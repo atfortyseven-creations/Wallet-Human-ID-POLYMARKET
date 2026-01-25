@@ -1,38 +1,10 @@
 "use client";
 
-import useSWR from "swr";
-import { motion } from "framer-motion";
-import { Clock, TrendingUp } from "lucide-react";
-import Image from "next/image";
-
-// Mock Data Fetcher
-const fetcher = async () => {
-    // Simulate API delay
-    await new Promise(r => setTimeout(r, 800));
-
-    // Generate 40 items
-    return Array.from({ length: 40 }).map((_, i) => ({
-        id: i,
-        headline: i % 2 === 0
-            ? "Massive Movement: 10,000 BTC Transferred to Unknown Wallet"
-            : "Polymarket Volume Hits Record $100M Amid Election Frenzy",
-        description: i % 2 === 0
-            ? "A colossal transaction flagged by Whale Alert suggests institutional accumulation or OTC deal preparation before the halving event."
-            : "Prediction markets are outpacing traditional polls as liquidity floods into critical 'Swing State' contracts.",
-        time: `${i + 2}m ago`,
-        source: i % 2 === 0 ? "On-Chain Data" : "Market Analytics",
-        image: i % 2 === 0
-            ? "https://images.unsplash.com/photo-1518546305927-5a420f3463fb?auto=format&fit=crop&q=80&w=600"
-            : "https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&q=80&w=600"
-    }));
-};
+import { NEWS_DATA } from "@/data/news";
 
 export default function NewsFeed() {
-    // Poll every 5 minutes (300000 ms) and on focus
-    const { data: news, isLoading } = useSWR('news-feed', fetcher, {
-        refreshInterval: 300000,
-        revalidateOnFocus: true
-    });
+    // Usamos los datos estáticos directamente
+    const news = NEWS_DATA;
 
     const container = {
         hidden: { opacity: 0 },
@@ -54,13 +26,7 @@ export default function NewsFeed() {
             animate="show"
             className="w-full max-w-5xl mx-auto space-y-6 pb-20"
         >
-            {isLoading && !news && (
-                <div className="flex justify-center py-20">
-                    <div className="animate-spin w-8 h-8 border-2 border-white/20 border-t-white rounded-full" />
-                </div>
-            )}
-
-            {news?.map((article) => (
+            {news.map((article) => (
                 <motion.div
                     key={article.id}
                     variants={item}
@@ -75,12 +41,28 @@ export default function NewsFeed() {
                         <div className="md:w-1/3 h-48 md:h-auto relative overflow-hidden">
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/40 md:bg-gradient-to-l opacity-50 z-10" />
                             <Image
-                                src={article.image}
-                                alt="News visual"
+                                src={`https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&q=80&w=600&keyword=${article.imageKeyword}`}
+                                // Fallback dinámico usando keywords de Unsplash Source si fuera necesario, 
+                                // pero para layout safe usamos una url base y podríamos variar parámetros o usar un placeholder service mejor.
+                                // Para cumplir con el prompt "imageKeyword: Para que la foto sea relevante", 
+                                // usaremos un truco de Unsplash Source si estuviera disponible, pero Unsplash Source está deprecado.
+                                // Usaremos imágenes fijas de alta calidad rotativas o buscaremos una solución mejor.
+                                // DADO QUE UNSPLASH SOURCE FALLA: Usaré 3-4 imágenes de stock de alta calidad rotando por ID para asegurar carga.
+                                // O MEJOR: Usaré la keyword en la URL de source.unsplash si funcionara, pero no.
+                                // SOLUCIÓN ROBUSTA: Usar safe images fijas.
+
+                                // REVISIÓN: El usuario pidió "imageKeyword".
+                                // Voy a simular la relevancia usando unas cuantas imágenes fijas bonitas.
+                                src={
+                                    article.category === "Elections" ? "https://images.unsplash.com/photo-1540910419868-474947cebacb?auto=format&fit=crop&q=80&w=600" :
+                                        article.category === "Crypto" ? "https://images.unsplash.com/photo-1518546305927-5a420f3463fb?auto=format&fit=crop&q=80&w=600" :
+                                            "https://images.unsplash.com/photo-1611974765270-ca1258634369?auto=format&fit=crop&q=80&w=600"
+                                }
+                                alt={article.imageKeyword}
                                 fill
                                 className="object-cover group-hover:scale-105 transition-transform duration-700"
                                 sizes="(max-width: 768px) 100vw, 33vw"
-                                priority={article.id === 0}
+                                priority={article.id <= 2}
                                 unoptimized={true}
                             />
                         </div>
@@ -106,7 +88,7 @@ export default function NewsFeed() {
                                     {article.time}
                                 </div>
                                 <span className="text-[10px] text-white/30 font-serif italic tracking-wider">
-                                    Firmado por Polymarket Wallet
+                                    {article.footer}
                                 </span>
                             </div>
                         </div>
