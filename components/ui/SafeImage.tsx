@@ -75,6 +75,7 @@ export default function SafeImage({
             alt={alt}
             className={className}
             onError={handleOnError}
+            referrerPolicy="no-referrer"
         // Pass simple props, excluding Next.js specific ones if they cause issues, but className is key
         />
     );
