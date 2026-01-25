@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useAccount, useReadContract } from "wagmi";
-import { parseEther, formatEther } from "viem";
 
 // TODO: Replace with real contract addresses on Polygon
 const USDC_ADDRESS = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";

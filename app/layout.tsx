@@ -20,6 +20,7 @@ export const metadata: Metadata = {
 };
 
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import GlobalBackground from "@/components/GlobalBackground";
 
 // ... existing imports
 
@@ -40,6 +41,7 @@ export default function RootLayout({
                     disableTransitionOnChange
                 >
                     <Web3Provider initialState={initialState}>
+                        <GlobalBackground />
                         {children}
                     </Web3Provider>
                 </ThemeProvider>
