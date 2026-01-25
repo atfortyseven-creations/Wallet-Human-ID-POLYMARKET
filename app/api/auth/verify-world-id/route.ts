@@ -7,10 +7,14 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
     try {
         const body = await req.json();
+        console.log("DEBUG: Verification Request Body:", JSON.stringify(body).slice(0, 100) + "...");
+
         const { proof, signal, merkle_root, nullifier_hash, verification_level, action } = body;
 
-        // 0. BYPASS DE EMERGENCIA (Para que puedas entrar al dashboard mientras arreglamos esto)
-        if (process.env.BYPASS_WORLD_ID === "true") {
+        // 0. BYPASS DE EMERGENCIA
+        // Chequeamos si la variable existe y si, al normalizarla, es 'true'
+        const bypassVar = process.env.BYPASS_WORLD_ID?.toLowerCase().trim();
+        if (bypassVar === "true" || bypassVar === "1") {
             console.log("⚠️ BYPASS_WORLD_ID enabled. Skipping verification.");
             return NextResponse.json({
                 success: true,
