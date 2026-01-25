@@ -1,99 +1,55 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { NewsCard } from './NewsCard';
-import { NewsSkeleton } from './NewsSkeleton';
-
-interface NewsItem {
-    id: string;
-    title: string;
-    imageUrl?: string | null; // From API mapped as imageUrl in service, or image in user's logic. Let's support both
-    image?: string | null;
-    url: string;
-    link?: string;
-    time: string;
-    pubDate?: string;
-    source: string;
-    category: string;
-}
+import { NewsCard } from '@/components/crystalline/NewsCard'; // Importación Correcta
+import { NewsSkeleton } from '@/components/crystalline/NewsSkeleton';
+import { processNewsFeed, ProcessedNews } from '@/utils/news-processor';
 
 export const NewsGrid = ({ category }: { category: string }) => {
-    const [news, setNews] = useState<NewsItem[]>([]);
+    const [news, setNews] = useState<ProcessedNews[]>([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
 
     useEffect(() => {
         let isMounted = true;
 
-        const loadNews = async () => {
+        const fetchNews = async () => {
             setLoading(true);
-            setError('');
             try {
-                // Añadimos timestamp para romper caché del navegador
-                const res = await fetch(`/api/news/sync?category=${encodeURIComponent(category)}&t=${Date.now()}`);
-
-                if (!res.ok) throw new Error('Error al conectar con el servidor');
-
-                const data = await res.json();
+                // Fetch a tu API interna
+                const res = await fetch(`/api/news/sync?category=${category}&t=${Date.now()}`);
+                const rawData = await res.json();
 
                 if (isMounted) {
-                    if (Array.isArray(data)) {
-                        setNews(data);
-                    } else {
-                        console.error('Formato inesperado:', data);
-                        setError('El servidor no devolvió una lista de noticias.');
-                    }
+                    // AQUI OCURRE LA MAGIA: Procesamos para eliminar duplicados y mejorar imágenes
+                    const uniqueNews = processNewsFeed(Array.isArray(rawData) ? rawData : []);
+                    setNews(uniqueNews);
                 }
-            } catch (err) {
-                if (isMounted) setError('No se pudieron cargar las noticias.');
-                console.error(err);
+            } catch (error) {
+                console.error("Error visual feed:", error);
             } finally {
                 if (isMounted) setLoading(false);
             }
         };
 
-        loadNews();
-
+        fetchNews();
         return () => { isMounted = false; };
     }, [category]);
 
-    if (loading) {
-        return (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {[...Array(6)].map((_, i) => <div key={i}><NewsSkeleton /></div>)}
-            </div>
-        );
-    }
+    if (loading) return <div className="grid grid-cols-1 md:grid-cols-3 gap-6"><NewsSkeleton /><NewsSkeleton /><NewsSkeleton /></div>;
 
-    if (error) {
-        return (
-            <div className="p-4 border border-red-500/50 bg-red-900/20 rounded-lg text-red-200 text-center">
-                <p className="font-bold">⚠️ {error}</p>
-                <p className="text-xs mt-2 opacity-70">Revisa la consola del navegador para más detalles.</p>
-            </div>
-        );
-    }
-
-    if (news.length === 0) {
-        return (
-            <div className="p-8 text-center text-gray-500 bg-gray-900/50 rounded-xl border border-dashed border-gray-700">
-                <p>No hay noticias disponibles para "{category}" en este momento.</p>
-            </div>
-        );
-    }
+    if (news.length === 0) return <div className="text-center py-20 text-gray-500 font-light">Sin novedades visuales en esta categoría.</div>;
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-24 px-1">
             {news.map((item) => (
                 <NewsCard
                     key={item.id}
                     title={item.title}
-                    // Prioridad de imagen: Propiedad 'image' normalizada -> Fallback en SafeImage
-                    image={(item.imageUrl || item.image) || ''}
-                    url={item.url || item.link || '#'}
+                    image={item.image}
+                    url={item.url}
                     source={item.source}
-                    // Aseguramos que la fecha se pase correctamente
-                    timeAgo={item.time || item.pubDate || ''}
+                    timeAgo={item.timeAgo}
+                    isGradient={item.isGradient}
                 />
             ))}
         </div>

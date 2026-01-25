@@ -1,52 +1,81 @@
 import { ExternalLink, Clock } from 'lucide-react';
-import SafeImage from '@/components/ui/SafeImage';
+import { useState } from 'react';
 
 interface NewsCardProps {
     title: string;
     image: string;
     url: string;
     source: string;
-    timeAgo: string; // Recibe la fecha ISO o texto
+    timeAgo: string;
+    isGradient?: boolean;
 }
 
-export const NewsCard = ({ title, image, url, source, timeAgo }: NewsCardProps) => {
-    // Función auxiliar para formatear fecha si viene en formato ISO
-    const displayDate = timeAgo && timeAgo.includes('T')
-        ? new Date(timeAgo).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-        : timeAgo || "Recently";
+export const NewsCard = ({ title, image, url, source, timeAgo, isGradient = false }: NewsCardProps) => {
+    const [imgError, setImgError] = useState(false);
+
+    // Formateo limpio de fecha
+    const dateStr = timeAgo.includes('T')
+        ? new Date(timeAgo).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
+        : timeAgo;
 
     return (
         <a
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex flex-col bg-gray-900/80 border border-gray-800 hover:border-blue-500/50 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-blue-900/20 h-full"
+            className="group flex flex-col h-full bg-[#0D0D12] border border-white/5 hover:border-blue-500/30 rounded-2xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-blue-900/10 hover:-translate-y-1"
         >
-            <div className="relative w-full aspect-[16/9]">
-                <SafeImage
-                    src={image}
-                    alt={title}
-                    fallbackCategory={source} // Usamos la fuente como pista, o podríamos pasar la categoría si la tuviéramos
-                    className="w-full h-full object-cover"
-                />
-                <div className="absolute top-2 left-2 bg-black/70 backdrop-blur-md px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider text-white border border-white/10 shadow-sm">
+            {/* ZONA DE IMAGEN - Prioridad Visual Total */}
+            <div className="relative w-full aspect-[16/9] overflow-hidden bg-gray-900">
+                {isGradient || imgError ? (
+                    // Renderizado de Arte Generativo (Gradiente Único)
+                    <div
+                        className="w-full h-full flex items-center justify-center p-6 text-center"
+                        style={{ background: isGradient ? image : 'linear-gradient(to right, #1a1a1a, #2a2a2a)' }}
+                    >
+                        <span className="text-white/20 font-serif italic text-2xl font-bold tracking-widest opacity-50 mix-blend-overlay">
+                            {source}
+                        </span>
+                    </div>
+                ) : (
+                    // Renderizado de Foto Real
+                    <>
+                        <img
+                            src={image}
+                            alt={title}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 saturate-[0.8] group-hover:saturate-100"
+                            loading="lazy"
+                            onError={() => setImgError(true)}
+                        />
+                        {/* Overlay Cinemático */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D12] via-transparent to-transparent opacity-80" />
+                    </>
+                )}
+
+                {/* Badge Flotante Minimalista */}
+                <div className="absolute top-3 left-3 bg-black/40 backdrop-blur-md border border-white/10 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-white/90">
                     {source}
                 </div>
             </div>
 
-            <div className="flex flex-col flex-1 p-4">
-                <div className="flex items-center gap-2 text-xs text-gray-400 mb-2.5">
-                    <Clock size={12} className="text-blue-400" />
-                    <span>{displayDate}</span>
+            {/* ZONA DE CONTENIDO - Tipografía Limpia */}
+            <div className="flex flex-col flex-1 p-5 relative">
+                <div className="flex items-center gap-2 text-xs font-medium text-gray-500 mb-3">
+                    <Clock size={12} className="text-blue-500" />
+                    <span className="uppercase tracking-wide">{dateStr}</span>
                 </div>
 
-                <h3 className="text-sm font-medium text-gray-100 leading-snug mb-4 line-clamp-3 group-hover:text-blue-400 transition-colors">
+                <h3 className="text-lg font-semibold text-gray-100 leading-snug mb-4 line-clamp-3 group-hover:text-blue-300 transition-colors font-sans tracking-tight">
                     {title}
                 </h3>
 
-                <div className="mt-auto pt-3 border-t border-gray-800/50 flex items-center justify-between text-xs text-gray-500 group-hover:text-gray-300">
-                    <span>Leer artículo</span>
-                    <ExternalLink size={14} className="group-hover:translate-x-1 transition-transform" />
+                <div className="mt-auto pt-4 border-t border-white/5 flex justify-between items-center">
+                    <span className="text-xs text-gray-600 font-medium group-hover:text-gray-400 transition-colors">
+                        Leer análisis completo
+                    </span>
+                    <div className="bg-white/5 p-1.5 rounded-full group-hover:bg-blue-500/20 transition-colors">
+                        <ExternalLink size={14} className="text-gray-400 group-hover:text-blue-400" />
+                    </div>
                 </div>
             </div>
         </a>
