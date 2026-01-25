@@ -21,6 +21,20 @@ export async function POST(req: Request) {
         const app_id = process.env.WLD_APP_ID;
         const action_id = process.env.NEXT_PUBLIC_WLD_ACTION || "";
 
+        // DEBUG: Logging para encontrar el error en Railway
+        console.log("--- World ID Verification Debug ---");
+        console.log("App ID from Env:", app_id ? `${app_id.substring(0, 5)}...` : "UNDEFINED");
+        console.log("Action ID from Env:", action_id);
+        console.log("Payload Proof:", proof ? "Present" : "Missing");
+
+        if (!app_id) {
+            console.error("CRITICAL: WLD_APP_ID is missing in server environment variables.");
+            return NextResponse.json(
+                { error: "Server Configuration Error: Missing WLD_APP_ID" },
+                { status: 500 }
+            );
+        }
+
         // URL de verificación oficial de Worldcoin
         const verifyRes = await fetch(
             `https://developer.worldcoin.org/api/v1/verify/${app_id}`,
@@ -43,12 +57,20 @@ export async function POST(req: Request) {
         const wldResponse = await verifyRes.json();
 
         if (!verifyRes.ok) {
-            console.error("Worldcoin Validation Error:", wldResponse);
+            console.error("Worldcoin API Error Response:", JSON.stringify(wldResponse, null, 2));
+            console.error("Status:", verifyRes.status, verifyRes.statusText);
+
             return NextResponse.json(
-                { error: "Invalid Proof", details: wldResponse },
+                {
+                    error: "Worldcoin Verification Failed",
+                    details: wldResponse,
+                    status: verifyRes.status
+                },
                 { status: 400 }
             );
         }
+
+        console.log("Worldcoin Verification Success!");
 
         // 3. (Opcional) Guardar en Base de Datos con Prisma
         // Si vas a usar Prisma aquí, asegúrate de importar 'prisma' desde tu lib instanciada, no crear una nueva instancia.
