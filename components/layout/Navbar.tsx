@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Heart, Home, BarChart2 } from 'lucide-react';
 import { useLanguage } from '@/src/context/LanguageContext';
+import { useWorld } from '@/src/context/WorldContext';
 import { WalletControl } from '@/components/crystalline/WalletControl';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { LanguageSelector } from '@/components/ui/LanguageSelector';
@@ -12,6 +13,10 @@ import { LanguageSelector } from '@/components/ui/LanguageSelector';
 export function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const { t } = useLanguage();
+    const { isHuman } = useWorld();
+
+    // REGLA ESTRICTA: Capa Fantasma (Si no es humano, no hay Navbar)
+    if (!isHuman) return null;
 
     const toggleMenu = () => setIsOpen(!isOpen);
 
