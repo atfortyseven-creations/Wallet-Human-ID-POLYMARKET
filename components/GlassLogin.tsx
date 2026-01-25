@@ -12,11 +12,9 @@ export default function GlassLogin() {
     const [isDiving, setIsDiving] = useState(false);
     const router = useRouter();
 
-    const handleSuccess = async (proof: any) => {
+    // Esta función se ejecuta DENTRO del widget de World ID (loading state)
+    const verifyProof = async (proof: any) => {
         try {
-            // 1. Send proof to Backend for Verification & Sybil Check
-            toast.loading("Verifying Identity...");
-
             const res = await fetch("/api/auth/verify-world-id", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -28,21 +26,26 @@ export default function GlassLogin() {
                 throw new Error(data.error || "Verification failed");
             }
 
-            // 2. Success Feedback
-            toast.dismiss();
-            toast.success("Identity Verified: Human confirmed");
-
-            // 3. Trigger Animation & Navigation
-            setIsDiving(true);
-            setTimeout(() => {
-                router.push("/dashboard");
-            }, 2800);
+            return; // Éxito (el widget mostrará el tick verde)
 
         } catch (error: any) {
             console.error(error);
-            toast.dismiss();
-            toast.error(error.message || "Verification Failed");
+            throw new Error(error.message || "Verification Failed"); // El widget mostrará error
         }
+    };
+
+    // Esta función se ejecuta DESPUÉS de que el widget muestre éxito
+    const onWidgetSuccess = () => {
+        toast.dismiss();
+        toast.success("Identity Verified: Human confirmed");
+
+        // Animación y Redirección
+        setIsDiving(true);
+
+        // Reducimos el tiempo de espera para que sea más ágil
+        setTimeout(() => {
+            router.push("/dashboard");
+        }, 1500);
     };
 
     const diveVariants = {
@@ -98,7 +101,10 @@ export default function GlassLogin() {
 
                 {/* Tu Botón de World ID */}
                 <div className="w-full">
-                    <WorldIDButton onVerificationSuccess={handleSuccess} />
+                    <WorldIDButton
+                        verifyProof={verifyProof}
+                        onVerificationSuccess={onWidgetSuccess}
+                    />
                 </div>
 
                 {/* Footer pequeño */}

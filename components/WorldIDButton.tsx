@@ -5,9 +5,10 @@ import { useState } from "react";
 
 interface WorldIDButtonProps {
   onVerificationSuccess?: (result: any) => void;
+  verifyProof?: (proof: any) => Promise<void>;
 }
 
-export default function WorldIDButton({ onVerificationSuccess }: WorldIDButtonProps) {
+export default function WorldIDButton({ onVerificationSuccess, verifyProof }: WorldIDButtonProps) {
   const [done, setDone] = useState(false);
 
   const onSuccess = (result: any) => {
@@ -20,7 +21,9 @@ export default function WorldIDButton({ onVerificationSuccess }: WorldIDButtonPr
 
   const handleVerify = async (proof: any) => {
     console.log("Proof received", proof);
-    // Call backend verify here
+    if (verifyProof) {
+      await verifyProof(proof);
+    }
   };
 
   return (
