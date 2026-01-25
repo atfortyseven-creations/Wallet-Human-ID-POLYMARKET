@@ -10,7 +10,7 @@ export default function Masthead() {
             animate={{ y: 0, opacity: 1 }}
             className="w-full border-b border-glass-border bg-black/10 backdrop-blur-xl sticky top-0 z-50"
         >
-            <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div className="max-w-7xl mx-auto px-6 h-16 md:h-20 flex items-center justify-between">
 
                 {/* Date/Meta - Left */}
                 <div className="hidden md:flex flex-col">

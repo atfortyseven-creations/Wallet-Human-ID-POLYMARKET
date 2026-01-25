@@ -24,7 +24,7 @@ export default function Leaderboard() {
     }, [searchQuery]);
 
     return (
-        <div className="w-full max-w-5xl mx-auto space-y-8 pb-20">
+        <div className="w-full max-w-5xl mx-auto space-y-8 pb-32 px-4 md:px-0">
             {/* HEADER SECTION */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-4 md:px-0">
 

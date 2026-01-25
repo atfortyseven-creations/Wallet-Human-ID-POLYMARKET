@@ -14,9 +14,9 @@ export default function NewsFeed() {
     }, [activeCategory]);
 
     return (
-        <div className="w-full max-w-7xl mx-auto space-y-4 pb-20">
+        <div className="w-full max-w-7xl mx-auto space-y-4 pb-32 px-2 md:px-0">
             {/* Tabs */}
-            <div className="sticky top-0 z-30 bg-[#0a0a0c]/80 backdrop-blur-xl border-b border-white/5 pb-2 pt-2 -mx-4 px-4 md:mx-0 md:px-0">
+            <div className="sticky top-16 md:top-20 z-30 bg-[#0a0a0c]/80 backdrop-blur-xl border-b border-white/5 pb-2 pt-2 -mx-4 px-4 md:mx-0 md:px-0">
                 <CategoryTabs
                     activeCategory={activeCategory}
                     onSelect={setActiveCategory}

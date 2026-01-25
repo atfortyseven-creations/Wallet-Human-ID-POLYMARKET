@@ -12,7 +12,7 @@ interface GlassDockProps {
 
 export default function GlassDock({ activeTab, onTabChange }: GlassDockProps) {
     return (
-        <div className="flex justify-center my-8 sticky top-24 z-40">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 w-auto">
             <motion.div
                 initial={{ y: 10, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -64,7 +64,7 @@ function TabButton({ isActive, onClick, icon, label }: { isActive: boolean; onCl
 
             <span className="relative z-10 flex items-center gap-2 font-sans text-xs font-bold tracking-wider">
                 {icon}
-                {label}
+                <span className="hidden md:block">{label}</span>
             </span>
         </button>
     );

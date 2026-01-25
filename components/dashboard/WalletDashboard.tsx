@@ -25,7 +25,7 @@ export default function WalletDashboard() {
     const [isReceiveOpen, setIsReceiveOpen] = useState(false);
 
     return (
-        <div className="w-full text-white font-sans p-4 md:p-8 min-h-[calc(100vh-200px)]">
+        <div className="w-full text-white font-sans p-4 md:p-8 pb-32 min-h-[calc(100vh-200px)]">
             <Toaster position="bottom-right" theme="dark" richColors />
             <SendModal isOpen={isSendOpen} onClose={() => setIsSendOpen(false)} />
             <ReceiveModal isOpen={isReceiveOpen} onClose={() => setIsReceiveOpen(false)} />
