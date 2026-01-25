@@ -37,7 +37,7 @@
   height: 100vh;
   background-color: #000;
   /* Fondo negro puro */
-  z-index: 0;
+  z-index: 50;
   display: flex;
   justify-content: center;
   align-items: center;
