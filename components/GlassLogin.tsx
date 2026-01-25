@@ -24,9 +24,10 @@ export default function GlassLogin() {
             if (!res.ok) {
                 const data = await res.json();
 
-                // Errores de configuración comunes
+                // Errores de configuración comunes (HTML response)
                 if (data.error?.includes("Upstream API Error") || data.error?.includes("Non-JSON")) {
-                    throw new Error("Configuration Error: Check WLD_APP_ID");
+                    const status = data.status || "Unknown";
+                    throw new Error(`API Config Error (Status: ${status}). Check WLD_APP_ID.`);
                 }
 
                 throw new Error(data.error || "Verification failed");

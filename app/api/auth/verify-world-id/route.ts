@@ -32,15 +32,15 @@ export async function POST(req: Request) {
         }
 
         // 2. Verificar la prueba con la API de Worldcoin (Server-to-Server)
-        // Usamos trim() para evitar errores por espacios en blanco accidentales al copiar/pegar
+        // Usamos trim() y replace para quitar comillas accidentales
         const raw_app_id = process.env.WLD_APP_ID || process.env.NEXT_PUBLIC_WLD_APP_ID || "";
-        const app_id = raw_app_id.trim();
-        const action_id = (process.env.NEXT_PUBLIC_WLD_ACTION || "").trim();
+        const app_id = raw_app_id.trim().replace(/["']/g, ""); // Quitamos comillas ' o "
+        const action_id = (process.env.NEXT_PUBLIC_WLD_ACTION || "").trim().replace(/["']/g, "");
 
         // DEBUG: Logging para encontrar el error en Railway
         console.log("--- World ID Verification Debug ---");
-        console.log("App ID (processed):", app_id ? `${app_id.substring(0, 6)}...` : "UNDEFINED");
-        console.log("Action ID (processed):", action_id);
+        console.log("App ID (sanitized):", app_id ? `${app_id.substring(0, 6)}...` : "UNDEFINED");
+        console.log("Action ID (sanitized):", action_id);
         console.log("Target URL:", `https://developer.worldcoin.org/api/v1/verify/${app_id}`);
 
         if (!app_id) {
