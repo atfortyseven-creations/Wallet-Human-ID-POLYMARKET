@@ -44,7 +44,7 @@ export default function NewsFeed() {
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/40 md:bg-gradient-to-l opacity-50 z-10" />
                             <Image
                                 src={article.imageUrl}
-                                alt={article.imageKeyword || "News image"}
+                                alt={article.headline}
                                 fill
                                 className="object-cover group-hover:scale-105 transition-transform duration-700"
                                 sizes="(max-width: 768px) 100vw, 33vw"
