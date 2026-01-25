@@ -47,46 +47,53 @@ export const Leaderboard = () => {
 
             {/* Lista de Traders */}
             <div className="divide-y divide-white/5">
-                {traders.map((trader) => (
-                    <a
-                        key={trader.address}
-                        href={trader.profileUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-white/[0.02] transition-colors group cursor-pointer"
-                    >
-                        {/* 1. Ranking */}
-                        <div className="col-span-1 flex justify-center">
-                            {getRankIcon(trader.rank)}
-                        </div>
-
-                        {/* 2. Identidad Real */}
-                        <div className="col-span-6 flex items-center gap-3">
-                            <div className="relative w-8 h-8 rounded-full bg-gray-800 border border-white/10 overflow-hidden group-hover:border-blue-500/50 transition-colors">
-                                <img src={trader.image} alt={trader.name} className="w-full h-full object-cover" />
+                {traders.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+                        <span className="text-sm font-medium">No hay datos disponibles</span>
+                        <span className="text-xs opacity-60 mt-1">Intenta más tarde</span>
+                    </div>
+                ) : (
+                    traders.map((trader) => (
+                        <a
+                            key={trader.address}
+                            href={trader.profileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-white/[0.02] transition-colors group cursor-pointer"
+                        >
+                            {/* 1. Ranking */}
+                            <div className="col-span-1 flex justify-center">
+                                {getRankIcon(trader.rank)}
                             </div>
-                            <div className="flex flex-col">
-                                <span className="text-sm font-medium text-gray-200 group-hover:text-blue-400 transition-colors flex items-center gap-1.5">
-                                    {trader.name}
-                                    <ExternalLink size={10} className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-500" />
-                                </span>
-                                {/* Check de Realismo Visual: Mostrar parte de la address */}
-                                <span className="text-[10px] text-gray-600 font-mono tracking-tight">
-                                    {trader.address.substring(0, 6)}...{trader.address.substring(38)}
+
+                            {/* 2. Identidad Real */}
+                            <div className="col-span-6 flex items-center gap-3">
+                                <div className="relative w-8 h-8 rounded-full bg-gray-800 border border-white/10 overflow-hidden group-hover:border-blue-500/50 transition-colors">
+                                    <img src={trader.image} alt={trader.name} className="w-full h-full object-cover" />
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-sm font-medium text-gray-200 group-hover:text-blue-400 transition-colors flex items-center gap-1.5">
+                                        {trader.name}
+                                        <ExternalLink size={10} className="opacity-0 group-hover:opacity-100 transition-opacity text-gray-500" />
+                                    </span>
+                                    {/* Check de Realismo Visual: Mostrar parte de la address */}
+                                    <span className="text-[10px] text-gray-600 font-mono tracking-tight">
+                                        {trader.address.substring(0, 6)}...{trader.address.substring(38)}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* 3. Métricas Financieras */}
+                            <div className="col-span-5 flex flex-col items-end gap-0.5">
+                                <span className="text-xs text-gray-400 font-mono">Vol: ${Math.floor(trader.volume).toLocaleString()}</span>
+                                <span className={`text-xs font-bold font-mono flex items-center gap-1 ${trader.profit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                    {trader.profit >= 0 ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
+                                    {trader.profit >= 0 ? '+' : ''}${Math.abs(Math.floor(trader.profit)).toLocaleString()}
                                 </span>
                             </div>
-                        </div>
-
-                        {/* 3. Métricas Financieras */}
-                        <div className="col-span-5 flex flex-col items-end gap-0.5">
-                            <span className="text-xs text-gray-400 font-mono">Vol: ${Math.floor(trader.volume).toLocaleString()}</span>
-                            <span className={`text-xs font-bold font-mono flex items-center gap-1 ${trader.profit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                                {trader.profit >= 0 ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
-                                {trader.profit >= 0 ? '+' : ''}${Math.abs(Math.floor(trader.profit)).toLocaleString()}
-                            </span>
-                        </div>
-                    </a>
-                ))}
+                        </a>
+                    ))
+                )}
             </div>
         </div>
     );
