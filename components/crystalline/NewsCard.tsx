@@ -55,9 +55,14 @@ export default function NewsCard({ article, priority = false }: NewsCardProps) {
                         {article.time}
                     </div>
                     {/* REQUESTED SIGNATURE */}
-                    <span className="text-[10px] text-white/40 font-serif italic text-right">
-                        Signed by Polymarket News
-                    </span>
+                    <div className="flex flex-col items-end">
+                        <span className="text-[9px] text-white/30 font-sans tracking-widest uppercase mb-0.5">
+                            Curated By
+                        </span>
+                        <span className="text-xs text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 via-white to-emerald-200 font-serif active-serif italic font-medium tracking-wide">
+                            Polymarket News
+                        </span>
+                    </div>
                 </div>
             </div>
         </motion.div>

@@ -12,7 +12,7 @@ export default function NewsFeed() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Fetch News from our AI API
+    // Fetch News from our API
     useEffect(() => {
         async function fetchNews() {
             try {
@@ -25,26 +25,19 @@ export default function NewsFeed() {
 
                 const data = await response.json();
 
-                if (data.article) {
+                if (data.articles && Array.isArray(data.articles)) {
                     // Map API response to our UI NewsItem type
-                    const mappedArticle: NewsItem = {
-                        id: data.article.id,
-                        headline: data.article.originalTitle, // Map API 'title' to UI 'headline'
-                        description: "Fetched via NewsData.io & AI", // Description from API if available or fallback
-                        category: "Trending", // Default category safely cast
-                        time: "Just now",
-                        source: data.article.source || "Polymarket News",
-                        imageUrl: data.article.image || "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&q=80&w=2832"
-                    };
+                    const mappedArticles: NewsItem[] = data.articles.map((art: any) => ({
+                        id: art.id,
+                        headline: art.originalTitle,
+                        description: art.description || "No description available.",
+                        category: mapCategory(art.categories), // Helper function needed or simple logic
+                        time: new Date(art.date).toLocaleDateString(),
+                        source: art.source || "Polymarket News",
+                        imageUrl: art.image || "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&q=80&w=2832"
+                    }));
 
-                    // Apply AI Title if available
-                    if (data.suggestions && data.suggestions.length > 0) {
-                        const punchyTitle = data.suggestions.find((s: any) => s.style === 'Punchy')?.title;
-                        // Use AI title if available, otherwise keep original
-                        if (punchyTitle) mappedArticle.headline = punchyTitle;
-                    }
-
-                    setNewsData([mappedArticle]);
+                    setNewsData(mappedArticles);
                     setError(null);
                 } else {
                     setNewsData([]);
@@ -52,7 +45,7 @@ export default function NewsFeed() {
 
             } catch (err) {
                 console.error("News Fetch Error:", err);
-                setError("Could not load real-time news. (Check API Keys)");
+                setError("Could not load real-time news.");
             } finally {
                 setLoading(false);
             }
@@ -62,8 +55,27 @@ export default function NewsFeed() {
     }, []);
 
     // Filter Logic
-    // Since we only fetch one item currently for demo, we behave loosely on filtering or just show it if Trending
-    const filteredNews = newsData.filter(item => activeCategory === "Trending" || item.category === activeCategory);
+    const filteredNews = newsData.filter(item => {
+        if (activeCategory === "Trending") return true;
+        return item.category === activeCategory;
+    });
+
+    // Helper to map API categories to our fixed UI categories
+    // NewsData.io returns array like ["technology", "business"]
+    function mapCategory(apiCategories: string[]): Category {
+        if (!apiCategories || apiCategories.length === 0) return "Trending";
+
+        const catString = apiCategories.join(' ').toLowerCase();
+
+        if (catString.includes('crypto') || catString.includes('bitcoin')) return "Crypto";
+        if (catString.includes('tech') || catString.includes('technology')) return "Tech";
+        if (catString.includes('science')) return "Climate & Science";
+        if (catString.includes('business') || catString.includes('finance')) return "Finance";
+        if (catString.includes('economy')) return "Economy";
+        if (catString.includes('politics')) return "Politics";
+
+        return "Trending"; // Fallback
+    }
 
     return (
         <div className="w-full max-w-7xl mx-auto space-y-4 pb-32 px-2 md:px-0">

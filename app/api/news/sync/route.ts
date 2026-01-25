@@ -5,28 +5,29 @@ import { generateSmartTitles } from '@/lib/ai-editor';
 
 export async function GET() {
     try {
-        // Buscar noticias relacionadas con tecnología o crypto
-        const articles = await NewsDataService.fetchLatest('crypto OR technology');
+        // Fetch diverse news to populate all categories
+        const articles = await NewsDataService.fetchLatest('crypto OR technology OR business OR science OR politics');
 
         if (!articles.length) {
             return NextResponse.json({ message: "No fresh news found (or API Key missing)" }, { status: 404 });
         }
 
-        const news = articles[0]; // La más reciente
-
-        const context = `TITULO: ${news.title} | CONTENIDO: ${news.content.substring(0, 1000)}`; // Truncate content to avoid token limits
-        const aiTitles = await generateSmartTitles(context);
+        // Return up to 10 articles
+        // Note: AI title generation for ALL articles might be too slow/expensive for this demo, 
+        // using original titles + descriptions.
+        const mappedArticles = articles.slice(0, 10).map(news => ({
+            id: news.id,
+            originalTitle: news.title,
+            source: news.source,
+            image: news.imageUrl,
+            url: news.link,
+            date: news.pubDate,
+            description: news.description, // Pass the description/summary
+            categories: news.category // Pass original categories for filtering
+        }));
 
         return NextResponse.json({
-            article: {
-                id: news.id,
-                originalTitle: news.title,
-                source: news.source,
-                image: news.imageUrl,
-                url: news.link,
-                date: news.pubDate
-            },
-            suggestions: aiTitles,
+            articles: mappedArticles,
             status: "success"
         });
 

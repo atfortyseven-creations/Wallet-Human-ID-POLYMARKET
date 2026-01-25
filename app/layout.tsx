@@ -27,7 +27,10 @@ export const metadata: Metadata = {
 };
 
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import GlobalBackground from "@/components/GlobalBackground";
+import { Toaster } from "sonner";
+import NetworkGuard from "@/components/guards/NetworkGuard";
 
 // ... existing imports
 
@@ -49,6 +52,8 @@ export default function RootLayout({
                 >
                     <Web3Provider initialState={initialState}>
                         <GlobalBackground />
+                        <NetworkGuard />
+                        <Toaster position="bottom-right" theme="dark" richColors closeButton />
                         <div style={{ position: 'relative', zIndex: 1 }}>
                             {children}
                         </div>
