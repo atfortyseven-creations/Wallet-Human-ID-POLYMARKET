@@ -24,6 +24,10 @@ const GlobalBackground = () => {
 
     return (
         <div className={styles.backgroundContainer}>
+            {/* DEBUG OVERLAY */}
+            <div style={{ position: 'absolute', top: 100, left: 20, color: 'red', zIndex: 9999, background: 'white' }}>
+                DEBUG MODE: Path: {pathname} | Show: {mostrarGlobo.toString()}
+            </div>
             <video
                 autoPlay
                 loop
