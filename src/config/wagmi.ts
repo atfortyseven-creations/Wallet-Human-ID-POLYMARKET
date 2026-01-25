@@ -13,6 +13,8 @@ export const config = createConfig({
     },
     connectors: [
         injected(),
-        walletConnect({ projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID as string }),
+        walletConnect({
+            projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || 'c0f7329d55474325a75cf015f5d3419f' // Fallback to avoid crash
+        }),
     ],
 })
