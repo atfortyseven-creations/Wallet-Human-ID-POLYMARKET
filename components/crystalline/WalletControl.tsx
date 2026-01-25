@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Copy, Check, LogOut, Wallet, ChevronDown, ExternalLink } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/src/context/LanguageContext";
 
 // Inline formatter since not in utils yet
 const formatAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`;
@@ -14,6 +15,7 @@ export function WalletControl() {
     const { disconnect } = useDisconnect();
     const { connectors, connect } = useConnect();
     const { data: balance } = useBalance({ address });
+    const { t } = useLanguage();
 
     const [isOpen, setIsOpen] = useState(false);
     const [copied, setCopied] = useState(false);
@@ -77,7 +79,7 @@ export function WalletControl() {
                         >
                             {/* Header Info */}
                             <div className="flex items-center justify-between mb-4 pb-4 border-b border-white/5">
-                                <span className="text-xs text-gray-500 font-semibold uppercase tracking-wider">Tu Billetera</span>
+                                <span className="text-xs text-gray-500 font-semibold uppercase tracking-wider">{t('wallet.yours')}</span>
                                 <div className="px-2 py-0.5 rounded text-[10px] font-bold bg-green-500/20 text-green-400 border border-green-500/30">
                                     {chain?.name || 'Polygon'}
                                 </div>
@@ -94,7 +96,7 @@ export function WalletControl() {
                                             <Copy size={16} />
                                         </div>
                                         <div className="flex flex-col items-start">
-                                            <span className="text-sm font-medium text-gray-200">Copiar Dirección</span>
+                                            <span className="text-sm font-medium text-gray-200">{t('wallet.copy')}</span>
                                             <span className="text-[10px] text-gray-500">{address ? formatAddress(address) : ''}</span>
                                         </div>
                                     </div>
@@ -111,7 +113,7 @@ export function WalletControl() {
                                         <div className="p-2 rounded-lg bg-purple-500/10 text-purple-400 group-hover:text-purple-300">
                                             <ExternalLink size={16} />
                                         </div>
-                                        <span className="text-sm font-medium text-gray-200">Ver en Explorador</span>
+                                        <span className="text-sm font-medium text-gray-200">{t('wallet.view')}</span>
                                     </div>
                                 </a>
                             </div>
@@ -122,7 +124,7 @@ export function WalletControl() {
                                 className="w-full mt-4 flex items-center justify-center gap-2 p-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 font-medium transition-colors border border-transparent hover:border-red-500/30"
                             >
                                 <LogOut size={16} />
-                                <span>Desconectar</span>
+                                <span>{t('wallet.disconnect')}</span>
                             </button>
                         </motion.div>
                     </>

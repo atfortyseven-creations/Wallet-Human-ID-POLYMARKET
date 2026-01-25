@@ -3,13 +3,14 @@
 import { useEffect, useState } from 'react';
 import { Trophy, ExternalLink, TrendingUp, TrendingDown, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { type Trader } from '@/lib/leaderboard-service';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 export const Leaderboard = () => {
     const [traders, setTraders] = useState<Trader[]>([]);
     const [loading, setLoading] = useState(true);
-    const [page, setPage] = useState(1); // Estado para la página actual
+    const [page, setPage] = useState(1);
+    const { t } = useLanguage();
 
-    // Función para cargar datos
     const loadData = (pageNum: number) => {
         setLoading(true);
         fetch(`/api/leaderboard?page=${pageNum}`)
@@ -21,10 +22,8 @@ export const Leaderboard = () => {
             .catch(() => setLoading(false));
     };
 
-    // Cargar al inicio y cuando cambia la página
     useEffect(() => {
         loadData(page);
-        // Scroll suave al inicio de la tabla al cambiar de página
         if (page > 1) {
             document.getElementById('leaderboard-top')?.scrollIntoView({ behavior: 'smooth' });
         }
@@ -43,13 +42,10 @@ export const Leaderboard = () => {
     return (
         <div id="leaderboard-top" className="w-full bg-[#0D0D12] border border-white/5 rounded-xl overflow-hidden shadow-2xl backdrop-blur-sm flex flex-col min-h-[600px]">
 
-            {/* Header */}
-            <div className="px-6 py-4 border-b border-white/5 bg-gradient-to-r from-blue-900/5 to-transparent flex justify-between items-center">
-                <h2 className="text-sm font-bold text-gray-100 uppercase tracking-widest flex items-center gap-2">
-                    Top Traders Global
-                </h2>
+            {/* Header Reducido (Solo Paginación) */}
+            <div className="px-6 py-4 border-b border-white/5 bg-gradient-to-r from-blue-900/5 to-transparent flex justify-end items-center">
                 <span className="text-xs font-mono text-gray-500">
-                    Página {page}
+                    {t('leaderboard.page')} {page}
                 </span>
             </div>
 
@@ -58,13 +54,13 @@ export const Leaderboard = () => {
                 {loading ? (
                     <div className="h-96 flex flex-col items-center justify-center text-blue-400/50 gap-3">
                         <Loader2 className="animate-spin" size={32} />
-                        <span className="text-xs uppercase tracking-widest">Cargando Página {page}...</span>
+                        <span className="text-xs uppercase tracking-widest">{t('leaderboard.loading')} {page}...</span>
                     </div>
                 ) : (
                     <div className="divide-y divide-white/5">
                         {traders.length === 0 ? (
                             <div className="flex flex-col items-center justify-center h-48 text-gray-500">
-                                <span className="text-sm font-medium">No hay más datos</span>
+                                <span className="text-sm font-medium">{t('leaderboard.nodata')}</span>
                             </div>
                         ) : (
                             traders.map((trader) => (
@@ -73,7 +69,7 @@ export const Leaderboard = () => {
                                     href={trader.profileUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="grid grid-cols-12 gap-4 px-6 py-3.5 items-center hover:bg-white/[0.02] transition-colors group cursor-pointer"
+                                    className="grid grid-cols-12 gap-4 px-6 py-3.5 items-center hover:bg-white/[0.02] transition-colors group cursor-pointer min-w-[500px]"
                                 >
                                     {/* Rank */}
                                     <div className="col-span-1 flex justify-center">
@@ -98,7 +94,7 @@ export const Leaderboard = () => {
 
                                     {/* Stats */}
                                     <div className="col-span-5 flex flex-col items-end gap-0.5">
-                                        <span className="text-xs text-gray-400 font-mono">Vol: ${Math.floor(trader.volume).toLocaleString()}</span>
+                                        <span className="text-xs text-gray-400 font-mono">{t('leaderboard.vol')}: ${Math.floor(trader.volume).toLocaleString()}</span>
                                         <span className={`text-xs font-bold font-mono flex items-center gap-1 ${trader.profit >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                                             {trader.profit >= 0 ? '+' : ''}${Math.abs(Math.floor(trader.profit)).toLocaleString()}
                                         </span>
@@ -117,11 +113,10 @@ export const Leaderboard = () => {
                     disabled={page === 1 || loading}
                     className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-gray-400 bg-white/5 rounded hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                 >
-                    <ChevronLeft size={14} /> ANTERIOR
+                    <ChevronLeft size={14} /> {t('leaderboard.prev')}
                 </button>
 
                 <div className="flex gap-2">
-                    {/* Indicadores visuales de página */}
                     <div className="w-2 h-2 rounded-full bg-blue-500"></div>
                     <div className="w-2 h-2 rounded-full bg-gray-700"></div>
                     <div className="w-2 h-2 rounded-full bg-gray-700"></div>
@@ -129,10 +124,10 @@ export const Leaderboard = () => {
 
                 <button
                     onClick={handleNext}
-                    disabled={loading || traders.length < 20} // Si vienen menos de 20, es la última página
+                    disabled={loading || traders.length < 20}
                     className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-gray-400 bg-white/5 rounded hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
                 >
-                    SIGUIENTE <ChevronRight size={14} />
+                    {t('leaderboard.next')} <ChevronRight size={14} />
                 </button>
             </div>
         </div>

@@ -89,22 +89,14 @@ export default function GlassLogin() {
             {/* Efecto de brillo superior */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[2px] bg-gradient-to-r from-transparent via-blue-400/50 to-transparent blur-sm" />
 
+            {/* Contenido Principal */}
             <div className="flex flex-col items-center p-8 pt-10">
 
-                {/* Icono Header */}
-                <div className="mb-6 rounded-full bg-white/5 p-3 ring-1 ring-white/10 shadow-lg backdrop-blur-md">
-                    <ShieldCheck className="h-6 w-6 text-white" strokeWidth={1.5} />
-                </div>
-
-                {/* Títulos */}
-                <div className="text-center space-y-1 mb-8">
-                    <h1 className="text-2xl font-bold text-white tracking-tight">
-                        Polymarket
+                {/* Títulos / Cabecera (Simplificada) */}
+                <div className="text-center space-y-1 mb-6">
+                    <h1 className="text-xl font-bold text-white tracking-tight">
+                        Polymarket Wallet
                     </h1>
-                    <div className="flex items-center justify-center gap-2 text-xs font-medium tracking-[0.2em] text-gray-400 uppercase">
-                        <Wallet className="w-3 h-3" />
-                        <span>Wallet</span>
-                    </div>
                 </div>
 
                 {/* Separador Sutil */}
@@ -112,7 +104,6 @@ export default function GlassLogin() {
 
                 {/* Tu Botón de World ID */}
                 <div className="w-full">
-                    {/* Versión Debug sin props */}
                     <WorldIDButton />
                 </div>
 
