@@ -82,37 +82,50 @@ export class NewsDataService {
         // Enforce images from API side if possible
         params.append('image', '1');
 
-        const response = await fetch(`${this.BASE_URL}?${params.toString()}`, {
-            next: { revalidate: 900 },
-        });
+        try {
+            const response = await fetch(`${this.BASE_URL}?${params.toString()}`, {
+                next: { revalidate: 900 },
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        if (data.status !== "success") {
-            console.error(`[NewsData Error]:`, data);
+            if (data.status !== "success") {
+                console.error(`[NewsData Error]:`, data);
+                return { articles: [], nextPage: null };
+            }
+
+            const rawResults = data.results as any[] || [];
+            console.log(`[DEBUG] Received ${rawResults.length} articles.`);
+
+            // ROBUST PROCESSING
+            const articles = rawResults
+                .map((article: any) => ({
+                    id: article.article_id || Math.random().toString(),
+                    title: article.title,
+                    link: article.link || article.url,
+                    description: article.description || "Sin descripción disponible.",
+                    content: article.content || article.description || "",
+                    pubDate: article.pubDate,
+                    source: article.source_id,
+                    // ROBUST MAPPING: Check all common keys, fine to be null
+                    imageUrl: article.image_url || article.urlToImage || article.image || article.cover || null,
+                    category: article.category || [],
+                    // Additional fields for consistency
+                    time: article.pubDate,
+                    date: article.pubDate
+                }))
+                // RELAXED FILTER: Keep article if it has TITLE and LINK. Image is optional.
+                .filter((article: NewsArticle) => {
+                    const hasTitle = article.title && article.title.length > 5;
+                    const hasLink = article.link;
+                    return hasTitle && hasLink;
+                });
+
+            return { articles, nextPage: data.nextPage };
+        } catch (error) {
+            console.error(`[NewsService Fetch Error]:`, error);
             return { articles: [], nextPage: null };
         }
-
-        const rawResults = data.results as any[] || [];
-        console.log(`[DEBUG] Received ${rawResults.length} articles. Item 0 keys:`, rawResults.length > 0 ? Object.keys(rawResults[0]) : "Empty");
-
-        const articles = rawResults
-            .map((article: any) => ({
-                id: article.article_id,
-                title: article.title,
-                link: article.link || article.url,
-                description: article.description || "Sin descripción disponible.",
-                content: article.content || article.description || "",
-                pubDate: article.pubDate,
-                source: article.source_id,
-                // ROBUST MAPPING: Check all common keys
-                imageUrl: article.image_url || article.urlToImage || article.image || article.cover || null,
-                category: article.category || [],
-            }))
-            // RELAXED FILTER: Keep article even if image is null (SafeImage will handle fallback)
-            .filter((article: NewsArticle) => article.title && article.link);
-
-        return { articles, nextPage: data.nextPage };
     }
 
     private static mapCategoryToParams(userCategory: string): { q?: string, category?: string } {

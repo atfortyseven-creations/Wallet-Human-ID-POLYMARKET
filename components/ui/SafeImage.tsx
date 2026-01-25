@@ -31,52 +31,42 @@ export default function SafeImage({
     className,
     ...props
 }: SafeImageProps) {
+    // Determine start state: error if src is missing or empty
+    const [hasError, setHasError] = useState(!src || src === "");
     const [imgSrc, setImgSrc] = useState<string | null>(src || null);
-    const [hasError, setHasError] = useState(false);
 
     useEffect(() => {
+        setHasError(!src || src === "");
         setImgSrc(src || null);
-        setHasError(false);
     }, [src]);
 
     const handleOnError = () => {
-        if (!hasError) {
-            setHasError(true);
-            // Select fallback based on category partial match
-            const category = Object.keys(FALLBACK_IMAGES).find(key =>
-                fallbackCategory.toLowerCase().includes(key.toLowerCase())
-            ) || "Default";
-
-            setImgSrc(FALLBACK_IMAGES[category]);
-        }
+        setHasError(true);
     };
 
-    // If initial src is missing, immediately use fallback
-    if (!imgSrc || imgSrc === "") {
+    // Determine final source
+    let finalSrc = imgSrc;
+    if (hasError) {
         const category = Object.keys(FALLBACK_IMAGES).find(key =>
-            fallbackCategory.toLowerCase().includes(key.toLowerCase())
+            (fallbackCategory || "Default").toLowerCase().includes(key.toLowerCase())
         ) || "Default";
-        const fallback = FALLBACK_IMAGES[category];
-
-        return (
-            <Image
-                src={fallback}
-                alt={alt}
-                className={className}
-                {...props}
-            />
-        );
+        finalSrc = FALLBACK_IMAGES[category];
     }
 
-    // Use standard <img> for dynamic news sources to bypass Next.js restricted domain list
+    if (!finalSrc) return null;
+
     return (
-        <img
-            src={imgSrc}
-            alt={alt}
-            className={className}
-            onError={handleOnError}
-            referrerPolicy="no-referrer"
-        // Pass simple props, excluding Next.js specific ones if they cause issues, but className is key
-        />
+        <div className={`relative overflow-hidden bg-gray-800 w-full h-full ${className}`}>
+            <img
+                src={finalSrc}
+                alt={alt}
+                className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                loading="lazy"
+                referrerPolicy="no-referrer" // Critical for hotlinking
+                onError={handleOnError}
+            />
+            {/* Visual overlay for better text readability if used as background */}
+            <div className="absolute inset-0 bg-gradient-to-t from-gray-900/40 to-transparent pointer-events-none" />
+        </div>
     );
 }
