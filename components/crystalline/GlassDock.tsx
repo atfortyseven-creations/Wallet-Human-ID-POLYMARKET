@@ -1,9 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Newspaper, Wallet } from "lucide-react";
+import { Newspaper, Wallet, Trophy } from "lucide-react";
 
-type Tab = "NEWS" | "WALLET";
+type Tab = "NEWS" | "WALLET" | "LEADERBOARD";
 
 interface GlassDockProps {
     activeTab: Tab;
@@ -23,6 +23,15 @@ export default function GlassDock({ activeTab, onTabChange }: GlassDockProps) {
                     onClick={() => onTabChange("NEWS")}
                     icon={<Newspaper className="w-4 h-4" />}
                     label="NEWS"
+                />
+
+                <div className="w-[1px] bg-white/5 mx-1 my-2" />
+
+                <TabButton
+                    isActive={activeTab === "LEADERBOARD"}
+                    onClick={() => onTabChange("LEADERBOARD")}
+                    icon={<Trophy className="w-4 h-4" />}
+                    label="LEADERBOARD"
                 />
 
                 <div className="w-[1px] bg-white/5 mx-1 my-2" />
