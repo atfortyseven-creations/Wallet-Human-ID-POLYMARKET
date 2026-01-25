@@ -8,6 +8,8 @@ import GlassDock from "./GlassDock";
 import NewsFeed from "./NewsFeed";
 import PolymarketGlassDashboard from "@/components/dashboard/PolymarketGlassDashboard";
 
+import WalletDashboard from "@/components/dashboard/WalletDashboard";
+
 export default function CrystallineDashboard() {
     const [activeTab, setActiveTab] = useState<"NEWS" | "WALLET">("NEWS");
 
@@ -41,9 +43,7 @@ export default function CrystallineDashboard() {
                         >
                             {/* Reuse the verified Dashboard, wrapped in the new aesthetic context if needed */}
                             <div className="max-w-7xl mx-auto">
-                                <div className="max-w-7xl mx-auto">
-                                    <WalletDashboard />
-                                </div>
+                                <WalletDashboard />
                             </div>
                         </motion.div>
                     )}
