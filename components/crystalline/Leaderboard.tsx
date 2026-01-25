@@ -46,7 +46,6 @@ export const Leaderboard = () => {
             {/* Header */}
             <div className="px-6 py-4 border-b border-white/5 bg-gradient-to-r from-blue-900/5 to-transparent flex justify-between items-center">
                 <h2 className="text-sm font-bold text-gray-100 uppercase tracking-widest flex items-center gap-2">
-                    <Trophy size={14} className="text-blue-500" />
                     Top Traders Global
                 </h2>
                 <span className="text-xs font-mono text-gray-500">
@@ -55,7 +54,7 @@ export const Leaderboard = () => {
             </div>
 
             {/* Contenido */}
-            <div className="flex-1">
+            <div className="flex-1 overflow-x-auto">
                 {loading ? (
                     <div className="h-96 flex flex-col items-center justify-center text-blue-400/50 gap-3">
                         <Loader2 className="animate-spin" size={32} />

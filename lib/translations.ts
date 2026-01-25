@@ -1,6 +1,9 @@
 export const translations = {
     en: {
         'nav.title': 'Polymarket News',
+        'nav.home': 'Home',
+        'nav.fav': 'Favorites',
+        'nav.leaderboard': 'Leaderboard',
         'wallet.connect': 'Connect Wallet',
         'wallet.disconnect': 'Disconnect Wallet',
         'wallet.copy': 'Copy Address',
@@ -18,6 +21,9 @@ export const translations = {
     },
     es: {
         'nav.title': 'Noticias Polymarket',
+        'nav.home': 'Inicio',
+        'nav.fav': 'Favoritos',
+        'nav.leaderboard': 'Top Traders',
         'wallet.connect': 'Conectar Wallet',
         'wallet.disconnect': 'Desconectar',
         'wallet.copy': 'Copiar Dirección',
@@ -35,6 +41,9 @@ export const translations = {
     },
     fr: {
         'nav.title': 'Actualités Polymarket',
+        'nav.home': 'Accueil',
+        'nav.fav': 'Favoris',
+        'nav.leaderboard': 'Classement',
         'wallet.connect': 'Connecter le Portefeuille',
         'wallet.disconnect': 'Déconnecter',
         'wallet.copy': 'Copier l\'adresse',
@@ -52,6 +61,9 @@ export const translations = {
     },
     de: {
         'nav.title': 'Polymarket Nachrichten',
+        'nav.home': 'Startseite',
+        'nav.fav': 'Favoriten',
+        'nav.leaderboard': 'Bestenliste',
         'wallet.connect': 'Wallet Verbinden',
         'wallet.disconnect': 'Wallet Trennen',
         'wallet.copy': 'Adresse Kopieren',

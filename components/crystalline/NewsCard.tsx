@@ -1,5 +1,5 @@
 
-import { ExternalLink, Clock, TrendingUp, TrendingDown, Star } from 'lucide-react';
+import { ExternalLink, Clock, TrendingUp, TrendingDown, Heart } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { RelatedMarket } from './RelatedMarket';
 import { useWatchlist } from '@/lib/watchlist-store';
@@ -18,11 +18,10 @@ interface NewsCardProps {
 export const NewsCard = ({ title, image, url, source, timeAgo, isGradient = false, description }: NewsCardProps) => {
     const [imgError, setImgError] = useState(false);
     const { isSaved, toggleItem } = useWatchlist();
-    // Hydration fix for zustand persist (optional but recommended)
     const [mounted, setMounted] = useState(false);
     useEffect(() => setMounted(true), []);
 
-    const isFav = isSaved(url); // Using URL as unique ID for news
+    const isFav = isSaved(url);
 
     const handleFav = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -34,22 +33,22 @@ export const NewsCard = ({ title, image, url, source, timeAgo, isGradient = fals
             meta: image
         });
         toast(isFav ? "Eliminado de favoritos" : "Añadido a favoritos", {
-            icon: isFav ? <Star size={16} /> : <Star size={16} fill="#EAB308" className="text-yellow-500" />
+            icon: isFav ? <Heart size={16} /> : <Heart size={16} fill="#EF4444" className="text-red-500" />
         });
     };
 
+    // ... date logic ...
     // Formateo limpio de fecha
     const dateStr = timeAgo.includes('T')
         ? new Date(timeAgo).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
         : timeAgo;
 
-    // Simple Sentiment Analysis based on title keywords
+    // ... sentiment logic ...
     const isBullish = title.toLowerCase().match(/surge|record|high|jump|bull|growth|approve|win/);
     const isBearish = title.toLowerCase().match(/drop|crash|low|bear|ban|lawsuit|fail|loss/);
     const sentiment = isBullish ? 'bullish' : isBearish ? 'bearish' : 'neutral';
 
-    // Market Keyword Extraction (Main noun/topic)
-    const keyword = title.split(' ').slice(0, 3).join(' '); // Taking first 3 words as a naive keyword
+    const keyword = title.split(' ').slice(0, 3).join(' ');
 
     return (
         <a
@@ -58,15 +57,15 @@ export const NewsCard = ({ title, image, url, source, timeAgo, isGradient = fals
             rel="noopener noreferrer"
             className="group flex flex-col h-full bg-[#0D0D12] dark:bg-[#0D0D12] bg-white border border-black/5 dark:border-white/5 hover:border-blue-500/30 rounded-2xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-blue-900/10 hover:-translate-y-1 relative"
         >
-            {/* FAVORITE BUTTON (Top Right) */}
+            {/* FAVORITE BUTTON */}
             <button
                 onClick={handleFav}
-                className="absolute top-3 right-3 z-20 p-2 rounded-full bg-black/40 backdrop-blur-md border border-white/10 hover:bg-black/60 transition-colors"
+                className="absolute top-3 right-3 z-20 p-2 rounded-full bg-black/40 backdrop-blur-md border border-white/10 hover:bg-black/60 transition-colors group/heart"
             >
                 {mounted && (
-                    <Star
-                        size={16}
-                        className={`transition - colors duration - 300 ${isFav ? 'text-yellow-500 fill-yellow-500' : 'text-white/60 hover:text-white'} `}
+                    <Heart
+                        size={18}
+                        className={`transition-all duration-300 ${isFav ? 'text-red-500 fill-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]' : 'text-white/60 group-hover/heart:text-white'}`}
                     />
                 )}
             </button>
@@ -81,8 +80,8 @@ export const NewsCard = ({ title, image, url, source, timeAgo, isGradient = fals
 
                 {sentiment !== 'neutral' && (
                     <div className={`absolute bottom - 3 right - 3 z - 10 px - 2 py - 1 rounded text - [10px] font - bold uppercase tracking - wider backdrop - blur - md border ${sentiment === 'bullish'
-                            ? 'bg-green-500/80 text-white border-green-400/50'
-                            : 'bg-red-500/80 text-white border-red-400/50'
+                        ? 'bg-green-500/80 text-white border-green-400/50'
+                        : 'bg-red-500/80 text-white border-red-400/50'
                         } `}>
                         <div className="flex items-center gap-1">
                             {sentiment === 'bullish' ? <TrendingUp size={12} /> : <TrendingDown size={12} />}

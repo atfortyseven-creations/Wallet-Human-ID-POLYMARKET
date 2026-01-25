@@ -10,6 +10,7 @@ import NetworkGuard from "@/components/guards/NetworkGuard";
 import Providers from "@/components/Providers";
 import BackgroundWrapper from "@/components/layout/BackgroundWrapper";
 import { Footer } from "@/components/layout/Footer";
+import { Navbar } from "@/components/layout/Navbar";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const merriweather = Merriweather({
@@ -42,6 +43,7 @@ export default function RootLayout({
             <body className={`${inter.variable} ${merriweather.variable} ${unifraktur.variable} font-sans`}>
                 <Providers initialState={initialState}>
                     <BackgroundWrapper />
+                    <Navbar />
                     <NetworkGuard />
                     <Toaster position="bottom-right" theme="dark" richColors closeButton />
                     <div style={{ position: 'relative', zIndex: 1, minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
