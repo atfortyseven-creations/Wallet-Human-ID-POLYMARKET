@@ -39,24 +39,26 @@ export default function WalletConnect() {
             <AnimatePresence mode="wait">
                 {!isConnected ? (
                     // 1. DISCONNECTED STATE: "INITIALIZE LINK"
-                    <motion.button
-                        key="connect-btn"
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        whileHover={{ scale: 1.02, textShadow: "0 0 8px rgba(255,255,255,0.5)" }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={handleConnect}
-                        className="group relative px-6 py-2.5 rounded-full bg-white/5 border border-white/10 hover:border-white/30 backdrop-blur-md transition-all duration-300 shadow-[0_4px_20px_-5px_rgba(0,0,0,0.3)] overflow-hidden"
-                    >
-                        {/* Hover Glow Effect */}
-                        <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+                    <div className="flex flex-col items-center gap-3">
+                        <motion.button
+                            key="connect-btn"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            onClick={handleConnect}
+                            className="group relative px-6 py-2.5 rounded-full bg-white/5 border border-white/10 hover:border-white/30 backdrop-blur-md transition-all duration-300 shadow-[0_4px_20px_-5px_rgba(0,0,0,0.3)] overflow-hidden"
+                        >
+                            <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-shimmer" />
+                            <div className="flex items-center gap-3 relative z-10 text-xs tracking-[0.15em] font-medium text-white/90">
+                                <span className="w-1.5 h-1.5 rounded-full bg-white/50 group-hover:bg-emerald-400 group-hover:shadow-[0_0_8px_#34d399] transition-all" />
+                                {isReconnecting ? "INITIALIZING..." : "CONNECT WALLET"}
+                            </div>
+                        </motion.button>
 
-                        <div className="flex items-center gap-3 relative z-10 text-xs tracking-[0.15em] font-medium text-white/90">
-                            <span className="w-1.5 h-1.5 rounded-full bg-white/50 group-hover:bg-emerald-400 group-hover:shadow-[0_0_8px_#34d399] transition-all" />
-                            {isReconnecting ? "INITIALIZING..." : "INITIALIZE LINK"}
-                        </div>
-                    </motion.button>
+                        <button className="text-[10px] text-white/30 hover:text-emerald-400 transition-colors uppercase tracking-widest flex items-center gap-1">
+                            <span className="w-1 h-1 rounded-full bg-emerald-500/50" />
+                            Try Gasless Mode
+                        </button>
+                    </div>
                 ) : (
                     // 2. CONNECTED STATE: "IDENTITY CAPSULE"
                     <motion.div

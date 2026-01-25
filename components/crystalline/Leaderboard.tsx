@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, Trophy, TrendingUp, Medal, Verified } from "lucide-react";
 import Image from "next/image";
 import { LEADERBOARD_DATA } from "@/data/leaderboard";
+import TipButton from "@/components/leaderboard/TipButton";
 
 const TIME_FRAMES = ["TODAY", "WEEKLY", "MONTHLY", "ALL TIME"];
 
@@ -83,7 +84,8 @@ export default function Leaderboard() {
                     <div className="col-span-1 text-center">Rank</div>
                     <div className="col-span-6 md:col-span-5">User</div>
                     <div className="col-span-3 text-right">Profit / Loss</div>
-                    <div className="col-span-2 md:col-span-3 text-right hidden md:block">Volume</div>
+                    <div className="col-span-2 md:col-span-2 text-right hidden md:block">Volume</div>
+                    <div className="col-span-2 md:col-span-1 text-right">Tip</div>
                 </div>
 
                 {/* TABLE BODY */}
@@ -148,7 +150,7 @@ export default function Leaderboard() {
                                 </div>
 
                                 {/* VOLUME */}
-                                <div className="col-span-2 md:col-span-3 text-right hidden md:block">
+                                <div className="col-span-2 md:col-span-2 text-right hidden md:block">
                                     <div className="text-sm font-medium text-white/80">
                                         {user.volume}
                                     </div>
@@ -156,6 +158,11 @@ export default function Leaderboard() {
                                         <TrendingUp className="w-3 h-3" />
                                         <span>30d Vol</span>
                                     </div>
+                                </div>
+
+                                {/* ACTIONS */}
+                                <div className="col-span-2 md:col-span-1 flex justify-end">
+                                    <TipButton traderName={user.name} traderAddress={user.address} />
                                 </div>
                             </motion.div>
                         ))}
