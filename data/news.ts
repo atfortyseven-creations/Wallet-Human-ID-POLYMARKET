@@ -4,15 +4,21 @@ export type Category =
     | "Economy" | "Climate & Science" | "Elections" | "Mentions";
 
 export interface NewsItem {
-    id: string;
-    headline: string;
+    id: string | number;
+    headline: string; // Keeping headline as primary but allowing title if needed by mapping
+    title?: string;   // Optional alias
     description: string;
     category: Category;
-    time: string;
     source: string;
     imageUrl: string;
-    // New fields for processing
+
+    // Flexible Time/Date fields
+    time?: string;
     date?: string;
+    publishedAt?: string;
+    timeAgo?: string;
+
+    // URL
     url?: string;
 }
 

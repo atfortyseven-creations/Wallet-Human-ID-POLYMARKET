@@ -29,7 +29,9 @@ export default function NewsCard({ article, priority = false }: NewsCardProps) {
                 {/* 2. Metadata: Time */}
                 <div className="flex items-center gap-2 text-xs text-gray-400 mb-2">
                     <Clock size={12} />
-                    <span>{article.time || article.date}</span>
+                    <span className="capitalize">
+                        {article.timeAgo || article.time || article.date || "Recently"}
+                    </span>
                 </div>
 
                 {/* 3. Headline */}
