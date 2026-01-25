@@ -1,9 +1,6 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { Clock, TrendingUp } from "lucide-react";
-import SafeImage from "@/components/ui/SafeImage"; // Usage of our new safe image
-import { NewsItem } from "@/data/news";
+import { ExternalLink, Clock } from 'lucide-react';
+import SafeImage from "@/components/ui/SafeImage";
+import { NewsItem } from '@/data/news';
 
 interface NewsCardProps {
     article: NewsItem;
@@ -12,59 +9,53 @@ interface NewsCardProps {
 
 export default function NewsCard({ article, priority = false }: NewsCardProps) {
     return (
-        <motion.div
-            layout
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="group relative overflow-hidden rounded-2xl border border-white/10 bg-black/20 backdrop-blur-xl shadow-lg shadow-black/20 transition-all duration-500 hover:bg-white/10 hover:border-white/30 h-full flex flex-col"
-        >
-            {/* Image Section */}
-            <div className="aspect-[16/9] w-full relative overflow-hidden bg-black/50">
+        <article className="group flex flex-col bg-gray-900/50 border border-white/10 hover:border-blue-500/50 rounded-xl overflow-hidden transition-all duration-200 hover:shadow-lg hover:shadow-blue-900/10 h-full">
+
+            {/* 1. Image with Fixed Aspect Ratio */}
+            <div className="relative w-full aspect-[16/9] overflow-hidden bg-gray-800">
                 <SafeImage
                     src={article.imageUrl}
                     alt={article.headline}
                     fallbackCategory={article.category}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-700"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    priority={priority}
+                    className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
                 />
-
-                {/* Source Badge with slightly refined look */}
-                <div className="absolute top-3 left-3 flex items-center gap-2 text-[10px] font-bold tracking-widest text-emerald-400 uppercase bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5">
-                    <TrendingUp className="w-3 h-3" />
-                    {article.source}
+                {/* Source Badge */}
+                <div className="absolute top-2 left-2 bg-black/60 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-white border border-white/10">
+                    {article.source || "Polymarket"}
                 </div>
             </div>
 
-            {/* Content Section */}
-            <div className="p-5 flex flex-col flex-1">
-                <h3 className="font-serif text-lg text-white font-bold leading-tight mb-3 group-hover:text-indigo-200 transition-colors line-clamp-3">
+            <div className="flex flex-col flex-1 p-4">
+                {/* 2. Metadata: Time */}
+                <div className="flex items-center gap-2 text-xs text-gray-400 mb-2">
+                    <Clock size={12} />
+                    <span>{article.time || article.date}</span>
+                </div>
+
+                {/* 3. Headline */}
+                <h3 className="text-sm font-semibold text-gray-100 leading-snug mb-4 line-clamp-3 flex-1 group-hover:text-blue-400 transition-colors">
                     {article.headline}
                 </h3>
 
-                <p className="font-sans text-xs text-white/60 leading-relaxed mb-4 line-clamp-3">
-                    {article.description}
-                </p>
-
-                {/* Footer Section */}
-                <div className="flex items-center justify-between border-t border-white/10 pt-4 mt-auto">
-                    <div className="flex items-center gap-2 text-xs text-white/40">
-                        <Clock className="w-3 h-3" />
-                        {article.time}
-                    </div>
-                    {/* REQUESTED SIGNATURE */}
-                    <div className="flex flex-col items-end">
-                        <span className="text-[9px] text-white/30 font-sans tracking-widest uppercase mb-0.5">
-                            Curated By
-                        </span>
-                        <span className="text-xs text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 via-white to-emerald-200 font-serif active-serif italic font-medium tracking-wide">
-                            Polymarket News
-                        </span>
-                    </div>
+                {/* 4. Functional Footer */}
+                <div className="mt-auto pt-4 border-t border-white/5">
+                    {article.url ? (
+                        <a
+                            href={article.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-between w-full text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors"
+                        >
+                            <span>Leer noticia completa</span>
+                            <ExternalLink size={14} />
+                        </a>
+                    ) : (
+                        <div className="flex items-center justify-between w-full text-xs font-medium text-gray-500 cursor-not-allowed">
+                            <span>Fuente no disponible</span>
+                        </div>
+                    )}
                 </div>
             </div>
-        </motion.div>
+        </article>
     );
 }

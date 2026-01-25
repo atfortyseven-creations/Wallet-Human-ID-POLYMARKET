@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Category, NewsItem } from "@/data/news"; // Ensure this matches user's types
 import CategoryTabs, { CATEGORIES } from "@/components/crystalline/CategoryTabs";
+import { processNewsFeed } from "@/utils/news-processor";
+import { NewsSkeleton } from "@/components/crystalline/NewsSkeleton";
 import NewsCard from "@/components/crystalline/NewsCard";
 import { toast } from "sonner";
 
@@ -42,9 +44,12 @@ export default function NewsFeed() {
             const data = await response.json();
 
             if (data.articles) {
+                // Apply Deduplication and Processing
+                const processedArticles = processNewsFeed(data.articles);
+
                 setNewsCache(prev => ({
                     ...prev,
-                    [category]: data.articles
+                    [category]: processedArticles
                 }));
             } else {
                 setNewsCache(prev => ({
@@ -99,15 +104,28 @@ export default function NewsFeed() {
                     {isCategoryLoading ? (
                         // Skeleton Loading State
                         [1, 2, 3, 4, 5, 6].map((n) => (
-                            <div key={n} className="h-64 bg-white/5 rounded-2xl animate-pulse" />
+                            <motion.div
+                                key={`skeleton-${n}`}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                            >
+                                <NewsSkeleton />
+                            </motion.div>
                         ))
                     ) : (
                         currentNews.map((article, index) => (
-                            <NewsCard
-                                key={`${article.id}-${index}`} // Composite key to avoid dups if any
-                                article={article}
-                                priority={index < 6}
-                            />
+                            <motion.div
+                                key={`${article.id}-${index}`}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.05 }}
+                            >
+                                <NewsCard
+                                    article={article}
+                                    priority={index < 6}
+                                />
+                            </motion.div>
                         ))
                     )}
                 </AnimatePresence>
