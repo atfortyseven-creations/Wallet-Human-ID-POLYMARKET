@@ -24,9 +24,9 @@ export default function Leaderboard() {
     }, [searchQuery]);
 
     return (
-        <div className="w-full max-w-5xl mx-auto space-y-8 pb-32 px-4 md:px-0">
+        <div className="w-full max-w-5xl mx-auto space-y-8 pb-32 px-2 md:px-0">
             {/* HEADER SECTION */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-4 md:px-0">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-2 md:px-0">
 
                 {/* Titles */}
                 <div className="space-y-2">
@@ -80,12 +80,12 @@ export default function Leaderboard() {
                 </div>
 
                 {/* TABLE HEADER */}
-                <div className="grid grid-cols-12 gap-4 px-6 py-4 border-b border-white/5 text-[10px] font-bold tracking-widest text-white/30 uppercase">
+                <div className="grid grid-cols-[1fr_4fr_3fr_2fr] md:grid-cols-12 gap-2 md:gap-4 px-4 md:px-6 py-4 border-b border-white/5 text-[10px] font-bold tracking-widest text-white/30 uppercase">
                     <div className="col-span-1 text-center">Rank</div>
-                    <div className="col-span-6 md:col-span-5">User</div>
-                    <div className="col-span-3 text-right">Profit / Loss</div>
-                    <div className="col-span-2 md:col-span-2 text-right hidden md:block">Volume</div>
-                    <div className="col-span-2 md:col-span-1 text-right">Tip</div>
+                    <div className="col-span-1 md:col-span-5">User</div>
+                    <div className="col-span-1 md:col-span-3 text-right">Profit</div>
+                    <div className="hidden md:block md:col-span-2 text-right">Volume</div>
+                    <div className="col-span-1 md:col-span-1 text-right">Tip</div>
                 </div>
 
                 {/* TABLE BODY */}
@@ -99,7 +99,7 @@ export default function Leaderboard() {
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: 20 }}
                                 transition={{ duration: 0.2, delay: index * 0.05 }}
-                                className="grid grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-white/[0.03] transition-colors group"
+                                className="grid grid-cols-[1fr_4fr_3fr_2fr] md:grid-cols-12 gap-2 md:gap-4 px-4 md:px-6 py-4 items-center hover:bg-white/[0.03] transition-colors group"
                             >
                                 {/* RANK */}
                                 <div className="col-span-1 flex justify-center">
@@ -114,8 +114,8 @@ export default function Leaderboard() {
                                 </div>
 
                                 {/* USER */}
-                                <div className="col-span-6 md:col-span-5 flex items-center gap-4">
-                                    <div className="relative w-10 h-10 md:w-12 md:h-12 flex-shrink-0">
+                                <div className="col-span-1 md:col-span-5 flex items-center gap-2 md:gap-4 overflow-hidden">
+                                    <div className="relative w-8 h-8 md:w-12 md:h-12 flex-shrink-0">
                                         <Image
                                             src={user.avatarUrl}
                                             alt={user.name}
@@ -140,17 +140,17 @@ export default function Leaderboard() {
                                 </div>
 
                                 {/* PROFIT */}
-                                <div className="col-span-3 text-right">
-                                    <div className="text-sm font-bold text-[#00ff9d] drop-shadow-[0_0_8px_rgba(0,255,157,0.3)] font-mono tracking-tight">
+                                <div className="col-span-1 md:col-span-3 text-right">
+                                    <div className="text-xs md:text-sm font-bold text-[#00ff9d] drop-shadow-[0_0_8px_rgba(0,255,157,0.3)] font-mono tracking-tight truncate">
                                         {user.profit}
                                     </div>
-                                    <div className="text-[10px] text-white/20 uppercase tracking-wider">
+                                    <div className="text-[10px] text-white/20 uppercase tracking-wider hidden md:block">
                                         Net PnL
                                     </div>
                                 </div>
 
                                 {/* VOLUME */}
-                                <div className="col-span-2 md:col-span-2 text-right hidden md:block">
+                                <div className="hidden md:block md:col-span-2 text-right">
                                     <div className="text-sm font-medium text-white/80">
                                         {user.volume}
                                     </div>
@@ -161,7 +161,7 @@ export default function Leaderboard() {
                                 </div>
 
                                 {/* ACTIONS */}
-                                <div className="col-span-2 md:col-span-1 flex justify-end">
+                                <div className="col-span-1 md:col-span-1 flex justify-end">
                                     <TipButton traderName={user.name} traderAddress={user.address} />
                                 </div>
                             </motion.div>

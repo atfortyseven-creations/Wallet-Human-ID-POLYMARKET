@@ -17,7 +17,8 @@ export default function CrystallineDashboard() {
     return (
         <main className="min-h-screen text-white font-sans selection:bg-indigo-500/30 bg-transparent">
             {/* Background handled by layout */}
-            {/* Masthead handled by layout */}
+
+            {activeTab !== "WALLET" && <Masthead />}
 
             <GlassDock activeTab={activeTab} onTabChange={setActiveTab} />
 

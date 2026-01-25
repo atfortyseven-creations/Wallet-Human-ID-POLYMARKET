@@ -23,7 +23,7 @@ export default function Masthead() {
                 </div>
 
                 {/* BRAND - Center */}
-                <h1 className="font-serif text-2xl md:text-3xl text-white/90 tracking-[0.1em] font-bold text-center absolute left-1/2 -translate-x-1/2 w-full md:w-auto">
+                <h1 className="flex-1 text-center md:absolute md:left-1/2 md:-translate-x-1/2 md:w-auto font-serif text-2xl md:text-3xl text-white/90 tracking-[0.1em] font-bold">
                     POLYMARKET NEWS
                 </h1>
 

@@ -7,7 +7,11 @@ import { Copy, Check, LogOut, ChevronDown } from "lucide-react";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import { toast } from "sonner";
 
-export default function WalletConnect() {
+interface WalletConnectProps {
+    showGasless?: boolean;
+}
+
+export default function WalletConnect({ showGasless = false }: WalletConnectProps) {
     const { address, isConnected, isReconnecting } = useAccount();
     const { disconnect } = useDisconnect();
     const { connect, connectors } = useConnect();
@@ -54,10 +58,12 @@ export default function WalletConnect() {
                             </div>
                         </motion.button>
 
-                        <button className="text-[10px] text-white/30 hover:text-emerald-400 transition-colors uppercase tracking-widest flex items-center gap-1">
-                            <span className="w-1 h-1 rounded-full bg-emerald-500/50" />
-                            Try Gasless Mode
-                        </button>
+                        {showGasless && (
+                            <button className="text-[10px] text-white/30 hover:text-emerald-400 transition-colors uppercase tracking-widest flex items-center gap-1">
+                                <span className="w-1 h-1 rounded-full bg-emerald-500/50" />
+                                Try Gasless Mode
+                            </button>
+                        )}
                     </div>
                 ) : (
                     // 2. CONNECTED STATE: "IDENTITY CAPSULE"

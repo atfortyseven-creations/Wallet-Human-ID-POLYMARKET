@@ -6,6 +6,7 @@ import { useAccount, useChainId } from "wagmi";
 import { polygon } from "wagmi/chains";
 import { Toaster } from "sonner";
 import NetworkSwitcher from "@/components/wallet/NetworkSwitcher";
+import WalletConnect from "@/components/wallet/WalletConnect";
 import { usePolymarketData } from "@/hooks/usePolymarketData";
 import PositionsDashboard from "./PositionsDashboard";
 import { useState } from "react";
@@ -41,11 +42,8 @@ export default function WalletDashboard() {
                         </span>
                     </div>
                 </div>
-                <div className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-black/20 border border-white/5 backdrop-blur-md">
-                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                    <span className="text-xs font-mono text-white/70">
-                        {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "Not Connected"}
-                    </span>
+                <div className="flex items-center space-x-2">
+                    <WalletConnect showGasless={true} />
                 </div>
             </header>
 
@@ -102,6 +100,6 @@ export default function WalletDashboard() {
                 </motion.div>
 
             </div>
-        </div>
+        </div >
     );
 }

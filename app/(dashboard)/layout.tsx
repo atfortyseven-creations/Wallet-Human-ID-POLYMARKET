@@ -9,7 +9,6 @@ export default function InternalLayout({ children }: { children: React.ReactNode
 
             {/* 2. EL CONTENIDO (Encima del globo con z-index) */}
             <div className="relative z-20">
-                <Masthead />
                 <main className="container mx-auto px-4 py-8">
                     {children}
                 </main>
