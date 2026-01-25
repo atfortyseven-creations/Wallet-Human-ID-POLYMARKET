@@ -1,34 +1,20 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAccount, useChainId, useSwitchChain, useDisconnect, useConnect, useEnsName } from "wagmi";
-import { mainnet, polygon, optimism, arbitrum, base } from "wagmi/chains";
-import { Wallet, ChevronDown, Circle, LogOut, Link2, AlertTriangle, Loader2 } from "lucide-react";
-
-// Supported Chains Config
-const SUPPORTED_CHAINS = [
-    { id: mainnet.id, name: "Ethereum", short: "ETH", color: "bg-blue-500" },
-    { id: polygon.id, name: "Polygon", short: "MATIC", color: "bg-purple-500" },
-    { id: optimism.id, name: "OP Mainnet", short: "OP", color: "bg-red-500" },
-    { id: arbitrum.id, name: "Arbitrum One", short: "ARB", color: "bg-sky-500" },
-    { id: base.id, name: "Base", short: "BASE", color: "bg-blue-600" },
-];
+import { useAccount, useDisconnect, useConnect, useEnsName } from "wagmi";
+import { Copy, Check, LogOut, ChevronDown } from "lucide-react";
+import ThemeToggle from "@/components/ui/ThemeToggle";
+import { toast } from "sonner";
 
 export default function WalletConnect() {
     const { address, isConnected, isReconnecting } = useAccount();
-    const chainId = useChainId();
-    const { switchChain, isPending: isSwitching } = useSwitchChain();
     const { disconnect } = useDisconnect();
     const { connect, connectors } = useConnect();
     const { data: ensName } = useEnsName({ address });
 
-    const [isNetOpen, setIsNetOpen] = useState(false);
-    const [isMenuOpen, setIsMenuOpen] = useState(false); // Identity Menu
-
-    // Derived State
-    const activeChain = SUPPORTED_CHAINS.find(c => c.id === chainId);
-    const isUnsupported = !activeChain && isConnected;
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [copied, setCopied] = useState(false);
 
     // Formatting
     const formatAddress = (addr: string) => `${addr.slice(0, 5)}...${addr.slice(-4)}`;
@@ -36,9 +22,16 @@ export default function WalletConnect() {
 
     // Logic
     const handleConnect = () => {
-        // Prefer injected (MetaMask/Rabby) or WalletConnect depending on availability
         const connector = connectors.find(c => c.id === 'injected') || connectors[0];
         if (connector) connect({ connector });
+    };
+
+    const handleCopy = () => {
+        if (!address) return;
+        navigator.clipboard.writeText(address);
+        setCopied(true);
+        toast.success("Wallet address copied!", { position: "bottom-right" });
+        setTimeout(() => setCopied(false), 2000);
     };
 
     return (
@@ -65,112 +58,71 @@ export default function WalletConnect() {
                         </div>
                     </motion.button>
                 ) : (
-                    // 2. CONNECTED STATE: "COMMAND CENTER"
+                    // 2. CONNECTED STATE: "IDENTITY CAPSULE"
                     <motion.div
                         key="connected-capsule"
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className={`flex items-center p-1 rounded-full border backdrop-blur-xl shadow-2xl transition-colors duration-500 ${isUnsupported ? "bg-amber-900/20 border-amber-500/30" : "bg-black/20 border-white/10"
-                            }`}
+                        className="relative group" // Group for hover logic
+                        onMouseEnter={() => setIsMenuOpen(true)}
+                        onMouseLeave={() => setIsMenuOpen(false)}
                     >
-                        {/* A. NETWORK SEGMENT */}
-                        <div className="relative">
-                            <button
-                                onClick={() => setIsNetOpen(!isNetOpen)}
-                                className={`flex items-center gap-2 px-3 py-1.5 rounded-l-full hover:bg-white/5 transition-colors ${isUnsupported ? "text-amber-500" : "text-white/80"
-                                    }`}
-                            >
-                                {isSwitching ? (
-                                    <Loader2 className="w-4 h-4 animate-spin" />
-                                ) : isUnsupported ? (
-                                    <AlertTriangle className="w-4 h-4" />
-                                ) : (
-                                    <div className={`w-2 h-2 rounded-full ${activeChain?.color || "bg-gray-500"} shadow-[0_0_8px_currentColor]`} />
-                                )}
-                                <span className="text-[10px] font-bold tracking-wider uppercase hidden md:block">
-                                    {isUnsupported ? "UNSUPPORTED" : activeChain?.short}
-                                </span>
-                                <ChevronDown className={`w-3 h-3 transition-transform ${isNetOpen ? "rotate-180" : ""}`} />
-                            </button>
+                        <button
+                            className="flex items-center gap-3 pl-4 pr-2 py-1.5 rounded-full border border-white/10 bg-black/20 backdrop-blur-xl shadow-2xl transition-all group-hover:bg-black/40 group-hover:border-white/20"
+                        >
+                            <span className="font-serif text-sm text-white font-medium tracking-wide">
+                                {displayName}
+                            </span>
+                            {/* Generated Gradient Avatar */}
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-fuchsia-500 border border-white/20 shadow-inner flex items-center justify-center">
+                                <ChevronDown className={`w-3 h-3 text-white/70 transition-transform duration-300 ${isMenuOpen ? "rotate-180" : ""}`} />
+                            </div>
+                        </button>
 
-                            {/* DROPDOWN */}
-                            <AnimatePresence>
-                                {isNetOpen && (
-                                    <>
-                                        <div className="fixed inset-0 z-40" onClick={() => setIsNetOpen(false)} />
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            transition={{ duration: 0.2 }}
-                                            className="absolute top-full left-0 mt-3 w-48 p-1 rounded-xl bg-[#0a0a0c]/90 border border-white/10 backdrop-blur-2xl shadow-2xl z-50"
-                                        >
-                                            <div className="px-3 py-2 text-[10px] font-bold text-white/30 uppercase tracking-widest border-b border-white/5 mb-1">
-                                                Select Network
-                                            </div>
-                                            {SUPPORTED_CHAINS.map((chain) => (
-                                                <button
-                                                    key={chain.id}
-                                                    onClick={() => {
-                                                        switchChain({ chainId: chain.id });
-                                                        setIsNetOpen(false);
-                                                    }}
-                                                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-all group ${chainId === chain.id ? "bg-white/10" : "hover:bg-white/5"
-                                                        }`}
-                                                >
-                                                    <div className={`w-1.5 h-1.5 rounded-full ${chain.color} ${chainId === chain.id ? "shadow-[0_0_8px_currentColor]" : "opacity-30 group-hover:opacity-100"}`} />
-                                                    <span className={`text-xs ${chainId === chain.id ? "text-white font-bold" : "text-white/60 group-hover:text-white"}`}>
-                                                        {chain.name}
-                                                    </span>
-                                                    {chainId === chain.id && <div className="ml-auto w-1 h-1 rounded-full bg-white/50" />}
-                                                </button>
-                                            ))}
-                                        </motion.div>
-                                    </>
-                                )}
-                            </AnimatePresence>
-                        </div>
-
-                        {/* Divider */}
-                        <div className="w-px h-4 bg-white/10 mx-1" />
-
-                        {/* B. IDENTITY SEGMENT */}
-                        <div className="relative">
-                            <button
-                                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                                className="flex items-center gap-3 px-4 py-1.5 hover:opacity-80 transition-opacity"
-                            >
-                                <span className="font-serif text-sm text-white font-medium tracking-wide">
-                                    {displayName}
-                                </span>
-                                {/* Generated Gradient Avatar */}
-                                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-indigo-500 to-fuchsia-500 border border-white/20 shadow-inner" />
-                            </button>
-
-                            {/* IDENTITY MENU */}
-                            <AnimatePresence>
-                                {isMenuOpen && (
-                                    <>
-                                        <div className="fixed inset-0 z-40" onClick={() => setIsMenuOpen(false)} />
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            className="absolute top-full right-0 mt-3 w-40 p-1 rounded-xl bg-[#0a0a0c]/90 border border-white/10 backdrop-blur-2xl shadow-2xl z-50"
-                                        >
+                        {/* IDENTITY MENU (Hover) */}
+                        <AnimatePresence>
+                            {isMenuOpen && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 5, scale: 0.95 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="absolute top-full right-0 mt-2 w-64 p-3 rounded-2xl bg-[#0a0a0c]/95 border border-white/10 backdrop-blur-2xl shadow-2xl z-50 overflow-hidden"
+                                >
+                                    {/* Header: Avatar & Address */}
+                                    <div className="flex items-center gap-3 pb-3 border-b border-white/5">
+                                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-fuchsia-500 border border-white/20 shadow-inner" />
+                                        <div className="flex flex-col">
+                                            <span className="text-sm font-bold text-white tracking-wide">{displayName}</span>
                                             <button
-                                                onClick={() => disconnect()}
-                                                className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-xs text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-colors"
+                                                onClick={handleCopy}
+                                                className="flex items-center gap-1.5 text-[10px] text-white/50 hover:text-emerald-400 transition-colors uppercase tracking-wider"
                                             >
-                                                <LogOut className="w-3 h-3" />
-                                                Disconnect
+                                                {formatAddress(address!)}
+                                                {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                                             </button>
-                                        </motion.div>
-                                    </>
-                                )}
-                            </AnimatePresence>
-                        </div>
+                                        </div>
+                                    </div>
 
+                                    {/* Theme Toggle */}
+                                    <div className="py-2">
+                                        <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest pl-1 mb-1">Theme</p>
+                                        <ThemeToggle />
+                                    </div>
+
+                                    {/* Actions */}
+                                    <div className="pt-2 border-t border-white/5">
+                                        <button
+                                            onClick={() => disconnect()}
+                                            className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-left text-xs font-medium text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-all group/disconnect"
+                                        >
+                                            <LogOut className="w-3.5 h-3.5 group-hover/disconnect:scale-110 transition-transform" />
+                                            Disconnect Wallet
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </motion.div>
                 )}
             </AnimatePresence>

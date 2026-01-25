@@ -19,6 +19,10 @@ export const metadata: Metadata = {
     description: "Identity-First Wallet for Prediction Markets",
 };
 
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
+
+// ... existing imports
+
 export default function RootLayout({
     children,
 }: Readonly<{
@@ -27,11 +31,18 @@ export default function RootLayout({
     const initialState = cookieToInitialState(config, headers().get('cookie'))
 
     return (
-        <html lang="en">
+        <html lang="en" suppressHydrationWarning>
             <body className={`${inter.variable} ${merriweather.variable} font-sans`}>
-                <Web3Provider initialState={initialState}>
-                    {children}
-                </Web3Provider>
+                <ThemeProvider
+                    attribute="class"
+                    defaultTheme="dark"
+                    enableSystem
+                    disableTransitionOnChange
+                >
+                    <Web3Provider initialState={initialState}>
+                        {children}
+                    </Web3Provider>
+                </ThemeProvider>
             </body>
         </html>
     );
