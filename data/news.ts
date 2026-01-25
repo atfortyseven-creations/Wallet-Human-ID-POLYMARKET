@@ -6,6 +6,7 @@ export interface NewsItem {
     time: string;
     source: string;
     imageUrl: string;
+    imageKeyword?: string;
     footer: string;
 }
 

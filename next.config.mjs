@@ -11,6 +11,10 @@ const nextConfig = {
     // Esta parte soluciona los errores de dependencias de MetaMask y WalletConnect
     webpack: (config) => {
         config.resolve.fallback = { fs: false, net: false, tls: false };
+        config.resolve.alias = {
+            ...config.resolve.alias,
+            '@react-native-async-storage/async-storage': false,
+        };
         config.externals.push('pino-pretty', 'lokijs', 'encoding');
         return config;
     },
