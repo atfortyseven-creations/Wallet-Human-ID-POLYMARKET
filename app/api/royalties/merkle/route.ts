@@ -8,7 +8,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { MerkleTree } from 'merkletreejs';
 import keccak256 from 'keccak256';
-import { ethers } from 'ethers';
+import { AbiCoder } from 'ethers';
 
 const prisma = new PrismaClient();
 
@@ -73,19 +73,18 @@ export async function POST(request: NextRequest) {
 
         const amount = leaves[address];
 
-        // Reconstruct Merkle tree
+        // Reconstruct Merkle tree using ethers v6 AbiCoder
+        const abiCoder = AbiCoder.defaultAbiCoder();
         const leafNodes = Object.entries(leaves).map(([addr, amt]) => {
-            return keccak256(
-                ethers.utils.solidityPack(['address', 'uint256'], [addr, amt])
-            );
+            const encoded = abiCoder.encode(['address', 'uint256'], [addr, amt]);
+            return keccak256(Buffer.from(encoded.slice(2), 'hex'));
         });
 
         const tree = new MerkleTree(leafNodes, keccak256, { sortPairs: true });
 
         // Generate proof for this address
-        const leaf = keccak256(
-            ethers.utils.solidityPack(['address', 'uint256'], [address, amount])
-        );
+        const encodedLeaf = abiCoder.encode(['address', 'uint256'], [address, amount]);
+        const leaf = keccak256(Buffer.from(encodedLeaf.slice(2), 'hex'));
         const proof = tree.getHexProof(leaf);
         const leafIndex = leafNodes.findIndex(node => node.equals(leaf));
 

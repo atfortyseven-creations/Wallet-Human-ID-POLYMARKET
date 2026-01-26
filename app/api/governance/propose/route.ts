@@ -49,12 +49,12 @@ export async function POST(request: NextRequest) {
         const app_id = process.env.NEXT_PUBLIC_WLD_APP_ID as `app_${string}`;
         const action = 'propose_market';
 
-        const verifyRes = (await verifyCloudProof(
-            body.worldIdProof.proof,
-            app_id,
-            action,
-            body.worldIdProof.nullifier_hash
-        )) as IVerifyResponse;
+        const verifyRes = (await verifyCloudProof({
+            proof: body.worldIdProof.proof,
+            merkle_root: body.worldIdProof.merkle_root,
+            nullifier_hash: body.worldIdProof.nullifier_hash,
+            verification_level: body.worldIdProof.verification_level as any,
+        }, app_id, action)) as IVerifyResponse;
 
         if (!verifyRes.success) {
             return NextResponse.json(
