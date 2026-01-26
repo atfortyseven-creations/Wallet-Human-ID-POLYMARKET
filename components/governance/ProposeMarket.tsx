@@ -10,7 +10,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { IDKitWidget, ISuccessResult, VerificationLevel } from '@worldcoin/idkit';
-import { Vote, CheckCircle2, AlertCircle, Loader2, Users } from 'lucide-react';
+import { Vote, CheckCircle2, AlertCircle, Loader2, Users, Info } from 'lucide-react';
 import { useAccount } from 'wagmi';
 import { toast } from 'sonner';
 import { VoidButton, VoidInput, VoidCard } from '@/components/VoidUI';
