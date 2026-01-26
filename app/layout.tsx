@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+// Force rebuild
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import Providers from '@/components/Providers';
