@@ -8,9 +8,10 @@ import { usePathname } from "next/navigation";
 
 export default function Masthead() {
     const pathname = usePathname();
+    console.log("DEBUG: Masthead Pathname =", pathname);
 
     // Prevent duplicate header on Home (which uses Ghost Navbar)
-    if (pathname === '/') return null;
+    if (pathname === '/' || pathname === '/es' || pathname === '/en') return null;
 
     return (
         <motion.header
