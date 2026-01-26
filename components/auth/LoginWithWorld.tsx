@@ -71,7 +71,7 @@ export default function LoginWithWorld() {
                 }}
                 verification_level={VerificationLevel.Orb}
             >
-                {({ open }) => (
+                {({ open }: { open: () => void }) => (
                     <button
                         onClick={open}
                         disabled={isLoading}
