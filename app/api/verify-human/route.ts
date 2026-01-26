@@ -4,8 +4,8 @@ export async function POST(req: Request) {
     try {
         const proof = await req.json();
         // HARDCODE PARA EVITAR ERRORES DE ENV EN DEPLOY
-        const app_id = "app_d2014c58bb084dcb09e1f3c1c1144287".trim();
-        const action = "verify_human".trim();
+        const app_id = "app_2e2c2cee1ea7297203d7d5534c3c5201".trim();
+        const action = "polymarket-wallet-id".trim();
 
         if (!app_id) {
             console.error("❌ CRITICAL: NEXT_PUBLIC_WLD_APP_ID is missing in server environment");
