@@ -1,28 +1,57 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-// ============================================================================
-// ATOMIC WLD-TO-BET ZAP CONTRACT (Pseudocode)
-// ============================================================================
-// Purpose: Convert WLD grants into prediction market positions atomically
-// Security: All-or-nothing execution with MEV protection
-// Gas: Optimized for Optimism L2, Paymaster-compatible
-// ============================================================================
-
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
-import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-interface IPolymarketCTF {
-    function buyOutcome(
+/// @title ISwapRouter - Uniswap V3 Router Interface
+/// @notice Minimal interface for exact input swaps
+interface ISwapRouter {
+    struct ExactInputSingleParams {
+        address tokenIn;
+        address tokenOut;
+        uint24 fee;
+        address recipient;
+        uint256 deadline;
+        uint256 amountIn;
+        uint256 amountOutMinimum;
+        uint160 sqrtPriceLimitX96;
+    }
+
+    /// @notice Swaps `amountIn` of one token for as much as possible of another token
+    /// @param params The parameters necessary for the swap, encoded as `ExactInputSingleParams` in calldata
+    /// @return amountOut The amount of the received token
+    function exactInputSingle(ExactInputSingleParams calldata params) external payable returns (uint256 amountOut);
+}
+
+/// @title ICTFExchange - Polymarket Conditional Token Framework Interface
+/// @notice Minimal interface for buying outcome shares
+interface ICTFExchange {
+    /// @notice Buy outcome tokens from the minter
+    /// @param conditionId The condition identifier
+    /// @param outcomeIndex The outcome index (0 or 1 for binary markets)
+    /// @param amount The amount of collateral to spend
+    /// @return shares The amount of outcome shares received
+    function buyFromMinter(
         bytes32 conditionId,
         uint256 outcomeIndex,
         uint256 amount
     ) external returns (uint256 shares);
 }
 
+/// @title IPermit2 - Uniswap Permit2 Interface
+/// @notice Minimal interface for gasless approvals
 interface IPermit2 {
+    /// @notice Transfer tokens from user to recipient using permit signature
+    /// @param from The address to transfer from
+    /// @param to The address to transfer to
+    /// @param amount The amount to transfer
+    /// @param token The token address
+    /// @param nonce The permit nonce
+    /// @param deadline The permit deadline
+    /// @param signature The permit signature
     function permitTransferFrom(
         address from,
         address to,
@@ -34,34 +63,70 @@ interface IPermit2 {
     ) external;
 }
 
-/**
- * @title ZapContract
- * @notice Atomically converts WLD → USDC → Polymarket Outcome Shares
- * @dev Implements "House Money Effect" psychology with strict atomicity
- */
-contract ZapContract is ReentrancyGuard {
-    
-    // ========================================================================
-    // STATE VARIABLES
-    // ========================================================================
-    
-    address public immutable WLD_TOKEN;           // Worldcoin token on Optimism
-    address public immutable USDC_TOKEN;          // USDC on Optimism
-    address public immutable POLYMARKET_CTF;      // Polymarket Conditional Token Framework
-    address public immutable SWAP_ROUTER;         // Uniswap V3 or 1inch aggregator
-    address public immutable PERMIT2;             // Permit2 for gasless approvals
-    
-    uint256 public constant MAX_SLIPPAGE = 200;   // 2% max slippage (basis points)
-    uint256 public constant DEADLINE_WINDOW = 300; // 5 minutes
-    
-    address public paymaster;                     // Biconomy paymaster for gas abstraction
-    address public treasury;                      // Fee collection
-    uint256 public zapFee = 50;                   // 0.5% fee (basis points)
-    
-    // ========================================================================
+/// @title ZapContract
+/// @author Polymarket Wallet Team
+/// @notice Atomically converts WLD tokens to Polymarket outcome shares
+/// @dev Implements "House Money Effect" psychology with strict atomicity guarantees
+/// @custom:security-contact security@polymarketwallet.com
+contract ZapContract is Ownable, ReentrancyGuard {
+    using SafeERC20 for IERC20;
+
+    // ============================================================================
+    // IMMUTABLE STATE VARIABLES
+    // ============================================================================
+
+    /// @notice Worldcoin token address on Optimism
+    address public immutable WLD_TOKEN;
+
+    /// @notice USDC token address on Optimism
+    address public immutable USDC_TOKEN;
+
+    /// @notice Polymarket CTF Exchange address
+    address public immutable CTF_EXCHANGE;
+
+    /// @notice Uniswap V3 Swap Router address
+    address public immutable SWAP_ROUTER;
+
+    /// @notice Permit2 contract address (optional, can be address(0))
+    address public immutable PERMIT2;
+
+    /// @notice Uniswap V3 pool fee tier (3000 = 0.3%)
+    uint24 public constant POOL_FEE = 3000;
+
+    /// @notice Maximum slippage tolerance in basis points (200 = 2%)
+    uint256 public constant MAX_SLIPPAGE_BPS = 200;
+
+    /// @notice Basis points denominator
+    uint256 public constant BPS_DENOMINATOR = 10000;
+
+    /// @notice Maximum deadline window (5 minutes)
+    uint256 public constant MAX_DEADLINE_WINDOW = 300;
+
+    // ============================================================================
+    // MUTABLE STATE VARIABLES
+    // ============================================================================
+
+    /// @notice Protocol fee in basis points (50 = 0.5%)
+    uint256 public protocolFeeBps = 50;
+
+    /// @notice Treasury address for fee collection
+    address public treasury;
+
+    /// @notice Emergency pause flag
+    bool public paused;
+
+    // ============================================================================
     // EVENTS
-    // ========================================================================
-    
+    // ============================================================================
+
+    /// @notice Emitted when a zap is successfully executed
+    /// @param user The user who initiated the zap
+    /// @param wldAmount The amount of WLD tokens zapped
+    /// @param usdcReceived The amount of USDC received from swap
+    /// @param conditionId The Polymarket condition ID
+    /// @param outcomeIndex The outcome index purchased
+    /// @param sharesReceived The amount of outcome shares received
+    /// @param protocolFee The protocol fee charged
     event ZapExecuted(
         address indexed user,
         uint256 wldAmount,
@@ -69,407 +134,379 @@ contract ZapContract is ReentrancyGuard {
         bytes32 indexed conditionId,
         uint256 outcomeIndex,
         uint256 sharesReceived,
-        uint256 actualSlippage
+        uint256 protocolFee
     );
-    
-    event ZapFailed(
-        address indexed user,
-        string reason,
-        uint256 step // 1=approve, 2=swap, 3=buy
-    );
-    
-    event EmergencyWithdraw(
-        address indexed user,
-        address token,
-        uint256 amount
-    );
-    
-    // ========================================================================
-    // STRUCTS
-    // ========================================================================
-    
-    struct ZapParams {
-        uint256 wldAmount;              // Amount of WLD to zap
-        uint256 minUSDCOut;             // Minimum USDC from swap (slippage protection)
-        bytes32 conditionId;            // Polymarket condition ID
-        uint256 outcomeIndex;           // Which outcome to buy (0 or 1)
-        uint256 deadline;               // Transaction deadline
-        bytes permit2Signature;         // Gasless approval signature
-    }
-    
-    struct SwapResult {
-        uint256 usdcReceived;
-        uint256 actualSlippage;
-        bool success;
-        string errorMessage;
-    }
-    
-    // ========================================================================
+
+    /// @notice Emitted when protocol fee is updated
+    /// @param oldFee The old fee in basis points
+    /// @param newFee The new fee in basis points
+    event ProtocolFeeUpdated(uint256 oldFee, uint256 newFee);
+
+    /// @notice Emitted when treasury address is updated
+    /// @param oldTreasury The old treasury address
+    /// @param newTreasury The new treasury address
+    event TreasuryUpdated(address indexed oldTreasury, address indexed newTreasury);
+
+    /// @notice Emitted when contract is paused/unpaused
+    /// @param isPaused The new pause state
+    event PauseToggled(bool isPaused);
+
+    /// @notice Emitted when dust tokens are recovered
+    /// @param token The token address
+    /// @param amount The amount recovered
+    /// @param recipient The recipient address
+    event DustRecovered(address indexed token, uint256 amount, address indexed recipient);
+
+    // ============================================================================
+    // ERRORS
+    // ============================================================================
+
+    error ContractPaused();
+    error InvalidAmount();
+    error InvalidDeadline();
+    error SlippageTooHigh();
+    error InsufficientOutput();
+    error SwapFailed();
+    error SharePurchaseFailed();
+    error InvalidFee();
+    error ZeroAddress();
+
+    // ============================================================================
     // CONSTRUCTOR
-    // ========================================================================
-    
+    // ============================================================================
+
+    /// @notice Initializes the ZapContract
+    /// @param _wld WLD token address
+    /// @param _usdc USDC token address
+    /// @param _ctfExchange Polymarket CTF Exchange address
+    /// @param _swapRouter Uniswap V3 Swap Router address
+    /// @param _permit2 Permit2 address (can be address(0) if not using)
+    /// @param _treasury Treasury address for fee collection
     constructor(
         address _wld,
         address _usdc,
-        address _polymarketCTF,
+        address _ctfExchange,
         address _swapRouter,
         address _permit2,
-        address _paymaster,
         address _treasury
     ) {
+        if (_wld == address(0) || _usdc == address(0) || _ctfExchange == address(0) || 
+            _swapRouter == address(0) || _treasury == address(0)) {
+            revert ZeroAddress();
+        }
+
         WLD_TOKEN = _wld;
         USDC_TOKEN = _usdc;
-        POLYMARKET_CTF = _polymarketCTF;
+        CTF_EXCHANGE = _ctfExchange;
         SWAP_ROUTER = _swapRouter;
         PERMIT2 = _permit2;
-        paymaster = _paymaster;
         treasury = _treasury;
     }
-    
-    // ========================================================================
-    // MAIN ZAP FUNCTION (ATOMIC EXECUTION)
-    // ========================================================================
-    
-    /**
-     * @notice Execute atomic WLD-to-Bet conversion
-     * @dev ALL STEPS MUST SUCCEED OR ENTIRE TX REVERTS
-     * @param params Zap parameters including amounts and slippage limits
-     * @return sharesReceived Number of outcome shares purchased
-     */
-    function executeZap(ZapParams calldata params) 
-        external 
-        nonReentrant 
-        returns (uint256 sharesReceived) 
-    {
-        // ====================================================================
-        // VALIDATION PHASE
-        // ====================================================================
-        
-        require(params.wldAmount > 0, "ZAP: Zero amount");
-        require(params.deadline >= block.timestamp, "ZAP: Expired deadline");
-        require(
-            params.deadline <= block.timestamp + DEADLINE_WINDOW,
-            "ZAP: Deadline too far"
-        );
-        
-        // Calculate expected USDC with slippage tolerance
-        uint256 expectedUSDC = _getExpectedUSDC(params.wldAmount);
-        require(
-            params.minUSDCOut >= expectedUSDC * (10000 - MAX_SLIPPAGE) / 10000,
-            "ZAP: Slippage too high"
-        );
-        
-        // ====================================================================
-        // STEP 1: TRANSFER WLD FROM USER (Permit2 for gasless)
-        // ====================================================================
-        
-        try this._transferWLDFromUser(
-            msg.sender,
-            params.wldAmount,
-            params.permit2Signature,
-            params.deadline
-        ) {
-            // Success - WLD now in contract
-        } catch Error(string memory reason) {
-            emit ZapFailed(msg.sender, reason, 1);
-            revert("ZAP: WLD transfer failed");
-        } catch {
-            emit ZapFailed(msg.sender, "Unknown error in WLD transfer", 1);
-            revert("ZAP: WLD transfer failed");
-        }
-        
-        // ====================================================================
-        // STEP 2: SWAP WLD → USDC (Atomic with revert on failure)
-        // ====================================================================
-        
-        SwapResult memory swapResult;
-        
-        try this._executeSwap(
-            params.wldAmount,
-            params.minUSDCOut,
-            params.deadline
-        ) returns (uint256 usdcReceived, uint256 slippage) {
-            swapResult.usdcReceived = usdcReceived;
-            swapResult.actualSlippage = slippage;
-            swapResult.success = true;
-        } catch Error(string memory reason) {
-            // CRITICAL: Return WLD to user before reverting
-            IERC20(WLD_TOKEN).transfer(msg.sender, params.wldAmount);
-            emit ZapFailed(msg.sender, reason, 2);
-            revert("ZAP: Swap failed");
-        } catch {
-            // CRITICAL: Return WLD to user before reverting
-            IERC20(WLD_TOKEN).transfer(msg.sender, params.wldAmount);
-            emit ZapFailed(msg.sender, "Unknown swap error", 2);
-            revert("ZAP: Swap failed");
-        }
-        
-        // Deduct protocol fee
-        uint256 feeAmount = swapResult.usdcReceived * zapFee / 10000;
-        uint256 usdcForBet = swapResult.usdcReceived - feeAmount;
-        
-        if (feeAmount > 0) {
-            IERC20(USDC_TOKEN).transfer(treasury, feeAmount);
-        }
-        
-        // ====================================================================
-        // STEP 3: BUY OUTCOME SHARES (Final atomic step)
-        // ====================================================================
-        
-        try this._buyOutcomeShares(
-            params.conditionId,
-            params.outcomeIndex,
-            usdcForBet
-        ) returns (uint256 shares) {
-            sharesReceived = shares;
-            
-            // SUCCESS - Transfer shares to user
-            // Note: CTF shares are ERC1155, transfer handled in _buyOutcomeShares
-            
-            emit ZapExecuted(
-                msg.sender,
-                params.wldAmount,
-                swapResult.usdcReceived,
-                params.conditionId,
-                params.outcomeIndex,
-                sharesReceived,
-                swapResult.actualSlippage
-            );
-            
-        } catch Error(string memory reason) {
-            // CRITICAL: Return USDC to user before reverting
-            IERC20(USDC_TOKEN).transfer(msg.sender, usdcForBet);
-            if (feeAmount > 0) {
-                // Reclaim fee from treasury (edge case handling)
-                IERC20(USDC_TOKEN).transferFrom(treasury, msg.sender, feeAmount);
-            }
-            emit ZapFailed(msg.sender, reason, 3);
-            revert("ZAP: Outcome purchase failed");
-        } catch {
-            // CRITICAL: Return USDC to user before reverting
-            IERC20(USDC_TOKEN).transfer(msg.sender, usdcForBet);
-            if (feeAmount > 0) {
-                IERC20(USDC_TOKEN).transferFrom(treasury, msg.sender, feeAmount);
-            }
-            emit ZapFailed(msg.sender, "Unknown purchase error", 3);
-            revert("ZAP: Outcome purchase failed");
-        }
-        
-        return sharesReceived;
+
+    // ============================================================================
+    // MODIFIERS
+    // ============================================================================
+
+    /// @notice Ensures contract is not paused
+    modifier whenNotPaused() {
+        if (paused) revert ContractPaused();
+        _;
     }
-    
-    // ========================================================================
-    // INTERNAL FUNCTIONS (External for try/catch)
-    // ========================================================================
-    
-    /**
-     * @notice Transfer WLD from user using Permit2 (gasless)
-     * @dev External to enable try/catch in main function
-     */
-    function _transferWLDFromUser(
-        address user,
-        uint256 amount,
-        bytes calldata signature,
-        uint256 deadline
-    ) external {
-        require(msg.sender == address(this), "ZAP: Internal only");
-        
-        // Use Permit2 for gasless approval
-        IPermit2(PERMIT2).permitTransferFrom(
-            user,
-            address(this),
-            uint160(amount),
-            WLD_TOKEN,
-            0, // nonce managed by Permit2
-            deadline,
-            signature
-        );
-    }
-    
-    /**
-     * @notice Execute WLD → USDC swap via DEX
-     * @dev External to enable try/catch in main function
-     * @return usdcReceived Amount of USDC received
-     * @return actualSlippage Actual slippage in basis points
-     */
-    function _executeSwap(
-        uint256 wldAmount,
-        uint256 minUSDCOut,
-        uint256 deadline
-    ) external returns (uint256 usdcReceived, uint256 actualSlippage) {
-        require(msg.sender == address(this), "ZAP: Internal only");
-        
-        // Approve router to spend WLD
-        IERC20(WLD_TOKEN).approve(SWAP_ROUTER, wldAmount);
-        
-        // Uniswap V3 exact input swap
-        ISwapRouter.ExactInputSingleParams memory swapParams = ISwapRouter
-            .ExactInputSingleParams({
-                tokenIn: WLD_TOKEN,
-                tokenOut: USDC_TOKEN,
-                fee: 3000, // 0.3% pool
-                recipient: address(this),
-                deadline: deadline,
-                amountIn: wldAmount,
-                amountOutMinimum: minUSDCOut,
-                sqrtPriceLimitX96: 0 // No price limit
-            });
-        
-        usdcReceived = ISwapRouter(SWAP_ROUTER).exactInputSingle(swapParams);
-        
-        // Calculate actual slippage
-        uint256 expectedUSDC = _getExpectedUSDC(wldAmount);
-        if (usdcReceived < expectedUSDC) {
-            actualSlippage = ((expectedUSDC - usdcReceived) * 10000) / expectedUSDC;
-        } else {
-            actualSlippage = 0; // Positive slippage (better than expected)
-        }
-        
-        require(actualSlippage <= MAX_SLIPPAGE, "ZAP: Slippage exceeded");
-        
-        return (usdcReceived, actualSlippage);
-    }
-    
-    /**
-     * @notice Purchase outcome shares on Polymarket
-     * @dev External to enable try/catch in main function
-     * @return shares Number of shares received
-     */
-    function _buyOutcomeShares(
+
+    // ============================================================================
+    // MAIN ZAP FUNCTION
+    // ============================================================================
+
+    /// @notice Atomically converts WLD to Polymarket outcome shares
+    /// @dev ALL STEPS MUST SUCCEED OR ENTIRE TRANSACTION REVERTS
+    /// @param amountWLD Amount of WLD tokens to zap
+    /// @param minUSDC Minimum USDC to receive from swap (slippage protection)
+    /// @param conditionId Polymarket condition ID
+    /// @param outcomeIndex Outcome index to purchase (0 or 1 for binary markets)
+    /// @param minSharesOut Minimum shares to receive (additional slippage protection)
+    /// @param deadline Transaction deadline timestamp
+    /// @return sharesReceived Amount of outcome shares received
+    function zapWLDToBinaryOutcome(
+        uint256 amountWLD,
+        uint256 minUSDC,
         bytes32 conditionId,
         uint256 outcomeIndex,
-        uint256 usdcAmount
-    ) external returns (uint256 shares) {
-        require(msg.sender == address(this), "ZAP: Internal only");
-        
-        // Approve CTF to spend USDC
-        IERC20(USDC_TOKEN).approve(POLYMARKET_CTF, usdcAmount);
-        
-        // Buy outcome shares
-        shares = IPolymarketCTF(POLYMARKET_CTF).buyOutcome(
+        uint256 minSharesOut,
+        uint256 deadline
+    ) external nonReentrant whenNotPaused returns (uint256 sharesReceived) {
+        // ====================================================================
+        // VALIDATION
+        // ====================================================================
+
+        if (amountWLD == 0) revert InvalidAmount();
+        if (block.timestamp > deadline) revert InvalidDeadline();
+        if (deadline > block.timestamp + MAX_DEADLINE_WINDOW) revert InvalidDeadline();
+        if (outcomeIndex > 1) revert InvalidAmount(); // Binary markets only
+
+        // ====================================================================
+        // STEP 1: TRANSFER WLD FROM USER
+        // ====================================================================
+
+        IERC20(WLD_TOKEN).safeTransferFrom(msg.sender, address(this), amountWLD);
+
+        // ====================================================================
+        // STEP 2: SWAP WLD → USDC
+        // ====================================================================
+
+        // Approve Uniswap router to spend WLD
+        IERC20(WLD_TOKEN).safeApprove(SWAP_ROUTER, amountWLD);
+
+        // Execute swap
+        uint256 usdcReceived;
+        try ISwapRouter(SWAP_ROUTER).exactInputSingle(
+            ISwapRouter.ExactInputSingleParams({
+                tokenIn: WLD_TOKEN,
+                tokenOut: USDC_TOKEN,
+                fee: POOL_FEE,
+                recipient: address(this),
+                deadline: deadline,
+                amountIn: amountWLD,
+                amountOutMinimum: minUSDC,
+                sqrtPriceLimitX96: 0 // No price limit
+            })
+        ) returns (uint256 amount) {
+            usdcReceived = amount;
+        } catch {
+            // Reset approval and revert
+            IERC20(WLD_TOKEN).safeApprove(SWAP_ROUTER, 0);
+            revert SwapFailed();
+        }
+
+        // Reset approval
+        IERC20(WLD_TOKEN).safeApprove(SWAP_ROUTER, 0);
+
+        // Verify slippage
+        if (usdcReceived < minUSDC) revert SlippageTooHigh();
+
+        // ====================================================================
+        // STEP 3: DEDUCT PROTOCOL FEE
+        // ====================================================================
+
+        uint256 protocolFee = (usdcReceived * protocolFeeBps) / BPS_DENOMINATOR;
+        uint256 usdcForShares = usdcReceived - protocolFee;
+
+        // Transfer fee to treasury
+        if (protocolFee > 0) {
+            IERC20(USDC_TOKEN).safeTransfer(treasury, protocolFee);
+        }
+
+        // ====================================================================
+        // STEP 4: BUY OUTCOME SHARES
+        // ====================================================================
+
+        // Approve CTF Exchange to spend USDC
+        IERC20(USDC_TOKEN).safeApprove(CTF_EXCHANGE, usdcForShares);
+
+        // Purchase shares
+        try ICTFExchange(CTF_EXCHANGE).buyFromMinter(
             conditionId,
             outcomeIndex,
-            usdcAmount
+            usdcForShares
+        ) returns (uint256 shares) {
+            sharesReceived = shares;
+        } catch {
+            // Reset approval and revert
+            IERC20(USDC_TOKEN).safeApprove(CTF_EXCHANGE, 0);
+            revert SharePurchaseFailed();
+        }
+
+        // Reset approval
+        IERC20(USDC_TOKEN).safeApprove(CTF_EXCHANGE, 0);
+
+        // Verify minimum shares received
+        if (sharesReceived < minSharesOut) revert InsufficientOutput();
+
+        // ====================================================================
+        // STEP 5: RETURN DUST TO USER
+        // ====================================================================
+
+        // Check for any remaining WLD dust
+        uint256 wldDust = IERC20(WLD_TOKEN).balanceOf(address(this));
+        if (wldDust > 0) {
+            IERC20(WLD_TOKEN).safeTransfer(msg.sender, wldDust);
+        }
+
+        // Check for any remaining USDC dust
+        uint256 usdcDust = IERC20(USDC_TOKEN).balanceOf(address(this));
+        if (usdcDust > 0) {
+            IERC20(USDC_TOKEN).safeTransfer(msg.sender, usdcDust);
+        }
+
+        // ====================================================================
+        // EMIT EVENT
+        // ====================================================================
+
+        emit ZapExecuted(
+            msg.sender,
+            amountWLD,
+            usdcReceived,
+            conditionId,
+            outcomeIndex,
+            sharesReceived,
+            protocolFee
         );
-        
-        require(shares > 0, "ZAP: No shares received");
-        
-        // Note: Shares are ERC1155 tokens, automatically transferred to msg.sender
-        // in the CTF contract's buyOutcome function
-        
-        return shares;
+
+        return sharesReceived;
     }
-    
-    // ========================================================================
-    // VIEW FUNCTIONS
-    // ========================================================================
-    
-    /**
-     * @notice Get expected USDC output for WLD input
-     * @dev Uses Uniswap V3 TWAP oracle for MEV resistance
-     */
-    function _getExpectedUSDC(uint256 wldAmount) 
-        internal 
-        view 
-        returns (uint256) 
-    {
-        // TODO: Implement TWAP oracle query
-        // For now, placeholder calculation
-        // In production: Use Uniswap V3 OracleLibrary.consult()
-        
-        // Example: 1 WLD = $2.50 USDC (hardcoded for pseudocode)
-        return (wldAmount * 250) / 100; // 2.5x conversion
-    }
-    
-    /**
-     * @notice Preview zap output (frontend helper)
-     * @param wldAmount Amount of WLD to zap
-     * @return estimatedShares Estimated outcome shares
-     * @return estimatedSlippage Estimated slippage
-     */
-    function previewZap(
-        uint256 wldAmount,
+
+    // ============================================================================
+    // PERMIT2 INTEGRATION (OPTIONAL)
+    // ============================================================================
+
+    /// @notice Zap using Permit2 for gasless approval
+    /// @dev Same as zapWLDToBinaryOutcome but uses Permit2 for initial transfer
+    /// @param amountWLD Amount of WLD tokens to zap
+    /// @param minUSDC Minimum USDC to receive from swap
+    /// @param conditionId Polymarket condition ID
+    /// @param outcomeIndex Outcome index to purchase
+    /// @param minSharesOut Minimum shares to receive
+    /// @param deadline Transaction deadline
+    /// @param permitNonce Permit2 nonce
+    /// @param permitDeadline Permit2 deadline
+    /// @param permitSignature Permit2 signature
+    /// @return sharesReceived Amount of outcome shares received
+    function zapWithPermit(
+        uint256 amountWLD,
+        uint256 minUSDC,
         bytes32 conditionId,
-        uint256 outcomeIndex
-    ) external view returns (
-        uint256 estimatedShares,
-        uint256 estimatedSlippage
-    ) {
-        uint256 expectedUSDC = _getExpectedUSDC(wldAmount);
-        uint256 feeAmount = expectedUSDC * zapFee / 10000;
-        uint256 usdcForBet = expectedUSDC - feeAmount;
-        
-        // Simplified: 1 USDC = 1 share (actual depends on market odds)
-        estimatedShares = usdcForBet;
-        estimatedSlippage = 100; // 1% estimated
-        
-        return (estimatedShares, estimatedSlippage);
+        uint256 outcomeIndex,
+        uint256 minSharesOut,
+        uint256 deadline,
+        uint256 permitNonce,
+        uint256 permitDeadline,
+        bytes calldata permitSignature
+    ) external nonReentrant whenNotPaused returns (uint256 sharesReceived) {
+        if (PERMIT2 == address(0)) revert ZeroAddress();
+
+        // Transfer WLD using Permit2
+        IPermit2(PERMIT2).permitTransferFrom(
+            msg.sender,
+            address(this),
+            uint160(amountWLD),
+            WLD_TOKEN,
+            permitNonce,
+            permitDeadline,
+            permitSignature
+        );
+
+        // Continue with normal zap flow (internal call to avoid code duplication)
+        return _executeZap(amountWLD, minUSDC, conditionId, outcomeIndex, minSharesOut, deadline);
     }
-    
-    // ========================================================================
-    // EMERGENCY FUNCTIONS
-    // ========================================================================
-    
-    /**
-     * @notice Emergency withdraw stuck tokens
-     * @dev Only callable by user if their tokens are stuck
-     */
-    function emergencyWithdraw(address token) external nonReentrant {
-        uint256 balance = IERC20(token).balanceOf(address(this));
-        require(balance > 0, "ZAP: No balance");
+
+    /// @notice Internal zap execution (shared logic)
+    /// @dev Assumes WLD is already in contract
+    function _executeZap(
+        uint256 amountWLD,
+        uint256 minUSDC,
+        bytes32 conditionId,
+        uint256 outcomeIndex,
+        uint256 minSharesOut,
+        uint256 deadline
+    ) private returns (uint256 sharesReceived) {
+        // Validation
+        if (amountWLD == 0) revert InvalidAmount();
+        if (block.timestamp > deadline) revert InvalidDeadline();
+        if (outcomeIndex > 1) revert InvalidAmount();
+
+        // Swap WLD → USDC
+        IERC20(WLD_TOKEN).safeApprove(SWAP_ROUTER, amountWLD);
         
-        IERC20(token).transfer(msg.sender, balance);
-        emit EmergencyWithdraw(msg.sender, token, balance);
+        uint256 usdcReceived = ISwapRouter(SWAP_ROUTER).exactInputSingle(
+            ISwapRouter.ExactInputSingleParams({
+                tokenIn: WLD_TOKEN,
+                tokenOut: USDC_TOKEN,
+                fee: POOL_FEE,
+                recipient: address(this),
+                deadline: deadline,
+                amountIn: amountWLD,
+                amountOutMinimum: minUSDC,
+                sqrtPriceLimitX96: 0
+            })
+        );
+
+        IERC20(WLD_TOKEN).safeApprove(SWAP_ROUTER, 0);
+
+        if (usdcReceived < minUSDC) revert SlippageTooHigh();
+
+        // Deduct fee
+        uint256 protocolFee = (usdcReceived * protocolFeeBps) / BPS_DENOMINATOR;
+        uint256 usdcForShares = usdcReceived - protocolFee;
+
+        if (protocolFee > 0) {
+            IERC20(USDC_TOKEN).safeTransfer(treasury, protocolFee);
+        }
+
+        // Buy shares
+        IERC20(USDC_TOKEN).safeApprove(CTF_EXCHANGE, usdcForShares);
+        
+        sharesReceived = ICTFExchange(CTF_EXCHANGE).buyFromMinter(
+            conditionId,
+            outcomeIndex,
+            usdcForShares
+        );
+
+        IERC20(USDC_TOKEN).safeApprove(CTF_EXCHANGE, 0);
+
+        if (sharesReceived < minSharesOut) revert InsufficientOutput();
+
+        // Return dust
+        uint256 wldDust = IERC20(WLD_TOKEN).balanceOf(address(this));
+        if (wldDust > 0) IERC20(WLD_TOKEN).safeTransfer(msg.sender, wldDust);
+
+        uint256 usdcDust = IERC20(USDC_TOKEN).balanceOf(address(this));
+        if (usdcDust > 0) IERC20(USDC_TOKEN).safeTransfer(msg.sender, usdcDust);
+
+        emit ZapExecuted(msg.sender, amountWLD, usdcReceived, conditionId, outcomeIndex, sharesReceived, protocolFee);
+
+        return sharesReceived;
     }
-    
-    // ========================================================================
+
+    // ============================================================================
     // ADMIN FUNCTIONS
-    // ========================================================================
-    
-    function setZapFee(uint256 newFee) external {
-        require(msg.sender == treasury, "ZAP: Only treasury");
-        require(newFee <= 100, "ZAP: Fee too high"); // Max 1%
-        zapFee = newFee;
+    // ============================================================================
+
+    /// @notice Update protocol fee
+    /// @param newFeeBps New fee in basis points (max 100 = 1%)
+    function setProtocolFee(uint256 newFeeBps) external onlyOwner {
+        if (newFeeBps > 100) revert InvalidFee(); // Max 1%
+        
+        uint256 oldFee = protocolFeeBps;
+        protocolFeeBps = newFeeBps;
+        
+        emit ProtocolFeeUpdated(oldFee, newFeeBps);
     }
-    
-    function setPaymaster(address newPaymaster) external {
-        require(msg.sender == treasury, "ZAP: Only treasury");
-        paymaster = newPaymaster;
+
+    /// @notice Update treasury address
+    /// @param newTreasury New treasury address
+    function setTreasury(address newTreasury) external onlyOwner {
+        if (newTreasury == address(0)) revert ZeroAddress();
+        
+        address oldTreasury = treasury;
+        treasury = newTreasury;
+        
+        emit TreasuryUpdated(oldTreasury, newTreasury);
+    }
+
+    /// @notice Toggle pause state
+    function togglePause() external onlyOwner {
+        paused = !paused;
+        emit PauseToggled(paused);
+    }
+
+    /// @notice Recover stuck tokens (emergency only)
+    /// @param token Token address to recover
+    /// @param amount Amount to recover
+    /// @param recipient Recipient address
+    function recoverDust(address token, uint256 amount, address recipient) external onlyOwner {
+        if (recipient == address(0)) revert ZeroAddress();
+        
+        IERC20(token).safeTransfer(recipient, amount);
+        
+        emit DustRecovered(token, amount, recipient);
     }
 }
-
-// ============================================================================
-// SECURITY CONSIDERATIONS
-// ============================================================================
-// 1. Reentrancy: Protected by OpenZeppelin's ReentrancyGuard
-// 2. Atomicity: All steps wrapped in try/catch with full revert on failure
-// 3. MEV Protection: TWAP oracle for price feeds, slippage limits
-// 4. Deadline Enforcement: Prevents stale transactions
-// 5. Permit2: Gasless approvals reduce attack surface
-// 6. Emergency Withdrawals: Users can recover stuck funds
-// ============================================================================
-
-// ============================================================================
-// GAS OPTIMIZATION NOTES
-// ============================================================================
-// 1. Use immutable for addresses (saves ~2100 gas per read)
-// 2. Batch approvals in single transaction
-// 3. Paymaster integration for gas abstraction
-// 4. Optimism L2: ~10x cheaper than Ethereum mainnet
-// 5. Consider EIP-4337 Account Abstraction for advanced users
-// ============================================================================
-
-// ============================================================================
-// TESTING CHECKLIST
-// ============================================================================
-// [ ] Test successful zap flow
-// [ ] Test swap failure (reverts entire tx)
-// [ ] Test outcome purchase failure (reverts entire tx)
-// [ ] Test slippage protection
-// [ ] Test deadline expiration
-// [ ] Test MEV attack scenarios
-// [ ] Test emergency withdrawals
-// [ ] Test Permit2 integration
-// [ ] Test Paymaster gas abstraction
-// [ ] Fuzz testing with random inputs
-// ============================================================================
