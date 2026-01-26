@@ -142,7 +142,7 @@ export function ProposeMarket() {
                 {!isVerified && (
                     <IDKitWidget
                         app_id={process.env.NEXT_PUBLIC_WLD_APP_ID as `app_${string}`}
-                        action="propose_market"
+                        action="polymarket-wallet"
                         verification_level={VerificationLevel.Orb}
                         onSuccess={handleWorldIDSuccess}
                     >
