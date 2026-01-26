@@ -37,8 +37,9 @@ export async function verifyWorldIDProof(
     const finalAppId = app_id || "app_d2014c58bb084dcb09e1f3c1c1144287";
 
     try {
+        console.log(`Calling World ID API: https://developer.worldcoin.org/api/v2/verify/${finalAppId}`);
         const response = await fetch(
-            `https://developer.worldcoin.org/api/v1/verify/${finalAppId}`,
+            `https://developer.worldcoin.org/api/v2/verify/${finalAppId}`,
             {
                 method: 'POST',
                 headers: {
