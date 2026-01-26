@@ -1,6 +1,7 @@
+import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
-import { Providers } from '@/components/Providers';
+import Providers from '@/components/Providers';
 import { WorldProvider } from '@/src/context/WorldContext';
 import { Toaster } from 'sonner';
 import VoidShell from '@/components/VoidShell';
