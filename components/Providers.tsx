@@ -8,7 +8,14 @@ import { ThemeProvider } from "next-themes";
 import { LanguageProvider } from "@/src/context/LanguageContext";
 
 export default function Providers({ children, initialState }: { children: React.ReactNode, initialState?: State }) {
-    const [queryClient] = useState(() => new QueryClient());
+    const [queryClient] = useState(() => new QueryClient({
+        defaultOptions: {
+            queries: {
+                staleTime: 60 * 1000, // Datos frescos por 1 minuto
+                refetchOnWindowFocus: false,
+            },
+        },
+    }));
 
     return (
         <WagmiProvider config={config} initialState={initialState}>
