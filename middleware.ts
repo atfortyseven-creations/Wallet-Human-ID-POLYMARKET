@@ -7,7 +7,8 @@ export function middleware(request: NextRequest) {
         'https://www.polymarketwallet.com',
         'https://polymarketwallet.com',
         'https://polymarketwallet.up.railway.app',
-        'http://localhost:3000' // Keep localhost for dev
+        'http://localhost:3000', // Keep localhost for dev
+        'http://localhost:8080'  // Railway local dev port
     ];
 
     // Check if origin is allowed
