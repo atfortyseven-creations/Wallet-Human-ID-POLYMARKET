@@ -7,7 +7,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { verifyCloudProof, IVerifyResponse } from '@worldcoin/idkit';
+import { verifyWorldIDProof } from '@/lib/worldid';
 
 const prisma = new PrismaClient();
 
@@ -36,19 +36,19 @@ export async function POST(request: NextRequest) {
         }
 
         // Verify World ID proof
-        const app_id = process.env.NEXT_PUBLIC_WLD_APP_ID as `app_${string}`;
+        const app_id = process.env.NEXT_PUBLIC_WLD_APP_ID as string;
         const action = `vote_${body.proposalId}`;
 
-        const verifyRes = (await verifyCloudProof({
+        const verifyRes = await verifyWorldIDProof({
             proof: body.worldIdProof.proof,
             merkle_root: body.worldIdProof.merkle_root,
             nullifier_hash: body.worldIdProof.nullifier_hash,
-            verification_level: body.worldIdProof.verification_level as any,
-        }, app_id, action)) as IVerifyResponse;
+            verification_level: body.worldIdProof.verification_level,
+        }, app_id, action);
 
         if (!verifyRes.success) {
             return NextResponse.json(
-                { error: 'World ID verification failed' },
+                { error: 'World ID verification failed', detail: verifyRes.detail },
                 { status: 401 }
             );
         }
