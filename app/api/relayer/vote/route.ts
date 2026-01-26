@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { ethers } from "ethers";
-import PolymarketGovernanceGaslessABI from "../../../../artifacts/contracts/PolymarketGovernanceGasless.sol/PolymarketGovernanceGasless.json";
+// TODO: Uncomment after deploying contracts
+// import PolymarketGovernanceGaslessABI from "../../../../artifacts/contracts/PolymarketGovernanceGasless.sol/PolymarketGovernanceGasless.json";
 
 const prisma = new PrismaClient();
 
@@ -11,6 +12,9 @@ const RPC_URL = process.env.BASE_MAINNET_RPC_URL || process.env.BASE_SEPOLIA_RPC
 const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_GOVERNANCE_CONTRACT_ADDRESS;
 
 export async function POST(request: NextRequest) {
+    // TODO: Remove this after deploying governance contract
+    return NextResponse.json({ error: "Governance contract not deployed yet" }, { status: 503 });
+
     if (!RELAYER_PRIVATE_KEY || !RPC_URL || !CONTRACT_ADDRESS) {
         return NextResponse.json({ error: "Relayer misconfiguration" }, { status: 500 });
     }
