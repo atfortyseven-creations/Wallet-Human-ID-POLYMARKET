@@ -135,8 +135,8 @@ export function ProposeMarket() {
             {/* World ID Verification */}
             <div className="mb-6">
                 <div className={`p-6 rounded-xl border-2 ${isVerified
-                        ? 'bg-green-500/10 border-green-500/30'
-                        : 'bg-purple-500/10 border-purple-500/30'
+                    ? 'bg-green-500/10 border-green-500/30'
+                    : 'bg-purple-500/10 border-purple-500/30'
                     }`}>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -164,7 +164,7 @@ export function ProposeMarket() {
                                 verification_level={VerificationLevel.Orb}
                                 onSuccess={handleWorldIDSuccess}
                             >
-                                {({ open }) => (
+                                {({ open }: { open: () => void }) => (
                                     <button
                                         onClick={open}
                                         className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-2 rounded-lg transition-colors"
