@@ -98,16 +98,22 @@ export async function POST(req: NextRequest) {
         // SAVE TO DATABASE (PENDING)
         // ====================================================================
 
-        await prisma.proposalVote.create({
+        await prisma.zapTransaction.create({
             data: {
-                proposalId: conditionId, // Using conditionId as proposalId for now
-                voterAddress: user.toLowerCase(),
-                support: outcomeIndex === 0, // Map outcome to support
-                votingPower: wldAmount,
-                transactionHash: tx.hash,
-                transactionStatus: "PENDING",
-                createdAt: new Date(),
-            },
+                userAddress: user.toLowerCase(),
+                wldAmount: wldAmount.toString(), // Decimal in schema
+                wldPriceUSD: 0, // Placeholder
+                usdcReceived: 0, // Placeholder
+                slippage: 0,
+                dexUsed: "uniswap",
+                marketId: conditionId, // Using conditionId as reference
+                outcomeIndex: Number(outcomeIndex),
+                sharesReceived: 0,
+                txHash: tx.hash,
+                status: "PENDING", // ZapStatus.PENDING
+                gasUsed: 0,
+                gasPaidBy: "relayer",
+            } as any,
         });
 
         // ====================================================================
@@ -123,12 +129,12 @@ export async function POST(req: NextRequest) {
         // UPDATE DATABASE (CONFIRMED)
         // ====================================================================
 
-        await prisma.proposalVote.updateMany({
-            where: { transactionHash: tx.hash },
+        await prisma.zapTransaction.update({
+            where: { txHash: tx.hash },
             data: {
-                transactionStatus: "CONFIRMED",
-                blockNumber: receipt.blockNumber,
-            },
+                status: "COMPLETED", // ZapStatus.COMPLETED
+                // blockNumber: receipt.blockNumber,
+            } as any,
         });
 
         // ====================================================================
