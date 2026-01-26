@@ -15,9 +15,6 @@ export function Navbar() {
     const { t } = useLanguage();
     const { isHuman } = useWorld();
 
-    // REGLA ESTRICTA: Capa Fantasma (Si no es humano, no hay Navbar)
-    if (!isHuman) return null;
-
     const toggleMenu = () => setIsOpen(!isOpen);
 
     const navLinks = [
@@ -27,7 +24,15 @@ export function Navbar() {
     ];
 
     return (
-        <nav className="sticky top-0 z-50 w-full border-b border-white/5 bg-[#0D0D12]/80 dark:bg-[#0D0D12]/80 bg-white/80 backdrop-blur-xl transition-colors duration-300">
+        <nav
+            className={`
+                sticky top-0 z-50 w-full border-b transition-all duration-1000 ease-in-out
+                ${isHuman
+                    ? 'bg-[#0D0D12]/80 dark:bg-[#0D0D12]/80 bg-white/80 backdrop-blur-xl border-white/5 opacity-100 translate-y-0'
+                    : 'bg-black/20 backdrop-blur-[2px] border-transparent opacity-40 grayscale pointer-events-none select-none'
+                }
+            `}
+        >
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
 
                 {/* LOGO (Left) */}

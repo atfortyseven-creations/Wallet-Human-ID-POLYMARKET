@@ -8,27 +8,45 @@ import { Toaster, toast } from 'sonner';
 export const WorldGate = ({ children }: { children: React.ReactNode }) => {
     const { isHuman, verifyHumanity } = useWorld();
 
-    const onSuccess = (result: ISuccessResult) => {
-        verifyHumanity(result);
-        toast.success("Humanity Verified: Protocol Unlocked", {
-            description: "Welcome to the Sovereign Layer."
-        });
-        // Optional: Reload to ensure all components re-render if context isn't enough for some deep trees (though context should work)
-        // window.location.reload(); 
+    const handleProof = async (result: ISuccessResult) => {
+        const toastId = toast.loading("Verificando prueba criptográfica (ZK-Proof)...");
+
+        try {
+            // 1. Enviar prueba al Backend
+            const res = await fetch('/api/verify-human', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(result),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok || !data.verified) {
+                throw new Error(data.detail || "Verificación fallida");
+            }
+
+            // 2. Éxito: Desbloquear UI
+            toast.dismiss(toastId);
+            toast.success("✨ Identidad Soberana Verificada");
+            verifyHumanity(data);
+
+        } catch (error) {
+            toast.dismiss(toastId);
+            toast.error("Error: No se pudo verificar tu humanidad.");
+            console.error(error);
+        }
     };
 
     return (
         <>
-            {/* CAPA DE VERIFICACIÓN FLOTANTE (Solo visible si NO es humano) */}
             {!isHuman && (
-                <div className="fixed bottom-8 right-8 z-[100] animate-bounce-slow">
+                <div className="fixed bottom-10 right-10 z-[100] animate-bounce-slow">
                     <IDKitWidget
-                        app_id="app_staging_560824623761352378912739" // Example Staging ID
+                        app_id={process.env.NEXT_PUBLIC_WLD_APP_ID || "app_staging_560824623761352378912739"}
                         action="login"
-                        onSuccess={onSuccess}
+                        onSuccess={handleProof}
                         handleVerify={async (proof: unknown) => {
-                            // Simulación de verificación backend
-                            await new Promise(resolve => setTimeout(resolve, 1000));
+                            // World ID requiere esta función, pero validamos en onSuccess
                             return;
                         }}
                         verification_level={VerificationLevel.Orb}
@@ -36,17 +54,15 @@ export const WorldGate = ({ children }: { children: React.ReactNode }) => {
                         {({ open }: { open: () => void }) => (
                             <button
                                 onClick={open}
-                                className="flex items-center gap-3 bg-white text-black px-6 py-4 rounded-full font-bold shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-105 transition-transform"
+                                className="flex items-center gap-3 bg-white text-black px-6 py-4 rounded-full font-bold shadow-[0_0_40px_rgba(255,255,255,0.4)] hover:scale-105 transition-transform border-4 border-white/20 backdrop-blur-md"
                             >
-                                <ScanFace size={24} />
-                                <span>Verify Humanity</span>
+                                <ScanFace size={24} className="animate-pulse" />
+                                <span>VERIFY HUMANITY</span>
                             </button>
                         )}
                     </IDKitWidget>
                 </div>
             )}
-
-            {/* RENDERIZADO DEL CONTENIDO */}
             {children}
         </>
     );
