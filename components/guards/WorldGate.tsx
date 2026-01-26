@@ -8,7 +8,7 @@ import { Toaster, toast } from 'sonner';
 
 export const WorldGate = ({ children }: { children: React.ReactNode }) => {
     const { isHuman, verifyHumanity } = useWorld();
-    const APP_ID = process.env.NEXT_PUBLIC_WLD_APP_ID || "app_staging_560824623761352378912739";
+    const APP_ID = process.env.NEXT_PUBLIC_WLD_APP_ID || "app_d2014c58bb084dcb09e1f3c1c1144287";
     const ACTION = "login";
 
     useEffect(() => {
