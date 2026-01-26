@@ -3,8 +3,8 @@ import { NextResponse } from 'next/server';
 export async function POST(req: Request) {
     try {
         const proof = await req.json();
-        const app_id = process.env.NEXT_PUBLIC_WLD_APP_ID || "app_d2014c58bb084dcb09e1f3c1c1144287"; // User Provided ID
-        const action = "login"; // Debe coincidir con tu IDKitWidget
+        const app_id = process.env.NEXT_PUBLIC_WLD_APP_ID;
+        const action = "login";
 
         const verifyRes = await fetch(`https://developer.worldcoin.org/api/v1/verify/${app_id}`, {
             method: "POST",
