@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node_modules/.bin/hardhat compile && next build",
+    "build": "next build",
+    "build:contracts": "hardhat compile",
     "start": "next start -H 0.0.0.0 -p ${PORT:-3000}",
     "lint": "next lint"
   },
