@@ -43,7 +43,7 @@ export default function GaslessZapInterface({
             return;
         }
 
-        if (parseFloat(wldAmount) > parseFloat(wldBalance || "0")) {
+        if (parseFloat(wldAmount) > parseFloat((wldBalance || "0").toString())) {
             toast.error("Insufficient WLD balance");
             return;
         }
@@ -93,7 +93,7 @@ export default function GaslessZapInterface({
                         disabled={isLoading}
                     />
                     <button
-                        onClick={() => handleAmountChange(wldBalance || "0")}
+                        onClick={() => handleAmountChange((wldBalance || "0").toString())}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-midgard hover:text-midgard/80 transition-colors"
                     >
                         MAX
@@ -101,7 +101,7 @@ export default function GaslessZapInterface({
                 </div>
                 {wldBalance && (
                     <p className="text-xs text-neutral-400 mt-1">
-                        Balance: {parseFloat(wldBalance).toFixed(2)} WLD
+                        Balance: {parseFloat((wldBalance || "0").toString()).toFixed(2)} WLD
                     </p>
                 )}
             </div>
@@ -115,8 +115,8 @@ export default function GaslessZapInterface({
                     <button
                         onClick={() => setOutcomeIndex(0)}
                         className={`px-4 py-3 rounded-lg font-medium transition-all ${outcomeIndex === 0
-                                ? "bg-green-500/20 border-2 border-green-500 text-green-400"
-                                : "bg-neutral-900 border border-neutral-800 text-neutral-400 hover:border-neutral-700"
+                            ? "bg-green-500/20 border-2 border-green-500 text-green-400"
+                            : "bg-neutral-900 border border-neutral-800 text-neutral-400 hover:border-neutral-700"
                             }`}
                         disabled={isLoading}
                     >
@@ -125,8 +125,8 @@ export default function GaslessZapInterface({
                     <button
                         onClick={() => setOutcomeIndex(1)}
                         className={`px-4 py-3 rounded-lg font-medium transition-all ${outcomeIndex === 1
-                                ? "bg-red-500/20 border-2 border-red-500 text-red-400"
-                                : "bg-neutral-900 border border-neutral-800 text-neutral-400 hover:border-neutral-700"
+                            ? "bg-red-500/20 border-2 border-red-500 text-red-400"
+                            : "bg-neutral-900 border border-neutral-800 text-neutral-400 hover:border-neutral-700"
                             }`}
                         disabled={isLoading}
                     >
