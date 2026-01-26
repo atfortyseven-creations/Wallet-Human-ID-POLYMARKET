@@ -1,5 +1,5 @@
 /**
- * ProposeMarket Component
+ * ProposeMarket Component (Void Edition)
  * 
  * Sybil-resistant market proposal submission with World ID verification
  * Implements democratic market creation governance
@@ -13,6 +13,7 @@ import { IDKitWidget, ISuccessResult, VerificationLevel } from '@worldcoin/idkit
 import { Vote, CheckCircle2, AlertCircle, Loader2, Users } from 'lucide-react';
 import { useAccount } from 'wagmi';
 import { toast } from 'sonner';
+import { VoidButton, VoidInput, VoidCard } from '@/components/VoidUI';
 
 interface ProposalFormData {
     question: string;
@@ -120,126 +121,63 @@ export function ProposeMarket() {
     };
 
     return (
-        <div className="max-w-4xl mx-auto p-6">
-            {/* Header */}
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold mb-2 flex items-center gap-3">
-                    <Vote className="w-8 h-8 text-purple-500" />
-                    Propose a Market
-                </h1>
-                <p className="text-muted-foreground">
-                    Submit a market proposal for community voting. Requires World ID verification (orb level).
-                </p>
-            </div>
+        <div className="w-full h-full flex flex-col">
 
-            {/* World ID Verification */}
-            <div className="mb-6">
-                <div className={`p-6 rounded-xl border-2 ${isVerified
-                    ? 'bg-green-500/10 border-green-500/30'
-                    : 'bg-purple-500/10 border-purple-500/30'
-                    }`}>
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            {isVerified ? (
-                                <CheckCircle2 className="w-6 h-6 text-green-500" />
-                            ) : (
-                                <Users className="w-6 h-6 text-purple-500" />
-                            )}
-                            <div>
-                                <h3 className="font-semibold">
-                                    {isVerified ? 'Verified Human' : 'Verify Your Identity'}
-                                </h3>
-                                <p className="text-sm text-muted-foreground">
-                                    {isVerified
-                                        ? 'You can now submit your proposal'
-                                        : 'Prove you\'re a unique human with World ID'}
-                                </p>
-                            </div>
-                        </div>
-
-                        {!isVerified && (
-                            <IDKitWidget
-                                app_id={process.env.NEXT_PUBLIC_WLD_APP_ID as `app_${string}`}
-                                action="propose_market"
-                                verification_level={VerificationLevel.Orb}
-                                onSuccess={handleWorldIDSuccess}
-                            >
-                                {({ open }: { open: () => void }) => (
-                                    <button
-                                        onClick={open}
-                                        className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-2 rounded-lg transition-colors"
-                                    >
-                                        Verify with World ID
-                                    </button>
-                                )}
-                            </IDKitWidget>
-                        )}
+            {/* World ID Verification Card */}
+            <VoidCard className={`mb-6 p-4 flex items-center justify-between transition-colors ${isVerified ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-surface/50'}`}>
+                <div className="flex items-center gap-3">
+                    <div className={`p-2 rounded-full ${isVerified ? 'bg-emerald-500/20 text-emerald-400' : 'bg-neutral-800 text-neutral-400'}`}>
+                        {isVerified ? <CheckCircle2 size={20} /> : <Users size={20} />}
+                    </div>
+                    <div>
+                        <h3 className={`text-sm font-bold ${isVerified ? 'text-emerald-400' : 'text-neutral-300'}`}>
+                            {isVerified ? 'Human Verified' : 'Sybil Resistance'}
+                        </h3>
+                        <p className="text-xs text-neutral-500">
+                            {isVerified ? 'Ready to propose' : 'Verify UID to unlock governance'}
+                        </p>
                     </div>
                 </div>
-            </div>
+
+                {!isVerified && (
+                    <IDKitWidget
+                        app_id={process.env.NEXT_PUBLIC_WLD_APP_ID as `app_${string}`}
+                        action="propose_market"
+                        verification_level={VerificationLevel.Orb}
+                        onSuccess={handleWorldIDSuccess}
+                    >
+                        {({ open }: { open: () => void }) => (
+                            <VoidButton onClick={open} size="sm" variant="secondary">
+                                Verify UID
+                            </VoidButton>
+                        )}
+                    </IDKitWidget>
+                )}
+            </VoidCard>
 
             {/* Proposal Form */}
-            <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Question */}
-                <div>
-                    <label className="block text-sm font-semibold mb-2">
-                        Market Question *
-                    </label>
-                    <input
-                        type="text"
-                        value={formData.question}
-                        onChange={(e) => setFormData({ ...formData, question: e.target.value })}
-                        placeholder="Will Bitcoin reach $100,000 by end of 2026?"
-                        className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                        required
-                        disabled={!isVerified}
-                    />
-                </div>
+            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto pr-2 space-y-5 custom-scrollbar">
 
-                {/* Category */}
-                <div>
-                    <label className="block text-sm font-semibold mb-2">
-                        Category *
-                    </label>
-                    <select
+                <div className="grid grid-cols-2 gap-4">
+                    <VoidInput
+                        label="Category"
+                        placeholder="Crypto"
                         value={formData.category}
                         onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                        className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                        required
                         disabled={!isVerified}
-                    >
-                        <option value="Crypto">Crypto</option>
-                        <option value="Politics">Politics</option>
-                        <option value="Sports">Sports</option>
-                        <option value="Technology">Technology</option>
-                        <option value="Entertainment">Entertainment</option>
-                        <option value="Science">Science</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-
-                {/* Description */}
-                <div>
-                    <label className="block text-sm font-semibold mb-2">
-                        Description *
-                    </label>
-                    <textarea
-                        value={formData.description}
-                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        placeholder="Provide context and details about this market..."
-                        rows={4}
-                        className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
-                        required
+                    />
+                    <VoidInput
+                        label="Question"
+                        placeholder="Will ETH flip BTC?"
+                        value={formData.question}
+                        onChange={(e) => setFormData({ ...formData, question: e.target.value })}
                         disabled={!isVerified}
                     />
                 </div>
 
-                {/* Outcomes */}
-                <div>
-                    <label className="block text-sm font-semibold mb-2">
-                        Possible Outcomes *
-                    </label>
-                    <div className="space-y-2">
+                <div className="space-y-1.5">
+                    <label className="text-xs font-mono text-neutral-500 uppercase tracking-wider ml-1">Outcomes</label>
+                    <div className="grid grid-cols-2 gap-2">
                         {formData.outcomes.map((outcome, index) => (
                             <div key={index} className="flex gap-2">
                                 <input
@@ -247,7 +185,7 @@ export function ProposeMarket() {
                                     value={outcome}
                                     onChange={(e) => updateOutcome(index, e.target.value)}
                                     placeholder={`Outcome ${index + 1}`}
-                                    className="flex-1 px-4 py-2 rounded-lg border border-border bg-background focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                    className="w-full bg-surface/50 border border-glass-border rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-white/20 transition-all font-mono disabled:opacity-50"
                                     required
                                     disabled={!isVerified}
                                 />
@@ -255,10 +193,10 @@ export function ProposeMarket() {
                                     <button
                                         type="button"
                                         onClick={() => removeOutcome(index)}
-                                        className="px-3 py-2 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                                        className="px-2 text-red-500/50 hover:text-red-500 transition-colors"
                                         disabled={!isVerified}
                                     >
-                                        Remove
+                                        ×
                                     </button>
                                 )}
                             </div>
@@ -268,7 +206,7 @@ export function ProposeMarket() {
                         <button
                             type="button"
                             onClick={addOutcome}
-                            className="mt-2 text-sm text-purple-500 hover:text-purple-600 font-semibold"
+                            className="text-xs text-midgard hover:text-white transition-colors ml-1 mt-1"
                             disabled={!isVerified}
                         >
                             + Add Outcome
@@ -276,52 +214,40 @@ export function ProposeMarket() {
                     )}
                 </div>
 
-                {/* Resolution Criteria */}
-                <div>
-                    <label className="block text-sm font-semibold mb-2">
-                        Resolution Criteria *
-                    </label>
+                <div className="space-y-1.5">
+                    <label className="text-xs font-mono text-neutral-500 uppercase tracking-wider ml-1">Resolution Criteria</label>
                     <textarea
                         value={formData.resolutionCriteria}
                         onChange={(e) => setFormData({ ...formData, resolutionCriteria: e.target.value })}
-                        placeholder="How will this market be resolved? What sources will be used?"
-                        rows={3}
-                        className="w-full px-4 py-3 rounded-lg border border-border bg-background focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                        placeholder="Resolution source and rules..."
+                        rows={2}
+                        className="w-full bg-surface/50 border border-glass-border rounded-xl px-4 py-3 text-sm text-white placeholder-neutral-700 focus:outline-none focus:border-white/20 transition-all font-mono resize-none disabled:opacity-50"
                         required
                         disabled={!isVerified}
                     />
                 </div>
 
-                {/* Info Box */}
-                <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
-                    <div className="flex items-start gap-3">
-                        <AlertCircle className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
-                        <div className="text-sm">
-                            <p className="font-semibold text-blue-400 mb-1">Voting Requirements</p>
-                            <ul className="text-muted-foreground space-y-1">
-                                <li>• Minimum 100 votes required for approval</li>
-                                <li>• Voting period: 7 days</li>
-                                <li>• You'll earn royalties if your market is approved</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Submit Button */}
-                <button
+                <VoidButton
                     type="submit"
                     disabled={!isVerified || isSubmitting || !isConnected}
-                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-gray-600 disabled:to-gray-600 text-white font-bold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:cursor-not-allowed disabled:transform-none"
+                    variant="primary"
+                    glow
+                    className="w-full"
                 >
                     {isSubmitting ? (
-                        <span className="flex items-center justify-center gap-2">
-                            <Loader2 className="w-5 h-5 animate-spin" />
-                            Submitting Proposal...
-                        </span>
+                        <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <span>ENCRYPTING PROPOSAL...</span>
+                        </>
                     ) : (
-                        'Submit Proposal for Voting'
+                        'SUBMIT TO CHAIN'
                     )}
-                </button>
+                </VoidButton>
+
+                <div className="flex items-center gap-2 text-[10px] text-neutral-600 justify-center">
+                    <Info size={10} />
+                    <span>Requires 100 votes to activate • 7 days voting period</span>
+                </div>
             </form>
         </div>
     );
