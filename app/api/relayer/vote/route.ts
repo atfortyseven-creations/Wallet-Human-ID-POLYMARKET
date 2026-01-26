@@ -7,9 +7,9 @@ import { ethers } from "ethers";
 const prisma = new PrismaClient();
 
 // ENV Checks
-const RELAYER_PRIVATE_KEY = process.env.RELAYER_PRIVATE_KEY;
-const RPC_URL = process.env.BASE_MAINNET_RPC_URL || process.env.BASE_SEPOLIA_RPC_URL;
-const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_GOVERNANCE_CONTRACT_ADDRESS;
+const RELAYER_PRIVATE_KEY = process.env.RELAYER_PRIVATE_KEY || "";
+const RPC_URL = process.env.BASE_MAINNET_RPC_URL || process.env.BASE_SEPOLIA_RPC_URL || "";
+const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_GOVERNANCE_CONTRACT_ADDRESS || "";
 
 export async function POST(request: NextRequest) {
     // TODO: Remove this after deploying governance contract
