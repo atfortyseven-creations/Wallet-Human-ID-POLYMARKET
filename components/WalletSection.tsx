@@ -15,7 +15,7 @@ import {
     Info
 } from "lucide-react";
 import { ProposeMarket } from "@/components/governance/ProposeMarket";
-import { useAccount, useBalance, useNetwork } from "wagmi";
+import { useAccount, useBalance } from "wagmi";
 import { toast } from "sonner";
 
 // --- Utility: Formateador de Moneda Seguro ---
@@ -31,8 +31,7 @@ const formatAddress = (addr: string) =>
 
 export default function WalletSection() {
     // --- Hooks de Blockchain ---
-    const { address, isConnected } = useAccount();
-    const { chain } = useNetwork();
+    const { address, isConnected, chain } = useAccount();
 
     // Balance Nativo (ETH)
     const { data: balanceData } = useBalance({
@@ -135,8 +134,8 @@ export default function WalletSection() {
                     </div>
 
                     <div className={`px-3 py-1.5 rounded-full border flex items-center gap-2 ${isWorldIDVerified
-                            ? "bg-indigo-500/10 border-indigo-500/20 text-indigo-300"
-                            : "bg-red-500/10 border-red-500/20 text-red-400"
+                        ? "bg-indigo-500/10 border-indigo-500/20 text-indigo-300"
+                        : "bg-red-500/10 border-red-500/20 text-red-400"
                         }`}>
                         <ShieldCheck size={14} />
                         <span className="text-xs font-bold tracking-wide">
