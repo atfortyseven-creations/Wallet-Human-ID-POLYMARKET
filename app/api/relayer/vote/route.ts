@@ -40,7 +40,10 @@ export async function POST(request: NextRequest) {
         // 2. Setup Ethers Provider & Signer
         const provider = new ethers.JsonRpcProvider(RPC_URL);
         const wallet = new ethers.Wallet(RELAYER_PRIVATE_KEY, provider);
-        const contract = new ethers.Contract(CONTRACT_ADDRESS, PolymarketGovernanceGaslessABI.abi, wallet);
+        const GOV_ABI = [
+            "function executeVoteWithSignature(address voter, uint256 proposalId, uint8 support, uint256 merkleRoot, uint256 nullifierHash, uint256[8] calldata proof, uint8 v, bytes32 r, bytes32 s) external"
+        ];
+        const contract = new ethers.Contract(CONTRACT_ADDRESS, GOV_ABI, wallet);
 
         // 3. Prepare Transaction
         // We unpack the proof because the contract expects uint256[8]
