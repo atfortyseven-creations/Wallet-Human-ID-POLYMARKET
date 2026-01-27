@@ -16,6 +16,10 @@ export const metadata: Metadata = {
     description: 'Sybil-resistant financial engine for Polymarket',
 };
 
+import BackgroundVideo from '@/components/layout/BackgroundVideo';
+
+// ...
+
 export default function RootLayout({
     children,
 }: {
@@ -23,7 +27,8 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" className={`${inter.variable} ${mono.variable}`}>
-            <body className="bg-void text-white">
+            <body className="bg-void text-white relative">
+                <BackgroundVideo />
                 <Providers>
                     <AppProvider>
                         <WorldProvider>
