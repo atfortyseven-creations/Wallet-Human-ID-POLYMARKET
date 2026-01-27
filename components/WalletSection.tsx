@@ -203,13 +203,9 @@ export default function WalletSection() {
                 </div>
 
                 {/* Status Badges */}
+                {/* Status Badges */}
                 <div className="flex items-center gap-3">
-                    <div className="px-3 py-1.5 rounded-full bg-neutral-900 border border-neutral-800 flex items-center gap-2">
-                        <div className={`w-2 h-2 rounded-full ${chain?.id === 10 || chain?.name === 'Optimism' ? 'bg-emerald-500' : 'bg-yellow-500'} animate-pulse`} />
-                        <span className="text-xs font-medium text-neutral-400">
-                            {chain?.id === 10 || chain?.name === 'Optimism' ? "World Chain" : chain?.name || "Unknown Network"}
-                        </span>
-                    </div>
+                    {/* Network Badge Removed as per user request (moved to MainVault) */}
 
                     <div className={`px-3 py-1.5 rounded-full border flex items-center gap-2 ${isWorldIDVerified
                         ? "bg-indigo-500/10 border-indigo-500/20 text-indigo-300"
