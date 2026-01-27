@@ -24,6 +24,7 @@ import { useTokenPrice } from "@/hooks/useTokenPrice";
 import useSWR from "swr";
 import { useHumanFi } from "@/hooks/useHumanFi";
 import { formatEther } from "viem";
+import { useProposals } from "@/hooks/useProposals";
 
 // --- Utility: Formateador de Moneda Seguro ---
 const formatCurrency = (value: number) =>
@@ -53,6 +54,7 @@ export default function WalletSection() {
     } = useHumanFi();
 
     const { price: wldPrice, isLoading: isPriceLoading } = useTokenPrice();
+    const { proposals, isLoading: isLoadingProposals } = useProposals();
 
     // Fetch User Governance & Royalty Stats
     const { data: userStats } = useSWR(
@@ -358,37 +360,57 @@ export default function WalletSection() {
                                         exit={{ opacity: 0, x: 20 }}
                                         className="h-full flex flex-col gap-4"
                                     >
-                                        <div className="bg-neutral-950/50 p-4 rounded-xl border border-neutral-800">
-                                            <h4 className="font-bold text-white mb-2">Proposal #1: Activate Rewards</h4>
-                                            <p className="text-sm text-neutral-400 mb-4">Vote to distribute royalties to stakers.</p>
-
-                                            <div className="flex gap-2">
-                                                {/* Voting Integration */}
-                                                <div className="w-full">
-                                                    <IDKitWidget
-                                                        app_id={process.env.NEXT_PUBLIC_WLD_APP_ID as `app_${string}`}
-                                                        action={process.env.NEXT_PUBLIC_WLD_ACTION || "vote_proposal_1"}
-                                                        signal="1"
-                                                        onSuccess={castVote}
-                                                        verification_level={VerificationLevel.Orb}
-                                                    >
-                                                        {({ open }: { open: () => void }) => (
-                                                            <button
-                                                                onClick={open}
-                                                                disabled={!governancePower || governancePower === BigInt(0)}
-                                                                className={`w-full py-3 rounded-xl font-bold transition flex items-center justify-center gap-2 ${!governancePower || governancePower === BigInt(0)
-                                                                    ? "bg-neutral-800 text-neutral-500 cursor-not-allowed"
-                                                                    : "bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20"
-                                                                    }`}
-                                                            >
-                                                                {!governancePower || governancePower === BigInt(0) ? "Zap WLD to Vote" : "🗳️ Votar con World ID"}
-                                                            </button>
-                                                        )}
-                                                    </IDKitWidget>
+                                        <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-4 max-h-[300px]">
+                                            {isLoadingProposals ? (
+                                                <div className="flex justify-center py-8">
+                                                    <Loader2 className="animate-spin text-neutral-500" />
                                                 </div>
-                                            </div>
+                                            ) : proposals.length > 0 ? (
+                                                proposals.map((proposal) => (
+                                                    <div key={proposal.id} className="bg-neutral-950/50 p-4 rounded-xl border border-neutral-800 hover:border-indigo-500/30 transition-colors">
+                                                        <div className="flex justify-between items-start mb-2">
+                                                            <h4 className="font-bold text-white text-sm">{proposal.question}</h4>
+                                                            <span className="text-[10px] bg-neutral-800 px-2 py-0.5 rounded text-neutral-400">
+                                                                {proposal.category}
+                                                            </span>
+                                                        </div>
+                                                        <p className="text-xs text-neutral-400 mb-4 line-clamp-2">{proposal.description}</p>
+
+                                                        <div className="flex gap-2">
+                                                            <div className="w-full">
+                                                                <IDKitWidget
+                                                                    app_id={process.env.NEXT_PUBLIC_WLD_APP_ID as `app_${string}`}
+                                                                    action={process.env.NEXT_PUBLIC_WLD_ACTION || "vote_proposal_1"} // Should be dynamic per proposal ideally
+                                                                    signal={proposal.id} // Sign the proposal ID
+                                                                    onSuccess={castVote}
+                                                                    verification_level={VerificationLevel.Orb}
+                                                                >
+                                                                    {({ open }: { open: () => void }) => (
+                                                                        <button
+                                                                            onClick={open}
+                                                                            disabled={!governancePower || governancePower === BigInt(0)}
+                                                                            className={`w-full py-2 rounded-lg font-bold text-xs transition flex items-center justify-center gap-2 ${!governancePower || governancePower === BigInt(0)
+                                                                                ? "bg-neutral-800 text-neutral-500 cursor-not-allowed"
+                                                                                : "bg-indigo-600 hover:bg-indigo-500 text-white"
+                                                                                }`}
+                                                                        >
+                                                                            {!governancePower || governancePower === BigInt(0) ? "Zap WLD to Vote" : "🗳️ Vote with World ID"}
+                                                                        </button>
+                                                                    )}
+                                                                </IDKitWidget>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <div className="text-center py-8 text-neutral-500 text-sm">
+                                                    No active proposals. Be the first to create one!
+                                                </div>
+                                            )}
                                         </div>
-                                        <ProposeMarket />
+                                        <div className="pt-2 border-t border-neutral-800">
+                                            <ProposeMarket />
+                                        </div>
                                     </motion.div>
                                 ) : (
                                     <motion.div
