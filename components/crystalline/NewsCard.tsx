@@ -20,6 +20,7 @@ export function NewsCard({ title, source, publishedAt, image, url }: NewsCardPro
           <img
             src={image}
             alt={title}
+            loading="lazy"
             className="object-cover w-full h-full"
           />
         </div>

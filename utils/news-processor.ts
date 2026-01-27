@@ -1,7 +1,5 @@
 import { createHash } from 'crypto';
 
-// GLOBAL removed
-
 export interface ProcessedNews {
     id: string;
     title: string;
@@ -12,7 +10,7 @@ export interface ProcessedNews {
     isGradient: boolean;
 }
 
-// Fallback images map by category/keyword - ARRAYS for variety
+// Fallback images map by category/keyword - ARRAYS for variety (unchanged)
 const FALLBACK_IMAGES: Record<string, string[]> = {
     'Crypto': [
         'https://images.unsplash.com/photo-1518546305927-5a555bb7020d?q=80&w=2000&auto=format&fit=crop',
@@ -113,38 +111,50 @@ const getFallbackImage = (text: string, category: string): string => {
 };
 
 export const processNewsFeed = (rawArticles: any[], categoryContext: string = 'General'): ProcessedNews[] => {
-    // LOCAL: Deduplicación solo para el lote actual de noticias
-    const currentBatchIds = new Set<string>();
+    // Use a Map for O(1) deduplication based on ID or Title
+    const seen = new Map<string, boolean>();
+    const processed: ProcessedNews[] = [];
 
-    return rawArticles
-        .filter((article) => {
-            // 1. Filtros de Calidad
-            if (!article.title || article.title.length < 5) return false;
+    // Prioritize articles with images
+    const sortedRaw = [...rawArticles].sort((a, b) => {
+        const aHasImg = (a.imageUrl || a.image);
+        const bHasImg = (b.imageUrl || b.image);
+        if (aHasImg && !bHasImg) return -1;
+        if (!aHasImg && bHasImg) return 1;
+        return 0;
+    });
 
-            // 2. Deduplicación Local
-            const uniqueId = article.article_id || article.url || article.title;
-            if (currentBatchIds.has(uniqueId)) return false;
-            currentBatchIds.add(uniqueId);
+    for (const article of sortedRaw) {
+        if (processed.length >= 50) break; // Hard limit
 
-            return true;
-        })
-        .map((article) => {
-            let finalImage = article.image || article.image_url;
+        // 1. Quality Filters
+        if (!article.title || article.title.length < 5) continue;
 
-            // Force Image: If missing, assign fallback based on category/content
-            if (!finalImage || finalImage.length < 5) {
-                finalImage = getFallbackImage(article.title + " " + (article.description || ""), categoryContext);
-            }
+        // 2. Strict Deduplication
+        // We use either the ID or the Title as the unique key
+        const uniqueKey = (article.id ? article.id.toString() : article.title).trim();
 
-            return {
-                id: article.article_id || article.url || Math.random().toString(),
-                title: article.title,
-                image: finalImage,
-                url: article.url || article.link,
-                source: article.source || article.source_name || "Polymarket",
-                timeAgo: article.time || article.pubDate || article.publishedAt || new Date().toISOString(),
-                isGradient: false
-            };
-        })
-        .slice(0, 20); // Limit to top 20
+        if (seen.has(uniqueKey)) continue;
+        seen.set(uniqueKey, true);
+
+        // 3. Processing
+        let finalImage = article.imageUrl || article.image; // Normalized from service
+
+        // Force Image: If missing, assign fallback based on category/content
+        if (!finalImage || finalImage.length < 5) {
+            finalImage = getFallbackImage(article.title + " " + (article.description || ""), categoryContext);
+        }
+
+        processed.push({
+            id: uniqueKey,
+            title: article.title,
+            image: finalImage,
+            url: article.link || article.url,
+            source: article.source || "Nexus Feed",
+            timeAgo: article.pubDate || new Date().toISOString(),
+            isGradient: false
+        });
+    }
+
+    return processed;
 };
