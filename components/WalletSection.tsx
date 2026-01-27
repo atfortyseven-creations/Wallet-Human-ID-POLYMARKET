@@ -119,7 +119,26 @@ export default function WalletSection() {
         }
     };
 
-    const handleZap = async () => {
+    import { useFPMM } from "@/hooks/useFPMM"; // [NEW]
+
+    // ... inside component ...
+
+    // --- Hooks de Blockchain ---
+    // [NEW] FPMM Hook (Market Maker)
+    // Hardcoded Market for Demo until we have dynamic routing
+    const { buy, isPending: isTrading } = useFPMM(process.env.NEXT_PUBLIC_MARKET_ADDRESS as `0x${string}` || "0x0000000000000000000000000000000000000000");
+
+    // ...
+
+    // --- Estado ---
+    const [activeTab, setActiveTab] = useState<'trade' | 'governance' | 'activity'>('trade'); // Rename 'zap' to 'trade'
+    const [zapAmount, setZapAmount] = useState("");
+    const [selectedOutcome, setSelectedOutcome] = useState<0 | 1>(0); // 0 = YES, 1 = NO
+    // const [isZapping, setIsZapping] = useState(false); // Removed, using hook state
+
+    // ...
+
+    const handleTrade = async () => {
         if (!isConnected) {
             toast.error("Wallet not connected. Connecting...");
             handleConnect();
@@ -128,14 +147,15 @@ export default function WalletSection() {
         if (!zapAmount || parseFloat(zapAmount) <= 0) return;
 
         try {
-            executeZap(zapAmount);
-            // El hook maneja el state de loading via isHumanFiPending pero aquí tenemos isZapping local.
-            // Idealmente deberíamos usar el del hook para el UI feedback.
+            // Calculate Min Amount (Slippage protection) - Mocked for now to 0
+            const minTokens = BigInt(0);
+            buy(zapAmount, selectedOutcome, minTokens);
+
             setZapAmount("");
-            toast.success("Zap transaction initiated!");
+            toast.success(`Buying ${selectedOutcome === 0 ? 'YES' : 'NO'} positions...`);
         } catch (e) {
             console.error(e);
-            toast.error("Zap failed");
+            toast.error("Trade failed");
         }
     };
 
@@ -244,7 +264,7 @@ export default function WalletSection() {
                         {/* Tabs Header */}
                         < div className="flex border-b border-neutral-800" >
                             {
-                                ['zap', 'governance', 'activity'].map((tab) => (
+                                ['trade', 'governance', 'activity'].map((tab) => (
                                     <button
                                         key={tab}
                                         onClick={() => setActiveTab(tab as any)}
@@ -267,33 +287,47 @@ export default function WalletSection() {
                         {/* Tab Content */}
                         < div className="p-6 md:p-8 flex-1 relative overflow-hidden" >
                             <AnimatePresence mode="wait">
-                                {activeTab === 'zap' ? (
+                                {activeTab === 'trade' ? (
                                     <motion.div
-                                        key="zap-panel"
+                                        key="trade-panel"
                                         initial={{ opacity: 0, x: -20 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         exit={{ opacity: 0, x: 20 }}
                                         className="h-full flex flex-col justify-center max-w-lg mx-auto"
                                     >
-                                        <div className="text-center mb-8">
-                                            <h3 className="text-xl font-bold text-white mb-2">Atomic Zap</h3>
-                                            <p className="text-sm text-neutral-400 mb-4">Transforma WLD en tokens de gobernanza en una sola transacción.</p>
+                                        <div className="text-center mb-6">
+                                            <h3 className="text-xl font-bold text-white mb-2">Market Trading</h3>
+                                            <p className="text-sm text-neutral-400 mb-4">Buy YES or NO positions in the prediction market.</p>
+                                        </div>
 
-                                            {/* Faucet for Demo */}
-                                            {wldVal < 5 && (
-                                                <button
-                                                    onClick={claimFaucet}
-                                                    className="px-4 py-1.5 bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 rounded-full text-xs font-bold hover:bg-yellow-500/20 transition-colors"
-                                                >
-                                                    💸 Get 10 Demo WLD
-                                                </button>
-                                            )}
+                                        {/* Market Outcome Toggle */}
+                                        <div className="grid grid-cols-2 gap-4 mb-6">
+                                            <button
+                                                onClick={() => setSelectedOutcome(0)}
+                                                className={`py-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${selectedOutcome === 0
+                                                    ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.2)]'
+                                                    : 'bg-neutral-900 border-neutral-800 text-neutral-500 hover:border-neutral-700'
+                                                    }`}
+                                            >
+                                                <span className="text-2xl font-bold">YES</span>
+                                                <span className="text-xs tracking-widest uppercase">Long Position</span>
+                                            </button>
+                                            <button
+                                                onClick={() => setSelectedOutcome(1)}
+                                                className={`py-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${selectedOutcome === 1
+                                                    ? 'bg-red-500/20 border-red-500 text-red-400 shadow-[0_0_20px_rgba(239,68,68,0.2)]'
+                                                    : 'bg-neutral-900 border-neutral-800 text-neutral-500 hover:border-neutral-700'
+                                                    }`}
+                                            >
+                                                <span className="text-2xl font-bold">NO</span>
+                                                <span className="text-xs tracking-widest uppercase">Short Position</span>
+                                            </button>
                                         </div>
 
                                         {/* Input Box */}
                                         <div className="bg-neutral-950 border border-neutral-800 rounded-2xl p-4 mb-4 focus-within:ring-2 focus-within:ring-indigo-500/50 transition-all">
                                             <div className="flex justify-between text-xs text-neutral-500 mb-2 font-mono">
-                                                <span>INPUT</span>
+                                                <span>INVESTMENT</span>
                                                 <span>BAL: {wldVal.toFixed(2)} WLD</span>
                                             </div>
                                             <div className="flex items-center gap-4">
@@ -306,9 +340,9 @@ export default function WalletSection() {
                                                 />
                                                 <span className="shrink-0 bg-neutral-800 text-white px-3 py-1 rounded-lg text-sm font-bold">WLD</span>
                                             </div>
-                                            {/* USD Estimator */}
+                                            {/* Estimated Return */}
                                             <div className="text-right text-xs text-neutral-500 mt-2 font-mono">
-                                                ≈ {zapAmount ? formatMoney(parseFloat(zapAmount) * wldPrice) : '$0.00'}
+                                                Est. Return: {zapAmount ? (parseFloat(zapAmount) * 1.95).toFixed(2) : '0.00'} Shares (mock)
                                             </div>
                                         </div>
 
@@ -325,27 +359,26 @@ export default function WalletSection() {
                                             ))}
                                         </div>
 
-                                        {/* CTA Button */}
+                                        {/* Buy Button */}
                                         <button
-                                            onClick={handleZap}
-                                            disabled={isZapping || !zapAmount}
-                                            className="w-full group relative py-4 bg-white text-black rounded-xl font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
+                                            onClick={handleTrade}
+                                            disabled={isTrading || !zapAmount}
+                                            className={`w-full group relative py-4 text-black rounded-xl font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden transition-colors ${selectedOutcome === 0 ? 'bg-emerald-500 hover:bg-emerald-400' : 'bg-red-500 hover:bg-red-400'
+                                                }`}
                                         >
                                             <div className="relative z-10 flex items-center justify-center gap-2">
-                                                {isZapping ? (
+                                                {isTrading ? (
                                                     <>
                                                         <Loader2 className="animate-spin" />
                                                         <span>EXECUTING...</span>
                                                     </>
                                                 ) : (
                                                     <>
-                                                        <Zap className={`w-5 h-5 fill-black transition-transform duration-300 ${zapAmount ? 'group-hover:scale-125' : ''}`} />
-                                                        <span>EJECUTAR ZAP</span>
+                                                        <TrendingUp className="w-5 h-5 fill-black" />
+                                                        <span>BUY {selectedOutcome === 0 ? 'YES' : 'NO'}</span>
                                                     </>
                                                 )}
                                             </div>
-                                            {/* Shimmer Effect */}
-                                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-neutral-200/50 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
                                         </button>
 
                                     </motion.div>
