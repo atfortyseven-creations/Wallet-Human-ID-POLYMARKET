@@ -351,7 +351,7 @@ export default function WalletSection() {
                                                         onSuccess={castVote}
                                                         verification_level={VerificationLevel.Orb}
                                                     >
-                                                        {({ open }) => (
+                                                        {({ open }: { open: () => void }) => (
                                                             <button
                                                                 onClick={open}
                                                                 disabled={!governancePower || governancePower === BigInt(0)}
