@@ -2,7 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider, State } from "wagmi";
-import { config } from "@/src/config/wagmi";
+import { config } from "@/lib/wagmi-config";
 import { useState } from "react";
 import { ThemeProvider } from "next-themes";
 import { LanguageProvider } from "@/src/context/LanguageContext";

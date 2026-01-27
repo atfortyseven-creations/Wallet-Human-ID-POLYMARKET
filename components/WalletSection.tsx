@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useApp } from "@/components/AppContext";
 import SettingsMenu from "@/components/SettingsMenu";
+import { MainVault } from "@/components/MainVault";
 import {
     Wallet,
     ArrowRightLeft,
@@ -222,60 +223,12 @@ export default function WalletSection() {
                 {/* LEFT COLUMN: Assets & Actions (8 cols) */}
                 <div className="lg:col-span-8 space-y-6">
 
-                    {/* 1. Portfolio Card */}
+                    {/* 1. Portfolio Card (World ID Connected) */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="relative overflow-hidden rounded-3xl bg-neutral-900/50 border border-neutral-800 p-8"
                     >
-                        {/* Background Decor */}
-                        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-
-                        <div className="relative z-10">
-                            <div className="flex justify-between items-start mb-2">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-neutral-400 font-medium text-sm">Net Worth Estimate</span>
-                                    <button
-                                        onClick={refreshNetWorth}
-                                        disabled={isNetWorthLoading}
-                                        className="p-1 rounded-full hover:bg-white/10 transition-colors text-neutral-500 hover:text-white"
-                                    >
-                                        <RefreshCw size={12} className={isNetWorthLoading ? "animate-spin" : ""} />
-                                    </button>
-                                </div>
-
-                                {/* Dynamic Floating Badge */}
-                                <div className={`flex items-center gap-1 px-2 py-1 rounded-md border text-xs font-bold font-mono transition-colors
-                                    ${netWorthPct >= 0
-                                        ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
-                                        : 'text-red-400 bg-red-500/10 border-red-500/20'
-                                    }`}>
-                                    {netWorthPct >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
-                                    <span>{netWorthPct > 0 ? '+' : ''}{netWorthPct}%</span>
-                                </div>
-                            </div>
-
-                            <h1 className="text-5xl md:text-6xl font-bold text-white tracking-tighter font-mono mb-6">
-                                {formatMoney(portfolioValue)}
-                            </h1>
-
-                            {/* Mini Stats Grid */}
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 pt-6 border-t border-white/5">
-                                <div>
-                                    <p className="text-xs text-neutral-500 mb-1">ETH Balance</p>
-                                    <p className="text-lg font-mono text-white">{ethBalance.toFixed(4)}</p>
-                                </div>
-                                <div>
-                                    <p className="text-xs text-neutral-500 mb-1">WLD Balance</p>
-                                    <p className="text-lg font-mono text-white">{wldVal.toFixed(2)}</p>
-                                </div>
-                                <div>
-                                    {/* Placeholder for now */}
-                                    <p className="text-xs text-neutral-500 mb-1">WLD Price</p>
-                                    <p className="text-lg font-mono text-white">${wldPrice}</p>
-                                </div>
-                            </div>
-                        </div>
+                        <MainVault />
                     </motion.div>
 
                     {/* 2. Action Center (Tabs + Content) */}
