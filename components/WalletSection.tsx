@@ -27,6 +27,8 @@ import useSWR from "swr";
 import { useHumanFi } from "@/hooks/useHumanFi";
 import { formatEther } from "viem";
 import { useProposals } from "@/hooks/useProposals";
+import { useNetWorth } from "@/hooks/useNetWorth"; // New Hook
+import { ArrowUpRight, ArrowDownRight, RefreshCw } from "lucide-react"; // New Icons
 
 // removed local formatCurrency
 // const formatCurrency = ...  <-- Using global context instead
@@ -84,6 +86,14 @@ export default function WalletSection() {
 
     // Real Data or Default
     const portfolioValue = (ethBalance * 2500) + (wldVal * (wldPrice || 0)); // ETH @ $2500 approx fixed for now
+
+    // --- Dynamic Net Worth Logic ---
+    const {
+        percentage: netWorthPct,
+        loading: isNetWorthLoading,
+        fetchBalance: refreshNetWorth
+    } = useNetWorth(address, ethBalance, wldVal, wldPrice);
+
     const unclaimedRoyalties = userStats?.unclaimedRoyalties || 0;
     const votingPower = userStats?.votingPower || 0;
     const activeProposals = userStats?.activeProposals || 0;
@@ -223,10 +233,25 @@ export default function WalletSection() {
 
                         <div className="relative z-10">
                             <div className="flex justify-between items-start mb-2">
-                                <span className="text-neutral-400 font-medium text-sm">Net Worth Estimate</span>
-                                <div className="flex items-center gap-1 text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-md border border-emerald-500/20">
-                                    <TrendingUp size={14} />
-                                    <span className="text-xs font-bold font-mono">+12.4%</span>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-neutral-400 font-medium text-sm">Net Worth Estimate</span>
+                                    <button
+                                        onClick={refreshNetWorth}
+                                        disabled={isNetWorthLoading}
+                                        className="p-1 rounded-full hover:bg-white/10 transition-colors text-neutral-500 hover:text-white"
+                                    >
+                                        <RefreshCw size={12} className={isNetWorthLoading ? "animate-spin" : ""} />
+                                    </button>
+                                </div>
+
+                                {/* Dynamic Floating Badge */}
+                                <div className={`flex items-center gap-1 px-2 py-1 rounded-md border text-xs font-bold font-mono transition-colors
+                                    ${netWorthPct >= 0
+                                        ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
+                                        : 'text-red-400 bg-red-500/10 border-red-500/20'
+                                    }`}>
+                                    {netWorthPct >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+                                    <span>{netWorthPct > 0 ? '+' : ''}{netWorthPct}%</span>
                                 </div>
                             </div>
 
