@@ -16,12 +16,14 @@ import {
 } from "lucide-react";
 import { IDKitWidget, VerificationLevel } from "@worldcoin/idkit";
 import { ProposeMarket } from "@/components/governance/ProposeMarket";
-import { useAccount, useBalance } from "wagmi";
+import { useAccount, useBalance, useConnect } from "wagmi";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 
 import { useTokenPrice } from "@/hooks/useTokenPrice";
 import useSWR from "swr";
+import { useHumanFi } from "@/hooks/useHumanFi";
+import { formatEther } from "viem";
 
 // --- Utility: Formateador de Moneda Seguro ---
 const formatCurrency = (value: number) =>
@@ -34,12 +36,10 @@ const formatCurrency = (value: number) =>
 const formatAddress = (addr: string) =>
     `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`;
 
-import { useHumanFi } from "@/hooks/useHumanFi";
-import { formatEther } from "viem";
-
 export default function WalletSection() {
     // --- Hooks de Blockchain ---
     const { address, isConnected, chain } = useAccount();
+    const { connectors, connect } = useConnect();
     const { isAuthenticated } = useAuth(); // World ID authentication
 
     // Human-Fi Hook
@@ -85,7 +85,8 @@ export default function WalletSection() {
     const unclaimedRoyalties = userStats?.unclaimedRoyalties || 0;
     const votingPower = userStats?.votingPower || 0;
     const activeProposals = userStats?.activeProposals || 0;
-    const isWorldIDVerified = isAuthenticated; // Use actual auth status
+    // const isWorldIDVerified = isAuthenticated; // Use actual auth status - Removed redundancy
+    const isWorldIDVerified = isAuthenticated;
 
     // --- Handlers ---
     const handleCopy = () => {
@@ -95,9 +96,19 @@ export default function WalletSection() {
         }
     };
 
+    const handleConnect = () => {
+        const connector = connectors[0]; // Logic to pick connector, usually injected or WalletConnect
+        if (connector) {
+            connect({ connector });
+        } else {
+            toast.error("No wallet connector found");
+        }
+    };
+
     const handleZap = async () => {
         if (!isConnected) {
-            toast.error("Please connect your wallet first");
+            toast.error("Wallet not connected. Connecting...");
+            handleConnect();
             return;
         }
         if (!zapAmount || parseFloat(zapAmount) <= 0) return;
@@ -128,7 +139,6 @@ export default function WalletSection() {
                     <Wallet className="w-16 h-16 text-neutral-600 mx-auto mb-6" />
                     <h2 className="text-2xl font-bold text-white mb-2">Authentication Required</h2>
                     <p className="text-neutral-400 mb-8">Please sign in with World ID or connect your wallet to access the Void Terminal.</p>
-                    {/* El botón de conectar suele estar en el Navbar, pero podríamos poner uno aquí */}
                 </div>
             </div>
         );
@@ -149,8 +159,19 @@ export default function WalletSection() {
                     <div>
                         <h2 className="text-xl font-bold text-white tracking-tight">Main Vault</h2>
                         <div className="flex items-center gap-2 text-xs font-mono text-neutral-500">
-                            <span>{address ? formatAddress(address) : "0x..."}</span>
-                            <button onClick={handleCopy} className="hover:text-indigo-400 transition-colors"><Copy size={12} /></button>
+                            {address ? (
+                                <>
+                                    <span>{formatAddress(address)}</span>
+                                    <button onClick={handleCopy} className="hover:text-indigo-400 transition-colors"><Copy size={12} /></button>
+                                </>
+                            ) : (
+                                <button
+                                    onClick={handleConnect}
+                                    className="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-xs font-bold transition-colors"
+                                >
+                                    CONNECT WALLET
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -158,7 +179,7 @@ export default function WalletSection() {
                 {/* Status Badges */}
                 <div className="flex items-center gap-3">
                     <div className="px-3 py-1.5 rounded-full bg-neutral-900 border border-neutral-800 flex items-center gap-2">
-                        <div className={`w-2 h-2 rounded-full ${chain?.id === 10 ? 'bg-emerald-500' : 'bg-yellow-500'} animate-pulse`} />
+                        <div className={`w-2 h-2 rounded-full ${chain?.id === 11155420 ? 'bg-emerald-500' : 'bg-yellow-500'} animate-pulse`} />
                         <span className="text-xs font-medium text-neutral-400">{chain?.name || "Unknown Network"}</span>
                     </div>
 
