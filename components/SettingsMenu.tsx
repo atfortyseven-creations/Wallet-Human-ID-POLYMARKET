@@ -8,6 +8,12 @@ const SettingsMenu = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { theme, setTheme, lang, setLang, currency, setCurrency, t } = useApp();
 
+    const [mounted, setMounted] = React.useState(false);
+
+    React.useEffect(() => setMounted(true), []);
+
+    if (!mounted) return null; // Prevent hydration mismatch
+
     return (
         <div className="relative z-50">
             {/* Botón de 3 Barras (Hamburguesa) */}
