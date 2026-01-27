@@ -32,7 +32,7 @@ export default function FavoritesPage() {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {favorites.map((id) => (
+                    {favorites.map((id: string) => (
                         <div key={id} className="h-[400px]">
                             <NewsCard
                                 title={`Market ${id}`}
