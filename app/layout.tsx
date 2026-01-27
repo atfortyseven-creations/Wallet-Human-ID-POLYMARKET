@@ -27,7 +27,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" className={`${inter.variable} ${mono.variable}`}>
-            <body className="bg-void text-white relative">
+            <body className="bg-transparent text-white relative">
                 <BackgroundVideo />
                 <Providers>
                     <AppProvider>

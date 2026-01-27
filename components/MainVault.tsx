@@ -1,12 +1,40 @@
 // components/MainVault.tsx
 import { useWLD } from '../hooks/useWLD'
+import { useChainId, useAccount, useConnect } from 'wagmi';
 
 interface MainVaultProps {
     onConnect?: () => void;
 }
 
+// Función para obtener nombre y color según ID
+const getNetworkDetails = (chainId: number | undefined) => {
+    switch (chainId) {
+        case 10: return { name: 'Optimism', color: 'bg-red-500' }; // World App runs here
+        case 1: return { name: 'Mainnet', color: 'bg-blue-500' };
+        case 42161: return { name: 'Arbitrum', color: 'bg-blue-600' };
+        case 8453: return { name: 'Base', color: 'bg-blue-500' };
+        case 137: return { name: 'Polygon', color: 'bg-purple-500' };
+        default: return { name: 'Unknown Network', color: 'bg-yellow-500' };
+    }
+};
+
 export const MainVault = ({ onConnect }: MainVaultProps) => {
     const { balance, symbol, status, isLoading } = useWLD()
+    const chainId = useChainId();
+    const { isConnected } = useAccount();
+    const { connect, connectors } = useConnect();
+    const network = getNetworkDetails(chainId);
+
+    const handleUniversalConnect = () => {
+        // Buscamos el conector de WalletConnect para máxima compatibilidad con World App
+        const connector = connectors.find((c) => c.id === 'walletConnect');
+        if (connector) {
+            connect({ connector });
+        } else {
+            // Fallback por si no se encuentra
+            if (onConnect) onConnect();
+        }
+    };
 
     return (
         <div className="bg-[#0a0a0a] p-8 rounded-3xl border border-white/5 shadow-2xl relative overflow-hidden">
@@ -14,6 +42,12 @@ export const MainVault = ({ onConnect }: MainVaultProps) => {
             {status === 'connected' && (
                 <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[100px] -z-0" />
             )}
+
+            {/* Network Indicator (Dynamic) */}
+            <div className="relative z-10 flex items-center gap-2 mb-6">
+                <div className={`h-2.5 w-2.5 rounded-full ${network.color} animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.2)]`} />
+                <span className="text-xs font-bold tracking-widest text-neutral-400 uppercase">{network.name}</span>
+            </div>
 
             <div className="flex justify-between items-start mb-6 relative z-10">
                 <div>
@@ -25,7 +59,7 @@ export const MainVault = ({ onConnect }: MainVaultProps) => {
                         <span className="text-lg align-top ml-1 text-gray-400">,00</span>
                     </h2>
                 </div>
-                <div className="bg-emerald-500/10 text-emerald-500 px-3 py-1 rounded-full text-xs font-bold">
+                <div className="bg-emerald-500/10 text-emerald-500 px-3 py-1 rounded-full text-xs font-bold h-fit">
                     ↗ 0%
                 </div>
             </div>
@@ -46,8 +80,8 @@ export const MainVault = ({ onConnect }: MainVaultProps) => {
                         </p>
                     ) : (
                         <button
-                            onClick={onConnect}
-                            className="flex items-center gap-2 px-4 py-2 bg-white text-black rounded-lg font-bold text-xs hover:bg-gray-200 transition-colors"
+                            onClick={handleUniversalConnect}
+                            className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white text-black rounded-lg font-bold text-xs hover:bg-gray-200 transition-colors shadow-lg hover:shadow-xl"
                         >
                             CONNECT WORLD APP
                         </button>
