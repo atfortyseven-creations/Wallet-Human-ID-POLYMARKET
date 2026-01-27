@@ -10,17 +10,16 @@ const BackgroundVideo: React.FC = () => {
                 muted
                 playsInline
                 preload="auto"
-                className="h-full w-full object-cover opacity-50"
+                className="h-full w-full object-cover opacity-100"
             >
                 <source src="/background.mp4" type="video/mp4" />
                 {/* Fallback por si el navegador es muy antiguo */}
                 Your browser does not support the video tag.
             </video>
 
-            {/* Capa de Legibilidad (Overlay): 
-          Esto asegura que tus balances y botones se vean claros */}
+            {/* Capa de Legibilidad (Overlay): Lighter for visibility */}
             <div
-                className="absolute inset-0 bg-gradient-to-b from-black/80 via-transparent to-black/90"
+                className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80"
                 aria-hidden="true"
             />
 
