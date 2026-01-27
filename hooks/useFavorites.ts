@@ -4,7 +4,7 @@ import { useWatchlist, SavedItem } from '@/lib/watchlist-store';
 import { useEffect, useState } from 'react';
 
 export function useFavorites() {
-    const { items, toggleItem, isSaved } = useWatchlist();
+    const { watchlist, addItem, removeItem, isInWatchlist } = useWatchlist();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -12,21 +12,28 @@ export function useFavorites() {
     }, []);
 
     const toggleFavorite = (item: { id: string; title: string; image: string; type: 'news' | 'trader' }) => {
-        toggleItem({
-            id: item.id,
-            title: item.title,
-            type: item.type,
-            meta: item.image // Mapping image to meta as per store definition
-        });
+        if (isInWatchlist(item.id)) {
+            removeItem(item.id);
+        } else {
+            addItem({
+                id: item.id,
+                title: item.title,
+                image: item.image,
+                type: item.type,
+                source: 'Polymarket', // Default source
+                publishedAt: new Date().toISOString(),
+                url: `/market/${item.id}` // Default URL assumption
+            });
+        }
     };
 
     const isFavorite = (id: string) => {
         if (!mounted) return false;
-        return isSaved(id);
+        return isInWatchlist(id);
     };
 
     return {
-        favorites: mounted ? items : [],
+        favorites: mounted ? watchlist : [],
         toggleFavorite,
         isFavorite,
         mounted
