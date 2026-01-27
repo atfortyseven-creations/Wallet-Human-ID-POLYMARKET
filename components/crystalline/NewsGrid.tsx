@@ -42,16 +42,21 @@ export const NewsGrid = ({ category }: { category: string }) => {
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-24 px-1 min-h-[500px]">
-            {news.map((item) => (
-                <NewsCard
+            {news.map((item, index) => (
+                <div
                     key={item.id}
-                    title={item.title}
-                    image={item.image}
-                    url={item.url}
-                    source={item.source}
-                    timeAgo={item.timeAgo}
-                    isGradient={item.isGradient}
-                />
+                    className="opacity-0 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-forwards"
+                    style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'forwards' }}
+                >
+                    <NewsCard
+                        title={item.title}
+                        image={item.image}
+                        url={item.url}
+                        source={item.source}
+                        timeAgo={item.timeAgo}
+                        isGradient={item.isGradient}
+                    />
+                </div>
             ))}
         </div>
     );
