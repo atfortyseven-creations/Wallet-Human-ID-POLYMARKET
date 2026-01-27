@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import Providers from '@/components/Providers';
+import { AppProvider } from '@/components/AppContext';
 import { WorldProvider } from '@/src/context/WorldContext';
 import { Toaster } from 'sonner';
 import VoidShell from '@/components/VoidShell';
@@ -24,12 +25,14 @@ export default function RootLayout({
         <html lang="en" className={`${inter.variable} ${mono.variable}`}>
             <body className="bg-void text-white">
                 <Providers>
-                    <WorldProvider>
-                        <VoidShell>
-                            {children}
-                        </VoidShell>
-                        <Toaster richColors theme="dark" />
-                    </WorldProvider>
+                    <AppProvider>
+                        <WorldProvider>
+                            <VoidShell>
+                                {children}
+                            </VoidShell>
+                            <Toaster richColors theme="dark" />
+                        </WorldProvider>
+                    </AppProvider>
                 </Providers>
             </body>
         </html>

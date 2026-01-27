@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useApp } from "@/components/AppContext";
+import SettingsMenu from "@/components/SettingsMenu";
 import {
     Wallet,
     ArrowRightLeft,
@@ -26,18 +28,16 @@ import { useHumanFi } from "@/hooks/useHumanFi";
 import { formatEther } from "viem";
 import { useProposals } from "@/hooks/useProposals";
 
-// --- Utility: Formateador de Moneda Seguro ---
-const formatCurrency = (value: number) =>
-    new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2
-    }).format(value);
+// removed local formatCurrency
+// const formatCurrency = ...  <-- Using global context instead
 
 const formatAddress = (addr: string) =>
     `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`;
 
 export default function WalletSection() {
+    // --- Global "Brain" Context ---
+    const { formatMoney, t } = useApp();
+
     // --- Hooks de Blockchain ---
     const { address, isConnected, chain } = useAccount();
     const { connectors, connect } = useConnect();
@@ -154,8 +154,12 @@ export default function WalletSection() {
                 <div className="flex items-center gap-4">
                     <div className="relative group">
                         <div className="absolute inset-0 bg-indigo-500 blur-lg opacity-20 group-hover:opacity-40 transition-opacity" />
-                        <div className="relative p-3 bg-neutral-900 border border-neutral-800 rounded-2xl">
+                        <div className="relative p-3 bg-neutral-900 border border-neutral-800 rounded-2xl flex items-center gap-2">
                             <Wallet className="w-6 h-6 text-indigo-400" />
+                            {/* Settings Menu Trigger */}
+                            <div className="md:hidden">
+                                <SettingsMenu />
+                            </div>
                         </div>
                     </div>
                     <div>
@@ -194,6 +198,11 @@ export default function WalletSection() {
                             {isWorldIDVerified ? "WORLD ID VERIFIED" : "UNVERIFIED"}
                         </span>
                     </div>
+
+                    {/* Global Settings Menu */}
+                    <div className="hidden md:block">
+                        <SettingsMenu />
+                    </div>
                 </div>
             </header>
 
@@ -222,7 +231,7 @@ export default function WalletSection() {
                             </div>
 
                             <h1 className="text-5xl md:text-6xl font-bold text-white tracking-tighter font-mono mb-6">
-                                {formatCurrency(portfolioValue)}
+                                {formatMoney(portfolioValue)}
                             </h1>
 
                             {/* Mini Stats Grid */}
@@ -311,7 +320,7 @@ export default function WalletSection() {
                                             </div>
                                             {/* USD Estimator */}
                                             <div className="text-right text-xs text-neutral-500 mt-2 font-mono">
-                                                ≈ {zapAmount ? formatCurrency(parseFloat(zapAmount) * wldPrice) : '$0.00'}
+                                                ≈ {zapAmount ? formatMoney(parseFloat(zapAmount) * wldPrice) : '$0.00'}
                                             </div>
                                         </div>
 

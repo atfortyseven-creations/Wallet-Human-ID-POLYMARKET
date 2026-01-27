@@ -23,6 +23,34 @@
   ::-webkit-scrollbar-thumb {
     @apply bg-neutral-800 rounded-full hover:bg-neutral-700 transition-colors;
   }
+
+  /* --- LIGHT MODE OVERRIDES --- */
+  /* Se activan cuando la clase .light está en el HTML */
+  .light body {
+    background-color: #ffffff !important; /* Blanco puro */
+    color: #000000 !important; /* Texto negro */
+    background-image: none !important; /* Quitamos la rejilla o la hacemos gris muy suave */
+  }
+
+  .light .bg-neutral-900,
+  .light .bg-neutral-950,
+  .light .bg-black {
+    background-color: #f3f4f6; /* Gris muy claro para tarjetas */
+    color: #000000;
+  }
+  
+  .light .border-neutral-800 {
+     border-color: #e5e7eb;
+  }
+
+  .light .text-white {
+      color: #000000 !important;
+  }
+  
+  .light .text-neutral-400,
+  .light .text-neutral-500 {
+      color: #4b5563;
+  }
 }
 
 @layer utilities {
