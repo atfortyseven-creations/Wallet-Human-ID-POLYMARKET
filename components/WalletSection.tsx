@@ -30,6 +30,7 @@ import { formatEther } from "viem";
 import { useProposals } from "@/hooks/useProposals";
 import { useNetWorth } from "@/hooks/useNetWorth"; // New Hook
 import { ArrowUpRight, ArrowDownRight, RefreshCw } from "lucide-react"; // New Icons
+import { useFPMM } from "@/hooks/useFPMM"; // [NEW] Gnosis Hook
 
 // removed local formatCurrency
 // const formatCurrency = ...  <-- Using global context instead
@@ -72,10 +73,13 @@ export default function WalletSection() {
     });
 
     // --- Estado ---
-    const [activeTab, setActiveTab] = useState<'zap' | 'governance' | 'activity'>('zap');
+    const [activeTab, setActiveTab] = useState<'trade' | 'governance' | 'activity'>('trade');
     const [zapAmount, setZapAmount] = useState("");
-    const [isZapping, setIsZapping] = useState(false);
+    const [selectedOutcome, setSelectedOutcome] = useState<0 | 1>(0); // 0 = YES, 1 = NO
     const [mounted, setMounted] = useState(false);
+
+    // [NEW] FPMM Hook (Market Maker)
+    const { buy, isPending: isTrading } = useFPMM(process.env.NEXT_PUBLIC_MARKET_ADDRESS as `0x${string}` || "0x0000000000000000000000000000000000000000");
 
     // Evitar hidratación incorrecta en Next.js
     useEffect(() => setMounted(true), []);
@@ -118,25 +122,6 @@ export default function WalletSection() {
             toast.error("World ID connector not found");
         }
     };
-
-    import { useFPMM } from "@/hooks/useFPMM"; // [NEW]
-
-    // ... inside component ...
-
-    // --- Hooks de Blockchain ---
-    // [NEW] FPMM Hook (Market Maker)
-    // Hardcoded Market for Demo until we have dynamic routing
-    const { buy, isPending: isTrading } = useFPMM(process.env.NEXT_PUBLIC_MARKET_ADDRESS as `0x${string}` || "0x0000000000000000000000000000000000000000");
-
-    // ...
-
-    // --- Estado ---
-    const [activeTab, setActiveTab] = useState<'trade' | 'governance' | 'activity'>('trade'); // Rename 'zap' to 'trade'
-    const [zapAmount, setZapAmount] = useState("");
-    const [selectedOutcome, setSelectedOutcome] = useState<0 | 1>(0); // 0 = YES, 1 = NO
-    // const [isZapping, setIsZapping] = useState(false); // Removed, using hook state
-
-    // ...
 
     const handleTrade = async () => {
         if (!isConnected) {
