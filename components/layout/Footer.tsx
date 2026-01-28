@@ -16,10 +16,10 @@ export const Footer = () => {
 
                 {/* Links */}
                 <div className="flex gap-8 text-sm text-[#888899]">
+                    <a href="https://docs.humanid.fi" target='_blank' rel='noreferrer' className="hover:text-[#00f2ea] transition-colors">Documentation</a>
                     <a href="#" className="hover:text-[#00f2ea] transition-colors">Protocol</a>
                     <a href="#" className="hover:text-[#00f2ea] transition-colors">Security</a>
                     <a href="#" className="hover:text-[#00f2ea] transition-colors">Governance</a>
-                    <a href="#" className="hover:text-[#00f2ea] transition-colors">Terms</a>
                 </div>
 
                 {/* Status */}

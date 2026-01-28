@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-// Force rebuild
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import Providers from '@/components/Providers';
@@ -7,6 +6,10 @@ import { AppProvider } from '@/components/AppContext';
 import { WorldProvider } from '@/src/context/WorldContext';
 import { Toaster } from 'sonner';
 import VoidShell from '@/components/VoidShell';
+import BackgroundVideo from '@/components/layout/BackgroundVideo';
+import { BootSequence } from '@/components/layout/BootSequence';
+import { Footer } from '@/components/layout/Footer';
+import { GeoBlocker } from '@/components/logic/GeoBlocker';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' });
@@ -21,7 +24,7 @@ export const metadata: Metadata = {
         siteName: 'HumanID.fi',
         images: [
             {
-                url: 'https://humanid.fi/og-void.jpg', // Placeholder
+                url: 'https://humanid.fi/og-void.jpg',
                 width: 1200,
                 height: 630,
                 alt: 'HumanID Upgrade',
@@ -44,12 +47,6 @@ export const metadata: Metadata = {
     },
 };
 
-import BackgroundVideo from '@/components/layout/BackgroundVideo';
-import { BootSequence } from '@/components/layout/BootSequence';
-import { Footer } from '@/components/layout/Footer';
-
-// ...
-
 export default function RootLayout({
     children,
 }: {
@@ -57,33 +54,22 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" className={`${inter.variable} ${mono.variable}`}>
-            import {GeoBlocker} from '@/components/logic/GeoBlocker';
-
-            // ...
-
-            export default function RootLayout({
-                children,
-}: {
-                children: React.ReactNode;
-}) {
-    return (
-            <html lang="en" className={`${inter.variable} ${mono.variable}`}>
-                <body className="bg-transparent text-white relative min-h-screen">
-                    <GeoBlocker />
-                    <BootSequence />
-                    <BackgroundVideo />
-                    <Providers>
-                        <AppProvider>
-                            <WorldProvider>
-                                <VoidShell>
-                                    {children}
-                                    <Footer />
-                                </VoidShell>
-                                <Toaster richColors theme="dark" />
-                            </WorldProvider>
-                        </AppProvider>
-                    </Providers>
-                </body>
-            </html>
-            );
+            <body className="bg-transparent text-white relative min-h-screen">
+                <GeoBlocker />
+                <BootSequence />
+                <BackgroundVideo />
+                <Providers>
+                    <AppProvider>
+                        <WorldProvider>
+                            <VoidShell>
+                                {children}
+                                <Footer />
+                            </VoidShell>
+                            <Toaster richColors theme="dark" />
+                        </WorldProvider>
+                    </AppProvider>
+                </Providers>
+            </body>
+        </html>
+    );
 }
