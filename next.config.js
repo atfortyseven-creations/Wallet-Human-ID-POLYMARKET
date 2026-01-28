@@ -28,13 +28,20 @@ const nextConfig = {
     },
 
     // 4. WEBPACK (Wagmi/RainbowKit Polyfills)
-    webpack: (config) => {
-        config.resolve.fallback = { fs: false, net: false, tls: false };
+    webpack: (config, { webpack }) => {
+        config.resolve.fallback = { fs: false, net: false, tls: false, buffer: require.resolve('buffer/') };
         config.resolve.alias = {
             ...config.resolve.alias,
             '@react-native-async-storage/async-storage': false,
         };
         config.externals.push('pino-pretty', 'lokijs', 'encoding');
+
+        config.plugins.push(
+            new webpack.ProvidePlugin({
+                Buffer: ['buffer', 'Buffer'],
+            })
+        );
+
         return config;
     },
 
