@@ -130,13 +130,7 @@ export default function WalletSection() {
     };
 
     const handleConnect = () => {
-        // Specifically find WalletConnect for World ID
-        const connector = connectors.find(c => c.id === 'walletConnect') || connectors[0];
-        if (connector) {
-            connect({ connector });
-        } else {
-            toast.error("World ID connector not found");
-        }
+        open({ view: 'Connect' });
     };
 
     // [NEW] CTF Hook (Redemption)
@@ -186,25 +180,7 @@ export default function WalletSection() {
     };
 
     const handleStandardConnect = () => {
-        // 1. Try Injected (MetaMask, Coinbase, etc.)
-        const injected = connectors.find(c => c.id === 'injected');
-
-        // 2. Try WalletConnect (Universal QR) - This is what the user wants fixed
-        const wc = connectors.find(c => c.id === 'walletConnect');
-
-        if (injected && injected.ready) {
-            connect({ connector: injected });
-        } else if (wc) {
-            console.log("Triggering WalletConnect QR with connector:", wc);
-            connect({ connector: wc });
-        } else {
-            // Fallback: Connect first available
-            if (connectors.length > 0) {
-                connect({ connector: connectors[0] });
-            } else {
-                toast.error("No wallet connectors found");
-            }
-        }
+        open({ view: 'Connect' });
     };
 
     if (!mounted) return null;
