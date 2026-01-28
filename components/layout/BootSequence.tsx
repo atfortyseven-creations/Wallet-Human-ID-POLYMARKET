@@ -28,13 +28,12 @@ export const BootSequence = () => {
     const [isHovered, setIsHovered] = useState(false); // Interactividad
 
     useEffect(() => {
-        // 1. Check Session (Para no molestar si ya entró)
-        // HEMOS CAMBIADO LA KEY PARA FORZAR QUE LO VEAS AHORA MISMO
-        const hasBooted = sessionStorage.getItem('zk_boot_v2_force_show_4aa1');
-        if (hasBooted) {
-            setIsVisible(false);
-            return;
-        }
+        // 1. Force Show (Session check removed for debugging)
+        // const hasBooted = sessionStorage.getItem('zk_boot_v2_force_show_4aa1');
+        // if (hasBooted) {
+        //    setIsVisible(false);
+        //    return;
+        // }
 
         // 2. Secuencia de Carga
         const duration = 3500; // 3.5 segundos de viaje
