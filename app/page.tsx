@@ -1,8 +1,5 @@
-import { GlassCard } from '@/components/ui/GlassComponents';
-import { CreateMarketForm } from '@/components/CreateMarketForm';
 import { MarketFeed } from '@/components/MarketFeed';
-import { NewsGrid } from '@/components/crystalline/NewsGrid'; // Restored Import
-import { ArrowDown } from 'lucide-react';
+import { NewsGrid } from '@/components/crystalline/NewsGrid';
 
 export default function Home() {
     return (
@@ -16,24 +13,12 @@ export default function Home() {
                 <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay" />
             </div>
 
-            {/* 2. Contenedor Principal (Hero) */}
-            <div className="relative z-10 container mx-auto px-4">
-                {/* SECCIÓN HERO: Crear Mercado (Mantenemos como principal) */}
-                <section className="min-h-[85vh] flex flex-col items-center justify-center pt-20 relative">
-                    <CreateMarketForm />
-
-                    <div className="absolute bottom-10 animate-bounce text-white/30 hidden md:block">
-                        <ArrowDown size={24} />
-                    </div>
-                </section>
-            </div>
-
-            {/* SECCIÓN: News Feed (Global Intel Engine - Full Width Control) */}
-            <div className="relative z-10">
+            {/* SECCIÓN PRINCIPAL: Global Intel Engine (Top Priority) */}
+            <div className="relative z-10 pt-10">
                 <NewsGrid />
             </div>
 
-            {/* SECCIÓN MARKETS: Mercados en Base Sepolia */}
+            {/* SECCIÓN MARKETS: Mercados en Base Sepolia (Bottom Layer) */}
             <div className="relative z-10 container mx-auto px-4">
                 <section className="py-20 relative">
                     <MarketFeed />
