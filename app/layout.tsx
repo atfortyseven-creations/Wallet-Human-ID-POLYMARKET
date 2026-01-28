@@ -13,7 +13,7 @@ import { GeoBlocker } from '@/components/logic/GeoBlocker';
 import { TermsGate } from '@/components/compliance/TermsGate';
 import { BaseGasWidget } from '@/components/compliance/BaseGasWidget';
 import RegisterSW from '@/components/pwa/RegisterSW';
-import Polyfill from '@/components/Polyfill';
+import '@/components/polyfills'; // <-- Import early to fix WalletConnect Buffer issue
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' });
@@ -64,7 +64,6 @@ export default function RootLayout({
     return (
         <html lang="en" className={`${inter.variable} ${mono.variable}`}>
             <body className="relative min-h-screen">
-                <Polyfill />
                 <RegisterSW />
                 <TermsGate />
                 <GeoBlocker />
