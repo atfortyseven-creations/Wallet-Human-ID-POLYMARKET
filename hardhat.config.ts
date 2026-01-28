@@ -14,6 +14,13 @@ const config: HardhatUserConfig = {
         ],
     },
     networks: {
+        hardhat: {
+            forking: {
+                url: process.env.BASE_MAINNET_RPC || "https://mainnet.base.org",
+                blockNumber: 9000000, // Pinning block for deterministic tests
+            },
+            chainId: 8453,
+        },
         optimismSepolia: {
             url: "https://sepolia.optimism.io",
             accounts: (process.env.PRIVATE_KEY && process.env.PRIVATE_KEY.length >= 64) ? [process.env.PRIVATE_KEY] : [],
