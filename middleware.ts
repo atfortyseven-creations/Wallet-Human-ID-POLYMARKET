@@ -8,6 +8,7 @@ const JWT_SECRET = new TextEncoder().encode(
 
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
+    console.log(`[Middleware] Incoming request: ${pathname} from ${request.headers.get('origin') || 'unknown origin'}`);
 
     // Admin route protection
     if (pathname.startsWith('/admin')) {

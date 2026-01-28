@@ -1,14 +1,21 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    reactStrictMode: true,
+    compress: true,
     // 1. DECENTRALIZED DEPLOY (Disabled for SSR/API Routes Support)
     // output: 'export',
 
     // 2. IMAGE OPTIMIZATION (Enabled)
     images: {
-        // unoptimized: true,
         remotePatterns: [
             { protocol: 'https', hostname: 'picsum.photos' },
-            { protocol: 'https', hostname: 'cdn.weatherapi.com' }
+            { protocol: 'https', hostname: 'cdn.weatherapi.com' },
+            { protocol: 'https', hostname: 'images.unsplash.com' },
+            { protocol: 'https', hostname: 'plus.unsplash.com' },
+            { protocol: 'https', hostname: 'source.unsplash.com' },
+            { protocol: 'https', hostname: 'loremflickr.com' },
+            // AÑADIDO: Necesario para los avatares reales del Leaderboard
+            { protocol: 'https', hostname: 'i.pravatar.cc' },
         ]
     },
 
@@ -23,6 +30,10 @@ const nextConfig = {
     // 4. WEBPACK (Wagmi/RainbowKit Polyfills)
     webpack: (config) => {
         config.resolve.fallback = { fs: false, net: false, tls: false };
+        config.resolve.alias = {
+            ...config.resolve.alias,
+            '@react-native-async-storage/async-storage': false,
+        };
         config.externals.push('pino-pretty', 'lokijs', 'encoding');
         return config;
     },

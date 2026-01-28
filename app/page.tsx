@@ -1,29 +1,22 @@
-import { MarketFeed } from '@/components/MarketFeed';
-import { NewsGrid } from '@/components/crystalline/NewsGrid';
+import { getDashboardData } from "@/actions/dashboard.actions";
+import EnterpriseDashboard from "@/components/EnterpriseDashboard";
 
-export default function Home() {
+// Server Component (Async por defecto en Next.js 14)
+export default async function Page() {
+
+    // Fetching de datos en el servidor (SEO Friendly + Rápido)
+    // We use a try-catch block to ensure the page loads even if the DB is cold/unreachable
+    let data;
+    try {
+        data = await getDashboardData();
+    } catch (e) {
+        console.error("Failed to fetch dashboard data:", e);
+        // Fallback data is handled inside the component if data is undefined/null
+    }
+
     return (
-        <main className="min-h-screen relative bg-slate-900 selection:bg-cyan-500/30 pb-20 overflow-x-hidden">
-
-            {/* FONDOS DINÁMICOS (The "Wallpaper") */}
-            <div className="fixed inset-0 z-0">
-                <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-purple-600/20 blur-[120px] rounded-full animate-blob mix-blend-screen" />
-                <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-blue-600/20 blur-[120px] rounded-full animate-blob animation-delay-2000 mix-blend-screen" />
-                <div className="absolute top-[40%] left-[30%] w-[30%] h-[30%] bg-cyan-600/10 blur-[100px] rounded-full animate-blob animation-delay-4000 mix-blend-screen" />
-                <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay" />
-            </div>
-
-            {/* SECCIÓN PRINCIPAL: Global Intel Engine (Top Priority) */}
-            <div className="relative z-10 pt-10">
-                <NewsGrid />
-            </div>
-
-            {/* SECCIÓN MARKETS: Mercados en Base Sepolia (Bottom Layer) */}
-            <div className="relative z-10 container mx-auto px-4">
-                <section className="py-20 relative">
-                    <MarketFeed />
-                </section>
-            </div>
-        </main>
+        <EnterpriseDashboard
+            initialData={data}
+        />
     );
 }

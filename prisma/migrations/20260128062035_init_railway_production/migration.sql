@@ -1,4 +1,10 @@
 -- CreateEnum
+CREATE TYPE "IdentityTier" AS ENUM ('GHOST', 'INITIATE', 'HUMAN', 'SOVEREIGN');
+
+-- CreateEnum
+CREATE TYPE "MarketStatus" AS ENUM ('ACTIVE', 'PAUSED', 'RESOLVED', 'DISPUTED');
+
+-- CreateEnum
 CREATE TYPE "TransactionStatus" AS ENUM ('PENDING_RELAY', 'SUBMITTED', 'CONFIRMED', 'FAILED');
 
 -- CreateEnum
@@ -19,11 +25,67 @@ CREATE TYPE "ZapStatus" AS ENUM ('PENDING', 'SWAPPING', 'BUYING', 'COMPLETED', '
 -- CreateTable
 CREATE TABLE "User" (
     "walletAddress" TEXT NOT NULL,
-    "worldIdNullifierHash" TEXT NOT NULL,
+    "worldIdNullifierHash" TEXT,
+    "email" TEXT,
+    "tier" "IdentityTier" NOT NULL DEFAULT 'GHOST',
+    "reputation" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "lastActive" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("walletAddress")
+);
+
+-- CreateTable
+CREATE TABLE "TreasurySnapshot" (
+    "id" TEXT NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "totalValueLocked" DECIMAL(18,2) NOT NULL,
+    "circulatingSupply" DECIMAL(65,30) NOT NULL,
+    "protocolRevenue" DECIMAL(65,30) NOT NULL,
+    "blockNumber" BIGINT,
+    "txHash" TEXT,
+
+    CONSTRAINT "TreasurySnapshot_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "IntelItem" (
+    "id" TEXT NOT NULL,
+    "source" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "category" TEXT NOT NULL,
+    "url" TEXT NOT NULL,
+    "publishedAt" TIMESTAMP(3) NOT NULL,
+    "sentimentScore" DOUBLE PRECISION,
+    "aiSummary" TEXT,
+
+    CONSTRAINT "IntelItem_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Market" (
+    "slug" TEXT NOT NULL,
+    "question" TEXT NOT NULL,
+    "category" TEXT NOT NULL,
+    "status" "MarketStatus" NOT NULL DEFAULT 'ACTIVE',
+    "endDate" TIMESTAMP(3) NOT NULL,
+    "volume" DECIMAL(65,30) NOT NULL DEFAULT 0,
+    "liquidity" DECIMAL(65,30) NOT NULL DEFAULT 0,
+
+    CONSTRAINT "Market_pkey" PRIMARY KEY ("slug")
+);
+
+-- CreateTable
+CREATE TABLE "Trade" (
+    "id" TEXT NOT NULL,
+    "userWallet" TEXT NOT NULL,
+    "marketSlug" TEXT NOT NULL,
+    "amount" DECIMAL(65,30) NOT NULL,
+    "position" TEXT NOT NULL,
+    "timestamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Trade_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -75,6 +137,14 @@ CREATE TABLE "ProposalVote" (
     "errorMessage" TEXT,
 
     CONSTRAINT "ProposalVote_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Vote" (
+    "id" TEXT NOT NULL,
+    "userWallet" TEXT NOT NULL,
+
+    CONSTRAINT "Vote_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -173,6 +243,18 @@ CREATE TABLE "UserMetrics" (
 CREATE UNIQUE INDEX "User_worldIdNullifierHash_key" ON "User"("worldIdNullifierHash");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE INDEX "User_reputation_idx" ON "User"("reputation");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "IntelItem_url_key" ON "IntelItem"("url");
+
+-- CreateIndex
+CREATE INDEX "IntelItem_publishedAt_idx" ON "IntelItem"("publishedAt");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "MarketProposal_creatorNullifier_key" ON "MarketProposal"("creatorNullifier");
 
 -- CreateIndex
@@ -194,25 +276,16 @@ CREATE INDEX "MarketProposal_status_votingEndsAt_idx" ON "MarketProposal"("statu
 CREATE INDEX "MarketProposal_creatorAddress_idx" ON "MarketProposal"("creatorAddress");
 
 -- CreateIndex
-CREATE INDEX "MarketProposal_createdAt_idx" ON "MarketProposal"("createdAt");
-
--- CreateIndex
-CREATE UNIQUE INDEX "ProposalVote_proposalId_nullifierHash_key" ON "ProposalVote"("proposalId", "nullifierHash");
-
--- CreateIndex
 CREATE INDEX "ProposalVote_proposalId_votedAt_idx" ON "ProposalVote"("proposalId", "votedAt");
 
 -- CreateIndex
-CREATE INDEX "ProposalVote_nullifierHash_idx" ON "ProposalVote"("nullifierHash");
+CREATE UNIQUE INDEX "ProposalVote_proposalId_nullifierHash_key" ON "ProposalVote"("proposalId", "nullifierHash");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "RoyaltyAccrual_txHash_key" ON "RoyaltyAccrual"("txHash");
 
 -- CreateIndex
 CREATE INDEX "RoyaltyAccrual_proposalId_timestamp_idx" ON "RoyaltyAccrual"("proposalId", "timestamp");
-
--- CreateIndex
-CREATE INDEX "RoyaltyAccrual_merkleTreeId_claimed_idx" ON "RoyaltyAccrual"("merkleTreeId", "claimed");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "MerkleDistribution_merkleRoot_key" ON "MerkleDistribution"("merkleRoot");
@@ -227,16 +300,10 @@ CREATE UNIQUE INDEX "RewardClaim_txHash_key" ON "RewardClaim"("txHash");
 CREATE UNIQUE INDEX "RewardClaim_merkleTreeId_claimerAddress_key" ON "RewardClaim"("merkleTreeId", "claimerAddress");
 
 -- CreateIndex
-CREATE INDEX "RewardClaim_claimerAddress_claimedAt_idx" ON "RewardClaim"("claimerAddress", "claimedAt");
-
--- CreateIndex
 CREATE UNIQUE INDEX "ZapTransaction_txHash_key" ON "ZapTransaction"("txHash");
 
 -- CreateIndex
 CREATE INDEX "ZapTransaction_userAddress_initiatedAt_idx" ON "ZapTransaction"("userAddress", "initiatedAt");
-
--- CreateIndex
-CREATE INDEX "ZapTransaction_status_idx" ON "ZapTransaction"("status");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UserMetrics_userAddress_key" ON "UserMetrics"("userAddress");
@@ -244,8 +311,11 @@ CREATE UNIQUE INDEX "UserMetrics_userAddress_key" ON "UserMetrics"("userAddress"
 -- CreateIndex
 CREATE INDEX "UserMetrics_reputationScore_idx" ON "UserMetrics"("reputationScore");
 
--- CreateIndex
-CREATE INDEX "UserMetrics_lastActiveAt_idx" ON "UserMetrics"("lastActiveAt");
+-- AddForeignKey
+ALTER TABLE "Trade" ADD CONSTRAINT "Trade_userWallet_fkey" FOREIGN KEY ("userWallet") REFERENCES "User"("walletAddress") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Trade" ADD CONSTRAINT "Trade_marketSlug_fkey" FOREIGN KEY ("marketSlug") REFERENCES "Market"("slug") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "MarketProposal" ADD CONSTRAINT "MarketProposal_creatorAddress_fkey" FOREIGN KEY ("creatorAddress") REFERENCES "User"("walletAddress") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -255,6 +325,9 @@ ALTER TABLE "ProposalVote" ADD CONSTRAINT "ProposalVote_proposalId_fkey" FOREIGN
 
 -- AddForeignKey
 ALTER TABLE "ProposalVote" ADD CONSTRAINT "ProposalVote_voterAddress_fkey" FOREIGN KEY ("voterAddress") REFERENCES "User"("walletAddress") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Vote" ADD CONSTRAINT "Vote_userWallet_fkey" FOREIGN KEY ("userWallet") REFERENCES "User"("walletAddress") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "RoyaltyAccrual" ADD CONSTRAINT "RoyaltyAccrual_proposalId_fkey" FOREIGN KEY ("proposalId") REFERENCES "MarketProposal"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
