@@ -1,6 +1,6 @@
 // hooks/useWLD.ts
 import { useAccount, useBalance } from 'wagmi'
-import { WLD_TOKEN_ADDRESS } from '../lib/wagmi-config'
+import { WLD_TOKEN_ADDRESS } from '../config/tokens'
 
 export function useWLD() {
     const { address, isConnected, isConnecting } = useAccount()

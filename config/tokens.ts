@@ -13,3 +13,5 @@ export const USDC_ADDRESSES: Record<number, Address> = {
 export const getUsdcAddress = (chainId: number): Address | undefined => {
     return USDC_ADDRESSES[chainId];
 };
+
+export const WLD_TOKEN_ADDRESS = (process.env.NEXT_PUBLIC_WLD_TOKEN_ADDRESS || '0xdc6f18f83959cd25095c2453192f16d08b496666') as `0x${string}`;

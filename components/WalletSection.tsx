@@ -1,5 +1,6 @@
 "use client";
 
+import { useAppKit, useAppKitAccount } from '@reown/appkit/react'
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useApp } from "@/components/AppContext";
@@ -51,9 +52,13 @@ export default function WalletSection() {
     const marketParam = searchParams.get('market') as `0x${string}` | null;
 
     // --- Hooks de Blockchain ---
-    const { address, isConnected, chain } = useAccount();
+    const { chain } = useAccount();
     const { connectors, connect } = useConnect();
     const { isAuthenticated } = useAuth(); // World ID authentication
+
+    // AppKit Hooks
+    const { open } = useAppKit();
+    const { address, isConnected } = useAppKitAccount();
 
     // Human-Fi Hook
     const {
@@ -216,7 +221,7 @@ export default function WalletSection() {
 
                     <div className="flex flex-col gap-4 max-w-xs mx-auto">
                         <button
-                            onClick={handleStandardConnect}
+                            onClick={() => open()}
                             className="w-full px-8 py-4 bg-white text-black rounded-full font-bold text-lg hover:bg-neutral-200 transition-colors flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.3)]"
                         >
                             <Wallet className="w-5 h-5" />
@@ -250,14 +255,14 @@ export default function WalletSection() {
                             {address ? (
                                 <>
                                     <span>{formatAddress(address)}</span>
-                                    <button onClick={handleCopy} className="hover:text-indigo-400 transition-colors"><Copy size={12} /></button>
+                                    <button onClick={() => open()} className="hover:text-indigo-400 transition-colors"><Copy size={12} /></button>
                                 </>
                             ) : (
                                 <button
-                                    onClick={handleConnect}
+                                    onClick={() => open()}
                                     className="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-xs font-bold transition-colors"
                                 >
-                                    CONNECT WALLET
+                                    {isConnected ? `${address?.slice(0, 6)}...${address?.slice(-4)}` : "CONNECT WALLET"}
                                 </button>
                             )}
                         </div>
