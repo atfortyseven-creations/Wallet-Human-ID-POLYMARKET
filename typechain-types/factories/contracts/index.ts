@@ -2,5 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export * as humanFiGovernanceSol from "./HumanFiGovernance.sol";
+export * as security from "./security";
+export { HumanFiTreasury__factory } from "./HumanFiTreasury__factory";
 export { MockERC20__factory } from "./MockERC20__factory";
 export { MockWLD__factory } from "./MockWLD__factory";

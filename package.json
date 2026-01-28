@@ -22,6 +22,7 @@
     "@gnosis.pm/conditional-tokens-market-makers": "^1.8.1",
     "@gnosis.pm/util-contracts": "^3.0.0-alpha.3",
     "@openzeppelin/contracts": "^5.4.0",
+    "@openzeppelin/contracts-upgradeable": "^5.4.0",
     "@radix-ui/react-slot": "^1.2.4",
     "@rainbow-me/rainbowkit": "^2.0.5",
     "@react-three/drei": "^9.108.4",
@@ -65,6 +66,7 @@
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^6.1.0",
+    "@openzeppelin/hardhat-upgrades": "^3.9.1",
     "@prisma/client": "5.22.0",
     "@types/dompurify": "^3.0.5",
     "@types/node": "^22.19.7",

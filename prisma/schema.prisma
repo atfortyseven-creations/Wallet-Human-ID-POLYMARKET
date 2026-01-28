@@ -15,6 +15,13 @@ datasource db {
 // 1. ENUMS (REGLAS ESTRICTAS DE NEGOCIO)
 // ----------------------------------------------------------------------------
 
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
 enum IdentityTier {
   GHOST
   INITIATE
@@ -140,6 +147,7 @@ model Market {
   endDate   DateTime
   volume    Decimal      @default(0)
   liquidity Decimal      @default(0)
+  riskLevel RiskLevel    @default(LOW)
   trades    Trade[]
 }
 
