@@ -157,6 +157,49 @@ export const NewsGrid = () => {
                     border-color: var(--accent-cyan);
                 }
                 .news-card-hover:hover img { transform: scale(1.1); }
+
+                /* Whitepaper Specific Styles */
+                .wp-card {
+                    background: rgba(10, 10, 15, 0.6);
+                    border: 1px solid rgba(255, 255, 255, 0.05);
+                    border-left: 3px solid var(--accent-cyan);
+                    padding: 25px;
+                    border-radius: 8px;
+                    position: relative;
+                    overflow: hidden;
+                    transition: all 0.3s ease;
+                    backdrop-filter: blur(10px);
+                }
+                .wp-card:hover {
+                    background: rgba(255, 255, 255, 0.05);
+                    transform: translateY(-5px);
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+                    border-color: rgba(255,255,255,0.2);
+                }
+                .wp-card.intro { border-left-color: #ffffff; }
+                .wp-card.identity { border-left-color: #ff0055; }
+                .wp-card.finance { border-left-color: #00ff9d; }
+                .wp-card.intel { border-left-color: #00f2ea; }
+                .wp-card.arch { border-left-color: #7000ff; }
+                
+                .tech-separator {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 60px 0 40px 0;
+                    color: var(--text-muted);
+                    font-family: var(--font-mono);
+                    font-size: 0.7rem;
+                    letter-spacing: 3px;
+                    opacity: 0.7;
+                }
+                .tech-separator::before, .tech-separator::after {
+                    content: '';
+                    flex: 1;
+                    height: 1px;
+                    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+                    margin: 0 20px;
+                }
             `}</style>
 
             {/* --- MASTER HEADER --- */}
@@ -264,50 +307,7 @@ export const NewsGrid = () => {
 
             {/* --- IDENTITY & INFO LAYER (Interactive Protocol Ledger) --- */}
             <div className="mb-24" id="protocol-ledger">
-                <style jsx>{`
-                    /* Whitepaper Specific Styles */
-                    .wp-card {
-                        background: rgba(10, 10, 15, 0.6);
-                        border: 1px solid rgba(255, 255, 255, 0.05);
-                        border-left: 3px solid var(--accent-cyan);
-                        padding: 25px;
-                        border-radius: 8px;
-                        position: relative;
-                        overflow: hidden;
-                        transition: all 0.3s ease;
-                        backdrop-filter: blur(10px);
-                    }
-                    .wp-card:hover {
-                        background: rgba(255, 255, 255, 0.05);
-                        transform: translateY(-5px);
-                        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-                        border-color: rgba(255,255,255,0.2);
-                    }
-                    .wp-card.intro { border-left-color: #ffffff; }
-                    .wp-card.identity { border-left-color: #ff0055; }
-                    .wp-card.finance { border-left-color: #00ff9d; }
-                    .wp-card.intel { border-left-color: #00f2ea; }
-                    .wp-card.arch { border-left-color: #7000ff; }
-                    
-                    .tech-separator {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        margin: 60px 0 40px 0;
-                        color: var(--text-muted);
-                        font-family: var(--font-mono);
-                        font-size: 0.7rem;
-                        letter-spacing: 3px;
-                        opacity: 0.7;
-                    }
-                    .tech-separator::before, .tech-separator::after {
-                        content: '';
-                        flex: 1;
-                        height: 1px;
-                        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-                        margin: 0 20px;
-                    }
-                `}</style>
+                {/* Styles moved to top */}
 
                 {!showWhitepaper ? (
                     /* STATE A: DEFAULT DASHBOARD */
