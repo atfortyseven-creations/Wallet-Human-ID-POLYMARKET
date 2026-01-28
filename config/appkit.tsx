@@ -1,6 +1,6 @@
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { mainnet, optimism, base, arbitrum, polygon, type AppKitNetwork } from '@reown/appkit/networks'
+import { mainnet, optimism, base, baseSepolia, arbitrum, polygon, type AppKitNetwork } from '@reown/appkit/networks'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { ReactNode } from 'react'
 import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
@@ -13,7 +13,7 @@ if (!projectId) {
 }
 
 // 2. Set the networks
-export const networks = [optimism, mainnet, base, arbitrum, polygon] as [AppKitNetwork, ...AppKitNetwork[]];
+export const networks = [baseSepolia, base, mainnet, optimism, arbitrum, polygon] as [AppKitNetwork, ...AppKitNetwork[]];
 
 // 3. Set up the Wagmi Adapter (Config)
 export const wagmiAdapter = new WagmiAdapter({
@@ -42,7 +42,7 @@ createAppKit({
         email: false, // Optional - disable email login if not needed to reduce complexity
         socials: [], // Optional - disable social login if causing config issues
     },
-    themeMode: 'light',
+    themeMode: 'dark',
 })
 
 // 5. Create the wrapper component
