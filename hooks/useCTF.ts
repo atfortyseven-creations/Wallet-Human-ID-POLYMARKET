@@ -43,6 +43,17 @@ const CTF_ABI = [
         outputs: []
     },
     {
+        name: 'prepareCondition',
+        type: 'function',
+        stateMutability: 'nonpayable',
+        inputs: [
+            { name: 'oracle', type: 'address' },
+            { name: 'questionId', type: 'bytes32' },
+            { name: 'outcomeSlotCount', type: 'uint256' }
+        ],
+        outputs: []
+    },
+    {
         name: 'payoutDenominator',
         type: 'function',
         stateMutability: 'view',
@@ -58,18 +69,43 @@ const COLLATERAL_TOKEN = process.env.NEXT_PUBLIC_COLLATERAL_TOKEN_ADDRESS as `0x
 
 export function useCTF() {
     const { address } = useAccount();
-    const { writeContract, data: hash, isPending, error } = useWriteContract();
+    const { writeContractAsync, data: hash, isPending, error } = useWriteContract();
+
+    // 0. Prepare Condition (Register Question)
+    const prepareCondition = async (questionId: `0x${string}`, outcomeSlotCount: number = 2) => {
+        if (!CTF_ADDRESS) throw new Error("CTF Address not configured");
+
+        // Oracle is us (the user/deployer) for this simple ID-based system
+        // Or in a real oracle system, it's the Adapter address. 
+        // For this "Void" version where user resolves, oracle = sender? 
+        // Or we use a fixed oracle?
+        // Let's assume the Connected User is the Oracle for their own question (Simple)
+        // OR use a fixed address if we have a centralized resolution bot.
+        // User wants "Submit to Chain", implying they own it.
+        const oracle = address;
+
+        if (!oracle) throw new Error("Wallet not connected");
+
+        return await writeContractAsync({
+            address: CTF_ADDRESS,
+            abi: CTF_ABI,
+            functionName: 'prepareCondition',
+            args: [
+                oracle,
+                questionId,
+                BigInt(outcomeSlotCount)
+            ]
+        });
+    };
 
     // 1. Split Position (Mint Tokens)
-    // To mint YES/NO tokens, you must split collateral.
-    // Partition for Binary: [1, 2] (Index Set 1=Yes, 2=No)
-    const splitPosition = (conditionId: `0x${string}`, amount: string) => {
+    const splitPosition = async (conditionId: `0x${string}`, amount: string) => {
         if (!CTF_ADDRESS) throw new Error("CTF Address not configured");
 
         const weiAmount = parseUnits(amount, 18); // Assuming 18 decimals
         const parentCollectionId = '0x0000000000000000000000000000000000000000000000000000000000000000'; // Base Split
 
-        writeContract({
+        return await writeContractAsync({
             address: CTF_ADDRESS,
             abi: CTF_ABI,
             functionName: 'splitPosition',
@@ -84,12 +120,11 @@ export function useCTF() {
     };
 
     // 2. Merge Positions (Burn Tokens)
-    // Combine YES + NO tokens back into Collateral.
-    const mergePositions = (conditionId: `0x${string}`, amount: string) => {
+    const mergePositions = async (conditionId: `0x${string}`, amount: string) => {
         const weiAmount = parseUnits(amount, 18);
         const parentCollectionId = '0x0000000000000000000000000000000000000000000000000000000000000000';
 
-        writeContract({
+        return await writeContractAsync({
             address: CTF_ADDRESS,
             abi: CTF_ABI,
             functionName: 'mergePositions',
@@ -104,14 +139,10 @@ export function useCTF() {
     };
 
     // 3. Redeem Positions (Claim Winnings)
-    // Burn the WINNING outcome token for Collateral.
-    // indexSets should ideally be dynamic based on user holdings, but typically we try redeeming all relevant sets.
-    const redeemPositions = (conditionId: `0x${string}`) => {
+    const redeemPositions = async (conditionId: `0x${string}`) => {
         const parentCollectionId = '0x0000000000000000000000000000000000000000000000000000000000000000';
 
-        // We attempt to redeem for both YES and NO slots. 
-        // Only the winning slot will have value (payout > 0).
-        writeContract({
+        return await writeContractAsync({
             address: CTF_ADDRESS,
             abi: CTF_ABI,
             functionName: 'redeemPositions',
@@ -124,18 +155,8 @@ export function useCTF() {
         });
     };
 
-    // Check if market is resolved
-    const { data: payoutDenominator } = useReadContract({
-        address: CTF_ADDRESS,
-        abi: CTF_ABI,
-        functionName: 'payoutDenominator',
-        // We'd need to pass conditionId dynamically in a real component usage context
-        // This is just the shell hook structure.
-        args: ['0x0000000000000000000000000000000000000000000000000000000000000000'],
-        query: { enabled: false } // Disabled by default here
-    });
-
     return {
+        prepareCondition,
         splitPosition,
         mergePositions,
         redeemPositions,

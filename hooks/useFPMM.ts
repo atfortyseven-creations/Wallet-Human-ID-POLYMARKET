@@ -32,17 +32,27 @@ const FPMM_ABI = [
             { name: 'minOutcomeTokensToBuy', type: 'uint256' }
         ],
         outputs: []
+    },
+    {
+        name: 'addFunding',
+        type: 'function',
+        stateMutability: 'nonpayable',
+        inputs: [
+            { name: 'addedFunds', type: 'uint256' },
+            { name: 'distributionHint', type: 'uint256[]' }
+        ],
+        outputs: []
     }
 ] as const;
 
 export function useFPMM(marketAddress?: `0x${string}`) {
-    const { writeContract, data: hash, isPending, error } = useWriteContract();
+    const { writeContractAsync, data: hash, isPending, error } = useWriteContract();
 
     // Minimal wrapper to call factory
-    const deployMarket = (conditionId: `0x${string}`, fee: string = "0.0") => {
+    const deployMarket = async (conditionId: `0x${string}`, fee: string = "0.0") => {
         const feeBI = parseEther(fee);
 
-        writeContract({
+        return await writeContractAsync({
             address: FPMM_FACTORY_ADDRESS,
             abi: FACTORY_ABI,
             functionName: 'createFixedProductMarketMaker',
@@ -55,14 +65,14 @@ export function useFPMM(marketAddress?: `0x${string}`) {
         });
     };
 
-    const buy = (amount: string, outcomeIndex: number, minTokens: bigint = BigInt(0)) => {
+    const buy = async (amount: string, outcomeIndex: number, minTokens: bigint = BigInt(0)) => {
         if (!marketAddress || marketAddress === "0x0000000000000000000000000000000000000000") {
             throw new Error("Invalid Market Address");
         }
 
         const investmentAmount = parseEther(amount);
 
-        writeContract({
+        return await writeContractAsync({
             address: marketAddress,
             abi: FPMM_ABI,
             functionName: 'buy',
@@ -74,9 +84,28 @@ export function useFPMM(marketAddress?: `0x${string}`) {
         });
     };
 
+    const addFunding = async (amount: string, distributionHint: bigint[] = []) => {
+        if (!marketAddress || marketAddress === "0x0000000000000000000000000000000000000000") {
+            throw new Error("Invalid Market Address");
+        }
+
+        const investmentAmount = parseEther(amount);
+
+        return await writeContractAsync({
+            address: marketAddress,
+            abi: FPMM_ABI,
+            functionName: 'addFunding',
+            args: [
+                investmentAmount,
+                distributionHint
+            ]
+        });
+    };
+
     return {
         deployMarket,
         buy,
+        addFunding,
         isPending,
         hash,
         error

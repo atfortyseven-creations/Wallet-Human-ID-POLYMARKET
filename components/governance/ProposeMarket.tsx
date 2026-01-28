@@ -11,9 +11,13 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { IDKitWidget, ISuccessResult, VerificationLevel } from '@worldcoin/idkit';
 import { Vote, CheckCircle2, AlertCircle, Loader2, Users, Info } from 'lucide-react';
-import { useAccount } from 'wagmi';
+import { useAccount, usePublicClient } from 'wagmi';
 import { toast } from 'sonner';
 import { VoidButton, VoidInput, VoidCard } from '@/components/VoidUI';
+import { useCTF } from '@/hooks/useCTF';
+import { useFPMM } from '@/hooks/useFPMM';
+import { getConditionId } from '@/lib/gnosis-ctf';
+import { keccak256, encodePacked } from 'viem';
 
 interface ProposalFormData {
     question: string;
@@ -43,23 +47,70 @@ export function ProposeMarket() {
         toast.success('World ID verified! You can now submit your proposal.');
     };
 
+    // --- Chain Hooks ---
+    const { prepareCondition } = useCTF();
+    const { deployMarket } = useFPMM();
+    const publicClient = usePublicClient();
+    const [statusValues, setStatusValues] = useState<string>("");
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        // 1. Validations
+        if (!isConnected || !address) {
+            toast.error('Connect wallet first');
+            return;
+        }
+        // Temporary Bypass for Testing if World ID is flaky in dev, 
+        // but explicit request was "with World ID".
         if (!isVerified || !worldIdProof) {
             toast.error('Please verify with World ID first');
             return;
         }
 
-        if (!address) {
-            toast.error('Please connect your wallet');
-            return;
-        }
-
         setIsSubmitting(true);
+        setStatusValues("Initializing...");
 
         try {
-            const response = await fetch('/api/governance/propose', {
+            // 2. Generate Deterministic IDs
+            // Random nonce for Question ID to ensure uniqueness
+            const randomNonce = Math.floor(Math.random() * 1_000_000_000);
+            const questionId = keccak256(encodePacked(['address', 'string', 'uint256'], [address, formData.question, BigInt(randomNonce)]));
+
+            // Derive Condition ID (Oracle = Creator for this version)
+            const oracle = address;
+            const outcomeSlotCount = 2; // YES / NO
+            const conditionId = getConditionId(oracle, questionId, outcomeSlotCount);
+
+            // 3. STEP A: Prepare Condition (On-Chain)
+            setStatusValues("Step 1/2: Preparing Condition on Chain...");
+            toast.info("Please sign transaction 1/2: Prepare Condition");
+
+            const hash1 = await prepareCondition(questionId, outcomeSlotCount);
+            if (!hash1) throw new Error("Condition preparation failed");
+
+            // Wait for confirmation
+            setStatusValues("Waiting for Condition confirmation...");
+            if (publicClient) {
+                await publicClient.waitForTransactionReceipt({ hash: hash1 });
+            }
+
+            // 4. STEP B: Deploy Market (On-Chain)
+            setStatusValues("Step 2/2: Creating Market (FPMM)...");
+            toast.info("Please sign transaction 2/2: Create Market");
+
+            const hash2 = await deployMarket(conditionId);
+            if (!hash2) throw new Error("Market deployment failed");
+
+            setStatusValues("Waiting for Market confirmation...");
+            if (publicClient) {
+                await publicClient.waitForTransactionReceipt({ hash: hash2 });
+            }
+
+            // 5. Indexing (Arcvhive in DB)
+            setStatusValues("Archiving Proposal...");
+            // We use the existing API to log it, but now it's "REAL"
+            await fetch('/api/governance/propose', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -71,18 +122,13 @@ export function ProposeMarket() {
                         proof: worldIdProof.proof,
                         verification_level: worldIdProof.verification_level,
                     },
+                    // We could send the tx hashes too if the API supported it
                 }),
             });
 
-            const data = await response.json();
+            toast.success('Market Successfully Created & Active!');
 
-            if (!response.ok) {
-                throw new Error(data.error || 'Failed to submit proposal');
-            }
-
-            toast.success('Proposal submitted! Voting period has started.');
-
-            // Reset form
+            // Reset
             setFormData({
                 question: '',
                 description: '',
@@ -94,10 +140,11 @@ export function ProposeMarket() {
             setWorldIdProof(null);
 
         } catch (error) {
-            console.error('Error submitting proposal:', error);
-            toast.error(error instanceof Error ? error.message : 'Failed to submit proposal');
+            console.error('Error in proposal flow:', error);
+            toast.error(error instanceof Error ? error.message : 'Failed to create market');
         } finally {
             setIsSubmitting(false);
+            setStatusValues("");
         }
     };
 
@@ -250,7 +297,7 @@ export function ProposeMarket() {
                     {isSubmitting ? (
                         <>
                             <Loader2 className="w-4 h-4 animate-spin" />
-                            <span>ENCRYPTING PROPOSAL...</span>
+                            <span>{statusValues || "PROCESSING..."}</span>
                         </>
                     ) : (
                         'SUBMIT TO CHAIN'
