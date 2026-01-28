@@ -44,16 +44,17 @@ export const BootSequence = () => {
         const timer = setInterval(() => {
             step++;
 
-            // Curva de aceleración (Empieza lento, acaba rapidísimo)
-            const easeInOut = step < totalSteps / 2
-                ? 2 * step * step / (totalSteps * totalSteps)
-                : 1 - Math.pow(-2 * step + 2, 2) / 2;
+            // Curva de aceleración corregida (Normalized t 0..1)
+            const t = step / totalSteps;
+            const easeInOut = t < 0.5
+                ? 2 * t * t
+                : 1 - Math.pow(-2 * t + 2, 2) / 2;
 
             const currentPercent = Math.min(100, Math.floor(easeInOut * 100));
             setProgress(currentPercent);
 
             // Cambiar logs según el progreso
-            const logIndex = Math.floor((currentPercent / 100) * (ZK_LOGS.length - 1));
+            const logIndex = Math.min(ZK_LOGS.length - 1, Math.floor((currentPercent / 100) * ZK_LOGS.length));
             setCurrentLog(ZK_LOGS[logIndex]);
 
             // Efecto de Hash loco cambiando
