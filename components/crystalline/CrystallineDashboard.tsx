@@ -1,4 +1,4 @@
-import React from 'react';
+import { TreasuryCard } from "@/components/dashboard/TreasuryCard";
 
 export default function CrystallineDashboard() {
     return (
@@ -18,17 +18,20 @@ export default function CrystallineDashboard() {
                 <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-purple-500/10 blur-3xl rounded-full pointer-events-none"></div>
             </div>
 
-            {/* Grid de Placeholders (mientras cargan los datos reales) */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[1, 2, 3].map((item) => (
-                    <div key={item} className="h-40 rounded-xl bg-white/5 border border-white/10 p-6 animate-pulse flex flex-col justify-between">
-                        <div className="w-10 h-10 rounded-full bg-white/10 mb-4"></div>
-                        <div className="space-y-2">
-                            <div className="h-4 w-3/4 bg-white/10 rounded"></div>
-                            <div className="h-3 w-1/2 bg-white/10 rounded"></div>
+            {/* Grid Principal */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                    {/* Placeholder for Market Activity */}
+                    <div className="h-full min-h-[250px] rounded-3xl bg-[#0a0a0a] border border-white/10 p-6 flex flex-col justify-center items-center text-center text-gray-500 font-mono text-xs border-dashed gap-2 group hover:border-white/20 transition-colors cursor-wait">
+                        <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                            <span className="animate-pulse">⚡</span>
                         </div>
+                        [MARKET ACTIVITY STREAM ONLINE SOON]
                     </div>
-                ))}
+                </div>
+                <div className="lg:col-span-1">
+                    <TreasuryCard />
+                </div>
             </div>
         </div>
     );
