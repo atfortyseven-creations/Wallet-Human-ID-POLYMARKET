@@ -29,7 +29,8 @@ export const BootSequence = () => {
 
     useEffect(() => {
         // 1. Check Session (Para no molestar si ya entró)
-        const hasBooted = sessionStorage.getItem('zk_boot_complete');
+        // HEMOS CAMBIADO LA KEY PARA FORZAR QUE LO VEAS AHORA MISMO
+        const hasBooted = sessionStorage.getItem('zk_boot_v2_force_show_4aa1');
         if (hasBooted) {
             setIsVisible(false);
             return;
@@ -63,7 +64,7 @@ export const BootSequence = () => {
                 clearInterval(timer);
                 setTimeout(() => {
                     setIsVisible(false);
-                    sessionStorage.setItem('zk_boot_complete', 'true');
+                    sessionStorage.setItem('zk_boot_v2_force_show_4aa1', 'true');
                 }, 800);
             }
         }, intervalTime);
