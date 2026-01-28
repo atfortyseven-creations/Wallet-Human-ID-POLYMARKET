@@ -1,4 +1,5 @@
 import React from 'react';
+import { IntelFeed } from '@/components/dashboard/IntelFeed';
 
 export default function EnterpriseDashboard({ initialData }: { initialData?: any }) {
     // Use initialData for treasury/intel if provided
@@ -50,45 +51,9 @@ export default function EnterpriseDashboard({ initialData }: { initialData?: any
                         </button>
                     </div>
 
-                    {/* BLOQUE 4: RECENT INTEL (Listado estilo tabla) */}
-                    <div className="md:col-span-2 lg:col-span-3 bg-[#111] border border-white/5 rounded-2xl p-8 overflow-hidden">
-                        <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-lg font-medium text-white">Verified Intelligence Stream</h3>
-                            <button className="text-xs text-neutral-400 hover:text-white transition-colors">View All</button>
-                        </div>
-
-                        <div className="space-y-0">
-                            {intel.length > 0 ? intel.map((item: any, i: number) => (
-                                <ListItem
-                                    key={i}
-                                    category={item.category}
-                                    title={item.title}
-                                    time={new Date(item.publishedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                    source={item.source}
-                                />
-                            )) : (
-                                <>
-                                    <ListItem
-                                        category="Geopolitics"
-                                        title="EU Parliament ratifies new AI Framework Regulation"
-                                        time="12m ago"
-                                        source="Reuters"
-                                    />
-                                    <ListItem
-                                        category="Finance"
-                                        title="BlackRock files for new Ethereum Spot ETF"
-                                        time="45m ago"
-                                        source="Bloomberg"
-                                    />
-                                    <ListItem
-                                        category="Tech"
-                                        title="OpenAI announces GPT-5 release window"
-                                        time="1h ago"
-                                        source="TechCrunch"
-                                    />
-                                </>
-                            )}
-                        </div>
+                    {/* BLOQUE 4: RECENT INTEL (God-Tier Terminal) */}
+                    <div className="md:col-span-2 lg:col-span-3">
+                        <IntelFeed />
                     </div>
 
                     {/* BLOQUE 5: YOUR IDENTITY (Minimalista) */}
