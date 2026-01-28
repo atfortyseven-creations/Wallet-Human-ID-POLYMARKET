@@ -1,17 +1,19 @@
 "use client";
 
 import React, { useState } from "react";
-import { Copy, Menu, User, Loader2 } from "lucide-react";
+import { Copy, Menu, User, Loader2, ShieldCheck, AlertCircle } from "lucide-react";
 import { IDKitWidget, ISuccessResult, VerificationLevel } from "@worldcoin/idkit";
 import { useAccount } from "wagmi";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import SettingsMenu from "./SettingsMenu";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function VoidShell({ children }: { children: React.ReactNode }) {
     const { address } = useAccount();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const { isAuthenticated } = useAuth();
 
     // World ID Config
     const app_id = process.env.NEXT_PUBLIC_WLD_APP_ID as `app_${string}` || "app_affe7470221b57a8edee20b3ac30c484"; // Fallback to ensure it works if env missing
@@ -89,13 +91,15 @@ export default function VoidShell({ children }: { children: React.ReactNode }) {
 
                 {/* User Controls (Right) */}
                 <div className="absolute right-6 top-4 hidden md:flex items-center gap-3">
-                    {/* IDENTITY STATUS BADGE (NEW) */}
+                    {/* IDENTITY STATUS BADGE (DYNAMIC) */}
                     <div className="hidden lg:flex items-center gap-3 mr-4">
                         <div className="flex flex-col items-end">
                             <span className="text-[10px] uppercase tracking-widest text-[#00f2ea]">Identity Status</span>
                             <div className="flex items-center gap-1.5">
-                                <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                                <span className="text-xs font-bold text-neutral-300">Unverified Tier 0</span>
+                                <span className={`w-1.5 h-1.5 rounded-full ${isAuthenticated ? 'bg-emerald-500' : 'bg-red-500'} animate-pulse`} />
+                                <span className={`text-xs font-bold ${isAuthenticated ? 'text-emerald-400' : 'text-neutral-300'}`}>
+                                    {isAuthenticated ? 'Verified Tier 1' : 'Unverified Tier 0'}
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -111,15 +115,20 @@ export default function VoidShell({ children }: { children: React.ReactNode }) {
                         {({ open }: { open: () => void }) => (
                             <button
                                 onClick={open}
-                                disabled={isLoading}
-                                className="group relative p-2.5 rounded-full bg-surface border border-glass-border hover:bg-glass-highlight transition-colors text-neutral-400 hover:text-white disabled:opacity-50"
+                                disabled={isLoading || isAuthenticated}
+                                className={`group relative p-2.5 rounded-full border transition-colors ${isAuthenticated
+                                    ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/20'
+                                    : 'bg-surface border-glass-border hover:bg-glass-highlight text-neutral-400 hover:text-white'
+                                    } disabled:opacity-50`}
                             >
                                 {isLoading ? (
                                     <Loader2 size={18} className="animate-spin" />
+                                ) : isAuthenticated ? (
+                                    <ShieldCheck size={18} />
                                 ) : (
                                     <>
                                         <User size={18} />
-                                        {/* Notification Dot */}
+                                        {/* Notification Dot for Unverified */}
                                         <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 border-2 border-[#09090b] rounded-full" />
                                     </>
                                 )}
