@@ -13,7 +13,7 @@ export default function VoidShell({ children }: { children: React.ReactNode }) {
     const { address } = useAccount();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, login } = useAuth();
 
     // World ID Config
     const app_id = process.env.NEXT_PUBLIC_WLD_APP_ID as `app_${string}` || "app_affe7470221b57a8edee20b3ac30c484"; // Fallback to ensure it works if env missing
@@ -39,6 +39,9 @@ export default function VoidShell({ children }: { children: React.ReactNode }) {
 
             toast.dismiss(toastId);
             toast.success("Identity Verified!");
+
+            // Update Global Auth State
+            await login(); // <--- Refresh status immediately
 
             // Redirect to Wallet as requested
             router.push("/wallet");
