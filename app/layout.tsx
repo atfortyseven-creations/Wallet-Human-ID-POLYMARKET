@@ -13,7 +13,35 @@ const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' });
 
 export const metadata: Metadata = {
     title: 'HumanID.fi | The Void Wallet',
-    description: 'Sybil-resistant financial engine for Polymarket',
+    description: 'Sybil-resistant financial engine for Polymarket. Built on Base Sepolia.',
+    openGraph: {
+        title: 'HumanID.fi | Sovereign Intelligence',
+        description: 'Identity-First Decentralized Finance. Verify your humanity, access the global intel feed.',
+        url: 'https://humanid.fi',
+        siteName: 'HumanID.fi',
+        images: [
+            {
+                url: 'https://humanid.fi/og-void.jpg', // Placeholder
+                width: 1200,
+                height: 630,
+                alt: 'HumanID Upgrade',
+            },
+        ],
+        locale: 'en_US',
+        type: 'website',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'HumanID.fi | The Void Wallet',
+        description: 'Sybil-resistant financial engine for Polymarket.',
+        creator: '@HumanID_fi',
+        images: ['https://humanid.fi/og-void.jpg'],
+    },
+    viewport: {
+        width: 'device-width',
+        initialScale: 1,
+        maximumScale: 1,
+    },
 };
 
 import BackgroundVideo from '@/components/layout/BackgroundVideo';
@@ -29,21 +57,33 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en" className={`${inter.variable} ${mono.variable}`}>
-            <body className="bg-transparent text-white relative min-h-screen">
-                <BootSequence />
-                <BackgroundVideo />
-                <Providers>
-                    <AppProvider>
-                        <WorldProvider>
-                            <VoidShell>
-                                {children}
-                                <Footer />
-                            </VoidShell>
-                            <Toaster richColors theme="dark" />
-                        </WorldProvider>
-                    </AppProvider>
-                </Providers>
-            </body>
-        </html>
-    );
+            import {GeoBlocker} from '@/components/logic/GeoBlocker';
+
+            // ...
+
+            export default function RootLayout({
+                children,
+}: {
+                children: React.ReactNode;
+}) {
+    return (
+            <html lang="en" className={`${inter.variable} ${mono.variable}`}>
+                <body className="bg-transparent text-white relative min-h-screen">
+                    <GeoBlocker />
+                    <BootSequence />
+                    <BackgroundVideo />
+                    <Providers>
+                        <AppProvider>
+                            <WorldProvider>
+                                <VoidShell>
+                                    {children}
+                                    <Footer />
+                                </VoidShell>
+                                <Toaster richColors theme="dark" />
+                            </WorldProvider>
+                        </AppProvider>
+                    </Providers>
+                </body>
+            </html>
+            );
 }

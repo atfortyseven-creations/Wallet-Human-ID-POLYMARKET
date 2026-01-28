@@ -1,0 +1,39 @@
+{
+    "name": "Humanid.fi Governance",
+    "about": "Sovereign Intelligence & Decentralized Identity Protocol on Base.",
+    "network": "8453",
+    "symbol": "HMND",
+    "strategies": [
+        {
+            "name": "erc20-balance-of",
+            "params": {
+                "address": "0xYourTokenAddressHere",
+                "symbol": "HMND",
+                "decimals": 18
+            }
+        },
+        {
+            "name": "whitelist",
+            "params": {
+                "addresses": [
+                    "0xYourTeamMultisig",
+                    "0xAdvisorWallet"
+                ]
+            }
+        }
+    ],
+    "filters": {
+        "minScore": 100,
+        "onlyMembers": false
+    },
+    "plugins": {
+        "hal": {}
+    },
+    "admins": [
+        "0xAdminWalletAddress"
+    ],
+    "domain": "humanid.fi",
+    "skin": "humanid-v1",
+    "website": "https://humanid.fi",
+    "twitter": "Humanid_fi"
+}

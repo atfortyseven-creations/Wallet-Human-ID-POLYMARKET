@@ -8,6 +8,7 @@
     "build:contracts": "hardhat compile",
     "start": "prisma migrate deploy && next start -H 0.0.0.0 -p ${PORT:-3000}",
     "lint": "next lint",
+    "audit": "slither . --print human-summary",
     "migrate:deploy": "prisma migrate deploy",
     "migrate:dev": "prisma migrate dev",
     "db:push": "prisma db push",
