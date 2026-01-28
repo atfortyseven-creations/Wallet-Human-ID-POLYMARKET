@@ -25,12 +25,22 @@ export const wagmiAdapter = new WagmiAdapter({
 export const config = wagmiAdapter.wagmiConfig as Config
 
 // 4. Create the modal
+const metadata = {
+    name: 'HumanID',
+    description: 'The Void Wallet',
+    url: 'https://humanid.fi', // origin must match your domain & subdomain
+    icons: ['https://humanid.fi/android-chrome-192x192.png']
+}
+
 createAppKit({
     adapters: [wagmiAdapter],
     networks,
     projectId,
+    metadata,
     features: {
-        analytics: true // Optional - defaults to your Cloud configuration
+        analytics: true,
+        email: false, // Optional - disable email login if not needed to reduce complexity
+        socials: [], // Optional - disable social login if causing config issues
     },
     themeMode: 'light',
 })
