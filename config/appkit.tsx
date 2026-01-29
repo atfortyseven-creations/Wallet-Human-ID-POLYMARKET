@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { CreateConnectorFn } from 'wagmi';
+import { CreateConnectorFn, WagmiProvider, cookieToInitialState } from 'wagmi';
 import { AppKitNetwork } from "@reown/appkit/networks";
 
 // 1. Get projectId from https://cloud.walletconnect.com
@@ -66,10 +66,13 @@ createAppKit({
 
 export function Web3ModalProvider({ children, cookies }: { children: ReactNode; cookies: string | null }) {
     const { theme } = useTheme();
+    const initialState = cookieToInitialState(wagmiAdapter.wagmiConfig, cookies)
 
     return (
-        <QueryClientProvider client={queryClient}>
-            {children}
-        </QueryClientProvider>
+        <WagmiProvider config={wagmiAdapter.wagmiConfig as any} initialState={initialState}>
+            <QueryClientProvider client={queryClient}>
+                {children}
+            </QueryClientProvider>
+        </WagmiProvider>
     )
 }
