@@ -46,10 +46,10 @@ function CoreMesh({ mode }: CoreProps) {
 
     return (
         <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-            {/* CÁSCARA EXTERIOR (CRISTAL) */}
-            <mesh ref={mesh}>
+            {/* CÁSCARA EXTERIOR (CRISTAL) - SCALED UP FOR WALLPAPER */}
+            <mesh ref={mesh} scale={[2.5, 2.5, 2.5]}>
                 {/* Un octaedro se ve más sci-fi que un cubo simple */}
-                <octahedronGeometry args={[1.2, 0]} />
+                <octahedronGeometry args={[1.5, 0]} />
                 <MeshTransmissionMaterial
                     backside
                     samples={4}       // Calidad del cristal
@@ -74,16 +74,27 @@ function CoreMesh({ mode }: CoreProps) {
                 </mesh>
             </mesh>
 
-            {/* PARTÍCULAS DE ENERGÍA */}
-            <Sparkles count={50} scale={3} size={2} speed={0.4} opacity={0.5} color={targetColor} />
+            {/* PARTÍCULAS DE ENERGÍA (ADAPTATIVAS) */}
+            <Sparkles count={80} scale={8} size={4} speed={0.4} opacity={0.6} color={targetColor} />
+
+            {/* CHISPAS VERDES EXTRA (SOLICITUD USER) */}
+            <Sparkles
+                count={150}
+                scale={10}
+                size={3}
+                speed={0.8}
+                opacity={0.8}
+                color="#10b981" // Emerald Green fijo
+                noise={0.5}
+            />
         </Float>
     );
 }
 
 export default function IdentityCore({ mode = 'LIVE' }: { mode: string }) {
     return (
-        <div className="w-full h-full">
-            <Canvas camera={{ position: [0, 0, 4], fov: 45 }} gl={{ alpha: true }}>
+        <div className="w-full h-full pointer-events-none"> {/* Allow clicks to pass through usually, but canvas catches events */}
+            <Canvas camera={{ position: [0, 0, 8], fov: 45 }} gl={{ alpha: true }}>
                 <ambientLight intensity={0.5} />
                 <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
                 <Environment preset="city" />

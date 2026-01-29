@@ -33,6 +33,7 @@ import { useNetWorth } from "@/hooks/useNetWorth"; // New Hook
 import { ArrowUpRight, ArrowDownRight, RefreshCw } from "lucide-react"; // New Icons
 import { useFPMM } from "@/hooks/useFPMM"; // [NEW] Gnosis Hook
 import { useCTF } from "@/hooks/useCTF"; // [NEW] Gnosis Hook
+import { SoulRing } from "@/components/identity/SoulRing"; // [NEW] Identity Module
 
 // removed local formatCurrency
 // const formatCurrency = ...  <-- Using global context instead
@@ -216,10 +217,12 @@ export default function WalletSection() {
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div className="flex items-center gap-4">
                     <div className="relative group">
-                        <div className="absolute inset-0 bg-indigo-500 blur-lg opacity-20 group-hover:opacity-40 transition-opacity" />
-                        <div className="relative p-3 bg-[var(--bg-card)] border border-[var(--border-main)] rounded-2xl flex items-center gap-2">
-                            <Wallet className="w-6 h-6 text-indigo-400" />
-                        </div>
+                        {/* SoulRing Wrapper */}
+                        <SoulRing>
+                            <div className="relative p-3 bg-[var(--bg-card)] border border-[var(--border-main)] rounded-full flex items-center justify-center w-12 h-12">
+                                <Wallet className="w-5 h-5 text-indigo-400" />
+                            </div>
+                        </SoulRing>
                     </div>
                     <div>
                         <h2 className="text-xl font-bold text-[var(--text-primary)] tracking-tight">Main Vault</h2>
@@ -241,7 +244,6 @@ export default function WalletSection() {
                     </div>
                 </div>
 
-                {/* Status Badges */}
                 {/* Status Badges */}
                 <div className="flex items-center gap-3">
                     {/* Network Badge Removed as per user request (moved to MainVault) */}
