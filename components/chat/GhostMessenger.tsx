@@ -29,6 +29,7 @@ function GhostMessengerInner() {
     const [peerAddress, setPeerAddress] = useState('');
     const [conversation, setConversation] = useState<any>(null);
     const [isConnected, setIsConnected] = useState(false);
+    const [isValidating, setIsValidating] = useState(false);
 
     const { client, setClient } = useXMTP();
     const { data: walletClient } = useWalletClient();
@@ -97,31 +98,42 @@ function GhostMessengerInner() {
         }
     };
 
-    // Start Chat
+    // Start Chat with improved validation
     const handleStartChat = async () => {
-        if (!client || !peerAddress) return;
+        if (!client || !peerAddress || isValidating) return;
 
         // Validate address format
         if (!peerAddress.startsWith('0x') || peerAddress.length !== 42) {
-            toast.error("Invalid Ethereum address");
+            toast.error("Invalid Ethereum address format");
             return;
         }
 
         try {
+            setIsValidating(true);
+
             // Check if user can message
             const canMessage = await client.canMessage([peerAddress]);
             if (!canMessage[peerAddress]) {
-                toast.error("Recipient has not activated XMTP yet");
+                toast.error(
+                    "This address has not activated XMTP chat yet.",
+                    {
+                        description: "Tell them to connect via Coinbase Wallet, Lenster, or HumanID and enable XMTP messaging.",
+                        duration: 6000
+                    }
+                );
                 return;
             }
 
             // Create a DM conversation (V3 uses conversations.newConversation)
             const conv = await client.conversations.newDm(peerAddress);
             setConversation(conv);
-            toast.success(`Connected to ${peerAddress.slice(0, 6)}...`);
-        } catch (e) {
-            console.error(e);
-            toast.error("Failed to start conversation");
+            toast.success(`🔗 Connected to ${peerAddress.slice(0, 6)}...${peerAddress.slice(-4)}`);
+        } catch (e: any) {
+            console.error('[XMTP] Start chat error:', e);
+            const errorMsg = e?.message || 'Unknown error';
+            toast.error(`Failed to start conversation: ${errorMsg.slice(0, 60)}`);
+        } finally {
+            setIsValidating(false);
         }
     };
 
@@ -202,13 +214,29 @@ function GhostMessengerInner() {
                                             placeholder="0x..."
                                             value={peerAddress}
                                             onChange={(e) => setPeerAddress(e.target.value)}
-                                            className="flex-1 bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500"
+                                            onKeyDown={(e) => e.key === 'Enter' && !isValidating && handleStartChat()}
+                                            disabled={isValidating}
+                                            className="flex-1 bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500 disabled:opacity-50"
                                         />
                                         <button
                                             onClick={handleStartChat}
-                                            className="p-2 bg-white/10 hover:bg-white/20 rounded-lg text-white"
+                                            disabled={isValidating || !peerAddress}
+                                            className="p-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            title={isValidating ? 'Validating address...' : 'Send message'}
                                         >
-                                            <Send size={14} />
+                                            {isValidating ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
+                                        </button>
+                                    </div>
+
+                                    {/* Quick Test Addresses */}
+                                    <div className="mb-4">
+                                        <div className="text-[10px] text-zinc-600 mb-2 uppercase tracking-wider">Quick Connect (Test)</div>
+                                        <button
+                                            onClick={() => setPeerAddress('0x4b70d04124c2996De29e0cea0588a04B0F563A5b')}
+                                            className="w-full text-left px-3 py-2 bg-zinc-900/50 hover:bg-zinc-800/50 border border-white/5 rounded-lg text-[10px] text-zinc-400 font-mono transition-colors"
+                                        >
+                                            📡 XMTP Test Bot
+                                            <span className="block text-[9px] text-zinc-600 mt-0.5">0x4b70...3A5b</span>
                                         </button>
                                     </div>
 
@@ -217,7 +245,7 @@ function GhostMessengerInner() {
                                         <div className="text-[10px] text-zinc-600 mb-2">DETECTED SIGNALS</div>
                                         <div className="space-y-2">
                                             {[1, 2, 3].map(i => (
-                                                <div key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-pointer opacity-50">
+                                                <div key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 cursor-not-allowed opacity-30">
                                                     <div className="w-8 h-8 rounded-full bg-zinc-800" />
                                                     <div className="flex-1">
                                                         <div className="h-2 w-20 bg-zinc-800 rounded mb-1" />
@@ -225,7 +253,10 @@ function GhostMessengerInner() {
                                                     </div>
                                                 </div>
                                             ))}
-                                            <div className="text-center text-[10px] text-zinc-600 mt-4">History module syncing...</div>
+                                            <div className="flex items-center justify-center gap-2 text-center text-[10px] text-zinc-600 mt-4">
+                                                <Loader2 size={10} className="animate-spin" />
+                                                History module syncing...
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
