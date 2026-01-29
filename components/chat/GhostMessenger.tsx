@@ -45,13 +45,21 @@ function GhostMessengerInner() {
 
         try {
             setIsInitializing(true);
+            console.log('[XMTP] Starting initialization...');
+            console.log('[XMTP] Wallet Client:', walletClient);
+
             const signer = walletClientToSigner(walletClient);
+            console.log('[XMTP] Signer created:', signer);
+
             const xmtp = await initialize({ signer });
+            console.log('[XMTP] Client initialized:', xmtp);
+
             setIsConnected(true);
             toast.success("Secure Uplink Established");
-        } catch (e) {
-            console.error(e);
-            toast.error("Failed to initialize secure channel");
+        } catch (e: any) {
+            console.error('[XMTP] Initialization failed:', e);
+            const errorMsg = e?.message || e?.toString() || 'Unknown error';
+            toast.error(`Failed to initialize: ${errorMsg.slice(0, 50)}`);
         } finally {
             setIsInitializing(false);
         }
