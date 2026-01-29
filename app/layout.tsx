@@ -28,7 +28,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://humanid.fi'),
+    metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://www.humanidfi.com'),
     title: 'HumanID.fi | The Void Wallet',
     description: 'Sybil-resistant financial engine for Polymarket. Built on Base Sepolia.',
     icons: {
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: 'HumanID.fi | Sovereign Intelligence',
         description: 'Identity-First Decentralized Finance. Verify your humanity, access the global intel feed.',
-        url: 'https://humanid.fi',
+        url: 'https://www.humanidfi.com',
         siteName: 'HumanID.fi',
         images: [
             {

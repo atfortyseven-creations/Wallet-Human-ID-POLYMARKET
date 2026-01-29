@@ -29,8 +29,8 @@ export const config = wagmiAdapter.wagmiConfig as Config
 const metadata = {
     name: 'HumanID',
     description: 'The Void Wallet',
-    url: 'https://humanid.fi', // origin must match your domain & subdomain
-    icons: ['https://humanid.fi/android-chrome-192x192.png']
+    url: 'https://www.humanidfi.com', // origin must match your domain & subdomain
+    icons: ['https://www.humanidfi.com/android-chrome-192x192.png']
 }
 
 createAppKit({
