@@ -8,6 +8,7 @@ export const USDC_ADDRESSES: Record<number, Address> = {
     [optimism.id]: "0x0b2C639c5343465d47499142552a7ba59dd7346F", // Native USDC
     [arbitrum.id]: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831", // Native USDC
     [base.id]: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", // Native USDC
+    [84532]: "0x036CbD53842c5426634e7929541eC2318f3dCF7e", // Base Sepolia USDC
 };
 
 export const getUsdcAddress = (chainId: number): Address | undefined => {

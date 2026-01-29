@@ -1,30 +1,105 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUpRight, ArrowDownLeft, Copy, X, Send, QrCode, ExternalLink, ChevronRight } from 'lucide-react';
-
-// --- MOCK DATA (Simulación de Indexador) ---
-const ASSETS = [
-    { id: 'eth', symbol: 'ETH', name: 'Ethereum', balance: 1.4502, price: 3240.50, change: '+2.4%', icon: '🔹', network: 'Base Sepolia' },
-    { id: 'usdc', symbol: 'USDC', name: 'USD Coin', balance: 540.00, price: 1.00, change: '+0.01%', icon: '💲', network: 'Base Sepolia' },
-    { id: 'wld', symbol: 'WLD', name: 'Worldcoin', balance: 125.00, price: 7.80, change: '-1.2%', icon: '🌍', network: 'Optimism' },
-    { id: 'hmnd', symbol: 'HMND', name: 'HumanID Gov', balance: 15000.00, price: 0.15, change: '+12.5%', icon: '🧬', network: 'HumanID Chain' },
-];
+import { ArrowUpRight, ArrowDownLeft, Copy, X, Send, QrCode } from 'lucide-react';
+import { useAccount, useBalance, useReadContracts } from 'wagmi';
+import { formatEther, formatUnits, erc20Abi } from 'viem';
+import { useTokenPrice } from '@/hooks/useTokenPrice';
+import { getUsdcAddress, WLD_TOKEN_ADDRESS } from '@/config/tokens';
+import { toast } from 'sonner';
 
 export function TokenPortfolio() {
+    const { address, chainId } = useAccount();
     const [selectedToken, setSelectedToken] = useState<any>(null);
     const [view, setView] = useState<'details' | 'send' | 'receive'>('details');
 
-    const openToken = (token: any) => {
-        setSelectedToken(token);
-        setView('details');
+    // --- PRICES ---
+    const { prices, changes, isLoading: isPricesLoading } = useTokenPrice();
+
+    // --- BALANCES ---
+    // 1. Native ETH
+    const { data: ethBalance } = useBalance({ address });
+
+    // 2. ERC20s (USDC, WLD)
+    const usdcAddress = chainId ? getUsdcAddress(chainId) : undefined;
+
+    const { data: tokenBalances } = useReadContracts({
+        contracts: [
+            {
+                address: usdcAddress,
+                abi: erc20Abi,
+                functionName: 'balanceOf',
+                args: [address as `0x${string}`],
+            },
+            {
+                address: WLD_TOKEN_ADDRESS,
+                abi: erc20Abi,
+                functionName: 'balanceOf',
+                args: [address as `0x${string}`],
+            }
+        ],
+        query: {
+            enabled: !!address,
+            refetchInterval: 10000
+        }
+    });
+
+    // --- DATA TRANSFORMATION ---
+    const assets = useMemo(() => {
+        if (!address) return [];
+
+        const ethVal = ethBalance ? parseFloat(ethBalance.formatted) : 0;
+        const usdcVal = tokenBalances?.[0]?.result ? parseFloat(formatUnits(tokenBalances[0].result as bigint, 6)) : 0; // USDC usually 6 decimals
+        const wldVal = tokenBalances?.[1]?.result ? parseFloat(formatEther(tokenBalances[1].result as bigint)) : 0; // WLD 18 decimals
+
+        return [
+            {
+                id: 'eth',
+                symbol: 'ETH',
+                name: 'Ethereum',
+                balance: ethVal,
+                price: prices.ETH || 0,
+                change: changes.ETH || 0,
+                icon: '🔹',
+                network: 'Base Sepolia',
+                decimals: 18
+            },
+            {
+                id: 'usdc',
+                symbol: 'USDC',
+                name: 'USD Coin',
+                balance: usdcVal,
+                price: prices.USDC || 1, // Stablecoin fallback
+                change: changes.USDC || 0,
+                icon: '💲',
+                network: 'Base Sepolia',
+                decimals: 6
+            },
+            {
+                id: 'wld',
+                symbol: 'WLD',
+                name: 'Worldcoin',
+                balance: wldVal,
+                price: prices.WLD || 0,
+                change: changes.WLD || 0,
+                icon: '🌍',
+                network: 'Optimism / Base',
+                decimals: 18
+            }
+        ];
+    }, [ethBalance, tokenBalances, prices, changes, address]);
+
+    // Helpers
+    const openToken = (token: any) => { setSelectedToken(token); setView('details'); };
+    const closeToken = () => setSelectedToken(null);
+    const formatUSD = (val: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+    const formatChange = (val: number) => {
+        const sign = val >= 0 ? '+' : '';
+        return `${sign}${val.toFixed(2)}%`;
     };
 
-    const closeToken = () => setSelectedToken(null);
-
-    // Formateador de dinero
-    const formatUSD = (val: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val);
+    if (!address) return null; // Or return generic skeleton
 
     return (
         <>
@@ -33,12 +108,12 @@ export function TokenPortfolio() {
                 <div className="p-4 border-b border-white/5 flex justify-between items-center">
                     <h3 className="text-sm font-medium text-gray-400 tracking-wider">PORTFOLIO ASSETS</h3>
                     <span className="text-xs bg-[#00f2ea]/10 text-[#00f2ea] px-2 py-1 rounded border border-[#00f2ea]/20">
-                        {ASSETS.length} TOKENS
+                        {assets.length} TOKENS
                     </span>
                 </div>
 
                 <div className="divide-y divide-white/5">
-                    {ASSETS.map((token) => (
+                    {assets.map((token) => (
                         <motion.div
                             key={token.id}
                             onClick={() => openToken(token)}
@@ -53,7 +128,7 @@ export function TokenPortfolio() {
                                 <div>
                                     <h4 className="text-white font-bold text-sm">{token.name}</h4>
                                     <div className="flex items-center gap-2">
-                                        <span className="text-xs text-gray-500 font-mono">{token.balance} {token.symbol}</span>
+                                        <span className="text-xs text-gray-500 font-mono">{token.balance.toFixed(4)} {token.symbol}</span>
                                         <span className="text-[10px] text-gray-600 bg-white/5 px-1 rounded">{token.network}</span>
                                     </div>
                                 </div>
@@ -62,8 +137,8 @@ export function TokenPortfolio() {
                             {/* Derecha: Valor + Cambio */}
                             <div className="text-right">
                                 <p className="text-white font-mono font-medium">{formatUSD(token.balance * token.price)}</p>
-                                <p className={`text-xs ${token.change.startsWith('+') ? 'text-emerald-400' : 'text-red-400'}`}>
-                                    {token.change}
+                                <p className={`text-xs ${token.change >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                                    {formatChange(token.change)}
                                 </p>
                             </div>
                         </motion.div>
@@ -101,7 +176,7 @@ export function TokenPortfolio() {
                                     <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-white/5 to-white/0 border border-white/10 flex items-center justify-center text-4xl mb-4 shadow-[0_0_30px_rgba(0,242,234,0.1)]">
                                         {selectedToken.icon}
                                     </div>
-                                    <h2 className="text-3xl font-bold text-white mb-1">{selectedToken.balance} <span className="text-lg text-gray-500">{selectedToken.symbol}</span></h2>
+                                    <h2 className="text-3xl font-bold text-white mb-1">{selectedToken.balance.toFixed(4)} <span className="text-lg text-gray-500">{selectedToken.symbol}</span></h2>
                                     <p className="text-gray-400 font-mono mb-8">≈ {formatUSD(selectedToken.balance * selectedToken.price)}</p>
 
                                     {/* Botones de Acción */}
@@ -156,16 +231,23 @@ export function TokenPortfolio() {
                             {view === 'receive' && (
                                 <div className="flex flex-col items-center text-center space-y-6">
                                     <div className="p-4 bg-white rounded-xl">
-                                        {/* QR FALSO GENERADO CON CSS PARA DEMO */}
-                                        <div className="w-40 h-40 bg-gray-900 pattern-grid-lg opacity-80" />
+                                        {/* QR GENERATOR (Real QR logic should go here) */}
+                                        <div className="w-40 h-40 bg-gray-900 flex items-center justify-center">
+                                            <QrCode size={64} className="text-white opacity-50" />
+                                        </div>
                                     </div>
                                     <div className="space-y-2 w-full">
                                         <p className="text-xs text-gray-500">Tu dirección {selectedToken.network}</p>
                                         <div
                                             className="flex items-center justify-between bg-white/5 border border-white/10 rounded-xl p-3 cursor-pointer hover:bg-white/10 active:scale-95 transition-all"
-                                            onClick={() => navigator.clipboard.writeText('0x7883...7b4a')}
+                                            onClick={() => {
+                                                if (address) {
+                                                    navigator.clipboard.writeText(address);
+                                                    toast.success("Address copied");
+                                                }
+                                            }}
                                         >
-                                            <code className="text-xs text-[#00f2ea] font-mono truncate mr-2">0x7883...7b4a</code>
+                                            <code className="text-xs text-[#00f2ea] font-mono truncate mr-2">{address ? `${address.substring(0, 8)}...${address.substring(address.length - 8)}` : '...'}</code>
                                             <Copy size={14} className="text-gray-400" />
                                         </div>
                                     </div>
