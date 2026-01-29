@@ -30,12 +30,25 @@ const nextConfig = {
         ignoreDuringBuilds: true
     },
 
+    // RAILWAY / XMTP FIXES
+    experimental: {
+        serverComponentsExternalPackages: [
+            '@xmtp/user-preferences-bindings-wasm',
+            '@xmtp/react-sdk',
+            '@xmtp/xmtp-js',
+            'sharp',
+            'onnxruntime-node'
+        ]
+    },
+
     // WEBPACK (Wagmi/RainbowKit Polyfills)
     webpack: (config, { webpack }) => {
         config.resolve.fallback = { fs: false, net: false, tls: false, buffer: require.resolve('buffer/') };
         config.resolve.alias = {
             ...config.resolve.alias,
             '@react-native-async-storage/async-storage': false,
+            'sharp$': false,
+            'onnxruntime-node$': false,
         };
         config.externals.push('pino-pretty', 'lokijs', 'encoding');
 
