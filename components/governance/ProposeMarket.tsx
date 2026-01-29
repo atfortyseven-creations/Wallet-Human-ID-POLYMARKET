@@ -258,7 +258,7 @@ export function ProposeMarket({ onClose }: ProposeMarketProps) {
     };
 
     return (
-        <div className="w-full h-full flex flex-col">
+        <div className="w-full mb-8">
 
             {/* World ID Verification Card */}
             <VoidCard className={`mb-6 p-4 flex items-center justify-between transition-colors ${isVerified ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-surface/50'}`}>
@@ -293,7 +293,7 @@ export function ProposeMarket({ onClose }: ProposeMarketProps) {
             </VoidCard>
 
             {/* Proposal Form */}
-            <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto pr-2 space-y-5 custom-scrollbar">
+            <form onSubmit={handleSubmit} className="w-full space-y-5">
 
                 <div className="grid grid-cols-2 gap-4">
                     <VoidInput

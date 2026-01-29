@@ -7,6 +7,7 @@ import { useAccount } from 'wagmi';
 import useSWR from 'swr';
 import { ChronosLens } from '@/components/oracle/ChronosLens';
 import { useFactCheck } from '@/hooks/useFactCheck';
+import { ProposeMarket } from '@/components/governance/ProposeMarket';
 
 interface Proposal {
     id: string;
@@ -110,8 +111,11 @@ export function GovernanceProposals() {
                     ENCUESTAS CREADAS POR HUMANOS VERIFICADOS
                 </h1>
             </div>
+
+            {/* Governance Creation Card */}
+            <ProposeMarket />
             
-            <div className="flex items-center justify-between text-zinc-400 text-xs mb-2">
+            <div className="flex items-center justify-between text-zinc-400 text-xs mb-2 mt-8 border-t border-white/10 pt-4">
                 <span className="flex items-center gap-1">
                     <Vote className="w-3 h-3" />
                     Encuestas Activas
