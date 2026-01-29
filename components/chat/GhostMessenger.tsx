@@ -9,6 +9,20 @@ import { walletClientToSigner } from './XMTPProviderWrapper';
 import { toast } from 'sonner';
 
 export function GhostMessenger() {
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) {
+        return null;
+    }
+
+    return <GhostMessengerInner />;
+}
+
+function GhostMessengerInner() {
     const [isOpen, setIsOpen] = useState(false);
     const [isInitializing, setIsInitializing] = useState(false);
     const [peerAddress, setPeerAddress] = useState('');
@@ -220,8 +234,8 @@ export function GhostMessenger() {
                                             return (
                                                 <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                                                     <div className={`max-w-[80%] rounded-xl p-3 text-xs ${isMe
-                                                            ? 'bg-indigo-600 text-white rounded-br-none'
-                                                            : 'bg-zinc-800 text-zinc-200 rounded-bl-none'
+                                                        ? 'bg-indigo-600 text-white rounded-br-none'
+                                                        : 'bg-zinc-800 text-zinc-200 rounded-bl-none'
                                                         }`}>
                                                         {msg.content}
                                                         <div className={`text-[9px] mt-1 ${isMe ? 'text-indigo-200' : 'text-zinc-500'} text-right`}>
