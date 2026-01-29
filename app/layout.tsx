@@ -14,6 +14,7 @@ import { TermsGate } from '@/components/compliance/TermsGate';
 import { BaseGasWidget } from '@/components/compliance/BaseGasWidget';
 import RegisterSW from '@/components/pwa/RegisterSW';
 import '@/components/polyfills'; // <-- Import early to fix WalletConnect Buffer issue
+import { GlobalErrorBoundary } from '@/components/GlobalErrorBoundary';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' });
@@ -81,17 +82,19 @@ export default function RootLayout({
                 <BootSequence />
                 <BackgroundVideo />
                 <BaseGasWidget />
-                <Providers>
-                    <AppProvider>
-                        <WorldProvider>
-                            <VoidShell>
-                                {children}
-                                <Footer />
-                            </VoidShell>
-                            <Toaster richColors theme="dark" />
-                        </WorldProvider>
-                    </AppProvider>
-                </Providers>
+                <GlobalErrorBoundary>
+                    <Providers>
+                        <AppProvider>
+                            <WorldProvider>
+                                <VoidShell>
+                                    {children}
+                                    <Footer />
+                                </VoidShell>
+                                <Toaster richColors theme="dark" />
+                            </WorldProvider>
+                        </AppProvider>
+                    </Providers>
+                </GlobalErrorBoundary>
             </body>
         </html>
     );
