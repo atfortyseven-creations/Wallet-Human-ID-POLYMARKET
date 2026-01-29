@@ -31,6 +31,17 @@ export const metadata: Metadata = {
     metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://humanid.fi'),
     title: 'HumanID.fi | The Void Wallet',
     description: 'Sybil-resistant financial engine for Polymarket. Built on Base Sepolia.',
+    icons: {
+        icon: [
+            { url: '/logo.png', sizes: 'any' },
+            { url: '/assets/icon-16.png', sizes: '16x16', type: 'image/png' },
+            { url: '/assets/icon-48.png', sizes: '48x48', type: 'image/png' },
+            { url: '/assets/icon-128.png', sizes: '128x128', type: 'image/png' },
+        ],
+        apple: [
+            { url: '/assets/icon-128.png', sizes: '128x128', type: 'image/png' },
+        ],
+    },
     openGraph: {
         title: 'HumanID.fi | Sovereign Intelligence',
         description: 'Identity-First Decentralized Finance. Verify your humanity, access the global intel feed.',

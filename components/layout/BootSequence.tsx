@@ -119,14 +119,29 @@ export const BootSequence = () => {
                         animate={{ scale: 1, opacity: 1 }}
                         className="relative z-10 w-full max-w-lg p-8 mx-4"
                     >
-                        {/* Título y Estado */}
-                        <div className="flex flex-col items-center mb-12 space-y-4 text-center">
+                        {/* Logo and Title */}
+                        <div className="flex flex-col items-center mb-12 space-y-6 text-center">
+                            {/* Logo Image */}
+                            <motion.div
+                                initial={{ scale: 0.8, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                transition={{ duration: 0.5 }}
+                                className="relative w-20 h-20"
+                            >
+                                <img
+                                    src="/logo.png"
+                                    alt="HumanID.fi Logo"
+                                    className="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(0,242,234,0.5)]"
+                                />
+                            </motion.div>
+
+                            {/* Company Name */}
                             <motion.h1
                                 className="text-5xl md:text-6xl font-black tracking-tighter text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]"
                                 animate={{ textShadow: ["0 0 10px rgba(255,255,255,0.2)", "0 0 20px rgba(255,255,255,0.6)", "0 0 10px rgba(255,255,255,0.2)"] }}
                                 transition={{ duration: 2, repeat: Infinity }}
                             >
-                                HUMAN<span className="text-[#00f2ea]">ID</span>
+                                HUMAN<span className="text-[#00f2ea]">ID</span>.fi
                             </motion.h1>
 
                             <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
