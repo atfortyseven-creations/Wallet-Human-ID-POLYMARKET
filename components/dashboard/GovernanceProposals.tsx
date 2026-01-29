@@ -7,7 +7,7 @@ import { useAccount } from 'wagmi';
 import useSWR from 'swr';
 import { ChronosLens } from '@/components/oracle/ChronosLens';
 import { useFactCheck } from '@/hooks/useFactCheck';
-import { useFactCheck } from '@/hooks/useFactCheck';
+
 
 interface Proposal {
     id: string;
@@ -97,101 +97,14 @@ export function GovernanceProposals() {
     }
 
     return (
-        <div className="space-y-4">
-            {/* Content removed as per user request to show only background */}
-        </div>
-    );
-}
-
-// Extracted Sub-Component to isolate JSX scope and prevent syntax errors
-function ProposalCard({ 
-    proposal, 
-    onVote, 
-    votingProposal 
-}: { 
-    proposal: Proposal; 
-    onVote: (id: string, idx: number, proof: ISuccessResult) => void;
-    votingProposal: string | null;
-}) {
-    const { result } = useFactCheck({ claim: proposal.question });
-
-    return (
-        <div className="bg-gradient-to-br from-indigo-900/10 to-purple-900/10 border border-indigo-500/20 p-5 rounded-2xl hover:border-indigo-500/40 transition-all">
-            <div className="flex items-start justify-between mb-3">
-                <div className="flex-1">
-                    <span className="text-[10px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded font-bold uppercase">
-                        {proposal.category}
-                    </span>
-                    <h3 className="text-base font-bold text-white mt-2 mb-1">
-                        {proposal.question}
-                    </h3>
-                    {proposal.description && (
-                        <p className="text-xs text-zinc-400 line-clamp-2">
-                            {proposal.description}
-                        </p>
-                    )}
-                </div>
-            </div>
-
-            {result && (
-                <div className="flex justify-center my-4 border-y border-white/5 py-4">
-                    <ChronosLens
-                        status={result.status}
-                        truthScore={result.truthScore}
-                        sources={result.sources.length}
-                        provenanceStamp={result.provenanceStamp}
+        <div className="flex items-center justify-center min-h-[50vh]">
+             <div className="flex justify-center mb-4">
+                    <img 
+                        src="/fingerprint-inverted.png" 
+                        alt="Human Verification" 
+                        className="w-32 h-32 opacity-20 invert brightness-0 contrast-200 animate-pulse" 
+                        style={{ filter: 'invert(1) brightness(2)' }}
                     />
-                </div>
-            )}
-
-            {proposal.outcomes && proposal.outcomes.length === 2 && (
-                <div className="grid grid-cols-2 gap-3 mt-4">
-                    {proposal.outcomes.map((outcome, idx) => (
-                        <IDKitWidget
-                            key={idx}
-                            app_id={process.env.NEXT_PUBLIC_WLD_APP_ID as `app_${string}`}
-                            action={`vote_${proposal.id}_${outcome}`}
-                            signal={proposal.id}
-                            onSuccess={(proof) => onVote(proposal.id, idx, proof)}
-                            verification_level={VerificationLevel.Orb}
-                        >
-                            {({ open }) => (
-                                <button
-                                    onClick={open}
-                                    disabled={votingProposal === proposal.id}
-                                    className={`py-3 px-4 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${idx === 0
-                                        ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/30'
-                                        : 'bg-red-500/20 border border-red-500/40 text-red-300 hover:bg-red-500/30'
-                                        } disabled:opacity-50 disabled:cursor-not-allowed`}
-                                >
-                                    {votingProposal === proposal.id ? (
-                                        <>
-                                            <Loader2 className="w-4 h-4 animate-spin" />
-                                            <span>Votando...</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Vote className="w-4 h-4" />
-                                            <span>{outcome}</span>
-                                        </>
-                                    )}
-                                </button>
-                            )}
-                        </IDKitWidget>
-                    ))}
-                </div>
-            )}
-
-            <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
-                <span className="text-[10px] text-zinc-500 font-mono">
-                    Por: {proposal.creatorAddress?.slice(0, 6)}...{proposal.creatorAddress?.slice(-4)}
-                </span>
-                {proposal.votes !== undefined && (
-                    <span className="text-[10px] text-indigo-400 font-bold flex items-center gap-1">
-                        <CheckCircle2 size={10} />
-                        {proposal.votes} votos
-                    </span>
-                )}
             </div>
         </div>
     );
