@@ -30,13 +30,9 @@ interface CoreProps {
 
 function CoreMesh({ mode }: CoreProps) {
     const mesh = useRef<THREE.Mesh>(null);
-    const innerMesh = useRef<THREE.Mesh>(null);
-
-    // Color objetivo (para transiciones suaves)
-    const targetColor = new THREE.Color(MODE_COLORS[mode as keyof typeof MODE_COLORS] || '#00f2ea');
 
     useFrame((state, delta) => {
-        if (!mesh.current || !innerMesh.current) return;
+        if (!mesh.current) return;
 
         // 1. SEGUIMIENTO DEL MOUSE (Suave como la seda)
         // Usamos 'lerp' para que el movimiento tenga inercia y peso
@@ -44,22 +40,13 @@ function CoreMesh({ mode }: CoreProps) {
 
         mesh.current.rotation.x = THREE.MathUtils.lerp(mesh.current.rotation.x, y * 0.5, 0.05);
         mesh.current.rotation.y = THREE.MathUtils.lerp(mesh.current.rotation.y, x * 0.5, 0.05);
-
-        // 2. ANIMACIÓN "RESPIRACIÓN" (El núcleo interior pulsa)
-        const t = state.clock.getElapsedTime();
-        innerMesh.current.scale.setScalar(0.5 + Math.sin(t * 2) * 0.05);
-
-        // 3. TRANSICIÓN DE COLOR
-        // El material interior cambia de color suavemente según la pestaña
-        (innerMesh.current.material as THREE.MeshStandardMaterial).color.lerp(targetColor, 0.05);
-        (innerMesh.current.material as THREE.MeshStandardMaterial).emissive.lerp(targetColor, 0.05);
     });
 
     return (
         <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-            {/* CÁSCARA EXTERIOR (CRISTAL) - SCALED DOWN 30% */}
-            <mesh ref={mesh} scale={[1.75, 1.75, 1.75]}>
-                {/* Un octaedro se ve más sci-fi que un cubo simple */}
+            {/* PRISMA TRANSPARENTE - MÁS ALTO Y DELGADO */}
+            <mesh ref={mesh} scale={[1.5, 3.5, 1.5]}>
+                {/* Octaedro estirado verticalmente */}
                 <octahedronGeometry args={[1.5, 0]} />
                 <MeshTransmissionMaterial
                     backside
@@ -71,33 +58,7 @@ function CoreMesh({ mode }: CoreProps) {
                     color="#ffffff"
                     resolution={512}
                 />
-
-                {/* ALMA INTERNA (TUS DATOS) */}
-                <mesh ref={innerMesh} scale={[0.5, 0.5, 0.5]}>
-                    <sphereGeometry args={[0.8, 32, 32]} />
-                    <meshStandardMaterial
-                        color="#00f2ea"
-                        emissive="#00f2ea"
-                        emissiveIntensity={3}
-                        wireframe
-                        toneMapped={false}
-                    />
-                </mesh>
             </mesh>
-
-            {/* PARTÍCULAS DE ENERGÍA (ADAPTATIVAS) */}
-            <Sparkles count={80} scale={5.6} size={4} speed={0.4} opacity={0.6} color={targetColor} />
-
-            {/* CHISPAS VERDES EXTRA (SOLICITUD USER) */}
-            <Sparkles
-                count={150}
-                scale={7}
-                size={3}
-                speed={0.8}
-                opacity={0.8}
-                color="#10b981" // Emerald Green fijo
-                noise={0.5}
-            />
         </Float>
     );
 }
