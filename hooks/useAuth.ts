@@ -32,8 +32,16 @@ export function useAuth() {
         }
     };
 
-    const resetAuth = () => {
-        setIsAuthenticated(false);
+    const resetAuth = async () => {
+        try {
+            // Invalidate server-side session/cookie to prevent refresh bypass
+            await fetch("/api/auth/logout", { method: "POST" });
+            setIsAuthenticated(false);
+        } catch (error) {
+            console.error("Reset auth failed", error);
+            // Still clear client state even if server call fails
+            setIsAuthenticated(false);
+        }
     };
 
     useEffect(() => {

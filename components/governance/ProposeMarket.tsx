@@ -205,8 +205,8 @@ export function ProposeMarket({ onClose }: ProposeMarketProps) {
 
             toast.success('Market Successfully Created & Leaded!');
             
-            // Reset authentication to force re-verification for next poll
-            resetAuth();
+            // Reset authentication with server-side logout (prevents refresh bypass)
+            await resetAuth();
             toast.info('Verificación reseteada. Necesitarás verificarte de nuevo para crear otra encuesta.', {
                 duration: 5000
             });
