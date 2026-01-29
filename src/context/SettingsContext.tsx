@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { dictionary } from '@/src/lib/dictionary';
 
 // --- TYPES ---
 export type Currency = 'USD' | 'EUR' | 'GBP' | 'JPY' | 'MXN';
@@ -55,6 +56,7 @@ export interface SettingsContextType {
     // Helper Functions
     formatAmount: (amount: number) => string;
     lockApp: () => void;
+    t: (key: string) => string;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -170,6 +172,11 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         }).format(value);
     };
 
+    const t = (key: string) => {
+        // @ts-ignore
+        return dictionary[language]?.[key] || dictionary['en'][key] || key;
+    };
+
     return (
         <SettingsContext.Provider value={{
             currency, setCurrency, language, setLanguage, searchEngine, setSearchEngine,
@@ -177,7 +184,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
             testNetsEnabled, toggleTestNets, ipfsGateway, setIpfsGateway, customRPC, setCustomRPC, stateLogsEnabled, toggleStateLogs, resetAccount,
             contacts, addContact, removeContact,
             notifications, toggleNotification,
-            formatAmount, lockApp
+            formatAmount, lockApp, t
         }}>
             {children}
         </SettingsContext.Provider>

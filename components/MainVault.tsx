@@ -39,7 +39,7 @@ export const MainVault = ({ onConnect }: MainVaultProps) => {
     };
 
     return (
-        <div className="bg-[#0a0a0a] p-8 rounded-3xl border border-white/5 shadow-2xl relative overflow-hidden">
+        <div className="bg-[#0a0a0a] text-white p-8 rounded-3xl border border-white/5 shadow-2xl relative overflow-hidden">
             {/* Background Glow for Connected State */}
             {isConnected && !network.isError && (
                 <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 blur-[100px] -z-0" />
