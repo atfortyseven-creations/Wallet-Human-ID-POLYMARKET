@@ -44,9 +44,7 @@ export function IntelFeed() {
             <div className="flex-1 flex flex-col relative z-20 overflow-hidden">
 
                 {/* Space to see 3D background */}
-                <div className="flex-1 min-h-[150px] flex items-center justify-center pointer-events-none">
-                    {/* The 3D lives here visually */}
-                </div>
+
 
                 {/* --- CONTENIDO DE DATOS (SCROLLABLE) --- */}
                 <div className="flex-1 p-4 overflow-y-auto relative z-20 custom-scrollbar">

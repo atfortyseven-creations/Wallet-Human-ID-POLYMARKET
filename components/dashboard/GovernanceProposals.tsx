@@ -138,7 +138,7 @@ function ProposalCard({
     votingProposal 
 }: { 
     proposal: Proposal; 
-    onVote: (id: string, idx: number, proof: any) => void;
+    onVote: (id: string, idx: number, proof: ISuccessResult) => void;
     votingProposal: string | null;
 }) {
     const { result } = useFactCheck({ claim: proposal.question });
