@@ -28,6 +28,7 @@ interface CoreProps {
     mode: string;
 }
 
+/*
 function CoreMesh({ mode }: CoreProps) {
     const mesh = useRef<THREE.Mesh>(null);
 
@@ -44,9 +45,9 @@ function CoreMesh({ mode }: CoreProps) {
 
     return (
         <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-            {/* PRISMA TRANSPARENTE - MÁS ALTO Y DELGADO */}
+            {/* PRISMA TRANSPARENTE - MÁS ALTO Y DELGADO /}
             <mesh ref={mesh} scale={[1.5, 3.5, 1.5]}>
-                {/* Octaedro estirado verticalmente */}
+                {/* Octaedro estirado verticalmente /}
                 <octahedronGeometry args={[1.5, 0]} />
                 <MeshTransmissionMaterial
                     backside
@@ -62,6 +63,7 @@ function CoreMesh({ mode }: CoreProps) {
         </Float>
     );
 }
+*/
 
 // CSS-Only Fallback Component
 function FallbackBackground() {
@@ -121,7 +123,7 @@ export default function IdentityCore({ mode = 'LIVE' }: IdentityCoreProps) {
                 <ambientLight intensity={0.5} />
                 <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
                 <Environment preset="city" />
-                <CoreMesh mode={mode} />
+                {/* <CoreMesh mode={mode} /> Prism removed as per user request */}
             </Canvas>
         </div>
     );

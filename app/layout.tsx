@@ -10,7 +10,7 @@ import { WorldProvider } from '@/src/context/WorldContext';
 import { Toaster } from 'sonner';
 import VoidShell from '@/components/VoidShell';
 import BackgroundVideo from '@/components/layout/BackgroundVideo';
-import { BootSequence } from '@/components/layout/BootSequence';
+// import { BootSequence } from '@/components/layout/BootSequence';
 import { Footer } from '@/components/layout/Footer';
 import { GeoBlocker } from '@/components/logic/GeoBlocker';
 import { TermsGate } from '@/components/compliance/TermsGate';
@@ -176,7 +176,8 @@ export default function RootLayout({
                         <RegisterSW />
                         <TermsGate />
                         <GeoBlocker />
-                        <BootSequence />
+
+                        {/* <BootSequence /> Loading screen removed as per user request */}
                         <BackgroundVideo />
                         <BaseGasWidget />
                         <AppProvider>
