@@ -2,7 +2,7 @@ const isExtension = process.env.EXT_BUILD === 'true';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: 'standalone',
+    // output: 'standalone',
     trailingSlash: isExtension,
     distDir: isExtension ? 'out' : '.next',
 
