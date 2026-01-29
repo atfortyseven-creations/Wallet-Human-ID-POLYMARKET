@@ -104,8 +104,29 @@ model User {
   metrics         UserMetrics?
   trades          Trade[]
   simpleVotes     Vote[]
+  sessions        Session[] // [NEW] Session tracking
 
   @@index([reputation])
+}
+
+// ----------------------------------------------------------------------------
+// 2.1. SESSIONS (Security & Authentication)
+// ----------------------------------------------------------------------------
+
+model Session {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [walletAddress], onDelete: Cascade)
+  sessionToken String   @unique
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  lastActivity DateTime @default(now())
+  ipAddress    String?
+  userAgent    String?
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([sessionToken])
 }
 
 // ----------------------------------------------------------------------------

@@ -22,9 +22,19 @@ export function useAuth() {
         }
     };
 
+    const logout = async () => {
+        try {
+            await fetch("/api/auth/logout", { method: "POST" });
+            setIsAuthenticated(false);
+            window.location.href = "/"; // Redirect to home
+        } catch (error) {
+            console.error("Logout failed", error);
+        }
+    };
+
     useEffect(() => {
         checkAuth();
     }, []);
 
-    return { isAuthenticated, isLoading, login: checkAuth };
+    return { isAuthenticated, isLoading, login: checkAuth, logout };
 }

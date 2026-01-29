@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { verifyWorldIDProof } from "@/lib/worldid";
 import { cookies } from "next/headers";
-import { SignJWT } from "jose"; // Necesitaremos 'jose' para JWT (o jsonwebtoken)
+import { SignJWT } from "jose";
 
 const prisma = new PrismaClient();
 
@@ -22,10 +22,9 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // 2. Verificar la prueba con Worldcoin (Logic Step 2)
-        // PRIORIDAD: Variable de entorno correcta. Fallback solo para dev/test si es necesario.
+        // 2. Verificar la prueba con Worldcoin
         const app_id = process.env.NEXT_PUBLIC_WLD_APP_ID || process.env.WLD_APP_ID || "app_d2014c58bb084dcb09e1f3c1c1144287";
-        const action = "login"; // Debe coincidir con el frontend
+        const action = "login";
 
         console.log("Verifying World ID with:", { app_id, action, hasProof: !!proof });
 
@@ -50,26 +49,19 @@ export async function POST(request: NextRequest) {
 
         const nullifierHash = proof.nullifier_hash;
 
-        // 3. Lógica de Usuario y Base de Datos (Logic Step 3)
-
-        // A) Buscar usuario por nullifier_hash
+        // 3. Lógica de Usuario y Base de Datos
         let user = await prisma.user.findUnique({
             where: { worldIdNullifierHash: nullifierHash },
         });
 
-        // B) Escenario Migración: No existe por nullifier, intentamos linkear si hay wallet
         if (!user) {
             if (walletAddress) {
-                // Buscamos si el usuario existe por wallet
                 const existingUserByWallet = await prisma.user.findUnique({
                     where: { walletAddress: walletAddress },
                 });
 
                 if (existingUserByWallet) {
-                    // LINK: Actualizamos el usuario existente con el nullifier
                     if (existingUserByWallet.worldIdNullifierHash && existingUserByWallet.worldIdNullifierHash !== nullifierHash) {
-                        // PRECAUCIÓN: Ya tiene otro World ID. Política: Rechazar o Sobreescribir?
-                        // Por seguridad, rechazamos el hijacking.
                         return NextResponse.json(
                             { error: "Wallet already linked to another World ID" },
                             { status: 409 }
@@ -81,7 +73,6 @@ export async function POST(request: NextRequest) {
                         data: { worldIdNullifierHash: nullifierHash },
                     });
                 } else {
-                    // CREATE: Nuevo usuario con wallet (SignUp)
                     user = await prisma.user.create({
                         data: {
                             walletAddress: walletAddress,
@@ -89,14 +80,11 @@ export async function POST(request: NextRequest) {
                         },
                     });
 
-                    // Inicializar métricas
                     await prisma.userMetrics.create({
                         data: { userAddress: walletAddress }
                     });
                 }
             } else {
-                // CREATE: Nuevo usuario SIN wallet - usar nullifier_hash como ID temporal
-                // El usuario puede vincular su wallet más tarde
                 const tempWalletAddress = `worldid_${nullifierHash.slice(0, 16)}`;
 
                 user = await prisma.user.create({
@@ -106,29 +94,48 @@ export async function POST(request: NextRequest) {
                     },
                 });
 
-                // Inicializar métricas
                 await prisma.userMetrics.create({
                     data: { userAddress: tempWalletAddress }
                 });
             }
         }
 
-        // 4. Generar Session Token (JWT)
-        // Usamos 'jose' para un entorno edge-friendly si fuera necesario
+        // 4. [NEW] Create Session in Database
+        const sessionToken = crypto.randomUUID(); // Secure random session ID
+        const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour from now
+
+        // Get optional request info for security tracking
+        const ipAddress = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+        const userAgent = request.headers.get('user-agent') || 'unknown';
+
+        // Create session record
+        const session = await prisma.session.create({
+            data: {
+                userId: user.walletAddress,
+                sessionToken,
+                expiresAt,
+                ipAddress,
+                userAgent,
+            }
+        });
+
+        // 5. [UPDATED] Generate JWT with session token (1 hour expiration)
         const token = await new SignJWT({
             sub: user.walletAddress,
-            nullifier: user.worldIdNullifierHash
+            nullifier: user.worldIdNullifierHash,
+            sessionId: session.id, // Link to database session
         })
             .setProtectedHeader({ alg: 'HS256' })
             .setIssuedAt()
-            .setExpirationTime('24h')
+            .setExpirationTime('1h') // Changed from 24h to 1h
             .sign(new TextEncoder().encode(JWT_SECRET));
 
-        // Establecer cookie (opcional, o devolver en body)
+        // 6. [UPDATED] Set SESSION cookie (expires when browser closes)
         cookies().set("auth_token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            maxAge: 60 * 60 * 24, // 1 day
+            // NO maxAge = session cookie, expires when browser closes
+            sameSite: 'lax', // CSRF protection
             path: "/",
         });
 

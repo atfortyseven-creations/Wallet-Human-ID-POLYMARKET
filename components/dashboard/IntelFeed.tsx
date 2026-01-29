@@ -203,14 +203,6 @@ export function IntelFeed() {
 
                     </AnimatePresence>
                 </div>
-
-                {/* --- TICKER FOOTER --- */}
-                <div className="px-4 py-2 border-t border-white/10 bg-black/40 flex justify-between items-center text-[10px] font-mono text-zinc-600 z-20">
-                    <span>Updated: {new Date().toLocaleTimeString()}</span>
-                    <span className="flex items-center gap-1">
-                        <Lock size={10} /> ENCRYPTED
-                    </span>
-                </div>
             </div>
         </div>
     );
