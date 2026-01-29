@@ -8,7 +8,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import SettingsMenu from "./SettingsMenu";
 import { useAuth } from "@/hooks/useAuth";
-import { GhostMessenger } from './chat/GhostMessenger'; // [NEW] Phase 4
+import dynamic from 'next/dynamic';
+const GhostMessenger = dynamic(() => import('./chat/GhostMessenger').then(mod => mod.GhostMessenger), { ssr: false });
 import XMTPProviderWrapper from './chat/XMTPProviderWrapper'; // [NEW] Phase 4
 import IdentityCore from './3d/IdentityCore'; // [NEW] Global 3D Background
 

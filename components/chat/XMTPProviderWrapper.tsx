@@ -22,6 +22,11 @@ export function walletClientToSigner(walletClient: any) {
 export default function XMTPProviderWrapper({ children }: { children: React.ReactNode }) {
     const { data: walletClient } = useWalletClient();
     const [signer, setSigner] = useState<any>(null);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     useEffect(() => {
         if (walletClient) {
@@ -30,8 +35,8 @@ export default function XMTPProviderWrapper({ children }: { children: React.Reac
         }
     }, [walletClient]);
 
-    // If no wallet connected, we can still render children but chat won't work
-    // or we can block it. For now, let's allow rendering.
+    // Loop Fix: Use mounted check to avoid hydration mismatch or generic provider errors on server
+    if (!mounted) return <>{children}</>;
 
     return (
         <XMTPProvider>
