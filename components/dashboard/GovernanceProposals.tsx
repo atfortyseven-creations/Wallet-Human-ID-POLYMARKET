@@ -55,20 +55,19 @@ export function GovernanceProposals() {
                         nullifier_hash: proof.nullifier_hash,
                         proof: proof.proof,
                         verification_level: proof.verification_level,
-                    }
+                    },
                 }),
             });
 
-            const data = await res.json();
-
             if (!res.ok) {
-                throw new Error(data.error || 'Failed to vote');
+                const error = await res.text();
+                throw new Error(error || 'Fallo al votar');
             }
 
-            toast.success(`¡Voto registrado: ${vote === 'FOR' ? 'A favor' : 'En contra'}!`);
+            toast.success(`¡Voto registrado: ${vote}!`);
             mutate(); // Refresh proposals
         } catch (error: any) {
-            console.error('Vote error:', error);
+            console.error('Error voting:', error);
             toast.error(error.message || 'Error al votar');
         } finally {
             setVotingProposal(null);
@@ -77,7 +76,7 @@ export function GovernanceProposals() {
 
     if (isLoading) {
         return (
-            <div className="flex justify-center items-center py-12">
+            <div className="flex items-center justify-center py-12">
                 <Loader2 className="w-8 h-8 animate-spin text-indigo-400" />
             </div>
         );
@@ -117,7 +116,8 @@ export function GovernanceProposals() {
             
             <div className="flex items-center justify-between text-zinc-400 text-xs mb-2">
                 <span className="flex items-center gap-1">
-                    <Vote size={12} className="inline" /> Encuestas Activas
+                    <Vote className="w-3 h-3" />
+                    Encuestas Activas
                 </span>
                 <span className="text-indigo-400">{proposals.length} Encontradas</span>
             </div>
@@ -169,51 +169,51 @@ export function GovernanceProposals() {
                                         app_id={process.env.NEXT_PUBLIC_WLD_APP_ID as `app_${string}`}
                                         action={`vote_${proposal.id}_${outcome}`}
                                         signal={proposal.id}
-                                    onSuccess={(proof: ISuccessResult) => handleVote(proposal.id, idx, proof)}
-                                    verification_level={VerificationLevel.Orb}
-                                >
-                                    {({ open }: { open: () => void }) => (
-                                        <button
-                                            onClick={open}
-                                            disabled={!isAuthenticated || votingProposal === proposal.id}
-                                            className={`py-3 px-4 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${idx === 0
-                                                ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/30'
-                                                : 'bg-red-500/20 border border-red-500/40 text-red-300 hover:bg-red-500/30'
-                                                } disabled:opacity-50 disabled:cursor-not-allowed`}
-                                        >
-                                            {votingProposal === proposal.id ? (
-                                                <>
-                                                    <Loader2 className="w-4 h-4 animate-spin" />
-                                                    <span>Votando...</span>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Vote className="w-4 h-4" />
-                                                    <span>{outcome}</span>
-                                                </>
-                                            )}
-                                        </button>
-                                    )}
-                                </IDKitWidget>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Footer Info */}
-                    <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
-                        <span className="text-[10px] text-zinc-500 font-mono">
-                            Por: {proposal.creatorAddress?.slice(0, 6)}...{proposal.creatorAddress?.slice(-4)}
-                        </span>
-                        {proposal.votes !== undefined && (
-                            <span className="text-[10px] text-indigo-400 font-bold flex items-center gap-1">
-                                <CheckCircle2 size={10} />
-                                {proposal.votes} votos
-                            </span>
+                                        onSuccess={(proof: ISuccessResult) => handleVote(proposal.id, idx, proof)}
+                                        verification_level={VerificationLevel.Orb}
+                                    >
+                                        {({ open }) => (
+                                            <button
+                                                onClick={open}
+                                                disabled={votingProposal === proposal.id}
+                                                className={`py-3 px-4 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${idx === 0
+                                                    ? 'bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/30'
+                                                    : 'bg-red-500/20 border border-red-500/40 text-red-300 hover:bg-red-500/30'
+                                                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                                            >
+                                                {votingProposal === proposal.id ? (
+                                                    <>
+                                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                                        <span>Votando...</span>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Vote className="w-4 h-4" />
+                                                        <span>{outcome}</span>
+                                                    </>
+                                                )}
+                                            </button>
+                                        )}
+                                    </IDKitWidget>
+                                ))}
+                            </div>
                         )}
+
+                        {/* Footer Info */}
+                        <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
+                            <span className="text-[10px] text-zinc-500 font-mono">
+                                Por: {proposal.creatorAddress?.slice(0, 6)}...{proposal.creatorAddress?.slice(-4)}
+                            </span>
+                            {proposal.votes !== undefined && (
+                                <span className="text-[10px] text-indigo-400 font-bold flex items-center gap-1">
+                                    <CheckCircle2 size={10} />
+                                    {proposal.votes} votos
+                                </span>
+                            )}
+                        </div>
                     </div>
-                </div>
-            );
-        }))}
+                );
+            })}
         </div>
     );
 }
