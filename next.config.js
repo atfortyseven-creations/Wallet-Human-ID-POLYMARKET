@@ -75,13 +75,13 @@ const nextConfig = {
             new CopyPlugin({
                 patterns: [
                     {
-                        from: './node_modules/@xmtp/user-preferences-bindings-wasm/dist/web/user_preferences_bindings_wasm_bg.wasm',
-                        to: 'static/chunks/app', // Try multiple locations to be safe
+                        from: './node_modules/@xmtp/user-preferences-bindings-wasm/dist/node/user_preferences_bindings_wasm_bg.wasm',
+                        to: 'static/chunks/app',
                         noErrorOnMissing: true
                     },
                     {
-                        from: './node_modules/@xmtp/user-preferences-bindings-wasm/dist/web/user_preferences_bindings_wasm_bg.wasm',
-                        to: 'server/chunks', // The likely required location based on error log
+                        from: './node_modules/@xmtp/user-preferences-bindings-wasm/dist/node/user_preferences_bindings_wasm_bg.wasm',
+                        to: 'server/chunks',
                         noErrorOnMissing: true
                     }
                 ]
