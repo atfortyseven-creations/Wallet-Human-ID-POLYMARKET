@@ -55,6 +55,9 @@
   body {
     background-color: var(--bg-page);
     color: var(--text-primary);
+    min-width: 360px;
+    min-height: 600px;
+    overflow-x: hidden;
     @apply antialiased cursor-default selection:bg-indigo-500/30 selection:text-indigo-200 transition-colors duration-300;
   }
 }

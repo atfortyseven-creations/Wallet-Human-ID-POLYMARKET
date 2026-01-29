@@ -1,11 +1,13 @@
+const isExtension = process.env.EXT_BUILD === 'true';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: 'export', // Exportación estática obligatoria
-    trailingSlash: true, // VITAL for extension routing
-    distDir: 'out',
+    output: isExtension ? 'export' : undefined,
+    trailingSlash: isExtension,
+    distDir: isExtension ? 'out' : '.next',
 
     images: {
-        unoptimized: true, // Required for extensions
+        unoptimized: isExtension,
         remotePatterns: [
             { protocol: 'https', hostname: 'picsum.photos' },
             { protocol: 'https', hostname: 'cdn.weatherapi.com' },

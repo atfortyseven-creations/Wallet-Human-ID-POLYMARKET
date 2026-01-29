@@ -3,7 +3,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RefreshCw, ExternalLink, ShieldAlert, Cpu, Globe, Banknote, Search, Filter, TrendingUp, Activity, AlertCircle } from 'lucide-react';
-import { refreshIntelStream } from '@/src/actions/news-stream';
+
+const API_URL = "https://wallet-human-polymarket-id-production.up.railway.app";
 
 // --- SUB-COMPONENTS ---
 
@@ -58,12 +59,20 @@ export function IntelFeed() {
 
     const loadData = async () => {
         setIsRefreshing(true);
-        const data = await refreshIntelStream();
-        if (data && data.length > 0) {
-            setNews(data);
+        try {
+            const res = await fetch(`${API_URL}/api/news`);
+            if (res.ok) {
+                const data = await res.json();
+                if (data && data.length > 0) {
+                    setNews(data);
+                }
+            }
+        } catch (e) {
+            console.error("Failed to load news", e);
+        } finally {
+            setLoading(false);
+            setTimeout(() => setIsRefreshing(false), 800);
         }
-        setLoading(false);
-        setTimeout(() => setIsRefreshing(false), 800);
     };
 
     // Safe Filter Logic
