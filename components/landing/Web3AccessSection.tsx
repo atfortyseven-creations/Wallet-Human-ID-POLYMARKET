@@ -2,23 +2,44 @@
 
 import React from 'react';
 import { ArrowRight, Mail, BookOpen } from 'lucide-react';
+import { useAppKit } from '@reown/appkit/react';
+import Image from 'next/image';
 
 export function Web3AccessSection() {
+    const { open } = useAppKit();
+
     return (
-        <div className="w-full max-w-5xl mx-auto px-4 py-20 flex flex-col items-center">
+        <div className="w-full max-w-5xl mx-auto px-4 py-32 flex flex-col items-center">
             
             {/* Cartoon / Access Area */}
-            <div className="relative mb-24 text-center">
-                {/* Visual Placeholder for Cartoon */}
-                <div className="w-48 h-48 mx-auto bg-gradient-to-br from-orange-400 to-yellow-400 rounded-full blur-sm opacity-20 animate-pulse absolute top-0 left-1/2 -translate-x-1/2" />
-                <div className="relative z-10 w-40 h-40 mx-auto bg-zinc-800 rounded-full flex items-center justify-center border-4 border-white/10 mb-6">
-                    <span className="text-4xl">🦊</span> {/* Placeholder emoji for lack of asset */}
+            <div className="relative mb-32 text-center group">
+                {/* Visual Glow */}
+                <div className="w-64 h-64 mx-auto bg-gradient-to-r from-orange-500/20 to-yellow-500/20 rounded-full blur-3xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse-slow pointer-events-none" />
+                
+                {/* Image Container with Hover Effect */}
+                <div className="relative z-10 w-48 h-48 mx-auto bg-zinc-900/50 backdrop-blur-xl rounded-full flex items-center justify-center border border-white/10 mb-10 shadow-2xl transition-transform duration-500 group-hover:scale-105">
+                     <Image 
+                        src="/assets/web3_fox.png" 
+                        alt="Web3 Access" 
+                        width={120} 
+                        height={120} 
+                        className="object-contain drop-shadow-lg"
+                     />
                 </div>
                 
-                <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Acceda a la web3</h2>
+                <h2 className="text-6xl md:text-8xl font-black text-white mb-8 tracking-tighter drop-shadow-xl">
+                    Acceda a la web3
+                </h2>
                 
-                <button className="px-8 py-3 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-colors flex items-center gap-2 mx-auto">
-                    Comenzar <ArrowRight size={18} />
+                <button 
+                    onClick={() => open()}
+                    className="
+                        px-12 py-5 bg-white text-black text-xl font-bold rounded-full 
+                        hover:bg-gray-100 transition-all active:scale-95 
+                        flex items-center gap-3 mx-auto shadow-[0_0_40px_rgba(255,255,255,0.3)]
+                    "
+                >
+                    Comenzar <ArrowRight size={24} />
                 </button>
             </div>
 

@@ -11,8 +11,6 @@ import { FeatureCardsSection } from '@/components/landing/FeatureCardsSection';
 import { SecurityGrowthSection } from '@/components/landing/SecurityGrowthSection';
 import { Web3AccessSection } from '@/components/landing/Web3AccessSection';
 import { HumanDefiFooter } from '@/components/landing/HumanDefiFooter';
-import { FeaturesSection } from '@/components/site/FeaturesSection';
-import { ZKVault } from '@/components/ZKVault';
 import { BarrelDistortion } from '@/components/3d/effects/BarrelDistortion';
 import { QuantumLeapEffectInternal } from '@/components/3d/effects/QuantumLeapEffect';
 import { EffectComposer } from '@react-three/postprocessing';
