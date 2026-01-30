@@ -27,78 +27,77 @@ export function NetworkSelector() {
     const [selected, setSelected] = useState(NETWORKS.popular[0]);
 
     return (
+    return (
         <div className="w-full max-w-md mx-auto relative z-40 my-6">
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="
-                    w-full flex items-center justify-between px-4 py-3 rounded-xl
-                    bg-white/5 backdrop-blur-md border border-white/10
-                    hover:bg-white/10 transition-colors group
+                    w-full flex items-center justify-between px-5 py-3.5 rounded-2xl
+                    bg-neutral-900 shadow-xl border border-neutral-800
+                    hover:bg-black transition-all group hover:scale-[1.01] active:scale-[0.99]
                 "
             >
-                <div className="flex items-center gap-3">
-                    <div className={`w-6 h-6 rounded-full ${selected.color} flex items-center justify-center text-[8px] font-bold`}>
-                        {/* Logo Placeholder */}
-                    </div>
-                    <span className="text-white font-medium">{selected.name}</span>
+                <div className="flex items-center gap-4">
+                    <div className={`w-3 h-3 rounded-full ${selected.color} shadow-[0_0_10px_currentColor]`} />
+                    <span className="text-white font-bold text-lg tracking-tight">{selected.name}</span>
                 </div>
-                <div className="flex items-center gap-2 text-white/40">
-                    <span className="text-xs">Select Network</span>
-                    <ChevronDown size={16} className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+                <div className="flex items-center gap-3 text-neutral-500">
+                    <span className="text-xs font-bold uppercase tracking-widest">Network</span>
+                    <ChevronDown size={18} className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
                 </div>
             </button>
 
             {/* Mega Menu Dropdown */}
             {isOpen && (
                 <div className="
-                    absolute top-full left-0 mt-2 w-full
-                    bg-[#121212]/95 backdrop-blur-xl border border-white/10 box-border
-                    rounded-2xl shadow-2xl p-4 overflow-hidden
-                    animate-in fade-in slide-in-from-top-2 duration-200
+                    absolute bottom-full left-0 mb-3 w-full
+                    bg-[#0a0a0a]/95 backdrop-blur-2xl border border-white/10
+                    rounded-3xl shadow-2xl p-5 overflow-hidden
+                    animate-in fade-in slide-in-from-bottom-2 duration-200
                 ">
                     {/* Search */}
-                    <div className="relative mb-4">
-                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+                    <div className="relative mb-5">
+                        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500" />
                         <input 
                             type="text" 
                             placeholder="Find network..." 
-                            className="w-full bg-black/40 border border-white/10 rounded-lg py-2 pl-9 pr-4 text-sm text-white focus:outline-none focus:border-blue-500"
+                            className="w-full bg-neutral-900 border border-neutral-800 rounded-xl py-3 pl-10 pr-4 text-sm text-white placeholder:text-neutral-600 focus:outline-none focus:border-neutral-700 focus:bg-black transition-all"
                         />
                     </div>
 
-                    <div className="flex gap-8">
+                    <div className="flex gap-6">
                         {/* Column 1: Popular */}
                         <div className="flex-1">
-                            <div className="text-xs text-white/40 font-bold uppercase mb-2">Populares</div>
+                            <div className="text-[10px] text-neutral-500 font-bold uppercase tracking-widest mb-3 pl-2">Popular</div>
                             <div className="space-y-1">
                                 {NETWORKS.popular.map((net) => (
                                     <button 
                                         key={net.name}
                                         onClick={() => { setSelected(net); setIsOpen(false); }}
-                                        className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 transition-colors text-left"
+                                        className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/5 transition-colors text-left group"
                                     >
-                                        <div className={`w-5 h-5 rounded-full ${net.color}`} />
-                                        <span className="text-sm text-white/90">{net.name}</span>
+                                        <div className={`w-2 h-2 rounded-full ${net.color} group-hover:scale-125 transition-transform`} />
+                                        <span className="text-sm font-medium text-neutral-300 group-hover:text-white">{net.name}</span>
                                     </button>
                                 ))}
                             </div>
                         </div>
 
                         {/* Column 2: Additional/Custom */}
-                        <div className="flex-1 border-l border-white/5 pl-4">
-                             <div className="flex items-center justify-between mb-2">
-                                <div className="text-xs text-white/40 font-bold uppercase">Adicionales</div>
-                                <button className="text-[10px] text-blue-400 font-bold hover:underline">+ Custom</button>
+                        <div className="flex-1 border-l border-white/5 pl-6">
+                             <div className="flex items-center justify-between mb-3 px-1">
+                                <div className="text-[10px] text-neutral-500 font-bold uppercase tracking-widest">Others</div>
+                                <button className="text-[10px] text-blue-500 font-bold hover:text-blue-400 transition-colors">+ Custom</button>
                              </div>
                              <div className="space-y-1">
                                 {NETWORKS.additional.map((net) => (
                                     <button 
                                         key={net.name}
                                         onClick={() => { setSelected(net); setIsOpen(false); }}
-                                        className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 transition-colors text-left"
+                                        className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/5 transition-colors text-left group"
                                     >
-                                        <div className={`w-5 h-5 rounded-full ${net.color}`} />
-                                        <span className="text-sm text-white/90">{net.name}</span>
+                                        <div className={`w-2 h-2 rounded-full ${net.color} group-hover:scale-125 transition-transform`} />
+                                        <span className="text-sm font-medium text-neutral-300 group-hover:text-white">{net.name}</span>
                                     </button>
                                 ))}
                             </div>
