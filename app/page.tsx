@@ -80,7 +80,16 @@ export default function Home() {
   return (
     <main className="main-container">
       <div className="canvas-layer">
-        <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 1], fov: 75 }}>
+        <Canvas 
+            dpr={[1, 2]} 
+            camera={{ position: [0, 0, 1], fov: 75 }}
+            gl={{ 
+                powerPreference: 'high-performance',
+                antialias: false,
+                stencil: false,
+                depth: false
+            }}
+        >
           <color attach="background" args={['#000']} /> 
           
           <ScrollControls pages={10} damping={0.2} style={{ scrollBehavior: 'smooth' }}> {/* 0.2 damping for "weighty" smooth feel */}

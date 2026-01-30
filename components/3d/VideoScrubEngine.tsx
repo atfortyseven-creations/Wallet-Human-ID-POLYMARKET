@@ -40,12 +40,10 @@ export function VideoScrubEngine() {
     return vid;
   });
 
-  // Configure WebGL for performance
   useEffect(() => {
     if (gl) {
-      // Prioritize performance over perfect color accuracy on mobile
-      gl.powerPreference = "high-performance";
-      gl.capabilities.precision = 'mediump'; // Drop to mediump for speed
+      // capabilities.precision is read-only too in some implementations, but toneMapping is fine.
+      // We set powerPreference in Canvas props now.
       gl.toneMappingExposure = 1.0;
     }
   }, [gl]);
