@@ -11,6 +11,12 @@ import { BarrelDistortion } from '@/components/3d/effects/BarrelDistortion';
 import { QuantumLeapEffectInternal } from '@/components/3d/effects/QuantumLeapEffect';
 import { EffectComposer } from '@react-three/postprocessing';
 import * as THREE from 'three';
+import { useAuth } from '@/hooks/useAuth';
+import { useAppKitAccount, useAppKit } from '@reown/appkit/react';
+import dynamic from 'next/dynamic';
+
+// Dynamic import for the heavy wallet component
+const WalletSection = dynamic(() => import('@/components/WalletSection'), { ssr: false });
 
 // Componente que controla la distorsión basado en el scroll
 function AnimatedDistortion() {
@@ -42,6 +48,34 @@ function AnimatedDistortion() {
     return <BarrelDistortion distortion={distortion} />;
 }
 
+function DashboardContent() {
+    const { isConnected } = useAppKitAccount();
+    const { isAuthenticated } = useAuth();
+    const { open } = useAppKit();
+
+    // If connected/auth, show full dashboard
+    if (isConnected || isAuthenticated) {
+        return (
+            <div className="w-full mt-24">
+                <WalletSection />
+            </div>
+        );
+    }
+
+    // Otherwise show landing page
+    return (
+        <>
+            <MetaMaskInterface onConnect={() => open()} />
+            <div className="mt-20 w-full">
+                <FeaturesSection />
+            </div>
+            <div className="mt-32 w-full">
+                <ZKVault />
+            </div>
+        </>
+    );
+}
+
 export default function Home() {
   return (
     <main className="main-container">
@@ -57,7 +91,7 @@ export default function Home() {
             </Suspense>
 
             {/* 2. Post-Processing Effects */}
-            <EffectComposer disableNormalPass>
+            <EffectComposer>
                  <AnimatedDistortion />
             </EffectComposer>
 
@@ -66,18 +100,11 @@ export default function Home() {
                {/* Quantum Leap Effect - Inside Canvas for useScroll access */}
                <QuantumLeapEffectInternal />
                
-               <DashboardTransition>
-                   <div className="flex flex-col items-center justify-start w-full min-h-screen pb-20">
-                       <MetaMaskInterface />
-                       <div className="mt-20 w-full">
-                            <FeaturesSection />
-                       </div>
-                       {/* ZK-Vault: Extended scroll experience */}
-                       <div className="mt-32 w-full">
-                            <ZKVault />
-                       </div>
-                   </div>
-               </DashboardTransition>
+                <DashboardTransition>
+                    <div className="flex flex-col items-center justify-start w-full min-h-screen pb-20">
+                        <DashboardContent />
+                    </div>
+                </DashboardTransition>
             </Scroll>
             
           </ScrollControls>

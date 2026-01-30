@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
  * MetaMask-inspired interface component
  * Glassmorphism design with scroll-based opacity
  */
-export function MetaMaskInterface() {
+export function MetaMaskInterface({ onConnect }: { onConnect?: () => void }) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
@@ -43,7 +43,8 @@ export function MetaMaskInterface() {
           transition={{ delay: 0.6 }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-cyan-500/50 transition-all"
+          onClick={onConnect}
+          className="px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-cyan-500/50 transition-all cursor-pointer z-50"
         >
           Connect Identity
         </motion.button>
