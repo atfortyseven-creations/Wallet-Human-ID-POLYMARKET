@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Lock, ShieldCheck, Key, Eye, TrendingUp, Briefcase, Globe, Award } from 'lucide-react';
+import LottieCard from '../ui/LottieCard';
 
 export function SecurityGrowthSection() {
     return (
@@ -30,37 +30,65 @@ export function SecurityGrowthSection() {
                 </div>
             </div>
 
-            {/* 4 Cards: Security */}
+            {/* 4 Cards: Security with Lottie Animations */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-32">
-                {[
-                    { title: "Non-Custodial", icon: <Lock />, desc: "Tú tienes el control total de tus claves." },
-                    { title: "Auditada", icon: <ShieldCheck />, desc: "Smart contracts verificados por líderes." },
-                    { title: "Biometría", icon: <Key />, desc: "Acceso protegido por Human ID." },
-                    { title: "Privacidad", icon: <Eye />, desc: "Tus datos nunca salen de tu dispositivo." }
-                ].map((card, i) => (
-                    <div key={i} className="bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-2xl hover:bg-white/10 transition-colors">
-                        <div className="mb-4 text-blue-400">{card.icon}</div>
-                        <h3 className="text-xl font-bold text-white mb-2">{card.title}</h3>
-                        <p className="text-white/60 text-sm">{card.desc}</p>
-                    </div>
-                ))}
+                <LottieCard
+                    lottieSrc="https://lottie.host/1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d/LockSecure.lottie"
+                    title="Non-Custodial"
+                    subtitle="Tú tienes el control total de tus claves."
+                    lottieSize="md"
+                />
+                <LottieCard
+                    lottieSrc="https://lottie.host/2b3c4d5e-6f7a-8b9c-0d1e-2f3a4b5c6d7e/ShieldCheck.lottie"
+                    title="Auditada"
+                    subtitle="Smart contracts verificados por líderes."
+                    lottieSize="md"
+                />
+                <LottieCard
+                    lottieSrc="https://lottie.host/3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f/Fingerprint.lottie"
+                    title="Biometría"
+                    subtitle="Acceso protegido por Human ID."
+                    lottieSize="md"
+                />
+                <LottieCard
+                    lottieSrc="https://lottie.host/4d5e6f7a-8b9c-0d1e-2f3a-4b5c6d7e8f9a/PrivacyEye.lottie"
+                    title="Privacidad"
+                    subtitle="Tus datos nunca salen de tu dispositivo."
+                    lottieSize="md"
+                />
             </div>
 
-            {/* 4 Cards: Growth ($250M Investment) */}
-            <h3 className="text-3xl font-bold text-white mb-8 pl-4 border-l-4 border-blue-500">Crecimiento Exponencial</h3>
+            {/* 4 Cards: Growth ($250M Investment) with Lottie Animations */}
+            <h3 className="text-3xl font-bold text-white mb-8 pl-4 border-l-4 border-indigo-500">Crecimiento Exponencial</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {[
-                    { title: "$250M Inversión", icon: <Briefcase />, desc: "Respaldados por fondos tier-1." },
-                    { title: "+1M Usuarios", icon: <Globe />, desc: "Comunidad global activa." },
-                    { title: "Top 3 DeFi", icon: <TrendingUp />, desc: "Líderes en volumen on-chain." },
-                    { title: "Premiados", icon: <Award />, desc: "Mejor Wallet Web3 2025." }
-                ].map((card, i) => (
-                    <div key={i} className="bg-gradient-to-b from-blue-900/20 to-transparent border border-blue-500/20 p-6 rounded-2xl">
-                        <div className="mb-4 text-green-400">{card.icon}</div>
-                        <h3 className="text-xl font-bold text-white mb-2">{card.title}</h3>
-                        <p className="text-white/60 text-sm">{card.desc}</p>
-                    </div>
-                ))}
+                <LottieCard
+                    lottieSrc="https://lottie.host/5e6f7a8b-9c0d-1e2f-3a4b-5c6d7e8f9a0b/Investment.lottie"
+                    title="$250M Inversión"
+                    subtitle="Respaldados por fondos tier-1."
+                    lottieSize="md"
+                    className="bg-gradient-to-b from-indigo-900/20 to-transparent border-indigo-500/20"
+                />
+                <LottieCard
+                    lottieSrc="https://lottie.host/6f7a8b9c-0d1e-2f3a-4b5c-6d7e8f9a0b1c/GlobeNetwork.lottie"
+                    title="+1M Usuarios"
+                    subtitle="Comunidad global activa."
+                    lottieSize="md"
+                    className="bg-gradient-to-b from-indigo-900/20 to-transparent border-indigo-500/20"
+                />
+                <LottieCard
+                    lottieSrc="https://lottie.host/7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d/Trophy.lottie"
+                    title="Top 3 DeFi"
+                    subtitle="Líderes en volumen on-chain."
+                    lottieSize="md"
+                    className="bg-gradient-to-b from-indigo-900/20 to-transparent border-indigo-500/20"
+                />
+                <LottieCard
+                    lottieSrc="https://lottie.host/8b9c0d1e-2f3a-4b5c-6d7e-8f9a0b1c2d3e/AwardMedal.lottie"
+                    title="Premiados"
+                    subtitle="Mejor Wallet Web3 2025."
+                    lottieSize="md"
+                    className="bg-gradient-to-b from-indigo-900/20 to-transparent border-indigo-500/20"
+                />
             </div>
 
         </div>
