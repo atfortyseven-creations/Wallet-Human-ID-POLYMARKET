@@ -127,13 +127,18 @@ export default function Home() {
                         <SecurityGrowthSection />
                     </section>
 
-                    {/* SECTION 5: WEB3 ACCESS (Viewport Virtualized) */}
-                    <section className="relative w-full py-32 optimize-visibility">
-                        <Web3AccessSection />
+                    {/* SECTION 5: WEB3 ACCESS & FOOTER (Fluid Background Area) */}
+                    <section className="relative w-full overflow-hidden">
+                        {/* Background Layer */}
+                        <div className="absolute inset-0 z-0 transform-gpu translate-3d-0">
+                             <FluidBeigeBackground />
+                        </div>
+                        
+                        <div className="relative z-10 w-full pt-32 pb-10 optimize-visibility">
+                            <Web3AccessSection />
+                            <HumanDefiFooter />
+                        </div>
                     </section>
-
-                    {/* FOOTER */}
-                    <HumanDefiFooter />
                 </div>
             )}
         </div>
