@@ -3,7 +3,6 @@
 import React from 'react';
 import { ArrowRight, Mail, BookOpen } from 'lucide-react';
 import { useAppKit } from '@reown/appkit/react';
-import Image from 'next/image';
 
 export function Web3AccessSection() {
     const { open } = useAppKit();
@@ -16,16 +15,8 @@ export function Web3AccessSection() {
                 {/* Visual Glow */}
                 <div className="w-64 h-64 mx-auto bg-gradient-to-r from-orange-500/20 to-yellow-500/20 rounded-full blur-3xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse-slow pointer-events-none" />
                 
-                {/* Image Container with Hover Effect */}
-                <div className="relative z-10 w-48 h-48 mx-auto bg-zinc-900/50 backdrop-blur-xl rounded-full flex items-center justify-center border border-white/10 mb-10 shadow-2xl transition-transform duration-500 group-hover:scale-105">
-                     <Image 
-                        src="/assets/web3_fox.png" 
-                        alt="Web3 Access" 
-                        width={120} 
-                        height={120} 
-                        className="object-contain drop-shadow-lg"
-                     />
-                </div>
+                {/* Image Container Removed as per request */}
+
                 
                 <h2 className="text-6xl md:text-8xl font-black text-white mb-8 tracking-tighter drop-shadow-xl">
                     Acceda a la web3
