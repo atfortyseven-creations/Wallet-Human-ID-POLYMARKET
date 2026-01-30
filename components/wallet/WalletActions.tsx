@@ -9,7 +9,7 @@ import { SecurityGrowthSection } from '@/components/landing/SecurityGrowthSectio
 import SendModal from '@/components/wallet/SendModal';
 import ReceiveModal from '@/components/wallet/ReceiveModal';
 import SwapModal from '@/components/wallet/SwapModal';
-import { getSupportedTokens } from '@/config/tokens';
+import { getSupportedTokens, TOKENS_BY_CHAIN } from '@/config/tokens';
 import { toast } from 'sonner';
 import { Position, Transaction } from '@/types/wallet';
 
@@ -29,7 +29,9 @@ export function WalletActions({ positions = [], history = [] }: WalletActionsPro
     const [showSwap, setShowSwap] = useState(false);
 
     // Tokens Data
-    const supportedTokens: { symbol: string; name: string; address: string; decimals: number; icon?: string }[] = getSupportedTokens(chainId) || [];
+    // Defensive coding: Handle case where getSupportedTokens import might be undefined at runtime due to circular deps or build issues
+    const supportedTokens: { symbol: string; name: string; address: string; decimals: number; icon?: string }[] = 
+        (typeof getSupportedTokens === 'function' ? getSupportedTokens(chainId) : TOKENS_BY_CHAIN?.[chainId]) || [];
     
     // Construct contract calls for all supported tokens
     const { data: tokenBalances, isLoading: isLoadingTokens } = useReadContracts({

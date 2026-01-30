@@ -33,9 +33,10 @@ export function WalletPreview() {
             className="w-full max-w-lg mx-auto bg-[#8B8B83] border border-white/5 rounded-[3rem] p-8 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden relative z-20"
         >
             {/* GLASS CURTAIN OVERLAY ("Tape por partes como cristal") */}
+            {/* GLASS CURTAIN OVERLAY - Modified for better readability */}
             <motion.div 
                 style={{ height: curtainHeight }}
-                className="absolute top-0 left-0 w-full bg-white/10 backdrop-blur-md z-50 pointer-events-none border-b border-white/20 transition-all duration-300 ease-out"
+                className="absolute top-0 left-0 w-full bg-neutral-900/90 z-50 pointer-events-none border-b border-white/10 transition-all duration-300 ease-out"
             />
             {/* Header Area - CENTERED */}
             <div className="flex items-center justify-between mb-8 relative">

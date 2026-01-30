@@ -8,7 +8,7 @@ import { useDisconnect, useEnsName } from 'wagmi';
 export function AccountSwitcher() {
     const { address, isConnected } = useAppKitAccount();
     const { open } = useAppKit();
-    const { disconnect } = useDisconnect();
+    const { disconnectAsync } = useDisconnect();
     const { data: ensName } = useEnsName({ address: address as `0x${string}` });
     
     const [isOpen, setIsOpen] = useState(false);
@@ -94,7 +94,13 @@ export function AccountSwitcher() {
                     {/* Footer Actions */}
                     <div className="p-2 bg-neutral-50/50">
                         <button 
-                            onClick={() => { disconnect(); setIsOpen(false); }}
+                            onClick={async () => { 
+                                await disconnectAsync(); 
+                                // "Armored" security: Clear all storage and reload to ensure clean state
+                                localStorage.clear();
+                                sessionStorage.clear();
+                                window.location.href = '/'; 
+                            }}
                             className="w-full flex items-center justify-center gap-2 py-3 text-red-500 hover:bg-red-50 rounded-xl font-bold text-sm transition-colors"
                         >
                             <LogOut size={16} /> Disconnect

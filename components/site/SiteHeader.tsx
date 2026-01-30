@@ -87,9 +87,9 @@ export function SiteHeader() {
                                 </>
                             ) : (
                                 <>
-                                    <NavLink href="/features">Funciones</NavLink>
-                                    <NavLink href="/developer">Desarrollador</NavLink>
-                                    <NavLink href="/support">Soporte</NavLink>
+                                    <NavLink href="/funciones">Funciones</NavLink>
+                                    <NavLink href="/desarrollador">Desarrollador</NavLink>
+                                    <NavLink href="/soporte">Soporte</NavLink>
                                 </>
                             )}
                         </nav>
@@ -107,7 +107,7 @@ export function SiteHeader() {
                                         handleVerify={async (proof: ISuccessResult) => { return; }}
                                         verification_level={VerificationLevel.Device}
                                     >
-                                        {({ open }) => (
+                                        {({ open }: { open: () => void }) => (
                                             <button
                                                 onClick={open}
                                                 disabled={isVerifying || isAuthenticated}
@@ -177,9 +177,9 @@ export function SiteHeader() {
                                 </>
                             ) : (
                                 <>
-                                    <Link href="/features" className="hover:text-blue-400" onClick={() => setIsMobileMenuOpen(false)}>Funciones</Link>
-                                    <Link href="/developer" className="hover:text-blue-400" onClick={() => setIsMobileMenuOpen(false)}>Desarrollador</Link>
-                                    <Link href="/support" className="hover:text-blue-400" onClick={() => setIsMobileMenuOpen(false)}>Soporte</Link>
+                                    <Link href="/funciones" className="hover:text-blue-400" onClick={() => setIsMobileMenuOpen(false)}>Funciones</Link>
+                                    <Link href="/desarrollador" className="hover:text-blue-400" onClick={() => setIsMobileMenuOpen(false)}>Desarrollador</Link>
+                                    <Link href="/soporte" className="hover:text-blue-400" onClick={() => setIsMobileMenuOpen(false)}>Soporte</Link>
                                 </>
                             )}
                             

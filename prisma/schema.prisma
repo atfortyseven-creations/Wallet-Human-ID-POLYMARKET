@@ -105,6 +105,7 @@ model User {
   trades          Trade[]
   simpleVotes     Vote[]
   sessions        Session[] // [NEW] Session tracking
+  supportTickets  SupportTicket[] // [NEW] Support tickets
 
   @@index([reputation])
 }
@@ -390,4 +391,34 @@ model UserMetrics {
   lastActiveAt          DateTime @default(now())
 
   @@index([reputationScore])
+}
+
+// ----------------------------------------------------------------------------
+// 7. SUPPORT SYSTEM (The Void)
+// ----------------------------------------------------------------------------
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+model SupportTicket {
+  id        String       @id @default(cuid())
+  userId    String?      // Optional: User might be anonymous or "Ghost"
+  user      User?        @relation(fields: [userId], references: [walletAddress])
+  section   String       // 'general', 'technical', 'governance', 'other'
+  message   String       @db.Text
+  status    TicketStatus @default(OPEN)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  
+  // Admin fields
+  adminNotes String?     @db.Text
+  priority   String      @default("NORMAL")
+
+  @@index([status])
+  @@index([userId])
+  @@index([createdAt])
 }
