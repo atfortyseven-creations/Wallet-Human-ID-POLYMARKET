@@ -21,9 +21,16 @@ export function QuantumLeapEffectInternal() {
     
     // Activate flash at 85%+ scroll
     if (offset >= 0.85) {
-      // Map 85%-100% to opacity 0-1
-      const flashProgress = (offset - 0.85) / 0.15;
-      setOpacity(Math.min(flashProgress * 2, 1)); // Fast ramp-up
+        // 0.85 -> 0.93 (Fade In)
+        // 0.93 -> 1.0 (Fade Out)
+        
+        if (offset < 0.93) {
+            const fadeIn = (offset - 0.85) / 0.08;
+            setOpacity(fadeIn);
+        } else {
+            const fadeOut = 1 - (offset - 0.93) / 0.07;
+            setOpacity(Math.max(0, fadeOut));
+        }
     } else {
       setOpacity(0);
     }

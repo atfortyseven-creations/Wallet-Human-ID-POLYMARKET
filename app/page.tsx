@@ -163,9 +163,13 @@ const DashboardTransition = React.memo(function DashboardTransition({ children }
             
             let sOpacity = 0;
             if (offset > shroudStart && offset < shroudPeak) {
+                // Fade In
                 sOpacity = (offset - shroudStart) / (shroudPeak - shroudStart);
             } else if (offset >= shroudPeak) {
-                sOpacity = 1;
+                // Fade Out (Reveal Dashboard)
+                const fadeOutRange = 0.1; // 0.9 to 1.0
+                const exitProgress = (offset - shroudPeak) / fadeOutRange;
+                sOpacity = Math.max(0, 1 - exitProgress);
             }
             
             // INCREASED threshold to reduce re-renders
