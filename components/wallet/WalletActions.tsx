@@ -1,7 +1,7 @@
-"use client";
-
 import React, { useState } from 'react';
-import { ArrowUpRight, ArrowDownLeft, Repeat, CreditCard, LayoutGrid, Image as ImageIcon, History } from 'lucide-react';
+import { ArrowUpRight, ArrowDownLeft, Repeat, CreditCard, LayoutGrid, Image as ImageIcon, History, Newspaper } from 'lucide-react';
+import { FeatureCardsSection } from '@/components/landing/FeatureCardsSection';
+import { SecurityGrowthSection } from '@/components/landing/SecurityGrowthSection';
 
 export function WalletActions() {
     const [activeTab, setActiveTab] = useState('Tokens');
@@ -17,13 +17,13 @@ export function WalletActions() {
         { id: 'Tokens', label: 'Tokens' },
         { id: 'DeFi', label: 'DeFi' },
         { id: 'NFT', label: 'NFT' },
-        { id: 'Actividad', label: 'Actividad' }
+        { id: 'Feed', label: 'Feed' }
     ];
 
     return (
-        <div className="w-full max-w-md mx-auto">
+        <div className="w-full">
             {/* 4 Action Buttons */}
-            <div className="grid grid-cols-4 gap-4 mb-8">
+            <div className="grid grid-cols-4 gap-4 mb-8 max-w-md mx-auto">
                 {ACTIONS.map((action) => (
                     <button 
                         key={action.label}
@@ -64,31 +64,36 @@ export function WalletActions() {
                 ))}
             </div>
 
-            {/* Content Area (Placeholder for list) */}
-            <div className="min-h-[200px]">
-                {activeTab === 'Tokens' && (
-                    <div className="text-center py-10 text-white/30 text-sm">
-                        <p>No tokens found except native assets.</p>
-                        <button className="mt-4 text-blue-400 hover:text-blue-300">Import tokens</button>
-                    </div>
-                )}
-                 {activeTab === 'DeFi' && (
-                    <div className="text-center py-10 text-white/30 text-sm">
-                        <p>No active positions.</p>
-                    </div>
-                )}
-                 {activeTab === 'NFT' && (
-                    <div className="text-center py-10 text-white/30 text-sm">
-                        <p>No NFTs in this wallet.</p>
-                    </div>
-                )}
-                 {activeTab === 'Actividad' && (
-                    <div className="text-center py-10 text-white/30 text-sm">
-                        <History className="mx-auto mb-2 opacity-50" />
-                        <p>No recent transaction history.</p>
-                    </div>
-                )}
-            </div>
+                {/* Content Area */}
+                <div className="min-h-[400px] animate-fade-in">
+                    {activeTab === 'Tokens' && (
+                        <div className="text-center py-10 text-white/30 text-sm">
+                            <p>No tokens found except native assets.</p>
+                            <button className="mt-4 text-blue-400 hover:text-blue-300 font-bold">Import tokens</button>
+                        </div>
+                    )}
+                     {activeTab === 'DeFi' && (
+                        <div className="text-center py-10 text-white/30 text-sm">
+                            <p>No active positions.</p>
+                        </div>
+                    )}
+                     {activeTab === 'NFT' && (
+                        <div className="text-center py-10 text-white/30 text-sm">
+                            <p>No NFTs in this wallet.</p>
+                        </div>
+                    )}
+                     {activeTab === 'Feed' && (
+                        <div className="flex flex-col gap-10 pb-10">
+                            {/* Reusing Landing Page Components for the Feed */}
+                            <div className="scale-90 origin-top -mt-10">
+                                <FeatureCardsSection />
+                            </div>
+                            <div className="scale-90 origin-top -mt-20">
+                                <SecurityGrowthSection />
+                            </div>
+                        </div>
+                    )}
+                </div>
         </div>
     );
 }
