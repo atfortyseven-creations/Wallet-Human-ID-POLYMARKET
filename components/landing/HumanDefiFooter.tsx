@@ -27,7 +27,7 @@ export function HumanDefiFooter() {
     ];
 
     return (
-        <footer className="w-full bg-black border-t border-white/10 py-20 px-4 mt-20 relative z-10 text-center md:text-left">
+        <footer className="w-full bg-black/40 backdrop-blur-xl border-t border-white/10 py-20 px-4 mt-20 relative z-10 text-center md:text-left">
             <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10">
                 {sections.map((section, i) => (
                     <div key={i}>
