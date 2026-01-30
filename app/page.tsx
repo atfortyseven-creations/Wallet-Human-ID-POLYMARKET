@@ -15,13 +15,13 @@ import FluidBeigeBackground from '@/components/layout/FluidBeigeBackground';
 // ============================================
 // 2. LAZY IMPORTS (Below the Fold - Load on Demand)
 // ============================================
-const WalletPreview = dynamic(() => import('@/components/landing/WalletPreview'), { 
+const WalletPreview = dynamic(() => import('@/components/landing/WalletPreview').then(mod => mod.WalletPreview), { 
   loading: () => <div className="h-[80vh] w-full animate-pulse bg-neutral-100/50 rounded-3xl" /> 
 });
-const FeatureCardsSection = dynamic(() => import('@/components/landing/FeatureCardsSection'));
-const SecurityGrowthSection = dynamic(() => import('@/components/landing/SecurityGrowthSection'));
-const Web3AccessSection = dynamic(() => import('@/components/landing/Web3AccessSection'));
-const HumanDefiFooter = dynamic(() => import('@/components/landing/HumanDefiFooter'));
+const FeatureCardsSection = dynamic(() => import('@/components/landing/FeatureCardsSection').then(mod => mod.FeatureCardsSection));
+const SecurityGrowthSection = dynamic(() => import('@/components/landing/SecurityGrowthSection').then(mod => mod.SecurityGrowthSection));
+const Web3AccessSection = dynamic(() => import('@/components/landing/Web3AccessSection').then(mod => mod.Web3AccessSection));
+const HumanDefiFooter = dynamic(() => import('@/components/landing/HumanDefiFooter').then(mod => mod.HumanDefiFooter));
 
 // Heavy Wallet - Only load when absolutely necessary
 const WalletSection = dynamic(() => import('@/components/WalletSection'), { 
@@ -46,7 +46,7 @@ export default function Home() {
     setIsMounted(true);
     // Force hardware acceleration on iOS
     if (typeof document !== 'undefined') {
-      document.body.style.webkitFontSmoothing = 'antialiased';
+      (document.body.style as any).webkitFontSmoothing = 'antialiased';
     }
   }, []);
 
