@@ -2,62 +2,71 @@
 
 import React, { useRef } from 'react';
 import { Search, MoreVertical, CreditCard, ArrowUpRight, ArrowDownLeft, Repeat } from 'lucide-react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 export function WalletPreview() {
     const containerRef = useRef<HTMLDivElement>(null);
-    const cardRef = useRef<HTMLDivElement>(null);
-    const listRef = useRef<HTMLDivElement>(null);
 
-    // Standard CSS/React component now, no 3D hooks.
+    // Aggressive scroll fade: disappears quickly as you scroll past it
+    // We map scroll 0 to 300px -> Opacity 1 to 0
+    const { scrollY } = useScroll();
+    const opacity = useTransform(scrollY, [0, 400], [1, 0]);
+    const scale = useTransform(scrollY, [0, 400], [1, 0.9]);
+    const y = useTransform(scrollY, [0, 400], [0, 100]);
 
     return (
-        <div 
+        <motion.div 
             ref={containerRef}
-            className="w-full max-w-lg mx-auto bg-black/40 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-2xl overflow-hidden"
-            style={{ fontFamily: 'var(--font-inter)' }}
+            style={{ opacity, scale, y }}
+            className="w-full max-w-lg mx-auto bg-[#8B8B83] border border-white/5 rounded-[3rem] p-8 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden relative z-20"
         >
-            {/* Header Area */}
-            <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2 text-white/70 bg-white/5 px-3 py-1 rounded-full text-xs">
+            {/* Header Area - CENTERED */}
+            <div className="flex items-center justify-between mb-8 relative">
+                <div className="flex items-center gap-2 text-white/50 bg-black/10 px-3 py-1 rounded-full text-[10px] font-mono">
                     <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"/>
                     Mainnet
                 </div>
-                <div className="text-white font-bold text-lg tracking-wide">Human Defi</div>
-                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 border-2 border-white/20" />
+                
+                {/* Centered Title */}
+                <div className="absolute left-1/2 -translate-x-1/2 text-white font-black text-2xl tracking-tight">
+                    Human Defi
+                </div>
+
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 border-2 border-white/20 shadow-lg" />
             </div>
 
-            {/* Total Balance Card */}
-            <div ref={cardRef} className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 border border-white/10 rounded-2xl p-6 mb-6 text-center relative group transition-all duration-500 hover:scale-[1.02]">
-                <div className="text-white/60 text-sm mb-1">Balance Total</div>
-                <div className="text-4xl font-bold text-white mb-2">$24,593.00</div>
-                <div className="text-green-400 text-sm font-mono flex items-center justify-center gap-1">
-                    <ArrowUpRight size={14} /> +$1,240.50 (5.4%)
+            {/* Total Balance Card - CENTERED & LARGE */}
+            <div className="bg-gradient-to-b from-[#6D6D75] to-[#5A5A60] rounded-[2rem] p-10 mb-8 text-center relative shadow-inner border border-white/10">
+                <div className="text-white/40 text-sm font-medium mb-4 uppercase tracking-widest">Balance Total</div>
+                <div className="text-6xl font-black text-white mb-4 tracking-tighter">$24,593.00</div>
+                <div className="text-green-400 font-bold font-mono flex items-center justify-center gap-2 bg-green-500/10 py-1 px-4 rounded-full w-fit mx-auto">
+                    <ArrowUpRight size={16} /> +$1,240.50 (5.4%)
                 </div>
                 
-                {/* Actions Grid */}
-                <div className="grid grid-cols-4 gap-2 mt-6">
+                {/* Actions Grid - CENTERED */}
+                <div className="flex justify-center gap-6 mt-10">
                     {['Buy', 'Send', 'Recv', 'Swap'].map((action, i) => (
-                        <button key={action} className="flex flex-col items-center gap-2 group/btn">
-                            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white group-hover/btn:bg-blue-500 transition-colors">
-                                {i === 0 && <CreditCard size={18} />}
-                                {i === 1 && <ArrowUpRight size={18} />}
-                                {i === 2 && <ArrowDownLeft size={18} />}
-                                {i === 3 && <Repeat size={18} />}
+                        <div key={action} className="flex flex-col items-center gap-3 group cursor-pointer">
+                            <div className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/90 group-hover:bg-white/20 group-hover:scale-110 transition-all duration-300 shadow-lg backdrop-blur-sm">
+                                {i === 0 && <CreditCard size={24} />}
+                                {i === 1 && <ArrowUpRight size={24} />}
+                                {i === 2 && <ArrowDownLeft size={24} />}
+                                {i === 3 && <Repeat size={24} />}
                             </div>
-                            <span className="text-[10px] text-white/50">{action}</span>
-                        </button>
+                            <span className="text-[11px] font-bold text-white/40 uppercase tracking-wide group-hover:text-white/80 transition-colors">{action}</span>
+                        </div>
                     ))}
                 </div>
             </div>
 
             {/* Accounts List & Search */}
-            <div ref={listRef} className="space-y-4">
-                <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" size={16} />
+            <div className="space-y-4">
+                <div className="relative mb-6">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={18} />
                     <input 
                         type="text" 
                         placeholder="Buscar cuentas..." 
-                        className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-blue-500/50 transition-colors"
+                        className="w-full bg-black/5 border border-white/5 rounded-2xl py-3 pl-12 pr-4 text-sm text-white focus:outline-none focus:bg-black/10 transition-colors placeholder:text-white/20"
                         disabled
                     />
                 </div>
@@ -68,23 +77,23 @@ export function WalletPreview() {
                     { name: 'Trading Alpha', balance: '1.2 BTC', usd: '$42,100.00', color: 'bg-orange-500' },
                     { name: 'Yield Farm', balance: '5,000 USDC', usd: '$5,000.00', color: 'bg-green-500' }
                 ].map((acc, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group">
-                        <div className="flex items-center gap-3">
-                            <div className={`w-8 h-8 rounded-full ${acc.color} flex items-center justify-center text-[10px] text-white font-bold`}>
+                    <div key={i} className="flex items-center justify-between p-4 rounded-2xl hover:bg-white/5 transition-colors cursor-pointer group border border-transparent hover:border-white/5">
+                        <div className="flex items-center gap-4">
+                            <div className={`w-10 h-10 rounded-full ${acc.color} flex items-center justify-center text-xs text-white font-bold shadow-md`}>
                                 {acc.name[0]}
                             </div>
                             <div>
-                                <div className="text-white text-sm font-medium">{acc.name}</div>
-                                <div className="text-white/40 text-xs">{acc.balance}</div>
+                                <div className="text-white font-bold text-base">{acc.name}</div>
+                                <div className="text-white/30 text-xs font-mono">{acc.balance}</div>
                             </div>
                         </div>
                         <div className="text-right">
-                            <div className="text-white text-sm font-bold">{acc.usd}</div>
-                            <MoreVertical size={14} className="text-white/20 ml-auto mt-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <div className="text-white font-bold text-base">{acc.usd}</div>
+                            <MoreVertical size={16} className="text-white/20 ml-auto mt-1 opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
                     </div>
                 ))}
             </div>
-        </div>
+        </motion.div>
     );
 }

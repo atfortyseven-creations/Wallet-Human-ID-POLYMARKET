@@ -15,26 +15,27 @@ export function LandingHero({ onStart }: Props) {
         >
             <h1 
                 className="
-                    text-5xl md:text-7xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-white
-                    mb-8 tracking-tighter drop-shadow-lg
+                    text-6xl md:text-8xl lg:text-[9rem] font-black text-transparent bg-clip-text bg-gradient-to-br from-indigo-900 via-purple-800 to-indigo-900
+                    mb-8 tracking-tighter drop-shadow-2xl uppercase leading-[0.9]
                 "
-                style={{ fontFamily: 'var(--font-inter)' }} // Ensuring consistent font
+                style={{ fontFamily: 'var(--font-inter)' }} 
             >
-                Te damos la bienvenida <br className="hidden md:block"/>
-                en Human Defi
+                BIENVENIDO A<br/>
+                HUMAN DeFi<br/>
+                <span className="text-4xl md:text-6xl text-indigo-900/40 block mt-4">TU HOGAR EN WEB3</span>
             </h1>
 
             <button 
                 onClick={onStart}
                 className="
-                    group relative px-8 py-4 bg-blue-600 rounded-full text-white font-bold text-lg
-                    overflow-hidden transition-all hover:scale-105 hover:bg-blue-500 hover:shadow-[0_0_30px_rgba(37,99,235,0.5)]
+                    group relative px-12 py-6 bg-indigo-900 rounded-full text-white font-black text-2xl
+                    overflow-hidden transition-all hover:scale-105 hover:bg-indigo-800 hover:shadow-[0_0_50px_rgba(79,70,229,0.5)]
                 "
                 aria-label="Start Registration"
             >
                 <span className="relative z-10 flex items-center gap-2">
-                    Comenzar
-                    <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                    COMENZAR
+                    <ArrowRight size={28} className="group-hover:translate-x-1 transition-transform" />
                 </span>
                 
                 {/* Shine Effect */}
