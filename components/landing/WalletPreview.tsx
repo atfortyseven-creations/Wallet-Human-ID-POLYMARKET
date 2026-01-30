@@ -1,43 +1,15 @@
+```typescript
 "use client";
 
 import React, { useRef } from 'react';
-import { useScroll } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
 import { Search, MoreVertical, CreditCard, ArrowUpRight, ArrowDownLeft, Repeat } from 'lucide-react';
 
 export function WalletPreview() {
-    const scroll = useScroll();
     const containerRef = useRef<HTMLDivElement>(null);
     const cardRef = useRef<HTMLDivElement>(null);
     const listRef = useRef<HTMLDivElement>(null);
 
-    // Scroll Logic:
-    // 1.0 - 2.0: Fade In & Slide Up
-    // 2.0 - 3.0: Stay visible
-    // 3.0 - 4.0: "Close by parts" (Fade/Scale out elements sequentially)
-    
-    useFrame(() => {
-        if (!scroll || !containerRef.current) return;
-        
-        const offset = scroll.offset * scroll.pages; // Absolute scroll units
-        // Assuming this component sits around page 1.5 to 3.5
-        
-        // Simpler visibility logic for mock (The scroll offset management is tricky in R3F HTML)
-        // We'll rely on global scroll offset if possible, or relative.
-        // Let's assume standard CSS opacity transition driven by r3f scroll range?
-        // Actually, let's just render static layout and let the parent scroll handle viewport?
-        // No, user wants "captura... y que desaparezca muy importante".
-        
-        // Let's implement local logic if possible, or just standard CSS snap?
-        // Using direct ref manipulation for performance
-        
-        const start = 1; 
-        const end = 2.5;
-        
-        // This is complex to coordinate without knowing exact page index.
-        // For now, let's return a static beautiful component and handle fade in parent or via CSS keyframes?
-        // Better: standard React entry animation.
-    });
+    // Standard CSS/React component now, no 3D hooks.
 
     return (
         <div 
