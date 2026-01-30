@@ -21,11 +21,11 @@ export const TOKENS_BY_CHAIN: Record<number, { symbol: string, name: string, add
     ]
 };
 
-export const getUsdcAddress = (chainId: number) => {
+export function getUsdcAddress(chainId: number) {
     const list = TOKENS_BY_CHAIN[chainId];
     return list?.find(t => t.symbol === "USDC")?.address as `0x${string}` | undefined;
 }
 
-export const getSupportedTokens = (chainId: number) => {
+export function getSupportedTokens(chainId: number) {
     return TOKENS_BY_CHAIN[chainId] || [];
 }
