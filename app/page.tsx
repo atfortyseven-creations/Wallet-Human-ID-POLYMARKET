@@ -22,6 +22,7 @@ const FeatureCardsSection = dynamic(() => import('@/components/landing/FeatureCa
 const SecurityGrowthSection = dynamic(() => import('@/components/landing/SecurityGrowthSection').then(mod => mod.SecurityGrowthSection));
 const Web3AccessSection = dynamic(() => import('@/components/landing/Web3AccessSection').then(mod => mod.Web3AccessSection));
 const HumanDefiFooter = dynamic(() => import('@/components/landing/HumanDefiFooter').then(mod => mod.HumanDefiFooter));
+import { CommunityInfo } from '@/components/CommunityInfo';
 
 // Heavy Wallet - Only load when absolutely necessary
 const WalletSection = dynamic(() => import('@/components/WalletSection'), { 
@@ -110,6 +111,11 @@ export default function Home() {
                     {/* SECTION 1: HERO (Critical for LCP - Largest Contentful Paint) */}
                     <section className="relative w-full h-[100dvh]">
                         <LandingHero onStart={handleStart} />
+                    </section>
+
+                    {/* COMMUNITY INFO (Vibrant Cards) */}
+                    <section className="relative w-full optimize-visibility bg-neutral-100/50 backdrop-blur-sm">
+                         <CommunityInfo />
                     </section>
 
                     {/* SECTION 2: WALLET PREVIEW (Viewport Virtualized) */}

@@ -65,9 +65,6 @@ export default function WalletSection() {
 
                 {/* ACTION GRID (Buy, Send, etc.) & TABS */}
                 <div className="w-full">
-                    {/* Community Info Cards - 20 Lottie Animations */}
-                    <CommunityInfo />
-                    
                     <WalletActions />
                 </div>
 
