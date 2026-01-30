@@ -7,7 +7,7 @@ import { SettingsProvider } from "@/src/context/SettingsContext";
 import dynamic from 'next/dynamic';
 
 const ClientWeb3Provider = dynamic(() => import('@/components/ClientWeb3Provider'), {
-    ssr: false
+    ssr: true // Enable SSR so context exists during build
 });
 
 export default function Providers({ children, initialState }: { children: React.ReactNode, initialState?: State }) {
