@@ -14,15 +14,15 @@ const ClientWeb3Provider = dynamic(() => import('@/components/ClientWeb3Provider
 export default function Providers({ children, initialState }: { children: React.ReactNode, initialState?: State }) {
     return (
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-            <ClientWeb3Provider cookies={null}>
-                <AppProvider>
+            <AppProvider>
+                <ClientWeb3Provider cookies={null}>
                     <SettingsProvider>
                         <LanguageProvider>
                             {children}
                         </LanguageProvider>
                     </SettingsProvider>
-                </AppProvider>
-            </ClientWeb3Provider>
+                </ClientWeb3Provider>
+            </AppProvider>
         </ThemeProvider>
     );
 }
