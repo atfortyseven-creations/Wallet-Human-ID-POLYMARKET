@@ -157,7 +157,7 @@ export default function Home() {
         >
           <color attach="background" args={['#000']} /> 
           
-          <ScrollControls pages={12} damping={0.2} style={{ scrollBehavior: 'smooth' }}>
+          <ScrollControls pages={7} damping={0.2} style={{ scrollBehavior: 'smooth' }}>
             
             {/* 1. The Video Engine (Background) */}
             <Suspense fallback={null}>
@@ -171,36 +171,33 @@ export default function Home() {
 
             {/* 3. The Scroll Story Content */}
             <Scroll html style={{ width: '100vw' }}>
-                
-                {/* PAGE 1: HERO */}
                 <LandingHero onStart={handleStart} />
+                
+                <div className="w-full flex flex-col relative z-10 pb-20">
+                    
+                    {/* PAGE 2: WALLET VISUALIZATION (Triggered slightly later) */}
+                    <div className="w-full flex items-center justify-center opacity-0 animate-fade-in-scroll mt-[100vh] mb-20">
+                         <WalletPreview />
+                    </div>
 
-                {/* PAGE 2: WALLET VISUALIZATION */}
-                <div className="w-full h-[150vh] flex items-center justify-center opacity-0 animate-fade-in-scroll">
-                     {/* We will fade this in via CSS in logic later or rely on scroll position */}
-                     <WalletPreview />
-                </div>
+                    {/* PAGE 3: FEATURE CARDS */}
+                    <div className="w-full py-20">
+                        <FeatureCardsSection />
+                    </div>
 
-                {/* PAGE 3: FEATURE CARDS (5 Cards) */}
-                <div className="w-full min-h-screen flex items-center justify-center py-20">
-                    <FeatureCardsSection />
-                </div>
+                    {/* PAGE 4: SECURITY & GROWTH */}
+                    <div className="w-full py-20">
+                        <SecurityGrowthSection />
+                    </div>
 
-                {/* PAGE 4: SECURITY & GROWTH (8 Cards + Text) */}
-                <div className="w-full min-h-screen py-20">
-                    <SecurityGrowthSection />
-                </div>
+                    {/* PAGE 5: BENEFITS & ACCESS (Finale) */}
+                    <div className="w-full py-32 mt-auto">
+                        <Web3AccessSection />
+                    </div>
 
-                {/* PAGE 5: BENEFITS & ACCESS (Cartoon + News) */}
-                <div className="w-full min-h-screen py-20">
-                    <Web3AccessSection />
-                </div>
-
-                {/* PAGE 6: FOOTER */}
-                <div className="w-full">
+                    {/* PAGE 6: FOOTER */}
                     <HumanDefiFooter />
                 </div>
-                
             </Scroll>
             
           </ScrollControls>

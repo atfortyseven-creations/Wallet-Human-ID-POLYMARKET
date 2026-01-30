@@ -34,7 +34,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
     metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://www.humanidfi.com'),
-    title: 'HumanID.fi | The Void Wallet',
+    title: 'Human DeFi',
     description: 'Sybil-resistant financial engine for Polymarket. Built on Base Sepolia.',
     icons: {
         icon: [
