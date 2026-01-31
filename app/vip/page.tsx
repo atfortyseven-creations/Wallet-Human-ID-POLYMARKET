@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useUser } from '@clerk/nextjs';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Crown, Waves, BarChart3, Upload, Bell, Star, Sparkles, Brain, GitBranch, TrendingUp, Zap, Activity, Trophy } from 'lucide-react';
 import WhaleTracker from '@/components/premium/WhaleTracker';
@@ -17,20 +18,70 @@ import type { WatchedWallet } from '@/components/premium/WhaleTracker';
 type TabType = 'tracker' | 'analytics' | 'alerts' | 'copytrading' | 'comparison' | 'gamification' | 'leaderboard';
 
 export default function VIPPage() {
+  const { user, isLoaded } = useUser();
   const [isPremium, setIsPremium] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [showPricing, setShowPricing] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('tracker');
   const [watchedWallets, setWatchedWallets] = useState<WatchedWallet[]>([]);
 
-  const handleUpgrade = () => {
+  // Check subscription status on mount
+  useEffect(() => {
+    if (isLoaded && user) {
+      checkSubscriptionStatus();
+    } else if (isLoaded) {
+      setLoading(false);
+    }
+  }, [isLoaded, user]);
+
+  const checkSubscriptionStatus = async () => {
+    try {
+      const response = await fetch('/api/subscription/status');
+      const data = await response.json();
+      setIsPremium(data.isPremium || false);
+    } catch (error) {
+      console.error('Failed to check subscription:', error);
+      setIsPremium(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpgrade = async () => {
     setShowPricing(true);
   };
 
-  const handleSubscribe = (tier: 'monthly' | 'yearly') => {
-    console.log(`Subscribed to ${tier} plan`);
-    setIsPremium(true);
-    alert(`🎉 Welcome to VIP Premium! You're now subscribed to the ${tier} plan.`);
+  const handleSubscribe = async (tier: 'monthly' | 'yearly') => {
+    try {
+      // Create Stripe checkout session
+      const priceId = tier === 'monthly' 
+        ? 'price_1234567890' // Replace with your actual Stripe price ID
+        : 'price_0987654321'; // Replace with your actual Stripe price ID
+      
+      const response = await fetch('/api/subscription/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ priceId }),
+      });
+
+      const { url } = await response.json();
+      
+      if (url) {
+        window.location.href = url;
+      }
+    } catch (error) {
+      console.error('Failed to create checkout:', error);
+      alert('Failed to start checkout. Please try again.');
+    }
   };
+
+  if (!isLoaded || loading) {
+    return (
+      <div className="min-h-screen bg-[#EAEADF] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-4 border-purple-600 border-t-transparent" />
+      </div>
+    );
+  }
 
   const tabs = [
     { id: 'tracker' as const, label: 'Whale Tracker', icon: <Waves size={20} />, color: 'blue' },
@@ -211,7 +262,7 @@ export default function VIPPage() {
               exit={{ opacity: 0, x: 20 }}
             >
               <div className="grid md:grid-cols-2 gap-6">
-                <CompetitiveLeaderboard currentUserId="user-id" />
+                <CompetitiveLeaderboard currentUserId={user?.id || 'guest'} />
                 <RealTimeLiveFeed isPremium={isPremium} />
               </div>
             </motion.div>
@@ -224,7 +275,7 @@ export default function VIPPage() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
             >
-              <GamificationSystem userId="user-id" />
+              <GamificationSystem userId={user?.id || 'guest'} />
             </motion.div>
           )}
 

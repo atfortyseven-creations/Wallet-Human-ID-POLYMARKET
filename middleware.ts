@@ -1,150 +1,30 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-import { jwtVerify } from 'jose'
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 
-const JWT_SECRET = new TextEncoder().encode(
-    process.env.JWT_SECRET || 'VOID_SECRET_99_POLY'
-);
+const isPublicRoute = createRouteMatcher([
+  '/',
+  '/sign-in(.*)',
+  '/sign-up(.*)',
+  '/api/webhooks(.*)',
+  '/dashboard(.*)',
+  '/mercados(.*)',
+  '/favorites(.*)',
+  '/tokenomics(.*)',
+  '/developer(.*)',
+  '/funciones(.*)',
+  '/soporte(.*)',
+])
 
-export async function middleware(request: NextRequest) {
-    const { pathname } = request.nextUrl;
-    console.log(`[Middleware] Incoming request: ${pathname} from ${request.headers.get('origin') || 'unknown origin'}`);
-
-    // Admin route protection
-    if (pathname.startsWith('/admin')) {
-        // Allow access to admin login
-        if (pathname.startsWith('/admin/login')) {
-            return NextResponse.next();
-        }
-
-        // Check for admin authentication
-        const token = request.cookies.get('admin_token')?.value;
-
-        if (!token) {
-            return NextResponse.redirect(new URL('/admin/login', request.url));
-        }
-
-        try {
-            await jwtVerify(token, JWT_SECRET);
-        } catch (error) {
-            const response = NextResponse.redirect(new URL('/admin/login', request.url));
-            response.cookies.delete('admin_token');
-            return response;
-        }
-    }
-
-    // CORS and security logic for all routes
-    const origin = request.headers.get('origin');
-    const allowedOrigins = [
-        'https://www.humanidfi.com',
-        'https://humanidfi.com',
-        'https://www.polymarketwallet.com',
-        'https://polymarketwallet.com',
-        'https://polymarketwallet.up.railway.app',
-        'http://localhost:3000',
-        'http://localhost:8080'
-    ];
-
-    // Block unknown origins for sensitive API routes
-    if (pathname.startsWith('/api/auth/')) {
-        if (origin && !allowedOrigins.includes(origin)) {
-            console.warn(`[Security] Blocked request to ${pathname} from ${origin}`);
-            return new NextResponse(JSON.stringify({ error: 'Unauthorized origin' }), {
-                status: 403,
-                headers: { 'Content-Type': 'application/json' },
-            });
-        }
-    }
-
-    // Allow requests without origin (Railway health checks, SSR, direct requests)
-    // Only block requests WITH an origin that's not allowed (and not to sensitive routes)
-    if (origin && !allowedOrigins.includes(origin) && !pathname.startsWith('/api/auth/session')) {
-        console.warn(`[Security] Blocked request to ${pathname} from unauthorized origin: ${origin}`);
-        return new NextResponse(null, {
-            status: 403,
-            statusText: 'Forbidden',
-            headers: {
-                'Content-Type': 'text/plain',
-            },
-        });
-    }
-
-    const response = NextResponse.next();
-
-    // Set CORS headers
-    if (origin && allowedOrigins.includes(origin)) {
-        response.headers.set('Access-Control-Allow-Origin', origin);
-        response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-        response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-        response.headers.set('Access-Control-Allow-Credentials', 'true');
-    }
-
-    // 🛡️ ENTERPRISE-GRADE SECURITY HEADERS
-
-    // Prevent MIME type sniffing
-    response.headers.set('X-Content-Type-Options', 'nosniff');
-
-    // Prevent clickjacking
-    response.headers.set('X-Frame-Options', 'DENY');
-
-    // XSS Protection (legacy browsers)
-    response.headers.set('X-XSS-Protection', '1; mode=block');
-
-    // Referrer Policy
-    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-
-    // Permissions Policy - Disable sensitive features
-    response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
-
-    // Content Security Policy - More restrictive
-    // Note: Keeping unsafe-inline/unsafe-eval for Next.js dev mode compatibility
-    // In strict production, these should be replaced with nonces
-    const cspHeader = `
-            default-src 'self' https: wss:;
-            img-src 'self' https: data: blob:;
-            connect-src 'self' https://worldcoin.org https://developer.worldcoin.org wss: https: blob:;
-            script-src 'self' 'unsafe-eval' 'unsafe-inline' https://worldcoin.org https://www.gstatic.com;
-            worker-src 'self' blob:;
-            style-src 'self' 'unsafe-inline' https:;
-            font-src 'self' https: data:;
-            object-src 'none';
-            base-uri 'self';
-            form-action 'self';
-            frame-ancestors 'none';
-            block-all-mixed-content;
-            upgrade-insecure-requests;
-        `.replace(/\s{2,}/g, ' ').trim();
-    response.headers.set('Content-Security-Policy', cspHeader);
-
-    // HSTS - Force HTTPS for 1 year (only in production)
-    if (process.env.NODE_ENV === 'production') {
-        response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
-    }
-
-    // HTTPS Redirect in production
-    if (process.env.NODE_ENV === 'production' && !request.url.startsWith('https://')) {
-        const httpsUrl = request.url.replace(/^http:/, 'https:');
-        return NextResponse.redirect(httpsUrl, 301);
-    }
-
-    // Geo-Block logic (Compliance)
-    const country = request.geo?.country || request.headers.get('x-vercel-ip-country') || 'XX';
-    if (country === 'US') {
-        // return new NextResponse('Access Denied: Service not available in your region.', { status: 403 });
-    }
-
-    return response;
-}
+export default clerkMiddleware(async (auth, request) => {
+  if (!isPublicRoute(request)) {
+    await auth.protect()
+  }
+})
 
 export const config = {
-    matcher: [
-        /*
-         * Match all request paths except for:
-         * - _next/static (static files)
-         * - _next/image (image optimization files)
-         * - favicon.ico (favicon file)
-         * - assets/ (public assets)
-         */
-        '/((?!_next/static|_next/image|favicon.ico|assets).*)',
-    ],
+  matcher: [
+    // Skip Next.js internals and all static files, unless found in search params
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes
+    '/(api|trpc)(.*)',
+  ],
 }
