@@ -125,60 +125,20 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade }: W
         setWatchedWallets(updatedWallets);
     };
 
-    const handleAddWallet = async (address: string, label: string) => {
-        const newWallet: WatchedWallet = {
-            id: Math.random().toString(36).substr(2, 9),
-            address,
-            label,
-            tags: ['Custom'],
-            isWhale: false,
-            isSmart: false,
-            totalValue: 0,
-            change24h: 0,
-            lastActive: new Date(),
-            alertsEnabled: true
-        };
+    const filteredWallets = watchedWallets.filter(w => {
+        if (filter === 'whales' && !w.isWhale) return false;
+        if (filter === 'smart' && !w.isSmart) return false;
+        if (filter === 'alerts' && !w.alertsEnabled) return false;
+        if (searchQuery && !w.label.toLowerCase().includes(searchQuery.toLowerCase()) 
+            && !w.address.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+        return true;
+    });
 
-        // Fetch stats for the new wallet immediately
-        try {
-            const res = await fetch(`/api/whale/stats?address=${address}`);
-            const data = await res.json();
-            newWallet.totalValue = data.totalValue || 0;
-            newWallet.isWhale = data.isWhale || false;
-            newWallet.isSmart = data.totalValue > 1000000;
-        } catch (e) {
-            console.error("Error fetching new wallet stats", e);
-        }
-
-        setWatchedWallets(prev => [newWallet, ...prev]);
-        setShowAddWallet(false);
-    };
-
-    const handleBatchImport = async (text: string) => {
-        const lines = text.split('\n');
-        const newTracked: WatchedWallet[] = [];
-        
-        for (const line of lines) {
-            const [address, label] = line.split(',').map(s => s.trim());
-            if (address && address.startsWith('0x')) {
-                newTracked.push({
-                    id: Math.random().toString(36).substr(2, 9),
-                    address,
-                    label: label || 'Imported Wallet',
-                    tags: ['Imported'],
-                    isWhale: false,
-                    isSmart: false,
-                    totalValue: 0,
-                    change24h: 0,
-                    lastActive: new Date(),
-                    alertsEnabled: true
-                });
-            }
-        }
-
-        setWatchedWallets(prev => [...newTracked, ...prev]);
-        setShowBatchImport(false);
-        // Data for these will be fetched on next cycle or manual refresh
+    const formatValue = (val: number) => {
+        if (val >= 1e9) return `$${(val / 1e9).toFixed(2)}B`;
+        if (val >= 1e6) return `$${(val / 1e6).toFixed(2)}M`;
+        if (val >= 1e3) return `$${(val / 1e3).toFixed(2)}K`;
+        return `$${val.toFixed(2)}`;
     };
 
     return (
@@ -239,9 +199,11 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade }: W
                 </select>
 
                 <button
-                    onClick={() => setShowAddWallet(true)}
-                    disabled={!isPremium && watchedWallets.length >= 3}
-                    className="px-4 py-3 bg-[#1F1F1F] text-white rounded-2xl font-bold hover:bg-[#1F1F1F]/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    onClick={() => {
+                        if (isPremium) setShowAddWallet(true);
+                        else onUpgrade();
+                    }}
+                    className="px-4 py-3 bg-[#1F1F1F] text-white rounded-2xl font-bold hover:bg-[#1F1F1F]/90 transition-all flex items-center gap-2"
                 >
                     <Eye size={20} />
                     Add Wallet
@@ -308,6 +270,128 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade }: W
                 </div>
             )}
         </div>
+    );
+}
+
+function StatCard({ icon, label, value, isPremium }: { icon: React.ReactNode, label: string, value: number, isPremium: boolean }) {
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-[#1F1F1F]/10"
+        >
+            <div className="flex items-center gap-3 mb-2">
+                <div className="text-[#1F1F1F]/70">{icon}</div>
+                <span className="text-xs font-bold text-[#1F1F1F]/70 uppercase">{label}</span>
+            </div>
+            <div className="text-2xl font-black text-[#1F1F1F]">{value}</div>
+        </motion.div>
+    );
+}
+
+function WalletCard({ wallet, index, isPremium }: { wallet: WatchedWallet, index: number, isPremium: boolean }) {
+    const formatValue = (val: number) => {
+        if (val >= 1e9) return `$${(val / 1e9).toFixed(2)}B`;
+        if (val >= 1e6) return `$${(val / 1e6).toFixed(2)}M`;
+        return `$${(val / 1e3).toFixed(2)}K`;
+    };
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ delay: index * 0.05 }}
+            className="p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-[#1F1F1F]/10 hover:bg-white/80 transition-all"
+        >
+            <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-2">
+                        <h3 className="font-black text-[#1F1F1F] truncate">{wallet.label}</h3>
+                        {wallet.isWhale && <Waves size={16} className="text-blue-500" />}
+                        {wallet.isSmart && <Star size={16} className="text-yellow-500 fill-current" />}
+                        {wallet.alertsEnabled && <Bell size={16} className="text-green-500" />}
+                    </div>
+                    
+                    <div className="text-xs font-mono text-[#1F1F1F]/60 mb-2 truncate">{wallet.address}</div>
+                    
+                    <div className="flex flex-wrap gap-1 mb-2">
+                        {wallet.tags.map(tag => (
+                            <span key={tag} className="px-2 py-0.5 bg-[#1F1F1F]/10 rounded-full text-xs font-bold text-[#1F1F1F]">
+                                {tag}
+                            </span>
+                        ))}
+                    </div>
+
+                    {wallet.note && isPremium && (
+                        <p className="text-xs text-[#1F1F1F]/70 italic">{wallet.note}</p>
+                    )}
+                </div>
+
+                <div className="text-right">
+                    <div className="text-xl font-black text-[#1F1F1F] mb-1">{formatValue(wallet.totalValue)}</div>
+                    <div className={`text-sm font-bold flex items-center gap-1 justify-end ${wallet.change24h >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {wallet.change24h >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                        {Math.abs(wallet.change24h).toFixed(2)}%
+                    </div>
+                    <div className="text-xs text-[#1F1F1F]/50 mt-1">
+                        {new Date(wallet.lastActive).toLocaleTimeString()}
+                    </div>
+                </div>
+            </div>
+        </motion.div>
+    );
+}
+
+function ActivityCard({ activity, index }: { activity: WhaleActivity, index: number }) {
+    const getTypeColor = (type: string) => {
+        switch(type) {
+            case 'BUY': return 'text-green-600 bg-green-100';
+            case 'SELL': return 'text-red-600 bg-red-100';
+            case 'TRANSFER': return 'text-blue-600 bg-blue-100';
+            case 'SWAP': return 'text-purple-600 bg-purple-100';
+            default: return 'text-gray-600 bg-gray-100';
+        }
+    };
+
+    const formatValue = (val: number) => {
+        if (val >= 1e6) return `$${(val / 1e6).toFixed(2)}M`;
+        if (val >= 1e3) return `$${(val / 1e3).toFixed(2)}K`;
+        return `$${val.toFixed(2)}`;
+    };
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.05 }}
+            className="p-4 bg-white/50 backdrop-blur-sm rounded-xl border border-[#1F1F1F]/10 hover:bg-white/80 transition-all"
+        >
+            <div className="flex items-center justify-between gap-4">
+                <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                        <span className={`px-2 py-1 rounded-lg text-xs font-bold ${getTypeColor(activity.type)}`}>
+                            {activity.type}
+                        </span>
+                        <span className="font-bold text-[#1F1F1F]">{activity.walletLabel}</span>
+                    </div>
+                    <div className="text-sm text-[#1F1F1F]/70">
+                        {activity.amount.toLocaleString()} {activity.token}
+                    </div>
+                    <div className="text-xs text-[#1F1F1F]/50 font-mono mt-1">
+                        {new Date(activity.timestamp).toLocaleString()}
+                    </div>
+                </div>
+                
+                <div className="text-right">
+                    <div className="text-lg font-black text-[#1F1F1F]">{formatValue(activity.usdValue)}</div>
+                    <button className="text-xs text-blue-600 hover:underline flex items-center gap-1 mt-1">
+                        <Copy size={12} />
+                        {activity.txHash.slice(0, 10)}...
+                    </button>
+                </div>
+            </div>
+        </motion.div>
     );
 }
 
@@ -402,7 +486,22 @@ function BatchImportModal({ isOpen, onClose, onImport }: { isOpen: boolean, onCl
     );
 }
 
-import { X } from 'lucide-react';
+const X = ({ size, className }: { size?: number, className?: string }) => (
+    <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        width={size || 24} 
+        height={size || 24} 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        className={className}
+    >
+        <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+    </svg>
+);
 
 function StatCard({ icon, label, value, isPremium }: { icon: React.ReactNode, label: string, value: number, isPremium: boolean }) {
   return (
