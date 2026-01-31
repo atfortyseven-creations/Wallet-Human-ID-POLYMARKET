@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, Globe, Settings, Bell } from 'lucide-react';
+import { Menu, X, Globe, Settings, Bell, Crown } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useAppKit, useAppKitAccount } from '@reown/appkit/react';
 import { useAccount } from 'wagmi';
@@ -42,6 +42,7 @@ export function SiteHeader() {
 
     const navLinks = [
         { name: t('nav.functions'), href: '/funciones' },
+        { name: 'VIP', href: '/vip', isVIP: true },
         { name: t('nav.developer'), href: '/developer' }, 
         { name: t('nav.human_card'), href: '/wallet' },
         { name: t('nav.support'), href: '/soporte' },
@@ -78,8 +79,13 @@ export function SiteHeader() {
                             <Link 
                                 key={link.href} 
                                 href={link.href}
-                                className="px-5 py-2 text-[14px] font-black text-gray-800 hover:text-black transition-all hover:bg-gray-100/50 rounded-lg tracking-widest uppercase font-sans whitespace-nowrap"
+                                className={`px-5 py-2 text-[14px] font-black transition-all hover:bg-gray-100/50 rounded-lg tracking-widest uppercase font-sans whitespace-nowrap flex items-center gap-2 ${
+                                    link.isVIP 
+                                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-lg hover:scale-105' 
+                                        : 'text-gray-800 hover:text-black'
+                                }`}
                             >
+                                {link.isVIP && <Crown size={16} />}
                                 {link.name}
                             </Link>
                         ))}

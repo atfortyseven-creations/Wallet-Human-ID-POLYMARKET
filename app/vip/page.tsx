@@ -1,0 +1,343 @@
+"use client";
+
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Crown, Waves, BarChart3, Upload, Bell, Star, Sparkles, Brain, GitBranch, TrendingUp, Zap, Activity, Trophy } from 'lucide-react';
+import WhaleTracker from '@/components/premium/WhaleTracker';
+import WalletComparison from '@/components/premium/WalletComparison';
+import PricingModal from '@/components/premium/PricingModal';
+import AdvancedAnalytics from '@/components/premium/AdvancedAnalytics';
+import SmartAlertsEngine from '@/components/premium/SmartAlertsEngine';
+import TokenFlowVisualizer from '@/components/premium/TokenFlowVisualizer';
+import GamificationSystem from '@/components/gamification/GamificationSystem';
+import CompetitiveLeaderboard from '@/components/gamification/CompetitiveLeaderboard';
+import RealTimeLiveFeed from '@/components/gamification/RealTimeLiveFeed';
+import type { WatchedWallet } from '@/components/premium/WhaleTracker';
+
+type TabType = 'tracker' | 'analytics' | 'alerts' | 'copytrading' | 'comparison' | 'gamification' | 'leaderboard';
+
+export default function VIPPage() {
+  const [isPremium, setIsPremium] = useState(false);
+  const [showPricing, setShowPricing] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabType>('tracker');
+  const [watchedWallets, setWatchedWallets] = useState<WatchedWallet[]>([]);
+
+  const handleUpgrade = () => {
+    setShowPricing(true);
+  };
+
+  const handleSubscribe = (tier: 'monthly' | 'yearly') => {
+    console.log(`Subscribed to ${tier} plan`);
+    setIsPremium(true);
+    alert(`🎉 Welcome to VIP Premium! You're now subscribed to the ${tier} plan.`);
+  };
+
+  const tabs = [
+    { id: 'tracker' as const, label: 'Whale Tracker', icon: <Waves size={20} />, color: 'blue' },
+    { id: 'analytics' as const, label: 'Analytics', icon: <BarChart3 size={20} />, color: 'purple' },
+    { id: 'alerts' as const, label: 'Smart Alerts', icon: <Bell size={20} />, color: 'orange' },
+    { id: 'copytrading' as const, label: 'Copy Trading', icon: <GitBranch size={20} />, color: 'green' },
+    { id: 'leaderboard' as const, label: 'Leaderboard', icon: <Trophy size={20} />, color: 'yellow' },
+    { id: 'gamification' as const, label: 'My Progress', icon: <Crown size={20} />, color: 'pink' },
+    { id: 'comparison' as const, label: 'Compare', icon: <TrendingUp size={20} />, color: 'pink' },
+  ];
+
+  return (
+    <div className="min-h-screen bg-[#EAEADF] text-[#1F1F1F] font-sans pb-20 relative overflow-hidden">
+      {/* Premium Background Effect */}
+      <div className="absolute inset-0 pointer-events-none opacity-10">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500 rounded-full blur-[150px]" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-500 rounded-full blur-[150px]" />
+        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-blue-500 rounded-full blur-[150px]" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-8 relative z-10">
+        {/* Hero Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-12"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full text-white font-bold mb-4">
+                <Crown size={20} />
+                PROFESSIONAL WHALE TRACKER
+                {isPremium && <Sparkles size={16} className="animate-pulse" />}
+              </div>
+
+              <h1 className="text-5xl md:text-7xl font-black text-[#1F1F1F] mb-4 leading-tight">
+                Track Whales.
+                <br />
+                <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  Copy Profits.
+                </span>
+              </h1>
+
+              <p className="text-xl text-[#1F1F1F]/70 max-w-2xl">
+                Professional-grade whale tracking with AI-powered insights, real-time alerts,
+                and automated copy trading. Join 10,000+ traders making smarter decisions.
+              </p>
+            </div>
+
+            {!isPremium && (
+              <button
+                onClick={handleUpgrade}
+                className="hidden md:block px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl font-black text-lg hover:shadow-2xl transition-all group"
+              >
+                <div className="flex items-center gap-3">
+                  <Sparkles className="group-hover:rotate-12 transition-transform" />
+                  Start Free Trial
+                  <Waves className="group-hover:-rotate-12 transition-transform" />
+                </div>
+                <div className="text-xs font-normal mt-1 opacity-90">
+                  7 days free • $19.99/mo after
+                </div>
+              </button>
+            )}
+          </div>
+
+          {/* Premium Stats */}
+          {isPremium && (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <StatCard icon={<Activity />} label="Tracked Whales" value="247" change="+12" />
+              <StatCard icon={<TrendingUp />} label="Copy Trade P&L" value="+$125K" change="+24%" />
+              <StatCard icon={<Bell />} label="Active Alerts" value="18" change="+3" />
+              <StatCard icon={<Zap />} label="Win Rate" value="85.7%" change="+2.1%" />
+            </div>
+          )}
+        </motion.div>
+
+        {/* Feature Highlights (Non-Premium) */}
+        {!isPremium && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="grid md:grid-cols-3 gap-6 mb-12"
+          >
+            <HighlightCard
+              icon={<Brain className="text-purple-500" size={32} />}
+              title="AI-Powered Insights"
+              features={['Pattern recognition', 'Profit predictions', 'Risk analysis', 'Auto recommendations']}
+            />
+            <HighlightCard
+              icon={<GitBranch className="text-green-500" size={32} />}
+              title="Copy Trading"
+              features={['1-click copy trades', '85%+ win rate', 'Auto-execute', 'Risk management']}
+            />
+            <HighlightCard
+              icon={<Bell className="text-orange-500" size={32} />}
+              title="Real-Time Alerts"
+              features={['Instant notifications', 'Telegram/Email/SMS', 'Custom rules', 'Smart filtering']}
+            />
+          </motion.div>
+        )}
+
+        {/* Tab Navigation */}
+        <div className="mb-6">
+          <div className="flex gap-2 bg-white/50 p-2 rounded-2xl overflow-x-auto scrollbar-hide">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+                  activeTab === tab.id
+                    ? 'bg-[#1F1F1F] text-white shadow-lg scale-105'
+                    : 'text-[#1F1F1F]/70 hover:bg-white/80'
+                }`}
+              >
+                {tab.icon}
+                <span className="hidden md:inline">{tab.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Tab Content */}
+        <AnimatePresence mode="wait">
+          {activeTab === 'tracker' && (
+            <motion.div
+              key="tracker"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+            >
+              <WhaleTracker isPremium={isPremium} onUpgrade={handleUpgrade} />
+            </motion.div>
+          )}
+
+          {activeTab === 'analytics' && (
+            <motion.div
+              key="analytics"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+            >
+              <AdvancedAnalytics 
+                walletAddress="0x28C6c06298d514Db089934071355E5743bf21d60" 
+                isPremium={isPremium} 
+              />
+            </motion.div>
+          )}
+
+          {activeTab === 'alerts' && (
+            <motion.div
+              key="alerts"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+            >
+              <SmartAlertsEngine isPremium={isPremium} />
+            </motion.div>
+          )}
+
+          {activeTab === 'copytrading' && (
+            <motion.div
+              key="copytrading"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+            >
+              <TokenFlowVisualizer isPremium={isPremium} />
+            </motion.div>
+          )}
+
+          {activeTab === 'leaderboard' && (
+            <motion.div
+              key="leaderboard"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+            >
+              <div className="grid md:grid-cols-2 gap-6">
+                <CompetitiveLeaderboard currentUserId="user-id" />
+                <RealTimeLiveFeed isPremium={isPremium} />
+              </div>
+            </motion.div>
+          )}
+
+          {activeTab === 'gamification' && (
+            <motion.div
+              key="gamification"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+            >
+              <GamificationSystem userId="user-id" />
+            </motion.div>
+          )}
+
+          {activeTab === 'comparison' && (
+            <motion.div
+              key="comparison"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+            >
+              <WalletComparison wallets={watchedWallets} isPremium={isPremium} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Sticky upgrade banner for free users */}
+        {!isPremium && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 1 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-4xl w-full mx-auto px-4"
+          >
+            <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 rounded-2xl p-6 shadow-2xl backdrop-blur-sm">
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                    <Crown size={24} className="text-white" />
+                  </div>
+                  <div>
+                    <div className="text-white font-black text-lg">
+                      Unlock Professional Features
+                    </div>
+                    <div className="text-white/90 text-sm">
+                      AI insights • Copy trading • Unlimited alerts • 85% avg win rate
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="text-right">
+                    <div className="text-white text-xs line-through opacity-75">$49.99</div>
+                    <div className="text-white font-black text-2xl">$19.99/mo</div>
+                  </div>
+                  <button
+                    onClick={handleUpgrade}
+                    className="px-6 py-3 bg-white text-purple-600 rounded-xl font-black hover:bg-white/90 transition-all whitespace-nowrap"
+                  >
+                    Start Free Trial →
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </div>
+
+      {/* Pricing Modal */}
+      <AnimatePresence>
+        {showPricing && (
+          <PricingModal
+            isOpen={showPricing}
+            onClose={() => setShowPricing(false)}
+            onSubscribe={handleSubscribe}
+          />
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function StatCard({ icon, label, value, change }: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  change: string;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="p-4 bg-white/50 backdrop-blur-sm rounded-xl border border-[#1F1F1F]/10"
+    >
+      <div className="flex items-center gap-2 mb-2 text-[#1F1F1F]/70">
+        {icon}
+        <span className="text-xs font-bold uppercase">{label}</span>
+      </div>
+      <div className="text-2xl font-black text-[#1F1F1F]">{value}</div>
+      <div className="text-sm font-bold text-green-600 mt-1">{change}</div>
+    </motion.div>
+  );
+}
+
+function HighlightCard({ icon, title, features }: {
+  icon: React.ReactNode;
+  title: string;
+  features: string[];
+}) {
+  return (
+    <motion.div
+      whileHover={{ scale: 1.02, y: -5 }}
+      className="p-6 bg-white/50 backdrop-blur-sm rounded-2xl border border-[#1F1F1F]/10 hover:shadow-xl transition-all"
+    >
+      <div className="mb-4">{icon}</div>
+      <h3 className="text-lg font-black text-[#1F1F1F] mb-3">{title}</h3>
+      <ul className="space-y-2">
+        {features.map((feature, i) => (
+          <li key={i} className="flex items-start gap-2 text-sm text-[#1F1F1F]/70">
+            <Star size={16} className="text-yellow-500 fill-current flex-shrink-0 mt-0.5" />
+            {feature}
+          </li>
+        ))}
+      </ul>
+    </motion.div>
+  );
+}
+

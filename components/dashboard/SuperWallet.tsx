@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Wallet, TrendingUp, Zap, Loader2, PieChart, Users, Settings } from 'lucide-react';
 import { NetworkSelector } from '@/components/wallet/NetworkSelector';
 import { WalletActions } from '@/components/wallet/WalletActions';
@@ -12,7 +12,9 @@ import AccountSwitcher from '@/components/wallet/AccountSwitcher';
 import StakingDashboard from '@/components/wallet/StakingDashboard';
 import TransactionHistory from '@/components/wallet/TransactionHistory';
 import WatchOnlyInput from '@/components/wallet/WatchOnlyInput';
-import { getAccountColor } from '@/lib/wallet/accounts';
+import { getAccountColor, type WalletAccount } from '@/lib/wallet/accounts';
+import { resolveENSName } from '@/lib/wallet/ens';
+import { isAddress } from 'viem';
 
 export default function SuperWallet({ recentNews = [] }: { recentNews?: any[] }) {
     
@@ -30,13 +32,100 @@ export default function SuperWallet({ recentNews = [] }: { recentNews?: any[] })
 
     const [activeView, setActiveView] = useState<'dashboard' | 'portfolio' | 'earn' | 'activity' | 'contacts' | 'settings'>('dashboard');
     const [showWatchInput, setShowWatchInput] = useState(false);
+    const [accounts, setAccounts] = useState<WalletAccount[]>([]);
+    const [currentAddress, setCurrentAddress] = useState<string>('');
 
-    // Mock accounts for UI demo (since we don't have the full provider yet)
-    const accounts = address ? [{
-        address: address,
-        name: 'Main Wallet',
-        type: 'PRIMARY' as const
-    }] : [];
+    // Load accounts from localStorage on mount
+    useEffect(() => {
+        const stored = localStorage.getItem('wallet_accounts');
+        if (stored) {
+            const loadedAccounts = JSON.parse(stored);
+            setAccounts(loadedAccounts);
+            if (loadedAccounts.length > 0 && !currentAddress) {
+                setCurrentAddress(loadedAccounts[0].address);
+            }
+        } else if (address) {
+            // Initialize with primary wallet
+            const primaryAccount: WalletAccount = {
+                address: address,
+                name: 'Main Wallet',
+                type: 'PRIMARY',
+                index: 0,
+                color: getAccountColor(address)
+            };
+            setAccounts([primaryAccount]);
+            setCurrentAddress(address);
+            localStorage.setItem('wallet_accounts', JSON.stringify([primaryAccount]));
+        }
+    }, [address]);
+
+    // Save accounts to localStorage whenever they change
+    useEffect(() => {
+        if (accounts.length > 0) {
+            localStorage.setItem('wallet_accounts', JSON.stringify(accounts));
+        }
+    }, [accounts]);
+
+    const handleAddAccount = () => {
+        const newIndex = accounts.filter(a => a.type === 'DERIVED').length + 1;
+        // Generate a mock derived address (in real app, this would derive from mnemonic)
+        const mockAddress = `0x${Math.random().toString(16).slice(2, 42)}`;
+        
+        const newAccount: WalletAccount = {
+            address: mockAddress,
+            name: `Account ${newIndex + 1}`,
+            type: 'DERIVED',
+            index: newIndex,
+            color: getAccountColor(mockAddress)
+        };
+
+        setAccounts([...accounts, newAccount]);
+        alert(`New account "${newAccount.name}" created!`);
+    };
+
+    const handleAddWatchWallet = async (address: string, name?: string) => {
+        try {
+            let resolvedAddress = address;
+            let ensName: string | undefined;
+
+            // Try to resolve ENS
+            if (address.endsWith('.eth')) {
+                const resolved = await resolveENSName(address);
+                if (resolved) {
+                    resolvedAddress = resolved;
+                    ensName = address;
+                } else {
+                    throw new Error('Could not resolve ENS name');
+                }
+            } else if (!isAddress(address)) {
+                throw new Error('Invalid Ethereum address');
+            }
+
+            // Check if already exists
+            if (accounts.some(a => a.address.toLowerCase() === resolvedAddress.toLowerCase())) {
+                throw new Error('This address is already in your accounts');
+            }
+
+            const watchAccount: WalletAccount = {
+                address: resolvedAddress,
+                name: ensName || name || `Watch ${resolvedAddress.slice(0, 6)}...`,
+                type: 'WATCH_ONLY',
+                color: getAccountColor(resolvedAddress)
+            };
+
+            setAccounts([...accounts, watchAccount]);
+            setShowWatchInput(false);
+        } catch (error: any) {
+            throw new Error(error.message || 'Failed to add watch wallet');
+        }
+    };
+
+    const handleSwitchAccount = (address: string) => {
+        setCurrentAddress(address);
+    };
+
+    // Use current address or fallback to connected address
+    const displayAddress = currentAddress || address || '';
 
     // Always show the wallet interface
     return (
@@ -49,12 +138,12 @@ export default function SuperWallet({ recentNews = [] }: { recentNews?: any[] })
             {/* Header Navigation */}
             <header className="px-4 py-4 md:px-6 flex items-center justify-between sticky top-0 z-30 bg-[#EAEADF]/80 backdrop-blur-md">
                 <div className="flex items-center gap-2">
-                    {address && (
+                    {accounts.length > 0 && (
                         <AccountSwitcher 
-                            currentAddress={address}
+                            currentAddress={displayAddress}
                             accounts={accounts}
-                            onSwitch={() => {}}
-                            onAddAccount={() => {}}
+                            onSwitch={handleSwitchAccount}
+                            onAddAccount={handleAddAccount}
                             onAddWatchOnly={() => setShowWatchInput(true)}
                         />
                     )}
@@ -95,9 +184,9 @@ export default function SuperWallet({ recentNews = [] }: { recentNews?: any[] })
                     </div>
                 )}
 
-                {activeView === 'portfolio' && address && (
+                {activeView === 'portfolio' && displayAddress && (
                     <div className="animate-fade-in">
-                        <PortfolioDashboard walletAddress={address} chainIds={[1, 137]} />
+                        <PortfolioDashboard walletAddress={displayAddress} chainIds={[1, 137]} />
                     </div>
                 )}
 
@@ -107,15 +196,15 @@ export default function SuperWallet({ recentNews = [] }: { recentNews?: any[] })
                     </div>
                 )}
 
-                {activeView === 'activity' && address && (
+                {activeView === 'activity' && displayAddress && (
                     <div className="animate-fade-in">
-                        <TransactionHistory authUserId={address} />
+                        <TransactionHistory authUserId={displayAddress} />
                     </div>
                 )}
 
-                {activeView === 'contacts' && address && (
+                {activeView === 'contacts' && displayAddress && (
                     <div className="animate-fade-in">
-                        <AddressBook authUserId={address} />
+                        <AddressBook authUserId={displayAddress} />
                     </div>
                 )}
 
@@ -127,11 +216,7 @@ export default function SuperWallet({ recentNews = [] }: { recentNews?: any[] })
                 
                 {showWatchInput && (
                     <WatchOnlyInput 
-                        onAdd={async (addr) => {
-                            // Mock add logic
-                            setShowWatchInput(false);
-                            alert(`Watching ${addr}`);
-                        }} 
+                        onAdd={handleAddWatchWallet} 
                         onCancel={() => setShowWatchInput(false)} 
                     />
                 )}

@@ -3,8 +3,18 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Search, Star, Edit2, Trash2, X, Check } from 'lucide-react';
-import { getAddressBook, addToAddressBook, deleteAddressBookEntry, toggleFavorite, type AddressBookEntry } from '@/lib/wallet/addressBook';
 import { resolveENSName, isValidENSName } from '@/lib/wallet/ens';
+
+interface AddressBookEntry {
+  id: string;
+  authUserId: string;
+  name: string;
+  address: string;
+  ensName?: string | null;
+  label?: string | null;
+  note?: string | null;
+  isFavorite: boolean;
+}
 
 interface AddressBookProps {
   authUserId: string;
@@ -24,10 +34,17 @@ export default function AddressBook({ authUserId }: AddressBookProps) {
   const loadAddressBook = async () => {
     setLoading(true);
     try {
-      const data = await getAddressBook(authUserId, { search: searchQuery || undefined });
-      setEntries(data);
+      const params = new URLSearchParams();
+      if (searchQuery) params.append('search', searchQuery);
+      
+      const response = await fetch(`/api/wallet/address-book?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch address book');
+      
+      const data = await response.json();
+      setEntries(data.entries || []);
     } catch (error) {
       console.error('Error loading address book:', error);
+      setEntries([]);
     } finally {
       setLoading(false);
     }
@@ -35,25 +52,39 @@ export default function AddressBook({ authUserId }: AddressBookProps) {
 
   const handleAddEntry = async (entry: Partial<AddressBookEntry>) => {
     try {
-      await addToAddressBook({
-        authUserId,
-        name: entry.name!,
-        address: entry.address!,
-        ensName: entry.ensName,
-        label: entry.label,
-        note: entry.note,
-        isFavorite: entry.isFavorite,
+      const response = await fetch('/api/wallet/address-book', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: entry.name,
+          address: entry.address,
+          ensName: entry.ensName,
+          label: entry.label,
+          note: entry.note,
+          isFavorite: entry.isFavorite,
+        }),
       });
+
+      if (!response.ok) throw new Error('Failed to add entry');
+      
       await loadAddressBook();
       setShowAddDialog(false);
     } catch (error) {
       console.error('Error adding entry:', error);
+      alert('Failed to add contact. Please try again.');
     }
   };
 
   const handleToggleFavorite = async (id: string) => {
     try {
-      await toggleFavorite(id);
+      const response = await fetch('/api/wallet/address-book', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, toggleFavoriteFlag: true }),
+      });
+
+      if (!response.ok) throw new Error('Failed to toggle favorite');
+      
       await loadAddressBook();
     } catch (error) {
       console.error('Error toggling favorite:', error);
@@ -63,7 +94,12 @@ export default function AddressBook({ authUserId }: AddressBookProps) {
   const handleDelete = async (id: string) => {
     if (confirm('Delete this contact?')) {
       try {
-        await deleteAddressBookEntry(id);
+        const response = await fetch(`/api/wallet/address-book?id=${id}`, {
+          method: 'DELETE',
+        });
+
+        if (!response.ok) throw new Error('Failed to delete entry');
+        
         await loadAddressBook();
       } catch (error) {
         console.error('Error deleting entry:', error);
@@ -73,7 +109,7 @@ export default function AddressBook({ authUserId }: AddressBookProps) {
 
   useEffect(() => {
     const debounce = setTimeout(() => {
-      if (searchQuery) loadAddressBook();
+      loadAddressBook();
     }, 300);
 
     return () => clearTimeout(debounce);
