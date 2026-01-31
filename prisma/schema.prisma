@@ -520,6 +520,8 @@ model AuthUser {
   contacts          UserContact[]
   notifications     UserNotification[]
   sessions          Session[]
+  authenticators    Authenticator[]
+  wallets           WalletAccount[]
 
   @@index([email])
 }
@@ -744,3 +746,130 @@ model UserNotification {
   @@index([authUserId, read])
   @@index([authUserId, createdAt])
 }
+
+// ----------------------------------------------------------------------------
+// WALLET TRANSACTION HISTORY
+// ----------------------------------------------------------------------------
+
+enum WalletTransactionType {
+  SEND
+  RECEIVE
+  SWAP
+  CONTRACT
+  NFT_TRANSFER
+  STAKE
+  UNSTAKE
+}
+
+enum WalletTransactionStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+}
+
+model Transaction {
+  id            String                  @id @default(cuid())
+  authUserId    String
+  hash          String                  @unique
+  chainId       Int
+  type          WalletTransactionType
+  status        WalletTransactionStatus
+  from          String
+  to            String
+  value         Decimal                 @db.Decimal(32, 18)
+  tokenAddress  String?
+  tokenSymbol   String?
+  gasUsed       BigInt?
+  gasPrice      Decimal?                @db.Decimal(32, 18)
+  timestamp     DateTime                @default(now())
+  metadata      Json?
+
+  @@index([authUserId, timestamp])
+  @@index([hash])
+  @@index([chainId])
+  @@index([type])
+  @@index([status])
+}
+
+// ----------------------------------------------------------------------------
+// ADDRESS BOOK & CONTACTS
+// ----------------------------------------------------------------------------
+
+model AddressBookEntry {
+  id        String   @id @default(cuid())
+  authUserId String
+  name      String
+  address   String
+  ensName   String?
+  label     String?  // e.g., "Friend", "Exchange", "Work"
+  note      String?  @db.Text
+  isFavorite Boolean @default(false)
+  chainId   Int?     // Optional: specify which chain this address is primarily used on
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([authUserId, address])
+  @@index([authUserId, isFavorite])
+  @@index([authUserId, label])
+}
+
+// ----------------------------------------------------------------------------
+// WEBAUTHN / BIOMETRICS
+// ----------------------------------------------------------------------------
+
+model Authenticator {
+  id                   String   @id @default(cuid())
+  credentialID         String   @unique
+  credentialPublicKey  String   @db.Text
+  counter              BigInt
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+  
+  userId               String
+  user                 AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt            DateTime @default(now())
+  lastUsedAt           DateTime @default(now())
+
+  @@index([userId])
+}
+
+// ----------------------------------------------------------------------------
+// MULTI-ACCOUNT / WALLETS
+// ----------------------------------------------------------------------------
+
+enum WalletType {
+  PRIMARY     // The main address derived from seed (Index 0)
+  DERIVED     // Additional HD addresses (Index 1, 2...)
+  IMPORTED    // Imported private key (Encrypted)
+  WATCH_ONLY  // Public address only
+  HARDWARE    // Ledger/Trezor
+}
+
+model WalletAccount {
+  id             String     @id @default(cuid())
+  userId         String
+  user           AuthUser   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  address        String
+  name           String
+  type           WalletType @default(DERIVED)
+  
+  // For HD Wallets
+  derivationPath String?    // e.g. "m/44'/60'/0'/0/1"
+  index          Int?       // e.g. 1
+  
+  // For Imported (Encrypted)
+  encryptedKey   String?    @db.Text
+  
+  isVisible      Boolean    @default(true)
+  color          String?    // UI customization
+  
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  @@unique([userId, address])
+  @@index([userId])
+}
+

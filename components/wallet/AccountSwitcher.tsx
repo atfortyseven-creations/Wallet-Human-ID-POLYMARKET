@@ -1,113 +1,141 @@
 "use client";
 
-import React, { useState } from 'react';
-import { ChevronDown, Plus, MoreVertical, Copy, LogOut, ExternalLink, User, Wallet } from 'lucide-react';
-import { useAppKit, useAppKitAccount } from '@reown/appkit/react';
-import { useDisconnect, useEnsName } from 'wagmi';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Users, Plus, Wallet, Eye, Check, Settings } from 'lucide-react';
+import { getAccountColor, type WalletAccount } from '@/lib/wallet/accounts';
 
-export function AccountSwitcher() {
-    const { address, isConnected } = useAppKitAccount();
-    const { open } = useAppKit();
-    const { disconnectAsync } = useDisconnect();
-    const { data: ensName } = useEnsName({ address: address as `0x${string}` });
-    
-    const [isOpen, setIsOpen] = useState(false);
+interface AccountSwitcherProps {
+  currentAddress: string;
+  onSwitch: (address: string) => void;
+  onAddAccount: () => void;
+  onAddWatchOnly: () => void;
+  accounts: WalletAccount[];
+}
 
-    const toggleMenu = () => {
-        if (!isConnected) {
-            open();
-        } else {
-            setIsOpen(!isOpen);
-        }
-    };
+export default function AccountSwitcher({ 
+  currentAddress, 
+  onSwitch, 
+  onAddAccount, 
+  onAddWatchOnly,
+  accounts 
+}: AccountSwitcherProps) {
+  const [isOpen, setIsOpen] = useState(false);
 
-    const formattedAddress = address 
-        ? `${address.slice(0, 6)}...${address.slice(-4)}`
-        : '';
-    
-    const displayName = ensName || formattedAddress || "Connect Wallet";
+  const selectedAccount = accounts.find(a => a.address === currentAddress) || accounts[0];
 
-    return (
-        <div className="relative z-50">
-            {/* Main Trigger Button */}
-            <button 
-                onClick={toggleMenu}
-                className="
-                    flex items-center gap-3 px-5 py-2.5 rounded-full 
-                    bg-white border border-neutral-200 shadow-sm
-                    text-neutral-900 hover:shadow-md hover:border-neutral-300 transition-all active:scale-95
-                    min-w-[180px] justify-between
-                "
-                aria-haspopup="true"
-                aria-expanded={isConnected ? isOpen : false}
-            >
-                <div className="flex items-center gap-3">
-                    <div className={`w-7 h-7 rounded-full flex items-center justify-center border-2 border-white shadow-sm ${isConnected ? 'bg-gradient-to-tr from-blue-600 to-indigo-600' : 'bg-neutral-200'}`}>
-                         {isConnected ? <User size={14} className="text-white" /> : <Wallet size={14} className="text-neutral-500" />}
-                    </div>
-                    <div className="flex flex-col items-start leading-none gap-0.5">
-                        <span className="font-bold text-sm tracking-tight">{displayName}</span>
-                        {isConnected && <span className="text-[10px] text-neutral-400 font-medium">Main Vault</span>}
-                    </div>
-                </div>
-                {isConnected && (
-                    <ChevronDown size={16} className={`text-neutral-400 transition-transform duration-300 ml-2 ${isOpen ? 'rotate-180' : ''}`} />
-                )}
-            </button>
+  if (!selectedAccount) return null;
 
-            {/* Dropdown Menu */}
-            {isConnected && isOpen && (
-                <div className="
-                    absolute top-full left-0 mt-3 w-80 
-                    bg-white/95 backdrop-blur-xl border border-white/20 
-                    rounded-3xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] overflow-hidden
-                    animate-in fade-in zoom-in-95 duration-200 origin-top-left ring-1 ring-black/5
-                ">
-                    {/* Header: Active Account Info */}
-                    <div className="p-4 border-b border-neutral-100 bg-white/50">
-                        <div className="text-xs text-neutral-500 font-bold uppercase tracking-wider mb-2">Active Account</div>
-                        <div className="flex items-center justify-between bg-neutral-100 p-3 rounded-xl">
-                            <span className="font-mono text-sm text-neutral-700">{formattedAddress}</span>
-                            <div className="flex gap-2">
-                                <button 
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        navigator.clipboard.writeText(address || '');
-                                    }}
-                                    className="p-1.5 hover:bg-white rounded-lg transition-colors text-neutral-500 hover:text-blue-600"
-                                >
-                                    <Copy size={14} />
-                                </button>
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        window.open(`https://etherscan.io/address/${address}`, '_blank');
-                                    }}
-                                    className="p-1.5 hover:bg-white rounded-lg transition-colors text-neutral-500 hover:text-blue-600"
-                                >
-                                    <ExternalLink size={14} />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Footer Actions */}
-                    <div className="p-2 bg-neutral-50/50">
-                        <button 
-                            onClick={async () => { 
-                                await disconnectAsync(); 
-                                // "Armored" security: Clear all storage and reload to ensure clean state
-                                localStorage.clear();
-                                sessionStorage.clear();
-                                window.location.href = '/'; 
-                            }}
-                            className="w-full flex items-center justify-center gap-2 py-3 text-red-500 hover:bg-red-50 rounded-xl font-bold text-sm transition-colors"
-                        >
-                            <LogOut size={16} /> Disconnect
-                        </button>
-                    </div>
-                </div>
-            )}
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2 p-1.5 pr-3 bg-white/50 hover:bg-white/80 rounded-full transition-all border border-[#1F1F1F]/10"
+      >
+        <div 
+          className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs"
+          style={{ background: getAccountColor(selectedAccount.address) }}
+        >
+          {selectedAccount.name[0].toUpperCase()}
         </div>
-    );
+        <div className="text-left hidden md:block">
+          <div className="text-xs font-bold text-[#1F1F1F] leading-tight">{selectedAccount.name}</div>
+          <div className="text-[10px] text-[#1F1F1F]/60 font-mono">
+            {selectedAccount.address.slice(0, 6)}...{selectedAccount.address.slice(-4)}
+          </div>
+        </div>
+        <Users size={14} className="text-[#1F1F1F]/50" />
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            <div 
+              className="fixed inset-0 z-40 bg-black/20 backdrop-blur-[1px]" 
+              onClick={() => setIsOpen(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: -20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -20 }}
+              className="absolute top-12 left-0 w-72 bg-[#EAEADF] rounded-2xl shadow-xl border border-[#1F1F1F]/10 z-50 overflow-hidden"
+            >
+              <div className="p-3 border-b border-[#1F1F1F]/10 bg-white/30 flex justify-between items-center">
+                <span className="text-sm font-black text-[#1F1F1F]">My Accounts</span>
+                <button className="p-1 hover:bg-[#1F1F1F]/10 rounded-lg">
+                  <Settings size={14} className="text-[#1F1F1F]/70" />
+                </button>
+              </div>
+
+              <div className="max-h-64 overflow-y-auto p-2 space-y-1">
+                {accounts.map((account) => (
+                  <button
+                    key={account.address}
+                    onClick={() => {
+                      onSwitch(account.address);
+                      setIsOpen(false);
+                    }}
+                    className={`w-full p-2 flex items-center gap-3 rounded-xl transition-all ${
+                      account.address === currentAddress
+                        ? 'bg-white shadow-sm'
+                        : 'hover:bg-white/50'
+                    }`}
+                  >
+                    <div 
+                      className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm"
+                      style={{ background: getAccountColor(account.address) }}
+                    >
+                      {account.name[0].toUpperCase()}
+                    </div>
+                    
+                    <div className="flex-1 text-left min-w-0">
+                      <div className="text-sm font-bold text-[#1F1F1F] truncate flex items-center gap-1">
+                        {account.name}
+                        {account.type === 'WATCH_ONLY' && (
+                          <Eye size={10} className="text-[#1F1F1F]/50" />
+                        )}
+                        {account.type === 'HARDWARE' && (
+                          <Wallet size={10} className="text-[#1F1F1F]/50" />
+                        )}
+                      </div>
+                      <div className="text-xs text-[#1F1F1F]/60 font-mono truncate">
+                        {account.address}
+                      </div>
+                    </div>
+
+                    {account.address === currentAddress && (
+                      <Check size={16} className="text-green-600" />
+                    )}
+                  </button>
+                ))}
+              </div>
+
+              <div className="p-2 border-t border-[#1F1F1F]/10 bg-white/30 grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => {
+                    onAddAccount();
+                    setIsOpen(false);
+                  }}
+                  className="p-2 flex items-center justify-center gap-2 rounded-xl hover:bg-white/50 transition-all text-xs font-bold text-[#1F1F1F]"
+                >
+                  <Plus size={14} />
+                  New Account
+                </button>
+                <button
+                  onClick={() => {
+                    onAddWatchOnly();
+                    setIsOpen(false);
+                  }}
+                  className="p-2 flex items-center justify-center gap-2 rounded-xl hover:bg-white/50 transition-all text-xs font-bold text-[#1F1F1F]"
+                >
+                  <Eye size={14} />
+                  Watch Wallet
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }
