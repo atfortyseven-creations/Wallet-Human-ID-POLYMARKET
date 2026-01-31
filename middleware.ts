@@ -47,8 +47,8 @@ export async function middleware(request: NextRequest) {
 
     // Block unknown origins for sensitive API routes
     if (pathname.startsWith('/api/auth/')) {
-        if (!origin || !allowedOrigins.includes(origin)) {
-            console.warn(`[Security] Blocked request to ${pathname} from ${origin || 'unknown origin'}`);
+        if (origin && !allowedOrigins.includes(origin)) {
+            console.warn(`[Security] Blocked request to ${pathname} from ${origin}`);
             return new NextResponse(JSON.stringify({ error: 'Unauthorized origin' }), {
                 status: 403,
                 headers: { 'Content-Type': 'application/json' },
