@@ -125,144 +125,284 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade }: W
         setWatchedWallets(updatedWallets);
     };
 
-    if (isPremium) {
-        fetchWalletData();
-    }
-  }, [isPremium]);
+    const handleAddWallet = async (address: string, label: string) => {
+        const newWallet: WatchedWallet = {
+            id: Math.random().toString(36).substr(2, 9),
+            address,
+            label,
+            tags: ['Custom'],
+            isWhale: false,
+            isSmart: false,
+            totalValue: 0,
+            change24h: 0,
+            lastActive: new Date(),
+            alertsEnabled: true
+        };
 
-  const filteredWallets = watchedWallets.filter(w => {
-    if (filter === 'whales' && !w.isWhale) return false;
-    if (filter === 'smart' && !w.isSmart) return false;
-    if (filter === 'alerts' && !w.alertsEnabled) return false;
-    if (searchQuery && !w.label.toLowerCase().includes(searchQuery.toLowerCase()) 
-        && !w.address.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-    return true;
-  });
+        // Fetch stats for the new wallet immediately
+        try {
+            const res = await fetch(`/api/whale/stats?address=${address}`);
+            const data = await res.json();
+            newWallet.totalValue = data.totalValue || 0;
+            newWallet.isWhale = data.isWhale || false;
+            newWallet.isSmart = data.totalValue > 1000000;
+        } catch (e) {
+            console.error("Error fetching new wallet stats", e);
+        }
 
-  const formatValue = (val: number) => {
-    if (val >= 1e9) return `$${(val / 1e9).toFixed(2)}B`;
-    if (val >= 1e6) return `$${(val / 1e6).toFixed(2)}M`;
-    if (val >= 1e3) return `$${(val / 1e3).toFixed(2)}K`;
-    return `$${val.toFixed(2)}`;
-  };
+        setWatchedWallets(prev => [newWallet, ...prev]);
+        setShowAddWallet(false);
+    };
 
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-black text-[#1F1F1F] flex items-center gap-3">
-            <Waves className="text-blue-500" />
-            Whale Tracker
-            {isPremium && <span className="px-3 py-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs rounded-full">PRO</span>}
-          </h1>
-          <p className="text-sm text-[#1F1F1F]/70 mt-1">
-            {isPremium ? `Tracking ${watchedWallets.length} wallets` : 'Limited to 3 wallets - Upgrade for unlimited'}
-          </p>
-        </div>
-
-        {!isPremium && (
-          <button
-            onClick={onUpgrade}
-            className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold hover:shadow-lg transition-all"
-          >
-            ⚡ Upgrade to Pro
-          </button>
-        )}
-      </div>
-
-      {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <StatCard icon={<Eye />} label="Watched Wallets" value={watchedWallets.length} isPremium={isPremium} />
-        <StatCard icon={<Waves />} label="Whale Wallets" value={watchedWallets.filter(w => w.isWhale).length} isPremium={isPremium} />
-        <StatCard icon={<Star />} label="Smart Money" value={watchedWallets.filter(w => w.isSmart).length} isPremium={isPremium} />
-        <StatCard icon={<Bell />} label="Active Alerts" value={watchedWallets.filter(w => w.alertsEnabled).length} isPremium={isPremium} />
-      </div>
-
-      {/* Actions Bar */}
-      <div className="flex flex-wrap gap-3">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1F1F1F]/50" size={20} />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search wallets..."
-            className="w-full pl-12 pr-4 py-3 bg-white/50 backdrop-blur-sm rounded-2xl outline-none focus:bg-white/80 transition-all"
-          />
-        </div>
-
-        <select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value as any)}
-          className="px-4 py-3 bg-white/50 rounded-2xl outline-none focus:bg-white/80 transition-all font-bold"
-        >
-          <option value="all">All Wallets</option>
-          <option value="whales">Whales Only</option>
-          <option value="smart">Smart Money</option>
-          <option value="alerts">With Alerts</option>
-        </select>
-
-        <button
-          onClick={() => setShowAddWallet(true)}
-          disabled={!isPremium && watchedWallets.length >= 3}
-          className="px-4 py-3 bg-[#1F1F1F] text-white rounded-2xl font-bold hover:bg-[#1F1F1F]/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-        >
-          <Eye size={20} />
-          Add Wallet
-        </button>
-
-        {isPremium && (
-          <button
-            onClick={() => setShowBatchImport(true)}
-            className="px-4 py-3 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all flex items-center gap-2"
-          >
-            <Upload size={20} />
-            Batch Import
-          </button>
-        )}
-      </div>
-
-      {/* Watched Wallets Grid */}
-      <div className="space-y-3">
-        <h2 className="text-xl font-black text-[#1F1F1F]">Watched Wallets</h2>
+    const handleBatchImport = async (text: string) => {
+        const lines = text.split('\n');
+        const newTracked: WatchedWallet[] = [];
         
-        {filteredWallets.length === 0 ? (
-          <div className="text-center py-12 text-[#1F1F1F]/70">
-            <p className="text-lg font-bold mb-2">No wallets found</p>
-            <p className="text-sm">Add some wallets to start tracking whale movements</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-3">
-            <AnimatePresence>
-              {filteredWallets.map((wallet, index) => (
-                <WalletCard key={wallet.id} wallet={wallet} index={index} isPremium={isPremium} />
-              ))}
-            </AnimatePresence>
-          </div>
-        )}
-      </div>
+        for (const line of lines) {
+            const [address, label] = line.split(',').map(s => s.trim());
+            if (address && address.startsWith('0x')) {
+                newTracked.push({
+                    id: Math.random().toString(36).substr(2, 9),
+                    address,
+                    label: label || 'Imported Wallet',
+                    tags: ['Imported'],
+                    isWhale: false,
+                    isSmart: false,
+                    totalValue: 0,
+                    change24h: 0,
+                    lastActive: new Date(),
+                    alertsEnabled: true
+                });
+            }
+        }
 
-      {/* Recent Whale Activity */}
-      {isPremium && (
-        <div className="space-y-3">
-          <h2 className="text-xl font-black text-[#1F1F1F] flex items-center gap-2">
-            <AlertCircle className="text-orange-500" />
-            Recent Whale Activity
-          </h2>
-          
-          <div className="space-y-2">
-            <AnimatePresence>
-              {activities.map((activity, index) => (
-                <ActivityCard key={activity.id} activity={activity} index={index} />
-              ))}
-            </AnimatePresence>
-          </div>
+        setWatchedWallets(prev => [...newTracked, ...prev]);
+        setShowBatchImport(false);
+        // Data for these will be fetched on next cycle or manual refresh
+    };
+
+    return (
+        <div className="space-y-6">
+            {/* Header */}
+            <div className="flex items-center justify-between">
+                <div>
+                    <h1 className="text-3xl font-black text-[#1F1F1F] flex items-center gap-3">
+                        <Waves className="text-blue-500" />
+                        Whale Tracker
+                        {isPremium && <span className="px-3 py-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs rounded-full">PRO</span>}
+                    </h1>
+                    <p className="text-sm text-[#1F1F1F]/70 mt-1">
+                        {isPremium ? `Tracking ${watchedWallets.length} wallets` : 'Limited to 3 wallets - Upgrade for unlimited'}
+                    </p>
+                </div>
+
+                {!isPremium && (
+                    <button
+                        onClick={onUpgrade}
+                        className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold hover:shadow-lg transition-all"
+                    >
+                        ⚡ Upgrade to Pro
+                    </button>
+                )}
+            </div>
+
+            {/* Stats Overview */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <StatCard icon={<Eye />} label="Watched Wallets" value={watchedWallets.length} isPremium={isPremium} />
+                <StatCard icon={<Waves />} label="Whale Wallets" value={watchedWallets.filter(w => w.isWhale).length} isPremium={isPremium} />
+                <StatCard icon={<Star />} label="Smart Money" value={watchedWallets.filter(w => w.isSmart).length} isPremium={isPremium} />
+                <StatCard icon={<Bell />} label="Active Alerts" value={watchedWallets.filter(w => w.alertsEnabled).length} isPremium={isPremium} />
+            </div>
+
+            {/* Actions Bar */}
+            <div className="flex flex-wrap gap-3">
+                <div className="relative flex-1 min-w-[200px]">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1F1F1F]/50" size={20} />
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search wallets..."
+                        className="w-full pl-12 pr-4 py-3 bg-white/50 backdrop-blur-sm rounded-2xl outline-none focus:bg-white/80 transition-all"
+                    />
+                </div>
+
+                <select
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value as any)}
+                    className="px-4 py-3 bg-white/50 rounded-2xl outline-none focus:bg-white/80 transition-all font-bold"
+                >
+                    <option value="all">All Wallets</option>
+                    <option value="whales">Whales Only</option>
+                    <option value="smart">Smart Money</option>
+                    <option value="alerts">With Alerts</option>
+                </select>
+
+                <button
+                    onClick={() => setShowAddWallet(true)}
+                    disabled={!isPremium && watchedWallets.length >= 3}
+                    className="px-4 py-3 bg-[#1F1F1F] text-white rounded-2xl font-bold hover:bg-[#1F1F1F]/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                    <Eye size={20} />
+                    Add Wallet
+                </button>
+
+                {isPremium && (
+                    <button
+                        onClick={() => setShowBatchImport(true)}
+                        className="px-4 py-3 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-700 transition-all flex items-center gap-2"
+                    >
+                        <Upload size={20} />
+                        Batch Import
+                    </button>
+                )}
+            </div>
+
+            {/* Watched Wallets Grid */}
+            <div className="space-y-3">
+                <h2 className="text-xl font-black text-[#1F1F1F]">Watched Wallets</h2>
+                
+                {filteredWallets.length === 0 ? (
+                    <div className="text-center py-12 text-[#1F1F1F]/70">
+                        <p className="text-lg font-bold mb-2">No wallets found</p>
+                        <p className="text-sm">Add some wallets to start tracking whale movements</p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 gap-3">
+                        <AnimatePresence>
+                            {filteredWallets.map((wallet, index) => (
+                                <WalletCard key={wallet.id} wallet={wallet} index={index} isPremium={isPremium} />
+                            ))}
+                        </AnimatePresence>
+                    </div>
+                )}
+            </div>
+
+            {/* Modals */}
+            <AddWalletModal 
+                isOpen={showAddWallet} 
+                onClose={() => setShowAddWallet(false)} 
+                onAdd={handleAddWallet} 
+            />
+            <BatchImportModal 
+                isOpen={showBatchImport} 
+                onClose={() => setShowBatchImport(false)} 
+                onImport={handleBatchImport} 
+            />
+
+            {/* Recent Whale Activity */}
+            {isPremium && (
+                <div className="space-y-3">
+                    <h2 className="text-xl font-black text-[#1F1F1F] flex items-center gap-2">
+                        <AlertCircle className="text-orange-500" />
+                        Recent Whale Activity
+                    </h2>
+                    
+                    <div className="space-y-2">
+                        <AnimatePresence>
+                            {activities.map((activity, index) => (
+                                <ActivityCard key={activity.id} activity={activity} index={index} />
+                            ))}
+                        </AnimatePresence>
+                    </div>
+                </div>
+            )}
         </div>
-      )}
-    </div>
-  );
+    );
 }
+
+function AddWalletModal({ isOpen, onClose, onAdd }: { isOpen: boolean, onClose: () => void, onAdd: (address: string, label: string) => void }) {
+    const [address, setAddress] = useState('');
+    const [label, setLabel] = useState('');
+
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <motion.div 
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="bg-[#EAEADF] w-full max-w-md rounded-3xl p-8 shadow-2xl"
+            >
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-black text-[#1F1F1F]">Add Whale Wallet</h2>
+                    <button onClick={onClose} className="p-2 hover:bg-black/5 rounded-full"><X size={24} /></button>
+                </div>
+                
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-xs font-bold uppercase text-[#1F1F1F]/60 mb-2">Wallet Address</label>
+                        <input 
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            placeholder="0x..." 
+                            className="w-full px-4 py-3 bg-white rounded-xl outline-none focus:ring-2 ring-blue-500 transition-all"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-xs font-bold uppercase text-[#1F1F1F]/60 mb-2">Label (Alias)</label>
+                        <input 
+                            value={label}
+                            onChange={(e) => setLabel(e.target.value)}
+                            placeholder="e.g. Vitalik's Main" 
+                            className="w-full px-4 py-3 bg-white rounded-xl outline-none focus:ring-2 ring-blue-500 transition-all"
+                        />
+                    </div>
+                    
+                    <button 
+                        onClick={() => { if(address) onAdd(address, label); }}
+                        className="w-full py-4 bg-[#1F1F1F] text-white rounded-2xl font-black text-lg hover:bg-black/90 transition-all mt-4"
+                    >
+                        Start Tracking
+                    </button>
+                </div>
+            </motion.div>
+        </div>
+    );
+}
+
+function BatchImportModal({ isOpen, onClose, onImport }: { isOpen: boolean, onClose: () => void, onImport: (text: string) => void }) {
+    const [text, setText] = useState('');
+
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <motion.div 
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="bg-[#EAEADF] w-full max-w-2xl rounded-3xl p-8 shadow-2xl"
+            >
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-black text-[#1F1F1F]">Batch Import Wallets</h2>
+                    <button onClick={onClose} className="p-2 hover:bg-black/5 rounded-full"><X size={24} /></button>
+                </div>
+                
+                <p className="text-[#1F1F1F]/70 mb-4 text-sm">
+                    Paste a list of wallet addresses, one per line. You can also add labels like: 
+                    <br/><code className="bg-white px-1">0xAddress, Label</code>
+                </p>
+
+                <textarea 
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    rows={10}
+                    placeholder="0x123...&#10;0x456, Whale 1&#10;0x789, Whale 2"
+                    className="w-full px-4 py-3 bg-white rounded-xl outline-none focus:ring-2 ring-blue-500 transition-all font-mono text-sm mb-6"
+                />
+                
+                <button 
+                    onClick={() => { if(text) onImport(text); }}
+                    className="w-full py-4 bg-blue-600 text-white rounded-2xl font-black text-lg hover:bg-blue-700 transition-all"
+                >
+                    Process Import
+                </button>
+            </motion.div>
+        </div>
+    );
+}
+
+import { X } from 'lucide-react';
 
 function StatCard({ icon, label, value, isPremium }: { icon: React.ReactNode, label: string, value: number, isPremium: boolean }) {
   return (
