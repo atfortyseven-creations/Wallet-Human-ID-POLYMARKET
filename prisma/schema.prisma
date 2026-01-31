@@ -484,7 +484,6 @@ model User {
   sessions        Session[]
   supportTickets  SupportTicket[]
 
-  // NextAuth relations
   accounts         Account[]
   nextAuthSessions NextAuthSession[]
 
@@ -492,6 +491,7 @@ model User {
   settings      UserSettings?
   contacts      Contact[]
   notifications Notification[]
+  stats         UserStats? // Relation to UserStats
 
   @@index([reputation])
 }
@@ -522,6 +522,7 @@ model AuthUser {
   sessions          Session[]
   authenticators    Authenticator[]
   wallets           WalletAccount[]
+  addressBook       AddressBookEntry[]
 
   @@index([email])
 }
@@ -796,21 +797,88 @@ model Transaction {
 // ----------------------------------------------------------------------------
 
 model AddressBookEntry {
-  id        String   @id @default(cuid())
+  id         String   @id @default(cuid())
   authUserId String
-  name      String
-  address   String
-  ensName   String?
-  label     String?  // e.g., "Friend", "Exchange", "Work"
-  note      String?  @db.Text
-  isFavorite Boolean @default(false)
-  chainId   Int?     // Optional: specify which chain this address is primarily used on
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  authUser   AuthUser @relation(fields: [authUserId], references: [id], onDelete: Cascade)
+
+  name       String
+  address    String
+  network    String?
+  ensName    String?
+  label      String?
+  notes      String?  @db.Text
+  isFavorite Boolean  @default(false)
+  chainId    Int?
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@unique([authUserId, address])
+  @@index([authUserId])
   @@index([authUserId, isFavorite])
-  @@index([authUserId, label])
+}
+
+// ----------------------------------------------------------------------------
+// 9. WHALE TRACKER & GAMIFICATION MODELS
+// ----------------------------------------------------------------------------
+
+model WhaleActivity {
+  id              String   @id @default(cuid())
+  walletAddress   String
+  type            String   // TRANSFER, SWAP, MINT, BURN
+  token           String
+  amount          Decimal  @db.Decimal(32, 18)
+  usdValue        Decimal  @db.Decimal(18, 2)
+  fromAddress     String
+  toAddress       String
+  transactionHash String   @unique
+  blockNumber     BigInt
+  timestamp       DateTime
+  
+  @@index([walletAddress])
+  @@index([timestamp])
+  @@index([usdValue])
+}
+
+model UserStats {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [walletAddress])
+  
+  totalProfitUSD   Decimal  @default(0) @db.Decimal(18, 2)
+  copyTradeWinRate Decimal  @default(0) @db.Decimal(5, 2)
+  totalCopyTrades  Int      @default(0)
+  currentStreak    Int      @default(0)
+  bestStreak       Int      @default(0)
+  
+  lastTradeAt      DateTime?
+  updatedAt        DateTime @updatedAt
+
+  @@index([totalProfitUSD])
+  @@index([copyTradeWinRate])
+}
+
+model Leaderboard {
+  id        String   @id // Composite: userId-metric
+  userId    String
+  username  String
+  metric    String   // PROFIT, WIN_RATE, STREAK
+  value     Decimal  @db.Decimal(18, 2)
+  rank      Int
+  updatedAt DateTime @default(now())
+
+  @@index([metric, rank])
+}
+
+model Achievement {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String   // FIRST_TRADE, WEEK_STREAK, etc
+  tier      String   // BRONZE, SILVER, GOLD, DIAMOND
+  metadata  Json
+  unlockedAt DateTime @default(now())
+
+  @@unique([userId, type, tier])
 }
 
 // ----------------------------------------------------------------------------

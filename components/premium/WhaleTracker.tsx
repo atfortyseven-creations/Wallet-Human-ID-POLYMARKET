@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, TrendingDown, Waves, AlertCircle, Star, Eye, Bell, Download, Upload, Filter, Search, BarChart3, Copy, CheckCircle, X } from 'lucide-react';
+import ChainSelector from './ChainSelector';
+import { SUPPORTED_CHAINS } from '@/lib/chains';
 
 export interface WatchedWallet {
   id: string;
@@ -33,9 +35,10 @@ export interface WhaleActivity {
 interface WhaleTrackerProps {
   isPremium: boolean;
   onUpgrade: () => void;
+  onWalletsUpdate?: (wallets: WatchedWallet[]) => void;
 }
 
-export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade }: WhaleTrackerProps) {
+export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade, onWalletsUpdate }: WhaleTrackerProps) {
   const isPremium = true; // FORCE UNLOCK FOR FULL VIP EXPERIENCE
   const [watchedWallets, setWatchedWallets] = useState<WatchedWallet[]>([]);
   const [activities, setActivities] = useState<WhaleActivity[]>([]);
@@ -43,6 +46,7 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade }: W
   const [searchQuery, setSearchQuery] = useState('');
   const [showAddWallet, setShowAddWallet] = useState(false);
   const [showBatchImport, setShowBatchImport] = useState(false);
+  const [selectedChains, setSelectedChains] = useState<string[]>(['base', 'ethereum', 'polygon', 'arbitrum', 'optimism']);
 
   // Initial "Watched" list skeletons (Real Base Addresses)
   const INITIAL_WALLETS = [
@@ -116,9 +120,10 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade }: W
             }
         }
         setWatchedWallets(updatedWallets);
+        onWalletsUpdate?.(updatedWallets);
     };
     fetchWalletData();
-  }, []);
+  }, [onWalletsUpdate]);
 
   const handleAddWallet = async (address: string, label: string) => {
     const newWallet: WatchedWallet = {
@@ -144,7 +149,11 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade }: W
         console.error("Error fetching new wallet stats", e);
     }
 
-    setWatchedWallets(prev => [newWallet, ...prev]);
+    setWatchedWallets(prev => {
+      const updated = [newWallet, ...prev];
+      onWalletsUpdate?.(updated);
+      return updated;
+    });
     setShowAddWallet(false);
   };
 
@@ -168,7 +177,11 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade }: W
             });
         }
     }
-    setWatchedWallets(prev => [...newTracked, ...prev]);
+    setWatchedWallets(prev => {
+      const updated = [...newTracked, ...prev];
+      onWalletsUpdate?.(updated);
+      return updated;
+    });
     setShowBatchImport(false);
   };
 
@@ -214,6 +227,18 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade }: W
 
       {/* Actions Bar */}
       <div className="flex flex-wrap gap-3">
+        <ChainSelector 
+          selectedChains={selectedChains}
+          onChainToggle={(chainKey) => {
+            setSelectedChains(prev => 
+              prev.includes(chainKey) 
+                ? prev.filter(k => k !== chainKey)
+                : [...prev, chainKey]
+            );
+          }}
+          showStats={true}
+        />
+
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1F1F1F]/50" size={20} />
           <input

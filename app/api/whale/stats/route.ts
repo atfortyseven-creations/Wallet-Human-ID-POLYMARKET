@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Alchemy, Network, Utils } from 'alchemy-sdk';
+import { getRealTimePrice } from '@/lib/priceHelper';
 
 // Configure Alchemy with GetBlock RPC
 const config = {
@@ -20,7 +21,7 @@ global.fetch = (url, init) => {
 
 const alchemy = new Alchemy(config);
 
-// Common tokens on Base to check for value (simplified for speed)
+// Common tokens on Base to check for value
 const TOKENS = [
   '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913', // USDC
   '0x4200000000000000000000000000000000000006', // WETH
@@ -40,46 +41,49 @@ export async function GET(req: NextRequest) {
     let ethBalance, tokenBalances;
     try {
         [ethBalance, tokenBalances] = await Promise.all([
-            alchemy.core.getBalance(address.toLowerCase()), // Lowercase to avoid checksum errors
+            alchemy.core.getBalance(address.toLowerCase()),
             alchemy.core.getTokenBalances(address.toLowerCase(), TOKENS)
         ]);
     } catch (apiError: any) {
-        // Handle "Network not enabled" (403) or other Alchemy errors gracefully
         console.warn("[Alchemy Error] Returning fallback data:", apiError.message);
         
-        // Return valid fallback structure to keep UI alive
         return NextResponse.json({
             address,
             totalValue: 0,
             ethBalance: 0,
             isWhale: false,
             isSmart: false,
-            fallback: true, // Flag to indicate mock/fallback data
+            fallback: true,
             error: "Live data unavailable (Network limit)"
         });
     }
 
-    // Calculate generic total value (Approximate for demo)
-    // In production we would need a Price Feed (CoinGecko/Chainlink)
-    // Here we assume: 
-    // ETH = $2500 (Hardcoded for demo speed, or fetch if needed)
-    // USDC/DAI = $1
+    // Get REAL-TIME ETH price from CoinGecko
+    const ethPrice = await getRealTimePrice('ETH');
     
-    // 1. ETH Value
+    // 1. ETH Value (REAL PRICE)
     const ethVal = parseFloat(Utils.formatEther(ethBalance));
-    const ethUsd = ethVal * 2500; 
+    const ethUsd = ethVal * ethPrice; 
 
     // 2. Token Value
     let tokenUsd = 0;
     if (tokenBalances && tokenBalances.tokenBalances) {
         for (const token of tokenBalances.tokenBalances) {
             if (token.tokenBalance) {
-                // Primitive check: USDC/DAI have 6 or 18 decimals usually. 
-                // For this demo we'll assume USDC (6 decimals) for the main stablecoin on Base
-                // This is a simplification.
-                if (token.contractAddress.toLowerCase() === '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913') { // USDC
+                // USDC is a stablecoin = $1
+                if (token.contractAddress.toLowerCase() === '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913') {
                      const val = parseInt(token.tokenBalance, 16) / 1e6;
-                     tokenUsd += val;
+                     tokenUsd += val; // USDC = $1
+                }
+                // WETH uses same price as ETH
+                if (token.contractAddress.toLowerCase() === '0x4200000000000000000000000000000000000006') {
+                     const val = parseInt(token.tokenBalance, 16) / 1e18;
+                     tokenUsd += val * ethPrice;
+                }
+                // DAI is a stablecoin = $1
+                if (token.contractAddress.toLowerCase() === '0x50c5725949a6f0c72e6c4a641f24049a917db0cb') {
+                     const val = parseInt(token.tokenBalance, 16) / 1e18;
+                     tokenUsd += val; // DAI = $1
                 }
             }
         }
@@ -92,6 +96,7 @@ export async function GET(req: NextRequest) {
       totalValue,
       ethBalance: ethVal,
       isWhale: totalValue > 100000, // Threshold > $100k
+      ethPrice, // Include real ETH price in response
     });
 
   } catch (error) {

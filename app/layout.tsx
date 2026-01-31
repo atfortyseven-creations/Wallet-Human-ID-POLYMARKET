@@ -19,16 +19,16 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <Providers>
-        <html lang="en" suppressHydrationWarning>
-          <body className={inter.className}>
-                <ClientLayout>
-                    {children}
-                </ClientLayout>
-                <Toaster position="top-right" />
-          </body>
-        </html>
-      </Providers>
+      <html lang="en" suppressHydrationWarning>
+        <body className={inter.className}>
+          <Providers>
+            <ClientLayout>
+              {children}
+            </ClientLayout>
+            <Toaster position="top-right" />
+          </Providers>
+        </body>
+      </html>
     </ClerkProvider>
   )
 }

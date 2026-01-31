@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { TrendingUp, TrendingDown, Activity, DollarSign, Percent, Zap, Brain, AlertTriangle } from 'lucide-react';
+import TradingViewChart from './TradingViewChart';
 
 interface AdvancedAnalyticsProps {
   walletAddress: string;
@@ -125,6 +126,12 @@ export default function AdvancedAnalytics({ walletAddress, isPremium }: Advanced
           icon={<AlertTriangle />}
           warning={portfolioData.riskScore > 50}
         />
+      </div>
+
+      {/* TradingView Price Chart */}
+      <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-[#1F1F1F]/10">
+        <h3 className="text-lg font-black text-[#1F1F1F] mb-4">ETH Price Chart</h3>
+        <TradingViewChart symbol="ETH" days={7} height={350} />
       </div>
 
       {/* Main Chart */}

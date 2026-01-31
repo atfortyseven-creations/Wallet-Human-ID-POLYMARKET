@@ -10,13 +10,15 @@ import WalletComparison from '@/components/premium/WalletComparison';
 import PricingModal from '@/components/premium/PricingModal';
 import AdvancedAnalytics from '@/components/premium/AdvancedAnalytics';
 import SmartAlertsEngine from '@/components/premium/SmartAlertsEngine';
+import CryptoNewsFeed from '@/components/premium/CryptoNewsFeed';
+import NotificationSettings from '@/components/premium/NotificationSettings';
 import TokenFlowVisualizer from '@/components/premium/TokenFlowVisualizer';
 import GamificationSystem from '@/components/gamification/GamificationSystem';
 import CompetitiveLeaderboard from '@/components/gamification/CompetitiveLeaderboard';
 import RealTimeLiveFeed from '@/components/gamification/RealTimeLiveFeed';
 import type { WatchedWallet } from '@/components/premium/WhaleTracker';
 
-type TabType = 'tracker' | 'analytics' | 'alerts' | 'copytrading' | 'comparison' | 'gamification' | 'leaderboard';
+type TabType = 'tracker' | 'analytics' | 'alerts' | 'news' | 'notifications' | 'comparison';
 
 export default function VIPPage() {
   const { user, isLoaded } = useUser();
@@ -34,6 +36,17 @@ export default function VIPPage() {
     activeAlerts: 0,
     activities: 0
   });
+
+  // Update stats when watched wallets change
+  const handleWalletsUpdate = (wallets: WatchedWallet[]) => {
+    setWatchedWallets(wallets);
+    const totalValue = wallets.reduce((sum, wallet) => sum + wallet.totalValue, 0);
+    setStats(prev => ({
+      ...prev,
+      trackedWhales: wallets.length,
+      totalValue
+    }));
+  };
 
   // Check subscription status on mount (Mocked for full access)
   useEffect(() => {
@@ -104,11 +117,12 @@ export default function VIPPage() {
 
   // Only keep tabs with REAL data
   const tabs = [
-    { id: 'tracker' as const, label: t('vip.tab_tracker'), icon: <Waves size={20} />, color: 'blue' },
-    { id: 'analytics' as const, label: t('vip.tab_analytics'), icon: <BarChart3 size={20} />, color: 'purple' },
+    { id: 'tracker' as const, label: t('vip.tab_tracker'), icon: <Waves size={20} />, color: 'blue', badge: '5 Chains' },
+    { id: 'analytics' as const, label: t('vip.tab_analytics'), icon: <BarChart3 size={20} />, color: 'purple', isNew: true },
     { id: 'alerts' as const, label: t('vip.tab_alerts'), icon: <Bell size={20} />, color: 'orange' },
+    { id: 'news' as const, label: 'AI News', icon: <Sparkles size={20} />, color: 'green', isNew: true },
+    { id: 'notifications' as const, label: 'Notifications', icon: <Zap size={20} />, color: 'cyan', isNew: true },
     { id: 'comparison' as const, label: t('vip.tab_compare'), icon: <TrendingUp size={20} />, color: 'pink' },
-    // REMOVED: Copy Trading (fake transactions/traders), Leaderboard (fake rankings), My Progress (fake achievements)
   ];
 
   return (
@@ -167,7 +181,7 @@ export default function VIPPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+                className={`px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 whitespace-nowrap relative ${
                   activeTab === tab.id
                     ? 'bg-[#1F1F1F] text-white shadow-lg scale-105'
                     : 'text-[#1F1F1F]/70 hover:bg-white/80'
@@ -175,6 +189,24 @@ export default function VIPPage() {
               >
                 {tab.icon}
                 <span className="hidden md:inline">{tab.label}</span>
+                
+                {/* NEW badge */}
+                {(tab as any).isNew && (
+                  <span className="px-2 py-0.5 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs rounded-full font-black animate-pulse">
+                    NEW
+                  </span>
+                )}
+                
+                {/* Multi-chain badge */}
+                {(tab as any).badge && (
+                  <span className={`px-2 py-0.5 text-xs rounded-full font-bold ${
+                    activeTab === tab.id 
+                      ? 'bg-white/20 text-white' 
+                      : 'bg-[#1F1F1F]/10 text-[#1F1F1F]'
+                  }`}>
+                    {(tab as any).badge}
+                  </span>
+                )}
               </button>
             ))}
           </div>
@@ -189,7 +221,7 @@ export default function VIPPage() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
             >
-              <WhaleTracker isPremium={isPremium} onUpgrade={handleUpgrade} />
+              <WhaleTracker isPremium={isPremium} onUpgrade={handleUpgrade} onWalletsUpdate={handleWalletsUpdate} />
             </motion.div>
           )}
 
@@ -215,6 +247,28 @@ export default function VIPPage() {
               exit={{ opacity: 0, x: 20 }}
             >
               <SmartAlertsEngine isPremium={isPremium} />
+            </motion.div>
+          )}
+
+          {activeTab === 'news' && (
+            <motion.div
+              key="news"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+            >
+              <CryptoNewsFeed isPremium={isPremium} />
+            </motion.div>
+          )}
+
+          {activeTab === 'notifications' && (
+            <motion.div
+              key="notifications"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+            >
+              <NotificationSettings />
             </motion.div>
           )}
 

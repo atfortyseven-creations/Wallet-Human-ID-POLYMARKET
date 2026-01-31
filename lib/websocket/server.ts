@@ -379,7 +379,7 @@ function getAchievementMessage(achievement: any): string {
     MONTH_STREAK: `${achievement.metadata.streak} day streak! Legendary dedication!`,
     LEGEND_STREAK: `${achievement.metadata.streak} day streak! You're a trading legend!`,
     PROFIT_1K: 'First $1,000 in profits! Keep it up!',
-    PROFIT_10K: '$10,000 in profits! You're crushing it!',
+    PROFIT_10K: '$10,000 in profits! You\'re crushing it!',
     PROFIT_100K: '$100,000 in profits! Pro trader status!',
     PERFECT_TRADER: `${achievement.metadata.winRate}% win rate! Absolutely incredible!`,
     PRO_TRADER: `${achievement.metadata.winRate}% win rate! Professional level!`,
