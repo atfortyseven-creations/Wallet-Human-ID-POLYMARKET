@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from 'react';
-import { createChart, IChartApi, ISeriesApi, CandlestickData, Time } from 'lightweight-charts';
+import { createChart, IChartApi, ISeriesApi, CandlestickData, Time, CandlestickSeries } from 'lightweight-charts';
 import { TrendingUp, TrendingDown, Activity } from 'lucide-react';
 
 interface TradingViewChartProps {
@@ -21,7 +21,7 @@ interface PriceStats {
 export default function TradingViewChart({ symbol, days = 7, height = 400 }: TradingViewChartProps) {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
-  const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
+  const candlestickSeriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
   
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<PriceStats | null>(null);
@@ -55,7 +55,7 @@ export default function TradingViewChart({ symbol, days = 7, height = 400 }: Tra
     chartRef.current = chart;
 
     // Add candlestick series
-    const candlestickSeries = chart.addCandlestickSeries({
+    const candlestickSeries = chart.addSeries(CandlestickSeries, {
       upColor: '#22c55e',
       downColor: '#ef4444',
       borderUpColor: '#22c55e',
