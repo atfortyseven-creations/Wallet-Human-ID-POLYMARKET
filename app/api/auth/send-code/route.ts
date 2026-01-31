@@ -35,8 +35,9 @@ export async function POST(request: NextRequest) {
     const code = generateVerificationCode();
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
     
-    // [DEBUG] Log code to Railway Console so user can login even if email fails
-    console.log(`[Auth] 🔐 VERIFICATION CODE for ${email}: ${code}`);
+    // Generate verification code
+    const code = generateVerificationCode();
+    const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
 
     await prisma.verificationCode.create({
       data: {
