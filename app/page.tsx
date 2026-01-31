@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useAuth } from '@/hooks/useAuth';
 import { useAppKitAccount, useAppKit } from '@reown/appkit/react';
-import { useLanguage } from '@/src/context/LanguageContext';
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 // ============================================
 // 1. CRITICAL IMPORTS (Above the Fold - Load Immediately)

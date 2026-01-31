@@ -6,7 +6,7 @@ import { MessageSquare, Send, Loader2, Info } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
 import { SiteHeader } from '@/components/site/SiteHeader';
 import { HumanDefiFooter } from '@/components/landing/HumanDefiFooter';
-import { useLanguage } from '@/src/context/LanguageContext';
+import { useLanguage } from "@/components/providers/LanguageProvider";
 
 export default function SoportePage() {
     const { t } = useLanguage();
