@@ -133,3 +133,64 @@ export const authOptions: NextAuthOptions = {
     },
   },
 };
+
+// ========================================
+// Authentication Helper Functions
+// ========================================
+
+import bcrypt from 'bcryptjs';
+
+/**
+ * Generate a 6-digit verification code
+ */
+export function generateVerificationCode(): string {
+  const code = Math.floor(100000 + Math.random() * 900000);
+  return code.toString();
+}
+
+/**
+ * Hash a password using bcrypt
+ */
+export async function hashPassword(password: string): Promise<string> {
+  const saltRounds = 12;
+  return await bcrypt.hash(password, saltRounds);
+}
+
+/**
+ * Verify a password against a hash
+ */
+export async function verifyPassword(password: string, hash: string): Promise<boolean> {
+  return await bcrypt.compare(password, hash);
+}
+
+/**
+ * Validate email format
+ */
+export function isValidEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+/**
+ * Validate password strength
+ * Requirements: min 8 chars, uppercase, lowercase, number
+ */
+export function isValidPassword(password: string): { valid: boolean; error?: string } {
+  if (password.length < 8) {
+    return { valid: false, error: 'Password must be at least 8 characters long' };
+  }
+  
+  if (!/[A-Z]/.test(password)) {
+    return { valid: false, error: 'Password must contain at least one uppercase letter' };
+  }
+  
+  if (!/[a-z]/.test(password)) {
+    return { valid: false, error: 'Password must contain at least one lowercase letter' };
+  }
+  
+  if (!/[0-9]/.test(password)) {
+    return { valid: false, error: 'Password must contain at least one number' };
+  }
+  
+  return { valid: true };
+}
