@@ -63,7 +63,7 @@ const nextConfig = {
     },
 
     // 2. Enable Async WebAssembly & Polyfills
-    webpack: (config, { webpack }) => {
+    webpack: (config, { webpack, isServer }) => {
         config.experiments = {
             ...config.experiments,
             asyncWebAssembly: true,
@@ -80,6 +80,10 @@ const nextConfig = {
             'porto': false, // Fix for Wagmi build error (root module)
         };
         config.externals.push('pino-pretty', 'lokijs', 'encoding');
+
+        // Case-sensitive paths plugin (critical for Railway/Linux compatibility)
+        const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+        config.plugins.push(new CaseSensitivePathsPlugin());
 
         config.plugins.push(
             new webpack.ProvidePlugin({

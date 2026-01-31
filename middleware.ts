@@ -56,7 +56,10 @@ export async function middleware(request: NextRequest) {
         }
     }
 
-    if (origin && !allowedOrigins.includes(origin)) {
+    // Allow requests without origin (Railway health checks, SSR, direct requests)
+    // Only block requests WITH an origin that's not allowed (and not to sensitive routes)
+    if (origin && !allowedOrigins.includes(origin) && !pathname.startsWith('/api/auth/session')) {
+        console.warn(`[Security] Blocked request to ${pathname} from unauthorized origin: ${origin}`);
         return new NextResponse(null, {
             status: 403,
             statusText: 'Forbidden',
