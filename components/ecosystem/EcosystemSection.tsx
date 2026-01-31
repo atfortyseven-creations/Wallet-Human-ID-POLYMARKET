@@ -1,138 +1,182 @@
 'use client';
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { FeatureCard } from './FeatureCard';
-import { ExpandableSection } from './ExpandableSection';
+import React, { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown, ExternalLink } from 'lucide-react';
+import { ScrollLottie } from '@/components/ui/ScrollLottie';
 import { ecosystemFeatures, type FeatureContent } from '@/lib/ecosystem-content';
 
-const categories = [
-  { id: 'core', label: 'Ecosistema Core', color: 'cyan' },
-  { id: 'trading', label: 'Trading & Seguridad', color: 'blue' },
-  { id: 'productos', label: 'Productos', color: 'purple' },
-  { id: 'developer', label: 'Developer Hub', color: 'green' },
-  { id: 'about', label: 'Acerca de', color: 'orange' }
-] as const;
+interface ExpandableFeatureProps {
+  feature: FeatureContent;
+}
+
+function ExpandableFeature({ feature }: ExpandableFeatureProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to content when expanded
+  useEffect(() => {
+    if (isExpanded && contentRef.current) {
+      setTimeout(() => {
+        contentRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start'
+        });
+      }, 100);
+    }
+  }, [isExpanded]);
+
+  return (
+    <div className="bg-zinc-900/80 border border-white/10 rounded-3xl overflow-hidden">
+      {/* Clickable Header */}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full p-8 text-left hover:bg-white/5 transition-all group"
+      >
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1">
+            <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">
+              {feature.title}
+            </h3>
+            <p className="text-zinc-400 text-sm mb-3">
+              {feature.subtitle}
+            </p>
+            <p className="text-zinc-300">
+              {feature.shortDesc}
+            </p>
+          </div>
+          <motion.div
+            animate={{ rotate: isExpanded ? 180 : 0 }}
+            transition={{ duration: 0.3 }}
+            className="flex-shrink-0"
+          >
+            <ChevronDown className="w-6 h-6 text-zinc-400 group-hover:text-white transition-colors" />
+          </motion.div>
+        </div>
+      </button>
+
+      {/* Expandable Content */}
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            ref={contentRef}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.4, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            <div className="px-8 pb-8 border-t border-white/10">
+              <div className="grid lg:grid-cols-2 gap-8 pt-8">
+                {/* Left: Text Content */}
+                <div className="space-y-6">
+                  {/* Deep Dive */}
+                  <div>
+                    <h4 className="text-lg font-bold text-blue-400 mb-4 font-mono">
+                      The Deep Dive
+                    </h4>
+                    <div className="space-y-4">
+                      {feature.deepDive.map((paragraph, idx) => (
+                        <p key={idx} className="text-zinc-300 leading-relaxed text-sm">
+                          {paragraph}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Human Edge */}
+                  <div className="bg-blue-500/10 border border-blue-500/30 rounded-2xl p-6">
+                    <h4 className="text-lg font-bold text-blue-400 mb-3 font-mono">
+                      Why We Are #1
+                    </h4>
+                    <p className="text-white leading-relaxed text-sm">
+                      {feature.humanEdge}
+                    </p>
+                  </div>
+
+                  {/* CTA */}
+                  {feature.cta && (
+                    <a
+                      href={feature.cta.link}
+                      className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-bold transition-colors"
+                    >
+                      {feature.cta.text}
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  )}
+                </div>
+
+                {/* Right: Lottie Animation */}
+                <div className="flex items-center justify-center">
+                  <div className="w-full max-w-md aspect-square">
+                    <ScrollLottie
+                      src={feature.lottieSrc}
+                      className="w-full h-full"
+                      speed={1}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export function EcosystemSection() {
-  const [selectedFeature, setSelectedFeature] = useState<FeatureContent | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>('core');
+
+  const categories = [
+    { id: 'core', label: 'Core Ecosystem' },
+    { id: 'trading', label: 'Trading & Security' },
+    { id: 'productos', label: 'Products' },
+    { id: 'developer', label: 'Developer Hub' },
+    { id: 'about', label: 'About' }
+  ];
 
   const filteredFeatures = ecosystemFeatures.filter(
     f => f.category === activeCategory
   );
 
   return (
-    <section className="relative py-32 px-6 bg-gradient-to-b from-[#0a0a0a] via-[#1a1a2e] to-[#0a0a0a] overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0 opacity-30">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/20 blur-[120px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/20 blur-[120px]" />
+    <div className="w-full max-w-5xl mx-auto px-4 py-32">
+      {/* Header */}
+      <div className="text-center mb-16">
+        <h2 className="text-6xl md:text-8xl font-black text-white mb-6 tracking-tighter drop-shadow-xl">
+          Human Defi
+        </h2>
+        <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
+          Engineering trust. We don't sell hype, we sell verifiable architecture.
+        </p>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-20 space-y-6"
-        >
-          <div className="inline-block px-6 py-2 bg-cyan-500/10 border border-cyan-500/30 rounded-full mb-4">
-            <span className="text-cyan-400 text-sm font-mono uppercase tracking-wider">
-              Arquitectura de la Sinceridad
-            </span>
-          </div>
-
-          <h2 className="text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-cyan-200 to-cyan-400">
-            Human Defi
-          </h2>
-
-          <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto font-light">
-            Ingeniería de confianza. No vendemos humo, vendemos arquitectura verificable.
-          </p>
-
-          <div className="pt-4 text-sm text-gray-500 font-mono">
-            <p>Como Senior Developer con 30 años de experiencia:</p>
-            <p className="text-cyan-400">La honestidad radical es nuestra única ventaja competitiva.</p>
-          </div>
-        </motion.div>
-
-        {/* Category Tabs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="flex flex-wrap justify-center gap-4 mb-16"
-        >
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
-              className={`
-                px-6 py-3 rounded-xl font-bold transition-all duration-300
-                ${activeCategory === cat.id
-                  ? 'bg-cyan-500 text-black shadow-lg shadow-cyan-500/30 scale-105'
-                  : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white border border-white/10'
-                }
-              `}
-            >
-              {cat.label}
-            </button>
-          ))}
-        </motion.div>
-
-        {/* Feature Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredFeatures.map((feature, index) => (
-            <FeatureCard
-              key={feature.id}
-              feature={feature}
-              onClick={() => setSelectedFeature(feature)}
-              index={index}
-            />
-          ))}
-        </div>
-
-        {/* Senior Dev Note */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.5 }}
-          className="mt-20 p-8 bg-gradient-to-r from-cyan-500/5 to-blue-500/5 border border-cyan-500/20 rounded-2xl"
-        >
-          <div className="flex items-start gap-4">
-            <div className="flex-shrink-0 w-12 h-12 bg-cyan-500/20 rounded-full flex items-center justify-center">
-              <span className="text-2xl">💡</span>
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-xl font-bold text-white font-mono">
-                Nota del Arquitecto Senior
-              </h3>
-              <p className="text-gray-300 leading-relaxed">
-                Cada sección que ves aquí no es marketing. Es documentación técnica real de cómo 
-                resolvemos problemas que otros proyectos ocultan. Haz clic en cualquier tarjeta 
-                para ver el "Deep Dive" completo con fórmulas matemáticas, decisiones de arquitectura, 
-                y la honestidad brutal sobre por qué somos mejores que la competencia.
-              </p>
-              <p className="text-cyan-400 text-sm font-mono">
-                — El equipo de ingeniería de Human Defi
-              </p>
-            </div>
-          </div>
-        </motion.div>
+      {/* Category Tabs */}
+      <div className="flex flex-wrap justify-center gap-3 mb-12">
+        {categories.map((cat) => (
+          <button
+            key={cat.id}
+            onClick={() => setActiveCategory(cat.id)}
+            className={`
+              px-6 py-3 rounded-full font-bold transition-all
+              ${activeCategory === cat.id
+                ? 'bg-white text-black'
+                : 'bg-zinc-900/80 text-zinc-400 hover:bg-zinc-800 border border-white/10'
+              }
+            `}
+          >
+            {cat.label}
+          </button>
+        ))}
       </div>
 
-      {/* Expandable Modal */}
-      {selectedFeature && (
-        <ExpandableSection
-          feature={selectedFeature}
-          isOpen={!!selectedFeature}
-          onClose={() => setSelectedFeature(null)}
-        />
-      )}
-    </section>
+      {/* Features List */}
+      <div className="space-y-4">
+        {filteredFeatures.map((feature) => (
+          <ExpandableFeature key={feature.id} feature={feature} />
+        ))}
+      </div>
+    </div>
   );
 }

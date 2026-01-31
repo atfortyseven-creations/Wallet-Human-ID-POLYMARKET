@@ -16,24 +16,24 @@ export interface FeatureContent {
 }
 
 export const ecosystemFeatures: FeatureContent[] = [
-  // ECOSISTEMA CORE
+  // CORE ECOSYSTEM
   {
     id: 'wallet',
     category: 'core',
-    title: 'Obtener Wallet',
-    subtitle: 'Protocolo: ERC-4337 Account Abstraction Layer',
-    shortDesc: 'El fin de la era de las seed phrases',
+    title: 'Get Wallet',
+    subtitle: 'Protocol: ERC-4337 Account Abstraction Layer',
+    shortDesc: 'The end of the seed phrase era',
     deepDive: [
-      'Las cuentas tradicionales (EOAs) son esclavas de una clave privada. Si pierdes la clave, pierdes el acceso. Human Defi rompe este paradigma mediante la Abstracción de Cuenta. Tu wallet no es una simple dirección, es un Smart Contract inteligente desplegado en la red.',
-      'Esto nos permite implementar la lógica de Paymasters, lo que significa que puedes pagar el gas en cualquier token (o nosotros podemos subsidiarlo por ti), eliminando la fricción de tener que comprar ETH o MATIC para mover tus fondos.',
-      'La seguridad se gestiona mediante un esquema de Firmas Multi-faceta, permitiendo la recuperación social: si pierdes tu dispositivo, tus "Guardianes" (amigos de confianza o dispositivos secundarios) pueden rotar tu clave de acceso sin que tus fondos se muevan.',
-      'Utilizamos criptografía de curva elíptica y² = x³ + 7 sobre secp256k1, pero abstraída para el humano. No generamos una clave privada local vulnerable; desplegamos un Smart Contract Wallet con límites de gasto diarios y recuperación social.'
+      'Traditional accounts (EOAs) are slaves to a private key. If you lose the key, you lose access. Human Defi breaks this paradigm through Account Abstraction. Your wallet is not just an address, it\'s an intelligent Smart Contract deployed on the network.',
+      'This allows us to implement Paymaster logic, meaning you can pay gas in any token (or we can subsidize it for you), eliminating the friction of having to buy ETH or MATIC to move your funds.',
+      'Security is managed through a Multi-faceted Signature scheme, enabling social recovery: if you lose your device, your "Guardians" (trusted friends or secondary devices) can rotate your access key without your funds moving.',
+      'We use elliptic curve cryptography y² = x³ + 7 over secp256k1, but abstracted for humans. We don\'t generate a vulnerable local private key; we deploy a Smart Contract Wallet with daily spending limits and social recovery.'
     ],
-    humanEdge: 'Sinceramente, pedirle a tu abuela que guarde 12 palabras en un papel es un insulto a la ingeniería de software del 2026. Somos el número uno porque hemos matado a la "Seed Phrase". Ofrecemos una experiencia bancaria Web2 con la seguridad matemática de Web3. No estamos "simplificando" la blockchain; la estamos reconstruyendo correctamente.',
+    humanEdge: 'Honestly, asking your grandmother to save 12 words on paper is an insult to 2026 software engineering. We are #1 because we\'ve killed the "Seed Phrase". We offer a Web2 banking experience with Web3 mathematical security. We\'re not "simplifying" blockchain; we\'re rebuilding it correctly.',
     lottieSrc: 'https://lottie.host/d5c4e8f5-8f3a-4c8e-9b5e-2f8c9d3e4f5a/6K7L8M9N0P.json',
-    lottieDescription: 'Una llave metálica vieja que se funde y transforma en una red de nodos interconectados formando una huella dactilar digital',
+    lottieDescription: 'An old metal key that melts and transforms into an interconnected network of nodes forming a digital fingerprint',
     cta: {
-      text: 'Ver contrato en Etherscan',
+      text: 'View contract on Etherscan',
       link: '#'
     }
   },
