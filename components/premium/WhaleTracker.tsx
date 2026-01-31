@@ -43,7 +43,29 @@ export default function WhaleTracker({ isPremium, onUpgrade }: WhaleTrackerProps
   const [showAddWallet, setShowAddWallet] = useState(false);
   const [showBatchImport, setShowBatchImport] = useState(false);
 
-  // Mock data for demonstration
+  // Fetch real data
+  useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        const response = await fetch('/api/whale/activities');
+        if (response.ok) {
+            const data = await response.json();
+            setActivities(data.activities || []);
+        }
+      } catch (error) {
+        console.error("Failed to fetch whale activities", error);
+      }
+    };
+
+    if (isPremium) {
+        fetchActivities();
+        // Poll every 30 seconds
+        const interval = setInterval(fetchActivities, 30000);
+        return () => clearInterval(interval);
+    }
+  }, [isPremium]);
+
+  // Keep mock wallets for now as they are "Watched" list
   useEffect(() => {
     const mockWallets: WatchedWallet[] = [
       {
@@ -84,48 +106,10 @@ export default function WhaleTracker({ isPremium, onUpgrade }: WhaleTrackerProps
       }
     ];
 
-    const mockActivities: WhaleActivity[] = [
-      {
-        id: '1',
-        walletAddress: '0x28C6c06298d514Db089934071355E5743bf21d60',
-        walletLabel: 'Binance Hot Wallet',
-        type: 'TRANSFER',
-        token: 'ETH',
-        amount: 5000,
-        usdValue: 12500000,
-        timestamp: new Date(Date.now() - 300000),
-        txHash: '0x123...'
-      },
-      {
-        id: '2',
-        walletAddress: '0xab5801a7d398351b8be11c439e05c5b3259aec9b',
-        walletLabel: 'Vitalik Buterin',
-        type: 'SELL',
-        token: 'UNI',
-        amount: 100000,
-        usdValue: 850000,
-        timestamp: new Date(Date.now() - 600000),
-        txHash: '0x456...'
-      },
-      {
-        id: '3',
-        walletAddress: '0x47ac0Fb4F2D84898e4D9E7b4DaB3C24507a6D503',
-        walletLabel: 'DeFi Whale #47',
-        type: 'BUY',
-        token: 'AAVE',
-        amount: 5000,
-        usdValue: 625000,
-        timestamp: new Date(Date.now() - 900000),
-        txHash: '0x789...'
-      }
-    ];
-
     if (isPremium) {
       setWatchedWallets(mockWallets);
-      setActivities(mockActivities);
     } else {
       setWatchedWallets(mockWallets.slice(0, 3));
-      setActivities(mockActivities.slice(0, 2));
     }
   }, [isPremium]);
 
