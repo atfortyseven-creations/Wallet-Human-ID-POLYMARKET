@@ -64,7 +64,7 @@ export function SiteHeader() {
                     `}
                 >
                     {/* LOGO */}
-                    <div className="flex-shrink-0 flex items-center gap-1">
+                    <div className="flex-1 flex justify-start items-center gap-1">
                         <Link href="/" className="flex items-center gap-2 group">
                             <span className="text-xl font-bold tracking-tight text-gray-900 font-sans group-hover:text-black transition-colors">
                                 Human DeFi
@@ -73,7 +73,7 @@ export function SiteHeader() {
                     </div>
 
                     {/* DESKTOP NAV */}
-                    <nav className="hidden lg:flex items-center gap-1 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <nav className="hidden xl:flex items-center gap-1 justify-center">
                         {navLinks.map((link) => (
                             <Link 
                                 key={link.href} 
@@ -86,7 +86,7 @@ export function SiteHeader() {
                     </nav>
 
                     {/* RIGHT ACTIONS */}
-                    <div className="hidden md:flex items-center gap-4">
+                    <div className="hidden md:flex flex-1 justify-end items-center gap-4">
                         {/* Grouped Icons: Bell, Settings, Language */}
                         <div className="flex items-center gap-4 pr-6 border-r border-gray-200">
                              <div className="scale-110">
