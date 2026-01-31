@@ -15,7 +15,7 @@ import { sendTelegramMessage, formatWhaleAlertTelegram, formatPriceAlertTelegram
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { chatId, type, data } = body;
+    const { chatId, topicId, type, data } = body;
 
     if (!chatId) {
       return NextResponse.json(
@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
       chatId,
       text: message,
       parseMode: 'HTML',
+      threadId: topicId, // Pass topicId if present
     });
 
     if (!success) {
@@ -97,6 +98,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const chatId = searchParams.get('chatId');
+    const topicId = searchParams.get('topicId');
 
     if (!chatId) {
       return NextResponse.json({
@@ -129,6 +131,7 @@ You will now receive:
 ⏰ ${new Date().toLocaleString()}
       `.trim(),
       parseMode: 'HTML',
+      threadId: topicId || undefined,
     });
 
     if (!success) {

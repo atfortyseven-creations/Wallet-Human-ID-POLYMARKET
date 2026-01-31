@@ -12,6 +12,7 @@ export interface TelegramMessage {
   text: string;
   parseMode?: 'HTML' | 'Markdown';
   disableWebPagePreview?: boolean;
+  threadId?: string; // Optional: For Telegram Topics
 }
 
 /**
@@ -32,6 +33,7 @@ export async function sendTelegramMessage(message: TelegramMessage): Promise<boo
         text: message.text,
         parse_mode: message.parseMode || 'HTML',
         disable_web_page_preview: message.disableWebPagePreview ?? true,
+        message_thread_id: message.threadId, // Sends to specific topic if provided
       }),
     });
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Bell, Mail, MessageSquare, Send, Check, X, AlertCircle, Sparkles, TestTube } from 'lucide-react';
 import TelegramLoginButton from './TelegramLoginButton';
@@ -29,7 +29,7 @@ export default function NotificationSettings() {
       name: 'Telegram',
       icon: <Send size={24} />,
       enabled: false,
-      config: { chatId: '' },
+      config: { chatId: '', topicId: '' },
       status: 'disconnected',
     },
     {
@@ -96,7 +96,8 @@ export default function NotificationSettings() {
           break;
         
         case 'telegram':
-          endpoint = `/api/notifications/telegram?chatId=${channel.config.chatId}`;
+          const topicParam = channel.config.topicId ? `&topicId=${channel.config.topicId}` : '';
+          endpoint = `/api/notifications/telegram?chatId=${channel.config.chatId}${topicParam}`;
           break;
         
         case 'discord':
@@ -131,6 +132,40 @@ export default function NotificationSettings() {
       alert(`Test failed for ${channel.name}. Check your configuration.`);
     } finally {
       setTesting(null);
+    }
+  };
+
+  // Load from localStorage on mount
+  useEffect(() => {
+    const savedChannels = localStorage.getItem('vip_notification_channels');
+    const savedAlerts = localStorage.getItem('vip_alert_types');
+    
+    if (savedChannels) {
+      // Merge saved config with default structure (to keep icons/functions)
+      const parsed = JSON.parse(savedChannels);
+      setChannels(prev => prev.map(ch => {
+        const saved = parsed.find((p: any) => p.id === ch.id);
+        return saved ? { ...ch, enabled: saved.enabled, config: saved.config, status: saved.status } : ch;
+      }));
+    }
+    
+    if (savedAlerts) {
+      setAlertTypes(JSON.parse(savedAlerts));
+    }
+  }, []);
+
+  const handleSave = () => {
+    localStorage.setItem('vip_notification_channels', JSON.stringify(channels));
+    localStorage.setItem('vip_alert_types', JSON.stringify(alertTypes));
+    
+    // Show toast feedback (simulated)
+    const button = document.getElementById('save-settings-btn');
+    if (button) {
+      const originalText = button.innerHTML;
+      button.innerHTML = '✅ Saved Successfully!';
+      setTimeout(() => {
+        button.innerHTML = originalText;
+      }, 2000);
     }
   };
 
@@ -264,7 +299,11 @@ export default function NotificationSettings() {
       </div>
 
       {/* Save Button */}
-      <button className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold hover:shadow-lg transition-all">
+      <button 
+        id="save-settings-btn"
+        onClick={handleSave}
+        className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold hover:shadow-lg transition-all"
+      >
         💾 Save Settings
       </button>
     </div>
@@ -399,6 +438,35 @@ function ChannelCard({
                       }
                     }}
                   />
+                </div>
+              )}
+              {channel.config.chatId && (
+                <div className="mt-2">
+                  <label className="block text-xs font-bold text-[#1F1F1F]/70 mb-1">
+                    Topic ID / Link (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={channel.config.topicId || ''}
+                    onChange={e => {
+                      let val = e.target.value;
+                      // Smart Parse: If URL is pasted, extract the last numeric segment
+                      // Example: https://t.me/HumanidFi/1367 -> 1367
+                      if (val.includes('t.me/') || val.includes('telegram.org/')) {
+                        const parts = val.split('/');
+                        const lastPart = parts[parts.length - 1];
+                        if (lastPart && /^\d+$/.test(lastPart)) {
+                          val = lastPart; // Auto extract
+                        }
+                      }
+                      onConfigChange('topicId', val);
+                    }}
+                    placeholder="Paste link (e.g. t.me/mygroup/1367) or ID"
+                    className="w-full px-4 py-2 bg-white border border-[#1F1F1F]/20 rounded-xl outline-none text-sm focus:border-purple-600"
+                  />
+                  <p className="text-[10px] text-gray-500 mt-1 pl-1">
+                    Tip: Paste the full topic link and we'll extract the ID automatically.
+                  </p>
                 </div>
               )}
             </div>

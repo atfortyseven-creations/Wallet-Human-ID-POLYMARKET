@@ -79,8 +79,8 @@ export async function GET(request: NextRequest) {
     const priceRes = await fetch(currentPriceUrl, {
       next: { revalidate: 60 },
     });
-    const priceData = await priceRes.json();
-    const currentPrice = priceData[coinId]?.[currency] || 0;
+    const currentPriceRaw = await priceRes.json();
+    const currentPrice = currentPriceRaw[coinId]?.[currency] || 0;
 
     const response: HistoricalResponse = {
       symbol,
