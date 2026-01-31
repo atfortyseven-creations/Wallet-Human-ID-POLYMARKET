@@ -12,7 +12,7 @@ export default function FiatOnRamp() {
   const moonPayUrl = `https://buy.moonpay.com?apiKey=${process.env.NEXT_PUBLIC_MOONPAY_KEY}&currencyCode=${crypto}&baseCurrencyCode=${currency}&baseCurrencyAmount=${amount}`;
 
   return (
-    <div className="bg-[#EAEADF] p-6 rounded-3xl border-2 border-[#1F1F1F]/10">
+    <div className="bg-white/50 backdrop-blur-md p-6 rounded-3xl border-2 border-[#1F1F1F]/10">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-black text-[#1F1F1F]">Buy Crypto</h3>
         <CreditCard className="text-[#1F1F1F]/30" />

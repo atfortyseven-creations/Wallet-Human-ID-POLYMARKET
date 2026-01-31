@@ -13,6 +13,10 @@ import SwapModal from '@/components/wallet/SwapModal';
 import { getSupportedTokens, TOKENS_BY_CHAIN } from '@/config/tokens';
 import { toast } from 'sonner';
 import { Position, Transaction } from '@/types/wallet';
+import FiatOnRamp from '@/components/wallet/FiatOnRamp';
+import TokenManager from '@/components/wallet/TokenManager';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X } from 'lucide-react';
 
 interface WalletActionsProps {
     positions?: Position[];
@@ -28,6 +32,8 @@ export function WalletActions({ positions = [], history = [] }: WalletActionsPro
     const [showSend, setShowSend] = useState(false);
     const [showReceive, setShowReceive] = useState(false);
     const [showSwap, setShowSwap] = useState(false);
+    const [showFiat, setShowFiat] = useState(false);
+    const [showTokenManager, setShowTokenManager] = useState(false);
 
     // Tokens Data
     // Defensive coding: Handle case where getSupportedTokens import might be undefined at runtime due to circular deps or build issues
@@ -90,7 +96,7 @@ export function WalletActions({ positions = [], history = [] }: WalletActionsPro
             label: 'Comprar', 
             icon: <CreditCard size={24} />, 
             color: 'bg-blue-600 hover:bg-blue-500',
-            action: () => window.open('https://app.metamask.io/buy/build-quote', '_blank')
+            action: () => setShowFiat(true)
         },
         { 
             label: 'Intercambio', 
@@ -124,6 +130,53 @@ export function WalletActions({ positions = [], history = [] }: WalletActionsPro
             <SendModal isOpen={showSend} onClose={() => setShowSend(false)} />
             <ReceiveModal isOpen={showReceive} onClose={() => setShowReceive(false)} />
             <SwapModal isOpen={showSwap} onClose={() => setShowSwap(false)} />
+
+            {/* Fiat On-Ramp Modal */}
+            <AnimatePresence>
+                {showFiat && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                        <motion.div
+                             initial={{ opacity: 0, scale: 0.95 }}
+                             animate={{ opacity: 1, scale: 1 }}
+                             exit={{ opacity: 0, scale: 0.95 }}
+                             className="relative w-full max-w-md"
+                        >
+                            <button 
+                                onClick={() => setShowFiat(false)}
+                                className="absolute -top-12 right-0 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
+                            >
+                                <X size={24} />
+                            </button>
+                            <FiatOnRamp />
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+             {/* Token Manager Modal */}
+             <AnimatePresence>
+                {showTokenManager && (
+                   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                        <motion.div
+                             initial={{ opacity: 0, y: 100 }}
+                             animate={{ opacity: 1, y: 0 }}
+                             exit={{ opacity: 0, y: 100 }}
+                             className="w-full max-w-lg bg-[#EAEADF] rounded-3xl p-6 relative max-h-[85vh] overflow-y-auto"
+                        >
+                             <button 
+                                onClick={() => setShowTokenManager(false)}
+                                className="absolute top-4 right-4 p-2 hover:bg-[#1F1F1F]/10 rounded-full"
+                            >
+                                <X size={20} className="text-[#1F1F1F]" />
+                            </button>
+                            <TokenManager 
+                                walletAddress={address || ''} 
+                                chainId={chainId} 
+                            />
+                        </motion.div>
+                   </div>
+                )}
+             </AnimatePresence>
 
             {/* 4 Action Buttons - Premium Squircle Design */}
             <div className="grid grid-cols-4 gap-4 mb-10 max-w-lg mx-auto">
@@ -172,7 +225,7 @@ export function WalletActions({ positions = [], history = [] }: WalletActionsPro
 
             {/* Search Bar */}
             {(activeTab === 'Tokens' || activeTab === 'DeFi') && (
-                <div className="px-4 mb-6">
+                <div className="px-4 mb-6 flex gap-2">
                     <input 
                         type="text" 
                         placeholder="Search assets..." 
@@ -180,6 +233,14 @@ export function WalletActions({ positions = [], history = [] }: WalletActionsPro
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-sm text-neutral-900 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-neutral-400"
                     />
+                    {activeTab === 'Tokens' && (
+                        <button
+                            onClick={() => setShowTokenManager(true)}
+                            className="px-4 py-3 bg-neutral-100 hover:bg-neutral-200 text-neutral-600 rounded-xl font-bold transition-colors whitespace-nowrap"
+                        >
+                            Manage
+                        </button>
+                    )}
                 </div>
             )}
 

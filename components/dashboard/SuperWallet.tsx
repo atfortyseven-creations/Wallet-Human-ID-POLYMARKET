@@ -9,6 +9,9 @@ import PortfolioDashboard from '@/components/wallet/PortfolioDashboard';
 import SettingsPanel from '@/components/wallet/SettingsPanel';
 import AddressBook from '@/components/wallet/AddressBook';
 import AccountSwitcher from '@/components/wallet/AccountSwitcher';
+import StakingDashboard from '@/components/wallet/StakingDashboard';
+import TransactionHistory from '@/components/wallet/TransactionHistory';
+import WatchOnlyInput from '@/components/wallet/WatchOnlyInput';
 import { getAccountColor } from '@/lib/wallet/accounts';
 
 export default function SuperWallet({ recentNews = [] }: { recentNews?: any[] }) {
@@ -25,7 +28,8 @@ export default function SuperWallet({ recentNews = [] }: { recentNews?: any[] })
         address
     } = useRealWalletData(recentNews);
 
-    const [activeView, setActiveView] = useState<'dashboard' | 'portfolio' | 'contacts' | 'settings'>('dashboard');
+    const [activeView, setActiveView] = useState<'dashboard' | 'portfolio' | 'earn' | 'activity' | 'contacts' | 'settings'>('dashboard');
+    const [showWatchInput, setShowWatchInput] = useState(false);
 
     // Mock accounts for UI demo (since we don't have the full provider yet)
     const accounts = address ? [{
@@ -51,14 +55,16 @@ export default function SuperWallet({ recentNews = [] }: { recentNews?: any[] })
                             accounts={accounts}
                             onSwitch={() => {}}
                             onAddAccount={() => {}}
-                            onAddWatchOnly={() => {}}
+                            onAddWatchOnly={() => setShowWatchInput(true)}
                         />
                     )}
                 </div>
                 
-                <div className="flex bg-white/50 rounded-full p-1.5 border border-[#1F1F1F]/5 shadow-sm">
+                <div className="flex bg-white/50 rounded-full p-1.5 border border-[#1F1F1F]/5 shadow-sm overflow-x-auto max-w-[200px] md:max-w-none scrollbar-hide">
                     <ViewTab icon={<Wallet size={18}/>} label="Wallet" active={activeView==='dashboard'} onClick={()=>setActiveView('dashboard')} />
                     <ViewTab icon={<PieChart size={18}/>} label="Portfolio" active={activeView==='portfolio'} onClick={()=>setActiveView('portfolio')} />
+                    <ViewTab icon={<TrendingUp size={18}/>} label="Earn" active={activeView==='earn'} onClick={()=>setActiveView('earn')} />
+                    <ViewTab icon={<Zap size={18}/>} label="Activity" active={activeView==='activity'} onClick={()=>setActiveView('activity')} />
                     <ViewTab icon={<Users size={18}/>} label="Contacts" active={activeView==='contacts'} onClick={()=>setActiveView('contacts')} />
                     <ViewTab icon={<Settings size={18}/>} label="Settings" active={activeView==='settings'} onClick={()=>setActiveView('settings')} />
                 </div>
@@ -95,6 +101,18 @@ export default function SuperWallet({ recentNews = [] }: { recentNews?: any[] })
                     </div>
                 )}
 
+                {activeView === 'earn' && (
+                    <div className="animate-fade-in">
+                        <StakingDashboard />
+                    </div>
+                )}
+
+                {activeView === 'activity' && address && (
+                    <div className="animate-fade-in">
+                        <TransactionHistory authUserId={address} />
+                    </div>
+                )}
+
                 {activeView === 'contacts' && address && (
                     <div className="animate-fade-in">
                         <AddressBook authUserId={address} />
@@ -105,6 +123,17 @@ export default function SuperWallet({ recentNews = [] }: { recentNews?: any[] })
                     <div className="animate-fade-in">
                         <SettingsPanel />
                     </div>
+                )}
+                
+                {showWatchInput && (
+                    <WatchOnlyInput 
+                        onAdd={async (addr) => {
+                            // Mock add logic
+                            setShowWatchInput(false);
+                            alert(`Watching ${addr}`);
+                        }} 
+                        onCancel={() => setShowWatchInput(false)} 
+                    />
                 )}
 
             </main>

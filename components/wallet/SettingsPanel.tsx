@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { DollarSign, Globe, Smartphone, Bell, Shield, Moon, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { DollarSign, Globe, Smartphone, Bell, Shield, Moon, ChevronRight, Key } from 'lucide-react';
+import { WalletConnectSessions } from '@/components/wallet/WalletConnectSessions';
+import BiometricGuard from '@/components/wallet/BiometricGuard';
 
 export default function SettingsPanel() {
   const [currency, setCurrency] = useState('USD');
   const [language, setLanguage] = useState('English');
   const [theme, setTheme] = useState('Light');
+  const [showSecret, setShowSecret] = useState(false);
 
   return (
     <div className="space-y-6">
@@ -37,6 +40,12 @@ export default function SettingsPanel() {
             onClick={() => setTheme(theme === 'Light' ? 'Dark' : 'Light')} 
           />
         </div>
+      </section>
+
+      {/* Connections (WalletConnect) */}
+      <section>
+        <h3 className="text-sm font-bold text-[#1F1F1F]/50 uppercase mb-4 tracking-wider">Active Sessions</h3>
+        <WalletConnectSessions />
       </section>
 
       {/* Security */}
@@ -78,6 +87,42 @@ export default function SettingsPanel() {
             onToggle={() => {}} 
           />
         </div>
+      </section>
+
+      {/* Advanced Security Zone */}
+      <section className="bg-[#EAEADF] rounded-3xl p-6 border-2 border-red-500/10">
+        <h3 className="text-sm font-bold text-red-600 uppercase mb-4 tracking-wider flex items-center gap-2">
+            <Shield size={16} /> Danger Zone
+        </h3>
+        
+        {!showSecret ? (
+             <button 
+                onClick={() => setShowSecret(true)}
+                className="w-full py-4 bg-red-50 text-red-600 border border-red-100 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-red-100 transition-all"
+             >
+                <Key size={18} />
+                Reveal Recovery Phrase
+            </button>
+        ) : (
+            <div className="h-[300px]">
+                <BiometricGuard reason="Reveal Secret Phrase" onSuccess={() => {}}>
+                    <div className="p-6 bg-white rounded-xl border border-[#1F1F1F]/10 text-center space-y-4">
+                        <p className="font-mono text-lg font-bold text-[#1F1F1F]">
+                            abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
+                        </p>
+                        <p className="text-xs text-red-500 font-bold">
+                            DO NOT SHARE THIS PHRASE WITH ANYONE.
+                        </p>
+                        <button 
+                            onClick={() => setShowSecret(false)}
+                            className="text-sm text-[#1F1F1F]/50 underline"
+                        >
+                            Hide Secret
+                        </button>
+                    </div>
+                </BiometricGuard>
+            </div>
+        )}
       </section>
 
       <div className="text-center text-xs text-[#1F1F1F]/30 pt-4">

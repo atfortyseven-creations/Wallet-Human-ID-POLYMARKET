@@ -34,7 +34,7 @@ export default function StakingDashboard() {
             className={`p-5 rounded-3xl border-2 cursor-pointer transition-colors ${
               selected === p.id 
                 ? 'bg-[#1F1F1F] text-[#EAEADF] border-[#1F1F1F]' 
-                : 'bg-[#EAEADF] border-transparent hover:bg-white/50'
+                : 'bg-white/50 border-[#1F1F1F]/5 hover:bg-white/80'
             }`}
           >
             <div className="flex justify-between items-center">
