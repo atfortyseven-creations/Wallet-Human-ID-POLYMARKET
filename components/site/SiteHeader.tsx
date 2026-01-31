@@ -85,10 +85,9 @@ export function SiteHeader() {
                             {isAppMode ? (
                                 <>
                                     <NavLink href="/" icon={<Globe size={16} />}>Feed</NavLink>
-                                    <NavLink href="/funciones">Funciones</NavLink>
                                     <NavLink href="/desarrollador">Desarrollador</NavLink>
-                                    <NavLink href="/soporte">Soporte</NavLink>
                                     <NavLink href="/wallet" icon={<Wallet size={16} />}>Wallet</NavLink>
+                                    <NavLink href="/soporte">Soporte</NavLink>
                                     <button 
                                         onClick={() => setIsSettingsOpen(true)}
                                         className="text-white/80 hover:text-white font-medium text-sm flex items-center gap-2 transition-colors px-3 py-2 rounded-lg hover:bg-white/5"
@@ -96,6 +95,7 @@ export function SiteHeader() {
                                         <SettingsIcon size={16} />
                                         <span>Settings</span>
                                     </button>
+                                    <NavLink href="/funciones">Funciones</NavLink>
                                 </>
                             ) : (
                                 <>
@@ -177,18 +177,18 @@ export function SiteHeader() {
                                     <Link href="/" className="hover:text-blue-400 flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
                                         <Globe size={20} /> Feed
                                     </Link>
-                                    <Link href="/funciones" className="hover:text-blue-400" onClick={() => setIsMobileMenuOpen(false)}>Funciones</Link>
                                     <Link href="/desarrollador" className="hover:text-blue-400" onClick={() => setIsMobileMenuOpen(false)}>Desarrollador</Link>
-                                    <Link href="/soporte" className="hover:text-blue-400" onClick={() => setIsMobileMenuOpen(false)}>Soporte</Link>
                                     <Link href="/wallet" className="hover:text-blue-400 flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
                                         <Wallet size={20} /> Wallet
                                     </Link>
+                                    <Link href="/soporte" className="hover:text-blue-400" onClick={() => setIsMobileMenuOpen(false)}>Soporte</Link>
                                     <button 
                                         onClick={() => { setIsSettingsOpen(true); setIsMobileMenuOpen(false); }}
                                         className="hover:text-blue-400 flex items-center gap-2 text-left"
                                     >
                                         <SettingsIcon size={20} /> Settings
                                     </button>
+                                    <Link href="/funciones" className="hover:text-blue-400" onClick={() => setIsMobileMenuOpen(false)}>Funciones</Link>
                                 </>
                             ) : (
                                 <>

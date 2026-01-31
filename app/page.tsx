@@ -8,10 +8,9 @@ import { useAppKitAccount, useAppKit } from '@reown/appkit/react';
 // ============================================
 // 1. CRITICAL IMPORTS (Above the Fold - Load Immediately)
 // ============================================
-import { HumanDefiHeader } from '@/components/landing/HumanDefiHeader';
 import { LandingHero } from '@/components/landing/LandingHero';
 import FluidBeigeBackground from '@/components/layout/FluidBeigeBackground';
-import { TitaniumGate, useGateState } from '@/components/layout/TitaniumGate';
+import { useGateState } from '@/components/layout/TitaniumGate';
 import { LenisProvider } from '@/components/creative/LenisProvider';
 import { LottieStack } from '@/components/creative/LottieStack';
 
@@ -54,7 +53,7 @@ export default function Home() {
     }
   }, []);
 
-  // Hook to check gate state
+  // Hook to check gate state - NOW CORRECTLY CONSUMES GLOBAL CONTEXT
   const gateState = useGateState();
 
   const handleStart = () => {
@@ -71,7 +70,6 @@ export default function Home() {
   // const showLobby = isMounted && (isConnected || isAuthenticated);
 
   return (
-    <TitaniumGate>
         <main className="relative min-h-screen w-full bg-[#F5F5DC] text-neutral-900 selection:bg-orange-200 selection:text-orange-900 overflow-x-hidden">
             
             {/* ============================================
@@ -145,6 +143,5 @@ export default function Home() {
                     </section>
             </div>
         </main>
-    </TitaniumGate>
   );
 }

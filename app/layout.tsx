@@ -12,7 +12,7 @@ import VoidShell from '@/components/VoidShell';
 import BackgroundVideo from '@/components/layout/BackgroundVideo';
 // import { BootSequence } from '@/components/layout/BootSequence';
 import { Footer } from '@/components/layout/Footer';
-import { SiteHeader } from '@/components/site/SiteHeader'; // Added import for SiteHeader
+import { ClientLayout } from '@/components/layout/ClientLayout'; // Replaces SiteHeader usage
 import { GeoBlocker } from '@/components/logic/GeoBlocker';
 import { TermsGate } from '@/components/compliance/TermsGate';
 import { BaseGasWidget } from '@/components/compliance/BaseGasWidget';
@@ -100,9 +100,10 @@ export default function RootLayout({
                 </div>
 
                 <Providers>
-                    {/* Official Header Layer */}
-                    <SiteHeader />
-                    {children}
+                    {/* Official Header and App Logic Layer */}
+                    <ClientLayout>
+                        {children}
+                    </ClientLayout>
                 </Providers>
 
                 {/* VISUAL RESILIENCE: Global Error Boundary is transparent */}

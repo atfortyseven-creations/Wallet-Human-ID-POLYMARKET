@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { IntroSequence } from '@/components/intro/IntroSequence';
 import { AuthModal } from '@/components/auth/AuthModal';
 import { createContext, useContext } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 
 type GateState = 'INTRO' | 'AUTH' | 'APP';
 
@@ -18,7 +19,15 @@ interface TitaniumGateProps {
 
 export function TitaniumGate({ children }: TitaniumGateProps) {
     // Always start at INTRO for the full cinematic experience
+    // BUT if already authenticated, we should respect that state
+    const { isAuthenticated, isLoading } = useAuth();
     const [state, setState] = useState<GateState>('INTRO');
+
+    React.useEffect(() => {
+        if (!isLoading && isAuthenticated && state !== 'APP') {
+            setState('APP');
+        }
+    }, [isAuthenticated, isLoading, state]);
 
     return (
         <GateStateContext.Provider value={state}>
