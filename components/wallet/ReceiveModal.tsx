@@ -13,10 +13,12 @@ import { TransactionStatusModal } from "@/components/ui/TransactionStatusModal";
 interface ReceiveModalProps {
     isOpen: boolean;
     onClose: () => void;
+    address?: string;
 }
 
-export default function ReceiveModal({ isOpen, onClose }: ReceiveModalProps) {
-    const { address, chainId } = useAccount();
+export default function ReceiveModal({ isOpen, onClose, address: propAddress }: ReceiveModalProps) {
+    const { address: wagmiAddress, chainId } = useAccount();
+    const address = propAddress || wagmiAddress;
     const chains = useChains();
     const { switchChain, isPending: isSwitching, isSuccess: isSwitchSuccess, error: switchError } = useSwitchChain();
     const [copied, setCopied] = useState(false);

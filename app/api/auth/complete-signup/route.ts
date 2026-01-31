@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   let body: any;
   try {
     body = await request.json();
-    const { email, password, name } = body;
+    const { email, password, name, walletAddress, encryptedMnemonic, walletSalt } = body;
 
     if (!email || !password) {
       return NextResponse.json(
@@ -30,15 +30,42 @@ export async function POST(request: NextRequest) {
     // Hash password
     const passwordHash = await hashPassword(password);
 
-    // Update user with password and mark as verified
+    // Update user with password and marked as verified
+    // Also store the generated wallet if provided
     const user = await prisma.authUser.update({
       where: { email },
       data: {
         passwordHash,
         name: name || null,
-        verified: true
+        verified: true,
+        walletAddress: walletAddress || null,
+        encryptedMnemonic: encryptedMnemonic || null,
+        walletSalt: walletSalt || null
       }
     });
+
+    // Create the associated User profile if it doesn't exist
+    if (walletAddress) {
+        try {
+            await prisma.user.upsert({
+                where: { walletAddress },
+                update: {
+                    email,
+                    name: name || null,
+                },
+                create: {
+                    walletAddress,
+                    email,
+                    name: name || null,
+                    tier: 'HUMAN', // Default to HUMAN for registered users
+                }
+            });
+        } catch (e) {
+            console.error('[Auth] Failed to create User profile:', e);
+            // We don't fail the whole signup if just the user profile creation fails, 
+            // but in production we'd want this to be atomic (transactional)
+        }
+    }
 
     // Generate access and refresh tokens
     const userAgent = request.headers.get('user-agent') || '';

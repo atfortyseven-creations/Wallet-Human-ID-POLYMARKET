@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -6,39 +5,41 @@ import { motion } from 'framer-motion';
 import { SiteHeader } from '@/components/site/SiteHeader';
 import { HumanDefiFooter } from '@/components/landing/HumanDefiFooter';
 import { Shield, Zap, Globe, Lock, Coins, Vote } from 'lucide-react';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 export default function FuncionesPage() {
+    const { t } = useLanguage();
     
     const features = [
         {
             icon: <Shield size={32} className="text-emerald-400" />,
-            title: "Sovereign Identity",
-            desc: "World ID integration ensures one-person-one-vote without revealing personal data. Your biometrics never leave your device."
+            title: t('features.id.title'),
+            desc: t('features.id.desc')
         },
         {
             icon: <Zap size={32} className="text-yellow-400" />,
-            title: "Instant Zaps",
-            desc: "Convert WLD to investment positions in one click. Our smart routers find the best path across Uniswap and obscure DEXs."
+            title: t('features.zap.title'),
+            desc: t('features.zap.desc')
         },
         {
             icon: <Vote size={32} className="text-purple-400" />,
-            title: "Democratic Governance",
-            desc: "Create and vote on market proposals. The protocol is owned by the users, not VCs. Your voice matters."
+            title: t('features.gov.title'),
+            desc: t('features.gov.desc')
         },
         {
             icon: <Coins size={32} className="text-blue-400" />,
-            title: "Yield Vaults",
-            desc: "Automated strategies optimized for risk-adjusted returns. Earn passive income on your dormant assets."
+            title: t('features.yield.title'),
+            desc: t('features.yield.desc')
         },
         {
             icon: <Lock size={32} className="text-red-400" />,
-            title: "Armored Security",
-            desc: "Session hijacking protection, auto-logout, and strict biometric re-verification for high-value transactions."
+            title: t('features.security.title'),
+            desc: t('features.security.desc')
         },
         {
             icon: <Globe size={32} className="text-cyan-400" />,
-            title: "Global Access",
-            desc: "Uncensored access to prediction markets. No geoblocking on the protocol level. You are a citizen of the world."
+            title: t('features.global.title'),
+            desc: t('features.global.desc')
         }
     ];
 
@@ -52,12 +53,12 @@ export default function FuncionesPage() {
                     <motion.h1 
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="text-5xl md:text-7xl font-black mb-6 tracking-tighter"
+                        className="text-5xl md:text-7xl font-black mb-6 tracking-tighter uppercase"
                     >
-                        SYSTEM CORE
+                        {t('features.title')}
                     </motion.h1>
                     <p className="max-w-xl mx-auto text-xl text-neutral-500 font-medium">
-                        A detailed breakdown of the machinery powering your financial freedom.
+                        {t('features.subtitle')}
                     </p>
                 </section>
 
@@ -67,9 +68,9 @@ export default function FuncionesPage() {
                      <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
                     
                     <div className="mb-8 px-12">
-                        <h2 className="text-xs font-mono uppercase tracking-widest opacity-50 mb-2">Visual Intelligence</h2>
-                        <p className="text-2xl font-bold">System Visualizations</p>
-                        <p className="text-sm text-neutral-400 mt-4 max-w-2xl">Interactive components coming soon. Explore the features below for a detailed system breakdown.</p>
+                        <h2 className="text-xs font-mono uppercase tracking-widest opacity-50 mb-2">{t('features.visual_intel')}</h2>
+                        <p className="text-2xl font-bold">{t('features.visual_desc')}</p>
+                        <p className="text-sm text-neutral-400 mt-4 max-w-2xl">{t('features.visual_note')}</p>
                     </div>
                 </section>
 
@@ -97,18 +98,17 @@ export default function FuncionesPage() {
                     </div>
                 </section>
                 
-                 {/* "Tech Specs" footer-like section */}
-                 <section className="px-6 py-20 text-center border-t border-neutral-200 bg-white">
+                {/* "Tech Specs" footer-like section */}
+                <section className="px-6 py-20 text-center border-t border-neutral-200 bg-white">
                     <div className="inline-block border border-neutral-200 rounded-full px-6 py-2 text-sm font-mono text-neutral-400 mb-8">
                         v2.4.0-alpha
                     </div>
-                    <h2 className="text-3xl font-bold mb-4">Open Source & Audited</h2>
+                    <h2 className="text-3xl font-bold mb-4">{t('features.footer.title')}</h2>
                     <p className="max-w-2xl mx-auto text-neutral-500 mb-8">
-                        Our smart contracts are verified on Etherscan and our frontend is fully open source. 
-                        Verify, don't trust.
+                        {t('features.footer.desc')}
                     </p>
-                    <a href="https://github.com/humanid-fi" target="_blank" className="font-bold border-b-2 border-black hover:bg-black hover:text-white transition-all">
-                        View Source Code
+                    <a href="https://github.com/humanid-fi" target="_blank" className="font-bold border-b-2 border-black hover:bg-black hover:text-white transition-all uppercase tracking-widest px-1">
+                        {t('features.footer.cta')}
                     </a>
                 </section>
 

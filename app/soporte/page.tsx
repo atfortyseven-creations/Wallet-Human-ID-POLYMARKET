@@ -6,8 +6,10 @@ import { MessageSquare, Send, Loader2, Info } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
 import { SiteHeader } from '@/components/site/SiteHeader';
 import { HumanDefiFooter } from '@/components/landing/HumanDefiFooter';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 export default function SoportePage() {
+    const { t } = useLanguage();
     const [message, setMessage] = useState('');
     const [section, setSection] = useState('general');
     const [isSending, setIsSending] = useState(false);
@@ -29,7 +31,7 @@ export default function SoportePage() {
             if (!response.ok) throw new Error('Failed to send');
             
             setSent(true);
-            toast.success("Message received by the Void.");
+            toast.success(t('support.success_toast'));
             setMessage('');
             
             // Auto reset after 3 seconds
@@ -37,7 +39,7 @@ export default function SoportePage() {
 
         } catch (error) {
             console.error(error);
-            toast.error("Failed to transmit to the Void.");
+            toast.error(t('support.error_toast'));
         } finally {
             setIsSending(false);
         }
@@ -60,11 +62,11 @@ export default function SoportePage() {
                         transition={{ duration: 0.8 }}
                         className="text-center mb-12"
                     >
-                        <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-4 text-[#1F1F1F]">
-                            THE VOID
+                        <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-4 text-[#1F1F1F] uppercase">
+                            {t('support.title')}
                         </h1>
                         <p className="text-xl md:text-2xl font-light text-[#1F1F1F]/60 max-w-lg mx-auto leading-relaxed">
-                            Speak your truth. We are listening in real-time.
+                            {t('support.subtitle')}
                         </p>
                     </motion.div>
 
@@ -84,7 +86,7 @@ export default function SoportePage() {
                                     onClick={() => setSection(s.toLowerCase())}
                                     className={`px-4 py-2 rounded-full text-sm font-bold transition-all border ${section === s.toLowerCase() ? 'bg-[#1F1F1F] text-white border-[#1F1F1F]' : 'bg-transparent text-[#1F1F1F]/40 border-[#1F1F1F]/10 hover:border-[#1F1F1F]/30'}`}
                                 >
-                                    {s}
+                                    {t(`support.cat.${s.toLowerCase() as any}`)}
                                 </button>
                             ))}
                         </div>
@@ -93,7 +95,7 @@ export default function SoportePage() {
                             <textarea
                                 value={message}
                                 onChange={(e) => setMessage(e.target.value)}
-                                placeholder="Type your message to the system..."
+                                placeholder={t('support.placeholder')}
                                 className="w-full h-40 bg-transparent text-xl md:text-2xl font-medium placeholder:text-[#1F1F1F]/20 resize-none outline-none text-center align-middle"
                                 style={{
                                     caretColor: '#1F1F1F'
@@ -112,7 +114,7 @@ export default function SoportePage() {
                                             <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white mb-2 shadow-lg">
                                                 <Send size={20} />
                                             </div>
-                                            <span className="font-bold text-[#1F1F1F]">Transmitted</span>
+                                            <span className="font-bold text-[#1F1F1F]">{t('support.transmitted')}</span>
                                         </div>
                                     </motion.div>
                                 )}
@@ -126,12 +128,12 @@ export default function SoportePage() {
                                 className="
                                     group relative px-8 py-4 bg-[#1F1F1F] text-[#EAEADF] rounded-full font-bold text-lg 
                                     hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed
-                                    shadow-lg hover:shadow-2xl overflow-hidden
+                                    shadow-lg hover:shadow-2xl overflow-hidden uppercase tracking-widest
                                 "
                             >
                                 <span className="relative z-10 flex items-center gap-2">
                                     {isSending ? <Loader2 className="animate-spin" /> : <MessageSquare size={20} />}
-                                    {isSending ? 'Transmitting...' : 'Send into the Void'}
+                                    {isSending ? t('support.transmitting') : t('support.send')}
                                 </span>
                                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                             </button>
@@ -141,7 +143,7 @@ export default function SoportePage() {
                     <div className="mt-8 text-center opacity-40 hover:opacity-100 transition-opacity duration-300">
                          <div className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest border border-[#1F1F1F]/20 px-3 py-1 rounded-full">
                             <Info size={12} />
-                            Zero-knowledge Support Protocol Active
+                            {t('support.zk_protocol')}
                         </div>
                     </div>
 

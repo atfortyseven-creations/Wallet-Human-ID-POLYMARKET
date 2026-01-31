@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Github, Twitter, Youtube, Instagram, Rss } from 'lucide-react';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 // Custom icons for brands not in Lucide (Discord, TikTok, Reddit)
 const DiscordIcon = ({ size = 20 }: { size?: number }) => (
@@ -24,26 +25,56 @@ const RedditIcon = ({ size = 20 }: { size?: number }) => (
 
 
 export function HumanDefiFooter() {
+    const { t } = useLanguage();
+
     const sections = [
         {
-            title: "Human Defi",
-            links: ["Obtener Wallet", "Comprar", "Ganar", "Canjear", "Recompensas"]
+            title: t('footer.human_defi'),
+            links: [
+                { name: t('footer.get_wallet'), href: "/wallet" },
+                { name: t('footer.buy'), href: "#" },
+                { name: t('footer.earn'), href: "#" },
+                { name: t('footer.redeem'), href: "#" },
+                { name: t('footer.rewards'), href: "#" }
+            ]
         },
         {
-            title: "NUEVA",
-            links: ["Predecir", "Perps", "Escudo de Transacciones", "Snaps"]
+            title: t('footer.new').toUpperCase(),
+            links: [
+                { name: t('footer.predict'), href: "#" },
+                { name: t('footer.perps'), href: "#" },
+                { name: t('footer.shield'), href: "#" },
+                { name: t('footer.snaps'), href: "#" }
+            ]
         },
         {
-            title: "Productos",
-            links: ["Tarjeta Human", "Human USD", "Smart Accounts Kit", "Billeteras integradas"]
+            title: t('footer.products'),
+            links: [
+                { name: t('nav.human_card'), href: "/wallet" },
+                { name: "Human USD", href: "/tokenomics" }, // Brand name
+                { name: t('footer.smart_kit'), href: "#" },
+                { name: t('footer.embedded'), href: "#" }
+            ]
         },
         {
-            title: "Aprender",
-            links: ["Desarrolladores", "Ver los documentos", "Panel de control", "SDK", "Servicios Web3"]
+            title: t('footer.learn'),
+            links: [
+                { name: t('footer.developers'), href: "/developer" },
+                { name: t('footer.docs'), href: "#" },
+                { name: t('footer.dashboard'), href: "/dashboard" },
+                { name: t('footer.sdk'), href: "#" },
+                { name: t('footer.web3_services'), href: "#" }
+            ]
         },
         {
-            title: "Acerca de",
-            links: ["Seguridad", "Soporte", "Blog", "Carreras", "Contacto"]
+            title: t('footer.about'),
+            links: [
+                { name: t('footer.security'), href: "#" },
+                { name: t('footer.support'), href: "/soporte" },
+                { name: t('footer.blog'), href: "#" },
+                { name: t('footer.careers'), href: "#" },
+                { name: t('footer.contact'), href: "#" }
+            ]
         }
     ];
 
@@ -62,9 +93,9 @@ export function HumanDefiFooter() {
         <footer className="w-full bg-black/40 backdrop-blur-xl border-t border-white/10 py-16 px-4 mt-20 relative z-10">
             
             <div className="max-w-7xl mx-auto mb-16">
-                 {/* Social Media Row - Styled as Buttons */}
+                 {/* Language & Social Media Row */}
                  <div className="flex flex-wrap items-center gap-4">
-                    <span className="text-xl font-bold text-white mr-4">Español</span>
+                    <span className="text-xl font-bold text-white mr-4 uppercase tracking-widest">{t('footer.lang_name')}</span>
                     {socialLinks.map((social, idx) => (
                         <a 
                             key={idx} 
@@ -84,12 +115,12 @@ export function HumanDefiFooter() {
             <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-10 text-center md:text-left">
                 {sections.map((section, i) => (
                     <div key={i}>
-                        <h4 className="text-white font-bold mb-6">{section.title}</h4>
+                        <h4 className="text-white font-bold mb-6 uppercase tracking-wider text-sm">{section.title}</h4>
                         <ul className="space-y-4">
                             {section.links.map((link, j) => (
                                 <li key={j}>
-                                    <a href="#" className="text-zinc-500 hover:text-white transition-colors text-sm">
-                                        {link}
+                                    <a href={link.href} className="text-zinc-500 hover:text-white transition-colors text-sm font-medium">
+                                        {link.name}
                                     </a>
                                 </li>
                             ))}
@@ -98,11 +129,11 @@ export function HumanDefiFooter() {
                 ))}
             </div>
             
-            <div className="max-w-7xl mx-auto mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between text-zinc-600 text-xs">
-                <p>&copy; 2026 Human Defi. All rights reserved.</p>
-                <div className="flex gap-4 mt-4 md:mt-0">
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Use</a>
+            <div className="max-w-7xl mx-auto mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between text-zinc-600 text-xs font-mono tracking-tighter">
+                <p>&copy; {t('footer.rights')}</p>
+                <div className="flex gap-6 mt-4 md:mt-0 uppercase tracking-widest">
+                    <a href="#" className="hover:text-white transition-colors">{t('footer.privacy')}</a>
+                    <a href="#" className="hover:text-white transition-colors">{t('footer.terms')}</a>
                 </div>
             </div>
         </footer>

@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Smartphone, Lock, User, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { signIn } from 'next-auth/react';
+import { Wallet } from 'ethers';
+import { encryptWithPassword, generateWalletSalt } from '@/lib/wallet-security';
 
 interface AuthModalProps {
     onAuthenticated: () => void;
@@ -122,11 +124,25 @@ export function AuthModal({ onAuthenticated }: AuthModalProps) {
 
         try {
             if (isSignup) {
-                // Complete signup
+                // [NEW] Generate and encrypt internal wallet
+                const wallet = Wallet.createRandom();
+                const mnemonic = wallet.mnemonic?.phrase || '';
+                const walletAddress = wallet.address;
+                const walletSalt = generateWalletSalt();
+                const encryptedMnemonic = await encryptWithPassword(mnemonic, password);
+
+                // Complete signup with wallet data
                 const response = await fetch('/api/auth/complete-signup', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password, name })
+                    body: JSON.stringify({ 
+                        email, 
+                        password, 
+                        name,
+                        walletAddress,
+                        encryptedMnemonic,
+                        walletSalt
+                    })
                 });
 
                 const data = await response.json();

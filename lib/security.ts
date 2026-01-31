@@ -9,7 +9,9 @@ export type SecurityEventType =
     | 'FINGERPRINT_MISMATCH'
     | 'RATE_LIMIT'
     | 'BLOCKED'
-    | 'FAILED_LOGIN';
+    | 'FAILED_LOGIN'
+    | 'REVEAL_MNEMONIC'
+    | 'WALLET_EXPORT';
 
 export type SecurityEventSeverity = 'INFO' | 'WARNING' | 'CRITICAL';
 

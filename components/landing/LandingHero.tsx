@@ -3,8 +3,8 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { ScrollLottie } from '@/components/ui/ScrollLottie';
-
 import { useGateState } from '@/components/layout/TitaniumGate';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 interface Props {
     onStart: () => void;
@@ -12,6 +12,8 @@ interface Props {
 
 export function LandingHero({ onStart }: Props) {
     const { hasPlayedIntro } = useGateState();
+    const { t } = useLanguage();
+    
     // If intro was played, start with video ended (true), otherwise false
     const [isVideoEnded, setIsVideoEnded] = React.useState(hasPlayedIntro);
 
@@ -54,7 +56,7 @@ export function LandingHero({ onStart }: Props) {
                 />
             </div>
 
-            {/* CONTENT LAYER (Title always visible, Button appears after) */}
+            {/* CONTENT LAYER */}
             <div className="relative z-10 flex flex-col items-center">
                 <h1 
                     className="
@@ -65,19 +67,18 @@ export function LandingHero({ onStart }: Props) {
                     "
                     style={{ 
                         fontFamily: 'var(--font-inter)',
-                        // During video, make text white/light for contrast, then switch to dark indigo
                         backgroundImage: isVideoEnded 
                             ? 'linear-gradient(to bottom right, #312e81, #6b21a8, #312e81)' 
                             : 'linear-gradient(to bottom right, #ffffff, #e0e7ff, #ffffff)',
                         textShadow: isVideoEnded ? 'none' : '0 0 40px rgba(0,0,0,0.5)'
                     }} 
                 >
-                    BIENVENIDO A<br/>
+                    {t('hero.welcome')}<br/>
                     HUMAN DeFi<br/>
                     <span 
                         className={`text-4xl md:text-6xl block mt-4 transition-colors duration-1000 ${isVideoEnded ? 'text-indigo-900/40' : 'text-white/60'}`}
                     >
-                        TU HOGAR EN WEB3
+                        {t('hero.subtitle')}
                     </span>
                 </h1>
 
@@ -93,11 +94,12 @@ export function LandingHero({ onStart }: Props) {
                         className="
                             group relative px-12 py-6 bg-indigo-900 rounded-full text-white font-black text-2xl
                             overflow-hidden transition-all hover:scale-105 hover:bg-indigo-800 hover:shadow-[0_0_50px_rgba(79,70,229,0.5)]
+                            uppercase tracking-widest
                         "
                         aria-label="Start Registration"
                     >
                         <span className="relative z-10 flex items-center gap-2">
-                            COMENZAR
+                            {t('hero.cta')}
                             <ArrowRight size={28} className="group-hover:translate-x-1 transition-transform" />
                         </span>
                         

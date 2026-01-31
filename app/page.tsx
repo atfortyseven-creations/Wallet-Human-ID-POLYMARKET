@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useAuth } from '@/hooks/useAuth';
 import { useAppKitAccount, useAppKit } from '@reown/appkit/react';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 // ============================================
 // 1. CRITICAL IMPORTS (Above the Fold - Load Immediately)
@@ -32,8 +33,8 @@ import { CommunityInfo } from '@/components/CommunityInfo';
 const WalletSection = dynamic(() => import('@/components/WalletSection'), { 
   ssr: false,
   loading: () => (
-    <div className="h-screen w-full flex items-center justify-center text-neutral-400 font-mono">
-      Cargando Bóveda...
+    <div className="h-screen w-full flex items-center justify-center text-neutral-400 font-mono text-center">
+       ...
     </div>
   )
 });
@@ -42,6 +43,7 @@ export default function Home() {
   const { isConnected } = useAppKitAccount();
   const { isAuthenticated } = useAuth();
   const { open } = useAppKit();
+  const { t } = useLanguage();
   
   // Prevent hydration mismatch
   const [isMounted, setIsMounted] = useState(false);
@@ -68,9 +70,6 @@ export default function Home() {
     }, 1000);
   };
 
-  // Always show the landing page - users can navigate to Wallet via the header menu
-  // const showLobby = isMounted && (isConnected || isAuthenticated);
-
   return (
         <main className="relative min-h-screen w-full bg-[#F5F5DC] text-neutral-900 selection:bg-orange-200 selection:text-orange-900 overflow-x-hidden">
             
@@ -86,13 +85,11 @@ export default function Home() {
             ============================================ */}
             <div className="relative z-10 flex flex-col">
                 
-                {/* HumanDefiHeader removed - SiteHeader is used globally in layout.tsx */}
-
                 {/* Loading Overlay */}
                 {isLoadingLobby && (
                    <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-xl flex items-center justify-center">
                        <div className="text-white animate-pulse text-2xl font-bold font-mono">
-                           CONNECTING...
+                           {t('nav.start').toUpperCase()}...
                        </div>
                    </div>
                 )}
@@ -108,23 +105,23 @@ export default function Home() {
                         <LenisProvider>
                              <LottieStack items={[
                                  {
-                                     title: "Human Wallet",
-                                     description: "Non-custodial, biometric-secured vault for your digital assets.",
+                                     title: t('lottie.wallet.title'),
+                                     description: t('lottie.wallet.desc'),
                                      lottieSrc: "https://lottie.host/8d48bb95-7124-4224-bcae-2144799011af/lHDi1Xo9qO.lottie"
                                  },
                                  {
-                                     title: "Prediction Markets",
-                                     description: "Trade on future outcomes with zero-knowledge privacy.",
+                                     title: t('lottie.prediction.title'),
+                                     description: t('lottie.prediction.desc'),
                                      lottieSrc: "https://lottie.host/8d48bb95-7124-4224-bcae-2144799011af/lHDi1Xo9qO.lottie"
                                  },
                                  {
-                                     title: "Yield Governance",
-                                     description: "Earn rewards by participating in protocol decisions.",
+                                     title: t('lottie.yield.title'),
+                                     description: t('lottie.yield.desc'),
                                      lottieSrc: "https://lottie.host/8d48bb95-7124-4224-bcae-2144799011af/lHDi1Xo9qO.lottie"
                                  },
                                  {
-                                      title: "Global Settlements",
-                                      description: "Instant cross-border transfers with stablecoin liquidity.",
+                                      title: t('lottie.settlement.title'),
+                                      description: t('lottie.settlement.desc'),
                                       lottieSrc: "https://lottie.host/8d48bb95-7124-4224-bcae-2144799011af/lHDi1Xo9qO.lottie"
                                  }
                              ]} />

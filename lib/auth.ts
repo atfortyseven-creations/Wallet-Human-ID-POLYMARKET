@@ -104,22 +104,35 @@ export const authOptions: NextAuthOptions = {
         // @ts-ignore
         session.sessionId = token.sessionId;
         
-        // Verify session is still active in DB (Revocation check)
+        // Verify session is still active in DB and fetch wallet info
         try {
           const dbSession = await prisma.session.findUnique({
-            where: { sessionToken: token.sessionId as string }
+            where: { sessionToken: token.sessionId as string },
+            include: {
+              authUser: {
+                select: {
+                    walletAddress: true,
+                    name: true,
+                    email: true
+                }
+              }
+            } as any
           });
           
           if (!dbSession) {
-             // Session revoked
-             // returning null or empty session forces logout in client
              return {} as any; 
           }
+
+          // @ts-ignore
+          session.user = {
+            ...session.user,
+            walletAddress: (dbSession as any).authUser?.walletAddress,
+            name: (dbSession as any).authUser?.name,
+            email: (dbSession as any).authUser?.email
+          } as any;
           
-          // Update last active (debounced/occasional)
-          // We can do this here or in middleware. Doing it here is safer for runtime.
           const now = new Date();
-          if (dbSession.lastActivity.getTime() < now.getTime() - 5 * 60 * 1000) { // 5 min debounce
+          if (dbSession.lastActivity.getTime() < now.getTime() - 5 * 60 * 1000) { 
              await prisma.session.update({
                where: { id: dbSession.id },
                data: { lastActivity: now }

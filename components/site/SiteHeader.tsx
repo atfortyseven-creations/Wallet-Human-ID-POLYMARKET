@@ -2,13 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, Globe, Settings } from 'lucide-react';
+import { Menu, X, Globe, Settings, Bell } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useAppKit, useAppKitAccount } from '@reown/appkit/react';
 import { useAccount } from 'wagmi';
 import { useGateState } from '@/components/layout/TitaniumGate';
 import { AnimatePresence, motion } from 'framer-motion';
 import { NotificationsMenu } from '@/components/notifications/NotificationsMenu';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 export function SiteHeader() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -19,6 +20,9 @@ export function SiteHeader() {
     const { open } = useAppKit();
     const { isConnected } = useAppKitAccount();
     const { address } = useAccount();
+
+    // i18n
+    const { t, language, toggleLanguage } = useLanguage();
 
     const { state } = useGateState();
 
@@ -37,11 +41,10 @@ export function SiteHeader() {
     }
 
     const navLinks = [
-        { name: 'Funciones', href: '/funciones' },
-        { name: 'Desarrollador', href: '/developer' }, 
-        { name: 'Tarjeta Human', href: '/wallet' }, // Mapped to Wallet
-        { name: 'Human USD', href: '/tokenomics' }, // Mapped to Tokenomics
-        { name: 'Soporte', href: '/soporte' },
+        { name: t('nav.functions'), href: '/funciones' },
+        { name: t('nav.developer'), href: '/developer' }, 
+        { name: t('nav.human_card'), href: '/wallet' },
+        { name: t('nav.support'), href: '/soporte' },
     ];
 
     return (
@@ -53,7 +56,7 @@ export function SiteHeader() {
                     className={`
                         pointer-events-auto
                         flex items-center justify-between 
-                        w-full max-w-[1240px] 
+                        w-full max-w-[1300px] 
                         h-[72px] px-8 rounded-full 
                         bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)]
                         border border-black/5
@@ -70,12 +73,12 @@ export function SiteHeader() {
                     </div>
 
                     {/* DESKTOP NAV */}
-                    <nav className="hidden md:flex items-center gap-1 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <nav className="hidden lg:flex items-center gap-1 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
                         {navLinks.map((link) => (
                             <Link 
-                                key={link.name} 
+                                key={link.href} 
                                 href={link.href}
-                                className="px-5 py-2 text-[15px] font-medium text-gray-600 hover:text-black transition-colors rounded-full hover:bg-gray-100/50 whitespace-nowrap"
+                                className="px-5 py-2 text-[14px] font-black text-gray-800 hover:text-black transition-all hover:bg-gray-100/50 rounded-lg tracking-widest uppercase font-sans whitespace-nowrap"
                             >
                                 {link.name}
                             </Link>
@@ -84,37 +87,46 @@ export function SiteHeader() {
 
                     {/* RIGHT ACTIONS */}
                     <div className="hidden md:flex items-center gap-4">
-                        {/* Notifications */}
-                        <div className="border-r border-gray-200 pr-4 mr-2 flex items-center gap-2">
-                             <NotificationsMenu />
-                             <Link href="/settings" className="p-2 rounded-full hover:bg-black/5 transition-colors group">
-                                <Settings size={20} className="text-gray-400 group-hover:text-black transition-colors" />
+                        {/* Grouped Icons: Bell, Settings, Language */}
+                        <div className="flex items-center gap-4 pr-6 border-r border-gray-200">
+                             <div className="scale-110">
+                                <NotificationsMenu />
+                             </div>
+                             
+                             <Link href="/settings" className="p-2.5 rounded-full hover:bg-black/5 transition-colors group">
+                                <Settings size={22} className="text-gray-400 group-hover:text-black transition-colors" />
                              </Link>
-                        </div>
 
-                        {/* Language/Globe Icon */}
-                        <button className="text-gray-400 hover:text-gray-900 transition-colors">
-                            <Globe size={20} strokeWidth={1.5} />
-                        </button>
+                             <button 
+                                onClick={toggleLanguage}
+                                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-black/5 transition-all group"
+                                title={language === 'es' ? 'Switch to English' : 'Cambiar a Español'}
+                            >
+                                <Globe size={22} className="text-gray-400 group-hover:text-black transition-colors" />
+                                <span className="text-[12px] font-black text-gray-400 group-hover:text-black uppercase tracking-tighter">
+                                    {language}
+                                </span>
+                            </button>
+                        </div>
 
                         {/* CTA / Connect Button */}
                         <button 
                             onClick={() => open()}
                             className="
                                 bg-black text-white 
-                                px-6 py-2.5 rounded-full 
-                                font-bold text-sm tracking-wide 
+                                px-8 py-3 rounded-full 
+                                font-black text-[11px] tracking-[0.2em] uppercase
                                 hover:bg-gray-900 hover:scale-[1.02] active:scale-[0.98] 
-                                transition-all shadow-lg min-w-[140px]
+                                transition-all shadow-lg min-w-[150px]
                             "
                         >
                             {isConnected ? (
                                 <span className="flex items-center justify-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                                    <div className="w-2.5 h-2.5 rounded-full bg-green-400 animate-pulse shadow-[0_0_10px_rgba(74,222,128,0.5)]" />
                                     {address?.slice(0,6)}...
                                 </span>
                             ) : (
-                                "COMENZAR"
+                                t('nav.start')
                             )}
                         </button>
                     </div>
@@ -142,24 +154,30 @@ export function SiteHeader() {
                     >
                         {navLinks.map((link) => (
                             <Link 
-                                key={link.name} 
+                                key={link.href} 
                                 href={link.href}
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors"
+                                className="text-2xl font-black text-gray-900 hover:text-blue-600 transition-colors uppercase tracking-[0.15em]"
                             >
                                 {link.name}
                             </Link>
                         ))}
-                         <div className="flex gap-6 mt-4">
+                         
+                         <div className="flex gap-6 mt-4 items-center">
                              <Link href="/settings" onClick={() => setIsMobileMenuOpen(false)} className="p-4 rounded-full bg-gray-100 hover:bg-gray-200">
                                 <Settings size={28} />
                              </Link>
+                             <button onClick={toggleLanguage} className="p-4 px-6 rounded-full bg-gray-100 hover:bg-gray-200 font-black uppercase tracking-widest flex items-center gap-2">
+                                <Globe size={22} />
+                                {language === 'en' ? 'ES' : 'EN'}
+                             </button>
                          </div>
+
                          <button 
                             onClick={() => { open(); setIsMobileMenuOpen(false); }}
-                            className="w-full max-w-xs bg-black text-white px-8 py-4 rounded-full font-bold text-lg mt-4"
+                            className="w-full max-w-xs bg-black text-white px-8 py-4 rounded-full font-black text-lg mt-4 uppercase tracking-[0.2em]"
                         >
-                            {isConnected ? "WALLET SETTINGS" : "COMENZAR"}
+                            {isConnected ? t('nav.wallet_settings') : t('nav.start')}
                         </button>
                     </motion.div>
                 )}

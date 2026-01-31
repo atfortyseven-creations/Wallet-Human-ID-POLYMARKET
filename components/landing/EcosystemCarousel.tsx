@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, Play } from 'lucide-react';
-import { StackableCarousel } from '../ui/StackableCarousel';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import LottieCard from '../ui/LottieCard';
 import { LOTTIE_CONTENT } from './lottie-content';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 export function EcosystemCarousel() {
     const scrollRef = useRef<HTMLDivElement>(null);
-    const [activeIndex, setActiveIndex] = useState(0);
+    const { language, t } = useLanguage();
 
     const scroll = (direction: 'left' | 'right') => {
         if (!scrollRef.current) return;
@@ -17,25 +17,19 @@ export function EcosystemCarousel() {
         container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     };
 
-    // Note: We can track active index with intersection observer if needed for dots,
-    // but for now simple scroll buttons are sufficient.
-
     return (
         <div className="w-full max-w-[1440px] mx-auto px-4 py-20 relative group">
             
-            {/* Header */}
             <div className="flex justify-between items-end mb-8 px-2">
                 <div>
-                    <h3 className="text-xl font-bold text-white mb-2 uppercase tracking-widest opacity-80">
-                        Human Ecosystem
+                    <h3 className="text-xl font-black text-white mb-2 uppercase tracking-widest opacity-80">
+                        {t('ecosystem.carousel_title')}
                     </h3>
-                    <p className="text-zinc-400 text-sm max-w-md">
-                        Explora las 15 dimensiones de la revolución financiera humana.
-                        Desliza para ver el futuro.
+                    <p className="text-zinc-500 text-sm max-w-md font-medium">
+                        {t('ecosystem.carousel_desc')}
                     </p>
                 </div>
                 
-                {/* Controls */}
                 <div className="hidden md:flex gap-2">
                     <button 
                         onClick={() => scroll('left')}
@@ -52,13 +46,6 @@ export function EcosystemCarousel() {
                 </div>
             </div>
 
-            {/* Carousel */}
-            {/* We use a custom ref access to the StackableCarousel's div if possible, OR we wrap it.
-                StackableCarousel doesn't expose ref by default. 
-                For simple button control, we can just reimplement the div structure here or modify Stackable props.
-                Let's use the div structure directly here for maximum control over the 15 items.
-            */}
-            
             <div 
                 ref={scrollRef}
                 className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide"
@@ -71,23 +58,23 @@ export function EcosystemCarousel() {
                     >
                         <LottieCard 
                             lottieSrc={item.src}
-                            title={item.title}
-                            subtitle={item.subtitle}
+                            title={language === 'en' ? item.titleEn : item.titleEs}
+                            subtitle={language === 'en' ? item.subtitleEn : item.subtitleEs}
                             lottieSize="lg"
-                            className="h-full bg-zinc-900/50 border-white/10 hover:border-blue-500/50 transition-all group-hover:hover:scale-[1.02]"
+                            className="h-full bg-zinc-900/50 border-white/10 hover:border-blue-500/50 transition-all hover:scale-[1.02]"
                         />
                         <div className="mt-3 flex justify-between items-center px-1">
-                            <span className="text-xs font-mono text-zinc-500 uppercase tracking-wider">{item.category}</span>
+                            <span className="text-xs font-black text-zinc-600 uppercase tracking-widest">
+                                {language === 'en' ? item.categoryEn : item.categoryEs}
+                            </span>
                             <span className="text-xs font-mono text-zinc-600">{(index + 1).toString().padStart(2, '0')}</span>
                         </div>
                     </div>
                 ))}
             </div>
 
-            {/* Progress Bar / Dots indicator could go here */}
             <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden mt-4">
-                <div className="h-full bg-blue-500/50 w-1/3 rounded-full" /> 
-                {/* Static for now, would need scroll listener for dynamic width */}
+                <div className="h-full bg-blue-500/50 w-1/3 rounded-full transition-all duration-300" /> 
             </div>
 
         </div>

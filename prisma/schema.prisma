@@ -509,6 +509,12 @@ model AuthUser {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  // [NEW] Internal Wallet Data
+  walletAddress       String?  @unique
+  encryptedMnemonic   String?  @db.Text
+  encryptedPrivateKey String?  @db.Text
+  walletSalt          String? 
+
   verificationCodes VerificationCode[]
   userSettings      UserSettings?
   contacts          UserContact[]
@@ -619,6 +625,11 @@ model UserSettings {
   defaultSlippage     Float   @default(0.5)
   defaultGasPrice     String  @default("medium")
   confirmTransactions Boolean @default(true)
+
+  // [NEW] Smart Wallet Security
+  walletStealthMode         Boolean @default(false)
+  requirePasswordForSigning Boolean @default(true)
+  autoLockDuration          Int     @default(15) // minutes
 
   // Backup
   lastBackupAt    DateTime?
