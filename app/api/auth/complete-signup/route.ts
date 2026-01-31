@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { hashPassword, createJWT, isValidPassword } from '@/lib/auth';
 import { cookies } from 'next/headers';
-
-const prisma = new PrismaClient();
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
+  let body: any;
   try {
-    const body = await request.json();
+    body = await request.json();
     const { email, password, name } = body;
 
     if (!email || !password) {
@@ -75,7 +74,12 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Complete signup error:', error);
+    console.error('[Auth] Complete signup error:', error);
+    console.error('[Auth] Error details:', {
+      email: body?.email,
+      errorMessage: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    });
     return NextResponse.json(
       { error: 'Failed to complete signup' },
       { status: 500 }

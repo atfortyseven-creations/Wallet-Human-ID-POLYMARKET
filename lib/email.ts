@@ -4,72 +4,95 @@ import { Resend } from 'resend';
 const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
 
 /**
- * Send verification code email
+ * Send verification code email with retry logic
  */
 export async function sendVerificationEmail(email: string, code: string): Promise<void> {
-  try {
-    await resend.emails.send({
-      from: 'HumanDefi <noreply@humanidfi.com>',
-      to: email,
-      subject: 'Your HumanDefi Verification Code',
-      html: `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        </head>
-        <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f5f5dc;">
-          <table role="presentation" style="width: 100%; border-collapse: collapse;">
-            <tr>
-              <td align="center" style="padding: 40px 0;">
-                <table role="presentation" style="width: 600px; border-collapse: collapse; background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                  <!-- Header -->
-                  <tr>
-                    <td style="padding: 40px 40px 20px; text-align: center;">
-                      <h1 style="margin: 0; font-size: 32px; font-weight: 700; color: #000000;">HumanDefi</h1>
-                      <p style="margin: 10px 0 0; font-size: 14px; color: #666666;">Decentralized Identity Protocol</p>
-                    </td>
-                  </tr>
-                  
-                  <!-- Content -->
-                  <tr>
-                    <td style="padding: 20px 40px;">
-                      <h2 style="margin: 0 0 20px; font-size: 24px; font-weight: 600; color: #000000;">Verification Code</h2>
-                      <p style="margin: 0 0 20px; font-size: 16px; color: #333333; line-height: 1.5;">
-                        Your verification code is:
-                      </p>
-                      <div style="background-color: #f3f4f6; border-radius: 12px; padding: 24px; text-align: center; margin: 20px 0;">
-                        <div style="font-size: 48px; font-weight: 700; letter-spacing: 8px; color: #2563eb; font-family: 'Courier New', monospace;">
-                          ${code}
+  const MAX_RETRIES = 3;
+  let lastError: Error | null = null;
+  
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const result = await resend.emails.send({
+        from: 'HumanDefi <noreply@humanidfi.com>',
+        to: email,
+        subject: 'Your HumanDefi Verification Code',
+        html: `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f5f5dc;">
+            <table role="presentation" style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td align="center" style="padding: 40px 0;">
+                  <table role="presentation" style="width: 600px; border-collapse: collapse; background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <!-- Header -->
+                    <tr>
+                      <td style="padding: 40px 40px 20px; text-align: center;">
+                        <h1 style="margin: 0; font-size: 32px; font-weight: 700; color: #000000;">HumanDefi</h1>
+                        <p style="margin: 10px 0 0; font-size: 14px; color: #666666;">Decentralized Identity Protocol</p>
+                      </td>
+                    </tr>
+                    
+                    <!-- Content -->
+                    <tr>
+                      <td style="padding: 20px 40px;">
+                        <h2 style="margin: 0 0 20px; font-size: 24px; font-weight: 600; color: #000000;">Verification Code</h2>
+                        <p style="margin: 0 0 20px; font-size: 16px; color: #333333; line-height: 1.5;">
+                          Your verification code is:
+                        </p>
+                        <div style="background-color: #f3f4f6; border-radius: 12px; padding: 24px; text-align: center; margin: 20px 0;">
+                          <div style="font-size: 48px; font-weight: 700; letter-spacing: 8px; color: #2563eb; font-family: 'Courier New', monospace;">
+                            ${code}
+                          </div>
                         </div>
-                      </div>
-                      <p style="margin: 20px 0 0; font-size: 14px; color: #666666; line-height: 1.5;">
-                        This code will expire in <strong>5 minutes</strong>. If you didn't request this code, please ignore this email.
-                      </p>
-                    </td>
-                  </tr>
-                  
-                  <!-- Footer -->
-                  <tr>
-                    <td style="padding: 20px 40px 40px; text-align: center; border-top: 1px solid #e5e7eb;">
-                      <p style="margin: 0; font-size: 12px; color: #999999;">
-                        © ${new Date().getFullYear()} HumanDefi. All rights reserved.
-                      </p>
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-          </table>
-        </body>
-        </html>
-      `
-    });
-  } catch (error) {
-    console.error('Failed to send verification email:', error);
-    throw new Error('Failed to send verification email');
+                        <p style="margin: 20px 0 0; font-size: 14px; color: #666666; line-height: 1.5;">
+                          This code will expire in <strong>5 minutes</strong>. If you didn't request this code, please ignore this email.
+                        </p>
+                      </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                      <td style="padding: 20px 40px 40px; text-align: center; border-top: 1px solid #e5e7eb;">
+                        <p style="margin: 0; font-size: 12px; color: #999999;">
+                          © ${new Date().getFullYear()} HumanDefi. All rights reserved.
+                        </p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </body>
+          </html>
+        `
+      });
+      
+      console.log(`[Email] ✓ Verification code sent to ${email} (attempt ${attempt})`, result.data ? { id: result.data.id } : {});
+      return; // Success!
+      
+    } catch (error: any) {
+      lastError = error;
+      console.error(`[Email] ✗ Attempt ${attempt}/${MAX_RETRIES} failed for ${email}:`, error?.message || error);
+      
+      // Don't retry on certain errors (invalid email, etc)
+      if (error?.message?.includes('Invalid') || error?.message?.includes('not found') || error?.statusCode === 422) {
+        throw new Error(`Email sending failed: ${error?.message || 'Invalid email address'}`);
+      }
+      
+      // Wait before retry (exponential backoff: 1s, 2s, 3s)
+      if (attempt < MAX_RETRIES) {
+        const backoffMs = 1000 * attempt;
+        console.log(`[Email] Retrying in ${backoffMs}ms...`);
+        await new Promise(resolve => setTimeout(resolve, backoffMs));
+      }
+    }
   }
+  
+  throw new Error(`Email sending failed after ${MAX_RETRIES} attempts: ${lastError?.message || 'Unknown error'}`);
 }
 
 /**
