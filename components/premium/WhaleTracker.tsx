@@ -66,25 +66,25 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade }: W
     }
   }, [isPremium]);
 
-  // Initial "Watched" list skeletons
+  // Initial "Watched" list skeletons (Real Base Addresses)
   const INITIAL_WALLETS = [
       {
         id: '1',
-        address: '0x28C6c06298d514Db089934071355E5743bf21d60',
-        label: 'Binance Hot Wallet',
-        tags: ['Exchange', 'Whale'],
+        address: '0x49048044D57e1C92A77f79988d21Fa8fAF74E97e', // Base Bridge (Huge Balance)
+        label: 'Base Bridge',
+        tags: ['Bridge', 'Whale'],
       },
       {
         id: '2',
-        address: '0xab5801a7d398351b8be11c439e05c5b3259aec9b', // Vitalik's address (Example)
-        label: 'Vitalik Buterin', 
-        tags: ['Founder', 'Smart Money'],
+        address: '0x8C4961558229F551DDfd29Da4878a879a78534C1', // Jesse Pollak (Base Lead)
+        label: 'Jesse Pollak (Base)', 
+        tags: ['Founder', 'Public'],
       },
       {
         id: '3',
-        address: '0x47ac0Fb4F2D84898e4D9E7b4DaB3C24507a6D503', // Random DeFi user
-        label: 'DeFi User',
-        tags: ['DeFi', 'Yield Farmer'],
+        address: '0x33128a8fC17869897dcE68Ed026d694621f6FDfD', // Uniswap V3
+        label: 'Uniswap V3 Base',
+        tags: ['DeFi', 'Protocol'],
       }
   ];
 

@@ -33,7 +33,7 @@ export default function CompetitiveLeaderboard({ currentUserId }: { currentUserI
       const response = await fetch(`/api/gamification/leaderboard?metric=${metric}`);
       const data = await response.json();
       
-      setLeaderboard(data.leaderboard);
+      setLeaderboard(data.leaderboard || []);
       setUserRank(data.userRank);
     } catch (error) {
       console.error('Failed to fetch leaderboard:', error);
