@@ -203,6 +203,19 @@ export default function SmartAlertsEngine({ isPremium }: { isPremium: boolean })
 
   const unreadCount = alerts.filter(a => !a.read).length;
 
+  const handleCopyTrade = (alert: SmartAlert) => {
+    if (!alert.copyable || !alert.action) return;
+    window.alert(`🎯 Copy Trade Executed!\n\n${alert.action.type} ${alert.action.amount.toLocaleString()} ${alert.action.token}\nValue: $${alert.action.usdValue.toLocaleString()}`);
+  };
+
+  const toggleRule = (ruleId: string) => {
+    setAlertRules(rules =>
+      rules.map(rule =>
+        rule.id === ruleId ? { ...rule, enabled: !rule.enabled } : rule
+      )
+    );
+  };
+
   const handleCreateRule = (name: string, channels: any) => {
     const newRule: AlertRule = {
       id: Math.random().toString(36).substr(2, 9),
