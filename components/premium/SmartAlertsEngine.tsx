@@ -203,17 +203,16 @@ export default function SmartAlertsEngine({ isPremium }: { isPremium: boolean })
 
   const unreadCount = alerts.filter(a => !a.read).length;
 
-  const handleCopyTrade = (alert: SmartAlert) => {
-    if (!alert.copyable || !alert.action) return;
-    window.alert(`🎯 Copy Trade Executed!\n\n${alert.action.type} ${alert.action.amount.toLocaleString()} ${alert.action.token}\nValue: $${alert.action.usdValue.toLocaleString()}`);
-  };
-
-  const toggleRule = (ruleId: string) => {
-    setAlertRules(rules =>
-      rules.map(rule =>
-        rule.id === ruleId ? { ...rule, enabled: !rule.enabled } : rule
-      )
-    );
+  const handleCreateRule = (name: string, channels: any) => {
+    const newRule: AlertRule = {
+      id: Math.random().toString(36).substr(2, 9),
+      name,
+      enabled: true,
+      conditions: [{ type: 'custom', value: 'all' }],
+      actions: channels,
+    };
+    setAlertRules(prev => [...prev, newRule]);
+    setShowCreateRule(false);
   };
 
   if (!isPremium) {
@@ -338,6 +337,70 @@ export default function SmartAlertsEngine({ isPremium }: { isPremium: boolean })
           ))}
         </div>
       </div>
+
+      <CreateRuleModal 
+        isOpen={showCreateRule} 
+        onClose={() => setShowCreateRule(false)} 
+        onCreate={handleCreateRule} 
+      />
+    </div>
+  );
+}
+
+function CreateRuleModal({ isOpen, onClose, onCreate }: { isOpen: boolean, onClose: () => void, onCreate: (name: string, actions: any) => void }) {
+  const [name, setName] = useState('');
+  const [actions, setActions] = useState({ telegram: true, push: true, email: false, sms: false });
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+      <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-[#EAEADF] w-full max-w-md rounded-3xl p-8 shadow-2xl">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-black text-[#1F1F1F]">Create Alert Rule</h2>
+          <button onClick={onClose} className="p-2 hover:bg-black/5 rounded-full"><X size={24} /></button>
+        </div>
+        
+        <div className="space-y-6">
+          <div>
+            <label className="block text-xs font-bold uppercase text-[#1F1F1F]/60 mb-2">Rule Name</label>
+            <input 
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="e.g. BTC Huge Move" 
+              className="w-full px-4 py-3 bg-white rounded-xl outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold uppercase text-[#1F1F1F]/60 mb-4">Notification Channels</label>
+            <div className="grid grid-cols-2 gap-3">
+              {(['telegram', 'push', 'email', 'sms'] as const).map(ch => (
+                <button
+                  key={ch}
+                  onClick={() => setActions(prev => ({ ...prev, [ch]: !prev[ch] }))}
+                  className={`p-3 rounded-xl border-2 font-bold transition-all text-sm flex items-center gap-2 ${
+                    actions[ch] ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-[#1F1F1F]/60 border-black/5'
+                  }`}
+                >
+                  {ch === 'telegram' && '📱'}
+                  {ch === 'push' && '🔔'}
+                  {ch === 'email' && '📧'}
+                  {ch === 'sms' && '💬'}
+                  {ch.charAt(0).toUpperCase() + ch.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button 
+            onClick={() => { if(name) onCreate(name, actions); }}
+            className="w-full py-4 bg-[#1F1F1F] text-white rounded-2xl font-black text-lg hover:bg-black/90 transition-all"
+          >
+            Create Rule
+          </button>
+        </div>
+      </motion.div>
     </div>
   );
 }
@@ -370,7 +433,7 @@ function AlertCard({ alert, index, onCopyTrade, onMarkRead }: {
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-lg">{alert.title}</span>
+            <span className="text-lg font-bold">{alert.title}</span>
             {!alert.read && (
               <span className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" />
             )}
@@ -397,7 +460,7 @@ function AlertCard({ alert, index, onCopyTrade, onMarkRead }: {
           )}
 
           <div className="flex items-center gap-4 mt-3">
-            <span className="text-xs text-[#1F1F1F]/60">
+            <span className="text-xs text-[#1F1F1F]/60 italic">
               {alert.walletLabel} • {new Date(alert.timestamp).toLocaleTimeString()}
             </span>
             {alert.copyable && (
