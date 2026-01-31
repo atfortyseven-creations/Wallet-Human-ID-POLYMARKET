@@ -4,7 +4,7 @@ import Stripe from 'stripe';
 import { clerkClient } from '@clerk/nextjs/server';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-18.acacia',
+  apiVersion: '2026-01-28.clover',
 });
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
@@ -132,7 +132,7 @@ async function handleSubscriptionUpdate(subscription: Stripe.Subscription) {
         stripeCustomerId: customerId,
         subscriptionStatus: subscription.status,
         subscriptionId: subscription.id,
-        currentPeriodEnd: subscription.current_period_end,
+        currentPeriodEnd: (subscription as any).current_period_end || 0,
       },
     });
 

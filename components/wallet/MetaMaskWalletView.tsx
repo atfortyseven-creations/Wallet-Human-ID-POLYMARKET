@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useUser } from '@clerk/nextjs';
 import { useAccount, useBalance, useDisconnect } from "wagmi";
 import { useTokenBalance } from "@/hooks/useTokenBalance";
 import { 
     Copy, ArrowDown, ArrowUp, RefreshCw, ExternalLink, 
     MoreVertical, LogOut, Shield, Key, Eye, EyeOff, Lock,
-    Check, ChevronRight, Settings, Info
+    Check, ChevronRight, Settings, Info, Wallet, TrendingUp, TrendingDown, DollarSign
 } from "lucide-react";
 import { toast } from "sonner";
 import { decryptWithPassword } from "@/lib/wallet-security";
@@ -16,17 +16,27 @@ import SendModal from "./SendModal";
 import SwapModal from "./SwapModal";
 import { motion, AnimatePresence } from "framer-motion";
 import { getAddress } from "ethers";
+import { formatEther } from 'viem';
+
+interface Transaction {
+    hash: string;
+    from: string;
+    to: string;
+    value: string;
+    timestamp: number;
+    status: 'success' | 'pending' | 'failed';
+}
 
 // Polygon USDC.e Address
 const USDC_ADDRESS = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174";
 
 export default function MetaMaskWalletView() {
-    const { data: session } = useSession();
+    const { user } = useUser();
     const { address: externalAddress } = useAccount();
     const { disconnect } = useDisconnect();
 
     // internal wallet address from session
-    const rawInternalAddress = (session?.user as any)?.walletAddress;
+    const rawInternalAddress = (user as any)?.walletAddress;
     const internalAddress = rawInternalAddress ? getAddress(rawInternalAddress) : null;
     
     // Toggle between internal and external

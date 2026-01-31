@@ -9,7 +9,7 @@ import { useAccount } from 'wagmi';
 import { useGateState } from '@/components/layout/TitaniumGate';
 import { AnimatePresence, motion } from 'framer-motion';
 import { NotificationsMenu } from '@/components/notifications/NotificationsMenu';
-import { useLanguage } from '@/src/context/LanguageContext';
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 export function SiteHeader() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -17,9 +17,22 @@ export function SiteHeader() {
     
     // Auth Hooks
     const { isAuthenticated } = useAuth();
-    const { open } = useAppKit();
-    const { isConnected } = useAppKitAccount();
-    const { address } = useAccount();
+    
+    // AppKit hooks - may not be available during SSR
+    let open: any = null;
+    let isConnected = false;
+    let address: any = null;
+    
+    try {
+        const appKit = useAppKit();
+        open = appKit.open;
+        const account = useAppKitAccount();
+        isConnected = account.isConnected;
+        const wagmiAccount = useAccount();
+        address = wagmiAccount.address;
+    } catch (e) {
+        // AppKit not initialized - this is fine for SSR
+    }
 
     // i18n
     const { t, language, toggleLanguage } = useLanguage();

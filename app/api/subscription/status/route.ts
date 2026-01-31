@@ -3,7 +3,7 @@ import { currentUser } from '@clerk/nextjs/server';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-18.acacia',
+  apiVersion: '2026-01-28.clover',
 });
 
 export async function GET(req: NextRequest) {
@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
       isPremium: true,
       tier: 'PREMIUM',
       subscriptionId: subscription.id,
-      currentPeriodEnd: subscription.current_period_end,
+      currentPeriodEnd: (subscription as any).current_period_end || 0,
       cancelAtPeriodEnd: subscription.cancel_at_period_end,
     });
   } catch (error) {
