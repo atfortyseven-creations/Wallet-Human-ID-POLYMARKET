@@ -35,7 +35,8 @@ interface WhaleTrackerProps {
   onUpgrade: () => void;
 }
 
-export default function WhaleTracker({ isPremium, onUpgrade }: WhaleTrackerProps) {
+export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade }: WhaleTrackerProps) {
+  const isPremium = true; // FORCE UNLOCK FOR TESTING
   const [watchedWallets, setWatchedWallets] = useState<WatchedWallet[]>([]);
   const [activities, setActivities] = useState<WhaleActivity[]>([]);
   const [filter, setFilter] = useState<'all' | 'whales' | 'smart' | 'alerts'>('all');
