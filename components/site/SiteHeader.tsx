@@ -86,7 +86,6 @@ export function SiteHeader() {
                             {isAppMode ? (
                                 <>
                                     <NavLink href="/" icon={<Globe size={16} />}>Feed</NavLink>
-                                    <NavLink href="/desarrollador">Desarrollador</NavLink>
                                     <NavLink href="/wallet" icon={<Wallet size={16} />}>Wallet</NavLink>
                                     <NavLink href="/soporte">Soporte</NavLink>
                                     <NavLink href="/settings" icon={<SettingsIcon size={16} />}>Settings</NavLink>
@@ -95,7 +94,6 @@ export function SiteHeader() {
                             ) : (
                                 <>
                                     <NavLink href="/funciones">Funciones</NavLink>
-                                    <NavLink href="/desarrollador">Desarrollador</NavLink>
                                     <NavLink href="/soporte">Soporte</NavLink>
                                 </>
                             )}
@@ -174,7 +172,6 @@ export function SiteHeader() {
                                     <Link href="/" className="hover:text-blue-400 flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
                                         <Globe size={20} /> Feed
                                     </Link>
-                                    <Link href="/desarrollador" className="hover:text-blue-400" onClick={() => setIsMobileMenuOpen(false)}>Desarrollador</Link>
                                     <Link href="/wallet" className="hover:text-blue-400 flex items-center gap-2" onClick={() => setIsMobileMenuOpen(false)}>
                                         <Wallet size={20} /> Wallet
                                     </Link>
@@ -187,7 +184,6 @@ export function SiteHeader() {
                             ) : (
                                 <>
                                     <Link href="/funciones" className="hover:text-blue-400" onClick={() => setIsMobileMenuOpen(false)}>Funciones</Link>
-                                    <Link href="/desarrollador" className="hover:text-blue-400" onClick={() => setIsMobileMenuOpen(false)}>Desarrollador</Link>
                                     <Link href="/soporte" className="hover:text-blue-400" onClick={() => setIsMobileMenuOpen(false)}>Soporte</Link>
                                 </>
                             )}

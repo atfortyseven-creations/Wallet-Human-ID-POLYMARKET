@@ -1,57 +1,85 @@
 "use client";
 
 import React from 'react';
-import LottieCard from '../ui/LottieCard';
-import { StackableCarousel } from '../ui/StackableCarousel';
+import { motion } from 'framer-motion';
+
+const PerspectiveCard = ({ title, subtitle, color, rotate, zIndex, translate }: any) => (
+    <motion.div 
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: zIndex * 0.1 }}
+        style={{ 
+            rotate: rotate, 
+            zIndex: zIndex,
+            x: translate.x,
+            y: translate.y 
+        }}
+        className={`absolute w-64 h-80 md:w-80 md:h-96 rounded-3xl shadow-2xl border border-white/10 overflow-hidden flex flex-col justify-end p-6 backdrop-blur-sm transition-transform hover:scale-105 hover:z-50 duration-300 group cursor-pointer`}
+    >
+        <div className={`absolute inset-0 opacity-40 ${color}`} />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+        
+        <div className="relative z-10">
+             <h3 className="text-2xl font-black text-white uppercase leading-none mb-2 drop-shadow-lg">{title}</h3>
+             <p className="text-white/80 font-medium text-sm leading-tight">{subtitle}</p>
+        </div>
+    </motion.div>
+);
 
 export function FeatureCardsSection() {
     return (
-        <div className="w-full max-w-[1440px] mx-auto px-4 py-20 relative">
-            <h3 className="text-xl font-bold text-white mb-6 uppercase tracking-widest opacity-80">
-                Características Principales
-            </h3>
+        <div className="w-full relative py-32 flex flex-col items-center justify-center overflow-hidden min-h-[600px]">
+            
+            <div className="text-center mb-16 relative z-20">
+                <h3 className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase mb-4 drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]">
+                    Bienvenido a<br/>Human DeFi
+                </h3>
+            </div>
 
-            <StackableCarousel itemClassName="w-[85vw] sm:w-[45vw] lg:w-[300px] h-[400px]">
-                <LottieCard 
-                    lottieSrc="https://lottie.host/0f8c4e3d-9b7a-4f6c-8d2e-1a3b4c5d6e7f/9KJh8G7F6D.lottie"
-                    title="Compra y canjea" 
-                    subtitle="Soporte nativo para USD y ETH"
-                    lottieSize="lg"
-                    className="h-full bg-zinc-900/50 border-white/10 hover:border-blue-500/50 transition-colors"
-                />
+            {/* Centralized Depth Group */}
+            <div className="relative w-full max-w-4xl h-[400px] flex items-center justify-center perspective-[1000px]">
                 
-                <LottieCard 
-                    lottieSrc="https://lottie.host/57803657-6105-4752-921c-308101452631/ShieldSecure.lottie"
-                    title="Human Defi" 
-                    subtitle="Rompiendo límites 2027"
-                    lottieSize="lg"
-                    className="h-full bg-zinc-900/50 border-white/10 hover:border-blue-500/50 transition-colors"
+                {/* Card 1: Left Back */}
+                <PerspectiveCard 
+                    title="COMPRA Y CANJEA"
+                    subtitle="Soporte nativo para USD y ETH"
+                    color="bg-emerald-600"
+                    rotate={-15}
+                    zIndex={10}
+                    translate={{ x: -120, y: 20 }}
                 />
 
-                <LottieCard 
-                    lottieSrc="https://lottie.host/0a1b2c3d-4e5f-6g7h-8i9j-0k1l2m3n4o5p/CoinSwap3D.lottie"
-                    title="Intercambio Rápido" 
+                {/* Card 2: Right Back */}
+                 <PerspectiveCard 
+                    title="INTERCAMBIO"
                     subtitle="Swaps instantáneos entre cadenas"
-                    lottieSize="lg"
-                    className="h-full bg-zinc-900/50 border-white/10 hover:border-blue-500/50 transition-colors"
+                    color="bg-blue-600"
+                    rotate={15}
+                    zIndex={10}
+                    translate={{ x: 120, y: 20 }}
                 />
 
-                <LottieCard 
-                    lottieSrc="https://lottie.host/8e4d2f1c-9bfa-4b77-8db5-3c5f1b2e6a9d/RainCoins.lottie"
-                    title="Recompensas" 
+                {/* Card 3: Center Back (Slightly higher) */}
+                 <PerspectiveCard 
+                    title="RECOMPENSAS"
                     subtitle="Gana royalties automáticamente"
-                    lottieSize="lg"
-                    className="h-full bg-zinc-900/50 border-white/10 hover:border-blue-500/50 transition-colors"
+                    color="bg-purple-600"
+                    rotate={-5}
+                    zIndex={20}
+                    translate={{ x: -40, y: -40 }}
                 />
 
-                <LottieCard 
-                    lottieSrc="https://lottie.host/1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p/FastLightning.lottie"
-                    title="Ultra Rápido" 
+                {/* Card 4: Front Center (Main Focus) */}
+                 <PerspectiveCard 
+                    title="ULTRA RÁPIDO"
                     subtitle="Ejecución instantánea en L2"
-                    lottieSize="lg"
-                    className="h-full bg-zinc-900/50 border-white/10 hover:border-blue-500/50 transition-colors"
+                    color="bg-orange-600"
+                    rotate={0}
+                    zIndex={30}
+                    translate={{ x: 40, y: 40 }}
                 />
-            </StackableCarousel>
+
+            </div>
         </div>
     );
 }

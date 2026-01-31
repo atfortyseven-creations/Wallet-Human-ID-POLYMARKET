@@ -16,6 +16,7 @@ const nextConfig = {
             { protocol: 'https', hostname: 'source.unsplash.com' },
             { protocol: 'https', hostname: 'loremflickr.com' },
             { protocol: 'https', hostname: 'i.pravatar.cc' },
+            { protocol: 'https', hostname: 'cryptologos.cc' },
         ]
     },
 
