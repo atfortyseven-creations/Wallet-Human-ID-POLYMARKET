@@ -23,6 +23,7 @@ const WalletPreview = dynamic(() => import('@/components/landing/WalletPreview')
 const FeatureCardsSection = dynamic(() => import('@/components/landing/FeatureCardsSection').then(mod => mod.FeatureCardsSection));
 const SecurityGrowthSection = dynamic(() => import('@/components/landing/SecurityGrowthSection').then(mod => mod.SecurityGrowthSection));
 const Web3AccessSection = dynamic(() => import('@/components/landing/Web3AccessSection').then(mod => mod.Web3AccessSection));
+const EcosystemSection = dynamic(() => import('@/components/ecosystem/EcosystemSection').then(mod => mod.EcosystemSection));
 const HumanDefiFooter = dynamic(() => import('@/components/landing/HumanDefiFooter').then(mod => mod.HumanDefiFooter));
 import { CommunityInfo } from '@/components/CommunityInfo';
 
@@ -138,6 +139,10 @@ export default function Home() {
                         
                         <div className="relative z-10 w-full pt-32 pb-10 optimize-visibility">
                             <Web3AccessSection />
+                            
+                            {/* ECOSYSTEM DEEP DIVE SECTION */}
+                            <EcosystemSection />
+                            
                             <HumanDefiFooter />
                         </div>
                     </section>
