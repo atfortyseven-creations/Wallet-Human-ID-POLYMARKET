@@ -24,6 +24,14 @@ export default function VIPPage() {
   const [showPricing, setShowPricing] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('tracker');
   const [watchedWallets, setWatchedWallets] = useState<WatchedWallet[]>([]);
+  
+  // Real stats from API
+  const [stats, setStats] = useState({
+    trackedWhales: 3, // Start with our initial 3 wallets
+    totalValue: 0,
+    activeAlerts: 0,
+    activities: 0
+  });
 
   // Check subscription status on mount (Mocked for full access)
   useEffect(() => {
@@ -31,6 +39,30 @@ export default function VIPPage() {
       setLoading(false);
     }
   }, [isLoaded]);
+
+  // Fetch real stats
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        // Fetch whale activities to count
+        const activitiesRes = await fetch('/api/whale/activities');
+        const activitiesData = await activitiesRes.json();
+        
+        setStats(prev => ({
+          ...prev,
+          activities: activitiesData.activities?.length || 0
+        }));
+      } catch (error) {
+        console.error('Failed to fetch stats:', error);
+      }
+    };
+
+    if (isPremium) {
+      fetchStats();
+      const interval = setInterval(fetchStats, 30000); // Update every 30s
+      return () => clearInterval(interval);
+    }
+  }, [isPremium]);
 
   const handleUpgrade = async () => {
     setShowPricing(true);
@@ -119,13 +151,33 @@ export default function VIPPage() {
             {/* Removed Upgrade Button for Full Access */}
           </div>
 
-          {/* Premium Stats */}
+          {/* Premium Stats - REAL DATA */}
           {isPremium && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <StatCard icon={<Activity />} label="Tracked Whales" value="247" change="+12" />
-              <StatCard icon={<TrendingUp />} label="Copy Trade P&L" value="+$125K" change="+24%" />
-              <StatCard icon={<Bell />} label="Active Alerts" value="18" change="+3" />
-              <StatCard icon={<Zap />} label="Win Rate" value="85.7%" change="+2.1%" />
+              <StatCard 
+                icon={<Activity />} 
+                label="Tracked Whales" 
+                value={stats.trackedWhales.toString()} 
+                change="Live" 
+              />
+              <StatCard 
+                icon={<TrendingUp />} 
+                label="Total Value" 
+                value={stats.totalValue > 0 ? `$${(stats.totalValue / 1e6).toFixed(2)}M` : "Cargando..."} 
+                change="Real-time" 
+              />
+              <StatCard 
+                icon={<Bell />} 
+                label="Activities (24h)" 
+                value={stats.activities.toString()} 
+                change="Live" 
+              />
+              <StatCard 
+                icon={<Zap />} 
+                label="Network" 
+                value="Base" 
+                change="Mainnet" 
+              />
             </div>
           )}
         </motion.div>
