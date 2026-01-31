@@ -38,33 +38,36 @@ export function AuthModal({ onAuthenticated }: AuthModalProps) {
 
             const checkData = await checkResponse.json();
 
-            if (checkData.exists) {
-                // Email exists - go directly to password (signin flow)
+            // All users get a verification code
+            // New users: code → password → access
+            // Existing verified users: code → access (passwordless)
+            if (checkData.exists && !checkData.requiresVerification) {
+                // Existing verified user - passwordless login
                 setIsSignup(false);
-                setStep('password');
-                setIsLoading(false);
             } else {
-                // Email doesn't exist - send verification code (signup flow)
+                // New user or unverified user - signup flow
                 setIsSignup(true);
-                const response = await fetch('/api/auth/send-code', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email })
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    setIsLoading(false);
-                    toast.error(data.error || 'Failed to send code');
-                    return;
-                }
-
-                setUserId(data.userId);
-                setStep('verify');
-                setIsLoading(false);
-                toast.success('Verification code sent to your email');
             }
+
+            // Send verification code for everyone
+            const response = await fetch('/api/auth/send-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setIsLoading(false);
+                toast.error(data.error || 'Failed to send code');
+                return;
+            }
+
+            setUserId(data.userId);
+            setStep('verify');
+            setIsLoading(false);
+            toast.success('Verification code sent to your email');
         } catch (error) {
             setIsLoading(false);
             toast.error('Network error. Please try again.');
@@ -80,7 +83,11 @@ export function AuthModal({ onAuthenticated }: AuthModalProps) {
             const response = await fetch('/api/auth/verify-code', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, code })
+                body: JSON.stringify({ 
+                    email, 
+                    code,
+                    isLogin: !isSignup // If not signup, it's a login
+                })
             });
 
             const data = await response.json();
@@ -91,9 +98,17 @@ export function AuthModal({ onAuthenticated }: AuthModalProps) {
                 return;
             }
 
-            setStep('password');
-            setIsLoading(false);
-            toast.success('Email verified!');
+            // If existing user (passwordless login), authentication is complete
+            if (!isSignup) {
+                setIsLoading(false);
+                toast.success('Welcome back!');
+                onAuthenticated();
+            } else {
+                // New user - proceed to password creation
+                setStep('password');
+                setIsLoading(false);
+                toast.success('Email verified!');
+            }
         } catch (error) {
             setIsLoading(false);
             toast.error('Network error. Please try again.');
