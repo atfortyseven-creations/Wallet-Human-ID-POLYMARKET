@@ -4,12 +4,16 @@ import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { ScrollLottie } from '@/components/ui/ScrollLottie';
 
+import { useGateState } from '@/components/layout/TitaniumGate';
+
 interface Props {
     onStart: () => void;
 }
 
 export function LandingHero({ onStart }: Props) {
-    const [isVideoEnded, setIsVideoEnded] = React.useState(false);
+    const { hasPlayedIntro } = useGateState();
+    // If intro was played, start with video ended (true), otherwise false
+    const [isVideoEnded, setIsVideoEnded] = React.useState(hasPlayedIntro);
 
     return (
         <section 

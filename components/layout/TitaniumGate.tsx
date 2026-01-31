@@ -10,7 +10,12 @@ import { useAuth } from '@/hooks/useAuth';
 
 type GateState = 'INTRO' | 'AUTH' | 'APP';
 
-const GateStateContext = createContext<GateState>('INTRO');
+interface GateContextType {
+    state: GateState;
+    hasPlayedIntro: boolean;
+}
+
+const GateStateContext = createContext<GateContextType>({ state: 'INTRO', hasPlayedIntro: false });
 export const useGateState = () => useContext(GateStateContext);
 
 interface TitaniumGateProps {
@@ -22,6 +27,7 @@ export function TitaniumGate({ children }: TitaniumGateProps) {
     // BUT if already authenticated, we should respect that state
     const { isAuthenticated, isLoading } = useAuth();
     const [state, setState] = useState<GateState>('INTRO');
+    const [hasPlayedIntro, setHasPlayedIntro] = useState(false);
 
     React.useEffect(() => {
         if (!isLoading && isAuthenticated && state !== 'APP') {
@@ -29,11 +35,16 @@ export function TitaniumGate({ children }: TitaniumGateProps) {
         }
     }, [isAuthenticated, isLoading, state]);
 
+    const handleIntroComplete = () => {
+        setHasPlayedIntro(true);
+        setState('AUTH');
+    };
+
     return (
-        <GateStateContext.Provider value={state}>
+        <GateStateContext.Provider value={{ state, hasPlayedIntro }}>
             {/* 1. INTRO SEQUENCE */}
             {state === 'INTRO' && (
-                <IntroSequence onComplete={() => setState('AUTH')} />
+                <IntroSequence onComplete={handleIntroComplete} />
             )}
 
             {/* 2. AUTHENTICATION GATE */}

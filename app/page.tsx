@@ -54,7 +54,7 @@ export default function Home() {
   }, []);
 
   // Hook to check gate state - NOW CORRECTLY CONSUMES GLOBAL CONTEXT
-  const gateState = useGateState();
+  const { state } = useGateState();
 
   const handleStart = () => {
     setIsLoadingLobby(true);

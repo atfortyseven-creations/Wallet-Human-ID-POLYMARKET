@@ -1,6 +1,7 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Provide a dummy key for build-time safety if env is missing
+const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
 
 /**
  * Send verification code email

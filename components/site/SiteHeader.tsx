@@ -58,10 +58,10 @@ export function SiteHeader() {
     const isAppMode = isConnected || isAuthenticated;
     
     // Check gate state to hide header during auth
-    const gateState = useGateState();
+    const { state } = useGateState();
     
     // Don't render header during INTRO or AUTH states
-    if (gateState !== 'APP') {
+    if (state !== 'APP') {
         return null;
     }
 
