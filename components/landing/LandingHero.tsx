@@ -3,6 +3,8 @@
 import React, { useRef } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { FloatingImmersiveBackground } from './FloatingImmersiveBackground';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 interface Props {
     onStart: () => void;
@@ -14,6 +16,7 @@ export function LandingHero({ onStart }: Props) {
         target: containerRef,
         offset: ["start start", "end start"]
     });
+    const { t } = useLanguage();
 
     // Parallax effects for the cats
     const yLeft = useTransform(scrollYProgress, [0, 1], [0, 100]);
@@ -30,6 +33,9 @@ export function LandingHero({ onStart }: Props) {
             className="w-full h-[100dvh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden bg-[#FAFAEE]"
             aria-label="Welcome to Human Defi"
         >
+            {/* FLOATING IMMERSIVE ELEMENTS LAYER (Behind everything) */}
+            <FloatingImmersiveBackground />
+
             {/* CONTENT LAYER */}
             <motion.div 
                 style={{ y: yText, opacity: opacityText }}
