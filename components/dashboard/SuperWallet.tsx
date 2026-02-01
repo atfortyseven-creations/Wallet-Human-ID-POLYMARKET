@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Wallet, TrendingUp, Zap, Loader2, PieChart, Users, Settings, X, Gift, CreditCard, Wifi, Shield } from 'lucide-react';
-import HumanCard from '@/components/wallet/HumanCard';
+import { HumanCard } from '@/components/wallet/HumanCard';
 import ReceiveHub from '@/components/wallet/ReceiveHub';
 import QRScannerModal from '@/components/wallet/QRScannerModal';
 import ReferralDashboard from '@/components/wallet/ReferralDashboard';
@@ -50,7 +50,7 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
         address
     } = useRealWalletData(recentNews);
 
-    const [activeView, setActiveView] = useState<'dashboard' | 'portfolio' | 'earn' | 'activity' | 'contacts' | 'settings' | 'referrals' | 'whales' | 'cards'>('dashboard');
+    const [activeView, setActiveView] = useState<'dashboard' | 'portfolio' | 'earn' | 'activity' | 'contacts' | 'settings' | 'referrals' | 'whales' | 'cards' | 'vault' | 'nfc'>('dashboard');
     const [showWatchInput, setShowWatchInput] = useState(false);
     const [accounts, setAccounts] = useState<WalletAccount[]>([]);
     const [currentAddress, setCurrentAddress] = useState<string>('');
@@ -207,13 +207,7 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
                     <div className="animate-fade-in space-y-8">
                         {/* HUMAN CARD (Premium Visual) */}
                         <div className="py-4">
-                            <HumanCard 
-                                address={displayAddress}
-                                totalBalance={`$${totalBalance}`}
-                                trend={{ value: "+$0.00", percentage: "0.00%", positive: true }}
-                                onReceive={() => setShowReceive(true)}
-                                onScan={() => setShowScanner(true)}
-                            />
+                            <HumanCard />
                         </div>
 
                         {/* Wallet Actions & Tabs */}

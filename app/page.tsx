@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
@@ -7,43 +7,15 @@ import { useAppKitAccount, useAppKit } from '@reown/appkit/react';
 import { useLanguage } from '@/src/context/LanguageContext';
 
 // ============================================
-// 1. CRITICAL IMPORTS (Above the Fold - Load Immediately)
+// 1. CRITICAL IMPORTS
 // ============================================
 import { LandingHero } from '@/components/landing/LandingHero';
 import FluidBeigeBackground from '@/components/layout/FluidBeigeBackground';
 import { useGateState } from '@/components/layout/TitaniumGate';
-import { LenisProvider } from '@/components/creative/LenisProvider';
 import { FloatingImmersiveBackground } from '@/components/landing/FloatingImmersiveBackground';
-
-// ============================================
-// 2. LAZY IMPORTS (Below the Fold - Load on Demand)
-// ============================================
-const WalletPreview = dynamic(() => import('@/components/landing/WalletPreview').then(mod => mod.WalletPreview), { 
-  loading: () => <div className="h-[80vh] w-full animate-pulse bg-neutral-100/50 rounded-3xl" /> 
-});
-const FeatureCardsSection = dynamic(() => import('@/components/landing/FeatureCardsSection').then(mod => mod.FeatureCardsSection));
-const SecurityGrowthSection = dynamic(() => import('@/components/landing/SecurityGrowthSection').then(mod => mod.SecurityGrowthSection));
-const Web3AccessSection = dynamic(() => import('@/components/landing/Web3AccessSection').then(mod => mod.Web3AccessSection));
-const EcosystemSection = dynamic(() => import('@/components/ecosystem/EcosystemSection').then(mod => mod.EcosystemSection));
-const EnterpriseFooter = dynamic(() => import('@/components/landing/EnterpriseFooter').then(mod => mod.EnterpriseFooter));
-const EcosystemCarousel = dynamic(() => import('@/components/landing/EcosystemCarousel').then(mod => mod.EcosystemCarousel));
-const WalletShowcaseSection = dynamic(() => import('@/components/landing/ImprovedLandingSections').then(mod => mod.WalletShowcaseSection));
-const NotificationsSection = dynamic(() => import('@/components/landing/ImprovedLandingSections').then(mod => mod.NotificationsSection));
-const DownloadCTASection = dynamic(() => import('@/components/landing/ImprovedLandingSections').then(mod => mod.DownloadCTASection));
-const FAQSection = dynamic(() => import('@/components/landing/FAQSection').then(mod => mod.FAQSection));
-import { CommunityInfo } from '@/components/CommunityInfo';
-// import { LottieStack } from '@/components/creative/LottieStack'; // Replaced
-import { StackedFeatureCards } from '@/components/landing/StackedFeatureCards';
-
-// Heavy Wallet - Only load when absolutely necessary
-const WalletSection = dynamic(() => import('@/components/WalletSection'), { 
-  ssr: false,
-  loading: () => (
-    <div className="h-screen w-full flex items-center justify-center text-neutral-400 font-mono text-center">
-       ...
-    </div>
-  )
-});
+import { Footer } from '@/components/layout/Footer';
+import { LaunchCountdown } from '@/components/landing/LaunchCountdown';
+import { LoadingScreen } from '@/components/ui/LoadingScreen';
 
 export default function Home() {
   const { isConnected } = useAppKitAccount();
@@ -51,100 +23,52 @@ export default function Home() {
   const { open } = useAppKit();
   const { t } = useLanguage();
   
-  // Prevent hydration mismatch
   const [isMounted, setIsMounted] = useState(false);
-  const [isLoadingLobby, setIsLoadingLobby] = useState(false);
+  const [showLoading, setShowLoading] = useState(true);
 
   useEffect(() => {
     setIsMounted(true);
-    // Force hardware acceleration on iOS
     if (typeof document !== 'undefined') {
       (document.body.style as any).webkitFontSmoothing = 'antialiased';
     }
   }, []);
 
-  // Hook to check gate state - NOW CORRECTLY CONSUMES GLOBAL CONTEXT
   const { state } = useGateState();
 
   const handleStart = () => {
-    setIsLoadingLobby(true);
-    setTimeout(() => {
       if (!isConnected && !isAuthenticated) {
         open(); 
       }
-      setIsLoadingLobby(false);
-    }, 1000);
   };
 
   return (
-        <main className="relative min-h-screen w-full bg-[#F5F5DC] text-neutral-900 selection:bg-orange-200 selection:text-orange-900 overflow-x-hidden">
+        <main className="relative min-h-screen w-full bg-[#0a0a0a] text-white selection:bg-[#00ff9d] selection:text-black overflow-x-hidden">
             
-            {/* ============================================
-                LAYER 0: GPU-ISOLATED BACKGROUND
-            ============================================ */}
-            <div className="fixed inset-0 z-0 pointer-events-none transform-gpu">
-                 <FluidBeigeBackground />
-                 {/* Global Floating Immersive Elements */}
+            {/* 0. Video Loading Screen */}
+            {showLoading && (
+                <div className="fixed inset-0 z-[9999]">
+                    <LoadingScreen onComplete={() => setShowLoading(false)} />
+                </div>
+            )}
+
+            {/* 1. Background Layers */}
+            <div className="fixed inset-0 z-0 pointer-events-none">
                  <FloatingImmersiveBackground />
             </div>
 
-            {/* ============================================
-                LAYER 1: CONTENT
-            ============================================ */}
+            {/* 2. Main Content */}
             <div className="relative z-10 flex flex-col">
                 
-                {/* Loading Overlay */}
-                {isLoadingLobby && (
-                   <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-xl flex items-center justify-center">
-                       <div className="text-white animate-pulse text-2xl font-bold font-mono">
-                           {t('nav.start').toUpperCase()}...
-                       </div>
-                   </div>
-                )}
+                {/* HERO SECTION */}
+                <section className="relative w-full h-[100dvh]">
+                    <LandingHero onStart={handleStart} />
+                </section>
 
-                {/* Always show landing page - wallet access via menu */}
-                {/* SECTION 1: HERO (Critical for LCP - Largest Contentful Paint) */}
-                    <section className="relative w-full h-[100dvh]">
-                        <LandingHero onStart={handleStart} />
-                    </section>
+                {/* LAUNCH COUNTDOWN & IMMERSIVE IMAGE */}
+                <LaunchCountdown />
 
-
-                    {/* HIGH PERFORMANCE STACK (Replaces standard grid) */}
-                    <div className="relative z-20 w-full flex justify-center py-20 lg:py-32">
-                        <StackedFeatureCards />
-                    </div>
-
-                    {/* NEW: Wallet Showcase Section */}
-                    <WalletShowcaseSection />
-
-                    {/* NEW: Notifications Section */}
-                    <NotificationsSection />
-
-                    {/* NEW: FAQ Section */}
-                    <FAQSection />
-
-                    {/* NEW: Download CTA Section */}
-                    <DownloadCTASection />
-
-                    {/* SECTION 5: WEB3 ACCESS & FOOTER (Fluid Background Area) */}
-                    <section className="relative w-full overflow-hidden">
-                        {/* Background Layer */}
-                        <div className="absolute inset-0 z-0 transform-gpu translate-3d-0">
-                             <FluidBeigeBackground />
-                        </div>
-                        
-                        <div className="relative z-10 w-full pt-32 pb-10 optimize-visibility">
-                            <Web3AccessSection />
-                            
-                            {/* NEW: Interactive 15+ Lottie Carousel */}
-                            <EcosystemCarousel />
-
-                            {/* ECOSYSTEM DEEP DIVE SECTION */}
-                            <EcosystemSection />
-                            
-                            <EnterpriseFooter />
-                        </div>
-                    </section>
+                {/* FOOTER */}
+                <Footer />
             </div>
         </main>
   );

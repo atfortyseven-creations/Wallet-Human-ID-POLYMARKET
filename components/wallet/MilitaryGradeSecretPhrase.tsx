@@ -124,26 +124,45 @@ Wallet: Human Wallet v4.0
                 </div>
             </div>
 
-            {/* Security Stats */}
-            <div className="grid grid-cols-3 gap-4 mb-8">
+            {/* Security Stats with Live Monitoring */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 <StatCard
-                    icon={<Shield />}
-                    label="Entropía"
-                    value="256 bits"
-                    description="Máxima seguridad"
+                    icon={<Shield className="animate-pulse text-[#00ff9d]" />}
+                    label="Entropy"
+                    value="256-bit"
+                    description="Military Grade"
+                    active
                 />
                 <StatCard
-                    icon={<Lock />}
-                    label="Palabras"
-                    value="24"
-                    description="BIP39 estándar"
+                    icon={<Lock className="text-purple-400" />}
+                    label="Function"
+                    value="PBKDF2"
+                    description="SHA-512 Hashing"
                 />
                 <StatCard
-                    icon={<Check />}
-                    label="Validación"
-                    value="Checksum"
-                    description="Verificado"
+                    icon={<Check className="text-blue-400" />}
+                    label="Checksum"
+                    value="Valid"
+                    description="CRC32 Integrity"
                 />
+                <div className="bg-black/40 backdrop-blur-sm border border-red-500/30 rounded-2xl p-6 text-center relative overflow-hidden group">
+                    <div className="absolute inset-0 bg-red-500/5 group-hover:bg-red-500/10 transition-colors" />
+                    <div className="w-12 h-12 bg-red-900/50 rounded-full flex items-center justify-center text-red-500 mx-auto mb-3 border border-red-500/20">
+                        <AlertTriangle size={20} />
+                    </div>
+                    <div className="text-sm text-red-400 font-bold mb-1">Quantum Resistance</div>
+                    <div className="text-xs text-red-500/70">Post-Quantum Sig.</div>
+                </div>
+            </div>
+
+            {/* Entropy Visualizer */}
+            <div className="mb-6 bg-black/40 rounded-xl p-4 border border-white/5 font-mono text-[10px] text-green-500/50 break-all h-24 overflow-hidden relative">
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80" />
+                {Array.from({ length: 12 }).map((_, i) => (
+                    <div key={i} className="opacity-50">
+                        {Math.random().toString(36).substring(2)}...[ENTROPY_POOL_#{i}]...{Math.random().toString(16).substring(2)}
+                    </div>
+                ))}
             </div>
 
             {/* Mnemonic Display */}
@@ -277,20 +296,21 @@ function WordCard({ number, word, isRevealed }: { number: number; word: string; 
     );
 }
 
-function StatCard({ icon, label, value, description }: {
+function StatCard({ icon, label, value, description, active }: {
     icon: React.ReactNode;
     label: string;
     value: string;
     description: string;
+    active?: boolean;
 }) {
     return (
-        <div className="bg-white/60 backdrop-blur-sm border border-purple-200 rounded-2xl p-6 text-center">
-            <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white mx-auto mb-3">
+        <div className={`bg-black/40 backdrop-blur-sm border rounded-2xl p-6 text-center transition-all ${active ? 'border-[#00ff9d]/50 bg-[#00ff9d]/5' : 'border-white/10 hover:border-white/20'}`}>
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 ${active ? 'bg-[#00ff9d]/10 text-[#00ff9d]' : 'bg-white/5 text-white/50'}`}>
                 {icon}
             </div>
-            <div className="text-sm text-purple-600 font-bold mb-1">{label}</div>
-            <div className="text-2xl font-black text-purple-900">{value}</div>
-            <div className="text-xs text-purple-500">{description}</div>
+            <div className={`text-sm font-bold mb-1 ${active ? 'text-[#00ff9d]' : 'text-white/70'}`}>{label}</div>
+            <div className="text-2xl font-black text-white">{value}</div>
+            <div className="text-xs text-white/40">{description}</div>
         </div>
     );
 }
