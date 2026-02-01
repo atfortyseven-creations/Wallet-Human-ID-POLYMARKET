@@ -89,7 +89,7 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade, onW
     return () => clearInterval(interval);
   }, []);
 
-  // Fetch real wallet stats
+  // Fetch real wallet stats - ONLY ONCE on mount
   useEffect(() => {
     const fetchWalletData = async () => {
         const updatedWallets: WatchedWallet[] = [];
@@ -123,7 +123,8 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade, onW
         onWalletsUpdate?.(updatedWallets);
     };
     fetchWalletData();
-  }, [onWalletsUpdate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // ONLY run once on mount - do NOT include onWalletsUpdate
 
   const handleAddWallet = async (address: string, label: string) => {
     const newWallet: WatchedWallet = {
