@@ -14,11 +14,11 @@ interface ReferralStats {
 
 export default function ReferralDashboard({ 
     stats = {
-        totalEarnings: "1,250.00",
-        totalInvites: 12,
-        rank: "Silver",
-        nextTierProgress: 75,
-        inviteCode: "HUMAN-8X29"
+        totalEarnings: "0.00",
+        totalInvites: 0,
+        rank: "Bronze",
+        nextTierProgress: 0,
+        inviteCode: "HUMAN-...."
     }
 }: { stats?: ReferralStats }) {
 
