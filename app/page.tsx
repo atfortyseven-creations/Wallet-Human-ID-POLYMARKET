@@ -26,7 +26,11 @@ const SecurityGrowthSection = dynamic(() => import('@/components/landing/Securit
 const Web3AccessSection = dynamic(() => import('@/components/landing/Web3AccessSection').then(mod => mod.Web3AccessSection));
 const EcosystemSection = dynamic(() => import('@/components/ecosystem/EcosystemSection').then(mod => mod.EcosystemSection));
 const HumanDefiFooter = dynamic(() => import('@/components/landing/HumanDefiFooter').then(mod => mod.HumanDefiFooter));
-const EcosystemCarousel = dynamic(() => import('@/components/landing/EcosystemCarousel').then(mod => mod.EcosystemCarousel)); // [NEW]
+const EcosystemCarousel = dynamic(() => import('@/components/landing/EcosystemCarousel').then(mod => mod.EcosystemCarousel));
+const WalletShowcaseSection = dynamic(() => import('@/components/landing/ImprovedLandingSections').then(mod => mod.WalletShowcaseSection));
+const NotificationsSection = dynamic(() => import('@/components/landing/ImprovedLandingSections').then(mod => mod.NotificationsSection));
+const DownloadCTASection = dynamic(() => import('@/components/landing/ImprovedLandingSections').then(mod => mod.DownloadCTASection));
+const FAQSection = dynamic(() => import('@/components/landing/FAQSection').then(mod => mod.FAQSection));
 import { CommunityInfo } from '@/components/CommunityInfo';
 // import { LottieStack } from '@/components/creative/LottieStack'; // Replaced
 import { StackedFeatureCards } from '@/components/landing/StackedFeatureCards';
@@ -104,10 +108,23 @@ export default function Home() {
                         <LandingHero onStart={handleStart} />
                     </section>
 
+
                     {/* HIGH PERFORMANCE STACK (Replaces standard grid) */}
                     <div className="relative z-20 w-full flex justify-center py-20 lg:py-32">
                         <StackedFeatureCards />
                     </div>
+
+                    {/* NEW: Wallet Showcase Section */}
+                    <WalletShowcaseSection />
+
+                    {/* NEW: Notifications Section */}
+                    <NotificationsSection />
+
+                    {/* NEW: FAQ Section */}
+                    <FAQSection />
+
+                    {/* NEW: Download CTA Section */}
+                    <DownloadCTASection />
 
                     {/* SECTION 5: WEB3 ACCESS & FOOTER (Fluid Background Area) */}
                     <section className="relative w-full overflow-hidden">

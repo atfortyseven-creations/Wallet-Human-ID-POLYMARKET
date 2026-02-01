@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Send, Loader2, Info } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
 import { SiteHeader } from '@/components/site/SiteHeader';
-import { BackgroundGradient } from "@/components/ui/background-gradient";
 import { FloatingImmersiveBackground } from "@/components/landing/FloatingImmersiveBackground";
 import { ImmersiveKittens } from "@/components/immersive/ImmersiveKittens";
 import { HumanDefiFooter } from '@/components/landing/HumanDefiFooter';
@@ -61,12 +60,14 @@ export default function SoportePage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
-                        className="text-center mb-12"
+                        className="text-center mb-12 px-4"
                     >
-                        <h1 className="text-6xl md:text-7xl font-black tracking-tighter mb-4 text-[#1F1F1F] uppercase max-w-4xl mx-auto leading-[0.9]">
-                            Escribe una peticion al soporte de Human DeFi Corp.
+                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter mb-6 text-[#1F1F1F] uppercase max-w-4xl mx-auto leading-tight">
+                            Escribe una petición al <br className="hidden sm:block" />
+                            soporte de <br className="sm:hidden" />
+                            Human DeFi Corp.
                         </h1>
-                        <p className="text-xl md:text-2xl font-light text-[#1F1F1F]/60 max-w-lg mx-auto leading-relaxed">
+                        <p className="text-lg md:text-xl lg:text-2xl font-light text-[#1F1F1F]/60 max-w-2xl mx-auto leading-relaxed">
                             Di tu verdad. Estamos escuchandote en tiempo real.
                         </p>
                     </motion.div>
