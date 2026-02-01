@@ -25,7 +25,7 @@ const FeatureCardsSection = dynamic(() => import('@/components/landing/FeatureCa
 const SecurityGrowthSection = dynamic(() => import('@/components/landing/SecurityGrowthSection').then(mod => mod.SecurityGrowthSection));
 const Web3AccessSection = dynamic(() => import('@/components/landing/Web3AccessSection').then(mod => mod.Web3AccessSection));
 const EcosystemSection = dynamic(() => import('@/components/ecosystem/EcosystemSection').then(mod => mod.EcosystemSection));
-const HumanDefiFooter = dynamic(() => import('@/components/landing/HumanDefiFooter').then(mod => mod.HumanDefiFooter));
+const EnterpriseFooter = dynamic(() => import('@/components/landing/EnterpriseFooter').then(mod => mod.EnterpriseFooter));
 const EcosystemCarousel = dynamic(() => import('@/components/landing/EcosystemCarousel').then(mod => mod.EcosystemCarousel));
 const WalletShowcaseSection = dynamic(() => import('@/components/landing/ImprovedLandingSections').then(mod => mod.WalletShowcaseSection));
 const NotificationsSection = dynamic(() => import('@/components/landing/ImprovedLandingSections').then(mod => mod.NotificationsSection));
@@ -142,7 +142,7 @@ export default function Home() {
                             {/* ECOSYSTEM DEEP DIVE SECTION */}
                             <EcosystemSection />
                             
-                            <HumanDefiFooter />
+                            <EnterpriseFooter />
                         </div>
                     </section>
             </div>
