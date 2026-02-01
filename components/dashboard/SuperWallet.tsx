@@ -258,14 +258,19 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
                 )}
 
                 {activeView === 'cards' && (
-                    <div className="animate-fade-in">
+                    <div className="animate-fade-in space-y-6">
                         <FiatCardIssuance />
-                    </div>
-                )}
-
-                {activeView === 'cards' && (
-                    <div className="animate-fade-in">
-                        <FiatCardIssuance />
+                        
+                        <div className="bg-[#1F1F1F] p-6 rounded-3xl text-[#EAEADF] relative overflow-hidden">
+                             {/* Abstract Background */}
+                             <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
+                             
+                             <h3 className="text-lg font-bold mb-2 relative z-10">Why store with Human DeFi?</h3>
+                             <p className="text-sm opacity-70 leading-relaxed relative z-10">
+                                Uncompromised security meets radical transparency. Unlike traditional banks, we provide verifiable, on-chain proof of reserves.  
+                                Your assets are shielded by military-grade encryption and accessible only by you—no hidden fees, no frozen accounts, just pure financial sovereignty.
+                             </p>
+                        </div>
                     </div>
                 )}
                 

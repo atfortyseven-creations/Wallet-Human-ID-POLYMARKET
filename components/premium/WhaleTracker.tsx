@@ -102,7 +102,7 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade, onW
                     isWhale: data.isWhale || false,
                     isSmart: data.totalValue > 1000000, 
                     totalValue: data.totalValue || 0,
-                    change24h: (Math.random() * 10) - 5,
+                    change24h: 0, // No fake data
                     lastActive: new Date(),
                     alertsEnabled: true
                 });

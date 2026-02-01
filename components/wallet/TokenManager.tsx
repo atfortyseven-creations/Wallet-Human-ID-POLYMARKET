@@ -67,7 +67,7 @@ export default function TokenManager({ walletAddress, chainId, onSelectToken }: 
           <p className="text-sm text-[#1F1F1F]/70">Total Value: ${totalValue.toFixed(2)}</p>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 mr-10">
           <button
             onClick={() => setHideSmallBalances(!hideSmallBalances)}
             className="p-2 rounded-xl bg-white/50 hover:bg-white/80 transition-all"

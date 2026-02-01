@@ -15,38 +15,7 @@ interface Group {
     isLocked: boolean;
 }
 
-const GROUPS: Group[] = [
-    {
-        id: '1',
-        name: "Alpha Seekers DAO",
-        leader: "0xWhale...88",
-        leaderAvatar: "bg-blue-600",
-        members: 428,
-        monthlyReturn: "+145%",
-        entryRequirement: "Hold 1000 HUMAN",
-        isLocked: false
-    },
-    {
-        id: '2',
-        name: "Insiders Circle",
-        leader: "0xElon...99",
-        leaderAvatar: "bg-purple-600",
-        members: 12,
-        monthlyReturn: "+850%",
-        entryRequirement: "Hold 1 HUMAN VIP NFT",
-        isLocked: true
-    },
-    {
-        id: '3',
-        name: "Stable Farmers",
-        leader: "0xSafe...22",
-        leaderAvatar: "bg-green-600",
-        members: 1502,
-        monthlyReturn: "+12%",
-        entryRequirement: "Open Access",
-        isLocked: false
-    }
-];
+const GROUPS: Group[] = []; // No fake data as requested
 
 export default function WhaleGroups() {
     const [activeGroup, setActiveGroup] = useState<Group | null>(null);
@@ -64,7 +33,7 @@ export default function WhaleGroups() {
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {GROUPS.map((group) => (
+                {GROUPS.length > 0 ? GROUPS.map((group) => (
                     <motion.div 
                         key={group.id}
                         whileHover={{ y: -5 }}
@@ -123,7 +92,13 @@ export default function WhaleGroups() {
                         {/* Hover Effect */}
                         <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-purple-500 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
                     </motion.div>
-                ))}
+                )) : (
+                    <div className="col-span-full py-12 text-center text-[#1F1F1F]/50">
+                        <Users size={48} className="mx-auto mb-4 opacity-20" />
+                        <h3 className="text-xl font-bold mb-2">No active groups</h3>
+                        <p className="text-sm">Check back later for new whale communities.</p>
+                    </div>
+                )}
             </div>
 
             {/* CHAT/FEED AREA */}

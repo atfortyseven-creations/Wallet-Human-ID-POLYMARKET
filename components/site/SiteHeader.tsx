@@ -127,20 +127,21 @@ export function SiteHeader() {
                     {/* RIGHT ACTIONS */}
                     <div className="hidden md:flex w-[350px] lg:w-[500px] justify-end items-center gap-4 relative z-50 pointer-events-auto">
                         {/* Grouped Icons: Bell, Settings, Language, Stealth */}
-                        <div className="flex items-center gap-4 pr-6 border-r border-gray-200">
-                             <div className="scale-110">
+                        {/* Grouped Icons: Bell, Settings, Language, Stealth */}
+                        <div className="flex items-center gap-2 pr-6 border-r border-gray-200">
+                             <div className="scale-100 hover:scale-110 transition-transform">
                                 <NotificationsMenu />
                              </div>
                              
                              <button 
                                 onClick={toggleStealthMode}
-                                className="p-2.5 rounded-full hover:bg-black/5 transition-colors group relative z-10"
+                                className={`p-2.5 rounded-full transition-colors group relative z-10 ${isStealthMode ? 'bg-[#1F1F1F] text-white' : 'hover:bg-black/5 text-gray-400 hover:text-black'}`}
                                 title={isStealthMode ? "Disable Stealth Mode" : "Enable Stealth Mode"}
                             >
                                 {isStealthMode ? (
-                                    <EyeOff size={22} className="text-gray-400 group-hover:text-black transition-colors" />
+                                    <EyeOff size={22} />
                                 ) : (
-                                    <Eye size={22} className="text-gray-400 group-hover:text-black transition-colors" />
+                                    <Eye size={22} />
                                 )}
                              </button>
 
@@ -150,11 +151,11 @@ export function SiteHeader() {
 
                              <button 
                                 onClick={toggleLanguage}
-                                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-black/5 transition-all group relative z-10"
+                                className="flex items-center gap-1 px-3 py-2 rounded-xl hover:bg-black/5 transition-all group relative z-10"
                                 title={language === 'es' ? 'Switch to English' : 'Cambiar a Español'}
                             >
                                 <Globe size={22} className="text-gray-400 group-hover:text-black transition-colors" />
-                                <span className="text-[12px] font-black text-gray-400 group-hover:text-black uppercase tracking-tighter">
+                                <span className="text-[10px] font-black text-gray-400 group-hover:text-black uppercase tracking-tighter">
                                     {language}
                                 </span>
                             </button>

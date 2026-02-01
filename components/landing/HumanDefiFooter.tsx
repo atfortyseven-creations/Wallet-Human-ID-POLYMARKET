@@ -130,12 +130,8 @@ export function HumanDefiFooter() {
                     
                     <div className="flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
                         <div className="text-center md:text-left">
-                            <h3 className="text-2xl font-bold text-white mb-2">
-                                {t('footer.newsletter_title' as any) || "Mantente Actualizado"}
-                            </h3>
-                            <p className="text-gray-400 max-w-md text-sm">
-                                {t('footer.newsletter_desc' as any) || "Recibe las últimas actualizaciones del ecosistema Human, lanzamientos y alertas directamente en tu correo."}
-                            </p>
+
+
                         </div>
 
                         <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">

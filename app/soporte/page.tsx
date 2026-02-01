@@ -63,11 +63,11 @@ export default function SoportePage() {
                         transition={{ duration: 0.8 }}
                         className="text-center mb-12"
                     >
-                        <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-4 text-[#1F1F1F] uppercase">
-                            {t('support.title')}
+                        <h1 className="text-6xl md:text-7xl font-black tracking-tighter mb-4 text-[#1F1F1F] uppercase max-w-4xl mx-auto leading-[0.9]">
+                            Escribe una peticion al soporte de Human DeFi Corp.
                         </h1>
                         <p className="text-xl md:text-2xl font-light text-[#1F1F1F]/60 max-w-lg mx-auto leading-relaxed">
-                            {t('support.subtitle')}
+                            Di tu verdad. Estamos escuchandote en tiempo real.
                         </p>
                     </motion.div>
 

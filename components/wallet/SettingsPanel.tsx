@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { DollarSign, Globe, Smartphone, Bell, Shield, Moon, ChevronRight, Key } from 'lucide-react';
+import { DollarSign, Globe, Smartphone, Bell, Shield, Moon, ChevronRight, Key, ShieldCheck } from 'lucide-react';
 import { WalletConnectSessions } from '@/components/wallet/WalletConnectSessions';
 import BiometricGuard from '@/components/wallet/BiometricGuard';
 import { startRegistration } from '@simplewebauthn/browser';
@@ -158,31 +158,23 @@ export default function SettingsPanel() {
         </h3>
         
         {!showSecret ? (
-             <button 
-                onClick={() => setShowSecret(true)}
-                className="w-full py-4 bg-red-50 text-red-600 border border-red-100 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-red-100 transition-all"
-             >
-                <Key size={18} />
-                Reveal Recovery Phrase
-            </button>
+             <DangerZoneReveal onSuccess={() => setShowSecret(true)} />
         ) : (
             <div className="h-[300px]">
-                <BiometricGuard reason="Reveal Secret Phrase" onSuccess={() => {}}>
-                    <div className="p-6 bg-white rounded-xl border border-[#1F1F1F]/10 text-center space-y-4">
-                        <p className="font-mono text-lg font-bold text-[#1F1F1F]">
-                            abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
-                        </p>
-                        <p className="text-xs text-red-500 font-bold">
-                            DO NOT SHARE THIS PHRASE WITH ANYONE.
-                        </p>
-                        <button 
-                            onClick={() => setShowSecret(false)}
-                            className="text-sm text-[#1F1F1F]/50 underline"
-                        >
-                            Hide Secret
-                        </button>
-                    </div>
-                </BiometricGuard>
+                <div className="p-6 bg-white rounded-xl border border-[#1F1F1F]/10 text-center space-y-4">
+                    <p className="font-mono text-lg font-bold text-[#1F1F1F]">
+                        abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about
+                    </p>
+                    <p className="text-xs text-red-500 font-bold">
+                        DO NOT SHARE THIS PHRASE WITH ANYONE.
+                    </p>
+                    <button 
+                        onClick={() => setShowSecret(false)}
+                        className="text-sm text-[#1F1F1F]/50 underline"
+                    >
+                        Hide Secret
+                    </button>
+                </div>
             </div>
         )}
       </section>
@@ -192,6 +184,79 @@ export default function SettingsPanel() {
       </div>
     </div>
   );
+}
+
+function DangerZoneReveal({ onSuccess }: { onSuccess: () => void }) {
+    const [input, setInput] = useState('');
+    const [isHovering, setIsHovering] = useState(false);
+    
+    const correctPhrase = "Human DeFi Corp.";
+    const isMatched = input === correctPhrase;
+
+    return (
+        <div className="relative group">
+            {/* Glassmorphism Container */}
+            <div className="bg-red-500/5 backdrop-blur-xl border border-red-500/10 rounded-2xl p-6 space-y-4 transition-all hover:bg-red-500/10">
+                <div className="flex flex-col gap-2">
+                    <label className="text-xs font-bold text-red-600 uppercase tracking-widest">
+                        Security Verification
+                    </label>
+                    <p className="text-sm text-[#1F1F1F]/60">
+                        Type <span className="font-mono font-bold bg-white/50 px-1 rounded text-red-500">{correctPhrase}</span> to reveal your secret phrase.
+                    </p>
+                </div>
+
+                <div className="relative">
+                    <input 
+                        type="text" 
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        placeholder="Type verification phrase..."
+                        className="w-full px-4 py-3 bg-white/60 border-2 border-transparent focus:border-red-500/20 rounded-xl outline-none font-bold text-[#1F1F1F] placeholder:text-[#1F1F1F]/20 transition-all"
+                    />
+                    
+                    {isMatched && (
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 text-green-500"
+                        >
+                            <ShieldCheck size={20} />
+                        </motion.div>
+                    )}
+                </div>
+
+                <motion.button
+                    disabled={!isMatched}
+                    onMouseEnter={() => setIsHovering(true)}
+                    onMouseLeave={() => setIsHovering(false)}
+                    onClick={() => {
+                        if (isMatched) onSuccess();
+                    }}
+                    className={`w-full h-12 rounded-xl font-bold flex items-center justify-center gap-2 transition-all overflow-hidden relative ${
+                        isMatched 
+                        ? 'bg-red-500 text-white cursor-pointer shadow-lg shadow-red-500/20' 
+                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    }`}
+                >
+                     {/* Hover Animation Overlay */}
+                     {isMatched && (
+                         <motion.div 
+                            initial={{ x: '-100%' }}
+                            animate={{ x: isHovering ? '100%' : '-100%' }}
+                            transition={{ duration: 0.5, ease: "easeInOut" }}
+                            className="absolute inset-0 bg-white/30 skew-x-12"
+                         />
+                     )}
+                     
+                     <span className="relative z-10 flex items-center gap-2">
+                        {isMatched ? <Key size={18} /> : <Shield size={18} />}
+                        {isMatched ? 'Click to Reveal' : 'Locked'}
+                     </span>
+                </motion.button>
+            </div>
+        </div>
+    );
 }
 
 function SettingsInfoRow({ icon, label, value, onClick }: any) {
@@ -237,3 +302,4 @@ function SettingsToggleRow({ icon, label, sublabel, enabled, onToggle }: any) {
     </div>
   );
 }
+

@@ -11,16 +11,32 @@ interface QRScannerModalProps {
 }
 
 export default function QRScannerModal({ isOpen, onClose, onScan }: QRScannerModalProps) {
-    const [isScanning, setIsScanning] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const videoRef = React.useRef<HTMLVideoElement>(null);
 
-    // Mock scan after 2 seconds for demo purposes if no real camera
-    const handleMockScan = () => {
-        setIsScanning(false);
-        setTimeout(() => {
-            onScan("0x742d35Cc6634C0532925a3b844Bc454e4438f44e");
-            onClose();
-        }, 1500);
-    };
+    React.useEffect(() => {
+        let stream: MediaStream | null = null;
+
+        if (isOpen) {
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+                .then((s) => {
+                    stream = s;
+                    if (videoRef.current) {
+                        videoRef.current.srcObject = stream;
+                    }
+                })
+                .catch((err) => {
+                    console.error("Camera error:", err);
+                    setError("Unable to access camera. Please ensure permissions are granted.");
+                });
+        }
+
+        return () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+        };
+    }, [isOpen]);
 
     return (
         <AnimatePresence>
@@ -42,30 +58,32 @@ export default function QRScannerModal({ isOpen, onClose, onScan }: QRScannerMod
                         className="w-full max-w-md h-[80vh] flex flex-col items-center justify-center relative"
                     >
                         {/* Scanner Frame */}
-                        <div className="relative w-72 h-72 border-2 border-white/20 rounded-3xl overflow-hidden shadow-[0_0_100px_-20px_rgba(168,85,247,0.5)]">
+                        <div className="relative w-72 h-72 border-2 border-white/20 rounded-3xl overflow-hidden shadow-[0_0_100px_-20px_rgba(168,85,247,0.5)] bg-black">
                             
-                            {/* Scanning Animation */}
-                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/20 to-transparent w-full h-full animate-scan" />
-                            <div className="absolute top-0 left-0 w-full h-1 bg-purple-500 shadow-[0_0_20px_#a855f7] animate-scan-line" />
-
-                            {/* Camera Feed Placeholder */}
-                            <div 
-                                className="w-full h-full bg-black flex items-center justify-center cursor-pointer"
-                                onClick={handleMockScan}
-                            >
-                                <div className="text-center text-white/50 space-y-4">
-                                    <div className="w-16 h-16 rounded-full bg-white/5 mx-auto flex items-center justify-center mb-2 animate-pulse">
-                                        <Camera size={32} />
-                                    </div>
-                                    <p className="text-sm font-medium">Tap to simulate scan</p>
+                            {/* Camera Feed */}
+                            {!error ? (
+                                <video 
+                                    ref={videoRef}
+                                    autoPlay 
+                                    playsInline 
+                                    muted 
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <div className="absolute inset-0 flex items-center justify-center p-4 text-center">
+                                    <p className="text-red-400 text-sm font-bold">{error}</p>
                                 </div>
-                            </div>
+                            )}
+
+                            {/* Scanning Animation Overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/10 to-transparent w-full h-full animate-scan pointer-events-none" />
+                            <div className="absolute top-0 left-0 w-full h-1 bg-purple-500 shadow-[0_0_20px_#a855f7] animate-scan-line pointer-events-none" />
 
                             {/* Corner Accents */}
-                            <div className="absolute top-4 left-4 w-8 h-8 border-t-4 border-l-4 border-purple-500 rounded-tl-xl" />
-                            <div className="absolute top-4 right-4 w-8 h-8 border-t-4 border-r-4 border-purple-500 rounded-tr-xl" />
-                            <div className="absolute bottom-4 left-4 w-8 h-8 border-b-4 border-l-4 border-purple-500 rounded-bl-xl" />
-                            <div className="absolute bottom-4 right-4 w-8 h-8 border-b-4 border-r-4 border-purple-500 rounded-br-xl" />
+                            <div className="absolute top-4 left-4 w-8 h-8 border-t-4 border-l-4 border-purple-500 rounded-tl-xl pointer-events-none" />
+                            <div className="absolute top-4 right-4 w-8 h-8 border-t-4 border-r-4 border-purple-500 rounded-tr-xl pointer-events-none" />
+                            <div className="absolute bottom-4 left-4 w-8 h-8 border-b-4 border-l-4 border-purple-500 rounded-bl-xl pointer-events-none" />
+                            <div className="absolute bottom-4 right-4 w-8 h-8 border-b-4 border-r-4 border-purple-500 rounded-br-xl pointer-events-none" />
                         </div>
 
                         {/* Instructions */}
