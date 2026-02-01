@@ -16,6 +16,7 @@ import { FloatingImmersiveBackground } from '@/components/landing/FloatingImmers
 import { Footer } from '@/components/layout/Footer';
 import { LaunchCountdown } from '@/components/landing/LaunchCountdown';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
+import { StackedFeatureCards } from '@/components/landing/StackedFeatureCards';
 
 export default function Home() {
   const { isConnected } = useAppKitAccount();
@@ -42,18 +43,16 @@ export default function Home() {
   };
 
   return (
-        <main className="relative min-h-screen w-full bg-[#0a0a0a] text-white selection:bg-[#00ff9d] selection:text-black overflow-x-hidden">
+        <main className="relative min-h-screen w-full bg-[#EAEADF] dark:bg-[#0a0a0a] text-[#1F1F1F] dark:text-white selection:bg-[#00ff9d] selection:text-black overflow-x-hidden transition-colors duration-700">
             
-            {/* 0. Video Loading Screen */}
-            {showLoading && (
-                <div className="fixed inset-0 z-[9999]">
-                    <LoadingScreen onComplete={() => setShowLoading(false)} />
-                </div>
-            )}
-
             {/* 1. Background Layers */}
             <div className="fixed inset-0 z-0 pointer-events-none">
-                 <FloatingImmersiveBackground />
+                 <div className="block dark:hidden">
+                    <FluidBeigeBackground />
+                 </div>
+                 <div className="hidden dark:block">
+                    <FloatingImmersiveBackground />
+                 </div>
             </div>
 
             {/* 2. Main Content */}
@@ -62,6 +61,11 @@ export default function Home() {
                 {/* HERO SECTION */}
                 <section className="relative w-full h-[100dvh]">
                     <LandingHero onStart={handleStart} />
+                </section>
+
+                {/* FEATURE CARDS (Restored) */}
+                <section className="w-full py-20 flex justify-center">
+                    <StackedFeatureCards />
                 </section>
 
                 {/* LAUNCH COUNTDOWN & IMMERSIVE IMAGE */}
