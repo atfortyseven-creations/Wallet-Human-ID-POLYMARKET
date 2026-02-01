@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Wallet, TrendingUp, CreditCard, Gift, ChevronDown, ArrowRight, Code, Cpu, Shield, Globe } from "lucide-react";
-import FloatingImmersiveBackground from "@/components/landing/FloatingImmersiveBackground";
+import { FloatingImmersiveBackground } from "@/components/landing/FloatingImmersiveBackground";
 
 export default function DeveloperPage() {
     const [openItem, setOpenItem] = useState<string | null>("wallet");
