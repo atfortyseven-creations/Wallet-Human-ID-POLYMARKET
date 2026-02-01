@@ -493,6 +493,10 @@ model User {
   notifications Notification[]
   stats         UserStats? // Relation to UserStats
 
+  // Referral Relations
+  referralsSent     Referral[] @relation("Referrer")
+  referralsReceived Referral?  @relation("Referee")
+
   @@index([reputation])
 }
 
@@ -776,6 +780,7 @@ model Notification {
   // Status
   read     Boolean @default(false)
   archived Boolean @default(false)
+  isGlobal Boolean @default(false) // [NEW] For admin broadcasts
 
   // Metadata
   actionUrl String?
@@ -785,6 +790,7 @@ model Notification {
 
   @@index([userId, read])
   @@index([userId, createdAt])
+  @@index([isGlobal])
 }
 
 model UserNotification {
@@ -796,19 +802,35 @@ model UserNotification {
   title   String
   message String
   type    String // "transaction", "market", "system", "social"
-
+  
   // Status
   read     Boolean @default(false)
   archived Boolean @default(false)
 
-  // Metadata
-  actionUrl String?
-  metadata  Json?
-
   createdAt DateTime @default(now())
+  
+  @@index([authUserId])
+}
 
-  @@index([authUserId, read])
-  @@index([authUserId, createdAt])
+// ----------------------------------------------------------------------------
+// REFERRAL SYSTEM
+// ----------------------------------------------------------------------------
+
+model Referral {
+  id            String   @id @default(cuid())
+  referrerId    String
+  referrer      User     @relation("Referrer", fields: [referrerId], references: [walletAddress])
+  
+  refereeId     String   @unique
+  referee       User     @relation("Referee", fields: [refereeId], references: [walletAddress])
+  
+  status        String   @default("PENDING") // PENDING, ACTIVE, COMPLETED
+  totalEarnings Decimal  @default(0) @db.Decimal(18, 6)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([referrerId])
 }
 
 // ----------------------------------------------------------------------------

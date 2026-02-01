@@ -5,12 +5,52 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { DollarSign, Globe, Smartphone, Bell, Shield, Moon, ChevronRight, Key } from 'lucide-react';
 import { WalletConnectSessions } from '@/components/wallet/WalletConnectSessions';
 import BiometricGuard from '@/components/wallet/BiometricGuard';
+import { startRegistration } from '@simplewebauthn/browser';
+import { toast } from 'sonner';
 
 export default function SettingsPanel() {
   const [currency, setCurrency] = useState('USD');
   const [language, setLanguage] = useState('English');
   const [theme, setTheme] = useState('Light');
   const [showSecret, setShowSecret] = useState(false);
+  const [isRegisteringPasskey, setIsRegisteringPasskey] = useState(false);
+
+  // Hardcoded for now, real app should get from auth context
+  const authUserId = "cm6lcm2b600003b6m7k8j9l0n"; 
+
+  const registerPasskey = async () => {
+    setIsRegisteringPasskey(true);
+    try {
+      // 1. Get options from server
+      const resp = await fetch(`/api/auth/webauthn/register?userId=${authUserId}`);
+      const options = await resp.json();
+
+      if (options.error) throw new Error(options.error);
+
+      // 2. Start registration with browser
+      const attResp = await startRegistration(options);
+
+      // 3. Verify with server
+      const verifyResp = await fetch('/api/auth/webauthn/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...attResp, userId: authUserId }),
+      });
+
+      const verification = await verifyResp.json();
+
+      if (verification.verified) {
+        toast.success('Passkey registered successfully!');
+      } else {
+        throw new Error(verification.error || 'Verification failed');
+      }
+    } catch (error: any) {
+      console.error(error);
+      toast.error(error.message || 'Failed to register passkey');
+    } finally {
+      setIsRegisteringPasskey(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -59,6 +99,28 @@ export default function SettingsPanel() {
             enabled={true} 
             onToggle={() => {}} 
           />
+          <button 
+            onClick={registerPasskey}
+            disabled={isRegisteringPasskey}
+            className="w-full flex items-center justify-between p-3 hover:bg-white/50 rounded-xl transition-all group"
+          >
+            <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-[#1F1F1F]/5 rounded-xl flex items-center justify-center text-[#1F1F1F] group-hover:bg-[#1F1F1F] group-hover:text-[#EAEADF] transition-colors">
+                <Key size={20} />
+                </div>
+                <div className="text-left">
+                    <div className="font-bold text-[#1F1F1F]">Add Passkey</div>
+                    <div className="text-xs text-[#1F1F1F]/50">For passwordless login</div>
+                </div>
+            </div>
+            <div className="flex items-center gap-2 text-[#1F1F1F]/60">
+                {isRegisteringPasskey ? (
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-[#1F1F1F] border-t-transparent" />
+                ) : (
+                    <ChevronRight size={16} />
+                )}
+            </div>
+          </button>
           <SettingsToggleRow 
             icon={<Shield size={20} />} 
             label="Auto-Lock Timer" 

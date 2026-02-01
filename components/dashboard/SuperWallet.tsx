@@ -1,7 +1,17 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Wallet, TrendingUp, Zap, Loader2, PieChart, Users, Settings } from 'lucide-react';
+import { Wallet, TrendingUp, Zap, Loader2, PieChart, Users, Settings, X, Gift, CreditCard, Wifi, Shield } from 'lucide-react';
+import HumanCard from '@/components/wallet/HumanCard';
+import ReceiveHub from '@/components/wallet/ReceiveHub';
+import QRScannerModal from '@/components/wallet/QRScannerModal';
+import ReferralDashboard from '@/components/wallet/ReferralDashboard';
+import NotificationCenter from '@/components/notifications/NotificationCenter';
+import AIConcierge from '@/components/wallet/AIConcierge';
+import WhaleGroups from '@/components/wallet/WhaleGroups';
+import FiatCardIssuance from '@/components/wallet/FiatCardIssuance';
+import SecurityVault from '@/components/wallet/SecurityVault';
+import NFCHardware from '@/components/wallet/NFCHardware';
 import { NetworkSelector } from '@/components/wallet/NetworkSelector';
 import { WalletActions } from '@/components/wallet/WalletActions';
 import { useRealWalletData } from '@/hooks/useRealWalletData';
@@ -16,9 +26,19 @@ import { getAccountColor, type WalletAccount } from '@/lib/wallet/accounts';
 import { resolveENSName } from '@/lib/wallet/ens';
 import { isAddress } from 'viem';
 
+import LanguageSwitcher from '@/components/wallet/LanguageSwitcher';
+import { LanguageProvider, useLanguage } from '@/lib/i18n/LanguageContext';
+
 export default function SuperWallet({ recentNews = [] }: { recentNews?: any[] }) {
-    
-    // Data Hook (Real Logic)
+    return (
+        <LanguageProvider>
+            <SuperWalletContent recentNews={recentNews} />
+        </LanguageProvider>
+    );
+}
+
+function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
+    const { t } = useLanguage();
     const {
         usdcBalance,
         totalBalance,
@@ -30,7 +50,7 @@ export default function SuperWallet({ recentNews = [] }: { recentNews?: any[] })
         address
     } = useRealWalletData(recentNews);
 
-    const [activeView, setActiveView] = useState<'dashboard' | 'portfolio' | 'earn' | 'activity' | 'contacts' | 'settings'>('dashboard');
+    const [activeView, setActiveView] = useState<'dashboard' | 'portfolio' | 'earn' | 'activity' | 'contacts' | 'settings' | 'referrals' | 'whales' | 'cards'>('dashboard');
     const [showWatchInput, setShowWatchInput] = useState(false);
     const [accounts, setAccounts] = useState<WalletAccount[]>([]);
     const [currentAddress, setCurrentAddress] = useState<string>('');
@@ -58,6 +78,9 @@ export default function SuperWallet({ recentNews = [] }: { recentNews?: any[] })
             localStorage.setItem('wallet_accounts', JSON.stringify([primaryAccount]));
         }
     }, [address]);
+
+    const [showReceive, setShowReceive] = useState(false);
+    const [showScanner, setShowScanner] = useState(false);
 
     // Save accounts to localStorage whenever they change
     useEffect(() => {
@@ -149,34 +172,48 @@ export default function SuperWallet({ recentNews = [] }: { recentNews?: any[] })
                     )}
                 </div>
                 
-                <div className="flex bg-white/50 rounded-full p-1.5 border border-[#1F1F1F]/5 shadow-sm overflow-x-auto max-w-[200px] md:max-w-none scrollbar-hide">
+                {/* Center Tabs */}
+                <div className="hidden md:flex bg-white/50 rounded-full p-1.5 border border-[#1F1F1F]/5 shadow-sm overflow-x-auto max-w-[200px] md:max-w-none scrollbar-hide">
                     <ViewTab icon={<Wallet size={18}/>} label="Wallet" active={activeView==='dashboard'} onClick={()=>setActiveView('dashboard')} />
                     <ViewTab icon={<PieChart size={18}/>} label="Portfolio" active={activeView==='portfolio'} onClick={()=>setActiveView('portfolio')} />
                     <ViewTab icon={<TrendingUp size={18}/>} label="Earn" active={activeView==='earn'} onClick={()=>setActiveView('earn')} />
                     <ViewTab icon={<Zap size={18}/>} label="Activity" active={activeView==='activity'} onClick={()=>setActiveView('activity')} />
-                    <ViewTab icon={<Users size={18}/>} label="Contacts" active={activeView==='contacts'} onClick={()=>setActiveView('contacts')} />
+                    <ViewTab icon={<Users size={18}/>} label="Whales" active={activeView==='whales'} onClick={()=>setActiveView('whales')} />
+                    <ViewTab icon={<CreditCard size={18}/>} label="Cards" active={activeView==='cards'} onClick={()=>setActiveView('cards')} />
+                    <ViewTab icon={<Gift size={18}/>} label="Referrals" active={activeView==='referrals'} onClick={()=>setActiveView('referrals')} />
                     <ViewTab icon={<Settings size={18}/>} label="Settings" active={activeView==='settings'} onClick={()=>setActiveView('settings')} />
                 </div>
+
+                {/* Right Actions */}
+                <div className="flex items-center gap-3">
+                    <NotificationCenter />
+                    <div className="hidden md:flex">
+                        <ViewTab icon={<Settings size={18}/>} label="" active={activeView==='settings'} onClick={()=>setActiveView('settings')} />
+                    </div>
+                </div>
             </header>
+
+             {/* Mobile Tab Bar (Bottom) */}
+             <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-white/90 backdrop-blur-lg border border-[#1F1F1F]/5 shadow-2xl rounded-full p-2 flex gap-1">
+                 <ViewTab icon={<Wallet size={20}/>} label="" active={activeView==='dashboard'} onClick={()=>setActiveView('dashboard')} />
+                 <ViewTab icon={<PieChart size={20}/>} label="" active={activeView==='portfolio'} onClick={()=>setActiveView('portfolio')} />
+                 <ViewTab icon={<Gift size={20}/>} label="" active={activeView==='referrals'} onClick={()=>setActiveView('referrals')} />
+                 <ViewTab icon={<Settings size={20}/>} label="" active={activeView==='settings'} onClick={()=>setActiveView('settings')} />
+            </div>
 
             <main className="max-w-4xl mx-auto p-6 space-y-8 relative z-10 min-h-[80vh]">
 
                 {activeView === 'dashboard' && (
-                    <div className="animate-fade-in">
-                        {/* Balance Section */}
-                        <div className="text-center space-y-2 py-8 animate-fade-in-up">
-                            <h2 className="text-[#1F1F1F]/60 font-medium text-sm uppercase tracking-widest">Total Balance</h2>
-                            <div className="flex items-center justify-center gap-3">
-                                <span className="text-5xl md:text-6xl font-black text-[#1F1F1F] tracking-tighter">
-                                    ${totalBalance}
-                                </span>
-                            </div>
-                            
-                            {/* 24h Change Badge - Remove green color */}
-                            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/50 backdrop-blur-sm text-[#1F1F1F] text-sm font-bold border border-[#1F1F1F]/10 shadow-sm">
-                                 <TrendingUp size={14} />
-                                 <span>+$0.00 (0.00%)</span> {/* Mock currently, as per instruction to leave structure ready */}
-                            </div>
+                    <div className="animate-fade-in space-y-8">
+                        {/* HUMAN CARD (Premium Visual) */}
+                        <div className="py-4">
+                            <HumanCard 
+                                address={displayAddress}
+                                totalBalance={`$${totalBalance}`}
+                                trend={{ value: "+$0.00", percentage: "0.00%", positive: true }}
+                                onReceive={() => setShowReceive(true)}
+                                onScan={() => setShowScanner(true)}
+                            />
                         </div>
 
                         {/* Wallet Actions & Tabs */}
@@ -208,18 +245,84 @@ export default function SuperWallet({ recentNews = [] }: { recentNews?: any[] })
                     </div>
                 )}
 
+                {activeView === 'referrals' && (
+                    <div className="animate-fade-in">
+                        <ReferralDashboard />
+                    </div>
+                )}
+
+                {activeView === 'whales' && (
+                    <div className="animate-fade-in">
+                        <WhaleGroups />
+                    </div>
+                )}
+
+                {activeView === 'cards' && (
+                    <div className="animate-fade-in">
+                        <FiatCardIssuance />
+                    </div>
+                )}
+
+                {activeView === 'cards' && (
+                    <div className="animate-fade-in">
+                        <FiatCardIssuance />
+                    </div>
+                )}
+                
+                {activeView === 'vault' && (
+                    <div className="animate-fade-in">
+                        <SecurityVault />
+                    </div>
+                )}
+
+                 {activeView === 'nfc' && (
+                    <div className="animate-fade-in">
+                        <NFCHardware />
+                    </div>
+                )}
+
                 {activeView === 'settings' && (
                     <div className="animate-fade-in">
                         <SettingsPanel />
                     </div>
                 )}
                 
+                {/* MODALS */}
                 {showWatchInput && (
                     <WatchOnlyInput 
                         onAdd={handleAddWatchWallet} 
                         onCancel={() => setShowWatchInput(false)} 
                     />
                 )}
+
+                {showReceive && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in" onClick={() => setShowReceive(false)}>
+                        <div className="w-full max-w-4xl bg-[#EAEADF] rounded-[40px] overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+                            <div className="p-4 flex justify-between items-center">
+                                <h2 className="text-xl font-bold ml-4">Receive Assets</h2>
+                                <button onClick={() => setShowReceive(false)} className="p-2 rounded-full hover:bg-black/5"><X size={24}/></button>
+                            </div>
+                            <ReceiveHub addresses={[
+                                { network: 'Ethereum', address: displayAddress, token: 'ETH' },
+                                { network: 'Polygon', address: displayAddress, token: 'MATIC' },
+                                { network: 'Bitcoin', address: "bc1q...", token: 'BTC' }, // Mock for now
+                            ]} />
+                        </div>
+                    </div>
+                )}
+
+                <QRScannerModal 
+                    isOpen={showScanner} 
+                    onClose={() => setShowScanner(false)}
+                    onScan={(data) => {
+                        console.log("Scanned:", data);
+                        alert(`Scanned: ${data}`);
+                        setShowScanner(false);
+                    }}
+                />
+
+                {/* FEATURE: AI Financial Concierge */}
+                <AIConcierge />
 
             </main>
         </div>
@@ -239,5 +342,3 @@ function ViewTab({ icon, label, active, onClick }: { icon: React.ReactNode, labe
         </button>
     )
 }
-
-

@@ -67,7 +67,7 @@ export default function AccountSwitcher({
                 </button>
               </div>
 
-              <div className="max-h-64 overflow-y-auto p-2 space-y-1">
+              <div className="max-h-[60vh] overflow-y-auto p-2 space-y-1 custom-scrollbar">
                 {accounts.map((account) => (
                   <button
                     key={account.address}

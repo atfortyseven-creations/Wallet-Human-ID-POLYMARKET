@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight, ArrowDownLeft, ArrowLeftRight, Filter, Download, ExternalLink, CheckCircle2, Clock, XCircle } from 'lucide-react';
 import { getTransactionHistory, exportTransactionsToCSV, type TransactionType, type TransactionStatus } from '@/lib/wallet/transactions';
 import { getChainName, getExplorerTxUrl } from '@/lib/wallet/chains';
+import { StealthText } from '@/components/ui/stealth-text';
 
 interface TransactionHistoryProps {
   authUserId: string;
@@ -16,6 +17,38 @@ export default function TransactionHistory({ authUserId }: TransactionHistoryPro
   const [filterType, setFilterType] = useState<TransactionType | 'ALL'>('ALL');
   const [filterChain, setFilterChain] = useState<number | 'ALL'>('ALL');
 
+  // Custom Virtualization State
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scrollTop, setScrollTop] = useState(0);
+  const [containerHeight, setContainerHeight] = useState(0);
+
+  // Constants
+  const ITEM_HEIGHT = 100;
+  const GAP = 12;
+  const TOTAL_ITEM_HEIGHT = ITEM_HEIGHT + GAP;
+
+  // Resize Observer for Container
+  useEffect(() => {
+    if (!containerRef.current) return;
+    
+    // Initial size
+    setContainerHeight(containerRef.current.clientHeight);
+
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+         setContainerHeight(entry.contentRect.height);
+      }
+    });
+
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, [containerRef]);
+
+  // Handle Scroll
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+      setScrollTop(e.currentTarget.scrollTop);
+  };
+
   useEffect(() => {
     loadTransactions();
   }, [authUserId, filterType, filterChain]);
@@ -26,7 +59,7 @@ export default function TransactionHistory({ authUserId }: TransactionHistoryPro
       const txs = await getTransactionHistory(authUserId, {
         type: filterType !== 'ALL' ? filterType : undefined,
         chainId: filterChain !== 'ALL' ? filterChain : undefined,
-        limit: 50,
+        limit: 1000, 
       });
       setTransactions(txs);
     } catch (error) {
@@ -47,18 +80,31 @@ export default function TransactionHistory({ authUserId }: TransactionHistoryPro
     URL.revokeObjectURL(url);
   };
 
+  // Virtualization Math
+  const totalContentHeight = transactions.length * TOTAL_ITEM_HEIGHT;
+  const startIndex = Math.max(0, Math.floor(scrollTop / TOTAL_ITEM_HEIGHT) - 2); // Buffer top
+  const endIndex = Math.min(
+      transactions.length - 1,
+      Math.floor((scrollTop + containerHeight) / TOTAL_ITEM_HEIGHT) + 2 // Buffer bottom
+  );
+
+  const visibleItems = [];
+  for (let i = startIndex; i <= endIndex; i++) {
+      visibleItems.push({
+          index: i,
+          item: transactions[i],
+          offsetY: i * TOTAL_ITEM_HEIGHT
+      });
+  }
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 h-full flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between shrink-0">
         <h2 className="text-2xl font-black text-[#1F1F1F]">Transaction History</h2>
         
         <div className="flex gap-2">
-          <FilterButton
-            active={filterType !== 'ALL'}
-            onClick={() => setFilterType('ALL')}
-          />
-
+            
           <button
             onClick={handleExport}
             disabled={transactions.length === 0}
@@ -71,7 +117,7 @@ export default function TransactionHistory({ authUserId }: TransactionHistoryPro
       </div>
 
       {/* Filters */}
-      <div className="flex gap-2 overflow-x-auto pb-2">
+      <div className="flex gap-2 overflow-x-auto pb-2 shrink-0 scrollbar-hide">
         <TypeFilterButton label="All" active={filterType === 'ALL'} onClick={() => setFilterType('ALL')} />
         <TypeFilterButton label="Send" active={filterType === 'SEND'} onClick={() => setFilterType('SEND' as TransactionType)} />
         <TypeFilterButton label="Receive" active={filterType === 'RECEIVE'} onClick={() => setFilterType('RECEIVE' as TransactionType)} />
@@ -79,34 +125,49 @@ export default function TransactionHistory({ authUserId }: TransactionHistoryPro
         <TypeFilterButton label="NFT" active={filterType === 'NFT_TRANSFER'} onClick={() => setFilterType('NFT_TRANSFER' as TransactionType)} />
       </div>
 
-      {/* Transaction List */}
-      {loading ? (
-        <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#1F1F1F] border-t-transparent" />
-        </div>
-      ) : transactions.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-[#1F1F1F]/70">No transactions found</p>
-        </div>
-      ) : (
-        <div className="space-y-2">
-          <AnimatePresence>
-            {transactions.map((tx, index) => (
-              <TransactionCard
-                key={tx.id}
-                transaction={tx}
-                index={index}
-              />
-            ))}
-          </AnimatePresence>
-        </div>
-      )}
+      {/* Virtualized Transaction List */}
+      <div 
+        ref={containerRef}
+        onScroll={handleScroll}
+        className="flex-1 min-h-[400px] bg-[#1F1F1F]/5 rounded-3xl overflow-y-auto border border-[#1F1F1F]/5 relative scrollbar-hide"
+      >
+        {loading ? (
+          <div className="absolute inset-0 flex items-center justify-center">
+             <div className="flex flex-col items-center gap-2">
+                <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#1F1F1F] border-t-transparent" />
+                <span className="text-xs font-bold text-[#1F1F1F]/50">Loading History...</span>
+             </div>
+          </div>
+        ) : transactions.length === 0 ? (
+          <div className="absolute inset-0 flex items-center justify-center text-[#1F1F1F]/50 font-medium">
+            No transactions found
+          </div>
+        ) : (
+            <div style={{ height: totalContentHeight, position: 'relative' }}>
+                {visibleItems.map(({ index, item, offsetY }) => (
+                    <div
+                        key={item.id || index}
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: '1%',
+                            width: '98%',
+                            height: ITEM_HEIGHT,
+                            transform: `translateY(${offsetY}px)`,
+                        }}
+                    >
+                        <TransactionCard transaction={item} />
+                    </div>
+                ))}
+            </div>
+        )}
+      </div>
     </div>
   );
 }
 
 // Transaction Card Component
-function TransactionCard({ transaction, index }: { transaction: any; index: number }) {
+function TransactionCard({ transaction }: { transaction: any }) {
   const getTypeIcon = () => {
     switch (transaction.type) {
       case 'SEND':
@@ -134,7 +195,9 @@ function TransactionCard({ transaction, index }: { transaction: any; index: numb
   const formatValue = () => {
     const value = parseFloat(transaction.value);
     const symbol = transaction.tokenSymbol || 'ETH';
-    
+     // Handle NaN gracefully
+    if (isNaN(value)) return `0.00 ${symbol}`;
+
     if (transaction.type === 'SEND') {
       return `-${value.toFixed(6)} ${symbol}`;
     } else if (transaction.type === 'RECEIVE') {
@@ -160,62 +223,39 @@ function TransactionCard({ transaction, index }: { transaction: any; index: numb
   const explorerUrl = getExplorerTxUrl(transaction.chainId, transaction.hash);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ delay: index * 0.05 }}
-      className="p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-[#1F1F1F]/10 hover:bg-white/80 transition-all"
-    >
+    <div className="h-full p-4 bg-white/60 backdrop-blur-md rounded-2xl border border-white/40 hover:bg-white/80 transition-colors shadow-sm flex flex-col justify-between">
       <div className="flex items-center justify-between">
         {/* Type & Info */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+          <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
             {getTypeIcon()}
           </div>
 
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-bold text-[#1F1F1F] capitalize">{transaction.type.toLowerCase()}</span>
-              {getStatusIcon()}
+              <span className="font-bold text-[#1F1F1F] capitalize text-sm">{transaction.type.toLowerCase()}</span>
+               {/* Hide status on small screens or keep it compact */}
             </div>
-            <div className="text-sm text-[#1F1F1F]/70">{getChainName(transaction.chainId)}</div>
+            <div className="text-xs text-[#1F1F1F]/60 font-medium">{getChainName(transaction.chainId)}</div>
           </div>
         </div>
 
         {/* Value & Date */}
         <div className="text-right">
-          <div className={`font-black text-[#1F1F1F] ${
+          <div className={`font-black text-sm ${
             transaction.type === 'SEND' ? 'text-red-600' : 
-            transaction.type === 'RECEIVE' ? 'text-green-600' : ''
+            transaction.type === 'RECEIVE' ? 'text-green-600' : 'text-[#1F1F1F]'
           }`}>
-            {formatValue()}
+            <StealthText>{formatValue()}</StealthText>
           </div>
-          <div className="text-sm text-[#1F1F1F]/70">{formatDate()}</div>
+          <div className="text-[10px] text-[#1F1F1F]/50 font-bold uppercase">{formatDate()}</div>
         </div>
       </div>
-
-      {/* Additional Info */}
-      <div className="mt-3 pt-3 border-t border-[#1F1F1F]/10 flex items-center justify-between">
-        <div className="text-xs font-mono text-[#1F1F1F]/70">
-          {transaction.hash.slice(0, 10)}...{transaction.hash.slice(-8)}
-        </div>
-
-        <a
-          href={explorerUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-1 text-xs font-bold text-[#1F1F1F] hover:text-[#1F1F1F]/70 transition-colors"
-        >
-          View
-          <ExternalLink size={12} />
-        </a>
-      </div>
-    </motion.div>
+    </div>
   );
 }
 
-// Filter Button Component
+// Filter Button Components (Unchanged logic, minor style tweaks)
 function FilterButton({ active, onClick }: { active: boolean; onClick: () => void }) {
   return (
     <button
@@ -231,7 +271,6 @@ function FilterButton({ active, onClick }: { active: boolean; onClick: () => voi
   );
 }
 
-// Type Filter Button
 function TypeFilterButton({ 
   label, 
   active, 
@@ -244,10 +283,10 @@ function TypeFilterButton({
   return (
     <button
       onClick={onClick}
-      className={`px-4 py-2 rounded-xl font-bold whitespace-nowrap transition-all ${
+      className={`px-4 py-2 rounded-xl font-bold whitespace-nowrap transition-all text-sm ${
         active
-          ? 'bg-[#1F1F1F] text-[#EAEADF]'
-          : 'bg-white/50 hover:bg-white/80'
+          ? 'bg-[#1F1F1F] text-[#EAEADF] shadow-lg'
+          : 'bg-white/50 hover:bg-white/80 border border-[#1F1F1F]/5'
       }`}
     >
       {label}

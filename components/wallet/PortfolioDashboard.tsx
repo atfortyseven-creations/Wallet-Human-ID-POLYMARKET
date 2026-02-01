@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Download } from 'lucide-react';
 import { getPortfolio, getPortfolioHistory, getPortfolioMetrics, exportPortfolioToCSV, type PortfolioSummary, type PortfolioHistory, type PortfolioMetrics } from '@/lib/wallet/portfolio';
 import { getChainName } from '@/lib/wallet/chains';
+import { StealthText } from '@/components/ui/stealth-text';
 
 interface PortfolioDashboardProps {
   walletAddress: string;
@@ -83,7 +84,7 @@ export default function PortfolioDashboard({ walletAddress, chainIds }: Portfoli
           <div>
             <h2 className="text-sm text-[#1F1F1F]/70 mb-1">Total Portfolio Value</h2>
             <div className="text-4xl font-black text-[#1F1F1F]">
-              ${portfolio.totalValueUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              <StealthText>${portfolio.totalValueUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</StealthText>
             </div>
           </div>
 
@@ -104,7 +105,7 @@ export default function PortfolioDashboard({ walletAddress, chainIds }: Portfoli
             </span>
           </div>
           <div className="text-sm text-[#1F1F1F]/70">
-            {isPositive ? '+' : ''}{portfolio.change24hUSD.toFixed(2)} USD (24h)
+            <StealthText>{isPositive ? '+' : ''}{portfolio.change24hUSD.toFixed(2)} USD (24h)</StealthText>
           </div>
         </div>
       </div>
@@ -173,7 +174,7 @@ export default function PortfolioDashboard({ walletAddress, chainIds }: Portfoli
                 <div key={chainId}>
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-sm font-bold text-[#1F1F1F]">{getChainName(parseInt(chainId))}</span>
-                    <span className="text-sm text-[#1F1F1F]/70">${value.toFixed(2)} ({percentage.toFixed(1)}%)</span>
+                    <span className="text-sm text-[#1F1F1F]/70"><StealthText>${value.toFixed(2)}</StealthText> ({percentage.toFixed(1)}%)</span>
                   </div>
                   <div className="h-2 bg-white/50 rounded-full overflow-hidden">
                     <motion.div
@@ -222,7 +223,7 @@ function AssetRow({ asset }: { asset: any }) {
       </div>
 
       <div className="text-right">
-        <div className="font-bold text-[#1F1F1F]">${asset.valueUSD.toFixed(2)}</div>
+        <div className="font-bold text-[#1F1F1F]"><StealthText>${asset.valueUSD.toFixed(2)}</StealthText></div>
         <div className={`text-xs ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
           {isPositive ? '+' : ''}{asset.change24h?.toFixed(2)}%
         </div>

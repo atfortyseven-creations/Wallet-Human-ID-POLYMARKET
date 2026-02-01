@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, Globe, Settings, Bell, Crown } from 'lucide-react';
+import { Menu, X, Globe, Settings, Bell, Crown, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useAppKit, useAppKitAccount } from '@reown/appkit/react';
 import { useAccount } from 'wagmi';
@@ -10,6 +10,7 @@ import { useGateState } from '@/components/layout/TitaniumGate';
 import { AnimatePresence, motion } from 'framer-motion';
 import { NotificationsMenu } from '@/components/notifications/NotificationsMenu';
 import { useLanguage } from '@/src/context/LanguageContext';
+import { useUIStore } from '@/lib/store/ui-store';
 
 export function SiteHeader() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -36,8 +37,8 @@ export function SiteHeader() {
 
     // i18n
     const { t, language, toggleLanguage } = useLanguage();
-
     const { state } = useGateState();
+    const { isStealthMode, toggleStealthMode } = useUIStore();
 
     // Handle scroll effect
     useEffect(() => {
@@ -125,12 +126,24 @@ export function SiteHeader() {
 
                     {/* RIGHT ACTIONS */}
                     <div className="hidden md:flex w-[350px] lg:w-[500px] justify-end items-center gap-4 relative z-50 pointer-events-auto">
-                        {/* Grouped Icons: Bell, Settings, Language */}
+                        {/* Grouped Icons: Bell, Settings, Language, Stealth */}
                         <div className="flex items-center gap-4 pr-6 border-r border-gray-200">
                              <div className="scale-110">
                                 <NotificationsMenu />
                              </div>
                              
+                             <button 
+                                onClick={toggleStealthMode}
+                                className="p-2.5 rounded-full hover:bg-black/5 transition-colors group relative z-10"
+                                title={isStealthMode ? "Disable Stealth Mode" : "Enable Stealth Mode"}
+                            >
+                                {isStealthMode ? (
+                                    <EyeOff size={22} className="text-gray-400 group-hover:text-black transition-colors" />
+                                ) : (
+                                    <Eye size={22} className="text-gray-400 group-hover:text-black transition-colors" />
+                                )}
+                             </button>
+
                              <Link href="/settings" className="p-2.5 rounded-full hover:bg-black/5 transition-colors group relative z-10">
                                 <Settings size={22} className="text-gray-400 group-hover:text-black transition-colors" />
                              </Link>
@@ -203,6 +216,9 @@ export function SiteHeader() {
                         ))}
                          
                          <div className="flex gap-6 mt-4 items-center">
+                             <button onClick={toggleStealthMode} className="p-4 rounded-full bg-gray-100 hover:bg-gray-200">
+                                {isStealthMode ? <EyeOff size={28} /> : <Eye size={28} />}
+                             </button>
                              <Link href="/settings" onClick={() => setIsMobileMenuOpen(false)} className="p-4 rounded-full bg-gray-100 hover:bg-gray-200">
                                 <Settings size={28} />
                              </Link>
