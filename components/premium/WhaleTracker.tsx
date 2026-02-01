@@ -205,16 +205,10 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade, onW
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
           <h1 className="text-3xl font-black text-[#1F1F1F] flex items-center gap-3">
             <Waves className="text-blue-500" />
             Whale Tracker
-            <span className="px-3 py-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs rounded-full">PRO</span>
           </h1>
-          <p className="text-sm text-[#1F1F1F]/70 mt-1">
-            Tracking {watchedWallets.length} high-value wallets in real-time
-          </p>
-        </div>
       </div>
 
       {/* Stats Overview */}

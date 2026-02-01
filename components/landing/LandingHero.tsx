@@ -1,113 +1,115 @@
 "use client";
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { ArrowRight } from 'lucide-react';
-import { ScrollLottie } from '@/components/ui/ScrollLottie';
-import { useGateState } from '@/components/layout/TitaniumGate';
-import { useLanguage } from '@/src/context/LanguageContext';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 interface Props {
     onStart: () => void;
 }
 
 export function LandingHero({ onStart }: Props) {
-    const { hasPlayedIntro } = useGateState();
-    const { t } = useLanguage();
-    
-    // If intro was played, start with video ended (true), otherwise false
-    const [isVideoEnded, setIsVideoEnded] = React.useState(hasPlayedIntro);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start start", "end start"]
+    });
+
+    // Parallax effects for the cats
+    const yLeft = useTransform(scrollYProgress, [0, 1], [0, 100]);
+    const yRight = useTransform(scrollYProgress, [0, 1], [0, 150]); // Slightly different speed for depth
+    const scaleCats = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+
+    // Text parallax
+    const yText = useTransform(scrollYProgress, [0, 1], [0, -50]);
+    const opacityText = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
     return (
         <section 
-            className="w-full h-[100dvh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden"
+            ref={containerRef}
+            className="w-full h-[100dvh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden bg-[#FAFAEE]"
             aria-label="Welcome to Human Defi"
         >
-            {/* INTRO VIDEO LAYER */}
-            <div 
-                className={`
-                    absolute inset-0 z-0 transition-opacity duration-1000 ease-in-out
-                    ${isVideoEnded ? 'opacity-0 pointer-events-none' : 'opacity-100'}
-                `}
-            >
-                <video 
-                    autoPlay 
-                    muted 
-                    playsInline 
-                    className="w-full h-full object-cover"
-                    onEnded={() => setIsVideoEnded(true)}
-                >
-                    <source src="/models/kanagawa-wave.mp4" type="video/mp4" />
-                </video>
-                {/* Gradient Overlay for Text Readability during Video */}
-                <div className="absolute inset-0 bg-black/40" />
-            </div>
-
-            {/* PREMIUM SCROLL LOTTIE BACKGROUND (Appears after video ends) */}
-            <div 
-                className={`
-                    absolute inset-0 z-0 transition-opacity duration-1000 ease-in-out pointer-events-none
-                    ${isVideoEnded ? 'opacity-60' : 'opacity-0'}
-                `}
-            >
-                <ScrollLottie
-                     src="https://lottie.host/98c5806c-843e-4363-8a9d-59d4c153724c/Example3DNetwork.lottie"
-                     className="w-full h-full"
-                     speed={1.2}
-                />
-            </div>
-
             {/* CONTENT LAYER */}
-            <div className="relative z-10 flex flex-col items-center">
-                <h1 
+            <motion.div 
+                style={{ y: yText, opacity: opacityText }}
+                className="relative z-20 flex flex-col items-center mb-20 md:mb-0"
+            >
+                <motion.h1 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
                     className="
-                        text-6xl md:text-8xl lg:text-[9rem] font-black text-transparent bg-clip-text 
-                        bg-gradient-to-br from-indigo-900 via-purple-800 to-indigo-900
-                        mb-8 tracking-tighter drop-shadow-2xl uppercase leading-[0.9]
-                        transition-all duration-1000
+                        text-5xl md:text-7xl lg:text-[7rem] font-black text-[#4F2683]
+                        mb-2 tracking-tighter uppercase leading-[0.9]
+                        drop-shadow-sm
                     "
-                    style={{ 
-                        fontFamily: 'var(--font-inter)',
-                        backgroundImage: isVideoEnded 
-                            ? 'linear-gradient(to bottom right, #312e81, #6b21a8, #312e81)' 
-                            : 'linear-gradient(to bottom right, #ffffff, #e0e7ff, #ffffff)',
-                        textShadow: isVideoEnded ? 'none' : '0 0 40px rgba(0,0,0,0.5)'
-                    }} 
+                    style={{ fontFamily: 'var(--font-inter)' }}
                 >
-                    {t('hero.welcome')}<br/>
-                    HUMAN DeFi<br/>
-                    <span 
-                        className={`text-4xl md:text-6xl block mt-4 transition-colors duration-1000 ${isVideoEnded ? 'text-indigo-900/40' : 'text-white/60'}`}
-                    >
-                        {t('hero.subtitle')}
-                    </span>
-                </h1>
+                    BIENVENIDO A<br/>
+                    HUMAN DEFI
+                </motion.h1>
 
-                {/* Button appears only after video ends */}
-                <div 
-                    className={`
-                        transition-all duration-1000 transform
-                        ${isVideoEnded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}
-                    `}
+                <motion.h2
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.4, duration: 0.8 }}
+                    className="text-2xl md:text-4xl font-black text-[#4F2683] tracking-tight mb-8"
                 >
-                    <button 
-                        onClick={onStart}
-                        className="
-                            group relative px-12 py-6 bg-indigo-900 rounded-full text-white font-black text-2xl
-                            overflow-hidden transition-all hover:scale-105 hover:bg-indigo-800 hover:shadow-[0_0_50px_rgba(79,70,229,0.5)]
-                            uppercase tracking-widest
-                        "
-                        aria-label="Start Registration"
-                    >
-                        <span className="relative z-10 flex items-center gap-2">
-                            {t('hero.cta')}
-                            <ArrowRight size={28} className="group-hover:translate-x-1 transition-transform" />
-                        </span>
-                        
-                        {/* Shine Effect */}
-                        <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-                    </button>
-                </div>
+                    TUHOGARENWEB3
+                </motion.h2>
+
+                <motion.button 
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.8, type: "spring" }}
+                    onClick={onStart}
+                    className="
+                        group relative px-10 py-4 bg-[#2E1A57] rounded-full text-white font-bold text-lg md:text-xl
+                        overflow-hidden transition-all hover:scale-105 hover:bg-[#3d2270] hover:shadow-xl
+                        uppercase tracking-widest flex items-center gap-2
+                    "
+                >
+                    COMENZAR 
+                    <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                </motion.button>
+            </motion.div>
+
+            {/* IMMERSIVE CATS LAYER */}
+            <div className="absolute inset-0 pointer-events-none z-10 flex justify-between items-end pb-0 md:pb-10 px-4 md:px-20 w-full max-w-[1800px] mx-auto">
+                {/* Left Cat */}
+                <motion.div 
+                    style={{ y: yLeft, scale: scaleCats }}
+                    initial={{ x: -100, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    className="w-[40%] md:w-[25%] max-w-[400px]"
+                >
+                    <img 
+                        src="/models/cat12.png" 
+                        alt="Human DeFi Cat Left" 
+                        className="w-full h-auto object-contain drop-shadow-2xl"
+                    />
+                </motion.div>
+
+                {/* Right Cat */}
+                <motion.div 
+                    style={{ y: yRight, scale: scaleCats }}
+                    initial={{ x: 100, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    className="w-[40%] md:w-[25%] max-w-[400px]"
+                >
+                    <img 
+                        src="/models/cat12.png" 
+                        alt="Human DeFi Cat Right" 
+                        className="w-full h-auto object-contain drop-shadow-2xl transform scale-x-[-1]" // Flip horizontally for symmetry
+                    />
+                </motion.div>
             </div>
+            
+            {/* Bottom Gradient for smooth blend if needed, or colored bar as in mockup */}
+            <div className="absolute bottom-0 left-0 right-0 h-4 bg-[#F0A6E3]/30 z-0" />
         </section>
     );
 }

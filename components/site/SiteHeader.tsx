@@ -55,7 +55,7 @@ export function SiteHeader() {
 
     const navLinks = [
         { name: t('nav.functions'), href: '/funciones' },
-        { name: 'VIP', href: '/vip', isVIP: true },
+        { name: 'VIP MEMBER', href: '/vip', isVIP: true },
         { name: t('nav.developer'), href: '/developer' }, 
         { name: t('nav.human_card'), href: '/wallet' },
         { name: t('nav.support'), href: '/soporte' },
@@ -92,13 +92,13 @@ export function SiteHeader() {
                             <Link 
                                 key={link.href} 
                                 href={link.href}
-                                className={`px-5 py-2 text-[14px] font-black transition-all hover:bg-gray-100/50 rounded-lg tracking-widest uppercase font-sans whitespace-nowrap flex items-center gap-2 ${
+                                className={`px-5 py-2 text-[14px] font-black transition-all rounded-lg tracking-widest uppercase font-sans whitespace-nowrap flex items-center gap-2 ${
                                     link.isVIP 
-                                        ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-lg hover:scale-105' 
-                                        : 'text-gray-800 hover:text-black'
+                                        ? 'bg-black text-white border-2 border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:scale-105 hover:shadow-[0_0_25px_rgba(212,175,55,0.5)]' 
+                                        : 'text-gray-800 hover:text-black hover:bg-gray-100/50'
                                 }`}
                             >
-                                {link.isVIP && <Crown size={16} />}
+                                {link.isVIP && <Crown size={16} className="text-[#D4AF37]" />}
                                 {link.name}
                             </Link>
                         ))}

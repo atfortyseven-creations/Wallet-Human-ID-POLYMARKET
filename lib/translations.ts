@@ -173,9 +173,9 @@ export const translations = {
         'footer.lang_name': 'English',
 
         // VIP Section
-        'vip.badge': 'PROFESSIONAL WHALE TRACKER',
-        'vip.title_track': 'Track Whales',
-        'vip.title_copy': 'Copy Profits',
+        'vip.badge': 'LEGIONARY STATUS',
+        'vip.title_track': 'WHALE SOVEREIGNTY',
+        'vip.title_copy': 'CAPITAL STRATEGY',
         'vip.desc': 'Professional-grade whale tracking with AI-powered insights, real-time alerts, and automated copy trading. Join 10,000+ traders making smarter decisions.',
         'vip.tab_tracker': 'Whale Tracker',
         'vip.tab_analytics': 'Analytics',
@@ -356,9 +356,9 @@ export const translations = {
         'footer.lang_name': 'Español',
 
         // VIP Section
-        'vip.badge': 'RASTREADOR DE BALLENAS PROFESIONAL',
-        'vip.title_track': 'Rastrea Ballenas',
-        'vip.title_copy': 'Copia Ganancias',
+        'vip.badge': 'ESTATUS LEGIONARIO',
+        'vip.title_track': 'INTELIGENCIA SOBERANA',
+        'vip.title_copy': 'SINCRO ESTRATÉGICA',
         'vip.desc': 'Rastreo de ballenas de nivel profesional con análisis de IA, alertas en tiempo real y copy trading automatizado. Únete a más de 10,000 traders que toman mejores decisiones.',
         'vip.tab_tracker': 'Rastreador',
         'vip.tab_analytics': 'Análisis',

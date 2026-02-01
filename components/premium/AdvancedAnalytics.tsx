@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { TrendingUp, TrendingDown, Activity, DollarSign, Percent, Zap, Brain, AlertTriangle } from 'lucide-react';
+import { TrendingUp, TrendingDown, Activity, DollarSign, Percent, Zap, Brain, AlertTriangle, BarChart3 } from 'lucide-react';
 import TradingViewChart from './TradingViewChart';
 
 interface AdvancedAnalyticsProps {
@@ -67,23 +67,16 @@ export default function AdvancedAnalytics({ walletAddress, isPremium }: Advanced
     return `$${val.toFixed(0)}`;
   };
 
-  if (!isPremium) {
-    return (
-      <div className="p-12 text-center bg-white/30 rounded-2xl border-2 border-dashed border-[#1F1F1F]/20">
-        <Brain size={64} className="mx-auto mb-4 text-[#1F1F1F]/30" />
-        <h3 className="text-2xl font-black text-[#1F1F1F] mb-2">Advanced Analytics</h3>
-        <p className="text-[#1F1F1F]/70 mb-6">
-          Unlock AI-powered insights, portfolio tracking, and professional analytics
-        </p>
-        <button className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold hover:shadow-lg transition-all">
-          Upgrade to Pro
-        </button>
-      </div>
-    );
-  }
-
+  // formatValue helper is already defined
+  
   return (
     <div className="space-y-6">
+      <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-black text-[#1F1F1F] flex items-center gap-2">
+            <BarChart3 className="text-purple-600" />
+            Advanced Market Intelligence
+          </h2>
+      </div>
       {/* Timeframe Selector */}
       <div className="flex gap-2 bg-white/50 p-2 rounded-xl">
         {(['24h', '7d', '30d', '90d', '1y'] as const).map((tf) => (

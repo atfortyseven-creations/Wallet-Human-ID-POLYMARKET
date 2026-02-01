@@ -142,25 +142,29 @@ export default function VIPPage() {
           className="mb-12 text-center"
         >
           {/* Centered Badge */}
-          <div className="flex justify-center mb-6">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full text-white font-bold">
-              <Crown size={20} />
-              {t('vip.badge')}
-              {isPremium && <Sparkles size={16} className="animate-pulse" />}
+          <div className="flex justify-center mb-10">
+            <div className="inline-flex items-center gap-3 px-6 py-3 bg-black border border-[#D4AF37] rounded-full text-[#D4AF37] font-black tracking-[0.2em] shadow-[0_0_20px_rgba(212,175,55,0.15)]">
+              <Crown size={22} />
+              <span className="text-sm uppercase">{t('vip.badge')}</span>
+              {isPremium && <Sparkles size={18} className="animate-pulse" />}
             </div>
           </div>
 
-          {/* Centered Title */}
-          <h1 className="text-5xl md:text-7xl font-black text-[#1F1F1F] mb-4 leading-tight">
-            {t('vip.title_track')}.
-            <br />
-            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              {t('vip.title_copy')}.
+          {/* Centered Title - Stately & Bold */}
+          <h1 className="text-6xl md:text-8xl font-black text-[#1F1F1F] mb-6 leading-none tracking-tighter uppercase">
+            {t('vip.title_track')}
+            <div className="flex justify-center items-center gap-4 my-2">
+              <div className="h-[2px] w-20 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
+              <span className="text-2xl font-light tracking-[0.5em] text-[#1F1F1F]/40">&</span>
+              <div className="h-[2px] w-20 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
+            </div>
+            <span className="bg-gradient-to-b from-[#1F1F1F] to-[#D4AF37] bg-clip-text text-transparent">
+              {t('vip.title_copy')}
             </span>
           </h1>
 
           {/* Centered Description */}
-          <p className="text-xl text-[#1F1F1F]/70 max-w-2xl mx-auto">
+          <p className="text-lg text-[#1F1F1F]/60 max-w-3xl mx-auto font-medium leading-relaxed tracking-wide italic">
             {t('vip.desc')}
           </p>
 
