@@ -5,6 +5,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Send, Loader2, Info } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
 import { SiteHeader } from '@/components/site/SiteHeader';
+import { BackgroundGradient } from "@/components/ui/background-gradient";
+import { FloatingImmersiveBackground } from "@/components/landing/FloatingImmersiveBackground";
+import { ImmersiveKittens } from "@/components/immersive/ImmersiveKittens";
 import { HumanDefiFooter } from '@/components/landing/HumanDefiFooter';
 import { useLanguage } from '@/src/context/LanguageContext';
 
@@ -48,12 +51,10 @@ export default function SoportePage() {
     return (
         <div className="min-h-screen bg-[#EAEADF] text-[#1F1F1F] font-sans selection:bg-[#1F1F1F] selection:text-[#EAEADF] flex flex-col">
             <SiteHeader />
-            
             <main className="flex-grow flex items-center justify-center p-6 relative overflow-hidden">
-                {/* Background Noise/Void Effect */}
-                <div className="absolute inset-0 pointer-events-none opacity-5">
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-black rounded-full blur-[120px]" />
-                </div>
+                {/* Global Immersive Elements */}
+                <FloatingImmersiveBackground />
+                <ImmersiveKittens variant="side-peek" />
 
                 <div className="w-full max-w-2xl relative z-10">
                     <motion.div 

@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useRef } from 'react';
+import { ImmersiveKittens } from '@/components/immersive/ImmersiveKittens';
 import { ArrowRight } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { FloatingImmersiveBackground } from './FloatingImmersiveBackground';
+
 import { useLanguage } from '@/src/context/LanguageContext';
 
 interface Props {
@@ -30,12 +31,9 @@ export function LandingHero({ onStart }: Props) {
     return (
         <section 
             ref={containerRef}
-            className="w-full h-[100dvh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden bg-[#FAFAEE]"
+            className="w-full h-[100dvh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden bg-transparent"
             aria-label="Welcome to Human Defi"
         >
-            {/* FLOATING IMMERSIVE ELEMENTS LAYER (Behind everything) */}
-            <FloatingImmersiveBackground />
-
             {/* CONTENT LAYER */}
             <motion.div 
                 style={{ y: yText, opacity: opacityText }}
@@ -82,40 +80,10 @@ export function LandingHero({ onStart }: Props) {
             </motion.div>
 
             {/* IMMERSIVE CATS LAYER */}
-            <div className="absolute inset-0 pointer-events-none z-10 flex justify-between items-end pb-0 md:pb-10 px-4 md:px-20 w-full max-w-[1800px] mx-auto">
-                {/* Left Cat */}
-                <motion.div 
-                    style={{ y: yLeft, scale: scaleCats }}
-                    initial={{ x: -100, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                    className="w-[40%] md:w-[25%] max-w-[400px]"
-                >
-                    <img 
-                        src="/models/cat12.png" 
-                        alt="Human DeFi Cat Left" 
-                        className="w-full h-auto object-contain drop-shadow-2xl"
-                    />
-                </motion.div>
-
-                {/* Right Cat */}
-                <motion.div 
-                    style={{ y: yRight, scale: scaleCats }}
-                    initial={{ x: 100, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                    className="w-[40%] md:w-[25%] max-w-[400px]"
-                >
-                    <img 
-                        src="/models/cat12.png" 
-                        alt="Human DeFi Cat Right" 
-                        className="w-full h-auto object-contain drop-shadow-2xl transform scale-x-[-1]" // Flip horizontally for symmetry
-                    />
-                </motion.div>
-            </div>
+            <ImmersiveKittens variant="hero" />
             
             {/* Bottom Gradient for smooth blend if needed, or colored bar as in mockup */}
-            <div className="absolute bottom-0 left-0 right-0 h-4 bg-[#F0A6E3]/30 z-0" />
+            {/* Bottom Gradient Removed for seamless transition */}
         </section>
     );
 }

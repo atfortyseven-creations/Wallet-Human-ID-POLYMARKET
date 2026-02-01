@@ -16,6 +16,7 @@ import TokenFlowVisualizer from '@/components/premium/TokenFlowVisualizer';
 import GamificationSystem from '@/components/gamification/GamificationSystem';
 import CompetitiveLeaderboard from '@/components/gamification/CompetitiveLeaderboard';
 import RealTimeLiveFeed from '@/components/gamification/RealTimeLiveFeed';
+import { FloatingImmersiveBackground } from '@/components/landing/FloatingImmersiveBackground';
 import type { WatchedWallet } from '@/components/premium/WhaleTracker';
 
 type TabType = 'tracker' | 'analytics' | 'alerts' | 'news' | 'notifications' | 'comparison';
@@ -128,6 +129,8 @@ export default function VIPPage() {
   return (
     <div className="min-h-screen bg-[#EAEADF] text-[#1F1F1F] font-sans pb-20 relative overflow-hidden">
       {/* Premium Background Effect */}
+      <FloatingImmersiveBackground density="low" kittenCount={2} />
+      
       <div className="absolute inset-0 pointer-events-none opacity-10">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500 rounded-full blur-[150px]" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-500 rounded-full blur-[150px]" />
@@ -145,21 +148,21 @@ export default function VIPPage() {
           <div className="flex justify-center mb-10">
             <div className="inline-flex items-center gap-3 px-6 py-3 bg-black border border-[#D4AF37] rounded-full text-[#D4AF37] font-black tracking-[0.2em] shadow-[0_0_20px_rgba(212,175,55,0.15)]">
               <Crown size={22} />
-              <span className="text-sm uppercase">{t('vip.badge')}</span>
+              <span className="text-sm uppercase">THE IMMERSIVE WHALE ALERT</span>
               {isPremium && <Sparkles size={18} className="animate-pulse" />}
             </div>
           </div>
 
           {/* Centered Title - Stately & Bold */}
           <h1 className="text-6xl md:text-8xl font-black text-[#1F1F1F] mb-6 leading-none tracking-tighter uppercase">
-            {t('vip.title_track')}
+            INTELIGENCIA SOBERANA
             <div className="flex justify-center items-center gap-4 my-2">
               <div className="h-[2px] w-20 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
               <span className="text-2xl font-light tracking-[0.5em] text-[#1F1F1F]/40">&</span>
               <div className="h-[2px] w-20 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
             </div>
             <span className="bg-gradient-to-b from-[#1F1F1F] to-[#D4AF37] bg-clip-text text-transparent">
-              {t('vip.title_copy')}
+              SINCRO ESTRATÉGICA
             </span>
           </h1>
 

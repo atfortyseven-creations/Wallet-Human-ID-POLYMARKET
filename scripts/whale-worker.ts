@@ -65,6 +65,7 @@ async function startWorker() {
   // Infinite poll loop
   while (true) {
     try {
+      console.log(`💓 [Whale Worker] Heartbeat - Scanning block ${lastProcessedBlock}...`);
       const currentBlock = await alchemy.core.getBlockNumber();
       
       if (currentBlock > lastProcessedBlock) {
@@ -86,6 +87,8 @@ async function startWorker() {
           if (tx.asset === "ETH" || tx.asset === "WETH" || tx.asset === "CBETH") usdValue = val * 3300;
           else if (["USDC", "USDT", "DAI"].includes(tx.asset || "")) usdValue = val;
           else if (tx.asset === "AERO") usdValue = val * 1.2;
+          else if (tx.asset === "DEGEN") usdValue = val * 0.02;
+          else if (tx.asset === "VIRTUAL") usdValue = val * 2.5; 
           else {
             usdValue = val * 0.5; // fallback
           }
@@ -93,8 +96,8 @@ async function startWorker() {
           if (usdValue >= WHALE_THRESHOLD_USD) {
             console.log(`🌊 [Whale Worker] Detected Whale Move: ${usdValue.toFixed(2)} USD (${tx.asset})`);
             
-            // 1. Save to Database
-            await prisma.whaleActivity.upsert({
+            // 1. Save to Database (Non-blocking)
+            prisma.whaleActivity.upsert({
               where: { transactionHash: tx.hash },
               update: {},
               create: {
@@ -109,7 +112,7 @@ async function startWorker() {
                 blockNumber: BigInt(parseInt(tx.blockNum, 16)),
                 timestamp: new Date(),
               }
-            }).catch((err: any) => console.error("❌ [Whale Worker] DB Error:", err.message));
+            }).catch((err: any) => console.warn(`⚠️ [Whale Worker] DB Write Warning (continuing): ${err.message}`));
 
             // 2. Send Telegram Alert
             const shortFrom = `${tx.from.slice(0, 4)}...${tx.from.slice(-4)}`;
@@ -138,6 +141,7 @@ Transferencia de <b>${parseFloat(val.toFixed(2)).toLocaleString()} ${tx.asset ||
       await new Promise(resolve => setTimeout(resolve, 30000)); // Poll every 30s
     } catch (error: any) {
       console.error("❌ [Whale Worker] Error in worker loop:", error.message);
+      // Wait a bit before retrying to avoid spamming logs
       await new Promise(resolve => setTimeout(resolve, 30000));
     }
   }

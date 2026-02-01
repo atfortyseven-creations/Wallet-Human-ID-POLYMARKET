@@ -4,6 +4,7 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
 import { GPULottie } from './GPULottie';
+import { ImmersiveKittens } from '@/components/immersive/ImmersiveKittens';
 
 interface LottieStackProps {
     items: {
@@ -64,6 +65,7 @@ export function LottieStack({ items }: LottieStackProps) {
 
     return (
         <div ref={container} className="relative mt-[20vh]">
+            <ImmersiveKittens variant="side-peek" />
             {items.map((item, i) => {
                 // Calculate scale range for stacking effect
                 const targetScale = 1 - ((items.length - i) * 0.05); 

@@ -13,7 +13,7 @@ import { LandingHero } from '@/components/landing/LandingHero';
 import FluidBeigeBackground from '@/components/layout/FluidBeigeBackground';
 import { useGateState } from '@/components/layout/TitaniumGate';
 import { LenisProvider } from '@/components/creative/LenisProvider';
-import { LottieStack } from '@/components/creative/LottieStack';
+import { FloatingImmersiveBackground } from '@/components/landing/FloatingImmersiveBackground';
 
 // ============================================
 // 2. LAZY IMPORTS (Below the Fold - Load on Demand)
@@ -28,6 +28,8 @@ const EcosystemSection = dynamic(() => import('@/components/ecosystem/EcosystemS
 const HumanDefiFooter = dynamic(() => import('@/components/landing/HumanDefiFooter').then(mod => mod.HumanDefiFooter));
 const EcosystemCarousel = dynamic(() => import('@/components/landing/EcosystemCarousel').then(mod => mod.EcosystemCarousel)); // [NEW]
 import { CommunityInfo } from '@/components/CommunityInfo';
+// import { LottieStack } from '@/components/creative/LottieStack'; // Replaced
+import { StackedFeatureCards } from '@/components/landing/StackedFeatureCards';
 
 // Heavy Wallet - Only load when absolutely necessary
 const WalletSection = dynamic(() => import('@/components/WalletSection'), { 
@@ -78,6 +80,8 @@ export default function Home() {
             ============================================ */}
             <div className="fixed inset-0 z-0 pointer-events-none transform-gpu">
                  <FluidBeigeBackground />
+                 {/* Global Floating Immersive Elements */}
+                 <FloatingImmersiveBackground />
             </div>
 
             {/* ============================================
@@ -101,31 +105,8 @@ export default function Home() {
                     </section>
 
                     {/* HIGH PERFORMANCE STACK (Replaces standard grid) */}
-                    <div className="relative z-20">
-                        <LenisProvider>
-                             <LottieStack items={[
-                                 {
-                                     title: t('lottie.wallet.title'),
-                                     description: t('lottie.wallet.desc'),
-                                     lottieSrc: "https://lottie.host/8d48bb95-7124-4224-bcae-2144799011af/lHDi1Xo9qO.lottie"
-                                 },
-                                 {
-                                     title: t('lottie.prediction.title'),
-                                     description: t('lottie.prediction.desc'),
-                                     lottieSrc: "https://lottie.host/8d48bb95-7124-4224-bcae-2144799011af/lHDi1Xo9qO.lottie"
-                                 },
-                                 {
-                                     title: t('lottie.yield.title'),
-                                     description: t('lottie.yield.desc'),
-                                     lottieSrc: "https://lottie.host/8d48bb95-7124-4224-bcae-2144799011af/lHDi1Xo9qO.lottie"
-                                 },
-                                 {
-                                      title: t('lottie.settlement.title'),
-                                      description: t('lottie.settlement.desc'),
-                                      lottieSrc: "https://lottie.host/8d48bb95-7124-4224-bcae-2144799011af/lHDi1Xo9qO.lottie"
-                                 }
-                             ]} />
-                        </LenisProvider>
+                    <div className="relative z-20 w-full flex justify-center py-20 lg:py-32">
+                        <StackedFeatureCards />
                     </div>
 
                     {/* SECTION 5: WEB3 ACCESS & FOOTER (Fluid Background Area) */}
