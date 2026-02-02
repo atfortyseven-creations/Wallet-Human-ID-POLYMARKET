@@ -134,7 +134,7 @@ export default function VIPPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#EAEADF] text-[#1F1F1F] font-sans pb-20 relative overflow-hidden">
+    <div className="min-h-screen bg-[#EAEADF] text-[#1F1F1F] font-sans pb-20 relative">
       {/* Premium Background Effect */}
       <FloatingImmersiveBackground density="low" kittenCount={2} />
       

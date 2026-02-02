@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { currentUser } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
 import { ethers } from 'ethers';
@@ -35,7 +35,7 @@ function encrypt(text: string) {
   return iv.toString('hex') + ':' + encrypted.toString('hex') + ':' + cipher.getAuthTag().toString('hex');
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const user = await currentUser();
 
@@ -43,6 +43,30 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const { searchParams } = new URL(request.url);
+    const requestedAddress = searchParams.get('address');
+
+    // If a specific address is requested, we fetch its public portfolio data
+    if (requestedAddress && ethers.isAddress(requestedAddress)) {
+        try {
+            const portfolio = await getPortfolio(requestedAddress);
+            return NextResponse.json({
+                address: requestedAddress,
+                balance: portfolio.totalValueUSD.toFixed(2),
+                assets: portfolio.assets || [],
+                change24hUSD: portfolio.change24hUSD || 0,
+                change24hPercent: portfolio.change24hPercent || 0,
+                status: "Public",
+                isReadOnly: true,
+                securityLevel: "WATCH_ONLY"
+            });
+        } catch (e) {
+            console.error(`Failed to fetch portfolio for requested address ${requestedAddress}:`, e);
+            return NextResponse.json({ error: 'Failed to fetch public portfolio data' }, { status: 500 });
+        }
+    }
+
+    // Otherwise, continue with the standard logic for the AUTHENTICATED user's MANAGED wallet
     const email = user.emailAddresses[0]?.emailAddress;
     
     if (!email) {

@@ -50,6 +50,8 @@ export default function NotificationSettings() {
   });
 
   const [testing, setTesting] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleToggleChannel = (channelId: string) => {
     setChannels(prev =>
@@ -182,6 +184,7 @@ export default function NotificationSettings() {
     const telegram = channels.find(c => c.id === 'telegram');
     const email = channels.find(c => c.id === 'email');
 
+    setIsSaving(true);
     try {
       const response = await fetch('/api/user/settings/notifications', {
         method: 'POST',
@@ -197,19 +200,17 @@ export default function NotificationSettings() {
       });
 
       if (response.ok) {
-        const button = document.getElementById('save-settings-btn');
-        if (button) {
-          const originalText = button.innerHTML;
-          button.innerHTML = '✅ Saved Successfully!';
-          setTimeout(() => {
-            button.innerHTML = originalText;
-          }, 2000);
-        }
+        setShowSuccess(true);
+        setTimeout(() => {
+          setShowSuccess(false);
+        }, 3000);
       } else {
         throw new Error('Save failed');
       }
     } catch (error) {
       alert('Failed to save settings to cloud.');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -345,10 +346,36 @@ export default function NotificationSettings() {
       {/* Save Button */}
       <button 
         id="save-settings-btn"
+        type="button"
         onClick={handleSave}
-        className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold hover:shadow-lg transition-all"
+        disabled={isSaving}
+        className={`w-full py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+          showSuccess 
+            ? 'bg-green-600 text-white' 
+            : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]'
+        } disabled:opacity-70 disabled:cursor-not-allowed`}
       >
-        💾 Save Settings
+        {isSaving ? (
+          <>
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+            >
+              <Sparkles size={20} />
+            </motion.div>
+            Saving Settings...
+          </>
+        ) : showSuccess ? (
+          <>
+            <Check size={20} />
+            Saved Successfully!
+          </>
+        ) : (
+          <>
+            <span>💾</span>
+            Save Settings
+          </>
+        )}
       </button>
     </div>
   );

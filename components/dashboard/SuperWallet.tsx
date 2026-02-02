@@ -171,6 +171,7 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
             };
 
             setAccounts([...accounts, watchAccount]);
+            handleSwitchAccount(resolvedAddress);
             setShowWatchInput(false);
         } catch (error: any) {
             throw new Error(error.message || 'Failed to add watch wallet');
@@ -330,45 +331,41 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
                         <SettingsPanel />
                     </div>
                 )}
-                
-                {/* MODALS */}
-                {showWatchInput && (
-                    <WatchOnlyInput 
-                        onAdd={handleAddWatchWallet} 
-                        onCancel={() => setShowWatchInput(false)} 
-                    />
-                )}
-
-                {showReceive && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in" onClick={() => setShowReceive(false)}>
-                        <div className="w-full max-w-4xl bg-[#EAEADF] rounded-[40px] overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
-                            <div className="p-4 flex justify-between items-center">
-                                <h2 className="text-xl font-bold ml-4">Receive Assets</h2>
-                                <button onClick={() => setShowReceive(false)} className="p-2 rounded-full hover:bg-black/5"><X size={24}/></button>
-                            </div>
-                            <ReceiveHub addresses={[
-                                { network: 'Ethereum', address: displayAddress, token: 'ETH', chainId: 1 },
-                                { network: 'Base', address: displayAddress, token: 'ETH', chainId: 8453 },
-                                { network: 'Polygon', address: displayAddress, token: 'MATIC', chainId: 137 },
-                            ]} />
-                        </div>
-                    </div>
-                )}
-
-                <QRScannerModal 
-                    isOpen={showScanner} 
-                    onClose={() => setShowScanner(false)}
-                    onScan={(data) => {
-                        console.log("Scanned:", data);
-                        alert(`Scanned: ${data}`);
-                        setShowScanner(false);
-                    }}
-                />
-
-                {/* FEATURE: AI Financial Concierge */}
-                <AIConcierge />
-
             </main>
+
+            {/* MODALS - Outside main to avoid z-index trapping */}
+            {showWatchInput && (
+                <WatchOnlyInput 
+                    onAdd={handleAddWatchWallet} 
+                    onCancel={() => setShowWatchInput(false)} 
+                />
+            )}
+
+            {showReceive && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in" onClick={() => setShowReceive(false)}>
+                    <div className="w-full max-w-4xl bg-[#EAEADF] rounded-[40px] overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+                        <div className="p-4 flex justify-between items-center">
+                            <h2 className="text-xl font-bold ml-4">Receive Assets</h2>
+                            <button onClick={() => setShowReceive(false)} className="p-2 rounded-full hover:bg-black/5"><X size={24}/></button>
+                        </div>
+                        <ReceiveHub addresses={[
+                            { network: 'Ethereum', address: displayAddress, token: 'ETH', chainId: 1 },
+                            { network: 'Base', address: displayAddress, token: 'ETH', chainId: 8453 },
+                            { network: 'Polygon', address: displayAddress, token: 'MATIC', chainId: 137 },
+                        ]} />
+                    </div>
+                </div>
+            )}
+
+            <QRScannerModal 
+                isOpen={showScanner} 
+                onClose={() => setShowScanner(false)}
+                onScan={(data) => {
+                    console.log("Scanned:", data);
+                    alert(`Scanned: ${data}`);
+                    setShowScanner(false);
+                }}
+            />
         </div>
     );
 }
