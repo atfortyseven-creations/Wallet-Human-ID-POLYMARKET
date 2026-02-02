@@ -17,6 +17,9 @@ import SwapModal from "./SwapModal";
 import { motion, AnimatePresence } from "framer-motion";
 import { getAddress } from "ethers";
 import { formatEther } from 'viem';
+import useSWR from 'swr';
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 interface Transaction {
     hash: string;
@@ -67,15 +70,17 @@ export default function MetaMaskWalletView() {
     const [isStealthMode, setIsStealthMode] = useState(false);
     const [isLocked, setIsLocked] = useState(false);
 
+    // Optimized: Fetch real settings with caching to prevent 429 errors
+    const { data: settingsData } = useSWR('/api/user/settings', fetcher, {
+        revalidateOnFocus: false, // Don't spam when switching tabs
+        dedupingInterval: 60000,   // Cache for 1 minute
+    });
+
     useEffect(() => {
-        // Fetch real settings if needed
-        const fetchSettings = async () => {
-             const res = await fetch('/api/user/settings');
-             const data = await res.json();
-             if (data.settings?.walletStealthMode) setIsStealthMode(true);
-        };
-        fetchSettings();
-    }, []);
+         if (settingsData?.settings?.walletStealthMode) {
+             setIsStealthMode(true);
+         }
+    }, [settingsData]);
 
     // Mock prices
     const maticPrice = 0.72;
