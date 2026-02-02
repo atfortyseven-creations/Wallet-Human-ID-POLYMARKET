@@ -53,6 +53,7 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({
                 address: requestedAddress,
                 balance: portfolio.totalValueUSD.toFixed(2),
+                totalValueUSD: portfolio.totalValueUSD, // Added for compatibility
                 assets: portfolio.assets || [],
                 perps: portfolio.perps || [],
                 predictions: portfolio.predictions || [],
@@ -187,6 +188,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       address: walletAddress,
       balance: balance,
+      totalValueUSD: portfolio?.totalValueUSD || 0, // Added for compatibility
       assets: portfolio?.assets || [],
       perps: portfolio?.perps || [],
       predictions: portfolio?.predictions || [],
@@ -258,6 +260,59 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(newAccount);
   } catch (error) {
     console.error("Wallet Add Error:", error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const user = await currentUser();
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const email = user.emailAddresses[0]?.emailAddress;
+    if (!email) return NextResponse.json({ error: 'No email found' }, { status: 400 });
+
+    const { searchParams } = new URL(request.url);
+    const address = searchParams.get('address');
+
+    if (!address) {
+      return NextResponse.json({ error: 'Missing address' }, { status: 400 });
+    }
+
+    const authUser = await prisma.authUser.findUnique({
+      where: { email },
+    });
+
+    if (!authUser) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // [SECURITY] Do not allow deleting the primary account
+    const account = await prisma.walletAccount.findUnique({
+      where: { 
+        userId_address: {
+          userId: authUser.id,
+          address: address
+        }
+      }
+    });
+
+    if (account?.type === 'PRIMARY') {
+      return NextResponse.json({ error: 'Cannot delete primary account' }, { status: 400 });
+    }
+
+    await prisma.walletAccount.delete({
+      where: { 
+        userId_address: {
+          userId: authUser.id,
+          address: address
+        }
+      },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Wallet Delete Error:", error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

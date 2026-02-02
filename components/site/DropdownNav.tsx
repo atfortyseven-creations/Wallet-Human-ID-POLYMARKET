@@ -76,131 +76,93 @@ export function DropdownNav() {
                     </motion.div>
                 </motion.button>
 
-
-
                 {/* Dropdown Menu */}
                 <AnimatePresence>
                     {isOpen && (
                         <>
-                            {/* Transparent Backdrop to detect click outside - NO BLUR here to keep button sharp */}
+                            {/* Transparent Backdrop */}
                             <div 
                                 className="fixed inset-0 z-40 bg-black/5" 
                                 onClick={() => setIsOpen(false)} 
                             />
 
-                            {/* Menu Panel - Absolute below button, Glassmorphic Rectangle */}
+                            {/* Menu Panel - Absolute below button, Glassmorphic Horizontal Bar */}
                             <motion.div
-                                initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                                initial={{ opacity: 0, y: -20, scale: 0.95 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                                transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-                                className="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-80 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 dark:border-white/10 overflow-hidden z-50 pointer-events-auto"
+                                exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                                transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                                className="absolute top-full mt-6 left-1/2 -translate-x-1/2 w-[90vw] max-w-5xl bg-white/80 dark:bg-neutral-950/90 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border border-white/30 dark:border-white/10 z-50 pointer-events-auto overflow-hidden p-2"
                             >
-                                {/* Exit Button / Header */}
-                                <div className="p-4 border-b border-gray-200 dark:border-white/10 flex justify-between items-center">
-                                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Quick Navigation</h3>
-                                    <button
-                                        onClick={() => setIsOpen(false)}
-                                        className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-                                    >
-                                        <X size={16} className="text-gray-400" />
-                                    </button>
-                                </div>
+                                <div className="flex flex-col md:flex-row items-center justify-between gap-2 px-4 py-2">
+                                    
+                                    {/* Left: Branding */}
+                                    <div className="hidden lg:flex items-center gap-3 pr-6 border-r border-gray-200 dark:border-white/10 shrink-0">
+                                       <div className="w-10 h-10 bg-[#1F1F1F] dark:bg-white rounded-2xl flex items-center justify-center shadow-lg">
+                                            <span className="text-white dark:text-[#1F1F1F] font-black text-xl italic">H</span>
+                                       </div>
+                                       <div className="flex flex-col">
+                                            <span className="text-sm font-black text-[#1F1F1F] dark:text-white leading-none tracking-tight">HUMAN</span>
+                                            <span className="text-[10px] font-black text-purple-500 uppercase tracking-[0.2em]">Nav</span>
+                                       </div>
+                                    </div>
 
-                                {/* Navigation Links */}
-                                <div className="p-4 space-y-1">
-                                    {navLinks.map((link) => (
-                                        <Link
-                                            key={link.href}
-                                            href={link.href}
-                                            onClick={() => setIsOpen(false)}
-                                            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                                                link.isVIP
-                                                    ? 'bg-gradient-to-r from-black to-gray-800 text-white hover:scale-[1.02] shadow-lg'
-                                                    : 'hover:bg-gray-100 dark:hover:bg-white/10 text-[#1F1F1F] dark:text-white'
-                                            }`}
-                                        >
-                                            <div className="w-5 flex justify-center">{link.icon}</div>
-                                            <span className="font-bold text-sm tracking-tight">{link.name}</span>
-                                        </Link>
-                                    ))}
-                                </div>
+                                    {/* Center: Navigation Links */}
+                                    <nav className="flex items-center gap-1 flex-1 justify-center overflow-x-auto no-scrollbar">
+                                        {navLinks.map((link) => (
+                                            <Link
+                                                key={link.href}
+                                                href={link.href}
+                                                onClick={() => setIsOpen(false)}
+                                                className={`flex items-center gap-2 px-5 py-3 rounded-2xl transition-all whitespace-nowrap group/link ${
+                                                    link.isVIP
+                                                        ? 'bg-[#1F1F1F] dark:bg-white text-white dark:text-[#1F1F1F] hover:scale-105 shadow-lg'
+                                                        : 'hover:bg-gray-100 dark:hover:bg-white/5 text-[#1F1F1F] dark:text-white font-bold text-sm tracking-tight'
+                                                }`}
+                                            >
+                                                {link.isVIP && <div className="animate-pulse">{link.icon}</div>}
+                                                <span>{link.name}</span>
+                                            </Link>
+                                        ))}
+                                    </nav>
 
-                                {/* Divider */}
-                                <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-white/10 to-transparent" />
+                                    {/* Right: Tools & Connect */}
+                                    <div className="flex items-center gap-4 pl-6 border-l border-gray-200 dark:border-white/10 shrink-0">
+                                        <div className="flex gap-1">
+                                            <NavToolButton 
+                                                onClick={() => { setShowNotifications(true); setIsOpen(false); }}
+                                                icon={<Bell size={18} />}
+                                                badge={unreadCount > 0}
+                                                label="Alertas"
+                                            />
+                                            <NavToolButton 
+                                                onClick={toggleStealthMode}
+                                                icon={isStealthMode ? <EyeOff size={18} /> : <Eye size={18} />}
+                                                label={isStealthMode ? 'Visible' : 'Ocultar'}
+                                            />
+                                            <Link href="/settings" onClick={() => setIsOpen(false)}>
+                                                <NavToolButton icon={<Settings size={18} />} label="Config" />
+                                            </Link>
+                                            <NavToolButton onClick={toggleLanguage} icon={<Globe size={18} />} label={language} />
+                                        </div>
 
-                                {/* Utility Buttons Grid */}
-                                <div className="p-4">
-                                    <div className="grid grid-cols-2 gap-2">
-                                        {/* Notifications */}
                                         <button
                                             onClick={() => {
-                                                setShowNotifications(true);
+                                                appKit.open();
                                                 setIsOpen(false);
                                             }}
-                                            className="relative flex flex-col items-center justify-center gap-1 p-3 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-all border border-transparent hover:border-gray-200 dark:hover:border-white/10"
+                                            className="px-6 py-3 bg-[#1F1F1F] dark:bg-white dark:text-[#1F1F1F] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl flex items-center gap-3 whitespace-nowrap"
                                         >
-                                            <div className="relative">
-                                                <Bell size={18} className="text-[#1F1F1F] dark:text-white" />
-                                                {unreadCount > 0 && (
-                                                    <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-[#1F1F1F]" />
-                                                )}
-                                            </div>
-                                            <span className="text-[10px] font-black uppercase tracking-wider text-gray-500">Alertas</span>
-                                        </button>
-
-                                        {/* Stealth Mode */}
-                                        <button
-                                            onClick={toggleStealthMode}
-                                            className="flex flex-col items-center justify-center gap-1 p-3 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-all border border-transparent hover:border-gray-200 dark:hover:border-white/10"
-                                        >
-                                            {isStealthMode ? <EyeOff size={18} /> : <Eye size={18} />}
-                                            <span className="text-[10px] font-black uppercase tracking-wider text-gray-500">
-                                                {isStealthMode ? 'Visible' : 'Ocultar'}
-                                            </span>
-                                        </button>
-
-                                        {/* Settings */}
-                                        <Link
-                                            href="/settings"
-                                            onClick={() => setIsOpen(false)}
-                                            className="flex flex-col items-center justify-center gap-1 p-3 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-all border border-transparent hover:border-gray-200 dark:hover:border-white/10"
-                                        >
-                                            <Settings size={18} className="text-[#1F1F1F] dark:text-white" />
-                                            <span className="text-[10px] font-black uppercase tracking-wider text-gray-500">Config</span>
-                                        </Link>
-
-                                        {/* Language */}
-                                        <button
-                                            onClick={toggleLanguage}
-                                            className="flex flex-col items-center justify-center gap-1 p-3 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-all border border-transparent hover:border-gray-200 dark:hover:border-white/10"
-                                        >
-                                            <Globe size={18} className="text-[#1F1F1F] dark:text-white" />
-                                            <span className="text-[10px] font-black uppercase tracking-wider text-gray-500">
-                                                {language}
-                                            </span>
+                                            {isConnected ? (
+                                                <>
+                                                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                                    <span className="font-mono">{address?.slice(0, 4)}...{address?.slice(-4)}</span>
+                                                </>
+                                            ) : (
+                                                t('nav.start')
+                                            )}
                                         </button>
                                     </div>
-                                </div>
-
-                                {/* Connect Button */}
-                                <div className="p-4 pt-0">
-                                    <button
-                                        onClick={() => {
-                                            appKit.open();
-                                            setIsOpen(false);
-                                        }}
-                                        className="w-full bg-[#1F1F1F] dark:bg-white dark:text-[#1F1F1F] text-white px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-95 transition-all shadow-xl flex items-center justify-center gap-3"
-                                    >
-                                        {isConnected ? (
-                                            <>
-                                                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                                                <span className="font-mono">{address?.slice(0, 6)}...{address?.slice(-4)}</span>
-                                            </>
-                                        ) : (
-                                            t('nav.start')
-                                        )}
-                                    </button>
                                 </div>
                             </motion.div>
                         </>
@@ -208,7 +170,7 @@ export function DropdownNav() {
                 </AnimatePresence>
             </div>
 
-            {/* Notifications Modal - Portaled to avoid positioning bugs */}
+            {/* Notifications Modal */}
             {mounted && showNotifications && createPortal(
                 <AnimatePresence mode="wait">
                     <div className="fixed inset-0 z-[1000] isolate">
@@ -224,7 +186,7 @@ export function DropdownNav() {
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: 100 }}
                             transition={{ duration: 0.3, ease: "easeOut" }}
-                            className="absolute right-4 top-4 bottom-4 w-[calc(100%-2rem)] max-w-96 bg-white dark:bg-[#1F1F1F] rounded-3xl shadow-2xl border border-white/20 overflow-hidden flex flex-col"
+                            className="absolute right-4 top-4 bottom-4 w-[calc(100%-2rem)] max-w-96 bg-white dark:bg-[#1F1F1F] rounded-3xl shadow-2xl border border-white/20 dark:border-white/10 overflow-hidden flex flex-col"
                         >
                             <div className="p-4 border-b border-gray-100 dark:border-white/10 flex justify-between items-center bg-gray-50/50 dark:bg-white/5">
                                 <h3 className="font-bold text-gray-900 dark:text-white">Notificaciones</h3>
@@ -239,12 +201,7 @@ export function DropdownNav() {
                             </div>
 
                             <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-                                {!data ? (
-                                    <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                                        <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mb-2" />
-                                        Cargando...
-                                    </div>
-                                ) : notifications.length === 0 ? (
+                                {notifications.length === 0 ? (
                                     <div className="flex flex-col items-center justify-center h-full text-gray-400">
                                         <Bell size={32} className="opacity-40 mb-2" />
                                         <p>No hay notificaciones</p>
@@ -280,5 +237,26 @@ export function DropdownNav() {
                 document.body
             )}
         </>
+    );
+}
+
+function NavToolButton({ icon, onClick, label, badge = false }: { icon: React.ReactNode, onClick?: () => void, label: string, badge?: boolean }) {
+    return (
+        <button
+            onClick={onClick}
+            className="group relative w-12 h-12 flex items-center justify-center rounded-2xl hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-[#1F1F1F] dark:text-white"
+            title={label}
+        >
+            <div className="relative">
+                {icon}
+                {badge && (
+                    <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-[#1F1F1F]" />
+                )}
+            </div>
+            {/* Tooltip on hover */}
+            <span className="absolute top-full mt-2 left-1/2 -translate-x-1/2 px-2 py-1 rounded bg-black text-[8px] font-bold text-white opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap z-[60]">
+                {label}
+            </span>
+        </button>
     );
 }

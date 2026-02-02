@@ -10,6 +10,7 @@ interface AccountSwitcherProps {
   onSwitch: (address: string) => void;
   onAddAccount: () => void;
   onAddWatchOnly: () => void;
+  onDeleteAccount: (address: string) => void;
   accounts: WalletAccount[];
 }
 
@@ -18,6 +19,7 @@ export default function AccountSwitcher({
   onSwitch, 
   onAddAccount, 
   onAddWatchOnly,
+  onDeleteAccount,
   accounts 
 }: AccountSwitcherProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -58,7 +60,7 @@ export default function AccountSwitcher({
               initial={{ opacity: 0, scale: 0.95, y: -20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
-              className="absolute top-12 left-0 w-72 bg-[#EAEADF] rounded-2xl shadow-xl border border-[#1F1F1F]/10 z-50 overflow-hidden"
+              className="absolute top-12 left-0 w-80 bg-[#EAEADF] rounded-2xl shadow-2xl border border-[#1F1F1F]/10 z-50 overflow-hidden"
             >
               <div className="p-3 border-b border-[#1F1F1F]/10 bg-white/30 flex justify-between items-center">
                 <span className="text-sm font-black text-[#1F1F1F]">My Accounts</span>
@@ -66,44 +68,56 @@ export default function AccountSwitcher({
 
               <div className="max-h-[60vh] overflow-y-auto p-2 space-y-1 custom-scrollbar">
                 {accounts.map((account) => (
-                  <button
-                    key={account.address}
-                    onClick={() => {
-                      onSwitch(account.address);
-                      setIsOpen(false);
-                    }}
-                    className={`w-full p-2 flex items-center gap-3 rounded-xl transition-all ${
-                      account.address === currentAddress
-                        ? 'bg-white shadow-sm'
-                        : 'hover:bg-white/50'
-                    }`}
-                  >
-                    <div 
-                      className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm"
-                      style={{ background: getAccountColor(account.address) }}
+                  <div key={account.address} className="flex items-center gap-1">
+                    <button
+                      key={account.address}
+                      onClick={() => {
+                        onSwitch(account.address);
+                        setIsOpen(false);
+                      }}
+                      className={`flex-1 p-2 flex items-center gap-3 rounded-xl transition-all ${
+                        account.address === currentAddress
+                          ? 'bg-white shadow-sm'
+                          : 'hover:bg-white/50'
+                      }`}
                     >
-                      {account.name[0].toUpperCase()}
-                    </div>
-                    
-                    <div className="flex-1 text-left min-w-0">
-                      <div className="text-sm font-bold text-[#1F1F1F] truncate flex items-center gap-1">
-                        {account.name}
-                        {account.type === 'WATCH_ONLY' && (
-                          <Eye size={10} className="text-[#1F1F1F]/50" />
-                        )}
-                        {account.type === 'HARDWARE' && (
-                          <Wallet size={10} className="text-[#1F1F1F]/50" />
-                        )}
+                      <div 
+                        className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm shrink-0"
+                        style={{ background: getAccountColor(account.address) }}
+                      >
+                        {account.name[0].toUpperCase()}
                       </div>
-                      <div className="text-xs text-[#1F1F1F]/60 font-mono truncate">
-                        {account.address}
+                      
+                      <div className="flex-1 text-left min-w-0">
+                        <div className="text-sm font-bold text-[#1F1F1F] truncate flex items-center gap-1">
+                          {account.name}
+                          {account.type === 'WATCH_ONLY' && (
+                            <Eye size={10} className="text-[#1F1F1F]/50" />
+                          )}
+                        </div>
+                        <div className="text-[10px] text-[#1F1F1F]/50 font-mono truncate">
+                          {account.address.slice(0, 10)}...{account.address.slice(-8)}
+                        </div>
                       </div>
-                    </div>
 
-                    {account.address === currentAddress && (
-                      <Check size={16} className="text-green-600" />
+                      {account.address === currentAddress && (
+                        <Check size={14} className="text-green-600 shrink-0" />
+                      )}
+                    </button>
+
+                    {account.type !== 'PRIMARY' && (
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDeleteAccount(account.address);
+                        }}
+                        className="p-2 text-red-500/30 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                        title="Delete account"
+                      >
+                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                      </button>
                     )}
-                  </button>
+                  </div>
                 ))}
               </div>
 

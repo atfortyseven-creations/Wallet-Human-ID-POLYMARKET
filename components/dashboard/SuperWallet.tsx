@@ -235,6 +235,27 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
         }
     };
 
+    const handleDeleteAccount = async (address: string) => {
+        if (!confirm('Are you sure you want to remove this account?')) return;
+
+        try {
+            await fetch(`/api/user/wallet?address=${address}`, {
+                method: 'DELETE'
+            });
+
+            const updated = accounts.filter(a => a.address.toLowerCase() !== address.toLowerCase());
+            setAccounts(updated);
+            localStorage.setItem('wallet_accounts', JSON.stringify(updated));
+            
+            if (currentAddress.toLowerCase() === address.toLowerCase()) {
+                setCurrentAddress(updated[0]?.address || hookAddress);
+            }
+        } catch (e) {
+            console.error("Failed to delete account", e);
+            alert("Failed to delete account. Please try again.");
+        }
+    };
+
     const handleSwitchAccount = (address: string) => {
         setCurrentAddress(address);
     };
@@ -256,19 +277,11 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
                     {accounts.length > 0 && (
                         <AccountSwitcher 
                             currentAddress={displayAddress}
-                            accounts={accounts.filter(acc => {
-                                // Always show Primary and Currently Selected
-                                if (acc.type === 'PRIMARY') return true;
-                                if (acc.address === displayAddress) return true;
-                                
-                                // Show if balance is > 0 or unknown (to avoid flickering)
-                                const balanceStr = accountBalances[acc.address.toLowerCase()];
-                                if (balanceStr === undefined) return true;
-                                return parseFloat(balanceStr) > 0;
-                            })}
+                            accounts={accounts} // Fix: Removed filtering to show all accounts as requested
                             onSwitch={handleSwitchAccount}
                             onAddAccount={handleAddAccount}
                             onAddWatchOnly={() => setShowWatchInput(true)}
+                            onDeleteAccount={handleDeleteAccount}
                         />
                     )}
                 </div>

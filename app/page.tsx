@@ -33,7 +33,11 @@ export default function Home() {
     if (typeof document !== 'undefined') {
       (document.body.style as any).webkitFontSmoothing = 'antialiased';
     }
-  }, []);
+    // [Bugfix] If user is already authenticated, take them to the wallet immediately
+    if (isAuthenticated) {
+        window.location.href = '/wallet';
+    }
+  }, [isAuthenticated]);
 
   const { state } = useGateState();
 

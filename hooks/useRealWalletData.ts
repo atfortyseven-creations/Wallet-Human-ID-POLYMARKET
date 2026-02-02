@@ -141,8 +141,9 @@ export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?:
     const multiChainBalance = assetsData?.totalValueUSD || 0;
     const usdcBalance = parseFloat(balanceData?.formatted || '0');
     
-    // For "Rainbow" feel, we show total net worth across everything
-    const totalNetWorth = multiChainBalance + portfolioValue;
+    // For "Rainbow" feel, we use the unified balance from the portfolio API
+    // which already includes tokens, perps, and predictions.
+    const totalNetWorth = multiChainBalance;
 
     return {
         address: effectiveAddress,
