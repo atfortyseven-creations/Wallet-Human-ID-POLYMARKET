@@ -255,17 +255,27 @@ function Bubble({ coin, index, timeframe, containerRef, dimensions, onClick }: {
     const offsetX = (Math.sin(seed) * (dimensions.width / cols / 3));
     const offsetY = (Math.cos(seed) * 40);
 
-    const initialX = col * (dimensions.width / cols) + (dimensions.width / cols / 3) + offsetX;
-    const initialY = row * 200 + 80 + offsetY;
+    // Safe zone calculation to prevent cropping
+    const padding = 20;
+    const safeMaxX = Math.max(padding, dimensions.width - size - padding);
+    const safeMaxY = Math.max(padding, dimensions.height - size - padding);
 
-    // Autonomous floating animation
+    const initialX = Math.max(padding, Math.min(safeMaxX, col * (dimensions.width / cols) + (dimensions.width / cols / 3) + offsetX));
+    const initialY = Math.max(padding, Math.min(safeMaxY, row * 200 + 80 + offsetY));
+
+    // Autonomous floating animation restricted to safe zone
     const floatDuration = 4 + (index % 3);
     const floatDistance = 15 + (index % 10);
 
     return (
         <motion.div
             drag
-            dragConstraints={containerRef}
+            dragConstraints={{
+                top: padding,
+                left: padding,
+                right: safeMaxX,
+                bottom: safeMaxY
+            }}
             dragElastic={0.25}
             dragTransition={{ bounceStiffness: 600, bounceDamping: 20 }}
             dragMomentum={true}
@@ -278,9 +288,17 @@ function Bubble({ coin, index, timeframe, containerRef, dimensions, onClick }: {
             animate={{ 
                 scale: 1, 
                 opacity: 1,
-                // Only animate floating if NOT dragging
-                x: isDragging ? undefined : [initialX - floatDistance, initialX + floatDistance, initialX - floatDistance],
-                y: isDragging ? undefined : [initialY - floatDistance, initialY + floatDistance, initialY - floatDistance],
+                // Only animate floating if NOT dragging and stay within safe zone
+                x: isDragging ? undefined : [
+                    Math.max(padding, initialX - floatDistance), 
+                    Math.min(safeMaxX, initialX + floatDistance), 
+                    Math.max(padding, initialX - floatDistance)
+                ],
+                y: isDragging ? undefined : [
+                    Math.max(padding, initialY - floatDistance), 
+                    Math.min(safeMaxY, initialY + floatDistance), 
+                    Math.max(padding, initialY - floatDistance)
+                ],
             }}
             transition={{ 
                 x: { duration: floatDuration, repeat: Infinity, ease: "easeInOut" },
