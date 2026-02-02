@@ -26,6 +26,23 @@ export interface TokenMetadata {
 }
 
 /**
+ * Get the correct Alchemy API URL for a specific chain and method
+ */
+function getAlchemyApiUrl(chainId: number, method: 'getTokenBalances' | 'getTokenMetadata'): string {
+  const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
+  const networkMap: Record<number, string> = {
+    1: 'eth-mainnet',
+    137: 'polygon-mainnet',
+    8453: 'base-mainnet',
+    42161: 'arb-mainnet',
+    10: 'opt-mainnet',
+  };
+
+  const network = networkMap[chainId] || 'eth-mainnet';
+  return `https://${network}.g.alchemy.com/v2/${apiKey}/${method}`;
+}
+
+/**
  * Discover all ERC20 tokens in a wallet
  */
 export async function discoverTokens(
@@ -33,8 +50,9 @@ export async function discoverTokens(
   chainId: number
 ): Promise<Token[]> {
   try {
+    const url = getAlchemyApiUrl(chainId, 'getTokenBalances');
     const response = await fetch(
-      `https://api.alchemyapi.io/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}/getTokenBalances`,
+      url,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -93,8 +111,9 @@ export async function getTokenMetadata(
   chainId: number
 ): Promise<TokenMetadata> {
   try {
+    const url = getAlchemyApiUrl(chainId, 'getTokenMetadata');
     const response = await fetch(
-      `https://api.alchemyapi.io/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}/getTokenMetadata`,
+      url,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
