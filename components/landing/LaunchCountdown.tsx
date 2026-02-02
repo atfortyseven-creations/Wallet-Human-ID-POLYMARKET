@@ -33,19 +33,12 @@ export function LaunchCountdown() {
     }, []);
 
     return (
-        <section className="relative w-full min-h-screen py-32 flex flex-col items-center justify-center overflow-hidden">
+        <section className="relative w-full min-h-screen py-32 flex flex-col items-center justify-center">
             
-            {/* Immersive Image Background */}
-            <div className="absolute inset-0 z-0">
-                <img 
-                    src="/assets/immersive-launch.png" 
-                    alt="Human DeFi 2027 Vision" 
-                    className="w-full h-full object-cover opacity-80"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-black/40 to-black/80" />
-            </div>
+            {/* CLEAN WHITE BACKGROUND - NO CLUTTER */}
+            <div className="absolute inset-0 bg-white dark:bg-[#0a0a0a]" />
 
-            <div className="relative z-10 w-full max-w-7xl mx-auto px-6 text-center text-white">
+            <div className="relative z-10 w-full max-w-7xl mx-auto px-6 text-center">
                 
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
@@ -53,26 +46,26 @@ export function LaunchCountdown() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
                 >
-                    <div className="inline-block px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-xs font-mono uppercase tracking-widest text-[#00ff9d] mb-6">
-                        Roadmap to Sovereignty
-                    </div>
-
-                    <h2 className="text-5xl md:text-8xl font-black tracking-tighter mb-4">
-                        WORLD RELEASE <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-[#00ff9d]">
-                            2027
-                        </span>
+                    {/* WORLD RELEASE - Clean and Elegant */}
+                    <h2 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter mb-6 text-[#1F1F1F] dark:text-white uppercase leading-none">
+                        WORLD RELEASE
                     </h2>
 
-                    <p className="max-w-3xl mx-auto text-lg md:text-xl text-white/70 leading-relaxed font-light mb-16">
+                    {/* 2027 - Elegant Typography */}
+                    <div className="text-7xl md:text-9xl lg:text-[12rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600 mb-12">
+                        2027
+                    </div>
+
+                    {/* Clean Description */}
+                    <p className="max-w-3xl mx-auto text-lg md:text-xl text-[#1F1F1F]/70 dark:text-white/70 leading-relaxed font-light mb-20">
                         Before entering to operate in the market candles, it is crucial to be well-informed with great detail. 
                         We encourage deep understanding over impulsivity. 
                         Prepare yourself for the next era of financial intelligence.
                     </p>
                 </motion.div>
 
-                {/* Glassmorphism Countdown */}
-                <div className="flex flex-wrap justify-center gap-4 md:gap-8">
+                {/* Clean Countdown Boxes */}
+                <div className="flex flex-wrap justify-center gap-6 md:gap-10">
                     <CountdownItem value={timeLeft.days} label="DAYS" />
                     <CountdownItem value={timeLeft.hours} label="HOURS" />
                     <CountdownItem value={timeLeft.minutes} label="MINUTES" />
@@ -89,12 +82,13 @@ function CountdownItem({ value, label }: { value: number, label: string }) {
         <motion.div 
             initial={{ scale: 0.9, opacity: 0 }}
             whileInView={{ scale: 1, opacity: 1 }}
-            className="flex flex-col items-center justify-center w-24 h-24 md:w-40 md:h-40 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl"
+            viewport={{ once: true }}
+            className="flex flex-col items-center justify-center w-28 h-28 md:w-44 md:h-44 bg-white dark:bg-[#1F1F1F] rounded-2xl border-2 border-[#1F1F1F]/10 dark:border-white/10 shadow-lg hover:scale-105 transition-transform"
         >
-            <div className="text-3xl md:text-5xl font-black font-mono tracking-tighter text-white">
+            <div className="text-4xl md:text-6xl font-black font-mono tracking-tighter text-[#1F1F1F] dark:text-white">
                 {String(value).padStart(2, '0')}
             </div>
-            <div className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-white/40 mt-2">
+            <div className="text-xs md:text-sm font-bold uppercase tracking-widest text-[#1F1F1F]/50 dark:text-white/50 mt-2">
                 {label}
             </div>
         </motion.div>

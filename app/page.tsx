@@ -17,6 +17,7 @@ import { Footer } from '@/components/layout/Footer';
 import { LaunchCountdown } from '@/components/landing/LaunchCountdown';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import { StackedFeatureCards } from '@/components/landing/StackedFeatureCards';
+import { TrustCarousel } from '@/components/landing/TrustCarousel';
 
 export default function Home() {
   const { isConnected } = useAppKitAccount();
@@ -67,6 +68,9 @@ export default function Home() {
                 <section className="w-full py-20 flex justify-center">
                     <StackedFeatureCards />
                 </section>
+
+                {/* TRUST CAROUSEL - Why Choose Human DeFi */}
+                <TrustCarousel />
 
                 {/* LAUNCH COUNTDOWN & IMMERSIVE IMAGE */}
                 <LaunchCountdown />

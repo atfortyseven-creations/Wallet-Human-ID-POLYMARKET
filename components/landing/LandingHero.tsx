@@ -2,11 +2,10 @@
 
 import React, { useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { ImmersiveKittens } from '@/components/immersive/ImmersiveKittens';
 import { ArrowRight } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-
 import { useLanguage } from '@/src/context/LanguageContext';
+import Image from 'next/image';
 
 interface Props {
     onStart: () => void;
@@ -21,21 +20,36 @@ export function LandingHero({ onStart }: Props) {
     const { t } = useLanguage();
     const router = useRouter();
 
-    // Parallax effects for the cats
-    const yLeft = useTransform(scrollYProgress, [0, 1], [0, 100]);
-    const yRight = useTransform(scrollYProgress, [0, 1], [0, 150]); // Slightly different speed for depth
-    const scaleCats = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
-
-    // Text parallax
+    // Parallax effects
     const yText = useTransform(scrollYProgress, [0, 1], [0, -50]);
     const opacityText = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+    const scaleImage = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
 
     return (
         <section 
             ref={containerRef}
-            className="w-full h-[100dvh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden bg-transparent"
+            className="w-full h-[100dvh] flex flex-col items-center justify-center text-center px-4 relative overflow-hidden"
             aria-label="Welcome to Human Defi"
         >
+            {/* IMMERSIVE HERO IMAGE BACKGROUND */}
+            <motion.div 
+                style={{ scale: scaleImage }}
+                className="absolute inset-0 z-0"
+            >
+                <div className="relative w-full h-full">
+                    <Image
+                        src="/assets/hero-kittens.png"
+                        alt="Human DeFi - Bienvenido"
+                        fill
+                        className="object-cover"
+                        priority
+                        quality={100}
+                    />
+                    {/* Gradient Overlay for Text Readability */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/40" />
+                </div>
+            </motion.div>
+
             {/* CONTENT LAYER */}
             <motion.div 
                 style={{ y: yText, opacity: opacityText }}
@@ -46,9 +60,9 @@ export function LandingHero({ onStart }: Props) {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
                     className="
-                        text-5xl md:text-7xl lg:text-[7rem] font-black text-[#4F2683]
+                        text-5xl md:text-7xl lg:text-[7rem] font-black text-white
                         mb-2 tracking-tighter uppercase leading-[0.9]
-                        drop-shadow-sm
+                        drop-shadow-2xl
                     "
                     style={{ fontFamily: 'var(--font-inter)' }}
                 >
@@ -60,7 +74,7 @@ export function LandingHero({ onStart }: Props) {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.4, duration: 0.8 }}
-                    className="text-2xl md:text-4xl font-black text-[#4F2683] tracking-tight mb-8"
+                    className="text-2xl md:text-4xl font-black text-white tracking-tight mb-8 drop-shadow-xl"
                 >
                     TUHOGARENWEB3
                 </motion.h2>
@@ -72,7 +86,7 @@ export function LandingHero({ onStart }: Props) {
                     onClick={() => router.push('/wallet')}
                     className="
                         group relative px-10 py-4 bg-[#2E1A57] rounded-full text-white font-bold text-lg md:text-xl
-                        overflow-hidden transition-all hover:scale-105 hover:bg-[#3d2270] hover:shadow-xl
+                        overflow-hidden transition-all hover:scale-105 hover:bg-[#3d2270] hover:shadow-2xl
                         uppercase tracking-widest flex items-center gap-2
                     "
                 >
@@ -80,12 +94,6 @@ export function LandingHero({ onStart }: Props) {
                     <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                 </motion.button>
             </motion.div>
-
-            {/* IMMERSIVE CATS LAYER */}
-            <ImmersiveKittens variant="hero" />
-            
-            {/* Bottom Gradient for smooth blend if needed, or colored bar as in mockup */}
-            {/* Bottom Gradient Removed for seamless transition */}
         </section>
     );
 }
