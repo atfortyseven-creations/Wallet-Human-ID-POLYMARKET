@@ -4,6 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, BarChart3, TrendingUp, Globe } from 'lucide-react';
 import BubblesView from '@/components/premium/BubblesView';
+import MarketTable from '@/components/premium/MarketTable';
 import { FloatingImmersiveBackground } from '@/components/landing/FloatingImmersiveBackground';
 
 export default function BubblesPage() {
@@ -16,7 +17,7 @@ export default function BubblesPage() {
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-400/10 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-400/10 blur-[120px] rounded-full translate-y-1/2 -translate-x-1/2" />
 
-      <div className="max-w-7xl mx-auto px-4 pt-32 pb-20 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 pt-32 pb-32 relative z-10">
         {/* Header Section */}
         <div className="mb-12 text-center">
           <motion.div
@@ -42,7 +43,7 @@ export default function BubblesPage() {
             transition={{ delay: 0.1 }}
             className="text-lg md:text-xl text-black/50 max-w-2xl mx-auto font-medium"
           >
-            Visualiza el sentimiento del mercado en tiempo real. Burbujas dinámicas basadas en el rendimiento de los activos.
+            Visualiza el sentimiento del mercado en tiempo real. Burbujas dinámicas interactivas y ranking de activos soberanos.
           </motion.p>
         </div>
 
@@ -59,15 +60,40 @@ export default function BubblesPage() {
             <MiniStat icon={<Sparkles size={16} />} label="Miedo/Codicia" value="74 (Codicia)" />
         </motion.div>
 
-        {/* Main Visualization */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="w-full h-[800px]"
-        >
-          <BubblesView />
-        </motion.div>
+        {/* Main Visualization Container */}
+        <div className="space-y-24">
+            {/* Bubbles Chart */}
+            <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="w-full h-[700px]"
+            >
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center text-white shadow-lg">
+                        <TrendingUp size={20} />
+                    </div>
+                    <h2 className="text-3xl font-black tracking-tighter uppercase italic">Visual Sentimental Engine</h2>
+                </div>
+                <BubblesView />
+            </motion.div>
+
+            {/* Market Ranking Table */}
+            <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="w-full"
+            >
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center text-white shadow-lg">
+                        <BarChart3 size={20} />
+                    </div>
+                    <h2 className="text-3xl font-black tracking-tighter uppercase italic">Real-Time Market Ranking</h2>
+                </div>
+                <MarketTable />
+            </motion.div>
+        </div>
       </div>
 
       {/* Footer Tag */}

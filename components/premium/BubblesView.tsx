@@ -11,6 +11,7 @@ interface BubbleData {
     image: string;
     current_price: number;
     market_cap: number;
+    total_volume: number;
     price_change_1h: number;
     price_change_24h: number;
     price_change_7d: number;
@@ -142,23 +143,28 @@ export default function BubblesView() {
                                 const sizeScale = Math.min(Math.max(Math.abs(change) * 5, 0), 100);
                                 const size = baseSize + sizeScale;
 
-                                // Rough positions to avoid stack (not perfect packing but good enough for visual)
-                                const cols = Math.floor(dimensions.width / 180);
+                                // Rough initial positions
+                                const cols = Math.floor(dimensions.width / 180) || 1;
                                 const row = Math.floor(index / cols);
                                 const col = index % cols;
                                 
-                                const x = 50 + col * (dimensions.width / cols) + (Math.random() * 20 - 10);
-                                const y = 50 + row * 180 + (Math.random() * 20 - 10);
+                                const initialX = col * (dimensions.width / cols) + (dimensions.width / cols / 4);
+                                const initialY = row * 180 + 50;
 
                                 return (
                                     <motion.div
                                         key={coin.id}
-                                        initial={{ scale: 0, opacity: 0 }}
+                                        drag
+                                        dragConstraints={containerRef}
+                                        dragElastic={0.1}
+                                        dragTransition={{ bounceStiffness: 600, bounceDamping: 20 }}
+                                        whileDrag={{ scale: 1.1, zIndex: 100 }}
+                                        initial={{ scale: 0, opacity: 0, x: initialX, y: initialY }}
                                         animate={{ 
                                             scale: 1, 
                                             opacity: 1,
-                                            x: x,
-                                            y: y
+                                            x: initialX,
+                                            y: initialY
                                         }}
                                         exit={{ scale: 0, opacity: 0 }}
                                         transition={{ 
@@ -171,9 +177,10 @@ export default function BubblesView() {
                                             position: 'absolute',
                                             width: size,
                                             height: size,
-                                            zIndex: Math.floor(Math.abs(change)),
+                                            zIndex: Math.floor(Math.abs(change)) + 1,
+                                            cursor: 'grab'
                                         }}
-                                        className="group cursor-pointer"
+                                        className="group"
                                     >
                                         <div 
                                             className={`w-full h-full rounded-full flex flex-col items-center justify-center text-center p-4 transition-all duration-500 relative ${
