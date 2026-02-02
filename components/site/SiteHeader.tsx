@@ -72,7 +72,7 @@ export function SiteHeader() {
                     `}
                 >
                     {/* LOGO */}
-                    <div className="w-[180px] lg:w-auto xl:w-[250px] flex justify-start items-center gap-1 shrink-0">
+                    <div className="w-[180px] xl:w-[250px] flex justify-start items-center gap-1 shrink-0">
                         <Link href="/" className="flex items-center gap-2 group relative z-50 pointer-events-auto">
                             <span className="text-xl font-black tracking-tight text-gray-900 font-sans group-hover:text-black transition-colors">
                                 Human DeFi
@@ -81,7 +81,7 @@ export function SiteHeader() {
                     </div>
 
                     {/* DESKTOP NAV - Enhanced for Zoom Resilience */}
-                    <nav className="flex-1 hidden lg:flex items-center gap-4 xl:gap-6 justify-center relative z-50 pointer-events-auto min-w-0">
+                    <nav className="flex-1 hidden xl:flex items-center gap-6 justify-center relative z-50 pointer-events-auto min-w-0">
                         {navLinks.map((link) => (
                             <div key={link.href} className="relative group shrink-0">
                                 <Link 
@@ -120,7 +120,7 @@ export function SiteHeader() {
                     </nav>
 
                     {/* RIGHT ACTIONS */}
-                    <div className="hidden md:flex w-auto xl:w-[500px] justify-end items-center gap-4 relative z-50 pointer-events-auto shrink-0">
+                    <div className="hidden md:flex xl:w-[500px] justify-end items-center gap-4 relative z-50 pointer-events-auto shrink-0">
                         {/* Grouped Icons: Bell, Settings, Language, Stealth */}
                         {/* Grouped Icons: Bell, Settings, Language, Stealth */}
                         <div className="flex items-center gap-2 pr-6 border-r border-gray-200">
