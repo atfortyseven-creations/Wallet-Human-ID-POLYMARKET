@@ -108,6 +108,13 @@ export async function GET(request: NextRequest) {
 
     let walletAddress = authUser.walletAddress;
 
+    // [CLEANUP] If the database contains a legacy "Virtual" dummy address, 
+    // we disregard it and trigger the generation of a real one below.
+    if (walletAddress && (walletAddress.includes('Virtual') || walletAddress.includes('Human'))) {
+      console.log(`Regenerating real wallet for ${email} (discarding legacy virtual handle)...`);
+      walletAddress = null;
+    }
+
     if (!walletAddress) {
       console.log(`Generating high-security wallet for ${email}...`);
       

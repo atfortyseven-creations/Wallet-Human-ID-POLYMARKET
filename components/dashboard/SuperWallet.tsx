@@ -59,39 +59,68 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
         address: hookAddress
     } = useRealWalletData(recentNews, currentAddress);
 
-    // Load accounts from localStorage on mount
+    const [isInitialized, setIsInitialized] = useState(false);
+
+    // 1. Initial Load: LocalStorage OR Hook Address
     useEffect(() => {
+        if (isInitialized) return;
+
         const stored = localStorage.getItem('wallet_accounts');
+        let initialAccounts: WalletAccount[] = [];
+
         if (stored) {
-            const loadedAccounts = JSON.parse(stored);
-            setAccounts(loadedAccounts);
-            if (loadedAccounts.length > 0 && !currentAddress) {
-                setCurrentAddress(loadedAccounts[0].address);
+            try {
+                const loaded = JSON.parse(stored);
+                // CLEANUP: Force remove any 'Virtual' legacy addresses
+                initialAccounts = loaded.filter((a: any) => 
+                    a.address && 
+                    !a.address.includes('Virtual') && 
+                    !a.address.includes('Human')
+                );
+            } catch (e) {
+                console.error("Failed to parse stored accounts", e);
             }
-        } else if (hookAddress) {
-            // Initialize with CONNECTED wallet only (Real Blockchain Wallet)
-            const primaryAccount: WalletAccount = {
+        }
+
+            if (initialAccounts.length === 0 && hookAddress && !hookAddress.includes('Virtual')) {
+                initialAccounts = [{
+                    address: hookAddress,
+                    name: 'Human Vault (Primary)',
+                    type: 'PRIMARY' as const,
+                    index: 0,
+                    color: getAccountColor(hookAddress)
+                }];
+            }
+
+        if (initialAccounts.length > 0) {
+            setAccounts(initialAccounts);
+            // Default to first account if none selected
+            setCurrentAddress(prev => prev || initialAccounts[0].address);
+            setIsInitialized(true);
+        } else if (hookAddress && !hookAddress.includes('Virtual')) {
+             // Second chance if hookAddress just arrived
+             const primary: WalletAccount = {
                 address: hookAddress,
-                name: 'Account 1', // Generic real name
-                type: 'PRIMARY',
+                name: 'Human Vault (Primary)',
+                type: 'PRIMARY' as const,
                 index: 0,
                 color: getAccountColor(hookAddress)
             };
-            setAccounts([primaryAccount]);
+            setAccounts([primary]);
             setCurrentAddress(hookAddress);
-            localStorage.setItem('wallet_accounts', JSON.stringify([primaryAccount]));
+            setIsInitialized(true);
         }
-    }, [hookAddress]);
+    }, [hookAddress, isInitialized]);
+
+    // 2. Persistence: Save to Storage whenever accounts change
+    useEffect(() => {
+        if (isInitialized && accounts.length > 0) {
+            localStorage.setItem('wallet_accounts', JSON.stringify(accounts));
+        }
+    }, [accounts, isInitialized]);
 
     const [showReceive, setShowReceive] = useState(false);
     const [showScanner, setShowScanner] = useState(false);
-
-    // Save accounts to localStorage whenever they change
-    useEffect(() => {
-        if (accounts.length > 0) {
-            localStorage.setItem('wallet_accounts', JSON.stringify(accounts));
-        }
-    }, [accounts]);
 
     // Background balance fetching for all accounts to support filtering
     useEffect(() => {
@@ -119,62 +148,77 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
     }, [accounts]);
 
     const handleAddAccount = () => {
-        const newIndex = accounts.filter(a => a.type === 'DERIVED').length + 1;
+        const derivedAccounts = accounts.filter(a => a.type === 'DERIVED');
+        const newIndex = derivedAccounts.length + 1;
         
-        // Use a more stable mock derivation based on the first account
+        // Ensure we have a REAL base address for the simulation
         const primaryAccount = accounts.find(a => a.type === 'PRIMARY') || accounts[0];
-        const baseAddr = primaryAccount?.address || '0x0000000000000000000000000000000000000000';
+        const baseAddr = (primaryAccount?.address && !primaryAccount.address.includes('Virtual')) 
+            ? primaryAccount.address 
+            : '0x71C7656EC7ab88b098defB751B7401B5f6d8976F'; // Fallback real-looking address for demo
         
-        // Simple deterministic simulation: offset the last bytes
+        // Deterministic mock derivation
         const mockAddress = baseAddr.slice(0, -2) + newIndex.toString(16).padStart(2, '0');
         
         const newAccount: WalletAccount = {
             address: mockAddress,
-            name: `Account ${newIndex + 1}`,
+            name: `Personal Account ${newIndex + 1}`,
             type: 'DERIVED',
             index: newIndex,
             color: getAccountColor(mockAddress)
         };
 
-        setAccounts([...accounts, newAccount]);
+        const updated = [...accounts, newAccount];
+        setAccounts(updated);
+        setCurrentAddress(mockAddress); // Switch to the new account
+        localStorage.setItem('wallet_accounts', JSON.stringify(updated));
+        
         alert(`New account "${newAccount.name}" created! Note: Explorer visibility requires first transaction.`);
     };
 
     const handleAddWatchWallet = async (address: string, name?: string) => {
         try {
             let resolvedAddress = address;
-            let ensName: string | undefined;
+            let displayLabel = name;
 
             // Try to resolve ENS
-            if (address.endsWith('.eth')) {
+            if (address.toLowerCase().endsWith('.eth')) {
                 const resolved = await resolveENSName(address);
-                if (resolved) {
+                if (resolved && isAddress(resolved)) {
                     resolvedAddress = resolved;
-                    ensName = address;
+                    displayLabel = address; // Keep the .eth as the label
                 } else {
-                    throw new Error('Could not resolve ENS name');
+                    alert('Could not resolve ENS name to a valid address. Please check and try again.');
+                    return;
                 }
             } else if (!isAddress(address)) {
-                throw new Error('Invalid Ethereum address');
+                alert('Please enter a valid Ethereum address or ENS name.');
+                return;
             }
 
             // Check if already exists
             if (accounts.some(a => a.address.toLowerCase() === resolvedAddress.toLowerCase())) {
-                throw new Error('This address is already in your accounts');
+                alert('This address is already in your accounts list.');
+                return;
             }
 
             const watchAccount: WalletAccount = {
                 address: resolvedAddress,
-                name: ensName || name || `Watch ${resolvedAddress.slice(0, 6)}...`,
+                name: displayLabel || `Watch ${resolvedAddress.slice(0, 6)}...`,
                 type: 'WATCH_ONLY',
                 color: getAccountColor(resolvedAddress)
             };
 
-            setAccounts([...accounts, watchAccount]);
-            handleSwitchAccount(resolvedAddress);
+            const updatedAccounts = [...accounts, watchAccount];
+            setAccounts(updatedAccounts);
+            setCurrentAddress(resolvedAddress);
             setShowWatchInput(false);
+            
+            // Explicit save to ensure persistence immediately
+            localStorage.setItem('wallet_accounts', JSON.stringify(updatedAccounts));
         } catch (error: any) {
-            throw new Error(error.message || 'Failed to add watch wallet');
+            console.error("ENS Resolution Error:", error);
+            alert(`Error: ${error.message || 'Failed to add wallet'}`);
         }
     };
 
