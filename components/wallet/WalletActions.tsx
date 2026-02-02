@@ -200,101 +200,131 @@ export function WalletActions({ positions = [], history = [], userAddress }: Wal
                 )}
              </AnimatePresence>
 
-            {/* 4 Action Buttons - Premium Squircle Design */}
-            <div className="grid grid-cols-4 gap-4 mb-6 max-w-lg mx-auto">
-                {ACTIONS.map((action) => (
-                    <button 
-                        key={action.label}
-                        onClick={action.action}
-                        className="flex flex-col items-center gap-3 group"
-                    >
-                        <div className={`
-                            w-16 h-16 rounded-[24px] 
-                            flex items-center justify-center text-white 
-                            shadow-[0_8px_20px_-6px_rgba(0,0,0,0.15)] 
-                            transition-all duration-300 ease-out
-                            group-hover:scale-110 group-hover:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.2)]
-                            group-active:scale-95
-                            ${action.label === 'Comprar' ? 'bg-blue-600' : 'bg-neutral-800'}
-                        `}>
-                            {action.icon}
-                        </div>
-                        <span className="text-xs font-bold text-neutral-600 group-hover:text-neutral-900 transition-colors">
-                            {action.label}
-                        </span>
-                    </button>
-                ))}
+
+            {/* Main Actions - Elegant Stacked Cards */}
+            <div className="mb-8 px-4">
+                <h2 className="text-xs uppercase tracking-widest text-neutral-500 font-bold mb-4 px-2">Acciones Principales</h2>
+                <div className="grid grid-cols-2 gap-3">
+                    {ACTIONS.map((action, index) => (
+                        <motion.button
+                            key={action.label}
+                            onClick={action.action}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.05 }}
+                            whileHover={{ scale: 1.02, y: -2 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="relative group bg-neutral-900 border border-neutral-800 rounded-2xl p-5 overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
+                        >
+                            {/* Gradient Glow Effect */}
+                            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            
+                            {/* Content */}
+                            <div className="relative z-10 flex items-center gap-3">
+                                <div className={`
+                                    w-12 h-12 rounded-xl flex items-center justify-center
+                                    ${action.label === 'Comprar' ? 'bg-blue-600/20 text-blue-400' : 'bg-white/10 text-white'}
+                                    group-hover:scale-110 transition-transform
+                                `}>
+                                    {action.icon}
+                                </div>
+                                <div className="flex-1 text-left">
+                                    <p className="font-bold text-white text-sm">{action.label}</p>
+                                    <p className="text-xs text-neutral-400">
+                                        {action.label === 'Comprar' && 'Añadir fondos'}
+                                        {action.label === 'Intercambio' && 'Cambiar tokens'}
+                                        {action.label === 'Enviar' && 'Transferir activos'}
+                                        {action.label === 'Recibir' && 'Obtener dirección'}
+                                    </p>
+                                </div>
+                                <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </motion.button>
+                    ))}
+                </div>
             </div>
 
-            {/* 5 Unique Features - Premium Grid */}
-            <div className="grid grid-cols-5 gap-3 mb-10 max-w-2xl mx-auto px-2">
-                {[
-                    { label: 'Time Vault', icon: <Lock size={20} />, color: 'bg-yellow-600', action: () => setShowTimeLock(true) },
-                    { label: 'Dead Man', icon: <Skull size={20} />, color: 'bg-red-600', action: () => setShowDeadMan(true) },
-                    { label: 'AI Rebal', icon: <Brain size={20} />, color: 'bg-cyan-600', action: () => setShowAIRebalancer(true) },
-                    { label: 'Recovery', icon: <Shield size={20} />, color: 'bg-green-600', action: () => setShowSocialRecovery(true) },
-                    { label: 'Privacy', icon: <EyeOff size={20} />, color: 'bg-indigo-600', action: () => setShowPrivacyMixer(true) }
-                ].map((feature) => (
-                    <button 
-                        key={feature.label}
-                        onClick={feature.action}
-                        className="flex flex-col items-center gap-2 group"
-                    >
-                         <div className={`
-                            w-14 h-14 rounded-[20px] 
-                            flex items-center justify-center text-white 
-                            shadow-[0_8px_20px_-6px_rgba(0,0,0,0.15)] 
-                            transition-all duration-300 ease-out
-                            group-hover:scale-110 group-hover:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.2)]
-                            group-active:scale-95
-                            ${feature.color}
-                        `}>
-                            {feature.icon}
-                        </div>
-                        <span className="text-[10px] font-bold text-neutral-500 group-hover:text-neutral-900 transition-colors text-center leading-tight">
-                            {feature.label}
-                        </span>
-                    </button>
-                ))}
+            {/* Advanced Features - Stackable Pills */}
+            <div className="mb-10 px-4">
+                <h2 className="text-xs uppercase tracking-widest text-neutral-500 font-bold mb-4 px-2">Funciones Avanzadas</h2>
+                <div className="flex flex-wrap gap-2">
+                    {[
+                        { label: 'Time Vault', icon: <Lock size={16} />, gradient: 'from-amber-500/20 to-yellow-500/20', textColor: 'text-amber-400', ringColor: 'ring-amber-500/30', action: () => setShowTimeLock(true) },
+                        { label: 'Dead Man Switch', icon: <Skull size={16} />, gradient: 'from-rose-500/20 to-red-500/20', textColor: 'text-rose-400', ringColor: 'ring-rose-500/30', action: () => setShowDeadMan(true) },
+                        { label: 'AI Rebalancer', icon: <Brain size={16} />, gradient: 'from-cyan-500/20 to-blue-500/20', textColor: 'text-cyan-400', ringColor: 'ring-cyan-500/30', action: () => setShowAIRebalancer(true) },
+                        { label: 'Social Recovery', icon: <Shield size={16} />, gradient: 'from-emerald-500/20 to-green-500/20', textColor: 'text-emerald-400', ringColor: 'ring-emerald-500/30', action: () => setShowSocialRecovery(true) },
+                        { label: 'Privacy Mixer', icon: <EyeOff size={16} />, gradient: 'from-indigo-500/20 to-purple-500/20', textColor: 'text-indigo-400', ringColor: 'ring-indigo-500/30', action: () => setShowPrivacyMixer(true) }
+                    ].map((feature, index) => (
+                        <motion.button
+                            key={feature.label}
+                            onClick={feature.action}
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.2 + index * 0.05 }}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className={`
+                                group relative px-4 py-3 rounded-full
+                                bg-gradient-to-r ${feature.gradient}
+                                backdrop-blur-xl border border-white/10
+                                ring-1 ${feature.ringColor}
+                                hover:shadow-lg hover:shadow-${feature.ringColor}/20
+                                transition-all duration-300
+                            `}
+                        >
+                            <div className="flex items-center gap-2">
+                                <div className={`${feature.textColor} group-hover:scale-110 transition-transform`}>
+                                    {feature.icon}
+                                </div>
+                                <span className={`text-xs font-bold ${feature.textColor}`}>
+                                    {feature.label}
+                                </span>
+                            </div>
+                        </motion.button>
+                    ))}
+                </div>
             </div>
 
-            {/* Tabs Navigation - Minimalist */}
-            <div className="flex border-b border-neutral-200/60 mb-8 mx-4">
+
+            {/* Tabs Navigation - Elegant Pills */}
+            <div className="flex gap-2 mb-8 mx-4 p-1 bg-neutral-100 rounded-2xl">
                 {TABS.map((tab) => (
                     <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
                         className={`
-                            flex-1 py-4 text-sm font-bold text-center relative transition-colors tracking-wide
-                            ${activeTab === tab.id ? 'text-blue-600' : 'text-neutral-400 hover:text-neutral-600'}
+                            flex-1 py-3 px-4 text-sm font-bold text-center rounded-xl
+                            transition-all duration-300
+                            ${activeTab === tab.id 
+                                ? 'bg-white text-neutral-900 shadow-md' 
+                                : 'text-neutral-500 hover:text-neutral-700'
+                            }
                         `}
                     >
                         {tab.label}
-                        {activeTab === tab.id && (
-                            <div className="absolute bottom-0 left-0 w-full h-[3px] bg-blue-600 rounded-t-full shadow-[0_0_15px_rgba(37,99,235,0.4)]" />
-                        )}
                     </button>
                 ))}
             </div>
 
-            {/* Search Bar */}
+            {/* Search Bar - Elegant */}
             {(activeTab === 'Tokens' || activeTab === 'DeFi') && (
-                <div className="px-4 mb-6 flex gap-2">
-                    <input 
-                        type="text" 
-                        placeholder="Search assets..." 
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-white border border-neutral-200 rounded-xl px-4 py-3 text-sm text-neutral-900 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all placeholder:text-neutral-400"
-                    />
-                    {activeTab === 'Tokens' && (
-                        <button
-                            onClick={() => setShowTokenManager(true)}
-                            className="px-4 py-3 bg-neutral-100 hover:bg-neutral-200 text-neutral-600 rounded-xl font-bold transition-colors whitespace-nowrap"
-                        >
-                            Manage
-                        </button>
-                    )}
+                <div className="px-4 mb-6">
+                    <div className="relative">
+                        <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <input 
+                            type="text" 
+                            placeholder="Buscar activos..." 
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full bg-white border border-neutral-200 rounded-2xl pl-12 pr-4 py-4 text-sm text-neutral-900 focus:outline-none focus:border-neutral-900 focus:ring-4 focus:ring-neutral-100 transition-all placeholder:text-neutral-400"
+                        />
+                    </div>
                 </div>
             )}
 
