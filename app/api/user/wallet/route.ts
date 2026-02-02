@@ -91,9 +91,9 @@ export async function GET() {
     }
 
     // 4. Return Safe Data
-    // Deterministic balance for persistent feel based on address characters
+    // Return zero balance until real integration or user deposit
     const safeAddress = walletAddress || "0x0000000000000000000000000000000000000000";
-    const uniqueBalance = (parseInt(safeAddress.slice(-5), 16) / 100).toFixed(2);
+    const uniqueBalance = "0.00";
 
     return NextResponse.json({
       address: safeAddress,

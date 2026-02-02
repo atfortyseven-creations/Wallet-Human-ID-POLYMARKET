@@ -63,16 +63,24 @@ export async function POST(req: Request) {
         const wallet = new ethers.Wallet(privateKey, provider);
 
         // Build transaction
-        const tx = {
+        const tx: any = {
             to: to,
             value: ethers.parseEther(amount),
-            gasLimit: 21000,
         };
+
+        // Estimate gas for the transaction
+        try {
+            const gasEstimate = await provider.estimateGas(tx);
+            tx.gasLimit = (gasEstimate * BigInt(12)) / BigInt(10); // 20% buffer
+        } catch (e) {
+            console.warn('Gas estimation failed, using fallback', e);
+            tx.gasLimit = 21000;
+        }
 
         // Get current gas price
         const feeData = await provider.getFeeData();
         if (feeData.gasPrice) {
-            (tx as any).gasPrice = feeData.gasPrice;
+            tx.gasPrice = feeData.gasPrice;
         }
 
         // Sign and send transaction

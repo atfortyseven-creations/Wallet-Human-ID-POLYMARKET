@@ -1,17 +1,17 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { currentUser } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const session = await getServerSession(authOptions);
+  const user = await currentUser();
+  const email = user?.emailAddresses[0]?.emailAddress;
 
-  if (!session?.user?.email) {
+  if (!email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const authUser = await prisma.authUser.findUnique({
-    where: { email: session.user.email },
+    where: { email },
   });
 
   if (!authUser) {
@@ -43,8 +43,9 @@ export async function GET() {
 }
 
 export async function PUT(req: Request) {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
+    if (!email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const { id, read } = await req.json();
 
@@ -55,7 +56,7 @@ export async function PUT(req: Request) {
         });
     } else {
         // Mark all as read
-        const authUser = await prisma.authUser.findUnique({ where: { email: session.user.email } });
+        const authUser = await prisma.authUser.findUnique({ where: { email } });
         if (authUser) {
             await prisma.userNotification.updateMany({
                 where: { authUserId: authUser.id, read: false },

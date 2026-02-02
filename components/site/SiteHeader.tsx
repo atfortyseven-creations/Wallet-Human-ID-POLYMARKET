@@ -19,21 +19,14 @@ export function SiteHeader() {
     // Auth Hooks
     const { isAuthenticated } = useAuth();
     
-    // AppKit hooks - may not be available during SSR
-    let open: any = null;
-    let isConnected = false;
-    let address: any = null;
+    // AppKit hooks - Moved out of try-catch to fix Error #310
+    const appKit = useAppKit();
+    const account = useAppKitAccount();
+    const wagmiAccount = useAccount();
     
-    try {
-        const appKit = useAppKit();
-        open = appKit.open;
-        const account = useAppKitAccount();
-        isConnected = account.isConnected;
-        const wagmiAccount = useAccount();
-        address = wagmiAccount.address;
-    } catch (e) {
-        // AppKit not initialized - this is fine for SSR
-    }
+    const { open } = appKit;
+    const { isConnected } = account;
+    const { address } = wagmiAccount;
 
     // i18n
     const { t, language, toggleLanguage } = useLanguage();

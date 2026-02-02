@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
   title: 'Human DeFi | The $WLD Whale Intel & Sovereign Asset Management',
-  description: 'The world\'s most advanced non-custodial wallet for $WLD. Track whales, copy-trade profits, and manage assets with zkSNARK privacy and AI rebalancing.',
+  description: 'Human DeFi: The world\'s most advanced sovereign wallet. Secure, AI-powered asset management with zkSNARK privacy.',
   keywords: ['DeFi', 'Whale Tracker', 'Worldcoin', 'WLD', 'AI Wallet', 'Crypto Security'],
   viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0',
   themeColor: '#000000',
@@ -22,7 +22,7 @@ export const metadata = {
   },
   openGraph: {
     title: 'Human DeFi | Sovereign Asset Management',
-    description: 'Master the markets with AI-powered whale tracking and sovereign wallet security.',
+    description: 'Sovereign asset management with AI-powered security and privacy.',
     type: 'website',
   }
 }

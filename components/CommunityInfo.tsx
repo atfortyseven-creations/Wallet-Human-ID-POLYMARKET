@@ -7,121 +7,121 @@ import { Users, TrendingUp, Globe, Award, Shield, Zap, Heart, MessageCircle, Dol
 export function CommunityInfo() {
     const communityCards = [
         {
-            lottieSrc: "https://lottie.host/a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d/Community.lottie",
+            lottieSrc: "https://lottie.host/0f8c4e3d-9b7a-4f6c-8d2e-1a3b4c5d6e7f/9KJh8G7F6D.lottie",
             title: "+150K Miembros",
             subtitle: "Comunidad global activa en 45 países",
             color: "bg-indigo-600"
         },
         {
-            lottieSrc: "https://lottie.host/b2c3d4e5-f6a7-8b9c-0d1e-2f3a4b5c6d7e/Growth.lottie",
+            lottieSrc: "https://lottie.host/57803657-6105-4752-921c-308101452631/ShieldSecure.lottie",
             title: "300% Crecimiento",
             subtitle: "Aumento mensual de usuarios verificados",
             color: "bg-purple-600"
         },
         {
-            lottieSrc: "https://lottie.host/c3d4e5f6-a7b8-9c0d-1e2f-3a4b5c6d7e8f/Global.lottie",
+            lottieSrc: "https://lottie.host/8e4d2f1c-9bfa-4b77-8db5-3c5f1b2e6a9d/RainCoins.lottie",
             title: "Alcance Global",
             subtitle: "Operaciones en 45+ países del mundo",
             color: "bg-blue-600"
         },
         {
-            lottieSrc: "https://lottie.host/d4e5f6a7-b8c9-0d1e-2f3a-4b5c6d7e8f9a/Prize.lottie",
+            lottieSrc: "https://lottie.host/0a1b2c3d-4e5f-6g7h-8i9j-0k1l2m3n4o5p/CoinSwap3D.lottie",
             title: "$2M en Premios",
             subtitle: "Distribuidos a la comunidad este año",
             color: "bg-pink-600"
         },
         {
-            lottieSrc: "https://lottie.host/e5f6a7b8-c9d0-1e2f-3a4b-5c6d7e8f9a0b/Security.lottie",
+            lottieSrc: "https://lottie.host/1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p/FastLightning.lottie",
             title: "100% Seguro",
             subtitle: "Auditorías de seguridad trimestrales",
             color: "bg-emerald-600"
         },
         {
-            lottieSrc: "https://lottie.host/f6a7b8c9-d0e1-2f3a-4b5c-6d7e8f9a0b1c/Speed.lottie",
+            lottieSrc: "https://lottie.host/0f8c4e3d-9b7a-4f6c-8d2e-1a3b4c5d6e7f/9KJh8G7F6D.lottie",
             title: "<1s Transacciones",
             subtitle: "Velocidad promedio en Layer 2",
             color: "bg-cyan-600"
         },
         {
-            lottieSrc: "https://lottie.host/a7b8c9d0-e1f2-3a4b-5c6d-7e8f9a0b1c2d/Heart.lottie",
+            lottieSrc: "https://lottie.host/57803657-6105-4752-921c-308101452631/ShieldSecure.lottie",
             title: "98% Satisfacción",
             subtitle: "Rating promedio de usuarios activos",
             color: "bg-rose-600"
         },
         {
-            lottieSrc: "https://lottie.host/b8c9d0e1-f2a3-4b5c-6d7e-8f9a0b1c2d3e/Chat.lottie",
+            lottieSrc: "https://lottie.host/8e4d2f1c-9bfa-4b77-8db5-3c5f1b2e6a9d/RainCoins.lottie",
             title: "24/7 Soporte",
             subtitle: "Equipo disponible en Discord y Telegram",
             color: "bg-violet-600"
         },
         {
-            lottieSrc: "https://lottie.host/c9d0e1f2-a3b4-5c6d-7e8f-9a0b1c2d3e4f/Money.lottie",
+            lottieSrc: "https://lottie.host/0a1b2c3d-4e5f-6g7h-8i9j-0k1l2m3n4o5p/CoinSwap3D.lottie",
             title: "$50M Volumen",
             subtitle: "Volumen total de trading acumulado",
             color: "bg-green-600"
         },
         {
-            lottieSrc: "https://lottie.host/d0e1f2a3-b4c5-6d7e-8f9a-0b1c2d3e4f5a/Learn.lottie",
+            lottieSrc: "https://lottie.host/1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p/FastLightning.lottie",
             title: "200+ Tutoriales",
             subtitle: "Academia DeFi gratuita para todos",
             color: "bg-amber-600"
         },
         {
-            lottieSrc: "https://lottie.host/e1f2a3b4-c5d6-7e8f-9a0b-1c2d3e4f5a6b/Target.lottie",
+            lottieSrc: "https://lottie.host/0f8c4e3d-9b7a-4f6c-8d2e-1a3b4c5d6e7f/9KJh8G7F6D.lottie",
             title: "92% Precisión",
             subtitle: "Predicciones acertadas en mercados",
             color: "bg-red-600"
         },
         {
-            lottieSrc: "https://lottie.host/f2a3b4c5-d6e7-8f9a-0b1c-2d3e4f5a6b7c/Trophy.lottie",
+            lottieSrc: "https://lottie.host/57803657-6105-4752-921c-308101452631/ShieldSecure.lottie",
             title: "Top 5 DeFi",
             subtitle: "Ranking global en plataformas DeFi",
             color: "bg-yellow-600"
         },
         {
-            lottieSrc: "https://lottie.host/a3b4c5d6-e7f8-9a0b-1c2d-3e4f5a6b7c8d/Magic.lottie",
+            lottieSrc: "https://lottie.host/8e4d2f1c-9bfa-4b77-8db5-3c5f1b2e6a9d/RainCoins.lottie",
             title: "Zero Gas Fees",
             subtitle: "Transacciones gratuitas para holders",
             color: "bg-fuchsia-600"
         },
         {
-            lottieSrc: "https://lottie.host/b4c5d6e7-f8a9-0b1c-2d3e-4f5a6b7c8d9e/Lock.lottie",
+            lottieSrc: "https://lottie.host/0a1b2c3d-4e5f-6g7h-8i9j-0k1l2m3n4o5p/CoinSwap3D.lottie",
             title: "Non-Custodial",
             subtitle: "Tú controlas tus claves privadas siempre",
             color: "bg-slate-700"
         },
         {
-            lottieSrc: "https://lottie.host/c5d6e7f8-a9b0-1c2d-3e4f-5a6b7c8d9e0f/Wallet.lottie",
+            lottieSrc: "https://lottie.host/1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p/FastLightning.lottie",
             title: "Multi-Chain",
             subtitle: "Compatible con 15+ blockchains",
             color: "bg-orange-600"
         },
         {
-            lottieSrc: "https://lottie.host/d6e7f8a9-b0c1-2d3e-4f5a-6b7c8d9e0f1a/Coins.lottie",
+            lottieSrc: "https://lottie.host/0f8c4e3d-9b7a-4f6c-8d2e-1a3b4c5d6e7f/9KJh8G7F6D.lottie",
             title: "12% APY Promedio",
             subtitle: "Rendimientos en staking automático",
             color: "bg-lime-600"
         },
         {
-            lottieSrc: "https://lottie.host/e7f8a9b0-c1d2-3e4f-5a6b-7c8d9e0f1a2b/Chart.lottie",
+            lottieSrc: "https://lottie.host/57803657-6105-4752-921c-308101452631/ShieldSecure.lottie",
             title: "500K Operaciones",
             subtitle: "Transacciones procesadas este mes",
             color: "bg-teal-600"
         },
         {
-            lottieSrc: "https://lottie.host/f8a9b0c1-d2e3-4f5a-6b7c-8d9e0f1a2b3c/Star.lottie",
+            lottieSrc: "https://lottie.host/8e4d2f1c-9bfa-4b77-8db5-3c5f1b2e6a9d/RainCoins.lottie",
             title: "4.9/5 Rating",
             subtitle: "Calificación en todas las plataformas",
             color: "bg-indigo-500"
         },
         {
-            lottieSrc: "https://lottie.host/a9b0c1d2-e3f4-5a6b-7c8d-9e0f1a2b3c4d/Check.lottie",
+            lottieSrc: "https://lottie.host/0a1b2c3d-4e5f-6g7h-8i9j-0k1l2m3n4o5p/CoinSwap3D.lottie",
             title: "99.9% Uptime",
             subtitle: "Disponibilidad garantizada anual",
             color: "bg-sky-600"
         },
         {
-            lottieSrc: "https://lottie.host/b0c1d2e3-f4a5-6b7c-8d9e-0f1a2b3c4d5e/Gift.lottie",
+            lottieSrc: "https://lottie.host/1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p/FastLightning.lottie",
             title: "Referral Program",
             subtitle: "Gana 15% de comisión por referido",
             color: "bg-purple-500"

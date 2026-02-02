@@ -1,5 +1,4 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { currentUser } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { createHash } from 'crypto';
@@ -11,14 +10,15 @@ import { validateUserSettings, validatePartialSettings, getDefaultUserSettings }
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
 
-    if (!session?.user?.email) {
+    if (!email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const authUser = await prisma.authUser.findUnique({
-      where: { email: session.user.email },
+      where: { email },
       include: { userSettings: true }
     });
 
@@ -61,9 +61,10 @@ export async function GET(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
 
-    if (!session?.user?.email) {
+    if (!email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -75,7 +76,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json(
         { 
           error: "Validation failed", 
-          details: validation.errors?.errors 
+          details: validation.errors?.issues 
         },
         { status: 400 }
       );
@@ -83,7 +84,7 @@ export async function PUT(request: NextRequest) {
 
     // Find AuthUser
     const authUser = await prisma.authUser.findUnique({
-      where: { email: session.user.email },
+      where: { email },
       include: { userSettings: true },
     });
 
@@ -137,10 +138,9 @@ export async function PUT(request: NextRequest) {
         settingsId: settings.id,
         authUserId: authUser.id,
         changeType: authUser.userSettings ? 'UPDATE' : 'CREATE',
-        previousValue: authUser.userSettings ? 
-          JSON.stringify(authUser.userSettings) : null,
-        newValue: JSON.stringify(data),
-        fullSnapshot: JSON.stringify(settings),
+        previousValue: authUser.userSettings ? (authUser.userSettings as any) : undefined,
+        newValue: data,
+        fullSnapshot: (settings as any),
         ipAddress,
         userAgent,
       },
@@ -178,9 +178,10 @@ export async function PUT(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
 
-    if (!session?.user?.email) {
+    if (!email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -192,7 +193,7 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json(
         { 
           error: "Validation failed", 
-          details: validation.errors?.errors 
+          details: validation.errors?.issues
         },
         { status: 400 }
       );
@@ -200,7 +201,7 @@ export async function PATCH(request: NextRequest) {
 
     // Find AuthUser with current settings
     const authUser = await prisma.authUser.findUnique({
-      where: { email: session.user.email },
+      where: { email },
       include: { userSettings: true },
     });
 
@@ -264,10 +265,9 @@ export async function PATCH(request: NextRequest) {
           authUserId: authUser.id,
           field,
           changeType: 'UPDATE',
-          previousValue: (currentSettings as any)[field] ? 
-            JSON.stringify((currentSettings as any)[field]) : null,
-          newValue: JSON.stringify(data[field]),
-          fullSnapshot: JSON.stringify(settings),
+          previousValue: (currentSettings as any)[field] ?? undefined,
+          newValue: data[field],
+          fullSnapshot: (settings as any),
           ipAddress,
           userAgent,
         },

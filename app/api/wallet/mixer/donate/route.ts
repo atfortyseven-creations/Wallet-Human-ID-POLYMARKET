@@ -12,7 +12,19 @@ export async function POST(req: Request) {
         
         const email = user.emailAddresses[0]?.emailAddress;
         const authUser = await prisma.authUser.findUnique({ where: { email } });
-        if (!authUser) return NextResponse.json({ error: 'User not found' }, { status: 404 });
+        if (!authUser || !authUser.walletAddress) return NextResponse.json({ error: 'User wallet not found' }, { status: 404 });
+
+        // Real Balance Verification
+        const provider = new ethers.AlchemyProvider('mainnet', process.env.ALCHEMY_API_KEY);
+        const balance = await provider.getBalance(authUser.walletAddress);
+        const amountInWei = ethers.parseEther(amount.toString());
+
+        if (balance < amountInWei) {
+            return NextResponse.json({ 
+                error: 'Insufficient funds for mixing',
+                currentBalance: ethers.formatEther(balance)
+            }, { status: 400 });
+        }
 
         // Simulate zkSNARK Privacy Mixing logic
         // 1. Fee calculation (0.5%)

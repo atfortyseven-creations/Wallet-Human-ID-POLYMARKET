@@ -1,5 +1,4 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { currentUser } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -9,14 +8,15 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
 
-    if (!session?.user?.email) {
+    if (!email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const authUser = await prisma.authUser.findUnique({
-      where: { email: session.user.email },
+      where: { email },
     });
 
     if (!authUser) {
@@ -38,22 +38,12 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch history
-    const history = await (prisma as any).userSettingsHistory.findMany({
+    const history = await prisma.userSettingsHistory.findMany({
       where: whereClause,
       orderBy: {
         changedAt: 'desc',
       },
       take: Math.min(limit, 100), // Max 100 records
-      select: {
-        id: true,
-        field: true,
-        previousValue: true,
-        newValue: true,
-        changeType: true,
-        changedAt: true,
-        ipAddress: true,
-        userAgent: true,
-      },
     });
 
     return NextResponse.json({

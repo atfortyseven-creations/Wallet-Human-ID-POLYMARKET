@@ -41,6 +41,8 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Unlock date must be in the future' }, { status: 400 });
         }
 
+        // 1. Balance Verification
+        let currentBalance = ethers.parseEther("0");
         const email = user.emailAddresses[0]?.emailAddress;
         const authUser = await prisma.authUser.findUnique({ where: { email } });
 
@@ -48,7 +50,23 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'AuthUser not found' }, { status: 404 });
         }
 
-        // 1. Simulate or Interact with Smart Contract
+        if (authUser.walletAddress) {
+            try {
+                currentBalance = await provider.getBalance(authUser.walletAddress);
+            } catch (err) {
+                console.error("Failed to fetch on-chain balance:", err);
+            }
+        }
+
+        const amountToLock = ethers.parseEther(amount);
+        if (currentBalance < amountToLock && !process.env.SKIP_BALANCE_CHECK) {
+            return NextResponse.json({ 
+                error: 'Insufficient funds', 
+                message: `You have ${ethers.formatEther(currentBalance)} ETH, but tried to lock ${amount} ETH.` 
+            }, { status: 400 });
+        }
+
+        // 2. Simulate or Interact with Smart Contract
         let txHash = `mock-tx-${Date.now()}`;
         if (process.env.TIMELOCK_CONTRACT_ADDRESS && authUser.encryptedPrivateKey) {
             try {
@@ -56,7 +74,7 @@ export async function POST(req: Request) {
                 const wallet = new ethers.Wallet(privateKey, provider);
                 const contract = new ethers.Contract(TIMELOCK_CONTRACT_ADDRESS, TIMELOCK_ABI, wallet);
                 const tx = await contract.lock(unlockTimestamp, {
-                    value: ethers.parseEther(amount),
+                    value: amountToLock,
                 });
                 await tx.wait();
                 txHash = tx.hash;

@@ -14,8 +14,14 @@ export default function TimeLockVaultModal({ isOpen, onClose }: TimeLockVaultMod
     const [unlockDate, setUnlockDate] = useState('');
     const [loading, setLoading] = useState(false);
     const [vaults, setVaults] = useState<any[]>([]);
+    const [balance, setBalance] = useState('0.00');
 
     const createVault = async () => {
+        if (parseFloat(amount) > parseFloat(balance)) {
+            alert(`Insufficient funds! You have ${balance} ETH and tried to lock ${amount} ETH.`);
+            return;
+        }
+
         setLoading(true);
         try {
             const res = await fetch('/api/wallet/timelock/create', {
@@ -24,14 +30,28 @@ export default function TimeLockVaultModal({ isOpen, onClose }: TimeLockVaultMod
                 body: JSON.stringify({ amount, unlockDate }),
             });
             const data = await res.json();
+            
+            if (!res.ok) throw new Error(data.message || data.error || 'Failed to create vault');
+
             alert(`🔒 Vault Created! ${amount} ETH locked until ${unlockDate}`);
             fetchVaults();
+            fetchBalance();
             setAmount('');
             setUnlockDate('');
         } catch (e: any) {
             alert(e.message || 'Failed to create vault');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchBalance = async () => {
+        try {
+            const res = await fetch('/api/user/wallet');
+            const data = await res.json();
+            setBalance(data.balance || '0.00');
+        } catch (e) {
+            console.error("Failed to fetch balance:", e);
         }
     };
 
@@ -51,13 +71,17 @@ export default function TimeLockVaultModal({ isOpen, onClose }: TimeLockVaultMod
             const data = await res.json();
             alert(`✅ Vault unlocked! ${data.amount} ETH returned to your wallet.`);
             fetchVaults();
+            fetchBalance();
         } catch (e: any) {
             alert(e.message || 'Cannot unlock vault yet');
         }
     };
 
     React.useEffect(() => {
-        if (isOpen) fetchVaults();
+        if (isOpen) {
+            fetchVaults();
+            fetchBalance();
+        }
     }, [isOpen]);
 
     return (
@@ -96,15 +120,21 @@ export default function TimeLockVaultModal({ isOpen, onClose }: TimeLockVaultMod
                             <h3 className="text-lg font-bold text-white mb-4">Create New Vault</h3>
                             
                             <div className="mb-4">
-                                <label className="text-white/80 text-sm mb-2 block">Amount (ETH)</label>
+                                <div className="flex justify-between items-center mb-2">
+                                    <label className="text-white/80 text-sm block">Amount (ETH)</label>
+                                    <span className="text-xs text-white/40">Balance: {balance} ETH</span>
+                                </div>
                                 <input
                                     type="number"
                                     value={amount}
                                     onChange={(e) => setAmount(e.target.value)}
                                     placeholder="0.0"
-                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white"
+                                    className={`w-full px-4 py-3 bg-white/5 border ${parseFloat(amount) > parseFloat(balance) ? 'border-red-500' : 'border-white/10'} rounded-xl text-white`}
                                 />
-</div>
+                                {parseFloat(amount) > parseFloat(balance) && (
+                                    <p className="text-red-500 text-[10px] mt-1 font-bold">⚠️ Amount exceeds your current balance</p>
+                                )}
+                            </div>
 
                             <div className="mb-4">
                                 <label className="text-white/80 text-sm mb-2 block">Unlock Date</label>
@@ -119,11 +149,11 @@ export default function TimeLockVaultModal({ isOpen, onClose }: TimeLockVaultMod
 
                             <button
                                 onClick={createVault}
-                                disabled={loading || !amount || !unlockDate}
-                                className="w-full py-3 bg-yellow-600 hover:bg-yellow-500 disabled:bg-white/10 rounded-xl font-bold text-white flex items-center justify-center gap-2"
+                                disabled={loading || !amount || !unlockDate || parseFloat(amount) > parseFloat(balance)}
+                                className="w-full py-3 bg-yellow-600 hover:bg-yellow-500 disabled:bg-white/10 disabled:grayscale rounded-xl font-bold text-white flex items-center justify-center gap-2"
                             >
                                 {loading ? <Loader2 className="animate-spin" size={20} /> : <Lock size={20} />}
-                                {loading ? 'Creating Vault...' : 'Lock Funds'}
+                                {loading ? 'Creating Vault...' : parseFloat(amount) > parseFloat(balance) ? 'Insufficient Funds' : 'Lock Funds'}
                             </button>
                         </div>
 

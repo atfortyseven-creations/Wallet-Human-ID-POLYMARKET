@@ -58,9 +58,19 @@ export function TitaniumGate({ children }: TitaniumGateProps) {
                         className="fixed inset-0 z-50 bg-[#F5F5DC] flex items-center justify-center p-4"
                     >
                          <div className="w-full max-w-md">
-                            <h1 className="text-3xl font-black text-center mb-8 tracking-tighter text-neutral-900">
-                                HUMAN <span className="text-gray-400">ID</span>
-                            </h1>
+                             <div className="flex flex-col items-center mb-8 gap-4">
+                                <img 
+                                    src="/apple-icon.jpg" 
+                                    alt="Human DeFi Icon" 
+                                    className="w-24 h-24 rounded-3xl shadow-2xl border-4 border-white/50"
+                                />
+                                <h1 className="text-4xl font-black text-center tracking-tighter text-neutral-900">
+                                    HUMAN <span className="text-gray-400">DeFi</span>
+                                </h1>
+                                <p className="text-center text-sm font-bold text-neutral-500 max-w-[280px] leading-relaxed">
+                                    Billetera Soberana Inteligente: IA, Privacidad zkSNARKs y Control Total de tus Activos.
+                                </p>
+                             </div>
                             <div className="flex justify-center">
                                 <SignIn 
                                     appearance={{

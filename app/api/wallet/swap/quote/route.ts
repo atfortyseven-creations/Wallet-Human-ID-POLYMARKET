@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { currentUser } from '@clerk/nextjs/server';
+import { formatUnits } from 'viem';
 
 const ONEINCH_API = 'https://api.1inch.dev/swap/v6.0/1'; // Ethereum mainnet
 
@@ -42,9 +43,12 @@ export async function POST(req: Request) {
 
         const quoteData = await quoteRes.json();
 
+        const resultDecimals = toToken === 'ETH' || toToken === 'DAI' ? 18 : 6;
+        const toAmountFormatted = (BigInt(quoteData.toAmount) / BigInt(10 ** resultDecimals)).toString();
+
         return NextResponse.json({
-            toAmount: (parseInt(quoteData.toAmount) / 1e6).toFixed(2), // USDC has 6 decimals
-            rate: (parseInt(quoteData.toAmount) / parseInt(amount) / 1e6).toFixed(4),
+            toAmount: parseFloat(formatUnits(BigInt(quoteData.toAmount), resultDecimals)).toFixed(4),
+            rate: (parseFloat(formatUnits(BigInt(quoteData.toAmount), resultDecimals)) / parseFloat(formatUnits(BigInt(amount), 18))).toFixed(4),
             gasFee: (parseInt(quoteData.gas) * 10 / 1e9).toFixed(2), // Rough estimate
         });
 

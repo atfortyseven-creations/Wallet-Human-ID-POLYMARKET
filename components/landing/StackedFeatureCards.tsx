@@ -17,28 +17,28 @@ const CARDS: CardData[] = [
     id: 1,
     title: "Mercados de Predicción",
     description: "Opera sobre resultados futuros con privacidad de conocimiento cero.",
-    lottieSrc: "https://lottie.host/8d48bb95-7124-4224-bcae-2144799011af/lHDi1Xo9qO.lottie",
-    color: "#1a1a1a" // Dark card
+    lottieSrc: "https://lottie.host/57803657-6105-4752-921c-308101452631/ShieldSecure.lottie",
+    color: "#1a1a1a"
   },
   {
     id: 2,
     title: "Human Wallet",
     description: "Bóveda no custodial asegurada con biometría para tus activos digitales.",
-    lottieSrc: "https://lottie.host/8d48bb95-7124-4224-bcae-2144799011af/lHDi1Xo9qO.lottie", // Placeholder
+    lottieSrc: "https://lottie.host/0f8c4e3d-9b7a-4f6c-8d2e-1a3b4c5d6e7f/9KJh8G7F6D.lottie",
     color: "#2a2a2a"
   },
   {
     id: 3,
     title: "Gobernanza de Rendimiento",
     description: "Gana recompensas participando en las decisiones del protocolo.",
-    lottieSrc: "https://lottie.host/8d48bb95-7124-4224-bcae-2144799011af/lHDi1Xo9qO.lottie",
+    lottieSrc: "https://lottie.host/8e4d2f1c-9bfa-4b77-8db5-3c5f1b2e6a9d/RainCoins.lottie",
     color: "#3a3a3a"
   },
   {
     id: 4,
     title: "Liquidaciones Globales",
     description: "Transferencias transfronterizas instantáneas con liquidez en stablecoins.",
-    lottieSrc: "https://lottie.host/8d48bb95-7124-4224-bcae-2144799011af/lHDi1Xo9qO.lottie",
+    lottieSrc: "https://lottie.host/1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p/FastLightning.lottie",
     color: "#4a4a4a"
   }
 ];
