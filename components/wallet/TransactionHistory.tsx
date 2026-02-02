@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight, ArrowDownLeft, ArrowLeftRight, Filter, Download, ExternalLink, CheckCircle2, Clock, XCircle } from 'lucide-react';
-import { getTransactionHistory, exportTransactionsToCSV, type TransactionType, type TransactionStatus } from '@/lib/wallet/transactions';
+import { exportTransactionsToCSV, type TransactionType, type TransactionStatus } from '@/lib/wallet/transactions';
 import { getChainName, getExplorerTxUrl } from '@/lib/wallet/chains';
 import { StealthText } from '@/components/ui/stealth-text';
 
@@ -50,20 +50,31 @@ export default function TransactionHistory({ authUserId }: TransactionHistoryPro
   };
 
   useEffect(() => {
-    loadTransactions();
+    if (authUserId) {
+        loadTransactions();
+    }
   }, [authUserId, filterType, filterChain]);
 
   const loadTransactions = async () => {
     setLoading(true);
     try {
-      const txs = await getTransactionHistory(authUserId, {
-        type: filterType !== 'ALL' ? filterType : undefined,
-        chainId: filterChain !== 'ALL' ? filterChain : undefined,
-        limit: 1000, 
-      });
-      setTransactions(txs);
+        const params = new URLSearchParams({
+            authUserId: authUserId, // Passing wallet address as ID
+            limit: '1000'
+        });
+        
+        if (filterType !== 'ALL') params.append('type', filterType);
+        if (filterChain !== 'ALL') params.append('chainId', filterChain.toString());
+
+        const response = await fetch(`/api/wallet/transactions?${params.toString()}`);
+        if (!response.ok) throw new Error('Failed to fetch transactions');
+        
+        const data = await response.json();
+        setTransactions(data.transactions || []);
     } catch (error) {
       console.error('Error loading transactions:', error);
+      // Fallback to empty
+      setTransactions([]);
     } finally {
       setLoading(false);
     }

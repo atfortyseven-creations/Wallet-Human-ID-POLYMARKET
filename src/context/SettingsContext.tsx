@@ -97,7 +97,9 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
     // --- CLERK AUTH ---
     const { user } = useUser();
-    const session = { user };
+    // derived state for dependencies
+    const userId = user?.id;
+    const userEmail = user?.primaryEmailAddress?.emailAddress;
 
     // --- SYNC STATES ---
     const [isSyncing, setIsSyncing] = useState(false);
@@ -106,6 +108,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
     // --- LOAD SETTINGS (Using Sync Service) ---
     useEffect(() => {
+        if (!userId) return; // Don't load if no user
+
         const loadSettings = async () => {
             setIsSyncing(true);
             setSyncError(null);
@@ -142,7 +146,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         };
 
         loadSettings();
-    }, [session]);
+    }, [userId]); // Fixed: Only re-run when user ID changes
 
     // Helper to apply settings object
     const applySettings = (parsed: any) => {
@@ -163,6 +167,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
     // --- AUTO SAVE (Using Sync Service with Optimistic Updates) ---
     useEffect(() => {
+        // Skip initial render/load to avoid overwriting cloud with defaults
+        // Logic: if not synced yet and user exists, maybe wait? 
+        // For now, we rely on the debounce.
+
         const saveSettings = async () => {
             const settingsToSave = {
                 currency, language, searchEngine,
@@ -179,7 +187,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
             }
 
             // Save to cloud if logged in (with retry logic via service)
-            if (session?.user?.email) {
+            if (userEmail) {
                 const timeoutId = setTimeout(async () => {
                     setIsSyncing(true);
                     setSyncError(null);
@@ -207,7 +215,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         };
 
         saveSettings();
-    }, [currency, language, searchEngine, hideBalances, privacyMode, strictMode, humanMetrics, testNetsEnabled, ipfsGateway, customRPC, stateLogsEnabled, contacts, notifications, session]);
+    }, [currency, language, searchEngine, hideBalances, privacyMode, strictMode, humanMetrics, testNetsEnabled, ipfsGateway, customRPC, stateLogsEnabled, contacts, notifications, userEmail]);
 
     // --- FUNCTIONS ---
     const toggleHideBalances = () => setHideBalances(prev => !prev);

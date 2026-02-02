@@ -44,20 +44,16 @@ export class SettingsSyncService {
    */
   async loadSettings(): Promise<UserSettings | null> {
     try {
-      // Try to load from server
-      const response = await fetch('/api/user/settings', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      // Try to load from server with retry logic
+      const data = await this.retryableRequest<any>(async () => {
+        return fetch('/api/user/settings', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
       });
 
-      if (!response.ok) {
-        throw new Error(`Server returned ${response.status}`);
-      }
-
-      const data = await response.json();
-      
       if (data.settings) {
         // Validate server data
         const validation = validateUserSettings(data.settings);
@@ -84,23 +80,18 @@ export class SettingsSyncService {
     const hash = this.calculateHash(settings);
 
     try {
-      const response = await fetch('/api/user/settings', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...settings,
-          syncHash: hash,
-        }),
+      const data = await this.retryableRequest<any>(async () => {
+        return fetch('/api/user/settings', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...settings,
+            syncHash: hash,
+          }),
+        });
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to save settings');
-      }
-
-      const data = await response.json();
       
       // Update localStorage
       this.saveToLocalStorage(settings);
@@ -142,6 +133,48 @@ export class SettingsSyncService {
   }
 
   /**
+   * Retry a request with exponential backoff and rate limit handling
+   */
+  private async retryableRequest<T>(
+    requestFn: () => Promise<Response> // Changed signature to return Response
+  ): Promise<T> {
+    for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
+      try {
+        const response = await requestFn();
+        
+        if (response.status === 429) {
+            const retryAfter = response.headers.get('Retry-After');
+            const waitSeconds = retryAfter ? parseInt(retryAfter, 10) : 60; // Default 60s
+            console.warn(`Rate limited (429). Waiting ${waitSeconds}s...`);
+            
+            // Wait full duration + 1s buffer
+            await this.delay((waitSeconds + 1) * 1000);
+            continue; // Retry after wait
+        }
+
+        if (!response.ok) {
+            // Throw error to trigger catch block for other errors
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || `Server returned ${response.status}`);
+        }
+
+        return response.json();
+      } catch (error: any) {
+        if (attempt === this.maxRetries) {
+          throw error;
+        }
+
+        // Exponential backoff: 1s, 2s, 4s
+        const delay = this.baseDelay * Math.pow(2, attempt);
+        console.log(`Retry attempt ${attempt + 1} after ${delay}ms`);
+        await this.delay(delay);
+      }
+    }
+
+    throw new Error('Max retries exceeded');
+  }
+
+  /**
    * Sync all pending changes to server
    */
   async syncPendingChanges(): Promise<SyncResult> {
@@ -170,21 +203,14 @@ export class SettingsSyncService {
       }
 
       // Send to server with retry logic
-      const result = await this.retryableRequest(async () => {
-        const response = await fetch('/api/user/settings', {
+      const result = await this.retryableRequest<any>(async () => {
+        return fetch('/api/user/settings', {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(updates),
         });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to update settings');
-        }
-
-        return response.json();
       });
 
       // Clear pending changes on success
@@ -206,30 +232,6 @@ export class SettingsSyncService {
         error: error.message,
       };
     }
-  }
-
-  /**
-   * Retry a request with exponential backoff
-   */
-  private async retryableRequest<T>(
-    requestFn: () => Promise<T>
-  ): Promise<T> {
-    for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
-      try {
-        return await requestFn();
-      } catch (error) {
-        if (attempt === this.maxRetries) {
-          throw error;
-        }
-
-        // Exponential backoff: 1s, 2s, 4s
-        const delay = this.baseDelay * Math.pow(2, attempt);
-        console.log(`Retry attempt ${attempt + 1} after ${delay}ms`);
-        await this.delay(delay);
-      }
-    }
-
-    throw new Error('Max retries exceeded');
   }
 
   /**

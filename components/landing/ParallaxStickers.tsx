@@ -45,49 +45,52 @@ export function ParallaxStickers() {
 
     return (
         <div className="fixed inset-0 pointer-events-none z-[1] overflow-hidden">
-            {stickersData.map((sticker, index) => {
-                // Create parallax transform for each sticker
-                const y = useTransform(
-                    scrollY,
-                    [0, 3000],
-                    [sticker.baseY, sticker.baseY - (sticker.speed * 1000)]
-                );
-                const rotate = useTransform(
-                    scrollY,
-                    [0, 3000],
-                    [sticker.rotate, sticker.rotate + (sticker.speed * 90)]
-                );
-                const opacity = useTransform(
-                    scrollY,
-                    [sticker.baseY - 600, sticker.baseY - 100, sticker.baseY + 800],
-                    [0, 1, 0]
-                );
-
-                return (
-                    <motion.div
-                        key={index}
-                        style={{
-                            x: sticker.x,
-                            y,
-                            rotate,
-                            opacity,
-                        }}
-                        className="absolute"
-                    >
-                        <motion.img
-                            src={sticker.src}
-                            alt={sticker.src.includes('rocket') ? 'Rocket' : sticker.src.includes('star') ? 'Star' : 'Cat'}
-                            style={{
-                                width: sticker.size,
-                                height: sticker.size,
-                                filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.2))',
-                                transform: `perspective(1000px) translateZ(${sticker.speed * 100}px)`,
-                            }}
-                            className="object-contain"
-                        />
-                    </motion.div>
-                );
-            })}
+            {stickersData.map((sticker, index) => (
+                <StickerItem key={index} sticker={sticker} scrollY={scrollY} />
+            ))}
         </div>
     );
 }
+
+function StickerItem({ sticker, scrollY }: { sticker: any, scrollY: any }) {
+    const y = useTransform(
+        scrollY,
+        [0, 3000],
+        [sticker.baseY, sticker.baseY - (sticker.speed * 1000)]
+    );
+    const rotate = useTransform(
+        scrollY,
+        [0, 3000],
+        [sticker.rotate, sticker.rotate + (sticker.speed * 90)]
+    );
+    const opacity = useTransform(
+        scrollY,
+        [sticker.baseY - 600, sticker.baseY - 100, sticker.baseY + 800],
+        [0, 1, 0]
+    );
+
+    return (
+        <motion.div
+            style={{
+                x: sticker.x,
+                y,
+                rotate,
+                opacity,
+            }}
+            className="absolute"
+        >
+            <motion.img
+                src={sticker.src}
+                alt={sticker.src.includes('rocket') ? 'Rocket' : sticker.src.includes('star') ? 'Star' : 'Cat'}
+                style={{
+                    width: sticker.size,
+                    height: sticker.size,
+                    filter: 'drop-shadow(0 10px 30px rgba(0,0,0,0.2))',
+                    transform: `perspective(1000px) translateZ(${sticker.speed * 100}px)`,
+                }}
+                className="object-contain"
+            />
+        </motion.div>
+    );
+}
+

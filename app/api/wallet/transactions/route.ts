@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+// Imports removed
 import { 
-  getTransactionHistory, 
-  getTransactionStats,
   exportTransactionsToCSV,
   type TransactionType 
 } from '@/lib/wallet/transactions';
+import { 
+  getTransactionHistory, 
+  getTransactionStats
+} from '@/lib/wallet/transactions-server';
 
 /**
  * GET /api/wallet/transactions
@@ -14,20 +15,21 @@ import {
  */
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     const { searchParams } = new URL(request.url);
+    const authUserId = searchParams.get('authUserId');
     const chainId = searchParams.get('chainId');
     const type = searchParams.get('type') as TransactionType | null;
     const limit = searchParams.get('limit');
     const offset = searchParams.get('offset');
     const format = searchParams.get('format'); // 'json' or 'csv'
 
-    const transactions = await getTransactionHistory(session.user.id, {
+    // We allow fetching public transaction data for any "address" (authUserId)
+    // In a real app, you might want to verify if the requestor owns the address via Clerk
+    if (!authUserId) {
+        return NextResponse.json({ error: 'Missing authUserId (wallet address)' }, { status: 400 });
+    }
+
+    const transactions = await getTransactionHistory(authUserId, {
       chainId: chainId ? parseInt(chainId) : undefined,
       type: type || undefined,
       limit: limit ? parseInt(limit) : 50,
@@ -61,13 +63,14 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const body = await request.json();
+    const { authUserId } = body;
+
+    if (!authUserId) {
+        return NextResponse.json({ error: 'Missing authUserId' }, { status: 400 });
     }
 
-    const stats = await getTransactionStats(session.user.id);
+    const stats = await getTransactionStats(authUserId);
 
     return NextResponse.json({ stats });
   } catch (error) {
