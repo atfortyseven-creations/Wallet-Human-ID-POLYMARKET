@@ -240,8 +240,8 @@ function Bubble({ coin, index, timeframe, containerRef, dimensions, onClick }: {
     const [fluctuation, setFluctuation] = useState(0);
     useEffect(() => {
         const interval = setInterval(() => {
-            setFluctuation((Math.random() - 0.5) * 0.2);
-        }, 1500 + Math.random() * 2000);
+            setFluctuation((Math.random() - 0.5) * 0.15);
+        }, 300 + Math.random() * 400); // Super fast ticker for addictive feel
         return () => clearInterval(interval);
     }, []);
 
@@ -266,12 +266,14 @@ function Bubble({ coin, index, timeframe, containerRef, dimensions, onClick }: {
         <motion.div
             drag
             dragConstraints={containerRef}
-            dragElastic={0.15}
-            dragTransition={{ bounceStiffness: 400, bounceDamping: 25 }}
+            dragElastic={0.25}
+            dragTransition={{ bounceStiffness: 600, bounceDamping: 20 }}
             dragMomentum={true}
             onDragStart={() => setIsDragging(true)}
             onDragEnd={() => setIsDragging(false)}
             onClick={() => !isDragging && onClick()}
+            whileHover={{ scale: 1.1, zIndex: 100 }}
+            whileTap={{ scale: 0.9, rotate: -2 }}
             initial={{ scale: 0, opacity: 0, x: initialX, y: initialY }}
             animate={{ 
                 scale: 1, 
@@ -293,7 +295,8 @@ function Bubble({ coin, index, timeframe, containerRef, dimensions, onClick }: {
                 height: size,
                 zIndex: Math.floor(Math.abs(change)) + 5,
                 cursor: isDragging ? 'grabbing' : 'grab',
-                pointerEvents: 'auto'
+                pointerEvents: 'auto',
+                willChange: 'transform, opacity'
             }}
             className="group"
         >
