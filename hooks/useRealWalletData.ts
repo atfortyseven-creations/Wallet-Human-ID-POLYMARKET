@@ -30,23 +30,28 @@ export const useRealWalletData = (recentNews: NewsItem[] = []) => {
     });
 
     // 2. Posiciones Off-Chain (Vía nuestro Proxy)
+    const isValidAddress = effectiveAddress && effectiveAddress.startsWith('0x') && effectiveAddress.length === 42 && !effectiveAddress.includes('Virtual');
+    
     const { data: positionsRaw, isLoading: isPositionsLoading } = useQuery({
         queryKey: ['positions', effectiveAddress],
         queryFn: async () => {
+             // Si llegamos aquí sin check de 'enabled', evitamos la llamada igual
+            if (!isValidAddress) return []; 
             const { data } = await axios.get(`/api/wallet/positions?userAddress=${effectiveAddress}`);
             return data;
         },
-        enabled: !!effectiveAddress,
+        enabled: !!isValidAddress,
     });
 
     // 3. Historial (History) - Off-Chain
     const { data: historyRaw, isLoading: isHistoryLoading } = useQuery({
         queryKey: ['history', effectiveAddress],
         queryFn: async () => {
+             if (!isValidAddress) return [];
             const { data } = await axios.get(`/api/wallet/history?userAddress=${effectiveAddress}`);
             return data;
         },
-        enabled: !!effectiveAddress,
+        enabled: !!isValidAddress,
     });
 
 
