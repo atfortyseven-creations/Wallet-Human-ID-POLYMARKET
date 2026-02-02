@@ -18,7 +18,12 @@ function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
-export const HumanCard = () => {
+interface HumanCardProps {
+    address?: string;
+    balance?: string;
+}
+
+export const HumanCard = ({ address: propAddress, balance: propBalance }: HumanCardProps) => {
     const { t } = useApp();
     
     // User Data State
@@ -33,8 +38,10 @@ export const HumanCard = () => {
         dedupingInterval: 30000
     });
 
-    const balance = walletData?.balance ? `$${walletData.balance}` : (loading && !walletData ? "..." : "---");
-    const addressDisplay = walletData?.address || "Connect Wallet";
+    const balance = propBalance !== undefined 
+        ? (propBalance.startsWith('$') ? propBalance : `$${propBalance}`) 
+        : (walletData?.balance ? `$${walletData.balance}` : (loading && !walletData ? "..." : "$0.00"));
+    const addressDisplay = propAddress || walletData?.address || "Connect Wallet";
 
     useEffect(() => {
         if (walletData || error) setLoading(false);

@@ -8,8 +8,8 @@ import { useAuth } from '@/hooks/useAuth';
 // Dirección de Bridged USDC en Polygon
 const USDC_ADDRESS = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174';
 
-export const useRealWalletData = (recentNews: NewsItem[] = []) => {
-    const { address, isConnected: isWeb3Connected } = useAccount();
+export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?: string) => {
+    const { address: web3Address, isConnected: isWeb3Connected } = useAccount();
     const { isAuthenticated } = useAuth();
     
     // Unified connection state
@@ -31,8 +31,8 @@ export const useRealWalletData = (recentNews: NewsItem[] = []) => {
         enabled: isAuthenticated && !isWeb3Connected
     });
 
-    // Use real address if web3, or the managed address if authenticated
-    const effectiveAddress = address || managedWallet?.address;
+    // Priority: 1. Manual override (Account Switcher), 2. Web3 Connected, 3. Managed/Auth
+    const effectiveAddress = overrideAddress || web3Address || managedWallet?.address;
 
     // 1. On-Chain Balance (Wagmi ya maneja su propio caché/reactividad)
     const { data: balanceData, isLoading: isBalanceLoading } = useBalance({

@@ -39,6 +39,11 @@ export default function SuperWallet({ recentNews = [] }: { recentNews?: any[] })
 
 function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
     const { t } = useLanguage();
+    const [activeView, setActiveView] = useState<'dashboard' | 'portfolio' | 'earn' | 'activity' | 'contacts' | 'settings' | 'referrals' | 'whales' | 'cards' | 'vault' | 'nfc'>('dashboard');
+    const [showWatchInput, setShowWatchInput] = useState(false);
+    const [accounts, setAccounts] = useState<WalletAccount[]>([]);
+    const [currentAddress, setCurrentAddress] = useState<string>('');
+
     const {
         usdcBalance,
         totalBalance,
@@ -47,13 +52,8 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
         transactions,
         isLoading,
         isConnected,
-        address
-    } = useRealWalletData(recentNews);
-
-    const [activeView, setActiveView] = useState<'dashboard' | 'portfolio' | 'earn' | 'activity' | 'contacts' | 'settings' | 'referrals' | 'whales' | 'cards' | 'vault' | 'nfc'>('dashboard');
-    const [showWatchInput, setShowWatchInput] = useState(false);
-    const [accounts, setAccounts] = useState<WalletAccount[]>([]);
-    const [currentAddress, setCurrentAddress] = useState<string>('');
+        address: hookAddress
+    } = useRealWalletData(recentNews, currentAddress);
 
     // Load accounts from localStorage on mount
     useEffect(() => {
@@ -64,20 +64,20 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
             if (loadedAccounts.length > 0 && !currentAddress) {
                 setCurrentAddress(loadedAccounts[0].address);
             }
-        } else if (address) {
+        } else if (hookAddress) {
             // Initialize with CONNECTED wallet only (Real Blockchain Wallet)
             const primaryAccount: WalletAccount = {
-                address: address,
+                address: hookAddress,
                 name: 'Account 1', // Generic real name
                 type: 'PRIMARY',
                 index: 0,
-                color: getAccountColor(address)
+                color: getAccountColor(hookAddress)
             };
             setAccounts([primaryAccount]);
-            setCurrentAddress(address);
+            setCurrentAddress(hookAddress);
             localStorage.setItem('wallet_accounts', JSON.stringify([primaryAccount]));
         }
-    }, [address]);
+    }, [hookAddress]);
 
     const [showReceive, setShowReceive] = useState(false);
     const [showScanner, setShowScanner] = useState(false);
@@ -148,7 +148,7 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
     };
 
     // Use current address or fallback to connected address
-    const displayAddress = currentAddress || address || '';
+    const displayAddress = currentAddress || hookAddress || '';
 
     // Always show the wallet interface
     return (
@@ -207,11 +207,11 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
                     <div className="animate-fade-in space-y-8">
                         {/* HUMAN CARD (Premium Visual) */}
                         <div className="py-4">
-                            <HumanCard />
+                            <HumanCard address={displayAddress} balance={totalBalance} />
                         </div>
 
                         {/* Wallet Actions & Tabs */}
-                        <WalletActions positions={positions} history={transactions} userAddress={address || ''} />
+                        <WalletActions positions={positions} history={transactions} userAddress={displayAddress} />
                     </div>
                 )}
 
