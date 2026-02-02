@@ -56,7 +56,7 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade, onW
   const [searchQuery, setSearchQuery] = useState('');
   const [showAddWallet, setShowAddWallet] = useState(false);
   const [showBatchImport, setShowBatchImport] = useState(false);
-  const [selectedChains, setSelectedChains] = useState<string[]>(['base', 'ethereum', 'polygon', 'arbitrum', 'optimism']);
+  const [selectedChains, setSelectedChains] = useState<string[]>(['bitcoin', 'base', 'ethereum', 'polygon', 'arbitrum', 'optimism']);
 
   const watchedWallets: WatchedWallet[] = watchedData?.watchedWallets || [];
 
@@ -135,7 +135,8 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade, onW
     const lines = text.split('\n');
     for (const line of lines) {
         const [address, label] = line.split(',').map(s => s.trim());
-        if (address && address.startsWith('0x')) {
+        // Validation now supports non-0x addresses (e.g. BTC)
+        if (address && address.length > 20) {
             await handleAddWallet(address, label);
         }
     }

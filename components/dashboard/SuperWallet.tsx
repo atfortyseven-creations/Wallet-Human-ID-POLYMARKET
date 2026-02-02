@@ -211,7 +211,7 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
                         </div>
 
                         {/* Wallet Actions & Tabs */}
-                        <WalletActions positions={positions} history={transactions} />
+                        <WalletActions positions={positions} history={transactions} userAddress={address || ''} />
                     </div>
                 )}
 

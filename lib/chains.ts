@@ -115,6 +115,25 @@ export const SUPPORTED_CHAINS: Record<string, ChainConfig> = {
     color: '#FF0420',
     isTestnet: false,
   },
+  bitcoin: {
+    id: 0, 
+    name: 'Bitcoin',
+    shortName: 'BTC',
+    nativeCurrency: {
+      name: 'Bitcoin',
+      symbol: 'BTC',
+      decimals: 8,
+    },
+    // Use the custom GetBlock endpoint if available, otherwise fallback
+    rpcUrls: [
+        process.env.NEXT_PUBLIC_BITCOIN_RPC_URL || 'https://btc.getblock.io/3648ec09-7a0e-447f-a4eb-8d92b81e5...', 
+        'https://mempool.space/api'
+    ], 
+    blockExplorerUrls: ['https://mempool.space'],
+    iconUrl: '/chains/bitcoin.svg',
+    color: '#F7931A',
+    isTestnet: false,
+  }
 };
 
 export const getChainById = (chainId: number): ChainConfig | undefined => {

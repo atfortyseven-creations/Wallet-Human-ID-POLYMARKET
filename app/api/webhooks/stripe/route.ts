@@ -3,8 +3,10 @@ import { headers } from 'next/headers';
 import Stripe from 'stripe';
 import { clerkClient } from '@clerk/nextjs/server';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2026-01-28.clover',
+// Initialize Stripe with dummy key for build time if missing
+const stripeKey = process.env.STRIPE_SECRET_KEY || 'sk_test_123456789';
+const stripe = new Stripe(stripeKey, {
+  apiVersion: '2024-12-18.acacia' as any,
 });
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;

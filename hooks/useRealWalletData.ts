@@ -15,9 +15,24 @@ export const useRealWalletData = (recentNews: NewsItem[] = []) => {
     // Unified connection state
     const isConnected = isWeb3Connected || isAuthenticated;
     
-    // Use real address if web3, or a placeholder/virtual address if only web2
-    // In a real implementation, we might fetch a generated wallet address from the backend for web2 users
-    const effectiveAddress = address || (isAuthenticated ? '0xVirtual...Human' : undefined);
+    // Fetch managed wallet if not connected via Web3
+    const { data: managedWallet } = useQuery({
+        queryKey: ['managed-wallet'],
+        queryFn: async () => {
+            if (!isAuthenticated || isWeb3Connected) return null;
+            try {
+                const { data } = await axios.get('/api/user/wallet');
+                return data;
+            } catch (error) {
+                console.error('Error fetching managed wallet:', error);
+                return null;
+            }
+        },
+        enabled: isAuthenticated && !isWeb3Connected
+    });
+
+    // Use real address if web3, or the managed address if authenticated
+    const effectiveAddress = address || managedWallet?.address;
 
     // 1. On-Chain Balance (Wagmi ya maneja su propio caché/reactividad)
     const { data: balanceData, isLoading: isBalanceLoading } = useBalance({

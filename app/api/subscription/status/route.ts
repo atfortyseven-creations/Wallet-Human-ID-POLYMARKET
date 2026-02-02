@@ -2,8 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { currentUser } from '@clerk/nextjs/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2026-01-28.clover',
+// Initialize Stripe with dummy key for build time if missing
+const stripeKey = process.env.STRIPE_SECRET_KEY || 'sk_test_123456789';
+const stripe = new Stripe(stripeKey, {
+  apiVersion: '2024-12-18.acacia' as any,
 });
 
 export async function GET(req: NextRequest) {

@@ -31,10 +31,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing userId or address' }, { status: 400 });
     }
 
+    const formattedAddress = address.startsWith('0x') ? address.toLowerCase() : address;
+
     const watchedWallet = await prisma.watchedWallet.create({
       data: {
         userId,
-        address: address.toLowerCase(),
+        address: formattedAddress,
         label: label || address,
         tags: tags || [],
         alertsEnabled: true

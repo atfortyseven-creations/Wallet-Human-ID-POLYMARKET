@@ -26,10 +26,14 @@ import { X } from 'lucide-react';
 interface WalletActionsProps {
     positions?: Position[];
     history?: Transaction[];
+    userAddress?: string; // Add optional prop
 }
 
-export function WalletActions({ positions = [], history = [] }: WalletActionsProps) {
-    const { address, isConnected } = useAccount();
+export function WalletActions({ positions = [], history = [], userAddress }: WalletActionsProps) {
+    const { address: wagmiAddress, isConnected } = useAccount();
+    // Use prop or fallback to wagmi
+    const effectiveAddress = userAddress || wagmiAddress || ''; 
+    
     const chainId = useChainId();
     const [activeTab, setActiveTab] = useState('Tokens');
 
@@ -57,16 +61,16 @@ export function WalletActions({ positions = [], history = [] }: WalletActionsPro
             address: t.address as `0x${string}`,
             abi: erc20Abi,
             functionName: 'balanceOf',
-            args: [address as `0x${string}`],
+            args: [effectiveAddress as `0x${string}`], // Use effectiveAddress
             chainId
         })),
         query: {
-            enabled: !!address && supportedTokens.length > 0
+            enabled: !!effectiveAddress && supportedTokens.length > 0
         }
     });
 
     // Native Balance
-    const { data: nativeBalance } = useBalance({ address });
+    const { data: nativeBalance } = useBalance({ address: effectiveAddress as `0x${string}` });
 
     // Process balances
     const tokens = supportedTokens.map((t, i) => {
@@ -138,8 +142,8 @@ export function WalletActions({ positions = [], history = [] }: WalletActionsPro
     return (
         <div className="w-full">
             {/* Core Modals */}
-            <SendModal isOpen={showSend} onClose={() => setShowSend(false)} userAddress={address || ''} />
-            <ReceiveModal isOpen={showReceive} onClose={() => setShowReceive(false)} userAddress={address || ''} />
+            <SendModal isOpen={showSend} onClose={() => setShowSend(false)} userAddress={effectiveAddress} />
+            <ReceiveModal isOpen={showReceive} onClose={() => setShowReceive(false)} userAddress={effectiveAddress} />
             <SwapModal isOpen={showSwap} onClose={() => setShowSwap(false)} />
             
             {/* Unique Feature Modals */}
@@ -188,7 +192,7 @@ export function WalletActions({ positions = [], history = [] }: WalletActionsPro
                                 <X size={20} className="text-[#1F1F1F]" />
                             </button>
                             <TokenManager 
-                                walletAddress={address || ''} 
+                                walletAddress={effectiveAddress || ''} 
                                 chainId={chainId} 
                             />
                         </motion.div>
@@ -399,8 +403,8 @@ export function WalletActions({ positions = [], history = [] }: WalletActionsPro
                 )}
                  {activeTab === 'NFT' && (
                     <div className="px-4">
-                        {isConnected && address ? (
-                            <NFTGallery walletAddress={address} chainId={chainId} />
+                        {isConnected && effectiveAddress ? (
+                            <NFTGallery walletAddress={effectiveAddress} chainId={chainId} />
                         ) : (
                              <div className="text-center py-16 text-neutral-400 text-sm">
                                  <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4 text-neutral-300">
