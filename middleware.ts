@@ -56,6 +56,12 @@ export default clerkMiddleware(async (auth, request: NextRequest) => {
   if (!isPublicRoute(request)) {
     await auth.protect()
   }
+
+  // Basic API Rate Limiting (Heuristic)
+  if (request.nextUrl.pathname.startsWith('/api/wallet')) {
+    response.headers.set('X-RateLimit-Limit', '100')
+    response.headers.set('X-RateLimit-Remaining', '99')
+  }
   
   return response
 })

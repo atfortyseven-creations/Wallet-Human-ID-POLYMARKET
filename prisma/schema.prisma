@@ -527,6 +527,10 @@ model AuthUser {
   authenticators    Authenticator[]
   wallets           WalletAccount[]
   addressBook       AddressBookEntry[]
+  timeLockVaults    TimeLockVault[]
+  deadMansSwitch    DeadMansSwitch?
+  socialRecovery    SocialRecovery?
+  aiRebalancerPlans AIRebalancerPlan[]
 
   @@index([email])
 }
@@ -1026,3 +1030,99 @@ model WalletAccount {
   @@index([userId])
 }
 
+// ----------------------------------------------------------------------------
+// 10. ADVANCED WALLET INNOVATIONS (PHASE 2)
+// ----------------------------------------------------------------------------
+
+model TimeLockVault {
+  id           String   @id @default(cuid())
+  userId       String
+  authUser     AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  amount       Decimal  @db.Decimal(32, 18)
+  tokenSymbol  String   @default("ETH")
+  unlockDate   DateTime
+  txHash       String?  @unique
+  status       String   @default("LOCKED") // LOCKED, UNLOCKED, WITHDRAWN
+  
+  unlockTxHash String?  @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId])
+  @@index([unlockDate])
+  @@index([status])
+}
+
+model DeadMansSwitch {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  authUser          AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  beneficiaryAddress String
+  inactivityPeriod   Int      // In months
+  lastPingAt         DateTime @default(now())
+  status             String   @default("ACTIVE") // ACTIVE, EXPIRED, EXECUTED
+  
+  checkFrequencyDays Int      @default(7)
+  executionTxHash    String?  @unique
+  
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([lastPingAt])
+}
+
+model SocialRecovery {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  authUser     AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  threshold    Int      @default(3)
+  totalGuardians Int    @default(5)
+  status       String   @default("INACTIVE") // INACTIVE, ACTIVE, RECOVERING
+  
+  guardians    Guardian[]
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Guardian {
+  id               String   @id @default(cuid())
+  recoveryId       String
+  recovery         SocialRecovery @relation(fields: [recoveryId], references: [id], onDelete: Cascade)
+  
+  email            String
+  address          String?  // Optional: Guardian's wallet
+  status           String   @default("PENDING") // PENDING, VERIFIED
+  
+  hasApproved      Boolean  @default(false)
+  approvedAt       DateTime?
+  
+  createdAt        DateTime @default(now())
+
+  @@unique([recoveryId, email])
+  @@index([recoveryId])
+}
+
+model AIRebalancerPlan {
+  id           String   @id @default(cuid())
+  userId       String
+  authUser     AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  strategy     String   // CONSERVATIVE, BALANCED, AGGRESSIVE
+  payload      Json     // The rebalancing plan details
+  executed     Boolean  @default(false)
+  
+  txHashes     String[] // Sub-transactions for the swaps
+  createdAt    DateTime @default(now())
+  executedAt   DateTime?
+
+  @@index([userId])
+  @@index([createdAt])
+}

@@ -93,7 +93,7 @@ export function SiteHeader() {
                             <div key={link.href} className="relative group">
                                 <Link 
                                     href={link.href}
-                                    className={`relative z-10 px-5 py-2 text-[14px] font-black transition-all rounded-lg tracking-widest uppercase font-sans whitespace-nowrap flex items-center gap-2 ${
+                                    className={`relative z-10 px-4 lg:px-5 py-2 text-[13px] lg:text-[14px] font-black transition-all rounded-lg tracking-widest uppercase font-sans whitespace-nowrap flex items-center gap-2 ${
                                         link.isVIP 
                                             ? 'bg-black text-white border-2 border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:scale-105 hover:shadow-[0_0_25px_rgba(212,175,55,0.5)]' 
                                             : 'text-gray-800 hover:text-black hover:bg-gray-100/50'
@@ -122,6 +122,26 @@ export function SiteHeader() {
                                 )}
                             </div>
                         ))}
+                    </nav>
+
+                    {/* TABLET/SMALL DESKTOP NAV - Horizontal Scroll on smaller screens */}
+                    <nav className="flex-1 hidden md:flex xl:hidden items-center justify-start relative z-50 pointer-events-auto overflow-x-auto scrollbar-hide px-2">
+                        <div className="flex items-center gap-2">
+                            {navLinks.map((link) => (
+                                <Link 
+                                    key={link.href}
+                                    href={link.href}
+                                    className={`px-3 py-2 text-[11px] font-black transition-all rounded-lg tracking-wider uppercase font-sans whitespace-nowrap flex items-center gap-1 ${
+                                        link.isVIP 
+                                            ? 'bg-black text-white border border-[#D4AF37]' 
+                                            : 'text-gray-800 hover:text-black hover:bg-gray-100/50'
+                                    }`}
+                                >
+                                    {link.isVIP && <Crown size={12} className="text-[#D4AF37]" />}
+                                    {link.isVIP ? "VIP" : link.name.split(' ')[0]}
+                                </Link>
+                            ))}
+                        </div>
                     </nav>
 
                     {/* RIGHT ACTIONS */}
@@ -203,35 +223,55 @@ export function SiteHeader() {
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="fixed inset-0 z-40 bg-white pt-32 px-6 pb-6 md:hidden flex flex-col items-center gap-8"
+                        className="fixed inset-0 z-40 bg-white pt-24 px-6 pb-6 md:hidden flex flex-col items-stretch gap-4 overflow-y-auto"
+                        style={{ scrollBehavior: 'smooth' }}
                     >
-                        {navLinks.map((link) => (
-                            <Link 
-                                key={link.href} 
-                                href={link.href}
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className="text-2xl font-black text-gray-900 hover:text-blue-600 transition-colors uppercase tracking-[0.15em]"
-                            >
-                                {link.name}
-                            </Link>
-                        ))}
+                        {/* Navigation Links - Stacked Vertically */}
+                        <div className="flex flex-col gap-3">
+                            {navLinks.map((link) => (
+                                <Link 
+                                    key={link.href} 
+                                    href={link.href}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className={`w-full py-4 px-6 rounded-2xl font-black text-center uppercase tracking-wider transition-all ${
+                                        link.isVIP 
+                                            ? 'bg-black text-white border-2 border-[#D4AF37] shadow-lg' 
+                                            : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                                    }`}
+                                >
+                                    {link.isVIP && <Crown size={18} className="inline mr-2 text-[#D4AF37]" />}
+                                    {link.name}
+                                </Link>
+                            ))}
+                        </div>
                          
-                         <div className="flex gap-6 mt-4 items-center">
-                             <button onClick={toggleStealthMode} className="p-4 rounded-full bg-gray-100 hover:bg-gray-200">
-                                {isStealthMode ? <EyeOff size={28} /> : <Eye size={28} />}
-                             </button>
-                             <Link href="/settings" onClick={() => setIsMobileMenuOpen(false)} className="p-4 rounded-full bg-gray-100 hover:bg-gray-200">
-                                <Settings size={28} />
-                             </Link>
-                             <button onClick={toggleLanguage} className="p-4 px-6 rounded-full bg-gray-100 hover:bg-gray-200 font-black uppercase tracking-widest flex items-center gap-2">
-                                <Globe size={22} />
-                                {language === 'en' ? 'ES' : 'EN'}
-                             </button>
+                         <div className="flex flex-col gap-4 mt-4">
+                             <div className="grid grid-cols-2 gap-4">
+                                <button onClick={toggleStealthMode} className="p-4 rounded-2xl bg-gray-100 hover:bg-gray-200 flex flex-col items-center gap-2">
+                                    {isStealthMode ? <EyeOff size={24} /> : <Eye size={24} />}
+                                    <span className="text-[10px] font-bold uppercase tracking-widest">Stealth</span>
+                                </button>
+                                <Link href="/settings" onClick={() => setIsMobileMenuOpen(false)} className="p-4 rounded-2xl bg-gray-100 hover:bg-gray-200 flex flex-col items-center gap-2">
+                                    <Settings size={24} />
+                                    <span className="text-[10px] font-bold uppercase tracking-widest">Settings</span>
+                                </Link>
+                             </div>
+                             
+                             <div className="grid grid-cols-2 gap-4">
+                                <button onClick={toggleLanguage} className="p-4 rounded-2xl bg-gray-100 hover:bg-gray-200 font-black uppercase tracking-widest flex flex-col items-center gap-2">
+                                    <Globe size={24} />
+                                    <span className="text-[10px] font-bold uppercase tracking-widest">{language === 'en' ? 'ESPAÑOL' : 'ENGLISH'}</span>
+                                </button>
+                                <div className="p-4 rounded-2xl bg-gray-100 flex flex-col items-center gap-2 opacity-50 cursor-not-allowed">
+                                    <Bell size={24} />
+                                    <span className="text-[10px] font-bold uppercase tracking-widest">Alerts</span>
+                                </div>
+                             </div>
                          </div>
 
                          <button 
                             onClick={() => { open(); setIsMobileMenuOpen(false); }}
-                            className="w-full max-w-xs bg-black text-white px-8 py-4 rounded-full font-black text-lg mt-4 uppercase tracking-[0.2em]"
+                            className="w-full bg-black text-white px-8 py-5 rounded-2xl font-black text-lg mt-auto mb-8 uppercase tracking-[0.2em] shadow-xl active:scale-95 transition-transform"
                         >
                             {isConnected ? t('nav.wallet_settings') : t('nav.start')}
                         </button>

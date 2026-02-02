@@ -13,6 +13,7 @@ import { LandingHero } from '@/components/landing/LandingHero';
 import FluidBeigeBackground from '@/components/layout/FluidBeigeBackground';
 import { useGateState } from '@/components/layout/TitaniumGate';
 import { FloatingImmersiveBackground } from '@/components/landing/FloatingImmersiveBackground';
+import { ParallaxStickers } from '@/components/landing/ParallaxStickers';
 import { Footer } from '@/components/layout/Footer';
 import { LaunchCountdown } from '@/components/landing/LaunchCountdown';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
@@ -49,6 +50,9 @@ export default function Home() {
             <div className="fixed inset-0 z-0 pointer-events-none">
                 <FluidBeigeBackground />
             </div>
+
+            {/* 2. Parallax Stickers Layer */}
+            <ParallaxStickers />
 
             {/* 2. Main Content */}
             <div className="relative z-10 flex flex-col">

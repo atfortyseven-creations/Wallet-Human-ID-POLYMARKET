@@ -1,15 +1,20 @@
 "use client";
 
 import React, { useState } from 'react';
-import { ArrowUpRight, ArrowDownLeft, Repeat, CreditCard, LayoutGrid, Image as ImageIcon, History, Loader2, TrendingUp, ExternalLink } from 'lucide-react';
+import { ArrowUpRight, ArrowDownLeft, Repeat, CreditCard, LayoutGrid, Image as ImageIcon, History, Loader2, TrendingUp, ExternalLink, Lock, Skull, Brain, Shield, EyeOff } from 'lucide-react';
 import { useAccount, useChainId, useReadContracts, useBalance } from 'wagmi';
 import { formatUnits, erc20Abi } from 'viem';
 import { FeatureCardsSection } from '@/components/landing/FeatureCardsSection';
 import NFTGallery from '@/components/wallet/NFTGallery';
 import { SecurityGrowthSection } from '@/components/landing/SecurityGrowthSection';
-import SendModal from '@/components/wallet/SendModal';
-import ReceiveModal from '@/components/wallet/ReceiveModal';
-import SwapModal from '@/components/wallet/SwapModal';
+import SendModal from '@/components/wallet/modals/SendModal';
+import ReceiveModal from '@/components/wallet/modals/ReceiveModal';
+import SwapModal from '@/components/wallet/modals/SwapModal';
+import TimeLockVaultModal from '@/components/wallet/modals/TimeLockVaultModal';
+import DeadMansSwitchModal from '@/components/wallet/modals/DeadMansSwitchModal';
+import AIRebalancerModal from '@/components/wallet/modals/AIRebalancerModal';
+import SocialRecoveryModal from '@/components/wallet/modals/SocialRecoveryModal';
+import PrivacyMixerModal from '@/components/wallet/modals/PrivacyMixerModal';
 import { getSupportedTokens, TOKENS_BY_CHAIN } from '@/config/tokens';
 import { toast } from 'sonner';
 import { Position, Transaction } from '@/types/wallet';
@@ -34,6 +39,12 @@ export function WalletActions({ positions = [], history = [] }: WalletActionsPro
     const [showSwap, setShowSwap] = useState(false);
     const [showFiat, setShowFiat] = useState(false);
     const [showTokenManager, setShowTokenManager] = useState(false);
+    // New unique features
+    const [showTimeLock, setShowTimeLock] = useState(false);
+    const [showDeadMan, setShowDeadMan] = useState(false);
+    const [showAIRebalancer, setShowAIRebalancer] = useState(false);
+    const [showSocialRecovery, setShowSocialRecovery] = useState(false);
+    const [showPrivacyMixer, setShowPrivacyMixer] = useState(false);
 
     // Tokens Data
     // Defensive coding: Handle case where getSupportedTokens import might be undefined at runtime due to circular deps or build issues
@@ -126,10 +137,17 @@ export function WalletActions({ positions = [], history = [] }: WalletActionsPro
 
     return (
         <div className="w-full">
-            {/* Modals */}
-            <SendModal isOpen={showSend} onClose={() => setShowSend(false)} />
-            <ReceiveModal isOpen={showReceive} onClose={() => setShowReceive(false)} />
+            {/* Core Modals */}
+            <SendModal isOpen={showSend} onClose={() => setShowSend(false)} userAddress={address || ''} />
+            <ReceiveModal isOpen={showReceive} onClose={() => setShowReceive(false)} userAddress={address || ''} />
             <SwapModal isOpen={showSwap} onClose={() => setShowSwap(false)} />
+            
+            {/* Unique Feature Modals */}
+            <TimeLockVaultModal isOpen={showTimeLock} onClose={() => setShowTimeLock(false)} />
+            <DeadMansSwitchModal isOpen={showDeadMan} onClose={() => setShowDeadMan(false)} />
+            <AIRebalancerModal isOpen={showAIRebalancer} onClose={() => setShowAIRebalancer(false)} />
+            <SocialRecoveryModal isOpen={showSocialRecovery} onClose={() => setShowSocialRecovery(false)} />
+            <PrivacyMixerModal isOpen={showPrivacyMixer} onClose={() => setShowPrivacyMixer(false)} />
 
             {/* Fiat On-Ramp Modal */}
             <AnimatePresence>
@@ -179,7 +197,7 @@ export function WalletActions({ positions = [], history = [] }: WalletActionsPro
              </AnimatePresence>
 
             {/* 4 Action Buttons - Premium Squircle Design */}
-            <div className="grid grid-cols-4 gap-4 mb-10 max-w-lg mx-auto">
+            <div className="grid grid-cols-4 gap-4 mb-6 max-w-lg mx-auto">
                 {ACTIONS.map((action) => (
                     <button 
                         key={action.label}
@@ -202,6 +220,42 @@ export function WalletActions({ positions = [], history = [] }: WalletActionsPro
                         </span>
                     </button>
                 ))}
+            </div>
+
+            {/* 5 Unique Features - Inline Horizontal Scroll */}
+            <div className="px-4 mb-10 overflow-x-auto">
+                <div className="flex gap-3 pb-2">
+                    <button
+                        onClick={() => setShowTimeLock(true)}
+                        className="flex items-center gap-2 px-4 py-2 bg-yellow-600 hover:bg-yellow-500 text-white rounded-xl font-bold text-sm whitespace-nowrap transition-all shadow-md"
+                    >
+                        <Lock size={16} /> Time Vault
+                    </button>
+                    <button
+                        onClick={() => setShowDeadMan(true)}
+                        className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-xl font-bold text-sm whitespace-nowrap transition-all shadow-md"
+                    >
+                        <Skull size={16} /> Dead Man
+                    </button>
+                    <button
+                        onClick={() => setShowAIRebalancer(true)}
+                        className="flex items-center gap-2 px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl font-bold text-sm whitespace-nowrap transition-all shadow-md"
+                    >
+                        <Brain size={16} /> AI Rebalance
+                    </button>
+                    <button
+                        onClick={() => setShowSocialRecovery(true)}
+                        className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-xl font-bold text-sm whitespace-nowrap transition-all shadow-md"
+                    >
+                        <Shield size={16} /> Recovery
+                    </button>
+                    <button
+                        onClick={() => setShowPrivacyMixer(true)}
+                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-sm whitespace-nowrap transition-all shadow-md"
+                    >
+                        <EyeOff size={16} /> Privacy
+                    </button>
+                </div>
             </div>
 
             {/* Tabs Navigation - Minimalist */}

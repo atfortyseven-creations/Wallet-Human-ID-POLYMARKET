@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-const ONE_INCH_BASE_URL = 'https://api.1inch.dev/swap/v6.0/1';
+const getBaseUrl = (chainId: number) => `https://api.1inch.dev/swap/v6.0/${chainId}`;
 
-const headers = {
-  'Authorization': `Bearer ${process.env.NEXT_PUBLIC_1INCH_API_KEY}`
-};
+const getHeaders = () => ({
+  'Authorization': `Bearer ${process.env.ONEINCH_API_KEY || process.env.NEXT_PUBLIC_1INCH_API_KEY}`
+});
 
-export interface QuoteParams {
+export interface SwapParams {
   src: string;
   dst: string;
   amount: string;
@@ -14,54 +14,54 @@ export interface QuoteParams {
   slippage: number;
 }
 
-export async function getSwapQuote(params: QuoteParams) {
+export async function getSwapQuote(chainId: number, params: SwapParams) {
   try {
-    const response = await axios.get(`${ONE_INCH_BASE_URL}/quote`, {
+    const response = await axios.get(`${getBaseUrl(chainId)}/quote`, {
       params,
-      headers
+      headers: getHeaders()
     });
     return response.data;
-  } catch (error) {
-    console.error('Error fetching swap quote:', error);
-    throw error;
+  } catch (error: any) {
+    console.error(`Error fetching swap quote for chain ${chainId}:`, error.response?.data || error.message);
+    throw new Error(error.response?.data?.description || 'Failed to fetch swap quote');
   }
 }
 
-export async function buildSwapTransaction(params: QuoteParams) {
+export async function buildSwapTransaction(chainId: number, params: SwapParams) {
   try {
-    const response = await axios.get(`${ONE_INCH_BASE_URL}/swap`, {
-      params: { ...params, disableEstimate: true }, // Disable estimate for faster response in quote phase
-      headers
+    const response = await axios.get(`${getBaseUrl(chainId)}/swap`, {
+      params: { ...params, disableEstimate: true },
+      headers: getHeaders()
     });
     return response.data;
-  } catch (error) {
-    console.error('Error building swap tx:', error);
-    throw error;
+  } catch (error: any) {
+    console.error(`Error building swap tx for chain ${chainId}:`, error.response?.data || error.message);
+    throw new Error(error.response?.data?.description || 'Failed to build swap transaction');
   }
 }
 
-export async function getAllowance(tokenAddress: string, walletAddress: string) {
+export async function getAllowance(chainId: number, tokenAddress: string, walletAddress: string) {
   try {
-    const response = await axios.get(`${ONE_INCH_BASE_URL}/approve/allowance`, {
+    const response = await axios.get(`${getBaseUrl(chainId)}/approve/allowance`, {
       params: { tokenAddress, walletAddress },
-      headers
+      headers: getHeaders()
     });
     return response.data.allowance;
-  } catch (error) {
-    console.error('Error fetching allowance:', error);
+  } catch (error: any) {
+    console.error(`Error fetching allowance for chain ${chainId}:`, error.response?.data || error.message);
     return '0';
   }
 }
 
-export async function getApproveTransaction(tokenAddress: string, amount: string) {
+export async function getApproveTransaction(chainId: number, tokenAddress: string, amount: string) {
   try {
-    const response = await axios.get(`${ONE_INCH_BASE_URL}/approve/transaction`, {
+    const response = await axios.get(`${getBaseUrl(chainId)}/approve/transaction`, {
       params: { tokenAddress, amount },
-      headers
+      headers: getHeaders()
     });
     return response.data;
-  } catch (error) {
-    console.error('Error fetching approve tx:', error);
-    throw error;
+  } catch (error: any) {
+    console.error(`Error fetching approve tx for chain ${chainId}:`, error.response?.data || error.message);
+    throw new Error(error.response?.data?.description || 'Failed to fetch approve transaction');
   }
 }

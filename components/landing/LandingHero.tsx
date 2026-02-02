@@ -1,7 +1,7 @@
 "use client";
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, Shield, Zap } from 'lucide-react';
 import Link from 'next/link';
 
@@ -10,13 +10,22 @@ interface LandingHeroProps {
 }
 
 export function LandingHero({ onStart }: LandingHeroProps) {
+    const { scrollY } = useScroll();
+    
+    // Parallax transforms for cats (opposite directions for depth)
+    const leftCatY = useTransform(scrollY, [0, 500], [0, -100]);
+    const rightCatY = useTransform(scrollY, [0, 500], [0, -150]);
+    const leftCatRotate = useTransform(scrollY, [0, 500], [0, -10]);
+    const rightCatRotate = useTransform(scrollY, [0, 500], [0, 10]);
+
     return (
         <div className="relative w-full h-full flex items-center justify-center px-6">
-            <div className="max-w-6xl mx-auto text-center">
+            <div className="max-w-6xl mx-auto text-center relative">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
+                    className="relative"
                 >
                     {/* Badge */}
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 dark:border-white/10 border-black/10 bg-white/5 dark:bg-white/5 bg-black/5 backdrop-blur-md mb-6">
@@ -26,14 +35,54 @@ export function LandingHero({ onStart }: LandingHeroProps) {
                         </span>
                     </div>
 
-                    {/* Main Heading */}
-                    <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-6 leading-[0.9]">
-                        <span className="text-[#1F1F1F] dark:text-white">The Future of</span>
-                        <br />
-                        <span className="text-purple-500">
-                            Human Finance
-                        </span>
-                    </h1>
+                    {/* Main Heading with 3D Cats */}
+                    <div className="relative">
+                        {/* Left Cat - 3D Depth Effect */}
+                        <motion.div
+                            style={{ y: leftCatY, rotate: leftCatRotate }}
+                            className="absolute -left-32 md:-left-48 top-1/2 -translate-y-1/2 pointer-events-none hidden lg:block"
+                        >
+                            <motion.img
+                                src="/assets/hero-kittens.png"
+                                alt="Kitten"
+                                className="w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-2xl"
+                                initial={{ scale: 0, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                transition={{ duration: 0.6, delay: 0.3 }}
+                                style={{
+                                    filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.3))',
+                                    transform: 'perspective(1000px) rotateY(15deg)',
+                                }}
+                            />
+                        </motion.div>
+
+                        {/* Right Cat - 3D Depth Effect */}
+                        <motion.div
+                            style={{ y: rightCatY, rotate: rightCatRotate }}
+                            className="absolute -right-32 md:-right-48 top-1/2 -translate-y-1/2 pointer-events-none hidden lg:block"
+                        >
+                            <motion.img
+                                src="/models/cat12.png"
+                                alt="Kitten"
+                                className="w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-2xl"
+                                initial={{ scale: 0, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                transition={{ duration: 0.6, delay: 0.5 }}
+                                style={{
+                                    filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.3))',
+                                    transform: 'perspective(1000px) rotateY(-15deg)',
+                                }}
+                            />
+                        </motion.div>
+
+                        <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-6 leading-[0.9]">
+                            <span className="text-[#1F1F1F] dark:text-white">The Future of</span>
+                            <br />
+                            <span className="text-purple-500">
+                                Human Finance
+                            </span>
+                        </h1>
+                    </div>
 
                     {/* Subtitle */}
                     <p className="text-xl md:text-2xl text-[#1F1F1F]/70 dark:text-white/70 max-w-3xl mx-auto mb-10 leading-relaxed">
