@@ -27,6 +27,8 @@ export interface TokenMetadata {
 }
 
 import { alchemyClient } from './alchemy-client';
+import { getChainById } from '../chains';
+import { getRealTimePrice } from '../priceHelper';
 
 /**
  * Get the correct Alchemy API URL for a specific chain and method
@@ -96,6 +98,48 @@ export async function discoverTokens(
 }
 
 /**
+ * Get the native balance of a chain (e.g. ETH on Ethereum)
+ */
+export async function getNativeBalanceToken(
+  walletAddress: string,
+  chainId: number
+): Promise<Token | null> {
+  try {
+    const chain = getChainById(chainId);
+    if (!chain) return null;
+
+    const url = getAlchemyApiUrl(chainId);
+    const result = await alchemyClient.fetchWithRetry(url, {
+      jsonrpc: '2.0',
+      method: 'eth_getBalance',
+      params: [walletAddress, 'latest'],
+      id: 1,
+    });
+
+    const balance = BigInt(result || '0x0');
+    if (balance === 0n) return null;
+
+    const formatted = formatTokenBalance(balance, chain.nativeCurrency.decimals);
+    const price = await getRealTimePrice(chain.nativeCurrency.symbol);
+
+    return {
+      address: 'native',
+      symbol: chain.nativeCurrency.symbol,
+      name: chain.nativeCurrency.name,
+      decimals: chain.nativeCurrency.decimals,
+      balance: balance.toString(),
+      balanceFormatted: formatted,
+      priceUSD: price,
+      valueUSD: price * parseFloat(formatted),
+      chainId,
+    };
+  } catch (error) {
+    console.error(`Error fetching native balance for chain ${chainId}:`, error);
+    return null;
+  }
+}
+
+/**
  * Get token metadata (symbol, name, decimals)
  */
 export async function getTokenMetadata(
@@ -130,8 +174,26 @@ export async function getTokenMetadata(
  */
 export async function getTokenPrice(chainId: number, tokenAddress: string): Promise<{ price: number; change24h: number }> {
   try {
+    const platformMap: Record<number, string> = {
+      1: 'ethereum',
+      137: 'polygon-pos',
+      8453: 'base',
+      42161: 'arbitrum-one',
+      10: 'optimistic-ethereum'
+    };
+
+    const platform = platformMap[chainId] || 'ethereum';
+    
+    // Native tokens (handled via symbol in fetcher, but this provides specialized contract lookup)
+    if (tokenAddress === 'native') {
+        const chain = getChainById(chainId);
+        if (!chain) return { price: 0, change24h: 0 };
+        const price = await getRealTimePrice(chain.nativeCurrency.symbol);
+        return { price, change24h: 0 }; // getRealTimePrice doesn't currently return 24h change
+    }
+
     const response = await fetch(
-      `https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=${tokenAddress}&vs_currencies=usd&include_24hr_change=true`,
+      `https://api.coingecko.com/api/v3/simple/token_price/${platform}?contract_addresses=${tokenAddress}&vs_currencies=usd&include_24hr_change=true`,
       {
         headers: {
           'x-cg-demo-api-key': process.env.NEXT_PUBLIC_COINGECKO_KEY || '',
@@ -146,6 +208,7 @@ export async function getTokenPrice(chainId: number, tokenAddress: string): Prom
       change24h: tokenData?.usd_24h_change || 0
     };
   } catch (error) {
+    console.error(`Error fetching price for ${tokenAddress} on chain ${chainId}:`, error);
     return { price: 0, change24h: 0 };
   }
 }

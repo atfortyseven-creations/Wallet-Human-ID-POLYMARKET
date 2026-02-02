@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CreditCard, Copy, ExternalLink, QrCode, Wallet, TrendingUp, Shield } from 'lucide-react';
+import { CreditCard, Copy, ExternalLink, QrCode, Wallet, TrendingUp, Shield, Eye } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { StealthText } from '@/components/ui/stealth-text';
@@ -12,6 +12,7 @@ import useSWR from 'swr';
 import ReceiveModal from '@/components/wallet/modals/ReceiveModal';
 import QRScannerModal from '@/components/wallet/QRScannerModal';
 import { WalletType } from '@/lib/wallet/accounts';
+import { getExplorerUrl } from '@/lib/chains';
 
 const fetcher = (url: string) => fetch(url).then(r => r.json());
 
@@ -25,9 +26,10 @@ interface HumanCardProps {
     change24hUSD?: number;
     change24hPercent?: number;
     accountType?: WalletType;
+    onWatchClick?: () => void;
 }
 
-export const HumanCard = ({ address: propAddress, balance: propBalance, change24hUSD, change24hPercent, accountType }: HumanCardProps) => {
+export const HumanCard = ({ address: propAddress, balance: propBalance, change24hUSD, change24hPercent, accountType, onWatchClick }: HumanCardProps) => {
     const { t } = useApp();
     
     // User Data State
@@ -148,20 +150,35 @@ export const HumanCard = ({ address: propAddress, balance: propBalance, change24
                     <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between">
                         
                         {/* Address with Copy */}
-                        <button 
-                            onClick={handleCopy}
-                            className="group/addr flex items-center gap-2 text-neutral-400 hover:text-white transition-colors"
-                        >
-                            <span className="font-mono text-xs">{addressDisplay.slice(0, 6)}...{addressDisplay.slice(-4)}</span>
-                            {copied ? (
-                               <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-[#00ff9d] text-[10px] font-bold">COPIED</motion.span>
-                            ) : (
-                               <Copy size={12} className="opacity-0 group-hover/addr:opacity-100 transition-opacity" />
+                        <div className="flex items-center gap-2">
+                            <button 
+                                onClick={handleCopy}
+                                className="group/addr flex items-center gap-2 text-neutral-400 hover:text-white transition-colors"
+                            >
+                                <span className="font-mono text-xs">{addressDisplay.slice(0, 6)}...{addressDisplay.slice(-4)}</span>
+                                {copied ? (
+                                <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-[#00ff9d] text-[10px] font-bold">COPIED</motion.span>
+                                ) : (
+                                <Copy size={12} className="opacity-0 group-hover/addr:opacity-100 transition-opacity" />
+                                )}
+                            </button>
+
+                            {address && (
+                                <a 
+                                    href={getExplorerUrl(1, address)} // Default to Ethereum for now, or detect from chain
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="text-neutral-400 hover:text-white transition-colors"
+                                    title="View on Explorer"
+                                >
+                                    <ExternalLink size={12} />
+                                </a>
                             )}
-                        </button>
+                        </div>
 
                         {/* Quick Actions (Mini) */}
                         <div className="flex gap-2">
+                            <ActionButton icon={<Eye size={16} />} onClick={onWatchClick} label="Watch Wallet" />
                             <ActionButton icon={<QrCode size={16} />} onClick={onScan} label="Scan" />
                             <ActionButton icon={<ExternalLink size={16} />} onClick={onReceive} label="Receive" />
                         </div>

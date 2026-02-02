@@ -1,4 +1,4 @@
-import { discoverTokens, type Token } from './tokens';
+import { discoverTokens, getNativeBalanceToken, type Token } from './tokens';
 import { getSupportedChainIds } from './chains';
 import { PerpPosition, PredictionPosition, ClaimableAsset } from '@/types/wallet';
 import { discoverPolymarketPositions } from './protocols/polymarket';
@@ -44,12 +44,18 @@ export async function getPortfolio(
   // Use a targeted set of chains to avoid massive RPC overhead in one go
   const chains = chainIds || [1, 137, 8453, 42161]; // Mainnet, Polygon, Base, Arbitrum
   
-  // 1. Fetch tokens from all chains - Staggered to prevent RPC flooding
+  // 1. Fetch tokens and native balances from all chains - Staggered to prevent RPC flooding
   const allTokensArrays = [];
   for (const chainId of chains) {
     try {
+        // Fetch native balance (ETH, MATIC, etc.)
+        const nativeToken = await getNativeBalanceToken(walletAddress, chainId);
+        
+        // Fetch ERC20 tokens
         const tokens = await discoverTokens(walletAddress, chainId);
-        allTokensArrays.push(tokens);
+        
+        const combined = nativeToken ? [nativeToken, ...tokens] : tokens;
+        allTokensArrays.push(combined);
     } catch (e) {
         console.warn(`[Portfolio] Token discovery failed for chain ${chainId}:`, e);
     }

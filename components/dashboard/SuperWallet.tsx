@@ -312,6 +312,7 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
                                 change24hUSD={change24hUSD}
                                 change24hPercent={change24hPercent}
                                 accountType={accounts.find(a => a.address.toLowerCase() === displayAddress.toLowerCase())?.type}
+                                onWatchClick={() => setShowWatchInput(true)}
                             />
 
                         {/* Wallet Actions & Tabs */}
