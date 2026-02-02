@@ -24,13 +24,36 @@ export default function MarketTable() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    const [prevPrices, setPrevPrices] = useState<Record<string, number>>({});
+    const [flashStates, setFlashStates] = useState<Record<string, 'up' | 'down' | null>>({});
+
     const fetchData = async () => {
         setError(null);
         try {
             const res = await fetch('/api/bubbles');
             const json = await res.json();
             if (json.bubbles) {
-                setCoins(json.bubbles);
+                const newCoins: CoinData[] = json.bubbles;
+                
+                // Determine flashes
+                const newFlashes: Record<string, 'up' | 'down' | null> = {};
+                newCoins.forEach(coin => {
+                    const prev = prevPrices[coin.id];
+                    if (prev !== undefined && prev !== coin.current_price) {
+                        newFlashes[coin.id] = coin.current_price > prev ? 'up' : 'down';
+                    }
+                });
+
+                if (Object.keys(newFlashes).length > 0) {
+                    setFlashStates(newFlashes);
+                    setTimeout(() => setFlashStates({}), 2000); // Clear flashes after 2s
+                }
+
+                const newPrices: Record<string, number> = {};
+                newCoins.forEach(c => newPrices[c.id] = c.current_price);
+                
+                setCoins(newCoins);
+                setPrevPrices(newPrices);
             } else if (json.error) {
                 setError(json.error);
             }
@@ -44,12 +67,12 @@ export default function MarketTable() {
 
     useEffect(() => {
         fetchData();
-        const interval = setInterval(fetchData, 60000); // Update every minute
+        const interval = setInterval(fetchData, 30000); // Higher frequency: 30s
         return () => clearInterval(interval);
-    }, []);
+    }, [prevPrices]);
 
     const formatCurrency = (val: number) => {
-        return new Intl.NumberFormat('es-ES', {
+        return new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
             minimumFractionDigits: val < 1 ? 4 : 2,
@@ -58,10 +81,39 @@ export default function MarketTable() {
     };
 
     const formatCompact = (val: number) => {
-        if (val >= 1e12) return (val / 1e12).toFixed(2) + ' B$';
-        if (val >= 1e9) return (val / 1e9).toFixed(2) + ' mil M$';
+        if (val >= 1e12) return (val / 1e12).toFixed(2) + ' T$';
+        if (val >= 1e9) return (val / 1e9).toFixed(2) + ' B$';
         if (val >= 1e6) return (val / 1e6).toFixed(2) + ' M$';
         return val.toLocaleString() + ' $';
+    };
+
+    const LivePriceTicker = ({ value, flash }: { value: number, flash: 'up' | 'down' | null }) => {
+        const [fluctuation, setFluctuation] = useState(0);
+        
+        useEffect(() => {
+            const ticker = setInterval(() => {
+                setFluctuation((Math.random() - 0.5) * (value * 0.0001)); // Subtle natural drift
+            }, 400 + Math.random() * 600);
+            return () => clearInterval(ticker);
+        }, [value]);
+
+        const displayValue = value + fluctuation;
+
+        return (
+            <div className={`transition-all duration-700 px-3 py-1 rounded-xl ${
+                flash === 'up' ? 'bg-emerald-500/20' : 
+                flash === 'down' ? 'bg-rose-500/20' : 
+                'bg-transparent'
+            }`}>
+                <span className={`font-black tabular-nums transition-colors duration-300 ${
+                    flash === 'up' ? 'text-emerald-500' :
+                    flash === 'down' ? 'text-rose-500' :
+                    'text-black'
+                }`}>
+                    {formatCurrency(displayValue)}
+                </span>
+            </div>
+        );
     };
 
     const PercentBadge = ({ val }: { val: number }) => {
@@ -137,8 +189,13 @@ export default function MarketTable() {
                                         </div>
                                     </div>
                                 </td>
-                                <td className="px-6 py-4 text-right text-sm font-black text-black tabular-nums">
-                                    {formatCurrency(coin.current_price)}
+                                <td className="px-6 py-4 text-right">
+                                    <div className="flex justify-end">
+                                        <LivePriceTicker 
+                                            value={coin.current_price} 
+                                            flash={flashStates[coin.id] || null} 
+                                        />
+                                    </div>
                                 </td>
                                 <td className="px-6 py-4 text-right text-sm font-black text-black tabular-nums">
                                     {formatCompact(coin.market_cap)}
