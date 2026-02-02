@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Shield, Zap } from 'lucide-react';
+import Link from 'next/link';
 
 interface LandingHeroProps {
     onStart?: () => void;
@@ -29,7 +30,7 @@ export function LandingHero({ onStart }: LandingHeroProps) {
                     <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-6 leading-[0.9]">
                         <span className="text-[#1F1F1F] dark:text-white">The Future of</span>
                         <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 via-pink-500 to-[#00ff9d]">
+                        <span className="text-purple-500">
                             Human Finance
                         </span>
                     </h1>
@@ -42,17 +43,20 @@ export function LandingHero({ onStart }: LandingHeroProps) {
 
                     {/* CTA Buttons */}
                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                        <button 
-                            onClick={onStart}
+                        <Link 
+                            href="/wallet"
                             className="group px-8 py-4 bg-white dark:bg-white text-black rounded-2xl font-bold text-lg hover:scale-105 transition-all shadow-[0_0_40px_-10px_rgba(255,255,255,0.5)] flex items-center gap-2"
                         >
                             Get Started
                             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                        </button>
+                        </Link>
                         
-                        <button className="px-8 py-4 bg-white/10 dark:bg-white/10 text-[#1F1F1F] dark:text-white rounded-2xl font-bold text-lg hover:bg-white/20 dark:hover:bg-white/20 transition-all backdrop-blur-md border border-white/10 dark:border-white/10 border-black/10">
+                        <Link 
+                            href="/trust"
+                            className="px-8 py-4 bg-white/10 dark:bg-white/10 text-[#1F1F1F] dark:text-white rounded-2xl font-bold text-lg hover:bg-white/20 dark:hover:bg-white/20 transition-all backdrop-blur-md border border-white/10 dark:border-white/10 border-black/10"
+                        >
                             Learn More
-                        </button>
+                        </Link>
                     </div>
 
                     {/* Trust Indicators */}

@@ -35,15 +35,8 @@ export function LaunchCountdown() {
     return (
         <section className="relative w-full min-h-screen py-32 flex flex-col items-center justify-center overflow-hidden">
             
-            {/* Immersive Image Background */}
-            <div className="absolute inset-0 z-0">
-                <img 
-                    src="/assets/immersive-launch.png" 
-                    alt="Human DeFi 2027 Vision" 
-                    className="w-full h-full object-cover opacity-30"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] dark:from-[#0a0a0a] from-[#EAEADF] via-black/90 to-black/70" />
-            </div>
+            {/* Solid Background - No Image */}
+            <div className="absolute inset-0 z-0 bg-[#EAEADF] dark:bg-[#0a0a0a]" />
 
             <div className="relative z-10 w-full max-w-7xl mx-auto px-6 text-center text-white">
                 

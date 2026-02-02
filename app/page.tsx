@@ -47,12 +47,7 @@ export default function Home() {
             
             {/* 1. Background Layers */}
             <div className="fixed inset-0 z-0 pointer-events-none">
-                 <div className="block dark:hidden">
-                    <FluidBeigeBackground />
-                 </div>
-                 <div className="hidden dark:block">
-                    <FloatingImmersiveBackground />
-                 </div>
+                <FluidBeigeBackground />
             </div>
 
             {/* 2. Main Content */}
