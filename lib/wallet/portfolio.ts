@@ -95,44 +95,110 @@ export async function getPortfolioHistory(
   walletAddress: string,
   period: '24h' | '7d' | '30d' | '1y' = '7d'
 ): Promise<PortfolioHistory[]> {
-  // In production, this would fetch historical balance snapshots
-  // For now, generate mock data
-  
+  try {
+    const portfolio = await getPortfolio(walletAddress);
+    const baseValue = portfolio.totalValueUSD;
+    
+    if (baseValue === 0) {
+      return Array.from({ length: 24 }, (_, i) => ({
+        timestamp: Date.now() - (24 - i) * 3600000,
+        totalValueUSD: 0
+      }));
+    }
+
+    // To get a real history, we fetch history for the top assets (weighted)
+    // and apply their performance to the total portfolio value.
+    // We'll limit to top 5 assets to avoid hitting rate limits too hard.
+    const topAssets = portfolio.assets.slice(0, 5);
+    const weightSum = topAssets.reduce((sum, a) => sum + a.valueUSD, 0);
+    
+    if (weightSum === 0) {
+      // Fallback to linear if no significant assets (e.g. only tiny dust)
+      return generateLinearHistory(baseValue, portfolio.change24hPercent, period);
+    }
+
+    // CoinGecko days parameter
+    const daysMap = { '24h': '1', '7d': '7', '30d': '30', '1y': '365' };
+    const days = daysMap[period];
+
+    const historyPromises = topAssets.map(async (asset) => {
+      try {
+        if (!asset.tokenAddress) return null;
+        
+        // We need the platform ID for CoinGecko. 
+        // For simplicity, we assume Ethereum mainnet (1) for most tokens,
+        // or mapping chainId to platform.
+        const platformMap: Record<number, string> = { 1: 'ethereum', 137: 'polygon-pos', 8453: 'base' };
+        const platform = platformMap[asset.chainId] || 'ethereum';
+
+        const res = await fetch(
+          `https://api.coingecko.com/api/v3/coins/${platform}/contract/${asset.tokenAddress}/market_chart/?vs_currency=usd&days=${days}`,
+          { headers: { 'x-cg-demo-api-key': process.env.NEXT_PUBLIC_COINGECKO_KEY || '' } }
+        );
+        const data = await res.json();
+        return { asset, prices: data.prices || [] };
+      } catch (e) {
+        return null;
+      }
+    });
+
+    const allHistory = (await Promise.all(historyPromises)).filter(h => h !== null && h.prices.length > 0);
+
+    if (allHistory.length === 0) {
+      return generateLinearHistory(baseValue, portfolio.change24hPercent, period);
+    }
+
+    // Align timestamps and aggregate
+    // Use the first asset's timestamps as the baseline
+    const baseline = allHistory[0]!.prices;
+    const history: PortfolioHistory[] = baseline.map(([ts]: [number, number], i: number) => {
+      let weightedChange = 0;
+      let totalWeight = 0;
+
+      allHistory.forEach(item => {
+        if (!item) return;
+        const priceAt = item.prices[i] ? item.prices[i][1] : item.prices[item.prices.length - 1][1];
+        const currentPrice = item.asset.priceUSD;
+        const weight = item.asset.valueUSD / weightSum;
+        const change = currentPrice > 0 ? priceAt / currentPrice : 1;
+        weightedChange += change * weight;
+        totalWeight += weight;
+      });
+
+      // Scale back to total portfolio value
+      const normalizedChange = totalWeight > 0 ? weightedChange / totalWeight : 1;
+      return {
+        timestamp: ts,
+        totalValueUSD: baseValue * normalizedChange
+      };
+    });
+
+    return history;
+  } catch (error) {
+    console.error('Error fetching portfolio history:', error);
+    const portfolio = await getPortfolio(walletAddress);
+    return generateLinearHistory(portfolio.totalValueUSD, portfolio.change24hPercent, period);
+  }
+}
+
+function generateLinearHistory(baseValue: number, change24hPercent: number, period: string): PortfolioHistory[] {
   const now = Date.now();
   const intervals: Record<string, { count: number; interval: number }> = {
-    '24h': { count: 24, interval: 60 * 60 * 1000 }, // hourly
-    '7d': { count: 7 * 24, interval: 60 * 60 * 1000 }, // hourly
-    '30d': { count: 30, interval: 24 * 60 * 60 * 1000 }, // daily
-    '1y': { count: 52, interval: 7 * 24 * 60 * 60 * 1000 }, // weekly
+    '24h': { count: 24, interval: 60 * 60 * 1000 },
+    '7d': { count: 7 * 24, interval: 60 * 60 * 1000 },
+    '30d': { count: 30, interval: 24 * 60 * 60 * 1000 },
+    '1y': { count: 52, interval: 7 * 24 * 60 * 60 * 1000 },
   };
-
-  const { count, interval } = intervals[period];
+  const { count, interval } = intervals[period] || intervals['7d'];
+  const startValue = baseValue / (1 + (change24hPercent / 100));
   
-  // Get current portfolio value
-  const currentPortfolio = await getPortfolio(walletAddress);
-  const baseValue = currentPortfolio.totalValueUSD;
-
-  // Generate historical data with some variance
-  const history: PortfolioHistory[] = [];
-  
-  // Use 24h change to find the start point
-  const startValue = baseValue / (1 + (currentPortfolio.change24hPercent / 100));
-  
-  for (let i = count - 1; i >= 0; i--) {
-    const timestamp = now - (i * interval);
-    // Linear interpolation between startValue (24h ago) and baseValue (now)
-    // For 24h period, this is exactly what happened assuming linear change
-    // For longer periods, it's still better than random noise as it anchors to a real 24h change
-    const progress = (count - 1 - i) / (count - 1);
-    const value = startValue + (baseValue - startValue) * progress;
-    
-    history.push({
-      timestamp,
-      totalValueUSD: value,
-    });
-  }
-
-  return history;
+  return Array.from({ length: count }, (_, i) => {
+    const progress = i / (count - 1);
+    return {
+      timestamp: now - ((count - 1 - i) * interval),
+      totalValueUSD: startValue + (baseValue - startValue) * progress
+    };
+  });
 }
 
 /**

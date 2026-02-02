@@ -96,15 +96,32 @@ export async function POST(req: NextRequest) {
 // --- Helper Logic (Mock Brain) ---
 
 function calculateVolumeAnomaly(trades: any[]): number {
-    // Real impl: Standard deviation of volume candles.
-    // Mock impl: Random "shock" factor + basic trade count check
-    const tradeCount = trades.length;
-    if (tradeCount === 0) return 0;
+    if (!trades || trades.length === 0) return 0;
 
-    // Anomaly simulation: 
-    // If trade count is prime, high anomaly (just for deterministic testing randomness)
-    // Or just random for demo visual
-    return Math.floor(Math.random() * 100);
+    const now = Date.now();
+    const oneHourAgo = now - (60 * 60 * 1000);
+    const twentyFourHoursAgo = now - (24 * 60 * 60 * 1000);
+
+    // Calculate volume in last hour
+    const lastHourVolume = trades
+        .filter(t => new Date(t.timestamp).getTime() > oneHourAgo)
+        .reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
+
+    // Calculate average hourly volume over last 24h
+    const last24hVolume = trades
+        .filter(t => new Date(t.timestamp).getTime() > twentyFourHoursAgo)
+        .reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
+    const avgHourlyVolume = last24hVolume / 24;
+
+    if (avgHourlyVolume === 0) {
+        return lastHourVolume > 0 ? 80 : 0;
+    }
+
+    // A volume spike is when last hour is significantly higher than average
+    const spikeRatio = lastHourVolume / avgHourlyVolume;
+    
+    // Scale: 1x avg = 10 points, 5x avg = 50 points, 10x avg = 100 points
+    return Math.min(Math.round(spikeRatio * 10), 100);
 }
 
 function analyzeSentiment(question: string, news: any[]): number {
