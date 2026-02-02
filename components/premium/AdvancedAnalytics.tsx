@@ -26,14 +26,24 @@ export default function AdvancedAnalytics({ walletAddress, isPremium }: Advanced
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(`/api/whale/stats?address=${walletAddress}`);
-        const data = await res.json();
+        const [statsRes, activitiesRes] = await Promise.all([
+            fetch(`/api/whale/stats?address=${walletAddress}`),
+            fetch(`/api/whale/activities`)
+        ]);
+        
+        const statsData = await statsRes.json();
+        const activitiesData = await activitiesRes.json();
+        
+        // Count activities for this specific address
+        const addressActivities = (activitiesData.activities || []).filter((a: any) => 
+            a.walletAddress.toLowerCase() === walletAddress.toLowerCase()
+        ).length;
         
         setPortfolioData({
-          totalValue: data.totalValue || 0,
-          pnl24h: 0, // Calculate from historical data if available
-          activity24h: 0, // Fetch from activities API
-          riskScore: 40,
+          totalValue: statsData.totalValue || 0,
+          pnl24h: statsData.pnl24h || 0, 
+          activity24h: addressActivities,
+          riskScore: statsData.totalValue > 1000000 ? 75 : 40, // Scaled risk
           loading: false
         });
       } catch (error) {
@@ -97,25 +107,25 @@ export default function AdvancedAnalytics({ walletAddress, isPremium }: Advanced
         <QuickStat
           label="Total Value"
           value={portfolioData.loading ? "Cargando..." : formatValue(portfolioData.totalValue)}
-          change={+12.5}
+          change={undefined}
           icon={<DollarSign />}
         />
         <QuickStat
           label="Total P&L"
           value={portfolioData.loading ? "Cargando..." : formatValue(portfolioData.pnl24h)}
-          change={+45.2}
+          change={undefined}
           icon={<TrendingUp />}
         />
         <QuickStat
           label="24h Activity"
           value={portfolioData.loading ? "..." : `${portfolioData.activity24h} TXs`}
-          change={+8}
+          change={undefined}
           icon={<Activity />}
         />
         <QuickStat
           label="Risk Score"
           value={`${portfolioData.riskScore}/100`}
-          change={-5}
+          change={undefined}
           icon={<AlertTriangle />}
           warning={portfolioData.riskScore > 50}
         />
@@ -224,7 +234,7 @@ export default function AdvancedAnalytics({ walletAddress, isPremium }: Advanced
 function QuickStat({ label, value, change, icon, warning }: {
   label: string;
   value: string;
-  change: number;
+  change?: number;
   icon: React.ReactNode;
   warning?: boolean;
 }) {
@@ -239,13 +249,20 @@ function QuickStat({ label, value, change, icon, warning }: {
         <span className="text-xs font-bold uppercase">{label}</span>
       </div>
       <div className="text-2xl font-black text-[#1F1F1F] mb-1">{value}</div>
-      <div className={`text-sm font-bold flex items-center gap-1 ${
-        warning ? 'text-yellow-600' :
-        change >= 0 ? 'text-green-600' : 'text-red-600'
-      }`}>
-        {change >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-        {Math.abs(change).toFixed(1)}%
-      </div>
+      {change !== undefined && (
+        <div className={`text-sm font-bold flex items-center gap-1 ${
+          warning ? 'text-yellow-600' :
+          change >= 0 ? 'text-green-600' : 'text-red-600'
+        }`}>
+          {change >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+          {Math.abs(change).toFixed(1)}%
+        </div>
+      )}
+      {change === undefined && (
+        <div className="text-xs font-bold text-[#1F1F1F]/40 mt-1">
+          Live Data Sync
+        </div>
+      )}
     </motion.div>
   );
 }
