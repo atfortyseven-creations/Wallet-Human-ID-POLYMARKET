@@ -1,10 +1,9 @@
-/**
- * Portfolio Service
- * Track wallet value across chains and tokens
- */
-
 import { discoverTokens, type Token } from './tokens';
 import { getSupportedChainIds } from './chains';
+import { PerpPosition, PredictionPosition, ClaimableAsset } from '@/types/wallet';
+import { discoverPolymarketPositions } from './protocols/polymarket';
+import { discoverGmxPositions } from './protocols/gmx';
+import { discoverClaimables } from './protocols/claims';
 
 export interface PortfolioAsset {
   symbol: string;
@@ -24,6 +23,9 @@ export interface PortfolioSummary {
   change24hUSD: number;
   change24hPercent: number;
   assets: PortfolioAsset[];
+  perps: PerpPosition[];
+  predictions: PredictionPosition[];
+  claimables: ClaimableAsset[];
   chainBreakdown: Record<number, number>; // chainId -> value USD
 }
 
@@ -39,20 +41,37 @@ export async function getPortfolio(
   walletAddress: string,
   chainIds?: number[]
 ): Promise<PortfolioSummary> {
-  const chains = chainIds || getSupportedChainIds();
+  // Use a targeted set of chains to avoid massive RPC overhead in one go
+  const chains = chainIds || [1, 137, 8453, 42161]; // Mainnet, Polygon, Base, Arbitrum
   
-  // Fetch tokens from all chains
+  // 1. Fetch tokens from all chains
   const allTokensPromises = chains.map(chainId =>
-    discoverTokens(walletAddress, chainId)
+    discoverTokens(walletAddress, chainId).catch(e => {
+        console.warn(`[Portfolio] Token discovery failed for chain ${chainId}:`, e);
+        return [];
+    })
   );
   
   const allTokensArrays = await Promise.all(allTokensPromises);
   const allTokens = allTokensArrays.flat();
 
-  // Calculate total value
-  const totalValueUSD = allTokens.reduce((sum, token) => sum + (token.valueUSD || 0), 0);
+  // 2. Fetch DeFi Positions (Real Protocol Discovery)
+  // Run discovery in parallel for performance
+  const [perps, predictions, claimables] = await Promise.all([
+    discoverGmxPositions(walletAddress, chains).catch(() => []),
+    discoverPolymarketPositions(walletAddress).catch(() => []),
+    discoverClaimables(walletAddress, chains).catch(() => [])
+  ]);
 
-  // Create assets with percentages
+  // 3. Calculate total value across all categories
+  const tokenValue = allTokens.reduce((sum, token) => sum + (token.valueUSD || 0), 0);
+  const perpValue = perps.reduce((sum, p) => sum + (p.pnl || 0) + (p.collateral || 0), 0);
+  const predictionValue = predictions.reduce((sum, p) => sum + (p.value || 0), 0);
+  const claimableValue = claimables.reduce((sum, c) => sum + (c.valueUSD || 0), 0);
+
+  const totalValueUSD = tokenValue + perpValue + predictionValue + claimableValue;
+
+  // 4. Create assets with percentages
   const assets: PortfolioAsset[] = allTokens.map(token => ({
     symbol: token.symbol,
     name: token.name,
@@ -69,13 +88,21 @@ export async function getPortfolio(
   // Sort by value (highest first)
   assets.sort((a, b) => b.valueUSD - a.valueUSD);
 
-  // Calculate chain breakdown
+  // 5. Calculate chain breakdown
   const chainBreakdown: Record<number, number> = {};
   assets.forEach(asset => {
     chainBreakdown[asset.chainId] = (chainBreakdown[asset.chainId] || 0) + asset.valueUSD;
   });
+  
+  // Add DeFi breakdown
+  perps.forEach(p => {
+    chainBreakdown[p.chainId] = (chainBreakdown[p.chainId] || 0) + (p.pnl + p.collateral);
+  });
+  predictions.forEach(p => {
+    chainBreakdown[p.chainId] = (chainBreakdown[p.chainId] || 0) + (p.value || 0);
+  });
 
-  // Calculate 24h change based on weighted average of assets
+  // Calculate 24h change (weighted average of tokens)
   const change24hUSD = assets.reduce((sum, a) => sum + (a.valueUSD * (a.change24h || 0) / 100), 0);
   const change24hPercent = totalValueUSD > 0 ? (change24hUSD / totalValueUSD) * 100 : 0;
 
@@ -84,6 +111,9 @@ export async function getPortfolio(
     change24hUSD,
     change24hPercent,
     assets,
+    perps,
+    predictions,
+    claimables,
     chainBreakdown,
   };
 }
@@ -108,12 +138,10 @@ export async function getPortfolioHistory(
 
     // To get a real history, we fetch history for the top assets (weighted)
     // and apply their performance to the total portfolio value.
-    // We'll limit to top 5 assets to avoid hitting rate limits too hard.
     const topAssets = portfolio.assets.slice(0, 5);
     const weightSum = topAssets.reduce((sum, a) => sum + a.valueUSD, 0);
     
     if (weightSum === 0) {
-      // Fallback to linear if no significant assets (e.g. only tiny dust)
       return generateLinearHistory(baseValue, portfolio.change24hPercent, period);
     }
 
@@ -125,9 +153,6 @@ export async function getPortfolioHistory(
       try {
         if (!asset.tokenAddress) return null;
         
-        // We need the platform ID for CoinGecko. 
-        // For simplicity, we assume Ethereum mainnet (1) for most tokens,
-        // or mapping chainId to platform.
         const platformMap: Record<number, string> = { 1: 'ethereum', 137: 'polygon-pos', 8453: 'base' };
         const platform = platformMap[asset.chainId] || 'ethereum';
 
@@ -149,7 +174,6 @@ export async function getPortfolioHistory(
     }
 
     // Align timestamps and aggregate
-    // Use the first asset's timestamps as the baseline
     const baseline = allHistory[0]!.prices;
     const history: PortfolioHistory[] = baseline.map(([ts]: [number, number], i: number) => {
       let weightedChange = 0;
@@ -165,7 +189,6 @@ export async function getPortfolioHistory(
         totalWeight += weight;
       });
 
-      // Scale back to total portfolio value
       const normalizedChange = totalWeight > 0 ? weightedChange / totalWeight : 1;
       return {
         timestamp: ts,
@@ -232,7 +255,6 @@ export async function getPortfolioMetrics(
   const history7d = await getPortfolioHistory(walletAddress, '7d');
   const history30d = await getPortfolioHistory(walletAddress, '30d');
 
-  // Calculate metrics
   const values7d = history7d.map(h => h.totalValueUSD);
   const values30d = history30d.map(h => h.totalValueUSD);
 
@@ -242,15 +264,16 @@ export async function getPortfolioMetrics(
   return {
     totalValue: current.totalValueUSD,
     change24h: current.change24hPercent,
-    change7d: ((current.totalValueUSD - value7dAgo) / value7dAgo) * 100,
-    change30d: ((current.totalValueUSD - value30dAgo) / value30dAgo) * 100,
+    change7d: value7dAgo > 0 ? ((current.totalValueUSD - value7dAgo) / value7dAgo) * 100 : 0,
+    change30d: value30dAgo > 0 ? ((current.totalValueUSD - value30dAgo) / value30dAgo) * 100 : 0,
     allTimeHigh: Math.max(...values30d, current.totalValueUSD),
     allTimeLow: Math.min(...values30d, current.totalValueUSD),
-    averageDailyChange: values30d.reduce((sum, val, i) => {
+    averageDailyChange: values30d.length > 1 ? values30d.reduce((sum, val, i) => {
       if (i === 0) return 0;
-      const change = ((val - values30d[i - 1]) / values30d[i - 1]) * 100;
+      const prev = values30d[i - 1];
+      const change = prev > 0 ? ((val - prev) / prev) * 100 : 0;
       return sum + change;
-    }, 0) / (values30d.length - 1),
+    }, 0) / (values30d.length - 1) : 0,
   };
 }
 

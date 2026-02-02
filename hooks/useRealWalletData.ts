@@ -153,6 +153,9 @@ export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?:
         positions,
         transactions,
         assets,
+        perps: assetsData?.perps || [],
+        predictions: assetsData?.predictions || [],
+        claimables: assetsData?.claimables || [],
         isLoading: isBalanceLoading || isPositionsLoading || isHistoryLoading || isAssetsLoading,
         change24hUSD: assetsData?.change24hUSD || 0,
         change24hPercent: assetsData?.change24hPercent || 0

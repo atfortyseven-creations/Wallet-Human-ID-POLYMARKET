@@ -649,7 +649,7 @@ model UserSettings {
   telegramChatId     String?
   telegramTopicId    String?
   telegramUsername   String?
-  whaleThreshold     Float   @default(50000)
+  whaleThreshold     Float   @default(20833333) // ~20,000,000 EUR
 
   // Trading
   defaultSlippage     Float   @default(0.5)

@@ -52,6 +52,9 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
         positions,
         transactions,
         assets,
+        perps,
+        predictions,
+        claimables,
         isLoading,
         isConnected,
         change24hUSD,
@@ -302,7 +305,16 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
                             />
 
                         {/* Wallet Actions & Tabs */}
-                        <WalletActions positions={positions} history={transactions} userAddress={displayAddress} assets={assets} />
+                        <WalletActions 
+                            positions={positions} 
+                            history={transactions} 
+                            userAddress={displayAddress} 
+                            assets={assets}
+                            perps={perps}
+                            predictions={predictions}
+                            claimables={claimables}
+                            isLoading={isLoading}
+                        />
                     </div>
                 )}
 
