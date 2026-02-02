@@ -29,19 +29,19 @@ const TOKENS = {
 // ERC20 Transfer Event Topic
 const TRANSFER_TOPIC = ethers.id("Transfer(address,address,uint256)");
 
-async function sendTelegram(text: string) {
+async function sendTelegram(text: string, chatId: string = TARGET_CHAT_ID, threadId: number | null = TOPIC_ID) {
   const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
   try {
     const res = await axios.post(url, {
-      chat_id: TARGET_CHAT_ID,
+      chat_id: chatId,
       text: text,
       parse_mode: 'HTML',
       disable_web_page_preview: true,
-      message_thread_id: TOPIC_ID
+      message_thread_id: threadId
     });
     return res.data.ok;
   } catch (e: any) {
-    console.error("❌ [Whale Worker] Telegram Error:", e.response?.data || e.message);
+    console.error(`❌ [Whale Worker] Telegram Error (${chatId}):`, e.response?.data || e.message);
     return false;
   }
 }
@@ -232,13 +232,13 @@ async function startBtcWorker() {
 }
 
 async function processWhaleTx(hash: string, from: string, to: string, asset: string, amount: number, usdValue: number, blockNumber: number, chain: string = 'BASE') {
-    // Dedup check (optional but good practice)
+    // Dedup check
     const exists = await prisma.whaleActivity.findUnique({ where: { transactionHash: hash } });
     if (exists) return;
 
-    console.log(`🌊 [${chain}] WHALE: ${usdValue.toFixed(2)} USD (${asset})`);
+    console.log(`🌊 [${chain}] WHALE DETECTED: ${usdValue.toFixed(2)} USD (${asset})`);
 
-    // Save DB
+    // 1. Save to Global Database Activity
     await prisma.whaleActivity.create({
         data: {
             walletAddress: from,
@@ -252,13 +252,11 @@ async function processWhaleTx(hash: string, from: string, to: string, asset: str
             blockNumber: BigInt(blockNumber),
             timestamp: new Date(),
         }
-    }).catch(e => console.error("DB Error:", e.message));
+    }).catch((e: any) => console.error("DB Error:", e.message));
 
-    // Telegram
+    // 2. Prepare Message
     const shortFrom = `${from.slice(0, 4)}...${from.slice(-4)}`;
     const shortTo = to ? `${to.slice(0, 4)}...${to.slice(-4)}` : 'Contract';
-    
-    // Auto-detect explorer based on chain
     const explorer = chain === 'BITCOIN' ? `https://mempool.space/tx/${hash}` : `https://basescan.org/tx/${hash}`;
 
     const msg = `
@@ -272,7 +270,36 @@ Transferencia de <b>${amount.toLocaleString()} ${asset}</b> detectada.
 🔗 <a href="${explorer}">Ver Transacción</a>
 `.trim();
 
-    await sendTelegram(msg);
+    // 3. Send to Global Channel
+    if (usdValue >= WHALE_THRESHOLD_USD) {
+        await sendTelegram(msg, TARGET_CHAT_ID, TOPIC_ID);
+    }
+
+    // 4. Send to Individual Users (Personalized Alert)
+    try {
+        const usersToNotify = await prisma.userSettings.findMany({
+            where: {
+                telegramEnabled: true,
+                telegramChatId: { not: null },
+                whaleThreshold: { lte: usdValue }
+            }
+        });
+
+        if (usersToNotify.length > 0) {
+            console.log(`Sending personal alerts to ${usersToNotify.length} users...`);
+            for (const user of usersToNotify) {
+                if (user.telegramChatId) {
+                    await sendTelegram(
+                        `🔔 <b>Personal Whale Alert!</b>\n\n${msg}`, 
+                        user.telegramChatId, 
+                        user.telegramTopicId ? parseInt(user.telegramTopicId) : null
+                    );
+                }
+            }
+        }
+    } catch (err: any) {
+        console.error("❌ [Whale Worker] Failed to send personalized alerts:", err.message);
+    }
 }
 
 module.exports = { startWorker };

@@ -170,6 +170,17 @@ export default function NotificationSettings() {
             }
             return ch;
           }));
+
+          // LOAD TRIGGER THRESHOLDS
+          if (s.whaleThreshold) {
+            setAlertTypes(prev => ({
+              ...prev,
+              whaleMovement: { 
+                ...prev.whaleMovement, 
+                threshold: Number(s.whaleThreshold) 
+              }
+            }));
+          }
         }
       } catch (error) {
         console.error('Failed to load settings:', error);
