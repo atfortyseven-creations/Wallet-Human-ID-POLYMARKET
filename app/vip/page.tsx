@@ -24,9 +24,8 @@ type TabType = 'tracker' | 'analytics' | 'alerts' | 'news' | 'notifications' | '
 export default function VIPPage() {
   const { user, isLoaded } = useUser();
   const { t } = useLanguage(); // Add translation support
-  const [isPremium, setIsPremium] = useState(true); // FORCE UNLOCKED 
+  const [isPremium, setIsPremium] = useState(true); // [UNLOCKED] Everyone is PREMIUM
   const [loading, setLoading] = useState(true);
-  const [showPricing, setShowPricing] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('tracker');
   const [watchedWallets, setWatchedWallets] = useState<WatchedWallet[]>([]);
   const [selectedComparisonIds, setSelectedComparisonIds] = useState<string[]>([]);
@@ -87,33 +86,7 @@ export default function VIPPage() {
     }
   }, [isPremium]);
 
-  const handleUpgrade = async () => {
-    setShowPricing(true);
-  };
-
-  const handleSubscribe = async (tier: 'monthly' | 'yearly') => {
-    try {
-      // Create Stripe checkout session
-      const priceId = tier === 'monthly' 
-        ? 'price_1234567890' // Replace with your actual Stripe price ID
-        : 'price_0987654321'; // Replace with your actual Stripe price ID
-      
-      const response = await fetch('/api/subscription/create-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId }),
-      });
-
-      const { url } = await response.json();
-      
-      if (url) {
-        window.location.href = url;
-      }
-    } catch (error) {
-      console.error('Failed to create checkout:', error);
-      alert('Failed to start checkout. Please try again.');
-    }
-  };
+  const handleUpgrade = () => {};
 
   if (!isLoaded || loading) {
     return (
@@ -165,8 +138,8 @@ export default function VIPPage() {
           <div className="flex justify-center mb-10">
             <div className="inline-flex items-center gap-3 px-6 py-3 bg-black border border-[#D4AF37] rounded-full text-[#D4AF37] font-black tracking-[0.2em] shadow-[0_0_20px_rgba(212,175,55,0.15)] z-20 relative">
               <Crown size={22} />
-              <span className="text-sm uppercase">THE IMMERSIVE WHALE ALERT</span>
-              {isPremium && <Sparkles size={18} className="animate-pulse" />}
+              <span className="text-sm uppercase">UNIVERSAL PREMIUM ACCESS UNLOCKED</span>
+              <Sparkles size={18} className="animate-pulse" />
             </div>
           </div>
 
@@ -327,16 +300,6 @@ export default function VIPPage() {
         {/* Sticky upgrade banner removed */}
       </div>
 
-      {/* Pricing Modal */}
-      <AnimatePresence>
-        {showPricing && (
-          <PricingModal
-            isOpen={showPricing}
-            onClose={() => setShowPricing(false)}
-            onSubscribe={handleSubscribe}
-          />
-        )}
-      </AnimatePresence>
     </div>
   );
 }

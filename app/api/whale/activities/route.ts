@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { currentUser } from '@clerk/nextjs/server';
 import { Alchemy, Network, AssetTransfersCategory, SortingOrder } from 'alchemy-sdk';
 import { prisma } from '@/lib/prisma';
 
@@ -7,12 +6,10 @@ import { prisma } from '@/lib/prisma';
 const config = {
   apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID || process.env.ALCHEMY_API_KEY,
   network: Network.BASE_MAINNET,
-  // Use GetBlock RPC endpoint for Base Mainnet
   url: process.env.BASE_RPC_URL || undefined,
 };
 
 // HACK: Fix for Alchemy SDK "Referrer 'client' is not a valid URL" in Next.js Server
-// The SDK sets 'client' as referrer which native fetch rejects.
 const originalFetch = global.fetch;
 global.fetch = (url, init) => {
     if (init && init.referrer === 'client') {
@@ -33,17 +30,8 @@ const KNOWN_WHALES: Record<string, string> = {
 
 export async function GET(req: NextRequest) {
   try {
-    const user = await currentUser();
+    // [UNLOCKED] Removed currentUser check to allow public access to whale data
     
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    const userId = user.id;
-
     // Fetch large transfers across chains
     const chainConfigs = [
         { name: 'base', client: alchemyBase },
@@ -94,8 +82,6 @@ export async function GET(req: NextRequest) {
         .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
         .slice(0, 30);
 
-    // Bitcoin activities removed to ensure only real on-chain data is shown
-
     // [REAL-TIME ALERTS] Logically senior implementation
     // 1. Fetch all watched wallets that have alerts enabled
     const watchedWalletsWithAlerts = await prisma.watchedWallet.findMany({
@@ -104,13 +90,11 @@ export async function GET(req: NextRequest) {
 
     if (watchedWalletsWithAlerts.length > 0) {
         for (const tx of processedActivities) {
-            // Check if 'from' or 'to' is a watched address
             const matchingWatchers = watchedWalletsWithAlerts.filter(w => 
                 w.address.toLowerCase() === tx.walletAddress.toLowerCase()
             );
 
             for (const watcher of matchingWatchers) {
-                // Create a real notification for this user
                 await prisma.notification.create({
                     data: {
                         userId: watcher.userId,

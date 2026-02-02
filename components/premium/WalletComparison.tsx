@@ -16,12 +16,7 @@ export default function WalletComparison({ wallets, isPremium, selectedWallets, 
   const [metric, setMetric] = useState<'value' | 'change' | 'activity'>('value');
 
   const toggleWallet = (id: string) => {
-    if (!selectedWallets.includes(id)) {
-      if (!isPremium && selectedWallets.length >= 2) {
-        alert('Upgrade to Pro to compare unlimited wallets');
-        return;
-      }
-    }
+// [UNLOCKED] Removed comparison limits
     onToggleWallet(id);
   };
 
@@ -44,9 +39,6 @@ export default function WalletComparison({ wallets, isPremium, selectedWallets, 
           <BarChart3 className="text-purple-500" />
           Wallet Comparison
         </h2>
-        <div className="text-sm text-[#1F1F1F]/70">
-          {!isPremium && `Limited to 2 wallets`}
-        </div>
       </div>
 
       {/* Wallet Selection */}

@@ -232,7 +232,6 @@ export default function NotificationSettings() {
         <h1 className="text-3xl font-black text-[#1F1F1F] flex items-center gap-3">
           <Bell className="text-purple-600" />
           Notification Settings
-          <span className="px-3 py-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs rounded-full">PRO</span>
         </h1>
         <p className="text-sm text-[#1F1F1F]/70 mt-1">
           Configure multi-channel alerts for whale tracking
@@ -244,7 +243,7 @@ export default function NotificationSettings() {
         <div className="flex items-start gap-3">
           <Sparkles className="text-blue-600 flex-shrink-0 mt-0.5" size={20} />
           <div className="text-sm text-blue-900">
-            <strong>New Feature!</strong> Get instant notifications via Email, Telegram, or Discord when:
+            <strong>Unlocked Feature!</strong> Get instant notifications via Email, Telegram, or Discord when:
             <ul className="list-disc ml-5 mt-2 space-y-1">
               <li>Large whale movements detected (customizable threshold)</li>
               <li>Price targets reached</li>

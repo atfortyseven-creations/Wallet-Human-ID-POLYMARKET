@@ -1,18 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { currentUser } from '@clerk/nextjs/server';
 
-// Leaderboard API
+// Leaderboard API - Public Access enabled
 export async function GET(req: NextRequest) {
   try {
-    const user = await currentUser();
-    
-    if (!user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
     const { searchParams } = new URL(req.url);
     const type = searchParams.get('type') || 'profits';
     const limit = parseInt(searchParams.get('limit') || '100');
