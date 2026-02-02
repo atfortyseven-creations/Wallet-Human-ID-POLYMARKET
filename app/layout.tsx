@@ -14,6 +14,16 @@ export const metadata = {
   keywords: ['DeFi', 'Whale Tracker', 'Worldcoin', 'WLD', 'AI Wallet', 'Crypto Security'],
   viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0',
   themeColor: '#000000',
+  icons: [
+    {
+      rel: 'icon',
+      url: '/models/cat12.png',
+    },
+    {
+      rel: 'apple-touch-icon',
+      url: '/models/cat12.png',
+    },
+  ],
   manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,
