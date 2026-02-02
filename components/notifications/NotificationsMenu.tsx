@@ -3,12 +3,15 @@
 import React, { useState } from 'react';
 import useSWR, { mutate } from 'swr';
 import { Bell, Check, Trash2, Info } from 'lucide-react';
+import { useAccount } from 'wagmi';
 
 const fetcher = (url: string) => fetch(url).then(r => r.json());
 
 export function NotificationsMenu() {
+    const { address } = useAccount();
     const { data: session } = useSWR('/api/auth/session', fetcher); 
-    const { data, error } = useSWR('/api/user/notifications', fetcher, { refreshInterval: 30000 });
+    // Pass address to API to fetch wallet-specific notifications
+    const { data, error } = useSWR(`/api/user/notifications?address=${address || ''}`, fetcher, { refreshInterval: 30000 });
     const [isOpen, setIsOpen] = useState(false);
 
     const notifications = data?.notifications || [];

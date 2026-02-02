@@ -2,68 +2,103 @@ import { currentUser } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(request: Request) {
   const user = await currentUser();
   const email = user?.emailAddresses[0]?.emailAddress;
+  
+  // Get wallet address from query params (supplied by frontend)
+  const { searchParams } = new URL(request.url);
+  const walletAddress = searchParams.get('address');
 
-  if (!email) {
+  // If neither matches, 401
+  if (!email && !walletAddress) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const authUser = await prisma.authUser.findUnique({
-    where: { email },
-  });
+  let allNotifications: any[] = [];
 
-  if (!authUser) {
-    return NextResponse.json({ notifications: [] });
-  }
-
-  // Fetch notifications
-  let notifications = await prisma.userNotification.findMany({
-    where: { authUserId: authUser.id },
-    orderBy: { createdAt: 'desc' },
-    take: 20
-  });
-
-  if (notifications.length === 0) {
-      // Seed welcome notification if empty
-      // In a real app we'd create this on signup
-      const welcome = await prisma.userNotification.create({
-          data: {
-              authUserId: authUser.id,
-              title: "Welcome to HumanDefi",
-              message: "Your account has been successfully created. Secure your identity now.",
-              type: "system",
-          }
+  // 1. Fetch Email-based Notifications (AuthUser)
+  if (email) {
+    const authUser = await prisma.authUser.findUnique({ where: { email } });
+    if (authUser) {
+      const emailNotifs = await prisma.userNotification.findMany({
+        where: { authUserId: authUser.id, archived: false },
+        orderBy: { createdAt: 'desc' },
+        take: 20
       });
-      notifications = [welcome];
+      allNotifications = [...allNotifications, ...emailNotifs.map(n => ({...n, source: 'email'}))];
+    }
   }
 
-  return NextResponse.json({ notifications });
+  // 2. Fetch Wallet-based Notifications (User)
+  if (walletAddress) {
+      const walletNotifs = await prisma.notification.findMany({
+          where: { userId: walletAddress, archived: false },
+          orderBy: { createdAt: 'desc' },
+          take: 20
+      });
+      allNotifications = [...allNotifications, ...walletNotifs.map(n => ({...n, source: 'wallet'}))];
+  }
+
+  // 3. Merge and Sort
+  allNotifications.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+  // 4. Default "Welcome" if absolutely empty (Pure UX)
+  if (allNotifications.length === 0 && email) {
+      // Temporary in-memory welcome for new users so it's not empty
+      return NextResponse.json({ notifications: [{
+          id: 'welcome-seed',
+          title: "Welcome to HumanDefi",
+          message: "System initialized. No new alerts.",
+          type: "system",
+          read: true,
+          createdAt: new Date().toISOString()
+      }]});
+  }
+
+  return NextResponse.json({ notifications: allNotifications });
 }
 
 export async function PUT(req: Request) {
+    const { id, read, address } = await req.json();
     const user = await currentUser();
     const email = user?.emailAddresses[0]?.emailAddress;
-    if (!email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const { id, read } = await req.json();
+    if (!email && !address) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    if (id) {
-        await prisma.userNotification.update({
-            where: { id },
-            data: { read: read ?? true }
-        });
-    } else {
-        // Mark all as read
-        const authUser = await prisma.authUser.findUnique({ where: { email } });
-        if (authUser) {
-            await prisma.userNotification.updateMany({
-                where: { authUserId: authUser.id, read: false },
-                data: { read: true }
-            });
+    try {
+        if (id) {
+            // Try updating both tables (IDs are CUIDs so unlikely to collide, but safe to try/catch or check existence)
+            // We optimize by checking which one exists, but a direct UPDATE is faster if ID is unique enough.
+            // However, Prisma requires knowing the model. We'll try Notification (Wallet) first then UserNotification.
+            
+            const walletNotif = await prisma.notification.findUnique({ where: { id } });
+            if (walletNotif) {
+                await prisma.notification.update({ where: { id }, data: { read: read ?? true } });
+            } else {
+                 await prisma.userNotification.update({ where: { id }, data: { read: read ?? true } }).catch(() => null);
+            }
+        } else {
+            // Mark ALL as read
+            if (email) {
+                const authUser = await prisma.authUser.findUnique({ where: { email } });
+                if (authUser) {
+                    await prisma.userNotification.updateMany({
+                        where: { authUserId: authUser.id, read: false },
+                        data: { read: true }
+                    });
+                }
+            }
+            if (address) {
+                await prisma.notification.updateMany({
+                    where: { userId: address, read: false },
+                    data: { read: true }
+                });
+            }
         }
+        return NextResponse.json({ success: true });
+    } catch (e) {
+        console.error("Failed to update notification", e);
+        return NextResponse.json({ error: "Update failed" }, { status: 500 });
     }
-
-    return NextResponse.json({ success: true });
 }
