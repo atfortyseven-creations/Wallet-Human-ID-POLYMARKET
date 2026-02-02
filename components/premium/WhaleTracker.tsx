@@ -66,7 +66,13 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade, onW
     { refreshInterval: 5000 } // Refresh every 5 seconds
   );
 
-  const watchedWallets: WatchedWallet[] = watchedData?.watchedWallets || [];
+  // Process watched wallets to ensure field mapping and safety
+  const watchedWallets: WatchedWallet[] = (watchedData?.watchedWallets || []).map((w: any) => ({
+    ...w,
+    totalValue: w.totalValue ?? w.lastValue ?? 0,
+    change24h: w.change24h ?? 0,
+    lastActive: w.lastActive ? new Date(w.lastActive) : new Date()
+  }));
 
   // Fetch real activities
   useEffect(() => {
@@ -160,7 +166,8 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade, onW
     return true;
   });
 
-  const formatValue = (val: number) => {
+  const formatValue = (val: number | undefined | null) => {
+    if (val === undefined || val === null) return "$0.00";
     if (val >= 1e9) return `$${(val / 1e9).toFixed(2)}B`;
     if (val >= 1e6) return `$${(val / 1e6).toFixed(2)}M`;
     if (val >= 1e3) return `$${(val / 1e3).toFixed(2)}K`;
@@ -370,12 +377,12 @@ function WalletCard({ wallet, index, formatValue, onToggleAlerts, onDelete }: { 
               <div className="text-xl font-black text-[#1F1F1F] mb-1">{formatValue(wallet.totalValue)}</div>
               <div className={`text-sm font-bold flex items-center gap-1 justify-end ${wallet.change24h >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                 {wallet.change24h >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-                {Math.abs(wallet.change24h).toFixed(2)}%
+                {(Math.abs(wallet.change24h || 0)).toFixed(2)}%
               </div>
           </div>
-          
+
           {/* DELETE BUTTON - VISIBLE ON HOVER */}
-          <button 
+          <button
             onClick={onDelete}
             className="p-1.5 rounded-full bg-red-50 text-red-500 opacity-0 group-hover/card:opacity-100 transition-all hover:bg-red-100"
             title="Remove Wallet"
@@ -404,7 +411,9 @@ function ActivityCard({ activity, index }: { activity: WhaleActivity, index: num
                         <span className={`px-2 py-1 rounded-lg text-xs font-bold ${getTypeColor(activity.type)}`}>{activity.type}</span>
                         <span className="font-bold text-[#1F1F1F]">{activity.walletLabel}</span>
                     </div>
-                    <div className="text-sm text-[#1F1F1F]/70">{activity.amount.toLocaleString()} {activity.token} (${(activity.usdValue / 1e6).toFixed(2)}M)</div>
+                    <div className="text-sm text-[#1F1F1F]/70">
+                        {(activity.amount || 0).toLocaleString()} {activity.token} (${((activity.usdValue || 0) / 1e6).toFixed(2)}M)
+                    </div>
                 </div>
                 <div className="text-xs text-[#1F1F1F]/50 font-mono">{new Date(activity.timestamp).toLocaleTimeString()}</div>
             </div>
