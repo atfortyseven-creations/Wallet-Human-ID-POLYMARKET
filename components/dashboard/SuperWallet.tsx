@@ -91,8 +91,13 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
 
     const handleAddAccount = () => {
         const newIndex = accounts.filter(a => a.type === 'DERIVED').length + 1;
-        // Generate a mock derived address (in real app, this would derive from mnemonic)
-        const mockAddress = `0x${Math.random().toString(16).slice(2, 42)}`;
+        
+        // Use a more stable mock derivation based on the first account
+        const primaryAccount = accounts.find(a => a.type === 'PRIMARY') || accounts[0];
+        const baseAddr = primaryAccount?.address || '0x0000000000000000000000000000000000000000';
+        
+        // Simple deterministic simulation: offset the last bytes
+        const mockAddress = baseAddr.slice(0, -2) + newIndex.toString(16).padStart(2, '0');
         
         const newAccount: WalletAccount = {
             address: mockAddress,
@@ -103,7 +108,7 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
         };
 
         setAccounts([...accounts, newAccount]);
-        alert(`New account "${newAccount.name}" created!`);
+        alert(`New account "${newAccount.name}" created! Note: Explorer visibility requires first transaction.`);
     };
 
     const handleAddWatchWallet = async (address: string, name?: string) => {
@@ -302,9 +307,9 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
                                 <button onClick={() => setShowReceive(false)} className="p-2 rounded-full hover:bg-black/5"><X size={24}/></button>
                             </div>
                             <ReceiveHub addresses={[
-                                { network: 'Ethereum', address: displayAddress, token: 'ETH' },
-                                { network: 'Polygon', address: displayAddress, token: 'MATIC' },
-                                { network: 'Bitcoin', address: "bc1q...", token: 'BTC' }, // Mock for now
+                                { network: 'Ethereum', address: displayAddress, token: 'ETH', chainId: 1 },
+                                { network: 'Base', address: displayAddress, token: 'ETH', chainId: 8453 },
+                                { network: 'Polygon', address: displayAddress, token: 'MATIC', chainId: 137 },
                             ]} />
                         </div>
                     </div>

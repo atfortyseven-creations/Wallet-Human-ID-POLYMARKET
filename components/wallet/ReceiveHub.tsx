@@ -4,12 +4,14 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
 import { Copy, ExternalLink, Share2, Check } from 'lucide-react';
+import { getExplorerAddressUrl } from '@/lib/wallet/chains';
 
 interface ReceiveHubProps {
     addresses: {
         network: string;
         address: string;
         token: string;
+        chainId?: number; // Optional chainId for explorer links
         icon?: React.ReactNode;
     }[];
 }
@@ -106,7 +108,7 @@ export default function ReceiveHub({ addresses = [] }: ReceiveHubProps) {
                         </div>
 
                         {/* Action Buttons */}
-                        <div className="flex gap-3 w-full max-w-md">
+                        <div className="flex gap-3 w-full max-w-md mb-8">
                             <button 
                                 onClick={() => handleCopy(current.address)}
                                 className="flex-1 py-4 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-purple-500/20 active:scale-95 flex items-center justify-center gap-2"
@@ -116,10 +118,11 @@ export default function ReceiveHub({ addresses = [] }: ReceiveHubProps) {
                             </button>
                             
                             <a 
-                                href={`https://etherscan.io/address/${current.address}`}
+                                href={current.chainId ? getExplorerAddressUrl(current.chainId, current.address) : `https://etherscan.io/address/${current.address}`}
                                 target="_blank"
                                 rel="noreferrer"
                                 className="px-4 py-4 bg-white border border-[#1F1F1F]/10 text-[#1F1F1F] rounded-xl font-bold hover:bg-gray-50 transition-all active:scale-95 flex items-center justify-center"
+                                title="View on Explorer"
                             >
                                 <ExternalLink size={20} />
                             </a>
@@ -127,6 +130,17 @@ export default function ReceiveHub({ addresses = [] }: ReceiveHubProps) {
                             <button className="px-4 py-4 bg-white border border-[#1F1F1F]/10 text-[#1F1F1F] rounded-xl font-bold hover:bg-gray-50 transition-all active:scale-95 flex items-center justify-center">
                                 <Share2 size={20} />
                             </button>
+                        </div>
+
+                        {/* Educational Tip for 404 addresses */}
+                        <div className="w-full max-w-md p-4 bg-blue-50/50 border border-blue-100 rounded-2xl flex gap-3 text-left">
+                           <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                               <ExternalLink size={12} className="text-blue-600" />
+                           </div>
+                           <p className="text-xs text-blue-800 leading-relaxed font-medium">
+                               <span className="font-bold block mb-1">¿Error 404 en el explorador?</span>
+                               Las direcciones nuevas no aparecen en los buscadores públicos hasta que reciben su primera transacción o saldo. Es una medida estándar de las redes de blockchain.
+                           </p>
                         </div>
                     </div>
                 </motion.div>
@@ -140,5 +154,6 @@ function getNetworkColor(network: string) {
     if (network.includes('Bitcoin')) return 'bg-orange-500';
     if (network.includes('Polygon')) return 'bg-purple-500';
     if (network.includes('Solana')) return 'bg-teal-500';
+    if (network.includes('Base')) return 'bg-blue-500';
     return 'bg-blue-600'; // Default ETH
 }

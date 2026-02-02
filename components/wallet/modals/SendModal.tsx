@@ -4,14 +4,16 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, ArrowUpRight, Loader2, AlertTriangle } from 'lucide-react';
 import { ethers } from 'ethers';
+import { getExplorerTxUrl } from '@/lib/wallet/chains';
 
 interface SendModalProps {
     isOpen: boolean;
     onClose: () => void;
     userAddress: string;
+    chainId?: number;
 }
 
-export default function SendModal({ isOpen, onClose, userAddress }: SendModalProps) {
+export default function SendModal({ isOpen, onClose, userAddress, chainId }: SendModalProps) {
     const [recipientAddress, setRecipientAddress] = useState('');
     const [amount, setAmount] = useState('');
     const [loading, setLoading] = useState(false);
@@ -125,12 +127,12 @@ export default function SendModal({ isOpen, onClose, userAddress }: SendModalPro
                                 <h3 className="text-xl font-bold text-white mb-2">Transaction Sent!</h3>
                                 <p className="text-white/60 text-sm mb-4">Your transaction is being processed</p>
                                 <a
-                                    href={`https://etherscan.io/tx/${txHash}`}
+                                    href={chainId ? getExplorerTxUrl(chainId, txHash) : `https://etherscan.io/tx/${txHash}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-purple-400 text-sm hover:underline"
                                 >
-                                    View on Etherscan →
+                                    View on Explorer →
                                 </a>
                             </div>
                         ) : (

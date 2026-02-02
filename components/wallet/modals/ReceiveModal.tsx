@@ -2,16 +2,18 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, QrCode, Copy, Download } from 'lucide-react';
+import { X, QrCode, Copy, Download, ExternalLink } from 'lucide-react';
 import QRCodeLib from 'qrcode';
+import { getExplorerAddressUrl } from '@/lib/wallet/chains';
 
 interface ReceiveModalProps {
     isOpen: boolean;
     onClose: () => void;
     userAddress: string;
+    chainId?: number;
 }
 
-export default function ReceiveModal({ isOpen, onClose, userAddress }: ReceiveModalProps) {
+export default function ReceiveModal({ isOpen, onClose, userAddress, chainId }: ReceiveModalProps) {
     const [qrCodeDataUrl, setQrCodeDataUrl] = useState('');
     const [copied,setCopied] = useState(false);
 
@@ -106,6 +108,22 @@ export default function ReceiveModal({ isOpen, onClose, userAddress }: ReceiveMo
                             >
                                 <Download size={18} />
                             </button>
+                            <a
+                                href={chainId ? getExplorerAddressUrl(chainId, userAddress) : `https://etherscan.io/address/${userAddress}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="px-4 py-3 bg-white/10 hover:bg-white/20 rounded-xl font-bold text-white transition-all flex items-center justify-center"
+                                title="View on Explorer"
+                            >
+                                <ExternalLink size={18} />
+                            </a>
+                        </div>
+                        
+                        <div className="mt-6 p-4 bg-white/5 border border-white/5 rounded-2xl">
+                             <p className="text-[10px] text-white/40 leading-relaxed uppercase tracking-wider font-bold mb-1">Blockchain Tip</p>
+                             <p className="text-xs text-white/60 leading-normal">
+                                Las direcciones nuevas no aparecen en el explorador hasta su primera transacción.
+                             </p>
                         </div>
                     </motion.div>
                 </motion.div>

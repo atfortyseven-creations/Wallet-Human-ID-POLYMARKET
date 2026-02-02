@@ -142,8 +142,8 @@ export function WalletActions({ positions = [], history = [], userAddress }: Wal
     return (
         <div className="w-full">
             {/* Core Modals */}
-            <SendModal isOpen={showSend} onClose={() => setShowSend(false)} userAddress={effectiveAddress} />
-            <ReceiveModal isOpen={showReceive} onClose={() => setShowReceive(false)} userAddress={effectiveAddress} />
+            <SendModal isOpen={showSend} onClose={() => setShowSend(false)} userAddress={effectiveAddress} chainId={chainId} />
+            <ReceiveModal isOpen={showReceive} onClose={() => setShowReceive(false)} userAddress={effectiveAddress} chainId={chainId} />
             <SwapModal isOpen={showSwap} onClose={() => setShowSwap(false)} />
             
             {/* Unique Feature Modals */}
