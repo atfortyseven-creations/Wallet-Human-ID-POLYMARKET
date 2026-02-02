@@ -76,27 +76,28 @@ export function DropdownNav() {
                     </motion.div>
                 </motion.button>
 
+
                 {/* Dropdown Menu */}
                 <AnimatePresence>
-                    {isOpen && (
-                        <>
-                            {/* Backdrop */}
+                    {isOpen && mounted && createPortal(
+                        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                            {/* Backdrop - blurs everything EXCEPT the button */}
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                                 transition={{ duration: 0.2 }}
-                                className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+                                className="absolute inset-0 bg-black/30 backdrop-blur-sm"
                                 onClick={() => setIsOpen(false)}
                             />
 
-                            {/* Menu Panel with elegant slide animation */}
+                            {/* Menu Panel - Center, Glassmorphic Rectangle */}
                             <motion.div
-                                initial={{ opacity: 0, y: -10, scale: 0.98 }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: -10, scale: 0.98 }}
-                                transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-                                className="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-80 bg-white/95 dark:bg-[#1F1F1F]/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden z-50"
+                                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                                transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                                className="relative w-full max-w-md bg-white/90 dark:bg-neutral-900/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 dark:border-white/10 overflow-hidden z-50"
                             >
                                 {/* Exit Button */}
                                 <div className="p-4 border-b border-gray-200 dark:border-white/10 flex justify-between items-center">
@@ -214,7 +215,8 @@ export function DropdownNav() {
                                     </button>
                                 </div>
                             </motion.div>
-                        </>
+                        </div>,
+                        document.body
                     )}
                 </AnimatePresence>
             </div>
