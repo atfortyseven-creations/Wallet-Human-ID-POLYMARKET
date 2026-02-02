@@ -59,61 +59,50 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
         isConnected,
         change24hUSD,
         change24hPercent,
-        address: hookAddress
+        address: hookAddress,
+        backendAccounts
     } = useRealWalletData(recentNews, currentAddress);
 
     const [isInitialized, setIsInitialized] = useState(false);
 
-    // 1. Initial Load: LocalStorage OR Hook Address
+    // 1. Initial Load: Load from Backend + LocalStorage merge
     useEffect(() => {
-        if (isInitialized) return;
+        if (!hookAddress) return;
 
         const stored = localStorage.getItem('wallet_accounts');
         let initialAccounts: WalletAccount[] = [];
 
         if (stored) {
             try {
-                const loaded = JSON.parse(stored);
-                // CLEANUP: Force remove any 'Virtual' legacy addresses
-                initialAccounts = loaded.filter((a: any) => 
-                    a.address && 
-                    !a.address.includes('Virtual') && 
-                    !a.address.includes('Human')
-                );
+                initialAccounts = JSON.parse(stored);
             } catch (e) {
                 console.error("Failed to parse stored accounts", e);
             }
         }
 
-            if (initialAccounts.length === 0 && hookAddress && !hookAddress.includes('Virtual')) {
-                initialAccounts = [{
-                    address: hookAddress,
-                    name: 'Human Vault (Primary)',
-                    type: 'PRIMARY' as const,
-                    index: 0,
-                    color: getAccountColor(hookAddress)
-                }];
+        // Merge backend accounts with local ones, avoiding duplicates
+        const merged = [...backendAccounts];
+        initialAccounts.forEach(local => {
+            if (!merged.some(m => m.address.toLowerCase() === local.address.toLowerCase())) {
+                merged.push(local);
             }
+        });
 
-        if (initialAccounts.length > 0) {
-            setAccounts(initialAccounts);
-            // Default to first account if none selected
-            setCurrentAddress(prev => prev || initialAccounts[0].address);
-            setIsInitialized(true);
-        } else if (hookAddress && !hookAddress.includes('Virtual')) {
-             // Second chance if hookAddress just arrived
-             const primary: WalletAccount = {
+        // Ensure primary is present
+        if (!merged.some(m => m.address.toLowerCase() === hookAddress.toLowerCase())) {
+            merged.unshift({
                 address: hookAddress,
                 name: 'Human Vault (Primary)',
                 type: 'PRIMARY' as const,
                 index: 0,
                 color: getAccountColor(hookAddress)
-            };
-            setAccounts([primary]);
-            setCurrentAddress(hookAddress);
-            setIsInitialized(true);
+            });
         }
-    }, [hookAddress, isInitialized]);
+
+        setAccounts(merged);
+        if (!currentAddress) setCurrentAddress(merged[0]?.address || hookAddress);
+        setIsInitialized(true);
+    }, [hookAddress, backendAccounts.length]); // Re-sync if backend list changes
 
     // 2. Persistence: Save to Storage whenever accounts change
     useEffect(() => {
@@ -150,17 +139,15 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
         return () => clearInterval(interval);
     }, [accounts]);
 
-    const handleAddAccount = () => {
+    const handleAddAccount = async () => {
         const derivedAccounts = accounts.filter(a => a.type === 'DERIVED');
         const newIndex = derivedAccounts.length + 1;
         
-        // Ensure we have a REAL base address for the simulation
         const primaryAccount = accounts.find(a => a.type === 'PRIMARY') || accounts[0];
         const baseAddr = (primaryAccount?.address && !primaryAccount.address.includes('Virtual')) 
             ? primaryAccount.address 
-            : '0x71C7656EC7ab88b098defB751B7401B5f6d8976F'; // Fallback real-looking address for demo
+            : '0x71C7656EC7ab88b098defB751B7401B5f6d8976F';
         
-        // Deterministic mock derivation
         const mockAddress = baseAddr.slice(0, -2) + newIndex.toString(16).padStart(2, '0');
         
         const newAccount: WalletAccount = {
@@ -171,9 +158,20 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
             color: getAccountColor(mockAddress)
         };
 
+        // [PERSISTENCE] Save to backend
+        try {
+            await fetch('/api/user/wallet', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newAccount)
+            });
+        } catch (e) {
+            console.error("Failed to persist new account to backend", e);
+        }
+
         const updated = [...accounts, newAccount];
         setAccounts(updated);
-        setCurrentAddress(mockAddress); // Switch to the new account
+        setCurrentAddress(mockAddress);
         localStorage.setItem('wallet_accounts', JSON.stringify(updated));
         
         alert(`New account "${newAccount.name}" created! Note: Explorer visibility requires first transaction.`);
@@ -213,6 +211,18 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
             };
 
             const updatedAccounts = [...accounts, watchAccount];
+            
+            // [PERSISTENCE] Save watch wallet to backend
+            try {
+                await fetch('/api/user/wallet', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(watchAccount)
+                });
+            } catch (e) {
+                console.error("Failed to persist watch wallet to backend", e);
+            }
+
             setAccounts(updatedAccounts);
             setCurrentAddress(resolvedAddress);
             setShowWatchInput(false);

@@ -29,7 +29,7 @@ export interface TokenMetadata {
 /**
  * Get the correct Alchemy API URL for a specific chain and method
  */
-function getAlchemyApiUrl(chainId: number, method: 'getTokenBalances' | 'getTokenMetadata'): string {
+function getAlchemyApiUrl(chainId: number): string {
   const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
   const networkMap: Record<number, string> = {
     1: 'eth-mainnet',
@@ -40,7 +40,8 @@ function getAlchemyApiUrl(chainId: number, method: 'getTokenBalances' | 'getToke
   };
 
   const network = networkMap[chainId] || 'eth-mainnet';
-  return `https://${network}.g.alchemy.com/v2/${apiKey}/${method}`;
+  // [FIX] Alchemy API URLs for JSON-RPC should not have the method name appended
+  return `https://${network}.g.alchemy.com/v2/${apiKey}`;
 }
 
 /**
@@ -51,7 +52,7 @@ export async function discoverTokens(
   chainId: number
 ): Promise<Token[]> {
   try {
-    const url = getAlchemyApiUrl(chainId, 'getTokenBalances');
+    const url = getAlchemyApiUrl(chainId);
     const response = await fetch(
       url,
       {
@@ -66,7 +67,14 @@ export async function discoverTokens(
       }
     );
 
-    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(`Alchemy API error: ${response.status} ${response.statusText}`);
+    }
+
+    const text = await response.text();
+    if (!text) return [];
+
+    const data = JSON.parse(text);
     const tokenBalances = data.result?.tokenBalances || [];
 
     // Filter out zero balances and fetch metadata
@@ -113,7 +121,7 @@ export async function getTokenMetadata(
   chainId: number
 ): Promise<TokenMetadata> {
   try {
-    const url = getAlchemyApiUrl(chainId, 'getTokenMetadata');
+    const url = getAlchemyApiUrl(chainId);
     const response = await fetch(
       url,
       {
@@ -128,7 +136,14 @@ export async function getTokenMetadata(
       }
     );
 
-    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(`Alchemy API metadata error: ${response.status}`);
+    }
+
+    const text = await response.text();
+    if (!text) throw new Error('Empty response from Alchemy Metadata');
+
+    const data = JSON.parse(text);
     const result = data.result;
 
     return {

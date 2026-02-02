@@ -178,6 +178,12 @@ export async function GET(request: NextRequest) {
       console.warn(`Failed to fetch portfolio for ${walletAddress}, falling back to 0`, e);
     }
 
+    // [MULTI-ACCOUNT] Fetch all accounts for this user to return a complete list
+    const accounts = await prisma.walletAccount.findMany({
+      where: { userId: authUser.id },
+      orderBy: { createdAt: 'asc' }
+    });
+
     return NextResponse.json({
       address: walletAddress,
       balance: balance,
@@ -189,11 +195,69 @@ export async function GET(request: NextRequest) {
       change24hPercent: portfolio?.change24hPercent || 0,
       status: "Active",
       isLedger: true,
-      securityLevel: "MAXIMUM"
+      securityLevel: "MAXIMUM",
+      accounts: accounts.map(acc => ({
+        address: acc.address,
+        name: acc.name,
+        type: acc.type,
+        index: acc.index
+      }))
     });
 
   } catch (error) {
     console.error("Wallet Fetch Error:", error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const user = await currentUser();
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const email = user.emailAddresses[0]?.emailAddress;
+    if (!email) return NextResponse.json({ error: 'No email found' }, { status: 400 });
+
+    const body = await request.json();
+    const { address, name, type, index } = body;
+
+    if (!address || !name) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    const authUser = await prisma.authUser.findUnique({
+      where: { email },
+    });
+
+    if (!authUser) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // [PERSISTENCE] Save the new wallet account to the database using compound unique constraint
+    const newAccount = await prisma.walletAccount.upsert({
+      where: { 
+        userId_address: {
+          userId: authUser.id,
+          address: address
+        }
+      },
+      update: {
+        name,
+        type: type || 'DERIVED',
+        index: index || 0,
+      },
+      create: {
+        userId: authUser.id,
+        address,
+        name,
+        type: type || 'DERIVED',
+        index: index || 0,
+      },
+    });
+
+    return NextResponse.json(newAccount);
+  } catch (error) {
+    console.error("Wallet Add Error:", error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
