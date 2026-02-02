@@ -2,36 +2,61 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Share2, Copy, Trophy, Users, TrendingUp, Gift } from 'lucide-react';
+import { Share2, Copy, Trophy, Users, TrendingUp, Gift, Loader2 } from 'lucide-react';
+import { useAccount } from 'wagmi';
+import useSWR from 'swr';
+import { toast } from 'sonner';
 
 interface ReferralStats {
     totalEarnings: string;
+    weeklyEarnings: string;
     totalInvites: number;
     rank: string;
-    nextTierProgress: number; // 0-100
+    nextTierProgress: number;
     inviteCode: string;
 }
 
-export default function ReferralDashboard({ 
-    stats = {
-        totalEarnings: "1,250.00",
-        totalInvites: 12,
-        rank: "Silver",
-        nextTierProgress: 75,
-        inviteCode: "HUMAN-8X29"
-    }
-}: { stats?: ReferralStats }) {
+interface RecentInvite {
+    id: string;
+    walletAddress: string;
+    earnings: string;
+    status: string;
+    createdAt: string;
+}
+
+const fetcher = (url: string) => fetch(url).then(r => r.json());
+
+export default function ReferralDashboard() {
+    const { address, isConnected } = useAccount();
+    
+    // Fetch real referral data from API
+    const { data, error, isLoading } = useSWR(
+        address ? `/api/referral/stats?address=${address}` : null,
+        fetcher,
+        { refreshInterval: 30000 } // Refresh every 30 seconds
+    );
+
+    const stats: ReferralStats = data?.stats || {
+        totalEarnings: "0.00",
+        weeklyEarnings: "0.00",
+        totalInvites: 0,
+        rank: "Bronze",
+        nextTierProgress: 0,
+        inviteCode: "HUMAN-XXXX"
+    };
+
+    const recentInvites: RecentInvite[] = data?.recentInvites || [];
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(`https://human.fi/invite/${stats.inviteCode}`);
-        // Toast logic would go here
+        navigator.clipboard.writeText(`https://humanid.fi/invite/${stats.inviteCode}`);
+        toast.success('Invite link copied to clipboard!');
     };
 
     const handleShare = async () => {
         const shareData = {
             title: 'Human DeFi',
             text: 'Join me on Human DeFi and experience the future of finance.',
-            url: `https://human.fi/invite/${stats.inviteCode}`
+            url: `https://humanid.fi/invite/${stats.inviteCode}`
         };
 
         if (navigator.share) {
@@ -45,10 +70,37 @@ export default function ReferralDashboard({
         }
     };
 
+    // Show loading state
+    if (!isConnected) {
+        return (
+            <div className="flex flex-col items-center justify-center py-20">
+                <p className="text-[#1F1F1F]/60">Connect your wallet to view referral stats</p>
+            </div>
+        );
+    }
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center py-20">
+                <Loader2 className="w-8 h-8 animate-spin text-purple-500 mb-2" />
+                <p className="text-[#1F1F1F]/60">Loading referral data...</p>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex flex-col items-center justify-center py-20">
+                <p className="text-red-500">Error loading referral data</p>
+                <p className="text-xs text-[#1F1F1F]/40">{error.message}</p>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-6">
             
-            {/* HERRO SECTION: EARNINGS */}
+            {/* HERO SECTION: EARNINGS */}
             <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -66,10 +118,18 @@ export default function ReferralDashboard({
                         <div className="text-5xl md:text-6xl font-black tracking-tighter mb-4">
                             <span className="text-purple-400">$</span>{stats.totalEarnings}
                         </div>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/5 backdrop-blur-md">
-                            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                            <span className="text-xs font-bold">+ $24.50 this week</span>
-                        </div>
+                        {parseFloat(stats.weeklyEarnings) > 0 && (
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/5 backdrop-blur-md">
+                                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                <span className="text-xs font-bold">+ ${stats.weeklyEarnings} this week</span>
+                            </div>
+                        )}
+                        {parseFloat(stats.totalEarnings) === 0 && (
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/5 backdrop-blur-md">
+                                <TrendingUp size={12} className="text-gray-400" />
+                                <span className="text-xs font-bold text-white/60">Start inviting to earn!</span>
+                            </div>
+                        )}
                     </div>
 
                     {/* Rank Card */}
@@ -83,12 +143,12 @@ export default function ReferralDashboard({
                         {/* Progress Bar */}
                         <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden mb-1">
                             <div 
-                                className="h-full bg-gradient-to-r from-purple-500 to-pink-500" 
+                                className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500" 
                                 style={{ width: `${stats.nextTierProgress}%` }}
                             />
                         </div>
                         <div className="text-[10px] text-white/40 text-right">
-                            {stats.nextTierProgress}% to Gold
+                            {stats.nextTierProgress}% to next tier
                         </div>
                     </div>
                 </div>
@@ -129,21 +189,50 @@ export default function ReferralDashboard({
                 </motion.div>
             </div>
 
-            {/* LEADERBOARD / RECENT ACTIVITY */}
+            {/* RECENT INVITES */}
             <div className="bg-white/50 backdrop-blur-sm rounded-3xl p-6 border border-[#1F1F1F]/5">
                 <h3 className="text-[#1F1F1F]/60 font-bold uppercase text-xs tracking-widest mb-6 flex items-center gap-2">
                     <Users size={14} />
-                    Recent Invites
+                    Recent Invites ({stats.totalInvites})
                 </h3>
 
                 <div className="space-y-4">
-                    {/* Real Data Logic would go here - Currently showing empty state for "Real Data" requirement */}
-                    {/* If stats list empty: */}
-                    <div className="text-center py-8 text-[#1F1F1F]/40">
-                        <Users size={32} className="mx-auto mb-2 opacity-50" />
-                        <p className="text-sm font-bold">No invites yet</p>
-                        <p className="text-xs">Start sharing your link to earn rewards!</p>
-                    </div>
+                    {recentInvites.length === 0 ? (
+                        <div className="text-center py-8 text-[#1F1F1F]/40">
+                            <Users size={32} className="mx-auto mb-2 opacity-50" />
+                            <p className="text-sm font-bold">No invites yet</p>
+                            <p className="text-xs">Start sharing your link to earn rewards!</p>
+                        </div>
+                    ) : (
+                        recentInvites.map((invite) => (
+                            <div 
+                                key={invite.id}
+                                className="flex items-center justify-between p-4 bg-white rounded-2xl border border-[#1F1F1F]/5"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                                        <Users size={18} className="text-purple-600" />
+                                    </div>
+                                    <div>
+                                        <p className="font-mono text-sm font-bold text-[#1F1F1F]">
+                                            {invite.walletAddress.slice(0, 6)}...{invite.walletAddress.slice(-4)}
+                                        </p>
+                                        <p className="text-xs text-[#1F1F1F]/40">
+                                            {new Date(invite.createdAt).toLocaleDateString()}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-sm font-bold text-green-600">
+                                        +${invite.earnings}
+                                    </p>
+                                    <p className="text-xs text-[#1F1F1F]/40 capitalize">
+                                        {invite.status.toLowerCase()}
+                                    </p>
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
 
