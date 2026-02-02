@@ -3,13 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Bell, Eye, EyeOff, Settings, Globe, Crown, X } from 'lucide-react';
+import { ChevronDown, Bell, Eye, EyeOff, Settings, Globe, Crown, X, Wallet, PieChart, TrendingUp, Zap, Users as UsersIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useAppKit } from '@reown/appkit/react';
 import { useAccount } from 'wagmi';
 import { useLanguage } from '@/src/context/LanguageContext';
 import { useUIStore } from '@/lib/store/ui-store';
 import useSWR, { mutate } from 'swr';
+import { getAccountColor, type WalletAccount } from '@/lib/wallet/accounts';
 
 const fetcher = (url: string) => fetch(url).then(r => r.json());
 
@@ -30,6 +31,30 @@ export function DropdownNav() {
     const { data } = useSWR(`/api/user/notifications?address=${address || ''}`, fetcher, { refreshInterval: 30000 });
     const notifications = data?.notifications || [];
     const unreadCount = notifications.filter((n: any) => !n.read).length;
+
+    // Account Management State (Synced with SuperWallet logic)
+    const [accounts, setAccounts] = useState<WalletAccount[]>([]);
+    const [currentAddress, setCurrentAddress] = useState<string>('');
+
+    useEffect(() => {
+        if (!address) return;
+        const stored = localStorage.getItem('wallet_accounts');
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                setAccounts(parsed);
+                if (!currentAddress) setCurrentAddress(parsed[0]?.address || address);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+    }, [address]);
+
+    const handleSwitchAccount = (addr: string) => {
+        setCurrentAddress(addr);
+        localStorage.setItem('wallet_current_address', addr);
+        window.dispatchEvent(new Event('storage')); // Notify other components
+    };
 
     const navLinks = [
         { name: t('nav.functions'), href: '/funciones', icon: null },
@@ -141,9 +166,11 @@ export function DropdownNav() {
                                                 icon={isStealthMode ? <EyeOff size={18} /> : <Eye size={18} />}
                                                 label={isStealthMode ? 'Visible' : 'Ocultar'}
                                             />
-                                            <Link href="/settings" onClick={() => setIsOpen(false)}>
-                                                <NavToolButton icon={<Settings size={18} />} label="Config" />
-                                            </Link>
+                                            <NavToolButton 
+                                                onClick={() => { window.location.href = '/settings'; setIsOpen(false); }}
+                                                icon={<Settings size={18} />} 
+                                                label="Config" 
+                                            />
                                             <NavToolButton onClick={toggleLanguage} icon={<Globe size={18} />} label={language} />
                                         </div>
 
@@ -165,6 +192,50 @@ export function DropdownNav() {
                                         </button>
                                     </div>
                                 </div>
+
+                                {/* Bottom Row: Wallet Context & Sub-links (Visible when connected) */}
+                                {isConnected && (
+                                    <motion.div 
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className="mt-2 p-2 bg-gray-50 dark:bg-white/5 rounded-[2rem] flex items-center justify-between gap-4 border-t border-gray-100 dark:border-white/5"
+                                    >
+                                        {/* Account Switcher Integration */}
+                                        <div className="flex items-center gap-2 pl-4">
+                                            <div 
+                                                className="w-8 h-8 rounded-full border-2 border-white shadow-sm flex items-center justify-center text-white text-[10px] font-black"
+                                                style={{ background: getAccountColor(currentAddress || address || '') }}
+                                            >
+                                                {(accounts.find(a => a.address === currentAddress)?.name?.[0] || 'H').toUpperCase()}
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-[10px] font-black text-[#1F1F1F] dark:text-white leading-tight">
+                                                    {accounts.find(a => a.address === currentAddress)?.name || 'Human Wallet'}
+                                                </span>
+                                                <span className="text-[8px] font-bold text-gray-400 tabular-nums">
+                                                    {(currentAddress || address || '').slice(0, 6)}...{(currentAddress || address || '').slice(-4)}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        {/* Wallet Sub-Tabs */}
+                                        <div className="flex items-center gap-1 bg-white/50 dark:bg-black/20 p-1 rounded-2xl">
+                                            <SubNavLink href="/wallet" icon={<Wallet size={14} />} label="Wallet" />
+                                            <SubNavLink href="/wallet?view=portfolio" icon={<PieChart size={14} />} label="Portfolio" />
+                                            <SubNavLink href="/wallet?view=earn" icon={<TrendingUp size={14} />} label="Earn" />
+                                            <SubNavLink href="/wallet?view=activity" icon={<Zap size={14} />} label="Activity" />
+                                            <SubNavLink href="/vip" icon={<UsersIcon size={14} />} label="Whales" />
+                                        </div>
+
+                                        {/* Switch Account Trigger (Small) */}
+                                        <button 
+                                            onClick={() => { window.location.href = '/wallet'; setIsOpen(false); }}
+                                            className="px-4 py-2 bg-white dark:bg-white/10 text-[10px] font-black uppercase tracking-widest text-[#1F1F1F] dark:text-white rounded-xl shadow-sm hover:scale-105 transition-all mr-2"
+                                        >
+                                            Switch
+                                        </button>
+                                    </motion.div>
+                                )}
                             </motion.div>
                         </>
                     )}
@@ -259,5 +330,17 @@ function NavToolButton({ icon, onClick, label, badge = false }: { icon: React.Re
                 {label}
             </span>
         </button>
+    );
+}
+
+function SubNavLink({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) {
+    return (
+        <Link 
+            href={href}
+            className="flex items-center gap-2 px-3 py-2 rounded-xl text-gray-500 hover:text-black dark:hover:text-white hover:bg-white dark:hover:bg-white/10 transition-all"
+        >
+            {icon}
+            <span className="text-[10px] font-black uppercase tracking-tight hidden sm:block">{label}</span>
+        </Link>
     );
 }

@@ -7,8 +7,10 @@ import { DropdownNav } from '@/components/site/DropdownNav';
 export function ClientLayout({ children }: { children: React.ReactNode }) {
     return (
         <TitaniumGate>
-            <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50">
-                <DropdownNav />
+            <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
+                <div className="pointer-events-auto">
+                    <DropdownNav />
+                </div>
             </div>
             {children}
         </TitaniumGate>
