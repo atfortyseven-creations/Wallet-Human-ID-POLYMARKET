@@ -7,6 +7,9 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { StealthText } from '@/components/ui/stealth-text';
 import { useApp } from '@/components/AppContext';
+import useSWR from 'swr';
+
+const fetcher = (url: string) => fetch(url).then(r => r.json());
 
 function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
@@ -16,33 +19,21 @@ export const HumanCard = () => {
     const { t } = useApp();
     
     // User Data State
-    const [balance, setBalance] = useState("$0.00");
-    const [address, setAddress] = useState("0x...");
     const [loading, setLoading] = useState(true);
     const [copied, setCopied] = useState(false);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await fetch('/api/user/wallet');
-                if (res.ok) {
-                    const data = await res.json();
-                    setBalance(`$${data.balance}`);
-                    setAddress(data.address);
-                } else {
-                    // Fallback for non-logged in users (Guest View)
-                    setBalance("---");
-                    setAddress("Connect Wallet");
-                }
-            } catch (e) {
-                console.error("Failed to load wallet data", e);
-            } finally {
-                setLoading(false);
-            }
-        };
+    // Optimized Data Fetching with SWR
+    const { data: walletData, error } = useSWR('/api/user/wallet', fetcher, {
+        revalidateOnFocus: false,
+        dedupingInterval: 30000
+    });
 
-        fetchData();
-    }, []);
+    const balance = walletData?.balance ? `$${walletData.balance}` : (loading && !walletData ? "..." : "---");
+    const addressDisplay = walletData?.address || "Connect Wallet";
+
+    useEffect(() => {
+        if (walletData || error) setLoading(false);
+    }, [walletData, error]);
 
     const handleCopy = () => {
         navigator.clipboard.writeText(address);
