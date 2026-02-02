@@ -62,9 +62,6 @@ export default function AccountSwitcher({
             >
               <div className="p-3 border-b border-[#1F1F1F]/10 bg-white/30 flex justify-between items-center">
                 <span className="text-sm font-black text-[#1F1F1F]">My Accounts</span>
-                <button className="p-1 hover:bg-[#1F1F1F]/10 rounded-lg">
-                  <Settings size={14} className="text-[#1F1F1F]/70" />
-                </button>
               </div>
 
               <div className="max-h-[60vh] overflow-y-auto p-2 space-y-1 custom-scrollbar">

@@ -65,10 +65,10 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
                 setCurrentAddress(loadedAccounts[0].address);
             }
         } else if (address) {
-            // Initialize with primary wallet
+            // Initialize with CONNECTED wallet only (Real Blockchain Wallet)
             const primaryAccount: WalletAccount = {
                 address: address,
-                name: 'Main Wallet',
+                name: 'Account 1', // Generic real name
                 type: 'PRIMARY',
                 index: 0,
                 color: getAccountColor(address)
@@ -172,8 +172,8 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
                     )}
                 </div>
                 
-                {/* Center Tabs */}
-                <div className="hidden md:flex bg-white/50 rounded-full p-1.5 border border-[#1F1F1F]/5 shadow-sm overflow-x-auto max-w-[200px] md:max-w-none scrollbar-hide">
+                {/* Center Tabs - ABSOLUTELY CENTERED FOR PERFECT ALIGNMENT WITH CARD */}
+                <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 bg-white/50 rounded-full p-1.5 border border-[#1F1F1F]/5 shadow-sm overflow-x-auto max-w-[600px] scrollbar-hide">
                     <ViewTab icon={<Wallet size={18}/>} label="Wallet" active={activeView==='dashboard'} onClick={()=>setActiveView('dashboard')} />
                     <ViewTab icon={<PieChart size={18}/>} label="Portfolio" active={activeView==='portfolio'} onClick={()=>setActiveView('portfolio')} />
                     <ViewTab icon={<TrendingUp size={18}/>} label="Earn" active={activeView==='earn'} onClick={()=>setActiveView('earn')} />

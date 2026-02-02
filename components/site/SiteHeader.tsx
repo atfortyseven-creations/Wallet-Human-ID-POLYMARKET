@@ -80,13 +80,13 @@ export function SiteHeader() {
                         </Link>
                     </div>
 
-                    {/* DESKTOP NAV */}
-                    <nav className="flex-1 hidden xl:flex items-center gap-1 justify-center relative z-50 pointer-events-auto">
+                    {/* DESKTOP NAV - Enhanced for Zoom Resilience */}
+                    <nav className="flex-1 hidden lg:flex items-center gap-1 justify-center relative z-50 pointer-events-auto min-w-0">
                         {navLinks.map((link) => (
-                            <div key={link.href} className="relative group">
+                            <div key={link.href} className="relative group shrink-0">
                                 <Link 
                                     href={link.href}
-                                    className={`relative z-10 px-4 lg:px-5 py-2 text-[13px] lg:text-[14px] font-black transition-all rounded-lg tracking-widest uppercase font-sans whitespace-nowrap flex items-center gap-2 ${
+                                    className={`relative z-10 px-3 lg:px-5 py-2 text-[12px] lg:text-[14px] font-black transition-all rounded-lg tracking-widest uppercase font-sans whitespace-nowrap flex items-center gap-2 ${
                                         link.isVIP 
                                             ? 'bg-black text-white border-2 border-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.3)] hover:scale-105 hover:shadow-[0_0_25px_rgba(212,175,55,0.5)]' 
                                             : 'text-gray-800 hover:text-black hover:bg-gray-100/50'
