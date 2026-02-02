@@ -8,7 +8,8 @@ dotenv.config();
 const prisma = new PrismaClient();
 
 // Configuration
-const RPC_URL = "https://go.getblock.io/3648ec097a0e447fa4eb8d92b81e5230";
+const BASE_RPC_URL = process.env.BASE_MAINNET_RPC_URL || `https://base-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || 'p2MK6Y8eQyHPbS5gQZ7TU'}`;
+const BTC_RPC_URL = process.env.NEXT_PUBLIC_BITCOIN_RPC_URL || "https://go.getblock.io/3648ec097a0e447fa4eb8d92b81e5230";
 const WHALE_THRESHOLD_USD = 50000;
 
 // Telegram Configuration
@@ -54,7 +55,7 @@ const formatMoney = (val: number) => {
 async function startWorker() {
   console.log("🐋 [Whale Worker] Starting with robust RPC...");
   
-  const provider = new ethers.JsonRpcProvider(RPC_URL);
+  const provider = new ethers.JsonRpcProvider(BASE_RPC_URL);
   
   // Start EVM Worker (Base)
   startEvmWorker(provider).catch(e => console.error("❌ [EVM Worker] Failed:", e));
@@ -160,8 +161,7 @@ async function startEvmWorker(provider: any) {
   }
 }
 
-// Bitcoin Configuration
-const BTC_RPC_URL = process.env.NEXT_PUBLIC_BITCOIN_RPC_URL || "https://go.getblock.io/3648ec097a0e447fa4eb8d92b81e5230";
+// Bitcoin Configuration (BTC Worker uses BTC_RPC_URL constant defined at top)
 
 async function btcRpcCall(method: string, params: any[] = []) {
     const response = await axios.post(BTC_RPC_URL, {
