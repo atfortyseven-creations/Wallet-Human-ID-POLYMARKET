@@ -56,12 +56,20 @@ async function startWorker() {
   
   const provider = new ethers.JsonRpcProvider(RPC_URL);
   
+  // Start EVM Worker (Base)
+  startEvmWorker(provider).catch(e => console.error("❌ [EVM Worker] Failed:", e));
+
+  // Start Bitcoin Worker
+  startBtcWorker().catch(e => console.error("❌ [BTC Worker] Failed:", e));
+}
+
+async function startEvmWorker(provider: any) {
   let lastProcessedBlock;
   try {
     lastProcessedBlock = await provider.getBlockNumber();
-    console.log(`📡 [Whale Worker] Connected to Base. Starting from block: ${lastProcessedBlock}`);
+    console.log(`📡 [EVM Worker] Connected to Base. Starting from block: ${lastProcessedBlock}`);
   } catch (err: any) {
-    console.error("❌ [Whale Worker] Failed to connect to RPC:", err.message);
+    console.error("❌ [EVM Worker] Failed to connect to RPC:", err.message);
     return;
   }
 
@@ -70,26 +78,23 @@ async function startWorker() {
       const currentBlock = await provider.getBlockNumber();
       
       if (currentBlock > lastProcessedBlock) {
-        console.log(`🔍 [Whale Worker] Scanning blocks ${lastProcessedBlock + 1} to ${currentBlock}...`);
+        console.log(`🔍 [EVM Worker] Scanning blocks ${lastProcessedBlock + 1} to ${currentBlock}...`);
 
-        // 1. Check Native ETH Transfers (from full block transactions)
-        // Note: For efficiency in high throughput, we might skip full block trace if generic RPC is slow, 
-        // but verifying block.transactions is standard.
-        // For 'getblock', getting full block might be heavy. We'll try.
+        // 1. Check Native ETH Transfers
         try {
-            const block = await provider.getBlock(currentBlock, true); // true for prefetch txs
+            const block = await provider.getBlock(currentBlock, true);
             if (block && block.prefetchedTransactions) {
                 for (const tx of block.prefetchedTransactions) {
                     const valueEth = parseFloat(ethers.formatEther(tx.value));
-                    const usdValue = valueEth * 3300; // Approx ETH price
+                    const usdValue = valueEth * 3300; 
                     
                     if (usdValue >= WHALE_THRESHOLD_USD) {
-                        await processWhaleTx(tx.hash, tx.from, tx.to, "ETH", valueEth, usdValue, currentBlock);
+                        await processWhaleTx(tx.hash, tx.from, tx.to, "ETH", valueEth, usdValue, currentBlock, 'BASE');
                     }
                 }
             }
-        } catch (e) {
-            console.warn("⚠️ [Whale Worker] Could not fetch (ETH) block txs:", e.message);
+        } catch (e: any) {
+            console.warn("⚠️ [EVM Worker] Could not fetch (ETH) block txs:", e.message);
         }
 
         // 2. Check ERC20 Transfers (Logs)
@@ -117,13 +122,13 @@ async function startWorker() {
             } else if (log.address.toLowerCase() === TOKENS.cbETH.toLowerCase()) {
                 tokenSymbol = "cbETH";
                 decimals = 18;
-                price = 3400; // slightly higher usually
+                price = 3400; 
             } else if (log.address.toLowerCase() === TOKENS.DAI.toLowerCase()) {
                 tokenSymbol = "DAI";
                 decimals = 18;
                 price = 1;
             } else {
-                continue; // Skip unknown tokens for now to reduce noise
+                continue; 
             }
 
             // Parse Value
@@ -136,11 +141,11 @@ async function startWorker() {
                 const from = ethers.AbiCoder.defaultAbiCoder().decode(["address"], log.topics[1])[0];
                 const to = ethers.AbiCoder.defaultAbiCoder().decode(["address"], log.topics[2])[0];
                 
-                await processWhaleTx(log.transactionHash, from, to, tokenSymbol, tokenAmount, usdValue, currentBlock);
+                await processWhaleTx(log.transactionHash, from, to, tokenSymbol, tokenAmount, usdValue, currentBlock, 'BASE');
             }
 
           } catch (err) {
-            // Silent catch for log parsing errors
+            // Silent catch
           }
         }
 
@@ -149,18 +154,89 @@ async function startWorker() {
       
       await new Promise(resolve => setTimeout(resolve, 10000)); // 10s Poll
     } catch (error: any) {
-      console.error("❌ [Whale Worker] Loop Error:", error.message);
+      console.error("❌ [EVM Worker] Loop Error:", error.message);
       await new Promise(resolve => setTimeout(resolve, 30000));
     }
   }
 }
 
-async function processWhaleTx(hash: string, from: string, to: string, asset: string, amount: number, usdValue: number, blockNumber: number) {
+// Bitcoin Configuration
+const BTC_RPC_URL = process.env.NEXT_PUBLIC_BITCOIN_RPC_URL || "https://go.getblock.io/3648ec097a0e447fa4eb8d92b81e5230";
+
+async function btcRpcCall(method: string, params: any[] = []) {
+    const response = await axios.post(BTC_RPC_URL, {
+        jsonrpc: "1.0",
+        id: "btc-worker",
+        method: method,
+        params: params
+    }, {
+        headers: { 'Content-Type': 'application/json' }
+    });
+    return response.data.result;
+}
+
+async function startBtcWorker() {
+    let lastBlock = 0;
+    try {
+        lastBlock = await btcRpcCall("getblockcount");
+        console.log(`asd [BTC Worker] Connected. Starting from block height: ${lastBlock}`);
+    } catch (e: any) {
+        console.error("❌ [BTC Worker] Connection failed:", e.message);
+        return;
+    }
+
+    while (true) {
+        try {
+            const currentBlock = await btcRpcCall("getblockcount");
+            
+            if (currentBlock > lastBlock) {
+                 console.log(`🔍 [BTC Worker] New Bitcoin block: ${currentBlock}`);
+                 
+                 const blockHash = await btcRpcCall("getblockhash", [currentBlock]);
+                 // verbosity 2 for full tx details
+                 const block = await btcRpcCall("getblock", [blockHash, 2]); 
+
+                 if (block && block.tx) {
+                     for (const tx of block.tx) {
+                         // Simple heuristic: Sum output values
+                         // Real "whale" logic needs to track input vs output to find actual transfer value
+                         // But for tracking *movements*, monitoring large outputs is a good start.
+                         
+                         let totalOutputBtc = 0;
+                         // Check outputs
+                         for (const vout of tx.vout) {
+                             totalOutputBtc += vout.value;
+                         }
+
+                         const btcPrice = 98000; // Mock/Approx Price - In prod use fetch
+                         const usdValue = totalOutputBtc * btcPrice;
+
+                         if (usdValue >= WHALE_THRESHOLD_USD) {
+                             // Using the first input address as 'sender' heuristic (not always 100% accurate in UTXO but sufficient for alert)
+                             const sender = tx.vin[0]?.coinbase ? "COINBASE" : "Unknown (UTXO)"; // extracting input address requires looking up prevout, simplified here
+                             // For notifictions, we can just show the Transaction ID
+                             
+                             await processWhaleTx(tx.txid, sender, "Multiple Outputs", "BTC", totalOutputBtc, usdValue, currentBlock, 'BITCOIN');
+                         }
+                     }
+                 }
+                 lastBlock = currentBlock;
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 60000)); // Bitcoin blocks are slow (10m), poll every 1m
+        } catch (e: any) {
+            console.error("❌ [BTC Worker] Error:", e.message);
+            await new Promise(resolve => setTimeout(resolve, 60000));
+        }
+    }
+}
+
+async function processWhaleTx(hash: string, from: string, to: string, asset: string, amount: number, usdValue: number, blockNumber: number, chain: string = 'BASE') {
     // Dedup check (optional but good practice)
     const exists = await prisma.whaleActivity.findUnique({ where: { transactionHash: hash } });
     if (exists) return;
 
-    console.log(`🌊 [Whale Worker] WHALE: ${usdValue.toFixed(2)} USD (${asset})`);
+    console.log(`🌊 [${chain}] WHALE: ${usdValue.toFixed(2)} USD (${asset})`);
 
     // Save DB
     await prisma.whaleActivity.create({
@@ -182,15 +258,18 @@ async function processWhaleTx(hash: string, from: string, to: string, asset: str
     const shortFrom = `${from.slice(0, 4)}...${from.slice(-4)}`;
     const shortTo = to ? `${to.slice(0, 4)}...${to.slice(-4)}` : 'Contract';
     
+    // Auto-detect explorer based on chain
+    const explorer = chain === 'BITCOIN' ? `https://mempool.space/tx/${hash}` : `https://basescan.org/tx/${hash}`;
+
     const msg = `
-🐳 <b>ALERTA WHALE DETECTADA</b> | Base
+🐳 <b>ALERTA WHALE DETECTADA</b> | ${chain}
 
 💶 <b>${formatMoney(usdValue)}</b>
 Transferencia de <b>${amount.toLocaleString()} ${asset}</b> detectada.
 
 👤 <code>${shortFrom}</code> ➡️ <code>${shortTo}</code>
 
-🔗 <a href="https://basescan.org/tx/${hash}">Ver Transacción</a>
+🔗 <a href="${explorer}">Ver Transacción</a>
 `.trim();
 
     await sendTelegram(msg);
