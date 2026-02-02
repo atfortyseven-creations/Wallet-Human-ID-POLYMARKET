@@ -133,7 +133,6 @@ export default function TransactionHistory({ authUserId }: TransactionHistoryPro
         <TypeFilterButton label="Send" active={filterType === 'SEND'} onClick={() => setFilterType('SEND' as TransactionType)} />
         <TypeFilterButton label="Receive" active={filterType === 'RECEIVE'} onClick={() => setFilterType('RECEIVE' as TransactionType)} />
         <TypeFilterButton label="Swap" active={filterType === 'SWAP'} onClick={() => setFilterType('SWAP' as TransactionType)} />
-        <TypeFilterButton label="NFT" active={filterType === 'NFT_TRANSFER'} onClick={() => setFilterType('NFT_TRANSFER' as TransactionType)} />
       </div>
 
       {/* Virtualized Transaction List */}
@@ -209,16 +208,23 @@ function TransactionCard({ transaction }: { transaction: any }) {
 
   const formatValue = () => {
     const value = parseFloat(transaction.value);
-    const symbol = transaction.tokenSymbol || 'ETH';
-     // Handle NaN gracefully
+    const symbol = transaction.asset || transaction.tokenSymbol || 'ETH';
+     
     if (isNaN(value)) return `0.00 ${symbol}`;
 
+    // Show more decimals for small values to be "exactly" accurate
+    const decimals = value < 1 ? 8 : 4;
+    const formatted = value.toLocaleString(undefined, { 
+      minimumFractionDigits: 2, 
+      maximumFractionDigits: decimals 
+    });
+
     if (transaction.type === 'SEND') {
-      return `-${value.toFixed(6)} ${symbol}`;
+      return `-${formatted} ${symbol}`;
     } else if (transaction.type === 'RECEIVE') {
-      return `+${value.toFixed(6)} ${symbol}`;
+      return `+${formatted} ${symbol}`;
     }
-    return `${value.toFixed(6)} ${symbol}`;
+    return `${formatted} ${symbol}`;
   };
 
   const formatDate = () => {

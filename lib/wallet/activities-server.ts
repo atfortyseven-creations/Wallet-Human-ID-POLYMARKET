@@ -62,7 +62,7 @@ async function fetchAlchemyTransfers(address: string, chainId: number): Promise<
           fromBlock: "0x0",
           toBlock: "latest",
           fromAddress: address,
-          category: ["external", "erc20", "erc721", "erc1155"],
+          category: ["external", "erc20"],
           withMetadata: true,
           excludeZeroValue: true,
           maxCount: "0x32" // 50 transactions
@@ -85,7 +85,7 @@ async function fetchAlchemyTransfers(address: string, chainId: number): Promise<
             fromBlock: "0x0",
             toBlock: "latest",
             toAddress: address,
-            category: ["external", "erc20", "erc721", "erc1155"],
+            category: ["external", "erc20"],
             withMetadata: true,
             excludeZeroValue: true,
             maxCount: "0x32"
