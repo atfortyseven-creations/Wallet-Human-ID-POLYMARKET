@@ -2,34 +2,60 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, Check, X, ShieldAlert, BadgePercent, MessageCircle } from 'lucide-react';
+import { Bell, Check, X, ShieldAlert, BadgePercent, MessageCircle, Info } from 'lucide-react';
+import { useAccount } from 'wagmi';
+import useSWR, { mutate } from 'swr';
 
-interface Notification {
-    id: string;
-    title: string;
-    message: string;
-    type: 'system' | 'transaction' | 'social';
-    read: boolean;
-    time: string;
-}
+const fetcher = (url: string) => fetch(url).then(r => r.json());
 
 export default function NotificationCenter() {
+    const { address } = useAccount();
     const [isOpen, setIsOpen] = useState(false);
-    const [notifications, setNotifications] = useState<Notification[]>([
-        { id: '1', title: 'Admin Broadcast', message: 'Maintenance scheduled for tonight at 2 AM UTC.', type: 'system', read: false, time: '2m ago' },
-        { id: '2', title: 'Payment Received', message: 'You received 0.5 ETH from 0x82...9a1', type: 'transaction', read: false, time: '1h ago' },
-        { id: '3', title: 'New Referral', message: 'Friend registered! You earned $5.00.', type: 'social', read: true, time: '3h ago' },
-    ]);
+    
+    // Fetch real notifications from API
+    const { data, error } = useSWR(
+        address ? `/api/user/notifications?address=${address}` : null, 
+        fetcher, 
+        { refreshInterval: 30000 }
+    );
 
-    const unreadCount = notifications.filter(n => !n.read).length;
+    const notifications = data?.notifications || [];
+    const unreadCount = notifications.filter((n: any) => !n.read).length;
 
     const getIcon = (type: string) => {
         switch(type) {
-            case 'system': return <ShieldAlert size={16} className="text-red-500" />;
+            case 'security': return <ShieldAlert size={16} className="text-red-500" />;
             case 'transaction': return <BadgePercent size={16} className="text-green-500" />;
             case 'social': return <MessageCircle size={16} className="text-blue-500" />;
+            case 'system': return <Info size={16} className="text-blue-500" />;
             default: return <Bell size={16} className="text-gray-500" />;
         }
+    };
+
+    const markAllRead = async () => {
+        try {
+            await fetch('/api/user/notifications', {
+                method: 'PUT',
+                body: JSON.stringify({ read: true, address })
+            });
+            mutate(`/api/user/notifications?address=${address}`);
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const getTimeLabel = (dateString: string) => {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+        
+        if (diffInMinutes < 1) return 'Just now';
+        if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+        
+        const diffInHours = Math.floor(diffInMinutes / 60);
+        if (diffInHours < 24) return `${diffInHours}h ago`;
+        
+        return date.toLocaleDateString();
     };
 
     return (
@@ -68,15 +94,21 @@ export default function NotificationCenter() {
 
                             {/* List */}
                             <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
-                                {notifications.length === 0 ? (
-                                    <div className="p-8 text-center text-[#1F1F1F]/40 text-sm">
+                                {!data && !error ? (
+                                    <div className="p-12 text-center text-[#1F1F1F]/20">
+                                        <Bell size={32} className="mx-auto mb-2 animate-pulse" />
+                                        <p className="text-sm">Loading...</p>
+                                    </div>
+                                ) : notifications.length === 0 ? (
+                                    <div className="p-12 text-center text-[#1F1F1F]/40 text-sm">
+                                        <Bell size={32} className="mx-auto mb-2 opacity-20" />
                                         No new notifications
                                     </div>
                                 ) : (
-                                    notifications.map((n) => (
+                                    notifications.map((n: any) => (
                                         <div 
                                             key={n.id} 
-                                            className={`p-4 border-b border-[#1F1F1F]/5 hover:bg-[#FAF9F6] transition-colors relative group ${!n.read ? 'bg-blue-50/50' : ''}`}
+                                            className={`p-4 border-b border-[#1F1F1F]/5 hover:bg-[#FAF9F6] transition-colors relative group ${!n.read ? 'bg-blue-50/30' : ''}`}
                                         >
                                             <div className="flex gap-3">
                                                 <div className={`mt-1 w-8 h-8 rounded-full bg-white border border-[#1F1F1F]/5 flex items-center justify-center shadow-sm shrink-0`}>
@@ -88,7 +120,7 @@ export default function NotificationCenter() {
                                                             {n.title}
                                                         </h4>
                                                         <span className="text-[10px] text-[#1F1F1F]/40 whitespace-nowrap ml-2">
-                                                            {n.time}
+                                                            {getTimeLabel(n.createdAt)}
                                                         </span>
                                                     </div>
                                                     <p className="text-xs text-[#1F1F1F]/60 mt-0.5 leading-relaxed line-clamp-2">
@@ -108,8 +140,12 @@ export default function NotificationCenter() {
 
                             {/* Footer */}
                             <div className="p-3 bg-[#FAFAF8] border-t border-[#1F1F1F]/5 text-center">
-                                <button className="text-xs font-bold text-[#1F1F1F]/50 hover:text-[#1F1F1F] transition-colors">
-                                    Mark all as changed
+                                <button 
+                                    onClick={markAllRead}
+                                    disabled={unreadCount === 0}
+                                    className="text-xs font-bold text-[#1F1F1F]/50 hover:text-[#1F1F1F] transition-colors disabled:opacity-30"
+                                >
+                                    Mark all as read
                                 </button>
                             </div>
                         </motion.div>

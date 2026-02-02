@@ -43,19 +43,7 @@ export async function GET(request: Request) {
   // 3. Merge and Sort
   allNotifications.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
-  // 4. Default "Welcome" if absolutely empty (Pure UX)
-  if (allNotifications.length === 0 && email) {
-      // Temporary in-memory welcome for new users so it's not empty
-      return NextResponse.json({ notifications: [{
-          id: 'welcome-seed',
-          title: "Welcome to HumanDefi",
-          message: "System initialized. No new alerts.",
-          type: "system",
-          read: true,
-          createdAt: new Date().toISOString()
-      }]});
-  }
-
+  // Return real notifications only - no fake data
   return NextResponse.json({ notifications: allNotifications });
 }
 
