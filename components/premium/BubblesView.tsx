@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Loader2, ArrowUpRight, ArrowDownRight, Maximize2, RefreshCw } from 'lucide-react';
+import { Search, Loader2, ArrowUpRight, ArrowDownRight, Maximize2, RefreshCw, X } from 'lucide-react';
 
 interface BubbleData {
     id: string;
@@ -24,6 +24,7 @@ type Timeframe = '1h' | '24h' | '7d' | '30d' | '1y';
 export default function BubblesView() {
     const [data, setData] = useState<BubbleData[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [timeframe, setTimeframe] = useState<Timeframe>('24h');
     const [searchQuery, setSearchQuery] = useState('');
     const containerRef = useRef<HTMLDivElement>(null);
@@ -31,14 +32,18 @@ export default function BubblesView() {
 
     const fetchData = async () => {
         setLoading(true);
+        setError(null);
         try {
             const res = await fetch('/api/bubbles');
             const json = await res.json();
             if (json.bubbles) {
                 setData(json.bubbles);
+            } else if (json.error) {
+                setError(json.error + (json.details ? `: ${json.details}` : ''));
             }
-        } catch (error) {
-            console.error('Failed to fetch bubbles:', error);
+        } catch (err: any) {
+            console.error('Failed to fetch bubbles:', err);
+            setError('Error de conexión con el motor de mercado');
         } finally {
             setLoading(false);
         }
@@ -132,85 +137,35 @@ export default function BubblesView() {
                     <div className="absolute inset-0 flex items-center justify-center">
                         <Loader2 className="animate-spin text-black/20" size={48} />
                     </div>
+                ) : error ? (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
+                        <div className="w-16 h-16 bg-rose-500/10 rounded-full flex items-center justify-center text-rose-500 mb-4 shadow-xl">
+                            <X size={32} />
+                        </div>
+                        <h3 className="text-xl font-black uppercase tracking-tighter mb-2 italic">Error de Datos</h3>
+                        <p className="text-sm text-black/40 font-medium max-w-sm mb-6 uppercase tracking-widest leading-loose">
+                            {error}
+                        </p>
+                        <button 
+                            onClick={fetchData}
+                            className="px-8 py-4 bg-black text-white rounded-[2rem] text-xs font-black uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-2xl"
+                        >
+                            Reintentar Conexión
+                        </button>
+                    </div>
                 ) : (
                     <div className="w-full h-full relative">
                         <AnimatePresence>
-                            {filteredData.slice(0, 50).map((coin, index) => {
-                                const change = getPriceChange(coin);
-                                const isPositive = change >= 0;
-                                // Bubble size based on performance (min 80px, max 200px)
-                                const baseSize = 100;
-                                const sizeScale = Math.min(Math.max(Math.abs(change) * 5, 0), 100);
-                                const size = baseSize + sizeScale;
-
-                                // Rough initial positions
-                                const cols = Math.floor(dimensions.width / 180) || 1;
-                                const row = Math.floor(index / cols);
-                                const col = index % cols;
-                                
-                                const initialX = col * (dimensions.width / cols) + (dimensions.width / cols / 4);
-                                const initialY = row * 180 + 50;
-
-                                return (
-                                    <motion.div
-                                        key={coin.id}
-                                        drag
-                                        dragConstraints={containerRef}
-                                        dragElastic={0.1}
-                                        dragTransition={{ bounceStiffness: 600, bounceDamping: 20 }}
-                                        whileDrag={{ scale: 1.1, zIndex: 100 }}
-                                        initial={{ scale: 0, opacity: 0, x: initialX, y: initialY }}
-                                        animate={{ 
-                                            scale: 1, 
-                                            opacity: 1,
-                                            x: initialX,
-                                            y: initialY
-                                        }}
-                                        exit={{ scale: 0, opacity: 0 }}
-                                        transition={{ 
-                                            delay: index * 0.01,
-                                            type: "spring",
-                                            stiffness: 100,
-                                            damping: 20
-                                        }}
-                                        style={{
-                                            position: 'absolute',
-                                            width: size,
-                                            height: size,
-                                            zIndex: Math.floor(Math.abs(change)) + 1,
-                                            cursor: 'grab'
-                                        }}
-                                        className="group"
-                                    >
-                                        <div 
-                                            className={`w-full h-full rounded-full flex flex-col items-center justify-center text-center p-4 transition-all duration-500 relative ${
-                                                isPositive 
-                                                    ? 'bg-emerald-500/10 border-4 border-emerald-500 group-hover:bg-emerald-500/20' 
-                                                    : 'bg-rose-500/10 border-4 border-rose-500 group-hover:bg-rose-500/20'
-                                            } shadow-2xl backdrop-blur-md`}
-                                            style={{
-                                                boxShadow: isPositive 
-                                                    ? '0 0 30px rgba(16, 185, 129, 0.2), inset 0 0 20px rgba(16, 185, 129, 0.1)' 
-                                                    : '0 0 30px rgba(244, 63, 94, 0.2), inset 0 0 20px rgba(244, 63, 94, 0.1)'
-                                            }}
-                                        >
-                                            {/* Glow effect */}
-                                            <div className={`absolute inset-0 rounded-full blur-2xl opacity-20 -z-10 animate-pulse ${isPositive ? 'bg-emerald-400' : 'bg-rose-400'}`} />
-                                            
-                                            <img src={coin.image} alt={coin.symbol} className="w-10 h-10 md:w-12 md:h-12 rounded-full mb-1 group-hover:scale-110 transition-transform shadow-lg" />
-                                            <div className="font-black text-sm md:text-base leading-none mb-0.5">{coin.symbol}</div>
-                                            <div className="font-black text-xs md:text-sm tracking-tight">
-                                                {change > 0 ? '+' : ''}{change.toFixed(1)}%
-                                            </div>
-                                            
-                                            {/* Detail overlay on hover */}
-                                            <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 bg-black text-white px-3 py-1.5 rounded-xl text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 pointer-events-none shadow-2xl">
-                                                ${coin.current_price.toLocaleString()} | MC: ${(coin.market_cap / 1e9).toFixed(1)}B
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                );
-                            })}
+                            {filteredData.slice(0, 50).map((coin, index) => (
+                                <Bubble 
+                                    key={coin.id} 
+                                    coin={coin} 
+                                    index={index} 
+                                    timeframe={timeframe} 
+                                    containerRef={containerRef}
+                                    dimensions={dimensions}
+                                />
+                            ))}
                         </AnimatePresence>
                     </div>
                 )}
@@ -234,5 +189,137 @@ export default function BubblesView() {
                 </div>
             </div>
         </div>
+    );
+}
+
+function Bubble({ coin, index, timeframe, containerRef, dimensions }: { 
+    coin: BubbleData, 
+    index: number, 
+    timeframe: Timeframe, 
+    containerRef: React.RefObject<HTMLDivElement>,
+    dimensions: { width: number, height: number }
+}) {
+    const [isDragging, setIsDragging] = useState(false);
+    
+    // Helper to get change based on timeframe
+    const getChange = () => {
+        switch(timeframe) {
+            case '1h': return coin.price_change_1h;
+            case '7d': return coin.price_change_7d;
+            case '30d': return coin.price_change_30d;
+            case '1y': return coin.price_change_1y;
+            default: return coin.price_change_24h;
+        }
+    };
+
+    const change = getChange();
+    const isPositive = change >= 0;
+    
+    // Bubble size based on performance
+    const baseSize = 110;
+    const sizeScale = Math.min(Math.max(Math.abs(change) * 4, 0), 120);
+    const size = baseSize + sizeScale;
+
+    // Micro-fluctuation for "Live" feel
+    const [fluctuation, setFluctuation] = useState(0);
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setFluctuation((Math.random() - 0.5) * 0.2);
+        }, 1500 + Math.random() * 2000);
+        return () => clearInterval(interval);
+    }, []);
+
+    // Initial random-ish positions with a bit of grid logic
+    const cols = Math.floor(dimensions.width / 200) || 1;
+    const row = Math.floor(index / cols);
+    const col = index % cols;
+    
+    // Seeded randomness for initial offsets
+    const seed = index * 123.456;
+    const offsetX = (Math.sin(seed) * (dimensions.width / cols / 3));
+    const offsetY = (Math.cos(seed) * 40);
+
+    const initialX = col * (dimensions.width / cols) + (dimensions.width / cols / 3) + offsetX;
+    const initialY = row * 200 + 80 + offsetY;
+
+    // Autonomous floating animation
+    const floatDuration = 4 + (index % 3);
+    const floatDistance = 15 + (index % 10);
+
+    return (
+        <motion.div
+            drag
+            dragConstraints={containerRef}
+            dragElastic={0.15}
+            dragTransition={{ bounceStiffness: 400, bounceDamping: 25 }}
+            dragMomentum={true}
+            onDragStart={() => setIsDragging(true)}
+            onDragEnd={() => setIsDragging(false)}
+            initial={{ scale: 0, opacity: 0, x: initialX, y: initialY }}
+            animate={{ 
+                scale: 1, 
+                opacity: 1,
+                // Only animate floating if NOT dragging
+                x: isDragging ? undefined : [initialX - floatDistance, initialX + floatDistance, initialX - floatDistance],
+                y: isDragging ? undefined : [initialY - floatDistance, initialY + floatDistance, initialY - floatDistance],
+            }}
+            transition={{ 
+                x: { duration: floatDuration, repeat: Infinity, ease: "easeInOut" },
+                y: { duration: floatDuration * 1.2, repeat: Infinity, ease: "easeInOut" },
+                scale: { duration: 0.5, delay: index * 0.01 },
+                opacity: { duration: 0.5, delay: index * 0.01 }
+            }}
+            whileDrag={{ scale: 1.15, zIndex: 100 }}
+            style={{
+                position: 'absolute',
+                width: size,
+                height: size,
+                zIndex: Math.floor(Math.abs(change)) + 5,
+                cursor: isDragging ? 'grabbing' : 'grab',
+                pointerEvents: 'auto'
+            }}
+            className="group"
+        >
+            <div 
+                className={`w-full h-full rounded-full flex flex-col items-center justify-center text-center p-4 transition-all duration-700 relative ${
+                    isPositive 
+                        ? 'bg-emerald-500/10 border-[5px] border-emerald-500/80 group-hover:bg-emerald-500/30' 
+                        : 'bg-rose-500/10 border-[5px] border-rose-500/80 group-hover:bg-rose-500/30'
+                } shadow-[0_20px_50px_rgba(0,0,0,0.15)] backdrop-blur-lg group-active:scale-95`}
+                style={{
+                    boxShadow: isPositive 
+                        ? '0 0 50px rgba(16, 185, 129, 0.25), inset 0 0 30px rgba(16, 185, 129, 0.15)' 
+                        : '0 0 50px rgba(244, 63, 94, 0.25), inset 0 0 30px rgba(244, 63, 94, 0.15)'
+                }}
+            >
+                {/* Glow effect pulse */}
+                <motion.div 
+                    animate={{ opacity: [0.1, 0.3, 0.1] }}
+                    transition={{ duration: 3, repeat: Infinity }}
+                    className={`absolute inset-0 rounded-full blur-3xl -z-10 ${isPositive ? 'bg-emerald-400' : 'bg-rose-400'}`} 
+                />
+                
+                <img 
+                    src={coin.image} 
+                    alt={coin.symbol} 
+                    className="w-12 h-12 md:w-14 md:h-14 rounded-full mb-2 group-hover:scale-110 transition-transform shadow-xl pointer-events-none" 
+                    draggable={false}
+                />
+                <div className="font-black text-sm md:text-base leading-none mb-1 tracking-tight">{coin.symbol}</div>
+                <div className="font-black text-xs md:text-sm tracking-widest tabular-nums italic">
+                    {change > 0 ? '+' : ''}{(change + fluctuation).toFixed(1)}%
+                </div>
+                
+                {/* Real-time Indicator Dot */}
+                <div className={`absolute top-4 right-1/2 translate-x-[25px] w-1.5 h-1.5 rounded-full ${isPositive ? 'bg-emerald-400' : 'bg-rose-400'} animate-ping`} />
+
+                {/* Detail overlay on hover */}
+                <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 bg-black/90 backdrop-blur-md text-white px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all transform group-hover:-translate-y-2 pointer-events-none shadow-2xl z-50 border border-white/10">
+                    <span className="text-white/50 mr-2">Price:</span> ${coin.current_price.toLocaleString()}
+                    <div className="h-px bg-white/10 my-1" />
+                    <span className="text-white/50 mr-2">Market Cap:</span> ${(coin.market_cap / 1e9).toFixed(1)}B
+                </div>
+            </div>
+        </motion.div>
     );
 }

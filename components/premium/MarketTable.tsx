@@ -22,16 +22,21 @@ interface CoinData {
 export default function MarketTable() {
     const [coins, setCoins] = useState<CoinData[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     const fetchData = async () => {
+        setError(null);
         try {
             const res = await fetch('/api/bubbles');
             const json = await res.json();
             if (json.bubbles) {
                 setCoins(json.bubbles);
+            } else if (json.error) {
+                setError(json.error);
             }
-        } catch (error) {
-            console.error('Failed to fetch market data:', error);
+        } catch (err) {
+            console.error('Failed to fetch market data:', err);
+            setError('Connection failed');
         } finally {
             setLoading(false);
         }
@@ -74,6 +79,20 @@ export default function MarketTable() {
         return (
             <div className="flex items-center justify-center py-20">
                 <Loader2 className="animate-spin text-black/20" size={32} />
+            </div>
+        );
+    }
+
+    if (error && coins.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+                <p className="text-rose-500 font-bold mb-4 uppercase tracking-widest text-xs">{error}</p>
+                <button 
+                  onClick={fetchData}
+                  className="px-6 py-2 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em]"
+                >
+                  Retry
+                </button>
             </div>
         );
     }
