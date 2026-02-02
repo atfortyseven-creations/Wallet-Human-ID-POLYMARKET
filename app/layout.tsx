@@ -9,8 +9,8 @@ import { Toaster } from 'sonner'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'Human DeFi | The $WLD Whale Intel & Sovereign Asset Management',
-  description: 'Human DeFi: The world\'s most advanced sovereign wallet. Secure, AI-powered asset management with zkSNARK privacy.',
+  title: 'Human DeFi: La plataforma líder',
+  description: 'Human DeFi: La plataforma líder de activos soberanos. Gestión segura impulsada por IA con privacidad zkSNARK.',
   keywords: ['DeFi', 'Whale Tracker', 'Worldcoin', 'WLD', 'AI Wallet', 'Crypto Security'],
   viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0',
   themeColor: '#000000',
@@ -21,8 +21,8 @@ export const metadata = {
     title: 'Human DeFi',
   },
   openGraph: {
-    title: 'Human DeFi | Sovereign Asset Management',
-    description: 'Sovereign asset management with AI-powered security and privacy.',
+    title: 'Human DeFi: La plataforma líder',
+    description: 'La plataforma líder de activos soberanos.',
     type: 'website',
   }
 }

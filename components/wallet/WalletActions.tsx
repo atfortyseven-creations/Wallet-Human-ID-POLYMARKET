@@ -222,40 +222,36 @@ export function WalletActions({ positions = [], history = [] }: WalletActionsPro
                 ))}
             </div>
 
-            {/* 5 Unique Features - Inline Horizontal Scroll */}
-            <div className="px-4 mb-10 overflow-x-auto">
-                <div className="flex gap-3 pb-2">
-                    <button
-                        onClick={() => setShowTimeLock(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-yellow-600 hover:bg-yellow-500 text-white rounded-xl font-bold text-sm whitespace-nowrap transition-all shadow-md"
+            {/* 5 Unique Features - Premium Grid */}
+            <div className="grid grid-cols-5 gap-3 mb-10 max-w-2xl mx-auto px-2">
+                {[
+                    { label: 'Time Vault', icon: <Lock size={20} />, color: 'bg-yellow-600', action: () => setShowTimeLock(true) },
+                    { label: 'Dead Man', icon: <Skull size={20} />, color: 'bg-red-600', action: () => setShowDeadMan(true) },
+                    { label: 'AI Rebal', icon: <Brain size={20} />, color: 'bg-cyan-600', action: () => setShowAIRebalancer(true) },
+                    { label: 'Recovery', icon: <Shield size={20} />, color: 'bg-green-600', action: () => setShowSocialRecovery(true) },
+                    { label: 'Privacy', icon: <EyeOff size={20} />, color: 'bg-indigo-600', action: () => setShowPrivacyMixer(true) }
+                ].map((feature) => (
+                    <button 
+                        key={feature.label}
+                        onClick={feature.action}
+                        className="flex flex-col items-center gap-2 group"
                     >
-                        <Lock size={16} /> Time Vault
+                         <div className={`
+                            w-14 h-14 rounded-[20px] 
+                            flex items-center justify-center text-white 
+                            shadow-[0_8px_20px_-6px_rgba(0,0,0,0.15)] 
+                            transition-all duration-300 ease-out
+                            group-hover:scale-110 group-hover:shadow-[0_15px_30px_-10px_rgba(0,0,0,0.2)]
+                            group-active:scale-95
+                            ${feature.color}
+                        `}>
+                            {feature.icon}
+                        </div>
+                        <span className="text-[10px] font-bold text-neutral-500 group-hover:text-neutral-900 transition-colors text-center leading-tight">
+                            {feature.label}
+                        </span>
                     </button>
-                    <button
-                        onClick={() => setShowDeadMan(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-xl font-bold text-sm whitespace-nowrap transition-all shadow-md"
-                    >
-                        <Skull size={16} /> Dead Man
-                    </button>
-                    <button
-                        onClick={() => setShowAIRebalancer(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl font-bold text-sm whitespace-nowrap transition-all shadow-md"
-                    >
-                        <Brain size={16} /> AI Rebalance
-                    </button>
-                    <button
-                        onClick={() => setShowSocialRecovery(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded-xl font-bold text-sm whitespace-nowrap transition-all shadow-md"
-                    >
-                        <Shield size={16} /> Recovery
-                    </button>
-                    <button
-                        onClick={() => setShowPrivacyMixer(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold text-sm whitespace-nowrap transition-all shadow-md"
-                    >
-                        <EyeOff size={16} /> Privacy
-                    </button>
-                </div>
+                ))}
             </div>
 
             {/* Tabs Navigation - Minimalist */}

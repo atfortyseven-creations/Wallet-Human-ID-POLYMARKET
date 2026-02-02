@@ -62,7 +62,7 @@ export function TitaniumGate({ children }: TitaniumGateProps) {
                                 <img 
                                     src="/apple-icon.jpg" 
                                     alt="Human DeFi Icon" 
-                                    className="w-24 h-24 rounded-3xl shadow-2xl border-4 border-white/50"
+                                    className="w-32 h-32 rounded-3xl shadow-2xl"
                                 />
                                 <h1 className="text-4xl font-black text-center tracking-tighter text-neutral-900">
                                     HUMAN <span className="text-gray-400">DeFi</span>
