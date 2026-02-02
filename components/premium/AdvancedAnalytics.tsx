@@ -17,6 +17,7 @@ export default function AdvancedAnalytics({ walletAddress, isPremium }: Advanced
   const [portfolioData, setPortfolioData] = useState({
     totalValue: 0,
     pnl24h: 0,
+    change24h: 0,
     activity24h: 0,
     riskScore: 40,
     loading: true
@@ -42,6 +43,7 @@ export default function AdvancedAnalytics({ walletAddress, isPremium }: Advanced
         setPortfolioData({
           totalValue: statsData.totalValue || 0,
           pnl24h: statsData.pnl24h || 0, 
+          change24h: statsData.change24h || 0,
           activity24h: addressActivities,
           riskScore: statsData.totalValue > 1000000 ? 75 : 40, // Scaled risk
           loading: false
@@ -107,13 +109,13 @@ export default function AdvancedAnalytics({ walletAddress, isPremium }: Advanced
         <QuickStat
           label="Total Value"
           value={portfolioData.loading ? "Cargando..." : formatValue(portfolioData.totalValue)}
-          change={undefined}
+          change={portfolioData.change24h}
           icon={<DollarSign />}
         />
         <QuickStat
           label="Total P&L"
           value={portfolioData.loading ? "Cargando..." : formatValue(portfolioData.pnl24h)}
-          change={undefined}
+          change={portfolioData.change24h}
           icon={<TrendingUp />}
         />
         <QuickStat
@@ -133,8 +135,13 @@ export default function AdvancedAnalytics({ walletAddress, isPremium }: Advanced
 
       {/* TradingView Price Chart */}
       <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-[#1F1F1F]/10">
-        <h3 className="text-lg font-black text-[#1F1F1F] mb-4">ETH Price Chart (Live Binance)</h3>
-        <TradingViewChart symbol="ETHUSDT" height={350} />
+        <h3 className="text-lg font-black text-[#1F1F1F] mb-4">
+            {walletAddress.startsWith('0x') ? 'ETH' : 'BTC'} Price Chart (Live Binance)
+        </h3>
+        <TradingViewChart 
+            symbol={walletAddress.startsWith('0x') ? "ETHUSDT" : "BTCUSDT"} 
+            height={350} 
+        />
       </div>
 
       {/* Main Chart */}

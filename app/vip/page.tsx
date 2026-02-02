@@ -258,7 +258,11 @@ export default function VIPPage() {
               exit={{ opacity: 0, x: 20 }}
             >
               <AdvancedAnalytics 
-                walletAddress={selectedComparisonIds[0] || watchedWallets[0]?.address || "0x28C6c06298d514Db089934071355E5743bf21d60"} 
+                walletAddress={
+                    watchedWallets.find(w => w.id === selectedComparisonIds[0])?.address || 
+                    watchedWallets[0]?.address || 
+                    "0x28C6c06298d514Db089934071355E5743bf21d60"
+                } 
                 isPremium={isPremium} 
               />
             </motion.div>
