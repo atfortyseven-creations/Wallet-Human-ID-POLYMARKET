@@ -81,7 +81,7 @@ export function SiteHeader() {
                     </div>
 
                     {/* DESKTOP NAV - Enhanced for Zoom Resilience */}
-                    <nav className="flex-1 hidden lg:flex items-center gap-1 justify-center relative z-50 pointer-events-auto min-w-0">
+                    <nav className="flex-1 hidden lg:flex items-center gap-6 justify-center relative z-50 pointer-events-auto min-w-0">
                         {navLinks.map((link) => (
                             <div key={link.href} className="relative group shrink-0">
                                 <Link 

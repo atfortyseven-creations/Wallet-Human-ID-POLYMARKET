@@ -43,7 +43,7 @@ export function LandingHero({ onStart }: LandingHeroProps) {
                             className="absolute -left-32 md:-left-48 top-1/2 -translate-y-1/2 pointer-events-none hidden lg:block"
                         >
                             <motion.img
-                                src="/assets/hero-kittens.png"
+                                src="/models/cat12.png"
                                 alt="Kitten"
                                 className="w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-2xl"
                                 initial={{ scale: 0, opacity: 0 }}

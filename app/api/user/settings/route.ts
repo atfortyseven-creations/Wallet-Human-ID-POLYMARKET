@@ -126,7 +126,7 @@ export async function PUT(request: NextRequest) {
         version: { increment: 1 },
       },
       create: {
-        authUserId: authUser.id,
+        authUser: { connect: { id: authUser.id } },
         ...updateData,
         version: 1,
       },
