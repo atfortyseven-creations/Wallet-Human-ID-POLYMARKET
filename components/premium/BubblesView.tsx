@@ -255,56 +255,82 @@ function Bubble({ coin, index, timeframe, containerRef, dimensions, onClick }: {
     const offsetX = (Math.sin(seed) * (dimensions.width / cols / 3));
     const offsetY = (Math.cos(seed) * 40);
 
-    // Safe zone calculation to prevent cropping
-    const padding = 20;
-    const safeMaxX = Math.max(padding, dimensions.width - size - padding);
-    const safeMaxY = Math.max(padding, dimensions.height - size - padding);
+    // Expert Level Containment: Account for MaxScale (1.15x) + Glow margin (20px)
+    const maxVisualSize = size * 1.15;
+    const overflowBuffer = (maxVisualSize - size) / 2 + 20;
+    
+    const safeMaxX = Math.max(overflowBuffer, dimensions.width - size - overflowBuffer);
+    const safeMaxY = Math.max(overflowBuffer, dimensions.height - size - overflowBuffer);
 
-    const initialX = Math.max(padding, Math.min(safeMaxX, col * (dimensions.width / cols) + (dimensions.width / cols / 3) + offsetX));
-    const initialY = Math.max(padding, Math.min(safeMaxY, row * 200 + 80 + offsetY));
+    // Initial positioning clamped to safe zone
+    const initialX = Math.max(overflowBuffer, Math.min(safeMaxX, col * (dimensions.width / cols) + (dimensions.width / cols / 3) + offsetX));
+    const initialY = Math.max(overflowBuffer, Math.min(safeMaxY, row * 180 + 100 + offsetY));
 
-    // Autonomous floating animation restricted to safe zone
-    const floatDuration = 4 + (index % 3);
-    const floatDistance = 15 + (index % 10);
+    // Expert Level Physics: Organic floating curves (X/Y decoupled with different easing/timing)
+    const floatDurationX = 5 + (index % 4);
+    const floatDurationY = 7 + (index % 5);
+    const floatDistance = 20 + (index % 15);
 
     return (
         <motion.div
             drag
             dragConstraints={{
-                top: padding,
-                left: padding,
+                top: overflowBuffer,
+                left: overflowBuffer,
                 right: safeMaxX,
                 bottom: safeMaxY
             }}
-            dragElastic={0.25}
-            dragTransition={{ bounceStiffness: 600, bounceDamping: 20 }}
+            dragElastic={0.4}
+            dragTransition={{ 
+                bounceStiffness: 800, 
+                bounceDamping: 15,
+                power: 0.1 // Reduces friction for "expert" throw feel
+            }}
             dragMomentum={true}
             onDragStart={() => setIsDragging(true)}
             onDragEnd={() => setIsDragging(false)}
             onClick={() => !isDragging && onClick()}
-            whileHover={{ scale: 1.1, zIndex: 100 }}
-            whileTap={{ scale: 0.9, rotate: -2 }}
+            whileHover={{ 
+                scale: 1.1, 
+                zIndex: 100,
+                transition: { type: "spring", stiffness: 400, damping: 10 }
+            }}
+            whileTap={{ scale: 0.9, rotate: -3 }}
             initial={{ scale: 0, opacity: 0, x: initialX, y: initialY }}
             animate={{ 
                 scale: 1, 
                 opacity: 1,
-                // Only animate floating if NOT dragging and stay within safe zone
+                // DECOUPLED X/Y: Creating organic circular/oval paths instead of straight lines
                 x: isDragging ? undefined : [
-                    Math.max(padding, initialX - floatDistance), 
-                    Math.min(safeMaxX, initialX + floatDistance), 
-                    Math.max(padding, initialX - floatDistance)
+                    initialX,
+                    Math.min(safeMaxX, initialX + floatDistance),
+                    initialX,
+                    Math.max(overflowBuffer, initialX - floatDistance),
+                    initialX
                 ],
                 y: isDragging ? undefined : [
-                    Math.max(padding, initialY - floatDistance), 
-                    Math.min(safeMaxY, initialY + floatDistance), 
-                    Math.max(padding, initialY - floatDistance)
+                    Math.max(overflowBuffer, initialY - floatDistance),
+                    initialY,
+                    Math.min(safeMaxY, initialY + floatDistance),
+                    initialY,
+                    Math.max(overflowBuffer, initialY - floatDistance),
                 ],
             }}
             transition={{ 
-                x: { duration: floatDuration, repeat: Infinity, ease: "easeInOut" },
-                y: { duration: floatDuration * 1.2, repeat: Infinity, ease: "easeInOut" },
-                scale: { duration: 0.5, delay: index * 0.01 },
-                opacity: { duration: 0.5, delay: index * 0.01 }
+                x: { 
+                    duration: floatDurationX, 
+                    repeat: Infinity, 
+                    ease: "easeInOut",
+                    times: [0, 0.25, 0.5, 0.75, 1]
+                },
+                y: { 
+                    duration: floatDurationY, 
+                    repeat: Infinity, 
+                    ease: "easeInOut",
+                    times: [0, 0.25, 0.5, 0.75, 1]
+                },
+                scale: { duration: 0.5, delay: index * 0.005 },
+                opacity: { duration: 0.5, delay: index * 0.005 }
             }}
             whileDrag={{ scale: 1.15, zIndex: 100 }}
             style={{
