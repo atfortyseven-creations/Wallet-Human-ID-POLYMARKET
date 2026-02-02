@@ -36,6 +36,7 @@ export interface WhaleActivity {
   usdValue: number;
   timestamp: Date;
   txHash: string;
+  chain?: string;
 }
 
 interface WhaleTrackerProps {
