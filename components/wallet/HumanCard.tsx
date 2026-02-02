@@ -21,9 +21,11 @@ function cn(...inputs: ClassValue[]) {
 interface HumanCardProps {
     address?: string;
     balance?: string;
+    change24hUSD?: number;
+    change24hPercent?: number;
 }
 
-export const HumanCard = ({ address: propAddress, balance: propBalance }: HumanCardProps) => {
+export const HumanCard = ({ address: propAddress, balance: propBalance, change24hUSD, change24hPercent }: HumanCardProps) => {
     const { t } = useApp();
     
     // User Data State
@@ -109,11 +111,29 @@ export const HumanCard = ({ address: propAddress, balance: propBalance }: HumanC
                              )}
                         </div>
                         
-                        {/* Trend Pill - Static "Ready" State */}
-                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md shadow-lg bg-[#00ff9d]/10 border-[#00ff9d]/20 text-[#00ff9d]">
-                            <div className="w-1.5 h-1.5 rounded-full bg-[#00ff9d] animate-pulse" />
-                            <span>READY TO RECEIVE</span>
-                        </div>
+                        {/* Trend Pill - Real-time Change State */}
+                        {(change24hUSD !== undefined || change24hPercent !== undefined) ? (
+                            <div className={cn(
+                                "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md shadow-lg transition-all",
+                                (change24hPercent || 0) >= 0 
+                                    ? "bg-[#00ff9d]/10 border-[#00ff9d]/20 text-[#00ff9d]" 
+                                    : "bg-red-500/10 border-red-500/20 text-red-400"
+                            )}>
+                                <div className={cn(
+                                    "w-1.5 h-1.5 rounded-full",
+                                    (change24hPercent || 0) >= 0 ? "bg-[#00ff9d] animate-pulse" : "bg-red-400"
+                                )} />
+                                <span>
+                                    { (change24hPercent || 0) >= 0 ? '+' : '' }
+                                    { change24hUSD?.toFixed(2) } USD ({ change24hPercent?.toFixed(2) }%)
+                                </span>
+                            </div>
+                        ) : (
+                            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border backdrop-blur-md shadow-lg bg-[#00ff9d]/10 border-[#00ff9d]/20 text-[#00ff9d]">
+                                <div className="w-1.5 h-1.5 rounded-full bg-[#00ff9d] animate-pulse" />
+                                <span>READY TO RECEIVE</span>
+                            </div>
+                        )}
                     </div>
 
                     {/* FOOTER: ADDRESS & ACTIONS */}

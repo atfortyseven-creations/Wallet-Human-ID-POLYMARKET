@@ -43,6 +43,7 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
     const [showWatchInput, setShowWatchInput] = useState(false);
     const [accounts, setAccounts] = useState<WalletAccount[]>([]);
     const [currentAddress, setCurrentAddress] = useState<string>('');
+    const [accountBalances, setAccountBalances] = useState<Record<string, string>>({});
 
     const {
         usdcBalance,
@@ -50,8 +51,11 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
         portfolioValue,
         positions,
         transactions,
+        assets,
         isLoading,
         isConnected,
+        change24hUSD,
+        change24hPercent,
         address: hookAddress
     } = useRealWalletData(recentNews, currentAddress);
 
@@ -87,6 +91,31 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
         if (accounts.length > 0) {
             localStorage.setItem('wallet_accounts', JSON.stringify(accounts));
         }
+    }, [accounts]);
+
+    // Background balance fetching for all accounts to support filtering
+    useEffect(() => {
+        if (accounts.length === 0) return;
+
+        const fetchAllBalances = async () => {
+            const balances: Record<string, string> = {};
+            await Promise.all(accounts.map(async (acc) => {
+                try {
+                    const res = await fetch(`/api/user/wallet?address=${acc.address}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        balances[acc.address.toLowerCase()] = data.balance || "0.00";
+                    }
+                } catch (e) {
+                    console.error("Failed to fetch balance for", acc.address);
+                }
+            }));
+            setAccountBalances(prev => ({ ...prev, ...balances }));
+        };
+
+        fetchAllBalances();
+        const interval = setInterval(fetchAllBalances, 60000);
+        return () => clearInterval(interval);
     }, [accounts]);
 
     const handleAddAccount = () => {
@@ -169,7 +198,16 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
                     {accounts.length > 0 && (
                         <AccountSwitcher 
                             currentAddress={displayAddress}
-                            accounts={accounts}
+                            accounts={accounts.filter(acc => {
+                                // Always show Primary and Currently Selected
+                                if (acc.type === 'PRIMARY') return true;
+                                if (acc.address === displayAddress) return true;
+                                
+                                // Show if balance is > 0 or unknown (to avoid flickering)
+                                const balanceStr = accountBalances[acc.address.toLowerCase()];
+                                if (balanceStr === undefined) return true;
+                                return parseFloat(balanceStr) > 0;
+                            })}
                             onSwitch={handleSwitchAccount}
                             onAddAccount={handleAddAccount}
                             onAddWatchOnly={() => setShowWatchInput(true)}
@@ -210,19 +248,21 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
 
                 {activeView === 'dashboard' && (
                     <div className="animate-fade-in space-y-8">
-                        {/* HUMAN CARD (Premium Visual) */}
-                        <div className="py-4">
-                            <HumanCard address={displayAddress} balance={totalBalance} />
-                        </div>
+                            <HumanCard 
+                                address={displayAddress} 
+                                balance={totalBalance} 
+                                change24hUSD={change24hUSD}
+                                change24hPercent={change24hPercent}
+                            />
 
                         {/* Wallet Actions & Tabs */}
-                        <WalletActions positions={positions} history={transactions} userAddress={displayAddress} />
+                        <WalletActions positions={positions} history={transactions} userAddress={displayAddress} assets={assets} />
                     </div>
                 )}
 
                 {activeView === 'portfolio' && displayAddress && (
                     <div className="animate-fade-in">
-                        <PortfolioDashboard walletAddress={displayAddress} chainIds={[1, 137]} />
+                        <PortfolioDashboard walletAddress={displayAddress} chainIds={[1, 137, 8453]} initialAssets={assets} />
                     </div>
                 )}
 

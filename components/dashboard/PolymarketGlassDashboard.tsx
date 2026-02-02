@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useAccount, useChainId } from "wagmi";
 import { polygon } from "wagmi/chains";
-import { useMarketData } from "@/hooks/useMarketData";
+import { useRealWalletData } from "@/hooks/useRealWalletData";
 import { usePolymarketSession } from "@/hooks/usePolymarketSession";
 import { usePolymarketOrderbook } from "@/hooks/usePolymarketOrderbook";
 import { usePolymarketTrade } from "@/hooks/usePolymarketTrade";
@@ -54,12 +54,14 @@ const TOKEN_ID_YES = "2174263314346390629056905015582624153306727273689761495048
 const TOKEN_ID_NO = "21742633143463906290569050155826241533067272736897614950488156847949938836456";
 
 export default function PolymarketGlassDashboard({ embedded = false }: { embedded?: boolean }) {
-    const { address } = useAccount();
+    const { address: web3Address } = useAccount();
     const chainId = useChainId();
     const isPolygon = chainId === polygon.id;
 
     const { isProxyEnabled, login } = usePolymarketSession();
-    const { portfolioValue, usdcBalance } = useMarketData(); // Keep visual data from here for now
+    
+    // Real Data Hooks (Synced with everything else)
+    const { totalBalance: portfolioValue, usdcBalance, address } = useRealWalletData([], web3Address);
 
     // Real Data Hooks (Only active on Polygon)
     const { orderBook, isLoading: isBookLoading } = usePolymarketOrderbook(isPolygon ? MARKET_ID : "");

@@ -15,24 +15,39 @@ export interface Position {
     shares: number;
     avgPrice?: number;
     currentPrice?: number;
-    value?: number; // Hook adds this
+    value?: number;
     pnl: number;
     pnlPercent: number;
     relatedNewsId?: string;
-    newsContext?: string; // Hook adds this
+    newsContext?: string;
+}
+
+export interface Asset {
+    symbol: string;
+    name: string;
+    balance: string;
+    balanceFormatted: string;
+    priceUSD: number;
+    valueUSD: number;
+    chainId: number;
+    logoURI?: string;
 }
 
 export interface Transaction {
     id: string;
-    type: 'DEPOSIT' | 'WITHDRAW' | 'BUY' | 'SELL' | 'WINNINGS';
-    amount: number;
-    asset: string; // "USDC"
+    type: 'DEPOSIT' | 'WITHDRAW' | 'BUY' | 'SELL' | 'WINNINGS' | 'TRANSFER' | 'SWAP' | 'BRIDGE';
+    amount: string | number;
+    asset: string;
     date: string;
-    status: 'COMPLETED' | 'PENDING';
+    status: 'COMPLETED' | 'PENDING' | 'FAILED';
+    hash?: string;
+    chainId?: number;
+    from?: string;
+    to?: string;
     newsContext?: {
         newsId: string;
         headline: string;
-        impactLabel: string; // e.g. "Triggered by Biden Dropout"
+        impactLabel: string;
     };
 }
 

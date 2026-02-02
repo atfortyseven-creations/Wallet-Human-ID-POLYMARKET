@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { getGasEstimates } from '@/lib/wallet/gas';
 
 interface GasData {
     gasPrices: {
@@ -12,64 +13,62 @@ interface GasData {
 }
 
 export function useGasMatrix() {
-    const [history, setHistory] = useState<number[]>(Array(20).fill(15)); // Last 20 block base fees
+    const [history, setHistory] = useState<number[]>(Array(20).fill(0.01)); // Base values for history
     const [data, setData] = useState<GasData>({
-        gasPrices: { eco: 10, standard: 15, turbo: 20 },
-        networkLoad: 45,
+        gasPrices: { eco: 0.01, standard: 0.02, turbo: 0.05 },
+        networkLoad: 10,
         forecast: 'STABLE',
-        baseFee: 15
+        baseFee: 0.02
     });
 
-    // Simulate Brownian Motion for Base Fee
-    const simulateBlock = useCallback(() => {
-        setHistory(prevHistory => {
-            const lastFee = prevHistory[prevHistory.length - 1];
+    const fetchRealGas = useCallback(async () => {
+        try {
+            // Using Base (8453) as the default intelligence chain
+            const estimates = await getGasEstimates(8453);
+            
+            const standardGwei = Number(estimates.normal.maxFeePerGas) / 1e9;
+            const ecoGwei = Number(estimates.slow.maxFeePerGas) / 1e9;
+            const turboGwei = Number(estimates.fast.maxFeePerGas) / 1e9;
 
-            // Random Drift (Brownian Motion)
-            // Delta is normally distributed around 0
-            const delta = (Math.random() - 0.5) * 4; // +/- 2 Gwei volatility
+            setHistory(prev => {
+                const newHistory = [...prev.slice(1), standardGwei];
+                
+                // Analyze Trend
+                const start = newHistory[0];
+                const end = newHistory[newHistory.length - 1];
+                const diff = end - start;
 
-            let newFee = lastFee + delta;
-            // Mean reversion to keep it realistic (e.g., center around 15 Gwei)
-            newFee += (15 - newFee) * 0.1;
+                let forecast: 'RISING_FAST' | 'STABLE' | 'DROPPING' = 'STABLE';
+                if (diff > 0.1) forecast = 'RISING_FAST';
+                else if (diff < -0.1) forecast = 'DROPPING';
 
-            // Clamp to realistic values
-            newFee = Math.max(5, Math.min(200, newFee));
+                // Real Load Calculation (Base has target gas limit, we estimate load based on price)
+                // Base gas is ultra-cheap, 0.1 Gwei is already "some load"
+                const load = Math.min(99, Math.max(1), (standardGwei / 0.5) * 100); 
 
-            const newHistory = [...prevHistory.slice(1), newFee];
+                setData({
+                    gasPrices: {
+                        eco: Math.round(ecoGwei * 1000) / 1000,
+                        standard: Math.round(standardGwei * 1000) / 1000,
+                        turbo: Math.round(turboGwei * 1000) / 1000
+                    },
+                    networkLoad: Math.round(load),
+                    forecast,
+                    baseFee: Math.round(standardGwei * 1000) / 1000
+                });
 
-            // Analyze Trend
-            const start = newHistory[0];
-            const end = newHistory[newHistory.length - 1];
-            const diff = end - start;
-
-            let forecast: 'RISING_FAST' | 'STABLE' | 'DROPPING' = 'STABLE';
-            if (diff > 5) forecast = 'RISING_FAST';
-            else if (diff < -5) forecast = 'DROPPING';
-
-            // Load Calculation (Correlated to price)
-            const load = Math.min(99, Math.max(10, (newFee / 30) * 100));
-
-            // Set Public Data
-            setData({
-                gasPrices: {
-                    eco: Math.round(newFee * 0.9),
-                    standard: Math.round(newFee),
-                    turbo: Math.round(newFee * 1.5)
-                },
-                networkLoad: Math.round(load),
-                forecast,
-                baseFee: parseFloat(newFee.toFixed(2))
+                return newHistory;
             });
-
-            return newHistory;
-        });
+        } catch (e) {
+            console.error("Failed to fetch real gas matrix:", e);
+        }
     }, []);
 
     useEffect(() => {
-        const interval = setInterval(simulateBlock, 3000); // New block every 3s (Layer 2 speed)
+        fetchRealGas();
+        const interval = setInterval(fetchRealGas, 10000); 
         return () => clearInterval(interval);
-    }, [simulateBlock]);
+    }, [fetchRealGas]);
 
     return data;
 }

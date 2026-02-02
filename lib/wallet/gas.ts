@@ -3,6 +3,8 @@
  * Provides gas estimation with slow/normal/fast options
  */
 
+import { getChainById } from '@/lib/chains';
+
 export interface GasEstimate {
   slow: {
     maxFeePerGas: bigint;
@@ -36,13 +38,9 @@ export async function getGasEstimates(
   ethPriceUSD: number = 3000
 ): Promise<GasEstimate> {
   try {
-    // Get base fee from latest block
     const baseFee = await getBaseFee(chainId);
-    
-    // Get priority fee suggestions
     const priorityFees = await getPriorityFees(chainId);
 
-    // Calculate total fees for each speed
     const slow = {
       maxFeePerGas: baseFee + priorityFees.slow,
       maxPriorityFeePerGas: priorityFees.slow,
@@ -67,7 +65,6 @@ export async function getGasEstimates(
       totalCostUSD: '',
     };
 
-    // Calculate USD costs
     slow.totalCostUSD = (parseFloat(slow.totalCost) * ethPriceUSD).toFixed(2);
     normal.totalCostUSD = (parseFloat(normal.totalCost) * ethPriceUSD).toFixed(2);
     fast.totalCostUSD = (parseFloat(fast.totalCost) * ethPriceUSD).toFixed(2);
@@ -75,8 +72,6 @@ export async function getGasEstimates(
     return { slow, normal, fast };
   } catch (error) {
     console.error('Error fetching gas estimates:', error);
-    
-    // Fallback to default values
     return getDefaultGasEstimates(gasLimit, ethPriceUSD);
   }
 }
@@ -87,7 +82,6 @@ export async function getGasEstimates(
 async function getBaseFee(chainId: number): Promise<bigint> {
   try {
     const rpcUrl = getRPCUrl(chainId);
-    
     const response = await fetch(rpcUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -98,13 +92,11 @@ async function getBaseFee(chainId: number): Promise<bigint> {
         id: 1,
       }),
     });
-
     const data = await response.json();
     const baseFeeHex = data.result?.baseFeePerGas;
-    
-    return baseFeeHex ? BigInt(baseFeeHex) : 30000000000n; // 30 gwei default
+    return baseFeeHex ? BigInt(baseFeeHex) : 30000000000n;
   } catch (error) {
-    return 30000000000n; // 30 gwei default
+    return 30000000000n;
   }
 }
 
@@ -118,7 +110,6 @@ async function getPriorityFees(chainId: number): Promise<{
 }> {
   try {
     const rpcUrl = getRPCUrl(chainId);
-    
     const response = await fetch(rpcUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -129,22 +120,18 @@ async function getPriorityFees(chainId: number): Promise<{
         id: 1,
       }),
     });
-
     const data = await response.json();
     const suggestedPriorityFee = data.result ? BigInt(data.result) : 1500000000n;
-
-    // Create three tiers based on suggested fee
     return {
-      slow: suggestedPriorityFee / 2n,       // 50% of suggested
-      normal: suggestedPriorityFee,           // 100% of suggested
-      fast: suggestedPriorityFee * 2n,        // 200% of suggested
+      slow: suggestedPriorityFee / 2n,
+      normal: suggestedPriorityFee,
+      fast: suggestedPriorityFee * 2n,
     };
   } catch (error) {
-    // Fallback values (in wei)
     return {
-      slow: 1000000000n,   // 1 gwei
-      normal: 1500000000n, // 1.5 gwei
-      fast: 3000000000n,   // 3 gwei
+      slow: 1000000000n,
+      normal: 1500000000n,
+      fast: 3000000000n,
     };
   }
 }
@@ -152,7 +139,7 @@ async function getPriorityFees(chainId: number): Promise<{
 /**
  * Get RPC URL for chain
  */
-function getRPCUrl(chainId: number): string {
+export function getRPCUrl(chainId: number): string {
   const rpcUrls: Record<number, string> = {
     1: `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
     137: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
@@ -160,7 +147,6 @@ function getRPCUrl(chainId: number): string {
     42161: `https://arb-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
     10: `https://opt-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
   };
-
   return rpcUrls[chainId] || rpcUrls[1];
 }
 
@@ -176,10 +162,9 @@ function formatEther(wei: bigint): string {
  * Get default gas estimates as fallback
  */
 function getDefaultGasEstimates(gasLimit: bigint, ethPriceUSD: number): GasEstimate {
-  const slowCost = formatEther(gasLimit * 25000000000n); // 25 gwei
-  const normalCost = formatEther(gasLimit * 35000000000n); // 35 gwei
-  const fastCost = formatEther(gasLimit * 50000000000n); // 50 gwei
-
+  const slowCost = formatEther(gasLimit * 25000000000n);
+  const normalCost = formatEther(gasLimit * 35000000000n);
+  const fastCost = formatEther(gasLimit * 50000000000n);
   return {
     slow: {
       maxFeePerGas: 30000000000n,
@@ -217,36 +202,23 @@ export async function estimateGasLimit(
 ): Promise<bigint> {
   try {
     const rpcUrl = getRPCUrl(chainId);
-    
     const response = await fetch(rpcUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         jsonrpc: '2.0',
         method: 'eth_estimateGas',
-        params: [{
-          from,
-          to,
-          data,
-          value,
-        }],
+        params: [{ from, to, data, value }],
         id: 1,
       }),
     });
-
     const responseData = await response.json();
     const gasHex = responseData.result;
-    
-    if (!gasHex) {
-      throw new Error('Failed to estimate gas');
-    }
-
-    // Add 20% buffer for safety
+    if (!gasHex) throw new Error('Failed to estimate gas');
     const estimatedGas = BigInt(gasHex);
     return (estimatedGas * 120n) / 100n;
   } catch (error) {
     console.error('Error estimating gas:', error);
-    // Return default gas limit for standard transfer
     return 21000n;
   }
 }
@@ -258,13 +230,12 @@ export async function getGasPriceHistory(
   chainId: number,
   hours: number = 24
 ): Promise<{ timestamp: number; gasPrice: number }[]> {
-  // This would typically call a gas tracker API
-  // For now, return mock data
   const now = Date.now();
-  const interval = (hours * 60 * 60 * 1000) / 24; // Hourly intervals
-  
+  const interval = (hours * 60 * 60 * 1000) / 24;
+  const currentBaseFee = await getBaseFee(chainId);
+  const gasPriceGwei = Number(currentBaseFee) / 1e9;
   return Array.from({ length: 24 }, (_, i) => ({
     timestamp: now - (24 - i) * interval,
-    gasPrice: 20 + Math.random() * 30, // Mock data: 20-50 gwei
+    gasPrice: gasPriceGwei,
   }));
 }

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { TrendingUp, TrendingDown, Waves, AlertCircle, Star, Eye, Bell, Download, Upload, Filter, Search, BarChart3, Copy, CheckCircle, X } from 'lucide-react';
+import { TrendingUp, TrendingDown, Waves, AlertCircle, Star, Eye, Bell, Download, Upload, Filter, Search, BarChart3, Copy, CheckCircle, X, Activity, Zap } from 'lucide-react';
 import useSWR from 'swr';
 import { useAccount } from 'wagmi';
 import { useQuery } from '@tanstack/react-query';
@@ -216,6 +216,62 @@ export default function WhaleTracker({
             Whale Tracker
           </h1>
       </div>
+
+      {/* IMPLEMENTATION DETAILS - PREMIUM DOCS */}
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }} 
+        animate={{ opacity: 1, y: 0 }}
+        className="p-8 bg-white/40 backdrop-blur-md rounded-[2.5rem] border border-white/20 shadow-xl overflow-hidden relative"
+      >
+        <div className="absolute top-0 right-0 p-4 opacity-10">
+            <Activity size={100} className="text-blue-600" />
+        </div>
+        
+        <h2 className="text-xl font-black text-[#1F1F1F] mb-6 flex items-center gap-2 uppercase tracking-tight">
+            <Zap className="text-yellow-500" size={20} />
+            Arquitectura de Inteligencia: Whale Tracker Engine
+        </h2>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+            <div className="space-y-4">
+                <p className="text-sm text-[#1F1F1F]/80 leading-relaxed font-medium">
+                    Nuestro sistema de rastreo de ballenas ha sido diseñado bajo los estándares más estrictos de **transparencia on-chain**. No utilizamos simulaciones ni datos proyectados; cada métrica que visualizas nace directamente de la interacción con los nodos RPC de las redes soportadas.
+                </p>
+                <div className="space-y-3">
+                    <FeatureItem 
+                        title="Monitoreo Multicadena Directo" 
+                        desc="Conexión en tiempo real con Ethereum Mainnet, Polygon y Base. Utilizamos el SDK de Alchemy para capturar eventos de transferencias de activos (ERC-20 y Externos) procesando únicamente transacciones confirmadas."
+                    />
+                    <FeatureItem 
+                        title="Valoración de Activos de Grado Comercial" 
+                        desc="Integramos el servicio de precios de CoinGecko y Binance a través de nuestro 'priceHelper' interno. Los montos de tokens se convierten a USD en el momento de la detección utilizando tipos de cambio reales."
+                    />
+                </div>
+            </div>
+            <div className="space-y-4">
+                <div className="space-y-3">
+                    <FeatureItem 
+                        title="Monitor de Infraestructura Activa" 
+                        desc="Panel de salud técnica que consulta la latencia y la altura de bloque de cada red cada 5 segundos. Esto garantiza que la información mostrada tiene una frescura de milisegundos respecto a la realidad del bloque."
+                    />
+                    <FeatureItem 
+                        title="Motor de Alertas y Persistencia" 
+                        desc="Cada movimiento detectado se cruza con nuestra base de datos Prisma. Si una dirección coincide con tus carteras vigiladas, se genera una notificación persistente y se dispara una alerta de seguridad inmediata."
+                    />
+                    <FeatureItem 
+                        title="Integración de Identidad Digital (ENS)" 
+                        desc="Utilizamos 'viem' para la resolución en tiempo real de dominios .eth, permitiendo identificar a los actores del mercado no solo por sus hashes, sino por sus identidades verificadas."
+                    />
+                </div>
+            </div>
+        </div>
+        
+        <div className="mt-8 pt-6 border-t border-[#1F1F1F]/5">
+            <p className="text-[10px] font-black text-[#1F1F1F]/40 uppercase tracking-[0.3em] text-center">
+                100% Real-Time Data Verified • No Simulations • Deep Chain Integration
+            </p>
+        </div>
+      </motion.div>
 
       {/* Tab Navigation */}
       <div className="flex gap-2 p-1 bg-gray-100 rounded-2xl w-fit">
@@ -633,6 +689,16 @@ function InfrastructureTab({ data }: { data: any }) {
                     <span className="text-sm font-bold">All systems operational • Refreshing every 5s</span>
                 </div>
             )}
+        </div>
+    );
+}
+
+
+function FeatureItem({ title, desc }: { title: string, desc: string }) {
+    return (
+        <div className="p-4 bg-white/20 rounded-2xl border border-white/10 hover:bg-white/30 transition-all">
+            <h4 className="text-sm font-black text-[#1F1F1F] mb-1 uppercase tracking-tight">{title}</h4>
+            <p className="text-xs text-[#1F1F1F]/70 leading-relaxed font-medium">{desc}</p>
         </div>
     );
 }

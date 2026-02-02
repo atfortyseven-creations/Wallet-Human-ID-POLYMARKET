@@ -62,17 +62,25 @@ export async function GET(req: NextRequest) {
                 maxCount: 10,
                 order: SortingOrder.DESCENDING,
             });
-            return (transfers?.transfers || []).map((tx: any) => ({
-                id: tx.hash,
-                walletAddress: tx.from,
-                walletLabel: KNOWN_WHALES[tx.from] || `${tx.from.slice(0, 6)}...${tx.from.slice(-4)}`,
-                type: 'TRANSFER',
-                token: tx.asset || (config_item.name === 'polygon' ? 'MATIC' : 'ETH'),
-                amount: tx.value || 0,
-                usdValue: (tx.value || 0) * 1,
-                timestamp: new Date(tx.metadata.blockTimestamp),
-                txHash: tx.hash,
-                chain: config_item.name
+
+            const { getRealTimePrice } = await import('@/lib/priceHelper');
+            
+            return await Promise.all((transfers?.transfers || []).map(async (tx: any) => {
+                const assetSymbol = tx.asset || (config_item.name === 'polygon' ? 'MATIC' : 'ETH');
+                const price = await getRealTimePrice(assetSymbol);
+                
+                return {
+                    id: tx.hash,
+                    walletAddress: tx.from,
+                    walletLabel: KNOWN_WHALES[tx.from] || `${tx.from.slice(0, 6)}...${tx.from.slice(-4)}`,
+                    type: 'TRANSFER',
+                    token: assetSymbol,
+                    amount: tx.value || 0,
+                    usdValue: (tx.value || 0) * price,
+                    timestamp: new Date(tx.metadata.blockTimestamp),
+                    txHash: tx.hash,
+                    chain: config_item.name
+                };
             }));
         } catch (e) {
             console.warn(`[Alchemy ${config_item.name} Error]:`, e);
@@ -83,24 +91,7 @@ export async function GET(req: NextRequest) {
     const allEvmActivities = await Promise.all(chainConfigs.map(fetchChainActivities));
     const processedActivities = allEvmActivities.flat().sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()).slice(0, 30);
 
-    // [EXPANSION] Add Bitcoin Activities (Mock/Real from mempool)
-    try {
-        const btcRes = await fetch('https://mempool.space/api/blocks/tip/height');
-        if (btcRes.ok) {
-            processedActivities.unshift({
-                id: 'btc-' + Date.now(),
-                walletAddress: '34xp4vRoCGJym3xR7yCVPFHoCNxv4Twseo',
-                walletLabel: 'Binance Cold Wallet (BTC)',
-                type: 'TRANSFER',
-                token: 'BTC',
-                amount: 142.5,
-                usdValue: 142.5 * 103000, 
-                timestamp: new Date(),
-                txHash: '5e8b...',
-                chain: 'bitcoin'
-            } as any);
-        }
-    } catch (e) {}
+    // Bitcoin activities removed to ensure only real on-chain data is shown
 
     // [REAL-TIME ALERTS] Logically senior implementation
     // 1. Fetch all watched wallets that have alerts enabled

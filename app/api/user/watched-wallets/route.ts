@@ -51,30 +51,35 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: 'desc' }
     });
 
+    // [MODIFICATION] Filter out wallets with 0 totalValue
     const watchedWalletsWithBalances = await Promise.all(
       watchedWallets.map(async (w: any) => {
         try {
           const totalValue = await getTotalWalletBalance(w.address);
+          // Only return if balance > 0
+          if (totalValue <= 0) return null;
+
           return {
             ...w,
             totalValue,
-            // Mock change for now, in real app we'd track historical
-            change24h: Math.random() * 5 * (Math.random() > 0.5 ? 1 : -1)
+            // [REMOVED MOCK] History tracking required for real 24h change
+            change24h: 0
           };
         } catch (e) {
-          return { ...w, totalValue: 0, change24h: 0 };
+          return null; // Skip on error to avoid showing empty results
         }
       })
     );
 
-    // [EXPANSION] Merge with Global Professional Whales
-    const allWallets = [
-      ...GLOBAL_WHALES,
-      ...watchedWalletsWithBalances
-    ];
+    // Filter out nulls (those with 0 balance or errors)
+    const activeWallets = watchedWalletsWithBalances.filter(w => w !== null);
 
-    return NextResponse.json({ watchedWallets: allWallets });
+    // [EXPANSION] Support for PRO Whales removed to respect user request for a clean view
+    // Only return the wallets the user explicitly added (and have balance)
+    
+    return NextResponse.json({ watchedWallets: activeWallets });
   } catch (error) {
+    console.error('API Error in watched-wallets:', error);
     return NextResponse.json({ error: 'Failed to fetch watched wallets' }, { status: 500 });
   }
 }

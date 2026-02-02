@@ -26,10 +26,11 @@ import { X } from 'lucide-react';
 interface WalletActionsProps {
     positions?: Position[];
     history?: Transaction[];
-    userAddress?: string; // Add optional prop
+    userAddress?: string;
+    assets?: any[];
 }
 
-export function WalletActions({ positions = [], history = [], userAddress }: WalletActionsProps) {
+export function WalletActions({ positions = [], history = [], userAddress, assets = [] }: WalletActionsProps) {
     const { address: wagmiAddress, isConnected } = useAccount();
     // Use prop or fallback to wagmi
     const effectiveAddress = userAddress || wagmiAddress || ''; 
@@ -336,11 +337,11 @@ export function WalletActions({ positions = [], history = [], userAddress }: Wal
                              <div className="text-center py-16 text-neutral-400 text-sm">
                                 <p>Wallet connection required for token details.</p>
                             </div>
-                        ) : isLoadingTokens ? (
+                        ) : isLoadingTokens && assets.length === 0 ? (
                             <div className="flex justify-center py-20">
                                 <Loader2 className="animate-spin text-neutral-400" />
                             </div>
-                        ) : filteredTokens.length === 0 && (!nativeBalance || parseFloat(nativeBalance.formatted) === 0) ? (
+                        ) : (filteredTokens.length === 0 && assets.length === 0 && (!nativeBalance || parseFloat(nativeBalance.formatted) === 0)) ? (
                             <div className="text-center py-16 text-neutral-400 text-sm">
                                 <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4 text-neutral-300">
                                     <LayoutGrid size={24} />
@@ -350,43 +351,49 @@ export function WalletActions({ positions = [], history = [], userAddress }: Wal
                             </div>
                         ) : (
                             <div className="space-y-2">
-                                {/* Always show Native Token First if matches search */}
-                                {nativeBalance && parseFloat(nativeBalance.formatted) > 0 && (nativeBalance.symbol.toLowerCase().includes(searchQuery.toLowerCase()) || "native".includes(searchQuery.toLowerCase())) && (
-                                    <div className="flex items-center justify-between p-4 bg-white border border-neutral-100 rounded-2xl hover:shadow-md transition-shadow">
+                                {/* Multi-Chain Assets from useRealWalletData (Enhanced View) */}
+                                {assets.map((asset, i) => (
+                                    <div key={`multi-${i}`} className="flex items-center justify-between p-4 bg-white border border-neutral-100 rounded-2xl hover:shadow-md transition-shadow">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-neutral-900 flex items-center justify-center text-white font-bold">
-                                                {nativeBalance.symbol[0]}
+                                            <div className="w-10 h-10 rounded-full bg-[#1F1F1F] flex items-center justify-center text-[#EAEADF] font-bold overflow-hidden">
+                                                {asset.logoURI ? <img src={asset.logoURI} alt={asset.symbol} className="w-full h-full object-cover" /> : asset.symbol[0]}
                                             </div>
                                             <div>
-                                                <div className="font-bold text-neutral-900">{nativeBalance.symbol}</div>
-                                                <div className="text-xs text-neutral-500">Native Token</div>
+                                                <div className="font-bold text-neutral-900">{asset.symbol}</div>
+                                                <div className="text-xs text-neutral-500 uppercase flex items-center gap-1">
+                                                    {asset.name} • <span className="opacity-70">Chain {asset.chainId}</span>
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="text-right">
-                                            <div className="font-bold text-neutral-900">{parseFloat(nativeBalance.formatted).toFixed(4)}</div>
-                                            <div className="text-xs text-neutral-500">$0.00</div>
-                                        </div>
-                                    </div>
-                                )}
-                                {/* ERC20s */}
-                                {filteredTokens.map((token, i) => (
-                                    <div key={i} className="flex items-center justify-between p-4 bg-white border border-neutral-100 rounded-2xl hover:shadow-md transition-shadow">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
-                                                {token.symbol[0]}
-                                            </div>
-                                            <div>
-                                                <div className="font-bold text-neutral-900">{token.name}</div>
-                                                <div className="text-xs text-neutral-500">{token.symbol}</div>
-                                            </div>
-                                        </div>
-                                        <div className="text-right">
-                                            <div className="font-bold text-neutral-900">{parseFloat(token.formatted).toFixed(4)}</div>
-                                            {/* Price placeholder */}
-                                            <div className="text-xs text-neutral-500">$0.00</div>
+                                            <div className="font-bold text-neutral-900">{asset.balanceFormatted}</div>
+                                            <div className="text-xs text-blue-600 font-bold">${asset.valueUSD.toFixed(2)}</div>
                                         </div>
                                     </div>
                                 ))}
+
+                                {/* Original Wagmi Tokens (Fallback/Specific Chain) */}
+                                {filteredTokens.map((token, i) => {
+                                    // Avoid duplicates if already in assets
+                                    if (assets.some(a => a.symbol === token.symbol)) return null;
+                                    return (
+                                        <div key={i} className="flex items-center justify-between p-4 bg-white border border-neutral-100 rounded-2xl hover:shadow-md transition-shadow">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+                                                    {token.symbol[0]}
+                                                </div>
+                                                <div>
+                                                    <div className="font-bold text-neutral-900">{token.name}</div>
+                                                    <div className="text-xs text-neutral-500">{token.symbol}</div>
+                                                </div>
+                                            </div>
+                                            <div className="text-right">
+                                                <div className="font-bold text-neutral-900">{parseFloat(token.formatted).toFixed(4)}</div>
+                                                <div className="text-xs text-neutral-500">$0.00</div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         )}
                     </div>

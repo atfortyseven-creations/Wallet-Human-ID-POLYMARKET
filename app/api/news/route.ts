@@ -5,7 +5,7 @@ export async function GET() {
   try {
     // Try to fetch from DB
     // If DB fails (like now with P1001), fallback to static data for demo
-    let news = [];
+    let news: any[] = [];
     try {
         news = await prisma.newsUpdate.findMany({
             orderBy: { publishedAt: 'desc' },
@@ -19,41 +19,9 @@ export async function GET() {
     // Schema: title, description, category, imageUrl, publishedAt
     
     if (!news || news.length === 0) {
-        // Fallback Mock Data
-        news = [
-            {
-                id: '1',
-                title: 'Human Protocol V2 Launch',
-                description: 'New quantum-resistant signatures for all users.', // mapped to summary in frontend
-                category: 'security',
-                publishedAt: new Date().toISOString(),
-                imageUrl: '/assets/news/quantum.jpg'
-            },
-            {
-                id: '2',
-                title: 'Yield Rates Update',
-                description: 'Sepolia testnet yields increased to 15% APY.',
-                category: 'defi',
-                publishedAt: new Date().toISOString(),
-                imageUrl: '/assets/news/yield.jpg'
-            },
-            {
-                id: '3',
-                title: 'Governance Proposal #42',
-                description: 'Vote on the new privacy layer implementation.',
-                category: 'governance',
-                publishedAt: new Date().toISOString(),
-                imageUrl: '/assets/news/gov.jpg'
-            },
-             {
-                id: '4',
-                title: 'Mobile App Beta',
-                description: 'Test flight invitations sent to top holders.',
-                category: 'updates',
-                publishedAt: new Date().toISOString(),
-                imageUrl: '/assets/news/mobile.jpg'
-            }
-        ];
+        // Fetch from Real News Service (NewsData.io)
+        const { fetchNewsByCategory } = await import("@/lib/news-service");
+        news = await fetchNewsByCategory('crypto');
     }
 
     // Frontend expects 'summary', schema has 'description'. We map it.

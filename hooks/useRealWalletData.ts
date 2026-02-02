@@ -2,7 +2,7 @@ import { useAccount, useBalance } from 'wagmi';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { matchNewsToMarket } from '@/utils/news-matcher';
-import { NewsItem, Position, Transaction } from '@/types/wallet';
+import { Asset, NewsItem, Position, Transaction } from '@/types/wallet';
 import { useAuth } from '@/hooks/useAuth';
 
 // Dirección de Bridged USDC en Polygon
@@ -58,21 +58,39 @@ export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?:
         enabled: !!isValidAddress,
     });
 
-    // 3. Historial (History) - Off-Chain
+    // 3. Historial (History) - Enriched On-Chain History
     const { data: historyRaw, isLoading: isHistoryLoading } = useQuery({
-        queryKey: ['history', effectiveAddress],
+        queryKey: ['enriched-history', effectiveAddress],
         queryFn: async () => {
              if (!isValidAddress) return [];
-            const { data } = await axios.get(`/api/wallet/history?userAddress=${effectiveAddress}`);
-            return data;
+             try {
+                const { data } = await axios.get(`/api/wallet/history/enriched?userAddress=${effectiveAddress}`);
+                return data.activities || [];
+             } catch (e) {
+                console.error("Enriched history fetch failed:", e);
+                return [];
+             }
         },
         enabled: !!isValidAddress,
     });
 
 
-    // 4. Procesamiento y Enriquecimiento de Datos
+    // 4. Multi-Chain Assets (New!)
+    const { data: assetsData, isLoading: isAssetsLoading } = useQuery({
+        queryKey: ['portfolio-assets', effectiveAddress],
+        queryFn: async () => {
+            if (!effectiveAddress) return null;
+            const { data } = await axios.get(`/api/user/wallet?address=${effectiveAddress}`);
+            return data;
+        },
+        enabled: !!effectiveAddress,
+    });
+
+    // 5. Procesamiento y Enriquecimiento de Datos
     const positions: Position[] = positionsRaw?.map((pos: any) => {
-        const currentPrice = parseFloat(pos.market.outcomePrices[pos.outcomeIndex]);
+        // Fix for crash reported by user: outcomePrices might be undefined
+        const prices = pos.market?.outcomePrices;
+        const currentPrice = prices ? parseFloat(prices[pos.outcomeIndex]) : 0;
         const avgPrice = parseFloat(pos.avgPrice) || currentPrice;
         const size = parseFloat(pos.size);
 
@@ -83,11 +101,11 @@ export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?:
         const pnlPercent = cost > 0 ? (pnl / cost) * 100 : 0;
 
         // News Matching
-        const newsContext = matchNewsToMarket(pos.market.question, recentNews);
+        const newsContext = matchNewsToMarket(pos.market?.question || "", recentNews);
 
         return {
             id: pos.assetId,
-            marketTitle: pos.market.question,
+            marketTitle: pos.market?.question || "Unknown Market",
             outcome: pos.outcome,
             shares: size,
             value,
@@ -97,20 +115,30 @@ export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?:
         };
     }) || [];
 
-    const transactions: Transaction[] = historyRaw?.map((trade: any) => ({
-        id: trade.id,
-        type: trade.side === 'BUY' ? 'BUY' : 'SELL',
-        amount: (trade.size * trade.price).toFixed(2),
-        asset: 'USDC',
-        date: 'Recently', // Simplificación, podrías usar date-fns aquí si quieres fecha exacta
+    const transactions: Transaction[] = historyRaw?.map((tx: any) => ({
+        id: tx.id || tx.hash,
+        type: tx.type === 'SWAP' ? 'SWAP' : tx.type === 'BRIDGE' ? 'BRIDGE' : (tx.type === 'SEND' ? 'SELL' : tx.type === 'RECEIVE' ? 'DEPOSIT' : 'TRANSFER'),
+        amount: tx.value ? tx.value.toFixed(4) : '0',
+        asset: tx.asset || 'ETH',
+        date: tx.timestamp ? new Date(tx.timestamp).toLocaleString() : 'Recently',
         status: 'COMPLETED',
+        hash: tx.hash,
+        chainId: tx.chainId,
+        from: tx.from,
+        to: tx.to,
+        platform: tx.platform
     })) || [];
 
+    // Assets processing
+    const assets: Asset[] = assetsData?.assets || [];
 
-    // Totales
+    // Totals
     const portfolioValue = positions.reduce((acc: number, curr: any) => acc + curr.value, 0);
+    const multiChainBalance = assetsData?.totalValueUSD || 0;
     const usdcBalance = parseFloat(balanceData?.formatted || '0');
-    const totalNetWorth = usdcBalance + portfolioValue;
+    
+    // For "Rainbow" feel, we show total net worth across everything
+    const totalNetWorth = multiChainBalance + portfolioValue;
 
     return {
         address: effectiveAddress,
@@ -120,6 +148,9 @@ export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?:
         totalBalance: totalNetWorth.toFixed(2),
         positions,
         transactions,
-        isLoading: isBalanceLoading || isPositionsLoading || isHistoryLoading,
+        assets,
+        isLoading: isBalanceLoading || isPositionsLoading || isHistoryLoading || isAssetsLoading,
+        change24hUSD: assetsData?.change24hUSD || 0,
+        change24hPercent: assetsData?.change24hPercent || 0
     };
 };

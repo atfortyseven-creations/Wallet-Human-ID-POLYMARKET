@@ -63,7 +63,7 @@ export async function getPortfolio(
     chainId: token.chainId,
     tokenAddress: token.address,
     percentage: totalValueUSD > 0 ? ((token.valueUSD || 0) / totalValueUSD) * 100 : 0,
-    change24h: Math.random() * 20 - 10, // Mock - would fetch from price API
+    change24h: (token as any).change24h || 0,
   }));
 
   // Sort by value (highest first)
@@ -75,9 +75,9 @@ export async function getPortfolio(
     chainBreakdown[asset.chainId] = (chainBreakdown[asset.chainId] || 0) + asset.valueUSD;
   });
 
-  // Calculate 24h change (mock for now)
-  const change24hPercent = Math.random() * 10 - 5;
-  const change24hUSD = (totalValueUSD * change24hPercent) / 100;
+  // Calculate 24h change based on weighted average of assets
+  const change24hUSD = assets.reduce((sum, a) => sum + (a.valueUSD * (a.change24h || 0) / 100), 0);
+  const change24hPercent = totalValueUSD > 0 ? (change24hUSD / totalValueUSD) * 100 : 0;
 
   return {
     totalValueUSD,
@@ -115,10 +115,16 @@ export async function getPortfolioHistory(
   // Generate historical data with some variance
   const history: PortfolioHistory[] = [];
   
+  // Use 24h change to find the start point
+  const startValue = baseValue / (1 + (currentPortfolio.change24hPercent / 100));
+  
   for (let i = count - 1; i >= 0; i--) {
     const timestamp = now - (i * interval);
-    const variance = (Math.random() - 0.5) * 0.1; // ±5% variance
-    const value = baseValue * (1 + variance);
+    // Linear interpolation between startValue (24h ago) and baseValue (now)
+    // For 24h period, this is exactly what happened assuming linear change
+    // For longer periods, it's still better than random noise as it anchors to a real 24h change
+    const progress = (count - 1 - i) / (count - 1);
+    const value = startValue + (baseValue - startValue) * progress;
     
     history.push({
       timestamp,

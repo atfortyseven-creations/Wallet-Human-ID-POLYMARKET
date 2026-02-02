@@ -9,16 +9,10 @@ export function AdvancedAnalytics() {
     const chartContainerRef = useRef<HTMLDivElement>(null);
     const [prices, setPrices] = useState({ btc: 64230.50, eth: 3450.20, sol: 145.80 });
 
-    // Simulate Live Ticker
+    // Live Ticker is now driven by real-time API polling in the next useEffect
     useEffect(() => {
-        const interval = setInterval(() => {
-            setPrices(prev => ({
-                btc: prev.btc + (Math.random() - 0.5) * 50,
-                eth: prev.eth + (Math.random() - 0.5) * 5,
-                sol: prev.sol + (Math.random() - 0.5) * 0.5
-            }));
-        }, 1000);
-        return () => clearInterval(interval);
+        // We rely on the fetchData polling in the next effect for real updates
+        return () => {};
     }, []);
 
     // Initialize Chart & Fetch Backend Data

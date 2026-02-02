@@ -148,6 +148,8 @@ export async function GET() {
       address: walletAddress,
       balance: balance,
       assets: portfolio?.assets || [],
+      change24hUSD: portfolio?.change24hUSD || 0,
+      change24hPercent: portfolio?.change24hPercent || 0,
       status: "Active",
       isLedger: true,
       securityLevel: "MAXIMUM"

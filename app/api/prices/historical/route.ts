@@ -93,34 +93,16 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Price fetch error:', error);
     
-    // Return demo data if API fails
-    return NextResponse.json(getDemoData());
+    // Return empty state if API fails, avoid fictitious data at all costs
+    return NextResponse.json(
+      { 
+        symbol: 'UNKNOWN',
+        currency: 'USD',
+        data: [],
+        currentPrice: 0,
+        error: "Real-time market data currently unavailable"
+      }, 
+      { status: 503 }
+    );
   }
-}
-
-function getDemoData(): HistoricalResponse {
-  const now = Date.now();
-  const data: PriceDataPoint[] = [];
-  
-  // Generate demo data for last 7 days
-  for (let i = 6; i >= 0; i--) {
-    const timestamp = now - (i * 24 * 60 * 60 * 1000);
-    const basePrice = 3200 + Math.random() * 200;
-    
-    data.push({
-      timestamp,
-      open: basePrice,
-      high: basePrice + Math.random() * 100,
-      low: basePrice - Math.random() * 100,
-      close: basePrice + (Math.random() - 0.5) * 50,
-      volume: Math.random() * 1000000,
-    });
-  }
-
-  return {
-    symbol: 'ETH',
-    currency: 'USD',
-    data,
-    currentPrice: 3250,
-  };
 }

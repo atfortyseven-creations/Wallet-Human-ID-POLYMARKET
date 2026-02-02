@@ -14,6 +14,7 @@ export interface Token {
   priceUSD?: number;
   valueUSD?: number;
   chainId: number;
+  change24h?: number;
 }
 
 export interface TokenMetadata {
@@ -78,7 +79,7 @@ export async function discoverTokens(
         const metadata = await getTokenMetadata(token.contractAddress, chainId);
         const balance = BigInt(token.tokenBalance);
         const formatted = formatTokenBalance(balance, metadata.decimals);
-        const priceUSD = await getTokenPrice(chainId, token.contractAddress);
+        const { price, change24h } = await getTokenPrice(chainId, token.contractAddress);
 
         return {
           address: token.contractAddress,
@@ -88,8 +89,9 @@ export async function discoverTokens(
           logoURI: metadata.logoURI,
           balance: balance.toString(),
           balanceFormatted: formatted,
-          priceUSD,
-          valueUSD: priceUSD * parseFloat(formatted),
+          priceUSD: price,
+          valueUSD: price * parseFloat(formatted),
+          change24h, // Optional property if added to Token interface
           chainId,
         };
       })
@@ -150,12 +152,12 @@ export async function getTokenMetadata(
 }
 
 /**
- * Get token price in USD
+ * Get token price and 24h change in USD
  */
-async function getTokenPrice(chainId: number, tokenAddress: string): Promise<number> {
+export async function getTokenPrice(chainId: number, tokenAddress: string): Promise<{ price: number; change24h: number }> {
   try {
     const response = await fetch(
-      `https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=${tokenAddress}&vs_currencies=usd`,
+      `https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=${tokenAddress}&vs_currencies=usd&include_24hr_change=true`,
       {
         headers: {
           'x-cg-demo-api-key': process.env.NEXT_PUBLIC_COINGECKO_KEY || '',
@@ -164,9 +166,13 @@ async function getTokenPrice(chainId: number, tokenAddress: string): Promise<num
     );
 
     const data = await response.json();
-    return data[tokenAddress.toLowerCase()]?.usd || 0;
+    const tokenData = data[tokenAddress.toLowerCase()];
+    return {
+      price: tokenData?.usd || 0,
+      change24h: tokenData?.usd_24h_change || 0
+    };
   } catch (error) {
-    return 0;
+    return { price: 0, change24h: 0 };
   }
 }
 

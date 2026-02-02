@@ -154,7 +154,7 @@ function TokenCard({
   index: number;
   onClick: () => void;
 }) {
-  const priceChange = Math.random() * 10 - 5; // Mock price change
+  const priceChange = token.change24h || 0;
   const isPositive = priceChange >= 0;
 
   return (

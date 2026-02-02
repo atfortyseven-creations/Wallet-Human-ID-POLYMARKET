@@ -10,14 +10,15 @@ import { StealthText } from '@/components/ui/stealth-text';
 interface PortfolioDashboardProps {
   walletAddress: string;
   chainIds?: number[];
+  initialAssets?: any[];
 }
 
-export default function PortfolioDashboard({ walletAddress, chainIds }: PortfolioDashboardProps) {
+export default function PortfolioDashboard({ walletAddress, chainIds, initialAssets }: PortfolioDashboardProps) {
   const [portfolio, setPortfolio] = useState<PortfolioSummary | null>(null);
   const [history, setHistory] = useState<PortfolioHistory[]>([]);
   const [metrics, setMetrics] = useState<PortfolioMetrics | null>(null);
   const [period, setPeriod] = useState<'24h' | '7d' | '30d' | '1y'>('7d');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialAssets);
 
   useEffect(() => {
     loadPortfolio();
@@ -43,6 +44,22 @@ export default function PortfolioDashboard({ walletAddress, chainIds }: Portfoli
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (initialAssets && initialAssets.length > 0) {
+        setPortfolio(prev => {
+            if (prev) return prev;
+            // Basic summary from initial assets
+            return {
+                totalValueUSD: initialAssets.reduce((sum, a) => sum + a.valueUSD, 0),
+                change24hUSD: 0,
+                change24hPercent: 0,
+                assets: initialAssets,
+                chainBreakdown: {}
+            };
+        });
+    }
+  }, [initialAssets]);
 
   const loadHistory = async () => {
     try {

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUpRight, ArrowDownLeft, ArrowLeftRight, Filter, Download, ExternalLink, CheckCircle2, Clock, XCircle } from 'lucide-react';
+import { ArrowUpRight, ArrowDownLeft, ArrowLeftRight, Filter, Download, ExternalLink, CheckCircle2, Clock, XCircle, Globe } from 'lucide-react';
 import { exportTransactionsToCSV, type TransactionType, type TransactionStatus } from '@/lib/wallet/transactions';
 import { getChainName, getExplorerTxUrl } from '@/lib/wallet/chains';
 import { StealthText } from '@/components/ui/stealth-text';
@@ -66,11 +66,11 @@ export default function TransactionHistory({ authUserId }: TransactionHistoryPro
         if (filterType !== 'ALL') params.append('type', filterType);
         if (filterChain !== 'ALL') params.append('chainId', filterChain.toString());
 
-        const response = await fetch(`/api/wallet/transactions?${params.toString()}`);
+        const response = await fetch(`/api/wallet/history/enriched?userAddress=${authUserId}`);
         if (!response.ok) throw new Error('Failed to fetch transactions');
         
         const data = await response.json();
-        setTransactions(data.transactions || []);
+        setTransactions(data.activities || []);
     } catch (error) {
       console.error('Error loading transactions:', error);
       // Fallback to empty
@@ -182,11 +182,15 @@ function TransactionCard({ transaction }: { transaction: any }) {
   const getTypeIcon = () => {
     switch (transaction.type) {
       case 'SEND':
+      case 'SELL':
         return <ArrowUpRight size={20} className="text-red-500" />;
       case 'RECEIVE':
+      case 'DEPOSIT':
         return <ArrowDownLeft size={20} className="text-green-500" />;
       case 'SWAP':
         return <ArrowLeftRight size={20} className="text-blue-500" />;
+      case 'BRIDGE':
+        return <Globe size={20} className="text-purple-500" />;
       default:
         return <ArrowLeftRight size={20} className="text-[#1F1F1F]" />;
     }
@@ -218,6 +222,7 @@ function TransactionCard({ transaction }: { transaction: any }) {
   };
 
   const formatDate = () => {
+    if (!transaction.timestamp) return 'Recently';
     const date = new Date(transaction.timestamp);
     const now = new Date();
     const diff = now.getTime() - date.getTime();
@@ -245,7 +250,9 @@ function TransactionCard({ transaction }: { transaction: any }) {
           <div>
             <div className="flex items-center gap-2">
               <span className="font-bold text-[#1F1F1F] capitalize text-sm">{transaction.type.toLowerCase()}</span>
-               {/* Hide status on small screens or keep it compact */}
+              {transaction.platform && (
+                 <span className="text-[10px] bg-[#1F1F1F]/5 px-1.5 py-0.5 rounded-md text-[#1F1F1F]/60 font-bold uppercase">Via {transaction.platform}</span>
+              )}
             </div>
             <div className="text-xs text-[#1F1F1F]/60 font-medium">{getChainName(transaction.chainId)}</div>
           </div>

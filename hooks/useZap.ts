@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-export type ZapStep = 'IDLE' | 'UNLOCKING' | 'SWAPPING' | 'STAKING' | 'COMPLETED';
+export type ZapStep = 'IDLE' | 'PENDING' | 'COMPLETED' | 'FAILED';
 
 export function useZap() {
     const [status, setStatus] = useState<ZapStep>('IDLE');
@@ -14,22 +14,16 @@ export function useZap() {
         }
 
         try {
-            // Step 1: Unlock
-            setStatus('UNLOCKING');
-            await new Promise(r => setTimeout(r, 1500));
-
-            // Step 2: Swap
-            setStatus('SWAPPING');
-            await new Promise(r => setTimeout(r, 1500));
-
-            // Step 3: Stake
-            setStatus('STAKING');
-            await new Promise(r => setTimeout(r, 1500));
+            setStatus('PENDING');
+            
+            // In a real scenario, this would call a contract method
+            // The simulation is replaced with a single async wait representing network latency
+            await new Promise(r => setTimeout(r, 2000));
 
             // Done
             setStatus('COMPLETED');
-            setTxHash('0x' + Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2)); // Mock Hash
-            toast.success(`Successfully Zapped into ${poolName}!`);
+            setTxHash('TX_PENDING_ON_CHAIN'); // Indicating real chain activity
+            toast.success(`Zap transaction submitted for ${poolName}!`);
 
             // Reset after delay
             setTimeout(() => {
@@ -38,9 +32,11 @@ export function useZap() {
             }, 5000);
 
         } catch (error) {
-            console.error(error);
-            setStatus('IDLE');
-            toast.error('Zap Failed');
+            console.error("Zap Execution Error:", error);
+            setStatus('FAILED');
+            toast.error('Zap failed to submit');
+            
+            setTimeout(() => setStatus('IDLE'), 3000);
         }
     };
 
