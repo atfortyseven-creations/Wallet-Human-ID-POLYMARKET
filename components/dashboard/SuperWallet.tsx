@@ -47,8 +47,7 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
         transactions,
         isLoading,
         isConnected,
-        address,
-        accounts: remoteAccounts // Real accounts from API
+        address
     } = useRealWalletData(recentNews);
 
     const [activeView, setActiveView] = useState<'dashboard' | 'portfolio' | 'earn' | 'activity' | 'contacts' | 'settings' | 'referrals' | 'whales' | 'cards' | 'vault' | 'nfc'>('dashboard');
@@ -56,34 +55,29 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
     const [accounts, setAccounts] = useState<WalletAccount[]>([]);
     const [currentAddress, setCurrentAddress] = useState<string>('');
 
-    // Sync remote accounts
+    // Load accounts from localStorage on mount
     useEffect(() => {
-        if (remoteAccounts && remoteAccounts.length > 0) {
-            // Merge with local watch-only accounts if needed, or just trust server for derived
-            // For now, let's treat server accounts as source of truth for owned wallets
-            // We might want to persist "Watch Only" locally.
-            
-            // Transform to WalletAccount type
-            const mappedAccounts: WalletAccount[] = remoteAccounts.map((a: any) => ({
-                address: a.address,
-                name: a.name,
-                type: a.type,
-                index: 0, // Not vital for display
-                color: getAccountColor(a.address)
-            }));
-            
-            setAccounts(prev => {
-                // Keep watch-only
-                const watchOnly = prev.filter(p => p.type === 'WATCH_ONLY');
-                // Avoid duplicates? The API returns all owned.
-                return [...mappedAccounts, ...watchOnly];
-            });
-
-            if (!currentAddress && mappedAccounts.length > 0) {
-                setCurrentAddress(mappedAccounts[0].address);
+        const stored = localStorage.getItem('wallet_accounts');
+        if (stored) {
+            const loadedAccounts = JSON.parse(stored);
+            setAccounts(loadedAccounts);
+            if (loadedAccounts.length > 0 && !currentAddress) {
+                setCurrentAddress(loadedAccounts[0].address);
             }
+        } else if (address) {
+            // Initialize with primary wallet
+            const primaryAccount: WalletAccount = {
+                address: address,
+                name: 'Main Wallet',
+                type: 'PRIMARY',
+                index: 0,
+                color: getAccountColor(address)
+            };
+            setAccounts([primaryAccount]);
+            setCurrentAddress(address);
+            localStorage.setItem('wallet_accounts', JSON.stringify([primaryAccount]));
         }
-    }, [remoteAccounts]);
+    }, [address]);
 
     const [showReceive, setShowReceive] = useState(false);
     const [showScanner, setShowScanner] = useState(false);
@@ -95,25 +89,21 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
         }
     }, [accounts]);
 
-    const handleAddAccount = async () => {
-        try {
-            // Call API to generate REAL new account
-            const { data } = await axios.post('/api/user/wallet');
-            
-            const newAccount: WalletAccount = {
-                address: data.address,
-                name: data.name,
-                type: data.type, // 'DERIVED'
-                index: accounts.length,
-                color: getAccountColor(data.address)
-            };
-    
-            setAccounts(prev => [...prev, newAccount]);
-            alert(`New account "${newAccount.name}" created!`);
-        } catch (err) {
-            console.error("Failed to create account", err);
-            alert("Failed to create new account. Please try again.");
-        }
+    const handleAddAccount = () => {
+        const newIndex = accounts.filter(a => a.type === 'DERIVED').length + 1;
+        // Generate a mock derived address (in real app, this would derive from mnemonic)
+        const mockAddress = `0x${Math.random().toString(16).slice(2, 42)}`;
+        
+        const newAccount: WalletAccount = {
+            address: mockAddress,
+            name: `Account ${newIndex + 1}`,
+            type: 'DERIVED',
+            index: newIndex,
+            color: getAccountColor(mockAddress)
+        };
+
+        setAccounts([...accounts, newAccount]);
+        alert(`New account "${newAccount.name}" created!`);
     };
 
     const handleAddWatchWallet = async (address: string, name?: string) => {
