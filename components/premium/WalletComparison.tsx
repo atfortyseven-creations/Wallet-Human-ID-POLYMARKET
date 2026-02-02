@@ -8,22 +8,21 @@ import type { WatchedWallet } from './WhaleTracker';
 interface WalletComparisonProps {
   wallets: WatchedWallet[];
   isPremium: boolean;
+  selectedWallets: string[];
+  onToggleWallet: (id: string) => void;
 }
 
-export default function WalletComparison({ wallets, isPremium }: WalletComparisonProps) {
-  const [selectedWallets, setSelectedWallets] = useState<string[]>([]);
+export default function WalletComparison({ wallets, isPremium, selectedWallets, onToggleWallet }: WalletComparisonProps) {
   const [metric, setMetric] = useState<'value' | 'change' | 'activity'>('value');
 
   const toggleWallet = (id: string) => {
-    if (selectedWallets.includes(id)) {
-      setSelectedWallets(selectedWallets.filter(w => w !== id));
-    } else {
+    if (!selectedWallets.includes(id)) {
       if (!isPremium && selectedWallets.length >= 2) {
         alert('Upgrade to Pro to compare unlimited wallets');
         return;
       }
-      setSelectedWallets([...selectedWallets, id]);
     }
+    onToggleWallet(id);
   };
 
   const compareData = selectedWallets.map(id => {

@@ -43,9 +43,17 @@ interface WhaleTrackerProps {
   isPremium: boolean;
   onUpgrade: () => void;
   onWalletsUpdate?: (wallets: WatchedWallet[]) => void;
+  selectedComparisonIds?: string[];
+  onToggleComparison?: (id: string) => void;
 }
 
-export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade, onWalletsUpdate }: WhaleTrackerProps) {
+export default function WhaleTracker({ 
+  isPremium: _propIsPremium, 
+  onUpgrade, 
+  onWalletsUpdate,
+  selectedComparisonIds = [],
+  onToggleComparison
+}: WhaleTrackerProps) {
   const isPremium = true; // FORCE UNLOCK FOR FULL VIP EXPERIENCE
   const { address: web3Address } = useAccount();
   const { isAuthenticated } = useAuth();
@@ -91,6 +99,13 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade, onW
     change24h: w.change24h ?? 0,
     lastActive: w.lastActive ? new Date(w.lastActive) : new Date()
   }));
+
+  // Sync wallets to parent
+  useEffect(() => {
+    if (onWalletsUpdate && watchedWallets.length > 0) {
+      onWalletsUpdate(watchedWallets);
+    }
+  }, [watchedData, onWalletsUpdate]);
 
   // Fetch real activities
   useEffect(() => {
@@ -323,6 +338,8 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade, onW
                   formatValue={formatValue} 
                   onToggleAlerts={() => handleToggleAlerts(wallet.id, wallet.alertsEnabled)}
                   onDelete={() => handleDeleteWallet(wallet.id)}
+                  isComparing={selectedComparisonIds.includes(wallet.id)}
+                  onToggleComparison={() => onToggleComparison?.(wallet.id)}
                 />
               ))}
             </AnimatePresence>
@@ -366,7 +383,23 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode, label: string
   );
 }
 
-function WalletCard({ wallet, index, formatValue, onToggleAlerts, onDelete }: { wallet: WatchedWallet, index: number, formatValue: (v: number) => string, onToggleAlerts: () => void, onDelete: () => void }) {
+function WalletCard({ 
+  wallet, 
+  index, 
+  formatValue, 
+  onToggleAlerts, 
+  onDelete,
+  isComparing,
+  onToggleComparison
+}: { 
+  wallet: WatchedWallet, 
+  index: number, 
+  formatValue: (v: number) => string, 
+  onToggleAlerts: () => void, 
+  onDelete: () => void,
+  isComparing?: boolean,
+  onToggleComparison?: () => void
+}) {
   return (
     <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.05 }} className="p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-[#1F1F1F]/10 hover:bg-white/80 transition-all group/card">
       <div className="flex items-start justify-between gap-4">
@@ -383,6 +416,15 @@ function WalletCard({ wallet, index, formatValue, onToggleAlerts, onDelete }: { 
                 title={wallet.alertsEnabled ? "Alerts Enabled" : "Enable Alerts"}
             >
                 <Bell size={16} className={wallet.alertsEnabled ? "fill-current" : ""} />
+            </button>
+
+            {/* COMPARE TOGGLE */}
+            <button 
+                onClick={onToggleComparison}
+                className={`p-1 rounded-full transition-all ${isComparing ? 'text-purple-600 bg-purple-50' : 'text-gray-300 hover:text-purple-400'}`}
+                title={isComparing ? "Selected for comparison" : "Add to comparison"}
+            >
+                <BarChart3 size={16} className={isComparing ? "fill-current" : ""} />
             </button>
           </div>
           <div className="text-xs font-mono text-[#1F1F1F]/60 mb-2 truncate">{wallet.address}</div>

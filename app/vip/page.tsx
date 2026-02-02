@@ -29,6 +29,7 @@ export default function VIPPage() {
   const [showPricing, setShowPricing] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('tracker');
   const [watchedWallets, setWatchedWallets] = useState<WatchedWallet[]>([]);
+  const [selectedComparisonIds, setSelectedComparisonIds] = useState<string[]>([]);
   
   // Real stats from API
   const [stats, setStats] = useState({
@@ -47,6 +48,12 @@ export default function VIPPage() {
       trackedWhales: wallets.length,
       totalValue
     }));
+  };
+
+  const handleToggleComparison = (id: string) => {
+    setSelectedComparisonIds(prev => 
+      prev.includes(id) ? prev.filter(wid => wid !== id) : [...prev, id]
+    );
   };
 
   // Check subscription status on mount (Mocked for full access)
@@ -233,7 +240,13 @@ export default function VIPPage() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
             >
-              <WhaleTracker isPremium={isPremium} onUpgrade={handleUpgrade} onWalletsUpdate={handleWalletsUpdate} />
+              <WhaleTracker 
+                isPremium={isPremium} 
+                onUpgrade={handleUpgrade} 
+                onWalletsUpdate={handleWalletsUpdate}
+                selectedComparisonIds={selectedComparisonIds}
+                onToggleComparison={handleToggleComparison}
+              />
             </motion.div>
           )}
 
@@ -297,7 +310,12 @@ export default function VIPPage() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
             >
-              <WalletComparison wallets={watchedWallets} isPremium={isPremium} />
+              <WalletComparison 
+                wallets={watchedWallets} 
+                isPremium={isPremium}
+                selectedWallets={selectedComparisonIds}
+                onToggleWallet={handleToggleComparison}
+              />
             </motion.div>
           )}
         </AnimatePresence>
