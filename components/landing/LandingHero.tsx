@@ -26,12 +26,7 @@ export function LandingHero({ onStart }: LandingHeroProps) {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
-                    className="relative"
                 >
-                    {/* Dropdown Navigation */}
-                    <div className="mb-6">
-                        <DropdownNav />
-                    </div>
 
                     {/* Main Heading with 3D Cats */}
                     <div className="relative">
@@ -43,7 +38,7 @@ export function LandingHero({ onStart }: LandingHeroProps) {
                             <motion.img
                                 src="/models/cat12.png"
                                 alt="Kitten"
-                                className="w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-2xl"
+                                className="w-64 h-64 md:w-80 md:h-80 object-contain drop-shadow-2xl"
                                 initial={{ scale: 0, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 transition={{ duration: 0.6, delay: 0.3 }}
@@ -62,7 +57,7 @@ export function LandingHero({ onStart }: LandingHeroProps) {
                             <motion.img
                                 src="/models/cat12.png"
                                 alt="Kitten"
-                                className="w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-2xl"
+                                className="w-64 h-64 md:w-80 md:h-80 object-contain drop-shadow-2xl"
                                 initial={{ scale: 0, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 transition={{ duration: 0.6, delay: 0.5 }}

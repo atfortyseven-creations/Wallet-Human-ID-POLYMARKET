@@ -53,7 +53,7 @@ export function ImmersiveKittens({ variant, progress }: Props) {
             <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden h-full w-full">
                {/* Left Peeker */}
                <motion.div 
-                   className="fixed top-1/2 left-0 w-[15vw] max-w-[200px] -translate-y-1/2 -translate-x-1/2"
+                   className="fixed top-1/2 left-0 w-[30vw] max-w-[400px] -translate-y-1/2 -translate-x-1/2"
                    animate={{ x: [-20, 0, -20], rotate: [0, 5, 0] }}
                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
                >
@@ -62,7 +62,7 @@ export function ImmersiveKittens({ variant, progress }: Props) {
                
                {/* Right Peeker */}
                <motion.div 
-                   className="fixed top-2/3 right-0 w-[15vw] max-w-[200px] -translate-y-1/2 translate-x-1/2 scale-x-[-1]"
+                   className="fixed top-2/3 right-0 w-[30vw] max-w-[400px] -translate-y-1/2 translate-x-1/2 scale-x-[-1]"
                    animate={{ x: [20, 0, 20], rotate: [0, -5, 0] }}
                    transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
                >
@@ -78,7 +78,7 @@ export function ImmersiveKittens({ variant, progress }: Props) {
         return (
              <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
                 <motion.div
-                    className="absolute top-[20%] right-[10%] w-[20vw] max-w-[300px] opacity-20 blur-[1px]"
+                    className="absolute top-[20%] right-[10%] w-[40vw] max-w-[600px] opacity-20 blur-[1px]"
                     animate={{ 
                         y: [0, -40, 0],
                         rotate: [0, 10, 0]
@@ -89,7 +89,7 @@ export function ImmersiveKittens({ variant, progress }: Props) {
                 </motion.div>
 
                 <motion.div
-                    className="absolute bottom-[20%] left-[10%] w-[15vw] max-w-[250px] opacity-20 blur-[1px] scale-x-[-1]"
+                    className="absolute bottom-[20%] left-[10%] w-[30vw] max-w-[500px] opacity-20 blur-[1px] scale-x-[-1]"
                     animate={{ 
                         y: [0, -30, 0],
                         rotate: [0, -10, 0]

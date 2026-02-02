@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Bell, Eye, EyeOff, Settings, Globe, Crown } from 'lucide-react';
+import { ChevronDown, Bell, Eye, EyeOff, Settings, Globe, Crown, X } from 'lucide-react';
 import Link from 'next/link';
 import { useAppKit } from '@reown/appkit/react';
 import { useAccount } from 'wagmi';
@@ -48,19 +48,23 @@ export function DropdownNav() {
     return (
         <>
             <div className="relative z-50">
-                {/* Trigger Button */}
+                {/* Trigger Button - always visible with elegant animation */}
                 <motion.button
                     onClick={() => setIsOpen(!isOpen)}
                     className="group inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/20 bg-white/10 backdrop-blur-xl hover:bg-white/20 transition-all shadow-lg hover:shadow-2xl"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
+                    animate={{ 
+                        backgroundColor: isOpen ? 'rgba(255, 255, 255, 0.25)' : 'rgba(255, 255, 255, 0.1)',
+                    }}
+                    transition={{ duration: 0.3 }}
                 >
                     <span className="text-lg font-black tracking-tight text-[#1F1F1F] dark:text-white">
                         Human DeFi
                     </span>
                     <motion.div
                         animate={{ rotate: isOpen ? 180 : 0 }}
-                        transition={{ duration: 0.3 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
                     >
                         <ChevronDown className="w-5 h-5 text-[#1F1F1F] dark:text-white" />
                     </motion.div>
@@ -75,18 +79,31 @@ export function DropdownNav() {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
+                                transition={{ duration: 0.2 }}
                                 className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
                                 onClick={() => setIsOpen(false)}
                             />
 
-                            {/* Menu Panel */}
+                            {/* Menu Panel with elegant slide animation */}
                             <motion.div
-                                initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                                initial={{ opacity: 0, y: -10, scale: 0.98 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                                transition={{ duration: 0.2, ease: "easeOut" }}
+                                exit={{ opacity: 0, y: -10, scale: 0.98 }}
+                                transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
                                 className="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-80 bg-white/95 dark:bg-[#1F1F1F]/95 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden z-50"
                             >
+                                {/* Exit Button */}
+                                <div className="p-4 border-b border-gray-200 dark:border-white/10 flex justify-between items-center">
+                                    <h3 className="text-sm font-bold uppercase tracking-widest text-gray-400">Menú</h3>
+                                    <button
+                                        onClick={() => setIsOpen(false)}
+                                        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group"
+                                        aria-label="Cerrar menú"
+                                    >
+                                        <X size={20} className="text-gray-400 group-hover:text-[#1F1F1F] dark:group-hover:text-white transition-colors" />
+                                    </button>
+                                </div>
+
                                 {/* Navigation Links */}
                                 <div className="p-6 space-y-2">
                                     <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 px-2">
