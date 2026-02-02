@@ -77,45 +77,38 @@ export function DropdownNav() {
                 </motion.button>
 
 
+
                 {/* Dropdown Menu */}
                 <AnimatePresence>
-                    {isOpen && mounted && createPortal(
-                        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                            {/* Backdrop - blurs everything EXCEPT the button */}
-                            <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.2 }}
-                                className="absolute inset-0 bg-black/30 backdrop-blur-sm"
-                                onClick={() => setIsOpen(false)}
+                    {isOpen && (
+                        <>
+                            {/* Transparent Backdrop to detect click outside - NO BLUR here to keep button sharp */}
+                            <div 
+                                className="fixed inset-0 z-40 bg-black/5" 
+                                onClick={() => setIsOpen(false)} 
                             />
 
-                            {/* Menu Panel - Center, Glassmorphic Rectangle */}
+                            {/* Menu Panel - Absolute below button, Glassmorphic Rectangle */}
                             <motion.div
-                                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                                animate={{ opacity: 1, scale: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                                transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-                                className="relative w-full max-w-md bg-white/90 dark:bg-neutral-900/90 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 dark:border-white/10 overflow-hidden z-50"
+                                initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                                transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                                className="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-80 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-2xl rounded-3xl shadow-2xl border border-white/20 dark:border-white/10 overflow-hidden z-50 pointer-events-auto"
                             >
-                                {/* Exit Button */}
+                                {/* Exit Button / Header */}
                                 <div className="p-4 border-b border-gray-200 dark:border-white/10 flex justify-between items-center">
-                                    <h3 className="text-sm font-bold uppercase tracking-widest text-gray-400">Menú</h3>
+                                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Quick Navigation</h3>
                                     <button
                                         onClick={() => setIsOpen(false)}
-                                        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors group"
-                                        aria-label="Cerrar menú"
+                                        className="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
                                     >
-                                        <X size={20} className="text-gray-400 group-hover:text-[#1F1F1F] dark:group-hover:text-white transition-colors" />
+                                        <X size={16} className="text-gray-400" />
                                     </button>
                                 </div>
 
                                 {/* Navigation Links */}
-                                <div className="p-6 space-y-2">
-                                    <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 px-2">
-                                        Navegación
-                                    </p>
+                                <div className="p-4 space-y-1">
                                     {navLinks.map((link) => (
                                         <Link
                                             key={link.href}
@@ -123,48 +116,46 @@ export function DropdownNav() {
                                             onClick={() => setIsOpen(false)}
                                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                                                 link.isVIP
-                                                    ? 'bg-gradient-to-r from-black to-gray-900 text-white hover:scale-105 shadow-lg'
+                                                    ? 'bg-gradient-to-r from-black to-gray-800 text-white hover:scale-[1.02] shadow-lg'
                                                     : 'hover:bg-gray-100 dark:hover:bg-white/10 text-[#1F1F1F] dark:text-white'
                                             }`}
                                         >
-                                            {link.icon}
-                                            <span className="font-bold text-sm">{link.name}</span>
+                                            <div className="w-5 flex justify-center">{link.icon}</div>
+                                            <span className="font-bold text-sm tracking-tight">{link.name}</span>
                                         </Link>
                                     ))}
                                 </div>
 
                                 {/* Divider */}
-                                <div className="h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-white/20 to-transparent" />
+                                <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-white/10 to-transparent" />
 
-                                {/* Utility Buttons */}
-                                <div className="p-6 space-y-3">
-                                    <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4 px-2">
-                                        Herramientas
-                                    </p>
-
-                                    <div className="grid grid-cols-2 gap-3">
+                                {/* Utility Buttons Grid */}
+                                <div className="p-4">
+                                    <div className="grid grid-cols-2 gap-2">
                                         {/* Notifications */}
                                         <button
                                             onClick={() => {
                                                 setShowNotifications(true);
                                                 setIsOpen(false);
                                             }}
-                                            className="relative flex items-center justify-center gap-2 p-3 rounded-xl bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
+                                            className="relative flex flex-col items-center justify-center gap-1 p-3 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-all border border-transparent hover:border-gray-200 dark:hover:border-white/10"
                                         >
-                                            <Bell size={18} className="text-[#1F1F1F] dark:text-white" />
-                                            {unreadCount > 0 && (
-                                                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border border-white animate-pulse" />
-                                            )}
-                                            <span className="text-xs font-bold text-[#1F1F1F] dark:text-white">Alertas</span>
+                                            <div className="relative">
+                                                <Bell size={18} className="text-[#1F1F1F] dark:text-white" />
+                                                {unreadCount > 0 && (
+                                                    <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-[#1F1F1F]" />
+                                                )}
+                                            </div>
+                                            <span className="text-[10px] font-black uppercase tracking-wider text-gray-500">Alertas</span>
                                         </button>
 
                                         {/* Stealth Mode */}
                                         <button
                                             onClick={toggleStealthMode}
-                                            className="flex items-center justify-center gap-2 p-3 rounded-xl bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
+                                            className="flex flex-col items-center justify-center gap-1 p-3 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-all border border-transparent hover:border-gray-200 dark:hover:border-white/10"
                                         >
                                             {isStealthMode ? <EyeOff size={18} /> : <Eye size={18} />}
-                                            <span className="text-xs font-bold text-[#1F1F1F] dark:text-white">
+                                            <span className="text-[10px] font-black uppercase tracking-wider text-gray-500">
                                                 {isStealthMode ? 'Visible' : 'Ocultar'}
                                             </span>
                                         </button>
@@ -173,41 +164,38 @@ export function DropdownNav() {
                                         <Link
                                             href="/settings"
                                             onClick={() => setIsOpen(false)}
-                                            className="flex items-center justify-center gap-2 p-3 rounded-xl bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
+                                            className="flex flex-col items-center justify-center gap-1 p-3 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-all border border-transparent hover:border-gray-200 dark:hover:border-white/10"
                                         >
                                             <Settings size={18} className="text-[#1F1F1F] dark:text-white" />
-                                            <span className="text-xs font-bold text-[#1F1F1F] dark:text-white">Config</span>
+                                            <span className="text-[10px] font-black uppercase tracking-wider text-gray-500">Config</span>
                                         </Link>
 
                                         {/* Language */}
                                         <button
                                             onClick={toggleLanguage}
-                                            className="flex items-center justify-center gap-2 p-3 rounded-xl bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 transition-all"
+                                            className="flex flex-col items-center justify-center gap-1 p-3 rounded-2xl bg-gray-50 dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-all border border-transparent hover:border-gray-200 dark:hover:border-white/10"
                                         >
                                             <Globe size={18} className="text-[#1F1F1F] dark:text-white" />
-                                            <span className="text-xs font-bold text-[#1F1F1F] dark:text-white uppercase">
+                                            <span className="text-[10px] font-black uppercase tracking-wider text-gray-500">
                                                 {language}
                                             </span>
                                         </button>
                                     </div>
                                 </div>
 
-                                {/* Divider */}
-                                <div className="h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-white/20 to-transparent" />
-
                                 {/* Connect Button */}
-                                <div className="p-6">
+                                <div className="p-4 pt-0">
                                     <button
                                         onClick={() => {
                                             appKit.open();
                                             setIsOpen(false);
                                         }}
-                                        className="w-full bg-gradient-to-r from-black to-gray-900 text-white px-6 py-4 rounded-2xl font-black text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl flex items-center justify-center gap-2"
+                                        className="w-full bg-[#1F1F1F] dark:bg-white dark:text-[#1F1F1F] text-white px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-95 transition-all shadow-xl flex items-center justify-center gap-3"
                                     >
                                         {isConnected ? (
                                             <>
-                                                <div className="w-2.5 h-2.5 rounded-full bg-green-400 animate-pulse" />
-                                                {address?.slice(0, 6)}...{address?.slice(-4)}
+                                                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                                <span className="font-mono">{address?.slice(0, 6)}...{address?.slice(-4)}</span>
                                             </>
                                         ) : (
                                             t('nav.start')
@@ -215,8 +203,7 @@ export function DropdownNav() {
                                     </button>
                                 </div>
                             </motion.div>
-                        </div>,
-                        document.body
+                        </>
                     )}
                 </AnimatePresence>
             </div>
