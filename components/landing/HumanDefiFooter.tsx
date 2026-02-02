@@ -213,8 +213,8 @@ export function HumanDefiFooter() {
             <div className="max-w-7xl mx-auto mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between text-zinc-600 text-xs font-mono tracking-tighter">
                 <p>&copy; {t('footer.rights')}</p>
                 <div className="flex gap-6 mt-4 md:mt-0 uppercase tracking-widest">
-                    <a href="#" className="hover:text-white transition-colors">{t('footer.privacy')}</a>
-                    <a href="#" className="hover:text-white transition-colors">{t('footer.terms')}</a>
+                    <a href="/privacy" className="hover:text-white transition-colors">{t('footer.privacy')}</a>
+                    <a href="/terms" className="hover:text-white transition-colors">{t('footer.terms')}</a>
                 </div>
             </div>
         </footer>
