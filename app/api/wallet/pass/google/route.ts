@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
+import jwt from 'jsonwebtoken';
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,8 +18,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Card not issued' }, { status: 404 });
     }
 
-    // [PRODUCTION REAL] In a real app, you must use the official googleapis package
-    // and sign the JWT with a service account key (.json file).
+    // [PRODUCTION REAL] Official Google Wallet Structure
+    // Requires a service account private key stored in GOOGLE_WALLET_PRIVATE_KEY
     
     const ISSUER_ID = process.env.GOOGLE_WALLET_ISSUER_ID;
     const SERVICE_ACCOUNT_EMAIL = process.env.GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL;
@@ -31,13 +32,71 @@ export async function POST(request: NextRequest) {
       }, { status: 501 });
     }
 
-    // Logic for real JWT signing would go here
-    // const jwt = signGoogleWalletJwt({ ...cardData, issuerId: ISSUER_ID });
-    
-    return NextResponse.json({ 
-      error: 'INTEGRATION_Handoff', 
-      message: 'Ready for real Google Wallet handshake. Please provide valid Service Account credentials.' 
-    }, { status: 503 });
+    try {
+      const payload = {
+        iss: SERVICE_ACCOUNT_EMAIL,
+        aud: 'google',
+        typ: 'savetowallet',
+        iat: Math.floor(Date.now() / 1000),
+        origins: [],
+        payload: {
+          genericObjects: [
+            {
+              id: `${ISSUER_ID}.HumanCard_${card.id}`,
+              classId: `${ISSUER_ID}.HumanCardClass`,
+              genericType: 'GENERIC_TYPE_UNSPECIFIED',
+              hexBackgroundColor: '#1F1F1F',
+              logo: {
+                sourceUri: {
+                  uri: 'https://humanid.fi/logo-v2.png',
+                },
+              },
+              cardTitle: {
+                defaultValue: {
+                  language: 'en',
+                  value: 'Human Card',
+                },
+              },
+              subheader: {
+                defaultValue: {
+                  language: 'en',
+                  value: 'Status',
+                },
+              },
+              header: {
+                defaultValue: {
+                  language: 'en',
+                  value: card.status === 'ACTIVE' ? 'Verified' : 'Pending KYC',
+                },
+              },
+              barcode: {
+                type: 'QR_CODE',
+                value: card.linkedAddress || 'https://humanid.fi',
+              },
+              hexFontColor: '#FFFFFF'
+            },
+          ],
+        },
+      };
+
+      // Sign JWT with RS256 using the Service Account Private Key
+      // Note: We replace literal \n with real newlines for the PEM format
+      const token = jwt.sign(payload, PRIVATE_KEY.replace(/\\n/g, '\n'), { algorithm: 'RS256' });
+      const saveUrl = `https://pay.google.com/gp/v/save/${token}`;
+
+      return NextResponse.json({ 
+        success: true,
+        saveUrl,
+        message: 'Google Wallet pass generated successfully.'
+      });
+    } catch (jwtError: any) {
+      console.error('JWT Signing Error:', jwtError);
+      return NextResponse.json({ 
+        error: 'JWT_SIGNING_FAILED', 
+        message: 'Failed to sign the Google Wallet pass.',
+        details: jwtError.message
+      }, { status: 500 });
+    }
 
   } catch (error: any) {
     console.error('Error generating Google Wallet pass:', error);

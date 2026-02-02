@@ -208,7 +208,10 @@ export default function FiatCardIssuance({ walletAddress, balance }: { walletAdd
                                         Back
                                     </button>
                                     <button 
-                                        onClick={() => setStep('kyc')}
+                                        onClick={() => {
+                                            setStep('kyc');
+                                            handleIssue();
+                                        }}
                                         className="flex-1 py-4 bg-[#1F1F1F] text-white rounded-2xl font-bold text-lg hover:scale-[1.02] transition-transform"
                                     >
                                         Continue
@@ -229,17 +232,12 @@ export default function FiatCardIssuance({ walletAddress, balance }: { walletAdd
                                 <div className="w-20 h-20 bg-[#1F1F1F] rounded-full flex items-center justify-center mx-auto mb-6">
                                     <Shield size={32} className="text-white" />
                                 </div>
-                                <h3 className="text-xl font-bold text-[#1F1F1F]">Verifying with Human ID...</h3>
-                                <p className="text-[#1F1F1F]/60">Authenticating on-chain credentials for instant issuance.</p>
+                                <h3 className="text-xl font-bold text-[#1F1F1F]">Contacting Financial Provider...</h3>
+                                <p className="text-[#1F1F1F]/60">Securely initializing your account with our BaaS partner.</p>
                                 
-                                <div className="h-2 w-full lg:w-64 mx-auto bg-gray-200 rounded-full overflow-hidden">
-                                    <motion.div 
-                                        initial={{ width: 0 }}
-                                        animate={{ width: "100%" }}
-                                        transition={{ duration: 2 }}
-                                        onAnimationComplete={handleIssue}
-                                        className="h-full bg-[#1F1F1F]"
-                                    />
+                                <div className="flex flex-col items-center gap-4">
+                                    <Loader2 size={40} className="animate-spin text-[#1F1F1F]" />
+                                    <div className="text-[10px] font-bold text-[#1F1F1F]/40 tracking-widest uppercase">Striga Infrastructure Connection</div>
                                 </div>
                             </motion.div>
                         )}

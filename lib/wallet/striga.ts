@@ -6,8 +6,10 @@ export class StrigaClient {
   private apiKey: string;
 
   constructor() {
-    // Priority: .env or hardcoded for immediate response to user request
-    this.apiKey = process.env.STRIGA_API_KEY || '[REDACTED_STRIGA_API_KEY]=';
+    this.apiKey = process.env.STRIGA_API_KEY || '';
+    if (!this.apiKey) {
+      console.warn('WARNING: STRIGA_API_KEY is not defined in environment variables.');
+    }
   }
 
   private get headers() {
