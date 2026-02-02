@@ -41,15 +41,18 @@ export const HumanCard = ({ address: propAddress, balance: propBalance }: HumanC
     const balance = propBalance !== undefined 
         ? (propBalance.startsWith('$') ? propBalance : `$${propBalance}`) 
         : (walletData?.balance ? `$${walletData.balance}` : (loading && !walletData ? "..." : "$0.00"));
-    const addressDisplay = propAddress || walletData?.address || "Connect Wallet";
+    
+    // Prioritize prop address for all logic
+    const address = propAddress || walletData?.address || "";
+    const addressDisplay = address || "Connect Wallet";
 
     useEffect(() => {
         if (walletData || error) setLoading(false);
     }, [walletData, error]);
 
     const handleCopy = () => {
-        if (walletData?.address) {
-            navigator.clipboard.writeText(walletData.address);
+        if (address) {
+            navigator.clipboard.writeText(address);
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
         }
@@ -142,7 +145,7 @@ export const HumanCard = ({ address: propAddress, balance: propBalance }: HumanC
             <ReceiveModal 
                 isOpen={isReceiveOpen} 
                 onClose={() => setIsReceiveOpen(false)} 
-                userAddress={walletData?.address || ""} 
+                userAddress={address} 
             />
             <QRScannerModal 
                 isOpen={isScannerOpen}

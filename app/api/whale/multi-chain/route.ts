@@ -39,10 +39,13 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Validate address format
-    if (!/^0x[a-fA-F0-9]{40}$/.test(address)) {
+    // Validate address format (Supports 0x for EVM and typical BTC formats)
+    const isEvm = /^0x[a-fA-F0-9]{40}$/.test(address);
+    const isBtc = /^(1|3|bc1)[a-zA-HJ-NP-Z0-9]{25,62}$/.test(address);
+
+    if (!isEvm && !isBtc) {
       return NextResponse.json(
-        { error: 'Invalid Ethereum address format' },
+        { error: 'Invalid address format. Supported: EVM (0x) and Bitcoin (1, 3, bc1)' },
         { status: 400 }
       );
     }
@@ -104,9 +107,33 @@ async function fetchChainBalance(
   }
 
   try {
+    if (chainId === 0) { // BITCOIN
+        // Fetch BTC balance from mempool.space (Reliable & Free API)
+        const btcRes = await fetch(`https://mempool.space/api/address/${address}`);
+        if (!btcRes.ok) throw new Error('Bitcoin API error');
+        
+        const btcData = await btcRes.json();
+        // sum of funded minus sum of spent = balance in satoshis
+        const satoshis = (btcData.chain_stats.funded_txo_sum - btcData.chain_stats.spent_txo_sum) || 0;
+        const btcBalance = satoshis / 1e8;
+        
+        const btcPrice = await getRealTimePrice('BTC');
+        const btcBalanceUSD = btcBalance * btcPrice;
+
+        return {
+            chainId,
+            chainName: 'Bitcoin',
+            nativeBalance: btcBalance.toFixed(8),
+            nativeBalanceUSD: btcBalanceUSD,
+            tokenCount: 0,
+            totalValueUSD: btcBalanceUSD,
+            lastUpdate: new Date().toISOString(),
+        };
+    }
+
     const rpcUrl = getRpcUrl(chainId);
     
-    // Fetch native balance
+    // Fetch native balance (EVM)
     const balanceRes = await fetch(rpcUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -119,6 +146,8 @@ async function fetchChainBalance(
     });
 
     const balanceData = await balanceRes.json();
+    if (balanceData.error) throw new Error(balanceData.error.message);
+
     const nativeBalanceWei = balanceData.result || '0x0';
     const nativeBalance = parseInt(nativeBalanceWei, 16) / 1e18;
 

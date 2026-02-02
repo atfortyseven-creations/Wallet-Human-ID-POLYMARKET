@@ -3,9 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, TrendingDown, Waves, AlertCircle, Star, Eye, Bell, Download, Upload, Filter, Search, BarChart3, Copy, CheckCircle, X } from 'lucide-react';
-import useSWR, { mutate } from 'swr';
+import useSWR from 'swr';
 import { useAccount } from 'wagmi';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import ChainSelector from './ChainSelector';
+import { useAuth } from '@/hooks/useAuth';
 
 const fetcher = (url: string) => fetch(url).then(r => r.json());
 
@@ -43,10 +46,24 @@ interface WhaleTrackerProps {
 
 export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade, onWalletsUpdate }: WhaleTrackerProps) {
   const isPremium = true; // FORCE UNLOCK FOR FULL VIP EXPERIENCE
-  const { address: currentUserAddress } = useAccount();
+  const { address: web3Address } = useAccount();
+  const { isAuthenticated } = useAuth();
+
+  // Fetch managed wallet if not connected via Web3
+  const { data: managedWallet } = useQuery({
+    queryKey: ['managed-wallet-small'],
+    queryFn: async () => {
+        if (!isAuthenticated || web3Address) return null;
+        const { data } = await axios.get('/api/user/wallet');
+        return data;
+    },
+    enabled: isAuthenticated && !web3Address
+  });
+
+  const currentUserAddress = web3Address || managedWallet?.address;
   
   // Real Data Fetching (Persistent)
-  const { data: watchedData, isLoading: isLoadingWallets } = useSWR(
+  const { data: watchedData, isLoading: isLoadingWallets, mutate: mutateWallets } = useSWR(
     currentUserAddress ? `/api/user/watched-wallets?address=${currentUserAddress}` : null,
     fetcher
   );
@@ -107,7 +124,7 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade, onW
             })
         });
         if (res.ok) {
-            mutate(`/api/user/watched-wallets?address=${currentUserAddress}`);
+            mutateWallets();
             setShowAddWallet(false);
         }
     } catch (e) {
@@ -125,7 +142,7 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade, onW
             })
         });
         if (res.ok) {
-            mutate(`/api/user/watched-wallets?address=${currentUserAddress}`);
+            mutateWallets();
         }
     } catch (e) {
         console.error("Error toggling alerts:", e);
@@ -138,7 +155,7 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade, onW
             method: 'DELETE'
         });
         if (res.ok) {
-            mutate(`/api/user/watched-wallets?address=${currentUserAddress}`);
+            mutateWallets();
         }
     } catch (e) {
         console.error("Error deleting wallet:", e);
@@ -410,6 +427,8 @@ function ActivityCard({ activity, index }: { activity: WhaleActivity, index: num
                     <div className="flex items-center gap-2 mb-1">
                         <span className={`px-2 py-1 rounded-lg text-xs font-bold ${getTypeColor(activity.type)}`}>{activity.type}</span>
                         <span className="font-bold text-[#1F1F1F]">{activity.walletLabel}</span>
+                        {/* @ts-ignore */}
+                        {activity.chain && <span className="px-2 py-0.5 bg-gray-100 rounded-md text-[10px] font-black text-gray-500 uppercase tracking-tighter">{activity.chain}</span>}
                     </div>
                     <div className="text-sm text-[#1F1F1F]/70">
                         {(activity.amount || 0).toLocaleString()} {activity.token} (${((activity.usdValue || 0) / 1e6).toFixed(2)}M)

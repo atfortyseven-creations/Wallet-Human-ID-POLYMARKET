@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { useAccount } from 'wagmi'; // Wait, this is server side
+import { getTotalWalletBalance } from '@/lib/wallet/multi-chain';
 
 export async function GET(req: NextRequest) {
   try {
@@ -16,7 +16,23 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: 'desc' }
     });
 
-    return NextResponse.json({ watchedWallets });
+    const watchedWalletsWithBalances = await Promise.all(
+      watchedWallets.map(async (w: any) => {
+        try {
+          const totalValue = await getTotalWalletBalance(w.address);
+          return {
+            ...w,
+            totalValue,
+            // Mock change for now, in real app we'd track historical
+            change24h: Math.random() * 5 * (Math.random() > 0.5 ? 1 : -1)
+          };
+        } catch (e) {
+          return { ...w, totalValue: 0, change24h: 0 };
+        }
+      })
+    );
+
+    return NextResponse.json({ watchedWallets: watchedWalletsWithBalances });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch watched wallets' }, { status: 500 });
   }
