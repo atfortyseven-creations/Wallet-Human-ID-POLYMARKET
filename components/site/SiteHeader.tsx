@@ -72,7 +72,7 @@ export function SiteHeader() {
                     `}
                 >
                     {/* LOGO */}
-                    <div className="w-[180px] lg:w-[250px] flex justify-start items-center gap-1">
+                    <div className="w-[180px] lg:w-auto xl:w-[250px] flex justify-start items-center gap-1 shrink-0">
                         <Link href="/" className="flex items-center gap-2 group relative z-50 pointer-events-auto">
                             <span className="text-xl font-black tracking-tight text-gray-900 font-sans group-hover:text-black transition-colors">
                                 Human DeFi
@@ -81,12 +81,12 @@ export function SiteHeader() {
                     </div>
 
                     {/* DESKTOP NAV - Enhanced for Zoom Resilience */}
-                    <nav className="flex-1 hidden lg:flex items-center gap-6 justify-center relative z-50 pointer-events-auto min-w-0">
+                    <nav className="flex-1 hidden lg:flex items-center gap-4 xl:gap-6 justify-center relative z-50 pointer-events-auto min-w-0">
                         {navLinks.map((link) => (
                             <div key={link.href} className="relative group shrink-0">
                                 <Link 
                                     href={link.href}
-                                    className={`relative z-10 px-3 lg:px-5 py-2 text-[12px] lg:text-[14px] font-black transition-all rounded-lg tracking-widest uppercase font-sans whitespace-nowrap flex items-center gap-2 ${
+                                    className={`relative z-10 px-2 xl:px-5 py-2 text-[12px] xl:text-[14px] font-black transition-all rounded-lg tracking-widest uppercase font-sans whitespace-nowrap flex items-center gap-2 ${
                                         link.isVIP 
                                             ? 'bg-black text-white hover:scale-105 transition-transform shadow-md' 
                                             : 'text-gray-800 hover:text-black hover:bg-gray-100/50'
@@ -120,7 +120,7 @@ export function SiteHeader() {
                     </nav>
 
                     {/* RIGHT ACTIONS */}
-                    <div className="hidden md:flex w-[350px] lg:w-[500px] justify-end items-center gap-4 relative z-50 pointer-events-auto">
+                    <div className="hidden md:flex w-auto xl:w-[500px] justify-end items-center gap-4 relative z-50 pointer-events-auto shrink-0">
                         {/* Grouped Icons: Bell, Settings, Language, Stealth */}
                         {/* Grouped Icons: Bell, Settings, Language, Stealth */}
                         <div className="flex items-center gap-2 pr-6 border-r border-gray-200">

@@ -116,6 +116,7 @@ export async function PUT(request: NextRequest) {
     }
     if (data.notifications) {
       updateData.notificationsConfig = JSON.stringify(data.notifications);
+      delete updateData.notifications;
     }
 
     // Upsert settings with version increment

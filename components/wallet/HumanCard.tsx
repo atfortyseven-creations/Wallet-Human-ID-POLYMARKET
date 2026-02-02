@@ -36,11 +36,12 @@ export const HumanCard = () => {
     }, [walletData, error]);
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(address);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        if (walletData?.address) {
+            navigator.clipboard.writeText(walletData.address);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        }
     };
-
     const onScan = () => { /* Open Scanner */ };
     const onReceive = () => { /* Open QR Modal */ };
 
@@ -107,7 +108,7 @@ export const HumanCard = () => {
                         onClick={handleCopy}
                         className="group/addr flex items-center gap-2 text-neutral-400 hover:text-white transition-colors"
                     >
-                        <span className="font-mono text-xs">{address}</span>
+                        <span className="font-mono text-xs">{addressDisplay}</span>
                         {copied ? (
                            <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-[#00ff9d] text-[10px] font-bold">COPIED</motion.span>
                         ) : (
