@@ -1,4 +1,4 @@
-const { Alchemy, Network, AssetTransfersCategory, SortingOrder } = require("alchemy-sdk");
+const { ethers } = require("ethers");
 const { PrismaClient } = require("@prisma/client");
 const dotenv = require("dotenv");
 const axios = require("axios");
@@ -7,23 +7,27 @@ dotenv.config();
 
 const prisma = new PrismaClient();
 
-// Alchemy Configuration
-const config = {
-  apiKey: process.env.ALCHEMY_API_KEY || "p2MK6Y8eQyHPbS5gQZ7TU",
-  network: Network.BASE_MAINNET,
-};
-
-const alchemy = new Alchemy(config);
-const WHALE_THRESHOLD_USD = 50000; // $50k threshold for whale detection
+// Configuration
+const RPC_URL = "https://go.getblock.io/3648ec097a0e447fa4eb8d92b81e5230";
+const WHALE_THRESHOLD_USD = 50000;
 
 // Telegram Configuration
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "8400528150:AAGtzfSpSvD6HgauHwg7Nw3sGElQx1Ug4rg";
 const TARGET_CHAT_ID = "@HumanidFi"; 
 const TOPIC_ID = 1367;
 
-/**
- * Sends a premium-formatted alert to Telegram
- */
+// Token Addresses on BASE
+const TOKENS = {
+  USDC: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+  mUSDC: "0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA", // Bridged USDbC
+  WETH: "0x4200000000000000000000000000000000000006",
+  DAI: "0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb",
+  cbETH: "0x2Ae3F1Ec7F1F5012CFEab0185bfc7aa3cf0DEc22",
+};
+
+// ERC20 Transfer Event Topic
+const TRANSFER_TOPIC = ethers.id("Transfer(address,address,uint256)");
+
 async function sendTelegram(text: string) {
   const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
   try {
@@ -41,9 +45,6 @@ async function sendTelegram(text: string) {
   }
 }
 
-/**
- * Formats USD value to EUR millions
- */
 const formatMoney = (val: number) => {
   const eurVal = val * 0.96;
   const millions = (eurVal / 1_000_000).toFixed(2);
@@ -51,100 +52,148 @@ const formatMoney = (val: number) => {
 };
 
 async function startWorker() {
-  console.log("🐋 [Whale Worker] Background monitoring started on Base Mainnet...");
+  console.log("🐋 [Whale Worker] Starting with robust RPC...");
   
-  let lastProcessedBlock: number;
+  const provider = new ethers.JsonRpcProvider(RPC_URL);
+  
+  let lastProcessedBlock;
   try {
-    lastProcessedBlock = await alchemy.core.getBlockNumber();
-    console.log(`📡 [Whale Worker] Starting from block: ${lastProcessedBlock}`);
+    lastProcessedBlock = await provider.getBlockNumber();
+    console.log(`📡 [Whale Worker] Connected to Base. Starting from block: ${lastProcessedBlock}`);
   } catch (err: any) {
-    console.error("❌ [Whale Worker] Failed to get initial block number:", err.message);
+    console.error("❌ [Whale Worker] Failed to connect to RPC:", err.message);
     return;
   }
 
-  // Infinite poll loop
   while (true) {
     try {
-      console.log(`💓 [Whale Worker] Heartbeat - Scanning block ${lastProcessedBlock}...`);
-      const currentBlock = await alchemy.core.getBlockNumber();
+      const currentBlock = await provider.getBlockNumber();
       
       if (currentBlock > lastProcessedBlock) {
-        console.log(`🔍 [Whale Worker] Processing blocks ${lastProcessedBlock + 1} to ${currentBlock}...`);
-        
-        const transfers = await alchemy.core.getAssetTransfers({
-          fromBlock: `0x${(lastProcessedBlock + 1).toString(16)}`,
-          toBlock: `0x${currentBlock.toString(16)}`,
-          category: [AssetTransfersCategory.EXTERNAL, AssetTransfersCategory.ERC20],
-          excludeZeroValue: true,
-          order: SortingOrder.ASCENDING,
+        console.log(`🔍 [Whale Worker] Scanning blocks ${lastProcessedBlock + 1} to ${currentBlock}...`);
+
+        // 1. Check Native ETH Transfers (from full block transactions)
+        // Note: For efficiency in high throughput, we might skip full block trace if generic RPC is slow, 
+        // but verifying block.transactions is standard.
+        // For 'getblock', getting full block might be heavy. We'll try.
+        try {
+            const block = await provider.getBlock(currentBlock, true); // true for prefetch txs
+            if (block && block.prefetchedTransactions) {
+                for (const tx of block.prefetchedTransactions) {
+                    const valueEth = parseFloat(ethers.formatEther(tx.value));
+                    const usdValue = valueEth * 3300; // Approx ETH price
+                    
+                    if (usdValue >= WHALE_THRESHOLD_USD) {
+                        await processWhaleTx(tx.hash, tx.from, tx.to, "ETH", valueEth, usdValue, currentBlock);
+                    }
+                }
+            }
+        } catch (e) {
+            console.warn("⚠️ [Whale Worker] Could not fetch (ETH) block txs:", e.message);
+        }
+
+        // 2. Check ERC20 Transfers (Logs)
+        const logs = await provider.getLogs({
+          fromBlock: lastProcessedBlock + 1,
+          toBlock: currentBlock,
+          topics: [TRANSFER_TOPIC]
         });
 
-        for (const tx of transfers.transfers) {
-          let usdValue = 0;
-          const val = tx.value || 0;
+        for (const log of logs) {
+          try {
+            // Identify Token
+            let tokenSymbol = "Unknown";
+            let decimals = 18;
+            let price = 0;
 
-          // Value estimation logic
-          if (tx.asset === "ETH" || tx.asset === "WETH" || tx.asset === "CBETH") usdValue = val * 3300;
-          else if (["USDC", "USDT", "DAI"].includes(tx.asset || "")) usdValue = val;
-          else if (tx.asset === "AERO") usdValue = val * 1.2;
-          else if (tx.asset === "DEGEN") usdValue = val * 0.02;
-          else if (tx.asset === "VIRTUAL") usdValue = val * 2.5; 
-          else {
-            usdValue = val * 0.5; // fallback
-          }
+            if (log.address.toLowerCase() === TOKENS.USDC.toLowerCase() || log.address.toLowerCase() === TOKENS.mUSDC.toLowerCase()) {
+                tokenSymbol = "USDC";
+                decimals = 6;
+                price = 1;
+            } else if (log.address.toLowerCase() === TOKENS.WETH.toLowerCase()) {
+                tokenSymbol = "WETH";
+                decimals = 18;
+                price = 3300;
+            } else if (log.address.toLowerCase() === TOKENS.cbETH.toLowerCase()) {
+                tokenSymbol = "cbETH";
+                decimals = 18;
+                price = 3400; // slightly higher usually
+            } else if (log.address.toLowerCase() === TOKENS.DAI.toLowerCase()) {
+                tokenSymbol = "DAI";
+                decimals = 18;
+                price = 1;
+            } else {
+                continue; // Skip unknown tokens for now to reduce noise
+            }
 
-          if (usdValue >= WHALE_THRESHOLD_USD) {
-            console.log(`🌊 [Whale Worker] Detected Whale Move: ${usdValue.toFixed(2)} USD (${tx.asset})`);
-            
-            // 1. Save to Database (Non-blocking)
-            prisma.whaleActivity.upsert({
-              where: { transactionHash: tx.hash },
-              update: {},
-              create: {
-                walletAddress: tx.from,
-                type: tx.to === null ? "CONTRACT" : "TRANSFER",
-                token: tx.asset || "TOKEN",
-                amount: val,
-                usdValue: usdValue,
-                fromAddress: tx.from,
-                toAddress: tx.to || "Contract",
-                transactionHash: tx.hash,
-                blockNumber: BigInt(parseInt(tx.blockNum, 16)),
-                timestamp: new Date(),
-              }
-            }).catch((err: any) => console.warn(`⚠️ [Whale Worker] DB Write Warning (continuing): ${err.message}`));
+            // Parse Value
+            const parsedLog = ethers.AbiCoder.defaultAbiCoder().decode(["uint256"], log.data);
+            const rawValue = parsedLog[0];
+            const tokenAmount = parseFloat(ethers.formatUnits(rawValue, decimals));
+            const usdValue = tokenAmount * price;
 
-            // 2. Send Telegram Alert
-            const shortFrom = `${tx.from.slice(0, 4)}...${tx.from.slice(-4)}`;
-            const shortTo = tx.to ? `${tx.to.slice(0, 4)}...${tx.to.slice(-4)}` : 'Contract 📄';
-            
-            const msg = `
-🐳 <b>ALERTA WHALE DETECTADA</b> | Base
+            if (usdValue >= WHALE_THRESHOLD_USD) {
+                const from = ethers.AbiCoder.defaultAbiCoder().decode(["address"], log.topics[1])[0];
+                const to = ethers.AbiCoder.defaultAbiCoder().decode(["address"], log.topics[2])[0];
+                
+                await processWhaleTx(log.transactionHash, from, to, tokenSymbol, tokenAmount, usdValue, currentBlock);
+            }
 
-💶 <b>${formatMoney(usdValue)}</b>
-Transferencia de <b>${parseFloat(val.toFixed(2)).toLocaleString()} ${tx.asset || 'Token'}</b> detectada AHORA MISMO.
-
-👤 <code>${shortFrom}</code> ➡️ <code>${shortTo}</code>
-
-🔗 <a href="https://basescan.org/tx/${tx.hash}">Ver Transacción Real</a>
-`.trim();
-
-            await sendTelegram(msg);
-            console.log("✅ [Whale Worker] Telegram Alert sent successfully");
-            await new Promise(r => setTimeout(r, 500)); // Rate limit protection
+          } catch (err) {
+            // Silent catch for log parsing errors
           }
         }
-        
+
         lastProcessedBlock = currentBlock;
       }
       
-      await new Promise(resolve => setTimeout(resolve, 30000)); // Poll every 30s
+      await new Promise(resolve => setTimeout(resolve, 10000)); // 10s Poll
     } catch (error: any) {
-      console.error("❌ [Whale Worker] Error in worker loop:", error.message);
-      // Wait a bit before retrying to avoid spamming logs
+      console.error("❌ [Whale Worker] Loop Error:", error.message);
       await new Promise(resolve => setTimeout(resolve, 30000));
     }
   }
+}
+
+async function processWhaleTx(hash: string, from: string, to: string, asset: string, amount: number, usdValue: number, blockNumber: number) {
+    // Dedup check (optional but good practice)
+    const exists = await prisma.whaleActivity.findUnique({ where: { transactionHash: hash } });
+    if (exists) return;
+
+    console.log(`🌊 [Whale Worker] WHALE: ${usdValue.toFixed(2)} USD (${asset})`);
+
+    // Save DB
+    await prisma.whaleActivity.create({
+        data: {
+            walletAddress: from,
+            type: "TRANSFER",
+            token: asset,
+            amount: amount,
+            usdValue: usdValue,
+            fromAddress: from,
+            toAddress: to || "Contract",
+            transactionHash: hash,
+            blockNumber: BigInt(blockNumber),
+            timestamp: new Date(),
+        }
+    }).catch(e => console.error("DB Error:", e.message));
+
+    // Telegram
+    const shortFrom = `${from.slice(0, 4)}...${from.slice(-4)}`;
+    const shortTo = to ? `${to.slice(0, 4)}...${to.slice(-4)}` : 'Contract';
+    
+    const msg = `
+🐳 <b>ALERTA WHALE DETECTADA</b> | Base
+
+💶 <b>${formatMoney(usdValue)}</b>
+Transferencia de <b>${amount.toLocaleString()} ${asset}</b> detectada.
+
+👤 <code>${shortFrom}</code> ➡️ <code>${shortTo}</code>
+
+🔗 <a href="https://basescan.org/tx/${hash}">Ver Transacción</a>
+`.trim();
+
+    await sendTelegram(msg);
 }
 
 module.exports = { startWorker };

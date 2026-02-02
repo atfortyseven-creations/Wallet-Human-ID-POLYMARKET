@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, Shield, Zap } from 'lucide-react';
 import Link from 'next/link';
+import { DropdownNav } from './DropdownNav';
 
 interface LandingHeroProps {
     onStart?: () => void;
@@ -27,12 +28,9 @@ export function LandingHero({ onStart }: LandingHeroProps) {
                     transition={{ duration: 0.8 }}
                     className="relative"
                 >
-                    {/* Badge */}
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 dark:border-white/10 border-black/10 bg-white/5 dark:bg-white/5 bg-black/5 backdrop-blur-md mb-6">
-                        <Shield className="w-4 h-4 text-[#00ff9d]" />
-                        <span className="text-sm font-mono uppercase tracking-wider text-[#1F1F1F] dark:text-white">
-                            Military-Grade Security
-                        </span>
+                    {/* Dropdown Navigation */}
+                    <div className="mb-6">
+                        <DropdownNav />
                     </div>
 
                     {/* Main Heading with 3D Cats */}
