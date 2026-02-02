@@ -8,7 +8,6 @@ import {
     Loader2, Check, ChevronRight
 } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
-import { SiteHeader } from '@/components/site/SiteHeader';
 import { HumanDefiFooter } from '@/components/landing/HumanDefiFooter';
 import { useSettings } from '@/src/context/SettingsContext';
 import { verifyBiometricOwnership } from '@/src/services/security/BiometricService';
@@ -281,7 +280,6 @@ export default function SettingsPage() {
 
     return (
         <div className="min-h-screen bg-[#EAEADF] text-[#1F1F1F] font-sans selection:bg-[#1F1F1F] selection:text-[#EAEADF] flex flex-col">
-            <SiteHeader />
              
             {/* Background Noise/Void Effect */}
             <div className="fixed inset-0 pointer-events-none opacity-5 z-0">

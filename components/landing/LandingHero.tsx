@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, Shield, Zap } from 'lucide-react';
 import Link from 'next/link';
-import { DropdownNav } from './DropdownNav';
+import { DropdownNav } from '@/components/site/DropdownNav';
 
 interface LandingHeroProps {
     onStart?: () => void;

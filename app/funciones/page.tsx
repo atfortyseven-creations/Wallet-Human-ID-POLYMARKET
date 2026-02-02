@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { SiteHeader } from '@/components/site/SiteHeader';
 import { HumanDefiFooter } from '@/components/landing/HumanDefiFooter';
 import { FloatingImmersiveBackground } from '@/components/landing/FloatingImmersiveBackground';
 import { Shield, Zap, Globe, Lock, Coins, Vote } from 'lucide-react';
@@ -46,7 +45,6 @@ export default function FuncionesPage() {
 
     return (
         <div className="min-h-screen bg-[#F5F5F0] text-[#1F1F1F] font-sans selection:bg-[#1F1F1F] selection:text-[#F5F5F0] flex flex-col">
-            <SiteHeader />
             <FloatingImmersiveBackground density="high" kittenCount={15} />
             
             <main className="flex-grow">
