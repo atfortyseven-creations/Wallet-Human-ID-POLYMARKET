@@ -521,6 +521,7 @@ model AuthUser {
   encryptedMnemonic   String?  @db.Text
   encryptedPrivateKey String?  @db.Text
   walletSalt          String? 
+  strigaUserId        String?  @unique
 
   verificationCodes VerificationCode[]
   userSettings      UserSettings?
@@ -1173,6 +1174,7 @@ model VirtualCard {
   tier          String   @default("BLACK") // BLACK, METAL, SILVER
   status        String   @default("ACTIVE")
   brand         String   @default("VISA")
+  strigaCardId  String?  @unique
   
   // Real Spending Logic (Linked Balance)
   linkedAddress String

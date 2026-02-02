@@ -9,6 +9,7 @@ export default function FiatCardIssuance({ walletAddress, balance }: { walletAdd
     const [cardTier, setCardTier] = useState<'standard' | 'black' | 'metal'>('black');
     const [isIssuing, setIsIssuing] = useState(false);
     const [cardData, setCardData] = useState<any>(null);
+    const [kycRequired, setKycRequired] = useState(false);
     const [isAddingWallet, setIsAddingWallet] = useState<'google' | 'apple' | null>(null);
 
     // Load card on mount
@@ -20,7 +21,8 @@ export default function FiatCardIssuance({ walletAddress, balance }: { walletAdd
                 if (data.card) {
                     setCardData(data.card);
                     setCardTier(data.card.tier.toLowerCase() as any);
-                    setStep('success'); // Already has a card
+                    setKycRequired(data.card.status === 'PENDING_KYC');
+                    setStep('success'); // Already has a card (or record of one)
                 }
             } catch (e) {
                 console.error("Failed to load card", e);
@@ -43,6 +45,9 @@ export default function FiatCardIssuance({ walletAddress, balance }: { walletAdd
             const data = await res.json();
             if (data.card) {
                 setCardData(data.card);
+                if (data.kycRequired) {
+                    setKycRequired(true);
+                }
                 setStep('success');
             }
         } catch (e) {
@@ -250,32 +255,53 @@ export default function FiatCardIssuance({ walletAddress, balance }: { walletAdd
                                 <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-green-500/30">
                                     <Check size={40} className="text-white" strokeWidth={3} />
                                 </div>
-                                <h3 className="text-2xl font-black text-[#1F1F1F]">Authentic Card Issued.</h3>
-                                <p className="text-[#1F1F1F]/60">Your Human Card is active and spendable.</p>
+                                <h3 className="text-2xl font-black text-[#1F1F1F]">
+                                    {kycRequired ? "KYC Verification Needed" : "Authentic Card Issued."}
+                                </h3>
+                                <p className="text-[#1F1F1F]/60">
+                                    {kycRequired 
+                                        ? "Your account is created on Striga. Please check your email to complete verification." 
+                                        : "Your Human Card is active and spendable."}
+                                </p>
                                 
                                 <div className="grid grid-cols-1 gap-3">
-                                    <button 
-                                        onClick={handleAddToGoogleWallet}
-                                        disabled={isAddingWallet === 'google'}
-                                        className="w-full py-4 bg-[#1B1B1B] text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:opacity-90 transition-opacity disabled:opacity-50"
-                                    >
-                                        {isAddingWallet === 'google' ? <Loader2 size={24} className="animate-spin"/> : (
-                                            <>
-                                                <Smartphone size={24} /> Add to Google Wallet
-                                            </>
-                                        )}
-                                    </button>
-                                    
-                                    <button className="w-full py-4 bg-[#F5F5F7] text-black rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:bg-gray-200 transition-colors">
-                                        <span className="text-2xl mb-1"></span> Add to Apple Wallet
-                                    </button>
+                                    {!kycRequired ? (
+                                        <>
+                                            <button 
+                                                onClick={handleAddToGoogleWallet}
+                                                disabled={isAddingWallet === 'google'}
+                                                className="w-full py-4 bg-[#1B1B1B] text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:opacity-90 transition-opacity disabled:opacity-50"
+                                            >
+                                                {isAddingWallet === 'google' ? <Loader2 size={24} className="animate-spin"/> : (
+                                                    <>
+                                                        <Smartphone size={24} /> Add to Google Wallet
+                                                    </>
+                                                )}
+                                            </button>
+                                            
+                                            <button className="w-full py-4 bg-[#F5F5F7] text-black rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:bg-gray-200 transition-colors">
+                                                <span className="text-2xl mb-1"></span> Add to Apple Wallet
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <button 
+                                            className="w-full py-4 bg-orange-600 text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:bg-orange-700 transition-colors"
+                                            onClick={() => window.open('https://portal.striga.com', '_blank')}
+                                        >
+                                            <Shield size={24} /> Complete Real KYC
+                                        </button>
+                                    )}
 
                                     <div className="pt-2 border-t border-black/5 mt-2 space-y-4">
                                         <div className="text-left">
                                             <div className="text-[10px] font-black uppercase text-[#1F1F1F]/40 mb-3 tracking-widest">Financial Status</div>
-                                            <div className="bg-orange-500/5 border border-orange-500/20 p-4 rounded-2xl text-orange-700 text-xs font-bold flex items-center gap-3">
+                                            <div className={`p-4 rounded-2xl text-xs font-bold flex items-center gap-3 border ${
+                                                kycRequired 
+                                                    ? "bg-orange-500/5 border-orange-500/20 text-orange-700"
+                                                    : "bg-green-500/5 border-green-500/20 text-green-700"
+                                            }`}>
                                                 <Shield size={16}/>
-                                                Real Provider Connection Required for Real-time Transactions.
+                                                {kycRequired ? "Verification in Progress" : "Real Striga Provider Connected"}
                                             </div>
                                         </div>
 

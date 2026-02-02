@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { auth } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
+import { striga } from '@/lib/wallet/striga';
 
 export async function GET(request: NextRequest) {
   try {
@@ -22,52 +23,96 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const user = await currentUser();
     const { userId: authUserId } = await auth();
-    if (!authUserId) {
+    
+    if (!authUserId || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const body = await request.json();
     const { tier, linkedAddress } = body;
 
-    // Check if card already exists
-    const existing = await prisma.virtualCard.findUnique({
-      where: { authUserId },
+    // 1. Check if card or Striga user already exists in our DB
+    let dbUser = await prisma.authUser.findUnique({
+      where: { id: authUserId },
+      include: { virtualCard: true }
     });
 
-    if (existing) {
-      return NextResponse.json({ card: existing });
+    if (dbUser?.virtualCard) {
+      return NextResponse.json({ card: dbUser.virtualCard });
     }
 
-    // [PRODUCTION REAL] In a real app, we would call a BaaS provider like Striga here
-    // Example: const strigaCard = await striga.createCard({ userId: authUserId, tier });
-    
-    // For now, we ensure that if a REAL CONFIG is not provided, we don't invent numbers.
-    const PROVIDER_API_KEY = process.env.STRIGA_API_KEY;
-    
-    if (!PROVIDER_API_KEY) {
-      return NextResponse.json({ 
-        error: 'CONFIGURATION_REQUIRED', 
-        message: 'Real-world Card Provider (BaaS) not configured. Please add STRIGA_API_KEY to environment.' 
-      }, { status: 501 });
+    // 2. REAL STRIGA INTEGRATION: Create User if not exists
+    let strigaUserId = dbUser?.strigaUserId;
+    if (!strigaUserId) {
+      const firstName = user.firstName || "Human";
+      const lastName = user.lastName || "User";
+      const email = user.emailAddresses[0]?.emailAddress;
+
+      try {
+        const strigaUser = await striga.createUser({ email, firstName, lastName });
+        strigaUserId = strigaUser.userId;
+        
+        // Save Striga User ID
+        await prisma.authUser.update({
+          where: { id: authUserId },
+          data: { strigaUserId }
+        });
+      } catch (e: any) {
+        return NextResponse.json({ 
+          error: 'STRIGA_USER_CREATION_FAILED', 
+          message: 'Failed to register with financial provider.',
+          details: e.message 
+        }, { status: 502 });
+      }
     }
 
-    // This section would be replaced by actual data from the provider
-    // const { cardNumber, cvv, expiry } = strigaCard;
+    // 3. Check KYC Status
+    const strigaStatus = await striga.getUserStatus(strigaUserId);
+    if (strigaStatus.kycStatus !== 'APPROVED') {
+       // In production, we create the VirtualCard record with PENDING status
+       // but we cannot "issue" it on the network until KYC is done.
+       const card = await prisma.virtualCard.create({
+         data: {
+           authUserId,
+           cardNumber: "PENDING_KYC",
+           cvv: "•••",
+           expiry: "MM/YY",
+           tier: tier || "BLACK",
+           linkedAddress: linkedAddress || '',
+           status: "PENDING_KYC"
+         },
+       });
+       return NextResponse.json({ success: true, card, kycRequired: true });
+    }
 
-    const card = await prisma.virtualCard.create({
-      data: {
-        authUserId,
-        cardNumber: "PENDING_ACTIVATION", // Real number would go here from Provider
-        cvv: "•••",
-        expiry: "MM/YY",
-        tier: tier || "BLACK",
-        linkedAddress: linkedAddress || '',
-        status: "PENDING_CONFIG"
-      },
-    });
+    // 4. Issue REAL Card on Striga
+    try {
+      const strigaCard = await striga.issueCard(strigaUserId, tier);
+      
+      const card = await prisma.virtualCard.create({
+        data: {
+          authUserId,
+          strigaCardId: strigaCard.id,
+          cardNumber: strigaCard.maskedNumber || "PROCESSING", // Real providers often mask initially
+          cvv: "•••",
+          expiry: strigaCard.expiry || "MM/YY",
+          tier: tier || "BLACK",
+          linkedAddress: linkedAddress || '',
+          status: "ACTIVE"
+        },
+      });
 
-    return NextResponse.json({ success: true, card });
+      return NextResponse.json({ success: true, card });
+    } catch (e: any) {
+       return NextResponse.json({ 
+         error: 'STRIGA_CARD_ISSUANCE_FAILED', 
+         message: 'Real-world card issuance failed at provider level.',
+         details: e.message 
+       }, { status: 502 });
+    }
+
   } catch (error: any) {
     console.error('Error issuing card:', error);
     return NextResponse.json({ error: 'Internal Server Error', details: error.message }, { status: 500 });
