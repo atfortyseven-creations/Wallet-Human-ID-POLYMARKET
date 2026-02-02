@@ -11,6 +11,7 @@ import useSWR from 'swr';
 
 import ReceiveModal from '@/components/wallet/modals/ReceiveModal';
 import QRScannerModal from '@/components/wallet/QRScannerModal';
+import { WalletType } from '@/lib/wallet/accounts';
 
 const fetcher = (url: string) => fetch(url).then(r => r.json());
 
@@ -23,9 +24,10 @@ interface HumanCardProps {
     balance?: string;
     change24hUSD?: number;
     change24hPercent?: number;
+    accountType?: WalletType;
 }
 
-export const HumanCard = ({ address: propAddress, balance: propBalance, change24hUSD, change24hPercent }: HumanCardProps) => {
+export const HumanCard = ({ address: propAddress, balance: propBalance, change24hUSD, change24hPercent, accountType }: HumanCardProps) => {
     const { t } = useApp();
     
     // User Data State
@@ -35,9 +37,9 @@ export const HumanCard = ({ address: propAddress, balance: propBalance, change24
     const [isScannerOpen, setIsScannerOpen] = useState(false);
 
     // Optimized Data Fetching with SWR
-    const { data: walletData, error } = useSWR('/api/user/wallet', fetcher, {
-        revalidateOnFocus: false,
-        dedupingInterval: 30000
+    const { data: walletData, error } = useSWR(propAddress ? `/api/user/wallet?address=${propAddress}` : '/api/user/wallet', fetcher, {
+        revalidateOnFocus: true,
+        refreshInterval: 10000
     });
 
     const balance = propBalance !== undefined 
@@ -83,8 +85,8 @@ export const HumanCard = ({ address: propAddress, balance: propBalance, change24
                     {/* HEADER: LOGO & CHIP */}
                     <div className="flex justify-between items-start mb-6">
                         <div className="flex items-center gap-2 text-white/60 bg-black/20 px-3 py-1.5 rounded-full text-xs font-mono border border-white/5">
-                            <Shield size={12} className="text-[#00ff9d]" />
-                            LEDGER SECURED
+                            <Shield size={12} className={cn("text-[#00ff9d]", accountType === 'WATCH_ONLY' && "text-blue-400")} />
+                            {accountType === 'WATCH_ONLY' ? 'WATCH ONLY' : 'LEDGER SECURED'}
                         </div>
                         <div className="w-12 h-8 rounded-md bg-gradient-to-br from-yellow-400/20 to-yellow-600/20 border border-white/10 flex items-center justify-center relative overflow-hidden">
                             <div className="absolute top-1/2 left-0 w-full h-[1px] bg-white/10" />
@@ -100,6 +102,12 @@ export const HumanCard = ({ address: propAddress, balance: propBalance, change24
                             className="text-neutral-400 text-xs font-medium uppercase tracking-[0.2em] mb-1"
                         >
                             Total Balance
+                            {(!loading || walletData) && (
+                                <span className="ml-2 inline-flex items-center gap-1 text-[10px] text-[#00ff9d] bg-[#00ff9d]/10 px-1.5 py-0.5 rounded-full border border-[#00ff9d]/20">
+                                    <span className="w-1 h-1 rounded-full bg-[#00ff9d] animate-ping" />
+                                    LIVE
+                                </span>
+                            )}
                         </motion.div>
                         
                         {/* Unique User Balance */}

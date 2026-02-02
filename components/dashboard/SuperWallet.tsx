@@ -298,6 +298,7 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
                                 balance={totalBalance} 
                                 change24hUSD={change24hUSD}
                                 change24hPercent={change24hPercent}
+                                accountType={accounts.find(a => a.address.toLowerCase() === displayAddress.toLowerCase())?.type}
                             />
 
                         {/* Wallet Actions & Tabs */}

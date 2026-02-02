@@ -40,7 +40,8 @@ export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?:
         token: USDC_ADDRESS,
         chainId: 137, // Polygon
         query: {
-            enabled: !!effectiveAddress, // Solo ejecutar si hay address
+            enabled: !!effectiveAddress,
+            refetchInterval: 10000, // Real-time balance updates
         }
     });
 
@@ -56,6 +57,7 @@ export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?:
             return data;
         },
         enabled: !!isValidAddress,
+        refetchInterval: 15000,
     });
 
     // 3. Historial (History) - Enriched On-Chain History
@@ -72,6 +74,7 @@ export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?:
              }
         },
         enabled: !!isValidAddress,
+        refetchInterval: 30000,
     });
 
 
@@ -84,6 +87,7 @@ export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?:
             return data;
         },
         enabled: !!effectiveAddress,
+        refetchInterval: 10000, // Real-time multi-chain updates
     });
 
     // 5. Procesamiento y Enriquecimiento de Datos
