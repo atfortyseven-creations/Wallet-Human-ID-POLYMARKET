@@ -217,6 +217,8 @@ export async function getTokenPrice(chainId: number, tokenAddress: string): Prom
  * Format token balance with decimals
  */
 function formatTokenBalance(balance: bigint, decimals: number): string {
+  if (balance === 0n) return '0';
+  
   const divisor = BigInt(10 ** decimals);
   const wholePart = balance / divisor;
   const remainder = balance % divisor;
@@ -225,7 +227,14 @@ function formatTokenBalance(balance: bigint, decimals: number): string {
     return wholePart.toString();
   }
   
-  const fractional = remainder.toString().padStart(decimals, '0');
+  // Format with limited precision for extreme cases
+  let fractional = remainder.toString().padStart(decimals, '0');
+  
+  // limit to 8 significant decimals to avoid layout explosion
+  if (fractional.length > 8) {
+    fractional = fractional.substring(0, 8);
+  }
+  
   const trimmed = fractional.replace(/0+$/, '');
   
   return trimmed ? `${wholePart}.${trimmed}` : wholePart.toString();

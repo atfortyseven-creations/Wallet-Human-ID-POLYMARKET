@@ -103,6 +103,29 @@ export function WalletActions({
         { id: 'Claimables', label: 'Claimables', icon: <Gift size={14} />, count: claimables.length }
     ];
 
+    const formatDisplayBalance = (balance: string) => {
+        const num = parseFloat(balance);
+        if (isNaN(num)) return '0';
+        if (num === 0) return '0';
+        
+        if (num > 1_000_000_000_000) {
+            return (num / 1_000_000_000_000).toFixed(2) + 'T';
+        }
+        if (num > 1_000_000_000) {
+            return (num / 1_000_000_000).toFixed(2) + 'B';
+        }
+        if (num > 1_000_000) {
+            return (num / 1_000_000).toFixed(2) + 'M';
+        }
+        
+        // Truncate very long strings that might still pass the backend check
+        if (balance.length > 15) {
+            return num.toLocaleString(undefined, { maximumFractionDigits: 2 });
+        }
+        
+        return balance;
+    };
+
     return (
         <div className="w-full">
             {/* Modals */}
@@ -217,19 +240,53 @@ export function WalletActions({
                             >
                                 {assets.length > 0 ? (
                                     assets.filter(a => a.symbol.toLowerCase().includes(searchQuery.toLowerCase())).map((asset, i) => (
-                                        <div key={i} className="flex items-center justify-between p-4 bg-white/60 hover:bg-white rounded-3xl transition-all border border-transparent hover:border-[#1F1F1F]/5">
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center p-2">
-                                                    {asset.logoURI ? <img src={asset.logoURI} alt={asset.symbol} className="w-full h-full object-contain" /> : <div className="font-black">{asset.symbol[0]}</div>}
+                                        <div 
+                                            key={i} 
+                                            className="group flex items-center justify-between p-4 bg-white/60 hover:bg-white rounded-[2rem] transition-all border border-[#1F1F1F]/[0.02] hover:border-[#1F1F1F]/10 hover:shadow-xl hover:shadow-[#1F1F1F]/5 active:scale-[0.99]"
+                                        >
+                                            <div className="flex items-center gap-4 min-w-0 flex-1 pr-4">
+                                                <div className="relative shrink-0">
+                                                    <div className="w-12 h-12 rounded-2xl bg-[#F8F8F8] dark:bg-neutral-800 flex items-center justify-center p-2.5 overflow-hidden shadow-[inset_0_2px_4px_rgba(0,0,0,0.05)]">
+                                                        {asset.logoURI ? (
+                                                            <img src={asset.logoURI} alt={asset.symbol} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300" />
+                                                        ) : (
+                                                            <div className="font-black text-xs text-[#1F1F1F]/40">{asset.symbol.slice(0, 2)}</div>
+                                                        )}
+                                                    </div>
+                                                    {asset.chainId === 137 && (
+                                                        <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-purple-100 rounded-full border-2 border-white flex items-center justify-center">
+                                                            <img src="https://cryptologos.cc/logos/polygon-matic-logo.png" className="w-3 h-3" alt="Polygon" />
+                                                        </div>
+                                                    )}
                                                 </div>
-                                                <div>
-                                                    <div className="font-black text-base text-[#1F1F1F]">{asset.symbol}</div>
-                                                    <div className="text-xs font-bold text-[#1F1F1F]/40 uppercase tracking-tighter">{asset.name}</div>
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="font-black text-base text-[#1F1F1F] truncate leading-tight">
+                                                            {asset.symbol}
+                                                        </div>
+                                                        {asset.change24h !== 0 && (
+                                                            <span className={`text-[10px] font-black ${asset.change24h > 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
+                                                                {asset.change24h > 0 ? '+' : ''}{asset.change24h.toFixed(1)}%
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <div className="text-[10px] font-black text-[#1F1F1F]/30 uppercase tracking-widest truncate">
+                                                        {asset.name}
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div className="text-right">
-                                                <div className="font-black text-base text-[#1F1F1F]">{asset.balanceFormatted}</div>
-                                                <div className="text-xs font-black text-emerald-600">${asset.valueUSD.toFixed(2)}</div>
+                                            <div className="text-right shrink-0 flex flex-col items-end">
+                                                <div className="font-black text-base text-[#1F1F1F] tabular-nums tracking-tighter">
+                                                    {formatDisplayBalance(asset.balanceFormatted)}
+                                                </div>
+                                                <div className="flex items-center gap-1.5">
+                                                    <span className="text-[10px] font-black text-[#1F1F1F]/20 uppercase tracking-tighter">
+                                                        Total
+                                                    </span>
+                                                    <div className="text-xs font-black text-emerald-600 tabular-nums">
+                                                        ${asset.valueUSD.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     ))
