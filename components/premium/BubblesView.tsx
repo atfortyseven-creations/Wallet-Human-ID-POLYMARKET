@@ -156,7 +156,7 @@ export default function BubblesView() {
                 ) : (
                     <div className="w-full h-full relative">
                         <AnimatePresence>
-                            {filteredData.slice(0, 50).map((coin, index) => (
+                            {filteredData.slice(0, 100).map((coin, index) => (
                                 <Bubble 
                                     key={coin.id} 
                                     coin={coin} 
@@ -230,7 +230,7 @@ function Bubble({ coin, index, timeframe, containerRef, dimensions }: {
     }, []);
 
     // Initial random-ish positions with a bit of grid logic
-    const cols = Math.floor(dimensions.width / 200) || 1;
+    const cols = Math.floor(dimensions.width / 140) || 1;
     const row = Math.floor(index / cols);
     const col = index % cols;
     

@@ -5,19 +5,15 @@ export async function GET() {
     const cgKey = process.env.NEXT_PUBLIC_COINGECKO_KEY || process.env.COINGECKO_KEY;
     console.log('Fetching Bubbles from CoinGecko...');
     
-    const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false`;
+    const url = `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=1h,24h,7d,30d,1y`;
     
     const headers: Record<string, string> = {
       'Accept': 'application/json',
     };
     
     if (cgKey) {
-      // Try both headers to be sure
       headers['x-cg-demo-api-key'] = cgKey;
       headers['x-cg-api-key'] = cgKey;
-      console.log('Using CoinGecko API Key (Demo)');
-    } else {
-      console.warn('No CoinGecko API Key found - results may be limited');
     }
 
     const response = await fetch(url, { 
@@ -36,10 +32,8 @@ export async function GET() {
     }
 
     const data = await response.json();
-    console.log(`Fetched ${data?.length} coins from CoinGecko`);
 
     if (!Array.isArray(data) || data.length === 0) {
-      console.error('CoinGecko returned empty or invalid data:', data);
       return NextResponse.json({ error: 'No se encontraron datos en CoinGecko' }, { status: 404 });
     }
 
@@ -54,7 +48,6 @@ export async function GET() {
       total_volume: coin.total_volume || 0,
       high_24h: coin.high_24h || 0,
       low_24h: coin.low_24h || 0,
-      // Fallback percentages if the specific call didn't include them
       price_change_1h: coin.price_change_percentage_1h_in_currency || 0,
       price_change_24h: coin.price_change_percentage_24h_in_currency || coin.price_change_percentage_24h || 0,
       price_change_7d: coin.price_change_percentage_7d_in_currency || 0,
