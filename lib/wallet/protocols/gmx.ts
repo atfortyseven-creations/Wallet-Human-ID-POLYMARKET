@@ -20,7 +20,12 @@ export async function discoverGmxPositions(address: string, chainIds: number[]):
   try {
     // Arbitrum Check
     if (chainIds.includes(42161)) {
-      const alchemyArb = new Alchemy({ apiKey: ALCHEMY_KEY, network: Network.ARB_MAINNET });
+      const alchemyArb = new Alchemy({ 
+        apiKey: ALCHEMY_KEY, 
+        network: Network.ARB_MAINNET,
+        maxRetries: 3,
+        requestTimeout: 10000 
+      });
       const balances = await alchemyArb.core.getTokenBalances(address, [GMX_TOKENS.ARBITRUM.GMX, GMX_TOKENS.ARBITRUM.GLP]);
       
       for (const b of balances.tokenBalances) {

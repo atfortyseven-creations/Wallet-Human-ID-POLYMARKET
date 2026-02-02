@@ -44,15 +44,19 @@ export async function getPortfolio(
   // Use a targeted set of chains to avoid massive RPC overhead in one go
   const chains = chainIds || [1, 137, 8453, 42161]; // Mainnet, Polygon, Base, Arbitrum
   
-  // 1. Fetch tokens from all chains
-  const allTokensPromises = chains.map(chainId =>
-    discoverTokens(walletAddress, chainId).catch(e => {
+  // 1. Fetch tokens from all chains - Staggered to prevent RPC flooding
+  const allTokensArrays = [];
+  for (const chainId of chains) {
+    try {
+        const tokens = await discoverTokens(walletAddress, chainId);
+        allTokensArrays.push(tokens);
+    } catch (e) {
         console.warn(`[Portfolio] Token discovery failed for chain ${chainId}:`, e);
-        return [];
-    })
-  );
+    }
+    // Slight delay between chains
+    await new Promise(resolve => setTimeout(resolve, 300));
+  }
   
-  const allTokensArrays = await Promise.all(allTokensPromises);
   const allTokens = allTokensArrays.flat();
 
   // 2. Fetch DeFi Positions (Real Protocol Discovery)

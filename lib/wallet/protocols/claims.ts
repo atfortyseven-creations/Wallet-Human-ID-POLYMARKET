@@ -4,17 +4,20 @@ export async function discoverClaimables(address: string, chainIds: number[]): P
   const claimables: ClaimableAsset[] = [];
 
   try {
-    // 1. Check for Worldcoin (WLD) Grant Rewards (Simulated for this specific "Human" context)
-    // In a real high-level integration, we would query the Worldcoin Grant contract.
-    // For now, we add logic that can be expanded with real contract calls.
-    
-    // 2. Check for known Base Airdrops / Quest rewards
-    if (chainIds.includes(8453)) {
-        // Here we could query the "Layer3" or "RabbitHole" or specific protocol claim contracts
-    }
+    for (const chainId of chainIds) {
+        // 1. Check for Worldcoin (WLD) Grant Rewards (Simulated for this specific "Human" context)
+        if (chainId === 1) {
+            // Real logic for Worldcoin or Mainnet claims would go here
+        }
+        
+        // 2. Check for known Base Airdrops / Quest rewards
+        if (chainId === 8453) {
+            // Logic for Base claims
+        }
 
-    // Since airdrops are often off-chain merkle roots, 
-    // real-time on-chain discovery without an indexer is limited to "contract balance" in specific protocols.
+        // Slight delay between chains to prevent RPC flooding
+        await new Promise(resolve => setTimeout(resolve, 200));
+    }
     
     return claimables;
   } catch (error) {

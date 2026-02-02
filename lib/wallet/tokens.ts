@@ -26,22 +26,13 @@ export interface TokenMetadata {
   chainId: number;
 }
 
+import { alchemyClient } from './alchemy-client';
+
 /**
  * Get the correct Alchemy API URL for a specific chain and method
  */
 function getAlchemyApiUrl(chainId: number): string {
-  const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
-  const networkMap: Record<number, string> = {
-    1: 'eth-mainnet',
-    137: 'polygon-mainnet',
-    8453: 'base-mainnet',
-    42161: 'arb-mainnet',
-    10: 'opt-mainnet',
-  };
-
-  const network = networkMap[chainId] || 'eth-mainnet';
-  // [FIX] Alchemy API URLs for JSON-RPC should not have the method name appended
-  return `https://${network}.g.alchemy.com/v2/${apiKey}`;
+  return alchemyClient.getApiUrl(chainId);
 }
 
 /**
@@ -53,53 +44,44 @@ export async function discoverTokens(
 ): Promise<Token[]> {
   try {
     const url = getAlchemyApiUrl(chainId);
-    const response = await fetch(
-      url,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'alchemy_getTokenBalances',
-          params: [walletAddress],
-          id: 1,
-        }),
-      }
+    const result = await alchemyClient.fetchWithRetry(url, {
+      jsonrpc: '2.0',
+      method: 'alchemy_getTokenBalances',
+      params: [walletAddress],
+      id: 1,
+    });
+
+    const tokenBalances = result?.tokenBalances || [];
+
+    // Filter out zero balances
+    const nonZeroBalances = tokenBalances.filter(
+      (token: any) => BigInt(token.tokenBalance || '0') > 0n
     );
 
-    if (!response.ok) {
-        throw new Error(`Alchemy API error: ${response.status} ${response.statusText}`);
-    }
+    if (nonZeroBalances.length === 0) return [];
 
-    const text = await response.text();
-    if (!text) return [];
-
-    const data = JSON.parse(text);
-    const tokenBalances = data.result?.tokenBalances || [];
-
-    // Filter out zero balances and fetch metadata
-    const nonZeroTokens = tokenBalances.filter(
-      (token: any) => BigInt(token.tokenBalance) > 0n
-    );
+    // Fetch all metadata in staggered chunks to avoid rate limiting
+    const tokenAddresses = nonZeroBalances.map((t: any) => t.contractAddress);
+    const metadataResults = await alchemyClient.getBatchMetadata(tokenAddresses, chainId);
 
     const tokensWithMetadata = await Promise.all(
-      nonZeroTokens.map(async (token: any) => {
-        const metadata = await getTokenMetadata(token.contractAddress, chainId);
-        const balance = BigInt(token.tokenBalance);
+        nonZeroBalances.map(async (token: any, index: number) => {
+        const metadata = metadataResults[index] || { symbol: 'UNKNOWN', name: 'Unknown Token', decimals: 18 };
+        const balance = BigInt(token.tokenBalance || '0');
         const formatted = formatTokenBalance(balance, metadata.decimals);
         const { price, change24h } = await getTokenPrice(chainId, token.contractAddress);
 
         return {
           address: token.contractAddress,
-          symbol: metadata.symbol,
-          name: metadata.name,
-          decimals: metadata.decimals,
-          logoURI: metadata.logoURI,
+          symbol: metadata.symbol || 'UNKNOWN',
+          name: metadata.name || 'Unknown Token',
+          decimals: metadata.decimals || 18,
+          logoURI: metadata.logo || undefined,
           balance: balance.toString(),
           balanceFormatted: formatted,
           priceUSD: price,
           valueUSD: price * parseFloat(formatted),
-          change24h, // Optional property if added to Token interface
+          change24h,
           chainId,
         };
       })
@@ -121,30 +103,7 @@ export async function getTokenMetadata(
   chainId: number
 ): Promise<TokenMetadata> {
   try {
-    const url = getAlchemyApiUrl(chainId);
-    const response = await fetch(
-      url,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'alchemy_getTokenMetadata',
-          params: [tokenAddress],
-          id: 1,
-        }),
-      }
-    );
-
-    if (!response.ok) {
-        throw new Error(`Alchemy API metadata error: ${response.status}`);
-    }
-
-    const text = await response.text();
-    if (!text) throw new Error('Empty response from Alchemy Metadata');
-
-    const data = JSON.parse(text);
-    const result = data.result;
+    const result = await alchemyClient.getTokenMetadata(tokenAddress, chainId);
 
     return {
       address: tokenAddress,
