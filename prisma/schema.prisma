@@ -497,6 +497,8 @@ model User {
   // Referral Relations
   referralsSent     Referral[] @relation("Referrer")
   referralsReceived Referral?  @relation("Referee")
+  // [NEW] Virtual Card
+  virtualCard   VirtualCard?
 
   @@index([reputation])
 }
@@ -532,6 +534,8 @@ model AuthUser {
   deadMansSwitch    DeadMansSwitch?
   socialRecovery    SocialRecovery?
   aiRebalancerPlans AIRebalancerPlan[]
+  // [NEW] Virtual Card
+  virtualCard       VirtualCard?
 
   @@index([email])
 }
@@ -1151,4 +1155,31 @@ model AIRebalancerPlan {
 
   @@index([userId])
   @@index([createdAt])
+}
+// ----------------------------------------------------------------------------
+// 8. VIRTUAL CARD ISSUANCE (Human Card)
+// ----------------------------------------------------------------------------
+
+model VirtualCard {
+  id            String   @id @default(cuid())
+  userId        String?  @unique
+  authUserId    String?  @unique
+  user          User?    @relation(fields: [userId], references: [walletAddress], onDelete: Cascade)
+  authUser      AuthUser? @relation(fields: [authUserId], references: [id], onDelete: Cascade)
+
+  cardNumber    String   // Masked or encrypted in real prod
+  cvv           String
+  expiry        String   // MM/YY
+  tier          String   @default("BLACK") // BLACK, METAL, SILVER
+  status        String   @default("ACTIVE")
+  brand         String   @default("VISA")
+  
+  // Real Spending Logic (Linked Balance)
+  linkedAddress String
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([authUserId])
+  @@index([linkedAddress])
 }

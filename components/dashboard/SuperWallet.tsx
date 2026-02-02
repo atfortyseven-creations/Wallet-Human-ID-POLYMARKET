@@ -343,7 +343,7 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
 
                 {activeView === 'cards' && (
                     <div className="animate-fade-in space-y-6">
-                        <FiatCardIssuance />
+                        <FiatCardIssuance walletAddress={displayAddress} balance={totalBalance} />
                         
                         <div className="bg-[#1F1F1F] p-6 rounded-3xl text-[#EAEADF] relative overflow-hidden">
                              {/* Abstract Background */}

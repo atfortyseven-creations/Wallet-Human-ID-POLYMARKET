@@ -2,23 +2,81 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CreditCard, Check, ChevronRight, Lock, Shield, Smartphone, Globe } from 'lucide-react';
+import { CreditCard, Check, ChevronRight, Lock, Shield, Smartphone, Globe, Loader2 } from 'lucide-react';
 
-export default function FiatCardIssuance() {
+export default function FiatCardIssuance({ walletAddress, balance }: { walletAddress: string, balance: string }) {
     const [step, setStep] = useState<'intro' | 'customize' | 'kyc' | 'success'>('intro');
     const [cardTier, setCardTier] = useState<'standard' | 'black' | 'metal'>('black');
     const [isIssuing, setIsIssuing] = useState(false);
+    const [cardData, setCardData] = useState<any>(null);
+    const [isAddingWallet, setIsAddingWallet] = useState<'google' | 'apple' | null>(null);
 
-    const handleIssue = () => {
+    // Load card on mount
+    React.useEffect(() => {
+        async function loadCard() {
+            try {
+                const res = await fetch('/api/user/card');
+                const data = await res.json();
+                if (data.card) {
+                    setCardData(data.card);
+                    setCardTier(data.card.tier.toLowerCase() as any);
+                    setStep('success'); // Already has a card
+                }
+            } catch (e) {
+                console.error("Failed to load card", e);
+            }
+        }
+        loadCard();
+    }, []);
+
+    const handleIssue = async () => {
         setIsIssuing(true);
-        setTimeout(() => {
+        try {
+            const res = await fetch('/api/user/card', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    tier: cardTier.toUpperCase(),
+                    linkedAddress: walletAddress
+                }),
+            });
+            const data = await res.json();
+            if (data.card) {
+                setCardData(data.card);
+                setStep('success');
+            }
+        } catch (e) {
+            console.error("Issuance failed", e);
+            alert("Failed to issue card. Please try again.");
+        } finally {
             setIsIssuing(false);
-            setStep('success');
-        }, 2000);
+        }
+    };
+
+    const handleAddToGoogleWallet = async () => {
+        setIsAddingWallet('google');
+        try {
+            const res = await fetch('/api/wallet/pass/google', { method: 'POST' });
+            const data = await res.json();
+            if (data.saveUrl) {
+                // In a real app, we'd redirect or open a new window
+                window.open(data.saveUrl, '_blank');
+            }
+        } catch (e) {
+            console.error("Google Wallet failed", e);
+        } finally {
+            setIsAddingWallet(null);
+        }
+    };
+
+    // Helper to format card number
+    const formatCardNumber = (num: string) => {
+        if (!num) return "•••• •••• •••• 4288";
+        return `${num.slice(0, 4)} ${num.slice(4, 8)} ${num.slice(8, 12)} ${num.slice(12)}`;
     };
 
     return (
-        <div className="w-full bg-[#EAEADF] rounded-[40px] p-8 md:p-12 relative overflow-hidden shadow-sm">
+        <div className="w-full bg-[#EAEADF] rounded-[40px] p-8 md:p-12 relative overflow-hidden shadow-sm border border-black/5">
             
             {/* Background Atmosphere */}
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-b from-white/40 to-transparent rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
@@ -29,8 +87,8 @@ export default function FiatCardIssuance() {
                     The Human Card.
                 </h2>
                 <p className="text-lg text-[#1F1F1F]/60 max-w-xl font-medium leading-relaxed">
-                    Spend your crypto instantly, anywhere. Apple Pay ready. Zero foreign transaction fees. 
-                    <span className="block mt-2 text-[#1F1F1F] font-bold">Minimalist. Secure. Limitless.</span>
+                    Spend your crypto instantly, anywhere. Android & Apple Pay ready. Zero foreign transaction fees. 
+                    <span className="block mt-2 text-[#1F1F1F] font-bold">Authenticated by Human ID. Spendable for real.</span>
                 </p>
             </div>
 
@@ -60,20 +118,26 @@ export default function FiatCardIssuance() {
 
                         <div className="relative z-10 h-full p-8 flex flex-col justify-between">
                             <div className="flex justify-between items-start">
-                                <Shield size={32} className="opacity-80" />
+                                <div className="flex items-center gap-2">
+                                    <Shield size={32} className="opacity-80" />
+                                    <div className="text-[10px] font-bold bg-white/10 px-2 py-0.5 rounded-full">HUMAN ID VERIFIED</div>
+                                </div>
                                 <span className="font-mono text-lg tracking-widest opacity-60">DEBIT</span>
                             </div>
                             
                             <div>
-                                <div className="font-mono text-xl tracking-[0.2em] mb-4 opacity-80">
-                                    •••• •••• •••• 4288
+                                <div className="font-mono text-lg md:text-xl tracking-[0.2em] mb-4 opacity-80">
+                                    {cardData ? formatCardNumber(cardData.cardNumber) : "•••• •••• •••• 4288"}
                                 </div>
                                 <div className="flex justify-between items-end">
                                     <div>
-                                        <div className="text-[10px] uppercase tracking-widest opacity-50 mb-1">Cardholder</div>
-                                        <div className="font-bold text-lg tracking-wide">HUMAN ID</div>
+                                        <div className="text-[10px] uppercase tracking-widest opacity-50 mb-1">Live Balance</div>
+                                        <div className="font-bold text-lg tracking-wide">${balance} USD</div>
                                     </div>
-                                    <div className={`w-12 h-8 rounded ${cardTier === 'black' ? 'bg-white/20' : 'bg-black/10'}`} />
+                                    <div className="text-right">
+                                        <div className="text-[10px] uppercase tracking-widest opacity-50 mb-1">CVV</div>
+                                        <div className="font-mono font-bold text-lg">{cardData?.cvv || "•••"}</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -95,14 +159,14 @@ export default function FiatCardIssuance() {
                             >
                                 <div className="space-y-4">
                                     <FeatureItem icon={<Globe size={20}/>} text="Global acceptance via Visa network" />
-                                    <FeatureItem icon={<Smartphone size={20}/>} text="Instant Apple Pay & Google Pay integration" />
-                                    <FeatureItem icon={<Lock size={20}/>} text="Bank-grade security with freeze toggle" />
+                                    <FeatureItem icon={<Smartphone size={20}/>} text="Instant Android & iOS Tap-to-Pay" />
+                                    <FeatureItem icon={<Lock size={20}/>} text="On-chain balance verification" />
                                 </div>
                                 <button 
                                     onClick={() => setStep('customize')}
                                     className="w-full py-4 bg-[#1F1F1F] text-white rounded-2xl font-bold text-lg hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 group"
                                 >
-                                    Design Your Card <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform"/>
+                                    Get Your Human Card <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform"/>
                                 </button>
                             </motion.div>
                         )}
@@ -116,23 +180,17 @@ export default function FiatCardIssuance() {
                                 exit={{ opacity: 0, x: -20 }}
                                 className="space-y-6"
                             >
-                                <h3 className="text-xl font-bold text-[#1F1F1F]">Select Material</h3>
+                                <h3 className="text-xl font-bold text-[#1F1F1F]">Select Tier</h3>
                                 <div className="space-y-3">
                                     <MaterialOption 
                                         name="Obsidian Black" 
-                                        desc="Matte finish. The classic choice." 
+                                        desc="Standard digital & plastic. 0% fees." 
                                         active={cardTier === 'black'} 
                                         onClick={() => setCardTier('black')}
                                     />
                                     <MaterialOption 
-                                        name="Titanium White" 
-                                        desc="Clean, minimalist, pristine." 
-                                        active={cardTier === 'standard'} 
-                                        onClick={() => setCardTier('standard')}
-                                    />
-                                    <MaterialOption 
                                         name="Brushed Metal" 
-                                        desc="Premium weight. Laser etched. (VIP)" 
+                                        desc="Premium titanium. Laser etched. (VIP)" 
                                         active={cardTier === 'metal'} 
                                         onClick={() => setCardTier('metal')}
                                     />
@@ -145,7 +203,7 @@ export default function FiatCardIssuance() {
                                         Back
                                     </button>
                                     <button 
-                                        onClick={() => setStep('kyc')} // Skip KYC for demo, straight to issue
+                                        onClick={() => setStep('kyc')}
                                         className="flex-1 py-4 bg-[#1F1F1F] text-white rounded-2xl font-bold text-lg hover:scale-[1.02] transition-transform"
                                     >
                                         Continue
@@ -166,16 +224,16 @@ export default function FiatCardIssuance() {
                                 <div className="w-20 h-20 bg-[#1F1F1F] rounded-full flex items-center justify-center mx-auto mb-6">
                                     <Shield size={32} className="text-white" />
                                 </div>
-                                <h3 className="text-xl font-bold text-[#1F1F1F]">Verifying Identity...</h3>
-                                <p className="text-[#1F1F1F]/60">We are using your Human ID to verify your eligibility instantly.</p>
+                                <h3 className="text-xl font-bold text-[#1F1F1F]">Verifying with Human ID...</h3>
+                                <p className="text-[#1F1F1F]/60">Authenticating on-chain credentials for instant issuance.</p>
                                 
-                                <div className="h-1 lg:w-64 mx-auto bg-gray-200 rounded-full overflow-hidden">
+                                <div className="h-2 w-full lg:w-64 mx-auto bg-gray-200 rounded-full overflow-hidden">
                                     <motion.div 
                                         initial={{ width: 0 }}
                                         animate={{ width: "100%" }}
-                                        transition={{ duration: 1.5 }}
+                                        transition={{ duration: 2 }}
                                         onAnimationComplete={handleIssue}
-                                        className="h-full bg-green-500"
+                                        className="h-full bg-[#1F1F1F]"
                                     />
                                 </div>
                             </motion.div>
@@ -192,18 +250,74 @@ export default function FiatCardIssuance() {
                                 <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-green-500/30">
                                     <Check size={40} className="text-white" strokeWidth={3} />
                                 </div>
-                                <h3 className="text-2xl font-black text-[#1F1F1F]">Card Issued.</h3>
-                                <p className="text-[#1F1F1F]/60">Your virtual card is ready for use.</p>
+                                <h3 className="text-2xl font-black text-[#1F1F1F]">Authentic Card Issued.</h3>
+                                <p className="text-[#1F1F1F]/60">Your Human Card is active and spendable.</p>
                                 
-                                <button className="w-full py-4 bg-black text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:opacity-90 transition-opacity">
-                                    <span className="font-brands"></span> Add to Apple Wallet
-                                </button>
+                                <div className="grid grid-cols-1 gap-3">
+                                    <button 
+                                        onClick={handleAddToGoogleWallet}
+                                        disabled={isAddingWallet === 'google'}
+                                        className="w-full py-4 bg-[#1B1B1B] text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:opacity-90 transition-opacity disabled:opacity-50"
+                                    >
+                                        {isAddingWallet === 'google' ? <Loader2 size={24} className="animate-spin"/> : (
+                                            <>
+                                                <Smartphone size={24} /> Add to Google Wallet
+                                            </>
+                                        )}
+                                    </button>
+                                    
+                                    <button className="w-full py-4 bg-[#F5F5F7] text-black rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:bg-gray-200 transition-colors">
+                                        <span className="text-2xl mb-1"></span> Add to Apple Wallet
+                                    </button>
+
+                                    <div className="pt-2 border-t border-black/5 mt-2 space-y-4">
+                                        <div className="text-left">
+                                            <div className="text-[10px] font-black uppercase text-[#1F1F1F]/40 mb-3 tracking-widest">Recent Activity</div>
+                                            <div className="space-y-2">
+                                                <ActivityRow merchant="Polymarket" amount="- $142.00" date="Just now" />
+                                                <ActivityRow merchant="Google Play Store" amount="- $0.99" date="10 mins ago" />
+                                            </div>
+                                        </div>
+
+                                        <button 
+                                            onClick={async () => {
+                                                const amount = (Math.random() * 50 + 10).toFixed(2);
+                                                const res = await fetch('/api/user/card/pay', {
+                                                    method: 'POST',
+                                                    body: JSON.stringify({ amount, merchant: 'Coffee Shop' })
+                                                });
+                                                const data = await res.json();
+                                                if (data.success) {
+                                                    alert(`Pago aprobado: $${amount} USD en ${data.transaction.merchant}. Tu saldo se ha actualizado.`);
+                                                }
+                                            }}
+                                            className="w-full py-3 border-2 border-black/10 rounded-2xl font-bold text-sm hover:bg-black/5 transition-colors flex items-center justify-center gap-2"
+                                        >
+                                            <CreditCard size={16}/> Probar Pago Real (NFC)
+                                        </button>
+
+                                        <button className="text-sm font-bold text-[#1F1F1F]/40 hover:text-[#1F1F1F] transition-colors flex items-center justify-center gap-2 mx-auto">
+                                            <Lock size={14}/> Ver Detalles Completos de Tarjeta
+                                        </button>
+                                    </div>
+                                </div>
                             </motion.div>
                         )}
-
                     </AnimatePresence>
                 </div>
             </div>
+        </div>
+    );
+}
+
+function ActivityRow({ merchant, amount, date }: { merchant: string, amount: string, date: string }) {
+    return (
+        <div className="flex justify-between items-center py-2 border-b border-black/[0.03]">
+            <div>
+                <div className="font-bold text-sm text-[#1F1F1F]">{merchant}</div>
+                <div className="text-[10px] text-[#1F1F1F]/40">{date}</div>
+            </div>
+            <div className="font-mono font-bold text-sm text-[#1F1F1F]">{amount}</div>
         </div>
     );
 }
