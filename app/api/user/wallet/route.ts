@@ -64,6 +64,24 @@ export async function GET() {
       });
     }
 
+    // [FIX] Ensure the base 'User' record exists for this wallet address
+    // This allows the user to add 'WatchedWallet' since it has a foreign key to 'User'
+    if (authUser.walletAddress) {
+      await prisma.user.upsert({
+        where: { walletAddress: authUser.walletAddress },
+        update: {
+          email: authUser.email,
+          name: authUser.name,
+        },
+        create: {
+          walletAddress: authUser.walletAddress,
+          email: authUser.email,
+          name: authUser.name,
+          tier: 'HUMAN',
+        },
+      });
+    }
+
     let walletAddress = authUser.walletAddress;
 
     if (!walletAddress) {
@@ -89,6 +107,19 @@ export async function GET() {
             encryptedMnemonic,
             encryptedPrivateKey,
           }
+        }),
+        prisma.user.upsert({
+          where: { walletAddress },
+          update: {
+            email: authUser.email,
+            name: authUser.name,
+          },
+          create: {
+            walletAddress,
+            email: authUser.email,
+            name: authUser.name,
+            tier: 'HUMAN',
+          },
         }),
         prisma.walletAccount.create({
           data: {

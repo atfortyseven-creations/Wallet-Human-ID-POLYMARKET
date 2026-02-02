@@ -2,6 +2,41 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getTotalWalletBalance } from '@/lib/wallet/multi-chain';
 
+const GLOBAL_WHALES = [
+  {
+    id: 'global-binance',
+    address: '0x28C6c06298d514Db089934071355E5743bf21d60',
+    label: 'Binance: Hot Wallet',
+    tags: ['Exchange', 'Whale', 'Market Maker'],
+    alertsEnabled: true,
+    isGlobal: true
+  },
+  {
+    id: 'global-cumberland',
+    address: '0x3Efa5AaCD2f676239bc7a60C0392F86E20340A39',
+    label: 'Cumberland DRW',
+    tags: ['Institutional', 'Liquidity', 'Whale'],
+    alertsEnabled: true,
+    isGlobal: true
+  },
+  {
+    id: 'global-wintermute',
+    address: '0x000000000000541E251674E0d273D3c034000000',
+    label: 'Wintermute',
+    tags: ['Market Maker', 'Smart Money'],
+    alertsEnabled: true,
+    isGlobal: true
+  },
+  {
+    id: 'global-jump',
+    address: '0xf584F8728B874a6a5c7A8d4d387C9aae91720d2b',
+    label: 'Jump Crypto',
+    tags: ['Institutional', 'Whale'],
+    alertsEnabled: true,
+    isGlobal: true
+  }
+];
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -32,7 +67,13 @@ export async function GET(req: NextRequest) {
       })
     );
 
-    return NextResponse.json({ watchedWallets: watchedWalletsWithBalances });
+    // [EXPANSION] Merge with Global Professional Whales
+    const allWallets = [
+      ...GLOBAL_WHALES,
+      ...watchedWalletsWithBalances
+    ];
+
+    return NextResponse.json({ watchedWallets: allWallets });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch watched wallets' }, { status: 500 });
   }
@@ -48,6 +89,17 @@ export async function POST(req: NextRequest) {
     }
 
     const formattedAddress = address.startsWith('0x') ? address.toLowerCase() : address;
+
+    // [DEFENSIVE] Ensure the User record exists before creating the WatchedWallet
+    // This handles cases where the user might not have visited the wallet dashboard yet
+    await prisma.user.upsert({
+      where: { walletAddress: userId },
+      update: {},
+      create: {
+        walletAddress: userId,
+        tier: 'HUMAN',
+      }
+    });
 
     const watchedWallet = await prisma.watchedWallet.create({
       data: {

@@ -12,6 +12,41 @@ import { prisma } from '@/lib/prisma';
 // PROTECTED API: Watch Wallet
 // ============================================
 
+const GLOBAL_WHALES = [
+  {
+    id: 'global-binance',
+    address: '0x28C6c06298d514Db089934071355E5743bf21d60',
+    label: 'Binance: Hot Wallet',
+    tags: ['Exchange', 'Whale', 'Market Maker'],
+    alertsEnabled: true,
+    isGlobal: true
+  },
+  {
+    id: 'global-cumberland',
+    address: '0x3Efa5AaCD2f676239bc7a60C0392F86E20340A39',
+    label: 'Cumberland DRW',
+    tags: ['Institutional', 'Liquidity', 'Whale'],
+    alertsEnabled: true,
+    isGlobal: true
+  },
+  {
+    id: 'global-wintermute',
+    address: '0x000000000000541E251674E0d273D3c034000000',
+    label: 'Wintermute',
+    tags: ['Market Maker', 'Smart Money'],
+    alertsEnabled: true,
+    isGlobal: true
+  },
+  {
+    id: 'global-jump',
+    address: '0xf584F8728B874a6a5c7A8d4d387C9aae91720d2b',
+    label: 'Jump Crypto',
+    tags: ['Institutional', 'Whale'],
+    alertsEnabled: true,
+    isGlobal: true
+  }
+];
+
 export async function POST(req: NextRequest) {
   try {
     // Security validation
@@ -74,7 +109,6 @@ export async function POST(req: NextRequest) {
         address,
         label,
         tags: body.tags || [],
-        notes: body.notes || '',
         createdAt: new Date(),
       },
     });
@@ -123,10 +157,16 @@ export async function GET(req: NextRequest) {
 
     // Watermark each wallet
     const watermarkedWallets = wallets.map(w => watermarkData(w, userId));
+    
+    // [EXPANSION] Inject Global Professional Whales for a full experience
+    const allWallets = [
+      ...GLOBAL_WHALES.map(gw => watermarkData(gw, userId)),
+      ...watermarkedWallets
+    ];
 
     return NextResponse.json({
-      wallets: watermarkedWallets,
-      count: wallets.length,
+      wallets: allWallets,
+      count: allWallets.length,
     });
   } catch (error) {
     console.error('[API ERROR] Get wallets:', error);

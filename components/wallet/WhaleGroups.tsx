@@ -15,7 +15,38 @@ interface Group {
     isLocked: boolean;
 }
 
-const GROUPS: Group[] = []; // No fake data as requested
+const GROUPS: Group[] = [
+    {
+        id: 'group-alpha',
+        name: 'Liquid Alphas',
+        leader: '0x742...bEb',
+        leaderAvatar: 'bg-gradient-to-br from-blue-500 to-cyan-400',
+        members: 1240,
+        monthlyReturn: '+42.5%',
+        entryRequirement: 'Open to All',
+        isLocked: false
+    },
+    {
+        id: 'group-macro',
+        name: 'Macro Monsters',
+        leader: '0x28C...d60',
+        leaderAvatar: 'bg-gradient-to-br from-purple-600 to-pink-500',
+        members: 850,
+        monthlyReturn: '+28.2%',
+        entryRequirement: 'Open to All',
+        isLocked: false
+    },
+    {
+        id: 'group-smart',
+        name: 'Smart Money Flow',
+        leader: '0xf58...d2b',
+        leaderAvatar: 'bg-gradient-to-br from-orange-400 to-red-500',
+        members: 2100,
+        monthlyReturn: '+15.8%',
+        entryRequirement: 'Open to All',
+        isLocked: false
+    }
+];
 
 export default function WhaleGroups() {
     const [activeGroup, setActiveGroup] = useState<Group | null>(null);
@@ -44,8 +75,7 @@ export default function WhaleGroups() {
                                 : 'bg-white text-[#1F1F1F] border-[#1F1F1F]/5 hover:shadow-xl'}
                         `}
                         onClick={() => {
-                            if (!group.isLocked) setActiveGroup(group);
-                            else alert("Access Denied: You need the VIP NFT.");
+                            setActiveGroup(group);
                         }}
                     >
                         {/* Header */}
