@@ -272,29 +272,12 @@ export default function FiatCardIssuance({ walletAddress, balance }: { walletAdd
 
                                     <div className="pt-2 border-t border-black/5 mt-2 space-y-4">
                                         <div className="text-left">
-                                            <div className="text-[10px] font-black uppercase text-[#1F1F1F]/40 mb-3 tracking-widest">Recent Activity</div>
-                                            <div className="space-y-2">
-                                                <ActivityRow merchant="Polymarket" amount="- $142.00" date="Just now" />
-                                                <ActivityRow merchant="Google Play Store" amount="- $0.99" date="10 mins ago" />
+                                            <div className="text-[10px] font-black uppercase text-[#1F1F1F]/40 mb-3 tracking-widest">Financial Status</div>
+                                            <div className="bg-orange-500/5 border border-orange-500/20 p-4 rounded-2xl text-orange-700 text-xs font-bold flex items-center gap-3">
+                                                <Shield size={16}/>
+                                                Real Provider Connection Required for Real-time Transactions.
                                             </div>
                                         </div>
-
-                                        <button 
-                                            onClick={async () => {
-                                                const amount = (Math.random() * 50 + 10).toFixed(2);
-                                                const res = await fetch('/api/user/card/pay', {
-                                                    method: 'POST',
-                                                    body: JSON.stringify({ amount, merchant: 'Coffee Shop' })
-                                                });
-                                                const data = await res.json();
-                                                if (data.success) {
-                                                    alert(`Pago aprobado: $${amount} USD en ${data.transaction.merchant}. Tu saldo se ha actualizado.`);
-                                                }
-                                            }}
-                                            className="w-full py-3 border-2 border-black/10 rounded-2xl font-bold text-sm hover:bg-black/5 transition-colors flex items-center justify-center gap-2"
-                                        >
-                                            <CreditCard size={16}/> Probar Pago Real (NFC)
-                                        </button>
 
                                         <button className="text-sm font-bold text-[#1F1F1F]/40 hover:text-[#1F1F1F] transition-colors flex items-center justify-center gap-2 mx-auto">
                                             <Lock size={14}/> Ver Detalles Completos de Tarjeta

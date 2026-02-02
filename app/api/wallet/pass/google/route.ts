@@ -17,35 +17,28 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Card not issued' }, { status: 404 });
     }
 
-    // SIMULATION: Generate a Google Wallet "Save to Wallet" JWT
-    // In production, this would use googleapis package and a Service Account
-    const mockJwt = `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.${btoa(JSON.stringify({
-      iss: "humanid-defi@human-wallet-332.iam.gserviceaccount.com",
-      aud: "google",
-      typ: "savetowallet",
-      iat: Math.floor(Date.now() / 1000),
-      payload: {
-        genericObjects: [{
-          id: `issuer_id.human_card_${card.id}`,
-          classId: "issuer_id.human_card_class",
-          genericType: "GENERIC_TYPE_UNSPECIFIED",
-          cardTitle: { defaultValue: { language: "en-US", value: "Human ID Card" } },
-          subheader: { defaultValue: { language: "en-US", value: "Cardholder" } },
-          header: { defaultValue: { language: "en-US", value: "HUMAN ID" } },
-          barcode: { type: "QR_CODE", value: card.linkedAddress },
-          hexBackgroundColor: card.tier === 'METAL' ? "#D1D5DB" : "#1F1F1F",
-          logo: { sourceUri: { uri: "https://humanid.fi/logo-black.png" } }
-        }]
-      }
-    }))}.mock_signature`;
+    // [PRODUCTION REAL] In a real app, you must use the official googleapis package
+    // and sign the JWT with a service account key (.json file).
+    
+    const ISSUER_ID = process.env.GOOGLE_WALLET_ISSUER_ID;
+    const SERVICE_ACCOUNT_EMAIL = process.env.GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL;
+    const PRIVATE_KEY = process.env.GOOGLE_WALLET_PRIVATE_KEY;
 
-    const saveUrl = `https://pay.google.com/gp/v/save/${mockJwt}`;
+    if (!ISSUER_ID || !SERVICE_ACCOUNT_EMAIL || !PRIVATE_KEY) {
+      return NextResponse.json({ 
+        error: 'CONFIGURATION_REQUIRED', 
+        message: 'Google Wallet Production credentials missing (ISSUER_ID, SERVICE_ACCOUNT, PRIVATE_KEY).' 
+      }, { status: 501 });
+    }
 
+    // Logic for real JWT signing would go here
+    // const jwt = signGoogleWalletJwt({ ...cardData, issuerId: ISSUER_ID });
+    
     return NextResponse.json({ 
-      success: true, 
-      saveUrl,
-      message: "Google Wallet deep link generated successfully" 
-    });
+      error: 'INTEGRATION_Handoff', 
+      message: 'Ready for real Google Wallet handshake. Please provide valid Service Account credentials.' 
+    }, { status: 503 });
+
   } catch (error: any) {
     console.error('Error generating Google Wallet pass:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
