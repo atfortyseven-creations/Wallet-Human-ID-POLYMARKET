@@ -489,9 +489,10 @@ model User {
 
   // [NEW] Phase 1 Relations
   settings      UserSettings?
-  contacts      Contact[]
-  notifications Notification[]
-  stats         UserStats? // Relation to UserStats
+  contacts          Contact[]
+  notifications     Notification[]
+  watchedWallets    WatchedWallet[]
+  stats             UserStats? // Relation to UserStats
 
   // Referral Relations
   referralsSent     Referral[] @relation("Referrer")
@@ -795,6 +796,31 @@ model Notification {
   @@index([userId, read])
   @@index([userId, createdAt])
   @@index([isGlobal])
+}
+
+model WatchedWallet {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [walletAddress], onDelete: Cascade)
+
+  // Wallet Info
+  address String
+  label   String
+  tags    String[] @default([])
+  
+  // Alert Settings (The Green Bell)
+  alertsEnabled Boolean @default(true)
+  
+  // Stats (Cached)
+  lastValue Float?
+  lastCheck DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, address])
+  @@index([userId])
+  @@index([address])
 }
 
 model UserNotification {

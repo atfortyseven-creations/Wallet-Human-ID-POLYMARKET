@@ -1,10 +1,13 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, TrendingDown, Waves, AlertCircle, Star, Eye, Bell, Download, Upload, Filter, Search, BarChart3, Copy, CheckCircle, X } from 'lucide-react';
+import useSWR, { mutate } from 'swr';
+import { useAccount } from 'wagmi';
 import ChainSelector from './ChainSelector';
-import { SUPPORTED_CHAINS } from '@/lib/chains';
+
+const fetcher = (url: string) => fetch(url).then(r => r.json());
 
 export interface WatchedWallet {
   id: string;
@@ -40,7 +43,14 @@ interface WhaleTrackerProps {
 
 export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade, onWalletsUpdate }: WhaleTrackerProps) {
   const isPremium = true; // FORCE UNLOCK FOR FULL VIP EXPERIENCE
-  const [watchedWallets, setWatchedWallets] = useState<WatchedWallet[]>([]);
+  const { address: currentUserAddress } = useAccount();
+  
+  // Real Data Fetching (Persistent)
+  const { data: watchedData, isLoading: isLoadingWallets } = useSWR(
+    currentUserAddress ? `/api/user/watched-wallets?address=${currentUserAddress}` : null,
+    fetcher
+  );
+
   const [activities, setActivities] = useState<WhaleActivity[]>([]);
   const [filter, setFilter] = useState<'all' | 'whales' | 'smart' | 'alerts'>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -48,27 +58,7 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade, onW
   const [showBatchImport, setShowBatchImport] = useState(false);
   const [selectedChains, setSelectedChains] = useState<string[]>(['base', 'ethereum', 'polygon', 'arbitrum', 'optimism']);
 
-  // Initial "Watched" list skeletons (Real Base Addresses)
-  const INITIAL_WALLETS = [
-      {
-        id: '1',
-        address: '0x49048044D57e1C92A77f79988d21Fa8fAF74E97e', // Base Bridge
-        label: 'Base Bridge',
-        tags: ['Bridge', 'Whale'],
-      },
-      {
-        id: '2',
-        address: '0x8C4961558229F551DDfd29Da4878a879a78534C1', // Jesse Pollak
-        label: 'Jesse Pollak (Base)', 
-        tags: ['Founder', 'Public'],
-      },
-      {
-        id: '3',
-        address: '0x33128a8fC17869897dcE68Ed026d694621f6FDfD', // Uniswap V3
-        label: 'Uniswap V3 Base',
-        tags: ['DeFi', 'Protocol'],
-      }
-  ];
+  const watchedWallets: WatchedWallet[] = watchedData?.watchedWallets || [];
 
   // Fetch real activities
   useEffect(() => {
@@ -89,100 +79,66 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade, onW
     return () => clearInterval(interval);
   }, []);
 
-  // Fetch real wallet stats - ONLY ONCE on mount
-  useEffect(() => {
-    const fetchWalletData = async () => {
-        const updatedWallets: WatchedWallet[] = [];
-        for (const w of INITIAL_WALLETS) {
-            try {
-                const res = await fetch(`/api/whale/stats?address=${w.address}`);
-                const data = await res.json();
-                updatedWallets.push({
-                    ...w,
-                    isWhale: data.isWhale || false,
-                    isSmart: data.totalValue > 1000000, 
-                    totalValue: data.totalValue || 0,
-                    change24h: 0, // No fake data
-                    lastActive: new Date(),
-                    alertsEnabled: true
-                });
-            } catch (e) {
-                console.error("Error fetching wallet stats", w.address, e);
-                updatedWallets.push({
-                    ...w,
-                    isWhale: false,
-                    isSmart: false,
-                    totalValue: 0,
-                    change24h: 0,
-                    lastActive: new Date(),
-                    alertsEnabled: false
-                });
-            }
-        }
-        setWatchedWallets(updatedWallets);
-        onWalletsUpdate?.(updatedWallets);
-    };
-    fetchWalletData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // ONLY run once on mount - do NOT include onWalletsUpdate
-
   const handleAddWallet = async (address: string, label: string) => {
-    const newWallet: WatchedWallet = {
-        id: Math.random().toString(36).substr(2, 9),
-        address,
-        label: label || 'Custom Wallet',
-        tags: ['Custom'],
-        isWhale: false,
-        isSmart: false,
-        totalValue: 0,
-        change24h: 0,
-        lastActive: new Date(),
-        alertsEnabled: true
-    };
-
+    if (!currentUserAddress) return;
+    
     try {
-        const res = await fetch(`/api/whale/stats?address=${address}`);
-        const data = await res.json();
-        newWallet.totalValue = data.totalValue || 0;
-        newWallet.isWhale = data.isWhale || false;
-        newWallet.isSmart = data.totalValue > 1000000;
+        const res = await fetch('/api/user/watched-wallets', {
+            method: 'POST',
+            body: JSON.stringify({
+                userId: currentUserAddress,
+                address,
+                label: label || address,
+                tags: ['Custom']
+            })
+        });
+        if (res.ok) {
+            mutate(`/api/user/watched-wallets?address=${currentUserAddress}`);
+            setShowAddWallet(false);
+        }
     } catch (e) {
-        console.error("Error fetching new wallet stats", e);
+        console.error("Error adding wallet:", e);
     }
+  };
 
-    setWatchedWallets(prev => {
-      const updated = [newWallet, ...prev];
-      onWalletsUpdate?.(updated);
-      return updated;
-    });
-    setShowAddWallet(false);
+  const handleToggleAlerts = async (walletId: string, currentState: boolean) => {
+    try {
+        const res = await fetch('/api/user/watched-wallets', {
+            method: 'PATCH',
+            body: JSON.stringify({
+                id: walletId,
+                alertsEnabled: !currentState
+            })
+        });
+        if (res.ok) {
+            mutate(`/api/user/watched-wallets?address=${currentUserAddress}`);
+        }
+    } catch (e) {
+        console.error("Error toggling alerts:", e);
+    }
+  };
+
+  const handleDeleteWallet = async (walletId: string) => {
+    try {
+        const res = await fetch(`/api/user/watched-wallets?id=${walletId}`, {
+            method: 'DELETE'
+        });
+        if (res.ok) {
+            mutate(`/api/user/watched-wallets?address=${currentUserAddress}`);
+        }
+    } catch (e) {
+        console.error("Error deleting wallet:", e);
+    }
   };
 
   const handleBatchImport = async (text: string) => {
     const lines = text.split('\n');
-    const newTracked: WatchedWallet[] = [];
     for (const line of lines) {
         const [address, label] = line.split(',').map(s => s.trim());
         if (address && address.startsWith('0x')) {
-            newTracked.push({
-                id: Math.random().toString(36).substr(2, 9),
-                address,
-                label: label || 'Imported Wallet',
-                tags: ['Imported'],
-                isWhale: false,
-                isSmart: false,
-                totalValue: 0,
-                change24h: 0,
-                lastActive: new Date(),
-                alertsEnabled: true
-            });
+            await handleAddWallet(address, label);
         }
     }
-    setWatchedWallets(prev => {
-      const updated = [...newTracked, ...prev];
-      onWalletsUpdate?.(updated);
-      return updated;
-    });
     setShowBatchImport(false);
   };
 
@@ -284,7 +240,14 @@ export default function WhaleTracker({ isPremium: _propIsPremium, onUpgrade, onW
           <div className="grid grid-cols-1 gap-3">
             <AnimatePresence>
               {filteredWallets.map((wallet, index) => (
-                <WalletCard key={wallet.id} wallet={wallet} index={index} formatValue={formatValue} />
+                <WalletCard 
+                  key={wallet.id} 
+                  wallet={wallet} 
+                  index={index} 
+                  formatValue={formatValue} 
+                  onToggleAlerts={() => handleToggleAlerts(wallet.id, wallet.alertsEnabled)}
+                  onDelete={() => handleDeleteWallet(wallet.id)}
+                />
               ))}
             </AnimatePresence>
           </div>
@@ -325,28 +288,47 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode, label: string
   );
 }
 
-function WalletCard({ wallet, index, formatValue }: { wallet: WatchedWallet, index: number, formatValue: (v: number) => string }) {
+function WalletCard({ wallet, index, formatValue, onToggleAlerts, onDelete }: { wallet: WatchedWallet, index: number, formatValue: (v: number) => string, onToggleAlerts: () => void, onDelete: () => void }) {
   return (
-    <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.05 }} className="p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-[#1F1F1F]/10 hover:bg-white/80 transition-all">
+    <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.05 }} className="p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-[#1F1F1F]/10 hover:bg-white/80 transition-all group/card">
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-2">
             <h3 className="font-black text-[#1F1F1F] truncate">{wallet.label}</h3>
             {wallet.isWhale && <Waves size={16} className="text-blue-500" />}
             {wallet.isSmart && <Star size={16} className="text-yellow-500 fill-current" />}
-            {wallet.alertsEnabled && <Bell size={16} className="text-green-500" />}
+            
+            {/* ALERT BELL - TOGGLEABLE */}
+            <button 
+                onClick={onToggleAlerts}
+                className={`p-1 rounded-full transition-all ${wallet.alertsEnabled ? 'text-green-500 bg-green-50' : 'text-gray-300 hover:text-green-400'}`}
+                title={wallet.alertsEnabled ? "Alerts Enabled" : "Enable Alerts"}
+            >
+                <Bell size={16} className={wallet.alertsEnabled ? "fill-current" : ""} />
+            </button>
           </div>
           <div className="text-xs font-mono text-[#1F1F1F]/60 mb-2 truncate">{wallet.address}</div>
           <div className="flex flex-wrap gap-1">
             {wallet.tags.map(tag => <span key={tag} className="px-2 py-0.5 bg-[#1F1F1F]/10 rounded-full text-xs font-bold text-[#1F1F1F]">{tag}</span>)}
           </div>
         </div>
-        <div className="text-right">
-          <div className="text-xl font-black text-[#1F1F1F] mb-1">{formatValue(wallet.totalValue)}</div>
-          <div className={`text-sm font-bold flex items-center gap-1 justify-end ${wallet.change24h >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-            {wallet.change24h >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-            {Math.abs(wallet.change24h).toFixed(2)}%
+        <div className="flex flex-col items-end gap-2">
+          <div className="text-right">
+              <div className="text-xl font-black text-[#1F1F1F] mb-1">{formatValue(wallet.totalValue)}</div>
+              <div className={`text-sm font-bold flex items-center gap-1 justify-end ${wallet.change24h >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                {wallet.change24h >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                {Math.abs(wallet.change24h).toFixed(2)}%
+              </div>
           </div>
+          
+          {/* DELETE BUTTON - VISIBLE ON HOVER */}
+          <button 
+            onClick={onDelete}
+            className="p-1.5 rounded-full bg-red-50 text-red-500 opacity-0 group-hover/card:opacity-100 transition-all hover:bg-red-100"
+            title="Remove Wallet"
+          >
+            <X size={14} />
+          </button>
         </div>
       </div>
     </motion.div>

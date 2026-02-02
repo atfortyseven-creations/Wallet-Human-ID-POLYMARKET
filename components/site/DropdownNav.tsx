@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Bell, Eye, EyeOff, Settings, Globe, Crown, X } from 'lucide-react';
 import Link from 'next/link';
@@ -19,6 +20,11 @@ export function DropdownNav() {
     const { isStealthMode, toggleStealthMode } = useUIStore();
     const appKit = useAppKit();
     const { address, isConnected } = useAccount();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     // Fetch notifications
     const { data } = useSWR(`/api/user/notifications?address=${address || ''}`, fetcher, { refreshInterval: 30000 });
@@ -37,7 +43,7 @@ export function DropdownNav() {
         try {
             await fetch('/api/user/notifications', {
                 method: 'PUT',
-                body: JSON.stringify({ read: true })
+                body: JSON.stringify({ read: true, address })
             });
             mutate(`/api/user/notifications?address=${address || ''}`);
         } catch (e) {
@@ -213,23 +219,23 @@ export function DropdownNav() {
                 </AnimatePresence>
             </div>
 
-            {/* Notifications Modal */}
-            <AnimatePresence>
-                {showNotifications && (
-                    <>
+            {/* Notifications Modal - Portaled to avoid positioning bugs */}
+            {mounted && showNotifications && createPortal(
+                <AnimatePresence mode="wait">
+                    <div className="fixed inset-0 z-[1000] isolate">
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100]"
+                            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
                             onClick={() => setShowNotifications(false)}
                         />
                         <motion.div
                             initial={{ opacity: 0, x: 100 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: 100 }}
-                            transition={{ duration: 0.3 }}
-                            className="fixed right-4 top-4 bottom-4 w-96 bg-white dark:bg-[#1F1F1F] rounded-2xl shadow-2xl border border-white/20 overflow-hidden z-[101] flex flex-col"
+                            transition={{ duration: 0.3, ease: "easeOut" }}
+                            className="absolute right-4 top-4 bottom-4 w-[calc(100%-2rem)] max-w-96 bg-white dark:bg-[#1F1F1F] rounded-3xl shadow-2xl border border-white/20 overflow-hidden flex flex-col"
                         >
                             <div className="p-4 border-b border-gray-100 dark:border-white/10 flex justify-between items-center bg-gray-50/50 dark:bg-white/5">
                                 <h3 className="font-bold text-gray-900 dark:text-white">Notificaciones</h3>
@@ -243,10 +249,10 @@ export function DropdownNav() {
                                 )}
                             </div>
 
-                            <div className="flex-1 overflow-y-auto p-4">
+                            <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
                                 {!data ? (
                                     <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                                        <div className="w-8 h-8 bg-gray-200 dark:bg-white/10 rounded-full animate-pulse mb-2" />
+                                        <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin mb-2" />
                                         Cargando...
                                     </div>
                                 ) : notifications.length === 0 ? (
@@ -261,17 +267,17 @@ export function DropdownNav() {
                                                 key={n.id} 
                                                 className={`p-4 rounded-xl border transition-all ${
                                                     !n.read 
-                                                        ? 'bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800' 
-                                                        : 'bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10'
+                                                        ? 'bg-blue-50/50 dark:bg-blue-950/20 border-blue-100 dark:border-blue-900/50' 
+                                                        : 'bg-gray-50/50 dark:bg-white/5 border-gray-100 dark:border-white/10'
                                                 }`}
                                             >
                                                 <h4 className={`text-sm mb-1 ${!n.read ? 'font-bold' : 'font-medium'} text-gray-900 dark:text-white`}>
                                                     {n.title}
                                                 </h4>
-                                                <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
+                                                <p className="text-xs text-gray-600 dark:text-gray-400 mb-2 leading-relaxed">
                                                     {n.message}
                                                 </p>
-                                                <span className="text-[10px] text-gray-400">
+                                                <span className="text-[10px] text-gray-400 font-medium">
                                                     {new Date(n.createdAt).toLocaleString()}
                                                 </span>
                                             </div>
@@ -280,9 +286,10 @@ export function DropdownNav() {
                                 )}
                             </div>
                         </motion.div>
-                    </>
-                )}
-            </AnimatePresence>
+                    </div>
+                </AnimatePresence>,
+                document.body
+            )}
         </>
     );
 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { Alchemy, Network, AssetTransfersCategory, SortingOrder } from 'alchemy-sdk';
+import { prisma } from '@/lib/prisma';
 
 // Configure Alchemy with GetBlock RPC
 const config = {
@@ -63,22 +64,53 @@ export async function GET(req: NextRequest) {
     }
 
     // Map to our internal interface
-    const activities = transfers.transfers
-      .filter(tx => tx.value && tx.value > 10000) // Filter: > 10k value (approx for simplicity)
-      .map(tx => ({
+    const processedActivities = (transfers?.transfers || []).map((tx: any) => ({
         id: tx.hash,
         walletAddress: tx.from,
         walletLabel: KNOWN_WHALES[tx.from] || `${tx.from.slice(0, 6)}...${tx.from.slice(-4)}`,
-        type: 'TRANSFER', // Infer type based on context if possible
+        type: 'TRANSFER',
         token: tx.asset || 'ETH',
         amount: tx.value || 0,
-        usdValue: (tx.value || 0) * 1, // Placeholder: In prod we'd fetch price prices
+        usdValue: (tx.value || 0) * 1,
         timestamp: new Date(tx.metadata.blockTimestamp),
         txHash: tx.hash,
-      }));
+    }));
+
+    // [REAL-TIME ALERTS] Logically senior implementation
+    // 1. Fetch all watched wallets that have alerts enabled
+    const watchedWalletsWithAlerts = await prisma.watchedWallet.findMany({
+        where: { alertsEnabled: true }
+    });
+
+    if (watchedWalletsWithAlerts.length > 0) {
+        for (const tx of processedActivities) {
+            // Check if 'from' or 'to' is a watched address
+            const matchingWatchers = watchedWalletsWithAlerts.filter(w => 
+                w.address.toLowerCase() === tx.walletAddress.toLowerCase()
+            );
+
+            for (const watcher of matchingWatchers) {
+                // Create a real notification for this user
+                await prisma.notification.create({
+                    data: {
+                        userId: watcher.userId,
+                        title: `Movement Detected: ${watcher.label}`,
+                        message: `Alert! ${watcher.label} moved ${tx.amount} ${tx.token}. Hash: ${tx.txHash.slice(0, 10)}...`,
+                        type: 'security',
+                        metadata: {
+                            txHash: tx.txHash,
+                            address: tx.walletAddress,
+                            amount: tx.amount,
+                            token: tx.token
+                        }
+                    }
+                });
+            }
+        }
+    }
 
     return NextResponse.json({
-      activities,
+      activities: processedActivities,
       timestamp: Date.now(),
     });
   } catch (error) {
