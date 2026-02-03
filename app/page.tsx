@@ -99,7 +99,7 @@ export default function Home() {
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true, margin: "-100px" }}
                         transition={{ duration: 0.8, ease: "easeOut" }}
-                        className="w-full py-20 flex justify-center"
+                        className="w-full flex justify-center pb-0"
                     >
                         <StackedFeatureCards />
                     </motion.section>
@@ -110,7 +110,7 @@ export default function Home() {
                         whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 1 }}
-                        className="py-20"
+                        className="mt-[-100px] md:mt-[-200px]"
                     >
                         <LaunchCountdown />
                     </motion.div>
