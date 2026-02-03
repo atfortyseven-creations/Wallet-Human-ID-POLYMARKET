@@ -36,6 +36,9 @@ interface PhysicsNode {
     mass: number;
     ref: React.RefObject<HTMLDivElement>;
     coin: BubbleData;
+    settled: boolean; // Track if bubble has settled
+    dragOffsetX: number; // Offset for smooth dragging
+    dragOffsetY: number;
 }
 
 export default function BubblesView() {
@@ -50,6 +53,8 @@ export default function BubblesView() {
     const nodesRef = useRef<PhysicsNode[]>([]);
     const requestRef = useRef<number>();
     const lastTimeRef = useRef<number>();
+    const animationStartRef = useRef<number>(0);
+    const [isSettled, setIsSettled] = useState(false);
     
     const mouseRef = useRef({ x: 0, y: 0, active: false, targetNode: null as string | null });
 
@@ -105,90 +110,147 @@ export default function BubblesView() {
                 id: coin.id,
                 x: Math.random() * width,
                 y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 0.3,
-                vy: (Math.random() - 0.5) * 0.3,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
                 radius: size / 2,
                 mass: size / 10,
                 ref: React.createRef<HTMLDivElement>(),
-                coin
+                coin,
+                settled: false,
+                dragOffsetX: 0,
+                dragOffsetY: 0
             };
         });
 
         nodesRef.current = nextNodes;
+        // Reset animation state when data changes
+        setIsSettled(false);
+        animationStartRef.current = 0;
     }, [filteredData, timeframe]);
 
     const animate = (time: number) => {
+        if (!animationStartRef.current) animationStartRef.current = time;
         if (!lastTimeRef.current) lastTimeRef.current = time;
-        const deltaTime = Math.min((time - lastTimeRef.current) / 33.33, 2); // Slower, smoother animation
+        
+        const deltaTime = Math.min((time - lastTimeRef.current) / 16.67, 2);
         lastTimeRef.current = time;
 
         const nodes = nodesRef.current;
         const width = containerRef.current?.offsetWidth || 0;
         const height = containerRef.current?.offsetHeight || 0;
 
-        const damping = 0.985;
-        const repulsion = 0.4;
-        const edgeForce = 0.05;
-        const pullToCenter = 0.005;
+        // Calculate animation progress (0 to 1 over 3 seconds)
+        const animationDuration = 3000; // 3 seconds for initial settling
+        const elapsed = time - animationStartRef.current;
+        const progress = Math.min(elapsed / animationDuration, 1);
+        const isAnimating = progress < 1;
+
+        // Easing function for smooth settling
+        const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+        const animationStrength = isAnimating ? (1 - easeOut(progress)) : 0;
+
+        let allSettled = true;
 
         for (let i = 0; i < nodes.length; i++) {
             const a = nodes[i];
+            let needsUpdate = false;
             
-            // 1. Dragging Interaction (High-Precision Spring Force)
+            // PHASE 1: User is dragging this bubble
             if (mouseRef.current.active && mouseRef.current.targetNode === a.id) {
-                const dx = mouseRef.current.x - a.x;
-                const dy = mouseRef.current.y - a.y;
-                // Gentle pull for slow, smooth following
-                a.vx += dx * 0.08 * deltaTime;
-                a.vy += dy * 0.08 * deltaTime;
-                a.vx *= 0.88; 
-                a.vy *= 0.88;
-            } else {
-                // Gentle pull to center to keep them clustered
-                a.vx += (width / 2 - a.x) * pullToCenter * deltaTime;
-                a.vy += (height / 2 - a.y) * pullToCenter * deltaTime;
+                const targetX = mouseRef.current.x + a.dragOffsetX;
+                const targetY = mouseRef.current.y + a.dragOffsetY;
+                
+                // Slow, ultra-smooth spring following for maximum fluidity
+                const dx = targetX - a.x;
+                const dy = targetY - a.y;
+                const springStrength = 0.08; // Reduced for slower movement
+                const damping = 0.85; // Smooth deceleration
+                
+                // Smooth velocity interpolation
+                a.vx += dx * springStrength;
+                a.vy += dy * springStrength;
+                a.vx *= damping;
+                a.vy *= damping;
+                
+                a.x += a.vx;
+                a.y += a.vy;
+                
+                a.settled = false;
+                needsUpdate = true;
+                allSettled = false;
             }
+            // PHASE 2: Initial settling animation
+            else if (isAnimating && !a.settled) {
+                // Gentle physics during initial animation
+                const damping = 0.92;
+                const repulsion = 0.3 * animationStrength;
+                const edgeForce = 0.08 * animationStrength;
+                const pullToCenter = 0.002 * animationStrength;
 
-            // 2. Collisions
-            for (let j = i + 1; j < nodes.length; j++) {
-                const b = nodes[j];
-                const dx = b.x - a.x;
-                const dy = b.y - a.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                const minDistance = a.radius + b.radius + 10; // Extra padding
+                // Pull to center
+                a.vx += (width / 2 - a.x) * pullToCenter;
+                a.vy += (height / 2 - a.y) * pullToCenter;
 
-                if (distance < minDistance) {
-                    const nx = dx / distance;
-                    const ny = dy / distance;
-                    const overlap = minDistance - distance;
-                    const force = overlap * repulsion;
-                    
-                    const massRatioA = b.mass / (a.mass + b.mass);
-                    const massRatioB = a.mass / (a.mass + b.mass);
+                // Collision detection (only during initial animation)
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const b = nodes[j];
+                    const dx = b.x - a.x;
+                    const dy = b.y - a.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const minDistance = a.radius + b.radius + 8;
 
-                    a.vx -= nx * force * massRatioA * deltaTime;
-                    a.vy -= ny * force * massRatioA * deltaTime;
-                    b.vx += nx * force * massRatioB * deltaTime;
-                    b.vy += ny * force * massRatioB * deltaTime;
+                    if (distance < minDistance && distance > 0) {
+                        const nx = dx / distance;
+                        const ny = dy / distance;
+                        const overlap = minDistance - distance;
+                        const force = overlap * repulsion;
+                        
+                        a.vx -= nx * force * 0.5;
+                        a.vy -= ny * force * 0.5;
+                        b.vx += nx * force * 0.5;
+                        b.vy += ny * force * 0.5;
+                    }
                 }
+
+                // Boundary forces
+                if (a.x < a.radius) a.vx += (a.radius - a.x) * edgeForce;
+                if (a.x > width - a.radius) a.vx += (width - a.radius - a.x) * edgeForce;
+                if (a.y < a.radius) a.vy += (a.radius - a.y) * edgeForce;
+                if (a.y > height - a.radius) a.vy += (height - a.radius - a.y) * edgeForce;
+
+                // Apply damping and update position
+                a.vx *= damping;
+                a.vy *= damping;
+                a.x += a.vx;
+                a.y += a.vy;
+
+                // Check if settled (velocity very low)
+                const speed = Math.sqrt(a.vx * a.vx + a.vy * a.vy);
+                if (speed < 0.1 && progress > 0.8) {
+                    a.settled = true;
+                    a.vx = 0;
+                    a.vy = 0;
+                }
+
+                needsUpdate = true;
+                allSettled = false;
+            }
+            // PHASE 3: Fully settled - no movement
+            else if (!a.settled) {
+                a.settled = true;
+                a.vx = 0;
+                a.vy = 0;
             }
 
-            // 3. Walls
-            if (a.x < a.radius) { a.vx += (a.radius - a.x) * edgeForce; a.vx *= 0.9; }
-            if (a.x > width - a.radius) { a.vx += (width - a.radius - a.x) * edgeForce; a.vx *= 0.9; }
-            if (a.y < a.radius) { a.vy += (a.radius - a.y) * edgeForce; a.vy *= 0.9; }
-            if (a.y > height - a.radius) { a.vy += (height - a.radius - a.y) * edgeForce; a.vy *= 0.9; }
-
-            // 4. Integration
-            a.vx *= damping;
-            a.vy *= damping;
-            a.x += a.vx * deltaTime;
-            a.y += a.vy * deltaTime;
-
-            // 5. Direct Dom Update
-            if (a.ref.current) {
+            // Update DOM only if needed
+            if (needsUpdate && a.ref.current) {
                 a.ref.current.style.transform = `translate3d(${a.x - a.radius}px, ${a.y - a.radius}px, 0)`;
             }
+        }
+
+        // Update settled state
+        if (allSettled && !isSettled) {
+            setIsSettled(true);
         }
 
         requestRef.current = requestAnimationFrame(animate);
@@ -270,8 +332,28 @@ export default function BubblesView() {
                             <div
                                 key={node.id}
                                 ref={node.ref}
-                                onMouseDown={() => { mouseRef.current.active = true; mouseRef.current.targetNode = node.id; }}
-                                onTouchStart={() => { mouseRef.current.active = true; mouseRef.current.targetNode = node.id; }}
+                                onMouseDown={(e) => { 
+                                    const rect = containerRef.current?.getBoundingClientRect();
+                                    if (rect) {
+                                        const clickX = e.clientX - rect.left;
+                                        const clickY = e.clientY - rect.top;
+                                        node.dragOffsetX = node.x - clickX;
+                                        node.dragOffsetY = node.y - clickY;
+                                    }
+                                    mouseRef.current.active = true; 
+                                    mouseRef.current.targetNode = node.id; 
+                                }}
+                                onTouchStart={(e) => { 
+                                    const rect = containerRef.current?.getBoundingClientRect();
+                                    if (rect && e.touches[0]) {
+                                        const touchX = e.touches[0].clientX - rect.left;
+                                        const touchY = e.touches[0].clientY - rect.top;
+                                        node.dragOffsetX = node.x - touchX;
+                                        node.dragOffsetY = node.y - touchY;
+                                    }
+                                    mouseRef.current.active = true; 
+                                    mouseRef.current.targetNode = node.id; 
+                                }}
                                 onMouseUp={() => { if (mouseRef.current.targetNode === node.id) setSelectedCoin(node.coin); mouseRef.current.active = false; mouseRef.current.targetNode = null; }}
                                 onTouchEnd={() => { if (mouseRef.current.targetNode === node.id) setSelectedCoin(node.coin); mouseRef.current.active = false; mouseRef.current.targetNode = null; }}
                                 style={{
@@ -310,8 +392,10 @@ export default function BubblesView() {
             {/* Footer Stats */}
             <div className="p-6 bg-black/5 border-t border-black/5 flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-[10px] font-black uppercase text-black/40 tracking-widest">Smooth Physics Engine</span>
+                    <div className={`w-2 h-2 rounded-full ${isSettled ? 'bg-emerald-500' : 'bg-emerald-500 animate-pulse'}`} />
+                    <span className="text-[10px] font-black uppercase text-black/40 tracking-widest">
+                        {isSettled ? 'Drag to Move' : 'Settling...'}
+                    </span>
                 </div>
             </div>
         </div>
