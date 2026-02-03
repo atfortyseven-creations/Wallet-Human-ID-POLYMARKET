@@ -103,29 +103,35 @@ export function DropdownNav() {
                     </motion.div>
                 </motion.button>
 
-                {/* Dropdown Menu - Portalled to Body for absolute reliability */}
-                {mounted && (
+                {/* Dropdown Menu - Refactored for absolute reliability */}
+                {mounted && createPortal(
                     <AnimatePresence>
-                        {isOpen && createPortal(
-                            <>
-                                {/* Backdrop - Captures clicks outside to close */}
-                                <div 
-                                    className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[99998]" 
+                        {isOpen && (
+                            <div key="nav-portal-wrapper" className="fixed inset-0 z-[2147483647]">
+                                {/* Backdrop */}
+                                <motion.div 
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className="absolute inset-0 bg-black/60 backdrop-blur-md cursor-pointer" 
                                     onClick={() => setIsOpen(false)} 
                                 />
 
                                 {/* Menu Panel */}
                                 <motion.div
+                                    key="nav-menu-panel"
                                     initial={{ opacity: 0, y: -20, x: "-50%", scale: 0.95 }}
                                     animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
                                     exit={{ opacity: 0, y: -20, x: "-50%", scale: 0.95 }}
-                                    transition={{ duration: 0.2, ease: "easeOut" }}
+                                    transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
                                     style={{
                                         position: 'fixed',
-                                        top: '90px',
+                                        top: '100px',
                                         left: '50%',
+                                        transform: 'translateX(-50%)',
+                                        transformOrigin: 'top center'
                                     }}
-                                    className="w-[95vw] max-w-5xl bg-zinc-900/95 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] border border-white/20 z-[99999] overflow-hidden p-2"
+                                    className="w-[95vw] max-w-5xl bg-zinc-900/90 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)] border border-white/20 overflow-hidden p-2"
                                 >
                                     <div className="flex flex-col md:flex-row items-center justify-between gap-2 px-4 py-2">
                                         
@@ -137,14 +143,14 @@ export function DropdownNav() {
                                                 router.push('/');
                                                 setIsOpen(false);
                                             }}
-                                            className="hidden lg:flex items-center gap-3 pr-6 border-r border-gray-200 dark:border-white/10 shrink-0 hover:opacity-80 transition-all active:scale-95"
+                                            className="hidden lg:flex items-center gap-3 pr-6 border-r border-white/10 shrink-0 hover:opacity-80 transition-all active:scale-95"
                                          >
-                                            <div className="w-10 h-10 bg-[#1F1F1F] dark:bg-white rounded-2xl flex items-center justify-center shadow-lg">
-                                                 <span className="text-white dark:text-[#1F1F1F] font-black text-xl italic">H</span>
+                                            <div className="w-10 h-10 bg-white rounded-2xl flex items-center justify-center shadow-lg">
+                                                 <span className="text-black font-black text-xl italic">H</span>
                                             </div>
                                             <div className="flex flex-col">
-                                                 <span className="text-sm font-black text-[#1F1F1F] dark:text-white leading-none tracking-tight">HUMAN</span>
-                                                 <span className="text-[10px] font-black text-purple-500 uppercase tracking-[0.2em]">Nav</span>
+                                                 <span className="text-sm font-black text-white leading-none tracking-tight">HUMAN</span>
+                                                 <span className="text-[10px] font-black text-purple-400 uppercase tracking-[0.2em]">Nav</span>
                                             </div>
                                          </Link>
 
@@ -157,8 +163,8 @@ export function DropdownNav() {
                                                     onClick={() => setIsOpen(false)}
                                                     className={`flex items-center gap-2 px-5 py-3 rounded-2xl transition-all whitespace-nowrap group/link ${
                                                         link.isVIP
-                                                            ? 'bg-[#1F1F1F] dark:bg-white text-white dark:text-[#1F1F1F] hover:scale-105 shadow-lg'
-                                                            : 'hover:bg-gray-100 dark:hover:bg-white/5 text-[#1F1F1F] dark:text-white font-bold text-sm tracking-tight'
+                                                            ? 'bg-white text-black hover:scale-105 shadow-xl'
+                                                            : 'hover:bg-white/10 text-white font-bold text-sm tracking-tight'
                                                     }`}
                                                 >
                                                     {link.isVIP && <div className="animate-pulse">{link.icon}</div>}
@@ -168,7 +174,7 @@ export function DropdownNav() {
                                         </nav>
 
                                         {/* Right: Tools & Connect */}
-                                        <div className="flex items-center gap-4 pl-6 border-l border-gray-200 dark:border-white/10 shrink-0">
+                                        <div className="flex items-center gap-4 pl-6 border-l border-white/10 shrink-0">
                                             <div className="flex gap-1">
                                                 <NavToolButton 
                                                     onClick={() => { router.push('/soporte'); setIsOpen(false); }}
@@ -199,7 +205,7 @@ export function DropdownNav() {
                                                     appKit.open();
                                                     setIsOpen(false);
                                                 }}
-                                                className="px-6 py-3 bg-[#1F1F1F] dark:bg-white dark:text-[#1F1F1F] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl flex items-center gap-3 whitespace-nowrap"
+                                                className="px-6 py-3 bg-white text-black rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl flex items-center gap-3 whitespace-nowrap"
                                             >
                                                 {isConnected ? (
                                                     <>
@@ -218,18 +224,18 @@ export function DropdownNav() {
                                         <motion.div 
                                             initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0 }}
-                                            className="mt-2 p-2 bg-gray-50 dark:bg-white/5 rounded-[2rem] flex items-center justify-between gap-4 border-t border-gray-100 dark:border-white/5"
+                                            className="mt-2 p-2 bg-white/5 rounded-[2rem] flex items-center justify-between gap-4 border-t border-white/5"
                                         >
                                             {/* Account Switcher Integration */}
                                             <div className="flex items-center gap-2 pl-4">
                                                 <div 
-                                                    className="w-8 h-8 rounded-full border-2 border-white shadow-sm flex items-center justify-center text-white text-[10px] font-black"
+                                                    className="w-8 h-8 rounded-full border-2 border-white/20 shadow-sm flex items-center justify-center text-white text-[10px] font-black"
                                                     style={{ background: getAccountColor(currentAddress || address || '') }}
                                                 >
                                                     {(accounts.find(a => a.address === currentAddress)?.name?.[0] || 'H').toUpperCase()}
                                                 </div>
                                                 <div className="flex flex-col">
-                                                    <span className="text-[10px] font-black text-[#1F1F1F] dark:text-white leading-tight">
+                                                    <span className="text-[10px] font-black text-white leading-tight">
                                                         {accounts.find(a => a.address === currentAddress)?.name || 'Human Wallet'}
                                                     </span>
                                                     <span className="text-[8px] font-bold text-gray-400 tabular-nums">
@@ -239,7 +245,7 @@ export function DropdownNav() {
                                             </div>
 
                                             {/* Wallet Sub-Tabs */}
-                                            <div className="flex items-center gap-1 bg-white/50 dark:bg-black/20 p-1 rounded-2xl">
+                                            <div className="flex items-center gap-1 bg-black/40 p-1 rounded-2xl">
                                                 <SubNavLink href="/wallet" icon={<Wallet size={14} />} label="Wallet" />
                                                 <SubNavLink href="/wallet?view=portfolio" icon={<PieChart size={14} />} label="Portfolio" />
                                                 <SubNavLink href="/wallet?view=earn" icon={<TrendingUp size={14} />} label="Earn" />
@@ -250,17 +256,17 @@ export function DropdownNav() {
                                             {/* Switch Account Trigger (Small) */}
                                             <button 
                                                 onClick={() => { router.push('/wallet'); setIsOpen(false); }}
-                                                className="px-4 py-2 bg-white dark:bg-white/10 text-[10px] font-black uppercase tracking-widest text-[#1F1F1F] dark:text-white rounded-xl shadow-sm hover:scale-105 transition-all mr-2"
+                                                className="px-4 py-2 bg-white/10 text-[10px] font-black uppercase tracking-widest text-white rounded-xl shadow-sm hover:scale-105 transition-all mr-2"
                                             >
                                                 Switch
                                             </button>
                                         </motion.div>
                                     )}
                                 </motion.div>
-                            </>,
-                            document.body
+                            </div>
                         )}
-                    </AnimatePresence>
+                    </AnimatePresence>,
+                    document.body
                 )}
             </div>
 
