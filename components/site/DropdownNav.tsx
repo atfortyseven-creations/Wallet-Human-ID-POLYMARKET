@@ -103,157 +103,166 @@ export function DropdownNav() {
                     </motion.div>
                 </motion.button>
 
-                {/* Dropdown Menu */}
-                <AnimatePresence>
-                    {isOpen && (
-                        <>
-                            {/* Transparent Backdrop */}
-                            <div 
-                                className="fixed inset-0 z-40 bg-black/5" 
-                                onClick={() => setIsOpen(false)} 
-                            />
+                {/* Dropdown Menu - Portalled to Body for absolute reliability */}
+                {mounted && (
+                    <AnimatePresence>
+                        {isOpen && createPortal(
+                            <div className="fixed inset-0 z-[9999] isolate pointer-events-none">
+                                {/* Transparent Backdrop - Captures clicks outside to close */}
+                                <div 
+                                    className="fixed inset-0 bg-black/5 pointer-events-auto" 
+                                    onClick={() => setIsOpen(false)} 
+                                />
 
-                            {/* Menu Panel - Absolute below button, Glassmorphic Horizontal Bar */}
-                            <motion.div
-                                initial={{ opacity: 0, y: -20, scale: 0.95 }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                                transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-                                className="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-[95vw] max-w-5xl bg-white/80 dark:bg-neutral-950/90 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border border-white/30 dark:border-white/10 z-[100] pointer-events-auto overflow-hidden p-2"
-                            >
-                                <div className="flex flex-col md:flex-row items-center justify-between gap-2 px-4 py-2">
-                                    
-                                     {/* Left: Branding */}
-                                     <Link 
-                                        href="/"
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            router.push('/');
-                                            setIsOpen(false);
-                                        }}
-                                        className="hidden lg:flex items-center gap-3 pr-6 border-r border-gray-200 dark:border-white/10 shrink-0 hover:opacity-80 transition-all active:scale-95"
-                                     >
-                                        <div className="w-10 h-10 bg-[#1F1F1F] dark:bg-white rounded-2xl flex items-center justify-center shadow-lg">
-                                             <span className="text-white dark:text-[#1F1F1F] font-black text-xl italic">H</span>
-                                        </div>
-                                        <div className="flex flex-col">
-                                             <span className="text-sm font-black text-[#1F1F1F] dark:text-white leading-none tracking-tight">HUMAN</span>
-                                             <span className="text-[10px] font-black text-purple-500 uppercase tracking-[0.2em]">Nav</span>
-                                        </div>
-                                     </Link>
-
-                                    {/* Center: Navigation Links */}
-                                    <nav className="flex items-center gap-1 flex-1 justify-center overflow-x-auto no-scrollbar">
-                                        {navLinks.map((link) => (
-                                            <Link
-                                                key={link.href}
-                                                href={link.href}
-                                                onClick={() => setIsOpen(false)}
-                                                className={`flex items-center gap-2 px-5 py-3 rounded-2xl transition-all whitespace-nowrap group/link ${
-                                                    link.isVIP
-                                                        ? 'bg-[#1F1F1F] dark:bg-white text-white dark:text-[#1F1F1F] hover:scale-105 shadow-lg'
-                                                        : 'hover:bg-gray-100 dark:hover:bg-white/5 text-[#1F1F1F] dark:text-white font-bold text-sm tracking-tight'
-                                                }`}
-                                            >
-                                                {link.isVIP && <div className="animate-pulse">{link.icon}</div>}
-                                                <span>{link.name}</span>
-                                            </Link>
-                                        ))}
-                                    </nav>
-
-                                    {/* Right: Tools & Connect */}
-                                    <div className="flex items-center gap-4 pl-6 border-l border-gray-200 dark:border-white/10 shrink-0">
-                                        <div className="flex gap-1">
-                                            <NavToolButton 
-                                                onClick={() => { window.location.href = '/soporte'; setIsOpen(false); }}
-                                                icon={<div className="animate-pulse text-purple-500"><LifeBuoy size={18} /></div>} 
-                                                label="EL VACÍO" 
-                                            />
-                                            <NavToolButton 
-                                                onClick={() => { setShowNotifications(true); setIsOpen(false); }}
-                                                icon={<Bell size={18} />}
-                                                badge={unreadCount > 0}
-                                                label="Alertas"
-                                            />
-                                            <NavToolButton 
-                                                onClick={toggleStealthMode}
-                                                icon={isStealthMode ? <EyeOff size={18} /> : <Eye size={18} />}
-                                                label={isStealthMode ? 'Visible' : 'Ocultar'}
-                                            />
-                                            <NavToolButton 
-                                                onClick={() => { window.location.href = '/settings'; setIsOpen(false); }}
-                                                icon={<Settings size={18} />} 
-                                                label="Config" 
-                                            />
-                                            <NavToolButton onClick={toggleLanguage} icon={<Globe size={18} />} label={language} />
-                                        </div>
-
-                                        <button
-                                            onClick={() => {
-                                                appKit.open();
+                                {/* Menu Panel - Absolute below button, Glassmorphic Horizontal Bar */}
+                                <motion.div
+                                    initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                                    transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                                    style={{
+                                        position: 'fixed',
+                                        top: '100px', // Below the trigger button link
+                                        left: '50%',
+                                        transform: 'translateX(-50%)',
+                                    }}
+                                    className="w-[95vw] max-w-5xl bg-white/80 dark:bg-neutral-950/90 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border border-white/30 dark:border-white/10 pointer-events-auto overflow-hidden p-2"
+                                >
+                                    <div className="flex flex-col md:flex-row items-center justify-between gap-2 px-4 py-2">
+                                        
+                                         {/* Left: Branding */}
+                                         <Link 
+                                            href="/"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                router.push('/');
                                                 setIsOpen(false);
                                             }}
-                                            className="px-6 py-3 bg-[#1F1F1F] dark:bg-white dark:text-[#1F1F1F] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl flex items-center gap-3 whitespace-nowrap"
-                                        >
-                                            {isConnected ? (
-                                                <>
-                                                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                                                    <span className="font-mono">{address?.slice(0, 4)}...{address?.slice(-4)}</span>
-                                                </>
-                                            ) : (
-                                                t('nav.start')
-                                            )}
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {/* Bottom Row: Wallet Context & Sub-links (Visible when connected) */}
-                                {isConnected && (
-                                    <motion.div 
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        className="mt-2 p-2 bg-gray-50 dark:bg-white/5 rounded-[2rem] flex items-center justify-between gap-4 border-t border-gray-100 dark:border-white/5"
-                                    >
-                                        {/* Account Switcher Integration */}
-                                        <div className="flex items-center gap-2 pl-4">
-                                            <div 
-                                                className="w-8 h-8 rounded-full border-2 border-white shadow-sm flex items-center justify-center text-white text-[10px] font-black"
-                                                style={{ background: getAccountColor(currentAddress || address || '') }}
-                                            >
-                                                {(accounts.find(a => a.address === currentAddress)?.name?.[0] || 'H').toUpperCase()}
+                                            className="hidden lg:flex items-center gap-3 pr-6 border-r border-gray-200 dark:border-white/10 shrink-0 hover:opacity-80 transition-all active:scale-95"
+                                         >
+                                            <div className="w-10 h-10 bg-[#1F1F1F] dark:bg-white rounded-2xl flex items-center justify-center shadow-lg">
+                                                 <span className="text-white dark:text-[#1F1F1F] font-black text-xl italic">H</span>
                                             </div>
                                             <div className="flex flex-col">
-                                                <span className="text-[10px] font-black text-[#1F1F1F] dark:text-white leading-tight">
-                                                    {accounts.find(a => a.address === currentAddress)?.name || 'Human Wallet'}
-                                                </span>
-                                                <span className="text-[8px] font-bold text-gray-400 tabular-nums">
-                                                    {(currentAddress || address || '').slice(0, 6)}...{(currentAddress || address || '').slice(-4)}
-                                                </span>
+                                                 <span className="text-sm font-black text-[#1F1F1F] dark:text-white leading-none tracking-tight">HUMAN</span>
+                                                 <span className="text-[10px] font-black text-purple-500 uppercase tracking-[0.2em]">Nav</span>
                                             </div>
-                                        </div>
+                                         </Link>
 
-                                        {/* Wallet Sub-Tabs */}
-                                        <div className="flex items-center gap-1 bg-white/50 dark:bg-black/20 p-1 rounded-2xl">
-                                            <SubNavLink href="/wallet" icon={<Wallet size={14} />} label="Wallet" />
-                                            <SubNavLink href="/wallet?view=portfolio" icon={<PieChart size={14} />} label="Portfolio" />
-                                            <SubNavLink href="/wallet?view=earn" icon={<TrendingUp size={14} />} label="Earn" />
-                                            <SubNavLink href="/wallet?view=activity" icon={<Zap size={14} />} label="Activity" />
-                                            <SubNavLink href="/vip" icon={<UsersIcon size={14} />} label="Whales" />
-                                        </div>
+                                        {/* Center: Navigation Links */}
+                                        <nav className="flex items-center gap-1 flex-1 justify-center overflow-x-auto no-scrollbar">
+                                            {navLinks.map((link) => (
+                                                <Link
+                                                    key={link.href}
+                                                    href={link.href}
+                                                    onClick={() => setIsOpen(false)}
+                                                    className={`flex items-center gap-2 px-5 py-3 rounded-2xl transition-all whitespace-nowrap group/link ${
+                                                        link.isVIP
+                                                            ? 'bg-[#1F1F1F] dark:bg-white text-white dark:text-[#1F1F1F] hover:scale-105 shadow-lg'
+                                                            : 'hover:bg-gray-100 dark:hover:bg-white/5 text-[#1F1F1F] dark:text-white font-bold text-sm tracking-tight'
+                                                    }`}
+                                                >
+                                                    {link.isVIP && <div className="animate-pulse">{link.icon}</div>}
+                                                    <span>{link.name}</span>
+                                                </Link>
+                                            ))}
+                                        </nav>
 
-                                        {/* Switch Account Trigger (Small) */}
-                                        <button 
-                                            onClick={() => { window.location.href = '/wallet'; setIsOpen(false); }}
-                                            className="px-4 py-2 bg-white dark:bg-white/10 text-[10px] font-black uppercase tracking-widest text-[#1F1F1F] dark:text-white rounded-xl shadow-sm hover:scale-105 transition-all mr-2"
+                                        {/* Right: Tools & Connect */}
+                                        <div className="flex items-center gap-4 pl-6 border-l border-gray-200 dark:border-white/10 shrink-0">
+                                            <div className="flex gap-1">
+                                                <NavToolButton 
+                                                    onClick={() => { router.push('/soporte'); setIsOpen(false); }}
+                                                    icon={<LifeBuoy size={18} />} 
+                                                    label="Soporte" 
+                                                />
+                                                <NavToolButton 
+                                                    onClick={() => { setShowNotifications(true); setIsOpen(false); }}
+                                                    icon={<Bell size={18} />}
+                                                    badge={unreadCount > 0}
+                                                    label="Alertas"
+                                                />
+                                                <NavToolButton 
+                                                    onClick={toggleStealthMode}
+                                                    icon={isStealthMode ? <EyeOff size={18} /> : <Eye size={18} />}
+                                                    label={isStealthMode ? 'Visible' : 'Ocultar'}
+                                                />
+                                                <NavToolButton 
+                                                    onClick={() => { router.push('/settings'); setIsOpen(false); }}
+                                                    icon={<Settings size={18} />} 
+                                                    label="Config" 
+                                                />
+                                                <NavToolButton onClick={toggleLanguage} icon={<Globe size={18} />} label={language} />
+                                            </div>
+
+                                            <button
+                                                onClick={() => {
+                                                    appKit.open();
+                                                    setIsOpen(false);
+                                                }}
+                                                className="px-6 py-3 bg-[#1F1F1F] dark:bg-white dark:text-[#1F1F1F] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl flex items-center gap-3 whitespace-nowrap"
+                                            >
+                                                {isConnected ? (
+                                                    <>
+                                                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                                        <span className="font-mono">{address?.slice(0, 4)}...{address?.slice(-4)}</span>
+                                                    </>
+                                                ) : (
+                                                    t('nav.start')
+                                                )}
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {/* Bottom Row: Wallet Context & Sub-links (Visible when connected) */}
+                                    {isConnected && (
+                                        <motion.div 
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className="mt-2 p-2 bg-gray-50 dark:bg-white/5 rounded-[2rem] flex items-center justify-between gap-4 border-t border-gray-100 dark:border-white/5"
                                         >
-                                            Switch
-                                        </button>
-                                    </motion.div>
-                                )}
-                            </motion.div>
-                        </>
-                    )}
-                </AnimatePresence>
+                                            {/* Account Switcher Integration */}
+                                            <div className="flex items-center gap-2 pl-4">
+                                                <div 
+                                                    className="w-8 h-8 rounded-full border-2 border-white shadow-sm flex items-center justify-center text-white text-[10px] font-black"
+                                                    style={{ background: getAccountColor(currentAddress || address || '') }}
+                                                >
+                                                    {(accounts.find(a => a.address === currentAddress)?.name?.[0] || 'H').toUpperCase()}
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <span className="text-[10px] font-black text-[#1F1F1F] dark:text-white leading-tight">
+                                                        {accounts.find(a => a.address === currentAddress)?.name || 'Human Wallet'}
+                                                    </span>
+                                                    <span className="text-[8px] font-bold text-gray-400 tabular-nums">
+                                                        {(currentAddress || address || '').slice(0, 6)}...{(currentAddress || address || '').slice(-4)}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {/* Wallet Sub-Tabs */}
+                                            <div className="flex items-center gap-1 bg-white/50 dark:bg-black/20 p-1 rounded-2xl">
+                                                <SubNavLink href="/wallet" icon={<Wallet size={14} />} label="Wallet" />
+                                                <SubNavLink href="/wallet?view=portfolio" icon={<PieChart size={14} />} label="Portfolio" />
+                                                <SubNavLink href="/wallet?view=earn" icon={<TrendingUp size={14} />} label="Earn" />
+                                                <SubNavLink href="/wallet?view=activity" icon={<Zap size={14} />} label="Activity" />
+                                                <SubNavLink href="/vip" icon={<UsersIcon size={14} />} label="Whales" />
+                                            </div>
+
+                                            {/* Switch Account Trigger (Small) */}
+                                            <button 
+                                                onClick={() => { router.push('/wallet'); setIsOpen(false); }}
+                                                className="px-4 py-2 bg-white dark:bg-white/10 text-[10px] font-black uppercase tracking-widest text-[#1F1F1F] dark:text-white rounded-xl shadow-sm hover:scale-105 transition-all mr-2"
+                                            >
+                                                Switch
+                                            </button>
+                                        </motion.div>
+                                    )}
+                                </motion.div>
+                            </div>,
+                            document.body
+                        )}
+                    </AnimatePresence>
+                )}
             </div>
 
             {/* Notifications Modal */}
