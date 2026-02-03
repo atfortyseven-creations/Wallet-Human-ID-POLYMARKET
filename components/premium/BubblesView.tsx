@@ -105,8 +105,8 @@ export default function BubblesView() {
                 id: coin.id,
                 x: Math.random() * width,
                 y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 2,
-                vy: (Math.random() - 0.5) * 2,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3,
                 radius: size / 2,
                 mass: size / 10,
                 ref: React.createRef<HTMLDivElement>(),
@@ -119,7 +119,7 @@ export default function BubblesView() {
 
     const animate = (time: number) => {
         if (!lastTimeRef.current) lastTimeRef.current = time;
-        const deltaTime = Math.min((time - lastTimeRef.current) / 16.67, 2); // Normalize to 60fps
+        const deltaTime = Math.min((time - lastTimeRef.current) / 33.33, 2); // Slower, smoother animation
         lastTimeRef.current = time;
 
         const nodes = nodesRef.current;
@@ -138,11 +138,11 @@ export default function BubblesView() {
             if (mouseRef.current.active && mouseRef.current.targetNode === a.id) {
                 const dx = mouseRef.current.x - a.x;
                 const dy = mouseRef.current.y - a.y;
-                // Stronger pull and custom damping for "glued" feel
-                a.vx += dx * 0.35 * deltaTime;
-                a.vy += dy * 0.35 * deltaTime;
-                a.vx *= 0.65; 
-                a.vy *= 0.65;
+                // Gentle pull for slow, smooth following
+                a.vx += dx * 0.08 * deltaTime;
+                a.vy += dy * 0.08 * deltaTime;
+                a.vx *= 0.88; 
+                a.vy *= 0.88;
             } else {
                 // Gentle pull to center to keep them clustered
                 a.vx += (width / 2 - a.x) * pullToCenter * deltaTime;
@@ -311,7 +311,7 @@ export default function BubblesView() {
             <div className="p-6 bg-black/5 border-t border-black/5 flex justify-between items-center">
                 <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-[10px] font-black uppercase text-black/40 tracking-widest">60FPS Physics Engine Active</span>
+                    <span className="text-[10px] font-black uppercase text-black/40 tracking-widest">Smooth Physics Engine</span>
                 </div>
             </div>
         </div>
