@@ -95,6 +95,95 @@ export default function BubblesView() {
         }
     };
 
+    // --- Expert Force-Directed Layout Engine ---
+    const bubbleAnchors = React.useMemo(() => {
+        if (dimensions.width === 0 || filteredData.length === 0) return {};
+
+        // 1. Initialize Nodes with deterministic physics properties
+        const nodes = filteredData.slice(0, 100).map((coin, i) => {
+            const change = timeframe === '1h' ? coin.price_change_1h : 
+                          timeframe === '7d' ? coin.price_change_7d :
+                          timeframe === '30d' ? coin.price_change_30d :
+                          timeframe === '1y' ? coin.price_change_1y : coin.price_change_24h;
+            
+            const baseSize = 110;
+            const sizeScale = Math.min(Math.max(Math.abs(change) * 4, 0), 120);
+            const size = baseSize + sizeScale;
+            const maxVisualSize = size * 1.15;
+            const radius = (maxVisualSize / 2) + 15; // Include padding/glow buffer
+
+            // Initial Spiral placement to reduce initial overlap and keep things centered
+            const angle = i * 0.5;
+            const distance = i * 15;
+            return {
+                id: coin.id,
+                x: (dimensions.width / 2) + Math.cos(angle) * distance,
+                y: (dimensions.height / 2) + Math.sin(angle) * distance,
+                radius,
+                size,
+                vx: 0,
+                vy: 0
+            };
+        });
+
+        // 2. Iterative Solver (Standard Verlet / Force Integration)
+        const iterations = 60;
+        const damping = 0.82;
+        const repulsionStrength = 0.6;
+        const centerPull = 0.012;
+
+        for (let step = 0; step < iterations; step++) {
+            // A. Repulsion & Collision (avoid "amogollarse")
+            for (let i = 0; i < nodes.length; i++) {
+                const a = nodes[i];
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const b = nodes[j];
+                    const dx = b.x - a.x;
+                    const dy = b.y - a.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const minDistance = a.radius + b.radius;
+
+                    if (distance < minDistance) {
+                        const overlap = minDistance - distance;
+                        const nx = dx / (distance || 1);
+                        const ny = dy / (distance || 1);
+                        const force = overlap * repulsionStrength;
+                        
+                        a.vx -= nx * force * 0.5;
+                        a.vy -= ny * force * 0.5;
+                        b.vx += nx * force * 0.5;
+                        b.vy += ny * force * 0.5;
+                    }
+                }
+
+                // B. Centering Force (keep it grouped but spaced)
+                a.vx += (dimensions.width / 2 - a.x) * centerPull;
+                a.vy += (dimensions.height / 2 - a.y) * centerPull;
+
+                // C. Boundaries (Absolute Vision)
+                const margin = a.radius;
+                if (a.x < margin) a.vx += (margin - a.x) * 0.25;
+                if (a.x > dimensions.width - margin) a.vx += (dimensions.width - margin - a.x) * 0.25;
+                if (a.y < margin) a.vy += (margin - a.y) * 0.25;
+                if (a.y > dimensions.height - margin) a.vy += (dimensions.height - margin - a.y) * 0.25;
+            }
+
+            // D. Apply velocities
+            nodes.forEach(n => {
+                n.x += n.vx;
+                n.y += n.vy;
+                n.vx *= damping;
+                n.vy *= damping;
+            });
+        }
+
+        // Return lookup map
+        return nodes.reduce((acc, n) => ({
+            ...acc,
+            [n.id]: { x: n.x, y: n.y, size: n.size }
+        }), {} as Record<string, { x: number, y: number, size: number }>);
+    }, [filteredData, dimensions, timeframe]);
+
     return (
         <div className="flex flex-col h-full bg-[#EAEADF]/50 dark:bg-neutral-900/50 backdrop-blur-xl rounded-[2.5rem] border border-white/20 overflow-hidden shadow-2xl">
             {/* Header / Controls */}
@@ -168,6 +257,7 @@ export default function BubblesView() {
                                     timeframe={timeframe} 
                                     containerRef={containerRef}
                                     dimensions={dimensions}
+                                    anchor={bubbleAnchors[coin.id]}
                                     onClick={() => setSelectedCoin(coin)}
                                 />
                             ))}
@@ -207,12 +297,13 @@ export default function BubblesView() {
     );
 }
 
-function Bubble({ coin, index, timeframe, containerRef, dimensions, onClick }: { 
+function Bubble({ coin, index, timeframe, containerRef, dimensions, anchor, onClick }: { 
     coin: BubbleData, 
     index: number, 
     timeframe: Timeframe, 
     containerRef: React.RefObject<HTMLDivElement>,
     dimensions: { width: number, height: number },
+    anchor?: { x: number, y: number, size: number },
     onClick: () => void
 }) {
     const [isDragging, setIsDragging] = useState(false);
@@ -232,9 +323,7 @@ function Bubble({ coin, index, timeframe, containerRef, dimensions, onClick }: {
     const isPositive = change >= 0;
     
     // Bubble size based on performance
-    const baseSize = 110;
-    const sizeScale = Math.min(Math.max(Math.abs(change) * 4, 0), 120);
-    const size = baseSize + sizeScale;
+    const size = anchor?.size || 110;
 
     // Micro-fluctuation for "Live" feel
     const [fluctuation, setFluctuation] = useState(0);
@@ -245,28 +334,18 @@ function Bubble({ coin, index, timeframe, containerRef, dimensions, onClick }: {
         return () => clearInterval(interval);
     }, []);
 
-    // Initial random-ish positions with a bit of grid logic
-    const cols = Math.floor(dimensions.width / 140) || 1;
-    const row = Math.floor(index / cols);
-    const col = index % cols;
-    
-    // Seeded randomness for initial offsets
-    const seed = index * 123.456;
-    const offsetX = (Math.sin(seed) * (dimensions.width / cols / 3));
-    const offsetY = (Math.cos(seed) * 40);
-
-    // Expert Level Containment: Account for MaxScale (1.15x) + Glow margin (20px)
+    // Expert Level Containment
     const maxVisualSize = size * 1.15;
     const overflowBuffer = (maxVisualSize - size) / 2 + 20;
     
     const safeMaxX = Math.max(overflowBuffer, dimensions.width - size - overflowBuffer);
     const safeMaxY = Math.max(overflowBuffer, dimensions.height - size - overflowBuffer);
 
-    // Initial positioning clamped to safe zone
-    const initialX = Math.max(overflowBuffer, Math.min(safeMaxX, col * (dimensions.width / cols) + (dimensions.width / cols / 3) + offsetX));
-    const initialY = Math.max(overflowBuffer, Math.min(safeMaxY, row * 180 + 100 + offsetY));
+    // Initial position from Anchor or fallback
+    const initialX = anchor ? anchor.x - size/2 : dimensions.width / 2;
+    const initialY = anchor ? anchor.y - size/2 : dimensions.height / 2;
 
-    // Expert Level Physics: Organic floating curves (X/Y decoupled with different easing/timing)
+    // Expert Level Physics: Organic floating curves
     const floatDurationX = 5 + (index % 4);
     const floatDurationY = 7 + (index % 5);
     const floatDistance = 20 + (index % 15);

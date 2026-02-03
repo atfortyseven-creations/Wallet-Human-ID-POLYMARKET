@@ -62,16 +62,19 @@ export async function discoverTokens(
 
     if (nonZeroBalances.length === 0) return [];
 
-    // Fetch all metadata in staggered chunks to avoid rate limiting
+    // Fetch metadata results
     const tokenAddresses = nonZeroBalances.map((t: any) => t.contractAddress);
     const metadataResults = await alchemyClient.getBatchMetadata(tokenAddresses, chainId);
 
-    const tokensWithMetadata = await Promise.all(
-        nonZeroBalances.map(async (token: any, index: number) => {
+    // Fetch prices in batch to avoid rate limiting
+    const priceMap = await getTokenPricesBatch(chainId, tokenAddresses);
+
+    const tokensWithMetadata = nonZeroBalances.map((token: any, index: number) => {
         const metadata = metadataResults[index] || { symbol: 'UNKNOWN', name: 'Unknown Token', decimals: 18 };
         const balance = BigInt(token.tokenBalance || '0');
         const formatted = formatTokenBalance(balance, metadata.decimals);
-        const { price, change24h } = await getTokenPrice(chainId, token.contractAddress);
+        
+        const priceData = priceMap[token.contractAddress.toLowerCase()] || { price: 0, change24h: 0 };
 
         return {
           address: token.contractAddress,
@@ -81,19 +84,73 @@ export async function discoverTokens(
           logoURI: metadata.logo || undefined,
           balance: balance.toString(),
           balanceFormatted: formatted,
-          priceUSD: price,
-          valueUSD: price * parseFloat(formatted),
-          change24h,
+          priceUSD: priceData.price,
+          valueUSD: priceData.price * parseFloat(formatted),
+          change24h: priceData.change24h,
           chainId,
         };
-      })
-    );
+    });
 
     // Sort by USD value (highest first)
-    return tokensWithMetadata.sort((a, b) => (b.valueUSD || 0) - (a.valueUSD || 0));
+    return tokensWithMetadata.sort((a: Token, b: Token) => (b.valueUSD || 0) - (a.valueUSD || 0));
   } catch (error) {
     console.error('Error discovering tokens:', error);
     return [];
+  }
+}
+
+/**
+ * Get multiple token prices in a single batch
+ */
+export async function getTokenPricesBatch(chainId: number, tokenAddresses: string[]): Promise<Record<string, { price: number; change24h: number }>> {
+  if (tokenAddresses.length === 0) return {};
+  
+  try {
+    const platformMap: Record<number, string> = {
+      1: 'ethereum',
+      137: 'polygon-pos',
+      8453: 'base',
+      42161: 'arbitrum-one',
+      10: 'optimistic-ethereum'
+    };
+
+    const platform = platformMap[chainId] || 'ethereum';
+    const addressString = tokenAddresses.join(',').toLowerCase();
+    
+    const response = await fetch(
+      `https://api.coingecko.com/api/v3/simple/token_price/${platform}?contract_addresses=${addressString}&vs_currencies=usd&include_24hr_change=true`,
+      {
+        headers: {
+          'x-cg-demo-api-key': process.env.NEXT_PUBLIC_COINGECKO_KEY || '',
+        },
+      }
+    );
+
+    if (!response.ok) {
+        const text = await response.text();
+        if (text.includes('Throttled')) {
+            console.warn('[CoinGecko] Batched request throttled. Returning zeros.');
+            return {};
+        }
+        throw new Error(`CoinGecko Batch API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const result: Record<string, { price: number; change24h: number }> = {};
+    
+    tokenAddresses.forEach(addr => {
+        const lowerAddr = addr.toLowerCase();
+        const tokenData = data[lowerAddr];
+        result[lowerAddr] = {
+            price: tokenData?.usd || 0,
+            change24h: tokenData?.usd_24h_change || 0
+        };
+    });
+    
+    return result;
+  } catch (error) {
+    console.error(`Error fetching batched prices for chain ${chainId}:`, error);
+    return {};
   }
 }
 
@@ -200,6 +257,15 @@ export async function getTokenPrice(chainId: number, tokenAddress: string): Prom
         },
       }
     );
+
+    if (!response.ok) {
+        const text = await response.text();
+        if (text.includes('Throttled')) {
+            console.warn(`[CoinGecko] Request for ${tokenAddress} throttled.`);
+            return { price: 0, change24h: 0 };
+        }
+        throw new Error(`CoinGecko API error: ${response.status}`);
+    }
 
     const data = await response.json();
     const tokenData = data[tokenAddress.toLowerCase()];

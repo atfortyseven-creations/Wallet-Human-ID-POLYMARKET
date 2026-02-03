@@ -122,16 +122,20 @@ export function DropdownNav() {
                             >
                                 <div className="flex flex-col md:flex-row items-center justify-between gap-2 px-4 py-2">
                                     
-                                    {/* Left: Branding */}
-                                    <div className="hidden lg:flex items-center gap-3 pr-6 border-r border-gray-200 dark:border-white/10 shrink-0">
-                                       <div className="w-10 h-10 bg-[#1F1F1F] dark:bg-white rounded-2xl flex items-center justify-center shadow-lg">
-                                            <span className="text-white dark:text-[#1F1F1F] font-black text-xl italic">H</span>
-                                       </div>
-                                       <div className="flex flex-col">
-                                            <span className="text-sm font-black text-[#1F1F1F] dark:text-white leading-none tracking-tight">HUMAN</span>
-                                            <span className="text-[10px] font-black text-purple-500 uppercase tracking-[0.2em]">Nav</span>
-                                       </div>
-                                    </div>
+                                     {/* Left: Branding */}
+                                     <Link 
+                                        href="/"
+                                        onClick={() => setIsOpen(false)}
+                                        className="hidden lg:flex items-center gap-3 pr-6 border-r border-gray-200 dark:border-white/10 shrink-0 hover:opacity-80 transition-all active:scale-95"
+                                     >
+                                        <div className="w-10 h-10 bg-[#1F1F1F] dark:bg-white rounded-2xl flex items-center justify-center shadow-lg">
+                                             <span className="text-white dark:text-[#1F1F1F] font-black text-xl italic">H</span>
+                                        </div>
+                                        <div className="flex flex-col">
+                                             <span className="text-sm font-black text-[#1F1F1F] dark:text-white leading-none tracking-tight">HUMAN</span>
+                                             <span className="text-[10px] font-black text-purple-500 uppercase tracking-[0.2em]">Nav</span>
+                                        </div>
+                                     </Link>
 
                                     {/* Center: Navigation Links */}
                                     <nav className="flex items-center gap-1 flex-1 justify-center overflow-x-auto no-scrollbar">

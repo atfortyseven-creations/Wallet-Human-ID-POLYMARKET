@@ -78,14 +78,64 @@ export async function getRealTimePrice(symbol: string): Promise<number> {
 }
 
 /**
- * Get multiple prices in parallel
+ * Get multiple prices efficiently in single requests where possible
  */
 export async function getBulkPrices(symbols: string[]): Promise<Record<string, number>> {
-  const pricePromises = symbols.map(async (symbol) => {
-    const price = await getRealTimePrice(symbol);
-    return [symbol.toUpperCase(), price] as const;
+  if (symbols.length === 0) return {};
+
+  const result: Record<string, number> = {};
+  const coinIdsToFetch: string[] = [];
+  const symbolToId: Record<string, string> = {};
+
+  symbols.forEach(symbol => {
+    const s = symbol.toUpperCase();
+    const id = COIN_ID_MAP[s];
+    if (id) {
+        coinIdsToFetch.push(id);
+        symbolToId[id] = s;
+    } else {
+        result[s] = 0;
+    }
   });
 
-  const results = await Promise.all(pricePromises);
-  return Object.fromEntries(results);
+  if (coinIdsToFetch.length === 0) return result;
+
+  try {
+    // Fetch in chunks of 50 to stay safe
+    const CHUNK_SIZE = 50;
+    for (let i = 0; i < coinIdsToFetch.length; i += CHUNK_SIZE) {
+      const chunk = coinIdsToFetch.slice(i, i + CHUNK_SIZE);
+      const ids = chunk.join(',');
+      const url = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd`;
+
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        const text = await response.text();
+        if (text.includes('Throttled')) {
+            console.warn('[CoinGecko] Bulk price request throttled.');
+            continue; // Skip this chunk but keep going
+        }
+        throw new Error(`CoinGecko Bulk API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      chunk.forEach(id => {
+        const price = data[id]?.usd || 0;
+        const sym = symbolToId[id];
+        result[sym] = price;
+        
+        // Update cache
+        priceCache[sym] = {
+            price,
+            timestamp: Date.now()
+        };
+      });
+    }
+  } catch (error) {
+    console.error('Error fetching bulk prices:', error);
+  }
+
+  return result;
 }
