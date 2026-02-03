@@ -8,8 +8,31 @@ export const Footer = () => {
     
     return (
         <footer className="relative z-10 mt-0 bg-black">
-            <div className="max-w-[1440px] mx-auto px-6 py-12">
-                {/* Purposely empty to maintain clean black aesthetic as requested */}
+            <div className="max-w-[1440px] mx-auto px-6 py-24">
+                <div className="flex flex-col items-center text-center">
+                    
+                    {/* Main CTA - Restored as requested */}
+                    <div className="max-w-4xl mx-auto">
+                        <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-12 leading-[0.9]">
+                            {t('footer.get_wallet')} <br />
+                            <span className="text-white">Human DeFi</span>
+                        </h2>
+                        
+                        <div className="flex flex-wrap justify-center gap-4">
+                            <DownloadButton 
+                                icon={<Smartphone size={24} />} 
+                                label="Mobile App" 
+                                sub="iOS & Android" 
+                                active
+                            />
+                            <DownloadButton 
+                                icon={<Monitor size={24} />} 
+                                label="Extension" 
+                                sub="Chrome & Brave" 
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
         </footer>
     );
