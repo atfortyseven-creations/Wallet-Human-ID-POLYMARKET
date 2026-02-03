@@ -7,64 +7,9 @@ export const Footer = () => {
     const { t } = useApp();
     
     return (
-        <footer className="relative z-10 mt-0 border-t border-white/5 bg-black backdrop-blur-2xl">
-            {/* Immersive Top Gradient Line */}
-            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#00ff9d]/20 to-transparent" />
-
-            <div className="max-w-[1440px] mx-auto px-6 py-24">
-                <div className="flex flex-col items-center text-center">
-                    
-                    {/* CTA Section (Rainbow Style - Minimal & Bold) */}
-                    <div className="max-w-4xl mx-auto mb-20">
-                        <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-8 leading-[0.9]">
-                            {t('footer.get_wallet')} <br />
-                            <span className="text-white">Human DeFi</span>
-                        </h2>
-                        <p className="text-xl text-white/50 mb-10 max-w-2xl mx-auto">
-                            The most secure and easy-to-use Web3 wallet. Available on all platforms.
-                        </p>
-                        
-                        <div className="flex flex-wrap justify-center gap-4">
-                            <DownloadButton 
-                                icon={<Smartphone size={24} />} 
-                                label="Mobile App" 
-                                sub="iOS & Android" 
-                                active
-                            />
-                            <DownloadButton 
-                                icon={<Monitor size={24} />} 
-                                label="Extension" 
-                                sub="Chrome & Brave" 
-                            />
-                        </div>
-
-                        <div className="mt-8 flex items-center justify-center gap-2 text-xs font-mono text-white/30">
-                            <span className="w-2 h-2 rounded-full bg-[#00ff9d] animate-pulse" />
-                            Latest Version: v4.2.0 (Stable)
-                        </div>
-                    </div>
-
-                    {/* Bottom Bar - Centered & Clean */}
-                    <div className="w-full pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 opacity-60 hover:opacity-100 transition-opacity">
-                        
-                        {/* Brand & Copyright */}
-                        <div className="flex items-center gap-4">
-                            <SecurityShield />
-                            <div className="text-[10px] text-white/50 font-mono uppercase text-left">
-                                © {new Date().getFullYear()} Humanidfi.com Org. <br />
-                                Sovereign Intelligence.
-                            </div>
-                        </div>
-
-                        {/* Socials */}
-                        <div className="flex items-center gap-4">
-                            <SocialIcon icon={<Twitter size={18} />} href="https://twitter.com" />
-                            <SocialIcon icon={<Github size={18} />} href="https://github.com" />
-                            <SocialIcon icon={<MessageCircle size={18} />} href="https://discord.com" />
-                            <SocialIcon icon={<Globe size={18} />} href="https://humanid.fi" />
-                        </div>
-                    </div>
-                </div>
+        <footer className="relative z-10 mt-0 bg-black">
+            <div className="max-w-[1440px] mx-auto px-6 py-12">
+                {/* Purposely empty to maintain clean black aesthetic as requested */}
             </div>
         </footer>
     );
