@@ -4,9 +4,11 @@ import AdminUser from "@/models/AdminUser";
 import bcrypt from "bcryptjs";
 import { SignJWT } from "jose";
 
-const JWT_SECRET = new TextEncoder().encode(
-    process.env.JWT_SECRET || "VOID_SECRET_99_POLY"
-);
+const JWT_SECRET_STR = process.env.JWT_SECRET;
+if (!JWT_SECRET_STR) {
+    throw new Error("CRITICAL: JWT_SECRET environment variable is not defined");
+}
+const JWT_SECRET = new TextEncoder().encode(JWT_SECRET_STR);
 
 export async function POST(req: NextRequest) {
     try {

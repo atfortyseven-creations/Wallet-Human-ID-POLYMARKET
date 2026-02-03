@@ -1,7 +1,19 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
+import rateLimit from '@/lib/rate-limit';
 
-export async function GET() {
+const limiter = rateLimit({
+    interval: 60 * 1000,
+    uniqueTokenPerInterval: 500,
+});
+
+export async function GET(req: NextRequest) {
   try {
+    const ip = req.headers.get('x-forwarded-for') || 'anonymous';
+    try {
+        await limiter.check(30, ip); // 30 requests per minute
+    } catch {
+        return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+    }
     const cgKey = process.env.NEXT_PUBLIC_COINGECKO_KEY || process.env.COINGECKO_KEY;
     console.log('Fetching Bubbles from CoinGecko...');
     

@@ -43,7 +43,9 @@ const nextConfig = {
     },
 
     // Turbopack config (Next.js 16)
-    turbopack: {},
+    turbopack: {
+        root: __dirname,
+    },
 
     // External packages
     serverExternalPackages: [

@@ -9,9 +9,9 @@ import { prisma } from '@/lib/prisma';
  */
 export async function POST(req: Request) {
     try {
-        // Simple security check (could be a secret header in production)
+        // [SECURITY] Mandatory Cron Secret Check
         const authHeader = req.headers.get('authorization');
-        if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+        if (!process.env.CRON_SECRET || authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 

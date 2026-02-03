@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Alchemy, Network, AssetTransfersCategory, SortingOrder } from 'alchemy-sdk';
 import { prisma } from '@/lib/prisma';
+import rateLimit from '@/lib/rate-limit';
+
+// Global rate limiter (server-side per instance)
+const limiter = rateLimit({
+    interval: 60 * 1000, // 60 seconds
+    uniqueTokenPerInterval: 500, // Max 500 users per second
+});
 
 // Configure Alchemy with GetBlock RPC
 const config = {
@@ -30,6 +37,14 @@ const KNOWN_WHALES: Record<string, string> = {
 
 export async function GET(req: NextRequest) {
   try {
+    // [SECURITY] Apply Rate Limiting
+    const ip = req.headers.get('x-forwarded-for') || 'anonymous';
+    try {
+        await limiter.check(20, ip); // 20 requests per minute per IP
+    } catch {
+        return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+    }
+
     // [UNLOCKED] Removed currentUser check to allow public access to whale data
     
     // Fetch large transfers across chains

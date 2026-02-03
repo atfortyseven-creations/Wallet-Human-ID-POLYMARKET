@@ -7,6 +7,12 @@ const prisma = new PrismaClient();
 const RPC_URL = process.env.BASE_MAINNET_RPC_URL || process.env.BASE_SEPOLIA_RPC_URL;
 
 export async function GET(request: NextRequest) {
+    // [SECURITY] Protect Cron route
+    const authHeader = request.headers.get('authorization');
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     if (!RPC_URL) return NextResponse.json({ error: "Missing RPC config" }, { status: 500 });
 
     try {

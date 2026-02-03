@@ -68,13 +68,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Validate input
-    if (!body.name || !body.conditions || !Array.isArray(body.conditions)) {
+    // Validate input using Zod
+    const { AlertRuleSchema } = await import('@/lib/validations/alert-rules');
+    const parseResult = AlertRuleSchema.safeParse(body);
+
+    if (!parseResult.success) {
       return NextResponse.json(
-        { error: 'Invalid rule configuration' },
+        { error: 'Invalid input', details: parseResult.error.format() },
         { status: 400 }
       );
     }
+
+    const validData = parseResult.data;
 
     // Check rule limit (max 20 rules per user)
     const ruleCount = await prisma.alertRule.count({
@@ -92,10 +97,10 @@ export async function POST(req: NextRequest) {
     const rule = await prisma.alertRule.create({
       data: {
         userId,
-        name: body.name,
-        enabled: body.enabled ?? true,
-        conditions: body.conditions,
-        actions: body.actions || {},
+        name: validData.name,
+        enabled: validData.enabled ?? true,
+        conditions: validData.conditions,
+        actions: validData.actions || {},
         createdAt: new Date(),
       },
     });

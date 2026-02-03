@@ -500,6 +500,10 @@ model User {
   // [NEW] Virtual Card
   virtualCard   VirtualCard?
 
+  // [NEW] Security & Premium Features
+  alertRules    AlertRule[]
+  subscriptions Subscription[]
+
   @@index([reputation])
 }
 
@@ -1184,4 +1188,54 @@ model VirtualCard {
 
   @@index([authUserId])
   @@index([linkedAddress])
+}
+
+// ----------------------------------------------------------------------------
+// 11. MISSING SECURITY & PREMIUM MODELS
+// ----------------------------------------------------------------------------
+
+model AlertRule {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [walletAddress], onDelete: Cascade)
+  
+  name       String
+  enabled    Boolean  @default(true)
+  conditions Json
+  actions    Json
+  
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  @@index([userId])
+}
+
+model Subscription {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [walletAddress], onDelete: Cascade)
+  
+  status    String   @default("ACTIVE") // ACTIVE, CANCELLED, EXPIRED
+  tier      String   @default("PREMIUM")
+  
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([userId, status])
+  @@index([expiresAt])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String
+  resource  String
+  metadata  Json?
+  ip        String?
+  userAgent String?
+  timestamp DateTime @default(now())
+  
+  @@index([userId, timestamp])
+  @@index([action])
 }

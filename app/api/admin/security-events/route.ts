@@ -4,11 +4,14 @@ import { cookies } from 'next/headers';
 import { jwtVerify } from 'jose';
 
 const prisma = new PrismaClient();
-const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-jwt-key-change-in-prod';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+    throw new Error("CRITICAL: JWT_SECRET environment variable is missing");
+}
 
 // Simple admin authentication check
 async function isAdminAuthenticated(request: NextRequest): Promise<boolean> {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const adminToken = cookieStore.get('admin_token');
 
     if (!adminToken) {

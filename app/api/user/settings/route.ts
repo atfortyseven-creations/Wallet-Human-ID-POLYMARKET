@@ -48,8 +48,11 @@ export async function GET(request: NextRequest) {
     });
   } catch (error: any) {
     console.error('Settings GET error:', error);
+    if (error instanceof Error) {
+      console.error('Stack:', error.stack);
+    }
     return NextResponse.json(
-      { error: "Internal Server Error", details: error.message },
+      { error: "Internal Server Error", details: error.message, stack: process.env.NODE_ENV === 'development' ? error.stack : undefined },
       { status: 500 }
     );
   }
@@ -63,6 +66,7 @@ export async function PUT(request: NextRequest) {
   try {
     const user = await currentUser();
     const email = user?.emailAddresses[0]?.emailAddress;
+    console.log('[DEBUG] PUT /api/user/settings - Email:', email);
 
     if (!email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

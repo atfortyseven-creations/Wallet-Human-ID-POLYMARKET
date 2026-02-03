@@ -1,4 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import rateLimit from '@/lib/rate-limit';
+
+const limiter = rateLimit({
+    interval: 60 * 1000,
+    uniqueTokenPerInterval: 500,
+});
 
 /**
  * CoinGecko Historical Price Data API
@@ -36,6 +42,13 @@ const COIN_MAP: Record<string, string> = {
 
 export async function GET(request: NextRequest) {
   try {
+    const ip = request.headers.get('x-forwarded-for') || 'anonymous';
+    try {
+        await limiter.check(50, ip); // 50 requests per minute
+    } catch {
+        return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 });
+    }
+
     const { searchParams } = new URL(request.url);
     const symbol = searchParams.get('symbol')?.toUpperCase() || 'ETH';
     const days = parseInt(searchParams.get('days') || '7');
