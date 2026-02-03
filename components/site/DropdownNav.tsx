@@ -234,11 +234,11 @@ export function DropdownNav() {
 
                                         {/* Wallet Sub-Tabs */}
                                         <div className="flex items-center gap-1 bg-black/40 p-1 rounded-full">
-                                            <SubNavLink href="/wallet" icon={<Wallet size={14} />} label="Wallet" />
-                                            <SubNavLink href="/wallet?view=portfolio" icon={<PieChart size={14} />} label="Portfolio" />
-                                            <SubNavLink href="/wallet?view=earn" icon={<TrendingUp size={14} />} label="Earn" />
-                                            <SubNavLink href="/wallet?view=activity" icon={<Zap size={14} />} label="Activity" />
-                                            <SubNavLink href="/vip" icon={<UsersIcon size={14} />} label="Whales" />
+                                            <SubNavLink onClick={() => setIsOpen(false)} href="/wallet" icon={<Wallet size={14} />} label="Wallet" />
+                                            <SubNavLink onClick={() => setIsOpen(false)} href="/wallet?view=portfolio" icon={<PieChart size={14} />} label="Portfolio" />
+                                            <SubNavLink onClick={() => setIsOpen(false)} href="/wallet?view=earn" icon={<TrendingUp size={14} />} label="Earn" />
+                                            <SubNavLink onClick={() => setIsOpen(false)} href="/wallet?view=activity" icon={<Zap size={14} />} label="Activity" />
+                                            <SubNavLink onClick={() => setIsOpen(false)} href="/vip" icon={<UsersIcon size={14} />} label="Whales" />
                                         </div>
 
                                         {/* Switch Account Trigger (Small) */}
@@ -347,10 +347,11 @@ function NavToolButton({ icon, onClick, label, badge = false }: { icon: React.Re
     );
 }
 
-function SubNavLink({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) {
+function SubNavLink({ href, icon, label, onClick }: { href: string; icon: React.ReactNode; label: string; onClick?: () => void }) {
     return (
         <Link 
             href={href}
+            onClick={onClick}
             className="flex items-center gap-2 px-3 py-2 rounded-full text-gray-500 hover:text-black dark:hover:text-white hover:bg-white dark:hover:bg-white/10 transition-all"
         >
             {icon}
