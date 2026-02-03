@@ -103,171 +103,161 @@ export function DropdownNav() {
                     </motion.div>
                 </motion.button>
 
-                {/* Dropdown Menu - Refactored for absolute reliability */}
-                {mounted && createPortal(
-                    <AnimatePresence>
-                        {isOpen && (
-                            <div key="nav-portal-wrapper" className="fixed inset-0 z-[2147483647]">
-                                {/* Backdrop */}
-                                <motion.div 
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    className="absolute inset-0 bg-black/60 backdrop-blur-md cursor-pointer" 
-                                    onClick={() => setIsOpen(false)} 
-                                />
+                {/* Dropdown Menu - Inline for maximum reliability */}
+                <AnimatePresence>
+                    {isOpen && (
+                        <div key="nav-wrapper" className="absolute top-full left-1/2 -translate-x-1/2 pt-4 z-[2147483647]">
+                            {/* Backdrop - Uses fixed to cover screen regardless of parent */}
+                            <motion.div 
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="fixed inset-0 bg-black/60 backdrop-blur-md cursor-pointer pointer-events-auto" 
+                                onClick={() => setIsOpen(false)} 
+                            />
 
-                                {/* Menu Panel */}
-                                <motion.div
-                                    key="nav-menu-panel"
-                                    initial={{ opacity: 0, y: -20, x: "-50%", scale: 0.95 }}
-                                    animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
-                                    exit={{ opacity: 0, y: -20, x: "-50%", scale: 0.95 }}
-                                    transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
-                                    style={{
-                                        position: 'fixed',
-                                        top: '100px',
-                                        left: '50%',
-                                        transform: 'translateX(-50%)',
-                                        transformOrigin: 'top center'
-                                    }}
-                                    className="w-[95vw] max-w-5xl bg-zinc-900/90 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)] border border-white/20 overflow-hidden p-2"
-                                >
-                                    <div className="flex flex-col md:flex-row items-center justify-between gap-2 px-4 py-2">
-                                        
-                                         {/* Left: Branding */}
-                                         <Link 
-                                            href="/"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                router.push('/');
+                            {/* Menu Panel */}
+                            <motion.div
+                                key="nav-menu-panel"
+                                initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                                transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
+                                className="relative w-[95vw] max-w-5xl bg-zinc-900/90 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)] border border-white/20 overflow-hidden p-2 pointer-events-auto"
+                            >
+                                <div className="flex flex-col md:flex-row items-center justify-between gap-2 px-4 py-2">
+                                    
+                                     {/* Left: Branding */}
+                                     <Link 
+                                        href="/"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            router.push('/');
+                                            setIsOpen(false);
+                                        }}
+                                        className="hidden lg:flex items-center gap-3 pr-6 border-r border-white/10 shrink-0 hover:opacity-80 transition-all active:scale-95"
+                                     >
+                                        <div className="w-10 h-10 bg-white rounded-2xl flex items-center justify-center shadow-lg">
+                                             <span className="text-black font-black text-xl italic">H</span>
+                                        </div>
+                                        <div className="flex flex-col">
+                                             <span className="text-sm font-black text-white leading-none tracking-tight">HUMAN</span>
+                                             <span className="text-[10px] font-black text-purple-400 uppercase tracking-[0.2em]">Nav</span>
+                                        </div>
+                                     </Link>
+
+                                    {/* Center: Navigation Links */}
+                                    <nav className="flex items-center gap-1 flex-1 justify-center overflow-x-auto no-scrollbar">
+                                        {navLinks.map((link) => (
+                                            <Link
+                                                key={link.href}
+                                                href={link.href}
+                                                onClick={() => setIsOpen(false)}
+                                                className={`flex items-center gap-2 px-5 py-3 rounded-2xl transition-all whitespace-nowrap group/link ${
+                                                    link.isVIP
+                                                        ? 'bg-white text-black hover:scale-105 shadow-xl'
+                                                        : 'hover:bg-white/10 text-white font-bold text-sm tracking-tight'
+                                                }`}
+                                            >
+                                                {link.isVIP && <div className="animate-pulse">{link.icon}</div>}
+                                                <span>{link.name}</span>
+                                            </Link>
+                                        ))}
+                                    </nav>
+
+                                    {/* Right: Tools & Connect */}
+                                    <div className="flex items-center gap-4 pl-6 border-l border-white/10 shrink-0">
+                                        <div className="flex gap-1">
+                                            <NavToolButton 
+                                                onClick={() => { router.push('/soporte'); setIsOpen(false); }}
+                                                icon={<LifeBuoy size={18} />} 
+                                                label="Soporte" 
+                                            />
+                                            <NavToolButton 
+                                                onClick={() => { setShowNotifications(true); setIsOpen(false); }}
+                                                icon={<Bell size={18} />}
+                                                badge={unreadCount > 0}
+                                                label="Alertas"
+                                            />
+                                            <NavToolButton 
+                                                onClick={toggleStealthMode}
+                                                icon={isStealthMode ? <EyeOff size={18} /> : <Eye size={18} />}
+                                                label={isStealthMode ? 'Visible' : 'Ocultar'}
+                                            />
+                                            <NavToolButton 
+                                                onClick={() => { router.push('/settings'); setIsOpen(false); }}
+                                                icon={<Settings size={18} />} 
+                                                label="Config" 
+                                            />
+                                            <NavToolButton onClick={toggleLanguage} icon={<Globe size={18} />} label={language} />
+                                        </div>
+
+                                        <button
+                                            onClick={() => {
+                                                appKit.open();
                                                 setIsOpen(false);
                                             }}
-                                            className="hidden lg:flex items-center gap-3 pr-6 border-r border-white/10 shrink-0 hover:opacity-80 transition-all active:scale-95"
-                                         >
-                                            <div className="w-10 h-10 bg-white rounded-2xl flex items-center justify-center shadow-lg">
-                                                 <span className="text-black font-black text-xl italic">H</span>
+                                            className="px-6 py-3 bg-white text-black rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl flex items-center gap-3 whitespace-nowrap"
+                                        >
+                                            {isConnected ? (
+                                                <>
+                                                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                                    <span className="font-mono">{address?.slice(0, 4)}...{address?.slice(-4)}</span>
+                                                </>
+                                            ) : (
+                                                t('nav.start')
+                                            )}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Bottom Row: Wallet Context & Sub-links (Visible when connected) */}
+                                {isConnected && (
+                                    <motion.div 
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className="mt-2 p-2 bg-white/5 rounded-[2rem] flex items-center justify-between gap-4 border-t border-white/5"
+                                    >
+                                        {/* Account Switcher Integration */}
+                                        <div className="flex items-center gap-2 pl-4">
+                                            <div 
+                                                className="w-8 h-8 rounded-full border-2 border-white/20 shadow-sm flex items-center justify-center text-white text-[10px] font-black"
+                                                style={{ background: getAccountColor(currentAddress || address || '') }}
+                                            >
+                                                {(accounts.find(a => a.address === currentAddress)?.name?.[0] || 'H').toUpperCase()}
                                             </div>
                                             <div className="flex flex-col">
-                                                 <span className="text-sm font-black text-white leading-none tracking-tight">HUMAN</span>
-                                                 <span className="text-[10px] font-black text-purple-400 uppercase tracking-[0.2em]">Nav</span>
+                                                <span className="text-[10px] font-black text-white leading-tight">
+                                                    {accounts.find(a => a.address === currentAddress)?.name || 'Human Wallet'}
+                                                </span>
+                                                <span className="text-[8px] font-bold text-gray-400 tabular-nums">
+                                                    {(currentAddress || address || '').slice(0, 6)}...{(currentAddress || address || '').slice(-4)}
+                                                </span>
                                             </div>
-                                         </Link>
-
-                                        {/* Center: Navigation Links */}
-                                        <nav className="flex items-center gap-1 flex-1 justify-center overflow-x-auto no-scrollbar">
-                                            {navLinks.map((link) => (
-                                                <Link
-                                                    key={link.href}
-                                                    href={link.href}
-                                                    onClick={() => setIsOpen(false)}
-                                                    className={`flex items-center gap-2 px-5 py-3 rounded-2xl transition-all whitespace-nowrap group/link ${
-                                                        link.isVIP
-                                                            ? 'bg-white text-black hover:scale-105 shadow-xl'
-                                                            : 'hover:bg-white/10 text-white font-bold text-sm tracking-tight'
-                                                    }`}
-                                                >
-                                                    {link.isVIP && <div className="animate-pulse">{link.icon}</div>}
-                                                    <span>{link.name}</span>
-                                                </Link>
-                                            ))}
-                                        </nav>
-
-                                        {/* Right: Tools & Connect */}
-                                        <div className="flex items-center gap-4 pl-6 border-l border-white/10 shrink-0">
-                                            <div className="flex gap-1">
-                                                <NavToolButton 
-                                                    onClick={() => { router.push('/soporte'); setIsOpen(false); }}
-                                                    icon={<LifeBuoy size={18} />} 
-                                                    label="Soporte" 
-                                                />
-                                                <NavToolButton 
-                                                    onClick={() => { setShowNotifications(true); setIsOpen(false); }}
-                                                    icon={<Bell size={18} />}
-                                                    badge={unreadCount > 0}
-                                                    label="Alertas"
-                                                />
-                                                <NavToolButton 
-                                                    onClick={toggleStealthMode}
-                                                    icon={isStealthMode ? <EyeOff size={18} /> : <Eye size={18} />}
-                                                    label={isStealthMode ? 'Visible' : 'Ocultar'}
-                                                />
-                                                <NavToolButton 
-                                                    onClick={() => { router.push('/settings'); setIsOpen(false); }}
-                                                    icon={<Settings size={18} />} 
-                                                    label="Config" 
-                                                />
-                                                <NavToolButton onClick={toggleLanguage} icon={<Globe size={18} />} label={language} />
-                                            </div>
-
-                                            <button
-                                                onClick={() => {
-                                                    appKit.open();
-                                                    setIsOpen(false);
-                                                }}
-                                                className="px-6 py-3 bg-white text-black rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl flex items-center gap-3 whitespace-nowrap"
-                                            >
-                                                {isConnected ? (
-                                                    <>
-                                                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                                                        <span className="font-mono">{address?.slice(0, 4)}...{address?.slice(-4)}</span>
-                                                    </>
-                                                ) : (
-                                                    t('nav.start')
-                                                )}
-                                            </button>
                                         </div>
-                                    </div>
 
-                                    {/* Bottom Row: Wallet Context & Sub-links (Visible when connected) */}
-                                    {isConnected && (
-                                        <motion.div 
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            className="mt-2 p-2 bg-white/5 rounded-[2rem] flex items-center justify-between gap-4 border-t border-white/5"
+                                        {/* Wallet Sub-Tabs */}
+                                        <div className="flex items-center gap-1 bg-black/40 p-1 rounded-2xl">
+                                            <SubNavLink href="/wallet" icon={<Wallet size={14} />} label="Wallet" />
+                                            <SubNavLink href="/wallet?view=portfolio" icon={<PieChart size={14} />} label="Portfolio" />
+                                            <SubNavLink href="/wallet?view=earn" icon={<TrendingUp size={14} />} label="Earn" />
+                                            <SubNavLink href="/wallet?view=activity" icon={<Zap size={14} />} label="Activity" />
+                                            <SubNavLink href="/vip" icon={<UsersIcon size={14} />} label="Whales" />
+                                        </div>
+
+                                        {/* Switch Account Trigger (Small) */}
+                                        <button 
+                                            onClick={() => { router.push('/wallet'); setIsOpen(false); }}
+                                            className="px-4 py-2 bg-white/10 text-[10px] font-black uppercase tracking-widest text-white rounded-xl shadow-sm hover:scale-105 transition-all mr-2"
                                         >
-                                            {/* Account Switcher Integration */}
-                                            <div className="flex items-center gap-2 pl-4">
-                                                <div 
-                                                    className="w-8 h-8 rounded-full border-2 border-white/20 shadow-sm flex items-center justify-center text-white text-[10px] font-black"
-                                                    style={{ background: getAccountColor(currentAddress || address || '') }}
-                                                >
-                                                    {(accounts.find(a => a.address === currentAddress)?.name?.[0] || 'H').toUpperCase()}
-                                                </div>
-                                                <div className="flex flex-col">
-                                                    <span className="text-[10px] font-black text-white leading-tight">
-                                                        {accounts.find(a => a.address === currentAddress)?.name || 'Human Wallet'}
-                                                    </span>
-                                                    <span className="text-[8px] font-bold text-gray-400 tabular-nums">
-                                                        {(currentAddress || address || '').slice(0, 6)}...{(currentAddress || address || '').slice(-4)}
-                                                    </span>
-                                                </div>
-                                            </div>
-
-                                            {/* Wallet Sub-Tabs */}
-                                            <div className="flex items-center gap-1 bg-black/40 p-1 rounded-2xl">
-                                                <SubNavLink href="/wallet" icon={<Wallet size={14} />} label="Wallet" />
-                                                <SubNavLink href="/wallet?view=portfolio" icon={<PieChart size={14} />} label="Portfolio" />
-                                                <SubNavLink href="/wallet?view=earn" icon={<TrendingUp size={14} />} label="Earn" />
-                                                <SubNavLink href="/wallet?view=activity" icon={<Zap size={14} />} label="Activity" />
-                                                <SubNavLink href="/vip" icon={<UsersIcon size={14} />} label="Whales" />
-                                            </div>
-
-                                            {/* Switch Account Trigger (Small) */}
-                                            <button 
-                                                onClick={() => { router.push('/wallet'); setIsOpen(false); }}
-                                                className="px-4 py-2 bg-white/10 text-[10px] font-black uppercase tracking-widest text-white rounded-xl shadow-sm hover:scale-105 transition-all mr-2"
-                                            >
-                                                Switch
-                                            </button>
-                                        </motion.div>
-                                    )}
-                                </motion.div>
-                            </div>
-                        )}
-                    </AnimatePresence>,
-                    document.body
-                )}
+                                            Switch
+                                        </button>
+                                    </motion.div>
+                                )}
+                            </motion.div>
+                        </div>
+                    )}
+                </AnimatePresence>
             </div>
 
             {/* Notifications Modal */}
