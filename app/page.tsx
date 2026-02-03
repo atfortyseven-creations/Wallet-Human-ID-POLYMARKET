@@ -110,7 +110,7 @@ export default function Home() {
                         whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
                         transition={{ duration: 1 }}
-                        className="mt-[-100px] md:mt-[-200px]"
+                        className="mt-[-200px] md:mt-[-400px] relative z-20"
                     >
                         <LaunchCountdown />
                     </motion.div>
