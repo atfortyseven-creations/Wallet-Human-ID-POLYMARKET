@@ -7,7 +7,7 @@ export const Footer = () => {
     const { t } = useApp();
     
     return (
-        <footer className="relative z-10 mt-0 border-t border-white/5 bg-black/40 backdrop-blur-2xl">
+        <footer className="relative z-10 mt-0 border-t border-white/5 bg-black backdrop-blur-2xl">
             {/* Immersive Top Gradient Line */}
             <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#00ff9d]/20 to-transparent" />
 

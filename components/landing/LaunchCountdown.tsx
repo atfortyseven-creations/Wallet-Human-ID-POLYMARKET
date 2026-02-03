@@ -33,21 +33,30 @@ export function LaunchCountdown() {
     }, []);
 
     return (
-        <section className="relative w-full min-h-[140vh] flex flex-col items-center justify-center overflow-visible" style={{ maskImage: 'linear-gradient(to bottom, transparent, black 15%, black 85%, transparent)' }}>
+        <section 
+            className="relative w-full min-h-[140vh] flex flex-col items-center justify-center overflow-visible"
+            style={{ 
+                maskImage: 'linear-gradient(to bottom, transparent, black 15%, black 85%, transparent)',
+                WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 15%, black 85%, transparent)'
+            }}
+        >
             
-            {/* 1. SEAMLESS TOP BLEND (Refined Scoop) */}
-            <div className="absolute top-0 left-0 w-full h-[400px] z-10 pointer-events-none">
-                <svg viewBox="0 0 1440 320" className="w-full h-full" preserveAspectRatio="none">
-                    <path 
-                        fill="#0a0a0a" 
-                        fillOpacity="1" 
-                        d="M0,160L120,186.7C240,213,480,267,720,266.7C960,267,1200,213,1320,186.7L1440,160L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"
-                    ></path>
-                </svg>
+            {/* 1. SEAMLESS TOP MELTING (Fuzzy Gradient) */}
+            <div className="absolute top-0 left-0 w-full h-[300px] z-10 pointer-events-none">
+                <div 
+                    className="w-full h-full"
+                    style={{
+                        background: 'radial-gradient(ellipse at 50% 0%, #EAEADF 0%, #EAEADF 40%, rgba(234, 234, 223, 0) 100%)',
+                        filter: 'blur(40px)',
+                    }}
+                />
             </div>
 
             {/* 2. ANIMATED MESH BACKGROUND (The Portal) */}
             <div className="absolute inset-0 z-0 bg-[#0a0a0a] overflow-hidden">
+                {/* Immersive mesh glow foundation */}
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-900/10 to-transparent" />
+                
                 <div className="absolute inset-0 opacity-50">
                     <motion.div 
                         animate={{ 
@@ -109,15 +118,15 @@ export function LaunchCountdown() {
                 </div>
             </div>
 
-            {/* 4. SEAMLESS BOTTOM BLEND (Refined Blend) */}
+            {/* 4. SEAMLESS BOTTOM MELTING (Fuzzy Gradient to Footer) */}
             <div className="absolute bottom-0 left-0 w-full h-[400px] z-10 pointer-events-none">
-                <svg viewBox="0 0 1440 320" className="w-full h-full absolute bottom-0 translate-y-1" preserveAspectRatio="none">
-                    <path 
-                        fill="#0a0a0a" 
-                        fillOpacity="1" 
-                        d="M0,160L120,133.3C240,107,480,53,720,53.3C960,53,1200,107,1320,133.3L1440,160L1440,0L1320,0C1200,0,960,0,720,0C480,0,240,0,120,0L0,0Z"
-                    ></path>
-                </svg>
+                <div 
+                    className="w-full h-full"
+                    style={{
+                        background: 'radial-gradient(ellipse at 50% 100%, black 0%, black 30%, rgba(0, 0, 0, 0) 100%)',
+                        filter: 'blur(60px)',
+                    }}
+                />
             </div>
 
         </section>

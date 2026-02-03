@@ -105,7 +105,7 @@ export default function Home() {
                     </motion.section>
 
                     {/* LAUNCH COUNTDOWN & IMMERSIVE IMAGE */}
-                    <div className="mt-[-100px] md:mt-[-150px] relative z-10">
+                    <div className="mt-[-60px] md:mt-[-80px] relative z-10">
                         <LaunchCountdown />
                     </div>
 
