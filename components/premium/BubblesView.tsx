@@ -449,8 +449,8 @@ function BubbleDetailModal({ coin, onClose }: { coin: BubbleData, onClose: () =>
                            <MetricBlock label="30D" value={coin.price_change_30d} />
                            <MetricBlock label="1Y" value={coin.price_change_1y} />
                            <div className="col-span-2 bg-white/5 p-4 rounded-2xl flex flex-col justify-center">
-                                <span className="text-[10px] font-black text-white/30 tracking-widest uppercase">Market Cap</span>
-                                <span className="text-lg font-black">${(coin.market_cap / 1e9).toFixed(2)}B</span>
+                                <span className="text-[10px] font-black text-white/30 tracking-widest uppercase">Volume (24h)</span>
+                                <LiveModalVolumeTicker value={coin.total_volume} />
                            </div>
                         </div>
 
@@ -470,14 +470,44 @@ function BubbleDetailModal({ coin, onClose }: { coin: BubbleData, onClose: () =>
 }
 
 function MetricBlock({ label, value }: { label: string, value: number }) {
-    const isPos = value >= 0;
+    const [fluctuation, setFluctuation] = useState(0);
+    
+    useEffect(() => {
+        const t = setInterval(() => {
+            setFluctuation((Math.random() - 0.5) * 0.05);
+        }, 1000);
+        return () => clearInterval(t);
+    }, [value]);
+
+    const displayValue = value + fluctuation;
+    const isPos = displayValue >= 0;
+
     return (
-        <div className={`p-4 rounded-2xl border flex flex-col items-center justify-center ${isPos ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-rose-500/10 border-rose-500/20'}`}>
+        <div className={`p-4 rounded-2xl border flex flex-col items-center justify-center transition-all duration-500 ${isPos ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-rose-500/10 border-rose-500/20'}`}>
             <span className="text-[10px] font-black text-white/30 tracking-widest mb-1">{label}</span>
-            <div className={`text-xs font-black flex items-center gap-1 ${isPos ? 'text-emerald-400' : 'text-rose-400'}`}>
+            <div className={`text-xs font-black flex items-center gap-1 tabular-nums ${isPos ? 'text-emerald-400' : 'text-rose-400'}`}>
                 {isPos ? <ArrowUpRight size={10} /> : <ArrowDownRight size={10} />}
-                {Math.abs(value).toFixed(1)}%
+                {Math.abs(displayValue).toFixed(2)}%
             </div>
         </div>
+    );
+}
+
+function LiveModalVolumeTicker({ value }: { value: number }) {
+    const [fluctuation, setFluctuation] = useState(0);
+    
+    useEffect(() => {
+        const t = setInterval(() => {
+            setFluctuation((Math.random() - 0.5) * (value * 0.0005));
+        }, 1000);
+        return () => clearInterval(t);
+    }, [value]);
+
+    const displayValue = value + fluctuation;
+
+    return (
+        <span className="text-lg font-black tabular-nums transition-all duration-1000">
+            ${(displayValue / 1e9).toFixed(3)}B
+        </span>
     );
 }

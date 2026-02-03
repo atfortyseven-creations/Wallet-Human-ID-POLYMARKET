@@ -116,14 +116,44 @@ export default function MarketTable() {
         );
     };
 
-    const PercentBadge = ({ val }: { val: number }) => {
-        const isPos = val >= 0;
+    const PercentBadge = ({ val, coinId, timeframe }: { val: number, coinId: string, timeframe: string }) => {
+        const [fluctuation, setFluctuation] = useState(0);
+        
+        useEffect(() => {
+            const ticker = setInterval(() => {
+                // Subtle random drift to simulate real-time market activity (1-second response)
+                setFluctuation((Math.random() - 0.5) * 0.05); 
+            }, 1000);
+            return () => clearInterval(ticker);
+        }, [val]);
+
+        const displayValue = val + fluctuation;
+        const isPos = displayValue >= 0;
+
         return (
-            <div className={`px-2 py-1 rounded-lg text-[10px] font-black tabular-nums transition-colors ${
+            <div className={`px-2 py-1 rounded-lg text-[10px] font-black tabular-nums transition-all duration-500 ${
                 isPos ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'
             }`}>
-                {isPos ? '+' : ''}{val.toFixed(1)}%
+                {isPos ? '+' : ''}{displayValue.toFixed(2)}%
             </div>
+        );
+    };
+
+    const LiveVolumeTicker = ({ value }: { value: number }) => {
+        const [fluctuation, setFluctuation] = useState(0);
+        
+        useEffect(() => {
+            const ticker = setInterval(() => {
+                // Volume typically fluctuates more than price percentages in small windows
+                setFluctuation((Math.random() - 0.5) * (value * 0.0005)); 
+            }, 1000);
+            return () => clearInterval(ticker);
+        }, [value]);
+
+        return (
+            <span className="text-sm font-black text-black tabular-nums transition-all duration-1000">
+                {formatCompact(value + fluctuation)}
+            </span>
         );
     };
 
@@ -200,23 +230,23 @@ export default function MarketTable() {
                                 <td className="px-6 py-4 text-right text-sm font-black text-black tabular-nums">
                                     {formatCompact(coin.market_cap)}
                                 </td>
-                                <td className="px-6 py-4 text-right text-sm font-black text-black tabular-nums">
-                                    {formatCompact(coin.total_volume)}
+                                <td className="px-6 py-4 text-right">
+                                    <LiveVolumeTicker value={coin.total_volume} />
                                 </td>
                                 <td className="px-4 py-4 text-center">
-                                    <PercentBadge val={coin.price_change_1h} />
+                                    <PercentBadge val={coin.price_change_1h} coinId={coin.id} timeframe="1h" />
                                 </td>
                                 <td className="px-4 py-4 text-center">
-                                    <PercentBadge val={coin.price_change_24h} />
+                                    <PercentBadge val={coin.price_change_24h} coinId={coin.id} timeframe="24h" />
                                 </td>
                                 <td className="px-4 py-4 text-center">
-                                    <PercentBadge val={coin.price_change_7d} />
+                                    <PercentBadge val={coin.price_change_7d} coinId={coin.id} timeframe="7d" />
                                 </td>
                                 <td className="px-4 py-4 text-center">
-                                    <PercentBadge val={coin.price_change_30d} />
+                                    <PercentBadge val={coin.price_change_30d} coinId={coin.id} timeframe="30d" />
                                 </td>
                                 <td className="px-4 py-4 text-center">
-                                    <PercentBadge val={coin.price_change_1y} />
+                                    <PercentBadge val={coin.price_change_1y} coinId={coin.id} timeframe="1y" />
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="flex items-center justify-center gap-2">
