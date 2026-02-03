@@ -20,6 +20,8 @@ import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import { StackedFeatureCards } from '@/components/landing/StackedFeatureCards';
 import BubblesView from '@/components/premium/BubblesView';
 import MarketTable from '@/components/premium/MarketTable';
+import SmoothScroll from '@/components/layout/SmoothScroll';
+import { motion } from 'framer-motion';
 
 export default function Home() {
   const { isConnected } = useAppKitAccount();
@@ -46,51 +48,77 @@ export default function Home() {
   };
 
   return (
-        <main className="relative min-h-screen w-full bg-[#EAEADF] dark:bg-[#0a0a0a] text-[#1F1F1F] dark:text-white selection:bg-[#00ff9d] selection:text-black overflow-x-hidden transition-colors duration-700">
-            
-            {/* 1. Background Layers */}
-            <div className="fixed inset-0 z-0 pointer-events-none">
-                <FluidBeigeBackground />
-            </div>
-
-            {/* 2. Parallax Stickers Layer */}
-            <ParallaxStickers />
-
-            {/* 2. Main Content */}
-            <div className="relative z-10 flex flex-col">
+        <SmoothScroll>
+            <main className="relative min-h-screen w-full bg-[#EAEADF] dark:bg-[#0a0a0a] text-[#1F1F1F] dark:text-white selection:bg-[#00ff9d] selection:text-black overflow-x-hidden transition-colors duration-700">
                 
-                {/* HERO SECTION */}
-                <section className="relative w-full h-[100dvh]">
-                    <LandingHero onStart={handleStart} />
-                </section>
-
-                {/* BUBBLES - Now second, moved up for immediate impact */}
-                <section className="w-full px-4 md:px-8 flex justify-center py-6">
-                    <div className="w-full max-w-7xl h-[600px] md:h-[700px]">
-                        <BubblesView />
-                    </div>
-                </section>
-
-                {/* MARKET TABLE - Now third */}
-                <section className="w-full px-4 md:px-8 flex justify-center py-6">
-                    <div className="w-full max-w-7xl">
-                        <MarketTable />
-                    </div>
-                </section>
-
-                {/* FEATURE CARDS (Stacked) - Moved to bottom as a final fluid stack */}
-                <section className="w-full py-12 flex justify-center">
-                    <StackedFeatureCards />
-                </section>
-
-                {/* LAUNCH COUNTDOWN & IMMERSIVE IMAGE */}
-                <div className="py-12">
-                    <LaunchCountdown />
+                {/* 1. Background Layers */}
+                <div className="fixed inset-0 z-0 pointer-events-none">
+                    <FluidBeigeBackground />
                 </div>
 
-                {/* FOOTER */}
-                <Footer />
-            </div>
-        </main>
+                {/* 2. Parallax Stickers Layer */}
+                <ParallaxStickers />
+
+                {/* 2. Main Content */}
+                <div className="relative z-10 flex flex-col">
+                    
+                    {/* HERO SECTION */}
+                    <section className="relative w-full h-[100dvh]">
+                        <LandingHero onStart={handleStart} />
+                    </section>
+
+                    {/* BUBBLES - Now second, moved up for immediate impact */}
+                    <motion.section 
+                        initial={{ opacity: 0, y: 40 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-100px" }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                        className="w-full px-4 md:px-8 flex justify-center py-12"
+                    >
+                        <div className="w-full max-w-7xl h-[600px] md:h-[700px]">
+                            <BubblesView />
+                        </div>
+                    </motion.section>
+
+                    {/* MARKET TABLE - Now third */}
+                    <motion.section 
+                        initial={{ opacity: 0, y: 40 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, margin: "-100px" }}
+                        transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+                        className="w-full px-4 md:px-8 flex justify-center py-12"
+                    >
+                        <div className="w-full max-w-7xl">
+                            <MarketTable />
+                        </div>
+                    </motion.section>
+
+                    {/* FEATURE CARDS (Stacked) - Moved to bottom as a final fluid stack */}
+                    <motion.section 
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true, margin: "-100px" }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                        className="w-full py-20 flex justify-center"
+                    >
+                        <StackedFeatureCards />
+                    </motion.section>
+
+                    {/* LAUNCH COUNTDOWN & IMMERSIVE IMAGE */}
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1 }}
+                        className="py-20"
+                    >
+                        <LaunchCountdown />
+                    </motion.div>
+
+                    {/* FOOTER */}
+                    <Footer />
+                </div>
+            </main>
+        </SmoothScroll>
   );
 }
