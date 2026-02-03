@@ -63,7 +63,6 @@ export function DropdownNav() {
         { name: 'WHALE', href: '/vip', icon: <Crown size={16} className="text-[#D4AF37]" />, isVIP: true },
         { name: t('nav.developer'), href: '/developer', icon: null },
         { name: t('nav.human_card'), href: '/wallet', icon: null },
-        { name: t('nav.bubbles'), href: '/bubbles', icon: null },
         { name: t('nav.support'), href: '/soporte', icon: null },
     ];
 

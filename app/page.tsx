@@ -18,6 +18,8 @@ import { Footer } from '@/components/layout/Footer';
 import { LaunchCountdown } from '@/components/landing/LaunchCountdown';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
 import { StackedFeatureCards } from '@/components/landing/StackedFeatureCards';
+import BubblesView from '@/components/premium/BubblesView';
+import MarketTable from '@/components/premium/MarketTable';
 
 export default function Home() {
   const { isConnected } = useAppKitAccount();
@@ -65,6 +67,20 @@ export default function Home() {
                 {/* FEATURE CARDS (Restored) */}
                 <section className="w-full py-20 flex justify-center">
                     <StackedFeatureCards />
+                </section>
+
+                {/* BUBBLES - No title, just the component */}
+                <section className="w-full px-4 md:px-8 flex justify-center">
+                    <div className="w-full max-w-7xl h-[600px] md:h-[700px]">
+                        <BubblesView />
+                    </div>
+                </section>
+
+                {/* MARKET TABLE - No title, just the component */}
+                <section className="w-full px-4 md:px-8 flex justify-center pt-8">
+                    <div className="w-full max-w-7xl">
+                        <MarketTable />
+                    </div>
                 </section>
 
                 {/* LAUNCH COUNTDOWN & IMMERSIVE IMAGE */}

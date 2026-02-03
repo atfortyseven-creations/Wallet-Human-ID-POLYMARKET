@@ -18,7 +18,7 @@ export async function GET() {
 
     const response = await fetch(url, { 
       headers,
-      next: { revalidate: 60 } 
+      next: { revalidate: 1 } // Real-time updates every second
     });
 
     if (!response.ok) {

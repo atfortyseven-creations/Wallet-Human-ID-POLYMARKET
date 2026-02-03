@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
-import { GPULottie } from "@/components/creative/GPULottie";
 
 interface CardData {
   id: number;
@@ -153,7 +152,9 @@ function Card({ data, index, isTop, offset, onSwipe }: {
             {/* Visual */}
             <div className="flex-1 w-full flex items-center justify-center relative my-4 rounded-xl overflow-hidden bg-black/20">
                  <div className="w-full h-full absolute inset-0 bg-gradient-to-t from-neutral-900/50 to-transparent z-10" />
-                 <GPULottie src={data.lottieSrc} width={200} height={200} />
+                 <div className="w-24 h-24 bg-white/10 rounded-full animate-pulse flex items-center justify-center text-4xl">
+                     ✨
+                 </div>
             </div>
 
             {/* Footer / Call to Action Indicator */}

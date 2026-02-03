@@ -67,7 +67,7 @@ export default function MarketTable() {
 
     useEffect(() => {
         fetchData();
-        const interval = setInterval(fetchData, 30000); // Higher frequency: 30s
+        const interval = setInterval(fetchData, 1000); // Real-time updates every second
         return () => clearInterval(interval);
     }, [prevPrices]);
 

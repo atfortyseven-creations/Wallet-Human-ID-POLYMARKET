@@ -10,9 +10,9 @@ import {
 import { Toaster, toast } from 'sonner';
 import { HumanDefiFooter } from '@/components/landing/HumanDefiFooter';
 import { useSettings } from '@/src/context/SettingsContext';
-import { verifyBiometricOwnership } from '@/src/services/security/BiometricService';
-import { revokeTokenAllowance } from '@/src/services/security/RevokeService';
-import { ContactsManager } from '@/components/contacts/ContactsManager';
+// import { verifyBiometricOwnership } from '@/src/services/security/BiometricService';
+// import { revokeTokenAllowance } from '@/src/services/security/RevokeService';
+// import { ContactsManager } from '@/components/contacts/ContactsManager';
 import { CloudSyncManager } from '@/components/settings/CloudSyncManager';
 import { WalletConnectSessions } from '@/components/wallet/WalletConnectSessions';
 
@@ -45,6 +45,8 @@ export default function SettingsPage() {
     ];
 
     const toggleBiometrics = async () => {
+        toast.info("Biometric authentication temporarily unavailable");
+        /*
         if (!biometricsEnabled) {
             const verified = await verifyBiometricOwnership();
             if (verified) {
@@ -56,9 +58,12 @@ export default function SettingsPage() {
         } else {
             setBiometricsEnabled(false);
         }
+        */
     };
 
     const handleRevoke = async () => {
+        toast.info("Token revocation service temporarily unavailable");
+        /*
         if (!revokeToken || !revokeSpender) return;
         setIsRevoking(true);
         try {
@@ -71,6 +76,7 @@ export default function SettingsPage() {
         } finally {
             setIsRevoking(false);
         }
+        */
     };
 
     const renderContent = () => {
@@ -225,7 +231,7 @@ export default function SettingsPage() {
                 );
 
             case 'contacts':
-                return <ContactsManager />;
+                return <EmptyState icon={Users} label="Contactos" subLabel="El gestor de contactos está temporalmente fuera de servicio." />;
 
             case 'notifications':
                 return (

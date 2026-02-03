@@ -52,7 +52,6 @@ export function HumanDefiFooter() {
             title: t('footer.products'),
             links: [
                 { name: t('nav.human_card'), href: "/wallet" },
-                { name: "Human USD", href: "/tokenomics" }, // Brand name
                 { name: t('footer.smart_kit'), href: "#" },
                 { name: t('footer.embedded'), href: "#" }
             ]

@@ -93,12 +93,6 @@ export function LandingHero({ onStart }: LandingHeroProps) {
                             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </Link>
                         
-                        <Link 
-                            href="/trust"
-                            className="px-8 py-4 bg-white/10 dark:bg-white/10 text-[#1F1F1F] dark:text-white rounded-2xl font-bold text-lg hover:bg-white/20 dark:hover:bg-white/20 transition-all backdrop-blur-md border border-white/10 dark:border-white/10 border-black/10"
-                        >
-                            Learn More
-                        </Link>
                     </div>
 
                     {/* Trust Indicators */}

@@ -2,14 +2,12 @@
 
 import React from 'react';
 import { FloatingImmersiveBackground } from '@/components/landing/FloatingImmersiveBackground';
-import { ImmersiveKittens } from '@/components/immersive/ImmersiveKittens';
 
 export default function DeveloperPage() {
     return (
         <main className="relative min-h-screen w-full bg-[#F5F5DC] overflow-hidden pt-24 pb-12">
             {/* Layer 0: Global Background */}
             <FloatingImmersiveBackground density="high" kittenCount={15} />
-            <ImmersiveKittens variant="floating" />
 
             {/* Layer 1: Content */}
             <div className="relative z-10 w-full max-w-7xl mx-auto px-6 text-center">

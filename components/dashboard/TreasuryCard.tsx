@@ -63,12 +63,12 @@ export const TreasuryCard = () => {
                     </div>
                 </div>
 
-                <Link href="/tokenomics" className="mt-6 group/btn">
-                    <div className="flex items-center justify-between py-3 px-4 rounded-xl bg-white/5 border border-white/10 group-hover/btn:bg-white/10 group-hover/btn:border-amber-500/30 transition-all">
-                        <span className="text-xs font-bold text-gray-300 group-hover/btn:text-white">INSPECT LEDGER</span>
-                        <ArrowRight size={14} className="text-gray-500 group-hover/btn:text-amber-500 transition-colors" />
+                <div className="mt-6">
+                    <div className="flex items-center justify-between py-3 px-4 rounded-xl bg-white/5 border border-white/10">
+                        <span className="text-xs font-bold text-gray-300">INSPECT LEDGER</span>
+                        <ArrowRight size={14} className="text-gray-500" />
                     </div>
-                </Link>
+                </div>
             </div>
         </motion.div>
     );
