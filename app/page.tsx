@@ -105,15 +105,9 @@ export default function Home() {
                     </motion.section>
 
                     {/* LAUNCH COUNTDOWN & IMMERSIVE IMAGE */}
-                    <motion.div 
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1 }}
-                        className="mt-[-200px] md:mt-[-400px] relative z-20"
-                    >
+                    <div className="mt-[-100px] md:mt-[-150px] relative z-10">
                         <LaunchCountdown />
-                    </motion.div>
+                    </div>
 
                     {/* FOOTER */}
                     <Footer />

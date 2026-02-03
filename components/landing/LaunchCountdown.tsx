@@ -33,15 +33,10 @@ export function LaunchCountdown() {
     }, []);
 
     return (
-        <section className="relative w-full min-h-[140vh] flex flex-col items-center justify-center overflow-visible">
+        <section className="relative w-full min-h-[140vh] flex flex-col items-center justify-center overflow-visible" style={{ maskImage: 'linear-gradient(to bottom, transparent, black 15%, black 85%, transparent)' }}>
             
-            {/* 1. SEAMLESS TOP MELT (Beige -> Black) */}
-            <div className="absolute top-0 left-0 w-full h-[600px] z-30 pointer-events-none -translate-y-[300px]">
-                <div className="w-full h-full bg-gradient-to-b from-[#EAEADF] via-[#EAEADF]/80 via-[#0a0a0a]/40 to-transparent" />
-            </div>
-
-            {/* 2. IMMERSIVE TOP DIVIDER (Refined Scoop) */}
-            <div className="absolute top-0 left-0 w-full h-[400px] z-20 pointer-events-none">
+            {/* 1. SEAMLESS TOP BLEND (Refined Scoop) */}
+            <div className="absolute top-0 left-0 w-full h-[400px] z-10 pointer-events-none">
                 <svg viewBox="0 0 1440 320" className="w-full h-full" preserveAspectRatio="none">
                     <path 
                         fill="#0a0a0a" 
@@ -51,7 +46,7 @@ export function LaunchCountdown() {
                 </svg>
             </div>
 
-            {/* 3. ANIMATED MESH BACKGROUND (The Portal) */}
+            {/* 2. ANIMATED MESH BACKGROUND (The Portal) */}
             <div className="absolute inset-0 z-0 bg-[#0a0a0a] overflow-hidden">
                 <div className="absolute inset-0 opacity-50">
                     <motion.div 
@@ -79,8 +74,8 @@ export function LaunchCountdown() {
                 <div className="absolute inset-0 opacity-[0.04] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay" />
             </div>
 
-            {/* 4. CONTENT AREA */}
-            <div className="relative z-40 w-full max-w-7xl mx-auto px-6 text-center text-white pt-60 pb-40">
+            {/* 3. CONTENT AREA */}
+            <div className="relative z-20 w-full max-w-7xl mx-auto px-6 text-center text-white pt-60 pb-40">
                 
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9, filter: 'blur(20px)' }}
@@ -114,13 +109,8 @@ export function LaunchCountdown() {
                 </div>
             </div>
 
-            {/* 5. SEAMLESS BOTTOM MELT (Black -> Beige) */}
-            <div className="absolute bottom-0 left-0 w-full h-[600px] z-30 pointer-events-none translate-y-[300px]">
-                <div className="w-full h-full bg-gradient-to-t from-[#EAEADF] via-[#EAEADF]/80 via-[#0a0a0a]/40 to-transparent" />
-            </div>
-
-            {/* 6. IMMERSIVE BOTTOM DIVIDER (Refined Blend) */}
-            <div className="absolute bottom-0 left-0 w-full h-[400px] z-20 pointer-events-none">
+            {/* 4. SEAMLESS BOTTOM BLEND (Refined Blend) */}
+            <div className="absolute bottom-0 left-0 w-full h-[400px] z-10 pointer-events-none">
                 <svg viewBox="0 0 1440 320" className="w-full h-full absolute bottom-0 translate-y-1" preserveAspectRatio="none">
                     <path 
                         fill="#0a0a0a" 

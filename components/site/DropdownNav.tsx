@@ -166,8 +166,8 @@ export function DropdownNav() {
                                         <div className="flex gap-1">
                                             <NavToolButton 
                                                 onClick={() => { window.location.href = '/soporte'; setIsOpen(false); }}
-                                                icon={<LifeBuoy size={18} />} 
-                                                label="Soporte" 
+                                                icon={<div className="animate-pulse text-purple-500"><LifeBuoy size={18} /></div>} 
+                                                label="EL VACÍO" 
                                             />
                                             <NavToolButton 
                                                 onClick={() => { setShowNotifications(true); setIsOpen(false); }}
