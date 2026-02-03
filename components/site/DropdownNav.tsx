@@ -123,21 +123,17 @@ export function DropdownNav() {
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: -20, scale: 0.95 }}
                                 transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
-                                className="relative w-[95vw] max-w-5xl bg-zinc-900/90 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)] border border-white/20 overflow-hidden p-2 pointer-events-auto"
+                                className="relative w-[95vw] max-w-5xl bg-zinc-900/90 backdrop-blur-3xl rounded-full shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)] border border-white/20 overflow-hidden p-2 pointer-events-auto"
                             >
                                 <div className="flex flex-col md:flex-row items-center justify-between gap-2 px-4 py-2">
                                     
                                      {/* Left: Branding */}
                                      <Link 
                                         href="/"
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            router.push('/');
-                                            setIsOpen(false);
-                                        }}
+                                        onClick={() => setIsOpen(false)}
                                         className="hidden lg:flex items-center gap-3 pr-6 border-r border-white/10 shrink-0 hover:opacity-80 transition-all active:scale-95"
                                      >
-                                        <div className="w-10 h-10 bg-white rounded-2xl flex items-center justify-center shadow-lg">
+                                        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg">
                                              <span className="text-black font-black text-xl italic">H</span>
                                         </div>
                                         <div className="flex flex-col">
@@ -149,16 +145,16 @@ export function DropdownNav() {
                                     {/* Center: Navigation Links */}
                                     <nav className="flex items-center gap-1 flex-1 justify-center overflow-x-auto no-scrollbar">
                                         {navLinks.map((link) => (
-                                            <Link
-                                                key={link.href}
-                                                href={link.href}
-                                                onClick={() => setIsOpen(false)}
-                                                className={`flex items-center gap-2 px-5 py-3 rounded-2xl transition-all whitespace-nowrap group/link ${
-                                                    link.isVIP
-                                                        ? 'bg-white text-black hover:scale-105 shadow-xl'
-                                                        : 'hover:bg-white/10 text-white font-bold text-sm tracking-tight'
-                                                }`}
-                                            >
+                                                <Link
+                                                    key={link.href}
+                                                    href={link.href}
+                                                    onClick={() => setIsOpen(false)}
+                                                    className={`flex items-center gap-2 px-5 py-3 rounded-full transition-all whitespace-nowrap group/link ${
+                                                        link.isVIP
+                                                            ? 'bg-white text-black hover:scale-105 shadow-xl'
+                                                            : 'hover:bg-white/10 text-white font-bold text-sm tracking-tight'
+                                                    }`}
+                                                >
                                                 {link.isVIP && <div className="animate-pulse">{link.icon}</div>}
                                                 <span>{link.name}</span>
                                             </Link>
@@ -197,7 +193,7 @@ export function DropdownNav() {
                                                 appKit.open();
                                                 setIsOpen(false);
                                             }}
-                                            className="px-6 py-3 bg-white text-black rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl flex items-center gap-3 whitespace-nowrap"
+                                            className="px-6 py-3 bg-white text-black rounded-full font-black text-xs uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl flex items-center gap-3 whitespace-nowrap"
                                         >
                                             {isConnected ? (
                                                 <>
@@ -216,7 +212,7 @@ export function DropdownNav() {
                                     <motion.div 
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        className="mt-2 p-2 bg-white/5 rounded-[2rem] flex items-center justify-between gap-4 border-t border-white/5"
+                                        className="mt-2 p-2 bg-white/5 rounded-full flex items-center justify-between gap-4 border-t border-white/5"
                                     >
                                         {/* Account Switcher Integration */}
                                         <div className="flex items-center gap-2 pl-4">
@@ -237,7 +233,7 @@ export function DropdownNav() {
                                         </div>
 
                                         {/* Wallet Sub-Tabs */}
-                                        <div className="flex items-center gap-1 bg-black/40 p-1 rounded-2xl">
+                                        <div className="flex items-center gap-1 bg-black/40 p-1 rounded-full">
                                             <SubNavLink href="/wallet" icon={<Wallet size={14} />} label="Wallet" />
                                             <SubNavLink href="/wallet?view=portfolio" icon={<PieChart size={14} />} label="Portfolio" />
                                             <SubNavLink href="/wallet?view=earn" icon={<TrendingUp size={14} />} label="Earn" />
@@ -248,7 +244,7 @@ export function DropdownNav() {
                                         {/* Switch Account Trigger (Small) */}
                                         <button 
                                             onClick={() => { router.push('/wallet'); setIsOpen(false); }}
-                                            className="px-4 py-2 bg-white/10 text-[10px] font-black uppercase tracking-widest text-white rounded-xl shadow-sm hover:scale-105 transition-all mr-2"
+                                            className="px-4 py-2 bg-white/10 text-[10px] font-black uppercase tracking-widest text-white rounded-full shadow-sm hover:scale-105 transition-all mr-2"
                                         >
                                             Switch
                                         </button>
@@ -334,7 +330,7 @@ function NavToolButton({ icon, onClick, label, badge = false }: { icon: React.Re
     return (
         <button
             onClick={onClick}
-            className="group relative w-12 h-12 flex items-center justify-center rounded-2xl hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-[#1F1F1F] dark:text-white"
+            className="group relative w-12 h-12 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-white/5 transition-all text-[#1F1F1F] dark:text-white"
             title={label}
         >
             <div className="relative">
@@ -355,7 +351,7 @@ function SubNavLink({ href, icon, label }: { href: string; icon: React.ReactNode
     return (
         <Link 
             href={href}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl text-gray-500 hover:text-black dark:hover:text-white hover:bg-white dark:hover:bg-white/10 transition-all"
+            className="flex items-center gap-2 px-3 py-2 rounded-full text-gray-500 hover:text-black dark:hover:text-white hover:bg-white dark:hover:bg-white/10 transition-all"
         >
             {icon}
             <span className="text-[10px] font-black uppercase tracking-tight hidden sm:block">{label}</span>
