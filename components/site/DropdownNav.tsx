@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Bell, Eye, EyeOff, Settings, Globe, Crown, X, Wallet, PieChart, TrendingUp, Zap, Users as UsersIcon } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAppKit } from '@reown/appkit/react';
 import { useAccount } from 'wagmi';
 import { useLanguage } from '@/src/context/LanguageContext';
@@ -15,6 +16,7 @@ import { getAccountColor, type WalletAccount } from '@/lib/wallet/accounts';
 const fetcher = (url: string) => fetch(url).then(r => r.json());
 
 export function DropdownNav() {
+    const router = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
     const { t, language, toggleLanguage } = useLanguage();
@@ -125,7 +127,11 @@ export function DropdownNav() {
                                      {/* Left: Branding */}
                                      <Link 
                                         href="/"
-                                        onClick={() => setIsOpen(false)}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            router.push('/');
+                                            setIsOpen(false);
+                                        }}
                                         className="hidden lg:flex items-center gap-3 pr-6 border-r border-gray-200 dark:border-white/10 shrink-0 hover:opacity-80 transition-all active:scale-95"
                                      >
                                         <div className="w-10 h-10 bg-[#1F1F1F] dark:bg-white rounded-2xl flex items-center justify-center shadow-lg">
