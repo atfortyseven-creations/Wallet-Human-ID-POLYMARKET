@@ -107,26 +107,25 @@ export function DropdownNav() {
                 {mounted && (
                     <AnimatePresence>
                         {isOpen && createPortal(
-                            <div className="fixed inset-0 z-[99999] pointer-events-none">
-                                {/* Transparent Backdrop - Captures clicks outside to close */}
+                            <>
+                                {/* Backdrop - Captures clicks outside to close */}
                                 <div 
-                                    className="fixed inset-0 bg-black/5 pointer-events-auto" 
+                                    className="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[99998]" 
                                     onClick={() => setIsOpen(false)} 
                                 />
 
-                                {/* Menu Panel - Absolute below button, Glassmorphic Horizontal Bar */}
+                                {/* Menu Panel */}
                                 <motion.div
-                                    initial={{ opacity: 0, y: -20, scale: 0.95 }}
-                                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                                    exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                                    transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                                    initial={{ opacity: 0, y: -20, x: "-50%", scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
+                                    exit={{ opacity: 0, y: -20, x: "-50%", scale: 0.95 }}
+                                    transition={{ duration: 0.2, ease: "easeOut" }}
                                     style={{
                                         position: 'fixed',
-                                        top: '100px', // Below the trigger button link
+                                        top: '90px',
                                         left: '50%',
-                                        transform: 'translateX(-50%)',
                                     }}
-                                    className="w-[95vw] max-w-5xl bg-white/80 dark:bg-neutral-950/90 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border border-white/30 dark:border-white/10 pointer-events-auto overflow-hidden p-2"
+                                    className="w-[95vw] max-w-5xl bg-zinc-900/95 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] border border-white/20 z-[99999] overflow-hidden p-2"
                                 >
                                     <div className="flex flex-col md:flex-row items-center justify-between gap-2 px-4 py-2">
                                         
@@ -258,7 +257,7 @@ export function DropdownNav() {
                                         </motion.div>
                                     )}
                                 </motion.div>
-                            </div>,
+                            </>,
                             document.body
                         )}
                     </AnimatePresence>
