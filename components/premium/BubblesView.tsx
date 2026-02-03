@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Loader2, ArrowUpRight, ArrowDownRight, Maximize2, RefreshCw, X, ShoppingCart } from 'lucide-react';
+import { Search, Loader2, ArrowUpRight, ArrowDownRight, Maximize2, RefreshCw, X, ShoppingCart, Globe, TrendingUp, Info, Zap } from 'lucide-react';
 
 interface BubbleData {
     id: string;
@@ -266,15 +267,16 @@ export default function BubblesView() {
                 )}
             </div>
 
-            {/* Detail Modal */}
-            <AnimatePresence>
-                {selectedCoin && (
+            {/* Detail Modal (Portal) */}
+            {selectedCoin && typeof document !== 'undefined' && createPortal(
+                <AnimatePresence mode="wait">
                     <BubbleDetailModal 
                         coin={selectedCoin} 
                         onClose={() => setSelectedCoin(null)} 
                     />
-                )}
-            </AnimatePresence>
+                </AnimatePresence>,
+                document.body
+            )}
 
             {/* Footer Stats */}
             <div className="p-6 bg-black/5 border-t border-black/5 flex justify-between items-center">
@@ -473,105 +475,163 @@ function BubbleDetailModal({ coin, onClose }: { coin: BubbleData, onClose: () =>
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 backdrop-blur-md bg-black/40"
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 backdrop-blur-xl bg-black/60"
             onClick={onClose}
         >
             <motion.div
-                initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                initial={{ scale: 0.9, opacity: 0, y: 40 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                className="bg-[#1a1a1a] text-white w-full max-w-lg rounded-[2.5rem] overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.5)] border border-white/10"
+                exit={{ scale: 0.9, opacity: 0, y: 40 }}
+                className="bg-neutral-900 text-white w-full max-w-xl rounded-[3rem] overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.8)] border border-white/10 flex flex-col max-h-[90vh]"
                 onClick={(e) => e.stopPropagation()}
             >
-                {/* Modal Header */}
-                <div className="p-8 flex justify-between items-start border-b border-white/5 bg-gradient-to-b from-white/5 to-transparent">
-                    <div className="flex items-center gap-4">
-                        <img src={coin.image} alt={coin.name} className="w-16 h-16 rounded-full shadow-2xl border-2 border-white/10" />
+                {/* Modal Header - Premium Glossy */}
+                <div className="p-8 pb-6 flex justify-between items-center border-b border-white/5 bg-gradient-to-b from-white/10 to-transparent shrink-0">
+                    <div className="flex items-center gap-5">
+                        <div className="relative group">
+                            <div className="absolute inset-0 bg-white/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <img src={coin.image} alt={coin.name} className="relative w-16 h-16 rounded-full shadow-2xl border-2 border-white/20" />
+                        </div>
                         <div>
-                            <h2 className="text-3xl font-black tracking-tighter uppercase italic">{coin.name}</h2>
+                            <div className="flex items-center gap-3">
+                                <h2 className="text-3xl font-black tracking-tighter uppercase italic bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
+                                    {coin.name}
+                                </h2>
+                                <span className="px-3 py-1 bg-white/10 rounded-full text-[10px] font-black uppercase tracking-widest text-white/60 border border-white/5">
+                                    {coin.symbol}
+                                </span>
+                            </div>
                             <div className="flex gap-2 items-center mt-1">
-                                <span className="px-2 py-0.5 bg-white/10 rounded-md text-[10px] font-black uppercase tracking-widest text-white/40">Rank #{coin.market_cap_rank}</span>
-                                <span className="text-xs font-bold text-white/30 uppercase tracking-widest">{coin.symbol}</span>
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-purple-400">Rank #{coin.market_cap_rank}</span>
+                                <span className="w-1 h-1 rounded-full bg-white/20" />
+                                <span className="text-[10px] font-bold text-white/30 uppercase tracking-[0.1em]">Soberanía Digital</span>
                             </div>
                         </div>
                     </div>
                     <button 
                         onClick={onClose}
-                        className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all border border-white/5"
+                        className="w-12 h-12 rounded-2xl bg-white/5 hover:bg-white/10 flex items-center justify-center transition-all border border-white/5 group active:scale-95"
                     >
-                        <X size={20} className="text-white/40" />
+                        <X size={24} className="text-white/40 group-hover:text-white transition-colors" />
                     </button>
                 </div>
 
-                {/* Content Body */}
-                <div className="p-8 space-y-8">
-                    {/* Trade Links & Platforms */}
-                    <div className="grid grid-cols-2 gap-8 text-center bg-white/5 p-6 rounded-3xl border border-white/5">
-                        <div className="space-y-4">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-white/30">Enlaces Externos</span>
-                            <div className="flex justify-center gap-3">
-                                <TradeIconLink href={`https://coinmarketcap.com/currencies/${coin.id}`} icon={<img src="https://cryptologos.cc/logos/coinmarketcap-cmc-logo.png" className="w-5 h-5 grayscale hover:grayscale-0 transition-all" />} label="CMC" />
-                                <TradeIconLink href={`https://www.coingecko.com/es/monedas/${coin.id}`} icon={<img src="https://static.coingecko.com/s/coingecko-logo-d13d6bcceddb2450890637f907b226f909569738ef95d3a5cefdcda03264c76d.png" className="w-5 h-5 grayscale hover:grayscale-0 transition-all rounded-full" />} label="Gecko" />
-                                <TradeIconLink href={`https://www.tradingview.com/symbols/${coin.symbol}USD`} icon={<img src="https://cdn.worldvectorlogo.com/logos/tradingview-1.svg" className="w-5 h-5 grayscale hover:grayscale-0 transition-all" />} label="TV" />
-                            </div>
+                {/* Content Body - Scrollable */}
+                <div className="flex-1 overflow-y-auto p-8 space-y-10 custom-scrollbar">
+                    {/* Hero Price & Pulse */}
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                        <div className="space-y-2">
+                             <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Market Live Price</span>
+                             </div>
+                             <div className="text-6xl font-black tabular-nums tracking-tighter italic text-white flex items-baseline gap-2">
+                                {coin.current_price < 1 ? coin.current_price.toFixed(6) : coin.current_price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
+                                <span className="text-xl font-bold text-emerald-400">USD</span>
+                             </div>
+                             <div className="text-2xl font-bold text-white/20 tabular-nums lowercase italic">
+                                ≈ {coin.current_price_eur.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}
+                             </div>
                         </div>
-                        <div className="space-y-4">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-white/30">Negociar en</span>
-                            <div className="flex justify-center flex-wrap gap-2">
-                                {['Binance', 'Kraken', 'Coinbase', 'Kucoin', 'Bybit'].map(ex => (
-                                    <div key={ex} className="w-8 h-8 bg-white/5 rounded-lg border border-white/5 flex items-center justify-center hover:bg-white/10 transition-all cursor-alias" title={ex}>
-                                        <div className="w-4 h-4 bg-white/20 rounded-full" />
+                        <div className="flex flex-col items-end gap-2 bg-white/5 p-4 rounded-3xl border border-white/10 w-full md:w-auto">
+                             <div className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30">Capítulo de Mercado</div>
+                             <div className="text-2xl font-black text-white italic">
+                                {coin.market_cap >= 1e9 ? `${(coin.market_cap / 1e9).toFixed(2)}B` : `${(coin.market_cap / 1e6).toFixed(2)}M`} $
+                             </div>
+                             <div className={`flex items-center gap-1 text-xs font-black ${coin.price_change_24h >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                                {coin.price_change_24h >= 0 ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+                                {Math.abs(coin.price_change_24h).toFixed(2)}% (24h)
+                             </div>
+                        </div>
+                    </div>
+
+                    {/* Chart Visualization - Immersive */}
+                    <div className="space-y-4">
+                        <div className="flex justify-between items-end">
+                            <h3 className="text-xs font-black uppercase tracking-[0.3em] text-white/40">Trayectoria 7 Días</h3>
+                            <span className="text-[10px] font-bold text-white/20 px-3 py-1 rounded-lg border border-white/5">Auto-Scaling Engine</span>
+                        </div>
+                        <div className="h-44 w-full bg-black/40 rounded-[2rem] border border-white/5 p-6 relative group overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/5 to-transparent pointer-events-none" />
+                            <SparklineChart data={coin.sparkline} isPositive={coin.price_change_24h >= 0} />
+                        </div>
+                    </div>
+
+                    {/* Data Grid: Backend Analytics */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <DetailItem label="Volumen 24h" value={`${(coin.total_volume / 1e6).toFixed(1)}M $`} icon={<TrendingUp size={12} />} />
+                        <DetailItem label="Dominancia" value={`${(coin.market_cap / 2.5e12 * 100).toFixed(2)}%`} icon={<Globe size={12} />} />
+                        <DetailItem label="Status" value="Verificado" icon={<Info size={12} />} color="text-emerald-400" />
+                        <DetailItem label="Red" value="EVM Compatible" icon={<Zap size={12} />} />
+                    </div>
+
+                    {/* Performance History */}
+                    <div className="space-y-4">
+                        <h3 className="text-xs font-black uppercase tracking-[0.3em] text-white/40 text-center">Rendimiento Histórico</h3>
+                        <div className="grid grid-cols-5 gap-3 bg-white/5 p-4 rounded-[2rem] border border-white/10">
+                             <PerfItem label="1H" val={coin.price_change_1h} />
+                             <PerfItem label="24H" val={coin.price_change_24h} active />
+                             <PerfItem label="7D" val={coin.price_change_7d} />
+                             <PerfItem label="30D" val={coin.price_change_30d} />
+                             <PerfItem label="1Y" val={coin.price_change_1y} />
+                        </div>
+                    </div>
+
+                    {/* Trade & External Links */}
+                    <div className="flex flex-col md:flex-row gap-4 items-center justify-between p-6 bg-white/5 rounded-[2rem] border border-white/10">
+                        <div className="flex gap-4">
+                            <TradeActionLink href={`https://coinmarketcap.com/currencies/${coin.id}`} label="MarketCap" />
+                            <TradeActionLink href={`https://www.coingecko.com/es/monedas/${coin.id}`} label="Gecko" />
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <span className="text-[10px] font-black uppercase text-white/20">Acceso Rápido</span>
+                            <div className="flex gap-1.5">
+                                {['Binance', 'Coinbase', 'Bybit'].map(ex => (
+                                    <div key={ex} className="w-8 h-8 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-all cursor-pointer flex items-center justify-center opacity-40 hover:opacity-100" title={ex}>
+                                        <div className="w-2 h-2 rounded-full bg-white/30" />
                                     </div>
                                 ))}
                             </div>
                         </div>
                     </div>
-
-                    {/* Price Section */}
-                    <div className="flex items-end justify-between px-2">
-                        <div className="space-y-1">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-white/30">Valor en tiempo real</span>
-                            <div className="text-4xl font-black tabular-nums tracking-tighter italic text-emerald-400">
-                                {coin.current_price.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
-                            </div>
-                            <div className="text-xl font-bold text-white/40 tabular-nums">
-                                {coin.current_price_eur.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}
-                            </div>
-                        </div>
-                        <div className="text-right">
-                             <div className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">Market Cap</div>
-                             <div className="text-lg font-black italic">{(coin.market_cap / 1e9).toFixed(2)}B $</div>
-                        </div>
-                    </div>
-
-                    {/* Chart Visualization */}
-                    <div className="h-40 w-full relative group">
-                        <SparklineChart data={coin.sparkline} isPositive={coin.price_change_24h >= 0} />
-                        <div className="absolute top-0 left-0 w-full flex justify-between px-2 text-[8px] font-black text-white/20 uppercase tracking-widest">
-                            <span>Histórico 7d</span>
-                            <span>Live Precision</span>
-                        </div>
-                    </div>
-
-                    {/* Performance Grid */}
-                    <div className="grid grid-cols-5 gap-2">
-                         <PerfItem label="Hora" val={coin.price_change_1h} />
-                         <PerfItem label="Día" val={coin.price_change_24h} active />
-                         <PerfItem label="Semana" val={coin.price_change_7d} />
-                         <PerfItem label="Mes" val={coin.price_change_30d} />
-                         <PerfItem label="Año" val={coin.price_change_1y} />
-                    </div>
                 </div>
 
-                {/* Sell / Action Button */}
-                <div className="p-8 pt-0">
-                    <button className="w-full py-5 bg-white text-black rounded-[1.5rem] font-black uppercase tracking-[0.3em] text-xs hover:scale-[1.02] active:scale-95 transition-all shadow-2xl flex items-center justify-center gap-3">
-                        <ShoppingCart size={18} />
-                        Ejecutar Operación Instantánea
+                {/* Final Footer Actions */}
+                <div className="p-8 pt-4 shrink-0 bg-neutral-900 border-t border-white/5">
+                    <button 
+                        onClick={() => window.location.href = `/wallet?asset=${coin.symbol}`}
+                        className="w-full py-6 bg-gradient-to-r from-white to-white/90 text-black rounded-[1.8rem] font-black uppercase tracking-[0.4em] text-sm hover:scale-[1.03] active:scale-95 transition-all shadow-[0_20px_40px_rgba(255,255,255,0.1)] flex items-center justify-center gap-4 group"
+                    >
+                        <ShoppingCart size={20} className="group-hover:rotate-12 transition-transform" />
+                        Ejecutar Swap IA
                     </button>
                 </div>
             </motion.div>
         </motion.div>
+    );
+}
+
+function DetailItem({ label, value, icon, color = "text-white" }: { label: string, value: string, icon: React.ReactNode, color?: string }) {
+    return (
+        <div className="p-4 bg-white/5 rounded-2xl border border-white/5 space-y-2">
+            <div className="flex items-center gap-2 text-[8px] font-black uppercase tracking-widest text-white/30">
+                {icon}
+                {label}
+            </div>
+            <div className={`text-sm font-black italic ${color}`}>{value}</div>
+        </div>
+    );
+}
+
+function TradeActionLink({ href, label }: { href: string, label: string }) {
+    return (
+        <a 
+            href={href} 
+            target="_blank" 
+            className="px-5 py-2.5 bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all hover:scale-105"
+        >
+            {label}
+        </a>
     );
 }
 
