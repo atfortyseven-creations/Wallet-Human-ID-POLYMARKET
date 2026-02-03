@@ -64,27 +64,29 @@ export default function Home() {
                     <LandingHero onStart={handleStart} />
                 </section>
 
-                {/* FEATURE CARDS (Restored) */}
-                <section className="w-full py-20 flex justify-center">
-                    <StackedFeatureCards />
-                </section>
-
-                {/* BUBBLES - No title, just the component */}
-                <section className="w-full px-4 md:px-8 flex justify-center">
+                {/* BUBBLES - Now second, moved up for immediate impact */}
+                <section className="w-full px-4 md:px-8 flex justify-center py-6">
                     <div className="w-full max-w-7xl h-[600px] md:h-[700px]">
                         <BubblesView />
                     </div>
                 </section>
 
-                {/* MARKET TABLE - No title, just the component */}
-                <section className="w-full px-4 md:px-8 flex justify-center pt-8">
+                {/* MARKET TABLE - Now third */}
+                <section className="w-full px-4 md:px-8 flex justify-center py-6">
                     <div className="w-full max-w-7xl">
                         <MarketTable />
                     </div>
                 </section>
 
+                {/* FEATURE CARDS (Stacked) - Moved to bottom as a final fluid stack */}
+                <section className="w-full py-12 flex justify-center">
+                    <StackedFeatureCards />
+                </section>
+
                 {/* LAUNCH COUNTDOWN & IMMERSIVE IMAGE */}
-                <LaunchCountdown />
+                <div className="py-12">
+                    <LaunchCountdown />
+                </div>
 
                 {/* FOOTER */}
                 <Footer />
