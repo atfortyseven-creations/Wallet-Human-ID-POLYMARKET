@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, Shield, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { DropdownNav } from '@/components/site/DropdownNav';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 interface LandingHeroProps {
     onStart?: () => void;
@@ -12,6 +13,7 @@ interface LandingHeroProps {
 
 export function LandingHero({ onStart }: LandingHeroProps) {
     const { scrollY } = useScroll();
+    const { t } = useLanguage();
     
     // Parallax transforms for cats (opposite directions for depth)
     const leftCatY = useTransform(scrollY, [0, 500], [0, -100]);
@@ -69,18 +71,16 @@ export function LandingHero({ onStart }: LandingHeroProps) {
                         </motion.div>
 
                         <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-6 leading-[0.9]">
-                            <span className="text-[#1F1F1F] dark:text-white">The Future of</span>
-                            <br />
-                            <span className="text-purple-500">
-                                Human Finance
+                            <span className="text-[#1F1F1F] dark:text-white">
+                                {t('nav.title')}
                             </span>
                         </h1>
                     </div>
 
                     {/* Subtitle */}
                     <p className="text-xl md:text-2xl text-[#1F1F1F]/70 dark:text-white/70 max-w-3xl mx-auto mb-10 leading-relaxed">
-                        Sovereign wallet with biometric security, zero-knowledge proofs, and unmatched privacy. 
-                        <span className="font-bold text-[#1F1F1F] dark:text-white"> Your keys. Your control.</span>
+                        {t('hero.subtitle')}
+                        <span className="font-bold text-[#1F1F1F] dark:text-white"> {t('hero.keys_control')}</span>
                     </p>
 
                     {/* CTA Buttons */}
@@ -89,7 +89,7 @@ export function LandingHero({ onStart }: LandingHeroProps) {
                             href="/wallet"
                             className="group px-8 py-4 bg-white dark:bg-white text-black rounded-2xl font-bold text-lg hover:scale-105 transition-all shadow-[0_0_40px_-10px_rgba(255,255,255,0.5)] flex items-center gap-2"
                         >
-                            Get Started
+                            {t('hero.cta')}
                             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </Link>
                         
@@ -99,15 +99,15 @@ export function LandingHero({ onStart }: LandingHeroProps) {
                     <div className="mt-16 flex flex-wrap justify-center gap-8 text-sm font-mono text-[#1F1F1F]/50 dark:text-white/50">
                         <div className="flex items-center gap-2">
                             <Zap className="w-4 h-4 text-[#00ff9d]" />
-                            <span>10M+ Users</span>
+                            <span>{t('hero.stats.users')}</span>
                         </div>
                         <div className="flex items-center gap-2">
                             <Shield className="w-4 h-4 text-[#00ff9d]" />
-                            <span>Zero Breaches</span>
+                            <span>{t('hero.stats.security')}</span>
                         </div>
                         <div className="flex items-center gap-2">
                             <span className="w-2 h-2 rounded-full bg-[#00ff9d] animate-pulse" />
-                            <span>100% Uptime</span>
+                            <span>{t('hero.stats.uptime')}</span>
                         </div>
                     </div>
                 </motion.div>

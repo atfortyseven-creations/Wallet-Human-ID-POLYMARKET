@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink, ShoppingCart, TrendingUp, TrendingDown, Loader2 } from 'lucide-react';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 interface CoinData {
     id: string;
@@ -20,6 +21,7 @@ interface CoinData {
 }
 
 export default function MarketTable() {
+    const { t } = useLanguage();
     const [coins, setCoins] = useState<CoinData[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -28,7 +30,6 @@ export default function MarketTable() {
     const [flashStates, setFlashStates] = useState<Record<string, 'up' | 'down' | null>>({});
 
     const fetchData = async () => {
-        setError(null);
         try {
             const res = await fetch('/api/bubbles');
             const json = await res.json();
@@ -54,12 +55,14 @@ export default function MarketTable() {
                 
                 setCoins(newCoins);
                 setPrevPrices(newPrices);
+                setError(null);
             } else if (json.error) {
-                setError(json.error);
+                console.warn('Market API Error:', json.error);
+                if (coins.length === 0) setError(json.error);
             }
         } catch (err) {
             console.error('Failed to fetch market data:', err);
-            setError('Connection failed');
+            if (coins.length === 0) setError('Connection failed');
         } finally {
             setLoading(false);
         }
@@ -67,7 +70,7 @@ export default function MarketTable() {
 
     useEffect(() => {
         fetchData();
-        const interval = setInterval(fetchData, 1000); // Real-time updates every second
+        const interval = setInterval(fetchData, 15000); // Relaxed to 15s
         return () => clearInterval(interval);
     }, [prevPrices]);
 
@@ -173,7 +176,7 @@ export default function MarketTable() {
                   onClick={fetchData}
                   className="px-6 py-2 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em]"
                 >
-                  Retry
+                  {t('market.retry')}
                 </button>
             </div>
         );
@@ -186,16 +189,16 @@ export default function MarketTable() {
                     <thead>
                         <tr className="border-b border-black/5">
                             <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-white/30">#</th>
-                            <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-white/30">Nombre</th>
-                            <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-white/30">Valor</th>
-                            <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-white/30">Cap de Mercado</th>
-                            <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-white/30">Volumen en 24h</th>
-                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">Hora</th>
-                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">Día</th>
-                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">Semana</th>
-                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">Mes</th>
-                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">Año</th>
-                            <th className="px-6 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">Enlaces & Negociar</th>
+                            <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-white/30">{t('market.name')}</th>
+                            <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-white/30">{t('market.price')}</th>
+                            <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-white/30">{t('market.market_cap')}</th>
+                            <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-white/30">{t('market.volume_24h')}</th>
+                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">{t('market.hour')}</th>
+                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">{t('market.day')}</th>
+                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">{t('market.week')}</th>
+                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">{t('market.month')}</th>
+                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">{t('market.year')}</th>
+                            <th className="px-6 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">{t('market.actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -212,7 +215,7 @@ export default function MarketTable() {
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
-                                        <img src={coin.image} alt={coin.name} className="w-8 h-8 rounded-full group-hover:scale-110 transition-transform" />
+                                        <CoinIcon src={coin.image} alt={coin.name} />
                                         <div className="flex flex-col">
                                             <span className="text-sm font-black text-white">{coin.name}</span>
                                             <span className="text-[10px] font-bold text-white/30 uppercase tracking-tighter">{coin.symbol}</span>
@@ -262,7 +265,7 @@ export default function MarketTable() {
                                             className="px-4 py-2 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all flex items-center gap-2 shadow-lg"
                                         >
                                             <ShoppingCart size={12} />
-                                            Negociar
+                                            {t('common.trade')}
                                         </button>
                                     </div>
                                 </td>
@@ -274,9 +277,30 @@ export default function MarketTable() {
             
             <div className="p-6 bg-black/5 border-t border-black/5 flex justify-center">
                  <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] italic">
-                    Market data sync active • Latency compensation enabled
+                    {t('market.sync')}
                  </p>
             </div>
         </div>
+    );
+}
+
+function CoinIcon({ src, alt }: { src: string, alt: string }) {
+    const [error, setError] = useState(false);
+
+    if (error) {
+        return (
+            <div className="w-8 h-8 rounded-full flex items-center justify-center bg-white/10 text-[8px] font-bold text-white/50">
+                {alt.slice(0, 2)}
+            </div>
+        );
+    }
+    
+    return (
+        <img 
+            src={src} 
+            alt={alt} 
+            className="w-8 h-8 rounded-full group-hover:scale-110 transition-transform"
+            onError={() => setError(true)}
+        />
     );
 }

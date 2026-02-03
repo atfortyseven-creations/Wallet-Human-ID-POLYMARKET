@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { Search, Loader2, ArrowUpRight, ArrowDownRight, RefreshCw, X, Globe, TrendingUp, Zap } from 'lucide-react';
+import { useLanguage } from '@/src/context/LanguageContext';
 
 interface BubbleData {
     id: string;
@@ -42,6 +43,7 @@ interface PhysicsNode {
 }
 
 export default function BubblesView() {
+    const { t } = useLanguage();
     const [data, setData] = useState<BubbleData[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -64,11 +66,15 @@ export default function BubblesView() {
             const json = await res.json();
             if (json.bubbles) {
                 setData(json.bubbles);
+                setError(null);
             } else if (json.error) {
-                setError(json.error);
+                console.warn('API Error:', json.error);
+                // Don't set error state if we have data, just log it
+                if (data.length === 0) setError(json.error);
             }
         } catch (err) {
-            setError('Error de conexión');
+            console.error('Fetch error:', err);
+             if (data.length === 0) setError('Error de conexión');
         } finally {
             setLoading(false);
         }
@@ -76,7 +82,7 @@ export default function BubblesView() {
 
     useEffect(() => {
         fetchData();
-        const interval = setInterval(fetchData, 1000); // Real-time updates every second
+        const interval = setInterval(fetchData, 15000); // Relaxed to 15s to avoid rate limits
         return () => clearInterval(interval);
     }, []);
 
@@ -285,7 +291,15 @@ export default function BubblesView() {
             {/* Header / Controls */}
             <div className="p-6 border-b border-black/5 flex flex-col md:flex-row gap-4 justify-between items-center z-20">
                 <div className="flex items-center gap-2 bg-white/40 p-1.5 rounded-2xl border border-black/5">
-                    {(['1h', '24h', '7d', '30d', '1y'] as Timeframe[]).map((tf) => (
+                    {(['1h', '24h', '7d', '30d', '1y'] as Timeframe[]).map((tf) => {
+                         const labels: Record<string, string> = {
+                             '1h': t('market.hour'),
+                             '24h': t('market.day'),
+                             '7d': t('market.week'),
+                             '30d': t('market.month'),
+                             '1y': t('market.year')
+                         };
+                         return (
                         <button
                             key={tf}
                             onClick={() => setTimeframe(tf)}
@@ -295,9 +309,9 @@ export default function BubblesView() {
                                     : 'text-white/40 hover:bg-white/5'
                             }`}
                         >
-                            {tf.toUpperCase()}
+                            {labels[tf]}
                         </button>
-                    ))}
+                    )})}
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -305,7 +319,7 @@ export default function BubblesView() {
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={18} />
                         <input 
                             type="text"
-                            placeholder="Search..."
+                            placeholder={t('common.search')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="pl-11 pr-6 py-3 bg-white/10 border border-white/5 rounded-2xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-white/10 transition-all w-64 text-white"
@@ -371,7 +385,7 @@ export default function BubblesView() {
                                         ? 'bg-emerald-500/20 border-[3px] border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)]' 
                                         : 'bg-rose-500/20 border-[3px] border-rose-500 shadow-[0_0_20px_rgba(244,63,94,0.3)]'
                                 } backdrop-blur-md overflow-hidden hover:scale-110 active:scale-90 transition-transform`}>
-                                    <img src={node.coin.image} alt={node.coin.symbol} className="w-8 h-8 rounded-full mb-1 pointer-events-none" />
+                                    <BubbleIcon src={node.coin.image} alt={node.coin.symbol} />
                                     <div className="font-black text-[10px] leading-none mb-1 text-white uppercase">{node.coin.symbol}</div>
                                     <div className="font-black text-[9px] tabular-nums text-white">
                                         <LiveBubblePercentTicker 
@@ -396,11 +410,32 @@ export default function BubblesView() {
                 <div className="flex items-center gap-2">
                     <div className={`w-2 h-2 rounded-full ${isSettled ? 'bg-emerald-500' : 'bg-emerald-500 animate-pulse'}`} />
                     <span className="text-[10px] font-black uppercase text-white/40 tracking-widest">
-                        {isSettled ? 'Drag to Move' : 'Settling...'}
+                        {isSettled ? t('market.drag_move') : t('market.settling')}
                     </span>
                 </div>
             </div>
         </div>
+    );
+}
+
+function BubbleIcon({ src, alt }: { src: string, alt: string }) {
+    const [error, setError] = useState(false);
+
+    if (error) {
+        return (
+            <div className="w-8 h-8 rounded-full mb-1 flex items-center justify-center bg-white/10 text-[8px] font-bold text-white/50">
+                {alt.slice(0, 2)}
+            </div>
+        );
+    }
+
+    return (
+        <img 
+            src={src} 
+            alt={alt} 
+            className="w-8 h-8 rounded-full mb-1 pointer-events-none" 
+            onError={() => setError(true)}
+        />
     );
 }
 
@@ -428,6 +463,7 @@ function LiveBubblePercentTicker({ value }: { value: number }) {
 // Modal component remains mostly same but optimized
 function BubbleDetailModal({ coin, onClose }: { coin: BubbleData, onClose: () => void }) {
     const router = useRouter();
+    const { t } = useLanguage();
     const [livePrice, setLivePrice] = useState(coin.current_price);
 
     useEffect(() => {
@@ -451,7 +487,7 @@ function BubbleDetailModal({ coin, onClose }: { coin: BubbleData, onClose: () =>
                 >
                     <div className="p-8 flex justify-between items-center border-b border-white/5 bg-gradient-to-b from-white/10 to-transparent">
                         <div className="flex items-center gap-6">
-                            <img src={coin.image} alt={coin.name} className="w-16 h-16 rounded-full" />
+                            <BubbleIcon src={coin.image} alt={coin.name} />
                             <div>
                                 <h2 className="text-3xl font-black">{coin.name}</h2>
                                 <span className="text-sm font-black text-purple-400 uppercase tracking-widest">{coin.symbol}</span>
@@ -466,23 +502,23 @@ function BubbleDetailModal({ coin, onClose }: { coin: BubbleData, onClose: () =>
 
                     <div className="p-8 space-y-8">
                         <div className="grid grid-cols-2 lg:grid-cols-7 gap-3">
-                           <MetricBlock label="1H" value={coin.price_change_1h} />
-                           <MetricBlock label="24H" value={coin.price_change_24h} />
-                           <MetricBlock label="7D" value={coin.price_change_7d} />
-                           <MetricBlock label="30D" value={coin.price_change_30d} />
-                           <MetricBlock label="1Y" value={coin.price_change_1y} />
+                           <MetricBlock label={t('market.hour')} value={coin.price_change_1h} />
+                           <MetricBlock label={t('market.day')} value={coin.price_change_24h} />
+                           <MetricBlock label={t('market.week')} value={coin.price_change_7d} />
+                           <MetricBlock label={t('market.month')} value={coin.price_change_30d} />
+                           <MetricBlock label={t('market.year')} value={coin.price_change_1y} />
                            <div className="col-span-2 bg-white/5 p-4 rounded-2xl flex flex-col justify-center">
-                                <span className="text-[10px] font-black text-white/30 tracking-widest uppercase">Volume (24h)</span>
+                                <span className="text-[10px] font-black text-white/30 tracking-widest uppercase">{t('market.volume_24h')}</span>
                                 <LiveModalVolumeTicker value={coin.total_volume} />
                            </div>
                         </div>
 
                         <div className="flex gap-4">
                             <button onClick={() => router.push(`/wallet?asset=${coin.symbol}`)} className="flex-1 py-5 bg-white text-black rounded-2xl font-black uppercase text-xs hover:scale-105 active:scale-95 transition-all shadow-xl">
-                                Trade {coin.symbol}
+                                {t('common.trade')} {coin.symbol}
                             </button>
                             <button onClick={onClose} className="px-8 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10">
-                                Close
+                                {t('common.close')}
                             </button>
                         </div>
                     </div>

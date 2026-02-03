@@ -181,15 +181,16 @@ function NewsCard({
       className="group block p-4 bg-white/50 backdrop-blur-sm rounded-2xl border border-[#1F1F1F]/10 hover:bg-white/80 hover:border-purple-500/30 transition-all cursor-pointer"
     >
       {/* Image */}
-      {article.imageUrl && (
-        <div className="relative w-full h-40 mb-3 rounded-xl overflow-hidden bg-gray-100">
-          <img 
-            src={article.imageUrl} 
-            alt={article.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-          />
-        </div>
-      )}
+      <div className="relative w-full h-40 mb-3 rounded-xl overflow-hidden bg-gray-100">
+        <img 
+          src={article.imageUrl || `https://images.unsplash.com/photo-1621761191319-c6fb62004040?auto=format&fit=crop&q=80&w=800`}
+          alt={article.title}
+          onError={(e) => {
+            e.currentTarget.src = "https://images.unsplash.com/photo-1621761191319-c6fb62004040?auto=format&fit=crop&q=80&w=800";
+          }}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+        />
+      </div>
 
       {/* Sentiment Badge */}
       <div className="flex items-center gap-2 mb-2">

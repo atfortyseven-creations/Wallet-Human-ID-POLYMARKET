@@ -138,6 +138,7 @@ function getDemoNews(): NewsArticle[] {
       tags: ['DeFi', 'Trading'],
       categories: ['Blockchain'],
       sentiment: 'bullish',
+      imageUrl: 'https://images.unsplash.com/photo-1620321023374-d1a68fdd720e?auto=format&fit=crop&q=80&w=800'
     },
     {
       id: '2',
@@ -149,6 +150,7 @@ function getDemoNews(): NewsArticle[] {
       tags: ['Ethereum', 'Whales'],
       categories: ['Transaction'],
       sentiment: 'neutral',
+      imageUrl: 'https://images.unsplash.com/photo-1622630998477-20aa696fa4a5?auto=format&fit=crop&q=80&w=800'
     },
     {
       id: '3',
@@ -160,6 +162,7 @@ function getDemoNews(): NewsArticle[] {
       tags: ['Layer2', 'Scaling'],
       categories: ['Technology'],
       sentiment: 'bullish',
+      imageUrl: 'https://images.unsplash.com/photo-1639322537228-ad7127ef94f4?auto=format&fit=crop&q=80&w=800'
     },
   ];
 }

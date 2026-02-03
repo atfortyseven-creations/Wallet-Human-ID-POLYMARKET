@@ -70,14 +70,15 @@ export default function TradingViewChart({ symbol = "ETHUSDT", height = 400 }: T
     chartRef.current = chart;
     candlestickSeriesRef.current = series;
 
-    // 2. Fetch Initial History (REST API)
+    // 2. Fetch Initial History (REST API via Proxy)
     const loadHistory = async () => {
       try {
         setLoading(true);
-        // Fetch 500 candles of 1m interval for history context
-        const res = await fetch(`https://api.binance.com/api/v3/klines?symbol=${symbol.toUpperCase()}&interval=1m&limit=500`);
+        // Use our own proxy to avoid CORS
+        const res = await fetch(`/api/proxy/binance?symbol=${symbol.toUpperCase()}&interval=1m&limit=500`);
         const data = await res.json();
         
+        if (data.error) throw new Error(data.error);
         if (!Array.isArray(data)) throw new Error("Invalid data from Binance");
 
         const formattedData: CandlestickData[] = data.map((d: any) => ({
@@ -99,6 +100,12 @@ export default function TradingViewChart({ symbol = "ETHUSDT", height = 400 }: T
           changePercent: ((last.close - first.close) / first.close) * 100,
           high24h: Math.max(...formattedData.map(d => d.high)),
           low24h: Math.min(...formattedData.map(d => d.low))
+        });
+
+        // Set visible range to the last part of data
+        chart.timeScale().setVisibleRange({
+            from: (data[data.length - 100][0] / 1000) as Time,
+            to: (data[data.length - 1][0] / 1000) as Time,
         });
 
         setLoading(false);

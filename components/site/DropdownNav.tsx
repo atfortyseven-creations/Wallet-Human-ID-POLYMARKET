@@ -59,7 +59,7 @@ export function DropdownNav() {
     };
 
     const navLinks = [
-        { name: 'WHALE', href: '/vip', icon: <Crown size={16} className="text-[#D4AF37]" />, isVIP: true },
+        { name: t('nav.whale'), href: '/vip', icon: <Crown size={16} className="text-[#D4AF37]" />, isVIP: true },
         { name: t('nav.developer'), href: '/developer', icon: null },
         { name: t('nav.human_card'), href: '/wallet', icon: null },
     ];
@@ -126,23 +126,23 @@ export function DropdownNav() {
                                 <NavToolButton 
                                     onClick={() => { router.push('/soporte'); }}
                                     icon={<LifeBuoy size={18} />} 
-                                    label="Soporte" 
+                                    label={t('nav.support')} 
                                 />
                                 <NavToolButton 
                                     onClick={() => { setShowNotifications(true); }}
                                     icon={<Bell size={18} />}
                                     badge={unreadCount > 0}
-                                    label="Alertas"
+                                    label={t('nav.alerts')}
                                 />
                                 <NavToolButton 
                                     onClick={toggleStealthMode}
                                     icon={isStealthMode ? <EyeOff size={18} /> : <Eye size={18} />}
-                                    label={isStealthMode ? 'Visible' : 'Ocultar'}
+                                    label={isStealthMode ? t('nav.visible') : t('nav.hide')}
                                 />
                                 <NavToolButton 
                                     onClick={() => { router.push('/settings'); }}
                                     icon={<Settings size={18} />} 
-                                    label="Config" 
+                                    label={t('nav.settings')} 
                                 />
                                 <NavToolButton onClick={toggleLanguage} icon={<Globe size={18} />} label={language} />
                             </div>
@@ -193,11 +193,11 @@ export function DropdownNav() {
 
                         {/* Wallet Sub-Tabs */}
                         <div className="flex items-center gap-1 bg-black/40 p-1.5 rounded-full">
-                            <SubNavLink href="/wallet" icon={<Wallet size={16} />} label="Wallet" />
-                            <SubNavLink href="/wallet?view=portfolio" icon={<PieChart size={16} />} label="Portfolio" />
-                            <SubNavLink href="/wallet?view=earn" icon={<TrendingUp size={16} />} label="Earn" />
-                            <SubNavLink href="/wallet?view=activity" icon={<Zap size={16} />} label="Activity" />
-                            <SubNavLink href="/vip" icon={<UsersIcon size={16} />} label="Whales" />
+                            <SubNavLink href="/wallet" icon={<Wallet size={16} />} label={t('nav.human_card')} />
+                            <SubNavLink href="/wallet?view=portfolio" icon={<PieChart size={16} />} label={t('nav.portfolio')} />
+                            <SubNavLink href="/wallet?view=earn" icon={<TrendingUp size={16} />} label={t('nav.earn')} />
+                            <SubNavLink href="/wallet?view=activity" icon={<Zap size={16} />} label={t('nav.activity')} />
+                            <SubNavLink href="/vip" icon={<UsersIcon size={16} />} label={t('nav.whale')} />
                         </div>
 
                         {/* Switch Account Trigger (Small) */}
@@ -205,7 +205,7 @@ export function DropdownNav() {
                             onClick={() => { router.push('/wallet'); }}
                             className="px-6 py-2.5 bg-white/10 text-[10px] font-black uppercase tracking-widest text-white rounded-full shadow-sm hover:scale-105 transition-all mr-2"
                         >
-                            SWITCH
+                            {t('nav.switch')}
                         </button>
                     </motion.div>
                 )}
