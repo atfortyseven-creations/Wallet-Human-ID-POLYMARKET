@@ -49,11 +49,11 @@ export default function Home() {
 
   return (
         <SmoothScroll>
-            <main className="relative min-h-screen w-full bg-[#EAEADF] dark:bg-[#0a0a0a] text-[#1F1F1F] dark:text-white selection:bg-[#00ff9d] selection:text-black overflow-x-hidden transition-colors duration-700">
+            <main className="relative min-h-screen w-full bg-black text-[#1F1F1F] dark:text-white selection:bg-[#00ff9d] selection:text-black overflow-x-hidden transition-colors duration-700">
                 
                 {/* 1. Background Layers */}
                 <div className="fixed inset-0 z-0 pointer-events-none">
-                    <FluidBeigeBackground />
+                    {/* <FluidBeigeBackground /> */}
                 </div>
 
                 {/* 2. Parallax Stickers Layer */}

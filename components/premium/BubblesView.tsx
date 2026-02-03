@@ -281,7 +281,7 @@ export default function BubblesView() {
     };
 
     return (
-        <div className="flex flex-col h-full bg-[#EAEADF]/50 dark:bg-neutral-900/50 backdrop-blur-xl rounded-[2.5rem] border border-white/20 overflow-hidden shadow-2xl">
+        <div className="flex flex-col h-full bg-black/50 dark:bg-neutral-900/50 backdrop-blur-xl rounded-[2.5rem] border border-white/20 overflow-hidden shadow-2xl">
             {/* Header / Controls */}
             <div className="p-6 border-b border-black/5 flex flex-col md:flex-row gap-4 justify-between items-center z-20">
                 <div className="flex items-center gap-2 bg-white/40 p-1.5 rounded-2xl border border-black/5">
@@ -291,8 +291,8 @@ export default function BubblesView() {
                             onClick={() => setTimeframe(tf)}
                             className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
                                 timeframe === tf 
-                                    ? 'bg-[#1F1F1F] text-white shadow-lg' 
-                                    : 'text-[#1F1F1F]/40 hover:bg-black/5'
+                                    ? 'bg-white text-black shadow-lg' 
+                                    : 'text-white/40 hover:bg-white/5'
                             }`}
                         >
                             {tf.toUpperCase()}
@@ -302,13 +302,13 @@ export default function BubblesView() {
 
                 <div className="flex items-center gap-3">
                     <div className="relative">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-black/20" size={18} />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={18} />
                         <input 
                             type="text"
                             placeholder="Search..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-11 pr-6 py-3 bg-white/40 border border-black/5 rounded-2xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-black/10 transition-all w-64"
+                            className="pl-11 pr-6 py-3 bg-white/10 border border-white/5 rounded-2xl text-sm font-bold focus:outline-none focus:ring-2 focus:ring-white/10 transition-all w-64 text-white"
                         />
                     </div>
                 </div>
@@ -324,7 +324,7 @@ export default function BubblesView() {
             >
                 {loading && data.length === 0 ? (
                     <div className="absolute inset-0 flex items-center justify-center">
-                        <Loader2 className="animate-spin text-black/20" size={48} />
+                        <Loader2 className="animate-spin text-white/20" size={48} />
                     </div>
                 ) : (
                     <div className="w-full h-full relative">
@@ -395,7 +395,7 @@ export default function BubblesView() {
             <div className="p-6 bg-black/5 border-t border-black/5 flex justify-between items-center">
                 <div className="flex items-center gap-2">
                     <div className={`w-2 h-2 rounded-full ${isSettled ? 'bg-emerald-500' : 'bg-emerald-500 animate-pulse'}`} />
-                    <span className="text-[10px] font-black uppercase text-black/40 tracking-widest">
+                    <span className="text-[10px] font-black uppercase text-white/40 tracking-widest">
                         {isSettled ? 'Drag to Move' : 'Settling...'}
                     </span>
                 </div>

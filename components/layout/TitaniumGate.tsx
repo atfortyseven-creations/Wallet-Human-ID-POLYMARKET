@@ -40,8 +40,8 @@ export function TitaniumGate({ children }: TitaniumGateProps) {
     // Loader
     if (isLoading) {
         return (
-            <div className="fixed inset-0 bg-[#F5F5DC] flex items-center justify-center">
-                 <div className="w-8 h-8 border-4 border-gray-900 border-t-transparent rounded-full animate-spin" />
+            <div className="fixed inset-0 bg-black flex items-center justify-center">
+                 <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin" />
             </div>
         );
     }
@@ -55,7 +55,7 @@ export function TitaniumGate({ children }: TitaniumGateProps) {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 bg-[#F5F5DC] flex items-center justify-center p-4"
+                        className="fixed inset-0 z-50 bg-black flex items-center justify-center p-4"
                     >
                          <div className="w-full max-w-md">
                              <div className="flex flex-col items-center mb-8 gap-4">
@@ -64,10 +64,10 @@ export function TitaniumGate({ children }: TitaniumGateProps) {
                                     alt="Human DeFi Icon" 
                                     className="w-32 h-32 rounded-3xl shadow-2xl"
                                 />
-                                <h1 className="text-4xl font-black text-center tracking-tighter text-neutral-900">
+                                 <h1 className="text-4xl font-black text-center tracking-tighter text-white">
                                     HUMAN <span className="text-gray-400">DeFi</span>
                                 </h1>
-                                <p className="text-center text-sm font-bold text-neutral-500 max-w-[280px] leading-relaxed">
+                                <p className="text-center text-sm font-bold text-neutral-400 max-w-[280px] leading-relaxed">
                                     Billetera Soberana Inteligente: IA, Privacidad zkSNARKs y Control Total de tus Activos.
                                 </p>
                              </div>

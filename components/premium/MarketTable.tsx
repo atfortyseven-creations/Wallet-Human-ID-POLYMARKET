@@ -108,7 +108,7 @@ export default function MarketTable() {
                 <span className={`font-black tabular-nums transition-colors duration-300 ${
                     flash === 'up' ? 'text-emerald-500' :
                     flash === 'down' ? 'text-rose-500' :
-                    'text-black'
+                    'text-white'
                 }`}>
                     {formatCurrency(displayValue)}
                 </span>
@@ -151,7 +151,7 @@ export default function MarketTable() {
         }, [value]);
 
         return (
-            <span className="text-sm font-black text-black tabular-nums transition-all duration-1000">
+            <span className="text-sm font-black text-white tabular-nums transition-all duration-1000">
                 {formatCompact(value + fluctuation)}
             </span>
         );
@@ -180,22 +180,22 @@ export default function MarketTable() {
     }
 
     return (
-        <div className="w-full bg-[#EAEADF]/50 dark:bg-neutral-900/50 backdrop-blur-xl rounded-[2.5rem] border border-white/20 overflow-hidden shadow-2xl">
+        <div className="w-full bg-black/80 dark:bg-neutral-900/50 backdrop-blur-xl rounded-[2.5rem] border border-white/20 overflow-hidden shadow-2xl">
             <div className="overflow-x-auto">
                 <table className="w-full border-collapse">
                     <thead>
                         <tr className="border-b border-black/5">
-                            <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-black/30">#</th>
-                            <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-black/30">Nombre</th>
-                            <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-black/30">Valor</th>
-                            <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-black/30">Cap de Mercado</th>
-                            <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-black/30">Volumen en 24h</th>
-                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-black/30">Hora</th>
-                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-black/30">Día</th>
-                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-black/30">Semana</th>
-                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-black/30">Mes</th>
-                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-black/30">Año</th>
-                            <th className="px-6 py-4 text-center text-[10px] font-black uppercase tracking-widest text-black/30">Enlaces & Negociar</th>
+                            <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-white/30">#</th>
+                            <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-white/30">Nombre</th>
+                            <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-white/30">Valor</th>
+                            <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-white/30">Cap de Mercado</th>
+                            <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-white/30">Volumen en 24h</th>
+                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">Hora</th>
+                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">Día</th>
+                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">Semana</th>
+                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">Mes</th>
+                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">Año</th>
+                            <th className="px-6 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">Enlaces & Negociar</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -207,15 +207,15 @@ export default function MarketTable() {
                                 transition={{ delay: i * 0.01 }}
                                 className="group hover:bg-white/40 border-b border-black/5 transition-colors"
                             >
-                                <td className="px-6 py-4 text-sm font-black text-black/40 tabular-nums">
+                                <td className="px-6 py-4 text-sm font-black text-white/40 tabular-nums">
                                     {i + 1}
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
                                         <img src={coin.image} alt={coin.name} className="w-8 h-8 rounded-full group-hover:scale-110 transition-transform" />
                                         <div className="flex flex-col">
-                                            <span className="text-sm font-black text-black">{coin.name}</span>
-                                            <span className="text-[10px] font-bold text-black/30 uppercase tracking-tighter">{coin.symbol}</span>
+                                            <span className="text-sm font-black text-white">{coin.name}</span>
+                                            <span className="text-[10px] font-bold text-white/30 uppercase tracking-tighter">{coin.symbol}</span>
                                         </div>
                                     </div>
                                 </td>
@@ -227,7 +227,7 @@ export default function MarketTable() {
                                         />
                                     </div>
                                 </td>
-                                <td className="px-6 py-4 text-right text-sm font-black text-black tabular-nums">
+                                <td className="px-6 py-4 text-right text-sm font-black text-white tabular-nums">
                                     {formatCompact(coin.market_cap)}
                                 </td>
                                 <td className="px-6 py-4 text-right">
@@ -253,7 +253,7 @@ export default function MarketTable() {
                                         <a 
                                             href={`https://www.coingecko.com/es/monedas/${coin.id}`} 
                                             target="_blank" 
-                                            className="p-2 bg-white/50 hover:bg-white rounded-xl border border-black/5 transition-all text-black/40 hover:text-blue-500"
+                                            className="p-2 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all text-white/40 hover:text-blue-400"
                                             title="Ver en CoinGecko"
                                         >
                                             <ExternalLink size={14} />
@@ -273,7 +273,7 @@ export default function MarketTable() {
             </div>
             
             <div className="p-6 bg-black/5 border-t border-black/5 flex justify-center">
-                 <p className="text-[10px] font-black text-black/30 uppercase tracking-[0.2em] italic">
+                 <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] italic">
                     Market data sync active • Latency compensation enabled
                  </p>
             </div>

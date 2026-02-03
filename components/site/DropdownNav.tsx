@@ -92,14 +92,14 @@ export function DropdownNav() {
                     }}
                     transition={{ duration: 0.3 }}
                 >
-                    <span className="text-lg font-black tracking-tight text-[#1F1F1F] dark:text-white">
+                    <span className="text-lg font-black tracking-tight text-white">
                         Human DeFi
                     </span>
                     <motion.div
                         animate={{ rotate: isOpen ? 180 : 0 }}
                         transition={{ duration: 0.3, ease: "easeInOut" }}
                     >
-                        <ChevronDown className="w-5 h-5 text-[#1F1F1F] dark:text-white" />
+                        <ChevronDown className="w-5 h-5 text-white" />
                     </motion.div>
                 </motion.button>
 
@@ -107,7 +107,7 @@ export function DropdownNav() {
                 {mounted && (
                     <AnimatePresence>
                         {isOpen && createPortal(
-                            <div className="fixed inset-0 z-[9999] isolate pointer-events-none">
+                            <div className="fixed inset-0 z-[99999] pointer-events-none">
                                 {/* Transparent Backdrop - Captures clicks outside to close */}
                                 <div 
                                     className="fixed inset-0 bg-black/5 pointer-events-auto" 

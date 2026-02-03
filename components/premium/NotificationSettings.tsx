@@ -43,7 +43,7 @@ export default function NotificationSettings() {
   ]);
 
   const [alertTypes, setAlertTypes] = useState({
-    whaleMovement: { enabled: true, threshold: 20833333 }, // ~20,000,000 EUR
+    whaleMovement: { enabled: true, threshold: 500000000 }, // $500,000,000
     priceAlert: { enabled: true },
     smartMoneyChange: { enabled: true, minChange: 10 },
     dailyDigest: { enabled: false },
@@ -296,9 +296,9 @@ export default function NotificationSettings() {
                 }))
               }
               className="px-3 py-2 bg-white border border-[#1F1F1F]/20 rounded-lg w-32"
-              placeholder="20833333"
+              placeholder="500000000"
             />
-            <span className="text-sm text-[#1F1F1F]/70">USD (~20,000,000 EUR)</span>
+            <span className="text-sm text-[#1F1F1F]/70">USD ($500,000,000)</span>
           </TriggerToggle>
 
           <TriggerToggle

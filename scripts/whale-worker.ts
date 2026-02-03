@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 // Configuration
 const BASE_RPC_URL = process.env.BASE_MAINNET_RPC_URL || `https://base-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY || 'p2MK6Y8eQyHPbS5gQZ7TU'}`;
 const BTC_RPC_URL = process.env.NEXT_PUBLIC_BITCOIN_RPC_URL || "https://go.getblock.io/3648ec097a0e447fa4eb8d92b81e5230";
-const WHALE_THRESHOLD_USD = 20833333; // ~20,000,000 EUR
+const WHALE_THRESHOLD_USD = 500000000; // $500,000,000
 
 // Telegram Configuration
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "8400528150:AAGtzfSpSvD6HgauHwg7Nw3sGElQx1Ug4rg";

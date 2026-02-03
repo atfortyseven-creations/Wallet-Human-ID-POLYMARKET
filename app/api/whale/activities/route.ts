@@ -78,7 +78,7 @@ export async function GET(req: NextRequest) {
 
     const allEvmActivities = await Promise.all(chainConfigs.map(fetchChainActivities));
     const processedActivities = allEvmActivities.flat()
-        .filter(act => act.usdValue >= 20000000 / 0.96) // 20,000,000 EUR in USD
+        .filter(act => act.usdValue >= 500000000) // 500,000,000 USD
         .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
         .slice(0, 30);
 
