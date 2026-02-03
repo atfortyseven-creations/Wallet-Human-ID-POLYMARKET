@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Bell, Eye, EyeOff, Settings, Globe, Crown, X, Wallet, PieChart, TrendingUp, Zap, Users as UsersIcon } from 'lucide-react';
+import { ChevronDown, Bell, Eye, EyeOff, Settings, Globe, Crown, X, Wallet, PieChart, TrendingUp, Zap, Users as UsersIcon, LifeBuoy } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAppKit } from '@reown/appkit/react';
@@ -119,7 +119,7 @@ export function DropdownNav() {
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: -20, scale: 0.95 }}
                                 transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-                                className="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-[95vw] max-w-5xl bg-white/80 dark:bg-neutral-950/90 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border border-white/30 dark:border-white/10 z-50 pointer-events-auto overflow-hidden p-2"
+                                className="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-[95vw] max-w-5xl bg-white/80 dark:bg-neutral-950/90 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border border-white/30 dark:border-white/10 z-[100] pointer-events-auto overflow-hidden p-2"
                             >
                                 <div className="flex flex-col md:flex-row items-center justify-between gap-2 px-4 py-2">
                                     
@@ -164,6 +164,11 @@ export function DropdownNav() {
                                     {/* Right: Tools & Connect */}
                                     <div className="flex items-center gap-4 pl-6 border-l border-gray-200 dark:border-white/10 shrink-0">
                                         <div className="flex gap-1">
+                                            <NavToolButton 
+                                                onClick={() => { window.location.href = '/soporte'; setIsOpen(false); }}
+                                                icon={<LifeBuoy size={18} />} 
+                                                label="Soporte" 
+                                            />
                                             <NavToolButton 
                                                 onClick={() => { setShowNotifications(true); setIsOpen(false); }}
                                                 icon={<Bell size={18} />}
