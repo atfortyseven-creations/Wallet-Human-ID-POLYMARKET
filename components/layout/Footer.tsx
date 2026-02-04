@@ -1,48 +1,78 @@
 import React from 'react';
 import { SecurityShield } from '@/components/security/SecurityShield';
+import { Twitter, Github, Globe, MessageCircle, Shield, ArrowUpRight, Download, Smartphone, Monitor } from 'lucide-react';
+import { useApp } from '@/components/AppContext';
 
 export const Footer = () => {
+    const { t } = useApp();
+    
     return (
-        <footer className="relative z-10 border-t border-white/5 bg-black/20 backdrop-blur-sm mt-20">
-            <div className="max-w-[1440px] mx-auto px-5 py-12 flex flex-col md:flex-row justify-between items-center gap-6 md:gap-0">
-
-                {/* Brand */}
-                <div className="text-center md:text-left">
-                    <h5 className="text-xl font-bold text-white tracking-tight">Humanid.fi</h5>
-                    <p className="text-xs text-[#888899] mt-2 font-mono">
-                        Sovereign Intelligence & Financial Layer. <br />
-                        Built on Base Sepolia.
-                    </p>
-                </div>
-
-                {/* Links */}
-                <div className="flex gap-8 text-sm text-[#888899]">
-                    <a href="https://docs.humanid.fi" target='_blank' rel='noreferrer' className="hover:text-[#00f2ea] transition-colors">Documentation</a>
-                    <a href="#" className="hover:text-[#00f2ea] transition-colors">Protocol</a>
-                    <a href="#" className="hover:text-[#00f2ea] transition-colors">Security</a>
-                    <a href="#" className="hover:text-[#00f2ea] transition-colors">Governance</a>
-                </div>
-
-                {/* Status */}
-                <div className="flex items-center gap-4">
-                    <SecurityShield />
-                    <div className="h-8 w-px bg-white/10 mx-2 hidden md:block" />
-                    <div className="flex items-center gap-2">
-                        <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00ff9d] opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00ff9d]"></span>
-                        </span>
-                        <span className="text-xs font-mono text-[#00ff9d] tracking-wider">SYSTEM OPTIMAL</span>
+        <footer className="relative z-10 mt-0 bg-black">
+            <div className="max-w-[1440px] mx-auto px-6 py-24">
+                <div className="flex flex-col items-center text-center">
+                    
+                    {/* Main CTA - Restored as requested */}
+                    <div className="max-w-4xl mx-auto">
+                        <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter mb-12 leading-[0.9]">
+                            {t('footer.get_wallet')} <br />
+                            <span className="text-white">Human DeFi</span>
+                        </h2>
+                        
+                        <div className="flex flex-wrap justify-center gap-4">
+                            <DownloadButton 
+                                icon={<Smartphone size={24} />} 
+                                label="Mobile App" 
+                                sub="iOS & Android" 
+                                active
+                            />
+                            <DownloadButton 
+                                icon={<Monitor size={24} />} 
+                                label="Extension" 
+                                sub="Chrome & Brave" 
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            {/* Copyright */}
-            <div className="border-t border-white/5 py-4 text-center">
-                <p className="text-[10px] text-[#444] font-mono uppercase">
-                    © 2024 Humanid.fi Org. All Rights Reserved. Non-Custodial Output.
-                </p>
             </div>
         </footer>
     );
 };
+
+// Helper Components
+
+const DownloadButton = ({ icon, label, sub, active = false }: { icon: React.ReactNode, label: string, sub: string, active?: boolean }) => (
+    <button className={`
+        group relative overflow-hidden flex items-center gap-3 px-6 py-4 rounded-2xl transition-all duration-300
+        ${active 
+            ? 'bg-white text-black hover:scale-105 shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)]' 
+            : 'bg-white/5 text-white hover:bg-white/10 border border-white/10 hover:border-white/20'
+        }
+    `}>
+        <div className={`
+            p-2 rounded-lg transition-colors
+            ${active ? 'bg-black/5' : 'bg-white/5 group-hover:bg-white/10'}
+        `}>
+            {icon}
+        </div>
+        <div className="text-left">
+            <div className="text-sm font-bold leading-none mb-1">{label}</div>
+            <div className={`text-[10px] font-mono ${active ? 'text-black/60' : 'text-white/40'}`}>{sub}</div>
+        </div>
+        
+        {/* Shine Effect */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+    </button>
+);
+
+const FooterLink = ({ href, children }: { href: string, children: React.ReactNode }) => (
+    <a href={href} className="block text-sm text-white/50 hover:text-[#00ff9d] transition-colors flex items-center gap-1 group">
+        {children}
+        <ArrowUpRight size={10} className="opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all" />
+    </a>
+);
+
+const SocialIcon = ({ icon, href }: { icon: React.ReactNode, href: string }) => (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="p-3 bg-white/5 rounded-full text-white/50 hover:text-white hover:bg-white/10 hover:scale-110 transition-all border border-transparent hover:border-white/10">
+        {icon}
+    </a>
+);

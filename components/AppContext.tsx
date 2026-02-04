@@ -2,6 +2,9 @@
 
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 
+import { translations } from '@/lib/translations';
+
+/*
 // 1. Diccionario de Traducciones (Español, Inglés, Alemán, Francés)
 const translations: Record<string, Record<string, string>> = {
     es: { title: "Billetera", claimable: "Reclamable", royalties: "Regalías", settings: "Configuración" },
@@ -9,6 +12,7 @@ const translations: Record<string, Record<string, string>> = {
     de: { title: "Brieftasche", claimable: "Forderbar", royalties: "Lizenzgebühren", settings: "Einstellungen" },
     fr: { title: "Portefeuille", claimable: "Réclamable", royalties: "Redevances", settings: "Paramètres" }
 };
+*/
 
 // 2. Tasas de cambio simuladas (Base: USD)
 interface ExchangeRate {
@@ -66,7 +70,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
     // Función para obtener texto traducido
     const t = (key: string) => {
+        // @ts-ignore - Dynamic key access
         const dict = translations[lang] || translations['en'];
+        // @ts-ignore - Dynamic key access
         return dict[key] || key;
     };
 

@@ -1,28 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-
-// Mock Headlines Database
-const HEADLINES_DB = [
-    { text: "SEC Approves Bitcoin ETF for Institutional Trading", score: 20, keywords: ["SEC", "ETF"] },
-    { text: "Major Exchange Hacked: $50M Stolen", score: -25, keywords: ["HACK", "STOLEN"] },
-    { text: "Ethereum Network Upgrade Successfully Deployed", score: 15, keywords: ["UPGRADE", "ETH"] },
-    { text: "Regulatory uncertainty continues in US markets", score: -10, keywords: ["REGULATION"] },
-    { text: "New DeFi Protocol offers 50% APY", score: 10, keywords: ["DEFI", "APY"] },
-    { text: "Whale Wallet moves 10,000 BTC to Cold Storage", score: 5, keywords: ["WHALE", "BTC"] },
-    { text: "Inflation data comes in lower than expected", score: 12, keywords: ["INFLATION", "MACRO"] },
-    { text: "Tech Stocks rally pushes Crypto higher", score: 8, keywords: ["RALLY", "CORRELATION"] },
-    { text: "Central Bank announces Digital Currency pilot", score: 0, keywords: ["CBDC"] },
-    { text: "Smart Contract vulnerability found in top Lend Protocol", score: -15, keywords: ["EXPLOIT", "BUG"] },
-    { text: "Gas fees hit 6-month low", score: 8, keywords: ["GAS", "FEES"] },
-    { text: "Institutional adoption grows in Asia", score: 12, keywords: ["ADOPTION", "ASIA"] },
-    { text: "Miner capitulation signals bottom", score: -5, keywords: ["MINER", "BOTTOM"] },
-    { text: "Stablecoin depegs slightly causing panic", score: -12, keywords: ["PEG", "PANIC"] },
-    { text: "Layer 2 scaling solutions see record TVL", score: 10, keywords: ["L2", "TVL"] },
-    { text: "NFT floor prices crash across board", score: -8, keywords: ["NFT", "CRASH"] },
-    { text: "Fed pauses interest rate hikes", score: 15, keywords: ["FED", "RATES"] },
-    { text: "Partnership announced between Chainlink and Swift", score: 18, keywords: ["PARTNERSHIP"] },
-    { text: "Government bans crypto mining operations", score: -20, keywords: ["BAN", "MINING"] },
-    { text: "Zero-Knowledge proofs gain traction", score: 10, keywords: ["ZK", "PRIVACY"] }
-];
+import { useState, useEffect, useCallback } from 'react';
 
 interface SentimentData {
     score: number;
@@ -31,6 +7,9 @@ interface SentimentData {
     lastHeadlines: string[];
     index: number; // 0-100
 }
+
+const POSITIVE_WORDS = ['boom', 'rally', 'surge', 'growth', 'adopted', 'partnership', 'upgrade', 'launch', 'profit', 'gain', 'low', 'approval'];
+const NEGATIVE_WORDS = ['hack', 'stolen', 'crash', 'drop', 'regulatory', 'ban', 'exploit', 'vuln', 'bug', 'panic', 'loss', 'bear'];
 
 export function useAiSentiment() {
     const [data, setData] = useState<SentimentData>({
@@ -41,45 +20,61 @@ export function useAiSentiment() {
         index: 50
     });
 
-    const analyzeHeadlines = useCallback(() => {
-        // Pick 3 random headlines
-        const shuffled = [...HEADLINES_DB].sort(() => 0.5 - Math.random());
-        const selected = shuffled.slice(0, 3);
+    const analyzeRealHeadlines = useCallback(async () => {
+        try {
+            const res = await fetch('/api/news');
+            const json = await res.json();
+            const headlines = json.news || [];
+            
+            if (headlines.length === 0) return;
 
-        // Calculate score
-        let netScore = 0;
-        const currentKeywords: Set<string> = new Set();
+            // Analyze sentiment based on keywords
+            let totalScore = 0;
+            const foundKeywords: Set<string> = new Set();
 
-        selected.forEach(h => {
-            netScore += h.score;
-            h.keywords.forEach(k => currentKeywords.add(k));
-        });
+            const selected = headlines.slice(0, 5); // Take top 5 recent
 
-        // Normalize score change for variability
-        // We want the index to move, but not jump 50 points at once casually.
-        // We simulate a "rolling" effect by blending with previous state if we had one, but strict requirements say "Calculate... based on last 10".
-        // For this simulation, we'll keep it simple and responsive.
+            selected.forEach((h: any) => {
+                const text = (h.title + ' ' + (h.summary || '')).toLowerCase();
+                
+                POSITIVE_WORDS.forEach(w => {
+                    if (text.includes(w)) {
+                        totalScore += 10;
+                        foundKeywords.add(w.toUpperCase());
+                    }
+                });
 
-        setData(prev => {
-            const newIndex = Math.min(100, Math.max(0, prev.index + (netScore * 0.2)));
-            const trend = newIndex > prev.index ? 'UP' : newIndex < prev.index ? 'DOWN' : 'NEUTRAL';
+                NEGATIVE_WORDS.forEach(w => {
+                    if (text.includes(w)) {
+                        totalScore -= 10;
+                        foundKeywords.add(w.toUpperCase());
+                    }
+                });
+            });
 
-            return {
-                score: netScore,
-                trend,
-                keywords: Array.from(currentKeywords).slice(0, 5),
-                lastHeadlines: selected.map(h => h.text),
-                index: Math.round(newIndex)
-            };
-        });
+            setData(prev => {
+                const newIndex = Math.min(100, Math.max(0, 50 + totalScore));
+                const trend = newIndex > prev.index ? 'UP' : newIndex < prev.index ? 'DOWN' : 'NEUTRAL';
 
+                return {
+                    score: totalScore,
+                    trend,
+                    keywords: Array.from(foundKeywords).slice(0, 5),
+                    lastHeadlines: selected.map((h: any) => h.title),
+                    index: Math.round(newIndex)
+                };
+            });
+
+        } catch (error) {
+            console.error("AI Sentiment Hub Error:", error);
+        }
     }, []);
 
     useEffect(() => {
-        analyzeHeadlines(); // Initial run
-        const interval = setInterval(analyzeHeadlines, 5000); // Every 5 seconds
+        analyzeRealHeadlines();
+        const interval = setInterval(analyzeRealHeadlines, 60000); // Only every minute for news
         return () => clearInterval(interval);
-    }, [analyzeHeadlines]);
+    }, [analyzeRealHeadlines]);
 
     return data;
 }

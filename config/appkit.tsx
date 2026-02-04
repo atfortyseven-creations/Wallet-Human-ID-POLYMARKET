@@ -1,38 +1,52 @@
-import { createAppKit } from '@reown/appkit/react'
-// Config clean-up verification
-import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
-import { mainnet, optimism, base, baseSepolia, arbitrum, polygon, type AppKitNetwork } from '@reown/appkit/networks'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import type { ReactNode } from 'react'
-import { cookieToInitialState, WagmiProvider, type Config } from 'wagmi'
+"use client";
 
+import { useTheme } from "next-themes";
+import { CreateConnectorFn, WagmiProvider, cookieToInitialState } from 'wagmi';
+import { AppKitNetwork } from "@reown/appkit/networks";
+
+// 1. Get projectId from https://cloud.walletconnect.com
 // 1. Get projectId
-export const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
+// Fallback to a generous default if env is missing to prevent crash
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "37621051039974f1c7a00f59ee5c1185";
 
-if (!projectId) {
-    throw new Error('Project ID is not defined')
+if (!process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID) {
+    console.warn("Using fallback WalletConnect Project ID. Please set NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID.");
 }
 
-// 2. Set the networks
-export const networks = [baseSepolia, base, mainnet, optimism, arbitrum, polygon] as [AppKitNetwork, ...AppKitNetwork[]];
+// 2. Create wagmiConfig
+import { cookieStorage, createStorage, http } from '@wagmi/core'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+import { mainnet, arbitrum, base, baseSepolia } from '@reown/appkit/networks'
 
-// 3. Set up the Wagmi Adapter (Config)
+export const networks: [AppKitNetwork, ...AppKitNetwork[]] = [baseSepolia, mainnet, arbitrum, base];
+
 export const wagmiAdapter = new WagmiAdapter({
-    ssr: false,
+    storage: createStorage({
+        storage: cookieStorage
+    }),
+    ssr: true,
     projectId,
     networks
 })
 
-export const config = wagmiAdapter.wagmiConfig as Config
+export const config = wagmiAdapter.wagmiConfig
 
-// 4. Create the modal
+// 3. Create modal
+import { createAppKit } from '@reown/appkit/react'
+import { ReactNode } from "react";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+// Setup queryClient
+const queryClient = new QueryClient()
+
 const metadata = {
-    name: 'HumanID',
+    name: 'HumanID.fi',
     description: 'The Void Wallet',
-    url: 'https://www.humanidfi.com', // origin must match your domain & subdomain
-    icons: ['https://www.humanidfi.com/android-chrome-192x192.png']
+    url: typeof window !== 'undefined' ? window.location.origin : 'https://www.humanidfi.com', // origin must match your domain & subdomain
+    icons: ['https://avatars.githubusercontent.com/u/37784886']
 }
 
+// Create the modal instance (outside component to be singleton)
 createAppKit({
     adapters: [wagmiAdapter],
     networks,
@@ -40,20 +54,25 @@ createAppKit({
     metadata,
     features: {
         analytics: true,
-        email: false, // Optional - disable email login if not needed to reduce complexity
-        socials: [], // Optional - disable social login if causing config issues
+        email: false,
+        socials: [],
     },
     themeMode: 'dark',
+    themeVariables: {
+        '--w3m-font-family': 'Inter, sans-serif',
+        '--w3m-accent': '#FFFFFF',
+    }
 })
 
-// 5. Create the wrapper component
-export function Web3ModalProvider({ children, cookies }: { children: ReactNode; cookies?: string | null }) {
-    const initialState = cookieToInitialState(wagmiAdapter.wagmiConfig as Config, cookies)
-    const queryClient = new QueryClient()
+export function Web3ModalProvider({ children, cookies }: { children: ReactNode; cookies: string | null }) {
+    const { theme } = useTheme();
+    const initialState = cookieToInitialState(wagmiAdapter.wagmiConfig, cookies)
 
     return (
-        <WagmiProvider config={wagmiAdapter.wagmiConfig as Config} initialState={initialState}>
-            <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        <WagmiProvider config={wagmiAdapter.wagmiConfig as any} initialState={initialState}>
+            <QueryClientProvider client={queryClient}>
+                {children}
+            </QueryClientProvider>
         </WagmiProvider>
     )
 }

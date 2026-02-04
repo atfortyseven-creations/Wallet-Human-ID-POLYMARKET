@@ -1,0 +1,15 @@
+/node_modules
+/.next
+/out
+/build
+.git
+.ds_store
+.env*
+npm-debug.log*
+yarn-debug.log*
+/artifacts
+/cache
+/typechain-types
+/subgraph
+/test
+/docs

@@ -1,21 +1,24 @@
 "use client";
 
-import { Web3ModalProvider } from "@/config/appkit";
 import { ThemeProvider } from "next-themes";
 import { LanguageProvider } from "@/src/context/LanguageContext";
 import { State } from "wagmi";
 import { SettingsProvider } from "@/src/context/SettingsContext";
+import { AppProvider } from "@/components/AppContext";
+import ClientWeb3Provider from '@/components/ClientWeb3Provider';
 
 export default function Providers({ children, initialState }: { children: React.ReactNode, initialState?: State }) {
     return (
-        <Web3ModalProvider cookies={null}>
-            <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-                <SettingsProvider>
-                    <LanguageProvider>
-                        {children}
-                    </LanguageProvider>
-                </SettingsProvider>
-            </ThemeProvider>
-        </Web3ModalProvider>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+            <AppProvider>
+                <ClientWeb3Provider cookies={null}>
+                    <SettingsProvider>
+                        <LanguageProvider>
+                            {children}
+                        </LanguageProvider>
+                    </SettingsProvider>
+                </ClientWeb3Provider>
+            </AppProvider>
+        </ThemeProvider>
     );
 }

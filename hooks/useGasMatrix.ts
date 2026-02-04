@@ -1,46 +1,50 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
+import { getGasEstimates } from '@/lib/wallet/gas';
+import { useChainId } from 'wagmi';
 
 /**
  * useGasMatrix Hook
- * Uses Brownian Motion physics to simulate realistic EIP-1559 base fee fluctuations.
- * Predicts network congestion patterns.
+ * Fetches real EIP-1559 gas data from the network.
+ * Predicts network congestion based on on-chain base fees.
  */
 export const useGasMatrix = () => {
-    const [baseFee, setBaseFee] = useState(15.0); // Initial Gwei
+    const chainId = useChainId();
+    const [gasData, setGasData] = useState({
+        eco: 0,
+        std: 0,
+        turbo: 0,
+        congestion: 'LOW' as 'LOW' | 'MEDIUM' | 'HIGH' | 'CLOGGED',
+        baseFee: 0
+    });
 
-    // Brownian Motion Simulation
     useEffect(() => {
-        const interval = setInterval(() => {
-            setBaseFee((prev) => {
-                const drift = 0.05; // Slight upward/downward trend pressure
-                const volatility = 2.0; // Magnitude of change
-                const change = (Math.random() - 0.5 + drift) * volatility;
-                return Math.max(5, prev + change); // Minimum 5 Gwei to prevent negative
-            });
-        }, 2000); // Create new block simulation every 2 seconds
+        const fetchGas = async () => {
+            try {
+                const estimates = await getGasEstimates(chainId);
+                const baseFeeGwei = Number(estimates.normal.maxFeePerGas) / 1e9;
+                
+                let congestion: 'LOW' | 'MEDIUM' | 'HIGH' | 'CLOGGED' = 'LOW';
+                if (baseFeeGwei > 100) congestion = 'CLOGGED';
+                else if (baseFeeGwei > 50) congestion = 'HIGH';
+                else if (baseFeeGwei > 25) congestion = 'MEDIUM';
+
+                setGasData({
+                    eco: Number((Number(estimates.slow.maxFeePerGas) / 1e9).toFixed(1)),
+                    std: Number(baseFeeGwei.toFixed(1)),
+                    turbo: Number((Number(estimates.fast.maxFeePerGas) / 1e9).toFixed(1)),
+                    congestion,
+                    baseFee: Number(baseFeeGwei.toFixed(1))
+                });
+            } catch (error) {
+                console.error("Error fetching real gas data:", error);
+            }
+        };
+
+        fetchGas();
+        const interval = setInterval(fetchGas, 10000); // Update every 10 seconds
 
         return () => clearInterval(interval);
-    }, []);
+    }, [chainId]);
 
-    const gasMatrix = useMemo(() => {
-        const eco = Number((baseFee * 0.9).toFixed(1));
-        const std = Number(baseFee.toFixed(1));
-        const turbo = Number((baseFee * 1.2).toFixed(1));
-
-        // Congestion Prediction
-        let congestion: 'LOW' | 'MEDIUM' | 'HIGH' | 'CLOGGED' = 'LOW';
-        if (baseFee > 100) congestion = 'CLOGGED';
-        else if (baseFee > 50) congestion = 'HIGH';
-        else if (baseFee > 25) congestion = 'MEDIUM';
-
-        return {
-            eco,
-            std,
-            turbo,
-            congestion,
-            baseFee: std
-        };
-    }, [baseFee]);
-
-    return gasMatrix;
+    return gasData;
 };

@@ -1,243 +1,466 @@
+"use client";
 
-import React, { useState } from 'react';
-import {
-    Wallet, TrendingUp, Newspaper, ArrowRight, ArrowUpRight,
-    ArrowDownLeft, Shield, AlertTriangle, Zap, CreditCard, Loader2
-} from 'lucide-react';
-// Asumiendo que usas Recharts para el gráfico
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { Transaction, Position, WalletState } from '@/types/wallet';
+import React, { useState, useEffect } from 'react';
+import { Wallet, TrendingUp, Zap, Loader2, PieChart, Users, Settings, X, Gift, CreditCard, Wifi, Shield } from 'lucide-react';
+import { HumanCard } from '@/components/wallet/HumanCard';
+import ReceiveHub from '@/components/wallet/ReceiveHub';
+import QRScannerModal from '@/components/wallet/QRScannerModal';
+import ReferralDashboard from '@/components/wallet/ReferralDashboard';
+import NotificationCenter from '@/components/notifications/NotificationCenter';
+import AIConcierge from '@/components/wallet/AIConcierge';
+import WhaleGroups from '@/components/wallet/WhaleGroups';
+import FiatCardIssuance from '@/components/wallet/FiatCardIssuance';
+import SecurityVault from '@/components/wallet/SecurityVault';
+import NFCHardware from '@/components/wallet/NFCHardware';
+import { NetworkSelector } from '@/components/wallet/NetworkSelector';
+import { WalletActions } from '@/components/wallet/WalletActions';
 import { useRealWalletData } from '@/hooks/useRealWalletData';
+import PortfolioDashboard from '@/components/wallet/PortfolioDashboard';
+import SettingsPanel from '@/components/wallet/SettingsPanel';
+import AddressBook from '@/components/wallet/AddressBook';
+import AccountSwitcher from '@/components/wallet/AccountSwitcher';
+import StakingDashboard from '@/components/wallet/StakingDashboard';
+import TransactionHistory from '@/components/wallet/TransactionHistory';
+import WatchOnlyInput from '@/components/wallet/WatchOnlyInput';
+import { getAccountColor, type WalletAccount } from '@/lib/wallet/accounts';
+import { resolveENSName } from '@/lib/wallet/ens';
+import { isAddress } from 'viem';
 
-// --- MOCK DATA FOR CHART (Aún mockeado hasta tener endpoint de historial de portfolio) ---
-const MOCK_DATA = [
-    { name: 'Mon', value: 1000 },
-    { name: 'Tue', value: 1200 },
-    { name: 'Wed', value: 1150 },
-    { name: 'Thu', value: 1600 },
-    { name: 'Fri', value: 1850 },
-    { name: 'Sat', value: 1900 },
-    { name: 'Sun', value: 2100 },
-];
+import LanguageSwitcher from '@/components/wallet/LanguageSwitcher';
+import { LanguageProvider, useLanguage } from '@/lib/i18n/LanguageContext';
 
-export default function SuperWallet({ recentNews = [] }: { recentNews?: any[] }) { // Acepte prop
-    const [activeTab, setActiveTab] = useState<'OVERVIEW' | 'POSITIONS' | 'ACTIVITY' | 'DEFI'>('OVERVIEW');
+export default function SuperWallet({ recentNews = [] }: { recentNews?: any[] }) {
+    return (
+        <LanguageProvider>
+            <SuperWalletContent recentNews={recentNews} />
+        </LanguageProvider>
+    );
+}
 
-    // USAR EL HOOK DE DATOS REALES
+function SuperWalletContent({ recentNews = [] }: { recentNews?: any[] }) {
+    const { t } = useLanguage();
+    const [activeView, setActiveView] = useState<'dashboard' | 'portfolio' | 'earn' | 'activity' | 'contacts' | 'settings' | 'referrals' | 'whales' | 'cards' | 'vault' | 'nfc'>('dashboard');
+    const [showWatchInput, setShowWatchInput] = useState(false);
+    const [accounts, setAccounts] = useState<WalletAccount[]>([]);
+    const [currentAddress, setCurrentAddress] = useState<string>('');
+    const [accountBalances, setAccountBalances] = useState<Record<string, string>>({});
+
     const {
         usdcBalance,
         totalBalance,
         portfolioValue,
         positions,
         transactions,
+        assets,
+        perps,
+        predictions,
+        claimables,
         isLoading,
         isConnected,
-        address
-    } = useRealWalletData(recentNews);
+        change24hUSD,
+        change24hPercent,
+        address: hookAddress,
+        backendAccounts
+    } = useRealWalletData(recentNews, currentAddress);
 
-    // MANEJO DE ESTADOS DE CARGA Y CONEXIÓN
-    if (!isConnected) {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-[50vh] text-gray-400 bg-black">
-                <Wallet className="w-16 h-16 mb-6 opacity-30" />
-                <h2 className="text-xl font-bold mb-2">Wallet Disconnected</h2>
-                <p className="text-sm opacity-60">Connect your wallet to view your Polymarket dashboard.</p>
-            </div>
-        );
-    }
+    const [isInitialized, setIsInitialized] = useState(false);
 
+    // 1. Initial Load: Load from Backend + LocalStorage merge
+    useEffect(() => {
+        if (!hookAddress) return;
+
+        const stored = localStorage.getItem('wallet_accounts');
+        let initialAccounts: WalletAccount[] = [];
+
+        if (stored) {
+            try {
+                initialAccounts = JSON.parse(stored);
+            } catch (e) {
+                console.error("Failed to parse stored accounts", e);
+            }
+        }
+
+        // Merge backend accounts with local ones, avoiding duplicates
+        const merged = [...backendAccounts];
+        initialAccounts.forEach(local => {
+            if (!merged.some(m => m.address.toLowerCase() === local.address.toLowerCase())) {
+                merged.push(local);
+            }
+        });
+
+        // Ensure primary is present
+        if (!merged.some(m => m.address.toLowerCase() === hookAddress.toLowerCase())) {
+            merged.unshift({
+                address: hookAddress,
+                name: 'Human Vault (Primary)',
+                type: 'PRIMARY' as const,
+                index: 0,
+                color: getAccountColor(hookAddress)
+            });
+        }
+
+        setAccounts(merged);
+        if (!currentAddress) setCurrentAddress(merged[0]?.address || hookAddress);
+        setIsInitialized(true);
+    }, [hookAddress, backendAccounts.length]); // Re-sync if backend list changes
+
+    // 2. Persistence: Save to Storage whenever accounts change
+    useEffect(() => {
+        if (isInitialized && accounts.length > 0) {
+            localStorage.setItem('wallet_accounts', JSON.stringify(accounts));
+        }
+    }, [accounts, isInitialized]);
+
+    const [showReceive, setShowReceive] = useState(false);
+    const [showScanner, setShowScanner] = useState(false);
+
+    // Background balance fetching for all accounts to support filtering
+    useEffect(() => {
+        if (accounts.length === 0) return;
+
+        const fetchAllBalances = async () => {
+            const balances: Record<string, string> = {};
+            await Promise.all(accounts.map(async (acc) => {
+                try {
+                    const res = await fetch(`/api/user/wallet?address=${acc.address}`);
+                    if (res.ok) {
+                        const data = await res.json();
+                        balances[acc.address.toLowerCase()] = data.balance || "0.00";
+                    }
+                } catch (e) {
+                    console.error("Failed to fetch balance for", acc.address);
+                }
+            }));
+            setAccountBalances(prev => ({ ...prev, ...balances }));
+        };
+
+        fetchAllBalances();
+        const interval = setInterval(fetchAllBalances, 60000);
+        return () => clearInterval(interval);
+    }, [accounts]);
+
+    const handleAddAccount = async () => {
+        const derivedAccounts = accounts.filter(a => a.type === 'DERIVED');
+        const newIndex = derivedAccounts.length + 1;
+        
+        const primaryAccount = accounts.find(a => a.type === 'PRIMARY') || accounts[0];
+        const baseAddr = (primaryAccount?.address && !primaryAccount.address.includes('Virtual')) 
+            ? primaryAccount.address 
+            : '0x71C7656EC7ab88b098defB751B7401B5f6d8976F';
+        
+        const mockAddress = baseAddr.slice(0, -2) + newIndex.toString(16).padStart(2, '0');
+        
+        const newAccount: WalletAccount = {
+            address: mockAddress,
+            name: `Personal Account ${newIndex + 1}`,
+            type: 'DERIVED',
+            index: newIndex,
+            color: getAccountColor(mockAddress)
+        };
+
+        // [PERSISTENCE] Save to backend
+        try {
+            await fetch('/api/user/wallet', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newAccount)
+            });
+        } catch (e) {
+            console.error("Failed to persist new account to backend", e);
+        }
+
+        const updated = [...accounts, newAccount];
+        setAccounts(updated);
+        setCurrentAddress(mockAddress);
+        localStorage.setItem('wallet_accounts', JSON.stringify(updated));
+        
+        alert(`New account "${newAccount.name}" created! Note: Explorer visibility requires first transaction.`);
+    };
+
+    const handleAddWatchWallet = async (address: string, name?: string) => {
+        try {
+            let resolvedAddress = address;
+            let displayLabel = name;
+
+            // Try to resolve ENS
+            if (address.toLowerCase().endsWith('.eth')) {
+                const resolved = await resolveENSName(address);
+                if (resolved && isAddress(resolved)) {
+                    resolvedAddress = resolved;
+                    displayLabel = address; // Keep the .eth as the label
+                } else {
+                    alert('Could not resolve ENS name to a valid address. Please check and try again.');
+                    return;
+                }
+            } else if (!isAddress(address)) {
+                alert('Please enter a valid Ethereum address or ENS name.');
+                return;
+            }
+
+            // Check if already exists
+            if (accounts.some(a => a.address.toLowerCase() === resolvedAddress.toLowerCase())) {
+                alert('This address is already in your accounts list.');
+                return;
+            }
+
+            const watchAccount: WalletAccount = {
+                address: resolvedAddress,
+                name: displayLabel || `Watch ${resolvedAddress.slice(0, 6)}...`,
+                type: 'WATCH_ONLY',
+                color: getAccountColor(resolvedAddress)
+            };
+
+            const updatedAccounts = [...accounts, watchAccount];
+            
+            // [PERSISTENCE] Save watch wallet to backend
+            try {
+                await fetch('/api/user/wallet', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(watchAccount)
+                });
+            } catch (e) {
+                console.error("Failed to persist watch wallet to backend", e);
+            }
+
+            setAccounts(updatedAccounts);
+            setCurrentAddress(resolvedAddress);
+            setShowWatchInput(false);
+            
+            // Explicit save to ensure persistence immediately
+            localStorage.setItem('wallet_accounts', JSON.stringify(updatedAccounts));
+        } catch (error: any) {
+            console.error("ENS Resolution Error:", error);
+            alert(`Error: ${error.message || 'Failed to add wallet'}`);
+        }
+    };
+
+    const handleDeleteAccount = async (address: string) => {
+        if (!confirm('Are you sure you want to remove this account?')) return;
+
+        try {
+            await fetch(`/api/user/wallet?address=${address}`, {
+                method: 'DELETE'
+            });
+
+            const updated = accounts.filter(a => a.address.toLowerCase() !== address.toLowerCase());
+            setAccounts(updated);
+            localStorage.setItem('wallet_accounts', JSON.stringify(updated));
+            
+            if (currentAddress.toLowerCase() === address.toLowerCase()) {
+                setCurrentAddress(updated[0]?.address || hookAddress);
+            }
+        } catch (e) {
+            console.error("Failed to delete account", e);
+            alert("Failed to delete account. Please try again.");
+        }
+    };
+
+    const handleSwitchAccount = (address: string) => {
+        setCurrentAddress(address);
+    };
+
+    // Use current address or fallback to connected address
+    const displayAddress = currentAddress || hookAddress || '';
+
+    // Always show the wallet interface
     return (
-        <div className="max-w-4xl mx-auto p-4 md:p-6 bg-black min-h-screen text-white font-sans">
+        <div className="min-h-screen bg-[#EAEADF] text-[#1F1F1F] font-sans selection:bg-[#1F1F1F] selection:text-[#EAEADF] pb-20 relative overflow-hidden">
+             {/* Background Noise/Void Effect */}
+            <div className="absolute inset-0 pointer-events-none opacity-5">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-black rounded-full blur-[120px]" />
+            </div>
 
-            {/* HEADER: GAS & STATUS */}
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Wallet Dashboard</h1>
+            {/* Header Navigation */}
+            <header className="px-4 py-4 md:px-6 flex items-center justify-between sticky top-0 z-30 bg-[#EAEADF]/80 backdrop-blur-md">
                 <div className="flex items-center gap-2">
-                    <span className="flex items-center px-3 py-1 bg-purple-900/30 text-purple-400 text-xs font-bold rounded-full border border-purple-500/30">
-                        <Zap className="w-3 h-3 mr-1 fill-current" />
-                        Polygon Mainnet
-                    </span>
+                    {accounts.length > 0 && (
+                        <AccountSwitcher 
+                            currentAddress={displayAddress}
+                            accounts={accounts} // Fix: Removed filtering to show all accounts as requested
+                            onSwitch={handleSwitchAccount}
+                            onAddAccount={handleAddAccount}
+                            onAddWatchOnly={() => setShowWatchInput(true)}
+                            onDeleteAccount={handleDeleteAccount}
+                        />
+                    )}
                 </div>
-            </div>
+                
+                {/* Center Tabs - ABSOLUTELY CENTERED FOR PERFECT ALIGNMENT WITH CARD */}
+                <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 bg-white/50 rounded-full p-1.5 border border-[#1F1F1F]/5 shadow-sm overflow-x-auto max-w-[600px] scrollbar-hide">
+                    <ViewTab icon={<Wallet size={18}/>} label="Wallet" active={activeView==='dashboard'} onClick={()=>setActiveView('dashboard')} />
+                    <ViewTab icon={<PieChart size={18}/>} label="Portfolio" active={activeView==='portfolio'} onClick={()=>setActiveView('portfolio')} />
+                    <ViewTab icon={<TrendingUp size={18}/>} label="Earn" active={activeView==='earn'} onClick={()=>setActiveView('earn')} />
+                    <ViewTab icon={<Zap size={18}/>} label="Activity" active={activeView==='activity'} onClick={()=>setActiveView('activity')} />
+                    <ViewTab icon={<Users size={18}/>} label="Whales" active={activeView==='whales'} onClick={()=>setActiveView('whales')} />
+                    <ViewTab icon={<CreditCard size={18}/>} label="Cards" active={activeView==='cards'} onClick={()=>setActiveView('cards')} />
+                    <ViewTab icon={<Gift size={18}/>} label="Referrals" active={activeView==='referrals'} onClick={()=>setActiveView('referrals')} />
+                    <ViewTab icon={<Settings size={18}/>} label="Settings" active={activeView==='settings'} onClick={()=>setActiveView('settings')} />
+                </div>
 
-            {/* MAIN NAVIGATION TABS */}
-            <div className="flex border-b border-gray-800 mb-6">
-                {['OVERVIEW', 'POSITIONS', 'ACTIVITY', 'DEFI'].map((tab) => (
-                    <button
-                        key={tab}
-                        onClick={() => setActiveTab(tab as any)}
-                        className={`px-4 py-2 text-sm font-bold transition-colors relative ${activeTab === tab ? 'text-white' : 'text-gray-500 hover:text-gray-300'
-                            }`}
-                    >
-                        {tab}
-                        {activeTab === tab && (
-                            <div className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-500" />
-                        )}
-                    </button>
-                ))}
-            </div>
-
-            {/* CONTENT AREA */}
-            <div className="space-y-6">
-
-                {isLoading ? (
-                    <div className="flex flex-col items-center justify-center py-20">
-                        <Loader2 className="w-10 h-10 animate-spin text-blue-500 mb-4" />
-                        <p className="text-sm text-gray-500">Syncing blockchain & market data...</p>
+                {/* Right Actions */}
+                <div className="flex items-center gap-3">
+                    <NotificationCenter />
+                    <div className="hidden md:flex">
+                        <ViewTab icon={<Settings size={18}/>} label="" active={activeView==='settings'} onClick={()=>setActiveView('settings')} />
                     </div>
-                ) : (
-                    <>
-                        {/* TAB: OVERVIEW */}
-                        {activeTab === 'OVERVIEW' && (
-                            <>
-                                <div className="h-48 w-full bg-gray-900/50 rounded-xl p-4 mb-6 border border-gray-800">
-                                    <div className="flex justify-between items-center mb-2">
-                                        <div>
-                                            <span className="text-gray-400 text-xs uppercase tracking-wider">Total Net Worth</span>
-                                            <div className="text-3xl font-bold text-white">${totalBalance}</div>
-                                        </div>
-                                        <div className="text-green-400 font-mono font-bold flex items-center">
-                                            {/* Placeholder for chart change */}
-                                            <TrendingUp className="w-4 h-4 mr-1" />
-                                            <span>Live Data</span>
-                                        </div>
-                                    </div>
-                                    <ResponsiveContainer width="100%" height="70%">
-                                        <LineChart data={MOCK_DATA}>
-                                            <Line type="monotone" dataKey="value" stroke="#10b981" strokeWidth={2} dot={false} />
-                                            <Tooltip
-                                                contentStyle={{ backgroundColor: '#111', border: 'none', borderRadius: '8px' }}
-                                                itemStyle={{ color: '#10b981' }}
-                                            />
-                                        </LineChart>
-                                    </ResponsiveContainer>
-                                </div>
+                </div>
+            </header>
 
-                                {/* ACTION BUTTONS WITH REAL ON-RAMP */}
-                                <div className="grid grid-cols-4 gap-2 mb-6">
-                                    <button className="flex flex-col items-center justify-center p-3 bg-blue-600 hover:bg-blue-500 rounded-lg transition text-white">
-                                        <ArrowDownLeft className="w-5 h-5 mb-1" />
-                                        <span className="text-xs font-bold">Receive</span>
-                                    </button>
-                                    <button className="flex flex-col items-center justify-center p-3 bg-gray-800 hover:bg-gray-700 rounded-lg transition text-white">
-                                        <ArrowUpRight className="w-5 h-5 mb-1" />
-                                        <span className="text-xs font-bold">Send</span>
-                                    </button>
-                                    <button
-                                        onClick={() => window.open(`https://global.transak.com?defaultCryptoCurrency=USDC&network=polygon&walletAddress=${address}`, '_blank')}
-                                        className="flex flex-col items-center justify-center p-3 bg-green-600 hover:bg-green-500 rounded-lg transition text-white col-span-2"
-                                    >
-                                        <CreditCard className="w-5 h-5 mb-1" />
-                                        <span className="text-xs font-bold">Buy USDC</span>
-                                    </button >
-                                </div >
+             {/* Mobile Tab Bar (Bottom) */}
+             <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40 bg-white/90 backdrop-blur-lg border border-[#1F1F1F]/5 shadow-2xl rounded-full p-2 flex gap-1">
+                 <ViewTab icon={<Wallet size={20}/>} label="" active={activeView==='dashboard'} onClick={()=>setActiveView('dashboard')} />
+                 <ViewTab icon={<PieChart size={20}/>} label="" active={activeView==='portfolio'} onClick={()=>setActiveView('portfolio')} />
+                 <ViewTab icon={<Gift size={20}/>} label="" active={activeView==='referrals'} onClick={()=>setActiveView('referrals')} />
+                 <ViewTab icon={<Settings size={20}/>} label="" active={activeView==='settings'} onClick={()=>setActiveView('settings')} />
+            </div>
 
-                                <div className="bg-gray-900 rounded-xl p-5 border border-gray-800">
-                                    <h3 className="text-gray-400 text-sm font-bold uppercase mb-4">Capital Breakdown</h3>
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <div className="text-white font-medium">Idle Cash (USDC)</div>
-                                            <div className="text-2xl font-bold text-gray-200">${usdcBalance}</div>
-                                        </div>
-                                        <div className="h-16 w-px bg-gray-800 mx-4"></div>
-                                        <div>
-                                            <div className="text-white font-medium">Active Positions</div>
-                                            <div className="text-2xl font-bold text-blue-400">${portfolioValue}</div>
-                                            <div className="text-xs text-gray-400 mt-2">Across {positions.length} Markets</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </>
-                        )}
+            <main className="max-w-4xl mx-auto p-6 space-y-8 relative z-10 min-h-[80vh]">
 
-                        {/* TAB: POSITIONS */}
-                        {
-                            activeTab === 'POSITIONS' && (
-                                <div>
-                                    <div className="flex justify-between items-center mb-4">
-                                        <h3 className="text-white font-bold">Active Trades ({positions.length})</h3>
-                                    </div>
-                                    {positions.length === 0 ? (
-                                        <div className="text-center py-10 border border-dashed border-gray-800 rounded-xl text-gray-500">
-                                            No active positions found on Polymarket.
-                                        </div>
-                                    ) : (
-                                        positions.map(pos => (
-                                            <div key={pos.id} className="bg-gray-800/50 p-4 rounded-lg mb-2 border border-gray-700 flex justify-between items-center group hover:bg-gray-800 transition">
-                                                <div>
-                                                    <div className="flex items-center gap-2 mb-1">
-                                                        <span className={`px-2 py-0.5 rounded text-xs font-bold ${pos.outcome === 'YES' ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'}`}>
-                                                            {pos.outcome}
-                                                        </span>
-                                                        <span className="text-white text-sm font-medium">{pos.marketTitle}</span>
-                                                    </div>
-                                                    <div className="text-gray-400 text-xs flex gap-3">
-                                                        <span>{pos.shares.toFixed(1)} Shares</span>
-                                                        <span className={pos.pnl >= 0 ? 'text-green-400' : 'text-red-400'}>
-                                                            {pos.pnl >= 0 ? '+' : ''}{pos.pnl.toFixed(2)} ({pos.pnlPercent.toFixed(1)}%)
-                                                        </span>
-                                                    </div>
-                                                </div>
+                {activeView === 'dashboard' && (
+                    <div className="animate-fade-in space-y-8">
+                            <HumanCard 
+                                address={displayAddress} 
+                                balance={totalBalance} 
+                                change24hUSD={change24hUSD}
+                                change24hPercent={change24hPercent}
+                                accountType={accounts.find(a => a.address.toLowerCase() === displayAddress.toLowerCase())?.type}
+                                onWatchClick={() => setShowWatchInput(true)}
+                            />
 
-                                                <div className="flex items-center gap-3">
-                                                    {pos.newsContext && (
-                                                        <div className="hidden md:flex items-center text-xs text-blue-400 bg-blue-900/20 px-2 py-1 rounded border border-blue-900/50">
-                                                            <Newspaper className="w-3 h-3 mr-1" />
-                                                            <span>Linked: {pos.newsContext}</span>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        ))
-                                    )}
-                                </div>
-                            )
-                        }
-
-                        {/* TAB: ACTIVITY (REAL) */}
-                        {
-                            activeTab === 'ACTIVITY' && (
-                                <div className="space-y-3">
-                                    {transactions.length === 0 ? <p className="text-gray-500 text-center">No recent history.</p> : transactions.map((tx, index) => (
-                                        <div key={index} className="bg-gray-900 p-4 rounded border border-gray-800 flex justify-between items-center">
-                                            <div className="flex items-start gap-3">
-                                                <div className={`p-2 rounded-full ${tx.type === 'SELL' ? 'bg-red-900/20 text-red-500' : 'bg-green-900/20 text-green-500'}`}>
-                                                    {tx.type === 'SELL' ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownLeft className="w-4 h-4" />}
-                                                </div>
-                                                <div>
-                                                    <div className="text-white font-bold text-sm">{tx.type} {tx.asset}</div>
-                                                    <div className="text-gray-500 text-xs">{tx.date}</div>
-                                                </div>
-                                            </div>
-                                            <div className="text-right">
-                                                <div className="text-white font-mono font-bold">${tx.amount}</div>
-                                                <div className="text-xs text-green-500">Confirmed</div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )
-                        }
-
-                        {/* TAB: DEFI / YIELD */}
-                        {
-                            activeTab === 'DEFI' && (
-                                <div className="text-center py-12 bg-gray-900 rounded-xl border border-gray-800 border-dashed">
-                                    <h3 className="text-gray-300 font-bold text-lg mb-2">Idle Cash Optimization</h3>
-                                    <p className="text-gray-500 text-sm max-w-xs mx-auto mb-6">
-                                        Connect to Aave V3 to earn yield on your uninvested USDC automatically.
-                                    </p>
-                                    <button className="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded font-bold transition">
-                                        Activate Smart Savings
-                                    </button>
-                                </div>
-                            )
-                        }
-                    </>
+                        {/* Wallet Actions & Tabs */}
+                        <WalletActions 
+                            positions={positions} 
+                            history={transactions} 
+                            userAddress={displayAddress} 
+                            assets={assets}
+                            perps={perps}
+                            predictions={predictions}
+                            claimables={claimables}
+                            isLoading={isLoading}
+                        />
+                    </div>
                 )}
 
-            </div >
-        </div >
+                {activeView === 'portfolio' && displayAddress && (
+                    <div className="animate-fade-in">
+                        <PortfolioDashboard walletAddress={displayAddress} chainIds={[1, 137, 8453]} initialAssets={assets} />
+                    </div>
+                )}
+
+                {activeView === 'earn' && (
+                    <div className="animate-fade-in">
+                        <StakingDashboard />
+                    </div>
+                )}
+
+                {activeView === 'activity' && displayAddress && (
+                    <div className="animate-fade-in">
+                        <TransactionHistory authUserId={displayAddress} />
+                    </div>
+                )}
+
+                {activeView === 'contacts' && displayAddress && (
+                    <div className="animate-fade-in">
+                        <AddressBook authUserId={displayAddress} />
+                    </div>
+                )}
+
+                {activeView === 'referrals' && (
+                    <div className="animate-fade-in">
+                        <ReferralDashboard />
+                    </div>
+                )}
+
+                {activeView === 'whales' && (
+                    <div className="animate-fade-in">
+                        <WhaleGroups />
+                    </div>
+                )}
+
+                {activeView === 'cards' && (
+                    <div className="animate-fade-in space-y-6">
+                        <FiatCardIssuance walletAddress={displayAddress} balance={totalBalance} />
+                        
+                        <div className="bg-[#1F1F1F] p-6 rounded-3xl text-[#EAEADF] relative overflow-hidden">
+                             {/* Abstract Background */}
+                             <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
+                             
+                             <h3 className="text-lg font-bold mb-2 relative z-10">Why store with Human DeFi?</h3>
+                             <p className="text-sm opacity-70 leading-relaxed relative z-10">
+                                Uncompromised security meets radical transparency. Unlike traditional banks, we provide verifiable, on-chain proof of reserves.  
+                                Your assets are shielded by military-grade encryption and accessible only by you—no hidden fees, no frozen accounts, just pure financial sovereignty.
+                             </p>
+                        </div>
+                    </div>
+                )}
+                
+                {activeView === 'vault' && (
+                    <div className="animate-fade-in">
+                        <SecurityVault />
+                    </div>
+                )}
+
+                 {activeView === 'nfc' && (
+                    <div className="animate-fade-in">
+                        <NFCHardware />
+                    </div>
+                )}
+
+                {activeView === 'settings' && (
+                    <div className="animate-fade-in">
+                        <SettingsPanel />
+                    </div>
+                )}
+            </main>
+
+            {/* MODALS - Outside main to avoid z-index trapping */}
+            {showWatchInput && (
+                <WatchOnlyInput 
+                    onAdd={handleAddWatchWallet} 
+                    onCancel={() => setShowWatchInput(false)} 
+                />
+            )}
+
+            {showReceive && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in" onClick={() => setShowReceive(false)}>
+                    <div className="w-full max-w-4xl bg-[#EAEADF] rounded-[40px] overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+                        <div className="p-4 flex justify-between items-center">
+                            <h2 className="text-xl font-bold ml-4">Receive Assets</h2>
+                            <button onClick={() => setShowReceive(false)} className="p-2 rounded-full hover:bg-black/5"><X size={24}/></button>
+                        </div>
+                        <ReceiveHub addresses={[
+                            { network: 'Ethereum', address: displayAddress, token: 'ETH', chainId: 1 },
+                            { network: 'Base', address: displayAddress, token: 'ETH', chainId: 8453 },
+                            { network: 'Polygon', address: displayAddress, token: 'MATIC', chainId: 137 },
+                        ]} />
+                    </div>
+                </div>
+            )}
+
+            <QRScannerModal 
+                isOpen={showScanner} 
+                onClose={() => setShowScanner(false)}
+                onScan={(data) => {
+                    console.log("Scanned:", data);
+                    alert(`Scanned: ${data}`);
+                    setShowScanner(false);
+                }}
+            />
+        </div>
     );
 }
 
+
+function ViewTab({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active: boolean, onClick: () => void }) {
+    return (
+        <button 
+           onClick={onClick}
+           className={`p-2.5 rounded-full transition-all flex items-center gap-2 ${active ? 'bg-[#1F1F1F] text-[#EAEADF] shadow-md' : 'text-[#1F1F1F]/50 hover:bg-white/80'}`}
+           title={label}
+        >
+            {icon}
+            {active && <span className="text-xs font-bold pr-1 hidden md:block">{label}</span>}
+        </button>
+    )
+}

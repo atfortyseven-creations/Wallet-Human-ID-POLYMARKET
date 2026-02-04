@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useUser } from '@clerk/nextjs';
 import { dictionary } from '@/src/lib/dictionary';
 
 // --- TYPES ---
@@ -94,40 +95,127 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         security: true
     });
 
-    // --- LOAD SETTINGS ---
-    useEffect(() => {
-        const savedSettings = localStorage.getItem('humanid_settings_v2');
-        if (savedSettings) {
-            try {
-                const parsed = JSON.parse(savedSettings);
-                if (parsed.currency) setCurrency(parsed.currency);
-                if (parsed.language) setLanguage(parsed.language);
-                if (parsed.searchEngine) setSearchEngine(parsed.searchEngine);
-                if (parsed.hideBalances !== undefined) setHideBalances(parsed.hideBalances);
-                if (parsed.privacyMode !== undefined) setPrivacyMode(parsed.privacyMode);
-                if (parsed.humanMetrics !== undefined) setHumanMetrics(parsed.humanMetrics);
-                if (parsed.testNetsEnabled !== undefined) setTestNetsEnabled(parsed.testNetsEnabled);
-                if (parsed.ipfsGateway) setIpfsGateway(parsed.ipfsGateway);
-                if (parsed.customRPC) setCustomRPC(parsed.customRPC);
-                if (parsed.stateLogsEnabled !== undefined) setStateLogsEnabled(parsed.stateLogsEnabled);
-                if (parsed.contacts) setContacts(parsed.contacts);
-                if (parsed.notifications) setNotifications(parsed.notifications);
-            } catch (e) {
-                console.error("Failed to parse settings", e);
-            }
-        }
-    }, []);
+    // --- CLERK AUTH ---
+    const { user } = useUser();
+    // derived state for dependencies
+    const userId = user?.id;
+    const userEmail = user?.primaryEmailAddress?.emailAddress;
 
-    // --- AUTO SAVE ---
+    // --- SYNC STATES ---
+    const [isSyncing, setIsSyncing] = useState(false);
+    const [syncError, setSyncError] = useState<string | null>(null);
+    const [lastSyncAt, setLastSyncAt] = useState<Date | null>(null);
+
+    // --- LOAD SETTINGS (Using Sync Service) ---
     useEffect(() => {
-        const settingsToSave = {
-            currency, language, searchEngine,
-            hideBalances, privacyMode, humanMetrics,
-            testNetsEnabled, ipfsGateway, customRPC, stateLogsEnabled,
-            contacts, notifications
+        if (!userId) return; // Don't load if no user
+
+        const loadSettings = async () => {
+            setIsSyncing(true);
+            setSyncError(null);
+
+            try {
+                // Import service dynamically to avoid SSR issues
+                const { settingsSyncService } = await import('@/lib/settings-sync');
+                
+                // Load settings from service (handles local + cloud)
+                const settings = await settingsSyncService.loadSettings();
+                
+                if (settings) {
+                    // Apply loaded settings
+                    applySettings(settings);
+                    setLastSyncAt(new Date());
+                }
+            } catch (error: any) {
+                console.error('Failed to load settings:', error);
+                setSyncError(error.message);
+                
+                // Fallback to localStorage
+                try {
+                    const local = localStorage.getItem('humanid_settings_v3');
+                    if (local) {
+                        const parsed = JSON.parse(local);
+                        applySettings(parsed);
+                    }
+                } catch (e) {
+                    console.error('Failed to load from localStorage:', e);
+                }
+            } finally {
+                setIsSyncing(false);
+            }
         };
-        localStorage.setItem('humanid_settings_v2', JSON.stringify(settingsToSave));
-    }, [currency, language, searchEngine, hideBalances, privacyMode, humanMetrics, testNetsEnabled, ipfsGateway, customRPC, stateLogsEnabled, contacts, notifications]);
+
+        loadSettings();
+    }, [userId]); // Fixed: Only re-run when user ID changes
+
+    // Helper to apply settings object
+    const applySettings = (parsed: any) => {
+        if (parsed.currency) setCurrency(parsed.currency);
+        if (parsed.language) setLanguage(parsed.language);
+        if (parsed.searchEngine) setSearchEngine(parsed.searchEngine);
+        if (parsed.hideBalances !== undefined) setHideBalances(parsed.hideBalances);
+        if (parsed.privacyMode !== undefined) setPrivacyMode(parsed.privacyMode);
+        if (parsed.strictMode !== undefined) setStrictMode(parsed.strictMode);
+        if (parsed.humanMetrics !== undefined) setHumanMetrics(parsed.humanMetrics);
+        if (parsed.testNetsEnabled !== undefined) setTestNetsEnabled(parsed.testNetsEnabled);
+        if (parsed.ipfsGateway) setIpfsGateway(parsed.ipfsGateway);
+        if (parsed.customRPC) setCustomRPC(parsed.customRPC);
+        if (parsed.stateLogsEnabled !== undefined) setStateLogsEnabled(parsed.stateLogsEnabled);
+        if (parsed.contacts) setContacts(parsed.contacts);
+        if (parsed.notifications) setNotifications(parsed.notifications);
+    };
+
+    // --- AUTO SAVE (Using Sync Service with Optimistic Updates) ---
+    useEffect(() => {
+        // Skip initial render/load to avoid overwriting cloud with defaults
+        // Logic: if not synced yet and user exists, maybe wait? 
+        // For now, we rely on the debounce.
+
+        const saveSettings = async () => {
+            const settingsToSave = {
+                currency, language, searchEngine,
+                hideBalances, privacyMode, strictMode, humanMetrics,
+                testNetsEnabled, ipfsGateway, customRPC, stateLogsEnabled,
+                contacts, notifications
+            };
+
+            // Always save to localStorage immediately (optimistic)
+            try {
+                localStorage.setItem('humanid_settings_v3', JSON.stringify(settingsToSave));
+            } catch (e) {
+                console.error('Failed to save to localStorage:', e);
+            }
+
+            // Save to cloud if logged in (with retry logic via service)
+            if (userEmail) {
+                const timeoutId = setTimeout(async () => {
+                    setIsSyncing(true);
+                    setSyncError(null);
+
+                    try {
+                        const { settingsSyncService } = await import('@/lib/settings-sync');
+                        const result = await settingsSyncService.saveSettings(settingsToSave as any);
+                        
+                        if (result.success) {
+                            setLastSyncAt(new Date());
+                            setSyncError(null);
+                        } else {
+                            setSyncError(result.error || 'Sync failed');
+                        }
+                    } catch (error: any) {
+                        console.error('Cloud save failed:', error);
+                        setSyncError(error.message);
+                    } finally {
+                        setIsSyncing(false);
+                    }
+                }, 2000);
+
+                return () => clearTimeout(timeoutId);
+            }
+        };
+
+        saveSettings();
+    }, [currency, language, searchEngine, hideBalances, privacyMode, strictMode, humanMetrics, testNetsEnabled, ipfsGateway, customRPC, stateLogsEnabled, contacts, notifications, userEmail]);
 
     // --- FUNCTIONS ---
     const toggleHideBalances = () => setHideBalances(prev => !prev);
