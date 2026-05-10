@@ -2,7 +2,7 @@ import Stripe from 'stripe';
 
 // NOTE: STRIPE_SECRET_KEY is validated at runtime when stripe is first used.
 // No module-level console.warn — it would pollute Railway [err] logs.
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_placeholder_build_only', {
   apiVersion: '2026-01-28.clover' as any,
   typescript: true,
 });
