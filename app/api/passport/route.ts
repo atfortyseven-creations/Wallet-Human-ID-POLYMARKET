@@ -100,10 +100,13 @@ Respond ONLY with a JSON object: {"valid": boolean, "reason": "Short explanation
         { status: 400 }
       );
     }
-  } catch (error) {
-    console.error('OpenAI validation error:', error);
-    // If OpenAI fails (e.g. no API key), we continue to not block production. 
-    // In strict environments, you would return 500 here.
+  } catch (error: any) {
+    if (error.status === 429 || error.code === 'insufficient_quota' || error.message?.includes('quota')) {
+      console.warn('⚠️ [Studio-AI-Auditor] OpenAI API Quota Exceeded (429). Bypassing semantic validation gracefully.');
+    } else {
+      console.error('⚠️ [Studio-AI-Auditor] OpenAI validation error:', error.message || error);
+    }
+    // Fail-open: continue execution so institutional registry doesn't block due to AI downtime
   }
 
   // 4. Create the passport

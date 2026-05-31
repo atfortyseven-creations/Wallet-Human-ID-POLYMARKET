@@ -196,7 +196,10 @@ export class PortfolioService {
 
       // Pagination Loop for exhaustive token discovery
       do {
-          const tokensData: any = await moralisService.getWalletBalances(address, chain, cursor);
+          const fetchPromise = moralisService.getWalletBalances(address, chain, cursor);
+          const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('MORALIS_TIMEOUT')), 3000));
+          const tokensData: any = await Promise.race([fetchPromise, timeoutPromise]);
+          
           if (tokensData && tokensData.result) {
               allTokens = [...allTokens, ...tokensData.result];
           }
@@ -208,7 +211,10 @@ export class PortfolioService {
 
       // Use pre-fetched data if available to save RTT
       const [nativeData, netWorthData] = await Promise.all([
-        moralisService.getNativeBalance(address, chain),
+        Promise.race([
+          moralisService.getNativeBalance(address, chain),
+          new Promise<any>((_, reject) => setTimeout(() => reject(new Error('MORALIS_TIMEOUT')), 3000))
+        ]),
         preFetchedNetWorth ? Promise.resolve(preFetchedNetWorth) : moralisService.getWalletNetWorth(address).catch(() => null)
       ]);
 
