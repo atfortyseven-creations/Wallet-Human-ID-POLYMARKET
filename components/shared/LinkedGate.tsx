@@ -172,14 +172,26 @@ export function LinkedGate({ children }: { children: React.ReactNode }) {
   //  Body scroll lockdown when gate is active 
   useEffect(() => {
     if (!isMounted) return;
-    const shouldLock = !isLinked && !isWalletConnected;
+    let justDisconnected = false;
+    try { justDisconnected = sessionStorage.getItem('__disconnected__') === '1'; } catch {}
+    
+    const isPublicPath = pathname === '/' ||
+                         pathname.startsWith('/connect') ||
+                         pathname.startsWith('/login') ||
+                         pathname.startsWith('/news') ||
+                         pathname.startsWith('/chat') ||
+                         pathname.startsWith('/portfolio') ||
+                         pathname.startsWith('/sign-up') ||
+                         (pathname.startsWith('/forum') && !pathname.startsWith('/forum/settings'));
+
+    const shouldLock = !isLinked && !isWalletConnected && !justDisconnected && !isPublicPath;
     document.body.style.overflow = shouldLock ? 'hidden' : '';
     document.documentElement.style.overflow = shouldLock ? 'hidden' : '';
     return () => {
       document.body.style.overflow = '';
       document.documentElement.style.overflow = '';
     };
-  }, [isLinked, isWalletConnected, isMounted]);
+  }, [isLinked, isWalletConnected, isMounted, pathname]);
 
   //  Redirect unauthenticated users to /connect 
   // SECURITY PROTOCOL: A dual-layer check is performed before any redirect fires.
@@ -206,12 +218,17 @@ export function LinkedGate({ children }: { children: React.ReactNode }) {
     const isBot = typeof window !== 'undefined' && /bot|google|grok|crawler|spider|robot|crawling|bing/i.test(navigator.userAgent);
 
     const checkTimer = setTimeout(() => {
-      // [FIX] If the user just disconnected, NEVER redirect — let nuclearDisconnect
-      // handle the redirect itself (to '/'). Prevents a race where LinkedGate fires
-      // a redirect to /connect while nuclearDisconnect is redirecting to /.
+      // [FIX] If the user just disconnected, let nuclearDisconnect handle the redirect to '/'.
+      // Since checkTimer is 1500ms, if they are STILL on an internal app page after 1.5s,
+      // nuclearDisconnect failed or they manually navigated back. Redirect to /connect.
       const justDisconnected = typeof window !== 'undefined' &&
         sessionStorage.getItem('__disconnected__') === '1';
-      if (justDisconnected) return;
+      if (justDisconnected) {
+        if (pathname !== '/' && !pathname.startsWith('/connect')) {
+          router.replace('/connect');
+        }
+        return;
+      }
 
       // Layer B: direct cookie check — catches the race condition window
       // where isLinked is still false even though the session is established.

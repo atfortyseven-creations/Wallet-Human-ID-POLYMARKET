@@ -20,7 +20,7 @@ export default function TopicPage() {
   const [deleteConfirmTarget, setDeleteConfirmTarget] = useState<string | null>(null);
   
   const { signMessageAsync } = useSignMessage();
-  const { address, isSystemHandshake } = useSystemAccount();
+  const { address, isSystemHandshake, isLocalSystemWallet } = useSystemAccount();
   const sessionAddress = address?.toLowerCase() || null;
 
   // Draft persistence key is scoped per topic so different threads have independent drafts
@@ -67,7 +67,10 @@ export default function TopicPage() {
       let finalContent = replyContent;
       let signature = 'SESSION:AUTHENTICATED';
       
-      const { isLocalSystemWallet, privateKey: storedPrivateKey } = useWalletStore.getState();
+      // isLocalSystemWallet comes from useSystemAccount (the hook that correctly
+      // computes it). Reading from wallet-store.getState() would return undefined
+      // because that field is not part of WalletState.
+      const { privateKey: storedPrivateKey } = useWalletStore.getState();
       
       if (storedPrivateKey) {
         try {
@@ -80,14 +83,16 @@ export default function TopicPage() {
           return;
         }
       } else if (!isLocalSystemWallet) {
+        // External wallet (MetaMask / WalletConnect) — use wagmi.
         try {
           signature = await signMessageAsync({ message: finalContent });
         } catch (err) {
-          setReplyError('SIGNATURE REQUIRED');
+          setReplyError('SIGNATURE REQUIRED. PLEASE APPROVE IN YOUR WALLET.');
           setSubmitting(false);
           return;
         }
       }
+      // else: isLocalSystemWallet=true (session-restored) — SESSION:AUTHENTICATED already set.
       finalContent = `${replyContent}\n\n[SIGNATURE:${signature}]`;
 
       let csrfToken = '';

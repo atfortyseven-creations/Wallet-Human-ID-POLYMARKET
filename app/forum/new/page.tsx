@@ -35,7 +35,7 @@ function NewTopicContent() {
   const [draftSaved, setDraftSaved] = useState(false);
   const [documents, setDocuments]   = useState<{ title: string, url: string }[]>([]);
   const [uploadingFile, setUploadingFile] = useState(false);
-  const { address, isConnected, isSystemHandshake } = useSystemAccount();
+  const { address, isConnected, isSystemHandshake, isLocalSystemWallet } = useSystemAccount();
   const { signMessageAsync } = useSignMessage();
 
   //  Restore draft on mount 
@@ -98,8 +98,10 @@ function NewTopicContent() {
       });
 
       // ── Signature routing ──────────────────────────────────────────────────
-      // Read store state outside the hook call (legal in async functions).
-      const { isLocalSystemWallet, privateKey: storedPrivateKey } = useWalletStore.getState();
+      // isLocalSystemWallet comes from useSystemAccount (the hook that correctly
+      // computes it). Reading from wallet-store.getState() would return undefined
+      // because that field is not part of WalletState.
+      const { privateKey: storedPrivateKey } = useWalletStore.getState();
       const messageToSign = `${title}\n${finalContent}`;
 
       if (storedPrivateKey) {
@@ -113,8 +115,12 @@ function NewTopicContent() {
           setSubmitting(false);
           return;
         }
-      } else if (!isLocalSystemWallet) {
-        // Case 2: External wallet (MetaMask / WalletConnect) — use wagmi.
+      } else if (isLocalSystemWallet) {
+        // Case 2: Session-restored Humanity Ledger user (address known, no key in memory).
+        // Their SIWE cookie / system_session_v2 is valid — backend accepts SESSION:AUTHENTICATED.
+        finalSignature = 'SESSION:AUTHENTICATED';
+      } else {
+        // Case 3: External wallet (MetaMask / WalletConnect) — use wagmi signMessageAsync.
         try {
           finalSignature = await signMessageAsync({ message: messageToSign });
         } catch (err) {
@@ -122,10 +128,6 @@ function NewTopicContent() {
           setSubmitting(false);
           return;
         }
-      } else {
-        // Case 3: Session-restored user (address known, no private key in memory).
-        // Their SIWE cookie is valid — backend will accept SESSION:AUTHENTICATED.
-        finalSignature = 'SESSION:AUTHENTICATED';
       }
       // ──────────────────────────────────────────────────────────────────────
       
