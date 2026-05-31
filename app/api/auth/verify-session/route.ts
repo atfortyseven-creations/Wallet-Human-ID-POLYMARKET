@@ -19,9 +19,23 @@ export async function GET(request: NextRequest) {
         // Priority 1: whale_session or human_session JWT
         const whaleSession  = request.cookies.get('whale_session')?.value;
         const humanSession  = request.cookies.get('human_session')?.value;
+        const handshake = request.cookies.get('system_handshake')?.value;
         const primaryJwt    = whaleSession || humanSession;
 
         if (primaryJwt) {
+            // [ZOMBIE SESSION HEALER]
+            // If the HTTP-only JWT exists but the client-side system_handshake is missing,
+            // this is a "zombie" session (caused by the old logout bug where localStorage/handshake
+            // were cleared but httpOnly cookies were left behind).
+            // We MUST invalidate the session to break the Connect -> Portfolio -> Connect redirect loop.
+            if (!handshake) {
+                console.warn('[verify-session] Zombie session detected (missing handshake). Purging cookies.');
+                const res = NextResponse.json({ authenticated: false }, { status: 401 });
+                res.cookies.set('whale_session', '', { maxAge: 0, path: '/' });
+                res.cookies.set('human_session', '', { maxAge: 0, path: '/' });
+                return res;
+            }
+
             try {
                 const { verifyJWT } = await import('@/lib/jwt');
                 const payload = await verifyJWT(primaryJwt);
@@ -39,7 +53,6 @@ export async function GET(request: NextRequest) {
 
         // Priority 2: system_handshake cookie (raw Ethereum address)
         // Set by QR hydration and system-verify. JS-readable (httpOnly: false).
-        const handshake = request.cookies.get('system_handshake')?.value;
         if (handshake && /^0x[a-fA-F0-9]{40}$/.test(handshake)) {
             return NextResponse.json({
                 authenticated: true,

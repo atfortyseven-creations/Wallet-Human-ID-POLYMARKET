@@ -24,9 +24,11 @@ export function useSystemSignOut() {
             try { useUIStore.getState().setLinked(false); } catch {}
 
             // STEP 0b — Set __disconnected__ guard IMMEDIATELY (sync, before anything async).
-            sessionStorage.setItem('__disconnected__', '1');
-            sessionStorage.removeItem('portfolio_unlocked');
-            sessionStorage.removeItem('system_wallet_addr');
+            try {
+                sessionStorage.setItem('__disconnected__', '1');
+                sessionStorage.removeItem('portfolio_unlocked');
+                sessionStorage.removeItem('system_wallet_addr');
+            } catch (e) {}
             
             // STEP 1 — Nuke ALL cookies synchronously.
             try {
@@ -112,6 +114,11 @@ export function useSystemSignOut() {
                             window.indexedDB.deleteDatabase(db.name);
                         }
                     });
+                } else if (window.indexedDB) {
+                    // Safari/iOS fallback
+                    ['walletconnect-v2', 'w3m-core-storage', 'w3m-storage', 'wagmi-cache'].forEach(name => {
+                        try { window.indexedDB.deleteDatabase(name); } catch(e) {}
+                    });
                 }
             } catch (e) {
                 console.warn('[System:Logout] IndexedDB purge failed:', e);
@@ -140,6 +147,21 @@ export function useSystemSignOut() {
             try {
                 signOut({ redirect: false }).catch(() => {});
             } catch (e) {}
+
+            // STEP 6b — Call server-side /api/auth/logout to clear httpOnly cookies.
+            // CRITICAL: whale_session and human_session are httpOnly=true, meaning JavaScript
+            // CANNOT clear them via document.cookie. Without this call, the server-side cookies
+            // remain valid for 7 days and the middleware re-authenticates the user on every
+            // page load — making it impossible to log out from Humanity Ledger or WalletConnect.
+            try {
+                await fetch('/api/auth/logout', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+            } catch (e) {
+                console.warn('[System:Logout] Server logout call failed (non-fatal):', e);
+            }
 
             // STEP 7 — Lock local wallet vault.
             try {

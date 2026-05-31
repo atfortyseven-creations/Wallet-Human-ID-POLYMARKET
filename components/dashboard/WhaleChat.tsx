@@ -855,8 +855,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             if (m.conversationId !== activeId) return false;
             if (!m.id.startsWith('optimistic-')) return false;
             // If a confirmed message exists with identical content, drop optimistic
-            const alreadyConfirmed = mappedMsgs.some((r: any) => r.content === m.content) ||
-                                     pendingServer.some((p: any) => p.content === m.content);
+            const alreadyConfirmed = mappedMsgs.some((r: any) => r.content === m.content);
+            // DO NOT drop optimistic messages if they exist in pendingServer, because pendingServer items might not have their ID formatted correctly yet or might just be our own unconfirmed messages
+            const inPendingServer = pendingServer.some((p: any) => p.content === m.content);
+            if (inPendingServer) return false; // Hide optimistic if it's already in pendingServer to prevent duplicates
             return !alreadyConfirmed;
           });
           

@@ -5,118 +5,183 @@
  * No hardcodear URLs aquí. Para añadir endpoints, editar .env + registry.
  */
 
-import { getGbAllRpc, getActiveCount, getCoveredChains, markCuExhausted } from './getblock-registry';
+import { getGbAllRpc, getActiveCount, getCoveredChains, markCuExhausted, GbChain } from './getblock-registry';
 
 //  FALLBACK PÚBLICOS DE EMERGENCIA 
-const PUBLIC_ETH_FALLBACKS = [
-  'https://eth.llamarpc.com',
-  'https://cloudflare-eth.com',
-  'https://ethereum-rpc.publicnode.com',
-  'https://eth.drpc.org',
-  'https://1rpc.io/eth',
-  'https://ethereum-rpc.publicnode.com',
-];
+const PUBLIC_FALLBACKS: Record<string, string[]> = {
+  eth: [
+    'https://eth.llamarpc.com',
+    'https://cloudflare-eth.com',
+    'https://ethereum-rpc.publicnode.com',
+    'https://eth.drpc.org',
+  ],
+  polygon: [
+    'https://polygon.llamarpc.com',
+    'https://polygon-rpc.com',
+    'https://rpc-mainnet.maticvigil.com'
+  ],
+  bsc: [
+    'https://binance.llamarpc.com',
+    'https://bsc-dataseed.binance.org',
+  ],
+  arb: [
+    'https://arbitrum.llamarpc.com',
+    'https://arb1.arbitrum.io/rpc',
+  ],
+  base: [
+    'https://base.llamarpc.com',
+    'https://mainnet.base.org',
+  ],
+  op: [
+    'https://optimism.llamarpc.com',
+    'https://mainnet.optimism.io',
+  ]
+};
 
-const PUBLIC_ETH_FALLBACK = PUBLIC_ETH_FALLBACKS[0];
+// Cooldown de 24 horas (86400000 ms) para evitar baneos si se agota la cuota diaria (540,000 requests)
+const EXHAUSTION_COOLDOWN_MS = 24 * 60 * 60 * 1000;
 
-//  Estado de salud por endpoint 
-interface EndpointHealth {
-  url: string;
-  exhausted: boolean;
-  exhaustedAt?: number;
-  errorCount: number;
-}
+class RpcRotator {
+  private rrIndex = new Map<string, number>();
+  private healthMap = new Map<string, { exhausted: boolean; exhaustedAt?: number; errorCount: number }>();
 
-// Cooldown de 10 min para 402/429
-const EXHAUSTION_COOLDOWN_MS = 10 * 60 * 1000;
-
-// Mapa de salud por URL (singleton en memoria del proceso)
-const healthMap = new Map<string, EndpointHealth>();
-
-function getOrCreateHealth(url: string): EndpointHealth {
-  if (!healthMap.has(url)) {
-    healthMap.set(url, { url, exhausted: false, errorCount: 0 });
-  }
-  return healthMap.get(url)!;
-}
-
-function getActiveUrls(urls: string[]): string[] {
-  const now = Date.now();
-  return urls.filter(url => {
-    const h = getOrCreateHealth(url);
-    if (h.exhausted && h.exhaustedAt && now - h.exhaustedAt > EXHAUSTION_COOLDOWN_MS) {
-      h.exhausted = false;
-      h.errorCount = 0;
+  private getOrCreateHealth(url: string) {
+    if (!this.healthMap.has(url)) {
+      this.healthMap.set(url, { exhausted: false, errorCount: 0 });
     }
-    return !h.exhausted;
-  });
-}
+    return this.healthMap.get(url)!;
+  }
 
-function markExhausted(url: string, reason: string) {
-  const h = getOrCreateHealth(url);
-  h.exhausted = true;
-  h.exhaustedAt = Date.now();
-  h.errorCount++;
-  console.warn(`[GetBlock-Engine]  BLACKLISTED (${reason}): ${url.slice(0, 48)}...`);
-}
-
-//  JSON-RPC core con failover automático desde el registry 
-async function rpcWithFailover(method: string, params: unknown[], id = 1): Promise<string> {
-  // ETAPA 1: Intentar endpoints GetBlock activos del registry
-  const registryUrls = getGbAllRpc('eth');
-  const activeUrls = getActiveUrls(registryUrls);
-
-  for (const url of activeUrls) {
-    try {
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jsonrpc: '2.0', method, params, id }),
-        signal: AbortSignal.timeout(8000),
-      });
-
-      if (res.status === 402 || res.status === 429 || res.status === 401) {
-        markCuExhausted(url);
-        markExhausted(url, `HTTP_${res.status}`);
-        continue;
+  private getActiveUrls(urls: string[]): string[] {
+    const now = Date.now();
+    return urls.filter(url => {
+      const h = this.getOrCreateHealth(url);
+      if (h.exhausted && h.exhaustedAt && now - h.exhaustedAt > EXHAUSTION_COOLDOWN_MS) {
+        h.exhausted = false;
+        h.errorCount = 0;
       }
+      return !h.exhausted;
+    });
+  }
 
-      if (!res.ok) continue;
+  private markExhausted(url: string, reason: string) {
+    const h = this.getOrCreateHealth(url);
+    h.exhausted = true;
+    h.exhaustedAt = Date.now();
+    h.errorCount++;
+    markCuExhausted(url);
+    console.warn(`[GetBlock-Engine] BLACKLISTED (${reason}): ${url.slice(0, 48)}...`);
+  }
 
-      const json = await res.json() as { result?: string; error?: any };
-      if (json.error) {
-        const msg = JSON.stringify(json.error);
-        if (msg.includes('quota') || msg.includes('limit') || msg.includes('unauthorized') || msg.includes('exceeded')) {
-          markCuExhausted(url);
-          markExhausted(url, 'RPC_LIMIT');
+  public getNext(chain: GbChain): string | null {
+    const registryUrls = getGbAllRpc(chain);
+    const activeUrls = this.getActiveUrls(registryUrls);
+    
+    if (activeUrls.length === 0) return null;
+    
+    const currentIndex = this.rrIndex.get(chain) || 0;
+    const nextIndex = (currentIndex + 1) % activeUrls.length;
+    this.rrIndex.set(chain, nextIndex);
+    
+    return activeUrls[nextIndex];
+  }
+
+  public async call<T>(chain: GbChain, method: string, params: unknown[], timeoutMs = 8000): Promise<T> {
+    const registryUrls = getGbAllRpc(chain);
+    const activeUrls = this.getActiveUrls(registryUrls);
+
+    // Etapa 1: Endpoints de GetBlock
+    for (let i = 0; i < activeUrls.length; i++) {
+      const url = this.getNext(chain);
+      if (!url) break;
+
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jsonrpc: '2.0', method, params, id: Date.now() }),
+          signal: AbortSignal.timeout(timeoutMs),
+        });
+
+        if (res.status === 402 || res.status === 429 || res.status === 401) {
+          this.markExhausted(url, `HTTP_${res.status}`);
+          await new Promise(r => setTimeout(r, Math.random() * 40 + 10)); // Jitter
           continue;
         }
-        throw new Error(msg);
+
+        if (!res.ok) {
+          await new Promise(r => setTimeout(r, Math.random() * 40 + 10)); // Jitter
+          continue;
+        }
+
+        const json = await res.json() as { result?: T; error?: any };
+        if (json.error) {
+          const msg = JSON.stringify(json.error);
+          if (msg.includes('quota') || msg.includes('limit') || msg.includes('unauthorized') || msg.includes('exceeded')) {
+            this.markExhausted(url, 'RPC_LIMIT');
+            await new Promise(r => setTimeout(r, Math.random() * 40 + 10)); // Jitter
+            continue;
+          }
+          throw new Error(msg);
+        }
+
+        return json.result as T;
+      } catch (err: any) {
+        if (err.name === 'TimeoutError') {
+          this.markExhausted(url, 'TIMEOUT');
+        }
+        await new Promise(r => setTimeout(r, Math.random() * 40 + 10)); // Jitter
+        continue;
       }
-
-      return json.result as string;
-    } catch {
-      continue;
     }
+
+    // Etapa 2: Fallbacks públicos
+    const fallbacks = PUBLIC_FALLBACKS[chain] || PUBLIC_FALLBACKS['eth'];
+    for (const fallbackUrl of fallbacks) {
+      try {
+        const r = await fetch(fallbackUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jsonrpc: '2.0', method, params, id: Date.now() }),
+          signal: AbortSignal.timeout(timeoutMs),
+        });
+        if (!r.ok) continue;
+        const j = await r.json() as { result?: T; error?: any };
+        if (j.error || j.result === undefined) continue;
+        return j.result;
+      } catch { continue; }
+    }
+
+    throw new Error(`All RPC endpoints exhausted for chain ${chain}`);
   }
 
-  // ETAPA 2: GetBlock vacío o agotado  iterar fallbacks públicos en orden
-  for (const fallbackUrl of PUBLIC_ETH_FALLBACKS) {
-    try {
-      const r = await fetch(fallbackUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jsonrpc: '2.0', method, params, id }),
-        signal: AbortSignal.timeout(8000),
-      });
-      if (!r.ok) continue;
-      const j = await r.json() as { result?: string; error?: any };
-      if (j.error || !j.result) continue;
-      return j.result as string;
-    } catch { continue; }
+  public getEndpointStatus() {
+    return Array.from(this.healthMap.values()).map(h => ({
+      url: h.url.slice(0, 55) + '...',
+      exhausted: h.exhausted,
+      errorCount: h.errorCount,
+      exhaustedAt: h.exhaustedAt ? new Date(h.exhaustedAt).toISOString() : null,
+    }));
   }
+}
 
-  return '0x0'; // Silencio absoluto
+export const rpcRotator = new RpcRotator();
+
+// Compatibilidad hacia atrás
+async function rpcWithFailover(method: string, params: unknown[], id = 1): Promise<string> {
+  try {
+    return await rpcRotator.call<string>('eth', method, params);
+  } catch {
+    return '0x0';
+  }
+}
+
+export async function chainRpc(chain: GbChain, method: string, params: unknown[]): Promise<string> {
+  try {
+    return await rpcRotator.call<string>(chain, method, params);
+  } catch {
+    return '0x0';
+  }
 }
 
 //  Pad address to 32-byte ABI encoding 
@@ -188,7 +253,7 @@ export async function getUserPortfolio(walletAddress: string): Promise<{
     ),
   ]);
 
-  const ethBalance = parseInt(ethHex, 16) / 1e18;
+  const ethBalance = parseInt(ethHex || '0x0', 16) / 1e18;
 
   const tokens: PortfolioToken[] = activeTokens.map((t, i) => {
     const raw = erc20Results[i] || '0x0';
@@ -241,9 +306,7 @@ export async function getPoolPrices(): Promise<PoolPrice[]> {
     const p = TOP_POOLS_V3[i];
     const raw = results[i];
 
-    // Validate: must be a hex string of at least 64 chars (32 bytes for sqrtPriceX96)
     if (!raw || raw === '0x' || raw === '0x0' || raw.length < 66) {
-      // slot0 empty  RPC degraded, CoinGecko fallback will handle it below
       prices.push({ ...p, sqrtPriceX96: '0', tick: 0, price: 0 });
       continue;
     }
@@ -266,7 +329,6 @@ export async function getPoolPrices(): Promise<PoolPrice[]> {
     }
   }
 
-  // If all prices failed (all-zero), try CoinGecko as fallback
   const hasValidPrice = prices.some(p => p.price > 0);
   if (!hasValidPrice) {
     try {
@@ -276,7 +338,6 @@ export async function getPoolPrices(): Promise<PoolPrice[]> {
       );
       if (cgRes.ok) {
         const cg = await cgRes.json();
-        // Map CoinGecko data to pool prices for display
         return prices.map(p => {
           if (p.symbol === 'ETH/USDC' || p.symbol === 'ETH/USDT') {
             const ethUsd = cg?.ethereum?.usd ?? 0;
@@ -300,23 +361,16 @@ export async function getPoolPrices(): Promise<PoolPrice[]> {
           return p;
         });
       }
-    } catch { /* silencio  CoinGecko también falló */ }
+    } catch { /* silencio */ }
   }
 
   return prices;
 }
 
-/** Exponer estado de salud de endpoints para debug / monitoring */
 export function getEndpointStatus() {
-  return Array.from(healthMap.values()).map(h => ({
-    url: h.url.slice(0, 55) + '...',
-    exhausted: h.exhausted,
-    errorCount: h.errorCount,
-    exhaustedAt: h.exhaustedAt ? new Date(h.exhaustedAt).toISOString() : null,
-  }));
+  return rpcRotator.getEndpointStatus();
 }
 
-/** Resumen del registry para logging de startup */
 export function getRegistrySummary() {
   return {
     activeEndpoints: getActiveCount(),

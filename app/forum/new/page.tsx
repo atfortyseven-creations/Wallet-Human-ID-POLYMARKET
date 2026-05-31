@@ -101,7 +101,7 @@ function NewTopicContent() {
       // isLocalSystemWallet comes from useSystemAccount (the hook that correctly
       // computes it). Reading from wallet-store.getState() would return undefined
       // because that field is not part of WalletState.
-      const { privateKey: storedPrivateKey } = useWalletStore.getState();
+      const { privateKey: storedPrivateKey, address: actualWalletAddress } = useWalletStore.getState();
       const messageToSign = `${title}\n${finalContent}`;
 
       if (storedPrivateKey) {
@@ -115,7 +115,7 @@ function NewTopicContent() {
           setSubmitting(false);
           return;
         }
-      } else if (isLocalSystemWallet) {
+      } else if (isLocalSystemWallet || (actualWalletAddress && address && actualWalletAddress.toLowerCase() === address.toLowerCase() && !storedPrivateKey && isSystemHandshake)) {
         // Case 2: Session-restored Humanity Ledger user (address known, no key in memory).
         // Their SIWE cookie / system_session_v2 is valid — backend accepts SESSION:AUTHENTICATED.
         finalSignature = 'SESSION:AUTHENTICATED';

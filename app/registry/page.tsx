@@ -556,7 +556,8 @@ export default function RegistryPage() {
       setWallets(finalWallets);
       setBlockRoots(roots.sort((a, b) => b.blockNumber - a.blockNumber));
       
-      let syncedTotal = finalWallets.length + 11530;
+      // Zero-Mock Mandate: totalWallets = only real on-chain + DB users. No padding.
+      let syncedTotal = finalWallets.length;
       try {
         const resMap = await fetch("/api/network/wallet-connections");
         if (resMap.ok) {
@@ -571,7 +572,7 @@ export default function RegistryPage() {
         totalWallets: syncedTotal,
         totalChains: chains.length,
         latestBlock: Math.max(...roots.map((r) => r.blockNumber), 0),
-        totalTxs: totalTxs + 751350, // 751.35k historic requests from CF
+        totalTxs: totalTxs, // Real tx count from on-chain scan only. Zero-Mock Mandate.
         senders,
         receivers,
       });

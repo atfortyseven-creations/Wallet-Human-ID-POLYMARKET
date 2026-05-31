@@ -769,6 +769,7 @@ export function MobileLanding() {
       setIsLinked(true);
       setConnecting(null);
       setShowFallbackBtn(false);
+      try { sessionStorage.removeItem('__disconnected__'); } catch {}
       try { sessionStorage.removeItem('system_show_reconnect'); } catch {}
       try { localStorage.removeItem('system_pending_wakeup'); } catch {}
       setShowManualReconnectRaw(false);

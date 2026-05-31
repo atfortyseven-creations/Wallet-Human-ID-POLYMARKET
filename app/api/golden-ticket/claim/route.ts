@@ -375,26 +375,8 @@ export async function GET(req: NextRequest) {
             take: 30,
         });
 
-        // The user explicitly requested to restore the missing signature and funds transaction from yesterday.
-        // We inject it here so it never appears "in blank" again.
-        if (!feedRaw || feedRaw.length === 0) {
-            feedRaw = [{
-                userAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
-                claimedAt: "2026-05-29T21:00:00.000Z",
-                signatureData: JSON.stringify({
-                    signature: "0xMockedSignatureDataFromYesterday",
-                    timestamp: "2026-05-29T21:00:00.000Z",
-                    txHash: "0x5c504ed432cb51138bcf09aa5e8a410dd4a1e204ef84bfed1be16dfba1b22060",
-                    cryptoSignature: "0xSignatureForFundReceipt",
-                    targetAddress: "0x78831C25c86eA2a78A6127fC2Ccb95E612D87b4a"
-                }),
-                serialCode: 'WGT-GENESIS-0001',
-                tier: 'GENESIS',
-                badgeColor: 'GOLD',
-                networkLaunchEligible: true,
-                twitterHandle: 'WhaleInvestor'
-            }];
-        }
+        // Zero-Mock Mandate: if DB feed is empty, return empty array — no hardcoded fallback data.
+
 
         if (!address) {
             return NextResponse.json({

@@ -12,7 +12,8 @@ export async function POST(request: NextRequest) {
   };
 
   //  Clear all system session cookies 
-  response.cookies.set("human_session", "", cookieBase);
+  response.cookies.set("whale_session", "", cookieBase);      // httpOnly — MUST be cleared server-side
+  response.cookies.set("human_session", "", cookieBase);      // httpOnly — MUST be cleared server-side
   response.cookies.set("system_handshake", "", { ...cookieBase, httpOnly: false });
   response.cookies.set("wallet-auth", "", { ...cookieBase, httpOnly: false });
 
