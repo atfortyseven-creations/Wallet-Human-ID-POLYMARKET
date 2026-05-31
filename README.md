@@ -1,16 +1,5 @@
-# Whale Network & Humanity Ledger
 
-### A Zero-Knowledge Institutional Analytics & Universal Identity Ecosystem
-
-**Whale Network** represents the most advanced, enterprise-grade, non-custodial portfolio management and zero-knowledge intelligence ecosystem natively architected on the **Aztec Network**. At its core lies the **Humanity Ledger**, an impregnable identity and state-management protocol. 
-
-To draw a direct architectural parallel for the Aztec Network team: **Humanity Ledger is to Whale Network what Obsidion and ZKPassport are to the broader ZK ecosystem.** It is a standalone, highly acquirable, and integratable zero-trust identity and cryptographic handshake ledger designed for absolute privacy and seamless omni-device execution.
-
-**CEO & Repository Owner:** Stefan Antonio Cirisanu
-
----
-
-## 🛡️ Executive Security & Architecture Overview
+## Architecture Overview
 
 Our infrastructure is built strictly on-chain, utilizing deterministic cryptographic verification and decentralized key custody to achieve a state of absolute integration. Every module detailed below operates in a live production environment, strictly hardened to ensure maximum concurrency, omni-device state synchronization, and quantum-level execution integrity.
 
@@ -18,7 +7,7 @@ This repository serves as our official technical manifestation and acquisition/g
 
 ---
 
-## 🧠 Humanity Ledger: The Ultimate ZK Identity Protocol
+## Humanity Ledger
 
 Humanity Ledger represents our proprietary Zero-Trust Authentication Bridge. It is designed to unify traditional Web3 wallet infrastructure with cutting-edge cryptographic session handshakes, providing an absolutely flawless user experience across Desktop, iOS, and Android platforms.
 
@@ -28,7 +17,7 @@ Humanity Ledger represents our proprietary Zero-Trust Authentication Bridge. It 
 
 ---
 
-## 🔐 Aztec Network Privacy Architecture
+## Aztec Network Privacy Architecture
 
 Our integration with Aztec Network is deeply embedded and production-ready. The system leverages the private execution environment to process confidential logic directly on the user's edge device, emitting only zero-knowledge proofs to the network.
 
@@ -39,7 +28,7 @@ Our integration with Aztec Network is deeply embedded and production-ready. The 
 
 ---
 
-## ⚡ Global Interoperability & Analytics Engine
+## Global Interoperability
 
 *   **Real-Time Institutional Scanning:** Evaluates raw transaction logs to detect massive institutional capital flows without relying on centralized or delayed indexing registries.
 *   **Encrypted Client-to-Client Messaging (Whale Chat):** Decentralized communication protocols orchestrating end-to-end encrypted messaging. The server architecture operates strictly as a blind relay; it can never decrypt or access plaintext payloads.
@@ -47,7 +36,7 @@ Our integration with Aztec Network is deeply embedded and production-ready. The 
 
 ---
 
-## 🛠️ System Architecture Layers
+## System Architecture Layers
 
 1.  **Presentation Layer:** Impeccable institutional aesthetic, featuring exact iOS-app emulations for mobile zones and hyper-optimized React Server Components (Next.js 15).
 2.  **Authentication Layer (Humanity Ledger):** Deterministic core, asymmetric QR handshake synchronization, local encrypted caching, and multi-account derivation.
@@ -57,7 +46,7 @@ Our integration with Aztec Network is deeply embedded and production-ready. The 
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We adhere to the strictest cybersecurity and code-hygiene standards. All contributions must pass comprehensive static analysis, boundary checks, and cryptographic logic audits.
 
@@ -68,7 +57,7 @@ We adhere to the strictest cybersecurity and code-hygiene standards. All contrib
 
 ---
 
-## 🚨 Security & Vulnerability Disclosure
+## Security & Vulnerability Disclosure
 
 Security is the foundational pillar of the Whale Network and Humanity Ledger. 
 
@@ -78,7 +67,7 @@ Security is the foundational pillar of the Whale Network and Humanity Ledger.
 
 ---
 
-## 📄 License
+## License
 
 **MIT License**
 
@@ -91,4 +80,4 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---
-*Status: Deployed in Production. Build Integrity: Verified.*
+*Status: Deployed, Build Integrity: Verified.*
