@@ -95,7 +95,7 @@ function NewTopicContent() {
         }
       });
 
-      let finalSignature = 'SESSION:AUTHENTICATED';
+      finalSignature = 'SESSION:AUTHENTICATED';
       
       const { isLocalSystemWallet } = useWalletStore.getState();
       if (!isLocalSystemWallet) {
