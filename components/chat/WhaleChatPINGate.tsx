@@ -392,16 +392,34 @@ export default function WhaleChatPINGate({ onEnter }: Props) {
   const [isLoading, setIsLoading] = useState(true);
   const [showQR, setShowQR] = useState(false);
 
-  // On mount / address change: Bypass PIN Gate entirely based on institutional mandate
+  // On mount / address change: check PIN state and route to correct phase
   useEffect(() => {
     if (!address) return;
 
     setPin('');
     setPinFirst('');
-    setIsLoading(false);
+    setAttempts(0);
 
-    // Bypass PIN gate entirely for maximum perfection
-    onEnter();
+    // [FIX] Check if session is already unlocked (30-day window)
+    // If yes → enter immediately without asking for PIN again
+    if (isSessionUnlocked(address)) {
+      setIsLoading(false);
+      onEnter();
+      return;
+    }
+
+    // Check if a PIN already exists (async, checks all 5 storage layers)
+    setIsLoading(true);
+    loadPINHash(address).then((hash) => {
+      setIsLoading(false);
+      if (hash) {
+        // PIN exists → ask user to enter it
+        setPhase('enter-pin');
+      } else {
+        // No PIN yet → start with confirm screen before creating one
+        setPhase('confirm');
+      }
+    });
   }, [address, onEnter]);
 
   //  Handle keypad 
@@ -450,7 +468,7 @@ export default function WhaleChatPINGate({ onEnter }: Props) {
           const next = attempts + 1;
           setAttempts(next);
           if (next >= 5) {
-            toast.error('Too many incorrect attempts. Access locked  create a new PIN.');
+            toast.error('Too many incorrect attempts. Access locked — create a new PIN.');
             clearSession(address!);
             await deletePIN(address!);
             await wipeXMTPDatabases();
@@ -459,6 +477,11 @@ export default function WhaleChatPINGate({ onEnter }: Props) {
             toast.error(`Incorrect PIN (${5 - next} attempt${5 - next !== 1 ? 's' : ''} left)`);
           }
         }
+      } else {
+        // [FIX] Safety reset: if somehow 6 digits are entered in an unexpected phase,
+        // clear the pin so the UI never freezes. This was the root cause of the
+        // "stuck on last digit" bug when phase === 'confirm'.
+        setPin('');
       }
     }, 120);
     return () => clearTimeout(timer);

@@ -4,6 +4,7 @@ import { useCallback } from 'react';
 import { useDisconnect } from 'wagmi';
 import { signOut } from 'next-auth/react';
 import { useWalletStore } from '@/lib/store/wallet-store';
+import { useUIStore } from '@/lib/store/ui-store';
 
 /**
  * [Enterprise SYSTEM LOGOUT]
@@ -17,7 +18,12 @@ export function useSystemSignOut() {
         console.log('%c[System] Initiating System Logout...', 'color:#FF3B30;font-weight:bold');
 
         try {
-            // STEP 0 — Set __disconnected__ guard IMMEDIATELY (sync, before anything async).
+            // STEP 0 — IMMEDIATELY reset isLinked in-memory store (sync).
+            // This MUST happen before any async work so LinkedGate cannot re-link
+            // during the WalletConnect/wagmi disconnect window.
+            try { useUIStore.getState().setLinked(false); } catch {}
+
+            // STEP 0b — Set __disconnected__ guard IMMEDIATELY (sync, before anything async).
             sessionStorage.setItem('__disconnected__', '1');
             sessionStorage.removeItem('portfolio_unlocked');
             sessionStorage.removeItem('system_wallet_addr');
@@ -67,6 +73,8 @@ export function useSystemSignOut() {
                         lower.includes('w3m') ||
                         lower.includes('reown') ||
                         lower.includes('whale_draft') ||
+                        // [FIX] Also clear system_signed_* keys (WalletConnect session persistence)
+                        lower.startsWith('system_signed_') ||
                         (lower.includes('system_') && !lower.includes('whale_xmtp') && !lower.includes('whale_chat_history_')) ||
                         (lower.includes('whale_chat') && !lower.includes('whale_chat_history_'))
                     ) {
@@ -107,14 +115,19 @@ export function useSystemSignOut() {
             }
 
             // STEP 5 — Disconnect Wagmi.
+            // [FIX] WalletConnect requires up to ~2s to close the socket cleanly.
+            // 100ms was always timing out, leaving wagmi in 'connected' state,
+            // which caused LinkedGate to immediately re-link the user.
             try {
                 if (disconnectAsync) {
                     await Promise.race([
                         disconnectAsync(),
-                        new Promise(resolve => setTimeout(resolve, 100)) // Bulletproof instantaneous timeout
+                        new Promise(resolve => setTimeout(resolve, 2000)) // WalletConnect needs up to 2s
                     ]);
                 } else if (disconnect) {
                     disconnect();
+                    // Give sync disconnect a moment to propagate
+                    await new Promise(resolve => setTimeout(resolve, 300));
                 }
             } catch (e) {
                 console.warn('[System:Logout] Wagmi disconnect failed:', e);

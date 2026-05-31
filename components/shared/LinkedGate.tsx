@@ -143,11 +143,16 @@ export function LinkedGate({ children }: { children: React.ReactNode }) {
         sessionStorage.removeItem('__disconnected__');
     }
 
-    // Nuclear Logout Guard: If the user just manually disconnected in this tab session,
-    // do NOT auto-link them back immediately even if the wallet is still connected.
+    // [FIX] Nuclear Logout Guard: Check FIRST, before ANY storage read.
+    // Previously this guard was AFTER hasValidStoredSession(), meaning:
+    //   1. User clicks disconnect
+    //   2. nuclearDisconnect starts clearing storage (async)
+    //   3. LinkedGate re-renders, reads cookie/localStorage BEFORE they're cleared
+    //   4. hasValidStoredSession() returns true → setLinked(true) → logout fails
+    // The guard must be checked unconditionally regardless of current isLinked state.
     const justDisconnected = sessionStorage.getItem('__disconnected__') === '1';
-    if (justDisconnected && !isLinked) {
-        console.log('[LinkedGate] Nuclear Logout Guard active  blocking auto-link');
+    if (justDisconnected) {
+        console.log('[LinkedGate] Nuclear Logout Guard active — blocking all auto-link paths');
         return;
     }
 
@@ -201,6 +206,13 @@ export function LinkedGate({ children }: { children: React.ReactNode }) {
     const isBot = typeof window !== 'undefined' && /bot|google|grok|crawler|spider|robot|crawling|bing/i.test(navigator.userAgent);
 
     const checkTimer = setTimeout(() => {
+      // [FIX] If the user just disconnected, NEVER redirect — let nuclearDisconnect
+      // handle the redirect itself (to '/'). Prevents a race where LinkedGate fires
+      // a redirect to /connect while nuclearDisconnect is redirecting to /.
+      const justDisconnected = typeof window !== 'undefined' &&
+        sessionStorage.getItem('__disconnected__') === '1';
+      if (justDisconnected) return;
+
       // Layer B: direct cookie check — catches the race condition window
       // where isLinked is still false even though the session is established.
       const hasCookieSession = typeof document !== 'undefined' &&
