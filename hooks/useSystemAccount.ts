@@ -84,8 +84,15 @@ export function useSystemAccount() {
         //    This makes sign-up users identical to MetaMask users on every page load.
         //    sessionStorage is per-tab, so we restore it from the durable localStorage token.
         //    GUARD: Skip restore if the user just explicitly disconnected in this tab.
-        const justDisconnected = typeof window !== 'undefined' &&
-            sessionStorage.getItem('__disconnected__') === '1';
+        //
+        // [FIX] Also check localStorage for the disconnect guard — the guard is written
+        // to localStorage in nuclearDisconnect() so it survives window.location.replace('/').
+        // sessionStorage alone was being wiped by STEP 3 before the redirect, so on the
+        // next page load the guard was missing and the session auto-restored.
+        const justDisconnected = typeof window !== 'undefined' && (
+            sessionStorage.getItem('__disconnected__') === '1' ||
+            localStorage.getItem('__disconnected__') === '1'
+        );
 
         if (justDisconnected) {
             // Actively purge any lingering session data so a re-render
@@ -93,6 +100,9 @@ export function useSystemAccount() {
             try { localStorage.removeItem('system_session_v2'); } catch {}
             try { sessionStorage.removeItem('system_wallet_addr'); } catch {}
             try { sessionStorage.removeItem('portfolio_unlocked'); } catch {}
+            // Consume the guard from BOTH storages so future logins work normally.
+            try { sessionStorage.removeItem('__disconnected__'); } catch {}
+            try { localStorage.removeItem('__disconnected__'); } catch {}
             // Do NOT proceed with any session restoration below.
         }
 

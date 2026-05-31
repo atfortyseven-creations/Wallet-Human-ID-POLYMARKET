@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
 import { ShieldCheck, Cpu, Network, Lock, Zap, Server, Globe, Key, CheckCircle } from 'lucide-react';
@@ -19,6 +19,11 @@ const PHASES = [
 
 export default function WhaleChatInitPhase({ onComplete }: { onComplete: () => void }) {
   const [currentPhase, setCurrentPhase] = useState(0);
+  // [FIX] Capture onComplete in a ref so the effect never re-runs due to
+  // parent re-renders creating a new arrow-function reference each time.
+  // Without this, the effect restarted on every render and never completed.
+  const onCompleteRef = useRef(onComplete);
+  useEffect(() => { onCompleteRef.current = onComplete; }, [onComplete]);
 
   useEffect(() => {
     let isMounted = true;
@@ -34,13 +39,14 @@ export default function WhaleChatInitPhase({ onComplete }: { onComplete: () => v
       
       // Final delay before transitioning to chat
       await new Promise(r => setTimeout(r, 1200));
-      if (isMounted) onComplete();
+      if (isMounted) onCompleteRef.current();
     };
 
     runPhases();
 
     return () => { isMounted = false; };
-  }, [onComplete]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // ← intentionally empty: run once on mount only
 
   return (
     <motion.div

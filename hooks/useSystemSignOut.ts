@@ -24,8 +24,14 @@ export function useSystemSignOut() {
             try { useUIStore.getState().setLinked(false); } catch {}
 
             // STEP 0b — Set __disconnected__ guard IMMEDIATELY (sync, before anything async).
+            // [FIX] Also write to localStorage so the guard survives the hard reload
+            // that happens via window.location.replace('/'). Without this, sessionStorage
+            // was cleared in STEP 3 and then window.location.replace('/') reloaded the
+            // page without the guard — causing useSystemAccount to immediately re-restore
+            // the session from system_session_v2, making it impossible to log out.
             try {
                 sessionStorage.setItem('__disconnected__', '1');
+                localStorage.setItem('__disconnected__', '1');
                 sessionStorage.removeItem('portfolio_unlocked');
                 sessionStorage.removeItem('system_wallet_addr');
             } catch (e) {}
@@ -81,7 +87,10 @@ export function useSystemSignOut() {
             try {
                 const swNuclearPurgeFlag = sessionStorage.getItem('sw_nuclear_purge_v4');
                 sessionStorage.clear();
+                // [FIX] Re-set the disconnect guard after clear() — it was being wiped
                 sessionStorage.setItem('__disconnected__', '1');
+                // Also ensure it's in localStorage for cross-reload persistence
+                localStorage.setItem('__disconnected__', '1');
                 if (swNuclearPurgeFlag) {
                     sessionStorage.setItem('sw_nuclear_purge_v4', swNuclearPurgeFlag);
                 }

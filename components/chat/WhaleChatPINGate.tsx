@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAppKit } from '@reown/appkit/react';
 import { useDisconnect } from 'wagmi';
@@ -391,6 +391,12 @@ export default function WhaleChatPINGate({ onEnter }: Props) {
   const [attempts, setAttempts] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [showQR, setShowQR] = useState(false);
+  const [isLocked, setIsLocked] = useState(false); // true while nuclearDisconnect is running
+
+  // [FIX] Capture onEnter in a ref so useEffects never re-run just because the
+  // parent recreated the arrow function reference on a re-render.
+  const onEnterRef = useRef(onEnter);
+  useEffect(() => { onEnterRef.current = onEnter; }, [onEnter]);
 
   // On mount / address change: check PIN state and route to correct phase
   useEffect(() => {
@@ -404,7 +410,7 @@ export default function WhaleChatPINGate({ onEnter }: Props) {
     // If yes → enter immediately without asking for PIN again
     if (isSessionUnlocked(address)) {
       setIsLoading(false);
-      onEnter();
+      onEnterRef.current();
       return;
     }
 
@@ -420,7 +426,8 @@ export default function WhaleChatPINGate({ onEnter }: Props) {
         setPhase('confirm');
       }
     });
-  }, [address, onEnter]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address]); // ← intentionally excludes onEnter — captured via ref above
 
   //  Handle keypad 
 
@@ -449,7 +456,7 @@ export default function WhaleChatPINGate({ onEnter }: Props) {
           await savePIN(pin, address!);
           unlockSession(address!);
           toast.success('PIN created. Welcome to Whale Chat!');
-          onEnter();
+          onEnterRef.current();
         } else {
           triggerShake();
           setPinFirst('');
@@ -461,18 +468,19 @@ export default function WhaleChatPINGate({ onEnter }: Props) {
         const valid = await verifyPIN(pin, address!);
         if (valid) {
           unlockSession(address!);
-          onEnter();
+          onEnterRef.current();
         } else {
           triggerShake();
           setPin('');
           const next = attempts + 1;
           setAttempts(next);
           if (next >= 5) {
-            toast.error('Too many incorrect attempts. Access locked — create a new PIN.');
+            toast.error('Too many incorrect attempts. Access locked — disconnecting...');
+            setIsLocked(true); // show spinner immediately so UI doesn't freeze
             clearSession(address!);
             await deletePIN(address!);
             await wipeXMTPDatabases();
-            nuclearDisconnect();
+            await nuclearDisconnect(); // await so redirect fires after cleanup
           } else {
             toast.error(`Incorrect PIN (${5 - next} attempt${5 - next !== 1 ? 's' : ''} left)`);
           }
@@ -560,6 +568,19 @@ export default function WhaleChatPINGate({ onEnter }: Props) {
         <div className="flex flex-col items-center gap-3">
           <div className="w-8 h-8 border-2 border-black/10 border-t-black/60 rounded-full animate-spin" />
           <p className="text-[11px] font-mono uppercase tracking-widest text-black/40">Verifying...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // [FIX] Show a spinner while nuclearDisconnect() is running after 5 failed PIN
+  // attempts. Without this, the UI was frozen on the last keypad press for 2-4s.
+  if (isLocked) {
+    return (
+      <div className="fixed inset-0 z-[200] flex items-center justify-center bg-white">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-rose-200 border-t-rose-500 rounded-full animate-spin" />
+          <p className="text-[11px] font-mono uppercase tracking-widest text-rose-400">Locking session…</p>
         </div>
       </div>
     );
