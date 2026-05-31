@@ -362,6 +362,7 @@ export default function PortfolioView({
   const [history, setHistory] = useState<any[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [isDark, setIsDark] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { address: userAddress, isConnected } = useSystemAccount();
   const { nuclearDisconnect } = useSystemSignOut();
@@ -660,7 +661,7 @@ export default function PortfolioView({
                       </p>
                     </div>
                   ) : (
-                    balances.map((bal: any, i: number) => (
+                    balances.slice((currentPage - 1) * 8, currentPage * 8).map((bal: any, i: number) => (
                       <motion.div
                         key={`${bal.symbol}-${bal.chainId}-${i}`}
                         initial={{ opacity: 0, x: -12 }}
@@ -680,6 +681,37 @@ export default function PortfolioView({
                     ))
                   )}
                 </div>
+                
+                {/* PORTFOLIO PAGINATION */}
+                {balances.length > 8 && (
+                  <div className="flex items-center justify-center gap-2 mt-4">
+                    <button
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                      className="px-3 py-1.5 rounded border border-white/10 bg-white/5 hover:bg-white/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-xs font-black uppercase text-white/50 hover:text-white"
+                    >
+                      Prev
+                    </button>
+                    <div className="flex gap-1">
+                      {Array.from({ length: Math.ceil(balances.length / 8) }).map((_, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setCurrentPage(idx + 1)}
+                          className={`w-6 h-6 flex items-center justify-center rounded text-[10px] font-mono font-black transition-colors ${currentPage === idx + 1 ? 'bg-purple-500 text-white' : 'bg-white/5 text-white/40 hover:bg-white/10 hover:text-white'}`}
+                        >
+                          {idx + 1}
+                        </button>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => setCurrentPage(p => Math.min(Math.ceil(balances.length / 8), p + 1))}
+                      disabled={currentPage === Math.ceil(balances.length / 8)}
+                      className="px-3 py-1.5 rounded border border-white/10 bg-white/5 hover:bg-white/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-xs font-black uppercase text-white/50 hover:text-white"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Activity Column */}

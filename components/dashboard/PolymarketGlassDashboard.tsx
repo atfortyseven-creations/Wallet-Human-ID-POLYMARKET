@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import { motion, Variants } from "framer-motion";
@@ -60,6 +60,7 @@ export default function PolymarketGlassDashboard({ embedded = false }: { embedde
     // Dynamic Markets L1
     const { markets, isLoading: isMarketsLoading, error: marketsError } = usePolymarketMarkets();
     const [selectedMarket, setSelectedMarket] = useState<PolymarketMarket | null>(null);
+    const [currentMarketPage, setCurrentMarketPage] = useState(1);
 
     // Default auto-select top market
     useEffect(() => {
@@ -205,7 +206,7 @@ export default function PolymarketGlassDashboard({ embedded = false }: { embedde
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {markets.map((market, i) => {
+                            {markets.slice((currentMarketPage - 1) * 8, currentMarketPage * 8).map((market, i) => {
                                 const isSelected = selectedMarket?.condition_id === market.condition_id;
                                 return (
                                     <motion.div 
@@ -243,6 +244,37 @@ export default function PolymarketGlassDashboard({ embedded = false }: { embedde
                                 </div>
                             )}
                         </div>
+
+                        {/* MARKETS PAGINATION */}
+                        {markets.length > 8 && (
+                            <div className="flex items-center justify-center gap-2 mt-6">
+                                <button
+                                    onClick={() => setCurrentMarketPage(p => Math.max(1, p - 1))}
+                                    disabled={currentMarketPage === 1}
+                                    className="px-3 py-1.5 rounded-lg border border-[#E5E5E5] bg-[#FFFFFF] hover:bg-black/5 transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-xs font-black uppercase text-[#050505]/50 hover:text-[#050505]"
+                                >
+                                    Prev
+                                </button>
+                                <div className="flex gap-1">
+                                    {Array.from({ length: Math.ceil(markets.length / 8) }).map((_, idx) => (
+                                        <button
+                                            key={idx}
+                                            onClick={() => setCurrentMarketPage(idx + 1)}
+                                            className={`w-6 h-6 flex items-center justify-center rounded-lg text-[10px] font-mono font-black transition-colors ${currentMarketPage === idx + 1 ? 'bg-emerald-600 text-white border-emerald-700' : 'bg-[#FFFFFF] border border-[#E5E5E5] text-[#050505]/40 hover:bg-black/5 hover:text-[#050505]'}`}
+                                        >
+                                            {idx + 1}
+                                        </button>
+                                    ))}
+                                </div>
+                                <button
+                                    onClick={() => setCurrentMarketPage(p => Math.min(Math.ceil(markets.length / 8), p + 1))}
+                                    disabled={currentMarketPage === Math.ceil(markets.length / 8)}
+                                    className="px-3 py-1.5 rounded-lg border border-[#E5E5E5] bg-[#FFFFFF] hover:bg-black/5 transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-xs font-black uppercase text-[#050505]/50 hover:text-[#050505]"
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </motion.div>
 
