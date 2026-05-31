@@ -3,8 +3,6 @@
 
 Our infrastructure is built strictly on-chain, utilizing deterministic cryptographic verification and decentralized key custody to achieve a state of absolute integration. Every module detailed below operates in a live production environment, strictly hardened to ensure maximum concurrency, omni-device state synchronization, and quantum-level execution integrity.
 
-This repository serves as our official technical manifestation and acquisition/grant pitch for the Aztec Network.
-
 ---
 
 ## Humanity Ledger
