@@ -621,8 +621,10 @@ export function WhaleProShell({ activeTab, onTabChange, children, isExternalEmbe
             </motion.div>
             </motion.div>
         )}
+        </AnimatePresence>
 
         {/* Mobile slide-up menu sheet drawer */}
+        <AnimatePresence>
         {showMobileNav && isMenuDrawerOpen && (
             <motion.div
                 initial={{ opacity: 0 }}
@@ -708,6 +710,7 @@ export function WhaleProShell({ activeTab, onTabChange, children, isExternalEmbe
                 </motion.div>
             </motion.div>
         )}
+        </AnimatePresence>
         </>
     );
 }

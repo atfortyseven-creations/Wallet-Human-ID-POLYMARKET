@@ -55,18 +55,14 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const session = await getSession();
-    if (!session || !session.userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     const { sender, recipient, content } = await req.json();
 
     if (!sender || !recipient || !content) {
       return NextResponse.json({ error: 'Missing parameters' }, { status: 400 });
     }
 
-    if (sender.toLowerCase() !== session.userId.toLowerCase()) {
+    const userId = await resolveUserId(req, sender);
+    if (!userId || sender.toLowerCase() !== userId.toLowerCase()) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

@@ -54,6 +54,8 @@ export function useSystemSignOut() {
                 Object.keys(localStorage).forEach(key => {
                     const lower = key.toLowerCase();
                     if (lower.startsWith('whale_chat_pin_')) return;
+                    if (lower.includes('whale_chat_history_')) return;
+                    if (lower.includes('whale_xmtp')) return;
                     if (lower.includes('whale-system-wallet-registry-v3')) return;
                     if (lower === 'system_accounts' || lower === 'system_keystore') return;
 
@@ -65,9 +67,9 @@ export function useSystemSignOut() {
                         lower.includes('appkit') ||
                         lower.includes('w3m') ||
                         lower.includes('reown') ||
-                        lower.includes('whale_chat') ||
                         lower.includes('whale_draft') ||
-                        lower.includes('system_')
+                        (lower.includes('system_') && !lower.includes('whale_xmtp') && !lower.includes('whale_chat_history_')) ||
+                        (lower.includes('whale_chat') && !lower.includes('whale_chat_history_'))
                     ) {
                         localStorage.removeItem(key);
                     }

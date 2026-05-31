@@ -73,77 +73,76 @@ export function InstitutionalHeader() {
       { label: 'PRIVACY', href: '/privacy' }
     ];
 
+
     return (
         <header
             role="banner"
             className="relative flex items-center justify-between w-full border-b border-[#EBEBEB] sticky top-0 z-[100] bg-white shadow-[0_1px_0_rgba(0,0,0,0.05)]"
             style={{ minHeight: 'calc(64px + env(safe-area-inset-top, 0px))', paddingTop: 'env(safe-area-inset-top, 0px)', width: '100%' }}
         >
-            {/* Inner container  centred, full-width up to 4K */}
-            <div className="w-full max-w-[2560px] mx-auto px-6 lg:px-10 flex items-center justify-between h-full">
-            {/* Paper grain texture overlay */}
-            <div className="absolute inset-0 opacity-[0.035] pointer-events-none noise-bg" />
+            {/* Inner container — centred, full-width up to 4K */}
+            <div className="w-full max-w-[2560px] mx-auto px-6 lg:px-10 flex items-center justify-between h-full relative">
+                {/* Paper grain texture overlay */}
+                <div className="absolute inset-0 opacity-[0.035] pointer-events-none noise-bg" />
 
-            {/* LEFT: Brand Identity */}
-            <div className="flex items-center gap-5 relative z-10 flex-shrink-0 lg:flex-1">
-                <Link href="/" className="flex items-center gap-3.5 group">
-                    <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                        className="relative flex items-center justify-center rounded-xl border border-black/5 bg-black/5 overflow-hidden w-[58px] h-[36px]"
-                    >
-                        <Image
-                            src="/official-whale-monochrome.png"
-                            alt="Whale Alert Network Logo"
-                            width={52}
-                            height={32}
-                            className="object-contain w-full h-full p-1 opacity-80 mix-blend-multiply"
-                            unoptimized={true}
-                        />
-                    </motion.div>
-                    <div className="flex flex-col leading-none text-[#050505] justify-center">
-                        <span className="font-aztec-serif text-[18px] font-black uppercase tracking-tighter leading-none">
-                            Whale Alert Network
-                        </span>
-                    </div>
-                </Link>
-            </div>
-
-            {/* CENTER: Tronscan Inspired Navigation Menu  perfectly centered */}
-            <div className="hidden lg:flex items-center justify-center relative z-20 pointer-events-none lg:flex-[2]">
-                <nav className="flex items-center gap-1 h-full pointer-events-auto">
-                    {MENU_ITEMS.map((item, index) => (
-                        <MegaMenuItem key={index} item={item} />
-                    ))}
-                </nav>
-            </div>
-
-            {/* RIGHT: Utility area */}
-            <div className="flex items-center justify-end gap-4 relative z-10 flex-shrink-0 lg:flex-1">
-                <div className="hidden lg:flex items-center gap-4">
-                    {pathname.startsWith('/forum') && (
-                        <Link href="/forum/settings" className="w-8 h-8 rounded-full border border-black/10 flex items-center justify-center hover:bg-black/5 transition-colors text-black/60 hover:text-black">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                        </Link>
-                    )}
-                    <SystemsUtilityHeader />
+                {/* LEFT: Brand Identity */}
+                <div className="flex items-center gap-5 relative z-10 flex-shrink-0 lg:flex-1">
+                    <Link href="/" className="flex items-center gap-3.5 group">
+                        <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                            className="relative flex items-center justify-center rounded-xl border border-black/5 bg-black/5 overflow-hidden w-[58px] h-[36px]"
+                        >
+                            <Image
+                                src="/official-whale-monochrome.png"
+                                alt="Whale Alert Network Logo"
+                                width={52}
+                                height={32}
+                                className="object-contain w-full h-full p-1 opacity-80 mix-blend-multiply"
+                                unoptimized={true}
+                            />
+                        </motion.div>
+                        <div className="flex flex-col leading-none text-[#050505] justify-center">
+                            <span className="font-aztec-serif text-[18px] font-black uppercase tracking-tighter leading-none">
+                                Whale Alert Network
+                            </span>
+                        </div>
+                    </Link>
                 </div>
 
-                {/* Mobile hamburger */}
-                <motion.button
-                    whileTap={{ scale: 0.93 }}
-                    onClick={() => setIsMenuOpen(!isMenuOpen)}
-                    className="xl:hidden flex items-center justify-center w-9 h-9 rounded-xl border border-black/10 transition-all bg-transparent text-black"
-                >
-                    {isMenuOpen ? <X size={16} /> : <Menu size={16} />}
-                </motion.button>
-            </div>
+                {/* CENTER: Navigation Menu — perfectly centered */}
+                <div className="hidden lg:flex items-center justify-center relative z-20 pointer-events-none lg:flex-[2]">
+                    <nav className="flex items-center gap-1 h-full pointer-events-auto">
+                        {MENU_ITEMS.map((item, index) => (
+                            <MegaMenuItem key={index} item={item} />
+                        ))}
+                    </nav>
+                </div>
 
-            {/*  MOBILE MENU DRAWER  */}
-            {isMenuOpen && (
-                <div
-                    className="absolute top-full left-0 right-0 z-[90] shadow-2xl bg-white border-b border-[#EBEBEB] overflow-hidden"
-                >
+                {/* RIGHT: Utility area */}
+                <div className="flex items-center justify-end gap-4 relative z-10 flex-shrink-0 lg:flex-1">
+                    <div className="hidden lg:flex items-center gap-4">
+                        {pathname.startsWith('/forum') && (
+                            <Link href="/forum/settings" className="w-8 h-8 rounded-full border border-black/10 flex items-center justify-center hover:bg-black/5 transition-colors text-black/60 hover:text-black">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            </Link>
+                        )}
+                        <SystemsUtilityHeader />
+                    </div>
+
+                    {/* Mobile hamburger */}
+                    <motion.button
+                        whileTap={{ scale: 0.93 }}
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                        className="xl:hidden flex items-center justify-center w-9 h-9 rounded-xl border border-black/10 transition-all bg-transparent text-black"
+                    >
+                        {isMenuOpen ? <X size={16} /> : <Menu size={16} />}
+                    </motion.button>
+                </div>
+
+                {/* MOBILE MENU DRAWER — positioned absolutely, inside inner container */}
+                {isMenuOpen && (
+                    <div className="absolute top-full left-0 right-0 z-[90] shadow-2xl bg-white border-b border-[#EBEBEB] overflow-hidden">
                         <div className="flex flex-col gap-1 p-4 max-h-[75vh] overflow-y-auto overscroll-contain">
                             {MENU_ITEMS.map((item, index) => (
                                 <div key={index} className="flex flex-col">
@@ -154,9 +153,9 @@ export function InstitutionalHeader() {
                                             </span>
                                             <div className="flex flex-col gap-1 pl-2 border-l border-black/10">
                                                 {item.subItems.map((sub: any, subIdx: number) => (
-                                                    <Link 
-                                                        key={subIdx} 
-                                                        href={sub.href} 
+                                                    <Link
+                                                        key={subIdx}
+                                                        href={sub.href}
                                                         onClick={() => setIsMenuOpen(false)}
                                                         className="font-mono text-[11px] font-bold uppercase tracking-[0.15em] py-2.5 px-3 text-[#0A0A0A] hover:bg-black/5 rounded-lg transition-colors"
                                                     >
@@ -166,8 +165,8 @@ export function InstitutionalHeader() {
                                             </div>
                                         </div>
                                     ) : (
-                                        <Link 
-                                            href={item.href} 
+                                        <Link
+                                            href={item.href}
                                             onClick={() => setIsMenuOpen(false)}
                                             className="font-mono text-[11px] font-black uppercase tracking-[0.2em] py-3 px-4 text-[#0A0A0A] hover:bg-black/5 rounded-lg transition-colors"
                                         >
@@ -177,8 +176,11 @@ export function InstitutionalHeader() {
                                 </div>
                             ))}
                         </div>
-                </div>
-            )}
+                    </div>
+                )}
+            </div>{/* end inner container */}
         </header>
     );
 }
+
+

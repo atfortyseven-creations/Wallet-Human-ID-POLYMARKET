@@ -7,6 +7,7 @@ import { formatDistanceToNowStrict, format } from 'date-fns';
 import { BarChart2, PieChart, MessageSquare, Menu } from 'lucide-react';
 import { useSignMessage } from 'wagmi';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
+import { useWalletStore } from '@/lib/store/wallet-store';
 
 export default function TopicPage() {
   const { id } = useParams();
@@ -64,15 +65,19 @@ export default function TopicPage() {
       // If the user is in Chrome mobile (wagmi not reconnected yet) or rejects
       // the signature request, we post without a signature rather than blocking.
       let finalContent = replyContent;
+      let signature = 'SESSION:AUTHENTICATED';
       
-      try {
-        const signature = await signMessageAsync({ message: finalContent });
-        finalContent = `${replyContent}\n\n[SIGNATURE:${signature}]`;
-      } catch (err) {
-        setReplyError('SIGNATURE REQUIRED');
-        setSubmitting(false);
-        return;
+      const { isLocalSystemWallet } = useWalletStore.getState();
+      if (!isLocalSystemWallet) {
+        try {
+          signature = await signMessageAsync({ message: finalContent });
+        } catch (err) {
+          setReplyError('SIGNATURE REQUIRED');
+          setSubmitting(false);
+          return;
+        }
       }
+      finalContent = `${replyContent}\n\n[SIGNATURE:${signature}]`;
 
       let csrfToken = '';
       try {

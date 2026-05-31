@@ -982,7 +982,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         // QUEUE TO SERVER FOR UNREGISTERED WALLET
         await fetch('/api/chat/pending', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'x-web3-address': address
+          },
           body: JSON.stringify({ sender: address, recipient: activePeer, content })
         });
       }

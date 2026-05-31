@@ -95,12 +95,17 @@ function NewTopicContent() {
         }
       });
 
-      try {
-        finalSignature = await signMessageAsync({ message: finalContent });
-      } catch (err) {
-        setError('You must sign the message to post.');
-        setSubmitting(false);
-        return;
+      let finalSignature = 'SESSION:AUTHENTICATED';
+      
+      const { isLocalSystemWallet } = useWalletStore.getState();
+      if (!isLocalSystemWallet) {
+        try {
+          finalSignature = await signMessageAsync({ message: `${title}\n${finalContent}` });
+        } catch (err) {
+          setError('You must sign the message to post.');
+          setSubmitting(false);
+          return;
+        }
       }
       
       finalContent = `${finalContent}\n\n[SIGNATURE:${finalSignature}]`;
