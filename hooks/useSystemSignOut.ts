@@ -42,6 +42,7 @@ export function useSystemSignOut() {
 
                     document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;SameSite=Lax`;
                     document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=${window.location.hostname};SameSite=Lax`;
+                    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;domain=.${window.location.hostname};SameSite=Lax`;
                     document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=${window.location.pathname};SameSite=Lax`;
                 }
             } catch (e) {
@@ -69,22 +70,8 @@ export function useSystemSignOut() {
                     if (lower.includes('whale-system-wallet-registry')) return; // PROTECT ALL WALLET VERSIONS
                     if (lower.includes('system_account') || lower.includes('system_keystore')) return; // PROTECT ALL SYSTEM ACCOUNTS
 
-                    if (
-                        lower.includes('wagmi') ||
-                        lower.includes('walletconnect') ||
-                        lower.includes('wc@2') ||
-                        lower.includes('walletlink') ||
-                        lower.includes('appkit') ||
-                        lower.includes('w3m') ||
-                        lower.includes('reown') ||
-                        lower.includes('whale_draft') ||
-                        // [FIX] Also clear system_signed_* keys (WalletConnect session persistence)
-                        lower.startsWith('system_signed_') ||
-                        (lower.includes('system_') && !lower.includes('whale_xmtp') && !lower.includes('whale_chat_history_')) ||
-                        (lower.includes('whale_chat') && !lower.includes('whale_chat_history_'))
-                    ) {
-                        localStorage.removeItem(key);
-                    }
+                    // Nuke EVERYTHING else. If clearing browsing history works, this will mimic it precisely.
+                    localStorage.removeItem(key);
                 });
             } catch (e) {
                 console.warn('[System:Logout] LocalStorage purge failed:', e);
@@ -105,12 +92,11 @@ export function useSystemSignOut() {
                 if (window.indexedDB && typeof window.indexedDB.databases === 'function') {
                     const dbs = await window.indexedDB.databases();
                     dbs.forEach(db => {
-                        if (db.name && (
-                            db.name.includes('walletconnect') ||
-                            db.name.includes('wc@2') ||
-                            db.name.includes('wagmi') ||
-                            db.name.includes('w3m')
-                        )) {
+                        if (db.name) {
+                            const lower = db.name.toLowerCase();
+                            if (lower.includes('xmtp') || lower.includes('whalechatsecurestore') || lower.includes('whale_chat_history')) {
+                                return;
+                            }
                             window.indexedDB.deleteDatabase(db.name);
                         }
                     });
@@ -143,9 +129,12 @@ export function useSystemSignOut() {
                 console.warn('[System:Logout] Wagmi disconnect failed:', e);
             }
 
-            // STEP 6 — NextAuth SignOut (fire and forget).
+            // STEP 6 — NextAuth SignOut (awaited with timeout to guarantee cookie clearance).
             try {
-                signOut({ redirect: false }).catch(() => {});
+                await Promise.race([
+                    signOut({ redirect: false }),
+                    new Promise(resolve => setTimeout(resolve, 1500))
+                ]);
             } catch (e) {}
 
             // STEP 6b — Call server-side /api/auth/logout to clear httpOnly cookies.

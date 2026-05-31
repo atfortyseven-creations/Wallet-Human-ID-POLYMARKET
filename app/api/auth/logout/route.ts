@@ -22,5 +22,13 @@ export async function POST(request: NextRequest) {
   response.cookies.set("human.access-token", "", cookieBase);
   response.cookies.set("human.refresh-token", "", cookieBase);
 
+  // NextAuth explicit cookie purge
+  response.cookies.set("next-auth.session-token", "", cookieBase);
+  response.cookies.set("__Secure-next-auth.session-token", "", cookieBase);
+  response.cookies.set("next-auth.callback-url", "", cookieBase);
+  response.cookies.set("__Secure-next-auth.callback-url", "", cookieBase);
+  response.cookies.set("next-auth.csrf-token", "", cookieBase);
+  response.cookies.set("__Host-next-auth.csrf-token", "", cookieBase);
+
   return response;
 }
