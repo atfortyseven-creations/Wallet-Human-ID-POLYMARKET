@@ -12,6 +12,8 @@ import { NETWORKS, NetworkId } from '@/lib/store/wallet-store';
 export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, userAssets = [] }: { address: string, activeNetwork: string, scannerBase: string, userAssets?: any[] }) {
     
     const [actionState, setActionState] = useState<{ isOpen: boolean, type: 'SEND'|'RECEIVE'|'SWAP'|'BRIDGE', token?: any }>({ isOpen: false, type: 'SEND' });
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 8;
 
     const combinedAssets = useMemo(() => {
         const activeChainId = NETWORKS[activeNetwork as NetworkId]?.chainId;
@@ -84,6 +86,12 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
         setActionState({ isOpen: true, type, token });
     };
 
+    const totalPages = Math.ceil(combinedAssets.length / ITEMS_PER_PAGE);
+    const paginatedAssets = useMemo(() => {
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        return combinedAssets.slice(start, start + ITEMS_PER_PAGE);
+    }, [combinedAssets, currentPage]);
+
     return (
         <div className="border border-black/10 bg-white flex flex-col min-h-[500px] overflow-hidden relative">
             
@@ -132,8 +140,8 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-black/5">
-                        {combinedAssets.length > 0 ? (
-                            combinedAssets.map((token, idx) => (
+                        {paginatedAssets.length > 0 ? (
+                            paginatedAssets.map((token, idx) => (
                                 <tr key={`${token.symbol}-${idx}`} className="hover:bg-black/[0.03] transition-colors group/row">
                                     <td className="py-4 px-6">
                                         <div className="flex items-center gap-4">
@@ -224,6 +232,31 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
                     </tbody>
                 </table>
             </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="flex items-center justify-between px-6 py-4 border-t border-black/10 bg-white sticky bottom-0 z-10 shadow-[0_-4px_10px_rgba(0,0,0,0.02)]">
+                    <span className="text-[10px] font-black text-black/40 uppercase tracking-widest">
+                        Page {currentPage} of {totalPages}
+                    </span>
+                    <div className="flex items-center gap-2">
+                        <button 
+                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                            disabled={currentPage === 1}
+                            className="px-4 py-2 border border-black/10 rounded-sm text-[10px] font-black uppercase tracking-widest text-black/60 hover:text-black hover:bg-black/5 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+                        >
+                            Previous
+                        </button>
+                        <button 
+                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                            disabled={currentPage === totalPages}
+                            className="px-4 py-2 border border-black/10 rounded-sm text-[10px] font-black uppercase tracking-widest text-black/60 hover:text-black hover:bg-black/5 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+                        >
+                            Next
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -110,7 +110,7 @@ export function useSystemSignOut() {
                 if (disconnectAsync) {
                     await Promise.race([
                         disconnectAsync(),
-                        new Promise(resolve => setTimeout(resolve, 800)) // Reduced timeout
+                        new Promise(resolve => setTimeout(resolve, 100)) // Bulletproof instantaneous timeout
                     ]);
                 } else if (disconnect) {
                     disconnect();

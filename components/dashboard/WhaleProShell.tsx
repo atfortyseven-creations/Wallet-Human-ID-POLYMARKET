@@ -481,9 +481,7 @@ export function WhaleProShell({ activeTab, onTabChange, children, isExternalEmbe
                             touchAction: 'pan-y',
                         }}
                     >
-                        {/* Spacer clears the fixed mobile nav (64px) + iOS safe-area-inset-bottom */}
                         <div className="pb-0 md:pb-0 w-full flex-1 flex flex-col relative z-10">
-                            <AnimatePresence mode="wait">
                                 <motion.div
                                     key={activeTab}
                                     initial={{ opacity: 0, filter: 'blur(4px)' }}
@@ -496,7 +494,6 @@ export function WhaleProShell({ activeTab, onTabChange, children, isExternalEmbe
                                         {children}
                                     </InstitutionalErrorBoundary>
                                 </motion.div>
-                            </AnimatePresence>
                             {/* iOS spacer: clears the fixed bottom nav + safe-area-inset-bottom */}
                             {showMobileNav && (
                                 <div className="block lg:hidden shrink-0" style={{ height: 'calc(72px + env(safe-area-inset-bottom, 0px))' }} aria-hidden="true" />
@@ -711,7 +708,6 @@ export function WhaleProShell({ activeTab, onTabChange, children, isExternalEmbe
                 </motion.div>
             </motion.div>
         )}
-        </AnimatePresence>
         </>
     );
 }

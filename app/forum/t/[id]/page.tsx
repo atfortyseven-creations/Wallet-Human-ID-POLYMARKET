@@ -18,6 +18,7 @@ export default function TopicPage() {
   const [replyDraftSaved, setReplyDraftSaved] = useState(false);
   const [deleteConfirmTarget, setDeleteConfirmTarget] = useState<string | null>(null);
   
+  const { signMessageAsync } = useSignMessage();
   const { address, isSystemHandshake } = useSystemAccount();
   const sessionAddress = address?.toLowerCase() || null;
 
@@ -63,7 +64,15 @@ export default function TopicPage() {
       // If the user is in Chrome mobile (wagmi not reconnected yet) or rejects
       // the signature request, we post without a signature rather than blocking.
       let finalContent = replyContent;
-      finalContent = `${replyContent}\n\n[SIGNATURE:SIGNED VERIFIED]`;
+      
+      try {
+        const signature = await signMessageAsync({ message: finalContent });
+        finalContent = `${replyContent}\n\n[SIGNATURE:${signature}]`;
+      } catch (err) {
+        setReplyError('SIGNATURE REQUIRED');
+        setSubmitting(false);
+        return;
+      }
 
       let csrfToken = '';
       try {

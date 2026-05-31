@@ -13,6 +13,8 @@ export function InstitutionalMarkets() {
     const [sortCol, setSortCol] = useState<string | null>(null);
     const [sortDesc, setSortDesc] = useState(true);
     const [showChainDropdown, setShowChainDropdown] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 8;
 
     useEffect(() => {
         setTokens(getParsedMarkets());
@@ -88,6 +90,12 @@ export function InstitutionalMarkets() {
     };
 
     const isNegative = (chg: string) => chg.startsWith('-');
+
+    const totalPages = Math.ceil(sortedAndFiltered.length / ITEMS_PER_PAGE);
+    const paginatedAssets = useMemo(() => {
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        return sortedAndFiltered.slice(start, start + ITEMS_PER_PAGE);
+    }, [sortedAndFiltered, currentPage]);
 
     return (
         <div className="w-full h-full min-h-0 flex flex-col p-4 md:p-8 bg-white  text-[#050505]  font-mono overflow-hidden transition-colors">
@@ -165,12 +173,12 @@ export function InstitutionalMarkets() {
 
                 {/* Table Body */}
                 <div className="flex-1 overflow-y-auto">
-                    {sortedAndFiltered.length === 0 ? (
+                    {paginatedAssets.length === 0 ? (
                         <div className="h-full flex items-center justify-center text-[12px] text-[#888888] uppercase tracking-widest font-black">
                             NO ASSETS FOUND FOR SELECTED CRITERIA
                         </div>
                     ) : (
-                        sortedAndFiltered.map((t, idx) => (
+                        paginatedAssets.map((t, idx) => (
                             <div key={idx} className="flex flex-col md:grid md:grid-cols-[2fr_1fr_1fr_1fr_1fr] p-4 md:px-6 md:py-4 border-b border-[#F0F0F0]  hover:bg-[#F9F9F9]  transition-colors md:items-center gap-3 md:gap-0">
                                 {/* Mobile Top Row / Desktop Col 1 */}
                                 <div className="flex items-center justify-between md:justify-start gap-4 min-w-0">
@@ -239,6 +247,30 @@ export function InstitutionalMarkets() {
                 </div>
             </div>
             
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="flex items-center justify-between px-6 py-4 mt-4 bg-[#F9F9F9] border border-[#E5E5E5] rounded-xl max-w-[1400px] mx-auto w-full flex-shrink-0">
+                    <span className="text-[10px] font-black text-black/40 uppercase tracking-widest">
+                        Page {currentPage} of {totalPages}
+                    </span>
+                    <div className="flex items-center gap-2">
+                        <button 
+                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                            disabled={currentPage === 1}
+                            className="px-4 py-2 border border-[#E5E5E5] bg-white rounded-lg text-[10px] font-black uppercase tracking-widest text-[#050505]/60 hover:text-[#050505] disabled:opacity-30 disabled:pointer-events-none transition-colors"
+                        >
+                            Previous
+                        </button>
+                        <button 
+                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                            disabled={currentPage === totalPages}
+                            className="px-4 py-2 border border-[#E5E5E5] bg-white rounded-lg text-[10px] font-black uppercase tracking-widest text-[#050505]/60 hover:text-[#050505] disabled:opacity-30 disabled:pointer-events-none transition-colors"
+                        >
+                            Next
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

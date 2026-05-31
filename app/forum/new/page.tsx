@@ -34,6 +34,7 @@ function NewTopicContent() {
   const [documents, setDocuments]   = useState<{ title: string, url: string }[]>([]);
   const [uploadingFile, setUploadingFile] = useState(false);
   const { address, isConnected, isSystemHandshake } = useSystemAccount();
+  const { signMessageAsync } = useSignMessage();
 
   //  Restore draft on mount 
   useEffect(() => {
@@ -94,8 +95,15 @@ function NewTopicContent() {
         }
       });
 
-      finalSignature = 'SIGNED VERIFIED';
-      finalContent = `${finalContent}\n\n[SIGNATURE:SIGNED VERIFIED]`;
+      try {
+        finalSignature = await signMessageAsync({ message: finalContent });
+      } catch (err) {
+        setError('You must sign the message to post.');
+        setSubmitting(false);
+        return;
+      }
+      
+      finalContent = `${finalContent}\n\n[SIGNATURE:${finalSignature}]`;
 
       let csrfToken = '';
       try {

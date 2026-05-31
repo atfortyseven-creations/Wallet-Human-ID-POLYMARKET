@@ -140,15 +140,10 @@ export function InstitutionalHeader() {
             </div>
 
             {/*  MOBILE MENU DRAWER  */}
-            <AnimatePresence>
-                {isMenuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.2, ease: "easeOut" }}
-                        className="absolute top-full left-0 right-0 z-[90] shadow-2xl bg-white border-b border-[#EBEBEB] overflow-hidden"
-                    >
+            {isMenuOpen && (
+                <div
+                    className="absolute top-full left-0 right-0 z-[90] shadow-2xl bg-white border-b border-[#EBEBEB] overflow-hidden"
+                >
                         <div className="flex flex-col gap-1 p-4 max-h-[75vh] overflow-y-auto overscroll-contain">
                             {MENU_ITEMS.map((item, index) => (
                                 <div key={index} className="flex flex-col">
@@ -182,10 +177,8 @@ export function InstitutionalHeader() {
                                 </div>
                             ))}
                         </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-            </div>{/* end inner container */}
+                </div>
+            )}
         </header>
     );
 }
