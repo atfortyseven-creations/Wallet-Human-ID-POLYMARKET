@@ -29,6 +29,7 @@ ts-debug.log*
 .env.railway
 .env.production.template
 .env.example
+.env.getblock
 
 
 # vercel

@@ -241,105 +241,121 @@ export class BlockchainService {
   }
 }
 
-// Singleton instances for production
+// =============================================================================
+//  SINGLETON — Instancia de producción
+//  Tier 1: GetBlock (registry unificado: 22 existentes + 25 nuevas)
+//  Tier 2: Alchemy (fallback por cadena)
+//  Tier 3: Nodos públicos gratuitos
+// =============================================================================
+
+import { getGbAllRpc } from './getblock-registry';
+
+const PUBLIC_FALLBACKS: Record<string, string[]> = {
+  eth:     ['https://eth.llamarpc.com', 'https://cloudflare-eth.com', 'https://1rpc.io/eth'],
+  base:    ['https://mainnet.base.org', 'https://base.llamarpc.com', 'https://1rpc.io/base'],
+  polygon: ['https://polygon-rpc.com', 'https://rpc-mainnet.maticvigil.com'],
+  arb:     ['https://arb1.arbitrum.io/rpc', 'https://arbitrum.llamarpc.com'],
+  bsc:     ['https://bsc-dataseed1.binance.org', 'https://bsc.publicnode.com'],
+  op:      ['https://mainnet.optimism.io', 'https://optimism.llamarpc.com'],
+  avax:    ['https://api.avax.network/ext/bc/C/rpc', 'https://1rpc.io/avax/c'],
+  world:   ['https://worldchain-mainnet.g.alchemy.com/public'],
+};
+
+function buildRpcPool(gbChain: string, alchemySuffix?: string): string[] {
+  const gbUrls      = getGbAllRpc(gbChain as any);
+  const alchemyUrl  = alchemySuffix && process.env.NEXT_PUBLIC_ALCHEMY_API_KEY
+    ? [`https://${alchemySuffix}.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`]
+    : [];
+  const pubFallback = PUBLIC_FALLBACKS[gbChain] ?? [];
+  // Orden: GetBlock (todos los tokens activos) → Alchemy → Públicos
+  return [...gbUrls, ...alchemyUrl, ...pubFallback];
+}
+
 export const blockchainService = new BlockchainService([
   {
     chainId: ChainId.MAINNET,
     name: 'Ethereum Mainnet',
-    rpcUrls: [
-      process.env.NEXT_PUBLIC_ALCHEMY_MAINNET_RPC || `https://eth-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
-      'https://cloudflare-eth.com',
-      'https://eth.llamarpc.com'
-    ],
+    rpcUrls: buildRpcPool('eth', 'eth-mainnet'),
     privateRpcUrl: 'https://rpc.flashbots.net',
-    bundlerUrl: `https://api.pimlico.io/v2/1/rpc?apikey=${process.env.NEXT_PUBLIC_PIMLICO_API_KEY}`,
+    bundlerUrl: process.env.NEXT_PUBLIC_PIMLICO_API_KEY
+      ? `https://api.pimlico.io/v2/1/rpc?apikey=${process.env.NEXT_PUBLIC_PIMLICO_API_KEY}`
+      : undefined,
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
     blockExplorer: 'https://etherscan.io',
   },
   {
     chainId: ChainId.POLYGON,
     name: 'Polygon',
-    rpcUrls: [
-      process.env.NEXT_PUBLIC_ALCHEMY_POLYGON_RPC || `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
-      'https://polygon-rpc.com',
-      'https://rpc-mainnet.maticvigil.com'
-    ],
-    privateRpcUrl: 'https://polygon-rpc.flashbots.net',
-    bundlerUrl: `https://api.pimlico.io/v2/137/rpc?apikey=${process.env.NEXT_PUBLIC_PIMLICO_API_KEY}`,
+    rpcUrls: buildRpcPool('polygon', 'polygon-mainnet'),
+    bundlerUrl: process.env.NEXT_PUBLIC_PIMLICO_API_KEY
+      ? `https://api.pimlico.io/v2/137/rpc?apikey=${process.env.NEXT_PUBLIC_PIMLICO_API_KEY}`
+      : undefined,
     nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
     blockExplorer: 'https://polygonscan.com',
   },
   {
     chainId: ChainId.ARBITRUM,
     name: 'Arbitrum One',
-    rpcUrls: [
-      `https://arb-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
-      'https://arb1.arbitrum.io/rpc',
-      'https://arbitrum.llamarpc.com'
-    ],
-    privateRpcUrl: 'https://arbitrum-rpc.flashbots.net',
-    bundlerUrl: `https://api.pimlico.io/v2/42161/rpc?apikey=${process.env.NEXT_PUBLIC_PIMLICO_API_KEY}`,
+    rpcUrls: buildRpcPool('arb', 'arb-mainnet'),
+    bundlerUrl: process.env.NEXT_PUBLIC_PIMLICO_API_KEY
+      ? `https://api.pimlico.io/v2/42161/rpc?apikey=${process.env.NEXT_PUBLIC_PIMLICO_API_KEY}`
+      : undefined,
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
     blockExplorer: 'https://arbiscan.io',
   },
   {
     chainId: ChainId.BASE,
     name: 'Base',
-    rpcUrls: [
-      'https://mainnet.base.org',
-      `https://base-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
-      'https://base.llamarpc.com'
-    ],
-    bundlerUrl: `https://api.pimlico.io/v2/8453/rpc?apikey=${process.env.NEXT_PUBLIC_PIMLICO_API_KEY}`,
+    rpcUrls: buildRpcPool('base', 'base-mainnet'),
+    bundlerUrl: process.env.NEXT_PUBLIC_PIMLICO_API_KEY
+      ? `https://api.pimlico.io/v2/8453/rpc?apikey=${process.env.NEXT_PUBLIC_PIMLICO_API_KEY}`
+      : undefined,
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
     blockExplorer: 'https://basescan.org',
   },
   {
     chainId: ChainId.OPTIMISM,
     name: 'Optimism',
-    rpcUrls: [
-      `https://opt-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}`,
-      'https://mainnet.optimism.io',
-      'https://optimism.llamarpc.com'
-    ],
-    bundlerUrl: `https://api.pimlico.io/v2/10/rpc?apikey=${process.env.NEXT_PUBLIC_PIMLICO_API_KEY}`,
+    rpcUrls: buildRpcPool('op', 'opt-mainnet'),
+    bundlerUrl: process.env.NEXT_PUBLIC_PIMLICO_API_KEY
+      ? `https://api.pimlico.io/v2/10/rpc?apikey=${process.env.NEXT_PUBLIC_PIMLICO_API_KEY}`
+      : undefined,
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
     blockExplorer: 'https://optimistic.etherscan.io',
   },
   {
     chainId: ChainId.AVALANCHE,
     name: 'Avalanche',
-    rpcUrls: [
-      'https://api.avax.network/ext/bc/C/rpc',
-      'https://avalanche.public-rpc.com',
-      'https://1rpc.io/avax/c'
-    ],
-    bundlerUrl: `https://api.pimlico.io/v2/43114/rpc?apikey=${process.env.NEXT_PUBLIC_PIMLICO_API_KEY}`,
+    rpcUrls: buildRpcPool('avax'),
+    bundlerUrl: process.env.NEXT_PUBLIC_PIMLICO_API_KEY
+      ? `https://api.pimlico.io/v2/43114/rpc?apikey=${process.env.NEXT_PUBLIC_PIMLICO_API_KEY}`
+      : undefined,
     nativeCurrency: { name: 'AVAX', symbol: 'AVAX', decimals: 18 },
     blockExplorer: 'https://snowtrace.io',
   },
   {
     chainId: ChainId.BSC,
     name: 'BNB Smart Chain',
-    rpcUrls: [
-      'https://bsc-dataseed1.binance.org',
-      'https://bsc.publicnode.com',
-      'https://binance.llamarpc.com'
-    ],
-    bundlerUrl: `https://api.pimlico.io/v2/56/rpc?apikey=${process.env.NEXT_PUBLIC_PIMLICO_API_KEY}`,
+    rpcUrls: buildRpcPool('bsc'),
+    bundlerUrl: process.env.NEXT_PUBLIC_PIMLICO_API_KEY
+      ? `https://api.pimlico.io/v2/56/rpc?apikey=${process.env.NEXT_PUBLIC_PIMLICO_API_KEY}`
+      : undefined,
     nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
     blockExplorer: 'https://bscscan.com',
   },
   {
     chainId: ChainId.WORLDCHAIN,
     name: 'World Chain',
-    rpcUrls: [
-      process.env.NEXT_PUBLIC_ALCHEMY_API_KEY ? `https://worldchain-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_API_KEY}` : 'https://worldchain-mainnet.g.alchemy.com/public',
-      'https://worldchain-mainnet.g.alchemy.com/public'
-    ],
-    bundlerUrl: `https://api.pimlico.io/v2/480/rpc?apikey=${process.env.NEXT_PUBLIC_PIMLICO_API_KEY}`,
+    rpcUrls: buildRpcPool('world'),
+    bundlerUrl: process.env.NEXT_PUBLIC_PIMLICO_API_KEY
+      ? `https://api.pimlico.io/v2/480/rpc?apikey=${process.env.NEXT_PUBLIC_PIMLICO_API_KEY}`
+      : undefined,
     nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
     blockExplorer: 'https://worldscan.org',
   },
 ]);
+
+
+
+
 
