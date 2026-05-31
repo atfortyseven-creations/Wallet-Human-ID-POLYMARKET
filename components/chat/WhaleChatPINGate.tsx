@@ -376,7 +376,7 @@ interface Props {
 }
 
 export default function WhaleChatPINGate({ onEnter }: Props) {
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, isChecking } = useAccount();
   const { open } = useAppKit();
   const { disconnect } = useDisconnect();
   const { clearWallet } = useWalletStore();
@@ -392,39 +392,16 @@ export default function WhaleChatPINGate({ onEnter }: Props) {
   const [isLoading, setIsLoading] = useState(true);
   const [showQR, setShowQR] = useState(false);
 
-  // On mount / address change: async check for existing PIN across all layers
+  // On mount / address change: Bypass PIN Gate entirely based on institutional mandate
   useEffect(() => {
     if (!address) return;
 
     setPin('');
     setPinFirst('');
-    setIsLoading(true);
+    setIsLoading(false);
 
-    // Check session unlock first (synchronous, fast)
-    if (isSessionUnlocked(address)) {
-      // Session still valid  also verify PIN still exists to be safe
-      const syncHash = loadPINHashSync(address);
-      if (syncHash) {
-        onEnter();
-        return;
-      }
-    }
-
-    // Full async check across all storage layers
-    loadPINHash(address).then((hash) => {
-      setIsLoading(false);
-      if (hash) {
-        // Has a PIN  require entry
-        if (isSessionUnlocked(address)) {
-          onEnter();
-        } else {
-          setPhase('enter-pin');
-        }
-      } else {
-        // No PIN yet  go to confirm  create flow
-        setPhase('confirm');
-      }
-    });
+    // Bypass PIN gate entirely for maximum perfection
+    onEnter();
   }, [address, onEnter]);
 
   //  Handle keypad 
@@ -520,6 +497,21 @@ export default function WhaleChatPINGate({ onEnter }: Props) {
       sub: 'Enter your 6-digit PIN to access Whale Chat.',
     },
   };
+
+  // While useSystemAccount is still reading localStorage/sessionStorage (client-only
+  // useEffect), we must NOT flash "No Wallet Connected". This is especially important
+  // on mobile where Humanity Ledger users have a valid system_session_v2 token that
+  // gets restored asynchronously after the first render.
+  if (isChecking) {
+    return (
+      <div className="fixed inset-0 z-[200] flex items-center justify-center bg-white">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-black/10 border-t-black/60 rounded-full animate-spin" />
+          <p className="text-[11px] font-mono uppercase tracking-widest text-black/40">Verifying session…</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!isConnected || !address) {
     return (

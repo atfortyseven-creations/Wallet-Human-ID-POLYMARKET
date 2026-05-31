@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ChevronDown, Save, FileLock2, Plus, ShieldCheck } from 'lucide-react';
 import { useSignMessage, useAccount } from 'wagmi';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
+import { useWalletStore } from '@/lib/store/wallet-store';
 import { WhaleAlertLoader } from '@/components/ui/WhaleAlertLoader';
 
 const DRAFT_KEY = 'forum_draft_new_topic';

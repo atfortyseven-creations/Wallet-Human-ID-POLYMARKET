@@ -6,9 +6,21 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { UniversalEliteWallpaper } from "@/components/shared/UniversalEliteWallpaper";
 
-// SSR-unsafe  XMTP uses browser WASM
-const SystemChat = dynamic(
-  () => import("@/components/dashboard/SystemChat"),
+// ─── Chat stack ─────────────────────────────────────────────────────────────
+// IMPORTANT: We use ChatClientPage (which includes WhaleChatPINGate →
+// WhaleChatInitPhase → SystemChat) instead of rendering SystemChat directly.
+// Previously MobileChatPage rendered SystemChat raw, completely bypassing the
+// PIN gate. This meant Humanity Ledger users on mobile landed in SystemChat's
+// "needsWalletReconnect" screen and tapping "Connect Wallet" opened AppKit
+// which did nothing (HL users are not WalletConnect users).
+//
+// With ChatClientPage:
+//   1. WhaleChatPINGate detects the HL system_session_v2 session.
+//   2. If session is valid AND PIN is unlocked → auto-passes, opens chat.
+//   3. If PIN is needed → shows the PIN pad (correct UX).
+//   4. isChecking spinner prevents any premature "No Wallet Connected" flash.
+const ChatClientPage = dynamic(
+  () => import("@/components/chat/ChatClientPage"),
   {
     ssr: false,
     loading: () => (
@@ -40,7 +52,6 @@ function useIsMobile() {
 export default function MobileChatPage() {
   const isMobile = useIsMobile();
   const [viewportHeight, setViewportHeight] = useState<number | null>(null);
-  const [viewportOffset, setViewportOffset] = useState<number>(0);
   const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -59,7 +70,6 @@ export default function MobileChatPage() {
         if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
         rafRef.current = requestAnimationFrame(() => {
           setViewportHeight(vv.height);
-          // Removed buggy viewportOffset which causes keyboard misalignment
         });
       };
       update();
@@ -111,9 +121,9 @@ export default function MobileChatPage() {
               </div>
             </header>
 
-            {/* Chat fills the remainder  perfectly centered */}
+            {/* Full chat stack with PIN gate */}
             <div className="flex-1 min-h-0 w-full overflow-hidden relative bg-transparent">
-              <SystemChat />
+              <ChatClientPage />
             </div>
           </div>
         </div>
@@ -159,9 +169,9 @@ export default function MobileChatPage() {
           </div>
         </header>
 
-        {/* Chat fills the remainder transparently  wallpaper shows through */}
+        {/* Full chat stack with PIN gate  wallpaper shows through */}
         <div className="flex-1 min-h-0 overflow-hidden relative">
-          <SystemChat />
+          <ChatClientPage />
         </div>
       </div>
     </>

@@ -46,8 +46,7 @@ export function useSystemSignOut() {
                     'system_handshake',
                     'system_session_v2',
                     'system_vault_v1',
-                    'system_pending_wakeup',
-                    'whale-system-wallet-registry-v2'
+                    'system_pending_wakeup'
                 ];
                 targets.forEach(t => localStorage.removeItem(t));
 
@@ -56,8 +55,8 @@ export function useSystemSignOut() {
                     if (lower.startsWith('whale_chat_pin_')) return;
                     if (lower.includes('whale_chat_history_')) return;
                     if (lower.includes('whale_xmtp')) return;
-                    if (lower.includes('whale-system-wallet-registry-v3')) return;
-                    if (lower === 'system_accounts' || lower === 'system_keystore') return;
+                    if (lower.includes('whale-system-wallet-registry')) return; // PROTECT ALL WALLET VERSIONS
+                    if (lower.includes('system_account') || lower.includes('system_keystore')) return; // PROTECT ALL SYSTEM ACCOUNTS
 
                     if (
                         lower.includes('wagmi') ||

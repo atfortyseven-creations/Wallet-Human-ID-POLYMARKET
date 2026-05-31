@@ -197,7 +197,7 @@ export class PortfolioService {
       // Pagination Loop for exhaustive token discovery
       do {
           const fetchPromise = moralisService.getWalletBalances(address, chain, cursor);
-          const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('MORALIS_TIMEOUT')), 3000));
+          const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('MORALIS_TIMEOUT')), 8000));
           const tokensData: any = await Promise.race([fetchPromise, timeoutPromise]);
           
           if (tokensData && tokensData.result) {
@@ -213,7 +213,7 @@ export class PortfolioService {
       const [nativeData, netWorthData] = await Promise.all([
         Promise.race([
           moralisService.getNativeBalance(address, chain),
-          new Promise<any>((_, reject) => setTimeout(() => reject(new Error('MORALIS_TIMEOUT')), 3000))
+          new Promise<any>((_, reject) => setTimeout(() => reject(new Error('MORALIS_TIMEOUT')), 8000))
         ]),
         preFetchedNetWorth ? Promise.resolve(preFetchedNetWorth) : moralisService.getWalletNetWorth(address).catch(() => null)
       ]);
@@ -814,11 +814,11 @@ export class PortfolioService {
     const [netWorthData, activeChainsData] = await Promise.all([
         Promise.race([
             moralisService.getWalletNetWorth(address).catch(() => null),
-            new Promise<null>(resolve => setTimeout(() => resolve(null), 5000))
+            new Promise<null>(resolve => setTimeout(() => resolve(null), 8000))
         ]),
         Promise.race([
             moralisService.getWalletActiveChains(address).catch(() => ({ active_chains: [] })),
-            new Promise<{active_chains: any[]}>(resolve => setTimeout(() => resolve({ active_chains: [] }), 5000))
+            new Promise<{active_chains: any[]}>(resolve => setTimeout(() => resolve({ active_chains: [] }), 8000))
         ])
     ]);
 

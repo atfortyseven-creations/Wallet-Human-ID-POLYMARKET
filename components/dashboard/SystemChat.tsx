@@ -235,7 +235,7 @@ function playMessageSound() {
 //  SystemChat (Orchestrator) 
 
 export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => void }) {
-  const { address, isConnected, isLocalSystemWallet, connector, isSystemHandshake, needsWalletReconnect } = useAccount();
+  const { address, isConnected, isLocalSystemWallet, connector, isSystemHandshake, needsWalletReconnect, isChecking } = useAccount();
   const { open: openAppKit } = useAppKit();
   const { data: walletClient } = useWalletClient();
   const { privateKey: storePrivateKey } = useWalletStore();
@@ -1139,12 +1139,36 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
 
   //  Theme-driven background is handled via CSS variables in globals.css 
 
-  if (!isConnected) {
+  // ── Session-restoration spinner ────────────────────────────────────────────
+  // useSystemAccount reads localStorage/sessionStorage in a useEffect (client-only).
+  // While that check is still in-flight we must NOT flash a "connect wallet" screen
+  // — especially on mobile where HL users have a valid system_session_v2 token.
+  if (isChecking) {
     return (
       <div className="flex flex-1 w-full h-full bg-white items-center justify-center">
-        <p className="font-mono text-[12px] tracking-widest text-black/30 uppercase">
-          Connect wallet to access System Chat
-        </p>
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-7 h-7 border-2 border-black/10 border-t-black/50 rounded-full animate-spin" />
+          <p className="font-mono text-[10px] uppercase tracking-widest text-black/30">Restoring session…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isConnected) {
+    return (
+      <div className="flex flex-1 w-full h-full bg-white items-center justify-center p-6">
+        <div className="max-w-xs w-full flex flex-col items-center gap-5 text-center">
+          <p className="font-mono text-[11px] uppercase tracking-widest text-black/40 leading-relaxed">
+            Connect your wallet to access Whale Chat.
+          </p>
+          <button
+            type="button"
+            onClick={() => { window.location.href = '/'; }}
+            className="w-full py-4 rounded-xl bg-[#050505] text-white font-mono text-[11px] font-bold uppercase tracking-widest hover:bg-black/80 transition-all active:scale-[0.98]"
+          >
+            Go to Home
+          </button>
+        </div>
       </div>
     );
   }
@@ -1156,12 +1180,22 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
           <p className="font-mono text-[11px] uppercase tracking-widest text-black/40 leading-relaxed">
             Connect your wallet in this browser to activate end-to-end encrypted Whale Chat.
           </p>
+          {/* On mobile, openAppKit() may silently fail for Humanity Ledger users.
+              We offer both options: AppKit modal AND a page refresh which re-runs
+              the session-restoration logic and detects the HL system_session_v2 token. */}
           <button
             type="button"
             onClick={() => openAppKit()}
             className="w-full py-4 rounded-xl bg-[#050505] text-white font-mono text-[11px] font-bold uppercase tracking-widest hover:bg-black/80 transition-all active:scale-[0.98]"
           >
             Connect Wallet
+          </button>
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="w-full py-3 rounded-xl bg-transparent border border-black/15 text-black font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-black/5 transition-all active:scale-[0.98]"
+          >
+            Already logged in? Refresh
           </button>
         </div>
       </div>
