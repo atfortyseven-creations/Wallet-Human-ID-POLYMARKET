@@ -4,9 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronDown, Save, FileLock2, Plus, ShieldCheck } from 'lucide-react';
-import { useSignMessage, useAccount } from 'wagmi';
+import { useSignMessage } from 'wagmi';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
 import { useWalletStore } from '@/lib/store/wallet-store';
+import { ethers } from 'ethers';
 import { WhaleAlertLoader } from '@/components/ui/WhaleAlertLoader';
 
 const DRAFT_KEY = 'forum_draft_new_topic';
@@ -96,18 +97,37 @@ function NewTopicContent() {
         }
       });
 
-      finalSignature = 'SESSION:AUTHENTICATED';
-      
-      const { isLocalSystemWallet } = useWalletStore.getState();
-      if (!isLocalSystemWallet) {
+      // ── Signature routing ──────────────────────────────────────────────────
+      // Read store state outside the hook call (legal in async functions).
+      const { isLocalSystemWallet, privateKey: storedPrivateKey } = useWalletStore.getState();
+      const messageToSign = `${title}\n${finalContent}`;
+
+      if (storedPrivateKey) {
+        // Case 1: Humanity Ledger local wallet — sign with ethers directly.
+        // wagmi's useSignMessage requires an active connector; local wallets have none.
         try {
-          finalSignature = await signMessageAsync({ message: `${title}\n${finalContent}` });
+          const wallet = new ethers.Wallet(storedPrivateKey);
+          finalSignature = await wallet.signMessage(messageToSign);
         } catch (err) {
-          setError('You must sign the message to post.');
+          setError('Signature failed. Please re-import your wallet and try again.');
           setSubmitting(false);
           return;
         }
+      } else if (!isLocalSystemWallet) {
+        // Case 2: External wallet (MetaMask / WalletConnect) — use wagmi.
+        try {
+          finalSignature = await signMessageAsync({ message: messageToSign });
+        } catch (err) {
+          setError('You must sign the message in your wallet to post.');
+          setSubmitting(false);
+          return;
+        }
+      } else {
+        // Case 3: Session-restored user (address known, no private key in memory).
+        // Their SIWE cookie is valid — backend will accept SESSION:AUTHENTICATED.
+        finalSignature = 'SESSION:AUTHENTICATED';
       }
+      // ──────────────────────────────────────────────────────────────────────
       
       finalContent = `${finalContent}\n\n[SIGNATURE:${finalSignature}]`;
 

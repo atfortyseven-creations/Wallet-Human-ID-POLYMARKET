@@ -50,11 +50,14 @@ export function useSystemSignOut() {
             try {
                 const targets = [
                     'system_handshake',
-                    'system_session_v2',
+                    'system_session_v2',   // MUST be cleared — this is what auto-restores sessions
                     'system_vault_v1',
-                    'system_pending_wakeup'
+                    'system_pending_wakeup',
+                    'system_wallet_addr',  // Extra guard
                 ];
                 targets.forEach(t => localStorage.removeItem(t));
+                // Failsafe: also nuke via direct key in case the key was stored differently
+                try { localStorage.removeItem('system_session_v2'); } catch {}
 
                 Object.keys(localStorage).forEach(key => {
                     const lower = key.toLowerCase();

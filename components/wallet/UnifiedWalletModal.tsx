@@ -42,9 +42,9 @@ export default function UnifiedWalletModal({ isOpen, onClose, initialTab = "SEND
         // Build a set of symbols the user already owns on any chain
         const ownedSymbols = new Set(userAssets.map(a => a.symbol.toUpperCase()));
         
-        // Add universal tokens not already owned (show as 0-balance) — don't pin them to mainnet
+        // Add universal tokens not already owned and exclude placeholders with 0x0...0 address
         const additional = UNIVERSAL_TOKENS
-            .filter(t => !ownedSymbols.has(t.symbol.toUpperCase()))
+            .filter(t => !ownedSymbols.has(t.symbol.toUpperCase()) && t.address !== "0x0000000000000000000000000000000000000000")
             .map(t => ({
                 ...t,
                 balanceNumeric: 0,

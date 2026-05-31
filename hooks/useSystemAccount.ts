@@ -87,6 +87,15 @@ export function useSystemAccount() {
         const justDisconnected = typeof window !== 'undefined' &&
             sessionStorage.getItem('__disconnected__') === '1';
 
+        if (justDisconnected) {
+            // Actively purge any lingering session data so a re-render
+            // cannot restore the session that was just explicitly killed.
+            try { localStorage.removeItem('system_session_v2'); } catch {}
+            try { sessionStorage.removeItem('system_wallet_addr'); } catch {}
+            try { sessionStorage.removeItem('portfolio_unlocked'); } catch {}
+            // Do NOT proceed with any session restoration below.
+        }
+
         if (!justDisconnected && typeof window !== 'undefined') {
             try {
                 const raw = localStorage.getItem('system_session_v2');

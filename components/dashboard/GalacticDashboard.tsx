@@ -78,18 +78,9 @@ export function GalacticDashboard() {
   const [showSettings, setShowSettings] = useState(false);
   const [showVault, setShowVault] = useState(false);
 
-  // Simulated token list for UI demonstration of complexity
-  const mockTokens: TokenInfo[] = [
-    { symbol: 'USDC', name: 'USD Coin', balance: '0.00', price: 1.00, value: 0, icon: '🔵', change24h: 0.01 },
-    { symbol: 'WETH', name: 'Wrapped Ether', balance: '0.0000', price: 3500.20, value: 0, icon: '🔷', change24h: 2.4 },
-    { symbol: 'LINK', name: 'Chainlink', balance: '0.00', price: 18.50, value: 0, icon: '🔗', change24h: -1.2 },
-  ];
-
-  // Dummy activity
-  const mockActivity: ActivityEvent[] = [
-    { id: '1', type: 'approval', hash: '0x123...abc', amount: 'Unlimited USDC', timestamp: Date.now() - 3600000, status: 'confirmed' },
-    { id: '2', type: 'contract', hash: '0x456...def', amount: 'Interaction', timestamp: Date.now() - 86400000, status: 'confirmed' }
-  ];
+  // Enforce zero-mock mandate
+  const realTokens: TokenInfo[] = [];
+  const realActivity: ActivityEvent[] = [];
 
   const fetchOnChainData = async () => {
     if (!address) return;
@@ -378,8 +369,14 @@ export function GalacticDashboard() {
                     </div>
                   </div>
 
-                  {/* Dummy ERC20s */}
-                  {mockTokens.map((token, i) => (
+                  {/* Enforce Zero-Mock Mandate */}
+                  {realTokens.length === 0 && (
+                    <div className="flex flex-col items-center justify-center py-10 text-white/40">
+                      <p className="text-sm">No ERC-20 tokens detected on-chain.</p>
+                      <p className="text-[10px] mt-2 font-mono uppercase tracking-widest">Zero-Mock Protocol Enforced</p>
+                    </div>
+                  )}
+                  {realTokens.map((token, i) => (
                     <div key={i} className="flex items-center justify-between p-5 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] transition-colors cursor-pointer">
                       <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-xl">{token.icon}</div>
@@ -410,7 +407,13 @@ export function GalacticDashboard() {
 
               {activeTab === 'ACTIVITY' && (
                 <motion.div key="activity" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
-                  {mockActivity.map((ev) => (
+                  {realActivity.length === 0 && (
+                    <div className="flex flex-col items-center justify-center py-10 text-white/40">
+                      <p className="text-sm">No recent on-chain activity.</p>
+                      <p className="text-[10px] mt-2 font-mono uppercase tracking-widest">Zero-Mock Protocol Enforced</p>
+                    </div>
+                  )}
+                  {realActivity.map((ev) => (
                     <div key={ev.id} className="flex items-center justify-between p-5 rounded-2xl bg-white/[0.02] border border-white/5">
                       <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">

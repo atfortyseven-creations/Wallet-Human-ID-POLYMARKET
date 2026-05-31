@@ -12,13 +12,22 @@ interface WhaleMissionLoaderProps {
 
 export function WhaleMissionLoader({ children, duration = 4000, label = "Loading..." }: WhaleMissionLoaderProps) {
   const [isLoading, setIsLoading] = useState(true);
+  const [shouldRenderChildren, setShouldRenderChildren] = useState(false);
 
   useEffect(() => {
+    // Defer heavy child rendering to keep main thread free for Lottie animation on mobile
+    const renderTimer = setTimeout(() => {
+      setShouldRenderChildren(true);
+    }, Math.max(0, duration - 100));
+
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, duration);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(renderTimer);
+      clearTimeout(timer);
+    };
   }, [duration]);
 
   return (
@@ -55,7 +64,7 @@ export function WhaleMissionLoader({ children, duration = 4000, label = "Loading
         className="w-full h-full flex flex-col flex-1"
         style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
       >
-        {children}
+        {shouldRenderChildren && children}
       </motion.div>
     </>
   );

@@ -67,8 +67,19 @@ export default function TopicPage() {
       let finalContent = replyContent;
       let signature = 'SESSION:AUTHENTICATED';
       
-      const { isLocalSystemWallet } = useWalletStore.getState();
-      if (!isLocalSystemWallet) {
+      const { isLocalSystemWallet, privateKey: storedPrivateKey } = useWalletStore.getState();
+      
+      if (storedPrivateKey) {
+        try {
+          const { ethers } = await import('ethers');
+          const wallet = new ethers.Wallet(storedPrivateKey);
+          signature = await wallet.signMessage(finalContent);
+        } catch (err) {
+          setReplyError('SIGNATURE FAILED');
+          setSubmitting(false);
+          return;
+        }
+      } else if (!isLocalSystemWallet) {
         try {
           signature = await signMessageAsync({ message: finalContent });
         } catch (err) {

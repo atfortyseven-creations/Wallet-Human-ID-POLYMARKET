@@ -1,27 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
-// Assuming you have an auth utility
-// import { getSession } from '@/lib/auth';
-
+import { prisma } from '@/lib/prisma';
+import { validateSecureRequest } from '@/lib/security/premium-security';
 export async function GET(req: NextRequest) {
   try {
-    // const session = await getSession(req);
-    // if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    // const walletAddress = session.walletAddress;
+    const validation = await validateSecureRequest(req);
+    if (!validation.valid || !validation.userId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const address = validation.userId;
 
-    // FOR MOCK DEVELOPMENT (Using the first user for testing since auth is bypassed here)
-    const mockUser = await prisma.user.findFirst();
-    if (!mockUser) {
+    const realUser = await prisma.user.findUnique({ where: { walletAddress: address } });
+    if (!realUser) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     return NextResponse.json({
-      theme: mockUser.theme,
-      language: mockUser.language,
-      notifyOnReply: mockUser.notifyOnReply,
-      notifyOnMention: mockUser.notifyOnMention,
-      bio: mockUser.bio,
-      displayName: mockUser.displayName
+      theme: realUser.theme,
+      language: realUser.language,
+      notifyOnReply: realUser.notifyOnReply,
+      notifyOnMention: realUser.notifyOnMention,
+      bio: realUser.bio,
+      displayName: realUser.displayName
     });
   } catch (error) {
     console.error('[Forum Preferences GET]', error);
@@ -31,16 +30,19 @@ export async function GET(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   try {
-    // const session = await getSession(req);
-    // if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const validation = await validateSecureRequest(req);
+    if (!validation.valid || !validation.userId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const address = validation.userId;
     
     const body = await req.json();
 
-    const mockUser = await prisma.user.findFirst();
-    if (!mockUser) return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    const realUser = await prisma.user.findUnique({ where: { walletAddress: address } });
+    if (!realUser) return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
     const updatedUser = await prisma.user.update({
-      where: { id: mockUser.id },
+      where: { id: realUser.id },
       data: {
         ...(body.theme && { theme: body.theme }),
         ...(body.language && { language: body.language }),

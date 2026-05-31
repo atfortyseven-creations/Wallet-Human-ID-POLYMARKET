@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
@@ -41,61 +41,10 @@ export function NewPairsTable() {
             setRawData(data);
             setError(false);
         } catch (err) {
-            console.warn("Falling back to demo data for Contract Monitors", err);
-            // Fallback mock data
-            setRawData({
-                pairs: [
-                    {
-                        chainId: 'ethereum',
-                        dexId: 'uniswap',
-                        pairCreatedAt: Date.now() - 1000 * 60 * 15,
-                        baseToken: { symbol: 'MEDSEC', name: 'Medical Security' },
-                        quoteToken: { symbol: 'WETH' },
-                        priceUsd: '0.0452',
-                        priceChange: { m5: 12.4, h1: 45.2, h6: 120.5, h24: 340.2 },
-                        liquidity: { usd: 450000 },
-                        mcap: 4500000,
-                        fdv: 4500000,
-                        txns: { m5: { buys: 145, sells: 12 } },
-                        traders: { makers: 120, snipers: 4 },
-                        security: { score: 95, honeypotRisk: false, lpBurned: true, mintRevoked: true },
-                        taxes: { buy: 0, sell: 0 }
-                    },
-                    {
-                        chainId: 'arbitrum',
-                        dexId: 'camelot',
-                        pairCreatedAt: Date.now() - 1000 * 60 * 45,
-                        baseToken: { symbol: 'HLTH', name: 'Health Node' },
-                        quoteToken: { symbol: 'USDC' },
-                        priceUsd: '1.24',
-                        priceChange: { m5: 2.1, h1: -4.5, h6: 12.4, h24: 24.1 },
-                        liquidity: { usd: 1200000 },
-                        mcap: 12000000,
-                        fdv: 12000000,
-                        txns: { m5: { buys: 45, sells: 34 } },
-                        traders: { makers: 89, snipers: 0 },
-                        security: { score: 88, honeypotRisk: false, lpBurned: true, mintRevoked: false },
-                        taxes: { buy: 1, sell: 1 }
-                    },
-                    {
-                        chainId: 'base',
-                        dexId: 'aerodrome',
-                        pairCreatedAt: Date.now() - 1000 * 60 * 5,
-                        baseToken: { symbol: 'CLINIC', name: 'ClinicDAO' },
-                        quoteToken: { symbol: 'WETH' },
-                        priceUsd: '0.00012',
-                        priceChange: { m5: -45.2, h1: -45.2, h6: -45.2, h24: -45.2 },
-                        liquidity: { usd: 15000 },
-                        mcap: 150000,
-                        fdv: 150000,
-                        txns: { m5: { buys: 12, sells: 89 } },
-                        traders: { makers: 45, snipers: 12 },
-                        security: { score: 25, honeypotRisk: true, lpBurned: false, mintRevoked: false },
-                        taxes: { buy: 5, sell: 25 }
-                    }
-                ]
-            });
-            setError(false); // Hide error in UI, just show the mock
+            console.warn("Failed to fetch pairs", err);
+            // Zero-Mock Mandate: No fallback data. Show error state.
+            setError(true);
+            setRawData({ pairs: [] });
         } finally {
             setLoading(false);
         }

@@ -335,7 +335,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
   const [blockedList, setBlockedListState] = useState<string[]>([]);
   const [contacts, setContactsState] = useState<Record<string, string>>({});
   
-  // Group Chat State (Mock)
+  // Group Chat State (Internal)
   const [isGroupChat, setIsGroupChat] = useState(false);
   const [groupMembers, setGroupMembers] = useState<string[]>([]);
 

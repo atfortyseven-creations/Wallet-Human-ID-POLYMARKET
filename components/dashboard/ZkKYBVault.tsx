@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -31,9 +31,24 @@ export function ZkKYBVault() {
       const verifyData = await uploadRes.json();
       
       setStage("MINTING");
-      const signature = await signMessageAsync({
-        message: `[ZK business verify]\nMint corporate SBT for ${address}\nDocument hash: ${verifyData.hash ?? '0x0'}`,
-      });
+      
+      const mintMessage = `[ZK business verify]\nMint corporate SBT for ${address}\nDocument hash: ${verifyData.hash ?? '0x0'}`;
+      let signature = "";
+      
+      const { useSystemAccount } = await import('@/hooks/useSystemAccount');
+      const { useWalletStore } = await import('@/lib/store/wallet-store');
+      const isLocalSystemWallet = useSystemAccount.getState?.().isLocalSystemWallet || (typeof window !== 'undefined' && !!localStorage.getItem('system_vault'));
+      
+      if (isLocalSystemWallet) {
+          const wallet = await useWalletStore.getState().getConnectedWallet();
+          if (wallet) {
+              signature = await wallet.signMessage(mintMessage);
+          } else {
+              throw new Error("No local wallet found");
+          }
+      } else {
+          signature = await signMessageAsync({ message: mintMessage });
+      }
 
       // Save seed to prevent double-signing in Whale Chat
       const existingSeed = localStorage.getItem(`whale_chat_seed_${address.toLowerCase()}`);
