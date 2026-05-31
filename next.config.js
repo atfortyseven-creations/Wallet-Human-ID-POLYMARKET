@@ -97,8 +97,7 @@ const nextConfig = {
     reactStrictMode: false,
     // devIndicators removed  buildActivity and appIsrStatus are deprecated in Next.js 15
 
-    // swcMinify is explicitly set to true to enforce Rust-based minification
-    swcMinify: true,
+    // swcMinify is removed as it's the default and deprecated in Next.js 15
     generateEtags: true,
     httpAgentOptions: {
         keepAlive: true,

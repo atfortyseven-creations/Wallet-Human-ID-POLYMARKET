@@ -86,7 +86,7 @@ export const AztecProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
         // ─ Dynamic import: only executes in the browser at runtime ─
         const { createPXEClient, waitForPXE } = (await import(
-          /* webpackChunkName: "aztec-sdk" */
+          /* webpackIgnore: true */
           '@aztec/aztec.js'
         )) as any;
 

@@ -6,7 +6,7 @@ import { z } from 'zod';
 import OpenAI from 'openai';
 
 // Init OpenAI for semantic validation
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
 // Strict institutional schema
 const passportSchema = z.object({

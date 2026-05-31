@@ -13,6 +13,9 @@ export class ExecutionEngine {
     private worker: Worker;
 
     constructor() {
+        const isBuild = process.env.NEXT_PHASE === 'phase-production-build' || process.argv.join(' ').includes('next build');
+        if (isBuild) return;
+
         this.executionQueue = new Queue('execution-engine', {
             connection: {
                 host: process.env.REDIS_HOST || 'localhost',

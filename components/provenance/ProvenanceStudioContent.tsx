@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { QRCodeSVG } from 'qrcode.react';
@@ -522,14 +522,18 @@ function RegistryTab({ isMobile: _isMobile, refreshKey }: RegistryTabProps) {
     load();
   }, [load, refreshKey]);
 
-  const filtered = passports.filter((p) => {
-    if (filter === 'anchored') return !!p.txHash;
-    if (filter === 'pending') return !p.txHash;
-    return true;
-  });
+  const filtered = useMemo(() => {
+    return passports.filter((p) => {
+      if (filter === 'anchored') return !!p.txHash;
+      if (filter === 'pending') return !p.txHash;
+      return true;
+    });
+  }, [passports, filter]);
 
-  const anchored = passports.filter((p) => !!p.txHash).length;
-  const pending = passports.filter((p) => !p.txHash).length;
+  const { anchored, pending } = useMemo(() => {
+    const a = passports.filter((p) => !!p.txHash).length;
+    return { anchored: a, pending: passports.length - a };
+  }, [passports]);
 
   if (loading) {
     return (
