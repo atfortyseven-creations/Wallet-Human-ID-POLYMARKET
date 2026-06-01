@@ -97,7 +97,7 @@ const INJECTION_PATTERNS = [
   /\beval\b\s*\(/i,                            // Eval injection
 ];
 
-//  SUSPICIOUS HEADERS (Nation-State Hardened) 
+//  SUSPICIOUS HEADERS (Nation-State Hardened + Proxy) 
 const SUSPICIOUS_HEADERS = [
   'x-original-url',           // IIS/nginx URL override  used for auth bypass
   'x-rewrite-url',            // Apache mod_rewrite override
@@ -107,6 +107,23 @@ const SUSPICIOUS_HEADERS = [
   'x-forwarded-server',       // Server identity spoofing
   'x-original-host',          // CDN origin override
   'x-backend-server',         // Server disclosure / SSRF
+  'x-anonymous-vpn',          // Anonymous VPN
+  'x-proxyuser-ip',           // Proxy User
+  // Note: 'via' is intentionally excluded to prevent false positives with benign ISP/corporate proxies.
+];
+
+// TOR / ANONYMIZATION HEADERS (Instant Jail)
+const TOR_HEADERS = [
+  'x-tor',
+  'tor-proxy',
+];
+
+// SSRF AND LOCALHOST ABUSE PATTERNS
+const SSRF_PATTERNS = [
+  /169\.254\.169\.254/i,      // AWS Metadata
+  /127\.0\.0\.1/i,            // Localhost IPv4
+  /0\.0\.0\.0/i,              // Any IP
+  /\[::1\]/i,                 // Localhost IPv6
 ];
 
 //  HTTP REQUEST SMUGGLING INDICATORS 
@@ -124,8 +141,17 @@ function getIP(req: NextRequest): string {
           '127.0.0.1').trim();
 }
 
+// THE QUANTUM JAIL (Edge In-Memory Blackhole)
+const quantumJail = new Map<string, number>();
+const JAIL_SENTENCE_MS = 86400000; // 24 hours
+
+export function banIPGlobal(ip: string) {
+  quantumJail.set(ip, Date.now() + JAIL_SENTENCE_MS);
+}
+
 function buildBlockResponse(anomalyScore: number, reason: string, ip: string): NextResponse {
-  console.error(`[WhaleFortress:WAF]  BLOCKED score=${anomalyScore} reason="${reason}" ip=${ip}`);
+  console.error(`[WhaleFortress:WAF]  BLOCKED & JAILED score=${anomalyScore} reason="${reason}" ip=${ip}`);
+  banIPGlobal(ip); // Instant Jail on Hard Block
   return new NextResponse(
     JSON.stringify({ error: 'WAF_BLOCK', code: 403, message: 'Request blocked by Institutional Security Policy.' }),
     { status: 403, headers: { 'Content-Type': 'application/json', 'X-WAF-Block': 'true' } }
@@ -200,6 +226,17 @@ const WAF_BYPASS_PATHS = [
 
 export async function runWAF(req: NextRequest): Promise<NextResponse | null> {
   const ip       = getIP(req);
+
+  //  QUANTUM JAIL CHECK (Zero-Latency Blackhole) 
+  if (quantumJail.has(ip)) {
+    if (Date.now() > quantumJail.get(ip)!) {
+      quantumJail.delete(ip); // Sentence served
+    } else {
+      // Abysmal silence  don't even waste CPU logging it unless in debug
+      return new NextResponse(null, { status: 403, statusText: 'JAILED' });
+    }
+  }
+
   const pathname = req.nextUrl.pathname;
   const ua       = req.headers.get('user-agent') ?? '';
   const method   = req.method;
@@ -237,12 +274,33 @@ export async function runWAF(req: NextRequest): Promise<NextResponse | null> {
     }
   }
 
-  //  VECTOR 2: Path Traversal / Injection in URL 
+  //  VECTOR 2: Path Traversal / Injection in URL (Polymorphic Decoder)
   const fullUrl = req.url;
+  let decodedUrl = fullUrl;
+  try {
+      decodedUrl = decodeURIComponent(fullUrl);
+      // Attempt Base64 decode heuristic on query params
+      const queryParams = new URL(fullUrl).searchParams;
+      queryParams.forEach((value) => {
+          if (value.length > 10 && /^[a-zA-Z0-9+/]+={0,2}$/.test(value)) {
+              try { decodedUrl += ' ' + Buffer.from(value, 'base64').toString('utf8'); } catch {}
+          }
+      });
+  } catch {}
+
   for (const pattern of INJECTION_PATTERNS) {
-    if (pattern.test(fullUrl)) {
-      anomalyScore += 8;
+    if (pattern.test(fullUrl) || pattern.test(decodedUrl)) {
+      anomalyScore += 10; // Instant Hard Block for injection
       reasons.push(`INJECTION:${pattern.source.slice(0, 20)}`);
+      break;
+    }
+  }
+
+  //  VECTOR 2.5: SSRF Detection 
+  for (const pattern of SSRF_PATTERNS) {
+    if (pattern.test(fullUrl) || pattern.test(decodedUrl)) {
+      anomalyScore += 15;
+      reasons.push(`SSRF_ATTEMPT`);
       break;
     }
   }
@@ -252,6 +310,15 @@ export async function runWAF(req: NextRequest): Promise<NextResponse | null> {
     if (req.headers.has(header)) {
       anomalyScore += 5;
       reasons.push(`SUSPICIOUS_HEADER:${header}`);
+    }
+  }
+
+  //  VECTOR 3.1: Absolute Tor Block (Zero Tolerance)
+  for (const header of TOR_HEADERS) {
+    if (req.headers.has(header)) {
+      anomalyScore += 20; // Instant Hard Block & Jail
+      reasons.push(`TOR_NODE_DETECTED`);
+      break;
     }
   }
 

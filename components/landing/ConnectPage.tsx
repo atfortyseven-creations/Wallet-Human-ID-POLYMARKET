@@ -500,7 +500,7 @@ export default function ConnectPage() {
               >
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-[300px] h-[300px]">
-                    <RemoteLottie path="Transaction Complete.json" loop={false} className="w-full h-full object-contain scale-[1.2]" />
+                    <RemoteLottie path="/system-shots/Transaction Complete.json" loop={false} className="w-full h-full object-contain scale-[1.2]" />
                   </div>
                 </div>
 

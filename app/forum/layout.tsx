@@ -1,5 +1,6 @@
 import { TelemetryTracker } from '@/components/forum/TelemetryTracker';
 import { MobileBottomNav } from '@/components/forum/MobileBottomNav';
+import { ForumGate } from '@/components/forum/ForumGate';
 
 export default async function ForumLayout({
   children,
@@ -11,7 +12,9 @@ export default async function ForumLayout({
       <TelemetryTracker />
 
       <main className="flex-1 w-full overflow-x-hidden">
-        {children}
+        <ForumGate>
+          {children}
+        </ForumGate>
       </main>
 
       <footer className="w-full py-6 mt-auto flex flex-col items-center justify-center border-t border-slate-200/60">

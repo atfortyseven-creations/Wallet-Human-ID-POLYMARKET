@@ -76,6 +76,21 @@ const HONEYPOT_PATTERNS = [
   '/etc/passwd(.*)',
   '/.git(.*)',
   '/.svn(.*)',
+  // New Honeypots
+  '/.env.local(.*)',
+  '/.env.prod(.*)',
+  '/.env.save(.*)',
+  '/docker-compose(.*)',
+  '/swagger.json(.*)',
+  '/aws/credentials(.*)',
+  '/.aws/credentials(.*)',
+  '/config.json(.*)',
+  '/config.yml(.*)',
+  '/administrator/manifests(.*)',
+  '/wp-includes(.*)',
+  '/wp-content(.*)',
+  '/manager/html(.*)',
+  '/actuator(.*)',
 ];
 
 // KYC completely removed by institutional request
@@ -140,7 +155,7 @@ export default async function middleware(request: NextRequest) {
       }
     }
 
-    // 1. HONEYPOT TRAP  Instant Block
+    // 1. HONEYPOT TRAP  Instant Block & Global Ban
     if (!isBypassIP && matchesPattern(pathname, HONEYPOT_PATTERNS)) {
       const isCommonNoise = pathname.includes('wp-') || pathname.includes('phpmyadmin');
       if (isCommonNoise) {
@@ -148,8 +163,13 @@ export default async function middleware(request: NextRequest) {
         console.info(`[WhaleFortress:Noise]  Scanner blocked: ${ip} -> ${pathname}`);
       } else {
         // High-priority alert for unexpected paths (genuine security threats)
-        console.error(`[WhaleFortress:SECURITY]  SHADOW_PROBE BLOCKED: ${ip} -> ${pathname}`);
+        console.error(`[WhaleFortress:SECURITY]  SHADOW_PROBE BLOCKED & JAILED: ${ip} -> ${pathname}`);
       }
+      
+      // Zero-Tolerance Edge Ban
+      const { banIPGlobal } = await import('./lib/security/waf-engine');
+      banIPGlobal(ip);
+
       logAuditSafe(request, 'SECURITY_HONEYPOT_HIT', 'anonymous', ip, { path: pathname, isNoise: isCommonNoise });
       return new NextResponse(null, { status: 404 });
     }
@@ -239,6 +259,12 @@ export default async function middleware(request: NextRequest) {
     const whaleSessionCookie = request.cookies.get('whale_session')?.value;
     if (whaleSessionCookie) {
       try {
+        const { isTokenRevoked } = await import('./lib/security/jwt-blacklist');
+        if (isTokenRevoked(whaleSessionCookie)) {
+            console.error(`[WhaleFortress:SECURITY]  REVOKED TOKEN DETECTED: IP ${ip} tried to use a blacklisted JWT.`);
+            throw new Error('TOKEN_REVOKED');
+        }
+
         const { verifyJWT } = await import('./lib/jwt');
         const payload = await verifyJWT(whaleSessionCookie);
         siweSessionValid = true;

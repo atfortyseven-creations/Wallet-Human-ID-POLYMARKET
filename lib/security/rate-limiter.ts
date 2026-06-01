@@ -1,4 +1,4 @@
-﻿/**
+/**
  * AI-Powered Rate Limiter with Adaptive Thresholds
  * 
  * Features:
@@ -109,9 +109,13 @@ class RateLimiter {
     
     // Check if limit exceeded
     if (record.count > adaptiveLimit) {
+      // Paranoia Mode: If suspicion score is critical (> 90), block for 72 hours
+      const isCriticalThreat = record.suspicionScore > 90;
+      const blockDuration = isCriticalThreat ? 72 * 60 * 60 * 1000 : this.config.blockDuration;
+
       // Block the IP
       record.blocked = true
-      record.blockUntil = now + this.config.blockDuration
+      record.blockUntil = now + blockDuration
       this.cache.set(identifier, record)
       
       // Log suspicious activity
@@ -122,7 +126,7 @@ class RateLimiter {
         limit: adaptiveLimit,
         remaining: 0,
         reset: record.resetTime,
-        retryAfter: Math.ceil(this.config.blockDuration / 1000)
+        retryAfter: Math.ceil(blockDuration / 1000)
       }
     }
     
