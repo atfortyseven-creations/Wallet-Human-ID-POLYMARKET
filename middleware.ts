@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { runWAF } from './lib/security/waf-engine';
+import { runWAF, banIPGlobal } from './lib/security/waf-engine';
 import type { JWTPayload } from 'jose';
 import { checkRateLimit, resolveTier } from './lib/security/rate-limiter';
 // Removed: import { appendAuditEntry } from './lib/audit/audit-trail';
@@ -109,14 +109,17 @@ export default async function middleware(request: NextRequest) {
       return NextResponse.next();
     }
 
-    const ip = request.headers.get('x-forwarded-for')?.split(',')[0] ||
+    // Aegis Fix: Prioritize Cloudflare Header to prevent IP spoofing
+    const ip = request.headers.get('cf-connecting-ip') ||
+               request.headers.get('x-forwarded-for')?.split(',')[0] ||
                request.headers.get('x-real-ip') ||
                '127.0.0.1';
-    const country = request.headers.get('x-vercel-ip-country') ||
-                    request.headers.get('cf-ipcountry') ||
+    const country = request.headers.get('cf-ipcountry') ||
+                    request.headers.get('x-vercel-ip-country') ||
                     'UNKNOWN';
 
-    const BYPASS_IPS = ['127.0.0.1', '91.126.42.179'];
+    // Aegis Fix: Removed external IP from whitelist to prevent header spoofing bypass
+    const BYPASS_IPS = ['127.0.0.1'];
     const isBypassIP = BYPASS_IPS.includes(ip);
 
     //  LAYER -1.2: CLOUD-SHIELD STRICT VALIDATION (Anti-Direct IP Attacks)
@@ -176,7 +179,6 @@ export default async function middleware(request: NextRequest) {
       }
       
       // Zero-Tolerance Edge Ban
-      const { banIPGlobal } = await import('./lib/security/waf-engine');
       banIPGlobal(ip);
 
       logAuditSafe(request, 'SECURITY_HONEYPOT_HIT', 'anonymous', ip, { path: pathname, isNoise: isCommonNoise });

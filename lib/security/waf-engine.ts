@@ -21,7 +21,7 @@ const BLOCK_THRESHOLD     = 10;
 const CHALLENGE_THRESHOLD = 5;
 
 //  BYPASS IPS (Institutional Whitelist) 
-const BYPASS_IPS = ['127.0.0.1', '91.126.42.179'];
+const BYPASS_IPS = ['127.0.0.1'];
 
 //  PER-ENDPOINT RATE LIMITS (requests / window in seconds) 
 // Tighter limits on write/trade endpoints to prevent automation abuse.
@@ -135,9 +135,10 @@ const SMUGGLING_HEADER_COMBINATIONS = [
 //  HELPERS 
 
 function getIP(req: NextRequest): string {
-  return (req.headers.get('x-forwarded-for')?.split(',')[0] ??
+  // Aegis Fix: Prioritize Cloudflare Header to prevent IP spoofing
+  return (req.headers.get('cf-connecting-ip') ??
+          req.headers.get('x-forwarded-for')?.split(',')[0] ??
           req.headers.get('x-real-ip') ??
-          req.headers.get('cf-connecting-ip') ??
           '127.0.0.1').trim();
 }
 
@@ -145,7 +146,13 @@ function getIP(req: NextRequest): string {
 const quantumJail = new Map<string, number>();
 const JAIL_SENTENCE_MS = 86400000; // 24 hours
 
+const MAX_JAIL_SIZE = 10000;
 export function banIPGlobal(ip: string) {
+  // Aegis Fix: Prevent Memory Exhaustion (OOM) by limiting the Map size
+  if (quantumJail.size >= MAX_JAIL_SIZE) {
+    const keysToPurge = Array.from(quantumJail.keys()).slice(0, 2000);
+    for (const k of keysToPurge) quantumJail.delete(k);
+  }
   quantumJail.set(ip, Date.now() + JAIL_SENTENCE_MS);
 }
 
