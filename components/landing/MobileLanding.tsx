@@ -568,7 +568,14 @@ export function MobileLanding() {
   // Tracks active polling interval so onFocusRecheck can cancel previous runs
   const pollIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const isConnected = wagmiConnected;
+  let isGuarded = false;
+  try {
+    if (typeof window !== 'undefined') {
+      isGuarded = sessionStorage.getItem("__disconnected__") === "1" || localStorage.getItem("__disconnected__") === "1";
+    }
+  } catch {}
+
+  const isConnected = wagmiConnected && !isGuarded;
   const address     = wagmiAddress;
 
   const [mounted, setMounted]           = useState(false);

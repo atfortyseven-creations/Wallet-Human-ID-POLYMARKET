@@ -410,14 +410,8 @@ export default function ChatInput({
               disabled={disabled}
               placeholder={disabled ? 'Connection unavailable' : 'Encrypted message'}
               rows={1}
-              className="w-full bg-transparent px-4 py-[14px] text-[15px] font-mono text-black resize-none focus:outline-none placeholder:text-black/30 transition-colors pr-[45px] leading-relaxed disabled:opacity-40"
+              className="w-full bg-transparent px-4 py-[14px] text-[15px] font-mono text-black resize-none focus:outline-none placeholder:text-black/30 transition-colors pr-[15px] leading-relaxed disabled:opacity-40"
             />
-            <button
-              onClick={() => { setShowEmoji(p => !p); setShowDestruct(false); }}
-              className="absolute right-3.5 bottom-[14px] text-black/30 hover:text-black transition-colors"
-            >
-              <Smile size={22} />
-            </button>
           </div>
 
           {/* Send / Mic */}
@@ -442,21 +436,6 @@ export default function ChatInput({
       )}
 
       {/* Self-destruct selector (removed) */}
-
-      {/* Emoji picker */}
-      {showEmoji && (
-        <div className="mt-2 bg-white border border-black/8 rounded-2xl p-3 grid grid-cols-8 gap-1.5 shadow-sm">
-          {EMOJI_GRID.map(e => (
-            <button
-              key={e}
-              onClick={() => { onSendEmoji(e); setShowEmoji(false); }}
-              className="w-9 h-9 text-[18px] rounded-xl hover:bg-black/5 flex items-center justify-center transition-colors"
-            >
-              {e}
-            </button>
-          ))}
-        </div>
-      )}
 
       {/* Location duration selector */}
       {showLocationSelect && !isRecording && (

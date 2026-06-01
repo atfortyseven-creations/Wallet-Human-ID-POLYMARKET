@@ -216,22 +216,10 @@ export function VisionStatsSection() {
       <div className="max-w-5xl mx-auto">
 
         {/* ── Section Header ─────────────────────────────────────────────── */}
-        <div className="mb-12">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-black/10 bg-black/[0.025] mb-5">
-            <span className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
-            <span className="text-[9px] font-black uppercase tracking-[0.22em] text-black/45">
-              Live Platform Data · Zero Simulation
-            </span>
-          </div>
-
+        <div className="mb-8">
           <h2 className="text-2xl md:text-[2rem] font-black uppercase tracking-tighter text-black leading-tight">
-            Real Activity.{' '}
-            <span className="text-black/30">Verified On-Chain.</span>
+            Platform Statistics
           </h2>
-          <p className="mt-3 text-[13px] text-black/45 max-w-xl leading-relaxed font-sans">
-            Every figure is pulled directly from our live production database — real wallets,
-            real conversations, real registrations. No mock data, ever.
-          </p>
         </div>
 
         {/* ── Stat Cards ─────────────────────────────────────────────────── */}
@@ -277,19 +265,10 @@ export function VisionStatsSection() {
         {/* ── Growth Chart ───────────────────────────────────────────────── */}
         <div className="border border-black/8 rounded-2xl bg-white overflow-hidden">
           {/* Chart header */}
-          <div className="px-6 md:px-8 pt-6 pb-4 flex items-start justify-between gap-4 border-b border-black/5">
-            <div>
-              <p className="text-[9px] font-black uppercase tracking-[0.22em] text-black/25 mb-1">
-                Growth Chart · Last 6 Months
-              </p>
-              <p className="text-base font-black uppercase tracking-tighter text-black">
-                Platform Adoption Velocity
-              </p>
-            </div>
-            <div className="flex items-center gap-1.5 px-2.5 py-1 border border-black/8 rounded-full shrink-0">
-              <span className="w-1 h-1 rounded-full bg-black animate-pulse" />
-              <span className="text-[8px] font-mono uppercase tracking-widest text-black/35">Live</span>
-            </div>
+          <div className="px-6 md:px-8 pt-6 pb-4 border-b border-black/5">
+            <p className="text-base font-black uppercase tracking-tighter text-black">
+              Platform Adoption Velocity
+            </p>
           </div>
 
           {/* Chart body */}

@@ -115,6 +115,15 @@ export default function ConnectPage() {
   const [authStatus, setAuthStatus] = useState<"idle" | "verifying" | "failed">("idle");
   const redirectingRef = useRef(false);
 
+  let isGuarded = false;
+  try {
+    if (typeof window !== 'undefined') {
+      isGuarded = sessionStorage.getItem("__disconnected__") === "1" || localStorage.getItem("__disconnected__") === "1";
+    }
+  } catch {}
+  
+  const effectiveIsConnected = isConnected && !isGuarded;
+
   useEffect(() => {
     if (!isError || !error) return;
     setPendingId(null);
@@ -514,7 +523,7 @@ export default function ConnectPage() {
                 </div>
               </motion.div>
 
-            ) : isConnected && !isLinked ? (
+            ) : effectiveIsConnected && !isLinked ? (
               <div className="flex flex-col items-center justify-center gap-6 flex-1 py-4 text-center">
                 <div className="w-16 h-16 bg-[#0A0A0A]/5 rounded-full flex items-center justify-center text-[#0A0A0A] mb-2">
                   <Lock size={20} strokeWidth={1.5} />

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
+import { VisionStatsSection } from '@/components/vision/VisionStatsSection';
 
 // Lottie cargado dinámicamente para evitar SSR issues
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
@@ -681,50 +682,7 @@ function FAQSection() {
   );
 }
 
-// ─── About Us / Leadership Section ──────────────────────────────────────────────
 
-function AboutUsSection() {
-  return (
-    <section className="w-full bg-[#fcfcfc] py-24 md:py-32 border-t border-black/10" id="about">
-      <div className="w-full max-w-[1000px] mx-auto px-6">
-        <div className="mb-16">
-          <span className="text-[12px] font-bold uppercase tracking-widest text-black/40 mb-4 block">
-            About Us & Leadership
-          </span>
-          <h2 className="text-[32px] md:text-[42px] font-black tracking-tight text-black leading-[1.1] max-w-[600px]">
-            Spearheading privacy in a transparent world.
-          </h2>
-        </div>
-
-        <div className="flex flex-col md:flex-row gap-10 items-start">
-          <div className="w-full md:w-1/3 shrink-0">
-            <img
-              src="/system-shots/photo_2026-05-16_19-57-16.jpg"
-              alt="Stefan Antonio Cirisanu, CEO"
-              className="rounded-2xl border border-black/10 w-full object-cover aspect-square shadow-sm"
-            />
-            <div className="mt-4 text-center">
-              <h3 className="text-[16px] font-bold text-black">Stefan Antonio Cirisanu</h3>
-              <p className="text-[12px] text-black/50 font-mono uppercase tracking-wider mt-1">CEO & Founder</p>
-            </div>
-          </div>
-          
-          <div className="w-full md:w-2/3 space-y-5 text-[15px] font-medium text-black/60 leading-relaxed">
-            <p>
-              The Whale Alert Network and Humanity Ledger ecosystems were founded on a singular vision: to bring absolute privacy and security to decentralized finance without compromising compliance. Led by Stefan Antonio Cirisanu, our global team of engineers and cryptographers is dedicated to building tools that empower individuals to take control of their financial identities.
-            </p>
-            <p>
-              Our current architecture leverages the <strong>Aztec Network</strong> to execute zero-knowledge proofs directly on your device. This ensures that every capital flow you track and every identity attribute you verify remains completely shielded. We process mathematical proofs, not personal data.
-            </p>
-            <p>
-              Operating as an open-source initiative, we are actively expanding our integration with Layer-2 protocols. We believe that true financial sovereignty requires transparent code and trustless systems, giving you the power to monitor global markets privately and securely.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
 // ─── Final CTA ────────────────────────────────────────────────────────────────
 
@@ -797,7 +755,7 @@ export function ImmersiveManifestoLanding(_props: ImmersiveManifestoLandingProps
       <IntegrationSection />
       <GlobalRegistrySection />
       <FAQSection />
-      <AboutUsSection />
+      <VisionStatsSection />
       <FinalCTASection />
     </div>
   );

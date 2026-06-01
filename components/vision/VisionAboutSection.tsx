@@ -33,7 +33,7 @@ export function VisionAboutSection() {
               {!imgError ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src="/stefan-portrait.jpg"
+                  src="/system-shots/photo_2026-05-16_19-57-16.jpg"
                   alt="Stefan Antonio Cirisanu"
                   className="w-full h-full object-cover object-top"
                   onError={() => setImgError(true)}
