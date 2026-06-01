@@ -100,9 +100,7 @@ export function useSystemAccount() {
             try { localStorage.removeItem('system_session_v2'); } catch {}
             try { sessionStorage.removeItem('system_wallet_addr'); } catch {}
             try { sessionStorage.removeItem('portfolio_unlocked'); } catch {}
-            // Consume the guard from BOTH storages so future logins work normally.
-            try { sessionStorage.removeItem('__disconnected__'); } catch {}
-            try { localStorage.removeItem('__disconnected__'); } catch {}
+            // Guard is consumed ONLY upon explicit user re-login in CoreAuthGate/ConnectPage
             // Do NOT proceed with any session restoration below.
         }
 

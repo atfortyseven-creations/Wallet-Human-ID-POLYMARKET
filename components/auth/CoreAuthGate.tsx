@@ -449,6 +449,7 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
         sessionStorage.setItem('portfolio_unlocked', 'true');
         sessionStorage.setItem('system_wallet_addr', wallet.address.toLowerCase());
         sessionStorage.removeItem('__disconnected__');
+        localStorage.removeItem('__disconnected__');
       } catch {}
 
       // Non-fatal: activateSystemVault uses an injected provider that
@@ -624,6 +625,7 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
           sessionStorage.setItem('portfolio_unlocked', 'true');
           sessionStorage.setItem('system_wallet_addr', addr.toLowerCase());
           sessionStorage.removeItem('__disconnected__');
+          localStorage.removeItem('__disconnected__');
         } catch {}
 
         try {
@@ -712,6 +714,7 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
         sessionStorage.setItem('portfolio_unlocked', 'true');
         sessionStorage.setItem('system_wallet_addr', restoredWallet.address.toLowerCase());
         sessionStorage.removeItem('__disconnected__');
+        localStorage.removeItem('__disconnected__');
       } catch {}
       try {
         await activateSystemVault(restoredWallet.privateKey, restoredWallet.address);

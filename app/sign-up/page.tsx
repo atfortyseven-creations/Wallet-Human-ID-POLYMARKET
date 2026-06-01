@@ -22,13 +22,9 @@ export default function SignUpPage() {
   }, []);
 
   const handleComplete = useCallback(() => {
-    // Wallet sealed, session established, DB indexed
-    const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(navigator.userAgent);
-    if (mobile) {
-      router.replace("/portfolio");
-    } else {
-      router.replace("/portfolio");
-    }
+    // Wallet sealed, session established, DB indexed.
+    // Always send the user to the landing page so they choose what to do next.
+    router.replace("/");
   }, [router]);
 
   if (!mounted) {

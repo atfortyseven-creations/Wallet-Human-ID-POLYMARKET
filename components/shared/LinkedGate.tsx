@@ -229,8 +229,12 @@ export function LinkedGate({ children }: { children: React.ReactNode }) {
       // [FIX] If the user just disconnected, let nuclearDisconnect handle the redirect to '/'.
       // Since checkTimer is 1500ms, if they are STILL on an internal app page after 1.5s,
       // nuclearDisconnect failed or they manually navigated back. Redirect to /connect.
-      const justDisconnected = typeof window !== 'undefined' &&
-        sessionStorage.getItem('__disconnected__') === '1';
+      // [FIX] Read from BOTH storages — nuclearDisconnect writes to localStorage which
+      // survives page reloads, while sessionStorage is cleared on tab close.
+      const justDisconnected = typeof window !== 'undefined' && (
+        sessionStorage.getItem('__disconnected__') === '1' ||
+        localStorage.getItem('__disconnected__') === '1'
+      );
       if (justDisconnected) {
         if (pathname !== '/' && !pathname.startsWith('/connect')) {
           router.replace('/connect');

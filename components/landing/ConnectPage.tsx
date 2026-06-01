@@ -404,6 +404,7 @@ export default function ConnectPage() {
         return;
     }
     try { sessionStorage.removeItem("__disconnected__"); } catch {}
+    try { localStorage.removeItem("__disconnected__"); } catch {}
     setPendingId(walletId);
     if (!rdns) { openAppKit(); setPendingId(null); return; }
     const connector = connectors.find((c: any) => c.id === rdns)
@@ -426,6 +427,7 @@ export default function ConnectPage() {
         return;
     }
     try { sessionStorage.removeItem("__disconnected__"); } catch {}
+    try { localStorage.removeItem("__disconnected__"); } catch {}
     try { localStorage.setItem('system_pending_wakeup', '1'); } catch {}
     
     // Instead of forcing the user into the dapp browser with metamask.app.link/dapp,

@@ -74,19 +74,15 @@ export default function LoginPage() {
   const handleRedirect = useCallback(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const returnUrl = urlParams.get("returnUrl") || urlParams.get("redirect_url");
-    if (returnUrl) {
+    if (returnUrl && returnUrl !== '/portfolio') {
       if (returnUrl.startsWith("http")) {
         window.location.href = returnUrl;
       } else {
         window.location.replace(returnUrl);
       }
     } else {
-      const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(navigator.userAgent);
-      if (mobile) {
-        window.location.replace("/portfolio");
-      } else {
-        window.location.replace("/portfolio");
-      }
+      // Always land on the main page so the user can choose what to do next.
+      window.location.replace("/");
     }
   }, []);
 

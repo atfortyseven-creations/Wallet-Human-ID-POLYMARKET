@@ -645,9 +645,14 @@ export function MobileLanding() {
   const [showKyc, setShowKyc] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
 
-  // Start with connect overlay visible  like Scroll.io, users see wallet buttons immediately
-  // The ImmersiveManifesto is moved to a secondary "Learn More" link below the buttons.
-  const [showConnectOverlay, setShowConnectOverlay] = useState(true);
+  // Show the connect overlay immediately for unauthenticated users (Scroll.io pattern).
+  // If the user already has an active session (system_handshake cookie) we start with
+  // the overlay hidden so they see the landing page cleanly without a modal flash.
+  const [showConnectOverlay, setShowConnectOverlay] = useState(() => {
+    if (typeof document === 'undefined') return true;
+    const alreadyConnected = document.cookie.split('; ').some(r => r.startsWith('system_handshake=0x'));
+    return !alreadyConnected;
+  });
   const [connecting, setConnecting] = useState<string | null>(null);
   // Emergency "I already connected" button  appears 3.5s after clicking a wallet button
   const [showFallbackBtn, setShowFallbackBtn] = useState(false);
@@ -770,15 +775,23 @@ export function MobileLanding() {
       setConnecting(null);
       setShowFallbackBtn(false);
       try { sessionStorage.removeItem('__disconnected__'); } catch {}
+      try { localStorage.removeItem('__disconnected__'); } catch {}
       try { sessionStorage.removeItem('system_show_reconnect'); } catch {}
       try { localStorage.removeItem('system_pending_wakeup'); } catch {}
       setShowManualReconnectRaw(false);
 
+      // [MOBILE UX] Session is established. If a ?next= param was provided navigate there;
+      // otherwise we are already on '/' (MobileLanding renders on '/') so simply close the
+      // connect overlay. The component re-renders with isLinked=true and shows the
+      // connected header (Whale Hub + address badge + disconnect).
       const params = new URLSearchParams(window.location.search);
       const next = params.get('next');
       if (next && next !== '/connect' && next !== window.location.pathname) {
           console.log('[Auth] Redirecting to:', next);
           window.location.replace(next);
+      } else {
+          // Already on landing page — just close the overlay.
+          setShowConnectOverlay(false);
       }
     } catch (err: any) {
       console.error('[Auth] Handshake failed:', err);
@@ -894,6 +907,7 @@ export function MobileLanding() {
   useEffect(() => {
     if (isConnected && !prevConnectedRef.current) {
       try { sessionStorage.removeItem("__disconnected__"); } catch {}
+      try { localStorage.removeItem("__disconnected__"); } catch {}
     }
     prevConnectedRef.current = isConnected;
   }, [isConnected]);
@@ -913,6 +927,7 @@ export function MobileLanding() {
   //  forceFullReconnect  Manual sync trigger for Android Chrome 
   const forceFullReconnect = useCallback(() => {
     try { sessionStorage.removeItem("__disconnected__"); } catch {}
+    try { localStorage.removeItem("__disconnected__"); } catch {}
     setFallbackStatus('checking');
     try {
       // Wagmi automatically reconnects via AppKit. Manually calling reconnect()
@@ -1079,26 +1094,9 @@ export function MobileLanding() {
   // The cookie value IS the wallet address: system_handshake=0xABCD...
 
 
-  if (isLinked && effectiveAddress) {
-    return (
-      <div className="w-full min-h-[100dvh] bg-transparent">
-        <ConnectedScreen 
-           address={effectiveAddress} 
-           onScan={() => { setScanMode('session-only'); setShowScanner(true); }} 
-           onScanLabel={() => { setScanMode('universal'); setShowScanner(true); }}
-           showScanner={showScanner} 
-           onCloseScanner={() => setShowScanner(false)} 
-           scanMode={scanMode}
-           connectorName={connector?.name}
-           chainId={chainId}
-           onDisconnect={handleDisconnect}
-           signMessageAsync={signMessageAsync}
-           initialScanData={(autoSyncStarted && uuidParam) ? window.location.href : null}
-           setShowKyc={setShowKyc}
-        />
-      </div>
-    );
-  }
+  // [MOBILE UX] When isLinked is true the session is fully established.
+  // We fall through to the normal landing page render below (no ConnectedScreen).
+  // The header shows Whale Hub + account controls. The user chooses where to go.
 
   //  Render: Wallet connected, session being written (brief) 
   // This render is typically invisible  the useEffect above fires setIsLinked
@@ -1151,15 +1149,48 @@ export function MobileLanding() {
         </div>
         
         <div className="flex items-center gap-2">
-          {!showConnectOverlay && (
-            <button
-              onClick={() => setShowConnectOverlay(true)}
-              className="px-4 py-2 rounded-xl bg-black text-white text-[10px] font-black uppercase tracking-widest shadow-lg active:scale-95 transition-all"
-            >
-              Connect
-            </button>
+          {/* Whale Hub — mobile-only direct scanner access (iOS + Android only) */}
+          <button
+            id="whale-hub-btn"
+            onClick={() => { setScanMode('universal'); setShowScanner(true); }}
+            className="px-3 py-2 rounded-xl border border-black/20 bg-white text-[9px] font-black uppercase tracking-widest text-black/70 shadow-sm active:scale-95 transition-all flex items-center gap-1.5"
+            aria-label="Open Whale Hub scanner"
+          >
+            <ScanLine size={11} className="shrink-0" />
+            Whale Hub
+          </button>
+
+          {isLinked && effectiveAddress ? (
+            /* Connected state: show address badge + portfolio link */
+            <>
+              <Link
+                href="/portfolio"
+                className="px-3 py-2 rounded-xl border border-emerald-200 bg-emerald-50 text-[9px] font-black uppercase tracking-widest text-emerald-700 shadow-sm active:scale-95 transition-all flex items-center gap-1.5"
+              >
+                <CheckCircle2 size={11} className="shrink-0" />
+                {effectiveAddress.slice(0, 6)}
+              </Link>
+              <button
+                onClick={handleDisconnect}
+                className="px-3 py-2 rounded-xl border border-black/10 bg-white text-[9px] font-black uppercase tracking-widest text-black/40 shadow-sm active:scale-95 transition-all"
+                aria-label="Disconnect wallet"
+              >
+                <LogOut size={11} />
+              </button>
+            </>
+          ) : (
+            /* Disconnected state: show Connect button */
+            !showConnectOverlay && (
+              <button
+                onClick={() => setShowConnectOverlay(true)}
+                className="px-4 py-2 rounded-xl bg-black text-white text-[10px] font-black uppercase tracking-widest shadow-lg active:scale-95 transition-all"
+              >
+                Connect
+              </button>
+            )
           )}
         </div>
+
       </motion.header>
 
       {/*  Background Landing Page  */}
@@ -1219,6 +1250,7 @@ export function MobileLanding() {
                 const openWalletModal = async (walletId: string) => {
                   if (isLinked && effectiveAddress) return;
                   try { sessionStorage.removeItem("__disconnected__"); } catch {}
+                  try { localStorage.removeItem("__disconnected__"); } catch {}
 
                   setConnecting(walletId);
                   setWcTargetWallet(walletId);
