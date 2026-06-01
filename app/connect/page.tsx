@@ -32,24 +32,7 @@ function RealDeviceRouter() {
   const [view, setView] = useState<'loading' | 'mobile' | 'desktop'>('loading');
   const { isConnected } = useSystemAccount();
 
-  // Dynamic Redirection Watcher (Triggers instantly when wallet connects)
-  useEffect(() => {
-    if (isConnected) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const hasUuid = urlParams.has('uuid');
-      if (!hasUuid) {
-        const next = urlParams.get('next');
-        if (next && next !== window.location.pathname) {
-          window.location.replace(next);
-        } else {
-          // Mobile → Dashboard (scanner), Desktop → Landing Page
-          const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-            ('ontouchstart' in window || navigator.maxTouchPoints > 0) && window.screen.width < 768;
-          window.location.replace('/portfolio');
-        }
-      }
-    }
-  }, [isConnected]);
+
 
   useEffect(() => {
     // If already authenticated, redirect to the target destination immediately.

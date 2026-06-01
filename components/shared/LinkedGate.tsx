@@ -98,6 +98,9 @@ function writeSessionAll(addr: string) {
     localStorage.setItem(LS_SESSION_KEY, JSON.stringify({
       address: norm,
       exp: Date.now() + 30 * 24 * 60 * 60 * 1000,
+      // [FIX] Tag source as 'wagmi' so useSystemAccount doesn't treat external
+      // wallets as local Humanity Ledger wallets (which would break signing).
+      source: 'wagmi',
     }));
   } catch {}
   // sessionStorage
@@ -181,7 +184,13 @@ export function LinkedGate({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!isMounted) return;
     let justDisconnected = false;
-    try { justDisconnected = sessionStorage.getItem('__disconnected__') === '1'; } catch {}
+    try {
+      // [FIX] Check BOTH storages — sessionStorage is empty in new tabs,
+      // localStorage persists across tabs and page reloads.
+      justDisconnected =
+        sessionStorage.getItem('__disconnected__') === '1' ||
+        localStorage.getItem('__disconnected__') === '1';
+    } catch {}
     
     const isPublicPath = pathname === '/' ||
                          pathname.startsWith('/connect') ||

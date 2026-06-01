@@ -116,9 +116,9 @@ export function TitaniumGate({ children }: TitaniumGateProps) {
                 // Network error — fail open to avoid locking out users on flaky connections
             }
 
-            // Otherwise: Access Denied  redirect to connect
+            // Otherwise: Access Denied — redirect to connect, preserving intended destination
             setState('AUTH');
-            if (pathname !== '/connect') router.push('/connect');
+            if (pathname !== '/connect') router.push('/connect?returnUrl=' + encodeURIComponent(pathname));
         }, 1500);
 
         return () => clearTimeout(checkTimer);

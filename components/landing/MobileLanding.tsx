@@ -854,10 +854,11 @@ export function MobileLanding() {
           try { val = decodeURIComponent(val); } catch {}
           if (val) {
             const addr = extractAddressFromAppKit(val);
-            if (addr && wagmiAddressRef.current) {
+            if (addr) {
+              // [FIX] Use addr directly — wagmiAddressRef.current is undefined here by definition
               console.log('[System:Sync] Found address in cookies:', addr);
               clearInterval(pollIntervalRef.current!); pollIntervalRef.current = null;
-              tryEstablish(wagmiAddressRef.current);
+              tryEstablish(addr);
               return;
             }
           }
@@ -875,12 +876,11 @@ export function MobileLanding() {
             
             const addr = extractAddressFromAppKit(raw);
             if (addr) { 
+              // [FIX] Use addr directly — wagmiAddressRef.current is undefined here by definition
+              // The entire reason this fallback runs is because wagmi hasn't resolved yet.
               console.log('[System:Sync] Found address in storage key:', key, addr);
-              
               clearInterval(pollIntervalRef.current!); pollIntervalRef.current = null;
-              if (wagmiAddressRef.current) {
-                tryEstablish(wagmiAddressRef.current);
-              }
+              tryEstablish(addr);
               return;
             }
           }
@@ -1091,6 +1091,7 @@ export function MobileLanding() {
   const handleDisconnect = useCallback(async () => {
     if (isDisconnecting) return;
     setIsDisconnecting(true);
+    setShowHub(false); // [FIX] Reset Hub so stale showHub=true doesn't auto-open after re-login
     await nuclearDisconnect();
   }, [isDisconnecting, nuclearDisconnect]);
 

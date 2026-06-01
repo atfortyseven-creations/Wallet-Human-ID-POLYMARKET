@@ -182,8 +182,9 @@ export default function ConnectPage() {
   useEffect(() => { if (!qrSession && mounted) initEphemeral(); }, [qrSession, initEphemeral, mounted]);
 
   // QR poll  desktop side: waits for mobile to complete handshake, then hydrates session
+  // [FIX] Also stop polling when syncStatus === "ERROR" to prevent infinite retry loops.
   useEffect(() => {
-    if (!qrSession || !ephemeral || syncStatus === "SYNCED") return;
+    if (!qrSession || !ephemeral || syncStatus === "SYNCED" || syncStatus === "ERROR") return;
     const poll = setInterval(async () => {
       try {
         const res = await fetch(`/api/auth/qr-poll?uuid=${qrSession}&t=${Date.now()}`, { cache: 'no-store' });
@@ -271,16 +272,10 @@ export default function ConnectPage() {
             // Small delay so the SYNCED animation plays before redirect
             await new Promise(r => setTimeout(r, 800));
             const urlParams = new URLSearchParams(window.location.search);
-            const returnUrl = urlParams.get('returnUrl') || urlParams.get('redirect_url');
-            if (returnUrl && returnUrl !== '/portfolio') {
-              if (returnUrl.startsWith('http')) {
-                window.location.href = returnUrl;
-              } else {
-                window.location.replace(returnUrl);
-              }
-            } else {
-              window.location.replace("/");
-            }
+            const raw = urlParams.get('returnUrl') || urlParams.get('redirect_url') || '';
+            // [SECURITY] Only allow same-origin relative paths — reject any http(s):// returnUrl
+            const safeReturn = raw.startsWith('/') && !raw.startsWith('//') && raw !== '/portfolio' ? raw : '/';
+            window.location.replace(safeReturn);
           } else {
             const errData = await hydrateRes.json().catch(() => ({}));
             console.error('[QR:Desktop] Hydrate failed:', errData);
