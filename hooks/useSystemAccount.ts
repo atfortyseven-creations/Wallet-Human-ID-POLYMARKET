@@ -78,23 +78,19 @@ export function useSystemAccount() {
     const [isZkVerified, setIsZkVerified]         = useState(globalIsZkVerified);
     const [isChecking, setIsChecking]             = useState(true);
 
+    // [CRITICAL FIX] Absolute Firewall for Logout Loops
+    // Read the disconnect guard synchronously during render.
+    // Wagmi sometimes auto-reconnects on page load if IndexedDB clearing fails.
+    // If the guard is active, we FORCE the UI to show disconnected.
+    const isGuarded = typeof window !== 'undefined' && (
+        safeSessionGet('__disconnected__') === '1' ||
+        (typeof localStorage !== 'undefined' && localStorage.getItem('__disconnected__') === '1')
+    );
+
     //  Mount effect: read all client-only storage once 
     useEffect(() => {
         // 0. AUTO-RESTORE from system_session_v2 (Humanity Ledger EIP-712 sign-up)
-        //    This makes sign-up users identical to MetaMask users on every page load.
-        //    sessionStorage is per-tab, so we restore it from the durable localStorage token.
-        //    GUARD: Skip restore if the user just explicitly disconnected in this tab.
-        //
-        // [FIX] Also check localStorage for the disconnect guard — the guard is written
-        // to localStorage in nuclearDisconnect() so it survives window.location.replace('/').
-        // sessionStorage alone was being wiped by STEP 3 before the redirect, so on the
-        // next page load the guard was missing and the session auto-restored.
-        const justDisconnected = typeof window !== 'undefined' && (
-            sessionStorage.getItem('__disconnected__') === '1' ||
-            localStorage.getItem('__disconnected__') === '1'
-        );
-
-        if (justDisconnected) {
+        if (isGuarded) {
             // Actively purge any lingering session data so a re-render
             // cannot restore the session that was just explicitly killed.
             try { localStorage.removeItem('system_session_v2'); } catch {}
@@ -104,7 +100,7 @@ export function useSystemAccount() {
             // Do NOT proceed with any session restoration below.
         }
 
-        if (!justDisconnected && typeof window !== 'undefined') {
+        if (!isGuarded && typeof window !== 'undefined') {
             try {
                 const raw = localStorage.getItem('system_session_v2');
                 if (raw) {
@@ -165,6 +161,26 @@ export function useSystemAccount() {
         };
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [wagmiAccount.isConnected, storePrivateKey]);
+
+    //  Priority 0: Nuclear Disconnect Guard 
+    if (isGuarded) {
+        return {
+            address: undefined,
+            isConnected: false,
+            isConnecting: false,
+            isReconnecting: false,
+            isDisconnected: true,
+            status: 'disconnected' as const,
+            chain: undefined,
+            chainId: 1,
+            connector: undefined,
+            isSystemHandshake: false,
+            isLocalSystemWallet: false,
+            needsWalletReconnect: false,
+            isZkVerified: false,
+            isChecking: false,
+        };
+    }
 
     //  Priority 1: Local system wallet (privateKey live in memory) 
     if (storeAddress && storePrivateKey) {

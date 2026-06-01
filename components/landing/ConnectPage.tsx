@@ -317,7 +317,13 @@ export default function ConnectPage() {
     if (!mounted || !isConnected || !address) return;
     if (redirectingRef.current || signingRef.current || authStatus === 'failed') return;
     try {
-      if (sessionStorage.getItem("__disconnected__") === "1") return;
+      // [CRITICAL FIX] After hard page reload, sessionStorage is CLEARED by the browser.
+      // nuclearDisconnect writes __disconnected__ to localStorage for cross-reload persistence.
+      // We MUST check BOTH storages or wagmi auto-reconnect will restore the session every reload.
+      const isGuarded =
+        sessionStorage.getItem("__disconnected__") === "1" ||
+        localStorage.getItem("__disconnected__") === "1";
+      if (isGuarded) return;
     } catch {}
 
     signingRef.current = true;

@@ -822,6 +822,14 @@ export function MobileLanding() {
   //  onFocusRecheck  stable useCallback so multiple effects can reference it 
   const onFocusRecheck = useCallback(() => {
     if (isLinked || signingError) return;
+    
+    // [CRITICAL FIX] Respect the disconnect guard here too! If the user just logged out,
+    // do NOT run the polling recovery engine.
+    try {
+      const isGuarded = sessionStorage.getItem("__disconnected__") === "1" || 
+                        localStorage.getItem("__disconnected__") === "1";
+      if (isGuarded) return;
+    } catch {}
 
     const tryEstablish = (addr: string) => {
       if (!addr) return;
@@ -912,22 +920,21 @@ export function MobileLanding() {
     }, 500);
   }, [isLinked, signingError, establishSession]);
 
-  // Wallet state transition tracking to clear __disconnected__ ONLY on new user connection
+  // [CRITICAL FIX] Removed the useEffect that automatically deleted __disconnected__ 
+  // when isConnected became true. Wagmi auto-reconnects in the background after
+  // a page reload, which was causing this effect to silently erase the logout guard,
+  // throwing the user into an infinite logout-login loop.
+  // The guard must ONLY be cleared by explicit user action (e.g. clicking Connect).
   const prevConnectedRef = useRef(isConnected);
-  useEffect(() => {
-    if (isConnected && !prevConnectedRef.current) {
-      try { sessionStorage.removeItem("__disconnected__"); } catch {}
-      try { localStorage.removeItem("__disconnected__"); } catch {}
-    }
-    prevConnectedRef.current = isConnected;
-  }, [isConnected]);
 
   useEffect(() => {
     if (!mounted || isLinked || isActuallySigning || signingInProgressRef.current || signingError) return;
     try {
-      if (sessionStorage.getItem("__disconnected__") === "1") {
-        return;
-      }
+      // [CRITICAL FIX] sessionStorage is empty after hard reload — must check localStorage too.
+      const isGuarded =
+        sessionStorage.getItem("__disconnected__") === "1" ||
+        localStorage.getItem("__disconnected__") === "1";
+      if (isGuarded) return;
     } catch {}
     if (isConnected && address) {
       establishSession(address);

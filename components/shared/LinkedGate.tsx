@@ -129,6 +129,14 @@ export function LinkedGate({ children }: { children: React.ReactNode }) {
   //  Read session from ALL 3 layers on mount 
   useEffect(() => {
     setIsMounted(true);
+    // [CRITICAL FIX] Check disconnect guard BEFORE restoring any session.
+    // sessionStorage is cleared on hard reload, so we MUST also check localStorage.
+    try {
+      const isGuarded =
+        sessionStorage.getItem('__disconnected__') === '1' ||
+        localStorage.getItem('__disconnected__') === '1';
+      if (isGuarded) return;
+    } catch {}
     if (typeof document !== 'undefined' && hasValidStoredSession(address)) {
       setLinked(true);
     }
