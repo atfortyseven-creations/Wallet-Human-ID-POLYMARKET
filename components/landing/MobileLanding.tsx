@@ -15,7 +15,7 @@ import { useSystemSignOut } from '@/hooks/useSystemSignOut';
 import { 
   Scan, MessageSquare, LogOut, MessageCircle, ScanLine, 
   Fingerprint, ChevronDown, CheckCircle, Zap, Shield, Menu,
-  ArrowRight, Loader2, CheckCircle2, AlertCircle, RefreshCw, Mail, Info, X, PieChart,
+  ArrowLeft, ArrowRight, Loader2, CheckCircle2, AlertCircle, RefreshCw, Mail, Info, X, PieChart,
   Newspaper, GraduationCap, Briefcase, Activity, TrendingUp, Package, LayoutDashboard, Target
 } from 'lucide-react';
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
@@ -352,8 +352,17 @@ function ConnectedScreen({
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
           style={{ willChange: 'opacity, transform', transform: 'translateZ(0)' }}
-          className="w-full flex items-center justify-center mb-10 bg-white"
+          className="w-full flex items-center justify-center mb-10 bg-white relative"
         >
+          {onBack && (
+            <button
+              onClick={onBack}
+              className="absolute left-0 top-1/2 -translate-y-1/2 p-2 text-black/50 hover:text-black transition-colors"
+              aria-label="Back to Landing Page"
+            >
+              <ArrowLeft size={20} />
+            </button>
+          )}
           <img
             src="/system-shots/connect/Gemini_Generated_Image_dzte5edzte5edzte (2).png"
             className="h-8 w-auto object-contain mix-blend-multiply"
@@ -565,6 +574,7 @@ export function MobileLanding() {
   const [mounted, setMounted]           = useState(false);
   const [showScanner, setShowScanner]   = useState(false);
   const [scanMode, setScanMode] = useState<'universal' | 'session-only'>('session-only');
+  const [showHub, setShowHub]           = useState(false);
   const [showDebug, setShowDebug]       = useState(false);  // secret debug panel
   const [debugTaps, setDebugTaps]       = useState(0);
   // Always false on SSR. Reads from sessionStorage after mount to survive Chrome
@@ -1098,6 +1108,28 @@ export function MobileLanding() {
   // We fall through to the normal landing page render below (no ConnectedScreen).
   // The header shows Whale Hub + account controls. The user chooses where to go.
 
+  if (isLinked && effectiveAddress && showHub) {
+    return (
+      <div className="w-full min-h-[100dvh] bg-transparent">
+        <ConnectedScreen 
+           address={effectiveAddress} 
+           onScan={() => { setScanMode('session-only'); setShowScanner(true); }} 
+           onScanLabel={() => { setScanMode('universal'); setShowScanner(true); }}
+           showScanner={showScanner} 
+           onCloseScanner={() => setShowScanner(false)} 
+           scanMode={scanMode}
+           onBack={() => setShowHub(false)}
+           connectorName={connector?.name}
+           chainId={chainId}
+           onDisconnect={handleDisconnect}
+           signMessageAsync={signMessageAsync}
+           initialScanData={(autoSyncStarted && uuidParam) ? window.location.href : null}
+           setShowKyc={setShowKyc}
+        />
+      </div>
+    );
+  }
+
   //  Render: Wallet connected, session being written (brief) 
   // This render is typically invisible  the useEffect above fires setIsLinked
   // in the same React batch. Shown only for a fraction of a second max.
@@ -1152,9 +1184,15 @@ export function MobileLanding() {
           {/* Whale Hub — mobile-only direct scanner access (iOS + Android only) */}
           <button
             id="whale-hub-btn"
-            onClick={() => { setScanMode('universal'); setShowScanner(true); }}
+            onClick={() => { 
+              if (isLinked && effectiveAddress) {
+                setShowHub(true);
+              } else {
+                setShowConnectOverlay(true);
+              }
+            }}
             className="px-3 py-2 rounded-xl border border-black/20 bg-white text-[9px] font-black uppercase tracking-widest text-black/70 shadow-sm active:scale-95 transition-all flex items-center gap-1.5"
-            aria-label="Open Whale Hub scanner"
+            aria-label="Open Whale Hub"
           >
             <ScanLine size={11} className="shrink-0" />
             Whale Hub

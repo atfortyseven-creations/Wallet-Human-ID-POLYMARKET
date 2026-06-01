@@ -270,7 +270,17 @@ export default function ConnectPage() {
 
             // Small delay so the SYNCED animation plays before redirect
             await new Promise(r => setTimeout(r, 800));
-            window.location.replace("/dashboard");
+            const urlParams = new URLSearchParams(window.location.search);
+            const returnUrl = urlParams.get('returnUrl') || urlParams.get('redirect_url');
+            if (returnUrl && returnUrl !== '/portfolio') {
+              if (returnUrl.startsWith('http')) {
+                window.location.href = returnUrl;
+              } else {
+                window.location.replace(returnUrl);
+              }
+            } else {
+              window.location.replace("/");
+            }
           } else {
             const errData = await hydrateRes.json().catch(() => ({}));
             console.error('[QR:Desktop] Hydrate failed:', errData);
@@ -332,14 +342,14 @@ export default function ConnectPage() {
             redirectingRef.current = true;
             const urlParams = new URLSearchParams(window.location.search);
             const returnUrl = urlParams.get('returnUrl') || urlParams.get('redirect_url');
-            if (returnUrl) {
+            if (returnUrl && returnUrl !== '/portfolio') {
                 if (returnUrl.startsWith('http')) {
                     window.location.href = returnUrl;
                 } else {
                     window.location.replace(returnUrl);
                 }
             } else {
-                window.location.replace("/dashboard");
+                window.location.replace("/");
             }
             return;
           }
@@ -371,14 +381,14 @@ export default function ConnectPage() {
         redirectingRef.current = true;
         const urlParams = new URLSearchParams(window.location.search);
         const returnUrl = urlParams.get('returnUrl') || urlParams.get('redirect_url');
-        if (returnUrl) {
+        if (returnUrl && returnUrl !== '/portfolio') {
             if (returnUrl.startsWith('http')) {
                 window.location.href = returnUrl;
             } else {
                 window.location.replace(returnUrl);
             }
         } else {
-            window.location.replace("/dashboard");
+            window.location.replace("/");
         }
       } catch (err: any) {
         const msg = err?.message || '';
