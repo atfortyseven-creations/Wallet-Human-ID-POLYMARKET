@@ -16,13 +16,30 @@ interface LandingHeroProps {
 export function LandingHero({ onStart }: LandingHeroProps) {
     const { t } = useLanguage();
     const { isConnected, address, status } = useAccount();
-    const isSignedIn = isConnected;
     const isLoaded = status !== 'connecting' && status !== 'reconnecting';
     const router = useRouter();
     const searchParams = useSearchParams();
     const [loginSuccess, setLoginSuccess] = useState(false);
+    const [isDisconnectGuarded, setIsDisconnectGuarded] = useState(false);
 
     const isLoginRedirect = searchParams.get('login') === 'true';
+
+    // [ABSOLUTE DISCONNECT FIREWALL] Check the guard on mount synchronously.
+    // wagmi auto-reconnects on page reload even after logout, which would cause
+    // isConnected to be true and show the "Access Granted" panel to a user who
+    // just clicked Disconnect. We must read both storages: sessionStorage for the
+    // current tab and localStorage for cross-reload persistence.
+    useEffect(() => {
+        try {
+            const guarded =
+                sessionStorage.getItem('__disconnected__') === '1' ||
+                localStorage.getItem('__disconnected__') === '1';
+            setIsDisconnectGuarded(guarded);
+        } catch { /* storage blocked — treat as unguarded */ }
+    }, []);
+
+    // Treat wagmi's "connected" state as false if the disconnect guard is active.
+    const isSignedIn = isConnected && !isDisconnectGuarded;
 
     useEffect(() => {
         if (isSignedIn && isLoaded && !loginSuccess) {

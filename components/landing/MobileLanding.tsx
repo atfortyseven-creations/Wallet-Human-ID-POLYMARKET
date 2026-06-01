@@ -1139,9 +1139,18 @@ export function MobileLanding() {
   }
 
   //  Render: Wallet connected, session being written (brief) 
-  // This render is typically invisible  the useEffect above fires setIsLinked
+  // This render is typically invisible — the useEffect above fires setIsLinked
   // in the same React batch. Shown only for a fraction of a second max.
-  if ((isConnected && address && !isLinked) || isActuallySigning) {
+  // [DISCONNECT GUARD] Never show the signing overlay if the user explicitly logged out.
+  // wagmi's auto-reconnect would satisfy (isConnected && address && !isLinked) but
+  // the user must NOT be prompted to sign again after clicking Disconnect.
+  let signingOverlayGuarded = false;
+  try {
+    signingOverlayGuarded =
+      sessionStorage.getItem('__disconnected__') === '1' ||
+      localStorage.getItem('__disconnected__') === '1';
+  } catch {}
+  if (!signingOverlayGuarded && ((isConnected && address && !isLinked) || isActuallySigning)) {
     return (
       <div className="w-full h-full">
         <SigningOverlay 

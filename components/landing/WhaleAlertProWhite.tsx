@@ -145,13 +145,26 @@ export default function WhaleAlertProWhite() {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const { isConnected } = useAccount();
+  const [isDisconnectGuarded, setIsDisconnectGuarded] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    // [ABSOLUTE DISCONNECT FIREWALL] wagmi may auto-reconnect even after logout.
+    // If the guard is active, treat the wallet as disconnected so we redirect to /connect
+    // instead of bypassing auth by going directly to /portfolio.
+    try {
+      const guarded =
+        sessionStorage.getItem('__disconnected__') === '1' ||
+        localStorage.getItem('__disconnected__') === '1';
+      setIsDisconnectGuarded(guarded);
+    } catch { /* storage blocked */ }
   }, []);
 
+  // The effective connected state respects the explicit disconnect guard.
+  const isEffectivelyConnected = isConnected && !isDisconnectGuarded;
+
   const handleEnterTerminal = () => {
-    if (isConnected) router.push('/portfolio');
+    if (isEffectivelyConnected) router.push('/portfolio');
     else router.push('/connect');
   };
 
@@ -193,7 +206,7 @@ export default function WhaleAlertProWhite() {
             onClick={handleEnterTerminal}
             className="flex items-center gap-3 px-8 py-4 bg-[#0A0A0A] text-white text-[12px] font-bold tracking-wider rounded-2xl hover:bg-black transition-all shadow-xl"
           >
-            {mounted && isConnected ? (
+            {mounted && isEffectivelyConnected ? (
               <><span>Enter Dashboard</span><div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" /></>
             ) : (
               <><LogIn size={14} /><span>Connect Wallet</span></>

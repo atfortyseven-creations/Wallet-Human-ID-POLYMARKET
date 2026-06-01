@@ -61,16 +61,42 @@ export function TitaniumGate({ children }: TitaniumGateProps) {
     }, [isPublicPage]);
 
     useEffect(() => {
-        // Increased debounce: 300ms was too short  on first mobile connection,
+        // Increased debounce: 300ms was too short on first mobile connection.
         // establishSession() writes the cookie AFTER wagmi reconnects (~200-400ms).
         // 1500ms gives wagmi + cookie-write time to complete before we gate.
-        // With ssr:true + cookieStorage in appkit.tsx, reconnect is now synchronous
-        // on return visits, so this guard only fires on the first-ever connect.
         const checkTimer = setTimeout(async () => {
             if (!mounted) return;
 
+            // ─────────────────────────────────────────────────────────────────
+            // [ABSOLUTE DISCONNECT FIREWALL] — Checked FIRST before everything.
+            // After nuclearDisconnect(), __disconnected__ is written to BOTH
+            // localStorage (survives hard reloads) and sessionStorage (same tab).
+            // If this guard is active we MUST NOT call /api/auth/verify-session —
+            // the httpOnly cookies (whale_session, human_session) may still be
+            // present in the browser for a brief moment while the server processes
+            // the deletion response. A verify-session call in that window would
+            // return authenticated:true and silently re-log the user back in.
+            // ─────────────────────────────────────────────────────────────────
+            let isDisconnectGuarded = false;
+            try {
+                isDisconnectGuarded =
+                    sessionStorage.getItem('__disconnected__') === '1' ||
+                    localStorage.getItem('__disconnected__') === '1';
+            } catch { /* storage may be blocked in incognito — treat as unguarded */ }
+
+            if (isDisconnectGuarded) {
+                // The user explicitly logged out. Deny access to ALL protected routes.
+                // Public pages are still allowed (landing, /connect, etc.).
+                if (isPublicPage) {
+                    setState('APP');
+                    return;
+                }
+                setState('AUTH');
+                if (pathname !== '/connect') router.push('/connect?returnUrl=' + encodeURIComponent(pathname));
+                return;
+            }
+
             // Failsafe: if we are in the middle of connecting/reconnecting, WAIT.
-            // This prevents aggressive redirects while the wallet modal is open.
             if (isConnecting || isReconnecting) return;
 
             // Priority 1: Wagmi is connected
@@ -85,13 +111,14 @@ export function TitaniumGate({ children }: TitaniumGateProps) {
                 return;
             }
 
-            // Priority 3: system_handshake cookie (JS-readable, set by all auth paths)
+            // Priority 3: system_handshake cookie (JS-readable, set by all auth paths).
             // Must have real 0x address prefix — empty/expired values are rejected.
             const hasHandshake = typeof document !== 'undefined'
                 && document.cookie.split('; ').some(r => r.startsWith('system_handshake=0x'));
-            
-            // Priority 3.5: Local System Wallet session storage fallback
-            const isLocalUnlocked = typeof window !== 'undefined' && sessionStorage.getItem('portfolio_unlocked') === 'true';
+
+            // Priority 3.5: Local System Wallet session storage fallback.
+            const isLocalUnlocked = typeof window !== 'undefined'
+                && sessionStorage.getItem('portfolio_unlocked') === 'true';
 
             if (hasHandshake || isLocalUnlocked) {
                 setState('APP');
@@ -113,10 +140,10 @@ export function TitaniumGate({ children }: TitaniumGateProps) {
                     }
                 }
             } catch {
-                // Network error — fail open to avoid locking out users on flaky connections
+                // Network error — fail open to avoid locking out users on flaky connections.
             }
 
-            // Otherwise: Access Denied — redirect to connect, preserving intended destination
+            // Otherwise: Access Denied — redirect to connect, preserving intended destination.
             setState('AUTH');
             if (pathname !== '/connect') router.push('/connect?returnUrl=' + encodeURIComponent(pathname));
         }, 1500);

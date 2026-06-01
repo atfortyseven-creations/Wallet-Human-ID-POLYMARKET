@@ -359,15 +359,29 @@ export default async function middleware(request: NextRequest) {
     });
 
     // Absolutamente forzar seguridad en cualquier cookie emitida por la respuesta
-    const setCookieHeader = response.headers.get('Set-Cookie');
-    if (setCookieHeader && process.env.NODE_ENV === 'production') {
-      const securedCookie = setCookieHeader.split(',').map(cookie => {
-        if (!cookie.toLowerCase().includes('secure')) cookie += '; Secure';
-        if (!cookie.toLowerCase().includes('httponly') && cookie.includes('whale_session')) cookie += '; HttpOnly';
-        if (!cookie.toLowerCase().includes('samesite')) cookie += '; SameSite=Strict';
-        return cookie;
-      }).join(',');
-      response.headers.set('Set-Cookie', securedCookie);
+    if (process.env.NODE_ENV === 'production') {
+      let cookiesArray: string[] = [];
+      if (typeof response.headers.getSetCookie === 'function') {
+        cookiesArray = response.headers.getSetCookie();
+      } else {
+        const raw = response.headers.get('Set-Cookie');
+        if (raw) {
+          // Expresión regular que separa por comas solo si están seguidas de un nombre de cookie válido y un signo '='.
+          // Evita romper fechas como 'Expires=Thu, 01 Jan 1970'
+          cookiesArray = raw.split(/,\s*(?=[a-zA-Z0-9_-]+\s*=)/);
+        }
+      }
+
+      if (cookiesArray.length > 0) {
+        response.headers.delete('Set-Cookie');
+        cookiesArray.forEach(cookie => {
+          let secureCookie = cookie;
+          if (!secureCookie.toLowerCase().includes('secure')) secureCookie += '; Secure';
+          if (!secureCookie.toLowerCase().includes('httponly') && secureCookie.includes('whale_session=')) secureCookie += '; HttpOnly';
+          if (!secureCookie.toLowerCase().includes('samesite')) secureCookie += '; SameSite=Strict';
+          response.headers.append('Set-Cookie', secureCookie);
+        });
+      }
     }
 
     response.headers.set('X-Nonce', nonce);
