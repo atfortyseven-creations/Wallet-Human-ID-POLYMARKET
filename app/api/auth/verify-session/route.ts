@@ -28,13 +28,23 @@ export async function GET(request: NextRequest) {
             // this is a "zombie" session (caused by the old logout bug where localStorage/handshake
             // were cleared but httpOnly cookies were left behind).
             // We MUST invalidate the session to break the Connect -> Portfolio -> Connect redirect loop.
-            if (!handshake) {
-                console.warn('[verify-session] Zombie session detected (missing handshake). Purging cookies.');
-                const res = NextResponse.json({ authenticated: false }, { status: 401 });
-                res.cookies.set('whale_session', '', { maxAge: 0, path: '/' });
-                res.cookies.set('human_session', '', { maxAge: 0, path: '/' });
-                return res;
+        if (!handshake) {
+            console.warn('[verify-session] Zombie session detected (missing handshake). Purging cookies.');
+            const res = NextResponse.json({ authenticated: false }, { status: 401 });
+            // [FIX] BUG-5: Must delete with EXACT same attributes the cookie was created with.
+            // The original code used { maxAge: 0, path: '/' } without httpOnly/SameSite,
+            // so the browser rejected the deletion for HttpOnly cookies.
+            const isProd = process.env.NODE_ENV === 'production';
+            const expiredDate = 'Thu, 01 Jan 1970 00:00:00 GMT';
+            const secure = isProd ? '; Secure' : '';
+            // Clear both whale_session and human_session with all SameSite variants
+            for (const name of ['whale_session', 'human_session']) {
+                res.headers.append('Set-Cookie', `${name}=; Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Strict`);
+                res.headers.append('Set-Cookie', `${name}=; Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Lax`);
             }
+            return res;
+        }
+
 
             try {
                 const { verifyJWT } = await import('@/lib/jwt');

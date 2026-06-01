@@ -133,6 +133,16 @@ export default function ConnectPage() {
 
   useEffect(() => {
     if (typeof document === "undefined") return;
+    // [FIX] BUG-9/10: Must check disconnect guard BEFORE restoring session.
+    // If the user just logged out, system_session_v2 and system_handshake cookie
+    // are being cleared async. Reading them here without the guard check
+    // caused an immediate setLinked(true) race that restored the session mid-logout.
+    try {
+      if (
+        sessionStorage.getItem('__disconnected__') === '1' ||
+        localStorage.getItem('__disconnected__') === '1'
+      ) return; // actively disconnecting — do NOT restore session
+    } catch {}
     const hasCookie = document.cookie.split("; ").some((r) => r.startsWith("system_handshake="));
     const hasLocal = (() => {
       try {
@@ -282,12 +292,14 @@ export default function ConnectPage() {
     nuclearDisconnect();
   }, [nuclearDisconnect]);
 
-  // Wallet state transition tracking to clear __disconnected__ ONLY on new user connection
+  // Wallet state transition tracking:
+  // [FIX] BUG-7: The previous code cleared __disconnected__ whenever isConnected flipped
+  // from false to true — including wagmi auto-reconnect on page load after logout.
+  // This erased the disconnect guard silently, making logout impossible.
+  // Guard is now ONLY cleared explicitly inside handleDesktopWallet / handleMobileWallet
+  // (when the user physically taps a wallet button). Auto-reconnect no longer clears it.
   const prevConnectedRef = useRef(isConnected);
   useEffect(() => {
-    if (isConnected && !prevConnectedRef.current) {
-      try { sessionStorage.removeItem("__disconnected__"); } catch {}
-    }
     prevConnectedRef.current = isConnected;
   }, [isConnected]);
 

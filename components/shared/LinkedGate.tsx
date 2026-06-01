@@ -139,9 +139,13 @@ export function LinkedGate({ children }: { children: React.ReactNode }) {
     //  INHUMAN OPTIMIZATION: Nuclear Guard State Transition Fix 
     // If the wallet transitions from disconnected to connected, the user intentionally
     // re-authenticated. We MUST purge the __disconnected__ flag to resume auto-routing.
-    if (prevWalletConnected === false && isWalletConnected) {
-        sessionStorage.removeItem('__disconnected__');
-    }
+    // [FIX] BUG-8: wagmi auto-reconnect (e.g. WalletConnect resuming after page reload)
+    // was triggering this block without user intent → guard erased → logout failed silently.
+    // We now only clear the guard when the user explicitly connected a NEW wallet
+    // AND the guard is not present (i.e. not a post-logout auto-reconnect attempt).
+    // The explicit clear happens in handleDesktopWallet / handleMobileWallet in ConnectPage.
+    // This block is intentionally left as a no-op — do NOT clear guard here.
+    // if (prevWalletConnected === false && isWalletConnected) { ... }
 
     // [FIX] Nuclear Logout Guard: Check FIRST, before ANY storage read.
     // Previously this guard was AFTER hasValidStoredSession(), meaning:
@@ -150,7 +154,11 @@ export function LinkedGate({ children }: { children: React.ReactNode }) {
     //   3. LinkedGate re-renders, reads cookie/localStorage BEFORE they're cleared
     //   4. hasValidStoredSession() returns true → setLinked(true) → logout fails
     // The guard must be checked unconditionally regardless of current isLinked state.
-    const justDisconnected = sessionStorage.getItem('__disconnected__') === '1';
+    // [FIX] BUG-6: Read guard from BOTH storages (localStorage survives the reload,
+    // sessionStorage is consumed by useSystemAccount before LinkedGate sometimes mounts).
+    const justDisconnected =
+        sessionStorage.getItem('__disconnected__') === '1' ||
+        localStorage.getItem('__disconnected__') === '1';
     if (justDisconnected) {
         console.log('[LinkedGate] Nuclear Logout Guard active — blocking all auto-link paths');
         return;
