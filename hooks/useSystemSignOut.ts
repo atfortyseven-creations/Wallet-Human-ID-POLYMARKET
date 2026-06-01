@@ -75,10 +75,14 @@ export function useSystemSignOut() {
                     if (lower.includes('whale_xmtp')) return;
                     if (lower.includes('whale-system-wallet-registry')) return; // PROTECT ALL WALLET VERSIONS
                     if (lower.includes('system_account') || lower.includes('system_keystore')) return; // PROTECT ALL SYSTEM ACCOUNTS
+                    // CRITICAL: The hardware-bound session token enables Revolut-style auto-unlock.
+                    // Must survive disconnect so user doesn't need to re-enter password on next visit.
+                    if (lower.includes('whale_hw_session_token')) return;
 
                     // Nuke EVERYTHING else. If clearing browsing history works, this will mimic it precisely.
                     localStorage.removeItem(key);
                 });
+
             } catch (e) {
                 console.warn('[System:Logout] LocalStorage purge failed:', e);
             }
@@ -103,7 +107,17 @@ export function useSystemSignOut() {
                     dbs.forEach(db => {
                         if (db.name) {
                             const lower = db.name.toLowerCase();
-                            if (lower.includes('xmtp') || lower.includes('whalechatsecurestore') || lower.includes('whale_chat_history')) {
+                            if (
+                                lower.includes('xmtp') ||
+                                lower.includes('whalechatsecurestore') ||
+                                lower.includes('whale_chat_history') ||
+                                // CRITICAL: Preserve the hardware-bound Revolut-style persistence key.
+                                // Deleting this would destroy the non-extractable AES-GCM CryptoKey
+                                // that auto-unlocks the vault on every page load. Users would need
+                                // to re-enter their password after EVERY disconnect — exactly the
+                                // problem we are solving.
+                                lower.includes('whalequantumpersistence')
+                            ) {
                                 return;
                             }
                             window.indexedDB.deleteDatabase(db.name);
@@ -118,6 +132,7 @@ export function useSystemSignOut() {
             } catch (e) {
                 console.warn('[System:Logout] IndexedDB purge failed:', e);
             }
+
 
             // STEP 5 — Disconnect Wagmi.
             // [FIX] WalletConnect requires up to ~2s to close the socket cleanly.

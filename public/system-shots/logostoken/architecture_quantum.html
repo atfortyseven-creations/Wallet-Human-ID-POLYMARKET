@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Whale Alert Portal - Master Hybrid Architecture</title>
+    <!-- CSS para configurar exactamente 7860x4320 sobre FONDO BLANCO, perfectamente centrado -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 7860px;
+            height: 4320px;
+            background-color: #ffffff; /* FONDOBLANCO */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 7600px;
+            height: 4100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #ffffff;
+            box-shadow: 0 0 100px rgba(0,0,0,0.05);
+            border-radius: 40px;
+            padding: 50px;
+            box-sizing: border-box;
+        }
+
+        .mermaid {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+    <!-- Importar Mermaid.js -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#ffffff',
+                primaryTextColor: '#000000',
+                primaryBorderColor: '#333333',
+                lineColor: '#1a1a1a',
+                secondaryColor: '#f4f4f4',
+                tertiaryColor: '#ffffff',
+                fontFamily: 'Inter',
+                fontSize: '48px'
+            },
+            flowchart: {
+                htmlLabels: true,
+                curve: 'basis',
+                nodeSpacing: 180,
+                rankSpacing: 220,
+                padding: 40
+            },
+            securityLevel: 'loose'
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="mermaid">
+        %%{init: {'theme': 'base', 'themeVariables': { 'fontSize': '36px', 'fontFamily': 'Inter' }}}%%
+        graph TB
+            classDef title fill:#ffffff,stroke:none,color:#000000,font-size:120px,font-weight:900,padding:50px;
+            classDef section fill:#f8f9fa,stroke:#dee2e6,stroke-width:8px,color:#212529,font-size:70px,font-weight:bold;
+            classDef hybridPC fill:#e3f2fd,stroke:#1976d2,stroke-width:10px,color:#0d47a1,font-size:65px,font-weight:bold;
+            classDef hybridMobile fill:#e8f5e9,stroke:#388e3c,stroke-width:10px,color:#1b5e20,font-size:65px,font-weight:bold;
+            classDef data fill:#fff3e0,stroke:#f57c00,stroke-width:8px,color:#e65100,font-size:55px;
+            classDef engine fill:#fce4ec,stroke:#c2185b,stroke-width:8px,color:#880e4f,font-size:55px;
+            classDef aztec fill:#f3e5f5,stroke:#7b1fa2,stroke-width:10px,color:#4a148c,font-size:65px,font-weight:bold;
+            classDef zk fill:#e0f7fa,stroke:#0097a7,stroke-width:8px,color:#006064,font-size:55px;
+            classDef evm fill:#fffde7,stroke:#fbc02d,stroke-width:8px,color:#f57f17,font-size:55px;
+            classDef gateway fill:#eceff1,stroke:#455a64,stroke-width:10px,color:#263238,font-size:70px,font-weight:bold;
+
+            Title[/"🌌 WHALE ALERT PORTAL & HUMANITY LEDGER <br/> MASTER QUANTUM ARCHITECTURE <br/> DOUBLE HYBRID FUNCTIONING (PC & MOBILE) 🌌"/] :::title
+
+            %% ================= 1. EVM BASE =================
+            subgraph L_EVM [1. EVM BASE & PROTOCOL LAYER]
+                direction LR
+                RPC[RPC Nodes<br/>Alchemy / Infura] :::evm
+                Mem[Mempool Streams<br/>Pending Txs] :::evm
+                Blk[Confirmed Blocks<br/>ETH / Base] :::evm
+                RPProvider[ResilientProvider<br/>Circuit Breaker] :::evm
+                Moralis[Moralis Deep Indexing] :::evm
+                
+                RPC --> RPProvider
+                RPProvider --> Mem
+                RPProvider --> Blk
+                Moralis -.-> Blk
+            end
+
+            %% ================= 2. WHALE ENGINE =================
+            subgraph L_ENGINE [2. BACKGROUND WHALE ENGINE]
+                direction TB
+                EVMScan[EVM Whale Scanner] :::engine
+                BTCScan[BTC Mempool Scanner] :::engine
+                TGAlert[Telegram Alert Bot] :::engine
+                AlchMon[Alchemy Monitor<br/>Elite Addresses] :::engine
+            end
+
+            %% ================= 3. STATE LAYER =================
+            subgraph L_DATA [3. STATE & PERSISTENCE]
+                direction LR
+                Prisma[(PostgreSQL<br/>Prisma ORM)] :::data
+                Mongo[(MongoDB<br/>Polymarket Indices)] :::data
+                Neo[(Neo4j Graph<br/>Whale Relations)] :::data
+                Redis[(Redis / Upstash<br/>PubSub & Cache)] :::data
+            end
+
+            %% ================= 4. ZK SECURITY =================
+            subgraph L_ZK [4. ZK SECURITY & IDENTITY]
+                direction LR
+                WorldID[WorldID Integration<br/>Sybil Resistance] :::zk
+                Cir[circomlibjs<br/>ZK-SNARK Circuits] :::zk
+                Hnd[QR Handshake<br/>E2EE Protocol] :::zk
+                
+                WorldID --> Cir
+            end
+
+            %% ================= 5. AZTEC SHIELDED =================
+            subgraph L_AZTEC [5. PRIVATE AZTEC LAYER]
+                direction TB
+                Pxe[PXE<br/>Private Execution Env] :::aztec
+                Noir[Noir Circuits<br/>Aztec.nr] :::aztec
+                Azt[Aztec Account<br/>ECDSA Contracts] :::aztec
+                L2[Aztec L2<br/>Shielded Pool] :::aztec
+                
+                Pxe -->|ACIR Compilation| Noir
+                Noir -->|UltraHonk Backend| L2
+                L2 -->|Settlement| Azt
+            end
+
+            %% ================= 6. CELESTIAL GATEWAY =================
+            subgraph L_GATEWAY [6. CELESTIAL GATEWAY]
+                Gateway[Node.js + WebSockets<br/>Port 3000<br/>Sub-100ms Latency] :::gateway
+                Intel[Intelligence Service<br/>AI Forensics & Heatmaps] :::gateway
+                Gateway <--> Intel
+            end
+
+            %% ================= 7. DOUBLE HYBRID ZONE =================
+            subgraph L_HYBRID [7. DOUBLE HYBRID CLIENT ZONES]
+                direction TB
+                subgraph Zone_PC [ZONA PC (DESKTOP VAULT)]
+                    Daemon[SystemVault_RUN.bat<br/>Local Daemon] :::hybridPC
+                    Wrk[Whale Worker Nodes<br/>Data Crunching] :::hybridPC
+                    Nxt[Next.js 15 Web/Desktop<br/>LiquidPrism UI] :::hybridPC
+                    Daemon <--> Wrk
+                    Nxt <--> Daemon
+                end
+
+                subgraph Zone_Mobile [ZONA MOVIL (PWA OFFLINE)]
+                    Pwa[iOS / Android PWA<br/>Zero-Crash Offline Ready] :::hybridMobile
+                end
+            end
+
+            %% ================= CONNECTIONS =================
+            
+            Mem --> EVMScan
+            Blk --> EVMScan
+            RPProvider --> AlchMon
+            
+            EVMScan -->|Store Tx| Prisma
+            EVMScan -->|Graph| Neo
+            EVMScan -->|Publish vitals.tx.new| Redis
+            AlchMon --> Redis
+            
+            Redis <--> Gateway
+            Prisma <--> Intel
+            Mongo <--> Intel
+            Neo <--> Intel
+            
+            Daemon --> Gateway
+            Wrk --> Intel
+            
+            Daemon -->|Hub Hosted| Cir
+            Daemon -->|E2EE Tunnel| Hnd
+            
+            Gateway == WebSockets ==> Nxt
+            Gateway == WebSockets ==> Pwa
+            
+            Nxt -->|ZK Verified| Cir
+            Pwa -.->|QR Handshake Sync| Hnd
+            Hnd --> Daemon
+            
+            Nxt -->|aztec.js proofs| Pxe
+            Pwa -->|aztec.js proofs| Pxe
+            
+            %% Class applications
+            class L_EVM,L_ENGINE,L_DATA,L_ZK,L_AZTEC,L_GATEWAY,L_HYBRID section;
+        </div>
+    </div>
+</body>
+</html>

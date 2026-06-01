@@ -1,19 +1,28 @@
 "use client";
 
 import { useAccount } from 'wagmi';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useWalletStore } from '@/lib/store/wallet-store';
 import { getAddress } from 'viem';
 
 /**
- * [Enterprise HANDSHAKE] Account Bridge
+ * [Enterprise HANDSHAKE] Account Bridge — Hardware-Bound Persistence Edition
  *
  * Priority ladder:
- *   1. Local system wallet (privateKey in memory  just unlocked)
- *   1b. Session-restored system wallet (address in sessionStorage  page reload)
+ *   0. Nuclear Disconnect Guard (explicit user logout)
+ *   1. Local system wallet (privateKey in memory — just unlocked OR auto-unlocked)
+ *   1b. Session-restored system wallet (address in sessionStorage — page reload, read-only)
  *   2. Direct Wagmi connection (MetaMask / WalletConnect / AppKit)
  *   3. QR Handshake cookie (system_handshake=0x...)
  *   4. Disconnected fallback
+ *
+ * Auto-Unlock Engine (Revolut-style infinite persistence):
+ *   On every page load, if the vault has an encryptedVault + passwordHash but no
+ *   privateKey in memory (cleared by security on page unload), we silently call
+ *   autoUnlockVault(). This decrypts the vault using a CryptoKey stored in IndexedDB
+ *   (non-extractable, hardware-bound) and restores the privateKey to memory in
+ *   milliseconds — before the user sees any UI. The session NEVER expires unless the
+ *   user explicitly deletes their wallet.
  *
  * Network request policy:
  *   - /api/auth/session: polled only for non-system users (ZK/SIWE flow)
@@ -32,7 +41,6 @@ const startGlobalPolling = () => {
 
     const check = async () => {
         if (globalIsZkVerified) {
-            // ZK is verified — stop polling, no further network requests needed
             if (globalPollId) { clearInterval(globalPollId); globalPollId = null; }
             return;
         }
@@ -49,7 +57,7 @@ const startGlobalPolling = () => {
     };
 
     check();
-    globalPollId = setInterval(check, 15_000); // 15s — stays well under 20req/60s rate limit
+    globalPollId = setInterval(check, 15_000);
 };
 
 //  SSR-safe storage helpers 
@@ -76,37 +84,68 @@ function readHandshakeCookie(): string | null {
 //  Hook 
 export function useSystemAccount() {
     const wagmiAccount = useAccount();
-    const { address: storeAddress, privateKey: storePrivateKey } = useWalletStore();
+    const storeAddress = useWalletStore(s => s.address);
+    const storePrivateKey = useWalletStore(s => s.privateKey);
+    const storePasswordHash = useWalletStore(s => s.passwordHash);
+    const storeEncryptedVault = useWalletStore(s => s.encryptedVault);
+    const autoUnlockVault = useWalletStore(s => s.autoUnlockVault);
+
 
     const [handshakeAddress, setHandshakeAddress] = useState<string | null>(null);
     const [sessionAddress, setSessionAddress]     = useState<string | null>(null);
     const [isSessionUnlocked, setIsSessionUnlocked] = useState(false);
     const [isZkVerified, setIsZkVerified]         = useState(globalIsZkVerified);
     const [isChecking, setIsChecking]             = useState(true);
+    // Track auto-unlock so we don't run it twice
+    const autoUnlockRan = useRef(false);
 
     // [CRITICAL FIX] Absolute Firewall for Logout Loops
-    // Read the disconnect guard synchronously during render.
     // Wagmi sometimes auto-reconnects on page load if IndexedDB clearing fails.
     // If the guard is active, we FORCE the UI to show disconnected.
+    // IMPORTANT: The guard ONLY kills wagmi/session state — it NEVER touches
+    // whale_hw_session_token (IDB-based), which is the hardware-bound key that
+    // must survive logout so the user can re-login without re-creating a wallet.
     const isGuarded = typeof window !== 'undefined' && (
         safeSessionGet('__disconnected__') === '1' ||
         (typeof localStorage !== 'undefined' && localStorage.getItem('__disconnected__') === '1')
     );
 
-    //  Mount effect: read all client-only storage once 
+    //  Mount effect: storage reads + hardware-bound auto-unlock 
     useEffect(() => {
-        // 0. AUTO-RESTORE from system_session_v2 (Humanity Ledger EIP-712 sign-up)
-        if (isGuarded) {
-            // Actively purge any lingering session data so a re-render
-            // cannot restore the session that was just explicitly killed.
-            try { localStorage.removeItem('system_session_v2'); } catch {}
-            try { sessionStorage.removeItem('system_wallet_addr'); } catch {}
-            try { sessionStorage.removeItem('portfolio_unlocked'); } catch {}
-            // Guard is consumed ONLY upon explicit user re-login in CoreAuthGate/ConnectPage
-            // Do NOT proceed with any session restoration below.
-        }
+        const run = async () => {
+            // === Step 0: Handle Logout Guard ===
+            // Purge wagmi/session tokens. Do NOT touch whale_hw_session_token — that
+            // must survive so the user can log back in without re-creating a wallet.
+            if (isGuarded) {
+                try { localStorage.removeItem('system_session_v2'); } catch {}
+                try { sessionStorage.removeItem('system_wallet_addr'); } catch {}
+                try { sessionStorage.removeItem('portfolio_unlocked'); } catch {}
+                // Guard is consumed ONLY on explicit re-login in CoreAuthGate/ConnectPage.
+                setIsChecking(false);
+                return; // Do not restore any session while guard is active.
+            }
 
-        if (!isGuarded && typeof window !== 'undefined') {
+            // === Step 1: Hardware-Bound Auto-Unlock (Revolut-style) ===
+            // If the vault is locked (isLocked=true after hydration) but has credentials,
+            // silently decrypt using the IndexedDB CryptoKey. This restores privateKey to
+            // memory without any user interaction — across ALL page loads and browser restarts.
+            if (!autoUnlockRan.current && storePasswordHash && storeEncryptedVault && !storePrivateKey) {
+                autoUnlockRan.current = true;
+                try {
+                    const unlocked = await autoUnlockVault();
+                    if (unlocked) {
+                        // autoUnlockVault sets address + privateKey in the store.
+                        // The store update will trigger a re-render and Priority 1 will fire.
+                        console.log('[useSystemAccount] Hardware auto-unlock SUCCESS.');
+                    } else {
+                        console.warn('[useSystemAccount] Hardware auto-unlock FAILED — user will need to enter password.');
+                    }
+                } catch (e) {
+                    console.warn('[useSystemAccount] Hardware auto-unlock error:', e);
+                }
+            }
+
+            // === Step 2: Restore system_session_v2 (EIP-712 sign-up flow) ===
             try {
                 const raw = localStorage.getItem('system_session_v2');
                 if (raw) {
@@ -122,51 +161,47 @@ export function useSystemAccount() {
                     }
                 }
             } catch {}
-        }
 
-        // 1. Read sessionStorage (safe  client only) — now includes auto-restored values above
-        const sessAddr = safeSessionGet('system_wallet_addr');
-        if (sessAddr && sessAddr.startsWith('0x') && sessAddr.length === 42) {
-            setSessionAddress(sessAddr);
-        }
-        const unlocked = safeSessionGet('portfolio_unlocked') === 'true';
-        setIsSessionUnlocked(unlocked);
+            // === Step 3: Read sessionStorage (client only) ===
+            const sessAddr = safeSessionGet('system_wallet_addr');
+            if (sessAddr && sessAddr.startsWith('0x') && sessAddr.length === 42) {
+                setSessionAddress(sessAddr);
+            }
+            const unlocked = safeSessionGet('portfolio_unlocked') === 'true';
+            setIsSessionUnlocked(unlocked);
 
-        // 2. Read handshake cookie
-        setHandshakeAddress(readHandshakeCookie());
+            // === Step 4: Read handshake cookie ===
+            setHandshakeAddress(readHandshakeCookie());
 
-        // 3. ZK verification listener
-        const listener = (v: boolean) => setIsZkVerified(v);
-        listeners.add(listener);
+            // === Step 5: ZK verification listener ===
+            const listener = (v: boolean) => setIsZkVerified(v);
+            listeners.add(listener);
 
-        // 4. ZK polling  only for non-system users
-        //    If storePrivateKey is set, the user unlocked a local wallet.
-        //    They NEVER need /api/auth/session (no SIWE/ZK involved).
-        if (!storePrivateKey) {
-            startGlobalPolling();
-        }
+            // === Step 6: ZK polling — only for non-system users ===
+            if (!storePrivateKey) {
+                startGlobalPolling();
+            }
 
-        setIsChecking(false);
+            setIsChecking(false);
 
-        // 5. Cookie poll interval  only when:
-        //    - not connected via wagmi (MetaMask etc.)
-        //    - AND no system wallet already in memory
-        //    - AND no session already restored from system_session_v2
-        //    This avoids a 1s tick hammering while already authenticated.
-        let cookiePoll: ReturnType<typeof setInterval> | null = null;
-        const alreadyRestored = safeSessionGet('portfolio_unlocked') === 'true';
-        if (!wagmiAccount.isConnected && !storePrivateKey && !alreadyRestored) {
-            cookiePoll = setInterval(() => {
-                setHandshakeAddress(readHandshakeCookie());
-            }, 1_000);
-        }
+            // === Step 7: Cookie poll — only when not already authenticated ===
+            let cookiePoll: ReturnType<typeof setInterval> | null = null;
+            const alreadyRestored = safeSessionGet('portfolio_unlocked') === 'true';
+            if (!wagmiAccount.isConnected && !storePrivateKey && !alreadyRestored) {
+                cookiePoll = setInterval(() => {
+                    setHandshakeAddress(readHandshakeCookie());
+                }, 1_000);
+            }
 
-        return () => {
-            if (cookiePoll) clearInterval(cookiePoll);
-            listeners.delete(listener);
+            return () => {
+                if (cookiePoll) clearInterval(cookiePoll);
+                listeners.delete(listener);
+            };
         };
+
+        run();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [wagmiAccount.isConnected, storePrivateKey]);
+    }, [wagmiAccount.isConnected, storePrivateKey, storePasswordHash, storeEncryptedVault]);
 
     //  Priority 0: Nuclear Disconnect Guard 
     if (isGuarded) {
@@ -189,6 +224,7 @@ export function useSystemAccount() {
     }
 
     //  Priority 1: Local system wallet (privateKey live in memory) 
+    // This fires immediately after autoUnlockVault() succeeds — zero user friction.
     if (storeAddress && storePrivateKey) {
         return {
             address: storeAddress as `0x${string}`,
@@ -209,8 +245,7 @@ export function useSystemAccount() {
     }
 
     //  Priority 1b: Session-restored (address in sessionStorage) 
-    // privateKey is not in memory (security  never persisted), but the address
-    // is safe to use for read-only portfolio display. Signing requires re-login.
+    // privateKey is not in memory — read-only portfolio display until auto-unlock completes.
     const sessionRestoredAddr = sessionAddress || storeAddress;
     if (sessionRestoredAddr && isSessionUnlocked) {
         return {
@@ -272,6 +307,7 @@ export function useSystemAccount() {
     }
 
     //  Priority 4: Disconnected / connecting fallback 
+    // isChecking stays true while auto-unlock is in progress to prevent flash of login UI
     return {
         address: wagmiAccount.address,
         isConnected: false,
@@ -289,3 +325,5 @@ export function useSystemAccount() {
         isChecking,
     };
 }
+
+

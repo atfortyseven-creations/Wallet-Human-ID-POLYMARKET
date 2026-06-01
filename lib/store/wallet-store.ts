@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { getGbRpc, getGbWss } from '@/lib/blockchain/getblock-registry';
 import CryptoJS from 'crypto-js';
 import { TransactionManager } from '@/lib/tx-manager';
+import { sealSessionKey, unsealSessionKey, clearSessionKey } from '@/lib/wallet-persistence';
 
 // 100M-User Scalability & Enterprise Grid Configuration
 export type NetworkId = 'ethereum' | 'polygon' | 'arbitrum' | 'optimism' | 'base' | 'avalanche' | 'bitcoin' | 'bsc' | 'zksync' | 'celo' | 'fantom' | 'linea' | 'scroll' | 'blast' | 'gnosis' | 'ronin' | 'kava' | 'mantle' | 'worldchain';
@@ -198,6 +199,7 @@ interface WalletState {
   // Security Operations
   setupPassword: (password: string) => void;
   unlockVault: (password: string) => boolean;
+  autoUnlockVault: () => Promise<boolean>;
   lockVault: () => void;
   _encryptAndSave: () => void;
   getConnectedWallet: () => Promise<ethers.Wallet | null>;
@@ -234,6 +236,7 @@ export const useWalletStore = create<WalletState>()(
           sessionEncryptionKey = cleanPassword;
           set({ passwordHash: hash, isLocked: false });
           get()._encryptAndSave();
+          sealSessionKey(cleanPassword);
           toast.success("Security Vault Initialized");
       },
 
@@ -247,6 +250,7 @@ export const useWalletStore = create<WalletState>()(
               return false;
           }
           sessionEncryptionKey = cleanPassword;
+          sealSessionKey(cleanPassword);
           
           if (encryptedVault) {
               try {
@@ -294,10 +298,51 @@ export const useWalletStore = create<WalletState>()(
           return true;
       },
 
+      autoUnlockVault: async () => {
+          const { passwordHash, encryptedVault } = get();
+          if (!passwordHash || !encryptedVault) return false;
+
+          try {
+              const storedSessionKey = await unsealSessionKey();
+              if (!storedSessionKey) return false;
+
+              const hash = CryptoJS.SHA256(storedSessionKey).toString();
+              if (hash !== passwordHash) {
+                  await clearSessionKey();
+                  return false;
+              }
+
+              sessionEncryptionKey = storedSessionKey;
+              const bytes = CryptoJS.AES.decrypt(encryptedVault, sessionEncryptionKey);
+              const decrypted = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+              
+              set({
+                  accounts: decrypted.accounts || [],
+                  address: decrypted.address || null,
+                  privateKey: decrypted.privateKey || null,
+                  mnemonic: decrypted.mnemonic || null,
+                  isLocked: false,
+              });
+              
+              get().updateBalance();
+              console.log("[Vault] Auto-unlocked via hardware-bound session.");
+              return true;
+          } catch (e) {
+              console.error("[Vault] Auto-unlock failed:", e);
+              await clearSessionKey();
+              return false;
+          }
+      },
+
       lockVault: () => {
           const { passwordHash } = get();
           if (passwordHash) {
               sessionEncryptionKey = null;
+              // REVOLUT-STYLE: We clear the private key from RAM (security),
+              // but do NOT call clearSessionKey() here. The hardware-bound token
+              // in IndexedDB survives the lock so autoUnlockVault() can restore
+              // the session on the next page load without asking for a password.
+              // clearSessionKey() is ONLY called in clearWallet() (explicit deletion).
               set({
                   isLocked: true,
                   privateKey: null,
@@ -308,6 +353,7 @@ export const useWalletStore = create<WalletState>()(
               toast.info("Vault Locked", { description: "Cryptographic memory wiped." });
           }
       },
+
 
       _encryptAndSave: () => {
           const state = get();
@@ -507,6 +553,7 @@ export const useWalletStore = create<WalletState>()(
       clearWallet: () => {
         set({ address: null, privateKey: null, mnemonic: null, accounts: [], balance: "0.0", isCustom: false, encryptedVault: null, passwordHash: null, isLocked: false });
         sessionEncryptionKey = null;
+        clearSessionKey();
         toast.info("Registry Purged", { description: "All secure keys removed from local memory." });
       },
 
