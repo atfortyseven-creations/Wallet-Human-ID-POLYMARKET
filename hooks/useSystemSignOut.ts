@@ -139,27 +139,45 @@ export function useSystemSignOut() {
             }
 
             // STEP 6 — NextAuth SignOut (awaited with timeout to guarantee cookie clearance).
+            // [FIX] Increased from 1500ms to 5000ms — 1.5s was too short on slow connections.
             try {
                 await Promise.race([
                     signOut({ redirect: false }),
-                    new Promise(resolve => setTimeout(resolve, 1500))
+                    new Promise(resolve => setTimeout(resolve, 5000))
                 ]);
             } catch (e) {}
 
             // STEP 6b — Call server-side /api/auth/logout to clear httpOnly cookies.
             // CRITICAL: whale_session and human_session are httpOnly=true, meaning JavaScript
             // CANNOT clear them via document.cookie. Without this call, the server-side cookies
-            // remain valid for 7 days and the middleware re-authenticates the user on every
-            // page load — making it impossible to log out from Humanity Ledger or WalletConnect.
-            try {
-                await fetch('/api/auth/logout', {
+            // remain valid and the middleware re-authenticates the user on every page load —
+            // making it impossible to log out.
+            //
+            // [FIX] Increased timeout from 1500ms to 8000ms. The old 1500ms timeout fired before
+            // the server responded on slow connections, causing the fetch to be abandoned
+            // mid-flight — the Set-Cookie headers (which clear whale_session) were never received
+            // by the browser. Result: users stayed logged in after clicking Disconnect.
+            // [FIX] Added one retry on network error for reliability.
+            const doLogoutFetch = async () => {
+                const res = await fetch('/api/auth/logout', {
                     method: 'POST',
                     credentials: 'include',
                     headers: { 'Content-Type': 'application/json' },
                 });
+                return res;
+            };
+            try {
+                await Promise.race([
+                    doLogoutFetch().catch(async (firstErr) => {
+                        console.warn('[System:Logout] First logout attempt failed, retrying...', firstErr);
+                        return doLogoutFetch(); // one retry
+                    }),
+                    new Promise(resolve => setTimeout(resolve, 8000)) // raised from 1500ms
+                ]);
             } catch (e) {
                 console.warn('[System:Logout] Server logout call failed (non-fatal):', e);
             }
+
 
             // STEP 7 — Lock local wallet vault.
             try {
