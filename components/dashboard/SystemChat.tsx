@@ -209,10 +209,50 @@ function xmtpToRenderable(msg: any, selfInboxId: string): RenderableMessage {
   };
 }
 
-// Typing Indicator — XMTP v2 has no native protocol for this.
-// Real implementation deferred to XMTP v3 MLS. No simulation.
-function useTypingIndicator(_peerAddress: string | undefined): false {
-  return false;
+// ─── Lottie helper (CDN, no extra npm dep) ──────────────────────────────────
+function LottieInline({
+  animId,
+  size = 32,
+  className = '',
+  loop = true,
+}: {
+  animId: string;
+  size?: number;
+  className?: string;
+  loop?: boolean;
+}) {
+  const ref = React.useRef<HTMLDivElement>(null);
+  const animRef = React.useRef<any>(null);
+  React.useEffect(() => {
+    if (!ref.current) return;
+    const init = () => {
+      if (animRef.current) return;
+      const lottie = (window as any).lottie;
+      if (!lottie) return;
+      animRef.current = lottie.loadAnimation({
+        container: ref.current,
+        renderer: 'svg',
+        loop,
+        autoplay: true,
+        path: `https://lottie.host/${animId}/lottie.json`,
+      });
+    };
+    if ((window as any).lottie) { init(); return; }
+    const script = document.getElementById('lottie-cdn') as HTMLScriptElement | null;
+    if (!script) {
+      const s = document.createElement('script');
+      s.id = 'lottie-cdn';
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js';
+      s.async = true;
+      s.onload = init;
+      document.head.appendChild(s);
+    } else {
+      script.addEventListener('load', init, { once: true });
+    }
+    return () => { animRef.current?.destroy(); animRef.current = null; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animId]);
+  return <div ref={ref} style={{ width: size, height: size }} className={className} />;
 }
 
 //  Sound helper 
@@ -388,7 +428,16 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
   const activeConvRef = useRef<Conversation | null>(null);
   useEffect(() => { activeConvRef.current = activeConv; }, [activeConv]);
 
-  const peerIsTyping = useTypingIndicator(activeConv?.peerAddress);
+  // Local typing state — true while the user is actively typing in ChatInput
+  const [isTyping, setIsTyping] = React.useState(false);
+  const typingTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const handleTypingChange = React.useCallback((typing: boolean) => {
+    setIsTyping(typing);
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    if (typing) {
+      typingTimeoutRef.current = setTimeout(() => setIsTyping(false), 3000);
+    }
+  }, []);
 
   const settingsRef = useRef<ChatSettings>(settings);
   useEffect(() => { settingsRef.current = settings; }, [settings]);
@@ -1399,8 +1448,11 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                   <p className="font-mono text-[10px] text-black/35 truncate mt-0.5">{conv.lastMessage ?? 'E2EE encrypted'}</p>
                 </div>
                 {conv.unread > 0 && (
-                  <div className="w-5 h-5 rounded-full bg-black text-white text-[10px] font-bold flex items-center justify-center shrink-0">
-                    {conv.unread}
+                  <div className="relative shrink-0 flex items-center justify-center" style={{ width: 32, height: 32 }}>
+                    <LottieInline animId="02dee108-117f-11ee-8417-5fe9d1aa5cbb" size={32} loop={false} />
+                    <span className="absolute inset-0 flex items-center justify-center font-mono text-[9px] font-black text-black">
+                      {conv.unread > 9 ? '+9' : conv.unread}
+                    </span>
                   </div>
                 )}
               </div>
@@ -1424,11 +1476,16 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-mono text-[13px] font-bold text-black break-all leading-tight">{activeConv.peerAddress}</p>
-                  <p className={`font-mono text-[10px] font-bold mt-1 uppercase tracking-widest flex items-center gap-1.5 ${sending || isUploading || peerIsTyping ? 'text-[#00C076]' : !isConnected ? 'text-red-500' : 'text-[#00C076]'}`}>
+                  <p className={`font-mono text-[10px] font-bold mt-1 uppercase tracking-widest flex items-center gap-1.5 ${isTyping || sending || isUploading ? 'text-[#00C076]' : !isConnected ? 'text-red-500' : 'text-[#00C076]'}`}>
                     {blockedList.includes(activeConv.peerAddress.toLowerCase()) ? <span className="text-red-400">BLOCKED</span> :
                      !isConnected ? <> <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div> OFFLINE </> :
                      !xmtpReady ? <span className="text-amber-500">AWAITING HANDSHAKE...</span> :
-                     sending || isUploading || peerIsTyping ? <> <div className="w-1.5 h-1.5 rounded-full bg-[#00C076] animate-pulse"></div> ESCRIBIENDO... </> : 
+                     isTyping || sending || isUploading ? (
+                       <span className="flex items-center gap-1">
+                         <LottieInline animId="16b39f54-cb36-11ee-b44b-afd859f781c2" size={22} />
+                         <span>ESCRIBIENDO...</span>
+                       </span>
+                     ) : 
                      <> <div className="w-1.5 h-1.5 rounded-full bg-[#00C076]"></div> ONLINE • ENCRYPTED </>}
                   </p>
                 </div>
@@ -1589,6 +1646,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                     onSendVoice={handleSendVoice}
                     onSendFile={handleSendFile}
                     onSendEmoji={handleSendEmoji}
+                    onTyping={handleTypingChange}
                     replyingTo={replyingTo}
                     onCancelReply={() => setReplyingTo(undefined)}
                     autoDestruct={settings.autoDestruct}

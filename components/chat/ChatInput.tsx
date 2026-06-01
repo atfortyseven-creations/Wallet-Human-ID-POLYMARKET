@@ -14,6 +14,7 @@ interface ChatInputProps {
   onSendVoice:   (blob: Blob, durationMs: number) => void;
   onSendFile:    (file: File) => void;
   onSendEmoji:   (emoji: string) => void;
+  onTyping?:     (typing: boolean) => void;
   replyingTo?:   { id: string; preview: string };
   onCancelReply: () => void;
   autoDestruct:  AutoDestructPreset;
@@ -51,7 +52,7 @@ function getSupportedMimeType(): string {
 }
 
 export default function ChatInput({
-  onSendText, onSendVoice, onSendFile, onSendEmoji,
+  onSendText, onSendVoice, onSendFile, onSendEmoji, onTyping,
   replyingTo, onCancelReply, autoDestruct, onAutoDestructChange, disabled = false,
 }: ChatInputProps) {
   const { address } = useSystemAccount();
@@ -405,7 +406,10 @@ export default function ChatInput({
             <textarea
               ref={inputRef}
               value={text}
-              onChange={e => setText(e.target.value)}
+              onChange={e => {
+                setText(e.target.value);
+                onTyping?.(e.target.value.length > 0);
+              }}
               onKeyDown={handleKey}
               disabled={disabled}
               placeholder={disabled ? 'Connection unavailable' : 'Encrypted message'}
