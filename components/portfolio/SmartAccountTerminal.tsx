@@ -9,7 +9,9 @@ import { packUserOp, getUserOpHash, ENTRY_POINT_ADDRESS } from '@/lib/erc4337-bu
 import { ethers } from 'ethers';
 
 export function SmartAccountTerminal({ onBack }: { onBack: () => void }) {
-  const { getConnectedWallet, address, isLocked } = useWalletStore();
+  const getConnectedWallet = useWalletStore(s => s.getConnectedWallet);
+  const address = useWalletStore(s => s.address);
+  const isLocked = useWalletStore(s => s.isLocked);
   const [isPacking, setIsPacking] = useState(false);
   const [userOpData, setUserOpData] = useState<any>(null);
 

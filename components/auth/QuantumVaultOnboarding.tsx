@@ -23,7 +23,12 @@ type OnboardingPhase =
   | "COMPLETE";
 
 export function QuantumVaultOnboarding({ onComplete }: { onComplete: () => void }) {
-  const { createWallet, setupPassword, importWallet, accounts, mnemonic, cloudSync } = useWalletStore();
+  const createWallet = useWalletStore(s => s.createWallet);
+  const setupPassword = useWalletStore(s => s.setupPassword);
+  const importWallet = useWalletStore(s => s.importWallet);
+  const accounts = useWalletStore(s => s.accounts);
+  const mnemonic = useWalletStore(s => s.mnemonic);
+  const cloudSync = useWalletStore(s => s.cloudSync);
   const { activateSystemVault } = useSystemConnect();
   
   const [phase, setPhase] = useState<OnboardingPhase>("INTRO");
@@ -264,18 +269,24 @@ export function QuantumVaultOnboarding({ onComplete }: { onComplete: () => void 
     // (Priority 1b) can restore the session on the very first render after redirect.
     // Previously only portfolio_unlocked was set — address was missing, breaking the restore.
     try {
+      const stateAddr = useWalletStore.getState().address;
       sessionStorage.setItem('portfolio_unlocked', 'true');
-      sessionStorage.setItem('system_wallet_addr', walletAddress.toLowerCase());
+      if (stateAddr) {
+        sessionStorage.setItem('system_wallet_addr', stateAddr.toLowerCase());
+      }
     } catch {}
 
     // CRITICAL FIX 3: Write system_session_v2 to localStorage for cross-tab and
     // page-refresh recovery (7 days). Without this, a refresh after sign-up loses the session.
     try {
-      const sessionV2 = {
-        wallet: walletAddress.toLowerCase(),
-        exp: Date.now() + 7 * 24 * 60 * 60 * 1000,
-      };
-      localStorage.setItem('system_session_v2', JSON.stringify(sessionV2));
+      const stateAddr = useWalletStore.getState().address;
+      if (stateAddr) {
+        const sessionV2 = {
+          wallet: stateAddr.toLowerCase(),
+          exp: Date.now() + 7 * 24 * 60 * 60 * 1000,
+        };
+        localStorage.setItem('system_session_v2', JSON.stringify(sessionV2));
+      }
     } catch {}
 
     setPhase("COMPLETE");

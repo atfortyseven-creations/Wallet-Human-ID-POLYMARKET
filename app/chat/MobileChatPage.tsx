@@ -122,7 +122,7 @@ export default function MobileChatPage() {
             </header>
 
             {/* Full chat stack with PIN gate */}
-            <div className="flex-1 min-h-0 w-full overflow-hidden relative bg-transparent">
+            <div className="flex-1 flex flex-col min-h-0 w-full overflow-hidden relative bg-transparent">
               <ChatClientPage />
             </div>
           </div>
@@ -170,7 +170,7 @@ export default function MobileChatPage() {
         </header>
 
         {/* Full chat stack with PIN gate  wallpaper shows through */}
-        <div className="flex-1 min-h-0 overflow-hidden relative">
+        <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative">
           <ChatClientPage />
         </div>
       </div>

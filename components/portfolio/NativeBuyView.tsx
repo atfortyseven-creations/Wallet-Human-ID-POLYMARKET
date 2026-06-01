@@ -6,7 +6,7 @@ import { useWalletStore, NETWORKS, NetworkId } from '@/lib/store/wallet-store';
 import { toast } from 'sonner';
 
 export function NativeBuyView({ address, onBack }: any) {
-    const { activeNetwork } = useWalletStore();
+    const activeNetwork = useWalletStore(s => s.activeNetwork);
     const [fiatAmount, setFiatAmount] = useState('1000');
     
     // Moonpay requires specific currency codes based on network

@@ -373,9 +373,9 @@ export default function ChatInput({
           <button
             onClick={() => fileRef.current?.click()}
             title="Attach file"
-            className="w-10 h-10 rounded-xl bg-black/[0.03] border border-black/8 flex items-center justify-center text-black/40 hover:text-black hover:bg-black/[0.06] transition-all shrink-0"
+            className="w-[50px] h-[50px] rounded-2xl bg-[#F5F5F5] border border-black/[0.04] flex items-center justify-center text-black/40 hover:text-black hover:bg-black/[0.06] transition-all shrink-0"
           >
-            <Paperclip size={18} />
+            <Paperclip size={20} />
           </button>
           
           <button
@@ -386,22 +386,22 @@ export default function ChatInput({
               setShowDestruct(false);
             }}
             title="Share Location"
-            className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-all shrink-0 ${
+            className={`w-[50px] h-[50px] rounded-2xl border transition-all flex items-center justify-center shrink-0 ${
               showLocationSelect
                 ? 'bg-black text-white border-black'
-                : 'bg-black/[0.03] border-black/8 text-black/40 hover:text-black hover:bg-black/[0.06]'
+                : 'bg-[#F5F5F5] border-black/[0.04] text-black/40 hover:text-black hover:bg-black/[0.06]'
             }`}
             disabled={isRetrievingLocation || disabled}
           >
             {isRetrievingLocation ? (
               <div className="w-4 h-4 rounded-full border-2 border-black/25 border-t-black animate-spin" />
             ) : (
-              <MapPin size={18} />
+              <MapPin size={20} />
             )}
           </button>
 
-          {/* Textarea */}
-          <div className="flex-1 relative">
+          {/* Textarea Container */}
+          <div className="flex-1 relative bg-[#F5F5F5] border border-black/[0.04] rounded-2xl min-h-[50px] flex items-end">
             <textarea
               ref={inputRef}
               value={text}
@@ -410,24 +410,22 @@ export default function ChatInput({
               disabled={disabled}
               placeholder={disabled ? 'Connection unavailable' : 'Encrypted message'}
               rows={1}
-              className="w-full bg-black/[0.025] border border-black/10 rounded-xl px-4 py-3 text-[14px] font-mono text-black resize-none focus:outline-none focus:border-black/30 placeholder:text-black/25 transition-colors pr-12 leading-relaxed disabled:opacity-40"
+              className="w-full bg-transparent px-4 py-[14px] text-[15px] font-mono text-black resize-none focus:outline-none placeholder:text-black/30 transition-colors pr-[45px] leading-relaxed disabled:opacity-40"
             />
             <button
               onClick={() => { setShowEmoji(p => !p); setShowDestruct(false); }}
-              className="absolute right-3 bottom-3 text-black/25 hover:text-black transition-colors"
+              className="absolute right-3.5 bottom-[14px] text-black/30 hover:text-black transition-colors"
             >
-              <Smile size={18} />
+              <Smile size={22} />
             </button>
           </div>
-
-          {/* Self-destruct toggle (removed) */}
 
           {/* Send / Mic */}
           {text.trim() ? (
             <button
               onClick={handleSend}
               disabled={disabled}
-              className="w-12 h-12 rounded-xl bg-black flex items-center justify-center text-white disabled:opacity-30 hover:bg-black/80 transition-all shrink-0"
+              className="w-[50px] h-[50px] rounded-2xl bg-black flex items-center justify-center text-white disabled:opacity-30 hover:bg-black/80 transition-all shrink-0 shadow-md"
             >
               <Send size={18} className="ml-0.5" />
             </button>
@@ -435,9 +433,9 @@ export default function ChatInput({
             <button
               onClick={startRecording}
               title="Record voice"
-              className="w-12 h-12 rounded-xl bg-black/[0.03] border border-black/8 flex items-center justify-center text-black/40 hover:text-black hover:bg-black/[0.06] transition-all shrink-0"
+              className="w-[50px] h-[50px] rounded-2xl bg-[#F5F5F5] border border-black/[0.04] flex items-center justify-center text-black/40 hover:text-black hover:bg-black/[0.06] transition-all shrink-0"
             >
-              <Mic size={18} />
+              <Mic size={22} />
             </button>
           )}
         </div>

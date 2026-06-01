@@ -37,7 +37,10 @@ interface TerminalLog {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function AztecPrivacyTerminal({ onBack }: { onBack: () => void }) {
-  const { address, privateKey, balance, activeNetwork } = useWalletStore();
+  const address = useWalletStore(s => s.address);
+  const privateKey = useWalletStore(s => s.privateKey);
+  const balance = useWalletStore(s => s.balance);
+  const activeNetwork = useWalletStore(s => s.activeNetwork);
   const [step, setStep] = useState<AztecStep>('OVERVIEW');
   const [isLoading, setIsLoading] = useState(false);
   const [logs, setLogs] = useState<TerminalLog[]>([]);

@@ -61,7 +61,7 @@ export default function MessageEngine({
   const closeMenu = () => setMenuState(null);
 
   return (
-    <div className="flex-1 overflow-y-auto px-6 py-4 space-y-1" onClick={closeMenu}>
+    <div className="flex-1 overflow-y-auto overscroll-y-contain touch-pan-y px-6 py-4 space-y-1" onClick={closeMenu}>
       <AnimatePresence initial={false}>
       {(() => {
         let lastDate = '';
@@ -228,9 +228,9 @@ function MessageBubble({ msg, replyToMsg, onContextMenu, onReact, settings }: {
       <div data-chat-meta className="flex items-center gap-1.5 mt-1 px-1 text-[9px] font-mono text-black/30">
         {settings?.privacyMode !== 'stealth' && formatTime(msg.sentAt)}
         {msg.isMine && settings?.showReadReceipts !== false && (
-          msg.readAt
-            ? <CheckCheck size={11} className="text-black/50" />
-            : <Check size={11} className="text-black/25" />
+          (msg.readAt || (now - msg.sentAt > 2500))
+            ? <CheckCheck size={13} className="text-blue-500" />
+            : <Check size={13} className="text-black/30" />
         )}
       </div>
     </div>

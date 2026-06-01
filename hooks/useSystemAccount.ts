@@ -23,6 +23,7 @@ import { getAddress } from 'viem';
 //  Module-level singletons to prevent duplicate polls across re-renders 
 let globalIsPolling = false;
 let globalIsZkVerified = false;
+let globalPollId: ReturnType<typeof setInterval> | null = null;
 const listeners = new Set<(v: boolean) => void>();
 
 const startGlobalPolling = () => {
@@ -30,20 +31,25 @@ const startGlobalPolling = () => {
     globalIsPolling = true;
 
     const check = async () => {
-        if (globalIsZkVerified) return;
+        if (globalIsZkVerified) {
+            // ZK is verified — stop polling, no further network requests needed
+            if (globalPollId) { clearInterval(globalPollId); globalPollId = null; }
+            return;
+        }
         try {
             const res = await fetch('/api/auth/session');
             if (!res.ok) return;
             const data = await res.json();
             if (data?.user?.isZkVerified) {
                 globalIsZkVerified = true;
+                if (globalPollId) { clearInterval(globalPollId); globalPollId = null; }
                 listeners.forEach(fn => fn(true));
             }
         } catch {}
     };
 
     check();
-    setInterval(check, 15_000); // 15s  stays well under 20req/60s rate limit
+    globalPollId = setInterval(check, 15_000); // 15s — stays well under 20req/60s rate limit
 };
 
 //  SSR-safe storage helpers 

@@ -96,7 +96,10 @@ function TokenSelector({ selectedToken, onSelect, label }: { selectedToken: Univ
 }
 
 export function NativeBridgeView({ onBack }: any) {
-    const { sendTransaction, activeNetwork, privateKey, address: systemAddress } = useWalletStore();
+    const sendTransaction = useWalletStore(s => s.sendTransaction);
+    const activeNetwork = useWalletStore(s => s.activeNetwork);
+    const privateKey = useWalletStore(s => s.privateKey);
+    const systemAddress = useWalletStore(s => s.address);
     const networkInfo = NETWORKS[activeNetwork as NetworkId] || NETWORKS.ethereum;
     
     const { isConnected: isWagmiConnected, address: wagmiAddress } = useAccount();

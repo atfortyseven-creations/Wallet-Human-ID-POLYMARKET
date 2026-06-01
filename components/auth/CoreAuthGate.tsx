@@ -272,7 +272,9 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
   const progressTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const transitionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { isConnected } = useAccount();
-  const { importWallet, setupPassword: storeSetupPassword, cloudSync } = useWalletStore();
+  const importWallet = useWalletStore(s => s.importWallet);
+  const storeSetupPassword = useWalletStore(s => s.setupPassword);
+  const cloudSync = useWalletStore(s => s.cloudSync);
   const { activateSystemVault } = useSystemConnect();
 
   // Cleanup timers on unmount

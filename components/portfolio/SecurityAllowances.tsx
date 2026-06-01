@@ -9,7 +9,7 @@ import { useWalletStore } from '@/lib/store/wallet-store';
 import { fetchOnChainAllowances, executeOnChainApproval } from '@/lib/onchain-engine';
 
 export function SecurityAllowances({ onBack }: { onBack: () => void }) {
-    const { getConnectedWallet } = useWalletStore();
+    const getConnectedWallet = useWalletStore(s => s.getConnectedWallet);
     const [allowances, setAllowances] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [revokingIdx, setRevokingIdx] = useState<number | null>(null);

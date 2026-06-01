@@ -9,7 +9,8 @@ import { quoteLayerZeroMessage, LZ_EIDS, LZ_ENDPOINT_V2 } from '@/lib/layerzero-
 import { ethers } from 'ethers';
 
 export function OmnichainBridgeView({ onBack }: { onBack: () => void }) {
-  const { address, activeNetwork } = useWalletStore();
+  const address = useWalletStore(s => s.address);
+  const activeNetwork = useWalletStore(s => s.activeNetwork);
   const [targetNetwork, setTargetNetwork] = useState<string>('arbitrum');
   const [message, setMessage] = useState('');
   const [isQuoting, setIsQuoting] = useState(false);

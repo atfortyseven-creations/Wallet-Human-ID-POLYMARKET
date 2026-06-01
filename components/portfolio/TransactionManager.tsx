@@ -8,7 +8,8 @@ import { useWalletStore } from '@/lib/store/wallet-store';
 import { TransactionManager } from '@/lib/tx-manager';
 
 export function TransactionManagerView({ onBack }: { onBack: () => void }) {
-    const { getConnectedWallet, activeNetwork } = useWalletStore();
+    const getConnectedWallet = useWalletStore(s => s.getConnectedWallet);
+    const activeNetwork = useWalletStore(s => s.activeNetwork);
     const [nonceState, setNonceState] = useState<{ latest: number, pending: number } | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isExecuting, setIsExecuting] = useState<{ type: 'speedup' | 'cancel', nonce: number } | null>(null);

@@ -72,7 +72,13 @@ const truncate = (str: string, len: number) => {
 };
 
 export function InstitutionalPortfolioView() {
-    const { balance, updateBalance, activeNetwork, restoreFromCloud, isLocked, unlockVault, passwordHash } = useWalletStore();
+    const balance = useWalletStore(s => s.balance);
+    const updateBalance = useWalletStore(s => s.updateBalance);
+    const activeNetwork = useWalletStore(s => s.activeNetwork);
+    const restoreFromCloud = useWalletStore(s => s.restoreFromCloud);
+    const isLocked = useWalletStore(s => s.isLocked);
+    const unlockVault = useWalletStore(s => s.unlockVault);
+    const passwordHash = useWalletStore(s => s.passwordHash);
     const { address } = useSystemAccount();
     const { assets } = useRealWalletData([], address || undefined);
     
@@ -463,7 +469,8 @@ function ModalView({ title, onBack, children }: any) {
 }
 
 function NetworkView({ onBack }: any) {
-    const { activeNetwork, setNetwork } = useWalletStore();
+    const activeNetwork = useWalletStore(s => s.activeNetwork);
+    const setNetwork = useWalletStore(s => s.setNetwork);
     return (
         <ModalView title="Protocol Selection" onBack={onBack}>
             <div className="grid grid-cols-1 gap-2">

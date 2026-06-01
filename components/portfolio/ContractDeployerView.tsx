@@ -8,7 +8,8 @@ import { useWalletStore } from '@/lib/store/wallet-store';
 import { deploySmartContract, isValidBytecode } from '@/lib/contract-deployer';
 
 export function ContractDeployerView({ onBack }: { onBack: () => void }) {
-  const { getConnectedWallet, activeNetwork } = useWalletStore();
+  const getConnectedWallet = useWalletStore(s => s.getConnectedWallet);
+  const activeNetwork = useWalletStore(s => s.activeNetwork);
   const [bytecode, setBytecode] = useState('');
   const [isDeploying, setIsDeploying] = useState(false);
   const [result, setResult] = useState<{ address: string | null; hash: string; gas: bigint } | null>(null);

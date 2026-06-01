@@ -1419,17 +1419,17 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                 <button onClick={() => setActiveConv(null)} className="md:hidden p-2 -ml-3 text-black/50 hover:text-black transition-colors rounded-full hover:bg-black/5">
                   <ChevronLeft size={24} />
                 </button>
-                <div className="w-9 h-9 rounded-full bg-black/8 border border-black/10 flex items-center justify-center font-mono text-[13px] font-bold text-black shrink-0">
+                <div className="w-9 h-9 rounded-full bg-[#00C076]/10 border border-[#00C076]/20 flex items-center justify-center font-mono text-[13px] font-bold text-[#00C076] shrink-0">
                   {activeConv.displayName.slice(0, 2).toUpperCase()}
                 </div>
-                <div>
-                  <p className="font-mono text-[14px] font-bold text-black">{resolveZKName(activeConv.peerAddress) !== activeConv.displayName ? resolveZKName(activeConv.peerAddress) : activeConv.displayName}</p>
-                  <p className={`font-mono text-[10px] font-bold mt-0.5 uppercase tracking-widest ${sending || isUploading ? 'text-black/50' : 'text-emerald-500'}`}>
-                    {blockedList.includes(activeConv.peerAddress.toLowerCase()) ? <span className="text-red-400">Blocked</span> :
-                     !isConnected ? <span className="text-red-500">Offline</span> :
-                     !xmtpReady ? <span className="text-amber-500">Awaiting Handshake...</span> :
-                     sending || isUploading ? 'Typing...' : 
-                     peerIsTyping ? <span className="text-emerald-400 animate-pulse">Typing...</span> : 'End-to-end encrypted'}
+                <div className="flex-1 min-w-0">
+                  <p className="font-mono text-[13px] font-bold text-black break-all leading-tight">{activeConv.peerAddress}</p>
+                  <p className={`font-mono text-[10px] font-bold mt-1 uppercase tracking-widest flex items-center gap-1.5 ${sending || isUploading || peerIsTyping ? 'text-[#00C076]' : !isConnected ? 'text-red-500' : 'text-[#00C076]'}`}>
+                    {blockedList.includes(activeConv.peerAddress.toLowerCase()) ? <span className="text-red-400">BLOCKED</span> :
+                     !isConnected ? <> <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div> OFFLINE </> :
+                     !xmtpReady ? <span className="text-amber-500">AWAITING HANDSHAKE...</span> :
+                     sending || isUploading || peerIsTyping ? <> <div className="w-1.5 h-1.5 rounded-full bg-[#00C076] animate-pulse"></div> ESCRIBIENDO... </> : 
+                     <> <div className="w-1.5 h-1.5 rounded-full bg-[#00C076]"></div> ONLINE • ENCRYPTED </>}
                   </p>
                 </div>
               </div>

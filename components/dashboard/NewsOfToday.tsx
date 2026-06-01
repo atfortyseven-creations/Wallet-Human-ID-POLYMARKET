@@ -189,6 +189,15 @@ function NewsArticleCard({ a, index, isExpanded, setExpandedId, readTime, volati
     const [isHovered, setIsHovered] = useState(false);
     const [isTranslating, setIsTranslating] = useState(false);
     const [translatedText, setTranslatedText] = useState("");
+    // Ref to clear the typewriter interval if the card unmounts mid-animation
+    const typewriterRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
+
+    // Cleanup on unmount to prevent setState-on-unmounted-component
+    React.useEffect(() => {
+        return () => {
+            if (typewriterRef.current) clearInterval(typewriterRef.current);
+        };
+    }, []);
 
     const handleTranslate = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -203,11 +212,12 @@ function NewsArticleCard({ a, index, isExpanded, setExpandedId, readTime, volati
         // Since we don't have an actual translator API here, we will just show a stylized "decoding" effect of the original text
         let i = 0;
         setTranslatedText("");
-        const interval = setInterval(() => {
+        typewriterRef.current = setInterval(() => {
             setTranslatedText(prev => prev + textToTranslate[i]);
             i++;
             if (i >= textToTranslate.length) {
-                clearInterval(interval);
+                if (typewriterRef.current) clearInterval(typewriterRef.current);
+                typewriterRef.current = null;
                 setIsTranslating(false);
             }
         }, 5);

@@ -76,7 +76,9 @@ function TokenSelector({ selectedToken, onSelect, label }: { selectedToken: Univ
 }
 
 export function NativeSwapView({ address, onBack }: any) {
-    const { activeNetwork, privateKey, activeProtocol } = useWalletStore();
+    const activeNetwork = useWalletStore(s => s.activeNetwork);
+    const privateKey = useWalletStore(s => s.privateKey);
+    const activeProtocol = useWalletStore(s => s.activeProtocol);
     const networkInfo = NETWORKS[activeNetwork as NetworkId] || NETWORKS.ethereum;
     
     const [fromToken, setFromToken] = useState<UniversalToken>(UNIVERSAL_TOKENS.find(t=>t.symbol==='ETH') || UNIVERSAL_TOKENS[0]);

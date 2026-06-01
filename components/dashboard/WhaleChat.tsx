@@ -20,6 +20,7 @@ interface ConversationMeta {
   peerAddress: string;
   lastMessage?: string;
   lastAt?: Date;
+  unreadCount?: number;
 }
 
 /** forceAutoInit=true: always auto-init XMTP even on mobile (used by /chat route) */
@@ -1287,14 +1288,27 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                     isActive ? 'bg-black/[0.03]  border-l-2 border-l-black ' : 'hover:bg-black/[0.02] '
                   }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <Avatar address={conv.peerAddress} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[11px] font-bold text-[#050505]  font-mono truncate">{shortAddr(conv.peerAddress)}</p>
-                      {conv.lastMessage && (
-                        <p className="text-[10px] text-black/40  truncate mt-0.5">{conv.lastMessage}</p>
-                      )}
+                  <div className="flex items-center justify-between gap-3 w-full">
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <Avatar address={conv.peerAddress} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[11px] font-bold text-[#050505]  font-mono truncate">{shortAddr(conv.peerAddress)}</p>
+                        {conv.lastMessage && (
+                          <p className="text-[10px] text-black/40  truncate mt-0.5">{conv.lastMessage}</p>
+                        )}
+                      </div>
                     </div>
+                    {conv.unreadCount && conv.unreadCount > 0 ? (
+                      <div className="relative w-6 h-6 flex items-center justify-center shrink-0">
+                        <RemoteLottie
+                          path="/system-shots/LOTTIECHAT/02dee108-117f-11ee-8417-5fe9d1aa5cbb.json"
+                          className="absolute inset-0 w-full h-full opacity-90"
+                        />
+                        <span className="relative z-10 text-[8px] font-black text-black mt-0.5">
+                          {conv.unreadCount > 9 ? '+9' : conv.unreadCount}
+                        </span>
+                      </div>
+                    ) : null}
                   </div>
                 </button>
               );
@@ -1449,12 +1463,18 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 });
               })()}
               {peerStatus.isTyping && (
-                  <div className="flex self-start items-start max-w-[78%]">
-                      <div className="px-3.5 py-2 rounded-2xl bg-white  border border-black/10  shadow-sm flex items-center gap-1.5 rounded-bl-sm">
-                          <span className="w-1 h-1 rounded-full bg-black/20  animate-bounce" style={{ animationDelay: '0ms' }} />
-                          <span className="w-1 h-1 rounded-full bg-black/20  animate-bounce" style={{ animationDelay: '150ms' }} />
-                          <span className="w-1 h-1 rounded-full bg-black/20  animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <div className="flex self-start items-start mt-2">
+                      <div className="w-12 h-12 opacity-80">
+                        <RemoteLottie path="/system-shots/LOTTIECHAT/16b39f54-cb36-11ee-b44b-afd859f781c2.json" />
                       </div>
+                  </div>
+              )}
+              {sending && (
+                  <div className="flex flex-col self-end max-w-[80%] items-end mt-2">
+                     <div className="w-32 h-1.5 bg-gradient-to-r from-indigo-500 via-teal-400 to-white/10 rounded-full animate-pulse shadow-sm" />
+                     <div className="w-8 h-8 mt-1 opacity-90">
+                       <RemoteLottie path="/system-shots/LOTTIECHAT/d5cfd39e-1150-11ee-8341-c736863152e8 (1).json" />
+                     </div>
                   </div>
               )}
               <div ref={messagesEndRef} />
@@ -1540,32 +1560,86 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             </div>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center bg-transparent relative overflow-hidden p-6">
-            <div className="flex flex-col items-center gap-6 max-w-2xl text-center select-none relative z-10">
+          <div className="flex-1 flex flex-col items-center justify-center bg-white relative overflow-hidden p-6 md:p-12 border-l border-black/5">
+            <div className="w-full max-w-3xl flex flex-col">
               
-              <div className="relative mb-8 flex flex-col items-center justify-center">
-                 <RemoteLottie path="system-shots/Paper airplane.json" className="w-48 h-48 absolute -top-32 pointer-events-none" />
-                 <div className="w-32 h-32 flex items-center justify-center rounded-full border border-black/5 shadow-sm bg-transparent">
-                     <img src="/official-whale-monochrome.png" alt="Whale" className="w-24 h-24 opacity-80" />
-                 </div>
+              {/* Header / Badges */}
+              <div className="flex items-center gap-3 mb-10 md:mb-16">
+                <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-black/10 bg-black/[0.02] shadow-sm">
+                  <div className="w-2 h-2 rounded-full bg-[#050505] animate-pulse" />
+                  <span className="text-[9px] font-black uppercase tracking-[0.2em] text-black/60">
+                    E2E Encrypted Session
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-black/5 bg-white shadow-sm">
+                  <span className="text-[9px] font-mono uppercase tracking-[0.1em] text-black/40">
+                    Port: 443 (Secure)
+                  </span>
+                </div>
               </div>
 
-              <div className="inline-flex items-center gap-3 px-5 py-2 bg-white  border border-black/5  rounded-full shadow-sm">
-                  <span className="text-[9px] font-black uppercase tracking-widest text-[#00C076]">Tunnel Established</span>
-              </div>
-
-              <h2 className="text-[32px] md:text-[40px] font-black uppercase tracking-tighter text-[#0A0A0A]  leading-none mt-2">
-                <span className="text-black/20  block text-[12px] tracking-[0.4em] mb-3">Welcome to</span>
-                Whale Chat.
+              {/* Main Typography */}
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-black uppercase tracking-tighter text-black leading-[1.05] mb-8">
+                Decentralized <br />
+                <span className="text-black/25">Communication.</span>
               </h2>
-              
-              <p className="font-sans text-[13px] text-slate-400  leading-relaxed max-w-xl mx-auto mt-4 font-black tracking-widest uppercase">
-                Peer-to-Peer Secure Terminal
+
+              <p className="font-sans text-[14px] md:text-[15px] text-black/60 leading-relaxed max-w-xl mb-14">
+                You are securely connected to the Whale Chat protocol. All messages, documents, and voice transmissions are encrypted end-to-end locally on your device. We utilize zero-knowledge architecture to ensure absolute privacy—no third party can intercept or read your communications.
               </p>
 
-              <p className="font-mono text-[10px] text-black/10  uppercase tracking-[0.2em] mt-8">
-                Awaiting connection initialization...
-              </p>
+              {/* Technical Specifications Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full border-t border-black/10 pt-10">
+                
+                {/* Protocol */}
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center justify-between border-b border-black/5 pb-2.5">
+                    <span className="text-[10px] font-black uppercase tracking-[0.15em] text-black/40">Encryption Standard</span>
+                    <span className="text-[11px] font-mono font-bold text-black">AES-256-GCM / X3DH</span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-black/5 pb-2.5">
+                    <span className="text-[10px] font-black uppercase tracking-[0.15em] text-black/40">Network Protocol</span>
+                    <span className="text-[11px] font-mono font-bold text-black">XMTP Layer-2</span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-black/5 pb-2.5">
+                    <span className="text-[10px] font-black uppercase tracking-[0.15em] text-black/40">Identity Verification</span>
+                    <span className="text-[11px] font-mono font-bold text-black">Cryptographic Signatures</span>
+                  </div>
+                </div>
+
+                {/* Features */}
+                <div className="flex flex-col justify-center pl-0 md:pl-8 space-y-5">
+                  <div className="flex items-start gap-3">
+                    <div className="mt-0.5 w-4 h-4 shrink-0 rounded-[3px] border border-black/20 flex items-center justify-center">
+                      <div className="w-1.5 h-1.5 bg-black rounded-[1px]" />
+                    </div>
+                    <div>
+                      <p className="text-[11px] font-black uppercase tracking-wide text-black">Peer-to-Peer Routing</p>
+                      <p className="text-[12px] font-sans text-black/50 mt-1 leading-snug">Direct connections established without centralized relay servers.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="mt-0.5 w-4 h-4 shrink-0 rounded-[3px] border border-black/20 flex items-center justify-center">
+                      <div className="w-1.5 h-1.5 bg-black rounded-[1px]" />
+                    </div>
+                    <div>
+                      <p className="text-[11px] font-black uppercase tracking-wide text-black">Forward Secrecy</p>
+                      <p className="text-[12px] font-sans text-black/50 mt-1 leading-snug">Cryptographic keys are rotated continuously to protect past sessions.</p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Action Call */}
+              <div className="mt-16 pt-8 flex items-center gap-6">
+                <div className="flex-1 h-px bg-black/10" />
+                <span className="text-[9px] font-mono uppercase tracking-widest text-black/35 select-none">
+                  Select a peer from the sidebar to initialize secure tunnel
+                </span>
+                <div className="flex-1 h-px bg-black/10" />
+              </div>
+
             </div>
           </div>
         )}

@@ -8,7 +8,14 @@ import { Eye, EyeOff, Save, Key, Shield, Plus, Copy, Lock, Unlock } from 'lucide
 import { useWalletStore } from '@/lib/store/wallet-store';
 
 export default function SecurityVault() {
-    const { isLocked, unlockVault, mnemonic, accounts, address, setupPassword, switchAccount, removeAccount } = useWalletStore();
+    const isLocked = useWalletStore(s => s.isLocked);
+    const unlockVault = useWalletStore(s => s.unlockVault);
+    const mnemonic = useWalletStore(s => s.mnemonic);
+    const accounts = useWalletStore(s => s.accounts);
+    const address = useWalletStore(s => s.address);
+    const setupPassword = useWalletStore(s => s.setupPassword);
+    const switchAccount = useWalletStore(s => s.switchAccount);
+    const removeAccount = useWalletStore(s => s.removeAccount);
     const [password, setPassword] = useState('');
     const [showMnemonic, setShowMnemonic] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);

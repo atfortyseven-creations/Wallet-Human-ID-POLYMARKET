@@ -23,7 +23,11 @@ import {
 } from '@/lib/hd-wallet-engine';
 
 export function HDAccountManager({ onBack }: { onBack: () => void }) {
-  const { mnemonic, address, activeNetwork, switchAccount, addContact } = useWalletStore();
+  const mnemonic = useWalletStore(s => s.mnemonic);
+  const address = useWalletStore(s => s.address);
+  const activeNetwork = useWalletStore(s => s.activeNetwork);
+  const switchAccount = useWalletStore(s => s.switchAccount);
+  const addContact = useWalletStore(s => s.addContact);
   const [derived, setDerived] = useState<(DerivedAccount & { balanceEth?: string })[]>([]);
   const [isScanning, setIsScanning] = useState(false);
   const [isFetchingBalances, setIsFetchingBalances] = useState(false);

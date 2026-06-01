@@ -9,7 +9,8 @@ import { useWalletStore } from '@/lib/store/wallet-store';
 import { executeAztecShielding } from '@/lib/onchain-engine';
 
 export function AztecShieldView({ address, onBack }: { address: string, onBack: () => void }) {
-    const { getConnectedWallet, activeNetwork } = useWalletStore();
+    const getConnectedWallet = useWalletStore(s => s.getConnectedWallet);
+    const activeNetwork = useWalletStore(s => s.activeNetwork);
     const [amount, setAmount] = useState('');
     const [isShielding, setIsShielding] = useState(false);
     const [logs, setLogs] = useState<string[]>([]);
