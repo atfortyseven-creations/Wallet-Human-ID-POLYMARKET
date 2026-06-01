@@ -119,6 +119,15 @@ export default async function middleware(request: NextRequest) {
     const BYPASS_IPS = ['127.0.0.1', '91.126.42.179'];
     const isBypassIP = BYPASS_IPS.includes(ip);
 
+    //  LAYER -1.2: CLOUD-SHIELD STRICT VALIDATION (Anti-Direct IP Attacks)
+    // Drops any traffic that bypasses Cloudflare and hits Railway directly.
+    const isLocalhost = request.nextUrl.hostname === 'localhost' || request.nextUrl.hostname === '127.0.0.1';
+    if (!isLocalhost && !isBypassIP && !request.headers.has('cf-ray')) {
+        console.warn(`[Aegis]  Direct IP hit blocked (Bypassed Cloudflare): ${ip}`);
+        // Drop the connection silently
+        return new NextResponse(null, { status: 403, statusText: 'DIRECT_ACCESS_DENIED' });
+    }
+
     //  LAYER -1.5: ENFORCE STRICT DOMAIN FOR WALLETCONNECT CLOUD VERIFY 
     // If the user lands on www, WalletConnect Cloud might reject their signature
     // or flag the connection as suspicious because the project is registered
