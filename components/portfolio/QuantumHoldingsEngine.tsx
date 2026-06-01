@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Database, ExternalLink, ArrowUpRight, ArrowDownRight, Send, Download, ArrowRightLeft, Route, Activity } from 'lucide-react';
 import { safeToFixed } from '@/lib/utils/number-format';
-import { UNIVERSAL_TOKENS } from '@/config/universal-tokens';
+import { QUANTUM_TOKENS } from '@/lib/config/tokens';
 import { TOKEN_STATS_20260530, TOKEN_STATS_DATE } from '@/config/token-stats-snapshot';
 import UnifiedWalletModal from '@/components/wallet/UnifiedWalletModal';
 import { TokenLogo } from '@/components/ui/TokenLogo';
@@ -15,6 +15,13 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
     const [currentPage, setCurrentPage] = useState(1);
     const ITEMS_PER_PAGE = 8;
 
+    // CRITICAL: Reset to page 1 whenever the user switches network.
+    // Without this, switching from Ethereum (300+ tokens, many pages) to Celo (few tokens, 1 page)
+    // leaves currentPage at 5 and renders a blank table.
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [activeNetwork]);
+
     const combinedAssets = useMemo(() => {
         const activeChainId = NETWORKS[activeNetwork as NetworkId]?.chainId;
 
@@ -25,7 +32,20 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
                 assetMap.set(a.symbol.toUpperCase(), a);
             }
         });
-        const combined = UNIVERSAL_TOKENS.map(t => {
+        
+        const networkMap: Record<string, string> = {
+          ethereum: 'ethereum', polygon: 'polygon', arbitrum: 'arbitrum',
+          optimism: 'optimism', base: 'base', bsc: 'bsc', avalanche: 'avalanche',
+          fantom: 'fantom', linea: 'linea', scroll: 'scroll', celo: 'celo'
+        };
+        const mappedNet = networkMap[activeNetwork] || activeNetwork;
+        // Explicit parens fix operator precedence:
+        // Without parens: (t.addresses && t.addresses[mappedNet]) || assetMap.has(...) -- correct but ambiguous
+        // With parens: unambiguous, linter-safe, readable
+        const validNetworkTokens = QUANTUM_TOKENS.filter(t =>
+            (t.addresses && !!t.addresses[mappedNet]) || assetMap.has(t.symbol.toUpperCase())
+        );
+        const combined = validNetworkTokens.map(t => {
             const userOwned = assetMap.get(t.symbol.toUpperCase());
             assetMap.delete(t.symbol.toUpperCase());
             // Prefer user's real-time price, then fall back to our snapshot
@@ -37,7 +57,7 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
             
             return {
                 ...t,
-                address: userOwned?.address || t.address,
+                address: userOwned?.address || (t.addresses ? t.addresses[mappedNet] : undefined),
                 chainId: userOwned?.chainId || activeChainId,
                 balance,
                 price,
@@ -48,7 +68,7 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
             };
         });
 
-        // Add any remaining assets the user owns that aren't in UNIVERSAL_TOKENS
+        // Add any remaining assets the user owns that aren't in QUANTUM_TOKENS
         assetMap.forEach((userOwned, symbol) => {
             if (userOwned.balanceNumeric > 0) {
                 combined.push({
@@ -125,14 +145,14 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
                 <div className="flex items-center gap-2">
                     <span className="text-[9px] font-bold text-[#00C076] tracking-widest">{TOKEN_STATS_DATE}</span>
                 </div>
-                <span className="text-[9px] font-bold text-black/30 tracking-widest uppercase">{UNIVERSAL_TOKENS.length} Assets · CoinGecko</span>
+                <span className="text-[9px] font-bold text-black/30 tracking-widest uppercase">{combinedAssets.length} Assets · {activeNetwork}</span>
             </div>
 
             <div className="p-0 flex-1 flex flex-col overflow-y-auto custom-scrollbar">
                 <table className="w-full text-left text-[11px] font-mono">
                     <thead className="bg-black/5 border-b border-black/10 text-[9px] uppercase tracking-widest text-black/50 sticky top-0 z-10 backdrop-blur-md">
                         <tr>
-                            <th className="py-4 px-6 font-black w-1/4">Asset ({UNIVERSAL_TOKENS.length})</th>
+                            <th className="py-4 px-6 font-black w-1/4">Asset ({combinedAssets.length})</th>
                             <th className="py-4 px-6 font-black text-right w-1/5">Balance / Price</th>
                             <th className="py-4 px-6 font-black text-right w-1/6">24h Δ</th>
                             <th className="py-4 px-6 font-black text-right">Actions</th>

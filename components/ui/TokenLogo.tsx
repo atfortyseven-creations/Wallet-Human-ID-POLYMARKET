@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { UNIVERSAL_TOKENS } from '@/config/universal-tokens';
+import { QUANTUM_TOKENS } from '@/lib/config/tokens';
 
-// Build fast symbol → local logoPath map from our 568 verified tokens (built once at module load)
+// Build fast symbol → local logoPath map from our 357 verified tokens (built once at module load)
 const TOKEN_LOGO_MAP: Record<string, string> = {};
-UNIVERSAL_TOKENS.forEach(t => {
+QUANTUM_TOKENS.forEach(t => {
     if (t.symbol && t.logoPath) {
         TOKEN_LOGO_MAP[t.symbol.toUpperCase()] = t.logoPath;
     }
@@ -31,7 +31,7 @@ export const TokenLogo: React.FC<TokenLogoProps> = ({ symbol, logoURI, className
 
     // Resolve the best local logo path:
     // 1. Direct logoURI if it points to our local folder
-    // 2. Symbol lookup in UNIVERSAL_TOKENS map
+    // 2. Symbol lookup in QUANTUM_TOKENS map (357 tokens, built once at module load)
     // 3. Text fallback
     const resolvedPath = (() => {
         if (logoURI && logoURI.startsWith('/system-shots/logostoken/')) return logoURI;

@@ -3,20 +3,36 @@
 import React, { useMemo } from 'react';
 import { useReadContracts } from 'wagmi';
 import { formatUnits } from 'viem';
-import { Database, RefreshCw, Layers, ExternalLink } from 'lucide-react';
-import { MAJOR_TOKENS, ERC20_ABI } from './quantum-constants';
+import { Layers, Database, RefreshCw, ExternalLink, Activity } from 'lucide-react';
+import { ERC20_ABI } from './quantum-constants';
+import { QUANTUM_TOKENS } from '@/lib/config/tokens';
 
 export function TokenHoldingsTable({ address, activeNetwork, scannerBase }: { address: string, activeNetwork: string, scannerBase: string }) {
-  // Construct the massive multi-call array for wagmi
+  // Filter tokens based on the currently active network
+  const networkTokens = useMemo(() => {
+    // Map internal network IDs to CoinGecko network IDs stored in the registry
+    const networkMap: Record<string, string> = {
+      ethereum: 'ethereum', polygon: 'polygon', arbitrum: 'arbitrum',
+      optimism: 'optimism', base: 'base', bsc: 'bsc', avalanche: 'avalanche',
+      fantom: 'fantom', linea: 'linea', scroll: 'scroll', celo: 'celo'
+    };
+    const mappedNet = networkMap[activeNetwork] || activeNetwork;
+    
+    return QUANTUM_TOKENS.filter(t => t.addresses && t.addresses[mappedNet])
+                         .map(t => ({ ...t, address: t.addresses[mappedNet] }));
+  }, [activeNetwork]);
+
+  // Construct the multi-call array. Wagmi v2's useReadContracts automatically handles 
+  // atomic Multicall3 batching in a SINGLE RPC request, providing extreme CU efficiency.
   const contracts = useMemo(() => {
-    if (!address || activeNetwork !== 'ethereum') return [];
-    return MAJOR_TOKENS.map(token => ({
+    if (!address || networkTokens.length === 0) return [];
+    return networkTokens.map(token => ({
       address: token.address as `0x${string}`,
       abi: ERC20_ABI,
       functionName: 'balanceOf',
       args: [address as `0x${string}`]
     }));
-  }, [address, activeNetwork]);
+  }, [address, networkTokens]);
 
   const { data, isError, isLoading, refetch } = useReadContracts({
     contracts,
@@ -28,7 +44,7 @@ export function TokenHoldingsTable({ address, activeNetwork, scannerBase }: { ad
   const holdings = useMemo(() => {
     if (!data) return [];
     return data.map((result, i) => {
-      const token = MAJOR_TOKENS[i];
+      const token = networkTokens[i];
       let balance = "0";
       let raw = 0n;
       if (result.status === 'success' && result.result) {
@@ -42,16 +58,16 @@ export function TokenHoldingsTable({ address, activeNetwork, scannerBase }: { ad
         hasBalance: raw > 0n
       };
     }).sort((a, b) => (b.raw > a.raw ? 1 : -1));
-  }, [data]);
+  }, [data, networkTokens]);
 
   const nonZeroHoldings = holdings.filter(h => h.hasBalance);
 
-  if (activeNetwork !== 'ethereum') {
+  if (networkTokens.length === 0) {
       return (
           <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-black/5 border border-black/10">
               <Layers size={24} className="text-black/20 mb-4" />
-              <p className="text-[11px] text-black/60 uppercase tracking-widest font-black mb-2">Network Segment Mismatch</p>
-              <p className="text-[10px] text-black/40">Token scanning is currently optimized for Ethereum Mainnet. Switch network to visualize.</p>
+              <p className="text-[11px] text-black/60 uppercase tracking-widest font-black mb-2">No Tokens Indexed</p>
+              <p className="text-[10px] text-black/40">The Quantum Registry hasn't mapped tokens for {activeNetwork} yet.</p>
           </div>
       );
   }
@@ -59,9 +75,9 @@ export function TokenHoldingsTable({ address, activeNetwork, scannerBase }: { ad
   if (isLoading) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center min-h-[300px] text-center p-8 border border-black/10 bg-white">
-        <RefreshCw size={24} className="animate-spin text-black/20 mb-4" />
-        <p className="text-[11px] font-black uppercase tracking-widest text-black/60">Interrogating EVM State...</p>
-        <p className="text-[9px] font-mono mt-2 text-black/30">Executing deep multicall across 20 smart contracts</p>
+        <Activity size={24} className="animate-spin text-black/20 mb-4" />
+        <p className="text-[11px] font-black uppercase tracking-widest text-black/60">Atomic Execution Active...</p>
+        <p className="text-[9px] font-mono mt-2 text-black/30">Batching {networkTokens.length} token checks into 1 CU via Multicall3</p>
       </div>
     );
   }
@@ -101,8 +117,8 @@ export function TokenHoldingsTable({ address, activeNetwork, scannerBase }: { ad
                         <tr key={token.address} className="hover:bg-black/5 transition-colors group/row">
                             <td className="py-3 px-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-6 h-6 rounded-sm flex items-center justify-center shadow-inner border border-black/10" style={{ backgroundColor: token.color }}>
-                                        <span className="text-[8px] font-black text-white mix-blend-overlay">{token.symbol[0]}</span>
+                                    <div className="w-6 h-6 rounded-sm flex items-center justify-center shadow-inner border border-black/10 bg-black/5 overflow-hidden">
+                                        <img src={token.logoPath} alt={token.symbol} className="w-full h-full object-cover" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                                     </div>
                                     <span className="font-black text-[12px]">{token.symbol}</span>
                                 </div>

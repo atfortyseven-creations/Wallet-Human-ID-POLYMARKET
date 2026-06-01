@@ -1,19 +1,9 @@
-fix: disconnect race condition + Whale Chat PIN gate frozen on last digit
+fix: Quantum audit - 5 critical bugs patched
 
-[useSystemSignOut] STEP 0: reset isLinked in-memory store SYNCHRONOUSLY before
-any async work. This prevents LinkedGate from re-linking users with WalletConnect
-during the 1-2s socket close window. Also bumps wagmi disconnect timeout 100ms
-to 2s so WalletConnect can actually close cleanly. Clears system_signed_* keys
-in localStorage which were keeping Humanity Ledger sessions alive after logout.
-
-[LinkedGate] Nuclear Logout Guard now fires BEFORE hasValidStoredSession() and
-unconditionally (removed erroneous && !isLinked condition that allowed re-linking
-when isLinked was already true). Also adds __disconnected__ guard inside the
-redirect timer to prevent LinkedGate from racing against nuclearDisconnect redirect.
-
-[WhaleChatPINGate] Restore proper PIN check on mount: check 30-day session
-unlock window first, then async-load PIN hash from all 5 storage layers to
-decide phase (enter-pin vs confirm/create). Previous code called onEnter()
-blindly bypassing all PIN logic. Add else-branch to auto-submit effect so
-6-digit entry never freezes the UI in an unexpected phase (root cause of
-stuck-on-last-digit bug).
+- DELETE generated_registry_code.ts (orphan fragment breaking TSC build)
+- FIX TokenLogo: was importing UNIVERSAL_TOKENS (15 tokens), now QUANTUM_TOKENS (357)
+- FIX QuantumHoldingsEngine: pagination blank table bug when switching networks
+- FIX QuantumHoldingsEngine: filter operator precedence ambiguity
+- FIX universal-tokens.ts: adapter now re-exports 357 QUANTUM_TOKENS in legacy shape
+  (NativeSwapView, NativeBridgeView, ReceiveHub, UnifiedWalletModal, GainersLosersPanel
+  all automatically gain 357-token coverage with correct logos)
