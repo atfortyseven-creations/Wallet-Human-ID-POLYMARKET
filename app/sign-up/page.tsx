@@ -23,8 +23,10 @@ export default function SignUpPage() {
 
   const handleComplete = useCallback(() => {
     // Wallet sealed, session established, DB indexed.
-    // Always send the user to the landing page so they choose what to do next.
-    router.replace("/");
+    // CRITICAL FIX: Send user to /portfolio (authenticated zone) NOT / (public landing).
+    // The landing page is always public and does not reflect the connected state,
+    // causing the user to think they are logged out right after sign-up.
+    router.replace("/portfolio");
   }, [router]);
 
   if (!mounted) {

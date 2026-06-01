@@ -251,9 +251,33 @@ export function QuantumVaultOnboarding({ onComplete }: { onComplete: () => void 
       return;
     }
 
-    // Only transition to COMPLETE after all crypto work succeeded
-    // Mark session as unlocked so portfolio page gate clears on return/refresh
-    try { sessionStorage.setItem('portfolio_unlocked', 'true'); } catch {}
+    // Only transition to COMPLETE after all crypto work succeeded.
+
+    // CRITICAL FIX 1: Clear any leftover disconnect guard from a previous logout.
+    // Without this, useSystemAccount sees the guard and forces-disconnects the new session.
+    try {
+      localStorage.removeItem('__disconnected__');
+      sessionStorage.removeItem('__disconnected__');
+    } catch {}
+
+    // CRITICAL FIX 2: Write the wallet address to sessionStorage so useSystemAccount
+    // (Priority 1b) can restore the session on the very first render after redirect.
+    // Previously only portfolio_unlocked was set — address was missing, breaking the restore.
+    try {
+      sessionStorage.setItem('portfolio_unlocked', 'true');
+      sessionStorage.setItem('system_wallet_addr', walletAddress.toLowerCase());
+    } catch {}
+
+    // CRITICAL FIX 3: Write system_session_v2 to localStorage for cross-tab and
+    // page-refresh recovery (7 days). Without this, a refresh after sign-up loses the session.
+    try {
+      const sessionV2 = {
+        wallet: walletAddress.toLowerCase(),
+        exp: Date.now() + 7 * 24 * 60 * 60 * 1000,
+      };
+      localStorage.setItem('system_session_v2', JSON.stringify(sessionV2));
+    } catch {}
+
     setPhase("COMPLETE");
     setTimeout(() => {
       onComplete();
@@ -317,10 +341,21 @@ export function QuantumVaultOnboarding({ onComplete }: { onComplete: () => void 
       if (pk && addr) {
         importWallet(pk, 'System Main');
         try { setupPassword(cleanPassword); } catch {}
+
+        // CRITICAL FIX: Clear disconnect guard from previous logout & persist full session
+        try {
+          localStorage.removeItem('__disconnected__');
+          sessionStorage.removeItem('__disconnected__');
+        } catch {}
         try {
           sessionStorage.setItem('portfolio_unlocked', 'true');
           sessionStorage.setItem('system_wallet_addr', addr.toLowerCase());
         } catch {}
+        try {
+          const sessionV2 = { wallet: addr.toLowerCase(), exp: Date.now() + 7 * 24 * 60 * 60 * 1000 };
+          localStorage.setItem('system_session_v2', JSON.stringify(sessionV2));
+        } catch {}
+
         try { await activateSystemVault(pk, addr); } catch {}
         try {
           const verifyResp = await fetch('/api/auth/system-verify', {

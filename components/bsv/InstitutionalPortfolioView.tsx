@@ -102,18 +102,29 @@ export function InstitutionalPortfolioView() {
         }
     }, [address, updateBalance]);
 
+    // INFINITE LOOP FIX 1: restoreFromCloud is not a stable reference from Zustand.
+    // Depending on [address, restoreFromCloud] caused it to re-fire every render.
+    // Use a ref guard to call it only once on mount.
+    const hasRestoredRef = useRef(false);
     useEffect(() => {
         setIsHydrated(true);
-        if (!address) {
-            restoreFromCloud();
+        if (!hasRestoredRef.current) {
+            hasRestoredRef.current = true;
+            if (!address) restoreFromCloud();
         }
-    }, [address, restoreFromCloud]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
+    // INFINITE LOOP FIX 2: refreshBalance is a useCallback that depends on [address, updateBalance].
+    // updateBalance from Zustand is not a stable reference, so refreshBalance gets a new identity
+    // on every render, causing this effect to fire continuously.
+    // Fix: depend only on [isHydrated, address] which are stable primitives.
     useEffect(() => {
-        if (isHydrated) {
+        if (isHydrated && address) {
             refreshBalance();
         }
-    }, [refreshBalance, isHydrated]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isHydrated, address]);
 
     const ethPrice = useVIPStore(s => s.ethPrice);
 
