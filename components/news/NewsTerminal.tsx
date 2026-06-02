@@ -135,7 +135,9 @@ export function NewsTerminal() {
         const items: NewsArticle[] = data.articles ?? [];
         setArticles(items);
         if (items.length > 0) {
-          setSelected(items[0]);
+          if (typeof window !== 'undefined' && window.innerWidth >= 768) {
+            setSelected(items[0]);
+          }
           upsertDayArticles(todayKey(), items);
         }
       })

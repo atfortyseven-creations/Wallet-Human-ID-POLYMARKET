@@ -74,15 +74,12 @@ export default function LoginPage() {
   const handleRedirect = useCallback(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const returnUrl = urlParams.get("returnUrl") || urlParams.get("redirect_url");
-    if (returnUrl && returnUrl !== '/portfolio') {
-      if (returnUrl.startsWith("http")) {
-        window.location.href = returnUrl;
-      } else {
-        window.location.replace(returnUrl);
-      }
+    if (returnUrl && returnUrl.startsWith('/') && !returnUrl.startsWith('/connect') && !returnUrl.startsWith('/sign-up')) {
+      // Honor any valid internal returnUrl, including /portfolio
+      window.location.replace(returnUrl);
     } else {
-      // Always land on the main page so the user can choose what to do next.
-      window.location.replace("/");
+      // No valid returnUrl — go to portfolio (user just logged in, send them to their wallet)
+      window.location.replace("/portfolio");
     }
   }, []);
 
@@ -91,6 +88,8 @@ export default function LoginPage() {
     try {
       sessionStorage.setItem("portfolio_unlocked", "true");
       sessionStorage.setItem("system_wallet_addr", address.toLowerCase());
+      sessionStorage.removeItem("__disconnected__");
+      localStorage.removeItem("__disconnected__");
     } catch {}
 
     try { await activateSystemVault(pk, address); } catch {}

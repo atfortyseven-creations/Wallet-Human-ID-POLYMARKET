@@ -255,22 +255,8 @@ function LottieInline({
   return <div ref={ref} style={{ width: size, height: size }} className={className} />;
 }
 
-//  Sound helper 
-
-function playMessageSound() {
-  if (typeof window === 'undefined') return;
-  try {
-    const ctx = new window.AudioContext();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain); gain.connect(ctx.destination);
-    osc.frequency.setValueAtTime(880, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.08);
-    gain.gain.setValueAtTime(0.2, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
-    osc.start(); osc.stop(ctx.currentTime + 0.15);
-  } catch {}
-}
+// [AUDIO REMOVED] playMessageSound is permanently silenced.
+function playMessageSound() { /* no-op */ }
 
 //  SystemChat (Orchestrator) 
 
@@ -776,8 +762,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
           return next;
         });
 
-        // Play notification sound
-        playMessageSound();
+        // [AUDIO REMOVED] notification sound disabled.
       } catch (e) {
         console.error('[XMTP Offline Queue] Error consuming offline queue:', e);
       }
@@ -836,7 +821,6 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
             const belongsToActive = (msgConvPeer === currentActivePeer) || (!msgConvPeer && currentActivePeer);
 
             if (belongsToActive) {
-              if (fromPeer && (settingsRef.current as any).soundEnabled !== false) playMessageSound();
               setMessages(prev => {
                 if (prev.some(m => m.id === hydrated.id)) return prev;
                 if (!fromPeer) {
@@ -875,7 +859,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                    }];
                  }
               });
-              if ((settingsRef.current as any).soundEnabled !== false) playMessageSound();
+              // [AUDIO REMOVED] background notification sound disabled.
             }
           }
         } catch (e) {

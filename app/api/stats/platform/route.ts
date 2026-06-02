@@ -132,12 +132,27 @@ export async function GET() {
       }
     } catch {}
 
+    // We need to calculate the unique combined users for registryTotal
+    let combinedTotal = totalUsers;
+    try {
+      const distinctUsers = await prisma.user.findMany({ select: { walletAddress: true } });
+      const distinctChatContacts = await (prisma as any).chatContact.findMany({ select: { owner: true }, distinct: ['owner'] });
+      
+      const uniqueSet = new Set();
+      distinctUsers.forEach(u => u.walletAddress && uniqueSet.add(u.walletAddress.toLowerCase()));
+      distinctChatContacts.forEach((c: any) => c.owner && uniqueSet.add(c.owner.toLowerCase()));
+      
+      combinedTotal = uniqueSet.size;
+    } catch {
+      combinedTotal = totalUsers + whaleChatUsers; // Fallback
+    }
+
     return NextResponse.json({
       totalUsers,
       newUsersLast30d,
       whaleChatUsers,
       whaleChatConversations,
-      registryTotal: totalUsers,
+      registryTotal: combinedTotal,
       growthByMonth,
     }, {
       headers: {

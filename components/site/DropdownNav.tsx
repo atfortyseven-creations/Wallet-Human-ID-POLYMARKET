@@ -132,7 +132,7 @@ export function DropdownNav() {
                         <NavLink href="/dashboard" label="Dashboard" icon={LayoutDashboard} isActive={pathname === '/dashboard'} />
                         <NavLink href="/portfolio" label="Portfolio" icon={TrendingUp} isActive={pathname === '/portfolio'} />
                         <NavLink href="/chat" label="Whale Chat" icon={MessageCircle} isActive={pathname === '/chat'} />
-                        <NavLink href="/registry" label="Global Map" icon={Map} isActive={pathname === '/registry'} badge="LIVE" />
+                        <NavLink href="/registry" label="Registry" icon={Map} isActive={pathname === '/registry'} badge="LIVE" />
                     </div>
 
                     {/* Action Hub */}
@@ -357,7 +357,7 @@ export function DropdownNav() {
                                     onClick={() => setIsMenuOpen(false)}
                                 >
                                     <Map size={20} className="text-indigo-500" />
-                                    Global Map
+                                    Registry
                                     <span className="ml-auto bg-indigo-500 text-[10px] font-black px-2 py-0.5 rounded text-white animate-pulse">LIVE</span>
                                 </Link>
                             </div>

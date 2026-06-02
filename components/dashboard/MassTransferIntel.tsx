@@ -212,41 +212,20 @@ export function MassTransferIntel() {
   const [sortBy,       setSortBy]       = useState<"time_desc" | "usd_desc">("time_desc");
   const [isSonarActive, setIsSonarActive] = useState(false);
   const [syncing,      setSyncing]      = useState(false);
-  const audioCtxRef    = useRef<AudioContext | null>(null);
+  // [AUDIO REMOVED] audioCtxRef no longer used.
   const prevCountRef   = useRef<number>(0);
 
   const [events, setEvents] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  //  Sonar ping 
-  const playPing = useCallback(() => {
-    try {
-      if (!audioCtxRef.current)
-        audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const ctx  = audioCtxRef.current;
-      if (ctx.state === "suspended") ctx.resume();
-      const osc  = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(880, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(330, ctx.currentTime + 0.4);
-      gain.gain.setValueAtTime(0, ctx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 0.04);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.4);
-    } catch {}
-  }, []);
+  // [AUDIO REMOVED] playPing is permanently silenced.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const playPing = useCallback(() => { /* no-op */ }, []);
 
   useEffect(() => {
-    if (isSonarActive && prevCountRef.current > 0 && events.length > prevCountRef.current) {
-      playPing();
-    }
     prevCountRef.current = events.length;
-  }, [events.length, isSonarActive, playPing]);
+  }, [events.length]);
 
   //  Sync handler  Real On-Chain L1 Fetch 
   const handleSync = useCallback(async () => {

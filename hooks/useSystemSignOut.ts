@@ -221,9 +221,9 @@ export function useSystemSignOut() {
         } catch (e) {
             console.error('[System:Logout] Critical exception:', e);
         } finally {
-            // STEP 10 — Hard redirect to home. Wipes all in-memory React state.
-            console.log('%c[System] Session Locked. Redirecting to /', 'color:#00A36C');
-            window.location.replace('/');
+            // STEP 10 — Hard redirect to connect page. Wipes all in-memory React state.
+            console.log('%c[System] Session Locked. Redirecting to /connect', 'color:#00A36C');
+            window.location.replace('/connect');
             
             // Fallback in case window.location.replace hangs for some reason
             setTimeout(() => {

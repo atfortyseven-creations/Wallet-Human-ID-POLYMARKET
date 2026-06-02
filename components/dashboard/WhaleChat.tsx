@@ -711,7 +711,6 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           const belongsToActive = (msgConvPeer === currentActivePeer) || (!msgConvPeer && currentActivePeer);
 
           if (belongsToActive) {
-            if (!isMobile && fromPeer) playAudioPing('receive');
 
             setMessages(prev => {
               // Guard: if real ID already in list (can happen on reconnect), skip
@@ -782,7 +781,6 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               persistToLocal(updated);
               return updated;
             });
-            playAudioPing('receive');
           }
         }
       } catch (e) {
@@ -970,8 +968,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       // Clear typing indicator immediately
       stopTypingSignal();
 
-      // @ts-ignore
-      if (!isMobile && typeof playAudioPing === 'function' && soundEffects) playAudioPing('send');
+      // [AUDIO REMOVED] send ping disabled.
       
       let canMsg = canReceiveCache.current.get(activePeer.toLowerCase());
       if (canMsg !== true) {
@@ -1047,52 +1044,14 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     }
   };
 
-  const playAudioPing = (type: 'send' | 'receive') => {
-    try {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-      if (!AudioCtx) return;
-      const ctx = new AudioCtx();
-      if (ctx.state === 'suspended') ctx.resume();
-
-      const makeNote = (freq: number, startTime: number, duration: number, volume: number) => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, startTime);
-        gain.gain.setValueAtTime(0, startTime);
-        gain.gain.linearRampToValueAtTime(volume, startTime + 0.01);
-        gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
-        osc.start(startTime);
-        osc.stop(startTime + duration);
-      };
-
-      if (type === 'send') {
-        // Ascending two-tone send chime  clean, positive
-        makeNote(880, ctx.currentTime, 0.12, 0.08);
-        makeNote(1320, ctx.currentTime + 0.09, 0.14, 0.06);
-      } else {
-        // Descending three-tone receive notification  softer, distinct
-        makeNote(1046, ctx.currentTime, 0.1, 0.07);
-        makeNote(880, ctx.currentTime + 0.08, 0.1, 0.06);
-        makeNote(698, ctx.currentTime + 0.16, 0.15, 0.05);
-      }
-    } catch(e) {}
-  };
+  // [AUDIO REMOVED] playAudioPing is permanently silenced.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const playAudioPing = (_type: 'send' | 'receive') => { /* no-op */ };
 
   const [prevMsgCount, setPrevMsgCount] = useState<number>(0);
   useEffect(() => {
-    if (messages.length > prevMsgCount && messages.length > 0) {
-        const lastMsg = messages[messages.length - 1];
-        const isMe = lastMsg.senderInboxId?.toLowerCase() === client?.inboxId?.toLowerCase();
-        // If it's a new message and I didn't send it, play receive ping
-        if (!isMobile && !isMe && prevMsgCount > 0) {
-            playAudioPing('receive');
-        }
-    }
     setPrevMsgCount(messages.length);
-  }, [messages.length, client?.inboxId, prevMsgCount]);
+  }, [messages.length]);
 
   if (!isConnected) {
     return (

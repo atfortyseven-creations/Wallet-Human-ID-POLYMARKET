@@ -174,50 +174,8 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     };
   }, [isDashboard, isBounded]);
 
-  // Handle Global Audio Feedback if enabled
-  React.useEffect(() => {
-    if (typeof document === 'undefined' || !settings?.soundEffects) return;
-    
-    // Low-latency AudioContext for UI clicks
-    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-    if (!AudioContext) return;
-    const ctx = new AudioContext();
-
-    const playTick = () => {
-      try {
-        if (ctx.state === 'suspended') ctx.resume();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(1200, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.05);
-        gain.gain.setValueAtTime(0.05, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.05);
-      } catch (e) {
-        // Silent catch for locked audio states
-      }
-    };
-
-    const handleAudioClick = (e: MouseEvent) => {
-        const target = e.target as HTMLElement;
-        const clickable = target.closest('button, a, input[type="submit"], [role="button"], .cursor-pointer');
-        if (clickable) playTick();
-    };
-
-    document.addEventListener('mousedown', handleAudioClick, { passive: true });
-    
-    //  INHUMAN OPTIMIZATION: AudioContext Memory Leak Fix 
-    return () => {
-      document.removeEventListener('mousedown', handleAudioClick);
-      if (ctx.state !== 'closed') {
-        ctx.close().catch(() => {});
-      }
-    };
-  }, [settings?.soundEffects]);
+  // [AUDIO REMOVED] Global click audio feedback has been permanently disabled.
+  // No sounds play on user interaction anywhere in the system.
 
   //  System Interaction Telemetry (independent of sound settings) 
   // CRITICAL FIX: Previously gated behind soundEffects=true, so if users had

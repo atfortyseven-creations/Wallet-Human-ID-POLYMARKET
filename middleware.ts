@@ -175,12 +175,10 @@ export default async function middleware(request: NextRequest) {
         console.info(`[WhaleFortress:Noise]  Scanner blocked: ${ip} -> ${pathname}`);
       } else {
         // High-priority alert for unexpected paths (genuine security threats)
-        console.error(`[WhaleFortress:SECURITY]  SHADOW_PROBE BLOCKED & JAILED: ${ip} -> ${pathname}`);
+        console.error(`[WhaleFortress:SECURITY]  SHADOW_PROBE BLOCKED: ${ip} -> ${pathname}`);
       }
       
-      // Zero-Tolerance Edge Ban
-      banIPGlobal(ip);
-
+      // We removed banIPGlobal(ip) here to prevent freezing legitimate users on shared IPs.
       logAuditSafe(request, 'SECURITY_HONEYPOT_HIT', 'anonymous', ip, { path: pathname, isNoise: isCommonNoise });
       return new NextResponse(null, { status: 404 });
     }

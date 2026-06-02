@@ -22,8 +22,38 @@ export async function GET() {
       },
     });
 
+    const chatContacts = await (prisma as any).chatContact.findMany({
+      select: {
+        owner: true,
+        createdAt: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    const uniqueUsersMap = new Map();
+    users.forEach(u => {
+      if (u.walletAddress) {
+        uniqueUsersMap.set(u.walletAddress.toLowerCase(), {
+          walletAddress: u.walletAddress,
+          createdAt: u.createdAt
+        });
+      }
+    });
+    chatContacts.forEach((c: any) => {
+      if (c.owner && !uniqueUsersMap.has(c.owner.toLowerCase())) {
+        uniqueUsersMap.set(c.owner.toLowerCase(), {
+          walletAddress: c.owner,
+          createdAt: c.createdAt
+        });
+      }
+    });
+
+    const combinedUsers = Array.from(uniqueUsersMap.values()).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
     return NextResponse.json(
-      { users, total: users.length },
+      { users: combinedUsers, total: combinedUsers.length },
       {
         headers: {
           "Cache-Control": "no-store, no-cache",

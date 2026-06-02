@@ -41,11 +41,29 @@ function RealDeviceRouter() {
     const urlParams = new URLSearchParams(window.location.search);
     const hasUuid = urlParams.has('uuid');
 
-    // Session detection: check cookie only for instant redirection.
-    // Local session (Humanity Ledger) is handled by the isConnected effect above.
+    // Check __disconnected__ guard first — if active, never auto-redirect.
+    let isGuarded = false;
+    try {
+      isGuarded = sessionStorage.getItem("__disconnected__") === "1" || localStorage.getItem("__disconnected__") === "1";
+    } catch {}
+
+    if (isGuarded) {
+      // User explicitly logged out — show connect UI, do not redirect.
+      const isUaMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase());
+      const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0 || (navigator as any).msMaxTouchPoints > 0);
+      const isNarrowScreen = window.screen.width < 768;
+      setView((isUaMobile || (isTouchDevice && isNarrowScreen)) ? 'mobile' : 'desktop');
+      return;
+    }
+
+    // Session detection: check cookie for desktop QR sessions.
     const hasCookie = document.cookie.split('; ').some(r => r.startsWith('system_handshake=0x'));
 
-    const isAlreadyLinked = hasCookie;
+    // HUMANITY LEDGER: Check sessionStorage unlock flag (set by /login page after successful unlock).
+    let hasLocalSession = false;
+    try {
+      hasLocalSession = sessionStorage.getItem('portfolio_unlocked') === 'true';
+    } catch {}
 
     // Detect device type early — needed for both the early redirect and the view setting
     const isUaMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase());
@@ -58,8 +76,11 @@ function RealDeviceRouter() {
     const isNarrowScreen = window.screen.width < 768;
     const isMobileDevice = isUaMobile || (isTouchDevice && isNarrowScreen);
 
+    // isConnected covers wagmi (MetaMask/WC) AND Humanity Ledger (via useSystemAccount priority ladder)
+    const isAlreadyLinked = hasCookie || hasLocalSession || isConnected;
+
     if (isAlreadyLinked && !hasUuid) {
-      const next = urlParams.get('next');
+      const next = urlParams.get('next') || urlParams.get('returnUrl');
       const fallback = '/portfolio';
       const destination = next && !next.startsWith('/connect') && !next.startsWith('/sign-up')
         ? next
@@ -70,7 +91,8 @@ function RealDeviceRouter() {
 
     // Not authenticated — show appropriate connect UI
     setView(isMobileDevice ? 'mobile' : 'desktop');
-  }, []);
+  // isConnected is in the dependency so wagmi-connected users trigger redirect immediately
+  }, [isConnected]);
 
   if (view === 'loading') {
     return (

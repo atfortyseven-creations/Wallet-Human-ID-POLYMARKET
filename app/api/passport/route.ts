@@ -67,46 +67,50 @@ export async function POST(req: NextRequest) {
   // 3. AI Semantic Coherence Check
   // We ask OpenAI to evaluate if the input makes logical sense for a physical product registry.
   // We do this to prevent spam like "Book" with "Water bottle" batch ID.
-  try {
-    const aiResponse = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        {
-          role: 'system',
-          content: `You are an AI auditor for an institutional supply chain registry. 
+  if (openai) {
+    try {
+      const aiResponse = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: `You are an AI auditor for an institutional supply chain registry. 
 Evaluate the provided product data for semantic coherence and realism.
 Reject fake, spam, testing, or mismatched data (e.g., category 'FOOD' but title 'iPhone', or description 'test test').
 Respond ONLY with a JSON object: {"valid": boolean, "reason": "Short explanation if invalid"}`,
-        },
-        {
-          role: 'user',
-          content: JSON.stringify({
-            title: validData.title,
-            category: validData.category,
-            description: validData.payload.description,
-            batchId: validData.payload.batchId,
-          }),
-        },
-      ],
-      response_format: { type: 'json_object' },
-      max_tokens: 150,
-      temperature: 0.1,
-    });
+          },
+          {
+            role: 'user',
+            content: JSON.stringify({
+              title: validData.title,
+              category: validData.category,
+              description: validData.payload.description,
+              batchId: validData.payload.batchId,
+            }),
+          },
+        ],
+        response_format: { type: 'json_object' },
+        max_tokens: 150,
+        temperature: 0.1,
+      });
 
-    const result = JSON.parse(aiResponse.choices[0].message.content || '{"valid": false, "reason": "AI validation failed"}');
-    if (!result.valid) {
-      return NextResponse.json(
-        { error: `Semantic validation failed: ${result.reason}` },
-        { status: 400 }
-      );
+      const result = JSON.parse(aiResponse.choices[0].message.content || '{"valid": false, "reason": "AI validation failed"}');
+      if (!result.valid) {
+        return NextResponse.json(
+          { error: `Semantic validation failed: ${result.reason}` },
+          { status: 400 }
+        );
+      }
+    } catch (error: any) {
+      if (error.status === 429 || error.code === 'insufficient_quota' || error.message?.includes('quota')) {
+        console.warn('⚠️ [Studio-AI-Auditor] OpenAI API Quota Exceeded (429). Bypassing semantic validation gracefully.');
+      } else {
+        console.error('⚠️ [Studio-AI-Auditor] OpenAI validation error:', error.message || error);
+      }
+      // Fail-open: continue execution so institutional registry doesn't block due to AI downtime
     }
-  } catch (error: any) {
-    if (error.status === 429 || error.code === 'insufficient_quota' || error.message?.includes('quota')) {
-      console.warn('⚠️ [Studio-AI-Auditor] OpenAI API Quota Exceeded (429). Bypassing semantic validation gracefully.');
-    } else {
-      console.error('⚠️ [Studio-AI-Auditor] OpenAI validation error:', error.message || error);
-    }
-    // Fail-open: continue execution so institutional registry doesn't block due to AI downtime
+  } else {
+    console.warn('⚠️ [Studio-AI-Auditor] OpenAI API Key missing. Bypassing semantic validation gracefully.');
   }
 
   // 4. Create the passport

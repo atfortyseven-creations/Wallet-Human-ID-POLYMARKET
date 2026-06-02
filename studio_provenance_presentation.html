@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Studio Provenance - Live Presentation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600;700&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fafafa;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            color: #111111;
+        }
+
+        #intro-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            background: #fafafa;
+            transition: opacity 1s ease;
+        }
+
+        h1 {
+            font-weight: 200;
+            letter-spacing: 2px;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #000;
+        }
+        
+        .subtitle-intro {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 50px;
+            font-weight: 400;
+            letter-spacing: 1px;
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .play-btn {
+            padding: 18px 50px;
+            border: 1px solid #000;
+            background: #000;
+            color: #fff;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            border-radius: 40px;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .play-btn:hover {
+            background: #fff;
+            color: #000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        #player {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0;
+            pointer-events: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at 30% 50%, #ffffff 0%, #f0f0f0 100%);
+        }
+
+        /* PREMIUM AZTEC BRANDING - ABSOLUTE CENTER AND MASSIVE */
+        .aztec-premium-logo {
+            position: absolute;
+            bottom: 2%; 
+            left: 50%; /* EXACT CENTER OF THE SCREEN */
+            transform: translateX(-50%);
+            height: 40%; /* MASSIVE */
+            max-height: 450px; 
+            width: auto;
+            object-fit: contain;
+            z-index: 1000;
+            filter: drop-shadow(0 30px 60px rgba(0,0,0,0.15));
+            border-radius: 24px;
+        }
+
+        /* 3D Black Titanium iPhone Pro Mockup Container */
+        .phone-container {
+            position: absolute;
+            right: 12%; 
+            top: 50%;
+            transform: translateY(-50%);
+            width: 380px; 
+            height: 820px; 
+            background: #000;
+            border-radius: 50px;
+            box-shadow: 0 0 0 12px #1a1a1a, 0 50px 100px rgba(0,0,0,0.2), inset 0 0 0 4px #333;
+            overflow: hidden;
+            opacity: 0;
+            transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 50;
+        }
+
+        .phone-container.visible {
+            opacity: 1;
+            transform: translateY(-50%) scale(1);
+        }
+
+        /* TEXT UNDER PHONE */
+        .powered-by {
+            position: absolute;
+            right: 12%; 
+            top: 50%;
+            transform: translateY(440px);
+            width: 380px; 
+            text-align: center;
+            font-size: 0.95rem;
+            color: #555;
+            z-index: 50;
+            letter-spacing: 0.5px;
+            font-weight: 300;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        .powered-by strong {
+            font-weight: 600;
+            color: #111;
+        }
+
+        .powered-by.visible {
+            opacity: 1;
+        }
+
+        /* Dynamic Island */
+        .phone-notch {
+            position: absolute;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 110px;
+            height: 30px;
+            background: #000;
+            border-radius: 20px;
+            z-index: 20;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+        }
+
+        .screenshot {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top;
+            transition: all 1.5s ease;
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            border-radius: 38px;
+            transform: scale(1.05);
+        }
+        
+        .screenshot.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Typography for presentation */
+        .text-container {
+            position: absolute;
+            left: 8%;
+            top: 40%; 
+            transform: translateY(-50%); 
+            width: 40%; /* Made slightly narrower so it doesn't overlap the center */
+            z-index: 50;
+        }
+
+        .presentation-text {
+            font-size: 2.6rem;
+            font-weight: 300;
+            line-height: 1.4;
+            color: #111;
+            opacity: 0;
+            margin: 0;
+            position: absolute;
+            width: 100%;
+        }
+
+        .highlight {
+            font-weight: 600;
+            color: #eab308;
+            text-shadow: 0 2px 10px rgba(234, 179, 8, 0.2);
+        }
+
+        .code-highlight {
+            font-family: monospace;
+            background: rgba(241, 245, 249, 0.9);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 2.1rem;
+            color: #334155;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        @keyframes textFadeIn {
+            0% { opacity: 0; transform: translateY(15px); }
+            15% { opacity: 1; transform: translateY(0); }
+            85% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-15px); }
+        }
+
+        #logo-final {
+            position: absolute;
+            z-index: 100;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 2s ease;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            height: 100%;
+        }
+
+        #logo-final h2 {
+            font-size: 5rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 2px;
+            color: #000;
+        }
+
+        #logo-final .tags {
+            font-size: 1.5rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+            color: #666;
+            margin-top: 40px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="intro-screen">
+        <h1>Studio Provenance</h1>
+        <p class="subtitle-intro">Technical Demonstration: Zero-Knowledge Privacy in the Supply Chain</p>
+        <button class="play-btn" onclick="startTrailer()">Start Experience</button>
+    </div>
+
+    <div id="player">
+        
+        <!-- High-DPI Aztec Branding - ABSOLUTE CENTER AND MASSIVE -->
+        <img src="file:///C:/Users/admin/Desktop/stu%20dioprovenance/Gemini_Generated_Image_dzte5edzte5edzte%20(2).png" class="aztec-premium-logo" alt="Aztec Network Logo">
+
+        <!-- Text Area (Left) -->
+        <div class="text-container" id="text-wrapper">
+            <!-- Texts injected by JS -->
+        </div>
+
+        <!-- Phone Area (Right) -->
+        <div class="phone-container" id="main-phone">
+            <!-- Dynamic Island -->
+            <div class="phone-notch"></div>
+            <!-- Medias mapped exactly as requested by the user -->
+            <img src="file:///C:/Users/admin/Desktop/stu%20dioprovenance/photo_2026-06-02_09-40-16%20(2).jpg" class="screenshot" id="screen-create">
+            <img src="file:///C:/Users/admin/Desktop/stu%20dioprovenance/photo_2026-06-02_09-40-16%20(3).jpg" class="screenshot" id="screen-dashboard">
+            <img src="file:///C:/Users/admin/Desktop/stu%20dioprovenance/photo_2026-06-02_09-40-16.jpg" class="screenshot" id="screen-passport">
+        </div>
+        
+        <!-- Under Phone Credits -->
+        <div class="powered-by" id="credits">
+            Powered by <strong>Whale Network</strong> | Engineered by <strong>Aztec Network</strong>
+        </div>
+
+        <!-- Final Logo -->
+        <div id="logo-final">
+            <h2>Studio Provenance</h2>
+            <p style="color: #666; font-size: 1.5rem; margin-top: 10px; font-weight: 300;">Public verification. Private data.</p>
+            <div class="tags">
+                <strong>@whalecosystem</strong> &nbsp;&nbsp;|&nbsp;&nbsp; <strong>@AztecLabs_</strong>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const timeline = [
+            // SCENE 1: The Concept (Oranges) (Total ~18s)
+            { time: 1000, 
+              text: "Imagine a box of <span class='highlight'>Valencia Oranges</span>.", 
+              spokenText: "Imagine a shipment of premium Valencia Oranges. As a supplier, you are required to prove their authenticity and organic origin to the public.",
+              duration: 8000 },
+            { time: 9500, 
+              text: "You need to prove its authenticity to the public and to inspectors...", 
+              spokenText: "However, your proprietary supplier identity, profit margins, and commercial trade volumes must remain absolutely confidential to protect your business advantage.",
+              duration: 10000 },
+            
+            // SCENE 2: The Smart Contract Logic (Total ~22s)
+            { time: 20000, 
+              text: "The supplier fills in the product name, category, description, emission site, batch ID, and GS1 barcode.", 
+              spokenText: "To solve this, the supplier accesses the Provenance Registry smart contract. Here, they input essential product metadata, including the GS1 barcode.",
+              duration: 9000, 
+              screen: 'screen-create' },
+            { time: 29500, 
+              text: "Clicking 'Create product record' instantly triggers the <span class='highlight'>ProvenanceRegistry</span> smart contract.", 
+              spokenText: "By clicking 'Create product record', the system seamlessly integrates with the Aztec Network.",
+              duration: 7000 },
+            { time: 37000, 
+              text: "Aztec Network mints a <span class='code-highlight'>PrivateBatchNote</span> encrypting all commercial data.", 
+              spokenText: "Under the hood, Aztec mints a Zero-Knowledge Private Batch Note, instantly and permanently encrypting all sensitive commercial data, securing your trade secrets on-chain.",
+              duration: 11000 },
+
+            // SCENE 3: The Public Record (Total ~18s)
+            { time: 48500, 
+              text: "Instantly, the product's registry zone is created, securely storing all details.", 
+              spokenText: "Instantly, the product's secure registry zone is generated. The supplier's dashboard elegantly tracks all pending and confirmed assets in real time.",
+              duration: 9000, 
+              screen: 'screen-dashboard' },
+            { time: 58000, 
+              text: "Simultaneously, a <span class='code-highlight'>PublicProductRecord</span> is emitted on-chain.", 
+              spokenText: "Simultaneously, while the private data remains locked, a Public Product Record is emitted on the blockchain. This architecture beautifully isolates public identity from private reality.",
+              duration: 11000 },
+
+            // SCENE 4: Zero-Knowledge Verification (Total ~22s)
+            { time: 69500, 
+              text: "Scanning the generated QR code reveals the absolute traceability of the product.", 
+              spokenText: "Finally, the end consumer interacts with the physical product. By simply scanning the generated QR code, they unlock the absolute traceability of the item.",
+              duration: 9000, 
+              screen: 'screen-passport' },
+            { time: 79000, 
+              text: "The consumer sees everything the supplier did to guarantee authenticity.", 
+              spokenText: "They can verify every certified step the supplier took to guarantee its authenticity and origin.",
+              duration: 7000 },
+            { time: 86500, 
+              text: "Mathematical verification powered by <span class='highlight'>Zero-Knowledge</span> proofs.", 
+              spokenText: "This is made possible through mathematical verification powered by Zero-Knowledge proofs—ensuring absolute public trust, without ever exposing the underlying corporate data.",
+              duration: 11000 },
+
+            // OUTRO
+            { time: 98000, triggerFinal: true }
+        ];
+
+        // Ensure voices are loaded ahead of time
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                window.speechSynthesis.getVoices();
+            };
+        }
+
+        function startTrailer() {
+            // Request fullscreen
+            let elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen().catch(err => console.log(err));
+            }
+
+            // Unlock audio/speech context (requires user interaction)
+            if ('speechSynthesis' in window) {
+                let silent = new SpeechSynthesisUtterance('');
+                silent.volume = 0;
+                window.speechSynthesis.speak(silent);
+            }
+
+            document.getElementById('intro-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('intro-screen').style.display = 'none';
+                document.getElementById('player').style.opacity = '1';
+                runTimeline();
+            }, 1000);
+        }
+
+        function runTimeline() {
+            let textWrapper = document.getElementById('text-wrapper');
+
+            timeline.forEach(event => {
+                setTimeout(() => {
+                    // Handle Screen changes
+                    if (event.screen) {
+                        // Make phone and credits visible if not already
+                        document.getElementById('main-phone').classList.add('visible');
+                        document.getElementById('credits').classList.add('visible');
+                        
+                        // Reset all screenshots
+                        document.querySelectorAll('.screenshot').forEach(el => {
+                            el.classList.remove('active');
+                        });
+                        
+                        // Activate target screenshot
+                        const targetScreen = document.getElementById(event.screen);
+                        if (targetScreen) targetScreen.classList.add('active');
+                    }
+
+                    // Handle Text changes
+                    if (event.text) {
+                        // Create a new text element to trigger animation cleanly
+                        const p = document.createElement('p');
+                        p.className = 'presentation-text';
+                        p.innerHTML = event.text;
+                        
+                        // Set animation duration dynamically based on the event duration
+                        p.style.animation = `textFadeIn ${event.duration / 1000}s ease-in-out forwards`;
+                        
+                        textWrapper.innerHTML = ''; // Clear previous
+                        textWrapper.appendChild(p);
+
+                        // TEXT-TO-SPEECH (DETAILED ACADEMIC NARRATION)
+                        if ('speechSynthesis' in window) {
+                            window.speechSynthesis.cancel(); // Stop any currently playing audio
+                            
+                            // Prefer spokenText if available, otherwise fallback to standard text
+                            let rawText = event.spokenText ? event.spokenText : event.text;
+                            
+                            // Remove HTML tags for clean reading
+                            let cleanText = rawText.replace(/<[^>]*>?/gm, '');
+                            
+                            // Adjust text slightly for better pronunciation
+                            cleanText = cleanText.replace('GS1', 'G S 1');
+                            
+                            let utterance = new SpeechSynthesisUtterance(cleanText);
+                            utterance.lang = 'en-GB'; 
+                            utterance.rate = 0.85; // Very slow, calm, detailed pace
+                            utterance.pitch = 0.85; // Deep, serious, academic tone
+                            
+                            // Attempt to select a premium British voice if available
+                            let voices = window.speechSynthesis.getVoices();
+                            let goodVoice = voices.find(v => v.lang === 'en-GB' && v.name.includes('Male')) 
+                                         || voices.find(v => v.lang === 'en-GB') 
+                                         || voices.find(v => v.lang.startsWith('en'));
+                            if (goodVoice) utterance.voice = goodVoice;
+                            
+                            window.speechSynthesis.speak(utterance);
+                        }
+                    }
+
+                    // Final Logo
+                    if (event.triggerFinal) {
+                        document.getElementById('main-phone').classList.remove('visible');
+                        document.getElementById('credits').classList.remove('visible');
+                        textWrapper.innerHTML = '';
+                        setTimeout(() => {
+                            document.getElementById('logo-final').style.opacity = '1';
+                        }, 1000);
+                    }
+
+                }, event.time);
+            });
+        }
+    </script>
+</body>
+</html>
