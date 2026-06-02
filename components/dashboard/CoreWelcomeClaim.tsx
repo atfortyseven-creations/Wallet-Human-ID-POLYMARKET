@@ -15,7 +15,7 @@ export default function CoreWelcomeClaim({ signature, onSuccess }: { signature: 
 
     const handleClaim = async () => {
         if (!signature) {
-            toast.error('Firma de autorización no encontrada. Verifica tu registro.');
+            toast.error('Authorization signature not found. Check your registration.');
             return;
         }
 

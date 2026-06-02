@@ -165,7 +165,7 @@ export default function LoginPage() {
         } catch {}
       }
 
-      toast.success("Wallet Desbloqueado", { description: `${addr.slice(0, 6)}...${addr.slice(-4)}` });
+      toast.success("Wallet Unlocked", { description: `${addr.slice(0, 6)}...${addr.slice(-4)}` });
       await afterUnlock(pk, addr, cleanPwd);
       return true;
     } catch (err: any) {

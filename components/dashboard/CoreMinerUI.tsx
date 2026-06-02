@@ -184,7 +184,7 @@ export default function CoreMinerUI() {
             setIsMining(false);
             setHashRate(0);
             workerRef.current?.postMessage({ command: 'stop' });
-            toast.warning('Minería detenida por el usuario.');
+            toast.warning('Mining stopped by user.');
         }
     };
 
@@ -246,8 +246,8 @@ export default function CoreMinerUI() {
             {userBalanceFormatted === '0.00' && address && (
                 <div className="mb-6 p-4 rounded-2xl border border-white/30 bg-white/5 flex flex-col sm:flex-row items-start sm:items-center gap-3 relative z-10">
                     <div className="flex-1">
-                        <p className="text-xs font-bold text-white tracking-widest uppercase mb-1"> Bienvenido  500 QDs Gratis</p>
-                        <p className="text-[10px] text-white/50">Tu cuenta es nueva. Reclama tu Airdrop de bienvenida para obtener tus primeros 500 QDs al instante.</p>
+                        <p className="text-xs font-bold text-white tracking-widest uppercase mb-1"> Welcome  500 QDs Free</p>
+                        <p className="text-[10px] text-white/50">Your account is new. Claim your welcome Airdrop to instantly get your first 500 QDs.</p>
                     </div>
                     <button
                         onClick={async () => {
