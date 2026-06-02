@@ -223,8 +223,32 @@ export function useSystemAccount() {
         };
     }
 
-    //  Priority 1: Local system wallet (privateKey live in memory) 
-    // This fires immediately after autoUnlockVault() succeeds — zero user friction.
+    //  Priority 1: Direct Wagmi connection (WalletConnect / MetaMask / any injected wallet)
+    // ABSOLUTE PRIORITY: a live external wallet connection always wins over any
+    // cached or in-memory Humanity Ledger local-wallet state. This is the single
+    // source-of-truth fix that eliminates the "Access Denied" loop for WalletConnect users.
+    if (wagmiAccount.isConnected) {
+        return {
+            address: wagmiAccount.address,
+            isConnected: true,
+            isConnecting: wagmiAccount.isConnecting,
+            isReconnecting: wagmiAccount.isReconnecting,
+            isDisconnected: false,
+            status: 'connected' as const,
+            connector: wagmiAccount.connector,
+            chainId: wagmiAccount.chainId,
+            chain: wagmiAccount.chain,
+            isSystemHandshake: false,
+            isLocalSystemWallet: false,
+            needsWalletReconnect: false,
+            isZkVerified,
+            isChecking: false,
+        };
+    }
+
+    //  Priority 2: Local system wallet (privateKey live in memory) 
+    // Only reached when there is NO active external wallet connection.
+    // This fires after autoUnlockVault() succeeds — zero user friction.
     if (storeAddress && storePrivateKey) {
         return {
             address: storeAddress as `0x${string}`,
@@ -244,8 +268,10 @@ export function useSystemAccount() {
         };
     }
 
-    //  Priority 1b: Session-restored (address in sessionStorage) 
+    //  Priority 3: Session-restored system wallet (address in sessionStorage) 
     // privateKey is not in memory — read-only portfolio display until auto-unlock completes.
+    // Only reached when there is NO active external Wagmi/WalletConnect connection.
+
     const sessionRestoredAddr = sessionAddress || storeAddress;
     if (sessionRestoredAddr && isSessionUnlocked) {
         return {
@@ -266,27 +292,7 @@ export function useSystemAccount() {
         };
     }
 
-    //  Priority 2: Direct Wagmi connection (MetaMask / WalletConnect) 
-    if (wagmiAccount.isConnected) {
-        return {
-            address: wagmiAccount.address,
-            isConnected: true,
-            isConnecting: wagmiAccount.isConnecting,
-            isReconnecting: wagmiAccount.isReconnecting,
-            isDisconnected: false,
-            status: 'connected' as const,
-            connector: wagmiAccount.connector,
-            chainId: wagmiAccount.chainId,
-            chain: wagmiAccount.chain,
-            isSystemHandshake: false,
-            isLocalSystemWallet: false,
-            needsWalletReconnect: false,
-            isZkVerified,
-            isChecking: false,
-        };
-    }
-
-    //  Priority 3: QR Handshake cookie 
+    //  Priority 4: QR Handshake cookie 
     if (handshakeAddress) {
         return {
             address: handshakeAddress as `0x${string}`,
@@ -306,7 +312,7 @@ export function useSystemAccount() {
         };
     }
 
-    //  Priority 4: Disconnected / connecting fallback 
+    //  Priority 5: Disconnected / connecting fallback 
     // isChecking stays true while auto-unlock is in progress to prevent flash of login UI
     return {
         address: wagmiAccount.address,

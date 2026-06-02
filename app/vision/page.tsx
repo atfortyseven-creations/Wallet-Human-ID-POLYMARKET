@@ -2,7 +2,6 @@ import React from 'react';
 import { SystemHeader } from '@/components/landing/SystemHeader';
 import { SystemFooter } from '@/components/landing/SystemFooter';
 import { VisionAboutSection } from '@/components/vision/VisionAboutSection';
-import { VisionStatsSection } from '@/components/vision/VisionStatsSection';
 
 export const metadata = {
   title: 'Our Vision — Whale Alert Network',
@@ -72,10 +71,9 @@ export default function VisionPage() {
         </section>
 
         {/* ── About Us & Leadership ─────────────────────────────────────────── */}
-        <VisionAboutSection />
-
-        {/* ── Real Platform Statistics ──────────────────────────────────────── */}
-        <VisionStatsSection />
+        <div className="pb-24">
+          <VisionAboutSection />
+        </div>
 
       </main>
 
