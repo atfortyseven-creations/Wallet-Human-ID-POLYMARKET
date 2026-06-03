@@ -754,14 +754,20 @@ function AdvancedRouterModule({ mode, userAssets, forceToken, setStatus, setTxHa
             try {
                 // Real-time market price discovery from backend API
                 const priceRes = await fetch(`/api/prices?symbols=${payToken.symbol},${receiveToken.symbol}`);
-                let fromRate = 1; let toRate = 1;
+                let fromRate = payToken.price || 1; 
+                let toRate = receiveToken.price || 1;
                 
                 if (priceRes.ok) {
                     const priceData = await priceRes.json();
-                    fromRate = priceData[payToken.symbol] || 1;
-                    toRate = priceData[receiveToken.symbol] || 1;
+                    fromRate = priceData[payToken.symbol] || fromRate;
+                    toRate = priceData[receiveToken.symbol] || toRate;
                 }
                 
+                // If it's a stablecoin to stablecoin, enforce ~1:1
+                if (['USDC','USDT','DAI'].includes(payToken.symbol) && ['USDC','USDT','DAI'].includes(receiveToken.symbol)) {
+                    fromRate = 1; toRate = 1;
+                }
+
                 const conversion = (parseFloat(payAmount) * fromRate) / toRate;
                 setReceiveAmount((conversion * 0.997).toFixed(6));
                 
@@ -787,14 +793,30 @@ function AdvancedRouterModule({ mode, userAssets, forceToken, setStatus, setTxHa
         const estimateCrossChainCost = async () => {
             setIsQuoting(true); setQuoteError("");
             try {
+                const priceRes = await fetch(`/api/prices?symbols=${payToken.symbol},${receiveToken.symbol}`);
+                let fromRate = payToken.price || 1; 
+                let toRate = receiveToken.price || 1;
+                
+                if (priceRes.ok) {
+                    const priceData = await priceRes.json();
+                    fromRate = priceData[payToken.symbol] || fromRate;
+                    toRate = priceData[receiveToken.symbol] || toRate;
+                }
+
+                if (['USDC','USDT','DAI'].includes(payToken.symbol) && ['USDC','USDT','DAI'].includes(receiveToken.symbol)) {
+                    fromRate = 1; toRate = 1;
+                }
+
+                const conversion = (parseFloat(payAmount) * fromRate) / toRate;
+
                 await new Promise(r => setTimeout(r, 600));
                 
                 const baseCost = toChain.id === 1 ? 0.015 : 0.0008;
                 const jitter = Math.random() * 0.0002;
                 setLzFee((baseCost + jitter).toFixed(5));
                 
-                // For Bridge, you receive exactly what you send minus minor bridge fees natively
-                setReceiveAmount(parseFloat(payAmount).toFixed(6));
+                // For Bridge, you receive conversion amount minus minor bridge slippage/fee
+                setReceiveAmount((conversion * 0.998).toFixed(6));
                 
                 if (!isPayTokenNative) refetchAllowance();
             } catch (e) {
