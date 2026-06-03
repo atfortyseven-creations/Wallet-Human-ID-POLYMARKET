@@ -15,7 +15,7 @@ import ReceiveHub from '@/components/wallet/ReceiveHub';
 import QRScannerModal from '@/components/wallet/QRScannerModal';
 import SecurityVault from '@/components/wallet/SecurityVault';
 import SettingsPanel from '@/components/wallet/SettingsPanel';
-import SecureWalletModal from '@/components/wallet/SecureWalletModal';
+import { LegendaryTransactionModal } from '@/components/rainbow/LegendaryTransactionModal';
 import { useRealWalletData } from '@/hooks/useRealWalletData';
 
 import { QRCodeSVG } from 'qrcode.react';
@@ -230,11 +230,11 @@ export function InstitutionalPortfolioView() {
             </AnimatePresence>
 
             {/* Universal On-Chain Modals for ALL Users */}
-            <SecureWalletModal 
+            <LegendaryTransactionModal 
                 isOpen={!!unifiedActionTab} 
-                initialTab={unifiedActionTab || 'SEND'} 
+                initialMode={unifiedActionTab === 'SEND' ? 'send' : unifiedActionTab === 'SWAP' ? 'swap' : unifiedActionTab === 'BRIDGE' ? 'bridge' : 'buy'} 
                 onClose={() => setUnifiedActionTab(null)} 
-                userAssets={assets || []}
+                balances={assets || []}
             />
             
             {showReceive && (

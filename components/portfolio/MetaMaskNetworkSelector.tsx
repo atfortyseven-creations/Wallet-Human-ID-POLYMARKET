@@ -16,9 +16,14 @@ export function MetaMaskNetworkSelector({ activeNetworkId, onNetworkChange }: { 
     const currentId = activeNetworkId || chainId || (chains.length > 0 ? chains[0].id : 1);
     const currentWagmiChain = chains.find(c => c.id === currentId);
     
+    const fallbackNames: Record<number, string> = {
+        1: 'Ethereum', 56: 'BNB Smart Chain', 137: 'Polygon', 8453: 'Base',
+        42161: 'Arbitrum One', 10: 'OP Mainnet', 480: 'World Chain'
+    };
+    
     const currentNetwork = {
         id: currentId,
-        name: currentWagmiChain?.name || 'Unknown Network',
+        name: currentWagmiChain?.name || fallbackNames[currentId] || 'Unknown Network',
         icon: getChainLogo(currentId)
     };
     
@@ -27,10 +32,7 @@ export function MetaMaskNetworkSelector({ activeNetworkId, onNetworkChange }: { 
 
     const getNetworkInfo = (id: number) => {
         const wagmiChain = chains.find(c => c.id === id);
-        const fallbackNames: Record<number, string> = {
-            1: 'Ethereum', 56: 'BNB Smart Chain', 137: 'Polygon', 8453: 'Base',
-            42161: 'Arbitrum One', 10: 'OP Mainnet', 480: 'World Chain'
-        };
+        // fallbackNames already defined above
         return { 
             id, 
             name: wagmiChain?.name || fallbackNames[id] || 'Unknown', 

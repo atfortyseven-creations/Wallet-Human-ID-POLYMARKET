@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { safeToFixed } from '@/lib/utils/number-format';
 import { QUANTUM_TOKENS } from '@/lib/config/tokens';
 import { TOKEN_STATS_20260530, TOKEN_STATS_DATE } from '@/config/token-stats-snapshot';
-import SecureWalletModal from '@/components/wallet/SecureWalletModal';
+import { LegendaryTransactionModal } from '@/components/rainbow/LegendaryTransactionModal';
 import ReceiveHub from '@/components/wallet/ReceiveHub';
 import { TokenLogo } from '@/components/ui/TokenLogo';
 import { NETWORKS, NetworkId } from '@/lib/store/wallet-store';
@@ -154,13 +154,12 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
                                     }]} />
                                 </div>
                             ) : (
-                                <SecureWalletModal 
+                                <LegendaryTransactionModal 
                                     isOpen={actionState.isOpen} 
-                                    initialTab={actionState.type as any}
+                                    initialMode={actionState.type === 'SEND' ? 'send' : actionState.type === 'SWAP' ? 'swap' : actionState.type === 'BRIDGE' ? 'bridge' : 'buy'}
                                     onClose={() => setActionState({ ...actionState, isOpen: false })} 
-                                    userAssets={userAssets}
+                                    balances={userAssets || []}
                                     forceToken={actionState.token?.symbol}
-                                    asEmbedded={true}
                                 />
                             )}
                         </div>

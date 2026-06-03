@@ -29,6 +29,7 @@ interface LegendaryTransactionModalProps {
   balances: any[];
   initialMode?: "send" | "swap" | "bridge" | "buy";
   initialSubMode?: string;
+  forceToken?: string;
 }
 
 const CHAINS = [
@@ -94,7 +95,8 @@ export function LegendaryTransactionModal({
     onClose, 
     balances, 
     initialMode = "send",
-    initialSubMode = "standard"
+    initialSubMode = "standard",
+    forceToken
 }: LegendaryTransactionModalProps) {
   const [mode, setMode] = useState<"send" | "swap" | "bridge" | "buy">(initialMode);
   const [subMode, setSubMode] = useState<string>(initialSubMode === 'standard' && initialMode === 'buy' ? 'EUR' : initialSubMode);
@@ -125,8 +127,12 @@ export function LegendaryTransactionModal({
     if (isOpen) {
         setMode(initialMode);
         setSubMode(initialSubMode);
+        if (forceToken) {
+            setFromAssetSymbol(forceToken);
+            setFromAsset(balances.find(b => b.symbol === forceToken) || balances[0]);
+        }
     }
-  }, [isOpen, initialMode, initialSubMode]);
+  }, [isOpen, initialMode, initialSubMode, forceToken, balances]);
 
   useEffect(() => {
       const asset = balances.find(b => b.symbol === fromAssetSymbol);
