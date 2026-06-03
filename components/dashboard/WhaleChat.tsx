@@ -512,7 +512,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 }
             }
             try {
-              return await signMessageAsync({ message: typeof msg === 'string' ? msg : { raw: msg } as any });
+              return await signMessageAsync({ 
+                  message: typeof msg === 'string' ? msg : { raw: msg } as any,
+                  account: address as `0x${string}`
+              });
             } catch (sigErr: any) {
               const msg = sigErr?.message || '';
               if (msg.includes('connector') || msg.includes('not connected') || msg.includes('No connector') || msg.includes('signMessage')) {

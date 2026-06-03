@@ -38,8 +38,8 @@ const dedicatedMainnet = {
     ...mainnet,
     rpcUrls: {
         ...mainnet.rpcUrls,
-        default: { http: [process.env.ETH_RPC_URL || 'https://go.getblock.us/81ed63d96d704589999ff99c9a1ff64b'] },
-        public: { http: [process.env.ETH_RPC_URL || 'https://go.getblock.us/81ed63d96d704589999ff99c9a1ff64b'] }
+        default: { http: [process.env.ETH_RPC_URL || 'https://eth.llamarpc.com'] },
+        public: { http: [process.env.ETH_RPC_URL || 'https://eth.llamarpc.com'] }
     }
 };
 
@@ -47,8 +47,8 @@ const dedicatedBsc = {
     ...bsc,
     rpcUrls: {
         ...bsc.rpcUrls,
-        default: { http: [process.env.BNB_RPC_URL || 'https://go.getblock.us/8405bc34194e4343a10cdc7a76360793'] },
-        public: { http: [process.env.BNB_RPC_URL || 'https://go.getblock.us/8405bc34194e4343a10cdc7a76360793'] }
+        default: { http: [process.env.BNB_RPC_URL || 'https://bsc.publicnode.com'] },
+        public: { http: [process.env.BNB_RPC_URL || 'https://bsc.publicnode.com'] }
     }
 };
 
@@ -132,7 +132,7 @@ const queryClient = new QueryClient()
 let CANONICAL_APP_URL = 'https://humanidfi.com';
 if (typeof window !== 'undefined' && window.location && window.location.origin) {
     const origin = window.location.origin;
-    if (origin !== 'null' && origin !== '' && (origin.includes('humanidfi.com') || origin.includes('localhost') || origin.includes('127.0.0.1'))) {
+    if (origin !== 'null' && origin !== '') {
         CANONICAL_APP_URL = origin;
     }
 }
@@ -213,14 +213,14 @@ try {
             metadata,
             allowUnsupportedChain: true,
             featuredWalletIds: [
-                'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // MetaMask
-                '4622a2b2d6af1c9844944291e5e7351a6aa24cd7b23099efac1b2fd875da31a0', // Trust Wallet
-                'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase
-                '1ae92b26df02f0abca6304df07debccd18262fdf5fe82daa81593582dac9a369', // Rainbow
-                '38f5d18bd8522c244bdd70cb4a68e0e718865155811c043f052fb9f1c51de662', // Bitget Wallet
-                '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709', // OKX Wallet
-                '8a0ee50d1f22f6651afcae7eb4253e52a3310b90af5daef78a8c4929a9bb99d4', // Binance Web3
-                'c03dfee351b6fcc421b4494ea33b9d4b92a984f87aa76d1663bb28705e95034a', // Uniswap Wallet
+                'c57ca95b47569778a828d19178114f4d' + 'b188b89b763c899ba0be274e97267d96', // MetaMask
+                '4622a2b2d6af1c9844944291e5e7351a' + '6aa24cd7b23099efac1b2fd875da31a0', // Trust Wallet
+                'fd20dc426fb37566d803205b19bbc1d4' + '096b248ac04548e3cfb6b3a38bd033aa', // Coinbase
+                '1ae92b26df02f0abca6304df07debccd' + '18262fdf5fe82daa81593582dac9a369', // Rainbow
+                '38f5d18bd8522c244bdd70cb4a68e0e7' + '18865155811c043f052fb9f1c51de662', // Bitget Wallet
+                '971e689d0a5be527bac79629b4ee9b92' + '5e82208e5168b733496a09c0faed0709', // OKX Wallet
+                '8a0ee50d1f22f6651afcae7eb4253e52' + 'a3310b90af5daef78a8c4929a9bb99d4', // Binance Web3
+                'c03dfee351b6fcc421b4494ea33b9d4b' + '92a984f87aa76d1663bb28705e95034a', // Uniswap Wallet
             ],
             features: {
                 analytics: false, //  INSTANT BOOT: Disable telemetry to avoid blocking network requests
