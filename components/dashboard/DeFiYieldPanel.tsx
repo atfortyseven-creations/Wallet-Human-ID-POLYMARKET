@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -76,7 +76,9 @@ export default function DeFiYieldPanel() {
             const d = await r.json();
             if (d.error) throw new Error(d.error);
             setStats(d.stats || {});
-            setTs(new Date(d.timestamp).toISOString().slice(11, 19));
+            if (d?.timestamp) {
+                setTs(new Date(d.timestamp).toISOString().slice(11, 19));
+            }
             let p: DeFiPool[] = d.pools || [];
             if (stableOnly) p = p.filter(x => x.stablecoin);
             if (riskMax < 5) p = p.filter(x => x.riskScore <= riskMax);

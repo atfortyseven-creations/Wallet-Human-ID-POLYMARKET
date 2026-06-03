@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -60,7 +60,7 @@ interface ReceiptData {
 
 //  Utils 
 function shortAddr(a: string) {
-    return `${a.slice(0, 8)}...${a.slice(-6)}`;
+    return a ? `${a.slice(0, 8)}...${a.slice(-6)}` : '';
 }
 
 function generateCoreEntropy(): bigint {

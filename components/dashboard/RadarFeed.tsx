@@ -1,4 +1,4 @@
-﻿// components/dashboard/RadarFeed.tsx
+// components/dashboard/RadarFeed.tsx
 "use client";
 
 import React, { useEffect } from 'react';
@@ -87,9 +87,9 @@ export default function RadarFeed() {
                     {alert.txHash}
                  </span>
                  <div className="flex items-center gap-2 text-[7px] text-black/40 mt-1 uppercase tracking-widest">
-                    <span>{alert.from.slice(0,6)}</span>
+                    <span>{alert.from?.slice(0,6)}</span>
                     <span></span>
-                    <span>{alert.to.slice(0,6)}</span>
+                    <span>{alert.to?.slice(0,6)}</span>
                  </div>
               </div>
 
@@ -118,7 +118,7 @@ export default function RadarFeed() {
                      ? 'border-rose-500/20 text-rose-600 bg-rose-50'
                      : 'border-black/10 text-black/50 bg-black/5'
                  }`}>
-                   {alert.action.slice(0, 4)}
+                   {alert.action?.slice(0, 4)}
                  </span>
               </div>
             </motion.div>

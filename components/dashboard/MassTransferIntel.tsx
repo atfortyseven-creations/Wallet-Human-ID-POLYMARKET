@@ -38,7 +38,7 @@ function formatUsd(v: number): string {
 
 function shortAddr(addr: string): string {
   if (!addr || addr.length < 10) return addr;
-  return `${addr.slice(0, 6)}${addr.slice(-4)}`;
+  return addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : '';
 }
 
 function getExplorer(chain: string, type: "tx" | "address", val: string): string {

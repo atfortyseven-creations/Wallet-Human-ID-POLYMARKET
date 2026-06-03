@@ -21,7 +21,7 @@ const OPTIMISM_CHAIN_ID = 10;
 const MAX_SUPPLY = 200;
 
 //  Helpers 
-const truncAddr = (a: string) => `${a.slice(0, 6)}${a.slice(-4)}`;
+const truncAddr = (a: string) => a ? `${a.slice(0, 6)}...${a.slice(-4)}` : '';
 const fmtEth = (wei: bigint) => (Number(wei) / 1e18).toFixed(4);
 const pct = (a: number, b: number) => Math.min(100, Math.round((a / b) * 100));
 

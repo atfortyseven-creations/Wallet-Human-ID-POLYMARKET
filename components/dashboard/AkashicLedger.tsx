@@ -67,7 +67,7 @@ function ChainBadge({ chain }: { chain: string }) {
 
 function HashDisplay({ hash, chain }: { hash: string, chain: string }) {
   const [copied, setCopied] = useState(false);
-  const short = `${hash.slice(0, 8)}...${hash.slice(-8)}`;
+  const short = hash ? `${hash.slice(0, 8)}...${hash.slice(-8)}` : '';
 
   const copy = () => {
     navigator.clipboard.writeText(hash).catch(() => {});

@@ -158,7 +158,7 @@ function SIWEPanel({
                 Connected Wallet
               </p>
               <p className="text-[12px] font-mono font-bold text-[#050505] truncate">
-                {address.slice(0, 10)}...{address.slice(-6)}
+                {address ? `${address.slice(0, 10)}...${address.slice(-6)}` : 'Connecting...'}
               </p>
             </div>
             {!isAuthed && (

@@ -230,7 +230,7 @@ export default function PolymarketGlassDashboard({ embedded = false }: { embedde
                                             {market.question}
                                         </h4>
                                         <div className="mt-4 flex items-center justify-between">
-                                            <div className="text-[9px] font-mono text-[#050505]/30 uppercase">{market.condition_id.slice(0, 10)}...</div>
+                                            <div className="text-[9px] font-mono text-[#050505]/30 uppercase">{market.condition_id?.slice(0, 10)}...</div>
                                             <div className={`w-8 h-8 rounded-full flex items-center justify-center border transition-all ${isSelected ? 'border-emerald-300 bg-emerald-50' : 'border-[#E5E5E5] bg-[#FFFFFF] group-hover:border-[#050505]/20'}`}>
                                                 <ArrowUpRight size={14} className={isSelected ? 'text-emerald-600' : 'text-[#050505]/40'} />
                                             </div>

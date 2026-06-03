@@ -134,7 +134,7 @@ export function GalacticDashboard() {
 
   const truncateAddress = (addr: string) => {
     if (!addr) return '0x000...0000';
-    return `${addr.slice(0, 10)}...${addr.slice(-8)}`;
+    return addr ? `${addr.slice(0, 10)}...${addr.slice(-8)}` : '';
   };
 
   // Centralized Action Handler
