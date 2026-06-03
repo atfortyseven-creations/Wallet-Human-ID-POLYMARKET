@@ -180,15 +180,32 @@ function saveSettings(s: ChatSettings) {
 function loadConversations(selfAddress: string): Conversation[] {
   if (typeof window === 'undefined' || !selfAddress) return [];
   try {
-    const raw = localStorage.getItem(`system_chat_convs_${selfAddress.toLowerCase()}`);
-    if (raw) return JSON.parse(raw);
+    const rawWhale = localStorage.getItem(`whale_chat_convs_${selfAddress.toLowerCase()}`);
+    const rawSystem = localStorage.getItem(`system_chat_convs_${selfAddress.toLowerCase()}`);
+    let convs: Conversation[] = [];
+    if (rawWhale) convs = [...convs, ...JSON.parse(rawWhale)];
+    if (rawSystem) convs = [...convs, ...JSON.parse(rawSystem)];
+    
+    const unique = new Map<string, Conversation>();
+    for (const c of convs) {
+      if (!unique.has(c.peerAddress)) {
+        unique.set(c.peerAddress, c);
+      } else {
+        const existing = unique.get(c.peerAddress)!;
+        if (c.lastMessage && !existing.lastMessage) {
+          unique.set(c.peerAddress, c);
+        }
+      }
+    }
+    return Array.from(unique.values());
   } catch {}
   return [];
 }
 
 function saveConversations(selfAddress: string, convs: Conversation[]) {
   if (typeof window === 'undefined' || !selfAddress) return;
-  localStorage.setItem(`system_chat_convs_${selfAddress.toLowerCase()}`, JSON.stringify(convs));
+  localStorage.setItem(`whale_chat_convs_${selfAddress.toLowerCase()}`, JSON.stringify(convs));
+  localStorage.removeItem(`system_chat_convs_${selfAddress.toLowerCase()}`);
 }
 
 //  XMTP message  RenderableMessage 

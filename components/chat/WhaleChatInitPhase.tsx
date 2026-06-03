@@ -79,6 +79,16 @@ export default function WhaleChatInitPhase({ onComplete }: { onComplete: () => v
     }
   };
 
+  const handleResetPin = () => {
+    if (window.confirm("Are you sure you want to reset your passcode? You will need to create a new one.")) {
+      localStorage.removeItem(`whale_pin_${address?.toLowerCase()}`);
+      setPin('');
+      setFirstPin('');
+      setErrorText('');
+      setPhase('CREATE');
+    }
+  };
+
   if (phase === 'CHECKING') return null;
 
   return (
@@ -113,6 +123,15 @@ export default function WhaleChatInitPhase({ onComplete }: { onComplete: () => v
             'Unlock Whale Chat Protocol'
           )}
         </p>
+
+        {phase === 'VERIFY' && (
+          <button 
+            onClick={handleResetPin}
+            className="text-[9px] text-black/40 hover:text-black uppercase tracking-widest underline underline-offset-4 absolute top-24"
+          >
+            Reset Passcode
+          </button>
+        )}
 
         {/* PIN Indicators */}
         <div className="flex items-center gap-6 mb-16">
