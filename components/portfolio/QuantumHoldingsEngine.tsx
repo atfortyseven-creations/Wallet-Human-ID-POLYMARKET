@@ -49,6 +49,8 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
     const [isImportModalOpen, setIsImportModalOpen] = useState(false);
     const [importAddress, setImportAddress] = useState('');
     const [isImporting, setIsImporting] = useState(false);
+    const [viewMode, setViewMode] = useState<'LIST' | 'GRID'>('LIST');
+    const [activeAction, setActiveAction] = useState<{type: 'SEND'|'RECEIVE'|'SWAP'|'BRIDGE', token: any} | null>(null);
     const [showSpam, setShowSpam] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const ITEMS_PER_PAGE = 8;
@@ -146,33 +148,7 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
     }, [userAssets, activeNetwork]);
 
     const handleAction = (type: 'SEND'|'RECEIVE'|'SWAP'|'BRIDGE', token: any) => {
-        if (type === 'SWAP') {
-            toast.custom((t) => <NativeSwapView onBack={() => toast.dismiss(t)} />);
-        } else if (type === 'BRIDGE') {
-            toast.custom((t) => <NativeBridgeView onBack={() => toast.dismiss(t)} />);
-        } else if (type === 'SEND') {
-            toast.custom((t) => (
-                <ModalView title={`Send ${token.symbol}`} onBack={() => toast.dismiss(t)}>
-                    <div className="flex flex-col items-center justify-center p-8 bg-black/[0.02] border border-black/5">
-                        <span className="text-[10px] uppercase tracking-widest text-black/40 font-black mb-2">Notice</span>
-                        <p className="text-sm font-mono text-center text-black/60">
-                            Send interface is being natively integrated.
-                        </p>
-                    </div>
-                </ModalView>
-            ));
-        } else if (type === 'RECEIVE') {
-            toast.custom((t) => (
-                <ModalView title={`Receive ${token.symbol}`} onBack={() => toast.dismiss(t)}>
-                    <ReceiveHub addresses={[{
-                        network: activeNetwork,
-                        address: address,
-                        token: token?.symbol || 'ETH',
-                        iconPath: token?.logoPath
-                    }]} />
-                </ModalView>
-            ));
-        }
+        setActiveAction({ type, token });
     };
 
     const legitimateAssets = useMemo(() => combinedAssets.filter(a => !(a as any).isSpam), [combinedAssets]);
@@ -420,6 +396,56 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
                     </div>
                 )}
             </div>
+            {/* ACTION MODAL OVERLAY */}
+            <AnimatePresence>
+                {activeAction && (
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+                    >
+                        <motion.div 
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                            className="w-full max-w-2xl max-h-[90vh] bg-white overflow-y-auto rounded-3xl shadow-2xl relative custom-scrollbar flex flex-col"
+                        >
+                            <button onClick={() => setActiveAction(null)} className="absolute top-4 right-4 z-[110] p-2 bg-black/5 hover:bg-black/10 transition-colors rounded-full text-black/60 hover:text-black">
+                                <X size={20} />
+                            </button>
+
+                            {activeAction.type === 'SWAP' && <NativeSwapView onBack={() => setActiveAction(null)} />}
+                            {activeAction.type === 'BRIDGE' && <NativeBridgeView onBack={() => setActiveAction(null)} />}
+                            
+                            {activeAction.type === 'SEND' && (
+                                <ModalView title={`Send ${activeAction.token.symbol}`} onBack={() => setActiveAction(null)}>
+                                    <div className="flex flex-col items-center justify-center p-8 bg-black/[0.02] border border-black/5 mt-10">
+                                        <span className="text-[10px] uppercase tracking-widest text-black/40 font-black mb-2">Notice</span>
+                                        <p className="text-sm font-mono text-center text-black/60">
+                                            Send interface is being natively integrated.
+                                        </p>
+                                    </div>
+                                </ModalView>
+                            )}
+
+                            {activeAction.type === 'RECEIVE' && (
+                                <ModalView title={`Receive ${activeAction.token.symbol}`} onBack={() => setActiveAction(null)}>
+                                    <div className="mt-8">
+                                        <ReceiveHub addresses={[{
+                                            network: activeNetwork,
+                                            address: address,
+                                            token: activeAction.token.symbol || 'ETH',
+                                            iconPath: activeAction.token.logoPath
+                                        }]} />
+                                    </div>
+                                </ModalView>
+                            )}
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
         </div>
     );
 }
