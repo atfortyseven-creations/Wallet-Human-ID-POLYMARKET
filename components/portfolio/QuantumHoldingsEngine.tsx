@@ -43,7 +43,7 @@ function Sparkline({ isPositive }: { isPositive: boolean }) {
     );
 }
 
-export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, userAssets = [], displayCurrency = 'USD', rate = 1, symbol = '$' }: { address: string, activeNetwork: string, scannerBase: string, userAssets?: any[], displayCurrency?: string, rate?: number, symbol?: string }) {
+export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, userAssets = [], displayCurrency = 'USD', rate = 1, symbol = '$', onSwapRequest, onBridgeRequest }: { address: string, activeNetwork: string, scannerBase: string, userAssets?: any[], displayCurrency?: string, rate?: number, symbol?: string, onSwapRequest?: (token: any) => void, onBridgeRequest?: (token: any) => void }) {
     
     const [selectedToken, setSelectedToken] = useState<any | null>(null);
     const [isImportModalOpen, setIsImportModalOpen] = useState(false);
@@ -148,6 +148,14 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
     }, [userAssets, activeNetwork]);
 
     const handleAction = (type: 'SEND'|'RECEIVE'|'SWAP'|'BRIDGE', token: any) => {
+        if (type === 'SWAP' && onSwapRequest) {
+             onSwapRequest(token);
+             return;
+        }
+        if (type === 'BRIDGE' && onBridgeRequest) {
+             onBridgeRequest(token);
+             return;
+        }
         setActiveAction({ type, token });
     };
 
@@ -497,7 +505,7 @@ function TokenPerformanceChart({ token }: { token: any }) {
         chartRef.current = chart;
 
         // Generate highly realistic 24h price data for the chart
-        const data = [];
+        const data: any[] = [];
         let currentPrice = token.price / (1 + (token.change24h / 100)); // Price 24h ago
         const endPrice = token.price;
         const now = Math.floor(Date.now() / 1000);

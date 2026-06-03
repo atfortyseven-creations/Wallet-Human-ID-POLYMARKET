@@ -46,7 +46,7 @@ export default function PortfolioPage() {
 
   if (needsGate) {
     return (
-      <div className="w-full flex-1 flex flex-col bg-white text-[#0A0A0A] h-full min-h-0 overflow-hidden relative">
+      <div className="w-full flex-1 flex flex-col bg-white text-[#0A0A0A] min-h-[100dvh] overflow-x-hidden relative">
         <Link href="/" className="absolute top-6 left-6 z-50 w-10 h-10 rounded-full bg-white/50 backdrop-blur-md border border-black/10 flex items-center justify-center text-black/40 hover:text-black hover:bg-white transition-all shadow-sm" title="Return to Landing Page">
           <span className="font-mono text-[11px] font-black text-black/40">[&lt;]</span>
         </Link>

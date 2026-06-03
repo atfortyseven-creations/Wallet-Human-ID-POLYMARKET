@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import {
   useConnect, useSignMessage,
   useReadContract, useSwitchChain, useAccount,
-  useSendTransaction
+  useSendTransaction, useWalletClient
 } from 'wagmi';
 import { parseEther } from 'viem';
 import { injected } from 'wagmi/connectors';
@@ -281,7 +281,7 @@ function GlobalLedger({ feed }: { feed: any[] }) {
       <div className="w-full h-full bg-white flex flex-col">
          <div className="px-6 py-4 border-b border-black/[0.04] bg-[#FFFFFF] shrink-0 flex items-center justify-between relative overflow-hidden">
              <div className="flex items-center gap-3 relative z-10">
-                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#050505]">PUBLIC SIGNATURE LEDGER</span>
+                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#050505] hidden">PUBLIC SIGNATURE LEDGER</span>
              </div>
              <span className="text-[8px] font-black text-black/40 uppercase tracking-[0.3em] relative z-10">{feed?.length || 0} ENTRIES</span>
          </div>
@@ -408,7 +408,8 @@ export function GoldTicketPanel() {
   const { open: openAppKit } = useAppKit();
   const router = useRouter();
   const { switchChain } = useSwitchChain();
-  const { signMessage, isPending: isSigning } = useSignMessage();
+  const { signMessageAsync, isPending: isSigning } = useSignMessage();
+  const { data: walletClient } = useWalletClient();
   const { sendTransactionAsync } = useSendTransaction();
   const [dbStats, setDbStats] = useState<any>(null);
   const [signatureData, setSignatureData] = useState<string>("");
@@ -508,27 +509,33 @@ export function GoldTicketPanel() {
 
     try {
       const signToastId = toast.loading('Awaiting cryptographic wallet signature (Gasless)...');
-      signMessage(
-        { 
-          message: `WHALE ALERT NETWORK GOLD ACCESS VERIFICATION: ${address}`
-        },
-        {
-          onSuccess: async (cryptoSignature: string) => {
-            toast.dismiss(signToastId);
-            await performClaim(cryptoSignature, undefined);
-          },
-          onError: async (err: any) => {
-            toast.dismiss(signToastId);
-            toast.error('Signature rejected. You must sign the message to claim your identity.');
-            setIsMinting(false);
-          }
-        }
-      );
+      
+      const messageToSign = `WHALE ALERT NETWORK GOLD ACCESS VERIFICATION: ${address}`;
+      let cryptoSignature = '';
+      
+      try {
+         if (walletClient?.signMessage) {
+            cryptoSignature = await walletClient.signMessage({
+               account: walletClient.account || address as `0x${string}`,
+               message: messageToSign
+            });
+         } else {
+            cryptoSignature = await signMessageAsync({ message: messageToSign });
+         }
+      } catch (innerErr) {
+         console.warn("Primary signature failed, falling back to signMessageAsync", innerErr);
+         cryptoSignature = await signMessageAsync({ message: messageToSign });
+      }
+
+      toast.dismiss(signToastId);
+      await performClaim(cryptoSignature, undefined);
+
     } catch (error: any) {
+      toast.dismiss();
       toast.error(`Mint execution failed: ${error?.shortMessage || error?.message || 'Transaction rejected'}`);
       setIsMinting(false);
     }
-  }, [isConnected, isWagmiConnected, address, wagmiAddress, signatureData, signatureStrokes, isMinting, isSigning, signMessage, openAppKit, fetchStats]);
+  }, [isConnected, isWagmiConnected, address, wagmiAddress, signatureData, signatureStrokes, isMinting, isSigning, signMessageAsync, walletClient, openAppKit, fetchStats]);
 
   const hasTicket = dbStats?.ticket || false;
 
@@ -657,16 +664,20 @@ export function GoldTicketPanel() {
                    Any obscene, offensive or fraudulent signature will be permanently erased from the network —
                    that identity will never again be eligible for uniqueness within Whale Network.
                 </p>
-                 <div className="flex-1">
+                 <div className="flex-1 flex flex-col justify-between">
                     <SignaturePad 
                       onSignature={setSignatureData} 
                       onStrokesUpdate={setSignatureStrokes}
                       disabled={hasTicket}
-                      onMint={handleMint}
-                      mintLabel={
-                        isMinting || isSigning ? 'CLAIMING...' : `CLAIM TICKET (FREE MINT)`
-                      }
+                      isMinting={isMinting || isSigning}
                     />
+                    <button
+                      onClick={handleMint}
+                      disabled={!signatureData || isMinting || isSigning || hasTicket}
+                      className="w-full mt-6 bg-black text-white px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:scale-[1.02] disabled:hover:scale-100 disabled:opacity-50 transition-all active:scale-95 shadow-lg"
+                    >
+                      {isMinting || isSigning ? 'CLAIMING...' : 'CLAIM TICKET (FREE MINT)'}
+                    </button>
                  </div>
             </div>
           ) : (

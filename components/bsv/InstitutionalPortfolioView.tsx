@@ -89,7 +89,7 @@ export function InstitutionalPortfolioView() {
     const { assets, totalBalance } = useRealWalletData([], address || undefined);
     
     // We keep 'HOME' as the main view, and overlay modals for actions
-    const [view, setView] = useState<'HOME'|'NETWORK'|'CREATE'|'SHIELD'|'SECURITY'|'DEPLOY'|'MEMPOOL'|'SMART_ACCOUNT'|'OMNICHAIN'>('HOME');
+    const [view, setView] = useState<'HOME'|'NETWORK'|'CREATE'|'SHIELD'|'SECURITY'|'DEPLOY'|'MEMPOOL'|'SMART_ACCOUNT'|'OMNICHAIN'|'SWAP'|'BRIDGE'|'BUY'>('HOME');
     
     // Modal states for full universal capability
     const [showReceive, setShowReceive] = useState(false);
@@ -202,7 +202,7 @@ export function InstitutionalPortfolioView() {
     const balanceFiat = `${(parseFloat(balance || "0") * priceOracle * rate).toFixed(2)}`;
 
     return (
-        <div className="flex flex-col relative text-black selection:bg-black/10 min-h-[100dvh] bg-white font-sans">
+        <div className="flex flex-col relative text-black selection:bg-black/10 min-h-[100dvh] bg-white font-sans overflow-x-hidden">
             <AnimatePresence mode="wait">
                 {view === 'HOME' && (
                     <HomeView key="home"
@@ -515,7 +515,7 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                                 ))}
                             </div>
                             <div className="flex-1 bg-white flex flex-col">
-                                {activeTab === 'TOKENS' && <QuantumHoldingsEngine address={address} activeNetwork={activeNetwork} scannerBase={scannerBase} userAssets={assets} displayCurrency={displayCurrency} rate={rate} symbol={symbol} />}
+                                {activeTab === 'TOKENS' && <QuantumHoldingsEngine address={address} activeNetwork={activeNetwork} scannerBase={scannerBase} userAssets={assets} displayCurrency={displayCurrency} rate={rate} symbol={symbol} onSwapRequest={onSwap} onBridgeRequest={onBridge} />}
                                 {activeTab === 'DEFI' && <QuantumDeFiPositions address={address} activeNetwork={activeNetwork} />}
                                 {activeTab === 'ACTIVITY' && <TransactionHistory address={address} scannerBase={scannerBase} activeNetwork={activeNetwork} />}
                             </div>

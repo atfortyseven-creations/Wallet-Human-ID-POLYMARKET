@@ -57,11 +57,17 @@ function TokenSelector({ selectedToken, onSelect, label }: { selectedToken: Univ
 
     const filtered = UNIVERSAL_TOKENS.filter(t => t.symbol.toLowerCase().includes(search.toLowerCase()) || t.name.toLowerCase().includes(search.toLowerCase())).slice(0, 100);
 
+    const handleSelect = (t: UniversalToken) => {
+        onSelect(t);
+        setOpen(false);
+        setSearch('');
+    };
+
     return (
         <div className="relative">
             <button 
                 onClick={() => setOpen(!open)}
-                className="flex items-center gap-2 bg-black/5 hover:bg-black/10 border border-black/10 px-4 py-2 font-bold uppercase tracking-widest text-sm outline-none transition-colors"
+                className="flex items-center gap-2 bg-black/5 hover:bg-black/10 border border-black/10 px-4 py-2 font-bold uppercase tracking-widest text-sm outline-none transition-colors rounded-sm"
             >
                 {selectedToken.logoPath && <img src={selectedToken.logoPath} alt={selectedToken.symbol} className="w-5 h-5 rounded-full" />}
                 {selectedToken.symbol}
@@ -70,35 +76,73 @@ function TokenSelector({ selectedToken, onSelect, label }: { selectedToken: Univ
             
             <AnimatePresence>
                 {open && (
-                    <motion.div initial={{opacity:0, y: -10}} animate={{opacity:1, y:0}} exit={{opacity:0, y:-10}} className="absolute top-full right-0 mt-2 w-64 bg-white border border-black/20 shadow-2xl z-50 flex flex-col max-h-[300px]">
-                        <div className="p-2 border-b border-black/10">
-                            <input 
-                                type="text" 
-                                placeholder="Search 500+ tokens..." 
-                                value={search}
-                                onChange={e => setSearch(e.target.value)}
-                                className="w-full bg-black/5 px-3 py-2 text-[10px] font-mono tracking-widest outline-none focus:bg-black/10 transition-colors"
-                                autoFocus
-                            />
-                        </div>
-                        <div className="overflow-y-auto flex-1 p-2 space-y-1">
-                            {filtered.map(t => (
-                                <button key={t.symbol} onClick={() => { onSelect(t); setOpen(false); }} className="w-full flex items-center gap-3 p-2 hover:bg-black/5 transition-colors text-left">
-                                    <img src={t.logoPath} alt={t.symbol} className="w-6 h-6 rounded-full" />
-                                    <div className="flex flex-col">
-                                        <span className="text-[11px] font-black tracking-widest uppercase">{t.symbol}</span>
-                                        <span className="text-[9px] text-black/50">{t.name}</span>
-                                    </div>
+                    <>
+                        {/* Backdrop — closes dropdown on tap outside */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 z-[998] bg-black/20 backdrop-blur-[2px]"
+                            onClick={() => { setOpen(false); setSearch(''); }}
+                        />
+                        {/* Token picker — fixed + centrado en todas las pantallas */}
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                            className="fixed z-[999] bg-white border border-black/15 shadow-2xl flex flex-col overflow-hidden"
+                            style={{
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                width: 'min(320px, calc(100vw - 32px))',
+                                maxHeight: '70vh',
+                                borderRadius: '16px',
+                            }}
+                        >
+                            {/* Header */}
+                            <div className="px-4 py-3 border-b border-black/8 flex items-center justify-between shrink-0">
+                                <span className="text-[11px] font-black uppercase tracking-[0.2em] text-black/50">{label}</span>
+                                <button
+                                    onClick={() => { setOpen(false); setSearch(''); }}
+                                    className="w-7 h-7 flex items-center justify-center rounded-full bg-black/5 hover:bg-black/10 text-black/50 hover:text-black transition-colors"
+                                >
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
                                 </button>
-                            ))}
-                            {filtered.length === 0 && <div className="p-4 text-center text-[10px] uppercase text-black/40">No tokens found</div>}
-                        </div>
-                    </motion.div>
+                            </div>
+                            {/* Search */}
+                            <div className="p-3 border-b border-black/8 shrink-0">
+                                <input 
+                                    type="text" 
+                                    placeholder="Search 500+ tokens..." 
+                                    value={search}
+                                    onChange={e => setSearch(e.target.value)}
+                                    className="w-full bg-black/[0.04] px-3 py-2.5 text-[12px] font-mono tracking-widest outline-none focus:bg-black/[0.07] transition-colors rounded-sm"
+                                    autoFocus
+                                />
+                            </div>
+                            {/* List */}
+                            <div className="overflow-y-auto flex-1 p-2 space-y-0.5">
+                                {filtered.map(t => (
+                                    <button key={t.symbol} onClick={() => handleSelect(t)} className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-black/5 active:bg-black/10 transition-colors text-left rounded-sm">
+                                        <img src={t.logoPath} alt={t.symbol} className="w-7 h-7 rounded-full shrink-0" />
+                                        <div className="flex flex-col min-w-0">
+                                            <span className="text-[12px] font-black tracking-widest uppercase">{t.symbol}</span>
+                                            <span className="text-[10px] text-black/40 truncate">{t.name}</span>
+                                        </div>
+                                    </button>
+                                ))}
+                                {filtered.length === 0 && <div className="p-6 text-center text-[11px] uppercase text-black/40 font-bold tracking-widest">No tokens found</div>}
+                            </div>
+                        </motion.div>
+                    </>
                 )}
             </AnimatePresence>
         </div>
     );
 }
+
 
 export function NativeSwapView({ address, onBack }: any) {
     const activeNetwork = useWalletStore(s => s.activeNetwork);
@@ -316,35 +360,42 @@ export function NativeSwapView({ address, onBack }: any) {
     };
 
     return (
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="flex flex-col max-w-2xl mx-auto w-full pt-8 px-6 pb-20 font-mono min-h-full flex-1 bg-white">
-            <div className="flex items-center justify-between mb-6 pb-4 border-b border-black/10">
-                <div>
-                    <h2 className="text-xl font-black uppercase tracking-widest text-black flex items-center gap-2">
+        <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 40 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 260 }}
+            className="flex flex-col w-full bg-white font-mono overflow-x-hidden"
+            style={{ minHeight: '100dvh', paddingBottom: 'calc(5rem + env(safe-area-inset-bottom, 0px))' }}
+        >
+            {/* ── Header ── */}
+            <div className="flex flex-wrap items-start justify-between gap-3 px-4 sm:px-6 pt-6 pb-4 border-b border-black/10">
+                <div className="min-w-0">
+                    <h2 className="text-lg sm:text-xl font-black uppercase tracking-widest text-black flex items-center gap-2">
                         Universal Swap
-                        <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+                        <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse shrink-0"></span>
                     </h2>
                     <p className="text-[10px] uppercase text-black/50 tracking-widest mt-1">DEX Routing Engine v5 | {UNIVERSAL_TOKENS.length} Assets</p>
                 </div>
-                <div className="flex items-center gap-3">
-                    {/* Multi-sig toggle */}
+                <div className="flex items-center gap-3 shrink-0">
                     <label className="flex items-center gap-2 cursor-pointer text-[9px] uppercase font-bold text-black/40 hover:text-black transition-colors">
                         <input type="checkbox" checked={useMultiSig} onChange={e=>setUseMultiSig(e.target.checked)} className="accent-black" />
                         Multi-Sig
                     </label>
-
-                    <button onClick={onBack} className="text-[10px] uppercase font-bold tracking-widest border border-black/10 px-3 py-1 hover:bg-black hover:text-white transition-colors">
+                    <button onClick={onBack} className="text-[10px] uppercase font-bold tracking-widest border border-black/10 px-3 py-2 hover:bg-black hover:text-white transition-colors active:bg-black active:text-white">
                         CLOSE
                     </button>
                 </div>
             </div>
 
-            <div className="flex-1 flex flex-col min-h-0 space-y-2">
-                <div className="flex justify-between items-end mb-2">
+            {/* ── Body ── */}
+            <div className="flex flex-col px-4 sm:px-6 pt-4 space-y-2">
+                <div className="flex justify-between items-center">
                     <div className="text-[9px] font-bold uppercase tracking-widest text-black/40">
                         NETWORK: <span className="text-black ml-1">{activeNetwork}</span>
                     </div>
                     <div className="flex items-center gap-2 text-[10px] font-bold text-black/40">
-                        MAX SLIPPAGE: 
+                        MAX SLIPPAGE:
                         <select value={slippage} onChange={e=>setSlippage(e.target.value)} className="bg-transparent text-black outline-none font-bold border-b border-black/20 pb-0.5">
                             <option value="0.1">0.1%</option>
                             <option value="0.5">0.5%</option>
@@ -354,24 +405,27 @@ export function NativeSwapView({ address, onBack }: any) {
                     </div>
                 </div>
 
-                {/* Sell Block */}
-                <div className="border border-black/10 p-6 bg-white hover:border-black/30 transition-colors relative group">
-                    <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-black/40 mb-4 block flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 bg-red-500 block"></span> SELL
+                {/* ── Sell Block ── */}
+                <div className="border border-black/10 p-4 sm:p-6 bg-white hover:border-black/30 transition-colors">
+                    <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-black/40 mb-3 flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 bg-red-500 block shrink-0"></span> SELL
                     </label>
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                        <input 
-                            type="number" 
+                    <div className="flex items-center justify-between gap-3">
+                        {/* font-size >= 16px previene zoom automático en iOS Safari */}
+                        <input
+                            type="number"
+                            inputMode="decimal"
                             value={amountIn}
                             onChange={(e) => setAmountIn(e.target.value)}
                             placeholder="0.0"
-                            className="bg-transparent text-5xl font-light outline-none w-full sm:w-2/3 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-black"
+                            className="bg-transparent text-4xl sm:text-5xl font-light outline-none w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-black"
+                            style={{ fontSize: 'clamp(1.75rem, 8vw, 3rem)' }}
                         />
                         <TokenSelector selectedToken={fromToken} onSelect={setFromToken} label="Sell Token" />
                     </div>
-                    <div className="mt-6 text-[10px] text-black/40 font-mono flex justify-between pt-4 border-t border-black/5">
+                    <div className="mt-4 text-[10px] text-black/40 font-mono flex justify-between pt-3 border-t border-black/5">
                         <span>Balance: {currentBalance}</span>
-                        <span onClick={() => setAmountIn(currentBalance)} className="text-black/60 cursor-pointer hover:text-black font-bold tracking-widest border border-black/10 px-2 py-0.5 rounded-sm">MAX</span>
+                        <span onClick={() => setAmountIn(currentBalance)} className="text-black/60 cursor-pointer hover:text-black font-bold tracking-widest border border-black/10 px-2 py-0.5 rounded-sm active:bg-black active:text-white transition-colors">MAX</span>
                     </div>
                 </div>
 
@@ -381,16 +435,16 @@ export function NativeSwapView({ address, onBack }: any) {
                     </button>
                 </div>
 
-                {/* Buy Block */}
-                <div className="border border-black/10 p-6 bg-black/[0.02] hover:border-black/30 transition-colors">
-                    <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-black/40 mb-4 block flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 bg-green-500 block"></span> BUY
+                {/* ── Buy Block ── */}
+                <div className="border border-black/10 p-4 sm:p-6 bg-black/[0.02] hover:border-black/30 transition-colors">
+                    <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-black/40 mb-3 flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 bg-green-500 block shrink-0"></span> BUY
                     </label>
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                        <div className="text-5xl font-light w-full sm:w-2/3 truncate text-black flex items-center">
+                    <div className="flex items-center justify-between gap-3">
+                        <div className="text-black flex items-center w-0 flex-1 overflow-hidden" style={{ fontSize: 'clamp(1.75rem, 8vw, 3rem)', fontWeight: 300 }}>
                             {isCalculating ? (
-                                <motion.span initial={{opacity:0.3}} animate={{opacity:1}} transition={{repeat:Infinity, duration:0.5}} className="text-black/20 font-mono text-3xl tracking-widest">CALCULATING...</motion.span>
-                            ) : amountOut || "0.0"}
+                                <motion.span initial={{opacity:0.3}} animate={{opacity:1}} transition={{repeat:Infinity, duration:0.5}} className="text-black/20 font-mono text-2xl tracking-widest">CALCULATING...</motion.span>
+                            ) : <span className="truncate">{amountOut || "0.0"}</span>}
                         </div>
                         <TokenSelector selectedToken={toToken} onSelect={setToToken} label="Buy Token" />
                     </div>
@@ -425,29 +479,30 @@ export function NativeSwapView({ address, onBack }: any) {
                     )}
                 </AnimatePresence>
 
-                <div className="mt-auto pt-6">
-                    {needsApproval ? (
-                        <button 
-                            onClick={executeApproval}
-                            disabled={isApproving}
-                            className="w-full py-5 bg-black text-white font-black text-[12px] uppercase tracking-[0.3em] transition-all hover:bg-black/90 disabled:opacity-50 flex justify-center shadow-2xl"
-                        >
-                            {isApproving ? 'AUTHORIZING EXACT AMOUNT...' : `APPROVE ${fromToken.symbol}`}
-                        </button>
-                    ) : (
-                        <button 
-                            onClick={executeSwap}
-                            disabled={isSwapping || !amountIn || isCalculating}
-                            className="w-full py-5 bg-black text-white font-black text-[12px] uppercase tracking-[0.3em] transition-all hover:bg-black/90 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center shadow-2xl"
-                        >
-                            {useMultiSig ? 'SIGN & QUEUE (MULTI-SIG)' : isSwapping ? 'EXECUTING ON-CHAIN...' : 'SIGN & EXECUTE SWAP'}
-                        </button>
-                    )}
-                    
-                    <div className="mt-4 flex items-start gap-2 text-[8px] uppercase tracking-[0.2em] text-black/40 text-center justify-center">
-                        <p>ZERO SIMULATION. DIRECT ON-CHAIN EXECUTION VIA UNISWAP V3 ROUTER.</p>
-                    </div>
-                </div>
+            </div>{/* end body */}
+
+            {/* ── Sticky CTA — funciona en iOS con safe-area ── */}
+            <div className="fixed bottom-0 left-0 right-0 z-10 bg-white border-t border-black/10 px-4 sm:px-6 pt-4"
+                style={{ paddingBottom: 'calc(1rem + env(safe-area-inset-bottom, 0px))' }}
+            >
+                {needsApproval ? (
+                    <button
+                        onClick={executeApproval}
+                        disabled={isApproving}
+                        className="w-full py-4 sm:py-5 bg-black text-white font-black text-[12px] uppercase tracking-[0.3em] transition-all hover:bg-black/90 active:bg-black/70 disabled:opacity-50 flex justify-center shadow-2xl rounded-sm"
+                    >
+                        {isApproving ? 'AUTHORIZING...' : `APPROVE ${fromToken.symbol}`}
+                    </button>
+                ) : (
+                    <button
+                        onClick={executeSwap}
+                        disabled={isSwapping || !amountIn || isCalculating}
+                        className="w-full py-4 sm:py-5 bg-black text-white font-black text-[12px] uppercase tracking-[0.3em] transition-all hover:bg-black/90 active:bg-black/70 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center shadow-2xl rounded-sm"
+                    >
+                        {useMultiSig ? 'SIGN & QUEUE (MULTI-SIG)' : isSwapping ? 'EXECUTING...' : 'SIGN & EXECUTE SWAP'}
+                    </button>
+                )}
+                <p className="mt-2 text-[8px] uppercase tracking-[0.2em] text-black/30 text-center">ZERO SIMULATION. DIRECT ON-CHAIN EXECUTION VIA UNISWAP V3 ROUTER.</p>
             </div>
         </motion.div>
     );

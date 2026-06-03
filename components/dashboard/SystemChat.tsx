@@ -104,6 +104,7 @@ import {
   getMessages,
   streamMessages,
   nsToDate,
+  revokeXMTPInstallations,
 } from '@/lib/xmtp/client';
 
 //  Types 
@@ -641,6 +642,15 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
       } catch (e: any) {
         attempts++;
         const msg = (e?.message || '').toLowerCase();
+        
+        if (msg.includes('xmtp_limit_reached')) {
+          const [, inboxId] = (e.message as string).split(':');
+          xmtpInitLock.current = false;
+          setXmtpInitializing(false);
+          setXmtpError(`XMTP_LIMIT_REACHED:${inboxId || ''}`);
+          return;
+        }
+
         // If user actively rejected, don't retry
         if (msg.includes('reject') || msg.includes('deny') || msg.includes('user denied')) {
           xmtpInitLock.current = false;
@@ -659,6 +669,37 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConnected, walletClient, address, isLocalSystemWallet, storePrivateKey, xmtpReady, connector, isSystemHandshake]);
+
+  const handleRevokeSessions = async (inboxId: string) => {
+    if (!walletClientRef.current) return;
+    try {
+      setXmtpInitializing(true);
+      setXmtpError(null);
+      const signer = {
+        getAddress: async () => address as string,
+        signMessage: async (msg: string | Uint8Array) => {
+          if (getDeviceOS() === 'ios' && !isLocalSystemWallet) {
+            setIosSignPending(true);
+            setWcDeepLink(getWalletConnectDeepLink());
+          }
+          const sig = await walletClientRef.current.signMessage({
+            account: address as `0x${string}`,
+            message: typeof msg === 'string' ? msg : { raw: msg as unknown as `0x${string}` },
+          });
+          setIosSignPending(false);
+          return sig;
+        },
+      };
+      await revokeXMTPInstallations(signer as any, inboxId);
+      toast.success('Sesiones antiguas revocadas. Iniciando nueva sesión...');
+      initXmtpClient(true);
+    } catch (err: any) {
+      console.error(err);
+      toast.error('Error al revocar', { description: err?.message });
+      setXmtpInitializing(false);
+      setXmtpError(`XMTP_LIMIT_REACHED:${inboxId}`);
+    }
+  };
 
   // Auto-init on mount
   useEffect(() => {
@@ -1601,43 +1642,71 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                       </>
                     ) : (
                       <>
-                        {xmtpError && (
-                          <p className="text-[10px] font-mono text-rose-500 text-center leading-relaxed max-w-xs">{xmtpError}</p>
-                        )}
-                        {!xmtpError && (
+                        {xmtpError?.startsWith('XMTP_LIMIT_REACHED:') ? (
                           <div className="flex flex-col items-center gap-4 text-center max-w-sm mt-2 mb-4">
-                            <p className="text-[11px] font-mono font-bold text-black uppercase tracking-widest leading-relaxed">
-                              Activación de Protocolo E2EE
+                            <p className="text-[11px] font-mono font-bold text-amber-500 uppercase tracking-widest leading-relaxed">
+                              Limpieza de Seguridad Necesaria
                             </p>
-                            <p className="text-[9px] font-mono text-black/60 uppercase tracking-widest leading-relaxed">
-                              El nodo requiere <strong className="text-black">DOS FIRMAS CRIPTOGRÁFICAS</strong> en tu wallet para establecer el canal seguro:
+                            <p className="text-[9.5px] font-mono text-black/70 uppercase tracking-widest leading-relaxed">
+                              Por máxima seguridad, el protocolo solo permite 10 sesiones simultáneas. Haz clic abajo para limpiar tus sesiones antiguas (tus mensajes no se borrarán) y entrar al instante con 1 sola firma.
                             </p>
-                            <ul className="text-[9px] font-mono text-black/50 uppercase tracking-widest leading-relaxed text-left space-y-2 border-l-2 border-black/10 pl-3">
-                              <li>1. <strong className="text-black">Creación de Identidad:</strong> Genera tus llaves cuánticas.</li>
-                              <li>2. <strong className="text-black">Autorización de Sesión:</strong> Permite enviar mensajes sin firmar cada uno.</li>
-                            </ul>
-                            <p className="text-[8px] font-mono text-[#00C076] font-bold uppercase tracking-widest bg-[#00C076]/10 px-3 py-1 rounded">
-                              Estas firmas no consumen gas (0 fees).
-                            </p>
-                          </div>
-                        )}
-                        <div className="flex flex-col gap-2 w-full max-w-xs">
-                          {(xmtpError?.toLowerCase().includes('wallet') || xmtpError?.toLowerCase().includes('reconnect')) && (
                             <button
-                              type="button"
-                              onClick={() => openAppKit()}
-                              className="w-full px-6 py-3 bg-white border border-black/15 text-black font-mono text-[11px] font-bold uppercase tracking-widest rounded-[14px] hover:bg-black/[0.03] transition-all active:scale-95"
+                              onClick={() => handleRevokeSessions(xmtpError.split(':')[1])}
+                              className="w-full px-6 py-3 bg-amber-500/10 text-amber-600 border border-amber-500/30 font-mono text-[11px] font-bold uppercase tracking-widest rounded-[14px] hover:bg-amber-500/20 transition-all active:scale-95"
                             >
-                              Reconnect Wallet
+                              Limpiar Sesiones Antiguas
                             </button>
-                          )}
-                          <button
-                            onClick={() => { setXmtpError(null); initXmtpClient(true); }}
-                            className="w-full px-6 py-3 bg-[#050505] text-white font-mono text-[11px] font-bold uppercase tracking-widest rounded-[14px] hover:bg-black/80 transition-all shadow-md active:scale-95"
-                          >
-                            {xmtpError ? 'Retry Connection' : 'Activate Secure Chat'}
-                          </button>
-                        </div>
+                          </div>
+                        ) : (
+                          <>
+                            {xmtpError && (
+                              <p className="text-[10px] font-mono text-rose-500 text-center leading-relaxed max-w-xs">{xmtpError}</p>
+                            )}
+                            {!xmtpError && (
+                              <div className="flex flex-col items-center gap-4 text-center max-w-sm mt-2 mb-4">
+                                <p className="text-[11px] font-mono font-bold text-black uppercase tracking-widest leading-relaxed">
+                                  Activación de Alta Seguridad
+                                </p>
+                                <p className="text-[9px] font-mono text-black/60 uppercase tracking-widest leading-[1.6]">
+                                  Para garantizar que <strong className="text-black">nadie</strong> pueda leer tus chats, el protocolo requiere firmar por única vez en este dispositivo:
+                                </p>
+                                <ul className="text-[9px] font-mono text-black/55 uppercase tracking-widest leading-[1.7] text-left space-y-2 border-l-2 border-black/10 pl-3">
+                                  <li><strong className="text-black text-[9.5px]">Firma 1:</strong> Crea tu buzón encriptado descentralizado.</li>
+                                  <li><strong className="text-black text-[9.5px]">Firma 2:</strong> Autoriza este dispositivo (para no tener que firmar cada mensaje nuevo).</li>
+                                </ul>
+                                <p className="text-[8px] font-mono text-[#00C076] font-bold uppercase tracking-widest bg-[#00C076]/10 px-3 py-1.5 rounded-md mt-1">
+                                  Firmas Gratuitas • Quedarás guardado automáticamente
+                                </p>
+                              </div>
+                            )}
+                            <div className="flex flex-col gap-2 w-full max-w-xs mt-2">
+                              {(xmtpError?.toLowerCase().includes('wallet') || xmtpError?.toLowerCase().includes('reconnect')) && (
+                                <button
+                                  type="button"
+                                  onClick={() => openAppKit()}
+                                  className="w-full px-6 py-3 bg-white border border-black/15 text-black font-mono text-[11px] font-bold uppercase tracking-widest rounded-[14px] hover:bg-black/[0.03] transition-all active:scale-95"
+                                >
+                                  Reconectar Billetera
+                                </button>
+                              )}
+                              <button
+                                onClick={() => { setXmtpError(null); initXmtpClient(true); }}
+                                className="w-full px-6 py-3 bg-[#050505] text-white font-mono text-[11px] font-bold uppercase tracking-widest rounded-[14px] hover:bg-black/80 transition-all shadow-md active:scale-95"
+                              >
+                                {xmtpError ? 'Reintentar Conexión' : 'Iniciar Conexión Segura'}
+                              </button>
+                              {deviceOS === 'ios' && (
+                                <button
+                                  type="button"
+                                  onClick={() => openWalletOnIOS(wcDeepLink)}
+                                  className="w-full px-6 py-3 bg-white border border-black/15 text-black font-mono text-[11px] font-bold uppercase tracking-widest rounded-[14px] hover:bg-black/[0.03] transition-all active:scale-95 mt-1"
+                                >
+                                  Abrir Wallet Manualmente
+                                </button>
+                              )}
+                            </div>
+                          </>
+                        )}
                       </>
                     )}
                   </div>
@@ -1660,10 +1729,11 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
           </>
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center text-black/20 font-mono text-sm space-y-2">
-            <p>Select or start a conversation.</p>
+            <p>Selecciona o inicia una conversación segura.</p>
           </div>
         )}
       </div>
     </div>
   );
 }
+

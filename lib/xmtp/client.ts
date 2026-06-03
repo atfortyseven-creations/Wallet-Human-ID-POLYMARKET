@@ -138,39 +138,38 @@ export async function getXMTPClient(
       errorMsg.includes('already registered 10/10 installations') ||
       errorMsg.includes('Cannot register a new installation')
     ) {
-      console.warn('[XMTP] 10/10 installation limit reached. Attempting automatic revocation...');
-      try {
-        const match = errorMsg.match(/InboxID\s+([a-fA-F0-9]+)\s+has/i) || errorMsg.match(/InboxID\s+([a-fA-F0-9]+)/i);
-        const inboxId = match ? match[1] : null;
-        if (inboxId) {
-          console.log('[XMTP] Revoking installations for inbox:', inboxId);
-          const states = await (Client as any).inboxStateFromInboxIds([inboxId], XMTP_ENV);
-          if (states && states[0] && states[0].installations) {
-            const installationsToRevoke = states[0].installations.map((i: any) => i.bytes);
-            if (installationsToRevoke.length > 0) {
-              await (Client as any).revokeInstallations(signer as any, inboxId, installationsToRevoke, XMTP_ENV);
-              console.log('[XMTP] Successfully revoked installations. Retrying Client.create...');
-              client = await Client.create(signer, { env: XMTP_ENV, dbEncryptionKey });
-            } else {
-              throw err;
-            }
-          } else {
-            throw err;
-          }
-        } else {
-          throw err;
-        }
-      } catch (revokeErr: any) {
-        console.error('[XMTP] Automatic revocation failed:', revokeErr);
-        throw err;
+      const match = errorMsg.match(/InboxID\s+([a-fA-F0-9]+)\s+has/i) || errorMsg.match(/InboxID\s+([a-fA-F0-9]+)/i) || errorMsg.match(/InboxID\s*\n*\s*([a-fA-F0-9]+)/i);
+      const inboxId = match ? match[1] : null;
+      if (inboxId) {
+        throw new Error(`XMTP_LIMIT_REACHED:${inboxId}`);
       }
-    } else {
-      throw err;
+      throw new Error(`XMTP_LIMIT_REACHED`);
     }
+    throw err;
   }
 
   clientRegistry.set(address, client);
   return client;
+}
+
+/** 
+ * Revokes all previous installations for a given Inbox ID to fix the 10/10 limit error.
+ */
+export async function revokeXMTPInstallations(
+  wagmiSigner: {
+    getAddress: () => Promise<string>;
+    signMessage: (message: string | Uint8Array) => Promise<string>;
+  },
+  inboxId: string
+): Promise<void> {
+  const signer = buildXmtpSigner(wagmiSigner);
+  const states = await (Client as any).inboxStateFromInboxIds([inboxId], XMTP_ENV);
+  if (states && states[0] && states[0].installations) {
+    const installationsToRevoke = states[0].installations.map((i: any) => i.bytes);
+    if (installationsToRevoke.length > 0) {
+      await (Client as any).revokeInstallations(signer as any, inboxId, installationsToRevoke, XMTP_ENV);
+    }
+  }
 }
 
 /** Remove a client from the registry (call on wallet disconnect) */

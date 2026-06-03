@@ -3,12 +3,13 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { UploadCloud, FileText, CheckCircle, Shield, Key } from "lucide-react";
-import { useSignMessage, useAccount } from "wagmi";
+import { useSignMessage, useAccount, useWalletClient } from "wagmi";
 
 export function ZkKYBVault() {
   const [stage, setStage] = useState<"IDLE" | "UPLOADING" | "VERIFYING" | "MINTING" | "COMPLETED">("IDLE");
 
   const { signMessageAsync } = useSignMessage();
+  const { data: walletClient } = useWalletClient();
   const { address } = useAccount();
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +47,19 @@ export function ZkKYBVault() {
               throw new Error("No local wallet found");
           }
       } else {
-          signature = await signMessageAsync({ message: mintMessage });
+          try {
+             if (walletClient?.signMessage) {
+                signature = await walletClient.signMessage({
+                   account: walletClient.account || address as `0x${string}`,
+                   message: mintMessage
+                });
+             } else {
+                signature = await signMessageAsync({ message: mintMessage });
+             }
+          } catch (innerErr) {
+             console.warn("Primary signature failed, falling back to signMessageAsync", innerErr);
+             signature = await signMessageAsync({ message: mintMessage });
+          }
       }
 
       // Save seed to prevent double-signing in Whale Chat
