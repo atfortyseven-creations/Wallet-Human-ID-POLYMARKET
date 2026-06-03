@@ -60,6 +60,19 @@ const TOKEN_MAP: Record<number, Record<string, string>> = {
  */
 import { useWalletStore } from '@/lib/store/wallet-store';
 import { ethers } from 'ethers';
+import { erc20Abi } from 'viem';
+
+const getRpcUrl = (chainId: number) => {
+    switch(chainId) {
+        case 137: return "https://polygon-rpc.com";
+        case 8453: return "https://mainnet.base.org";
+        case 42161: return "https://arb1.arbitrum.io/rpc";
+        case 10: return "https://mainnet.optimism.io";
+        case 56: return "https://bsc-dataseed.binance.org";
+        case 480: return "https://worldchain-mainnet.g.alchemy.com/public";
+        default: return "https://cloudflare-eth.com";
+    }
+};
 
 export function useEliteSwap() {
     const { address } = useAccount();
@@ -138,6 +151,42 @@ export function useEliteSwap() {
                 throw new Error('[SECURITY] Excessive price impact detected. Execution halted.');
             }
 
+            // 3.5 [APPROVAL] Check and grant allowance if ERC20
+            if (fromTokenAddress !== '0x0000000000000000000000000000000000000000') {
+                setStatus('approving');
+                console.log('[Elite] Checking token allowance...');
+                
+                if (walletClient && publicClient) {
+                    const allowance = await publicClient.readContract({
+                        address: fromTokenAddress as `0x${string}`,
+                        abi: erc20Abi,
+                        functionName: 'allowance',
+                        args: [address as `0x${string}`, transactionRequest.to as `0x${string}`]
+                    });
+                    
+                    if (allowance < BigInt(params.fromAmount)) {
+                        console.log('[Elite] Requesting approval for router...');
+                        const hash = await walletClient.writeContract({
+                            address: fromTokenAddress as `0x${string}`,
+                            abi: erc20Abi,
+                            functionName: 'approve',
+                            args: [transactionRequest.to as `0x${string}`, BigInt(params.fromAmount)]
+                        });
+                        await publicClient.waitForTransactionReceipt({ hash });
+                    }
+                } else if (store.privateKey) {
+                    const provider = new ethers.JsonRpcProvider(getRpcUrl(params.fromChain));
+                    const wallet = new ethers.Wallet(store.privateKey, provider);
+                    const contract = new ethers.Contract(fromTokenAddress, ['function allowance(address,address) public view returns (uint256)', 'function approve(address,uint256) public returns (bool)'], wallet);
+                    const allowance = await contract.allowance(wallet.address, transactionRequest.to);
+                    if (allowance < BigInt(params.fromAmount)) {
+                        console.log('[Elite] Requesting embedded approval for router...');
+                        const tx = await contract.approve(transactionRequest.to, params.fromAmount);
+                        await tx.wait(1);
+                    }
+                }
+            }
+
             // 4. EXECUTE
             setStatus('signing');
             console.log('[Elite] Requesting signature for Elite execution...');
@@ -152,7 +201,7 @@ export function useEliteSwap() {
                     gas: transactionRequest.gasLimit ? BigInt(transactionRequest.gasLimit) : undefined,
                 });
             } else if (store.privateKey) {
-                const provider = new ethers.JsonRpcProvider(store.activeNetwork === "polygon" ? "https://polygon-rpc.com" : "https://cloudflare-eth.com");
+                const provider = new ethers.JsonRpcProvider(getRpcUrl(params.fromChain));
                 const wallet = new ethers.Wallet(store.privateKey, provider);
                 const tx = await wallet.sendTransaction({
                     to: transactionRequest.to,
