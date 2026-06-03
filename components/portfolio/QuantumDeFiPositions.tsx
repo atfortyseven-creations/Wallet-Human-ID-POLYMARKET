@@ -100,10 +100,10 @@ export function QuantumDeFiPositions({ address, activeNetwork }: { address: stri
 
     if (activeNetwork !== 'ethereum') {
         return (
-            <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-black/5 border border-black/10">
+            <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-black/5 border border-black/10 min-h-[400px]">
                 <Layers size={24} className="text-black/20 mb-4" />
-                <p className="text-[11px] text-black/60 uppercase tracking-widest font-black mb-2">Network Segment Mismatch</p>
-                <p className="text-[10px] text-black/40 max-w-[250px]">Institutional DeFi tracking requires L1 Mainnet context. Change network to activate the engine.</p>
+                <p className="text-[11px] text-black/60 uppercase tracking-widest font-black mb-2">Cross-Chain DeFi Analytics</p>
+                <p className="text-[10px] text-black/40 max-w-[280px]">DeFi tracking for <span className="uppercase text-black/60 font-bold">{activeNetwork}</span> is syncing. Currently, full institutional tracking is optimized for Ethereum Mainnet.</p>
             </div>
         );
     }

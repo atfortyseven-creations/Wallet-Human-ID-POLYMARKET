@@ -1,4 +1,4 @@
-import { useBalance, useReadContract, useChains } from 'wagmi';
+import { useBalance, useReadContract, useChains, useChainId } from 'wagmi';
 import { parseAbi, formatEther } from 'viem';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
@@ -48,11 +48,13 @@ export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?:
     // [DEBUG] Monitor address resolution changes
     // console.log('[useRealWalletData] Address Resolution:', { effectiveAddress, isConnected, isAuthenticated, isWeb3Connected, handshakeAddressFromCookie });
 
+    const currentChainId = useChainId();
+
     // 1. On-Chain Native Balance (Wagmi v2  no 'token' param, that's deprecated)
     // ERC-20 USDC balance is already fetched by the portfolio assets API below.
     const { data: balanceData, isLoading: isBalanceLoading } = useBalance({
         address: effectiveAddress as `0x${string}` | undefined,
-        chainId: 1, // Ethereum mainnet native balance
+        chainId: currentChainId, // Dynamic based on active network
         query: {
             enabled: !!effectiveAddress,
             refetchInterval: 10000,

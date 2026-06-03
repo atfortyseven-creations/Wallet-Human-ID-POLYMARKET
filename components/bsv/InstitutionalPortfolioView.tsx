@@ -5,9 +5,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { useWalletStore, NETWORKS, NetworkId } from '@/lib/store/wallet-store';
 import { useVIPStore } from '@/lib/vip-store';
+import { useVIPStore } from '@/lib/vip-store';
 import { SettingsView } from '@/components/settings/SettingsView';
-import { ethers } from 'ethers';
 import { useSystemSignOut } from '@/hooks/useSystemSignOut';
+import { useFeeData } from 'wagmi';
+import { formatUnits } from 'viem';
 import { useFeeData } from 'wagmi';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
 
@@ -33,6 +35,8 @@ import { SmartAccountTerminal } from '@/components/portfolio/SmartAccountTermina
 import { OmnichainBridgeView } from '@/components/portfolio/OmnichainBridgeView';
 import { TransactionHistory } from '@/components/portfolio/TransactionHistory';
 import { QuantumDeFiPositions } from '@/components/portfolio/QuantumDeFiPositions';
+import { PerformanceChart } from '@/components/portfolio/PerformanceChart';
+import { Download, ArrowRightLeft, Route, Send, QrCode, Scan, Activity } from 'lucide-react';
 
 // Original minimalist VaultUnlockScreen (internal)
 function VaultUnlockScreen({ unlockVault }: { unlockVault: (pwd: string) => boolean }) {
@@ -80,7 +84,7 @@ export function InstitutionalPortfolioView() {
     const unlockVault = useWalletStore(s => s.unlockVault);
     const passwordHash = useWalletStore(s => s.passwordHash);
     const { address, isLocalSystemWallet, isConnected } = useSystemAccount();
-    const { assets } = useRealWalletData([], address || undefined);
+    const { assets, totalBalance } = useRealWalletData([], address || undefined);
     
     // We keep 'HOME' as the main view, and overlay modals for actions
     const [view, setView] = useState<'HOME'|'NETWORK'|'CREATE'|'SHIELD'|'SECURITY'|'DEPLOY'|'MEMPOOL'|'SMART_ACCOUNT'|'OMNICHAIN'>('HOME');
@@ -192,6 +196,7 @@ export function InstitutionalPortfolioView() {
                         onOmnichain={() => setView('OMNICHAIN')}
                         onMempool={() => setView('MEMPOOL')}
                         assets={assets || []}
+                        totalBalance={totalBalance}
                     />
                 )}
                 {/* Embedded older views for deep protocol interactions */}
@@ -264,7 +269,7 @@ export function InstitutionalPortfolioView() {
     );
 }
 
-function HomeView({ address, balance, balanceFiat, activeNetwork, loading, onRefresh, onSend, onReceive, onScan, onCreate, onBuy, onSwap, onBridge, onNetworkClick, onSettingsClick, onAccountsClick, scannerBase, onShield, onSecurity, onSmartAccount, onDeploy, onOmnichain, onMempool, assets }: any) {
+function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, loading, onRefresh, onSend, onReceive, onScan, onCreate, onBuy, onSwap, onBridge, onNetworkClick, onSettingsClick, onAccountsClick, scannerBase, onShield, onSecurity, onSmartAccount, onDeploy, onOmnichain, onMempool, assets }: any) {
     const [copied, setCopied] = useState(false);
     const [isDisconnecting, setIsDisconnecting] = useState(false);
     const [activeTab, setActiveTab] = useState<'TOKENS'|'DEFI'|'ACTIVITY'>('TOKENS');
@@ -337,20 +342,33 @@ function HomeView({ address, balance, balanceFiat, activeNetwork, loading, onRef
             </header>
 
             {/* ── Balance Hero Section ── */}
-            <section className="w-full flex flex-col items-center text-center px-6 pt-16 pb-14 border-b border-black/5 bg-white">
-                <div className="relative inline-flex items-baseline justify-center mb-3">
-                    <h1 className="font-light tracking-tighter text-black" style={{ fontSize: 'clamp(3.5rem, 11vw, 7rem)' }}>
-                        {balance || '0.0000'}
+            <section className="w-full flex flex-col items-center text-center px-6 pt-12 pb-10 border-b border-black/5 bg-white relative">
+                {address && feeData?.gasPrice && (
+                    <div className="absolute top-4 right-6 flex items-center gap-1.5 text-black/40">
+                        <Activity size={12} className="animate-pulse text-green-500" />
+                        <span className="text-[10px] font-mono tracking-widest">{parseFloat(formatUnits(feeData.gasPrice, 9)).toFixed(1)} GWEI</span>
+                    </div>
+                )}
+                
+                <div className="relative inline-flex items-baseline justify-center mb-2">
+                    <h1 className="font-light tracking-tighter text-black flex items-start" style={{ fontSize: 'clamp(3.5rem, 9vw, 6.5rem)' }}>
+                        <span className="text-3xl mt-3 md:mt-5 mr-1 text-black/40">$</span>
+                        {totalBalance || '0.00'}
                     </h1>
-                    <span className="absolute left-full ml-3 md:ml-5 font-black uppercase tracking-[0.2em] text-black/25 flex flex-col items-start" style={{ bottom: '0.8rem' }}>
-                        <span style={{ fontSize: 'clamp(1.1rem, 2.5vw, 1.75rem)' }}>{networkInfo.currency}</span>
-                        <span className="text-[10px] text-black/40 tracking-[0.3em] mt-1 bg-black/5 px-2 py-0.5 rounded-sm">{networkInfo.name}</span>
-                    </span>
                 </div>
-                <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
-                    <p className="text-[12px] tracking-[0.18em] font-mono text-black/50 border border-black/10 px-5 py-2">{balanceFiat} USD</p>
-                    <span className="px-4 py-2 bg-black text-white text-[9px] font-black uppercase tracking-widest">Live</span>
+                <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
+                    <p className="text-[11px] tracking-[0.18em] font-mono text-black/50 border border-black/10 px-4 py-1.5">
+                        {balance} {networkInfo.currency} (${balanceFiat})
+                    </p>
+                    <span className="px-3 py-1.5 bg-black text-white text-[9px] font-black uppercase tracking-widest">Live</span>
                 </div>
+
+                {/* Performance Chart (MetaMask / Rainbow Style) */}
+                {address && (
+                    <div className="w-full max-w-4xl h-[160px] mb-8">
+                        <PerformanceChart />
+                    </div>
+                )}
 
                 {address ? (
                     <div className="flex flex-col items-center gap-3 w-full max-w-lg mx-auto">
@@ -385,15 +403,51 @@ function HomeView({ address, balance, balanceFiat, activeNetwork, loading, onRef
                     <div className="lg:col-span-3 space-y-4">
                         <div className="bg-white border border-black/10 p-5">
                             <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-black/40 border-b border-black/10 pb-3 mb-4 block">
+                                MULTI-CHAIN EXPOSURE
+                            </h4>
+                            <div className="flex w-full h-3 bg-black/5 rounded-full overflow-hidden mb-4">
+                                {Object.entries(
+                                    assets.reduce((acc: any, asset: any) => {
+                                        const v = parseFloat(asset.value || '0');
+                                        if (v > 0) {
+                                            acc[asset.network] = (acc[asset.network] || 0) + v;
+                                        }
+                                        return acc;
+                                    }, {})
+                                ).map(([net, val]: any) => {
+                                    const total = assets.reduce((sum: number, a: any) => sum + parseFloat(a.value || '0'), 0);
+                                    if (total === 0) return null;
+                                    const pct = (val / total) * 100;
+                                    const colors: any = { 'Ethereum': '#627EEA', 'Polygon': '#8247E5', 'Arbitrum': '#28A0F0', 'Optimism': '#FF0420', 'Base': '#0052FF', 'Humanity Ledger': '#000000' };
+                                    return (
+                                        <div key={net} style={{ width: `${pct}%`, backgroundColor: colors[net] || '#333' }} className="h-full" title={`${net}: ${pct.toFixed(1)}%`} />
+                                    );
+                                })}
+                            </div>
+                            <div className="flex flex-col gap-2 mb-6">
+                                {Object.entries(
+                                    assets.reduce((acc: any, asset: any) => {
+                                        const v = parseFloat(asset.value || '0');
+                                        if (v > 0) acc[asset.network] = (acc[asset.network] || 0) + v;
+                                        return acc;
+                                    }, {})
+                                ).sort((a: any, b: any) => b[1] - a[1]).slice(0, 3).map(([net, val]: any) => (
+                                    <div key={net} className="flex items-center justify-between text-[10px]">
+                                        <span className="font-bold tracking-widest uppercase">{net}</span>
+                                        <span className="font-mono text-black/50">${val.toFixed(2)}</span>
+                                    </div>
+                                ))}
+                            </div>
+                            <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-black/40 border-b border-black/10 pb-3 mb-4 block">
                                 ACTIONS
                             </h4>
                             <div className="grid grid-cols-2 gap-2">
-                                <ActionBtn label="Deposit" onClick={onBuy} />
-                                <ActionBtn label="Swap" onClick={onSwap} />
-                                <ActionBtn label="Bridge" onClick={onBridge} />
-                                <ActionBtn label="Send" onClick={onSend} />
-                                <ActionBtn label="Receive" onClick={onReceive} />
-                                <ActionBtn label="Scan" onClick={onScan} />
+                                <ActionBtn label="Deposit" icon={<Download size={16} />} onClick={onBuy} />
+                                <ActionBtn label="Swap" icon={<ArrowRightLeft size={16} />} onClick={onSwap} />
+                                <ActionBtn label="Bridge" icon={<Route size={16} />} onClick={onBridge} />
+                                <ActionBtn label="Send" icon={<Send size={16} />} onClick={onSend} />
+                                <ActionBtn label="Receive" icon={<QrCode size={16} />} onClick={onReceive} />
+                                <ActionBtn label="Scan" icon={<Scan size={16} />} onClick={onScan} />
                             </div>
                         </div>
                     </div>
@@ -443,12 +497,15 @@ function HomeView({ address, balance, balanceFiat, activeNetwork, loading, onRef
     );
 }
 
-function ActionBtn({ label, onClick }: any) {
+function ActionBtn({ label, icon, onClick }: any) {
     return (
         <button
             onClick={onClick}
-            className="flex flex-col items-center justify-center p-6 border border-black/5 hover:border-black hover:bg-black hover:text-white hover:shadow-xl transition-all duration-300 group bg-black/[0.02]"
+            className="flex flex-col items-center justify-center p-4 border border-black/5 hover:border-black hover:bg-black hover:text-white hover:shadow-xl transition-all duration-300 group bg-black/[0.02] gap-3"
         >
+            <div className="text-black/60 group-hover:text-white transition-colors">
+                {icon}
+            </div>
             <span className="text-[10px] font-bold uppercase tracking-widest">{label}</span>
         </button>
     );

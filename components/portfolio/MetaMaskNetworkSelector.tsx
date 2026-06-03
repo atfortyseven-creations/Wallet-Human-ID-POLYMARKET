@@ -134,7 +134,7 @@ export function MetaMaskNetworkSelector({ activeNetworkId, onNetworkChange }: { 
                                     <div className="w-8 h-8 rounded-full border border-black/10 flex items-center justify-center mr-3 shrink-0">
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                                     </div>
-                                    <span className="text-[14px] font-normal text-black flex-1 text-left">Todas las redes populares</span>
+                                    <span className="text-[14px] font-normal text-black flex-1 text-left">All popular networks</span>
                                 </button>
                             )}
 
@@ -167,7 +167,7 @@ export function MetaMaskNetworkSelector({ activeNetworkId, onNetworkChange }: { 
                             {tab === 'popular' && (
                                 <div className="mt-2">
                                     <div className="flex items-center gap-1 px-4 py-2">
-                                        <span className="text-[13px] text-black/50 font-medium">Redes adicionales</span>
+                                        <span className="text-[13px] text-black/50 font-medium">Additional networks</span>
                                         <Info size={12} className="text-black/40" />
                                     </div>
                                     {customNetworks.map(net => (

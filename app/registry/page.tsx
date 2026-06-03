@@ -426,7 +426,7 @@ export default function RegistryPage() {
             color: "#000000",
             txCount: 1,
             blockNumber: 0,
-            timestamp: u.createdAt,
+            timestamp: u.updatedAt,
             explorer: "https://etherscan.io",
             network: selectedNetwork,
             role: "both",

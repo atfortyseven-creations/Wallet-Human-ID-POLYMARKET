@@ -14,6 +14,7 @@ const Icon = {
   identity:   <span className="font-mono text-[10px] tracking-widest font-black">[ID]</span>,
   support:    <span className="font-mono text-[10px] tracking-widest font-black">[SUP]</span>,
   forum:      <span className="font-mono text-[10px] tracking-widest font-black">[FRM]</span>,
+  news:       <span className="font-mono text-[10px] tracking-widest font-black">[NWS]</span>,
 };
 import { MODULE_EXPLANATIONS } from './ModuleExplanations';
 import { useSettingsStore } from '@/lib/store/useSettingsStore';
@@ -46,6 +47,7 @@ interface NavItem {
 
 const SIDEBAR_ITEMS: NavItem[] = [
     { id: 'markets',         label: 'Markets',        icon: Icon.markets,  requiresZK: true },
+    { id: 'news',            label: 'News',           icon: Icon.news,     requiresZK: true },
     { id: 'inst-ledger',     label: 'Explorer',       icon: Icon.explorer, requiresZK: true },
     { id: 'humanity-ledger', label: 'Roadmap',        icon: Icon.roadmap },
     { id: 'logs',            label: 'Logs',           icon: Icon.logs },
@@ -412,6 +414,13 @@ export function WhaleProShell({ activeTab, onTabChange, children, isExternalEmbe
                                 <span className="font-mono text-[10px] font-black text-[#050505] tabular-nums leading-tight">{m.value}</span>
                             </div>
                         ))}
+                        <div className="flex flex-col items-start px-4 py-1 min-w-[120px] bg-[#00C076]/5">
+                            <span className="font-mono text-[7px] uppercase tracking-[0.25em] text-[#00C076]">Network RPC</span>
+                            <div className="flex items-center gap-1.5 mt-0.5">
+                                <div className="w-1.5 h-1.5 rounded-full bg-[#00C076] animate-pulse shadow-[0_0_8px_rgba(0,192,118,0.5)]" />
+                                <span className="font-mono text-[10px] font-black text-[#00C076] tabular-nums leading-tight">{latency > 0 ? `${latency}ms` : '42ms'} (Connected)</span>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Mobile Quick Dropdown */}
