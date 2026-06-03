@@ -11,6 +11,29 @@ import { encodeFunctionData } from 'viem';
 
 const BRIDGE_ROUTER_ADDRESS = "0x8731d54E9D02c286767d56ac03e8037C07e01e98"; 
 
+const safeParseUnits = (val: string, decimals: number) => {
+    try {
+        let cleanVal = val.toLowerCase();
+        if (cleanVal.includes('e')) {
+            const [base, expStr] = cleanVal.split('e');
+            const [lead, trail = ''] = base.split('.');
+            const exp = parseInt(expStr);
+            if (exp > 0) {
+                if (trail.length > exp) {
+                    cleanVal = lead + trail.slice(0, exp) + '.' + trail.slice(exp);
+                } else {
+                    cleanVal = lead + trail + '0'.repeat(exp - trail.length);
+                }
+            } else {
+                return 0n;
+            }
+        }
+        return ethers.parseUnits(cleanVal || "0", decimals);
+    } catch {
+        return 0n;
+    }
+};
+
 const STARGATE_ROUTER_ABI = [
   {
     "inputs": [
@@ -177,7 +200,7 @@ export function NativeBridgeView({ onBack }: any) {
         toast.loading(`Initiating Cross-Chain Bridge for ${selectedToken.symbol}...`, { id: "bridge-tx" });
 
         try {
-            const value = ethers.parseUnits(amount, selectedToken.decimals || 18);
+            const value = safeParseUnits(amount, selectedToken.decimals || 18);
             toast.loading("Please sign the cross-chain transaction...", { id: "bridge-tx" });
             
             let txHash = "";

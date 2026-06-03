@@ -26,6 +26,29 @@ const ERC20_ABI = [
 
 const ROUTER_ADDRESS = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"; 
 
+const safeParseUnits = (val: string, decimals: number) => {
+    try {
+        let cleanVal = val.toLowerCase();
+        if (cleanVal.includes('e')) {
+            const [base, expStr] = cleanVal.split('e');
+            const [lead, trail = ''] = base.split('.');
+            const exp = parseInt(expStr);
+            if (exp > 0) {
+                if (trail.length > exp) {
+                    cleanVal = lead + trail.slice(0, exp) + '.' + trail.slice(exp);
+                } else {
+                    cleanVal = lead + trail + '0'.repeat(exp - trail.length);
+                }
+            } else {
+                return 0n; // Negligible or unsupported
+            }
+        }
+        return ethers.parseUnits(cleanVal || "0", decimals);
+    } catch {
+        return 0n;
+    }
+};
+
 function TokenSelector({ selectedToken, onSelect, label }: { selectedToken: UniversalToken, onSelect: (t: UniversalToken) => void, label: string }) {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState('');
@@ -123,9 +146,10 @@ export function NativeSwapView({ address, onBack }: any) {
             setIsCalculating(true);
             setRoutingPath([fromToken.symbol, toToken.symbol]);
             try {
-                // Determine rate realistically
+                // Determine rate realistically and prevent scientific notation on huge amounts
                 const conversion = parseFloat(amountIn) * (Math.random() * 0.5 + 0.8);
-                setAmountOut((conversion * 0.997).toFixed(6));
+                const finalOut = conversion * 0.997;
+                setAmountOut(finalOut.toLocaleString('fullwide', { useGrouping: false, maximumFractionDigits: 6 }));
                 
                 // Active gas estimation
                 const baseGas = activeNetwork === 'ethereum' ? 0.002 : 0.0001;
@@ -138,7 +162,7 @@ export function NativeSwapView({ address, onBack }: any) {
                         const wallet = new ethers.Wallet(privateKey, provider);
                         const tokenContract = new ethers.Contract(fromToken.address, ERC20_ABI, wallet);
                         const allowance = await tokenContract.allowance(address, ROUTER_ADDRESS);
-                        const parsedIn = ethers.parseUnits(amountIn, fromToken.decimals || 18);
+                        const parsedIn = safeParseUnits(amountIn, fromToken.decimals || 18);
                         
                         if (allowance < parsedIn) {
                             setNeedsApproval(true);
@@ -174,7 +198,7 @@ export function NativeSwapView({ address, onBack }: any) {
             const tokenContract = new ethers.Contract(fromToken.address, ERC20_ABI, wallet);
             
             // SECURITY: Exact amount approval ONLY. No MaxUint256.
-            const parsedIn = ethers.parseUnits(amountIn, fromToken.decimals || 18);
+            const parsedIn = safeParseUnits(amountIn, fromToken.decimals || 18);
             
             addLog(`Broadcasting tx to network: ${activeNetwork.toUpperCase()}`);
             try {
@@ -232,7 +256,7 @@ export function NativeSwapView({ address, onBack }: any) {
             await new Promise(r => setTimeout(r, 800));
 
             const deadline = Math.floor(Date.now() / 1000) + 60 * 20; 
-            const parsedOut = ethers.parseUnits(amountOut || "0", toToken.decimals || 18);
+            const parsedOut = safeParseUnits(amountOut || "0", toToken.decimals || 18);
             const minOut = parsedOut * BigInt(Math.floor((100 - parseFloat(slippage)) * 100)) / 10000n;
             
             addLog(`Min Output Threshold Locked: ${ethers.formatUnits(minOut, toToken.decimals || 18)} ${toToken.symbol}`);
@@ -248,12 +272,12 @@ export function NativeSwapView({ address, onBack }: any) {
                     addLog(`Executing swapExactETHForTokens payload...`);
                     tx = await router.swapExactETHForTokens(minOut, path, address, deadline, { value });
                 } else if (toToken.symbol === 'ETH') {
-                    const parsedIn = ethers.parseUnits(amountIn, fromToken.decimals || 18);
+                    const parsedIn = safeParseUnits(amountIn, fromToken.decimals || 18);
                     const path = [fromToken.address, await router.WETH()];
                     addLog(`Executing swapExactTokensForETH payload...`);
                     tx = await router.swapExactTokensForETH(parsedIn, minOut, path, address, deadline);
                 } else {
-                    const parsedIn = ethers.parseUnits(amountIn, fromToken.decimals || 18);
+                    const parsedIn = safeParseUnits(amountIn, fromToken.decimals || 18);
                     const path = [fromToken.address, await router.WETH(), toToken.address]; 
                     addLog(`Executing swapExactTokensForTokens (Multi-Hop)...`);
                     tx = await router.swapExactTokensForTokens(parsedIn, minOut, path, address, deadline);

@@ -16,6 +16,29 @@ import { useEliteSwap } from "@/hooks/useEliteSwap";
 import { useGaslessSwap } from "@/hooks/useGaslessSwap";
 import { safeToFixed, safeToLocaleString } from '@/lib/utils/number-format';
 
+const safeParseUnits = (val: string, decimals: number) => {
+    try {
+        let cleanVal = val.toLowerCase();
+        if (cleanVal.includes('e')) {
+            const [base, expStr] = cleanVal.split('e');
+            const [lead, trail = ''] = base.split('.');
+            const exp = parseInt(expStr);
+            if (exp > 0) {
+                if (trail.length > exp) {
+                    cleanVal = lead + trail.slice(0, exp) + '.' + trail.slice(exp);
+                } else {
+                    cleanVal = lead + trail + '0'.repeat(exp - trail.length);
+                }
+            } else {
+                return 0n;
+            }
+        }
+        return parseUnits(cleanVal || "0", decimals);
+    } catch {
+        return 0n;
+    }
+};
+
 //  Design Tokens (Ivory Model) 
 const BG     = "#FFFFFF";
 const INK    = "#050505";
@@ -164,7 +187,7 @@ export function LegendaryTransactionModal({
             
             let amountInUnits;
             try {
-                amountInUnits = parseUnits(amount, activeFromAsset?.decimals || 18);
+                amountInUnits = safeParseUnits(amount, activeFromAsset?.decimals || 18);
             } catch (err) {
                 return; // Ignore invalid amounts like "."
             }
@@ -313,7 +336,7 @@ export function LegendaryTransactionModal({
                                fromAssetSymbol === 'POL' ||
                                fromAssetSymbol === 'MATIC';
 
-              const amountInUnits = parseUnits(amount, decimals);
+              const amountInUnits = safeParseUnits(amount, decimals);
 
               if (isNative) {
                   hash = await walletClient.sendTransaction({
@@ -375,7 +398,7 @@ export function LegendaryTransactionModal({
                           maker: address as `0x${string}`,
                           receiver: address as `0x${string}`,
                           allowedSender: '0x0000000000000000000000000000000000000000' as `0x${string}`,
-                          makingAmount: parseUnits(amount, fromAsset?.decimals || 18),
+                          makingAmount: safeParseUnits(amount, fromAsset?.decimals || 18),
                           takingAmount: parseUnits("0", 18), 
                           offsets: BigInt(0),
                           interactions: '0x' as `0x${string}`,
@@ -397,7 +420,7 @@ export function LegendaryTransactionModal({
               }
 
               const activeFromAsset = fromAsset || balances.find(b => b.symbol === fromAssetSymbol && b.chainId === sourceChain.id);
-              const amountInUnits = parseUnits(amount, activeFromAsset?.decimals || 18);
+              const amountInUnits = safeParseUnits(amount, activeFromAsset?.decimals || 18);
 
               const hash = await executeSwap({
                   fromChain: sourceChain.id,
