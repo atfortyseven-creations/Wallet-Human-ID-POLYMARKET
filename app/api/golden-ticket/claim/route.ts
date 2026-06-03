@@ -231,31 +231,30 @@ export async function POST(req: NextRequest) {
             create: { walletAddress: address }
         });
 
-        //  On-Chain Payment Verification (Optimism) [STRICT ENFORCEMENT]
-        // Verifies the txHash actually transferred 0.00111 ETH to TREASURY_WALLET.
-        if (!txHash || typeof txHash !== 'string' || !txHash.startsWith('0x')) {
-            console.warn(JSON.stringify({ level: 'SECURITY', event: 'NO_TX_HASH_PROVIDED', address }));
-            return NextResponse.json({
-                error: 'Missing transaction hash. You must pay the 0.00111 ETH fee on Optimism to mint the ticket.',
-            }, { status: 402 });
-        }
-
+        //  On-Chain Payment Verification (BETA: SPONSORED GASLESS) 
+        // During the Beta Phase, payment is not strictly enforced. The protocol sponsors the mint.
         let paymentVerified = false;
         let paymentGraceMode = false;
-        const paymentCheck = await verifyOnChainPayment(txHash, address);
         
-        if (paymentCheck.verified) {
-            paymentVerified = true;
-            console.log(JSON.stringify({ level: 'INFO', event: 'PAYMENT_CONFIRMED', address, txHash }));
-        } else if (paymentCheck.graceMode) {
-            paymentGraceMode = true;
-            console.warn(JSON.stringify({ level: 'WARN', event: 'PAYMENT_GRACE_MODE', address, txHash, reason: paymentCheck.reason }));
+        if (txHash && typeof txHash === 'string' && txHash.startsWith('0x')) {
+            const paymentCheck = await verifyOnChainPayment(txHash, address);
+            if (paymentCheck.verified) {
+                paymentVerified = true;
+                console.log(JSON.stringify({ level: 'INFO', event: 'PAYMENT_CONFIRMED', address, txHash }));
+            } else if (paymentCheck.graceMode) {
+                paymentGraceMode = true;
+                console.warn(JSON.stringify({ level: 'WARN', event: 'PAYMENT_GRACE_MODE', address, txHash, reason: paymentCheck.reason }));
+            } else {
+                console.warn(JSON.stringify({ level: 'SECURITY', event: 'PAYMENT_REJECTED', address, txHash, reason: paymentCheck.reason }));
+                // If they provided a bad txHash, we can still reject, or just let them through as sponsored.
+                // Let's reject bad tx hashes to prevent spoofing attempts, but allow empty ones.
+                return NextResponse.json({
+                    error: `Payment verification failed: ${paymentCheck.reason}.`,
+                    txHash,
+                }, { status: 402 });
+            }
         } else {
-            console.warn(JSON.stringify({ level: 'SECURITY', event: 'PAYMENT_REJECTED', address, txHash, reason: paymentCheck.reason }));
-            return NextResponse.json({
-                error: `Payment verification failed: ${paymentCheck.reason}. Ensure you sent 0.00111 ETH on Optimism to the treasury.`,
-                txHash,
-            }, { status: 402 });
+            console.log(JSON.stringify({ level: 'INFO', event: 'GASLESS_MINT_SPONSORED', address }));
         }
 
 

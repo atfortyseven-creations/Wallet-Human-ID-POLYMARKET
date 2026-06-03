@@ -288,9 +288,9 @@ function GlobalLedger({ feed }: { feed: any[] }) {
                                       <span className="text-[8px] font-black text-emerald-600/70 uppercase tracking-widest">+0.00111 ETH</span>
                                   </div>
                               ) : visualSig ? (
-                                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/5 border border-black/10 text-black shadow-sm select-none">
-                                      <span className="font-mono text-[10px] font-black text-black shrink-0">[@]</span>
-                                      <span className="text-[9px] font-black font-mono uppercase tracking-wider">SIGNED ONLY</span>
+                                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#7C3AED]/10 border border-[#7C3AED]/20 text-[#7C3AED] shadow-sm select-none">
+                                      <span className="font-mono text-[10px] font-black shrink-0">[@]</span>
+                                      <span className="text-[9px] font-black font-mono uppercase tracking-wider">BETA SPONSORED</span>
                                   </div>
                               ) : (
                                   <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/5 border border-black/[0.06] text-black/40 select-none">
@@ -317,7 +317,7 @@ export function GoldTicketPanel() {
   const [dbStats, setDbStats] = useState<any>(null);
   const [signatureData, setSignatureData] = useState<string>("");
   const [isMinting, setIsMinting] = useState(false);
-  const MINT_FEE_ETH = "0.00111"; // Highly addictive micro-transaction fee
+  const MINT_FEE_ETH = "0.000"; // Beta Phase: Sponsored Gasless Mint
 
   const fetchStats = useCallback(async (isMounted: boolean = true) => {
     try {
@@ -351,10 +351,10 @@ export function GoldTicketPanel() {
   const handleMint = useCallback(async () => {
     if (!isConnected) { router.push('/connect'); return; }
 
-    // If user is not Wagmi connected, they cannot pay the required fee
+    // If user is not Wagmi connected, they cannot sign
     if (!isWagmiConnected) {
       toast.error('Wallet connection required for minting', {
-        description: 'A connected Web3 wallet is required to process the mint transaction fee.',
+        description: 'A connected Web3 wallet is required to sign the cryptographic ledger entry.',
         duration: 6000,
       });
       router.push('/connect');
@@ -402,32 +402,18 @@ export function GoldTicketPanel() {
     };
 
     try {
-      if (chainId !== OPTIMISM_CHAIN_ID) {
-          toast.info('Switching to Optimism Network...');
-          await switchChain({ chainId: OPTIMISM_CHAIN_ID });
-      }
-
-      const txToast = toast.loading(`Initiating Network Mint Protocol (${MINT_FEE_ETH} ETH)...`);
-      
-      const txHash = await sendTransactionAsync({
-          to: TREASURY_WALLET,
-          value: parseEther(MINT_FEE_ETH)
-      });
-      
-      toast.dismiss(txToast);
-      toast.success(`Transaction sent: ${txHash.slice(0, 10)}... Please sign the ledger entry.`);
-
-      const signToastId = toast.loading('Awaiting system endorsement...');
+      const signToastId = toast.loading('Awaiting cryptographic wallet signature (Gasless)...');
       signMessage(
-        { message: `WHALE ALERT NETWORK ACCESS VERIFICATION: ${address}` },
+        { message: `WHALE ALERT NETWORK GOLD ACCESS VERIFICATION: ${address}` },
         {
           onSuccess: async (cryptoSignature: string) => {
             toast.dismiss(signToastId);
-            await performClaim(cryptoSignature, txHash);
+            // No txHash required for Gasless Beta
+            await performClaim(cryptoSignature, undefined);
           },
           onError: async (err: any) => {
             toast.dismiss(signToastId);
-            toast.error('Signature rejected. You must sign the message to claim your ticket.');
+            toast.error('Signature rejected. You must sign the message to claim your identity.');
             setIsMinting(false);
           }
         }
@@ -486,7 +472,7 @@ export function GoldTicketPanel() {
             </div>
             <div className="flex justify-between items-center text-xs">
               <span className="text-black/40 font-mono uppercase tracking-wider text-[9px] font-bold">Mint Fee Paid</span>
-              <span className="font-mono font-black text-[#7C3AED]">{MINT_FEE_ETH} ETH</span>
+              <span className="font-mono font-black text-[#7C3AED]">FREE (PROTOCOL SPONSORED)</span>
             </div>
             {txHash && (
               <div className="flex justify-between items-center text-xs">
@@ -572,7 +558,7 @@ export function GoldTicketPanel() {
                       disabled={hasTicket}
                       onMint={handleMint}
                       mintLabel={
-                        isMinting || isSigning ? 'CLAIMING...' : `CLAIM TICKET (${MINT_FEE_ETH} ETH)`
+                        isMinting || isSigning ? 'CLAIMING...' : `CLAIM TICKET (FREE MINT)`
                       }
                     />
                  </div>
