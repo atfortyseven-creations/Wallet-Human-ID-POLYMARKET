@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
 import { useWalletStore } from '@/lib/store/wallet-store';
+import { useAccount, useDisconnect } from 'wagmi';
 
 /**
  * WalletConnectionBridge
@@ -14,6 +15,21 @@ import { useWalletStore } from '@/lib/store/wallet-store';
 export function WalletConnectionBridge() {
     const { address, isConnected } = useSystemAccount();
     const syncAddress = useWalletStore(state => state.syncAddress);
+    const wagmiAccount = useAccount();
+    const { disconnect } = useDisconnect();
+
+    // [ANTI-LOOP] Force disconnect if wagmi gets stuck connecting for >15s
+    useEffect(() => {
+        if (wagmiAccount.isConnecting || wagmiAccount.isReconnecting) {
+            const timer = setTimeout(() => {
+                if (wagmiAccount.isConnecting || wagmiAccount.isReconnecting) {
+                    console.warn("[WalletConnectionBridge] Wagmi stuck in connecting loop. Force disconnecting to unblock UI.");
+                    disconnect();
+                }
+            }, 15000);
+            return () => clearTimeout(timer);
+        }
+    }, [wagmiAccount.isConnecting, wagmiAccount.isReconnecting, disconnect]);
 
     useEffect(() => {
         // [AUDITED] Extract handshake address from cookie with strict validation

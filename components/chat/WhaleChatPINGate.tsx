@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function WhaleChatPINGate({ onEnter }: Props) {
-  const { address, isConnected, isChecking, isLocalSystemWallet } = useAccount();
+  const { address, isConnected, isChecking, isLocalSystemWallet, isConnecting, isReconnecting } = useAccount();
   const { open } = useAppKit();
 
   const onEnterRef = useRef(onEnter);
@@ -35,6 +35,18 @@ export default function WhaleChatPINGate({ onEnter }: Props) {
   }
 
   if (!isConnected || !address) {
+    if (isConnecting || isReconnecting) {
+      return (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-white/95 backdrop-blur-xl">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-8 h-8 border-2 border-[#050505]/10 border-t-[#050505] rounded-full animate-spin" />
+            <h2 className="text-xl font-black uppercase tracking-tighter text-[#050505]">Connecting...</h2>
+            <p className="text-[12px] text-black/50 font-medium">Please approve the connection in your wallet.</p>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-white/95 backdrop-blur-xl">
         <div className="text-center space-y-4">
