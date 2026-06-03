@@ -164,7 +164,7 @@ export default function WhaleAlertProWhite() {
   const isEffectivelyConnected = isConnected && !isDisconnectGuarded;
 
   const handleEnterTerminal = () => {
-    if (isEffectivelyConnected) router.push('/portfolio');
+    // if (isEffectivelyConnected) router.push('/portfolio');
     else router.push('/connect');
   };
 

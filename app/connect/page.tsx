@@ -81,7 +81,7 @@ function RealDeviceRouter() {
 
     if (isAlreadyLinked && !hasUuid) {
       const next = urlParams.get('next') || urlParams.get('returnUrl');
-      const fallback = '/portfolio';
+      const fallback = '/';
       const destination = next && !next.startsWith('/connect') && !next.startsWith('/sign-up')
         ? next
         : fallback;

@@ -469,29 +469,14 @@ export default function ConnectPage() {
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center bg-white relative overflow-hidden">
-      {/* Background Image — Responsive */}
-      <img
-        src={
-          isMobile
-            ? "/system-shots/Devine-Lu-Linvega-monochrome-pixel-art-illustration-arch-2268374-wallhere.com.jpg"
-            : "/system-shots/monochrome-illustration-science-fiction-arch-pixel-art-Devine-Lu-Linvega-2268380-wallhere.com (1).jpg"
-        }
-        alt="Architecture Background"
-        className="absolute inset-0 z-0 w-full h-full pointer-events-none"
-        style={{
-          objectFit: 'contain',
-          objectPosition: 'center',
-          opacity: 1,
-        }}
-      />
-      
+      {/* Background Image Removed for Clean White Look */}
       {/* Interactive Particle Animation Overlay */}
       {mounted && <CanvasParticles isMobile={isMobile} />}
 
-      <div className="relative z-10 w-full flex-1 flex flex-col items-center justify-center px-4 pt-0 mx-auto min-h-0" style={{ pointerEvents: 'none' }}>
+      <div className="relative z-10 w-full flex-1 flex flex-col items-center lg:items-end justify-center px-4 lg:pr-32 pt-0 mx-auto min-h-0" style={{ pointerEvents: 'none' }}>
         
-        {/* Login Panel — positioned further right, slightly wider panel */}
-        <div className="w-full max-w-[540px] flex-shrink-0 flex flex-col bg-white/96 backdrop-blur-sm rounded-[24px] border border-[#F0F0F0] shadow-[0_8px_60px_rgba(0,0,0,0.18)] p-8 z-20 translate-x-[10%]" style={{ pointerEvents: 'all' }}>
+        {/* Login Panel — positioned on the right */}
+        <div className="w-full max-w-[480px] flex-shrink-0 flex flex-col bg-white/96 backdrop-blur-sm rounded-[24px] border border-[#F0F0F0] shadow-[0_8px_60px_rgba(0,0,0,0.18)] p-8 z-20" style={{ pointerEvents: 'all' }}>
           
           <div className="flex items-center gap-3 mb-8 pb-5 border-b border-black/5">
             <Lock size={16} strokeWidth={1.2} className="text-[#0A0A0A]" />
@@ -670,48 +655,6 @@ export default function ConnectPage() {
           </div>
         </div>
 
-      </div>
-
-      {/* TOP BAR: Aztec only */}
-      <div className="absolute top-0 left-0 right-0 z-40 border-b border-black/10 bg-white backdrop-blur-md overflow-hidden h-16 flex items-center">
-        <style dangerouslySetInnerHTML={{ __html: `
-          @keyframes marquee-aztec {
-            0% { transform: translateX(0%); }
-            100% { transform: translateX(-50%); }
-          }
-          .animate-marquee-aztec {
-            animation: marquee-aztec 10s linear infinite;
-          }
-          @keyframes marquee-bottom {
-            0% { transform: translateX(0%); }
-            100% { transform: translateX(-50%); }
-          }
-          .animate-marquee-bottom {
-            animation: marquee-bottom 12s linear infinite;
-          }
-        `}} />
-        <div className="flex w-max animate-marquee-aztec items-center">
-          {[...Array(20)].map((_, i) => (
-            <div key={i} className="flex items-center gap-3 px-8">
-              <img
-                src="/system-shots/connect/Gemini_Generated_Image_dzte5edzte5edzte (2).png"
-                className="h-10 w-auto object-contain"
-                alt="Aztec"
-              />
-              <span className="text-black/50 text-[8px] font-mono uppercase tracking-[0.3em] whitespace-nowrap">Powered by Aztec</span>
-            </div>
-          ))}
-          {[...Array(20)].map((_, i) => (
-            <div key={`b-${i}`} className="flex items-center gap-3 px-8">
-              <img
-                src="/system-shots/connect/Gemini_Generated_Image_dzte5edzte5edzte (2).png"
-                className="h-10 w-auto object-contain"
-                alt="Aztec"
-              />
-              <span className="text-black/50 text-[8px] font-mono uppercase tracking-[0.3em] whitespace-nowrap">Powered by Aztec</span>
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* Mobile QR Scanner */}
