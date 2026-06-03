@@ -86,7 +86,7 @@ export function NewsOfToday() {
         {
             id: "fallback-3",
             title: "Global Regulators Coordinate on Comprehensive Stablecoin Framework",
-            body": "International financial watchdogs have announced a unified approach to stablecoin regulation, aiming to integrate digital assets into the traditional financial system safely.",
+            body: "International financial watchdogs have announced a unified approach to stablecoin regulation, aiming to integrate digital assets into the traditional financial system safely.",
             source_info: { name: "Reuters" },
             published_on: Math.floor(Date.now() / 1000) - 14400,
             url: "https://reuters.com"
