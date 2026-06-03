@@ -729,15 +729,19 @@ export function MobileLanding() {
       console.warn('[Auth] Session check failed, proceeding to sign');
     }
 
-    // 2. No session? Bypassed SIWE-sign per user request
+    // 2. Requires SIWE-sign to establish session securely
     setIsActuallySigning(true);
     setSigningError(null);
 
     try {
+      // [SECURITY: ZERO-DAY PATCH] Generate SIWE message and request signature
+      const message = `Welcome to Whale Alert Network.\n\nSign this message to securely connect your wallet and establish your identity.\n\nWallet: ${norm}\nTimestamp: ${Date.now()}`;
+      const signature = await signMessageAsync({ message });
+
       const verifyRes = await fetch('/api/auth/system-verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address: norm })
+        body: JSON.stringify({ address: norm, message, signature })
       });
 
       if (!verifyRes.ok) {

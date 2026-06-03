@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { mintJWT } from '@/lib/jwt';
+import { ethers } from 'ethers';
 
 /**
  * POST /api/auth/system-verify
  * 
- * [HARDENED v2] Accepts a wallet address and:
+ * [HARDENED v2] Accepts a wallet address, message, and signature and:
+ *   0. Verifies cryptographic signature proves ownership of the address (SIWE)
  *   1. Upserts the User in DB (creates if not found — fixes "account not found")
  *   2. Mints a 7-day JWT covering BOTH whale_session and human_session cookies
  *   3. Sets system_handshake cookie (JS-readable) for mobile QR auth
@@ -18,9 +20,23 @@ export async function POST(req: NextRequest) {
     try {
         const body = await req.json();
         const rawAddress: string = (body.address || '').trim().toLowerCase();
+        const signature: string = body.signature;
+        const message: string = body.message;
 
-        if (!rawAddress || !/^0x[a-f0-9]{40}$/.test(rawAddress)) {
-            return NextResponse.json({ error: 'Invalid or missing wallet address' }, { status: 400 });
+        if (!rawAddress || !/^0x[a-f0-9]{40}$/.test(rawAddress) || !signature || !message) {
+            return NextResponse.json({ error: 'Invalid or missing authentication parameters' }, { status: 400 });
+        }
+
+        // [SECURITY: ZERO-DAY PATCH] Strict SIWE Cryptographic Verification
+        try {
+            const recoveredAddress = ethers.verifyMessage(message, signature);
+            if (recoveredAddress.toLowerCase() !== rawAddress) {
+                console.error(`[Auth:Spoof] Signature mismatch: recovered ${recoveredAddress} !== expected ${rawAddress}`);
+                return NextResponse.json({ error: 'Cryptographic verification failed: Unauthorized' }, { status: 401 });
+            }
+        } catch (cryptoErr) {
+            console.error('[Auth:CryptoError] Failed to verify message:', cryptoErr);
+            return NextResponse.json({ error: 'Invalid cryptographic signature format' }, { status: 401 });
         }
 
         // [INDEXATION FIX] Upsert — never fail with "account not found".
