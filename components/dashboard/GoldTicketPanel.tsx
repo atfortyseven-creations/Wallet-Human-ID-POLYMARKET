@@ -514,8 +514,7 @@ export function GoldTicketPanel() {
       const signToastId = toast.loading('Awaiting cryptographic wallet signature (Gasless)...');
       signMessage(
         { 
-          message: `WHALE ALERT NETWORK GOLD ACCESS VERIFICATION: ${address}`,
-          account: address as `0x${string}`
+          message: `WHALE ALERT NETWORK GOLD ACCESS VERIFICATION: ${address}`
         },
         {
           onSuccess: async (cryptoSignature: string) => {
