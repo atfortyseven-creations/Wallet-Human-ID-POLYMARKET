@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import {
@@ -13,6 +13,7 @@ import { useSystemAccount } from '@/hooks/useSystemAccount';
 import { injected } from 'wagmi/connectors';
 import { WhaleLogo } from '@/components/shared/WhaleLogo';
 import { useRouter } from 'next/navigation';
+import { Fingerprint } from 'lucide-react';
 
 //  Treasury 
 const TREASURY_WALLET = '0x78831C25c86eA2a78A6127fC2Ccb95E612D87b4a' as const;
@@ -342,8 +343,8 @@ function GlobalLedger({ feed }: { feed: any[] }) {
                              )}
                         </div>
                         <div className="px-4 py-4 flex flex-col justify-center gap-1">
-                             <span className="text-[10px] font-black uppercase text-black tracking-[0.1em]">{f.serialCode || 'MEMBER'}</span>
-                             <span className="text-[8px] font-black text-black/40 uppercase tracking-[0.2em]">Optimism L2</span>
+                             <span className="text-[10px] font-black uppercase text-black tracking-[0.1em]">TICKET {f.ticketNumber || '0'}</span>
+                             <span className="text-[8px] font-black text-black/40 uppercase tracking-[0.2em]">by {truncAddr(f.userAddress)}</span>
                         </div>
                         <div className="px-4 py-4 text-[10px] font-black font-mono text-black/60 uppercase">
                              {new Date(f.claimedAt).toLocaleDateString()}<br/>
@@ -379,9 +380,9 @@ function GlobalLedger({ feed }: { feed: any[] }) {
                                       <span className="text-[8px] font-black text-emerald-600/70 uppercase tracking-widest">+0.00111 ETH</span>
                                   </div>
                               ) : visualSig ? (
-                                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#7C3AED]/10 border border-[#7C3AED]/20 text-[#7C3AED] shadow-sm select-none">
-                                      <span className="font-mono text-[10px] font-black shrink-0">[@]</span>
-                                      <span className="text-[9px] font-black font-mono uppercase tracking-wider">BETA SPONSORED</span>
+                                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/5 border border-black/10 text-black shadow-sm select-none">
+                                      <Fingerprint size={12} strokeWidth={2.5} />
+                                      <span className="text-[9px] font-black font-mono uppercase tracking-wider">Identity Claimed ™</span>
                                   </div>
                               ) : (
                                   <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/5 border border-black/[0.06] text-black/40 select-none">
@@ -549,7 +550,7 @@ export function GoldTicketPanel() {
           <div className="border-t border-dashed border-black/10 pt-4 space-y-3">
             <div className="flex justify-between items-center text-xs">
               <span className="text-black/40 font-mono uppercase tracking-wider text-[9px] font-bold">Ticket Number</span>
-              <span className="font-mono font-black text-black">{ticketData.serialCode}</span>
+              <span className="font-mono font-black text-black">TICKET {ticketData.ticketNumber || '0'}</span>
             </div>
             <div className="flex justify-between items-center text-xs">
               <span className="text-black/40 font-mono uppercase tracking-wider text-[9px] font-bold">Minted By</span>
@@ -580,7 +581,7 @@ export function GoldTicketPanel() {
             <div className="flex justify-between items-center text-xs">
               <span className="text-black/40 font-mono uppercase tracking-wider text-[9px] font-bold">Status</span>
               <span className="flex items-center gap-1 text-black font-mono font-black text-[10px] uppercase tracking-wider">
-                <span className="font-mono font-black text-[10px]">[OK]</span> LIVE ON-CHAIN
+                <Fingerprint size={12} strokeWidth={2.5} className="mr-1" /> Identity Claimed ™
               </span>
             </div>
           </div>

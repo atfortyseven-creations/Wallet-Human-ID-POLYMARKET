@@ -54,7 +54,7 @@ async function verifyOnChainPayment(txHash: string, fromAddress: string): Promis
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-const MAX_SUPPLY       = 200;
+const MAX_SUPPLY       = 1000;
 const CLAIM_RATE_LIMIT = 3;    // Max 3 claim attempts per IP per hour
 const RATE_WINDOW_SEC  = 3600; // 1 hour TTL
 
@@ -295,7 +295,8 @@ export async function POST(req: NextRequest) {
         });
 
         // Update with final formatted serial code based on the generated ticketNumber
-        const finalSerial = `WGT-GENESIS-${String(initialTicket.ticketNumber).padStart(4, '0')}`;
+        const shortAddr = `${address.slice(0, 6)}...${address.slice(-4)}`;
+        const finalSerial = `TICKET ${initialTicket.ticketNumber} by ${shortAddr}`;
         let finalTicket = await (prisma as any).goldenTicket.update({
             where: { id: initialTicket.id },
             data: { serialCode: finalSerial }
@@ -384,6 +385,7 @@ export async function GET(req: NextRequest) {
                 where:   { isActive: true },
                 select: {
                     userAddress:            true,
+                    ticketNumber:           true,
                     claimedAt:              true,
                     signatureData:          true,
                     serialCode:             true,
@@ -393,7 +395,7 @@ export async function GET(req: NextRequest) {
                     twitterHandle:          true,
                 },
                 orderBy: { claimedAt: 'desc' },
-                take: 30,
+                take: 1000, // Fetch up to 1000 for the global ledger feed
             });
 
             // Cache for 15 seconds to shield DB from massive traffic
