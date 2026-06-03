@@ -21,6 +21,9 @@ const MAX_SUPPLY = 200;
 
 //  Helpers 
 const truncAddr = (a: string) => `${a.slice(0, 6)}${a.slice(-4)}`;
+const fmtEth = (wei: bigint) => (Number(wei) / 1e18).toFixed(4);
+const pct = (a: number, b: number) => Math.min(100, Math.round((a / b) * 100));
+
 //  Advanced Gold Sealing Engine (SVG & Framer Motion) 
 
 function createSmoothPath(points: {x: number, y: number}[]): string {

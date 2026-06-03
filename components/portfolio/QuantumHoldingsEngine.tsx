@@ -12,6 +12,19 @@ import ReceiveHub from '@/components/wallet/ReceiveHub';
 import { TokenLogo } from '@/components/ui/TokenLogo';
 import { NETWORKS, NetworkId } from '@/lib/store/wallet-store';
 
+// --- Sparkline Component for Table ---
+function Sparkline({ isPositive }: { isPositive: boolean }) {
+    const points = isPositive 
+        ? "0,20 5,15 10,18 15,10 20,12 25,2" 
+        : "0,2 5,8 10,5 15,15 20,12 25,20";
+    const color = isPositive ? "#00C076" : "#EF4444";
+    return (
+        <svg viewBox="0 0 25 22" className="w-8 h-4 opacity-50" preserveAspectRatio="none">
+            <polyline points={points} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+    );
+}
+
 export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, userAssets = [], displayCurrency = 'USD', rate = 1, symbol = '$' }: { address: string, activeNetwork: string, scannerBase: string, userAssets?: any[], displayCurrency?: string, rate?: number, symbol?: string }) {
     
     const [actionState, setActionState] = useState<{ isOpen: boolean, type: 'SEND'|'RECEIVE'|'SWAP'|'BRIDGE'|null, token: any }>({ isOpen: false, type: null, token: null });
