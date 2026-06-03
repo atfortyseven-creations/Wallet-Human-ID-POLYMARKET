@@ -187,6 +187,15 @@ const nextConfig = {
                     { key: 'Pragma',        value: 'no-cache' },
                 ]
             },
+            //  HTML pages: always serve fresh — prevents stale cookie / old JS chunk issues
+            {
+                source: '/((?!_next|api|.*\\..*).*)',
+                headers: [
+                    { key: 'Cache-Control', value: 'no-cache, no-store, must-revalidate, max-age=0' },
+                    { key: 'Pragma',        value: 'no-cache' },
+                    { key: 'Expires',       value: '0' },
+                ]
+            },
             //  Static asset immutable caching 
             // Images & fonts cached for 1 year  eliminates repeated server hits
             // Explicit paths to bypass Next.js path-to-regexp capturing group errors.

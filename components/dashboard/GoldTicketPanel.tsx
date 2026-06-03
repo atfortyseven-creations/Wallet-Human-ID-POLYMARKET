@@ -637,10 +637,14 @@ export function GoldTicketPanel() {
 
           {!hasTicket ? (
             <div className="bg-white/80 backdrop-blur-xl border border-black/5 rounded-2xl p-6 shadow-[0_8px_32px_rgba(0,0,0,0.04)] flex flex-col">
-                <div className="flex justify-between items-center mb-2">
+                <div className="flex justify-between items-center mb-1">
                    <h3 className="text-sm font-black uppercase tracking-widest text-[#050505]">Sign & Claim Your Ticket</h3>
                    <span className="text-[9px] text-[#888888] uppercase">Sign</span>
                 </div>
+                <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-black/30 mb-5 border-b border-black/[0.05] pb-4">
+                   Any obscene, offensive or fraudulent signature will be permanently erased from the network —
+                   that identity will never again be eligible for uniqueness within Whale Network.
+                </p>
                  <div className="flex-1">
                     <SignaturePad 
                       onSignature={setSignatureData} 
