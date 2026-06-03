@@ -14,6 +14,7 @@ import { useAppKit } from '@reown/appkit/react';
 import { WhaleLogo } from '@/components/shared/WhaleLogo';
 import { useRouter } from 'next/navigation';
 import { Fingerprint } from 'lucide-react';
+import { useSystemAccount } from '@/hooks/useSystemAccount';
 
 //  Treasury 
 const TREASURY_WALLET = '0x78831C25c86eA2a78A6127fC2Ccb95E612D87b4a' as const;
