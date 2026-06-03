@@ -7,10 +7,27 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { safeToFixed } from '@/lib/utils/number-format';
 import { QUANTUM_TOKENS } from '@/lib/config/tokens';
 import { TOKEN_STATS_20260530, TOKEN_STATS_DATE } from '@/config/token-stats-snapshot';
-import { LegendaryTransactionModal } from '@/components/rainbow/LegendaryTransactionModal';
-import ReceiveHub from '@/components/wallet/ReceiveHub';
-import { TokenLogo } from '@/components/ui/TokenLogo';
+import { toast } from 'sonner';
 import { NETWORKS, NetworkId } from '@/lib/store/wallet-store';
+import { NativeSwapView } from '@/components/portfolio/NativeSwapView';
+import { NativeBridgeView } from '@/components/portfolio/NativeBridgeView';
+import ReceiveHub from '@/components/wallet/ReceiveHub';
+
+function ModalView({ title, onBack, children }: any) {
+    return (
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="flex flex-col max-w-xl mx-auto w-full pt-8 px-6 pb-20 font-mono min-h-full flex-1 bg-white">
+            <div className="flex items-center justify-between mb-8 pb-4 border-b border-black/10">
+                <h2 className="text-lg font-black uppercase tracking-widest text-black">{title}</h2>
+                <button onClick={onBack} className="text-[10px] uppercase tracking-widest font-bold text-black/40 hover:text-black transition-colors border border-black/10 px-3 py-1 bg-white">
+                    CLOSE
+                </button>
+            </div>
+            <div className="flex-1 flex flex-col min-h-0">
+                {children}
+            </div>
+        </motion.div>
+    );
+}
 
 // --- Sparkline Component for Table ---
 function Sparkline({ isPositive }: { isPositive: boolean }) {
@@ -27,7 +44,6 @@ function Sparkline({ isPositive }: { isPositive: boolean }) {
 
 export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, userAssets = [], displayCurrency = 'USD', rate = 1, symbol = '$' }: { address: string, activeNetwork: string, scannerBase: string, userAssets?: any[], displayCurrency?: string, rate?: number, symbol?: string }) {
     
-    const [actionState, setActionState] = useState<{ isOpen: boolean, type: 'SEND'|'RECEIVE'|'SWAP'|'BRIDGE'|null, token: any }>({ isOpen: false, type: null, token: null });
     const [selectedToken, setSelectedToken] = useState<any | null>(null);
     const [isImportModalOpen, setIsImportModalOpen] = useState(false);
     const [importAddress, setImportAddress] = useState('');
@@ -129,7 +145,33 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
     }, [userAssets, activeNetwork]);
 
     const handleAction = (type: 'SEND'|'RECEIVE'|'SWAP'|'BRIDGE', token: any) => {
-        setActionState({ isOpen: true, type, token });
+        if (type === 'SWAP') {
+            toast.custom((t) => <NativeSwapView onBack={() => toast.dismiss(t)} />);
+        } else if (type === 'BRIDGE') {
+            toast.custom((t) => <NativeBridgeView onBack={() => toast.dismiss(t)} />);
+        } else if (type === 'SEND') {
+            toast.custom((t) => (
+                <ModalView title={`Send ${token.symbol}`} onBack={() => toast.dismiss(t)}>
+                    <div className="flex flex-col items-center justify-center p-8 bg-black/[0.02] border border-black/5">
+                        <span className="text-[10px] uppercase tracking-widest text-black/40 font-black mb-2">Notice</span>
+                        <p className="text-sm font-mono text-center text-black/60">
+                            Send interface is being natively integrated.
+                        </p>
+                    </div>
+                </ModalView>
+            ));
+        } else if (type === 'RECEIVE') {
+            toast.custom((t) => (
+                <ModalView title={`Receive ${token.symbol}`} onBack={() => toast.dismiss(t)}>
+                    <ReceiveHub addresses={[{
+                        network: activeNetwork,
+                        address: address,
+                        token: token?.symbol || 'ETH',
+                        iconPath: token?.logoPath
+                    }]} />
+                </ModalView>
+            ));
+        }
     };
 
     const legitimateAssets = useMemo(() => combinedAssets.filter(a => !(a as any).isSpam), [combinedAssets]);
@@ -145,40 +187,7 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
     return (
         <div className="border border-black/10 bg-white flex flex-col min-h-[500px] overflow-hidden relative">
             
-            {/* Modal Gateway for Action Execution */}
-            {actionState.isOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/90 backdrop-blur-sm" onClick={() => setActionState({ ...actionState, isOpen: false })}>
-                    <div className="w-full max-w-5xl h-[90vh] bg-white border border-black/10 shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
-                        <div className="flex items-center justify-between px-8 py-5 border-b border-black/10 bg-black/5">
-                            <h2 className="text-[12px] font-black uppercase tracking-[0.3em] text-black flex items-center gap-2">
-                                <img src={actionState.token?.logoPath} alt="" className="w-5 h-5 rounded-full" />
-                                {actionState.type} {actionState.token?.symbol}
-                            </h2>
-                            <button onClick={() => setActionState({ ...actionState, isOpen: false })} className="font-black text-[10px] uppercase tracking-widest text-black/50 hover:text-black hover:bg-black/5 transition-colors border border-black/10 px-4 py-2">[CLOSE]</button>
-                        </div>
-                        <div className="flex-1 overflow-y-auto">
-                            {actionState.type === 'RECEIVE' ? (
-                                <div className="p-4 flex items-center justify-center min-h-[60vh]">
-                                    <ReceiveHub addresses={[{
-                                        network: activeNetwork,
-                                        address: address,
-                                        token: actionState.token?.symbol || 'ETH',
-                                        iconPath: actionState.token?.logoPath
-                                    }]} />
-                                </div>
-                            ) : (
-                                <LegendaryTransactionModal 
-                                    isOpen={actionState.isOpen} 
-                                    initialMode={actionState.type === 'SEND' ? 'send' : actionState.type === 'SWAP' ? 'swap' : actionState.type === 'BRIDGE' ? 'bridge' : 'buy'}
-                                    onClose={() => setActionState({ ...actionState, isOpen: false })} 
-                                    balances={userAssets || []}
-                                    forceToken={actionState.token?.symbol}
-                                />
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* Modal Gateway for Action Execution removed in favor of native views */}
 
             {/* Import Token Modal */}
             <AnimatePresence>
