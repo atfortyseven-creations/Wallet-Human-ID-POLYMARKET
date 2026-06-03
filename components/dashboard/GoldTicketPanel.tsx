@@ -40,97 +40,56 @@ function createSmoothPath(points: {x: number, y: number}[]): string {
 }
 
 function AdvancedGoldSealingOverlay({ 
-  isMinting, hasTicket, strokes 
+  strokes 
 }: { 
-  isMinting: boolean, hasTicket: boolean, strokes: {x:number, y:number}[][] 
+  strokes: {x:number, y:number}[][] 
 }) {
-  // Bounding box calculation to center the signature dynamically
-  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-  strokes.forEach(stroke => stroke.forEach(p => {
-    if (p.x < minX) minX = p.x;
-    if (p.y < minY) minY = p.y;
-    if (p.x > maxX) maxX = p.x;
-    if (p.y > maxY) maxY = p.y;
-  }));
-
-  const pad = 20;
-  const vBox = strokes.length > 0 && minX !== Infinity 
-    ? `${minX - pad} ${minY - pad} ${maxX - minX + pad*2} ${maxY - minY + pad*2}`
-    : "0 0 100 100";
-
   return (
-    <AnimatePresence>
-      {isMinting && !hasTicket && (
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0, filter: "blur(20px)", transition: { duration: 1.2, ease: "easeInOut" } }}
-          className="absolute inset-0 z-[100] bg-white/95 backdrop-blur-3xl flex flex-col items-center justify-center overflow-hidden"
-        >
-           {/* Liquid Gold SVG Engine */}
-           <div className="absolute inset-0 flex items-center justify-center p-12 pointer-events-none mix-blend-multiply">
-              <svg 
-                viewBox={vBox} 
-                className="w-full h-full max-w-2xl max-h-96" 
-                preserveAspectRatio="xMidYMid meet"
-              >
-                 <defs>
-                    <linearGradient id="liquidGold" x1="0%" y1="0%" x2="100%" y2="100%">
-                       <stop offset="0%" stopColor="#BF953F" />
-                       <stop offset="50%" stopColor="#FCF6BA" />
-                       <stop offset="100%" stopColor="#B38728" />
-                    </linearGradient>
-                    <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-                       <feGaussianBlur stdDeviation="3" result="blur1" />
-                       <feGaussianBlur stdDeviation="6" result="blur2" />
-                       <feMerge>
-                          <feMergeNode in="blur2" />
-                          <feMergeNode in="blur1" />
-                          <feMergeNode in="SourceGraphic" />
-                       </feMerge>
-                    </filter>
-                 </defs>
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0, transition: { duration: 0.5 } }}
+      className="absolute inset-0 z-50 pointer-events-none rounded-2xl overflow-hidden"
+    >
+        <svg className="w-full h-full">
+           <defs>
+              <linearGradient id="liquidGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                 <stop offset="0%" stopColor="#BF953F" />
+                 <stop offset="50%" stopColor="#FCF6BA" />
+                 <stop offset="100%" stopColor="#B38728" />
+              </linearGradient>
+              <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+                 <feGaussianBlur stdDeviation="2" result="blur1" />
+                 <feGaussianBlur stdDeviation="4" result="blur2" />
+                 <feMerge>
+                    <feMergeNode in="blur2" />
+                    <feMergeNode in="blur1" />
+                    <feMergeNode in="SourceGraphic" />
+                 </feMerge>
+              </filter>
+           </defs>
 
-                 {strokes.map((stroke, i) => (
-                    <motion.path
-                       key={i}
-                       d={createSmoothPath(stroke)}
-                       fill="none"
-                       stroke="url(#liquidGold)"
-                       strokeWidth={Math.max(1.5, (maxX - minX) * 0.005)}
-                       strokeLinecap="round"
-                       strokeLinejoin="round"
-                       filter="url(#goldGlow)"
-                       initial={{ pathLength: 0, opacity: 0.8 }}
-                       animate={{ pathLength: 1, opacity: 1 }}
-                       transition={{ 
-                         duration: Math.max(1, stroke.length * 0.02), 
-                         delay: i * 0.2, // Stagger multi-strokes
-                         ease: "easeInOut"
-                       }}
-                    />
-                 ))}
-              </svg>
-           </div>
-
-           {/* Typographic Identity Seal */}
-           <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.5, duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute bottom-16 flex flex-col items-center gap-2"
-           >
-              <div className="h-[1px] w-12 bg-gradient-to-r from-transparent via-[#BF953F] to-transparent mb-2" />
-              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-transparent bg-clip-text bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]">
-                Sealing Identity Ledger
-              </span>
-              <span className="text-[7px] font-mono uppercase tracking-widest text-black/30">
-                Cryptographic Signature Reconstruction
-              </span>
-           </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+           {strokes.map((stroke, i) => (
+              <motion.path
+                 key={i}
+                 d={createSmoothPath(stroke)}
+                 fill="none"
+                 stroke="url(#liquidGold)"
+                 strokeWidth="4" 
+                 strokeLinecap="round"
+                 strokeLinejoin="round"
+                 filter="url(#goldGlow)"
+                 initial={{ pathLength: 0, opacity: 0.9 }}
+                 animate={{ pathLength: 1, opacity: 1 }}
+                 transition={{ 
+                   duration: Math.max(0.8, stroke.length * 0.015), 
+                   delay: i * 0.1, 
+                   ease: "easeInOut"
+                 }}
+              />
+           ))}
+        </svg>
+    </motion.div>
   );
 }
 
@@ -200,18 +159,19 @@ function StatChip({ label, value, accent }: { label: string; value: string; acce
   );
 }
 
-function SignaturePad({ onSignature, disabled, onMint, mintLabel, onStrokesUpdate }: { 
-  onSignature: (d: string) => void; 
-  disabled: boolean;
-  onMint: () => void;
-  mintLabel: string;
-  onStrokesUpdate: (strokes: {x:number, y:number}[][]) => void;
+function SignaturePad({ 
+  onSignature, onStrokesUpdate, disabled, isMinting 
+}: { 
+  onSignature: (d: string) => void, onStrokesUpdate: (s: {x:number, y:number}[][]) => void, disabled: boolean, isMinting: boolean 
 }) {
-  const canvasRef = React.useRef<HTMLCanvasElement>(null);
-  const [isDrawing, setIsDrawing] = React.useState(false);
-  const [hasDrawn, setHasDrawn] = React.useState(false);
-  const [strokes, setStrokes] = React.useState<{x:number, y:number}[][]>([]);
-  const currentStrokeRef = React.useRef<{x:number, y:number}[]>([]);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [hasDrawn, setHasDrawn] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const previewTimer = useRef<NodeJS.Timeout | null>(null);
+  
+  const currentStrokeRef = useRef<{x: number, y: number}[]>([]);
+  const [signatureStrokes, setSignatureStrokes] = useState<{x:number, y:number}[][]>([]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -224,33 +184,32 @@ function SignaturePad({ onSignature, disabled, onMint, mintLabel, onStrokesUpdat
     if (ctx) ctx.scale(dpr, dpr);
   }, []);
 
-  const getPos = (e: React.PointerEvent<HTMLCanvasElement>) => {
+  const getPos = (e: React.PointerEvent) => {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
     return { x: e.clientX - rect.left, y: e.clientY - rect.top };
   };
 
-  const start = (e: React.PointerEvent<HTMLCanvasElement>) => {
+  const start = (e: React.PointerEvent) => {
     if (disabled) return;
+    setShowPreview(false);
+    if (previewTimer.current) clearTimeout(previewTimer.current);
     e.currentTarget.setPointerCapture(e.pointerId);
-    // Use hardware-accelerated 2D context options where possible
-    const ctx = canvasRef.current?.getContext('2d', { desynchronized: true });
+    const ctx = canvasRef.current?.getContext('2d');
     if (!ctx) return;
     const pos = getPos(e);
     ctx.beginPath();
     ctx.moveTo(pos.x, pos.y);
     setIsDrawing(true);
-    if (!hasDrawn) setHasDrawn(true); // Move state update here to avoid 240Hz re-render storm
+    if (!hasDrawn) setHasDrawn(true);
     currentStrokeRef.current = [pos];
   };
 
-  const draw = (e: React.PointerEvent<HTMLCanvasElement>) => {
+  const draw = (e: React.PointerEvent) => {
     if (!isDrawing || disabled) return;
     const ctx = canvasRef.current?.getContext('2d');
     if (!ctx) return;
-    
-    // Hardware acceleration optimizations for 240Hz drawing
     const pos = getPos(e);
     ctx.lineTo(pos.x, pos.y);
     ctx.strokeStyle = '#000000';
@@ -258,30 +217,43 @@ function SignaturePad({ onSignature, disabled, onMint, mintLabel, onStrokesUpdat
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.stroke();
-    
-    // Track points in memory WITHOUT triggering React state updates
     currentStrokeRef.current.push(pos);
   };
 
   const stop = () => {
-    if (!isDrawing) return;
+    if (!isDrawing || disabled) return;
     setIsDrawing(false);
-    if (!hasDrawn || !canvasRef.current) return;
-    
-    // Commit the current stroke
-    const newStrokes = [...strokes, currentStrokeRef.current];
-    setStrokes(newStrokes);
+    const newStrokes = [...signatureStrokes, currentStrokeRef.current];
+    setSignatureStrokes(newStrokes);
     onStrokesUpdate(newStrokes);
     currentStrokeRef.current = [];
+    onSignature("VECTOR_MODE"); 
 
-    // Vectors are collected in state and passed via onStrokesUpdate.
-    // We no longer need to export heavy, pixelated Base64 JPEGs.
-    onSignature("VECTOR_MODE"); // Signal that we are using vector mode
+    previewTimer.current = setTimeout(() => {
+        setShowPreview(true);
+    }, 2000);
   };
 
   return (
     <div className="flex flex-col gap-3">
-      {/* Header row: label + black AUTHORIZE MINT button */}
+      <div className="relative">
+           <AnimatePresence>
+               {(showPreview || isMinting) && hasDrawn && (
+                   <AdvancedGoldSealingOverlay strokes={signatureStrokes} />
+               )}
+           </AnimatePresence>
+
+           <canvas
+             ref={canvasRef}
+             onPointerDown={start}
+             onPointerMove={draw}
+             onPointerUp={stop}
+             onPointerOut={stop}
+             className={`w-full h-32 rounded-2xl bg-black/[0.02] border border-black/10 touch-none cursor-crosshair will-change-contents relative z-10 ${(showPreview || disabled) ? 'opacity-50 cursor-not-allowed' : ''}`}
+             style={{ touchAction: 'none' }} 
+           />
+      </div>
+
       <div className="flex items-center justify-between gap-3">
          <label className="text-[10px] font-black uppercase tracking-[0.2em] text-black/30 shrink-0">Your Signature</label>
          <div className="flex items-center gap-2">
@@ -290,30 +262,13 @@ function SignaturePad({ onSignature, disabled, onMint, mintLabel, onStrokesUpdat
                const ctx = canvasRef.current?.getContext('2d');
                ctx?.clearRect(0, 0, canvasRef.current!.width, canvasRef.current!.height);
                setHasDrawn(false);
-               setStrokes([]);
+               setSignatureStrokes([]);
+               setShowPreview(false);
                onStrokesUpdate([]);
                onSignature("");
              }} className="text-[10px] font-black uppercase tracking-[0.2em] text-[#FF3B30] hover:scale-105 transition-all whitespace-nowrap">Reset</button>
            )}
-           <button
-             onClick={onMint}
-             disabled={disabled}
-             className="px-6 py-3 bg-[#050505] border border-[#050505] hover:bg-white hover:text-black text-white rounded-xl font-black uppercase tracking-[0.15em] text-[10px] transition-all disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap shadow-xl shadow-black/10 active:scale-95"
-           >
-             {mintLabel}
-           </button>
          </div>
-      </div>
-
-      {/* Canvas */}
-      <div className={`relative w-full h-[160px] rounded-[2rem] overflow-hidden border-2 border-dashed transition-all ${hasDrawn ? 'border-[#7C3AED] bg-white shadow-2xl' : 'border-black/10 bg-black/5'}`}>
-        <canvas ref={canvasRef} className="w-full h-full cursor-crosshair touch-none" onPointerDown={start} onPointerMove={draw} onPointerUp={stop} onPointerLeave={stop} />
-        {!hasDrawn && !disabled && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none opacity-20">
-            <span className="text-2xl font-mono font-black text-black mb-2">[SIGN]</span>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em]">Draw your signature to unlock</p>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -344,7 +299,6 @@ function GlobalLedger({ feed }: { feed: any[] }) {
                 </div>
             )}
             {feed?.map((f: any, i: number) => {
-                // Parse txHash and cryptoSignature from stored signatureData JSON
                 let txHash = "";
                 let cryptoSignature = "";
                 let visualSig = "";
@@ -353,7 +307,7 @@ function GlobalLedger({ feed }: { feed: any[] }) {
                 if (f.signatureData && f.signatureData.includes('isVector')) {
                     const parsedData = JSON.parse(f.signatureData);
                     isVector = true;
-                    visualSig = parsedData.signature; // This is the vector JSON string
+                    visualSig = parsedData.signature;
                 } else if (f.signatureData) {
                     try {
                         const parsed = JSON.parse(f.signatureData);
@@ -446,7 +400,7 @@ function GlobalLedger({ feed }: { feed: any[] }) {
 
 export function GoldTicketPanel() {
   const { address, isConnected, chainId, isSystemHandshake } = useSystemAccount();
-  const { isConnected: isWagmiConnected } = useAccount(); // Real wagmi connector state
+  const { isConnected: isWagmiConnected } = useAccount();
   const router = useRouter();
   const { switchChain } = useSwitchChain();
   const { signMessage, isPending: isSigning } = useSignMessage();
@@ -455,11 +409,9 @@ export function GoldTicketPanel() {
   const [signatureData, setSignatureData] = useState<string>("");
   const [signatureStrokes, setSignatureStrokes] = useState<{x:number, y:number}[][]>([]);
   const [isMinting, setIsMinting] = useState(false);
-  const MINT_FEE_ETH = "0.000"; // Beta Phase: Sponsored Gasless Mint
 
   const fetchStats = useCallback(async (isMounted: boolean = true) => {
     try {
-      //  Zero-Mock Mandate: Fetch real data from our internal API 
       const res = await fetch(`/api/golden-ticket/claim${address ? `?address=${address}` : ''}`);
       if (!res.ok) throw new Error('API fetch failed');
       const data = await res.json();
@@ -479,7 +431,7 @@ export function GoldTicketPanel() {
   useEffect(() => {
     let isMounted = true;
     fetchStats(isMounted);
-    const id = setInterval(() => fetchStats(isMounted), 15000); // 15s for optimism
+    const id = setInterval(() => fetchStats(isMounted), 15000);
     return () => {
       isMounted = false;
       clearInterval(id);
@@ -489,7 +441,6 @@ export function GoldTicketPanel() {
   const handleMint = useCallback(async () => {
     if (!isConnected) { router.push('/connect'); return; }
 
-    // If user is not Wagmi connected, they cannot sign
     if (!isWagmiConnected) {
       toast.error('Wallet connection required for minting', {
         description: 'A connected Web3 wallet is required to sign the cryptographic ledger entry.',
@@ -510,7 +461,6 @@ export function GoldTicketPanel() {
     const performClaim = async (cryptoSignature: string, txHash?: string) => {
       const t2 = toast.loading('Synchronizing System Identity...');
       try {
-        // Quantum Optimization: Send pure vector JSON instead of Base64 blobs
         const vectorData = JSON.stringify(signatureStrokes);
         const res = await fetch('/api/golden-ticket/claim', {
           method: 'POST',
@@ -552,7 +502,6 @@ export function GoldTicketPanel() {
         {
           onSuccess: async (cryptoSignature: string) => {
             toast.dismiss(signToastId);
-            // No txHash required for Gasless Beta
             await performClaim(cryptoSignature, undefined);
           },
           onError: async (err: any) => {
@@ -566,29 +515,25 @@ export function GoldTicketPanel() {
       toast.error(`Mint execution failed: ${error?.shortMessage || error?.message || 'Transaction rejected'}`);
       setIsMinting(false);
     }
-  }, [isConnected, isWagmiConnected, isSystemHandshake, signatureData, signatureStrokes, isMinting, isSigning, address, signMessage, sendTransactionAsync, switchChain, chainId, router, fetchStats]);
+  }, [isConnected, isWagmiConnected, signatureData, signatureStrokes, isMinting, isSigning, address, signMessage, fetchStats, router]);
 
   const hasTicket = dbStats?.ticket || false;
 
-  // Render receipt if user has a ticket
   const renderReceipt = () => {
     if (!hasTicket) return null;
     const ticketData = dbStats.ticket;
     let txHash = "";
-    let timestamp = "";
     let cryptoSignature = "";
     if (ticketData.signatureData) {
       try {
         const parsed = JSON.parse(ticketData.signatureData);
         txHash = parsed.txHash || "";
-        timestamp = parsed.timestamp || "";
         cryptoSignature = parsed.cryptoSignature || "";
       } catch {}
     }
 
     return (
       <div className="bg-white/95 backdrop-blur-xl border border-[#7C3AED]/20 rounded-2xl p-6 shadow-[0_20px_50px_rgba(124,58,237,0.05)] flex flex-col justify-between h-full relative overflow-hidden">
-        {/* Abstract decorative accent */}
         <div className="absolute top-0 right-0 w-24 h-24 bg-[#7C3AED]/5 rounded-full blur-2xl pointer-events-none" />
         
         <div className="space-y-4">
@@ -660,9 +605,6 @@ export function GoldTicketPanel() {
   return (
     <div className="relative w-full h-full min-h-0 flex flex-col p-4 md:p-8 gap-5 overflow-y-auto no-scrollbar bg-white">
       
-      <AdvancedGoldSealingOverlay isMinting={isMinting} hasTicket={hasTicket} strokes={signatureStrokes} />
-
-      {/*  HERO & INTERACTION (BENTO GRID)  */}
       <div className="w-full flex justify-end mb-4 flex-shrink-0">
           <button 
              onClick={handleMint}
