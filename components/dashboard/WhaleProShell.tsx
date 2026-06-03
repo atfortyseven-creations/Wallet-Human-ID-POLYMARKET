@@ -50,8 +50,8 @@ const SIDEBAR_ITEMS: NavItem[] = [
     { id: 'humanity-ledger', label: 'Roadmap',        icon: Icon.roadmap },
     { id: 'logs',            label: 'Logs',           icon: Icon.logs },
     { id: 'gold',            label: 'Identity',       icon: Icon.identity },
-    { id: 'support',         label: 'Support',        icon: Icon.support },
 ];
+
 
 const RESTRICTED_TABS = [
     'logs',
