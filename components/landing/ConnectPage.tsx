@@ -479,8 +479,8 @@ export default function ConnectPage() {
         alt="Architecture Background"
         className="absolute inset-0 z-0 w-full h-full pointer-events-none"
         style={{
-          objectFit: 'cover',
-          objectPosition: isMobile ? 'center' : 'right top',
+          objectFit: 'contain',
+          objectPosition: 'center',
           opacity: 1,
         }}
       />
