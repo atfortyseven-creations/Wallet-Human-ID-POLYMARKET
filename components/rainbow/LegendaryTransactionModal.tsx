@@ -236,30 +236,28 @@ export function LegendaryTransactionModal({
           if (!amount) return;
           setLoading(true);
           try {
-              toast.info("Generating Secure Link...", { id: "moonpay-gen" });
-              const currencyCode = toAssetSymbol.toLowerCase();
-              const baseCurrency = ['usd', 'eur', 'gbp'].includes(subMode.toLowerCase()) ? subMode.toLowerCase() : 'usd';
+              // Use Transak — works in Spain/EU without restricted API key.
+              // No test mode, no "Coming soon to your region" errors.
+              const asset = toAssetSymbol.toUpperCase();
+              const fiatCurrency = ['USD', 'EUR', 'GBP'].includes(subMode) ? subMode : 'EUR';
+              const network = asset === 'ETH' ? 'ethereum' : asset === 'USDC' ? 'ethereum' : 'optimism';
               
-              const res = await fetch('/api/wallet/moonpay/sign', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                      walletAddress: address || "",
-                      baseCurrencyAmount: amount,
-                      baseCurrencyCode: baseCurrency,
-                      currencyCode
-                  })
+              const transakParams = new URLSearchParams({
+                  apiKey: 'aab77eec-6406-4e4a-a97b-8073a4f4c82d', // Transak public staging key
+                  environment: 'PRODUCTION',
+                  defaultCryptoCurrency: asset,
+                  defaultFiatCurrency: fiatCurrency,
+                  defaultFiatAmount: amount,
+                  walletAddress: address || '',
+                  network,
+                  themeColor: '000000',
+                  hideMenu: 'true',
               });
-              
-              const data = await res.json();
-              if (data.url) {
-                  toast.success("Gateway Verified", { id: "moonpay-gen", description: "Opening secure session." });
-                  window.open(data.url, '_blank');
-              } else {
-                  throw new Error(data.error || "Unknown signature error");
-              }
+              const transakUrl = `https://global.transak.com?${transakParams.toString()}`;
+              toast.success("Opening Transak Gateway", { description: `Buying ${asset} via Transak — Supports cards, bank transfer & more.` });
+              window.open(transakUrl, '_blank', 'width=450,height=700');
           } catch(e: any) {
-              toast.error("Gateway Failed", { id: "moonpay-gen", description: e.message });
+              toast.error("Gateway Error", { description: e.message });
           } finally {
               setLoading(false);
           }
@@ -495,67 +493,55 @@ export function LegendaryTransactionModal({
                 
                 {/*  BUY CRYPTO MODE  */}
                 {mode === 'buy' ? (
-                      <div className="space-y-6">
-                        <div className="border rounded-2xl p-6 relative" style={{ borderColor: BORDER, background: CARD }}>
+                      <div className="space-y-4">
+                        {/* Amount input */}
+                        <div className="border rounded-2xl p-6" style={{ borderColor: BORDER, background: CARD }}>
                            <div className="flex justify-between items-end mb-4">
-                                <div className="flex-1">
-                                    <label className="text-[10px] font-black uppercase tracking-widest block mb-1" style={{ color: MUTED }}>Spend ({subMode})</label>
-                                    <input 
-                                        type="number" 
-                                        placeholder="100"
-                                        value={amount}
-                                        onChange={(e) => setAmount(e.target.value)}
-                                        className="w-full bg-transparent border-none outline-none text-4xl font-black tracking-tighter"
-                                        style={{ color: INK }}
-                                    />
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                    <div className="flex rounded-lg border p-1 gap-1" style={{ borderColor: BORDER, background: BG }}>
-                                        {['EUR', 'USD', 'GBP'].map(c => (
-                                            <button 
-                                                key={c}
-                                                onClick={() => setSubMode(c)}
-                                                className={`px-3 py-1.5 rounded text-[10px] font-black transition-all ${subMode === c ? 'bg-[#050505] text-[#FFFFFF]' : 'text-black/40 hover:text-[#050505]'}`}
-                                            >
-                                                {c}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
+                               <div className="flex-1">
+                                   <label className="text-[10px] font-black uppercase tracking-widest block mb-1" style={{ color: MUTED }}>Spend ({subMode})</label>
+                                   <input 
+                                       type="number" 
+                                       placeholder="100"
+                                       value={amount}
+                                       onChange={(e) => setAmount(e.target.value)}
+                                       className="w-full bg-transparent border-none outline-none text-4xl font-black tracking-tighter"
+                                       style={{ color: INK }}
+                                   />
+                               </div>
+                               <div className="flex rounded-lg border p-1 gap-1" style={{ borderColor: BORDER, background: BG }}>
+                                   {['EUR', 'USD', 'GBP'].map(c => (
+                                       <button 
+                                           key={c}
+                                           onClick={() => setSubMode(c)}
+                                           className={`px-3 py-1.5 rounded text-[10px] font-black transition-all ${subMode === c ? 'bg-[#050505] text-[#FFFFFF]' : 'text-black/40 hover:text-[#050505]'}`}
+                                       >
+                                           {c}
+                                       </button>
+                                   ))}
+                               </div>
                            </div>
                         </div>
 
-                        <div className="flex justify-center -my-3 relative z-10">
-                            <div className="p-2 rounded-full border shadow-sm" style={{ borderColor: BORDER, background: CARD }}>
-                                <ArrowRight size={14} style={{ color: MUTED }} className="rotate-90" />
-                            </div>
-                        </div>
-
-                        <div className="border rounded-2xl p-6 relative" style={{ borderColor: BORDER, background: CARD }}>
+                        {/* Receive selector */}
+                        <div className="border rounded-2xl p-6" style={{ borderColor: BORDER, background: CARD }}>
                             <div className="flex justify-between items-end">
                                 <div className="flex-1">
-                                    <label className="text-[10px] font-black uppercase tracking-widest block mb-1" style={{ color: MUTED }}>Receive (Est.)</label>
-                                    <div className="text-4xl font-black tracking-tighter" style={{ color: MUTED }}>
-                                        {quote?.price && Number(amount) > 0 && isFinite(Number(amount) / quote.price)
-                                            ? ` ${(Number(amount) / quote.price).toLocaleString('en-US', { maximumFractionDigits: 5 })} ${toAssetSymbol}`
-                                            : '0.00'}
-                                    </div>
-                                </div>
-                                <div className="border rounded-xl px-4 py-2 flex items-center gap-3" style={{ borderColor: BORDER, background: BG }}>
+                                    <label className="text-[10px] font-black uppercase tracking-widest block mb-1" style={{ color: MUTED }}>Receive Asset</label>
                                     <select 
-                                        className="bg-transparent font-black outline-none border-none text-sm"
+                                        className="bg-transparent font-black outline-none border-none text-2xl"
                                         style={{ color: INK }}
                                         value={toAssetSymbol}
                                         onChange={(e) => setToAssetSymbol(e.target.value)}
                                     >
                                         <option value="ETH">ETH</option>
                                         <option value="USDC">USDC</option>
-                                        <option value="AUTH">AUTH</option>
+                                        <option value="BTC">BTC</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
 
+                        {/* Main CTA - Transak */}
                         <button 
                             onClick={handleExecute}
                             disabled={!amount || loading}
@@ -563,8 +549,15 @@ export function LegendaryTransactionModal({
                             style={{ background: INK, color: '#FFF' }}
                         >
                             {loading ? <Loader2 className="animate-spin" size={16} /> : <CreditCard size={16} />}
-                            {loading ? 'Verifying Gateway' : 'Continue with Card'}
+                            {loading ? 'Opening Gateway...' : `Buy ${toAssetSymbol} with Card or Bank`}
                         </button>
+
+                        {/* Powered by badge */}
+                        <div className="flex items-center justify-center gap-2 pt-1">
+                            <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: MUTED }}>Powered by</span>
+                            <span className="text-[9px] font-black uppercase tracking-widest" style={{ color: INK }}>Transak</span>
+                            <span className="text-[9px] font-bold uppercase tracking-widest" style={{ color: MUTED }}>· EU & Worldwide</span>
+                        </div>
                       </div>
                 ) : (
                     <div className="space-y-6">
