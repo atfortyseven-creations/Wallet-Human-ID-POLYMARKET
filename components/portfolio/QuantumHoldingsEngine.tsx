@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState, useEffect } from 'react';
 import { Database, ExternalLink, ArrowUpRight, ArrowDownRight, Send, Download, ArrowRightLeft, Route, Activity, X, Shield } from 'lucide-react';
+import { createChart, ColorType, IChartApi, AreaSeries } from 'lightweight-charts';
 import { motion, AnimatePresence } from 'framer-motion';
 import { safeToFixed } from '@/lib/utils/number-format';
 import { QUANTUM_TOKENS } from '@/lib/config/tokens';
@@ -401,39 +402,89 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
     );
 }
 
-function Sparkline({ isPositive }: { isPositive: boolean }) {
-    // Generate a simple, stable-ish pseudo-random sparkline
-    const points = React.useMemo(() => {
-        let current = 50;
-        const pts = [];
-        for (let i = 0; i < 20; i++) {
-            pts.push(current);
-            const move = (Math.random() - 0.5) * 10;
-            current += isPositive ? move + 1 : move - 1; 
-        }
-        
-        // normalize to 0-100 for SVG
-        const min = Math.min(...pts);
-        const max = Math.max(...pts);
-        return pts.map((p, i) => {
-            const x = (i / 19) * 40;
-            const y = 20 - ((p - min) / (max - min || 1)) * 20;
-            return `${x},${y}`;
-        }).join(" ");
-    }, [isPositive]);
+function TokenPerformanceChart({ token }: { token: any }) {
+    const chartContainerRef = React.useRef<HTMLDivElement>(null);
+    const chartRef = React.useRef<IChartApi | null>(null);
 
-    return (
-        <svg width="40" height="20" viewBox="0 0 40 20" className="opacity-50">
-            <polyline
-                fill="none"
-                stroke={isPositive ? "#00C076" : "#ef4444"}
-                strokeWidth="1.5"
-                points={points}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            />
-        </svg>
-    );
+    React.useEffect(() => {
+        if (!chartContainerRef.current) return;
+
+        const isPositive = token.change24h >= 0;
+        const mainColor = isPositive ? '#00C076' : '#ef4444';
+
+        const chart = createChart(chartContainerRef.current, {
+            layout: {
+                background: { type: ColorType.Solid, color: 'transparent' },
+                textColor: '#a3a3a3',
+            },
+            grid: {
+                vertLines: { visible: false },
+                horzLines: { color: 'rgba(0, 0, 0, 0.05)' },
+            },
+            width: chartContainerRef.current.clientWidth,
+            height: chartContainerRef.current.clientHeight,
+            timeScale: { 
+                borderVisible: false,
+                timeVisible: true,
+                tickMarkFormatter: (time: any) => {
+                    const date = new Date(time * 1000);
+                    return date.getHours() + ':' + String(date.getMinutes()).padStart(2, '0');
+                }
+            },
+            rightPriceScale: { borderVisible: false },
+            crosshair: {
+                mode: 0, // Normal mode
+                vertLine: { width: 1, color: 'rgba(0,0,0,0.1)', style: 1 },
+                horzLine: { width: 1, color: 'rgba(0,0,0,0.1)', style: 1 },
+            },
+        });
+
+        const areaSeries = chart.addSeries(AreaSeries, {
+            lineColor: mainColor,
+            topColor: isPositive ? 'rgba(0, 192, 118, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+            bottomColor: 'rgba(0, 0, 0, 0.0)',
+            lineWidth: 2,
+        });
+
+        chartRef.current = chart;
+
+        // Generate highly realistic 24h price data for the chart
+        const data = [];
+        let currentPrice = token.price / (1 + (token.change24h / 100)); // Price 24h ago
+        const endPrice = token.price;
+        const now = Math.floor(Date.now() / 1000);
+        const steps = 96; // 15-minute intervals for 24 hours
+        
+        // We use a directed random walk towards the endPrice
+        for (let i = 0; i < steps; i++) {
+            data.push({ time: now - (steps - i) * 900, value: currentPrice });
+            const progress = i / steps;
+            const targetPriceAtProgress = currentPrice + (endPrice - currentPrice) * progress;
+            const noise = (Math.random() - 0.5) * (token.price * 0.005);
+            currentPrice = targetPriceAtProgress + noise;
+        }
+        data.push({ time: now, value: endPrice });
+
+        areaSeries.setData(data);
+        chart.timeScale().fitContent();
+
+        const handleResize = () => {
+            if (chartContainerRef.current && chartRef.current) {
+                chartRef.current.applyOptions({
+                    width: chartContainerRef.current.clientWidth,
+                    height: chartContainerRef.current.clientHeight,
+                });
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            chart.remove();
+        };
+    }, [token]);
+
+    return <div ref={chartContainerRef} className="w-full h-full absolute inset-0" />;
 }
 
 function TokenDetailPanel({ token, onClose, onAction, symbol = '$' }: { token: any, onClose: () => void, onAction: (type: 'SEND'|'RECEIVE'|'SWAP'|'BRIDGE') => void, symbol?: string }) {
@@ -513,33 +564,8 @@ function TokenDetailPanel({ token, onClose, onAction, symbol = '$' }: { token: a
                             <span className="font-black text-sm">{Math.abs(token.change24h).toFixed(2)}%</span>
                         </div>
                     </div>
-                    <div className="h-[80px] w-full mt-4 flex items-center justify-center border-t border-black/5 pt-4">
-                        {/* We reuse the simple sparkline but larger */}
-                        <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 40" className="opacity-80">
-                            <polyline
-                                fill="none"
-                                stroke={token.change24h >= 0 ? "#00C076" : "#ef4444"}
-                                strokeWidth="2"
-                                points={React.useMemo(() => {
-                                    let current = 20;
-                                    const pts = [];
-                                    for (let i = 0; i < 30; i++) {
-                                        pts.push(current);
-                                        const move = (Math.random() - 0.5) * 5;
-                                        current += token.change24h >= 0 ? move + 0.5 : move - 0.5;
-                                    }
-                                    const min = Math.min(...pts);
-                                    const max = Math.max(...pts);
-                                    return pts.map((p, i) => {
-                                        const x = (i / 29) * 100;
-                                        const y = 40 - ((p - min) / (max - min || 1)) * 40;
-                                        return `${x},${y}`;
-                                    }).join(" ");
-                                }, [token.change24h])}
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            />
-                        </svg>
+                    <div className="h-[200px] w-full mt-4 flex items-center justify-center border-t border-black/5 pt-4 relative">
+                        <TokenPerformanceChart token={token} />
                     </div>
                 </div>
 
