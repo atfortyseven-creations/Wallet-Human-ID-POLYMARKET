@@ -85,7 +85,8 @@ function NewTopicContent() {
       setError('Please connect your wallet to post.');
       return;
     }
-      let finalSignature = '';
+    let finalContent = content;
+    let finalSignature = '';
       
       // Inject Secure Documents into payload
       documents.forEach(doc => {
