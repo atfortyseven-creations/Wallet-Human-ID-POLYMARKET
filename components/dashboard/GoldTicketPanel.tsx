@@ -77,9 +77,9 @@ function AdvancedGoldSealingOverlay({
                        <stop offset="50%" stopColor="#FCF6BA" />
                        <stop offset="100%" stopColor="#B38728" />
                     </linearGradient>
-                    <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
-                       <feGaussianBlur stdDeviation="4" result="blur1" />
-                       <feGaussianBlur stdDeviation="8" result="blur2" />
+                    <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+                       <feGaussianBlur stdDeviation="3" result="blur1" />
+                       <feGaussianBlur stdDeviation="6" result="blur2" />
                        <feMerge>
                           <feMergeNode in="blur2" />
                           <feMergeNode in="blur1" />
@@ -231,12 +231,14 @@ function SignaturePad({ onSignature, disabled, onMint, mintLabel, onStrokesUpdat
   const start = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (disabled) return;
     e.currentTarget.setPointerCapture(e.pointerId);
-    const ctx = canvasRef.current?.getContext('2d');
+    // Use hardware-accelerated 2D context options where possible
+    const ctx = canvasRef.current?.getContext('2d', { desynchronized: true });
     if (!ctx) return;
     const pos = getPos(e);
     ctx.beginPath();
     ctx.moveTo(pos.x, pos.y);
     setIsDrawing(true);
+    if (!hasDrawn) setHasDrawn(true); // Move state update here to avoid 240Hz re-render storm
     currentStrokeRef.current = [pos];
   };
 
@@ -244,13 +246,17 @@ function SignaturePad({ onSignature, disabled, onMint, mintLabel, onStrokesUpdat
     if (!isDrawing || disabled) return;
     const ctx = canvasRef.current?.getContext('2d');
     if (!ctx) return;
+    
+    // Hardware acceleration optimizations for 240Hz drawing
     const pos = getPos(e);
     ctx.lineTo(pos.x, pos.y);
     ctx.strokeStyle = '#000000';
     ctx.lineWidth = 2.5;
     ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
     ctx.stroke();
-    setHasDrawn(true);
+    
+    // Track points in memory WITHOUT triggering React state updates
     currentStrokeRef.current.push(pos);
   };
 
