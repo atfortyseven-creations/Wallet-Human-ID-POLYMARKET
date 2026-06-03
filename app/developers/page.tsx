@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -107,14 +107,14 @@ const BuilderAnnouncements = () => {
 // 2. The Full Stack (01-08)
 const FullStack = () => {
   const stacks = [
-    { num: "01", title: "Cryptographic Identity", desc: "Identity is established through provable ownership of a secp256k1 private key. This enforces strict privacy and eliminates password-based attack vectors." },
-    { num: "02", title: "Ephemeral QR Exchange", desc: "Cross-device authentication is secured via an ephemeral X25519 key exchange. The mobile enclave securely tunnels the signed EIP-191 payload directly to the desktop session." },
-    { num: "03", title: "EdDSA Edge Middleware", desc: "Ed25519 asymmetric cryptography allows our edge routing to verify authentication tokens in microseconds, preventing token manipulation." },
-    { num: "04", title: "Redis-Backed Telemetry", desc: "A high-performance Redis cluster governs session rate-limiting. Institutional throughput is dynamically extracted and enforced per-request." },
-    { num: "05", title: "Neo4j Topological Graphs", desc: "Graph databases map complex institutional capital transfers, isolating structural behavior patterns from standard mempool noise." },
-    { num: "06", title: "EVM Energy & Z-Score Alerts", desc: "By tracking computational energy intra-block, our engines deploy Z-Score calculations to detect the accumulation of institutional positions before market impact." },
-    { num: "07", title: "System Forums", desc: "A communication layer where identities are linked to verifiable signatures. PII is hashed via SHA-256 to ensure complete privacy compliance." },
-    { num: "08", title: "Institutional SLAs", desc: "Atomic cryptographic validation integrates with Stripe Webhooks for zero-trust subscription tracking and automated API key delivery." }
+    { num: "01", title: "Cryptographic Identity", desc: "Identity is established through provable ownership of a secp256k1 private key. This enforces deterministic authentication." },
+    { num: "02", title: "Ephemeral Key Exchange", desc: "Cross-device authentication is secured via an ephemeral X25519 key exchange. The payload is encrypted via AES-256-GCM." },
+    { num: "03", title: "Asymmetric Verification", desc: "Ed25519 cryptography allows edge routing to verify JWT structures mathematically, mitigating symmetric key extraction risks." },
+    { num: "04", title: "Distributed Telemetry", desc: "A robust Redis topology governs session rate-limiting, ensuring atomic enforcement of request ceilings per authenticated identity." },
+    { num: "05", title: "Graph Database Topologies", desc: "Neo4j maps structural interactions between accounts, separating systemic capital flow topologies from isolated transactions." },
+    { num: "06", title: "Heuristic Block Analysis", desc: "Continuous state monitoring evaluates computational expenditure to identify institutional behavioral patterns statistically." },
+    { num: "07", title: "Encrypted Messaging", desc: "A protocol layer where peer-to-peer communications are secured using end-to-end encryption anchored to wallet keys." },
+    { num: "08", title: "Zero-Trust Service Level", desc: "Automated verification routines evaluate subscription states cryptographically to provision API access without human intervention." }
   ];
 
   return (
@@ -124,7 +124,7 @@ const FullStack = () => {
             Core <br/> <span className="text-black/40 italic">Infrastructure.</span>
          </h2>
          <p className="mt-10 font-sans text-[20px] text-[#1a1a1a] max-w-4xl leading-[1.8] tracking-[0.01em]">
-            Every system layer is built with precision. In collaboration with <strong>Aztec Network</strong>, we replaced legacy Web2 structures with a deterministic, cryptographically provable framework designed for high-frequency environments.
+            Every system layer is built with precision. We implement a deterministic, cryptographically provable framework designed for high-frequency analytical environments and zero-knowledge privacy operations.
          </p>
       </div>
 
@@ -174,10 +174,10 @@ const ToolsAndLibraries = () => {
                 <div className="font-mono text-[10px] font-bold tracking-widest uppercase text-black/40 mb-8 border-b border-black/10 pb-4">On-Chain Analytics</div>
                 <div className="space-y-6 font-serif text-[22px] font-normal">
                    <div className="hover:text-[#0044CC] cursor-pointer transition-colors flex items-center justify-between group">
-                     Whale Alert Pro Terminal <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                     Institutional Dashboard <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                    </div>
                    <div className="hover:text-[#0044CC] cursor-pointer transition-colors flex items-center justify-between group">
-                     The Akashic Ledger Engine <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                     Cryptographic Ledger Engine <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                    </div>
                 </div>
              </div>
@@ -185,10 +185,10 @@ const ToolsAndLibraries = () => {
                 <div className="font-mono text-[10px] font-bold tracking-widest uppercase text-black/40 mb-8 border-b border-black/10 pb-4">Identity Protocols</div>
                 <div className="space-y-6 font-serif text-[22px] font-normal">
                    <div className="hover:text-[#0044CC] cursor-pointer transition-colors flex items-center justify-between group">
-                     KYC API <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                     Verification API <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                    </div>
                    <div className="hover:text-[#0044CC] cursor-pointer transition-colors flex items-center justify-between group">
-                     Humanity Score Grid <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                     Attestation Grid <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                    </div>
                 </div>
              </div>
@@ -196,10 +196,10 @@ const ToolsAndLibraries = () => {
                 <div className="font-mono text-[10px] font-bold tracking-widest uppercase text-black/40 mb-8 border-b border-black/10 pb-4">Regulatory Compliance</div>
                 <div className="space-y-6 font-serif text-[22px] font-normal">
                    <div className="hover:text-[#0044CC] cursor-pointer transition-colors flex items-center justify-between group">
-                     MiCA Automation Toolkit <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                     Compliance Automation Toolkit <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                    </div>
                    <div className="hover:text-[#0044CC] cursor-pointer transition-colors flex items-center justify-between group">
-                     GDPR Entity Wiping Script <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                     Data Wiping Specifications <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                    </div>
                 </div>
              </div>
@@ -209,7 +209,7 @@ const ToolsAndLibraries = () => {
                    <div className="mb-10">
                       <div className="font-serif text-[26px] font-normal hover:text-[#0044CC] cursor-pointer transition-colors mb-6">System Sandbox</div>
                       <p className="font-sans text-[15px] leading-[1.8] tracking-[0.01em] text-black/70">
-                        An isolated environment simulating live mempool latency and complex graphs, enabling quantitative developers to test alerts locally before mainnet deployment.
+                        An isolated test environment enabling developers to execute zero-knowledge circuit tests and REST queries with minimal network latency before mainnet deployment.
                       </p>
                    </div>
                 </div>
@@ -234,7 +234,7 @@ const SandboxSection = () => {
                 Test.<br/> Validate. <br/><span className="text-black/40 italic">Deploy.</span>
              </h2>
              <p className="font-sans text-[20px] text-black/60 leading-[1.6] mb-12 max-w-md">
-               Test your integrations against live mempool data using our local zero-latency sandboxes.
+               Execute cryptographic validation within our deterministically isolated local environments.
              </p>
              <button className="px-10 py-5 bg-[#0A0A0A] text-white font-mono text-[10px] font-bold uppercase tracking-widest hover:bg-[#222] transition-colors rounded-sm shadow-xl">
                 Access Sandbox
@@ -243,9 +243,9 @@ const SandboxSection = () => {
           
           <div className="md:w-1/2 w-full space-y-4">
              {[
-               { title: "Instantiate Local Graph", sub: "Mock Neo4j Data Environment", icon: Database },
-               { title: "Invoke EdDSA Auth", sub: "Test session minting locally", icon: ShieldCheck },
-               { title: "Query Endpoint Latency", sub: "Benchmark API Performance", icon: Activity }
+               { title: "Instantiate Test Models", sub: "Initialize Graph Databases", icon: Database },
+               { title: "Invoke Circuit Witnesses", sub: "Test Proof Generation Locally", icon: ShieldCheck },
+               { title: "Query Endpoint Latency", sub: "Benchmark API Constraints", icon: Activity }
              ].map((item, i) => (
                 <div key={i} className="group p-8 bg-white/20 dark:bg-black/20 backdrop-blur-md border border-black/10 dark:border-white/10 flex items-center justify-between cursor-pointer hover:border-[#0044CC]/40 hover:shadow-lg transition-all rounded-sm">
                    <div className="flex items-center gap-8">
@@ -273,10 +273,10 @@ const TransactionDiagram = () => {
       <div className="max-w-[1400px] mx-auto text-center mb-32">
          <div className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#0044CC] mb-8">System Flow</div>
          <h2 className="font-serif text-5xl md:text-[72px] font-normal leading-[1.05] tracking-tight mb-10">
-            The Authentication <br/><span className="italic text-white/50">Lifecycle</span>
+            Authentication <br/><span className="italic text-white/50">Execution</span>
          </h2>
          <p className="font-sans text-[18px] text-white/60 max-w-4xl mx-auto leading-[1.8] border-b border-white/10 pb-20">
-            Trace the execution path of a zero-trust login request. See how the protocol uses elliptic curve cryptography to enforce absolute session integrity from mobile to desktop.
+            Review the deterministic sequence mapping a secure cryptographic login.
          </p>
       </div>
 
@@ -284,8 +284,8 @@ const TransactionDiagram = () => {
          {/* 1. Mobile Signer */}
          <div className="border border-white/10 p-10 flex flex-col justify-between hover:bg-white/[0.02] transition-colors group rounded-sm">
             <div className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-white/30 mb-8">Phase 01</div>
-            <h3 className="font-serif text-[26px] font-normal text-[#0044CC] mb-6 leading-[1.2]">Mobile Enclave</h3>
-            <p className="font-sans text-[14px] text-white/60 mb-12 leading-[1.7]">The operator's mobile wallet receives a deterministic authentication string. The private key never leaves the device; it exclusively signs the payload via the secp256k1 curve.</p>
+            <h3 className="font-serif text-[26px] font-normal text-[#0044CC] mb-6 leading-[1.2]">Client Signer</h3>
+            <p className="font-sans text-[14px] text-white/60 mb-12 leading-[1.7]">The client generates a deterministic signature utilizing an elliptic curve keypair without exposing private data.</p>
             <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center font-mono text-xl font-bold group-hover:bg-white group-hover:text-black transition-colors mt-auto">
                 <Terminal size={20} strokeWidth={1.5} />
             </div>
@@ -297,12 +297,12 @@ const TransactionDiagram = () => {
             <h3 className="font-serif text-[28px] font-normal mb-8">X25519 Ephemeral Handshake</h3>
             <div className="grid grid-cols-2 gap-8">
                <div>
-                  <h4 className="font-mono text-[11px] font-bold tracking-widest uppercase text-white/80 mb-3">Key Exchange</h4>
-                  <p className="font-sans text-[13px] text-white/50 leading-[1.6]">Desktop and mobile generate ephemeral X25519 keys to establish a shared secret dynamically over an isolated channel.</p>
+                  <h4 className="font-mono text-[11px] font-bold tracking-widest uppercase text-white/80 mb-3">Key Derivation</h4>
+                  <p className="font-sans text-[13px] text-white/50 leading-[1.6]">Clients independently calculate a shared secret employing out-of-band ephemeral materials.</p>
                </div>
                <div>
                   <h4 className="font-mono text-[11px] font-bold tracking-widest uppercase text-white/80 mb-3">AES-GCM Tunnel</h4>
-                  <p className="font-sans text-[13px] text-white/50 leading-[1.6]">The signed EIP-191 payload is encrypted, protecting against network interception and packet sniffing.</p>
+                  <p className="font-sans text-[13px] text-white/50 leading-[1.6]">Data transits through authenticated symmetric encryption.</p>
                </div>
             </div>
          </div>
@@ -310,13 +310,13 @@ const TransactionDiagram = () => {
          {/* 3. EdDSA Middleware */}
          <div className="border border-[#0044CC]/40 p-10 flex flex-col justify-between bg-[#0044CC]/5 hover:bg-[#0044CC]/10 transition-colors group col-span-1 lg:col-span-2 rounded-sm shadow-[0_0_40px_rgb(0,68,204,0.1)]">
             <div className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#0044CC] mb-8">Phase 03</div>
-            <h3 className="font-serif text-[28px] font-normal mb-6">EdDSA Edge Middleware</h3>
-            <p className="font-sans text-[14px] text-white/80 mb-10 leading-[1.7]">The server performs an `ecrecover` verification. Upon validation, the system mints an asymmetric Ed25519 JWT. Our Edge architecture rigorously validates this JWT globally.</p>
+            <h3 className="font-serif text-[28px] font-normal mb-6">Asymmetric Verification</h3>
+            <p className="font-sans text-[14px] text-white/80 mb-10 leading-[1.7]">Authentication servers confirm signature validity and issue a heavily restricted JSON Web Token (JWT).</p>
             
             <div className="bg-black/50 p-6 rounded-sm border border-white/10 mt-auto">
                <div className="flex items-center justify-between mb-4">
                   <div className="text-[13px] text-white/90 font-mono font-bold">Ed25519 JWT</div>
-                  <div className="text-[10px] text-white/40 font-mono uppercase tracking-widest">Secure Session Cookie</div>
+                  <div className="text-[10px] text-white/40 font-mono uppercase tracking-widest">Stateless Session</div>
                </div>
                <div className="flex items-center justify-between">
                   <div className="text-[13px] text-white/90 font-mono font-bold">SameSite=Lax</div>
@@ -328,15 +328,15 @@ const TransactionDiagram = () => {
          {/* 4. Redis Tier Limiting */}
          <div className="border border-white/10 p-10 flex flex-col justify-center hover:bg-white/[0.02] transition-colors group col-span-1 md:col-span-3 lg:col-span-3 min-h-[300px] rounded-sm">
             <div className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-white/30 mb-8">Phase 04</div>
-            <h3 className="font-serif text-[32px] font-normal mb-10">Redis Telemetry & Isolation</h3>
+            <h3 className="font-serif text-[32px] font-normal mb-10">Telemetry Architecture</h3>
             <div className="flex flex-col md:flex-row gap-8">
                <div className="flex-1 bg-white/[0.03] p-8 border-l-[3px] border-[#0044CC]">
-                  <p className="text-[13px] font-mono font-bold uppercase tracking-widest text-white mb-4">Tiered Rate Limiting</p>
-                  <p className="text-[14px] font-sans text-white/60 leading-[1.6]">The decrypted JWT payload dictates API request boundaries. Redis atomic counters enforce hard cryptographic ceilings.</p>
+                  <p className="text-[13px] font-mono font-bold uppercase tracking-widest text-white mb-4">Distributed Logging</p>
+                  <p className="text-[14px] font-sans text-white/60 leading-[1.6]">In-memory data structures map usage volumes strictly evaluating JWT clearance.</p>
                </div>
                <div className="flex-1 bg-white/[0.03] p-8 border-l-[3px] border-white/20">
-                  <p className="text-[13px] font-mono font-bold uppercase tracking-widest text-white mb-4">COOP/COEP Headers</p>
-                  <p className="text-[14px] font-sans text-white/60 leading-[1.6]">COOP and COEP isolate the Terminal's execution environment. This mitigates hardware-level vulnerabilities, preventing malicious scripts from performing memory reads.</p>
+                  <p className="text-[13px] font-mono font-bold uppercase tracking-widest text-white mb-4">Isolation Headers</p>
+                  <p className="text-[14px] font-sans text-white/60 leading-[1.6]">COOP and COEP responses lock origin data securely.</p>
                </div>
             </div>
          </div>
@@ -344,15 +344,15 @@ const TransactionDiagram = () => {
          {/* 5. Terminal Access */}
          <div className="border border-white/10 p-10 flex flex-col justify-between hover:bg-white/[0.02] transition-colors group col-span-1 md:col-span-2 lg:col-span-2 min-h-[300px] rounded-sm">
             <div className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-white/30 mb-8">Phase 05</div>
-            <h3 className="font-serif text-[32px] font-normal text-white mb-8">Institutional Dashboard</h3>
+            <h3 className="font-serif text-[32px] font-normal text-white mb-8">Verified Connectivity</h3>
             <p className="font-sans text-[15px] text-white/60 mb-10 leading-[1.7]">
-               The cryptographic payload arrives pristine. The operator is granted access to the heuristic terminal, receiving analytics directly extracted from the EVM.
+               End-user sessions transition to authorized status, unlocking REST endpoints.
             </p>
             <div className="flex items-center gap-6 border-t border-white/10 pt-8 mt-auto">
                <div className="w-12 h-12 flex-shrink-0 bg-white border border-white text-black rounded-full flex items-center justify-center font-bold">
                    <Activity size={20} strokeWidth={1.5} />
                </div>
-               <div className="text-[11px] font-mono font-bold uppercase tracking-widest text-white/60">Terminal Granted</div>
+               <div className="text-[11px] font-mono font-bold uppercase tracking-widest text-white/60">Execution Granted</div>
             </div>
          </div>
 
@@ -368,10 +368,10 @@ const ResearchSection = () => {
       <div className="max-w-[1400px] mx-auto flex flex-col lg:flex-row gap-20 items-center">
          <div className="lg:w-1/3">
             <h2 className="font-serif text-5xl md:text-[64px] font-normal text-[#0A0A0A] leading-[1.05] tracking-tight mb-12">
-               Institutional <br/><span className="italic text-black/40">Compliance.</span>
+               Protocol <br/><span className="italic text-black/40">Compliance.</span>
             </h2>
             <div className="space-y-6">
-               {["MiCA Article 72", "GDPR Data Wipe", "Privacy-by-Void", "Ed25519 JWT", "X25519 Key Exchange", "AES-256-GCM Tunnels", "Neo4j Cypher Traversal"].map((term, i) => (
+               {["Data Minimization", "Deterministic Deletion", "Zero-Trust Architecture", "EdDSA Proofs", "X25519 Intercept Guard", "Authenticated Encryption"].map((term, i) => (
                   <div key={i} className="font-mono text-[11px] font-bold tracking-[0.2em] text-black/30 uppercase hover:text-black/80 transition-colors cursor-default select-none">
                      {term}
                   </div>
@@ -382,20 +382,20 @@ const ResearchSection = () => {
          <div className="lg:w-2/3 grid grid-cols-1 md:grid-cols-3 gap-y-16 gap-x-12 lg:pl-20">
             <div className="border-t-[3px] border-[#0044CC] pt-8">
                <div className="font-serif text-[80px] font-normal text-[#0A0A0A] leading-[1.0] mb-6">0%</div>
-               <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-black/60 mb-3">Stored Passwords</div>
-               <div className="font-sans text-[14px] text-black/40 leading-relaxed">A pristine, mathematically proven Zero-Trust Environment.</div>
+               <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-black/60 mb-3">Stored Plaintext</div>
+               <div className="font-sans text-[14px] text-black/40 leading-relaxed">Cryptographic proof dependencies negate database persistence.</div>
             </div>
 
             <div className="border-t-[3px] border-black/10 pt-8">
                <div className="font-serif text-[80px] font-normal text-[#0A0A0A] leading-[1.0] mb-6">256</div>
                <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-black/60 mb-3">Bit Encryption</div>
-               <div className="font-sans text-[14px] text-black/40 leading-relaxed">Securing the QR Mesh Data Stream from all interception vectors.</div>
+               <div className="font-sans text-[14px] text-black/40 leading-relaxed">Industry standard Advanced Encryption Standard configurations.</div>
             </div>
 
             <div className="border-t-[3px] border-black/10 pt-8">
                <div className="font-serif text-[80px] font-normal text-[#0A0A0A] leading-[1.0] mb-6">1</div>
                <div className="font-mono text-[10px] font-bold uppercase tracking-widest text-black/60 mb-3">Immutable Hash</div>
-               <div className="font-sans text-[14px] text-black/40 leading-relaxed">Replacing wiped entity data permanently to satisfy GDPR mandates.</div>
+               <div className="font-sans text-[14px] text-black/40 leading-relaxed">Cryptographically deterministic hashes replace sensitive records.</div>
             </div>
          </div>
       </div>
@@ -409,28 +409,20 @@ const FAQs = () => {
 
   const faqs = [
     {
-      q: "Why did the architecture migrate from HS256 to EdDSA (Ed25519) JWTs?",
-      a: "Symmetric HS256 requires the validation server to possess the exact same secret key used for signing, introducing a vulnerability vector if the edge environment is compromised. Ed25519 asymmetric cryptography allows our Edge Middleware to verify the integrity of the JWT mathematically using only the public key. This preserves the absolute confidentiality of the signing mechanism."
+      q: "Why employ EdDSA (Ed25519) asymmetric JWT validation?",
+      a: "Symmetric signature verification (e.g. HS256) requires edge servers to retain the identical secret used to generate the token, establishing a vast attack surface. Asymmetric validation mathematically isolates the private signing node from the public verifying nodes."
     },
     {
-      q: "How does the X25519 Ephemeral QR Mesh Handshake decisively prevent MitM attacks?",
-      a: "Legacy QR login mechanisms transmitted raw authentication tokens over standard web sockets, exposing them to network sniffers. Our protocol dictates that the desktop and mobile devices dynamically generate an ephemeral X25519 shared secret out-of-band. The EIP-191 payload is encrypted via AES-256-GCM before transmission."
+      q: "How does the X25519 Ephemeral Handshake neutralize interception vulnerabilities?",
+      a: "Standard WebSocket authentications risk local network packet analysis. The protocol mandates out-of-band X25519 key derivation followed by AES-256-GCM symmetric encryption for all initial token routing."
     },
     {
-      q: "What is the critical function of COOP and COEP headers within the Terminal?",
-      a: "COOP and COEP isolate the Terminal's execution environment. This mitigates hardware-level vulnerabilities like Spectre or Meltdown, preventing malicious scripts from performing side-channel memory reads."
+      q: "What dictates the usage of Cross-Origin policies?",
+      a: "COOP and COEP headers execute strict memory boundaries in V8 engines, effectively eliminating hardware-adjacent timing extraction attacks such as Spectre."
     },
     {
-      q: "How does the system autonomously achieve MiCA and GDPR compliance?",
-      a: "We implement 'Privacy-by-Void'. When a user invokes the 'Right to Be Forgotten', all Personally Identifiable Information (PII) is permanently wiped and substituted with a deterministic SHA-256 hash, ensuring compliance."
-    },
-    {
-      q: "Why employ Neo4j over traditional PostgreSQL for heuristic analysis?",
-      a: "Determining the origin of capital across multi-hop transactions is inefficient using traditional SQL JOIN operations. Neo4js graph architecture maps these complex relationships natively, resulting in significantly lower latency."
-    },
-    {
-      q: "How does Redis facilitate institutional rate-limiting without database bottlenecks?",
-      a: "The user tier is extracted from the verified EdDSA JWT on every request. This is evaluated against atomic counters in a distributed Redis cluster, enforcing rate limits in-memory with microsecond precision."
+      q: "How is data destruction verified?",
+      a: "Invoking data deletion replaces database arrays with immutable SHA-256 checksums, guaranteeing mathematical impossibility of reconstruction."
     }
   ];
 
@@ -440,10 +432,10 @@ const FAQs = () => {
           <div className="lg:w-1/3">
              <div className="font-mono text-[10px] font-bold uppercase tracking-[0.3em] text-[#0044CC] mb-8">Documentation</div>
              <h2 className="font-serif text-5xl md:text-[64px] font-normal leading-[1.05] tracking-tight mb-10">
-               Architectural<br /> <span className="italic text-black/40">Syllabus.</span>
+               Protocol <br /> <span className="italic text-black/40">Inquiries.</span>
              </h2>
              <p className="font-sans text-[16px] text-black/60 leading-[1.8]">
-               Extensive documentation addressing the most complex cryptographic and architectural methodologies deployed within our infrastructure.
+               Detailed explanations of the cryptographic paradigms anchoring the backend infrastructure.
              </p>
           </div>
           <div className="lg:w-2/3 border-t border-black/10">
@@ -489,7 +481,7 @@ export default function DevelopersPage() {
       {/*  TOP NAV SPACER  */}
       <div className="fixed top-0 left-0 right-0 z-50 px-8 py-6 pointer-events-none flex justify-center backdrop-blur-md bg-white/20 dark:bg-black/20 border-b border-black/5 dark:border-white/5">
          <Link href="/" className="pointer-events-auto font-mono text-[10px] font-bold uppercase tracking-widest text-black/40 hover:text-black transition-colors flex items-center gap-2">
-            <ArrowRight size={12} className="rotate-180" /> Return to Terminal
+            <ArrowRight size={12} className="rotate-180" /> Return to Root
          </Link>
       </div>
       
@@ -506,7 +498,7 @@ export default function DevelopersPage() {
             </motion.div>
 
             <h1 className="font-serif text-[clamp(3.5rem,8vw,110px)] font-normal text-[#0A0A0A] leading-[0.95] tracking-tight text-balance max-w-[95vw] mb-12">
-               Master the <br/>
+               Protocol <br/>
                <span className="italic relative inline-block text-black/40 px-4 mt-2">
                   Architecture.
                </span>
@@ -518,7 +510,7 @@ export default function DevelopersPage() {
                transition={{ delay: 0.2 }}
                className="font-sans text-[20px] md:text-[24px] text-[#1a1a1a] max-w-4xl leading-[1.7] mb-20 text-balance tracking-[0.01em]"
             >
-               The technical reference for institutional integrators and engineers. Built collaboratively with <strong>Aztec Network</strong>, we detail the cryptographic parameters, privacy models, and system architecture that powers the network.
+               The definitive technical reference for integrators. We present the exact cryptographic models, zero-knowledge constraints, and state transition paradigms powering the underlying architecture. Update: June 3, 2026.
             </motion.p>
 
          </div>

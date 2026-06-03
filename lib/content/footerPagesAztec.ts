@@ -9,7 +9,7 @@ export const WHITEPAPER_SECTIONS: AztecDocSection[] = [
     paragraphs: [
       'Humanity Ledger is a privacy-preserving protocol built natively on the Aztec Network. It provides a zero-knowledge execution environment where financial activity, identity verification, and governance actions are proven locally on the user device and verified by the network — without the network ever accessing the underlying private data.',
       'Public blockchains, by design, expose all transaction metadata to every observer. This creates fundamental problems for individuals, businesses, and institutions that require confidentiality as a standard operating condition. Humanity Ledger resolves this by making privacy the default state of the network, not an opt-in feature.',
-      'The protocol is deeply integrated with the Whale Alert Network, which provides real-time monitoring of large capital flows across major blockchains. Users can act on this intelligence — setting alerts, analyzing flows, executing trades — entirely within the shielded environment. Their positions and intentions remain cryptographically hidden from all external observers.',
+      'The protocol is deeply integrated with the Whale Alert Network, which provides real-time monitoring of large capital flows across major blockchains. Users can act on these analytics — setting alerts, analyzing flows, executing trades — entirely within the shielded environment. Their positions and intentions remain cryptographically hidden from all external observers.',
       'This document describes the technical architecture, cryptographic primitives, economic model, and development roadmap of the Humanity Ledger protocol.',
     ],
   },
@@ -59,8 +59,8 @@ export const WHITEPAPER_SECTIONS: AztecDocSection[] = [
     title: '5. Integration with Whale Alert Network',
     paragraphs: [
       'The Whale Alert Network monitors capital flows across more than 20 major blockchain networks in real time. It identifies large asset transfers, exchange inflows and outflows, wallet activations, and macroeconomic flow patterns, and surfaces these events as structured, queryable data.',
-      'This intelligence is accessible within the Humanity Ledger shielded environment through private indexing logic. Users interact with the data — querying events, setting alert conditions, analyzing accumulation patterns — entirely inside the Aztec shielded pool. Their queries, alert configurations, and subsequent actions are cryptographically hidden from the public network.',
-      'The architecture creates a dual-state design: market intelligence is derived from publicly available on-chain data (via rigorous graph DB parsing and RPC ingestion), while user engagement with that intelligence remains entirely private. A user who acts on a large transfer alert cannot be observed by competitors or adversarial actors.',
+      'This dataset is accessible within the Humanity Ledger shielded environment through private indexing logic. Users interact with the data — querying events, setting alert conditions, analyzing accumulation patterns — entirely inside the Aztec shielded pool. Their queries, alert configurations, and subsequent actions are cryptographically hidden from the public network.',
+      'The architecture creates a dual-state design: market analytics are derived from publicly available on-chain data (via rigorous graph DB parsing and RPC ingestion), while user engagement with those analytics remains entirely private. A user who acts on a large transfer alert cannot be observed by competitors or adversarial actors.',
     ],
     bullets: [
       'Alert Engine: Configurable alert conditions triggered by specific flow events across monitored networks.',
@@ -122,7 +122,7 @@ export const WHITEPAPER_SECTIONS: AztecDocSection[] = [
     id: 'conclusion',
     title: '10. Conclusion',
     paragraphs: [
-      'Humanity Ledger provides the missing privacy layer for decentralized finance. By integrating natively with the Aztec Network and combining institutional market intelligence from Whale Alert with cryptographically private execution, the protocol enables a new category of financial activity: verifiable, compliant, and completely private.',
+      'Humanity Ledger provides the missing privacy layer for decentralized finance. By integrating natively with the Aztec Network and combining institutional market analytics from Whale Alert with cryptographically private execution, the protocol enables a new category of financial activity: verifiable, compliant, and completely private.',
       'The architecture is designed to scale without compromising its privacy guarantees. Each component — proving, sequencing, settlement, identity — operates with well-defined trust boundaries. Users retain exclusive control over their keys and data at all times.',
       'We invite developers, institutions, and privacy advocates to build on Humanity Ledger, contribute to its open-source circuits, and participate in governance. The protocol belongs to its participants.',
     ],
@@ -164,11 +164,11 @@ export const MANIFESTO_SECTIONS: AztecDocSection[] = [
     ],
   },
   {
-    title: 'The Role of Market Intelligence',
+    title: 'The Role of Market Analytics',
     paragraphs: [
       'Understanding capital flows is a legitimate and important activity. Large movements of assets across blockchain networks often signal significant market events: institutional accumulation, exchange insolvency risk, protocol migrations, and macro repositioning. Participants who understand these flows are better positioned to make informed decisions.',
-      'The Whale Alert Network makes this intelligence available. The challenge is that acting on public intelligence in a public environment creates a surveillance problem: if your alerts, queries, and trades are all visible, the intelligence advantage is neutralized and your own position becomes vulnerable.',
-      'Humanity Ledger solves this by integrating market intelligence into a private execution environment. You can access the same on-chain data, configure the same alerts, and execute the same strategies — without any of your activity being observable. The intelligence is derived from public data. Your response to it is not.',
+      'The Whale Alert Network makes these analytics available. The challenge is that acting on public analytics in a public environment creates a surveillance problem: if your alerts, queries, and trades are all visible, the analytical advantage is neutralized and your own position becomes vulnerable.',
+      'Humanity Ledger solves this by integrating market analytics into a private execution environment. You can access the same on-chain data, configure the same alerts, and execute the same strategies — without any of your activity being observable. The analytics are derived from public data. Your response to it is not.',
     ],
   },
   {
@@ -362,19 +362,17 @@ export const ROADMAP_SECTIONS: AztecDocSection[] = [
   },
   {
     id: 'phase-1',
-    title: 'Phase 1 — Cryptographic Infrastructure',
+    title: 'Phase 1 — Core Cryptographic Primitives',
     paragraphs: [
-      'Phase 1 establishes the post-quantum and hybrid cryptographic layer. The current elliptic curve system (BN254) is vulnerable to future quantum computing advances. This phase introduces the cryptographic foundations that will make the protocol resistant to those advances before they become threats.',
+      'Phase 1 establishes the fundamental cryptographic foundation. The current elliptic curve system (BN254) is optimized for efficient zero-knowledge proof verification. This phase introduces additional primitives to ensure long-term mathematical security and protocol resilience against theoretical cryptanalytic advancements.',
     ],
     bullets: [
-      'Lattice-based cryptography for state anchoring on Ethereum L1, replacing elliptic curve assumptions with structures resistant to Shor\'s algorithm.',
-      'STARK and FRI proof integration inside Noir circuits, removing the trusted setup requirement from the existing SNARK system.',
-      'CRYSTALS-Dilithium digital signatures replacing ECDSA for user authorization, using the NIST post-quantum standard.',
-      'Falcon signature support for high-frequency interactions where Dilithium signature sizes create overhead.',
-      'SPHINCS+ hash-based signatures as a fallback for treasury and governance keys, providing mathematical resilience against future cryptographic advances.',
-      'Quantum random number generation via hardware entropy oracles connected to the Aztec network.',
-      'Circuit architecture structured to be compatible with future quantum annealing processors.',
-      'Hybrid key exchange combining classical X25519 with CRYSTALS-Kyber for all encrypted communications.',
+      'Implementation of high-entropy Cryptographically Secure Pseudorandom Number Generators (CSPRNG) utilizing hardware-derived entropy oracles.',
+      'Integration of STARK and FRI-based proof systems within Noir circuits, eliminating the requirement for trusted setups in the existing SNARK architecture.',
+      'Deterministic signature generation utilizing EdDSA over the Baby Jubjub curve to facilitate efficient in-circuit verification.',
+      'Hash-based digital signatures serving as a fallback mechanism for treasury and governance multisignature wallets.',
+      'Circuit architecture designed for provable soundness under standard cryptographic assumptions.',
+      'Hybrid key exchange mechanisms combining standard X25519 with advanced asymmetric primitives for encrypted peer-to-peer state channels.',
     ],
   },
   {
@@ -396,37 +394,37 @@ export const ROADMAP_SECTIONS: AztecDocSection[] = [
   },
   {
     id: 'phase-3',
-    title: 'Phase 3 — Institutional Security',
+    title: 'Phase 3 — Enterprise Security Architecture',
     paragraphs: [
-      'Phase 3 establishes the security architecture required for institutional participation. This phase addresses the gap between the security requirements of professional financial entities and the trust models currently available in decentralized systems.',
+      'Phase 3 establishes the security architecture required for rigorous institutional and enterprise participation. This phase addresses the gap between the security requirements of professional financial entities and the trust models currently available in decentralized systems.',
     ],
     bullets: [
-      'Multi-layer defense: circuit logic, L1 verification, API rate limiting, and L2 timelocks operating independently — requiring simultaneous failure of all four to produce an exploit.',
-      'Continuous formal verification of all Noir circuits in the CI/CD pipeline, producing mathematical certificates on every deployment.',
-      'Continuous fuzzing and symbolic execution running against Barretenberg witnesses to identify underconstrained conditions before they can be exploited.',
-      'Post-quantum key management: Shamir\'s Secret Sharing partition schemes secured with lattice-based cryptography, providing 99.999% custody uptime for protocol treasury keys.',
-      'Hardware security module integration with Intel SGX and AWS Nitro Enclaves for all server-side cryptographic operations.',
-      'Non-extractable key architecture using device hardware modules, eliminating mnemonic phrase exposure as an attack surface.',
-      'Decentralized gateway deployment via IPFS for the frontend interface, with Tor and I2P routing integration in the client.',
-      'ZK circuit-breakers: smart contracts that automatically pause flows when proofs detect anomalies, without requiring administrative intervention.',
-      'Threshold ZK signatures: M-of-N institutional authorization proven inside a circuit without revealing the total number of signers or their identities.',
+      'Multi-layer defense: circuit logic, L1 verification, API rate limiting, and L2 timelocks operating independently — requiring simultaneous failure of all constraints to produce an exploit.',
+      'Continuous formal verification of all Noir circuits in the CI/CD pipeline, producing mathematical certificates of correctness on every deployment.',
+      'Continuous fuzzing and symbolic execution running against Barretenberg witnesses to identify underconstrained conditions before deployment.',
+      'Advanced key management protocols utilizing Shamir\'s Secret Sharing partition schemes, providing fault-tolerant custody for protocol treasury keys.',
+      'Hardware security module integration with Trusted Execution Environments (TEEs) such as Intel SGX for isolated server-side cryptographic operations.',
+      'Non-extractable key architecture leveraging local secure enclaves, mitigating the risks associated with plaintext mnemonic phrase exposure.',
+      'Decentralized gateway deployment via IPFS for the frontend interface, with strict content security policies.',
+      'Zero-knowledge circuit-breakers: programmatic constraints that automatically halt state transitions when proofs detect invariants violations.',
+      'Threshold signatures: M-of-N authorization proven inside a circuit without revealing the total number of signers or their identities to the verifier.',
     ],
   },
   {
     id: 'phase-4',
-    title: 'Phase 4 — Analytics and Market Tools',
+    title: 'Phase 4 — On-Chain Analytics and Verifiable Credentials',
     paragraphs: [
-      'Phase 4 builds the financial intelligence layer on top of the privacy infrastructure. The goal is to provide institutional-grade market analysis tools that operate without compromising user privacy — either the privacy of the analyst or the privacy of the subjects being analyzed.',
+      'Phase 4 builds the analytical layer on top of the privacy infrastructure. The objective is to provide robust analysis tools that operate securely without compromising user confidentiality or the privacy of the subjects undergoing heuristic evaluation.',
     ],
     bullets: [
-      'Private data streams using Private Information Retrieval: the user filters alert data locally on their device; the server transmits everything without knowing what is relevant to the client.',
-      'Dark pool liquidity: blind order matching using ZK proofs and multi-party computation. Order intent is never published before matching. Front-running is structurally impossible.',
-      'ZK signal generation: verified holders emit directional signals cryptographically, proving capital under management without revealing identity.',
-      'Encrypted mempool routing: transaction intents are routed as encrypted data; the sequencer orders bytes, and state is decrypted only after block ordering is finalized.',
-      'Real-world asset integration: tokenization of traditional assets under smart contract custody, with ZK attestation of underlying asset validity.',
-      'Private compliance APIs: Verifiable Credentials issued and consumed without transmitting passport data, name, or wallet address to the platform.',
-      'Forensic ZK algorithms: investigators run queries that return only the specific pre-approved information, without accessing legitimate user data.',
-      'Capital flow obfuscation: randomized batching and time-lock fragmentation on L1 deposits, converting observable bridge entry patterns into statistical noise.',
+      'Private Information Retrieval (PIR): users filter large datasets locally; the server provides the encrypted dataset without learning the specific queries executed by the client.',
+      'Zero-knowledge order matching: intent verification using cryptographic commitments and multi-party computation. Order parameters remain encrypted prior to execution, mitigating front-running mathematically.',
+      'Cryptographic attestations: verified holders emit directional signals by proving control over assets without revealing their identity or total balance.',
+      'Encrypted state routing: transaction inputs are routed as encrypted data; the sequencer determines ordering, and state transitions are decrypted only post-finality.',
+      'Asset tokenization: representation of external assets under smart contract constraints, with ZK attestations confirming the underlying asset validity.',
+      'Selective disclosure APIs: Verifiable Credentials presented and cryptographically validated without exposing raw personal identifiable information (PII).',
+      'Forensic evaluation algorithms: automated constraints that return deterministic outputs regarding compliance without exposing the underlying legitimate transactional data.',
+      'Traffic obfuscation: randomized batching and delayed execution on L1 state transitions, converting observable entry patterns into high-entropy statistical noise.',
     ],
   },
   {
@@ -455,7 +453,7 @@ export const API_REFERENCE_SECTIONS: AztecDocSection[] = [
   {
     title: 'API Overview & Network Architecture',
     paragraphs: [
-      'The Humanity Ledger Institutional API provides deterministic, cryptographically secure programmatic access to network analytics, Aztec L2 state commitments, and real-time Whale Network event streams. The API architecture separates read-only intelligence endpoints from write-heavy state-transition relay layers.',
+      'The Humanity Ledger Institutional API provides deterministic, cryptographically secure programmatic access to network analytics, Aztec L2 state commitments, and real-time Whale Network event streams. The API architecture separates read-only analytics endpoints from write-heavy state-transition relay layers.',
       'All interactions operate over TLS 1.3 with strict cypher suite enforcement. The base URL for the production environment is `https://api.humanidfi.com/v1`. Testnet environments operate on `https://testnet-api.humanidfi.com/v1`.',
       'The API Gateway implements a sophisticated bucket-algorithm rate limiter based on the caller\'s institutional tier, verifying HMAC-SHA256 signatures derived from assigned API keys in sub-millisecond latencies using edge-deployed WebAssembly verifiers.'
     ],
