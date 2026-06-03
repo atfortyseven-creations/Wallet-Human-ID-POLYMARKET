@@ -24,6 +24,78 @@ const truncAddr = (a: string) => `${a.slice(0, 6)}${a.slice(-4)}`;
 const fmtEth = (wei: bigint) => (Number(wei) / 1e18).toFixed(4);
 const pct = (a: number, b: number) => Math.min(100, Math.round((a / b) * 100));
 
+//  Minimalist Mint Overlay Animation 
+function MinimalistMintOverlay({ isMinting, hasTicket }: { isMinting: boolean, hasTicket: boolean }) {
+  return (
+    <AnimatePresence>
+      {isMinting && !hasTicket && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0, filter: "blur(10px)", transition: { duration: 0.8, ease: "easeInOut" } }}
+          className="absolute inset-0 z-[100] bg-white/90 backdrop-blur-2xl flex flex-col items-center justify-center overflow-hidden"
+        >
+           {/* Center Horizon Line */}
+           <motion.div 
+              initial={{ width: 0 }}
+              animate={{ width: "100%" }}
+              transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute top-1/2 left-0 h-[1px] bg-black/10 -translate-y-1/2"
+           />
+           {/* Quantum Scanning Line */}
+           <motion.div 
+              initial={{ left: "-10%" }}
+              animate={{ left: "110%" }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
+              className="absolute top-1/2 h-[1px] w-[15%] bg-black -translate-y-1/2 shadow-[0_0_15px_rgba(0,0,0,0.5)]"
+           />
+           
+           <div className="flex flex-col items-center gap-10 z-10 px-8 py-6 bg-white/50 rounded-3xl">
+              <div className="w-16 h-16 relative flex items-center justify-center">
+                 <motion.div 
+                   animate={{ rotate: 360 }} 
+                   transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                   className="absolute inset-0 border-[1px] border-black/10 rounded-full"
+                 />
+                 <motion.div 
+                   animate={{ rotate: -360, scale: [1, 1.05, 1] }} 
+                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                   className="absolute inset-3 border-[1px] border-black/20 border-t-black rounded-full"
+                 />
+                 <motion.div 
+                   animate={{ opacity: [0.3, 1, 0.3] }}
+                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                   className="text-[9px] font-mono font-black text-black tracking-widest"
+                 >
+                   ZK
+                 </motion.div>
+              </div>
+
+              <motion.div
+                 initial={{ opacity: 0, y: 15 }}
+                 animate={{ opacity: 1, y: 0 }}
+                 transition={{ delay: 0.4, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                 className="flex flex-col items-center gap-3 text-center"
+              >
+                 <span className="text-[11px] font-black uppercase tracking-[0.5em] text-black">
+                   Aztec Network Shield
+                 </span>
+                 <div className="flex flex-col items-center gap-1">
+                     <span className="text-[8px] font-bold uppercase tracking-[0.3em] text-black/40">
+                       Awaiting Cryptographic Signature
+                     </span>
+                     <span className="text-[7px] font-mono uppercase tracking-widest text-black/20">
+                       Please check your wallet extension
+                     </span>
+                 </div>
+              </motion.div>
+           </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 //  Sub-components 
 
 function SupplyBar({ minted, max }: { minted: number; max: number }) {
@@ -514,7 +586,9 @@ export function GoldTicketPanel() {
   };
 
   return (
-    <div className="w-full h-full min-h-0 flex flex-col p-4 md:p-8 gap-5 overflow-y-auto no-scrollbar bg-white">
+    <div className="relative w-full h-full min-h-0 flex flex-col p-4 md:p-8 gap-5 overflow-y-auto no-scrollbar bg-white">
+      
+      <MinimalistMintOverlay isMinting={isMinting} hasTicket={hasTicket} />
 
       {/*  HERO & INTERACTION (BENTO GRID)  */}
       <div className="w-full flex justify-end mb-4 flex-shrink-0">

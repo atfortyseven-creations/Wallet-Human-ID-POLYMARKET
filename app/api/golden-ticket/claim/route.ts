@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { prisma as systemPrisma } from '@/lib/prisma';
 import { createPublicClient, http, verifyMessage, parseEther } from 'viem';
 import { optimism } from 'viem/chains';
+import { safeRedisGet, safeRedisSet } from '@/lib/redis/client';
 
 // Cast to base PrismaClient so TypeScript resolves goldenTicket + user models correctly.
 // The SystemPrismaClient augmentation adds cosmicEntity but doesn't remove base models 
@@ -355,27 +356,48 @@ export async function GET(req: NextRequest) {
     try {
         const address = req.nextUrl.searchParams.get('address')?.toLowerCase();
 
-        const totalClaimed = await (prisma as any).goldenTicket.count();
-        const remaining    = Math.max(0, MAX_SUPPLY - totalClaimed);
+        let totalClaimed = 0;
+        let remaining = MAX_SUPPLY;
+        let feedRaw: any[] = [];
 
-        let feedRaw = await (prisma as any).goldenTicket.findMany({
-            where:   { isActive: true },
-            select: {
-                userAddress:            true,
-                claimedAt:              true,
-                signatureData:          true,
-                serialCode:             true,
-                tier:                   true,
-                badgeColor:             true,
-                networkLaunchEligible:  true,
-                twitterHandle:          true,
-            },
-            orderBy: { claimedAt: 'desc' },
-            take: 30,
-        });
+        // REDIS EDGE CACHING LAYER
+        const CACHE_KEY = 'global_ledger_stats_v2';
+        const cachedStr = await safeRedisGet(CACHE_KEY);
+        
+        if (cachedStr && cachedStr !== 'TIMEOUT') {
+            try {
+                const parsed = JSON.parse(cachedStr);
+                totalClaimed = parsed.totalClaimed;
+                remaining = parsed.remaining;
+                feedRaw = parsed.feedRaw;
+            } catch (e) {
+                // Ignore parse error and fallback to DB
+            }
+        }
 
-        // Zero-Mock Mandate: if DB feed is empty, return empty array — no hardcoded fallback data.
+        if (feedRaw.length === 0) {
+            // DB Fallback / Cache Miss
+            totalClaimed = await (prisma as any).goldenTicket.count();
+            remaining    = Math.max(0, MAX_SUPPLY - totalClaimed);
+            feedRaw = await (prisma as any).goldenTicket.findMany({
+                where:   { isActive: true },
+                select: {
+                    userAddress:            true,
+                    claimedAt:              true,
+                    signatureData:          true,
+                    serialCode:             true,
+                    tier:                   true,
+                    badgeColor:             true,
+                    networkLaunchEligible:  true,
+                    twitterHandle:          true,
+                },
+                orderBy: { claimedAt: 'desc' },
+                take: 30,
+            });
 
+            // Cache for 15 seconds to shield DB from massive traffic
+            await safeRedisSet(CACHE_KEY, JSON.stringify({ totalClaimed, remaining, feedRaw }), 'EX', 15);
+        }
 
         if (!address) {
             return NextResponse.json({
@@ -384,6 +406,7 @@ export async function GET(req: NextRequest) {
             });
         }
 
+        // Individual Query (Not cached globally, highly specific and lightweight)
         const ticket = await (prisma as any).goldenTicket.findUnique({
             where:  { userAddress: address },
             select: {
