@@ -78,9 +78,10 @@ export function InstitutionalPortfolioView() {
     const updateBalance = useWalletStore(s => s.updateBalance);
     const activeNetwork = useWalletStore(s => s.activeNetwork);
     const restoreFromCloud = useWalletStore(s => s.restoreFromCloud);
-    const isLocked = useWalletStore(s => s.isLocked);
     const unlockVault = useWalletStore(s => s.unlockVault);
     const passwordHash = useWalletStore(s => s.passwordHash);
+    const displayCurrency = useWalletStore(s => s.displayCurrency || 'EUR');
+    const setDisplayCurrency = useWalletStore(s => s.setDisplayCurrency);
     const { address, isLocalSystemWallet, isConnected } = useSystemAccount();
     const { assets, totalBalance } = useRealWalletData([], address || undefined);
     
@@ -135,6 +136,22 @@ export function InstitutionalPortfolioView() {
     }, [isHydrated, address]);
 
     const ethPrice = useVIPStore(s => s.ethPrice);
+    const btcPrice = useVIPStore(s => s.btcPrice) || 68000;
+
+    const getExchangeRate = (currency: string) => {
+        if (currency === 'EUR') return 0.92; // Fixed stable rate for video demo
+        if (currency === 'BTC') return 1 / btcPrice;
+        return 1; // USD
+    };
+
+    const getCurrencySymbol = (currency: string) => {
+        if (currency === 'EUR') return '€';
+        if (currency === 'BTC') return '₿';
+        return '$';
+    };
+
+    const rate = getExchangeRate(displayCurrency);
+    const symbol = getCurrencySymbol(displayCurrency);
 
     if (!isHydrated) {
         return (
@@ -163,7 +180,7 @@ export function InstitutionalPortfolioView() {
     };
     const scannerBase = getScannerBase(activeNetwork);
     const priceOracle = ethPrice > 0 ? ethPrice : 3100;
-    const balanceFiat = `${(parseFloat(balance || "0") * priceOracle).toFixed(2)}`;
+    const balanceFiat = `${(parseFloat(balance || "0") * priceOracle * rate).toFixed(2)}`;
 
     return (
         <div className="flex flex-col relative text-black selection:bg-black/10 min-h-[100dvh] bg-white font-sans">
@@ -195,6 +212,10 @@ export function InstitutionalPortfolioView() {
                         onMempool={() => setView('MEMPOOL')}
                         assets={assets || []}
                         totalBalance={totalBalance}
+                        displayCurrency={displayCurrency}
+                        setDisplayCurrency={setDisplayCurrency}
+                        rate={rate}
+                        symbol={symbol}
                     />
                 )}
                 {/* Embedded older views for deep protocol interactions */}
@@ -267,7 +288,7 @@ export function InstitutionalPortfolioView() {
     );
 }
 
-function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, loading, onRefresh, onSend, onReceive, onScan, onCreate, onBuy, onSwap, onBridge, onNetworkClick, onSettingsClick, onAccountsClick, scannerBase, onShield, onSecurity, onSmartAccount, onDeploy, onOmnichain, onMempool, assets }: any) {
+function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, loading, onRefresh, onSend, onReceive, onScan, onCreate, onBuy, onSwap, onBridge, onNetworkClick, onSettingsClick, onAccountsClick, scannerBase, onShield, onSecurity, onSmartAccount, onDeploy, onOmnichain, onMempool, assets, displayCurrency, setDisplayCurrency, rate, symbol }: any) {
     const [copied, setCopied] = useState(false);
     const [isDisconnecting, setIsDisconnecting] = useState(false);
     const [activeTab, setActiveTab] = useState<'TOKENS'|'DEFI'|'ACTIVITY'>('TOKENS');
@@ -323,6 +344,18 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
 
                 {address && (
                     <div className="flex flex-wrap gap-2 items-center justify-end mt-3 md:mt-0">
+                        {/* Currency Toggle */}
+                        <div className="flex bg-black/[0.03] border border-black/10 rounded-md p-0.5 mr-2">
+                            {(['EUR', 'USD', 'BTC'] as const).map(c => (
+                                <button 
+                                    key={c}
+                                    onClick={() => setDisplayCurrency(c)}
+                                    className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-sm transition-colors ${displayCurrency === c ? 'bg-black text-white' : 'text-black/40 hover:text-black'}`}
+                                >
+                                    {c}
+                                </button>
+                            ))}
+                        </div>
                         <button onClick={onRefresh} disabled={loading} className="text-[10px] font-bold uppercase tracking-widest text-black/40 hover:text-black transition-colors px-3 py-1.5 border border-transparent hover:border-black/10">
                             {loading ? 'Refreshing…' : 'Refresh'}
                         </button>
@@ -350,13 +383,13 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                 
                 <div className="relative inline-flex items-baseline justify-center mb-2">
                     <h1 className="font-light tracking-tighter text-black flex items-start" style={{ fontSize: 'clamp(3.5rem, 9vw, 6.5rem)' }}>
-                        <span className="text-3xl mt-3 md:mt-5 mr-1 text-black/40">$</span>
-                        {totalBalance || '0.00'}
+                        <span className="text-3xl mt-3 md:mt-5 mr-1 text-black/40">{symbol}</span>
+                        {totalBalance ? (parseFloat(totalBalance) * rate).toLocaleString('en-US', { minimumFractionDigits: displayCurrency === 'BTC' ? 4 : 2, maximumFractionDigits: displayCurrency === 'BTC' ? 4 : 2 }) : '0.00'}
                     </h1>
                 </div>
                 <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
                     <p className="text-[11px] tracking-[0.18em] font-mono text-black/50 border border-black/10 px-4 py-1.5">
-                        {balance} {networkInfo.currency} (${balanceFiat})
+                        {balance} {networkInfo.currency} ({symbol}{balanceFiat})
                     </p>
                     <span className="px-3 py-1.5 bg-black text-white text-[9px] font-black uppercase tracking-widest">Live</span>
                 </div>
@@ -425,14 +458,14 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                             <div className="flex flex-col gap-2 mb-6">
                                 {Object.entries(
                                     assets.reduce((acc: any, asset: any) => {
-                                        const v = parseFloat(asset.value || '0');
+                                        const v = parseFloat(asset.value || '0') * rate;
                                         if (v > 0) acc[asset.network] = (acc[asset.network] || 0) + v;
                                         return acc;
                                     }, {})
                                 ).sort((a: any, b: any) => b[1] - a[1]).slice(0, 3).map(([net, val]: any) => (
                                     <div key={net} className="flex items-center justify-between text-[10px]">
                                         <span className="font-bold tracking-widest uppercase">{net}</span>
-                                        <span className="font-mono text-black/50">${val.toFixed(2)}</span>
+                                        <span className="font-mono text-black/50">{symbol}{displayCurrency === 'BTC' ? val.toFixed(4) : val.toFixed(2)}</span>
                                     </div>
                                 ))}
                             </div>
@@ -469,7 +502,7 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                                 ))}
                             </div>
                             <div className="flex-1 bg-white flex flex-col">
-                                {activeTab === 'TOKENS' && <QuantumHoldingsEngine address={address} activeNetwork={activeNetwork} scannerBase={scannerBase} userAssets={assets} />}
+                                {activeTab === 'TOKENS' && <QuantumHoldingsEngine address={address} activeNetwork={activeNetwork} scannerBase={scannerBase} userAssets={assets} displayCurrency={displayCurrency} rate={rate} symbol={symbol} />}
                                 {activeTab === 'DEFI' && <QuantumDeFiPositions address={address} activeNetwork={activeNetwork} />}
                                 {activeTab === 'ACTIVITY' && <TransactionHistory address={address} scannerBase={scannerBase} activeNetwork={activeNetwork} />}
                             </div>

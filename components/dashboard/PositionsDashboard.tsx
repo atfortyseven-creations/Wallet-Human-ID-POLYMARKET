@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
@@ -17,7 +17,7 @@ export default function PositionsDashboard({ positions, isLoading }: { positions
         return (
             <div className="flex flex-col items-center justify-center h-64 text-black/40 space-y-2 rounded-3xl bg-[#FFFFFF] border border-black/10">
                 <p>No active positions found.</p>
-                <p className="text-xs">Start trading on the News tab.</p>
+                <p className="text-xs">Browse markets to start trading.</p>
             </div>
         );
     }

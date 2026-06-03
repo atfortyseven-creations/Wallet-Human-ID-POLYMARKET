@@ -530,9 +530,9 @@ export function LegendaryTransactionModal({
                                 <div className="flex-1">
                                     <label className="text-[10px] font-black uppercase tracking-widest block mb-1" style={{ color: MUTED }}>Receive (Est.)</label>
                                     <div className="text-4xl font-black tracking-tighter" style={{ color: MUTED }}>
-                                        {quote?.price && Number(amount) > 0
-                                            ? ` ${(Number(amount) / quote.price).toLocaleString('de-DE', { maximumFractionDigits: 5 })} ${toAssetSymbol}`
-                                            : ''}
+                                        {quote?.price && Number(amount) > 0 && isFinite(Number(amount) / quote.price)
+                                            ? ` ${(Number(amount) / quote.price).toLocaleString('en-US', { maximumFractionDigits: 5 })} ${toAssetSymbol}`
+                                            : '0.00'}
                                     </div>
                                 </div>
                                 <div className="border rounded-xl px-4 py-2 flex items-center gap-3" style={{ borderColor: BORDER, background: BG }}>
@@ -599,7 +599,7 @@ export function LegendaryTransactionModal({
                                 </div>
                             </div>
                             <div className="flex justify-between text-[10px] font-black tracking-tight uppercase">
-                                <span style={{ color: MUTED }}>Approx ${safeToLocaleString(parseFloat(amount || '0') * (balances.find(b => b.symbol === fromAssetSymbol)?.usdPrice || 0), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                <span style={{ color: MUTED }}>Approx ${safeToLocaleString((isNaN(parseFloat(amount)) ? 0 : parseFloat(amount)) * (balances.find(b => b.symbol === fromAssetSymbol)?.usdPrice || 0), { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                                 <button 
                                     onClick={() => {
                                         const asset = balances.find(b => b.symbol === fromAssetSymbol);
@@ -643,10 +643,14 @@ export function LegendaryTransactionModal({
                                         <label className="text-[10px] font-black uppercase tracking-widest block mb-1" style={{ color: MUTED }}>Receiving (Est.)</label>
                                         <div className="text-4xl font-black tracking-tighter" style={{ color: MUTED }}>
                                             {quote?.estimate?.toAmount
-                                                ? (Number(quote.estimate.toAmount) / (10 ** (quote.estimate?.toToken?.decimals ?? 6))).toFixed(4)
+                                                ? isFinite(Number(quote.estimate.toAmount) / (10 ** (quote.estimate?.toToken?.decimals ?? 6)))
+                                                    ? (Number(quote.estimate.toAmount) / (10 ** (quote.estimate?.toToken?.decimals ?? 6))).toFixed(4)
+                                                    : '0.0000'
                                                 : quote?.action?.toAmount
-                                                    ? (Number(quote.action.toAmount) / (10 ** (toAsset?.decimals ?? 6))).toFixed(4)
-                                                    : ''}
+                                                    ? isFinite(Number(quote.action.toAmount) / (10 ** (toAsset?.decimals ?? 6)))
+                                                        ? (Number(quote.action.toAmount) / (10 ** (toAsset?.decimals ?? 6))).toFixed(4)
+                                                        : '0.0000'
+                                                    : '0.0000'}
                                         </div>
                                     </div>
                                     <div className="border rounded-xl flex items-center gap-3 cursor-pointer" style={{ borderColor: BORDER, background: BG }}>

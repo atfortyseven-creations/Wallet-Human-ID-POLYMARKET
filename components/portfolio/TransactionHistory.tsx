@@ -232,11 +232,11 @@ export function TransactionHistory({ address, scannerBase, activeNetwork }: { ad
 
                                     <div className="text-right">
                                         <span className="text-[15px] font-bold text-black block mb-0.5">
-                                            {tx.direction === 'SEND' ? '-' : '+'}{tx.value} {nativeSymbol}
+                                            {Number(tx.value) === 0 ? 'Contract Call' : `${tx.direction === 'SEND' ? '-' : '+'}${tx.value} ${nativeSymbol}`}
                                         </span>
                                         <div className="flex flex-col items-end">
                                             <span className="text-[12px] text-black/50">
-                                                {nativePrice > 0 ? `$${(Number(tx.value) * nativePrice).toFixed(2)} USD` : `${nativeSymbol}`}
+                                                {Number(tx.value) === 0 ? 'Smart Contract' : nativePrice > 0 ? `$${(Number(tx.value) * nativePrice).toFixed(2)} USD` : `${nativeSymbol}`}
                                             </span>
                                             <span className="text-[9px] text-black/30 font-mono mt-0.5">Gas: {tx.gasUsed} @ {tx.gasPrice} gwei</span>
                                         </div>

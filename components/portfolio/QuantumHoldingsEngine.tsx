@@ -11,7 +11,7 @@ import ReceiveHub from '@/components/wallet/ReceiveHub';
 import { TokenLogo } from '@/components/ui/TokenLogo';
 import { NETWORKS, NetworkId } from '@/lib/store/wallet-store';
 
-export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, userAssets = [] }: { address: string, activeNetwork: string, scannerBase: string, userAssets?: any[] }) {
+export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, userAssets = [], displayCurrency = 'USD', rate = 1, symbol = '$' }: { address: string, activeNetwork: string, scannerBase: string, userAssets?: any[], displayCurrency?: string, rate?: number, symbol?: string }) {
     
     const [actionState, setActionState] = useState<{ isOpen: boolean, type: 'SEND'|'RECEIVE'|'SWAP'|'BRIDGE'|null, token: any }>({ isOpen: false, type: null, token: null });
     const [selectedToken, setSelectedToken] = useState<any | null>(null);
@@ -57,7 +57,8 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
             assetMap.delete(t.symbol.toUpperCase());
             // Prefer user's real-time price, then fall back to our snapshot
             const snapshot = TOKEN_STATS_20260530[t.symbol.toUpperCase()];
-            const price = userOwned?.price ?? snapshot?.price ?? 0;
+            const basePrice = userOwned?.price ?? snapshot?.price ?? 0;
+            const price = basePrice * rate;
             const change24h = userOwned?.change24h ?? snapshot?.change24h ?? 0;
             const balance = userOwned?.balanceNumeric || 0;
             const value = balance > 0 ? balance * price : 0;
@@ -276,10 +277,10 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
                                             <span className={`font-black text-sm ${token.isOwned ? 'text-black' : 'text-black/30'}`}>
                                                 {token.balance > 0 ? Number(token.balance).toFixed(6) : "0.00"}
                                             </span>
-                                            {token.value > 0 && <span className="text-[10px] text-black/50 font-bold">${safeToFixed(token.value, 2)}</span>}
+                                            {token.value > 0 && <span className="text-[10px] text-black/50 font-bold">{symbol}{safeToFixed(token.value, 2)}</span>}
                                             {token.price > 0 && !token.isOwned && (
                                                 <span className="text-[9px] text-black/30 font-bold font-mono">
-                                                    ${token.price >= 1 ? safeToFixed(token.price, 2) : token.price >= 0.0001 ? token.price.toFixed(6) : token.price.toExponential(2)}
+                                                    {symbol}{token.price >= 1 ? safeToFixed(token.price, 2) : token.price >= 0.0001 ? token.price.toFixed(6) : "0.00"}
                                                 </span>
                                             )}
                                         </div>
@@ -505,7 +506,7 @@ function TokenDetailPanel({ token, onClose, onAction }: { token: any, onClose: (
                 <div className="p-6 border border-black/10 bg-black/[0.02] mb-6">
                     <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30 mb-6 block">Performance 24h</span>
                     <div className="flex items-center justify-between mb-4">
-                        <span className="font-mono text-xl">${token.price >= 1 ? safeToFixed(token.price, 2) : token.price >= 0.0001 ? token.price.toFixed(6) : token.price.toExponential(2)}</span>
+                        <span className="font-mono text-xl">{symbol}{token.price === 0 ? "0.00" : token.price >= 1 ? safeToFixed(token.price, 2) : token.price >= 0.0001 ? token.price.toFixed(6) : "0.00"}</span>
                         <div className={`flex items-center gap-1 px-3 py-1.5 ${token.change24h >= 0 ? 'bg-[#00C076]/10 text-[#00C076]' : 'bg-red-500/10 text-red-500'}`}>
                             {token.change24h >= 0 ? <ArrowUpRight size={14} strokeWidth={3} /> : <ArrowDownRight size={14} strokeWidth={3} />}
                             <span className="font-black text-sm">{Math.abs(token.change24h).toFixed(2)}%</span>

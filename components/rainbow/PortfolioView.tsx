@@ -24,6 +24,7 @@
  */
 
 import { motion, AnimatePresence } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
 import { TokenRow } from "./TokenRow";
 import { ActionCluster } from "./ActionCluster";
 import {
@@ -384,39 +385,32 @@ export default function PortfolioView({
     html.classList.toggle("dark");
   };
 
-  // Removed obsolete global window shortcut. Use GenerateWalletWizard UI directly.
-  // History fetch
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  // Fetch History using React Query so it automatically syncs when invalidateQueries is called
+  const { data: historyData, isLoading: historyLoading } = useQuery({
+    queryKey: ['enriched-history', userAddress],
+    queryFn: async () => {
+      if (!userAddress) return { history: [] };
+      const res = await fetch(`/api/wallet/history/deep?address=${userAddress}`);
+      return res.json();
+    },
+    enabled: !!userAddress,
+    refetchInterval: 30000
+  });
+
   useEffect(() => {
-    if (!userAddress) return;
-    let mounted = true;
-    const fetchHistory = async () => {
-      setHistoryLoading(true);
-      try {
-        const res = await fetch(`/api/wallet/history/deep?address=${userAddress}`);
-        const data = await res.json();
-        if (mounted && data.history) {
-          setHistory(
-            data.history.map((tx: any) => ({
-              hash: tx.hash,
-              from: tx.from,
-              to: tx.to,
-              value: parseFloat(tx.value),
-              asset: tx.tokenSymbol || "ETH",
-              type: tx.type,
-              status: tx.status,
-              chainId: tx.chainId,
-              timestamp: new Date(tx.timestamp),
-              source: tx.source,
-            }))
-          );
-        }
-      } catch {}
-      if (mounted) setHistoryLoading(false);
-    };
-    fetchHistory();
-    const t = setInterval(fetchHistory, 30000);
-    return () => { mounted = false; clearInterval(t); };
-  }, [userAddress]);
+    if (historyData?.history) {
+      setHistory(
+        historyData.history.map((tx: any) => ({
+          ...tx,
+          value: parseFloat(tx.value),
+          timestamp: new Date(tx.timestamp),
+        }))
+      );
+    }
+  }, [historyData]);
 
   const handleAction = (action: string, mode?: string) => {
     if (action === "Send" || action === "Buy" || action === "Swap" || action === "Bridge" || action === "Sell") {
@@ -487,9 +481,11 @@ export default function PortfolioView({
       className="relative min-h-screen text-black font-sans selection:bg-black/10"
       style={{ background: "#fdfcf9" }}
     >
-      {/* Institutional Grid Pattern */}
-      <div className="absolute inset-0 pointer-events-none opacity-[0.05]"
-          style={{ backgroundImage: 'repeating-linear-gradient(0deg,#000 0,#000 1px,transparent 1px,transparent 60px),repeating-linear-gradient(90deg,#000 0,#000 1px,transparent 1px,transparent 60px)' }} />
+      {/* Institutional Grid Pattern - Client Only to fix SSR Glitch */}
+      {mounted && (
+        <div className="absolute inset-0 pointer-events-none opacity-[0.05]"
+            style={{ backgroundImage: 'repeating-linear-gradient(0deg,#000 0,#000 1px,transparent 1px,transparent 60px),repeating-linear-gradient(90deg,#000 0,#000 1px,transparent 1px,transparent 60px)' }} />
+      )}
       {/* 
           HEADER  Matches screenshot exactly
           Whale logo · Brand · Dark on left, tools on right

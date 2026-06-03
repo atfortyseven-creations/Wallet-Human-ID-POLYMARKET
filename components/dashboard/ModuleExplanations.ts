@@ -19,16 +19,7 @@ export const MODULE_EXPLANATIONS: Record<string, { title: string, subtitle: stri
             { title: 'Local Storage', desc: 'Watchlist configuration stays on your device only.' },
         ]
     },
-    'news': {
-        title: 'Analytics Feed',
-        subtitle: 'Market context',
-        overview: 'Aggregated macroeconomic and on-chain reporting delivered without centralized tracking scripts or third-party cookies.',
-        features: [
-            { title: 'Event Coverage', desc: 'Earnings, regulatory announcements, and protocol updates.' },
-            { title: 'Continuous Delivery', desc: 'Feed updates in real time as events occur.' },
-            { title: 'Relevance Filtering', desc: 'Configurable filters to surface what matters to you.' },
-        ]
-    },
+
     'gold': {
         title: 'Identity',
         subtitle: 'Account management',

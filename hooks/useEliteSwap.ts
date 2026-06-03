@@ -14,21 +14,23 @@ export interface SwapParams {
     slippage?: number;
 }
 
-// Token address mapping
+// Token address mapping (Token Translation layer)
 const TOKEN_MAP: Record<number, Record<string, string>> = {
     1: { // Ethereum
         'USDT': '0xdac17f958d2ee523a2206206994597c13d831ec7',
         'USDC': '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         'AUTH': '0x163f8c2467924be0ae7b5347228cabf260318753',
         'ETH': '0x0000000000000000000000000000000000000000',
-        'WETH': '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
+        'WETH': '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+        'BNB': '0x0000000000000000000000000000000000000000'
     },
     137: { // Polygon
         'USDT': '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
         'USDC': '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
-        'AUTH': '0x163f8c2467924be0ae7b5347228cabf260318753', // Standard OP AUTH
+        'AUTH': '0x163f8c2467924be0ae7b5347228cabf260318753',
         'POL': '0x0000000000000000000000000000000000000000',
-        'MATIC': '0x0000000000000000000000000000000000000000'
+        'MATIC': '0x0000000000000000000000000000000000000000',
+        'ETH': '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619'
     },
     8453: { // Base
         'USDC': '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
@@ -69,22 +71,27 @@ export function useEliteSwap() {
     const [error, setError] = useState<string | null>(null);
     const [status, setStatus] = useState<'idle' | 'quoting' | 'approving' | 'signing' | 'broadcasting' | 'synced' | 'failed'>('idle');
 
-    // Helper function to resolve token address from symbol
+    // Helper function to resolve token address from symbol (The "Token Translation" Layer)
     const resolveTokenAddress = (tokenSymbolOrAddress: string, chainId: number): string => {
-        // If it's already an address (starts with 0x and is 42 chars), return it
+        if (!tokenSymbolOrAddress) return '0x0000000000000000000000000000000000000000';
+        
+        // If it's already an address
         if (tokenSymbolOrAddress.startsWith('0x') && tokenSymbolOrAddress.length === 42) {
             return tokenSymbolOrAddress;
         }
-        
-        // Otherwise, look it up in the TOKEN_MAP
-        const chainTokens = TOKEN_MAP[chainId];
-        if (!chainTokens) {
-            throw new Error(`Chain ${chainId} not supported`);
+
+        // Native gas token universal fallback if not in map
+        const upperToken = tokenSymbolOrAddress.toUpperCase();
+        if (upperToken === 'ETH' || upperToken === 'POL' || upperToken === 'MATIC' || upperToken === 'BNB' || upperToken === 'AVAX') {
+            return '0x0000000000000000000000000000000000000000';
         }
         
-        const address = chainTokens[tokenSymbolOrAddress.toUpperCase()];
+        const chainTokens = TOKEN_MAP[chainId] || {};
+        const address = chainTokens[upperToken];
+        
         if (!address) {
-            throw new Error(`Token ${tokenSymbolOrAddress} not found on chain ${chainId}`);
+            console.warn(`[EliteSwap] Token translation missing for ${upperToken} on chain ${chainId}. Falling back to Li.Fi auto-resolution.`);
+            return upperToken; // Li.Fi can often resolve symbols directly if mapping fails
         }
         
         return address;

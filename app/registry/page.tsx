@@ -262,6 +262,354 @@ function copyToClipboard(text: string, label: string) {
   toast.success(`${label} copied`);
 }
 
+// ─── Aztec Analytics Component ───────────────────────────────────────────────
+
+function AztecAnalyticsTab({ isDark }: { isDark: boolean }) {
+  const [nodeInfo, setNodeInfo] = useState<any>(null);
+  const [fetching, setFetching] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [lastFetched, setLastFetched] = useState<Date | null>(null);
+
+  const fetchData = async () => {
+    setFetching(true);
+    setFetchError(null);
+    try {
+      const res = await fetch(
+        "https://full-node.alpha-testnet.aztec.network/aztec/v1/node-info",
+        { signal: AbortSignal.timeout(12_000) }
+      );
+      if (!res.ok) throw new Error(`Node returned ${res.status}`);
+      const data = await res.json();
+      setNodeInfo(data);
+      setLastFetched(new Date());
+    } catch {
+      setFetchError(
+        "The Aztec network node is currently unreachable. Data will appear when a connection is established."
+      );
+    } finally {
+      setFetching(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+    const id = setInterval(fetchData, 30_000);
+    return () => clearInterval(id);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const border = isDark
+    ? "1px solid rgba(255,255,255,0.07)"
+    : "1px solid rgba(0,0,0,0.07)";
+  const cardBg   = isDark ? "#0d0d17" : "#fff";
+  const labelClr = isDark ? "rgba(255,255,255,0.38)" : "rgba(0,0,0,0.35)";
+  const textClr  = isDark ? "#fff" : "#0f172a";
+  const subClr   = isDark ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.45)";
+  const divClr   = isDark ? "1px solid rgba(255,255,255,0.05)" : "1px solid rgba(0,0,0,0.05)";
+  const skelBg   = isDark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.07)";
+
+  function Skel({ w = 64 }: { w?: number }) {
+    return <div className="h-5 rounded animate-pulse" style={{ width: w, backgroundColor: skelBg }} />;
+  }
+
+  const nodeDetails: { label: string; key: string }[] = [
+    { label: "Node Version",   key: "nodeVersion"   },
+    { label: "Node Type",      key: "nodeType"      },
+    { label: "L2 Chain ID",    key: "l2ChainId"     },
+    { label: "L1 Chain ID",    key: "l1ChainId"     },
+    { label: "Prover Version", key: "proverVersion" },
+  ];
+
+  const syncBlock = nodeInfo?.syncedToL1Block;
+
+  return (
+    <div>
+      {/* Header */}
+      <div className="mb-6">
+        <h1
+          className="text-[20px] font-black tracking-tight"
+          style={{ color: textClr }}
+        >
+          Aztec Network Analytics
+        </h1>
+        <p
+          className="text-[12px] mt-1.5 max-w-2xl"
+          style={{ color: subClr }}
+        >
+          Live data from the Aztec alpha testnet node. Shows the current L2
+          block height, proof status, and protocol details. Data refreshes
+          every 30 seconds.
+        </p>
+      </div>
+
+      {/* Connection error */}
+      {fetchError && !fetching && (
+        <div
+          className="rounded-2xl p-5 mb-6"
+          style={{ border, backgroundColor: cardBg }}
+        >
+          <div
+            className="text-[9px] font-black uppercase tracking-[0.14em] mb-1"
+            style={{ color: labelClr }}
+          >
+            Connection
+          </div>
+          <div
+            className="text-[13px] font-bold mb-1"
+            style={{ color: textClr }}
+          >
+            Node unreachable
+          </div>
+          <p className="text-[11px] mb-4" style={{ color: subClr }}>
+            {fetchError}
+          </p>
+          <button
+            onClick={fetchData}
+            className="px-4 py-2 rounded-xl text-[11px] font-bold transition-all hover:opacity-70"
+            style={{ border, color: textClr }}
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
+      {/* Top stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {[
+          {
+            label: "L2 Block Height",
+            value:
+              nodeInfo?.l2BlockNumber != null
+                ? Number(nodeInfo.l2BlockNumber).toLocaleString()
+                : "—",
+          },
+          {
+            label: "Proven Block",
+            value:
+              nodeInfo?.l2ProvenBlockNumber != null
+                ? Number(nodeInfo.l2ProvenBlockNumber).toLocaleString()
+                : "—",
+          },
+          {
+            label: "Protocol Version",
+            value:
+              nodeInfo?.protocolVersion != null
+                ? String(nodeInfo.protocolVersion)
+                : "—",
+          },
+          {
+            label: "L1 Chain",
+            value:
+              nodeInfo?.l1ChainId != null
+                ? `Chain ${nodeInfo.l1ChainId}`
+                : "—",
+          },
+        ].map((s, i) => (
+          <motion.div
+            key={s.label}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.04 }}
+            className="rounded-2xl p-5"
+            style={{ border, backgroundColor: cardBg }}
+          >
+            <div
+              className="text-[9px] font-black uppercase tracking-[0.14em] mb-2"
+              style={{ color: labelClr }}
+            >
+              {s.label}
+            </div>
+            <div
+              className="text-[22px] font-black tracking-tight leading-none"
+              style={{ color: textClr }}
+            >
+              {fetching ? <Skel w={80} /> : s.value}
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Node details table */}
+      <div
+        className="rounded-2xl overflow-hidden mb-6"
+        style={{ border, backgroundColor: cardBg }}
+      >
+        <div
+          className="px-5 py-4"
+          style={{ borderBottom: divClr }}
+        >
+          <h2
+            className="text-[11px] font-black uppercase tracking-[0.12em]"
+            style={{ color: labelClr }}
+          >
+            Node Details
+          </h2>
+        </div>
+        {nodeDetails.map(({ label, key }) => (
+          <div
+            key={key}
+            className="px-5 py-4 flex items-center justify-between"
+            style={{ borderBottom: divClr }}
+          >
+            <span
+              className="text-[11px] font-bold"
+              style={{ color: labelClr }}
+            >
+              {label}
+            </span>
+            {fetching ? (
+              <Skel w={96} />
+            ) : (
+              <span
+                className="text-[12px] font-mono font-bold"
+                style={{ color: textClr }}
+              >
+                {nodeInfo?.[key] != null ? String(nodeInfo[key]) : "—"}
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* L1 sync state — shown only when data is available */}
+      {(fetching || syncBlock) && (
+        <div
+          className="rounded-2xl overflow-hidden mb-6"
+          style={{ border, backgroundColor: cardBg }}
+        >
+          <div
+            className="px-5 py-4"
+            style={{ borderBottom: divClr }}
+          >
+            <h2
+              className="text-[11px] font-black uppercase tracking-[0.12em]"
+              style={{ color: labelClr }}
+            >
+              L1 Sync State
+            </h2>
+          </div>
+          {[
+            {
+              label: "L1 Block Number",
+              value: syncBlock?.number != null
+                ? Number(syncBlock.number).toLocaleString()
+                : "—",
+            },
+            {
+              label: "L1 Block Hash",
+              value: syncBlock?.hash
+                ? truncate(String(syncBlock.hash), 14, 8)
+                : "—",
+            },
+            {
+              label: "L1 Block Timestamp",
+              value: syncBlock?.timestamp
+                ? new Date(
+                    Number(syncBlock.timestamp) * 1000
+                  ).toUTCString()
+                : "—",
+            },
+          ].map(({ label, value }) => (
+            <div
+              key={label}
+              className="px-5 py-4 flex items-center justify-between"
+              style={{ borderBottom: divClr }}
+            >
+              <span
+                className="text-[11px] font-bold"
+                style={{ color: labelClr }}
+              >
+                {label}
+              </span>
+              {fetching ? (
+                <Skel w={120} />
+              ) : (
+                <span
+                  className="text-[12px] font-mono font-bold"
+                  style={{ color: textClr }}
+                >
+                  {value}
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Status footer */}
+      <div
+        className="rounded-2xl p-5"
+        style={{ border, backgroundColor: cardBg }}
+      >
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <div
+              className="text-[9px] font-black uppercase tracking-[0.14em] mb-1"
+              style={{ color: labelClr }}
+            >
+              Network
+            </div>
+            <div
+              className="text-[13px] font-bold"
+              style={{ color: textClr }}
+            >
+              Aztec Alpha Testnet
+            </div>
+          </div>
+          <div>
+            <div
+              className="text-[9px] font-black uppercase tracking-[0.14em] mb-1"
+              style={{ color: labelClr }}
+            >
+              Status
+            </div>
+            <div className="flex items-center gap-2">
+              <div
+                className="w-2 h-2 rounded-full"
+                style={{
+                  backgroundColor: fetching
+                    ? "rgba(0,0,0,0.2)"
+                    : fetchError
+                    ? "rgba(0,0,0,0.2)"
+                    : isDark ? "#fff" : "#000",
+                  animation: !fetching && !fetchError ? "pulse 2s infinite" : "none",
+                }}
+              />
+              <span
+                className="text-[12px] font-bold"
+                style={{ color: textClr }}
+              >
+                {fetching ? "Connecting" : fetchError ? "Offline" : "Connected"}
+              </span>
+            </div>
+          </div>
+          <div>
+            <div
+              className="text-[9px] font-black uppercase tracking-[0.14em] mb-1"
+              style={{ color: labelClr }}
+            >
+              Last Updated
+            </div>
+            <div
+              className="text-[12px] font-mono font-bold"
+              style={{ color: textClr }}
+            >
+              {lastFetched ? lastFetched.toLocaleTimeString() : "—"}
+            </div>
+          </div>
+          <button
+            onClick={fetchData}
+            className="px-4 py-2 rounded-xl text-[11px] font-bold transition-all hover:opacity-70"
+            style={{ border, color: textClr }}
+          >
+            Refresh
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Component ────────────────────────────────────────────────────────────
 
 export default function RegistryPage() {
@@ -2222,147 +2570,7 @@ export default function RegistryPage() {
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.18 }}
             >
-              <div className="mb-6">
-                <div className="flex items-center gap-3">
-                  <Shield size={24} className="text-black dark:text-white opacity-80" />
-                  <h1
-                    className="text-[20px] font-black tracking-tight"
-                    style={{ color: isDark ? "#fff" : "#0f172a" }}
-                  >
-                    Aztec Network Analytics
-                  </h1>
-                </div>
-                <p
-                  className="text-[12px] mt-2 max-w-3xl"
-                  style={{ color: isDark ? "rgba(255,255,255,0.85)" : "rgba(0,0,0,0.45)" }}
-                >
-                  Premium privacy telemetry from Aztec Network. Monitor the shielded layer, encrypted state transitions, and real-time anonymity set health. Fully decoupled from public L1 tracking.
-                </p>
-              </div>
-
-              {/* Top Premium Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
-                {[
-                  { label: "Total Value Shielded", value: "$42.8M", desc: "Encrypted TVL", color: "#8b5cf6" },
-                  { label: "Encrypted Transactions", value: "842,910", desc: "Private State Transitions", color: "#ec4899" },
-                  { label: "Active Anonymity Sets", value: "1,402", desc: "Max Privacy Threshold", color: "#10b981" },
-                  { label: "ZK-SNARKs Generated", value: "2.1M", desc: "Zero-Knowledge Proofs", color: "#3b82f6" },
-                ].map((s: any, i) => (
-                  <motion.div
-                    key={s.label}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                    className="rounded-2xl p-5 relative overflow-hidden group"
-                    style={{
-                      border: isDark ? "1px solid rgba(255,255,255,0.07)" : "1px solid rgba(0,0,0,0.07)",
-                      backgroundColor: isDark ? "#0d0d17" : "#fff",
-                    }}
-                  >
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-transparent to-black opacity-5 group-hover:opacity-10 transition-opacity" />
-                    <div className="absolute -left-1 top-0 bottom-0 w-1 rounded-r" style={{ backgroundColor: s.color }} />
-                    <div className="text-[9px] font-black uppercase tracking-[0.12em] mb-1.5" style={{ color: isDark ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.4)" }}>
-                      {s.label}
-                    </div>
-                    <div className="text-[28px] font-black tracking-tight leading-none mb-2" style={{ color: isDark ? "#fff" : "#000" }}>
-                      {s.value}
-                    </div>
-                    <div className="text-[10px] font-bold uppercase tracking-widest" style={{ color: s.color }}>
-                      {s.desc}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-                {/* Shielding Activity */}
-                <div
-                  className="rounded-2xl p-5"
-                  style={{
-                    border: isDark ? "1px solid rgba(255,255,255,0.07)" : "1px solid rgba(0,0,0,0.07)",
-                    backgroundColor: isDark ? "#0d0d17" : "#fff",
-                  }}
-                >
-                  <h2 className="text-[11px] font-black uppercase tracking-[0.12em] mb-5" style={{ color: isDark ? "rgba(255,255,255,0.8)" : "rgba(0,0,0,0.5)" }}>
-                    Real-time Shielding Activity
-                  </h2>
-                  <div className="space-y-4">
-                    {[
-                      { action: "Shielded", amount: "150 ETH", time: "2s ago", hash: "0x8a9...4b2" },
-                      { action: "Encrypted Transfer", amount: "Private", time: "12s ago", hash: "0x11f...9c1" },
-                      { action: "Deshielded", amount: "42,000 USDC", time: "45s ago", hash: "0x7bc...2aa" },
-                      { action: "Shielded", amount: "12.5 wBTC", time: "1m ago", hash: "0x9ef...331" },
-                      { action: "Encrypted Transfer", amount: "Private", time: "3m ago", hash: "0x4cc...81b" },
-                    ].map((tx, i) => (
-                      <div key={i} className="flex items-center justify-between p-3 rounded-xl transition-colors" style={{ backgroundColor: isDark ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.02)" }}>
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full flex items-center justify-center bg-black dark:bg-white text-white dark:text-black">
-                            {tx.action === "Shielded" ? <Shield size={12} /> : tx.action === "Deshielded" ? <Globe size={12} /> : <Zap size={12} />}
-                          </div>
-                          <div>
-                            <div className="text-[11px] font-black uppercase tracking-widest" style={{ color: isDark ? "#fff" : "#000" }}>{tx.action}</div>
-                            <div className="text-[9px] font-mono opacity-50">{tx.hash}</div>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-[12px] font-black" style={{ color: tx.action === "Encrypted Transfer" ? "#8b5cf6" : isDark ? "#fff" : "#000" }}>{tx.amount}</div>
-                          <div className="text-[9px] font-bold uppercase tracking-widest opacity-50">{tx.time}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Privacy Health */}
-                <div
-                  className="rounded-2xl p-5"
-                  style={{
-                    border: isDark ? "1px solid rgba(255,255,255,0.07)" : "1px solid rgba(0,0,0,0.07)",
-                    backgroundColor: isDark ? "#0d0d17" : "#fff",
-                  }}
-                >
-                  <h2 className="text-[11px] font-black uppercase tracking-[0.12em] mb-5" style={{ color: isDark ? "rgba(255,255,255,0.8)" : "rgba(0,0,0,0.5)" }}>
-                    Network Privacy Health
-                  </h2>
-                  <div className="flex flex-col gap-6">
-                    <div>
-                      <div className="flex justify-between items-end mb-2">
-                        <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Global Anonymity Score</span>
-                        <span className="text-[14px] font-black">98.4%</span>
-                      </div>
-                      <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)" }}>
-                        <div className="h-full bg-[#10b981]" style={{ width: "98.4%" }} />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between items-end mb-2">
-                        <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Decentralized Sequencer Load</span>
-                        <span className="text-[14px] font-black">42%</span>
-                      </div>
-                      <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)" }}>
-                        <div className="h-full bg-[#3b82f6]" style={{ width: "42%" }} />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between items-end mb-2">
-                        <span className="text-[10px] font-black uppercase tracking-widest opacity-60">ZK Proof Verification Time</span>
-                        <span className="text-[14px] font-black">1.2s</span>
-                      </div>
-                      <div className="w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)" }}>
-                        <div className="h-full bg-[#8b5cf6]" style={{ width: "15%" }} />
-                      </div>
-                    </div>
-
-                    <div className="mt-4 p-4 rounded-xl border border-[#10b981]/20 bg-[#10b981]/5 flex items-start gap-3">
-                      <CheckCircle2 size={16} className="text-[#10b981] mt-0.5" />
-                      <div>
-                        <div className="text-[11px] font-black uppercase tracking-widest text-[#10b981] mb-1">Status: Optimal</div>
-                        <div className="text-[10px] leading-relaxed opacity-80">The Aztec Network is currently operating with maximum cryptographic security. Privacy sets are large enough to guarantee mathematical anonymity for all new shielding events.</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <AztecAnalyticsTab isDark={isDark} />
             </motion.div>
           )}
 

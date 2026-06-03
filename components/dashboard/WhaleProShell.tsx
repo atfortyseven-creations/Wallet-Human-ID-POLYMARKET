@@ -14,7 +14,6 @@ const Icon = {
   identity:   <span className="font-mono text-[10px] tracking-widest font-black">[ID]</span>,
   support:    <span className="font-mono text-[10px] tracking-widest font-black">[SUP]</span>,
   forum:      <span className="font-mono text-[10px] tracking-widest font-black">[FRM]</span>,
-  news:       <span className="font-mono text-[10px] tracking-widest font-black">[NWS]</span>,
 };
 import { MODULE_EXPLANATIONS } from './ModuleExplanations';
 import { useSettingsStore } from '@/lib/store/useSettingsStore';
@@ -47,7 +46,6 @@ interface NavItem {
 
 const SIDEBAR_ITEMS: NavItem[] = [
     { id: 'markets',         label: 'Markets',        icon: Icon.markets,  requiresZK: true },
-    { id: 'news',            label: 'News',           icon: Icon.news,     requiresZK: true },
     { id: 'inst-ledger',     label: 'Explorer',       icon: Icon.explorer, requiresZK: true },
     { id: 'humanity-ledger', label: 'Roadmap',        icon: Icon.roadmap },
     { id: 'logs',            label: 'Logs',           icon: Icon.logs },

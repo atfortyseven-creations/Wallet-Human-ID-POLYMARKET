@@ -37,9 +37,8 @@ export const PerformanceChart: React.FC = () => {
 
         chartRef.current = chart;
 
-        // Fetch REAL price history  CoinGecko ETH 30-day history
-        // If wallet connected: value = balance × ETH price at each point
-        // If not connected: ETH market index (still 100% real data)
+        // Fetch REAL price history:
+        // Try wallet history first. If it returns 0 data or fails, fallback to ETH market index.
         const url = address
             ? `/api/wallet/portfolio/history-real?address=${address}&days=30`
             : `/api/wallet/portfolio/history-real?days=30`;
@@ -47,14 +46,25 @@ export const PerformanceChart: React.FC = () => {
         fetch(url)
             .then(r => r.json())
             .then(data => {
-                if (data.chart && data.chart.length > 0) {
+                if (data.chart && data.chart.length > 0 && data.chart.some((p: any) => p.value > 0)) {
                     areaSeries.setData(
                         data.chart.map((p: any) => ({ time: p.time, value: p.value }))
                     );
                     chart.timeScale().fitContent();
                     setMode(data.mode === 'wallet' ? 'wallet' : 'market_index');
                 } else {
-                    setMode('error');
+                    // Force fallback to generic ETH Market Index if wallet history is flat $0
+                    fetch(`/api/wallet/portfolio/history-real?days=30`)
+                        .then(r => r.json())
+                        .then(fallbackData => {
+                            if (fallbackData.chart) {
+                                areaSeries.setData(fallbackData.chart.map((p: any) => ({ time: p.time, value: p.value })));
+                                chart.timeScale().fitContent();
+                                setMode('market_index');
+                            } else {
+                                setMode('error');
+                            }
+                        }).catch(() => setMode('error'));
                 }
             })
             .catch(() => setMode('error'));

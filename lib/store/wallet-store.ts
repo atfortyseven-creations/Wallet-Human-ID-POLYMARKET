@@ -173,6 +173,7 @@ interface WalletState {
   customRpcUrl: string | null;
   customTokens: CustomToken[];
   tokenBalances: TokenBalance[];
+  displayCurrency: 'EUR' | 'USD' | 'BTC';
 
   // Vault Security
   isLocked: boolean;
@@ -195,6 +196,7 @@ interface WalletState {
   syncAddress: (address: string | null) => void;
   cloudSync: () => Promise<void>;
   restoreFromCloud: () => Promise<void>;
+  setDisplayCurrency: (currency: 'EUR' | 'USD' | 'BTC') => void;
 
   // Security Operations
   setupPassword: (password: string) => void;
@@ -225,6 +227,7 @@ export const useWalletStore = create<WalletState>()(
       customRpcUrl: null,
       customTokens: [],
       tokenBalances: [],
+      displayCurrency: 'EUR',
 
       isLocked: false, // Initially false, but set to true on hydrate if passwordHash exists
       passwordHash: null,
@@ -784,7 +787,8 @@ export const useWalletStore = create<WalletState>()(
         } catch (e) {
           console.error("[CLOUD-RESTORE] Error:", e);
         }
-      }
+      },
+      setDisplayCurrency: (currency: string) => set({ displayCurrency: currency })
     }),
     {
       name: 'whale-system-wallet-registry-v3', // Bumped for encryption
@@ -799,6 +803,7 @@ export const useWalletStore = create<WalletState>()(
                  activeProtocol: state.activeProtocol,
                  passwordHash: state.passwordHash,
                  encryptedVault: state.encryptedVault,
+                 displayCurrency: state.displayCurrency,
                  // We store masked accounts so the UI knows they exist, but without keys
                  accounts: state.accounts.map(a => ({ ...a, privateKey: null, mnemonic: null })),
                  isLocked: true // Force lock on fresh page load to prevent stuck "unlocked but keyless" UI states

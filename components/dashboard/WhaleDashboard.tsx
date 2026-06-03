@@ -26,7 +26,6 @@ const Registry = {
   InstitutionalLedger: dynamic(() => import('@/components/dashboard/InstitutionalLedger'), { ssr: false, loading: LoadingPanel }),
   MassTransferIntel: dynamic(() => import('@/components/dashboard/MassTransferIntel').then(m => ({ default: m.MassTransferIntel })), { ssr: false, loading: LoadingPanel }),
   SessionLogsPanel: dynamic(() => import('@/components/dashboard/SessionLogsPanel').then(m => ({ default: m.SessionLogsPanel })), { ssr: false, loading: LoadingPanel }),
-  NewsOfToday: dynamic(() => import('@/components/dashboard/NewsOfToday').then(m => ({ default: m.NewsOfToday })), { ssr: false, loading: LoadingPanel }),
 
   HumanityLedger: dynamic(() => import('@/components/dashboard/HumanityLedger'), { ssr: false, loading: LoadingPanel }),
   PortfolioDashboard: dynamic(() => import('@/components/dashboard/PortfolioDashboard'), { ssr: false, loading: LoadingPanel }),
@@ -57,7 +56,6 @@ const RouteRenderer = React.memo(({ route, reconciliationKey }: RouteRendererPro
         'markets': <Registry.InstitutionalMarkets />,
         'inst-ledger': <Registry.InstitutionalLedger />,
         'mass-transfer': <Registry.MassTransferIntel />,
-        'news': <Registry.NewsOfToday />,
         'logs': <Registry.SessionLogsPanel />,
         'support': <Registry.WhaleSupport />,
         'community': <Registry.WhaleChat />,
