@@ -282,10 +282,6 @@ function GlobalLedger({ feed }: { feed: any[] }) {
          <div className="px-6 py-4 border-b border-black/[0.04] bg-[#FFFFFF] shrink-0 flex items-center justify-between relative overflow-hidden">
              <div className="flex items-center gap-3 relative z-10">
                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#050505]">PUBLIC SIGNATURE LEDGER</span>
-                 <div className="flex items-center gap-1.5 bg-red-500/10 px-2 py-1 rounded-full border border-red-500/20">
-                     <div className="w-1 h-1 rounded-full bg-red-500 animate-pulse" />
-                     <span className="text-[8px] font-black uppercase tracking-widest text-red-600">Live Feed</span>
-                 </div>
              </div>
              <span className="text-[8px] font-black text-black/40 uppercase tracking-[0.3em] relative z-10">{feed?.length || 0} ENTRIES</span>
          </div>
@@ -641,10 +637,6 @@ export function GoldTicketPanel() {
                       <h1 className="text-xl md:text-2xl font-black uppercase tracking-tighter text-[#050505]">
                           Public Ticket Mint
                       </h1>
-                      <div className="flex items-center gap-1.5 ml-2 bg-red-500/10 px-2 py-1 rounded-full border border-red-500/20">
-                          <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
-                          <span className="text-[8px] font-black uppercase tracking-widest text-red-600">Live</span>
-                      </div>
                     </div>
                     <p className="text-[10px] text-[#050505]/40 font-bold uppercase tracking-[0.2em] leading-tight">
                         Claim your unique public ticket on Optimism and sign the ledger.
