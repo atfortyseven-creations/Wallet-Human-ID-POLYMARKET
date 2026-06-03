@@ -278,9 +278,15 @@ function SignaturePad({
 function GlobalLedger({ feed }: { feed: any[] }) {
   return (
       <div className="w-full h-full bg-white flex flex-col">
-         <div className="px-6 py-4 border-b border-black/[0.04] bg-[#FFFFFF] shrink-0 flex items-center justify-between">
-             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#050505]">PUBLIC SIGNATURE LEDGER</span>
-             <span className="text-[8px] font-black text-black/40 uppercase tracking-[0.3em]">{feed?.length || 0} ENTRIES</span>
+         <div className="px-6 py-4 border-b border-black/[0.04] bg-[#FFFFFF] shrink-0 flex items-center justify-between relative overflow-hidden">
+             <div className="flex items-center gap-3 relative z-10">
+                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#050505]">PUBLIC SIGNATURE LEDGER</span>
+                 <div className="flex items-center gap-1.5 bg-red-500/10 px-2 py-1 rounded-full border border-red-500/20">
+                     <div className="w-1 h-1 rounded-full bg-red-500 animate-pulse" />
+                     <span className="text-[8px] font-black uppercase tracking-widest text-red-600">Live Feed</span>
+                 </div>
+             </div>
+             <span className="text-[8px] font-black text-black/40 uppercase tracking-[0.3em] relative z-10">{feed?.length || 0} ENTRIES</span>
          </div>
          <div className="grid text-[9px] font-black text-black/30 uppercase tracking-[0.2em] bg-white border-b border-black/[0.04] shrink-0"
               style={{ gridTemplateColumns: '1.4fr 0.9fr 0.9fr 1.2fr 0.8fr' }}>
@@ -432,7 +438,8 @@ export function GoldTicketPanel() {
   useEffect(() => {
     let isMounted = true;
     fetchStats(isMounted);
-    const id = setInterval(() => fetchStats(isMounted), 15000);
+    // Poll every 2.5 seconds for true real-time synchronization with the network
+    const id = setInterval(() => fetchStats(isMounted), 2500);
     return () => {
       isMounted = false;
       clearInterval(id);
@@ -625,6 +632,10 @@ export function GoldTicketPanel() {
                       <h1 className="text-xl md:text-2xl font-black uppercase tracking-tighter text-[#050505]">
                           Public Ticket Mint
                       </h1>
+                      <div className="flex items-center gap-1.5 ml-2 bg-red-500/10 px-2 py-1 rounded-full border border-red-500/20">
+                          <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
+                          <span className="text-[8px] font-black uppercase tracking-widest text-red-600">Live</span>
+                      </div>
                     </div>
                     <p className="text-[10px] text-[#050505]/40 font-bold uppercase tracking-[0.2em] leading-tight">
                         Claim your unique public ticket on Optimism and sign the ledger.

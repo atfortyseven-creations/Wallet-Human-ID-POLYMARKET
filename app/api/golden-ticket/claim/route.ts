@@ -398,8 +398,8 @@ export async function GET(req: NextRequest) {
                 take: 1000, // Fetch up to 1000 for the global ledger feed
             });
 
-            // Cache for 15 seconds to shield DB from massive traffic
-            await safeRedisSet(CACHE_KEY, JSON.stringify({ totalClaimed, remaining, feedRaw }), 'EX', 15);
+            // Cache for 2 seconds to enable real-time feed while shielding DB
+            await safeRedisSet(CACHE_KEY, JSON.stringify({ totalClaimed, remaining, feedRaw }), 'EX', 2);
         }
 
         if (!address) {
