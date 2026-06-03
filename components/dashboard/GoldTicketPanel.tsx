@@ -449,15 +449,6 @@ export function GoldTicketPanel() {
   const handleMint = useCallback(async () => {
     if (!isConnected) { router.push('/connect'); return; }
 
-    if (!isWagmiConnected) {
-      toast.error('Wallet connection required for minting', {
-        description: 'A connected Web3 wallet is required to sign the cryptographic ledger entry.',
-        duration: 6000,
-      });
-      router.push('/connect');
-      return;
-    }
-
     if (signatureData.length < 5) {
       toast.error('Draw your signature on the pad first');
       return;
@@ -487,7 +478,7 @@ export function GoldTicketPanel() {
         toast.dismiss(t2);
         const json = await res.json();
         if (res.ok) {
-          toast.success('Registration Complete  Welcome to the System Ledger ');
+          toast.success('Registration Complete — Welcome to the System Ledger');
           fetchStats();
         } else if (res.status === 409) {
           toast.info('Access level already established.');
@@ -503,27 +494,10 @@ export function GoldTicketPanel() {
       }
     };
 
-    try {
-      const signToastId = toast.loading('Awaiting cryptographic wallet signature (Gasless)...');
-      signMessage(
-        { message: `WHALE ALERT NETWORK GOLD ACCESS VERIFICATION: ${address}` },
-        {
-          onSuccess: async (cryptoSignature: string) => {
-            toast.dismiss(signToastId);
-            await performClaim(cryptoSignature, undefined);
-          },
-          onError: async (err: any) => {
-            toast.dismiss(signToastId);
-            toast.error('Signature rejected. You must sign the message to claim your identity.');
-            setIsMinting(false);
-          }
-        }
-      );
-    } catch (error: any) {
-      toast.error(`Mint execution failed: ${error?.shortMessage || error?.message || 'Transaction rejected'}`);
-      setIsMinting(false);
-    }
-  }, [isConnected, isWagmiConnected, signatureData, signatureStrokes, isMinting, isSigning, address, signMessage, fetchStats, router]);
+    // 1-Click Minting: Since the user is authenticated via JWT (isConnected),
+    // we do not need to force a second Wagmi signature.
+    await performClaim('bypass');
+  }, [isConnected, address, signatureData, signatureStrokes, isMinting, isSigning, router, fetchStats]);
 
   const hasTicket = dbStats?.ticket || false;
 
