@@ -14,7 +14,6 @@ import { TokenLogo } from '@/components/ui/TokenLogo';
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
 import { UNIVERSAL_TOKENS } from '@/config/universal-tokens';
 import { Activity, BookUser, X } from 'lucide-react';
-import { UNIVERSAL_TOKENS } from '@/config/universal-tokens';
 
 // --- Constants & Types ---
 type MainTab = "SEND" | "SWAP" | "BRIDGE" | "BUY";

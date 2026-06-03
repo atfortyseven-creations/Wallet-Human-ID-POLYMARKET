@@ -5,12 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { useWalletStore, NETWORKS, NetworkId } from '@/lib/store/wallet-store';
 import { useVIPStore } from '@/lib/vip-store';
-import { useVIPStore } from '@/lib/vip-store';
 import { SettingsView } from '@/components/settings/SettingsView';
 import { useSystemSignOut } from '@/hooks/useSystemSignOut';
 import { useFeeData } from 'wagmi';
 import { formatUnits } from 'viem';
-import { useFeeData } from 'wagmi';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
 
 import ReceiveHub from '@/components/wallet/ReceiveHub';

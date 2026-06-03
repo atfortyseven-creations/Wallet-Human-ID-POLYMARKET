@@ -569,10 +569,3 @@ function TokenDetailPanel({ token, onClose, onAction }: { token: any, onClose: (
         </motion.div>
     );
 }
-                strokeLinecap="round"
-                strokeLinejoin="round"
-            />
-        </svg>
-    );
-}
-
