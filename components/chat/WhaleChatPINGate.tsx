@@ -19,14 +19,9 @@ export default function WhaleChatPINGate({ onEnter }: Props) {
   useEffect(() => {
     if (!address || isChecking) return;
 
-    if (isLocalSystemWallet) {
-        // Block Humanity Ledger completely per rules
-        return;
-    }
-
-    // Connect automatically without PIN
+    // Connect automatically for all authenticated wallets (both Humanity Ledger & WalletConnect)
     onEnterRef.current();
-  }, [address, isChecking, isLocalSystemWallet]);
+  }, [address, isChecking]);
 
   if (isChecking) {
     return (
@@ -51,24 +46,6 @@ export default function WhaleChatPINGate({ onEnter }: Props) {
             className="mt-4 px-8 py-3.5 rounded-[18px] bg-[#050505] text-white font-black tracking-widest text-[12px] uppercase shadow-lg hover:bg-[#111] transition-all"
           >
             Connect Wallet
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (isLocalSystemWallet) {
-    return (
-      <div className="fixed inset-0 z-[200] flex flex-col items-center justify-center bg-white/95 backdrop-blur-xl">
-        <div className="text-center space-y-4 max-w-sm px-6">
-          <AlertTriangle size={40} className="text-rose-500 mx-auto" />
-          <h2 className="text-2xl font-black uppercase tracking-tighter text-[#050505]">Access Denied</h2>
-          <p className="text-[14px] text-black/50 font-medium">Accessing with Humanity Ledger is currently not possible as it requires a signature. You must log in specifically with WalletConnect.</p>
-          <button
-            onClick={() => open()}
-            className="mt-4 w-full py-4 rounded-[18px] bg-[#050505] text-white font-black tracking-widest text-[12px] uppercase shadow-lg hover:bg-[#111] transition-all"
-          >
-            Connect WalletConnect
           </button>
         </div>
       </div>

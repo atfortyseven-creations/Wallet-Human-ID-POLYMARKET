@@ -94,15 +94,15 @@ export async function GET() {
     // ── 6. Chat contact creation by month (same 6-month window) ──────────────
     try {
       const recentContacts = await (prisma as any).chatContact.findMany({
-        where: { createdAt: { gte: sixMonthsAgo } },
-        select: { createdAt: true },
+        where: { updatedAt: { gte: sixMonthsAgo } },
+        select: { updatedAt: true },
       });
 
       if (recentContacts?.length) {
         // Build a YYYY-MM → count map for chat contacts
         const chatBuckets: Record<string, number> = {};
         for (const c of recentContacts) {
-          const d = new Date(c.createdAt);
+          const d = new Date(c.updatedAt);
           const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
           chatBuckets[key] = (chatBuckets[key] ?? 0) + 1;
         }

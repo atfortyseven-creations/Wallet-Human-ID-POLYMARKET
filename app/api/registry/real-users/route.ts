@@ -25,10 +25,10 @@ export async function GET() {
     const chatContacts = await (prisma as any).chatContact.findMany({
       select: {
         owner: true,
-        createdAt: true,
+        updatedAt: true,
       },
       orderBy: {
-        createdAt: "desc",
+        updatedAt: "desc",
       },
     });
 
@@ -45,7 +45,7 @@ export async function GET() {
       if (c.owner && !uniqueUsersMap.has(c.owner.toLowerCase())) {
         uniqueUsersMap.set(c.owner.toLowerCase(), {
           walletAddress: c.owner,
-          createdAt: c.createdAt
+          createdAt: c.updatedAt
         });
       }
     });

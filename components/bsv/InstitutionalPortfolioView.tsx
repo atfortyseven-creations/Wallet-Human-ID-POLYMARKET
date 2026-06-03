@@ -79,7 +79,7 @@ export function InstitutionalPortfolioView() {
     const isLocked = useWalletStore(s => s.isLocked);
     const unlockVault = useWalletStore(s => s.unlockVault);
     const passwordHash = useWalletStore(s => s.passwordHash);
-    const { address } = useSystemAccount();
+    const { address, isLocalSystemWallet, isConnected } = useSystemAccount();
     const { assets } = useRealWalletData([], address || undefined);
     
     // We keep 'HOME' as the main view, and overlay modals for actions
@@ -142,7 +142,9 @@ export function InstitutionalPortfolioView() {
         );
     }
 
-    if (isLocked && passwordHash) {
+    // [BUG FIX] If a user is connected via WalletConnect (external), DO NOT block them 
+    // with the Humanity Ledger local vault unlock screen, even if they have a local vault.
+    if (isLocked && passwordHash && (!isConnected || isLocalSystemWallet)) {
         return <VaultUnlockScreen unlockVault={unlockVault} />;
     }
 
