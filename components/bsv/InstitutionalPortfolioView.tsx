@@ -34,6 +34,9 @@ import { TransactionHistory } from '@/components/portfolio/TransactionHistory';
 import { QuantumDeFiPositions } from '@/components/portfolio/QuantumDeFiPositions';
 import { PerformanceChart } from '@/components/portfolio/PerformanceChart';
 import { Download, ArrowRightLeft, Route, Send, QrCode, Scan, Activity } from 'lucide-react';
+import { NativeSwapView } from '@/components/portfolio/NativeSwapView';
+import { NativeBridgeView } from '@/components/portfolio/NativeBridgeView';
+import { NativeBuyView } from '@/components/portfolio/NativeBuyView';
 
 // Original minimalist VaultUnlockScreen (internal)
 function VaultUnlockScreen({ unlockVault }: { unlockVault: (pwd: string) => boolean }) {
@@ -197,9 +200,9 @@ export function InstitutionalPortfolioView() {
                         onReceive={() => setShowReceive(true)}
                         onScan={() => setShowScan(true)}
                         onCreate={() => setView('CREATE')}
-                        onBuy={() => setUnifiedActionTab('BUY')}
-                        onSwap={() => setUnifiedActionTab('SWAP')}
-                        onBridge={() => setUnifiedActionTab('BRIDGE')}
+                        onBuy={() => setView('BUY')}
+                        onSwap={() => setView('SWAP')}
+                        onBridge={() => setView('BRIDGE')}
                         onNetworkClick={() => setView('NETWORK')}
                         onSettingsClick={() => setShowSettings(true)}
                         onAccountsClick={() => setShowAccounts(true)}
@@ -227,6 +230,9 @@ export function InstitutionalPortfolioView() {
                 {view === 'MEMPOOL' && <TransactionManagerView key="mempool" onBack={() => setView('HOME')} />}
                 {view === 'SMART_ACCOUNT' && <SmartAccountTerminal key="smart_account" onBack={() => setView('HOME')} />}
                 {view === 'OMNICHAIN' && <OmnichainBridgeView key="omnichain" onBack={() => setView('HOME')} />}
+                {view === 'SWAP' && <NativeSwapView key="swap" address={address} onBack={() => setView('HOME')} />}
+                {view === 'BRIDGE' && <NativeBridgeView key="bridge" onBack={() => setView('HOME')} />}
+                {view === 'BUY' && <NativeBuyView key="buy" address={address} onBack={() => setView('HOME')} />}
             </AnimatePresence>
 
             {/* Universal On-Chain Modals for ALL Users */}
@@ -234,7 +240,7 @@ export function InstitutionalPortfolioView() {
                 isOpen={!!unifiedActionTab} 
                 initialMode={unifiedActionTab === 'SEND' ? 'send' : unifiedActionTab === 'SWAP' ? 'swap' : unifiedActionTab === 'BRIDGE' ? 'bridge' : 'buy'} 
                 onClose={() => setUnifiedActionTab(null)} 
-                balances={assets || []}
+                balances={(assets || []).filter(a => a.symbol !== 'QDs')}
             />
             
             {showReceive && (
