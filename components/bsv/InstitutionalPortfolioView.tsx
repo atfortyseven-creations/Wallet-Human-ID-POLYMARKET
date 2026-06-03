@@ -37,6 +37,7 @@ import { Download, ArrowRightLeft, Route, Send, QrCode, Scan, Activity } from 'l
 import { NativeSwapView } from '@/components/portfolio/NativeSwapView';
 import { NativeBridgeView } from '@/components/portfolio/NativeBridgeView';
 import { NativeBuyView } from '@/components/portfolio/NativeBuyView';
+import { SystemFooter } from '@/components/landing/SystemFooter';
 
 // Original minimalist VaultUnlockScreen (internal)
 function VaultUnlockScreen({ unlockVault }: { unlockVault: (pwd: string) => boolean }) {
@@ -518,17 +519,7 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
             )}
 
             {/* ── Downpage Footer ── */}
-            <div className="relative mt-auto pt-32 pb-0 overflow-hidden border-t border-black/[0.06]">
-                {/* Footer band */}
-                <div className="relative z-10 border-t border-black/10 bg-white px-6 md:px-10 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
-                    <span className="font-mono text-[9px] uppercase tracking-widest text-black/40 font-bold">
-                        Humanity Ledger · End-to-end encrypted · Zero data stored
-                    </span>
-                    <span className="font-mono text-[9px] uppercase tracking-widest text-black/30 text-center md:text-right">
-                        All transactions confirmed on-chain
-                    </span>
-                </div>
-            </div>
+            <SystemFooter />
 
         </motion.div>
     );
