@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useWalletStore, NETWORKS, NetworkId } from '@/lib/store/wallet-store';
 import { ethers } from 'ethers';
 import { toast } from 'sonner';
+import { useSystemAccount } from '@/hooks/useSystemAccount';
+import { useBalance } from 'wagmi';
 import { UNIVERSAL_TOKENS, UniversalToken } from '@/config/universal-tokens';
 import Image from 'next/image';
 
@@ -108,6 +110,13 @@ export function NativeSwapView({ address, onBack }: any) {
     const [toToken, setToToken] = useState<UniversalToken>(UNIVERSAL_TOKENS.find(t=>t.symbol==='USDC') || UNIVERSAL_TOKENS[1]);
     const [amountIn, setAmountIn] = useState('');
     const [amountOut, setAmountOut] = useState('');
+
+    const { address: userAddress } = useSystemAccount();
+    const { data: tokenBalance } = useBalance({
+        address: (userAddress || address) as `0x${string}`,
+        token: (fromToken.address && fromToken.address !== 'native' && fromToken.address !== '0x0000000000000000000000000000000000000000') ? (fromToken.address as `0x${string}`) : undefined,
+    });
+    const currentBalance = tokenBalance ? parseFloat(tokenBalance.formatted).toFixed(4) : '0.00';
     
     // Quantum states
     const [isCalculating, setIsCalculating] = useState(false);
@@ -361,8 +370,8 @@ export function NativeSwapView({ address, onBack }: any) {
                         <TokenSelector selectedToken={fromToken} onSelect={setFromToken} label="Sell Token" />
                     </div>
                     <div className="mt-6 text-[10px] text-black/40 font-mono flex justify-between pt-4 border-t border-black/5">
-                        <span>Balance: 1,420.00</span>
-                        <span className="text-black/60 cursor-pointer hover:text-black font-bold tracking-widest border border-black/10 px-2 py-0.5 rounded-sm">MAX</span>
+                        <span>Balance: {currentBalance}</span>
+                        <span onClick={() => setAmountIn(currentBalance)} className="text-black/60 cursor-pointer hover:text-black font-bold tracking-widest border border-black/10 px-2 py-0.5 rounded-sm">MAX</span>
                     </div>
                 </div>
 
