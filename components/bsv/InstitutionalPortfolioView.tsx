@@ -15,11 +15,10 @@ import ReceiveHub from '@/components/wallet/ReceiveHub';
 import QRScannerModal from '@/components/wallet/QRScannerModal';
 import SecurityVault from '@/components/wallet/SecurityVault';
 import SettingsPanel from '@/components/wallet/SettingsPanel';
-import UnifiedWalletModal from '@/components/wallet/UnifiedWalletModal';
+import SecureWalletModal from '@/components/wallet/SecureWalletModal';
 import { useRealWalletData } from '@/hooks/useRealWalletData';
 
 import { QRCodeSVG } from 'qrcode.react';
-import { OmniLayerTerminal } from '@/components/dashboard/OmniLayerTerminal';
 import { MetaMaskNetworkSelector } from '@/components/portfolio/MetaMaskNetworkSelector';
 
 import { QuantumHoldingsEngine } from '@/components/portfolio/QuantumHoldingsEngine';
@@ -231,7 +230,7 @@ export function InstitutionalPortfolioView() {
             </AnimatePresence>
 
             {/* Universal On-Chain Modals for ALL Users */}
-            <UnifiedWalletModal 
+            <SecureWalletModal 
                 isOpen={!!unifiedActionTab} 
                 initialTab={unifiedActionTab || 'SEND'} 
                 onClose={() => setUnifiedActionTab(null)} 

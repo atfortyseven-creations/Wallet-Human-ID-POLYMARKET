@@ -139,7 +139,7 @@ export default function ReceiveHub({ addresses = [] }: ReceiveHubProps) {
                                 {copied ? 'Copied!' : 'Copy Address'}
                             </button>
                             <a
-                                href={current.chainId ? getExplorerAddressUrl(current.chainId, current.address) : `https://etherscan.io/address/${current.address}`}
+                                href={(current as any).chainId ? getExplorerAddressUrl((current as any).chainId, current.address) : `https://etherscan.io/address/${current.address}`}
                                 target="_blank"
                                 rel="noreferrer"
                                 className="px-5 py-3 border border-black/20 text-black font-black text-[9px] uppercase tracking-widest hover:bg-black/5 transition-colors flex items-center justify-center"

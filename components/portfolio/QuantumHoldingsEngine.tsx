@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { safeToFixed } from '@/lib/utils/number-format';
 import { QUANTUM_TOKENS } from '@/lib/config/tokens';
 import { TOKEN_STATS_20260530, TOKEN_STATS_DATE } from '@/config/token-stats-snapshot';
-import UnifiedWalletModal from '@/components/wallet/UnifiedWalletModal';
+import SecureWalletModal from '@/components/wallet/SecureWalletModal';
 import ReceiveHub from '@/components/wallet/ReceiveHub';
 import { TokenLogo } from '@/components/ui/TokenLogo';
 import { NETWORKS, NetworkId } from '@/lib/store/wallet-store';
@@ -118,8 +118,8 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
         setActionState({ isOpen: true, type, token });
     };
 
-    const legitimateAssets = useMemo(() => combinedAssets.filter(a => !a.isSpam), [combinedAssets]);
-    const spamAssets = useMemo(() => combinedAssets.filter(a => a.isSpam), [combinedAssets]);
+    const legitimateAssets = useMemo(() => combinedAssets.filter(a => !(a as any).isSpam), [combinedAssets]);
+    const spamAssets = useMemo(() => combinedAssets.filter(a => (a as any).isSpam), [combinedAssets]);
     const displayAssets = showSpam ? spamAssets : legitimateAssets;
 
     const totalPages = Math.ceil(displayAssets.length / ITEMS_PER_PAGE);
@@ -153,7 +153,7 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
                                     }]} />
                                 </div>
                             ) : (
-                                <UnifiedWalletModal 
+                                <SecureWalletModal 
                                     isOpen={actionState.isOpen} 
                                     initialTab={actionState.type as any}
                                     onClose={() => setActionState({ ...actionState, isOpen: false })} 

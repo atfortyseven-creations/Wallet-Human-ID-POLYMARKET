@@ -19,7 +19,6 @@ import {
   Newspaper, GraduationCap, Briefcase, Activity, TrendingUp, Package, LayoutDashboard, Target
 } from 'lucide-react';
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
-import { ATOM_PNGTREE } from '@/lib/constants/systemAssets';
 
 //  Reown AppKit + WagmiAdapter localStorage key patterns 
 // These are ALL the keys that Reown AppKit v1/v2 and its WagmiAdapter write
@@ -280,7 +279,6 @@ function ConnectedScreen({
   const [userAgentInfo, setUserAgentInfo] = useState('');
   const [sessionHistory, setSessionHistory] = useState<any[]>([]);
 
-  //  Real on-chain data 
   const { data: balance } = useBalance({ address: address as `0x${string}` });
   const { data: ensName } = useEnsName({ address: address as `0x${string}`, chainId: 1 });
 
@@ -289,9 +287,6 @@ function ConnectedScreen({
     const val = parseFloat(balance.formatted);
     return `${val.toFixed(4)} ${balance.symbol}`;
   };
-
-  const checksumAddr = (addr: string) =>
-    addr ? `${addr.slice(0, 8)}${addr.slice(-6)}` : '';
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -343,145 +338,136 @@ function ConnectedScreen({
   const fmtDate   = (d: Date) => d.toLocaleDateString('en-US', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
 
   return (
-    <div className="relative min-h-[100dvh] w-full overflow-x-hidden font-sans flex flex-col bg-white text-black selection:bg-black selection:text-white">
-      <main className="relative z-10 flex-1 flex flex-col items-center px-5 pt-8 pb-12 gap-0 max-w-[480px] w-full mx-auto">
-
-        {/*  TOP BAR  */}
+    <div className="relative min-h-[100dvh] w-full overflow-x-hidden font-sans flex flex-col bg-white text-black selection:bg-black/10 selection:text-black">
+      {/* Background soft ambient noise/gradient */}
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-black/[0.01] via-white to-white" />
+      
+      <main className="relative z-10 flex-1 flex flex-col items-center px-6 pt-10 pb-16 gap-0 max-w-[480px] w-full mx-auto">
+        {/* TOP BAR */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          style={{ willChange: 'opacity, transform', transform: 'translateZ(0)' }}
-          className="w-full flex items-center justify-center mb-10 bg-white relative"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full flex items-center justify-between mb-12 bg-transparent relative"
         >
-          {onBack && (
+          {onBack ? (
             <button
               onClick={onBack}
-              className="absolute left-0 top-1/2 -translate-y-1/2 p-2 text-black/50 hover:text-black transition-colors"
-              aria-label="Back to Landing Page"
+              className="p-3 -ml-3 text-black/40 hover:text-black active:scale-95 transition-all rounded-full hover:bg-black/5"
+              aria-label="Back"
             >
-              <ArrowLeft size={20} />
+              <ArrowLeft size={22} strokeWidth={1.5} />
             </button>
+          ) : (
+            <div className="w-8" />
           )}
-          <img
-            src="/system-shots/connect/Gemini_Generated_Image_dzte5edzte5edzte (2).png"
-            className="h-8 w-auto object-contain mix-blend-multiply"
-            alt="Powered by Aztec"
-          />
+          
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+             <img
+               src="/system-shots/aztec-logo.png"
+               className="h-5 w-auto object-contain mix-blend-multiply opacity-80"
+               alt="Aztec"
+             />
+          </div>
+          
+          <div className="w-8" />
         </motion.div>
 
-        {/*  ATOM LOGO & GIANT CLOCK  */}
+        {/* HERO TIME SECTION */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          style={{ willChange: 'opacity, transform', transform: 'translateZ(0)' }}
-          className="w-full flex flex-col items-center justify-center text-center mb-2 px-6"
+          className="w-full flex flex-col items-center justify-center text-center mb-12"
         >
-          <div className="w-full max-w-[280px] mx-auto mb-6 flex items-center justify-center">
-            <img
-              src={ATOM_PNGTREE}
-              alt="Silver Atom"
-              className="w-full h-auto max-h-[220px] object-contain"
-              style={{ mixBlendMode: 'multiply' }}
-              draggable={false}
-            />
-          </div>
-          <p className="text-[64px] sm:text-[72px] font-light tracking-[-0.04em] leading-none tabular-nums text-black">
+          <p className="text-[64px] sm:text-[76px] font-light tracking-tight leading-none text-black drop-shadow-sm tabular-nums">
             {fmtTime(now)}
+          </p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-black/40 mt-4">
+            {fmtDate(now)}
           </p>
         </motion.div>
 
-        {/*  DATE  */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-          className="font-mono text-[10px] uppercase tracking-[0.3em] text-black/40 mb-10"
-        >
-          {fmtDate(now)}
-        </motion.p>
-
-        {/*  DIVIDER  */}
-        <div className="w-full border-t border-black/8 mb-8" />
-
-        {/*  IDENTITY BLOCK  */}
+        {/* IDENTITY BLOCK - GLASSMORPHISM / PREMIUM */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25, duration: 0.6 }}
-          style={{ willChange: 'opacity, transform', transform: 'translateZ(0)' }}
-          className="w-full mb-8"
+          transition={{ delay: 0.2, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full mb-10"
         >
-          <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-black/30 mb-3">Verified Identity</p>
-          <div className="flex items-center gap-3 bg-black/[0.02] border border-black/8 rounded-2xl px-4 py-4">
-            <div className="w-9 h-9 rounded-full bg-black/5 border border-black/10 flex items-center justify-center shrink-0">
-              <Fingerprint size={16} className="text-black/40" />
+          <div className="flex flex-col items-center gap-1.5 mb-3 text-center">
+            <Shield size={14} strokeWidth={1.5} className="text-black/30" />
+            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-black/40">Verified Identity</p>
+          </div>
+          <div className="flex items-center gap-4 bg-white border border-black/5 rounded-[24px] px-5 py-5 shadow-[0_8px_30px_rgb(0,0,0,0.03)] relative overflow-hidden group hover:border-black/10 transition-colors">
+            {/* Subtle gloss effect */}
+            <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-black/5 to-transparent" />
+            
+            <div className="w-12 h-12 rounded-full bg-black/[0.03] border border-black/5 flex items-center justify-center shrink-0">
+              <Fingerprint size={20} strokeWidth={1.5} className="text-black/60 group-hover:text-black transition-colors" />
             </div>
             <div className="flex flex-col min-w-0">
-              <p className="font-mono text-[11px] font-bold text-black tracking-tight break-all leading-snug">
+              <p className="font-mono text-[12px] sm:text-[13px] font-medium text-black tracking-tight break-all leading-relaxed">
                 {address}
               </p>
               {ensName && (
-                <p className="font-mono text-[9px] uppercase tracking-widest text-black/40 mt-0.5">{ensName}</p>
+                <p className="font-mono text-[10px] uppercase tracking-widest text-black/50 mt-1">{ensName}</p>
               )}
             </div>
           </div>
         </motion.div>
 
-        {/*  DATA ROW  */}
+        {/* STATS ROW */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-          style={{ willChange: 'opacity, transform', transform: 'translateZ(0)' }}
-          className="w-full grid grid-cols-3 mb-8"
+          transition={{ delay: 0.3, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full flex justify-between items-center mb-12 px-2"
         >
           {[
             { label: 'Network', value: chainName(chainId) },
-            { label: 'Balance', value: fmtBalance() ?? '' },
+            { label: 'Balance', value: fmtBalance() ?? '0.00' },
             { label: 'Provider', value: connectorName || 'Secure' },
           ].map((item, i) => (
-            <div key={i} className={`flex flex-col items-center text-center px-2 py-4 ${ i < 2 ? 'border-r border-black/8' : '' }`}>
-              <p className="font-mono text-[8px] uppercase tracking-[0.25em] text-black/30 mb-1.5">{item.label}</p>
-              <p className="font-mono text-[11px] font-bold text-black truncate w-full text-center">{item.value}</p>
+            <div key={i} className="flex flex-col items-center flex-1">
+              <p className="font-mono text-[8px] uppercase tracking-[0.2em] text-black/40 mb-2">{item.label}</p>
+              <p className="font-mono text-[11px] font-bold text-black truncate max-w-[100px]">{item.value}</p>
             </div>
           ))}
         </motion.div>
 
-
-        {/*  APPS GRID (iOS Style)  */}
+        {/* APPS SPRINGBOARD GRID */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
-          className="w-full grid grid-cols-4 gap-y-6 gap-x-2 mb-8 px-1"
+          transition={{ delay: 0.4, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="w-full grid grid-cols-4 gap-y-8 gap-x-2 mb-14"
         >
           {[
             { label: 'Dashboard', href: '/dashboard', img: '/system-shots/licencia-de-conducir.png' },
-            { label: 'Link New PC Session', action: onScan, icon: Scan, isLucide: true },
-            { label: 'Studio Provenance Beta', href: '/studio/provenance', img: '/system-shots/paquete-o-empaquetar.png' },
+            { label: 'Link Session', action: onScan, icon: ScanLine, isLucide: true },
+            { label: 'Studio Beta', href: '/studio/provenance', img: '/system-shots/paquete-o-empaquetar.png' },
             { label: 'Whale Forum', href: '/forum', img: '/system-shots/charla.png' },
             { label: 'Whale Chat', href: '/chat', img: '/system-shots/burbuja-de-dialogo.png' },
             { label: 'Portfolio', href: '/portfolio', img: '/system-shots/bitcoin.png' },
             { label: 'News', href: '/news', img: '/system-shots/periodico.png' },
             { label: 'Academy', href: '/academy', img: '/system-shots/academy.png' },
             { label: 'System Status', href: '/status', img: '/system-shots/estadistico.png' },
-            { label: 'Privacy Protocol', href: '/privacy', img: '/system-shots/candado.png' },
-            { label: 'Registry', href: '/registry', icon: Target, isLucide: true },
+            { label: 'Privacy', href: '/privacy', img: '/system-shots/candado.png' },
+            { label: 'Registry', href: '/registry', icon: LayoutDashboard, isLucide: true },
           ].map((app, i) => {
             const InnerContent = (
               <>
-                <div className="w-[60px] h-[60px] bg-white rounded-[16px] flex items-center justify-center overflow-hidden active:scale-95 transition-transform shadow-[0_2px_12px_rgba(0,0,0,0.06)] border border-black/5">
+                <div className="w-[64px] h-[64px] bg-white rounded-[20px] flex items-center justify-center overflow-hidden active:scale-90 transition-transform shadow-[0_4px_20px_rgb(0,0,0,0.06)] border border-black/5 hover:border-black/10 hover:shadow-[0_8px_25px_rgb(0,0,0,0.08)] duration-200">
                   {app.isLucide ? (
                     <app.icon size={26} strokeWidth={1.5} className="text-black/80" />
                   ) : (
-                    <img src={app.img} alt={app.label} className="w-[75%] h-[75%] object-contain mix-blend-multiply" />
+                    <img src={app.img} alt={app.label} className="w-[60%] h-[60%] object-contain mix-blend-multiply opacity-90" />
                   )}
                 </div>
                 <span 
-                  className="mt-2 text-black font-medium"
-                  style={{ fontSize: '9px', lineHeight: '1.2', maxWidth: '64px', textAlign: 'center' }}
+                  className="mt-3 text-black font-medium tracking-tight"
+                  style={{ fontSize: '10px', lineHeight: '1.2', maxWidth: '72px', textAlign: 'center' }}
                 >
                   {app.label}
                 </span>
@@ -493,7 +479,7 @@ function ConnectedScreen({
                 key={i}
                 type="button"
                 onClick={app.action}
-                className="flex flex-col items-center justify-start w-full cursor-pointer"
+                className="flex flex-col items-center justify-start w-full cursor-pointer group"
               >
                 {InnerContent}
               </button>
@@ -501,7 +487,7 @@ function ConnectedScreen({
               <Link
                 key={i}
                 href={app.href!}
-                className="flex flex-col items-center justify-start w-full cursor-pointer"
+                className="flex flex-col items-center justify-start w-full cursor-pointer group"
               >
                 {InnerContent}
               </Link>
@@ -509,23 +495,20 @@ function ConnectedScreen({
           })}
         </motion.div>
 
-        {/*  DISCONNECT  */}
+        {/* DISCONNECT BUTTON */}
         {onDisconnect && (
           <motion.button
-            id="system-disconnect-btn"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.55, duration: 0.5 }}
-            whileTap={{ scale: 0.97 }}
+            transition={{ delay: 0.6, duration: 0.5 }}
+            whileTap={{ scale: 0.95 }}
             onClick={onDisconnect}
-            className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl font-mono text-[9px] uppercase tracking-[0.3em] text-black/30 hover:text-black/60 active:scale-95 transition-all"
+            className="mt-auto flex items-center justify-center gap-3 px-8 py-4 rounded-full border border-black/10 bg-white font-mono text-[9px] uppercase tracking-[0.25em] text-black/40 hover:text-black hover:border-black/30 hover:shadow-lg transition-all duration-300"
           >
-            <LogOut size={13} />
+            <LogOut size={14} strokeWidth={1.5} />
             End Session · Change Wallet
           </motion.button>
         )}
-
-
       </main>
 
       <DynamicUniversalScanModal
