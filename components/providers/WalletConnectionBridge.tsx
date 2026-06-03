@@ -18,18 +18,7 @@ export function WalletConnectionBridge() {
     const wagmiAccount = useAccount();
     const { disconnect } = useDisconnect();
 
-    // [ANTI-LOOP] Force disconnect if wagmi gets stuck connecting for >15s
-    useEffect(() => {
-        if (wagmiAccount.isConnecting || wagmiAccount.isReconnecting) {
-            const timer = setTimeout(() => {
-                if (wagmiAccount.isConnecting || wagmiAccount.isReconnecting) {
-                    console.warn("[WalletConnectionBridge] Wagmi stuck in connecting loop. Force disconnecting to unblock UI.");
-                    disconnect();
-                }
-            }, 15000);
-            return () => clearTimeout(timer);
-        }
-    }, [wagmiAccount.isConnecting, wagmiAccount.isReconnecting, disconnect]);
+    // [REMOVED] 15s Force disconnect loop. It causes AppKit to freeze if the user takes longer than 15s to enter their password in MetaMask.
 
     useEffect(() => {
         // [AUDITED] Extract handshake address from cookie with strict validation
