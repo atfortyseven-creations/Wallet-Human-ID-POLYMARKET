@@ -407,7 +407,7 @@ function GlobalLedger({ feed }: { feed: any[] }) {
 
 export function GoldTicketPanel() {
   const { address, isConnected, chainId, isSystemHandshake } = useSystemAccount();
-  const { isConnected: isWagmiConnected } = useAccount();
+  const { isConnected: isWagmiConnected, address: wagmiAddress } = useAccount();
   const { open: openAppKit } = useAppKit();
   const router = useRouter();
   const { switchChain } = useSwitchChain();
@@ -502,10 +502,20 @@ export function GoldTicketPanel() {
       return;
     }
 
+    if (wagmiAddress && address && wagmiAddress.toLowerCase() !== address.toLowerCase()) {
+      toast.error(`Wallet mismatch. Please connect the exact wallet: ${address.slice(0,6)}...${address.slice(-4)}`);
+      openAppKit();
+      setIsMinting(false);
+      return;
+    }
+
     try {
       const signToastId = toast.loading('Awaiting cryptographic wallet signature (Gasless)...');
       signMessage(
-        { message: `WHALE ALERT NETWORK GOLD ACCESS VERIFICATION: ${address}` },
+        { 
+          message: `WHALE ALERT NETWORK GOLD ACCESS VERIFICATION: ${address}`,
+          account: address as `0x${string}`
+        },
         {
           onSuccess: async (cryptoSignature: string) => {
             toast.dismiss(signToastId);
@@ -522,7 +532,7 @@ export function GoldTicketPanel() {
       toast.error(`Mint execution failed: ${error?.shortMessage || error?.message || 'Transaction rejected'}`);
       setIsMinting(false);
     }
-  }, [isConnected, isWagmiConnected, address, signatureData, signatureStrokes, isMinting, isSigning, signMessage, openAppKit, fetchStats]);
+  }, [isConnected, isWagmiConnected, address, wagmiAddress, signatureData, signatureStrokes, isMinting, isSigning, signMessage, openAppKit, fetchStats]);
 
   const hasTicket = dbStats?.ticket || false;
 
