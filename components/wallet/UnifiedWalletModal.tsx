@@ -41,11 +41,11 @@ export default function UnifiedWalletModal({ isOpen, onClose, initialTab = "SEND
 
     const allMergedAssets = useMemo(() => {
         // Build a set of symbols the user already owns on any chain
-        const ownedSymbols = new Set(userAssets.map(a => a.symbol.toUpperCase()));
+        const ownedSymbols = new Set(userAssets.map(a => (a.symbol || '').toUpperCase()));
         
         // Add universal tokens not already owned and exclude placeholders with 0x0...0 address
         const additional = UNIVERSAL_TOKENS
-            .filter(t => !ownedSymbols.has(t.symbol.toUpperCase()) && t.address !== "0x0000000000000000000000000000000000000000")
+            .filter(t => !ownedSymbols.has((t.symbol || '').toUpperCase()) && t.address !== "0x0000000000000000000000000000000000000000")
             .map(t => ({
                 ...t,
                 balanceNumeric: 0,
@@ -243,7 +243,7 @@ function SendModule({ userAssets, forceToken, setStatus, setTxHash, setStatusMes
     
     const defaultToken = useMemo(() => {
         if (forceToken) {
-            const forced = validAssets.find((a: any) => a.symbol.toUpperCase() === forceToken.toUpperCase());
+            const forced = validAssets.find((a: any) => (a.symbol || '').toUpperCase() === forceToken.toUpperCase());
             if (forced) return forced;
         }
         return validAssets.find((a: any) => a.address === 'native' && a.chainId === chainId) || validAssets[0] || { symbol: "ETH", address: "native", decimals: 18, balanceNumeric: 0, logoURI: "", chainId: 1 };
@@ -703,7 +703,7 @@ function AdvancedRouterModule({ mode, userAssets, forceToken, setStatus, setTxHa
     
     const initialPayToken = useMemo(() => {
         if (forceToken) {
-            const forced = userAssets.find((a: any) => a.symbol.toUpperCase() === forceToken.toUpperCase() && a.chainId === fromChain.id);
+            const forced = userAssets.find((a: any) => (a.symbol || '').toUpperCase() === forceToken.toUpperCase() && a.chainId === fromChain.id);
             if (forced) return forced;
         }
         return availableFromAssets.find((a:any) => a.balanceNumeric > 0) || fallbackNativeToken;
