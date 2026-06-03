@@ -223,6 +223,7 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
                             setSelectedToken(null);
                             handleAction(type, selectedToken);
                         }}
+                        symbol={symbol}
                     />
                 )}
             </AnimatePresence>
@@ -435,7 +436,7 @@ function Sparkline({ isPositive }: { isPositive: boolean }) {
     );
 }
 
-function TokenDetailPanel({ token, onClose, onAction }: { token: any, onClose: () => void, onAction: (type: 'SEND'|'RECEIVE'|'SWAP'|'BRIDGE') => void }) {
+function TokenDetailPanel({ token, onClose, onAction, symbol = '$' }: { token: any, onClose: () => void, onAction: (type: 'SEND'|'RECEIVE'|'SWAP'|'BRIDGE') => void, symbol?: string }) {
     const [isRevoking, setIsRevoking] = useState(false);
     const [allowanceCleared, setAllowanceCleared] = useState(false);
 

@@ -218,29 +218,6 @@ export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?:
         });
     }
 
-    // AZTEC Token Integration
-    if (isConnected || isValidAddress) {
-        const aztecBalance = 125000;
-        const aztecPrice = 0.85;
-        assets.unshift({
-            symbol: "AZTEC",
-            name: "Aztec L2 Native",
-            balance: aztecBalance.toString(),
-            balanceNumeric: aztecBalance,
-            balanceFormatted: aztecBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-            price: aztecPrice,
-            priceUSD: aztecPrice,
-            usdPrice: aztecPrice,
-            value: aztecBalance * aztecPrice,
-            valueUSD: aztecBalance * aztecPrice,
-            address: "native",
-            decimals: 18,
-            logoURI: "/system-shots/aztec-logo.png",
-            chainId: 1,
-            network: "Aztec Network",
-            change24h: 12.4
-        });
-    }
 
     // Totals
     const portfolioValue = positions.reduce((acc: number, curr: any) => acc + (isNaN(curr.value) ? 0 : curr.value), 0);
