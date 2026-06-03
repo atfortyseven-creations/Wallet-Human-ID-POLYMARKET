@@ -21,75 +21,110 @@ const MAX_SUPPLY = 200;
 
 //  Helpers 
 const truncAddr = (a: string) => `${a.slice(0, 6)}${a.slice(-4)}`;
-const fmtEth = (wei: bigint) => (Number(wei) / 1e18).toFixed(4);
-const pct = (a: number, b: number) => Math.min(100, Math.round((a / b) * 100));
+//  Advanced Gold Sealing Engine (SVG & Framer Motion) 
 
-//  Minimalist Mint Overlay Animation 
-function MinimalistMintOverlay({ isMinting, hasTicket }: { isMinting: boolean, hasTicket: boolean }) {
+function createSmoothPath(points: {x: number, y: number}[]): string {
+  if (points.length === 0) return "";
+  if (points.length === 1) return `M ${points[0].x} ${points[0].y} L ${points[0].x} ${points[0].y}`;
+  let d = `M ${points[0].x} ${points[0].y}`;
+  for (let i = 1; i < points.length - 2; i++) {
+    const xc = (points[i].x + points[i + 1].x) / 2;
+    const yc = (points[i].y + points[i + 1].y) / 2;
+    d += ` Q ${points[i].x} ${points[i].y}, ${xc} ${yc}`;
+  }
+  d += ` Q ${points[points.length - 2].x} ${points[points.length - 2].y}, ${points[points.length - 1].x} ${points[points.length - 1].y}`;
+  return d;
+}
+
+function AdvancedGoldSealingOverlay({ 
+  isMinting, hasTicket, strokes 
+}: { 
+  isMinting: boolean, hasTicket: boolean, strokes: {x:number, y:number}[][] 
+}) {
+  // Bounding box calculation to center the signature dynamically
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  strokes.forEach(stroke => stroke.forEach(p => {
+    if (p.x < minX) minX = p.x;
+    if (p.y < minY) minY = p.y;
+    if (p.x > maxX) maxX = p.x;
+    if (p.y > maxY) maxY = p.y;
+  }));
+
+  const pad = 20;
+  const vBox = strokes.length > 0 && minX !== Infinity 
+    ? `${minX - pad} ${minY - pad} ${maxX - minX + pad*2} ${maxY - minY + pad*2}`
+    : "0 0 100 100";
+
   return (
     <AnimatePresence>
       {isMinting && !hasTicket && (
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          exit={{ opacity: 0, filter: "blur(10px)", transition: { duration: 0.8, ease: "easeInOut" } }}
-          className="absolute inset-0 z-[100] bg-white/90 backdrop-blur-2xl flex flex-col items-center justify-center overflow-hidden"
+          exit={{ opacity: 0, filter: "blur(20px)", transition: { duration: 1.2, ease: "easeInOut" } }}
+          className="absolute inset-0 z-[100] bg-white/95 backdrop-blur-3xl flex flex-col items-center justify-center overflow-hidden"
         >
-           {/* Center Horizon Line */}
-           <motion.div 
-              initial={{ width: 0 }}
-              animate={{ width: "100%" }}
-              transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute top-1/2 left-0 h-[1px] bg-black/10 -translate-y-1/2"
-           />
-           {/* Quantum Scanning Line */}
-           <motion.div 
-              initial={{ left: "-10%" }}
-              animate={{ left: "110%" }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
-              className="absolute top-1/2 h-[1px] w-[15%] bg-black -translate-y-1/2 shadow-[0_0_15px_rgba(0,0,0,0.5)]"
-           />
-           
-           <div className="flex flex-col items-center gap-10 z-10 px-8 py-6 bg-white/50 rounded-3xl">
-              <div className="w-16 h-16 relative flex items-center justify-center">
-                 <motion.div 
-                   animate={{ rotate: 360 }} 
-                   transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                   className="absolute inset-0 border-[1px] border-black/10 rounded-full"
-                 />
-                 <motion.div 
-                   animate={{ rotate: -360, scale: [1, 1.05, 1] }} 
-                   transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                   className="absolute inset-3 border-[1px] border-black/20 border-t-black rounded-full"
-                 />
-                 <motion.div 
-                   animate={{ opacity: [0.3, 1, 0.3] }}
-                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                   className="text-[9px] font-mono font-black text-black tracking-widest"
-                 >
-                   ZK
-                 </motion.div>
-              </div>
-
-              <motion.div
-                 initial={{ opacity: 0, y: 15 }}
-                 animate={{ opacity: 1, y: 0 }}
-                 transition={{ delay: 0.4, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                 className="flex flex-col items-center gap-3 text-center"
+           {/* Liquid Gold SVG Engine */}
+           <div className="absolute inset-0 flex items-center justify-center p-12 pointer-events-none mix-blend-multiply">
+              <svg 
+                viewBox={vBox} 
+                className="w-full h-full max-w-2xl max-h-96" 
+                preserveAspectRatio="xMidYMid meet"
               >
-                 <span className="text-[11px] font-black uppercase tracking-[0.5em] text-black">
-                   Aztec Network Shield
-                 </span>
-                 <div className="flex flex-col items-center gap-1">
-                     <span className="text-[8px] font-bold uppercase tracking-[0.3em] text-black/40">
-                       Awaiting Cryptographic Signature
-                     </span>
-                     <span className="text-[7px] font-mono uppercase tracking-widest text-black/20">
-                       Please check your wallet extension
-                     </span>
-                 </div>
-              </motion.div>
+                 <defs>
+                    <linearGradient id="liquidGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                       <stop offset="0%" stopColor="#BF953F" />
+                       <stop offset="50%" stopColor="#FCF6BA" />
+                       <stop offset="100%" stopColor="#B38728" />
+                    </linearGradient>
+                    <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
+                       <feGaussianBlur stdDeviation="4" result="blur1" />
+                       <feGaussianBlur stdDeviation="8" result="blur2" />
+                       <feMerge>
+                          <feMergeNode in="blur2" />
+                          <feMergeNode in="blur1" />
+                          <feMergeNode in="SourceGraphic" />
+                       </feMerge>
+                    </filter>
+                 </defs>
+
+                 {strokes.map((stroke, i) => (
+                    <motion.path
+                       key={i}
+                       d={createSmoothPath(stroke)}
+                       fill="none"
+                       stroke="url(#liquidGold)"
+                       strokeWidth={Math.max(1.5, (maxX - minX) * 0.005)}
+                       strokeLinecap="round"
+                       strokeLinejoin="round"
+                       filter="url(#goldGlow)"
+                       initial={{ pathLength: 0, opacity: 0.8 }}
+                       animate={{ pathLength: 1, opacity: 1 }}
+                       transition={{ 
+                         duration: Math.max(1, stroke.length * 0.02), 
+                         delay: i * 0.2, // Stagger multi-strokes
+                         ease: "easeInOut"
+                       }}
+                    />
+                 ))}
+              </svg>
            </div>
+
+           {/* Typographic Identity Seal */}
+           <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5, duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute bottom-16 flex flex-col items-center gap-2"
+           >
+              <div className="h-[1px] w-12 bg-gradient-to-r from-transparent via-[#BF953F] to-transparent mb-2" />
+              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-transparent bg-clip-text bg-gradient-to-r from-[#BF953F] via-[#FCF6BA] to-[#B38728]">
+                Sealing Identity Ledger
+              </span>
+              <span className="text-[7px] font-mono uppercase tracking-widest text-black/30">
+                Cryptographic Signature Reconstruction
+              </span>
+           </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
@@ -162,15 +197,18 @@ function StatChip({ label, value, accent }: { label: string; value: string; acce
   );
 }
 
-function SignaturePad({ onSignature, disabled, onMint, mintLabel }: { 
+function SignaturePad({ onSignature, disabled, onMint, mintLabel, onStrokesUpdate }: { 
   onSignature: (d: string) => void; 
   disabled: boolean;
   onMint: () => void;
   mintLabel: string;
+  onStrokesUpdate: (strokes: {x:number, y:number}[][]) => void;
 }) {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = React.useState(false);
   const [hasDrawn, setHasDrawn] = React.useState(false);
+  const [strokes, setStrokes] = React.useState<{x:number, y:number}[][]>([]);
+  const currentStrokeRef = React.useRef<{x:number, y:number}[]>([]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -199,6 +237,7 @@ function SignaturePad({ onSignature, disabled, onMint, mintLabel }: {
     ctx.beginPath();
     ctx.moveTo(pos.x, pos.y);
     setIsDrawing(true);
+    currentStrokeRef.current = [pos];
   };
 
   const draw = (e: React.PointerEvent<HTMLCanvasElement>) => {
@@ -212,12 +251,20 @@ function SignaturePad({ onSignature, disabled, onMint, mintLabel }: {
     ctx.lineCap = 'round';
     ctx.stroke();
     setHasDrawn(true);
+    currentStrokeRef.current.push(pos);
   };
 
   const stop = () => {
     if (!isDrawing) return;
     setIsDrawing(false);
     if (!hasDrawn || !canvasRef.current) return;
+    
+    // Commit the current stroke
+    const newStrokes = [...strokes, currentStrokeRef.current];
+    setStrokes(newStrokes);
+    onStrokesUpdate(newStrokes);
+    currentStrokeRef.current = [];
+
     // Export to a small fixed-resolution JPEG to stay well under the 10KB API limit.
     // High-DPR canvases (Retina/mobile) produce 50-150KB PNGs which the server rejects.
     const src = canvasRef.current;
@@ -240,6 +287,8 @@ function SignaturePad({ onSignature, disabled, onMint, mintLabel }: {
                const ctx = canvasRef.current?.getContext('2d');
                ctx?.clearRect(0, 0, canvasRef.current!.width, canvasRef.current!.height);
                setHasDrawn(false);
+               setStrokes([]);
+               onStrokesUpdate([]);
                onSignature("");
              }} className="text-[10px] font-black uppercase tracking-[0.2em] text-[#FF3B30] hover:scale-105 transition-all whitespace-nowrap">Reset</button>
            )}
@@ -388,6 +437,7 @@ export function GoldTicketPanel() {
   const { sendTransactionAsync } = useSendTransaction();
   const [dbStats, setDbStats] = useState<any>(null);
   const [signatureData, setSignatureData] = useState<string>("");
+  const [signatureStrokes, setSignatureStrokes] = useState<{x:number, y:number}[][]>([]);
   const [isMinting, setIsMinting] = useState(false);
   const MINT_FEE_ETH = "0.000"; // Beta Phase: Sponsored Gasless Mint
 
@@ -588,7 +638,7 @@ export function GoldTicketPanel() {
   return (
     <div className="relative w-full h-full min-h-0 flex flex-col p-4 md:p-8 gap-5 overflow-y-auto no-scrollbar bg-white">
       
-      <MinimalistMintOverlay isMinting={isMinting} hasTicket={hasTicket} />
+      <AdvancedGoldSealingOverlay isMinting={isMinting} hasTicket={hasTicket} strokes={signatureStrokes} />
 
       {/*  HERO & INTERACTION (BENTO GRID)  */}
       <div className="w-full flex justify-end mb-4 flex-shrink-0">
@@ -629,6 +679,7 @@ export function GoldTicketPanel() {
                  <div className="flex-1">
                     <SignaturePad 
                       onSignature={setSignatureData} 
+                      onStrokesUpdate={setSignatureStrokes}
                       disabled={hasTicket}
                       onMint={handleMint}
                       mintLabel={
