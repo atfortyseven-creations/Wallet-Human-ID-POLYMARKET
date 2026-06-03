@@ -365,7 +365,7 @@ function ConnectedScreen({
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
              <img
                src="/system-shots/aztec-logo.png"
-               className="h-5 w-auto object-contain mix-blend-multiply opacity-80"
+               className="h-16 w-auto object-contain mix-blend-multiply opacity-90"
                alt="Aztec"
              />
           </div>
@@ -388,33 +388,21 @@ function ConnectedScreen({
           </p>
         </motion.div>
 
-        {/* IDENTITY BLOCK - GLASSMORPHISM / PREMIUM */}
+        {/* IDENTITY BLOCK - ULTRA MINIMAL */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full mb-10"
+          className="w-full mb-10 flex flex-col items-center"
         >
-          <div className="flex flex-col items-center gap-1.5 mb-3 text-center">
-            <Shield size={14} strokeWidth={1.5} className="text-black/30" />
-            <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-black/40">Verified Identity</p>
+          <div className="bg-white/40 backdrop-blur-md border border-black/5 rounded-full px-6 py-3 shadow-sm hover:shadow-md transition-shadow">
+            <p className="font-mono text-[12px] sm:text-[14px] font-medium text-black tracking-widest text-center">
+              {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : ''}
+            </p>
           </div>
-          <div className="flex items-center gap-4 bg-white border border-black/5 rounded-[24px] px-5 py-5 shadow-[0_8px_30px_rgb(0,0,0,0.03)] relative overflow-hidden group hover:border-black/10 transition-colors">
-            {/* Subtle gloss effect */}
-            <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-black/5 to-transparent" />
-            
-            <div className="w-12 h-12 rounded-full bg-black/[0.03] border border-black/5 flex items-center justify-center shrink-0">
-              <Fingerprint size={20} strokeWidth={1.5} className="text-black/60 group-hover:text-black transition-colors" />
-            </div>
-            <div className="flex flex-col min-w-0">
-              <p className="font-mono text-[12px] sm:text-[13px] font-medium text-black tracking-tight break-all leading-relaxed">
-                {address}
-              </p>
-              {ensName && (
-                <p className="font-mono text-[10px] uppercase tracking-widest text-black/50 mt-1">{ensName}</p>
-              )}
-            </div>
-          </div>
+          {ensName && (
+            <p className="font-mono text-[10px] uppercase tracking-widest text-black/50 mt-3">{ensName}</p>
+          )}
         </motion.div>
 
         {/* STATS ROW */}
@@ -436,42 +424,30 @@ function ConnectedScreen({
           ))}
         </motion.div>
 
-        {/* APPS SPRINGBOARD GRID */}
+        {/* APPS SPRINGBOARD - PURE ELEGANT TYPOGRAPHY */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="w-full grid grid-cols-4 gap-y-8 gap-x-2 mb-14"
+          className="w-full flex flex-col items-center gap-6 mb-14"
         >
           {[
-            { label: 'Dashboard', href: '/dashboard', img: '/system-shots/licencia-de-conducir.png' },
-            { label: 'Link Session', action: onScan, icon: ScanLine, isLucide: true },
-            { label: 'Studio Beta', href: '/studio/provenance', img: '/system-shots/paquete-o-empaquetar.png' },
-            { label: 'Whale Forum', href: '/forum', img: '/system-shots/charla.png' },
-            { label: 'Whale Chat', href: '/chat', img: '/system-shots/burbuja-de-dialogo.png' },
-            { label: 'Portfolio', href: '/portfolio', img: '/system-shots/bitcoin.png' },
-            { label: 'News', href: '/news', img: '/system-shots/periodico.png' },
-            { label: 'Academy', href: '/academy', img: '/system-shots/academy.png' },
-            { label: 'System Status', href: '/status', img: '/system-shots/estadistico.png' },
-            { label: 'Privacy', href: '/privacy', img: '/system-shots/candado.png' },
-            { label: 'Registry', href: '/registry', icon: LayoutDashboard, isLucide: true },
+            { label: 'Dashboard', href: '/dashboard' },
+            { label: 'Link Session', action: onScan },
+            { label: 'Portfolio', href: '/portfolio' },
+            { label: 'Whale Chat', href: '/chat' },
+            { label: 'Whale Forum', href: '/forum' },
+            { label: 'Studio Beta', href: '/studio/provenance' },
+            { label: 'News', href: '/news' },
+            { label: 'Academy', href: '/academy' },
+            { label: 'System Status', href: '/status' },
+            { label: 'Privacy', href: '/privacy' },
+            { label: 'Registry', href: '/registry' },
           ].map((app, i) => {
             const InnerContent = (
-              <>
-                <div className="w-[64px] h-[64px] bg-white rounded-[20px] flex items-center justify-center overflow-hidden active:scale-90 transition-transform shadow-[0_4px_20px_rgb(0,0,0,0.06)] border border-black/5 hover:border-black/10 hover:shadow-[0_8px_25px_rgb(0,0,0,0.08)] duration-200">
-                  {app.isLucide ? (
-                    <app.icon size={26} strokeWidth={1.5} className="text-black/80" />
-                  ) : (
-                    <img src={app.img} alt={app.label} className="w-[60%] h-[60%] object-contain mix-blend-multiply opacity-90" />
-                  )}
-                </div>
-                <span 
-                  className="mt-3 text-black font-medium tracking-tight"
-                  style={{ fontSize: '10px', lineHeight: '1.2', maxWidth: '72px', textAlign: 'center' }}
-                >
-                  {app.label}
-                </span>
-              </>
+              <span className="font-sans text-[22px] sm:text-[26px] font-light tracking-tight text-black/70 hover:text-black active:scale-95 transition-all duration-300">
+                {app.label}
+              </span>
             );
 
             return app.action ? (
@@ -479,7 +455,7 @@ function ConnectedScreen({
                 key={i}
                 type="button"
                 onClick={app.action}
-                className="flex flex-col items-center justify-start w-full cursor-pointer group"
+                className="w-full flex justify-center py-2 cursor-pointer group"
               >
                 {InnerContent}
               </button>
@@ -487,7 +463,7 @@ function ConnectedScreen({
               <Link
                 key={i}
                 href={app.href!}
-                className="flex flex-col items-center justify-start w-full cursor-pointer group"
+                className="w-full flex justify-center py-2 cursor-pointer group"
               >
                 {InnerContent}
               </Link>
