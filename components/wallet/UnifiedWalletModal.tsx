@@ -1161,8 +1161,34 @@ function BuyModule() {
     const [isPolling, setIsPolling] = useState(false);
     const [fiatAmount, setFiatAmount] = useState('100');
     const [cryptoCurrencyCode, setCryptoCurrencyCode] = useState('eth');
+    const [cryptoPrice, setCryptoPrice] = useState<number>(0);
     const [errorMsg, setErrorMsg] = useState('');
     
+    // Fetch fiat price
+    useEffect(() => {
+        if (!cryptoCurrencyCode) return;
+        const fetchPrice = async () => {
+            try {
+                const symbolMap: Record<string, string> = { 'eth': 'ETH', 'btc': 'BTC', 'usdc': 'USDC', 'matic': 'MATIC' };
+                const targetSymbol = symbolMap[cryptoCurrencyCode] || 'ETH';
+                const priceRes = await fetch(`/api/prices?symbols=${targetSymbol}`);
+                if (priceRes.ok) {
+                    const priceData = await priceRes.json();
+                    if (priceData[targetSymbol]) {
+                        setCryptoPrice(priceData[targetSymbol]);
+                    }
+                }
+            } catch(e) {}
+        };
+        fetchPrice();
+        const t = setInterval(fetchPrice, 10000);
+        return () => clearInterval(t);
+    }, [cryptoCurrencyCode]);
+
+    const estimatedCrypto = cryptoPrice > 0 && parseFloat(fiatAmount) > 0 
+        ? ((parseFloat(fiatAmount) * 0.96) / cryptoPrice).toFixed(6) // 4% moonpay fee estimation
+        : '0.000000';
+
     // User's provided BTC wallet for BTC purchases
     const btcWalletAddress = 'bc1qqqe4htphjl3hgyl76dcv08k39uvz0wreuxpsg6';
 
@@ -1286,6 +1312,10 @@ function BuyModule() {
                         className="w-full bg-transparent text-4xl font-black text-black placeholder:text-black/10 focus:outline-none tabular-nums" 
                     />
                     <span className="text-sm font-black text-black/40">USD</span>
+                </div>
+                <div className="pt-3 mt-3 border-t border-black/5 flex justify-between items-center">
+                    <span className="text-[10px] font-black text-black/40 uppercase tracking-widest">Est. Receipt (Live)</span>
+                    <span className="text-xs font-black text-black">~{estimatedCrypto} {cryptoCurrencyCode.toUpperCase()}</span>
                 </div>
             </div>
 
