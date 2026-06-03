@@ -4,15 +4,21 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ethers, Wallet, HDNodeWallet } from 'ethers';
 import { toast } from 'sonner';
-import { Eye, EyeOff, Save, Key, Shield, Plus, Copy, Lock, Unlock } from 'lucide-react';
+import { Eye, EyeOff, Save, Key, Shield, Plus, Copy, Lock, Unlock, Wifi } from 'lucide-react';
 import { useWalletStore } from '@/lib/store/wallet-store';
+import { useSystemAccount } from '@/hooks/useSystemAccount';
 
 export default function SecurityVault() {
+    const { address: systemAddress, isLocalSystemWallet, isConnected, connector } = useSystemAccount();
     const isLocked = useWalletStore(s => s.isLocked);
     const unlockVault = useWalletStore(s => s.unlockVault);
     const mnemonic = useWalletStore(s => s.mnemonic);
     const accounts = useWalletStore(s => s.accounts);
     const address = useWalletStore(s => s.address);
+
+    // When connected via WalletConnect/MetaMask, the active address is systemAddress
+    const isExternalWallet = isConnected && !isLocalSystemWallet;
+    const activeAddress = isExternalWallet ? systemAddress : address;
     const setupPassword = useWalletStore(s => s.setupPassword);
     const switchAccount = useWalletStore(s => s.switchAccount);
     const removeAccount = useWalletStore(s => s.removeAccount);
@@ -132,18 +138,35 @@ export default function SecurityVault() {
                         <h3 className="text-xl font-black uppercase tracking-widest">Accounts</h3>
                     </div>
 
-                    {isLocked ? (
+                    {/* External WalletConnect / MetaMask account */}
+                    {isExternalWallet ? (
+                        <div className="space-y-3">
+                            <div className="p-4 border border-black/30 bg-black/5 rounded-xl">
+                                <div className="text-xs font-black uppercase tracking-widest text-black/50 mb-1 flex items-center gap-2">
+                                    <Wifi size={10} />
+                                    {connector?.name || 'External Wallet'}
+                                    <span className="bg-black text-white text-[8px] px-1.5 py-0.5 rounded">ACTIVE</span>
+                                </div>
+                                <div className="font-mono text-sm">
+                                    {systemAddress ? `${systemAddress.slice(0, 8)}...${systemAddress.slice(-6)}` : '—'}
+                                </div>
+                            </div>
+                            <p className="text-[10px] text-black/40 font-bold uppercase tracking-widest pt-2">
+                                Connected via {connector?.name || 'WalletConnect'}. Manage accounts in your external wallet app.
+                            </p>
+                        </div>
+                    ) : isLocked ? (
                         <div className="flex-1 flex items-center justify-center text-black/30 font-mono text-sm">
                             Unlock to view accounts
                         </div>
                     ) : (
                         <div className="space-y-3 overflow-y-auto flex-1">
                             {accounts.map((acc, idx) => (
-                                <div key={acc.address} className={`flex justify-between items-center p-4 border rounded-xl group transition-colors ${acc.address === address ? 'bg-black/5 border-black/30' : 'bg-white border-black/10 hover:border-black/30'}`}>
+                                <div key={acc.address} className={`flex justify-between items-center p-4 border rounded-xl group transition-colors ${acc.address === activeAddress ? 'bg-black/5 border-black/30' : 'bg-white border-black/10 hover:border-black/30'}`}>
                                     <div className="flex-1 cursor-pointer" onClick={() => switchAccount(acc.address)}>
                                         <div className="text-xs font-black uppercase tracking-widest text-black/50 mb-1 flex items-center gap-2">
                                             {acc.label || `Account ${idx}`}
-                                            {acc.address === address && <span className="bg-black text-white text-[8px] px-1.5 py-0.5 rounded">ACTIVE</span>}
+                                            {acc.address === activeAddress && <span className="bg-black text-white text-[8px] px-1.5 py-0.5 rounded">ACTIVE</span>}
                                         </div>
                                         <div className="font-mono text-sm">{acc.address.slice(0, 8)}...{acc.address.slice(-6)}</div>
                                     </div>

@@ -110,13 +110,16 @@ export function SettingsView({ onBack }: { onBack: () => void }) {
                 </AnimatePresence>
             </div>
 
-            <div className="shrink-0 px-8 py-5 border-t border-black bg-white flex items-center justify-between">
-                <span className="text-[10px] uppercase tracking-[0.3em] font-black">
+            <div className="shrink-0 px-8 py-5 border-t border-black bg-white flex items-center justify-between gap-4">
+                <span className="text-[10px] uppercase tracking-[0.3em] font-black text-black/40">
                     ABYSSAL CAPACITY ACTIVE
                 </span>
-                <span className="text-[10px] uppercase tracking-widest font-black">
-                    ZERO GRAPHICS
-                </span>
+                <button
+                    onClick={onBack}
+                    className="px-8 py-3 border border-black text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black hover:text-white transition-colors"
+                >
+                    ← BACK
+                </button>
             </div>
         </motion.div>
     );
