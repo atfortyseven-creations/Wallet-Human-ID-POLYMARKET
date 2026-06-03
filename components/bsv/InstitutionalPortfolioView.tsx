@@ -80,6 +80,7 @@ export function InstitutionalPortfolioView() {
     const restoreFromCloud = useWalletStore(s => s.restoreFromCloud);
     const unlockVault = useWalletStore(s => s.unlockVault);
     const passwordHash = useWalletStore(s => s.passwordHash);
+    const isLocked = useWalletStore(s => s.isLocked);
     const displayCurrency = useWalletStore(s => s.displayCurrency || 'EUR');
     const setDisplayCurrency = useWalletStore(s => s.setDisplayCurrency);
     const { address, isLocalSystemWallet, isConnected } = useSystemAccount();

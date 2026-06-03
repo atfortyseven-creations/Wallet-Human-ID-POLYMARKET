@@ -35,9 +35,8 @@ export function ZkKYBVault() {
       const mintMessage = `[ZK business verify]\nMint corporate SBT for ${address}\nDocument hash: ${verifyData.hash ?? '0x0'}`;
       let signature = "";
       
-      const { useSystemAccount } = await import('@/hooks/useSystemAccount');
       const { useWalletStore } = await import('@/lib/store/wallet-store');
-      const isLocalSystemWallet = useSystemAccount.getState?.().isLocalSystemWallet || (typeof window !== 'undefined' && !!localStorage.getItem('system_vault'));
+      const isLocalSystemWallet = typeof window !== 'undefined' && !!localStorage.getItem('system_vault');
       
       if (isLocalSystemWallet) {
           const wallet = await useWalletStore.getState().getConnectedWallet();
