@@ -199,7 +199,19 @@ export function useSystemAccount() {
             };
         };
 
-        run();
+        // Safety fallback: Never allow isChecking to stay true indefinitely
+        const fallbackTimer = setTimeout(() => {
+            setIsChecking(false);
+        }, 3000);
+
+        const cleanup = run();
+
+        return () => {
+            clearTimeout(fallbackTimer);
+            cleanup.then(clean => {
+                if (clean && typeof clean === 'function') clean();
+            });
+        };
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [wagmiAccount.isConnected, storePrivateKey, storePasswordHash, storeEncryptedVault]);
 
