@@ -92,7 +92,7 @@ export class SearchAnalyticsService {
         
         try {
             if (chain === 'eth') {
-                const tx = await moralisService.getTransaction(hash);
+                const tx: any = await moralisService.getTransaction(hash);
                 if (!tx) throw new Error('Transaction not found in indexer');
 
                 // Value analysis

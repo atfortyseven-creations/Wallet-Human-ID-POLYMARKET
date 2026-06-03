@@ -152,7 +152,6 @@ export const TOKEN_STATS_20260530: Record<string, TokenStat> = {
     "BRETT":  { price: 0.06712,   change24h: 3.44  },
     "BSV":    { price: 34.21,     change24h: -0.55 },
     "BSW":    { price: 0.1241,    change24h: 0.33  },
-    "BTC":    { price: 73459,     change24h: -0.31 },
     "BTCZ":   { price: 0.001041,  change24h: 0.11  },
     "BTG":    { price: 20.41,     change24h: 0.44  },
     "BTM":    { price: 0.0312,    change24h: -0.22 },
@@ -163,8 +162,6 @@ export const TOKEN_STATS_20260530: Record<string, TokenStat> = {
     "CAT":    { price: 0.0241,    change24h: 2.44  },
     "CEL":    { price: 0.2241,    change24h: -0.33 },
     "CENNZ":  { price: 0.0312,    change24h: 0.11  },
-    "DOGE":   { price: 0.100958,  change24h: 1.53  },
-    "DYDX":   { price: 0.6381,    change24h: -1.09 },
     "FLR":    { price: 0.01412,   change24h: 0.33  },
     "GLMR":   { price: 0.1021,    change24h: 0.55  },
     "ID":     { price: 0.3212,    change24h: -0.44 },
@@ -177,8 +174,6 @@ export const TOKEN_STATS_20260530: Record<string, TokenStat> = {
     "TIA":    { price: 2.441,     change24h: -2.33 },
     "W":      { price: 0.1041,    change24h: -1.55 },
     "JASMY":  { price: 0.01341,   change24h: 1.44  },
-    "OCEAN":  { price: 0.2194,    change24h: 1.21  },
-    "RNDR":   { price: 3.341,     change24h: 1.33  },
 };
 
 // Snapshot metadata

@@ -1,7 +1,7 @@
 import { http, createConfig } from "wagmi";
 import { 
     mainnet, polygon, optimism, arbitrum, base, baseSepolia, 
-    avalanche, bsc, celo, fantom, zksync, zkSyncSepolia, 
+    avalanche, bsc, celo, fantom, zksync, zksyncSepoliaTestnet, 
     gnosis, polygonZkEvm, mantle, blast, mode, manta, 
     taiko, ronin, kava, aurora, metis, zora, sei, 
     rootstock, linea, scroll 
@@ -13,7 +13,7 @@ const infuraKey = process.env.NEXT_PUBLIC_INFURA_API_KEY || "4307fae544b442c2a40
 export const config = createConfig({
     chains: [
         mainnet, polygon, optimism, arbitrum, base, baseSepolia,
-        avalanche, bsc, celo, fantom, zksync, zkSyncSepolia,
+        avalanche, bsc, celo, fantom, zksync, zksyncSepoliaTestnet,
         gnosis, polygonZkEvm, mantle, blast, mode, manta,
         taiko, ronin, kava, aurora, metis, zora, sei,
         rootstock, linea, scroll
@@ -32,7 +32,7 @@ export const config = createConfig({
         [celo.id]: http(),
         [fantom.id]: http(),
         [zksync.id]: http(),
-        [zkSyncSepolia.id]: http(),
+        [zksyncSepoliaTestnet.id]: http(),
         [gnosis.id]: http(),
         [polygonZkEvm.id]: http(),
         [mantle.id]: http(),

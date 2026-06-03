@@ -237,7 +237,7 @@ export class PortfolioService {
             if (bal > 1000000 && price === 0) return false;
             
             // Filter out fake native tokens (e.g., ERC20 token named ETH with 0 price)
-            const isFakeNative = (t.symbol === 'ETH' || t.symbol === 'MATIC' || t.symbol === 'AUTH' || t.symbol === 'BNB' || t.symbol === 'AVAX' || t.symbol === 'SOL') && price === 0 && t.token_address;
+            const isFakeNative = (t.symbol === 'ETH' || t.symbol === 'MATIC' || t.symbol === ("AUTH" as any) || t.symbol === 'BNB' || t.symbol === 'AVAX' || t.symbol === 'SOL') && price === 0 && t.token_address;
             if (isFakeNative) return false;
 
             return bal > 0.000001;
@@ -456,14 +456,14 @@ export class PortfolioService {
                   balance: t.balance,
                   balanceNumeric: bal,
                   balanceFormatted: safeToLocaleString(bal),
-                  name: isQd ? 'CoreDots' : symbol === 'AUTH' ? 'Identity' : 'Unknown Token',
+                  name: isQd ? 'CoreDots' : symbol === ("AUTH" as any) ? 'Identity' : 'Unknown Token',
                   symbol,
                   decimals,
-                  logo: isQd ? '/official-whale-monochrome.png' : symbol === 'AUTH' ? 'https://assets.coingecko.com/coins/images/31069/small/identity.jpeg' : null,
+                  logo: isQd ? '/official-whale-monochrome.png' : symbol === ("AUTH" as any) ? 'https://assets.coingecko.com/coins/images/31069/small/identity.jpeg' : null,
                   price,
                   valueUsd: bal * price,
                   chainId,
-                  sector: isQd ? 'AI' : symbol === 'AUTH' ? 'DeFi' : 'Unknown',
+                  sector: isQd ? 'AI' : symbol === ("AUTH" as any) ? 'DeFi' : 'Unknown',
                   isUnknown: !isQd && symbol === 'UNK'
               };
           }));

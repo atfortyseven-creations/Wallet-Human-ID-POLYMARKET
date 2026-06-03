@@ -102,7 +102,7 @@ export function VisionStatsSection() {
     return () => io.disconnect();
   }, []);
 
-  const getVal = (id: string): number => (!stats ? 0 : (stats as Record<string, number>)[id] ?? 0);
+  const getVal = (id: string): number => (!stats ? 0 : (stats as any as Record<string, number>)[id] ?? 0);
 
   return (
     <section

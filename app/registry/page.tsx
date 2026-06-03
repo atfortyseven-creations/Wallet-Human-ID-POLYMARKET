@@ -14,7 +14,7 @@ import {
   optimismSepolia,
   zkSync,
   polygonZkEvm,
-  zkSyncSepoliaTestnet,
+  zksyncSepoliaTestnet,
   polygonZkEvmCardona,
 } from "viem/chains";
 import { motion, AnimatePresence } from "framer-motion";
@@ -153,7 +153,7 @@ const ZK_MAINNET_CHAINS = [
 
 const ZK_TESTNET_CHAINS = [
   {
-    chain: zkSyncSepoliaTestnet,
+    chain: zksyncSepoliaTestnet,
     label: "zkSync Sepolia",
     badge: "ZKS-T",
     color: "#000000",

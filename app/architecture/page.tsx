@@ -8,7 +8,7 @@ export default function ArchitecturePage() {
             title="System Architecture Protocol"
             description="A formal technical specification of the Humanity Ledger infrastructure, detailing cryptographic primitives, state transitions, and privacy-preserving consensus mechanisms."
             lastUpdated="June 3, 2026"
-            category="Technical Specification"
+            category="Technical"
         >
             <div className="space-y-16 text-[#050505]">
                 {/* 1. Protocol Overview */}

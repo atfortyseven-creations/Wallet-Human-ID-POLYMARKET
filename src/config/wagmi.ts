@@ -1,7 +1,7 @@
 import { http, createConfig, cookieStorage, createStorage } from 'wagmi'
 import { 
     mainnet, polygon, optimism, arbitrum, base, baseSepolia, 
-    avalanche, bsc, celo, fantom, zksync, zkSyncSepolia, 
+    avalanche, bsc, celo, fantom, zksync, zksyncSepoliaTestnet, 
     gnosis, polygonZkEvm, mantle, blast, mode, manta, 
     taiko, ronin, kava, aurora, metis, zora, sei, 
     rootstock, linea, scroll, optimismSepolia 
@@ -11,7 +11,7 @@ import { injected, walletConnect } from 'wagmi/connectors'
 export const config = createConfig({
     chains: [
         mainnet, polygon, optimism, arbitrum, base, baseSepolia,
-        avalanche, bsc, celo, fantom, zksync, zkSyncSepolia,
+        avalanche, bsc, celo, fantom, zksync, zksyncSepoliaTestnet,
         gnosis, polygonZkEvm, mantle, blast, mode, manta,
         taiko, ronin, kava, aurora, metis, zora, sei,
         rootstock, linea, scroll, optimismSepolia
@@ -33,7 +33,7 @@ export const config = createConfig({
         [bsc.id]: http(),
         [celo.id]: http(),
         [fantom.id]: http(),
-        [zkSyncSepolia.id]: http(),
+        [zksyncSepoliaTestnet.id]: http(),
         [gnosis.id]: http(),
         [polygonZkEvm.id]: http(),
         [mantle.id]: http(),

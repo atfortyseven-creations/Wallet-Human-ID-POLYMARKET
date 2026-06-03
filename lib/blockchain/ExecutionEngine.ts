@@ -9,8 +9,8 @@ import { type Address, type Hex } from 'viem';
  * Orchestrates signal transformation, UserOp construction, and high-frequency relaying.
  */
 export class ExecutionEngine {
-    private executionQueue: Queue;
-    private worker: Worker;
+    private executionQueue!: Queue;
+    private worker!: Worker;
 
     constructor() {
         const isBuild = process.env.NEXT_PHASE === 'phase-production-build' || process.argv.join(' ').includes('next build');

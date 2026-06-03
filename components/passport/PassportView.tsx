@@ -281,15 +281,15 @@ export function PassportView({ passport }: { passport: ProductPassportPublic }) 
                     <p className="text-sm font-bold text-[#050505] mt-0.5">
                       {formatEventType(ev.eventType)}
                     </p>
-                    {ev.payload?.location && (
+                    {!!(ev.payload as any)?.location && (
                       <p className="text-xs text-black/60 mt-0.5 flex items-center gap-1">
                         <MapPin size={10} />
-                        {String(ev.payload.location)}
+                        {String((ev.payload as any).location)}
                       </p>
                     )}
-                    {ev.payload?.note && (
+                    {!!(ev.payload as any)?.note && (
                       <p className="text-xs text-black/50 mt-0.5 leading-relaxed">
-                        {String(ev.payload.note)}
+                        {String((ev.payload as any).note)}
                       </p>
                     )}
                   </div>
@@ -317,11 +317,11 @@ export function PassportView({ passport }: { passport: ProductPassportPublic }) 
               </div>
 
               {/* Anchor event from timeline */}
-              {anchorEvent?.payload?.confirmedAt && (
+              {!!(anchorEvent?.payload as any)?.confirmedAt && (
                 <DetailRow
                   icon={<Clock size={15} />}
                   label="Confirmed on"
-                  value={formatDatetime(String(anchorEvent.payload.confirmedAt))}
+                  value={formatDatetime(String((anchorEvent!.payload as any).confirmedAt))}
                 />
               )}
 

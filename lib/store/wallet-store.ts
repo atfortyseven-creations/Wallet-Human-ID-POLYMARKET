@@ -788,7 +788,7 @@ export const useWalletStore = create<WalletState>()(
           console.error("[CLOUD-RESTORE] Error:", e);
         }
       },
-      setDisplayCurrency: (currency: string) => set({ displayCurrency: currency })
+      setDisplayCurrency: (currency: 'EUR' | 'USD' | 'BTC') => set({ displayCurrency: currency })
     }),
     {
       name: 'whale-system-wallet-registry-v3', // Bumped for encryption

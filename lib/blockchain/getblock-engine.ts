@@ -156,8 +156,8 @@ class RpcRotator {
   }
 
   public getEndpointStatus() {
-    return Array.from(this.healthMap.values()).map(h => ({
-      url: h.url.slice(0, 55) + '...',
+    return Array.from(this.healthMap.entries()).map(([url, h]) => ({
+      url: url.slice(0, 55) + '...',
       exhausted: h.exhausted,
       errorCount: h.errorCount,
       exhaustedAt: h.exhaustedAt ? new Date(h.exhaustedAt).toISOString() : null,

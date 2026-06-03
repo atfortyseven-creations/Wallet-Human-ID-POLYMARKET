@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
 import { QRCodeSVG } from 'qrcode.react';
 import { useSystemSignOut } from '@/hooks/useSystemSignOut';
+import { CanvasParticles } from '@/components/ui/CanvasParticles';
 
 import {
   ArrowRight,
@@ -464,18 +465,25 @@ export default function ConnectPage() {
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center bg-white relative overflow-hidden">
-      {/* Background Image — fills entire page, no black bands, no zoom */}
+      {/* Background Image — Responsive */}
       <img
-        src="/system-shots/monochrome-illustration-science-fiction-arch-pixel-art-Devine-Lu-Linvega-2268380-wallhere.com (1).jpg"
+        src={
+          isMobile
+            ? "/system-shots/Devine-Lu-Linvega-monochrome-pixel-art-illustration-arch-2268374-wallhere.com.jpg"
+            : "/system-shots/monochrome-illustration-science-fiction-arch-pixel-art-Devine-Lu-Linvega-2268380-wallhere.com (1).jpg"
+        }
         alt="Architecture Background"
         className="absolute inset-0 z-0 w-full h-full pointer-events-none"
         style={{
           objectFit: 'cover',
-          objectPosition: 'right top',
+          objectPosition: isMobile ? 'center' : 'right top',
           opacity: 1,
         }}
       />
       
+      {/* Interactive Particle Animation Overlay */}
+      {mounted && <CanvasParticles isMobile={isMobile} />}
+
       <div className="relative z-10 w-full flex-1 flex flex-col items-center justify-center px-4 pt-0 mx-auto min-h-0" style={{ pointerEvents: 'none' }}>
         
         {/* Login Panel — positioned further right, slightly wider panel */}

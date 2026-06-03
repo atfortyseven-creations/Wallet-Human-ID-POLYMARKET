@@ -361,7 +361,7 @@ export default function PortfolioView({
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastRefreshTime, setLastRefreshTime] = useState<number>(0);
   const [history, setHistory] = useState<any[]>([]);
-  const [historyLoading, setHistoryLoading] = useState(false);
+  /* useState removed */
   const [isDark, setIsDark] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
 

@@ -1,7 +1,7 @@
 import { http, createConfig } from 'wagmi'
 import { 
     mainnet, polygon, optimism, arbitrum, base, baseSepolia, 
-    avalanche, bsc, celo, fantom, zksync, zkSyncSepolia, 
+    avalanche, bsc, celo, fantom, zksync, zksyncSepoliaTestnet, 
     gnosis, polygonZkEvm, mantle, blast, mode, manta, 
     taiko, ronin, kava, aurora, metis, zora, sei, 
     rootstock, linea, scroll 
@@ -21,7 +21,7 @@ export const AUTH_TOKEN_ADDRESS = (process.env.NEXT_PUBLIC_AUTH_TOKEN_ADDRESS ||
 export const config = createConfig({
     chains: [
         mainnet, polygon, optimism, arbitrum, base, baseSepolia,
-        avalanche, bsc, celo, fantom, zksync, zkSyncSepolia,
+        avalanche, bsc, celo, fantom, zksync, zksyncSepoliaTestnet,
         gnosis, polygonZkEvm, mantle, blast, mode, manta,
         taiko, ronin, kava, aurora, metis, zora, sei,
         rootstock, linea, scroll
@@ -60,7 +60,7 @@ export const config = createConfig({
         [celo.id]: http(),
         [fantom.id]: http(),
         [zksync.id]: http(),
-        [zkSyncSepolia.id]: http(),
+        [zksyncSepoliaTestnet.id]: http(),
         [gnosis.id]: http(),
         [polygonZkEvm.id]: http(),
         [mantle.id]: http(),

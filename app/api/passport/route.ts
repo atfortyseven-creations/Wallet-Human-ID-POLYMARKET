@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
   const parseResult = passportSchema.safeParse(body);
   if (!parseResult.success) {
     return NextResponse.json(
-      { error: 'Invalid data format', details: parseResult.error.errors },
+      { error: 'Invalid data format', details: (parseResult.error as any).errors },
       { status: 400 }
     );
   }
