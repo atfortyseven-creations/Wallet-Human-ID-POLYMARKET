@@ -469,11 +469,19 @@ export default function ConnectPage() {
 
   return (
     <div className="w-full min-h-screen flex flex-col items-center bg-white relative overflow-hidden">
-      {/* Background Image Removed for Clean White Look */}
+      {/* Background Image — Responsive without zoom */}
+      <div 
+        className="absolute inset-0 z-0 bg-no-repeat bg-center"
+        style={{
+          backgroundImage: "url('/wallpapers/monochrome-illustration-science-fiction-arch-pixel-art-Devine-Lu-Linvega-2268380-wallhere.com (1).jpg')",
+          backgroundSize: 'contain',
+        }}
+      />
+      
       {/* Interactive Particle Animation Overlay */}
       {mounted && <CanvasParticles isMobile={isMobile} />}
 
-      <div className="relative z-10 w-full flex-1 flex flex-col items-center lg:items-end justify-center px-4 lg:pr-32 pt-0 mx-auto min-h-0" style={{ pointerEvents: 'none' }}>
+      <div className="relative z-10 w-full flex-1 flex flex-col items-center justify-center px-4 pt-0 mx-auto min-h-0" style={{ pointerEvents: 'none' }}>
         
         {/* Login Panel — positioned on the right */}
         <div className="w-full max-w-[480px] flex-shrink-0 flex flex-col bg-white/96 backdrop-blur-sm rounded-[24px] border border-[#F0F0F0] shadow-[0_8px_60px_rgba(0,0,0,0.18)] p-8 z-20" style={{ pointerEvents: 'all' }}>

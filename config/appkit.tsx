@@ -211,12 +211,7 @@ try {
             networks,
             projectId,
             metadata,
-            // siweConfig intentionally removed:
-            // Reown Cloud project has "ReownAuthentication" enabled at dashboard
-            // level, which silently overrides any siweConfig passed here and logs:
-            // "ReownAuthentication option is enabled, SIWX configuration will be
-            // overridden."  session establishment is now handled directly in
-            // MobileLanding via the wagmi address (see establishSession).
+            siweConfig,
             allowUnsupportedChain: true,
             featuredWalletIds: [
                 'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // MetaMask
