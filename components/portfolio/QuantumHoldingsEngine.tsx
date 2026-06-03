@@ -12,6 +12,7 @@ import { NETWORKS, NetworkId } from '@/lib/store/wallet-store';
 import { NativeSwapView } from '@/components/portfolio/NativeSwapView';
 import { NativeBridgeView } from '@/components/portfolio/NativeBridgeView';
 import ReceiveHub from '@/components/wallet/ReceiveHub';
+import { TokenLogo } from '@/components/ui/TokenLogo';
 
 function ModalView({ title, onBack, children }: any) {
     return (
