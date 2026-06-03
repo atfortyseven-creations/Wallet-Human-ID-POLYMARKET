@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCw, ExternalLink, ShieldCheck, Clock, Loader2, TrendingUp, TrendingDown } from 'lucide-react';
+import { RefreshCw, ExternalLink, ShieldCheck, Clock, Loader2, TrendingUp, TrendingDown, ArrowLeft } from 'lucide-react';
 import { useOmniInfrastructure } from '@/lib/api-client';
 
 export interface UINewsArticle {
@@ -124,8 +124,17 @@ export function NewsOfToday() {
     );
 
     return (
-        <div className="w-full h-full min-h-0 p-4 md:p-6 flex flex-col text-[#050505]  font-sans overflow-hidden">
-            <div className="flex-1 w-full bg-white/70  backdrop-blur-3xl border border-black/[0.05]  rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.03)] overflow-hidden flex flex-col min-h-0 relative">
+        <div className="w-full h-full min-h-0 flex flex-col text-[#050505] font-sans overflow-hidden bg-white">
+            {/* ── Internal Nav Bar ── */}
+            <div className="shrink-0 flex items-center justify-between px-6 py-4 border-b border-black/[0.06] bg-white z-20">
+                <a href="/" className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-black/40 hover:text-black transition-colors">
+                    <ArrowLeft size={13} />
+                    Home
+                </a>
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black/20">Whale Alert Network</span>
+                <a href="/" className="text-[10px] font-black uppercase tracking-widest text-black/40 hover:text-black transition-colors">Dashboard →</a>
+            </div>
+            <div className="flex-1 w-full flex flex-col min-h-0 overflow-hidden relative">
                 
                 {/*  EXCHANGE STATUS TICKER  */}
                 <div className="shrink-0 w-full border-b border-black/[0.04]  bg-white/50  backdrop-blur-md flex items-center px-6 overflow-x-auto whitespace-nowrap scrollbar-hide py-3 gap-8 relative z-10">

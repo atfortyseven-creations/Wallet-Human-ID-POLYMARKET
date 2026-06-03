@@ -473,8 +473,8 @@ export default function ConnectPage() {
       <div 
         className="absolute inset-0 z-0 bg-no-repeat bg-center"
         style={{
-          backgroundImage: "url('/system-shots/monochrome-illustration-science-fiction-arch-pixel-art-Devine-Lu-Linvega-2268380-wallhere.com (1).jpg')",
-          backgroundSize: 'contain',
+          backgroundImage: "url('/system-shots/connect-wallpaper.jpg')",
+          backgroundSize: 'cover',
         }}
       />
       

@@ -7,10 +7,8 @@ export const metadata = {
 
 export default function NewsPage() {
     return (
-        <div className="min-h-screen bg-[#F5F5F7] pt-24 pb-20 flex flex-col">
-            <div className="flex-1 w-full max-w-7xl mx-auto flex flex-col h-[calc(100vh-10rem)]">
-                <NewsOfToday />
-            </div>
+        <div className="fixed inset-0 bg-white z-10 flex flex-col overflow-hidden">
+            <NewsOfToday />
         </div>
     );
 }
