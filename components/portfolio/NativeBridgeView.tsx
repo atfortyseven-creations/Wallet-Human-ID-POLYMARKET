@@ -259,7 +259,8 @@ export function NativeBridgeView({ onBack }: any) {
             });
             setAmount('');
         } catch (e: any) {
-            toast.error("Bridge Failed", { id: "bridge-tx", description: e.message || "Transaction cancelled or failed." });
+            const cleanError = e?.shortMessage || e?.message?.split('\n')[0] || "Transaction cancelled or failed.";
+            toast.error("Bridge Failed", { id: "bridge-tx", description: cleanError });
         } finally {
             setIsBridging(false);
         }

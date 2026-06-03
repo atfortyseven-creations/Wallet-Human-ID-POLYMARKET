@@ -292,13 +292,15 @@ export function NativeSwapView({ address, onBack }: any) {
                 setAmountIn('');
                 setAmountOut('');
             } catch(txErr: any) {
-                addLog(`ERROR: ${(txErr as any)?.message || 'Transaction failed'}`);
-                toast.error("Swap Failed", { id: "swap-tx", description: (txErr as any)?.message });
+                const cleanError = txErr?.shortMessage || txErr?.message?.split('\n')[0] || 'Transaction failed';
+                addLog(`ERROR: ${cleanError}`);
+                toast.error("Swap Failed", { id: "swap-tx", description: cleanError });
             }
 
         } catch (e: any) {
-            addLog(`FATAL: ${e.message}`);
-            toast.error("Execution Error", { id: "swap-tx", description: e.message });
+            const cleanError = e?.shortMessage || e?.message?.split('\n')[0] || 'Unknown error occurred.';
+            addLog(`FATAL: ${cleanError}`);
+            toast.error("Transaction Error", { id: "swap-tx", description: cleanError });
         } finally {
             setIsSwapping(false);
         }
