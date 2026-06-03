@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { CreateConnectorFn, WagmiProvider } from 'wagmi';
 import { AppKitNetwork, mainnet, base, arbitrum, polygon, optimism, bsc } from "@reown/appkit/networks";
@@ -26,8 +26,8 @@ const dedicatedBase = {
     ...base,
     rpcUrls: {
         ...base.rpcUrls,
-        default: { http: [process.env.GETBLOCK_BASE_RPC || base.rpcUrls.default.http[0]] },
-        public: { http: [process.env.GETBLOCK_BASE_RPC || base.rpcUrls.default.http[0]] }
+        default: { http: [process.env.GETBLOCK_BASE_RPC || 'https://base.llamarpc.com'] },
+        public: { http: [process.env.GETBLOCK_BASE_RPC || 'https://base.llamarpc.com'] }
     }
 };
 
@@ -67,7 +67,34 @@ const worldchain: AppKitNetwork = {
     }
 } as any;
 
-export const networks: [AppKitNetwork, ...AppKitNetwork[]] = [dedicatedMainnet, dedicatedBsc, polygon, dedicatedBase, arbitrum, optimism, worldchain];
+const dedicatedPolygon = {
+    ...polygon,
+    rpcUrls: {
+        ...polygon.rpcUrls,
+        default: { http: ['https://polygon.llamarpc.com'] },
+        public: { http: ['https://polygon.llamarpc.com'] }
+    }
+};
+
+const dedicatedArbitrum = {
+    ...arbitrum,
+    rpcUrls: {
+        ...arbitrum.rpcUrls,
+        default: { http: ['https://arbitrum.llamarpc.com'] },
+        public: { http: ['https://arbitrum.llamarpc.com'] }
+    }
+};
+
+const dedicatedOptimism = {
+    ...optimism,
+    rpcUrls: {
+        ...optimism.rpcUrls,
+        default: { http: ['https://optimism.llamarpc.com'] },
+        public: { http: ['https://optimism.llamarpc.com'] }
+    }
+};
+
+export const networks: [AppKitNetwork, ...AppKitNetwork[]] = [dedicatedMainnet, dedicatedBsc, dedicatedPolygon, dedicatedBase, dedicatedArbitrum, dedicatedOptimism, worldchain];
 
 export const wagmiAdapter = new WagmiAdapter({
     ssr: true,
