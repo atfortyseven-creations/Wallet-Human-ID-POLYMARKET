@@ -271,15 +271,9 @@ function SignaturePad({ onSignature, disabled, onMint, mintLabel, onStrokesUpdat
     onStrokesUpdate(newStrokes);
     currentStrokeRef.current = [];
 
-    // Export to a small fixed-resolution JPEG to stay well under the 10KB API limit.
-    // High-DPR canvases (Retina/mobile) produce 50-150KB PNGs which the server rejects.
-    const src = canvasRef.current;
-    const thumb = document.createElement('canvas');
-    thumb.width  = 320;
-    thumb.height = 80;
-    const tCtx = thumb.getContext('2d');
-    if (tCtx) tCtx.drawImage(src, 0, 0, 320, 80);
-    onSignature(thumb.toDataURL('image/jpeg', 0.4));
+    // Vectors are collected in state and passed via onStrokesUpdate.
+    // We no longer need to export heavy, pixelated Base64 JPEGs.
+    onSignature("VECTOR_MODE"); // Signal that we are using vector mode
   };
 
   return (
@@ -351,8 +345,13 @@ function GlobalLedger({ feed }: { feed: any[] }) {
                 let txHash = "";
                 let cryptoSignature = "";
                 let visualSig = "";
+                let isVector = false;
                 let isPaid = false;
-                if (f.signatureData) {
+                if (f.signatureData && f.signatureData.includes('isVector')) {
+                    const parsedData = JSON.parse(f.signatureData);
+                    isVector = true;
+                    visualSig = parsedData.signature; // This is the vector JSON string
+                } else if (f.signatureData) {
                     try {
                         const parsed = JSON.parse(f.signatureData);
                         txHash = parsed.txHash || "";
@@ -369,7 +368,15 @@ function GlobalLedger({ feed }: { feed: any[] }) {
                         <div className="px-4 py-4 flex flex-col justify-center">
                              <div className="flex items-center gap-3 mb-1">
                                   <span className="text-xs font-black font-mono text-black">{f.userAddress.slice(0,8)}...{f.userAddress.slice(-6)}</span>
-                                  {visualSig && visualSig.startsWith('data:image') && (
+                                  {isVector && visualSig ? (
+                                      <div className="w-16 h-8 bg-black/[0.02] rounded-lg overflow-hidden flex items-center justify-center p-1">
+                                          <svg viewBox="0 0 500 150" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+                                              {JSON.parse(visualSig).map((stroke: any, i: number) => (
+                                                  <path key={i} d={createSmoothPath(stroke)} fill="none" stroke="#000" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                                              ))}
+                                          </svg>
+                                      </div>
+                                  ) : visualSig && visualSig.startsWith('data:image') && (
                                       <img src={visualSig} alt="sig" className="h-6 w-auto opacity-70 mix-blend-darken" />
                                   )}
                              </div>
@@ -489,7 +496,7 @@ export function GoldTicketPanel() {
       return;
     }
 
-    if (signatureData.length < 50) {
+    if (signatureData.length < 5) {
       toast.error('Draw your signature on the pad first');
       return;
     }
@@ -497,17 +504,23 @@ export function GoldTicketPanel() {
 
     setIsMinting(true);
 
-    const performClaim = async (cryptoSig?: string, txHash?: string) => {
+    const performClaim = async (cryptoSignature: string, txHash?: string) => {
       const t2 = toast.loading('Synchronizing System Identity...');
       try {
+        // Quantum Optimization: Send pure vector JSON instead of Base64 blobs
+        const vectorData = JSON.stringify(signatureStrokes);
         const res = await fetch('/api/golden-ticket/claim', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             walletAddress: address,
-            cryptoSignature: cryptoSig,
-            txHash: txHash,
-            signatureData: JSON.stringify({ signature: signatureData, timestamp: new Date().toISOString() })
+            cryptoSignature: cryptoSignature,
+            txHash: txHash || null,
+            signatureData: JSON.stringify({ 
+               signature: vectorData, 
+               isVector: true, 
+               timestamp: new Date().toISOString() 
+            })
           })
         });
         toast.dismiss(t2);
@@ -550,7 +563,7 @@ export function GoldTicketPanel() {
       toast.error(`Mint execution failed: ${error?.shortMessage || error?.message || 'Transaction rejected'}`);
       setIsMinting(false);
     }
-  }, [isConnected, isWagmiConnected, isSystemHandshake, signatureData, isMinting, isSigning, address, signMessage, sendTransactionAsync, switchChain, chainId, router, fetchStats]);
+  }, [isConnected, isWagmiConnected, isSystemHandshake, signatureData, signatureStrokes, isMinting, isSigning, address, signMessage, sendTransactionAsync, switchChain, chainId, router, fetchStats]);
 
   const hasTicket = dbStats?.ticket || false;
 

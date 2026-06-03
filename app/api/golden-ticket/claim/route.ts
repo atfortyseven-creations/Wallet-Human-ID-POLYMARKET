@@ -134,11 +134,12 @@ export async function POST(req: NextRequest) {
 
     //  Payload size guard (DoS protection) 
     // signatureData is a canvas image data URL (base64). Cap to 10KB max.
-    // Client-side fix (JPEG thumbnail) ensures this never triggers, but we
+    // Client-side fix (Vector Array) ensures this never triggers, but we
     // truncate defensively here instead of hard-rejecting so no user is blocked.
+    // Increased to 150,000 to safely accommodate large JSON vector payloads without breaking JSON structure.
     const safeSignatureData =
         signatureData && typeof signatureData === 'string'
-            ? signatureData.slice(0, 10_240)
+            ? signatureData.slice(0, 150_000)
             : (signatureData ?? null);
 
     //  twitterHandle XSS sanitization 
