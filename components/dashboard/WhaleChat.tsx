@@ -578,9 +578,12 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   useEffect(() => {
     // Aggressive Auto-Init: Trigger for all connected users.
     if (isConnected && address && !client && !initInFlight.current && !initError) {
-      initClient();
+      const isMobileDevice = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0) && window.innerWidth < 768;
+      if (!isMobileDevice || forceAutoInit) {
+        initClient();
+      }
     }
-  }, [isConnected, address, client, initError, initClient]);
+  }, [isConnected, address, client, initError, initClient, forceAutoInit]);
 
   // Sync contacts to backend debounced
   const persistToLocal = useCallback((arr: ConversationMeta[]) => {

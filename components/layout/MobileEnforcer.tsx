@@ -6,16 +6,11 @@ import dynamic from 'next/dynamic';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
 import { usePathname } from 'next/navigation';
 
-// Lazy-load the authenticated mobile news shell
-const MobileNewsShell = dynamic(
-    () => import('@/components/mobile/MobileNewsShell').then(m => m.MobileNewsShell),
-    { ssr: false }
-);
+// No mobile news shell anymore
 
 export function MobileEnforcer({ children }: { children: React.ReactNode }) {
     const [mounted, setMounted] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
-    const [showNews, setShowNews] = useState(false);
     const { isConnected, address, isZkVerified } = useSystemAccount();
     const pathname = usePathname();
 
@@ -96,28 +91,7 @@ export function MobileEnforcer({ children }: { children: React.ReactNode }) {
             } catch (e) {}
         }
 
-        // CRITICAL iOS FIX: In iOS Safari Private Mode...
-        let bypassActive = false;
-        try {
-            if (typeof sessionStorage !== 'undefined') {
-                 bypassActive = sessionStorage.getItem('mobile_news_bypass') === 'true';
-            }
-        } catch (e) {
-            console.warn('[Safety] iOS Private Mode restricted sessionStorage read.');
-        }
-
-        // CRITICAL: check for '0x' prefix so an expired cookie ('system_handshake=; max-age=0')
-        // does not falsely register as authenticated.
-        // Normalize to lowercase to handle any case variant of the hex address prefix.
-        let hasSystemCookie = false;
-        try {
-            hasSystemCookie = typeof document !== 'undefined'
-                && (document.cookie.toLowerCase().split('; ').some(r => r.startsWith('system_handshake=0x')) || document.cookie.includes('wallet-auth='));
-        } catch(e) {}
-
-        if (bypassActive && hasSystemCookie) {
-            setShowNews(true);
-        }
+        // Legacy check removed
 
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
@@ -183,17 +157,8 @@ export function MobileEnforcer({ children }: { children: React.ReactNode }) {
         } catch (e) {}
     }, [isConnected, address, mounted]);
 
-    // When wallet disconnects  reset showNews so landing returns to initial state
     useEffect(() => {
         if (!mounted) return;
-        if (!isConnected && prevConnected.current) {
-            setShowNews(false);
-            try {
-                if (typeof sessionStorage !== 'undefined') {
-                    sessionStorage.removeItem('mobile_news_bypass');
-                }
-            } catch (e) {}
-        }
         prevConnected.current = isConnected;
     }, [isConnected, mounted]);
 
@@ -243,11 +208,6 @@ export function MobileEnforcer({ children }: { children: React.ReactNode }) {
 
         if (isDirectAccessRoute) {
             return <>{children}</>;
-        }
-
-        // User EXPLICITLY chose to go to news via the landing page button
-        if (showNews && isConnected) {
-            return <MobileNewsShell />;
         }
 
         // Always show the System Landing:

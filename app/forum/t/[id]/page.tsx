@@ -58,42 +58,27 @@ export default function TopicPage() {
   const submitReply = async () => {
     if (!replyContent.trim()) return;
     setReplyError('');
-    setSubmitting(true);
-    try {
-      // Cryptographic anchoring (Sign to Post)  OPTIONAL, graceful fallback.
-      // The system_handshake cookie is the primary auth gate on the server.
-      // If the user is in Chrome mobile (wagmi not reconnected yet) or rejects
-      // the signature request, we post without a signature rather than blocking.
       let finalContent = replyContent;
       let signature = 'SESSION:AUTHENTICATED';
       
-      // isLocalSystemWallet comes from useSystemAccount (the hook that correctly
-      // computes it). Reading from wallet-store.getState() would return undefined
-      // because that field is not part of WalletState.
       const { privateKey: storedPrivateKey } = useWalletStore.getState();
       
-      if (storedPrivateKey) {
-        try {
+      try {
+        if (storedPrivateKey) {
           const { ethers } = await import('ethers');
           const wallet = new ethers.Wallet(storedPrivateKey);
           signature = await wallet.signMessage(finalContent);
-        } catch (err) {
-          setReplyError('SIGNATURE FAILED');
-          setSubmitting(false);
-          return;
-        }
-      } else if (!isLocalSystemWallet) {
-        // External wallet (MetaMask / WalletConnect) — use wagmi.
-        try {
+        } else if (!isLocalSystemWallet) {
           signature = await signMessageAsync({ message: finalContent });
-        } catch (err) {
-          setReplyError('SIGNATURE REQUIRED. PLEASE APPROVE IN YOUR WALLET.');
-          setSubmitting(false);
-          return;
         }
+      } catch (err) {
+        setReplyError('SIGNATURE REQUIRED. PLEASE APPROVE IN YOUR WALLET.');
+        return;
       }
-      // else: isLocalSystemWallet=true (session-restored) — SESSION:AUTHENTICATED already set.
-      finalContent = `${replyContent}\n\n[SIGNATURE:${signature}]`;
+
+      setSubmitting(true);
+      try {
+        finalContent = `${replyContent}\n\n[SIGNATURE:${signature}]`;
 
       let csrfToken = '';
       try {

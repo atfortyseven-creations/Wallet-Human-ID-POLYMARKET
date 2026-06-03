@@ -85,9 +85,6 @@ function NewTopicContent() {
       setError('Please connect your wallet to post.');
       return;
     }
-    setSubmitting(true);
-    try {
-      let finalContent = content;
       let finalSignature = '';
       
       // Inject Secure Documents into payload
@@ -98,40 +95,26 @@ function NewTopicContent() {
       });
 
       // ── Signature routing ──────────────────────────────────────────────────
-      // isLocalSystemWallet comes from useSystemAccount (the hook that correctly
-      // computes it). Reading from wallet-store.getState() would return undefined
-      // because that field is not part of WalletState.
       const { privateKey: storedPrivateKey, address: actualWalletAddress } = useWalletStore.getState();
       const messageToSign = `${title}\n${finalContent}`;
 
-      if (storedPrivateKey) {
-        // Case 1: Humanity Ledger local wallet — sign with ethers directly.
-        // wagmi's useSignMessage requires an active connector; local wallets have none.
-        try {
+      try {
+        if (storedPrivateKey) {
           const wallet = new ethers.Wallet(storedPrivateKey);
           finalSignature = await wallet.signMessage(messageToSign);
-        } catch (err) {
-          setError('Signature failed. Please re-import your wallet and try again.');
-          setSubmitting(false);
-          return;
-        }
-      } else if (isLocalSystemWallet || (actualWalletAddress && address && actualWalletAddress.toLowerCase() === address.toLowerCase() && !storedPrivateKey && isSystemHandshake)) {
-        // Case 2: Session-restored Humanity Ledger user (address known, no key in memory).
-        // Their SIWE cookie / system_session_v2 is valid — backend accepts SESSION:AUTHENTICATED.
-        finalSignature = 'SESSION:AUTHENTICATED';
-      } else {
-        // Case 3: External wallet (MetaMask / WalletConnect) — use wagmi signMessageAsync.
-        try {
+        } else if (isLocalSystemWallet || (actualWalletAddress && address && actualWalletAddress.toLowerCase() === address.toLowerCase() && !storedPrivateKey && isSystemHandshake)) {
+          finalSignature = 'SESSION:AUTHENTICATED';
+        } else {
           finalSignature = await signMessageAsync({ message: messageToSign });
-        } catch (err) {
-          setError('You must sign the message in your wallet to post.');
-          setSubmitting(false);
-          return;
         }
+      } catch (err) {
+        setError('You must sign the message in your wallet to post.');
+        return;
       }
-      // ──────────────────────────────────────────────────────────────────────
       
-      finalContent = `${finalContent}\n\n[SIGNATURE:${finalSignature}]`;
+      setSubmitting(true);
+      try {
+        finalContent = `${finalContent}\n\n[SIGNATURE:${finalSignature}]`;
 
       let csrfToken = '';
       try {
