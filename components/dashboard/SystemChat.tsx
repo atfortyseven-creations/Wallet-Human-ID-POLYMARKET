@@ -590,6 +590,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
             getAddress: async () => address,
             signMessage: async (msg: string | Uint8Array) => {
               const currentDeviceOS = getDeviceOS();
+              const isMobile = currentDeviceOS === 'ios' || currentDeviceOS === 'android';
 
               // ── iOS: show manual wallet-open UI ───────────────────────────
               if (currentDeviceOS === 'ios' && !isLocalSystemWallet) {
@@ -599,32 +600,64 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                 setWcDeepLink(link);
               }
 
-              try {
-                // Try walletClient.signMessage() first (viem direct path — better iOS compat)
-                const wc = walletClientRef.current;
-                if (wc?.signMessage) {
-                  const sig = await wc.signMessage({
-                    account: address as `0x${string}`,
-                    message: typeof msg === 'string' ? msg : { raw: msg as unknown as `0x${string}` },
+              // ── Mobile: wait for WalletConnect session to stabilise ────────
+              // After the user returns from their wallet app, WalletConnect needs
+              // ~600ms to re-handshake the WebSocket before RPC calls succeed.
+              // Without this delay we get "An Unknown RPC Error Occurred" (WC v2).
+              if (isMobile && !isLocalSystemWallet) {
+                await new Promise(r => setTimeout(r, 700));
+              }
+
+              // ── Retry loop for Unknown RPC errors (WalletConnect v2 bug) ──
+              let rpcAttempts = 0;
+              const maxRpcAttempts = 3;
+              while (rpcAttempts < maxRpcAttempts) {
+                try {
+                  // Try walletClient.signMessage() first (viem direct path — better iOS compat)
+                  const wc = walletClientRef.current;
+                  if (wc?.signMessage) {
+                    const sig = await wc.signMessage({
+                      account: address as `0x${string}`,
+                      message: typeof msg === 'string' ? msg : { raw: msg as unknown as `0x${string}` },
+                    });
+                    setIosSignPending(false);
+                    return sig;
+                  }
+
+                  // Fallback: wagmi hook (works on Android + PC always)
+                  const sig = await signMessageAsync({
+                    message: typeof msg === 'string' ? msg : { raw: msg } as any
                   });
                   setIosSignPending(false);
                   return sig;
-                }
+                } catch (sigErr: any) {
+                  rpcAttempts++;
+                  const errMsg = (sigErr?.message || '').toLowerCase();
 
-                // Fallback: wagmi hook (works on Android + PC always)
-                const sig = await signMessageAsync({
-                  message: typeof msg === 'string' ? msg : { raw: msg } as any
-                });
-                setIosSignPending(false);
-                return sig;
-              } catch (sigErr: any) {
-                setIosSignPending(false);
-                const errMsg = (sigErr?.message || '').toLowerCase();
-                if (errMsg.includes('connector') || errMsg.includes('not connected') || errMsg.includes('signmessage')) {
-                  throw new Error('Wallet did not respond to signature. Please reconnect your wallet.');
+                  // WalletConnect v2 unknown RPC error — transient, retry with backoff
+                  const isRpcError = errMsg.includes('unknown rpc') || errMsg.includes('rpc error') || errMsg.includes('internal error');
+                  if (isRpcError && rpcAttempts < maxRpcAttempts) {
+                    console.warn(`[XMTP] WalletConnect RPC error (attempt ${rpcAttempts}), retrying in ${rpcAttempts * 800}ms...`);
+                    await new Promise(r => setTimeout(r, rpcAttempts * 800));
+                    continue;
+                  }
+
+                  setIosSignPending(false);
+
+                  if (isRpcError) {
+                    throw new Error('Tu wallet tardó en responder. Abre MetaMask, acepta la firma pendiente y pulsa Reintentar Conexión.');
+                  }
+                  if (errMsg.includes('reject') || errMsg.includes('deny') || errMsg.includes('user denied')) {
+                    throw sigErr; // propagate so outer catch handles it
+                  }
+                  if (errMsg.includes('connector') || errMsg.includes('not connected') || errMsg.includes('signmessage')) {
+                    throw new Error('Wallet did not respond to signature. Please reconnect your wallet.');
+                  }
+                  throw sigErr;
                 }
-                throw sigErr;
               }
+              // Should not reach here
+              throw new Error('Firma fallida después de 3 intentos. Abre tu wallet manualmente y reintenta.');
             },
           };
         }
@@ -655,7 +688,15 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
         if (msg.includes('reject') || msg.includes('deny') || msg.includes('user denied')) {
           xmtpInitLock.current = false;
           setXmtpInitializing(false);
-          setXmtpError('Signature rejected. Please tap the button below and approve in your wallet.');
+          setXmtpError('Firma rechazada. Pulsa el botón de abajo y aprueba en tu wallet.');
+          return;
+        }
+
+        // WalletConnect RPC error — give actionable instructions
+        if (msg.includes('wallet') || msg.includes('rpc') || msg.includes('tardó') || msg.includes('respond')) {
+          xmtpInitLock.current = false;
+          setXmtpInitializing(false);
+          setXmtpError(e?.message ?? 'Error de conexión con tu wallet. Abre MetaMask, asegúrate de que está en la red correcta y pulsa Reintentar.');
           return;
         }
         if (attempts >= maxAttempts) {
