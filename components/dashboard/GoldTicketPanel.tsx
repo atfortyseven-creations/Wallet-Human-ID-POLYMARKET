@@ -9,8 +9,8 @@ import {
   useSendTransaction
 } from 'wagmi';
 import { parseEther } from 'viem';
-import { useSystemAccount } from '@/hooks/useSystemAccount';
 import { injected } from 'wagmi/connectors';
+import { useAppKit } from '@reown/appkit/react';
 import { WhaleLogo } from '@/components/shared/WhaleLogo';
 import { useRouter } from 'next/navigation';
 import { Fingerprint } from 'lucide-react';
@@ -408,6 +408,7 @@ function GlobalLedger({ feed }: { feed: any[] }) {
 export function GoldTicketPanel() {
   const { address, isConnected, chainId, isSystemHandshake } = useSystemAccount();
   const { isConnected: isWagmiConnected } = useAccount();
+  const { open: openAppKit } = useAppKit();
   const router = useRouter();
   const { switchChain } = useSwitchChain();
   const { signMessage, isPending: isSigning } = useSignMessage();
@@ -494,10 +495,34 @@ export function GoldTicketPanel() {
       }
     };
 
-    // 1-Click Minting: Since the user is authenticated via JWT (isConnected),
-    // we do not need to force a second Wagmi signature.
-    await performClaim('bypass');
-  }, [isConnected, address, signatureData, signatureStrokes, isMinting, isSigning, router, fetchStats]);
+    if (!isWagmiConnected) {
+      openAppKit();
+      toast.info('Please connect your wallet directly to sign the transaction.');
+      setIsMinting(false);
+      return;
+    }
+
+    try {
+      const signToastId = toast.loading('Awaiting cryptographic wallet signature (Gasless)...');
+      signMessage(
+        { message: `WHALE ALERT NETWORK GOLD ACCESS VERIFICATION: ${address}` },
+        {
+          onSuccess: async (cryptoSignature: string) => {
+            toast.dismiss(signToastId);
+            await performClaim(cryptoSignature, undefined);
+          },
+          onError: async (err: any) => {
+            toast.dismiss(signToastId);
+            toast.error('Signature rejected. You must sign the message to claim your identity.');
+            setIsMinting(false);
+          }
+        }
+      );
+    } catch (error: any) {
+      toast.error(`Mint execution failed: ${error?.shortMessage || error?.message || 'Transaction rejected'}`);
+      setIsMinting(false);
+    }
+  }, [isConnected, isWagmiConnected, address, signatureData, signatureStrokes, isMinting, isSigning, signMessage, openAppKit, fetchStats]);
 
   const hasTicket = dbStats?.ticket || false;
 
