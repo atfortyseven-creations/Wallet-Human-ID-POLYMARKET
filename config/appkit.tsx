@@ -144,7 +144,6 @@ const metadata = {
     url: CANONICAL_APP_URL,
     icons: [`${CANONICAL_APP_URL}/official-whale-monochrome.png`],
     redirect: {
-        native: 'humanidfi://',
         universal: CANONICAL_APP_URL,
     }
 }
