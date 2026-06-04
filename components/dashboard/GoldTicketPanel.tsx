@@ -493,6 +493,17 @@ export function GoldTicketPanel() {
       }
     };
 
+    // ── System/QR Handshake users: session-only claim (no wallet client needed) ──
+    // These users connected via Humanity Ledger native login or QR scan.
+    // They have a valid HTTP session cookie (human_session / system_handshake)
+    // so we can skip the wallet signing entirely and go straight to the API.
+    if (!isWagmiConnected && isConnected) {
+      // They ARE connected to the system, just not via Wagmi.
+      // The API will authenticate them via session cookie.
+      await performClaim('SESSION_AUTH', undefined);
+      return;
+    }
+
     if (!isWagmiConnected) {
       openAppKit();
       toast.info('Please connect your wallet directly to sign the transaction.');
@@ -537,16 +548,21 @@ export function GoldTicketPanel() {
 
       while (rpcAttempts < maxRpcAttempts) {
         try {
+          // ── Try viem walletClient first (better WalletConnect mobile compat) ──
           if (walletClient?.signMessage) {
+            const acct = walletClient.account?.address ?? address;
             cryptoSignature = await walletClient.signMessage({
-              account: (walletClient.account ?? address) as `0x${string}`,
+              account: acct as `0x${string}`,
               message: messageToSign,
             });
-          } else {
+          } else if (signMessageAsync) {
+            // ── Fallback: wagmi hook (works on desktop + Android always) ──
             cryptoSignature = await signMessageAsync({ message: messageToSign });
+          } else {
+            throw new Error('No signing method available. Please reconnect your wallet.');
           }
           lastError = null;
-          break; // success
+          break; // success — exit retry loop
         } catch (sigErr: any) {
           lastError = sigErr;
           rpcAttempts++;
@@ -554,35 +570,50 @@ export function GoldTicketPanel() {
           const isRpcError =
             errMsg.includes('unknown rpc') ||
             errMsg.includes('rpc error') ||
-            errMsg.includes('internal error');
+            errMsg.includes('internal error') ||
+            errMsg.includes('socket') ||
+            errMsg.includes('timeout');
 
           if (isRpcError && rpcAttempts < maxRpcAttempts) {
-            console.warn(`[GoldTicket] WalletConnect RPC error (attempt ${rpcAttempts}), retrying in ${rpcAttempts * 800}ms...`);
-            await new Promise(r => setTimeout(r, rpcAttempts * 800));
+            const waitMs = rpcAttempts * 1000;
+            console.warn(`[GoldTicket] WalletConnect RPC error (attempt ${rpcAttempts}/${maxRpcAttempts}), retrying in ${waitMs}ms...`);
+            toast.loading(`Connection issue, retrying... (${rpcAttempts}/${maxRpcAttempts - 1})`, { id: signToastId });
+            await new Promise(r => setTimeout(r, waitMs));
             continue;
           }
 
-          // User rejected — no retry
-          if (errMsg.includes('reject') || errMsg.includes('deny') || errMsg.includes('user denied')) {
+          // User explicitly rejected — no retry, clean exit
+          if (errMsg.includes('reject') || errMsg.includes('deny') || errMsg.includes('user denied') || errMsg.includes('cancelled')) {
             toast.dismiss(signToastId);
-            toast.error('Signature declined. Please approve the request in your wallet.');
+            toast.error('Signature declined. Please approve the request in your wallet app.');
             setIsMinting(false);
             return;
           }
 
-          // Fallback to hook-based sign
-          try {
-            cryptoSignature = await signMessageAsync({ message: messageToSign });
-            lastError = null;
-          } catch (fallbackErr: any) {
-            lastError = fallbackErr;
+          // Last resort: try wagmi hook as final fallback
+          if (walletClient && signMessageAsync) {
+            try {
+              cryptoSignature = await signMessageAsync({ message: messageToSign });
+              lastError = null;
+            } catch (fallbackErr: any) {
+              lastError = fallbackErr;
+            }
           }
           break;
         }
       }
 
       if (lastError || !cryptoSignature) {
-        throw lastError || new Error('Signature could not be obtained.');
+        const errMsg = (lastError?.message || '').toLowerCase();
+        if (errMsg.includes('reject') || errMsg.includes('deny') || errMsg.includes('user denied')) {
+          toast.dismiss();
+          toast.error('Signature declined.');
+        } else {
+          toast.dismiss();
+          toast.error(`Could not sign: ${lastError?.shortMessage || lastError?.message || 'Unknown error'}. Open your wallet app and try again.`);
+        }
+        setIsMinting(false);
+        return;
       }
 
       toast.dismiss(signToastId);

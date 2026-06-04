@@ -180,12 +180,17 @@ export async function POST(req: NextRequest) {
         const { getSession } = await import('@/lib/session');
         const session = await getSession();
         
-        // Strategy: if cryptoSignature is present, verify it cryptographically (works on mobile/desktop).
-        // Session is only used as a fast-path if no signature is provided (legacy/native system login).
-        if (cryptoSignature && typeof cryptoSignature === 'string') {
-            // Cryptographic signature path — works on ALL platforms (mobile WalletConnect, desktop extension, native)
+        // Strategy:
+        //   1. If cryptoSignature is a real ECDSA hex sig → verify it (works on ALL platforms)
+        //   2. If cryptoSignature === 'SESSION_AUTH' → user is a native/QR login, use session cookie
+        //   3. No signature + no session → 401
+        const isSessionAuthSentinel = cryptoSignature === 'SESSION_AUTH';
+
+        if (cryptoSignature && typeof cryptoSignature === 'string' && !isSessionAuthSentinel) {
+            // ── Path A: ECDSA cryptographic verification ──────────────────────────
+            // Works on ALL platforms: mobile WalletConnect, desktop MetaMask, Coinbase, Rainbow.
             let isValidSig = false;
-            // Try exact message first
+            // Try current message format first
             try {
                 isValidSig = await verifyMessage({
                     address:   walletAddress as `0x${string}`,
@@ -193,7 +198,7 @@ export async function POST(req: NextRequest) {
                     signature: cryptoSignature as `0x${string}`,
                 });
             } catch {}
-            // Fallback: try legacy message format (backwards compat for any old clients)
+            // Fallback: try legacy message format (backwards compat for older clients)
             if (!isValidSig) {
                 try {
                     isValidSig = await verifyMessage({
@@ -207,13 +212,17 @@ export async function POST(req: NextRequest) {
                 console.warn(JSON.stringify({ level: 'SECURITY', event: 'INVALID_SIGNATURE', ip, address }));
                 return NextResponse.json({ error: 'Cryptographic signature is invalid or forged' }, { status: 401 });
             }
-            // Valid signature — proceed to minting
+            // ✅ Valid ECDSA signature — proceed to minting
         } else {
-            // Session-only path (native system login / QR login users who don't have a direct wallet)
+            // ── Path B: Session-only (native Humanity Ledger login / QR login) ────
+            // These users don't have a Wagmi wallet, they authenticate via HTTP session cookie.
             const isSessionAuthenticated = session?.userId?.toLowerCase() === address;
             if (!isSessionAuthenticated) {
-                return NextResponse.json({ error: 'Authentication required. Please sign with your wallet or connect via the app.' }, { status: 401 });
+                return NextResponse.json({
+                    error: 'Authentication required. Please sign with your wallet or reconnect via the app.',
+                }, { status: 401 });
             }
+            // ✅ Valid session — proceed to minting
         }
 
         //  Fast-path: check for existing claim 
