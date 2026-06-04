@@ -23,7 +23,6 @@ import { MetaMaskNetworkSelector } from '@/components/portfolio/MetaMaskNetworkS
 import { QuantumHoldingsEngine } from '@/components/portfolio/QuantumHoldingsEngine';
 
 import { AztecPrivacyTerminal } from '@/components/portfolio/AztecPrivacyTerminal';
-import { AztecQdsTransferView } from '@/components/portfolio/AztecQdsTransferView';
 import { SecurityAllowances } from '@/components/portfolio/SecurityAllowances';
 import { ContractDeployerView } from '@/components/portfolio/ContractDeployerView';
 import { TransactionManagerView } from '@/components/portfolio/TransactionManager';
@@ -244,7 +243,6 @@ export function InstitutionalPortfolioView() {
                 {view === 'BRIDGE' && <NativeBridgeView key="bridge" onBack={() => setView('HOME')} />}
                 {view === 'BUY' && <NativeBuyView key="buy" address={address} onBack={() => setView('HOME')} />}
                 {view === 'SEND' && <NativeSendView key="send" onBack={() => setView('HOME')} />}
-                {view === 'QDS' && <AztecQdsTransferView key="qds" onBack={() => setView('HOME')} />}
             </AnimatePresence>
             {showReceive && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/90 backdrop-blur-sm" onClick={() => setShowReceive(false)}>

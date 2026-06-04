@@ -245,8 +245,8 @@ export function NativeSendView({ onBack, initialTokenSymbol }: { onBack: () => v
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        fromAddress: aztecSender,
-                        toAddress: finalRecipient,
+                        from: aztecSender,
+                        to: finalRecipient,
                         amount: amount
                     })
                 });
