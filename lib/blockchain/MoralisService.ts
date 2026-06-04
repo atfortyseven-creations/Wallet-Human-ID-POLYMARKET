@@ -26,12 +26,18 @@ const MORALIS_KEYS = [
 
 export class MoralisService {
   private currentKeyIndex = 0;
+  private circuitBreakerTrippedUntil: number = 0;
+  private consecutiveFailures: number = 0;
 
   constructor() {
-    console.log('[MoralisService] Initialized with 7-key load balancing matrix. True Deep Index restored.');
+    console.log('[MoralisService] Initialized with 7-key load balancing matrix. Circuit Breaker enabled.');
   }
 
   private async fetchWithRotation(endpoint: string, options: any = {}): Promise<any> {
+    if (Date.now() < this.circuitBreakerTrippedUntil) {
+        throw new Error('MORALIS_QUOTA_EXHAUSTED: Circuit breaker tripped.');
+    }
+
     const maxRetries = MORALIS_KEYS.length;
     let attempt = 0;
     
@@ -51,9 +57,16 @@ export class MoralisService {
         });
 
         if (res.status === 429 || res.status === 402 || res.status === 401) {
-            console.warn(`[MoralisService] Quota/Auth error on key index ${this.currentKeyIndex} (status ${res.status}). Rotating...`);
+            const body = await res.text().catch(() => '');
+            console.warn(`[MoralisService] Quota/Auth error on key index ${this.currentKeyIndex} (status ${res.status}): ${body}. Rotating...`);
             this.currentKeyIndex = (this.currentKeyIndex + 1) % MORALIS_KEYS.length;
             attempt++;
+            this.consecutiveFailures++;
+            if (this.consecutiveFailures >= MORALIS_KEYS.length * 2) {
+                console.error('[MoralisService] CIRCUIT BREAKER TRIPPED. All keys failing. Disabling Moralis for 60s to trigger RPC fallback.');
+                this.circuitBreakerTrippedUntil = Date.now() + 60000;
+                throw new Error('MORALIS_QUOTA_EXHAUSTED: Circuit breaker tripped.');
+            }
             continue;
         }
 
@@ -61,6 +74,7 @@ export class MoralisService {
             throw new Error(`Moralis API Error: ${res.status} ${res.statusText}`);
         }
 
+        this.consecutiveFailures = 0;
         return await res.json();
       } catch (err: any) {
         if (err.name === 'TimeoutError' || err.message.includes('fetch') || err.message.includes('network')) {
