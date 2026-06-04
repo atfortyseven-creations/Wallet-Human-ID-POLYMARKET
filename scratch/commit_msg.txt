@@ -1,0 +1,9 @@
+fix: Quantum audit - 5 critical bugs patched
+
+- DELETE generated_registry_code.ts (orphan fragment breaking TSC build)
+- FIX TokenLogo: was importing UNIVERSAL_TOKENS (15 tokens), now QUANTUM_TOKENS (357)
+- FIX QuantumHoldingsEngine: pagination blank table bug when switching networks
+- FIX QuantumHoldingsEngine: filter operator precedence ambiguity
+- FIX universal-tokens.ts: adapter now re-exports 357 QUANTUM_TOKENS in legacy shape
+  (NativeSwapView, NativeBridgeView, ReceiveHub, UnifiedWalletModal, GainersLosersPanel
+  all automatically gain 357-token coverage with correct logos)

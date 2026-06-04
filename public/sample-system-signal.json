@@ -1,0 +1,26 @@
+{
+  "asset": "BTC",
+  "direction": "BULLISH",
+  "gravityScore": 82.4,
+  "institutionalVigorPercent": 91.5,
+  "institutionalVigorValueUsd": 127400000,
+  "institutionalIsAccumulation": true,
+  "polyConfluenceValue": 88.2,
+  "probabilityOfReversal": 88.27,
+  "expectedMove": 2.15,
+  "globalIcebergs": [
+    {
+      "price": 68420.00,
+      "sizeUsd": 47300000,
+      "exchanges": ["Binance", "Bybit"],
+      "type": "SUPPORT_WALL"
+    }
+  ],
+  "timestamp": "2026-03-29T13:45:00Z",
+  "status": "SOVEREIGN_CONFLUENCE_DETECTED",
+  "resolution": "ACTIONABLE",
+  "meta": {
+    "latency": "382ms",
+    "signature": "0xabc123...def456"
+  }
+}

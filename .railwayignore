@@ -1,0 +1,160 @@
+# ========================
+# RAILWAY IGNORE - MINIMAL
+# ========================
+
+# Build artifacts & dependencies (installed on Railway)
+node_modules/
+node_modules_backup/
+.next/
+.next_backup/
+
+# Git
+.git/
+.git_backup/
+
+# Environment files (set via Railway dashboard)
+.env
+.env.*
+!.env.example
+
+# Dev/editor
+.gemini/
+.vscode/
+.idea/
+
+# Smart Contracts (not needed at runtime)
+artifacts/
+cache/
+contracts/
+ignition/
+typechain-types/
+.openzeppelin/
+forge/
+circuits/
+noir-projects/
+hardhat.config.*
+tsconfig.hardhat.json
+tsconfig.seed.json
+
+# Unused subgraph / infra
+subgraph/
+k8s/
+docker/
+mobile-signer/
+neo4j/
+
+# Test files
+test/
+tests/
+test_*.js
+vitest.config.ts
+
+# Docs & examples
+docs/
+examples/
+scratch/
+tmp_mermaid/
+
+# Scripts not needed at runtime
+check_authors.py
+compose_logos.py
+fix_trade_page.py
+get_authors.sh
+rewrite_history.sh
+install.sh
+*.bat
+*.exe
+*.py
+*.patch
+*.cs
+*.html
+*.css
+out.css
+index.css
+index.html
+
+# Logs
+*.log
+tsc-output.txt
+tsc_output.txt
+tmp_diff.txt
+tsconfig.tsbuildinfo
+
+# Misc dev files
+bulk_replace_org.js
+clean.js
+clear_forum.js
+dedup.js
+debug_intel.js
+extract_color.js
+find_vault.js
+fix.js
+fix2.js
+fix_dark_mode.js
+fix_registry.js
+normalize.js
+purgeLogs.js
+refactor_jargon.js
+strip-dark.js
+inject-assets.js
+update_forum_script.js
+search.js
+parse-tokens.js
+search-pxe.mjs
+test-headers.js
+test_db.js
+test_db2.js
+test_redis.js
+test_stripe.js
+test_webhook.mjs
+tmp-test-rpc.js
+tmp-test-wss.js
+gtm_container_export.json
+pitch_deck.html
+index.html
+extract.html
+architecture.mmd
+AUDIT_DOSSIER.md
+CHANGELOG.md
+CONTRIBUTING.md
+DATABASE_FIX.md
+DEPLOYMENT.md
+DEPLOYMENT_CHECKLIST.md
+ETHERSCAN_SETUP.md
+GLOSSARY.md
+HARDWARE_REQUIREMENTS.md
+MANUAL_OPERATIVO_INTEGRAL.md
+MASTER_ARCHITECTURE.md
+PITCH_DECK_STRATEGY.md
+PRODUCTION_READINESS.md
+PROJECT_COMPILATION.md
+QUICKSTART.md
+RAILWAY_DEPLOYMENT.md
+RELASES.md
+RELEASES.md
+SECURITY.md
+SOVEREIGN_WHITEPAPER.md
+START_WHALE_BOT.md
+STATE_OF_WHALE_INTELLIGENCE_2026.md
+TESTING.md
+WHALE_KEEPALIVE.md
+ADMIN_SETUP.md
+system_capabilities.md
+LICENSE
+NOTICE
+
+# Critical runtime files that MUST be included
+!Dockerfile
+!start.sh
+!railway.toml
+!next.config.js
+!package.json
+!package-lock.json
+!tailwind.config.ts
+!postcss.config.js
+!tsconfig.json
+!middleware.ts
+!instrumentation.ts
+!ecosystem.config.json
+!server.js
+!server.ts

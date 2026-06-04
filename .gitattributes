@@ -1,0 +1,35 @@
+# .gitattributes  Export Control & Repository Integrity
+# © 20242026 humanityledger. All Rights Reserved.
+# Proprietary & Confidential.
+#
+# Note: export-ignore directives have been disabled to allow Railway's Metal 
+# Build System to successfully download the codebase snapshot via GitHub ZIP API.
+
+#  DEFAULT: All text files use LF line endings 
+* text=auto eol=lf
+
+# Legal documents  always export (must travel with any distribution)
+LICENSE         export-subst
+NOTICE          export-subst
+
+#  BINARY ASSETS 
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.webp  binary
+*.ico   binary
+*.svg   text
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.eot   binary
+
+#  LINGUIST OVERRIDES 
+# Prevents GitHub from showing language statistics that reveal tech stack
+*.tsx   linguist-language=TypeScript
+*.ts    linguist-language=TypeScript
+
+# Prevent GitHub from indexing these in search
+prisma/schema.prisma    linguist-detectable=false
+*.sql                   linguist-detectable=false

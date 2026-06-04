@@ -1,0 +1,29 @@
+{
+  "chainId": 999999,
+  "chainName": "WhaleAlert ID Fractal Chain",
+  "rpc": ["https://fractal-rpc.WhaleAlert ID.fi"],
+  "explorer": ["https://fractal-scan.WhaleAlert ID.fi"],
+  "nativeCurrency": {
+    "name": "Human Token",
+    "symbol": "HUMAN",
+    "decimals": 18
+  },
+  "rollupConfig": {
+    "baseChainId": 10,  // Optimism Mainnet
+    "blockTime": 0.25,  // 250ms Blocks (Flash-speed)
+    "maxBlockSize": 20000000,
+    "DA": {
+      "type": "EigenDA", // Posting blobs to EigenDA
+      "commitmentType": "KZG"
+    },
+    "sequencer": {
+      "type": "Centralized", // Initially
+      "url": "https://sequencer.WhaleAlert ID.fi"
+    }
+  },
+  "interop": {
+    "ccipEnabled": true,
+    "hyperlaneEnabled": true
+  }
+}
+

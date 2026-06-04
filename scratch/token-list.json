@@ -1,0 +1,2842 @@
+[
+  {
+    "symbol": "ZRX",
+    "nameId": "0x",
+    "logoPath": "/system-shots/logostoken/0x-zrx-logo.png"
+  },
+  {
+    "symbol": "1INCH",
+    "nameId": "1inch",
+    "logoPath": "/system-shots/logostoken/1inch-1inch-logo.png"
+  },
+  {
+    "symbol": "MPH",
+    "nameId": "88mph",
+    "logoPath": "/system-shots/logostoken/88mph-mph-logo.png"
+  },
+  {
+    "symbol": "AAVE",
+    "nameId": "aave",
+    "logoPath": "/system-shots/logostoken/aave-aave-logo.png"
+  },
+  {
+    "symbol": "ABBC",
+    "nameId": "abbc-coin",
+    "logoPath": "/system-shots/logostoken/abbc-coin-abbc-logo.png"
+  },
+  {
+    "symbol": "ACT",
+    "nameId": "achain",
+    "logoPath": "/system-shots/logostoken/achain-act-logo.png"
+  },
+  {
+    "symbol": "ADX",
+    "nameId": "adx-net",
+    "logoPath": "/system-shots/logostoken/adx-net-adx-logo.png"
+  },
+  {
+    "symbol": "ELF",
+    "nameId": "aelf",
+    "logoPath": "/system-shots/logostoken/aelf-elf-logo.png"
+  },
+  {
+    "symbol": "AE",
+    "nameId": "aeternity",
+    "logoPath": "/system-shots/logostoken/aeternity-ae-logo.png"
+  },
+  {
+    "symbol": "AEVO",
+    "nameId": "aevo",
+    "logoPath": "/system-shots/logostoken/aevo-aevo-logo.png"
+  },
+  {
+    "symbol": "AGRS",
+    "nameId": "agoras-tokens",
+    "logoPath": "/system-shots/logostoken/agoras-tokens-agrs-logo.png"
+  },
+  {
+    "symbol": "DLT",
+    "nameId": "agrello-delta",
+    "logoPath": "/system-shots/logostoken/agrello-delta-dlt-logo.png"
+  },
+  {
+    "symbol": "ADK",
+    "nameId": "aidos-kuneen",
+    "logoPath": "/system-shots/logostoken/aidos-kuneen-adk-logo.png"
+  },
+  {
+    "symbol": "AION",
+    "nameId": "aion",
+    "logoPath": "/system-shots/logostoken/aion-aion-logo.png"
+  },
+  {
+    "symbol": "AIOZ",
+    "nameId": "aioz-network",
+    "logoPath": "/system-shots/logostoken/aioz-network-aioz-logo.png"
+  },
+  {
+    "symbol": "AST",
+    "nameId": "airswap",
+    "logoPath": "/system-shots/logostoken/airswap-ast-logo.png"
+  },
+  {
+    "symbol": "AKT",
+    "nameId": "akash-network",
+    "logoPath": "/system-shots/logostoken/akash-network-akt-logo.png"
+  },
+  {
+    "symbol": "AKRO",
+    "nameId": "akropolis",
+    "logoPath": "/system-shots/logostoken/akropolis-akro-logo.png"
+  },
+  {
+    "symbol": "ACH",
+    "nameId": "alchemy-pay",
+    "logoPath": "/system-shots/logostoken/alchemy-pay-ach-logo.png"
+  },
+  {
+    "symbol": "ALEPH",
+    "nameId": "aleph-im",
+    "logoPath": "/system-shots/logostoken/aleph-im-aleph-logo.png"
+  },
+  {
+    "symbol": "ALGO",
+    "nameId": "algorand",
+    "logoPath": "/system-shots/logostoken/algorand-algo-logo.png"
+  },
+  {
+    "symbol": "ASAFE",
+    "nameId": "allsafe",
+    "logoPath": "/system-shots/logostoken/allsafe-asafe-logo.png"
+  },
+  {
+    "symbol": "ALPACA",
+    "nameId": "alpaca-finance",
+    "logoPath": "/system-shots/logostoken/alpaca-finance-alpaca-logo.png"
+  },
+  {
+    "symbol": "ALPHA",
+    "nameId": "alpha-finance-lab",
+    "logoPath": "/system-shots/logostoken/alpha-finance-lab-alpha-logo.png"
+  },
+  {
+    "symbol": "ALT",
+    "nameId": "altlayer",
+    "logoPath": "/system-shots/logostoken/altlayer-alt-logo.png"
+  },
+  {
+    "symbol": "AMP",
+    "nameId": "amp",
+    "logoPath": "/system-shots/logostoken/amp-amp-logo.png"
+  },
+  {
+    "symbol": "AMPL",
+    "nameId": "ampleforth",
+    "logoPath": "/system-shots/logostoken/ampleforth-ampl-logo.png"
+  },
+  {
+    "symbol": "ANKR",
+    "nameId": "ankr",
+    "logoPath": "/system-shots/logostoken/ankr-ankr-logo.png"
+  },
+  {
+    "symbol": "ANY",
+    "nameId": "anyswap",
+    "logoPath": "/system-shots/logostoken/anyswap-any-logo.png"
+  },
+  {
+    "symbol": "APE",
+    "nameId": "apecoin-ape",
+    "logoPath": "/system-shots/logostoken/apecoin-ape-ape-logo.png"
+  },
+  {
+    "symbol": "NFT",
+    "nameId": "apenft",
+    "logoPath": "/system-shots/logostoken/apenft-nft-logo.png"
+  },
+  {
+    "symbol": "API3",
+    "nameId": "api3",
+    "logoPath": "/system-shots/logostoken/api3-api3-logo.png"
+  },
+  {
+    "symbol": "APL",
+    "nameId": "apollo-currency",
+    "logoPath": "/system-shots/logostoken/apollo-currency-apl-logo.png"
+  },
+  {
+    "symbol": "APT",
+    "nameId": "aptos",
+    "logoPath": "/system-shots/logostoken/aptos-apt-logo.png"
+  },
+  {
+    "symbol": "ANT",
+    "nameId": "aragon",
+    "logoPath": "/system-shots/logostoken/aragon-ant-logo.png"
+  },
+  {
+    "symbol": "ARB",
+    "nameId": "arbitrum",
+    "logoPath": "/system-shots/logostoken/arbitrum-arb-logo.png"
+  },
+  {
+    "symbol": "ABT",
+    "nameId": "arcblock",
+    "logoPath": "/system-shots/logostoken/arcblock-abt-logo.png"
+  },
+  {
+    "symbol": "ARDR",
+    "nameId": "ardor",
+    "logoPath": "/system-shots/logostoken/ardor-ardr-logo.png"
+  },
+  {
+    "symbol": "ARK",
+    "nameId": "ark",
+    "logoPath": "/system-shots/logostoken/ark-ark-logo.png"
+  },
+  {
+    "symbol": "ARPA",
+    "nameId": "arpa-chain",
+    "logoPath": "/system-shots/logostoken/arpa-chain-arpa-logo.png"
+  },
+  {
+    "symbol": "FET",
+    "nameId": "artificial-superintelligence-alliance",
+    "logoPath": "/system-shots/logostoken/artificial-superintelligence-alliance-fet-logo.png"
+  },
+  {
+    "symbol": "AR",
+    "nameId": "arweave",
+    "logoPath": "/system-shots/logostoken/arweave-ar-logo.png"
+  },
+  {
+    "symbol": "ASTR",
+    "nameId": "astar",
+    "logoPath": "/system-shots/logostoken/astar-astr-logo.png"
+  },
+  {
+    "symbol": "REP",
+    "nameId": "augur",
+    "logoPath": "/system-shots/logostoken/augur-rep-logo.png"
+  },
+  {
+    "symbol": "AOA",
+    "nameId": "aurora",
+    "logoPath": "/system-shots/logostoken/aurora-aoa-logo.png"
+  },
+  {
+    "symbol": "NIOX",
+    "nameId": "autonio",
+    "logoPath": "/system-shots/logostoken/autonio-niox-logo.png"
+  },
+  {
+    "symbol": "AVAX",
+    "nameId": "avalanche",
+    "logoPath": "/system-shots/logostoken/avalanche-avax-logo.png"
+  },
+  {
+    "symbol": "AXS",
+    "nameId": "axie-infinity",
+    "logoPath": "/system-shots/logostoken/axie-infinity-axs-logo.png"
+  },
+  {
+    "symbol": "BABYDOGE",
+    "nameId": "baby-doge-coin",
+    "logoPath": "/system-shots/logostoken/baby-doge-coin-babydoge-logo.png"
+  },
+  {
+    "symbol": "BAKE",
+    "nameId": "bakerytoken",
+    "logoPath": "/system-shots/logostoken/bakerytoken-bake-logo.png"
+  },
+  {
+    "symbol": "BAL",
+    "nameId": "balancer",
+    "logoPath": "/system-shots/logostoken/balancer-bal-logo.png"
+  },
+  {
+    "symbol": "BAN",
+    "nameId": "banano",
+    "logoPath": "/system-shots/logostoken/banano-ban-logo.png"
+  },
+  {
+    "symbol": "BNT",
+    "nameId": "bancor",
+    "logoPath": "/system-shots/logostoken/bancor-bnt-logo.png"
+  },
+  {
+    "symbol": "BAND",
+    "nameId": "band-protocol",
+    "logoPath": "/system-shots/logostoken/band-protocol-band-logo.png"
+  },
+  {
+    "symbol": "BNK",
+    "nameId": "bankera-v2",
+    "logoPath": "/system-shots/logostoken/bankera-v2-bnk-logo.png"
+  },
+  {
+    "symbol": "BOND",
+    "nameId": "barnbridge",
+    "logoPath": "/system-shots/logostoken/barnbridge-bond-logo.png"
+  },
+  {
+    "symbol": "LOGO.JPEG",
+    "nameId": "base-base",
+    "logoPath": "/system-shots/logostoken/base-base-logo.jpeg"
+  },
+  {
+    "symbol": "BRETT",
+    "nameId": "based-brett",
+    "logoPath": "/system-shots/logostoken/based-brett-brett-logo.png"
+  },
+  {
+    "symbol": "BAT",
+    "nameId": "basic-attention-token",
+    "logoPath": "/system-shots/logostoken/basic-attention-token-bat-logo.png"
+  },
+  {
+    "symbol": "BEAM",
+    "nameId": "beam",
+    "logoPath": "/system-shots/logostoken/beam-beam-logo.png"
+  },
+  {
+    "symbol": "BITB",
+    "nameId": "bean-cash",
+    "logoPath": "/system-shots/logostoken/bean-cash-bitb-logo.png"
+  },
+  {
+    "symbol": "BIFI",
+    "nameId": "beefy-finance",
+    "logoPath": "/system-shots/logostoken/beefy-finance-bifi-logo.png"
+  },
+  {
+    "symbol": "BELA",
+    "nameId": "belacoin",
+    "logoPath": "/system-shots/logostoken/belacoin-bela-logo.png"
+  },
+  {
+    "symbol": "BIX",
+    "nameId": "bibox-token",
+    "logoPath": "/system-shots/logostoken/bibox-token-bix-logo.png"
+  },
+  {
+    "symbol": "BICO",
+    "nameId": "biconomy",
+    "logoPath": "/system-shots/logostoken/biconomy-bico-logo.png"
+  },
+  {
+    "symbol": "BUSD",
+    "nameId": "binance-usd",
+    "logoPath": "/system-shots/logostoken/binance-usd-busd-logo.png"
+  },
+  {
+    "symbol": "BNX",
+    "nameId": "binaryx-new",
+    "logoPath": "/system-shots/logostoken/binaryx-new-bnx-logo.png"
+  },
+  {
+    "symbol": "BSW",
+    "nameId": "biswap",
+    "logoPath": "/system-shots/logostoken/biswap-bsw-logo.png"
+  },
+  {
+    "symbol": "BTC",
+    "nameId": "bitcoin",
+    "logoPath": "/system-shots/logostoken/bitcoin-btc-logo.png"
+  },
+  {
+    "symbol": "BCH",
+    "nameId": "bitcoin-cash",
+    "logoPath": "/system-shots/logostoken/bitcoin-cash-bch-logo.png"
+  },
+  {
+    "symbol": "BCD",
+    "nameId": "bitcoin-diamond",
+    "logoPath": "/system-shots/logostoken/bitcoin-diamond-bcd-logo.png"
+  },
+  {
+    "symbol": "BTG",
+    "nameId": "bitcoin-gold",
+    "logoPath": "/system-shots/logostoken/bitcoin-gold-btg-logo.png"
+  },
+  {
+    "symbol": "XBC",
+    "nameId": "bitcoin-plus",
+    "logoPath": "/system-shots/logostoken/bitcoin-plus-xbc-logo.png"
+  },
+  {
+    "symbol": "BSV",
+    "nameId": "bitcoin-sv",
+    "logoPath": "/system-shots/logostoken/bitcoin-sv-bsv-logo.png"
+  },
+  {
+    "symbol": "BTCZ",
+    "nameId": "bitcoinz",
+    "logoPath": "/system-shots/logostoken/bitcoinz-btcz-logo.png"
+  },
+  {
+    "symbol": "BTX",
+    "nameId": "bitcore",
+    "logoPath": "/system-shots/logostoken/bitcore-btx-logo.png"
+  },
+  {
+    "symbol": "BIT",
+    "nameId": "bitdao",
+    "logoPath": "/system-shots/logostoken/bitdao-bit-logo.png"
+  },
+  {
+    "symbol": "BF",
+    "nameId": "bitforex-token",
+    "logoPath": "/system-shots/logostoken/bitforex-token-bf-logo.png"
+  },
+  {
+    "symbol": "BGL",
+    "nameId": "bitgesell",
+    "logoPath": "/system-shots/logostoken/bitgesell-bgl-logo.png"
+  },
+  {
+    "symbol": "BGB",
+    "nameId": "bitget-token-new",
+    "logoPath": "/system-shots/logostoken/bitget-token-new-bgb-logo.png"
+  },
+  {
+    "symbol": "BTS",
+    "nameId": "bitshares",
+    "logoPath": "/system-shots/logostoken/bitshares-bts-logo.png"
+  },
+  {
+    "symbol": "TAO",
+    "nameId": "bittensor",
+    "logoPath": "/system-shots/logostoken/bittensor-tao-logo.png"
+  },
+  {
+    "symbol": "BTTOLD",
+    "nameId": "bittorrent",
+    "logoPath": "/system-shots/logostoken/bittorrent-bttold-logo.png"
+  },
+  {
+    "symbol": "BLK",
+    "nameId": "blackcoin",
+    "logoPath": "/system-shots/logostoken/blackcoin-blk-logo.png"
+  },
+  {
+    "symbol": "BLOCK",
+    "nameId": "blocknet",
+    "logoPath": "/system-shots/logostoken/blocknet-block-logo.png"
+  },
+  {
+    "symbol": "BLZ",
+    "nameId": "bluzelle",
+    "logoPath": "/system-shots/logostoken/bluzelle-blz-logo.png"
+  },
+  {
+    "symbol": "BNB",
+    "nameId": "bnb",
+    "logoPath": "/system-shots/logostoken/bnb-bnb-logo.png"
+  },
+  {
+    "symbol": "BONE",
+    "nameId": "bone-shibaswap",
+    "logoPath": "/system-shots/logostoken/bone-shibaswap-bone-logo.png"
+  },
+  {
+    "symbol": "BONK",
+    "nameId": "bonk1",
+    "logoPath": "/system-shots/logostoken/bonk1-bonk-logo.png"
+  },
+  {
+    "symbol": "BOME",
+    "nameId": "book-of-meme",
+    "logoPath": "/system-shots/logostoken/book-of-meme-bome-logo.png"
+  },
+  {
+    "symbol": "BTO",
+    "nameId": "bottos",
+    "logoPath": "/system-shots/logostoken/bottos-bto-logo.png"
+  },
+  {
+    "symbol": "BNTY",
+    "nameId": "bounty0x",
+    "logoPath": "/system-shots/logostoken/bounty0x-bnty-logo.png"
+  },
+  {
+    "symbol": "BTRST",
+    "nameId": "braintrust",
+    "logoPath": "/system-shots/logostoken/braintrust-btrst-logo.png"
+  },
+  {
+    "symbol": "BRD",
+    "nameId": "bread",
+    "logoPath": "/system-shots/logostoken/bread-brd-logo.png"
+  },
+  {
+    "symbol": "BCN",
+    "nameId": "bytecoin-bcn",
+    "logoPath": "/system-shots/logostoken/bytecoin-bcn-bcn-logo.png"
+  },
+  {
+    "symbol": "BTM",
+    "nameId": "bytom",
+    "logoPath": "/system-shots/logostoken/bytom-btm-logo.png"
+  },
+  {
+    "symbol": "ADA",
+    "nameId": "cardano",
+    "logoPath": "/system-shots/logostoken/cardano-ada-logo.png"
+  },
+  {
+    "symbol": "CTSI",
+    "nameId": "cartesi",
+    "logoPath": "/system-shots/logostoken/cartesi-ctsi-logo.png"
+  },
+  {
+    "symbol": "CSPR",
+    "nameId": "casper",
+    "logoPath": "/system-shots/logostoken/casper-cspr-logo.png"
+  },
+  {
+    "symbol": "CATS",
+    "nameId": "catcoin-token",
+    "logoPath": "/system-shots/logostoken/catcoin-token-cats-logo.png"
+  },
+  {
+    "symbol": "TIA",
+    "nameId": "celestia",
+    "logoPath": "/system-shots/logostoken/celestia-tia-logo.png"
+  },
+  {
+    "symbol": "CELO",
+    "nameId": "celo",
+    "logoPath": "/system-shots/logostoken/celo-celo-logo.png"
+  },
+  {
+    "symbol": "CEL",
+    "nameId": "celsius",
+    "logoPath": "/system-shots/logostoken/celsius-cel-logo.png"
+  },
+  {
+    "symbol": "CENNZ",
+    "nameId": "centrality",
+    "logoPath": "/system-shots/logostoken/centrality-cennz-logo.png"
+  },
+  {
+    "symbol": "CFG",
+    "nameId": "centrifuge",
+    "logoPath": "/system-shots/logostoken/centrifuge-cfg-logo.png"
+  },
+  {
+    "symbol": "LINK",
+    "nameId": "chainlink",
+    "logoPath": "/system-shots/logostoken/chainlink-link-logo.png"
+  },
+  {
+    "symbol": "PCX",
+    "nameId": "chainx",
+    "logoPath": "/system-shots/logostoken/chainx-pcx-logo.png"
+  },
+  {
+    "symbol": "XCH",
+    "nameId": "chia-network",
+    "logoPath": "/system-shots/logostoken/chia-network-xch-logo.png"
+  },
+  {
+    "symbol": "BNANA",
+    "nameId": "chimpion",
+    "logoPath": "/system-shots/logostoken/chimpion-bnana-logo.png"
+  },
+  {
+    "symbol": "CND",
+    "nameId": "cindicator",
+    "logoPath": "/system-shots/logostoken/cindicator-cnd-logo.png"
+  },
+  {
+    "symbol": "CVC",
+    "nameId": "civic",
+    "logoPath": "/system-shots/logostoken/civic-cvc-logo.png"
+  },
+  {
+    "symbol": "CLAM",
+    "nameId": "clams",
+    "logoPath": "/system-shots/logostoken/clams-clam-logo.png"
+  },
+  {
+    "symbol": "CLOAK",
+    "nameId": "cloakcoin",
+    "logoPath": "/system-shots/logostoken/cloakcoin-cloak-logo.png"
+  },
+  {
+    "symbol": "COB",
+    "nameId": "cobinhood",
+    "logoPath": "/system-shots/logostoken/cobinhood-cob-logo.png"
+  },
+  {
+    "symbol": "C98",
+    "nameId": "coin98",
+    "logoPath": "/system-shots/logostoken/coin98-c98-logo.png"
+  },
+  {
+    "symbol": "CLT",
+    "nameId": "coinloan",
+    "logoPath": "/system-shots/logostoken/coinloan-clt-logo.png"
+  },
+  {
+    "symbol": "XCM",
+    "nameId": "coinmetro-token",
+    "logoPath": "/system-shots/logostoken/coinmetro-token-xcm-logo.png"
+  },
+  {
+    "symbol": "COLX",
+    "nameId": "colossusxt",
+    "logoPath": "/system-shots/logostoken/colossusxt-colx-logo.png"
+  },
+  {
+    "symbol": "COMP",
+    "nameId": "compound",
+    "logoPath": "/system-shots/logostoken/compound-comp-logo.png"
+  },
+  {
+    "symbol": "CFX",
+    "nameId": "conflux-network",
+    "logoPath": "/system-shots/logostoken/conflux-network-cfx-logo.png"
+  },
+  {
+    "symbol": "CVX",
+    "nameId": "convex-finance",
+    "logoPath": "/system-shots/logostoken/convex-finance-cvx-logo.png"
+  },
+  {
+    "symbol": "CORE",
+    "nameId": "core-dao",
+    "logoPath": "/system-shots/logostoken/core-dao-core-logo.png"
+  },
+  {
+    "symbol": "CTXC",
+    "nameId": "cortex",
+    "logoPath": "/system-shots/logostoken/cortex-ctxc-logo.png"
+  },
+  {
+    "symbol": "ATOM",
+    "nameId": "cosmos",
+    "logoPath": "/system-shots/logostoken/cosmos-atom-logo.png"
+  },
+  {
+    "symbol": "COTI",
+    "nameId": "coti",
+    "logoPath": "/system-shots/logostoken/coti-coti-logo.png"
+  },
+  {
+    "symbol": "XCP",
+    "nameId": "counterparty",
+    "logoPath": "/system-shots/logostoken/counterparty-xcp-logo.png"
+  },
+  {
+    "symbol": "CQT",
+    "nameId": "covalent",
+    "logoPath": "/system-shots/logostoken/covalent-cqt-logo.png"
+  },
+  {
+    "symbol": "CREAM",
+    "nameId": "cream-finance",
+    "logoPath": "/system-shots/logostoken/cream-finance-cream-logo.png"
+  },
+  {
+    "symbol": "CS",
+    "nameId": "credits",
+    "logoPath": "/system-shots/logostoken/credits-cs-logo.png"
+  },
+  {
+    "symbol": "CRO",
+    "nameId": "cronos",
+    "logoPath": "/system-shots/logostoken/cronos-cro-logo.png"
+  },
+  {
+    "symbol": "CRW",
+    "nameId": "crown",
+    "logoPath": "/system-shots/logostoken/crown-crw-logo.png"
+  },
+  {
+    "symbol": "CRPT",
+    "nameId": "crpt",
+    "logoPath": "/system-shots/logostoken/crpt-crpt-logo.png"
+  },
+  {
+    "symbol": "CRV",
+    "nameId": "curve-dao-token",
+    "logoPath": "/system-shots/logostoken/curve-dao-token-crv-logo.png"
+  },
+  {
+    "symbol": "CVT",
+    "nameId": "cybervein",
+    "logoPath": "/system-shots/logostoken/cybervein-cvt-logo.png"
+  },
+  {
+    "symbol": "DASH",
+    "nameId": "dash",
+    "logoPath": "/system-shots/logostoken/dash-dash-logo.png"
+  },
+  {
+    "symbol": "DUSD",
+    "nameId": "davos-protocol",
+    "logoPath": "/system-shots/logostoken/davos-protocol-dusd-logo.png"
+  },
+  {
+    "symbol": "MANA",
+    "nameId": "decentraland",
+    "logoPath": "/system-shots/logostoken/decentraland-mana-logo.png"
+  },
+  {
+    "symbol": "DCR",
+    "nameId": "decred",
+    "logoPath": "/system-shots/logostoken/decred-dcr-logo.png"
+  },
+  {
+    "symbol": "DBC",
+    "nameId": "deepbrain-chain",
+    "logoPath": "/system-shots/logostoken/deepbrain-chain-dbc-logo.png"
+  },
+  {
+    "symbol": "DFI",
+    "nameId": "defichain",
+    "logoPath": "/system-shots/logostoken/defichain-dfi-logo.png"
+  },
+  {
+    "symbol": "DG",
+    "nameId": "degate",
+    "logoPath": "/system-shots/logostoken/degate-dg-logo.png"
+  },
+  {
+    "symbol": "DEGEN",
+    "nameId": "degen-base",
+    "logoPath": "/system-shots/logostoken/degen-base-degen-logo.png"
+  },
+  {
+    "symbol": "DENT",
+    "nameId": "dent",
+    "logoPath": "/system-shots/logostoken/dent-dent-logo.png"
+  },
+  {
+    "symbol": "DCN",
+    "nameId": "dentacoin",
+    "logoPath": "/system-shots/logostoken/dentacoin-dcn-logo.png"
+  },
+  {
+    "symbol": "DDX",
+    "nameId": "derivadao",
+    "logoPath": "/system-shots/logostoken/derivadao-ddx-logo.png"
+  },
+  {
+    "symbol": "DESO",
+    "nameId": "deso",
+    "logoPath": "/system-shots/logostoken/deso-deso-logo.png"
+  },
+  {
+    "symbol": "DMD",
+    "nameId": "diamond",
+    "logoPath": "/system-shots/logostoken/diamond-dmd-logo.png"
+  },
+  {
+    "symbol": "DGB",
+    "nameId": "digibyte",
+    "logoPath": "/system-shots/logostoken/digibyte-dgb-logo.png"
+  },
+  {
+    "symbol": "DRC",
+    "nameId": "digital-reserve-currency",
+    "logoPath": "/system-shots/logostoken/digital-reserve-currency-drc-logo.png"
+  },
+  {
+    "symbol": "XDN",
+    "nameId": "digitalnote",
+    "logoPath": "/system-shots/logostoken/digitalnote-xdn-logo.png"
+  },
+  {
+    "symbol": "DINO",
+    "nameId": "dinolfg",
+    "logoPath": "/system-shots/logostoken/dinolfg-dino-logo.png"
+  },
+  {
+    "symbol": "DNT",
+    "nameId": "district0x",
+    "logoPath": "/system-shots/logostoken/district0x-dnt-logo.png"
+  },
+  {
+    "symbol": "DIVI",
+    "nameId": "divi",
+    "logoPath": "/system-shots/logostoken/divi-divi-logo.png"
+  },
+  {
+    "symbol": "DMT",
+    "nameId": "dmarket",
+    "logoPath": "/system-shots/logostoken/dmarket-dmt-logo.png"
+  },
+  {
+    "symbol": "DOCK",
+    "nameId": "dock",
+    "logoPath": "/system-shots/logostoken/dock-dock-logo.png"
+  },
+  {
+    "symbol": "DOBO",
+    "nameId": "dogebonk",
+    "logoPath": "/system-shots/logostoken/dogebonk-dobo-logo.png"
+  },
+  {
+    "symbol": "ELON",
+    "nameId": "dogelon",
+    "logoPath": "/system-shots/logostoken/dogelon-elon-logo.png"
+  },
+  {
+    "symbol": "DOGS",
+    "nameId": "dogs",
+    "logoPath": "/system-shots/logostoken/dogs-dogs-logo.png"
+  },
+  {
+    "symbol": "WIF",
+    "nameId": "dogwifhat",
+    "logoPath": "/system-shots/logostoken/dogwifhat-wif-logo.png"
+  },
+  {
+    "symbol": "DRT",
+    "nameId": "domraider",
+    "logoPath": "/system-shots/logostoken/domraider-drt-logo.png"
+  },
+  {
+    "symbol": "DRGN",
+    "nameId": "dragonchain",
+    "logoPath": "/system-shots/logostoken/dragonchain-drgn-logo.png"
+  },
+  {
+    "symbol": "DYDX",
+    "nameId": "dydx-chain",
+    "logoPath": "/system-shots/logostoken/dydx-chain-dydx-logo.png"
+  },
+  {
+    "symbol": "XEC",
+    "nameId": "ecash",
+    "logoPath": "/system-shots/logostoken/ecash-xec-logo.png"
+  },
+  {
+    "symbol": "PRIME",
+    "nameId": "echelon-prime",
+    "logoPath": "/system-shots/logostoken/echelon-prime-prime-logo.png"
+  },
+  {
+    "symbol": "EIGEN",
+    "nameId": "eigenlayer",
+    "logoPath": "/system-shots/logostoken/eigenlayer-eigen-logo.png"
+  },
+  {
+    "symbol": "ELA",
+    "nameId": "elastos",
+    "logoPath": "/system-shots/logostoken/elastos-ela-logo.png"
+  },
+  {
+    "symbol": "ETN",
+    "nameId": "electroneum",
+    "logoPath": "/system-shots/logostoken/electroneum-etn-logo.png"
+  },
+  {
+    "symbol": "EMC",
+    "nameId": "emercoin",
+    "logoPath": "/system-shots/logostoken/emercoin-emc-logo.png"
+  },
+  {
+    "symbol": "EWT",
+    "nameId": "energy-web-token",
+    "logoPath": "/system-shots/logostoken/energy-web-token-ewt-logo.png"
+  },
+  {
+    "symbol": "ENG",
+    "nameId": "enigma",
+    "logoPath": "/system-shots/logostoken/enigma-eng-logo.png"
+  },
+  {
+    "symbol": "ENJ",
+    "nameId": "enjin-coin",
+    "logoPath": "/system-shots/logostoken/enjin-coin-enj-logo.png"
+  },
+  {
+    "symbol": "MLN",
+    "nameId": "enzyme",
+    "logoPath": "/system-shots/logostoken/enzyme-mln-logo.png"
+  },
+  {
+    "symbol": "EOS",
+    "nameId": "eos",
+    "logoPath": "/system-shots/logostoken/eos-eos-logo.png"
+  },
+  {
+    "symbol": "ERG",
+    "nameId": "ergo",
+    "logoPath": "/system-shots/logostoken/ergo-erg-logo.png"
+  },
+  {
+    "symbol": "ENA",
+    "nameId": "ethena",
+    "logoPath": "/system-shots/logostoken/ethena-ena-logo.png"
+  },
+  {
+    "symbol": "USDE",
+    "nameId": "ethena-usde",
+    "logoPath": "/system-shots/logostoken/ethena-usde-usde-logo.png"
+  },
+  {
+    "symbol": "ETHFI",
+    "nameId": "ether-fi-ethfi",
+    "logoPath": "/system-shots/logostoken/ether-fi-ethfi-ethfi-logo.png"
+  },
+  {
+    "symbol": "ETC",
+    "nameId": "ethereum-classic",
+    "logoPath": "/system-shots/logostoken/ethereum-classic-etc-logo.png"
+  },
+  {
+    "symbol": "COLORED.SVG",
+    "nameId": "ethereum-eth-logo",
+    "logoPath": "/system-shots/logostoken/ethereum-eth-logo-colored.svg"
+  },
+  {
+    "symbol": "ENS",
+    "nameId": "ethereum-name-service",
+    "logoPath": "/system-shots/logostoken/ethereum-name-service-ens-logo.png"
+  },
+  {
+    "symbol": "ETHW",
+    "nameId": "ethereum-pow",
+    "logoPath": "/system-shots/logostoken/ethereum-pow-ethw-logo.png"
+  },
+  {
+    "symbol": "FUEL",
+    "nameId": "etherparty",
+    "logoPath": "/system-shots/logostoken/etherparty-fuel-logo.png"
+  },
+  {
+    "symbol": "ETHIX",
+    "nameId": "ethichub",
+    "logoPath": "/system-shots/logostoken/ethichub-ethix-logo.png"
+  },
+  {
+    "symbol": "EUL",
+    "nameId": "euler-finance",
+    "logoPath": "/system-shots/logostoken/euler-finance-eul-logo.png"
+  },
+  {
+    "symbol": "EVX",
+    "nameId": "everex",
+    "logoPath": "/system-shots/logostoken/everex-evx-logo.png"
+  },
+  {
+    "symbol": "EVER",
+    "nameId": "everscale",
+    "logoPath": "/system-shots/logostoken/everscale-ever-logo.png"
+  },
+  {
+    "symbol": "FTM",
+    "nameId": "fantom",
+    "logoPath": "/system-shots/logostoken/fantom-ftm-logo.png"
+  },
+  {
+    "symbol": "32X32 (1).PNG",
+    "nameId": "favicon",
+    "logoPath": "/system-shots/logostoken/favicon-32x32 (1).png"
+  },
+  {
+    "symbol": "32X32 (2).PNG",
+    "nameId": "favicon",
+    "logoPath": "/system-shots/logostoken/favicon-32x32 (2).png"
+  },
+  {
+    "symbol": "32X32.PNG",
+    "nameId": "favicon",
+    "logoPath": "/system-shots/logostoken/favicon-32x32.png"
+  },
+  {
+    "symbol": "FTC",
+    "nameId": "feathercoin",
+    "logoPath": "/system-shots/logostoken/feathercoin-ftc-logo.png"
+  },
+  {
+    "symbol": "FEI",
+    "nameId": "fei-usd",
+    "logoPath": "/system-shots/logostoken/fei-usd-fei-logo.png"
+  },
+  {
+    "symbol": "FIL",
+    "nameId": "filecoin",
+    "logoPath": "/system-shots/logostoken/filecoin-fil-logo.png"
+  },
+  {
+    "symbol": "FDUSD",
+    "nameId": "first-digital-usd",
+    "logoPath": "/system-shots/logostoken/first-digital-usd-fdusd-logo.png"
+  },
+  {
+    "symbol": "FLR",
+    "nameId": "flare",
+    "logoPath": "/system-shots/logostoken/flare-flr-logo.png"
+  },
+  {
+    "symbol": "FLOKI",
+    "nameId": "floki-inu",
+    "logoPath": "/system-shots/logostoken/floki-inu-floki-logo.png"
+  },
+  {
+    "symbol": "FLOW",
+    "nameId": "flow",
+    "logoPath": "/system-shots/logostoken/flow-flow-logo.png"
+  },
+  {
+    "symbol": "FOX",
+    "nameId": "fox-token",
+    "logoPath": "/system-shots/logostoken/fox-token-fox-logo.png"
+  },
+  {
+    "symbol": "FRXETH",
+    "nameId": "frax-finance-frax-ether",
+    "logoPath": "/system-shots/logostoken/frax-finance-frax-ether-frxeth-logo.png"
+  },
+  {
+    "symbol": "FRAX",
+    "nameId": "frax",
+    "logoPath": "/system-shots/logostoken/frax-frax-logo.png"
+  },
+  {
+    "symbol": "FPI",
+    "nameId": "frax-price-index",
+    "logoPath": "/system-shots/logostoken/frax-price-index-fpi-logo.png"
+  },
+  {
+    "symbol": "FPIS",
+    "nameId": "frax-price-index-share",
+    "logoPath": "/system-shots/logostoken/frax-price-index-share-fpis-logo.png"
+  },
+  {
+    "symbol": "FXS",
+    "nameId": "frax-share",
+    "logoPath": "/system-shots/logostoken/frax-share-fxs-logo.png"
+  },
+  {
+    "symbol": "FTT",
+    "nameId": "ftx-token",
+    "logoPath": "/system-shots/logostoken/ftx-token-ftt-logo.png"
+  },
+  {
+    "symbol": "FX",
+    "nameId": "function-x",
+    "logoPath": "/system-shots/logostoken/function-x-fx-logo.png"
+  },
+  {
+    "symbol": "FSN",
+    "nameId": "fusion",
+    "logoPath": "/system-shots/logostoken/fusion-fsn-logo.png"
+  },
+  {
+    "symbol": "GALA",
+    "nameId": "gala",
+    "logoPath": "/system-shots/logostoken/gala-gala-logo.png"
+  },
+  {
+    "symbol": "GAME",
+    "nameId": "gamecredits",
+    "logoPath": "/system-shots/logostoken/gamecredits-game-logo.png"
+  },
+  {
+    "symbol": "GAMMA",
+    "nameId": "gamma-strategies",
+    "logoPath": "/system-shots/logostoken/gamma-strategies-gamma-logo.png"
+  },
+  {
+    "symbol": "GAS",
+    "nameId": "gas",
+    "logoPath": "/system-shots/logostoken/gas-gas-logo.png"
+  },
+  {
+    "symbol": "GUSD",
+    "nameId": "gemini-dollar",
+    "logoPath": "/system-shots/logostoken/gemini-dollar-gusd-logo.png"
+  },
+  {
+    "symbol": "GTC",
+    "nameId": "gitcoin",
+    "logoPath": "/system-shots/logostoken/gitcoin-gtc-logo.png"
+  },
+  {
+    "symbol": "GSC",
+    "nameId": "global-social-chain",
+    "logoPath": "/system-shots/logostoken/global-social-chain-gsc-logo.png"
+  },
+  {
+    "symbol": "GNO",
+    "nameId": "gnosis-gno",
+    "logoPath": "/system-shots/logostoken/gnosis-gno-gno-logo.png"
+  },
+  {
+    "symbol": "GOAT",
+    "nameId": "goatseus-maximus",
+    "logoPath": "/system-shots/logostoken/goatseus-maximus-goat-logo.png"
+  },
+  {
+    "symbol": "GLM",
+    "nameId": "golem-network-tokens",
+    "logoPath": "/system-shots/logostoken/golem-network-tokens-glm-logo.png"
+  },
+  {
+    "symbol": "GLS",
+    "nameId": "golos-blockchain",
+    "logoPath": "/system-shots/logostoken/golos-blockchain-gls-logo.png"
+  },
+  {
+    "symbol": "GRIN",
+    "nameId": "grin",
+    "logoPath": "/system-shots/logostoken/grin-grin-logo.png"
+  },
+  {
+    "symbol": "GRS",
+    "nameId": "groestlcoin",
+    "logoPath": "/system-shots/logostoken/groestlcoin-grs-logo.png"
+  },
+  {
+    "symbol": "GXC",
+    "nameId": "gxchain",
+    "logoPath": "/system-shots/logostoken/gxchain-gxc-logo.png"
+  },
+  {
+    "symbol": "HAI",
+    "nameId": "hackenai",
+    "logoPath": "/system-shots/logostoken/hackenai-hai-logo.png"
+  },
+  {
+    "symbol": "HAKKA",
+    "nameId": "hakka-finance",
+    "logoPath": "/system-shots/logostoken/hakka-finance-hakka-logo.png"
+  },
+  {
+    "symbol": "HNS",
+    "nameId": "handshake",
+    "logoPath": "/system-shots/logostoken/handshake-hns-logo.png"
+  },
+  {
+    "symbol": "ONE",
+    "nameId": "harmony",
+    "logoPath": "/system-shots/logostoken/harmony-one-logo.png"
+  },
+  {
+    "symbol": "XHV",
+    "nameId": "haven-protocol",
+    "logoPath": "/system-shots/logostoken/haven-protocol-xhv-logo.png"
+  },
+  {
+    "symbol": "HBAR",
+    "nameId": "hedera",
+    "logoPath": "/system-shots/logostoken/hedera-hbar-logo.png"
+  },
+  {
+    "symbol": "HEDG",
+    "nameId": "hedgetrade",
+    "logoPath": "/system-shots/logostoken/hedgetrade-hedg-logo.png"
+  },
+  {
+    "symbol": "HNT",
+    "nameId": "helium",
+    "logoPath": "/system-shots/logostoken/helium-hnt-logo.png"
+  },
+  {
+    "symbol": "HEX",
+    "nameId": "hex",
+    "logoPath": "/system-shots/logostoken/hex-hex-logo.png"
+  },
+  {
+    "symbol": "HPB",
+    "nameId": "high-performance-blockchain",
+    "logoPath": "/system-shots/logostoken/high-performance-blockchain-hpb-logo.png"
+  },
+  {
+    "symbol": "HIVE",
+    "nameId": "hive-blockchain",
+    "logoPath": "/system-shots/logostoken/hive-blockchain-hive-logo.png"
+  },
+  {
+    "symbol": "HOT",
+    "nameId": "holo",
+    "logoPath": "/system-shots/logostoken/holo-hot-logo.png"
+  },
+  {
+    "symbol": "HORD",
+    "nameId": "hord",
+    "logoPath": "/system-shots/logostoken/hord-hord-logo.png"
+  },
+  {
+    "symbol": "HT",
+    "nameId": "htx-token",
+    "logoPath": "/system-shots/logostoken/htx-token-ht-logo.png"
+  },
+  {
+    "symbol": "HUSD",
+    "nameId": "husd",
+    "logoPath": "/system-shots/logostoken/husd-husd-logo.png"
+  },
+  {
+    "symbol": "HUSH",
+    "nameId": "hush",
+    "logoPath": "/system-shots/logostoken/hush-hush-logo.png"
+  },
+  {
+    "symbol": "HC",
+    "nameId": "hypercash",
+    "logoPath": "/system-shots/logostoken/hypercash-hc-logo.png"
+  },
+  {
+    "symbol": "ICX",
+    "nameId": "icon",
+    "logoPath": "/system-shots/logostoken/icon-icx-logo.png"
+  },
+  {
+    "symbol": "IDEX",
+    "nameId": "idex",
+    "logoPath": "/system-shots/logostoken/idex-idex-logo.png"
+  },
+  {
+    "symbol": "IDLE",
+    "nameId": "idle",
+    "logoPath": "/system-shots/logostoken/idle-idle-logo.png"
+  },
+  {
+    "symbol": "IGNIS",
+    "nameId": "ignis",
+    "logoPath": "/system-shots/logostoken/ignis-ignis-logo.png"
+  },
+  {
+    "symbol": "IMX",
+    "nameId": "immutable-x",
+    "logoPath": "/system-shots/logostoken/immutable-x-imx-logo.png"
+  },
+  {
+    "symbol": "INJ",
+    "nameId": "injective",
+    "logoPath": "/system-shots/logostoken/injective-inj-logo.png"
+  },
+  {
+    "symbol": "INK",
+    "nameId": "ink",
+    "logoPath": "/system-shots/logostoken/ink-ink-logo.png"
+  },
+  {
+    "symbol": "ICP",
+    "nameId": "internet-computer",
+    "logoPath": "/system-shots/logostoken/internet-computer-icp-logo.png"
+  },
+  {
+    "symbol": "ION",
+    "nameId": "ion",
+    "logoPath": "/system-shots/logostoken/ion-ion-logo.png"
+  },
+  {
+    "symbol": "IOST",
+    "nameId": "iostoken",
+    "logoPath": "/system-shots/logostoken/iostoken-iost-logo.png"
+  },
+  {
+    "symbol": "IOTA",
+    "nameId": "iota",
+    "logoPath": "/system-shots/logostoken/iota-iota-logo.png"
+  },
+  {
+    "symbol": "IOTX",
+    "nameId": "iotex",
+    "logoPath": "/system-shots/logostoken/iotex-iotx-logo.png"
+  },
+  {
+    "symbol": "IRIS",
+    "nameId": "irisnet",
+    "logoPath": "/system-shots/logostoken/irisnet-iris-logo.png"
+  },
+  {
+    "symbol": "JASMY",
+    "nameId": "jasmy",
+    "logoPath": "/system-shots/logostoken/jasmy-jasmy-logo.png"
+  },
+  {
+    "symbol": "JUNO",
+    "nameId": "juno",
+    "logoPath": "/system-shots/logostoken/juno-juno-logo.png"
+  },
+  {
+    "symbol": "JUP",
+    "nameId": "jupiter-ag",
+    "logoPath": "/system-shots/logostoken/jupiter-ag-jup-logo.png"
+  },
+  {
+    "symbol": "JST",
+    "nameId": "just",
+    "logoPath": "/system-shots/logostoken/just-jst-logo.png"
+  },
+  {
+    "symbol": "KDA",
+    "nameId": "kadena",
+    "logoPath": "/system-shots/logostoken/kadena-kda-logo.png"
+  },
+  {
+    "symbol": "KAIA",
+    "nameId": "kaia",
+    "logoPath": "/system-shots/logostoken/kaia-kaia-logo.png"
+  },
+  {
+    "symbol": "KAT",
+    "nameId": "kambria",
+    "logoPath": "/system-shots/logostoken/kambria-kat-logo.png"
+  },
+  {
+    "symbol": "KNDC",
+    "nameId": "kanadecoin",
+    "logoPath": "/system-shots/logostoken/kanadecoin-kndc-logo.png"
+  },
+  {
+    "symbol": "KBC",
+    "nameId": "karatgold-coin",
+    "logoPath": "/system-shots/logostoken/karatgold-coin-kbc-logo.png"
+  },
+  {
+    "symbol": "KAS",
+    "nameId": "kaspa",
+    "logoPath": "/system-shots/logostoken/kaspa-kas-logo.png"
+  },
+  {
+    "symbol": "KAVA",
+    "nameId": "kava",
+    "logoPath": "/system-shots/logostoken/kava-kava-logo.png"
+  },
+  {
+    "symbol": "KEEP",
+    "nameId": "keep-network",
+    "logoPath": "/system-shots/logostoken/keep-network-keep-logo.png"
+  },
+  {
+    "symbol": "ROOK",
+    "nameId": "keeperdao",
+    "logoPath": "/system-shots/logostoken/keeperdao-rook-logo.png"
+  },
+  {
+    "symbol": "KIN",
+    "nameId": "kin",
+    "logoPath": "/system-shots/logostoken/kin-kin-logo.png"
+  },
+  {
+    "symbol": "KLAY",
+    "nameId": "klaytn",
+    "logoPath": "/system-shots/logostoken/klaytn-klay-logo.png"
+  },
+  {
+    "symbol": "PNK",
+    "nameId": "kleros",
+    "logoPath": "/system-shots/logostoken/kleros-pnk-logo.png"
+  },
+  {
+    "symbol": "KLV",
+    "nameId": "klever",
+    "logoPath": "/system-shots/logostoken/klever-klv-logo.png"
+  },
+  {
+    "symbol": "KMD",
+    "nameId": "komodo",
+    "logoPath": "/system-shots/logostoken/komodo-kmd-logo.png"
+  },
+  {
+    "symbol": "KCS",
+    "nameId": "kucoin-token",
+    "logoPath": "/system-shots/logostoken/kucoin-token-kcs-logo.png"
+  },
+  {
+    "symbol": "KSM",
+    "nameId": "kusama",
+    "logoPath": "/system-shots/logostoken/kusama-ksm-logo.png"
+  },
+  {
+    "symbol": "KNC",
+    "nameId": "kyber-network-crystal-v2",
+    "logoPath": "/system-shots/logostoken/kyber-network-crystal-v2-knc-logo.png"
+  },
+  {
+    "symbol": "LA",
+    "nameId": "latoken",
+    "logoPath": "/system-shots/logostoken/latoken-la-logo.png"
+  },
+  {
+    "symbol": "LBC",
+    "nameId": "library-credits",
+    "logoPath": "/system-shots/logostoken/library-credits-lbc-logo.png"
+  },
+  {
+    "symbol": "LDO",
+    "nameId": "lido-dao",
+    "logoPath": "/system-shots/logostoken/lido-dao-ldo-logo.png"
+  },
+  {
+    "symbol": "LIKE",
+    "nameId": "likecoin",
+    "logoPath": "/system-shots/logostoken/likecoin-like-logo.png"
+  },
+  {
+    "symbol": "LQTY",
+    "nameId": "liquity",
+    "logoPath": "/system-shots/logostoken/liquity-lqty-logo.png"
+  },
+  {
+    "symbol": "LSK",
+    "nameId": "lisk",
+    "logoPath": "/system-shots/logostoken/lisk-lsk-logo.png"
+  },
+  {
+    "symbol": "LCC",
+    "nameId": "litecoin-cash",
+    "logoPath": "/system-shots/logostoken/litecoin-cash-lcc-logo.png"
+  },
+  {
+    "symbol": "LTC",
+    "nameId": "litecoin",
+    "logoPath": "/system-shots/logostoken/litecoin-ltc-logo.png"
+  },
+  {
+    "symbol": "LPT",
+    "nameId": "livepeer",
+    "logoPath": "/system-shots/logostoken/livepeer-lpt-logo.png"
+  },
+  {
+    "symbol": "LOOM",
+    "nameId": "loom-network",
+    "logoPath": "/system-shots/logostoken/loom-network-loom-logo.png"
+  },
+  {
+    "symbol": "LRC",
+    "nameId": "loopring",
+    "logoPath": "/system-shots/logostoken/loopring-lrc-logo.png"
+  },
+  {
+    "symbol": "LTO",
+    "nameId": "lto-network",
+    "logoPath": "/system-shots/logostoken/lto-network-lto-logo.png"
+  },
+  {
+    "symbol": "LUN",
+    "nameId": "lunyr",
+    "logoPath": "/system-shots/logostoken/lunyr-lun-logo.png"
+  },
+  {
+    "symbol": "LYM",
+    "nameId": "lympo",
+    "logoPath": "/system-shots/logostoken/lympo-lym-logo.png"
+  },
+  {
+    "symbol": "MAGIC",
+    "nameId": "magic-token",
+    "logoPath": "/system-shots/logostoken/magic-token-magic-logo.png"
+  },
+  {
+    "symbol": "MAID",
+    "nameId": "maidsafecoin",
+    "logoPath": "/system-shots/logostoken/maidsafecoin-maid-logo.png"
+  },
+  {
+    "symbol": "MKR",
+    "nameId": "maker",
+    "logoPath": "/system-shots/logostoken/maker-mkr-logo.png"
+  },
+  {
+    "symbol": "MNGO",
+    "nameId": "mango-markets",
+    "logoPath": "/system-shots/logostoken/mango-markets-mngo-logo.png"
+  },
+  {
+    "symbol": "MNT",
+    "nameId": "mantle",
+    "logoPath": "/system-shots/logostoken/mantle-mnt-logo.png"
+  },
+  {
+    "symbol": "OM",
+    "nameId": "mantra",
+    "logoPath": "/system-shots/logostoken/mantra-om-logo.png"
+  },
+  {
+    "symbol": "MASK",
+    "nameId": "mask-network",
+    "logoPath": "/system-shots/logostoken/mask-network-mask-logo.png"
+  },
+  {
+    "symbol": "MDT",
+    "nameId": "measurable-data-token",
+    "logoPath": "/system-shots/logostoken/measurable-data-token-mdt-logo.png"
+  },
+  {
+    "symbol": "MED",
+    "nameId": "medibloc",
+    "logoPath": "/system-shots/logostoken/medibloc-med-logo.png"
+  },
+  {
+    "symbol": "MDS",
+    "nameId": "medishares",
+    "logoPath": "/system-shots/logostoken/medishares-mds-logo.png"
+  },
+  {
+    "symbol": "MELD",
+    "nameId": "meld",
+    "logoPath": "/system-shots/logostoken/meld-meld-logo.png"
+  },
+  {
+    "symbol": "MEME",
+    "nameId": "meme",
+    "logoPath": "/system-shots/logostoken/meme-meme-logo.png"
+  },
+  {
+    "symbol": "META",
+    "nameId": "metadium",
+    "logoPath": "/system-shots/logostoken/metadium-meta-logo.png"
+  },
+  {
+    "symbol": "HERO",
+    "nameId": "metahero",
+    "logoPath": "/system-shots/logostoken/metahero-hero-logo.png"
+  },
+  {
+    "symbol": "MTL",
+    "nameId": "metal",
+    "logoPath": "/system-shots/logostoken/metal-mtl-logo.png"
+  },
+  {
+    "symbol": "ETP",
+    "nameId": "metaverse",
+    "logoPath": "/system-shots/logostoken/metaverse-etp-logo.png"
+  },
+  {
+    "symbol": "METIS",
+    "nameId": "metisdao",
+    "logoPath": "/system-shots/logostoken/metisdao-metis-logo.png"
+  },
+  {
+    "symbol": "MEW",
+    "nameId": "mew",
+    "logoPath": "/system-shots/logostoken/mew-mew-logo.png"
+  },
+  {
+    "symbol": "MLK",
+    "nameId": "milk-alliance",
+    "logoPath": "/system-shots/logostoken/milk-alliance-mlk-logo.png"
+  },
+  {
+    "symbol": "MWC",
+    "nameId": "mimblewimblecoin",
+    "logoPath": "/system-shots/logostoken/mimblewimblecoin-mwc-logo.png"
+  },
+  {
+    "symbol": "MINA",
+    "nameId": "mina",
+    "logoPath": "/system-shots/logostoken/mina-mina-logo.png"
+  },
+  {
+    "symbol": "MIR",
+    "nameId": "mirror-protocol",
+    "logoPath": "/system-shots/logostoken/mirror-protocol-mir-logo.png"
+  },
+  {
+    "symbol": "MITH",
+    "nameId": "mithril",
+    "logoPath": "/system-shots/logostoken/mithril-mith-logo.png"
+  },
+  {
+    "symbol": "XIN",
+    "nameId": "mixin",
+    "logoPath": "/system-shots/logostoken/mixin-xin-logo.png"
+  },
+  {
+    "symbol": "MDA",
+    "nameId": "moeda-loyalty-points",
+    "logoPath": "/system-shots/logostoken/moeda-loyalty-points-mda-logo.png"
+  },
+  {
+    "symbol": "MONA",
+    "nameId": "monacoin",
+    "logoPath": "/system-shots/logostoken/monacoin-mona-logo.png"
+  },
+  {
+    "symbol": "XMR",
+    "nameId": "monero",
+    "logoPath": "/system-shots/logostoken/monero-xmr-logo.png"
+  },
+  {
+    "symbol": "MTH",
+    "nameId": "monetha",
+    "logoPath": "/system-shots/logostoken/monetha-mth-logo.png"
+  },
+  {
+    "symbol": "MNS",
+    "nameId": "monnos",
+    "logoPath": "/system-shots/logostoken/monnos-mns-logo.png"
+  },
+  {
+    "symbol": "TKN",
+    "nameId": "monolith",
+    "logoPath": "/system-shots/logostoken/monolith-tkn-logo.png"
+  },
+  {
+    "symbol": "GLMR",
+    "nameId": "moonbeam",
+    "logoPath": "/system-shots/logostoken/moonbeam-glmr-logo.png"
+  },
+  {
+    "symbol": "MOVR",
+    "nameId": "moonriver",
+    "logoPath": "/system-shots/logostoken/moonriver-movr-logo.png"
+  },
+  {
+    "symbol": "DAI",
+    "nameId": "multi-collateral-dai",
+    "logoPath": "/system-shots/logostoken/multi-collateral-dai-dai-logo.png"
+  },
+  {
+    "symbol": "EGLD",
+    "nameId": "multiversx-egld",
+    "logoPath": "/system-shots/logostoken/multiversx-egld-egld-logo.png"
+  },
+  {
+    "symbol": "MVL",
+    "nameId": "mvl",
+    "logoPath": "/system-shots/logostoken/mvl-mvl-logo.png"
+  },
+  {
+    "symbol": "MXC",
+    "nameId": "mxc",
+    "logoPath": "/system-shots/logostoken/mxc-mxc-logo.png"
+  },
+  {
+    "symbol": "MYST",
+    "nameId": "mysterium",
+    "logoPath": "/system-shots/logostoken/mysterium-myst-logo.png"
+  },
+  {
+    "symbol": "NGC",
+    "nameId": "naga",
+    "logoPath": "/system-shots/logostoken/naga-ngc-logo.png"
+  },
+  {
+    "symbol": "NAKA",
+    "nameId": "nakamoto-games",
+    "logoPath": "/system-shots/logostoken/nakamoto-games-naka-logo.png"
+  },
+  {
+    "symbol": "NMC",
+    "nameId": "namecoin",
+    "logoPath": "/system-shots/logostoken/namecoin-nmc-logo.png"
+  },
+  {
+    "symbol": "XNO",
+    "nameId": "nano",
+    "logoPath": "/system-shots/logostoken/nano-xno-logo.png"
+  },
+  {
+    "symbol": "NAV",
+    "nameId": "nav-coin",
+    "logoPath": "/system-shots/logostoken/nav-coin-nav-logo.png"
+  },
+  {
+    "symbol": "NEAR",
+    "nameId": "near-protocol",
+    "logoPath": "/system-shots/logostoken/near-protocol-near-logo.png"
+  },
+  {
+    "symbol": "NEBL",
+    "nameId": "neblio",
+    "logoPath": "/system-shots/logostoken/neblio-nebl-logo.png"
+  },
+  {
+    "symbol": "NAS",
+    "nameId": "nebulas-token",
+    "logoPath": "/system-shots/logostoken/nebulas-token-nas-logo.png"
+  },
+  {
+    "symbol": "XEM",
+    "nameId": "nem",
+    "logoPath": "/system-shots/logostoken/nem-xem-logo.png"
+  },
+  {
+    "symbol": "NEO",
+    "nameId": "neo",
+    "logoPath": "/system-shots/logostoken/neo-neo-logo.png"
+  },
+  {
+    "symbol": "CKB",
+    "nameId": "nervos-network",
+    "logoPath": "/system-shots/logostoken/nervos-network-ckb-logo.png"
+  },
+  {
+    "symbol": "NEST",
+    "nameId": "nest-protocol",
+    "logoPath": "/system-shots/logostoken/nest-protocol-nest-logo.png"
+  },
+  {
+    "symbol": "NEU",
+    "nameId": "neumark",
+    "logoPath": "/system-shots/logostoken/neumark-neu-logo.png"
+  },
+  {
+    "symbol": "NEW",
+    "nameId": "newton",
+    "logoPath": "/system-shots/logostoken/newton-new-logo.png"
+  },
+  {
+    "symbol": "NEXO",
+    "nameId": "nexo",
+    "logoPath": "/system-shots/logostoken/nexo-nexo-logo.png"
+  },
+  {
+    "symbol": "NXS",
+    "nameId": "nexus",
+    "logoPath": "/system-shots/logostoken/nexus-nxs-logo.png"
+  },
+  {
+    "symbol": "NIM",
+    "nameId": "nimiq",
+    "logoPath": "/system-shots/logostoken/nimiq-nim-logo.png"
+  },
+  {
+    "symbol": "NKN",
+    "nameId": "nkn",
+    "logoPath": "/system-shots/logostoken/nkn-nkn-logo.png"
+  },
+  {
+    "symbol": "NU",
+    "nameId": "nucypher",
+    "logoPath": "/system-shots/logostoken/nucypher-nu-logo.png"
+  },
+  {
+    "symbol": "NULS",
+    "nameId": "nuls",
+    "logoPath": "/system-shots/logostoken/nuls-nuls-logo.png"
+  },
+  {
+    "symbol": "NMR",
+    "nameId": "numeraire",
+    "logoPath": "/system-shots/logostoken/numeraire-nmr-logo.png"
+  },
+  {
+    "symbol": "NXT",
+    "nameId": "nxt",
+    "logoPath": "/system-shots/logostoken/nxt-nxt-logo.png"
+  },
+  {
+    "symbol": "ROSE",
+    "nameId": "oasis-network",
+    "logoPath": "/system-shots/logostoken/oasis-network-rose-logo.png"
+  },
+  {
+    "symbol": "OAX",
+    "nameId": "oax",
+    "logoPath": "/system-shots/logostoken/oax-oax-logo.png"
+  },
+  {
+    "symbol": "GBYTE",
+    "nameId": "obyte",
+    "logoPath": "/system-shots/logostoken/obyte-gbyte-logo.png"
+  },
+  {
+    "symbol": "OCEAN",
+    "nameId": "ocean-protocol",
+    "logoPath": "/system-shots/logostoken/ocean-protocol-ocean-logo.png"
+  },
+  {
+    "symbol": "OCT",
+    "nameId": "octopus-network",
+    "logoPath": "/system-shots/logostoken/octopus-network-oct-logo.png"
+  },
+  {
+    "symbol": "OKB",
+    "nameId": "okb",
+    "logoPath": "/system-shots/logostoken/okb-okb-logo.png"
+  },
+  {
+    "symbol": "OK",
+    "nameId": "okcash",
+    "logoPath": "/system-shots/logostoken/okcash-ok-logo.png"
+  },
+  {
+    "symbol": "OMG",
+    "nameId": "omg",
+    "logoPath": "/system-shots/logostoken/omg-omg-logo.png"
+  },
+  {
+    "symbol": "OMNI",
+    "nameId": "omni",
+    "logoPath": "/system-shots/logostoken/omni-omni-logo.png"
+  },
+  {
+    "symbol": "BEAM",
+    "nameId": "onbeam",
+    "logoPath": "/system-shots/logostoken/onbeam-beam-logo.png"
+  },
+  {
+    "symbol": "ONDO",
+    "nameId": "ondo-finance",
+    "logoPath": "/system-shots/logostoken/ondo-finance-ondo-logo.png"
+  },
+  {
+    "symbol": "ONT",
+    "nameId": "ontology",
+    "logoPath": "/system-shots/logostoken/ontology-ont-logo.png"
+  },
+  {
+    "symbol": "EDU",
+    "nameId": "open-campus",
+    "logoPath": "/system-shots/logostoken/open-campus-edu-logo.png"
+  },
+  {
+    "symbol": "OP",
+    "nameId": "optimism-ethereum",
+    "logoPath": "/system-shots/logostoken/optimism-ethereum-op-logo.png"
+  },
+  {
+    "symbol": "ORAI",
+    "nameId": "oraichain-token",
+    "logoPath": "/system-shots/logostoken/oraichain-token-orai-logo.png"
+  },
+  {
+    "symbol": "ORBS",
+    "nameId": "orbs",
+    "logoPath": "/system-shots/logostoken/orbs-orbs-logo.png"
+  },
+  {
+    "symbol": "ORCA",
+    "nameId": "orca",
+    "logoPath": "/system-shots/logostoken/orca-orca-logo.png"
+  },
+  {
+    "symbol": "OXT",
+    "nameId": "orchid",
+    "logoPath": "/system-shots/logostoken/orchid-oxt-logo.png"
+  },
+  {
+    "symbol": "ORDI",
+    "nameId": "ordi",
+    "logoPath": "/system-shots/logostoken/ordi-ordi-logo.png"
+  },
+  {
+    "symbol": "OGV",
+    "nameId": "origin-dollar-governance",
+    "logoPath": "/system-shots/logostoken/origin-dollar-governance-ogv-logo.png"
+  },
+  {
+    "symbol": "OUSD",
+    "nameId": "origin-dollar",
+    "logoPath": "/system-shots/logostoken/origin-dollar-ousd-logo.png"
+  },
+  {
+    "symbol": "OETH",
+    "nameId": "origin-ether",
+    "logoPath": "/system-shots/logostoken/origin-ether-oeth-logo.png"
+  },
+  {
+    "symbol": "OGN",
+    "nameId": "origin-protocol",
+    "logoPath": "/system-shots/logostoken/origin-protocol-ogn-logo.png"
+  },
+  {
+    "symbol": "TRAC",
+    "nameId": "origintrail",
+    "logoPath": "/system-shots/logostoken/origintrail-trac-logo.png"
+  },
+  {
+    "symbol": "OSAK",
+    "nameId": "osaka-protocol",
+    "logoPath": "/system-shots/logostoken/osaka-protocol-osak-logo.png"
+  },
+  {
+    "symbol": "OSMO",
+    "nameId": "osmosis",
+    "logoPath": "/system-shots/logostoken/osmosis-osmo-logo.png"
+  },
+  {
+    "symbol": "OST",
+    "nameId": "ost",
+    "logoPath": "/system-shots/logostoken/ost-ost-logo.png"
+  },
+  {
+    "symbol": "CAKE",
+    "nameId": "pancakeswap",
+    "logoPath": "/system-shots/logostoken/pancakeswap-cake-logo.png"
+  },
+  {
+    "symbol": "PRQ",
+    "nameId": "parsiq",
+    "logoPath": "/system-shots/logostoken/parsiq-prq-logo.png"
+  },
+  {
+    "symbol": "PART",
+    "nameId": "particl",
+    "logoPath": "/system-shots/logostoken/particl-part-logo.png"
+  },
+  {
+    "symbol": "PASC",
+    "nameId": "pascal",
+    "logoPath": "/system-shots/logostoken/pascal-pasc-logo.png"
+  },
+  {
+    "symbol": "PTOY",
+    "nameId": "patientory",
+    "logoPath": "/system-shots/logostoken/patientory-ptoy-logo.png"
+  },
+  {
+    "symbol": "PAXG",
+    "nameId": "pax-gold",
+    "logoPath": "/system-shots/logostoken/pax-gold-paxg-logo.png"
+  },
+  {
+    "symbol": "USDP",
+    "nameId": "paxos-standard",
+    "logoPath": "/system-shots/logostoken/paxos-standard-usdp-logo.png"
+  },
+  {
+    "symbol": "PYUSD",
+    "nameId": "paypal-usd",
+    "logoPath": "/system-shots/logostoken/paypal-usd-pyusd-logo.png"
+  },
+  {
+    "symbol": "PAYX",
+    "nameId": "paypex",
+    "logoPath": "/system-shots/logostoken/paypex-payx-logo.png"
+  },
+  {
+    "symbol": "PEAQ",
+    "nameId": "peaq",
+    "logoPath": "/system-shots/logostoken/peaq-peaq-logo.png"
+  },
+  {
+    "symbol": "PEARL",
+    "nameId": "pearl",
+    "logoPath": "/system-shots/logostoken/pearl-pearl-logo.png"
+  },
+  {
+    "symbol": "PPC",
+    "nameId": "peercoin",
+    "logoPath": "/system-shots/logostoken/peercoin-ppc-logo.png"
+  },
+  {
+    "symbol": "PENDLE",
+    "nameId": "pendle",
+    "logoPath": "/system-shots/logostoken/pendle-pendle-logo.png"
+  },
+  {
+    "symbol": "PEN",
+    "nameId": "pendulum",
+    "logoPath": "/system-shots/logostoken/pendulum-pen-logo.png"
+  },
+  {
+    "symbol": "PEPE",
+    "nameId": "pepe",
+    "logoPath": "/system-shots/logostoken/pepe-pepe-logo.png"
+  },
+  {
+    "symbol": "PERL",
+    "nameId": "perlin",
+    "logoPath": "/system-shots/logostoken/perlin-perl-logo.png"
+  },
+  {
+    "symbol": "PERP",
+    "nameId": "perpetual-protocol",
+    "logoPath": "/system-shots/logostoken/perpetual-protocol-perp-logo.png"
+  },
+  {
+    "symbol": "SOUL",
+    "nameId": "phantasma",
+    "logoPath": "/system-shots/logostoken/phantasma-soul-logo.png"
+  },
+  {
+    "symbol": "PLR",
+    "nameId": "pillar",
+    "logoPath": "/system-shots/logostoken/pillar-plr-logo.png"
+  },
+  {
+    "symbol": "ARRR",
+    "nameId": "pirate-chain",
+    "logoPath": "/system-shots/logostoken/pirate-chain-arrr-logo.png"
+  },
+  {
+    "symbol": "PIVX",
+    "nameId": "pivx",
+    "logoPath": "/system-shots/logostoken/pivx-pivx-logo.png"
+  },
+  {
+    "symbol": "PLU",
+    "nameId": "pluton",
+    "logoPath": "/system-shots/logostoken/pluton-plu-logo.png"
+  },
+  {
+    "symbol": "PNT",
+    "nameId": "pnetwork",
+    "logoPath": "/system-shots/logostoken/pnetwork-pnt-logo.png"
+  },
+  {
+    "symbol": "POKT",
+    "nameId": "pocket-network",
+    "logoPath": "/system-shots/logostoken/pocket-network-pokt-logo.png"
+  },
+  {
+    "symbol": "POLIS",
+    "nameId": "polis",
+    "logoPath": "/system-shots/logostoken/polis-polis-logo.png"
+  },
+  {
+    "symbol": "DOT",
+    "nameId": "polkadot-new",
+    "logoPath": "/system-shots/logostoken/polkadot-new-dot-logo.png"
+  },
+  {
+    "symbol": "PLBT",
+    "nameId": "polybius",
+    "logoPath": "/system-shots/logostoken/polybius-plbt-logo.png"
+  },
+  {
+    "symbol": "MATIC",
+    "nameId": "polygon",
+    "logoPath": "/system-shots/logostoken/polygon-matic-logo.png"
+  },
+  {
+    "symbol": "POLY",
+    "nameId": "polymath-network",
+    "logoPath": "/system-shots/logostoken/polymath-network-poly-logo.png"
+  },
+  {
+    "symbol": "NCT",
+    "nameId": "polyswarm",
+    "logoPath": "/system-shots/logostoken/polyswarm-nct-logo.png"
+  },
+  {
+    "symbol": "PONKE",
+    "nameId": "ponke",
+    "logoPath": "/system-shots/logostoken/ponke-ponke-logo.png"
+  },
+  {
+    "symbol": "POOCOIN",
+    "nameId": "poocoin",
+    "logoPath": "/system-shots/logostoken/poocoin-poocoin-logo.png"
+  },
+  {
+    "symbol": "POPCAT",
+    "nameId": "popcat-sol",
+    "logoPath": "/system-shots/logostoken/popcat-sol-popcat-logo.png"
+  },
+  {
+    "symbol": "PPT",
+    "nameId": "populous",
+    "logoPath": "/system-shots/logostoken/populous-ppt-logo.png"
+  },
+  {
+    "symbol": "POT",
+    "nameId": "potcoin",
+    "logoPath": "/system-shots/logostoken/potcoin-pot-logo.png"
+  },
+  {
+    "symbol": "POWR",
+    "nameId": "power-ledger",
+    "logoPath": "/system-shots/logostoken/power-ledger-powr-logo.png"
+  },
+  {
+    "symbol": "CVP",
+    "nameId": "powerpool",
+    "logoPath": "/system-shots/logostoken/powerpool-cvp-logo.png"
+  },
+  {
+    "symbol": "PRE",
+    "nameId": "presearch",
+    "logoPath": "/system-shots/logostoken/presearch-pre-logo.png"
+  },
+  {
+    "symbol": "XPM",
+    "nameId": "primecoin",
+    "logoPath": "/system-shots/logostoken/primecoin-xpm-logo.png"
+  },
+  {
+    "symbol": "MERGE",
+    "nameId": "project-merge",
+    "logoPath": "/system-shots/logostoken/project-merge-merge-logo.png"
+  },
+  {
+    "symbol": "PRO",
+    "nameId": "propy",
+    "logoPath": "/system-shots/logostoken/propy-pro-logo.png"
+  },
+  {
+    "symbol": "XPR",
+    "nameId": "proton",
+    "logoPath": "/system-shots/logostoken/proton-xpr-logo.png"
+  },
+  {
+    "symbol": "PMA",
+    "nameId": "pumapay",
+    "logoPath": "/system-shots/logostoken/pumapay-pma-logo.png"
+  },
+  {
+    "symbol": "NPXS",
+    "nameId": "pundi-x",
+    "logoPath": "/system-shots/logostoken/pundi-x-npxs-logo.png"
+  },
+  {
+    "symbol": "PYTH",
+    "nameId": "pyth-network",
+    "logoPath": "/system-shots/logostoken/pyth-network-pyth-logo.png"
+  },
+  {
+    "symbol": "QASH",
+    "nameId": "qash",
+    "logoPath": "/system-shots/logostoken/qash-qash-logo.png"
+  },
+  {
+    "symbol": "QTUM",
+    "nameId": "qtum",
+    "logoPath": "/system-shots/logostoken/qtum-qtum-logo.png"
+  },
+  {
+    "symbol": "QNT",
+    "nameId": "quant",
+    "logoPath": "/system-shots/logostoken/quant-qnt-logo.png"
+  },
+  {
+    "symbol": "QRL",
+    "nameId": "quantum-resistant-ledger",
+    "logoPath": "/system-shots/logostoken/quantum-resistant-ledger-qrl-logo.png"
+  },
+  {
+    "symbol": "QKC",
+    "nameId": "quarkchain",
+    "logoPath": "/system-shots/logostoken/quarkchain-qkc-logo.png"
+  },
+  {
+    "symbol": "RDN",
+    "nameId": "raiden-network-token",
+    "logoPath": "/system-shots/logostoken/raiden-network-token-rdn-logo.png"
+  },
+  {
+    "symbol": "RAMP",
+    "nameId": "ramp",
+    "logoPath": "/system-shots/logostoken/ramp-ramp-logo.png"
+  },
+  {
+    "symbol": "RARI",
+    "nameId": "rarible",
+    "logoPath": "/system-shots/logostoken/rarible-rari-logo.png"
+  },
+  {
+    "symbol": "RVN",
+    "nameId": "ravencoin",
+    "logoPath": "/system-shots/logostoken/ravencoin-rvn-logo.png"
+  },
+  {
+    "symbol": "RAY",
+    "nameId": "raydium",
+    "logoPath": "/system-shots/logostoken/raydium-ray-logo.png"
+  },
+  {
+    "symbol": "RDD",
+    "nameId": "redd",
+    "logoPath": "/system-shots/logostoken/redd-rdd-logo.png"
+  },
+  {
+    "symbol": "REN",
+    "nameId": "ren",
+    "logoPath": "/system-shots/logostoken/ren-ren-logo.png"
+  },
+  {
+    "symbol": "REQ",
+    "nameId": "request",
+    "logoPath": "/system-shots/logostoken/request-req-logo.png"
+  },
+  {
+    "symbol": "RSR",
+    "nameId": "reserve-rights",
+    "logoPath": "/system-shots/logostoken/reserve-rights-rsr-logo.png"
+  },
+  {
+    "symbol": "RSV",
+    "nameId": "reserve",
+    "logoPath": "/system-shots/logostoken/reserve-rsv-logo.png"
+  },
+  {
+    "symbol": "REV",
+    "nameId": "revain",
+    "logoPath": "/system-shots/logostoken/revain-rev-logo.png"
+  },
+  {
+    "symbol": "RCN",
+    "nameId": "ripio-credit-network",
+    "logoPath": "/system-shots/logostoken/ripio-credit-network-rcn-logo.png"
+  },
+  {
+    "symbol": "RLC",
+    "nameId": "rlc",
+    "logoPath": "/system-shots/logostoken/rlc-rlc-logo.png"
+  },
+  {
+    "symbol": "RPL",
+    "nameId": "rocket-pool",
+    "logoPath": "/system-shots/logostoken/rocket-pool-rpl-logo.png"
+  },
+  {
+    "symbol": "RON",
+    "nameId": "ronin",
+    "logoPath": "/system-shots/logostoken/ronin-ron-logo.png"
+  },
+  {
+    "symbol": "RIF",
+    "nameId": "rsk-infrastructure-framework",
+    "logoPath": "/system-shots/logostoken/rsk-infrastructure-framework-rif-logo.png"
+  },
+  {
+    "symbol": "RUFF",
+    "nameId": "ruff",
+    "logoPath": "/system-shots/logostoken/ruff-ruff-logo.png"
+  },
+  {
+    "symbol": "RYO",
+    "nameId": "ryo-currency",
+    "logoPath": "/system-shots/logostoken/ryo-currency-ryo-logo.png"
+  },
+  {
+    "symbol": "SBR",
+    "nameId": "saber",
+    "logoPath": "/system-shots/logostoken/saber-sbr-logo.png"
+  },
+  {
+    "symbol": "SHA",
+    "nameId": "safe-haven",
+    "logoPath": "/system-shots/logostoken/safe-haven-sha-logo.png"
+  },
+  {
+    "symbol": "SFP",
+    "nameId": "safepal",
+    "logoPath": "/system-shots/logostoken/safepal-sfp-logo.png"
+  },
+  {
+    "symbol": "SFI",
+    "nameId": "saffron-finance",
+    "logoPath": "/system-shots/logostoken/saffron-finance-sfi-logo.png"
+  },
+  {
+    "symbol": "SALT",
+    "nameId": "salt",
+    "logoPath": "/system-shots/logostoken/salt-salt-logo.png"
+  },
+  {
+    "symbol": "SLS",
+    "nameId": "salus",
+    "logoPath": "/system-shots/logostoken/salus-sls-logo.png"
+  },
+  {
+    "symbol": "SAN",
+    "nameId": "santiment",
+    "logoPath": "/system-shots/logostoken/santiment-san-logo.png"
+  },
+  {
+    "symbol": "SATS",
+    "nameId": "sats-ordinals",
+    "logoPath": "/system-shots/logostoken/sats-ordinals-sats-logo.png"
+  },
+  {
+    "symbol": "SCRT",
+    "nameId": "secret",
+    "logoPath": "/system-shots/logostoken/secret-scrt-logo.png"
+  },
+  {
+    "symbol": "SEELE",
+    "nameId": "seele",
+    "logoPath": "/system-shots/logostoken/seele-seele-logo.png"
+  },
+  {
+    "symbol": "SEI",
+    "nameId": "sei",
+    "logoPath": "/system-shots/logostoken/sei-sei-logo.png"
+  },
+  {
+    "symbol": "SENSO",
+    "nameId": "senso",
+    "logoPath": "/system-shots/logostoken/senso-senso-logo.png"
+  },
+  {
+    "symbol": "SRM",
+    "nameId": "serum",
+    "logoPath": "/system-shots/logostoken/serum-srm-logo.png"
+  },
+  {
+    "symbol": "SHIB",
+    "nameId": "shiba-inu",
+    "logoPath": "/system-shots/logostoken/shiba-inu-shib-logo.png"
+  },
+  {
+    "symbol": "SHIBDOGE",
+    "nameId": "shibadoge",
+    "logoPath": "/system-shots/logostoken/shibadoge-shibdoge-logo.png"
+  },
+  {
+    "symbol": "SHUTTERSTOCK_2470985337.JPG.WEBP",
+    "nameId": "",
+    "logoPath": "/system-shots/logostoken/shutterstock_2470985337.jpg.webp"
+  },
+  {
+    "symbol": "SC",
+    "nameId": "siacoin",
+    "logoPath": "/system-shots/logostoken/siacoin-sc-logo.png"
+  },
+  {
+    "symbol": "SIB",
+    "nameId": "sibcoin",
+    "logoPath": "/system-shots/logostoken/sibcoin-sib-logo.png"
+  },
+  {
+    "symbol": "CAT",
+    "nameId": "simonscat",
+    "logoPath": "/system-shots/logostoken/simonscat-cat-logo.png"
+  },
+  {
+    "symbol": "AGIX",
+    "nameId": "singularitynet",
+    "logoPath": "/system-shots/logostoken/singularitynet-agix-logo.png"
+  },
+  {
+    "symbol": "SRN",
+    "nameId": "sirin-labs-token",
+    "logoPath": "/system-shots/logostoken/sirin-labs-token-srn-logo.png"
+  },
+  {
+    "symbol": "SKY",
+    "nameId": "skycoin",
+    "logoPath": "/system-shots/logostoken/skycoin-sky-logo.png"
+  },
+  {
+    "symbol": "SMART",
+    "nameId": "smartcash",
+    "logoPath": "/system-shots/logostoken/smartcash-smart-logo.png"
+  },
+  {
+    "symbol": "SLP",
+    "nameId": "smooth-love-potion",
+    "logoPath": "/system-shots/logostoken/smooth-love-potion-slp-logo.png"
+  },
+  {
+    "symbol": "SNOW",
+    "nameId": "snowswap",
+    "logoPath": "/system-shots/logostoken/snowswap-snow-logo.png"
+  },
+  {
+    "symbol": "SOL",
+    "nameId": "solana",
+    "logoPath": "/system-shots/logostoken/solana-sol-logo.png"
+  },
+  {
+    "symbol": "SNM",
+    "nameId": "sonm-bep20",
+    "logoPath": "/system-shots/logostoken/sonm-bep20-snm-logo.png"
+  },
+  {
+    "symbol": "XOR",
+    "nameId": "sora",
+    "logoPath": "/system-shots/logostoken/sora-xor-logo.png"
+  },
+  {
+    "symbol": "ID",
+    "nameId": "space-id",
+    "logoPath": "/system-shots/logostoken/space-id-id-logo.png"
+  },
+  {
+    "symbol": "STX",
+    "nameId": "stacks",
+    "logoPath": "/system-shots/logostoken/stacks-stx-logo.png"
+  },
+  {
+    "symbol": "STRK",
+    "nameId": "starknet-token",
+    "logoPath": "/system-shots/logostoken/starknet-token-strk-logo.png"
+  },
+  {
+    "symbol": "START",
+    "nameId": "startcoin",
+    "logoPath": "/system-shots/logostoken/startcoin-start-logo.png"
+  },
+  {
+    "symbol": "EURS",
+    "nameId": "stasis-euro",
+    "logoPath": "/system-shots/logostoken/stasis-euro-eurs-logo.png"
+  },
+  {
+    "symbol": "SNT",
+    "nameId": "status",
+    "logoPath": "/system-shots/logostoken/status-snt-logo.png"
+  },
+  {
+    "symbol": "SBD",
+    "nameId": "steem-dollars",
+    "logoPath": "/system-shots/logostoken/steem-dollars-sbd-logo.png"
+  },
+  {
+    "symbol": "STEEM",
+    "nameId": "steem",
+    "logoPath": "/system-shots/logostoken/steem-steem-logo.png"
+  },
+  {
+    "symbol": "XLM",
+    "nameId": "stellar",
+    "logoPath": "/system-shots/logostoken/stellar-xlm-logo.png"
+  },
+  {
+    "symbol": "STORJ",
+    "nameId": "storj",
+    "logoPath": "/system-shots/logostoken/storj-storj-logo.png"
+  },
+  {
+    "symbol": "STRAX",
+    "nameId": "stratis",
+    "logoPath": "/system-shots/logostoken/stratis-strax-logo.png"
+  },
+  {
+    "symbol": "DATA",
+    "nameId": "streamr",
+    "logoPath": "/system-shots/logostoken/streamr-data-logo.png"
+  },
+  {
+    "symbol": "STRONG",
+    "nameId": "strong",
+    "logoPath": "/system-shots/logostoken/strong-strong-logo.png"
+  },
+  {
+    "symbol": "SUB",
+    "nameId": "substratum",
+    "logoPath": "/system-shots/logostoken/substratum-sub-logo.png"
+  },
+  {
+    "symbol": "SUI",
+    "nameId": "sui",
+    "logoPath": "/system-shots/logostoken/sui-sui-logo.png"
+  },
+  {
+    "symbol": "SUMO",
+    "nameId": "sumokoin",
+    "logoPath": "/system-shots/logostoken/sumokoin-sumo-logo.png"
+  },
+  {
+    "symbol": "SUPER",
+    "nameId": "superverse",
+    "logoPath": "/system-shots/logostoken/superverse-super-logo.png"
+  },
+  {
+    "symbol": "SUSHI",
+    "nameId": "sushiswap",
+    "logoPath": "/system-shots/logostoken/sushiswap-sushi-logo.png"
+  },
+  {
+    "symbol": "SUTER",
+    "nameId": "suterusu",
+    "logoPath": "/system-shots/logostoken/suterusu-suter-logo.png"
+  },
+  {
+    "symbol": "SWT",
+    "nameId": "swarm-city",
+    "logoPath": "/system-shots/logostoken/swarm-city-swt-logo.png"
+  },
+  {
+    "symbol": "SWTH",
+    "nameId": "switcheo",
+    "logoPath": "/system-shots/logostoken/switcheo-swth-logo.png"
+  },
+  {
+    "symbol": "XYM",
+    "nameId": "symbol",
+    "logoPath": "/system-shots/logostoken/symbol-xym-logo.png"
+  },
+  {
+    "symbol": "SNX",
+    "nameId": "synthetix",
+    "logoPath": "/system-shots/logostoken/synthetix-snx-logo.png"
+  },
+  {
+    "symbol": "SYS",
+    "nameId": "syscoin",
+    "logoPath": "/system-shots/logostoken/syscoin-sys-logo.png"
+  },
+  {
+    "symbol": "TEL",
+    "nameId": "telcoin",
+    "logoPath": "/system-shots/logostoken/telcoin-tel-logo.png"
+  },
+  {
+    "symbol": "TRB",
+    "nameId": "tellor",
+    "logoPath": "/system-shots/logostoken/tellor-trb-logo.png"
+  },
+  {
+    "symbol": "TEM",
+    "nameId": "temdao",
+    "logoPath": "/system-shots/logostoken/temdao-tem-logo.png"
+  },
+  {
+    "symbol": "PAY",
+    "nameId": "tenx",
+    "logoPath": "/system-shots/logostoken/tenx-pay-logo.png"
+  },
+  {
+    "symbol": "TERA",
+    "nameId": "tera",
+    "logoPath": "/system-shots/logostoken/tera-tera-logo.png"
+  },
+  {
+    "symbol": "XAUT",
+    "nameId": "tether-gold",
+    "logoPath": "/system-shots/logostoken/tether-gold-xaut-logo.png"
+  },
+  {
+    "symbol": "USDT",
+    "nameId": "tether",
+    "logoPath": "/system-shots/logostoken/tether-usdt-logo.png"
+  },
+  {
+    "symbol": "XTZ",
+    "nameId": "tezos",
+    "logoPath": "/system-shots/logostoken/tezos-xtz-logo.png"
+  },
+  {
+    "symbol": "GRT",
+    "nameId": "the-graph",
+    "logoPath": "/system-shots/logostoken/the-graph-grt-logo.png"
+  },
+  {
+    "symbol": "SAND",
+    "nameId": "the-sandbox",
+    "logoPath": "/system-shots/logostoken/the-sandbox-sand-logo.png"
+  },
+  {
+    "symbol": "TFUEL",
+    "nameId": "theta-fuel",
+    "logoPath": "/system-shots/logostoken/theta-fuel-tfuel-logo.png"
+  },
+  {
+    "symbol": "THETA",
+    "nameId": "theta-network",
+    "logoPath": "/system-shots/logostoken/theta-network-theta-logo.png"
+  },
+  {
+    "symbol": "RUNE",
+    "nameId": "thorchain",
+    "logoPath": "/system-shots/logostoken/thorchain-rune-logo.png"
+  },
+  {
+    "symbol": "THR",
+    "nameId": "thorecoin",
+    "logoPath": "/system-shots/logostoken/thorecoin-thr-logo.png"
+  },
+  {
+    "symbol": "T",
+    "nameId": "threshold",
+    "logoPath": "/system-shots/logostoken/threshold-t-logo.png"
+  },
+  {
+    "symbol": "TBX",
+    "nameId": "tokenbox",
+    "logoPath": "/system-shots/logostoken/tokenbox-tbx-logo.png"
+  },
+  {
+    "symbol": "TEN",
+    "nameId": "tokenomy",
+    "logoPath": "/system-shots/logostoken/tokenomy-ten-logo.png"
+  },
+  {
+    "symbol": "TKS",
+    "nameId": "tokes",
+    "logoPath": "/system-shots/logostoken/tokes-tks-logo.png"
+  },
+  {
+    "symbol": "TON",
+    "nameId": "toncoin",
+    "logoPath": "/system-shots/logostoken/toncoin-ton-logo.png"
+  },
+  {
+    "symbol": "TOR",
+    "nameId": "torex",
+    "logoPath": "/system-shots/logostoken/torex-tor-logo.png"
+  },
+  {
+    "symbol": "TORN",
+    "nameId": "torn",
+    "logoPath": "/system-shots/logostoken/torn-torn-logo.png"
+  },
+  {
+    "symbol": "TZC",
+    "nameId": "trezarcoin",
+    "logoPath": "/system-shots/logostoken/trezarcoin-tzc-logo.png"
+  },
+  {
+    "symbol": "TRIBE",
+    "nameId": "tribe",
+    "logoPath": "/system-shots/logostoken/tribe-tribe-logo.png"
+  },
+  {
+    "symbol": "TNC",
+    "nameId": "trinity-network-credit",
+    "logoPath": "/system-shots/logostoken/trinity-network-credit-tnc-logo.png"
+  },
+  {
+    "symbol": "TRX",
+    "nameId": "tron",
+    "logoPath": "/system-shots/logostoken/tron-trx-logo.png"
+  },
+  {
+    "symbol": "TUSD",
+    "nameId": "trueusd",
+    "logoPath": "/system-shots/logostoken/trueusd-tusd-logo.png"
+  },
+  {
+    "symbol": "TRTL",
+    "nameId": "turtlecoin",
+    "logoPath": "/system-shots/logostoken/turtlecoin-trtl-logo.png"
+  },
+  {
+    "symbol": "UOS",
+    "nameId": "ultra",
+    "logoPath": "/system-shots/logostoken/ultra-uos-logo.png"
+  },
+  {
+    "symbol": "UMA",
+    "nameId": "uma",
+    "logoPath": "/system-shots/logostoken/uma-uma-logo.png"
+  },
+  {
+    "symbol": "UNI",
+    "nameId": "uniswap",
+    "logoPath": "/system-shots/logostoken/uniswap-uni-logo.png"
+  },
+  {
+    "symbol": "LEO",
+    "nameId": "unus-sed-leo",
+    "logoPath": "/system-shots/logostoken/unus-sed-leo-leo-logo.png"
+  },
+  {
+    "symbol": "UQC",
+    "nameId": "uquid-coin",
+    "logoPath": "/system-shots/logostoken/uquid-coin-uqc-logo.png"
+  },
+  {
+    "symbol": "USDC",
+    "nameId": "usd-coin",
+    "logoPath": "/system-shots/logostoken/usd-coin-usdc-logo.png"
+  },
+  {
+    "symbol": "USDD",
+    "nameId": "usdd",
+    "logoPath": "/system-shots/logostoken/usdd-usdd-logo.png"
+  },
+  {
+    "symbol": "UTK",
+    "nameId": "utrust",
+    "logoPath": "/system-shots/logostoken/utrust-utk-logo.png"
+  },
+  {
+    "symbol": "VSYS",
+    "nameId": "v-systems",
+    "logoPath": "/system-shots/logostoken/v-systems-vsys-logo.png"
+  },
+  {
+    "symbol": "VET",
+    "nameId": "vechain",
+    "logoPath": "/system-shots/logostoken/vechain-vet-logo.png"
+  },
+  {
+    "symbol": "VXV",
+    "nameId": "vectorspace-ai",
+    "logoPath": "/system-shots/logostoken/vectorspace-ai-vxv-logo.png"
+  },
+  {
+    "symbol": "VEIL",
+    "nameId": "veil",
+    "logoPath": "/system-shots/logostoken/veil-veil-logo.png"
+  },
+  {
+    "symbol": "VLX",
+    "nameId": "velas",
+    "logoPath": "/system-shots/logostoken/velas-vlx-logo.png"
+  },
+  {
+    "symbol": "XVG",
+    "nameId": "verge",
+    "logoPath": "/system-shots/logostoken/verge-xvg-logo.png"
+  },
+  {
+    "symbol": "VERI",
+    "nameId": "veritaseum",
+    "logoPath": "/system-shots/logostoken/veritaseum-veri-logo.png"
+  },
+  {
+    "symbol": "VTC",
+    "nameId": "vertcoin",
+    "logoPath": "/system-shots/logostoken/vertcoin-vtc-logo.png"
+  },
+  {
+    "symbol": "VRSC",
+    "nameId": "veruscoin",
+    "logoPath": "/system-shots/logostoken/veruscoin-vrsc-logo.png"
+  },
+  {
+    "symbol": "VSP",
+    "nameId": "vesper",
+    "logoPath": "/system-shots/logostoken/vesper-vsp-logo.png"
+  },
+  {
+    "symbol": "VTHO",
+    "nameId": "vethor-token",
+    "logoPath": "/system-shots/logostoken/vethor-token-vtho-logo.png"
+  },
+  {
+    "symbol": "VIA",
+    "nameId": "viacoin",
+    "logoPath": "/system-shots/logostoken/viacoin-via-logo.png"
+  },
+  {
+    "symbol": "VIBE",
+    "nameId": "vibe",
+    "logoPath": "/system-shots/logostoken/vibe-vibe-logo.png"
+  },
+  {
+    "symbol": "VIRTUAL",
+    "nameId": "virtual-protocol",
+    "logoPath": "/system-shots/logostoken/virtual-protocol-virtual-logo.png"
+  },
+  {
+    "symbol": "VITE",
+    "nameId": "vite",
+    "logoPath": "/system-shots/logostoken/vite-vite-logo.png"
+  },
+  {
+    "symbol": "WGR",
+    "nameId": "wagerr",
+    "logoPath": "/system-shots/logostoken/wagerr-wgr-logo.png"
+  },
+  {
+    "symbol": "WTC",
+    "nameId": "waltonchain",
+    "logoPath": "/system-shots/logostoken/waltonchain-wtc-logo.png"
+  },
+  {
+    "symbol": "WAN",
+    "nameId": "wanchain",
+    "logoPath": "/system-shots/logostoken/wanchain-wan-logo.png"
+  },
+  {
+    "symbol": "WAVES",
+    "nameId": "waves",
+    "logoPath": "/system-shots/logostoken/waves-waves-logo.png"
+  },
+  {
+    "symbol": "WAXP",
+    "nameId": "wax",
+    "logoPath": "/system-shots/logostoken/wax-waxp-logo.png"
+  },
+  {
+    "symbol": "WICC",
+    "nameId": "waykichain",
+    "logoPath": "/system-shots/logostoken/waykichain-wicc-logo.png"
+  },
+  {
+    "symbol": "WEN",
+    "nameId": "wen",
+    "logoPath": "/system-shots/logostoken/wen-wen-logo.png"
+  },
+  {
+    "symbol": "XWC",
+    "nameId": "whitecoin",
+    "logoPath": "/system-shots/logostoken/whitecoin-xwc-logo.png"
+  },
+  {
+    "symbol": "WING",
+    "nameId": "wing",
+    "logoPath": "/system-shots/logostoken/wing-wing-logo.png"
+  },
+  {
+    "symbol": "WINGS",
+    "nameId": "wings",
+    "logoPath": "/system-shots/logostoken/wings-wings-logo.png"
+  },
+  {
+    "symbol": "WOO",
+    "nameId": "wootrade",
+    "logoPath": "/system-shots/logostoken/wootrade-woo-logo.png"
+  },
+  {
+    "symbol": "WLD",
+    "nameId": "worldcoin-org",
+    "logoPath": "/system-shots/logostoken/worldcoin-org-wld-logo.png"
+  },
+  {
+    "symbol": "W",
+    "nameId": "wormhole",
+    "logoPath": "/system-shots/logostoken/wormhole-w-logo.png"
+  },
+  {
+    "symbol": "WOW",
+    "nameId": "wownero",
+    "logoPath": "/system-shots/logostoken/wownero-wow-logo.png"
+  },
+  {
+    "symbol": "STAKE",
+    "nameId": "xdai",
+    "logoPath": "/system-shots/logostoken/xdai-stake-logo.png"
+  },
+  {
+    "symbol": "XMX",
+    "nameId": "xmax",
+    "logoPath": "/system-shots/logostoken/xmax-xmx-logo.png"
+  },
+  {
+    "symbol": "XRP",
+    "nameId": "xrp",
+    "logoPath": "/system-shots/logostoken/xrp-xrp-logo.png"
+  },
+  {
+    "symbol": "XBY",
+    "nameId": "xtrabytes",
+    "logoPath": "/system-shots/logostoken/xtrabytes-xby-logo.png"
+  },
+  {
+    "symbol": "XYO",
+    "nameId": "xyo",
+    "logoPath": "/system-shots/logostoken/xyo-xyo-logo.png"
+  },
+  {
+    "symbol": "YFI",
+    "nameId": "yearn-finance",
+    "logoPath": "/system-shots/logostoken/yearn-finance-yfi-logo.png"
+  },
+  {
+    "symbol": "YOOSHI",
+    "nameId": "yooshi",
+    "logoPath": "/system-shots/logostoken/yooshi-yooshi-logo.png"
+  },
+  {
+    "symbol": "ZEC",
+    "nameId": "zcash",
+    "logoPath": "/system-shots/logostoken/zcash-zec-logo.png"
+  },
+  {
+    "symbol": "ZCL",
+    "nameId": "zclassic",
+    "logoPath": "/system-shots/logostoken/zclassic-zcl-logo.png"
+  },
+  {
+    "symbol": "ZBU",
+    "nameId": "zeebu",
+    "logoPath": "/system-shots/logostoken/zeebu-zbu-logo.png"
+  },
+  {
+    "symbol": "FLUX",
+    "nameId": "zel",
+    "logoPath": "/system-shots/logostoken/zel-flux-logo.png"
+  },
+  {
+    "symbol": "ZLW",
+    "nameId": "zelwin",
+    "logoPath": "/system-shots/logostoken/zelwin-zlw-logo.png"
+  },
+  {
+    "symbol": "ZIL",
+    "nameId": "zilliqa",
+    "logoPath": "/system-shots/logostoken/zilliqa-zil-logo.png"
+  }
+]

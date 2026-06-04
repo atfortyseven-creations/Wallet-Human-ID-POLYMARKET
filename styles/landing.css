@@ -1,0 +1,215 @@
+:root {
+  --arctic-cyan: #00f2ff;
+  --deep-black: #020617;
+  --emerald-flux: #10b981;
+  --rose-anomaly: #f43f5e;
+  --slate-space: #1e293b;
+  --glass-bg: rgba(15, 23, 42, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glow-cyan: 0 0 20px rgba(0, 242, 255, 0.3);
+  --glow-emerald: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+@keyframes flux {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.landing-container {
+  background: var(--deep-black);
+  color: #f8fafc;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+.hero-section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+  position: relative;
+  text-align: center;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(-45deg, #020617, #0f172a, #1e1b4b, #020617);
+  background-size: 400% 400%;
+  animation: flux 15s ease infinite;
+  opacity: 0.5;
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 1000px;
+}
+
+.hero-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+  margin-bottom: 2rem;
+  background: linear-gradient(to bottom, #fff 40%, rgba(255, 255, 255, 0.5));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1.25rem;
+  color: var(--arctic-cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  margin-bottom: 3rem;
+  font-weight: 700;
+}
+
+.pillar-section {
+  padding: 8rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.pillar-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 4rem;
+}
+
+.pillar-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 1.5rem;
+  padding: 3rem;
+  backdrop-filter: blur(12px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.pillar-card:hover {
+  border-color: var(--arctic-cyan);
+  box-shadow: var(--glow-cyan);
+  transform: translateY(-5px);
+}
+
+.pillar-number {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.875rem;
+  color: var(--arctic-cyan);
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.pillar-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.pillar-description {
+  font-size: 1rem;
+  color: #94a3b8;
+  margin-bottom: 2rem;
+}
+
+.technical-detail {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.875rem;
+  border-left: 2px solid var(--arctic-cyan);
+  color: #cbd5e1;
+}
+
+.case-study-section {
+  background: #000;
+  padding: 8rem 2rem;
+}
+
+.case-study-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.case-study-item {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.case-study-metrics {
+  background: var(--slate-space);
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+}
+
+.metric-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.75rem;
+}
+
+.metric-value {
+  font-weight: 700;
+}
+
+.metric-value.negative { color: var(--rose-anomaly); }
+.metric-value.positive { color: var(--emerald-flux); }
+
+.call-to-action {
+  padding: 10rem 2rem;
+  text-align: center;
+  background: linear-gradient(to bottom, #000, #020617);
+}
+
+.btn-premium {
+  background: #fff;
+  color: #000;
+  padding: 1.25rem 3rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  text-decoration: none;
+  font-family: 'Space Grotesk', sans-serif;
+  display: inline-block;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.btn-premium:hover {
+  background: transparent;
+  color: #fff;
+  border-color: #fff;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+  .case-study-item {
+    grid-template-columns: 1fr;
+  }
+}

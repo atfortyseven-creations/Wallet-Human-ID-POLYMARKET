@@ -1,0 +1,99 @@
+name: ️ System Core  Contract Tests & API Coverage
+
+on:
+  push:
+    paths:
+      - 'contracts/**'
+      - 'test/**'
+      - 'app/api/**'
+      - 'scripts/deploy-system.ts'
+  pull_request:
+    paths:
+      - 'contracts/**'
+      - 'test/**'
+      - 'app/api/**'
+
+jobs:
+  # 
+  # JOB 1: Smart Contract Unit Tests (Hardhat + hardhat-network-helpers)
+  # 
+  contract-tests:
+    name:  Contract Tests (Hardhat)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - run: npm ci --legacy-peer-deps
+
+      - name:  Compile Contracts
+        run: npx hardhat compile
+
+      - name:  Run WhaleDeadmanSwitch Tests
+        run: npx hardhat test test/WhaleDeadmanSwitch.test.ts --network hardhat
+
+      - name:  Run HumanTimeLock Tests
+        run: npx hardhat test test/HumanTimeLock.test.ts --network hardhat
+
+      - name:  Run Legacy SystemDeadmanSwitch Tests
+        run: npx hardhat test test/SystemDeadmanSwitch.test.js --network hardhat
+
+      - name:  Gas Report
+        run: REPORT_GAS=true npx hardhat test --network hardhat
+        continue-on-error: true
+
+  # 
+  # JOB 2: API Route Type Safety
+  # 
+  api-typecheck:
+    name:  API Routes Type Safety
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - run: npm ci --legacy-peer-deps
+
+      - name: ️ TypeScript check (API routes only)
+        run: npx tsc --noEmit --project tsconfig.json
+        env:
+          SKIP_ENV_VALIDATION: 'true'
+
+  # 
+  # JOB 3: Deploy Dry-Run (localhost fork)
+  # 
+  deploy-dry-run:
+    name:  Deploy Dry-Run (localhost)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [contract-tests]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - run: npm ci --legacy-peer-deps
+
+      - run: npx hardhat compile
+
+      - name:  Deploy System Contracts (localhost)
+        run: npx hardhat run scripts/deploy-system.ts --network localhost
+        env:
+          BACKUP_WALLET_ADDRESS: "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+          DEADMAN_TIMEOUT_DAYS:  "90"

@@ -1,0 +1,88 @@
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+ts-debug.log*
+
+# local env files
+.env*.local
+.env
+.env.railway
+.env.production.template
+.env.example
+.env.getblock
+
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+/src/generated/prisma
+
+# logs
+logs/
+*.log
+
+# clerk configuration (can include secrets)
+/.clerk/
+
+# Railway Deploy Fix
+.git/objects/pack/
+*.pack
+*.idx
+node_modules/
+.next/
+
+# Hardhat / Blockchain
+/artifacts/
+/cache/
+/typechain-types/
+.openzeppelin/
+
+# Local Storage (Local Vault / Backups)
+/vault-storage/
+/data/
+/lib/blockchain/abi/*.json
+!/lib/blockchain/abi/SystemDeadmanSwitch.json
+
+# Build Logs
+build.log
+tsc_output.txt
+tmp_diff.txt
+
+# Corrupt / accidental files  never commit these
+{
+console.log('
+tokens.txt
+parse_pools.py
+light_theme.js
+normalize-4k.js
+refactor.js
+replace_terms.js
+purge_jargon.js
+evacuate.js
+powershell.bat
+task.md
+snapshot-config.json

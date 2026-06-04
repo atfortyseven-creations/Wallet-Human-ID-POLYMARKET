@@ -1,0 +1,38 @@
+name: Unstoppable Frontend Deployment
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-pin:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+
+    - name: Build Next.js
+      run: |
+        npm ci
+        npm run build
+        # Export static site for IPFS
+        npm run export 
+
+    - name: Pin to IPFS (Simulated)
+      id: pin
+      run: |
+        # In a real setup, use `anantaramdas/ipfs-pin-action` or similar
+        echo "Pinning to Pinata..."
+        echo "CID=QmYourBuildHash" >> $GITHUB_OUTPUT
+
+    - name: Update ENS ContentHash
+      # Uses a private key stored in secrets to update the ENS record 'WhaleAlert ID.eth'
+      # to point to the new IPFS CID.
+      run: |
+        echo "Updating ENS domain WhaleAlert ID.eth to ${{ steps.pin.outputs.CID }}..."
+        # npx ts-node scripts/update-ens.ts ${{ steps.pin.outputs.CID }}
+

@@ -1,0 +1,56 @@
+/* Native smooth scrolling is handled by the browser compositor.
+   Lenis was removed for maximum native fluidity and zero-JS overhead. */
+html[data-scroll-behavior="smooth"] {
+  scroll-behavior: smooth;
+}
+
+/*  SINGLE SCROLLBAR 
+   Only html has the styled scrollbar. Inner containers use .no-scrollbar
+   or .custom-scrollbar explicitly  never inherit from *.
+    */
+
+/* Firefox: only the root html scrollbar */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(5, 5, 5, 0.15) transparent;
+}
+
+/* WebKit: single scrollbar on html only */
+html::-webkit-scrollbar {
+  width: 5px;
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: rgba(5, 5, 5, 0.18);
+  border-radius: 99px;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: rgba(5, 5, 5, 0.35);
+}
+
+/* All other elements: hide scrollbar chrome by default.
+   Apply .custom-scrollbar or .no-scrollbar on elements that need it explicitly. */
+*:not(html) {
+  scrollbar-width: none;
+}
+*:not(html)::-webkit-scrollbar {
+  display: none;
+}
+
+/* scroll-margin-top for anchor links */
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    scroll-margin-top: 100px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+}

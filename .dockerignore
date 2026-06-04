@@ -1,0 +1,62 @@
+#  DOCKER CONTEXT EXCLUSIONS 
+# Dev build artifacts
+/node_modules
+/.next
+/out
+/build
+/.turbo
+
+# Git & editor
+/.git
+/.gitignore
+/.github
+.DS_Store
+*.lnk
+
+# Environment secrets
+.env*
+!.env.example
+
+# Heavy dev-only directories (not needed at runtime)
+# 'scripts' is required for production background workers (system-mesh.ts etc)
+/k8s
+/contracts
+/typechain-types
+/artifacts
+/cache
+/subgraph
+/test
+/ignition
+/graphql
+/neo4j
+/docs
+/examples
+
+# Misc junk accumulated during dev
+*.bat
+*.ps1
+# Allow .sh files so start.sh can be copied to the runner
+*.patch
+*.log
+*.tsbuildinfo
+*.py
+Extractor.*
+diff.patch
+tmp_diff.txt
+tsc_output.txt
+build.log
+debug_intel.js
+refactor.js
+fix_trade_page.py
+extract.html
+extract_color.js
+get_color.js
+light_theme.js
+gtm_container_export.json
+theme_logic_prompt.md
+system_capabilities.md
+
+# Docker itself
+docker
+docker-compose.yml
+.dockerignore

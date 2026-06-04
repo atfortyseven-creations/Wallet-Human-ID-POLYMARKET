@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Whalecosystem Corp.  Investor Pitch 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --primary: #000000;
+  --secondary: #555555;
+  --border: #E5E7EB;
+  --bg: #FFFFFF;
+  --bg-alt: #F9FAFB;
+  --accent: #000000;
+}
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--primary);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* === SLIDE BASE === */
+.slide {
+  width: 297mm;
+  height: 210mm;
+  min-height: 210mm;
+  max-height: 210mm;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  page-break-after: always;
+  break-after: page;
+  margin: 0 auto;
+  border-bottom: 1px solid var(--border);
+}
+
+@page { size: A4 landscape; margin: 0; }
+
+@media print {
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: #FFFFFF; }
+  .slide { page-break-after: always; break-after: page; page-break-inside: avoid; margin: 0; border: none; }
+}
+
+/* === COMMON HEADER === */
+.slide-header {
+  padding: 12mm 15mm 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-shrink: 0;
+  z-index: 1;
+  border-bottom: 1px solid var(--primary);
+  padding-bottom: 5mm;
+  margin: 0 15mm;
+}
+
+.slide-content {
+  padding: 8mm 15mm 10mm;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  z-index: 1;
+}
+
+.logo-mark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logo-img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+.logo-text { font-family: 'Inter', sans-serif; font-size: 11pt; font-weight: 700; letter-spacing: -0.01em; color: var(--primary); }
+
+.seed-equity-tab {
+  font-family: 'Inter', sans-serif;
+  font-size: 7.5pt;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: var(--primary);
+  color: var(--bg);
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-left: 8px;
+  letter-spacing: 0.05em;
+}
+
+.slide-h {
+  font-size: 22pt;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 4mm;
+  color: var(--primary);
+  max-width: 85%;
+}
+
+.slide-sub {
+  font-size: 10.5pt;
+  color: var(--secondary);
+  line-height: 1.5;
+  margin-bottom: 8mm;
+  max-width: 75%;
+}
+
+/* === FOOTER === */
+.global-footer {
+  position: absolute;
+  bottom: 8mm;
+  left: 15mm;
+  right: 15mm;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding-top: 4mm;
+  font-family: 'Inter', sans-serif;
+  font-size: 8pt;
+  color: var(--secondary);
+  z-index: 1;
+}
+
+.footer-left { display: flex; gap: 15px; }
+.footer-right { font-weight: 600; color: var(--primary); }
+
+/* =========================== */
+/* SLIDE 1  COVER             */
+/* =========================== */
+.s1 {
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0 15mm;
+}
+
+.s1-header {
+  position: absolute;
+  top: 15mm; left: 15mm; right: 15mm;
+  display: flex; justify-content: space-between;
+  font-family: 'Inter', sans-serif;
+  font-size: 8.5pt;
+  border-bottom: 1px solid var(--primary);
+  padding-bottom: 4mm;
+  color: var(--secondary);
+}
+
+.s1-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15mm;
+}
+
+.s1-logo-container img {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+}
+
+.s1-logo-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 16pt;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.s1-content { width: 80%; z-index: 2; border-left: 2px solid var(--primary); padding-left: 10mm; }
+
+.s1-h {
+  font-size: 38pt;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin-bottom: 6mm;
+  color: var(--primary);
+}
+
+.s1-sub {
+  font-size: 12pt;
+  color: var(--secondary);
+  line-height: 1.5;
+  max-width: 650px;
+  margin-bottom: 0;
+}
+
+.s1-metadata {
+  position: absolute;
+  bottom: 15mm; left: 15mm; right: 15mm;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--primary);
+  padding-top: 5mm;
+  font-family: 'Inter', sans-serif;
+}
+
+.s1-meta-item { display: flex; flex-direction: column; gap: 6px; }
+.s1-meta-lbl { font-size: 8pt; color: var(--secondary); text-transform: uppercase; font-weight: 500; }
+.s1-meta-val { font-size: 10pt; color: var(--primary); font-weight: 600; }
+
+/* =========================== */
+/* DATA GRIDS                  */
+/* =========================== */
+.data-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+  flex: 1;
+  margin-bottom: 8mm;
+}
+
+.data-cell {
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 6mm;
+  display: flex;
+  flex-direction: column;
+}
+
+.data-cell-title {
+  font-size: 12pt;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: var(--primary);
+}
+
+.data-cell-body {
+  font-size: 9.5pt;
+  color: var(--secondary);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.data-cell-metric {
+  margin-top: 15px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9pt;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* =========================== */
+/* TOPOLOGY / ARCHITECTURE     */
+/* =========================== */
+.topo-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  flex: 1;
+  margin-bottom: 8mm;
+  border: 1px solid var(--border);
+}
+
+.topo-node {
+  flex: 1;
+  padding: 6mm;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+.topo-node:last-child { border-right: none; }
+
+.topo-subtitle {
+  font-size: 8.5pt;
+  color: var(--secondary);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.topo-title { font-size: 11pt; font-weight: 600; margin-bottom: 10px; }
+.topo-desc { font-size: 9.5pt; color: var(--secondary); line-height: 1.6; }
+
+/* =========================== */
+/* METRICS DISPLAY             */
+/* =========================== */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 0;
+  border: 1px solid var(--border);
+  flex: 1;
+  margin-bottom: 8mm;
+}
+
+.metric-box {
+  padding: 6mm 8mm;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.metric-box:nth-child(3n) { border-right: none; }
+.metric-box:nth-child(n+4) { border-bottom: none; }
+
+.metric-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 30pt;
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  color: var(--primary);
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+.metric-lbl {
+  font-size: 9pt;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.metric-desc {
+  font-size: 9pt;
+  color: var(--secondary);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+/* =========================== */
+/* TABLE SPECIFICATIONS        */
+/* =========================== */
+.spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9.5pt;
+  margin-bottom: 8mm;
+}
+
+.spec-table th, .spec-table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.spec-table th {
+  font-family: 'Inter', sans-serif;
+  font-size: 8.5pt;
+  color: var(--secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.spec-table td {
+  color: var(--primary);
+}
+
+.spec-table td.monospace {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9pt;
+}
+
+.spec-table tr:last-child td { border-bottom: none; }
+.col-highlight { background: var(--bg-alt); font-weight: 600; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
+.th-highlight { background: var(--primary); color: var(--bg) !important; border-left: 1px solid var(--primary); border-right: 1px solid var(--primary); }
+
+/* =========================== */
+/* LAYOUT: ASK / FUNDING       */
+/* =========================== */
+.fund-layout {
+  display: flex;
+  gap: 6mm;
+  flex: 1;
+  margin-bottom: 8mm;
+}
+
+.fund-col {
+  flex: 1;
+  border: 1px solid var(--border);
+  padding: 8mm;
+  display: flex;
+  flex-direction: column;
+}
+
+.fund-amount {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 46pt;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.fund-bar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: auto;
+}
+
+.fund-bar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fund-bar-lbl { width: 140px; font-size: 9pt; color: var(--secondary); }
+.fund-bar-track { flex: 1; height: 6px; background: #E5E7EB; }
+.fund-bar-fill { height: 100%; background: var(--primary); }
+.fund-bar-pct { width: 45px; text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 9pt; }
+
+.list-item {
+  position: relative;
+  padding-left: 14px;
+  font-size: 9.5pt;
+  line-height: 1.6;
+  color: var(--secondary);
+  margin-bottom: 10px;
+}
+.list-item::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 2px;
+  font-size: 6pt;
+  color: var(--primary);
+}
+
+.action-link {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 8px 16px;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 9pt;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.action-link:hover {
+  background: var(--primary);
+  color: var(--bg);
+}
+
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: COVER -->
+<div class="slide s1">
+  <div class="s1-header">
+    <span>CLASSIFICATION: PUBLIC</span>
+    <span>DATE: 2026-Q3</span>
+  </div>
+
+  <div class="s1-content">
+    <div class="s1-logo-container">
+      <img src="data:image/svg+xml;utf8,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23F8FAFC' /%3E%3Cstop offset='30%25' stop-color='%2394A3B8' /%3E%3Cstop offset='70%25' stop-color='%23475569' /%3E%3Cstop offset='100%25' stop-color='%230F172A' /%3E%3C/linearGradient%3E%3CradialGradient id='c' cx='35%25' cy='35%25' r='65%25'%3E%3Cstop offset='0%25' stop-color='%23FFFFFF' /%3E%3Cstop offset='60%25' stop-color='%2394A3B8' /%3E%3Cstop offset='100%25' stop-color='%231E293B' /%3E%3C/radialGradient%3E%3C/defs%3E%3Cg fill='none' stroke='url(%23s)' stroke-width='6' opacity='0.9'%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(0 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(60 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(120 100 100)' /%3E%3C/g%3E%3Ccircle cx='100' cy='100' r='18' fill='url(%23c)' /%3E%3C/svg%3E" alt="Logo">
+      <span class="s1-logo-text">Whale Alert Network</span>
+      <span class="seed-equity-tab">Seed Equity</span>
+    </div>
+
+    <h1 class="s1-h">On-chain transaction indexing prior to market reaction.</h1>
+    <p class="s1-sub">Deterministic capital flow tracking, XMTP-encrypted protocol messaging, and verified data distribution. Engineered on zero-knowledge infrastructure.</p>
+  </div>
+
+  <div class="s1-metadata">
+    <div class="s1-meta-item">
+      <span class="s1-meta-lbl">Target Capital</span>
+      <span class="s1-meta-val">USD 500,000</span>
+    </div>
+    <div class="s1-meta-item">
+      <span class="s1-meta-lbl">Round Type</span>
+      <span class="s1-meta-val">SEED EQUITY</span>
+    </div>
+    <div class="s1-meta-item">
+      <span class="s1-meta-lbl">Entity</span>
+      <span class="s1-meta-val">Whalecosystem Corp.</span>
+    </div>
+    <div class="s1-meta-item">
+      <span class="s1-meta-lbl">Network Architecture</span>
+      <span class="s1-meta-val">EVM · SVM · Aztec</span>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 2: PROBLEM -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="logo-mark">
+      <img src="data:image/svg+xml;utf8,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23F8FAFC' /%3E%3Cstop offset='30%25' stop-color='%2394A3B8' /%3E%3Cstop offset='70%25' stop-color='%23475569' /%3E%3Cstop offset='100%25' stop-color='%230F172A' /%3E%3C/linearGradient%3E%3CradialGradient id='c' cx='35%25' cy='35%25' r='65%25'%3E%3Cstop offset='0%25' stop-color='%23FFFFFF' /%3E%3Cstop offset='60%25' stop-color='%2394A3B8' /%3E%3Cstop offset='100%25' stop-color='%231E293B' /%3E%3C/radialGradient%3E%3C/defs%3E%3Cg fill='none' stroke='url(%23s)' stroke-width='6' opacity='0.9'%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(0 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(60 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(120 100 100)' /%3E%3C/g%3E%3Ccircle cx='100' cy='100' r='18' fill='url(%23c)' /%3E%3C/svg%3E" alt="Logo" class="logo-img">
+      <span class="logo-text">Whale Alert Network</span>
+      <span class="seed-equity-tab">Seed Equity</span>
+    </div>
+  </div>
+  <div class="slide-content">
+    <h2 class="slide-h">Structural inefficiencies in digital asset data distribution.</h2>
+    <p class="slide-sub">Current analytical protocols present latency ceilings and data exposure vectors that degrade mathematical probability of capital return.</p>
+
+    <div class="data-grid">
+      <div class="data-cell">
+        <div class="data-cell-title">Delayed Block Confirmation</div>
+        <div class="data-cell-body">Block execution to alert delivery spans 15 to 120 seconds in standard implementations. This temporal gap renders the indexed data mathematically irrelevant for automated and active capital strategies.</div>
+        <div class="data-cell-metric">Δt &gt; 30.00s</div>
+      </div>
+      <div class="data-cell">
+        <div class="data-cell-title">Proprietary Logic Harvesting</div>
+        <div class="data-cell-body">Centralized platform operators persistently log client search patterns. The client's proprietary research vectors are continuously harvested and retained by the infrastructure provider, eliminating execution advantage.</div>
+        <div class="data-cell-metric">100% RETENTION</div>
+      </div>
+      <div class="data-cell">
+        <div class="data-cell-title">Protocol Disconnection</div>
+        <div class="data-cell-body">Standard operations require independent applications for blockchain indexing, encrypted messaging, and data structuring. This horizontal fragmentation increases operational risk factors and execution delays.</div>
+        <div class="data-cell-metric">N  5 PLATFORMS</div>
+      </div>
+    </div>
+  </div>
+  <div class="global-footer">
+    <div class="footer-left"><span>humanidfi.com</span><span>Built with Aztec Network · Whalecosystem Corp. · 2026</span></div>
+    <div class="footer-right">02 / 12</div>
+  </div>
+</div>
+
+<!-- SLIDE 3: SOLUTION -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="logo-mark">
+      <img src="data:image/svg+xml;utf8,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23F8FAFC' /%3E%3Cstop offset='30%25' stop-color='%2394A3B8' /%3E%3Cstop offset='70%25' stop-color='%23475569' /%3E%3Cstop offset='100%25' stop-color='%230F172A' /%3E%3C/linearGradient%3E%3CradialGradient id='c' cx='35%25' cy='35%25' r='65%25'%3E%3Cstop offset='0%25' stop-color='%23FFFFFF' /%3E%3Cstop offset='60%25' stop-color='%2394A3B8' /%3E%3Cstop offset='100%25' stop-color='%231E293B' /%3E%3C/radialGradient%3E%3C/defs%3E%3Cg fill='none' stroke='url(%23s)' stroke-width='6' opacity='0.9'%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(0 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(60 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(120 100 100)' /%3E%3C/g%3E%3Ccircle cx='100' cy='100' r='18' fill='url(%23c)' /%3E%3C/svg%3E" alt="Logo" class="logo-img">
+      <span class="logo-text">Whale Alert Network</span>
+      <span class="seed-equity-tab">Seed Equity</span>
+    </div>
+  </div>
+  <div class="slide-content">
+    <h2 class="slide-h">Deterministic on-chain data layer.</h2>
+    <p class="slide-sub">Zero-knowledge verification of capital transfers with sub-second delivery to client terminals via Redis pub/sub channels.</p>
+
+    <div class="metrics-grid" style="grid-template-rows: 1fr;">
+      <div class="metric-box">
+        <div class="metric-val">870<span style="font-size:14pt">ms</span></div>
+        <div class="metric-lbl">Mean Latency</div>
+        <div class="metric-desc">Detection to distribution transmission time.</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-val">5</div>
+        <div class="metric-lbl">Supported Protocols</div>
+        <div class="metric-desc">EVM, SVM, and UTXO network indexing.</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-val">0</div>
+        <div class="metric-lbl">Data Retention</div>
+        <div class="metric-desc">Client queries execute entirely on local states.</div>
+      </div>
+    </div>
+
+    <div class="data-grid" style="border:none; margin-bottom:0;">
+      <div class="data-cell" style="border: 1px solid var(--border);">
+        <div class="data-cell-title">Continuous Indexing</div>
+        <div class="data-cell-body">Systematically tracks capital exceeding target thresholds. Classifies entities via historical deterministic parameters.</div>
+      </div>
+      <div class="data-cell" style="border: 1px solid var(--border); border-left: none;">
+        <div class="data-cell-title">XMTP Cryptographic Messaging</div>
+        <div class="data-cell-body">End-to-end encrypted infrastructure. Cryptographic keys remain isolated on client hardware ensuring strict data systemty.</div>
+      </div>
+      <div class="data-cell" style="border: 1px solid var(--border); border-left: none;">
+        <div class="data-cell-title">Structured Frameworks</div>
+        <div class="data-cell-body">Integrated technical documentation and academy modules designed to standardize on-chain analytical methodologies.</div>
+      </div>
+    </div>
+  </div>
+  <div class="global-footer">
+    <div class="footer-left"><span>humanidfi.com</span><span>Built with Aztec Network · Whalecosystem Corp. · 2026</span></div>
+    <div class="footer-right">03 / 12</div>
+  </div>
+</div>
+
+<!-- SLIDE 4: TOPOLOGY -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="logo-mark">
+      <img src="data:image/svg+xml;utf8,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23F8FAFC' /%3E%3Cstop offset='30%25' stop-color='%2394A3B8' /%3E%3Cstop offset='70%25' stop-color='%23475569' /%3E%3Cstop offset='100%25' stop-color='%230F172A' /%3E%3C/linearGradient%3E%3CradialGradient id='c' cx='35%25' cy='35%25' r='65%25'%3E%3Cstop offset='0%25' stop-color='%23FFFFFF' /%3E%3Cstop offset='60%25' stop-color='%2394A3B8' /%3E%3Cstop offset='100%25' stop-color='%231E293B' /%3E%3C/radialGradient%3E%3C/defs%3E%3Cg fill='none' stroke='url(%23s)' stroke-width='6' opacity='0.9'%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(0 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(60 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(120 100 100)' /%3E%3C/g%3E%3Ccircle cx='100' cy='100' r='18' fill='url(%23c)' /%3E%3C/svg%3E" alt="Logo" class="logo-img">
+      <span class="logo-text">Whale Alert Network</span>
+      <span class="seed-equity-tab">Seed Equity</span>
+    </div>
+  </div>
+  <div class="slide-content">
+    <h2 class="slide-h">Operational pipeline execution architecture.</h2>
+    <p class="slide-sub">Systematic flow from raw node data ingestion to client-side interface rendering.</p>
+
+    <div class="topo-row">
+      <div class="topo-node">
+        <div class="topo-title">Data Ingestion</div>
+        <div class="topo-desc">Direct websocket connections to primary node providers. Raw block data is intercepted at the mempool state prior to full block finality.</div>
+      </div>
+      <div class="topo-node">
+        <div class="topo-title">Algorithmic Parse</div>
+        <div class="topo-desc">Transfers exceeding nominal value of $50,000 USD are isolated. Entity classification executes mapping against known PostgreSQL address clusters.</div>
+      </div>
+      <div class="topo-node">
+        <div class="topo-title">Signal Routing</div>
+        <div class="topo-desc">Verified transactions are pushed via Redis pub/sub infrastructure to API endpoints, Telegram distribution channels, and secure terminal websockets.</div>
+      </div>
+      <div class="topo-node">
+        <div class="topo-title">Client State</div>
+        <div class="topo-desc">End user hardware receives the payload. Data is rendered locally, combining incoming signals with the client's isolated encrypted watchlist parameters.</div>
+      </div>
+    </div>
+  </div>
+  <div class="global-footer">
+    <div class="footer-left"><span>humanidfi.com</span><span>Built with Aztec Network · Whalecosystem Corp. · 2026</span></div>
+    <div class="footer-right">04 / 12</div>
+  </div>
+</div>
+
+<!-- SLIDE 5: PRIVACY -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="logo-mark">
+      <img src="data:image/svg+xml;utf8,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23F8FAFC' /%3E%3Cstop offset='30%25' stop-color='%2394A3B8' /%3E%3Cstop offset='70%25' stop-color='%23475569' /%3E%3Cstop offset='100%25' stop-color='%230F172A' /%3E%3C/linearGradient%3E%3CradialGradient id='c' cx='35%25' cy='35%25' r='65%25'%3E%3Cstop offset='0%25' stop-color='%23FFFFFF' /%3E%3Cstop offset='60%25' stop-color='%2394A3B8' /%3E%3Cstop offset='100%25' stop-color='%231E293B' /%3E%3C/radialGradient%3E%3C/defs%3E%3Cg fill='none' stroke='url(%23s)' stroke-width='6' opacity='0.9'%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(0 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(60 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(120 100 100)' /%3E%3C/g%3E%3Ccircle cx='100' cy='100' r='18' fill='url(%23c)' /%3E%3C/svg%3E" alt="Logo" class="logo-img">
+      <span class="logo-text">Whale Alert Network</span>
+      <span class="seed-equity-tab">Seed Equity</span>
+    </div>
+  </div>
+  <div class="slide-content">
+    <h2 class="slide-h">Zero-knowledge proof implementation.</h2>
+    <p class="slide-sub">Engineering data systemty through advanced cryptographic protocols, neutralizing external observation.</p>
+
+    <div style="display: flex; gap: 6mm; flex: 1; margin-bottom: 8mm;">
+      <div style="flex: 1.5; border: 1px solid var(--border); padding: 8mm;">
+        <h3 style="font-size: 14pt; margin-bottom: 12px; font-weight: 600;">Verification without disclosure.</h3>
+        <p style="font-size: 9.5pt; color: var(--secondary); line-height: 1.6; margin-bottom: 15px;">
+          The system architecture enforces strict data isolation. Utilizing zero-knowledge cryptography via Aztec Network, we distribute verified market data while mathematically preventing the exposure of client query models. The centralized infrastructure is structurally incapable of reversing client search parameters.
+        </p>
+      </div>
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 6mm;">
+        <div style="border: 1px solid var(--border); padding: 6mm; flex: 1;">
+          <div style="font-size: 10pt; font-weight: 600; margin-bottom: 6px;">Local Execution</div>
+          <div style="font-size: 9pt; color: var(--secondary); line-height: 1.5;">Watchlists and parameters remain encrypted on client storage arrays.</div>
+        </div>
+        <div style="border: 1px solid var(--border); padding: 6mm; flex: 1;">
+          <div style="font-size: 10pt; font-weight: 600; margin-bottom: 6px;">ZK Verification</div>
+          <div style="font-size: 9pt; color: var(--secondary); line-height: 1.5;">Alert delivery authenticated via cryptographic proofs of integrity.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="global-footer">
+    <div class="footer-left"><span>humanidfi.com</span><span>Built with Aztec Network · Whalecosystem Corp. · 2026</span></div>
+    <div class="footer-right">05 / 12</div>
+  </div>
+</div>
+
+<!-- SLIDE 6: MODULES -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="logo-mark">
+      <img src="data:image/svg+xml;utf8,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23F8FAFC' /%3E%3Cstop offset='30%25' stop-color='%2394A3B8' /%3E%3Cstop offset='70%25' stop-color='%23475569' /%3E%3Cstop offset='100%25' stop-color='%230F172A' /%3E%3C/linearGradient%3E%3CradialGradient id='c' cx='35%25' cy='35%25' r='65%25'%3E%3Cstop offset='0%25' stop-color='%23FFFFFF' /%3E%3Cstop offset='60%25' stop-color='%2394A3B8' /%3E%3Cstop offset='100%25' stop-color='%231E293B' /%3E%3C/radialGradient%3E%3C/defs%3E%3Cg fill='none' stroke='url(%23s)' stroke-width='6' opacity='0.9'%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(0 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(60 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(120 100 100)' /%3E%3C/g%3E%3Ccircle cx='100' cy='100' r='18' fill='url(%23c)' /%3E%3C/svg%3E" alt="Logo" class="logo-img">
+      <span class="logo-text">Whale Alert Network</span>
+      <span class="seed-equity-tab">Seed Equity</span>
+    </div>
+  </div>
+  <div class="slide-content">
+    <h2 class="slide-h">Integrated protocol functions.</h2>
+    <p class="slide-sub">Execution status of primary ecosystem components.</p>
+
+    <div class="data-grid" style="grid-template-rows: 1fr 1fr; margin-bottom: 8mm;">
+      <div class="data-cell">
+        <div class="data-cell-title">Transaction Tracker</div>
+        <div class="data-cell-body">Real-time indexing engine for institutional capital velocity and volume mapping.</div>
+      </div>
+      <div class="data-cell">
+        <div class="data-cell-title">Secure Comms</div>
+        <div class="data-cell-body">End-to-end encrypted protocol (XMTP) for institutional data exchange.</div>
+      </div>
+      <div class="data-cell">
+        <div class="data-cell-title">Portfolio Ledger</div>
+        <div class="data-cell-body">Historical address activity, graph-based Neo4j rendering, and counterparty exposure analysis.</div>
+      </div>
+      <div class="data-cell">
+        <div class="data-cell-title">Academy Protocol</div>
+        <div class="data-cell-body">Standardized educational structures for chain analysis operations.</div>
+      </div>
+      <div class="data-cell">
+        <div class="data-cell-title">Forum Infrastructure</div>
+        <div class="data-cell-body">Authenticated environment for coordinated protocol research.</div>
+      </div>
+      <div class="data-cell">
+        <div class="data-cell-title">News Aggregator</div>
+        <div class="data-cell-body">Market event indexing directly correlated with on-chain transaction execution.</div>
+      </div>
+    </div>
+  </div>
+  <div class="global-footer">
+    <div class="footer-left"><span>humanidfi.com</span><span>Built with Aztec Network · Whalecosystem Corp. · 2026</span></div>
+    <div class="footer-right">06 / 12</div>
+  </div>
+</div>
+
+<!-- SLIDE 7: MARKET -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="logo-mark">
+      <img src="data:image/svg+xml;utf8,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23F8FAFC' /%3E%3Cstop offset='30%25' stop-color='%2394A3B8' /%3E%3Cstop offset='70%25' stop-color='%23475569' /%3E%3Cstop offset='100%25' stop-color='%230F172A' /%3E%3C/linearGradient%3E%3CradialGradient id='c' cx='35%25' cy='35%25' r='65%25'%3E%3Cstop offset='0%25' stop-color='%23FFFFFF' /%3E%3Cstop offset='60%25' stop-color='%2394A3B8' /%3E%3Cstop offset='100%25' stop-color='%231E293B' /%3E%3C/radialGradient%3E%3C/defs%3E%3Cg fill='none' stroke='url(%23s)' stroke-width='6' opacity='0.9'%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(0 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(60 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(120 100 100)' /%3E%3C/g%3E%3Ccircle cx='100' cy='100' r='18' fill='url(%23c)' /%3E%3C/svg%3E" alt="Logo" class="logo-img">
+      <span class="logo-text">Whale Alert Network</span>
+      <span class="seed-equity-tab">Seed Equity</span>
+    </div>
+  </div>
+  <div class="slide-content">
+    <h2 class="slide-h">Addressable capital metrics.</h2>
+    <p class="slide-sub">Quantification of the global blockchain analytics sector.</p>
+
+    <div class="metrics-grid" style="grid-template-rows: 1fr; margin-bottom: 8mm;">
+      <div class="metric-box">
+        <div class="metric-val">$2.8B</div>
+        <div class="metric-lbl">Total Addressable (TAM)</div>
+        <div class="metric-desc">Global blockchain data infrastructure and analytics software sector. Sector variance currently modeling at +68% YOY.</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-val">$890M</div>
+        <div class="metric-lbl">Serviceable (SAM)</div>
+        <div class="metric-desc">Institutional analysts, funds, and terminal operators requiring immediate data delivery.</div>
+      </div>
+      <div class="metric-box" style="background: var(--primary); color: var(--bg);">
+        <div class="metric-val" style="color: var(--bg);">$45.0M</div>
+        <div class="metric-lbl" style="color: #D1D5DB;">Obtainable (SOM)</div>
+        <div class="metric-desc" style="color: #D1D5DB;">Strategic 24-month target based on projected capture of 15,000 active license holders.</div>
+      </div>
+    </div>
+  </div>
+  <div class="global-footer">
+    <div class="footer-left"><span>humanidfi.com</span><span>Built with Aztec Network · Whalecosystem Corp. · 2026</span></div>
+    <div class="footer-right">07 / 12</div>
+  </div>
+</div>
+
+<!-- SLIDE 8: BUSINESS MODEL -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="logo-mark">
+      <img src="data:image/svg+xml;utf8,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23F8FAFC' /%3E%3Cstop offset='30%25' stop-color='%2394A3B8' /%3E%3Cstop offset='70%25' stop-color='%23475569' /%3E%3Cstop offset='100%25' stop-color='%230F172A' /%3E%3C/linearGradient%3E%3CradialGradient id='c' cx='35%25' cy='35%25' r='65%25'%3E%3Cstop offset='0%25' stop-color='%23FFFFFF' /%3E%3Cstop offset='60%25' stop-color='%2394A3B8' /%3E%3Cstop offset='100%25' stop-color='%231E293B' /%3E%3C/radialGradient%3E%3C/defs%3E%3Cg fill='none' stroke='url(%23s)' stroke-width='6' opacity='0.9'%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(0 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(60 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(120 100 100)' /%3E%3C/g%3E%3Ccircle cx='100' cy='100' r='18' fill='url(%23c)' /%3E%3C/svg%3E" alt="Logo" class="logo-img">
+      <span class="logo-text">Whale Alert Network</span>
+      <span class="seed-equity-tab">Seed Equity</span>
+    </div>
+  </div>
+  <div class="slide-content">
+    <h2 class="slide-h">Structured software licensing models.</h2>
+    <p class="slide-sub">Tiered access parameters governing API and terminal utility.</p>
+
+    <table class="spec-table">
+      <thead>
+        <tr>
+          <th>Tier Identifier</th>
+          <th>Subscription Parameter (USD/mo)</th>
+          <th>API Throughput Limit</th>
+          <th>Index Range</th>
+          <th>Data Retention Window</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-weight: 600;">STANDARD</td>
+          <td class="monospace">$14.99</td>
+          <td class="monospace">5.0 × 10³ req/d</td>
+          <td>3 Assets</td>
+          <td>12 Hours</td>
+        </tr>
+        <tr>
+          <td style="font-weight: 600;">STARTER</td>
+          <td class="monospace">$49.00</td>
+          <td class="monospace">1.0 × 10 req/d</td>
+          <td>5 Assets</td>
+          <td>24 Hours</td>
+        </tr>
+        <tr class="col-highlight">
+          <td style="font-weight: 600;">PROFESSIONAL</td>
+          <td class="monospace">$299.00</td>
+          <td class="monospace">5.0 × 10 req/d</td>
+          <td>Unrestricted</td>
+          <td>30 Days</td>
+        </tr>
+        <tr>
+          <td style="font-weight: 600;">ENTERPRISE</td>
+          <td class="monospace">$1,999.00</td>
+          <td class="monospace">Unrestricted</td>
+          <td>Custom deployment</td>
+          <td>12 Months</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="font-size: 8pt; color: var(--secondary); font-family: 'JetBrains Mono', monospace;">
+      SECONDARY REVENUE COMPONENT: Deployment of 200 permanent baseline access licenses to establish primary user liquidity.
+    </div>
+  </div>
+  <div class="global-footer">
+    <div class="footer-left"><span>humanidfi.com</span><span>Built with Aztec Network · Whalecosystem Corp. · 2026</span></div>
+    <div class="footer-right">08 / 12</div>
+  </div>
+</div>
+
+<!-- SLIDE 9: TRACTION -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="logo-mark">
+      <img src="data:image/svg+xml;utf8,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23F8FAFC' /%3E%3Cstop offset='30%25' stop-color='%2394A3B8' /%3E%3Cstop offset='70%25' stop-color='%23475569' /%3E%3Cstop offset='100%25' stop-color='%230F172A' /%3E%3C/linearGradient%3E%3CradialGradient id='c' cx='35%25' cy='35%25' r='65%25'%3E%3Cstop offset='0%25' stop-color='%23FFFFFF' /%3E%3Cstop offset='60%25' stop-color='%2394A3B8' /%3E%3Cstop offset='100%25' stop-color='%231E293B' /%3E%3C/radialGradient%3E%3C/defs%3E%3Cg fill='none' stroke='url(%23s)' stroke-width='6' opacity='0.9'%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(0 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(60 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(120 100 100)' /%3E%3C/g%3E%3Ccircle cx='100' cy='100' r='18' fill='url(%23c)' /%3E%3C/svg%3E" alt="Logo" class="logo-img">
+      <span class="logo-text">Whale Alert Network</span>
+      <span class="seed-equity-tab">Seed Equity</span>
+    </div>
+  </div>
+  <div class="slide-content">
+    <h2 class="slide-h">Operational execution data logs.</h2>
+    <p class="slide-sub">Empirical metrics derived from production environment execution.</p>
+
+    <div class="metrics-grid">
+      <div class="metric-box">
+        <div class="metric-val">842,019</div>
+        <div class="metric-lbl">Indexed Executions</div>
+        <div class="metric-desc">Capital events processed and confirmed across tracked state machines.</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-val">4.73<span style="font-size: 16pt;">T</span></div>
+        <div class="metric-lbl">Monitored Volume (USD)</div>
+        <div class="metric-desc">Aggregate quantitative measure of institutional capital velocity mapped.</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-val">0.87<span style="font-size: 16pt;">s</span></div>
+        <div class="metric-lbl">Execution Delay</div>
+        <div class="metric-desc">Latency parameter mapping block ingestion to terminal render via Redis.</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-val">99.7<span style="font-size: 16pt;">%</span></div>
+        <div class="metric-lbl">Uptime Status</div>
+        <div class="metric-desc">System availability verified through redundant node routing constraints.</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-val">5</div>
+        <div class="metric-lbl">Network Integrity</div>
+        <div class="metric-desc">Active parsers operating on EVM, SVM, and UTXO architectures.</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-val">12.3<span style="font-size: 16pt;">%</span></div>
+        <div class="metric-lbl">False Positive Ratio</div>
+        <div class="metric-desc">Noise reduction metric resulting from deterministic behavioral models.</div>
+      </div>
+    </div>
+  </div>
+  <div class="global-footer">
+    <div class="footer-left"><span>humanidfi.com</span><span>Built with Aztec Network · Whalecosystem Corp. · 2026</span></div>
+    <div class="footer-right">09 / 12</div>
+  </div>
+</div>
+
+<!-- SLIDE 10: COMPETITIVE -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="logo-mark">
+      <img src="data:image/svg+xml;utf8,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23F8FAFC' /%3E%3Cstop offset='30%25' stop-color='%2394A3B8' /%3E%3Cstop offset='70%25' stop-color='%23475569' /%3E%3Cstop offset='100%25' stop-color='%230F172A' /%3E%3C/linearGradient%3E%3CradialGradient id='c' cx='35%25' cy='35%25' r='65%25'%3E%3Cstop offset='0%25' stop-color='%23FFFFFF' /%3E%3Cstop offset='60%25' stop-color='%2394A3B8' /%3E%3Cstop offset='100%25' stop-color='%231E293B' /%3E%3C/radialGradient%3E%3C/defs%3E%3Cg fill='none' stroke='url(%23s)' stroke-width='6' opacity='0.9'%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(0 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(60 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(120 100 100)' /%3E%3C/g%3E%3Ccircle cx='100' cy='100' r='18' fill='url(%23c)' /%3E%3C/svg%3E" alt="Logo" class="logo-img">
+      <span class="logo-text">Whale Alert Network</span>
+      <span class="seed-equity-tab">Seed Equity</span>
+    </div>
+  </div>
+  <div class="slide-content">
+    <h2 class="slide-h">Infrastructure vector evaluation.</h2>
+    <p class="slide-sub">Objective system mapping against incumbent legacy platforms.</p>
+
+    <table class="spec-table">
+      <thead>
+        <tr>
+          <th>System Component</th>
+          <th class="th-highlight">WHALE ALERT NETWORK</th>
+          <th>LEGACY ENTITY ALPHA</th>
+          <th>LEGACY ENTITY BETA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-weight: 600;">Data Delivery Latency</td>
+          <td class="col-highlight monospace">&lt; 900 ms</td>
+          <td class="monospace">15  120 sec</td>
+          <td class="monospace">30  90 sec</td>
+        </tr>
+        <tr>
+          <td style="font-weight: 600;">Storage Architecture</td>
+          <td class="col-highlight">Local-state isolated execution</td>
+          <td>Cloud retention protocol</td>
+          <td>Cloud retention protocol</td>
+        </tr>
+        <tr>
+          <td style="font-weight: 600;">Comms Layer Integration</td>
+          <td class="col-highlight">Native E2E encryption</td>
+          <td>Null</td>
+          <td>Null</td>
+        </tr>
+        <tr>
+          <td style="font-weight: 600;">Educational Constructs</td>
+          <td class="col-highlight">Integrated framework</td>
+          <td>Null</td>
+          <td>Null</td>
+        </tr>
+        <tr>
+          <td style="font-weight: 600;">Baseline Access Cost</td>
+          <td class="col-highlight monospace">$14.99 / mo</td>
+          <td class="monospace">$150.00 / mo</td>
+          <td class="monospace">$72.00 / mo</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="global-footer">
+    <div class="footer-left"><span>humanidfi.com</span><span>Built with Aztec Network · Whalecosystem Corp. · 2026</span></div>
+    <div class="footer-right">10 / 12</div>
+  </div>
+</div>
+
+<!-- SLIDE 11: ROADMAP -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="logo-mark">
+      <img src="data:image/svg+xml;utf8,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23F8FAFC' /%3E%3Cstop offset='30%25' stop-color='%2394A3B8' /%3E%3Cstop offset='70%25' stop-color='%23475569' /%3E%3Cstop offset='100%25' stop-color='%230F172A' /%3E%3C/linearGradient%3E%3CradialGradient id='c' cx='35%25' cy='35%25' r='65%25'%3E%3Cstop offset='0%25' stop-color='%23FFFFFF' /%3E%3Cstop offset='60%25' stop-color='%2394A3B8' /%3E%3Cstop offset='100%25' stop-color='%231E293B' /%3E%3C/radialGradient%3E%3C/defs%3E%3Cg fill='none' stroke='url(%23s)' stroke-width='6' opacity='0.9'%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(0 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(60 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(120 100 100)' /%3E%3C/g%3E%3Ccircle cx='100' cy='100' r='18' fill='url(%23c)' /%3E%3C/svg%3E" alt="Logo" class="logo-img">
+      <span class="logo-text">Whale Alert Network</span>
+      <span class="seed-equity-tab">Seed Equity</span>
+    </div>
+  </div>
+  <div class="slide-content">
+    <h2 class="slide-h">Phased deployment schedule.</h2>
+    <p class="slide-sub">Engineering and commercialization projections for T+12 months.</p>
+
+    <div class="topo-row">
+      <div class="topo-node">
+        <div class="topo-subtitle">Q3 2026</div>
+        <div class="topo-title">System Boot</div>
+        <div class="topo-desc">
+          <div class="list-item">Initialize indexing engine across 5 network architectures.</div>
+          <div class="list-item">Deploy end-to-end encrypted messaging substrate.</div>
+          <div class="list-item">Execute lifetime license generation protocol.</div>
+        </div>
+      </div>
+      <div class="topo-node">
+        <div class="topo-subtitle">T+90 Days</div>
+        <div class="topo-title">Economic Scaling</div>
+        <div class="topo-desc">
+          <div class="list-item">Achieve $50K Monthly Recurring Revenue threshold.</div>
+          <div class="list-item">Initiate API licensing framework for B2B nodes.</div>
+          <div class="list-item">Compile and deploy historical portfolio analytics.</div>
+        </div>
+      </div>
+      <div class="topo-node">
+        <div class="topo-subtitle">T+180 Days</div>
+        <div class="topo-title">Protocol Expansion</div>
+        <div class="topo-desc">
+          <div class="list-item">Execute native mobile application environment.</div>
+          <div class="list-item">Implement cross-chain behavioral correlation engines.</div>
+          <div class="list-item">Target threshold: 10,000 active license states.</div>
+        </div>
+      </div>
+      <div class="topo-node" style="background: var(--bg-alt);">
+        <div class="topo-subtitle">T+365 Days</div>
+        <div class="topo-title">Institutional Integration</div>
+        <div class="topo-desc">
+          <div class="list-item">Achieve $500K Monthly Recurring Revenue parameter.</div>
+          <div class="list-item">Deploy FIX protocol endpoints for fund operators.</div>
+          <div class="list-item">Compile architecture for Series A capital injection.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="global-footer">
+    <div class="footer-left"><span>humanidfi.com</span><span>Built with Aztec Network · Whalecosystem Corp. · 2026</span></div>
+    <div class="footer-right">11 / 12</div>
+  </div>
+</div>
+
+<!-- SLIDE 12: THE ASK -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="logo-mark">
+      <img src="data:image/svg+xml;utf8,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23F8FAFC' /%3E%3Cstop offset='30%25' stop-color='%2394A3B8' /%3E%3Cstop offset='70%25' stop-color='%23475569' /%3E%3Cstop offset='100%25' stop-color='%230F172A' /%3E%3C/linearGradient%3E%3CradialGradient id='c' cx='35%25' cy='35%25' r='65%25'%3E%3Cstop offset='0%25' stop-color='%23FFFFFF' /%3E%3Cstop offset='60%25' stop-color='%2394A3B8' /%3E%3Cstop offset='100%25' stop-color='%231E293B' /%3E%3C/radialGradient%3E%3C/defs%3E%3Cg fill='none' stroke='url(%23s)' stroke-width='6' opacity='0.9'%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(0 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(60 100 100)' /%3E%3Cellipse cx='100' cy='100' rx='38' ry='92' transform='rotate(120 100 100)' /%3E%3C/g%3E%3Ccircle cx='100' cy='100' r='18' fill='url(%23c)' /%3E%3C/svg%3E" alt="Logo" class="logo-img">
+      <span class="logo-text">Whale Alert Network</span>
+      <span class="seed-equity-tab">Seed Equity</span>
+    </div>
+  </div>
+  <div class="slide-content">
+    <h2 class="slide-h">Seed equity deployment parameters.</h2>
+    <p class="slide-sub">Allocations structured for maximum mathematical probability of product iteration and network scaling.</p>
+
+    <div class="fund-layout">
+      <div class="fund-col">
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 8pt; color: var(--secondary); margin-bottom: 6px;">TARGET CAPITAL ACQUISITION</div>
+        <div class="fund-amount">$500,000</div>
+        <div style="font-size: 9.5pt; color: var(--secondary); margin-bottom: 25px;">ROUND: SEED EQUITY · DATE: 2026</div>
+
+        <div style="font-size: 10pt; font-weight: 600; margin-bottom: 12px;">Execution Objectives:</div>
+        <div class="list-item">Acquire 5,000 active licenses (T+180 days).</div>
+        <div class="list-item">Secure $50K Monthly Recurring Revenue (MRR).</div>
+        <div class="list-item">Finalize native application and API infrastructure.</div>
+        <div class="list-item">Calibrate data for Series A corporate valuation.</div>
+        
+        <div style="margin-top: auto; padding-top: 15px; border-top: 1px solid var(--border);">
+          <div style="font-size: 8.5pt; color: var(--secondary); margin-bottom: 6px;">SYSTEM CONTACT PROTOCOL</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 9.5pt; color: var(--primary);">EMAIL: humanityledger@humanidfi.es</div>
+          <a href="https://calendly.com/oficialconcepts/30min?month=2026-05" target="_blank" class="action-link">SCHEDULE CEO BRIEFING </a>
+        </div>
+      </div>
+
+      <div class="fund-col" style="background: var(--bg-alt);">
+        <div style="font-size: 10pt; font-weight: 600; margin-bottom: 25px;">Capital Allocation Grid</div>
+        
+        <div class="fund-bar-container">
+          <div>
+            <div class="fund-bar-lbl">Engineering</div>
+            <div class="fund-bar-item">
+              <div class="fund-bar-track"><div class="fund-bar-fill" style="width: 40%;"></div></div>
+              <div class="fund-bar-pct">40%</div>
+            </div>
+          </div>
+          <div>
+            <div class="fund-bar-lbl">Market Scaling</div>
+            <div class="fund-bar-item">
+              <div class="fund-bar-track"><div class="fund-bar-fill" style="width: 25%;"></div></div>
+              <div class="fund-bar-pct">25%</div>
+            </div>
+          </div>
+          <div>
+            <div class="fund-bar-lbl">Legal / Compliance</div>
+            <div class="fund-bar-item">
+              <div class="fund-bar-track"><div class="fund-bar-fill" style="width: 20%;"></div></div>
+              <div class="fund-bar-pct">20%</div>
+            </div>
+          </div>
+          <div>
+            <div class="fund-bar-lbl">Operations Node</div>
+            <div class="fund-bar-item">
+              <div class="fund-bar-track"><div class="fund-bar-fill" style="width: 15%;"></div></div>
+              <div class="fund-bar-pct">15%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="global-footer">
+    <div class="footer-left"><span>humanidfi.com</span><span>Built with Aztec Network · Whalecosystem Corp. · 2026</span></div>
+    <div class="footer-right">12 / 12</div>
+  </div>
+</div>
+
+</body>
+</html>

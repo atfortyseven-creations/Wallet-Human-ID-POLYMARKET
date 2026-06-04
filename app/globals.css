@@ -1,0 +1,1618 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
+
+@layer utilities {
+  .font-aztec-logo {
+    font-family: 'UnifrakturMaguntia', 'Old English Text MT', serif;
+  }
+}
+
+/* 
+   A11Y GLOBAL REDUCED MOTION SUPPORT (Audit A11y & Motion Compliance)
+    */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 
+   IOS 15 / SAFARI WEBKIT UNIVERSAL COMPATIBILITY LAYER
+   Resolves blank screen, viewport bugs, and font rendering on iOS 15.x
+    */
+
+/* Fix iOS Safari 100vh blank bottom space bug */
+html {
+  /* Let the browser handle global scrolling natively */
+  overflow-x: hidden;
+  /*  HARD BOUNDARY: prevents rubber-band bounce and ghost pages  */
+  overscroll-behavior: none;
+}
+
+body {
+  -webkit-text-size-adjust: 100%;     /* Prevent iOS auto text-size increase */
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent; /* Remove tap flash on iOS */
+  touch-action: pan-x pan-y;          /* Optimal for Lenis / Pan movements */
+  
+  /* Safe Area / Notch Support */
+  padding-left:   env(safe-area-inset-left, 0px);
+  padding-right:  env(safe-area-inset-right, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+
+  /*  LANDING PAGE BOUNDARY SEAL: no empty space or scroll past footer  */
+  overscroll-behavior: none;
+}
+
+/*  STRICT DESKTOP SCROLL BLEED LOCK  */
+body.ios-scroll-lock-strict {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+  touch-action: none !important;
+}
+
+/*  BOUNDED VIEWPORT SEAL 
+   When ClientLayout is in "bounded" mode, the root div has h-[100dvh] and the
+   main tag is the scroll container. We must ensure nothing inside that tree
+   expands the document height beyond the viewport.
+   The `[data-bounded]` attribute is explicitly NOT set anywhere  instead we
+   rely on the CSS stacking of h-[100dvh] on the root to create a containing
+   block. These rules prevent common child component patterns (min-h-screen,
+   min-h-[100dvh]) from leaking outside their scrollable parent.
+    */
+/* Webkit momentum scrolling for the bounded <main> scroll container */
+main[class*="overflow-y-auto"] {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+/* Prevent any child from expanding PAST its scroll container's height */
+main[class*="overflow-y-auto"] > * {
+  min-height: 0;
+  /* Override the globals.css !important rule for min-h-screen within scroll
+     containers. Scoped via parent selector so it doesn't affect normal pages. */
+}
+/* Specific override: within a bounded overflow-y-auto main, min-h-screen
+   should resolve to 100% of the scroll container, not 100dvh of the *document*.
+   This prevents ghost whitespace when content is short. */
+main[class*="overflow-y-auto"] .min-h-screen,
+main[class*="overflow-y-auto"] [class*="min-h-screen"] {
+  min-height: 100% !important;
+}
+
+
+/* 
+   Enterprise LAYOUT SYSTEM
+   
+   Tabs are full width to provide maximum visual clarity across the 4K display.
+    */
+
+
+/* iOS Safari: Prevent 16px font auto-zoom on input focus
+   Full rule with appearance reset is defined below at the * block.
+   This stub is intentionally kept as a placeholder comment. */
+
+/* iOS-safe momentum scrolling for all scrollable containers */
+[class*="overflow-y-auto"],
+[class*="overflow-y-scroll"],
+[class*="overflow-auto"],
+[class*="overflow-scroll"],
+.custom-scrollbar {
+  -webkit-overflow-scrolling: touch;
+  /* NOTE: transform:translate3d removed  it forced ALL scroll containers into
+     separate GPU stacking contexts, which caused the OS native scrollbar to
+     misfire scroll events to the wrong target (document root vs inner container). */
+}
+
+  /* UNIVERSAL A11Y FOCUS — WCAG 2.4.7 compliant visible indicator */
+  :focus-visible {
+    outline: 2px solid rgba(0, 0, 0, 0.5);
+    outline-offset: 2px;
+  }
+  
+  /* Rendering Optimization for long pages */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Reduced heavy filter usage at global level for scroll speed */
+  }
+
+  :root {
+    /* --- WHITE BRAND PALETTE (Light Mode) --- */
+    --bg-page: #FFFFFF;
+    --bg-surface: #FFFFFF;
+    --bg-card: #FFFFFF;
+
+    --text-primary: #1C1917; /* Slate 900 for high contrast */
+    --text-secondary: #57534E;
+    --text-muted: #A8A29E;
+
+    --border-main: rgba(0, 0, 0, 0.08);
+    --glass-bg: rgba(255, 255, 255, 0.45);
+    --glass-border: rgba(0, 0, 0, 0.05);
+    
+    /* Institutional Absolute Contrast */
+    --aztec-parchment: #FFFFFF;
+    --aztec-ink: #050505;
+    
+    /* Institutional Accents */
+    --accent-primary: #00F2EA; /* Pure Cyan */
+    --accent-secondary: #00E5FF;
+    --accent-emerald: #10B981;
+    --accent-glow: rgba(0, 242, 234, 0.15);
+
+    /* Glass blur boundaries (Optimized for Mobile) */
+    --zk-glass-blur: 16px;
+    --zk-glass-blur-heavy: 24px;
+
+    /* Modern Hsl System (light mode) */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
+
+    /* --- Enterprise SETTINGS HOOKS --- */
+    --ui-p-base: 1rem;
+    --ui-text-scale: 1;
+    --stealth-blur: 0px;
+
+    /* 
+       MARCA DE AGUA CÓSMICA 4K / MATRIZ INSTITUCIONAL (SVG)
+       Reemplazamos el PNG estático por un SVG en Base64 para calidad infinita al hacer zoom
+        */
+    --wave-pattern: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h40v40H0V0zm20 20h20v20H20V20zM0 20h20v20H0V20z' fill='%23000' fill-opacity='0.015' fill-rule='evenodd'/%3E%3C/svg%3E");
+    --wave-pattern-opacity: 1;
+    --olas-hokusai: none;
+    --olas-hokusai-opacity: 0;
+    
+    /* Institutional Layout Constants */
+    --header-height: 68px;
+    --viewport-height: calc(100dvh - var(--header-height));
+  }
+
+
+
+
+  /* Light mode (default) */
+  html:not(.dark) {
+    color-scheme: light;
+  }
+
+  html {
+    /* Lenis (SmoothScroll.tsx) manages the smoothing. */
+    -webkit-tap-highlight-color: transparent;
+    touch-action: pan-x pan-y;
+
+    /* === STRATOSPHERIC GPU RENDERING === */
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+
+    /* Prevent horizontal layout overflow  use 100% NOT 100vw.
+       On Windows, 100vw includes the scrollbar width, which creates
+       phantom horizontal overflow that cuts the layout at half-screen. */
+    overflow-x: hidden;
+    width: 100%;
+    
+    /* Let only the body or the master container scroll */
+    min-height: 100%;
+    height: auto;
+
+    font-size: clamp(14px, 1vw + 10px, 17px);
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+
+    /* Background responds to dark/light class */
+    background-color: var(--bg-page, #FFFFFF);
+    color: var(--text-primary, #1C1917);
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+
+  /* NOTE: PC zoom is controlled by the single rule at the bottom of this file.
+   This block intentionally left empty to avoid duplicate/contradictory zoom rules. */
+
+  body {
+    background-color: transparent; /* wallpaper layer handles the base bg */
+    color: inherit;
+  }
+
+  /* 
+     JAPANESE WAVE PATTERN  Desktop CSS pseudo-element fallback
+     
+     WHY pseudo-element + React component both exist:
+      body::before renders instantly on SSR before JS hydrates
+        prevents flash of no-pattern on first paint on desktop
+      WavePatternOverlay (React) takes over on ALL platforms
+       and is the authoritative source of truth after hydration
+     
+     MOBILE OVERRIDE:
+     iOS Safari & Android WebView do NOT correctly handle
+     `position: fixed` on `body::before` pseudo-elements.
+     The pattern disappears/jumps during scroll.
+     We suppress it on touch devices with the media query below 
+     WavePatternOverlay (DOM element) handles mobile correctly.
+      */
+  /* body::before removed to prevent GPU compositing storm with WavePatternOverlay */
+
+  /* NOTE: body > * { z-index: 1 } was REMOVED.
+     It caused every Web3 modal (AppKit, ConnectKit, Reown) to be
+     trapped below the wave pattern overlay z-index, breaking
+     all modal portal rendering. Wave overlay uses z-index: 0
+     on its own element, no global body-child override needed. */
+
+
+  ::selection {
+    /* Institutional neutral  no brand-mismatched magenta */
+    background-color: rgba(0, 0, 0, 0.10);
+    color: #050505;
+  }
+
+   /* input/select/textarea: iOS auto-zoom prevention (16px minimum)
+      Canonical definition here  stub comment above kept for orientation. */
+   input, textarea, select {
+     font-size: 16px !important;
+     touch-action: manipulation;
+     -webkit-appearance: none;
+     -moz-appearance: none;
+     appearance: none;
+   }
+ 
+   /* === GLOBAL GPU LAYER HINTS ===
+      Every element participates in the GPU paint system.
+      Only `transform` and `opacity` are allowed to animate
+      without triggering layout  enforce that contract here.
+   */
+   * {
+     /* Do NOT set will-change here  that forces ALL elements onto GPU layers
+        and kills memory. Only set it on animated elements via .transform-gpu utility. */
+     -webkit-font-smoothing: antialiased;
+     -moz-osx-font-smoothing: grayscale;
+     /* PERF: text-rendering:optimizeLegibility removed from universal selector.
+        It was blocking EVERY text render on the page. Only apply to headings
+        where visual quality justifies the cost (h1h4 via element selectors). */
+     box-sizing: border-box;
+   }
+  /* Senior absolute layout correction */
+  .max-w-7xl {
+    max-width: 80rem !important; /* Reset to standard (1280px approx at 16px rem) */
+  }
+  
+  .max-w-5xl {
+    max-width: 64rem !important;
+  }
+
+  .max-w-4xl {
+    max-width: 56rem !important;
+  }
+
+  h1, .font-aztec-h1 {
+    font-family: 'Playfair Display', 'Arizona Serif', serif;
+    font-weight: 300;
+    line-height: 1.0;
+    letter-spacing: -0.05em;
+  }
+
+  h2, .font-aztec-h2 {
+    font-family: 'Roboto Mono', 'Oracle Triple', monospace;
+    font-weight: 500;
+    line-height: 1.0;
+    letter-spacing: -0.01em;
+  }
+
+  h3, .font-aztec-h3 {
+    font-family: 'Inter', 'MD Thermochrome', sans-serif;
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+  }
+
+  h4, .font-aztec-h4 {
+    font-family: 'Garamond', 'Francesco', serif;
+    font-weight: 400;
+    line-height: 0.95;
+  }
+
+  p, .font-aztec-body {
+    font-family: 'Inter', 'Oracle Standard', sans-serif;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -0.02em;
+  }
+
+  .font-aztec-text {
+    font-family: 'Playfair Display', 'Arizona Text', serif;
+    font-weight: 300;
+    line-height: 1.35;
+  }
+
+  code, .font-mono {
+    font-family: 'Roboto Mono', monospace;
+  }
+
+    /* HIGH-FIDELITY PAPER GRAIN TEXTURE */
+    .noise-bg {
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* IMMERSIVE TRANSPARENCY ENFORCEMENT */
+    #root {
+        background: transparent !important;
+    }
+
+    /* PURE WEB3 FLOATING NAV REFINEMENTS */
+    .capsule-nav-glass {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+    }
+
+/* ============================================================
+   STRATOSPHERIC GPU RENDERING UTILITIES
+   Deep compositor layer forcing for animated components.
+   Only apply these to elements that ACTUALLY animate 
+   misuse wastes VRAM and defeats the purpose.
+   ============================================================ */
+
+/* Viewport Virtualization  skip layout for off-screen content */
+.optimize-visibility {
+  /* content-visibility: auto; REMOVED AS IT BREAKS IPAD SAFARI */
+  contain-intrinsic-size: 0 900px;
+}
+
+/* Full GPU compositor layer  for heavy animated cards/overlays */
+.transform-gpu {
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+  will-change: transform, opacity;
+  /* Subpixel rendering fix for translated elements */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* [EXTREME GPU OPTIMIZATION] Strict Layout Isolation */
+.perf-isolate {
+  contain: layout style paint;
+  overflow: hidden;
+}
+
+/* Deep 3D Hardware layering for smooth parallax and lists */
+.perf-composited-3d {
+  transform: translate3d(0, 0, 0) scale(1);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  will-change: transform;
+}
+
+/* Micro-utility to promote individual elements without layout shifts */
+.perf-will-change-transform {
+  will-change: transform;
+}
+
+
+.z-stratosphere {
+  z-index: 9999 !important;
+}
+
+html,
+body,
+:root {
+  /* scroll-behavior managed by Lenis  not CSS */
+  /* CRITICAL: height:100% removed  causes iPad Safari blank screen.
+     Body/html height is auto by default; min-height:100vh on body handles full-page layout. */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Force hardware composite on heavily animated global components */
+.hardware-accelerated {
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  backface-visibility: hidden;
+  perspective: 1000;
+}
+
+/* GPU scroll container  use on long scrollable lists */
+.scroll-gpu {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  transform: translateZ(0);
+  will-change: scroll-position;
+}
+
+/* Smooth scrollbar styling */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #e2e8f0 transparent;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 99px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
+ 
+ /* Respect user preference: disable animations when reduced-motion is requested */
+ @media (prefers-reduced-motion: reduce) {
+   .animate-prism-shift {
+     animation: none !important;
+   }
+ }
+
+/* Hide scrollbar while maintaining functionality */
+.no-scrollbar::-webkit-scrollbar,
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar,
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Forum scroll containment is handled natively by ClientLayout's bounded <main> viewport */
+
+/* Prevent hover CSS from triggering repaint layers on touch devices */
+@media (hover: none) {
+  .forum-container button:hover,
+  .forum-container a:hover {
+    background-color: transparent !important;
+  }
+}
+
+/* ============================================================
+   240HZ MOBILE HARDWARE ACCELERATION (AZTEC SMOOTH SCROLL)
+   ============================================================ */
+@media (max-width: 768px) {
+  /* Enforce extreme scroll smoothing and disable bounce boundaries */
+  html, body {
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-y: none !important;
+    scroll-behavior: smooth !important;
+  }
+
+  /* Disable expensive backdrop-filters on mobile.
+     This is the #1 cause of 60fps drops on mobile WebKit.
+     Components define their own solid background fallbacks. */
+  .backdrop-blur-sm,
+  .backdrop-blur-md,
+  .glass-vault,
+  .glass-premium,
+  .glass-system {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  /* NOTE: box-shadow intentionally NOT removed  shadows are critical
+     for visual depth on cards, modals and buttons on mobile. */
+}
+
+/* ============================================================
+   ANDROID VIRTUAL KEYBOARD MITIGATION
+   When the Android keyboard opens, viewport shrinks.
+   Hide bottom navigation to prevent it from covering inputs.
+   ============================================================ */
+.mobile-bottom-nav {
+  display: none !important;
+}
+
+body.is-mobile-device .mobile-bottom-nav {
+  display: flex !important;
+}
+
+@media (min-width: 1024px) {
+  body.is-mobile-device .mobile-bottom-nav {
+    display: none !important;
+  }
+}
+
+@media (max-height: 450px) {
+  .mobile-bottom-nav {
+    display: none !important;
+  }
+}
+
+/* ============================================================
+   WHALE CHAT  ARTICULATED THEME ENGINE
+   Each data-chat-theme value maps directly to a palette.
+   Settings modal  data-chat-theme attribute  CSS variables.
+   ============================================================ */
+
+.chat-theme-wrapper {
+  --chat-bg:        #FFFFFF;
+  --chat-sidebar:   #FFFFFF;
+  --chat-bubble-me:      #000000;
+  --chat-bubble-me-text: #FFFFFF;
+  --chat-bubble-peer:    rgba(0,0,0,0.04);
+  --chat-bubble-peer-text: #000000;
+  --chat-border:    rgba(0,0,0,0.08);
+  --chat-input-bg:  rgba(0,0,0,0.03);
+  --chat-meta:      rgba(0,0,0,0.30);
+}
+
+/* DARK */
+.chat-theme-wrapper[data-chat-theme="dark"] {
+  --chat-bg:        #111111;
+  --chat-sidebar:   #1A1A1A;
+  --chat-bubble-me:      #E0E0E0;
+  --chat-bubble-me-text: #000000;
+  --chat-bubble-peer:    rgba(255,255,255,0.07);
+  --chat-bubble-peer-text: #EFEFEF;
+  --chat-border:    rgba(255,255,255,0.08);
+  --chat-input-bg:  rgba(255,255,255,0.05);
+  --chat-meta:      rgba(255,255,255,0.30);
+}
+
+/* MIDNIGHT */
+.chat-theme-wrapper[data-chat-theme="midnight"] {
+  --chat-bg:        #0D0D1A;
+  --chat-sidebar:   #12122A;
+  --chat-bubble-me:      #6C63FF;
+  --chat-bubble-me-text: #FFFFFF;
+  --chat-bubble-peer:    rgba(108,99,255,0.12);
+  --chat-bubble-peer-text: #C8C5FF;
+  --chat-border:    rgba(108,99,255,0.20);
+  --chat-input-bg:  rgba(108,99,255,0.08);
+  --chat-meta:      rgba(200,197,255,0.35);
+}
+
+/* FOREST */
+.chat-theme-wrapper[data-chat-theme="forest"] {
+  --chat-bg:        #0F1A14;
+  --chat-sidebar:   #142019;
+  --chat-bubble-me:      #2D7A4F;
+  --chat-bubble-me-text: #FFFFFF;
+  --chat-bubble-peer:    rgba(45,122,79,0.15);
+  --chat-bubble-peer-text: #A8D5B5;
+  --chat-border:    rgba(45,122,79,0.25);
+  --chat-input-bg:  rgba(45,122,79,0.10);
+  --chat-meta:      rgba(168,213,181,0.35);
+}
+
+/* ROSE */
+.chat-theme-wrapper[data-chat-theme="rose"] {
+  --chat-bg:        #1A0D10;
+  --chat-sidebar:   #221218;
+  --chat-bubble-me:      #C2185B;
+  --chat-bubble-me-text: #FFFFFF;
+  --chat-bubble-peer:    rgba(194,24,91,0.12);
+  --chat-bubble-peer-text: #F48FB1;
+  --chat-border:    rgba(194,24,91,0.20);
+  --chat-input-bg:  rgba(194,24,91,0.08);
+  --chat-meta:      rgba(244,143,177,0.35);
+}
+
+/* Wire theme variables to actual elements */
+.chat-theme-wrapper { background-color: var(--chat-bg) !important; color: var(--chat-bubble-peer-text); }
+.chat-theme-wrapper [data-sidebar] { background-color: var(--chat-sidebar) !important; border-color: var(--chat-border) !important; }
+.chat-theme-wrapper [data-bubble-mine] { background-color: var(--chat-bubble-me) !important; color: var(--chat-bubble-me-text) !important; }
+.chat-theme-wrapper [data-bubble-peer] { background-color: var(--chat-bubble-peer) !important; color: var(--chat-bubble-peer-text) !important; border-color: var(--chat-border) !important; }
+.chat-theme-wrapper [data-chat-meta] { color: var(--chat-meta) !important; }
+.chat-theme-wrapper [data-chat-input] { background-color: var(--chat-input-bg) !important; border-color: var(--chat-border) !important; color: var(--chat-bubble-peer-text) !important; }
+.chat-theme-wrapper [data-chat-input]::placeholder { color: var(--chat-meta) !important; }
+
+/* STEALTH mode: timestamps hidden via CSS, metadata blurred */
+.chat-theme-wrapper[data-privacy="stealth"] [data-chat-meta] { filter: blur(4px); opacity: 0.4; }
+
+/* ============================================================
+   HIDE BALANCES MODE
+   ============================================================ */
+html.hide-balances [data-balance] {
+  filter: blur(8px) saturate(0%);
+  opacity: 0.5;
+  pointer-events: none;
+  user-select: none;
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+html.hide-balances [data-balance]:active {
+  filter: blur(0px) saturate(100%);
+  opacity: 1;
+}
+
+  .font-aztec-serif {
+    font-family: var(--font-aztec-serif), serif;
+  }
+
+  .font-aztec-mono {
+    font-family: var(--font-aztec-mono), monospace;
+  }
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* IOS 15 / SAFARI WEBKIT DVH OVERRIDE GLOBAL */
+  .min-h-screen { min-height: 100dvh !important; }
+  .h-screen { height: 100dvh !important; }
+
+  /* MASTER LAYOUT HEIGHTS  Compensates for the 68px header */
+  .min-h-content { min-height: calc(100dvh - 68px) !important; }
+  .h-content { height: calc(100dvh - 68px) !important; }
+
+  /* ============================================================
+     Enterprise CONFIG: DENSITY & STEALTH MODE (Zero-JS)
+     ============================================================ */
+  
+  html.ui-compact {
+    --ui-p-base: 0.5rem;
+    --ui-text-scale: 0.85;
+  }
+  
+  html.ui-dense {
+    --ui-p-base: 0.25rem;
+    --ui-text-scale: 0.75;
+  }
+
+  html.stealth-active .privacy-sensitive {
+    filter: blur(8px) saturate(0%);
+    opacity: 0.6;
+    pointer-events: none;
+    user-select: none;
+    transition: filter 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+  }
+  
+  /* Opt-out on hover if user explicitly wants to check it securely */
+  html.stealth-active .privacy-sensitive:active {
+    filter: blur(0px) saturate(100%);
+    opacity: 1;
+  }
+
+  /* Safe Area / Fallback VP utilities for iOS 15 */
+  .min-h-safe {
+    min-height: 100vh;
+    /* iOS fallback using webkit */
+    min-height: -webkit-fill-available;
+  }
+  .h-safe {
+    height: 100vh;
+    height: -webkit-fill-available;
+  }
+
+
+  /* Utilitarios de brillo sutil */
+  .glow-text {
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  }
+  
+  /* ZK-Vault Glassmorphism */
+  .glass-vault {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--zk-glass-blur));
+    -webkit-backdrop-filter: blur(var(--zk-glass-blur));
+    border: 1px solid var(--glass-border);
+  }
+  
+  .glass-pearl {
+    background: rgba(255, 255, 255, 0.03);
+    /* PERF: Reduced from 45px to 12px. backdrop-filter:blur(45px) caused severe
+       GPU stall on mid-range laptops  it's the single most expensive CSS property.
+       12px is visually imperceptible from 45px at opacity 0.03. */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  
+  /* Pearlescent Shimmer Animation */
+  @keyframes pearl-shimmer {
+    0%, 100% {
+      background-position: 0% 50%;
+      opacity: 0;
+    }
+    50% {
+      background-position: 100% 50%;
+      opacity: 1;
+    }
+  }
+  
+  .pearl-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .pearl-shimmer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
+    animation: pearl-shimmer 2s ease-in-out infinite;
+  }
+  
+  /* Premium Glassmorphism Effects */
+  .glass-premium {
+    background: var(--glass-bg);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--glass-border);
+  }
+  
+  .glass-card {
+    background: rgba(17, 17, 17, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  /* Premium Glow Effects */
+  .glow-purple {
+    box-shadow: var(--glow-purple);
+  }
+  
+  .glow-green {
+    box-shadow: var(--glow-green);
+  }
+  
+  .glow-text-purple {
+    text-shadow: 0 0 30px rgba(139, 92, 246, 0.6), 0 0 60px rgba(139, 92, 246, 0.3);
+  }
+  
+  .glow-text-green {
+    text-shadow: 0 0 30px rgba(16, 185, 129, 0.6), 0 0 60px rgba(16, 185, 129, 0.3);
+  }
+  
+  /* Gradient Text */
+  .gradient-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  /* Premium Hover Effects */
+  .hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  /* --- System Web3 Aesthetics --- */
+  .noise-bg {
+    position: relative;
+    isolation: isolate;
+  }
+  
+  .noise-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.03;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3BaseFilter id='filter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/baseFilter%3E%3Crect width='100%25' height='100%25' filter='url(%23filter)'/%3E%3C/svg%3E");
+  }
+
+  .mesh-gradient {
+    background-color: #050505;
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+      radial-gradient(at 50% 0%, hsla(225,39%,10%,1) 0, transparent 50%), 
+      radial-gradient(at 100% 0%, hsla(339,49%,10%,1) 0, transparent 50%),
+      radial-gradient(at 0% 100%, hsla(253,16%,7%,1) 0, transparent 50%),
+      radial-gradient(at 50% 100%, hsla(225,39%,10%,1) 0, transparent 50%),
+      radial-gradient(at 100% 100%, hsla(339,49%,10%,1) 0, transparent 50%);
+  }
+
+  .glass-system {
+    background: rgba(255, 255, 255, 0.01);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
+  }
+
+  .text-glow-soft {
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+  }
+
+  /* --- PHASE 29: ARCHITECTURAL TOKENS --- */
+  .glass-aztek {
+    background: rgba(26, 20, 0, 0.4) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  }
+}
+
+/* ============================================================
+   FORUM LIGHT/DARK MODE ARCHITECTURE (AZTEC PERFECTION)
+   ============================================================ */
+
+html.forum-light-mode {
+  background-color: #f4f4f5 !important;
+}
+
+:root {
+  /* Default: Dark Mode (navy-black, NOT purple) */
+  --forum-bg: #0f0a1a;
+  --forum-text: #ffffff;
+  --forum-text-muted: rgba(255, 255, 255, 0.6);
+  --forum-border: rgba(255, 255, 255, 0.05);
+  --forum-surface: rgba(255, 255, 255, 0.02);
+  --forum-hover: #1a112a;
+  --forum-header-bg: rgba(0, 0, 0, 0.2);
+  --forum-subnav-bg: #110b1a;
+  --forum-button-bg: #ffffff;
+  --forum-button-text: #000000;
+}
+
+html.forum-light-mode {
+  /* Light Mode Overrides */
+  --forum-bg: #f4f4f5;
+  --forum-text: #18181b;
+  --forum-text-muted: #71717a;
+  --forum-border: rgba(0, 0, 0, 0.1);
+  --forum-surface: #ffffff;
+  --forum-hover: #fcfcfc;
+  --forum-header-bg: rgba(255, 255, 255, 0.8);
+  --forum-subnav-bg: #ffffff;
+  --forum-button-bg: #18181b;
+  --forum-button-text: #ffffff;
+}
+
+.forum-theme-root {
+  background-color: var(--forum-bg);
+  color: var(--forum-text);
+  /* Disable transition on initial load to prevent flash  JS adds class later */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Prevent the transition firing on first paint (added by JS after mount) */
+.forum-theme-root.theme-ready {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.forum-theme-root a:hover, .forum-theme-root button:hover {
+  transition-duration: 0.2s;
+}
+
+/* 
+   JAPANESE WAVE SURFACE UTILITIES
+   Apply to any white/cream/slate-50 element in any component.
+   Uses position:relative + ::before so content stays on top.
+    */
+
+/* Standard utility  use on bg-white / bg-black/5 sections */
+.wave-surface {
+  position: relative;
+}
+.wave-surface::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  transform: translateZ(0);
+  will-change: auto;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background-image: var(--wave-pattern);
+  background-repeat: repeat;
+  background-size: 250px auto;
+  image-rendering: auto; /* Crisp edges can cause artifacts on JPEG downscale */
+  opacity: var(--wave-pattern-opacity);
+  mix-blend-mode: multiply;
+  border-radius: inherit;
+}
+.wave-surface > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Lighter variant  for cards that already have subtle borders */
+.wave-surface-light::before {
+  opacity: 0.03;
+}
+
+/* Stronger variant  hero sections */
+.wave-surface-strong::before {
+  opacity: 0.065;
+}
+
+/* Dark mode: Invert texture to make lines light and use screen blend mode */
+/* .dark wave overrides removed */
+
+/* === AZTEC Enterprise AESTHETICS & EFFECTS === */
+
+.bg-noise {
+  position: relative;
+}
+.bg-noise::before {
+  content: "";
+  position: absolute;
+  inset: -150%;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacty='0.05'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  /* PERF: Replaced continuous animation with a static position.
+     The noise-shift animation was translating a 300%x300% element every 800ms
+     causing a full repaint every step. Static noise is visually equivalent
+     at opacity 0.04 and costs zero CPU. */
+  z-index: 50;
+  mix-blend-mode: overlay;
+}
+
+/* Only restore noise animation when user has NOT requested reduced motion
+   AND the device is plugged in (detected via .perf-high class on body). */
+@media (prefers-reduced-motion: no-preference) {
+  body.perf-high .bg-noise::before {
+    animation: noise-shift 8s steps(10) infinite;
+  }
+}
+
+@keyframes noise-shift {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-5%, -5%); }
+  20% { transform: translate(-10%, 5%); }
+  30% { transform: translate(5%, -10%); }
+  40% { transform: translate(-5%, 15%); }
+  50% { transform: translate(-10%, 5%); }
+  60% { transform: translate(15%, 0); }
+  70% { transform: translate(0, 15%); }
+  80% { transform: translate(3%, 35%); }
+  90% { transform: translate(-10%, 10%); }
+}
+
+.custom-cursor-none {
+  cursor: none !important;
+}
+.custom-cursor-none * {
+  cursor: none !important;
+}
+
+
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+.animate-blob {
+  animation: blob 10s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* =============================================
+   LIQUID PRISM BACKGROUND  Static Color Shift
+   ============================================= */
+@keyframes prism-shift {
+  0%   { filter: hue-rotate(0deg)   saturate(2)   brightness(1.1); }
+  25%  { filter: hue-rotate(40deg)  saturate(2.4) brightness(1.25); }
+  50%  { filter: hue-rotate(80deg)  saturate(2.6) brightness(1.15); }
+  75%  { filter: hue-rotate(-40deg) saturate(2.4) brightness(1.2); }
+  100% { filter: hue-rotate(0deg)   saturate(2)   brightness(1.1); }
+}
+
+@keyframes liquid {
+  0% { transform: translate(-10%, -10%) rotate(0deg) scale(1.1); }
+  33% { transform: translate(10%, 10%) rotate(120deg) scale(1.3); }
+  66% { transform: translate(-5%, 15%) rotate(240deg) scale(0.9); }
+  100% { transform: translate(-10%, -10%) rotate(360deg) scale(1.1); }
+}
+
+.animate-liquid {
+  animation: liquid 20s infinite linear;
+}
+
+.animate-prism-shift {
+  animation: prism-shift 30s linear infinite !important;
+  /* NO CSS TRANSFORMS TO PREVENT WOBBLE */
+  transform: none !important;
+  will-change: filter !important;
+  
+  /* Universal Premium Sizing & Blur */
+  width: 160vw !important;
+  height: 160vh !important;
+  left: -30vw !important;
+  top: -30vh !important;
+  filter: blur(80px) saturate(2) brightness(1.1) !important;
+}
+
+/* =============================================
+   AZTEC PATTERN & PIXEL DEFORMATION
+   ============================================= */
+
+.bg-aztec-pattern {
+  background-image: 
+    linear-gradient(45deg, currentcolor 25%, transparent 25%, transparent 75%, currentcolor 75%, currentcolor),
+    linear-gradient(45deg, currentcolor 25%, transparent 25%, transparent 75%, currentcolor 75%, currentcolor);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+  opacity: 0.05;
+}
+
+@keyframes pixel-deform {
+  0%   { filter: hue-rotate(0deg) saturate(1.5) contrast(1.2) drop-shadow(4px 4px 0 rgba(255,0,255,0.2)); transform: scale(1.0) skewX(0deg); }
+  25%  { filter: hue-rotate(90deg) saturate(2.5) contrast(1.4) drop-shadow(-4px -4px 0 rgba(0,255,255,0.2)); transform: scale(1.02) skewX(1deg); }
+  50%  { filter: hue-rotate(180deg) saturate(1) contrast(1.8) drop-shadow(4px -4px 0 rgba(255,255,0,0.2)); transform: scale(0.98) skewX(-1deg); }
+  75%  { filter: hue-rotate(270deg) saturate(2) contrast(1) drop-shadow(-4px 4px 0 rgba(255,0,0,0.2)); transform: scale(1.03) skewX(0.5deg); }
+  100% { filter: hue-rotate(360deg) saturate(1.5) contrast(1.2) drop-shadow(4px 4px 0 rgba(255,0,255,0.2)); transform: scale(1.0) skewX(0deg); }
+}
+
+.animate-pixel-deform {
+  animation: pixel-deform 8s steps(5) infinite !important;
+  will-change: filter, transform !important;
+}
+
+/* ============================================================
+   RESPONSIVE LAYOUT  NO ZOOM HACK
+   All breakpoints use fluid clamp() values and flex/grid.
+   The body never gets CSS zoom  that property breaks stacking
+   contexts and subpixel rendering entirely.
+
+   MOBILE (< 768px)
+   - Stack everything vertically (handled by Tailwind sm: prefix)
+   - font-size driven by clamp() on html
+   - Touch targets  48px (WCAG 2.5.5)
+
+   TABLET (768px  1279px)
+   - 2-column grids
+   - Slightly smaller padding
+
+   PC ( 1280px)
+   - Full 3-column grid, sticky headers
+============================================================ */
+
+/* Safe-area utility for fixed/sticky elements */
+.safe-top    { padding-top:    env(safe-area-inset-top); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+.safe-left   { padding-left:   env(safe-area-inset-left); }
+.safe-right  { padding-right:  env(safe-area-inset-right); }
+
+/* Minimum touch target size for buttons on mobile */
+@media (max-width: 1023px) {
+  /* WCAG 2.5.5 minimum touch target  applied only to non-icon buttons/links.
+     Icon-only controls use .icon-btn class and are excluded. */
+  button:not(.icon-btn),
+  a:not(.icon-link),
+  [role="button"]:not(.icon-btn) {
+    min-height: 44px;
+  }
+}
+
+/* Reduce blur on mobile for GPU budget */
+@media (max-width: 767px) {
+  .animate-prism-shift {
+    filter: blur(30px) saturate(1.8) brightness(1.05) !important;
+  }
+  /* Disable content-visibility on mobile  causes layout jumps */
+  .optimize-visibility {
+    content-visibility: visible;
+  }
+}
+
+/* Tablet: medium breakpoint adjustments */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .animate-prism-shift {
+    filter: blur(60px) saturate(2) brightness(1.1) !important;
+  }
+}
+
+/* PC: full resolution */
+@media (min-width: 1280px) {
+  .animate-prism-shift {
+    filter: blur(80px) saturate(2) brightness(1.1) !important;
+  }
+}
+
+/* Global Application Zoom (Excluding Landing) - REMOVED for Absolute Scaling Perfection */
+@media (min-width: 1024px) {
+  .app-zoom-effect {
+    zoom: 1.0;
+  }
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  /* ... existing code ... */
+}
+
+/* ============================================================
+   EXTREME PERFORMANCE ALIGNMENT (Developers-Portal Level)
+   Forces the UI into a ultra-fluent state by stripping 
+   expensive GPU filters on mobile devices.
+   ============================================================ */
+.perf-ultra {
+  /* On small screens, blurs are the #1 fps killer */
+  @media (max-width: 1024px) {
+    *, ::before, ::after {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+    
+    /* Compensate for lost blur depth with more opaque backgrounds */
+    .backdrop-blur-3xl, .backdrop-blur-2xl, .backdrop-blur-xl, .backdrop-blur-lg, .backdrop-blur-md, .backdrop-blur-sm, .backdrop-blur {
+       backdrop-filter: none !important;
+       -webkit-backdrop-filter: none !important;
+    }
+    
+    .bg-white\/10 { background-color: rgba(255,255,255,0.05) !important; }
+    .bg-white\/20 { background-color: rgba(255,255,255,0.1) !important; }
+    .bg-white\/40 { background-color: rgba(255,255,255,0.15) !important; }
+    .bg-slate-950\/80 { background-color: rgba(5, 5, 5, 0.8) !important; }
+    
+    /* Disable costly animations on active layout items */
+    .animate-blob, .animate-liquid, .animate-prism-shift {
+      animation: none !important;
+    }
+  }
+}
+
+
+/* ============================================================
+   MISSING UTILITIES  System Terminal v4.2
+   Critical additions for bug-free production rendering.
+   ============================================================ */
+
+/* scrollbar-hide  used across dashboard tab containers */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* animate-float  gentle vertical oscillation for WhaleLogo in CTA */
+@keyframes float {
+  0%,  100% { transform: translate3d(0,  0px, 0); }
+  50%        { transform: translate3d(0, -12px, 0); }
+}
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* ============================================================
+   SECTION FUSION SYSTEM  240Hz GPU-composited blend zones
+   Eliminates hard edges between light and dark landing sections.
+   Use on the BOTTOM of a light section or TOP of a dark section.
+   ============================================================ */
+
+/* Top of dark section  fades FROM the ivory (#FFFFFF) ABOVE it */
+.section-blend-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 220px;
+  background: linear-gradient(
+    to bottom,
+    #FFFFFF 0%,
+    rgba(250, 249, 246, 0) 100%
+  );
+  pointer-events: none;
+  z-index: 15;
+  will-change: opacity;
+  transform: translateZ(0);
+}
+
+/* Bottom of dark section  fades back TO ivory (#FFFFFF) */
+.section-blend-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 220px;
+  background: linear-gradient(
+    to top,
+    #FFFFFF 0%,
+    rgba(250, 249, 246, 0) 100%
+  );
+  pointer-events: none;
+  z-index: 15;
+  will-change: opacity;
+  transform: translateZ(0);
+}
+
+/* ============================================================
+   240Hz GPU CONTRACT ENFORCEMENT
+   All elements using these classes bypass CPU repaints entirely.
+   Only transform and opacity are allowed to change at runtime.
+   filter changes are explicitly prohibited on 240Hz-locked elements.
+   ============================================================ */
+
+/* Applied to any element that must render at monitor native refresh rate */
+.hz-240 {
+  transform: translate3d(0, 0, 0);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+  isolation: isolate;
+}
+
+/* Applied to parallax containers that drift via Framer Motion */
+.hz-240-drift {
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  contain: layout paint;
+}
+
+/* Applied to background photo layers (Logan Voss, Hokusai) */
+.hz-240-image {
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* 
+   Enterprise SETTINGS  CSS FUNCTIONAL LAYER
+   These classes are applied to <html> by applyDOMClasses() in useSettingsStore.
+   Every toggle/selection in Settings has a real visual effect here.
+    */
+
+/*  STEALTH MODE: blur & hide any element tagged [data-balance] 
+   Usage: add data-balance attribute to any span/div showing wallet balances.
+   Example: <span data-balance>${portfolio.total}</span>
+    */
+html.stealth-active [data-balance] {
+  filter: blur(8px);
+  user-select: none;
+  transition: filter 0.3s ease;
+}
+html.stealth-active [data-balance]:hover {
+  filter: blur(0px); /* Reveal on hover  intentional UX */
+}
+
+/*  SHOW BALANCES: when showBalances is OFF, hide [data-balance] fully 
+   The class hide-balances is applied when showBalances === false.
+    */
+html.hide-balances [data-balance] {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/*  UI DENSITY  RELAXED (default) */
+html:not(.ui-compact):not(.ui-dense) .card-pad   { padding: 1.5rem; }
+html:not(.ui-compact):not(.ui-dense) .row-gap    { gap: 1rem; }
+html:not(.ui-compact):not(.ui-dense) .table-row  { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+
+/*  UI DENSITY  COMPACT  */
+html.ui-compact .card-pad                        { padding: 0.875rem; }
+html.ui-compact .row-gap                         { gap: 0.5rem; }
+html.ui-compact .table-row                       { padding-top: 0.4rem; padding-bottom: 0.4rem; }
+html.ui-compact table td,
+html.ui-compact table th                         { padding-top: 0.4rem !important; padding-bottom: 0.4rem !important; }
+html.ui-compact .p-4                             { padding: 0.65rem !important; }
+html.ui-compact .p-5                             { padding: 0.75rem !important; }
+html.ui-compact .gap-4                           { gap: 0.625rem !important; }
+html.ui-compact .gap-6                           { gap: 0.875rem !important; }
+html.ui-compact .mb-4                            { margin-bottom: 0.5rem !important; }
+html.ui-compact .mb-6                            { margin-bottom: 0.75rem !important; }
+
+/*  UI DENSITY  DENSE  */
+html.ui-dense .card-pad                          { padding: 0.5rem; }
+html.ui-dense .row-gap                           { gap: 0.25rem; }
+html.ui-dense .table-row                         { padding-top: 0.2rem; padding-bottom: 0.2rem; }
+html.ui-dense table td,
+html.ui-dense table th                           { padding-top: 0.2rem !important; padding-bottom: 0.2rem !important; }
+html.ui-dense .p-4                               { padding: 0.4rem !important; }
+html.ui-dense .p-5                               { padding: 0.5rem !important; }
+html.ui-dense .gap-4                             { gap: 0.35rem !important; }
+html.ui-dense .gap-6                             { gap: 0.5rem !important; }
+html.ui-dense .mb-4                              { margin-bottom: 0.25rem !important; }
+html.ui-dense .mb-6                              { margin-bottom: 0.4rem !important; }
+html.ui-dense .h-16                              { height: 3.25rem !important; }
+html.ui-dense .h-\[52px\]                        { height: 44px !important; }
+
+/*  HARDWARE ACCELERATION OFF: disable GPU compositing hints  */
+html.no-hw-accel * {
+  will-change: auto !important;
+  transform: none !important;
+  backface-visibility: visible !important;
+}
+/* Note: animations still work  we just remove GPU layer hints to save VRAM */
+
+/*  FORUM LEGACY THEME VARS  */
+.forum-theme-root {
+  --forum-bg: #FFFFFF;
+  --forum-surface: #F0EFEA;
+  --forum-border: rgba(0, 0, 0, 0.1);
+  --forum-text: #050505;
+  --forum-text-muted: rgba(0, 0, 0, 0.5);
+  --forum-hover: rgba(0, 0, 0, 0.05);
+  --forum-button-bg: #050505;
+  --forum-button-text: #FFFFFF;
+  --forum-accent: #00C076;
+}
+.dark .forum-theme-root {
+  --forum-bg: #050505;
+  --forum-surface: #111111;
+  --forum-border: rgba(255, 255, 255, 0.1);
+  --forum-text: #FFFFFF;
+  --forum-text-muted: #888888;
+  --forum-hover: rgba(255, 255, 255, 0.05);
+  --forum-button-bg: #FFFFFF;
+  --forum-button-text: #050505;
+  --forum-accent: #00C076;
+}
+
+/* 
+   NOTE: html.hide-balances and html.no-hw-accel rules are defined above
+   (lines ~11411185). Duplicate declarations removed here to prevent
+   CSS specificity conflicts.
+    */
+
+/* 
+   GLOBAL PC SCALE SYSTEM  40% ZOOM-OUT FOR DESKTOP (zoom: 0.6)
+   
+   HOW IT WORKS:
+    `zoom: 0.6` on <html> scales the entire rendering tree to 60% of original.
+    This achieves a 40% zoom-out effect  content is closer than 0.5 but still
+     scaled down for 4K/ultrawide displays.
+    The browser automatically creates the logical coordinate space.
+    Mobile (< 1024px physical hardware screen) is completely unaffected.
+    */
+@media screen and (min-width: 1024px) {
+  html {
+    zoom: 0.6;
+  }
+}
+
+/* 
+   UNIVERSAL DARK MODE  Glass Surface System
+   Applied globally when html.dark is active (default theme = dark).
+   Ensures text is ALWAYS readable over the black wallpaper.
+    */
+
+/* Force all generic solid-white page shells to transparent in dark mode */
+html.dark [class*="bg-white"]:not([class*="bg-white/"]):not(button):not(a):not(input):not(textarea):not(select):not(img):not(svg):not(span):not(p):not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
+  background-color: transparent !important;
+}
+
+/*  UNIVERSAL TEXT CONTRAST  DARK MODE ABSOLUTE ENFORCEMENT  */
+/* Every text element in dark mode must be white/light  zero exceptions */
+html.dark body,
+html.dark body * {
+  color: inherit;
+}
+
+html.dark body {
+  color: #F5F5F5 !important;
+}
+
+/* Force white on ALL common text elements in dark mode */
+html.dark p,
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark h5,
+html.dark h6,
+html.dark span:not([class*="text-"]):not([class*="opacity-"]),
+html.dark li,
+html.dark label,
+html.dark td,
+html.dark th {
+  color: #F5F5F5;
+}
+
+/* Fix text-black / text-[#050505] classes that render dark text on dark bg */
+html.dark .text-black,
+html.dark [class*="text-black"],
+html.dark [class*="text-[#050505]"],
+html.dark [class*="text-[#0A0A0A]"],
+html.dark [class*="text-slate-900"],
+html.dark [class*="text-gray-900"],
+html.dark [class*="text-zinc-900"] {
+  color: #F5F5F5 !important;
+}
+
+/* Fix opacity-based dark text  make them light-opacity white instead */
+html.dark [class*="text-black/"] {
+  color: rgba(245, 245, 245, 0.85) !important;
+}
+
+/* Ensure all min-h-screen wrappers are transparent, not white */
+html.dark .min-h-screen:not([class*="bg-[#"]):not([class*="bg-black"]):not([class*="bg-white/"]):not([class*="bg-slate"]):not([class*="bg-transparent"]) {
+  background-color: transparent !important;
+}
+
+/* Section blend overlays: in dark mode they should fade to transparent/black */
+html.dark .section-blend-top {
+  background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%) !important;
+}
+html.dark .section-blend-bottom {
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%) !important;
+}
+
+/* Remove remaining cream/ivory hardcoded backgrounds in dark mode */
+html.dark [style*="#FDFCF8"],
+html.dark [style*="#FFFFFF"],
+html.dark [style*="#FFFFFF"] {
+  background-color: transparent !important;
+}
+
+/* 
+   UNIVERSAL NAV / TABS CENTERING SYSTEM
+   All navigation headers, tab bars, and pill navs must be perfectly centered.
+    */
+
+/* Ensure header inner containers are always max-width centered.
+   Scoped to max-width containers only to avoid breaking flex children
+   in headers that use justify-between / justify-start layouts. */
+header > div[class*="max-w-"],
+nav > div[class*="max-w-"] {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Tab navigation perfect centering for all doc/app tab rows */
+.tab-row,
+[role="tablist"],
+nav[class*="flex"] {
+  display: flex;
+  align-items: center;
+}
+
+/* Center the absolute-positioned nav in the InstitutionalHeader */
+header .absolute.left-\[50\%\] {
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+/*  DOCS LAYOUT: force dark-readable text in the docs panel  */
+/* The docs sidebar and content must have white text in dark mode */
+html.dark .doc-content h1,
+html.dark .doc-content h2,
+html.dark .doc-content h3,
+html.dark .doc-content h4,
+html.dark .doc-content p,
+html.dark .doc-content li,
+html.dark .doc-content td,
+html.dark .doc-content th,
+html.dark .doc-content span {
+  color: #F5F5F5 !important;
+  opacity: 1 !important;
+}
+
+html.dark .doc-content pre,
+html.dark .doc-content code {
+  background: rgba(255,255,255,0.05) !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  color: #E2E8F0 !important;
+}
+
+html.dark .doc-content .callout {
+  background: rgba(255,255,255,0.04) !important;
+  border-left-color: rgba(255,255,255,0.4) !important;
+}
+
+/* 
+   Enterprise LIGHT-MODE FIREWALL  Zero Dark Mode. Ever.
+
+   This platform enforces light mode universally: connected, disconnected,
+   on wallet reconnect/disconnect cycles, and on AppKit modal open/close.
+
+   Even if the `dark` class is momentarily injected by next-themes, AppKit,
+   Wagmi, or any other provider before our React effects run, these rules
+   ensure the visual output is ALWAYS light-mode compliant.
+
+   Strategy: override the html.dark cascade back to light-mode values.
+    */
+
+/* Force the browser's built-in color scheme to stay light even if .dark exists */
+html,
+html.dark,
+html.light {
+  color-scheme: light !important;
+}
+
+/* Neutralize the dark-body text inversion */
+html.dark body {
+  background-color: transparent !important;
+  color: #1C1917 !important; /* Slate-900  system light-mode text */
+}
+
+/* Neutralize white-text rules  restore dark system text on light bg */
+html.dark p,
+html.dark h1,
+html.dark h2,
+html.dark h3,
+html.dark h4,
+html.dark h5,
+html.dark h6,
+html.dark span:not([class*="text-"]):not([class*="opacity-"]),
+html.dark li,
+html.dark label,
+html.dark td,
+html.dark th {
+  color: #1C1917 !important;
+}
+
+html.dark .text-black,
+html.dark [class*="text-black"],
+html.dark [class*="text-[#050505]"],
+html.dark [class*="text-[#0A0A0A]"],
+html.dark [class*="text-slate-900"],
+html.dark [class*="text-gray-900"],
+html.dark [class*="text-zinc-900"] {
+  color: #1C1917 !important;
+}
+
+/* Restore opacity-based dark text (do NOT invert to white) */
+html.dark [class*="text-black/"] {
+  color: unset !important;
+}
+
+/* Restore bg-white containers  do NOT make them transparent */
+html.dark [class*="bg-white"]:not([class*="bg-white/"]):not(button):not(a):not(input):not(textarea):not(select):not(img):not(svg):not(span):not(p):not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
+  background-color: #ffffff !important;
+}
+
+/* Restore cream/ivory inline-style backgrounds */
+html.dark [style*="#FDFCF8"],
+html.dark [style*="#FFFFFF"],
+html.dark [style*="#FFFFFF"] {
+  background-color: inherit !important;
+}
+
+/* Docs content: keep dark system text on light surface */
+html.dark .doc-content h1,
+html.dark .doc-content h2,
+html.dark .doc-content h3,
+html.dark .doc-content h4,
+html.dark .doc-content p,
+html.dark .doc-content li,
+html.dark .doc-content td,
+html.dark .doc-content th,
+html.dark .doc-content span {
+  color: #1C1917 !important;
+  opacity: 1 !important;
+}
+
+html.dark .doc-content pre,
+html.dark .doc-content code {
+  background: rgba(0,0,0,0.04) !important;
+  border-color: rgba(0,0,0,0.08) !important;
+  color: #1C1917 !important;
+}
+
+html.dark .doc-content .callout {
+  background: rgba(0,0,0,0.02) !important;
+  border-left-color: rgba(0,0,0,0.3) !important;
+}

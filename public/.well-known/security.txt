@@ -1,0 +1,6 @@
+Contact: https://twitter.com/whalecosystem
+Expires: 2029-12-31T23:59:59.000Z
+Preferred-Languages: en, es
+Canonical: https://whalecosystem.io/.well-known/security.txt
+Policy: https://whalecosystem.io/legal/privacy
+Acknowledgments: https://whalecosystem.io/legal/terms

@@ -1,0 +1,30 @@
+﻿.next/types/validator.ts(116,39): error TS2307: Cannot find module '../../app/careers/[id]/page.js' or its corresponding type declarations.
+.next/types/validator.ts(125,39): error TS2307: Cannot find module '../../app/careers/page.js' or its corresponding type declarations.
+.next/types/validator.ts(134,39): error TS2307: Cannot find module '../../app/careers/web3-educator/page.js' or its corresponding type declarations.
+.next/types/validator.ts(287,39): error TS2307: Cannot find module '../../app/docs/[...slug]/page.js' or its corresponding type declarations.
+.next/types/validator.ts(296,39): error TS2307: Cannot find module '../../app/docs/api/page.js' or its corresponding type declarations.
+.next/types/validator.ts(305,39): error TS2307: Cannot find module '../../app/docs/page.js' or its corresponding type declarations.
+.next/types/validator.ts(4188,39): error TS2307: Cannot find module '../../app/docs/layout.js' or its corresponding type declarations.
+app/api/news/route.ts(206,35): error TS2339: Property 'metadata' does not exist on type 'CryptoPanicArticle'.
+app/api/news/route.ts(207,41): error TS2339: Property 'metadata' does not exist on type 'CryptoPanicArticle'.
+components/dashboard/GalacticDashboard.tsx(61,20): error TS2339: Property 'disconnect' does not exist on type '{ address: `0x${string}`; isConnected: boolean; isConnecting: boolean; isReconnecting: boolean; isDisconnected: boolean; status: "connected"; chain: undefined; chainId: number; connector: undefined; ... 4 more ...; isChecking: boolean; } | { ...; } | { ...; }'.
+components/portfolio/AztecPrivacyTerminal.tsx(163,98): error TS7006: Parameter 'hash' implicitly has an 'any' type.
+components/wallet/SecurityVault.tsx(19,13): error TS2339: Property 'setAddress' does not exist on type 'WalletState'.
+context/AztecContext.tsx(88,34): error TS2339: Property 'waitForPXE' does not exist on type '{ default: typeof import("@aztec/aztec.js"); createPXEClient(url: string): any; createAccount(pxe: any): Promise<any>; getSandboxAccountsWallets(pxe: any): Promise<any[]>; getContractAt(address: any, abi: any, wallet: any): Promise<...>; }'.
+lib/dex-engine.ts(59,77): error TS2339: Property 'WMATIC' does not exist on type '{ ROUTER: string; QUOTER: string; WETH: string; } | { ROUTER: string; QUOTER: string; WMATIC: string; }'.
+  Property 'WMATIC' does not exist on type '{ ROUTER: string; QUOTER: string; WETH: string; }'.
+lib/dex-engine.ts(59,96): error TS2339: Property 'WETH' does not exist on type '{ ROUTER: string; QUOTER: string; WETH: string; } | { ROUTER: string; QUOTER: string; WMATIC: string; }'.
+  Property 'WETH' does not exist on type '{ ROUTER: string; QUOTER: string; WMATIC: string; }'.
+lib/dex-engine.ts(60,79): error TS2339: Property 'WMATIC' does not exist on type '{ ROUTER: string; QUOTER: string; WETH: string; } | { ROUTER: string; QUOTER: string; WMATIC: string; }'.
+  Property 'WMATIC' does not exist on type '{ ROUTER: string; QUOTER: string; WETH: string; }'.
+lib/dex-engine.ts(60,98): error TS2339: Property 'WETH' does not exist on type '{ ROUTER: string; QUOTER: string; WETH: string; } | { ROUTER: string; QUOTER: string; WMATIC: string; }'.
+  Property 'WETH' does not exist on type '{ ROUTER: string; QUOTER: string; WMATIC: string; }'.
+lib/dex-engine.ts(97,57): error TS2339: Property 'WMATIC' does not exist on type '{ ROUTER: string; QUOTER: string; WETH: string; } | { ROUTER: string; QUOTER: string; WMATIC: string; }'.
+  Property 'WMATIC' does not exist on type '{ ROUTER: string; QUOTER: string; WETH: string; }'.
+lib/dex-engine.ts(97,76): error TS2339: Property 'WETH' does not exist on type '{ ROUTER: string; QUOTER: string; WETH: string; } | { ROUTER: string; QUOTER: string; WMATIC: string; }'.
+  Property 'WETH' does not exist on type '{ ROUTER: string; QUOTER: string; WMATIC: string; }'.
+lib/dex-engine.ts(98,59): error TS2339: Property 'WMATIC' does not exist on type '{ ROUTER: string; QUOTER: string; WETH: string; } | { ROUTER: string; QUOTER: string; WMATIC: string; }'.
+  Property 'WMATIC' does not exist on type '{ ROUTER: string; QUOTER: string; WETH: string; }'.
+lib/dex-engine.ts(98,78): error TS2339: Property 'WETH' does not exist on type '{ ROUTER: string; QUOTER: string; WETH: string; } | { ROUTER: string; QUOTER: string; WMATIC: string; }'.
+  Property 'WETH' does not exist on type '{ ROUTER: string; QUOTER: string; WMATIC: string; }'.
+lib/eip1193-provider.ts(181,38): error TS2339: Property 'send' does not exist on type 'Provider'.
