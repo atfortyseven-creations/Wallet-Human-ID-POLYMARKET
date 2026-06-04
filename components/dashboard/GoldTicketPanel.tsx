@@ -508,23 +508,81 @@ export function GoldTicketPanel() {
     }
 
     try {
-      const signToastId = toast.loading('Awaiting cryptographic wallet signature (Gasless)...');
-      
       const messageToSign = `WHALE ALERT NETWORK GOLD ACCESS VERIFICATION: ${address}`;
       let cryptoSignature = '';
-      
-      try {
-         if (walletClient?.signMessage) {
+
+      // ── Detect mobile device ──────────────────────────────────────────────
+      const ua = typeof navigator !== 'undefined' ? navigator.userAgent : '';
+      const isIOS = /iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream;
+      const isAndroid = /Android/.test(ua);
+      const isMobileDevice = isIOS || isAndroid;
+
+      const signToastId = toast.loading(
+        isMobileDevice
+          ? 'Opening your wallet app to sign...'
+          : 'Awaiting cryptographic wallet signature (Gasless)...'
+      );
+
+      // ── Mobile: wait for WalletConnect session to re-stabilise after app switch ──
+      // Without this 700ms delay, WalletConnect hasn't re-negotiated the WebSocket
+      // when returning from the wallet app and throws "Unknown RPC Error".
+      if (isMobileDevice) {
+        await new Promise(r => setTimeout(r, 700));
+      }
+
+      // ── Retry loop for transient WalletConnect RPC errors ─────────────────
+      let rpcAttempts = 0;
+      const maxRpcAttempts = 3;
+      let lastError: any = null;
+
+      while (rpcAttempts < maxRpcAttempts) {
+        try {
+          if (walletClient?.signMessage) {
             cryptoSignature = await walletClient.signMessage({
-               account: walletClient.account || address as `0x${string}`,
-               message: messageToSign
+              account: (walletClient.account ?? address) as `0x${string}`,
+              message: messageToSign,
             });
-         } else {
+          } else {
             cryptoSignature = await signMessageAsync({ message: messageToSign });
-         }
-      } catch (innerErr) {
-         console.warn("Primary signature failed, falling back to signMessageAsync", innerErr);
-         cryptoSignature = await signMessageAsync({ message: messageToSign });
+          }
+          lastError = null;
+          break; // success
+        } catch (sigErr: any) {
+          lastError = sigErr;
+          rpcAttempts++;
+          const errMsg = (sigErr?.message || '').toLowerCase();
+          const isRpcError =
+            errMsg.includes('unknown rpc') ||
+            errMsg.includes('rpc error') ||
+            errMsg.includes('internal error');
+
+          if (isRpcError && rpcAttempts < maxRpcAttempts) {
+            console.warn(`[GoldTicket] WalletConnect RPC error (attempt ${rpcAttempts}), retrying in ${rpcAttempts * 800}ms...`);
+            await new Promise(r => setTimeout(r, rpcAttempts * 800));
+            continue;
+          }
+
+          // User rejected — no retry
+          if (errMsg.includes('reject') || errMsg.includes('deny') || errMsg.includes('user denied')) {
+            toast.dismiss(signToastId);
+            toast.error('Signature declined. Please approve the request in your wallet.');
+            setIsMinting(false);
+            return;
+          }
+
+          // Fallback to hook-based sign
+          try {
+            cryptoSignature = await signMessageAsync({ message: messageToSign });
+            lastError = null;
+          } catch (fallbackErr: any) {
+            lastError = fallbackErr;
+          }
+          break;
+        }
+      }
+
+      if (lastError || !cryptoSignature) {
+        throw lastError || new Error('Signature could not be obtained.');
       }
 
       toast.dismiss(signToastId);
@@ -532,7 +590,8 @@ export function GoldTicketPanel() {
 
     } catch (error: any) {
       toast.dismiss();
-      toast.error(`Mint execution failed: ${error?.shortMessage || error?.message || 'Transaction rejected'}`);
+      const msg = error?.shortMessage || error?.message || 'Transaction rejected';
+      toast.error(`Claim failed: ${msg}`);
       setIsMinting(false);
     }
   }, [isConnected, isWagmiConnected, address, wagmiAddress, signatureData, signatureStrokes, isMinting, isSigning, signMessageAsync, walletClient, openAppKit, fetchStats]);
