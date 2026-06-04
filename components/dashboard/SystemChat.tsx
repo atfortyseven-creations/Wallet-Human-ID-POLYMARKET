@@ -288,27 +288,20 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
   const { signMessageAsync } = useSignMessage();
   const { nuclearDisconnect } = useSystemSignOut();
 
+  // walletClientRef: keeps a stable ref to the latest walletClient so the
+  // XMTP signer can always access the current client even after async awaits.
   const walletClientRef = useRef<any>(walletClient);
   useEffect(() => { walletClientRef.current = walletClient; }, [walletClient]);
 
-  // ── iOS-specific state ──────────────────────────────────────────────────
+  // Detect OS once on mount — used for platform-specific UX hints in the UI
   const [deviceOS] = useState<'ios' | 'android' | 'other'>(() =>
     typeof window !== 'undefined' ? getDeviceOS() : 'other'
   );
-  // When XMTP fires a sign request on iOS we surface a manual "Open Wallet" button
-  const [iosSignPending, setIosSignPending] = useState(false);
-  const [wcDeepLink, setWcDeepLink] = useState<string | null>(null);
-  // Resolve deep link once wallet is connected
-  useEffect(() => {
-    if (isConnected && deviceOS === 'ios') {
-      setWcDeepLink(getWalletConnectDeepLink());
-    }
-  }, [isConnected, deviceOS, walletClient]);
 
-  // MASTER RECOVERY: If wallet is connected but connector is missing (common on mobile redirects)
+  // Zombie session recovery: wallet connected but wagmi connector lost (common after mobile deep-link)
   useEffect(() => {
     if (isConnected && !connector && !isSystemHandshake && !isLocalSystemWallet) {
-        console.warn('[SystemChat] Zombie session detected  attempting silent reconnection.');
+        console.warn('[SystemChat] Zombie session detected — attempting silent reconnection.');
         reconnect();
     }
   }, [isConnected, connector, isSystemHandshake, isLocalSystemWallet, reconnect]);
@@ -569,61 +562,45 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
           };
         } else {
           // ── Path B: External wallet (MetaMask / WalletConnect) ─────────────
-          // CRITICAL iOS FIX: On iOS Chrome/Safari, signMessageAsync() from the
-          // wagmi hook loses the "user gesture" context after the first async
-          // await, causing WebKit to silently block the WalletConnect deep-link
-          // that would open the user's wallet app for signing.
-          //
-          // Fix 1: Use walletClient.signMessage() DIRECTLY from the ref — viem's
-          //         WalletClient uses a lower-level transport path that bypasses
-          //         the hook's React event-binding issue.
-          // Fix 2: On iOS, set iosSignPending=true BEFORE the sign call so the
-          //         UI shows an "Open Wallet" button the user can tap manually,
-          //         which restores a fresh user gesture context and triggers the
-          //         WalletConnect redirect natively.
+          // Key rules for maximum cross-platform compatibility:
+          // 1. Use walletClientRef.current (stable ref) so we always have the
+          //    rehydrated client even after an iOS/Android app-switch.
+          // 2. Do NOT pass `account` — let WalletConnect use its own connected
+          //    account. Explicit account passing causes casing mismatches on
+          //    mobile WalletConnect sessions that silently reject the request.
+          // 3. After signing on mobile, wait 250ms before returning the sig to
+          //    XMTP. When returning from the wallet app on iOS/Android, the
+          //    WebSocket to the XMTP relay re-establishes ~100-300ms after focus.
+          //    Without this gap, Client.create() can fail with a network error
+          //    even though the signature itself was valid.
           signer = {
             getAddress: async () => address,
             signMessage: async (msg: string | Uint8Array) => {
-              const currentDeviceOS = getDeviceOS();
-              const isMobile = currentDeviceOS === 'ios' || currentDeviceOS === 'android';
-
-              // ── iOS: show manual wallet-open UI ───────────────────────────
-              if (currentDeviceOS === 'ios' && !isLocalSystemWallet) {
-                setIosSignPending(true);
-                // Refresh deep link in case it was resolved after mount
-                const link = getWalletConnectDeepLink();
-                setWcDeepLink(link);
-              }
-
-              // ── Mobile: wait for WalletConnect session to stabilise ────────
-              // After the user returns from their wallet app, WalletConnect needs
-              // ~600ms to re-handshake the WebSocket before RPC calls succeed.
-              // Without this delay we get "An Unknown RPC Error Occurred" (WC v2).
-              if (isMobile && !isLocalSystemWallet) {
-                await new Promise(r => setTimeout(r, 700));
-              }
+              const isMobile = typeof navigator !== 'undefined' &&
+                /iPad|iPhone|iPod|Android/.test(navigator.userAgent);
 
               // ── Retry loop for Unknown RPC errors (WalletConnect v2 bug) ──
               let rpcAttempts = 0;
               const maxRpcAttempts = 3;
               while (rpcAttempts < maxRpcAttempts) {
                 try {
-                  // Try walletClient.signMessage() first (viem direct path — better iOS compat)
+                  // Primary: viem walletClient via ref — best iOS/Android compat
                   const wc = walletClientRef.current;
                   if (wc?.signMessage) {
                     const sig = await wc.signMessage({
-                      account: address as `0x${string}`,
+                      // No explicit account — WalletConnect uses its own session account
                       message: typeof msg === 'string' ? msg : { raw: msg as unknown as `0x${string}` },
                     });
-                    setIosSignPending(false);
+                    // Post-signing reconnection grace period for mobile
+                    if (isMobile) await new Promise(r => setTimeout(r, 250));
                     return sig;
                   }
 
-                  // Fallback: wagmi hook (works on Android + PC always)
+                  // Fallback: wagmi hook (always works once wallet is connected)
                   const sig = await signMessageAsync({
                     message: typeof msg === 'string' ? msg : { raw: msg } as any
                   });
-                  setIosSignPending(false);
+                  if (isMobile) await new Promise(r => setTimeout(r, 250));
                   return sig;
                 } catch (sigErr: any) {
                   rpcAttempts++;
@@ -643,8 +620,6 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                     continue;
                   }
 
-                  setIosSignPending(false);
-
                   if (isRpcError) {
                     throw new Error('Tu wallet tardó en responder. Abre MetaMask, acepta la firma pendiente y pulsa Reintentar Conexión.');
                   }
@@ -662,6 +637,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
             },
           };
         }
+
 
         const clientPromise = getXMTPClient(signer);
         const timeoutPromise = new Promise<never>((_, reject) =>
@@ -720,15 +696,10 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
       const signer = {
         getAddress: async () => address as string,
         signMessage: async (msg: string | Uint8Array) => {
-          if (getDeviceOS() === 'ios' && !isLocalSystemWallet) {
-            setIosSignPending(true);
-            setWcDeepLink(getWalletConnectDeepLink());
-          }
           const sig = await walletClientRef.current.signMessage({
-            account: address as `0x${string}`,
+            // No explicit account — let WalletConnect use its own session account
             message: typeof msg === 'string' ? msg : { raw: msg as unknown as `0x${string}` },
           });
-          setIosSignPending(false);
           return sig;
         },
       };
@@ -772,20 +743,10 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
     return () => clearTimeout(timeoutId);
   }, [xmtpInitializing, xmtpReady]);
 
-  // ── Retry XMTP init when user returns from wallet app (iOS/Android deep-link) ──
-  // This is the core iOS fix: when the user switches from Chrome back to their
-  // wallet app to sign, then returns to Chrome, we detect the app-foreground event
-  // and immediately retry the XMTP init. The walletClient re-hydrates on return.
+  // ── Retry XMTP init when user returns from wallet app ──
   useEffect(() => {
     const onVisibility = () => {
       if (document.visibilityState !== 'visible') return;
-      // If iosSignPending: user just returned from wallet, clear the pending state
-      // and let the in-flight initXmtpClient complete (the signer.signMessage
-      // promise will resolve because walletClient re-hydrated on focus).
-      if (iosSignPending) {
-        setIosSignPending(false);
-        return;
-      }
       if (needsWalletReconnect || !isConnected || xmtpReady) return;
       if (walletClientRef.current && !xmtpInitLock.current) {
         initXmtpClient(false);
@@ -794,7 +755,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
     document.addEventListener('visibilitychange', onVisibility);
     return () => document.removeEventListener('visibilitychange', onVisibility);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isConnected, xmtpReady, needsWalletReconnect, iosSignPending]);
+  }, [isConnected, xmtpReady, needsWalletReconnect]);
 
   // ── Consume Offline Messages ──
   useEffect(() => {
@@ -1623,65 +1584,12 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                 />
                 {!xmtpReady ? (
                   <div className="p-5 border-t border-black/6 bg-white flex flex-col items-center justify-center gap-3 shrink-0">
-                    {/* ── iOS Signature Pending State ─────────────────────────────── */}
-                    {iosSignPending ? (
-                      <div className="flex flex-col items-center gap-4 text-center max-w-sm w-full">
-                        {/* Animated iOS indicator */}
-                        <div className="relative w-14 h-14 flex items-center justify-center">
-                          <div className="absolute inset-0 rounded-full border-2 border-black/10 border-t-black animate-spin" />
-                          <Smartphone size={22} className="text-black/60" />
-                        </div>
-                        <div>
-                          <p className="text-[12px] font-mono font-black text-black uppercase tracking-widest">
-                            Firma Pendiente en tu Wallet
-                          </p>
-                          <p className="text-[9px] font-mono text-black/50 uppercase tracking-widest mt-1">
-                            Tu wallet necesita tu aprobación para continuar
-                          </p>
-                        </div>
-                        {/* Primary action: open wallet via deep link */}
-                        <button
-                          type="button"
-                          onClick={() => openWalletOnIOS(wcDeepLink)}
-                          className="w-full px-6 py-4 bg-black text-white font-mono text-[12px] font-black uppercase tracking-widest rounded-[14px] flex items-center justify-center gap-3 shadow-xl active:scale-95 transition-all"
-                        >
-                          <ExternalLink size={16} />
-                          Abrir Wallet para Firmar
-                        </button>
-                        {/* Reconnect fallback */}
-                        <button
-                          type="button"
-                          onClick={() => openAppKit()}
-                          className="w-full px-6 py-2.5 bg-white border border-black/15 text-black/60 font-mono text-[10px] font-bold uppercase tracking-widest rounded-[14px] hover:bg-black/[0.03] transition-all active:scale-95"
-                        >
-                          Cambiar Wallet
-                        </button>
-                        <p className="text-[8px] font-mono text-black/30 uppercase tracking-widest text-center leading-relaxed">
-                          Después de firmar, regresa a Chrome y el chat se activará automáticamente.
-                        </p>
-                      </div>
-                    ) : xmtpInitializing ? (
+                    {xmtpInitializing ? (
                       <>
                         <div className="w-5 h-5 border-2 border-black/10 border-t-black/60 rounded-full animate-spin" />
                         <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest text-center">
-                          {deviceOS === 'ios' ? 'Estableciendo canal seguro...' : 'Activating secure inbox'}
+                          Activating secure inbox
                         </p>
-                        {/* On iOS we show a passive "check wallet app" hint */}
-                        {deviceOS === 'ios' && (
-                          <p className="text-[8px] font-mono text-black/30 uppercase tracking-widest text-center max-w-xs leading-relaxed">
-                            Si tu wallet no reacciona, toca "Abrir Wallet" a continuación o ábrela manualmente.
-                          </p>
-                        )}
-                        {deviceOS === 'ios' && (
-                          <button
-                            type="button"
-                            onClick={() => openWalletOnIOS(wcDeepLink)}
-                            className="mt-1 px-5 py-2.5 bg-black text-white font-mono text-[10px] font-black uppercase tracking-widest rounded-[14px] flex items-center gap-2 shadow-md active:scale-95 transition-all"
-                          >
-                            <ExternalLink size={13} />
-                            Abrir Wallet
-                          </button>
-                        )}
                       </>
                     ) : (
                       <>
@@ -1741,7 +1649,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                               {deviceOS === 'ios' && (
                                 <button
                                   type="button"
-                                  onClick={() => openWalletOnIOS(wcDeepLink)}
+                                  onClick={() => openWalletOnIOS(getWalletConnectDeepLink())}
                                   className="w-full px-6 py-3 bg-white border border-black/15 text-black font-mono text-[11px] font-bold uppercase tracking-widest rounded-[14px] hover:bg-black/[0.03] transition-all active:scale-95 mt-1"
                                 >
                                   Abrir Wallet Manualmente

@@ -411,6 +411,12 @@ export function GoldTicketPanel() {
   const { signMessageAsync, isPending: isSigning } = useSignMessage();
   const { data: walletClient } = useWalletClient();
   const { sendTransactionAsync } = useSendTransaction();
+
+  // Keep a stable ref so async closures always see the latest walletClient
+  // (WalletConnect on Android/iOS rehydrates it after app-switch)
+  const walletClientRef = useRef<any>(null);
+  useEffect(() => { walletClientRef.current = walletClient; }, [walletClient]);
+
   const [dbStats, setDbStats] = useState<any>(null);
   const [signatureData, setSignatureData] = useState<string>("");
   const [signatureStrokes, setSignatureStrokes] = useState<{x:number, y:number}[][]>([]);
@@ -456,15 +462,18 @@ export function GoldTicketPanel() {
 
     setIsMinting(true);
 
-    const performClaim = async (cryptoSignature: string, txHash?: string) => {
+    const performClaim = async (cryptoSignature: string, txHash?: string, overrideAddress?: string) => {
       const t2 = toast.loading('Synchronizing System Identity...');
+      // Use overrideAddress when provided — this is the wagmiAddress (authoritative on WalletConnect).
+      // The API must verify the ECDSA signature against the SAME address that signed the message.
+      const claimAddress = overrideAddress || address;
       try {
         const vectorData = JSON.stringify(signatureStrokes);
         const res = await fetch('/api/golden-ticket/claim', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            walletAddress: address,
+            walletAddress: claimAddress,
             cryptoSignature: cryptoSignature,
             txHash: txHash || null,
             signatureData: JSON.stringify({ 
@@ -519,27 +528,15 @@ export function GoldTicketPanel() {
     }
 
     try {
-      const messageToSign = `WHALE ALERT NETWORK GOLD ACCESS VERIFICATION: ${address}`;
+      // ── Determine the authoritative signing address ───────────────────────
+      // wagmiAddress is always the live WalletConnect / injected wallet address.
+      // address (from useSystemAccount) can lag behind on mobile after connect.
+      // Using wagmiAddress guarantees the API verification matches the actual signer.
+      const signerAddress = (wagmiAddress || address) as string;
+      const messageToSign = `WHALE ALERT NETWORK GOLD ACCESS VERIFICATION: ${signerAddress}`;
       let cryptoSignature = '';
 
-      // ── Detect mobile device ──────────────────────────────────────────────
-      const ua = typeof navigator !== 'undefined' ? navigator.userAgent : '';
-      const isIOS = /iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream;
-      const isAndroid = /Android/.test(ua);
-      const isMobileDevice = isIOS || isAndroid;
-
-      const signToastId = toast.loading(
-        isMobileDevice
-          ? 'Opening your wallet app to sign...'
-          : 'Awaiting cryptographic wallet signature (Gasless)...'
-      );
-
-      // ── Mobile: wait for WalletConnect session to re-stabilise after app switch ──
-      // Without this 700ms delay, WalletConnect hasn't re-negotiated the WebSocket
-      // when returning from the wallet app and throws "Unknown RPC Error".
-      if (isMobileDevice) {
-        await new Promise(r => setTimeout(r, 700));
-      }
+      const signToastId = toast.loading('Opening your wallet to sign — approve the request...');
 
       // ── Retry loop for transient WalletConnect RPC errors ─────────────────
       let rpcAttempts = 0;
@@ -548,15 +545,15 @@ export function GoldTicketPanel() {
 
       while (rpcAttempts < maxRpcAttempts) {
         try {
-          // ── Try viem walletClient first (better WalletConnect mobile compat) ──
-          if (walletClient?.signMessage) {
-            const acct = walletClient.account?.address ?? address;
-            cryptoSignature = await walletClient.signMessage({
-              account: acct as `0x${string}`,
-              message: messageToSign,
-            });
+          // ── Primary: viem walletClient via ref (captures rehydrated client) ──
+          const wc = walletClientRef.current;
+          if (wc?.signMessage) {
+            // Do NOT pass account — let WalletConnect use its own connected account.
+            // Passing an explicit account can fail on Android if the address casing
+            // doesn't exactly match what the WalletConnect session knows.
+            cryptoSignature = await wc.signMessage({ message: messageToSign });
           } else if (signMessageAsync) {
-            // ── Fallback: wagmi hook (works on desktop + Android always) ──
+            // ── Fallback: wagmi hook (always works once wallet is connected) ──
             cryptoSignature = await signMessageAsync({ message: messageToSign });
           } else {
             throw new Error('No signing method available. Please reconnect your wallet.');
@@ -582,7 +579,7 @@ export function GoldTicketPanel() {
             continue;
           }
 
-          // User explicitly rejected — no retry, clean exit
+          // User explicitly rejected — no retry
           if (errMsg.includes('reject') || errMsg.includes('deny') || errMsg.includes('user denied') || errMsg.includes('cancelled')) {
             toast.dismiss(signToastId);
             toast.error('Signature declined. Please approve the request in your wallet app.');
@@ -590,8 +587,8 @@ export function GoldTicketPanel() {
             return;
           }
 
-          // Last resort: try wagmi hook as final fallback
-          if (walletClient && signMessageAsync) {
+          // Last resort: try wagmi hook as final fallback if walletClient failed
+          if (walletClientRef.current && signMessageAsync) {
             try {
               cryptoSignature = await signMessageAsync({ message: messageToSign });
               lastError = null;
@@ -617,7 +614,8 @@ export function GoldTicketPanel() {
       }
 
       toast.dismiss(signToastId);
-      await performClaim(cryptoSignature, undefined);
+      // Pass signerAddress so the API verifies the signature against the correct address
+      await performClaim(cryptoSignature, undefined, signerAddress);
 
     } catch (error: any) {
       toast.dismiss();
