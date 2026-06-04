@@ -36,6 +36,7 @@ import { Download, ArrowRightLeft, Route, Send, QrCode, Scan, Activity } from 'l
 import { NativeSwapView } from '@/components/portfolio/NativeSwapView';
 import { NativeBridgeView } from '@/components/portfolio/NativeBridgeView';
 import { NativeBuyView } from '@/components/portfolio/NativeBuyView';
+import { NativeSendView } from '@/components/portfolio/NativeSendView';
 import { SystemFooter } from '@/components/landing/SystemFooter';
 
 // Original minimalist VaultUnlockScreen (internal)
@@ -89,7 +90,7 @@ export function InstitutionalPortfolioView() {
     const { assets, totalBalance } = useRealWalletData([], address || undefined);
     
     // We keep 'HOME' as the main view, and overlay modals for actions
-    const [view, setView] = useState<'HOME'|'NETWORK'|'CREATE'|'SHIELD'|'SECURITY'|'DEPLOY'|'MEMPOOL'|'SMART_ACCOUNT'|'OMNICHAIN'|'SWAP'|'BRIDGE'|'BUY'>('HOME');
+    const [view, setView] = useState<'HOME'|'NETWORK'|'CREATE'|'SHIELD'|'SECURITY'|'DEPLOY'|'MEMPOOL'|'SMART_ACCOUNT'|'OMNICHAIN'|'SWAP'|'BRIDGE'|'BUY'|'SEND'>('HOME');
     
     // Modal states for full universal capability
     const [showReceive, setShowReceive] = useState(false);
@@ -114,20 +115,7 @@ export function InstitutionalPortfolioView() {
     }, [address, updateBalance]);
 
     const handleSend = useCallback(() => {
-        const id = toast.custom((t) => (
-            <div className="bg-white border border-black/10 shadow-2xl p-6 w-[400px] flex flex-col pointer-events-auto">
-                <div className="flex justify-between items-center mb-6">
-                    <span className="text-[10px] font-black uppercase tracking-widest">Send Asset</span>
-                    <button onClick={() => toast.dismiss(t)} className="text-black/40 hover:text-black">[X]</button>
-                </div>
-                <input placeholder="Recipient Address (0x...)" className="w-full border border-black/10 p-3 text-xs mb-3 outline-none focus:border-black transition-colors" />
-                <input placeholder="Amount" type="number" className="w-full border border-black/10 p-3 text-xs mb-4 outline-none focus:border-black transition-colors" />
-                <button onClick={() => {
-                    toast.dismiss(t);
-                    toast.success("Transaction submitted to mempool");
-                }} className="w-full bg-black text-white p-3 text-[10px] font-black uppercase tracking-widest hover:bg-black/80 transition-colors">Confirm Send</button>
-            </div>
-        ), { duration: Infinity, position: 'top-center' });
+        setView('SEND');
     }, []);
 
     // INFINITE LOOP FIX 1: restoreFromCloud is not a stable reference from Zustand.
@@ -249,6 +237,7 @@ export function InstitutionalPortfolioView() {
                 {view === 'SWAP' && <NativeSwapView key="swap" address={address} onBack={() => setView('HOME')} />}
                 {view === 'BRIDGE' && <NativeBridgeView key="bridge" onBack={() => setView('HOME')} />}
                 {view === 'BUY' && <NativeBuyView key="buy" address={address} onBack={() => setView('HOME')} />}
+                {view === 'SEND' && <NativeSendView key="send" onBack={() => setView('HOME')} />}
             </AnimatePresence>
             {showReceive && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/90 backdrop-blur-sm" onClick={() => setShowReceive(false)}>

@@ -6,7 +6,8 @@ import { useWalletStore, NETWORKS, NetworkId } from '@/lib/store/wallet-store';
 import { ethers } from 'ethers';
 import { toast } from 'sonner';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
-import { useBalance } from 'wagmi';
+import { useBalance, useAccount, useWalletClient } from 'wagmi';
+import { encodeFunctionData } from 'viem';
 import { UNIVERSAL_TOKENS, UniversalToken } from '@/config/universal-tokens';
 import Image from 'next/image';
 
@@ -156,8 +157,12 @@ export function NativeSwapView({ address, onBack }: any) {
     const [amountOut, setAmountOut] = useState('');
 
     const { address: userAddress } = useSystemAccount();
+    const { isConnected: isWagmiConnected, address: wagmiAddress } = useAccount();
+    const { data: walletClient } = useWalletClient();
+    const activeAddress = isWagmiConnected ? wagmiAddress : (userAddress || address);
+
     const { data: tokenBalance } = useBalance({
-        address: (userAddress || address) as `0x${string}`,
+        address: activeAddress as `0x${string}`,
         token: (fromToken.address && fromToken.address !== 'native' && fromToken.address !== '0x0000000000000000000000000000000000000000') ? (fromToken.address as `0x${string}`) : undefined,
     });
     const currentBalance = tokenBalance ? parseFloat(tokenBalance.formatted).toFixed(4) : '0.00';
@@ -246,30 +251,43 @@ export function NativeSwapView({ address, onBack }: any) {
         toast.loading("Constructing Exact-Amount Approval Payload...", { id: "approve-tx" });
         
         try {
-            const provider = new ethers.JsonRpcProvider(networkInfo.rpc);
-            const wallet = new ethers.Wallet(privateKey!, provider);
-            const tokenContract = new ethers.Contract(fromToken.address, ERC20_ABI, wallet);
-            
-            // SECURITY: Exact amount approval ONLY. No MaxUint256.
             const parsedIn = safeParseUnits(amountIn, fromToken.decimals || 18);
             
-            addLog(`Broadcasting tx to network: ${activeNetwork.toUpperCase()}`);
-            try {
+            if (isWagmiConnected && walletClient) {
+                addLog(`Broadcasting via Wagmi/WalletConnect to ${activeNetwork.toUpperCase()}`);
+                const dataPayload = encodeFunctionData({
+                    abi: [{"constant":false,"inputs":[{"name":"spender","type":"address"},{"name":"amount","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}],
+                    functionName: "approve",
+                    args: [ROUTER_ADDRESS as `0x${string}`, parsedIn]
+                });
+                
+                const txHash = await walletClient.sendTransaction({
+                    to: fromToken.address as `0x${string}`,
+                    value: 0n,
+                    data: dataPayload
+                });
+                
+                addLog(`TxHash Generated: ${txHash}`);
+                toast.success("Exact Amount ERC20 Approval Submitted", { id: "approve-tx" });
+                setNeedsApproval(false);
+            } else if (privateKey) {
+                const provider = new ethers.JsonRpcProvider(networkInfo.rpc);
+                const wallet = new ethers.Wallet(privateKey, provider);
+                const tokenContract = new ethers.Contract(fromToken.address, ERC20_ABI, wallet);
+                
+                addLog(`Broadcasting tx to network: ${activeNetwork.toUpperCase()}`);
                 const tx = await tokenContract.approve(ROUTER_ADDRESS, parsedIn);
                 addLog(`TxHash Generated: ${tx.hash}`);
                 await tx.wait();
                 addLog(`Approval Confirmed Block: ${tx.blockNumber}`);
                 toast.success("Exact Amount ERC20 Approval Confirmed", { id: "approve-tx" });
                 setNeedsApproval(false);
-            } catch (err: any) {
-                toast.error("Approval Failed", { id: "approve-tx", description: err?.message });
-                addLog(`ERROR: ${err?.message}`);
-                setIsApproving(false);
-                return;
+            } else {
+                toast.error("Wallet Error", { id: "approve-tx", description: "No wallet connected for approval." });
             }
         } catch (e: any) {
-            toast.error("Approval Execution Error", { id: "approve-tx" });
-            addLog(`CRITICAL ERROR: ${e.message}`);
+            toast.error("Approval Execution Error", { id: "approve-tx", description: e?.shortMessage || e?.message });
+            addLog(`CRITICAL ERROR: ${e?.message}`);
         } finally {
             setIsApproving(false);
         }
@@ -287,8 +305,8 @@ export function NativeSwapView({ address, onBack }: any) {
             return;
         }
 
-        if (!privateKey) {
-            toast.error("READ-ONLY NODE ACTIVE", { description: "Private key not found. Please import or create a wallet to sign transactions." });
+        if (!privateKey && !isWagmiConnected) {
+            toast.error("WALLET NOT CONNECTED", { description: "Please connect a wallet to sign transactions." });
             return;
         }
 
@@ -298,42 +316,110 @@ export function NativeSwapView({ address, onBack }: any) {
         toast.loading("Initiating On-Chain Swap Execution...", { id: "swap-tx" });
 
         try {
-            const provider = activeProtocol === 'WSS' 
-                ? new ethers.WebSocketProvider(networkInfo.wss)
-                : new ethers.JsonRpcProvider(networkInfo.rpc);
-            
-            const wallet = new ethers.Wallet(privateKey, provider);
-            const router = new ethers.Contract(ROUTER_ADDRESS, UNISWAP_V2_ROUTER_ABI, wallet);
-
             addLog(`Estimating precise gas bounds... enforcing slippage: ${slippage}%`);
             await new Promise(r => setTimeout(r, 800));
 
-            const deadline = Math.floor(Date.now() / 1000) + 60 * 20; 
+            const deadline = BigInt(Math.floor(Date.now() / 1000) + 60 * 20); 
             const parsedOut = safeParseUnits(amountOut || "0", toToken.decimals || 18);
             const minOut = parsedOut * BigInt(Math.floor((100 - parseFloat(slippage)) * 100)) / 10000n;
             
             addLog(`Min Output Threshold Locked: ${ethers.formatUnits(minOut, toToken.decimals || 18)} ${toToken.symbol}`);
             toast.loading("Awaiting cryptographic signature...", { id: "swap-tx" });
 
+            let txHash = "";
             try {
+
+            if (isWagmiConnected && walletClient) {
+                const isNativeIn = fromToken.symbol === 'ETH';
+                const isNativeOut = toToken.symbol === 'ETH';
+                const routerAddressObj = ROUTER_ADDRESS as `0x${string}`;
+                
+                // Need WETH address for path building
+                const wethProvider = new ethers.JsonRpcProvider(networkInfo.rpc);
+                const wethRouter = new ethers.Contract(ROUTER_ADDRESS, UNISWAP_V2_ROUTER_ABI, wethProvider);
+                const wethAddress = await wethRouter.WETH();
+
+                if (isNativeIn) {
+                    const value = ethers.parseEther(amountIn);
+                    const path = [(fromToken.address && fromToken.address !== 'native' && fromToken.address !== '0x0000000000000000000000000000000000000000') ? fromToken.address : wethAddress, toToken.address];
+                    addLog(`Executing swapExactETHForTokens payload...`);
+                    
+                    const dataPayload = encodeFunctionData({
+                        abi: [{"inputs":[{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactETHForTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"payable","type":"function"}],
+                        functionName: "swapExactETHForTokens",
+                        args: [minOut, path as `0x${string}`[], wagmiAddress as `0x${string}`, deadline]
+                    });
+                    
+                    txHash = await walletClient.sendTransaction({
+                        to: routerAddressObj,
+                        value: value,
+                        data: dataPayload
+                    });
+                } else if (isNativeOut) {
+                    const parsedIn = safeParseUnits(amountIn, fromToken.decimals || 18);
+                    const path = [fromToken.address, wethAddress];
+                    addLog(`Executing swapExactTokensForETH payload...`);
+                    
+                    const dataPayload = encodeFunctionData({
+                        abi: [{"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactTokensForETH","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"nonpayable","type":"function"}],
+                        functionName: "swapExactTokensForETH",
+                        args: [parsedIn, minOut, path as `0x${string}`[], wagmiAddress as `0x${string}`, deadline]
+                    });
+                    
+                    txHash = await walletClient.sendTransaction({
+                        to: routerAddressObj,
+                        value: 0n,
+                        data: dataPayload
+                    });
+                } else {
+                    const parsedIn = safeParseUnits(amountIn, fromToken.decimals || 18);
+                    const path = [fromToken.address, wethAddress, toToken.address]; 
+                    addLog(`Executing swapExactTokensForTokens (Multi-Hop)...`);
+                    
+                    const dataPayload = encodeFunctionData({
+                        abi: [{"inputs":[{"internalType":"uint256","name":"amountIn","type":"uint256"},{"internalType":"uint256","name":"amountOutMin","type":"uint256"},{"internalType":"address[]","name":"path","type":"address[]"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"deadline","type":"uint256"}],"name":"swapExactTokensForTokens","outputs":[{"internalType":"uint256[]","name":"amounts","type":"uint256[]"}],"stateMutability":"nonpayable","type":"function"}],
+                        functionName: "swapExactTokensForTokens",
+                        args: [parsedIn, minOut, path as `0x${string}`[], wagmiAddress as `0x${string}`, deadline]
+                    });
+
+                    txHash = await walletClient.sendTransaction({
+                        to: routerAddressObj,
+                        value: 0n,
+                        data: dataPayload
+                    });
+                }
+                
+                addLog(`Transaction broadcast via Wagmi: ${txHash}`);
+                toast.success("Swap Submitted", { id: "swap-tx", description: `Hash: ${txHash.slice(0, 10)}...` });
+                setAmountIn('');
+                setAmountOut('');
+
+            } else if (privateKey) {
+                // Local Vault Flow
+                const provider = activeProtocol === 'WSS' 
+                    ? new ethers.WebSocketProvider(networkInfo.wss)
+                    : new ethers.JsonRpcProvider(networkInfo.rpc);
+                
+                const wallet = new ethers.Wallet(privateKey, provider);
+                const router = new ethers.Contract(ROUTER_ADDRESS, UNISWAP_V2_ROUTER_ABI, wallet);
+
                 let tx;
-                // Since this is a real on-chain transaction without simulation, 
-                // we assume if it's the ETH address it's native.
+                const deadlineNum = Number(deadline);
                 if (fromToken.symbol === 'ETH') {
                     const value = ethers.parseEther(amountIn);
                     const path = [fromToken.address !== '0x0000000000000000000000000000000000000000' && fromToken.address !== 'native' ? fromToken.address : await router.WETH(), toToken.address];
                     addLog(`Executing swapExactETHForTokens payload...`);
-                    tx = await router.swapExactETHForTokens(minOut, path, address, deadline, { value });
+                    tx = await router.swapExactETHForTokens(minOut, path, address, deadlineNum, { value });
                 } else if (toToken.symbol === 'ETH') {
                     const parsedIn = safeParseUnits(amountIn, fromToken.decimals || 18);
                     const path = [fromToken.address, await router.WETH()];
                     addLog(`Executing swapExactTokensForETH payload...`);
-                    tx = await router.swapExactTokensForETH(parsedIn, minOut, path, address, deadline);
+                    tx = await router.swapExactTokensForETH(parsedIn, minOut, path, address, deadlineNum);
                 } else {
                     const parsedIn = safeParseUnits(amountIn, fromToken.decimals || 18);
                     const path = [fromToken.address, await router.WETH(), toToken.address]; 
                     addLog(`Executing swapExactTokensForTokens (Multi-Hop)...`);
-                    tx = await router.swapExactTokensForTokens(parsedIn, minOut, path, address, deadline);
+                    tx = await router.swapExactTokensForTokens(parsedIn, minOut, path, address, deadlineNum);
                 }
 
                 addLog(`Transaction broadcast: ${tx.hash}`);
@@ -344,13 +430,14 @@ export function NativeSwapView({ address, onBack }: any) {
                 toast.success("Swap Confirmed On-Chain", { id: "swap-tx" });
                 setAmountIn('');
                 setAmountOut('');
-            } catch(txErr: any) {
-                const cleanError = txErr?.shortMessage || txErr?.message?.split('\n')[0] || 'Transaction failed';
-                addLog(`ERROR: ${cleanError}`);
-                toast.error("Swap Failed", { id: "swap-tx", description: cleanError });
             }
+        } catch(txErr: any) {
+            const cleanError = txErr?.shortMessage || txErr?.message?.split('\n')[0] || 'Transaction failed';
+            addLog(`ERROR: ${cleanError}`);
+            toast.error("Swap Failed", { id: "swap-tx", description: cleanError });
+        }
 
-        } catch (e: any) {
+    } catch (e: any) {
             const cleanError = e?.shortMessage || e?.message?.split('\n')[0] || 'Unknown error occurred.';
             addLog(`FATAL: ${cleanError}`);
             toast.error("Transaction Error", { id: "swap-tx", description: cleanError });
