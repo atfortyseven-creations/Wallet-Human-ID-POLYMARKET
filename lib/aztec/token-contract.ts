@@ -58,7 +58,7 @@ export async function getQDsTokenContract(wallet: any, contractAddress?: string)
   }
 
   const { TokenContract } = await import('@aztec/noir-contracts.js/Token');
-  const { AztecAddress }  = await import('@aztec/aztec.js');
+  const { AztecAddress }  = await import('@aztec/aztec.js/addresses');
 
   return TokenContract.at(AztecAddress.fromString(address), wallet);
 }
@@ -67,7 +67,7 @@ export async function getQDsTokenContract(wallet: any, contractAddress?: string)
  * Reads the private QDs balance for a given Aztec address.
  */
 export async function getQDsBalance(wallet: any, ownerAddress: string): Promise<string> {
-  const { AztecAddress } = await import('@aztec/aztec.js');
+  const { AztecAddress } = await import('@aztec/aztec.js/addresses');
   const contract = await getQDsTokenContract(wallet);
   const owner    = AztecAddress.fromString(ownerAddress);
   const raw      = await contract.methods.balance_of_private(owner).simulate();

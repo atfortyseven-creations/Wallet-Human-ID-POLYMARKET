@@ -21,7 +21,8 @@ export async function GET(req: Request) {
 
   try {
     const { getSchnorrAccount } = await import('@aztec/accounts/schnorr');
-    const { Fr, deriveSigningKey } = await import('@aztec/aztec.js');
+    const { Fr } = await import('@aztec/aztec.js/fields');
+    const { deriveSigningKey } = await import('@aztec/aztec.js/keys');
     const { getPXEClient, deriveSecretKeyFromEvm } = await import('@/lib/aztec/client');
 
     const pxe       = await getPXEClient();

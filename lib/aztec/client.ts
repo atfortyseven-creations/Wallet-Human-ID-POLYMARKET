@@ -29,7 +29,7 @@ let _pxeClient: any = null;
 export async function getPXEClient() {
   if (_pxeClient) return _pxeClient;
 
-  const { createPXEClient } = await import('@aztec/aztec.js');
+  const { createPXEClient } = await import('@aztec/aztec.js/rpc');
   _pxeClient = await createPXEClient(AZTEC_PXE_URL);
   console.log(`[Aztec] ✅ PXE client connected → ${AZTEC_PXE_URL}`);
   return _pxeClient;
@@ -44,7 +44,8 @@ export async function getRelayerWallet() {
   if (!secretKeyHex) throw new Error('AZTEC_RELAYER_SECRET_KEY not set');
 
   const { getSchnorrAccount } = await import('@aztec/accounts/schnorr');
-  const { Fr, deriveSigningKey } = await import('@aztec/aztec.js');
+  const { Fr } = await import('@aztec/aztec.js/fields');
+  const { deriveSigningKey } = await import('@aztec/aztec.js/keys');
   const pxe = await getPXEClient();
 
   const secretKey  = Fr.fromString(secretKeyHex);

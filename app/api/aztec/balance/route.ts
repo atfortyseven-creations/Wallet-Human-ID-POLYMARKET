@@ -29,7 +29,7 @@ export async function GET(req: Request) {
   try {
     const { getPXEClient, getRelayerWallet } = await import('@/lib/aztec/client');
     const { getQDsTokenContract, rawToQds }  = await import('@/lib/aztec/token-contract');
-    const { AztecAddress } = await import('@aztec/aztec.js');
+    const { AztecAddress } = await import('@aztec/aztec.js/addresses');
 
     // We use the relayer wallet to read private balance via authwit or public balance
     // For TokenContract, balance_of_private requires the owner's wallet.

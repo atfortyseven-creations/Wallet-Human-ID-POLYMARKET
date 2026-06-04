@@ -61,7 +61,8 @@ export async function POST(req: Request) {
   try {
     const { getRelayerWallet, explorerTxUrl } = await import('@/lib/aztec/client');
     const { getQDsTokenContract, qdsToRaw }   = await import('@/lib/aztec/token-contract');
-    const { AztecAddress, SponsoredFeePaymentMethod } = await import('@aztec/aztec.js');
+    const { AztecAddress } = await import('@aztec/aztec.js/addresses');
+    const { SponsoredFeePaymentMethod } = await import('@aztec/aztec.js/fee');
 
     const wallet    = await getRelayerWallet();
     const contract  = await getQDsTokenContract(wallet, contractAddress);

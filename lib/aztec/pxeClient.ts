@@ -1,5 +1,7 @@
 // lib/aztec/pxeClient.ts
-import { createPXEClient, createAccount, getSandboxAccountsWallets, getContractAt } from '@aztec/aztec.js';
+import { createPXEClient, getSandboxAccountsWallets } from '@aztec/aztec.js/rpc';
+import { getContractAt } from '@aztec/aztec.js/contract';
+// createAccount removed in v4 — use getSchnorrAccount from @aztec/accounts/schnorr
 
 // Phase 4: Frontend Integration
 // Private System direct connection to Aztec PXE
