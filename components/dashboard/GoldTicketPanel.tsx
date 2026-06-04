@@ -545,16 +545,16 @@ export function GoldTicketPanel() {
 
       while (rpcAttempts < maxRpcAttempts) {
         try {
-          // ── Primary: viem walletClient via ref (captures rehydrated client) ──
-          const wc = walletClientRef.current;
-          if (wc?.signMessage) {
-            // Do NOT pass account — let WalletConnect use its own connected account.
-            // Passing an explicit account can fail on Android if the address casing
-            // doesn't exactly match what the WalletConnect session knows.
-            cryptoSignature = await wc.signMessage({ message: messageToSign });
-          } else if (signMessageAsync) {
-            // ── Fallback: wagmi hook (always works once wallet is connected) ──
+          // ── Primary: Wagmi hook (Integrated with AppKit iOS deep-linking) ──
+          // It is CRITICAL to use signMessageAsync first, because AppKit hooks into
+          // wagmi to display the "Open Wallet" modal or trigger the iOS URI scheme.
+          // Direct viem walletClient calls bypass this and fail silently on iOS.
+          if (signMessageAsync) {
             cryptoSignature = await signMessageAsync({ message: messageToSign });
+          } 
+          // ── Fallback: viem walletClient (if wagmi hook is unavailable) ──
+          else if (walletClientRef.current?.signMessage) {
+            cryptoSignature = await walletClientRef.current.signMessage({ message: messageToSign });
           } else {
             throw new Error('No signing method available. Please reconnect your wallet.');
           }
@@ -587,10 +587,10 @@ export function GoldTicketPanel() {
             return;
           }
 
-          // Last resort: try wagmi hook as final fallback if walletClient failed
-          if (walletClientRef.current && signMessageAsync) {
+          // Last resort: if wagmi failed due to internal state, try viem client directly
+          if (walletClientRef.current?.signMessage) {
             try {
-              cryptoSignature = await signMessageAsync({ message: messageToSign });
+              cryptoSignature = await walletClientRef.current.signMessage({ message: messageToSign });
               lastError = null;
             } catch (fallbackErr: any) {
               lastError = fallbackErr;

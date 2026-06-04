@@ -584,24 +584,29 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
               const maxRpcAttempts = 3;
               while (rpcAttempts < maxRpcAttempts) {
                 try {
-                  // Primary: viem walletClient via ref — best iOS/Android compat
-                  const wc = walletClientRef.current;
-                  if (wc?.signMessage) {
-                    const sig = await wc.signMessage({
-                      // No explicit account — WalletConnect uses its own session account
-                      message: typeof msg === 'string' ? msg : { raw: msg as unknown as `0x${string}` },
+                  // Primary: Wagmi hook (Integrated with AppKit iOS deep-linking)
+                  // It is CRITICAL to use signMessageAsync first, because AppKit hooks into
+                  // wagmi to display the "Open Wallet" modal or trigger the iOS URI scheme.
+                  // Direct viem walletClient calls bypass this and fail silently on iOS.
+                  if (signMessageAsync) {
+                    const sig = await signMessageAsync({
+                      message: typeof msg === 'string' ? msg : { raw: msg } as any
                     });
                     // Post-signing reconnection grace period for mobile
                     if (isMobile) await new Promise(r => setTimeout(r, 250));
                     return sig;
                   }
 
-                  // Fallback: wagmi hook (always works once wallet is connected)
-                  const sig = await signMessageAsync({
-                    message: typeof msg === 'string' ? msg : { raw: msg } as any
-                  });
-                  if (isMobile) await new Promise(r => setTimeout(r, 250));
-                  return sig;
+                  // Fallback: viem walletClient (if wagmi hook is unavailable)
+                  const wc = walletClientRef.current;
+                  if (wc?.signMessage) {
+                    const sig = await wc.signMessage({
+                      // No explicit account — WalletConnect uses its own session account
+                      message: typeof msg === 'string' ? msg : { raw: msg as unknown as `0x${string}` },
+                    });
+                    if (isMobile) await new Promise(r => setTimeout(r, 250));
+                    return sig;
+                  }
                 } catch (sigErr: any) {
                   rpcAttempts++;
                   const errMsg = (sigErr?.message || '').toLowerCase();
