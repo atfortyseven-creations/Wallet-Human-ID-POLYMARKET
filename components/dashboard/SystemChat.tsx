@@ -531,24 +531,19 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
       return;
     }
 
-    // Wait for walletClient (mobile deep-link returns often need 10–15s)
+    // Wait for walletClient (mobile deep-link returns often need a moment)
+    // We don't strictly fail if it's missing, because we can fallback to signMessageAsync
     if (!hasLocalWallet && !walletClientRef.current) {
       setXmtpInitializing(true);
       let waited = 0;
-      const MAX_WAIT = isManual ? 10000 : 15000;
+      const MAX_WAIT = isManual ? 4000 : 8000;
       const INTERVAL = 300;
       while (!walletClientRef.current && waited < MAX_WAIT) {
         await new Promise(r => setTimeout(r, INTERVAL));
         waited += INTERVAL;
       }
       if (!walletClientRef.current) {
-        xmtpInitLock.current = false;
-        setXmtpInitializing(false);
-        setXmtpError('Wallet not responding. Please reconnect your wallet and try again.');
-        if (isManual) {
-          toast.error('Wallet Not Ready', { description: 'Disconnect and reconnect your wallet, then try again.' });
-        }
-        return;
+        console.warn('[SystemChat] walletClient not hydrated, will attempt fallback to signMessageAsync');
       }
     }
 
@@ -635,10 +630,16 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                   const errMsg = (sigErr?.message || '').toLowerCase();
 
                   // WalletConnect v2 unknown RPC error — transient, retry with backoff
-                  const isRpcError = errMsg.includes('unknown rpc') || errMsg.includes('rpc error') || errMsg.includes('internal error');
+                  const isRpcError = errMsg.includes('unknown rpc') || 
+                                     errMsg.includes('rpc error') || 
+                                     errMsg.includes('internal error') ||
+                                     errMsg.includes('socket') ||
+                                     errMsg.includes('timeout');
+                                     
                   if (isRpcError && rpcAttempts < maxRpcAttempts) {
-                    console.warn(`[XMTP] WalletConnect RPC error (attempt ${rpcAttempts}), retrying in ${rpcAttempts * 800}ms...`);
-                    await new Promise(r => setTimeout(r, rpcAttempts * 800));
+                    const waitMs = rpcAttempts * 1200;
+                    console.warn(`[XMTP] WalletConnect RPC error (attempt ${rpcAttempts}), retrying in ${waitMs}ms...`);
+                    await new Promise(r => setTimeout(r, waitMs));
                     continue;
                   }
 
@@ -1562,6 +1563,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                   <p className={`font-mono text-[10px] font-bold mt-1 uppercase tracking-widest flex items-center gap-1.5 ${isTyping || sending || isUploading ? 'text-[#00C076]' : !isConnected ? 'text-red-500' : 'text-[#00C076]'}`}>
                     {blockedList.includes(activeConv.peerAddress.toLowerCase()) ? <span className="text-red-400">BLOCKED</span> :
                      !isConnected ? <> <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div> OFFLINE </> :
+                     xmtpError ? <span className="text-red-500">HANDSHAKE FAILED</span> :
                      !xmtpReady ? <span className="text-amber-500">AWAITING HANDSHAKE...</span> :
                      isTyping || sending || isUploading ? (
                        <span className="flex items-center gap-1">

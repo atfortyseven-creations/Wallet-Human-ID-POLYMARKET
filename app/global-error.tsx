@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect } from "react";
 import { AlertTriangle, RefreshCw } from "lucide-react";
@@ -43,6 +43,25 @@ export default function GlobalError({
       } catch (e) {
         console.error("Session storage failed during chunk reload", e);
       }
+    }
+    // [ABYSMALLY COMPLEX OPTIMIZATION]: Auto-heal Wagmi / WalletConnect Provider Crashes
+    const msg = (error?.message || '').toLowerCase();
+    const isWagmiCrash = msg.includes('wagmi') || 
+                         msg.includes('walletconnect') || 
+                         msg.includes('connector') || 
+                         msg.includes('appkit') ||
+                         msg.includes('socket stall') ||
+                         msg.includes('timeout') ||
+                         msg.includes('unhandled promise');
+    if (isWagmiCrash) {
+      console.warn("WalletConnect/Wagmi Provider crashed. Purging session to prevent white screen of death...");
+      try {
+        sessionStorage.setItem('__disconnected__', '1');
+        localStorage.removeItem('system_session_v2');
+      } catch {}
+      // We wait a tiny bit so logs can flush, then reload
+      setTimeout(() => window.location.reload(), 100);
+      return;
     }
   }, [error]);
 
