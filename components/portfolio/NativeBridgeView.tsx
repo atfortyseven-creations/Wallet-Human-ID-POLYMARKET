@@ -266,13 +266,19 @@ export function NativeBridgeView({ onBack }: any) {
                 dstNativeAddr: "0x" as `0x${string}`
             };
 
+            let poolId = 13n; // Default ETH
+            const upperSymbol = selectedToken.symbol.toUpperCase();
+            if (upperSymbol === 'USDC') poolId = 1n;
+            else if (upperSymbol === 'USDT') poolId = 2n;
+            else if (upperSymbol === 'DAI') poolId = 3n;
+
             const dataPayload = encodeFunctionData({
                 abi: STARGATE_ROUTER_ABI,
                 functionName: "swap",
                 args: [
                     dstChainId,
-                    13n, // srcPoolId (ETH fallback)
-                    13n, // dstPoolId
+                    poolId, // srcPoolId 
+                    poolId, // dstPoolId
                     activeAddress as `0x${string}`,
                     value,
                     value, 

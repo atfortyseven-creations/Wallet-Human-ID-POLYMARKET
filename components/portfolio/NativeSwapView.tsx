@@ -631,7 +631,7 @@ export function NativeSwapView({ address, onBack }: any) {
                         {useMultiSig ? 'SIGN & QUEUE (MULTI-SIG)' : isSwapping ? 'EXECUTING...' : 'SIGN & EXECUTE SWAP'}
                     </button>
                 )}
-                <p className="mt-2 text-[8px] uppercase tracking-[0.2em] text-black/30 text-center">ZERO SIMULATION. DIRECT ON-CHAIN EXECUTION VIA UNISWAP V3 ROUTER.</p>
+                <p className="mt-2 text-[8px] uppercase tracking-[0.2em] text-black/30 text-center">ZERO SIMULATION. DIRECT ON-CHAIN EXECUTION VIA UNISWAP V2 ROUTER.</p>
             </div>
         </motion.div>
     );
