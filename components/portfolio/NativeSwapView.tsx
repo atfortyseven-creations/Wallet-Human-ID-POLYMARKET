@@ -277,7 +277,14 @@ export function NativeSwapView({ address, onBack }: any) {
 
             } catch (e: any) {
                 console.error('Quote error:', e?.message);
-                setAmountOut('No liquidity / unsupported pair');
+                const msg = e?.message || '';
+                if (msg.includes('INSUFFICIENT_LIQUIDITY') || msg.includes('getAmountsOut')) {
+                    setAmountOut('No liquidity / unsupported pair');
+                } else if (msg.includes('network') || msg.includes('timeout') || msg.includes('fetch')) {
+                    setAmountOut('Network RPC error (rate limited)');
+                } else {
+                    setAmountOut('Quote calculation failed');
+                }
             } finally {
                 setIsCalculating(false);
             }
@@ -610,7 +617,6 @@ export function NativeSwapView({ address, onBack }: any) {
 
             </div>{/* end body */}
 
-            {/* ── Sticky CTA — funciona en iOS con safe-area ── */}
             <div className="fixed bottom-0 left-0 right-0 z-10 bg-white border-t border-black/10 px-4 sm:px-6 pt-4"
                 style={{ paddingBottom: 'calc(1rem + env(safe-area-inset-bottom, 0px))' }}
             >
@@ -622,10 +628,17 @@ export function NativeSwapView({ address, onBack }: any) {
                     >
                         {isApproving ? 'AUTHORIZING...' : `APPROVE ${fromToken.symbol}`}
                     </button>
+                ) : (parseFloat(amountIn || '0') > parseFloat(currentBalance || '0')) ? (
+                    <button
+                        disabled={true}
+                        className="w-full py-4 sm:py-5 bg-black/5 text-black/40 border border-black/10 font-black text-[12px] uppercase tracking-[0.3em] transition-all flex justify-center rounded-sm cursor-not-allowed"
+                    >
+                        INSUFFICIENT {fromToken.symbol} BALANCE
+                    </button>
                 ) : (
                     <button
                         onClick={executeSwap}
-                        disabled={isSwapping || !amountIn || isCalculating}
+                        disabled={isSwapping || !amountIn || isCalculating || !amountOut || amountOut.includes('error') || amountOut.includes('No liquidity')}
                         className="w-full py-4 sm:py-5 bg-black text-white font-black text-[12px] uppercase tracking-[0.3em] transition-all hover:bg-black/90 active:bg-black/70 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center shadow-2xl rounded-sm"
                     >
                         {useMultiSig ? 'SIGN & QUEUE (MULTI-SIG)' : isSwapping ? 'EXECUTING...' : 'SIGN & EXECUTE SWAP'}
