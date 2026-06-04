@@ -72,7 +72,7 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
-    "@aztec/bb.js": "^4.3.0",
+    "@aztec/bb.js": "^4.3.1",
     "@bsv/sdk": "^2.0.13",
     "@chainsafe/libp2p-gossipsub": "^14.1.2",
     "@chainsafe/libp2p-noise": "^17.0.0",

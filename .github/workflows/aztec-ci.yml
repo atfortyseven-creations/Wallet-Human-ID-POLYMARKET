@@ -19,7 +19,7 @@ jobs:
 
       - name: Install Aztec CLI & Aztec Nargo
         run: |
-          npm install -g @aztec/cli
+          npm install -g @aztec/cli@4.3.1
           # Setup aztec-nargo
           curl -L https://raw.githubusercontent.com/noir-lang/noirup/main/install | bash
           export PATH="$HOME/.nargo/bin:$PATH"
@@ -27,7 +27,7 @@ jobs:
 
       - name: Start Aztec Sandbox
         run: |
-          docker run -d -p 8080:8080 -p 8081:8081 --name aztec-sandbox aztecprotocol/aztec-sandbox:latest
+          docker run -d -p 8080:8080 -p 8081:8081 --name aztec-sandbox aztecprotocol/aztec-sandbox:4.3.1
           sleep 15
 
       - name: Compile Noir Circuits
