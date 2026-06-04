@@ -48,17 +48,22 @@ export function ZkKYBVault() {
           }
       } else {
           try {
-             if (walletClient?.signMessage) {
+             // CRITICAL FIX: Always use signMessageAsync first for Wagmi/WalletConnect.
+             // This is the ONLY way AppKit intercepts the signature to trigger iOS deep linking.
+             // Direct viem walletClient.signMessage calls bypass the state machine and hang iOS.
+             if (signMessageAsync) {
+                signature = await signMessageAsync({ message: mintMessage });
+             } else if (walletClient?.signMessage) {
                 signature = await walletClient.signMessage({
                    account: walletClient.account || address as `0x${string}`,
                    message: mintMessage
                 });
              } else {
-                signature = await signMessageAsync({ message: mintMessage });
+                 throw new Error("No signing method available in wallet.");
              }
-          } catch (innerErr) {
-             console.warn("Primary signature failed, falling back to signMessageAsync", innerErr);
-             signature = await signMessageAsync({ message: mintMessage });
+          } catch (innerErr: any) {
+             console.warn("[ZkKYBVault] Signature rejected or failed:", innerErr);
+             throw innerErr;
           }
       }
 

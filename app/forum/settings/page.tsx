@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { ShieldCheck, User, Bell, Tag, Settings, Plus, Trash2, Save, Loader2, Check, AlertTriangle } from 'lucide-react';
 import { SIWEPanel } from '@/components/auth/SIWEAuthGate';
+import { useAccount } from 'wagmi';
 
 //  Types 
 interface Category {
@@ -21,10 +22,12 @@ interface GlobalSettings {
 }
 
 //  API helpers 
-async function apiForum(action: string, payload: object) {
+async function apiForum(action: string, payload: object, address?: string) {
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  if (address) headers['x-web3-address'] = address;
   const res = await fetch('/api/forum/settings', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     body: JSON.stringify({ action, ...payload }),
   });
   return res.json();
@@ -67,6 +70,7 @@ const inputCls = "w-full px-3 py-2 rounded-lg text-[14px] font-mono outline-none
 
 // 
 export default function ForumSettingsPage() {
+  const { address } = useAccount();
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [banner, setBanner] = useState<{ msg: string; ok: boolean } | null>(null);
@@ -85,7 +89,7 @@ export default function ForumSettingsPage() {
 
   //  Load data 
   useEffect(() => {
-    fetch('/api/forum/settings')
+    fetch('/api/forum/settings', { headers: address ? { 'x-web3-address': address } : undefined })
       .then(r => r.json())
       .then(d => {
         if (d.error) { setLoading(false); return; }
@@ -96,7 +100,7 @@ export default function ForumSettingsPage() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, []);
+  }, [address]);
 
   const flash = (msg: string, ok = true) => {
     setBanner({ msg, ok });
@@ -113,27 +117,27 @@ export default function ForumSettingsPage() {
       avatarUrl: profile.avatarUrl?.trim() || null, // null if empty  field is optional
       notifyOnReply: profile.notifyOnReply,
       notifyOnMention: profile.notifyOnMention,
-    });
+    }, address);
     setSaving(false);
     r.ok ? flash('Profile saved.') : flash(r.error || 'Error saving profile.', false);
   };
 
   //  Category helpers 
   const saveCategory = async (cat: Category) => {
-    const r = await apiForum('update_category', { id: cat.id, name: cat.name, description: cat.description, color: cat.color, orderIndex: cat.orderIndex });
+    const r = await apiForum('update_category', { id: cat.id, name: cat.name, description: cat.description, color: cat.color, orderIndex: cat.orderIndex }, address);
     r.ok ? flash('Category updated.') : flash(r.error || 'Error.', false);
   };
 
   const deleteCategory = async (id: string) => {
     if (!confirm('Delete this category? All its topics will be uncategorized.')) return;
-    const r = await apiForum('delete_category', { id });
+    const r = await apiForum('delete_category', { id }, address);
     r.ok ? (flash('Category deleted.'), setCategories(p => p.filter(c => c.id !== id))) : flash(r.error || 'Error.', false);
   };
 
   const createCategory = async () => {
     if (!newCat.name.trim() || !newCat.slug.trim()) { flash('Name and slug are required.', false); return; }
     setAddingCat(true);
-    const r = await apiForum('create_category', newCat);
+    const r = await apiForum('create_category', newCat, address);
     setAddingCat(false);
     if (r.ok) {
       setCategories(p => [...p, r.category]);
@@ -145,7 +149,7 @@ export default function ForumSettingsPage() {
   //  Global save 
   const saveGlobal = async () => {
     if (!global) return;
-    const r = await apiForum('update_global', global);
+    const r = await apiForum('update_global', global, address);
     r.ok ? flash('Forum settings saved.') : flash(r.error || 'Error.', false);
   };
 
