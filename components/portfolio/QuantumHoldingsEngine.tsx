@@ -303,20 +303,28 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
                                             <Sparkline isPositive={token.change24h >= 0} />
                                         </div>
                                     </td>
-                                    <td className="py-4 px-6">
                                         <div className="flex items-center justify-end gap-2 opacity-30 group-hover/row:opacity-100 transition-opacity">
-                                            <button onClick={(e) => { e.stopPropagation(); handleAction('SEND', token); }} className="p-1.5 border border-black/10 hover:bg-black hover:text-white transition-colors" title="Send">
-                                                <Send size={12} />
-                                            </button>
-                                            <button onClick={(e) => { e.stopPropagation(); handleAction('RECEIVE', token); }} className="p-1.5 border border-black/10 hover:bg-black hover:text-white transition-colors" title="Receive">
-                                                <Download size={12} />
-                                            </button>
-                                            <button onClick={(e) => { e.stopPropagation(); handleAction('SWAP', token); }} className="p-1.5 border border-black/10 hover:bg-black hover:text-white transition-colors" title="Swap">
-                                                <ArrowRightLeft size={12} />
-                                            </button>
-                                            <button onClick={(e) => { e.stopPropagation(); handleAction('BRIDGE', token); }} className="p-1.5 border border-black/10 hover:bg-black hover:text-white transition-colors" title="Bridge">
-                                                <Route size={12} />
-                                            </button>
+                                            {token.symbol.toUpperCase() === 'QDS' ? (
+                                                <button onClick={(e) => { e.stopPropagation(); if(onQdsTransfer) onQdsTransfer(); }} className="flex items-center gap-2 px-3 py-1.5 border border-black hover:bg-black hover:text-white transition-all shadow-[0_0_15px_rgba(0,0,0,0.1)] group/zk" title="Zero-Knowledge Transfer">
+                                                    <Shield size={12} className="group-hover/zk:animate-pulse" />
+                                                    <span className="text-[10px] font-black uppercase tracking-widest">ZK Transfer</span>
+                                                </button>
+                                            ) : (
+                                                <>
+                                                    <button onClick={(e) => { e.stopPropagation(); handleAction('SEND', token); }} className="p-1.5 border border-black/10 hover:bg-black hover:text-white transition-colors" title="Send">
+                                                        <Send size={12} />
+                                                    </button>
+                                                    <button onClick={(e) => { e.stopPropagation(); handleAction('RECEIVE', token); }} className="p-1.5 border border-black/10 hover:bg-black hover:text-white transition-colors" title="Receive">
+                                                        <Download size={12} />
+                                                    </button>
+                                                    <button onClick={(e) => { e.stopPropagation(); handleAction('SWAP', token); }} className="p-1.5 border border-black/10 hover:bg-black hover:text-white transition-colors" title="Swap">
+                                                        <ArrowRightLeft size={12} />
+                                                    </button>
+                                                    <button onClick={(e) => { e.stopPropagation(); handleAction('BRIDGE', token); }} className="p-1.5 border border-black/10 hover:bg-black hover:text-white transition-colors" title="Bridge">
+                                                        <Route size={12} />
+                                                    </button>
+                                                </>
+                                            )}
                                         </div>
                                     </td>
                                     <td className="py-4 px-6 text-right">
