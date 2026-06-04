@@ -196,15 +196,28 @@ export function NativeBridgeView({ onBack }: any) {
 
             setIsEstimating(true);
             try {
-                await new Promise(r => setTimeout(r, 700));
+                // Real gas cost estimate using source chain fee data
+                const provider = new ethers.JsonRpcProvider(networkInfo.rpc);
+                const feeData = await provider.getFeeData();
+                const gasPrice = feeData.gasPrice || ethers.parseUnits('10', 'gwei');
+                
+                // Bridge ops use ~300k gas (Stargate swap + LayerZero overhead)
+                const bridgeGasLimit = 300000n;
+                const srcGasCost = bridgeGasLimit * gasPrice;
+
+                // Add LayerZero messaging fee — higher for Ethereum mainnet destination
                 const dstChainConfig = CHAINS.find(c => c.id === toChain);
-                if (dstChainConfig) {
-                    const baseCost = dstChainConfig.id === 'ethereum' ? 0.015 : 0.0008;
-                    const jitter = Math.random() * 0.0002;
-                    setLzFee((baseCost + jitter).toFixed(5));
-                }
+                const lzMsgFeeEth = dstChainConfig?.id === 'ethereum' ? 0.012 : 0.0005;
+                const lzMsgFeeWei = ethers.parseEther(lzMsgFeeEth.toString());
+
+                const totalFeeWei = srcGasCost + lzMsgFeeWei;
+                setLzFee(parseFloat(ethers.formatEther(totalFeeWei)).toFixed(6));
             } catch (e) {
-                console.error(e);
+                console.error('Fee estimation error:', e);
+                // Fallback: use conservative static estimate
+                const dstChainConfig = CHAINS.find(c => c.id === toChain);
+                const fallback = dstChainConfig?.id === 'ethereum' ? 0.015 : 0.001;
+                setLzFee(fallback.toFixed(5));
             } finally {
                 setIsEstimating(false);
             }
@@ -212,7 +225,7 @@ export function NativeBridgeView({ onBack }: any) {
 
         const t = setTimeout(estimateCrossChainCost, 500);
         return () => clearTimeout(t);
-    }, [amount, fromChain, toChain, selectedToken]);
+    }, [amount, fromChain, toChain, selectedToken, networkInfo.rpc]);
 
     const executeBridge = async () => {
         if (!amount || parseFloat(amount) <= 0) {

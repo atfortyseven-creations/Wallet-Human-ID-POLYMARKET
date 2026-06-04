@@ -52,11 +52,19 @@ const safeParseUnits = (val: string, decimals: number) => {
     }
 };
 
+// Only show tokens that have a real Ethereum EVM address (0x + 40 hex chars)
+const EVM_TOKENS = UNIVERSAL_TOKENS.filter(t => 
+    t.address && 
+    t.address.startsWith('0x') && 
+    t.address.length === 42 &&
+    t.address !== '0x0000000000000000000000000000000000000000'
+);
+
 function TokenSelector({ selectedToken, onSelect, label }: { selectedToken: UniversalToken, onSelect: (t: UniversalToken) => void, label: string }) {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState('');
 
-    const filtered = UNIVERSAL_TOKENS.filter(t => t.symbol.toLowerCase().includes(search.toLowerCase()) || t.name.toLowerCase().includes(search.toLowerCase())).slice(0, 100);
+    const filtered = EVM_TOKENS.filter(t => t.symbol.toLowerCase().includes(search.toLowerCase()) || t.name.toLowerCase().includes(search.toLowerCase())).slice(0, 100);
 
     const handleSelect = (t: UniversalToken) => {
         onSelect(t);
@@ -151,8 +159,10 @@ export function NativeSwapView({ address, onBack }: any) {
     const activeProtocol = useWalletStore(s => s.activeProtocol);
     const networkInfo = NETWORKS[activeNetwork as NetworkId] || NETWORKS.ethereum;
     
-    const [fromToken, setFromToken] = useState<UniversalToken>(UNIVERSAL_TOKENS.find(t=>t.symbol==='ETH') || UNIVERSAL_TOKENS[0]);
-    const [toToken, setToToken] = useState<UniversalToken>(UNIVERSAL_TOKENS.find(t=>t.symbol==='USDC') || UNIVERSAL_TOKENS[1]);
+    const ETH_TOKEN = EVM_TOKENS.find(t=>t.symbol==='ETH') || { symbol: 'ETH', name: 'Ethereum', address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE', decimals: 18, logoPath: '/crypto-logos/eth.png' };
+    const USDC_TOKEN = EVM_TOKENS.find(t=>t.symbol==='USDC') || EVM_TOKENS[1];
+    const [fromToken, setFromToken] = useState<UniversalToken>(ETH_TOKEN);
+    const [toToken, setToToken] = useState<UniversalToken>(USDC_TOKEN);
     const [amountIn, setAmountIn] = useState('');
     const [amountOut, setAmountOut] = useState('');
 
@@ -201,49 +211,81 @@ export function NativeSwapView({ address, onBack }: any) {
                 setNeedsApproval(false);
                 return;
             }
+            // Validate both tokens have real EVM addresses
+            const fromAddr = fromToken.address;
+            const toAddr = toToken.address;
+            const isFromNative = fromToken.symbol === 'ETH' || fromAddr === 'native';
+            const isToNative = toToken.symbol === 'ETH' || toAddr === 'native';
+
+            if (!isFromNative && (!fromAddr || fromAddr.length !== 42)) {
+                setAmountOut('N/A — token not on this network');
+                setIsCalculating(false);
+                return;
+            }
+            if (!isToNative && (!toAddr || toAddr.length !== 42)) {
+                setAmountOut('N/A — token not on this network');
+                setIsCalculating(false);
+                return;
+            }
+
             setIsCalculating(true);
             setRoutingPath([fromToken.symbol, toToken.symbol]);
             try {
-                // Determine rate realistically and prevent scientific notation on huge amounts
-                const conversion = parseFloat(amountIn) * (Math.random() * 0.5 + 0.8);
-                const finalOut = conversion * 0.997;
-                setAmountOut(finalOut.toLocaleString('fullwide', { useGrouping: false, maximumFractionDigits: 6 }));
-                
-                // Active gas estimation
-                const baseGas = activeNetwork === 'ethereum' ? 0.002 : 0.0001;
-                setGasEstimate(baseGas.toFixed(5));
+                const provider = new ethers.JsonRpcProvider(networkInfo.rpc);
+                const router = new ethers.Contract(ROUTER_ADDRESS, UNISWAP_V2_ROUTER_ABI, provider);
+                const wethAddress: string = await router.WETH();
 
-                // Check allowances if ERC20
-                if (fromToken.symbol !== 'ETH' && privateKey && fromToken.address && fromToken.address.length === 42) {
+                // Build routing path
+                const resolvedFrom = isFromNative ? wethAddress : fromAddr;
+                const resolvedTo   = isToNative   ? wethAddress : toAddr;
+
+                let path: string[];
+                if (resolvedFrom.toLowerCase() === wethAddress.toLowerCase() || resolvedTo.toLowerCase() === wethAddress.toLowerCase()) {
+                    path = [resolvedFrom, resolvedTo];
+                } else {
+                    path = [resolvedFrom, wethAddress, resolvedTo]; // Multi-hop via WETH
+                }
+
+                const parsedIn = safeParseUnits(amountIn, fromToken.decimals || 18);
+                if (parsedIn === 0n) { setAmountOut('0'); setIsCalculating(false); return; }
+
+                // Real on-chain quote from Uniswap
+                const amounts: bigint[] = await router.getAmountsOut(parsedIn, path);
+                const rawOut = amounts[amounts.length - 1];
+                const formattedOut = ethers.formatUnits(rawOut, toToken.decimals || 18);
+                setAmountOut(parseFloat(formattedOut).toLocaleString('fullwide', { useGrouping: false, maximumFractionDigits: 8 }));
+                setRoutingPath(path.length === 3 ? [fromToken.symbol, 'ETH/WETH', toToken.symbol] : [fromToken.symbol, toToken.symbol]);
+
+                // Gas estimation from real fee data
+                const feeData = await provider.getFeeData();
+                const gasLimit = 150000n; // conservative for V2 swap
+                const gasPrice = feeData.gasPrice || ethers.parseUnits('10', 'gwei');
+                setGasEstimate(parseFloat(ethers.formatEther(gasLimit * gasPrice)).toFixed(6));
+
+                // Check ERC20 allowance
+                if (!isFromNative && activeAddress) {
                     try {
-                        const provider = new ethers.JsonRpcProvider(networkInfo.rpc);
-                        const wallet = new ethers.Wallet(privateKey, provider);
-                        const tokenContract = new ethers.Contract(fromToken.address, ERC20_ABI, wallet);
-                        const allowance = await tokenContract.allowance(address, ROUTER_ADDRESS);
-                        const parsedIn = safeParseUnits(amountIn, fromToken.decimals || 18);
-                        
-                        if (allowance < parsedIn) {
-                            setNeedsApproval(true);
-                        } else {
-                            setNeedsApproval(false);
-                        }
-                    } catch (e) {
-                        setNeedsApproval(true); // Fail safe to requiring approval if RPC read fails
+                        const tokenContract = new ethers.Contract(fromAddr, ERC20_ABI, provider);
+                        const allowance = await tokenContract.allowance(activeAddress, ROUTER_ADDRESS);
+                        setNeedsApproval(allowance < parsedIn);
+                    } catch {
+                        setNeedsApproval(true);
                     }
                 } else {
                     setNeedsApproval(false);
                 }
 
-            } catch (e) {
-                console.error(e);
+            } catch (e: any) {
+                console.error('Quote error:', e?.message);
+                setAmountOut('No liquidity / unsupported pair');
             } finally {
                 setIsCalculating(false);
             }
         };
         
-        const timeoutId = setTimeout(fetchQuoteAndAllowance, 500);
+        const timeoutId = setTimeout(fetchQuoteAndAllowance, 700);
         return () => clearTimeout(timeoutId);
-    }, [amountIn, fromToken, toToken, activeNetwork, privateKey, address, networkInfo.rpc]);
+    }, [amountIn, fromToken, toToken, activeNetwork, address, activeAddress, networkInfo.rpc]);
 
     const executeApproval = async () => {
         setIsApproving(true);

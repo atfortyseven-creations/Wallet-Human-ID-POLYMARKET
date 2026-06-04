@@ -29,16 +29,36 @@ export function SmartAccountTerminal({ onBack }: { onBack: () => void }) {
         return;
       }
 
+      // Fetch real nonce from the blockchain
+      let realNonce = 0n;
+      try {
+        const provider = new ethers.JsonRpcProvider('https://cloudflare-eth.com');
+        const txCount = await provider.getTransactionCount(address || wallet.address);
+        realNonce = BigInt(txCount);
+      } catch {
+        realNonce = 0n; // fallback if RPC fails
+      }
+
+      // Fetch real gas prices
+      let maxFeePerGas = 3000000000n;
+      let maxPriorityFeePerGas = 1000000000n;
+      try {
+        const provider = new ethers.JsonRpcProvider('https://cloudflare-eth.com');
+        const feeData = await provider.getFeeData();
+        if (feeData.maxFeePerGas) maxFeePerGas = feeData.maxFeePerGas;
+        if (feeData.maxPriorityFeePerGas) maxPriorityFeePerGas = feeData.maxPriorityFeePerGas;
+      } catch {}
+
       const dummyOp = {
         sender: address || wallet.address,
-        nonce: BigInt(Math.floor(Math.random() * 100)),
+        nonce: realNonce,
         initCode: "0x",
         callData: "0xdeadbeef",
         callGasLimit: 2000000n,
         verificationGasLimit: 150000n,
         preVerificationGas: 21000n,
-        maxFeePerGas: 3000000000n,
-        maxPriorityFeePerGas: 1000000000n,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
         paymasterAndData: "0x",
         signature: "0x",
       };
