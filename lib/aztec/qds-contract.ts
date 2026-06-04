@@ -56,7 +56,7 @@ export async function getQDsContract(wallet: any, address?: string) {
     );
   }
 
-  const { Contract } = await import('@aztec/aztec.js/contract');
+  const { Contract } = await import('@aztec/aztec.js/contracts');
   const { AztecAddress } = await import('@aztec/aztec.js/addresses');
 
   // Load the compiled artifact from the filesystem

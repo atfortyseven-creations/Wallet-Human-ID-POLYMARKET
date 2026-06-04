@@ -13,7 +13,11 @@
  * After running, set AZTEC_QDS_CONTRACT_ADDRESS in your Railway environment.
  */
 
-import { createPXEClient, Fr, deriveSigningKey, AztecAddress, SponsoredFeePaymentMethod } from '@aztec/aztec.js';
+import { createAztecNodeClient } from '@aztec/aztec.js/node';
+import { Fr } from '@aztec/aztec.js/fields';
+import { deriveSigningKey } from '@aztec/aztec.js/keys';
+import { AztecAddress } from '@aztec/aztec.js/addresses';
+import { SponsoredFeePaymentMethod } from '@aztec/aztec.js/fee';
 import { getSchnorrAccount } from '@aztec/accounts/schnorr';
 import { TokenContract } from '@aztec/noir-contracts.js/Token';
 
@@ -28,7 +32,7 @@ async function main() {
   }
 
   console.log('🔗 Connecting to PXE:', PXE_URL);
-  const pxe = await createPXEClient(PXE_URL);
+  const pxe = await createAztecNodeClient(PXE_URL);
 
   const nodeInfo = await pxe.getNodeInfo();
   console.log('🌐 Connected to Aztec Network:', JSON.stringify(nodeInfo, null, 2));

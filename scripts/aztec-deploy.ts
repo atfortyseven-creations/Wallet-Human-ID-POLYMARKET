@@ -1,4 +1,5 @@
-import { createPXEClient, waitForPXE, AztecAddress } from '@aztec/aztec.js';
+import { createAztecNodeClient, waitForNode } from '@aztec/aztec.js/node';
+import { AztecAddress } from '@aztec/aztec.js/addresses';
 // En un entorno de desarrollo normal tendríamos:
 // import { WhaleChatContract } from '../src/artifacts/WhaleChat.js';
 
@@ -7,8 +8,8 @@ async function main() {
     const PXE_URL = process.env.PXE_URL || 'http://localhost:8080';
     
     try {
-        const pxe = createPXEClient(PXE_URL);
-        await waitForPXE(pxe, 10);
+        const pxe = createAztecNodeClient(PXE_URL);
+        await waitForNode(pxe, 10);
         console.log(`✅ Connected to Aztec PXE at ${PXE_URL}`);
 
         const accounts = await pxe.getRegisteredAccounts();

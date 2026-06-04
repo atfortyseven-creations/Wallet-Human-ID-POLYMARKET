@@ -1,6 +1,7 @@
 // lib/aztec/pxeClient.ts
-import { createPXEClient, getSandboxAccountsWallets } from '@aztec/aztec.js/rpc';
-import { getContractAt } from '@aztec/aztec.js/contract';
+import { createAztecNodeClient } from '@aztec/aztec.js/node';
+import { getContractAt } from '@aztec/aztec.js/contracts';
+import { getWallet } from '@aztec/aztec.js/wallet';
 // createAccount removed in v4 — use getSchnorrAccount from @aztec/accounts/schnorr
 
 // Phase 4: Frontend Integration
@@ -8,13 +9,15 @@ import { getContractAt } from '@aztec/aztec.js/contract';
 export const initializePrivatePXE = async () => {
     try {
         const pxeUrl = process.env.AZTEC_PXE_URL || 'http://localhost:8080';
-        const pxe = createPXEClient(pxeUrl);
+        const pxe = createAztecNodeClient(pxeUrl);
         
         // Wait for Active Sandbox initialization
         await pxe.getNodeInfo();
         
-        const wallets = await getSandboxAccountsWallets(pxe);
-        const coreWallet = wallets[0];
+        const accounts = await pxe.getRegisteredAccounts();
+        if (accounts.length === 0) throw new Error("No sandbox accounts found");
+        const sandboxAccount = accounts[0];
+        const coreWallet = await getWallet(pxe, sandboxAccount.address, sandboxAccount);
         
         return { pxe, coreWallet, status: 'LEGENDARY' };
     } catch (error) {
