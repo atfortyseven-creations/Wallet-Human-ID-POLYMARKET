@@ -180,24 +180,39 @@ export async function POST(req: NextRequest) {
         const { getSession } = await import('@/lib/session');
         const session = await getSession();
         
-        const isSessionAuthenticated = session?.userId?.toLowerCase() === address;
-
-        if (!isSessionAuthenticated) {
-            if (!cryptoSignature || typeof cryptoSignature !== 'string') {
-                return NextResponse.json({ error: 'Missing cryptographic signature and no active session found' }, { status: 401 });
-            }
+        // Strategy: if cryptoSignature is present, verify it cryptographically (works on mobile/desktop).
+        // Session is only used as a fast-path if no signature is provided (legacy/native system login).
+        if (cryptoSignature && typeof cryptoSignature === 'string') {
+            // Cryptographic signature path — works on ALL platforms (mobile WalletConnect, desktop extension, native)
+            let isValidSig = false;
+            // Try exact message first
             try {
-                const isValidSig = await verifyMessage({
+                isValidSig = await verifyMessage({
                     address:   walletAddress as `0x${string}`,
-                    message:   `WHALE ALERT NETWORK GOLD ACCESS: ${walletAddress}`,
+                    message:   `WHALE ALERT NETWORK GOLD ACCESS VERIFICATION: ${walletAddress}`,
                     signature: cryptoSignature as `0x${string}`,
                 });
-                if (!isValidSig) {
-                    console.warn(JSON.stringify({ level: 'SECURITY', event: 'INVALID_SIGNATURE', ip, address }));
-                    return NextResponse.json({ error: 'Cryptographic signature is invalid or forged' }, { status: 401 });
-                }
-            } catch {
-                return NextResponse.json({ error: 'Failed to verify cryptographic signature' }, { status: 401 });
+            } catch {}
+            // Fallback: try legacy message format (backwards compat for any old clients)
+            if (!isValidSig) {
+                try {
+                    isValidSig = await verifyMessage({
+                        address:   walletAddress as `0x${string}`,
+                        message:   `WHALE ALERT NETWORK GOLD ACCESS: ${walletAddress}`,
+                        signature: cryptoSignature as `0x${string}`,
+                    });
+                } catch {}
+            }
+            if (!isValidSig) {
+                console.warn(JSON.stringify({ level: 'SECURITY', event: 'INVALID_SIGNATURE', ip, address }));
+                return NextResponse.json({ error: 'Cryptographic signature is invalid or forged' }, { status: 401 });
+            }
+            // Valid signature — proceed to minting
+        } else {
+            // Session-only path (native system login / QR login users who don't have a direct wallet)
+            const isSessionAuthenticated = session?.userId?.toLowerCase() === address;
+            if (!isSessionAuthenticated) {
+                return NextResponse.json({ error: 'Authentication required. Please sign with your wallet or connect via the app.' }, { status: 401 });
             }
         }
 

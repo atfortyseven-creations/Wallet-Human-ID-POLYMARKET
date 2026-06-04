@@ -480,8 +480,8 @@ export function GoldTicketPanel() {
           toast.success('Registration Complete — Welcome to the System Ledger');
           fetchStats();
         } else if (res.status === 409) {
-          toast.info('Access level already established.');
-          fetchStats();
+          toast.info('✅ Ticket already claimed! Loading your receipt...');
+          fetchStats(); // This will populate dbStats with the existing ticket
         } else {
           toast.error(`Mint failed: ${json.error || 'Unknown server error'}`);
         }
