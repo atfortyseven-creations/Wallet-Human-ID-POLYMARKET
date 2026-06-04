@@ -151,8 +151,8 @@ export function NativeSendView({ onBack, initialTokenSymbol }: { onBack: () => v
 
     const defaultToken = initialTokenSymbol 
         ? UNIVERSAL_TOKENS.find(t => t.symbol === initialTokenSymbol) 
-          || { symbol: 'QDs', name: 'Aztec QDs (ZK)', address: '0x', decimals: 18, logoPath: '' } 
-        : UNIVERSAL_TOKENS.find(t=>t.symbol==='ETH') || UNIVERSAL_TOKENS[0];
+          || UNIVERSAL_TOKENS[0]
+        : UNIVERSAL_TOKENS.find(t => t.symbol==='ETH') || UNIVERSAL_TOKENS[0];
 
     const [selectedToken, setSelectedToken] = useState<UniversalToken>(defaultToken as UniversalToken);
     
@@ -169,7 +169,7 @@ export function NativeSendView({ onBack, initialTokenSymbol }: { onBack: () => v
             }
 
             if (selectedToken.symbol === 'QDs') {
-                setGasFee('0.00 (Gasless via SponsoredFPC)');
+                setGasFee('aztec-gasless');
                 setIsEstimating(false);
                 return;
             }
@@ -327,7 +327,7 @@ export function NativeSendView({ onBack, initialTokenSymbol }: { onBack: () => v
                     <h2 className="text-lg sm:text-xl font-black uppercase tracking-widest text-black flex items-center gap-2">
                         Send Asset
                     </h2>
-                    <p className="text-[10px] uppercase text-black/50 tracking-widest mt-1">Direct On-Chain Transfer</p>
+                    <p className="text-[10px] uppercase text-black/50 tracking-widest mt-1">{selectedToken.symbol === 'QDs' ? 'Zero-Knowledge Private Transfer · Aztec Network' : 'Direct On-Chain Transfer'}</p>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
                     <label className="flex items-center gap-2 cursor-pointer text-[9px] uppercase font-bold text-black/40 hover:text-black transition-colors">
@@ -383,12 +383,12 @@ export function NativeSendView({ onBack, initialTokenSymbol }: { onBack: () => v
                             <div className="border border-black/10 p-5 bg-white text-[10px] uppercase tracking-widest space-y-4 font-mono">
                                 <div className="flex justify-between text-black/50">
                                     <span>Network</span>
-                                    <span className="text-black font-bold uppercase">{activeNetwork}</span>
+                                    <span className="text-black font-bold uppercase">{selectedToken.symbol === 'QDs' ? 'Aztec Testnet' : activeNetwork}</span>
                                 </div>
                                 <div className="flex justify-between text-black/50">
                                     <span>Estimated Gas Fee</span>
                                     <span className="text-[#00C076] font-bold">
-                                        {isEstimating ? 'CALCULATING...' : `~ ${parseFloat(gasFee).toFixed(6)} ETH`}
+                                        {selectedToken.symbol === 'QDs' ? '✓ Gasless (Aztec SponsoredFPC)' : isEstimating ? 'CALCULATING...' : `~ ${parseFloat(gasFee).toFixed(6)} ETH`}
                                     </span>
                                 </div>
                             </div>

@@ -38,3 +38,16 @@ export const UNIVERSAL_TOKENS: UniversalToken[] = QUANTUM_TOKENS.map(t => ({
     decimals: t.decimals,
     logoPath: t.logoPath,
 }));
+
+// Aztec Quantum Dots — private ZK token on Aztec Testnet.
+// Not on EVM so has no on-chain address; uses the Aztec API route for transfers.
+const QDS_TOKEN: UniversalToken = {
+    symbol:   'QDs',
+    name:     'Quantum Dots (Aztec ZK)',
+    address:  'aztec',
+    decimals: 18,
+    logoPath: '/logos/qds.svg',
+};
+
+// Prepend QDs so it shows first in the selector
+UNIVERSAL_TOKENS.unshift(QDS_TOKEN);
