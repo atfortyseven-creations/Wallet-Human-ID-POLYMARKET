@@ -108,7 +108,7 @@ function useSyncFromDB(address: string) {
           }
           if (tx.type === 'send' && tx.fromAddress?.toLowerCase() === address.toLowerCase()) {
             if (!history.some(h => h.id === tx.id)) {
-              sendQDs(tx.amount, tx.toAddress, tx.txHash, tx.id);
+              sendQDs(tx.amount, tx.toAddress, tx.txHash, tx.id, true);
             }
           }
         }

@@ -19,7 +19,7 @@ interface QDsStore {
   logout: () => void;
   setBalance: (b: number) => void;
   setHistory: (h: TxRecord[]) => void;
-  sendQDs: (amount: number, to: string, txHash: string, dbId?: string) => void;
+  sendQDs: (amount: number, to: string, txHash: string, dbId?: string, isSync?: boolean) => void;
   receiveQDs: (amount: number, from: string, txHash: string, dbId?: string) => void;
   reset: () => void;
 }
@@ -35,8 +35,10 @@ export const useQDsStore = create<QDsStore>()(
       logout: () => set({ seed: null, aztecAddress: null, history: [], balance: 100 }),
       setBalance: (balance) => set({ balance }),
       setHistory: (history) => set({ history }),
-      sendQDs: (amount, to, txHash, dbId) => set((state) => ({
-        balance: state.balance - amount,
+      sendQDs: (amount, to, txHash, dbId, isSync) => set((state) => ({
+        // Only deduct balance optimistically if this is a direct user action.
+        // If isSync is true, the balance is already managed by the master setBalance() from DB.
+        balance: isSync ? state.balance : state.balance - amount,
         history: [
           {
             id: dbId || Math.random().toString(36).substr(2, 9),
