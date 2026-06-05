@@ -109,7 +109,7 @@ export default function MarketTable() {
                 <span className={`font-black tabular-nums transition-colors duration-300 ${
                     flash === 'up' ? 'text-emerald-500' :
                     flash === 'down' ? 'text-rose-500' :
-                    '!text-white'
+                    'text-white'
                 }`}>
                     {formatCurrency(displayValue)}
                 </span>
@@ -137,7 +137,7 @@ export default function MarketTable() {
 
     const ActiveVolumeTicker = ({ value }: { value: number }) => {
         return (
-            <span className="text-sm font-black !text-white tabular-nums transition-all duration-1000">
+            <span className="text-sm font-black text-white tabular-nums transition-all duration-1000">
                 {formatCompact(value)}
             </span>
         );
@@ -157,7 +157,7 @@ export default function MarketTable() {
                 <p className="text-rose-500 font-bold mb-4 uppercase tracking-widest text-xs">{error}</p>
                 <button 
                   onClick={fetchData}
-                  className="px-6 py-2 bg-black !!text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em]"
+                  className="px-6 py-2 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em]"
                 >
                   {t('market.retry')}
                 </button>
@@ -183,7 +183,7 @@ export default function MarketTable() {
             <div className="p-6 bg-black/20 border-b border-white/10 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                    <span className="text-xs font-black !text-white/60 uppercase tracking-widest">
+                    <span className="text-xs font-black text-white/60 uppercase tracking-widest">
                         Showing {startIndex + 1}-{Math.min(endIndex, coins.length)} of {coins.length} Cryptos
                     </span>
                 </div>
@@ -192,7 +192,7 @@ export default function MarketTable() {
                     <button
                         onClick={() => goToPage(currentPage - 1)}
                         disabled={currentPage === 1}
-                        className="px-4 py-2 bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed rounded-xl text-[10px] font-black uppercase tracking-widest !text-white transition-all"
+                        className="px-4 py-2 bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed rounded-xl text-[10px] font-black uppercase tracking-widest text-white transition-all"
                     >
                          Previous
                     </button>
@@ -211,15 +211,15 @@ export default function MarketTable() {
                                         onClick={() => goToPage(page)}
                                         className={`w-10 h-10 rounded-xl text-[11px] font-black transition-all ${
                                             currentPage === page
-                                                ? 'bg-blue-600 !text-white shadow-lg'
-                                                : 'bg-white/5 !text-white/60 hover:bg-white/10'
+                                                ? 'bg-blue-600 text-white shadow-lg'
+                                                : 'bg-white/5 text-white/60 hover:bg-white/10'
                                         }`}
                                     >
                                         {page}
                                     </button>
                                 );
                             } else if (page === currentPage - 2 || page === currentPage + 2) {
-                                return <span key={page} className="!text-white/30 px-1">...</span>;
+                                return <span key={page} className="text-white/30 px-1">...</span>;
                             }
                             return null;
                         })}
@@ -228,7 +228,7 @@ export default function MarketTable() {
                     <button
                         onClick={() => goToPage(currentPage + 1)}
                         disabled={currentPage === totalPages}
-                        className="px-4 py-2 bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed rounded-xl text-[10px] font-black uppercase tracking-widest !text-white transition-all"
+                        className="px-4 py-2 bg-white/5 hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed rounded-xl text-[10px] font-black uppercase tracking-widest text-white transition-all"
                     >
                         Next 
                     </button>
@@ -239,18 +239,18 @@ export default function MarketTable() {
                 <table className="w-full border-collapse">
                     <thead>
                         <tr className="border-b border-black/5">
-                            <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest !text-white/30">#</th>
-                            <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest !text-white/30">{t('market.name')}</th>
-                            <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest !text-white/30">{t('market.price')}</th>
-                            <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest !text-white/30">{t('market.market_cap')}</th>
-                            <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest !text-white/30">{t('market.volume_24h')}</th>
-                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest !text-white/30">{t('market.hour')}</th>
-                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest !text-white/30">{t('market.day')}</th>
-                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest !text-white/30">{t('market.week')}</th>
-                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest !text-white/30">{t('market.month')}</th>
-                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest !text-white/30">{t('market.year')}</th>
-                            <th className="px-6 py-4 text-center text-[10px] font-black uppercase tracking-widest !text-white/30">Analytics</th>
-                            <th className="px-6 py-4 text-center text-[10px] font-black uppercase tracking-widest !text-white/30">{t('market.actions')}</th>
+                            <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-white/30">#</th>
+                            <th className="px-6 py-4 text-left text-[10px] font-black uppercase tracking-widest text-white/30">{t('market.name')}</th>
+                            <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-white/30">{t('market.price')}</th>
+                            <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-white/30">{t('market.market_cap')}</th>
+                            <th className="px-6 py-4 text-right text-[10px] font-black uppercase tracking-widest text-white/30">{t('market.volume_24h')}</th>
+                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">{t('market.hour')}</th>
+                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">{t('market.day')}</th>
+                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">{t('market.week')}</th>
+                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">{t('market.month')}</th>
+                            <th className="px-4 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">{t('market.year')}</th>
+                            <th className="px-6 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">Analytics</th>
+                            <th className="px-6 py-4 text-center text-[10px] font-black uppercase tracking-widest text-white/30">{t('market.actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -262,15 +262,15 @@ export default function MarketTable() {
                                 transition={{ delay: i * 0.01 }}
                                 className="group hover:bg-white/40 border-b border-black/5 transition-colors"
                             >
-                                <td className="px-6 py-4 text-sm font-black !text-white/40 tabular-nums">
+                                <td className="px-6 py-4 text-sm font-black text-white/40 tabular-nums">
                                     {startIndex + i + 1}
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="flex items-center gap-3">
                                         <CoinIcon src={coin.image} alt={coin.name} />
                                         <div className="flex flex-col">
-                                            <span className="text-sm font-black !text-white">{coin.name}</span>
-                                            <span className="text-[10px] font-bold !text-white/30 uppercase tracking-tighter">{coin.symbol}</span>
+                                            <span className="text-sm font-black text-white">{coin.name}</span>
+                                            <span className="text-[10px] font-bold text-white/30 uppercase tracking-tighter">{coin.symbol}</span>
                                         </div>
                                     </div>
                                 </td>
@@ -282,7 +282,7 @@ export default function MarketTable() {
                                         />
                                     </div>
                                 </td>
-                                <td className="px-6 py-4 text-right text-sm font-black !text-white tabular-nums">
+                                <td className="px-6 py-4 text-right text-sm font-black text-white tabular-nums">
                                     {formatCompact(coin.market_cap)}
                                 </td>
                                 <td className="px-6 py-4 text-right">
@@ -320,7 +320,7 @@ export default function MarketTable() {
                                             {coin.riskLevel}
                                         </div>
                                     ) : (
-                                        <span className="text-[10px] font-black !text-white/10 italic">UNRATED</span>
+                                        <span className="text-[10px] font-black text-white/10 italic">UNRATED</span>
                                     )}
                                 </td>
                                 <td className="px-6 py-4">
@@ -328,7 +328,7 @@ export default function MarketTable() {
                                         <a 
                                             href={`https://www.coingecko.com/es/monedas/${coin.id}`} 
                                             target="_blank" 
-                                            className="p-2 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all !text-white/40 hover:text-blue-400"
+                                            className="p-2 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10 transition-all text-white/40 hover:text-blue-400"
                                             title="View on CoinGecko"
                                         >
                                             <ExternalLink size={14} />
@@ -336,7 +336,7 @@ export default function MarketTable() {
 
                                         <button 
                                             onClick={() => window.location.href = `/token-trade?symbol=${coin.symbol}&id=${coin.id}`}
-                                            className="px-4 py-2 bg-black !!text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all flex items-center gap-2 shadow-lg"
+                                            className="px-4 py-2 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all flex items-center gap-2 shadow-lg"
                                         >
                                             <ShoppingCart size={12} />
                                             {t('common.trade')}
@@ -352,12 +352,12 @@ export default function MarketTable() {
             
             {/* Pagination Footer */}
             <div className="p-6 bg-black/5 border-t border-black/5 flex items-center justify-between">
-                <p className="text-[10px] font-black !text-white/30 uppercase tracking-[0.2em] italic flex items-center gap-2">
+                <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] italic flex items-center gap-2">
                     <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
                     Real-time updates (every 3 seconds)
                 </p>
                 
-                <div className="text-[10px] font-black !text-white/40 uppercase tracking-widest">
+                <div className="text-[10px] font-black text-white/40 uppercase tracking-widest">
                     Page {currentPage} of {totalPages}
                 </div>
             </div>
@@ -370,7 +370,7 @@ function CoinIcon({ src, alt }: { src: string, alt: string }) {
 
     if (error) {
         return (
-            <div className="w-8 h-8 rounded-full flex items-center justify-center bg-white/10 text-[8px] font-bold !text-white/50">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center bg-white/10 text-[8px] font-bold text-white/50">
                 {alt.slice(0, 2)}
             </div>
         );

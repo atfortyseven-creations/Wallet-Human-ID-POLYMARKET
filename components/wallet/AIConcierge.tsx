@@ -138,7 +138,7 @@ export default function AIConcierge({ portfolioData }: AIConciergeProps) {
                                     <div 
                                         className={`max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed shadow-sm ${
                                             msg.role === 'user' 
-                                                ? 'bg-[#1F1F1F] !text-white rounded-tr-none' 
+                                                ? 'bg-[#1F1F1F] text-white rounded-tr-none' 
                                                 : 'bg-white text-[#1F1F1F] rounded-tl-none border border-black/5'
                                         }`}
                                     >
@@ -190,7 +190,7 @@ export default function AIConcierge({ portfolioData }: AIConciergeProps) {
                                 <button 
                                     type="submit"
                                     disabled={!input.trim() || isTyping}
-                                    className="w-8 h-8 rounded-full bg-[#1F1F1F] !text-white flex items-center justify-center hover:bg-black disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                    className="w-8 h-8 rounded-full bg-[#1F1F1F] text-white flex items-center justify-center hover:bg-black disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                                 >
                                     <Send size={14} />
                                 </button>

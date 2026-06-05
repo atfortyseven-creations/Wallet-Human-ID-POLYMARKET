@@ -114,7 +114,7 @@ export function ContractDeployerView({ onBack }: { onBack: () => void }) {
         <button
           onClick={handleDeploy}
           disabled={isDeploying || !bytecode.trim()}
-          className="w-full py-5 bg-black !!text-white text-[10px] font-black uppercase tracking-[0.25em] hover:bg-black/80 disabled:opacity-30 transition-all flex items-center justify-center gap-3 mt-4"
+          className="w-full py-5 bg-black text-white text-[10px] font-black uppercase tracking-[0.25em] hover:bg-black/80 disabled:opacity-30 transition-all flex items-center justify-center gap-3 mt-4"
         >
           {isDeploying ? <Activity size={14} className="animate-pulse" /> : <Play size={14} fill="currentColor" />}
           {isDeploying ? 'BROADCASTING BYTECODE...' : 'DEPLOY TO BLOCKCHAIN'}

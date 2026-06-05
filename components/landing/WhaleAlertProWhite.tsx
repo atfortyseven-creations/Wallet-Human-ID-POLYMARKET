@@ -93,11 +93,11 @@ function PricingCard(tier: PricingTier) {
       transition={{ duration: 0.5 }}
       viewport={{ once: true }}
       className={`group relative flex flex-col p-10 rounded-[2rem] border transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 ${
-        tier.highlight ? 'bg-slate-950 !text-white border-slate-800 shadow-2xl' : 'bg-white border-slate-100 hover:border-slate-300'
+        tier.highlight ? 'bg-slate-950 text-white border-slate-800 shadow-2xl' : 'bg-white border-slate-100 hover:border-slate-300'
       }`}
     >
       {tier.badge && (
-        <div className="absolute top-8 right-8 px-4 py-1.5 bg-[#0044CC] !text-white rounded-full font-mono text-[9px] font-black uppercase tracking-widest shadow-lg animate-pulse">
+        <div className="absolute top-8 right-8 px-4 py-1.5 bg-[#0044CC] text-white rounded-full font-mono text-[9px] font-black uppercase tracking-widest shadow-lg animate-pulse">
           {tier.badge}
         </div>
       )}
@@ -116,7 +116,7 @@ function PricingCard(tier: PricingTier) {
             <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 border ${
               f.included ? (tier.highlight ? 'bg-[#0044CC] border-[#0044CC]' : 'bg-slate-950 border-slate-800') : 'opacity-20'
             }`}>
-              {f.included && <CheckCircle2 size={12} className="!text-white" />}
+              {f.included && <CheckCircle2 size={12} className="text-white" />}
             </div>
             <span className={`text-[12px] font-bold tracking-wide ${f.included ? 'opacity-100' : 'opacity-20'}`}>
               {f.text}
@@ -128,7 +128,7 @@ function PricingCard(tier: PricingTier) {
       <Link 
         href="/connect" 
         className={`w-full py-5 rounded-[1rem] font-mono text-[11px] font-black uppercase tracking-[0.2em] text-center transition-all ${
-          tier.highlight ? 'bg-white text-slate-950 hover:bg-slate-100 shadow-xl' : 'bg-slate-950 !text-white hover:bg-black'
+          tier.highlight ? 'bg-white text-slate-950 hover:bg-slate-100 shadow-xl' : 'bg-slate-950 text-white hover:bg-black'
         }`}
       >
         {tier.id === 'STARTER' ? (
@@ -204,7 +204,7 @@ export default function WhaleAlertProWhite() {
           </div>
           <button
             onClick={handleEnterTerminal}
-            className="flex items-center gap-3 px-8 py-4 bg-[#0A0A0A] !text-white text-[12px] font-bold tracking-wider rounded-2xl hover:bg-black transition-all shadow-xl"
+            className="flex items-center gap-3 px-8 py-4 bg-[#0A0A0A] text-white text-[12px] font-bold tracking-wider rounded-2xl hover:bg-black transition-all shadow-xl"
           >
             {mounted && isEffectivelyConnected ? (
               <><span>Enter Dashboard</span><div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" /></>
@@ -239,7 +239,7 @@ export default function WhaleAlertProWhite() {
           <div className="flex flex-col sm:flex-row items-center gap-6 justify-center lg:justify-start pt-4">
             <button
               onClick={handleEnterTerminal}
-              className="flex items-center justify-center gap-4 px-10 py-5 w-full sm:w-auto bg-[#0044CC] !text-white rounded-2xl text-[14px] font-bold tracking-wide hover:bg-[#003399] transition-colors shadow-[0_10px_30px_rgba(0,68,204,0.3)]"
+              className="flex items-center justify-center gap-4 px-10 py-5 w-full sm:w-auto bg-[#0044CC] text-white rounded-2xl text-[14px] font-bold tracking-wide hover:bg-[#003399] transition-colors shadow-[0_10px_30px_rgba(0,68,204,0.3)]"
             >
               Start Tracking Now <ArrowRight size={18} />
             </button>

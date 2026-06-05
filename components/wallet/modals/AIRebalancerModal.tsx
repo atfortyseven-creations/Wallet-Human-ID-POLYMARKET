@@ -78,7 +78,7 @@ export default function AIRebalancerModal({ isOpen, onClose }: AIRebalancerModal
                         className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-purple-900/90 to-black/90 backdrop-blur-xl rounded-3xl p-8 border border-white/10 shadow-2xl"
                     >
                         <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/10">
-                            <X size={20} className="!text-white" />
+                            <X size={20} className="text-white" />
                         </button>
 
                         <div className="flex items-center gap-3 mb-6">
@@ -86,20 +86,20 @@ export default function AIRebalancerModal({ isOpen, onClose }: AIRebalancerModal
                                 <Brain className="text-cyan-400" size={24} />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-black !text-white">AI Portfolio Rebalancer</h2>
-                                <p className="text-sm !text-white/60">Optimize your holdings with ML</p>
+                                <h2 className="text-2xl font-black text-white">AI Portfolio Rebalancer</h2>
+                                <p className="text-sm text-white/60">Optimize your holdings with ML</p>
                             </div>
                         </div>
 
                         {/* Current Portfolio */}
                         {portfolio && (
                             <div className="bg-white/5 rounded-2xl p-6 mb-6">
-                                <h3 className="!text-white font-bold mb-4">Current Portfolio</h3>
+                                <h3 className="text-white font-bold mb-4">Current Portfolio</h3>
                                 <div className="space-y-2">
                                     {portfolio.tokens?.map((token: any) => (
                                         <div key={token.symbol} className="flex justify-between items-center">
-                                            <span className="!text-white/80">{token.symbol}</span>
-                                            <span className="!text-white font-bold">{token.percentage}%</span>
+                                            <span className="text-white/80">{token.symbol}</span>
+                                            <span className="text-white font-bold">{token.percentage}%</span>
                                         </div>
                                     ))}
                                 </div>
@@ -108,7 +108,7 @@ export default function AIRebalancerModal({ isOpen, onClose }: AIRebalancerModal
 
                         {/* Strategy Selection */}
                         <div className="mb-6">
-                            <label className="!text-white/80 text-sm mb-3 block">Rebalance Strategy</label>
+                            <label className="text-white/80 text-sm mb-3 block">Rebalance Strategy</label>
                             <div className="grid grid-cols-3 gap-3">
                                 {['conservative', 'balanced', 'aggressive'].map((s) => (
                                     <button
@@ -116,8 +116,8 @@ export default function AIRebalancerModal({ isOpen, onClose }: AIRebalancerModal
                                         onClick={() => setStrategy(s)}
                                         className={`px-4 py-3 rounded-xl font-bold text-sm transition-all ${
                                             strategy === s
-                                                ? 'bg-cyan-600 !text-white'
-                                                : 'bg-white/5 !text-white/60 hover:bg-white/10'
+                                                ? 'bg-cyan-600 text-white'
+                                                : 'bg-white/5 text-white/60 hover:bg-white/10'
                                         }`}
                                     >
                                         {s.charAt(0).toUpperCase() + s.slice(1)}
@@ -131,7 +131,7 @@ export default function AIRebalancerModal({ isOpen, onClose }: AIRebalancerModal
                             <button
                                 onClick={generatePlan}
                                 disabled={loading}
-                                className="w-full py-3 bg-purple-600 hover:bg-purple-500 rounded-xl font-bold !text-white flex items-center justify-center gap-2 mb-6"
+                                className="w-full py-3 bg-purple-600 hover:bg-purple-500 rounded-xl font-bold text-white flex items-center justify-center gap-2 mb-6"
                             >
                                 {loading ? <Loader2 className="animate-spin" size={20} /> : <Sparkles size={20} />}
                                 {loading ? 'Analyzing...' : 'Generate AI Plan'}
@@ -141,17 +141,17 @@ export default function AIRebalancerModal({ isOpen, onClose }: AIRebalancerModal
                         {/* Rebalance Plan */}
                         {rebalancePlan && (
                             <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-2xl p-6 mb-6">
-                                <h3 className="!text-white font-bold mb-4 flex items-center gap-2">
+                                <h3 className="text-white font-bold mb-4 flex items-center gap-2">
                                     <Zap className="text-cyan-400" size={20} />
                                     Recommended Rebalance
                                 </h3>
                                 <div className="space-y-3">
                                     {rebalancePlan.swaps?.map((swap: any, i: number) => (
                                         <div key={i} className="flex items-center justify-between bg-white/5 rounded-lg p-3">
-                                            <span className="!text-white/80">
+                                            <span className="text-white/80">
                                                 Swap {swap.from}  {swap.to}
                                             </span>
-                                            <span className="!text-white font-bold">{swap.amount}</span>
+                                            <span className="text-white font-bold">{swap.amount}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -164,7 +164,7 @@ export default function AIRebalancerModal({ isOpen, onClose }: AIRebalancerModal
                                 <button
                                     onClick={executeRebalance}
                                     disabled={loading}
-                                    className="w-full mt-4 py-3 bg-cyan-600 hover:bg-cyan-500 rounded-xl font-bold !text-white flex items-center justify-center gap-2"
+                                    className="w-full mt-4 py-3 bg-cyan-600 hover:bg-cyan-500 rounded-xl font-bold text-white flex items-center justify-center gap-2"
                                 >
                                     {loading ? <Loader2 className="animate-spin" size={20} /> : <TrendingUp size={20} />}
                                     {loading ? 'Executing...' : 'Execute Rebalance'}

@@ -1,4 +1,4 @@
-// Feature Cards Data - 40+ Categories
+﻿// Feature Cards Data - 40+ Categories
 import React from 'react';
 import {
   Shield, Key, Users, Heart, Eye, Fingerprint, Clock, Smartphone, Cloud, Lock,

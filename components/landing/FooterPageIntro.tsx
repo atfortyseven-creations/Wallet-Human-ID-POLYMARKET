@@ -20,8 +20,8 @@ export function FooterPageIntro({
 
   const border = dark ? 'border-white/10' : 'border-black/10';
   const bg = dark ? 'bg-white/[0.04]' : 'bg-[#2a1b4d]/[0.03]';
-  const text = dark ? '!text-white/70' : 'text-[#050505]/65';
-  const heading = dark ? '!text-white' : 'text-[#050505]';
+  const text = dark ? 'text-white/70' : 'text-[#050505]/65';
+  const heading = dark ? 'text-white' : 'text-[#050505]';
 
   return (
     <div className={`mb-8 rounded-2xl border ${border} ${bg} overflow-hidden`}>
@@ -35,7 +35,7 @@ export function FooterPageIntro({
         </span>
         <ChevronDown
           size={18}
-          className={`shrink-0 transition-transform ${open ? 'rotate-180' : ''} ${dark ? '!text-white/50' : 'text-black/40'}`}
+          className={`shrink-0 transition-transform ${open ? 'rotate-180' : ''} ${dark ? 'text-white/50' : 'text-black/40'}`}
         />
       </button>
       {open && (

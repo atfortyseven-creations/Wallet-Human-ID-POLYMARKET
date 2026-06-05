@@ -452,7 +452,7 @@ function CreateTab({ isMobile, onCreated }: CreateTabProps) {
       <button
         type="submit"
         disabled={creating}
-        className="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-[#050505] !text-white text-[11px] font-black uppercase tracking-widest active:scale-[0.98] transition-transform disabled:opacity-50"
+        className="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-[#050505] text-white text-[11px] font-black uppercase tracking-widest active:scale-[0.98] transition-transform disabled:opacity-50"
       >
         {creating ? <Loader2 className="animate-spin" size={16} /> : <Package size={16} />}
         {creating ? 'Validating integrity via AI…' : 'Create product record'}
@@ -609,7 +609,7 @@ function RegistryTab({ isMobile: _isMobile, refreshKey }: RegistryTabProps) {
               onClick={() => setFilter(f)}
               className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-colors ${
                 filter === f
-                  ? 'bg-[#050505] !text-white'
+                  ? 'bg-[#050505] text-white'
                   : 'bg-black/5 text-black/50 hover:bg-black/10'
               }`}
             >
@@ -621,7 +621,7 @@ function RegistryTab({ isMobile: _isMobile, refreshKey }: RegistryTabProps) {
           {filtered.length > 0 && (
             <button
               onClick={handleExportCSV}
-              className="px-3 py-1.5 rounded-lg bg-[#050505] !text-white hover:opacity-80 transition-opacity text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-lg bg-[#050505] text-white hover:opacity-80 transition-opacity text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5"
             >
               <Copy size={11} />
               Export CSV
@@ -809,7 +809,7 @@ function AztecTab() {
       <div className="rounded-2xl border border-black/10 bg-white p-6">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-6 h-6 rounded-md bg-[#050505] flex items-center justify-center">
-            <ShieldCheck size={13} className="!text-white" />
+            <ShieldCheck size={13} className="text-white" />
           </div>
           <p className="text-[10px] font-black uppercase tracking-widest text-black/50">
             Integration with Aztec Network
@@ -1040,7 +1040,7 @@ export function ProvenanceStudioContent({
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
                 activeTab === tab.id
-                  ? 'bg-[#050505] !text-white shadow-sm'
+                  ? 'bg-[#050505] text-white shadow-sm'
                   : 'text-black/40 hover:text-black/70'
               }`}
             >

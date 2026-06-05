@@ -85,11 +85,11 @@ export default function ContextMenu({ onAction, children }: ContextMenuProps) {
         >
           {/* Header */}
           <div className="px-3 py-2 mb-1 border-b border-white/10 flex items-center justify-between">
-            <span className="text-[9px] font-black !text-white/80 uppercase tracking-widest flex items-center gap-2">
+            <span className="text-[9px] font-black text-white/80 uppercase tracking-widest flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-white/60 animate-pulse" />
                 Quick actions
             </span>
-            <span className="text-[8px] font-mono !text-white/30 tracking-widest">v9.9.9</span>
+            <span className="text-[8px] font-mono text-white/30 tracking-widest">v9.9.9</span>
           </div>
           
           <div className="flex flex-col gap-1 mt-2">
@@ -101,10 +101,10 @@ export default function ContextMenu({ onAction, children }: ContextMenuProps) {
                     handleAction(item.label);
                     if (onAction) onAction(item.id);
                   }}
-                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-sm hover:bg-[#e0ff00]/10 !text-white/50 hover:text-[#e0ff00] transition-all group text-xs uppercase tracking-widest font-black"
+                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-sm hover:bg-[#e0ff00]/10 text-white/50 hover:text-[#e0ff00] transition-all group text-xs uppercase tracking-widest font-black"
                 >
                   <div className="flex items-center gap-3">
-                    <item.icon size={14} className="!text-white/40 group-hover:text-[#e0ff00] transition-colors" />
+                    <item.icon size={14} className="text-white/40 group-hover:text-[#e0ff00] transition-colors" />
                     <span>{item.label}</span>
                   </div>
                   {item.hotkey && (

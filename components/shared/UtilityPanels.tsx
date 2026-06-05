@@ -365,7 +365,7 @@ export function UtilityPanels() {
                     </h4>
                     <button
                         onClick={() => setShowScanner(true)}
-                        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-aztec-mono text-[11px] font-black uppercase tracking-widest bg-black !!text-white hover:bg-black/80 transition-all shadow-lg shadow-black/10"
+                        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-aztec-mono text-[11px] font-black uppercase tracking-widest bg-black text-white hover:bg-black/80 transition-all shadow-lg shadow-black/10"
                     >
                         <Link2 size={14} /> Connect dApp
                     </button>
@@ -498,7 +498,7 @@ export function BillionWhaleNotification() {
                             {/* Header */}
                             <div className="flex justify-between items-start">
                                 <div className="flex items-center gap-4">
-                                    <div className="bg-black !!text-white p-2 flex items-center justify-center relative">
+                                    <div className="bg-black text-white p-2 flex items-center justify-center relative">
                                         <div className="absolute -top-1 -right-1 w-2 h-2 bg-[#FFFFFF]" />
                                         <Zap size={16} className="fill-white" />
                                     </div>

@@ -2,7 +2,7 @@ import React from 'react';
 
 export const ProposeMarket = () => {
     return (
-        <div className="flex flex-col items-center justify-center h-full p-8 text-center !text-white">
+        <div className="flex flex-col items-center justify-center h-full p-8 text-center text-white">
             <h2 className="text-2xl font-bold mb-4">Propose a New Market</h2>
             <p className="text-zinc-400 mb-8">
                 Market proposals require System level verification.

@@ -20,10 +20,10 @@ export default function BalanceCard() {
                 <h3 className="text-gray-400 font-medium text-sm tracking-wider uppercase">Portfolio Value</h3>
                 <div className="mt-2 flex items-baseline space-x-2">
                     {isLoading ? (
-                        <Loader2 className="w-8 h-8 !text-white/50 animate-spin" />
+                        <Loader2 className="w-8 h-8 text-white/50 animate-spin" />
                     ) : ( 
                         <>
-                            <span className="text-4xl font-bold !text-white">
+                            <span className="text-4xl font-bold text-white">
                                 {data ? safeToFixed(data.formatted, 2) : "0.00"}
                             </span>
                             <span className="text-lg text-gray-500 font-medium">{data?.symbol}</span>
@@ -33,10 +33,10 @@ export default function BalanceCard() {
             </div>
 
             <div className="mt-4 flex space-x-2">
-                <button className="flex-1 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 !text-white font-medium text-sm transition-colors">
+                <button className="flex-1 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm transition-colors">
                     Deposit
                 </button>
-                <button className="flex-1 py-2 rounded-xl bg-white/10 hover:bg-white/20 !text-white font-medium text-sm transition-colors">
+                <button className="flex-1 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-sm transition-colors">
                     Withdraw
                 </button>
             </div>

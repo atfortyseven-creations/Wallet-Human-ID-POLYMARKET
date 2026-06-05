@@ -145,7 +145,7 @@ export function TokenInfoModal({ token, currency, eurRate, onClose }: Props) {
                 <TokenLogo
                     symbol={token.symbol}
                     className="w-12 h-12 rounded-xl shadow"
-                    fallbackClassName="w-12 h-12 rounded-xl flex items-center justify-center text-[16px] font-black !text-white shadow"
+                    fallbackClassName="w-12 h-12 rounded-xl flex items-center justify-center text-[16px] font-black text-white shadow"
                 />
                 <div>
                   <div className="flex items-center gap-2.5 mb-0.5">
@@ -154,7 +154,7 @@ export function TokenInfoModal({ token, currency, eurRate, onClose }: Props) {
                       {token.network.toUpperCase()}
                     </span>
                     {token.getblockVerified && (
-                      <span className="flex items-center gap-1 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest rounded-md bg-black !!text-white">
+                      <span className="flex items-center gap-1 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest rounded-md bg-black text-white">
                         <ShieldCheck size={9} /> Verified
                       </span>
                     )}

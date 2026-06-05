@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -46,7 +46,7 @@ const FAQ_DATA: FAQItem[][] = [
         { q: "How is 'Global Intensity' calculated?", a: "It's an aggregate of total USD value moved globally in the last 60 minutes, normalized against a 30-day moving average.", tag: "METRICS" },
         { q: "Can I create custom 'Target Lists'?", a: "Users can define specific wallet clusters to monitor, with custom alert thresholds for each group.", tag: "CUSTOMIZATION" },
         { q: "How do we handle stablecoin de-pegging signals?", a: "The system monitors 3pool and AMM imbalances 24/7, flagging 1\u03c3-3\u03c3 deviations as high-priority systemic risk alerts.", tag: "STABLES" },
-        { q: "What is the optional local verification setup?", a: "For advanced analytics tiers you can run a lightweight verifier that compares our published feeds against chain data�but it is optional, not required for normal use.", tag: "NODES" },
+        { q: "What is the optional local verification setup?", a: "For advanced analytics tiers you can run a lightweight verifier that compares our published feeds against chain data—but it is optional, not required for normal use.", tag: "NODES" },
         { q: "Do we provide API access for hedge funds?", a: "Yes, our Institutional API offers raw data streams with 99.99% uptime and <10ms internal processing overhead.", tag: "API" },
         { q: "How does the system identify 'Wash Trading'?", a: "We flag recursive A-B-C-A transaction patterns that artificially inflate volume without changing net asset ownership.", tag: "INTEGRITY" }
     ],
@@ -168,7 +168,7 @@ export function SystemFAQ() {
                                     onClick={() => setPage(i)}
                                     className={`shrink-0 h-10 px-6 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${
                                         page === i 
-                                        ? 'bg-black !!text-white scale-105' 
+                                        ? 'bg-black text-white scale-105' 
                                         : 'bg-black/5 text-black/40 hover:bg-black/10'
                                     }`}
                                 >
@@ -230,7 +230,7 @@ export function SystemFAQ() {
                     </div>
                     <button 
                         onClick={nextPage}
-                        className="flex items-center gap-3 px-8 py-4 rounded-xl bg-black !!text-white hover:bg-black/80 transition-all text-[10px] font-black uppercase tracking-widest"
+                        className="flex items-center gap-3 px-8 py-4 rounded-xl bg-black text-white hover:bg-black/80 transition-all text-[10px] font-black uppercase tracking-widest"
                     >
                         Next <ChevronRight size={16} />
                     </button>

@@ -46,10 +46,10 @@ export default function VisualTopography() {
                     <p className="text-[10px] text-black/30 font-bold uppercase tracking-[0.3em] mt-1">System Cluster Analysis // Q4 2026</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <button className="p-2.5 bg-white border border-black/5 rounded-xl hover:bg-black hover:!text-white transition-all">
+                    <button className="p-2.5 bg-white border border-black/5 rounded-xl hover:bg-black hover:text-white transition-all">
                         <Share2 size={16} />
                     </button>
-                    <button className="px-5 py-2.5 bg-black !!text-white rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+                    <button className="px-5 py-2.5 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
                         <Target size={14} /> Recalibrate
                     </button>
                 </div>
@@ -103,7 +103,7 @@ export default function VisualTopography() {
                         }}
                         className={`rounded-full border-2 flex items-center justify-center cursor-grab active:cursor-grabbing shadow-xl transition-all duration-300 ${
                             hoveredId === node.id 
-                                ? 'bg-black !!text-white border-black scale-110 z-20' 
+                                ? 'bg-black text-white border-black scale-110 z-20' 
                                 : 'bg-white border-black/5 text-black z-10'
                         }`}
                     >
@@ -117,7 +117,7 @@ export default function VisualTopography() {
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: 10 }}
-                                    className="absolute top-full mt-4 bg-black !!text-white px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest whitespace-nowrap shadow-2xl pointer-events-none"
+                                    className="absolute top-full mt-4 bg-black text-white px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest whitespace-nowrap shadow-2xl pointer-events-none"
                                 >
                                     {node.label} // {node.type}
                                 </motion.div>

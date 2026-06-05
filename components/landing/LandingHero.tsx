@@ -69,36 +69,36 @@ export function LandingHero({ onStart }: LandingHeroProps) {
                 >
                     <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full mb-8 backdrop-blur-md">
                         <Sparkles className="w-4 h-4 text-purple-400" />
-                        <span className="text-sm font-medium !text-white/80">{t.landing.hero.badge}</span>
+                        <span className="text-sm font-medium text-white/80">{t.landing.hero.badge}</span>
                     </div>
 
-                    <h1 className="font-black tracking-tighter leading-[0.9] !text-white mb-6" style={{
+                    <h1 className="font-black tracking-tighter leading-[0.9] text-white mb-6" style={{
                         fontSize: 'clamp(3.5rem, 8vw, 7rem)'
                     }}>
                         {t.landing.hero.title} <span className="text-purple-500 drop-shadow-[0_0_30px_rgba(168,85,247,0.4)]">DeFi</span>
                     </h1>
 
-                    <p className="!text-white/80 max-w-xl mb-6 leading-relaxed font-light text-xl md:text-2xl">
+                    <p className="text-white/80 max-w-xl mb-6 leading-relaxed font-light text-xl md:text-2xl">
                         {t.landing.hero.subtitle}
                     </p>
 
-                    <p className="!text-white/60 max-w-xl mb-12 font-light text-lg">
+                    <p className="text-white/60 max-w-xl mb-12 font-light text-lg">
                         <span className="text-green-400 font-medium tracking-wide">{t.landing.hero.keys}</span>
                         <br className="hidden md:block"/> {t.landing.hero.identity}
                     </p>
 
                     <div className="grid grid-cols-3 gap-8 w-full max-w-lg mb-12">
                         <div>
-                            <div className="text-2xl md:text-3xl font-black !text-white mb-1">10M+</div>
-                            <div className="text-[10px] uppercase tracking-widest !text-white/40 font-bold">{t.landing.hero.stats.identities}</div>
+                            <div className="text-2xl md:text-3xl font-black text-white mb-1">10M+</div>
+                            <div className="text-[10px] uppercase tracking-widest text-white/40 font-bold">{t.landing.hero.stats.identities}</div>
                         </div>
                         <div>
-                            <div className="text-2xl md:text-3xl font-black !text-white mb-1">$1B+</div>
-                            <div className="text-[10px] uppercase tracking-widest !text-white/40 font-bold">{t.landing.hero.stats.secured}</div>
+                            <div className="text-2xl md:text-3xl font-black text-white mb-1">$1B+</div>
+                            <div className="text-[10px] uppercase tracking-widest text-white/40 font-bold">{t.landing.hero.stats.secured}</div>
                         </div>
                         <div>
-                            <div className="text-2xl md:text-3xl font-black !text-white mb-1">100%</div>
-                            <div className="text-[10px] uppercase tracking-widest !text-white/40 font-bold">{t.landing.hero.stats.decentralized}</div>
+                            <div className="text-2xl md:text-3xl font-black text-white mb-1">100%</div>
+                            <div className="text-[10px] uppercase tracking-widest text-white/40 font-bold">{t.landing.hero.stats.decentralized}</div>
                         </div>
                     </div>
                 </motion.div>
@@ -127,8 +127,8 @@ export function LandingHero({ onStart }: LandingHeroProps) {
                                             <Lock className="w-6 h-6 text-blue-400" />
                                         </div>
                                         
-                                        <h3 className="text-2xl font-black !text-white mb-2 tracking-tight uppercase">Access Terminal</h3>
-                                        <p className="!text-white/60 text-sm mb-8 font-medium">Authenticate securely to enter the Whale Alert Network Analytics network.</p>
+                                        <h3 className="text-2xl font-black text-white mb-2 tracking-tight uppercase">Access Terminal</h3>
+                                        <p className="text-white/60 text-sm mb-8 font-medium">Authenticate securely to enter the Whale Alert Network Analytics network.</p>
 
                                         <button 
                                             onClick={() => router.push('/login')}
@@ -150,13 +150,13 @@ export function LandingHero({ onStart }: LandingHeroProps) {
                                     <CheckCircle2 className="w-10 h-10 text-green-400" />
                                 </div>
                                 <div className="mb-4">
-                                    <h3 className="text-2xl font-black !text-white mb-2 uppercase tracking-tight">{t.landing.hero.accessGranted}</h3>
-                                    <p className="!text-white/40 font-medium">Welcome back, {address ? `${address.slice(0,6)}...${address.slice(-4)}` : 'System Whale'}.<br/>All systems online.</p>
+                                    <h3 className="text-2xl font-black text-white mb-2 uppercase tracking-tight">{t.landing.hero.accessGranted}</h3>
+                                    <p className="text-white/40 font-medium">Welcome back, {address ? `${address.slice(0,6)}...${address.slice(-4)}` : 'System Whale'}.<br/>All systems online.</p>
                                 </div>
                                 <div className="w-full flex justify-center pb-2">
                                      <button 
                                         onClick={() => router.push('/portfolio')}
-                                        className="w-full bg-blue-600 hover:bg-blue-500 !text-white h-14 rounded-2xl font-black uppercase tracking-widest text-xs transition-colors"
+                                        className="w-full bg-blue-600 hover:bg-blue-500 text-white h-14 rounded-2xl font-black uppercase tracking-widest text-xs transition-colors"
                                     >
                                         Launch Application
                                     </button>

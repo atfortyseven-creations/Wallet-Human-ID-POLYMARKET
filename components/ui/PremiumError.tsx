@@ -32,8 +32,8 @@ export function PremiumError({
       </div>
 
       {/* Error Text */}
-      <h2 className="text-2xl font-bold !text-white mb-2">{title}</h2>
-      <p className="!text-white/60 mb-6">{message}</p>
+      <h2 className="text-2xl font-bold text-white mb-2">{title}</h2>
+      <p className="text-white/60 mb-6">{message}</p>
 
       {/* Retry Button */}
       {onRetry && (

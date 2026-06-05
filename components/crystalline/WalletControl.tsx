@@ -42,7 +42,7 @@ export function WalletControl() {
           variant="default" 
           size="sm" 
           onClick={() => handleConnect(mmConnector)}
-          className="bg-[#F6851B] hover:bg-[#E2761B] !text-white font-bold gap-2"
+          className="bg-[#F6851B] hover:bg-[#E2761B] text-white font-bold gap-2"
         >
           <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" className="w-4 h-4" alt="MetaMask" />
           METAMASK

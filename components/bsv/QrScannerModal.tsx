@@ -110,7 +110,7 @@ export const QrScannerModal = ({ isOpen, onClose, onScan }: QrScannerModalProps)
 
             {/* Hint */}
             <div className="p-8 bg-white/[0.01] border-t border-white/5 flex flex-col items-center">
-               <p className="text-[10px] !text-white/40 text-center font-aztec-mono italic">
+               <p className="text-[10px] text-white/40 text-center font-aztec-mono italic">
                  Align the protocol QR code within the highlighted grid to initiate a handshake.
                </p>
             </div>

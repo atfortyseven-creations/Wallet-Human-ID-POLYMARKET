@@ -16,7 +16,7 @@ const SettingsMenu = () => {
         <>
             <button
                 onClick={() => setIsSettingsOpen(true)}
-                className="p-2 rounded-full bg-neutral-900 hover:bg-neutral-800 !text-white transition-all border border-neutral-800"
+                className="p-2 rounded-full bg-neutral-900 hover:bg-neutral-800 text-white transition-all border border-neutral-800"
             >
                 <Menu size={20} />
             </button>

@@ -41,7 +41,7 @@ export default function ConnectExchange() {
                         <Link2 size={20} />
                         <span className="text-[11px] font-black uppercase tracking-[0.2em]">Exchange Bridge</span>
                     </div>
-                    <h1 className="text-3xl font-black !text-white uppercase tracking-tighter leading-none mb-3">
+                    <h1 className="text-3xl font-black text-white uppercase tracking-tighter leading-none mb-3">
                         Connect <span style={{ color: 'rgba(255,255,255,0.2)' }}>Liquidity</span>
                     </h1>
                     <p className="text-[11px] font-bold tracking-widest max-w-xl leading-relaxed" style={{ color: 'rgba(255,255,255,0.35)' }}>
@@ -81,7 +81,7 @@ export default function ConnectExchange() {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center justify-between mb-1">
-                                        <h3 className="text-sm font-black uppercase !text-white">{ex.name}</h3>
+                                        <h3 className="text-sm font-black uppercase text-white">{ex.name}</h3>
                                         <span className="text-[8px] font-black px-2 py-0.5 rounded-full"
                                             style={{
                                                 background: ex.status === 'OPTIMIZED' ? 'rgba(0,242,234,0.12)' : 'rgba(255,255,255,0.06)',
@@ -110,7 +110,7 @@ export default function ConnectExchange() {
                                     {EXCHANGES.find(e => e.id === selectedId)?.name[0]}
                                 </div>
                                 <div>
-                                    <h2 className="text-base font-black !text-white uppercase tracking-tight">Setup {EXCHANGES.find(e => e.id === selectedId)?.name}</h2>
+                                    <h2 className="text-base font-black text-white uppercase tracking-tight">Setup {EXCHANGES.find(e => e.id === selectedId)?.name}</h2>
                                     <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: '#00F2EA' }}>Awaiting API Payload</p>
                                 </div>
                             </div>
@@ -120,7 +120,7 @@ export default function ConnectExchange() {
                                     <label className="text-[9px] font-black uppercase tracking-[0.2em]" style={{ color: 'rgba(255,255,255,0.3)' }}>{f.label}</label>
                                     <div className="relative">
                                         <input type="password" value={f.value} onChange={e => f.setter(e.target.value)} placeholder={f.ph}
-                                            className="w-full rounded-xl px-11 py-3 text-sm font-mono outline-none !text-white transition-all"
+                                            className="w-full rounded-xl px-11 py-3 text-sm font-mono outline-none text-white transition-all"
                                             style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }} />
                                         <f.icon size={13} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: 'rgba(255,255,255,0.2)' }} />
                                     </div>

@@ -62,7 +62,7 @@ export default function LegendaryActionMenu({ label, mainIcon, onMainClick, opti
           >
              <div className="flex flex-col gap-1">
                 <div className="px-3 py-2 border-b border-white/5 mb-1 flex items-center justify-between">
-                    <span className="text-[9px] font-black uppercase tracking-widest !text-white/40">Select Action</span>
+                    <span className="text-[9px] font-black uppercase tracking-widest text-white/40">Select Action</span>
                     <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Active</span>
                 </div>
 
@@ -71,12 +71,12 @@ export default function LegendaryActionMenu({ label, mainIcon, onMainClick, opti
                   onClick={() => { onMainClick(); setIsOpen(false); }}
                   className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-left group"
                 >
-                    <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-500 group-hover:bg-emerald-500 group-hover:!text-white transition-all">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white transition-all">
                         <Zap size={14} />
                     </div>
                     <div>
-                        <div className="text-xs font-black !text-white uppercase tracking-wider">Standard {label}</div>
-                        <div className="text-[9px] font-medium !text-white/40">Default execution route</div>
+                        <div className="text-xs font-black text-white uppercase tracking-wider">Standard {label}</div>
+                        <div className="text-[9px] font-medium text-white/40">Default execution route</div>
                     </div>
                 </button>
 
@@ -86,17 +86,17 @@ export default function LegendaryActionMenu({ label, mainIcon, onMainClick, opti
                         onClick={() => { opt.onClick(); setIsOpen(false); }}
                         className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-colors text-left group"
                     >
-                        <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center !text-white/60 group-hover:!text-white group-hover:bg-white/10 transition-all">
+                        <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-white/60 group-hover:text-white group-hover:bg-white/10 transition-all">
                             {opt.icon || <Activity size={14} />}
                         </div>
                         <div className="flex-1">
                             <div className="flex items-center justify-between">
-                                <div className="text-xs font-bold !text-white/80 group-hover:!text-white transition-colors">{opt.label}</div>
+                                <div className="text-xs font-bold text-white/80 group-hover:text-white transition-colors">{opt.label}</div>
                                 {opt.badge && (
-                                    <span className="text-[8px] font-black bg-purple-500 !text-white px-1.5 py-0.5 rounded uppercase tracking-wider">{opt.badge}</span>
+                                    <span className="text-[8px] font-black bg-purple-500 text-white px-1.5 py-0.5 rounded uppercase tracking-wider">{opt.badge}</span>
                                 )}
                             </div>
-                            <div className="text-[9px] font-medium !text-white/30 group-hover:!text-white/50 transition-colors">{opt.desc}</div>
+                            <div className="text-[9px] font-medium text-white/30 group-hover:text-white/50 transition-colors">{opt.desc}</div>
                         </div>
                     </button>
                 ))}

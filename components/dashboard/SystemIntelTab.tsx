@@ -117,7 +117,7 @@ const SystemIntelTab: React.FC = () => {
                                             Browser-Based Protocol Participant
                                         </p>
                                     </div>
-                                    <Badge variant={isNodeActive ? "default" : "outline"} className={`px-3 py-1 uppercase tracking-widest text-[9px] font-black ${isNodeActive ? 'bg-[#00C076] hover:bg-[#00C076]/90 !text-white border-transparent' : 'text-[#888888] border-[#E5E5E5] '}`}>
+                                    <Badge variant={isNodeActive ? "default" : "outline"} className={`px-3 py-1 uppercase tracking-widest text-[9px] font-black ${isNodeActive ? 'bg-[#00C076] hover:bg-[#00C076]/90 text-white border-transparent' : 'text-[#888888] border-[#E5E5E5] '}`}>
                                         {isNodeActive ? 'Active' : 'Dormant'}
                                     </Badge>
                                 </CardHeader>

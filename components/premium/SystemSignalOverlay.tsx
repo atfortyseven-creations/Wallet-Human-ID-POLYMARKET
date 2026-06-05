@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from 'framer-motion';
 import { Target, Copy, CheckCircle, Clock } from 'lucide-react';
@@ -41,7 +41,7 @@ Reversal prob: ${reversalProb.toFixed(1)}%
 Expected move (15m): ${expectedMove > 0 ? '+' : ''}${expectedMove.toFixed(2)}%
 Vigor: ${vigorPercent.toFixed(0)}% | Score: ${gravityScore.toFixed(1)}
 Defense: ${icebergDefense || 'None'}
-�
+—
 HumanIDFi analytics`;
 
         navigator.clipboard.writeText(text);
@@ -69,7 +69,7 @@ HumanIDFi analytics`;
 
                 <div className="flex items-center gap-3 mb-6">
                     <div className="w-10 h-10 rounded-full bg-[#050505] flex items-center justify-center">
-                        <Target className="!text-white" size={20} />
+                        <Target className="text-white" size={20} />
                     </div>
                     <div>
                         <h2 className="text-xl font-black text-[#050505] tracking-tighter leading-none">Premium signal</h2>
@@ -105,9 +105,9 @@ HumanIDFi analytics`;
 
                 <button 
                     onClick={copyToClipboard}
-                    className="w-full bg-[#050505] !text-white py-3 rounded-lg font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-[#111] transition-colors"
+                    className="w-full bg-[#050505] text-white py-3 rounded-lg font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-[#111] transition-colors"
                 >
-                    {copied ? <CheckCircle size={14} className="!text-white" /> : <Copy size={14} />}
+                    {copied ? <CheckCircle size={14} className="text-white" /> : <Copy size={14} />}
                     {copied ? 'Copied to Clipboard' : 'Copy Alpha Signal'}
                 </button>
             </motion.div>

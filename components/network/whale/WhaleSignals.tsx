@@ -24,7 +24,7 @@ export function WhaleSignals({ signals, isFetching }: Props) {
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <Zap className="text-purple-400" size={22} />
-                    <h2 className="!text-white font-bold text-lg">Signal Feed</h2>
+                    <h2 className="text-white font-bold text-lg">Signal Feed</h2>
                     <span className="text-[10px] font-black bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full border border-purple-500/30 ml-1">AI</span>
                     {isFetching && (
                         <span className="flex h-2 w-2 ml-1">
@@ -63,7 +63,7 @@ export function WhaleSignals({ signals, isFetching }: Props) {
                                         )}
                                     </div>
                                     <Icon size={16} className={cfg.iconColor} />
-                                    <span className="!text-white font-bold text-sm leading-tight">{signal.title}</span>
+                                    <span className="text-white font-bold text-sm leading-tight">{signal.title}</span>
                                 </div>
                                 <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border uppercase shrink-0 ${cfg.badge}`}>
                                     {signal.severity}

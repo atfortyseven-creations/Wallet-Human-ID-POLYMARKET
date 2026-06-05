@@ -60,7 +60,7 @@ export default function ReceiveHub({ addresses = [] }: ReceiveHubProps) {
                             onClick={() => setSelectedIdx(idx)}
                             className={`w-full p-4 flex items-center justify-between transition-all border-b ${
                                 selectedIdx === idx
-                                    ? 'border-black bg-black !!text-white'
+                                    ? 'border-black bg-black text-white'
                                     : 'border-black/10 bg-transparent text-black hover:bg-black/5'
                             }`}
                         >
@@ -69,15 +69,15 @@ export default function ReceiveHub({ addresses = [] }: ReceiveHubProps) {
                                     symbol={addr.token} 
                                     logoURI={addr.iconPath} 
                                     className="w-7 h-7 rounded-full" 
-                                    fallbackClassName={`w-7 h-7 border flex items-center justify-center font-black text-[9px] uppercase ${selectedIdx === idx ? 'border-white !text-white' : 'border-black/20 text-black/40'}`} 
+                                    fallbackClassName={`w-7 h-7 border flex items-center justify-center font-black text-[9px] uppercase ${selectedIdx === idx ? 'border-white text-white' : 'border-black/20 text-black/40'}`} 
                                 />
                                 <div className="text-left">
-                                    <div className={`font-black text-[10px] uppercase tracking-widest ${selectedIdx === idx ? '!text-white' : 'text-black'}`}>{addr.network}</div>
-                                    <div className={`text-[9px] font-mono ${selectedIdx === idx ? '!text-white/60' : 'text-black/40'}`}>{addr.address.slice(0, 6)}...{addr.address.slice(-4)}</div>
+                                    <div className={`font-black text-[10px] uppercase tracking-widest ${selectedIdx === idx ? 'text-white' : 'text-black'}`}>{addr.network}</div>
+                                    <div className={`text-[9px] font-mono ${selectedIdx === idx ? 'text-white/60' : 'text-black/40'}`}>{addr.address.slice(0, 6)}...{addr.address.slice(-4)}</div>
                                 </div>
                             </div>
                             {selectedIdx === idx && (
-                                <span className="text-[9px] font-black !text-white/60 uppercase tracking-widest">[*]</span>
+                                <span className="text-[9px] font-black text-white/60 uppercase tracking-widest">[*]</span>
                             )}
                         </button>
                     ))}
@@ -134,7 +134,7 @@ export default function ReceiveHub({ addresses = [] }: ReceiveHubProps) {
                         <div className="flex gap-2 w-full max-w-md mb-6">
                             <button
                                 onClick={() => handleCopy(current.address)}
-                                className="flex-1 py-3 bg-black !!text-white font-black text-[9px] uppercase tracking-[0.2em] hover:bg-black/80 transition-colors"
+                                className="flex-1 py-3 bg-black text-white font-black text-[9px] uppercase tracking-[0.2em] hover:bg-black/80 transition-colors"
                             >
                                 {copied ? 'Copied!' : 'Copy Address'}
                             </button>

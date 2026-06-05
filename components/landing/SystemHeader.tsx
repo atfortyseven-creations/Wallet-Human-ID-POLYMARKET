@@ -76,7 +76,7 @@ export function SystemHeader() {
         <div className="flex items-center gap-3">
           <Link
             href="/"
-            className="hidden md:inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-black !!text-white font-black text-[11px] uppercase tracking-widest hover:bg-black/80 transition-all duration-200 active:scale-95"
+            className="hidden md:inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-black text-white font-black text-[11px] uppercase tracking-widest hover:bg-black/80 transition-all duration-200 active:scale-95"
           >
             Open App
           </Link>

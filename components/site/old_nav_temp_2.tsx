@@ -116,7 +116,7 @@ export function DropdownNav() {
                                             onClick={() => setIsOpen(false)}
                                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                                                 link.isVIP
-                                                    ? 'bg-gradient-to-r from-black to-gray-900 !text-white hover:scale-105 shadow-lg'
+                                                    ? 'bg-gradient-to-r from-black to-gray-900 text-white hover:scale-105 shadow-lg'
                                                     : 'hover:bg-gray-100  text-[#1F1F1F] '
                                             }`}
                                         >

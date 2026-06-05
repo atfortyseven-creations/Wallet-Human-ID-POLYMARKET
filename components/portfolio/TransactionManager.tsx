@@ -91,14 +91,14 @@ export function TransactionManagerView({ onBack }: { onBack: () => void }) {
                 </div>
             </div>
 
-            <div className="bg-black !!text-white p-6 relative overflow-hidden mb-6">
+            <div className="bg-black text-white p-6 relative overflow-hidden mb-6">
                 <div className="absolute top-0 right-0 opacity-10 transform translate-x-1/4 -translate-y-1/4">
                     <Layers size={140} strokeWidth={1} />
                 </div>
                 <h3 className="text-sm font-black uppercase tracking-widest mb-2 flex items-center gap-2">
                     <Zap size={16} /> EIP-1559 Queue Control
                 </h3>
-                <p className="text-[11px] !text-white/60 leading-relaxed max-w-sm">
+                <p className="text-[11px] text-white/60 leading-relaxed max-w-sm">
                     Monitor cryptographic nonces directly from the node. Accelerate pending transactions by overwriting them with higher `maxPriorityFeePerGas`, or cancel them entirely.
                 </p>
             </div>
@@ -131,7 +131,7 @@ export function TransactionManagerView({ onBack }: { onBack: () => void }) {
                                     <button 
                                         onClick={() => handleCancel(currentNonce)}
                                         disabled={isExecuting !== null}
-                                        className="px-4 py-2 border border-black/10 hover:border-black text-[9px] font-black uppercase tracking-widest text-red-600 hover:bg-black hover:!text-white transition-all disabled:opacity-30 flex items-center gap-2"
+                                        className="px-4 py-2 border border-black/10 hover:border-black text-[9px] font-black uppercase tracking-widest text-red-600 hover:bg-black hover:text-white transition-all disabled:opacity-30 flex items-center gap-2"
                                     >
                                         {isExecuting?.type === 'cancel' && isExecuting?.nonce === currentNonce ? <RefreshCw size={12} className="animate-spin" /> : <XCircle size={12} />}
                                         CANCEL
@@ -139,7 +139,7 @@ export function TransactionManagerView({ onBack }: { onBack: () => void }) {
                                     <button 
                                         onClick={() => handleSpeedUp(currentNonce)}
                                         disabled={isExecuting !== null}
-                                        className="px-4 py-2 bg-[#FAFAFA] border border-black/10 hover:border-black text-[9px] font-black uppercase tracking-widest text-blue-600 hover:bg-black hover:!text-white transition-all disabled:opacity-30 flex items-center gap-2"
+                                        className="px-4 py-2 bg-[#FAFAFA] border border-black/10 hover:border-black text-[9px] font-black uppercase tracking-widest text-blue-600 hover:bg-black hover:text-white transition-all disabled:opacity-30 flex items-center gap-2"
                                     >
                                         {isExecuting?.type === 'speedup' && isExecuting?.nonce === currentNonce ? <RefreshCw size={12} className="animate-spin" /> : <Zap size={12} />}
                                         SPEED UP

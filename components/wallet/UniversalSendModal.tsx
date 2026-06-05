@@ -323,7 +323,7 @@ export default function UniversalSendModal({ isOpen, onClose }: Props) {
                 </div>
               </div>
               <button onClick={onClose}
-                className="w-full py-3 bg-gray-900 !text-white font-black text-sm rounded-xl hover:bg-gray-800 transition-colors">
+                className="w-full py-3 bg-gray-900 text-white font-black text-sm rounded-xl hover:bg-gray-800 transition-colors">
                 Done
               </button>
             </div>
@@ -340,7 +340,7 @@ export default function UniversalSendModal({ isOpen, onClose }: Props) {
                 <p className="text-xs text-gray-500 mt-2 bg-red-50 p-3 rounded-xl border border-red-100 font-mono text-left">{errorMsg}</p>
               </div>
               <button onClick={() => setStatus("IDLE")}
-                className="w-full py-3 bg-gray-900 !text-white font-black text-sm rounded-xl hover:bg-gray-800 transition-colors">
+                className="w-full py-3 bg-gray-900 text-white font-black text-sm rounded-xl hover:bg-gray-800 transition-colors">
                 Try Again
               </button>
             </div>
@@ -453,7 +453,7 @@ export default function UniversalSendModal({ isOpen, onClose }: Props) {
                   />
                   <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
                     <button onClick={handleMax}
-                      className="px-2.5 py-1 bg-gray-900 !text-white rounded-lg text-[9px] font-black uppercase tracking-widest">
+                      className="px-2.5 py-1 bg-gray-900 text-white rounded-lg text-[9px] font-black uppercase tracking-widest">
                       MAX
                     </button>
                     <span className="text-xs font-black text-gray-400 pr-1">{selectedAsset.symbol}</span>
@@ -469,7 +469,7 @@ export default function UniversalSendModal({ isOpen, onClose }: Props) {
                     {(["low", "medium", "high"] as const).map(p => (
                       <button key={p}
                         onClick={() => setGasPriority(p)}
-                        className={`py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors ${gasPriority === p ? "bg-gray-900 !text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}
+                        className={`py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors ${gasPriority === p ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}
                       >
                         {p}
                       </button>
@@ -482,7 +482,7 @@ export default function UniversalSendModal({ isOpen, onClose }: Props) {
               <button
                 disabled={isProcessing || !amount || !recipient}
                 onClick={handleSend}
-                className="w-full py-4 bg-gray-900 hover:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl font-black text-sm uppercase tracking-widest !text-white transition-all active:scale-[0.98] flex items-center justify-center gap-3"
+                className="w-full py-4 bg-gray-900 hover:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl font-black text-sm uppercase tracking-widest text-white transition-all active:scale-[0.98] flex items-center justify-center gap-3"
               >
                 {isProcessing ? (
                   <>

@@ -110,7 +110,7 @@ export default function FiatCardIssuance({ walletAddress, balance }: { walletAdd
                         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
                         className={`
                             w-[340px] h-[215px] md:w-[420px] md:h-[265px] rounded-[32px] shadow-2xl relative overflow-hidden backdrop-blur-md border border-white/20
-                            ${cardTier === 'black' ? 'bg-[#1F1F1F] !text-white' : ''}
+                            ${cardTier === 'black' ? 'bg-[#1F1F1F] text-white' : ''}
                             ${cardTier === 'metal' ? 'bg-gradient-to-br from-gray-200 via-gray-400 to-gray-300 text-[#1F1F1F]' : ''}
                             ${cardTier === 'standard' ? 'bg-white text-[#1F1F1F]' : ''}
                         `}
@@ -169,7 +169,7 @@ export default function FiatCardIssuance({ walletAddress, balance }: { walletAdd
                                 </div>
                                 <button 
                                     onClick={() => setStep('customize')}
-                                    className="w-full py-4 bg-[#1F1F1F] !text-white rounded-2xl font-bold text-lg hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 group"
+                                    className="w-full py-4 bg-[#1F1F1F] text-white rounded-2xl font-bold text-lg hover:scale-[1.02] transition-transform flex items-center justify-center gap-2 group"
                                 >
                                     Get Your Whale Card <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform"/>
                                 </button>
@@ -212,7 +212,7 @@ export default function FiatCardIssuance({ walletAddress, balance }: { walletAdd
                                             setStep('kyc');
                                             handleIssue();
                                         }}
-                                        className="flex-1 py-4 bg-[#1F1F1F] !text-white rounded-2xl font-bold text-lg hover:scale-[1.02] transition-transform"
+                                        className="flex-1 py-4 bg-[#1F1F1F] text-white rounded-2xl font-bold text-lg hover:scale-[1.02] transition-transform"
                                     >
                                         Continue
                                     </button>
@@ -230,7 +230,7 @@ export default function FiatCardIssuance({ walletAddress, balance }: { walletAdd
                                 className="space-y-6 text-center"
                             >
                                 <div className="w-20 h-20 bg-[#1F1F1F] rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <Shield size={32} className="!text-white" />
+                                    <Shield size={32} className="text-white" />
                                 </div>
                                 <h3 className="text-xl font-bold text-[#1F1F1F]">Contacting Financial Provider...</h3>
                                 <p className="text-[#1F1F1F]/60">Securely initializing your account with our BaaS partner.</p>
@@ -251,7 +251,7 @@ export default function FiatCardIssuance({ walletAddress, balance }: { walletAdd
                                 className="space-y-6 text-center"
                             >
                                 <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl shadow-green-500/30">
-                                    <Check size={40} className="!text-white" strokeWidth={3} />
+                                    <Check size={40} className="text-white" strokeWidth={3} />
                                 </div>
                                 <h3 className="text-2xl font-black text-[#1F1F1F]">
                                     {kycRequired ? "KYC Verification Needed" : "Authentic Card Issued."}
@@ -268,7 +268,7 @@ export default function FiatCardIssuance({ walletAddress, balance }: { walletAdd
                                             <button 
                                                 onClick={handleAddToGoogleWallet}
                                                 disabled={isAddingWallet === 'google'}
-                                                className="w-full py-4 bg-[#1B1B1B] !text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:opacity-90 transition-opacity disabled:opacity-50"
+                                                className="w-full py-4 bg-[#1B1B1B] text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:opacity-90 transition-opacity disabled:opacity-50"
                                             >
                                                 {isAddingWallet === 'google' ? <Loader2 size={24} className="animate-spin"/> : (
                                                     <>
@@ -283,7 +283,7 @@ export default function FiatCardIssuance({ walletAddress, balance }: { walletAdd
                                         </>
                                     ) : (
                                         <button 
-                                            className="w-full py-4 bg-orange-600 !text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:bg-orange-700 transition-colors"
+                                            className="w-full py-4 bg-orange-600 text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:bg-orange-700 transition-colors"
                                             onClick={() => window.open('https://portal.striga.com', '_blank')}
                                         >
                                             <Shield size={24} /> Complete Real KYC
@@ -332,7 +332,7 @@ function ActivityRow({ merchant, amount, date }: { merchant: string, amount: str
 function FeatureItem({ icon, text }: { icon: React.ReactNode, text: string }) {
     return (
         <div className="flex items-center gap-4 p-4 bg-white/50 rounded-2xl border border-white/50">
-            <div className="p-2 bg-[#1F1F1F] !text-white rounded-full">
+            <div className="p-2 bg-[#1F1F1F] text-white rounded-full">
                 {icon}
             </div>
             <span className="font-bold text-[#1F1F1F]">{text}</span>
@@ -352,7 +352,7 @@ function MaterialOption({ name, desc, active, onClick }: { name: string, desc: s
                 <div className="font-black text-[#1F1F1F]">{name}</div>
                 <div className="text-xs text-[#1F1F1F]/50 font-bold">{desc}</div>
             </div>
-            {active && <div className="w-6 h-6 bg-[#1F1F1F] rounded-full flex items-center justify-center"><Check size={14} className="!text-white"/></div>}
+            {active && <div className="w-6 h-6 bg-[#1F1F1F] rounded-full flex items-center justify-center"><Check size={14} className="text-white"/></div>}
         </button>
     )
 }

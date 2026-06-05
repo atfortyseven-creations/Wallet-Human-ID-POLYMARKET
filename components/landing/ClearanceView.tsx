@@ -1,4 +1,4 @@
-"use client";
+ï»¿"use client";
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
@@ -64,7 +64,7 @@ export function ClearanceView({ onBack }: ClearanceViewProps) {
     const timer = setInterval(() => {
        if (timeRef.current) {
            const now = new Date();
-           timeRef.current.innerText = `${now.toLocaleDateString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" })} · ${now.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`;
+           timeRef.current.innerText = `${now.toLocaleDateString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" })} Â· ${now.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`;
        }
     }, 1000);
     
@@ -122,7 +122,7 @@ export function ClearanceView({ onBack }: ClearanceViewProps) {
   const isExecuting = isPending || isWaiting;
 
   // We only run this formatting once at mount time for hydration
-  const initialDateStr = mounted ? `${new Date().toLocaleDateString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" })} · ${new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}` : 'Sincronizando reloj L2...';
+  const initialDateStr = mounted ? `${new Date().toLocaleDateString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" })} Â· ${new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}` : 'Sincronizando reloj L2...';
 
   return (
     <div className="w-full max-w-2xl mx-auto flex flex-col items-center">
@@ -183,7 +183,7 @@ export function ClearanceView({ onBack }: ClearanceViewProps) {
           {/* MAIN METRICS */}
           <div className="text-center space-y-6">
             <span className="block font-mono text-[10px] uppercase tracking-[0.5em] text-black/30 font-black">
-              Asignación Requerida
+              AsignaciÃ³n Requerida
             </span>
 
             <div className="flex items-baseline justify-center gap-4">
@@ -216,7 +216,7 @@ export function ClearanceView({ onBack }: ClearanceViewProps) {
                   {rates ? `${eurEquivalent} EUR` : ""}
                 </p>
                 <p className="font-mono text-[9px] uppercase tracking-[0.3em] text-black/30 font-bold">
-                  {rates ? "Ratio Oráculo Integrado" : "Conectando..."}
+                  {rates ? "Ratio OrÃ¡culo Integrado" : "Conectando..."}
                 </p>
               </div>
             </div>
@@ -229,7 +229,7 @@ export function ClearanceView({ onBack }: ClearanceViewProps) {
                 Destino Asegurado
               </span>
               <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-black font-black">
-                Tesorería Whale Alert Network
+                TesorerÃ­a Whale Alert Network
               </p>
             </div>
             <span className="font-mono text-[10px] tracking-[0.2em] text-black/30 font-bold">
@@ -245,7 +245,7 @@ export function ClearanceView({ onBack }: ClearanceViewProps) {
                 animate={{ opacity: 1, scale: 1 }}
                 className="bg-[#00C076]/5 text-[#00C076] border border-[#00C076]/20 text-center py-6 font-mono text-[11px] font-black uppercase tracking-[0.4em] rounded-2xl"
               >
-                AUTORIZACIÓN COMPLETADA 
+                AUTORIZACIÃ“N COMPLETADA 
               </motion.div>
             ) : (
               <div className="space-y-6">
@@ -258,7 +258,7 @@ export function ClearanceView({ onBack }: ClearanceViewProps) {
                     onClick={() => connect({ connector: injected() })}
                     whileHover={{ scale: 1.02, backgroundColor: "#111" }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full bg-[#050505] !text-white font-mono text-xs font-black uppercase py-7 tracking-[0.4em] flex justify-center items-center gap-4 transition-all duration-300 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.1)]"
+                    className="w-full bg-[#050505] text-white font-mono text-xs font-black uppercase py-7 tracking-[0.4em] flex justify-center items-center gap-4 transition-all duration-300 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.1)]"
                   >
                     CONECTAR WALLET // L2
                   </motion.button>
@@ -268,7 +268,7 @@ export function ClearanceView({ onBack }: ClearanceViewProps) {
                     disabled={isExecuting || !rates}
                     whileHover={{ scale: 1.02, backgroundColor: "#111" }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full bg-[#050505] !text-white font-mono text-xs font-black uppercase py-7 tracking-[0.4em] disabled:opacity-30 disabled:cursor-not-allowed flex justify-center items-center gap-4 transition-all duration-300 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.1)]"
+                    className="w-full bg-[#050505] text-white font-mono text-xs font-black uppercase py-7 tracking-[0.4em] disabled:opacity-30 disabled:cursor-not-allowed flex justify-center items-center gap-4 transition-all duration-300 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.1)]"
                   >
                     {isWaiting ? (
                       <>
@@ -296,7 +296,7 @@ export function ClearanceView({ onBack }: ClearanceViewProps) {
           <div className="flex justify-between items-center pt-4 border-t border-black/[0.03]">
             <ShieldCheck size={16} className="text-black/10" strokeWidth={1.5} />
             <p className="text-right font-mono text-[9px] uppercase tracking-[0.3em] text-black/20 font-bold">
-              Protocolo Inmutable · Sin Reembolsos · Privacy by Void
+              Protocolo Inmutable Â· Sin Reembolsos Â· Privacy by Void
             </p>
           </div>
         </div>

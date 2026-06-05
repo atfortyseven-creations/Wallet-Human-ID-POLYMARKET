@@ -72,7 +72,7 @@ export function SecurityGrowthSection() {
             <motion.h3 
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                className="text-4xl font-black !text-white mb-12 pl-6 border-l-8 border-blue-500 uppercase tracking-tighter"
+                className="text-4xl font-black text-white mb-12 pl-6 border-l-8 border-blue-500 uppercase tracking-tighter"
             >
                 {t('growth.title')}
             </motion.h3>

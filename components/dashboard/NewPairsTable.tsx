@@ -124,9 +124,9 @@ export function NewPairsTable() {
                         <button key={f}
                             onClick={() => setRugFilter(f)}
                             className={`px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-widest border transition-all ${rugFilter === f
-                                ? f === 'verified' ? 'bg-[#00C076] !text-white border-[#00C076]'
-                                : f === 'risky'    ? 'bg-[#FF3B30] !text-white border-[#FF3B30]'
-                                : 'bg-[#050505] !text-white border-[#050505]'
+                                ? f === 'verified' ? 'bg-[#00C076] text-white border-[#00C076]'
+                                : f === 'risky'    ? 'bg-[#FF3B30] text-white border-[#FF3B30]'
+                                : 'bg-[#050505] text-white border-[#050505]'
                                 : 'text-[#888888] border-[#E5E5E5] hover:border-[#050505]'}`}
                         >
                             {f}
@@ -151,7 +151,7 @@ export function NewPairsTable() {
                     <button key={c}
                         onClick={() => setChainFilter(c)}
                         className={`px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-widest border transition-all ${chainFilter === c
-                            ? '!text-white border-transparent'
+                            ? 'text-white border-transparent'
                             : 'text-[#888888] border-[#E5E5E5] hover:border-[#050505] bg-transparent'}`}
                         style={chainFilter === c ? { background: c === 'all' ? '#050505' : CHAIN_COLORS[c] || '#050505' } : {}}>
                         {c === 'all' ? 'All Networks' : c.charAt(0).toUpperCase() + c.slice(1)}
@@ -212,7 +212,7 @@ export function NewPairsTable() {
                                             >
                                                 {/* Token / Dex */}
                                                 <div className="px-3 flex items-center gap-2.5 overflow-hidden">
-                                                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-black !text-white shrink-0"
+                                                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-black text-white shrink-0"
                                                         style={{ background: CHAIN_COLORS[chainName] || '#888' }}>
                                                         {p.baseToken.symbol[0]}
                                                     </div>

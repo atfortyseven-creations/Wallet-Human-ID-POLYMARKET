@@ -9,7 +9,7 @@ import { EpicFooter } from './EpicFooter';
 export function LegendaryLanding() {
     return (
         <SmoothScroller>
-            <main className="w-full bg-[#030303] !text-white overflow-hidden selection:bg-indigo-500/30">
+            <main className="w-full bg-[#030303] text-white overflow-hidden selection:bg-indigo-500/30">
                 {/* Fase 1: El Hook */}
                 <Hero3D />
 

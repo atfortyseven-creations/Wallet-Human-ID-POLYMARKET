@@ -1,4 +1,4 @@
-"use client";
+ï»¿"use client";
 
 import React from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
@@ -37,14 +37,14 @@ export function WalletShowcaseSection() {
                     />
                     <FeatureCard
                         icon={<Repeat className="w-10 h-10" />}
-                        title="Swaps Instantáneos"
+                        title="Swaps InstantÃ¡neos"
                         description="Intercambia tokens sin salir de tu wallet. Liquidez agregada."
                         delay={0.1}
                     />
                     <FeatureCard
                         icon={<Grid3x3 className="w-10 h-10" />}
                         title="NFTs Unificados"
-                        description="Toda tu colección en un solo vistazo. Belleza y utilidad."
+                        description="Toda tu colecciÃ³n en un solo vistazo. Belleza y utilidad."
                         delay={0.2}
                     />
                 </div>
@@ -70,7 +70,7 @@ function FeatureCard({ icon, title, description, delay }: {
             <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             
             <div className="relative z-10">
-                <div className="w-16 h-16 bg-[#1F1F1F] rounded-2xl flex items-center justify-center !text-white mb-6 group-hover:scale-110 transition-transform duration-300">
+                <div className="w-16 h-16 bg-[#1F1F1F] rounded-2xl flex items-center justify-center text-white mb-6 group-hover:scale-110 transition-transform duration-300">
                     {icon}
                 </div>
                 <h3 className="text-2xl font-black text-[#1F1F1F] mb-3 tracking-tight">
@@ -95,7 +95,7 @@ export function NotificationsSection() {
                     className="grid md:grid-cols-2 gap-16 items-center"
                 >
                     <div>
-                        <div className="inline-flex items-center gap-2 bg-[#1F1F1F] !text-white px-4 py-2 rounded-full text-sm font-bold mb-6 uppercase tracking-wider">
+                        <div className="inline-flex items-center gap-2 bg-[#1F1F1F] text-white px-4 py-2 rounded-full text-sm font-bold mb-6 uppercase tracking-wider">
                             <Bell className="w-4 h-4" />
                             Tiempo Real
                         </div>
@@ -108,7 +108,7 @@ export function NotificationsSection() {
                         </p>
                         <ul className="space-y-3">
                             {[
-                                'Confirmaciones instantáneas',
+                                'Confirmaciones instantÃ¡neas',
                                 'Alertas de whale activity',
                                 'Resumen diario personalizado'
                             ].map((item, i) => (
@@ -138,13 +138,13 @@ export function NotificationsSection() {
                                 type="info"
                                 title="Swap exitoso"
                                 subtitle="1 ETH  0.05759 SOCKS"
-                                time="3h atrás"
+                                time="3h atrÃ¡s"
                             />
                             <NotificationItem
                                 type="warning"
-                                title="vitalik.eth vendió un NFT"
+                                title="vitalik.eth vendiÃ³ un NFT"
                                 subtitle="Bibo 0745 por 0.085 ETH"
-                                time="1h atrás"
+                                time="1h atrÃ¡s"
                             />
                         </div>
                     </motion.div>
@@ -200,19 +200,19 @@ export function DownloadCTASection() {
                     </h2>
                     <p className="text-xl md:text-2xl text-[#1F1F1F]/60 max-w-2xl mx-auto font-light leading-relaxed">
                         Disponible en navegador y pronto en iOS/Android. <br />
-                        Tu soberanía financiera comienza hoy.
+                        Tu soberanÃ­a financiera comienza hoy.
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
                         <DownloadButton
                             icon={<Chrome className="w-6 h-6" />}
-                            text="Extensión de Chrome"
+                            text="ExtensiÃ³n de Chrome"
                             subtext="Disponible ahora"
                         />
                         <DownloadButton
                             icon={<Apple className="w-6 h-6" />}
                             text="App iOS/Android"
-                            subtext="Próximamente"
+                            subtext="PrÃ³ximamente"
                             disabled
                         />
                     </div>
@@ -245,7 +245,7 @@ function DownloadButton({
                 flex items-center gap-4 transition-all duration-300
                 ${disabled 
                     ? 'bg-[#1F1F1F]/20 text-[#1F1F1F]/40 cursor-not-allowed' 
-                    : 'bg-[#1F1F1F] !text-white hover:scale-105 hover:shadow-2xl active:scale-95'
+                    : 'bg-[#1F1F1F] text-white hover:scale-105 hover:shadow-2xl active:scale-95'
                 }
             `}
         >

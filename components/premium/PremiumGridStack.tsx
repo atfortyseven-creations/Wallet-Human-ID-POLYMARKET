@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Reorder } from 'framer-motion';
@@ -322,7 +322,7 @@ export function PremiumGridStack() {
                         }}
                         className={`px-4 py-1.5 text-[9px] font-black uppercase tracking-[0.2em] rounded-lg border transition-all flex items-center gap-1.5 ${
                             isRearranging
-                                ? 'bg-[#050505] border-[#050505] !text-white'
+                                ? 'bg-[#050505] border-[#050505] text-white'
                                 : 'border-[#E5E5E5] text-[#888888] hover:border-[#050505] hover:text-[#050505]'
                         }`}
                     >

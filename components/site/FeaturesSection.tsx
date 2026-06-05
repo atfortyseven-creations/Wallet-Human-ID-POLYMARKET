@@ -28,7 +28,7 @@ function FeatureCard({ icon: Icon, title, description, delay = 0 }: FeatureCardP
                 <Icon size={24} strokeWidth={1.5} />
             </div>
 
-            <h3 className="mb-3 text-xl font-bold !text-white tracking-tight group-hover:text-cyan-100 transition-colors">
+            <h3 className="mb-3 text-xl font-bold text-white tracking-tight group-hover:text-cyan-100 transition-colors">
                 {title}
             </h3>
 

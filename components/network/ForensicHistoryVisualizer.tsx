@@ -38,7 +38,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     if (!active || !payload || !payload.length) return null;
     return (
         <div className="bg-black/80 backdrop-blur-xl border border-white/10 p-4 rounded-2xl shadow-2xl">
-            <p className="!text-white/50 text-[10px] uppercase font-black tracking-widest mb-3">
+            <p className="text-white/50 text-[10px] uppercase font-black tracking-widest mb-3">
                 {new Date(label).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
             </p>
             {payload.map((entry: any, index: number) => (
@@ -46,7 +46,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
                     <span className="text-[10px] font-bold uppercase" style={{ color: entry.color }}>
                         {entry.name}
                     </span>
-                    <span className="font-mono font-black !text-white text-sm">
+                    <span className="font-mono font-black text-white text-sm">
                         {entry.value.toFixed(2)}%
                     </span>
                 </div>
@@ -68,7 +68,7 @@ export function ForensicHistoryVisualizer() {
                         </div>
                         <span className="text-[10px] font-black uppercase tracking-[0.3em] text-indigo-400">30-Day Retention</span>
                     </div>
-                    <h3 className="text-3xl md:text-4xl font-black !text-white tracking-tighter uppercase">
+                    <h3 className="text-3xl md:text-4xl font-black text-white tracking-tighter uppercase">
                         Advanced Forensic<br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">History Visualizer</span>
                     </h3>
@@ -139,22 +139,22 @@ export function ForensicHistoryVisualizer() {
                     <div className="flex items-start gap-4">
                         <div className="p-3 bg-indigo-500/10 rounded-xl text-indigo-400"><Server size={20} /></div>
                         <div>
-                            <p className="text-[10px] font-black tracking-widest uppercase !text-white/50 mb-1">ETH Gas Price</p>
-                            <p className="text-sm !text-white/80 font-medium font-mono">{currentStatus?.l1Gas || '0.00'} Gwei</p>
+                            <p className="text-[10px] font-black tracking-widest uppercase text-white/50 mb-1">ETH Gas Price</p>
+                            <p className="text-sm text-white/80 font-medium font-mono">{currentStatus?.l1Gas || '0.00'} Gwei</p>
                         </div>
                     </div>
                     <div className="flex items-start gap-4">
                         <div className="p-3 bg-emerald-500/10 rounded-xl text-emerald-400"><ShieldCheck size={20} /></div>
                         <div>
-                            <p className="text-[10px] font-black tracking-widest uppercase !text-white/50 mb-1">Network Compression</p>
-                            <p className="text-sm !text-white/80 font-medium">Real-time L2 batching efficiency anchored to Base Mainnet sequence.</p>
+                            <p className="text-[10px] font-black tracking-widest uppercase text-white/50 mb-1">Network Compression</p>
+                            <p className="text-sm text-white/80 font-medium">Real-time L2 batching efficiency anchored to Base Mainnet sequence.</p>
                         </div>
                     </div>
                     <div className="flex items-start gap-4">
                         <div className="p-3 bg-amber-500/10 rounded-xl text-amber-400"><Activity size={20} /></div>
                         <div>
-                            <p className="text-[10px] font-black tracking-widest uppercase !text-white/50 mb-1">State Validity</p>
-                            <p className="text-sm !text-white/80 font-medium">Cryptographic finality verified via on-chain contract state roots.</p>
+                            <p className="text-[10px] font-black tracking-widest uppercase text-white/50 mb-1">State Validity</p>
+                            <p className="text-sm text-white/80 font-medium">Cryptographic finality verified via on-chain contract state roots.</p>
                         </div>
                     </div>
                 </div>

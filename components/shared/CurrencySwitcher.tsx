@@ -37,11 +37,11 @@ export function CurrencySwitcher() {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-full hover:border-[var(--aztec-chartreuse)]/50 transition-all group shadow-sm"
       >
-        <span className="text-[10px] font-aztec-mono font-black !text-white/50 uppercase tracking-widest leading-none group-hover:!text-white">
+        <span className="text-[10px] font-aztec-mono font-black text-white/50 uppercase tracking-widest leading-none group-hover:text-white">
           {currency}
         </span>
         <div className="w-px h-3 bg-white/20" />
-        <Globe size={12} className="!text-white/40 group-hover:text-[var(--aztec-chartreuse)] transition-colors" />
+        <Globe size={12} className="text-white/40 group-hover:text-[var(--aztec-chartreuse)] transition-colors" />
       </motion.button>
 
       <AnimatePresence>
@@ -64,7 +64,7 @@ export function CurrencySwitcher() {
                   className={`flex items-center justify-between px-3 py-2 rounded-xl text-[10px] font-aztec-mono font-black uppercase tracking-widest transition-all ${
                     currency === opt.id 
                       ? 'bg-[var(--aztec-chartreuse)]/10 text-[var(--aztec-chartreuse)] border border-[var(--aztec-chartreuse)]/20' 
-                      : '!text-white/40 hover:bg-white/5 hover:!text-white'
+                      : 'text-white/40 hover:bg-white/5 hover:text-white'
                   }`}
                 >
                   <div className="flex items-center gap-2">

@@ -172,15 +172,15 @@ export default function SendModal({ isOpen, onClose, userAddress, chainId = 1, i
                         className="relative w-full max-w-md bg-gradient-to-br from-[#1a1a1a] to-black backdrop-blur-xl rounded-[2rem] p-8 border border-white/10 shadow-2xl overflow-visible"
                     >
                         <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors">
-                            <X size={20} className="!text-white" />
+                            <X size={20} className="text-white" />
                         </button>
 
                         {/* Mode Header */}
                         <div className="flex items-center gap-3 mb-8">
                             <div className={`p-3 ${config.color} rounded-2xl`}>{config.icon}</div>
                             <div>
-                                <h2 className="text-xl font-black !text-white">{config.title}</h2>
-                                <p className="text-xs !text-white/50 font-bold uppercase tracking-wider">{config.desc}</p>
+                                <h2 className="text-xl font-black text-white">{config.title}</h2>
+                                <p className="text-xs text-white/50 font-bold uppercase tracking-wider">{config.desc}</p>
                             </div>
                         </div>
 
@@ -191,20 +191,20 @@ export default function SendModal({ isOpen, onClose, userAddress, chainId = 1, i
                                 )}>
                                     {status === 'CONFIRMED' ? <ArrowUpRight size={40} /> : status === 'FAILED' ? <AlertTriangle size={40} /> : <Loader2 className="animate-spin" size={40} />}
                                 </div>
-                                <h3 className="text-2xl font-black !text-white mb-2">{status === 'CONFIRMED' ? 'Confirmed!' : status === 'FAILED' ? 'Failed' : 'Sent!'}</h3>
-                                <p className="!text-white/60 text-sm mb-6">
+                                <h3 className="text-2xl font-black text-white mb-2">{status === 'CONFIRMED' ? 'Confirmed!' : status === 'FAILED' ? 'Failed' : 'Sent!'}</h3>
+                                <p className="text-white/60 text-sm mb-6">
                                     {status === 'CONFIRMED' ? 'Funds successfully transferred.' : status === 'FAILED' ? 'Transaction encountered an error.' : 'Confirming on blockchain...'}
                                 </p>
-                                <a href={chainId ? getExplorerTxUrl(chainId, txHash) : `https://etherscan.io/tx/${txHash}`} target="_blank" rel="noopener noreferrer" className="block w-full py-4 bg-white/5 hover:bg-white/10 rounded-xl font-bold !text-white transition-all">
+                                <a href={chainId ? getExplorerTxUrl(chainId, txHash) : `https://etherscan.io/tx/${txHash}`} target="_blank" rel="noopener noreferrer" className="block w-full py-4 bg-white/5 hover:bg-white/10 rounded-xl font-bold text-white transition-all">
                                     View on Explorer
                                 </a>
-                                {status === 'FAILED' && <button onClick={() => { setSuccess(false); setStatus('IDLE'); }} className="mt-4 !text-white/40 text-xs hover:!text-white underline">Try Again</button>}
+                                {status === 'FAILED' && <button onClick={() => { setSuccess(false); setStatus('IDLE'); }} className="mt-4 text-white/40 text-xs hover:text-white underline">Try Again</button>}
                             </div>
                         ) : (
                             <>
                                 {/* Asset Selector */}
                                 <div className="mb-6 relative">
-                                    <label className="!text-white/40 text-[10px] font-black uppercase tracking-widest mb-2 block">Select Asset</label>
+                                    <label className="text-white/40 text-[10px] font-black uppercase tracking-widest mb-2 block">Select Asset</label>
                                     <button 
                                         onClick={() => setShowTokenSelect(!showTokenSelect)}
                                         className="w-full flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all"
@@ -216,11 +216,11 @@ export default function SendModal({ isOpen, onClose, userAddress, chainId = 1, i
                                                 <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-xs font-bold">{selectedToken?.symbol?.[0] || 'E'}</div>
                                             )}
                                             <div className="text-left">
-                                                <div className="!text-white font-bold">{selectedToken?.symbol || 'ETH'}</div>
-                                                <div className="!text-white/40 text-xs">{selectedToken?.balanceFormatted || '0.00'} Available</div>
+                                                <div className="text-white font-bold">{selectedToken?.symbol || 'ETH'}</div>
+                                                <div className="text-white/40 text-xs">{selectedToken?.balanceFormatted || '0.00'} Available</div>
                                             </div>
                                         </div>
-                                        <ChevronDown size={16} className="!text-white/40" />
+                                        <ChevronDown size={16} className="text-white/40" />
                                     </button>
 
                                     {/* Dropdown */}
@@ -232,10 +232,10 @@ export default function SendModal({ isOpen, onClose, userAddress, chainId = 1, i
                                             >
                                                 {tokens.map((t, i) => (
                                                     <button key={i} onClick={() => { setSelectedToken(t); setShowTokenSelect(false); }} className="w-full flex items-center gap-3 p-3 hover:bg-white/5 transition-colors text-left">
-                                                        <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-[10px] !text-white">{t.symbol[0]}</div>
+                                                        <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-[10px] text-white">{t.symbol[0]}</div>
                                                         <div>
-                                                            <div className="!text-white text-sm font-bold">{t.symbol}</div>
-                                                            <div className="!text-white/40 text-xs">{t.balanceFormatted}</div>
+                                                            <div className="text-white text-sm font-bold">{t.symbol}</div>
+                                                            <div className="text-white/40 text-xs">{t.balanceFormatted}</div>
                                                         </div>
                                                     </button>
                                                 ))}
@@ -245,18 +245,18 @@ export default function SendModal({ isOpen, onClose, userAddress, chainId = 1, i
                                 </div>
 
                                 <div className="mb-6">
-                                    <label className="!text-white/40 text-[10px] font-black uppercase tracking-widest mb-2 block">Recipient</label>
-                                    <input type="text" value={recipientAddress} onChange={(e) => setRecipientAddress(e.target.value)} onBlur={estimateGas} placeholder="0x... or ENS" className="w-full px-4 py-4 bg-white/5 border border-white/10 rounded-2xl !text-white placeholder-white/20 focus:outline-none focus:border-purple-500/50 font-mono text-sm" />
+                                    <label className="text-white/40 text-[10px] font-black uppercase tracking-widest mb-2 block">Recipient</label>
+                                    <input type="text" value={recipientAddress} onChange={(e) => setRecipientAddress(e.target.value)} onBlur={estimateGas} placeholder="0x... or ENS" className="w-full px-4 py-4 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-white/20 focus:outline-none focus:border-purple-500/50 font-mono text-sm" />
                                 </div>
 
                                 <div className="mb-8">
-                                    <label className="!text-white/40 text-[10px] font-black uppercase tracking-widest mb-2 block">Amount</label>
+                                    <label className="text-white/40 text-[10px] font-black uppercase tracking-widest mb-2 block">Amount</label>
                                     <div className="relative">
-                                        <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} onBlur={estimateGas} placeholder="0.00" step="0.000001" className="w-full pl-4 pr-16 py-4 bg-white/5 border border-white/10 rounded-2xl !text-white text-2xl font-black placeholder-white/10 focus:outline-none focus:border-purple-500/50" />
+                                        <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} onBlur={estimateGas} placeholder="0.00" step="0.000001" className="w-full pl-4 pr-16 py-4 bg-white/5 border border-white/10 rounded-2xl text-white text-2xl font-black placeholder-white/10 focus:outline-none focus:border-purple-500/50" />
                                         <button onClick={() => setAmount(selectedToken?.balanceNumeric || '')} className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-purple-400 hover:text-purple-300 uppercase tracking-wider">MAX</button>
                                     </div>
                                     <div className="mt-2 flex justify-between">
-                                        <span className="!text-white/40 text-xs font-bold"> ${((parseFloat(amount) || 0) * (selectedToken?.price || 0)).toFixed(2)} USD</span>
+                                        <span className="text-white/40 text-xs font-bold"> ${((parseFloat(amount) || 0) * (selectedToken?.price || 0)).toFixed(2)} USD</span>
                                         {gasEstimate && <span className="text-purple-400 text-xs font-bold">Gas: ~${gasEstimate}</span>}
                                     </div>
                                 </div>
@@ -268,7 +268,7 @@ export default function SendModal({ isOpen, onClose, userAddress, chainId = 1, i
                                     </div>
                                 )}
 
-                                <button onClick={handleSend} disabled={loading || !recipientAddress || !amount} className="w-full py-5 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-2xl font-black !text-white text-lg transition-all shadow-lg hover:shadow-purple-500/25 flex items-center justify-center gap-3">
+                                <button onClick={handleSend} disabled={loading || !recipientAddress || !amount} className="w-full py-5 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 disabled:opacity-50 disabled:cursor-not-allowed rounded-2xl font-black text-white text-lg transition-all shadow-lg hover:shadow-purple-500/25 flex items-center justify-center gap-3">
                                     {loading ? <><Loader2 className="animate-spin" size={24} /> Processing...</> : <><Send size={24} /> Send {selectedToken?.symbol || 'Asset'}</>}
                                 </button>
                             </>

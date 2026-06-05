@@ -138,7 +138,7 @@ export function TokenPortfolio() {
                                     <TokenLogo symbol={token.symbol} address={token.address} className="w-full h-full rounded-full" fallbackClassName="w-full h-full rounded-full text-[10px]" />
                                 </div>
                                 <div>
-                                    <h4 className="!text-white font-bold text-sm">{token.name}</h4>
+                                    <h4 className="text-white font-bold text-sm">{token.name}</h4>
                                     <div className="flex items-center gap-2">
                                         <span className="text-xs text-gray-500 font-mono">{safeToFixed(token.balance, 4)} {token.symbol}</span>
                                         <span className="text-[10px] text-gray-600 bg-white/5 px-1 rounded">{token.network}</span>
@@ -146,7 +146,7 @@ export function TokenPortfolio() {
                                 </div>
                             </div>
                             <div className="text-right">
-                                <p className="!text-white font-mono font-medium">{formatUSD(token.balance * token.price)}</p>
+                                <p className="text-white font-mono font-medium">{formatUSD(token.balance * token.price)}</p>
                                 <p className={`text-xs ${token.change >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                                     {formatChange(token.change)}
                                 </p>
@@ -172,7 +172,7 @@ export function TokenPortfolio() {
                             className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm bg-[#0D0D12] border border-white/10 rounded-3xl p-6 shadow-2xl z-[51] overflow-hidden"
                         >
                             <div className="flex justify-between items-center mb-6">
-                                <button onClick={() => view === 'details' ? closeToken() : setView('details')} className="text-gray-400 hover:!text-white">
+                                <button onClick={() => view === 'details' ? closeToken() : setView('details')} className="text-gray-400 hover:text-white">
                                     {view === 'details' ? <X size={20} /> : <span className="text-xs"> Back</span>}
                                 </button>
                                 <span className="text-xs font-bold tracking-widest text-gray-500 uppercase">{view} {selectedToken.symbol}</span>
@@ -184,7 +184,7 @@ export function TokenPortfolio() {
                                     <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-white/5 to-white/0 border border-white/10 flex items-center justify-center text-4xl mb-4 shadow-[0_0_30px_rgba(0,242,234,0.1)]">
                                         <TokenLogo symbol={selectedToken.symbol} address={selectedToken.address} className="w-full h-full rounded-full" fallbackClassName="w-full h-full rounded-full text-[14px]" />
                                     </div>
-                                    <h2 className="text-3xl font-bold !text-white mb-1">{safeToFixed(selectedToken.balance, 4)} <span className="text-lg text-gray-500">{selectedToken.symbol}</span></h2>
+                                    <h2 className="text-3xl font-bold text-white mb-1">{safeToFixed(selectedToken.balance, 4)} <span className="text-lg text-gray-500">{selectedToken.symbol}</span></h2>
                                     <p className="text-gray-400 font-mono mb-8"> {formatUSD(selectedToken.balance * selectedToken.price)}</p>
 
                                     <div className="grid grid-cols-2 gap-4 w-full">
@@ -221,7 +221,7 @@ export function TokenPortfolio() {
                                                 placeholder="0x..."
                                                 value={recipient}
                                                 onChange={(e) => setRecipient(e.target.value)}
-                                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-sm !text-white focus:border-[#00f2ea] outline-none font-mono"
+                                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-sm text-white focus:border-[#00f2ea] outline-none font-mono"
                                             />
                                         </div>
                                     </div>
@@ -233,7 +233,7 @@ export function TokenPortfolio() {
                                                 placeholder="0.00"
                                                 value={amount}
                                                 onChange={(e) => setAmount(e.target.value)}
-                                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-sm !text-white focus:border-[#00f2ea] outline-none font-mono"
+                                                className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-sm text-white focus:border-[#00f2ea] outline-none font-mono"
                                             />
                                             <button
                                                 onClick={() => setAmount(selectedToken.balance.toString())}

@@ -46,7 +46,7 @@ export default function GenesisContracts() {
   const filtered = contracts.filter(c => c.name.toLowerCase().includes(filter.toLowerCase()));
 
   return (
-    <div className="h-full w-full min-h-0 bg-black !!text-white font-mono flex flex-col p-8 gap-8">
+    <div className="h-full w-full min-h-0 bg-black text-white font-mono flex flex-col p-8 gap-8">
       
       {/*  ACADEMIC INTRO  */}
       <div className="border border-white/5 bg-white/[0.01] p-6 flex items-start gap-6">
@@ -55,7 +55,7 @@ export default function GenesisContracts() {
         </div>
         <div>
           <h2 className="text-sm font-black uppercase tracking-[0.4em]">Genesis_Contracts // SMART_CONTRACT_INVENTORY</h2>
-          <p className="text-[10px] !text-white/40 uppercase tracking-widest mt-1 leading-relaxed max-w-2xl">
+          <p className="text-[10px] text-white/40 uppercase tracking-widest mt-1 leading-relaxed max-w-2xl">
             Audit of verified institutional contracts and operational proxies. Monitors bytecode integrity and drift vs official repositories.
           </p>
         </div>
@@ -71,7 +71,7 @@ export default function GenesisContracts() {
 
       {/*  FILTER  */}
       <div className="relative">
-         <Search className="absolute left-4 top-1/2 -translate-y-1/2 !text-white/20" size={12} />
+         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={12} />
          <input 
             type="text" 
             placeholder="FILTER_CONTRACTS_BY_NAME_OR_ADDR..."
@@ -84,7 +84,7 @@ export default function GenesisContracts() {
       {/*  CONTRACT GRID  */}
       <div className="flex-1 overflow-y-auto custom-scrollbar">
          <div className="grid grid-cols-1 gap-1">
-            <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_60px] gap-4 px-6 py-3 border-b border-white/10 text-[8px] !text-white/20 uppercase tracking-[0.3em]">
+            <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_60px] gap-4 px-6 py-3 border-b border-white/10 text-[8px] text-white/20 uppercase tracking-[0.3em]">
                <span>[CONTRACT_ID]</span>
                <span>ARCHITECTURE</span>
                <span>VERSION</span>
@@ -100,21 +100,21 @@ export default function GenesisContracts() {
                  className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_60px] gap-4 px-6 py-4 border-b border-white/5 items-center hover:bg-white/[0.02] transition-colors group"
                >
                   <div className="flex flex-col gap-1">
-                     <span className="text-[11px] font-black uppercase tracking-widest !text-white/90">{c.name}</span>
-                     <span className="text-[8px] !text-white/20 font-mono tracking-tighter">{c.address}</span>
+                     <span className="text-[11px] font-black uppercase tracking-widest text-white/90">{c.name}</span>
+                     <span className="text-[8px] text-white/20 font-mono tracking-tighter">{c.address}</span>
                   </div>
-                  <span className="text-[9px] !text-white/40 font-black">{c.type}</span>
-                  <span className="text-[9px] !text-white/40 font-mono">{c.version}</span>
+                  <span className="text-[9px] text-white/40 font-black">{c.type}</span>
+                  <span className="text-[9px] text-white/40 font-mono">{c.version}</span>
                   <div className="flex items-center gap-2">
                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_theme(colors.emerald.500)]" />
                      <span className="text-[9px] text-emerald-500 font-black">{c.auditRating}</span>
                   </div>
                   <div className="flex items-center gap-2">
                      <CheckCircle2 size={10} className="text-emerald-500" />
-                     <span className="text-[8px] !text-white/40 font-black uppercase tracking-widest">OK</span>
+                     <span className="text-[8px] text-white/40 font-black uppercase tracking-widest">OK</span>
                   </div>
                   <div className="text-right">
-                     <button className="!text-white/10 group-hover:!text-white transition-all">
+                     <button className="text-white/10 group-hover:text-white transition-all">
                         <ExternalLink size={12} />
                      </button>
                   </div>
@@ -124,7 +124,7 @@ export default function GenesisContracts() {
       </div>
 
       {/*  FOOTER  */}
-      <div className="mt-auto border-t border-white/5 pt-4 flex justify-between items-center text-[8px] !text-white/20 uppercase tracking-[0.5em]">
+      <div className="mt-auto border-t border-white/5 pt-4 flex justify-between items-center text-[8px] text-white/20 uppercase tracking-[0.5em]">
          <div className="flex items-center gap-6">
             <div className="flex items-center gap-2">
                <Cpu size={10} />

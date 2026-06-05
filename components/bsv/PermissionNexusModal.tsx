@@ -51,14 +51,14 @@ export const PermissionNexusModal = ({
                </div>
                <div>
                   <span className="text-[10px] font-black uppercase tracking-[0.4em] text-red-500">Security Handshake</span>
-                  <h2 className="text-2xl font-aztec-serif font-black uppercase tracking-tighter">Authorization <span className="!text-white">Required</span></h2>
+                  <h2 className="text-2xl font-aztec-serif font-black uppercase tracking-tighter">Authorization <span className="text-white">Required</span></h2>
                </div>
             </div>
 
             {/* Context Section */}
             <div className="p-10 space-y-8">
                <div className="space-y-2">
-                  <p className="text-[9px] font-black uppercase tracking-widest !text-white/40">Requesting Analytics</p>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-white/40">Requesting Analytics</p>
                   <div className="p-6 bg-white/5 border border-white/10 rounded-2xl flex items-center gap-4">
                      <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center font-black">?</div>
                      <div>
@@ -71,16 +71,16 @@ export const PermissionNexusModal = ({
                <div className="space-y-4">
                   <div className="flex items-center gap-2">
                     <Zap size={14} className="text-[var(--aztec-orchid)]" />
-                    <p className="text-[11px] font-black uppercase tracking-widest">Action: <span className="!text-white">{action}</span></p>
+                    <p className="text-[11px] font-black uppercase tracking-widest">Action: <span className="text-white">{action}</span></p>
                   </div>
-                  <pre className="p-6 bg-black/40 rounded-2xl border border-white/5 font-aztec-mono text-[10px] !text-white/60 overflow-x-auto">
+                  <pre className="p-6 bg-black/40 rounded-2xl border border-white/5 font-aztec-mono text-[10px] text-white/60 overflow-x-auto">
                     {JSON.stringify(params, null, 2)}
                   </pre>
                </div>
 
                <div className="flex gap-4 p-4 bg-white/[0.02] border border-white/5 rounded-2xl">
-                  <Info size={16} className="!text-white/40 shrink-0" />
-                  <p className="text-[9px] !text-white/30 italic">
+                  <Info size={16} className="text-white/40 shrink-0" />
+                  <p className="text-[9px] text-white/30 italic">
                     Granting this permission allows the dApp to interact with your identity substrate. Always verify the protocol origin.
                   </p>
                </div>
@@ -90,7 +90,7 @@ export const PermissionNexusModal = ({
             <div className="p-10 bg-white/[0.01] border-t border-white/5 flex gap-6">
                <button 
                 onClick={onRefuse}
-                className="flex-1 py-6 bg-white/5 hover:bg-red-500/20 border border-white/10 rounded-3xl text-[11px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 !text-white/60 hover:text-red-500"
+                className="flex-1 py-6 bg-white/5 hover:bg-red-500/20 border border-white/10 rounded-3xl text-[11px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 text-white/60 hover:text-red-500"
                >
                  <XCircle size={18} /> Refuse
                </button>

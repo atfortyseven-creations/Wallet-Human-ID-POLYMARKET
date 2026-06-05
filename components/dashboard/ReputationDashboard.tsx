@@ -139,7 +139,7 @@ export function ReputationDashboard() {
             className={`w-full py-3.5 mt-6 rounded-xl text-[11px] font-bold uppercase tracking-widest transition-all flex justify-center items-center gap-2 ${
               hasCredential 
                 ? 'bg-black/5 text-black/30 cursor-not-allowed border border-black/5'
-                : 'bg-[#050505] !text-white hover:bg-black/80'
+                : 'bg-[#050505] text-white hover:bg-black/80'
             }`}
           >
             {isMinting ? <RefreshCw size={14} className="animate-spin" /> : <Award size={14} />}

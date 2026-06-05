@@ -48,8 +48,8 @@ function VoteButton({
     const [widgetOpen, setWidgetOpen] = useState(false);
     const isFor = idx === 0;
     const activeClass = isFor
-        ? 'bg-[#00C076]/10 border-[#00C076]/30 text-[#00C076] hover:bg-[#00C076] hover:!text-white'
-        : 'bg-[#FF3B30]/10 border-[#FF3B30]/30 text-[#FF3B30] hover:bg-[#FF3B30] hover:!text-white';
+        ? 'bg-[#00C076]/10 border-[#00C076]/30 text-[#00C076] hover:bg-[#00C076] hover:text-white'
+        : 'bg-[#FF3B30]/10 border-[#FF3B30]/30 text-[#FF3B30] hover:bg-[#FF3B30] hover:text-white';
     const idleClass = isFor
         ? 'bg-white border-[#E5E5E5] text-[#050505] hover:border-[#00C076] hover:text-[#00C076]'
         : 'bg-white border-[#E5E5E5] text-[#050505] hover:border-[#FF3B30] hover:text-[#FF3B30]';

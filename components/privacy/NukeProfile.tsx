@@ -90,7 +90,7 @@ export function NukeProfile() {
             
             <div className="relative z-10">
                 <div className="flex items-center gap-4 mb-6">
-                    <div className="w-14 h-14 bg-red-600 rounded-2xl flex items-center justify-center !text-white shadow-[0_0_30px_rgba(220,38,38,0.4)]">
+                    <div className="w-14 h-14 bg-red-600 rounded-2xl flex items-center justify-center text-white shadow-[0_0_30px_rgba(220,38,38,0.4)]">
                         <AlertOctagon size={28} />
                     </div>
                     <div>
@@ -107,7 +107,7 @@ export function NukeProfile() {
                             </p>
                             <button 
                                 onClick={() => setStep(1)}
-                                className="px-8 py-4 bg-red-600 hover:bg-red-700 !text-white font-black text-[11px] uppercase tracking-[0.2em] rounded-2xl transition-all shadow-[0_10px_30px_-10px_rgba(220,38,38,0.5)] flex items-center gap-3"
+                                className="px-8 py-4 bg-red-600 hover:bg-red-700 text-white font-black text-[11px] uppercase tracking-[0.2em] rounded-2xl transition-all shadow-[0_10px_30px_-10px_rgba(220,38,38,0.5)] flex items-center gap-3"
                             >
                                 <ShieldAlert size={16} /> INITIALIZE TERMINATION
                             </button>

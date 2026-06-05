@@ -1,4 +1,4 @@
-"use client";
+ï»¿"use client";
 
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 
@@ -15,8 +15,8 @@ interface ExchangeRate {
 const exchangeRates: Record<string, ExchangeRate> = {
     USD: { rate: 1, symbol: '$' },
     EUR: { rate: 0.92, symbol: '' },
-    GBP: { rate: 0.79, symbol: '£' },
-    JPY: { rate: 148, symbol: '¥' }
+    GBP: { rate: 0.79, symbol: 'Â£' },
+    JPY: { rate: 148, symbol: 'Â¥' }
 };
 
 interface AppContextType {
@@ -68,14 +68,14 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         } catch { /* incognito */ }
     }, []);
 
-    // Función para formatear dinero automáticamente
+    // FunciÃ³n para formatear dinero automÃ¡ticamente
     const formatMoney = (amountInUSD: number) => {
         const { rate, symbol } = exchangeRates[currency] || exchangeRates['USD'];
         const value = amountInUSD * rate;
         return `${symbol}${safeToLocaleString(value, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     };
 
-    // Función para obtener texto traducido
+    // FunciÃ³n para obtener texto traducido
     const t = (key: string) => {
         // @ts-ignore - Dynamic key access
         const dict = translations[lang] || translations['en'];

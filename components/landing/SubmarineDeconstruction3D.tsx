@@ -230,11 +230,11 @@ function DOMAnnotations({ scrollProgress }: { scrollProgress: number }) {
           >
             <div className="flex justify-end mb-4">
                 <div className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center border border-white/10 backdrop-blur-md">
-                    <Eye className="!text-white/80" size={24} />
+                    <Eye className="text-white/80" size={24} />
                 </div>
             </div>
-            <h3 className="!text-white font-aztec-serif italic text-3xl mb-2">Absolute <span className="text-[var(--aztec-orchid)]">Immersion</span></h3>
-            <p className="!text-white/50 text-[11px] uppercase font-aztec-mono tracking-widest leading-relaxed">
+            <h3 className="text-white font-aztec-serif italic text-3xl mb-2">Absolute <span className="text-[var(--aztec-orchid)]">Immersion</span></h3>
+            <p className="text-white/50 text-[11px] uppercase font-aztec-mono tracking-widest leading-relaxed">
               Unveiling the System Architecture. Scroll to descend into the ultimate institutional data engine.
             </p>
           </motion.div>
@@ -252,7 +252,7 @@ function DOMAnnotations({ scrollProgress }: { scrollProgress: number }) {
             <div className="w-10 h-10 bg-[var(--aztec-chartreuse)]/10 rounded-full flex items-center justify-center mb-4 border border-[var(--aztec-chartreuse)]/20 shadow-[0_0_15px_rgba(212,255,43,0.1)]">
               <ShieldCheck className="text-[var(--aztec-chartreuse)]" size={20} />
             </div>
-            <h3 className="!text-white font-aztec-mono text-[12px] uppercase tracking-[0.4em] font-bold mb-2">
+            <h3 className="text-white font-aztec-mono text-[12px] uppercase tracking-[0.4em] font-bold mb-2">
               Titanium Shielding
             </h3>
             <p className="text-[var(--aztec-chartreuse)]/60 text-[11px] uppercase font-aztec-mono tracking-widest leading-relaxed">
@@ -274,10 +274,10 @@ function DOMAnnotations({ scrollProgress }: { scrollProgress: number }) {
               <div className="absolute top-0 right-0 p-4 opacity-10">
                   <Cpu size={80} />
               </div>
-              <h3 className="!text-white font-aztec-serif italic text-2xl mb-3 relative z-10">
+              <h3 className="text-white font-aztec-serif italic text-2xl mb-3 relative z-10">
                 Institutional <span className="text-[var(--aztec-orchid)]">Logic Core</span>
               </h3>
-              <p className="!text-white/60 text-[10px] uppercase font-aztec-mono tracking-widest leading-relaxed relative z-10">
+              <p className="text-white/60 text-[10px] uppercase font-aztec-mono tracking-widest leading-relaxed relative z-10">
                 Programmable zero-knowledge execution nodes. 100% mathematical certainty, 0% data leakage.
               </p>
             </div>
@@ -296,11 +296,11 @@ function DOMAnnotations({ scrollProgress }: { scrollProgress: number }) {
             <div className="flex items-center gap-4 mb-6">
                 <div className="w-16 h-px bg-gradient-to-r from-transparent to-[var(--aztec-chartreuse)]" />
                 <Share2 className="text-[var(--aztec-chartreuse)]" size={28} />
-                <h3 className="!text-white font-aztec-mono text-[14px] uppercase tracking-[0.4em] font-black">
+                <h3 className="text-white font-aztec-mono text-[14px] uppercase tracking-[0.4em] font-black">
                     Cosmic Distribution
                 </h3>
             </div>
-            <p className="!text-white/70 text-lg font-aztec-serif italic leading-relaxed pl-20">
+            <p className="text-white/70 text-lg font-aztec-serif italic leading-relaxed pl-20">
               Thousands of system data points dispersing across the global network in real-time. Absolute resilience.
             </p>
           </motion.div>
@@ -316,12 +316,12 @@ function DOMAnnotations({ scrollProgress }: { scrollProgress: number }) {
             className="absolute bottom-[30%] left-1/2 -translate-x-1/2 text-center w-[90%] max-w-[500px]"
           >
             <div className="w-16 h-16 bg-white/5 mx-auto rounded-3xl flex items-center justify-center mb-6 border border-white/20 shadow-[0_20px_40px_-10px_rgba(255,255,255,0.1)]">
-              <Lock className="!text-white" size={32} />
+              <Lock className="text-white" size={32} />
             </div>
-            <h3 className="!text-white font-aztec-h1 text-5xl mb-4 tracking-tight drop-shadow-2xl">
+            <h3 className="text-white font-aztec-h1 text-5xl mb-4 tracking-tight drop-shadow-2xl">
               System <span className="text-[var(--aztec-orchid)]/80 italic font-light">Permanence</span>
             </h3>
-            <p className="!text-white/50 text-[11px] uppercase font-aztec-mono tracking-[0.3em] leading-relaxed">
+            <p className="text-white/50 text-[11px] uppercase font-aztec-mono tracking-[0.3em] leading-relaxed">
               Your assets descend into absolute cold storage. untouchable by algorithms. Protected by the deep network.
             </p>
           </motion.div>
@@ -395,11 +395,11 @@ export default function SubmarineDeconstruction3D() {
         </Canvas>
 
         {/* Cinematic Watermarks */}
-        <div className="absolute top-12 left-12 opacity-10 font-aztec-mono text-[9px] uppercase tracking-[0.6em] !text-white pointer-events-none hidden md:block z-0 mix-blend-overlay">
+        <div className="absolute top-12 left-12 opacity-10 font-aztec-mono text-[9px] uppercase tracking-[0.6em] text-white pointer-events-none hidden md:block z-0 mix-blend-overlay">
           Protocol: System Deep / Phase {Math.floor(scroll * 6)} / Grid Active
         </div>
         
-        <div className="absolute bottom-12 right-12 text-right opacity-10 font-aztec-serif italic !text-white text-[10vw] leading-none select-none pointer-events-none hidden md:block z-0 mix-blend-overlay">
+        <div className="absolute bottom-12 right-12 text-right opacity-10 font-aztec-serif italic text-white text-[10vw] leading-none select-none pointer-events-none hidden md:block z-0 mix-blend-overlay">
           WHALE
         </div>
       </div>

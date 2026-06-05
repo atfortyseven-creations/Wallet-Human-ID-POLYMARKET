@@ -82,7 +82,7 @@ export function WhaleAlertProLanding() {
   const scale = useSpring(useTransform(scrollYProgress, [0, 0.2], [1, 1.2]), { stiffness: 100, damping: 30 });
   
   return (
-    <div className="bg-black !!text-white selection:bg-cyan-500/30 selection:text-cyan-200">
+    <div className="bg-black text-white selection:bg-cyan-500/30 selection:text-cyan-200">
       <UniversalEliteWallpaper />
       
       {/* --- PROGRESS BAR --- */}
@@ -142,9 +142,9 @@ export function WhaleAlertProLanding() {
               <ShimmerText text="PRO" />
             </h1>
 
-            <p className="text-lg md:text-2xl !text-white/50 font-light max-w-3xl mx-auto mb-12 leading-relaxed tracking-tight">
+            <p className="text-lg md:text-2xl text-white/50 font-light max-w-3xl mx-auto mb-12 leading-relaxed tracking-tight">
               Detect. Decrypt. Dominate. <br />
-              The world's most immersive real-time <span className="!text-white font-medium">Whale Observation System</span>, 
+              The world's most immersive real-time <span className="text-white font-medium">Whale Observation System</span>, 
               built for the elite 1% of the Web3 system era.
             </p>
 
@@ -161,7 +161,7 @@ export function WhaleAlertProLanding() {
               <Link href="/api-marketplace">
                 <motion.button
                   whileHover={{ backgroundColor: "rgba(255,255,255,0.1)" }}
-                  className="px-12 py-5 border border-white/20 !text-white font-black uppercase tracking-widest text-xs rounded-full flex items-center gap-3"
+                  className="px-12 py-5 border border-white/20 text-white font-black uppercase tracking-widest text-xs rounded-full flex items-center gap-3"
                 >
                   Explore API <ArrowRight size={16} />
                 </motion.button>
@@ -211,20 +211,20 @@ export function WhaleAlertProLanding() {
                    </div>
                    <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter leading-none">
                       SCANNING THE <br />
-                      <span className="!text-white/20">MULTIVERSE.</span>
+                      <span className="text-white/20">MULTIVERSE.</span>
                    </h2>
-                   <p className="text-xl !text-white/40 leading-relaxed font-light mb-10">
+                   <p className="text-xl text-white/40 leading-relaxed font-light mb-10">
                       Our proprietary scanner threads penetrate every liquidity pool in real-time. 
-                      Not just transferswe detect the <span className="!text-white">intents</span> of the world's most powerful wallets before they hit the order book.
+                      Not just transferswe detect the <span className="text-white">intents</span> of the world's most powerful wallets before they hit the order book.
                    </p>
                    <div className="grid grid-cols-2 gap-8">
                       <div>
-                        <div className="text-3xl font-black !text-white mb-2 tracking-tighter">0.5s</div>
-                        <div className="text-[10px] font-mono !text-white/20 uppercase tracking-widest">Global Latency</div>
+                        <div className="text-3xl font-black text-white mb-2 tracking-tighter">0.5s</div>
+                        <div className="text-[10px] font-mono text-white/20 uppercase tracking-widest">Global Latency</div>
                       </div>
                       <div>
-                        <div className="text-3xl font-black !text-white mb-2 tracking-tighter">500k+</div>
-                        <div className="text-[10px] font-mono !text-white/20 uppercase tracking-widest">Active Wallets</div>
+                        <div className="text-3xl font-black text-white mb-2 tracking-tighter">500k+</div>
+                        <div className="text-[10px] font-mono text-white/20 uppercase tracking-widest">Active Wallets</div>
                       </div>
                    </div>
                 </motion.div>
@@ -245,15 +245,15 @@ export function WhaleAlertProLanding() {
                    </div>
                    <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter leading-none">
                       DECRYPTION OF <br />
-                      <span className="!text-white/20">PURE INTENSITY.</span>
+                      <span className="text-white/20">PURE INTENSITY.</span>
                    </h2>
-                   <p className="text-xl !text-white/40 leading-relaxed font-light mb-10">
+                   <p className="text-xl text-white/40 leading-relaxed font-light mb-10">
                       Raw data is noise. Our quantitative engine filters billions of bytes into institutional-grade signals. 
-                      Transforming blockchain chaos into <span className="!text-white">Forensic Guidance</span>.
+                      Transforming blockchain chaos into <span className="text-white">Forensic Guidance</span>.
                    </p>
                    <div className="flex flex-wrap gap-4">
                       {["Sentiment Pulse", "Intensity Radar", "Whale Vigor", "Conviction Score"].map((tag) => (
-                        <span key={tag} className="px-4 py-2 border border-white/5 bg-white/5 rounded-full text-[10px] font-mono !text-white/40 uppercase tracking-widest">
+                        <span key={tag} className="px-4 py-2 border border-white/5 bg-white/5 rounded-full text-[10px] font-mono text-white/40 uppercase tracking-widest">
                           {tag}
                         </span>
                       ))}
@@ -277,7 +277,7 @@ export function WhaleAlertProLanding() {
                               className="absolute w-48 h-48 border-2 border-dashed border-purple-500/20 rounded-full" 
                             />
                          </div>
-                         <Cpu size={80} className="!text-white opacity-20" strokeWidth={1} />
+                         <Cpu size={80} className="text-white opacity-20" strokeWidth={1} />
                       </div>
                    </div>
                 </ParallaxLayer>
@@ -298,7 +298,7 @@ export function WhaleAlertProLanding() {
                             <Bell size={48} className="text-cyan-500 mx-auto mb-6 animate-bounce" />
                             <div className="text-xs font-mono text-cyan-400 mb-2">WHALE_DETECTED [ETH]</div>
                             <div className="text-2xl font-black mb-2">$48,291,029</div>
-                            <div className="text-[10px] !text-white/40 uppercase tracking-widest">Institutional Accumulation Detected</div>
+                            <div className="text-[10px] text-white/40 uppercase tracking-widest">Institutional Accumulation Detected</div>
                          </div>
                       </div>
                    </div>
@@ -310,17 +310,17 @@ export function WhaleAlertProLanding() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8 }}
                 >
-                   <div className="flex items-center gap-3 !text-white font-mono text-[10px] tracking-[0.4em] uppercase mb-6">
+                   <div className="flex items-center gap-3 text-white font-mono text-[10px] tracking-[0.4em] uppercase mb-6">
                       <div className="w-2 h-2 bg-white animate-pulse rounded-full" />
                       Phase 03: Immediate Delivery
                    </div>
                    <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter leading-none">
                       UNMATCHED <br />
-                      <span className="!text-white/20">VELOCITY.</span>
+                      <span className="text-white/20">VELOCITY.</span>
                    </h2>
-                   <p className="text-xl !text-white/40 leading-relaxed font-light mb-10">
+                   <p className="text-xl text-white/40 leading-relaxed font-light mb-10">
                       Alerts delivered via WebSocket, Webhook, and Terminal in sub-second timeframes. 
-                      In the time it takes to read this sentence, our users have already <span className="!text-white">executed their edge</span>.
+                      In the time it takes to read this sentence, our users have already <span className="text-white">executed their edge</span>.
                    </p>
                    <Link href="/api-marketplace">
                       <button className="px-10 py-4 border border-cyan-500/30 text-cyan-400 font-black uppercase tracking-widest text-[10px] rounded-full hover:bg-cyan-500/10 transition-colors">
@@ -350,7 +350,7 @@ export function WhaleAlertProLanding() {
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.5, ease: "easeOut" }}
           >
-            <h2 className="text-[10vw] font-black tracking-tighter !text-white/5 opacity-50 absolute inset-0 flex items-center justify-center select-none pointer-events-none">
+            <h2 className="text-[10vw] font-black tracking-tighter text-white/5 opacity-50 absolute inset-0 flex items-center justify-center select-none pointer-events-none">
               WHALE ALERT
             </h2>
             <div className="max-w-4xl mx-auto relative z-20">
@@ -359,7 +359,7 @@ export function WhaleAlertProLanding() {
                 <span className="text-cyan-500">PREDICTED.</span> <br />
                 IT IS <ShimmerText text="OBSERVED." />
               </h3>
-              <p className="text-xl !text-white/40 mb-12 font-light">
+              <p className="text-xl text-white/40 mb-12 font-light">
                 Join the network that defines the frontier. <br />
                 Whale Alert Network Pro is more than a toolit's your absolute vision into the cosmic flow of value.
               </p>
@@ -367,7 +367,7 @@ export function WhaleAlertProLanding() {
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  className="px-16 py-6 bg-gradient-to-r from-cyan-600 to-blue-600 !text-white font-black uppercase tracking-[0.3em] text-sm rounded-full shadow-[0_0_50px_rgba(6,182,212,0.5)]"
+                  className="px-16 py-6 bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-black uppercase tracking-[0.3em] text-sm rounded-full shadow-[0_0_50px_rgba(6,182,212,0.5)]"
                 >
                   Join the Elite
                 </motion.button>
@@ -382,25 +382,25 @@ export function WhaleAlertProLanding() {
         <div className="max-w-[2560px] mx-auto flex flex-col md:row items-start justify-between gap-12 text-left">
            <div className="text-left">
               <div className="text-2xl font-black tracking-tighter mb-4">Whale Alert Network <span className="text-cyan-500">PRO</span></div>
-              <div className="text-[10px] font-mono !text-white/20 uppercase tracking-[0.4em]">© 2026 Whale Alert Network Access</div>
+              <div className="text-[10px] font-mono text-white/20 uppercase tracking-[0.4em]">© 2026 Whale Alert Network Access</div>
            </div>
            <div className="flex gap-12">
               <div className="flex flex-col gap-4">
-                 <div className="text-[10px] font-black !text-white/40 uppercase tracking-widest">Engine</div>
-                 <Link href="/vip" className="text-xs !text-white/20 hover:text-cyan-400 transition-colors">Terminal</Link>
-                 <Link href="/portfolio" className="text-xs !text-white/20 hover:text-cyan-400 transition-colors">Portfolio</Link>
-                 <Link href="/ledger" className="text-xs !text-white/20 hover:text-cyan-400 transition-colors">Ledger</Link>
+                 <div className="text-[10px] font-black text-white/40 uppercase tracking-widest">Engine</div>
+                 <Link href="/vip" className="text-xs text-white/20 hover:text-cyan-400 transition-colors">Terminal</Link>
+                 <Link href="/portfolio" className="text-xs text-white/20 hover:text-cyan-400 transition-colors">Portfolio</Link>
+                 <Link href="/ledger" className="text-xs text-white/20 hover:text-cyan-400 transition-colors">Ledger</Link>
               </div>
               <div className="flex flex-col gap-4">
-                 <div className="text-[10px] font-black !text-white/40 uppercase tracking-widest">Connect</div>
-                 <span className="text-xs !text-white/20 hover:text-cyan-400 cursor-pointer">Discord</span>
-                 <span className="text-xs !text-white/20 hover:text-cyan-400 cursor-pointer">X / Twitter</span>
-                 <span className="text-xs !text-white/20 hover:text-cyan-400 cursor-pointer">GitHub</span>
+                 <div className="text-[10px] font-black text-white/40 uppercase tracking-widest">Connect</div>
+                 <span className="text-xs text-white/20 hover:text-cyan-400 cursor-pointer">Discord</span>
+                 <span className="text-xs text-white/20 hover:text-cyan-400 cursor-pointer">X / Twitter</span>
+                 <span className="text-xs text-white/20 hover:text-cyan-400 cursor-pointer">GitHub</span>
               </div>
            </div>
            <button 
              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-             className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:border-cyan-500 !text-white/20 hover:text-cyan-500 transition-all"
+             className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:border-cyan-500 text-white/20 hover:text-cyan-500 transition-all"
            >
               <Zap size={20} />
            </button>

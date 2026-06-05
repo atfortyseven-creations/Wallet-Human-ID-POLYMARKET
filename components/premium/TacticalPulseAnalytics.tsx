@@ -55,11 +55,11 @@ export const TacticalPulseAnalytics: React.FC = () => {
                 {metrics.map((m, idx) => (
                     <div key={idx} className="group relative flex flex-col p-6 rounded-[2rem] border border-white/5 hover:border-white/20 transition-all duration-500 bg-white/[0.02] shadow-sm">
                         <div className="flex justify-between items-start mb-4">
-                            <span className="text-[11px] !text-white/50 uppercase tracking-[0.2em] font-black">{m.label}</span>
+                            <span className="text-[11px] text-white/50 uppercase tracking-[0.2em] font-black">{m.label}</span>
                             <div className={`w-1.5 h-1.5 rounded-full ${m.trend === 'up' ? 'bg-[#14f195]' : m.trend === 'down' ? 'bg-[#f43f5e]' : 'bg-white/30'}`} />
                         </div>
                         
-                        <div className="text-3xl font-black font-mono !text-white/90 tracking-tighter transition-colors duration-500">
+                        <div className="text-3xl font-black font-mono text-white/90 tracking-tighter transition-colors duration-500">
                             {m.value}
                         </div>
 
@@ -71,8 +71,8 @@ export const TacticalPulseAnalytics: React.FC = () => {
                         </div>
 
                         <div className="mt-6 pt-6 border-t border-white/5 transition-all duration-500">
-                            <p className="text-[8px] font-black uppercase leading-relaxed tracking-wider !text-white/40">
-                                <span className="!text-white/90 block mb-1">Strategic Logic:</span>
+                            <p className="text-[8px] font-black uppercase leading-relaxed tracking-wider text-white/40">
+                                <span className="text-white/90 block mb-1">Strategic Logic:</span>
                                 {m.description}
                             </p>
                         </div>

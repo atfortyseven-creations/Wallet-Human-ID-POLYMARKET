@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from 'react';
 import { motion } from 'framer-motion';
@@ -32,7 +32,7 @@ export function MajesticManifesto() {
 function ManifestoItem({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
     return (
         <div className="group space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-black/5 border border-slate-100 flex items-center justify-center text-slate-600 group-hover:bg-slate-950 group-hover:!text-white transition-all duration-500">
+            <div className="w-10 h-10 rounded-xl bg-black/5 border border-slate-100 flex items-center justify-center text-slate-600 group-hover:bg-slate-950 group-hover:text-white transition-all duration-500">
                 {icon}
             </div>
             <h4 className="text-xs font-black uppercase tracking-widest text-slate-900">{title}</h4>

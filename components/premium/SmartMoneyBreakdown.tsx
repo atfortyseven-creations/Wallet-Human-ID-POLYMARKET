@@ -76,7 +76,7 @@ export default function SmartMoneyBreakdown({ address }: SmartMoneyBreakdownProp
         <p className="text-red-600 font-bold"> Analysis Error: {error || 'Unknown error'}</p>
         <button
           onClick={fetchAnalysis}
-          className="mt-4 px-4 py-2 bg-red-600 !text-white rounded-xl font-bold hover:bg-red-700"
+          className="mt-4 px-4 py-2 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700"
         >
           Retry Analysis
         </button>
@@ -117,7 +117,7 @@ export default function SmartMoneyBreakdown({ address }: SmartMoneyBreakdownProp
 
         <button
           onClick={fetchAnalysis}
-          className="p-3 bg-purple-600 !text-white rounded-xl hover:bg-purple-700 transition-all"
+          className="p-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-all"
         >
           <RefreshCw size={20} />
         </button>

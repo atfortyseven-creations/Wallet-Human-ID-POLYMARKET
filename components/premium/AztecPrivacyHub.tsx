@@ -114,7 +114,7 @@ export default function AztecPrivacyHub() {
           </div>
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/40 border border-white/5">
             {isConnected
-              ? <><div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" /><span className="text-[10px] font-bold !text-white/60 uppercase tracking-wider">Wallet Connected · {address?.slice(0,6)}...{address?.slice(-4)}</span></>
+              ? <><div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" /><span className="text-[10px] font-bold text-white/60 uppercase tracking-wider">Wallet Connected · {address?.slice(0,6)}...{address?.slice(-4)}</span></>
               : <><div className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse" /><span className="text-[10px] font-bold text-yellow-400 uppercase tracking-wider">Connect wallet to activate</span></>
             }
           </div>
@@ -122,13 +122,13 @@ export default function AztecPrivacyHub() {
 
         <div className="flex items-center gap-6">
           <div className="text-right">
-            <div className="text-[10px] !text-white/40 uppercase tracking-widest font-black mb-1">Transaction Count</div>
+            <div className="text-[10px] text-white/40 uppercase tracking-widest font-black mb-1">Transaction Count</div>
             <div className="text-sm font-mono text-purple-400">{anonymitySet !== null ? `${anonymitySet.toLocaleString()} txs` : ''}</div>
           </div>
           <button
             onClick={() => { fetchTxs(); handleRoutePrivacy(); }}
             disabled={isRouting || isLoading || !isConnected}
-            className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 !text-white px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest hover:shadow-[0_0_20px_rgba(147,51,234,0.4)] transition-all disabled:opacity-50"
+            className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest hover:shadow-[0_0_20px_rgba(147,51,234,0.4)] transition-all disabled:opacity-50"
           >
             {isLoading ? <RefreshCw size={16} className="animate-spin" /> : <EyeOff size={16} />}
             <span>{isLoading ? 'Fetching...' : 'Refresh On-Chain'}</span>
@@ -144,9 +144,9 @@ export default function AztecPrivacyHub() {
           <div>
             <div className="flex items-center gap-3 mb-8">
               <div className="p-3 bg-white/5 rounded-2xl border border-white/10">
-                <Lock size={20} className="!text-white/80" />
+                <Lock size={20} className="text-white/80" />
               </div>
-              <h3 className="text-lg font-black tracking-tighter !text-white">On-Chain Balance</h3>
+              <h3 className="text-lg font-black tracking-tighter text-white">On-Chain Balance</h3>
             </div>
             <div className="space-y-2">
               <div className="text-[10px] font-black text-purple-400 uppercase tracking-widest">
@@ -165,7 +165,7 @@ export default function AztecPrivacyHub() {
                   <div className={`w-4 h-4 rounded-full bg-blue-500 ${isConnected ? 'animate-pulse' : ''}`} />
                 </div>
                 <div>
-                  <div className="text-xs font-bold !text-white">Network State</div>
+                  <div className="text-xs font-bold text-white">Network State</div>
                   <div className="text-[10px] text-blue-400 font-mono">{isConnected ? 'Ethereum Mainnet' : 'Disconnected'}</div>
                 </div>
               </div>
@@ -176,7 +176,7 @@ export default function AztecPrivacyHub() {
                   <Fingerprint size={14} className="text-purple-400" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold !text-white">Identity Layer</div>
+                  <div className="text-xs font-bold text-white">Identity Layer</div>
                   <div className="text-[10px] text-purple-400 font-mono">Wagmi EOA Verified</div>
                 </div>
               </div>
@@ -192,21 +192,21 @@ export default function AztecPrivacyHub() {
                 <Network size={20} />
               </div>
               <div>
-                <h3 className="text-lg font-black tracking-tighter !text-white">Recent Transactions</h3>
-                <p className="text-[10px] !text-white/40 uppercase tracking-widest">
+                <h3 className="text-lg font-black tracking-tighter text-white">Recent Transactions</h3>
+                <p className="text-[10px] text-white/40 uppercase tracking-widest">
                   {lastFetched ? `Etherscan API · ${lastFetched}` : 'Awaiting connection...'}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10">
               <Activity size={14} className="text-purple-400" />
-              <span className="text-[10px] font-mono !text-white/60">Active</span>
+              <span className="text-[10px] font-mono text-white/60">Active</span>
             </div>
           </div>
 
           <div className="flex-1 space-y-3 relative">
             {!isConnected && (
-              <div className="py-16 text-center !text-white/30 font-mono text-xs border border-dashed border-white/10 rounded-2xl">
+              <div className="py-16 text-center text-white/30 font-mono text-xs border border-dashed border-white/10 rounded-2xl">
                 Connect your wallet to see your real transaction history via Etherscan API.
               </div>
             )}
@@ -232,8 +232,8 @@ export default function AztecPrivacyHub() {
                         : <Zap size={16} className="text-blue-400" />}
                     </div>
                     <div>
-                      <div className="text-sm font-mono !text-white/80 group-hover:!text-white transition-colors">{node.hash}</div>
-                      <div className="text-[10px] !text-white/30 font-mono">From: {node.from}</div>
+                      <div className="text-sm font-mono text-white/80 group-hover:text-white transition-colors">{node.hash}</div>
+                      <div className="text-[10px] text-white/30 font-mono">From: {node.from}</div>
                       <div className="text-[10px] uppercase tracking-widest mt-1 font-black">
                         {node.status === 'verified' && <span className="text-green-500">Confirmed</span>}
                         {node.status === 'processing' && <span className="text-purple-500">Pending</span>}
@@ -242,9 +242,9 @@ export default function AztecPrivacyHub() {
                     </div>
                   </div>
                   <div className="text-right flex items-center gap-4">
-                    <div className="text-sm font-mono !text-white/60">{node.valueParsed} Ξ</div>
+                    <div className="text-sm font-mono text-white/60">{node.valueParsed} Ξ</div>
                     <a href={`https://etherscan.io/tx/${node.id}`} target="_blank" rel="noopener noreferrer">
-                      <ChevronRight size={16} className="!text-white/20 hover:!text-white transition-colors" />
+                      <ChevronRight size={16} className="text-white/20 hover:text-white transition-colors" />
                     </a>
                   </div>
                 </motion.div>

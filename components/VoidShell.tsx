@@ -125,7 +125,7 @@ export default function VoidShell({ children }: { children: React.ReactNode }) {
                                     disabled={isLoading || isAuthenticated}
                                     className={`group relative p-2.5 rounded-full border transition-colors ${isAuthenticated
                                         ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/20'
-                                        : 'bg-surface border-glass-border hover:bg-glass-highlight text-neutral-400 hover:!text-white'
+                                        : 'bg-surface border-glass-border hover:bg-glass-highlight text-neutral-400 hover:text-white'
                                         } disabled:opacity-50`}
                                 >
                                     {isLoading ? (

@@ -119,8 +119,8 @@ export function InflowOutflowCockpit() {
             <Compass className={`w-5 h-5 ${isInflow ? 'text-red-400' : isOutflow ? 'text-emerald-400' : 'text-gray-400'}`} />
           </div>
           <div>
-            <h3 className="!text-white font-black text-lg">Flow Cockpit</h3>
-            <p className="!text-white/30 text-xs font-mono">BTC Exchange Inflow / Outflow</p>
+            <h3 className="text-white font-black text-lg">Flow Cockpit</h3>
+            <p className="text-white/30 text-xs font-mono">BTC Exchange Inflow / Outflow</p>
           </div>
         </div>
         
@@ -151,7 +151,7 @@ export function InflowOutflowCockpit() {
               <p className={`text-2xl font-black ${isInflow ? 'text-red-400' : isOutflow ? 'text-emerald-400' : 'text-gray-400'}`}>
                 {isInflow ? '️ SELL' : isOutflow ? ' ACCUMULATION' : ' NEUTRAL'}
               </p>
-              <p className="!text-white/20 text-xs mt-1">Net flow signal</p>
+              <p className="text-white/20 text-xs mt-1">Net flow signal</p>
             </div>
           </div>
 
@@ -165,8 +165,8 @@ export function InflowOutflowCockpit() {
               <div key={label} className="flex items-center gap-3">
                 <span className="text-lg">{icon}</span>
                 <div>
-                  <p className="!text-white/20 text-[10px] font-mono uppercase">{label}</p>
-                  <p className="!text-white font-black">{value}</p>
+                  <p className="text-white/20 text-[10px] font-mono uppercase">{label}</p>
+                  <p className="text-white font-black">{value}</p>
                 </div>
               </div>
             ))}
@@ -176,7 +176,7 @@ export function InflowOutflowCockpit() {
         {/* Historical mini bars */}
         {data?.historicalPoints && data.historicalPoints.length > 0 && (
           <div className="mt-6 pt-4 border-t border-white/5">
-            <p className="!text-white/20 text-[10px] font-mono uppercase mb-2">Flow history  last 12 blocks</p>
+            <p className="text-white/20 text-[10px] font-mono uppercase mb-2">Flow history  last 12 blocks</p>
             <div className="flex items-end gap-1 h-12">
               {data.historicalPoints.map((pt, i) => {
                 const netFlow = pt.outflow - pt.inflow;

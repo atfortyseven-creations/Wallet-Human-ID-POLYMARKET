@@ -90,7 +90,7 @@ export function ErrorLogger() {
                 <div className="p-3 border-t border-red-500/30 bg-black/30">
                     <button
                         onClick={() => window.location.reload()}
-                        className="w-full px-3 py-2 bg-red-600 hover:bg-red-500 !text-white text-sm font-bold rounded transition-colors"
+                        className="w-full px-3 py-2 bg-red-600 hover:bg-red-500 text-white text-sm font-bold rounded transition-colors"
                     >
                         RELOAD APPLICATION
                     </button>

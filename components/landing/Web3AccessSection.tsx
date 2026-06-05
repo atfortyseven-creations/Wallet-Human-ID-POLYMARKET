@@ -28,7 +28,7 @@ export function Web3AccessSection() {
                     </p>
                     <button 
                         onClick={() => router.push('/wallet')}
-                        className="bg-[#030b36] !text-white px-8 py-4 rounded-full font-black text-lg hover:bg-blue-900 transition-all active:scale-95 shadow-xl hover:shadow-2xl uppercase tracking-widest"
+                        className="bg-[#030b36] text-white px-8 py-4 rounded-full font-black text-lg hover:bg-blue-900 transition-all active:scale-95 shadow-xl hover:shadow-2xl uppercase tracking-widest"
                     >
                         {t('web3.new_cta')}
                     </button>
@@ -107,7 +107,7 @@ function SubscribeCard() {
                             className={`w-6 h-6 border-2 border-[#4A1D6E] rounded flex items-center justify-center transition-colors ${preferences.general ? 'bg-[#4A1D6E]' : 'bg-transparent'}`}
                             onClick={() => togglePref('general')}
                         >
-                            {preferences.general && <Check size={16} className="!text-white" />}
+                            {preferences.general && <Check size={16} className="text-white" />}
                         </div>
                         <span className="text-[#24083a] font-black text-lg select-none group-hover:opacity-80 uppercase tracking-tight">{t('sub.pref_general')}</span>
                     </label>
@@ -117,7 +117,7 @@ function SubscribeCard() {
                             className={`w-6 h-6 border-2 border-[#4A1D6E] rounded flex items-center justify-center transition-colors ${preferences.developer ? 'bg-[#4A1D6E]' : 'bg-transparent'}`}
                             onClick={() => togglePref('developer')}
                         >
-                            {preferences.developer && <Check size={16} className="!text-white" />}
+                            {preferences.developer && <Check size={16} className="text-white" />}
                         </div>
                         <span className="text-[#24083a] font-black text-lg select-none group-hover:opacity-80 uppercase tracking-tight">{t('sub.pref_dev')}</span>
                     </label>
@@ -137,7 +137,7 @@ function SubscribeCard() {
                     <button 
                         onClick={handleSubscribe}
                         disabled={loading}
-                        className="bg-[#24083a] !text-white px-10 py-5 rounded-full font-black text-lg hover:bg-[#3bf] hover:text-[#24083a] transition-all shadow-xl hover:shadow-2xl disabled:opacity-50 whitespace-nowrap order-2 md:order-1 uppercase tracking-widest"
+                        className="bg-[#24083a] text-white px-10 py-5 rounded-full font-black text-lg hover:bg-[#3bf] hover:text-[#24083a] transition-all shadow-xl hover:shadow-2xl disabled:opacity-50 whitespace-nowrap order-2 md:order-1 uppercase tracking-widest"
                     >
                         {loading ? t('sub.cta_loading') : t('sub.cta')}
                     </button>

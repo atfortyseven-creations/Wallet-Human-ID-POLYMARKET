@@ -46,12 +46,12 @@ function NavLink({ href, label, icon: Icon, badge, isActive }: NavLinkProps) {
             <div className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 ${
                 isActive 
                 ? 'bg-indigo-500/10 text-indigo-500 border border-indigo-500/20 shadow-[0_0_15px_-5px_rgba(79,70,229,0.3)]' 
-                : 'text-gray-400 hover:!text-white hover:bg-white/5'
+                : 'text-gray-400 hover:text-white hover:bg-white/5'
             }`}>
                 <Icon size={18} className={isActive ? 'text-indigo-500' : 'group-hover:text-indigo-400 transition-colors'} />
                 <span className="text-sm font-bold tracking-tight">{label}</span>
                 {badge && (
-                    <span className="bg-indigo-500 text-[10px] font-black px-1.5 py-0.5 rounded-md !text-white animate-pulse">
+                    <span className="bg-indigo-500 text-[10px] font-black px-1.5 py-0.5 rounded-md text-white animate-pulse">
                         {badge}
                     </span>
                 )}
@@ -122,7 +122,7 @@ export function DropdownNav() {
                             />
                         </div>
                         <div className="flex flex-col leading-none">
-                            <span className="font-aztec-h2 text-[15px] uppercase tracking-[0.12em] !text-white leading-tight">Whale Alert Network</span>
+                            <span className="font-aztec-h2 text-[15px] uppercase tracking-[0.12em] text-white leading-tight">Whale Alert Network</span>
                             <span className="font-aztec-h2 text-[11px] uppercase tracking-[0.3em] text-[var(--aztec-orchid)] leading-tight">Corporation.</span>
                         </div>
                     </Link>
@@ -146,7 +146,7 @@ export function DropdownNav() {
                             className="p-2 hover:bg-white/10 rounded-lg transition-colors"
                             title="Support"
                         >
-                            <HelpCircle size={18} className="text-gray-400 hover:!text-white transition-colors" />
+                            <HelpCircle size={18} className="text-gray-400 hover:text-white transition-colors" />
                         </button>
 
                         {/* Notifications */}
@@ -155,7 +155,7 @@ export function DropdownNav() {
                             className="p-2 hover:bg-white/10 rounded-lg transition-colors relative"
                             title="Notifications"
                         >
-                            <Bell size={18} className="text-gray-400 hover:!text-white transition-colors" />
+                            <Bell size={18} className="text-gray-400 hover:text-white transition-colors" />
                             {unreadCount > 0 && (
                                 <span className="absolute top-1 right-1 w-2 h-2 bg-indigo-500 rounded-full" />
                             )}
@@ -170,7 +170,7 @@ export function DropdownNav() {
                             {isStealthMode ? (
                                 <EyeOff size={18} className="text-indigo-400" />
                             ) : (
-                                <Eye size={18} className="text-gray-400 hover:!text-white transition-colors" />
+                                <Eye size={18} className="text-gray-400 hover:text-white transition-colors" />
                             )}
                         </button>
 
@@ -181,7 +181,7 @@ export function DropdownNav() {
                                     onClick={() => setShowSettings(!showSettings)}
                                     className="p-1 rounded-full border border-white/20 hover:border-indigo-500/50 transition-all overflow-hidden"
                                 >
-                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-900 flex items-center justify-center !text-white font-black text-xs uppercase">
+                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-900 flex items-center justify-center text-white font-black text-xs uppercase">
                                         {address?.slice(2, 4)}
                                     </div>
                                 </button>
@@ -196,12 +196,12 @@ export function DropdownNav() {
                                         >
                                             <div className="p-4 border-b border-white/5 bg-white/5 rounded-t-2xl mb-2">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-xl bg-indigo-500 flex items-center justify-center !text-white font-black">
+                                                    <div className="w-10 h-10 rounded-xl bg-indigo-500 flex items-center justify-center text-white font-black">
                                                         {address?.slice(2, 4)}
                                                     </div>
                                                     <div>
                                                         <div className="text-xs font-black text-indigo-500 uppercase tracking-widest mb-0.5">VIP Member</div>
-                                                        <div className="text-sm font-bold !text-white tabular-nums">
+                                                        <div className="text-sm font-bold text-white tabular-nums">
                                                             {address?.slice(0, 8)}...{address?.slice(-6)}
                                                         </div>
                                                     </div>
@@ -214,7 +214,7 @@ export function DropdownNav() {
                                                         setShowSettings(false);
                                                         router.push('/ledger');
                                                     }}
-                                                    className="w-full px-4 py-3 text-left text-sm text-gray-300 hover:!text-white hover:bg-white/5 rounded-2xl transition-all flex items-center justify-between group"
+                                                    className="w-full px-4 py-3 text-left text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-2xl transition-all flex items-center justify-between group"
                                                 >
                                                     <div className="flex items-center gap-3">
                                                         <div className="p-2 bg-indigo-500/10 rounded-xl group-hover:bg-indigo-500/20 transition-colors">
@@ -232,7 +232,7 @@ export function DropdownNav() {
                                                         setShowSettings(false);
                                                         window.location.href = '/settings'; // Clerk profile management
                                                     }}
-                                                    className="w-full px-4 py-3 text-left text-sm text-gray-300 hover:!text-white hover:bg-white/5 rounded-2xl transition-all flex items-center justify-between group"
+                                                    className="w-full px-4 py-3 text-left text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-2xl transition-all flex items-center justify-between group"
                                                 >
                                                     <div className="flex items-center gap-3">
                                                         <div className="p-2 bg-indigo-500/10 rounded-xl group-hover:bg-indigo-500/20 transition-colors">
@@ -249,7 +249,7 @@ export function DropdownNav() {
                                                         await signOut();
                                                         window.location.href = '/?login=true'; // Direct to landing with login trigger
                                                     }}
-                                                    className="w-full px-4 py-3 text-left text-sm text-gray-300 hover:!text-white hover:bg-white/5 rounded-2xl transition-all flex items-center justify-between group"
+                                                    className="w-full px-4 py-3 text-left text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-2xl transition-all flex items-center justify-between group"
                                                 >
                                                     <div className="flex items-center gap-3">
                                                         <div className="p-2 bg-indigo-500/10 rounded-xl group-hover:bg-indigo-500/20 transition-colors">
@@ -264,7 +264,7 @@ export function DropdownNav() {
                                                         setShowSettings(false);
                                                         router.push('/?login=true');
                                                     }}
-                                                    className="w-full px-4 py-3 text-left text-sm text-gray-300 hover:!text-white hover:bg-white/5 rounded-2xl transition-all flex items-center justify-between group"
+                                                    className="w-full px-4 py-3 text-left text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-2xl transition-all flex items-center justify-between group"
                                                 >
                                                     <div className="flex items-center gap-3">
                                                         <div className="p-2 bg-indigo-500/10 rounded-xl group-hover:bg-indigo-500/20 transition-colors">
@@ -298,9 +298,9 @@ export function DropdownNav() {
                         ) : (
                             <button
                                 onClick={() => open()}
-                                className="px-4 py-2 bg-indigo-600 border border-indigo-500 shadow-[0_0_15px_rgba(79,70,229,0.4)] !text-white font-black text-xs uppercase tracking-widest rounded-xl hover:bg-indigo-500 transition-all flex items-center gap-2"
+                                className="px-4 py-2 bg-indigo-600 border border-indigo-500 shadow-[0_0_15px_rgba(79,70,229,0.4)] text-white font-black text-xs uppercase tracking-widest rounded-xl hover:bg-indigo-500 transition-all flex items-center gap-2"
                             >
-                                <Zap size={14} className="fill-current !text-white" />
+                                <Zap size={14} className="fill-current text-white" />
                                 Connect Wallet
                             </button>
                         )}
@@ -311,7 +311,7 @@ export function DropdownNav() {
                                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                                 className="p-2 hover:bg-white/10 rounded-lg transition-colors"
                             >
-                                {isMenuOpen ? <X size={24} className="!text-white" /> : <Menu size={24} className="!text-white" />}
+                                {isMenuOpen ? <X size={24} className="text-white" /> : <Menu size={24} className="text-white" />}
                             </button>
                         </div>
                     </div>
@@ -329,7 +329,7 @@ export function DropdownNav() {
                             <div className="flex flex-col p-4 gap-2">
                                 <Link 
                                     href="/dashboard" 
-                                    className="flex items-center gap-3 px-4 py-4 bg-white/5 rounded-xl !text-white font-bold"
+                                    className="flex items-center gap-3 px-4 py-4 bg-white/5 rounded-xl text-white font-bold"
                                     onClick={() => setIsMenuOpen(false)}
                                 >
                                     <LayoutDashboard size={20} className="text-indigo-500" />
@@ -337,7 +337,7 @@ export function DropdownNav() {
                                 </Link>
                                 <Link 
                                     href="/portfolio" 
-                                    className="flex items-center gap-3 px-4 py-4 bg-white/5 rounded-xl !text-white font-bold"
+                                    className="flex items-center gap-3 px-4 py-4 bg-white/5 rounded-xl text-white font-bold"
                                     onClick={() => setIsMenuOpen(false)}
                                 >
                                     <TrendingUp size={20} className="text-indigo-500" />
@@ -345,7 +345,7 @@ export function DropdownNav() {
                                 </Link>
                                 <Link 
                                     href="/chat" 
-                                    className="flex items-center gap-3 px-4 py-4 bg-white/5 rounded-xl !text-white font-bold"
+                                    className="flex items-center gap-3 px-4 py-4 bg-white/5 rounded-xl text-white font-bold"
                                     onClick={() => setIsMenuOpen(false)}
                                 >
                                     <MessageCircle size={20} className="text-indigo-500" />
@@ -353,12 +353,12 @@ export function DropdownNav() {
                                 </Link>
                                 <Link 
                                     href="/registry" 
-                                    className="flex items-center gap-3 px-4 py-4 bg-white/5 rounded-xl !text-white font-bold border border-indigo-500/20"
+                                    className="flex items-center gap-3 px-4 py-4 bg-white/5 rounded-xl text-white font-bold border border-indigo-500/20"
                                     onClick={() => setIsMenuOpen(false)}
                                 >
                                     <Map size={20} className="text-indigo-500" />
                                     Registry
-                                    <span className="ml-auto bg-indigo-500 text-[10px] font-black px-2 py-0.5 rounded !text-white animate-pulse">LIVE</span>
+                                    <span className="ml-auto bg-indigo-500 text-[10px] font-black px-2 py-0.5 rounded text-white animate-pulse">LIVE</span>
                                 </Link>
                             </div>
                         </motion.div>

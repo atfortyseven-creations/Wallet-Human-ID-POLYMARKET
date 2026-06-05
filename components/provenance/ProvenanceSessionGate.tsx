@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
@@ -30,7 +30,7 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
           </p>
           <Link
             href="/connect"
-            className="w-full py-4 rounded-2xl bg-[#050505] !text-white text-[11px] font-black uppercase tracking-widest"
+            className="w-full py-4 rounded-2xl bg-[#050505] text-white text-[11px] font-black uppercase tracking-widest"
           >
             Go to connect
           </Link>

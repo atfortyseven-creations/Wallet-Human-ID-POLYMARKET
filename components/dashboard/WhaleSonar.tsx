@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+﻿import React, { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Activity, Zap, ShieldAlert, Target, TrendingUp, Flame, Loader2 } from 'lucide-react';
 import { useSystemIntel } from '@/lib/api-client';

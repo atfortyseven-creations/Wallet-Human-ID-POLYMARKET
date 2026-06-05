@@ -53,7 +53,7 @@ export default function PrivacyMixerModal({ isOpen, onClose }: PrivacyMixerModal
                         className="relative w-full max-w-md bg-gradient-to-br from-indigo-900/90 to-black/90 backdrop-blur-xl rounded-3xl p-8 border border-white/10 shadow-2xl"
                     >
                         <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/10">
-                            <X size={20} className="!text-white" />
+                            <X size={20} className="text-white" />
                         </button>
 
                         <div className="flex items-center gap-3 mb-6">
@@ -61,8 +61,8 @@ export default function PrivacyMixerModal({ isOpen, onClose }: PrivacyMixerModal
                                 <EyeOff className="text-indigo-400" size={24} />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-black !text-white">Privacy Mixer</h2>
-                                <p className="text-sm !text-white/60">Anonymous donations</p>
+                                <h2 className="text-2xl font-black text-white">Privacy Mixer</h2>
+                                <p className="text-sm text-white/60">Anonymous donations</p>
                             </div>
                         </div>
 
@@ -77,49 +77,49 @@ export default function PrivacyMixerModal({ isOpen, onClose }: PrivacyMixerModal
                         </div>
 
                         <div className="mb-4">
-                            <label className="!text-white/80 text-sm mb-2 block">Recipient Address</label>
+                            <label className="text-white/80 text-sm mb-2 block">Recipient Address</label>
                             <input
                                 type="text"
                                 value={recipientAddress}
                                 onChange={(e) => setRecipientAddress(e.target.value)}
                                 placeholder="0x... or charity.eth"
-                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl !text-white"
+                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white"
                             />
                         </div>
 
                         <div className="mb-6">
-                            <label className="!text-white/80 text-sm mb-2 block">Amount (ETH)</label>
+                            <label className="text-white/80 text-sm mb-2 block">Amount (ETH)</label>
                             <input
                                 type="number"
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value)}
                                 placeholder="0.0"
                                 step="0.01"
-                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl !text-white"
+                                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white"
                             />
                         </div>
 
                         <div className="mb-6 p-3 bg-white/5 rounded-xl text-sm">
-                            <div className="flex justify-between !text-white/60 mb-2">
+                            <div className="flex justify-between text-white/60 mb-2">
                                 <span>Privacy Fee</span>
-                                <span className="!text-white font-bold">0.5%</span>
+                                <span className="text-white font-bold">0.5%</span>
                             </div>
-                            <div className="flex justify-between !text-white/60">
+                            <div className="flex justify-between text-white/60">
                                 <span>Mixing Time</span>
-                                <span className="!text-white font-bold">~5 minutes</span>
+                                <span className="text-white font-bold">~5 minutes</span>
                             </div>
                         </div>
 
                         <button
                             onClick={sendPrivate}
                             disabled={loading || !recipientAddress || !amount}
-                            className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 disabled:bg-white/10 rounded-xl font-bold !text-white flex items-center justify-center gap-2"
+                            className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 disabled:bg-white/10 rounded-xl font-bold text-white flex items-center justify-center gap-2"
                         >
                             {loading ? <Loader2 className="animate-spin" size={20} /> : <Heart size={20} />}
                             {loading ? 'Mixing & Sending...' : 'Send Anonymously'}
                         </button>
 
-                        <p className="!text-white/40 text-xs text-center mt-4">
+                        <p className="text-white/40 text-xs text-center mt-4">
                             Powered by zkSNARK privacy protocol. Your identity is mathematically protected.
                         </p>
                     </motion.div>

@@ -74,7 +74,7 @@ export function TransactionStatusModal({ isOpen, status, title, message, onClose
                                 >
                                      {/* Fox/Logo Simplified or Brand Logo */}
                                      {/* Using a simple H for Human or relevant icon */}
-                                     <span className="!text-white font-bold text-xl">H</span>
+                                     <span className="text-white font-bold text-xl">H</span>
                                 </motion.div>
                             )}
 
@@ -86,7 +86,7 @@ export function TransactionStatusModal({ isOpen, status, title, message, onClose
                                     transition={{ type: "spring", stiffness: 200, damping: 15 }}
                                     className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center shadow-xl"
                                 >
-                                    <Check size={40} className="!text-white" strokeWidth={4} />
+                                    <Check size={40} className="text-white" strokeWidth={4} />
                                 </motion.div>
                             )}
 
@@ -97,7 +97,7 @@ export function TransactionStatusModal({ isOpen, status, title, message, onClose
                                     animate={{ scale: 1 }}
                                     className="w-20 h-20 bg-red-500 rounded-full flex items-center justify-center shadow-xl"
                                 >
-                                    <X size={40} className="!text-white" strokeWidth={4} />
+                                    <X size={40} className="text-white" strokeWidth={4} />
                                 </motion.div>
                             )}
                         </div>

@@ -1,4 +1,4 @@
-"use client";
+ï»¿"use client";
 
 /**
  * CoreDotsPanel  Full system QDs interface
@@ -197,14 +197,14 @@ function EntropyTab() {
                 <div>
                     <h3 className="font-black text-sm uppercase tracking-tight">256-Bit Core Entropy</h3>
                     <p className="text-[10px] font-mono text-black/40 mt-0.5">
-                        CSPRNG · Web Crypto API · injected per-tx
+                        CSPRNG Â· Web Crypto API Â· injected per-tx
                     </p>
                 </div>
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => setAutoRefresh(a => !a)}
                         className={`px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border transition-all ${
-                            autoRefresh ? 'bg-black !!text-white border-black' : 'bg-transparent text-black/50 border-black/20 hover:border-black/40'
+                            autoRefresh ? 'bg-black text-white border-black' : 'bg-transparent text-black/50 border-black/20 hover:border-black/40'
                         }`}
                     >
                         {autoRefresh ? 'Active' : 'Paused'}
@@ -383,7 +383,7 @@ function ReceiptRow({
                 </div>
                 <div className="text-[9px] font-mono text-black/40 truncate mt-0.5">
                     {isSend ? ` ${fmtAddr(receipt.receiver)}` : ` ${fmtAddr(receipt.sender)}`}
-                    {receipt.memo ? ` · "${receipt.memo}"` : ''}
+                    {receipt.memo ? ` Â· "${receipt.memo}"` : ''}
                 </div>
             </div>
             <div className="text-right shrink-0">
@@ -432,17 +432,17 @@ function FullReceiptCard({ receipt, onClose }: { receipt: OnChainReceipt; onClos
             >
                 {/* Header */}
                 <div className="bg-black px-6 pt-6 pb-8 flex flex-col items-center gap-3 relative">
-                    <button onClick={onClose} className="absolute top-4 right-4 !text-white/40 hover:!text-white transition-colors">
+                    <button onClick={onClose} className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors">
                         <X size={18} />
                     </button>
                     <div className="w-20 h-20">
                         <RemoteLottie path="/system-shots/Transaction Complete.json" loop={false} className="w-full h-full" />
                     </div>
                     <div className="text-center">
-                        <div className="!text-white font-black text-2xl tracking-tight">
+                        <div className="text-white font-black text-2xl tracking-tight">
                             {amt.toLocaleString(undefined, { maximumFractionDigits: 6 })} QDs
                         </div>
-                        <div className="!text-white/40 text-[10px] font-mono uppercase tracking-widest mt-1">
+                        <div className="text-white/40 text-[10px] font-mono uppercase tracking-widest mt-1">
                             Immutable On-Chain Receipt
                         </div>
                     </div>
@@ -479,7 +479,7 @@ function FullReceiptCard({ receipt, onClose }: { receipt: OnChainReceipt; onClos
                     </a>
                     <button
                         onClick={onClose}
-                        className="flex-1 py-3 bg-black !!text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-black/80 transition-all"
+                        className="flex-1 py-3 bg-black text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-black/80 transition-all"
                     >
                         Close
                     </button>
@@ -563,7 +563,7 @@ function HistoryTab({
                     <div>
                         <div className="font-black text-sm uppercase tracking-tight">Transaction History</div>
                         <div className="text-[9px] font-mono text-black/40 mt-0.5">
-                            {userReceiptCount.toString()} on-chain receipts · CoreLedger
+                            {userReceiptCount.toString()} on-chain receipts Â· CoreLedger
                         </div>
                     </div>
                     <button
@@ -645,8 +645,8 @@ function StepBar({ step }: { step: TxStep }) {
                                 transition={{ duration: 0.2 }}
                                 className="w-6 h-6 rounded-full flex items-center justify-center"
                             >
-                                {done    ? <CheckCircle2 size={12} className="!text-white" /> :
-                                 current ? <Loader2 size={10} className="!text-white animate-spin" /> :
+                                {done    ? <CheckCircle2 size={12} className="text-white" /> :
+                                 current ? <Loader2 size={10} className="text-white animate-spin" /> :
                                            <div className="w-1.5 h-1.5 rounded-full bg-black/20" />}
                             </motion.div>
                             <span className={`text-[7px] font-black uppercase tracking-widest ${done || current ? 'text-black' : 'text-black/20'}`}>
@@ -968,7 +968,7 @@ function TransferTab({
                 {/* Memo field */}
                 <div className="space-y-1.5">
                     <label className="text-[9px] font-black uppercase tracking-[0.25em] text-black/40">
-                        Public Memo <span className="normal-case font-normal text-black/25">(optional · max 64 chars)</span>
+                        Public Memo <span className="normal-case font-normal text-black/25">(optional Â· max 64 chars)</span>
                     </label>
                     <input
                         type="text"
@@ -991,7 +991,7 @@ function TransferTab({
                             exit={{ opacity: 0 }}
                             className="bg-[#FFFFFF] border border-black/5 rounded-2xl px-5 py-4"
                         >
-                            <div className="text-[8px] font-black uppercase tracking-widest text-black/30 mb-3">Estimated Gas · L2 ({CHAIN_NAME})</div>
+                            <div className="text-[8px] font-black uppercase tracking-widest text-black/30 mb-3">Estimated Gas Â· L2 ({CHAIN_NAME})</div>
                             <div className="space-y-0 divide-y divide-black/5">
                                 {[
                                     { label: 'Gas Units',    value: gasEstimate.toLocaleString(), unit: 'gas' },
@@ -1162,7 +1162,7 @@ export function CoreDotsPanel() {
                 <div className="flex items-start justify-between mb-5">
                     <div>
                         <div className="text-[8px] font-mono font-black uppercase tracking-[0.35em] text-black/35 mb-1">
-                            CoreLedger v2 · {CHAIN_NAME} · {TOKEN_ADDR !== '0x0000000000000000000000000000000000000000' ? fmtAddr(TOKEN_ADDR) : 'Not configured'}
+                            CoreLedger v2 Â· {CHAIN_NAME} Â· {TOKEN_ADDR !== '0x0000000000000000000000000000000000000000' ? fmtAddr(TOKEN_ADDR) : 'Not configured'}
                         </div>
                         <h2 className="text-2xl font-black tracking-tighter text-black uppercase">
                             QDs  Core Dots

@@ -218,11 +218,11 @@ export function ConnectWalletModal() {
                                             </button>
 
                                             <button onClick={handleMobileSync} className="group w-full flex items-center justify-between px-3 py-2.5 sm:p-4 border border-[#050505] bg-[#050505] hover:bg-[#222] rounded-xl transition-all shadow-md">
-                                                <div className="flex items-center gap-3 !text-white">
+                                                <div className="flex items-center gap-3 text-white">
                                                     <QrCode size={15} />
                                                     <div className="text-left">
                                                         <div className="text-[11px] font-black uppercase tracking-wide">Direct Sync</div>
-                                                        <div className="text-[8px] !text-white/60 font-mono uppercase tracking-widest">Session Synchronization</div>
+                                                        <div className="text-[8px] text-white/60 font-mono uppercase tracking-widest">Session Synchronization</div>
                                                     </div>
                                                 </div>
                                                 <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] shrink-0" />

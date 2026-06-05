@@ -34,18 +34,18 @@ export function ApiKeyManager({ tier, keys }: { tier: keyof typeof SAAS_PLANS; k
             {/* Header */}
             <div className="flex justify-between items-start mb-8">
                 <div>
-                    <h2 className="text-xl font-black !text-white uppercase tracking-tight flex items-center gap-3">
+                    <h2 className="text-xl font-black text-white uppercase tracking-tight flex items-center gap-3">
                         <Key className="text-indigo-400" />
                         API Keys
                     </h2>
-                    <p className="!text-white/40 text-sm mt-1">
+                    <p className="text-white/40 text-sm mt-1">
                         Manage your API authentication credentials.
                     </p>
                 </div>
                 
                 <div className="text-right">
-                    <span className="text-2xl font-black !text-white">{keys.length}</span>
-                    <span className="!text-white/40">/{maxKeys}</span>
+                    <span className="text-2xl font-black text-white">{keys.length}</span>
+                    <span className="text-white/40">/{maxKeys}</span>
                     <p className="text-[10px] uppercase font-black tracking-widest text-indigo-400 mt-1">
                         Keys Allowed
                     </p>
@@ -76,8 +76,8 @@ export function ApiKeyManager({ tier, keys }: { tier: keyof typeof SAAS_PLANS; k
                     >
                         <div>
                             <div className="flex items-center gap-2 mb-1">
-                                <span className="font-bold !text-white">{key.name}</span>
-                                <span className="text-[10px] uppercase tracking-wider bg-white/10 !text-white/70 px-2 py-0.5 rounded-full">
+                                <span className="font-bold text-white">{key.name}</span>
+                                <span className="text-[10px] uppercase tracking-wider bg-white/10 text-white/70 px-2 py-0.5 rounded-full">
                                     Active
                                 </span>
                             </div>
@@ -85,11 +85,11 @@ export function ApiKeyManager({ tier, keys }: { tier: keyof typeof SAAS_PLANS; k
                                 <code className="text-sm font-mono text-indigo-300 bg-indigo-500/10 px-2 py-1 rounded">
                                     {visibleKeyId === key.id ? key.key : 'hdi_live_'}
                                 </code>
-                                <button onClick={() => toggleKeyVisibility(key.id)} className="!text-white/40 hover:!text-white transition-colors">
+                                <button onClick={() => toggleKeyVisibility(key.id)} className="text-white/40 hover:text-white transition-colors">
                                     {visibleKeyId === key.id ? <EyeOff size={16} /> : <Eye size={16} />}
                                 </button>
                             </div>
-                            <p className="text-xs !text-white/30 mt-2">
+                            <p className="text-xs text-white/30 mt-2">
                                 Created {new Date(key.createdAt).toLocaleDateString()}
                             </p>
                         </div>
@@ -105,8 +105,8 @@ export function ApiKeyManager({ tier, keys }: { tier: keyof typeof SAAS_PLANS; k
 
                 {keys.length === 0 && (
                      <div className="text-center py-12 border border-dashed border-white/10 rounded-xl">
-                         <Key className="mx-auto !text-white/20 mb-3" size={32} />
-                         <p className="!text-white/50">No API keys generated yet.</p>
+                         <Key className="mx-auto text-white/20 mb-3" size={32} />
+                         <p className="text-white/50">No API keys generated yet.</p>
                      </div>
                 )}
             </div>
@@ -120,7 +120,7 @@ export function ApiKeyManager({ tier, keys }: { tier: keyof typeof SAAS_PLANS; k
                         exit={{ opacity: 0, height: 0 }}
                         className="bg-white/5 border border-white/10 rounded-xl p-4 overflow-hidden"
                     >
-                        <h4 className="text-sm font-bold !text-white mb-3">Create New API Key</h4>
+                        <h4 className="text-sm font-bold text-white mb-3">Create New API Key</h4>
                         <div className="flex gap-3">
                             <Input 
                                 placeholder="Key Name (e.g., Trading Bot)"
@@ -129,12 +129,12 @@ export function ApiKeyManager({ tier, keys }: { tier: keyof typeof SAAS_PLANS; k
                                 className="bg-black/50 border-white/10 focus-visible:ring-indigo-500"
                             />
                             <Button 
-                                className="bg-indigo-500 hover:bg-indigo-600 !text-white shrink-0"
+                                className="bg-indigo-500 hover:bg-indigo-600 text-white shrink-0"
                                 onClick={() => setIsCreating(false)} // Close creation modal
                             >
                                 Generate
                             </Button>
-                            <Button variant="ghost" className="!text-white/50" onClick={() => setIsCreating(false)}>
+                            <Button variant="ghost" className="text-white/50" onClick={() => setIsCreating(false)}>
                                 Cancel
                             </Button>
                         </div>

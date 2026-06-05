@@ -65,7 +65,7 @@ export const ReceiveAssetModal = ({ isOpen, onClose }: ReceiveAssetModalProps) =
 
               <div className="w-full space-y-4">
                 <div className="flex flex-col items-center">
-                  <span className="text-[9px] font-black uppercase tracking-widest !text-white/40 mb-2">Your Institutional BSV Address</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest text-white/40 mb-2">Your Institutional BSV Address</span>
                   <div 
                     onClick={handleCopy}
                     className="group flex items-center gap-4 px-6 py-4 bg-white/5 border border-white/10 rounded-2xl cursor-pointer hover:border-[var(--aztec-chartreuse)] transition-all w-full justify-between"

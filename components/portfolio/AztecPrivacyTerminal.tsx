@@ -141,7 +141,7 @@ export function AztecPrivacyTerminal({ onBack }: { onBack: () => void }) {
               onClick={() => setStep(s)}
               className={`flex items-center gap-2.5 px-3 py-2.5 text-[9px] font-bold uppercase tracking-widest whitespace-nowrap transition-all ${
                 step === s
-                  ? 'bg-black !!text-white'
+                  ? 'bg-black text-white'
                   : 'text-black/40 hover:text-black hover:bg-black/5'
               }`}
             >
@@ -229,7 +229,7 @@ function OverviewPanel({ address, balance, pendingDeposit, viewingKey, onDeposit
         </div>
       )}
 
-      <button onClick={onDeposit} className="w-full py-5 bg-black !!text-white text-[10px] font-black uppercase tracking-[0.25em] hover:bg-black/80 transition-all flex items-center justify-center gap-3">
+      <button onClick={onDeposit} className="w-full py-5 bg-black text-white text-[10px] font-black uppercase tracking-[0.25em] hover:bg-black/80 transition-all flex items-center justify-center gap-3">
         <Shield size={14} /> Shield ETH into Aztec L2
       </button>
     </div>
@@ -320,7 +320,7 @@ function DepositPanel({ log, privateKey, onSuccess }: any) {
       <button
         onClick={execute}
         disabled={isBusy || !amount}
-        className="w-full py-5 bg-black !!text-white text-[10px] font-black uppercase tracking-[0.25em] hover:bg-black/80 disabled:opacity-30 transition-all flex items-center justify-center gap-3"
+        className="w-full py-5 bg-black text-white text-[10px] font-black uppercase tracking-[0.25em] hover:bg-black/80 disabled:opacity-30 transition-all flex items-center justify-center gap-3"
       >
         {isBusy ? <RefreshCw size={14} className="animate-spin" /> : <Lock size={14} />}
         {isBusy ? 'BROADCASTING TO L1...' : 'EXECUTE SHIELD'}
@@ -386,7 +386,7 @@ function RegisterPanel({ log, privateKey }: any) {
       <button
         onClick={execute}
         disabled={isBusy}
-        className="w-full py-5 bg-black !!text-white text-[10px] font-black uppercase tracking-[0.25em] hover:bg-black/80 disabled:opacity-30 transition-all flex items-center justify-center gap-3"
+        className="w-full py-5 bg-black text-white text-[10px] font-black uppercase tracking-[0.25em] hover:bg-black/80 disabled:opacity-30 transition-all flex items-center justify-center gap-3"
       >
         {isBusy ? <RefreshCw size={14} className="animate-spin" /> : <Key size={14} />}
         {isBusy ? 'SIGNING EIP-712...' : 'SIGN & REGISTER'}
@@ -469,7 +469,7 @@ function PrivateTransferPanel({ log, privateKey }: any) {
 
       <button
         onClick={build}
-        className="w-full py-5 bg-black !!text-white text-[10px] font-black uppercase tracking-[0.25em] hover:bg-black/80 transition-all flex items-center justify-center gap-3"
+        className="w-full py-5 bg-black text-white text-[10px] font-black uppercase tracking-[0.25em] hover:bg-black/80 transition-all flex items-center justify-center gap-3"
       >
         <EyeOff size={14} /> BUILD ZK PAYLOAD
       </button>
@@ -507,7 +507,7 @@ function PendingPanel({ pendingDeposit, lastTx, onRefresh }: any) {
 
       <button
         onClick={onRefresh}
-        className="w-full py-4 border border-black/10 text-[9px] font-black uppercase tracking-[0.25em] hover:border-black hover:bg-black hover:!text-white transition-all flex items-center justify-center gap-2"
+        className="w-full py-4 border border-black/10 text-[9px] font-black uppercase tracking-[0.25em] hover:border-black hover:bg-black hover:text-white transition-all flex items-center justify-center gap-2"
       >
         <RefreshCw size={12} /> REFRESH FROM CHAIN
       </button>

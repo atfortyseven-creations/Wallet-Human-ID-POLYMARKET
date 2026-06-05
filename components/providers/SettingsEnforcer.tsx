@@ -33,7 +33,7 @@ export function SettingsEnforcer() {
                     exit={{ opacity: 0, y: 50, scale: 0.9 }}
                     className="fixed bottom-6 right-6 z-[9000] pointer-events-none"
                 >
-                    <div className="bg-[#FF3B30] !text-white px-4 py-2 rounded-full shadow-[0_0_30px_rgba(255,59,48,0.5)] flex items-center gap-2 border-2 border-white">
+                    <div className="bg-[#FF3B30] text-white px-4 py-2 rounded-full shadow-[0_0_30px_rgba(255,59,48,0.5)] flex items-center gap-2 border-2 border-white">
                         <Network size={14} className="animate-pulse" />
                         <span className="text-[10px] font-black uppercase tracking-widest">Testnet Active</span>
                     </div>

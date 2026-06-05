@@ -70,7 +70,7 @@ export function AlphaToaster() {
                 }}
                 className={`pointer-events-auto p-3 rounded-full border transition-all shadow-xl ${
                     isMuted 
-                        ? 'bg-rose-500 !text-white border-transparent' 
+                        ? 'bg-rose-500 text-white border-transparent' 
                         : 'bg-white text-black border-black/10 hover:border-black/20'
                 }`}
             >

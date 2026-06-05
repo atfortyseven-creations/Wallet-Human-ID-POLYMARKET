@@ -68,7 +68,7 @@ export class GlobalErrorBoundary extends Component<Props, State> {
               <div className="w-full space-y-3">
                 <button
                   onClick={this.handleReset}
-                  className="w-full flex items-center justify-center gap-3 py-4 bg-black  !text-white  font-black uppercase tracking-[0.2em] text-[10px] hover:opacity-80 transition-opacity"
+                  className="w-full flex items-center justify-center gap-3 py-4 bg-black  text-white  font-black uppercase tracking-[0.2em] text-[10px] hover:opacity-80 transition-opacity"
                 >
                   <RefreshCw size={14} />
                   Re-initialize Core

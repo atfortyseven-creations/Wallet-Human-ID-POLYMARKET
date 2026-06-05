@@ -94,7 +94,7 @@ export default function GlassLogin() {
 
                 {/* Titles / Header (Simplified) */}
                 <div className="text-center space-y-1 mb-6">
-                    <h1 className="text-xl font-bold !text-white tracking-tight">
+                    <h1 className="text-xl font-bold text-white tracking-tight">
                         Polymarket Wallet
                     </h1>
                 </div>

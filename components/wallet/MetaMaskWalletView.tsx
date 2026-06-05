@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 // No Clerk dependency  wallet identity comes from SIWE wagmi
@@ -151,7 +151,7 @@ export default function MetaMaskWalletView() {
                 <header className="px-6 py-6 flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-xl z-30 border-b border-black/5">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-black flex items-center justify-center">
-                            <Shield className="w-5 h-5 !text-white" />
+                            <Shield className="w-5 h-5 text-white" />
                         </div>
                         <div>
                             <div className="flex items-center gap-1.5">
@@ -203,7 +203,7 @@ export default function MetaMaskWalletView() {
                                 <div className="absolute inset-0 flex items-center justify-center">
                                     <button 
                                         onClick={() => setIsStealthMode(false)}
-                                        className="px-4 py-2 bg-black !!text-white rounded-full text-[10px] font-black tracking-[0.2em]"
+                                        className="px-4 py-2 bg-black text-white rounded-full text-[10px] font-black tracking-[0.2em]"
                                     >
                                         REVEAL ASSETS
                                     </button>
@@ -321,7 +321,7 @@ export default function MetaMaskWalletView() {
                                 <div className="bg-white rounded-[3rem] border border-black/10 p-8 space-y-6 shadow-2xl max-w-md mx-auto">
                                     <div className="flex justify-between items-start">
                                         <div className="w-12 h-12 rounded-2xl bg-black flex items-center justify-center">
-                                            <Key className="w-6 h-6 !text-white" />
+                                            <Key className="w-6 h-6 text-white" />
                                         </div>
                                         <button onClick={() => setShowRevealModal(false)} className="p-2 hover:bg-black/5 rounded-full text-black/20">
                                             <LogOut className="w-5 h-5 rotate-90" />
@@ -350,7 +350,7 @@ export default function MetaMaskWalletView() {
                                             <button 
                                                 onClick={handleRevealPhrase}
                                                 disabled={!revealPassword || isRevealing}
-                                                className="w-full py-5 bg-black !!text-white font-black uppercase tracking-widest rounded-2xl hover:bg-black/80 active:scale-[0.98] transition-all disabled:opacity-20"
+                                                className="w-full py-5 bg-black text-white font-black uppercase tracking-widest rounded-2xl hover:bg-black/80 active:scale-[0.98] transition-all disabled:opacity-20"
                                             >
                                                 {isRevealing ? "Verifying..." : "Reveal Recovery Phrase"}
                                             </button>
@@ -410,7 +410,7 @@ function ActionButton({ icon, label, onClick, highlight = false }: ActionButtonP
             <div className={`
                 w-16 h-16 rounded-[1.5rem] flex items-center justify-center transition-all duration-300
                 ${highlight 
-                    ? 'bg-black !!text-white' 
+                    ? 'bg-black text-white' 
                     : 'bg-black/5 text-black/40 border border-black/5 hover:bg-black/10 hover:text-black'}
             `}>
                 {icon}

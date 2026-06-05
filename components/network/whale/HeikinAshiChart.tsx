@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useMemo, memo } from 'react';
 import { motion } from 'framer-motion';
@@ -52,7 +52,7 @@ export const HeikinAshiChart = memo(({
     const { candles, netBuy, netSell, netTransfer, nowIndex = -1 } = useMemo(() => {
         if (!data.length) return { candles: [], netBuy: 0, netSell: 0, netTransfer: 0 };
 
-        // ? [DATA PRECISION] 1-Minute Wall-Clock Aligned Binning
+        // ️ [DATA PRECISION] 1-Minute Wall-Clock Aligned Binning
         const binCount = 60; // 60 minutes of history
         const intervalMs = 60000; // 1 minute
         const now = Date.now();

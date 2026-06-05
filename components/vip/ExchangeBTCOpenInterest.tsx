@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
@@ -152,7 +152,7 @@ export function ExchangeBTCOpenInterest() {
             <span className="text-[var(--aztec-ink)]/30 font-light text-sm ml-1">({currency})</span>
           </h2>
           <p className="text-[10px] font-mono text-slate-400 uppercase tracking-widest mt-0.5">
-            Total OI across major exchanges � 90d history
+            Total OI across major exchanges · 90d history
           </p>
         </div>
 

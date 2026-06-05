@@ -42,8 +42,8 @@ export default function CoreReceipt({
                     <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full mx-auto flex items-center justify-center mb-4">
                         <CheckCircle2 size={32} strokeWidth={2.5} />
                     </div>
-                    <h3 className="!text-white text-xl font-black tracking-tight uppercase">Transferencia Exitosa</h3>
-                    <p className="!text-white/50 text-xs font-mono mt-2">ID: {receiptId}</p>
+                    <h3 className="text-white text-xl font-black tracking-tight uppercase">Transferencia Exitosa</h3>
+                    <p className="text-white/50 text-xs font-mono mt-2">ID: {receiptId}</p>
                 </div>
             </div>
 
@@ -94,7 +94,7 @@ export default function CoreReceipt({
             </div>
 
             <div className="bg-neutral-900 px-6 py-4 flex items-center justify-between">
-                <div className="flex items-center gap-2 !text-white">
+                <div className="flex items-center gap-2 text-white">
                     <Hexagon size={16} className="text-emerald-400" />
                     <span className="text-xs font-black uppercase tracking-widest">CoreLedger</span>
                 </div>

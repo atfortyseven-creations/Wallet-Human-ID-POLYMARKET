@@ -47,7 +47,7 @@ export function ZapButton({ poolName, apy }: { poolName: string, apy: string }) 
                             {/* Background Effects */}
                             <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/10 to-transparent pointer-events-none" />
 
-                            <h3 className="text-xl font-bold !text-white mb-1 relative z-10 flex items-center gap-2">
+                            <h3 className="text-xl font-bold text-white mb-1 relative z-10 flex items-center gap-2">
                                 <Zap className="text-emerald-400" />
                                 ZAP into {poolName}
                             </h3>
@@ -71,7 +71,7 @@ export function ZapButton({ poolName, apy }: { poolName: string, apy: string }) 
                                     >
                                         CONFIRM ZAP
                                     </button>
-                                    <button onClick={() => setShowModal(false)} className="w-full py-2 text-xs text-zinc-500 hover:!text-white">
+                                    <button onClick={() => setShowModal(false)} className="w-full py-2 text-xs text-zinc-500 hover:text-white">
                                         CANCEL
                                     </button>
                                 </div>

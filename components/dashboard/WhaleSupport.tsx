@@ -146,7 +146,7 @@ export function WhaleSupport() {
                                 onClick={() => setActiveSection(tab.id)}
                                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
                                     activeSection === tab.id
-                                        ? 'bg-black !!text-white shadow-sm'
+                                        ? 'bg-black text-white shadow-sm'
                                         : 'text-black/40 hover:text-black hover:bg-black/[0.04]'
                                 }`}
                             >
@@ -173,9 +173,9 @@ export function WhaleSupport() {
                                     className="group relative flex flex-col gap-3 p-6 bg-white border border-slate-200/60 rounded-2xl shadow-sm hover:shadow-md hover:border-black/20 transition-all duration-300"
                                 >
                                     {ch.badge && (
-                                        <span className="absolute top-4 right-4 text-[7px] font-black uppercase tracking-widest px-1.5 py-0.5 bg-emerald-500 !text-white rounded-md">{ch.badge}</span>
+                                        <span className="absolute top-4 right-4 text-[7px] font-black uppercase tracking-widest px-1.5 py-0.5 bg-emerald-500 text-white rounded-md">{ch.badge}</span>
                                     )}
-                                    <div className="w-10 h-10 flex items-center justify-center bg-black/[0.04] border border-black/8 rounded-xl text-black/60 group-hover:bg-black group-hover:!text-white group-hover:border-black transition-all duration-300">
+                                    <div className="w-10 h-10 flex items-center justify-center bg-black/[0.04] border border-black/8 rounded-xl text-black/60 group-hover:bg-black group-hover:text-white group-hover:border-black transition-all duration-300">
                                         {ch.icon}
                                     </div>
                                     <div className="flex flex-col gap-0.5">
@@ -237,7 +237,7 @@ export function WhaleSupport() {
                                         rel={doc.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                                         className={`group flex items-start gap-4 p-5 hover:bg-black/5/60 transition-colors ${i % 2 === 0 && i < DOCS_LINKS.length - 1 ? 'sm:border-b sm:border-slate-100' : ''}`}
                                     >
-                                        <div className="w-8 h-8 flex items-center justify-center bg-black/[0.03] border border-black/8 rounded-lg text-black/50 shrink-0 group-hover:bg-black group-hover:!text-white group-hover:border-black transition-all duration-200 mt-0.5">
+                                        <div className="w-8 h-8 flex items-center justify-center bg-black/[0.03] border border-black/8 rounded-lg text-black/50 shrink-0 group-hover:bg-black group-hover:text-white group-hover:border-black transition-all duration-200 mt-0.5">
                                             {doc.icon}
                                         </div>
                                         <div className="flex flex-col gap-1 min-w-0">
@@ -273,7 +273,7 @@ export function WhaleSupport() {
                                         <label className="font-mono text-[9px] font-black uppercase tracking-widest text-black/40 block mb-2">Priority</label>
                                         <div className="flex gap-2">
                                             {(['LOW', 'MEDIUM', 'HIGH'] as Priority[]).map(p => (
-                                                <button key={p} onClick={() => setPriority(p)} className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${priority === p ? 'bg-black !!text-white border-black' : 'bg-white text-black/40 border-slate-200/60 hover:border-black/20 hover:text-black'}`}>
+                                                <button key={p} onClick={() => setPriority(p)} className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${priority === p ? 'bg-black text-white border-black' : 'bg-white text-black/40 border-slate-200/60 hover:border-black/20 hover:text-black'}`}>
                                                     {priorityLabel[p]}
                                                 </button>
                                             ))}
@@ -290,7 +290,7 @@ export function WhaleSupport() {
                                                 <span className="font-mono text-[10px] font-black uppercase tracking-widest">Ticket Submitted</span>
                                             </motion.div>
                                         ) : (
-                                            <motion.button key="sub" onClick={handleSubmit} disabled={submitting} className="w-full flex items-center justify-center gap-2.5 py-4 rounded-xl font-black uppercase tracking-widest text-[10px] bg-black !!text-white hover:bg-black/80 transition-all disabled:opacity-50 active:scale-[0.98]">
+                                            <motion.button key="sub" onClick={handleSubmit} disabled={submitting} className="w-full flex items-center justify-center gap-2.5 py-4 rounded-xl font-black uppercase tracking-widest text-[10px] bg-black text-white hover:bg-black/80 transition-all disabled:opacity-50 active:scale-[0.98]">
                                                 {submitting ? <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" /> : <span className="font-mono text-[10px] font-black">[SND]</span>}
                                                 {submitting ? 'Submitting...' : 'Submit Ticket'}
                                             </motion.button>

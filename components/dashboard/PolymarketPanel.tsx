@@ -1,4 +1,4 @@
-"use client";
+ï»¿"use client";
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -288,14 +288,14 @@ export default function PolymarketPanel() {
                                     className="flex flex-col items-center justify-center p-2 rounded-xl bg-[#00C076]/10 border border-[#00C076]/30 min-w-[75px] hover:bg-[#00C076]/20 transition-all font-mono"
                                 >
                                     <span className="text-[10px] text-[#00C076] font-black uppercase tracking-widest mb-1">YES</span>
-                                    <span className="text-sm font-black text-[#00C076]">{Math.round(m.yesPrice * 100)}¢</span>
+                                    <span className="text-sm font-black text-[#00C076]">{Math.round(m.yesPrice * 100)}Â¢</span>
                                 </button>
                                 <button
                                     onClick={(e) => { e.stopPropagation(); setSelected(m); }}
                                     className="flex flex-col items-center justify-center p-2 rounded-xl bg-[#FF3B30]/10 border border-[#FF3B30]/30 min-w-[75px] hover:bg-[#FF3B30]/20 transition-all font-mono"
                                 >
                                     <span className="text-[10px] text-[#FF3B30] font-black uppercase tracking-widest mb-1">NO</span>
-                                    <span className="text-sm font-black text-[#FF3B30]">{Math.round((1 - m.yesPrice) * 100)}¢</span>
+                                    <span className="text-sm font-black text-[#FF3B30]">{Math.round((1 - m.yesPrice) * 100)}Â¢</span>
                                 </button>
                             </div>
                         </motion.div>
@@ -394,16 +394,16 @@ export default function PolymarketPanel() {
                                     <button 
                                         onClick={() => handleTrade('YES')}
                                         disabled={isExecuting !== null || !tradeAmount || parseFloat(tradeAmount) <= 0}
-                                        className="flex-1 py-5 rounded-2xl bg-[#00C076] !text-white font-black uppercase tracking-widest text-sm flex flex-col items-center justify-center gap-1 transition-all disabled:opacity-50 shadow-lg hover:shadow-[#00C076]/20"
+                                        className="flex-1 py-5 rounded-2xl bg-[#00C076] text-white font-black uppercase tracking-widest text-sm flex flex-col items-center justify-center gap-1 transition-all disabled:opacity-50 shadow-lg hover:shadow-[#00C076]/20"
                                     >
-                                        {isExecuting === 'YES' ? <Loader2 size={24} className="animate-spin" /> : <>BUY YES <span className="text-[10px] font-bold opacity-80 mt-0.5">@{Math.round(selected.yesPrice * 100)}¢</span></>}
+                                        {isExecuting === 'YES' ? <Loader2 size={24} className="animate-spin" /> : <>BUY YES <span className="text-[10px] font-bold opacity-80 mt-0.5">@{Math.round(selected.yesPrice * 100)}Â¢</span></>}
                                     </button>
                                     <button 
                                         onClick={() => handleTrade('NO')}
                                         disabled={isExecuting !== null || !tradeAmount || parseFloat(tradeAmount) <= 0}
-                                        className="flex-1 py-5 rounded-2xl bg-[#FF3B30] !text-white font-black uppercase tracking-widest text-sm flex flex-col items-center justify-center gap-1 transition-all disabled:opacity-50 shadow-lg hover:shadow-[#FF3B30]/20"
+                                        className="flex-1 py-5 rounded-2xl bg-[#FF3B30] text-white font-black uppercase tracking-widest text-sm flex flex-col items-center justify-center gap-1 transition-all disabled:opacity-50 shadow-lg hover:shadow-[#FF3B30]/20"
                                     >
-                                        {isExecuting === 'NO' ? <Loader2 size={24} className="animate-spin" /> : <>BUY NO <span className="text-[10px] font-bold opacity-80 mt-0.5">@{Math.round((1 - selected.yesPrice) * 100)}¢</span></>}
+                                        {isExecuting === 'NO' ? <Loader2 size={24} className="animate-spin" /> : <>BUY NO <span className="text-[10px] font-bold opacity-80 mt-0.5">@{Math.round((1 - selected.yesPrice) * 100)}Â¢</span></>}
                                     </button>
                                 </div>
                             </div>

@@ -76,14 +76,14 @@ export function RealPrivacySettings() {
         <div className="p-4 rounded-xl hover:bg-white/5 border border-white/5 transition-colors group">
           <div className="flex justify-between items-center mb-3">
              <div>
-                <h4 className="!text-white text-sm font-medium">Log Session Level</h4>
+                <h4 className="text-white text-sm font-medium">Log Session Level</h4>
                 <p className="text-xs text-gray-500">Determine verbosity of recorded sessions.</p>
              </div>
           </div>
           <select 
              value={profile.logLevel} 
              onChange={e => handleUpdate("logLevel", e.target.value)}
-             className="w-full bg-black/40 border border-white/10 rounded-lg p-3 !text-white focus:border-[#00f5ff] outline-none text-xs"
+             className="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white focus:border-[#00f5ff] outline-none text-xs"
           >
              <option value="LOW">Low (Logins & Transfers only)</option>
              <option value="MEDIUM">Medium (Default - Page views)</option>
@@ -103,14 +103,14 @@ export function RealPrivacySettings() {
         <div className="p-4 rounded-xl hover:bg-white/5 border border-white/5 transition-colors group">
           <div className="flex justify-between items-center mb-3">
              <div>
-                <h4 className="!text-white text-sm font-medium">Session Auto-Logout</h4>
+                <h4 className="text-white text-sm font-medium">Session Auto-Logout</h4>
                 <p className="text-xs text-gray-500">Eject session after inactivity.</p>
              </div>
           </div>
           <select 
              value={profile.sessionAutoLogout} 
              onChange={e => handleUpdate("sessionAutoLogout", e.target.value)}
-             className="w-full bg-black/40 border border-white/10 rounded-lg p-3 !text-white focus:border-[#00f5ff] outline-none text-xs"
+             className="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white focus:border-[#00f5ff] outline-none text-xs"
           >
              <option value="15min">15 Minutes (Maximum Security)</option>
              <option value="1h">1 Hour</option>
@@ -123,7 +123,7 @@ export function RealPrivacySettings() {
         <div className="p-4 rounded-xl hover:bg-white/5 border border-white/5 transition-colors group">
           <div className="flex justify-between items-center mb-3">
              <div>
-                <h4 className="!text-white text-sm font-medium">IP Whitelisting</h4>
+                <h4 className="text-white text-sm font-medium">IP Whitelisting</h4>
                 <p className="text-xs text-gray-500">Lock KYC to these IPs only.</p>
              </div>
           </div>
@@ -132,14 +132,14 @@ export function RealPrivacySettings() {
                value={ipInput} 
                onChange={e => setIpInput(e.target.value)} 
                placeholder="192.168.1.1" 
-               className="flex-1 bg-black/40 border border-white/10 rounded-lg p-3 !text-white outline-none font-mono text-xs" 
+               className="flex-1 bg-black/40 border border-white/10 rounded-lg p-3 text-white outline-none font-mono text-xs" 
              />
              <button onClick={addIp} className="px-4 bg-[#00f5ff]/10 text-[#00f5ff] border border-[#00f5ff]/30 rounded-lg text-xs font-bold hover:bg-[#00f5ff]/20 transition-colors">Add</button>
           </div>
           {profile.ipWhitelist.length > 0 && (
              <div className="flex flex-wrap gap-2 mt-3">
                {profile.ipWhitelist.map((ip: string) => (
-                  <span key={ip} className="px-2 py-1 bg-white/5 border border-white/10 rounded text-[10px] font-mono !text-white flex items-center gap-2">
+                  <span key={ip} className="px-2 py-1 bg-white/5 border border-white/10 rounded text-[10px] font-mono text-white flex items-center gap-2">
                     {ip}
                     <button onClick={() => removeIp(ip)} className="text-red-400 hover:text-red-300">×</button>
                   </span>
@@ -160,14 +160,14 @@ export function RealPrivacySettings() {
         <div className="p-4 rounded-xl hover:bg-white/5 border border-white/5 transition-colors group">
           <div className="flex justify-between items-center mb-3">
              <div>
-                <h4 className="!text-white text-sm font-medium">KYC Visibility</h4>
+                <h4 className="text-white text-sm font-medium">KYC Visibility</h4>
                 <p className="text-xs text-gray-500">How your wallets appear in peer discovery.</p>
              </div>
           </div>
           <select 
              value={profile.systemVisibility} 
              onChange={e => handleUpdate("systemVisibility", e.target.value)}
-             className="w-full bg-black/40 border border-white/10 rounded-lg p-3 !text-white focus:border-[#00f5ff] outline-none text-xs"
+             className="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white focus:border-[#00f5ff] outline-none text-xs"
           >
              <option value="Public">Public (Visible in Whale Network)</option>
              <option value="Trusted Only">Trusted Only (Contacts)</option>
@@ -193,7 +193,7 @@ function ToggleItem({ title, description, active, onClick }: { title: string, de
     return (
         <div className="flex items-center justify-between p-4 rounded-xl border border-white/5 bg-white/[0.01] hover:bg-white/5 transition-colors cursor-pointer group" onClick={onClick}>
             <div>
-                <h4 className="!text-white text-sm font-medium mb-1 group-hover:text-[#00f5ff] transition-colors flex items-center gap-2">
+                <h4 className="text-white text-sm font-medium mb-1 group-hover:text-[#00f5ff] transition-colors flex items-center gap-2">
                    {title}
                 </h4>
                 <p className="text-xs text-gray-500 max-w-[80%]">{description}</p>

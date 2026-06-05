@@ -90,13 +90,13 @@ export function IntelFeed() {
                                 {yieldData.pools.map((pool, i) => (
                                     <div key={i} className="relative bg-white/5 border border-white/5 p-4 rounded-xl overflow-hidden group hover:border-emerald-500/30 transition-all">
                                         {/* Rank Number */}
-                                        <div className="absolute -right-4 -top-4 w-16 h-16 bg-white/5 rounded-full flex items-end justify-start p-3 text-4xl font-bold !text-white/5 group-hover:text-emerald-500/20 transition-colors">
+                                        <div className="absolute -right-4 -top-4 w-16 h-16 bg-white/5 rounded-full flex items-end justify-start p-3 text-4xl font-bold text-white/5 group-hover:text-emerald-500/20 transition-colors">
                                             {i + 1}
                                         </div>
 
                                         <div className="flex justify-between items-start mb-2 relative z-10">
                                             <div>
-                                                <h4 className="text-sm font-bold !text-white">{pool.pool}</h4>
+                                                <h4 className="text-sm font-bold text-white">{pool.pool}</h4>
                                                 <p className="text-xs text-zinc-400">{pool.protocol}</p>
                                             </div>
                                             <div className="text-right flex flex-col items-end gap-1">

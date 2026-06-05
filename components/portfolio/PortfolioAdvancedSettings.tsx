@@ -171,7 +171,7 @@ export function PortfolioAdvancedSettings({ isOpen, onClose, userAddress }: Port
                         <div className="p-6 flex flex-row sm:flex-col items-center justify-between sm:items-start">
                             <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 rounded-xl bg-black flex items-center justify-center">
-                                    <SettingsIcon size={16} className="!text-white" />
+                                    <SettingsIcon size={16} className="text-white" />
                                 </div>
                                 <h2 className="font-black text-lg tracking-tight uppercase" style={{ color: INK }}>Settings</h2>
                             </div>
@@ -185,7 +185,7 @@ export function PortfolioAdvancedSettings({ isOpen, onClose, userAddress }: Port
                                     key={tab.id}
                                     onClick={() => setActiveTab(tab.id)}
                                     className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all whitespace-nowrap sm:whitespace-normal shrink-0 sm:shrink ${
-                                        activeTab === tab.id ? 'bg-black !!text-white' : 'hover:bg-black/5 text-black/60'
+                                        activeTab === tab.id ? 'bg-black text-white' : 'hover:bg-black/5 text-black/60'
                                     }`}
                                 >
                                     <tab.icon size={16} strokeWidth={activeTab === tab.id ? 2.5 : 2} />
@@ -268,7 +268,7 @@ export function PortfolioAdvancedSettings({ isOpen, onClose, userAddress }: Port
                                                 <h4 className="font-black text-[11px] uppercase tracking-widest" style={{ color: INK }}>State Logs</h4>
                                                 <p className="text-[11px] mt-1" style={{ color: MUTED }}>Download your active session state for debugging.</p>
                                             </div>
-                                            <button onClick={handleDownloadLogs} className="flex items-center justify-center gap-2 px-5 py-2.5 bg-black !!text-white rounded-full font-bold text-[10px] uppercase tracking-widest">
+                                            <button onClick={handleDownloadLogs} className="flex items-center justify-center gap-2 px-5 py-2.5 bg-black text-white rounded-full font-bold text-[10px] uppercase tracking-widest">
                                                 <Download size={14} /> Download
                                             </button>
                                         </div>
@@ -342,7 +342,7 @@ export function PortfolioAdvancedSettings({ isOpen, onClose, userAddress }: Port
                                                 value={newContactAddress} onChange={e => setNewContactAddress(e.target.value)}
                                                 className="flex-[2] p-3 rounded-xl border font-mono text-xs focus:outline-none focus:border-black"
                                             />
-                                            <button onClick={handleAddContact} className="px-6 py-3 bg-black !!text-white rounded-xl font-bold text-[10px] uppercase tracking-widest shrink-0">Add</button>
+                                            <button onClick={handleAddContact} className="px-6 py-3 bg-black text-white rounded-xl font-bold text-[10px] uppercase tracking-widest shrink-0">Add</button>
                                         </div>
                                     </div>
 
@@ -379,7 +379,7 @@ export function PortfolioAdvancedSettings({ isOpen, onClose, userAddress }: Port
                                                 <h4 className="font-black text-[11px] uppercase tracking-widest text-amber-700">Reveal Secret Recovery Phrase</h4>
                                             </div>
                                             <p className="text-[11px] text-amber-700/70 mb-4 leading-relaxed">If you lose your recovery phrase, you will lose access to your funds. Do not share it with anyone.</p>
-                                            <button className="px-5 py-2.5 bg-amber-500 !text-white rounded-full font-bold text-[10px] uppercase tracking-widest">Reveal Phrase</button>
+                                            <button className="px-5 py-2.5 bg-amber-500 text-white rounded-full font-bold text-[10px] uppercase tracking-widest">Reveal Phrase</button>
                                         </div>
 
                                         <div className="space-y-3 pt-4 border-t">

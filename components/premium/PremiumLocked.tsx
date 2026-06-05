@@ -90,7 +90,7 @@ export default function PremiumLocked({
         >
           <div className="absolute inset-0 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full blur-2xl opacity-50" />
           <div className="relative bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 p-8 rounded-3xl shadow-2xl">
-            <IconComponent className="w-16 h-16 !text-white" strokeWidth={1.5} />
+            <IconComponent className="w-16 h-16 text-white" strokeWidth={1.5} />
           </div>
           
           {/* Sparkle Effects */}
@@ -110,7 +110,7 @@ export default function PremiumLocked({
         </motion.div>
 
         {/* Title */}
-        <h2 className="text-4xl font-black !text-white mb-4 tracking-tight">
+        <h2 className="text-4xl font-black text-white mb-4 tracking-tight">
           {feature}
         </h2>
 
@@ -148,7 +148,7 @@ export default function PremiumLocked({
           className="group relative w-full overflow-hidden"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-purple-500 to-blue-600 rounded-2xl blur-xl opacity-75 group-hover:opacity-100 transition-opacity" />
-          <div className="relative bg-gradient-to-r from-purple-600 via-purple-500 to-blue-600 !text-white px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest shadow-2xl flex items-center justify-center gap-2">
+          <div className="relative bg-gradient-to-r from-purple-600 via-purple-500 to-blue-600 text-white px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest shadow-2xl flex items-center justify-center gap-2">
             <Crown className="w-5 h-5" />
             Upgrade to Premium
             <motion.div

@@ -116,7 +116,7 @@ export function DropdownNav() {
                                             onClick={() => setIsOpen(false)}
                                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                                                 link.isVIP
-                                                    ? 'bg-gradient-to-r from-black to-gray-800 !text-white hover:scale-[1.02] shadow-lg'
+                                                    ? 'bg-gradient-to-r from-black to-gray-800 text-white hover:scale-[1.02] shadow-lg'
                                                     : 'hover:bg-gray-100  text-[#1F1F1F] '
                                             }`}
                                         >
@@ -190,7 +190,7 @@ export function DropdownNav() {
                                             appKit.open();
                                             setIsOpen(false);
                                         }}
-                                        className="w-full bg-[#1F1F1F]   !text-white px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-95 transition-all shadow-xl flex items-center justify-center gap-3"
+                                        className="w-full bg-[#1F1F1F]   text-white px-6 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:scale-[1.02] active:scale-95 transition-all shadow-xl flex items-center justify-center gap-3"
                                     >
                                         {isConnected ? (
                                             <>

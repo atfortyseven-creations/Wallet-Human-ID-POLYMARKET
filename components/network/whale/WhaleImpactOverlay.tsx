@@ -75,7 +75,7 @@ export function WhaleImpactOverlay({ active, data, onComplete }: WhaleImpactProp
                             className="flex items-center gap-2 mb-2"
                         >
                             <div className={`w-1.5 h-1.5 rounded-full ${isMega ? 'bg-indigo-500 animate-pulse' : 'bg-emerald-500'}`} />
-                            <span className="text-[10px] font-black tracking-[0.3em] !text-white/40 uppercase">
+                            <span className="text-[10px] font-black tracking-[0.3em] text-white/40 uppercase">
                                 Large Scale Movement Alert
                             </span>
                         </motion.div>
@@ -86,7 +86,7 @@ export function WhaleImpactOverlay({ active, data, onComplete }: WhaleImpactProp
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ delay: 0.3 }}
-                                className={`text-7xl md:text-8xl font-black tracking-tighter ${isMega ? 'text-indigo-500' : '!text-white'} leading-none`}
+                                className={`text-7xl md:text-8xl font-black tracking-tighter ${isMega ? 'text-indigo-500' : 'text-white'} leading-none`}
                             >
                                 ${data.usdValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                             </motion.h2>
@@ -136,12 +136,12 @@ export function WhaleImpactOverlay({ active, data, onComplete }: WhaleImpactProp
                     {/* Meta Stream Footer */}
                     <div className="mt-8 flex gap-12 opacity-30">
                         <div className="flex items-center gap-2">
-                            <Cpu size={14} className="!text-white" />
-                            <span className="text-[9px] font-mono font-bold tracking-widest !text-white uppercase">System Analysis</span>
+                            <Cpu size={14} className="text-white" />
+                            <span className="text-[9px] font-mono font-bold tracking-widest text-white uppercase">System Analysis</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Flame size={14} className="!text-white" />
-                            <span className="text-[9px] font-mono font-bold tracking-widest !text-white uppercase">Market Shift Active</span>
+                            <Flame size={14} className="text-white" />
+                            <span className="text-[9px] font-mono font-bold tracking-widest text-white uppercase">Market Shift Active</span>
                         </div>
                     </div>
                 </motion.div>

@@ -49,10 +49,10 @@ const GenericModal = ({ title, onClose, children }: { title: string, onClose: ()
   <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in" onClick={onClose}>
     <div className="w-full max-w-4xl bg-[#050505] rounded-[40px] shadow-[0_0_80px_-20px_rgba(168,85,247,0.3)] border border-white/10 max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
       <div className="p-4 flex justify-between items-center border-b border-white/5 shrink-0 bg-[#0A0A0A] rounded-t-[40px]">
-        <h2 className="text-xl font-bold ml-4 !text-white tracking-widest uppercase">{title}</h2>
-        <button onClick={onClose} className="p-2 rounded-full hover:bg-white/10 transition-colors"><X size={20} className="!text-white/60" /></button>
+        <h2 className="text-xl font-bold ml-4 text-white tracking-widest uppercase">{title}</h2>
+        <button onClick={onClose} className="p-2 rounded-full hover:bg-white/10 transition-colors"><X size={20} className="text-white/60" /></button>
       </div>
-      <div className="overflow-y-auto p-6 custom-scrollbar bg-[#050505] rounded-b-[40px] !text-white">
+      <div className="overflow-y-auto p-6 custom-scrollbar bg-[#050505] rounded-b-[40px] text-white">
         {children}
       </div>
     </div>
@@ -154,7 +154,7 @@ export function GalacticDashboard() {
   };
 
   return (
-    <div className="w-full h-screen bg-[#050505] !text-white flex overflow-hidden font-sans selection:bg-white/20">
+    <div className="w-full h-screen bg-[#050505] text-white flex overflow-hidden font-sans selection:bg-white/20">
       
       {/* 
         ========================================================================
@@ -170,7 +170,7 @@ export function GalacticDashboard() {
               <div className="w-2.5 h-2.5 bg-purple-500 rounded-full shadow-[0_0_10px_rgba(168,85,247,0.8)]" />
             </div>
             <div>
-              <div className="text-[10px] font-black uppercase tracking-widest !text-white/50 mb-1">Network</div>
+              <div className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-1">Network</div>
               <div className="bg-white rounded-full">
                 <MetaMaskNetworkSelector />
               </div>
@@ -188,16 +188,16 @@ export function GalacticDashboard() {
             disabled={isRefreshing}
             className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/5 disabled:opacity-50"
           >
-            <RefreshCcw size={16} className={`!text-white/70 ${isRefreshing ? 'animate-spin' : ''}`} />
-            <span className="text-[9px] font-black uppercase tracking-widest !text-white/70">Refresh</span>
+            <RefreshCcw size={16} className={`text-white/70 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <span className="text-[9px] font-black uppercase tracking-widest text-white/70">Refresh</span>
           </button>
           <button onClick={() => handleAction('Settings')} className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/5">
-            <Settings size={16} className="!text-white/70" />
-            <span className="text-[9px] font-black uppercase tracking-widest !text-white/70">Settings</span>
+            <Settings size={16} className="text-white/70" />
+            <span className="text-[9px] font-black uppercase tracking-widest text-white/70">Settings</span>
           </button>
           <button onClick={() => handleAction('Vault Manager')} className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/5">
-            <Key size={16} className="!text-white/70" />
-            <span className="text-[9px] font-black uppercase tracking-widest !text-white/70">Vault Manager</span>
+            <Key size={16} className="text-white/70" />
+            <span className="text-[9px] font-black uppercase tracking-widest text-white/70">Vault Manager</span>
           </button>
           <button onClick={() => disconnect()} className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 transition-colors border border-red-500/20 group">
             <LogOut size={16} className="text-red-500/70 group-hover:text-red-400" />
@@ -209,7 +209,7 @@ export function GalacticDashboard() {
         <div className="p-6 border-b border-white/5 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 blur-[50px] rounded-full -translate-y-1/2 translate-x-1/2" />
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-black uppercase tracking-widest !text-white/40">Native Balance</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Native Balance</span>
             <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-green-500/10 border border-green-500/20">
               <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
               <span className="text-[8px] font-bold uppercase tracking-wider text-green-500">Live On-Chain</span>
@@ -217,16 +217,16 @@ export function GalacticDashboard() {
           </div>
           <div className="flex items-baseline gap-2">
             <span className="text-4xl font-black tracking-tighter">{maticBalance}</span>
-            <span className="text-lg font-bold !text-white/40">MATIC</span>
+            <span className="text-lg font-bold text-white/40">MATIC</span>
           </div>
-          <div className="text-sm font-mono !text-white/50 mt-1">${maticValueUsd} USD</div>
+          <div className="text-sm font-mono text-white/50 mt-1">${maticValueUsd} USD</div>
         </div>
 
         {/* Cryptographic Identity */}
         <div className="p-6 border-b border-white/5">
-          <h3 className="text-[10px] font-black uppercase tracking-widest !text-white/40 mb-3">Cryptographic Identity</h3>
+          <h3 className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-3">Cryptographic Identity</h3>
           <div className="bg-[#111] border border-white/10 rounded-xl p-4 flex flex-col gap-4">
-            <div className="font-mono text-[13px] !text-white/90 break-all">{truncateAddress(address || '')}</div>
+            <div className="font-mono text-[13px] text-white/90 break-all">{truncateAddress(address || '')}</div>
             <div className="grid grid-cols-2 gap-2">
               <button onClick={handleCopy} className="flex items-center justify-center gap-2 py-2.5 bg-white/5 hover:bg-white/10 transition-colors rounded-lg text-[10px] font-bold uppercase tracking-widest">
                 <Copy size={12} /> Copy
@@ -245,7 +245,7 @@ export function GalacticDashboard() {
 
         {/* Protocol & Security */}
         <div className="p-6">
-          <h3 className="text-[10px] font-black uppercase tracking-widest !text-white/40 mb-4">Protocol & Security</h3>
+          <h3 className="text-[10px] font-black uppercase tracking-widest text-white/40 mb-4">Protocol & Security</h3>
           <div className="flex flex-col gap-2">
             <div className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-colors">
               <div className="flex items-center gap-3">
@@ -259,7 +259,7 @@ export function GalacticDashboard() {
                 <CheckCircle2 size={14} className="text-green-400" />
                 <span className="text-xs font-bold">Allowances</span>
               </div>
-              <span className="text-[9px] font-bold uppercase tracking-widest !text-white/40">0 Exposed</span>
+              <span className="text-[9px] font-bold uppercase tracking-widest text-white/40">0 Exposed</span>
             </div>
             <div className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-colors">
               <div className="flex items-center gap-3">
@@ -273,7 +273,7 @@ export function GalacticDashboard() {
                 <Blocks size={14} className="text-indigo-400" />
                 <span className="text-xs font-bold">Deployer</span>
               </div>
-              <span className="text-[9px] font-bold uppercase tracking-widest !text-white/40">Ready</span>
+              <span className="text-[9px] font-bold uppercase tracking-widest text-white/40">Ready</span>
             </div>
             <div className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-colors">
               <div className="flex items-center gap-3">
@@ -287,7 +287,7 @@ export function GalacticDashboard() {
                 <ActivitySquare size={14} className="text-emerald-400" />
                 <span className="text-xs font-bold">Mempool</span>
               </div>
-              <span className="text-[9px] font-bold uppercase tracking-widest !text-white/40">Block #{blockNumber || '---'}</span>
+              <span className="text-[9px] font-bold uppercase tracking-widest text-white/40">Block #{blockNumber || '---'}</span>
             </div>
           </div>
         </div>
@@ -306,7 +306,7 @@ export function GalacticDashboard() {
 
         {/* Quick Actions Bar */}
         <div className="px-8 py-8 border-b border-white/5 relative z-10">
-          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] !text-white/40 mb-6">Quick Actions</h2>
+          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-white/40 mb-6">Quick Actions</h2>
           <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
             {[
               { icon: ArrowDownToLine, label: 'Deposit' },
@@ -318,9 +318,9 @@ export function GalacticDashboard() {
             ].map((action, i) => (
               <button key={i} onClick={() => handleAction(action.label)} className="flex flex-col items-center justify-center gap-3 p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.06] hover:border-purple-500/30 hover:scale-[1.02] transition-all group">
                 <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
-                  <action.icon size={18} className="!text-white/70 group-hover:text-purple-400" />
+                  <action.icon size={18} className="text-white/70 group-hover:text-purple-400" />
                 </div>
-                <span className="text-[10px] font-bold uppercase tracking-widest !text-white/70 group-hover:text-purple-400">{action.label}</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-white/70 group-hover:text-purple-400">{action.label}</span>
               </button>
             ))}
           </div>
@@ -337,7 +337,7 @@ export function GalacticDashboard() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`pb-4 text-[12px] font-black uppercase tracking-widest flex items-center gap-2 transition-colors relative ${activeTab === tab.id ? '!text-white' : '!text-white/40 hover:!text-white/70'}`}
+                className={`pb-4 text-[12px] font-black uppercase tracking-widest flex items-center gap-2 transition-colors relative ${activeTab === tab.id ? 'text-white' : 'text-white/40 hover:text-white/70'}`}
               >
                 <tab.icon size={14} />
                 {tab.id}
@@ -360,18 +360,18 @@ export function GalacticDashboard() {
                       <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-xl shadow-[0_0_15px_rgba(147,51,234,0.3)]">M</div>
                       <div>
                         <div className="font-bold text-base">Polygon</div>
-                        <div className="text-xs font-mono !text-white/50">MATIC</div>
+                        <div className="text-xs font-mono text-white/50">MATIC</div>
                       </div>
                     </div>
                     <div className="text-right">
                       <div className="font-bold text-base">{maticBalance}</div>
-                      <div className="text-xs font-mono !text-white/50">${maticValueUsd}</div>
+                      <div className="text-xs font-mono text-white/50">${maticValueUsd}</div>
                     </div>
                   </div>
 
                   {/* Enforce Zero-Mock Mandate */}
                   {realTokens.length === 0 && (
-                    <div className="flex flex-col items-center justify-center py-10 !text-white/40">
+                    <div className="flex flex-col items-center justify-center py-10 text-white/40">
                       <p className="text-sm">No ERC-20 tokens detected on-chain.</p>
                       <p className="text-[10px] mt-2 font-mono uppercase tracking-widest">Zero-Mock Protocol Enforced</p>
                     </div>
@@ -382,12 +382,12 @@ export function GalacticDashboard() {
                         <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-xl">{token.icon}</div>
                         <div>
                           <div className="font-bold text-base">{token.name}</div>
-                          <div className="text-xs font-mono !text-white/50">{token.symbol} · ${token.price.toFixed(2)} <span className={token.change24h >= 0 ? 'text-green-400' : 'text-red-400'}>{token.change24h > 0 ? '+' : ''}{token.change24h}%</span></div>
+                          <div className="text-xs font-mono text-white/50">{token.symbol} · ${token.price.toFixed(2)} <span className={token.change24h >= 0 ? 'text-green-400' : 'text-red-400'}>{token.change24h > 0 ? '+' : ''}{token.change24h}%</span></div>
                         </div>
                       </div>
                       <div className="text-right">
                         <div className="font-bold text-base">{token.balance}</div>
-                        <div className="text-xs font-mono !text-white/50">${token.value.toFixed(2)}</div>
+                        <div className="text-xs font-mono text-white/50">${token.value.toFixed(2)}</div>
                       </div>
                     </div>
                   ))}
@@ -397,10 +397,10 @@ export function GalacticDashboard() {
               {activeTab === 'DEFI' && (
                 <motion.div key="defi" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="flex flex-col items-center justify-center py-20 text-center">
                   <div className="w-20 h-20 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-6">
-                    <PieChart size={32} className="!text-white/40" />
+                    <PieChart size={32} className="text-white/40" />
                   </div>
                   <h3 className="text-xl font-bold mb-2">No Active Yield Positions</h3>
-                  <p className="text-sm !text-white/40 max-w-sm mb-8">Deposit liquidity into Aave, Curve, or Uniswap via the Bridge to start earning completely on-chain yield.</p>
+                  <p className="text-sm text-white/40 max-w-sm mb-8">Deposit liquidity into Aave, Curve, or Uniswap via the Bridge to start earning completely on-chain yield.</p>
                   <button className="px-8 py-3 rounded-xl bg-white text-black font-black uppercase tracking-widest text-[11px] hover:bg-white/90 transition-transform active:scale-95">Explore Opportunities</button>
                 </motion.div>
               )}
@@ -408,7 +408,7 @@ export function GalacticDashboard() {
               {activeTab === 'ACTIVITY' && (
                 <motion.div key="activity" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-4">
                   {realActivity.length === 0 && (
-                    <div className="flex flex-col items-center justify-center py-10 !text-white/40">
+                    <div className="flex flex-col items-center justify-center py-10 text-white/40">
                       <p className="text-sm">No recent on-chain activity.</p>
                       <p className="text-[10px] mt-2 font-mono uppercase tracking-widest">Zero-Mock Protocol Enforced</p>
                     </div>
@@ -421,7 +421,7 @@ export function GalacticDashboard() {
                         </div>
                         <div>
                           <div className="font-bold text-sm uppercase tracking-wider">{ev.type}</div>
-                          <div className="text-xs font-mono !text-white/50 mt-1">{new Date(ev.timestamp).toLocaleString()}</div>
+                          <div className="text-xs font-mono text-white/50 mt-1">{new Date(ev.timestamp).toLocaleString()}</div>
                         </div>
                       </div>
                       <div className="text-right">
@@ -472,8 +472,8 @@ export function GalacticDashboard() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in" onClick={() => setShowReceive(false)}>
           <div className="w-full max-w-4xl bg-[#050505] rounded-[40px] border border-white/10 shadow-[0_0_80px_-20px_rgba(168,85,247,0.3)] overflow-hidden" onClick={e => e.stopPropagation()}>
             <div className="p-4 flex justify-between items-center border-b border-white/5 bg-[#0A0A0A]">
-              <h2 className="text-xl font-bold ml-4 !text-white tracking-widest uppercase">Receive Assets</h2>
-              <button onClick={() => setShowReceive(false)} className="p-2 rounded-full hover:bg-white/10 transition-colors"><X size={20} className="!text-white/60" /></button>
+              <h2 className="text-xl font-bold ml-4 text-white tracking-widest uppercase">Receive Assets</h2>
+              <button onClick={() => setShowReceive(false)} className="p-2 rounded-full hover:bg-white/10 transition-colors"><X size={20} className="text-white/60" /></button>
             </div>
             {/* 
               ReceiveHub naturally adapts or works well in a dark wrapper, 

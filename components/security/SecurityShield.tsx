@@ -18,7 +18,7 @@ export const SecurityShield = () => {
             </div>
 
             <div className="flex flex-col">
-                <span className="text-[10px] uppercase font-bold text-[#888899] group-hover:!text-white transition-colors">
+                <span className="text-[10px] uppercase font-bold text-[#888899] group-hover:text-white transition-colors">
                     Security Level
                 </span>
                 <span className={`text-[10px] font-mono tracking-widest ${isSecure ? 'text-[#00ff9d]' : 'text-red-500'}`}>

@@ -22,7 +22,7 @@ export const WalletDisplay = () => {
             </div>
 
             <div className="flex flex-col leading-none">
-                <span className="font-mono text-sm !text-white font-bold group-hover:text-[#00f2ea] transition-colors">
+                <span className="font-mono text-sm text-white font-bold group-hover:text-[#00f2ea] transition-colors">
                     {ensName || `${address.substring(0, 6)}...${address.substring(address.length - 4)}`}
                 </span>
                 <span className="text-[10px] text-[#888899] uppercase tracking-wider">

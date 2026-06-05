@@ -52,7 +52,7 @@ export default function NFCHardware() {
 
                         <button
                             onClick={startScan}
-                            className="w-full py-4 bg-[#1F1F1F] !text-white rounded-2xl font-bold text-lg shadow-xl hover:scale-[1.02] transition-transform flex items-center justify-center gap-3"
+                            className="w-full py-4 bg-[#1F1F1F] text-white rounded-2xl font-bold text-lg shadow-xl hover:scale-[1.02] transition-transform flex items-center justify-center gap-3"
                         >
                             <Key size={20} />
                             Start Pairing
@@ -112,7 +112,7 @@ export default function NFCHardware() {
                         className="text-center space-y-8 relative z-10 max-w-md"
                     >
                          <div className="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mx-auto shadow-2xl shadow-green-500/20">
-                             <Check size={48} className="!text-white" strokeWidth={4} />
+                             <Check size={48} className="text-white" strokeWidth={4} />
                          </div>
 
                          <div>

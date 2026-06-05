@@ -36,7 +36,7 @@ export function BackersSection() {
                     className="flex flex-col items-center mb-16"
                 >
                     <span className="text-[10px] font-black uppercase tracking-[0.4em] text-blue-500 mb-3">{t.backers.badge}</span>
-                    <h2 className="text-3xl font-black !text-white tracking-widest uppercase">{t.backers.title}</h2>
+                    <h2 className="text-3xl font-black text-white tracking-widest uppercase">{t.backers.title}</h2>
                 </motion.div>
 
                 {/* The Marquee */}
@@ -69,7 +69,7 @@ export function BackersSection() {
                                     <div className={`w-8 h-8 rounded-lg bg-black flex items-center justify-center font-black text-xs ${backer.color} border border-white/10 shadow-lg ${backer.glow}`}>
                                         {backer.name[0]}
                                     </div>
-                                    <span className="text-sm font-black !text-white/50 group-hover:!text-white transition-colors tracking-tight">
+                                    <span className="text-sm font-black text-white/50 group-hover:text-white transition-colors tracking-tight">
                                         {backer.name}
                                     </span>
                                 </div>

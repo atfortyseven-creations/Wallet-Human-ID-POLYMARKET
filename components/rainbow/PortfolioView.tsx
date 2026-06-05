@@ -146,7 +146,7 @@ function ChainSelector() {
               className="absolute right-0 top-full mt-2 z-50 w-56 rounded-2xl border border-white/10 overflow-hidden shadow-2xl"
               style={{ background: "rgba(13,15,18,0.97)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)" }}
             >
-              <div className="px-3 py-2 text-[9px] uppercase font-black !text-white/30 tracking-[0.2em]">
+              <div className="px-3 py-2 text-[9px] uppercase font-black text-white/30 tracking-[0.2em]">
                 Select Network
               </div>
               <div className="max-h-72 overflow-y-auto">
@@ -160,8 +160,8 @@ function ChainSelector() {
                       onClick={() => handleSwitch(chain.id)}
                       className={`w-full flex items-center justify-between px-3 py-2.5 text-sm transition-colors ${
                         active
-                          ? "bg-white/8 !text-white"
-                          : "!text-white/50 hover:bg-white/5 hover:!text-white"
+                          ? "bg-white/8 text-white"
+                          : "text-white/50 hover:bg-white/5 hover:text-white"
                       }`}
                     >
                       <span className="flex items-center gap-2.5">
@@ -201,15 +201,15 @@ function RainbowAccountSwitcher({ userAddress }: { userAddress: string | undefin
         className="flex items-center gap-3 px-2 py-1.5 rounded-[20px] hover:bg-white/5 transition-colors border border-transparent hover:border-white/5"
       >
          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 shadow-inner flex items-center justify-center border border-white/20">
-            <span className="text-[14px] font-black tracking-tight !text-white shadow-sm font-mono uppercase">
+            <span className="text-[14px] font-black tracking-tight text-white shadow-sm font-mono uppercase">
                 {userAddress ? userAddress.slice(2, 4) : '?'}
             </span>
          </div>
          <div className="flex flex-col items-start leading-none gap-1">
-             <span className="!text-white font-black text-sm tracking-tight hover:text-purple-400 transition-colors">Main Wallet</span>
-             <span className="!text-white/40 text-[10px] font-mono font-bold tracking-widest">{userAddress ? `${userAddress.slice(0,6)}...${userAddress.slice(-4)}` : 'Not Connected'}</span>
+             <span className="text-white font-black text-sm tracking-tight hover:text-purple-400 transition-colors">Main Wallet</span>
+             <span className="text-white/40 text-[10px] font-mono font-bold tracking-widest">{userAddress ? `${userAddress.slice(0,6)}...${userAddress.slice(-4)}` : 'Not Connected'}</span>
          </div>
-         <ChevronDown size={14} className={`!text-white/40 ml-2 transition-transform duration-300 ${isOpen ? 'rotate-180':''}`} />
+         <ChevronDown size={14} className={`text-white/40 ml-2 transition-transform duration-300 ${isOpen ? 'rotate-180':''}`} />
       </button>
 
       <AnimatePresence>
@@ -226,15 +226,15 @@ function RainbowAccountSwitcher({ userAddress }: { userAddress: string | undefin
                     transition={{ duration: 0.15 }}
                     className="absolute top-full left-0 mt-3 w-72 bg-[#161A1E] border border-white/10 rounded-3xl shadow-2xl p-2 z-50 overflow-hidden"
                  >
-                     <div className="text-[9px] font-black !text-white/30 uppercase tracking-[0.25em] px-4 py-3 border-b border-white/5 mb-2">
+                     <div className="text-[9px] font-black text-white/30 uppercase tracking-[0.25em] px-4 py-3 border-b border-white/5 mb-2">
                          Your Profiles Array
                      </div>
                      <button className="w-full flex items-center justify-between p-3.5 rounded-2xl bg-white/5 border border-white/10 text-left mb-1 hover:bg-white/10 transition-colors group">
                          <div className="flex items-center gap-4">
-                             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg"><Wallet size={16} className="!text-white"/></div>
+                             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg"><Wallet size={16} className="text-white"/></div>
                              <div>
-                                 <div className="text-sm font-black !text-white tracking-tight">Main Wallet</div>
-                                 <div className="text-[10px] !text-white/40 font-mono tracking-widest">{userAddress?.slice(0,6)}...{userAddress?.slice(-4)}</div>
+                                 <div className="text-sm font-black text-white tracking-tight">Main Wallet</div>
+                                 <div className="text-[10px] text-white/40 font-mono tracking-widest">{userAddress?.slice(0,6)}...{userAddress?.slice(-4)}</div>
                              </div>
                          </div>
                          <CheckCircle2 size={18} className="text-emerald-400 shadow-emerald-500/20 drop-shadow-md"/>
@@ -243,14 +243,14 @@ function RainbowAccountSwitcher({ userAddress }: { userAddress: string | undefin
                      <div className="h-px bg-white/[0.04] my-2" />
                      
                      <button onClick={() => { setIsOpen(false); setShowWizard(true); }} className="w-full flex items-center gap-4 p-3.5 rounded-2xl hover:bg-white/5 transition-colors text-left group">
-                         <div className="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center border border-white/10 !text-white/60 group-hover:!text-white group-hover:border-purple-500/30 transition-all"><Plus size={18}/></div>
+                         <div className="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center border border-white/10 text-white/60 group-hover:text-white group-hover:border-purple-500/30 transition-all"><Plus size={18}/></div>
                          <div>
-                             <div className="text-sm font-black !text-white tracking-tight">Generate New Identity</div>
+                             <div className="text-sm font-black text-white tracking-tight">Generate New Identity</div>
                              <div className="flex items-center gap-1.5 mt-1.5">
                                  <div className="flex gap-1">
-                                    <span className="!text-white/40 text-[9px] font-bold uppercase tracking-widest">System Onboarding Flow</span>
-                                    <kbd className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-white/5 !text-white/40 border border-white/10">Alt</kbd>
-                                    <span className="!text-white/20 text-[9px] font-bold">+</span>
+                                    <span className="text-white/40 text-[9px] font-bold uppercase tracking-widest">System Onboarding Flow</span>
+                                    <kbd className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-white/5 text-white/40 border border-white/10">Alt</kbd>
+                                    <span className="text-white/20 text-[9px] font-bold">+</span>
                                     <kbd className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-white/5 text-purple-400 border border-purple-500/30">W</kbd>
                                  </div>
                              </div>
@@ -283,7 +283,7 @@ function RainbowOnboarding() {
         <div className="scale-90 origin-center">
             <appkit-button />
         </div>
-        <p className="!text-white/30 text-xs hover:!text-white/70 transition-colors cursor-pointer" onClick={() => setStep("choosing")}>
+        <p className="text-white/30 text-xs hover:text-white/70 transition-colors cursor-pointer" onClick={() => setStep("choosing")}>
            Go Back
         </p>
       </div>
@@ -297,15 +297,15 @@ function RainbowOnboarding() {
       <div className="relative w-20 h-20">
         <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20" />
         <div className="absolute inset-0 flex items-center justify-center">
-          <Wallet size={36} className="!text-white/80" />
+          <Wallet size={36} className="text-white/80" />
         </div>
       </div>
 
       <div className="space-y-2 max-w-xs">
-        <h2 className="text-2xl font-black !text-white tracking-tight">
+        <h2 className="text-2xl font-black text-white tracking-tight">
           Get Started
         </h2>
-        <p className="!text-white/40 text-sm leading-relaxed">
+        <p className="text-white/40 text-sm leading-relaxed">
           Create a brand new wallet or import an existing one to access your assets on-chain.
         </p>
       </div>
@@ -316,7 +316,7 @@ function RainbowOnboarding() {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.97 }}
           onClick={() => setShowWizard(true)}
-          className="w-full py-4 rounded-2xl font-black text-sm !text-white tracking-wide"
+          className="w-full py-4 rounded-2xl font-black text-sm text-white tracking-wide"
           style={{
             background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
             boxShadow: "0 4px 24px rgba(99,102,241,0.35)",
@@ -330,13 +330,13 @@ function RainbowOnboarding() {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.97 }}
           onClick={() => setStep("importing")}
-          className="w-full py-4 rounded-2xl font-black text-sm !text-white/70 tracking-wide border border-white/10 bg-white/5 hover:bg-white/10 transition-all"
+          className="w-full py-4 rounded-2xl font-black text-sm text-white/70 tracking-wide border border-white/10 bg-white/5 hover:bg-white/10 transition-all"
         >
           I already have a wallet
         </motion.button>
       </div>
 
-      <p className="!text-white/20 text-[10px] tracking-widest uppercase">
+      <p className="text-white/20 text-[10px] tracking-widest uppercase">
         Non-custodial · On-chain · System
       </p>
 
@@ -509,23 +509,23 @@ export default function PortfolioView({
           <ChainSelector />
            <div className="flex items-center gap-6">
             <div className="flex flex-col items-end">
-                <span className="text-[10px] font-black !text-white/40 uppercase tracking-[0.3em]">Institutional Node</span>
+                <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">Institutional Node</span>
                 <div className="flex items-center gap-2">
                     <div className="w-1.2 h-1.2 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-[10px] font-bold !text-white uppercase tracking-widest">{userAddress?.slice(0, 6)}...{userAddress?.slice(-4)}</span>
+                    <span className="text-[10px] font-bold text-white uppercase tracking-widest">{userAddress?.slice(0, 6)}...{userAddress?.slice(-4)}</span>
                 </div>
             </div>
             <button
                 onClick={() => nuclearDisconnect()}
                 className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center hover:bg-red-500/20 group transition-all border border-white/10"
             >
-                <X size={14} className="!text-white/40 group-hover:text-red-400" />
+                <X size={14} className="text-white/40 group-hover:text-red-400" />
             </button>
           </div>
           
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all !text-white/50 hover:!text-white"
+            className="p-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all text-white/50 hover:text-white"
           >
             {isDark ? <Sun size={15} /> : <Moon size={15} />}
           </button>
@@ -562,7 +562,7 @@ export default function PortfolioView({
       >
         <RefreshCw
           size={18}
-          className={`!text-white/50 ${isRefreshing ? "animate-spin text-purple-400" : ""}`}
+          className={`text-white/50 ${isRefreshing ? "animate-spin text-purple-400" : ""}`}
         />
         {/* Active dot */}
         <div
@@ -599,7 +599,7 @@ export default function PortfolioView({
             </h1>
             
             <div className="flex items-center justify-center gap-3">
-               <div className="px-5 py-2 bg-green-500 !text-white rounded-full text-[11px] font-black uppercase tracking-widest shadow-xl shadow-green-500/20">
+               <div className="px-5 py-2 bg-green-500 text-white rounded-full text-[11px] font-black uppercase tracking-widest shadow-xl shadow-green-500/20">
                  +{change24hValue || "0.00"} 24h
                </div>
                <div className="px-5 py-2 bg-black/[0.03] border border-black/5 text-black/40 rounded-full text-[11px] font-black uppercase tracking-widest">
@@ -614,7 +614,7 @@ export default function PortfolioView({
             {/*  BLOCKCHAIN LEDGER divider  */}
             <div className="flex items-center gap-4 px-4 my-8">
               <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-              <span className="text-[9px] font-black !text-white/25 tracking-[0.45em] uppercase whitespace-nowrap">
+              <span className="text-[9px] font-black text-white/25 tracking-[0.45em] uppercase whitespace-nowrap">
                 Blockchain Ledger
               </span>
               <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
@@ -626,7 +626,7 @@ export default function PortfolioView({
               {/* Assets Column */}
               <div>
                 <div className="flex items-center justify-between mb-6 px-1">
-                  <h2 className="font-black text-xl tracking-tighter uppercase italic !text-white/90">
+                  <h2 className="font-black text-xl tracking-tighter uppercase italic text-white/90">
                     Elite Assets
                   </h2>
                   <button
@@ -636,7 +636,7 @@ export default function PortfolioView({
                   >
                     <RefreshCw
                       size={14}
-                      className={`!text-white/40 ${isRefreshing ? "animate-spin text-purple-400" : ""}`}
+                      className={`text-white/40 ${isRefreshing ? "animate-spin text-purple-400" : ""}`}
                     />
                   </button>
                 </div>
@@ -651,8 +651,8 @@ export default function PortfolioView({
                   ) : balances.length === 0 ? (
                     /* Empty state  matches screenshot */
                     <div className="py-20 text-center rounded-3xl border border-white/[0.07] bg-white/[0.02]">
-                      <Wallet size={40} className="mx-auto mb-4 !text-white/10" />
-                      <p className="!text-white/20 font-black uppercase tracking-widest text-[10px]">
+                      <Wallet size={40} className="mx-auto mb-4 text-white/10" />
+                      <p className="text-white/20 font-black uppercase tracking-widest text-[10px]">
                         No Liquidity Detected
                       </p>
                     </div>
@@ -684,7 +684,7 @@ export default function PortfolioView({
                     <button
                       onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                       disabled={currentPage === 1}
-                      className="px-3 py-1.5 rounded border border-white/10 bg-white/5 hover:bg-white/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-xs font-black uppercase !text-white/50 hover:!text-white"
+                      className="px-3 py-1.5 rounded border border-white/10 bg-white/5 hover:bg-white/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-xs font-black uppercase text-white/50 hover:text-white"
                     >
                       Prev
                     </button>
@@ -693,7 +693,7 @@ export default function PortfolioView({
                         <button
                           key={idx}
                           onClick={() => setCurrentPage(idx + 1)}
-                          className={`w-6 h-6 flex items-center justify-center rounded text-[10px] font-mono font-black transition-colors ${currentPage === idx + 1 ? 'bg-purple-500 !text-white' : 'bg-white/5 !text-white/40 hover:bg-white/10 hover:!text-white'}`}
+                          className={`w-6 h-6 flex items-center justify-center rounded text-[10px] font-mono font-black transition-colors ${currentPage === idx + 1 ? 'bg-purple-500 text-white' : 'bg-white/5 text-white/40 hover:bg-white/10 hover:text-white'}`}
                         >
                           {idx + 1}
                         </button>
@@ -702,7 +702,7 @@ export default function PortfolioView({
                     <button
                       onClick={() => setCurrentPage(p => Math.min(Math.ceil(balances.length / 8), p + 1))}
                       disabled={currentPage === Math.ceil(balances.length / 8)}
-                      className="px-3 py-1.5 rounded border border-white/10 bg-white/5 hover:bg-white/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-xs font-black uppercase !text-white/50 hover:!text-white"
+                      className="px-3 py-1.5 rounded border border-white/10 bg-white/5 hover:bg-white/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-xs font-black uppercase text-white/50 hover:text-white"
                     >
                       Next
                     </button>
@@ -713,7 +713,7 @@ export default function PortfolioView({
               {/* Activity Column */}
               <div>
                 <div className="flex items-center justify-between mb-6 px-1">
-                  <h2 className="font-black text-xl tracking-tighter uppercase italic !text-white/90">
+                  <h2 className="font-black text-xl tracking-tighter uppercase italic text-white/90">
                     Recent Activity
                   </h2>
                   <button
@@ -723,7 +723,7 @@ export default function PortfolioView({
                   >
                     <History
                       size={14}
-                      className={`${isSyncing ? "animate-spin text-purple-400" : "!text-white/40"}`}
+                      className={`${isSyncing ? "animate-spin text-purple-400" : "text-white/40"}`}
                     />
                   </button>
                 </div>

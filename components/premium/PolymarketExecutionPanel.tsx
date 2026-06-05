@@ -1,4 +1,4 @@
-"use client";
+ï»¿"use client";
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -122,13 +122,13 @@ export function PolymarketExecutionPanel({ symbol, probability, direction, marke
                                             onClick={() => setOutcome("YES")}
                                             className={`flex-1 py-3 rounded-xl border-2 font-black uppercase tracking-widest text-xs transition-all ${outcome === "YES" ? 'bg-[#06b6d4]/10 border-[#06b6d4] text-[#06b6d4]' : 'bg-transparent border-[#E5E5E5] text-[#888888]'}`}
                                         >
-                                            YES <span className="text-[10px] text-[#050505]/40 ml-1">@{Math.round(probability)}¢</span>
+                                            YES <span className="text-[10px] text-[#050505]/40 ml-1">@{Math.round(probability)}Â¢</span>
                                         </button>
                                         <button 
                                             onClick={() => setOutcome("NO")}
                                             className={`flex-1 py-3 rounded-xl border-2 font-black uppercase tracking-widest text-xs transition-all ${outcome === "NO" ? 'bg-[#f97316]/10 border-[#f97316] text-[#f97316]' : 'bg-transparent border-[#E5E5E5] text-[#888888]'}`}
                                         >
-                                            NO <span className="text-[10px] text-[#050505]/40 ml-1">@{100 - Math.round(probability)}¢</span>
+                                            NO <span className="text-[10px] text-[#050505]/40 ml-1">@{100 - Math.round(probability)}Â¢</span>
                                         </button>
                                     </div>
 
@@ -166,7 +166,7 @@ export function PolymarketExecutionPanel({ symbol, probability, direction, marke
                                     {!isPolygon ? (
                                         <button 
                                             onClick={() => switchChain?.({ chainId: 137 })}
-                                            className="w-full bg-amber-500 hover:bg-amber-400 !text-white font-black font-sans uppercase tracking-widest text-[11px] py-4 rounded-xl transition-all shadow-[0_4px_14px_rgba(245,158,11,0.3)] flex items-center justify-center gap-2"
+                                            className="w-full bg-amber-500 hover:bg-amber-400 text-white font-black font-sans uppercase tracking-widest text-[11px] py-4 rounded-xl transition-all shadow-[0_4px_14px_rgba(245,158,11,0.3)] flex items-center justify-center gap-2"
                                         >
                                             <AlertTriangle size={14} />
                                             SWITCH TO POLYGON (137)

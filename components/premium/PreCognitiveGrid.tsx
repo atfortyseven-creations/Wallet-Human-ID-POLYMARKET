@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -212,7 +212,7 @@ export function PreCognitiveGrid({ symbol }: PreCognitiveGridProps) {
                 <div className="flex items-center justify-between z-10 relative">
                     <div className="flex items-center gap-3">
                         <span className="text-2xl font-black italic tracking-tighter text-[#050505]">{symbol}</span>
-                        <span className="px-2 py-0.5 rounded text-[8px] font-black bg-[#050505] !text-white tracking-[0.2em] shadow-sm flex items-center gap-1">
+                        <span className="px-2 py-0.5 rounded text-[8px] font-black bg-[#050505] text-white tracking-[0.2em] shadow-sm flex items-center gap-1">
                             <Zap size={8} className="text-amber-400" />
                             PRE-COG
                         </span>
@@ -281,12 +281,12 @@ export function PreCognitiveGrid({ symbol }: PreCognitiveGridProps) {
                                 <div className="grid grid-cols-2 gap-4 divide-x divide-white/10">
                                     {/* VIGOR METRIC */}
                                     <div>
-                                        <span className="block text-[8px] font-bold !text-white/40 uppercase tracking-widest mb-1">Inst. Vigor (Delta)</span>
+                                        <span className="block text-[8px] font-bold text-white/40 uppercase tracking-widest mb-1">Inst. Vigor (Delta)</span>
                                         <div className="flex flex-col">
                                             <span className={`text-[10px] font-mono font-black ${state.institutionalIsAccumulation ? 'text-cyan-400' : 'text-orange-400'}`}>
                                                 {state.institutionalVigorPercent.toFixed(0)}% {state.institutionalIsAccumulation ? 'ACCUM' : 'DISTRIB'}
                                             </span>
-                                            <span className="text-[8px] font-mono font-bold !text-white/60 mt-0.5">
+                                            <span className="text-[8px] font-mono font-bold text-white/60 mt-0.5">
                                                 Delta 1H: {state.institutionalIsAccumulation ? '+' : '-'}${fmtCompact(state.institutionalVigorValue)} (Whale vs Retail)
                                             </span>
                                         </div>
@@ -294,7 +294,7 @@ export function PreCognitiveGrid({ symbol }: PreCognitiveGridProps) {
                                     
                                     {/* POLY CONFLUENCE METRIC */}
                                     <div className="pl-4">
-                                        <span className="block text-[8px] font-bold !text-white/40 uppercase tracking-widest mb-1">Poly Confluence</span>
+                                        <span className="block text-[8px] font-bold text-white/40 uppercase tracking-widest mb-1">Poly Confluence</span>
                                         {state.polyHasData ? (
                                             <span className="text-xs font-mono font-black text-amber-300 shadow-[0_0_8px_rgba(252,211,77,0.3)]">
                                                 {typeof state.polyConfluenceValue === 'number' ? state.polyConfluenceValue.toFixed(1) : (state.polyConfluenceValue as any).ratio || state.polyConfluenceValue}% Agreement
@@ -312,7 +312,7 @@ export function PreCognitiveGrid({ symbol }: PreCognitiveGridProps) {
                                     <div className="border border-red-500/20 bg-red-500/5 rounded p-2">
                                         <span className="block text-[8px] font-bold text-red-400 uppercase tracking-[0.2em] mb-1">Global Icebergs Detected</span>
                                         {state.icebergs.slice(0,1).map((ice, i) => (
-                                            <span key={i} className="text-[9px] font-mono !text-white tracking-widest">
+                                            <span key={i} className="text-[9px] font-mono text-white tracking-widest">
                                                 Iceberg ${fmtCompact(ice.sizeUsd)} @ ${ice.price.toLocaleString()} ({ice.exchanges.join(' + ')} combined)
                                             </span>
                                         ))}
@@ -326,13 +326,13 @@ export function PreCognitiveGrid({ symbol }: PreCognitiveGridProps) {
                                     </span>
                                     <div className="flex flex-col mb-1">
                                         <div className="flex items-center gap-2">
-                                            <Eye size={12} className="!text-white animate-[pulse_1s_infinite]" />
-                                            <span className="!text-white font-black text-[11px] tracking-wide">
+                                            <Eye size={12} className="text-white animate-[pulse_1s_infinite]" />
+                                            <span className="text-white font-black text-[11px] tracking-wide">
                                                 {state.probabilityOfReversal.toFixed(1)}% probabilidad de {state.direction === 'BULLISH' ? 'Long-Squeeze' : 'Short-Squeeze'}
                                             </span>
                                         </div>
-                                        <span className="block !text-white/60 font-bold text-[9px] mt-0.5 pl-5">
-                                            Expected Move (15m): <span className="!text-white/90">{state.expectedMove > 0 ? '+' : '�'}{Math.abs(state.expectedMove).toFixed(2)}%</span>
+                                        <span className="block text-white/60 font-bold text-[9px] mt-0.5 pl-5">
+                                            Expected Move (15m): <span className="text-white/90">{state.expectedMove > 0 ? '+' : '±'}{Math.abs(state.expectedMove).toFixed(2)}%</span>
                                         </span>
                                     </div>
                                     <div className="absolute top-0 right-0 h-full w-1 bg-gradient-to-b from-cyan-500 to-[#00FFAA] opacity-50" />

@@ -213,7 +213,7 @@ function SigningOverlay({
         {error ? (
           <button
             onClick={onRetry}
-            className="w-full py-4 rounded-2xl bg-[#050505] !text-white font-black uppercase tracking-widest text-[12px] flex items-center justify-center gap-3 shadow-lg active:scale-[0.97] transition-all hover:bg-black/90"
+            className="w-full py-4 rounded-2xl bg-[#050505] text-white font-black uppercase tracking-widest text-[12px] flex items-center justify-center gap-3 shadow-lg active:scale-[0.97] transition-all hover:bg-black/90"
           >
             <RefreshCw size={16} />
             Retry Connection
@@ -224,14 +224,14 @@ function SigningOverlay({
                <a
                   href={wcDeepLink}
                   rel="noopener noreferrer"
-                  className="w-full py-4 rounded-2xl bg-[#050505] !text-white font-black uppercase tracking-widest text-[12px] flex items-center justify-center gap-3 shadow-lg active:scale-[0.97] transition-transform select-none hover:bg-black/90"
+                  className="w-full py-4 rounded-2xl bg-[#050505] text-white font-black uppercase tracking-widest text-[12px] flex items-center justify-center gap-3 shadow-lg active:scale-[0.97] transition-transform select-none hover:bg-black/90"
                >
                  Open Wallet App
                </a>
              ) : (
                 <button
                   onClick={onRetry}
-                  className="w-full py-4 rounded-2xl bg-[#050505] !text-white font-black uppercase tracking-widest text-[12px] flex items-center justify-center gap-3 shadow-lg active:scale-[0.97] transition-all hover:bg-black/90"
+                  className="w-full py-4 rounded-2xl bg-[#050505] text-white font-black uppercase tracking-widest text-[12px] flex items-center justify-center gap-3 shadow-lg active:scale-[0.97] transition-all hover:bg-black/90"
                 >
                   Tap to Sign & Complete Login
                 </button>
@@ -495,7 +495,7 @@ function ConnectedScreen({
         initialScanData={initialScanData}
         onScan={(_result: string) => {
           const toast = document.createElement('div');
-          toast.className = 'fixed top-6 left-4 right-4 z-[99999] bg-black !!text-white text-[10px] border border-white/10 font-mono uppercase tracking-[0.3em] px-6 py-5 rounded-2xl shadow-2xl text-center';
+          toast.className = 'fixed top-6 left-4 right-4 z-[99999] bg-black text-white text-[10px] border border-white/10 font-mono uppercase tracking-[0.3em] px-6 py-5 rounded-2xl shadow-2xl text-center';
           toast.textContent = scanMode === 'session-only' ? 'Session Synchronized' : 'Scan complete';
           document.body.appendChild(toast);
           setTimeout(() => toast.remove(), 3000);
@@ -592,7 +592,7 @@ export function MobileLanding() {
             const result = await completeSessionHandshake(window.location.href, () => effectiveAddress);
             
             const toast = document.createElement('div');
-            toast.className = `fixed top-6 left-4 right-4 z-[99999] !text-white text-[10px] border border-white/10 font-mono uppercase tracking-[0.3em] px-6 py-5 rounded-2xl shadow-2xl text-center ${result.ok ? 'bg-black' : 'bg-red-600'}`;
+            toast.className = `fixed top-6 left-4 right-4 z-[99999] text-white text-[10px] border border-white/10 font-mono uppercase tracking-[0.3em] px-6 py-5 rounded-2xl shadow-2xl text-center ${result.ok ? 'bg-black' : 'bg-red-600'}`;
             toast.textContent = result.ok ? 'Session Synchronized' : result.message;
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 4000);
@@ -1050,7 +1050,7 @@ export function MobileLanding() {
         if (res.ok) {
           sessionStorage.setItem(key, 'true');
           const t = document.createElement('div');
-          t.className = 'fixed top-6 left-4 right-4 z-[99999] bg-emerald-500 !text-white text-[11px] font-black uppercase tracking-widest px-5 py-4 rounded-2xl shadow-xl text-center';
+          t.className = 'fixed top-6 left-4 right-4 z-[99999] bg-emerald-500 text-white text-[11px] font-black uppercase tracking-widest px-5 py-4 rounded-2xl shadow-xl text-center';
           t.textContent = ' Desktop Platform Unlocked';
           document.body.appendChild(t);
           setTimeout(() => t.remove(), 4000);
@@ -1208,7 +1208,7 @@ export function MobileLanding() {
             !showConnectOverlay && (
               <button
                 onClick={() => setShowConnectOverlay(true)}
-                className="px-4 py-2 rounded-xl bg-black !!text-white text-[10px] font-black uppercase tracking-widest shadow-lg active:scale-95 transition-all"
+                className="px-4 py-2 rounded-xl bg-black text-white text-[10px] font-black uppercase tracking-widest shadow-lg active:scale-95 transition-all"
               >
                 Connect
               </button>
@@ -1379,7 +1379,7 @@ export function MobileLanding() {
         initialScanData={(autoSyncStarted && uuidParam) ? window.location.href : null}
         onScan={(_result: string) => {
           const toast = document.createElement('div');
-          toast.className = 'fixed top-6 left-4 right-4 z-[99999] bg-black !!text-white text-[10px] border border-white/10 font-mono uppercase tracking-[0.3em] px-6 py-5 rounded-2xl shadow-2xl text-center';
+          toast.className = 'fixed top-6 left-4 right-4 z-[99999] bg-black text-white text-[10px] border border-white/10 font-mono uppercase tracking-[0.3em] px-6 py-5 rounded-2xl shadow-2xl text-center';
           toast.textContent = scanMode === 'session-only' ? 'Session Handshake Initiated' : 'Scan complete';
           document.body.appendChild(toast);
           setTimeout(() => toast.remove(), 3000);

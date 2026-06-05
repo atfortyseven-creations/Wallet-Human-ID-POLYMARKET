@@ -56,7 +56,7 @@ export function PricingTable() {
         <div className="w-full">
             {/* Billing Toggle */}
             <div className="flex justify-center items-center gap-4 mb-16">
-                <span className={`text-sm font-bold uppercase tracking-widest ${!isAnnual ? '!text-white' : '!text-white/40'}`}>Monthly</span>
+                <span className={`text-sm font-bold uppercase tracking-widest ${!isAnnual ? 'text-white' : 'text-white/40'}`}>Monthly</span>
                 <button 
                     onClick={() => setIsAnnual(!isAnnual)}
                     className="w-16 h-8 bg-white/10 rounded-full relative border border-white/20 transition-all hover:border-white/40"
@@ -67,7 +67,7 @@ export function PricingTable() {
                         className="w-8 h-8 absolute top-[-1px] left-[-1px] bg-indigo-500 rounded-full shadow-[0_0_15px_rgba(99,102,241,0.5)] border border-white/20"
                     />
                 </button>
-                <span className={`text-sm font-bold uppercase tracking-widest flex items-center gap-2 ${isAnnual ? '!text-white' : '!text-white/40'}`}>
+                <span className={`text-sm font-bold uppercase tracking-widest flex items-center gap-2 ${isAnnual ? 'text-white' : 'text-white/40'}`}>
                     Annual <span className="text-[9px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full whitespace-nowrap">Save 20%</span>
                 </span>
             </div>
@@ -97,21 +97,21 @@ export function PricingTable() {
                                 </div>
                             )}
                             {isInst && (
-                                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-600 to-purple-600 !text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-indigo-400">
+                                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-indigo-400">
                                     Maximum Power
                                 </div>
                             )}
 
                             {/* Header */}
                             <div className="mb-8">
-                                <h3 className="text-2xl font-black !text-white uppercase tracking-tight mb-2">
+                                <h3 className="text-2xl font-black text-white uppercase tracking-tight mb-2">
                                     {plan.name}
                                 </h3>
                                 <div className="flex items-baseline gap-1">
-                                    <span className="text-4xl font-mono font-bold !text-white tracking-tight">
+                                    <span className="text-4xl font-mono font-bold text-white tracking-tight">
                                         {isAnnual ? plan.priceMetrics.annual : plan.priceMetrics.monthly}
                                     </span>
-                                    <span className="!text-white/40 text-[10px] font-mono uppercase tracking-widest">
+                                    <span className="text-white/40 text-[10px] font-mono uppercase tracking-widest">
                                         / {isAnnual ? 'YR' : 'MO'}
                                     </span>
                                 </div>
@@ -121,24 +121,24 @@ export function PricingTable() {
                             <div className="flex-1 space-y-4 mb-8">
                                 <div className="pb-4 border-b border-white/5 space-y-0">
                                     <div className="flex justify-between items-center text-[13px] py-2 border-b border-white/[0.02]">
-                                        <span className="!text-white/50 tracking-wide">Daily Requests</span>
-                                        <span className="!text-white font-mono font-medium">
+                                        <span className="text-white/50 tracking-wide">Daily Requests</span>
+                                        <span className="text-white font-mono font-medium">
                                             {plan.limits.requestsPerDay === -1 ? '' : plan.limits.requestsPerDay.toLocaleString()}
                                         </span>
                                     </div>
                                     <div className="flex justify-between items-center text-[13px] py-2 border-b border-white/[0.02]">
-                                        <span className="!text-white/50 tracking-wide">Max Tokens</span>
-                                        <span className="!text-white font-mono font-medium">
+                                        <span className="text-white/50 tracking-wide">Max Tokens</span>
+                                        <span className="text-white font-mono font-medium">
                                             {plan.limits.maxTokens === -1 ? 'ALL' : plan.limits.maxTokens}
                                         </span>
                                     </div>
                                     <div className="flex justify-between items-center text-[13px] py-2 border-b border-white/[0.02]">
-                                        <span className="!text-white/50 tracking-wide">API Keys</span>
-                                        <span className="!text-white font-mono font-medium">{plan.limits.maxApiKeys}</span>
+                                        <span className="text-white/50 tracking-wide">API Keys</span>
+                                        <span className="text-white font-mono font-medium">{plan.limits.maxApiKeys}</span>
                                     </div>
                                     <div className="flex justify-between items-center text-[13px] py-2 border-b border-white/[0.02]">
-                                        <span className="!text-white/50 tracking-wide">Data History</span>
-                                        <span className="!text-white font-mono font-medium">
+                                        <span className="text-white/50 tracking-wide">Data History</span>
+                                        <span className="text-white font-mono font-medium">
                                             {plan.limits.dataWindowHours >= 720 ? `${plan.limits.dataWindowHours/24/30} MO` : `${plan.limits.dataWindowHours} HR`}
                                         </span>
                                     </div>
@@ -161,8 +161,8 @@ export function PricingTable() {
                                 disabled={loadingTier === plan.tier}
                                 className={`w-full h-12 flex items-center justify-between px-6 transition-all ${
                                     isInst 
-                                    ? 'bg-indigo-500 hover:bg-indigo-600 !text-white hover:scale-[1.02]' 
-                                    : 'bg-white/10 hover:bg-white/20 !text-white'
+                                    ? 'bg-indigo-500 hover:bg-indigo-600 text-white hover:scale-[1.02]' 
+                                    : 'bg-white/10 hover:bg-white/20 text-white'
                                 }`}
                             >
                                 <span className="uppercase font-bold tracking-widest text-xs">
@@ -180,10 +180,10 @@ export function PricingTable() {
 
 function FeatureRow({ label, active, highlight = false }: { label: string, active: boolean, highlight?: boolean }) {
     return (
-        <div className={`flex justify-between items-center text-[13px] py-1.5 ${active ? (highlight ? 'text-indigo-300' : '!text-white/70') : '!text-white/20'}`}>
+        <div className={`flex justify-between items-center text-[13px] py-1.5 ${active ? (highlight ? 'text-indigo-300' : 'text-white/70') : 'text-white/20'}`}>
             <span className={`tracking-wide ${highlight ? 'font-medium' : ''}`}>{label}</span>
             <div className="shrink-0">
-                {active ? <Check size={14} className={highlight ? 'text-indigo-400' : 'text-green-500/80'} /> : <X size={14} className="!text-white/10" />}
+                {active ? <Check size={14} className={highlight ? 'text-indigo-400' : 'text-green-500/80'} /> : <X size={14} className="text-white/10" />}
             </div>
         </div>
     );

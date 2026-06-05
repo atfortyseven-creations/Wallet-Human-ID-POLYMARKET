@@ -134,7 +134,7 @@ export const SendAssetModal = ({ isOpen, onClose, initialAddress = '' }: SendAss
             {/* Form Section */}
             <div className="p-12 space-y-8">
               <div className="space-y-4">
-                <label className="text-[9px] font-black uppercase tracking-widest !text-white/40">Destination BSV Address</label>
+                <label className="text-[9px] font-black uppercase tracking-widest text-white/40">Destination BSV Address</label>
                 <div className="relative group">
                    <input 
                      type="text" 
@@ -147,7 +147,7 @@ export const SendAssetModal = ({ isOpen, onClose, initialAddress = '' }: SendAss
               </div>
 
               <div className="space-y-4">
-                <label className="text-[9px] font-black uppercase tracking-widest !text-white/40">Transmission Magnitude (BSV)</label>
+                <label className="text-[9px] font-black uppercase tracking-widest text-white/40">Transmission Magnitude (BSV)</label>
                 <div className="relative flex items-center">
                    <input 
                      type="number" 
@@ -163,8 +163,8 @@ export const SendAssetModal = ({ isOpen, onClose, initialAddress = '' }: SendAss
               <div className="p-6 bg-[var(--aztec-orchid)]/5 border border-[var(--aztec-orchid)]/10 rounded-3xl flex gap-4">
                  <Shield size={24} className="text-[var(--aztec-orchid)] shrink-0" />
                  <div className="space-y-1">
-                    <p className="text-[10px] font-black uppercase tracking-widest !text-white">Institutional Auth Required</p>
-                    <p className="text-[10px] !text-white/40 font-aztec-mono">This transaction will be signed with BIP32 Key (m/0/0) using the ECIES substrate.</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-white">Institutional Auth Required</p>
+                    <p className="text-[10px] text-white/40 font-aztec-mono">This transaction will be signed with BIP32 Key (m/0/0) using the ECIES substrate.</p>
                  </div>
               </div>
             </div>

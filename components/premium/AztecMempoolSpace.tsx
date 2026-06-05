@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -371,7 +371,7 @@ export default function AztecMempoolSpace() {
                                         href={selectedBlock ? `https://etherscan.io/block/${selectedBlock.id}` : `https://etherscan.io/tx/${selectedTx?.hash}`}
                                         target="_blank"
                                         rel="noreferrer"
-                                        className="flex-1 py-3 bg-[#050505]  !text-white  rounded font-bold uppercase tracking-[0.2em] text-[10px] hover:bg-[#A0A0A0] transition-colors text-center"
+                                        className="flex-1 py-3 bg-[#050505]  text-white  rounded font-bold uppercase tracking-[0.2em] text-[10px] hover:bg-[#A0A0A0] transition-colors text-center"
                                     >
                                         VERIFY ON ETHERSCAN
                                     </a>

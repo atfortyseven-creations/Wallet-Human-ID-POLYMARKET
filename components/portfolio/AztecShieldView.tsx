@@ -76,14 +76,14 @@ export function AztecShieldView({ address, onBack }: { address: string, onBack: 
             </div>
             
             <div className="space-y-6">
-                <div className="bg-black !!text-white p-6 relative overflow-hidden">
+                <div className="bg-black text-white p-6 relative overflow-hidden">
                     <div className="absolute top-0 right-0 opacity-10 transform translate-x-1/4 -translate-y-1/4">
                         <Hexagon size={140} strokeWidth={1} />
                     </div>
                     <h3 className="text-sm font-black uppercase tracking-widest mb-2 flex items-center gap-2">
                         <EyeOff size={16} /> Privacy-Preserving ZK Rollup
                     </h3>
-                    <p className="text-[11px] !text-white/60 leading-relaxed max-w-sm">
+                    <p className="text-[11px] text-white/60 leading-relaxed max-w-sm">
                         Shielding converts transparent L1 assets into encrypted L2 state variables. Once shielded, transfers and DeFi interactions within the Aztec Network are cryptographically untraceable.
                     </p>
                 </div>
@@ -99,7 +99,7 @@ export function AztecShieldView({ address, onBack }: { address: string, onBack: 
                 <button 
                     onClick={handleShield} 
                     disabled={isShielding || !amount} 
-                    className="w-full py-5 bg-black !!text-white font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-black/90 disabled:opacity-30 flex items-center justify-center gap-3 shadow-xl transition-all"
+                    className="w-full py-5 bg-black text-white font-bold text-[10px] uppercase tracking-[0.2em] hover:bg-black/90 disabled:opacity-30 flex items-center justify-center gap-3 shadow-xl transition-all"
                 >
                     {isShielding ? <RefreshCw size={16} className="animate-spin" /> : <Shield size={16} />}
                     {isShielding ? 'GENERATING ZK-PROOFS & BROADCASTING...' : 'EXECUTE ON-CHAIN SHIELD'}

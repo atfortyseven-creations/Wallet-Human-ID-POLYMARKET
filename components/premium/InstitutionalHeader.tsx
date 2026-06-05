@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from 'react';
 import { Search, Bell, Clock, Eye, Settings, User, Wallet } from 'lucide-react';
@@ -139,21 +139,21 @@ export default function InstitutionalHeader() {
           {address ? (
             <div 
               onClick={handleDisconnect}
-              className="flex items-center gap-4 bg-black !!text-white px-5 py-2.5 rounded-2xl shadow-xl shadow-black/10 cursor-pointer hover:bg-black/80 transition-all active:scale-95 group"
+              className="flex items-center gap-4 bg-black text-white px-5 py-2.5 rounded-2xl shadow-xl shadow-black/10 cursor-pointer hover:bg-black/80 transition-all active:scale-95 group"
             >
               <div className="flex flex-col text-right">
                  <span className="font-mono font-bold text-[10px] leading-tight opacity-90">{formatAddress(address)}</span>
                  <span className="font-black text-[8px] leading-tight opacity-40 group-hover:opacity-100 transition-opacity">TERMINATE SESSION</span>
               </div>
               <div className="bg-white/10 p-1.5 rounded-xl">
-                 <User size={14} className="!text-white" />
+                 <User size={14} className="text-white" />
               </div>
             </div>
           ) : (
             <button 
               onClick={connect}
               disabled={isConnecting}
-              className="flex items-center gap-3 bg-black !!text-white px-7 py-3 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-black/80 transition-all active:scale-95 disabled:opacity-20 shadow-xl shadow-black/10"
+              className="flex items-center gap-3 bg-black text-white px-7 py-3 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-black/80 transition-all active:scale-95 disabled:opacity-20 shadow-xl shadow-black/10"
             >
               {isConnecting ? <Clock size={16} className="animate-spin" /> : <Wallet size={16} />}
               <span>{isConnecting ? 'Authenticating...' : 'Connect Identity'}</span>

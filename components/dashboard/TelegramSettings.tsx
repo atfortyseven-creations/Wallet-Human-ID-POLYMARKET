@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Send, Bell, BellOff, CheckCircle2, AlertCircle, Trash2, ExternalLink, Loader2, RefreshCw } from 'lucide-react';
@@ -172,7 +172,7 @@ export default function TelegramSettings({ wallet }: { wallet: string }) {
               <button
                 onClick={handleDisconnect}
                 disabled={loading}
-                className="flex-1 py-2 text-[9px] font-black uppercase tracking-widest bg-[#FF3B30] !text-white rounded-xl hover:bg-[#D32F2F] transition-all active:scale-95 disabled:opacity-50"
+                className="flex-1 py-2 text-[9px] font-black uppercase tracking-widest bg-[#FF3B30] text-white rounded-xl hover:bg-[#D32F2F] transition-all active:scale-95 disabled:opacity-50"
               >
                 {loading ? 'Removing' : 'Yes, Disconnect'}
               </button>
@@ -233,7 +233,7 @@ export default function TelegramSettings({ wallet }: { wallet: string }) {
               required={!isActive}
             />
             <p className="text-[9px] font-mono text-[#CCCCCC] mt-1.5">
-              Numeric ID from @userinfobot � Can be negative for groups
+              Numeric ID from @userinfobot · Can be negative for groups
             </p>
           </div>
         )}
@@ -264,7 +264,7 @@ export default function TelegramSettings({ wallet }: { wallet: string }) {
               onClick={() => setEvSignals(v => !v)}
               className={`w-full py-2.5 rounded-xl border text-[10px] font-black uppercase tracking-widest transition-all ${
                 evSignals
-                  ? 'bg-[#050505] border-[#050505] !text-white'
+                  ? 'bg-[#050505] border-[#050505] text-white'
                   : 'bg-white border-[#E5E5E5] text-[#888888] hover:border-[#050505]'
               }`}
             >

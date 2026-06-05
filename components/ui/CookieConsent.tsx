@@ -38,7 +38,7 @@ export function CookieConsent() {
           className="fixed bottom-6 left-6 right-6 lg:left-auto lg:right-6 lg:w-[400px] bg-white border border-black/10 shadow-2xl rounded-2xl p-6 z-[999]"
         >
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-full bg-[#0a0a0a] !text-white flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-full bg-[#0a0a0a] text-white flex items-center justify-center flex-shrink-0">
               <Shield size={20} />
             </div>
             <div className="flex-1">
@@ -49,7 +49,7 @@ export function CookieConsent() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={acceptCookies}
-                  className="flex-1 bg-[#0a0a0a] !text-white text-xs font-bold uppercase tracking-wider py-3 rounded-lg hover:bg-black/80 transition-colors flex justify-center items-center gap-2"
+                  className="flex-1 bg-[#0a0a0a] text-white text-xs font-bold uppercase tracking-wider py-3 rounded-lg hover:bg-black/80 transition-colors flex justify-center items-center gap-2"
                 >
                   <Check size={14} /> Accept
                 </button>

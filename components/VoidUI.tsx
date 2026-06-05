@@ -53,9 +53,9 @@ export function VoidButton({
 
     const variants = {
         primary: "bg-white text-black hover:bg-neutral-200",
-        secondary: "bg-surface border border-glass-border !text-white hover:bg-white/5",
+        secondary: "bg-surface border border-glass-border text-white hover:bg-white/5",
         danger: "bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500/20",
-        ghost: "bg-transparent text-neutral-400 hover:!text-white"
+        ghost: "bg-transparent text-neutral-400 hover:text-white"
     };
 
     return (
@@ -89,7 +89,7 @@ export function VoidInput({ label, className, ...props }: VoidInputProps) {
             )}
             <input
                 className={twMerge(
-                    "w-full bg-surface/50 border border-glass-border rounded-xl px-4 py-3 !text-white placeholder-neutral-700 focus:outline-none focus:border-white/20 focus:ring-1 focus:ring-white/10 transition-all font-mono",
+                    "w-full bg-surface/50 border border-glass-border rounded-xl px-4 py-3 text-white placeholder-neutral-700 focus:outline-none focus:border-white/20 focus:ring-1 focus:ring-white/10 transition-all font-mono",
                     className
                 )}
                 {...props}

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 /**
  * CommandPalette  Global Search and Navigation (Cmd+K / Ctrl+K)

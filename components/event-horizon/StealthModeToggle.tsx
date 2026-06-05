@@ -39,7 +39,7 @@ export const StealthModeToggle = () => {
                     px-4 py-2 rounded-lg font-mono text-xs font-bold uppercase tracking-wider transition-all
                     ${isActive 
                         ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed' 
-                        : 'bg-indigo-600 hover:bg-indigo-500 !text-white shadow-[0_0_20px_rgba(79,70,229,0.5)]'}
+                        : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-[0_0_20px_rgba(79,70,229,0.5)]'}
                 `}
             >
                 {isActive ? "Stealth Engaged" : "Activate Stealth"}

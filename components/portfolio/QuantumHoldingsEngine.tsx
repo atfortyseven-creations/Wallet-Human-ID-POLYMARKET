@@ -211,7 +211,7 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
                                             setImportAddress('');
                                         }, 1500);
                                     }}
-                                    className="w-full py-4 bg-black !!text-white font-black text-[11px] uppercase tracking-[0.2em] hover:bg-black/80 transition-colors disabled:opacity-30 flex justify-center"
+                                    className="w-full py-4 bg-black text-white font-black text-[11px] uppercase tracking-[0.2em] hover:bg-black/80 transition-colors disabled:opacity-30 flex justify-center"
                                 >
                                     {isImporting ? <Activity size={16} className="animate-pulse" /> : 'Import'}
                                 </button>
@@ -305,16 +305,16 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
                                     </td>
                                     <td className="py-4 px-6">
                                         <div className="flex items-center justify-end gap-2 opacity-30 group-hover/row:opacity-100 transition-opacity">
-                                            <button onClick={(e) => { e.stopPropagation(); handleAction('SEND', token); }} className="p-1.5 border border-black/10 hover:bg-black hover:!text-white transition-colors" title="Send">
+                                            <button onClick={(e) => { e.stopPropagation(); handleAction('SEND', token); }} className="p-1.5 border border-black/10 hover:bg-black hover:text-white transition-colors" title="Send">
                                                 <Send size={12} />
                                             </button>
-                                            <button onClick={(e) => { e.stopPropagation(); handleAction('RECEIVE', token); }} className="p-1.5 border border-black/10 hover:bg-black hover:!text-white transition-colors" title="Receive">
+                                            <button onClick={(e) => { e.stopPropagation(); handleAction('RECEIVE', token); }} className="p-1.5 border border-black/10 hover:bg-black hover:text-white transition-colors" title="Receive">
                                                 <Download size={12} />
                                             </button>
-                                            <button onClick={(e) => { e.stopPropagation(); handleAction('SWAP', token); }} className="p-1.5 border border-black/10 hover:bg-black hover:!text-white transition-colors" title="Swap">
+                                            <button onClick={(e) => { e.stopPropagation(); handleAction('SWAP', token); }} className="p-1.5 border border-black/10 hover:bg-black hover:text-white transition-colors" title="Swap">
                                                 <ArrowRightLeft size={12} />
                                             </button>
-                                            <button onClick={(e) => { e.stopPropagation(); handleAction('BRIDGE', token); }} className="p-1.5 border border-black/10 hover:bg-black hover:!text-white transition-colors" title="Bridge">
+                                            <button onClick={(e) => { e.stopPropagation(); handleAction('BRIDGE', token); }} className="p-1.5 border border-black/10 hover:bg-black hover:text-white transition-colors" title="Bridge">
                                                 <Route size={12} />
                                             </button>
                                         </div>
@@ -390,14 +390,14 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
                             <button 
                                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                                 disabled={currentPage === 1}
-                                className="px-3 py-1.5 border border-black/10 text-[10px] font-black uppercase tracking-widest hover:bg-black hover:!text-white transition-colors disabled:opacity-30"
+                                className="px-3 py-1.5 border border-black/10 text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors disabled:opacity-30"
                             >
                                 Prev
                             </button>
                             <button 
                                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                                 disabled={currentPage === totalPages}
-                                className="px-3 py-1.5 border border-black/10 text-[10px] font-black uppercase tracking-widest hover:bg-black hover:!text-white transition-colors disabled:opacity-30"
+                                className="px-3 py-1.5 border border-black/10 text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors disabled:opacity-30"
                             >
                                 Next
                             </button>
@@ -585,19 +585,19 @@ function TokenDetailPanel({ token, onClose, onAction, symbol = '$' }: { token: a
                 </div>
 
                 <div className="grid grid-cols-4 gap-2 mb-10">
-                    <button onClick={() => onAction('SEND')} className="flex flex-col items-center justify-center p-4 bg-black/[0.02] hover:bg-black hover:!text-white border border-black/5 hover:border-black transition-all group">
+                    <button onClick={() => onAction('SEND')} className="flex flex-col items-center justify-center p-4 bg-black/[0.02] hover:bg-black hover:text-white border border-black/5 hover:border-black transition-all group">
                         <Send size={16} className="mb-2 opacity-50 group-hover:opacity-100" />
                         <span className="text-[9px] font-black uppercase tracking-widest">Send</span>
                     </button>
-                    <button onClick={() => onAction('RECEIVE')} className="flex flex-col items-center justify-center p-4 bg-black/[0.02] hover:bg-black hover:!text-white border border-black/5 hover:border-black transition-all group">
+                    <button onClick={() => onAction('RECEIVE')} className="flex flex-col items-center justify-center p-4 bg-black/[0.02] hover:bg-black hover:text-white border border-black/5 hover:border-black transition-all group">
                         <Download size={16} className="mb-2 opacity-50 group-hover:opacity-100" />
                         <span className="text-[9px] font-black uppercase tracking-widest">Receive</span>
                     </button>
-                    <button onClick={() => onAction('SWAP')} className="flex flex-col items-center justify-center p-4 bg-black/[0.02] hover:bg-black hover:!text-white border border-black/5 hover:border-black transition-all group">
+                    <button onClick={() => onAction('SWAP')} className="flex flex-col items-center justify-center p-4 bg-black/[0.02] hover:bg-black hover:text-white border border-black/5 hover:border-black transition-all group">
                         <ArrowRightLeft size={16} className="mb-2 opacity-50 group-hover:opacity-100" />
                         <span className="text-[9px] font-black uppercase tracking-widest">Swap</span>
                     </button>
-                    <button onClick={() => onAction('BRIDGE')} className="flex flex-col items-center justify-center p-4 bg-black/[0.02] hover:bg-black hover:!text-white border border-black/5 hover:border-black transition-all group">
+                    <button onClick={() => onAction('BRIDGE')} className="flex flex-col items-center justify-center p-4 bg-black/[0.02] hover:bg-black hover:text-white border border-black/5 hover:border-black transition-all group">
                         <Route size={16} className="mb-2 opacity-50 group-hover:opacity-100" />
                         <span className="text-[9px] font-black uppercase tracking-widest">Bridge</span>
                     </button>
@@ -631,7 +631,7 @@ function TokenDetailPanel({ token, onClose, onAction, symbol = '$' }: { token: a
                             {allowanceCleared ? (
                                 <span className="text-[9px] font-black uppercase tracking-widest text-[#00C076] bg-[#00C076]/10 px-2 py-1">Revoked</span>
                             ) : (
-                                <button onClick={handleRevoke} disabled={isRevoking} className="text-[9px] font-black uppercase tracking-widest text-red-500 bg-red-500/10 hover:bg-red-500 hover:!text-white px-3 py-1.5 transition-colors disabled:opacity-50">
+                                <button onClick={handleRevoke} disabled={isRevoking} className="text-[9px] font-black uppercase tracking-widest text-red-500 bg-red-500/10 hover:bg-red-500 hover:text-white px-3 py-1.5 transition-colors disabled:opacity-50">
                                     {isRevoking ? 'Revoking...' : 'Revoke'}
                                 </button>
                             )}

@@ -211,7 +211,7 @@ export function WatchlistTable() {
                                                             style={{ gridTemplateColumns: '2.5fr 1.5fr 1fr 1fr 1.2fr 1fr 1fr 1fr 0.8fr' }}>
                                                             {/* Token */}
                                                             <div className="px-3 flex items-center gap-2.5">
-                                                                <div className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-black !text-white shrink-0"
+                                                                <div className="w-7 h-7 rounded-full flex items-center justify-center text-[9px] font-black text-white shrink-0"
                                                                     style={{ background: CHAIN_COLORS[t.chain || 'ethereum'] || '#888' }}>
                                                                     {t.symbol ? t.symbol.charAt(0) : '?'}
                                                                 </div>

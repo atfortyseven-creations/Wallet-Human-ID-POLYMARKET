@@ -64,7 +64,7 @@ export function ScrollJourney() {
                 
                 <h2 
                     ref={textRef1} 
-                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-4xl md:text-7xl font-black uppercase !text-white tracking-tighter mix-blend-difference"
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-4xl md:text-7xl font-black uppercase text-white tracking-tighter mix-blend-difference"
                     style={{ opacity: 0 }}
                 >
                     <span className="block text-indigo-500 mb-4 text-xs tracking-[0.4em]">Phase I : The Philosophy</span>
@@ -73,7 +73,7 @@ export function ScrollJourney() {
 
                 <h2 
                     ref={textRef2} 
-                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-4xl md:text-7xl font-black uppercase !text-white tracking-tighter mix-blend-difference"
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full text-4xl md:text-7xl font-black uppercase text-white tracking-tighter mix-blend-difference"
                     style={{ opacity: 0 }}
                 >
                     <span className="block text-emerald-500 mb-4 text-xs tracking-[0.4em]">Phase II : The Solution</span>

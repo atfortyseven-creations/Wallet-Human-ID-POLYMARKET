@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import {
@@ -167,7 +167,7 @@ function ActionButton({ icon, label, highlight }: { icon: React.ReactNode, label
             <div className={`
                 w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-sm
                 ${highlight
-                    ? 'bg-slate-900 !text-white shadow-lg shadow-slate-200 group-hover:scale-105'
+                    ? 'bg-slate-900 text-white shadow-lg shadow-slate-200 group-hover:scale-105'
                     : 'bg-white border border-slate-200 text-slate-900 group-hover:border-slate-300 group-hover:bg-black/5'
                 }
             `}>

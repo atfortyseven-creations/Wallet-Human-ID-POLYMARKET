@@ -45,11 +45,11 @@ export default function SidebarNavigation({ onSelectFolder, onOpenSettings, acti
               key={folder.id}
               onClick={() => onSelectFolder(folder.id)}
               className={`w-full flex items-center justify-start p-3 rounded-xl transition-all ${
-                isActive ? 'bg-black !!text-white border border-black' : 'hover:bg-black/5 border border-transparent text-black/40 hover:text-black'
+                isActive ? 'bg-black text-white border border-black' : 'hover:bg-black/5 border border-transparent text-black/40 hover:text-black'
               }`}
             >
               <Icon size={18} />
-              <span className={`ml-3 font-mono text-[11px] whitespace-nowrap transition-opacity font-bold uppercase tracking-wide ${isActive ? '!text-white' : ''}`}>
+              <span className={`ml-3 font-mono text-[11px] whitespace-nowrap transition-opacity font-bold uppercase tracking-wide ${isActive ? 'text-white' : ''}`}>
                 {folder.name}
               </span>
             </button>

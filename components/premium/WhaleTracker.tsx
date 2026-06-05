@@ -377,19 +377,19 @@ export default function WhaleTracker({
           onClick={() => setActiveTab('signals')}
           className={`px-8 py-4 rounded-full text-lg font-bold transition-all shadow-sm flex items-center gap-2 ${
             activeTab === 'signals' 
-              ? 'bg-blue-600 !text-white shadow-lg shadow-blue-900/40' 
-              : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:!text-white'
+              ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40' 
+              : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
           }`}
         >
-          <Zap className={activeTab === 'signals' ? "!text-white fill-white" : ""} size={20} />
+          <Zap className={activeTab === 'signals' ? "text-white fill-white" : ""} size={20} />
           LIVE SIGNALS
         </button>
         <button
           onClick={() => setActiveTab('wallets')}
           className={`px-8 py-4 rounded-full text-lg font-bold transition-all shadow-sm flex items-center gap-2 ${
             activeTab === 'wallets' 
-              ? 'bg-blue-600 !text-white shadow-lg shadow-blue-900/40' 
-              : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:!text-white'
+              ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40' 
+              : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
           }`}
         >
           <Eye size={20} />
@@ -411,7 +411,7 @@ export default function WhaleTracker({
             >
                 <div className="flex justify-between items-center px-4">
                     <div className="flex items-center gap-4">
-                        <h3 className="text-2xl font-black !text-white flex items-center gap-2">
+                        <h3 className="text-2xl font-black text-white flex items-center gap-2">
                             <Activity className="text-blue-500" />
                             Latest Movements
                         </h3>
@@ -442,7 +442,7 @@ export default function WhaleTracker({
                                     <button 
                                         onClick={onUpgrade} 
                                         data-upgrade-trigger="true"
-                                        className="bg-blue-600 !text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-transform shadow-lg shadow-blue-900/50"
+                                        className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-transform shadow-lg shadow-blue-900/50"
                                     >
                                         Unlock Custom Alerts & Portfolio Tracking
                                     </button>
@@ -466,8 +466,8 @@ export default function WhaleTracker({
                  <div className="bg-white/5 p-6 rounded-3xl shadow-sm border border-white/10 flex flex-wrap gap-4 items-center justify-between backdrop-blur-sm">
                     <div className="flex items-center gap-6">
                         <div className="flex gap-2">
-                            <button onClick={() => setFilter('all')} className={`px-4 py-2 rounded-xl font-bold transition-all ${filter === 'all' ? 'bg-blue-600 !text-white' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}>All</button>
-                            <button onClick={() => setFilter('whales')} className={`px-4 py-2 rounded-xl font-bold transition-all ${filter === 'whales' ? 'bg-blue-600 !text-white' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}>Whales</button>
+                            <button onClick={() => setFilter('all')} className={`px-4 py-2 rounded-xl font-bold transition-all ${filter === 'all' ? 'bg-blue-600 text-white' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}>All</button>
+                            <button onClick={() => setFilter('whales')} className={`px-4 py-2 rounded-xl font-bold transition-all ${filter === 'whales' ? 'bg-blue-600 text-white' : 'bg-white/5 text-gray-400 hover:bg-white/10'}`}>Whales</button>
                         </div>
                         
                         {!authIsPremium && (
@@ -481,7 +481,7 @@ export default function WhaleTracker({
                                         />
                                     ))}
                                 </div>
-                                <span className="text-xs font-bold !text-white/60">{trialViews}/3 Views</span>
+                                <span className="text-xs font-bold text-white/60">{trialViews}/3 Views</span>
                             </div>
                         )}
                     </div>
@@ -501,7 +501,7 @@ export default function WhaleTracker({
                             <div className="w-20 h-20 bg-blue-600/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-blue-500/20">
                                 <Eye size={40} className="text-blue-500 opacity-50" />
                             </div>
-                            <h3 className="text-2xl font-black !text-white mb-2">You are not watching any wallets</h3>
+                            <h3 className="text-2xl font-black text-white mb-2">You are not watching any wallets</h3>
                             <p className="text-gray-400 max-w-xs mx-auto font-medium">
                                 Add a 0x address or a .eth name to start tracking movements.
                             </p>
@@ -603,13 +603,13 @@ function SignalCard({ activity, index }: { activity: WhaleActivity, index: numbe
                     </div>
                     <div>
                         <div className="text-xs font-bold opacity-50 uppercase tracking-widest text-gray-400">{activity.type}</div>
-                        <div className="text-2xl font-black !text-white">{activity.token}</div>
+                        <div className="text-2xl font-black text-white">{activity.token}</div>
                     </div>
                 </div>
 
                 {/* 2. AMOUNT & VALUE */}
                 <div className="text-center md:text-right flex-1">
-                    <div className="text-2xl font-black !text-white tracking-tight">
+                    <div className="text-2xl font-black text-white tracking-tight">
                         ${(activity.usdValue).toLocaleString('de-DE', { maximumFractionDigits: 0 })}
                         <span className="text-sm text-gray-400 font-bold ml-2">
                            ({(activity.usdValue * 0.92).toLocaleString('de-DE', { maximumFractionDigits: 0 })})
@@ -623,14 +623,14 @@ function SignalCard({ activity, index }: { activity: WhaleActivity, index: numbe
                 {/* 3. WHO & TIME */}
                 <div className="flex items-center gap-4 md:border-l md:pl-6 border-white/10 w-full md:w-auto justify-between md:justify-end">
                     <div className="text-right">
-                        <div className="font-bold !text-white text-lg">{activity.walletLabel}</div>
+                        <div className="font-bold text-white text-lg">{activity.walletLabel}</div>
                         <div className="text-xs text-gray-500 font-mono">{new Date(activity.timestamp).toLocaleTimeString()}</div>
                     </div>
                     {/* @ts-ignore */}
                     {activity.chain === 'bitcoin' ? (
                        <div className="w-10 h-10 rounded-full bg-[#f7931a]/20 flex items-center justify-center text-[#f7931a] font-bold border border-[#f7931a]/30"></div> 
                     ) : activity.chain === 'base' ? (
-                       <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center !text-white font-bold shadow-lg shadow-blue-600/30">B</div>
+                       <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold shadow-lg shadow-blue-600/30">B</div>
                     ) : (
                        <div className="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400 font-bold border border-indigo-500/30">Ξ</div>
                     )}
@@ -692,18 +692,18 @@ function ElegantWalletCard({
                     {wallet.isWhale ? <Waves size={24} /> : <Eye size={24} />}
                     <div className="absolute -top-2 -right-2 flex gap-1">
                         {wallet.address.startsWith('0x') && (
-                            <div className="w-5 h-5 rounded-full bg-indigo-600 flex items-center justify-center text-[10px] !text-white font-bold border border-black shadow-lg">Ξ</div>
+                            <div className="w-5 h-5 rounded-full bg-indigo-600 flex items-center justify-center text-[10px] text-white font-bold border border-black shadow-lg">Ξ</div>
                         )}
                         {(wallet.address.startsWith('bc1') || /^[13]/.test(wallet.address)) && !wallet.address.startsWith('0x') && (
-                            <div className="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center text-[10px] !text-white font-bold border border-black shadow-lg"></div>
+                            <div className="w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center text-[10px] text-white font-bold border border-black shadow-lg"></div>
                         )}
                         {/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(wallet.address) && !wallet.address.startsWith('0x') && !wallet.address.startsWith('bc1') && (
-                            <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center text-[10px] !text-white font-bold border border-black shadow-lg">S</div>
+                            <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center text-[10px] text-white font-bold border border-black shadow-lg">S</div>
                         )}
                     </div>
                 </div>
                 <div className="truncate">
-                    <h4 className="text-xl font-black !text-white flex items-center gap-2">
+                    <h4 className="text-xl font-black text-white flex items-center gap-2">
                         {wallet.label}
                         {wallet.isSmart && <Zap size={14} className="text-yellow-400 fill-yellow-400" />}
                     </h4>
@@ -729,7 +729,7 @@ function ElegantWalletCard({
                         </div>
                     ) : (
                         <>
-                            <div className="text-2xl font-black !text-white">{formatValue(wallet.totalValue)}</div>
+                            <div className="text-2xl font-black text-white">{formatValue(wallet.totalValue)}</div>
                             <div className={`font-bold flex items-center justify-end gap-1 ${wallet.change24h >= 0 ? 'text-green-400' : 'text-indigo-400'}`}>
                                 {wallet.change24h >= 0 ? '+' : ''}{wallet.change24h}% (24h)
                             </div>
@@ -740,7 +740,7 @@ function ElegantWalletCard({
                 <div className="flex flex-wrap justify-center md:justify-end gap-2 w-full md:w-auto">
                     <button 
                         onClick={(e) => { e.stopPropagation(); onAnalyze(); }}
-                        className="px-4 py-2 bg-blue-600 !text-white rounded-xl text-xs font-black uppercase hover:bg-blue-500 transition-colors shadow-lg shadow-blue-900/40"
+                        className="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-black uppercase hover:bg-blue-500 transition-colors shadow-lg shadow-blue-900/40"
                         title="View portfolio details and analysis"
                     >
                         View Portfolio
@@ -754,7 +754,7 @@ function ElegantWalletCard({
                             }
                             onAnalyzeSelect(wallet);
                         }}
-                        className={`px-4 py-2 ${(!isPremium && trialViews >= 3 && !hasTrialed) ? 'bg-gray-600' : 'bg-purple-600'} !text-white rounded-xl text-xs font-black uppercase hover:bg-purple-500 transition-colors shadow-lg shadow-purple-900/40 flex items-center gap-2`}
+                        className={`px-4 py-2 ${(!isPremium && trialViews >= 3 && !hasTrialed) ? 'bg-gray-600' : 'bg-purple-600'} text-white rounded-xl text-xs font-black uppercase hover:bg-purple-500 transition-colors shadow-lg shadow-purple-900/40 flex items-center gap-2`}
                         title={(!isPremium && trialViews >= 3 && !hasTrialed) ? "Trial limit reached" : "View advanced analytics (10+ metrics)"}
                     >
                         {(!isPremium && !hasTrialed) && <Lock size={12} />}
@@ -763,7 +763,7 @@ function ElegantWalletCard({
                     {wallet.isWhale && (
                        <button 
                            onClick={(e) => { e.stopPropagation(); onShowReport?.(); }}
-                           className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-400 !text-white rounded-xl text-xs font-black uppercase hover:scale-105 transition-transform shadow-lg shadow-blue-900/40 flex items-center gap-2"
+                           className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-400 text-white rounded-xl text-xs font-black uppercase hover:scale-105 transition-transform shadow-lg shadow-blue-900/40 flex items-center gap-2"
                            title="View Whale Identity Certificate"
                        >
                            <Award size={12} />
@@ -781,7 +781,7 @@ function ElegantWalletCard({
                         }}
                         className={`px-4 py-2 rounded-xl text-xs font-black uppercase transition-all shadow-lg ${
                             isComparing 
-                                ? 'bg-purple-600 !text-white shadow-purple-900/40 border-purple-400' 
+                                ? 'bg-purple-600 text-white shadow-purple-900/40 border-purple-400' 
                                 : 'bg-white/10 text-gray-300 hover:bg-white/20 border-white/10'
                         } border flex items-center gap-2`}
                     >
@@ -896,8 +896,8 @@ function AddWalletModal({ isOpen, onClose, onAdd }: { isOpen: boolean, onClose: 
                 className="bg-[#111] border border-white/10 w-full max-w-lg rounded-[2rem] p-8 shadow-2xl"
             >
                 <div className="flex justify-between items-center mb-8">
-                    <h2 className="text-2xl font-black !text-white">Seguir Nueva Ballena</h2>
-                    <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full !text-white"><X size={24} /></button>
+                    <h2 className="text-2xl font-black text-white">Seguir Nueva Ballena</h2>
+                    <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full text-white"><X size={24} /></button>
                 </div>
 
                 <div className="space-y-6">
@@ -909,7 +909,7 @@ function AddWalletModal({ isOpen, onClose, onAdd }: { isOpen: boolean, onClose: 
                             onKeyDown={handleKeyDown}
                             placeholder="0x... o vitalik.eth"
                             autoFocus
-                            className={`w-full px-4 py-4 bg-black border rounded-2xl outline-none text-xl font-mono mt-2 transition-all !text-white placeholder-gray-700 ${
+                            className={`w-full px-4 py-4 bg-black border rounded-2xl outline-none text-xl font-mono mt-2 transition-all text-white placeholder-gray-700 ${
                                 isHexAddress ? 'border-green-500/60 focus:border-green-500' :
                                 ensPreview.state === 'ok' ? 'border-green-500/60 focus:border-green-500' :
                                 ensPreview.state === 'error' ? 'border-indigo-500/60 focus:border-indigo-500' :
@@ -949,7 +949,7 @@ function AddWalletModal({ isOpen, onClose, onAdd }: { isOpen: boolean, onClose: 
                             onChange={(e) => setLabel(e.target.value)}
                             onKeyDown={handleKeyDown}
                             placeholder="Ej: BlackRock Whale"
-                            className="w-full px-4 py-4 bg-black border border-white/10 rounded-2xl outline-none text-xl mt-2 transition-all focus:border-blue-500 !text-white placeholder-gray-700"
+                            className="w-full px-4 py-4 bg-black border border-white/10 rounded-2xl outline-none text-xl mt-2 transition-all focus:border-blue-500 text-white placeholder-gray-700"
                         />
                     </div>
 
@@ -958,10 +958,10 @@ function AddWalletModal({ isOpen, onClose, onAdd }: { isOpen: boolean, onClose: 
                         disabled={isAdding}
                         className={`w-full py-5 rounded-2xl font-black text-xl transition-all shadow-xl flex items-center justify-center gap-3 ${
                             isAdding
-                            ? 'bg-blue-800 cursor-wait !text-white/70'
+                            ? 'bg-blue-800 cursor-wait text-white/70'
                             : isHexAddress || ensPreview.state === 'ok'
-                            ? 'bg-blue-600 hover:bg-blue-500 !text-white hover:scale-[1.02] shadow-blue-900/40'
-                            : 'bg-white/10 !text-white/50 cursor-default'
+                            ? 'bg-blue-600 hover:bg-blue-500 text-white hover:scale-[1.02] shadow-blue-900/40'
+                            : 'bg-white/10 text-white/50 cursor-default'
                         }`}
                     >
                         {isAdding && <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />}

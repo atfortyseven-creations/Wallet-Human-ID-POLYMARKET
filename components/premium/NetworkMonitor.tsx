@@ -72,7 +72,7 @@ export default function NetworkMonitor() {
                 <Globe className="text-blue-400" size={32} />
             </div>
             <div>
-                <h3 className="text-2xl font-black !text-white tracking-tighter uppercase italic">Node Network Core</h3>
+                <h3 className="text-2xl font-black text-white tracking-tighter uppercase italic">Node Network Core</h3>
                 <p className="text-[10px] font-black text-blue-400 uppercase tracking-[0.3em] mt-1">DEDICATED NODE UPLINK ESTABLISHED</p>
             </div>
         </div>
@@ -97,7 +97,7 @@ export default function NetworkMonitor() {
                 <div className="space-y-3 relative z-10">
                     <div>
                         <div className="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Block Height</div>
-                        <div className="text-2xl font-black !text-white font-mono">
+                        <div className="text-2xl font-black text-white font-mono">
                             {(btcStats?.height || 0).toLocaleString()}
                         </div>
                     </div>
@@ -108,7 +108,7 @@ export default function NetworkMonitor() {
                         </div>
                         <div className="text-right">
                             <div className="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Provider</div>
-                            <div className="font-black !text-white">GETBLOCK</div>
+                            <div className="font-black text-white">GETBLOCK</div>
                         </div>
                     </div>
                 </div>
@@ -133,7 +133,7 @@ export default function NetworkMonitor() {
                 <div className="space-y-3 relative z-10">
                     <div>
                         <div className="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Throughput Capacity</div>
-                        <div className="text-2xl font-black !text-white font-mono">
+                        <div className="text-2xl font-black text-white font-mono">
                             NOMINAL
                         </div>
                     </div>

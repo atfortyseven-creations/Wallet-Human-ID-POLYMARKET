@@ -762,7 +762,7 @@ export function GoldTicketPanel() {
                     <button
                       onClick={handleMint}
                       disabled={!signatureData || isMinting || isSigning || hasTicket}
-                      className="w-full mt-6 bg-black !!text-white px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:scale-[1.02] disabled:hover:scale-100 disabled:opacity-50 transition-all active:scale-95 shadow-lg"
+                      className="w-full mt-6 bg-black text-white px-6 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:scale-[1.02] disabled:hover:scale-100 disabled:opacity-50 transition-all active:scale-95 shadow-lg"
                     >
                       {isMinting || isSigning ? 'CLAIMING...' : 'CLAIM TICKET (FREE MINT)'}
                     </button>

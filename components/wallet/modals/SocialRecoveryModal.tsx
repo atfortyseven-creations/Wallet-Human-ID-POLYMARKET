@@ -68,7 +68,7 @@ export default function SocialRecoveryModal({ isOpen, onClose }: SocialRecoveryM
                         className="relative w-full max-w-lg bg-gradient-to-br from-purple-900/90 to-black/90 backdrop-blur-xl rounded-3xl p-8 border border-white/10 shadow-2xl"
                     >
                         <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/10">
-                            <X size={20} className="!text-white" />
+                            <X size={20} className="text-white" />
                         </button>
 
                         <div className="flex items-center gap-3 mb-6">
@@ -76,8 +76,8 @@ export default function SocialRecoveryModal({ isOpen, onClose }: SocialRecoveryM
                                 <Shield className="text-green-400" size={24} />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-black !text-white">Social Recovery</h2>
-                                <p className="text-sm !text-white/60">Recover wallet without seed phrase</p>
+                                <h2 className="text-2xl font-black text-white">Social Recovery</h2>
+                                <p className="text-sm text-white/60">Recover wallet without seed phrase</p>
                             </div>
                         </div>
 
@@ -90,19 +90,19 @@ export default function SocialRecoveryModal({ isOpen, onClose }: SocialRecoveryM
 
                         {/* Add Guardian */}
                         <div className="mb-6">
-                            <label className="!text-white/80 text-sm mb-2 block">Add Guardian (Email or Address)</label>
+                            <label className="text-white/80 text-sm mb-2 block">Add Guardian (Email or Address)</label>
                             <div className="flex gap-2">
                                 <input
                                     type="text"
                                     value={newGuardian}
                                     onChange={(e) => setNewGuardian(e.target.value)}
                                     placeholder="friend@example.com or 0x..."
-                                    className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl !text-white"
+                                    className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white"
                                 />
                                 <button
                                     onClick={addGuardian}
                                     disabled={!newGuardian || guardians.length >= 5}
-                                    className="px-4 py-3 bg-green-600 hover:bg-green-500 disabled:bg-white/10 rounded-xl !text-white"
+                                    className="px-4 py-3 bg-green-600 hover:bg-green-500 disabled:bg-white/10 rounded-xl text-white"
                                 >
                                     <UserPlus size={20} />
                                 </button>
@@ -111,9 +111,9 @@ export default function SocialRecoveryModal({ isOpen, onClose }: SocialRecoveryM
 
                         {/* Guardians List */}
                         <div className="mb-6">
-                            <h3 className="!text-white font-bold mb-3">Your Guardians ({guardians.length}/5)</h3>
+                            <h3 className="text-white font-bold mb-3">Your Guardians ({guardians.length}/5)</h3>
                             {guardians.length === 0 ? (
-                                <p className="!text-white/60 text-center py-4">No guardians yet</p>
+                                <p className="text-white/60 text-center py-4">No guardians yet</p>
                             ) : (
                                 <div className="space-y-2">
                                     {guardians.map((g, i) => (
@@ -122,7 +122,7 @@ export default function SocialRecoveryModal({ isOpen, onClose }: SocialRecoveryM
                                                 <div className="w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center">
                                                     <Users size={16} className="text-green-400" />
                                                 </div>
-                                                <span className="!text-white text-sm font-mono">{g.slice(0, 20)}...</span>
+                                                <span className="text-white text-sm font-mono">{g.slice(0, 20)}...</span>
                                             </div>
                                             <button
                                                 onClick={() => setGuardians(guardians.filter((_, idx) => idx !== i))}
@@ -138,7 +138,7 @@ export default function SocialRecoveryModal({ isOpen, onClose }: SocialRecoveryM
 
                         {/* Threshold */}
                         <div className="mb-6">
-                            <label className="!text-white/80 text-sm mb-2 block">
+                            <label className="text-white/80 text-sm mb-2 block">
                                 Recovery Threshold: <strong>{threshold} of {guardians.length}</strong>
                             </label>
                             <input
@@ -154,7 +154,7 @@ export default function SocialRecoveryModal({ isOpen, onClose }: SocialRecoveryM
                         <button
                             onClick={saveGuardians}
                             disabled={loading || guardians.length < 2}
-                            className="w-full py-3 bg-green-600 hover:bg-green-500 disabled:bg-white/10 rounded-xl font-bold !text-white flex items-center justify-center gap-2"
+                            className="w-full py-3 bg-green-600 hover:bg-green-500 disabled:bg-white/10 rounded-xl font-bold text-white flex items-center justify-center gap-2"
                         >
                             {loading ? <Loader2 className="animate-spin" size={20} /> : <Check size={20} />}
                             {loading ? 'Saving...' : 'Save Guardians'}

@@ -33,7 +33,7 @@ function Avatar({ address }: { address: string }) {
   const hue = parseInt(address.slice(2, 8), 16) % 360;
   return (
     <div
-      className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-black !text-white shrink-0"
+      className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-black text-white shrink-0"
       style={{ background: `hsl(${hue},70%,45%)` }}
     >
       {initials}
@@ -1066,7 +1066,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       <div className="flex flex-col items-center justify-center h-full min-h-[500px] gap-4">
         <h3 className="text-sm font-black uppercase tracking-widest text-[#050505] ">Whale Chat</h3>
         <p className="text-xs text-black/40  text-center max-w-xs">Connect your wallet to access maximum security decentralized messaging.</p>
-        <button onClick={() => openAppKit()} className="px-8 py-4 bg-black  !text-white  rounded-xl text-[11px] font-black uppercase tracking-widest active:scale-95 transition-transform shadow-xl">Connect Wallet</button>
+        <button onClick={() => openAppKit()} className="px-8 py-4 bg-black  text-white  rounded-xl text-[11px] font-black uppercase tracking-widest active:scale-95 transition-transform shadow-xl">Connect Wallet</button>
       </div>
     );
   }
@@ -1142,7 +1142,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 <div className="flex flex-col gap-3 w-full">
                   <button
                     onClick={() => openAppKit()}
-                    className="w-full py-5 rounded-xl bg-[#050505]  !text-white  text-[12px] font-black uppercase tracking-widest hover:bg-black/80  transition-all flex items-center justify-center gap-3 active:scale-[0.97]"
+                    className="w-full py-5 rounded-xl bg-[#050505]  text-white  text-[12px] font-black uppercase tracking-widest hover:bg-black/80  transition-all flex items-center justify-center gap-3 active:scale-[0.97]"
                   >
                     Reconnect Wallet
                   </button>
@@ -1157,7 +1157,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 <button
                   onClick={initClient}
                   disabled={isInitializing}
-                  className="w-full py-5 rounded-xl bg-[#050505] !text-white text-[12px] font-black uppercase tracking-widest hover:bg-black/80 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                  className="w-full py-5 rounded-xl bg-[#050505] text-white text-[12px] font-black uppercase tracking-widest hover:bg-black/80 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                 >
                   {isInitializing ? (
                     <>Establish Tunnel...</>
@@ -1181,7 +1181,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               <button
                 onClick={initClient}
                 disabled={isInitializing}
-                className="w-full max-w-md py-6 rounded-xl bg-[#050505]  !text-white  text-[13px] font-black uppercase tracking-[0.2em] hover:bg-black/80  transition-all disabled:opacity-50 flex items-center justify-center gap-3"
+                className="w-full max-w-md py-6 rounded-xl bg-[#050505]  text-white  text-[13px] font-black uppercase tracking-[0.2em] hover:bg-black/80  transition-all disabled:opacity-50 flex items-center justify-center gap-3"
               >
                 Activate Identity
               </button>
@@ -1205,7 +1205,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setShowScanner(true)}
-                className="p-2.5 rounded-xl bg-black  !text-white  hover:bg-black/80  transition-all text-[10px] font-black uppercase tracking-widest"
+                className="p-2.5 rounded-xl bg-black  text-white  hover:bg-black/80  transition-all text-[10px] font-black uppercase tracking-widest"
                 title="Scan Identity QR"
               >
                 SCAN
@@ -1232,7 +1232,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             <button
               onClick={handleStartConversation}
               disabled={sending}
-              className="w-9 h-9 bg-[#050505]  rounded-lg flex items-center justify-center !text-white  hover:bg-black/80  transition-colors active:scale-95 disabled:opacity-50 text-[18px] font-light"
+              className="w-9 h-9 bg-[#050505]  rounded-lg flex items-center justify-center text-white  hover:bg-black/80  transition-colors active:scale-95 disabled:opacity-50 text-[18px] font-light"
             >
               +
             </button>
@@ -1306,7 +1306,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               <div className="flex items-center gap-2">
                 <button 
                   onClick={() => setShowScanner(true)}
-                  className="lg:hidden px-3 py-2 bg-black  !text-white  rounded-lg text-[9px] font-black uppercase tracking-widest"
+                  className="lg:hidden px-3 py-2 bg-black  text-white  rounded-lg text-[9px] font-black uppercase tracking-widest"
                 >
                   SCAN
                 </button>
@@ -1374,7 +1374,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                             ? 'bg-[#050505]  rounded-br-sm'
                             : 'bg-white  rounded-bl-sm border border-black/8  shadow-sm'
                         }`}>
-                          <div className={`flex items-center gap-2 mb-1.5 ${isMe ? '!text-white/60 ' : 'text-black/40 '}`}>
+                          <div className={`flex items-center gap-2 mb-1.5 ${isMe ? 'text-white/60 ' : 'text-black/40 '}`}>
                             <span className="text-[9px] font-black uppercase tracking-widest">AUDIO</span>
                           </div>
                           <audio
@@ -1387,14 +1387,14 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                       ) : isLocation && locationCoords ? (
                         <div className={`px-4 py-3 rounded-2xl flex flex-col gap-2 relative z-20 ${
                           isMe
-                            ? 'bg-[#050505]  !text-white  rounded-br-sm'
+                            ? 'bg-[#050505]  text-white  rounded-br-sm'
                             : 'bg-white  text-[#050505]  rounded-bl-sm border border-black/8  shadow-sm'
                         }`}>
                           <div className="flex items-center gap-2">
-                             <MapPin size={14} className={isMe ? '!text-white/70 ' : 'text-blue-500'} />
+                             <MapPin size={14} className={isMe ? 'text-white/70 ' : 'text-blue-500'} />
                              <span className="text-[10px] font-mono uppercase font-bold">Real-time Location</span>
                           </div>
-                          <a href={`https://www.google.com/maps?q=${locationCoords}`} target="_blank" rel="noopener noreferrer" className={`text-[11px] underline mt-1 font-mono ${isMe ? '!text-white/80 ' : 'text-blue-500'}`}>
+                          <a href={`https://www.google.com/maps?q=${locationCoords}`} target="_blank" rel="noopener noreferrer" className={`text-[11px] underline mt-1 font-mono ${isMe ? 'text-white/80 ' : 'text-blue-500'}`}>
                             Open in Maps ({locationCoords})
                           </a>
                         </div>
@@ -1415,7 +1415,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                       ) : (
                         <div className={`px-4 py-2.5 rounded-2xl text-[13px] leading-relaxed break-words ${
                           isMe
-                            ? 'bg-[#050505]  !text-white  rounded-br-sm'
+                            ? 'bg-[#050505]  text-white  rounded-br-sm'
                             : 'bg-white  text-[#050505]  rounded-bl-sm border border-black/8  shadow-sm'
                         }`}>
                           {content}
@@ -1467,7 +1467,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   onPointerLeave={stopRecording}
                   className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all active:scale-95 shrink-0 ${
                     isRecording
-                      ? 'bg-black  !text-white  shadow-xl'
+                      ? 'bg-black  text-white  shadow-xl'
                       : 'bg-black/[0.05]  text-black/50  hover:bg-black/10 '
                   }`}
                   style={{ touchAction: 'none' }}
@@ -1519,7 +1519,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 <button
                   type="submit"
                   disabled={(!inputText.trim() && !isRecording) || sending || isUploading}
-                  className="w-11 h-11 rounded-xl bg-[#050505]  flex items-center justify-center !text-white  disabled:opacity-30 hover:bg-black/80  transition-all active:scale-95 shrink-0 text-[10px] font-black uppercase"
+                  className="w-11 h-11 rounded-xl bg-[#050505]  flex items-center justify-center text-white  disabled:opacity-30 hover:bg-black/80  transition-all active:scale-95 shrink-0 text-[10px] font-black uppercase"
                 >
                   SEND
                 </button>

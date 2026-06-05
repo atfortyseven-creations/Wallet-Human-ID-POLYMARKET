@@ -41,7 +41,7 @@ export default function PerpsTab({ perps, isLoading }: PerpsTabProps) {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: idx * 0.05 }}
-                    className="bg-neutral-900 rounded-[2rem] p-6 !text-white border border-white/5 hover:border-white/10 transition-all group overflow-hidden relative"
+                    className="bg-neutral-900 rounded-[2rem] p-6 text-white border border-white/5 hover:border-white/10 transition-all group overflow-hidden relative"
                 >
                     {/* Background Glow */}
                     <div className={`absolute top-0 right-0 w-32 h-32 blur-[60px] opacity-20 -mr-16 -mt-16 bg-${pos.side === 'LONG' ? 'emerald' : 'rose'}-500`} />
@@ -50,11 +50,11 @@ export default function PerpsTab({ perps, isLoading }: PerpsTabProps) {
                         <div className="flex flex-col gap-1">
                             <div className="flex items-center gap-2 mb-1">
                                 <span className={`px-2 py-0.5 rounded text-[10px] font-black tracking-tighter ${
-                                    pos.side === 'LONG' ? 'bg-emerald-500 !text-white' : 'bg-rose-500 !text-white'
+                                    pos.side === 'LONG' ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'
                                 }`}>
                                     {pos.side} {pos.leverage}X
                                 </span>
-                                <span className="text-xs font-bold !text-white/40">{pos.protocol}</span>
+                                <span className="text-xs font-bold text-white/40">{pos.protocol}</span>
                             </div>
                             <h4 className="text-2xl font-black">{pos.market}</h4>
                         </div>
@@ -70,11 +70,11 @@ export default function PerpsTab({ perps, isLoading }: PerpsTabProps) {
 
                     <div className="grid grid-cols-3 gap-4 relative z-10">
                         <div>
-                            <p className="text-[10px] !text-white/30 font-bold uppercase mb-1">Size</p>
+                            <p className="text-[10px] text-white/30 font-bold uppercase mb-1">Size</p>
                             <p className="text-sm font-bold">{pos.size} ETH</p>
                         </div>
                         <div>
-                            <p className="text-[10px] !text-white/30 font-bold uppercase mb-1">Entry</p>
+                            <p className="text-[10px] text-white/30 font-bold uppercase mb-1">Entry</p>
                             <p className="text-sm font-bold">${safeToLocaleString(pos.entryPrice)}</p>
                         </div>
                         <div className="text-right">

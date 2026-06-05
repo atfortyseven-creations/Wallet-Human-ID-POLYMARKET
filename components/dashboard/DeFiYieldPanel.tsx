@@ -311,7 +311,7 @@ export default function DeFiYieldPanel() {
                                 <button 
                                     onClick={handleOneClickDeposit}
                                     disabled={isDepositing || !depositAmount}
-                                    className="w-full py-4 rounded bg-[#050505] !text-white font-bold uppercase tracking-[0.2em] text-xs flex items-center justify-center gap-2 hover:bg-[#888888] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="w-full py-4 rounded bg-[#050505] text-white font-bold uppercase tracking-[0.2em] text-xs flex items-center justify-center gap-2 hover:bg-[#888888] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {isDepositing ? (
                                         <Loader2 size={16} className="animate-spin" />

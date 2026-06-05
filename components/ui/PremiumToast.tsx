@@ -88,16 +88,16 @@ function ToastItem({ toast, onClose }: { toast: Toast; onClose: () => void }) {
         <div className="shrink-0">{icons[toast.type]}</div>
         
         <div className="flex-1 min-w-0">
-          <h4 className="!text-white font-semibold text-sm mb-1">{toast.title}</h4>
+          <h4 className="text-white font-semibold text-sm mb-1">{toast.title}</h4>
           {toast.message && (
-            <p className="!text-white/60 text-xs leading-relaxed">{toast.message}</p>
+            <p className="text-white/60 text-xs leading-relaxed">{toast.message}</p>
           )}
         </div>
         
         <button
           onClick={onClose}
           className="shrink-0 p-1 rounded-lg hover:bg-white/10 transition-colors"
-        > <X className="w-4 h-4 !text-white/40" />
+        > <X className="w-4 h-4 text-white/40" />
         </button>
       </div>
     </motion.div>

@@ -267,7 +267,7 @@ export default function SwapModal({ isOpen, onClose }: SwapModalProps) {
                   </a>
                 </div>
               </div>
-              <button onClick={onClose} className="w-full py-3 bg-gray-900 !text-white font-black text-sm rounded-xl hover:bg-gray-800 transition-colors">Done</button>
+              <button onClick={onClose} className="w-full py-3 bg-gray-900 text-white font-black text-sm rounded-xl hover:bg-gray-800 transition-colors">Done</button>
             </div>
           )}
 
@@ -282,7 +282,7 @@ export default function SwapModal({ isOpen, onClose }: SwapModalProps) {
                 <p className="text-xs text-gray-500 mt-2 bg-red-50 p-3 rounded-xl border border-red-100 font-mono text-left">{errorMsg}</p>
               </div>
               <button onClick={() => setStatus("IDLE")}
-                className="w-full py-3 bg-gray-900 !text-white font-black text-sm rounded-xl hover:bg-gray-800 transition-colors">
+                className="w-full py-3 bg-gray-900 text-white font-black text-sm rounded-xl hover:bg-gray-800 transition-colors">
                 Try Again
               </button>
             </div>
@@ -380,7 +380,7 @@ export default function SwapModal({ isOpen, onClose }: SwapModalProps) {
                   {[0.1, 0.5, 1.0].map(s => (
                     <button key={s}
                       onClick={() => setSlippage(s)}
-                      className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase transition-colors ${slippage === s ? "bg-gray-900 !text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}
+                      className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase transition-colors ${slippage === s ? "bg-gray-900 text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}
                     >
                       {s}%
                     </button>
@@ -392,7 +392,7 @@ export default function SwapModal({ isOpen, onClose }: SwapModalProps) {
               <button
                 disabled={!fromAmount || !quoteData || isProcessing}
                 onClick={executeSwap}
-                className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl font-black text-sm uppercase tracking-widest !text-white transition-all active:scale-[0.98] flex items-center justify-center gap-3 mt-2"
+                className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-30 disabled:cursor-not-allowed rounded-2xl font-black text-sm uppercase tracking-widest text-white transition-all active:scale-[0.98] flex items-center justify-center gap-3 mt-2"
               >
                 {status === "QUOTING" ? (
                   <><Loader2 size={16} className="animate-spin" /> Finding Route...</>

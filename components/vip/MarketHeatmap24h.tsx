@@ -417,17 +417,17 @@ export function MarketHeatmap24h() {
       {/* Header */}
       <div className="flex items-center justify-between px-8 pt-7 pb-4">
         <div>
-          <h2 className="text-lg font-black !text-white tracking-tight">
-            Heatmap <span className="!text-white/30 font-light">24h</span>
+          <h2 className="text-lg font-black text-white tracking-tight">
+            Heatmap <span className="text-white/30 font-light">24h</span>
           </h2>
-          <p className="text-[10px] font-mono !text-white/40 uppercase tracking-widest mt-0.5">
+          <p className="text-[10px] font-mono text-white/40 uppercase tracking-widest mt-0.5">
             {TABS.find(t => t.key === activeTab)?.desc} · LIVE BINANCE
           </p>
         </div>
 
         <div className="flex items-center gap-4">
           {lastUpdate && (
-            <span className="text-[10px] font-mono !text-white/30">
+            <span className="text-[10px] font-mono text-white/30">
               {lastUpdate.toLocaleTimeString()}
             </span>
           )}
@@ -435,7 +435,7 @@ export function MarketHeatmap24h() {
             onClick={fetchData}
             className="p-2 rounded-xl border border-white/10 hover:border-white/30 transition-all group"
           >
-            <RefreshCw size={13} className="!text-white/40 group-hover:!text-white group-hover:rotate-180 transition-all duration-500" />
+            <RefreshCw size={13} className="text-white/40 group-hover:text-white group-hover:rotate-180 transition-all duration-500" />
           </button>
         </div>
       </div>
@@ -450,7 +450,7 @@ export function MarketHeatmap24h() {
               className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[11px] font-black uppercase tracking-wider transition-all ${
                 activeTab === tab.key
                   ? "bg-white text-black shadow-sm"
-                  : "!text-white/40 hover:!text-white hover:bg-white/5"
+                  : "text-white/40 hover:text-white hover:bg-white/5"
               }`}
             >
               {tab.icon}
@@ -506,7 +506,7 @@ export function MarketHeatmap24h() {
                 <div className="text-xs font-black text-[var(--aztec-parchment)] mb-3 font-mono">{coin.name}</div>
                 <div className="space-y-1.5">
                   {TABS.map(tab => (
-                    <div key={tab.key} className={`flex items-center justify-between gap-6 text-[10px] font-mono ${tab.key === activeTab ? "!text-white" : "text-slate-500"}`}>
+                    <div key={tab.key} className={`flex items-center justify-between gap-6 text-[10px] font-mono ${tab.key === activeTab ? "text-white" : "text-slate-500"}`}>
                       <span className={`flex items-center gap-1 ${tab.key === activeTab ? "text-violet-400" : ""}`}>
                         {tab.icon}{tab.label}
                       </span>
@@ -517,7 +517,7 @@ export function MarketHeatmap24h() {
                   ))}
                   <div className="flex items-center justify-between gap-6 text-[10px] font-mono text-slate-500 pt-1 border-t border-white/5">
                     <span>Price</span>
-                    <span className="!text-white font-black">${coin.price.toLocaleString()}</span>
+                    <span className="text-white font-black">${coin.price.toLocaleString()}</span>
                   </div>
                 </div>
               </motion.div>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { createPortal } from 'react-dom';
@@ -347,7 +347,7 @@ export default function BubblesView({ limit }: { limit?: number }) {
                             className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
                                 timeframe === tf 
                                     ? 'bg-white text-black shadow-lg' 
-                                    : '!text-white/40 hover:bg-white/5'
+                                    : 'text-white/40 hover:bg-white/5'
                             }`}
                         >
                             {labels[tf]}
@@ -379,7 +379,7 @@ export default function BubblesView({ limit }: { limit?: number }) {
             >
                 {loading && data.length === 0 ? (
                     <div className="absolute inset-0 flex items-center justify-center">
-                        <Loader2 className="animate-spin !text-white/20" size={48} />
+                        <Loader2 className="animate-spin text-white/20" size={48} />
                     </div>
                 ) : (
                     <div className="w-full h-full relative">
@@ -451,8 +451,8 @@ export default function BubblesView({ limit }: { limit?: number }) {
                                         </div>
                                     )}
                                     <BubbleIcon src={node.coin.image} alt={node.coin.symbol} />
-                                    <div className="font-black text-[10px] leading-none mb-1 !text-white uppercase">{node.coin.symbol}</div>
-                                    <div className="font-black text-[9px] tabular-nums !text-white">
+                                    <div className="font-black text-[10px] leading-none mb-1 text-white uppercase">{node.coin.symbol}</div>
+                                    <div className="font-black text-[9px] tabular-nums text-white">
                                         <ActiveBubblePercentTicker 
                                             value={node.coin[`price_change_${timeframe}` as keyof BubbleData] as number || 0} 
                                         />
@@ -488,7 +488,7 @@ function BubbleIcon({ src, alt }: { src: string, alt: string }) {
 
     if (error) {
         return (
-            <div className="w-8 h-8 rounded-full mb-1 flex items-center justify-center bg-white/10 text-[8px] font-bold !text-white/50">
+            <div className="w-8 h-8 rounded-full mb-1 flex items-center justify-center bg-white/10 text-[8px] font-bold text-white/50">
                 {alt.slice(0, 2)}
             </div>
         );
@@ -539,7 +539,7 @@ function BubbleDetailModal({ coin, onClose }: { coin: BubbleData, onClose: () =>
             >
                 <motion.div
                     initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
-                    className="bg-[#1a1a1a] !text-white w-full max-w-4xl rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/10 relative"
+                    className="bg-[#1a1a1a] text-white w-full max-w-4xl rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/10 relative"
                     onClick={(e) => e.stopPropagation()}
                 >
                     <div className="p-8 flex justify-between items-center border-b border-white/5 bg-gradient-to-b from-white/10 to-transparent">
@@ -565,7 +565,7 @@ function BubbleDetailModal({ coin, onClose }: { coin: BubbleData, onClose: () =>
                            <MetricBlock label={t('market.month')} value={coin.price_change_30d} />
                            <MetricBlock label={t('market.year')} value={coin.price_change_1y} />
                            <div className="col-span-2 bg-white/5 p-4 rounded-2xl flex flex-col justify-center">
-                                <span className="text-[10px] font-black !text-white/30 tracking-widest uppercase">{t('market.volume_24h')}</span>
+                                <span className="text-[10px] font-black text-white/30 tracking-widest uppercase">{t('market.volume_24h')}</span>
                                 <ActiveModalVolumeTicker value={coin.total_volume} />
                            </div>
                         </div>
@@ -591,7 +591,7 @@ function MetricBlock({ label, value }: { label: string, value: number }) {
 
     return (
         <div className={`p-4 rounded-2xl border flex flex-col items-center justify-center transition-all duration-500 ${isPos ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-rose-500/10 border-rose-500/20'}`}>
-            <span className="text-[10px] font-black !text-white/30 tracking-widest mb-1">{label}</span>
+            <span className="text-[10px] font-black text-white/30 tracking-widest mb-1">{label}</span>
             <div className={`text-xs font-black flex items-center gap-1 tabular-nums ${isPos ? 'text-emerald-400' : 'text-rose-400'}`}>
                 {isPos ? <ArrowUpRight size={10} /> : <ArrowDownRight size={10} />}
                 {safeToFixed(Math.abs(displayValue), 2)}%

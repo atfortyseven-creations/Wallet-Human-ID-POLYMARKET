@@ -16,7 +16,7 @@ export default function RealDashboard() {
         return (
             <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
                 <h1 className="text-4xl font-black mb-6">Whale Alert Network Engine</h1>
-                <button onClick={() => connect({ connector: injected() })} className="bg-black !!text-white px-8 py-4 rounded-full font-bold text-lg hover:scale-105 transition">
+                <button onClick={() => connect({ connector: injected() })} className="bg-black text-white px-8 py-4 rounded-full font-bold text-lg hover:scale-105 transition">
                     Connect Wallet
                 </button>
             </div>
@@ -30,7 +30,7 @@ export default function RealDashboard() {
         <div className="max-w-md mx-auto py-10 px-6 space-y-8 animate-in fade-in">
 
             {/* TARJETA DE DINERO */}
-            <div className="bg-black !!text-white p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+            <div className="bg-black text-white p-8 rounded-3xl shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-purple-600 rounded-full blur-[60px] opacity-50"></div>
                 <h2 className="text-gray-400 text-xs font-bold uppercase mb-1">Tu Poder de Voto</h2>
                 <div className="text-5xl font-black">{power} <span className="text-lg text-gray-500">SHARES</span></div>
@@ -66,7 +66,7 @@ export default function RealDashboard() {
                     verification_level={VerificationLevel.Orb}
                 >
                     {({ open }: { open: () => void }) => (
-                        <button onClick={open} disabled={power === 0} className={`w-full py-4 rounded-xl font-bold transition ${power === 0 ? "bg-gray-100 text-gray-400" : "bg-blue-600 !text-white hover:bg-blue-700"}`}>
+                        <button onClick={open} disabled={power === 0} className={`w-full py-4 rounded-xl font-bold transition ${power === 0 ? "bg-gray-100 text-gray-400" : "bg-blue-600 text-white hover:bg-blue-700"}`}>
                             {power === 0 ? " Haz ZAP para Votar" : "️ Votar"}
                         </button>
                     )}

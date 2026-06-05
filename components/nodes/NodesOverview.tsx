@@ -30,7 +30,7 @@ export default function NodesOverview() {
     }, [searchQuery, activeCategory]);
 
     return (
-        <div className="min-h-screen bg-black !!text-white selection:bg-white/20">
+        <div className="min-h-screen bg-black text-white selection:bg-white/20">
             {/* Stratospheric Background */}
             <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
                 <HeroCircuitry />
@@ -47,7 +47,7 @@ export default function NodesOverview() {
                         className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10"
                     >
                         <Shield size={12} className="text-indigo-400" />
-                        <span className="text-[10px] font-black uppercase tracking-[0.3em] !text-white/60">Elite Grade Infrastructure</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/60">Elite Grade Infrastructure</span>
                     </motion.div>
                     
                     <motion.h1 
@@ -64,7 +64,7 @@ export default function NodesOverview() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="!text-white/40 text-lg lg:text-xl font-medium tracking-tight max-w-2xl mx-auto"
+                        className="text-white/40 text-lg lg:text-xl font-medium tracking-tight max-w-2xl mx-auto"
                     >
                         Provision private, untethered blockchain infrastructure with 99.9%+ SLA and mission-critical performance control.
                     </motion.p>
@@ -89,8 +89,8 @@ export default function NodesOverview() {
                                 <point.icon size={20} className={point.color} />
                             </div>
                             <div>
-                                <h4 className="text-sm font-black uppercase tracking-widest !text-white">{point.title}</h4>
-                                <p className="text-xs !text-white/40 font-medium leading-relaxed mt-1">{point.desc}</p>
+                                <h4 className="text-sm font-black uppercase tracking-widest text-white">{point.title}</h4>
+                                <p className="text-xs text-white/40 font-medium leading-relaxed mt-1">{point.desc}</p>
                             </div>
                         </motion.div>
                     ))}
@@ -99,7 +99,7 @@ export default function NodesOverview() {
                 {/* Search & Filter Bar */}
                 <div className="sticky top-24 z-50 bg-black/40 backdrop-blur-3xl p-4 rounded-[2rem] border border-white/5 flex flex-col lg:flex-row items-center gap-6 shadow-2xl">
                     <div className="w-full relative group">
-                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 !text-white/20 group-focus-within:text-indigo-400 transition-colors" size={18} />
+                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-indigo-400 transition-colors" size={18} />
                         <input 
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -113,7 +113,7 @@ export default function NodesOverview() {
                             <button 
                                 key={cat}
                                 onClick={() => setActiveCategory(cat)}
-                                className={`px-6 py-4 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all shrink-0 ${activeCategory === cat ? 'bg-white text-black' : 'bg-white/5 !text-white/40 hover:bg-white/10'}`}
+                                className={`px-6 py-4 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] transition-all shrink-0 ${activeCategory === cat ? 'bg-white text-black' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}
                             >
                                 {cat}
                             </button>
@@ -136,7 +136,7 @@ export default function NodesOverview() {
                             >
                                 {/* Category Badge */}
                                 <div className="absolute top-0 right-0 p-4">
-                                    <span className="text-[8px] font-black tracking-widest !text-white/20 uppercase bg-white/5 px-2 py-0.5 rounded-full border border-white/5">
+                                    <span className="text-[8px] font-black tracking-widest text-white/20 uppercase bg-white/5 px-2 py-0.5 rounded-full border border-white/5">
                                         {node.category}
                                     </span>
                                 </div>
@@ -147,8 +147,8 @@ export default function NodesOverview() {
                                     </div>
                                     
                                     <div className="space-y-1">
-                                        <h3 className="text-xl font-black uppercase tracking-tighter !text-white">{node.name}</h3>
-                                        <p className="text-[10px] !text-white/40 font-medium leading-relaxed line-clamp-2">{node.description}</p>
+                                        <h3 className="text-xl font-black uppercase tracking-tighter text-white">{node.name}</h3>
+                                        <p className="text-[10px] text-white/40 font-medium leading-relaxed line-clamp-2">{node.description}</p>
                                     </div>
 
                                     <div className="flex flex-wrap gap-2">
@@ -156,17 +156,17 @@ export default function NodesOverview() {
                                             <span key={p} className="px-2 py-0.5 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[8px] font-black uppercase tracking-widest">{p}</span>
                                         ))}
                                         {node.mode.map(m => (
-                                            <span key={m} className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 !text-white/40 text-[8px] font-black uppercase tracking-widest">{m}</span>
+                                            <span key={m} className="px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-white/40 text-[8px] font-black uppercase tracking-widest">{m}</span>
                                         ))}
                                     </div>
                                 </div>
 
                                 <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between">
                                     <div className="space-y-0.5">
-                                        <p className="text-[8px] font-black uppercase tracking-widest !text-white/20 leading-none">Monthly Tier</p>
-                                        <p className="text-lg font-black font-mono !text-white leading-none">from {node.price}</p>
+                                        <p className="text-[8px] font-black uppercase tracking-widest text-white/20 leading-none">Monthly Tier</p>
+                                        <p className="text-lg font-black font-mono text-white leading-none">from {node.price}</p>
                                     </div>
-                                    <button className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white !text-white hover:text-black transition-all group/btn">
+                                    <button className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white text-white hover:text-black transition-all group/btn">
                                         <ArrowRight size={16} className="group-hover/btn:translate-x-0.5 transition-transform" />
                                     </button>
                                 </div>
@@ -182,11 +182,11 @@ export default function NodesOverview() {
                         animate={{ opacity: 1 }}
                         className="py-40 text-center space-y-4"
                     >
-                        <Search size={48} className="mx-auto !text-white/10" />
-                        <h3 className="text-xl font-black uppercase tracking-widest !text-white/40">No matching infrastructure found</h3>
+                        <Search size={48} className="mx-auto text-white/10" />
+                        <h3 className="text-xl font-black uppercase tracking-widest text-white/40">No matching infrastructure found</h3>
                         <button 
                             onClick={() => { setSearchQuery(''); setActiveCategory('ALL'); }}
-                            className="text-xs font-black uppercase tracking-widest text-indigo-400 hover:!text-white transition-colors"
+                            className="text-xs font-black uppercase tracking-widest text-indigo-400 hover:text-white transition-colors"
                         >
                             Reset System Filters
                         </button>
@@ -198,7 +198,7 @@ export default function NodesOverview() {
                     <div className="absolute inset-0 bg-grid-white/5 pointer-events-none" />
                     <div className="relative z-10 space-y-4">
                         <h2 className="text-4xl lg:text-6xl font-black uppercase tracking-tighter">Ready for Provisioning?</h2>
-                        <p className="!text-white/40 text-lg max-w-xl mx-auto font-medium tracking-tight">
+                        <p className="text-white/40 text-lg max-w-xl mx-auto font-medium tracking-tight">
                             Deploy your private node cluster in under 60 seconds with zero-lag API endpoints.
                         </p>
                     </div>
@@ -207,7 +207,7 @@ export default function NodesOverview() {
                         <button className="px-10 py-5 bg-white text-black rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-105 transition-all flex items-center gap-3">
                             Provision Now <ChevronRight size={14} />
                         </button>
-                        <button className="px-10 py-5 bg-white/5 border border-white/10 !text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-white/10 transition-all">
+                        <button className="px-10 py-5 bg-white/5 border border-white/10 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-white/10 transition-all">
                             Speak to Infrastructure Team
                         </button>
                     </div>

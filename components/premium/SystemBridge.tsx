@@ -125,7 +125,7 @@ export function SystemBridge({ onClose }: SystemBridgeProps) {
                     <Smartphone size={15} />
                     <span className="font-mono text-[10px] uppercase tracking-[0.3em]">Device Bridge</span>
                 </div>
-                <p className="text-[11px] !text-white/30 font-mono leading-relaxed">
+                <p className="text-[11px] text-white/30 font-mono leading-relaxed">
                     Generate a QR on this PC.<br />Scan it with your mobile to link your session.
                 </p>
             </div>
@@ -147,7 +147,7 @@ export function SystemBridge({ onClose }: SystemBridgeProps) {
 
                 {/* GENERATING */}
                 {state === 'generating' && (
-                    <motion.div key="generating" className="flex items-center gap-3 py-4 !text-white/40">
+                    <motion.div key="generating" className="flex items-center gap-3 py-4 text-white/40">
                         <Loader size={18} className="animate-spin" />
                         <span className="font-mono text-[10px] uppercase tracking-widest">Generating</span>
                     </motion.div>
@@ -181,9 +181,9 @@ export function SystemBridge({ onClose }: SystemBridgeProps) {
                         {/* Timer */}
                         <div className="flex items-center gap-2">
                             <div className={`w-1.5 h-1.5 rounded-full ${countdown < 60 ? 'bg-red-400 animate-pulse' : 'bg-[#4ade80]'}`} />
-                            <span className="font-mono text-[11px] !text-white/40">
+                            <span className="font-mono text-[11px] text-white/40">
                                 Expires in{' '}
-                                <span className={`font-bold ${countdown < 60 ? 'text-red-400' : '!text-white'}`}>
+                                <span className={`font-bold ${countdown < 60 ? 'text-red-400' : 'text-white'}`}>
                                     {mins}:{secs}
                                 </span>
                             </span>
@@ -191,7 +191,7 @@ export function SystemBridge({ onClose }: SystemBridgeProps) {
 
                         <button
                             onClick={generateQR}
-                            className="flex items-center gap-1.5 text-[9px] font-mono uppercase tracking-widest !text-white/20 hover:!text-white/50 transition-colors"
+                            className="flex items-center gap-1.5 text-[9px] font-mono uppercase tracking-widest text-white/20 hover:text-white/50 transition-colors"
                         >
                             <RefreshCw size={10} /> Refresh
                         </button>
@@ -217,8 +217,8 @@ export function SystemBridge({ onClose }: SystemBridgeProps) {
                         <div className="w-16 h-16 rounded-full bg-[#4ade80]/10 border border-[#4ade80]/30 flex items-center justify-center mb-2">
                             <Smartphone size={28} className="text-[#4ade80]" />
                         </div>
-                        <h3 className="font-mono text-[14px] font-bold !text-white uppercase tracking-widest">Bridge Connected</h3>
-                        <p className="text-[11px] !text-white/40 font-mono leading-relaxed max-w-[220px]">
+                        <h3 className="font-mono text-[14px] font-bold text-white uppercase tracking-widest">Bridge Connected</h3>
+                        <p className="text-[11px] text-white/40 font-mono leading-relaxed max-w-[220px]">
                             Session successfully linked.
                         </p>
                     </motion.div>
@@ -232,7 +232,7 @@ export function SystemBridge({ onClose }: SystemBridgeProps) {
                             {errorMsg || 'Failed to generate QR. Please try again.'}
                         </p>
                         <button onClick={generateQR}
-                            className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 !text-white/40 text-[10px] uppercase tracking-widest font-mono hover:bg-white/10 transition-colors">
+                            className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/40 text-[10px] uppercase tracking-widest font-mono hover:bg-white/10 transition-colors">
                             Try Again
                         </button>
                     </motion.div>

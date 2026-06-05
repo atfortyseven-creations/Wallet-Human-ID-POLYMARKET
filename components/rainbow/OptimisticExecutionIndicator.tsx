@@ -65,22 +65,22 @@ export function OptimisticExecutionIndicator({ userId }: { userId: string }) {
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
                                 <span className="text-[10px] font-black uppercase tracking-widest text-purple-400">Elite Execution</span>
-                                <div className="flex items-center gap-1 text-[8px] bg-white/5 px-2 py-0.5 rounded-full !text-white/40">
+                                <div className="flex items-center gap-1 text-[8px] bg-white/5 px-2 py-0.5 rounded-full text-white/40">
                                     <ShieldCheck size={8} className="text-green-500" />
                                     FLASHBOTS ACTIVE
                                 </div>
                             </div>
-                            <h4 className="text-sm font-black tracking-tight !text-white truncate">
+                            <h4 className="text-sm font-black tracking-tight text-white truncate">
                                 Swapping {safeToFixed(tx.fromAmount, 4)} {tx.fromToken}  {tx.toToken}
                             </h4>
-                            <p className="text-[10px] !text-white/30 font-bold uppercase tracking-tighter">
+                            <p className="text-[10px] text-white/30 font-bold uppercase tracking-tighter">
                                 Awaiting block finality...
                             </p>
                         </div>
 
                         <button 
                             onClick={() => window.open(getExplorerTxUrl(tx.fromChain, tx.hash), '_blank')}
-                            className="p-2 hover:bg-white/5 rounded-lg !text-white/40 hover:!text-white transition-all"
+                            className="p-2 hover:bg-white/5 rounded-lg text-white/40 hover:text-white transition-all"
                         >
                             <ExternalLink size={16} />
                         </button>

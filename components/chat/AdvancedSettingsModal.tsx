@@ -84,7 +84,7 @@ export default function AdvancedSettingsModal({
                  key={t.id}
                  onClick={() => setTab(t.id)}
                  className={`px-3 py-1.5 rounded-full text-[13px] font-sans transition-all duration-200 active:scale-95 ${
-                   tab === t.id ? 'bg-[#007AFF] !text-white' : 'bg-[#f2f2f7] text-black'
+                   tab === t.id ? 'bg-[#007AFF] text-white' : 'bg-[#f2f2f7] text-black'
                  }`}
                >
                  {t.label}
@@ -141,7 +141,7 @@ export default function AdvancedSettingsModal({
                           onClick={() => update('autoDestruct', o.value as AutoDestructPreset)}
                           className={`px-3 py-1.5 rounded-full text-[13px] font-sans transition-colors ${
                             settings.autoDestruct === o.value
-                              ? 'bg-[#007AFF] !text-white'
+                              ? 'bg-[#007AFF] text-white'
                               : 'bg-black/5 text-black hover:bg-black/10'
                           }`}
                         >

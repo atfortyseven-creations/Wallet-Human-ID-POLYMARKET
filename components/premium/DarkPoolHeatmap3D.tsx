@@ -181,10 +181,10 @@ export function DarkPoolHeatmap3D() {
       
       {/* HUD OVERLAY */}
       <div className="absolute top-6 border border-white/10 left-6 z-10 pointer-events-none bg-black/40 backdrop-blur-md px-4 py-2 rounded-xl">
-        <h3 className="!text-white font-mono font-bold tracking-[0.2em] uppercase text-sm mb-1">
+        <h3 className="text-white font-mono font-bold tracking-[0.2em] uppercase text-sm mb-1">
           Dark Pool Liquidity
         </h3>
-        <p className="!text-white/40 font-mono text-[10px] uppercase tracking-widest flex items-center gap-2">
+        <p className="text-white/40 font-mono text-[10px] uppercase tracking-widest flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse shadow-[0_0_10px_rgba(244,63,94,0.8)]" />
           Active 3D Topography
         </p>
@@ -192,15 +192,15 @@ export function DarkPoolHeatmap3D() {
 
       <div className="absolute bottom-6 left-6 z-10 pointer-events-none flex gap-4">
          <div className="flex flex-col gap-1">
-            <span className="!text-white/40 font-mono text-[9px] uppercase tracking-widest">Cold Volumes</span>
+            <span className="text-white/40 font-mono text-[9px] uppercase tracking-widest">Cold Volumes</span>
             <div className="h-1 w-12 bg-slate-900 rounded-full" />
          </div>
          <div className="flex flex-col gap-1">
-            <span className="!text-white/40 font-mono text-[9px] uppercase tracking-widest">Anomalies</span>
+            <span className="text-white/40 font-mono text-[9px] uppercase tracking-widest">Anomalies</span>
             <div className="h-1 w-12 bg-purple-700 rounded-full" />
          </div>
          <div className="flex flex-col gap-1">
-            <span className="!text-white/40 font-mono text-[9px] uppercase tracking-widest">Whale Hotspots</span>
+            <span className="text-white/40 font-mono text-[9px] uppercase tracking-widest">Whale Hotspots</span>
             <div className="h-1 w-12 bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,1)] rounded-full" />
          </div>
       </div>

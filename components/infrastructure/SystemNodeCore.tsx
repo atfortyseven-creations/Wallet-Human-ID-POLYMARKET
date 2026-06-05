@@ -53,7 +53,7 @@ export default function SystemNodeCore() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-black !!text-white selection:bg-white/20">
+        <div className="min-h-screen bg-black text-white selection:bg-white/20">
             {/* Stratospheric Background */}
             <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
                 <HeroCircuitry />
@@ -87,7 +87,7 @@ export default function SystemNodeCore() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="!text-white/40 text-lg font-medium tracking-tight"
+                            className="text-white/40 text-lg font-medium tracking-tight"
                         >
                             Active chain health, block latency, and validator status across supported networks.
                         </motion.p>
@@ -111,11 +111,11 @@ export default function SystemNodeCore() {
                         >
                             <div className="flex items-center justify-between">
                                 <span className={`text-[8px] font-black uppercase tracking-widest ${node.status === 'Operational' ? 'text-emerald-500' : 'text-yellow-500'}`}>{node.status}</span>
-                                <Activity size={12} className={activeNode?.chainId === node.chainId ? 'text-[#ef4444]' : '!text-white/20'} />
+                                <Activity size={12} className={activeNode?.chainId === node.chainId ? 'text-[#ef4444]' : 'text-white/20'} />
                             </div>
                             <div>
-                                <p className="text-[9px] font-black uppercase tracking-widest !text-white/40 leading-none mb-1">{node.name}</p>
-                                <p className="text-xl font-black font-mono !text-white tracking-tighter">#{node.blockNumber.toLocaleString()}</p>
+                                <p className="text-[9px] font-black uppercase tracking-widest text-white/40 leading-none mb-1">{node.name}</p>
+                                <p className="text-xl font-black font-mono text-white tracking-tighter">#{node.blockNumber.toLocaleString()}</p>
                                 <p className="text-[10px] font-mono text-[#ef4444]/60 mt-1">{(node.latency).toFixed(4)}s Latency</p>
                             </div>
                         </motion.button>
@@ -133,13 +133,13 @@ export default function SystemNodeCore() {
                         className="lg:col-span-2 p-10 bg-white/[0.02] border border-white/5 rounded-[3rem] backdrop-blur-3xl relative overflow-hidden group"
                     >
                         <div className="absolute top-0 right-0 p-8">
-                            <ShieldCheck size={48} className="!text-white/[0.03] group-hover:!text-white/[0.07] transition-all" />
+                            <ShieldCheck size={48} className="text-white/[0.03] group-hover:text-white/[0.07] transition-all" />
                         </div>
                         
                         <div className="space-y-10 relative z-10">
                             <div>
                                 <h3 className="text-2xl font-black uppercase tracking-widest leading-none">Security Sentinel</h3>
-                                <p className="text-xs !text-white/40 font-medium tracking-tight mt-1">Real-time status of critical node security modules.</p>
+                                <p className="text-xs text-white/40 font-medium tracking-tight mt-1">Real-time status of critical node security modules.</p>
                             </div>
 
                             <div className="grid md:grid-cols-2 gap-8">
@@ -151,15 +151,15 @@ export default function SystemNodeCore() {
                                 ].map((sys, i) => (
                                     <div key={i} className="flex gap-4 group/item">
                                         <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0 group-hover/item:bg-white/10 transition-colors">
-                                            <sys.icon size={18} className="!text-white/40 group-hover/item:!text-white transition-colors" />
+                                            <sys.icon size={18} className="text-white/40 group-hover/item:text-white transition-colors" />
                                         </div>
                                         <div className="space-y-1">
                                             <div className="flex items-center gap-2">
-                                                <h4 className="text-xs font-black uppercase tracking-widest !text-white">{sys.label}</h4>
+                                                <h4 className="text-xs font-black uppercase tracking-widest text-white">{sys.label}</h4>
                                                 <CheckCircle2 size={10} className="text-emerald-500" />
                                             </div>
                                             <p className="text-[10px] text-emerald-500 font-black uppercase tracking-widest">{sys.status}</p>
-                                            <p className="text-[10px] !text-white/20 font-medium leading-normal">{sys.desc}</p>
+                                            <p className="text-[10px] text-white/20 font-medium leading-normal">{sys.desc}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -177,7 +177,7 @@ export default function SystemNodeCore() {
                         <div className="space-y-6 flex-1">
                             <div className="flex items-center justify-between">
                                 <h3 className="text-lg font-black uppercase tracking-widest leading-none">Active Logs</h3>
-                                <Terminal size={14} className="!text-white/20" />
+                                <Terminal size={14} className="text-white/20" />
                             </div>
                             
                             <div className="space-y-3 font-mono">
@@ -196,7 +196,7 @@ export default function SystemNodeCore() {
                                                 initial={{ opacity: 0, x: 10 }}
                                                 animate={{ opacity: 1, x: 0 }}
                                                 exit={{ opacity: 0, x: -10 }}
-                                                className={`text-[9px] leading-relaxed py-2 border-b border-white/[0.03] ${isTimeout && isOneOfLastTwo ? 'text-red-500 font-bold' : '!text-white/40'}`}
+                                                className={`text-[9px] leading-relaxed py-2 border-b border-white/[0.03] ${isTimeout && isOneOfLastTwo ? 'text-red-500 font-bold' : 'text-white/40'}`}
                                             >
                                                 <span className={isTimeout && isOneOfLastTwo ? 'text-red-600' : 'text-[#ef4444]'}>$</span> {log}
                                             </motion.div>
@@ -207,7 +207,7 @@ export default function SystemNodeCore() {
                         </div>
 
                         <div className="mt-8 pt-6 border-t border-white/5">
-                            <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] !text-white/20">
+                            <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-white/20">
                                 <span>Verifying Core Integrity...</span>
                                 <span className="text-emerald-500">100.0%</span>
                             </div>
@@ -231,12 +231,12 @@ export default function SystemNodeCore() {
                 >
                     <div className="space-y-2">
                         <h3 className="text-3xl font-black uppercase tracking-tighter">Global Node Reach</h3>
-                        <p className="!text-white/40 text-sm font-medium tracking-tight">Our core core is natively integrated with 120+ elite networks.</p>
+                        <p className="text-white/40 text-sm font-medium tracking-tight">Our core core is natively integrated with 120+ elite networks.</p>
                     </div>
                     
                     <div className="flex flex-wrap justify-center gap-4 py-6">
                         {['ETHEREUM', 'BNB CHAIN', 'SOLANA', 'BITCOIN', 'BASE', 'SUI', 'ZK-SYNC', 'OPTIMISM', 'ARBITRUM'].map((n) => (
-                            <div key={n} className="px-5 py-3 rounded-2xl bg-white/5 border border-white/5 text-[9px] font-black uppercase tracking-widest !text-white/40 hover:!text-white hover:bg-white/10 transition-all cursor-crosshair">
+                            <div key={n} className="px-5 py-3 rounded-2xl bg-white/5 border border-white/5 text-[9px] font-black uppercase tracking-widest text-white/40 hover:text-white hover:bg-white/10 transition-all cursor-crosshair">
                                 {n}
                             </div>
                         ))}

@@ -102,7 +102,7 @@ export default function TimeLockVaultModal({ isOpen, onClose }: TimeLockVaultMod
                         className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-purple-900/90 to-black/90 backdrop-blur-xl rounded-3xl p-8 border border-white/10 shadow-2xl"
                     >
                         <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/10">
-                            <X size={20} className="!text-white" />
+                            <X size={20} className="text-white" />
                         </button>
 
                         <div className="flex items-center gap-3 mb-6">
@@ -110,26 +110,26 @@ export default function TimeLockVaultModal({ isOpen, onClose }: TimeLockVaultMod
                                 <Lock className="text-yellow-400" size={24} />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-black !text-white">Time-Locked Savings Vault</h2>
-                                <p className="text-sm !text-white/60">Lock funds until a future date</p>
+                                <h2 className="text-2xl font-black text-white">Time-Locked Savings Vault</h2>
+                                <p className="text-sm text-white/60">Lock funds until a future date</p>
                             </div>
                         </div>
 
                         {/* Create Vault */}
                         <div className="bg-white/5 rounded-2xl p-6 mb-6">
-                            <h3 className="text-lg font-bold !text-white mb-4">Create New Vault</h3>
+                            <h3 className="text-lg font-bold text-white mb-4">Create New Vault</h3>
                             
                             <div className="mb-4">
                                 <div className="flex justify-between items-center mb-2">
-                                    <label className="!text-white/80 text-sm block">Amount (ETH)</label>
-                                    <span className="text-xs !text-white/40">Balance: {balance} ETH</span>
+                                    <label className="text-white/80 text-sm block">Amount (ETH)</label>
+                                    <span className="text-xs text-white/40">Balance: {balance} ETH</span>
                                 </div>
                                 <input
                                     type="number"
                                     value={amount}
                                     onChange={(e) => setAmount(e.target.value)}
                                     placeholder="0.0"
-                                    className={`w-full px-4 py-3 bg-white/5 border ${parseFloat(amount) > parseFloat(balance) ? 'border-red-500' : 'border-white/10'} rounded-xl !text-white`}
+                                    className={`w-full px-4 py-3 bg-white/5 border ${parseFloat(amount) > parseFloat(balance) ? 'border-red-500' : 'border-white/10'} rounded-xl text-white`}
                                 />
                                 {parseFloat(amount) > parseFloat(balance) && (
                                     <p className="text-red-500 text-[10px] mt-1 font-bold">️ Amount exceeds your current balance</p>
@@ -137,20 +137,20 @@ export default function TimeLockVaultModal({ isOpen, onClose }: TimeLockVaultMod
                             </div>
 
                             <div className="mb-4">
-                                <label className="!text-white/80 text-sm mb-2 block">Unlock Date</label>
+                                <label className="text-white/80 text-sm mb-2 block">Unlock Date</label>
                                 <input
                                     type="date"
                                     value={unlockDate}
                                     onChange={(e) => setUnlockDate(e.target.value)}
                                     min={new Date().toISOString().split('T')[0]}
-                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl !text-white"
+                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white"
                                 />
                             </div>
 
                             <button
                                 onClick={createVault}
                                 disabled={loading || !amount || !unlockDate || parseFloat(amount) > parseFloat(balance)}
-                                className="w-full py-3 bg-yellow-600 hover:bg-yellow-500 disabled:bg-white/10 disabled:grayscale rounded-xl font-bold !text-white flex items-center justify-center gap-2"
+                                className="w-full py-3 bg-yellow-600 hover:bg-yellow-500 disabled:bg-white/10 disabled:grayscale rounded-xl font-bold text-white flex items-center justify-center gap-2"
                             >
                                 {loading ? <Loader2 className="animate-spin" size={20} /> : <Lock size={20} />}
                                 {loading ? 'Creating Vault...' : parseFloat(amount) > parseFloat(balance) ? 'Insufficient Funds' : 'Lock Funds'}
@@ -159,16 +159,16 @@ export default function TimeLockVaultModal({ isOpen, onClose }: TimeLockVaultMod
 
                         {/* Active Vaults */}
                         <div>
-                            <h3 className="text-lg font-bold !text-white mb-4">Your Vaults</h3>
+                            <h3 className="text-lg font-bold text-white mb-4">Your Vaults</h3>
                             {vaults.length === 0 ? (
-                                <p className="!text-white/60 text-center py-8">No vaults yet. Create one above!</p>
+                                <p className="text-white/60 text-center py-8">No vaults yet. Create one above!</p>
                             ) : (
                                 <div className="space-y-3">
                                     {vaults.map((vault) => (
                                         <div key={vault.id} className="bg-white/5 rounded-xl p-4 flex justify-between items-center">
                                             <div>
-                                                <p className="!text-white font-bold">{vault.amount} ETH</p>
-                                                <p className="!text-white/60 text-sm flex items-center gap-2">
+                                                <p className="text-white font-bold">{vault.amount} ETH</p>
+                                                <p className="text-white/60 text-sm flex items-center gap-2">
                                                     <Calendar size={14} />
                                                     Unlocks: {new Date(vault.unlockDate).toLocaleDateString()}
                                                 </p>
@@ -176,7 +176,7 @@ export default function TimeLockVaultModal({ isOpen, onClose }: TimeLockVaultMod
                                             <button
                                                 onClick={() => unlockVault(vault.id)}
                                                 disabled={new Date(vault.unlockDate) > new Date()}
-                                                className="px-4 py-2 bg-purple-600 hover:bg-purple-500 disabled:bg-white/10 disabled:cursor-not-allowed rounded-lg text-sm font-bold !text-white"
+                                                className="px-4 py-2 bg-purple-600 hover:bg-purple-500 disabled:bg-white/10 disabled:cursor-not-allowed rounded-lg text-sm font-bold text-white"
                                             >
                                                 {new Date(vault.unlockDate) > new Date() ? ' Locked' : ' Unlock'}
                                             </button>

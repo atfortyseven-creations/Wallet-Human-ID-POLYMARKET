@@ -33,7 +33,7 @@ export function NetworkSelector() {
                     flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold transition-all border
                     ${isWrongNetwork 
                         ? 'bg-red-500/10 text-red-500 border-red-500/50 hover:bg-red-500/20' 
-                        : 'bg-neutral-900 border-neutral-800 text-neutral-300 hover:border-neutral-700 hover:!text-white'}
+                        : 'bg-neutral-900 border-neutral-800 text-neutral-300 hover:border-neutral-700 hover:text-white'}
                 `}
             >
                 {isWrongNetwork ? (
@@ -71,7 +71,7 @@ export function NetworkSelector() {
                                 className={`
                                     w-full text-left px-3 py-2.5 text-sm flex items-center justify-between
                                     hover:bg-neutral-800 transition-colors
-                                    ${chain.id === chainId ? '!text-white' : 'text-neutral-400'}
+                                    ${chain.id === chainId ? 'text-white' : 'text-neutral-400'}
                                 `}
                             >
                                 <span className="flex items-center gap-2">

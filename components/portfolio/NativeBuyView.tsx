@@ -109,7 +109,7 @@ export function NativeBuyView({ address, onBack }: any) {
                     </h2>
                     <p className="text-[10px] uppercase text-black/50  tracking-widest mt-1">Fiat-to-Crypto Gateway Engine</p>
                 </div>
-                <button onClick={onBack} className="text-[10px] uppercase font-bold tracking-widest border border-black/10  px-3 py-1 hover:bg-black hover:!text-white   transition-colors">
+                <button onClick={onBack} className="text-[10px] uppercase font-bold tracking-widest border border-black/10  px-3 py-1 hover:bg-black hover:text-white   transition-colors">
                     CLOSE
                 </button>
             </div>
@@ -117,9 +117,9 @@ export function NativeBuyView({ address, onBack }: any) {
             <div className="flex-1 flex flex-col min-h-0 space-y-4">
                 
                 {/* Visual Dashboard */}
-                <div className="bg-black !!text-white   p-6 relative overflow-hidden transition-colors shadow-2xl">
+                <div className="bg-black text-white   p-6 relative overflow-hidden transition-colors shadow-2xl">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10  rounded-full blur-3xl -translate-y-1/2 translate-x-1/4"></div>
-                    <h3 className="text-[9px] font-bold uppercase tracking-[0.2em] !text-white/50  mb-6 flex items-center gap-2">
+                    <h3 className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/50  mb-6 flex items-center gap-2">
                         <span className="w-1.5 h-1.5 bg-emerald-500 block animate-pulse"></span> DEPOSIT TARGET IDENTITY
                     </h3>
                     <div className="flex items-center gap-4 mb-2 relative z-10">
@@ -173,7 +173,7 @@ export function NativeBuyView({ address, onBack }: any) {
                     <button 
                         onClick={handlePurchase}
                         disabled={isInitializing || isPolling}
-                        className="w-full py-6 bg-black !!text-white   font-black text-[12px] uppercase tracking-[0.3em] transition-all hover:bg-black/90  disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 shadow-2xl"
+                        className="w-full py-6 bg-black text-white   font-black text-[12px] uppercase tracking-[0.3em] transition-all hover:bg-black/90  disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 shadow-2xl"
                     >
                         {isPolling ? 'AWAITING FIAT SETTLEMENT...' : 'INITIALIZE SECURE INGRESS'}
                     </button>

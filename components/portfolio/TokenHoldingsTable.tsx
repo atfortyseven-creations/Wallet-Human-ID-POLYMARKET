@@ -87,7 +87,7 @@ export function TokenHoldingsTable({ address, activeNetwork, scannerBase }: { ad
         <div className="flex-1 flex flex-col items-center justify-center min-h-[300px] text-center p-8 border border-black/10 bg-white">
           <Database size={24} className="text-red-500/50 mb-4" />
           <p className="text-[11px] font-black uppercase tracking-widest text-red-500">RPC Sync Failure</p>
-          <button onClick={() => refetch()} className="mt-4 px-4 py-2 bg-black !!text-white text-[9px] uppercase tracking-widest font-black hover:bg-black/80">
+          <button onClick={() => refetch()} className="mt-4 px-4 py-2 bg-black text-white text-[9px] uppercase tracking-widest font-black hover:bg-black/80">
             Retry State Fetch
           </button>
         </div>

@@ -18,7 +18,7 @@ export function MetaMaskInterface({ onConnect }: { onConnect?: () => void }) {
       <div className="glass-pearl rounded-3xl p-6 sm:p-12 border border-white/[0.05] text-center backdrop-blur-xl bg-black/30">
         {/* Header */}
         <motion.h1
-          className="text-4xl sm:text-6xl font-bold !text-white mb-4 sm:mb-6 tracking-tight leading-tight"
+          className="text-4xl sm:text-6xl font-bold text-white mb-4 sm:mb-6 tracking-tight leading-tight"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -46,7 +46,7 @@ export function MetaMaskInterface({ onConnect }: { onConnect?: () => void }) {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={onConnect}
-          className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-cyan-600 to-blue-600 !text-white font-bold rounded-2xl shadow-lg shadow-cyan-900/40 hover:shadow-cyan-500/50 transition-all cursor-pointer z-50 text-lg"
+          className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-bold rounded-2xl shadow-lg shadow-cyan-900/40 hover:shadow-cyan-500/50 transition-all cursor-pointer z-50 text-lg"
         >
           Connect Identity
         </motion.button>

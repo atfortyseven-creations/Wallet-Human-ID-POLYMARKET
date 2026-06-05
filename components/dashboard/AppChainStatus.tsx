@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from 'react';
 import { motion } from 'framer-motion';
@@ -10,7 +10,7 @@ export default function AppChainStatus() {
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-2xl bg-[#050505] flex items-center justify-center shadow-lg">
-                        <Network className="!text-white" size={24} />
+                        <Network className="text-white" size={24} />
                     </div>
                     <div>
                         <h3 className="text-[11px] font-black uppercase tracking-[0.4em] text-[#050505]">Human AppChain</h3>
@@ -49,14 +49,14 @@ export default function AppChainStatus() {
                     </div>
                 </div>
 
-                <div className="bg-[#050505] rounded-3xl p-6 space-y-4 !text-white">
+                <div className="bg-[#050505] rounded-3xl p-6 space-y-4 text-white">
                     <div className="flex items-center gap-2 opacity-40">
                         <Cpu size={14} />
                         <span className="text-[9px] font-black uppercase tracking-widest">Inference Layer</span>
                     </div>
                     <div>
-                        <div className="text-2xl font-black !text-white tracking-tight">Active</div>
-                        <div className="text-[9px] font-bold !text-white/30 uppercase tracking-tight">On-Chain Ledger</div>
+                        <div className="text-2xl font-black text-white tracking-tight">Active</div>
+                        <div className="text-[9px] font-bold text-white/30 uppercase tracking-tight">On-Chain Ledger</div>
                     </div>
                 </div>
             </div>

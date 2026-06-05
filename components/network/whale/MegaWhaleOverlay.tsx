@@ -175,7 +175,7 @@ export function MegaWhaleOverlay({ tx, onDismiss }: MegaWhaleOverlayProps) {
                                     animate={{ opacity: [1, 0.2, 1], scale: [1, 0.8, 1] }}
                                     transition={{ duration: 0.8, repeat: Infinity }}
                                 />
-                                <span className="text-[9px] font-black uppercase tracking-[0.5em] !text-white/50">
+                                <span className="text-[9px] font-black uppercase tracking-[0.5em] text-white/50">
                                     Mega Whale Detected
                                 </span>
                             </div>
@@ -190,7 +190,7 @@ export function MegaWhaleOverlay({ tx, onDismiss }: MegaWhaleOverlayProps) {
                                     onClick={onDismiss}
                                     className="w-7 h-7 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
                                 >
-                                    <X size={12} className="!text-white/40" />
+                                    <X size={12} className="text-white/40" />
                                 </button>
                             </div>
                         </div>
@@ -203,7 +203,7 @@ export function MegaWhaleOverlay({ tx, onDismiss }: MegaWhaleOverlayProps) {
                                 animate={{ opacity: 1, y: 0 }}
                                 className="mb-2"
                             >
-                                <span className="text-[10px] font-black uppercase tracking-[0.4em] !text-white/40">
+                                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">
                                     Valor transferido
                                 </span>
                             </motion.div>
@@ -216,7 +216,7 @@ export function MegaWhaleOverlay({ tx, onDismiss }: MegaWhaleOverlayProps) {
                             >
                                 {usdFormatted}
                             </motion.div>
-                            <div className="text-xl font-black font-mono !text-white/50 mb-10">
+                            <div className="text-xl font-black font-mono text-white/50 mb-10">
                                 {amountFormatted}
                             </div>
 
@@ -228,13 +228,13 @@ export function MegaWhaleOverlay({ tx, onDismiss }: MegaWhaleOverlayProps) {
                                 className="flex items-center gap-3 bg-white/[0.03] border border-white/[0.06] rounded-2xl px-5 py-4 mb-6 font-mono text-[11px]"
                             >
                                 <div className="flex flex-col min-w-0 flex-1">
-                                    <span className="text-[9px] uppercase tracking-widest !text-white/40 mb-1">Origen</span>
-                                    <span className="!text-white/90 truncate" title={tx.from}>{tx.from.slice(0,10)}...{tx.from.slice(-8)}</span>
+                                    <span className="text-[9px] uppercase tracking-widest text-white/40 mb-1">Origen</span>
+                                    <span className="text-white/90 truncate" title={tx.from}>{tx.from.slice(0,10)}...{tx.from.slice(-8)}</span>
                                 </div>
-                                <ArrowRight size={14} className="!text-white/40 shrink-0" />
+                                <ArrowRight size={14} className="text-white/40 shrink-0" />
                                 <div className="flex flex-col min-w-0 flex-1 text-right">
-                                    <span className="text-[9px] uppercase tracking-widest !text-white/40 mb-1">Destino</span>
-                                    <span className="!text-white/90 truncate" title={tx.to}>{tx.to.slice(0,10)}...{tx.to.slice(-8)}</span>
+                                    <span className="text-[9px] uppercase tracking-widest text-white/40 mb-1">Destino</span>
+                                    <span className="text-white/90 truncate" title={tx.to}>{tx.to.slice(0,10)}...{tx.to.slice(-8)}</span>
                                 </div>
                             </motion.div>
 
@@ -247,14 +247,14 @@ export function MegaWhaleOverlay({ tx, onDismiss }: MegaWhaleOverlayProps) {
                             >
                                 {tx.walletProfile && (
                                     <div>
-                                        <span className="text-[9px] font-black uppercase tracking-widest !text-white/40 block mb-1">Perfil</span>
-                                        <span className="text-sm font-bold !text-white/80">{tx.walletProfile}</span>
+                                        <span className="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-1">Perfil</span>
+                                        <span className="text-sm font-bold text-white/80">{tx.walletProfile}</span>
                                     </div>
                                 )}
                                 {tx.sentiment && (
                                     <div>
-                                        <span className="text-[9px] font-black uppercase tracking-widest !text-white/40 block mb-1">Señal</span>
-                                        <span className={`text-sm font-black ${tx.sentimentColor || '!text-white/80'}`}>{tx.sentiment}</span>
+                                        <span className="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-1">Señal</span>
+                                        <span className={`text-sm font-black ${tx.sentimentColor || 'text-white/80'}`}>{tx.sentiment}</span>
                                     </div>
                                 )}
                             </motion.div>
@@ -266,7 +266,7 @@ export function MegaWhaleOverlay({ tx, onDismiss }: MegaWhaleOverlayProps) {
                                 transition={{ delay: 0.4 }}
                                 className="flex items-center justify-between border-t border-white/[0.05] pt-6"
                             >
-                                <span className="text-[9px] font-mono !text-white/20 truncate max-w-xs">
+                                <span className="text-[9px] font-mono text-white/20 truncate max-w-xs">
                                     {tx.hash.slice(0, 22)}
                                 </span>
                                 <a

@@ -74,8 +74,8 @@ export function CascadeLiquidations() {
             <Flame className="w-5 h-5 text-red-400" />
           </div>
           <div>
-            <h3 className="!text-white font-black text-lg">Cascade Liquidations</h3>
-            <p className="!text-white/30 text-xs font-mono">BTC  Perpetual Futures</p>
+            <h3 className="text-white font-black text-lg">Cascade Liquidations</h3>
+            <p className="text-white/30 text-xs font-mono">BTC  Perpetual Futures</p>
           </div>
         </div>
         <div className="flex gap-4 text-xs">
@@ -87,7 +87,7 @@ export function CascadeLiquidations() {
       <div className="p-6 space-y-5">
         {/* Dominance Bar */}
         <div>
-          <div className="flex justify-between text-xs !text-white/30 mb-1.5">
+          <div className="flex justify-between text-xs text-white/30 mb-1.5">
             <span>Longs liquidados</span>
             <span>Shorts liquidados</span>
           </div>
@@ -103,7 +103,7 @@ export function CascadeLiquidations() {
               className="h-full bg-gradient-to-l from-green-500 to-green-400 rounded-r-full"
             />
           </div>
-          <div className="flex justify-between text-[10px] !text-white/20 mt-1">
+          <div className="flex justify-between text-[10px] text-white/20 mt-1">
             <span>{longDominance.toFixed(0)}%</span>
             <span>{(100 - longDominance).toFixed(0)}%</span>
           </div>
@@ -159,8 +159,8 @@ export function CascadeLiquidations() {
             >
               <Zap className="w-4 h-4 text-yellow-400 shrink-0" />
               <div>
-                <p className="!text-white font-bold text-sm">Pico de liquidaciones detectado</p>
-                <p className="!text-white/40 text-xs">{formatUSD(lastSpike.total)} en {new Date(lastSpike.time).toLocaleTimeString()}</p>
+                <p className="text-white font-bold text-sm">Pico de liquidaciones detectado</p>
+                <p className="text-white/40 text-xs">{formatUSD(lastSpike.total)} en {new Date(lastSpike.time).toLocaleTimeString()}</p>
               </div>
             </motion.div>
           )}

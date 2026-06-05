@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useMemo, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -67,8 +67,8 @@ export default function PaperPortfolioView({ totalValue, balances, prices, chang
 
   const stats = useMemo(() => [
     { label: 'Portfolio Value', value: formatValue(totalValue), icon: Wallet, color: 'text-cyan-400' },
-    { label: 'Activity Count', value: (portfolio?.totalTransactions ?? intel?.transactionCount ?? transactions?.length ?? 0)?.toLocaleString() || '0', icon: Activity, color: '!text-white/60' },
-    { label: 'Active Age', value: intel?.activeAgeDays ? `${Math.floor(intel.activeAgeDays / 365)}Y ${intel.activeAgeDays % 365}D` : '0Y 0D', icon: Clock, color: '!text-white/60' },
+    { label: 'Activity Count', value: (portfolio?.totalTransactions ?? intel?.transactionCount ?? transactions?.length ?? 0)?.toLocaleString() || '0', icon: Activity, color: 'text-white/60' },
+    { label: 'Active Age', value: intel?.activeAgeDays ? `${Math.floor(intel.activeAgeDays / 365)}Y ${intel.activeAgeDays % 365}D` : '0Y 0D', icon: Clock, color: 'text-white/60' },
     { label: 'Streak', value: intel?.longestStreakDays ? `${intel.longestStreakDays}D` : '0D', icon: Flame, color: 'text-rose-500' },
   ], [totalValue, intel, transactions.length, portfolio, formatValue]);
 
@@ -105,7 +105,7 @@ export default function PaperPortfolioView({ totalValue, balances, prices, chang
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-12 bg-white/60 p-8 rounded-[2.5rem] border border-slate-100 backdrop-blur-3xl shadow-xl shadow-slate-200/50">
                 <div className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-[7px] font-black !text-white/30 uppercase tracking-widest">Recent Activity</span>
+                <span className="text-[7px] font-black text-white/30 uppercase tracking-widest">Recent Activity</span>
                 <div className="space-y-1">
                     <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-2 font-web3">Total Value</div>
                     <div className="text-3xl sm:text-4xl md:text-6xl font-black font-web3-mono tracking-tighter text-slate-900 leading-none">
@@ -158,7 +158,7 @@ export default function PaperPortfolioView({ totalValue, balances, prices, chang
                 <div className="bg-white/80 border border-slate-200 rounded-[3rem] overflow-hidden backdrop-blur-3xl shadow-xl shadow-slate-200/50">
                     <div className="p-10 border-b border-slate-100 flex items-center justify-between bg-white/[0.01]">
                         <div className="flex items-center gap-5">
-                            <div className="p-3 bg-emerald-600 !text-white rounded-2xl shadow-lg shadow-emerald-200/40">
+                            <div className="p-3 bg-emerald-600 text-white rounded-2xl shadow-lg shadow-emerald-200/40">
                                 <Wallet size={20} strokeWidth={3} />
                             </div>
                             <div>
@@ -247,7 +247,7 @@ export default function PaperPortfolioView({ totalValue, balances, prices, chang
                                     key={f}
                                     onClick={() => setFilter(f as any)}
                                     className={`px-8 py-3 rounded-2xl text-[10px] font-black tracking-[0.25em] transition-all uppercase font-web3 ${
-                                        filter === f ? 'bg-slate-950 !text-white shadow-lg' : 'text-slate-400 hover:text-slate-900 hover:bg-white'
+                                        filter === f ? 'bg-slate-950 text-white shadow-lg' : 'text-slate-400 hover:text-slate-900 hover:bg-white'
                                     }`}
                                 >
                                     {f}

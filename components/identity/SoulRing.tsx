@@ -83,7 +83,7 @@ export function SoulRing({ children }: { children: React.ReactNode }) {
                             </h4>
                             <p className="text-[10px] text-zinc-500 font-mono">SOULBOUND SCORE</p>
                         </div>
-                        <div className="text-2xl font-bold !text-white">{totalScore}</div>
+                        <div className="text-2xl font-bold text-white">{totalScore}</div>
                     </div>
 
                     {/* Config Stats */}
@@ -119,7 +119,7 @@ function StatRow({ icon: Icon, label, value, max, color }: any) {
                         className={`h-full ${color.replace('text-', 'bg-')}`}
                     />
                 </div>
-                <span className="!text-white font-mono w-4 text-right">{value}</span>
+                <span className="text-white font-mono w-4 text-right">{value}</span>
             </div>
         </div>
     );

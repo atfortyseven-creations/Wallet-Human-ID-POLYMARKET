@@ -545,7 +545,7 @@ export default function ConnectPage() {
                   <div className="flex flex-col gap-3 w-full mt-4">
                     <button
                       onClick={triggerManualVerify}
-                      className="w-full py-4 rounded-xl bg-[#0A0A0A] !text-white font-mono text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#222] transition-all shadow-md active:scale-[0.98]"
+                      className="w-full py-4 rounded-xl bg-[#0A0A0A] text-white font-mono text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#222] transition-all shadow-md active:scale-[0.98]"
                     >
                       Sign Message
                     </button>
@@ -636,7 +636,7 @@ export default function ConnectPage() {
                         </p>
                         <button
                           onClick={() => { setSyncStatus("IDLE"); setQrSession(null); setQrData(''); }}
-                          className="px-4 py-2 rounded-xl bg-rose-500 !text-white text-[9px] font-black uppercase tracking-widest hover:bg-rose-600 transition-colors active:scale-[0.97]"
+                          className="px-4 py-2 rounded-xl bg-rose-500 text-white text-[9px] font-black uppercase tracking-widest hover:bg-rose-600 transition-colors active:scale-[0.97]"
                         >
                           Retry
                         </button>

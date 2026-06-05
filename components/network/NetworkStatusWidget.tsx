@@ -47,10 +47,10 @@ export function NetworkStatusWidget() {
                         <span className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full animate-pulse border border-[#0D0D12]" />
                     </div>
                     
-                    <div className="flex items-center gap-3 text-[11px] font-medium !text-white/70">
+                    <div className="flex items-center gap-3 text-[11px] font-medium text-white/70">
                         <div className="flex items-center gap-1">
                             <Box size={12} className="text-gray-500" />
-                            <span className="font-mono !text-white">
+                            <span className="font-mono text-white">
                                 {latestBlock ? `#${Number(latestBlock.height).toLocaleString()}` : '...'}
                             </span>
                         </div>
@@ -59,7 +59,7 @@ export function NetworkStatusWidget() {
                         
                         <div className="flex items-center gap-1">
                             <Zap size={12} className="text-yellow-500" />
-                            <span className="font-mono !text-white">
+                            <span className="font-mono text-white">
                                 {fees?.fastestFee ?? '...'} <span className="text-[9px] text-gray-500">sat/vB</span>
                             </span>
                         </div>
@@ -84,11 +84,11 @@ export function NetworkStatusWidget() {
                             <div className="grid grid-cols-2 gap-3">
                                 <div className="space-y-1">
                                     <span className="text-[10px] text-gray-500 uppercase">Mempool</span>
-                                    <div className="text-sm font-bold !text-white font-mono">2,481 txs</div>
+                                    <div className="text-sm font-bold text-white font-mono">2,481 txs</div>
                                 </div>
                                 <div className="space-y-1">
                                     <span className="text-[10px] text-gray-500 uppercase">Hashrate</span>
-                                    <div className="text-sm font-bold !text-white font-mono">612 EH/s</div>
+                                    <div className="text-sm font-bold text-white font-mono">612 EH/s</div>
                                 </div>
                             </div>
 

@@ -315,7 +315,7 @@ export function WhaleProShell({ activeTab, onTabChange, children, isExternalEmbe
                     </p>
                     <button
                         onClick={unlockSession}
-                        className="px-8 py-3.5 bg-[#050505] !text-white text-[11px] font-black uppercase tracking-widest rounded-xl hover:bg-black/80 transition-all active:scale-[0.98]"
+                        className="px-8 py-3.5 bg-[#050505] text-white text-[11px] font-black uppercase tracking-widest rounded-xl hover:bg-black/80 transition-all active:scale-[0.98]"
                     >
                         Resume Session
                     </button>
@@ -450,7 +450,7 @@ export function WhaleProShell({ activeTab, onTabChange, children, isExternalEmbe
                                                 }}
                                                 className={`px-4 py-3 text-left text-[13px] font-semibold transition-colors ${
                                                     activeTab === item.id
-                                                        ? 'bg-black !!text-white  '
+                                                        ? 'bg-black text-white  '
                                                         : 'text-[#050505]  hover:bg-black/5 '
                                                 }`}
                                             >
@@ -621,7 +621,7 @@ export function WhaleProShell({ activeTab, onTabChange, children, isExternalEmbe
                     </div>
                 )}
                 <div className="px-6 py-4 border-t border-black/6 flex justify-end">
-                    <button onClick={() => setShowInfoModal(false)} className="px-6 py-2.5 rounded-xl bg-black !!text-white text-[13px] font-semibold hover:bg-black/80 transition-colors active:scale-[0.98]">
+                    <button onClick={() => setShowInfoModal(false)} className="px-6 py-2.5 rounded-xl bg-black text-white text-[13px] font-semibold hover:bg-black/80 transition-colors active:scale-[0.98]">
                         Close
                     </button>
                 </div>
@@ -682,12 +682,12 @@ export function WhaleProShell({ activeTab, onTabChange, children, isExternalEmbe
                                     }}
                                     className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all ${
                                         isActive 
-                                            ? 'bg-black !!text-white  ' 
+                                            ? 'bg-black text-white  ' 
                                             : 'bg-black/[0.02] hover:bg-black/[0.05]   text-black '
                                     } disabled:opacity-40 disabled:cursor-not-allowed`}
                                 >
                                     <div className="flex items-center gap-3.5">
-                                        <div className={isActive ? '!text-white ' : 'text-black/50 '}>
+                                        <div className={isActive ? 'text-white ' : 'text-black/50 '}>
                                             {item.icon}
                                         </div>
                                         <span className="text-[14px] font-medium">{item.label}</span>

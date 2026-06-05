@@ -23,7 +23,7 @@ export function InstitutionalShell({
 }: InstitutionalShellProps) {
 
   return (
-    <div className="flex flex-col flex-1 h-full min-h-0 !text-white relative font-aztec-body overflow-x-hidden">
+    <div className="flex flex-col flex-1 h-full min-h-0 text-white relative font-aztec-body overflow-x-hidden">
 
       {/*  Layer 1: Cosmic ukiyo-e pattern  exact same as landing page hero  */}
       <div

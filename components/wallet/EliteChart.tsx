@@ -166,8 +166,8 @@ export default function EliteChart({ data, height = 300, isPositive = true }: El
                 
                 {hoverData && (
                     <div className="flex flex-col gap-0.5 px-3 py-2 bg-[#1F1F1F] rounded-xl shadow-xl border border-[#1F1F1F]">
-                        <span className="text-[10px] font-bold !text-white/40 uppercase tracking-widest">{hoverData.time}</span>
-                        <span className="text-sm font-black !text-white italic tracking-tight">
+                        <span className="text-[10px] font-bold text-white/40 uppercase tracking-widest">{hoverData.time}</span>
+                        <span className="text-sm font-black text-white italic tracking-tight">
                             ${safeToLocaleString(hoverData.price, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
                     </div>

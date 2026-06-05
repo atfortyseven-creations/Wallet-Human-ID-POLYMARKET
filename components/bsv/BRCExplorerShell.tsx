@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
@@ -159,7 +159,7 @@ export function BRCExplorerShell() {
                     >
                         <div className="p-10 border-b border-[#E5E5E5] bg-[#FFFFFF]">
                             <div className="flex items-center gap-3 mb-4">
-                                <span className="text-[11px] font-mono bg-[#111] !text-white px-3 py-1 rounded font-black">BRC-{selected.brcNumber.toString().padStart(4, '0')}</span>
+                                <span className="text-[11px] font-mono bg-[#111] text-white px-3 py-1 rounded font-black">BRC-{selected.brcNumber.toString().padStart(4, '0')}</span>
                                 <span className="text-[10px] font-black uppercase tracking-widest text-[#888]">{selected.type}</span>
                                 {selected.githubUrl && (
                                     <a href={selected.githubUrl} target="_blank" rel="noopener noreferrer" className="ml-auto flex items-center gap-1.5 text-[9px] font-black text-[#888] hover:text-[#111] border border-[#E5E5E5] px-3 py-1 rounded-md transition-colors bg-white shadow-sm">

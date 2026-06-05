@@ -241,7 +241,7 @@ export function InstitutionalQuantChart() {
 
   //  Render 
   return (
-    <div className="w-full flex flex-col gap-4 !text-white">
+    <div className="w-full flex flex-col gap-4 text-white">
 
       {/*  Terminal Header  */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 pb-3 border-b border-white/10">
@@ -263,7 +263,7 @@ export function InstitutionalQuantChart() {
               className={`px-3 py-1.5 text-[9px] font-black uppercase tracking-widest rounded transition-all ${
                 resolution === r
                   ? 'bg-[#D4AF37] text-black'
-                  : 'bg-white/5 text-[#888888] hover:bg-white/10 hover:!text-white border border-white/10'
+                  : 'bg-white/5 text-[#888888] hover:bg-white/10 hover:text-white border border-white/10'
               }`}
             >
               {r}

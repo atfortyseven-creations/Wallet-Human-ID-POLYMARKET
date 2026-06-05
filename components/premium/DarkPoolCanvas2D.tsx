@@ -566,14 +566,14 @@ export function DarkPoolCanvas2D() {
           <div>
               <div className="flex items-center gap-3 mb-2">
                   <div className="w-2 h-2 rounded-full bg-indigo-500 animate-ping" />
-                  <span className="text-[10px] font-black !text-white/40 uppercase tracking-[0.3em]">Deep Pool Neural Scan</span>
+                  <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">Deep Pool Neural Scan</span>
               </div>
-              <h2 className="text-3xl font-normal tracking-tighter !text-white uppercase italic">Dark Pool</h2>
+              <h2 className="text-3xl font-normal tracking-tighter text-white uppercase italic">Dark Pool</h2>
           </div>
           
           <div className="text-right flex flex-col items-end gap-1">
-              <div className="text-[40px] font-black !text-white tabular-nums tracking-tighter leading-none">{txCount.toLocaleString()}</div>
-              <div className="text-[10px] font-black !text-white/30 uppercase tracking-widest">Global Inflow Captured</div>
+              <div className="text-[40px] font-black text-white tabular-nums tracking-tighter leading-none">{txCount.toLocaleString()}</div>
+              <div className="text-[10px] font-black text-white/30 uppercase tracking-widest">Global Inflow Captured</div>
           </div>
       </div>
 
@@ -586,7 +586,7 @@ export function DarkPoolCanvas2D() {
                           <Zap className="w-4 h-4 text-indigo-500" />
                       </div>
                       <div>
-                          <div className="text-[10px] font-black !text-white uppercase tracking-tight">{ev.label}</div>
+                          <div className="text-[10px] font-black text-white uppercase tracking-tight">{ev.label}</div>
                           <div className="text-lg font-black text-red-400">{ev.amount}</div>
                       </div>
                   </motion.div>
@@ -595,7 +595,7 @@ export function DarkPoolCanvas2D() {
       </div>
 
       <div className="absolute right-8 bottom-8 pointer-events-none text-right">
-          <div className="text-[10px] font-black !text-white/20 uppercase tracking-[0.2em] mb-4">Neural Fluid Sync</div>
+          <div className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] mb-4">Neural Fluid Sync</div>
           <div className="flex gap-1 justify-end">
               {[...Array(12)].map((_, i) => (
                   <div key={i} className={`w-1 h-3 rounded-full bg-white/5 ${i < (txCount % 12) ? 'bg-indigo-500/40' : ''}`} />

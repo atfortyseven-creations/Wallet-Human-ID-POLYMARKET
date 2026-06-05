@@ -44,7 +44,7 @@ export function CloudSyncManager() {
                 <div className="absolute right-0 top-0 p-4 opacity-10">
                     <Cloud className="w-40 h-40 text-[#00f2ea]" />
                 </div>
-                <h3 className="text-xl font-bold !text-white flex items-center gap-2 mb-2 relative z-10">
+                <h3 className="text-xl font-bold text-white flex items-center gap-2 mb-2 relative z-10">
                     <Database className="text-[#00f2ea]" size={24} />
                     WhaleAlert ID System Cloud
                 </h3>
@@ -70,12 +70,12 @@ export function CloudSyncManager() {
 
             {/* Backup Frequency */}
             <div className="p-6 bg-white/[0.03] border border-white/10 rounded-[2rem]">
-                <h4 className="!text-white font-bold mb-1">Automated Sync Frequency</h4>
+                <h4 className="text-white font-bold mb-1">Automated Sync Frequency</h4>
                 <p className="text-zinc-500 text-sm mb-4">How often your settings are automatically backed up to the cloud.</p>
                 <select
                     value={backupFrequency}
                     onChange={e => setBackupFrequency(e.target.value as any)}
-                    className="w-full bg-black/40 border border-white/10 rounded-xl p-4 !text-white focus:border-[#00f2ea] outline-none"
+                    className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white focus:border-[#00f2ea] outline-none"
                 >
                     <option value="daily">Daily</option>
                     <option value="weekly">Weekly (Recommended)</option>
@@ -86,17 +86,17 @@ export function CloudSyncManager() {
             {/* Local Export Only */}
             <div className="p-6 bg-white/[0.03] border border-white/10 rounded-[2rem] flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <div className="p-3 bg-white/10 !text-white rounded-xl">
+                    <div className="p-3 bg-white/10 text-white rounded-xl">
                         <HardDrive size={20} />
                     </div>
                     <div>
-                        <h4 className="font-bold !text-white">Local Export</h4>
+                        <h4 className="font-bold text-white">Local Export</h4>
                         <p className="text-xs text-zinc-500">Download a JSON backup of your current settings.</p>
                     </div>
                 </div>
                 <button
                     onClick={handleLocalExport}
-                    className="flex items-center gap-2 px-4 py-2 bg-white/10 !text-white text-sm font-bold rounded-xl border border-white/10 hover:bg-white/20 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 bg-white/10 text-white text-sm font-bold rounded-xl border border-white/10 hover:bg-white/20 transition-colors"
                 >
                     <Download size={14} />
                     Export

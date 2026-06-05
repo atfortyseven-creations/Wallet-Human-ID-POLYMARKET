@@ -47,7 +47,7 @@ export default function ActiveTransactions() {
                     <p className="text-[10px] text-black/30 font-bold uppercase tracking-[0.3em] mt-1">Cross-chain transaction propagation</p>
                 </div>
                 <div className="flex items-center gap-4">
-                    <div className="px-4 py-2 bg-black !!text-white text-[9px] font-black uppercase tracking-widest rounded-xl">
+                    <div className="px-4 py-2 bg-black text-white text-[9px] font-black uppercase tracking-widest rounded-xl">
                         {isLoading ? ' Events / Min' : `${txs.length} Events / Minute`}
                     </div>
                 </div>

@@ -74,7 +74,7 @@ export function IntroSequence({ onComplete }: IntroSequenceProps) {
                          </div>
                     )}
                     
-                    <div className="absolute bottom-10 !text-white/20 text-xs font-mono uppercase tracking-widest animate-pulse">
+                    <div className="absolute bottom-10 text-white/20 text-xs font-mono uppercase tracking-widest animate-pulse">
                         Click to skip
                     </div>
                 </motion.div>

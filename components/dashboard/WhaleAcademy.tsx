@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -126,7 +126,7 @@ export function WhaleAcademy() {
                              Back
                         </button>
                         <button onClick={markLessonComplete}
-                            className="flex-1 py-2.5 rounded text-[10px] font-bold uppercase tracking-widest bg-[#050505] !text-white hover:bg-[#A0A0A0] transition-colors flex items-center justify-center gap-2 border border-transparent">
+                            className="flex-1 py-2.5 rounded text-[10px] font-bold uppercase tracking-widest bg-[#050505] text-white hover:bg-[#A0A0A0] transition-colors flex items-center justify-center gap-2 border border-transparent">
                             <CheckCircle size={13} />
                             {selectedLesson.completed ? 'COMPLETED' : 'MARK COMPLETE'}
                         </button>
@@ -147,7 +147,7 @@ export function WhaleAcademy() {
 
                 <div className="bg-white border border-[#E5E5E5] rounded-2xl p-5 shadow-sm">
                     <div className="flex items-start gap-4 mb-4">
-                        <div className="w-11 h-11 rounded-xl flex items-center justify-center !text-white shrink-0"
+                        <div className="w-11 h-11 rounded-xl flex items-center justify-center text-white shrink-0"
                             style={{ background: selectedCourse.color }}>
                             {selectedCourse.icon}
                         </div>
@@ -251,7 +251,7 @@ export function WhaleAcademy() {
                         <div className="h-1" style={{ background: course.color }} />
                         <div className="p-5">
                             <div className="flex items-start gap-4 mb-4">
-                                <div className="w-10 h-10 rounded-xl flex items-center justify-center !text-white shrink-0"
+                                <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0"
                                     style={{ background: course.color }}>
                                     {course.icon}
                                 </div>

@@ -43,7 +43,7 @@ export default function ProfitabilityTracker({ pnlData, isLoading }: Profitabili
     return (
       <div className="p-16 text-center border border-dashed border-white/10 rounded-3xl bg-white/5">
         <DollarSign size={56} className="mx-auto mb-5 opacity-20 text-green-400" />
-        <h3 className="text-2xl font-black !text-white mb-2">P&L Data Not Available</h3>
+        <h3 className="text-2xl font-black text-white mb-2">P&L Data Not Available</h3>
         <p className="text-gray-500 text-sm max-w-md mx-auto">
           Profitability analysis requires complete transaction history.
         </p>
@@ -132,7 +132,7 @@ export default function ProfitabilityTracker({ pnlData, isLoading }: Profitabili
       {/* Token Breakdown */}
       {pnlData.result && pnlData.result.length > 0 && (
         <div className="bg-black/40 border border-white/10 rounded-3xl p-6">
-          <h3 className="text-xl font-black !text-white mb-6 flex items-center gap-3">
+          <h3 className="text-xl font-black text-white mb-6 flex items-center gap-3">
             <Coins size={24} className="text-blue-400" />
             P&L by Token
           </h3>
@@ -171,7 +171,7 @@ export default function ProfitabilityTracker({ pnlData, isLoading }: Profitabili
                           )}
                         </div>
                         <div>
-                          <p className="font-black text-xl !text-white">{token.token_symbol}</p>
+                          <p className="font-black text-xl text-white">{token.token_symbol}</p>
                           <p className="text-xs text-gray-500">
                             Buy: ${safeToFixed(parseFloat(token.avg_buy_price_usd || '0'), 4)} · 
                             Sell: ${safeToFixed(parseFloat(token.avg_sell_price_usd || '0'), 4)}

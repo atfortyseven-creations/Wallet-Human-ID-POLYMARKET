@@ -260,7 +260,7 @@ export default function PolymarketGlassDashboard({ embedded = false }: { embedde
                                         <button
                                             key={idx}
                                             onClick={() => setCurrentMarketPage(idx + 1)}
-                                            className={`w-6 h-6 flex items-center justify-center rounded-lg text-[10px] font-mono font-black transition-colors ${currentMarketPage === idx + 1 ? 'bg-emerald-600 !text-white border-emerald-700' : 'bg-[#FFFFFF] border border-[#E5E5E5] text-[#050505]/40 hover:bg-black/5 hover:text-[#050505]'}`}
+                                            className={`w-6 h-6 flex items-center justify-center rounded-lg text-[10px] font-mono font-black transition-colors ${currentMarketPage === idx + 1 ? 'bg-emerald-600 text-white border-emerald-700' : 'bg-[#FFFFFF] border border-[#E5E5E5] text-[#050505]/40 hover:bg-black/5 hover:text-[#050505]'}`}
                                         >
                                             {idx + 1}
                                         </button>
@@ -302,7 +302,7 @@ export default function PolymarketGlassDashboard({ embedded = false }: { embedde
                                         <p className="text-[10px] text-[#050505]/50 mb-3 font-medium">Asymmetric vault disables injections without EIP-712 Proxy.</p>
                                         <button
                                             onClick={login}
-                                            className="px-4 py-2 bg-amber-500 hover:bg-amber-400 !text-white text-[10px] font-black uppercase tracking-widest rounded transition-colors"
+                                            className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-white text-[10px] font-black uppercase tracking-widest rounded transition-colors"
                                         >
                                             Authorize Channel
                                         </button>
@@ -367,13 +367,13 @@ export default function PolymarketGlassDashboard({ embedded = false }: { embedde
                                     <div className="p-1 rounded-xl bg-[#FFFFFF] border border-[#E5E5E5] flex mb-6">
                                         <button
                                             onClick={() => setSide("YES")}
-                                            className={`flex-1 py-3 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${side === "YES" ? "bg-emerald-600 !text-white shadow-sm" : "text-[#050505]/40 hover:text-[#050505]"}`}
+                                            className={`flex-1 py-3 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${side === "YES" ? "bg-emerald-600 text-white shadow-sm" : "text-[#050505]/40 hover:text-[#050505]"}`}
                                         >
                                             BUY YES
                                         </button>
                                         <button
                                             onClick={() => setSide("NO")}
-                                            className={`flex-1 py-3 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${side === "NO" ? "bg-rose-600 !text-white shadow-sm" : "text-[#050505]/40 hover:text-[#050505]"}`}
+                                            className={`flex-1 py-3 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${side === "NO" ? "bg-rose-600 text-white shadow-sm" : "text-[#050505]/40 hover:text-[#050505]"}`}
                                         >
                                             BUY NO
                                         </button>
@@ -404,7 +404,7 @@ export default function PolymarketGlassDashboard({ embedded = false }: { embedde
                                         <button
                                             onClick={handleTrade}
                                             disabled={tradeStatus === "APPROVING" || tradeStatus === "SIGNING" || tradeStatus === "POSTING" || !amount || !selectedMarket}
-                                            className="w-full py-4 rounded-xl bg-[#050505] !text-white font-black uppercase tracking-widest text-[11px] transition-all hover:bg-[#050505]/80 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 mt-2"
+                                            className="w-full py-4 rounded-xl bg-[#050505] text-white font-black uppercase tracking-widest text-[11px] transition-all hover:bg-[#050505]/80 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 mt-2"
                                         >
                                             {tradeStatus === "APPROVING" && <><Loader2 className="animate-spin w-4 h-4" /> EIP-2612 Signature...</>}
                                             {tradeStatus === "SIGNING" && <><Loader2 className="animate-spin w-4 h-4" /> ECDSA Handshake...</>}

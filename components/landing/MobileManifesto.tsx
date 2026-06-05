@@ -64,7 +64,7 @@ export function MobileManifesto() {
           </motion.p>
 
           <motion.div variants={FADE_UP} className="w-full max-w-[300px] mx-auto">
-            <Link href={hasSession ? "/connect" : "/connect"} className="flex items-center justify-center w-full h-[60px] bg-[#0A0A0A] !text-white rounded-2xl font-mono text-[12px] font-black tracking-[0.2em] uppercase active:scale-[0.98] transition-transform shadow-xl">
+            <Link href={hasSession ? "/connect" : "/connect"} className="flex items-center justify-center w-full h-[60px] bg-[#0A0A0A] text-white rounded-2xl font-mono text-[12px] font-black tracking-[0.2em] uppercase active:scale-[0.98] transition-transform shadow-xl">
               Partner With Us
             </Link>
           </motion.div>
@@ -105,19 +105,19 @@ export function MobileManifesto() {
       {/* 
           3. WHALE CHAT
        */}
-      <section className="px-6 py-20 bg-[#0A0A0A] !text-white">
+      <section className="px-6 py-20 bg-[#0A0A0A] text-white">
         <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={FADE_UP}>
           <div className="flex items-center gap-3 mb-12">
             <div className="flex-1 h-px bg-white/10" />
-            <span className="font-mono text-[8px] font-black uppercase tracking-[0.3em] !text-white/40">Whale Chat</span>
+            <span className="font-mono text-[8px] font-black uppercase tracking-[0.3em] text-white/40">Whale Chat</span>
             <div className="flex-1 h-px bg-white/10" />
           </div>
 
-          <h2 className="text-[40px] font-black tracking-tighter uppercase leading-[0.95] !text-white mb-6 text-center">
+          <h2 className="text-[40px] font-black tracking-tighter uppercase leading-[0.95] text-white mb-6 text-center">
             Absolute <span className="text-emerald-500">Secrecy.</span>
           </h2>
 
-          <div className="space-y-6 font-serif text-[16px] !text-white/70 leading-[1.7] text-center max-w-[340px] mx-auto mb-10 px-2">
+          <div className="space-y-6 font-serif text-[16px] text-white/70 leading-[1.7] text-center max-w-[340px] mx-auto mb-10 px-2">
             <p>
               Centralized messaging platforms are liabilities for medical confidentiality. Whale Chat is built on XMTP  encrypted directly with authorized personnel keys.
             </p>
@@ -125,10 +125,10 @@ export function MobileManifesto() {
             <AnimatePresence>
               {noteExpanded && (
                 <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="space-y-6 overflow-hidden">
-                  <p className="pt-2 !text-white/50">
+                  <p className="pt-2 text-white/50">
                     No telecom provider or unauthorized staff can intercept the data. 
                   </p>
-                  <p className="!text-white/50">
+                  <p className="text-white/50">
                     Used daily for inter-departmental transfers, remote diagnostics, and legal compliance where perfect secrecy is mandatory.
                   </p>
                 </motion.div>
@@ -136,7 +136,7 @@ export function MobileManifesto() {
             </AnimatePresence>
           </div>
 
-          <button onClick={() => setNoteExpanded((v) => !v)} className="flex items-center justify-center gap-3 w-full max-w-[300px] mx-auto h-[56px] rounded-2xl bg-white/5 border border-white/10 font-mono text-[11px] font-black tracking-[0.2em] uppercase !text-white active:bg-white/10 transition-colors">
+          <button onClick={() => setNoteExpanded((v) => !v)} className="flex items-center justify-center gap-3 w-full max-w-[300px] mx-auto h-[56px] rounded-2xl bg-white/5 border border-white/10 font-mono text-[11px] font-black tracking-[0.2em] uppercase text-white active:bg-white/10 transition-colors">
             {noteExpanded ? "Collapse" : "Read More"}
             <ChevronDown size={16} className={`transition-transform duration-300 ${noteExpanded ? "rotate-180" : ""}`} />
           </button>

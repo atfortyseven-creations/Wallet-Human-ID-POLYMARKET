@@ -427,10 +427,10 @@ export function QuantumVaultOnboarding({ onComplete }: { onComplete: () => void 
                   <>
                     <button 
                       onClick={() => setPhase("UNLOCK")}
-                      className="group relative px-10 py-5 bg-black !!text-white font-black text-[14px] uppercase tracking-[0.3em] overflow-hidden transition-transform active:scale-95 w-full flex items-center justify-center gap-3 !shadow-2xl hover:bg-black/90"
+                      className="group relative px-10 py-5 bg-black !text-white font-black text-[14px] uppercase tracking-[0.3em] overflow-hidden transition-transform active:scale-95 w-full flex items-center justify-center gap-3 !shadow-2xl hover:bg-black/90"
                     >
                       <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-                      <span className="relative z-10 flex items-center gap-3 !!text-white"><Lock size={18} /> Login / Unlock Wallet</span>
+                      <span className="relative z-10 flex items-center gap-3 !text-white"><Lock size={18} /> Login / Unlock Wallet</span>
                     </button>
                     <button 
                       onClick={startNewWallet}
@@ -442,10 +442,10 @@ export function QuantumVaultOnboarding({ onComplete }: { onComplete: () => void 
                 ) : (
                   <button 
                     onClick={startNewWallet}
-                    className="group relative px-10 py-5 bg-black !!text-white font-black text-[14px] uppercase tracking-[0.3em] overflow-hidden transition-transform active:scale-95 w-full flex items-center justify-center gap-3 !shadow-2xl hover:bg-black/90"
+                    className="group relative px-10 py-5 bg-black !text-white font-black text-[14px] uppercase tracking-[0.3em] overflow-hidden transition-transform active:scale-95 w-full flex items-center justify-center gap-3 !shadow-2xl hover:bg-black/90"
                   >
                     <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-                    <span className="relative z-10 flex items-center gap-3 !!text-white"><UserPlus size={18} /> Create New Wallet</span>
+                    <span className="relative z-10 flex items-center gap-3 !text-white"><UserPlus size={18} /> Create New Wallet</span>
                   </button>
                 )}
               </div>
@@ -483,9 +483,9 @@ export function QuantumVaultOnboarding({ onComplete }: { onComplete: () => void 
               <button 
                 onClick={handleUnlock}
                 disabled={isDecrypting}
-                className="w-full px-10 py-5 bg-black !!text-white font-black text-[14px] uppercase tracking-[0.2em] hover:bg-black/90 transition-all flex items-center justify-center gap-3 disabled:opacity-50 !shadow-2xl"
+                className="w-full px-10 py-5 bg-black !text-white font-black text-[14px] uppercase tracking-[0.2em] hover:bg-black/90 transition-all flex items-center justify-center gap-3 disabled:opacity-50 !shadow-2xl"
               >
-                {isDecrypting ? <span className="animate-pulse !!text-white">Decrypting...</span> : <span className="!!text-white">Unlock</span>}
+                {isDecrypting ? <span className="animate-pulse !text-white">Decrypting...</span> : <span className="!text-white">Unlock</span>}
               </button>
               
               <button 
@@ -577,9 +577,9 @@ export function QuantumVaultOnboarding({ onComplete }: { onComplete: () => void 
               <div className="flex justify-center">
                 <button 
                   onClick={() => setPhase("MNEMONIC_VERIFY")}
-                  className="px-12 py-6 bg-black !!text-white font-black text-[14px] uppercase tracking-[0.2em] hover:bg-black/90 transition-colors w-full md:w-auto !shadow-2xl"
+                  className="px-12 py-6 bg-black !text-white font-black text-[14px] uppercase tracking-[0.2em] hover:bg-black/90 transition-colors w-full md:w-auto !shadow-2xl"
                 >
-                  <span className="!!text-white block w-full text-center">I have securely saved these words</span>
+                  <span className="!text-white block w-full text-center">I have securely saved these words</span>
                 </button>
               </div>
             </motion.div>
@@ -618,9 +618,9 @@ export function QuantumVaultOnboarding({ onComplete }: { onComplete: () => void 
                 </button>
                 <button 
                   onClick={verifyMnemonic}
-                  className="px-10 py-5 bg-black !!text-white font-black text-[14px] uppercase tracking-[0.2em] hover:bg-black/90 transition-colors w-full md:w-auto text-center !shadow-2xl"
+                  className="px-10 py-5 bg-black !text-white font-black text-[14px] uppercase tracking-[0.2em] hover:bg-black/90 transition-colors w-full md:w-auto text-center !shadow-2xl"
                 >
-                  <span className="!!text-white block w-full text-center">Verify & Proceed</span>
+                  <span className="!text-white block w-full text-center">Verify & Proceed</span>
                 </button>
               </div>
             </motion.div>
@@ -630,7 +630,7 @@ export function QuantumVaultOnboarding({ onComplete }: { onComplete: () => void 
             <motion.div key="seal" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="w-full max-w-2xl bg-white/40 backdrop-blur-xl p-8 md:p-16 rounded-[40px] shadow-2xl border border-white/50">
               <div className="mb-16 text-center">
                 <div className="w-24 h-24 mx-auto border-2 border-black flex items-center justify-center mb-8 bg-black shadow-lg">
-                  <Lock size={36} className="!text-white" />
+                  <Lock size={36} className="text-white" />
                 </div>
                 <h2 className="text-[28px] md:text-[40px] font-black uppercase tracking-[0.1em] text-black mb-4 drop-shadow-sm">Set Password</h2>
                 <p className="text-[14px] md:text-[18px] font-bold text-black/60 uppercase tracking-widest">Create a local password to encrypt your account on this device.</p>
@@ -674,9 +674,9 @@ export function QuantumVaultOnboarding({ onComplete }: { onComplete: () => void 
               <div className="flex justify-center">
                 <button 
                   onClick={sealVault}
-                  className="px-12 py-6 bg-black !!text-white font-black text-[14px] uppercase tracking-[0.2em] hover:bg-black/90 transition-all flex items-center justify-center gap-3 w-full md:w-auto !shadow-2xl"
+                  className="px-12 py-6 bg-black !text-white font-black text-[14px] uppercase tracking-[0.2em] hover:bg-black/90 transition-all flex items-center justify-center gap-3 w-full md:w-auto !shadow-2xl"
                 >
-                  <Lock size={18} className="!!text-white" /> <span className="!!text-white">Complete Setup</span>
+                  <Lock size={18} className="!text-white" /> <span className="!text-white">Complete Setup</span>
                 </button>
               </div>
             </motion.div>

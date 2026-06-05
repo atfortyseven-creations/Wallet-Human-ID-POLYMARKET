@@ -37,25 +37,25 @@ export const TacticalWhaleDatabase: React.FC<{ onClose: () => void }> = ({ onClo
                             <ShieldCheck className="text-cyan-400" size={24} />
                         </div>
                         <div>
-                            <h2 className="text-2xl font-black !text-white uppercase tracking-tighter">Whale Activity Ledger</h2>
-                            <p className="text-sm !text-white/30 font-mono uppercase tracking-widest">500 High-Volume On-Chain Entities · Telemetry Sync</p>
+                            <h2 className="text-2xl font-black text-white uppercase tracking-tighter">Whale Activity Ledger</h2>
+                            <p className="text-sm text-white/30 font-mono uppercase tracking-widest">500 High-Volume On-Chain Entities · Telemetry Sync</p>
                         </div>
                     </div>
                     
                     <div className="flex items-center gap-3">
                         <div className="relative">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 !text-white/20" size={16} />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={16} />
                             <input 
                                 type="text"
                                 placeholder="SEARCH ENTITY OR ADDRESS..."
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
-                                className="bg-white/5 border border-white/10 rounded-2xl pl-12 pr-6 py-3 text-sm !text-white font-mono focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all w-64 md:w-80"
+                                className="bg-white/5 border border-white/10 rounded-2xl pl-12 pr-6 py-3 text-sm text-white font-mono focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all w-64 md:w-80"
                             />
                         </div>
                         <button 
                             onClick={onClose}
-                            className="w-12 h-12 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center !text-white/40 hover:!text-white transition-all"
+                            className="w-12 h-12 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white/40 hover:text-white transition-all"
                         >
                             <X size={20} />
                         </button>
@@ -67,26 +67,26 @@ export const TacticalWhaleDatabase: React.FC<{ onClose: () => void }> = ({ onClo
                     <table className="w-full border-collapse">
                         <thead className="sticky top-0 z-10 bg-slate-950">
                             <tr className="text-left border-b border-white/10">
-                                <th className="pb-4 px-4 text-[10px] font-black !text-white/20 uppercase tracking-[0.2em]">Rank</th>
-                                <th className="pb-4 px-4 text-[10px] font-black !text-white/20 uppercase tracking-[0.2em]">Entity Signature</th>
-                                <th className="pb-4 px-4 text-[10px] font-black !text-white/20 uppercase tracking-[0.2em]">Tier</th>
-                                <th className="pb-4 px-4 text-[10px] font-black !text-white/20 uppercase tracking-[0.2em] text-right">24H Volume</th>
-                                <th className="pb-4 px-4 text-[10px] font-black !text-white/20 uppercase tracking-[0.2em] text-right">Activity</th>
-                                <th className="pb-4 px-4 text-[10px] font-black !text-white/20 uppercase tracking-[0.2em] text-center">Status</th>
+                                <th className="pb-4 px-4 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Rank</th>
+                                <th className="pb-4 px-4 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Entity Signature</th>
+                                <th className="pb-4 px-4 text-[10px] font-black text-white/20 uppercase tracking-[0.2em]">Tier</th>
+                                <th className="pb-4 px-4 text-[10px] font-black text-white/20 uppercase tracking-[0.2em] text-right">24H Volume</th>
+                                <th className="pb-4 px-4 text-[10px] font-black text-white/20 uppercase tracking-[0.2em] text-right">Activity</th>
+                                <th className="pb-4 px-4 text-[10px] font-black text-white/20 uppercase tracking-[0.2em] text-center">Status</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
                             {filtered.map((w, idx) => (
                                 <tr key={w.address} className="group hover:bg-white/2 transition-all">
                                     <td className="py-4 px-4">
-                                        <div className="text-sm font-black font-mono !text-white/20 group-hover:text-cyan-400">
+                                        <div className="text-sm font-black font-mono text-white/20 group-hover:text-cyan-400">
                                             #{w.rank || idx + 1}
                                         </div>
                                     </td>
                                     <td className="py-4 px-4">
                                         <div className="flex flex-col">
-                                            <span className="text-sm font-black !text-white uppercase tracking-tight">{w.label}</span>
-                                            <span className="text-[10px] font-mono !text-white/20">{w.address}</span>
+                                            <span className="text-sm font-black text-white uppercase tracking-tight">{w.label}</span>
+                                            <span className="text-[10px] font-mono text-white/20">{w.address}</span>
                                         </div>
                                     </td>
                                     <td className="py-4 px-4">
@@ -99,12 +99,12 @@ export const TacticalWhaleDatabase: React.FC<{ onClose: () => void }> = ({ onClo
                                         </span>
                                     </td>
                                     <td className="py-4 px-4 text-right">
-                                        <div className="text-sm font-black font-mono !text-white">
+                                        <div className="text-sm font-black font-mono text-white">
                                             ${(w.volume24h || 0).toLocaleString(undefined, { maximumFractionDigits: 0 })}
                                         </div>
                                     </td>
                                     <td className="py-4 px-4 text-right">
-                                        <div className="text-[10px] font-black !text-white/40 uppercase tracking-widest">
+                                        <div className="text-[10px] font-black text-white/40 uppercase tracking-widest">
                                             {w.txCount || 0} TRADES
                                         </div>
                                     </td>
@@ -124,7 +124,7 @@ export const TacticalWhaleDatabase: React.FC<{ onClose: () => void }> = ({ onClo
 
                 {/* Footer */}
                 <div className="p-6 border-t border-white/5 bg-white/2 flex justify-between items-center">
-                    <div className="text-[10px] font-black !text-white/10 uppercase tracking-[0.5em]">
+                    <div className="text-[10px] font-black text-white/10 uppercase tracking-[0.5em]">
                         DATA SET: CORE-AUDIT-TERMINAL-500
                     </div>
                     <div className="flex items-center gap-2 text-[10px] font-black text-cyan-500/50 uppercase tracking-widest">

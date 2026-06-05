@@ -197,10 +197,10 @@ export function ActiveTerminalWidgets({
 
   if (type === 'COPY_TRADING') {
       return (
-          <div ref={containerRef} className="w-full bg-[#050505] !text-white rounded-xl p-3 mt-3 shadow-inner max-h-[96px] overflow-hidden border border-white/10 relative">
+          <div ref={containerRef} className="w-full bg-[#050505] text-white rounded-xl p-3 mt-3 shadow-inner max-h-[96px] overflow-hidden border border-white/10 relative">
               <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-white/10">
                   <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                  <span className="text-[8px] font-black tracking-widest uppercase !text-white/50">Elite Intent Engine Active</span>
+                  <span className="text-[8px] font-black tracking-widest uppercase text-white/50">Elite Intent Engine Active</span>
               </div>
               <div id="copy-trade-log" className="flex flex-col">
                   {/* Imperative nodes injected here */}

@@ -389,7 +389,7 @@ export default function SendModal({ isOpen, onClose }: SendModalProps) {
                                                             {isSearching ? (
                                                                 <div className="py-8 flex flex-col items-center gap-2">
                                                                     <Loader2 className="w-5 h-5 text-indigo-500 animate-spin" />
-                                                                    <span className="text-[10px] font-bold !text-white/20">Searching network...</span>
+                                                                    <span className="text-[10px] font-bold text-white/20">Searching network...</span>
                                                                 </div>
                                                             ) : searchResults.length > 0 ? (
                                                                 searchResults.map((asset, idx) => (
@@ -409,13 +409,13 @@ export default function SendModal({ isOpen, onClose }: SendModalProps) {
                                                                             fallbackClassName="w-7 h-7 rounded-full text-[10px]"
                                                                         />
                                                                         <div>
-                                                                            <div className="!text-white font-bold text-sm tracking-tight">{asset.symbol}</div>
-                                                                            <div className="!text-white/30 text-[10px] font-medium truncate max-w-[200px]">{asset.name}</div>
+                                                                            <div className="text-white font-bold text-sm tracking-tight">{asset.symbol}</div>
+                                                                            <div className="text-white/30 text-[10px] font-medium truncate max-w-[200px]">{asset.name}</div>
                                                                         </div>
                                                                     </button>
                                                                 ))
                                                             ) : (
-                                                                <div className="py-8 text-center text-[10px] font-bold !text-white/10">No additional assets found</div>
+                                                                <div className="py-8 text-center text-[10px] font-bold text-white/10">No additional assets found</div>
                                                             )}
                                                         </>
                                                     )}
@@ -463,7 +463,7 @@ export default function SendModal({ isOpen, onClose }: SendModalProps) {
                                         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
                                             <button
                                                 onClick={handleMax}
-                                                className="px-2.5 py-1.5 bg-black !!text-white rounded-lg text-[9px] font-black transition-colors uppercase tracking-widest active:scale-95"
+                                                className="px-2.5 py-1.5 bg-black text-white rounded-lg text-[9px] font-black transition-colors uppercase tracking-widest active:scale-95"
                                             >
                                                 MAX
                                             </button>
@@ -478,7 +478,7 @@ export default function SendModal({ isOpen, onClose }: SendModalProps) {
                                 <button
                                     disabled={status === "SIGNING" || status === "SENDING" || !amount || !recipient || !address}
                                     onClick={handleSend}
-                                    className="w-full py-5 bg-black hover:bg-black/90 disabled:opacity-10 rounded-2xl font-black text-[11px] uppercase tracking-[0.25em] !text-white shadow-xl shadow-black/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3 group"
+                                    className="w-full py-5 bg-black hover:bg-black/90 disabled:opacity-10 rounded-2xl font-black text-[11px] uppercase tracking-[0.25em] text-white shadow-xl shadow-black/10 transition-all active:scale-[0.98] flex items-center justify-center gap-3 group"
                                 >
                                     {!address ? "Connect Wallet" :
                                         (

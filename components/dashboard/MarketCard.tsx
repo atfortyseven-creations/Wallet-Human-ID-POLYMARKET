@@ -59,7 +59,7 @@ export default function MarketCard({ market, isLoading }: MarketCardProps) {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0c] to-transparent opacity-80" />
 
                 <div className="absolute bottom-3 left-4 right-4">
-                    <h3 className="font-serif text-lg font-bold !text-white leading-tight line-clamp-2 text-shadow-sm">
+                    <h3 className="font-serif text-lg font-bold text-white leading-tight line-clamp-2 text-shadow-sm">
                         {market.question}
                     </h3>
                 </div>
@@ -68,7 +68,7 @@ export default function MarketCard({ market, isLoading }: MarketCardProps) {
             {/* Stats Body */}
             <div className="flex-1 p-4 flex flex-col justify-between gap-4">
                 {/* Volume & Tag */}
-                <div className="flex items-center justify-between text-xs !text-white/50 font-mono">
+                <div className="flex items-center justify-between text-xs text-white/50 font-mono">
                     <div className="flex items-center gap-1.5 text-emerald-400">
                         <TrendingUp className="w-3 h-3" />
                         <span>Vol: {volumeFormatted}</span>
@@ -85,9 +85,9 @@ export default function MarketCard({ market, isLoading }: MarketCardProps) {
                         type="number"
                         value={betAmount}
                         onChange={(e) => setBetAmount(e.target.value)}
-                        className="w-16 bg-black/20 border border-white/10 rounded-lg px-2 py-1 text-xs !text-white text-center focus:outline-none focus:border-white/30"
+                        className="w-16 bg-black/20 border border-white/10 rounded-lg px-2 py-1 text-xs text-white text-center focus:outline-none focus:border-white/30"
                     />
-                    <span className="text-xs !text-white/40 font-mono">USDC</span>
+                    <span className="text-xs text-white/40 font-mono">USDC</span>
                 </div>
 
                 {/* Outcome Bars */}
@@ -102,7 +102,7 @@ export default function MarketCard({ market, isLoading }: MarketCardProps) {
                             <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-0.5">
                                 {status === "TRADING" || status === "APPROVING" ? <Loader2 className="w-3 h-3 animate-spin" /> : "Bet Yes"}
                             </span>
-                            <span className="text-lg font-bold !text-white">{yesPrice}%</span>
+                            <span className="text-lg font-bold text-white">{yesPrice}%</span>
                         </div>
                         <div
                             className="absolute bottom-0 left-0 top-0 bg-emerald-500/10 transition-all group-hover/btn:bg-emerald-500/20"
@@ -120,7 +120,7 @@ export default function MarketCard({ market, isLoading }: MarketCardProps) {
                             <span className="text-[10px] font-bold text-rose-400 uppercase tracking-widest mb-0.5">
                                 {status === "TRADING" || status === "APPROVING" ? <Loader2 className="w-3 h-3 animate-spin" /> : "Bet No"}
                             </span>
-                            <span className="text-lg font-bold !text-white">{noPrice}%</span>
+                            <span className="text-lg font-bold text-white">{noPrice}%</span>
                         </div>
                         <div
                             className="absolute bottom-0 left-0 top-0 bg-rose-500/10 transition-all group-hover/btn:bg-rose-500/20"

@@ -102,7 +102,7 @@ export function TerminalSettingsPanel() {
                   <button 
                     key={opt.value}
                     onClick={() => updateSetting(key, opt.value as never)}
-                    className={`w-full px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border text-left ${isSelected ? 'bg-black !!text-white border-black' : 'bg-transparent text-black/50 border-black/10 hover:border-black/30 hover:text-black'}`}
+                    className={`w-full px-5 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border text-left ${isSelected ? 'bg-black text-white border-black' : 'bg-transparent text-black/50 border-black/10 hover:border-black/30 hover:text-black'}`}
                   >
                      {opt.label}
                   </button>
@@ -152,7 +152,7 @@ export function TerminalSettingsPanel() {
                  <button 
                    key={c.id} 
                    onClick={() => setActiveTab(c.id)}
-                   className={`flex items-center gap-3 px-5 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all ${isActive ? 'bg-black !!text-white' : 'bg-transparent text-black/40 hover:bg-black/5 hover:text-black'}`}
+                   className={`flex items-center gap-3 px-5 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all ${isActive ? 'bg-black text-white' : 'bg-transparent text-black/40 hover:bg-black/5 hover:text-black'}`}
                  >
                     {c.label}
                  </button>

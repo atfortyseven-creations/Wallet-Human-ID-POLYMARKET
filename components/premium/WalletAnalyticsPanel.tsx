@@ -151,7 +151,7 @@ export default function WalletAnalyticsPanel({ address, label, analytics: initia
                             <AlertTriangle size={32} className="text-indigo-500" />
                         </div>
                         
-                        <h2 className="text-2xl font-black !text-white mb-2 uppercase tracking-tighter">
+                        <h2 className="text-2xl font-black text-white mb-2 uppercase tracking-tighter">
                             {isAuthError ? 'Configuration Required' : isThrottled ? 'Feed Throttled' : 'Analysis Failed'}
                         </h2>
                         <p className="text-gray-400 mb-8 font-mono text-sm leading-relaxed px-4">
@@ -194,7 +194,7 @@ export default function WalletAnalyticsPanel({ address, label, analytics: initia
                                     href="https://dashboard.alchemy.com/" 
                                     target="_blank" 
                                     rel="noopener noreferrer"
-                                    className="flex-1 px-8 py-4 bg-blue-600 hover:bg-blue-500 rounded-2xl !text-white transition-all font-bold text-sm shadow-lg shadow-blue-900/40 flex items-center justify-center gap-2"
+                                    className="flex-1 px-8 py-4 bg-blue-600 hover:bg-blue-500 rounded-2xl text-white transition-all font-bold text-sm shadow-lg shadow-blue-900/40 flex items-center justify-center gap-2"
                                 >
                                     Get API Key
                                 </a>
@@ -204,7 +204,7 @@ export default function WalletAnalyticsPanel({ address, label, analytics: initia
                                     href="https://www.coingecko.com/en/api/pricing" 
                                     target="_blank" 
                                     rel="noopener noreferrer"
-                                    className="flex-1 px-8 py-4 bg-amber-600 hover:bg-amber-500 rounded-2xl !text-white transition-all font-bold text-sm shadow-lg shadow-amber-900/40 flex items-center justify-center gap-2"
+                                    className="flex-1 px-8 py-4 bg-amber-600 hover:bg-amber-500 rounded-2xl text-white transition-all font-bold text-sm shadow-lg shadow-amber-900/40 flex items-center justify-center gap-2"
                                 >
                                     Feed Status
                                 </a>
@@ -284,7 +284,7 @@ export default function WalletAnalyticsPanel({ address, label, analytics: initia
                             </div>
                         </div>
                         <div>
-                            <h2 className="text-xl md:text-3xl font-black !text-white tracking-tight flex items-center gap-3">
+                            <h2 className="text-xl md:text-3xl font-black text-white tracking-tight flex items-center gap-3">
                                 <span className="truncate max-w-[150px] md:max-w-none">{label}</span>
                                 <span className="px-2 py-0.5 rounded text-[8px] md:text-[10px] font-bold bg-gradient-to-r from-blue-500 to-purple-500 text-black uppercase tracking-wider">
                                     Verified
@@ -299,7 +299,7 @@ export default function WalletAnalyticsPanel({ address, label, analytics: initia
                             </div>
                         </div>
                     </div>
-                    <button onClick={onClose} className="p-2 md:p-3 hover:bg-white/10 rounded-full text-gray-400 hover:!text-white transition-all backdrop-blur-md border border-white/5">
+                    <button onClick={onClose} className="p-2 md:p-3 hover:bg-white/10 rounded-full text-gray-400 hover:text-white transition-all backdrop-blur-md border border-white/5">
                         <X size={20} />
                     </button>
                 </div>
@@ -312,7 +312,7 @@ export default function WalletAnalyticsPanel({ address, label, analytics: initia
                             onClick={() => setActiveTab(tab.id)}
                             className={`flex-shrink-0 px-6 py-4 text-xs font-bold transition-all border-b-2 flex items-center gap-2 ${
                                 activeTab === tab.id
-                                    ? 'border-blue-500 !text-white bg-blue-500/10'
+                                    ? 'border-blue-500 text-white bg-blue-500/10'
                                     : 'border-transparent text-gray-500 hover:text-gray-300'
                             }`}
                         >
@@ -335,7 +335,7 @@ export default function WalletAnalyticsPanel({ address, label, analytics: initia
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`w-full px-4 py-3 rounded-xl text-sm font-bold transition-all flex items-center justify-between group ${
                                     activeTab === tab.id
-                                        ? 'bg-gradient-to-r from-blue-600/20 to-purple-600/20 !text-white border border-blue-500/30'
+                                        ? 'bg-gradient-to-r from-blue-600/20 to-purple-600/20 text-white border border-blue-500/30'
                                         : 'text-gray-500 hover:bg-white/5 hover:text-gray-300 border border-transparent'
                                 }`}
                             >
@@ -411,14 +411,14 @@ function OverviewTab({ analytics, netWorth, stakingPositions, liquidityPools }: 
                             <ShieldCheck size={24} className="text-blue-400" />
                         </div>
                         <div>
-                            <h4 className="text-sm font-black !text-white uppercase tracking-widest leading-none mb-1">Scientific Analysis Active</h4>
+                            <h4 className="text-sm font-black text-white uppercase tracking-widest leading-none mb-1">Scientific Analysis Active</h4>
                             <p className="text-xs text-blue-200/60 font-medium">Direct DeFi positions detected via RPC Multicall.</p>
                         </div>
                     </div>
                     {stakingPositions.find((p: any) => p.details?.healthFactor) && (
                         <div className="text-right">
                             <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest block leading-none mb-1">Salud Global (Aave)</span>
-                            <span className="text-2xl font-black !text-white leading-none">
+                            <span className="text-2xl font-black text-white leading-none">
                                 {safeToFixed((stakingPositions.find((p: any) => (p as any).details?.healthFactor) as any).details.healthFactor, 2)}
                             </span>
                         </div>
@@ -476,7 +476,7 @@ function OverviewTab({ analytics, netWorth, stakingPositions, liquidityPools }: 
                                     <Zap size={14} />
                                     Market Influence Score
                                 </h4>
-                                <div className="text-4xl font-black !text-white">{analytics.influenceScore || 0}<span className="text-lg text-gray-500 ml-1">/100</span></div>
+                                <div className="text-4xl font-black text-white">{analytics.influenceScore || 0}<span className="text-lg text-gray-500 ml-1">/100</span></div>
                             </div>
                             <div className="px-3 py-1 bg-blue-500/20 border border-blue-500/30 rounded-full">
                                 <span className="text-[10px] font-black text-blue-400 uppercase tracking-tighter">Elite Rank</span>
@@ -527,12 +527,12 @@ function OverviewTab({ analytics, netWorth, stakingPositions, liquidityPools }: 
                                 />
                             </svg>
                             <div className="absolute text-center">
-                                <span className="text-2xl font-black !text-white">{analytics.riskScore || 0}</span>
+                                <span className="text-2xl font-black text-white">{analytics.riskScore || 0}</span>
                                 <p className="text-[10px] text-gray-500 uppercase">Risk</p>
                             </div>
                         </div>
                         <div>
-                            <h4 className="!text-white font-bold text-lg">
+                            <h4 className="text-white font-bold text-lg">
                                 {(analytics.riskScore || 0) > 70 ? 'High Risk Profile' : (analytics.riskScore || 0) > 40 ? 'Moderate Risk Profile' : 'Low Risk Profile'}
                             </h4>
                             <p className="text-gray-400 text-sm mt-1 max-w-md">
@@ -553,7 +553,7 @@ function HeatmapTab({ data }: { data: HourlyActivity[] }) {
         <div>
             <div className="flex justify-between items-end mb-6">
                 <div>
-                    <h3 className="text-xl font-black !text-white">Activity Heatmap</h3>
+                    <h3 className="text-xl font-black text-white">Activity Heatmap</h3>
                     <p className="text-gray-400 text-sm">24-hour transaction frequency distribution (UTC)</p>
                 </div>
             </div>
@@ -576,13 +576,13 @@ function HeatmapTab({ data }: { data: HourlyActivity[] }) {
                         >
                             {d.txCount > 0 && <div className="absolute inset-0 bg-blue-400/20 blur-md" />}
                         </div>
-                        <span className="text-[10px] text-gray-600 mt-2 font-mono group-hover:!text-white transition-colors">
+                        <span className="text-[10px] text-gray-600 mt-2 font-mono group-hover:text-white transition-colors">
                             {d.hour}H
                         </span>
                         
                         {/* Tooltip */}
                         <div className="absolute bottom-full mb-2 bg-black/90 border border-white/20 px-3 py-1.5 rounded-lg text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-20 backdrop-blur-md">
-                            <span className="font-bold !text-white">{d.txCount} TXs</span>
+                            <span className="font-bold text-white">{d.txCount} TXs</span>
                             <span className="text-gray-400 block">${safeToLocaleString(d.volume)} Vol</span>
                         </div>
                     </motion.div>
@@ -596,7 +596,7 @@ function CounterpartiesTab({ data }: { data: Counterparty[] }) {
     const safeData = data || [];
     return (
         <div className="space-y-4">
-            <h3 className="text-xl font-black !text-white mb-6">Top Interacted Wallets</h3>
+            <h3 className="text-xl font-black text-white mb-6">Top Interacted Wallets</h3>
             {safeData.map((cp, i) => (
                 <motion.div 
                     key={cp.address}
@@ -611,14 +611,14 @@ function CounterpartiesTab({ data }: { data: Counterparty[] }) {
                         </div>
                         <div>
                             <div className="flex items-center gap-2">
-                                <p className="font-mono !text-white text-lg">{cp.address.slice(0, 6)}...{cp.address.slice(-4)}</p>
+                                <p className="font-mono text-white text-lg">{cp.address.slice(0, 6)}...{cp.address.slice(-4)}</p>
                                 <Users size={14} className="text-gray-600 group-hover:text-blue-400 transition-colors" />
                             </div>
                             {cp.label && <p className="text-xs text-blue-400 mt-0.5 font-bold uppercase tracking-wider">{cp.label}</p>}
                         </div>
                     </div>
                     <div className="text-right">
-                        <p className="!text-white font-black text-xl">{cp.txCount}</p>
+                        <p className="text-white font-black text-xl">{cp.txCount}</p>
                         <p className="text-xs text-gray-500 uppercase tracking-wider">Transactions</p>
                     </div>
                 </motion.div>
@@ -631,7 +631,7 @@ function FlowsTab({ data }: { data: TokenFlow[] }) {
     const safeData = data || [];
     return (
         <div className="space-y-4">
-            <h3 className="text-xl font-black !text-white mb-6">Token Flow Analysis</h3>
+            <h3 className="text-xl font-black text-white mb-6">Token Flow Analysis</h3>
             {safeData.map((flow, i) => {
                 const total = flow.inflow + flow.outflow;
                 const inPercent = total === 0 ? 50 : (flow.inflow / total) * 100;
@@ -645,7 +645,7 @@ function FlowsTab({ data }: { data: TokenFlow[] }) {
                         className="p-6 bg-white/5 rounded-2xl border border-white/5"
                     >
                         <div className="flex justify-between items-center mb-4">
-                            <span className="font-black text-2xl !text-white">{flow.token}</span>
+                            <span className="font-black text-2xl text-white">{flow.token}</span>
                             <span className={`font-mono text-sm px-3 py-1 rounded-full border ${flow.netFlow >= 0 ? 'border-green-500/30 text-green-400 bg-green-500/10' : 'border-indigo-500/30 text-indigo-400 bg-indigo-500/10'}`}>
                                 Net: {flow.netFlow > 0 ? '+' : ''}{safeToFixed(flow.netFlow, 2)}
                             </span>
@@ -672,7 +672,7 @@ function WhaleMovesTab({ data }: { data: WhaleMovement[] }) {
     const safeData = data || [];
     return (
         <div className="space-y-4">
-            <h3 className="text-xl font-black !text-white mb-6">Large Transactions {'>'} $100</h3>
+            <h3 className="text-xl font-black text-white mb-6">Large Transactions {'>'} $100</h3>
             {safeData.length === 0 ? (
                 <div className="p-10 border border-dashed border-white/10 rounded-2xl text-center text-gray-500">
                     No major movements detected recently.
@@ -695,7 +695,7 @@ function WhaleMovesTab({ data }: { data: WhaleMovement[] }) {
                                     </div>
                                     <div>
                                         <div className="flex items-center gap-2">
-                                            <span className="font-black text-xl !text-white">{safeToFixed(move.amount, 4)} {move.token}</span>
+                                            <span className="font-black text-xl text-white">{safeToFixed(move.amount, 4)} {move.token}</span>
                                             <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-white/10 text-gray-400 uppercase">
                                                 {move.chainId === 480 ? 'WORLD' : move.chainId === 8453 ? 'BASE' : 'ETH'}
                                             </span>
@@ -722,7 +722,7 @@ function WhaleMovesTab({ data }: { data: WhaleMovement[] }) {
 function ContractsTab({ data }: { data: ContractInteraction[] }) {
     return (
         <div className="space-y-4">
-            <h3 className="text-xl font-black !text-white mb-6">Smart Contract Interactions</h3>
+            <h3 className="text-xl font-black text-white mb-6">Smart Contract Interactions</h3>
             {data.length === 0 ? (
                 <div className="p-10 border border-dashed border-white/10 rounded-2xl text-center text-gray-500">
                     No contract interactions.
@@ -730,7 +730,7 @@ function ContractsTab({ data }: { data: ContractInteraction[] }) {
             ) : (
                 data.map((c, i) => (
                     <div key={i} className="p-4 bg-white/5 rounded-xl border border-white/10">
-                        <p className="font-mono !text-white">{c.contract}</p>
+                        <p className="font-mono text-white">{c.contract}</p>
                         <p className="text-xs text-gray-400">{c.txCount} Interactions</p>
                     </div>
                 ))
@@ -746,7 +746,7 @@ function NFTsTab({ data }: { data: NFTHolding[] }) {
                 <div key={nft.tokenId} className="aspect-square bg-gray-800 rounded-xl overflow-hidden relative group">
                     {nft.imageUrl && <img src={nft.imageUrl} className="w-full h-full object-cover" />}
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-end p-4 transition-opacity">
-                        <p className="!text-white font-bold">{nft.name}</p>
+                        <p className="text-white font-bold">{nft.name}</p>
                     </div>
                 </div>
             ))}
@@ -785,7 +785,7 @@ function StakingTab({ data }: { data: StakingPosition[] }) {
                     <div className="flex justify-between items-start mb-4">
                         <div>
                             <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest block mb-1">{pos.protocol}</span>
-                            <h4 className="text-2xl font-black !text-white">{safeToFixed(pos.amount, 4)} {pos.token}</h4>
+                            <h4 className="text-2xl font-black text-white">{safeToFixed(pos.amount, 4)} {pos.token}</h4>
                         </div>
                         <div className="flex flex-col items-end gap-2">
                             {pos.apr && pos.apr > 0 && (
@@ -802,7 +802,7 @@ function StakingTab({ data }: { data: StakingPosition[] }) {
                     </div>
                     <div className="flex justify-between items-center text-sm font-mono text-gray-500">
                         <span>Current Value</span>
-                        <span className="!text-white">${safeToLocaleString(pos.valueUsd)}</span>
+                        <span className="text-white">${safeToLocaleString(pos.valueUsd)}</span>
                     </div>
                 </motion.div>
             ))}
@@ -842,16 +842,16 @@ function LPsTab({ data }: { data: LPPosition[] }) {
                             <div className="flex items-center gap-2 mb-1">
                                 <span className="text-[10px] font-black text-purple-400 uppercase tracking-widest">{pos.protocol}</span>
                                 {(pos as any).details?.positionCount && (
-                                    <span className="text-[10px] bg-white/10 !text-white/60 px-2 py-0.5 rounded-full font-mono">
+                                    <span className="text-[10px] bg-white/10 text-white/60 px-2 py-0.5 rounded-full font-mono">
                                         {pos.details?.positionCount} Pos.
                                     </span>
                                 )}
                             </div>
-                            <h4 className="text-xl font-black !text-white">{pos.pair}</h4>
+                            <h4 className="text-xl font-black text-white">{pos.pair}</h4>
                         </div>
                     </div>
                     <div className="text-right">
-                        <div className="text-2xl font-black !text-white">${safeToLocaleString(pos.valueUsd)}</div>
+                        <div className="text-2xl font-black text-white">${safeToLocaleString(pos.valueUsd)}</div>
                         <div className="text-xs font-mono text-gray-500">Liquidity Index: {safeToFixed(pos.liquidity, 2)}</div>
                     </div>
                 </motion.div>
@@ -869,10 +869,10 @@ function StatCard({ label, value, subtext, icon, gradient }: { label: string; va
             <div className="relative z-10 flex items-start justify-between">
                 <div>
                     <h4 className="text-sm font-bold text-gray-500 mb-1 uppercase tracking-wider">{label}</h4>
-                    <p className="text-3xl font-black !text-white tracking-tight">{value}</p>
+                    <p className="text-3xl font-black text-white tracking-tight">{value}</p>
                     {subtext && <p className="text-xs text-gray-400 mt-1 font-mono">{subtext}</p>}
                 </div>
-                <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient} !text-white shadow-lg`}>
+                <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient} text-white shadow-lg`}>
                     {icon}
                 </div>
             </div>
@@ -883,7 +883,7 @@ function StatCard({ label, value, subtext, icon, gradient }: { label: string; va
 function PnLTab({ data }: { data: PnLBreakdown[] }) {
     return (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <h3 className="text-lg font-black !text-white mb-4">Profit & Loss Breakdown</h3>
+            <h3 className="text-lg font-black text-white mb-4">Profit & Loss Breakdown</h3>
             <div className="space-y-3">
                 {data.length === 0 ? (
                     <p className="text-gray-500 text-center py-10">P&L data not available</p>
@@ -893,7 +893,7 @@ function PnLTab({ data }: { data: PnLBreakdown[] }) {
                         return (
                             <div key={pnl.token} className="p-4 bg-white/5 rounded-xl border border-white/10">
                                 <div className="flex justify-between items-center mb-2">
-                                    <span className="font-bold !text-white">{pnl.token}</span>
+                                    <span className="font-bold text-white">{pnl.token}</span>
                                     <span className={`font-bold text-lg ${isProfit ? 'text-green-400' : 'text-indigo-400'}`}>
                                         {isProfit ? '+' : ''}${safeToLocaleString(pnl.total)}
                                     </span>

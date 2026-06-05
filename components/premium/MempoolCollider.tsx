@@ -1,7 +1,7 @@
-/**
+﻿/**
  * 
  *    LIQUIDITY DYNAMICS  Capital Velocity Index                        
- *    Whale Alert Network Pro � Infrastructure Suite                             
+ *    Whale Alert Network Pro · Infrastructure Suite                             
  * 
  */
 
@@ -279,7 +279,7 @@ export function MempoolCollider() {
       <div className="p-10 border-b border-slate-50 bg-black/5/50">
         <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center !text-white shadow-lg shadow-indigo-100">
+                <div className="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-100">
                     <Activity size={20} />
                 </div>
                 <div>

@@ -149,10 +149,10 @@ export default function SubmarineDeconstruction() {
                            <div className="w-8 h-8 rounded-lg bg-[var(--aztec-orchid)]/10 flex items-center justify-center mb-3">
                              <Icon size={16} className="text-[var(--aztec-orchid)]" />
                            </div>
-                           <h4 className="font-aztec-h3 !text-white text-md uppercase tracking-tight mb-2">
+                           <h4 className="font-aztec-h3 text-white text-md uppercase tracking-tight mb-2">
                              {part.title}
                            </h4>
-                           <p className="font-aztec-body text-[11px] !text-white/60 leading-relaxed font-medium">
+                           <p className="font-aztec-body text-[11px] text-white/60 leading-relaxed font-medium">
                              {part.description}
                            </p>
                          </div>

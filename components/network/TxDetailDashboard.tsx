@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
@@ -44,7 +44,7 @@ export function TxDetailDashboard({ txid }: TxDetailDashboardProps) {
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-12 border-b border-slate-100">
                     <div className="space-y-6 flex-1 min-w-0">
                         <div className="flex items-center gap-4">
-                            <Link href="/ledger" className="w-12 h-12 rounded-2xl bg-black/5 border border-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-950 hover:!text-white hover:border-slate-950 transition-all duration-300">
+                            <Link href="/ledger" className="w-12 h-12 rounded-2xl bg-black/5 border border-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-950 hover:text-white hover:border-slate-950 transition-all duration-300">
                                 <ArrowLeft size={20} />
                             </Link>
                             <div className="inline-flex items-center gap-2 bg-indigo-50 text-indigo-600 px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border border-indigo-100">
@@ -92,7 +92,7 @@ export function TxDetailDashboard({ txid }: TxDetailDashboardProps) {
                     
                     <div className="bg-slate-950 p-12 rounded-[3.5rem] flex flex-col justify-center space-y-2 relative overflow-hidden shadow-2xl shadow-slate-200">
                          <div className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em]">Dispersed Volume</div>
-                         <div className="text-3xl font-black !text-white font-mono tracking-tighter">
+                         <div className="text-3xl font-black text-white font-mono tracking-tighter">
                              {(tx.vout.reduce((a: number, c: any) => a + c.value, 0) / 100000000).toFixed(8)} <span className="text-indigo-400 text-lg">BTC</span>
                          </div>
                     </div>

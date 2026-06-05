@@ -87,16 +87,16 @@ export const AztecProverHUD: React.FC<AztecProverHUDProps> = ({ isVisible, onCom
                 ) : step === idx ? (
                   <div className="animate-spin text-[var(--aztec-orchid)]">{s.icon}</div>
                 ) : (
-                  <div className="!text-white/20">{s.icon}</div>
+                  <div className="text-white/20">{s.icon}</div>
                 )}
-                <span className={step >= idx ? '!text-white' : '!text-white/40'}>
+                <span className={step >= idx ? 'text-white' : 'text-white/40'}>
                   {s.name}
                 </span>
               </div>
             ))}
           </div>
 
-          <div className="mt-3 pt-2 border-t border-white/10 flex justify-between items-center text-[8px] font-aztec-mono !text-white/40">
+          <div className="mt-3 pt-2 border-t border-white/10 flex justify-between items-center text-[8px] font-aztec-mono text-white/40">
             <span>Barretenberg Backend</span>
             <span>Circuit: WhaleChat</span>
           </div>

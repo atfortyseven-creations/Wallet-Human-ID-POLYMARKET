@@ -46,13 +46,13 @@ export function RefuelStation({ gasLevel = 0.5 }: { gasLevel?: number }) {
                     >
                         <div className="flex items-center gap-2 mb-4">
                             <Fuel className="text-red-500" />
-                            <h3 className="text-lg font-bold !text-white">Emergency Refuel</h3>
+                            <h3 className="text-lg font-bold text-white">Emergency Refuel</h3>
                         </div>
 
                         <div className="bg-white/5 rounded-xl p-4 flex items-center justify-between mb-6">
                             <div className="text-center">
                                 <div className="text-xs text-zinc-500">FROM</div>
-                                <div className="font-bold !text-white">USDC</div>
+                                <div className="font-bold text-white">USDC</div>
                                 <div className="text-[10px] text-zinc-600">Ethereum</div>
                             </div>
                             <ArrowRight className="text-zinc-600" />
@@ -66,11 +66,11 @@ export function RefuelStation({ gasLevel = 0.5 }: { gasLevel?: number }) {
                         <button
                             onClick={handleBridge}
                             disabled={isBridging}
-                            className="w-full py-3 bg-red-600 hover:bg-red-500 !text-white font-bold rounded-xl flex items-center justify-center gap-2 disabled:opacity-50"
+                            className="w-full py-3 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl flex items-center justify-center gap-2 disabled:opacity-50"
                         >
                             {isBridging ? 'BRIDGING...' : 'BRIDGE $5 GAS'}
                         </button>
-                        <button onClick={() => setIsOpen(false)} className="w-full mt-2 py-2 text-xs text-zinc-500 hover:!text-white">
+                        <button onClick={() => setIsOpen(false)} className="w-full mt-2 py-2 text-xs text-zinc-500 hover:text-white">
                             CANCEL
                         </button>
                     </motion.div>

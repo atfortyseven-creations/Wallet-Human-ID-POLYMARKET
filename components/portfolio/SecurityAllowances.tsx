@@ -83,14 +83,14 @@ export function SecurityAllowances({ onBack }: { onBack: () => void }) {
                 </div>
             </div>
 
-            <div className="bg-black !!text-white p-6 relative overflow-hidden mb-6">
+            <div className="bg-black text-white p-6 relative overflow-hidden mb-6">
                 <div className="absolute top-0 right-0 opacity-10 transform translate-x-1/4 -translate-y-1/4">
                     <Key size={140} strokeWidth={1} />
                 </div>
                 <h3 className="text-sm font-black uppercase tracking-widest mb-2 flex items-center gap-2">
                     <ShieldAlert size={16} /> Token Spend Permissions
                 </h3>
-                <p className="text-[11px] !text-white/60 leading-relaxed max-w-sm">
+                <p className="text-[11px] text-white/60 leading-relaxed max-w-sm">
                     Manage and revoke smart contract spending limits. This is a direct on-chain readout. Revoking will broadcast a 0-approval transaction to the Ethereum network.
                 </p>
             </div>
@@ -120,7 +120,7 @@ export function SecurityAllowances({ onBack }: { onBack: () => void }) {
                             <button 
                                 onClick={() => handleRevoke(i, al.token, al.spender)}
                                 disabled={revokingIdx !== null}
-                                className="px-6 py-3 bg-[#FAFAFA] border border-black/10 hover:border-black text-[10px] font-black uppercase tracking-widest text-red-600 hover:bg-black hover:!text-white transition-all disabled:opacity-30 flex items-center justify-center gap-2"
+                                className="px-6 py-3 bg-[#FAFAFA] border border-black/10 hover:border-black text-[10px] font-black uppercase tracking-widest text-red-600 hover:bg-black hover:text-white transition-all disabled:opacity-30 flex items-center justify-center gap-2"
                             >
                                 {revokingIdx === i ? <RefreshCw size={12} className="animate-spin" /> : <XCircle size={12} />}
                                 {revokingIdx === i ? 'REVOKING...' : 'REVOKE'}

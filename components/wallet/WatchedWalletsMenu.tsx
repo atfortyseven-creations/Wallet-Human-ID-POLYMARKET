@@ -73,7 +73,7 @@ export function WatchedWalletsMenu({ onClose, userAddress }: { onClose?: () => v
                     <Wallet size={14} className="text-purple-400" />
                 </div>
                 <div>
-                    <p className="text-sm font-medium text-gray-200 group-hover:!text-white truncate max-w-[120px]">
+                    <p className="text-sm font-medium text-gray-200 group-hover:text-white truncate max-w-[120px]">
                         {wallet.label || 'Unknown Wallet'}
                     </p>
                     <p className="text-[10px] text-gray-500 font-mono">

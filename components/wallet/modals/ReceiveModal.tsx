@@ -103,7 +103,7 @@ export default function ReceiveModal({ isOpen, onClose, userAddress, chainId, in
                         className="relative w-full max-w-md bg-gradient-to-br from-purple-900/90 to-black/90 backdrop-blur-xl rounded-3xl p-8 border border-white/10 shadow-2xl"
                     >
                         <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/10">
-                            <X size={20} className="!text-white" />
+                            <X size={20} className="text-white" />
                         </button>
 
                         <div className="flex items-center gap-3 mb-6">
@@ -111,14 +111,14 @@ export default function ReceiveModal({ isOpen, onClose, userAddress, chainId, in
                                 {config.icon}
                             </div>
                             <div>
-                                <h2 className="text-2xl font-black !text-white">{config.title}</h2>
-                                <p className="text-sm !text-white/60">{config.desc}</p>
+                                <h2 className="text-2xl font-black text-white">{config.title}</h2>
+                                <p className="text-sm text-white/60">{config.desc}</p>
                             </div>
                         </div>
 
                         {initialMode === 'invoice' && (
                             <div className="mb-4">
-                                <label className="!text-white/80 text-xs font-bold uppercase tracking-wider mb-2 block">
+                                <label className="text-white/80 text-xs font-bold uppercase tracking-wider mb-2 block">
                                     Request Amount (ETH)
                                 </label>
                                 <input
@@ -126,7 +126,7 @@ export default function ReceiveModal({ isOpen, onClose, userAddress, chainId, in
                                     value={invoiceAmount}
                                     onChange={(e) => setInvoiceAmount(e.target.value)}
                                     placeholder="0.00"
-                                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl !text-white placeholder-white/40 focus:outline-none focus:border-green-500/50"
+                                    className="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-green-500/50"
                                 />
                             </div>
                         )}
@@ -136,8 +136,8 @@ export default function ReceiveModal({ isOpen, onClose, userAddress, chainId, in
                                 <div className={`p-4 rounded-full bg-blue-500/10 mb-2 ${isScanning ? 'animate-pulse' : ''}`}>
                                     <Wifi size={32} className="text-blue-400" />
                                 </div>
-                                <p className="!text-white font-bold">{isScanning ? 'Ready to Tap...' : 'NFC Active'}</p>
-                                <p className="!text-white/40 text-xs mt-1">Bring device close to sender</p>
+                                <p className="text-white font-bold">{isScanning ? 'Ready to Tap...' : 'NFC Active'}</p>
+                                <p className="text-white/40 text-xs mt-1">Bring device close to sender</p>
                              </div>
                         )}
 
@@ -154,14 +154,14 @@ export default function ReceiveModal({ isOpen, onClose, userAddress, chainId, in
                         )}
 
                         <div className="mb-4 p-4 bg-white/5 rounded-xl">
-                            <p className="!text-white/60 text-xs mb-2">Your Address</p>
-                            <p className="!text-white font-mono text-sm break-all">{userAddress}</p>
+                            <p className="text-white/60 text-xs mb-2">Your Address</p>
+                            <p className="text-white font-mono text-sm break-all">{userAddress}</p>
                         </div>
 
                         <div className="flex gap-3">
                             <button
                                 onClick={handleCopy}
-                                className="flex-1 py-3 bg-purple-600 hover:bg-purple-500 rounded-xl font-bold !text-white transition-all flex items-center justify-center gap-2"
+                                className="flex-1 py-3 bg-purple-600 hover:bg-purple-500 rounded-xl font-bold text-white transition-all flex items-center justify-center gap-2"
                             >
                                 <Copy size={18} />
                                 {copied ? 'Copied!' : 'Copy Address'}
@@ -171,7 +171,7 @@ export default function ReceiveModal({ isOpen, onClose, userAddress, chainId, in
                                 href={chainId ? getExplorerAddressUrl(chainId, userAddress) : `https://etherscan.io/address/${userAddress}`}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="px-4 py-3 bg-white/10 hover:bg-white/20 rounded-xl font-bold !text-white transition-all flex items-center justify-center"
+                                className="px-4 py-3 bg-white/10 hover:bg-white/20 rounded-xl font-bold text-white transition-all flex items-center justify-center"
                                 title="View on Explorer"
                             >
                                 <ExternalLink size={18} />

@@ -36,7 +36,7 @@ function CopyButton({ text }: { text: string }) {
         });
     };
     return (
-        <button onClick={handleCopy} className="p-1 rounded-lg hover:bg-white/10 text-gray-600 hover:!text-white transition-colors">
+        <button onClick={handleCopy} className="p-1 rounded-lg hover:bg-white/10 text-gray-600 hover:text-white transition-colors">
             {copied ? <Check size={12} className="text-green-400" /> : <Copy size={12} />}
         </button>
     );
@@ -51,10 +51,10 @@ export function WhaleLeaderboard({ leaderboard, onSelectAddress, watchedAddresse
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <Trophy className="text-indigo-400" size={22} />
-                    <h2 className="!text-white font-black tracking-widest uppercase text-sm">Whale Leaderboard</h2>
+                    <h2 className="text-white font-black tracking-widest uppercase text-sm">Whale Leaderboard</h2>
                     <span className="text-[10px] font-black bg-indigo-500/20 text-indigo-400 px-2 py-0.5 rounded-full border border-indigo-500/30 ml-1">TOP {leaderboard.length}</span>
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-widest !text-white/20">sorted by net inflow (USD)</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-white/20">sorted by net inflow (USD)</span>
             </div>
 
             {/* Podium (top 3) */}
@@ -89,7 +89,7 @@ export function WhaleLeaderboard({ leaderboard, onSelectAddress, watchedAddresse
                         
                         // Elite Rank Branding
                         const rankLabel = entry.rank <= 3 ? 'LEVIATHAN' : entry.rank <= 10 ? 'APEX PREDATOR' : 'ALPHA ENTITY';
-                        const rankColor = entry.rank <= 3 ? 'text-indigo-400' : entry.rank <= 10 ? 'text-purple-400' : '!text-white/40';
+                        const rankColor = entry.rank <= 3 ? 'text-indigo-400' : entry.rank <= 10 ? 'text-purple-400' : 'text-white/40';
 
                         return (
                             <motion.div
@@ -107,7 +107,7 @@ export function WhaleLeaderboard({ leaderboard, onSelectAddress, watchedAddresse
                                 >
                                     <div className="w-24 shrink-0">
                                         <div className={`text-[8px] font-black tracking-widest uppercase ${rankColor}`}>{rankLabel}</div>
-                                        <div className="text-[10px] font-black !text-white/20">#{entry.rank}</div>
+                                        <div className="text-[10px] font-black text-white/20">#{entry.rank}</div>
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2">
@@ -125,15 +125,15 @@ export function WhaleLeaderboard({ leaderboard, onSelectAddress, watchedAddresse
                                                 {entry.label}
                                             </span>
                                             {entry.lastChain && (
-                                                <span className="text-[8px] !text-white/20 font-black uppercase tracking-widest">{entry.lastChain} ACTIVE</span>
+                                                <span className="text-[8px] text-white/20 font-black uppercase tracking-widest">{entry.lastChain} ACTIVE</span>
                                             )}
                                         </div>
                                     </div>
                                     <div className="text-right shrink-0">
-                                        <div className="!text-white font-black tracking-tighter text-sm">${(entry.totalUsd / 1_000_000).toFixed(2)}M</div>
-                                        <div className="!text-white/20 text-[9px] font-black uppercase tracking-widest">{entry.txCount} INTERCEPTS</div>
+                                        <div className="text-white font-black tracking-tighter text-sm">${(entry.totalUsd / 1_000_000).toFixed(2)}M</div>
+                                        <div className="text-white/20 text-[9px] font-black uppercase tracking-widest">{entry.txCount} INTERCEPTS</div>
                                     </div>
-                                    <ChevronRight size={14} className={`!text-white/10 transition-transform shrink-0 ${isExpanded ? 'rotate-90' : ''}`} />
+                                    <ChevronRight size={14} className={`text-white/10 transition-transform shrink-0 ${isExpanded ? 'rotate-90' : ''}`} />
                                 </div>
 
                                 {/* Expanded detail */}
@@ -148,11 +148,11 @@ export function WhaleLeaderboard({ leaderboard, onSelectAddress, watchedAddresse
                                             <div className="px-4 pb-3 pt-1 border-t border-white/5 flex flex-col md:flex-row md:items-center gap-4">
                                                 <div className="flex-1 grid grid-cols-2 gap-4 text-[10px]">
                                                     <div>
-                                                        <span className="!text-white/20 font-black uppercase tracking-widest">Avg Pulse</span>
-                                                        <div className="!text-white font-black tracking-tight">${(entry.avgTxUsd / 1000).toFixed(1)}k USD</div>
+                                                        <span className="text-white/20 font-black uppercase tracking-widest">Avg Pulse</span>
+                                                        <div className="text-white font-black tracking-tight">${(entry.avgTxUsd / 1000).toFixed(1)}k USD</div>
                                                     </div>
                                                     <div>
-                                                        <span className="!text-white/20 font-black uppercase tracking-widest">Last Tactical Move</span>
+                                                        <span className="text-white/20 font-black uppercase tracking-widest">Last Tactical Move</span>
                                                         <div className="text-indigo-400 font-bold leading-tight">{entry.lastMove || 'Routine Positioning'}</div>
                                                     </div>
                                                 </div>

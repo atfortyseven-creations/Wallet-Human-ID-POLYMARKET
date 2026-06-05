@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from 'react';
 import { motion } from 'framer-motion';
@@ -46,7 +46,7 @@ export default function WhaleVerificationReport({
             </div>
             <button 
                 onClick={onClose}
-                className="absolute top-6 right-6 p-2 bg-black/40 hover:bg-white/10 rounded-full !text-white transition-all"
+                className="absolute top-6 right-6 p-2 bg-black/40 hover:bg-white/10 rounded-full text-white transition-all"
             >
                 <X size={20} />
             </button>
@@ -56,12 +56,12 @@ export default function WhaleVerificationReport({
             {/* Main Identity Section */}
             <div className="flex justify-between items-start">
                 <div>
-                    <h3 className="text-4xl font-black !text-white tracking-tighter mb-1">{label}</h3>
+                    <h3 className="text-4xl font-black text-white tracking-tighter mb-1">{label}</h3>
                     <p className="text-sm font-mono text-gray-500">{address}</p>
                 </div>
                 <div className="text-right">
                     <div className="text-xs font-bold text-gray-500 uppercase mb-1">Status Institucional</div>
-                    <div className="px-4 py-1.5 bg-blue-600 !text-white rounded-full text-sm font-black uppercase shadow-lg shadow-blue-900/40">
+                    <div className="px-4 py-1.5 bg-blue-600 text-white rounded-full text-sm font-black uppercase shadow-lg shadow-blue-900/40">
                         {category}
                     </div>
                 </div>
@@ -74,7 +74,7 @@ export default function WhaleVerificationReport({
                         <Zap size={20} />
                         <span className="text-xs font-bold uppercase tracking-widest">Influence Score</span>
                     </div>
-                    <div className="text-4xl font-black !text-white">{influenceScore}<span className="text-lg text-gray-500 ml-1">/100</span></div>
+                    <div className="text-4xl font-black text-white">{influenceScore}<span className="text-lg text-gray-500 ml-1">/100</span></div>
                     <div className="w-full h-1.5 bg-white/10 rounded-full mt-4 overflow-hidden">
                         <motion.div 
                             initial={{ width: 0 }}
@@ -89,7 +89,7 @@ export default function WhaleVerificationReport({
                         <Waves size={20} />
                         <span className="text-xs font-bold uppercase tracking-widest">Net Worth</span>
                     </div>
-                    <div className="text-4xl font-black !text-white">
+                    <div className="text-4xl font-black text-white">
                         ${totalValue >= 1e6 ? safeToFixed(totalValue / 1e6, 2) + 'M' : safeToFixed(totalValue / 1e3, 1) + 'K'}
                     </div>
                     <div className="text-xs font-bold text-gray-500 mt-4 uppercase tracking-tighter">Real On-Chain Liquidity</div>
@@ -128,7 +128,7 @@ export default function WhaleVerificationReport({
                                      signal.type === 'positive' ? <Fingerprint size={14} /> : <Activity size={14} />}
                                 </div>
                                 <div>
-                                    <div className="text-xs font-bold !text-white uppercase">{signal.title}</div>
+                                    <div className="text-xs font-bold text-white uppercase">{signal.title}</div>
                                     <div className="text-[10px] text-gray-400 leading-tight mt-1">{signal.reasoning}</div>
                                 </div>
                             </div>

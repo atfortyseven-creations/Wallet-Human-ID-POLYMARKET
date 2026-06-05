@@ -55,7 +55,7 @@ export default function WhaleChatPINGate({ onEnter }: Props) {
           <p className="text-[14px] text-black/50 font-medium">Please connect a wallet to access Whale Chat.</p>
           <button
             onClick={() => open()}
-            className="mt-4 px-8 py-3.5 rounded-[18px] bg-[#050505] !text-white font-black tracking-widest text-[12px] uppercase shadow-lg hover:bg-[#111] transition-all"
+            className="mt-4 px-8 py-3.5 rounded-[18px] bg-[#050505] text-white font-black tracking-widest text-[12px] uppercase shadow-lg hover:bg-[#111] transition-all"
           >
             Connect Wallet
           </button>

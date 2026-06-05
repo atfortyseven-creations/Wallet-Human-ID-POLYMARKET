@@ -113,7 +113,7 @@ function AssetRow({ rank, symbol, data, pctKey, currency, eurRate, dominance, on
                     symbol={ticker}
                     logoURI={logoPath}
                     className="w-9 h-9 rounded-full shadow-sm shrink-0"
-                    fallbackClassName="w-9 h-9 rounded-full text-[11px] font-black !text-white shrink-0 shadow-sm"
+                    fallbackClassName="w-9 h-9 rounded-full text-[11px] font-black text-white shrink-0 shadow-sm"
                 />
                 <div>
                     <div className="flex items-center gap-1.5">
@@ -319,7 +319,7 @@ export function GainersLosersPanel() {
                                             symbol={ticker}
                                             logoURI={logoPath}
                                             className="w-8 h-8 rounded-full shadow-sm shrink-0"
-                                            fallbackClassName="w-8 h-8 rounded-full text-[10px] font-black !text-white bg-black shrink-0 shadow-sm"
+                                            fallbackClassName="w-8 h-8 rounded-full text-[10px] font-black text-white bg-black shrink-0 shadow-sm"
                                         />
                                         <div className="flex flex-col justify-center">
                                             <div className="text-[12px] font-black text-slate-900 leading-none mb-1">{ticker}</div>
@@ -359,7 +359,7 @@ export function GainersLosersPanel() {
                                             symbol={ticker}
                                             logoURI={logoPath}
                                             className="w-8 h-8 rounded-full shadow-sm shrink-0"
-                                            fallbackClassName="w-8 h-8 rounded-full text-[10px] font-black !text-white bg-black shrink-0 shadow-sm"
+                                            fallbackClassName="w-8 h-8 rounded-full text-[10px] font-black text-white bg-black shrink-0 shadow-sm"
                                         />
                                         <div className="flex flex-col justify-center">
                                             <div className="text-[12px] font-black text-slate-900 leading-none mb-1">{ticker}</div>
@@ -398,7 +398,7 @@ export function GainersLosersPanel() {
                     <div className="flex gap-1.5">
                         {(['1h', '24h', '7d'] as TimeWindow[]).map(w => (
                             <button key={w} onClick={() => setTimeWindow(w)}
-                                className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border transition-all ${timeWindow === w ? 'bg-slate-900 !text-white border-slate-900' : 'text-slate-400 border-slate-200 hover:border-slate-300 bg-white/50'}`}>
+                                className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border transition-all ${timeWindow === w ? 'bg-slate-900 text-white border-slate-900' : 'text-slate-400 border-slate-200 hover:border-slate-300 bg-white/50'}`}>
                                 {w}
                             </button>
                         ))}

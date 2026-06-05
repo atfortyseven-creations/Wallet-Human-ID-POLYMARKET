@@ -37,7 +37,7 @@ export function SystemProfileModal({
            className="bg-[#FFFFFF] w-full max-w-4xl shadow-2xl overflow-hidden border border-black/20 flex flex-col h-[85vh] max-h-[800px]"
         >
           {/* Header */}
-          <div className="bg-black !!text-white p-5 flex justify-between items-center">
+          <div className="bg-black text-white p-5 flex justify-between items-center">
              <div className="flex items-center gap-4">
                 <div className="w-10 h-10 bg-white/10 flex items-center justify-center border border-white/20">
                    <Shield size={18}/>
@@ -47,7 +47,7 @@ export function SystemProfileModal({
                    <span className="font-mono text-[9px] text-[#FFFFFF]/50 break-all">{walletAddress || "OFFLINE_MODE"}</span>
                 </div>
              </div>
-             <button onClick={onClose} className="p-2 hover:bg-white/10 transition-colors !text-white/50 hover:!text-white">
+             <button onClick={onClose} className="p-2 hover:bg-white/10 transition-colors text-white/50 hover:text-white">
                <X size={20}/>
              </button>
           </div>
@@ -127,7 +127,7 @@ export function SystemProfileModal({
                           <h3 className="font-serif text-2xl font-bold uppercase tracking-tight">Registro Forense</h3>
                           <p className="font-mono text-[10px] text-black/50 mt-1">Moodle-Layer Telemetry Grid</p>
                        </div>
-                       <button className="px-4 py-2 border border-black text-black font-mono text-[9px] uppercase font-bold hover:bg-black hover:!text-white transition-colors">
+                       <button className="px-4 py-2 border border-black text-black font-mono text-[9px] uppercase font-bold hover:bg-black hover:text-white transition-colors">
                           Export CSV
                        </button>
                     </div>
@@ -172,7 +172,7 @@ export function SystemProfileModal({
                             <Terminal size={14}/>
                          </div>
                          <input type="text" placeholder="Transmitir mensaje al mentor..." className="flex-1 px-4 text-[10px] font-mono border border-black/10 outline-none focus:border-black" />
-                         <button className="px-6 bg-black !!text-white font-mono text-[10px] uppercase font-bold hover:bg-neutral-800">Enviar</button>
+                         <button className="px-6 bg-black text-white font-mono text-[10px] uppercase font-bold hover:bg-neutral-800">Enviar</button>
                     </div>
                 </div>
              )}

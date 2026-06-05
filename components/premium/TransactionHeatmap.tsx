@@ -59,7 +59,7 @@ export const TransactionHeatmap: React.FC<TransactionHeatmapProps> = ({ data }) 
                     </div>
                 ))}
             </div>
-            <div className="mt-2 flex items-center justify-between text-[10px] !text-white/40 uppercase tracking-widest">
+            <div className="mt-2 flex items-center justify-between text-[10px] text-white/40 uppercase tracking-widest">
                 <span>1 Year History</span>
                 <div className="flex gap-1 items-center">
                     <span>Less</span>

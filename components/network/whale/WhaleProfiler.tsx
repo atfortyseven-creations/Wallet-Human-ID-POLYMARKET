@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -158,7 +158,7 @@ export function WhaleProfiler({ address, onClose }: Props) {
                                 <div className="flex items-center gap-2">
                                     <button 
                                         onClick={() => setShowChart(!showChart)} 
-                                        className={`p-2 rounded-xl border transition-all ${showChart ? 'bg-slate-950 !text-white border-slate-950 shadow-lg scale-105' : 'bg-black/5 text-slate-400 border-slate-100'}`}
+                                        className={`p-2 rounded-xl border transition-all ${showChart ? 'bg-slate-950 text-white border-slate-950 shadow-lg scale-105' : 'bg-black/5 text-slate-400 border-slate-100'}`}
                                     >
                                         <BarChart3 size={18} />
                                     </button>
@@ -178,7 +178,7 @@ export function WhaleProfiler({ address, onClose }: Props) {
 
                                 {isError && (
                                     <div className="flex flex-col items-center justify-center h-48 gap-2 text-slate-400">
-                                        <span className="text-2xl opacity-50">?</span>
+                                        <span className="text-2xl opacity-50">️</span>
                                         <p className="text-[10px] font-black uppercase tracking-widest">Incomplete Telemetry</p>
                                     </div>
                                 )}
@@ -260,7 +260,7 @@ export function WhaleProfiler({ address, onClose }: Props) {
                                                         <motion.div variants={rowVariant} className="p-6 bg-slate-950 rounded-[2.5rem] space-y-3 shadow-xl">
                                                             <div className="flex items-center gap-2">
                                                                 <Fingerprint size={16} className="text-slate-300" />
-                                                                <span className="!text-white font-black text-xs uppercase tracking-widest">Forensic Report</span>
+                                                                <span className="text-white font-black text-xs uppercase tracking-widest">Forensic Report</span>
                                                             </div>
                                                             <p className="text-[11px] text-slate-400 leading-relaxed font-medium italic">{data.forensics.summary}</p>
                                                         </motion.div>
@@ -274,7 +274,7 @@ export function WhaleProfiler({ address, onClose }: Props) {
                                                                 <div className="flex items-center justify-between relative z-10">
                                                                     <div className="flex items-center gap-2">
                                                                         <ShieldCheck size={18} className="text-indigo-400" />
-                                                                        <span className="!text-white font-black text-xs uppercase tracking-[0.2em]">Alpha Forensic Scan</span>
+                                                                        <span className="text-white font-black text-xs uppercase tracking-[0.2em]">Alpha Forensic Scan</span>
                                                                     </div>
                                                                     <div className="px-2 py-0.5 rounded bg-indigo-500/30 border border-indigo-500/50 text-[8px] font-black text-indigo-200 uppercase animate-pulse">
                                                                         Active AI Inference
@@ -284,7 +284,7 @@ export function WhaleProfiler({ address, onClose }: Props) {
                                                                 <div className="grid grid-cols-3 gap-4 relative z-10">
                                                                     <div className="space-y-1">
                                                                         <span className="text-[8px] font-black text-indigo-300/50 uppercase tracking-widest">Risk Score</span>
-                                                                        <div className="text-xl font-mono font-black !text-white">{kytScore}/100</div>
+                                                                        <div className="text-xl font-mono font-black text-white">{kytScore}/100</div>
                                                                     </div>
                                                                     <div className="space-y-1">
                                                                         <span className="text-[8px] font-black text-indigo-300/50 uppercase tracking-widest">Entity Class</span>
@@ -300,7 +300,7 @@ export function WhaleProfiler({ address, onClose }: Props) {
                                                                     <div className="flex items-center gap-2 mb-2 text-[9px] font-black text-indigo-400 uppercase tracking-widest">
                                                                         <Radar size={12} /> Behavioral Anomalies
                                                                     </div>
-                                                                    <p className="text-[10px] !text-white/60 leading-relaxed italic">
+                                                                    <p className="text-[10px] text-white/60 leading-relaxed italic">
                                                                         "Pattern recognition identifies {velocityLabel.toLowerCase()} with high temporal density ({temporalDensity}%). No mixer interaction detected in current hop."
                                                                     </p>
                                                                 </div>
@@ -334,7 +334,7 @@ export function WhaleProfiler({ address, onClose }: Props) {
                                                 href={data.is_evm ? `https://debank.com/profile/${address}` : `https://mempool.space/address/${address}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="flex items-center justify-center gap-3 w-full py-5 rounded-[2.5rem] bg-black/5 hover:bg-slate-950 border border-slate-100 text-slate-400 hover:!text-white text-[10px] font-black uppercase tracking-widest transition-all duration-500 shadow-sm"
+                                                className="flex items-center justify-center gap-3 w-full py-5 rounded-[2.5rem] bg-black/5 hover:bg-slate-950 border border-slate-100 text-slate-400 hover:text-white text-[10px] font-black uppercase tracking-widest transition-all duration-500 shadow-sm"
                                             >
                                                 <ExternalLink size={14} /> Explorer View
                                             </motion.a>

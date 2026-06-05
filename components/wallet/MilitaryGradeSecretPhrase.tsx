@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -105,7 +105,7 @@ Wallet: Whale Alert Network Terminal v4.0
             <div className="bg-indigo-500/10 border-2 border-indigo-500 rounded-2xl p-6 mb-8">
                 <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-indigo-500 rounded-full flex items-center justify-center flex-shrink-0">
-                        <AlertTriangle className="w-6 h-6 !text-white" />
+                        <AlertTriangle className="w-6 h-6 text-white" />
                     </div>
                     <div className="flex-1">
                         <h2 className="text-2xl font-black text-black mb-2 uppercase">SECURITY PROTOCOL - CRITICAL</h2>
@@ -172,7 +172,7 @@ Wallet: Whale Alert Network Terminal v4.0
                         <h3 className="text-2xl font-black text-[#050505]">Recovery Phrase</h3>
                         <button
                             onClick={() => setIsRevealed(!isRevealed)}
-                            className="flex items-center gap-2 px-4 py-2 bg-black !!text-white rounded-xl font-bold hover:bg-neutral-800 transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-xl font-bold hover:bg-neutral-800 transition-colors"
                         >
                             {isRevealed ? (
                                 <><EyeOff className="w-4 h-4" /> Hide</>
@@ -197,7 +197,7 @@ Wallet: Whale Alert Network Terminal v4.0
                     <div className="flex flex-wrap gap-3 mt-8">
                         <button
                             onClick={handleCopy}
-                            className="flex items-center gap-2 px-6 py-3 bg-black !!text-white rounded-xl font-bold hover:bg-neutral-800 transition-colors disabled:opacity-50"
+                            className="flex items-center gap-2 px-6 py-3 bg-black text-white rounded-xl font-bold hover:bg-neutral-800 transition-colors disabled:opacity-50"
                             disabled={!isRevealed}
                         >
                             {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
@@ -254,7 +254,7 @@ Wallet: Whale Alert Network Terminal v4.0
 
                     <button
                         onClick={handleVerification}
-                        className="mt-6 w-full px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 !text-white rounded-xl font-black text-lg hover:scale-105 active:scale-95 transition-transform"
+                        className="mt-6 w-full px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-black text-lg hover:scale-105 active:scale-95 transition-transform"
                     >
                         Verify and Confirm
                     </button>
@@ -268,7 +268,7 @@ Wallet: Whale Alert Network Terminal v4.0
                     className="bg-green-100 border-2 border-green-500 rounded-3xl p-8 text-center"
                 >
                     <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Check className="w-8 h-8 !text-white" />
+                        <Check className="w-8 h-8 text-white" />
                     </div>
                     <h3 className="text-2xl font-black text-green-900 mb-2">Phrase Verified!</h3>
                     <p className="text-green-700">
@@ -300,12 +300,12 @@ function StatCard({ icon, label, value, description, active }: {
 }) {
     return (
         <div className={`bg-black/40 backdrop-blur-sm border rounded-2xl p-6 text-center transition-all ${active ? 'border-[#00ff9d]/50 bg-[#00ff9d]/5' : 'border-white/10 hover:border-white/20'}`}>
-            <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 ${active ? 'bg-[#00ff9d]/10 text-[#00ff9d]' : 'bg-white/5 !text-white/50'}`}>
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 ${active ? 'bg-[#00ff9d]/10 text-[#00ff9d]' : 'bg-white/5 text-white/50'}`}>
                 {icon}
             </div>
-            <div className={`text-sm font-bold mb-1 ${active ? 'text-[#00ff9d]' : '!text-white/70'}`}>{label}</div>
-            <div className="text-2xl font-black !text-white">{value}</div>
-            <div className="text-xs !text-white/40">{description}</div>
+            <div className={`text-sm font-bold mb-1 ${active ? 'text-[#00ff9d]' : 'text-white/70'}`}>{label}</div>
+            <div className="text-2xl font-black text-white">{value}</div>
+            <div className="text-xs text-white/40">{description}</div>
         </div>
     );
 }

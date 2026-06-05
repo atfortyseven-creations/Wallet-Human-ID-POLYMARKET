@@ -21,8 +21,8 @@ const PerspectiveCard = ({ title, subtitle, color, rotate, zIndex, translate }: 
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
         
         <div className="relative z-10">
-             <h3 className="text-3xl font-black !text-white uppercase leading-none mb-3 drop-shadow-2xl tracking-tighter">{title}</h3>
-             <p className="!text-white/60 font-bold text-sm leading-tight uppercase tracking-widest">{subtitle}</p>
+             <h3 className="text-3xl font-black text-white uppercase leading-none mb-3 drop-shadow-2xl tracking-tighter">{title}</h3>
+             <p className="text-white/60 font-bold text-sm leading-tight uppercase tracking-widest">{subtitle}</p>
         </div>
     </motion.div>
 );
@@ -37,7 +37,7 @@ export function FeatureCardsSection() {
                 <motion.h3 
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    className="text-5xl md:text-8xl font-black !text-white tracking-tighter uppercase mb-4 drop-shadow-[0_0_50px_rgba(255,255,255,0.1)]"
+                    className="text-5xl md:text-8xl font-black text-white tracking-tighter uppercase mb-4 drop-shadow-[0_0_50px_rgba(255,255,255,0.1)]"
                 >
                     {t('features.welcome_to')}<br/>
                     <span className="text-blue-500">Whale Alert Network</span>

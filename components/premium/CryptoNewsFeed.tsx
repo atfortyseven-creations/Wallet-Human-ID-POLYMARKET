@@ -84,10 +84,10 @@ export default function CryptoNewsFeed({ isPremium, walletAddress, tokens = [] }
       {/* 1. HEADER */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black !text-white flex items-center gap-3">
+          <h1 className="text-3xl font-black text-white flex items-center gap-3">
             <Newspaper className="text-blue-500" />
             AI Crypto News
-            <span className="px-3 py-1 bg-gradient-to-r from-blue-500 to-cyan-500 !text-white text-xs rounded-full">PRO</span>
+            <span className="px-3 py-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-xs rounded-full">PRO</span>
           </h1>
           <p className="text-sm text-gray-400 mt-1">
             Real-time curated news with AI sentiment analysis
@@ -112,7 +112,7 @@ export default function CryptoNewsFeed({ isPremium, walletAddress, tokens = [] }
           <button
             onClick={fetchNews}
             disabled={loading}
-            className="px-4 py-2 bg-white/10 !text-white rounded-xl font-bold hover:bg-white/20 transition-all disabled:opacity-50 border border-white/5"
+            className="px-4 py-2 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-all disabled:opacity-50 border border-white/5"
           >
             Refresh Now
           </button>
@@ -142,7 +142,7 @@ export default function CryptoNewsFeed({ isPremium, walletAddress, tokens = [] }
             onClick={() => setFilter(f as any)}
             className={`px-4 py-2 rounded-xl font-bold transition-all capitalize ${
               filter === f
-                ? 'bg-blue-600 !text-white shadow-lg'
+                ? 'bg-blue-600 text-white shadow-lg'
                 : 'bg-white/5 text-gray-400 hover:bg-white/10'
             }`}
           >
@@ -215,7 +215,7 @@ function NewsCard({
           }}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
         />
-        <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded text-[10px] font-bold !text-white/70 z-20 uppercase tracking-widest border border-white/10">
+        <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded text-[10px] font-bold text-white/70 z-20 uppercase tracking-widest border border-white/10">
           HD Visual
         </div>
       </div>
@@ -230,7 +230,7 @@ function NewsCard({
       </div>
 
       {/* Title */}
-      <h3 className="font-black !text-white mb-2 line-clamp-2 group-hover:text-blue-400 transition-colors">
+      <h3 className="font-black text-white mb-2 line-clamp-2 group-hover:text-blue-400 transition-colors">
         {article.title}
       </h3>
 
