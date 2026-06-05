@@ -3,11 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Hexagon, Copy, Check, ExternalLink, Shield, Activity,
-  Zap, Lock, Terminal, RefreshCw, ChevronRight, Send, Download,
+  Copy, Check, ExternalLink, Shield, Activity,
+  Lock, Terminal, RefreshCw, ChevronRight, Send, Download,
   CheckCircle2, AlertCircle, Loader2, QrCode
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useQDsStore } from '../../lib/aztec/mockStore';
+import { LottiePlayer } from '../ui/LottiePlayer';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const AZTEC_ADDRESS  = '0x1c952fed9de9a283da0393cb9b9fb0c0443fc9128c549c1f9d659390323d1483';
@@ -17,7 +19,6 @@ const CLAIM_TX_BLOCK = 103861;
 const CLAIM_AMOUNT   = '100 FJ';
 const CLAIM_FEE      = '2.2694 FJ';
 const LAST_UPDATED   = '2026-06-05';
-const QDS_BALANCE    = 100;   // Guaranteed balance for every wallet
 
 // ─── Copy hook ────────────────────────────────────────────────────────────────
 function useCopy(value: string, label = '') {
@@ -47,6 +48,7 @@ function StatusBadge() {
 
 // ─── Send QDs panel ───────────────────────────────────────────────────────────
 function SendQDsPanel() {
+  const { balance, sendQDs } = useQDsStore();
   const [to, setTo]               = useState('');
   const [amount, setAmount]       = useState('');
   const [note, setNote]           = useState('');
@@ -54,13 +56,21 @@ function SendQDsPanel() {
   const [txHash, setTxHash]       = useState('');
   const [blockNum, setBlockNum]   = useState(0);
   const [toValid, setToValid]     = useState<boolean | null>(null);
+  const [lottieData, setLottieData] = useState<any>(null);
   const amountNum = parseFloat(amount || '0');
-  const amountOk  = amountNum > 0 && amountNum <= QDS_BALANCE;
+  const amountOk  = amountNum > 0 && amountNum <= balance;
   const formOk    = toValid === true && amountOk;
+
+  // Load Lottie animation dynamically (client-side only) to avoid webpack issues
+  useEffect(() => {
+    import('../../public/system-shots/Transaction Complete.json')
+      .then(m => setLottieData(m.default || m))
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (!to) { setToValid(null); return; }
-    // Accept any non-empty 0x... address (EVM or Aztec)
+    // Accept any non-empty 0x... address
     setToValid(to.startsWith('0x') && to.length >= 42);
   }, [to]);
 
@@ -77,6 +87,10 @@ function SendQDsPanel() {
       if (!res.ok) throw new Error(data.error || 'Transfer failed');
       setTxHash(data.txHash);
       setBlockNum(data.blockNumber || CLAIM_TX_BLOCK);
+      
+      // Save to UI state perfectly
+      sendQDs(amountNum, to, data.txHash);
+      
       setStep('done');
       toast.success(`${amount} QDs sent!`, { description: `Block #${data.blockNumber}` });
     } catch (e: any) {
@@ -88,6 +102,12 @@ function SendQDsPanel() {
   if (step === 'done') {
     return (
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+        {/* Lottie Animation at the top of the receipt */}
+        {lottieData && (
+          <div className="flex justify-center -mt-4 -mb-2">
+             <LottiePlayer animationData={lottieData} loop={false} width={120} height={120} speed={1.2} />
+          </div>
+        )}
         <div className="bg-emerald-50 border border-emerald-200 p-4 flex items-start gap-3">
           <div className="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
             <Check size={13} className="text-white" strokeWidth={3} />
@@ -126,7 +146,7 @@ function SendQDsPanel() {
       {/* Balance badge */}
       <div className="flex items-center justify-between bg-black/[0.02] border border-black/8 px-4 py-3">
         <span className="text-[9px] font-black uppercase tracking-widest text-black/40">Your Balance</span>
-        <span className="font-mono font-black text-sm text-emerald-600">{QDS_BALANCE} QDs</span>
+        <span className="font-mono font-black text-sm text-emerald-600">{balance} QDs</span>
       </div>
 
       {/* To field */}
@@ -152,7 +172,7 @@ function SendQDsPanel() {
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <label className="text-[9px] font-black uppercase tracking-widest text-black/40">Amount (QDs)</label>
-          <button onClick={() => setAmount(String(QDS_BALANCE))} className="text-[8px] font-black uppercase text-black/40 hover:text-black border border-black/10 px-2 py-0.5 transition-all">
+          <button onClick={() => setAmount(String(balance))} className="text-[8px] font-black uppercase text-black/40 hover:text-black border border-black/10 px-2 py-0.5 transition-all">
             MAX
           </button>
         </div>
@@ -170,22 +190,8 @@ function SendQDsPanel() {
           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-black/30 font-mono text-xs font-black">QDs</span>
         </div>
         {amount && !amountOk && (
-          <p className="text-[8px] text-red-500 font-mono">Max {QDS_BALANCE} QDs available.</p>
+          <p className="text-[8px] text-red-500 font-mono">Max {balance} QDs available.</p>
         )}
-      </div>
-
-      {/* Note */}
-      <div className="space-y-1.5">
-        <label className="text-[9px] font-black uppercase tracking-widest text-black/40">Note <span className="font-normal normal-case text-black/20">(optional)</span></label>
-        <input
-          type="text"
-          value={note}
-          onChange={e => setNote(e.target.value.slice(0, 64))}
-          placeholder="Payment, transfer..."
-          maxLength={64}
-          disabled={step === 'sending'}
-          className="w-full border border-black/10 px-4 py-3 text-[10px] text-black focus:outline-none disabled:opacity-50"
-        />
       </div>
 
       {/* CTA */}
@@ -199,7 +205,7 @@ function SendQDsPanel() {
         }}
       >
         {step === 'sending' ? (
-          <><Loader2 size={14} className="animate-spin" /> Sending...</>
+          <><Loader2 size={14} className="animate-spin" /> Transacting on Testnet...</>
         ) : (
           <><Send size={14} /> Send QDs</>
         )}
@@ -210,6 +216,7 @@ function SendQDsPanel() {
 
 // ─── Receive QDs panel ────────────────────────────────────────────────────────
 function ReceiveQDsPanel() {
+  const { balance } = useQDsStore();
   const { copied, copy } = useCopy(AZTEC_ADDRESS, 'Aztec address');
   return (
     <div className="space-y-5">
@@ -237,7 +244,7 @@ function ReceiveQDsPanel() {
         {[
           { label: 'Network',   value: 'Aztec Testnet' },
           { label: 'Token',     value: 'QDs (Quantum Dots)' },
-          { label: 'Balance',   value: `${QDS_BALANCE} QDs` },
+          { label: 'Balance',   value: `${balance} QDs` },
           { label: 'Standard',  value: 'Aztec Token (ZK Private)' },
         ].map(({ label, value }) => (
           <div key={label} className="flex items-center justify-between py-2 border-b border-black/5 last:border-0">
@@ -259,11 +266,59 @@ function ReceiveQDsPanel() {
   );
 }
 
+// ─── History Panel ────────────────────────────────────────────────────────────
+function HistoryPanel() {
+  const { history } = useQDsStore();
+  
+  if (history.length === 0) {
+    return (
+      <div className="py-10 text-center flex flex-col items-center">
+        <Activity size={24} className="text-black/10 mb-3" />
+        <div className="text-[10px] font-black uppercase tracking-widest text-black/40">No transactions yet</div>
+        <div className="text-[8px] text-black/30 mt-1">Your ledger is empty.</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+      {history.map(tx => (
+        <div key={tx.id} className="border border-black/10 bg-black/[0.015] p-3 flex items-center justify-between group">
+          <div className="flex items-center gap-3">
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${tx.type === 'send' ? 'bg-black/5' : 'bg-emerald-50'}`}>
+              {tx.type === 'send' ? <Send size={9} className="text-black/60" /> : <Download size={9} className="text-emerald-600" />}
+            </div>
+            <div>
+              <div className="text-[9px] font-black uppercase tracking-widest text-black/80 flex items-center gap-1.5">
+                {tx.type === 'send' ? 'Sent QDs' : 'Received QDs'}
+                <a href={`${AZTEC_EXPLORER}/tx-effects/${tx.txHash}`} target="_blank" rel="noopener noreferrer" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                   <ExternalLink size={9} className="text-black/40 hover:text-black" />
+                </a>
+              </div>
+              <div className="text-[8px] font-mono text-black/40 mt-0.5">{trunc(tx.address, 6, 4)}</div>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className={`text-[10px] font-black font-mono ${tx.type === 'send' ? 'text-black' : 'text-emerald-600'}`}>
+              {tx.type === 'send' ? '-' : '+'}{tx.amount}
+            </div>
+            <div className="text-[7px] text-black/30 uppercase tracking-widest mt-0.5">
+              {new Date(tx.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 export function AztecIdentityCard() {
+  const { balance } = useQDsStore();
   const { copied: addrCopied, copy: copyAddr } = useCopy(AZTEC_ADDRESS, 'Aztec address');
   const { copied: txCopied,   copy: copyTx }   = useCopy(CLAIM_TX_HASH, 'TX hash');
-  const [activeTab, setActiveTab]              = useState<'IDENTITY'|'SEND'|'RECEIVE'|'CLAIM'|'NODE'>('IDENTITY');
+  const [activeTab, setActiveTab]              = useState<'IDENTITY'|'SEND'|'RECEIVE'|'HISTORY'|'CLAIM'|'NODE'>('IDENTITY');
   const [checking, setChecking]                = useState(false);
 
   const pingNode = async () => {
@@ -277,6 +332,7 @@ export function AztecIdentityCard() {
     { id: 'IDENTITY' as const, label: 'Identity' },
     { id: 'SEND'     as const, label: 'Send' },
     { id: 'RECEIVE'  as const, label: 'Receive' },
+    { id: 'HISTORY'  as const, label: 'History' },
     { id: 'CLAIM'    as const, label: 'Claim' },
     { id: 'NODE'     as const, label: 'Node' },
   ];
@@ -292,10 +348,7 @@ export function AztecIdentityCard() {
       <div className="flex items-center justify-between px-6 py-4 border-b border-black/10 bg-black/[0.015]">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <Hexagon size={22} strokeWidth={1.2} className="text-black" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-1.5 h-1.5 bg-black rounded-full" />
-            </div>
+            <img src="/system-shots/aztec-logo.png" className="w-[22px] h-[22px] object-contain opacity-90 transition-transform" alt="Aztec" />
           </div>
           <div>
             <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-black leading-none">Aztec Identity</h3>
@@ -311,7 +364,7 @@ export function AztecIdentityCard() {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-black/10 overflow-x-auto">
+      <div className="flex border-b border-black/10 overflow-x-auto custom-scrollbar">
         {TABS.map(tab => (
           <button
             key={tab.id}
@@ -367,7 +420,7 @@ export function AztecIdentityCard() {
               <div className="border border-emerald-200 bg-emerald-50 p-4 flex items-center justify-between">
                 <div>
                   <div className="text-[8px] font-black uppercase tracking-widest text-emerald-600/70 mb-0.5">QDs Balance</div>
-                  <div className="text-2xl font-black font-mono text-emerald-700">{QDS_BALANCE}</div>
+                  <div className="text-2xl font-black font-mono text-emerald-700">{balance}</div>
                   <div className="text-[8px] text-emerald-600/60 uppercase tracking-widest">Quantum Dots · Aztec Testnet</div>
                 </div>
                 <div className="flex gap-2">
@@ -398,6 +451,9 @@ export function AztecIdentityCard() {
 
           {/* RECEIVE */}
           {activeTab === 'RECEIVE' && <ReceiveQDsPanel />}
+          
+          {/* HISTORY */}
+          {activeTab === 'HISTORY' && <HistoryPanel />}
 
           {/* CLAIM */}
           {activeTab === 'CLAIM' && (
@@ -453,7 +509,7 @@ export function AztecIdentityCard() {
 
               <details className="border border-black/10 group">
                 <summary className="flex items-center justify-between px-4 py-3 cursor-pointer text-[9px] font-black uppercase tracking-widest text-black/40 hover:text-black select-none list-none">
-                  <span className="flex items-center gap-1.5"><Zap size={9} /> How to claim again</span>
+                  <span className="flex items-center gap-1.5"><Check size={9} className="text-emerald-500" /> How to claim again</span>
                   <ChevronRight size={11} className="group-open:rotate-90 transition-transform" />
                 </summary>
                 <div className="px-4 pb-4 pt-2">
@@ -500,7 +556,7 @@ wsl bash claim-master.sh \\
               {/* Live status — always ONLINE */}
               <div className="border border-black/10 p-5 flex flex-col items-center gap-3">
                 <div className="w-12 h-12 rounded-full flex items-center justify-center bg-emerald-50 border border-emerald-200">
-                  <Activity size={18} className="text-emerald-500" />
+                  <Check size={18} strokeWidth={3} className="text-emerald-500" />
                 </div>
                 <div className="text-center">
                   <div className="text-[10px] font-black uppercase tracking-widest text-black/60">Node Online</div>

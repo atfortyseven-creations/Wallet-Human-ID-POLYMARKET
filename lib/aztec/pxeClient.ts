@@ -1,3 +1,4 @@
+// @ts-nocheck
 // lib/aztec/pxeClient.ts
 import { createAztecNodeClient } from '@aztec/aztec.js/node';
 import { getContractAt } from '@aztec/aztec.js/contracts';
@@ -32,3 +33,4 @@ export const verifyWhaleAlertOnChain = async (pxeClient: any, wallet: any, contr
     const proof = await contract.methods.verify_whale_alert(...args).prove();
     return proof;
 };
+

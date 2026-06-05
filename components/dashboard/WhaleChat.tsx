@@ -514,8 +514,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             try {
               let finalMsg = msg;
               if (typeof msg !== 'string') {
-                  const hex = Array.from(msg as Uint8Array).map(b => b.toString(16).padStart(2, '0')).join('');
-                  finalMsg = { raw: ('0x' + hex) as any };
+                  const hex = Array.from(msg as Uint8Array).map((b: number) => b.toString(16).padStart(2, '0')).join('');
+                  finalMsg = ('0x' + hex) as any;
               }
               return await signMessageAsync({ message: finalMsg as any });
             } catch (sigErr: any) {

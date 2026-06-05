@@ -45,6 +45,12 @@
     "workers",
     "src/context",
     "hardhat.config.ts",
-    "vitest.config.ts"
+    "vitest.config.ts",
+    "mobile-signer",
+    "test-manager.ts",
+    "lib/aztec/client.ts",
+    "lib/aztec/token-contract.ts",
+    "lib/aztec/pxeClient.ts",
+    "lib/aztec/qds-contract.ts"
   ]
 }

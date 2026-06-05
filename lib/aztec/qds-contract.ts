@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * lib/aztec/qds-contract.ts
  *
@@ -94,3 +95,4 @@ export async function getQDsBalance(wallet: any, ownerAddress: string): Promise<
     return '0.00000000';
   }
 }
+

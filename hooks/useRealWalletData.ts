@@ -220,8 +220,7 @@ export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?:
             logoURI: "",
             chainId: currentChainId, // Match current chain to always display
             network: "Aztec ZK",
-            change24h: 0,
-            isOwned: true
+            change24h: 0
         });
     }
 

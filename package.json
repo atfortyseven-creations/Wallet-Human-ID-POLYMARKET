@@ -96,6 +96,7 @@
     "@libp2p/tcp": "^11.0.15",
     "@libp2p/webrtc": "^6.0.16",
     "@libp2p/websockets": "^10.1.8",
+    "@lottiefiles/dotlottie-react": "^0.19.4",
     "@lottiefiles/dotlottie-web": "^0.61.0",
     "@metamask/sdk": "^0.34.0",
     "@noble/curves": "^1.9.7",
