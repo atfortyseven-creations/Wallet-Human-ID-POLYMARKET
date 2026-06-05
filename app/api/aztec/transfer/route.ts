@@ -79,7 +79,7 @@ export async function POST(req: Request) {
         _sum: { amount: true }
       })
     ]);
-    const genesisAmount = 100;
+    const genesisAmount = 0;
     const trueBalance = genesisAmount + (receivedAgg._sum.amount || 0) - (sentAgg._sum.amount || 0);
 
     if (parsedAmount > trueBalance) {

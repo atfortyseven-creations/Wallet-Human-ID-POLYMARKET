@@ -35,7 +35,7 @@ export async function GET(req: Request) {
       })
     ]);
 
-    const genesisAmount = 100; // Every unique wallet starts with 100 QDs Genesis
+    const genesisAmount = 0; // Genesis removed. Users must sign in Identity to get QDs.
     const received = receivedAgg._sum.amount || 0;
     const sent = sentAgg._sum.amount || 0;
     const trueBalance = genesisAmount + received - sent;

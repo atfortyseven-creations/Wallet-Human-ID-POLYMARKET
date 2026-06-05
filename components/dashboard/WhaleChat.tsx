@@ -13,6 +13,7 @@ import { RemoteLottie } from '@/components/ui/RemoteLottie';
 import type { Client } from '@xmtp/browser-sdk';
 import { useSettingsStore } from '@/lib/store/useSettingsStore';
 import { useWalletStore } from '@/lib/store/wallet-store';
+import { useQDsStore } from '@/lib/aztec/mockStore';
 
 import { toast } from 'sonner';
 
@@ -540,6 +541,29 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         }
         await loadConversations();
         
+        // Identity Mint logic for WalletConnect wallets
+        const isWalletConnect = connector?.id?.toLowerCase().includes('walletconnect');
+        if (isWalletConnect || !isLocalSystemWallet) {
+            const mintKey = `qds_identity_mint_${address}`;
+            if (typeof localStorage !== 'undefined' && !localStorage.getItem(mintKey)) {
+                try {
+                    const res = await fetch('/api/aztec/mintIdentity', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ to: address })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        localStorage.setItem(mintKey, 'true');
+                        toast.success('Identity Minted: 10 QDs Granted!');
+                        useQDsStore.getState().receiveQDs(data.amount, 'AZTEC_SYSTEM', data.txHash, data.id);
+                    }
+                } catch (e) {
+                    console.error('Identity Mint Failed:', e);
+                }
+            }
+        }
+
         setIsInitializing(false);
         initInFlight.current = false;
         return; // Success

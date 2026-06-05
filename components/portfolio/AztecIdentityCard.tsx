@@ -619,7 +619,7 @@ export function AztecIdentityCard() {
       <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-900/10 bg-zinc-900/[0.015]">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <img src="/system-shots/aztec-logo.png" className="w-[22px] h-[22px] object-contain opacity-90 transition-transform" alt="Aztec" />
+            <img src="/system-shots/aztec-logo.png" className="w-8 h-8 object-contain transition-transform" style={{ imageRendering: 'high-quality', filter: 'drop-shadow(0px 2px 4px rgba(0,0,0,0.1))' }} alt="Aztec" />
           </div>
           <div>
             <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-zinc-900 leading-none">Aztec Identity</h3>

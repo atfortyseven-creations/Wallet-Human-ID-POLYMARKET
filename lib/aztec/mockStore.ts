@@ -29,10 +29,10 @@ export const useQDsStore = create<QDsStore>()(
     (set) => ({
       seed: null,
       aztecAddress: null,
-      balance: 100, // Initial guaranteed balance
+      balance: 0, // Initial guaranteed balance
       history: [],
       login: (seed, address) => set({ seed, aztecAddress: address }),
-      logout: () => set({ seed: null, aztecAddress: null, history: [], balance: 100 }),
+      logout: () => set({ seed: null, aztecAddress: null, history: [], balance: 0 }),
       setBalance: (balance) => set({ balance }),
       setHistory: (history) => set({ history }),
       sendQDs: (amount, to, txHash, dbId, isSync) => set((state) => ({
@@ -67,7 +67,7 @@ export const useQDsStore = create<QDsStore>()(
           ...state.history
         ]
       })),
-      reset: () => set({ balance: 100, history: [] })
+      reset: () => set({ balance: 0, history: [] })
     }),
     {
       name: 'qds-storage',
