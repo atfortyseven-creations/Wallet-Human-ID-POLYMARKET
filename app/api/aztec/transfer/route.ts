@@ -12,6 +12,7 @@ import { prisma } from '@/lib/prisma';
  */
 
 const rateLimitMap = new Map<string, number>();
+const addressLockMap = new Set<string>(); // Mutex to prevent Double-Spend race conditions
 const RATE_LIMIT_MS = 10_000; // 10s between transfers per IP
 
 export const dynamic = 'force-dynamic';
@@ -49,14 +50,31 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'from, to, and amount are required' }, { status: 400 });
   }
 
+  // Cosmic strictness: Aztec accounts must be exactly 66 hex characters
+  const aztecRegex = /^0x[a-fA-F0-9]{64}$/;
+  if (!aztecRegex.test(from) || !aztecRegex.test(to)) {
+    return NextResponse.json({ error: 'Invalid Aztec address format (must be 0x + 64 hex chars)' }, { status: 400 });
+  }
+
+  const normalizedFrom = from.toLowerCase();
+  const normalizedTo = to.toLowerCase();
+
+  if (normalizedFrom === normalizedTo) {
+    return NextResponse.json({ error: 'Self-transfers are physically impossible on L3 Validium' }, { status: 400 });
+  }
+
   const parsedAmount = parseFloat(amount);
   if (isNaN(parsedAmount) || parsedAmount <= 0) {
     return NextResponse.json({ error: 'amount must be a positive number' }, { status: 400 });
   }
 
+  // ─── COSMIC MUTEX LOCK (Double-Spend Prevention) ─────────────────────
+  if (addressLockMap.has(normalizedFrom)) {
+    return NextResponse.json({ error: 'Concurrent transaction detected. Please wait.' }, { status: 409 });
+  }
+  addressLockMap.add(normalizedFrom);
+
   try {
-    const normalizedFrom = from.toLowerCase();
-    
     // ─── LEDGER SECURITY CHECK (Zero-Trust Validation) ───────────────────
     // We cannot trust the client's balance. Calculate absolute truth.
     const [receivedAgg, sentAgg] = await Promise.all([
@@ -134,5 +152,8 @@ export async function POST(req: Request) {
       { error: `Transfer failed: ${err.message}` },
       { status: 500 }
     );
+  } finally {
+    // ─── RELEASE COSMIC MUTEX LOCK ─────────────────────────────────────────
+    addressLockMap.delete(normalizedFrom);
   }
 }
