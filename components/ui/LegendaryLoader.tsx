@@ -36,7 +36,7 @@ export function LegendaryLoader({ title, subtitle }: LegendaryLoaderProps) {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="text-2xl md:text-4xl font-aztec-serif font-black text-white tracking-tighter uppercase mb-2 text-center"
+                    className="text-2xl md:text-4xl font-aztec-serif font-black !text-white tracking-tighter uppercase mb-2 text-center"
                 >
                     {title}
                 </motion.h2>

@@ -50,7 +50,7 @@ export const GeoBlocker = () => {
                         <span className="text-3xl"></span>
                     </div>
 
-                    <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">Access Restricted</h2>
+                    <h2 className="text-2xl font-bold !text-white mb-2 tracking-tight">Access Restricted</h2>
                     <p className="text-sm text-red-200/80 mb-8 font-mono leading-relaxed">
                         Protocol H-71 detects you are accessing from a Restricted Jurisdiction (USA/OFAC).
                         <br /><br />

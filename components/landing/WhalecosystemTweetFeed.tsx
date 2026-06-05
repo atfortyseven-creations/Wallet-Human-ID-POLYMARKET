@@ -47,7 +47,7 @@ export function WhalecosystemTweetFeed({
               <Twitter size={14} className="text-[#1d9bf0]" />
             </div>
             <div className="flex flex-col">
-              <span className={`text-[11px] font-black uppercase tracking-widest ${isDark ? 'text-white/80' : 'text-black/80'}`}>
+              <span className={`text-[11px] font-black uppercase tracking-widest ${isDark ? '!text-white/80' : 'text-black/80'}`}>
                 @humanityledger
               </span>
               {/* "Active Feed" text has been explicitly removed as requested */}
@@ -56,7 +56,7 @@ export function WhalecosystemTweetFeed({
           <div className="flex items-center gap-2">
             <button
               onClick={refreshFeed}
-              className={`p-1.5 rounded-lg border transition-colors ${isDark ? 'bg-white/5 hover:bg-white/10 border-white/10 text-white/40' : 'bg-black/5 hover:bg-black/10 border-black/10 text-black/40'}`}
+              className={`p-1.5 rounded-lg border transition-colors ${isDark ? 'bg-white/5 hover:bg-white/10 border-white/10 !text-white/40' : 'bg-black/5 hover:bg-black/10 border-black/10 text-black/40'}`}
               title="Refresh Feed"
             >
               <RefreshCw size={11} className="currentColor" />
@@ -65,7 +65,7 @@ export function WhalecosystemTweetFeed({
               href="https://twitter.com/humanityledger"
               target="_blank"
               rel="noopener noreferrer"
-              className={`p-1.5 rounded-lg border transition-all ${isDark ? 'bg-white/5 hover:bg-[#1d9bf0]/20 border-white/10 hover:border-[#1d9bf0]/30 text-white/40' : 'bg-black/5 hover:bg-[#1d9bf0]/10 border-black/10 hover:border-[#1d9bf0]/30 text-black/40'}`}
+              className={`p-1.5 rounded-lg border transition-all ${isDark ? 'bg-white/5 hover:bg-[#1d9bf0]/20 border-white/10 hover:border-[#1d9bf0]/30 !text-white/40' : 'bg-black/5 hover:bg-[#1d9bf0]/10 border-black/10 hover:border-[#1d9bf0]/30 text-black/40'}`}
               title="Open @humanityledger on X"
             >
               <ExternalLink size={11} className="hover:text-[#1d9bf0] currentColor" />

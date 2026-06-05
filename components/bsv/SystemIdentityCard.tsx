@@ -35,7 +35,7 @@ export const SystemIdentityCard = ({ handle = 'ceo@humanidfi.com' }: { handle?: 
             <div className="w-full h-48 bg-white/5 border border-white/10 rounded-[2.5rem] animate-pulse flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
                     <div className="w-10 h-10 bg-white/10 rounded-full animate-spin" />
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20">Resolving Identity...</span>
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em] !text-white/20">Resolving Identity...</span>
                 </div>
             </div>
         );
@@ -57,7 +57,7 @@ export const SystemIdentityCard = ({ handle = 'ceo@humanidfi.com' }: { handle?: 
                             <Shield className="text-[var(--aztec-chartreuse)]" size={28} />
                         </div>
                         <div>
-                            <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/40">KYC Profile</span>
+                            <span className="text-[9px] font-black uppercase tracking-[0.4em] !text-white/40">KYC Profile</span>
                             <h3 className="text-xl font-bold font-aztec-serif tracking-tight">{identity?.human_id || 'UNKNOWN'}</h3>
                         </div>
                     </div>
@@ -69,17 +69,17 @@ export const SystemIdentityCard = ({ handle = 'ceo@humanidfi.com' }: { handle?: 
 
                 <div className="space-y-4">
                     <div className="p-4 bg-white/[0.03] border border-white/5 rounded-2xl space-y-1 group-hover:bg-white/[0.05] transition-all">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-white/25">Handle / Paymail</label>
+                        <label className="text-[8px] font-black uppercase tracking-widest !text-white/25">Handle / Paymail</label>
                         <div className="flex items-center justify-between">
-                            <span className="text-sm font-aztec-mono font-medium text-white/80">{identity?.handle}</span>
-                            <Globe size={14} className="text-white/20" />
+                            <span className="text-sm font-aztec-mono font-medium !text-white/80">{identity?.handle}</span>
+                            <Globe size={14} className="!text-white/20" />
                         </div>
                     </div>
 
                     <div className="p-4 bg-white/[0.03] border border-white/5 rounded-2xl space-y-1">
-                        <label className="text-[8px] font-black uppercase tracking-widest text-white/25">Identity Address (PKI)</label>
+                        <label className="text-[8px] font-black uppercase tracking-widest !text-white/25">Identity Address (PKI)</label>
                         <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-aztec-mono text-white/40 break-all">{identity?.address}</span>
+                            <span className="text-[10px] font-aztec-mono !text-white/40 break-all">{identity?.address}</span>
                             <Zap size={14} className="text-indigo-500/30" />
                         </div>
                     </div>
@@ -88,13 +88,13 @@ export const SystemIdentityCard = ({ handle = 'ceo@humanidfi.com' }: { handle?: 
                 <div className="flex items-center justify-between pt-2">
                     <div className="flex items-center gap-3">
                         <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-white/30">Network Connected</span>
+                        <span className="text-[9px] font-black uppercase tracking-[0.2em] !text-white/30">Network Connected</span>
                     </div>
                     <button 
                         onClick={() => toast.info('Accessing Identity Protocol...')}
                         className="p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-all hover:translate-x-1"
                     >
-                        <ArrowRight size={16} className="text-white/40" />
+                        <ArrowRight size={16} className="!text-white/40" />
                     </button>
                 </div>
             </div>

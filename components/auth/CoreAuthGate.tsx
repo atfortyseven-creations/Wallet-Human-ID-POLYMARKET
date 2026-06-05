@@ -170,7 +170,7 @@ function LangSelector({ lang, setLang }: { lang: LangKey; setLang: (l: LangKey) 
           onClick={() => setLang(l)}
           className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition-all border ${
             lang === l
-              ? 'bg-[#050505] text-white border-[#050505]'
+              ? 'bg-[#050505] !text-white border-[#050505]'
               : 'bg-transparent text-black/40 border-black/10 hover:border-black/30 hover:text-black'
           }`}
         >
@@ -220,7 +220,7 @@ function SecureStepPanel({ t, onBack, onProceed }: { t: any; onBack: () => void;
       </div>
       <button
         onClick={onProceed}
-        className="w-full py-5 rounded-[20px] bg-[#050505] text-white font-black tracking-widest text-[14px] uppercase transition-all shadow-lg active:scale-[0.98]"
+        className="w-full py-5 rounded-[20px] bg-[#050505] !text-white font-black tracking-widest text-[14px] uppercase transition-all shadow-lg active:scale-[0.98]"
       >
         {t.reveal_btn}
       </button>
@@ -768,23 +768,23 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
               <button 
                 onClick={() => setStep('password')}
                 disabled={accounts.length >= 5}
-                className="group w-full flex items-center justify-between p-6 rounded-[24px] bg-[#050505] text-white hover:bg-[#111] transition-all shadow-[0_8px_30px_rgba(0,0,0,0.12)] active:scale-[0.98] border border-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="group w-full flex items-center justify-between p-6 rounded-[24px] bg-[#050505] !text-white hover:bg-[#111] transition-all shadow-[0_8px_30px_rgba(0,0,0,0.12)] active:scale-[0.98] border border-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <div className="flex items-center gap-5">
                   <div className="w-13 h-13 rounded-full bg-white/10 flex items-center justify-center border border-white/5 group-hover:scale-105 transition-transform p-3">
-                    <Wallet size={22} className="text-white" />
+                    <Wallet size={22} className="!text-white" />
                   </div>
                   <div className="text-left">
                     <div className="text-[16px] font-black uppercase tracking-widest flex items-center gap-2">
                        {t.create_vault}
                        {accounts.length > 0 && <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full">{accounts.length}/5</span>}
                     </div>
-                    <div className="text-[13px] text-white/50 font-medium mt-0.5 tracking-wide">
+                    <div className="text-[13px] !text-white/50 font-medium mt-0.5 tracking-wide">
                        {accounts.length >= 5 ? 'Maximum accounts reached' : t.create_vault_sub}
                     </div>
                   </div>
                 </div>
-                <ArrowRight size={20} className="text-white/40 group-hover:text-white transition-colors group-hover:translate-x-1" />
+                <ArrowRight size={20} className="!text-white/40 group-hover:!text-white transition-colors group-hover:translate-x-1" />
               </button>
 
               {hasKeystore && (
@@ -848,7 +848,7 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
                         onClick={() => setSelectedAccountId(acc.id)}
                         className={`w-full flex items-center justify-between p-3 rounded-[14px] transition-all ${
                           selectedAccountId === acc.id 
-                            ? 'bg-[#050505] text-white shadow-md' 
+                            ? 'bg-[#050505] !text-white shadow-md' 
                             : 'bg-transparent text-[#0A0A0A] hover:bg-black/5'
                         }`}
                       >
@@ -858,12 +858,12 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
                            </div>
                            <div className="text-left flex flex-col">
                               <span className="text-[13px] font-black uppercase tracking-wider">{acc.name}</span>
-                              <span className={`text-[11px] font-medium ${selectedAccountId === acc.id ? 'text-white/60' : 'text-[#0A0A0A]/40'}`}>
+                              <span className={`text-[11px] font-medium ${selectedAccountId === acc.id ? '!text-white/60' : 'text-[#0A0A0A]/40'}`}>
                                 {acc.address ? `${acc.address.slice(0, 6)}...${acc.address.slice(-4)}` : 'Encrypted Vault'}
                               </span>
                            </div>
                         </div>
-                        {selectedAccountId === acc.id && <Check size={16} className="text-white" />}
+                        {selectedAccountId === acc.id && <Check size={16} className="!text-white" />}
                       </button>
                     ))}
                   </div>
@@ -882,7 +882,7 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
               <button 
                 onClick={handleLogin}
                 disabled={!password}
-                className="w-full py-5 rounded-[20px] bg-[#050505] hover:bg-[#111] disabled:opacity-50 transition-all text-white font-black tracking-widest text-[14px] uppercase shadow-lg active:scale-[0.98]"
+                className="w-full py-5 rounded-[20px] bg-[#050505] hover:bg-[#111] disabled:opacity-50 transition-all !text-white font-black tracking-widest text-[14px] uppercase shadow-lg active:scale-[0.98]"
               >
                 {t.decrypt_btn}
               </button>
@@ -916,7 +916,7 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
                       setStep('home'); 
                     }
                     setShowResetConfirm(false); 
-                  }} className="flex-1 py-3.5 rounded-xl bg-red-500 text-white text-[13px] font-black uppercase tracking-widest hover:bg-red-600 transition-all shadow-md">{t.purge}</button>
+                  }} className="flex-1 py-3.5 rounded-xl bg-red-500 !text-white text-[13px] font-black uppercase tracking-widest hover:bg-red-600 transition-all shadow-md">{t.purge}</button>
                 </div>
               </motion.div>
             ) : (
@@ -967,7 +967,7 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
               <button
                 onClick={handleMnemonicRestore}
                 disabled={mnemonicInput.trim().split(/\s+/).length < 12 || password.length < 8}
-                className="w-full py-5 rounded-[20px] bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 transition-all text-white font-black tracking-widest text-[14px] uppercase shadow-lg active:scale-[0.98]"
+                className="w-full py-5 rounded-[20px] bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 transition-all !text-white font-black tracking-widest text-[14px] uppercase shadow-lg active:scale-[0.98]"
               >
                  Restaurar y Acceder
               </button>
@@ -999,7 +999,7 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
               <label className="flex items-start gap-4 p-5 border border-black/5 bg-[#FFFFFF] rounded-[22px] cursor-pointer hover:border-black/10 transition-colors mt-6 group">
                 <div className="pt-0.5">
                   <div className={`w-5 h-5 rounded flex items-center justify-center border transition-all ${termsAccepted ? 'bg-[#050505] border-[#050505]' : 'bg-white border-black/20 group-hover:border-black/40'}`}>
-                    {termsAccepted && <Check size={12} className="text-white" strokeWidth={3} />}
+                    {termsAccepted && <Check size={12} className="!text-white" strokeWidth={3} />}
                   </div>
                   <input type="checkbox" checked={termsAccepted} onChange={e => setTermsAccepted(e.target.checked)} className="sr-only" />
                 </div>
@@ -1009,7 +1009,7 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
               <button 
                 onClick={handleCreatePassword}
                 disabled={!termsAccepted || password.length < 8 || password !== confirmPassword}
-                className="w-full py-5 mt-2 rounded-[20px] bg-[#050505] text-white font-black tracking-widest text-[14px] uppercase disabled:opacity-40 disabled:scale-100 transition-all shadow-lg active:scale-[0.98]"
+                className="w-full py-5 mt-2 rounded-[20px] bg-[#050505] !text-white font-black tracking-widest text-[14px] uppercase disabled:opacity-40 disabled:scale-100 transition-all shadow-lg active:scale-[0.98]"
               >
                 {t.create_btn}
               </button>
@@ -1039,7 +1039,7 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
                   <p className="text-[13px] text-[#050505]/50 font-medium mb-6">{t.no_one}</p>
                   <button 
                     onClick={() => setRevealed(true)}
-                    className="px-8 py-4 rounded-[16px] bg-[#050505] text-white transition-all font-black text-[12px] uppercase tracking-widest active:scale-[0.96] shadow-md"
+                    className="px-8 py-4 rounded-[16px] bg-[#050505] !text-white transition-all font-black text-[12px] uppercase tracking-widest active:scale-[0.96] shadow-md"
                   >
                     {t.show_words}
                   </button>
@@ -1064,7 +1064,7 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
               <button 
                 onClick={() => setStep('verify')}
                 disabled={!revealed}
-                className="w-full px-10 py-4 rounded-[18px] bg-[#050505] text-white font-black tracking-widest text-[13px] uppercase disabled:opacity-40 transition-all shadow-md active:scale-[0.98]"
+                className="w-full px-10 py-4 rounded-[18px] bg-[#050505] !text-white font-black tracking-widest text-[13px] uppercase disabled:opacity-40 transition-all shadow-md active:scale-[0.98]"
               >
                 {t.proceed}
               </button>
@@ -1108,7 +1108,7 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
             <button 
               onClick={handleVerify}
               disabled={verifyInputs.some(v => v.length < 2)}
-              className="w-full py-5 mt-6 rounded-[20px] bg-[#050505] text-white font-black tracking-widest text-[14px] uppercase disabled:opacity-40 transition-all shadow-lg active:scale-[0.98]"
+              className="w-full py-5 mt-6 rounded-[20px] bg-[#050505] !text-white font-black tracking-widest text-[14px] uppercase disabled:opacity-40 transition-all shadow-lg active:scale-[0.98]"
             >
               {t.verify_btn}
             </button>

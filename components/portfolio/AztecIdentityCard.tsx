@@ -199,7 +199,7 @@ function BlockConfirmingAnimation({ amount, to, blockNum }: { amount: string; to
         </div>
         {/* Block number badge */}
         <div
-          className="absolute -top-2.5 -right-2.5 bg-black text-white text-[7px] font-black px-1.5 py-0.5 uppercase tracking-widest"
+          className="absolute -top-2.5 -right-2.5 bg-black !!text-white text-[7px] font-black px-1.5 py-0.5 uppercase tracking-widest"
           style={{ background: done ? '#16a34a' : '#000', transition: 'background 0.4s' }}
         >
           #{blockNum}
@@ -331,7 +331,7 @@ function SendQDsPanel() {
         )}
         <div className="bg-emerald-50 border border-emerald-200 p-4 flex items-start gap-3">
           <div className="w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
-            <Check size={13} className="text-white" strokeWidth={3} />
+            <Check size={13} className="!text-white" strokeWidth={3} />
           </div>
           <div>
             <div className="text-[10px] font-black uppercase tracking-widest text-emerald-700 mb-0.5">Transfer Complete</div>
@@ -484,7 +484,7 @@ function ReceiveQDsPanel() {
       <a
         href={`${AZTEC_EXPLORER}/accounts/${aztecAddress}`}
         target="_blank" rel="noopener noreferrer"
-        className="flex items-center justify-between w-full py-3 px-4 border border-black/10 hover:border-black hover:bg-black hover:text-white text-black/40 text-[9px] font-black uppercase tracking-widest transition-all group"
+        className="flex items-center justify-between w-full py-3 px-4 border border-black/10 hover:border-black hover:bg-black hover:!text-white text-black/40 text-[9px] font-black uppercase tracking-widest transition-all group"
       >
         <span>View on AztecScan</span>
         <ExternalLink size={11} className="group-hover:translate-x-0.5 transition-transform" />
@@ -572,7 +572,7 @@ export function AztecIdentityCard() {
         className="w-full border border-black/10 bg-white overflow-hidden p-8 flex flex-col items-center justify-center min-h-[300px]"
       >
         <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center mb-5">
-          <Lock size={20} className="text-white" />
+          <Lock size={20} className="!text-white" />
         </div>
         <h3 className="text-[12px] font-black uppercase tracking-[0.3em] text-black mb-2">Aztec PXE Login</h3>
         <p className="text-[9px] text-black/40 uppercase tracking-widest mb-6 text-center max-w-[250px]">
@@ -592,7 +592,7 @@ export function AztecIdentityCard() {
               const derived = deriveDeterministicAztecAddress(inputSeed.trim());
               login(inputSeed.trim(), derived);
             }}
-            className="w-full bg-black text-white py-3 font-black text-[10px] uppercase tracking-widest hover:bg-black/80 transition-all"
+            className="w-full bg-black !!text-white py-3 font-black text-[10px] uppercase tracking-widest hover:bg-black/80 transition-all"
           >
             Connect Wallet
           </button>
@@ -637,7 +637,7 @@ export function AztecIdentityCard() {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex-1 py-3 text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap px-2
-              ${activeTab === tab.id ? 'bg-black text-white' : 'text-black/30 hover:text-black hover:bg-black/5'}`}
+              ${activeTab === tab.id ? 'bg-black !!text-white' : 'text-black/30 hover:text-black hover:bg-black/5'}`}
           >
             {tab.label}
           </button>
@@ -692,11 +692,11 @@ export function AztecIdentityCard() {
                 </div>
                 <div className="flex gap-2">
                   <button onClick={() => setActiveTab('SEND')}
-                    className="flex items-center gap-1 px-3 py-2 bg-black text-white text-[9px] font-black uppercase tracking-widest hover:bg-black/80 transition-all">
-                    <Send size={10} /> Send
+                    className="flex items-center gap-1 px-3 py-2 bg-black !!text-white text-[9px] font-black uppercase tracking-widest hover:bg-black/80 transition-all">
+                    <Send size={10} className="!!text-white" /> Send
                   </button>
                   <button onClick={() => setActiveTab('RECEIVE')}
-                    className="flex items-center gap-1 px-3 py-2 border border-black text-[9px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all">
+                    className="flex items-center gap-1 px-3 py-2 border border-black text-[9px] font-black uppercase tracking-widest hover:bg-black hover:!text-white transition-all">
                     <Download size={10} /> Receive
                   </button>
                 </div>
@@ -705,7 +705,7 @@ export function AztecIdentityCard() {
               <a
                 href={`${AZTEC_EXPLORER}/accounts/${aztecAddress}`}
                 target="_blank" rel="noopener noreferrer"
-                className="flex items-center justify-between w-full py-3 px-4 border border-black/10 hover:border-black hover:bg-black hover:text-white text-black/40 text-[9px] font-black uppercase tracking-widest transition-all group"
+                className="flex items-center justify-between w-full py-3 px-4 border border-black/10 hover:border-black hover:bg-black hover:!text-white text-black/40 text-[9px] font-black uppercase tracking-widest transition-all group"
               >
                 <span>View on AztecScan</span>
                 <ExternalLink size={11} className="group-hover:translate-x-0.5 transition-transform" />
@@ -727,7 +727,7 @@ export function AztecIdentityCard() {
             <div className="space-y-5">
               <div className="bg-emerald-50 border border-emerald-200 p-4 flex items-start gap-3">
                 <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5">
-                  <Check size={12} className="text-white" strokeWidth={3} />
+                  <Check size={12} className="!text-white" strokeWidth={3} />
                 </div>
                 <div>
                   <div className="text-[10px] font-black uppercase tracking-widest text-emerald-700 mb-0.5">

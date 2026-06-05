@@ -362,7 +362,7 @@ export default function ChatInput({
           </div>
           <button
             onClick={stopRecording}
-            className="w-12 h-12 rounded-xl bg-black flex items-center justify-center text-white shadow"
+            className="w-12 h-12 rounded-xl bg-black flex items-center justify-center !text-white shadow"
           >
             <Square size={18} fill="white" />
           </button>
@@ -389,7 +389,7 @@ export default function ChatInput({
             title="Share Location"
             className={`w-[50px] h-[50px] rounded-2xl border transition-all flex items-center justify-center shrink-0 ${
               showLocationSelect
-                ? 'bg-black text-white border-black'
+                ? 'bg-black !!text-white border-black'
                 : 'bg-[#F5F5F5] border-black/[0.04] text-black/40 hover:text-black hover:bg-black/[0.06]'
             }`}
             disabled={isRetrievingLocation || disabled}
@@ -423,7 +423,7 @@ export default function ChatInput({
             <button
               onClick={handleSend}
               disabled={disabled}
-              className="w-[50px] h-[50px] rounded-2xl bg-black flex items-center justify-center text-white disabled:opacity-30 hover:bg-black/80 transition-all shrink-0 shadow-md"
+              className="w-[50px] h-[50px] rounded-2xl bg-black flex items-center justify-center !text-white disabled:opacity-30 hover:bg-black/80 transition-all shrink-0 shadow-md"
             >
               <Send size={18} className="ml-0.5" />
             </button>
@@ -459,7 +459,7 @@ export default function ChatInput({
                 }}
                 className={`px-3 py-1.5 rounded-lg font-mono text-[11px] border transition-all ${
                   preferredDuration === o.value
-                    ? 'bg-black text-white border-black'
+                    ? 'bg-black !!text-white border-black'
                     : 'bg-black/[0.03] border-black/8 text-black/50 hover:text-black hover:bg-black/[0.06]'
                 }`}
               >

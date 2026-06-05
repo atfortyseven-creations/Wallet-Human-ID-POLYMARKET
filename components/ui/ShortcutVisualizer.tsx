@@ -60,8 +60,8 @@ export function ShortcutVisualizer() {
                     <KeyTile label="W" active={keys.w} />
                     
                     <div className="ml-4 pl-4 border-l border-white/10 flex flex-col">
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">System Trigger</span>
-                        <span className="text-[11px] font-bold text-white tracking-tight">Generate Identity</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] !text-white/40">System Trigger</span>
+                        <span className="text-[11px] font-bold !text-white tracking-tight">Generate Identity</span>
                     </div>
                 </motion.div>
             )}

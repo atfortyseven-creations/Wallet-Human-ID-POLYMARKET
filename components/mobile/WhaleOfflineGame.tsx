@@ -276,7 +276,7 @@ export function WhaleOfflineGame({ visible, onBack }: { visible: boolean; onBack
         {backOnline && (
           <motion.button
             initial={{opacity:0,y:12}} animate={{opacity:1,y:0}}
-            className="mt-2 px-6 py-2.5 bg-emerald-500 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-xl pointer-events-auto active:scale-95 transition-transform"
+            className="mt-2 px-6 py-2.5 bg-emerald-500 !text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full shadow-xl pointer-events-auto active:scale-95 transition-transform"
             onClick={e => { e.stopPropagation(); onBack?.(); }}
           > Conexión Restaurada  Volver</motion.button>
         )}

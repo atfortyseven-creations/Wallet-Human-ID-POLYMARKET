@@ -37,7 +37,7 @@ export function WhaleTrackerTabs() {
                             href={tab.href}
                             className={cn(
                                 "relative px-4 py-4 text-xs tracking-wider uppercase font-medium transition-colors whitespace-nowrap",
-                                isActive ? "text-white" : "text-zinc-500 hover:text-white"
+                                isActive ? "!text-white" : "text-zinc-500 hover:!text-white"
                             )}
                         >
                             {tab.name}

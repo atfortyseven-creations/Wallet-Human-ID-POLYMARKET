@@ -174,7 +174,7 @@ export function ZKProofGrid() {
                 </div>
                 <div className="flex items-center gap-2 ml-2">
                     <Fingerprint className="w-4 h-4 text-indigo-400" />
-                    <span className="text-xs font-mono text-white/60 tracking-widest uppercase">ZK Identity Engine  proveIdentity.circom</span>
+                    <span className="text-xs font-mono !text-white/60 tracking-widest uppercase">ZK Identity Engine  proveIdentity.circom</span>
                 </div>
                 <div className="ml-auto flex items-center gap-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
@@ -187,17 +187,17 @@ export function ZKProofGrid() {
                 {/* LEFT: Inputs + Controls */}
                 <div className="p-6 flex flex-col gap-6">
                     <div>
-                        <label className="text-[10px] text-white/30 uppercase tracking-[0.2em] font-bold mb-3 block">
+                        <label className="text-[10px] !text-white/30 uppercase tracking-[0.2em] font-bold mb-3 block">
                             Private Inputs (never leaves your device)
                         </label>
                         <div className="space-y-3">
                             {/* Score */}
                             <div className="bg-[#0D1117] rounded-xl p-4 border border-white/[0.05]">
                                 <div className="flex justify-between items-center mb-2">
-                                    <span className="text-[10px] text-white/40 font-mono uppercase tracking-wider">
+                                    <span className="text-[10px] !text-white/40 font-mono uppercase tracking-wider">
                                         signal input <span className="text-indigo-400">score</span>
                                     </span>
-                                    <span className="text-sm font-black text-white font-mono">{score}</span>
+                                    <span className="text-sm font-black !text-white font-mono">{score}</span>
                                 </div>
                                 <input
                                     type="range" min={0} max={100} value={score}
@@ -206,18 +206,18 @@ export function ZKProofGrid() {
                                     className="w-full h-1.5 bg-white/10 rounded-full appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-500 [&::-webkit-slider-thumb]:cursor-pointer cursor-pointer"
                                 />
                                 <div className="flex justify-between mt-1">
-                                    <span className="text-[9px] text-white/20 font-mono">0 (Bot)</span>
-                                    <span className="text-[9px] text-white/20 font-mono">100 (System)</span>
+                                    <span className="text-[9px] !text-white/20 font-mono">0 (Bot)</span>
+                                    <span className="text-[9px] !text-white/20 font-mono">100 (System)</span>
                                 </div>
                             </div>
 
                             {/* Secret */}
                             <div className="bg-[#0D1117] rounded-xl p-4 border border-white/[0.05]">
                                 <div className="flex justify-between items-center mb-2">
-                                    <span className="text-[10px] text-white/40 font-mono uppercase tracking-wider">
+                                    <span className="text-[10px] !text-white/40 font-mono uppercase tracking-wider">
                                         signal input <span className="text-purple-400">secret</span>
                                     </span>
-                                    <button onClick={() => setShowSecret(!showSecret)} className="text-white/20 hover:text-white/60 transition-colors">
+                                    <button onClick={() => setShowSecret(!showSecret)} className="!text-white/20 hover:!text-white/60 transition-colors">
                                         {showSecret ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
                                     </button>
                                 </div>
@@ -226,7 +226,7 @@ export function ZKProofGrid() {
                                     value={secret}
                                     onChange={e => { setSecret(e.target.value); reset(); }}
                                     disabled={isProving}
-                                    className="w-full bg-transparent text-sm font-mono text-white/70 outline-none placeholder-white/20 border-none"
+                                    className="w-full bg-transparent text-sm font-mono !text-white/70 outline-none placeholder-white/20 border-none"
                                     placeholder="your_secret_salt..."
                                 />
                             </div>
@@ -235,16 +235,16 @@ export function ZKProofGrid() {
 
                     {/* Public Inputs */}
                     <div className="bg-[#0D1117] rounded-xl p-4 border border-white/[0.05]">
-                        <span className="text-[10px] text-white/30 uppercase tracking-[0.2em] font-bold mb-3 block">
+                        <span className="text-[10px] !text-white/30 uppercase tracking-[0.2em] font-bold mb-3 block">
                             Public Inputs (on-chain visible)
                         </span>
                         <div className="flex justify-between items-center">
-                            <span className="text-[10px] font-mono text-white/40">
+                            <span className="text-[10px] font-mono !text-white/40">
                                 signal input <span className="text-emerald-400">threshold</span>
                             </span>
                             <span className="font-black text-emerald-400 font-mono">{threshold}</span>
                         </div>
-                        <div className="mt-2 text-[10px] text-white/25 font-mono">
+                        <div className="mt-2 text-[10px] !text-white/25 font-mono">
                              circuit enforces: score &gt; threshold
                         </div>
                     </div>
@@ -274,12 +274,12 @@ export function ZKProofGrid() {
                         disabled={isProving}
                         className={`w-full py-4 rounded-2xl font-black uppercase tracking-[0.2em] text-sm transition-all duration-300 flex items-center justify-center gap-3 ${
                             isProving
-                                ? 'bg-white/5 text-white/30 cursor-not-allowed'
+                                ? 'bg-white/5 !text-white/30 cursor-not-allowed'
                                 : proofResult === 'success'
                                     ? 'bg-emerald-500 text-black hover:bg-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.4)]'
                                     : proofResult === 'failure'
                                         ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 hover:bg-indigo-500/30'
-                                        : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-[0_0_30px_rgba(99,102,241,0.3)]'
+                                        : 'bg-indigo-600 hover:bg-indigo-500 !text-white shadow-[0_0_30px_rgba(99,102,241,0.3)]'
                         }`}
                     >
                         {isProving
@@ -297,7 +297,7 @@ export function ZKProofGrid() {
                 <div className="p-6 flex flex-col gap-4">
                     {/* Steps */}
                     <div>
-                        <label className="text-[10px] text-white/30 uppercase tracking-[0.2em] font-bold mb-3 block">
+                        <label className="text-[10px] !text-white/30 uppercase tracking-[0.2em] font-bold mb-3 block">
                             Proof Pipeline
                         </label>
                         <div className="space-y-2">
@@ -323,14 +323,14 @@ export function ZKProofGrid() {
                                                 ? <Loader2 className="w-3 h-3 text-indigo-400 animate-spin" />
                                                 : step.status === 'done'
                                                     ? <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                                                    : <Icon className="w-3 h-3 text-white/20" />
+                                                    : <Icon className="w-3 h-3 !text-white/20" />
                                             }
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <div className={`text-[11px] font-bold ${
                                                 step.status === 'running' ? 'text-indigo-300' :
                                                 step.status === 'done' ? 'text-emerald-400' :
-                                                'text-white/40'
+                                                '!text-white/40'
                                             }`}>
                                                 {step.label}
                                             </div>
@@ -338,7 +338,7 @@ export function ZKProofGrid() {
                                                 <motion.div
                                                     initial={{ opacity: 0, height: 0 }}
                                                     animate={{ opacity: 1, height: 'auto' }}
-                                                    className="text-[9px] font-mono text-white/30 mt-0.5 truncate"
+                                                    className="text-[9px] font-mono !text-white/30 mt-0.5 truncate"
                                                 >
                                                     {step.output}
                                                 </motion.div>
@@ -371,7 +371,7 @@ export function ZKProofGrid() {
                                     <div className={`text-sm font-black ${proofResult === 'success' ? 'text-emerald-300' : 'text-red-300'}`}>
                                         {proofResult === 'success' ? 'IDENTITY VERIFIED  VIP APEX UNLOCKED' : 'PROOF REJECTED  ACCESS DENIED'}
                                     </div>
-                                    <div className="text-[10px] text-white/40 font-mono mt-0.5">
+                                    <div className="text-[10px] !text-white/40 font-mono mt-0.5">
                                         {proofResult === 'success'
                                             ? `isVerified=1 · nullifier committed · clearance: verified`
                                             : `isVerified=0 · score ${score} < threshold ${threshold}`
@@ -384,16 +384,16 @@ export function ZKProofGrid() {
 
                     {/* Terminal Log */}
                     <div className="flex-1 bg-[#0D1117] rounded-xl border border-white/[0.05] p-3 min-h-[140px] overflow-y-auto">
-                        <div className="text-[9px] text-white/20 font-mono uppercase tracking-widest mb-2">// SYSTEM LOG</div>
+                        <div className="text-[9px] !text-white/20 font-mono uppercase tracking-widest mb-2">// SYSTEM LOG</div>
                         {logs.length === 0 ? (
-                            <div className="text-[10px] text-white/15 font-mono">Awaiting proof generation...</div>
+                            <div className="text-[10px] !text-white/15 font-mono">Awaiting proof generation...</div>
                         ) : (
                             logs.map((log, i) => (
                                 <div key={i} className={`text-[9px] font-mono leading-relaxed ${
                                     log.includes('') || log.includes('') ? 'text-emerald-400/70' :
                                     log.includes('') || log.includes('') ? 'text-red-400/70' :
                                     log.includes('') ? 'text-indigo-300/60' :
-                                    'text-white/25'
+                                    '!text-white/25'
                                 }`}>
                                     {log}
                                 </div>
@@ -406,10 +406,10 @@ export function ZKProofGrid() {
 
             {/* Footer */}
             <div className="px-6 py-3 border-t border-white/[0.04] bg-[#0D1117] flex items-center justify-between">
-                <span className="text-[9px] font-mono text-white/20 uppercase tracking-widest">
+                <span className="text-[9px] font-mono !text-white/20 uppercase tracking-widest">
                     Circuit: IdentityCheck() · 2,048 constraints · PLONK proof system
                 </span>
-                <span className="text-[9px] font-mono text-white/20 uppercase tracking-widest">
+                <span className="text-[9px] font-mono !text-white/20 uppercase tracking-widest">
                     Score never transmitted · ZK System Privacy
                 </span>
             </div>

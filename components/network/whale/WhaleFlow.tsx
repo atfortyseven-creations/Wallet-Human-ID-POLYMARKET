@@ -82,7 +82,7 @@ export function WhaleFlow({ nodes, links }: Props) {
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <Waves className="text-blue-400" size={22} />
-                    <h2 className="text-white font-bold text-lg">Whale Flow</h2>
+                    <h2 className="!text-white font-bold text-lg">Whale Flow</h2>
                     <span className="text-[10px] font-black bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full border border-blue-500/30 ml-1">LIVE</span>
                 </div>
                 <span className="text-xs text-gray-600">BTC flow visualization</span>
@@ -190,7 +190,7 @@ export function WhaleFlow({ nodes, links }: Props) {
                                 />
                             </div>
                             <span className="text-gray-600 whitespace-nowrap w-32 truncate">{link.source}  {link.target}</span>
-                            <span className="text-white font-mono font-bold shrink-0">{link.value.toFixed(1)}</span>
+                            <span className="!text-white font-mono font-bold shrink-0">{link.value.toFixed(1)}</span>
                         </div>
                     ))}
                 </div>

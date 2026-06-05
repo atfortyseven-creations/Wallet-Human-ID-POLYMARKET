@@ -20,7 +20,7 @@ export function UnlockVaultScreen() {
     };
 
     return (
-        <div className="w-full h-screen bg-white text-black flex flex-col items-center justify-center p-6 selection:bg-black selection:text-white">
+        <div className="w-full h-screen bg-white text-black flex flex-col items-center justify-center p-6 selection:bg-black selection:!text-white">
             <motion.div 
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -48,7 +48,7 @@ export function UnlockVaultScreen() {
                     <button 
                         type="submit"
                         disabled={!password || loading}
-                        className="w-full bg-black text-white px-4 py-4 uppercase tracking-[0.2em] font-bold text-xs flex items-center justify-center gap-2 disabled:opacity-50 hover:bg-black/80 transition-colors"
+                        className="w-full bg-black !!text-white px-4 py-4 uppercase tracking-[0.2em] font-bold text-xs flex items-center justify-center gap-2 disabled:opacity-50 hover:bg-black/80 transition-colors"
                     >
                         {loading ? <Loader2 size={14} className="animate-spin" /> : <Fingerprint size={14} />}
                         Decrypt Vault

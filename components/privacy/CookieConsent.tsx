@@ -67,7 +67,7 @@ export function CookieConsent() {
                                 </button>
                                 <button
                                     onClick={handleAcceptAll}
-                                    className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-[11px] font-semibold transition-all duration-200 active:scale-[0.97] bg-black text-white   hover:opacity-90"
+                                    className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-[11px] font-semibold transition-all duration-200 active:scale-[0.97] bg-black !!text-white   hover:opacity-90"
                                 >
                                     Accept All
                                 </button>

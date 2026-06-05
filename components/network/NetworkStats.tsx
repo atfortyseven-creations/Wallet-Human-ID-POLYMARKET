@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useQuery } from '@tanstack/react-query';
 import { TrendingUp, Zap, Activity, BarChart3, Clock, Server } from 'lucide-react';
@@ -32,8 +32,8 @@ export function NetworkStats({ theme = 'default' }: { theme?: 'default' | 'arcti
     : "bg-white border border-slate-100 p-8 rounded-[2.5rem] shadow-sm relative overflow-hidden group hover:border-slate-200 transition-all duration-500";
   
   const iconBoxClass = isArctic
-    ? "p-2.5 bg-black/5 text-indigo-600 rounded-xl group-hover:bg-slate-950 group-hover:text-white transition-colors duration-500"
-    : "p-2.5 bg-black/5 text-slate-400 rounded-xl group-hover:bg-slate-950 group-hover:text-white transition-colors duration-500";
+    ? "p-2.5 bg-black/5 text-indigo-600 rounded-xl group-hover:bg-slate-950 group-hover:!text-white transition-colors duration-500"
+    : "p-2.5 bg-black/5 text-slate-400 rounded-xl group-hover:bg-slate-950 group-hover:!text-white transition-colors duration-500";
   const { data: prices, isLoading } = useQuery({
     queryKey: ['network', 'prices'],
     queryFn: async () => {

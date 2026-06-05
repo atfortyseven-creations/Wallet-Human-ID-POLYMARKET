@@ -86,7 +86,7 @@ export function LaunchCountdown() {
             </div>
 
             {/* 3. CONTENT AREA */}
-            <div className="relative z-20 w-full max-w-[2560px] mx-auto px-6 text-left text-white pt-60 pb-40">
+            <div className="relative z-20 w-full max-w-[2560px] mx-auto px-6 text-left !text-white pt-60 pb-40">
                 
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9, filter: 'blur(20px)' }}
@@ -105,7 +105,7 @@ export function LaunchCountdown() {
                         </span>
                     </h2>
 
-                    <p className="max-w-4xl mx-auto text-xl md:text-3xl text-white/40 leading-relaxed font-bold mb-24 px-4 tracking-tight">
+                    <p className="max-w-4xl mx-auto text-xl md:text-3xl !text-white/40 leading-relaxed font-bold mb-24 px-4 tracking-tight">
                         {t.countdown.description}
                     </p>
                 </motion.div>
@@ -145,10 +145,10 @@ function CountdownItem({ value, label }: { value: number, label: string }) {
             {/* Animated Glow behind timer */}
             <div className="absolute inset-0 bg-gradient-to-br from-[#00ff9d]/5 to-purple-500/5 rounded-[2.5rem] opacity-0 group-hover:opacity-100 transition-opacity" />
             
-            <div className="text-4xl md:text-7xl font-black tabular-nums tracking-tighter text-white z-10">
+            <div className="text-4xl md:text-7xl font-black tabular-nums tracking-tighter !text-white z-10">
                 {String(value).padStart(2, '0')}
             </div>
-            <div className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-white/30 z-10 mt-3 group-hover:text-[#00ff9d] transition-colors">
+            <div className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] !text-white/30 z-10 mt-3 group-hover:text-[#00ff9d] transition-colors">
                 {label}
             </div>
         </motion.div>

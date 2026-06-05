@@ -310,7 +310,7 @@ const MemoizedTransactionCard = React.memo(
     <div className="h-full p-4 bg-white/60 backdrop-blur-md rounded-3xl border border-white hover:bg-white/90 transition-all shadow-sm flex flex-col justify-between group">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-[#1F1F1F]/5 group-hover:bg-[#1F1F1F] group-hover:text-white transition-colors">
+          <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm border border-[#1F1F1F]/5 group-hover:bg-[#1F1F1F] group-hover:!text-white transition-colors">
             {getTypeIcon()}
           </div>
 

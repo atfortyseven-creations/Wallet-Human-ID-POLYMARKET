@@ -49,7 +49,7 @@ export default function NFTGallery({ nfts }: { nfts: NFT[] }) {
                 </div>
              )}
              
-             <div className="absolute top-3 right-3 px-2 py-1 bg-black/60 backdrop-blur-md rounded-lg text-[8px] font-black uppercase tracking-widest text-white">
+             <div className="absolute top-3 right-3 px-2 py-1 bg-black/60 backdrop-blur-md rounded-lg text-[8px] font-black uppercase tracking-widest !text-white">
                 {nft.type}
              </div>
            </div>

@@ -214,7 +214,7 @@ export function AuthModal({ onAuthenticated }: AuthModalProps) {
             >
                 {/* Header */}
                 <div className="pt-10 pb-2 px-10 text-center">
-                    <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-600 rounded-xl mb-4 text-white shadow-blue-200 shadow-lg">
+                    <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-600 rounded-xl mb-4 !text-white shadow-blue-200 shadow-lg">
                         <Lock size={24} strokeWidth={2.5} />
                     </div>
                     <h2 className="text-2xl font-bold tracking-tight text-neutral-900">
@@ -260,7 +260,7 @@ export function AuthModal({ onAuthenticated }: AuthModalProps) {
                                 <button 
                                     type="submit" 
                                     disabled={isLoading}
-                                    className="w-full bg-neutral-900 text-white font-bold py-4 rounded-xl hover:bg-neutral-800 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-xl shadow-neutral-200"
+                                    className="w-full bg-neutral-900 !text-white font-bold py-4 rounded-xl hover:bg-neutral-800 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-xl shadow-neutral-200"
                                 >
                                     {isLoading ? <Loader2 className="animate-spin" /> : "Continue"}
                                 </button>
@@ -315,7 +315,7 @@ export function AuthModal({ onAuthenticated }: AuthModalProps) {
                                 <button 
                                     type="submit" 
                                     disabled={isLoading || code.length < 6}
-                                    className="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-xl shadow-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="w-full bg-blue-600 !text-white font-bold py-4 rounded-xl hover:bg-blue-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-xl shadow-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {isLoading ? <Loader2 className="animate-spin" /> : "Verify"}
                                 </button>
@@ -402,7 +402,7 @@ export function AuthModal({ onAuthenticated }: AuthModalProps) {
                                 <button 
                                     type="submit" 
                                     disabled={isLoading}
-                                    className="w-full bg-neutral-900 text-white font-bold py-4 rounded-xl hover:bg-neutral-800 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-xl shadow-neutral-200 mt-2"
+                                    className="w-full bg-neutral-900 !text-white font-bold py-4 rounded-xl hover:bg-neutral-800 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-xl shadow-neutral-200 mt-2"
                                 >
                                     {isLoading ? <Loader2 className="animate-spin" /> : (isSignup ? "Complete Registration" : "Sign In")}
                                 </button>

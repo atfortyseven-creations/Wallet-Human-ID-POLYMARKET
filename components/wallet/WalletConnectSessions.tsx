@@ -41,7 +41,7 @@ export function WalletConnectSessions() {
                     </h3>
                     <p className="text-sm text-[#1F1F1F]/50">Monitoring real-time session parameters.</p>
                 </div>
-                <span className="px-3 py-1 bg-black text-white rounded-full text-xs font-bold border border-black/20 animate-pulse">
+                <span className="px-3 py-1 bg-black !!text-white rounded-full text-xs font-bold border border-black/20 animate-pulse">
                     LIVE
                 </span>
             </div>
@@ -78,13 +78,13 @@ export function WalletConnectSessions() {
                 </div>
 
                  {/* Address Info */}
-                 <div className="p-6 bg-[#1F1F1F] rounded-2xl shadow-xl text-white">
-                    <p className="text-xs font-bold text-white/40 uppercase mb-2">Connected Account</p>
+                 <div className="p-6 bg-[#1F1F1F] rounded-2xl shadow-xl !text-white">
+                    <p className="text-xs font-bold !text-white/40 uppercase mb-2">Connected Account</p>
                     <p className="font-mono text-lg md:text-xl break-all">{address}</p>
                     <div className="mt-4 pt-4 border-t border-white/10 flex justify-between items-center">
-                        <span className="text-xs text-white/40">{caipAddress || 'CAIP-10 Standard'}</span>
+                        <span className="text-xs !text-white/40">{caipAddress || 'CAIP-10 Standard'}</span>
                         <div className="flex items-center gap-2">
-                             <span className="text-xs font-bold text-white">Secure</span>
+                             <span className="text-xs font-bold !text-white">Secure</span>
                         </div>
                     </div>
                 </div>
@@ -98,7 +98,7 @@ export function WalletConnectSessions() {
 
                 <button 
                     onClick={handleDisconnect}
-                    className="w-full py-4 mt-2 bg-black hover:bg-black/80 text-white border border-black rounded-xl font-bold flex items-center justify-center gap-2 transition-all"
+                    className="w-full py-4 mt-2 bg-black hover:bg-black/80 !text-white border border-black rounded-xl font-bold flex items-center justify-center gap-2 transition-all"
                 >
                     Disconnect Session
                 </button>

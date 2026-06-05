@@ -55,17 +55,17 @@ export function ForumRadar() {
         </span>
         <div className="flex items-center gap-2">
            <span className="w-1.5 h-1.5 rounded-full bg-[#00f2ea] animate-pulse" />
-           <span className="text-[9px] font-mono uppercase text-white/40 tracking-widest">SYS_ONLINE</span>
+           <span className="text-[9px] font-mono uppercase !text-white/40 tracking-widest">SYS_ONLINE</span>
         </div>
       </div>
 
       <div className="flex flex-col gap-2 h-[140px] overflow-y-auto custom-scrollbar pr-2">
         {events.length === 0 ? (
-           <div className="text-[9px] font-mono text-white/30 uppercase">NO RECENT TELEMETRY DETECTED</div>
+           <div className="text-[9px] font-mono !text-white/30 uppercase">NO RECENT TELEMETRY DETECTED</div>
         ) : (
           events.map((ev, i) => (
             <div key={ev.id} className="flex items-start gap-3 py-1.5 border-b border-white/5 last:border-0" style={{ opacity: Math.max(1 - i * 0.1, 0.3) }}>
-              <span className="text-[9px] font-mono text-white/30 whitespace-nowrap pt-0.5">
+              <span className="text-[9px] font-mono !text-white/30 whitespace-nowrap pt-0.5">
                 {formatDistanceToNowStrict(new Date(ev.createdAt))} ago
               </span>
               <div className="flex flex-col">

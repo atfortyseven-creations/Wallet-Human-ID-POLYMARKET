@@ -55,7 +55,7 @@ export function LogMonitor() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-black/95 text-white/90 font-mono text-[10px] overflow-hidden border border-white/5 rounded-2xl shadow-2xl">
+    <div className="flex flex-col h-full bg-black/95 !text-white/90 font-mono text-[10px] overflow-hidden border border-white/5 rounded-2xl shadow-2xl">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/5 backdrop-blur-md">
         <div className="flex items-center gap-3">
@@ -90,8 +90,8 @@ export function LogMonitor() {
               className="group flex items-start gap-4 py-1.5 px-3 hover:bg-white/5 rounded-lg transition-colors border border-transparent hover:border-white/5"
             >
               <div className="flex items-center gap-2 shrink-0">
-                 <Clock size={10} className="text-white/20" />
-                 <span className="text-white/30 text-[9px]">
+                 <Clock size={10} className="!text-white/20" />
+                 <span className="!text-white/30 text-[9px]">
                    {new Date(log.createdAt).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                  </span>
               </div>
@@ -100,7 +100,7 @@ export function LogMonitor() {
                 {log.level}
               </div>
 
-              <div className="shrink-0 text-white/40 uppercase tracking-widest text-[9px] border-r border-white/10 pr-3 mr-1">
+              <div className="shrink-0 !text-white/40 uppercase tracking-widest text-[9px] border-r border-white/10 pr-3 mr-1">
                 {log.source}
               </div>
 

@@ -169,7 +169,7 @@ export function GenerateWalletWizard({ onComplete, onCancel }: GenerateWalletWiz
                 </p>
                 <button
                   onClick={generateIdentity}
-                  className="w-full h-14 bg-black text-white rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:opacity-90 active:scale-[0.98] transition-all"
+                  className="w-full h-14 bg-black !!text-white rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:opacity-90 active:scale-[0.98] transition-all"
                 >
                   <Zap size={16} /> Create Wallet
                 </button>
@@ -276,7 +276,7 @@ export function GenerateWalletWizard({ onComplete, onCancel }: GenerateWalletWiz
                 {/* Confirmation checkbox */}
                 <label className="flex items-start gap-3 cursor-pointer mb-6 p-4 bg-black/[0.03] rounded-2xl border border-black/5">
                   <div className={`w-5 h-5 rounded-md border-2 shrink-0 mt-0.5 flex items-center justify-center transition-colors ${saved ? 'bg-black border-black' : 'border-black/20 bg-white'}`}>
-                    {saved && <CheckCircle2 size={13} className="text-white" />}
+                    {saved && <CheckCircle2 size={13} className="!text-white" />}
                   </div>
                   <input type="checkbox" className="hidden" checked={saved} onChange={e => setSaved(e.target.checked)} />
                   <span className="text-xs font-bold text-black/70 leading-snug">I have securely backed up my Recovery Phrase and Private Key offline.</span>
@@ -285,7 +285,7 @@ export function GenerateWalletWizard({ onComplete, onCancel }: GenerateWalletWiz
                 <button
                   onClick={() => setStep(3)}
                   disabled={!saved}
-                  className="w-full h-14 bg-black text-white rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-full h-14 bg-black !!text-white rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   Continue to Security <MoveRight size={16} />
                 </button>
@@ -355,7 +355,7 @@ export function GenerateWalletWizard({ onComplete, onCancel }: GenerateWalletWiz
                 <button
                   onClick={handleSecureAndProceed}
                   disabled={password.length < 8 || password !== confirmPassword || isEncrypting}
-                  className="w-full h-14 bg-black text-white rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-full h-14 bg-black !!text-white rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   {isEncrypting
                     ? <><Lock size={15} className="animate-pulse" /> Encrypting...</>
@@ -381,7 +381,7 @@ export function GenerateWalletWizard({ onComplete, onCancel }: GenerateWalletWiz
 
                 <button
                   onClick={() => onComplete(wallet.privateKey, wallet.address)}
-                  className="w-full h-14 bg-black text-white rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:opacity-90 active:scale-[0.98] transition-all shadow-xl shadow-black/10"
+                  className="w-full h-14 bg-black !!text-white rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:opacity-90 active:scale-[0.98] transition-all shadow-xl shadow-black/10"
                 >
                   Enter Dashboard
                 </button>

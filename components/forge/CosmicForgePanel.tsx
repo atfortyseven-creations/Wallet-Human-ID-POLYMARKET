@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -64,7 +64,7 @@ export function CosmicForgePanel() {
           {/* Hive Energy Bar */}
           <div className="flex items-center gap-3 px-5 py-4 bg-white border border-black/10 rounded-2xl shadow-sm">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-              <Zap size={20} className="text-white" />
+              <Zap size={20} className="!text-white" />
             </div>
             <div>
               <p className="text-[9px] font-black uppercase tracking-[0.2em] text-black/40">Hive Energy</p>
@@ -87,7 +87,7 @@ export function CosmicForgePanel() {
               <span className="text-[10px] text-yellow-800 font-mono uppercase font-black tracking-widest">Dev Mode: Event Simulator</span>
               <button onClick={() => {
                 fetch('/api/forge/entities', { method: 'POST' });
-              }} className="px-4 py-2 bg-black text-white text-[10px] uppercase font-black tracking-widest rounded-lg">
+              }} className="px-4 py-2 bg-black !!text-white text-[10px] uppercase font-black tracking-widest rounded-lg">
                 Invoke Dummy Seed
               </button>
            </div>

@@ -47,9 +47,9 @@ function KPICard({ icon, label, value, sub, color, delay = 0 }: KPICardProps) {
             {icon}
           </div>
         </div>
-        <div className="text-[10px] font-black text-white/30 uppercase tracking-[0.25em] mb-2">{label}</div>
-        <div className="text-2xl font-black font-mono text-white tracking-tight">{value}</div>
-        {sub && <div className="text-[9px] text-white/20 font-mono uppercase tracking-widest mt-1">{sub}</div>}
+        <div className="text-[10px] font-black !text-white/30 uppercase tracking-[0.25em] mb-2">{label}</div>
+        <div className="text-2xl font-black font-mono !text-white tracking-tight">{value}</div>
+        {sub && <div className="text-[9px] !text-white/20 font-mono uppercase tracking-widest mt-1">{sub}</div>}
       </Card>
     </motion.div>
   );
@@ -74,7 +74,7 @@ export function OnChainFlowPanel() {
     if (!active || !payload?.length) return null;
     return (
       <div className="bg-black/90 backdrop-blur-xl border border-white/10 rounded-xl p-3">
-        <div className="text-[10px] text-white/40 font-mono uppercase mb-1">
+        <div className="text-[10px] !text-white/40 font-mono uppercase mb-1">
           {new Date(label).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
         </div>
         <div className="text-lg font-black font-mono text-indigo-400">
@@ -141,7 +141,7 @@ export function OnChainFlowPanel() {
       {/* Supply utilization bar */}
       <Card className="bg-[#0a0a0a]/60 backdrop-blur-xl border border-white/5 p-6">
         <div className="flex items-center justify-between mb-4">
-          <div className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em] flex items-center gap-2">
+          <div className="text-[11px] font-black !text-white/40 uppercase tracking-[0.3em] flex items-center gap-2">
             <Bitcoin size={12} className="text-orange-400" />
             Bitcoin Supply Issuance
           </div>
@@ -156,7 +156,7 @@ export function OnChainFlowPanel() {
             style={{ boxShadow: '0 0 20px rgba(251,146,60,0.4)' }}
           />
         </div>
-        <div className="flex justify-between mt-2 text-[9px] font-mono text-white/20 uppercase tracking-wider">
+        <div className="flex justify-between mt-2 text-[9px] font-mono !text-white/20 uppercase tracking-wider">
           <span>0 BTC</span>
           <span>~{safeToLocaleString(data?.circulatingSupply ?? 19850000)} mined</span>
           <span>21,000,000 BTC cap</span>
@@ -166,7 +166,7 @@ export function OnChainFlowPanel() {
       {/* Hashrate sparkline */}
       {data?.hashrateHistory && data.hashrateHistory.length > 0 && (
         <Card className="bg-[#0a0a0a]/60 backdrop-blur-xl border border-white/5 p-6">
-          <div className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
+          <div className="text-[11px] font-black !text-white/40 uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
             <Activity size={12} className="text-indigo-400" />
             Hashrate (3Y Trend)  EH/s
           </div>

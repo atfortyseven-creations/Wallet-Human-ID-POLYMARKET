@@ -228,12 +228,12 @@ export default function CoreMinerUI() {
             {/* Tokenomics Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-6 sm:mb-8 pb-6 border-b border-white/10 relative z-10">
                 <div>
-                    <h3 className="text-xs font-bold text-white/50 tracking-widest uppercase mb-1">Mi Saldo en QDs</h3>
-                    <p className="text-xl sm:text-2xl font-mono text-white break-all">{userBalanceFormatted} <span className="text-xs sm:text-sm">QDs</span></p>
+                    <h3 className="text-xs font-bold !text-white/50 tracking-widest uppercase mb-1">Mi Saldo en QDs</h3>
+                    <p className="text-xl sm:text-2xl font-mono !text-white break-all">{userBalanceFormatted} <span className="text-xs sm:text-sm">QDs</span></p>
                 </div>
                 <div className="text-left sm:text-right w-full sm:w-auto">
-                    <h3 className="text-xs font-bold text-white/50 tracking-widest uppercase mb-1">Suministro Circulante / Límite Máximo</h3>
-                    <p className="text-base sm:text-lg font-mono text-white">
+                    <h3 className="text-xs font-bold !text-white/50 tracking-widest uppercase mb-1">Suministro Circulante / Límite Máximo</h3>
+                    <p className="text-base sm:text-lg font-mono !text-white">
                         {currentSupplyFormatted.toLocaleString(undefined, { maximumFractionDigits: 0 })} / {maxSupply.toLocaleString()}
                     </p>
                     <div className="w-full bg-white/10 h-1 mt-2 rounded-full overflow-hidden">
@@ -246,8 +246,8 @@ export default function CoreMinerUI() {
             {userBalanceFormatted === '0.00' && address && (
                 <div className="mb-6 p-4 rounded-2xl border border-white/30 bg-white/5 flex flex-col sm:flex-row items-start sm:items-center gap-3 relative z-10">
                     <div className="flex-1">
-                        <p className="text-xs font-bold text-white tracking-widest uppercase mb-1"> Welcome  500 QDs Free</p>
-                        <p className="text-[10px] text-white/50">Your account is new. Claim your welcome Airdrop to instantly get your first 500 QDs.</p>
+                        <p className="text-xs font-bold !text-white tracking-widest uppercase mb-1"> Welcome  500 QDs Free</p>
+                        <p className="text-[10px] !text-white/50">Your account is new. Claim your welcome Airdrop to instantly get your first 500 QDs.</p>
                     </div>
                     <button
                         onClick={async () => {
@@ -272,33 +272,33 @@ export default function CoreMinerUI() {
                 <div className="flex items-center gap-3 sm:gap-4">
                     <div className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 bg-white/5 border border-white/20 rounded-2xl flex items-center justify-center relative overflow-hidden">
                         {isMining && <div className="absolute inset-0 bg-white/10 animate-pulse" />}
-                        <Cpu className={`text-white ${isMining ? 'animate-bounce' : ''}`} size={24} />
+                        <Cpu className={`!text-white ${isMining ? 'animate-bounce' : ''}`} size={24} />
                     </div>
                     <div>
-                        <h2 className="text-xl sm:text-2xl font-black tracking-tighter text-white uppercase">Nódulo Minero</h2>
-                        <p className="text-[10px] sm:text-xs font-bold text-white/60 tracking-widest uppercase">Prueba de Trabajo CPU</p>
+                        <h2 className="text-xl sm:text-2xl font-black tracking-tighter !text-white uppercase">Nódulo Minero</h2>
+                        <p className="text-[10px] sm:text-xs font-bold !text-white/60 tracking-widest uppercase">Prueba de Trabajo CPU</p>
                     </div>
                 </div>
                 
                 <div className="text-left sm:text-right">
-                    <p className="text-[10px] sm:text-xs font-bold text-white/40 tracking-widest uppercase mb-1">Objetivo de Dificultad</p>
-                    <p className="text-lg sm:text-xl font-mono text-white">0x{'0'.repeat(targetDifficulty)}...</p>
+                    <p className="text-[10px] sm:text-xs font-bold !text-white/40 tracking-widest uppercase mb-1">Objetivo de Dificultad</p>
+                    <p className="text-lg sm:text-xl font-mono !text-white">0x{'0'.repeat(targetDifficulty)}...</p>
                 </div>
             </div>
 
             {/* Metrics Dashboard */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6 sm:mb-8">
                 <div className="bg-[#111] border border-white/10 rounded-2xl p-4 sm:p-5 relative overflow-hidden">
-                    <Activity className="absolute right-3 top-3 sm:right-4 sm:top-4 text-white/5" size={40} />
-                    <p className="text-[10px] sm:text-xs font-bold text-white/40 tracking-widest uppercase mb-1 sm:mb-2">Tasa de Hash (CPU)</p>
-                    <p className="text-2xl sm:text-3xl font-black text-white tracking-tighter">
-                        {hashRate} <span className="text-xs sm:text-sm font-medium text-white/60">H/s</span>
+                    <Activity className="absolute right-3 top-3 sm:right-4 sm:top-4 !text-white/5" size={40} />
+                    <p className="text-[10px] sm:text-xs font-bold !text-white/40 tracking-widest uppercase mb-1 sm:mb-2">Tasa de Hash (CPU)</p>
+                    <p className="text-2xl sm:text-3xl font-black !text-white tracking-tighter">
+                        {hashRate} <span className="text-xs sm:text-sm font-medium !text-white/60">H/s</span>
                     </p>
                 </div>
                 <div className="bg-[#111] border border-white/10 rounded-2xl p-4 sm:p-5 relative overflow-hidden">
-                    <Hash className="absolute right-3 top-3 sm:right-4 sm:top-4 text-white/5" size={40} />
-                    <p className="text-[10px] sm:text-xs font-bold text-white/40 tracking-widest uppercase mb-1 sm:mb-2">Hashes Totales</p>
-                    <p className="text-2xl sm:text-3xl font-black text-white tracking-tighter truncate">
+                    <Hash className="absolute right-3 top-3 sm:right-4 sm:top-4 !text-white/5" size={40} />
+                    <p className="text-[10px] sm:text-xs font-bold !text-white/40 tracking-widest uppercase mb-1 sm:mb-2">Hashes Totales</p>
+                    <p className="text-2xl sm:text-3xl font-black !text-white tracking-tighter truncate">
                         {totalHashes.toLocaleString()}
                     </p>
                 </div>
@@ -306,22 +306,22 @@ export default function CoreMinerUI() {
 
             {/* Terminal View */}
             <div className="bg-black border border-white/20 rounded-2xl p-4 font-mono text-xs mb-8 h-24 overflow-hidden relative flex flex-col justify-end">
-                <div className="text-white/40 mb-1">&gt; CoreMiner.exe --start</div>
-                <div className="text-white/30 truncate mb-1">Objetivo: {targetDifficulty} ceros iniciales</div>
+                <div className="!text-white/40 mb-1">&gt; CoreMiner.exe --start</div>
+                <div className="!text-white/30 truncate mb-1">Objetivo: {targetDifficulty} ceros iniciales</div>
                 <AnimatePresence>
                     {isMining && (
                         <motion.div 
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0 }}
-                            className="text-white truncate break-all"
+                            className="!text-white truncate break-all"
                         >
                             &gt; {latestHash}
                         </motion.div>
                     )}
                 </AnimatePresence>
-                {!isMining && !blockFound && <div className="text-white/50 animate-pulse">&gt; _ SISTEMA INACTIVO</div>}
-                {blockFound && <div className="text-white font-bold bg-white/20 px-2 py-1 rounded">&gt; NONCE ENCONTRADO: {latestHash}</div>}
+                {!isMining && !blockFound && <div className="!text-white/50 animate-pulse">&gt; _ SISTEMA INACTIVO</div>}
+                {blockFound && <div className="!text-white font-bold bg-white/20 px-2 py-1 rounded">&gt; NONCE ENCONTRADO: {latestHash}</div>}
             </div>
 
             {/* Controls */}
@@ -337,7 +337,7 @@ export default function CoreMinerUI() {
                     onClick={toggleMining}
                     className={`w-full py-5 rounded-2xl font-black uppercase tracking-widest text-sm active:scale-[0.98] transition-all flex items-center justify-center gap-2 ${
                         isMining 
-                        ? 'bg-transparent text-white border border-white hover:bg-white/10'
+                        ? 'bg-transparent !text-white border border-white hover:bg-white/10'
                         : 'bg-white text-black hover:bg-white/90 shadow-[0_0_40px_-10px_rgba(255,255,255,0.2)]'
                     }`}
                 >

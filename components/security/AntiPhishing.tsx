@@ -151,9 +151,9 @@ Always Access Whale Alert Network through your bookmark to ensure you're on the 
           title={hasWarnings ? 'Security warnings detected' : 'Site is secure'}
         >
           {hasWarnings ? (
-            <AlertTriangle className="text-white" size={24} />
+            <AlertTriangle className="!text-white" size={24} />
           ) : (
-            <Shield className="text-white" size={24} />
+            <Shield className="!text-white" size={24} />
           )}
         </motion.button>
       </div>

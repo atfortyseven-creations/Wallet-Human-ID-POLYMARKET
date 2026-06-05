@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -170,9 +170,9 @@ export default function ReceiveModal({ isOpen, onClose, address: propAddress, us
                                     </div>
                                     <div className="mt-6 text-center z-10">
                                          <div className="text-black/40 text-[10px] font-black uppercase tracking-widest mb-3">Scan to resolve on-chain address</div>
-                                         <div className="font-mono text-black font-black text-xs bg-[#FFFFFF] px-5 py-3 rounded-2xl border border-black/10 shadow-sm flex items-center gap-3 cursor-pointer hover:bg-black hover:text-white transition-all group/btn" onClick={handleCopy}>
+                                         <div className="font-mono text-black font-black text-xs bg-[#FFFFFF] px-5 py-3 rounded-2xl border border-black/10 shadow-sm flex items-center gap-3 cursor-pointer hover:bg-black hover:!text-white transition-all group/btn" onClick={handleCopy}>
                                             {address ? `${address.slice(0, 8)}...${address.slice(-6)}` : "..."}
-                                            {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4 text-black/30 group-hover/btn:text-white/60 transition-colors" />}
+                                            {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4 text-black/30 group-hover/btn:!text-white/60 transition-colors" />}
                                          </div>
                                     </div>
                                 </div>
@@ -181,12 +181,12 @@ export default function ReceiveModal({ isOpen, onClose, address: propAddress, us
                                     <label className="text-[10px] font-black text-black/40 uppercase tracking-widest pl-1">Dynamic Supported Assets</label>
                                     <div className="space-y-2">
                                         {tokens.map((token, idx) => (
-                                            <div key={idx} onClick={() => setCurrentAsset(token)} className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-center justify-between ${currentAsset?.symbol === token.symbol ? 'bg-black text-white border-black shadow-md' : 'bg-white border-black/5 hover:border-black/20'}`}>
+                                            <div key={idx} onClick={() => setCurrentAsset(token)} className={`p-4 rounded-2xl border cursor-pointer transition-all flex items-center justify-between ${currentAsset?.symbol === token.symbol ? 'bg-black !!text-white border-black shadow-md' : 'bg-white border-black/5 hover:border-black/20'}`}>
                                                 <div className="flex items-center gap-4">
                                                     <TokenLogo symbol={token.symbol} address={token.address} logoURI={token.logoURI} className="w-10 h-10 rounded-full" fallbackClassName="w-10 h-10 rounded-full text-xs" />
                                                     <div>
-                                                        <div className={`text-sm font-black uppercase tracking-tight ${currentAsset?.symbol === token.symbol ? 'text-white' : 'text-black'}`}>{token.name}</div>
-                                                        <div className={`text-[10px] font-mono uppercase tracking-widest ${currentAsset?.symbol === token.symbol ? 'text-white/40' : 'text-black/30'}`}>{token.symbol}</div>
+                                                        <div className={`text-sm font-black uppercase tracking-tight ${currentAsset?.symbol === token.symbol ? '!text-white' : 'text-black'}`}>{token.name}</div>
+                                                        <div className={`text-[10px] font-mono uppercase tracking-widest ${currentAsset?.symbol === token.symbol ? '!text-white/40' : 'text-black/30'}`}>{token.symbol}</div>
                                                     </div>
                                                 </div>
                                                 {currentAsset?.symbol === token.symbol && <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center shadow-sm"><Check className="w-3 h-3 text-black" /></div>}

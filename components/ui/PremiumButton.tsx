@@ -25,10 +25,10 @@ export function PremiumButton({
 }: PremiumButtonProps) {
   
   const variantStyles = {
-    primary: 'glass-card hover-lift border-white/10 text-white hover:border-purple-500/50',
-    secondary: 'glass-card hover-lift border-white/5 text-white/80 hover:text-white',
-    ghost: 'bg-transparent hover:bg-white/5 text-white/80 hover:text-white',
-    gradient: 'bg-gradient-to-r from-purple-500 to-indigo-600 text-white hover:from-purple-600 hover:to-indigo-700 shadow-lg hover:shadow-purple-500/50'
+    primary: 'glass-card hover-lift border-white/10 !text-white hover:border-purple-500/50',
+    secondary: 'glass-card hover-lift border-white/5 !text-white/80 hover:!text-white',
+    ghost: 'bg-transparent hover:bg-white/5 !text-white/80 hover:!text-white',
+    gradient: 'bg-gradient-to-r from-purple-500 to-indigo-600 !text-white hover:from-purple-600 hover:to-indigo-700 shadow-lg hover:shadow-purple-500/50'
   };
 
   const sizeStyles = {

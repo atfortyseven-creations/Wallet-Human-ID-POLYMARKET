@@ -107,13 +107,13 @@ export function SatoshiDetector({ whaleAddresses = [] }: Props) {
             >
               <div className="text-6xl mb-4">️</div>
               <h2 className="text-3xl font-black text-cyan-400 mb-2">SLEEPING GIANT DETECTED!</h2>
-              <p className="text-white/60 text-sm mb-4">
-                Wallet inactive for <span className="text-white font-black">{criticalAlert.yearsInactive} years</span>
+              <p className="!text-white/60 text-sm mb-4">
+                Wallet inactive for <span className="!text-white font-black">{criticalAlert.yearsInactive} years</span>
               </p>
               <div className="bg-cyan-500/10 rounded-2xl p-4 border border-cyan-500/20">
                 <p className="text-cyan-300 font-mono text-xs break-all">{criticalAlert.address}</p>
                 <p className="text-cyan-400 text-2xl font-black mt-2">{criticalAlert.btcBalance.toFixed(4)} BTC</p>
-                <p className="text-white/40 text-xs">First activity: {new Date(criticalAlert.firstSeenDate).getFullYear()}</p>
+                <p className="!text-white/40 text-xs">First activity: {new Date(criticalAlert.firstSeenDate).getFullYear()}</p>
               </div>
             </motion.div>
           </motion.div>
@@ -127,21 +127,21 @@ export function SatoshiDetector({ whaleAddresses = [] }: Props) {
               <Snowflake className="w-5 h-5 text-cyan-400" />
             </div>
             <div>
-              <h3 className="text-white font-black text-lg">Satoshi Detector</h3>
-              <p className="text-white/30 text-xs font-mono">Historical wallets 8 years of inactivity</p>
+              <h3 className="!text-white font-black text-lg">Satoshi Detector</h3>
+              <p className="!text-white/30 text-xs font-mono">Historical wallets 8 years of inactivity</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <div className={`w-2 h-2 rounded-full ${isScanning ? 'bg-cyan-400 animate-ping' : 'bg-emerald-500'}`} />
-            <span className="text-xs text-white/30 font-mono">{isScanning ? 'SCANNING' : `${alerts.length} DETECTED`}</span>
+            <span className="text-xs !text-white/30 font-mono">{isScanning ? 'SCANNING' : `${alerts.length} DETECTED`}</span>
           </div>
         </div>
 
         <div className="p-6">
           {isScanning && alerts.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-40 gap-4">
-              <Eye className="w-10 h-10 text-white/10 animate-pulse" />
-              <p className="text-white/30 text-sm">Scanning historical Bitcoin wallets...</p>
+              <Eye className="w-10 h-10 !text-white/10 animate-pulse" />
+              <p className="!text-white/30 text-sm">Scanning historical Bitcoin wallets...</p>
               <div className="w-full max-w-xs h-0.5 bg-white/5 rounded-full overflow-hidden">
                 <motion.div
                   animate={{ x: ['-100%', '200%'] }}
@@ -153,7 +153,7 @@ export function SatoshiDetector({ whaleAddresses = [] }: Props) {
           ) : error ? (
             <div className="flex flex-col items-center justify-center h-40 gap-3">
               <AlertTriangle className="w-8 h-8 text-red-400/50" />
-              <p className="text-white/30 text-sm">{error}</p>
+              <p className="!text-white/30 text-sm">{error}</p>
               <button onClick={fetchBatchData} className="text-xs text-cyan-400 hover:underline">Retry</button>
             </div>
           ) : (
@@ -176,11 +176,11 @@ export function SatoshiDetector({ whaleAddresses = [] }: Props) {
                             {colors.badge}
                           </span>
                           <span className={`text-[9px] font-bold ${colors.text}/60`}>·</span>
-                          <span className={`text-[9px] text-white/30 font-mono`}>{alert.txCount} txs</span>
+                          <span className={`text-[9px] !text-white/30 font-mono`}>{alert.txCount} txs</span>
                         </div>
-                        <p className="text-white/50 font-mono text-xs truncate">{alert.address}</p>
+                        <p className="!text-white/50 font-mono text-xs truncate">{alert.address}</p>
                         <div className="flex items-center gap-3 mt-1">
-                          <p className="text-white/20 text-[10px]">
+                          <p className="!text-white/20 text-[10px]">
                             Active in {new Date(alert.firstSeenDate).getFullYear()}  Last: {new Date(alert.lastActiveDate).toLocaleDateString('en', { month: 'short', year: 'numeric' })}
                           </p>
                           {alert.yearsInactive > 0 && (
@@ -190,7 +190,7 @@ export function SatoshiDetector({ whaleAddresses = [] }: Props) {
                       </div>
                       <div className="text-right shrink-0">
                         <p className={`${colors.text} font-black text-2xl leading-none`}>{alert.btcBalance.toFixed(2)}</p>
-                        <p className="text-white/30 text-xs mt-0.5">BTC</p>
+                        <p className="!text-white/30 text-xs mt-0.5">BTC</p>
                       </div>
                     </div>
                   </motion.div>

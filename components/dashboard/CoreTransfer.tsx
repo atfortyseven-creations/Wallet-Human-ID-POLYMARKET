@@ -81,9 +81,9 @@ function StepBar({ step }: { step: TxStep }) {
                                 className="w-7 h-7 rounded-full flex items-center justify-center"
                             >
                                 {done ? (
-                                    <CheckCircle2 size={14} className="text-white" />
+                                    <CheckCircle2 size={14} className="!text-white" />
                                 ) : current ? (
-                                    <Loader2 size={12} className="text-white animate-spin" />
+                                    <Loader2 size={12} className="!text-white animate-spin" />
                                 ) : (
                                     <div className="w-2 h-2 rounded-full bg-black/20" />
                                 )}
@@ -134,22 +134,22 @@ function ReceiptCard({ receipt, onClose }: { receipt: ReceiptData; onClose: () =
             className="w-full max-w-lg mx-auto bg-white border border-black/10 rounded-3xl shadow-2xl overflow-hidden"
         >
             <div className="bg-black px-6 pt-6 pb-8 flex flex-col items-center gap-4 relative">
-                <button onClick={onClose} className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors">
+                <button onClick={onClose} className="absolute top-4 right-4 !text-white/40 hover:!text-white transition-colors">
                     <X size={18} />
                 </button>
                 <div className="w-24 h-24">
                     <RemoteLottie path="/system-shots/Transaction Complete.json" loop={false} className="w-full h-full" />
                 </div>
                 <div className="text-center">
-                    <div className="text-white font-black text-xl tracking-tight">
+                    <div className="!text-white font-black text-xl tracking-tight">
                         {parseFloat(formatEther(receipt.amount)).toLocaleString(undefined, { maximumFractionDigits: 4 })} QDs
                     </div>
-                    <div className="text-white/40 text-xs font-mono uppercase tracking-widest mt-1">
+                    <div className="!text-white/40 text-xs font-mono uppercase tracking-widest mt-1">
                         Transfer Finalised — Aztec Testnet
                     </div>
                 </div>
                 {receipt.memo && (
-                    <div className="px-4 py-2 bg-white/10 rounded-xl text-white/70 text-xs font-medium italic text-center">
+                    <div className="px-4 py-2 bg-white/10 rounded-xl !text-white/70 text-xs font-medium italic text-center">
                         &ldquo;{receipt.memo}&rdquo;
                     </div>
                 )}
@@ -185,7 +185,7 @@ function ReceiptCard({ receipt, onClose }: { receipt: ReceiptData; onClose: () =
                 </a>
                 <button
                     onClick={onClose}
-                    className="flex-1 py-3 bg-black text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-black/80 transition-all"
+                    className="flex-1 py-3 bg-black !!text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-black/80 transition-all"
                 >
                     New Transfer
                 </button>
@@ -348,20 +348,20 @@ export default function CoreTransfer() {
                         <div className="bg-black px-7 pt-7 pb-6">
                             <div className="flex items-start justify-between mb-5">
                                 <div>
-                                    <div className="text-[9px] font-mono font-black uppercase tracking-[0.3em] text-white/40 mb-1">
+                                    <div className="text-[9px] font-mono font-black uppercase tracking-[0.3em] !text-white/40 mb-1">
                                         Aztec Testnet · Zero-Knowledge L2
                                     </div>
-                                    <h2 className="text-2xl font-black tracking-tighter text-white uppercase">
+                                    <h2 className="text-2xl font-black tracking-tighter !text-white uppercase">
                                         Transfer QDs
                                     </h2>
                                 </div>
                                 <div className="flex flex-col items-end gap-1">
-                                    <div className="text-[8px] font-mono uppercase tracking-widest text-white/30">
+                                    <div className="text-[8px] font-mono uppercase tracking-widest !text-white/30">
                                         Your Balance
                                     </div>
-                                    <div className="font-mono font-black text-lg text-white">
+                                    <div className="font-mono font-black text-lg !text-white">
                                         {qdBalance.toLocaleString(undefined, { maximumFractionDigits: 2 })}
-                                        <span className="text-xs ml-1 text-white/50">QDs</span>
+                                        <span className="text-xs ml-1 !text-white/50">QDs</span>
                                     </div>
                                 </div>
                             </div>

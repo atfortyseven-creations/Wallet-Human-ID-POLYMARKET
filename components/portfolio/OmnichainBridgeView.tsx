@@ -95,7 +95,7 @@ export function OmnichainBridgeView({ onBack }: { onBack: () => void }) {
                         onClick={() => setTargetNetwork(net)}
                         className={`py-3 text-[9px] uppercase font-bold tracking-widest border transition-all ${
                             targetNetwork === net 
-                                ? 'border-black bg-black text-white' 
+                                ? 'border-black bg-black !!text-white' 
                                 : 'border-black/10 text-black/40 hover:border-black/30'
                         }`}
                     >
@@ -136,7 +136,7 @@ export function OmnichainBridgeView({ onBack }: { onBack: () => void }) {
 
                 <button
                     onClick={() => toast.success("Message Transmitted", { description: "Payload dispatched to Endpoint." })}
-                    className="w-full py-4 bg-blue-600 text-white text-[10px] font-black uppercase tracking-[0.25em] hover:bg-blue-700 transition-all flex items-center justify-center gap-3 mt-4"
+                    className="w-full py-4 bg-blue-600 !text-white text-[10px] font-black uppercase tracking-[0.25em] hover:bg-blue-700 transition-all flex items-center justify-center gap-3 mt-4"
                 >
                     <Play size={14} fill="currentColor" /> INITIATE CROSS-CHAIN EXECUTION
                 </button>
@@ -147,7 +147,7 @@ export function OmnichainBridgeView({ onBack }: { onBack: () => void }) {
             <button
                 onClick={handleQuote}
                 disabled={isQuoting || !message}
-                className="w-full py-5 bg-black text-white text-[10px] font-black uppercase tracking-[0.25em] hover:bg-black/80 disabled:opacity-30 transition-all flex items-center justify-center gap-3"
+                className="w-full py-5 bg-black !!text-white text-[10px] font-black uppercase tracking-[0.25em] hover:bg-black/80 disabled:opacity-30 transition-all flex items-center justify-center gap-3"
             >
                 {isQuoting ? <Search size={14} className="animate-spin" /> : <Globe size={14} />}
                 {isQuoting ? 'QUERYING OMNICHAIN ENDPOINT...' : 'ESTIMATE OMNICHAIN FEE'}

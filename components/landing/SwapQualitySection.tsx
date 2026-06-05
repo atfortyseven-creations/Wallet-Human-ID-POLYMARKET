@@ -105,13 +105,13 @@ export function SwapQualitySection() {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600/20 to-blue-600/20 backdrop-blur-xl border border-white/10 rounded-full px-4 py-2">
               <CheckCircle2 size={16} className="text-green-400" />
-              <span className="text-sm font-bold text-white/80 uppercase tracking-wider">
+              <span className="text-sm font-bold !text-white/80 uppercase tracking-wider">
                 {t.landing.swap.badge}
               </span>
             </div>
 
             {/* Heading */}
-            <h2 className="text-5xl md:text-6xl font-black text-white leading-tight">
+            <h2 className="text-5xl md:text-6xl font-black !text-white leading-tight">
               {t.landing.swap.title}
               <span className="block bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
                 {t.landing.swap.realtime}
@@ -119,7 +119,7 @@ export function SwapQualitySection() {
             </h2>
 
             {/* Description */}
-            <p className="text-xl text-white/60 leading-relaxed">
+            <p className="text-xl !text-white/60 leading-relaxed">
               {t.landing.swap.description}
             </p>
 
@@ -135,8 +135,8 @@ export function SwapQualitySection() {
                   className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 hover:bg-white/10 transition-all group"
                 >
                   <feature.icon size={24} className="text-purple-400 mb-3 group-hover:scale-110 transition-transform" />
-                  <h3 className="text-white font-bold mb-1">{feature.title}</h3>
-                  <p className="text-white/50 text-sm leading-relaxed">{feature.description}</p>
+                  <h3 className="!text-white font-bold mb-1">{feature.title}</h3>
+                  <p className="!text-white/50 text-sm leading-relaxed">{feature.description}</p>
                 </motion.div>
               ))}
             </div>
@@ -148,7 +148,7 @@ export function SwapQualitySection() {
                   <div className="text-2xl font-black bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                     {stat.value}
                   </div>
-                  <div className="text-xs text-white/40 uppercase tracking-wider mt-1">
+                  <div className="text-xs !text-white/40 uppercase tracking-wider mt-1">
                     {stat.label}
                   </div>
                 </div>
@@ -160,9 +160,9 @@ export function SwapQualitySection() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleProbarAhora}
-              className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold px-8 py-4 rounded-2xl shadow-2xl hover:shadow-purple-500/50 transition-all flex items-center gap-3 justify-center"
+              className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-blue-600 !text-white font-bold px-8 py-4 rounded-2xl shadow-2xl hover:shadow-purple-500/50 transition-all flex items-center gap-3 justify-center"
             >
-              <Radar size={18} className="text-white/80" />
+              <Radar size={18} className="!text-white/80" />
               {isSignedIn ? t.landing.swap.ctaPrimaryActive : t.landing.swap.ctaPrimary}
             </motion.button>
           </motion.div>

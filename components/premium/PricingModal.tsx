@@ -54,7 +54,7 @@ export default function PricingModal({ isOpen, onClose, onSubscribe }: PricingMo
 
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full text-white font-bold mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full !text-white font-bold mb-4">
             <Crown size={20} />
             VIP PREMIUM
           </div>
@@ -72,7 +72,7 @@ export default function PricingModal({ isOpen, onClose, onSubscribe }: PricingMo
             onClick={() => setSelectedTier('monthly')}
             className={`px-6 py-3 rounded-xl font-bold transition-all ${
               selectedTier === 'monthly'
-                ? 'bg-[#1F1F1F] text-white'
+                ? 'bg-[#1F1F1F] !text-white'
                 : 'bg-white/50 text-[#1F1F1F]/70'
             }`}
           >
@@ -82,12 +82,12 @@ export default function PricingModal({ isOpen, onClose, onSubscribe }: PricingMo
             onClick={() => setSelectedTier('yearly')}
             className={`px-6 py-3 rounded-xl font-bold transition-all relative ${
               selectedTier === 'yearly'
-                ? 'bg-[#1F1F1F] text-white'
+                ? 'bg-[#1F1F1F] !text-white'
                 : 'bg-white/50 text-[#1F1F1F]/70'
             }`}
           >
             Yearly
-            <span className="absolute -top-2 -right-2 px-2 py-0.5 bg-green-500 text-white text-xs rounded-full">
+            <span className="absolute -top-2 -right-2 px-2 py-0.5 bg-green-500 !text-white text-xs rounded-full">
               Save 40%
             </span>
           </button>
@@ -138,27 +138,27 @@ export default function PricingModal({ isOpen, onClose, onSubscribe }: PricingMo
             
             <div className="relative z-10">
               <div className="flex items-center gap-2 mb-4">
-                <Sparkles size={20} className="text-white" />
-                <h3 className="text-xl font-black text-white uppercase italic">System Access</h3>
-                <span className="ml-auto px-2 py-1 bg-white/20 backdrop-blur-sm rounded-full text-[10px] font-black text-white">
+                <Sparkles size={20} className="!text-white" />
+                <h3 className="text-xl font-black !text-white uppercase italic">System Access</h3>
+                <span className="ml-auto px-2 py-1 bg-white/20 backdrop-blur-sm rounded-full text-[10px] font-black !text-white">
                   LIFETIME VIP
                 </span>
               </div>
               
-              <div className="text-5xl font-black text-white mb-2 tracking-tighter">
+              <div className="text-5xl font-black !text-white mb-2 tracking-tighter">
                 1.50 
-                <span className="text-sm font-bold text-white/70 block lowercase">One-time lifetime payment</span>
+                <span className="text-sm font-bold !text-white/70 block lowercase">One-time lifetime payment</span>
               </div>
 
               <div className="bg-white/10 p-4 rounded-xl mb-6 border border-white/10">
-                   <p className="text-xs text-white/90 font-medium leading-relaxed">
+                   <p className="text-xs !text-white/90 font-medium leading-relaxed">
                        Unlimited access to Whale Tracker, Smart Alerts, Wallet Comparison, and much more. No subscriptions.
                    </p>
               </div>
 
               <ul className="grid grid-cols-2 gap-2 mb-8">
                 {features.map((feature, i) => (
-                  <li key={i} className="flex items-start gap-2 text-[11px] font-bold text-white">
+                  <li key={i} className="flex items-start gap-2 text-[11px] font-bold !text-white">
                     <Check size={14} className="mt-0.5 flex-shrink-0 text-blue-300" />
                     {feature}
                   </li>
@@ -174,7 +174,7 @@ export default function PricingModal({ isOpen, onClose, onSubscribe }: PricingMo
               </button>
 
               <div className="mt-4 text-center">
-                  <span className="text-[10px] font-black text-white/50 uppercase tracking-[0.2em]">Instant Activation via Whale Alert Network ID</span>
+                  <span className="text-[10px] font-black !text-white/50 uppercase tracking-[0.2em]">Instant Activation via Whale Alert Network ID</span>
               </div>
             </div>
           </div>

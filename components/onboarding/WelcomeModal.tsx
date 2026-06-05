@@ -119,12 +119,12 @@ export function WelcomeModal() {
                       if (step < steps.length - 1) setStep(step + 1);
                       else completeOnboarding();
                     }}
-                    className="w-full flex items-center justify-between px-8 py-5 bg-black text-white rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all group shadow-2xl shadow-black/20"
+                    className="w-full flex items-center justify-between px-8 py-5 bg-black !!text-white rounded-2xl hover:scale-[1.02] active:scale-[0.98] transition-all group shadow-2xl shadow-black/20"
                   >
                     <span className="font-black text-[11px] uppercase tracking-[0.2em]">
                       {steps[step].action}
                     </span>
-                    <ChevronRight size={18} className="text-white/50 group-hover:text-white transition-colors group-hover:translate-x-1" strokeWidth={2.5} />
+                    <ChevronRight size={18} className="!text-white/50 group-hover:!text-white transition-colors group-hover:translate-x-1" strokeWidth={2.5} />
                   </button>
                 </div>
               </div>

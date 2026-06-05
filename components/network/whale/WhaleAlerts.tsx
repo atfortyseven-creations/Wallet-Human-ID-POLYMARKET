@@ -42,7 +42,7 @@ export function WhaleAlerts({ alerts, threshold, onThresholdChange }: Props) {
                     <motion.div
                         initial={{ x: 60, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
-                        className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-[#12121a] border border-indigo-500/30 shadow-2xl shadow-indigo-500/10 text-white max-w-xs"
+                        className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-[#12121a] border border-indigo-500/30 shadow-2xl shadow-indigo-500/10 !text-white max-w-xs"
                     >
                         <span className="text-2xl"></span>
                         <div>
@@ -71,25 +71,25 @@ export function WhaleAlerts({ alerts, threshold, onThresholdChange }: Props) {
                     <div className="relative">
                         <BellRing className="text-yellow-400" size={22} />
                         {unread > 0 && (
-                            <span className="absolute -top-1 -right-1 bg-indigo-500 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">
+                            <span className="absolute -top-1 -right-1 bg-indigo-500 !text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center">
                                 {unread > 9 ? '9+' : unread}
                             </span>
                         )}
                     </div>
-                    <h2 className="text-white font-bold text-lg">Whale Alert Networks</h2>
+                    <h2 className="!text-white font-bold text-lg">Whale Alert Networks</h2>
                     <span className="text-[10px] font-black bg-yellow-500/20 text-yellow-300 px-2 py-0.5 rounded-full border border-yellow-500/30 ml-1">LIVE</span>
                 </div>
                 <div className="flex items-center gap-2">
                     <button
                         onClick={() => setMuted(m => !m)}
                         title={muted ? 'Unmute alerts' : 'Mute alerts'}
-                        className="p-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+                        className="p-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:!text-white transition-colors"
                     >
                         {muted ? <BellOff size={16} /> : <Bell size={16} />}
                     </button>
                     <button
                         onClick={() => setShowSettings(s => !s)}
-                        className="p-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+                        className="p-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-400 hover:!text-white transition-colors"
                     >
                         <Sliders size={16} />
                     </button>
@@ -113,7 +113,7 @@ export function WhaleAlerts({ alerts, threshold, onThresholdChange }: Props) {
                                     min={1}
                                     value={inputVal}
                                     onChange={e => setInputVal(e.target.value)}
-                                    className="flex-1 bg-black/30 border border-white/10 rounded-xl px-3 py-2 text-white font-mono text-sm focus:outline-none focus:border-yellow-500/50"
+                                    className="flex-1 bg-black/30 border border-white/10 rounded-xl px-3 py-2 !text-white font-mono text-sm focus:outline-none focus:border-yellow-500/50"
                                 />
                                 <span className="text-gray-400 text-sm font-mono">BTC</span>
                                 <button
@@ -177,7 +177,7 @@ export function WhaleAlerts({ alerts, threshold, onThresholdChange }: Props) {
                             <div className="flex items-center justify-between">
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-baseline gap-2">
-                                        <span className="text-white font-black text-lg font-mono">
+                                        <span className="!text-white font-black text-lg font-mono">
                                             {alert.btcAmount.toFixed(2)}
                                         </span>
                                         <span className="text-gray-500 text-xs font-bold">{alert.asset || 'BTC'}</span>
@@ -189,7 +189,7 @@ export function WhaleAlerts({ alerts, threshold, onThresholdChange }: Props) {
                                 <div className="flex items-center gap-1">
                                     <Link 
                                         href={`/network/tx/${alert.txid}`} 
-                                        className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-500 hover:text-white transition-all"
+                                        className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-500 hover:!text-white transition-all"
                                         title="Deep Dive View"
                                     >
                                         <ChevronRight size={16} />

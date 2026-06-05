@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -82,7 +82,7 @@ export const IntelPaywall = ({ intelId, onUnlock }: { intelId: string; onUnlock:
             <div className="relative z-10 max-w-md space-y-4">
                 <span className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--aztec-chartreuse)]">Premium Analytics Restricted</span>
                 <h2 className="text-3xl font-bold font-aztec-serif uppercase tracking-tighter">Whale <span className="text-[var(--aztec-orchid)]">De-Masking</span> Required</h2>
-                <p className="text-[11px] font-aztec-mono text-white/40 leading-relaxed mb-6">
+                <p className="text-[11px] font-aztec-mono !text-white/40 leading-relaxed mb-6">
                     This high-tier alert contains identifying metadata and historical PnL analysis. 
                     Unlocking requires an institutional micropayment.
                 </p>
@@ -94,7 +94,7 @@ export const IntelPaywall = ({ intelId, onUnlock }: { intelId: string; onUnlock:
                         onClick={handleUnlock}
                         disabled={isUnlocking}
                         className={`w-full py-6 rounded-2xl font-black uppercase text-[10px] tracking-[0.4em] flex items-center justify-center gap-3 transition-all
-                            ${isUnlocking ? 'bg-white/10 text-white/30 cursor-wait' : 'bg-white text-black hover:bg-[var(--aztec-chartreuse)]'}
+                            ${isUnlocking ? 'bg-white/10 !text-white/30 cursor-wait' : 'bg-white text-black hover:bg-[var(--aztec-chartreuse)]'}
                         `}
                     >
                         {isUnlocking ? (

@@ -94,7 +94,7 @@ export default function SecurityVault() {
                                 <button 
                                     onClick={handleUnlock}
                                     disabled={isProcessing}
-                                    className="w-full bg-black text-white font-black uppercase tracking-widest rounded-xl p-4 hover:bg-black/80 transition-all flex items-center justify-center gap-2"
+                                    className="w-full bg-black !!text-white font-black uppercase tracking-widest rounded-xl p-4 hover:bg-black/80 transition-all flex items-center justify-center gap-2"
                                 >
                                     {isProcessing ? <Lock className="animate-spin w-5 h-5" /> : <Unlock className="w-5 h-5" />}
                                     {isProcessing ? 'Decrypting...' : 'Unlock'}
@@ -145,7 +145,7 @@ export default function SecurityVault() {
                                 <div className="text-xs font-black uppercase tracking-widest text-black/50 mb-1 flex items-center gap-2">
                                     <Wifi size={10} />
                                     {connector?.name || 'External Wallet'}
-                                    <span className="bg-black text-white text-[8px] px-1.5 py-0.5 rounded">ACTIVE</span>
+                                    <span className="bg-black !!text-white text-[8px] px-1.5 py-0.5 rounded">ACTIVE</span>
                                 </div>
                                 <div className="font-mono text-sm">
                                     {systemAddress ? `${systemAddress.slice(0, 8)}...${systemAddress.slice(-6)}` : '—'}
@@ -166,7 +166,7 @@ export default function SecurityVault() {
                                     <div className="flex-1 cursor-pointer" onClick={() => switchAccount(acc.address)}>
                                         <div className="text-xs font-black uppercase tracking-widest text-black/50 mb-1 flex items-center gap-2">
                                             {acc.label || `Account ${idx}`}
-                                            {acc.address === activeAddress && <span className="bg-black text-white text-[8px] px-1.5 py-0.5 rounded">ACTIVE</span>}
+                                            {acc.address === activeAddress && <span className="bg-black !!text-white text-[8px] px-1.5 py-0.5 rounded">ACTIVE</span>}
                                         </div>
                                         <div className="font-mono text-sm">{acc.address.slice(0, 8)}...{acc.address.slice(-6)}</div>
                                     </div>
@@ -191,8 +191,8 @@ export default function SecurityVault() {
 function StatusRow({ label, value }: { label: string, value: string }) {
     return (
         <div className="flex items-center justify-between py-2 border-b border-white/10 last:border-0">
-            <span className="text-white/60 font-mono text-xs uppercase">{label}</span>
-            <span className="text-white font-black text-xs uppercase tracking-wider">{value}</span>
+            <span className="!text-white/60 font-mono text-xs uppercase">{label}</span>
+            <span className="!text-white font-black text-xs uppercase tracking-wider">{value}</span>
         </div>
     )
 }

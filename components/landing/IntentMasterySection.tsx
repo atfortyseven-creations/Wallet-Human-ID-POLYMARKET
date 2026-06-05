@@ -21,7 +21,7 @@ export function IntentMasterySection() {
           <motion.div 
              initial={{ opacity: 0, scale: 0.9 }}
              whileInView={{ opacity: 1, scale: 1 }}
-             className="inline-block px-4 py-1.5 rounded-full bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest mb-8"
+             className="inline-block px-4 py-1.5 rounded-full bg-slate-900 !text-white text-[10px] font-black uppercase tracking-widest mb-8"
           >
             System Intent Layer
           </motion.div>
@@ -67,7 +67,7 @@ export function IntentMasterySection() {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(99,102,241,0.15)_0%,transparent_50%)]" />
             <div className="relative z-10 flex flex-col lg:flex-row items-center gap-20">
                 <div className="flex-1">
-                    <h3 className="text-4xl md:text-6xl font-black text-white tracking-tighter mb-8 leading-none">
+                    <h3 className="text-4xl md:text-6xl font-black !text-white tracking-tighter mb-8 leading-none">
                         AI Agent <br />
                         <span className="text-indigo-400">Session Keys.</span>
                     </h3>
@@ -77,11 +77,11 @@ export function IntentMasterySection() {
                     </p>
                     <div className="grid grid-cols-2 gap-8">
                         <div>
-                            <div className="text-3xl font-black text-white mb-2">$100,000</div>
+                            <div className="text-3xl font-black !text-white mb-2">$100,000</div>
                             <div className="text-[10px] text-slate-500 uppercase tracking-widest font-black">Strict Execution Limit</div>
                         </div>
                         <div>
-                            <div className="text-3xl font-black text-white mb-2">0.1%</div>
+                            <div className="text-3xl font-black !text-white mb-2">0.1%</div>
                             <div className="text-[10px] text-slate-500 uppercase tracking-widest font-black">Max Slippage Threshold</div>
                         </div>
                     </div>
@@ -118,7 +118,7 @@ function FlowCard({ step, icon: Icon, title, desc, color }: { step: string; icon
     >
         <div className="text-[10px] font-black text-slate-300 mb-8 tracking-[0.3em] uppercase">{step} / Protocol System</div>
         <div className={`w-14 h-14 rounded-2xl ${color} flex items-center justify-center mb-10 shadow-lg shadow-indigo-500/10`}>
-            <Icon size={24} className="text-white" />
+            <Icon size={24} className="!text-white" />
         </div>
         <h3 className="text-2xl font-black text-slate-950 mb-4 group-hover:text-indigo-600 transition-colors">{title}</h3>
         <p className="text-slate-500 text-sm leading-relaxed">{desc}</p>

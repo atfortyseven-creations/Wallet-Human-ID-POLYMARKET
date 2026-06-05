@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -108,7 +108,7 @@ export function ExternalEmbed({
     const BlockedState = () => (
         <div className="absolute inset-0 bg-[#FFFFFF] flex flex-col items-center justify-center gap-6">
             <div
-                className="w-20 h-20 rounded-3xl flex items-center justify-center text-white shadow-lg"
+                className="w-20 h-20 rounded-3xl flex items-center justify-center !text-white shadow-lg"
                 style={{ background: accentColor }}
             >
                 {icon}
@@ -128,7 +128,7 @@ export function ExternalEmbed({
                 href={url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-8 py-3 rounded-2xl text-white text-[11px] font-black uppercase tracking-widest shadow-lg transition-all hover:opacity-85 active:scale-95"
+                className="flex items-center gap-2 px-8 py-3 rounded-2xl !text-white text-[11px] font-black uppercase tracking-widest shadow-lg transition-all hover:opacity-85 active:scale-95"
                 style={{ background: accentColor }}
             >
                 <ExternalLink size={15}/> Open {title} 
@@ -151,7 +151,7 @@ export function ExternalEmbed({
             >
                 {/* Color dot + icon */}
                 <div
-                    className="w-7 h-7 rounded-lg flex items-center justify-center text-white shrink-0"
+                    className="w-7 h-7 rounded-lg flex items-center justify-center !text-white shrink-0"
                     style={{ background: accentColor }}
                 >
                     <span className="scale-75">{icon}</span>

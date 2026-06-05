@@ -40,15 +40,15 @@ export function LegendaryDownhead() {
         
         {/* Navigation Breadcrumbs */}
         <div className="flex items-center gap-6 px-8 py-4">
-          <a href="/vip" className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-[#00ff9d] hover:text-white transition-colors flex items-center gap-2">
+          <a href="/vip" className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-[#00ff9d] hover:!text-white transition-colors flex items-center gap-2">
             <Cpu size={14} /> VIP Dashboard
           </a>
-          <span className="text-white/20">/</span>
-          <a href="/portfolio" className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-white/50 hover:text-white transition-colors">
+          <span className="!text-white/20">/</span>
+          <a href="/portfolio" className="text-[10px] sm:text-xs font-black uppercase tracking-widest !text-white/50 hover:!text-white transition-colors">
             Portfolio
           </a>
-          <span className="text-white/20">/</span>
-          <a href="/terms" className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-white/50 hover:text-white transition-colors">
+          <span className="!text-white/20">/</span>
+          <a href="/terms" className="text-[10px] sm:text-xs font-black uppercase tracking-widest !text-white/50 hover:!text-white transition-colors">
             Términos
           </a>
         </div>
@@ -57,27 +57,27 @@ export function LegendaryDownhead() {
         <div className="flex items-center gap-6 px-8 py-4 bg-white/[0.02]">
           
           {/* Status */}
-          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-white/60">
+          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest !text-white/60">
             <div className="w-2 h-2 rounded-full bg-[#00ff9d] animate-pulse" />
             L1 Status
           </div>
 
           {/* Block */}
-          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-white/60">
+          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest !text-white/60">
             <Activity size={12} className="text-blue-400" />
-            <span className="text-white font-bold">{stats.currentBlock || "Sync..."}</span>
+            <span className="!text-white font-bold">{stats.currentBlock || "Sync..."}</span>
           </div>
 
           {/* Gas */}
-          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-white/60">
+          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest !text-white/60">
             <ShieldCheck size={12} className="text-purple-400" />
-            <span className="text-white font-bold">{stats.baseFee ? stats.baseFee.toFixed(1) : "---"}</span> Gwei
+            <span className="!text-white font-bold">{stats.baseFee ? stats.baseFee.toFixed(1) : "---"}</span> Gwei
           </div>
 
           {/* Latency */}
-          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-white/60">
+          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest !text-white/60">
             <Network size={12} className="text-emerald-400" />
-            <span className="text-white font-bold">{latency}</span> ms
+            <span className="!text-white font-bold">{latency}</span> ms
           </div>
 
         </div>

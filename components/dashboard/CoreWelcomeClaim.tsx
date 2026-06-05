@@ -45,7 +45,7 @@ export default function CoreWelcomeClaim({ signature, onSuccess }: { signature: 
                         <CheckCircle2 size={24} />
                     </div>
                     <div>
-                        <h3 className="text-white font-bold tracking-tight">Bono Reclamado</h3>
+                        <h3 className="!text-white font-bold tracking-tight">Bono Reclamado</h3>
                         <p className="text-emerald-400/80 text-sm font-medium">500 QDs asegurados On-Chain</p>
                     </div>
                 </div>
@@ -62,17 +62,17 @@ export default function CoreWelcomeClaim({ signature, onSuccess }: { signature: 
                 
                 <div className="flex items-start gap-4">
                     <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0">
-                        <Gift className="text-white" size={28} />
+                        <Gift className="!text-white" size={28} />
                     </div>
                     <div>
                         <div className="flex items-center gap-2 mb-1">
-                            <h3 className="text-xl font-black text-white tracking-tighter uppercase">Bono Fundador</h3>
+                            <h3 className="text-xl font-black !text-white tracking-tighter uppercase">Bono Fundador</h3>
                             <span className="bg-blue-500/20 text-blue-400 text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border border-blue-500/20">
                                 EIP-712
                             </span>
                         </div>
-                        <p className="text-white/60 text-sm font-medium leading-relaxed max-w-md">
-                            Has creado tu cuenta exitosamente. Reclama tus <strong className="text-white">500 CoreDots (QDs)</strong> iniciales. La transacción está pre-firmada por el servidor para máxima seguridad sin coste de gas.
+                        <p className="!text-white/60 text-sm font-medium leading-relaxed max-w-md">
+                            Has creado tu cuenta exitosamente. Reclama tus <strong className="!text-white">500 CoreDots (QDs)</strong> iniciales. La transacción está pre-firmada por el servidor para máxima seguridad sin coste de gas.
                         </p>
                     </div>
                 </div>

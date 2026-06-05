@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -99,7 +99,7 @@ export default function DilutionTracker() {
                             <div className="flex justify-between items-start mb-12">
                                 <div>
                                     <div className="flex items-center gap-3 mb-2">
-                                        <div className="w-10 h-10 rounded-full bg-stone-900 flex items-center justify-center text-white text-xs font-black">
+                                        <div className="w-10 h-10 rounded-full bg-stone-900 flex items-center justify-center !text-white text-xs font-black">
                                             {unlock.tokenSymbol}
                                         </div>
                                         <h3 className="text-2xl font-black text-stone-900">{unlock.tokenName}</h3>
@@ -144,7 +144,7 @@ export default function DilutionTracker() {
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                                 onClick={() => setIsVipModalOpen(true)}
-                                className="w-full py-4 bg-stone-900 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-stone-900/20 flex items-center justify-center gap-2 group/btn"
+                                className="w-full py-4 bg-stone-900 !text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-stone-900/20 flex items-center justify-center gap-2 group/btn"
                             >
                                 ACTIVAR ALERTAS VIP
                                 <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
@@ -191,7 +191,7 @@ export default function DilutionTracker() {
                                                 onClick={() => setIsVipModalOpen(false)}
                                                 className="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center hover:bg-stone-200 transition-colors"
                                             >
-                                                ×
+                                                �
                                             </button>
                                         </div>
 
@@ -208,7 +208,7 @@ export default function DilutionTracker() {
                                             </div>
                                             <button 
                                                 disabled={isSubmitting}
-                                                className="w-full h-16 bg-stone-900 text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-stone-900/20 flex items-center justify-center gap-3"
+                                                className="w-full h-16 bg-stone-900 !text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-stone-900/20 flex items-center justify-center gap-3"
                                             >
                                                 {isSubmitting ? "CONECTANDO..." : "CONFIRMAR ACCESO VIP"}
                                                 <Zap size={14} className="text-yellow-400 fill-yellow-400" />

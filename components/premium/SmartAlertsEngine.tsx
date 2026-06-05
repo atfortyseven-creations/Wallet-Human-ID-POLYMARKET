@@ -233,10 +233,10 @@ export default function SmartAlertsEngine({ isPremium, selectedWalletAddress }: 
                 <BellRing className="text-blue-400" size={28} />
             </div>
             <div>
-              <h2 className="text-3xl font-black text-white flex items-center gap-3 tracking-tighter uppercase italic">
+              <h2 className="text-3xl font-black !text-white flex items-center gap-3 tracking-tighter uppercase italic">
                 Elite Intel
                 {unreadCount > 0 && (
-                  <span className="px-3 py-1 bg-blue-600 text-white text-[10px] font-black rounded-full uppercase tracking-widest shadow-lg shadow-blue-900/40 animate-pulse">
+                  <span className="px-3 py-1 bg-blue-600 !text-white text-[10px] font-black rounded-full uppercase tracking-widest shadow-lg shadow-blue-900/40 animate-pulse">
                     {unreadCount} NEW SIGNAL
                   </span>
                 )}
@@ -263,7 +263,7 @@ export default function SmartAlertsEngine({ isPremium, selectedWalletAddress }: 
             key={f}
             onClick={() => setFilter(f)}
             className={`flex-1 py-3 px-4 rounded-xl text-xs font-black transition-all capitalize tracking-widest ${
-              filter === f ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/40' : 'text-gray-500 hover:bg-white/5 hover:text-white'
+              filter === f ? 'bg-blue-600 !text-white shadow-lg shadow-blue-900/40' : 'text-gray-500 hover:bg-white/5 hover:!text-white'
             }`}
           >
             {f}
@@ -288,7 +288,7 @@ export default function SmartAlertsEngine({ isPremium, selectedWalletAddress }: 
         {filteredAlerts.length === 0 && (
           <div className="text-center py-24 bg-white/5 rounded-[2.5rem] border border-dashed border-white/10">
             <Bell size={64} className="mx-auto mb-6 opacity-10" />
-            <p className="text-2xl font-black text-white uppercase tracking-tighter">No signals detected</p>
+            <p className="text-2xl font-black !text-white uppercase tracking-tighter">No signals detected</p>
             <p className="text-sm text-gray-500 font-bold uppercase tracking-widest mt-2">The blockchain is currently silent</p>
           </div>
         )}
@@ -299,7 +299,7 @@ export default function SmartAlertsEngine({ isPremium, selectedWalletAddress }: 
         <div className="absolute top-0 right-0 p-8 opacity-5">
             <Filter size={120} />
         </div>
-        <h3 className="text-xl font-black text-white mb-6 flex items-center gap-3 uppercase italic tracking-tighter">
+        <h3 className="text-xl font-black !text-white mb-6 flex items-center gap-3 uppercase italic tracking-tighter">
           <Zap className="text-blue-400" />
           Active Protocols
         </h3>
@@ -311,7 +311,7 @@ export default function SmartAlertsEngine({ isPremium, selectedWalletAddress }: 
               className="flex items-center justify-between p-5 bg-white/5 rounded-2xl border border-white/5 hover:border-white/20 transition-all"
             >
               <div className="flex-1">
-                <div className="font-black text-white mb-2 uppercase tracking-tight">{rule.name}</div>
+                <div className="font-black !text-white mb-2 uppercase tracking-tight">{rule.name}</div>
                 <div className="flex gap-2">
                   {rule.actions.telegram && <ActionBadge icon="" label="Telegram" />}
                   {rule.actions.push && <ActionBadge icon="" label="Push" />}
@@ -354,7 +354,7 @@ function CreateRuleModal({ isOpen, onClose, onCreate }: { isOpen: boolean, onClo
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl">
       <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-[#0B0E11] w-full max-w-md rounded-[2.5rem] p-10 border border-white/10 shadow-3xl">
         <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-black text-white uppercase italic tracking-tighter">Configure Signal</h2>
+          <h2 className="text-3xl font-black !text-white uppercase italic tracking-tighter">Configure Signal</h2>
           <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full text-gray-400 transition-colors"><X size={28} /></button>
         </div>
         
@@ -365,7 +365,7 @@ function CreateRuleModal({ isOpen, onClose, onCreate }: { isOpen: boolean, onClo
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. WHALE WATCHER ALPHA" 
-              className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-blue-500 text-white font-bold transition-all"
+              className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-blue-500 !text-white font-bold transition-all"
             />
           </div>
 
@@ -377,7 +377,7 @@ function CreateRuleModal({ isOpen, onClose, onCreate }: { isOpen: boolean, onClo
                   key={ch}
                   onClick={() => setActions(prev => ({ ...prev, [ch]: !prev[ch] }))}
                   className={`p-4 rounded-2xl border-2 font-black transition-all text-[10px] uppercase tracking-widest flex items-center gap-3 ${
-                    actions[ch] ? 'bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-900/40' : 'bg-white/5 text-gray-500 border-white/5 hover:border-white/10'
+                    actions[ch] ? 'bg-blue-600 !text-white border-blue-600 shadow-lg shadow-blue-900/40' : 'bg-white/5 text-gray-500 border-white/5 hover:border-white/10'
                   }`}
                 >
                   <span className="text-lg">
@@ -438,9 +438,9 @@ function AlertCard({ alert, index, onCopyTrade, onMarkRead }: {
       <div className="flex items-start justify-between gap-6 relative z-10">
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-3">
-            <span className="text-xl font-black text-white uppercase italic tracking-tighter">{alert.title}</span>
+            <span className="text-xl font-black !text-white uppercase italic tracking-tighter">{alert.title}</span>
             {alert.priority === 'critical' && (
-                <span className="px-2 py-0.5 bg-blue-600 text-[8px] font-black text-white rounded uppercase tracking-[0.2em]">Critical</span>
+                <span className="px-2 py-0.5 bg-blue-600 text-[8px] font-black !text-white rounded uppercase tracking-[0.2em]">Critical</span>
             )}
             {!alert.read && (
               <div className="w-2.5 h-2.5 bg-blue-500 rounded-full animate-ping" />
@@ -459,7 +459,7 @@ function AlertCard({ alert, index, onCopyTrade, onMarkRead }: {
                 {alert.action.type}
               </div>
               <div className="flex flex-col">
-                  <span className="font-black text-white text-lg">
+                  <span className="font-black !text-white text-lg">
                     {alert.action.amount.toLocaleString('de-DE')} {alert.action.token}
                   </span>
                   <div className="flex items-center gap-2">

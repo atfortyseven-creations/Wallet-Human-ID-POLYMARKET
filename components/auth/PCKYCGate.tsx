@@ -232,7 +232,7 @@ export function PCKYCGate({ walletAddress, onVerified }: PCKYCGateProps) {
               animate={{ rotate: 360 }}
               transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
             />
-            <p className="text-[10px] font-mono uppercase tracking-[0.4em] text-white/30">
+            <p className="text-[10px] font-mono uppercase tracking-[0.4em] !text-white/30">
               Initializing Secure KYC Channel
             </p>
           </motion.div>
@@ -254,10 +254,10 @@ export function PCKYCGate({ walletAddress, onVerified }: PCKYCGateProps) {
                 <Shield size={16} className="text-emerald-500" />
               </div>
               <div>
-                <p className="text-[9px] font-mono uppercase tracking-[0.4em] text-white/30">
+                <p className="text-[9px] font-mono uppercase tracking-[0.4em] !text-white/30">
                   Humanity Ledger
                 </p>
-                <p className="text-[11px] font-black text-white/80 uppercase tracking-wider">
+                <p className="text-[11px] font-black !text-white/80 uppercase tracking-wider">
                   Biometric Verification
                 </p>
               </div>
@@ -284,10 +284,10 @@ export function PCKYCGate({ walletAddress, onVerified }: PCKYCGateProps) {
 
             {/* Instructions */}
             <div className="mt-8 text-center space-y-2">
-              <p className="text-[11px] font-black text-white uppercase tracking-[0.3em]">
+              <p className="text-[11px] font-black !text-white uppercase tracking-[0.3em]">
                 Scan with your mobile
               </p>
-              <p className="text-[10px] text-white/40 leading-relaxed">
+              <p className="text-[10px] !text-white/40 leading-relaxed">
                 Open this app on your phone, connect your wallet, then complete the facial scan.
               </p>
             </div>
@@ -306,11 +306,11 @@ export function PCKYCGate({ walletAddress, onVerified }: PCKYCGateProps) {
                   style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
                 >
                   <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center shrink-0">
-                    <Icon size={11} className="text-white/40" />
+                    <Icon size={11} className="!text-white/40" />
                   </div>
-                  <span className="text-[10px] text-white/50 uppercase tracking-wider">{label}</span>
+                  <span className="text-[10px] !text-white/50 uppercase tracking-wider">{label}</span>
                   <div
-                    className="ml-auto w-4 h-4 rounded-full border border-white/10 flex items-center justify-center text-[8px] font-black text-white/25"
+                    className="ml-auto w-4 h-4 rounded-full border border-white/10 flex items-center justify-center text-[8px] font-black !text-white/25"
                   >
                     {i + 1}
                   </div>
@@ -322,8 +322,8 @@ export function PCKYCGate({ walletAddress, onVerified }: PCKYCGateProps) {
             <div className="mt-6 w-full">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <Clock size={11} className="text-white/30" />
-                  <span className="text-[9px] font-mono text-white/30 uppercase tracking-widest">
+                  <Clock size={11} className="!text-white/30" />
+                  <span className="text-[9px] font-mono !text-white/30 uppercase tracking-widest">
                     Session Expires
                   </span>
                 </div>
@@ -371,7 +371,7 @@ export function PCKYCGate({ walletAddress, onVerified }: PCKYCGateProps) {
                   />
                 ))}
               </motion.div>
-              <span className="text-[9px] font-mono text-white/30 uppercase tracking-widest">
+              <span className="text-[9px] font-mono !text-white/30 uppercase tracking-widest">
                 Awaiting mobile verification
               </span>
             </div>
@@ -400,10 +400,10 @@ export function PCKYCGate({ walletAddress, onVerified }: PCKYCGateProps) {
               <p className="text-[9px] font-mono uppercase tracking-[0.4em] text-emerald-500/70 mb-2">
                 Biometric Signal Received
               </p>
-              <p className="text-lg font-black text-white uppercase tracking-wider">
+              <p className="text-lg font-black !text-white uppercase tracking-wider">
                 Verifying Humanity Proof
               </p>
-              <p className="text-[10px] text-white/30 mt-2 uppercase tracking-widest">
+              <p className="text-[10px] !text-white/30 mt-2 uppercase tracking-widest">
                 Activeness Score: {livenessScore}/100
               </p>
             </div>
@@ -442,7 +442,7 @@ export function PCKYCGate({ walletAddress, onVerified }: PCKYCGateProps) {
                   boxShadow: "0 0 60px rgba(16,185,129,0.4), 0 0 120px rgba(16,185,129,0.15)",
                 }}
               >
-                <CheckCircle2 size={48} className="text-white" />
+                <CheckCircle2 size={48} className="!text-white" />
               </div>
             </div>
 
@@ -456,7 +456,7 @@ export function PCKYCGate({ walletAddress, onVerified }: PCKYCGateProps) {
                 Humanity Verified
               </motion.p>
               <motion.h2
-                className="text-3xl font-black text-white tracking-tight mb-2"
+                className="text-3xl font-black !text-white tracking-tight mb-2"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
@@ -487,7 +487,7 @@ export function PCKYCGate({ walletAddress, onVerified }: PCKYCGateProps) {
                   ZK Proof Bound · Score {livenessScore}/100
                 </span>
               </div>
-              <p className="text-[10px] text-white/30 uppercase tracking-wider mt-2">
+              <p className="text-[10px] !text-white/30 uppercase tracking-wider mt-2">
                 Redirecting to System Terminal
               </p>
             </motion.div>
@@ -509,8 +509,8 @@ export function PCKYCGate({ walletAddress, onVerified }: PCKYCGateProps) {
               <p className="text-[9px] font-mono uppercase tracking-[0.4em] text-amber-500/70 mb-2">
                 Session Expired
               </p>
-              <p className="text-lg font-black text-white">QR Code Expired</p>
-              <p className="text-[10px] text-white/40 mt-1">
+              <p className="text-lg font-black !text-white">QR Code Expired</p>
+              <p className="text-[10px] !text-white/40 mt-1">
                 The secure tunnel expired. Generate a new QR code.
               </p>
             </div>

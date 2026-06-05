@@ -183,7 +183,7 @@ function Card({ data, index, isTop, offset, onSwipe }: {
         >
             <div className="relative z-10">
                 <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${data.gradient} mb-6 shadow-lg`}>
-                    <div className="text-white">
+                    <div className="!text-white">
                         {data.icon}
                     </div>
                 </div>

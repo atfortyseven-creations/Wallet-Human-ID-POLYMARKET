@@ -147,7 +147,7 @@ export function QuantumDeFiPositions({ address, activeNetwork }: { address: stri
                                 <tr key={idx} className="hover:bg-black/5 transition-colors group/row">
                                     <td className="py-4 px-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-full border border-black/10 flex items-center justify-center text-white font-black text-[10px]" style={{ backgroundColor: pos.color }}>
+                                            <div className="w-8 h-8 rounded-full border border-black/10 flex items-center justify-center !text-white font-black text-[10px]" style={{ backgroundColor: pos.color }}>
                                                 {pos.protocol[0]}
                                             </div>
                                             <div className="flex flex-col">

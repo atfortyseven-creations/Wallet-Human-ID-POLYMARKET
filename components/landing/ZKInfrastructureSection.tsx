@@ -80,7 +80,7 @@ function SpecItem({ icon: Icon, title, desc }: { icon: any; title: string; desc:
         <Icon size={20} className="text-[var(--aztec-orchid)]" />
       </div>
       <div>
-        <h3 className="font-black text-white text-lg mb-2 uppercase tracking-tight">{title}</h3>
+        <h3 className="font-black !text-white text-lg mb-2 uppercase tracking-tight">{title}</h3>
         <p className="text-slate-500 text-sm leading-relaxed group-hover:text-slate-300 transition-colors">{desc}</p>
       </div>
     </div>

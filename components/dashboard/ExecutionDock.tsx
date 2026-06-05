@@ -99,12 +99,12 @@ export default function ExecutionDock() {
       
       {/*  PRICE TICKER  */}
       <div className="flex flex-col gap-1 items-end z-10">
-        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 flex items-center gap-1.5">
+        <span className="text-[10px] font-black uppercase tracking-[0.2em] !text-white/30 flex items-center gap-1.5">
           <div className="w-1.5 h-1.5 rounded-full bg-[var(--aztec-orchid)] animate-pulse" />
           ORACLE // 0-CONF WSS
         </span>
-        <div className="text-4xl lg:text-5xl font-black font-mono text-white tracking-tighter flex items-baseline gap-2">
-          <span className="text-white/20 text-2xl">$</span>
+        <div className="text-4xl lg:text-5xl font-black font-mono !text-white tracking-tighter flex items-baseline gap-2">
+          <span className="!text-white/20 text-2xl">$</span>
           {currentPrice > 0 ? currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '---.--'}
         </div>
       </div>
@@ -150,17 +150,17 @@ export default function ExecutionDock() {
              </div>
          ) : null}
 
-         <div className="flex items-center justify-between text-[10px] uppercase font-black tracking-widest text-white/40">
+         <div className="flex items-center justify-between text-[10px] uppercase font-black tracking-widest !text-white/40">
            <span className="flex items-center gap-2"><Crosshair size={12}/> AUTO-EXECUTION</span>
-           <span className={filters.autoExecute ? 'text-rose-500' : 'text-white/20'}>
+           <span className={filters.autoExecute ? 'text-rose-500' : '!text-white/20'}>
              {filters.autoExecute ? 'LETHAL' : 'DISABLED'}
            </span>
          </div>
-         <div className="flex items-center justify-between text-[10px] uppercase font-black tracking-widest text-white/40">
+         <div className="flex items-center justify-between text-[10px] uppercase font-black tracking-widest !text-white/40">
            <span className="flex items-center gap-2"><Lock size={12}/> SLIPPAGE LIMIT</span>
            <span className="text-[var(--aztec-orchid)] font-mono">{filters.slippageTolerance.toFixed(1)}%</span>
          </div>
-         <div className="flex items-center justify-between text-[10px] uppercase font-black tracking-widest text-white/40">
+         <div className="flex items-center justify-between text-[10px] uppercase font-black tracking-widest !text-white/40">
            <span className="flex items-center gap-2"><Zap size={12}/> MAX GAS (GWEI)</span>
            <span className="text-[var(--aztec-orchid)] font-mono">{filters.gasLimitGwei}</span>
          </div>
@@ -174,7 +174,7 @@ export default function ExecutionDock() {
 
       {/*  EXECUTION DEPLOYMENT ZONE  */}
       {!isConnected ? (
-        <div className="w-full py-5 bg-white/[0.02] border border-white/5 rounded-[24px] text-center text-white/40 text-[11px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-3">
+        <div className="w-full py-5 bg-white/[0.02] border border-white/5 rounded-[24px] text-center !text-white/40 text-[11px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-3">
           <ShieldAlert size={16} /> WALLET REQUIRED
         </div>
       ) : (
@@ -185,7 +185,7 @@ export default function ExecutionDock() {
                 className={`py-5 px-6 rounded-[24px] text-[11px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 border ${
                     isArmed 
                      ? 'bg-rose-500/10 text-rose-500 border-rose-500/30 shadow-[0_0_20px_rgba(244,63,94,0.3)]' 
-                     : 'bg-white/[0.02] text-white/40 border-white/5 hover:border-white/20 hover:text-white/80 hover:bg-white/[0.04]'
+                     : 'bg-white/[0.02] !text-white/40 border-white/5 hover:border-white/20 hover:!text-white/80 hover:bg-white/[0.04]'
                 }`}
             >
                 <Fingerprint size={16} className={isArmed ? 'animate-pulse' : ''} />
@@ -197,7 +197,7 @@ export default function ExecutionDock() {
                 className={`h-full px-8 relative group overflow-hidden rounded-[24px] transition-all border ${
                     isArmed && !isQuoting && !isSendingTx && !isConfirming
                      ? 'bg-[var(--aztec-orchid)] border-[var(--aztec-orchid)]/50 text-black cursor-crosshair hover:brightness-110 shadow-[0_0_30px_rgba(var(--aztec-orchid-rgb),0.4)] active:scale-95'
-                     : 'bg-white/[0.01] border-white/5 text-white/10 cursor-not-allowed'
+                     : 'bg-white/[0.01] border-white/5 !text-white/10 cursor-not-allowed'
                 }`}
             >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />

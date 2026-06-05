@@ -69,10 +69,10 @@ export function EnterpriseFooter() {
                     viewport={{ once: true }}
                     className="text-center mb-16"
                 >
-                    <h2 className="text-5xl md:text-6xl font-black text-white mb-4 tracking-tight">
+                    <h2 className="text-5xl md:text-6xl font-black !text-white mb-4 tracking-tight">
                         Descarga <span className="bg-gradient-to-r from-yellow-300 to-orange-400 bg-clip-text text-transparent">Whale Alert Network Wallet</span>
                     </h2>
-                    <p className="text-xl text-white/80 mb-10 max-w-2xl mx-auto font-light">
+                    <p className="text-xl !text-white/80 mb-10 max-w-2xl mx-auto font-light">
                         La wallet Web3 más segura y fácil de usar. Disponible en múltiples plataformas.
                     </p>
 
@@ -106,11 +106,11 @@ export function EnterpriseFooter() {
                     <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8">
                         <div className="flex items-center gap-3 mb-4">
                             <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                                <Mail className="w-6 h-6 text-white" />
+                                <Mail className="w-6 h-6 !text-white" />
                             </div>
                             <div>
-                                <h3 className="text-xl font-bold text-white">Newsletter</h3>
-                                <p className="text-sm text-white/70">Actualizaciones y noticias exclusivas</p>
+                                <h3 className="text-xl font-bold !text-white">Newsletter</h3>
+                                <p className="text-sm !text-white/70">Actualizaciones y noticias exclusivas</p>
                             </div>
                         </div>
 
@@ -121,7 +121,7 @@ export function EnterpriseFooter() {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder="tu@email.com"
-                                    className="flex-1 px-4 py-3 bg-white/10 border border-white/30 rounded-xl text-white placeholder:text-white/50 outline-none focus:bg-white/20 transition-all"
+                                    className="flex-1 px-4 py-3 bg-white/10 border border-white/30 rounded-xl !text-white placeholder:!text-white/50 outline-none focus:bg-white/20 transition-all"
                                 />
                                 <button
                                     type="submit"
@@ -189,10 +189,10 @@ export function EnterpriseFooter() {
 
                 {/* Bottom Bar */}
                 <div className="border-t border-white/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div className="text-white/70 text-sm font-mono">
+                    <div className="!text-white/70 text-sm font-mono">
                         © 2026 Whale Alert Network. All rights reserved.
                     </div>
-                    <div className="flex items-center gap-6 text-sm text-white/70">
+                    <div className="flex items-center gap-6 text-sm !text-white/70">
                         <span>v4.0.0</span>
                     </div>
                 </div>
@@ -224,8 +224,8 @@ function DownloadButton({
                 group relative px-8 py-5 rounded-2xl font-bold text-lg
                 flex items-center gap-4 transition-all duration-300
                 ${disabled 
-                    ? 'bg-white/10 text-white/40 cursor-not-allowed' 
-                    : `bg-gradient-to-r ${gradient} text-white hover:scale-105 hover:shadow-2xl active:scale-95`
+                    ? 'bg-white/10 !text-white/40 cursor-not-allowed' 
+                    : `bg-gradient-to-r ${gradient} !text-white hover:scale-105 hover:shadow-2xl active:scale-95`
                 }
             `}
         >
@@ -244,13 +244,13 @@ function DownloadButton({
 function FooterColumn({ title, links }: { title: string; links: { label: string; href: string }[] }) {
     return (
         <div>
-            <h4 className="text-white font-bold mb-4 text-sm uppercase tracking-wider">{title}</h4>
+            <h4 className="!text-white font-bold mb-4 text-sm uppercase tracking-wider">{title}</h4>
             <ul className="space-y-2">
                 {links.map((link) => (
                     <li key={link.href}>
                         <a
                             href={link.href}
-                            className="text-white/70 hover:text-white transition-colors text-sm font-medium"
+                            className="!text-white/70 hover:!text-white transition-colors text-sm font-medium"
                         >
                             {link.label}
                         </a>
@@ -268,7 +268,7 @@ function SocialButton({ icon, href, label }: { icon: React.ReactNode; href: stri
             target="_blank"
             rel="noopener noreferrer"
             aria-label={label}
-            className="w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center text-white transition-all hover:scale-110 active:scale-95"
+            className="w-12 h-12 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full flex items-center justify-center !text-white transition-all hover:scale-110 active:scale-95"
         >
             {icon}
         </a>

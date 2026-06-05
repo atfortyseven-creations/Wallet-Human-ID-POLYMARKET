@@ -43,11 +43,11 @@ export function NetworkSwitcher() {
         >
             <div className={cn("w-2 h-2 rounded-full animate-pulse", getNetworkColor(chainId))} />
             
-            <span className="text-xs font-bold text-gray-300 group-hover:text-white transition-colors uppercase tracking-wider hidden md:block">
+            <span className="text-xs font-bold text-gray-300 group-hover:!text-white transition-colors uppercase tracking-wider hidden md:block">
                 {networkName}
             </span>
             
-            <ChevronDown size={14} className="text-gray-500 group-hover:text-white transition-colors" />
+            <ChevronDown size={14} className="text-gray-500 group-hover:!text-white transition-colors" />
 
             {/* Glow Effect */}
             <div className={cn(

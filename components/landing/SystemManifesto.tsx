@@ -10,7 +10,7 @@ export function SystemManifesto() {
   const yParallax = useTransform(scrollYProgress, [0, 1], [0, -50]);
 
   return (
-    <div className="relative w-full bg-[#0a0a0a] text-white pt-24 pb-0 z-20 flex flex-col items-center overflow-x-hidden selection:bg-[#00f5ff]/30"
+    <div className="relative w-full bg-[#0a0a0a] !text-white pt-24 pb-0 z-20 flex flex-col items-center overflow-x-hidden selection:bg-[#00f5ff]/30"
          style={{ transform: 'translateZ(0)', willChange: 'transform' }}>
         
         <div className="w-full max-w-[1720px] mx-auto px-6 md:px-16 lg:px-24 relative">
@@ -18,7 +18,7 @@ export function SystemManifesto() {
             
             <motion.div style={{ y: yParallax }} className="text-center max-w-4xl mx-auto mb-40 mt-32">
                <span className="text-[10px] font-mono text-[#00f5ff] uppercase tracking-[0.3em] mb-6 block">Declassified Technical Briefing</span>
-               <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter uppercase leading-[0.9] text-white">
+               <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter uppercase leading-[0.9] !text-white">
                  Protocol <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00f5ff] to-[#bd00ff]">Lexicon</span>
                </h2>
                <p className="mt-8 text-neutral-400 font-medium leading-relaxed text-base md:text-xl">
@@ -88,7 +88,7 @@ export function SystemManifesto() {
             {/* Footer Summary */}
             <div className="mt-40 mb-10 max-w-4xl mx-auto flex flex-col items-center relative z-20">
                 <OptimizedLocalLottie filename="successfully.json" className="w-32 h-32 mb-6" />
-                <h3 className="text-2xl font-black uppercase tracking-[0.2em] text-white mb-4 text-center">Protocol Synchronized</h3>
+                <h3 className="text-2xl font-black uppercase tracking-[0.2em] !text-white mb-4 text-center">Protocol Synchronized</h3>
                 <p className="text-center text-neutral-500 font-medium text-sm max-w-sm mb-16">All required Lottie telemetry nodes have been successfully rendered into the DOM with strict zero-delay execution.</p>
                 
                 <div className="flex gap-6 justify-center opacity-30 mt-6 grayscale">
@@ -175,7 +175,7 @@ function ManifestoSection({ title, description, lotties, reverse = false }: { ti
                 <div className="w-2.5 h-2.5 rounded-full bg-white/10" />
                 <div className="w-2.5 h-2.5 rounded-full bg-white/10" />
              </div>
-             <div className="absolute bottom-4 right-4 text-[9px] font-mono text-white/20 uppercase">
+             <div className="absolute bottom-4 right-4 text-[9px] font-mono !text-white/20 uppercase">
                 Vector Rendering Engine | {lotties[activeIndex].file}
              </div>
 

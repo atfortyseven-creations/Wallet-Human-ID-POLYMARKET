@@ -72,8 +72,8 @@ const CustomTooltip = ({ active, payload }: any) => {
   const score = payload[0]?.value;
   return (
     <div className="bg-black/90 backdrop-blur-xl border border-indigo-500/20 rounded-xl p-3">
-      <div className="text-[10px] font-mono text-white/40 uppercase tracking-widest mb-1">{subject}</div>
-      <div className="text-2xl font-black font-mono text-indigo-400">{score}<span className="text-sm text-white/20">/100</span></div>
+      <div className="text-[10px] font-mono !text-white/40 uppercase tracking-widest mb-1">{subject}</div>
+      <div className="text-2xl font-black font-mono text-indigo-400">{score}<span className="text-sm !text-white/20">/100</span></div>
     </div>
   );
 };
@@ -141,8 +141,8 @@ export function NetworkHealthRadar() {
             <Shield size={20} className="text-indigo-400" />
           </div>
           <div>
-            <h3 className="text-lg font-black text-white uppercase tracking-tight">Network Health</h3>
-            <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em]">6-Axis Composite Score</p>
+            <h3 className="text-lg font-black !text-white uppercase tracking-tight">Network Health</h3>
+            <p className="text-[10px] font-black !text-white/30 uppercase tracking-[0.3em]">6-Axis Composite Score</p>
           </div>
         </div>
         {/* Overall score badge */}
@@ -155,7 +155,7 @@ export function NetworkHealthRadar() {
           <div className="text-4xl font-black font-mono" style={{ color: scoreColor }}>
             {overallScore}
           </div>
-          <div className="text-[8px] font-black text-white/20 uppercase tracking-[0.3em]">/ 100</div>
+          <div className="text-[8px] font-black !text-white/20 uppercase tracking-[0.3em]">/ 100</div>
           <div className="text-[8px] font-black uppercase tracking-widest mt-0.5" style={{ color: scoreColor }}>
             {overallScore >= 80 ? 'OPTIMAL' : overallScore >= 60 ? 'NOMINAL' : 'STRESSED'}
           </div>
@@ -202,7 +202,7 @@ export function NetworkHealthRadar() {
         {radarData.map((item) => (
           <div key={item.subject} className="flex flex-col gap-1">
             <div className="flex justify-between">
-              <span className="text-[8px] font-black text-white/30 uppercase tracking-wider">{item.subject}</span>
+              <span className="text-[8px] font-black !text-white/30 uppercase tracking-wider">{item.subject}</span>
               <span className="text-[9px] font-black font-mono" style={{ color: item.score >= 70 ? '#10b981' : item.score >= 45 ? '#f59e0b' : '#ef4444' }}>
                 {item.score}
               </span>

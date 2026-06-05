@@ -1,4 +1,4 @@
-﻿// components/dashboard/AlertsPanel.tsx
+// components/dashboard/AlertsPanel.tsx
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -113,7 +113,7 @@ function CreateAlertModal({ onClose, onCreate }: { onClose: () => void; onCreate
                                 onCreate({ ...form, id: `rule-${Date.now()}` });
                                 onClose();
                             }}
-                            className="flex-1 py-3 bg-slate-900 rounded-xl text-white text-[9px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all"
+                            className="flex-1 py-3 bg-slate-900 rounded-xl !text-white text-[9px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all"
                         >
                             Deploy_Trigger
                         </button>
@@ -206,7 +206,7 @@ export function AlertsPanel() {
                 </div>
                 <button
                     onClick={() => setShowCreate(true)}
-                    className="flex items-center gap-2 rounded-xl px-6 py-3 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all"
+                    className="flex items-center gap-2 rounded-xl px-6 py-3 bg-slate-900 !text-white text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all"
                 >
                     <Plus size={14} /> New_Rule
                 </button>

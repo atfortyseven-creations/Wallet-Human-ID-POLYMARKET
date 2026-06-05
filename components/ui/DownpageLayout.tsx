@@ -1,4 +1,4 @@
-Ôªø"use client";
+"use client";
 
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -22,7 +22,7 @@ export function DownpageLayout({ pageTitle, subtitle, indexTitle, sections }: Do
   if (!mounted) return null;
 
   return (
-    <div className="relative min-h-[100dvh] w-full overflow-x-hidden font-sans flex flex-col md:flex-row bg-[#FFFFFF] text-black selection:bg-black selection:text-white">
+    <div className="relative min-h-[100dvh] w-full overflow-x-hidden font-sans flex flex-col md:flex-row bg-[#FFFFFF] text-black selection:bg-black selection:!text-white">
       {/* LEFT NAVIGATION */}
       <aside className="w-full md:w-[300px] shrink-0 border-b md:border-b-0 md:border-r border-black/10 flex flex-col px-6 pt-8 pb-12 md:h-[100dvh] md:sticky md:top-0 bg-[#FFFFFF] z-50">
         
@@ -43,7 +43,7 @@ export function DownpageLayout({ pageTitle, subtitle, indexTitle, sections }: Do
 
         {/* INDEX */}
         <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-black/40 mb-6 shrink-0 pl-2">
-          √çndice Estructural
+          Õndice Estructural
         </div>
         
         <nav className="flex flex-col gap-3 overflow-y-auto pr-2 custom-scrollbar pb-8">
@@ -105,7 +105,7 @@ export function DownpageLayout({ pageTitle, subtitle, indexTitle, sections }: Do
 
         <footer className="mt-48 pt-12 border-t border-black/10 max-w-[800px]">
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-40">
-            ¬© 2026 Whale Alert Network ¬∑ Desarrollado por Aztec Network
+            © 2026 Whale Alert Network ∑ Desarrollado por Aztec Network
           </p>
         </footer>
       </main>

@@ -1,4 +1,4 @@
-ï»¿"use client";
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -160,11 +160,11 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
                                         onClick={() => setActiveTab(tab.id)}
                                         className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all whitespace-nowrap ${
                                             active 
-                                            ? 'bg-black text-white shadow-md shadow-black/10' 
+                                            ? 'bg-black !!text-white shadow-md shadow-black/10' 
                                             : 'text-[#666666] hover:bg-black/5 hover:text-black'
                                         }`}
                                     >
-                                        <Icon size={16} className={active ? "text-white" : "text-[#888888]"} />
+                                        <Icon size={16} className={active ? "!text-white" : "text-[#888888]"} />
                                         <span className="text-[11px] font-black uppercase tracking-widest">
                                             {tab.label}
                                         </span>
@@ -274,7 +274,7 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
                                                             <Globe size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#888888]" />
                                                             <select value={language} onChange={e => setLanguage(e.target.value)} className="w-full p-3.5 pl-10 bg-[#FFFFFF] border border-[#E5E5E5] rounded-xl text-[13px] text-[#050505] font-bold focus:border-black outline-none appearance-none cursor-pointer">
                                                                 <option value="en-US">English (US)</option>
-                                                                <option value="es-ES">EspaÃ±ol (ES)</option>
+                                                                <option value="es-ES">Español (ES)</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -288,7 +288,7 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
                                                             <select value={currency} onChange={e => setCurrency(e.target.value)} className="w-full p-3.5 pl-10 bg-[#FFFFFF] border border-[#E5E5E5] rounded-xl text-[13px] text-[#050505] font-bold focus:border-black outline-none appearance-none cursor-pointer">
                                                                 <option value="USD">USD ($)</option>
                                                                 <option value="EUR">EUR ()</option>
-                                                                <option value="GBP">GBP (Â£)</option>
+                                                                <option value="GBP">GBP (£)</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -316,7 +316,7 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
                                                                 onClick={() => setGasPreset(preset)}
                                                                 className={`py-3 rounded-xl border text-[11px] font-black uppercase tracking-widest transition-all ${
                                                                     gasPreset === preset 
-                                                                    ? 'bg-black text-white border-black' 
+                                                                    ? 'bg-black !!text-white border-black' 
                                                                     : 'bg-[#FFFFFF] border-[#E5E5E5] text-[#888888] hover:border-black hover:text-black'
                                                                 }`}
                                                             >
@@ -369,7 +369,7 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
                             <button
                                 onClick={handleSave}
                                 disabled={!isConnected || isSaving}
-                                className="bg-[#050505] text-white px-8 py-3.5 rounded-xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-black/80 hover:shadow-lg hover:shadow-black/10 active:scale-[0.98] transition-all disabled:opacity-50 flex items-center gap-2"
+                                className="bg-[#050505] !text-white px-8 py-3.5 rounded-xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-black/80 hover:shadow-lg hover:shadow-black/10 active:scale-[0.98] transition-all disabled:opacity-50 flex items-center gap-2"
                             >
                                 {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
                                 {isSaving ? 'SYNCING STATE...' : 'SAVE CONFIGURATION'}

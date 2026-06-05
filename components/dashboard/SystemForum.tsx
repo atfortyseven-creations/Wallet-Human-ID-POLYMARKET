@@ -282,7 +282,7 @@ function CategoryCard({ cat, index }: { cat: any; index: number }) {
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
             <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 shadow-sm"
+              className="w-10 h-10 rounded-xl flex items-center justify-center !text-white shrink-0 shadow-sm"
               style={{ background: meta.color }}
             >
               {meta.icon}
@@ -351,7 +351,7 @@ function TopicRow({ topic, mounted }: { topic: any; mounted: boolean }) {
     >
       {/* Left: avatar + info */}
       <div className="flex items-center gap-4 min-w-0 flex-1">
-        <div className="w-9 h-9 rounded-full flex items-center justify-center text-[11px] font-black text-white shrink-0 uppercase shadow-sm"
+        <div className="w-9 h-9 rounded-full flex items-center justify-center text-[11px] font-black !text-white shrink-0 uppercase shadow-sm"
           style={{ background: meta.color }}>
           {topic.author?.walletAddress?.slice(2, 4) || '??'}
         </div>
@@ -458,7 +458,7 @@ function ForumHomeContent() {
           <div className="flex items-center gap-4 shrink-0">
               <button
                 onClick={() => setMenuOpen(v => !v)}
-                className={`flex items-center justify-center w-9 h-9 rounded-full border border-black/10 transition-colors ${menuOpen ? 'bg-black text-white' : 'bg-transparent hover:bg-black/5 text-slate-500'}`}
+                className={`flex items-center justify-center w-9 h-9 rounded-full border border-black/10 transition-colors ${menuOpen ? 'bg-black !!text-white' : 'bg-transparent hover:bg-black/5 text-slate-500'}`}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                   <line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="18" x2="21" y2="18" />
@@ -565,7 +565,7 @@ function ForumHomeContent() {
             <div className="flex-1" />
             <Link
               href="/forum/new"
-              className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#050505] text-white text-[11px] font-bold hover:bg-black/80 transition-colors mb-1"
+              className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#050505] !text-white text-[11px] font-bold hover:bg-black/80 transition-colors mb-1"
             >
               <Plus size={12} />
               New Topic
@@ -626,7 +626,7 @@ function ForumHomeContent() {
                       className="group flex items-center gap-3 px-4 py-3 hover:bg-black/5 transition-colors"
                     >
                       <div
-                        className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-black text-white shrink-0"
+                        className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-black !text-white shrink-0"
                         style={{ background: CATEGORY_META[topic.category?.slug]?.color || '#64748B' }}
                       >
                         {topic.author?.walletAddress?.slice(2, 4) || '??'}
@@ -660,7 +660,7 @@ function ForumHomeContent() {
                   {FILTER_TABS.find(t => t.id === activeTab)?.label} Topics
                 </h2>
                 <Link href="/forum/new"
-                  className="sm:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0088cc] text-white text-[11px] font-bold">
+                  className="sm:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0088cc] !text-white text-[11px] font-bold">
                   <Plus size={11} /> New
                 </Link>
               </div>
@@ -685,7 +685,7 @@ function ForumHomeContent() {
                     <MessageSquare size={32} className="text-slate-200" />
                     <p className="text-[14px] text-slate-400">No discussions here yet.</p>
                     <Link href="/forum/new"
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0088cc] text-white text-[13px] font-bold hover:bg-[#0077b3] transition-colors">
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0088cc] !text-white text-[13px] font-bold hover:bg-[#0077b3] transition-colors">
                       <Plus size={14} />
                       Start a Discussion
                     </Link>
@@ -716,7 +716,7 @@ function ForumHomeContent() {
 
                 {/* New topic CTA */}
                 <Link href="/forum/new"
-                  className="mt-4 flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-[#0088cc] text-white text-[12px] font-bold hover:bg-[#0077b3] transition-colors shadow-sm">
+                  className="mt-4 flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-[#0088cc] !text-white text-[12px] font-bold hover:bg-[#0077b3] transition-colors shadow-sm">
                   <Plus size={14} />
                   Start a New Discussion
                 </Link>

@@ -173,7 +173,7 @@ export default function TokenFlowVisualizer({ isPremium }: { isPremium: boolean 
                 {/* Flow Arrow */}
                 <div className="flex flex-col items-center">
                   <ArrowRight className="text-purple-600" size={24} />
-                  <div className="mt-1 px-2 py-0.5 bg-purple-600 text-white text-xs font-bold rounded-full">
+                  <div className="mt-1 px-2 py-0.5 bg-purple-600 !text-white text-xs font-bold rounded-full">
                     {flow.type}
                   </div>
                 </div>
@@ -209,7 +209,7 @@ export default function TokenFlowVisualizer({ isPremium }: { isPremium: boolean 
               LIVE
             </span>
           </h3>
-          <button className="px-4 py-2 bg-[#1F1F1F] text-white rounded-xl text-sm font-bold hover:bg-[#1F1F1F]/90 transition-all">
+          <button className="px-4 py-2 bg-[#1F1F1F] !text-white rounded-xl text-sm font-bold hover:bg-[#1F1F1F]/90 transition-all">
             Auto-Copy: OFF
           </button>
         </div>
@@ -330,8 +330,8 @@ function CopySignalCard({ signal, index }: { signal: CopyTradingSignal; index: n
           disabled={copied}
           className={`px-6 py-3 rounded-xl font-bold flex items-center gap-2 transition-all ${
             copied
-              ? 'bg-green-600 text-white'
-              : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-lg hover:scale-105'
+              ? 'bg-green-600 !text-white'
+              : 'bg-gradient-to-r from-purple-600 to-pink-600 !text-white hover:shadow-lg hover:scale-105'
           }`}
         >
           {copied ? (

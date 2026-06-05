@@ -35,7 +35,7 @@ export default function AttestationEngine({ sessionId }: { sessionId: string }) 
           <div className="text-sm">AUM &gt;$500M  Score 0.95  Last Seen: {new Date(payload.statement.last_seen_zk).toLocaleTimeString()}</div>
         </div>
       </div>
-      <div className="text-[10px] font-mono text-white/40">Latency {latency.toFixed(1)}ms | λ=512 | ε=0.0001</div>
+      <div className="text-[10px] font-mono !text-white/40">Latency {latency.toFixed(1)}ms | λ=512 | ε=0.0001</div>
     </div>
   );
 }

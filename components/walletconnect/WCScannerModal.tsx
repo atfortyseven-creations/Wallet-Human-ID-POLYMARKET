@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { getWeb3Wallet } from '@/lib/walletconnect/walletKit';
@@ -43,7 +43,7 @@ export function WCScannerModal({ onClose }: Props) {
                 </button>
                 
                 <div className="p-6 pb-4 border-b border-black/5 bg-[#FFFFFF] text-center">
-                    <div className="w-12 h-12 mx-auto bg-black text-white rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-black/20">
+                    <div className="w-12 h-12 mx-auto bg-black !!text-white rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-black/20">
                         <Link2 size={20} />
                     </div>
                     <h2 className="text-lg font-black font-aztec-mono uppercase tracking-widest text-black">Connect dApp</h2>
@@ -67,7 +67,7 @@ export function WCScannerModal({ onClose }: Props) {
                     <button 
                         onClick={handleConnect}
                         disabled={isConnecting || uri.length < 10}
-                        className="flex-1 py-3.5 rounded-xl font-aztec-mono text-[11px] font-black uppercase tracking-widest bg-black text-white hover:bg-black/80 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="flex-1 py-3.5 rounded-xl font-aztec-mono text-[11px] font-black uppercase tracking-widest bg-black !!text-white hover:bg-black/80 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                         {isConnecting ? 'Bridging...' : <><Scan size={14} /> Establish Link</>}
                     </button>

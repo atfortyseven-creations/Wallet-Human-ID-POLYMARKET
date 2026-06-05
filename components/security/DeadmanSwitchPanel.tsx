@@ -121,7 +121,7 @@ export function DeadmanSwitchPanel() {
             <HeartPulse size={22} className="text-indigo-400" />
           </div>
           <div>
-            <h2 className="text-white font-black text-base uppercase tracking-widest">Deadman's Switch</h2>
+            <h2 className="!text-white font-black text-base uppercase tracking-widest">Deadman's Switch</h2>
             <p className="text-indigo-500 text-[11px] uppercase tracking-widest font-bold">Non-Custodial Inheritance · Polygon</p>
           </div>
         </div>
@@ -208,7 +208,7 @@ export function DeadmanSwitchPanel() {
               <div className="relative flex-shrink-0">
                 <TimerArc percent={status.percentLeft} danger={status.isDangerous || status.isExpired} />
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className={`text-3xl font-black font-mono ${status.isDangerous || status.isExpired ? "text-red-400" : "text-white"}`}>
+                  <span className={`text-3xl font-black font-mono ${status.isDangerous || status.isExpired ? "text-red-400" : "!text-white"}`}>
                     {status.isExpired ? "00" : Math.floor(status.daysLeft).toString().padStart(2, "0")}
                   </span>
                   <span className="text-indigo-500 text-[10px] font-black uppercase tracking-widest mt-0.5">Days Left</span>
@@ -229,7 +229,7 @@ export function DeadmanSwitchPanel() {
                       <Icon size={11} className="text-indigo-500" />
                       <span className="text-[9px] text-indigo-500 font-black uppercase tracking-widest">{label}</span>
                     </div>
-                    <p className="text-white text-xs font-bold font-mono truncate">{val}</p>
+                    <p className="!text-white text-xs font-bold font-mono truncate">{val}</p>
                   </div>
                 ))}
               </div>
@@ -245,7 +245,7 @@ export function DeadmanSwitchPanel() {
                   <button
                     disabled={!!txPending}
                     onClick={() => exec("Confirm Backup Wallet", confirmBackup)}
-                    className="px-4 py-2 bg-blue-700 hover:bg-blue-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-colors disabled:opacity-50"
+                    className="px-4 py-2 bg-blue-700 hover:bg-blue-600 !text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-colors disabled:opacity-50"
                   >
                     {txPending === "Confirm Backup Wallet" ? <Loader2 size={14} className="animate-spin" /> : "Confirm Now"}
                   </button>
@@ -262,8 +262,8 @@ export function DeadmanSwitchPanel() {
                 onClick={() => exec("Send Heartbeat", sendPing)}
                 className={`w-full py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 shadow-xl disabled:opacity-50 ${
                   status.isDangerous || status.isExpired
-                    ? "bg-red-600 hover:bg-red-500 text-white shadow-red-900/40 animate-pulse"
-                    : "bg-indigo-600 hover:bg-indigo-500 text-white shadow-indigo-900/40"
+                    ? "bg-red-600 hover:bg-red-500 !text-white shadow-red-900/40 animate-pulse"
+                    : "bg-indigo-600 hover:bg-indigo-500 !text-white shadow-indigo-900/40"
                 }`}
               >
                 {txPending === "Send Heartbeat"
@@ -301,12 +301,12 @@ export function DeadmanSwitchPanel() {
                         placeholder="0x"
                         value={newBackupInput}
                         onChange={e => setNewBackupInput(e.target.value)}
-                        className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-white text-xs font-mono placeholder-slate-700 outline-none focus:border-indigo-500/60"
+                        className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 !text-white text-xs font-mono placeholder-slate-700 outline-none focus:border-indigo-500/60"
                       />
                       <button
                         disabled={!newBackupInput || !!txPending}
                         onClick={() => exec("Propose Backup", () => proposeBackup(newBackupInput as Address))}
-                        className="px-5 py-2.5 bg-indigo-700 hover:bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-colors disabled:opacity-50"
+                        className="px-5 py-2.5 bg-indigo-700 hover:bg-indigo-600 !text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-colors disabled:opacity-50"
                       >
                         Propose
                       </button>
@@ -323,13 +323,13 @@ export function DeadmanSwitchPanel() {
                         type="number" min={90} max={365}
                         value={newTimeoutDays}
                         onChange={e => setNewTimeoutDays(Number(e.target.value))}
-                        className="w-28 bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-white text-xs font-mono outline-none focus:border-indigo-500/60"
+                        className="w-28 bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 !text-white text-xs font-mono outline-none focus:border-indigo-500/60"
                       />
                       <span className="text-slate-500 text-xs">days</span>
                       <button
                         disabled={newTimeoutDays < 90 || !!txPending}
                         onClick={() => exec("Update Timeout", () => updateTimeout(newTimeoutDays))}
-                        className="ml-auto px-5 py-2.5 bg-indigo-700 hover:bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-colors disabled:opacity-50"
+                        className="ml-auto px-5 py-2.5 bg-indigo-700 hover:bg-indigo-600 !text-white text-[10px] font-black uppercase tracking-widest rounded-xl transition-colors disabled:opacity-50"
                       >
                         Update
                       </button>
@@ -347,8 +347,8 @@ export function DeadmanSwitchPanel() {
                       onClick={() => exec(status.paused ? "Unpause" : "Pause", status.paused ? unpauseContract : pauseContract)}
                       className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-colors disabled:opacity-50 ${
                         status.paused
-                          ? "bg-emerald-700 hover:bg-emerald-600 text-white"
-                          : "bg-red-700 hover:bg-red-600 text-white"
+                          ? "bg-emerald-700 hover:bg-emerald-600 !text-white"
+                          : "bg-red-700 hover:bg-red-600 !text-white"
                       }`}
                     >
                       {status.paused ? <><Play size={12} /> Resume</> : <><Pause size={12} /> Pause</>}

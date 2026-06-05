@@ -36,7 +36,7 @@ export default function ClaimablesTab({ claimables, isLoading }: ClaimablesTabPr
     return (
         <div className="space-y-3 px-4">
             <div className="p-4 bg-blue-50 border border-blue-100 rounded-2xl flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white">
+                <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center !text-white">
                     <Sparkles size={20} />
                 </div>
                 <div>
@@ -54,7 +54,7 @@ export default function ClaimablesTab({ claimables, isLoading }: ClaimablesTabPr
                     className="flex items-center justify-between p-5 bg-white border border-neutral-100 rounded-3xl hover:shadow-lg transition-all"
                 >
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-neutral-900 flex items-center justify-center text-white font-black overflow-hidden relative">
+                        <div className="w-12 h-12 rounded-2xl bg-neutral-900 flex items-center justify-center !text-white font-black overflow-hidden relative">
                             {item.protocol[0]}
                         </div>
                         <div>
@@ -69,7 +69,7 @@ export default function ClaimablesTab({ claimables, isLoading }: ClaimablesTabPr
                             <div className="font-black text-neutral-900">{item.amount}</div>
                             <div className="text-xs text-emerald-600 font-black">${safeToFixed(item.valueUSD, 2)}</div>
                         </div>
-                        <button className="w-10 h-10 bg-neutral-100 hover:bg-neutral-900 hover:text-white rounded-full flex items-center justify-center transition-colors">
+                        <button className="w-10 h-10 bg-neutral-100 hover:bg-neutral-900 hover:!text-white rounded-full flex items-center justify-center transition-colors">
                             <ArrowRight size={18} />
                         </button>
                     </div>

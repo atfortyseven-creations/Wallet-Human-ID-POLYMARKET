@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { useWalletConnectStore } from '@/lib/store/wallet-connect-store';
@@ -166,7 +166,7 @@ export function SessionRequestModal() {
                     <button
                         onClick={handleApprove}
                         disabled={isProcessing || (!privateKey && isSign)}
-                        className="flex-1 py-3.5 flex items-center justify-center gap-2 rounded-xl font-aztec-mono text-[11px] font-black uppercase tracking-widest bg-black text-white hover:bg-black/80 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="flex-1 py-3.5 flex items-center justify-center gap-2 rounded-xl font-aztec-mono text-[11px] font-black uppercase tracking-widest bg-black !!text-white hover:bg-black/80 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                         {isProcessing ? 'Signing...' : <><Shield size={14} /> Sign & Respond</>}
                     </button>

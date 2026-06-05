@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -189,7 +189,7 @@ export function TokenUnlockCalendar() {
               onClick={() => setFilter(f)}
               className={`px-4 py-1.5 text-[10px] uppercase font-semibold tracking-widest border transition-colors shadow-sm ${
                 filter === f
-                  ? "border-stone-400/80 bg-stone-900 text-white"
+                  ? "border-stone-400/80 bg-stone-900 !text-white"
                   : "border-stone-200 bg-white text-stone-500 hover:bg-black/5"
               }`}
             >

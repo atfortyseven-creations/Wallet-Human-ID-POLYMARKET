@@ -91,7 +91,7 @@ export default function PortfolioDashboard({ walletAddress }: { walletAddress?: 
                 <div className="flex gap-4 relative z-10">
                     <button
                         onClick={() => open()}
-                        className="px-8 py-4 bg-black text-white font-black rounded-xl uppercase tracking-[0.2em] text-[10px] hover:bg-slate-800 transition-colors"
+                        className="px-8 py-4 bg-black !!text-white font-black rounded-xl uppercase tracking-[0.2em] text-[10px] hover:bg-slate-800 transition-colors"
                     >
                         AUTHENTICATE
                     </button>

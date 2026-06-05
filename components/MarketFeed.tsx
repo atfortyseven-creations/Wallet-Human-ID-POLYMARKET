@@ -29,7 +29,7 @@ export const MarketFeed = () => {
 
             {/* Header Sección */}
             <div className="flex items-center justify-between mb-8 px-4">
-                <h3 className="text-2xl font-bold text-white flex items-center gap-2">
+                <h3 className="text-2xl font-bold !text-white flex items-center gap-2">
                     <TrendingUp className="text-cyan-400" />
                     Mercados en Base Sepolia
                 </h3>
@@ -50,9 +50,9 @@ export const MarketFeed = () => {
                 // Estado: Vacío
                 <GlassCard className="text-center py-20 mx-4 border-dashed border-white/20">
                     <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <AlertCircle className="text-white/40" size={32} />
+                        <AlertCircle className="!text-white/40" size={32} />
                     </div>
-                    <h3 className="text-xl text-white font-bold">No active markets</h3>
+                    <h3 className="text-xl !text-white font-bold">No active markets</h3>
                     <p className="text-blue-200/50 mt-2 max-w-md mx-auto">
                         The blockchain is quiet. Be the first to create a prediction above.
                     </p>
@@ -86,7 +86,7 @@ export const MarketFeed = () => {
                                 </div>
 
                                 {/* Título del Mercado */}
-                                <h4 className="text-xl font-bold text-white leading-tight mb-4 group-hover:text-cyan-300 transition-colors line-clamp-3 min-h-[4.5rem]">
+                                <h4 className="text-xl font-bold !text-white leading-tight mb-4 group-hover:text-cyan-300 transition-colors line-clamp-3 min-h-[4.5rem]">
                                     {market.title}
                                 </h4>
 

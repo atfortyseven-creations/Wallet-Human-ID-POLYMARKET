@@ -87,12 +87,12 @@ export function ActionCluster({ onAction }: ActionClusterProps) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              className={`w-14 h-14 rounded-full ${action.color} flex items-center justify-center text-white border border-white/5 shadow-2xl relative group overflow-hidden`}
+              className={`w-14 h-14 rounded-full ${action.color} flex items-center justify-center !text-white border border-white/5 shadow-2xl relative group overflow-hidden`}
             >
               <div className="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-colors" />
               <action.icon size={24} strokeWidth={2.5} className="relative z-10" />
             </motion.button>
-            <span className="text-[11px] font-bold text-white/50 tracking-wide mt-3 group-hover:text-white transition-colors">
+            <span className="text-[11px] font-bold !text-white/50 tracking-wide mt-3 group-hover:!text-white transition-colors">
               {action.label}
             </span>
         </div>

@@ -49,7 +49,7 @@ export default function SettingsPanel() {
           <button 
             onClick={registerPasskey}
             disabled={isRegisteringPasskey}
-            className="w-full flex items-center justify-between p-4 border border-black hover:bg-black hover:text-white transition-colors disabled:opacity-50"
+            className="w-full flex items-center justify-between p-4 border border-black hover:bg-black hover:!text-white transition-colors disabled:opacity-50"
           >
             <span className="font-black uppercase tracking-widest text-[10px]">REGISTER PASSKEY</span>
             {isRegisteringPasskey ? (
@@ -73,7 +73,7 @@ export default function SettingsPanel() {
                 </p>
                 <button 
                     onClick={() => setShowSecret(false)}
-                    className="w-full px-6 py-4 bg-black text-white text-[10px] uppercase font-black tracking-widest hover:bg-white hover:text-black border border-black transition-colors"
+                    className="w-full px-6 py-4 bg-black !!text-white text-[10px] uppercase font-black tracking-widest hover:bg-white hover:text-black border border-black transition-colors"
                 >
                     HIDE SECRET
                 </button>
@@ -87,7 +87,7 @@ export default function SettingsPanel() {
           <p className="text-[10px] uppercase tracking-widest">Clear all secure keys and local registries.</p>
           <button 
             onClick={nuclearDisconnect}
-            className="w-full px-6 py-4 bg-black text-white text-[10px] uppercase font-black tracking-widest hover:bg-white hover:text-black border border-black transition-colors"
+            className="w-full px-6 py-4 bg-black !!text-white text-[10px] uppercase font-black tracking-widest hover:bg-white hover:text-black border border-black transition-colors"
           >
             DISCONNECT SESSION
           </button>
@@ -117,7 +117,7 @@ function DangerZoneReveal({ onSuccess }: { onSuccess: () => void }) {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="TYPE WHALE..."
-                className="w-full px-6 py-4 border border-black outline-none font-black text-[11px] uppercase tracking-widest transition-colors focus:bg-black focus:text-white placeholder:text-black/30"
+                className="w-full px-6 py-4 border border-black outline-none font-black text-[11px] uppercase tracking-widest transition-colors focus:bg-black focus:!text-white placeholder:text-black/30"
             />
 
             <button
@@ -125,7 +125,7 @@ function DangerZoneReveal({ onSuccess }: { onSuccess: () => void }) {
                 onClick={() => { if (isMatched) onSuccess(); }}
                 className={`w-full h-12 font-black text-[10px] uppercase tracking-widest transition-colors flex items-center justify-center border border-black ${
                     isMatched 
-                    ? 'bg-black text-white cursor-pointer' 
+                    ? 'bg-black !!text-white cursor-pointer' 
                     : 'bg-white text-black/30 cursor-not-allowed'
                 }`}
             >

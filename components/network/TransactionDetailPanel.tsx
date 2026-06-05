@@ -30,10 +30,10 @@ export function TransactionDetailPanel({ transaction, onClose, btcToUsd }: Trans
             >
                 {/* Header */}
                 <div className="sticky top-0 bg-[#0D0D12]/95 backdrop-blur-xl border-b border-white/10 p-6 flex items-center justify-between">
-                    <h2 className="text-2xl font-bold text-white">Transaction</h2>
+                    <h2 className="text-2xl font-bold !text-white">Transaction</h2>
                     <button
                         onClick={onClose}
-                        className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-white transition-colors"
+                        className="p-2 rounded-full bg-white/5 hover:bg-white/10 !text-white transition-colors"
                     >
                         <X size={24} />
                     </button>
@@ -59,7 +59,7 @@ export function TransactionDetailPanel({ transaction, onClose, btcToUsd }: Trans
                             <Clock size={12} />
                             First Seen
                         </p>
-                        <p className="text-white text-lg">
+                        <p className="!text-white text-lg">
                             {formatDistanceToNow(new Date(transaction.timestamp * 1000), { addSuffix: true })}
                         </p>
                     </div>
@@ -70,7 +70,7 @@ export function TransactionDetailPanel({ transaction, onClose, btcToUsd }: Trans
                             <TrendingUp size={12} />
                             Amount
                         </p>
-                        <p className="text-white text-2xl font-bold font-mono">
+                        <p className="!text-white text-2xl font-bold font-mono">
                             {safeToFixed(transaction.amount, 8)} <span className="text-orange-400">BTC</span>
                         </p>
                         <p className="text-gray-400 text-sm mt-1">
@@ -81,7 +81,7 @@ export function TransactionDetailPanel({ transaction, onClose, btcToUsd }: Trans
                     {/* Fee Rate */}
                     <div>
                         <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">Fee Rate</p>
-                        <p className="text-white text-xl font-mono">
+                        <p className="!text-white text-xl font-mono">
                             {safeToFixed(transaction.feeRate, 3)} <span className="text-gray-400">sats</span>
                         </p>
                         <p className="text-green-400 font-bold text-lg">
@@ -92,7 +92,7 @@ export function TransactionDetailPanel({ transaction, onClose, btcToUsd }: Trans
                     {/* Exchange Rate */}
                     <div>
                         <p className="text-xs uppercase tracking-wider text-gray-500 mb-2">Exchange Rate</p>
-                        <p className="text-white font-mono">
+                        <p className="!text-white font-mono">
                             {safeToFixed(transaction.feeRate / transaction.virtualSize, 2)} <span className="text-gray-400">sat/vB</span>
                         </p>
                     </div>
@@ -103,7 +103,7 @@ export function TransactionDetailPanel({ transaction, onClose, btcToUsd }: Trans
                             <HardDrive size={12} />
                             Virtual Size
                         </p>
-                        <p className="text-white text-xl font-mono">
+                        <p className="!text-white text-xl font-mono">
                             {safeToLocaleString(transaction.virtualSize)} <span className="text-gray-400">kvB</span>
                         </p>
                     </div>
@@ -147,11 +147,11 @@ export function TransactionDetailPanel({ transaction, onClose, btcToUsd }: Trans
                         <div className="flex gap-4 text-sm">
                             <div className="bg-white/5 px-4 py-2 rounded-lg flex-1">
                                 <p className="text-gray-500 text-xs mb-1">Inputs</p>
-                                <p className="text-white font-mono font-bold">{transaction.inputs}</p>
+                                <p className="!text-white font-mono font-bold">{transaction.inputs}</p>
                             </div>
                             <div className="bg-white/5 px-4 py-2 rounded-lg flex-1">
                                 <p className="text-gray-500 text-xs mb-1">Outputs</p>
-                                <p className="text-white font-mono font-bold">{transaction.outputs}</p>
+                                <p className="!text-white font-mono font-bold">{transaction.outputs}</p>
                             </div>
                         </div>
                     </div>

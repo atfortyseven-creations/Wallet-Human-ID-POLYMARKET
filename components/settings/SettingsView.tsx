@@ -48,7 +48,7 @@ export function SettingsView({ onBack }: { onBack: () => void }) {
                 </div>
                 <button
                     onClick={onBack}
-                    className="px-6 py-2 border border-black text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-colors"
+                    className="px-6 py-2 border border-black text-[10px] font-black uppercase tracking-widest hover:bg-black hover:!text-white transition-colors"
                 >
                     CLOSE
                 </button>
@@ -61,7 +61,7 @@ export function SettingsView({ onBack }: { onBack: () => void }) {
                         onClick={() => setActiveTab(tab.id)}
                         className={`px-6 py-4 text-[10px] font-black uppercase tracking-[0.2em] transition-all whitespace-nowrap border-r border-black last:border-r-0 ${
                             activeTab === tab.id
-                                ? 'bg-black text-white'
+                                ? 'bg-black !!text-white'
                                 : 'bg-white text-black hover:bg-black/5'
                         }`}
                     >
@@ -116,7 +116,7 @@ export function SettingsView({ onBack }: { onBack: () => void }) {
                 </span>
                 <button
                     onClick={onBack}
-                    className="px-8 py-3 border border-black text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black hover:text-white transition-colors"
+                    className="px-8 py-3 border border-black text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black hover:!text-white transition-colors"
                 >
                     ← BACK
                 </button>
@@ -168,7 +168,7 @@ function ProtocolsModule() {
             <div className="space-y-6">
                 <button
                     onClick={() => setSelected(null)}
-                    className="text-[10px] font-black uppercase tracking-[0.2em] border border-black px-5 py-2.5 hover:bg-black hover:text-white transition-colors"
+                    className="text-[10px] font-black uppercase tracking-[0.2em] border border-black px-5 py-2.5 hover:bg-black hover:!text-white transition-colors"
                 >
                     Back
                 </button>
@@ -193,10 +193,10 @@ function ProtocolsModule() {
                     <button
                         key={p.id}
                         onClick={() => setSelected(p.id)}
-                        className="p-7 border border-black hover:bg-black hover:text-white transition-all text-left group"
+                        className="p-7 border border-black hover:bg-black hover:!text-white transition-all text-left group"
                     >
                         <span className="text-[11px] font-black uppercase tracking-[0.25em] block mb-2">{p.label}</span>
-                        <span className="text-[9px] uppercase tracking-widest text-black/40 group-hover:text-white/60 block leading-relaxed">{p.desc}</span>
+                        <span className="text-[9px] uppercase tracking-widest text-black/40 group-hover:!text-white/60 block leading-relaxed">{p.desc}</span>
                     </button>
                 ))}
             </div>
@@ -239,13 +239,13 @@ function QuantumSwapModule({ btcAddress, btcBalance }: any) {
                     value={amount}
                     onChange={e => setAmount(e.target.value)}
                     placeholder="AMOUNT OF BTC TO SWAP"
-                    className="w-full border border-black px-6 py-5 text-[14px] uppercase tracking-widest outline-none focus:bg-black focus:text-white transition-colors"
+                    className="w-full border border-black px-6 py-5 text-[14px] uppercase tracking-widest outline-none focus:bg-black focus:!text-white transition-colors"
                 />
                 
                 <button
                     onClick={handleSwap}
                     disabled={swapping || !amount}
-                    className="w-full bg-black text-white text-[12px] font-black uppercase tracking-[0.3em] py-6 hover:bg-white hover:text-black border border-black transition-colors disabled:opacity-50"
+                    className="w-full bg-black !!text-white text-[12px] font-black uppercase tracking-[0.3em] py-6 hover:bg-white hover:text-black border border-black transition-colors disabled:opacity-50"
                 >
                     {swapping ? 'ROUTING THROUGH AZTEC...' : 'EXECUTE NATIVE SWAP'}
                 </button>
@@ -270,12 +270,12 @@ function SecurityModule({ passwordHash, setupPassword, lockVault, privateKey, mn
                         placeholder="ENTER NEW PASSPHRASE"
                         value={newPassword}
                         onChange={e => setNewPassword(e.target.value)}
-                        className="w-full border border-black px-4 py-4 text-[12px] tracking-widest mb-4 outline-none focus:bg-black focus:text-white transition-colors"
+                        className="w-full border border-black px-4 py-4 text-[12px] tracking-widest mb-4 outline-none focus:bg-black focus:!text-white transition-colors"
                     />
                     <button
                         onClick={() => { setupPassword(newPassword); toast.success("VAULT ENCRYPTED"); }}
                         disabled={!newPassword || newPassword.length < 8}
-                        className="w-full bg-black text-white text-[10px] font-black uppercase tracking-[0.2em] py-4 border border-black hover:bg-white hover:text-black transition-colors disabled:opacity-50"
+                        className="w-full bg-black !!text-white text-[10px] font-black uppercase tracking-[0.2em] py-4 border border-black hover:bg-white hover:text-black transition-colors disabled:opacity-50"
                     >
                         INITIALIZE ENCRYPTION
                     </button>
@@ -286,13 +286,13 @@ function SecurityModule({ passwordHash, setupPassword, lockVault, privateKey, mn
 
     return (
         <div className="space-y-6">
-            <div className="border border-black p-6 flex items-center justify-between bg-black text-white">
+            <div className="border border-black p-6 flex items-center justify-between bg-black !!text-white">
                 <div>
                     <p className="text-[12px] font-black uppercase tracking-[0.2em]">AES-256-GCM ACTIVE</p>
                 </div>
                 <button
                     onClick={lockVault}
-                    className="text-[10px] font-black uppercase tracking-widest bg-white text-black border border-white px-6 py-3 hover:bg-black hover:text-white transition-colors"
+                    className="text-[10px] font-black uppercase tracking-widest bg-white text-black border border-white px-6 py-3 hover:bg-black hover:!text-white transition-colors"
                 >
                     LOCK NOW
                 </button>
@@ -307,7 +307,7 @@ function SecurityModule({ passwordHash, setupPassword, lockVault, privateKey, mn
                                 <span className="text-[10px] font-black uppercase tracking-[0.2em]">ECDSA PRIVATE KEY</span>
                                 <button
                                     onClick={() => setShowPk(!showPk)}
-                                    className="text-[10px] uppercase font-black tracking-widest border border-black px-4 py-2 hover:bg-black hover:text-white transition-colors"
+                                    className="text-[10px] uppercase font-black tracking-widest border border-black px-4 py-2 hover:bg-black hover:!text-white transition-colors"
                                 >
                                     {showPk ? 'HIDE' : 'REVEAL'}
                                 </button>
@@ -329,7 +329,7 @@ function SecurityModule({ passwordHash, setupPassword, lockVault, privateKey, mn
                                 <span className="text-[10px] font-black uppercase tracking-[0.2em]">BIP-39 MNEMONIC</span>
                                 <button
                                     onClick={() => setShowMnemonic(!showMnemonic)}
-                                    className="text-[10px] uppercase font-black tracking-widest border border-black px-4 py-2 hover:bg-black hover:text-white transition-colors"
+                                    className="text-[10px] uppercase font-black tracking-widest border border-black px-4 py-2 hover:bg-black hover:!text-white transition-colors"
                                 >
                                     {showMnemonic ? 'HIDE' : 'REVEAL'}
                                 </button>
@@ -386,11 +386,11 @@ function NetworkModule({ activeNetwork, setNetwork, customRpcUrl, setCustomRpcUr
                                 key={id}
                                 onClick={() => { setNetwork(id as NetworkId); }}
                                 className={`w-full p-6 text-left flex items-center justify-between border transition-all ${
-                                    isActive ? 'border-black bg-black text-white' : 'border-black hover:bg-black hover:text-white'
+                                    isActive ? 'border-black bg-black !!text-white' : 'border-black hover:bg-black hover:!text-white'
                                 }`}
                             >
                                 <span className="text-[12px] font-black uppercase tracking-[0.2em]">{net.name}</span>
-                                <span className={`text-[10px] uppercase tracking-widest ${isActive ? 'text-white/50' : 'text-black/50'}`}>CHAIN {net.chainId}</span>
+                                <span className={`text-[10px] uppercase tracking-widest ${isActive ? '!text-white/50' : 'text-black/50'}`}>CHAIN {net.chainId}</span>
                             </button>
                         );
                     })}
@@ -405,18 +405,18 @@ function NetworkModule({ activeNetwork, setNetwork, customRpcUrl, setCustomRpcUr
                         placeholder="HTTPS://..."
                         value={rpcInput}
                         onChange={e => setRpcInput(e.target.value)}
-                        className="w-full border border-black px-6 py-4 text-[11px] tracking-widest outline-none focus:bg-black focus:text-white transition-colors uppercase"
+                        className="w-full border border-black px-6 py-4 text-[11px] tracking-widest outline-none focus:bg-black focus:!text-white transition-colors uppercase"
                     />
                     <div className="flex gap-4">
                         <button
                             onClick={handleSaveRPC}
-                            className="flex-1 bg-black text-white text-[10px] font-black uppercase tracking-[0.2em] py-4 border border-black hover:bg-white hover:text-black transition-colors"
+                            className="flex-1 bg-black !!text-white text-[10px] font-black uppercase tracking-[0.2em] py-4 border border-black hover:bg-white hover:text-black transition-colors"
                         >
                             INJECT NODE
                         </button>
                         <button
                             onClick={() => { setRpcInput(''); setCustomRpcUrl(null); }}
-                            className="px-8 border border-black text-black text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black hover:text-white transition-colors"
+                            className="px-8 border border-black text-black text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black hover:!text-white transition-colors"
                         >
                             RESET
                         </button>
@@ -460,7 +460,7 @@ function ContactsModule({ contacts, addContact, removeContact }: any) {
                 <button
                     onClick={handleSave}
                     disabled={!newName || !newAddress}
-                    className="w-full bg-black text-white text-[10px] font-black uppercase tracking-[0.2em] py-4 hover:bg-white hover:text-black border border-black transition-colors disabled:opacity-50"
+                    className="w-full bg-black !!text-white text-[10px] font-black uppercase tracking-[0.2em] py-4 hover:bg-white hover:text-black border border-black transition-colors disabled:opacity-50"
                 >
                     COMMIT TO REGISTRY
                 </button>
@@ -475,7 +475,7 @@ function ContactsModule({ contacts, addContact, removeContact }: any) {
                 ) : (
                     <div className="space-y-4">
                         {contacts.map((c: any) => (
-                            <div key={c.address} className="border border-black p-6 flex justify-between items-center hover:bg-black hover:text-white transition-colors group">
+                            <div key={c.address} className="border border-black p-6 flex justify-between items-center hover:bg-black hover:!text-white transition-colors group">
                                 <div>
                                     <p className="text-[12px] font-black uppercase tracking-[0.2em]">{c.name}</p>
                                     <p className="text-[10px] tracking-widest mt-2 opacity-50">{c.address}</p>

@@ -29,9 +29,9 @@ export default function LoginCard() {
             <div className="mb-8 flex flex-col items-center space-y-2">
                 <div className="flex items-center space-x-3 mb-2">
                     <div className="p-2 rounded-full bg-white/5 border border-white/10">
-                        <Lock className="w-5 h-5 text-white/80" strokeWidth={2.5} />
+                        <Lock className="w-5 h-5 !text-white/80" strokeWidth={2.5} />
                     </div>
-                    <h1 className="text-3xl font-bold tracking-tight text-white drop-shadow-md">
+                    <h1 className="text-3xl font-bold tracking-tight !text-white drop-shadow-md">
                         Whale Alert Network
                     </h1>
                 </div>
@@ -43,7 +43,7 @@ export default function LoginCard() {
 
             {/* Content Area */}
             <div className="w-full space-y-6">
-                <p className="text-center text-white/60 text-sm leading-relaxed">
+                <p className="text-center !text-white/60 text-sm leading-relaxed">
                     Access the future of institutional analytics with your verified identity.
                 </p>
 
@@ -53,7 +53,7 @@ export default function LoginCard() {
             <div className="mt-8 pt-6 border-t border-white/5 w-full flex justify-center">
                 <div className="flex items-center space-x-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>
-                    <span className="text-xs text-white/40">Secure Connection Established</span>
+                    <span className="text-xs !text-white/40">Secure Connection Established</span>
                 </div>
             </div>
         </motion.div>

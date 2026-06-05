@@ -39,7 +39,7 @@ function ExpandableFeature({ feature }: ExpandableFeatureProps) {
       >
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
-            <h3 className="text-2xl font-black text-white mb-2 group-hover:text-blue-400 transition-colors uppercase tracking-widest">
+            <h3 className="text-2xl font-black !text-white mb-2 group-hover:text-blue-400 transition-colors uppercase tracking-widest">
               {title}
             </h3>
             <p className="text-blue-500/60 text-xs font-mono uppercase tracking-[0.2em] mb-3">
@@ -54,7 +54,7 @@ function ExpandableFeature({ feature }: ExpandableFeatureProps) {
             transition={{ duration: 0.3 }}
             className="flex-shrink-0"
           >
-            <ChevronDown className="w-6 h-6 text-zinc-400 group-hover:text-white transition-colors" />
+            <ChevronDown className="w-6 h-6 text-zinc-400 group-hover:!text-white transition-colors" />
           </motion.div>
         </div>
       </button>
@@ -94,7 +94,7 @@ function ExpandableFeature({ feature }: ExpandableFeatureProps) {
                     <h4 className="text-sm font-black text-blue-400 mb-4 font-mono uppercase tracking-[0.3em] relative z-10">
                       {t('ecosystem.why_hero')}
                     </h4>
-                    <p className="text-white leading-relaxed text-lg font-bold relative z-10">
+                    <p className="!text-white leading-relaxed text-lg font-bold relative z-10">
                       {humanEdge}
                     </p>
                   </div>
@@ -156,7 +156,7 @@ export function EcosystemSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-6xl md:text-8xl font-black text-white mb-8 tracking-tighter drop-shadow-2xl uppercase"
+            className="text-6xl md:text-8xl font-black !text-white mb-8 tracking-tighter drop-shadow-2xl uppercase"
         >
           {t('ecosystem.title')}
         </motion.h2>

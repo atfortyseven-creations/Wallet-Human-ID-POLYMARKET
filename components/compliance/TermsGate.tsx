@@ -33,7 +33,7 @@ export const TermsGate = () => {
                 {/* Warning Header */}
                 <div className="flex items-center gap-3 mb-6 text-yellow-500">
                     <ShieldAlert size={32} />
-                    <h2 className="text-xl font-bold tracking-tight text-white">JURIDICAL CHECKPOINT</h2>
+                    <h2 className="text-xl font-bold tracking-tight !text-white">JURIDICAL CHECKPOINT</h2>
                 </div>
 
                 <div className="prose prose-invert text-sm text-[#888899] font-mono mb-8 max-h-[40vh] overflow-y-auto pr-2">
@@ -58,7 +58,7 @@ export const TermsGate = () => {
                             />
                             <div className="w-5 h-5 border-2 border-[#444] rounded peer-checked:bg-[#00f2ea] peer-checked:border-[#00f2ea] transition-all"></div>
                         </div>
-                        <span className="text-sm text-gray-300 group-hover:text-white transition-colors">
+                        <span className="text-sm text-gray-300 group-hover:!text-white transition-colors">
                             I attest I am compliant with the above Manifesto.
                         </span>
                     </label>

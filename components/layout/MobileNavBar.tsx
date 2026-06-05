@@ -55,7 +55,7 @@ export function MobileNavBar() {
                                     strokeWidth={isActive || isCenter ? 2.5 : 2}
                                     className={cn(
                                         "transition-colors duration-300",
-                                        isCenter ? "text-white " : "group-hover:text-black "
+                                        isCenter ? "!text-white " : "group-hover:text-black "
                                     )}
                                 />
                             </div>

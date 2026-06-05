@@ -54,7 +54,7 @@ export const TokenChartOverlay = ({ symbol, onClose }: OverlayProps) => {
                     <div className="flex items-center gap-6">
                         <div>
                             <div className="flex items-baseline gap-3">
-                                <span className="font-aztec-h1 text-5xl uppercase text-white tracking-tighter leading-none">{s}</span>
+                                <span className="font-aztec-h1 text-5xl uppercase !text-white tracking-tighter leading-none">{s}</span>
                                 <span className={`font-mono text-2xl font-black tracking-tighter ${isBull ? 'text-emerald-400' : 'text-rose-400'}`}>
                                     {fmt(lastPrice)}
                                 </span>
@@ -68,13 +68,13 @@ export const TokenChartOverlay = ({ symbol, onClose }: OverlayProps) => {
                             </div>
                             {/* Sub-row: compact meta */}
                             <div className="flex items-center gap-5 mt-2">
-                                <span className="font-aztec-h2 text-[9px] uppercase tracking-[0.35em] text-white/20">Heikin-Ashi 1m</span>
+                                <span className="font-aztec-h2 text-[9px] uppercase tracking-[0.35em] !text-white/20">Heikin-Ashi 1m</span>
                                 <span className="w-px h-3 bg-white/10" />
-                                <span className="font-aztec-h2 text-[9px] uppercase tracking-[0.35em] text-white/20">
-                                    Vol  <span className="text-white/50">${fmtC(vol1h)}</span>
+                                <span className="font-aztec-h2 text-[9px] uppercase tracking-[0.35em] !text-white/20">
+                                    Vol  <span className="!text-white/50">${fmtC(vol1h)}</span>
                                 </span>
                                 <span className="w-px h-3 bg-white/10" />
-                                <span className="font-aztec-h2 text-[9px] uppercase tracking-[0.35em] text-white/20">
+                                <span className="font-aztec-h2 text-[9px] uppercase tracking-[0.35em] !text-white/20">
                                     {minP > 0 && maxP > 0 ? `${fmtP(minP, 0)}  ${fmtP(maxP, 0)}` : ''}
                                 </span>
                                 <span className="w-px h-3 bg-white/10" />
@@ -89,7 +89,7 @@ export const TokenChartOverlay = ({ symbol, onClose }: OverlayProps) => {
                     {/* Right: Close */}
                     <button
                         onClick={onClose}
-                        className="p-2.5 rounded-xl hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all text-white/40 hover:text-white group"
+                        className="p-2.5 rounded-xl hover:bg-white/5 border border-white/10 hover:border-white/20 transition-all !text-white/40 hover:!text-white group"
                     >
                         <X className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
                     </button>
@@ -111,22 +111,22 @@ export const TokenChartOverlay = ({ symbol, onClose }: OverlayProps) => {
                         {/* Stats strip */}
                         <div className="px-5 py-4 border-b border-white/5 grid grid-cols-2 gap-4">
                             <div>
-                                <div className="font-aztec-h2 text-[8px] uppercase tracking-[0.35em] text-white/20 mb-1">1h Volume</div>
-                                <div className="font-mono text-sm font-black text-white">${fmtC(vol1h)}</div>
+                                <div className="font-aztec-h2 text-[8px] uppercase tracking-[0.35em] !text-white/20 mb-1">1h Volume</div>
+                                <div className="font-mono text-sm font-black !text-white">${fmtC(vol1h)}</div>
                             </div>
                             <div>
-                                <div className="font-aztec-h2 text-[8px] uppercase tracking-[0.35em] text-white/20 mb-1">Momentum</div>
+                                <div className="font-aztec-h2 text-[8px] uppercase tracking-[0.35em] !text-white/20 mb-1">Momentum</div>
                                 <div className={`font-aztec-h2 text-[11px] uppercase tracking-wide font-black ${isBull ? 'text-emerald-400' : 'text-rose-400'}`}>
                                     {isBull ? ' Bullish' : ' Bearish'}
                                 </div>
                             </div>
                             <div>
-                                <div className="font-aztec-h2 text-[8px] uppercase tracking-[0.35em] text-white/20 mb-1">24h Low</div>
-                                <div className="font-mono text-sm font-black text-white/70">{minP > 0 ? fmtP(minP, 0) : ''}</div>
+                                <div className="font-aztec-h2 text-[8px] uppercase tracking-[0.35em] !text-white/20 mb-1">24h Low</div>
+                                <div className="font-mono text-sm font-black !text-white/70">{minP > 0 ? fmtP(minP, 0) : ''}</div>
                             </div>
                             <div>
-                                <div className="font-aztec-h2 text-[8px] uppercase tracking-[0.35em] text-white/20 mb-1">24h High</div>
-                                <div className="font-mono text-sm font-black text-white/70">{maxP > 0 ? fmtP(maxP, 0) : ''}</div>
+                                <div className="font-aztec-h2 text-[8px] uppercase tracking-[0.35em] !text-white/20 mb-1">24h High</div>
+                                <div className="font-mono text-sm font-black !text-white/70">{maxP > 0 ? fmtP(maxP, 0) : ''}</div>
                             </div>
                         </div>
 
@@ -134,7 +134,7 @@ export const TokenChartOverlay = ({ symbol, onClose }: OverlayProps) => {
                         <div className="px-5 py-3 border-b border-white/5 flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <Droplets className="w-3.5 h-3.5 text-[var(--aztec-orchid)] animate-pulse" />
-                                <span className="font-aztec-h2 text-[9px] uppercase tracking-[0.35em] text-white/50">Whale Flow</span>
+                                <span className="font-aztec-h2 text-[9px] uppercase tracking-[0.35em] !text-white/50">Whale Flow</span>
                             </div>
                             <ShieldCheck className="w-3.5 h-3.5 text-emerald-500/60" />
                         </div>
@@ -146,10 +146,10 @@ export const TokenChartOverlay = ({ symbol, onClose }: OverlayProps) => {
                                     {tokenEvents.slice(0, 25).map((e, i) => (
                                         <div key={i} className="px-5 py-3 flex items-center justify-between hover:bg-white/[0.02] transition-colors group">
                                             <div className="flex flex-col gap-0.5">
-                                                <span className="font-mono text-[10px] text-white/30 group-hover:text-white/50 transition-colors">
+                                                <span className="font-mono text-[10px] !text-white/30 group-hover:!text-white/50 transition-colors">
                                                     {e.wallet.slice(0, 10)}
                                                 </span>
-                                                <span className="font-mono text-[13px] font-black text-white">{fmt(e.usdNum)}</span>
+                                                <span className="font-mono text-[13px] font-black !text-white">{fmt(e.usdNum)}</span>
                                             </div>
                                             <div className="flex flex-col items-end gap-0.5">
                                                 <span className={`font-aztec-h2 text-[9px] uppercase tracking-[0.25em] px-2 py-0.5 rounded border ${
@@ -157,15 +157,15 @@ export const TokenChartOverlay = ({ symbol, onClose }: OverlayProps) => {
                                                         ? 'text-emerald-400 border-emerald-400/20 bg-emerald-400/5' 
                                                         : 'text-rose-400 border-rose-400/20 bg-rose-400/5'
                                                 }`}>{e.action}</span>
-                                                <span className="font-aztec-h2 text-[8px] uppercase tracking-[0.3em] text-white/20">{e.token}</span>
+                                                <span className="font-aztec-h2 text-[8px] uppercase tracking-[0.3em] !text-white/20">{e.token}</span>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
                             ) : (
                                 <div className="h-full flex flex-col items-center justify-center gap-3 p-8 opacity-30">
-                                    <Activity className="w-8 h-8 text-white" />
-                                    <span className="font-aztec-h2 text-[9px] uppercase tracking-[0.4em] text-white text-center">
+                                    <Activity className="w-8 h-8 !text-white" />
+                                    <span className="font-aztec-h2 text-[9px] uppercase tracking-[0.4em] !text-white text-center">
                                         Awaiting flow data
                                     </span>
                                 </div>
@@ -174,10 +174,10 @@ export const TokenChartOverlay = ({ symbol, onClose }: OverlayProps) => {
 
                         {/* Footer signature */}
                         <div className="px-5 py-3 border-t border-white/5 flex items-center justify-between">
-                            <span className="font-aztec-h2 text-[8px] uppercase tracking-[0.35em] text-white/15">Whale Alert Network.</span>
+                            <span className="font-aztec-h2 text-[8px] uppercase tracking-[0.35em] !text-white/15">Whale Alert Network.</span>
                             <div className="flex items-center gap-1.5">
                                 <div className="w-1 h-1 rounded-full bg-[var(--aztec-orchid)] animate-pulse" />
-                                <span className="font-aztec-h2 text-[8px] uppercase tracking-[0.35em] text-white/15">ha v1.02</span>
+                                <span className="font-aztec-h2 text-[8px] uppercase tracking-[0.35em] !text-white/15">ha v1.02</span>
                             </div>
                         </div>
                     </div>

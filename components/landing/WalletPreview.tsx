@@ -40,13 +40,13 @@ export function WalletPreview() {
             />
             {/* Header Area - CENTERED */}
             <div className="flex items-center justify-between mb-8 relative">
-                <div className="flex items-center gap-2 text-white/50 bg-black/10 px-3 py-1 rounded-full text-[10px] font-mono">
+                <div className="flex items-center gap-2 !text-white/50 bg-black/10 px-3 py-1 rounded-full text-[10px] font-mono">
                     <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"/>
                     Mainnet
                 </div>
                 
                 {/* Centered Title */}
-                <div className="absolute left-1/2 -translate-x-1/2 text-white font-black text-2xl tracking-tight">
+                <div className="absolute left-1/2 -translate-x-1/2 !text-white font-black text-2xl tracking-tight">
                     Whale Alert Network
                 </div>
 
@@ -55,8 +55,8 @@ export function WalletPreview() {
 
             {/* Total Balance Card - CENTERED & LARGE */}
             <div className="bg-gradient-to-b from-[#6D6D75] to-[#5A5A60] rounded-[2rem] p-10 mb-8 text-center relative shadow-inner border border-white/10">
-                <div className="text-white/40 text-sm font-medium mb-4 uppercase tracking-widest">Balance Total</div>
-                <div className="text-6xl font-black text-white mb-4 tracking-tighter">$24,593.00</div>
+                <div className="!text-white/40 text-sm font-medium mb-4 uppercase tracking-widest">Balance Total</div>
+                <div className="text-6xl font-black !text-white mb-4 tracking-tighter">$24,593.00</div>
                 <div className="text-green-400 font-bold font-mono flex items-center justify-center gap-2 bg-green-500/10 py-1 px-4 rounded-full w-fit mx-auto">
                     <ArrowUpRight size={16} /> +$1,240.50 (5.4%)
                 </div>
@@ -65,13 +65,13 @@ export function WalletPreview() {
                 <div className="flex justify-center gap-6 mt-10">
                     {['Buy', 'Send', 'Recv', 'Swap'].map((action, i) => (
                         <div key={action} className="flex flex-col items-center gap-3 group cursor-pointer">
-                            <div className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/90 group-hover:bg-white/20 group-hover:scale-110 transition-all duration-300 shadow-lg backdrop-blur-sm">
+                            <div className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center !text-white/90 group-hover:bg-white/20 group-hover:scale-110 transition-all duration-300 shadow-lg backdrop-blur-sm">
                                 {i === 0 && <CreditCard size={24} />}
                                 {i === 1 && <ArrowUpRight size={24} />}
                                 {i === 2 && <ArrowDownLeft size={24} />}
                                 {i === 3 && <Repeat size={24} />}
                             </div>
-                            <span className="text-[11px] font-bold text-white/40 uppercase tracking-wide group-hover:text-white/80 transition-colors">{action}</span>
+                            <span className="text-[11px] font-bold !text-white/40 uppercase tracking-wide group-hover:!text-white/80 transition-colors">{action}</span>
                         </div>
                     ))}
                 </div>
@@ -80,11 +80,11 @@ export function WalletPreview() {
             {/* Accounts List & Search */}
             <div className="space-y-4">
                 <div className="relative mb-6">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={18} />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 !text-white/20" size={18} />
                     <input 
                         type="text" 
                         placeholder="Buscar cuentas..." 
-                        className="w-full bg-black/5 border border-white/5 rounded-2xl py-3 pl-12 pr-4 text-sm text-white focus:outline-none focus:bg-black/10 transition-colors placeholder:text-white/20"
+                        className="w-full bg-black/5 border border-white/5 rounded-2xl py-3 pl-12 pr-4 text-sm !text-white focus:outline-none focus:bg-black/10 transition-colors placeholder:!text-white/20"
                         disabled
                     />
                 </div>
@@ -97,17 +97,17 @@ export function WalletPreview() {
                 ].map((acc, i) => (
                     <div key={i} className="flex items-center justify-between p-4 rounded-2xl hover:bg-white/5 transition-colors cursor-pointer group border border-transparent hover:border-white/5">
                         <div className="flex items-center gap-4">
-                            <div className={`w-10 h-10 rounded-full ${acc.color} flex items-center justify-center text-xs text-white font-bold shadow-md`}>
+                            <div className={`w-10 h-10 rounded-full ${acc.color} flex items-center justify-center text-xs !text-white font-bold shadow-md`}>
                                 {acc.name[0]}
                             </div>
                             <div>
-                                <div className="text-white font-bold text-base">{acc.name}</div>
-                                <div className="text-white/30 text-xs font-mono">{acc.balance}</div>
+                                <div className="!text-white font-bold text-base">{acc.name}</div>
+                                <div className="!text-white/30 text-xs font-mono">{acc.balance}</div>
                             </div>
                         </div>
                         <div className="text-right">
-                            <div className="text-white font-bold text-base">{acc.usd}</div>
-                            <MoreVertical size={16} className="text-white/20 ml-auto mt-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <div className="!text-white font-bold text-base">{acc.usd}</div>
+                            <MoreVertical size={16} className="!text-white/20 ml-auto mt-1 opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
                     </div>
                 ))}

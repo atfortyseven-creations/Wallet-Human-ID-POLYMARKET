@@ -31,7 +31,7 @@ export function ContextMenu({ x, y, nodeId, onClose, onAddNode }: ContextMenuPro
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.1 }}
-            className="absolute w-56 bg-[#111111]/90 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-xl overflow-hidden will-change-transform z-50 text-white"
+            className="absolute w-56 bg-[#111111]/90 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-xl overflow-hidden will-change-transform z-50 !text-white"
             style={{ left: safeX, top: safeY }}
             onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); }}
         >
@@ -39,7 +39,7 @@ export function ContextMenu({ x, y, nodeId, onClose, onAddNode }: ContextMenuPro
                 // Node Action Menu
                 <div className="flex flex-col">
                     <div className="px-4 py-2 border-b border-white/10 bg-white/5">
-                        <span className="text-[9px] uppercase tracking-[0.2em] font-mono text-white/40">Node Action</span>
+                        <span className="text-[9px] uppercase tracking-[0.2em] font-mono !text-white/40">Node Action</span>
                     </div>
                     <MenuButton icon={<Pause size={14} />} label="Pause Automation" onClick={onClose} />
                     <MenuButton icon={<RefreshCw size={14} />} label="Force Sync" onClick={onClose} />
@@ -52,7 +52,7 @@ export function ContextMenu({ x, y, nodeId, onClose, onAddNode }: ContextMenuPro
                 // Canvas Add Menu
                 <div className="flex flex-col">
                     <div className="px-4 py-2 border-b border-white/10 bg-white/5">
-                        <span className="text-[9px] uppercase tracking-[0.2em] font-mono text-white/40">Deploy Node</span>
+                        <span className="text-[9px] uppercase tracking-[0.2em] font-mono !text-white/40">Deploy Node</span>
                     </div>
                     <MenuButton icon={<Wallet size={14} />} label="Wallet Network" onClick={() => { onAddNode('wallet'); }} />
                     <MenuButton icon={<Bot size={14} />} label="Trading Bot" onClick={() => { onAddNode('bot'); }} />
@@ -68,7 +68,7 @@ function MenuButton({ icon, label, onClick, className = '' }: { icon: React.Reac
     return (
         <button 
             onClick={(e) => { e.stopPropagation(); onClick(); }}
-            className={`w-full flex items-center gap-3 px-4 py-2.5 text-xs font-medium text-white/70 hover:bg-white/10 hover:text-white transition-colors text-left ${className}`}
+            className={`w-full flex items-center gap-3 px-4 py-2.5 text-xs font-medium !text-white/70 hover:bg-white/10 hover:!text-white transition-colors text-left ${className}`}
         >
             {icon}
             {label}

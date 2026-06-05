@@ -116,7 +116,7 @@ export function SmartAccountTerminal({ onBack }: { onBack: () => void }) {
             <button
                 onClick={generateDummyUserOp}
                 disabled={isPacking}
-                className="px-6 py-4 bg-black text-white text-[10px] font-black uppercase tracking-[0.25em] hover:bg-black/80 disabled:opacity-30 transition-all flex items-center gap-3"
+                className="px-6 py-4 bg-black !!text-white text-[10px] font-black uppercase tracking-[0.25em] hover:bg-black/80 disabled:opacity-30 transition-all flex items-center gap-3"
             >
                 {isPacking ? <Cpu size={14} className="animate-spin" /> : <Zap size={14} fill="currentColor" />}
                 {isPacking ? 'PACKING CALLDATA...' : 'CONSTRUCT USER-OP'}
@@ -147,7 +147,7 @@ export function SmartAccountTerminal({ onBack }: { onBack: () => void }) {
 
                 <button
                     onClick={() => toast.success("Bundler Transmission Sent", { description: "eth_sendUserOperation executed via private RPC." })}
-                    className="w-full py-4 mt-4 bg-emerald-600 text-white text-[10px] font-black uppercase tracking-[0.25em] hover:bg-emerald-700 transition-all flex items-center justify-center gap-3 shadow-lg"
+                    className="w-full py-4 mt-4 bg-emerald-600 !text-white text-[10px] font-black uppercase tracking-[0.25em] hover:bg-emerald-700 transition-all flex items-center justify-center gap-3 shadow-lg"
                 >
                     TRANSMIT TO BUNDLER NETWORK <ArrowRight size={14} />
                 </button>

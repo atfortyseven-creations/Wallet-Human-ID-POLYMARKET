@@ -78,7 +78,7 @@ export function ActiveSessions() {
     <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
       <div className="flex justify-between items-center">
         <div>
-          <h3 className="text-lg font-bold text-white flex items-center gap-2">
+          <h3 className="text-lg font-bold !text-white flex items-center gap-2">
             <Shield className="w-5 h-5 text-[#00f2ea]" /> Active Sessions
           </h3>
           <p className="text-sm text-gray-500">Manage device access to your account.</p>
@@ -117,7 +117,7 @@ export function ActiveSessions() {
                   
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <h4 className="text-white font-medium text-sm">
+                      <h4 className="!text-white font-medium text-sm">
                         {session.device} <span className="text-gray-500 font-normal"> {session.browser}</span>
                       </h4>
                       {session.current && (

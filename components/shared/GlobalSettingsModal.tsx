@@ -43,7 +43,7 @@ export function GlobalSettingsModal() {
                     >
                         <div className="flex items-center justify-between px-6 py-4 border-b border-black/10  bg-white ">
                              <div className="flex items-center gap-3">
-                                 <div className="w-8 h-8 rounded-lg bg-black  flex items-center justify-center text-white ">
+                                 <div className="w-8 h-8 rounded-lg bg-black  flex items-center justify-center !text-white ">
                                     <Settings size={16} />
                                  </div>
                                  <div className="flex flex-col">

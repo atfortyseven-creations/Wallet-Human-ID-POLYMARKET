@@ -276,31 +276,31 @@ export function EntityGraphVis() {
                         <Network size={14} className="text-[#00C076]" />
                     </div>
                     <div>
-                        <h2 className="text-[10px] font-black uppercase tracking-[0.25em] text-white">Entity Graph</h2>
-                        <span className="text-[8px] text-white/30 uppercase tracking-widest">Multi-Entity Capital Topology</span>
+                        <h2 className="text-[10px] font-black uppercase tracking-[0.25em] !text-white">Entity Graph</h2>
+                        <span className="text-[8px] !text-white/30 uppercase tracking-widest">Multi-Entity Capital Topology</span>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-2">
                     {/* Zoom controls */}
                     <div className="flex items-center gap-1 bg-white/5 rounded-lg p-1 border border-white/5">
-                        <button onClick={handleZoomOut} className="p-1.5 rounded hover:bg-white/10 text-white/40 hover:text-white transition-colors">
+                        <button onClick={handleZoomOut} className="p-1.5 rounded hover:bg-white/10 !text-white/40 hover:!text-white transition-colors">
                             <ZoomOut size={12} />
                         </button>
-                        <span className="text-[9px] font-black font-mono text-white/30 px-2 tabular-nums min-w-[40px] text-center">
+                        <span className="text-[9px] font-black font-mono !text-white/30 px-2 tabular-nums min-w-[40px] text-center">
                             {Math.round(zoomLevel * 100)}%
                         </span>
-                        <button onClick={handleZoomIn} className="p-1.5 rounded hover:bg-white/10 text-white/40 hover:text-white transition-colors">
+                        <button onClick={handleZoomIn} className="p-1.5 rounded hover:bg-white/10 !text-white/40 hover:!text-white transition-colors">
                             <ZoomIn size={12} />
                         </button>
-                        <button onClick={handleResetZoom} className="p-1.5 rounded hover:bg-white/10 text-white/40 hover:text-white transition-colors">
+                        <button onClick={handleResetZoom} className="p-1.5 rounded hover:bg-white/10 !text-white/40 hover:!text-white transition-colors">
                             <Maximize2 size={12} />
                         </button>
                     </div>
 
                     <button
                         onClick={() => { setMountKey(Date.now()); mutate(); }}
-                        className="p-2 rounded-lg hover:bg-white/10 text-white/40 hover:text-white transition-colors border border-white/5"
+                        className="p-2 rounded-lg hover:bg-white/10 !text-white/40 hover:!text-white transition-colors border border-white/5"
                         title="Refresh graph"
                     >
                         <RefreshCw size={13} />
@@ -332,9 +332,9 @@ export function EntityGraphVis() {
                 {/* Empty state */}
                 {!isLoading && isOffline && (
                     <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 z-40">
-                        <WifiOff size={32} className="text-white/10" />
-                        <p className="text-[10px] font-black uppercase tracking-widest text-white/20">Graph Unavailable</p>
-                        <p className="text-[9px] text-white/10">The entity analytics layer is offline</p>
+                        <WifiOff size={32} className="!text-white/10" />
+                        <p className="text-[10px] font-black uppercase tracking-widest !text-white/20">Graph Unavailable</p>
+                        <p className="text-[9px] !text-white/10">The entity analytics layer is offline</p>
                     </div>
                 )}
 
@@ -344,7 +344,7 @@ export function EntityGraphVis() {
                 <div className="absolute bottom-5 left-5 flex flex-col gap-2 pointer-events-none">
                     <div className="rounded-xl border border-white/5 overflow-hidden" style={{ background: 'rgba(10,10,10,0.85)', backdropFilter: 'blur(12px)' }}>
                         <div className="px-4 py-2.5 border-b border-white/5">
-                            <span className="text-[8px] font-black uppercase tracking-widest text-white/30">Node Legend</span>
+                            <span className="text-[8px] font-black uppercase tracking-widest !text-white/30">Node Legend</span>
                         </div>
                         <div className="px-4 py-3 flex flex-col gap-2">
                             {Object.entries(NODE_COLORS).map(([group, colors]) => (
@@ -363,14 +363,14 @@ export function EntityGraphVis() {
                 <div className="absolute bottom-5 right-5 pointer-events-none">
                     <div className="rounded-xl border border-white/5 overflow-hidden" style={{ background: 'rgba(10,10,10,0.85)', backdropFilter: 'blur(12px)' }}>
                         <div className="px-4 py-2.5 border-b border-white/5">
-                            <span className="text-[8px] font-black uppercase tracking-widest text-white/30">Graph Metrics</span>
+                            <span className="text-[8px] font-black uppercase tracking-widest !text-white/30">Graph Metrics</span>
                         </div>
                         <div className="px-4 py-3 grid grid-cols-2 gap-x-8 gap-y-2">
-                            <span className="text-[7px] uppercase tracking-wider text-white/20">Nodes</span>
-                            <span className="text-[9px] font-black font-mono text-white">{gridData?.graph?.nodes?.length ?? 0}</span>
-                            <span className="text-[7px] uppercase tracking-wider text-white/20">Edges</span>
-                            <span className="text-[9px] font-black font-mono text-white">{gridData?.graph?.links?.length ?? 0}</span>
-                            <span className="text-[7px] uppercase tracking-wider text-white/20">Zoom</span>
+                            <span className="text-[7px] uppercase tracking-wider !text-white/20">Nodes</span>
+                            <span className="text-[9px] font-black font-mono !text-white">{gridData?.graph?.nodes?.length ?? 0}</span>
+                            <span className="text-[7px] uppercase tracking-wider !text-white/20">Edges</span>
+                            <span className="text-[9px] font-black font-mono !text-white">{gridData?.graph?.links?.length ?? 0}</span>
+                            <span className="text-[7px] uppercase tracking-wider !text-white/20">Zoom</span>
                             <span className="text-[9px] font-black font-mono text-[#00C076]">{Math.round(zoomLevel * 100)}%</span>
                         </div>
                     </div>
@@ -396,7 +396,7 @@ export function EntityGraphVis() {
                                     Entity Analysis
                                 </span>
                                 <button onClick={() => setSelectedNode(null)} className="p-0.5 hover:opacity-70 transition-opacity">
-                                    <XCircle size={13} className="text-white/30" />
+                                    <XCircle size={13} className="!text-white/30" />
                                 </button>
                             </div>
 
@@ -404,7 +404,7 @@ export function EntityGraphVis() {
                                 {/* Node name with glow dot */}
                                 <div className="flex items-center gap-2">
                                     <div className="w-2 h-2 rounded-full shrink-0" style={{ background: getNodeColor(selectedNode.group).fill, boxShadow: `0 0 8px ${getNodeColor(selectedNode.group).glow}` }} />
-                                    <h3 className="text-[11px] font-black text-white uppercase tracking-wide truncate">{selectedNode.label}</h3>
+                                    <h3 className="text-[11px] font-black !text-white uppercase tracking-wide truncate">{selectedNode.label}</h3>
                                 </div>
 
                                 {[
@@ -414,7 +414,7 @@ export function EntityGraphVis() {
                                     { label: 'Connections', value: String(selectedNode.connections ?? ''), color: 'rgba(255,255,255,0.4)' },
                                 ].map(({ label, value, color }) => (
                                     <div key={label} className="flex flex-col gap-0.5">
-                                        <span className="text-[7px] uppercase tracking-[0.2em] text-white/20 font-black">{label}</span>
+                                        <span className="text-[7px] uppercase tracking-[0.2em] !text-white/20 font-black">{label}</span>
                                         <span className="text-[10px] font-bold font-mono break-all" style={{ color }}>{value}</span>
                                     </div>
                                 ))}
@@ -425,14 +425,14 @@ export function EntityGraphVis() {
 
                 {/* Tip */}
                 <div className="absolute top-5 left-5 pointer-events-none">
-                    <span className="text-[8px] font-bold uppercase tracking-widest text-white/15">
+                    <span className="text-[8px] font-bold uppercase tracking-widest !text-white/15">
                         Scroll to zoom · drag nodes · click to inspect
                     </span>
                 </div>
             </div>
 
             {/*  FOOTER  */}
-            <div className="px-6 py-3 border-t border-white/5 bg-[#0A0A0A] flex justify-between items-center text-[7px] font-bold uppercase tracking-[0.2em] text-white/20 shrink-0">
+            <div className="px-6 py-3 border-t border-white/5 bg-[#0A0A0A] flex justify-between items-center text-[7px] font-bold uppercase tracking-[0.2em] !text-white/20 shrink-0">
                 <div className="flex items-center gap-4">
                     <span>Render: D3 Force Graph</span>
                     <span>Database: Neo4j Cluster</span>

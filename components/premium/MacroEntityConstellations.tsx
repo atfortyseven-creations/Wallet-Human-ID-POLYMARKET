@@ -40,7 +40,7 @@ export function MacroEntityConstellations({ whales, isSystemFlow, onProfileClick
       return (
         <div className="bg-black/80 backdrop-blur-md border border-indigo-500/30 p-3 rounded-xl shadow-2xl">
             <div className="text-[10px] text-indigo-400 uppercase tracking-widest font-bold mb-1">Kinetic Event</div>
-            <div className="font-mono text-white text-lg">{p.btc.toFixed(2)} BTC</div>
+            <div className="font-mono !text-white text-lg">{p.btc.toFixed(2)} BTC</div>
             <div className="text-gray-500 text-[10px] mt-1 break-all w-48 font-mono">{p.address}</div>
             <div className="text-cyan-500 text-[10px] mt-2 font-mono">{p.feeRate.toFixed(1)} sat/vB</div>
         </div>

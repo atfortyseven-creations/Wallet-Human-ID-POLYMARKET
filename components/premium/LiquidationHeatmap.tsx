@@ -111,7 +111,7 @@ export default function LiquidationHeatmap() {
       {/* Controls Header */}
       <div className="flex flex-wrap items-center justify-between gap-4 glass-premium p-4 rounded-3xl relative z-10">
         <div className="flex items-center gap-3">
-          <div className="bg-white/5 hover:bg-white/10 px-4 py-2 rounded-xl border border-white/10 text-white font-bold text-sm">
+          <div className="bg-white/5 hover:bg-white/10 px-4 py-2 rounded-xl border border-white/10 !text-white font-bold text-sm">
             BTC/USDT <span className="text-[10px] text-[#e0ff00] uppercase tracking-widest ml-2">Active WS</span>
           </div>
           <div className="flex bg-white/5 rounded-xl p-1 border border-white/10 gap-1">
@@ -119,7 +119,7 @@ export default function LiquidationHeatmap() {
               <button
                 key={tf}
                 onClick={() => setSelectedTimeframe(tf)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${selectedTimeframe === tf ? 'bg-purple-600 text-white shadow-lg' : 'text-white/50 hover:text-white'}`}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${selectedTimeframe === tf ? 'bg-purple-600 !text-white shadow-lg' : '!text-white/50 hover:!text-white'}`}
               >
                 {tf}
               </button>
@@ -128,7 +128,7 @@ export default function LiquidationHeatmap() {
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3 bg-white/5 px-4 py-2 rounded-xl border border-white/10">
-            <span className="text-xs font-bold text-white/40 uppercase">Depth Threshold</span>
+            <span className="text-xs font-bold !text-white/40 uppercase">Depth Threshold</span>
             <input
               type="range" min="0" max="5" step="0.1"
               value={liquidityThreshold}
@@ -141,10 +141,10 @@ export default function LiquidationHeatmap() {
             onClick={() => setSelectedTimeframe(t => t)} // re-trigger effect
             className="p-2.5 bg-white/5 hover:bg-white/10 rounded-xl border border-white/10"
           >
-            <RefreshCw size={18} className={isRefreshing ? 'animate-spin text-purple-400' : 'text-white/40'} />
+            <RefreshCw size={18} className={isRefreshing ? 'animate-spin text-purple-400' : '!text-white/40'} />
           </button>
           {lastUpdateTime && (
-            <span className="text-[10px] font-mono text-white/30">Updated {lastUpdateTime}</span>
+            <span className="text-[10px] font-mono !text-white/30">Updated {lastUpdateTime}</span>
           )}
         </div>
       </div>
@@ -162,7 +162,7 @@ export default function LiquidationHeatmap() {
                 </div>
               ))}
             </div>
-            <div className="text-[10px] font-bold text-white w-full text-center py-2 bg-white/5">
+            <div className="text-[10px] font-bold !text-white w-full text-center py-2 bg-white/5">
               ${currentPrice.toFixed(0)}
             </div>
             <div className="flex-1 w-full flex flex-col justify-start items-center gap-[1px]">
@@ -195,21 +195,21 @@ export default function LiquidationHeatmap() {
           <div className="p-3 bg-purple-500/10 rounded-2xl text-purple-400"><Info size={24} /></div>
           <div>
             <h4 className="font-bold mb-1">Active Binance Orderbook</h4>
-            <p className="text-sm text-white/40 leading-relaxed">
+            <p className="text-sm !text-white/40 leading-relaxed">
               Historical data from Binance Klines REST API. Active price appended from WebSocket stream. 0 mock data.
             </p>
           </div>
         </div>
         <div className="glass-premium p-6 rounded-[2rem] border border-white/5 flex items-center justify-between">
           <div className="space-y-1">
-            <span className="text-[10px] font-black text-white/30 uppercase tracking-widest">Data Source</span>
+            <span className="text-[10px] font-black !text-white/30 uppercase tracking-widest">Data Source</span>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
               <span className="font-bold text-green-400">api.binance.com</span>
             </div>
           </div>
           <div className="text-right">
-            <span className="text-[10px] font-black text-white/30 uppercase tracking-widest">Depth Max Pool</span>
+            <span className="text-[10px] font-black !text-white/30 uppercase tracking-widest">Depth Max Pool</span>
             <div className="font-mono text-xs font-bold text-purple-400 mt-1">{maxDepth.toFixed(2)}k BTC</div>
           </div>
         </div>

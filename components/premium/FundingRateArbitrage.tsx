@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface FundingRow {
@@ -143,7 +143,7 @@ export function FundingRateArbitrage() {
                   <div className="col-span-2">
                     <div className="flex items-center gap-2 mb-1">
                       <span className={`text-[13px] font-medium ${strong ? "text-stone-900" : "text-stone-700"}`}>{r.symbol}</span>
-                      {strong && <span className="px-1.5 py-0.5 text-[8px] bg-stone-900 text-white font-bold uppercase tracking-widest rounded-sm shadow-sm">High Yield</span>}
+                      {strong && <span className="px-1.5 py-0.5 text-[8px] bg-stone-900 !text-white font-bold uppercase tracking-widest rounded-sm shadow-sm">High Yield</span>}
                     </div>
                     <div className="text-[11px] text-stone-500">
                       {r.direction === "longs-pay" ? "Longs pay shorts" : "Shorts pay longs"}

@@ -44,7 +44,7 @@ export function LegendaryActivityFeed({ history }: { history: Transaction[] }) {
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                        <span className="text-sm font-bold tracking-tight text-white uppercase drop-shadow-md">
+                        <span className="text-sm font-bold tracking-tight !text-white uppercase drop-shadow-md">
                             {tx.type} {tx.asset}
                         </span>
                         {tx.status === 'PENDING' && <LoaderPulse />}
@@ -56,7 +56,7 @@ export function LegendaryActivityFeed({ history }: { history: Transaction[] }) {
                </div>
 
                <div className="text-right">
-                  <div className={`text-sm font-bold tracking-tight drop-shadow-md ${isOut ? 'text-white' : 'text-emerald-400'}`}>
+                  <div className={`text-sm font-bold tracking-tight drop-shadow-md ${isOut ? '!text-white' : 'text-emerald-400'}`}>
                      {isOut ? '-' : '+'}{safeToLocaleString(tx.value, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} {tx.asset}
                   </div>
                   <div className="flex items-center justify-end gap-1.5 mt-1">
@@ -67,7 +67,7 @@ export function LegendaryActivityFeed({ history }: { history: Transaction[] }) {
                          href={getExplorerUrl(tx.chainId, tx.hash, 'tx')} 
                          target="_blank" 
                          rel="noreferrer"
-                         className="text-zinc-600 hover:text-white transition-colors"
+                         className="text-zinc-600 hover:!text-white transition-colors"
                        >
                          <ExternalLink size={12} />
                        </a>

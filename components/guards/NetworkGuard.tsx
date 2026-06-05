@@ -33,7 +33,7 @@ export default function NetworkGuard() {
                     <AlertTriangle size={32} className="text-red-500" />
                 </div>
 
-                <h2 className="text-2xl font-bold text-white mb-2">Red Incorrecta</h2>
+                <h2 className="text-2xl font-bold !text-white mb-2">Red Incorrecta</h2>
                 <p className="text-gray-400 mb-8 leading-relaxed">
                     Esta aplicación solo funciona en la red <span className="text-purple-400 font-semibold">Polygon</span>.
                     Por favor cambia de red para continuar.
@@ -41,7 +41,7 @@ export default function NetworkGuard() {
 
                 <button
                     onClick={() => switchChain({ chainId: POLYGON_ID })}
-                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold tracking-brand shadow-lg transition-all transform hover:-translate-y-1 active:scale-95"
+                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 !text-white font-bold tracking-brand shadow-lg transition-all transform hover:-translate-y-1 active:scale-95"
                 >
                     Cambiar a Polygon
                 </button>

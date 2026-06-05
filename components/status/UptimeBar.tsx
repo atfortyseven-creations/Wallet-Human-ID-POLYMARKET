@@ -67,7 +67,7 @@ export default function UptimeBar({ serviceName, uptimePercentage, days }: Uptim
               <div className={`px-4 py-3 rounded-t-lg border-b border-black/10 ${
                 hoveredDay.day.status === 'outage' ? 'bg-black/10 text-black' :
                 hoveredDay.day.status === 'degraded' ? 'bg-black/5 text-black' :
-                'bg-black text-white'
+                'bg-black !!text-white'
               }`}>
                 <p className="text-xs font-bold uppercase tracking-wider">
                   {hoveredDay.day.status === 'outage' ? 'Major Outage' :

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -67,7 +67,7 @@ export function MultiversePortfolio({ theme = 'default' }: { theme?: 'default' |
                         <button
                             type="submit"
                             disabled={isScanning || !address.trim()}
-                            className={`h-14 px-6 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${isArctic ? 'bg-indigo-600 hover:bg-indigo-500 text-white' : 'bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-600'}`}
+                            className={`h-14 px-6 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${isArctic ? 'bg-indigo-600 hover:bg-indigo-500 !text-white' : 'bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-600'}`}
                         >
                             {isScanning ? (
                                 <Activity size={16} className="animate-spin" />

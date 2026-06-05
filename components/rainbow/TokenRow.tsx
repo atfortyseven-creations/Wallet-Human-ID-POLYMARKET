@@ -58,7 +58,7 @@ const TokenRowComponent = ({ symbol, name, balance, value, icon, change24h, chai
         </div>
         
         <div>
-          <div className="font-bold text-white tracking-tight flex items-center gap-2 drop-shadow-md">
+          <div className="font-bold !text-white tracking-tight flex items-center gap-2 drop-shadow-md">
               {name} 
               <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border uppercase tracking-widest ${getChainColor(chainId)}`}>
                   {getChainName(chainId)}
@@ -71,7 +71,7 @@ const TokenRowComponent = ({ symbol, name, balance, value, icon, change24h, chai
       </div>
 
       <div className="text-right">
-         <div className="font-bold text-white tracking-tight drop-shadow-md">
+         <div className="font-bold !text-white tracking-tight drop-shadow-md">
              {value}
          </div>
          {change24h !== undefined && (

@@ -195,7 +195,7 @@ const BridgeView = () => {
       <div className="border border-gray-100 rounded-3xl p-5 hover:border-gray-200 transition-colors mt-auto">
         <div className="flex justify-between items-center mb-5">
           <div className="text-gray-400 text-[10px] font-black tracking-widest">TO CHAIN & TOKEN</div>
-          <button className="bg-black text-white text-[10px] font-black px-3 py-1.5 rounded-sm flex items-center space-x-2">
+          <button className="bg-black !!text-white text-[10px] font-black px-3 py-1.5 rounded-sm flex items-center space-x-2">
             <span>BNB SMART CHAIN</span>
           </button>
         </div>
@@ -234,7 +234,7 @@ const BuyView = () => {
 
       {/* Token Tabs */}
       <div className="flex space-x-0 w-full mb-6">
-        <button className="flex-1 py-3.5 text-[10px] font-black tracking-widest bg-black text-white border border-black rounded-l-sm transition-colors">ETH</button>
+        <button className="flex-1 py-3.5 text-[10px] font-black tracking-widest bg-black !!text-white border border-black rounded-l-sm transition-colors">ETH</button>
         <button className="flex-1 py-3.5 text-[10px] font-black tracking-widest bg-white text-gray-400 border-y border-gray-100 hover:border-gray-200 hover:text-black transition-colors">BTC</button>
         <button className="flex-1 py-3.5 text-[10px] font-black tracking-widest bg-white text-gray-400 border border-l-0 border-gray-100 hover:border-gray-200 hover:text-black transition-colors">USDC</button>
         <button className="flex-1 py-3.5 text-[10px] font-black tracking-widest bg-white text-gray-400 border border-l-0 border-gray-100 hover:border-gray-200 hover:text-black rounded-r-sm transition-colors">MATIC</button>
@@ -267,7 +267,7 @@ const BuyView = () => {
       </div>
 
       {/* Footer Button */}
-      <button className="w-full bg-black text-white hover:bg-gray-900 font-black text-[11px] tracking-widest py-4 rounded-sm transition-colors">
+      <button className="w-full bg-black !!text-white hover:bg-gray-900 font-black text-[11px] tracking-widest py-4 rounded-sm transition-colors">
         INITIALIZE SECURE INGRESS {'->'}
       </button>
     </div>
@@ -291,14 +291,14 @@ export const SecureWalletModal: React.FC<SecureWalletModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 font-sans antialiased selection:bg-black selection:text-white">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 font-sans antialiased selection:bg-black selection:!text-white">
       {/* Modal Container */}
       <div className="bg-white rounded-[2rem] w-full max-w-[420px] shadow-2xl overflow-hidden relative border border-gray-100 flex flex-col h-[700px]">
         
         {/* Header */}
         <div className="flex items-center justify-between p-7 pb-4">
           <div className="flex items-center space-x-3">
-            <div className="bg-black text-white text-[10px] font-black tracking-widest px-3 py-1.5 rounded-sm">
+            <div className="bg-black !!text-white text-[10px] font-black tracking-widest px-3 py-1.5 rounded-sm">
               SECURE
             </div>
             <h2 className="text-2xl font-black tracking-tight">WALLET</h2>
@@ -320,7 +320,7 @@ export const SecureWalletModal: React.FC<SecureWalletModalProps> = ({
                 onClick={() => setActiveMainTab(tab as MainTab)}
                 className={`flex-1 text-center py-3 rounded-[1rem] text-[10px] font-black tracking-widest transition-all duration-300 ${
                   activeMainTab === tab 
-                    ? 'bg-black text-white shadow-md' 
+                    ? 'bg-black !!text-white shadow-md' 
                     : 'text-gray-400 hover:text-black hover:bg-gray-200/50'
                 }`}
               >

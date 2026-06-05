@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
@@ -128,7 +128,7 @@ export const WalkawayPanel = () => {
                         <Button 
                             onClick={handleHeartbeat}
                             disabled={loading}
-                            className="w-full bg-[#FF3B30] hover:bg-[#FF3B30]/90 text-white font-black uppercase tracking-widest text-[10px] h-10 gap-2 rounded-xl shadow-sm"
+                            className="w-full bg-[#FF3B30] hover:bg-[#FF3B30]/90 !text-white font-black uppercase tracking-widest text-[10px] h-10 gap-2 rounded-xl shadow-sm"
                         >
                             {loading ? <RefreshCw className="animate-spin" size={14} /> : <Lock size={14} />}
                             Confirm Founder Vitality

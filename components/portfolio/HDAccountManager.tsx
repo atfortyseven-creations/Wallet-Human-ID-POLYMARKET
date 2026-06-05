@@ -134,7 +134,7 @@ export function HDAccountManager({ onBack }: { onBack: () => void }) {
             key={path}
             onClick={() => { setActiveDerivation(path); setDerived([]); }}
             className={`px-4 py-2 text-[9px] font-black uppercase tracking-widest border transition-all ${
-              activeDerivation === path ? 'bg-black text-white border-black' : 'border-black/10 text-black/40 hover:border-black'
+              activeDerivation === path ? 'bg-black !!text-white border-black' : 'border-black/10 text-black/40 hover:border-black'
             }`}
           >
             {path === 'ethereum' ? "m/44'/60'/0'" : "Aztec m/44'/60'/1'"}
@@ -147,7 +147,7 @@ export function HDAccountManager({ onBack }: { onBack: () => void }) {
         <button
           onClick={() => deriveAndFetchBalances(showCount)}
           disabled={isScanning || !mnemonic}
-          className="flex items-center gap-2 px-5 py-3 bg-black text-white text-[9px] font-black uppercase tracking-widest hover:bg-black/80 disabled:opacity-30 transition-all"
+          className="flex items-center gap-2 px-5 py-3 bg-black !!text-white text-[9px] font-black uppercase tracking-widest hover:bg-black/80 disabled:opacity-30 transition-all"
         >
           {isScanning ? <RefreshCw size={11} className="animate-spin" /> : <Layers size={11} />}
           Derive {showCount} Accounts
@@ -215,7 +215,7 @@ export function HDAccountManager({ onBack }: { onBack: () => void }) {
                       switchAccount(acc.address);
                       toast.success(`Switched to Account ${acc.index}`);
                     }}
-                    className="text-[8px] font-black uppercase tracking-widest border border-black/10 px-3 py-1.5 hover:bg-black hover:text-white hover:border-black transition-all flex items-center gap-1"
+                    className="text-[8px] font-black uppercase tracking-widest border border-black/10 px-3 py-1.5 hover:bg-black hover:!text-white hover:border-black transition-all flex items-center gap-1"
                   >
                     USE <ChevronRight size={9} />
                   </button>

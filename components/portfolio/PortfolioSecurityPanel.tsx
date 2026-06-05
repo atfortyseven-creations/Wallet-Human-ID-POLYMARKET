@@ -1,4 +1,4 @@
-ï»¿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Key, Eye, EyeOff, Copy, AlertTriangle, ShieldCheck, Lock } from 'lucide-react';
 import { tryDecryptAny } from '@/lib/wallet-security';
@@ -25,7 +25,7 @@ export function PortfolioSecurityPanel() {
 
   const handleReveal = async () => {
     if (!password) {
-      toast.error("Ingresa tu contraseÃ±a");
+      toast.error("Ingresa tu contraseña");
       return;
     }
     
@@ -55,7 +55,7 @@ export function PortfolioSecurityPanel() {
       toast.success("Wallet desencriptado correctamente");
       setPassword('');
     } catch (err: any) {
-      toast.error("ContraseÃ±a incorrecta", { description: "Por favor, intenta de nuevo." });
+      toast.error("Contraseña incorrecta", { description: "Por favor, intenta de nuevo." });
     } finally {
       setIsLoading(false);
     }
@@ -78,17 +78,17 @@ export function PortfolioSecurityPanel() {
         </div>
         <div>
           <h2 className="font-black uppercase tracking-tight text-lg text-[#0A0A0A]">Centro de Seguridad y Respaldo</h2>
-          <p className="text-sm font-medium text-black/50">Verifica y respalda tus frases mnemÃ³nicas para evitar pÃ©rdida de acceso.</p>
+          <p className="text-sm font-medium text-black/50">Verifica y respalda tus frases mnemónicas para evitar pérdida de acceso.</p>
         </div>
       </div>
 
       <div className="bg-[#FFFFFF] border border-black/5 rounded-2xl p-5 mb-4">
         <div className="flex items-center gap-2 mb-3">
           <AlertTriangle size={16} className="text-amber-500" />
-          <span className="text-xs font-black uppercase tracking-widest text-amber-600">PrevenciÃ³n de PÃ©rdida</span>
+          <span className="text-xs font-black uppercase tracking-widest text-amber-600">Prevención de Pérdida</span>
         </div>
         <p className="text-sm font-medium text-black/60 leading-relaxed">
-          Si borras el historial de tu navegador o cambias de dispositivo, necesitarÃ¡s tu <strong>Frase MnemÃ³nica</strong> para recuperar tus fondos. AsegÃºrate de respaldarla ahora mismo.
+          Si borras el historial de tu navegador o cambias de dispositivo, necesitarás tu <strong>Frase Mnemónica</strong> para recuperar tus fondos. Asegúrate de respaldarla ahora mismo.
         </p>
       </div>
 
@@ -115,20 +115,20 @@ export function PortfolioSecurityPanel() {
 
           {!decryptedMnemonic ? (
             <div>
-              <label className="text-xs font-black uppercase tracking-widest text-black/40 mb-2 block">ContraseÃ±a de EncriptaciÃ³n</label>
+              <label className="text-xs font-black uppercase tracking-widest text-black/40 mb-2 block">Contraseña de Encriptación</label>
               <div className="flex gap-2">
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleReveal()}
-                  placeholder="Ingresa tu contraseÃ±a"
+                  placeholder="Ingresa tu contraseña"
                   className="flex-1 bg-[#FFFFFF] border border-black/10 rounded-xl px-4 py-3 text-sm font-bold focus:outline-none focus:border-black/30 placeholder:font-medium placeholder:text-black/30"
                 />
                 <button
                   onClick={handleReveal}
                   disabled={isLoading || !password}
-                  className="px-6 py-3 bg-[#0A0A0A] hover:bg-black text-white text-xs font-black uppercase tracking-widest rounded-xl disabled:opacity-50 transition-all active:scale-[0.98] shadow-md flex items-center gap-2"
+                  className="px-6 py-3 bg-[#0A0A0A] hover:bg-black !!text-white text-xs font-black uppercase tracking-widest rounded-xl disabled:opacity-50 transition-all active:scale-[0.98] shadow-md flex items-center gap-2"
                 >
                   {isLoading ? <span className="animate-pulse">Desencriptando...</span> : <><Lock size={14} /> Desbloquear</>}
                 </button>
@@ -159,10 +159,10 @@ export function PortfolioSecurityPanel() {
                     <EyeOff size={20} className="text-[#050505]" />
                   </div>
                   <p className="text-xs text-[#050505] font-black uppercase tracking-widest mb-1">Frase Protegida</p>
-                  <p className="text-[11px] text-[#050505]/50 font-medium mb-4 text-center px-4">AsegÃºrate de que nadie estÃ© mirando tu pantalla.</p>
+                  <p className="text-[11px] text-[#050505]/50 font-medium mb-4 text-center px-4">Asegúrate de que nadie esté mirando tu pantalla.</p>
                   <button 
                     onClick={() => setShowMnemonic(true)}
-                    className="px-6 py-3 rounded-xl bg-[#050505] text-white transition-all font-black text-[11px] uppercase tracking-widest active:scale-[0.96] shadow-md"
+                    className="px-6 py-3 rounded-xl bg-[#050505] !text-white transition-all font-black text-[11px] uppercase tracking-widest active:scale-[0.96] shadow-md"
                   >
                     Mostrar Frase
                   </button>

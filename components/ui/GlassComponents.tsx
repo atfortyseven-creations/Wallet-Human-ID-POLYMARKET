@@ -43,7 +43,7 @@ export const GlassInput = ({ label, className, ...props }: GlassInputProps) => {
             )}
             <input
                 className={cn(
-                    "w-full bg-surface/50 border border-glass-border rounded-xl px-4 py-3 text-white placeholder-neutral-700 focus:outline-none focus:border-white/20 focus:ring-1 focus:ring-white/10 transition-all font-mono",
+                    "w-full bg-surface/50 border border-glass-border rounded-xl px-4 py-3 !text-white placeholder-neutral-700 focus:outline-none focus:border-white/20 focus:ring-1 focus:ring-white/10 transition-all font-mono",
                     className
                 )}
                 {...props}

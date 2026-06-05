@@ -71,7 +71,7 @@ export function MinimalDarkPool() {
             {/* Header */}
             <div className="relative z-10 flex justify-between items-center mb-8 border-b border-white/10 pb-6">
                 <div>
-                    <h2 className="text-white text-2xl font-black tracking-widest uppercase flex items-center gap-3">
+                    <h2 className="!text-white text-2xl font-black tracking-widest uppercase flex items-center gap-3">
                         <Waves className="text-blue-500" size={28} />
                         Active Dark Pool
                     </h2>
@@ -101,7 +101,7 @@ export function MinimalDarkPool() {
                             <Activity size={64} className="relative animate-bounce text-blue-400" />
                         </div>
                         <span className="text-sm font-bold tracking-[0.3em] uppercase animate-pulse">Scanning Deep Network...</span>
-                        <span className="text-[10px] text-white/30 uppercase tracking-widest max-w-[200px] text-center leading-relaxed">Awaiting Elite transfers exceeding $500k USD.</span>
+                        <span className="text-[10px] !text-white/30 uppercase tracking-widest max-w-[200px] text-center leading-relaxed">Awaiting Elite transfers exceeding $500k USD.</span>
                     </div>
                 ) : (
                     <AnimatePresence>
@@ -112,7 +112,7 @@ export function MinimalDarkPool() {
                 )}
             </div>
             
-             <div className="relative z-10 mt-6 pt-4 border-t border-white/10 flex justify-between items-center text-[10px] text-white/40 uppercase tracking-widest">
+             <div className="relative z-10 mt-6 pt-4 border-t border-white/10 flex justify-between items-center text-[10px] !text-white/40 uppercase tracking-widest">
                 <span>Persistencia: Temporal (Desde Registro)</span>
                 <span>Umbral: &gt; $500k USD</span>
             </div>
@@ -133,22 +133,22 @@ function MinimalWhaleRow({ event, isNew }: { event: WhaleEvent, isNew: boolean }
             <div className="flex items-center gap-6 w-1/3">
                 <div className={`w-2 h-2 rounded-full ${eventAny.rawUsd >= 5000000 ? 'bg-purple-500' : 'bg-blue-500'}`} />
                 <div>
-                    <div className="text-white font-bold flex items-center gap-2">
+                    <div className="!text-white font-bold flex items-center gap-2">
                         {event.wallet}
                         {event.tier === 'MEGA WHALE' && <Zap size={12} className="text-purple-400 fill-purple-400" />}
                     </div>
-                    <div className="text-white/40 text-[10px] uppercase tracking-widest mt-1">Entity {event.hash?.slice(0,6)}</div>
+                    <div className="!text-white/40 text-[10px] uppercase tracking-widest mt-1">Entity {event.hash?.slice(0,6)}</div>
                 </div>
             </div>
 
             <div className="w-1/3 text-center">
-                <div className="text-white/80 font-bold">{event.amount} <span className="text-white/40">{event.token}</span></div>
+                <div className="!text-white/80 font-bold">{event.amount} <span className="!text-white/40">{event.token}</span></div>
                 <div className="text-blue-400/70 text-xs mt-0.5">{event.action}</div>
             </div>
 
             <div className="w-1/3 flex flex-col items-end">
-                <div className="text-lg font-black text-white tracking-tight">{event.usdValue}</div>
-                <div className="flex items-center gap-1 text-white/30 text-[10px] uppercase tracking-widest mt-1">
+                <div className="text-lg font-black !text-white tracking-tight">{event.usdValue}</div>
+                <div className="flex items-center gap-1 !text-white/30 text-[10px] uppercase tracking-widest mt-1">
                     <ShieldCheck size={10} className="text-green-500/70" />
                     Verified On-Chain
                 </div>

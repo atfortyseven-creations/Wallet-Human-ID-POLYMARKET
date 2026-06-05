@@ -55,12 +55,12 @@ export default function ChainSelector({ selectedChains, onChainToggle, showStats
                 className="w-6 h-6 rounded-full border-2 border-white flex items-center justify-center text-xs font-bold"
                 style={{ backgroundColor: chain.color }}
               >
-                <span className="text-white text-[10px]">{chain.shortName[0]}</span>
+                <span className="!text-white text-[10px]">{chain.shortName[0]}</span>
               </div>
             );
           })}
           {selectedCount > 3 && (
-            <div className="w-6 h-6 rounded-full border-2 border-white bg-[#1F1F1F] flex items-center justify-center text-xs font-bold text-white">
+            <div className="w-6 h-6 rounded-full border-2 border-white bg-[#1F1F1F] flex items-center justify-center text-xs font-bold !text-white">
               +{selectedCount - 3}
             </div>
           )}
@@ -115,7 +115,7 @@ export default function ChainSelector({ selectedChains, onChainToggle, showStats
                       ? 'bg-purple-500 border-purple-500' 
                       : 'border-[#1F1F1F]/30'
                   }`}>
-                    {allSelected && <Check size={14} className="text-white" />}
+                    {allSelected && <Check size={14} className="!text-white" />}
                   </div>
                   <span className="font-bold text-[#1F1F1F]">
                     {allSelected ? 'Deselect All' : 'Select All'}
@@ -177,12 +177,12 @@ function ChainItem({
           ? 'border-purple-500 bg-purple-500' 
           : 'border-[#1F1F1F]/30'
       }`}>
-        {isSelected && <Check size={14} className="text-white" />}
+        {isSelected && <Check size={14} className="!text-white" />}
       </div>
 
       {/* Chain Icon */}
       <div 
-        className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm"
+        className="w-8 h-8 rounded-full flex items-center justify-center !text-white font-bold text-sm"
         style={{ backgroundColor: chain.color }}
       >
         {chain.shortName[0]}

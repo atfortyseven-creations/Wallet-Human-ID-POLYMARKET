@@ -72,7 +72,7 @@ export const AIAnalysisModal = ({ textToAnalyze }: AIAnalysisProps) => {
                         <motion.p 
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            className="text-[10px] font-mono text-white/40 italic leading-relaxed"
+                            className="text-[10px] font-mono !text-white/40 italic leading-relaxed"
                         >
                             {justification}
                         </motion.p>

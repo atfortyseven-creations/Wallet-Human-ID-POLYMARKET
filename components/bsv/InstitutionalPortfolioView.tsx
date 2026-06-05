@@ -60,7 +60,7 @@ function VaultUnlockScreen({ unlockVault }: { unlockVault: (pwd: string) => bool
                 onClick={() => {
                     if (!unlockVault(pwd)) toast.error("Invalid password");
                 }}
-                className="w-full max-w-xs bg-black text-white font-black text-[10px] uppercase tracking-[0.2em] py-4 hover:bg-black/80 transition-colors"
+                className="w-full max-w-xs bg-black !!text-white font-black text-[10px] uppercase tracking-[0.2em] py-4 hover:bg-black/80 transition-colors"
             >
                 Decrypt Vault
             </button>
@@ -358,7 +358,7 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                                 <button 
                                     key={c}
                                     onClick={() => setDisplayCurrency(c)}
-                                    className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-sm transition-colors ${displayCurrency === c ? 'bg-black text-white' : 'text-black/40 hover:text-black'}`}
+                                    className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-sm transition-colors ${displayCurrency === c ? 'bg-black !!text-white' : 'text-black/40 hover:text-black'}`}
                                 >
                                     {c}
                                 </button>
@@ -370,10 +370,10 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                         <button onClick={onSettingsClick} className="text-[10px] font-bold uppercase tracking-widest text-black/40 hover:text-black transition-colors px-3 py-1.5 border border-transparent hover:border-black/10">
                             Settings
                         </button>
-                        <button onClick={onAccountsClick} className="border border-black/20 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-black hover:bg-black hover:text-white transition-colors">
+                        <button onClick={onAccountsClick} className="border border-black/20 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-black hover:bg-black hover:!text-white transition-colors">
                             Accounts
                         </button>
-                        <button onClick={handleDisconnect} className="border border-red-300 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-500 hover:text-white transition-colors">
+                        <button onClick={handleDisconnect} className="border border-red-300 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-500 hover:!text-white transition-colors">
                             Disconnect
                         </button>
                     </div>
@@ -410,7 +410,7 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
 
                 {address ? (
                     <div className="flex flex-col items-center gap-3 w-full max-w-lg mx-auto">
-                        <button onClick={copy} className="w-full bg-black text-white px-6 py-4 flex items-center justify-between hover:bg-black/80 transition-all group">
+                        <button onClick={copy} className="w-full bg-black !!text-white px-6 py-4 flex items-center justify-between hover:bg-black/80 transition-all group">
                             <div className="flex flex-col items-start">
                                 <span className="text-[8px] uppercase tracking-[0.3em] opacity-40 mb-1">Your Address</span>
                                 <code className="text-sm font-mono tracking-wider">{truncate(address, 26)}</code>
@@ -426,7 +426,7 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                     <div className="flex flex-col items-center gap-5 mt-4 p-10 bg-white border border-black/10 max-w-sm mx-auto">
                         <h4 className="text-sm font-black uppercase tracking-wider text-black">No Wallet Connected</h4>
                         <p className="text-xs text-black/40 leading-relaxed text-center">Create or import a wallet to start using the portfolio.</p>
-                        <button onClick={onCreate} className="w-full bg-black text-white px-8 py-4 text-[11px] uppercase tracking-[0.25em] font-black hover:bg-black/80 transition-all">
+                        <button onClick={onCreate} className="w-full bg-black !!text-white px-8 py-4 text-[11px] uppercase tracking-[0.25em] font-black hover:bg-black/80 transition-all">
                             Connect Wallet
                         </button>
                     </div>
@@ -500,7 +500,7 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                                         onClick={() => setActiveTab(t)}
                                         className={`px-8 py-4 text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all ${
                                             activeTab === t
-                                                ? 'bg-black text-white'
+                                                ? 'bg-black !!text-white'
                                                 : 'text-black/50 hover:text-black hover:bg-black/[0.03] border-r border-black/10'
                                         }`}
                                     >
@@ -530,9 +530,9 @@ function ActionBtn({ label, icon, onClick }: any) {
     return (
         <button
             onClick={onClick}
-            className="flex flex-col items-center justify-center p-4 border border-black/5 hover:border-black hover:bg-black hover:text-white hover:shadow-xl transition-all duration-300 group bg-black/[0.02] gap-3"
+            className="flex flex-col items-center justify-center p-4 border border-black/5 hover:border-black hover:bg-black hover:!text-white hover:shadow-xl transition-all duration-300 group bg-black/[0.02] gap-3"
         >
-            <div className="text-black/60 group-hover:text-white transition-colors">
+            <div className="text-black/60 group-hover:!text-white transition-colors">
                 {icon}
             </div>
             <span className="text-[10px] font-bold uppercase tracking-widest">{label}</span>
@@ -563,7 +563,7 @@ function NetworkView({ onBack }: any) {
         <ModalView title="Protocol Selection" onBack={onBack}>
             <div className="grid grid-cols-1 gap-2">
                 {Object.entries(NETWORKS).map(([id, data]) => (
-                    <button key={id} onClick={() => { setNetwork(id as NetworkId); onBack(); }} className={`flex items-center justify-between p-5 border transition-all ${activeNetwork === id ? 'border-black bg-black text-white' : 'border-black/10 hover:border-black/30 bg-white text-black'}`}>
+                    <button key={id} onClick={() => { setNetwork(id as NetworkId); onBack(); }} className={`flex items-center justify-between p-5 border transition-all ${activeNetwork === id ? 'border-black bg-black !!text-white' : 'border-black/10 hover:border-black/30 bg-white text-black'}`}>
                         <div className="flex items-center gap-4">
                             <span className="font-bold uppercase tracking-widest text-xs">{data.name}</span>
                         </div>

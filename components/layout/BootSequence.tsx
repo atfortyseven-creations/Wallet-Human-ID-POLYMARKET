@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -122,7 +122,7 @@ export const BootSequence = () => {
                         {/* Title and Status */}
                         <div className="flex flex-col items-center mb-12 space-y-4 text-center">
                             <motion.h1
-                                className="text-5xl md:text-6xl font-black tracking-tighter text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]"
+                                className="text-5xl md:text-6xl font-black tracking-tighter !text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]"
                                 animate={{ textShadow: ["0 0 10px rgba(255,255,255,0.2)", "0 0 20px rgba(255,255,255,0.6)", "0 0 10px rgba(255,255,255,0.2)"] }}
                                 transition={{ duration: 2, repeat: Infinity }}
                             >
@@ -148,7 +148,7 @@ export const BootSequence = () => {
                         {/* Technical Data (Logs & Hash) */}
                         <div className="flex flex-col items-center space-y-2">
                             {/* Giant Percentage */}
-                            <div className="text-4xl font-light text-white tabular-nums">
+                            <div className="text-4xl font-light !text-white tabular-nums">
                                 {progress}<span className="text-lg opacity-40">%</span>
                             </div>
 

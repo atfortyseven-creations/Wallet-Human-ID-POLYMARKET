@@ -74,7 +74,7 @@ export default function UnifiedWalletModal({ isOpen, onClose, initialTab = "SEND
             {!asEmbedded && (
                 <div className="flex items-center justify-between p-6 pb-4">
                     <div className="flex items-center gap-3">
-                        <div className="px-3 py-1 border border-black/10 bg-black text-white font-black text-[10px] tracking-widest uppercase">
+                        <div className="px-3 py-1 border border-black/10 bg-black !!text-white font-black text-[10px] tracking-widest uppercase">
                             SECURE
                         </div>
                         <h2 className="text-xl font-black text-black tracking-tighter uppercase">WALLET</h2>
@@ -88,7 +88,7 @@ export default function UnifiedWalletModal({ isOpen, onClose, initialTab = "SEND
             <div className={`px-6 ${asEmbedded ? 'pt-6' : ''} pb-6`}>
                 <div className="flex items-center bg-black/5 p-1 rounded-[20px] w-full">
                     {(["SEND", "SWAP", "BRIDGE", "BUY"] as MainTab[]).map(tab => (
-                        <button key={tab} onClick={() => setActiveTab(tab)} className={`flex-1 py-3 text-[10px] sm:text-xs font-black uppercase tracking-widest rounded-[16px] transition-all duration-300 ${activeTab === tab ? 'bg-black text-white shadow-md' : 'text-black/40 hover:text-black hover:bg-black/5'}`}>
+                        <button key={tab} onClick={() => setActiveTab(tab)} className={`flex-1 py-3 text-[10px] sm:text-xs font-black uppercase tracking-widest rounded-[16px] transition-all duration-300 ${activeTab === tab ? 'bg-black !!text-white shadow-md' : 'text-black/40 hover:text-black hover:bg-black/5'}`}>
                             {tab}
                         </button>
                     ))}
@@ -436,8 +436,8 @@ function SendModule({ userAssets, forceToken, setStatus, setTxHash, setStatusMes
                     <div className="flex justify-between items-center text-[10px] uppercase font-black tracking-widest border-b border-black/5 pb-2">
                         <span className="text-black/40">Gas Strategy</span>
                         <div className="flex items-center gap-1">
-                            <button onClick={() => setGasStrategy('MARKET')} className={`px-2 py-1 transition-colors ${gasStrategy === 'MARKET' ? 'bg-black text-white' : 'bg-black/5 text-black/40 hover:bg-black/10'}`}>Market</button>
-                            <button onClick={() => setGasStrategy('AGGRESSIVE')} className={`px-2 py-1 transition-colors ${gasStrategy === 'AGGRESSIVE' ? 'bg-black text-white' : 'bg-black/5 text-black/40 hover:bg-black/10'}`}>Aggressive</button>
+                            <button onClick={() => setGasStrategy('MARKET')} className={`px-2 py-1 transition-colors ${gasStrategy === 'MARKET' ? 'bg-black !!text-white' : 'bg-black/5 text-black/40 hover:bg-black/10'}`}>Market</button>
+                            <button onClick={() => setGasStrategy('AGGRESSIVE')} className={`px-2 py-1 transition-colors ${gasStrategy === 'AGGRESSIVE' ? 'bg-black !!text-white' : 'bg-black/5 text-black/40 hover:bg-black/10'}`}>Aggressive</button>
                         </div>
                     </div>
                 </div>
@@ -451,7 +451,7 @@ function SendModule({ userAssets, forceToken, setStatus, setTxHash, setStatusMes
                     </div>
                 )}
 
-                <button onClick={handleSend} className="w-full py-4 bg-black text-white font-black text-[11px] uppercase tracking-[0.2em] transition-all hover:bg-black/80 flex items-center justify-center gap-2">
+                <button onClick={handleSend} className="w-full py-4 bg-black !!text-white font-black text-[11px] uppercase tracking-[0.2em] transition-all hover:bg-black/80 flex items-center justify-center gap-2">
                     Confirm & Send <span className="text-[10px] font-black">-&gt;</span>
                 </button>
             </motion.div>
@@ -476,8 +476,8 @@ function SendModule({ userAssets, forceToken, setStatus, setTxHash, setStatusMes
             )}
 
             {isWrongNetwork && (
-                <div className="bg-black text-white border border-black p-4 flex items-start gap-3">
-                    <span className="font-black text-[10px] text-white shrink-0 mt-0.5">[!]</span>
+                <div className="bg-black !!text-white border border-black p-4 flex items-start gap-3">
+                    <span className="font-black text-[10px] !text-white shrink-0 mt-0.5">[!]</span>
                     <p className="text-[10px] font-bold uppercase tracking-widest leading-relaxed">Mismatched Network. You are on {activeChain?.name}, but {selectedAsset.symbol} is on {selectedAsset.network}. Click below to switch.</p>
                 </div>
             )}
@@ -543,7 +543,7 @@ function SendModule({ userAssets, forceToken, setStatus, setTxHash, setStatusMes
                 </AnimatePresence>
             </div>
 
-            <button disabled={(!amount || !finalRecipient || isEnsLoading || parseFloat(amount) <= 0 || parseFloat(amount) > (selectedAsset?.balanceNumeric || 0)) && !isWrongNetwork} onClick={() => isWrongNetwork ? handleSend() : handleReviewClick()} className={`w-full py-4 font-black text-[11px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 group ${isWrongNetwork ? 'bg-black text-white hover:bg-black/80' : 'bg-black hover:bg-black/80 disabled:bg-black/10 disabled:text-black/30 text-white'}`}>
+            <button disabled={(!amount || !finalRecipient || isEnsLoading || parseFloat(amount) <= 0 || parseFloat(amount) > (selectedAsset?.balanceNumeric || 0)) && !isWrongNetwork} onClick={() => isWrongNetwork ? handleSend() : handleReviewClick()} className={`w-full py-4 font-black text-[11px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 group ${isWrongNetwork ? 'bg-black !!text-white hover:bg-black/80' : 'bg-black hover:bg-black/80 disabled:bg-black/10 disabled:text-black/30 !text-white'}`}>
                 {isWrongNetwork ? `Switch to ${selectedAsset.network}` : 'Review Send'} {isWrongNetwork ? <span className="text-[10px] font-black">[NET]</span> : <span className="text-[10px] font-black group-hover:translate-x-1 transition-transform">-&gt;</span>}
             </button>
             
@@ -1014,8 +1014,8 @@ function AdvancedRouterModule({ mode, userAssets, forceToken, setStatus, setTxHa
             )}
 
             {isWrongNetwork && (
-                <div className="bg-black text-white border border-black p-4 flex items-start gap-3 mb-4">
-                    <span className="font-black text-[10px] text-white shrink-0 mt-0.5">[!]</span>
+                <div className="bg-black !!text-white border border-black p-4 flex items-start gap-3 mb-4">
+                    <span className="font-black text-[10px] !text-white shrink-0 mt-0.5">[!]</span>
                     <p className="text-[10px] font-bold uppercase tracking-widest leading-relaxed">Mismatched Network. You are on {activeChain?.name || 'Unknown'}, but the routing source requires {fromChain.name}.</p>
                 </div>
             )}
@@ -1098,7 +1098,7 @@ function AdvancedRouterModule({ mode, userAssets, forceToken, setStatus, setTxHa
                 )}
             </AnimatePresence>
 
-            <button disabled={(!receiveAmount || isQuoting || parseFloat(payAmount) > (payToken?.balanceNumeric || 0)) && !isWrongNetwork} onClick={handleExecute} className={`w-full mt-4 py-4 font-black text-[11px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 group bg-black hover:bg-black/80 disabled:bg-black/10 disabled:text-black/30 text-white`}>
+            <button disabled={(!receiveAmount || isQuoting || parseFloat(payAmount) > (payToken?.balanceNumeric || 0)) && !isWrongNetwork} onClick={handleExecute} className={`w-full mt-4 py-4 font-black text-[11px] uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 group bg-black hover:bg-black/80 disabled:bg-black/10 disabled:text-black/30 !text-white`}>
                 {isWrongNetwork ? `1. Switch to ${fromChain.name}` : needsApproval ? `1. Approve ${payToken.symbol}` : `Execute ${mode}`} <span className="text-[10px] font-black">{isWrongNetwork ? '[NET]' : '->'}</span>
             </button>
 
@@ -1291,7 +1291,7 @@ function BuyModule() {
                     <button
                         key={c.code}
                         onClick={() => setCryptoCurrencyCode(c.code)}
-                        className={`py-2.5 text-[9px] font-black uppercase tracking-widest border transition-all ${cryptoCurrencyCode === c.code ? 'bg-black text-white border-black' : 'bg-white text-black/50 border-black/10 hover:border-black/30'}`}
+                        className={`py-2.5 text-[9px] font-black uppercase tracking-widest border transition-all ${cryptoCurrencyCode === c.code ? 'bg-black !!text-white border-black' : 'bg-white text-black/50 border-black/10 hover:border-black/30'}`}
                     >
                         {c.symbol}
                     </button>
@@ -1345,7 +1345,7 @@ function BuyModule() {
             <button 
                 onClick={handlePurchase}
                 disabled={isInitializing || isPolling || !fiatAmount || parseFloat(fiatAmount) <= 0 || !hasDestination}
-                className="w-full py-4 bg-black text-white font-black text-[11px] uppercase tracking-[0.2em] hover:bg-black/80 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
+                className="w-full py-4 bg-black !!text-white font-black text-[11px] uppercase tracking-[0.2em] hover:bg-black/80 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed"
             >
                 {isInitializing ? 'Generating...' : isPolling ? 'Awaiting Settlement...' : 'Initialize Secure Ingress'} <span className="text-[10px] font-black">-&gt;</span>
             </button>

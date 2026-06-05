@@ -251,7 +251,7 @@ export default function AdvancedAnalytics({ walletAddress, isPremium, hasTrialed
               </div>
               <div>
                   <div className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-1">Blockchain Monitor</div>
-                  <div className="text-lg font-mono font-black text-white italic tracking-tighter flex items-center gap-2">
+                  <div className="text-lg font-mono font-black !text-white italic tracking-tighter flex items-center gap-2">
                       {portfolioData.entityInfo ? (
                         <span className="text-blue-400">{portfolioData.entityInfo.name}</span>
                       ) : (
@@ -269,8 +269,8 @@ export default function AdvancedAnalytics({ walletAddress, isPremium, hasTrialed
                   {portfolioData.smartMoneyMetrics && (
                     <div className="flex items-center gap-2 mt-1">
                       <div className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-tighter ${
-                        portfolioData.smartMoneyMetrics.score >= 80 ? 'bg-indigo-500 text-white' : 
-                        portfolioData.smartMoneyMetrics.score >= 60 ? 'bg-blue-500 text-white' : 
+                        portfolioData.smartMoneyMetrics.score >= 80 ? 'bg-indigo-500 !text-white' : 
+                        portfolioData.smartMoneyMetrics.score >= 60 ? 'bg-blue-500 !text-white' : 
                         'bg-white/10 text-gray-400'
                       }`}>
                         Signal for {portfolioData.smartMoneyMetrics.category}
@@ -291,7 +291,7 @@ export default function AdvancedAnalytics({ walletAddress, isPremium, hasTrialed
                   key={tf}
                   onClick={() => setTimeframe(tf)}
                   className={`flex-1 py-1 px-3 rounded-xl text-[9px] font-black transition-all uppercase tracking-widest ${
-                    timeframe === tf ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-500 hover:text-white hover:bg-white/5'
+                    timeframe === tf ? 'bg-blue-600 !text-white shadow-lg' : 'text-gray-500 hover:!text-white hover:bg-white/5'
                   }`}
                 >
                   {tf}
@@ -302,7 +302,7 @@ export default function AdvancedAnalytics({ walletAddress, isPremium, hasTrialed
             <button
               onClick={() => fetchData(true)}
               disabled={portfolioData.loading}
-              className={`p-3 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 text-white transition-all group ${portfolioData.loading ? 'opacity-50 cursor-wait' : ''}`}
+              className={`p-3 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 !text-white transition-all group ${portfolioData.loading ? 'opacity-50 cursor-wait' : ''}`}
               title="Full Sync"
             >
               <Zap size={18} className={`group-hover:text-blue-400 transition-colors ${portfolioData.loading ? 'animate-spin' : ''}`} />
@@ -389,7 +389,7 @@ export default function AdvancedAnalytics({ walletAddress, isPremium, hasTrialed
                     .map(([sym, val]) => (
                     <div key={sym} className="flex-shrink-0 min-w-[70px] bg-white/5 rounded-2xl p-3 text-center border border-white/5 group hover:border-blue-500/30 transition-all">
                         <div className="text-[10px] font-black text-gray-500 group-hover:text-blue-400 transition-colors uppercase">{sym}</div>
-                        <div className="text-lg font-black text-white italic tracking-tighter">
+                        <div className="text-lg font-black !text-white italic tracking-tighter">
                             {((Number(val || 0) / (portfolioData.totalValue || 1)) * 100).toFixed(0)}%
                         </div>
                     </div>
@@ -405,7 +405,7 @@ export default function AdvancedAnalytics({ walletAddress, isPremium, hasTrialed
             <div className="absolute inset-0 bg-black/40 backdrop-blur-sm z-20 flex items-center justify-center rounded-[2.5rem]">
                 <div className="flex flex-col items-center gap-3">
                     <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                    <span className="text-[10px] font-black text-white uppercase tracking-widest">Scanning History...</span>
+                    <span className="text-[10px] font-black !text-white uppercase tracking-widest">Scanning History...</span>
                 </div>
             </div>
         )}
@@ -414,7 +414,7 @@ export default function AdvancedAnalytics({ walletAddress, isPremium, hasTrialed
             <div className={`w-20 h-20 ${portfolioData.error ? 'bg-indigo-500/10' : 'bg-white/5'} rounded-full flex items-center justify-center mb-6 animate-pulse`}>
                 {portfolioData.error ? <AlertTriangle size={40} className="text-indigo-500" /> : <Activity size={40} className="text-gray-600" />}
             </div>
-            <h3 className="text-2xl font-black text-white italic mb-2 tracking-tighter">
+            <h3 className="text-2xl font-black !text-white italic mb-2 tracking-tighter">
                 {portfolioData.error ? "DATA FLOW INTERRUPTED" : (!walletAddress ? "TARGET NOT SELECTED" : "GATHERING ON-CHAIN INTELLIGENCE")}
             </h3>
             <p className="text-gray-500 max-w-xs font-medium">
@@ -430,7 +430,7 @@ export default function AdvancedAnalytics({ walletAddress, isPremium, hasTrialed
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-4">
               <div className="bg-black/20 backdrop-blur-md rounded-3xl p-6 border border-white/5">
                 <div className="flex items-center justify-between mb-8">
-                  <h3 className="text-sm font-black text-white uppercase tracking-[0.2em]">Inventory Breakdown</h3>
+                  <h3 className="text-sm font-black !text-white uppercase tracking-[0.2em]">Inventory Breakdown</h3>
                 </div>
                 <ResponsiveContainer width="100%" height={300}>
                   <PieChart>
@@ -463,7 +463,7 @@ export default function AdvancedAnalytics({ walletAddress, isPremium, hasTrialed
 
               <div className="bg-black/20 backdrop-blur-md rounded-3xl p-6 border border-white/5">
                 <div className="flex items-center justify-between mb-8">
-                  <h3 className="text-sm font-black text-white uppercase tracking-[0.2em]">{selectedMetric === 'value' ? 'Value' : selectedMetric === 'pnl' ? 'P&L' : 'Activity'} Performance</h3>
+                  <h3 className="text-sm font-black !text-white uppercase tracking-[0.2em]">{selectedMetric === 'value' ? 'Value' : selectedMetric === 'pnl' ? 'P&L' : 'Activity'} Performance</h3>
                   <div className="flex gap-1 bg-white/5 p-1 rounded-xl border border-white/5">
                     {(['value', 'pnl', 'activity'] as const).map((metric) => (
                       <button
@@ -472,7 +472,7 @@ export default function AdvancedAnalytics({ walletAddress, isPremium, hasTrialed
                         className={`px-3 py-1.5 rounded-lg text-[9px] font-black transition-all uppercase tracking-widest ${
                           selectedMetric === metric
                             ? 'bg-white text-black'
-                            : 'text-gray-500 hover:text-white'
+                            : 'text-gray-500 hover:!text-white'
                         }`}
                       >
                         {metric === 'value' ? 'VALOR' : metric === 'pnl' ? 'P&L' : 'ACTIVIDAD'}
@@ -545,11 +545,11 @@ function StatCard({ title, value, icon, trend, subtitle }: { title: string; valu
       animate={{ opacity: 1, y: 0 }}
       className="p-5 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 hover:border-blue-500/50 transition-all group"
     >
-      <div className="flex items-center gap-2 mb-3 text-gray-400 group-hover:text-white transition-colors">
+      <div className="flex items-center gap-2 mb-3 text-gray-400 group-hover:!text-white transition-colors">
         {getIcon()}
         <span className="text-[10px] font-black uppercase tracking-widest">{title}</span>
       </div>
-      <div className="text-3xl font-black text-white tracking-tighter mb-1">{value}</div>
+      <div className="text-3xl font-black !text-white tracking-tighter mb-1">{value}</div>
       {trend !== undefined && (
         <div className={`text-sm font-black flex items-center gap-1 ${
           (trend || 0) >= 0 ? 'text-green-400' : 'text-red-400'

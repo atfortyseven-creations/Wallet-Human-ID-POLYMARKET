@@ -89,7 +89,7 @@ export const MobileWhaleLanding = () => {
             {/* Primary CTA */}
             <Link
               href="/connect"
-              className="w-full flex items-center justify-between h-14 px-6 bg-black text-white font-semibold text-[13px] tracking-wide hover:bg-black/85 active:scale-[0.98] transition-all duration-200"
+              className="w-full flex items-center justify-between h-14 px-6 bg-black !!text-white font-semibold text-[13px] tracking-wide hover:bg-black/85 active:scale-[0.98] transition-all duration-200"
             >
               <span>Connect Wallet</span>
               <ArrowRight size={16} strokeWidth={2} />

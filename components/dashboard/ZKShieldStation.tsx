@@ -110,7 +110,7 @@ export function ZKShieldStation() {
                                <span className="text-[8px] text-[#888888] uppercase font-mono font-bold">Algorithm: Groth16 // Curve: BN128</span>
                             </div>
                             <div className="p-6 bg-[#FFFFFF]">
-                               <pre className="text-[10px] text-[#888888] font-mono font-bold leading-relaxed overflow-x-auto selection:bg-[#050505] selection:text-white">
+                               <pre className="text-[10px] text-[#888888] font-mono font-bold leading-relaxed overflow-x-auto selection:bg-[#050505] selection:!text-white">
                                   {JSON.stringify(lastProof, null, 2)}
                                </pre>
                             </div>

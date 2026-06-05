@@ -19,7 +19,7 @@ export default function VerificationGuard({ children }: { children: React.ReactN
     // Mientras carga, o si no es verificado (y está redirigiendo), mostramos un loader o null
     if (isLoading || !isVerified) {
         return (
-            <div className="h-screen w-full flex flex-col items-center justify-center bg-black text-white gap-4">
+            <div className="h-screen w-full flex flex-col items-center justify-center bg-black !!text-white gap-4">
                 <Loader2 className="animate-spin text-blue-500" size={48} />
                 <p className="text-sm font-light tracking-[0.2em] animate-pulse">
                     VERIFYING IDENTITY...

@@ -33,18 +33,18 @@ export function UsageStats({ tier, stats }: { tier: string; stats: Stats }) {
             </div>
 
             <div>
-                <h2 className="text-xl font-black text-white uppercase tracking-tight flex items-center gap-3 mb-6">
+                <h2 className="text-xl font-black !text-white uppercase tracking-tight flex items-center gap-3 mb-6">
                     <Activity className="text-green-400" />
                     Daily Usage
                 </h2>
 
                 <div className="mb-8">
                     <div className="flex justify-between items-end mb-2">
-                        <div className="text-4xl font-black text-white tracking-tighter">
+                        <div className="text-4xl font-black !text-white tracking-tighter">
                             {stats.dailyRequests.toLocaleString()}
                         </div>
                         <div className="text-right">
-                            <div className="text-white/40 text-sm font-medium">
+                            <div className="!text-white/40 text-sm font-medium">
                                 / {isUnlimited ? '' : limit.toLocaleString()} reqs
                             </div>
                         </div>
@@ -67,11 +67,11 @@ export function UsageStats({ tier, stats }: { tier: string; stats: Stats }) {
                     </div>
                     
                     <div className="flex justify-between mt-2">
-                        <span className="text-[10px] uppercase font-bold text-white/30 tracking-wider">
+                        <span className="text-[10px] uppercase font-bold !text-white/30 tracking-wider">
                             Reset at 00:00 UTC
                         </span>
                         {!isUnlimited && (
-                            <span className="text-[10px] uppercase font-bold text-white/50 tracking-wider">
+                            <span className="text-[10px] uppercase font-bold !text-white/50 tracking-wider">
                                 {percentage}% Consumed
                             </span>
                         )}
@@ -86,14 +86,14 @@ export function UsageStats({ tier, stats }: { tier: string; stats: Stats }) {
 
             <div className="p-4 rounded-xl bg-white/5 border border-white/5">
                 <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs text-white/40 uppercase tracking-wider font-bold">Current Plan</span>
+                    <span className="text-xs !text-white/40 uppercase tracking-wider font-bold">Current Plan</span>
                     <span className="text-xs text-indigo-400 font-bold px-2 py-0.5 bg-indigo-500/10 rounded">
                         {config.name.toUpperCase()}
                     </span>
                 </div>
                 <div className="flex justify-between items-center text-sm">
-                    <span className="text-white/60">Data Retention</span>
-                    <span className="text-white font-mono">{config.limits.dataWindowHours / 24} Days History</span>
+                    <span className="!text-white/60">Data Retention</span>
+                    <span className="!text-white font-mono">{config.limits.dataWindowHours / 24} Days History</span>
                 </div>
             </div>
         </div>

@@ -48,7 +48,7 @@ export const BRC100Wallet = () => {
                     </div>
                     <div>
                         <h3 className="text-lg font-bold font-aztec-serif uppercase tracking-tight">Institutional <span className="text-[var(--aztec-chartreuse)]">Assets</span></h3>
-                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30">BRC-100 Substrate v2</p>
+                        <p className="text-[9px] font-black uppercase tracking-[0.3em] !text-white/30">BRC-100 Substrate v2</p>
                     </div>
                 </div>
                 <button 
@@ -81,7 +81,7 @@ export const BRC100Wallet = () => {
                                             {token.ticker.slice(0, 1)}
                                         </div>
                                         <div>
-                                            <div className="text-[8px] font-black uppercase tracking-widest text-white/40">{token.name}</div>
+                                            <div className="text-[8px] font-black uppercase tracking-widest !text-white/40">{token.name}</div>
                                             <div className="text-xs font-bold text-[var(--aztec-chartreuse)]">{token.ticker}</div>
                                         </div>
                                     </div>
@@ -93,17 +93,17 @@ export const BRC100Wallet = () => {
 
                                 <div>
                                     <div className="text-2xl font-aztec-mono font-black tracking-tight">{token.balance}</div>
-                                    <div className="text-[10px] text-white/20 font-aztec-mono truncate">Equity: ${(parseFloat(token.balance.replace(/,/g, '')) * token.priceUsd).toLocaleString()}</div>
+                                    <div className="text-[10px] !text-white/20 font-aztec-mono truncate">Equity: ${(parseFloat(token.balance.replace(/,/g, '')) * token.priceUsd).toLocaleString()}</div>
                                 </div>
 
                                 <div className="flex justify-between items-center pt-2">
                                     <div className="flex gap-2">
-                                        <Zap size={10} className="text-white/20" />
-                                        <Shield size={10} className="text-white/20" />
+                                        <Zap size={10} className="!text-white/20" />
+                                        <Shield size={10} className="!text-white/20" />
                                     </div>
                                     <motion.button
                                         whileHover={{ x: 4 }}
-                                        className="p-2 bg-white/5 rounded-lg text-white/30 group-hover:text-[var(--aztec-chartreuse)] transition-colors"
+                                        className="p-2 bg-white/5 rounded-lg !text-white/30 group-hover:text-[var(--aztec-chartreuse)] transition-colors"
                                     >
                                         <ArrowRight size={14} />
                                     </motion.button>
@@ -116,8 +116,8 @@ export const BRC100Wallet = () => {
 
             {tokens.length === 0 && !loading && (
                 <div className="p-12 text-center bg-white/[0.02] border border-dashed border-white/10 rounded-[3rem]">
-                    <Search className="mx-auto text-white/10 mb-4" size={32} />
-                    <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20">No BRC-100 Substrates Detected</p>
+                    <Search className="mx-auto !text-white/10 mb-4" size={32} />
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em] !text-white/20">No BRC-100 Substrates Detected</p>
                 </div>
             )}
         </div>

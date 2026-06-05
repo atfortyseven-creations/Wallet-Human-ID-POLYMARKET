@@ -243,7 +243,7 @@ function LandingNav() {
           </Link>
           <Link
             href="/portfolio"
-            className="px-4 py-1.5 bg-black text-white text-[13.5px] font-medium hover:bg-black/85 transition-colors"
+            className="px-4 py-1.5 bg-black !!text-white text-[13.5px] font-medium hover:bg-black/85 transition-colors"
           >
             Sign In
           </Link>
@@ -277,7 +277,7 @@ function LandingNav() {
             <Link href="/company" onClick={() => setMobileOpen(false)} className="text-[15px] font-medium text-black/70 hover:text-black">Company</Link>
             <div className="flex gap-3 mt-2">
               <Link href="/developers/api-docs" onClick={() => setMobileOpen(false)} className="flex-1 text-center py-2.5 border border-black/15 text-[14px] font-medium text-black">Docs</Link>
-              <Link href="/portfolio" onClick={() => setMobileOpen(false)} className="flex-1 text-center py-2.5 bg-black text-[14px] font-medium text-white">Sign In</Link>
+              <Link href="/portfolio" onClick={() => setMobileOpen(false)} className="flex-1 text-center py-2.5 bg-black text-[14px] font-medium !text-white">Sign In</Link>
             </div>
           </motion.div>
         )}
@@ -380,7 +380,7 @@ function HeroSection() {
           <div className="flex flex-col sm:flex-row items-center gap-3">
             <Link
               href="/portfolio"
-              className="w-full sm:w-auto px-8 py-3.5 bg-black text-white text-[13px] font-semibold hover:bg-black/85 transition-colors shadow-2xl"
+              className="w-full sm:w-auto px-8 py-3.5 bg-black !!text-white text-[13px] font-semibold hover:bg-black/85 transition-colors shadow-2xl"
             >
               Open Application
             </Link>
@@ -718,7 +718,7 @@ function FinalCTASection() {
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <Link
             href="/portfolio"
-            className="w-full sm:w-auto px-10 py-4 bg-black text-white text-[14px] font-black uppercase tracking-wider hover:bg-black/80 transition-transform active:scale-95 shadow-lg"
+            className="w-full sm:w-auto px-10 py-4 bg-black !!text-white text-[14px] font-black uppercase tracking-wider hover:bg-black/80 transition-transform active:scale-95 shadow-lg"
           >
             Open Application
           </Link>

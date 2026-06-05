@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
@@ -59,7 +59,7 @@ export function MultiChainSystemty() {
                 {/* Header */}
                 <div className="flex items-center justify-between border-b border-slate-100 pb-8">
                     <div className="flex items-center gap-4">
-                        <div className="p-3 bg-slate-950 text-white rounded-2xl shadow-xl">
+                        <div className="p-3 bg-slate-950 !text-white rounded-2xl shadow-xl">
                             <Network size={24} className="text-[var(--aave-teal)]" />
                         </div>
                         <div>
@@ -92,7 +92,7 @@ export function MultiChainSystemty() {
                         >
                             <div className="flex items-center justify-between mb-4">
                                 <span className={`text-[8px] font-black px-2 py-1 rounded-lg border uppercase tracking-[0.1em] ${
-                                    chain.type === 'L1' ? 'bg-slate-950 text-white border-slate-950' :
+                                    chain.type === 'L1' ? 'bg-slate-950 !text-white border-slate-950' :
                                     chain.type === 'L2' ? 'bg-[var(--aave-purple)]/5 text-[var(--aave-purple)] border-[var(--aave-purple)]/20' :
                                     'bg-[var(--aave-teal)]/5 text-[var(--aave-teal)] border-[var(--aave-teal)]/20'
                                 }`}>

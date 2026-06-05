@@ -1263,7 +1263,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
           <button
             type="button"
             onClick={() => { window.location.href = '/'; }}
-            className="w-full py-4 rounded-xl bg-[#050505] text-white font-mono text-[11px] font-bold uppercase tracking-widest hover:bg-black/80 transition-all active:scale-[0.98]"
+            className="w-full py-4 rounded-xl bg-[#050505] !text-white font-mono text-[11px] font-bold uppercase tracking-widest hover:bg-black/80 transition-all active:scale-[0.98]"
           >
             Go to Home
           </button>
@@ -1285,7 +1285,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
           <button
             type="button"
             onClick={() => openAppKit()}
-            className="w-full py-4 rounded-xl bg-[#050505] text-white font-mono text-[11px] font-bold uppercase tracking-widest hover:bg-black/80 transition-all active:scale-[0.98]"
+            className="w-full py-4 rounded-xl bg-[#050505] !text-white font-mono text-[11px] font-bold uppercase tracking-widest hover:bg-black/80 transition-all active:scale-[0.98]"
           >
             Connect Wallet
           </button>
@@ -1459,7 +1459,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
             </button>
             <button
               onClick={() => startConversation()}
-              className="px-3 py-2.5 rounded-xl bg-black text-white hover:bg-black/80 font-bold text-[16px] transition-all shrink-0 flex items-center justify-center"
+              className="px-3 py-2.5 rounded-xl bg-black !!text-white hover:bg-black/80 font-bold text-[16px] transition-all shrink-0 flex items-center justify-center"
               title="Add Address"
             >
               +
@@ -1647,7 +1647,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                               )}
                               <button
                                 onClick={() => { setXmtpError(null); initXmtpClient(true); }}
-                                className="w-full px-6 py-3 bg-[#050505] text-white font-mono text-[11px] font-bold uppercase tracking-widest rounded-[14px] hover:bg-black/80 transition-all shadow-md active:scale-95"
+                                className="w-full px-6 py-3 bg-[#050505] !text-white font-mono text-[11px] font-bold uppercase tracking-widest rounded-[14px] hover:bg-black/80 transition-all shadow-md active:scale-95"
                               >
                                 {xmtpError ? 'Reintentar Conexión' : 'Iniciar Conexión Segura'}
                               </button>

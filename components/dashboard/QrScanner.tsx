@@ -258,7 +258,7 @@ export function QrScanner({ className, mode = 'scan', onScanSuccess, projectValu
                         />
                     </div>
                 ) : (
-                    <button onClick={generateQr} className="px-6 py-3 bg-black text-white font-black uppercase tracking-widest text-[11px] rounded-xl active:scale-95 transition-all">
+                    <button onClick={generateQr} className="px-6 py-3 bg-black !!text-white font-black uppercase tracking-widest text-[11px] rounded-xl active:scale-95 transition-all">
                         Generate Link QR
                     </button>
                 )}
@@ -290,7 +290,7 @@ export function QrScanner({ className, mode = 'scan', onScanSuccess, projectValu
                         </div>
                         <div className="w-full space-y-3">
                             <button onClick={startCamera}
-                                className="w-full py-4 rounded-2xl bg-black text-white font-mono text-[11px] uppercase tracking-widest font-black shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                                className="w-full py-4 rounded-2xl bg-black !!text-white font-mono text-[11px] uppercase tracking-widest font-black shadow-lg active:scale-[0.98] transition-all flex items-center justify-center gap-3">
                                 <Camera size={16} /> Activate Camera
                             </button>
                             <label className="w-full py-4 rounded-2xl bg-black/5 border border-black/10 text-black font-mono text-[11px] uppercase tracking-widest font-black shadow-sm active:scale-[0.98] transition-all flex items-center justify-center gap-3 cursor-pointer hover:bg-black/10">
@@ -381,7 +381,7 @@ export function QrScanner({ className, mode = 'scan', onScanSuccess, projectValu
                         <p className="text-xs text-black/60 max-w-xs leading-relaxed font-serif">{message}</p>
                         <div className="w-full space-y-3 pt-2">
                             <button onClick={reset}
-                                className="w-full py-4 rounded-xl bg-black text-white text-[10px] uppercase tracking-widest font-black hover:bg-black/80 transition-colors">
+                                className="w-full py-4 rounded-xl bg-black !!text-white text-[10px] uppercase tracking-widest font-black hover:bg-black/80 transition-colors">
                                 Try Again
                             </button>
                             <label className="w-full py-4 rounded-xl bg-black/5 border border-black/10 text-black font-mono text-[10px] uppercase tracking-widest font-black shadow-sm active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer hover:bg-black/10">

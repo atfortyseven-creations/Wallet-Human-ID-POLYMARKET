@@ -55,8 +55,8 @@ export function InteractiveCard({ title, subtitle, image, children, color = "fro
 
                 {/* Content Layer (Z-elevated) */}
                 <div className="relative z-10 transform translate-z-10">
-                    <div className="text-2xl font-bold text-white mb-2">{title}</div>
-                    {subtitle && <div className="text-white/60 text-sm">{subtitle}</div>}
+                    <div className="text-2xl font-bold !text-white mb-2">{title}</div>
+                    {subtitle && <div className="!text-white/60 text-sm">{subtitle}</div>}
                 </div>
 
                 {/* Center Image/Icon */}

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -189,7 +189,7 @@ export function CopyTradingArena() {
                     href="https://app.hyperliquid.xyz"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest px-5 py-2.5 bg-[#111111] text-white rounded-xl hover:bg-[#222222] transition-colors"
+                    className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest px-5 py-2.5 bg-[#111111] !text-white rounded-xl hover:bg-[#222222] transition-colors"
                 >
                     <ExternalLink size={12} /> Depositar en Hyperliquid
                 </a>
@@ -308,7 +308,7 @@ export function CopyTradingArena() {
                                         href="https://app.hyperliquid.xyz/portfolio"
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-5 py-3 bg-[#111111] text-white rounded-xl hover:bg-[#222222] transition-colors w-full justify-center mt-2"
+                                        className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-5 py-3 bg-[#111111] !text-white rounded-xl hover:bg-[#222222] transition-colors w-full justify-center mt-2"
                                     >
                                         <ExternalLink size={12} /> View on Hyperliquid
                                     </a>
@@ -383,7 +383,7 @@ export function CopyTradingArena() {
                                     <button
                                         onClick={handleCopy}
                                         disabled={isCopying || traderPositions.length === 0}
-                                        className="w-full bg-[#111111] text-white disabled:bg-[#E5E5E5] disabled:text-[#888888] font-black font-sans uppercase tracking-widest text-[11px] py-4 rounded-xl transition-all shadow-md flex justify-center items-center gap-2"
+                                        className="w-full bg-[#111111] !text-white disabled:bg-[#E5E5E5] disabled:text-[#888888] font-black font-sans uppercase tracking-widest text-[11px] py-4 rounded-xl transition-all shadow-md flex justify-center items-center gap-2"
                                     >
                                         {isCopying
                                             ? <><Zap size={16} className="animate-pulse" /> Signing EIP-712...</>

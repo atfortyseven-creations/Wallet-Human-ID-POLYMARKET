@@ -136,7 +136,7 @@ export function SystemLanding() {
 
   return (
     <ReactLenis root options={{ smoothWheel: true, duration: 1.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) }}>
-      <div className="w-full bg-[#0a0a0a] text-white flex flex-col font-sans selection:bg-[#00f5ff]/30 selection:text-white"
+      <div className="w-full bg-[#0a0a0a] !text-white flex flex-col font-sans selection:bg-[#00f5ff]/30 selection:!text-white"
            style={{ willChange: 'transform', transform: 'translateZ(0)' }}>
         
         {/* HERO DASHBOARD (Exactly 100vh) */}
@@ -153,7 +153,7 @@ export function SystemLanding() {
             </div>
           </div>
           <div className="flex flex-col">
-            <span className="text-[14px] font-black tracking-tighter text-white">WHALE ALERT NET</span>
+            <span className="text-[14px] font-black tracking-tighter !text-white">WHALE ALERT NET</span>
             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#00f5ff] flex items-center gap-1.5">
               <span className="w-1 h-1 rounded-full bg-[#00f5ff] animate-pulse" />
               KYC
@@ -162,7 +162,7 @@ export function SystemLanding() {
         </div>
 
         <nav className="hidden md:flex items-center gap-8">
-          <button onClick={() => router.push('/portfolio')} className="text-[12px] font-bold text-white/50 hover:text-white transition-colors">TERMINAL</button>
+          <button onClick={() => router.push('/portfolio')} className="text-[12px] font-bold !text-white/50 hover:!text-white transition-colors">TERMINAL</button>
           <button onClick={() => router.push('/developer')} className="text-[12px] font-bold text-[#9f00ff] hover:text-[#b233ff] transition-colors flex items-center gap-1.5">
             <Code2 size={14} /> LEGACY VIEW
           </button>
@@ -178,7 +178,7 @@ export function SystemLanding() {
           ) : (
             <button onClick={() => router.push('/connect')} className="relative group overflow-hidden rounded-lg">
                <div className="absolute inset-0 bg-gradient-to-r from-[#00f5ff] to-[#9f00ff] opacity-80 group-hover:opacity-100 transition-opacity" />
-               <div className="relative h-9 px-6 flex items-center justify-center gap-2 text-[11px] font-black uppercase tracking-widest text-white border border-white/10 rounded-lg group-hover:border-transparent transition-colors">
+               <div className="relative h-9 px-6 flex items-center justify-center gap-2 text-[11px] font-black uppercase tracking-widest !text-white border border-white/10 rounded-lg group-hover:border-transparent transition-colors">
                   <Fingerprint size={14} /> Connect Identity
                </div>
             </button>
@@ -191,7 +191,7 @@ export function SystemLanding() {
         
         {/* LEFT SIDEBAR (280px) */}
         <aside className="w-[280px] shrink-0 border-r border-white/5 bg-[#0a0a0a]/50 backdrop-blur-md flex flex-col pt-6 pb-4 px-4 h-full">
-          <div className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 mb-4 px-2">Navigation Grid</div>
+          <div className="text-[10px] font-black uppercase tracking-[0.2em] !text-white/30 mb-4 px-2">Navigation Grid</div>
           <div className="flex flex-col gap-1 flex-1">
             <NavItem icon={<LayoutDashboard size={16} />} label="Command Center" active />
 
@@ -203,7 +203,7 @@ export function SystemLanding() {
 
           <div className="mt-auto pt-6 border-t border-white/5">
              <div className="px-2 flex items-center justify-between">
-                <span className="text-[9px] font-mono text-white/30">WAN NODE: v7.0-alpha</span>
+                <span className="text-[9px] font-mono !text-white/30">WAN NODE: v7.0-alpha</span>
                 <span className="text-[#00f5ff] text-[9px] font-mono animate-pulse">SYNCED</span>
              </div>
           </div>
@@ -219,10 +219,10 @@ export function SystemLanding() {
            >
               {/* Header Title */}
               <div className="flex flex-col gap-2">
-                 <h1 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.9] text-white font-sans">
+                 <h1 className="text-4xl md:text-6xl font-black tracking-tighter leading-[0.9] !text-white font-sans">
                    VERIFY <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00f5ff] to-[#9f00ff]">EVERYTHING.</span>
                  </h1>
-                 <p className="text-sm md:text-lg text-white/50 font-medium max-w-xl">
+                 <p className="text-sm md:text-lg !text-white/50 font-medium max-w-xl">
                    System analytics protocol tracking on-chain thermodynamic signatures. No simulation. No intermediaries. 240Hz reality.
                  </p>
               </div>
@@ -239,13 +239,13 @@ export function SystemLanding() {
               <div className="w-full h-64 md:h-80 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-md relative overflow-hidden flex flex-col">
                   <div className="absolute inset-0 bg-gradient-to-b from-[#00f5ff]/5 to-transparent pointer-events-none" />
                   <div className="p-5 border-b border-white/5 flex items-center justify-between">
-                     <span className="text-[11px] font-black uppercase tracking-widest text-white/60">Global Whale Topography</span>
+                     <span className="text-[11px] font-black uppercase tracking-widest !text-white/60">Global Whale Topography</span>
                      <div className="flex gap-2">
                         <span className="px-2 py-1 rounded bg-[#00f5ff]/10 text-[#00f5ff] text-[9px] font-bold">LIVE</span>
                      </div>
                   </div>
                   <div className="flex-1 flex items-center justify-center">
-                     <div className="flex text-white/20 items-center justify-center h-full w-full">
+                     <div className="flex !text-white/20 items-center justify-center h-full w-full">
                         <motion.div 
                           animate={{ scaleY: [1, 1.5, 0.8, 1.2, 1] }} 
                           transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }} 
@@ -268,7 +268,7 @@ export function SystemLanding() {
 
               {/* Feed Preview */}
               <div className="flex flex-col gap-3">
-                 <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-white/50">Recent Anomalies</h2>
+                 <h2 className="text-[11px] font-black uppercase tracking-[0.2em] !text-white/50">Recent Anomalies</h2>
                  <div className="flex flex-col gap-2">
                     <MockAlertRow action="TRANSFER" amount="1,400 BTC" to="Unknown" time="2s ago" />
                     <MockAlertRow action="SWAP" amount="50,000 ETH" to="Binance" time="14s ago" />
@@ -291,11 +291,11 @@ export function SystemLanding() {
                       </div>
                       <div>
                          <div className="text-[11px] font-black uppercase tracking-widest text-[#ffd700]">KYC</div>
-                         <div className="text-[9px] font-mono text-white/40">Zk-Proof Generation Ready</div>
+                         <div className="text-[9px] font-mono !text-white/40">Zk-Proof Generation Ready</div>
                       </div>
                    </div>
                    {isConnected ? (
-                     <div className="text-[10px] font-mono bg-white/5 p-2 rounded border border-white/10 text-white/70 break-all text-center">
+                     <div className="text-[10px] font-mono bg-white/5 p-2 rounded border border-white/10 !text-white/70 break-all text-center">
                        {connector?.id || 'Connected'} / {address ? `${address.slice(0, 6)}…${address.slice(-4)}` : 'wallet linked'}
                      </div>
                    ) : (
@@ -321,8 +321,8 @@ function NavItem({ icon, label, active = false }: { icon: React.ReactNode, label
     <button className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl transition-all duration-300 group
       ${active ? 'bg-white/10 border border-white/10' : 'hover:bg-white/5 border border-transparent'}
     `}>
-      <span className={`${active ? 'text-[#00f5ff]' : 'text-white/40 group-hover:text-white'} transition-colors`}>{icon}</span>
-      <span className={`text-[11px] font-black uppercase tracking-wider ${active ? 'text-white' : 'text-white/40 group-hover:text-white'} transition-colors`}>{label}</span>
+      <span className={`${active ? 'text-[#00f5ff]' : '!text-white/40 group-hover:!text-white'} transition-colors`}>{icon}</span>
+      <span className={`text-[11px] font-black uppercase tracking-wider ${active ? '!text-white' : '!text-white/40 group-hover:!text-white'} transition-colors`}>{label}</span>
     </button>
   )
 }
@@ -331,8 +331,8 @@ function GodMetric({ title, value, change, negative = false }: { title: string, 
   return (
     <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 flex flex-col gap-2 hover:bg-white/[0.04] transition-colors relative overflow-hidden group">
        <div className="absolute right-0 top-0 w-32 h-32 bg-gradient-to-bl from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-full blur-[20px] -mr-10 -mt-10" />
-       <span className="text-[9px] font-black uppercase tracking-widest text-white/40">{title}</span>
-       <span className="text-2xl font-black text-white font-mono">{value}</span>
+       <span className="text-[9px] font-black uppercase tracking-widest !text-white/40">{title}</span>
+       <span className="text-2xl font-black !text-white font-mono">{value}</span>
        <span className={`text-[10px] font-bold ${negative ? 'text-[#ff3366]' : 'text-[#00FF55]'}`}>{change} (24h)</span>
     </div>
   )
@@ -346,11 +346,11 @@ function MockAlertRow({ action, amount, to, time }: { action: string, amount: st
              <TrendingUp size={14} className={action === 'MINT' ? 'text-[#00FF55]' : 'text-[#00f5ff]'} />
           </div>
           <div className="flex flex-col">
-             <span className="text-[12px] font-black text-white">{amount}</span>
-             <span className="text-[9px] font-bold text-white/40 uppercase tracking-widest">{action}  {to}</span>
+             <span className="text-[12px] font-black !text-white">{amount}</span>
+             <span className="text-[9px] font-bold !text-white/40 uppercase tracking-widest">{action}  {to}</span>
           </div>
        </div>
-       <span className="text-[10px] font-mono text-white/30 group-hover:text-white/60 transition-colors">{time}</span>
+       <span className="text-[10px] font-mono !text-white/30 group-hover:!text-white/60 transition-colors">{time}</span>
     </div>
   )
 }
@@ -358,8 +358,8 @@ function MockAlertRow({ action, amount, to, time }: { action: string, amount: st
 function StreamItem({ text, highlight = false }: { text: string, highlight?: boolean }) {
   return (
     <div className="flex items-start gap-2 text-[10px] font-mono">
-       <span className="text-white/20 mt-0.5"></span>
-       <span className={highlight ? 'text-[#00f5ff]' : 'text-white/40'}>{text}</span>
+       <span className="!text-white/20 mt-0.5"></span>
+       <span className={highlight ? 'text-[#00f5ff]' : '!text-white/40'}>{text}</span>
     </div>
   )
 }

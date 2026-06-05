@@ -54,7 +54,7 @@ export const EarlyAccess = () => {
                 className="p-6 rounded-xl bg-[#00ff9d]/10 border border-[#00ff9d]/30 text-center"
             >
                 <ShieldCheck className="mx-auto text-[#00ff9d] mb-3" size={32} />
-                <h3 className="text-xl font-bold text-white mb-1">ACCESS GRANTED</h3>
+                <h3 className="text-xl font-bold !text-white mb-1">ACCESS GRANTED</h3>
                 <p className="text-sm text-[#00ff9d] font-mono">YOUR SPOT IS SECURED ON CHAIN.</p>
             </motion.div>
         );
@@ -64,7 +64,7 @@ export const EarlyAccess = () => {
         <div className="glass p-8 rounded-xl border border-white/5 relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-50" />
 
-            <h3 className="text-2xl font-bold text-white mb-2 relative z-10">Beta Access</h3>
+            <h3 className="text-2xl font-bold !text-white mb-2 relative z-10">Beta Access</h3>
             <p className="text-[#888899] mb-6 text-sm relative z-10">
                 Sign a cryptographic proof to join the priority queue. <br />
                 <span className="text-[#00f2ea]">Zero Gas Fee.</span>
@@ -73,7 +73,7 @@ export const EarlyAccess = () => {
             <button
                 onClick={handleJoin}
                 disabled={status === 'SIGNING'}
-                className="w-full py-4 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#00f2ea] text-white font-mono uppercase tracking-widest transition-all relative z-10 flex items-center justify-center gap-3"
+                className="w-full py-4 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#00f2ea] !text-white font-mono uppercase tracking-widest transition-all relative z-10 flex items-center justify-center gap-3"
             >
                 {status === 'SIGNING' ? (
                     <>

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { Component, ErrorInfo, ReactNode } from "react";
 import { AlertOctagon, RotateCcw, Wifi } from "lucide-react";
@@ -92,7 +92,7 @@ export class DashboardErrorBoundary extends Component<Props, State> {
           <div className="flex bg-[#F7931A]/10 p-4 rounded-full mb-4">
             <Wifi size={32} className="text-[#F7931A]" />
           </div>
-          <h2 className="text-sm font-black text-[#050505] tracking-tight mb-2">Node Operational · Waiting</h2>
+          <h2 className="text-sm font-black text-[#050505] tracking-tight mb-2">Node Operational � Waiting</h2>
           <p className="text-[10px] font-bold text-[#888888] uppercase tracking-widest text-center max-w-sm leading-relaxed">
             Network connection lost. Module will auto-recover when connectivity is restored.
           </p>
@@ -122,7 +122,7 @@ export class DashboardErrorBoundary extends Component<Props, State> {
 
           <button
             onClick={() => this.setState({ hasError: false, error: null })}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[#050505] text-white text-[10px] font-black uppercase tracking-widest hover:bg-[#333] transition-all"
+            className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-[#050505] !text-white text-[10px] font-black uppercase tracking-widest hover:bg-[#333] transition-all"
           >
             <RotateCcw size={14} />
             Reboot Interface

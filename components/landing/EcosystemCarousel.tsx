@@ -22,7 +22,7 @@ export function EcosystemCarousel() {
             
             <div className="flex justify-between items-end mb-8 px-2">
                 <div>
-                    <h3 className="text-xl font-black text-white mb-2 uppercase tracking-widest opacity-80">
+                    <h3 className="text-xl font-black !text-white mb-2 uppercase tracking-widest opacity-80">
                         {t('ecosystem.carousel_title')}
                     </h3>
                     <p className="text-zinc-500 text-sm max-w-md font-medium">
@@ -35,13 +35,13 @@ export function EcosystemCarousel() {
                         onClick={() => scroll('left')}
                         className="p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors active:scale-95"
                     >
-                        <ArrowLeft size={20} className="text-white" />
+                        <ArrowLeft size={20} className="!text-white" />
                     </button>
                     <button 
                         onClick={() => scroll('right')}
                         className="p-3 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors active:scale-95"
                     >
-                        <ArrowRight size={20} className="text-white" />
+                        <ArrowRight size={20} className="!text-white" />
                     </button>
                 </div>
             </div>

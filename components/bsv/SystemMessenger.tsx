@@ -116,14 +116,14 @@ export const SystemMessenger = () => {
                         <MessageSquare className="text-[var(--aztec-orchid)]" size={18} />
                     </div>
                     <div>
-                        <h4 className="text-xs font-black uppercase tracking-widest text-white/80">System <span className="text-[var(--aztec-orchid)]">Messenger</span></h4>
+                        <h4 className="text-xs font-black uppercase tracking-widest !text-white/80">System <span className="text-[var(--aztec-orchid)]">Messenger</span></h4>
                         <div className="flex items-center gap-2">
                              <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                             <span className="text-[8px] font-black uppercase tracking-widest text-white/20">Gossip Node Active</span>
+                             <span className="text-[8px] font-black uppercase tracking-widest !text-white/20">Gossip Node Active</span>
                         </div>
                     </div>
                 </div>
-                <Globe size={14} className="text-white/10" />
+                <Globe size={14} className="!text-white/10" />
             </div>
 
             {/* Chat Body */}
@@ -149,11 +149,11 @@ export const SystemMessenger = () => {
                                 </div>
                             </div>
                             <div className={`p-4 rounded-2xl text-[11px] font-medium leading-relaxed max-w-[90%]
-                                ${msg.type === 'SYS' ? 'bg-transparent border border-white/5 italic text-center text-[10px]' : 'bg-white/5 border border-white/10 text-white/80'}
+                                ${msg.type === 'SYS' ? 'bg-transparent border border-white/5 italic text-center text-[10px]' : 'bg-white/5 border border-white/10 !text-white/80'}
                             `}>
                                 {msg.content}
                             </div>
-                            <span className="text-[7px] font-aztec-mono text-white/10">{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                            <span className="text-[7px] font-aztec-mono !text-white/10">{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                         </motion.div>
                     ))}
                 </AnimatePresence>

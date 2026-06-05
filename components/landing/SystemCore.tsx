@@ -41,8 +41,8 @@ export function SystemCore() {
                 {/* Left Side: Dynamic Accordeon / Selector */}
                 <div className="space-y-4">
                     <div className="mb-12">
-                        <span className="text-[10px] text-white/40 font-black uppercase tracking-[0.3em]">Arquitectura del Núcleo</span>
-                        <h2 className="text-4xl md:text-5xl font-black text-white mt-4 uppercase tracking-tighter">
+                        <span className="text-[10px] !text-white/40 font-black uppercase tracking-[0.3em]">Arquitectura del Núcleo</span>
+                        <h2 className="text-4xl md:text-5xl font-black !text-white mt-4 uppercase tracking-tighter">
                             Desglosando <br/>La Complejidad
                         </h2>
                     </div>
@@ -55,7 +55,7 @@ export function SystemCore() {
                                 onMouseEnter={() => setActiveId(mod.id)}
                                 className={`relative group cursor-pointer border-l-2 pl-6 py-4 transition-all duration-500 ${isActive ? 'border-white' : 'border-white/10 hover:border-white/40'}`}
                             >
-                                <h3 className={`text-2xl font-black uppercase tracking-tight transition-colors ${isActive ? 'text-white' : 'text-white/30 group-hover:text-white/60'}`}>
+                                <h3 className={`text-2xl font-black uppercase tracking-tight transition-colors ${isActive ? '!text-white' : '!text-white/30 group-hover:!text-white/60'}`}>
                                     {mod.title}
                                 </h3>
                                 <p className={`text-xs font-bold uppercase tracking-widest mt-1 transition-colors ${isActive ? 'text-indigo-400' : 'text-transparent'}`}>
@@ -87,10 +87,10 @@ export function SystemCore() {
 
                                     <div className="relative z-10">
                                         <div className="w-12 h-1 mb-8 bg-white/20 rounded-full" />
-                                        <h4 className="text-3xl font-black text-white uppercase tracking-tighter mb-4">
+                                        <h4 className="text-3xl font-black !text-white uppercase tracking-tighter mb-4">
                                             {mod.title}
                                         </h4>
-                                        <p className="text-sm text-white/50 leading-relaxed font-medium">
+                                        <p className="text-sm !text-white/50 leading-relaxed font-medium">
                                             {mod.description}
                                         </p>
                                     </div>

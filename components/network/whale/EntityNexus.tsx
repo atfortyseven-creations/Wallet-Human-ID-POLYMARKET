@@ -112,8 +112,8 @@ export function EntityNexus({ address }: Props) {
             <Network className="w-5 h-5 text-purple-400" />
           </div>
           <div>
-            <h3 className="text-white font-black text-lg">Entity Nexus</h3>
-            <p className="text-white/30 text-xs font-mono">On-chain clustering map</p>
+            <h3 className="!text-white font-black text-lg">Entity Nexus</h3>
+            <p className="!text-white/30 text-xs font-mono">On-chain clustering map</p>
           </div>
         </div>
         {/* Legend */}
@@ -121,7 +121,7 @@ export function EntityNexus({ address }: Props) {
           {Object.entries(NODE_COLORS).map(([type, color]) => (
             <div key={type} className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full" style={{ background: color }} />
-              <span className="text-white/30 text-[10px] capitalize">{type}</span>
+              <span className="!text-white/30 text-[10px] capitalize">{type}</span>
             </div>
           ))}
         </div>
@@ -130,19 +130,19 @@ export function EntityNexus({ address }: Props) {
       <div className="relative">
         {!address ? (
           <div className="flex flex-col items-center justify-center h-72 gap-3">
-            <Network className="w-12 h-12 text-white/10" />
-            <p className="text-white/20 text-sm">Click on a whale to view its entity nexus</p>
+            <Network className="w-12 h-12 !text-white/10" />
+            <p className="!text-white/20 text-sm">Click on a whale to view its entity nexus</p>
           </div>
         ) : loading ? (
           <div className="flex items-center justify-center h-72">
             <div className="flex flex-col items-center gap-3">
               <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
-              <p className="text-white/30 text-sm font-mono">Building entity graph...</p>
+              <p className="!text-white/30 text-sm font-mono">Building entity graph...</p>
             </div>
           </div>
         ) : nodes.length === 0 ? (
           <div className="flex items-center justify-center h-72">
-            <p className="text-white/20 text-sm">No clustering data available</p>
+            <p className="!text-white/20 text-sm">No clustering data available</p>
           </div>
         ) : (
           <svg ref={svgRef} viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height: '320px' }}>
@@ -223,19 +223,19 @@ export function EntityNexus({ address }: Props) {
           >
             <div className="flex items-center justify-between">
                 <div>
-                <p className="text-white/30 text-[10px] font-mono uppercase">{selectedNode.type} · {selectedNode.isCenter ? 'TARGET ADDRESS' : 'CONNECTED'}</p>
-                <p className="text-white font-mono text-sm">{selectedNode.label}</p>
+                <p className="!text-white/30 text-[10px] font-mono uppercase">{selectedNode.type} · {selectedNode.isCenter ? 'TARGET ADDRESS' : 'CONNECTED'}</p>
+                <p className="!text-white font-mono text-sm">{selectedNode.label}</p>
                 </div>
                 <div className="text-right">
                 <p className="text-yellow-400 font-black">{selectedNode.btcFlow.toFixed(2)} BTC</p>
-                <p className="text-white/20 text-xs">Recorded flow</p>
+                <p className="!text-white/20 text-xs">Recorded flow</p>
                 </div>
             </div>
 
             {/* ORACLE HOLOGRAPHIC BADGE */}
             <div className="border-t border-white/5 pt-3">
                 {oracleLoading ? (
-                    <div className="flex items-center gap-2 text-white/40 text-[10px] uppercase font-mono tracking-widest">
+                    <div className="flex items-center gap-2 !text-white/40 text-[10px] uppercase font-mono tracking-widest">
                         <Loader2 className="w-3 h-3 animate-spin" />
                         Querying Knowledge Graph Oracle...
                     </div>
@@ -250,22 +250,22 @@ export function EntityNexus({ address }: Props) {
                                 <span className={`text-xs font-bold uppercase tracking-widest ${oracleData.riskScore > 70 ? 'text-red-400' : 'text-emerald-400'}`}>
                                     L2 ORACLE VERIFIED
                                 </span>
-                                <span className="text-[9px] text-white/40 font-mono tracking-widest">CONFIDENCE: {oracleData.confidence}%</span>
+                                <span className="text-[9px] !text-white/40 font-mono tracking-widest">CONFIDENCE: {oracleData.confidence}%</span>
                             </div>
                             <div className="grid grid-cols-2 gap-2 text-[10px] font-mono">
                                 <div>
-                                    <span className="text-white/30 block mb-0.5">CATEGORY</span>
-                                    <span className="text-white bg-black/40 px-2 py-0.5 rounded border border-white/10">{oracleData.category}</span>
+                                    <span className="!text-white/30 block mb-0.5">CATEGORY</span>
+                                    <span className="!text-white bg-black/40 px-2 py-0.5 rounded border border-white/10">{oracleData.category}</span>
                                 </div>
                                 <div className="text-right">
-                                    <span className="text-white/30 block mb-0.5">RISK SCORE</span>
+                                    <span className="!text-white/30 block mb-0.5">RISK SCORE</span>
                                     <span className={`font-black text-xs ${oracleData.riskScore > 70 ? 'text-red-400' : 'text-emerald-400'}`}>{oracleData.riskScore}/100</span>
                                 </div>
                             </div>
                         </div>
                     </motion.div>
                 ) : (
-                    <div className="text-[10px] text-white/20 font-mono uppercase tracking-widest text-center">
+                    <div className="text-[10px] !text-white/20 font-mono uppercase tracking-widest text-center">
                         No intel found in Oracle for this entity.
                     </div>
                 )}

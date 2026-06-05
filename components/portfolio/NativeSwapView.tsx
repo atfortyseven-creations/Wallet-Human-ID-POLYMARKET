@@ -518,7 +518,7 @@ export function NativeSwapView({ address, onBack }: any) {
                         <input type="checkbox" checked={useMultiSig} onChange={e=>setUseMultiSig(e.target.checked)} className="accent-black" />
                         Multi-Sig
                     </label>
-                    <button onClick={onBack} className="text-[10px] uppercase font-bold tracking-widest border border-black/10 px-3 py-2 hover:bg-black hover:text-white transition-colors active:bg-black active:text-white">
+                    <button onClick={onBack} className="text-[10px] uppercase font-bold tracking-widest border border-black/10 px-3 py-2 hover:bg-black hover:!text-white transition-colors active:bg-black active:!text-white">
                         CLOSE
                     </button>
                 </div>
@@ -561,12 +561,12 @@ export function NativeSwapView({ address, onBack }: any) {
                     </div>
                     <div className="mt-4 text-[10px] text-black/40 font-mono flex justify-between pt-3 border-t border-black/5">
                         <span>Balance: {currentBalance}</span>
-                        <span onClick={() => setAmountIn(currentBalance)} className="text-black/60 cursor-pointer hover:text-black font-bold tracking-widest border border-black/10 px-2 py-0.5 rounded-sm active:bg-black active:text-white transition-colors">MAX</span>
+                        <span onClick={() => setAmountIn(currentBalance)} className="text-black/60 cursor-pointer hover:text-black font-bold tracking-widest border border-black/10 px-2 py-0.5 rounded-sm active:bg-black active:!text-white transition-colors">MAX</span>
                     </div>
                 </div>
 
                 <div className="flex justify-center -my-4 relative z-10">
-                    <button onClick={handleSwapAssets} className="bg-white border-2 border-white shadow-[0_0_0_1px_rgba(0,0,0,0.1)] p-3 rounded-full hover:bg-black hover:text-white transition-all group shadow-md">
+                    <button onClick={handleSwapAssets} className="bg-white border-2 border-white shadow-[0_0_0_1px_rgba(0,0,0,0.1)] p-3 rounded-full hover:bg-black hover:!text-white transition-all group shadow-md">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="group-hover:rotate-180 transition-transform duration-500"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
                     </button>
                 </div>
@@ -624,7 +624,7 @@ export function NativeSwapView({ address, onBack }: any) {
                     <button
                         onClick={executeApproval}
                         disabled={isApproving}
-                        className="w-full py-4 sm:py-5 bg-black text-white font-black text-[12px] uppercase tracking-[0.3em] transition-all hover:bg-black/90 active:bg-black/70 disabled:opacity-50 flex justify-center shadow-2xl rounded-sm"
+                        className="w-full py-4 sm:py-5 bg-black !!text-white font-black text-[12px] uppercase tracking-[0.3em] transition-all hover:bg-black/90 active:bg-black/70 disabled:opacity-50 flex justify-center shadow-2xl rounded-sm"
                     >
                         {isApproving ? 'AUTHORIZING...' : `APPROVE ${fromToken.symbol}`}
                     </button>
@@ -639,7 +639,7 @@ export function NativeSwapView({ address, onBack }: any) {
                     <button
                         onClick={executeSwap}
                         disabled={isSwapping || !amountIn || isCalculating || !amountOut || amountOut.includes('error') || amountOut.includes('No liquidity')}
-                        className="w-full py-4 sm:py-5 bg-black text-white font-black text-[12px] uppercase tracking-[0.3em] transition-all hover:bg-black/90 active:bg-black/70 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center shadow-2xl rounded-sm"
+                        className="w-full py-4 sm:py-5 bg-black !!text-white font-black text-[12px] uppercase tracking-[0.3em] transition-all hover:bg-black/90 active:bg-black/70 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center shadow-2xl rounded-sm"
                     >
                         {useMultiSig ? 'SIGN & QUEUE (MULTI-SIG)' : isSwapping ? 'EXECUTING...' : 'SIGN & EXECUTE SWAP'}
                     </button>

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -178,8 +178,8 @@ export function ApiTerminal() {
                                         {group.endpoints.map(ep => (
                                             <button key={ep.id}
                                                 onClick={() => { setSelected(ep); setResponse(null); setResponseHeaders({}); }}
-                                                className={`w-full text-left px-2 py-2 rounded-lg flex items-center gap-2 transition-colors ${selected.id === ep.id ? 'bg-[#050505] text-white' : 'text-[#888888] hover:text-[#050505] hover:bg-[#E5E5E5]/50'}`}>
-                                                <span className={`text-[7px] font-black px-1.5 py-0.5 rounded border uppercase tracking-wider shrink-0 ${selected.id === ep.id ? 'bg-white/20 text-white border-white/20' : METHOD_COLORS[ep.method]}`}>
+                                                className={`w-full text-left px-2 py-2 rounded-lg flex items-center gap-2 transition-colors ${selected.id === ep.id ? 'bg-[#050505] !text-white' : 'text-[#888888] hover:text-[#050505] hover:bg-[#E5E5E5]/50'}`}>
+                                                <span className={`text-[7px] font-black px-1.5 py-0.5 rounded border uppercase tracking-wider shrink-0 ${selected.id === ep.id ? 'bg-white/20 !text-white border-white/20' : METHOD_COLORS[ep.method]}`}>
                                                     {ep.method}
                                                 </span>
                                                 <span className="text-[9px] font-mono font-bold truncate">{ep.path.split('?')[0]}</span>
@@ -194,13 +194,13 @@ export function ApiTerminal() {
             </div>
 
             {/*  Console  */}
-            <div className="flex-1 flex flex-col min-w-0 bg-[#050505] text-white">
+            <div className="flex-1 flex flex-col min-w-0 bg-[#050505] !text-white">
 
                 {/* Header */}
                 <div className="px-6 py-3 border-b border-white/10 bg-black/30 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <Terminal size={15} className="text-[#00C076]"/>
-                        <span className="text-[10px] font-mono text-white/60">
+                        <span className="text-[10px] font-mono !text-white/60">
                             WHALECOSYSTEM API CONSOLE &gt; {selected.path}
                         </span>
                     </div>
@@ -215,8 +215,8 @@ export function ApiTerminal() {
                 <div className="px-6 py-4 border-b border-white/10 bg-black/20">
                     <div className="flex items-start gap-4 mb-4">
                         <div className="flex-1 min-w-0">
-                            <h3 className="text-[11px] font-black text-white font-mono">{selected.method} {selected.path}</h3>
-                            <p className="text-[9px] text-white/50 mt-1">{selected.description}</p>
+                            <h3 className="text-[11px] font-black !text-white font-mono">{selected.method} {selected.path}</h3>
+                            <p className="text-[9px] !text-white/50 mt-1">{selected.description}</p>
                             {selected.params && (
                                 <p className="text-[9px] text-[#D4AF37] mt-1 font-mono">Params: {selected.params}</p>
                             )}
@@ -231,7 +231,7 @@ export function ApiTerminal() {
                     {/* cURL block */}
                     <div className="bg-[#111] rounded-lg border border-white/10 p-3 relative">
                         <span className="absolute -top-2 left-3 bg-[#111] px-1 text-[7px] font-mono text-[#00C076] uppercase tracking-widest">cURL</span>
-                        <code className="text-[9px] font-mono text-white/60 select-all break-all">
+                        <code className="text-[9px] font-mono !text-white/60 select-all break-all">
                             curl -X {selected.method} "https://api.whalecosystem.com{selected.path}"<br/>
                             &nbsp;&nbsp;-H "Authorization: Bearer &lt;YOUR_API_KEY&gt;"<br/>
                             &nbsp;&nbsp;-H "Content-Type: application/json"
@@ -243,7 +243,7 @@ export function ApiTerminal() {
                 <div className="border-b border-white/10 px-6 flex items-center gap-1">
                     {(['response', 'headers'] as const).map(t => (
                         <button key={t} onClick={() => setActiveTab(t)}
-                            className={`px-4 py-2 text-[9px] font-black uppercase tracking-widest border-b-2 transition-all ${activeTab === t ? 'border-[#00C076] text-[#00C076]' : 'border-transparent text-white/30 hover:text-white/60'}`}>
+                            className={`px-4 py-2 text-[9px] font-black uppercase tracking-widest border-b-2 transition-all ${activeTab === t ? 'border-[#00C076] text-[#00C076]' : 'border-transparent !text-white/30 hover:!text-white/60'}`}>
                             {t}
                             {activeTab === 'headers' && responseHeaders && Object.keys(responseHeaders).length > 0 && (
                                 <span className="ml-1.5 px-1.5 py-0.5 bg-[#00C076]/20 text-[#00C076] rounded text-[7px]">{Object.keys(responseHeaders).length}</span>
@@ -251,7 +251,7 @@ export function ApiTerminal() {
                         </button>
                     ))}
                     {response && (
-                        <button onClick={copyToClipboard} className="ml-auto flex items-center gap-1 text-[9px] font-mono text-white/30 hover:text-white transition-colors pb-1">
+                        <button onClick={copyToClipboard} className="ml-auto flex items-center gap-1 text-[9px] font-mono !text-white/30 hover:!text-white transition-colors pb-1">
                             {copied ? <Check size={11} className="text-[#00C076]"/> : <Copy size={11}/>} COPY
                         </button>
                     )}
@@ -260,7 +260,7 @@ export function ApiTerminal() {
                 {/* Response Body */}
                 <div className="flex-1 overflow-auto p-6 no-scrollbar relative">
                     {!response && !loading && (
-                        <div className="absolute inset-0 flex items-center justify-center flex-col gap-3 text-white/15">
+                        <div className="absolute inset-0 flex items-center justify-center flex-col gap-3 !text-white/15">
                             <Terminal size={32}/>
                             <span className="text-[10px] font-mono uppercase tracking-widest">Awaiting execution</span>
                         </div>
@@ -281,7 +281,7 @@ export function ApiTerminal() {
                     {activeTab === 'headers' && responseHeaders && Object.keys(responseHeaders).length > 0 && (
                         <table className="w-full text-[10px] font-mono">
                             <thead>
-                                <tr className="text-[8px] text-white/30 uppercase tracking-widest border-b border-white/10">
+                                <tr className="text-[8px] !text-white/30 uppercase tracking-widest border-b border-white/10">
                                     <th className="text-left py-2 pr-6 font-black">Header</th>
                                     <th className="text-left py-2 font-black">Value</th>
                                 </tr>
@@ -290,14 +290,14 @@ export function ApiTerminal() {
                                 {Object.entries(responseHeaders).map(([k, v]) => (
                                     <tr key={k} className="border-b border-white/5 hover:bg-white/5">
                                         <td className="py-2 pr-6 text-[#00C076]">{k}</td>
-                                        <td className="py-2 text-white/70">{v}</td>
+                                        <td className="py-2 !text-white/70">{v}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     )}
                     {activeTab === 'headers' && (!responseHeaders || Object.keys(responseHeaders).length === 0) && (
-                        <div className="text-center text-white/20 text-[10px] font-mono mt-8">Execute a request to see response headers</div>
+                        <div className="text-center !text-white/20 text-[10px] font-mono mt-8">Execute a request to see response headers</div>
                     )}
                 </div>
             </div>

@@ -78,7 +78,7 @@ export default function DeadMansSwitchModal({ isOpen, onClose }: DeadMansSwitchM
                         className="relative w-full max-w-lg bg-gradient-to-br from-red-900/90 to-black/90 backdrop-blur-xl rounded-3xl p-8 border border-white/10 shadow-2xl"
                     >
                         <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/10">
-                            <X size={20} className="text-white" />
+                            <X size={20} className="!text-white" />
                         </button>
 
                         <div className="flex items-center gap-3 mb-6">
@@ -86,8 +86,8 @@ export default function DeadMansSwitchModal({ isOpen, onClose }: DeadMansSwitchM
                                 <Skull className="text-red-400" size={24} />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-black text-white">Dead Man's Switch</h2>
-                                <p className="text-sm text-white/60">Auto-transfer if inactive</p>
+                                <h2 className="text-2xl font-black !text-white">Dead Man's Switch</h2>
+                                <p className="text-sm !text-white/60">Auto-transfer if inactive</p>
                             </div>
                         </div>
 
@@ -95,20 +95,20 @@ export default function DeadMansSwitchModal({ isOpen, onClose }: DeadMansSwitchM
                             <div>
                                 <div className="bg-white/5 rounded-2xl p-6 mb-4">
                                     <div className="flex items-center justify-between mb-4">
-                                        <span className="text-white/60">Status</span>
+                                        <span className="!text-white/60">Status</span>
                                         <span className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm font-bold">
                                             Active
                                         </span>
                                     </div>
                                     <div className="flex items-center justify-between mb-4">
-                                        <span className="text-white/60">Beneficiary</span>
-                                        <span className="text-white font-mono text-sm">
+                                        <span className="!text-white/60">Beneficiary</span>
+                                        <span className="!text-white font-mono text-sm">
                                             {switchStatus.beneficiary.slice(0, 10)}...
                                         </span>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-white/60">Last Activity</span>
-                                        <span className="text-white font-bold">
+                                        <span className="!text-white/60">Last Activity</span>
+                                        <span className="!text-white font-bold">
                                             {new Date(switchStatus.lastActivity).toLocaleDateString()}
                                         </span>
                                     </div>
@@ -116,7 +116,7 @@ export default function DeadMansSwitchModal({ isOpen, onClose }: DeadMansSwitchM
 
                                 <button
                                     onClick={pingAlive}
-                                    className="w-full py-3 bg-green-600 hover:bg-green-500 rounded-xl font-bold text-white flex items-center justify-center gap-2"
+                                    className="w-full py-3 bg-green-600 hover:bg-green-500 rounded-xl font-bold !text-white flex items-center justify-center gap-2"
                                 >
                                     <Heart size={20} />
                                     I'm Alive! (Reset Timer)
@@ -133,18 +133,18 @@ export default function DeadMansSwitchModal({ isOpen, onClose }: DeadMansSwitchM
                                 </div>
 
                                 <div className="mb-4">
-                                    <label className="text-white/80 text-sm mb-2 block">Beneficiary Address</label>
+                                    <label className="!text-white/80 text-sm mb-2 block">Beneficiary Address</label>
                                     <input
                                         type="text"
                                         value={beneficiaryAddress}
                                         onChange={(e) => setBeneficiaryAddress(e.target.value)}
                                         placeholder="0x..."
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white"
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl !text-white"
                                     />
                                 </div>
 
                                 <div className="mb-6">
-                                    <label className="text-white/80 text-sm mb-2 block">
+                                    <label className="!text-white/80 text-sm mb-2 block">
                                         Inactivity Period (Months): <strong>{inactivityMonths}</strong>
                                     </label>
                                     <input
@@ -160,7 +160,7 @@ export default function DeadMansSwitchModal({ isOpen, onClose }: DeadMansSwitchM
                                 <button
                                     onClick={setupSwitch}
                                     disabled={loading || !beneficiaryAddress}
-                                    className="w-full py-3 bg-red-600 hover:bg-red-500 disabled:bg-white/10 rounded-xl font-bold text-white flex items-center justify-center gap-2"
+                                    className="w-full py-3 bg-red-600 hover:bg-red-500 disabled:bg-white/10 rounded-xl font-bold !text-white flex items-center justify-center gap-2"
                                 >
                                     {loading ? <Loader2 className="animate-spin" size={20} /> : <Skull size={20} />}
                                     {loading ? 'Activating...' : 'Activate Dead Man\'s Switch'}

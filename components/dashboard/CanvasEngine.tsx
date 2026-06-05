@@ -141,7 +141,7 @@ export function CanvasEngine() {
     return (
         <div
             ref={containerRef}
-            className="relative w-full h-full bg-[#050505] overflow-hidden cursor-grab active:cursor-grabbing text-white"
+            className="relative w-full h-full bg-[#050505] overflow-hidden cursor-grab active:cursor-grabbing !text-white"
             onPointerDown={handlePointerDown}
             onPointerUp={handlePointerUp}
             onPointerLeave={handlePointerUp}
@@ -164,7 +164,7 @@ export function CanvasEngine() {
                      style={{ backdropFilter: 'var(--mobile-blur, blur(12px))', WebkitBackdropFilter: 'var(--mobile-blur, blur(12px))' }}>
                     <div className="text-center space-y-4">
                         <div className="w-12 h-12 border-2 border-[var(--aztec-orchid)] border-t-transparent rounded-full animate-spin mx-auto" />
-                        <p className="font-aztec-mono text-[10px] uppercase tracking-widest text-white/40">Loading Canvas State...</p>
+                        <p className="font-aztec-mono text-[10px] uppercase tracking-widest !text-white/40">Loading Canvas State...</p>
                     </div>
                 </div>
             )}
@@ -172,7 +172,7 @@ export function CanvasEngine() {
             {/* Empty Canvas Guide */}
             {!isLoading && nodes.length === 0 && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none z-10">
-                    <p className="font-aztec-mono text-[11px] uppercase tracking-widest text-white/20">
+                    <p className="font-aztec-mono text-[11px] uppercase tracking-widest !text-white/20">
                         Right-click anywhere to deploy your first node
                     </p>
                     <div className="mt-4 w-px h-16 bg-gradient-to-b from-transparent via-[var(--aztec-orchid)]/20 to-transparent" />
@@ -198,7 +198,7 @@ export function CanvasEngine() {
             {/* Sync Status Indicator */}
             <div className="absolute top-4 left-4 z-50 flex items-center gap-2">
                 <div className={`w-1.5 h-1.5 rounded-full ${isSaving ? 'bg-yellow-400 animate-pulse' : 'bg-[var(--aztec-chartreuse)]'}`} />
-                <span className="font-mono text-[9px] uppercase tracking-widest text-white/30">
+                <span className="font-mono text-[9px] uppercase tracking-widest !text-white/30">
                     {isSaving ? 'Syncing...' : lastSynced ? `Saved ${lastSynced.toLocaleTimeString()}` : 'Ready'}
                 </span>
             </div>

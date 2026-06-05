@@ -144,7 +144,7 @@ function UserLikeRow({ user }: { user: any }) {
   const avatarColor = `#${user.walletAddress.slice(2, 8)}`;
   return (
     <Link href={`/forum/u/${user.walletAddress}`} className="flex items-center gap-3 group">
-      <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center text-[10px] font-mono font-black text-white" style={{ backgroundColor: avatarColor }}>
+      <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center text-[10px] font-mono font-black !text-white" style={{ backgroundColor: avatarColor }}>
         {user.avatarUrl ? <img src={user.avatarUrl} alt="avatar" className="w-full h-full object-cover" /> : user.walletAddress.slice(2, 3).toUpperCase()}
       </div>
       <div className="flex-1 flex flex-col">

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React from 'react';
 import { useSettings } from '@/src/context/SettingsContext';
@@ -33,7 +33,7 @@ export function ProFeatureGate({ children, featureName = "Premium Feature" }: Pr
             <motion.button 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="relative z-10 px-6 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-slate-900/20 flex items-center gap-2 hover:bg-indigo-600 transition-colors"
+                className="relative z-10 px-6 py-2 bg-slate-900 !text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-slate-900/20 flex items-center gap-2 hover:bg-indigo-600 transition-colors"
             >
                 <Zap size={12} className="fill-current" /> Upgrade to Pro $299/mo
             </motion.button>

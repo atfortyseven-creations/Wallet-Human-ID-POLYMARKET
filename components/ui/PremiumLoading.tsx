@@ -38,7 +38,7 @@ export function PremiumLoading({ message = "Loading...", fullScreen = true }: Pr
             className="relative"
           >
             <div className="w-20 h-20 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center">
-              <Sparkles className="w-10 h-10 text-white" />
+              <Sparkles className="w-10 h-10 !text-white" />
             </div>
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 blur-xl opacity-50" />
           </motion.div>
@@ -49,7 +49,7 @@ export function PremiumLoading({ message = "Loading...", fullScreen = true }: Pr
             <motion.div
               animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="flex items-center gap-2 text-white/60"
+              className="flex items-center gap-2 !text-white/60"
             >
               <Loader2 className="w-4 h-4 animate-spin" />
               <span className="text-sm font-mono">Initializing...</span>
@@ -69,7 +69,7 @@ export function PremiumLoading({ message = "Loading...", fullScreen = true }: Pr
         className="flex items-center gap-3"
       >
         <Loader2 className="w-5 h-5 animate-spin text-purple-400" />
-        <span className="text-white/80">{message}</span>
+        <span className="!text-white/80">{message}</span>
       </motion.div>
     </div>
   );

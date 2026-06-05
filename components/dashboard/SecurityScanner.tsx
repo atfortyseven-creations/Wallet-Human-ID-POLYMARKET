@@ -65,7 +65,7 @@ export default function SecurityScanner() {
                     <select
                         value={chain}
                         onChange={(e) => setChain(e.target.value)}
-                        className="rounded-xl px-4 py-3 text-[10px] font-black uppercase outline-none transition-all text-white"
+                        className="rounded-xl px-4 py-3 text-[10px] font-black uppercase outline-none transition-all !text-white"
                         style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', width: 140 }}
                     >
                         <option value="ethereum">ETHEREUM</option>
@@ -81,7 +81,7 @@ export default function SecurityScanner() {
                             placeholder="INPUT CONTRACT ADDRESS (0x...)"
                             value={address}
                             onChange={(e) => setAddress(e.target.value)}
-                            className="w-full rounded-xl px-12 py-3 text-sm font-mono outline-none transition-all text-white"
+                            className="w-full rounded-xl px-12 py-3 text-sm font-mono outline-none transition-all !text-white"
                             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', caretColor: '#00F2EA' }}
                         />
                         <Search size={14} className="absolute left-5 top-1/2 -translate-y-1/2" style={{ color: 'rgba(255,255,255,0.2)' }} />
@@ -147,7 +147,7 @@ export default function SecurityScanner() {
                                     <div className="text-3xl font-black font-mono" style={{ color: getVerdictColor('ALTA') }}>
                                         100<span className="text-sm opacity-30">/100</span>
                                     </div>
-                                    <div className="inline-flex mt-3 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest text-white" style={{ backgroundColor: getVerdictColor('ALTA') }}>
+                                    <div className="inline-flex mt-3 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest !text-white" style={{ backgroundColor: getVerdictColor('ALTA') }}>
                                         ALTA
                                     </div>
                                 </div>

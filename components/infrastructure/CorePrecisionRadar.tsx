@@ -72,7 +72,7 @@ export default function CorePrecisionRadar() {
                 <motion.div 
                     animate={{ y: [0, -5, 0] }}
                     transition={{ duration: 3, repeat: Infinity }}
-                    className="absolute -top-12 px-3 py-1 bg-black text-white text-[8px] font-black rounded-lg border border-white/10 whitespace-nowrap"
+                    className="absolute -top-12 px-3 py-1 bg-black !!text-white text-[8px] font-black rounded-lg border border-white/10 whitespace-nowrap"
                 >
                     LATENCY: 0.004ms
                 </motion.div>
@@ -80,7 +80,7 @@ export default function CorePrecisionRadar() {
                 <motion.div 
                     animate={{ y: [0, 5, 0] }}
                     transition={{ duration: 3.5, repeat: Infinity, delay: 0.5 }}
-                    className="absolute -bottom-12 px-3 py-1 bg-indigo-600 text-white text-[8px] font-black rounded-lg shadow-xl whitespace-nowrap"
+                    className="absolute -bottom-12 px-3 py-1 bg-indigo-600 !text-white text-[8px] font-black rounded-lg shadow-xl whitespace-nowrap"
                 >
                     PRECISION: 99.999%
                 </motion.div>

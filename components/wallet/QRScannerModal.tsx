@@ -425,7 +425,7 @@ export default function QRScannerModal({ isOpen, onClose, onScan, address: exter
                 onClick={() => setTab('camera')}
                 className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-[10px] font-black uppercase tracking-widest transition-all border ${
                   tab === 'camera'
-                    ? 'bg-[#050505] text-white border-[#050505]'
+                    ? 'bg-[#050505] !text-white border-[#050505]'
                     : 'bg-white text-black/40 border-black/10 hover:border-black/20'
                 }`}
               >
@@ -435,7 +435,7 @@ export default function QRScannerModal({ isOpen, onClose, onScan, address: exter
                 onClick={() => setTab('file')}
                 className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-[10px] font-black uppercase tracking-widest transition-all border ${
                   tab === 'file'
-                    ? 'bg-[#050505] text-white border-[#050505]'
+                    ? 'bg-[#050505] !text-white border-[#050505]'
                     : 'bg-white text-black/40 border-black/10 hover:border-black/20'
                 }`}
               >
@@ -480,8 +480,8 @@ export default function QRScannerModal({ isOpen, onClose, onScan, address: exter
                     {/* Loading state absolute centering */}
                     {status === 'idle' && (
                       <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 backdrop-blur-md z-10">
-                        <Loader2 size={28} className="animate-spin text-white/80 mb-3" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-white/90">
+                        <Loader2 size={28} className="animate-spin !text-white/80 mb-3" />
+                        <span className="text-[10px] font-black uppercase tracking-widest !text-white/90">
                           Initializing camera...
                         </span>
                       </div>
@@ -492,7 +492,7 @@ export default function QRScannerModal({ isOpen, onClose, onScan, address: exter
                       <div className="absolute bottom-4 left-4 right-4 z-20">
                         <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-full px-4 py-2.5 flex items-center justify-center gap-3 shadow-2xl">
                            <div className="w-1.5 h-1.5 rounded-full bg-white/80 animate-pulse" />
-                           <span className="font-mono text-[11px] font-black text-white uppercase tracking-widest">
+                           <span className="font-mono text-[11px] font-black !text-white uppercase tracking-widest">
                              {addressRef.current.slice(0, 8)}...{addressRef.current.slice(-6)}
                            </span>
                         </div>
@@ -516,7 +516,7 @@ export default function QRScannerModal({ isOpen, onClose, onScan, address: exter
                       </p>
                       <button
                         onClick={handleRetry}
-                        className="text-[9px] font-black uppercase tracking-[0.2em] px-6 py-3 bg-black text-white mx-auto mt-2 hover:bg-black/80 transition-colors"
+                        className="text-[9px] font-black uppercase tracking-[0.2em] px-6 py-3 bg-black !!text-white mx-auto mt-2 hover:bg-black/80 transition-colors"
                       >
                         Retry
                       </button>
@@ -541,7 +541,7 @@ export default function QRScannerModal({ isOpen, onClose, onScan, address: exter
                   </div>
 
                   <label className="relative cursor-pointer">
-                    <span className="flex items-center gap-2 px-6 py-3 bg-[#050505] text-white text-[10px] font-black uppercase tracking-widest hover:bg-black/80 transition-colors">
+                    <span className="flex items-center gap-2 px-6 py-3 bg-[#050505] !text-white text-[10px] font-black uppercase tracking-widest hover:bg-black/80 transition-colors">
                       {fileLoading ? (
                         <><span className="inline-block animate-spin">◌</span> Processing...</>
                       ) : (

@@ -180,21 +180,21 @@ export function FusionMiningVisualizer({ theme = 'default' }: { theme?: 'default
                  <div className={`w-2 h-2 rounded-full animate-pulse shrink-0 ${isArctic ? 'bg-indigo-600' : 'bg-[#00ff9d]'}`} />
                  <span className={`text-[10px] font-black uppercase tracking-[0.3em] truncate ${isArctic ? 'text-indigo-600' : 'text-[#00ff9d]'}`}>Mempool Active Stream</span>
               </div>
-              <h2 className={`text-2xl md:text-3xl font-black uppercase tracking-tighter ${isArctic ? 'text-slate-900' : 'text-white'}`}>
-                Fusion <span className={isArctic ? 'text-slate-300' : 'text-white/20'}>Visualizer</span>
+              <h2 className={`text-2xl md:text-3xl font-black uppercase tracking-tighter ${isArctic ? 'text-slate-900' : '!text-white'}`}>
+                Fusion <span className={isArctic ? 'text-slate-300' : '!text-white/20'}>Visualizer</span>
               </h2>
            </div>
            
            <div className={`${isArctic ? 'bg-white/80 border-slate-200' : 'bg-black/60 border-white/10'} backdrop-blur-xl border px-4 py-2 rounded-xl flex items-center gap-4 shrink-0 transition-colors`}>
               <div className="text-right">
-                 <div className={`text-[8px] font-black uppercase tracking-widest mb-0.5 ${isArctic ? 'text-slate-400' : 'text-white/30'}`}>Mempool TXs</div>
-                 <div className={`text-base md:text-xl font-black font-mono ${isArctic ? 'text-slate-900' : 'text-white'}`}>
+                 <div className={`text-[8px] font-black uppercase tracking-widest mb-0.5 ${isArctic ? 'text-slate-400' : '!text-white/30'}`}>Mempool TXs</div>
+                 <div className={`text-base md:text-xl font-black font-mono ${isArctic ? 'text-slate-900' : '!text-white'}`}>
                     {mempoolBlocks?.[0]?.nTx.toLocaleString() || "---"}
                  </div>
               </div>
               <div className={`w-px h-7 ${isArctic ? 'bg-slate-200' : 'bg-white/10'}`} />
               <div className="text-right">
-                 <div className={`text-[8px] font-black uppercase tracking-widest mb-0.5 ${isArctic ? 'text-slate-400' : 'text-white/30'}`}>Next Block Est.</div>
+                 <div className={`text-[8px] font-black uppercase tracking-widest mb-0.5 ${isArctic ? 'text-slate-400' : '!text-white/30'}`}>Next Block Est.</div>
                  <div className={`text-base md:text-xl font-black font-mono ${isArctic ? 'text-indigo-600' : 'text-[#00ff9d]'}`}>
                     ~{mempoolBlocks?.[0]?.medianFee.toFixed(1) || "---"} <span className="text-[10px]">sat/vB</span>
                  </div>
@@ -205,7 +205,7 @@ export function FusionMiningVisualizer({ theme = 'default' }: { theme?: 'default
         {/* Bottom row: stacks on mobile */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3">
             <div className="max-w-xs sm:max-w-[45%]">
-               <p className={`text-[9px] md:text-[10px] font-medium leading-relaxed uppercase tracking-wider ${isArctic ? 'text-slate-500' : 'text-white/40'}`}>
+               <p className={`text-[9px] md:text-[10px] font-medium leading-relaxed uppercase tracking-wider ${isArctic ? 'text-slate-500' : '!text-white/40'}`}>
                  Each point represents a pending institutional transaction. Upon detection of a new block, data atoms fuse into a unified assertion.
                </p>
             </div>
@@ -216,7 +216,7 @@ export function FusionMiningVisualizer({ theme = 'default' }: { theme?: 'default
                    initial={{ opacity: 0, scale: 0.8 }}
                    animate={{ opacity: 1, scale: 1 }}
                    exit={{ opacity: 0, scale: 1.2 }}
-                   className={`flex items-center gap-2 md:gap-4 px-4 py-2 rounded-xl font-black text-[10px] md:text-xs uppercase tracking-widest shrink-0 ${isArctic ? 'bg-indigo-600 text-white shadow-lg' : 'bg-[#00ff9d] text-black shadow-[0_0_50px_rgba(0,255,157,0.4)]'}`}
+                   className={`flex items-center gap-2 md:gap-4 px-4 py-2 rounded-xl font-black text-[10px] md:text-xs uppercase tracking-widest shrink-0 ${isArctic ? 'bg-indigo-600 !text-white shadow-lg' : 'bg-[#00ff9d] text-black shadow-[0_0_50px_rgba(0,255,157,0.4)]'}`}
                 >
                    <Zap size={14} fill={isArctic ? "white" : "black"} />
                    Block Mined - Fusion Successful!

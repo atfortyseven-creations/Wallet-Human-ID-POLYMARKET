@@ -104,14 +104,14 @@ export default function ReferralDashboard() {
             <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-[#1F1F1F] to-black text-white p-8 shadow-2xl"
+                className="relative overflow-hidden rounded-[32px] bg-gradient-to-br from-[#1F1F1F] to-black !text-white p-8 shadow-2xl"
             >
                 {/* Background Glow */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2" />
                 
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left">
                     <div>
-                        <div className="flex items-center gap-2 justify-center md:justify-start text-white/50 text-sm font-medium uppercase tracking-widest mb-2">
+                        <div className="flex items-center gap-2 justify-center md:justify-start !text-white/50 text-sm font-medium uppercase tracking-widest mb-2">
                             <Gift size={16} className="text-purple-400" />
                             Total Earnings
                         </div>
@@ -127,7 +127,7 @@ export default function ReferralDashboard() {
                         {parseFloat(stats.totalEarnings) === 0 && (
                             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/5 backdrop-blur-md">
                                 <TrendingUp size={12} className="text-gray-400" />
-                                <span className="text-xs font-bold text-white/60">Start inviting to earn!</span>
+                                <span className="text-xs font-bold !text-white/60">Start inviting to earn!</span>
                             </div>
                         )}
                     </div>
@@ -135,7 +135,7 @@ export default function ReferralDashboard() {
                     {/* Rank Card */}
                     <div className="mt-8 md:mt-0 bg-white/5 rounded-2xl p-4 border border-white/10 w-full md:w-auto min-w-[160px]">
                         <div className="flex justify-between items-center mb-2">
-                            <span className="text-xs text-white/50">Current Rank</span>
+                            <span className="text-xs !text-white/50">Current Rank</span>
                             <Trophy size={16} className="text-yellow-400" />
                         </div>
                         <div className="text-2xl font-bold mb-2">{stats.rank}</div>
@@ -147,7 +147,7 @@ export default function ReferralDashboard() {
                                 style={{ width: `${stats.nextTierProgress}%` }}
                             />
                         </div>
-                        <div className="text-[10px] text-white/40 text-right">
+                        <div className="text-[10px] !text-white/40 text-right">
                             {stats.nextTierProgress}% to next tier
                         </div>
                     </div>
@@ -169,7 +169,7 @@ export default function ReferralDashboard() {
                         </div>
                         <button 
                             onClick={handleCopy}
-                            className="bg-[#1F1F1F] text-white w-14 rounded-xl flex items-center justify-center hover:bg-black transition-colors"
+                            className="bg-[#1F1F1F] !text-white w-14 rounded-xl flex items-center justify-center hover:bg-black transition-colors"
                         >
                             <Copy size={20} />
                         </button>
@@ -181,11 +181,11 @@ export default function ReferralDashboard() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 }}
                     onClick={handleShare}
-                    className="bg-purple-600 rounded-3xl p-6 shadow-lg shadow-purple-500/20 text-white flex flex-col justify-center items-center text-center cursor-pointer hover:bg-purple-700 transition-colors"
+                    className="bg-purple-600 rounded-3xl p-6 shadow-lg shadow-purple-500/20 !text-white flex flex-col justify-center items-center text-center cursor-pointer hover:bg-purple-700 transition-colors"
                 >
                     <Share2 size={32} className="mb-2 opacity-80" />
                     <h3 className="font-bold text-lg">Share Invite Link</h3>
-                    <p className="text-white/60 text-xs mt-1">Earn 10% of trading fees</p>
+                    <p className="!text-white/60 text-xs mt-1">Earn 10% of trading fees</p>
                 </motion.div>
             </div>
 

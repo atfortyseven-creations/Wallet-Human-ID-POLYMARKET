@@ -277,7 +277,7 @@ function SelectTokenButton({
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="shrink-0 flex items-center gap-2 pl-2 pr-4 py-2 bg-[#1F1F1F] text-white rounded-2xl border-2 border-[#1F1F1F] shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] hover:translate-y-0.5 hover:translate-x-0.5 hover:shadow-none transition-all"
+        className="shrink-0 flex items-center gap-2 pl-2 pr-4 py-2 bg-[#1F1F1F] !text-white rounded-2xl border-2 border-[#1F1F1F] shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] hover:translate-y-0.5 hover:translate-x-0.5 hover:shadow-none transition-all"
       >
         {token ? (
           <>
@@ -340,7 +340,7 @@ function GasSettingsPanel({
         <h3 className="text-xl font-black text-[#1F1F1F] italic uppercase tracking-tighter">Settings</h3>
         <button 
           onClick={onClose} 
-          className="p-2 bg-white border-2 border-[#1F1F1F] rounded-xl font-black text-[10px] uppercase hover:bg-[#1F1F1F] hover:text-white transition-colors"
+          className="p-2 bg-white border-2 border-[#1F1F1F] rounded-xl font-black text-[10px] uppercase hover:bg-[#1F1F1F] hover:!text-white transition-colors"
         >
           Close
         </button>
@@ -356,7 +356,7 @@ function GasSettingsPanel({
                 onClick={() => onSelectSpeed(speed)}
                 className={`p-3 rounded-2xl border-2 transition-all flex flex-col items-center gap-1 ${
                   selectedSpeed === speed
-                    ? 'bg-[#1F1F1F] border-[#1F1F1F] text-white'
+                    ? 'bg-[#1F1F1F] border-[#1F1F1F] !text-white'
                     : 'bg-white border-[#1F1F1F]/10 text-[#1F1F1F] hover:border-[#1F1F1F]/40'
                 }`}
               >
@@ -376,7 +376,7 @@ function GasSettingsPanel({
                 onClick={() => onSlippageChange(value)}
                 className={`flex-1 py-3 rounded-2xl border-2 font-black text-xs transition-all ${
                   slippage === value
-                    ? 'bg-[#1F1F1F] border-[#1F1F1F] text-white shadow-lg'
+                    ? 'bg-[#1F1F1F] border-[#1F1F1F] !text-white shadow-lg'
                     : 'bg-white border-[#1F1F1F]/10 text-[#1F1F1F]/60'
                 }`}
               >

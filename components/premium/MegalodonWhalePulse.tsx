@@ -97,8 +97,8 @@ export function MegalodonWhalePulse() {
                         <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_12px_rgba(16,185,129,0.8)]" />
                     </div>
                     <div>
-                        <h3 className="text-white font-black text-xs uppercase tracking-[0.2em] mb-0.5">Megalodon Whale Pulse</h3>
-                        <p className="text-white/30 font-mono text-[9px] uppercase tracking-widest">Global Omni-Channel Dispatcher: Active</p>
+                        <h3 className="!text-white font-black text-xs uppercase tracking-[0.2em] mb-0.5">Megalodon Whale Pulse</h3>
+                        <p className="!text-white/30 font-mono text-[9px] uppercase tracking-widest">Global Omni-Channel Dispatcher: Active</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -126,27 +126,27 @@ export function MegalodonWhalePulse() {
                             <div className="flex justify-between items-start">
                                 <div className="flex items-center gap-4">
                                     <div className={`p-2.5 rounded-xl ${
-                                        alert.severity === 'ASTRONOMICAL' ? 'bg-indigo-500/20 text-indigo-400' : 'bg-white/5 text-white/40'
+                                        alert.severity === 'ASTRONOMICAL' ? 'bg-indigo-500/20 text-indigo-400' : 'bg-white/5 !text-white/40'
                                     }`}>
                                         {alert.type === 'WHALE_TX' ? <Crown className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
                                     </div>
                                     <div>
                                         <div className="flex items-center gap-2">
-                                            <span className="text-white font-bold text-sm tracking-tight">{alert.amount}</span>
-                                            <span className="px-1.5 py-0.5 bg-white/5 rounded text-[8px] font-mono text-white/40 uppercase tracking-widest border border-white/5">{alert.chain}</span>
+                                            <span className="!text-white font-bold text-sm tracking-tight">{alert.amount}</span>
+                                            <span className="px-1.5 py-0.5 bg-white/5 rounded text-[8px] font-mono !text-white/40 uppercase tracking-widest border border-white/5">{alert.chain}</span>
                                         </div>
-                                        <div className="text-[10px] text-white/30 font-mono uppercase tracking-widest mt-1">
+                                        <div className="text-[10px] !text-white/30 font-mono uppercase tracking-widest mt-1">
                                             {alert.type === 'WHALE_TX' ? 'Large Transfer Detected' : 'Massive Liquidation Event'}
                                         </div>
                                     </div>
                                 </div>
                                 <div className="text-right">
                                     <span className={`text-[10px] font-black uppercase tracking-widest mb-1 block ${
-                                        alert.severity === 'ASTRONOMICAL' ? 'text-indigo-400' : 'text-white/20'
+                                        alert.severity === 'ASTRONOMICAL' ? 'text-indigo-400' : '!text-white/20'
                                     }`}>
                                         {alert.severity}
                                     </span>
-                                    <span className="text-[9px] font-mono text-white/20">{alert.timestamp}</span>
+                                    <span className="text-[9px] font-mono !text-white/20">{alert.timestamp}</span>
                                 </div>
                             </div>
                         </motion.div>
@@ -175,8 +175,8 @@ export function MegalodonWhalePulse() {
 function MiniStat({ label, value }: { label: string, value: string }) {
     return (
         <div className="flex flex-col gap-0.5 whitespace-nowrap">
-            <span className="text-[8px] text-white/20 font-bold uppercase tracking-widest">{label}</span>
-            <span className="text-[10px] text-white/60 font-mono">{value}</span>
+            <span className="text-[8px] !text-white/20 font-bold uppercase tracking-widest">{label}</span>
+            <span className="text-[10px] !text-white/60 font-mono">{value}</span>
         </div>
     );
 }

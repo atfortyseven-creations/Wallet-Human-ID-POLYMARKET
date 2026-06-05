@@ -40,11 +40,11 @@ export const DownheadSection = () => {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <h2 className="font-aztec-h1 text-5xl text-white mb-6 leading-tight">
+              <h2 className="font-aztec-h1 text-5xl !text-white mb-6 leading-tight">
                 Beyond Standard <br />
                 <span className="text-[var(--aztec-orchid)] italic">Architecture.</span>
               </h2>
-              <p className="font-aztec-body text-xl text-white/50 leading-relaxed max-w-lg">
+              <p className="font-aztec-body text-xl !text-white/50 leading-relaxed max-w-lg">
                 The terminal's downhead logic operates on a separate execution thread, 
                 ensuring that your interaction with the blockchain is always decoupled 
                 from UI state for maximum reliability.
@@ -61,8 +61,8 @@ export const DownheadSection = () => {
                   className="space-y-3"
                 >
                   <div className="text-[var(--aztec-orchid)] mb-4">{f.icon}</div>
-                  <h3 className="font-aztec-body text-white font-bold">{f.title}</h3>
-                  <p className="font-aztec-body text-xs text-white/40 leading-relaxed">{f.desc}</p>
+                  <h3 className="font-aztec-body !text-white font-bold">{f.title}</h3>
+                  <p className="font-aztec-body text-xs !text-white/40 leading-relaxed">{f.desc}</p>
                 </motion.div>
               ))}
             </div>
@@ -89,9 +89,9 @@ export const DownheadSection = () => {
                           transition={{ duration: 4, repeat: Infinity }}
                           className="flex justify-center mb-6"
                         >
-                            <Layers size={64} className="text-white opacity-80" />
+                            <Layers size={64} className="!text-white opacity-80" />
                         </motion.div>
-                        <div className="font-aztec-mono text-[10px] uppercase tracking-[0.5em] text-white/40">
+                        <div className="font-aztec-mono text-[10px] uppercase tracking-[0.5em] !text-white/40">
                             Substrate Node v4.0.1
                         </div>
                     </div>
@@ -104,7 +104,7 @@ export const DownheadSection = () => {
                 transition={{ duration: 6, repeat: Infinity }}
                 className="absolute top-0 -right-8 p-4 bg-white/5 border border-white/10 backdrop-blur-xl rounded-xl"
              >
-                <div className="text-[10px] text-white/30 uppercase tracking-widest mb-1">Latency</div>
+                <div className="text-[10px] !text-white/30 uppercase tracking-widest mb-1">Latency</div>
                 <div className="font-aztec-mono text-[var(--aztec-chartreuse)]">0.12ms</div>
              </motion.div>
 
@@ -113,7 +113,7 @@ export const DownheadSection = () => {
                 transition={{ duration: 5, repeat: Infinity }}
                 className="absolute bottom-12 -left-12 p-4 bg-white/5 border border-white/10 backdrop-blur-xl rounded-xl"
              >
-                <div className="text-[10px] text-white/30 uppercase tracking-widest mb-1">Decentralization</div>
+                <div className="text-[10px] !text-white/30 uppercase tracking-widest mb-1">Decentralization</div>
                 <div className="font-aztec-mono text-[var(--aztec-orchid)]">100.00%</div>
              </motion.div>
           </div>

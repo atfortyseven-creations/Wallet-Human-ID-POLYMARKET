@@ -72,7 +72,7 @@ export default function WatchOnlyInput({ onAdd, onCancel }: WatchOnlyInputProps)
             <button 
                 onClick={handleSubmit}
                 disabled={loading || !input}
-                className="w-full py-4 bg-[#1F1F1F] text-white rounded-xl font-bold hover:opacity-90 disabled:opacity-50 cursor-pointer"
+                className="w-full py-4 bg-[#1F1F1F] !text-white rounded-xl font-bold hover:opacity-90 disabled:opacity-50 cursor-pointer"
             >
                 {loading ? <Loader2 className="animate-spin mx-auto" /> : 'Track Address'}
             </button>

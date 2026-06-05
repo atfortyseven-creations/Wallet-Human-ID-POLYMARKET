@@ -118,7 +118,7 @@ export function BlocksTreemapView() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                     >
-                        <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-2">
+                        <h1 className="text-4xl md:text-5xl font-black !text-white tracking-tight mb-2">
                             Visualización de Bloques
                         </h1>
                         <p className="text-gray-400 text-lg">
@@ -137,7 +137,7 @@ export function BlocksTreemapView() {
                         <div className="w-12 h-12 rounded-full border-2 border-white/5 border-t-blue-500 animate-spin" />
                         <div className="space-y-1">
                             <p className="text-[10px] font-black uppercase tracking-[0.4em] text-blue-300">Synchronizing Global Mining Feed</p>
-                            <p className="text-[8px] font-mono text-white/50 uppercase tracking-[0.2em]">Hashrate Telemetry: AWAITING_HANDSHAKE</p>
+                            <p className="text-[8px] font-mono !text-white/50 uppercase tracking-[0.2em]">Hashrate Telemetry: AWAITING_HANDSHAKE</p>
                         </div>
                     </div>
                 </div>
@@ -159,8 +159,8 @@ export function BlocksTreemapView() {
                             onClick={() => setSelectedTab(tab.id as TabType)}
                             className={`px-5 py-2 font-bold text-[10px] uppercase transition-all whitespace-nowrap ${
                                 selectedTab === tab.id
-                                    ? 'bg-[#1D74F1] text-white shadow-inner'
-                                    : 'text-gray-200 hover:text-white'
+                                    ? 'bg-[#1D74F1] !text-white shadow-inner'
+                                    : 'text-gray-200 hover:!text-white'
                             } ${tab.id === 'all' ? 'rounded-l-sm' : ''} ${tab.id === 'data' ? 'rounded-r-sm' : ''}`}
                         >
                             {tab.label}
@@ -176,23 +176,23 @@ export function BlocksTreemapView() {
                 >
                     <div className="bg-white/5 border border-white/10 rounded-xl p-4">
                         <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">Total Bloques</p>
-                        <p className="text-2xl font-bold text-white">{processedBlocks.length}</p>
+                        <p className="text-2xl font-bold !text-white">{processedBlocks.length}</p>
                     </div>
                     <div className="bg-emerald-600/10 border border-emerald-500/30 rounded-xl p-4">
                         <p className="text-xs uppercase tracking-wider text-emerald-400 mb-1">Consolidación</p>
-                        <p className="text-2xl font-bold text-white">
+                        <p className="text-2xl font-bold !text-white">
                             {processedBlocks[0]?.transactions.filter((t: any) => t.type === 'consolidation').length || 0}
                         </p>
                     </div>
                     <div className="bg-cyan-600/10 border border-cyan-500/30 rounded-xl p-4">
                         <p className="text-xs uppercase tracking-wider text-cyan-400 mb-1">Coinjoin</p>
-                        <p className="text-2xl font-bold text-white">
+                        <p className="text-2xl font-bold !text-white">
                             {processedBlocks[0]?.transactions.filter((t: any) => t.type === 'coinjoin').length || 0}
                         </p>
                     </div>
                     <div className="bg-yellow-600/10 border border-yellow-500/30 rounded-xl p-4">
                         <p className="text-xs uppercase tracking-wider text-yellow-400 mb-1">Datos</p>
-                        <p className="text-2xl font-bold text-white">
+                        <p className="text-2xl font-bold !text-white">
                             {processedBlocks[0]?.transactions.filter((t: any) => t.type === 'data').length || 0}
                         </p>
                     </div>
@@ -231,7 +231,7 @@ export function BlocksTreemapView() {
                                 <Box className="text-blue-500 animate-pulse" size={28} />
                             </div>
                             <p className="text-[10px] font-black uppercase text-blue-400 tracking-[0.2em] mb-1">Building Block</p>
-                            <p className="text-2xl font-black text-white font-mono tracking-tighter">1.82 MB</p>
+                            <p className="text-2xl font-black !text-white font-mono tracking-tighter">1.82 MB</p>
                             <div className="mt-4 flex items-center justify-center gap-2">
                                 <div className="w-2 h-2 rounded-full bg-blue-500 animate-ping" />
                                 <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Active Flow</span>

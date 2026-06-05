@@ -50,12 +50,12 @@ function L2FeesPanel() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <div className="text-[8px] font-black text-white/30 uppercase tracking-[0.35em]">Secondary Layer Activity</div>
-                    <div className="text-base font-black text-white mt-0.5 uppercase">L2 Network Fees</div>
+                    <div className="text-[8px] font-black !text-white/30 uppercase tracking-[0.35em]">Secondary Layer Activity</div>
+                    <div className="text-base font-black !text-white mt-0.5 uppercase">L2 Network Fees</div>
                 </div>
                 <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-xl backdrop-blur-sm">
                     <Cpu size={12} className="text-cyan-400" />
-                    <span className="text-[9px] font-black text-white/60 uppercase tracking-widest">Active Updates</span>
+                    <span className="text-[9px] font-black !text-white/60 uppercase tracking-widest">Active Updates</span>
                 </div>
             </div>
 
@@ -77,7 +77,7 @@ function L2FeesPanel() {
                                     <div className="w-10 h-10 rounded-2xl flex items-center justify-center bg-white/5 border border-white/5">
                                          <div className="w-4 h-4 rounded-full shadow-[0_0_10px]" style={{ backgroundColor: chainMeta?.color, boxShadow: `0 0 10px ${chainMeta?.color}` }} />
                                     </div>
-                                    <span className="text-sm font-black text-white/90 uppercase tracking-wide">{chainMeta?.name}</span>
+                                    <span className="text-sm font-black !text-white/90 uppercase tracking-wide">{chainMeta?.name}</span>
                                 </div>
                                 <div className="px-2 py-1 bg-cyan-400/10 border border-cyan-400/20 rounded-lg">
                                     <span className="text-[8px] font-black text-cyan-400 uppercase">Active</span>
@@ -85,18 +85,18 @@ function L2FeesPanel() {
                             </div>
                             
                             <div className="space-y-1">
-                                <div className="text-2xl font-black font-mono text-white">
+                                <div className="text-2xl font-black font-mono !text-white">
                                     {price.toFixed(4)}
-                                    <span className="text-[10px] text-white/40 ml-1.5 uppercase tracking-tighter">gwei</span>
+                                    <span className="text-[10px] !text-white/40 ml-1.5 uppercase tracking-tighter">gwei</span>
                                 </div>
-                                <div className="text-[10px] font-black text-white/30 uppercase tracking-[0.15em]">
+                                <div className="text-[10px] font-black !text-white/30 uppercase tracking-[0.15em]">
                                     Est. Gas: ${usd.toFixed(6)}
                                 </div>
                             </div>
 
                             <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between">
-                                <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">Speed: {chain.latency}ms</span>
-                                <Box size={12} className="text-white/10 group-hover:text-cyan-400 transition-colors" />
+                                <span className="text-[9px] font-black !text-white/40 uppercase tracking-widest">Speed: {chain.latency}ms</span>
+                                <Box size={12} className="!text-white/10 group-hover:text-cyan-400 transition-colors" />
                             </div>
                         </motion.div>
                     );
@@ -143,7 +143,7 @@ function FeesPanel() {
 
     const BLOCK_LABELS = ['IMMINENT BLOCK', 'PROJECTED +1', 'PROJECTED +2', 'PROJECTED +3'];
     const FEES = [
-        { label: 'Economic', value: fees?.hourFee,     icon: Turtle, hint: '~1h', color: 'text-white/40' },
+        { label: 'Economic', value: fees?.hourFee,     icon: Turtle, hint: '~1h', color: '!text-white/40' },
         { label: 'Standard', value: fees?.halfHourFee, icon: Clock,  hint: '~30m', color: 'text-cyan-400', accent: true },
         { label: 'Priority', value: fees?.fastestFee,  icon: Rocket, hint: '~10m', color: 'text-rose-400' },
     ];
@@ -152,8 +152,8 @@ function FeesPanel() {
         <div className="space-y-8">
             <div className="flex items-center justify-between">
                 <div>
-                    <div className="text-[8px] font-black text-white/30 uppercase tracking-[0.35em]">Main Protocol Metrics</div>
-                    <div className="text-base font-black text-white mt-0.5 uppercase">Network Stats</div>
+                    <div className="text-[8px] font-black !text-white/30 uppercase tracking-[0.35em]">Main Protocol Metrics</div>
+                    <div className="text-base font-black !text-white mt-0.5 uppercase">Network Stats</div>
                 </div>
                 <div className="flex items-center gap-1.5 bg-cyan-400/10 border border-cyan-400/20 px-3 py-1.5 rounded-full shadow-[0_0_15px_rgba(6,182,212,0.1)]">
                     <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
@@ -176,19 +176,19 @@ function FeesPanel() {
                                         : 'bg-white/5 border-white/5'
                                 }`}
                             >
-                                <div className={`text-[7px] font-black uppercase tracking-[0.3em] mb-4 ${isImminent ? 'text-cyan-400' : 'text-white/30'}`}>
+                                <div className={`text-[7px] font-black uppercase tracking-[0.3em] mb-4 ${isImminent ? 'text-cyan-400' : '!text-white/30'}`}>
                                     {lbl}
                                 </div>
                                 <div className="space-y-1">
-                                    <div className={`text-3xl font-black font-mono leading-none ${isImminent ? 'text-white' : 'text-white/90'}`}>
+                                    <div className={`text-3xl font-black font-mono leading-none ${isImminent ? '!text-white' : '!text-white/90'}`}>
                                         {b?.medianFee != null ? b.medianFee.toFixed(1) : ''}
-                                        <span className="text-[10px] font-bold text-white/20 ml-2">SAT/VB</span>
+                                        <span className="text-[10px] font-bold !text-white/20 ml-2">SAT/VB</span>
                                     </div>
                                     <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
-                                        <div className="text-[10px] font-mono font-black text-white/40 uppercase">
+                                        <div className="text-[10px] font-mono font-black !text-white/40 uppercase">
                                             {b?.nTx != null ? Number(b.nTx).toLocaleString() : ''} TXS
                                         </div>
-                                        <div className="text-[10px] text-white/20 font-bold uppercase">
+                                        <div className="text-[10px] !text-white/20 font-bold uppercase">
                                             {b?.sizeMB != null ? `${b.sizeMB} MB` : ''} BUCKET
                                         </div>
                                     </div>
@@ -212,19 +212,19 @@ function FeesPanel() {
                                     <Icon size={18} />
                                 </div>
                                 <div>
-                                    <div className="text-[8px] font-black text-white/30 uppercase tracking-widest">{label} Level</div>
-                                    <div className={`text-base font-black ${accent ? 'text-white' : 'text-white/80'} uppercase`}>{hint} wait time</div>
+                                    <div className="text-[8px] font-black !text-white/30 uppercase tracking-widest">{label} Level</div>
+                                    <div className={`text-base font-black ${accent ? '!text-white' : '!text-white/80'} uppercase`}>{hint} wait time</div>
                                 </div>
                             </div>
                             <div className="text-right">
                                 <div className={`text-2xl font-black font-mono ${color}`}>
                                     {value ?? ''}
                                 </div>
-                                <div className="text-[8px] font-black text-white/20 uppercase tracking-widest">SAT/VB</div>
+                                <div className="text-[8px] font-black !text-white/20 uppercase tracking-widest">SAT/VB</div>
                             </div>
                         </div>
                     ))}
-                    <div className="mt-auto pt-2 text-[8px] font-black text-white/10 uppercase tracking-[0.4em] text-center">
+                    <div className="mt-auto pt-2 text-[8px] font-black !text-white/10 uppercase tracking-[0.4em] text-center">
                         Relay Minimum Threshold: 1.0 Sat/vB
                     </div>
                 </div>
@@ -282,14 +282,14 @@ function PortfolioPanel() {
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <div className="text-[8px] font-black text-white/30 uppercase tracking-[0.35em]">Aggregated Holdings</div>
-                    <div className="text-base font-black text-white mt-0.5 uppercase">Portfolio Profile</div>
-                    <div className="text-[10px] text-white/40 mt-0.5 uppercase tracking-tighter">Unified overview of holdings across all primary and secondary networks.</div>
+                    <div className="text-[8px] font-black !text-white/30 uppercase tracking-[0.35em]">Aggregated Holdings</div>
+                    <div className="text-base font-black !text-white mt-0.5 uppercase">Portfolio Profile</div>
+                    <div className="text-[10px] !text-white/40 mt-0.5 uppercase tracking-tighter">Unified overview of holdings across all primary and secondary networks.</div>
                 </div>
                 {hasScanned && totalUsd > 0 && (
                     <div className="text-right shrink-0 ml-8">
-                        <div className="text-[8px] font-black text-white/30 uppercase tracking-widest mb-1">Aggregated Net Worth</div>
-                        <div className="text-2xl font-black font-mono text-white">
+                        <div className="text-[8px] font-black !text-white/30 uppercase tracking-widest mb-1">Aggregated Net Worth</div>
+                        <div className="text-2xl font-black font-mono !text-white">
                             ${totalUsd.toLocaleString(undefined, { maximumFractionDigits: 2 })}
                         </div>
                     </div>
@@ -303,7 +303,7 @@ function PortfolioPanel() {
                     placeholder="Enter 0x Address or ENS"
                     value={address}
                     onChange={e => setAddress(e.target.value)}
-                    className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-5 h-12 text-[13px] text-white font-mono placeholder-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-transparent transition-all shadow-lg"
+                    className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-5 h-12 text-[13px] !text-white font-mono placeholder-white/20 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-transparent transition-all shadow-lg"
                     autoComplete="off"
                     spellCheck={false}
                 />
@@ -325,8 +325,8 @@ function PortfolioPanel() {
                     <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
                         {entries.map(([chain, bal]) => (
                             <div key={chain} className="bg-white/5 border border-white/5 rounded-2xl p-4 hover:border-cyan-500/30 hover:shadow-lg transition-all">
-                                <div className="text-[8px] font-black text-white/30 uppercase tracking-wider truncate mb-2">{chain}</div>
-                                <div className="text-[13px] font-mono font-black text-white">
+                                <div className="text-[8px] font-black !text-white/30 uppercase tracking-wider truncate mb-2">{chain}</div>
+                                <div className="text-[13px] font-mono font-black !text-white">
                                     ${Number(bal).toLocaleString(undefined, { maximumFractionDigits: 2 })}
                                 </div>
                             </div>
@@ -337,7 +337,7 @@ function PortfolioPanel() {
 
             {hasScanned && entries.length === 0 && (
                 <div className="py-12 flex items-center justify-center border border-dashed border-white/10 rounded-2xl bg-white/2">
-                    <div className="text-[9px] font-black text-white/20 uppercase tracking-widest">
+                    <div className="text-[9px] font-black !text-white/20 uppercase tracking-widest">
                         No cryptographic assets detected on target networks
                     </div>
                 </div>
@@ -345,8 +345,8 @@ function PortfolioPanel() {
 
             {!hasScanned && (
                 <div className="py-12 flex flex-col items-center justify-center border border-dashed border-white/10 rounded-2xl gap-3 bg-white/2">
-                    <Wallet size={28} className="text-white/10" />
-                    <div className="text-[9px] font-black text-white/20 uppercase tracking-widest">
+                    <Wallet size={28} className="!text-white/10" />
+                    <div className="text-[9px] font-black !text-white/20 uppercase tracking-widest">
                         Initialize sequence: Input target address to begin
                     </div>
                 </div>
@@ -372,7 +372,7 @@ function ChainPanel() {
 
     return (
         <div>
-            <div className="text-[8px] font-black text-white/30 uppercase tracking-[0.35em] mb-5">
+            <div className="text-[8px] font-black !text-white/30 uppercase tracking-[0.35em] mb-5">
                 {OMNI_CHAINS.length} Networks · Deep Grid Pulse
             </div>
             {isLoading ? (
@@ -422,7 +422,7 @@ export function VipAnalyticsStack({ theme = 'arctic' }: { theme?: 'default' | 'a
                         className={`flex items-center gap-3 px-6 py-5 text-[10px] font-black uppercase tracking-[0.2em] border-b-2 transition-all whitespace-nowrap ${
                             activeTab === id
                                 ? 'border-cyan-500 text-cyan-400 bg-white/5 -mb-px rounded-t-xl shadow-[0_-10px_30px_-10px_rgba(6,182,212,0.3)]'
-                                : 'border-transparent text-white/30 hover:text-white/60 hover:bg-white/5'
+                                : 'border-transparent !text-white/30 hover:!text-white/60 hover:bg-white/5'
                         }`}
                     >
                         <Icon size={14} />

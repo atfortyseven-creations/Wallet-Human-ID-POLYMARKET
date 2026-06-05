@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect, useMemo } from "react";
 import { useAccount } from "wagmi";
@@ -121,7 +121,7 @@ export function AcademyInteractiveEngine({
                     <button 
                         onClick={handleSync}
                         disabled={isSyncing}
-                        className="px-8 py-4 bg-slate-900 text-white font-mono uppercase tracking-[0.2em] font-bold text-xs hover:bg-slate-800 transition-colors disabled:opacity-50 rounded-xl"
+                        className="px-8 py-4 bg-slate-900 !text-white font-mono uppercase tracking-[0.2em] font-bold text-xs hover:bg-slate-800 transition-colors disabled:opacity-50 rounded-xl"
                     >
                         {isSyncing ? "SYNCING..." : `SYNC ${expectedCategories} CATEGORIES`}
                     </button>
@@ -194,7 +194,7 @@ export function AcademyInteractiveEngine({
                                         className="w-full text-left p-6 flex justify-between items-center outline-none gap-4"
                                     >
                                         <div className="flex items-center gap-6">
-                                            <div onClick={(e) => { e.stopPropagation(); handleToggleComplete(lesson.id); }} className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-colors cursor-pointer ${isCompleted ? 'bg-slate-900 border-slate-900 text-white' : 'border-slate-300 text-transparent hover:border-slate-900'}`}>
+                                            <div onClick={(e) => { e.stopPropagation(); handleToggleComplete(lesson.id); }} className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-colors cursor-pointer ${isCompleted ? 'bg-slate-900 border-slate-900 !text-white' : 'border-slate-300 text-transparent hover:border-slate-900'}`}>
                                                 <span className="text-[10px] font-bold"></span>
                                             </div>
                                             <div>

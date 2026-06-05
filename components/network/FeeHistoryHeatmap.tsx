@@ -91,21 +91,21 @@ export function FeeHistoryHeatmap() {
             <Flame className="text-red-400" size={20} />
           </div>
           <div>
-            <h3 className="text-lg font-black text-white uppercase tracking-tight">Fee Congestion Map</h3>
-            <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em]">7-Day Hourly sat/vB</p>
+            <h3 className="text-lg font-black !text-white uppercase tracking-tight">Fee Congestion Map</h3>
+            <p className="text-[10px] font-black !text-white/30 uppercase tracking-[0.3em]">7-Day Hourly sat/vB</p>
           </div>
         </div>
 
         {/* Legend */}
         <div className="hidden md:flex items-center gap-3">
-          <span className="text-[9px] font-mono text-white/30 uppercase">Cheap</span>
+          <span className="text-[9px] font-mono !text-white/30 uppercase">Cheap</span>
           <div className="flex gap-1">
             <div className="w-4 h-4 rounded-sm bg-[#10b981] opacity-50" />
             <div className="w-4 h-4 rounded-sm bg-[#f59e0b] opacity-60" />
             <div className="w-4 h-4 rounded-sm bg-[#f97316] opacity-80" />
             <div className="w-4 h-4 rounded-sm bg-[#ef4444]" />
           </div>
-          <span className="text-[9px] font-mono text-white/30 uppercase">Extreme</span>
+          <span className="text-[9px] font-mono !text-white/30 uppercase">Extreme</span>
         </div>
       </div>
 
@@ -119,7 +119,7 @@ export function FeeHistoryHeatmap() {
             {/* X Axis Labels (Hours) */}
             <div className="flex ml-12 mb-2">
               {Array.from({ length: 24 }).map((_, i) => (
-                <div key={i} className="flex-1 text-center text-[8px] font-mono text-white/20">
+                <div key={i} className="flex-1 text-center text-[8px] font-mono !text-white/20">
                   {i % 4 === 0 ? `${i.toString().padStart(2, '0')}:00` : ''}
                 </div>
               ))}
@@ -129,7 +129,7 @@ export function FeeHistoryHeatmap() {
             <div className="flex flex-col gap-1.5">
               {gridByDay.map((hoursArr, dayIdx) => (
                 <div key={dayIdx} className="flex items-center gap-2">
-                  <div className="w-10 text-[9px] font-black text-white/40 uppercase tracking-widest text-right">
+                  <div className="w-10 text-[9px] font-black !text-white/40 uppercase tracking-widest text-right">
                     {days[dayIdx]}
                   </div>
                   <div className="flex-1 flex gap-1.5">
@@ -148,10 +148,10 @@ export function FeeHistoryHeatmap() {
                         {/* Tooltip on hover */}
                         <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50">
                           <div className="bg-black/90 backdrop-blur-xl border border-white/10 rounded-lg p-2 text-center shadow-xl whitespace-nowrap">
-                            <div className="text-[10px] text-white/50 font-mono mb-1">
+                            <div className="text-[10px] !text-white/50 font-mono mb-1">
                               {days[dayIdx]} {hourIdx.toString().padStart(2, '0')}:00
                             </div>
-                            <div className="font-black font-mono text-white text-xs">
+                            <div className="font-black font-mono !text-white text-xs">
                               {fee} <span className="text-[9px]">sat/vB</span>
                             </div>
                           </div>

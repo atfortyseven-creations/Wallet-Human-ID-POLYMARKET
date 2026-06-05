@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
@@ -82,7 +82,7 @@ export function MiningDashboard() {
                             animate={{ opacity: 1, scale: 1 }}
                             className="w-16 h-16 rounded-[2rem] bg-orange-500 flex items-center justify-center mx-auto shadow-2xl shadow-orange-100"
                         >
-                            <Activity size={32} className="text-white" />
+                            <Activity size={32} className="!text-white" />
                         </motion.div>
                         <div className="space-y-2">
                             <h1 className="text-6xl md:text-8xl font-black uppercase tracking-tighter leading-none text-slate-950">
@@ -123,7 +123,7 @@ export function MiningDashboard() {
                             className="bg-white border border-slate-100 p-10 rounded-[3rem] shadow-[0_24px_80px_rgba(0,0,0,0.03)] hover:shadow-[0_32px_120px_rgba(0,0,0,0.06)] transition-all group"
                         >
                             <div className="w-12 h-12 rounded-2xl bg-black/5 flex items-center justify-center border border-slate-100 mb-8 group-hover:bg-orange-500 group-hover:border-orange-500 transition-colors duration-500">
-                                <Icon size={20} className="text-slate-400 group-hover:text-white transition-colors duration-500" />
+                                <Icon size={20} className="text-slate-400 group-hover:!text-white transition-colors duration-500" />
                             </div>
                             <div className="space-y-1">
                                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">{label}</p>

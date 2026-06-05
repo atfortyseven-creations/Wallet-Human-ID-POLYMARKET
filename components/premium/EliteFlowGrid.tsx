@@ -94,15 +94,15 @@ function WhaleRow({ ev }: { ev: WhaleEvent }) {
       <div className="relative z-10 grid grid-cols-[1.5fr_1fr_1.5fr_1fr] gap-4 items-center px-6 py-4">
         <div className="flex items-center gap-4 min-w-0">
            <div className="w-8 h-8 rounded-lg bg-white/[0.03] border border-white/10 flex flex-shrink-0 items-center justify-center">
-              <Wallet size={14} className="text-white/40" />
+              <Wallet size={14} className="!text-white/40" />
            </div>
            <div className="min-w-0">
-              <div className="text-[10px] font-black text-white uppercase tracking-tight flex items-center gap-2">
+              <div className="text-[10px] font-black !text-white uppercase tracking-tight flex items-center gap-2">
                 {ev.label || "Alpha Wallet"}
                 {isOmega && <Zap size={10} className="text-emerald-400 fill-emerald-400" />}
               </div>
               <div className="flex items-center gap-2 mt-0.5">
-                  <div className="text-[9px] font-mono text-white/20 truncate">{ev.wallet.slice(0, 10)}...{ev.wallet.slice(-6)}</div>
+                  <div className="text-[9px] font-mono !text-white/20 truncate">{ev.wallet.slice(0, 10)}...{ev.wallet.slice(-6)}</div>
                   {ev.telemetryTag && (
                       <span className="text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 whitespace-nowrap hidden sm:inline-block">
                           {ev.telemetryTag}
@@ -113,15 +113,15 @@ function WhaleRow({ ev }: { ev: WhaleEvent }) {
         </div>
 
         <div className="text-right flex flex-col items-end justify-center">
-           <div className="text-base font-black font-mono text-white tracking-widest leading-none mb-1">
+           <div className="text-base font-black font-mono !text-white tracking-widest leading-none mb-1">
              {formatUSD(ev.usdNum || 0)}
            </div>
            <div className="flex items-center justify-end gap-2">
-               <div className="text-[8px] font-black text-white/30 uppercase tracking-widest bg-white/5 px-1.5 py-0.5 rounded">
+               <div className="text-[8px] font-black !text-white/30 uppercase tracking-widest bg-white/5 px-1.5 py-0.5 rounded">
                    {ev.amount} {ev.token}
                </div>
                {ev.gasUsd !== undefined && (
-                   <div className="text-[8px] font-black text-white/20 flex items-center gap-1 uppercase tracking-widest hidden md:flex">
+                   <div className="text-[8px] font-black !text-white/20 flex items-center gap-1 uppercase tracking-widest hidden md:flex">
                        <Shield size={8} /> GAS: ${ev.gasUsd.toFixed(2)}
                    </div>
                )}
@@ -143,11 +143,11 @@ function WhaleRow({ ev }: { ev: WhaleEvent }) {
         </div>
 
         <div className="text-right flex flex-col items-end gap-1">
-            <div className="text-[9px] font-black text-white/30">{timeAgo(ev.ts)}</div>
+            <div className="text-[9px] font-black !text-white/30">{timeAgo(ev.ts)}</div>
             <a 
               href={`https://etherscan.io/tx/${ev.hash}`} 
               target="_blank" 
-              className="text-[8px] font-mono text-white/30 hover:text-[#00ff9d] transition-colors"
+              className="text-[8px] font-mono !text-white/30 hover:text-[#00ff9d] transition-colors"
             >
                 {ev.hash?.slice(0, 12)}...
             </a>
@@ -227,7 +227,7 @@ export function EliteFlowGrid({ events }: { events: WhaleEvent[] }) {
             </div>
             <div>
                <div className="text-[10px] font-black text-[#00ff9d] uppercase tracking-[0.3em] mb-1">MOVIMIENTO OMEGA DETECTADO</div>
-               <div className="text-xl font-black text-white uppercase tracking-tighter">
+               <div className="text-xl font-black !text-white uppercase tracking-tighter">
                  {activeAlert.label || "Elite Whale"}  {formatUSD(activeAlert.usdNum)}
                </div>
             </div>
@@ -238,7 +238,7 @@ export function EliteFlowGrid({ events }: { events: WhaleEvent[] }) {
       {/*  HEADER METRICS TERMINAL  */}
       <div className="flex flex-wrap items-end gap-12 mb-12 pb-12 border-b border-white/[0.08]">
         <div className="flex-1">
-          <h1 className="text-6xl font-black text-white tracking-tighter leading-none uppercase">
+          <h1 className="text-6xl font-black !text-white tracking-tighter leading-none uppercase">
             Whale <span className="text-[#00ff9d]">Alert</span>
           </h1>
         </div>
@@ -262,9 +262,9 @@ export function EliteFlowGrid({ events }: { events: WhaleEvent[] }) {
                 <div className="flex items-center justify-between px-6">
                    <div className="flex items-center gap-4">
                       <div className="w-3 h-3 rounded-full" style={{ backgroundColor: meta.color, boxShadow: `0 0 15px ${meta.color}` }} />
-                      <h2 className="text-2xl font-black uppercase tracking-widest">{symbol} <span className="text-white/20 text-xs">{meta.name}</span></h2>
+                      <h2 className="text-2xl font-black uppercase tracking-widest">{symbol} <span className="!text-white/20 text-xs">{meta.name}</span></h2>
                    </div>
-                   <div className="flex gap-8 text-[10px] font-black text-white/30 uppercase tracking-widest">
+                   <div className="flex gap-8 text-[10px] font-black !text-white/30 uppercase tracking-widest">
                       <span>Events: {tokenEvents.length}</span>
                       <span>Vol: {formatUSD(tokenEvents.reduce((s, e) => s + (e.usdNum || 0), 0))}</span>
                    </div>
@@ -296,7 +296,7 @@ export function EliteFlowGrid({ events }: { events: WhaleEvent[] }) {
 function MetricBlock({ label, value, color }: { label: string; value: string; color: string }) {
   return (
     <div className="text-right">
-      <div className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-2">{label}</div>
+      <div className="text-[10px] font-black !text-white/20 uppercase tracking-[0.3em] mb-2">{label}</div>
       <div className="text-3xl font-black font-mono tracking-tighter" style={{ color }}>{value}</div>
       <div className="h-px bg-white/5 mt-3 w-full" />
     </div>

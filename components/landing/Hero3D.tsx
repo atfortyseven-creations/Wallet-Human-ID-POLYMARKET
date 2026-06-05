@@ -125,10 +125,10 @@ export function Hero3D() {
                     transition={{ duration: 1, ease: 'easeOut' }}
                     className="mb-6 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md"
                 >
-                    <span className="text-[10px] uppercase font-black tracking-[0.3em] text-white/50">Next-Gen Blockchain Analytics</span>
+                    <span className="text-[10px] uppercase font-black tracking-[0.3em] !text-white/50">Next-Gen Blockchain Analytics</span>
                 </motion.div>
 
-                <h1 ref={titleRef} className="text-[10vw] leading-[0.8] font-black uppercase text-white tracking-tighter mix-blend-difference">
+                <h1 ref={titleRef} className="text-[10vw] leading-[0.8] font-black uppercase !text-white tracking-tighter mix-blend-difference">
                     EL SISTEMA
                 </h1>
 
@@ -138,7 +138,7 @@ export function Hero3D() {
                         onMouseMove={handleMagneticHover}
                         onMouseLeave={handleMagneticLeave}
                         onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
-                        className="group relative px-10 py-5 bg-white text-black font-black uppercase tracking-widest text-xs rounded-full overflow-hidden transition-colors hover:bg-transparent hover:text-white border border-transparent hover:border-white/30"
+                        className="group relative px-10 py-5 bg-white text-black font-black uppercase tracking-widest text-xs rounded-full overflow-hidden transition-colors hover:bg-transparent hover:!text-white border border-transparent hover:border-white/30"
                     >
                         <div className="absolute inset-0 w-full h-full bg-indigo-600 scale-x-0 origin-left transition-transform duration-500 ease-out group-hover:scale-x-100 -z-10" />
                         <span className="relative z-10">Iniciar Secuencia</span>

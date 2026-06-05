@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { motion, useMotionValue, animate, useSpring } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
@@ -217,7 +217,7 @@ export function AnalyticsDashboard() {
                     <InsightCard icon={Shield}         title="Valuation Signal"    value="2.14"                                             sub="Macro MVRV Index"                 color="#6366f1" glow="rgba(99,102,241,0.2)" delay={0.1} trend="neutral" />
                     <InsightCard icon={Activity}       title="Capital Flow"        value="0.58"                                             sub="Sentiment Momentum"               color="#00ff9d" glow="rgba(0,255,157,0.2)" delay={0.15} trend="up" />
                     <InsightCard icon={Database}       title="Network Entity"      value="189.4M"                                           sub="Active Identifiers"               color="#a78bfa" glow="rgba(167,139,250,0.2)" delay={0.2} />
-                    <InsightCard icon={Hash}           title="Growth Projection"   value="48.3×"                                            sub="Estimated Multiplier"             color="#facc15" glow="rgba(250,204,21,0.2)" delay={0.25} trend="up" />
+                    <InsightCard icon={Hash}           title="Growth Projection"   value="48.3�"                                            sub="Estimated Multiplier"             color="#facc15" glow="rgba(250,204,21,0.2)" delay={0.25} trend="up" />
                     <InsightCard icon={AlertTriangle}  title="Operational Index"   value="0.94"                                             sub="Interaction Yield"                color="#fb923c" glow="rgba(251,146,60,0.2)" delay={0.3} trend="neutral" />
                     <InsightCard icon={Clock}          title="Retention Trend"     value="65%"                                              sub="Legacy Position"                  color="#34d399" glow="rgba(52,211,153,0.2)" delay={0.35} trend="up" />
                 </div>

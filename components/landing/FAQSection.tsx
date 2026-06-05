@@ -49,7 +49,7 @@ export function FAQSection() {
                     viewport={{ once: true }}
                     className="text-center mb-16"
                 >
-                    <div className="inline-flex items-center gap-2 bg-[#1F1F1F] text-white px-4 py-2 rounded-full text-sm font-bold mb-6 uppercase tracking-wider">
+                    <div className="inline-flex items-center gap-2 bg-[#1F1F1F] !text-white px-4 py-2 rounded-full text-sm font-bold mb-6 uppercase tracking-wider">
                         <HelpCircle className="w-4 h-4" />
                         Frequently Asked Questions
                     </div>
@@ -87,7 +87,7 @@ export function FAQSection() {
                     </p>
                     <a
                         href="/support"
-                        className="inline-block px-8 py-4 bg-[#1F1F1F] text-white rounded-full font-bold hover:scale-105 transition-transform duration-300"
+                        className="inline-block px-8 py-4 bg-[#1F1F1F] !text-white rounded-full font-bold hover:scale-105 transition-transform duration-300"
                     >
                         Contact Support
                     </a>
@@ -124,7 +124,7 @@ function FAQItem({
                     {question}
                 </h3>
                 <div className={`
-                    w-10 h-10 rounded-full bg-[#1F1F1F] text-white 
+                    w-10 h-10 rounded-full bg-[#1F1F1F] !text-white 
                     flex items-center justify-center transition-transform duration-300
                     ${isOpen ? 'rotate-180' : ''}
                 `}>

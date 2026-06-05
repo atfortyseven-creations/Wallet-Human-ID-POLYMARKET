@@ -87,7 +87,7 @@ export const WhaleCard = ({ address: propAddress, balance: propBalance, change24
 
                     {/* HEADER: LOGO & CHIP */}
                     <div className="flex justify-between items-start mb-6">
-                        <div className="flex items-center gap-2 text-white/60 bg-black/20 px-3 py-1.5 rounded-full text-xs font-mono border border-white/5">
+                        <div className="flex items-center gap-2 !text-white/60 bg-black/20 px-3 py-1.5 rounded-full text-xs font-mono border border-white/5">
                             <Shield size={12} className={cn("text-[#00ff9d]", accountType === 'WATCH_ONLY' && "text-blue-400")} />
                             {accountType === 'WATCH_ONLY' ? 'WATCH ONLY' : 'LEDGER SECURED'}
                         </div>
@@ -114,7 +114,7 @@ export const WhaleCard = ({ address: propAddress, balance: propBalance, change24
                         </motion.div>
                         
                         {/* Unique User Balance */}
-                        <div className="text-4xl font-extrabold text-white tracking-tight mb-2">
+                        <div className="text-4xl font-extrabold !text-white tracking-tight mb-2">
                              {loading ? (
                                  <div className="h-10 w-40 bg-white/10 animate-pulse rounded mx-auto" />
                              ) : (
@@ -154,7 +154,7 @@ export const WhaleCard = ({ address: propAddress, balance: propBalance, change24
                         <div className="flex items-center gap-2">
                             <button 
                                 onClick={handleCopy}
-                                className="group/addr flex items-center gap-2 text-neutral-400 hover:text-white transition-colors"
+                                className="group/addr flex items-center gap-2 text-neutral-400 hover:!text-white transition-colors"
                             >
                                 <span className="font-mono text-xs">{addressDisplay.slice(0, 6)}...{addressDisplay.slice(-4)}</span>
                                 {copied ? (
@@ -169,7 +169,7 @@ export const WhaleCard = ({ address: propAddress, balance: propBalance, change24
                                     href={getExplorerUrl(1, address)} // Default to Ethereum for now, or detect from chain
                                     target="_blank" 
                                     rel="noopener noreferrer"
-                                    className="text-neutral-400 hover:text-white transition-colors"
+                                    className="text-neutral-400 hover:!text-white transition-colors"
                                     title="View on Explorer"
                                 >
                                     <ExternalLink size={12} />
@@ -209,7 +209,7 @@ function ActionButton({ icon, onClick, label }: { icon: React.ReactNode, onClick
     return (
         <button 
             onClick={onClick}
-            className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/70 hover:text-white transition-all border border-white/5 hover:scale-105 active:scale-95"
+            className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center !text-white/70 hover:!text-white transition-all border border-white/5 hover:scale-105 active:scale-95"
             title={label}
         >
             {icon}

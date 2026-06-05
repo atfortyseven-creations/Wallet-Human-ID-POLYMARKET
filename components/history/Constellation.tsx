@@ -142,7 +142,7 @@ export function Constellation() {
                 <div className="flex gap-4">
                     <span className="flex items-center gap-1 text-blue-400"><div className="w-2 h-2 rounded-full bg-blue-500"></div> Protocol</span>
                     <span className="flex items-center gap-1 text-emerald-400"><div className="w-2 h-2 rounded-full bg-emerald-500"></div> Peer</span>
-                    <span className="flex items-center gap-1 text-white"><div className="w-2 h-2 rounded-full bg-white"></div> Me</span>
+                    <span className="flex items-center gap-1 !text-white"><div className="w-2 h-2 rounded-full bg-white"></div> Me</span>
                 </div>
             </div>
         </div>

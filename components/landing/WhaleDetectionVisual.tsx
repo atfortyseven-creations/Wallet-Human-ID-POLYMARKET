@@ -60,7 +60,7 @@ export function WhaleDetectionVisual() {
                         {isDetecting ? t.landing.visual.badgeDetected : t.landing.visual.badge}
                     </motion.div>
 
-                    <h2 className="text-4xl md:text-6xl font-black text-white leading-tight">
+                    <h2 className="text-4xl md:text-6xl font-black !text-white leading-tight">
                         {t.landing.visual.title} 
                         <span className="block italic text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500">
                             {t.landing.visual.precision}
@@ -127,7 +127,7 @@ export function WhaleDetectionVisual() {
                                 >
                                     <div>
                                         <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">{t.landing.visual.impactAlert}</p>
-                                        <h3 className="text-white text-2xl font-black">+{whaleData?.amount} BTC</h3>
+                                        <h3 className="!text-white text-2xl font-black">+{whaleData?.amount} BTC</h3>
                                     </div>
                                     <div className="text-right">
                                         <p className="text-[10px] font-bold text-gray-500 uppercase">{whaleData?.time}</p>
@@ -143,11 +143,11 @@ export function WhaleDetectionVisual() {
                     {/* Passive UI Elements */}
                     <div className="absolute top-8 left-8 flex items-center gap-3">
                         <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
-                        <span className="text-[9px] font-black text-white/40 uppercase tracking-[0.3em]">Active Feed / Nodes_Satoshi</span>
+                        <span className="text-[9px] font-black !text-white/40 uppercase tracking-[0.3em]">Active Feed / Nodes_Satoshi</span>
                     </div>
 
                     <div className="absolute top-8 right-8">
-                        <Waves className="w-5 h-5 text-white/20 animate-bounce" />
+                        <Waves className="w-5 h-5 !text-white/20 animate-bounce" />
                     </div>
                 </div>
 
@@ -161,7 +161,7 @@ function Feature({ icon: Icon, label, val }: any) {
         <div className="bg-white/[0.03] border border-white/5 p-4 rounded-2xl flex flex-col items-center gap-1 group hover:border-emerald-500/20 transition-colors">
             <Icon className="w-5 h-5 text-gray-400 group-hover:text-emerald-400 transition-colors" />
             <span className="text-[10px] text-gray-600 font-bold uppercase tracking-wider">{label}</span>
-            <span className="text-white font-black">{val}</span>
+            <span className="!text-white font-black">{val}</span>
         </div>
     );
 }

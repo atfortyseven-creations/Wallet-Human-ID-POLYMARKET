@@ -157,7 +157,7 @@ function MessageBubble({ msg, replyToMsg, onContextMenu, onReact, settings }: {
         data-bubble-peer={!msg.isMine ? '' : undefined}
         className={`relative group px-4 py-3 rounded-2xl cursor-default select-text transition-all backdrop-blur-md border ${
           msg.isMine
-            ? 'bg-black/90 text-white border-black/20 rounded-br-sm shadow-[0_4px_24px_rgba(0,0,0,0.12)]'
+            ? 'bg-black/90 !text-white border-black/20 rounded-br-sm shadow-[0_4px_24px_rgba(0,0,0,0.12)]'
             : 'bg-white/80  border-black/10  text-black  rounded-bl-sm shadow-[0_4px_24px_rgba(0,0,0,0.04)]'
         } ${msg.isDestructing ? 'opacity-60' : ''}`}
       >
@@ -165,7 +165,7 @@ function MessageBubble({ msg, replyToMsg, onContextMenu, onReact, settings }: {
         {replyToMsg && (
           <div className={`mb-2 pl-2 border-l-2 text-[11px] font-mono leading-snug rounded p-1.5 flex flex-col gap-0.5 max-w-[280px] ${
             msg.isMine 
-              ? 'border-white/30 text-white/75 bg-white/10' 
+              ? 'border-white/30 !text-white/75 bg-white/10' 
               : 'border-black/20  text-black/60  bg-black/[0.03] '
           }`}>
             <span className="font-bold text-[9px] uppercase tracking-wider opacity-60">
@@ -179,7 +179,7 @@ function MessageBubble({ msg, replyToMsg, onContextMenu, onReact, settings }: {
 
         {/* Attestation badge */}
         {msg.attestationScore && msg.attestationScore >= 95 && (
-          <div className="flex items-center gap-1 text-[9px] font-mono text-white/50 mb-2">
+          <div className="flex items-center gap-1 text-[9px] font-mono !text-white/50 mb-2">
             <ShieldCheck size={10} /> ZK-VERIFIED · {msg.attestationScore}
           </div>
         )}
@@ -285,15 +285,15 @@ function AttachmentRenderer({ attachment, isMine }: { attachment: { mime: string
       }`}
     >
       <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${isMine ? 'bg-white/20' : 'bg-black/10'}`}>
-        <FileText size={18} className={isMine ? 'text-white' : 'text-black'} />
+        <FileText size={18} className={isMine ? '!text-white' : 'text-black'} />
       </div>
       <div className="flex-1 min-w-0 overflow-hidden">
         <p className="font-mono text-[12px] font-bold truncate" title={name}>{name}</p>
-        <p className={`font-mono text-[9px] uppercase mt-0.5 ${isMine ? 'text-white/60' : 'text-black/50'}`}>
+        <p className={`font-mono text-[9px] uppercase mt-0.5 ${isMine ? '!text-white/60' : 'text-black/50'}`}>
           {mime.split('/')[1]?.toUpperCase() || 'DOCUMENT'}
         </p>
       </div>
-      <Download size={16} className={isMine ? 'text-white/70' : 'text-black/50'} />
+      <Download size={16} className={isMine ? '!text-white/70' : 'text-black/50'} />
     </a>
   );
 }
@@ -416,8 +416,8 @@ function LocationBubble({
             
           </div>
           <div>
-            <p className={`font-mono text-[12px] font-bold ${isMine ? 'text-white/60' : 'text-black/60'}`}>Ubicación Expirada</p>
-            <p className={`font-mono text-[9px] uppercase mt-0.5 ${isMine ? 'text-white/40' : 'text-black/40'}`}>{timeText}</p>
+            <p className={`font-mono text-[12px] font-bold ${isMine ? '!text-white/60' : 'text-black/60'}`}>Ubicación Expirada</p>
+            <p className={`font-mono text-[9px] uppercase mt-0.5 ${isMine ? '!text-white/40' : 'text-black/40'}`}>{timeText}</p>
           </div>
         </div>
       </div>
@@ -437,8 +437,8 @@ function LocationBubble({
             
           </div>
           <div>
-            <p className={`font-mono text-[12px] font-bold ${isMine ? 'text-white' : 'text-black'}`}>Ubicación Exacta</p>
-            <p className={`font-mono text-[9px] uppercase mt-0.5 tracking-wider ${isMine ? 'text-white/60' : 'text-black/50'}`}>{timeText}</p>
+            <p className={`font-mono text-[12px] font-bold ${isMine ? '!text-white' : 'text-black'}`}>Ubicación Exacta</p>
+            <p className={`font-mono text-[9px] uppercase mt-0.5 tracking-wider ${isMine ? '!text-white/60' : 'text-black/50'}`}>{timeText}</p>
           </div>
         </div>
       </a>

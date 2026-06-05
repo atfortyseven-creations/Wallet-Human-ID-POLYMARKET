@@ -361,8 +361,8 @@ export default function NotificationSettings() {
         disabled={isSaving}
         className={`w-full py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
           showSuccess 
-            ? 'bg-green-600 text-white' 
-            : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]'
+            ? 'bg-green-600 !text-white' 
+            : 'bg-gradient-to-r from-purple-600 to-pink-600 !text-white hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]'
         } disabled:opacity-70 disabled:cursor-not-allowed`}
       >
         {isSaving ? (
@@ -479,7 +479,7 @@ function ChannelCard({
           onClick={onToggle}
           className={`px-4 py-2 rounded-xl font-bold transition-all ${
             channel.enabled
-              ? 'bg-purple-600 text-white'
+              ? 'bg-purple-600 !text-white'
               : 'bg-[#1F1F1F]/10 text-[#1F1F1F]/70'
           }`}
         >
@@ -577,7 +577,7 @@ function ChannelCard({
           <button
             onClick={onTest}
             disabled={testing || (channel.id === 'telegram' ? !channel.config.chatId : !channel.config[configField?.field || ''])}
-            className="flex items-center gap-2 px-4 py-2 bg-[#1F1F1F] text-white rounded-xl font-bold hover:bg-[#1F1F1F]/90 transition-all disabled:opacity-50 w-full justify-center"
+            className="flex items-center gap-2 px-4 py-2 bg-[#1F1F1F] !text-white rounded-xl font-bold hover:bg-[#1F1F1F]/90 transition-all disabled:opacity-50 w-full justify-center"
           >
             <TestTube size={16} />
             {testing ? 'Sending Test...' : 'Send Test Notification'}

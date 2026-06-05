@@ -153,7 +153,7 @@ export function PassportView({ passport }: { passport: ProductPassportPublic }) 
       <div
         className={`w-full px-5 py-3 flex items-center justify-center gap-2 text-[11px] font-black uppercase tracking-widest ${
           isAnchored
-            ? 'bg-[#050505] text-white'
+            ? 'bg-[#050505] !text-white'
             : 'bg-black/5 text-black/60'
         }`}
       >
@@ -304,11 +304,11 @@ export function PassportView({ passport }: { passport: ProductPassportPublic }) 
           {isAnchored ? (
             <div className="space-y-4">
               {/* Status */}
-              <div className="flex items-start gap-3 p-4 rounded-xl bg-[#050505] text-white">
+              <div className="flex items-start gap-3 p-4 rounded-xl bg-[#050505] !text-white">
                 <ShieldCheck size={18} className="shrink-0 mt-0.5" />
                 <div>
                   <p className="text-xs font-bold mb-0.5">Record confirmed on blockchain</p>
-                  <p className="text-[11px] text-white/60 leading-relaxed">
+                  <p className="text-[11px] !text-white/60 leading-relaxed">
                     A permanent, tamper-proof reference to this record exists on the public ledger.
                     The information shown here matches what was registered. Any modification would
                     invalidate this confirmation.

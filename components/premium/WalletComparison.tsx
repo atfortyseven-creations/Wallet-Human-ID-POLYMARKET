@@ -49,7 +49,7 @@ export default function WalletComparison({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-black text-white flex items-center gap-2">
+        <h2 className="text-2xl font-black !text-white flex items-center gap-2">
           <BarChart3 className="text-blue-500" />
           Wallet Comparison
         </h2>
@@ -85,20 +85,20 @@ export default function WalletComparison({
                 )}
                 {isDisabled && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-10 backdrop-blur-[1px]">
-                        <span className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1">
+                        <span className="text-xs font-bold !text-white uppercase tracking-wider flex items-center gap-1">
                             <Crown size={12} className="text-yellow-500" /> Upgrade
                         </span>
                     </div>
                 )}
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-bold text-white truncate group-hover:text-blue-200 transition-colors">{wallet.label}</span>
+                  <span className="font-bold !text-white truncate group-hover:text-blue-200 transition-colors">{wallet.label}</span>
                   {isSelected && (
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center"
                     >
-                      <span className="text-white text-xs"></span>
+                      <span className="!text-white text-xs"></span>
                     </motion.div>
                   )}
                 </div>
@@ -131,7 +131,7 @@ export default function WalletComparison({
                 key={m.id}
                 onClick={() => setMetric(m.id as any)}
                 className={`flex-1 min-w-[80px] py-2 px-3 rounded-lg font-bold text-xs transition-all ${
-                  metric === m.id ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-400 hover:text-white'
+                  metric === m.id ? 'bg-blue-600 !text-white shadow-lg' : 'text-gray-400 hover:!text-white'
                 }`}
               >
                 {m.label}
@@ -153,8 +153,8 @@ export default function WalletComparison({
                 return (
                   <div key={wallet.id}>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-bold text-white">{wallet.label}</span>
-                      <span className="text-sm font-bold text-white">
+                      <span className="font-bold !text-white">{wallet.label}</span>
+                      <span className="text-sm font-bold !text-white">
                         {metric === 'value' && formatValue(wallet.totalValue)}
                         {metric === 'change' && (
                           <span className={wallet.change24h >= 0 ? 'text-green-400' : 'text-red-400'}>
@@ -206,15 +206,15 @@ export default function WalletComparison({
                 <tbody>
                   {compareData.map((wallet, index) => (
                     <tr key={wallet.id} className={index % 2 === 0 ? 'bg-white/5' : ''}>
-                      <td className="px-4 py-3 font-bold text-white">{wallet.label}</td>
-                      <td className="px-4 py-3 text-right font-bold text-white">{formatValue(wallet.totalValue)}</td>
+                      <td className="px-4 py-3 font-bold !text-white">{wallet.label}</td>
+                      <td className="px-4 py-3 text-right font-bold !text-white">{formatValue(wallet.totalValue)}</td>
                       <td className="px-4 py-3 text-right">
                         <span className={`font-bold flex items-center gap-1 justify-end ${wallet.pnl24h && wallet.pnl24h >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                           {wallet.pnl24h && wallet.pnl24h >= 0 ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
                           {formatValue(Math.abs(wallet.pnl24h || 0))}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-right text-white font-mono text-xs">{wallet.txCount || 0}</td>
+                      <td className="px-4 py-3 text-right !text-white font-mono text-xs">{wallet.txCount || 0}</td>
                       <td className="px-4 py-3 text-center">
                         <span className="px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded-full text-[10px] font-black uppercase">
                           Rank #{wallet.rank || '???'}

@@ -31,7 +31,7 @@ export default function DeFiPositionsPanel({ positions, totalValueUsd, protocolC
     return (
       <div className="p-16 text-center border border-dashed border-white/10 rounded-3xl bg-white/5">
         <Layers size={56} className="mx-auto mb-5 opacity-20 text-blue-400" />
-        <h3 className="text-2xl font-black text-white mb-2">Sin Posiciones DeFi</h3>
+        <h3 className="text-2xl font-black !text-white mb-2">Sin Posiciones DeFi</h3>
         <p className="text-gray-500 text-sm max-w-md mx-auto">
           No se detectaron posiciones activas en protocolos DeFi compatibles (Aave, Uniswap, Compound, Curve, Lido).
         </p>
@@ -78,7 +78,7 @@ export default function DeFiPositionsPanel({ positions, totalValueUsd, protocolC
           <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/20 blur-3xl" />
           <div className="relative z-10">
             <p className="text-xs uppercase tracking-widest text-blue-400 font-bold mb-1">Total DeFi</p>
-            <p className="text-4xl font-black text-white">${safeToLocaleString(totalValueUsd)}</p>
+            <p className="text-4xl font-black !text-white">${safeToLocaleString(totalValueUsd)}</p>
             <p className="text-xs text-gray-400 mt-1">Valor Total Bloqueado</p>
           </div>
         </motion.div>
@@ -90,7 +90,7 @@ export default function DeFiPositionsPanel({ positions, totalValueUsd, protocolC
           className="p-6 bg-white/5 border border-white/10 rounded-2xl"
         >
           <p className="text-xs uppercase tracking-widest text-gray-400 font-bold mb-1">Protocolos</p>
-          <p className="text-4xl font-black text-white">{protocolCount}</p>
+          <p className="text-4xl font-black !text-white">{protocolCount}</p>
           <p className="text-xs text-gray-500 mt-1">Activos</p>
         </motion.div>
 
@@ -101,14 +101,14 @@ export default function DeFiPositionsPanel({ positions, totalValueUsd, protocolC
           className="p-6 bg-white/5 border border-white/10 rounded-2xl"
         >
           <p className="text-xs uppercase tracking-widest text-gray-400 font-bold mb-1">Posiciones</p>
-          <p className="text-4xl font-black text-white">{positions.length}</p>
+          <p className="text-4xl font-black !text-white">{positions.length}</p>
           <p className="text-xs text-gray-500 mt-1">Total</p>
         </motion.div>
       </div>
 
       {/* Posiciones por Protocolo */}
       <div className="space-y-4">
-        <h3 className="text-xl font-black text-white mb-4 flex items-center gap-3">
+        <h3 className="text-xl font-black !text-white mb-4 flex items-center gap-3">
           <Layers size={24} className="text-blue-400" />
           Posiciones por Protocolo
         </h3>
@@ -132,12 +132,12 @@ export default function DeFiPositionsPanel({ positions, totalValueUsd, protocolC
                       <Layers size={28} className="text-blue-400" />
                     </div>
                     <div>
-                      <h4 className="text-2xl font-black text-white">{protocol}</h4>
+                      <h4 className="text-2xl font-black !text-white">{protocol}</h4>
                       <p className="text-sm text-gray-500">{protocolPositions.length} posiciones</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-3xl font-black text-white">${safeToLocaleString(protocolTotal)}</p>
+                    <p className="text-3xl font-black !text-white">${safeToLocaleString(protocolTotal)}</p>
                     <p className="text-xs text-gray-500">Valor Total</p>
                   </div>
                 </div>
@@ -155,7 +155,7 @@ export default function DeFiPositionsPanel({ positions, totalValueUsd, protocolC
                         {getTypeIcon(position.type)}
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs px-2 py-0.5 rounded-full bg-white/10 text-white font-bold uppercase tracking-wider">
+                            <span className="text-xs px-2 py-0.5 rounded-full bg-white/10 !text-white font-bold uppercase tracking-wider">
                               {position.type}
                             </span>
                           </div>
@@ -163,7 +163,7 @@ export default function DeFiPositionsPanel({ positions, totalValueUsd, protocolC
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="text-2xl font-black text-white">${safeToLocaleString(position.valueUsd)}</p>
+                        <p className="text-2xl font-black !text-white">${safeToLocaleString(position.valueUsd)}</p>
                       </div>
                     </div>
 
@@ -175,7 +175,7 @@ export default function DeFiPositionsPanel({ positions, totalValueUsd, protocolC
                           className="flex items-center gap-2 px-3 py-2 bg-black/40 backdrop-blur-md border border-white/10 rounded-xl"
                         >
                           <div className="flex items-center gap-2">
-                            <span className="font-mono text-white font-bold">{token.symbol}</span>
+                            <span className="font-mono !text-white font-bold">{token.symbol}</span>
                             <span className="text-gray-500">·</span>
                             <span className="text-sm text-gray-400">{token.balanceFormatted}</span>
                           </div>

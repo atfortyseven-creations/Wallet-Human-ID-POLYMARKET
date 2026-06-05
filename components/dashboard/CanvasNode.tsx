@@ -64,8 +64,8 @@ export function CanvasNode({ data, onDrag, onContextMenu }: CanvasNodeProps) {
                         {getIcon()}
                     </div>
                     <div>
-                        <h4 className="text-sm font-aztec-serif font-black tracking-tight text-white">{data.title}</h4>
-                        <p className="text-[10px] uppercase tracking-widest text-white/40 font-mono">{data.type}</p>
+                        <h4 className="text-sm font-aztec-serif font-black tracking-tight !text-white">{data.title}</h4>
+                        <p className="text-[10px] uppercase tracking-widest !text-white/40 font-mono">{data.type}</p>
                     </div>
                 </div>
                 {/* Status indicator */}
@@ -75,14 +75,14 @@ export function CanvasNode({ data, onDrag, onContextMenu }: CanvasNodeProps) {
             {/* Telemetry Metrics */}
             <div className="p-4 grid grid-cols-2 gap-4 bg-[#0a0a0a]/50 rounded-b-2xl">
                 <div>
-                    <div className="text-[9px] uppercase tracking-[0.2em] text-white/30 font-mono mb-1">Status</div>
-                    <div className="text-xs font-bold text-white capitalize">{data.status}</div>
+                    <div className="text-[9px] uppercase tracking-[0.2em] !text-white/30 font-mono mb-1">Status</div>
+                    <div className="text-xs font-bold !text-white capitalize">{data.status}</div>
                 </div>
                 <div>
-                    <div className="text-[9px] uppercase tracking-[0.2em] text-white/30 font-mono mb-1 flex items-center gap-1">
+                    <div className="text-[9px] uppercase tracking-[0.2em] !text-white/30 font-mono mb-1 flex items-center gap-1">
                         <Activity size={10} /> Ping
                     </div>
-                    <div className="text-xs font-bold text-white font-mono">{data.latency}ms</div>
+                    <div className="text-xs font-bold !text-white font-mono">{data.latency}ms</div>
                 </div>
             </div>
             

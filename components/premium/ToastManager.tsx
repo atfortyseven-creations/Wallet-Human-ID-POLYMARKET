@@ -55,7 +55,7 @@ export function PremiumToasts() {
                   {toast.type !== 'alert' && <div className="w-1.5 h-1.5 rounded-full bg-[#e0ff00] animate-pulse" />}
                   {toast.title}
                 </span>
-                <span className="text-xs font-mono font-medium text-white/60 mt-0.5">{toast.message}</span>
+                <span className="text-xs font-mono font-medium !text-white/60 mt-0.5">{toast.message}</span>
             </div>
           </motion.div>
         ))}

@@ -109,8 +109,8 @@ export function MasterPulse({ totalWhaleVolume, inflowScore, liquidationTotal, a
             <Brain className="w-5 h-5" style={{ color: pulseColor }} />
           </div>
           <div>
-            <h3 className="text-white font-black text-lg">Master AI Pulse</h3>
-            <p className="text-white/30 text-xs font-mono">Composite analytics signal</p>
+            <h3 className="!text-white font-black text-lg">Master AI Pulse</h3>
+            <p className="!text-white/30 text-xs font-mono">Composite analytics signal</p>
           </div>
         </div>
         
@@ -197,8 +197,8 @@ export function MasterPulse({ totalWhaleVolume, inflowScore, liquidationTotal, a
         ].map(({ label, value, icon }) => (
           <div key={label} className="flex flex-col items-center justify-center gap-1 p-4 border-r border-white/5 last:border-r-0">
             <div style={{ color: pulseColor }} className="opacity-60">{icon}</div>
-            <p className="text-white font-black text-sm">{value}</p>
-            <p className="text-white/20 text-[9px] font-mono uppercase text-center">{label}</p>
+            <p className="!text-white font-black text-sm">{value}</p>
+            <p className="!text-white/20 text-[9px] font-mono uppercase text-center">{label}</p>
           </div>
         ))}
       </div>

@@ -246,7 +246,7 @@ export function ZKBiometricGate({ onSuccess, uuid }: ZKBiometricGateProps) {
                    <AlertTriangle size={28} className="text-red-500" />
                  </div>
                  <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest leading-relaxed mb-6">{errorMsg}</p>
-                 <button onClick={() => setStage("IDLE")} className="px-6 py-2 bg-black text-white text-[9px] font-bold uppercase tracking-[0.2em] rounded-lg">
+                 <button onClick={() => setStage("IDLE")} className="px-6 py-2 bg-black !!text-white text-[9px] font-bold uppercase tracking-[0.2em] rounded-lg">
                    Retry Hardware Access
                  </button>
               </motion.div>

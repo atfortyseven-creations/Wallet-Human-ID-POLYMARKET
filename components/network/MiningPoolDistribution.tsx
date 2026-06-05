@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -179,7 +179,7 @@ export function MiningPoolDistribution({ hideHeader = false, theme = 'default' }
                 >
                   {/* Number Badge */}
                   <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-[11px] font-black text-white shrink-0 shadow-sm"
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-[11px] font-black !text-white shrink-0 shadow-sm"
                     style={{ backgroundColor: POOL_COLORS[idx % POOL_COLORS.length] }}
                   >
                     {idx + 1}

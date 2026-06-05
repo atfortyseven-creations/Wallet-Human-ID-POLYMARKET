@@ -50,7 +50,7 @@ export class GlobalErrorBoundary extends Component<Props, State> {
     public render() {
         if (this.state.hasError) {
             return (
-                <div className="flex flex-col items-center justify-center min-h-screen bg-black/80 backdrop-blur-sm text-white p-6 font-mono relative z-50">
+                <div className="flex flex-col items-center justify-center min-h-screen bg-black/80 backdrop-blur-sm !text-white p-6 font-mono relative z-50">
                     <div className="max-w-2xl w-full bg-red-950/40 border border-red-500/30 rounded-xl p-8 shadow-2xl backdrop-blur-md">
                         <div className="flex items-center gap-4 mb-6 text-red-500">
                             <AlertCircle size={48} />
@@ -67,14 +67,14 @@ export class GlobalErrorBoundary extends Component<Props, State> {
                         <div className="flex gap-3">
                             <button
                                 onClick={this.copyErrorToClipboard}
-                                className="px-6 py-3 bg-zinc-700 hover:bg-zinc-600 text-white rounded-lg font-bold flex items-center gap-2 transition-colors"
+                                className="px-6 py-3 bg-zinc-700 hover:bg-zinc-600 !text-white rounded-lg font-bold flex items-center gap-2 transition-colors"
                             >
                                 <Copy size={18} />
                                 COPY ERROR
                             </button>
                             <button
                                 onClick={() => window.location.reload()}
-                                className="flex-1 px-6 py-3 bg-red-600 hover:bg-red-500 text-white rounded-lg font-bold flex items-center gap-2 transition-colors"
+                                className="flex-1 px-6 py-3 bg-red-600 hover:bg-red-500 !text-white rounded-lg font-bold flex items-center gap-2 transition-colors"
                             >
                                 <RefreshCw size={18} />
                                 REBOOT SYSTEM

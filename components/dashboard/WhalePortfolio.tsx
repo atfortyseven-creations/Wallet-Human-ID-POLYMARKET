@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
@@ -237,7 +237,7 @@ function WhaleRow({ w }: { w: WhaleEntity }) {
                         /* eslint-disable-next-line @next/next/no-img-element */
                         <img src={ensAvatar} alt={w.label} className="w-8 h-8 rounded-full border border-[#E5E5E5]  object-cover shadow-sm" />
                     ) : (
-                        <div className="w-8 h-8 rounded-full bg-[#050505]  flex items-center justify-center text-[10px] font-black text-white  shadow-sm">
+                        <div className="w-8 h-8 rounded-full bg-[#050505]  flex items-center justify-center text-[10px] font-black !text-white  shadow-sm">
                             {w.label[0]}
                         </div>
                     )}

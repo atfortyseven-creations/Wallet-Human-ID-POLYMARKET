@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
@@ -80,7 +80,7 @@ export function AddressDashboard({ address }: AddressDashboardProps) {
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-12 border-b border-slate-100">
                     <div className="space-y-6 flex-1 min-w-0">
                         <div className="flex items-center gap-4">
-                            <Link href="/ledger" className="w-12 h-12 rounded-2xl bg-black/5 border border-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-950 hover:text-white hover:border-slate-950 transition-all duration-300">
+                            <Link href="/ledger" className="w-12 h-12 rounded-2xl bg-black/5 border border-slate-100 flex items-center justify-center text-slate-400 hover:bg-slate-950 hover:!text-white hover:border-slate-950 transition-all duration-300">
                                 <ArrowLeft size={20} />
                             </Link>
                             <div className="inline-flex items-center gap-2 bg-indigo-50 text-indigo-600 px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border border-indigo-100">
@@ -108,14 +108,14 @@ export function AddressDashboard({ address }: AddressDashboardProps) {
                         <div className="relative z-10 space-y-8">
                             <div className="space-y-2">
                                 <span className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em]">Verified Liquidity</span>
-                                <div className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-none">
+                                <div className="text-5xl md:text-7xl font-black !text-white tracking-tighter leading-none">
                                     {safeToFixed(balance, 8)} <span className="text-indigo-400 text-3xl">BTC</span>
                                 </div>
                             </div>
                             <div className="flex items-center gap-8">
                                 <div className="space-y-1">
                                     <div className="text-slate-500 text-[9px] font-black uppercase tracking-widest">Inscriptions</div>
-                                    <div className="text-xl font-bold text-white font-mono">{safeToLocaleString(stats.chain_stats.tx_count)}</div>
+                                    <div className="text-xl font-bold !text-white font-mono">{safeToLocaleString(stats.chain_stats.tx_count)}</div>
                                 </div>
                                 <div className="w-px h-8 bg-slate-800" />
                                 <div className="space-y-1">
@@ -217,7 +217,7 @@ export function AddressDashboard({ address }: AddressDashboardProps) {
                                                      <div className="text-[10px] font-bold uppercase tracking-widest mt-1">
                                                         {tx.status?.confirmed ? (
                                                             <span className="text-emerald-600">
-                                                                Validated · {(() => {
+                                                                Validated � {(() => {
                                                                     try {
                                                                         if (!tx.status.block_time) return "INDEX_UNDEF";
                                                                         const date = new Date(tx.status.block_time * 1000);
@@ -256,7 +256,7 @@ export function AddressDashboard({ address }: AddressDashboardProps) {
                                     <button
                                         onClick={() => fetchNextPage()}
                                         disabled={isFetchingNextPage}
-                                        className="px-10 py-5 bg-slate-950 text-white rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.3em] hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 disabled:opacity-50"
+                                        className="px-10 py-5 bg-slate-950 !text-white rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.3em] hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 disabled:opacity-50"
                                     >
                                         {isFetchingNextPage ? "Retrieving records..." : "Retrieve Legacy Records"}
                                     </button>

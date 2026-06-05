@@ -63,7 +63,7 @@ export function AdvancedAnalytics() {
     }, []);
 
     return (
-        <div className="w-full bg-[#0a0a0a] text-white p-6 rounded-3xl border border-white/5 shadow-2xl overflow-hidden relative">
+        <div className="w-full bg-[#0a0a0a] !text-white p-6 rounded-3xl border border-white/5 shadow-2xl overflow-hidden relative">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-[#00ff9d]" />
             
             {/* Header / Ticker */}
@@ -74,7 +74,7 @@ export function AdvancedAnalytics() {
                     </div>
                     <div>
                         <h2 className="text-2xl font-black tracking-tight">MARKET PULSE</h2>
-                        <p className="text-xs font-mono text-white/40">Latencia: 12ms // Oracle: Chainlink Low-Lat</p>
+                        <p className="text-xs font-mono !text-white/40">Latencia: 12ms // Oracle: Chainlink Low-Lat</p>
                     </div>
                 </div>
                 
@@ -113,13 +113,13 @@ export function AdvancedAnalytics() {
                             <h3 className="font-bold text-sm flex items-center gap-2">
                                 <Zap size={14} className="text-yellow-400" /> Liquidations
                             </h3>
-                            <span className="text-[10px] text-white/40">24H Heatmap</span>
+                            <span className="text-[10px] !text-white/40">24H Heatmap</span>
                         </div>
                         <div className="h-32 flex flex-col items-center justify-center border border-white/5 rounded-lg bg-black/40">
                             <div className="w-6 h-6 rounded-full border border-white/10 border-t-yellow-400 animate-spin mb-2" />
-                            <p className="text-[8px] font-black uppercase tracking-widest text-white/20">Syncing Liquidation Map</p>
+                            <p className="text-[8px] font-black uppercase tracking-widest !text-white/20">Syncing Liquidation Map</p>
                         </div>
-                        <div className="mt-2 text-center text-[9px] font-mono text-white/20 uppercase tracking-widest">
+                        <div className="mt-2 text-center text-[9px] font-mono !text-white/20 uppercase tracking-widest">
                             AWAITING_LIQUIDATION_FEED
                         </div>
                     </div>
@@ -134,7 +134,7 @@ export function AdvancedAnalytics() {
                         </div>
                         <div className="space-y-4 py-8 flex flex-col items-center justify-center">
                             <Activity size={24} className="text-blue-500/20 animate-pulse" />
-                            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/20">Establishing Whale Upstream</p>
+                            <p className="text-[9px] font-black uppercase tracking-[0.3em] !text-white/20">Establishing Whale Upstream</p>
                         </div>
                     </div>
                 </div>
@@ -142,12 +142,12 @@ export function AdvancedAnalytics() {
 
             {/* Bottom Bar: Funding Rates */}
             <div className="mt-6 flex items-center justify-between bg-white/[0.02] p-4 rounded-xl border border-white/5">
-               <div className="flex items-center gap-6 text-xs text-white/60">
-                   <div className="hover:text-white cursor-pointer">Funding / 1h</div>
-                   <div className="hover:text-white cursor-pointer">Open Interest</div>
-                   <div className="hover:text-white cursor-pointer">Orderbook Ratio</div>
+               <div className="flex items-center gap-6 text-xs !text-white/60">
+                   <div className="hover:!text-white cursor-pointer">Funding / 1h</div>
+                   <div className="hover:!text-white cursor-pointer">Open Interest</div>
+                   <div className="hover:!text-white cursor-pointer">Orderbook Ratio</div>
                </div>
-               <div className="text-[10px] font-mono text-white/20">
+               <div className="text-[10px] font-mono !text-white/20">
                    AWAITING_FUNDING_CLOCK
                </div>
             </div>
@@ -158,8 +158,8 @@ export function AdvancedAnalytics() {
 function TickerItem({ label, value }: { label: string, value: number }) {
     return (
         <div className="flex items-center gap-2">
-            <span className="text-white/40 font-bold">{label}</span>
-            <span className={value > 0 ? "text-white" : "text-red-400"}>
+            <span className="!text-white/40 font-bold">{label}</span>
+            <span className={value > 0 ? "!text-white" : "text-red-400"}>
                 ${safeToLocaleString(value, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
         </div>
@@ -168,7 +168,7 @@ function TickerItem({ label, value }: { label: string, value: number }) {
 
 function Badge({ children, active }: { children: React.ReactNode, active?: boolean }) {
     return (
-        <span className={`px-2 py-1 rounded text-[10px] font-bold cursor-pointer transition-colors ${active ? 'bg-white text-black' : 'bg-black/40 text-white/60 hover:text-white'}`}>
+        <span className={`px-2 py-1 rounded text-[10px] font-bold cursor-pointer transition-colors ${active ? 'bg-white text-black' : 'bg-black/40 !text-white/60 hover:!text-white'}`}>
             {children}
         </span>
     )
@@ -182,7 +182,7 @@ function WhaleRow({ amount, action, time }: { amount: string, action: string, ti
             <div className={`px-1.5 py-0.5 rounded text-[10px] uppercase font-bold ${isSell ? 'bg-red-500/20 text-red-500' : 'bg-green-500/20 text-green-500'}`}>
                 {action}
             </div>
-            <div className="text-white/30">{time}</div>
+            <div className="!text-white/30">{time}</div>
         </div>
     )
 }

@@ -33,11 +33,11 @@ export default function WhaleRadar() {
       <h3 className="font-mono text-[10px] text-emerald-400 mb-2">LIVE WHALE ACTIVITY (USDC &gt;1M)</h3>
       <div className="space-y-2">
         {events.length === 0 ? (
-          <div className="text-xs text-white/30 font-mono animate-pulse">Scanning mempool...</div>
+          <div className="text-xs !text-white/30 font-mono animate-pulse">Scanning mempool...</div>
         ) : (
           events.map((ev, i) => (
             <div key={i} className="bg-white/5 border border-white/10 p-2 rounded-lg font-mono text-[9px]">
-              <div className="flex justify-between text-white/70">
+              <div className="flex justify-between !text-white/70">
                 <span>From: {ev.args.from?.slice(0,6)}...</span>
                 <span>To: {ev.args.to?.slice(0,6)}...</span>
               </div>

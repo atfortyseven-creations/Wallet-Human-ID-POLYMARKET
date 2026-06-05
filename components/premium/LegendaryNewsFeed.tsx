@@ -85,7 +85,7 @@ export default function LegendaryNewsFeed({ isPremium, walletAddress }: Legendar
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="text-4xl font-black text-white flex items-center gap-4"
+            className="text-4xl font-black !text-white flex items-center gap-4"
           >
             <div className="p-2 bg-blue-500/20 rounded-lg">
                 <BrainCircuit className="text-blue-400 w-8 h-8" />
@@ -101,7 +101,7 @@ export default function LegendaryNewsFeed({ isPremium, walletAddress }: Legendar
           <button
             onClick={handleSync}
             disabled={syncing || !isPremium}
-            className="group px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg shadow-blue-900/20 disabled:opacity-50"
+            className="group px-6 py-3 bg-blue-600 hover:bg-blue-500 !text-white rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg shadow-blue-900/20 disabled:opacity-50"
           >
             <RefreshCw size={18} className={syncing ? 'animate-spin' : 'group-hover:rotate-180 transition-transform duration-500'} />
             {syncing ? 'PROCESSING...' : 'UPDATE NODES'}
@@ -139,8 +139,8 @@ export default function LegendaryNewsFeed({ isPremium, walletAddress }: Legendar
 
       {articles.length === 0 && !loading && (
         <div className="flex flex-col items-center justify-center py-20 bg-white/5 rounded-3xl border border-dashed border-white/10">
-          <Newspaper size={48} className="text-white/20 mb-4" />
-          <p className="text-xl font-bold text-white/40">No recent market data. Synchronize data nodes.</p>
+          <Newspaper size={48} className="!text-white/20 mb-4" />
+          <p className="text-xl font-bold !text-white/40">No recent market data. Synchronize data nodes.</p>
         </div>
       )}
     </div>
@@ -175,7 +175,7 @@ function LegendaryNewsCard({ article, index }: { article: NewsArticle; index: nu
         {/* Source Badge (Top Left) */}
         <div className="absolute top-4 left-4 z-20 px-3 py-1.5 bg-black/60 backdrop-blur-md rounded-lg border border-white/10 flex items-center gap-2">
             {article.isFake ? <ShieldAlert size={14} className="text-indigo-500" /> : <ShieldCheck size={14} className="text-blue-400" />}
-            <span className="text-[10px] font-black uppercase tracking-widest text-white/90">
+            <span className="text-[10px] font-black uppercase tracking-widest !text-white/90">
                 {article.source}
             </span>
         </div>
@@ -192,7 +192,7 @@ function LegendaryNewsCard({ article, index }: { article: NewsArticle; index: nu
       <div className="p-6 flex flex-col flex-grow -mt-6 relative z-20">
         
         {/* Headline */}
-        <h3 className="text-xl font-black text-white leading-tight mb-4 group-hover:text-blue-400 transition-colors">
+        <h3 className="text-xl font-black !text-white leading-tight mb-4 group-hover:text-blue-400 transition-colors">
           {article.title}
         </h3>
 
@@ -229,7 +229,7 @@ function LegendaryNewsCard({ article, index }: { article: NewsArticle; index: nu
                 <a 
                     href={article.url}
                     target="_blank"
-                    className="p-2 bg-white/5 rounded-full hover:bg-white/10 text-white/40 hover:text-white transition-all"
+                    className="p-2 bg-white/5 rounded-full hover:bg-white/10 !text-white/40 hover:!text-white transition-all"
                 >
                     <ExternalLink size={16} />
                 </a>
