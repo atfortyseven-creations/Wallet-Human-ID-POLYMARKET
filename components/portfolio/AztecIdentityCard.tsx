@@ -66,62 +66,64 @@ function StatusBadge() {
 }
 
 // ─── DB sync hook — detects incoming QDs and credits recipient ────────────────
+// DB sync hook - full DB-authoritative balance & history sync
 function useSyncFromDB(address: string) {
-  const { receiveQDs, sendQDs, history, setBalance } = useQDsStore();
-  const seenRef = React.useRef<Set<string>>(new Set());
-
-  // Initialize seenRef correctly whenever the address changes
-  React.useEffect(() => {
-    seenRef.current = new Set(history.map(h => h.id));
-  }, [address]);
+  // notifiedRef tracks which tx IDs have already fired a toast.
+  // Balance and history are NEVER derived from local mutations -- DB is sole truth.
+  const { setBalance, setHistory } = useQDsStore();
+  const notifiedRef = React.useRef<Set<string>>(new Set());
 
   React.useEffect(() => {
     if (!address) return;
+    notifiedRef.current = new Set(); // Reset on address change (logout/login)
 
     const poll = async () => {
       try {
-        // 1. Hard-sync true ledger balance from backend
+        // STEP 1: Authoritative balance from PostgreSQL.
+        // This is the ONLY source of balance truth. No local accumulation ever.
         const balRes = await fetch(`/api/aztec/balance?aztecAddress=${address.toLowerCase()}`);
         if (balRes.ok) {
           const { balance } = await balRes.json();
-          setBalance(parseFloat(balance)); // Absolute truth from Postgres Genesis + Txs
+          setBalance(parseFloat(balance));
         }
 
-        // 2. Sync transactions for history and toasts
+        // STEP 2: Full history rebuild from DB on every poll.
+        // Replace history completely - eliminates accumulation bugs,
+        // duplicates, ordering issues, and negative balance edge cases.
         const res = await fetch(`/api/aztec/transactions?address=${address.toLowerCase()}`);
         if (!res.ok) return;
         const { transactions } = await res.json();
         if (!Array.isArray(transactions)) return;
 
-        // Reverse the transactions to process oldest first, ensuring
-        // the newest transaction ends up at the top of the history array.
-        const unseenTxs = transactions.filter((t: any) => !seenRef.current.has(t.id)).reverse();
+        const freshHistory = transactions.map((tx: any) => ({
+          id:      tx.id,
+          type:    tx.type as 'send' | 'receive',
+          amount:  tx.amount,
+          address: tx.type === 'send' ? tx.toAddress : tx.fromAddress,
+          txHash:  tx.txHash,
+          date:    tx.createdAt,
+        }));
+        setHistory(freshHistory);
 
-        for (const tx of unseenTxs) {
-          seenRef.current.add(tx.id);
-
+        // STEP 3: Toast only for genuinely new incoming transactions.
+        for (const tx of transactions) {
+          if (notifiedRef.current.has(tx.id)) continue;
+          notifiedRef.current.add(tx.id);
           if (tx.type === 'receive' && tx.toAddress?.toLowerCase() === address.toLowerCase()) {
-            receiveQDs(tx.amount, tx.fromAddress, tx.txHash, tx.id);
             toast.success(`+${tx.amount} QDs received!`, {
               description: `From ${trunc(tx.fromAddress, 8, 6)}`,
             });
           }
-          if (tx.type === 'send' && tx.fromAddress?.toLowerCase() === address.toLowerCase()) {
-            if (!history.some(h => h.id === tx.id)) {
-              sendQDs(tx.amount, tx.toAddress, tx.txHash, tx.id, true);
-            }
-          }
         }
       } catch {
-        // Silently ignore network errors during polling
+        // Silently ignore transient network errors - next poll self-heals
       }
     };
 
-    poll(); // immediate first poll
-    const interval = setInterval(poll, 10_000); // poll every 10s
+    poll(); // Immediate first poll on mount
+    const interval = setInterval(poll, 10_000); // Re-sync every 10s
     return () => clearInterval(interval);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-
   }, [address]);
 }
 
