@@ -60,8 +60,12 @@ function StatusBadge() {
 // ─── DB sync hook — detects incoming QDs and credits recipient ────────────────
 function useSyncFromDB(address: string) {
   const { receiveQDs, sendQDs, history } = useQDsStore();
-  // Track which txHashes have already been applied this session (prevents double-credit)
-  const seenRef = React.useRef<Set<string>>(new Set(history.map(h => h.txHash)));
+  const seenRef = React.useRef<Set<string>>(new Set());
+
+  // Initialize seenRef correctly whenever the address changes
+  React.useEffect(() => {
+    seenRef.current = new Set(history.map(h => h.txHash));
+  }, [address]);
 
   React.useEffect(() => {
     if (!address) return;
