@@ -50,10 +50,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'from, to, and amount are required' }, { status: 400 });
   }
 
-  // Cosmic strictness: Aztec accounts must be exactly 66 hex characters
-  const aztecRegex = /^0x[a-fA-F0-9]{64}$/;
+  // Accept any valid 0x-prefixed hex address (40 to 64 chars — covers both EVM and Aztec formats)
+  const aztecRegex = /^0x[a-fA-F0-9]{40,64}$/;
   if (!aztecRegex.test(from) || !aztecRegex.test(to)) {
-    return NextResponse.json({ error: 'Invalid Aztec address format (must be 0x + 64 hex chars)' }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid address format (must be 0x followed by 40-64 hex chars)' }, { status: 400 });
   }
 
   const normalizedFrom = from.toLowerCase();
