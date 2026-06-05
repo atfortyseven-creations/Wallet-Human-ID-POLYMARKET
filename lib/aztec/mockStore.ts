@@ -50,7 +50,9 @@ export const useQDsStore = create<QDsStore>()(
         ]
       })),
       receiveQDs: (amount, from, txHash, dbId) => set((state) => ({
-        balance: Math.min(state.balance + amount, 100000000),
+        // DO NOT mutate balance here. The useSyncFromDB hook strictly enforces the 
+        // true balance directly from the DB via `setBalance`. Mutating it here would 
+        // cause a transient UI glitch (double counting the receive).
         history: [
           {
             id: dbId || Math.random().toString(36).substr(2, 9),

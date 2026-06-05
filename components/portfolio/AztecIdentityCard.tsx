@@ -93,8 +93,11 @@ function useSyncFromDB(address: string) {
         const { transactions } = await res.json();
         if (!Array.isArray(transactions)) return;
 
-        for (const tx of transactions) {
-          if (seenRef.current.has(tx.id)) continue; // already applied based on postgres ID
+        // Reverse the transactions to process oldest first, ensuring
+        // the newest transaction ends up at the top of the history array.
+        const unseenTxs = transactions.filter((t: any) => !seenRef.current.has(t.id)).reverse();
+
+        for (const tx of unseenTxs) {
           seenRef.current.add(tx.id);
 
           if (tx.type === 'receive' && tx.toAddress?.toLowerCase() === address.toLowerCase()) {
