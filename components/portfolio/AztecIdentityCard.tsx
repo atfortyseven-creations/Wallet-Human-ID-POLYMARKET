@@ -46,6 +46,52 @@ function StatusBadge() {
   );
 }
 
+// ─── DB sync hook — detects incoming QDs and credits recipient ────────────────
+function useSyncFromDB(address: string) {
+  const { receiveQDs, sendQDs, history } = useQDsStore();
+  // Track which txHashes have already been applied this session (prevents double-credit)
+  const seenRef = React.useRef<Set<string>>(new Set(history.map(h => h.txHash)));
+
+  React.useEffect(() => {
+    if (!address) return;
+
+    const poll = async () => {
+      try {
+        const res = await fetch(`/api/aztec/transactions?address=${address.toLowerCase()}`);
+        if (!res.ok) return;
+        const { transactions } = await res.json();
+        if (!Array.isArray(transactions)) return;
+
+        for (const tx of transactions) {
+          if (seenRef.current.has(tx.txHash)) continue; // already applied
+          seenRef.current.add(tx.txHash);
+
+          if (tx.type === 'receive' && tx.toAddress?.toLowerCase() === address.toLowerCase()) {
+            receiveQDs(tx.amount, tx.fromAddress, tx.txHash);
+            toast.success(`+${tx.amount} QDs received!`, {
+              description: `From ${trunc(tx.fromAddress, 8, 6)}`,
+            });
+          }
+          // outgoing txs were already applied optimistically in SendQDsPanel
+          // so we only need to ensure they appear in history if they're missing
+          if (tx.type === 'send' && tx.fromAddress?.toLowerCase() === address.toLowerCase()) {
+            if (!history.some(h => h.txHash === tx.txHash)) {
+              sendQDs(0, tx.toAddress, tx.txHash); // amount 0 = already deducted
+            }
+          }
+        }
+      } catch {
+        // Silently ignore network errors during polling
+      }
+    };
+
+    poll(); // immediate first poll
+    const interval = setInterval(poll, 10_000); // poll every 10s
+    return () => clearInterval(interval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address]);
+}
+
 // ─── Send QDs panel ───────────────────────────────────────────────────────────
 function SendQDsPanel() {
   const { balance, sendQDs } = useQDsStore();
@@ -311,8 +357,6 @@ function HistoryPanel() {
     </div>
   );
 }
-
-
 // ─── Main Component ───────────────────────────────────────────────────────────
 export function AztecIdentityCard() {
   const { balance } = useQDsStore();
@@ -320,6 +364,9 @@ export function AztecIdentityCard() {
   const { copied: txCopied,   copy: copyTx }   = useCopy(CLAIM_TX_HASH, 'TX hash');
   const [activeTab, setActiveTab]              = useState<'IDENTITY'|'SEND'|'RECEIVE'|'HISTORY'|'CLAIM'|'NODE'>('IDENTITY');
   const [checking, setChecking]                = useState(false);
+
+  // Actively poll database for incoming/outgoing QDs transfers
+  useSyncFromDB(AZTEC_ADDRESS);
 
   const pingNode = async () => {
     setChecking(true);
