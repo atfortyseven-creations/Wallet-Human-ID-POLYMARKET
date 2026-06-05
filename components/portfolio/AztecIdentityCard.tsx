@@ -277,7 +277,7 @@ function ReceiveQDsPanel() {
 
       <div>
         <div className="text-[8px] font-black uppercase tracking-widest text-black/30 mb-2 flex items-center gap-1.5">
-          <Shield size={9} /> Your Aztec Address
+          Your Aztec Address
         </div>
         <div className="flex items-center gap-2 bg-black/[0.02] border border-black/8 px-4 py-3">
           <span className="font-mono text-[9px] text-black/70 flex-1 break-all">{AZTEC_ADDRESS}</span>
@@ -320,7 +320,6 @@ function HistoryPanel() {
   if (history.length === 0) {
     return (
       <div className="py-10 text-center flex flex-col items-center">
-        <Activity size={24} className="text-black/10 mb-3" />
         <div className="text-[10px] font-black uppercase tracking-widest text-black/40">No transactions yet</div>
         <div className="text-[8px] text-black/30 mt-1">Your ledger is empty.</div>
       </div>
@@ -440,7 +439,7 @@ export function AztecIdentityCard() {
             <div className="space-y-5">
               <div>
                 <div className="text-[8px] font-black uppercase tracking-widest text-black/30 mb-2 flex items-center gap-1.5">
-                  <Shield size={9} /> Aztec Address (Schnorr · Salt=0)
+                  Aztec Address (Schnorr · Salt=0)
                 </div>
                 <div className="flex items-center gap-2 bg-black/[0.02] border border-black/8 px-4 py-3">
                   <span className="font-mono text-[10px] text-black/70 flex-1 break-all">{AZTEC_ADDRESS}</span>
@@ -536,7 +535,7 @@ export function AztecIdentityCard() {
 
               <div>
                 <div className="text-[8px] font-black uppercase tracking-widest text-black/30 mb-2 flex items-center gap-1.5">
-                  <Terminal size={9} /> Transaction Hash
+                  Transaction Hash
                 </div>
                 <div className="flex items-center gap-2 bg-black/[0.02] border border-black/8 px-4 py-3">
                   <span className="font-mono text-[9px] text-black/50 flex-1">{trunc(CLAIM_TX_HASH, 20, 12)}</span>
@@ -623,7 +622,7 @@ wsl bash claim-master.sh \\
               {/* Network parameters */}
               <div className="bg-black/[0.015] border border-black/8 p-4">
                 <div className="text-[8px] font-black uppercase tracking-widest text-black/30 mb-3 flex items-center gap-1.5">
-                  <Lock size={9} /> Network Parameters
+                  Network Parameters
                 </div>
                 <div className="space-y-1.5">
                   {[

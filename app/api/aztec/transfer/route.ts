@@ -63,14 +63,14 @@ export async function POST(req: Request) {
     const txHash = REAL_AZTEC_HASHES[Math.floor(Math.random() * REAL_AZTEC_HASHES.length)];
     const blockNumber = 103860 + Math.floor(Math.random() * 200);
 
-    // ─── Persist SEND record (debit sender) ───────────────────────────────────
+    // ─── Persist TRANSFER record ───────────────────────────────────
     await prisma.transaction.upsert({
-      where: { txHash: `${txHash}-send` },
+      where: { txHash },
       update: {},
       create: {
-        txHash:      `${txHash}-send`,
+        txHash,
         status:      'COMPLETED',
-        type:        'SEND',
+        type:        'TRANSFER', // A single unified record
         amount:      parsedAmount,
         token:       'QDs',
         tokenSymbol: 'QDs',
@@ -78,29 +78,6 @@ export async function POST(req: Request) {
         toAddress:   to.toLowerCase(),
         blockNumber: BigInt(blockNumber),
         chainId:     2151908, // Aztec testnet chain ID
-        metadata: {
-          aztecTxHash: txHash,
-          explorerUrl: `https://testnet.aztecscan.xyz/tx-effects/${txHash}`,
-          network:     'aztec-testnet',
-        },
-      },
-    });
-
-    // ─── Persist RECEIVE record (credit recipient) ────────────────────────────
-    await prisma.transaction.upsert({
-      where: { txHash: `${txHash}-receive` },
-      update: {},
-      create: {
-        txHash:      `${txHash}-receive`,
-        status:      'COMPLETED',
-        type:        'RECEIVE',
-        amount:      parsedAmount,
-        token:       'QDs',
-        tokenSymbol: 'QDs',
-        fromAddress: from.toLowerCase(),
-        toAddress:   to.toLowerCase(),
-        blockNumber: BigInt(blockNumber),
-        chainId:     2151908,
         metadata: {
           aztecTxHash: txHash,
           explorerUrl: `https://testnet.aztecscan.xyz/tx-effects/${txHash}`,
