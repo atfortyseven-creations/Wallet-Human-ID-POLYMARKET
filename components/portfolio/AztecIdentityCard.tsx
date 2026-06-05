@@ -72,7 +72,7 @@ function useSyncFromDB(address: string) {
 
   // Initialize seenRef correctly whenever the address changes
   React.useEffect(() => {
-    seenRef.current = new Set(history.map(h => h.txHash));
+    seenRef.current = new Set(history.map(h => h.id));
   }, [address]);
 
   React.useEffect(() => {
@@ -94,18 +94,18 @@ function useSyncFromDB(address: string) {
         if (!Array.isArray(transactions)) return;
 
         for (const tx of transactions) {
-          if (seenRef.current.has(tx.txHash)) continue; // already applied
-          seenRef.current.add(tx.txHash);
+          if (seenRef.current.has(tx.id)) continue; // already applied based on postgres ID
+          seenRef.current.add(tx.id);
 
           if (tx.type === 'receive' && tx.toAddress?.toLowerCase() === address.toLowerCase()) {
-            receiveQDs(tx.amount, tx.fromAddress, tx.txHash);
+            receiveQDs(tx.amount, tx.fromAddress, tx.txHash, tx.id);
             toast.success(`+${tx.amount} QDs received!`, {
               description: `From ${trunc(tx.fromAddress, 8, 6)}`,
             });
           }
           if (tx.type === 'send' && tx.fromAddress?.toLowerCase() === address.toLowerCase()) {
-            if (!history.some(h => h.txHash === tx.txHash)) {
-              sendQDs(tx.amount, tx.toAddress, tx.txHash);
+            if (!history.some(h => h.id === tx.id)) {
+              sendQDs(tx.amount, tx.toAddress, tx.txHash, tx.id);
             }
           }
         }
@@ -299,7 +299,7 @@ function SendQDsPanel() {
       if (!res.ok) throw new Error(data.error || 'Transfer failed');
       setTxHash(data.txHash);
       setBlockNum(data.blockNumber || pendingBlock);
-      sendQDs(amountNum, to, data.txHash);
+      sendQDs(amountNum, to, data.txHash, data.id);
       setStep('done');
       toast.success(`${amount} QDs sent!`, { description: `Block #${data.blockNumber || pendingBlock}` });
     } catch (e: any) {

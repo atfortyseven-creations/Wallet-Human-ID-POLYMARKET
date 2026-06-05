@@ -19,8 +19,8 @@ interface QDsStore {
   logout: () => void;
   setBalance: (b: number) => void;
   setHistory: (h: TxRecord[]) => void;
-  sendQDs: (amount: number, to: string, txHash: string) => void;
-  receiveQDs: (amount: number, from: string, txHash: string) => void;
+  sendQDs: (amount: number, to: string, txHash: string, dbId?: string) => void;
+  receiveQDs: (amount: number, from: string, txHash: string, dbId?: string) => void;
   reset: () => void;
 }
 
@@ -35,11 +35,11 @@ export const useQDsStore = create<QDsStore>()(
       logout: () => set({ seed: null, aztecAddress: null, history: [], balance: 100 }),
       setBalance: (balance) => set({ balance }),
       setHistory: (history) => set({ history }),
-      sendQDs: (amount, to, txHash) => set((state) => ({
+      sendQDs: (amount, to, txHash, dbId) => set((state) => ({
         balance: state.balance - amount,
         history: [
           {
-            id: Math.random().toString(36).substr(2, 9),
+            id: dbId || Math.random().toString(36).substr(2, 9),
             type: 'send',
             amount,
             address: to,
@@ -49,11 +49,11 @@ export const useQDsStore = create<QDsStore>()(
           ...state.history
         ]
       })),
-      receiveQDs: (amount, from, txHash) => set((state) => ({
+      receiveQDs: (amount, from, txHash, dbId) => set((state) => ({
         balance: Math.min(state.balance + amount, 100000000),
         history: [
           {
-            id: Math.random().toString(36).substr(2, 9),
+            id: dbId || Math.random().toString(36).substr(2, 9),
             type: 'receive',
             amount,
             address: from,
@@ -67,7 +67,7 @@ export const useQDsStore = create<QDsStore>()(
     }),
     {
       name: 'qds-storage',
-      version: 2, // Bump to v2 to wipe local storage and force true sync
+      version: 3, // Bump to v3 to wipe local storage and force true sync with dbIds
     }
   )
 );

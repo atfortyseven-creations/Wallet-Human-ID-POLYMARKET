@@ -31,8 +31,8 @@ export async function GET(req: Request) {
     });
 
     const formatted = txs.map(tx => ({
-      id:          tx.id,
-      txHash:      (tx.metadata as any)?.aztecTxHash ?? tx.txHash,
+      id:          tx.id,          // ← unique PG row ID — used for client deduplication
+      txHash:      (tx.metadata as any)?.aztecTxHash ?? tx.txHash, // display only
       type:        tx.toAddress === address ? 'receive' : 'send',
       amount:      tx.amount,
       fromAddress: tx.fromAddress,

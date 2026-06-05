@@ -112,7 +112,7 @@ export async function POST(req: Request) {
 
 
     // ─── Persist TRANSFER record ───────────────────────────────────
-    await prisma.transaction.create({
+    const newTx = await prisma.transaction.create({
       data: {
         txHash:      uniqueDbHash,
         status:      'COMPLETED',
@@ -137,6 +137,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success:     true,
+      id:          newTx.id,
       txHash:      realTxHash, // Frontend receives the exact real hash
       from,
       to,
