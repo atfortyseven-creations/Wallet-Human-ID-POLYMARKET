@@ -52,7 +52,11 @@ export default function RegulatoryCompliancePage() {
             {[
               {
                 label: 'EU Markets in Crypto-Assets (MiCA)',
-                text: 'We actively monitor and align our operations with Regulation (EU) 2023/1114, ensuring our token-related activities, stablecoin interactions, and crypto-asset service offerings meet MiCA requirements.',
+                text: 'We actively monitor and align our operations with Regulation (EU) 2023/1114, ensuring our token-related activities, stablecoin interactions, and crypto-asset service offerings meet MiCA requirements. Quantum Data points (QDs) operate exclusively as testnet tokens without monetary value.',
+              },
+              {
+                label: 'Prediction Markets & Jurisdiction Restrictions',
+                text: 'Access to decentralized prediction markets (e.g., Polymarket) is restricted in certain jurisdictions (including the US). In Spain, such platforms may intersect with DGOJ (Dirección General de Ordenación del Juego) or CNMV regulations. Users must ensure local compliance before interacting with prediction data.',
               },
               {
                 label: 'EU AI Act',

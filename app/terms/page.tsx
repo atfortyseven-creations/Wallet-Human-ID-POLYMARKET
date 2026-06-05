@@ -131,6 +131,38 @@ export default function TermsPage() {
                         </div>
                     </section>
 
+                    {/* SECTION 4 */}
+                    <section className="flex flex-col md:flex-row gap-8 md:gap-16">
+                        <div className="font-mono text-[48px] md:text-[64px] font-bold tracking-tighter shrink-0 text-white/10 leading-none">04</div>
+                        <div>
+                            <h2 className="text-[28px] md:text-[36px] font-bold tracking-tight mb-8 text-[#c4f344] uppercase">Token Classification & No Investment Advice</h2>
+                            <div className="space-y-6 text-white/70 text-[18px] leading-[1.8] font-light">
+                                <p>
+                                    Quantum Data points (QDs) are strictly testnet tokens designed exclusively to facilitate interaction with our privacy infrastructure. QDs do not constitute electronic money, securities, derivatives, or any form of regulated financial instrument.
+                                </p>
+                                <p>
+                                    We are not a regulated financial institution. Nothing on this platform, including access to decentralized prediction markets, constitutes financial, investment, or legal advice. You are solely responsible for your own financial decisions and interactions.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* SECTION 5 */}
+                    <section className="flex flex-col md:flex-row gap-8 md:gap-16">
+                        <div className="font-mono text-[48px] md:text-[64px] font-bold tracking-tighter shrink-0 text-white/10 leading-none">05</div>
+                        <div>
+                            <h2 className="text-[28px] md:text-[36px] font-bold tracking-tight mb-8 text-[#c4f344] uppercase">Jurisdiction & Prediction Markets</h2>
+                            <div className="space-y-6 text-white/70 text-[18px] leading-[1.8] font-light">
+                                <p>
+                                    The platform provides an informational interface to decentralized prediction markets (such as Polymarket). Depending on your jurisdiction, interacting with prediction markets may be legally classified as gambling, derivatives trading, or otherwise restricted.
+                                </p>
+                                <p>
+                                    Users accessing the platform from the European Union (EU), United States (US), or any restricted jurisdiction acknowledge that they do so at their own risk and are solely responsible for complying with all local laws and regulations governing access to prediction markets and crypto-asset services.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
                 </div>
             </div>
             

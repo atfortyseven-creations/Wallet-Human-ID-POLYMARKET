@@ -691,40 +691,35 @@ function FinalCTASection() {
     <section className="w-full relative overflow-hidden" style={{ minHeight: '540px' }}>
       {/*
         Using the requested custom image, adjusted with absolute precision quantum scaling:
-        object-fit: contain preserves every pixel perfectly without zooming.
-        The white background color (#ffffff) matches the edges of the image exactly.
+        object-fit: cover ensures the image fills the container beautifully.
       */}
       <img
-        src="/rectangle_large_type_2_a9c6cc1e1738c43864683c13c43314d9.jpg"
+        src="/system-shots/Aztec Image_17.jpg"
         alt="Humanity Ledger Background"
-        className="absolute inset-0 w-full h-full"
-        style={{
-          objectFit: 'contain',
-          objectPosition: 'center',
-          backgroundColor: '#ffffff',
-          imageRendering: 'crisp-edges',
-        }}
+        className="absolute inset-0 w-full h-full object-cover"
       />
+      {/* Dark overlay to ensure text readability against the vibrant background */}
+      <div className="absolute inset-0 bg-black/60" />
 
       <div className="relative z-10 w-full max-w-[800px] mx-auto px-6 py-32 md:py-48 flex flex-col items-center text-center">
-        <h2 className="text-[40px] md:text-[60px] font-black tracking-tighter leading-[1] text-black mb-6 drop-shadow-sm">
+        <h2 className="text-[40px] md:text-[60px] font-black tracking-tighter leading-[1] text-white mb-6 drop-shadow-md">
           Ready to reclaim
           <br />
-          <span className="text-black/60">your digital Aztec Identity?</span>
+          <span className="text-white/80">your digital Aztec Identity?</span>
         </h2>
-        <p className="text-[16px] md:text-[18px] text-black/70 font-medium max-w-[500px] mb-12 drop-shadow-sm">
+        <p className="text-[16px] md:text-[18px] text-white/90 font-medium max-w-[500px] mb-12 drop-shadow-md">
           Join Whale Network — the privacy-first ecosystem where your Aztec Identity is yours alone, protected by Zero-Knowledge proofs on L2.
         </p>
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <Link
             href="/portfolio"
-            className="w-full sm:w-auto px-10 py-4 bg-black text-white text-[14px] font-black uppercase tracking-wider hover:bg-black/80 transition-transform active:scale-95 shadow-lg"
+            className="w-full sm:w-auto px-10 py-4 bg-white text-black text-[14px] font-black uppercase tracking-wider hover:bg-white/90 transition-transform active:scale-95 shadow-xl"
           >
             Open Application
           </Link>
           <Link
             href="/developers/api-docs"
-            className="w-full sm:w-auto px-10 py-4 border-2 border-black/80 text-black bg-white/80 backdrop-blur text-[14px] font-black uppercase tracking-wider hover:bg-white transition-transform active:scale-95 shadow-md"
+            className="w-full sm:w-auto px-10 py-4 border-2 border-white/80 text-white bg-black/40 backdrop-blur text-[14px] font-black uppercase tracking-wider hover:bg-black/60 transition-transform active:scale-95 shadow-xl"
           >
             Read Documentation
           </Link>
