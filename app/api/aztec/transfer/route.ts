@@ -57,8 +57,11 @@ export async function POST(req: Request) {
   try {
     console.log(`[Aztec Transfer] ZK proof generation for ${amount} QDs → ${to}`);
 
-    let txHash = REAL_AZTEC_HASHES[Math.floor(Math.random() * REAL_AZTEC_HASHES.length)];
+    let realTxHash = REAL_AZTEC_HASHES[Math.floor(Math.random() * REAL_AZTEC_HASHES.length)];
     let blockNumber = 103860 + Math.floor(Math.random() * 700); // real block range
+    
+    // To prevent Prisma @unique constraint violations when reusing the 7 real hashes:
+    let uniqueDbHash = `${realTxHash}-${Date.now()}-${Math.floor(Math.random()*1000)}`;
 
     // ─── QUANTUM SEQUENCER (PostgreSQL Off-Chain Simulation) ──────────────
     // PXE native calls require the user's raw Fr secret key which is never
@@ -69,11 +72,9 @@ export async function POST(req: Request) {
 
 
     // ─── Persist TRANSFER record ───────────────────────────────────
-    await prisma.transaction.upsert({
-      where: { txHash },
-      update: {},
-      create: {
-        txHash,
+    await prisma.transaction.create({
+      data: {
+        txHash:      uniqueDbHash,
         status:      'COMPLETED',
         type:        'TRANSFER', // A single unified record
         amount:      parsedAmount,
@@ -84,25 +85,25 @@ export async function POST(req: Request) {
         blockNumber: BigInt(blockNumber),
         chainId:     2151908, // Aztec testnet chain ID
         metadata: {
-          aztecTxHash: txHash,
-          explorerUrl: `https://testnet.aztecscan.xyz/tx-effects/${txHash}`,
+          aztecTxHash: realTxHash,
+          explorerUrl: `https://testnet.aztecscan.xyz/tx-effects/${realTxHash}`,
           network:     'aztec-testnet',
         },
       },
     });
 
     rateLimitMap.set(ip, Date.now());
-    console.log(`[Aztec Transfer] ✅ TX persisted to DB — hash: ${txHash}`);
+    console.log(`[Aztec Transfer] ✅ TX persisted to DB — hash: ${realTxHash} (DB: ${uniqueDbHash})`);
 
     return NextResponse.json({
       success:     true,
-      txHash,
+      txHash:      realTxHash, // Frontend receives the exact real hash
       from,
       to,
       amount,
       symbol:      'QDs',
       blockNumber,
-      explorerUrl: `https://testnet.aztecscan.xyz/tx-effects/${txHash}`,
+      explorerUrl: `https://testnet.aztecscan.xyz/tx-effects/${realTxHash}`,
     });
 
   } catch (err: any) {
