@@ -72,11 +72,12 @@ function useSyncFromDB(address: string) {
               description: `From ${trunc(tx.fromAddress, 8, 6)}`,
             });
           }
-          // outgoing txs were already applied optimistically in SendQDsPanel
-          // so we only need to ensure they appear in history if they're missing
+          // outgoing txs were already applied optimistically in SendQDsPanel,
+          // but if they are missing from local history (e.g. cross-device or cleared cache),
+          // we must apply the full deduction and record the actual amount.
           if (tx.type === 'send' && tx.fromAddress?.toLowerCase() === address.toLowerCase()) {
             if (!history.some(h => h.txHash === tx.txHash)) {
-              sendQDs(0, tx.toAddress, tx.txHash); // amount 0 = already deducted
+              sendQDs(tx.amount, tx.toAddress, tx.txHash);
             }
           }
         }
