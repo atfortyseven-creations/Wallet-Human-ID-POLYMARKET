@@ -278,8 +278,8 @@ function SendQDsPanel() {
 
 // ─── Receive QDs panel ────────────────────────────────────────────────────────
 function ReceiveQDsPanel() {
-  const { balance } = useQDsStore();
-  const { copied, copy } = useCopy(AZTEC_ADDRESS, 'Aztec address');
+  const { balance, aztecAddress } = useQDsStore();
+  const { copied, copy } = useCopy(aztecAddress || '', 'Aztec address');
   return (
     <div className="space-y-5">
       <div className="bg-black/[0.02] border border-black/8 p-5 flex flex-col items-center gap-3">
@@ -295,7 +295,7 @@ function ReceiveQDsPanel() {
           Your Aztec Address
         </div>
         <div className="flex items-center gap-2 bg-black/[0.02] border border-black/8 px-4 py-3">
-          <span className="font-mono text-[9px] text-black/70 flex-1 break-all">{AZTEC_ADDRESS}</span>
+          <span className="font-mono text-[9px] text-black/70 flex-1 break-all">{aztecAddress}</span>
           <button onClick={copy} className="shrink-0 text-black/30 hover:text-black p-1">
             {copied ? <Check size={12} className="text-emerald-500" /> : <Copy size={12} />}
           </button>
@@ -317,7 +317,7 @@ function ReceiveQDsPanel() {
       </div>
 
       <a
-        href={`${AZTEC_EXPLORER}/accounts/${AZTEC_ADDRESS}`}
+        href={`${AZTEC_EXPLORER}/accounts/${aztecAddress}`}
         target="_blank" rel="noopener noreferrer"
         className="flex items-center justify-between w-full py-3 px-4 border border-black/10 hover:border-black hover:bg-black hover:text-white text-black/40 text-[9px] font-black uppercase tracking-widest transition-all group"
       >
