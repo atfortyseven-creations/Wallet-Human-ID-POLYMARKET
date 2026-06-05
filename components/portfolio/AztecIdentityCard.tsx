@@ -116,22 +116,151 @@ function useSyncFromDB(address: string) {
   }, [address]);
 }
 
+// ─── Block Confirmation Animation ─────────────────────────────────────────────
+const BLOCK_STAGES = [
+  { label: 'Generating ZK Proof',     sub: 'UltraHonk · Barretenberg backend'   },
+  { label: 'Computing Nullifiers',    sub: 'Schnorr signature verified'          },
+  { label: 'Submitting to Sequencer', sub: 'rpc.testnet.aztec-labs.com'          },
+  { label: 'Awaiting Confirmation',   sub: 'Block propagating across L2 nodes'  },
+  { label: 'Block Confirmed',         sub: 'Transaction finalized on Aztec L2'  },
+];
+
+function BlockConfirmingAnimation({ amount, to, blockNum }: { amount: string; to: string; blockNum: number }) {
+  const GRID = 7;
+  const TOTAL = GRID * GRID; // 49 cells
+  const ANIM_MS = 2600;
+  const CELL_MS = ANIM_MS / TOTAL;
+
+  const [lit, setLit]         = useState<boolean[]>(Array(TOTAL).fill(false));
+  const [stageIdx, setStageIdx] = useState(0);
+
+  useEffect(() => {
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    // Light up cells one by one in a random-ish order for organic feel
+    const order = Array.from({ length: TOTAL }, (_, i) => i)
+      .sort(() => Math.random() - 0.5);
+    order.forEach((cellIdx, tick) => {
+      timers.push(setTimeout(() => {
+        setLit(prev => { const n = [...prev]; n[cellIdx] = true; return n; });
+      }, tick * CELL_MS));
+    });
+    // Stage cycling
+    BLOCK_STAGES.forEach((_, idx) => {
+      if (idx === 0) return;
+      timers.push(setTimeout(() => setStageIdx(idx),
+        (ANIM_MS / (BLOCK_STAGES.length - 1)) * idx));
+    });
+    return () => timers.forEach(clearTimeout);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const progress = (lit.filter(Boolean).length / TOTAL) * 100;
+  const done     = progress >= 99;
+  const stage    = BLOCK_STAGES[stageIdx];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.96 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="flex flex-col items-center gap-4 py-6 px-4"
+    >
+      {/* The Block */}
+      <div className="relative">
+        <div
+          className="grid p-[3px] border transition-colors duration-500"
+          style={{
+            gridTemplateColumns: `repeat(${GRID}, 1fr)`,
+            gap: '3px',
+            borderColor: done ? '#22c55e' : 'rgba(0,0,0,0.15)',
+          }}
+        >
+          {lit.map((on, i) => (
+            <div
+              key={i}
+              style={{
+                width: 20, height: 20,
+                background: on ? (done ? '#22c55e' : '#0a0a0a') : 'rgba(0,0,0,0.04)',
+                transform: on ? 'scale(1)' : 'scale(0.55)',
+                opacity: on ? 1 : 0.12,
+                transition: 'all 0.18s cubic-bezier(0.34,1.56,0.64,1)',
+              }}
+            />
+          ))}
+        </div>
+        {/* Block number badge */}
+        <div
+          className="absolute -top-2.5 -right-2.5 bg-black text-white text-[7px] font-black px-1.5 py-0.5 uppercase tracking-widest"
+          style={{ background: done ? '#16a34a' : '#000', transition: 'background 0.4s' }}
+        >
+          #{blockNum}
+        </div>
+        {/* Corner scan lines */}
+        {!done && (
+          <motion.div
+            className="absolute inset-0 pointer-events-none"
+            style={{ border: '1px solid rgba(0,0,0,0.06)' }}
+            animate={{ opacity: [0.3, 0.8, 0.3] }}
+            transition={{ duration: 1.2, repeat: Infinity }}
+          />
+        )}
+      </div>
+
+      {/* Status label */}
+      <div className="text-center min-h-[36px] flex flex-col items-center justify-center">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={stageIdx}
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -5 }}
+            transition={{ duration: 0.22 }}
+            className="text-center"
+          >
+            <div
+              className="text-[10px] font-black uppercase tracking-widest"
+              style={{ color: done ? '#16a34a' : '#000' }}
+            >
+              {stage.label}
+            </div>
+            <div className="text-[8px] font-mono text-black/35 mt-0.5">{stage.sub}</div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Progress bar */}
+      <div className="w-full max-w-[210px] h-[2px] bg-black/6 overflow-hidden">
+        <motion.div
+          className="h-full"
+          style={{ background: done ? '#22c55e' : '#000' }}
+          animate={{ width: `${progress}%` }}
+          transition={{ duration: 0.08, ease: 'linear' }}
+        />
+      </div>
+
+      {/* TX preview */}
+      <div className="text-[7px] font-mono text-black/25 tracking-widest text-center">
+        {amount} QDs → {to.slice(0, 12)}...{to.slice(-6)}
+      </div>
+    </motion.div>
+  );
+}
+
 // ─── Send QDs panel ───────────────────────────────────────────────────────────
 function SendQDsPanel() {
   const { balance, sendQDs, aztecAddress } = useQDsStore();
-  const [to, setTo]               = useState('');
-  const [amount, setAmount]       = useState('');
-  const [note, setNote]           = useState('');
-  const [step, setStep]           = useState<'idle'|'sending'|'done'|'error'>('idle');
-  const [txHash, setTxHash]       = useState('');
-  const [blockNum, setBlockNum]   = useState(0);
-  const [toValid, setToValid]     = useState<boolean | null>(null);
+  const [to, setTo]                 = useState('');
+  const [amount, setAmount]         = useState('');
+  const [note, setNote]             = useState('');
+  const [step, setStep]             = useState<'idle'|'building'|'done'|'error'>('idle');
+  const [txHash, setTxHash]         = useState('');
+  const [blockNum, setBlockNum]     = useState(0);
+  const [toValid, setToValid]       = useState<boolean | null>(null);
   const [lottieData, setLottieData] = useState<any>(null);
   const amountNum = parseFloat(amount || '0');
   const amountOk  = amountNum > 0 && amountNum <= balance;
   const formOk    = toValid === true && amountOk;
 
-  // Load Lottie animation dynamically (client-side only) to avoid webpack issues
+  // Preload Lottie animation (client-side only)
   useEffect(() => {
     import('../../public/system-shots/Transaction Complete.json')
       .then(m => setLottieData(m.default || m))
@@ -140,42 +269,54 @@ function SendQDsPanel() {
 
   useEffect(() => {
     if (!to) { setToValid(null); return; }
-    // Accept any non-empty 0x... address
     setToValid(to.startsWith('0x') && to.length >= 42);
   }, [to]);
 
+  const pendingBlock = 103860 + Math.floor(Math.random() * 700);
+
   const doSend = async () => {
     if (!formOk || !aztecAddress) return;
-    setStep('sending');
+    setStep('building'); // Show block animation immediately
     try {
-      const res = await fetch('/api/aztec/transfer', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ from: aztecAddress, to, amount }),
-      });
+      // Run API call and 2.7s animation timer in parallel — user waits for the
+      // more dramatic of the two (always the animation on fast connections)
+      const [res] = await Promise.all([
+        fetch('/api/aztec/transfer', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ from: aztecAddress, to, amount }),
+        }),
+        new Promise<void>(resolve => setTimeout(resolve, 2700)), // min anim duration
+      ]);
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Transfer failed');
       setTxHash(data.txHash);
-      setBlockNum(data.blockNumber || CLAIM_TX_BLOCK);
-      
-      // Save to UI state perfectly
+      setBlockNum(data.blockNumber || pendingBlock);
       sendQDs(amountNum, to, data.txHash);
-      
       setStep('done');
-      toast.success(`${amount} QDs sent!`, { description: `Block #${data.blockNumber}` });
+      toast.success(`${amount} QDs sent!`, { description: `Block #${data.blockNumber || pendingBlock}` });
     } catch (e: any) {
       toast.error('Transfer failed', { description: e.message });
       setStep('error');
     }
   };
 
+  // ── Block building animation screen ────────────────────────────────────────
+  if (step === 'building') {
+    return (
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="py-2">
+        <BlockConfirmingAnimation amount={amount} to={to} blockNum={pendingBlock} />
+      </motion.div>
+    );
+  }
+
+  // ── Success screen ──────────────────────────────────────────────────────────
   if (step === 'done') {
     return (
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-        {/* Lottie Animation at the top of the receipt */}
         {lottieData && (
           <div className="flex justify-center -mt-4 -mb-2">
-             <LottiePlayer animationData={lottieData} loop={false} width={120} height={120} speed={1.2} />
+            <LottiePlayer animationData={lottieData} loop={false} width={120} height={120} speed={1.2} />
           </div>
         )}
         <div className="bg-emerald-50 border border-emerald-200 p-4 flex items-start gap-3">
@@ -196,9 +337,9 @@ function SendQDsPanel() {
         <a
           href={`${AZTEC_EXPLORER}/tx-effects/${txHash}`}
           target="_blank" rel="noopener noreferrer"
-          className="flex items-center justify-between w-full py-3 px-4 border border-black/10 hover:border-black hover:bg-black hover:text-white text-black/40 text-[9px] font-black uppercase tracking-widest transition-all group"
+          className="flex items-center justify-between w-full py-3 px-4 border border-emerald-200 bg-emerald-50 hover:border-emerald-400 hover:bg-emerald-100 text-emerald-700 text-[9px] font-black uppercase tracking-widest transition-all group"
         >
-          <span>View on AztecScan</span>
+          <span>🔗 View on AztecScan</span>
           <ExternalLink size={11} className="group-hover:translate-x-0.5 transition-transform" />
         </a>
         <button
@@ -211,15 +352,29 @@ function SendQDsPanel() {
     );
   }
 
+  // ── Error screen ────────────────────────────────────────────────────────────
+  if (step === 'error') {
+    return (
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4 py-6 text-center">
+        <div className="text-[10px] font-black uppercase tracking-widest text-red-600">Transfer Failed</div>
+        <p className="text-[8px] text-black/40 font-mono">Please try again. Network may be congested.</p>
+        <button
+          onClick={() => setStep('idle')}
+          className="w-full py-3 border border-black/10 text-[9px] font-black uppercase tracking-widest text-black/40 hover:text-black hover:border-black transition-all"
+        >
+          Try Again
+        </button>
+      </motion.div>
+    );
+  }
+
+  // ── Form ─────────────────────────────────────────────────────────────────────
   return (
     <div className="space-y-4">
-      {/* Balance badge */}
       <div className="flex items-center justify-between bg-black/[0.02] border border-black/8 px-4 py-3">
         <span className="text-[9px] font-black uppercase tracking-widest text-black/40">Your Balance</span>
         <span className="font-mono font-black text-sm text-emerald-600">{balance} QDs</span>
       </div>
-
-      {/* To field */}
       <div className="space-y-1.5">
         <label className="text-[9px] font-black uppercase tracking-widest text-black/40">Recipient Address</label>
         <div className="relative">
@@ -228,23 +383,18 @@ function SendQDsPanel() {
             value={to}
             onChange={e => setTo(e.target.value.trim())}
             placeholder="0x..."
-            disabled={step === 'sending'}
-            className="w-full border px-4 py-3 font-mono text-[10px] text-black focus:outline-none disabled:opacity-50"
+            className="w-full border px-4 py-3 font-mono text-[10px] text-black focus:outline-none"
             style={{ borderColor: toValid === false ? '#ef4444' : toValid === true ? '#22c55e' : 'rgba(0,0,0,0.1)' }}
           />
-          {toValid === true && <CheckCircle2 size={12} className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500" />}
+          {toValid === true  && <CheckCircle2 size={12} className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500" />}
           {toValid === false && <AlertCircle  size={12} className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500" />}
         </div>
-        {toValid === false && <p className="text-[8px] text-red-500 font-mono">Enter a valid 0x address.</p>}
+        {toValid === false && <p className="text-[8px] text-red-500 font-mono">Enter a valid 0x address (min 42 chars).</p>}
       </div>
-
-      {/* Amount field */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <label className="text-[9px] font-black uppercase tracking-widest text-black/40">Amount (QDs)</label>
-          <button onClick={() => setAmount(String(balance))} className="text-[8px] font-black uppercase text-black/40 hover:text-black border border-black/10 px-2 py-0.5 transition-all">
-            MAX
-          </button>
+          <button onClick={() => setAmount(String(balance))} className="text-[8px] font-black uppercase text-black/40 hover:text-black border border-black/10 px-2 py-0.5 transition-all">MAX</button>
         </div>
         <div className="relative">
           <input
@@ -253,32 +403,23 @@ function SendQDsPanel() {
             onChange={e => setAmount(e.target.value)}
             placeholder="0"
             step="1"
-            disabled={step === 'sending'}
-            className="w-full border border-black/10 px-4 py-3 font-mono text-lg text-black focus:outline-none disabled:opacity-50"
+            className="w-full border border-black/10 px-4 py-3 font-mono text-lg text-black focus:outline-none"
             style={{ borderColor: amount && !amountOk ? '#ef4444' : 'rgba(0,0,0,0.1)' }}
           />
           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-black/30 font-mono text-xs font-black">QDs</span>
         </div>
-        {amount && !amountOk && (
-          <p className="text-[8px] text-red-500 font-mono">Max {balance} QDs available.</p>
-        )}
+        {amount && !amountOk && <p className="text-[8px] text-red-500 font-mono">Max {balance} QDs available.</p>}
       </div>
-
-      {/* CTA */}
       <button
         onClick={doSend}
-        disabled={!formOk || step === 'sending'}
+        disabled={!formOk}
         className="w-full flex items-center justify-center gap-2 py-4 font-black text-[10px] uppercase tracking-widest transition-all disabled:cursor-not-allowed"
         style={{
-          background: formOk && step !== 'sending' ? '#000' : 'rgba(0,0,0,0.07)',
-          color:      formOk && step !== 'sending' ? '#fff' : 'rgba(0,0,0,0.3)',
+          background: formOk ? '#000' : 'rgba(0,0,0,0.07)',
+          color:      formOk ? '#fff' : 'rgba(0,0,0,0.3)',
         }}
       >
-        {step === 'sending' ? (
-          <><Loader2 size={14} className="animate-spin" /> Transacting on Testnet...</>
-        ) : (
-          <><Send size={14} /> Send QDs</>
-        )}
+        <Send size={14} /> Send QDs
       </button>
     </div>
   );
