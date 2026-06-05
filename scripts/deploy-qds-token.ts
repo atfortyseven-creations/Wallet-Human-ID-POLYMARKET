@@ -15,7 +15,7 @@
 
 import { createAztecNodeClient } from '@aztec/aztec.js/node';
 import { Fr } from '@aztec/aztec.js/fields';
-import { deriveSigningKey } from '@aztec/aztec.js/keys';
+import { deriveSigningKey } from '@aztec/stdlib/keys';
 import { AztecAddress } from '@aztec/aztec.js/addresses';
 import { SponsoredFeePaymentMethod } from '@aztec/aztec.js/fee';
 import { getSchnorrAccount } from '@aztec/accounts/schnorr';
