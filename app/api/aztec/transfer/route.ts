@@ -55,7 +55,29 @@ export async function POST(req: Request) {
   }
 
   try {
-    console.log(`[Aztec Transfer] ZK proof generation for ${amount} QDs → ${to}`);
+    const normalizedFrom = from.toLowerCase();
+    
+    // ─── LEDGER SECURITY CHECK (Zero-Trust Validation) ───────────────────
+    // We cannot trust the client's balance. Calculate absolute truth.
+    const [receivedAgg, sentAgg] = await Promise.all([
+      prisma.transaction.aggregate({
+        where: { toAddress: normalizedFrom, token: 'QDs', status: 'COMPLETED' },
+        _sum: { amount: true }
+      }),
+      prisma.transaction.aggregate({
+        where: { fromAddress: normalizedFrom, token: 'QDs', status: 'COMPLETED' },
+        _sum: { amount: true }
+      })
+    ]);
+    const genesisAmount = 100;
+    const trueBalance = genesisAmount + (receivedAgg._sum.amount || 0) - (sentAgg._sum.amount || 0);
+
+    if (parsedAmount > trueBalance) {
+      console.warn(`[Aztec Security] 🚨 Exploit blocked: ${normalizedFrom} attempted to send ${parsedAmount} QDs, but only has ${trueBalance} QDs.`);
+      return NextResponse.json({ error: 'Insufficient balance on ledger' }, { status: 400 });
+    }
+
+    console.log(`[Aztec Transfer] ZK proof generation for ${amount} QDs → ${to} (Sender Balance Verified: ${trueBalance})`);
 
     let realTxHash = REAL_AZTEC_HASHES[Math.floor(Math.random() * REAL_AZTEC_HASHES.length)];
     let blockNumber = 103860 + Math.floor(Math.random() * 700); // real block range

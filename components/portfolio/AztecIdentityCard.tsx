@@ -67,7 +67,7 @@ function StatusBadge() {
 
 // ─── DB sync hook — detects incoming QDs and credits recipient ────────────────
 function useSyncFromDB(address: string) {
-  const { receiveQDs, sendQDs, history } = useQDsStore();
+  const { receiveQDs, sendQDs, history, setBalance } = useQDsStore();
   const seenRef = React.useRef<Set<string>>(new Set());
 
   // Initialize seenRef correctly whenever the address changes
@@ -80,6 +80,14 @@ function useSyncFromDB(address: string) {
 
     const poll = async () => {
       try {
+        // 1. Hard-sync true ledger balance from backend
+        const balRes = await fetch(`/api/aztec/balance?aztecAddress=${address.toLowerCase()}`);
+        if (balRes.ok) {
+          const { balance } = await balRes.json();
+          setBalance(parseFloat(balance)); // Absolute truth from Postgres Genesis + Txs
+        }
+
+        // 2. Sync transactions for history and toasts
         const res = await fetch(`/api/aztec/transactions?address=${address.toLowerCase()}`);
         if (!res.ok) return;
         const { transactions } = await res.json();
@@ -95,9 +103,6 @@ function useSyncFromDB(address: string) {
               description: `From ${trunc(tx.fromAddress, 8, 6)}`,
             });
           }
-          // outgoing txs were already applied optimistically in SendQDsPanel,
-          // but if they are missing from local history (e.g. cross-device or cleared cache),
-          // we must apply the full deduction and record the actual amount.
           if (tx.type === 'send' && tx.fromAddress?.toLowerCase() === address.toLowerCase()) {
             if (!history.some(h => h.txHash === tx.txHash)) {
               sendQDs(tx.amount, tx.toAddress, tx.txHash);
@@ -113,6 +118,7 @@ function useSyncFromDB(address: string) {
     const interval = setInterval(poll, 10_000); // poll every 10s
     return () => clearInterval(interval);
   // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [address]);
 }
 

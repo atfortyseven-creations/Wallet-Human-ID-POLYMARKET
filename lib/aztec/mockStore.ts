@@ -17,6 +17,8 @@ interface QDsStore {
   history: TxRecord[];
   login: (seed: string, address: string) => void;
   logout: () => void;
+  setBalance: (b: number) => void;
+  setHistory: (h: TxRecord[]) => void;
   sendQDs: (amount: number, to: string, txHash: string) => void;
   receiveQDs: (amount: number, from: string, txHash: string) => void;
   reset: () => void;
@@ -31,6 +33,8 @@ export const useQDsStore = create<QDsStore>()(
       history: [],
       login: (seed, address) => set({ seed, aztecAddress: address }),
       logout: () => set({ seed: null, aztecAddress: null, history: [], balance: 100 }),
+      setBalance: (balance) => set({ balance }),
+      setHistory: (history) => set({ history }),
       sendQDs: (amount, to, txHash) => set((state) => ({
         balance: state.balance - amount,
         history: [
@@ -46,7 +50,7 @@ export const useQDsStore = create<QDsStore>()(
         ]
       })),
       receiveQDs: (amount, from, txHash) => set((state) => ({
-        balance: Math.min(state.balance + amount, 100000000), // Arbitrary cap just in case
+        balance: Math.min(state.balance + amount, 100000000),
         history: [
           {
             id: Math.random().toString(36).substr(2, 9),
@@ -63,7 +67,7 @@ export const useQDsStore = create<QDsStore>()(
     }),
     {
       name: 'qds-storage',
-      version: 1, // Bumping version clears out old dirty states and forces a clean sync from DB
+      version: 2, // Bump to v2 to wipe local storage and force true sync
     }
   )
 );
