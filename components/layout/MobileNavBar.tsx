@@ -11,10 +11,8 @@ export function MobileNavBar() {
 
     const navItems = [
         { href: '/dashboard', label: 'Dashboard',     icon: LayoutDashboard },
-        { href: '/news',      label: 'Analytics',  icon: Globe },
         { href: '/',          label: 'Home',          icon: Home },
         { href: '/portfolio', label: 'Portfolio',     icon: LineChart },
-        { href: '/registry',  label: 'Registry',      icon: Target },
     ];
 
     return (
@@ -27,7 +25,7 @@ export function MobileNavBar() {
                 {navItems.map((item, index) => {
                     const isActive = pathname === item.href;
                     const Icon = item.icon;
-                    const isCenter = index === 2;
+                    const isCenter = index === 1;
                     
                     return (
                         <Link 

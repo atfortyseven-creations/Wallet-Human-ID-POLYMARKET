@@ -438,11 +438,8 @@ function ConnectedScreen({
             { label: 'Whale Chat', href: '/chat' },
             { label: 'Whale Forum', href: '/forum' },
             { label: 'Studio Beta', href: '/studio/provenance' },
-            { label: 'News', href: '/news' },
             { label: 'Academy', href: '/academy' },
-            { label: 'System Status', href: '/status' },
             { label: 'Privacy', href: '/privacy' },
-            { label: 'Registry', href: '/registry' },
           ].map((app, i) => {
             const InnerContent = (
               <span className="font-sans text-[22px] sm:text-[26px] font-light tracking-tight text-black/70 hover:text-black active:scale-95 transition-all duration-300">

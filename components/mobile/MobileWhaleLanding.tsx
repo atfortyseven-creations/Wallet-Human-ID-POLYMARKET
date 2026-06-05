@@ -13,10 +13,10 @@ export const MobileWhaleLanding = () => {
   }, []);
 
   return (
-    <div className="min-h-screen w-full bg-white text-[#050505] overflow-x-hidden selection:bg-black/10">
+    <div className="min-h-screen w-full bg-white text-[#050505] overflow-x-hidden selection:bg-zinc-900/10">
 
       {/* Top status bar */}
-      <div className="w-full border-b border-black/8 px-6 py-3 flex items-center justify-between">
+      <div className="w-full border-b border-zinc-900/8 px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-4 h-4">
             <img
@@ -25,13 +25,13 @@ export const MobileWhaleLanding = () => {
               className="w-full h-full object-contain mix-blend-darken contrast-[1.15] brightness-[1.05]"
             />
           </div>
-          <span className="text-[11px] font-black tracking-widest uppercase text-black/70">
+          <span className="text-[11px] font-black tracking-widest uppercase text-zinc-900/70">
             Humanity Ledger
           </span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-1.5 h-1.5 rounded-full bg-black" />
-          <span className="text-[9px] font-bold uppercase tracking-widest text-black/40">
+          <div className="w-1.5 h-1.5 rounded-full bg-zinc-900" />
+          <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-900/40">
             Secure
           </span>
         </div>
@@ -48,7 +48,7 @@ export const MobileWhaleLanding = () => {
             className="flex flex-col items-center text-center w-full"
           >
             {/* Logo */}
-            <div className="w-full aspect-video mb-10 relative overflow-hidden rounded-xl border border-black/10">
+            <div className="w-full aspect-video mb-10 relative overflow-hidden rounded-xl border border-zinc-900/10">
               <img
                 src="/system-shots/monochrome-illustration-science-fiction-arch-pixel-art-Devine-Lu-Linvega-2268380-wallhere.com (1).jpg"
                 alt="Humanity Ledger Architecture"
@@ -66,10 +66,10 @@ export const MobileWhaleLanding = () => {
               ].map(({ icon: Icon, label }) => (
                 <div
                   key={label}
-                  className="flex flex-col items-center gap-2 py-4 px-2 border border-black/8 bg-white"
+                  className="flex flex-col items-center gap-2 py-4 px-2 border border-zinc-900/8 bg-white"
                 >
-                  <Icon size={16} strokeWidth={1.5} className="text-black/50" />
-                  <span className="text-[9px] font-bold uppercase tracking-wider text-black/50 text-center whitespace-pre-line leading-tight">
+                  <Icon size={16} strokeWidth={1.5} className="text-zinc-900/50" />
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-zinc-900/50 text-center whitespace-pre-line leading-tight">
                     {label}
                   </span>
                 </div>
@@ -89,7 +89,7 @@ export const MobileWhaleLanding = () => {
             {/* Primary CTA */}
             <Link
               href="/connect"
-              className="w-full flex items-center justify-between h-14 px-6 bg-black text-white font-semibold text-[13px] tracking-wide hover:bg-black/85 active:scale-[0.98] transition-all duration-200"
+              className="w-full flex items-center justify-between h-14 px-6 bg-zinc-900 text-white font-semibold text-[13px] tracking-wide hover:bg-zinc-900/85 active:scale-[0.98] transition-all duration-200"
             >
               <span>Connect Wallet</span>
               <ArrowRight size={16} strokeWidth={2} />
@@ -98,13 +98,13 @@ export const MobileWhaleLanding = () => {
             {/* Secondary */}
             <Link
               href="/developers/api-docs"
-              className="w-full flex items-center justify-center h-12 px-6 border border-black/15 text-black font-medium text-[13px] tracking-wide hover:bg-black/[0.04] active:scale-[0.98] transition-all duration-200"
+              className="w-full flex items-center justify-center h-12 px-6 border border-zinc-900/15 text-zinc-900 font-medium text-[13px] tracking-wide hover:bg-zinc-900/[0.04] active:scale-[0.98] transition-all duration-200"
             >
               Read Documentation
             </Link>
 
             {/* Fine print */}
-            <p className="text-center text-[10px] text-black/30 font-medium tracking-wide pt-2">
+            <p className="text-center text-[10px] text-zinc-900/30 font-medium tracking-wide pt-2">
               Non-custodial · Open source · Aztec L2
             </p>
           </motion.div>

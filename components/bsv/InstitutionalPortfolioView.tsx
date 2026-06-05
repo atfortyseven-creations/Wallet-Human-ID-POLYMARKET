@@ -44,9 +44,9 @@ import { SystemFooter } from '@/components/landing/SystemFooter';
 function VaultUnlockScreen({ unlockVault }: { unlockVault: (pwd: string) => boolean }) {
     const [pwd, setPwd] = useState("");
     return (
-        <div className="flex flex-col items-center justify-center min-h-[100dvh] bg-white text-black p-4">
+        <div className="flex flex-col items-center justify-center min-h-[100dvh] bg-white text-zinc-900 p-4">
             <h1 className="text-2xl font-black uppercase tracking-[0.2em] mb-2">Vault Locked</h1>
-            <p className="text-[10px] text-black/50 font-mono mb-8 text-center max-w-sm">
+            <p className="text-[10px] text-zinc-900/50 font-mono mb-8 text-center max-w-sm">
                 Your cryptographic identity is secured. Enter your master password to decrypt the local keystore.
             </p>
             <input 
@@ -54,13 +54,13 @@ function VaultUnlockScreen({ unlockVault }: { unlockVault: (pwd: string) => bool
                 value={pwd} 
                 onChange={e => setPwd(e.target.value)}
                 placeholder="Master Password" 
-                className="w-full max-w-xs border-b border-black/20 p-4 text-center text-xl tracking-widest outline-none focus:border-black transition-colors mb-6 font-mono"
+                className="w-full max-w-xs border-b border-zinc-900/20 p-4 text-center text-xl tracking-widest outline-none focus:border-zinc-900 transition-colors mb-6 font-mono"
             />
             <button 
                 onClick={() => {
                     if (!unlockVault(pwd)) toast.error("Invalid password");
                 }}
-                className="w-full max-w-xs bg-black text-white font-black text-[10px] uppercase tracking-[0.2em] py-4 hover:bg-black/80 transition-colors"
+                className="w-full max-w-xs bg-zinc-900 text-white font-black text-[10px] uppercase tracking-[0.2em] py-4 hover:bg-zinc-900/80 transition-colors"
             >
                 Decrypt Vault
             </button>
@@ -167,7 +167,7 @@ export function InstitutionalPortfolioView() {
 
     if (!isHydrated) {
         return (
-            <div className="flex items-center justify-center min-h-[100dvh] bg-white text-black text-[10px] uppercase tracking-widest font-bold">
+            <div className="flex items-center justify-center min-h-[100dvh] bg-white text-zinc-900 text-[10px] uppercase tracking-widest font-bold">
                 Loading...
             </div>
         );
@@ -195,7 +195,7 @@ export function InstitutionalPortfolioView() {
     const balanceFiat = `${(parseFloat(balance || "0") * priceOracle * rate).toFixed(2)}`;
 
     return (
-        <div className="flex flex-col relative text-black selection:bg-black/10 min-h-[100dvh] bg-white font-sans overflow-x-hidden">
+        <div className="flex flex-col relative text-zinc-900 selection:bg-zinc-900/10 min-h-[100dvh] bg-white font-sans overflow-x-hidden">
             <AnimatePresence mode="wait">
                 {view === 'HOME' && (
                     <HomeView key="home"
@@ -247,10 +247,10 @@ export function InstitutionalPortfolioView() {
             </AnimatePresence>
             {showReceive && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/90 backdrop-blur-sm" onClick={() => setShowReceive(false)}>
-                    <div className="w-full max-w-5xl max-h-[90vh] bg-white border border-black/10 shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
-                        <div className="flex items-center justify-between px-8 py-5 border-b border-black/10">
-                            <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-black">Receive Assets</h2>
-                            <button onClick={() => setShowReceive(false)} className="font-black text-[9px] uppercase tracking-widest text-black/40 hover:text-black transition-colors border border-black/10 px-3 py-2">[CLOSE]</button>
+                    <div className="w-full max-w-5xl max-h-[90vh] bg-white border border-zinc-900/10 shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
+                        <div className="flex items-center justify-between px-8 py-5 border-b border-zinc-900/10">
+                            <h2 className="text-[11px] font-black uppercase tracking-[0.3em] text-zinc-900">Receive Assets</h2>
+                            <button onClick={() => setShowReceive(false)} className="font-black text-[9px] uppercase tracking-widest text-zinc-900/40 hover:text-zinc-900 transition-colors border border-zinc-900/10 px-3 py-2">[CLOSE]</button>
                         </div>
                         <div className="overflow-y-auto flex-1">
                             <ReceiveHub addresses={[
@@ -281,10 +281,10 @@ export function InstitutionalPortfolioView() {
             </AnimatePresence>
             {showAccounts && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/90 backdrop-blur-sm p-4" onClick={() => setShowAccounts(false)}>
-                    <div className="w-full max-w-4xl bg-white border border-black/10 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
-                        <div className="p-4 border-b border-black/10 flex justify-between items-center bg-black/5">
-                            <h2 className="text-lg font-black uppercase tracking-widest text-black">Account Manager</h2>
-                            <button onClick={() => setShowAccounts(false)} className="text-black/40 hover:text-black font-bold text-xs uppercase">Close</button>
+                    <div className="w-full max-w-4xl bg-white border border-zinc-900/10 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
+                        <div className="p-4 border-b border-zinc-900/10 flex justify-between items-center bg-zinc-900/5">
+                            <h2 className="text-lg font-black uppercase tracking-widest text-zinc-900">Account Manager</h2>
+                            <button onClick={() => setShowAccounts(false)} className="text-zinc-900/40 hover:text-zinc-900 font-bold text-xs uppercase">Close</button>
                         </div>
                         <div className="overflow-y-auto p-4">
                             <SecurityVault />
@@ -325,15 +325,15 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
             {/* Disconnecting overlay */}
             {isDisconnecting && (
                 <div className="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black mb-4"></div>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-black/50">Signing out...</p>
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-zinc-900 mb-4"></div>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-900/50">Signing out...</p>
                 </div>
             )}
 
             {/* ── Top Navigation Bar ── */}
-            <header className="flex flex-col md:flex-row md:items-center justify-between px-6 md:px-10 py-5 border-b border-black/10 bg-white">
+            <header className="flex flex-col md:flex-row md:items-center justify-between px-6 md:px-10 py-5 border-b border-zinc-900/10 bg-white">
                 <div className="flex flex-col gap-1 items-start">
-                    <span className="text-[9px] uppercase tracking-[0.3em] font-black text-black/30">Network</span>
+                    <span className="text-[9px] uppercase tracking-[0.3em] font-black text-zinc-900/30">Network</span>
                     <MetaMaskNetworkSelector 
                         activeNetworkId={activeChainId}
                         onNetworkChange={(id) => {
@@ -347,30 +347,30 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                 </div>
 
                 <div className="hidden md:flex flex-col items-center">
-                    <span className="text-[11px] font-black uppercase tracking-[0.4em] text-black/20">Humanity Ledger</span>
+                    <span className="text-[11px] font-black uppercase tracking-[0.4em] text-zinc-900/20">Humanity Ledger</span>
                 </div>
 
                 {address && (
                     <div className="flex flex-wrap gap-2 items-center justify-end mt-3 md:mt-0">
                         {/* Currency Toggle */}
-                        <div className="flex bg-black/[0.03] border border-black/10 rounded-md p-0.5 mr-2">
+                        <div className="flex bg-zinc-900/[0.03] border border-zinc-900/10 rounded-md p-0.5 mr-2">
                             {(['EUR', 'USD', 'BTC'] as const).map(c => (
                                 <button 
                                     key={c}
                                     onClick={() => setDisplayCurrency(c)}
-                                    className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-sm transition-colors ${displayCurrency === c ? 'bg-black text-white' : 'text-black/40 hover:text-black'}`}
+                                    className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-sm transition-colors ${displayCurrency === c ? 'bg-zinc-900 text-white' : 'text-zinc-900/40 hover:text-zinc-900'}`}
                                 >
                                     {c}
                                 </button>
                             ))}
                         </div>
-                        <button onClick={onRefresh} disabled={loading} className="text-[10px] font-bold uppercase tracking-widest text-black/40 hover:text-black transition-colors px-3 py-1.5 border border-transparent hover:border-black/10">
+                        <button onClick={onRefresh} disabled={loading} className="text-[10px] font-bold uppercase tracking-widest text-zinc-900/40 hover:text-zinc-900 transition-colors px-3 py-1.5 border border-transparent hover:border-zinc-900/10">
                             {loading ? 'Refreshing…' : 'Refresh'}
                         </button>
-                        <button onClick={onSettingsClick} className="text-[10px] font-bold uppercase tracking-widest text-black/40 hover:text-black transition-colors px-3 py-1.5 border border-transparent hover:border-black/10">
+                        <button onClick={onSettingsClick} className="text-[10px] font-bold uppercase tracking-widest text-zinc-900/40 hover:text-zinc-900 transition-colors px-3 py-1.5 border border-transparent hover:border-zinc-900/10">
                             Settings
                         </button>
-                        <button onClick={onAccountsClick} className="border border-black/20 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-black hover:bg-black hover:text-white transition-colors">
+                        <button onClick={onAccountsClick} className="border border-zinc-900/20 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-zinc-900 hover:bg-zinc-900 hover:text-white transition-colors">
                             Accounts
                         </button>
                         <button onClick={handleDisconnect} className="border border-red-300 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-500 hover:text-white transition-colors">
@@ -381,22 +381,22 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
             </header>
 
             {/* ── Balance Hero Section ── */}
-            <section className="w-full flex flex-col items-center text-center px-6 pt-12 pb-10 border-b border-black/5 bg-white relative">
+            <section className="w-full flex flex-col items-center text-center px-6 pt-12 pb-10 border-b border-zinc-900/5 bg-white relative">
                 {address && feeData?.gasPrice && (
-                    <div className="absolute top-4 right-6 flex items-center gap-1.5 text-black/40">
+                    <div className="absolute top-4 right-6 flex items-center gap-1.5 text-zinc-900/40">
                         <Activity size={12} className="animate-pulse text-green-500" />
                         <span className="text-[10px] font-mono tracking-widest">{parseFloat(formatUnits(feeData.gasPrice, 9)).toFixed(1)} GWEI</span>
                     </div>
                 )}
                 
                 <div className="relative inline-flex items-baseline justify-center mb-2">
-                    <h1 className="font-light tracking-tighter text-black flex items-start" style={{ fontSize: 'clamp(3.5rem, 9vw, 6.5rem)' }}>
-                        <span className="text-3xl mt-3 md:mt-5 mr-1 text-black/40">{symbol}</span>
+                    <h1 className="font-light tracking-tighter text-zinc-900 flex items-start" style={{ fontSize: 'clamp(3.5rem, 9vw, 6.5rem)' }}>
+                        <span className="text-3xl mt-3 md:mt-5 mr-1 text-zinc-900/40">{symbol}</span>
                         {totalBalance ? (parseFloat(totalBalance) * rate).toLocaleString('en-US', { minimumFractionDigits: displayCurrency === 'BTC' ? 4 : 2, maximumFractionDigits: displayCurrency === 'BTC' ? 4 : 2 }) : '0.00'}
                     </h1>
                 </div>
                 <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
-                    <p className="text-[11px] tracking-[0.18em] font-mono text-black/50 border border-black/10 px-4 py-1.5">
+                    <p className="text-[11px] tracking-[0.18em] font-mono text-zinc-900/50 border border-zinc-900/10 px-4 py-1.5">
                         {balance} {networkInfo.currency} ({symbol}{balanceFiat})
                     </p>
                 </div>
@@ -410,7 +410,7 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
 
                 {address ? (
                     <div className="flex flex-col items-center gap-3 w-full max-w-lg mx-auto">
-                        <button onClick={copy} className="w-full bg-black text-white px-6 py-4 flex items-center justify-between hover:bg-black/80 transition-all group">
+                        <button onClick={copy} className="w-full bg-zinc-900 text-white px-6 py-4 flex items-center justify-between hover:bg-zinc-900/80 transition-all group">
                             <div className="flex flex-col items-start">
                                 <span className="text-[8px] uppercase tracking-[0.3em] opacity-40 mb-1">Your Address</span>
                                 <code className="text-sm font-mono tracking-wider">{truncate(address, 26)}</code>
@@ -418,15 +418,15 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                             <span className="text-[9px] uppercase font-black tracking-widest opacity-50 group-hover:opacity-100 transition-opacity">{copied ? 'Copied' : 'Copy'}</span>
                         </button>
                         <a href={`${scannerBase}/address/${address}`} target="_blank" rel="noopener noreferrer"
-                            className="w-full border border-black/10 bg-white px-6 py-3 flex items-center justify-center text-[10px] font-black uppercase tracking-[0.2em] text-black hover:bg-black/5 transition-all">
+                            className="w-full border border-zinc-900/10 bg-white px-6 py-3 flex items-center justify-center text-[10px] font-black uppercase tracking-[0.2em] text-zinc-900 hover:bg-zinc-900/5 transition-all">
                             View on Explorer
                         </a>
                     </div>
                 ) : (
-                    <div className="flex flex-col items-center gap-5 mt-4 p-10 bg-white border border-black/10 max-w-sm mx-auto">
-                        <h4 className="text-sm font-black uppercase tracking-wider text-black">No Wallet Connected</h4>
-                        <p className="text-xs text-black/40 leading-relaxed text-center">Create or import a wallet to start using the portfolio.</p>
-                        <button onClick={onCreate} className="w-full bg-black text-white px-8 py-4 text-[11px] uppercase tracking-[0.25em] font-black hover:bg-black/80 transition-all">
+                    <div className="flex flex-col items-center gap-5 mt-4 p-10 bg-white border border-zinc-900/10 max-w-sm mx-auto">
+                        <h4 className="text-sm font-black uppercase tracking-wider text-zinc-900">No Wallet Connected</h4>
+                        <p className="text-xs text-zinc-900/40 leading-relaxed text-center">Create or import a wallet to start using the portfolio.</p>
+                        <button onClick={onCreate} className="w-full bg-zinc-900 text-white px-8 py-4 text-[11px] uppercase tracking-[0.25em] font-black hover:bg-zinc-900/80 transition-all">
                             Connect Wallet
                         </button>
                     </div>
@@ -439,11 +439,11 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
 
                     {/* Left sidebar – actions */}
                     <div className="lg:col-span-3 space-y-4">
-                        <div className="bg-white border border-black/10 p-5">
-                            <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-black/40 border-b border-black/10 pb-3 mb-4 block">
+                        <div className="bg-white border border-zinc-900/10 p-5">
+                            <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-900/40 border-b border-zinc-900/10 pb-3 mb-4 block">
                                 MULTI-CHAIN EXPOSURE
                             </h4>
-                            <div className="flex w-full h-3 bg-black/5 rounded-full overflow-hidden mb-4">
+                            <div className="flex w-full h-3 bg-zinc-900/5 rounded-full overflow-hidden mb-4">
                                 {Object.entries(
                                     assets.reduce((acc: any, asset: any) => {
                                         const v = parseFloat(asset.value || '0');
@@ -472,11 +472,11 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                                 ).sort((a: any, b: any) => b[1] - a[1]).slice(0, 3).map(([net, val]: any) => (
                                     <div key={net} className="flex items-center justify-between text-[10px]">
                                         <span className="font-bold tracking-widest uppercase">{net}</span>
-                                        <span className="font-mono text-black/50">{symbol}{displayCurrency === 'BTC' ? val.toFixed(4) : val.toFixed(2)}</span>
+                                        <span className="font-mono text-zinc-900/50">{symbol}{displayCurrency === 'BTC' ? val.toFixed(4) : val.toFixed(2)}</span>
                                     </div>
                                 ))}
                             </div>
-                            <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-black/40 border-b border-black/10 pb-3 mb-4 block">
+                            <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-900/40 border-b border-zinc-900/10 pb-3 mb-4 block">
                                 ACTIONS
                             </h4>
                             <div className="grid grid-cols-2 gap-2">
@@ -492,16 +492,16 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
 
                     {/* Right: Tabs panel */}
                     <div className="lg:col-span-9">
-                        <div className="bg-white border border-black/10 overflow-hidden flex flex-col min-h-[520px]">
-                            <div className="flex border-b border-black/10 overflow-x-auto">
+                        <div className="bg-white border border-zinc-900/10 overflow-hidden flex flex-col min-h-[520px]">
+                            <div className="flex border-b border-zinc-900/10 overflow-x-auto">
                                 {(['TOKENS', 'DEFI', 'ACTIVITY', 'AZTEC'] as const).map(t => (
                                     <button
                                         key={t}
                                         onClick={() => setActiveTab(t)}
                                         className={`px-8 py-4 text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all ${
                                             activeTab === t
-                                                ? 'bg-black text-white'
-                                                : 'text-black/50 hover:text-black hover:bg-black/[0.03] border-r border-black/10'
+                                                ? 'bg-zinc-900 text-white'
+                                                : 'text-zinc-900/50 hover:text-zinc-900 hover:bg-zinc-900/[0.03] border-r border-zinc-900/10'
                                         }`}
                                     >
                                         {t === 'TOKENS' ? 'Assets' : t === 'DEFI' ? 'DeFi' : t === 'ACTIVITY' ? 'History' : 'Aztec Identity'}
@@ -530,9 +530,9 @@ function ActionBtn({ label, icon, onClick }: any) {
     return (
         <button
             onClick={onClick}
-            className="flex flex-col items-center justify-center p-4 border border-black/5 hover:border-black hover:bg-black hover:text-white hover:shadow-xl transition-all duration-300 group bg-black/[0.02] gap-3"
+            className="flex flex-col items-center justify-center p-4 border border-zinc-900/5 hover:border-zinc-900 hover:bg-zinc-900 hover:text-white hover:shadow-xl transition-all duration-300 group bg-zinc-900/[0.02] gap-3"
         >
-            <div className="text-black/60 group-hover:text-white transition-colors">
+            <div className="text-zinc-900/60 group-hover:text-white transition-colors">
                 {icon}
             </div>
             <span className="text-[10px] font-bold uppercase tracking-widest">{label}</span>
@@ -543,9 +543,9 @@ function ActionBtn({ label, icon, onClick }: any) {
 function ModalView({ title, onBack, children }: any) {
     return (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="flex flex-col max-w-xl mx-auto w-full pt-8 px-6 pb-20 font-mono min-h-full flex-1">
-            <div className="flex items-center justify-between mb-8 pb-4 border-b border-black/10">
-                <h2 className="text-lg font-black uppercase tracking-widest text-black">{title}</h2>
-                <button onClick={onBack} className="text-[10px] uppercase tracking-widest font-bold text-black/40 hover:text-black transition-colors border border-black/10 px-3 py-1">
+            <div className="flex items-center justify-between mb-8 pb-4 border-b border-zinc-900/10">
+                <h2 className="text-lg font-black uppercase tracking-widest text-zinc-900">{title}</h2>
+                <button onClick={onBack} className="text-[10px] uppercase tracking-widest font-bold text-zinc-900/40 hover:text-zinc-900 transition-colors border border-zinc-900/10 px-3 py-1">
                     CLOSE
                 </button>
             </div>
@@ -563,7 +563,7 @@ function NetworkView({ onBack }: any) {
         <ModalView title="Protocol Selection" onBack={onBack}>
             <div className="grid grid-cols-1 gap-2">
                 {Object.entries(NETWORKS).map(([id, data]) => (
-                    <button key={id} onClick={() => { setNetwork(id as NetworkId); onBack(); }} className={`flex items-center justify-between p-5 border transition-all ${activeNetwork === id ? 'border-black bg-black text-white' : 'border-black/10 hover:border-black/30 bg-white text-black'}`}>
+                    <button key={id} onClick={() => { setNetwork(id as NetworkId); onBack(); }} className={`flex items-center justify-between p-5 border transition-all ${activeNetwork === id ? 'border-zinc-900 bg-zinc-900 text-white' : 'border-zinc-900/10 hover:border-zinc-900/30 bg-white text-zinc-900'}`}>
                         <div className="flex items-center gap-4">
                             <span className="font-bold uppercase tracking-widest text-xs">{data.name}</span>
                         </div>

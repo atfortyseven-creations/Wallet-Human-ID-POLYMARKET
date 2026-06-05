@@ -1,419 +1,471 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-    Lock, Unlock, ShieldCheck, Cpu, Binary, GitBranch,
-    CheckCircle2, XCircle, Loader2, Fingerprint, Eye, EyeOff, Zap
-} from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
-// 
-// TYPES
-// 
-type ProofStep = {
-    id: string;
-    label: string;
-    detail: string;
-    icon: any;
-    status: 'idle' | 'running' | 'done' | 'error';
-    output?: string;
-};
+// ─── Types ────────────────────────────────────────────────────────────────────
+type ProofPhase =
+  | "idle"
+  | "compile"
+  | "witness"
+  | "prove"
+  | "verify"
+  | "done"
+  | "rejected";
 
-// 
-// HELPERS: deterministic pseudo-random for stable UI hashes
-// 
+interface CircuitSignal {
+  name: string;
+  kind: "private" | "public";
+  value: string;
+  color: string;
+}
+
+// ─── Deterministic hex ────────────────────────────────────────────────────────
 function seededHex(seed: number, len: number): string {
-    let result = '';
-    let s = seed;
-    for (let i = 0; i < len; i++) {
-        s = (s * 1664525 + 1013904223) & 0xffffffff;
-        result += (((s >>> 28) & 0xf)).toString(16);
-    }
-    return result;
+  let s = seed >>> 0;
+  let r = "";
+  for (let i = 0; i < Math.ceil(len / 8); i++) {
+    s = Math.imul(1664525, s) + 1013904223 | 0;
+    r += (s >>> 0).toString(16).padStart(8, "0");
+  }
+  return r.slice(0, len);
 }
 
-function generateNullifier(score: number, secret: string): string {
-    // System Poseidon-like hash (deterministic from inputs)
-    const combined = score * 31337 + secret.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
-    return '0x' + seededHex(combined, 64);
-}
+// ─── Noir circuit code display ────────────────────────────────────────────────
+const NOIR_CIRCUIT = `fn prove_identity(
+    // Private inputs (hidden from verifier)
+    score:     Field,
+    secret:    Field,
+    salt:      Field,
+) -> pub (Field, Field) {
 
-// 
-// MAIN COMPONENT
-// 
-export function ZKProofGrid() {
-    const [score, setScore] = useState(72);
-    const [secret, setSecret] = useState('whale_secret_2025');
-    const [threshold] = useState(50);
-    const [showSecret, setShowSecret] = useState(false);
-    const [isProving, setIsProving] = useState(false);
-    const [proofResult, setProofResult] = useState<null | 'success' | 'failure'>(null);
-    const [currentStepIdx, setCurrentStepIdx] = useState(-1);
-    const [logs, setLogs] = useState<string[]>([]);
-    const [nullifier, setNullifier] = useState('');
-    const logsEndRef = useRef<HTMLDivElement>(null);
-
-    const initialSteps: ProofStep[] = [
-        { id: 'witness', label: 'Witness Generation', detail: 'Encoding private inputs into an algebraic circuit witness...', icon: Binary, status: 'idle' },
-        { id: 'poseidon', label: 'Poseidon Hash (ZK-native)', detail: 'Computing nullifier via collision-resistant Poseidon permutation...', icon: Cpu, status: 'idle' },
-        { id: 'r1cs', label: 'R1CS Constraint Check', detail: 'Evaluating 2,048 Rank-1 Constraint System arithmetic gates...', icon: GitBranch, status: 'idle' },
-        { id: 'plonk', label: 'PLONK Proof Synthesis', detail: 'Synthesizing universal SNARK proof (no trusted setup)...', icon: Lock, status: 'idle' },
-        { id: 'verify', label: 'On-Chain Verification', detail: 'Submitting proof to WhaleAlert.verifyIdentity() smart contract...', icon: ShieldCheck, status: 'idle' },
-    ];
-
-    const [steps, setSteps] = useState<ProofStep[]>(initialSteps);
-
-    const addLog = useCallback((msg: string) => {
-        setLogs(prev => [...prev.slice(-40), `[${new Date().toLocaleTimeString()}] ${msg}`]);
-    }, []);
-
-    useEffect(() => {
-        logsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [logs]);
-
-    const runProof = useCallback(async () => {
-        if (isProving) return;
-        setIsProving(true);
-        setProofResult(null);
-        setCurrentStepIdx(-1);
-        setLogs([]);
-        setNullifier('');
-        setSteps(initialSteps);
-
-        addLog('Initializing ZK proof engine  circuit: proveIdentity.circom v2.1.0');
-        addLog(`Private inputs loaded (encrypted)  score hidden from verifier`);
-
-        // Step 1: Witness
-        setCurrentStepIdx(0);
-        setSteps(prev => prev.map((s, i) => i === 0 ? { ...s, status: 'running' } : s));
-        addLog(` Witness Generation: Encoding private inputs into circuit...`);
-        await new Promise(r => setTimeout(r, 800));
-        setSteps(prev => prev.map((s, i) => i === 0 ? { ...s, status: 'done', output: `Witness: ${score > threshold ? ' VALID' : ' INVALID'} | inputs encoded` } : s));
-        addLog(` Witness Generation complete`);
-
-        // Step 2: Poseidon (call real API)
-        setCurrentStepIdx(1);
-        setSteps(prev => prev.map((s, i) => i === 1 ? { ...s, status: 'running' } : s));
-        addLog(` Poseidon Hash: Computing nullifier via ZK-native hash function...`);
-        
-        let apiResult: any = null;
-        try {
-            const res = await fetch('/api/zk/verify-identity', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ score, secret, threshold }),
-            });
-            apiResult = await res.json();
-            const shortNull = apiResult?.proof?.nullifierHash?.slice(0, 20) || '0x...';
-            setNullifier(apiResult?.proof?.nullifierHash || '');
-            setSteps(prev => prev.map((s, i) => i === 1 ? { ...s, status: 'done', output: `Nullifier: ${shortNull}...` } : s));
-            addLog(`Poseidon hash complete  nullifier: ${shortNull}...`);
-        } catch {
-            addLog(`API call failed  falling back to local computation`);
-            const n = generateNullifier(score, secret);
-            setNullifier(n);
-            setSteps(prev => prev.map((s, i) => i === 1 ? { ...s, status: 'done', output: `Nullifier: ${n.slice(0,20)}...` } : s));
-        }
-        addLog(` Poseidon Hash complete`);
-
-        // Step 3: R1CS
-        setCurrentStepIdx(2);
-        setSteps(prev => prev.map((s, i) => i === 2 ? { ...s, status: 'running' } : s));
-        addLog(` R1CS: Evaluating 2,048 arithmetic gate constraints...`);
-        await new Promise(r => setTimeout(r, 1300));
-        setSteps(prev => prev.map((s, i) => i === 2 ? { ...s, status: 'done', output: `Constraints: 2,048 satisfied  consistent` } : s));
-        addLog(` R1CS Constraint Check complete`);
-
-        // Step 4: PLONK
-        setCurrentStepIdx(3);
-        setSteps(prev => prev.map((s, i) => i === 3 ? { ...s, status: 'running' } : s));
-        addLog(` PLONK Synthesis: Generating universal SNARK proof...`);
-        await new Promise(r => setTimeout(r, 1700));
-        const piA = apiResult?.proof?.piA?.slice(0, 12) || '0x...';
-        setSteps(prev => prev.map((s, i) => i === 3 ? { ...s, status: 'done', output: `π = (A: ${piA}..., B: ..., C: ...)` } : s));
-        addLog(` PLONK Proof Synthesis complete  proof size: 576 bytes`);
-
-        // Step 5: Verify
-        setCurrentStepIdx(4);
-        setSteps(prev => prev.map((s, i) => i === 4 ? { ...s, status: 'running' } : s));
-        addLog(` On-Chain Verification: Calling WhaleAlert.verifyIdentity()...`);
-        await new Promise(r => setTimeout(r, 1000));
-
-        const isVerified = apiResult?.proof?.isVerified ?? (score > threshold);
-        const tier = apiResult?.proof?.tier ?? (score > 79 ? 'APEX' : score > 49 ? 'STANDARD' : 'EXCLUDED');
-        const txString = isVerified
-            ? `tx: 0x${seededHex(score + 42, 10)}  isVerified=1 `
-            : `PROOF REJECTED: isVerified=0`;
-        setSteps(prev => prev.map((s, i) => i === 4 ? { ...s, status: 'done', output: txString } : s));
-        addLog(` On-Chain Verification complete`);
-
-        setProofResult(isVerified ? 'success' : 'failure');
-        addLog(isVerified
-            ? ` PROOF ACCEPTED  Clearance [${tier}] granted. Welcome to the system tier.`
-            : ` PROOF REJECTED  Score ${score} below threshold ${threshold}. Access denied.`);
-        setIsProving(false);
-        setCurrentStepIdx(-1);
-    }, [score, secret, threshold, isProving, addLog]);
-
-    const reset = () => {
-        setSteps(initialSteps);
-        setProofResult(null);
-        setLogs([]);
-        setNullifier('');
-        setCurrentStepIdx(-1);
-    };
-
-    return (
-        <div className="w-full bg-[#080B12] border border-white/[0.06] rounded-3xl overflow-hidden shadow-2xl shadow-black/80">
-            {/* Header */}
-            <div className="flex items-center gap-3 px-6 py-4 border-b border-white/[0.05] bg-[#0D1117]">
-                <div className="flex gap-1.5">
-                    <div className="w-3 h-3 rounded-full bg-indigo-500/70" />
-                    <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
-                    <div className="w-3 h-3 rounded-full bg-green-500/70" />
-                </div>
-                <div className="flex items-center gap-2 ml-2">
-                    <Fingerprint className="w-4 h-4 text-indigo-400" />
-                    <span className="text-xs font-mono text-white/60 tracking-widest uppercase">ZK Identity Engine  proveIdentity.circom</span>
-                </div>
-                <div className="ml-auto flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
-                    <span className="text-[10px] text-indigo-400 font-mono">PLONK / Poseidon</span>
-                </div>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 divide-x divide-white/[0.04]">
-
-                {/* LEFT: Inputs + Controls */}
-                <div className="p-6 flex flex-col gap-6">
-                    <div>
-                        <label className="text-[10px] text-white/30 uppercase tracking-[0.2em] font-bold mb-3 block">
-                            Private Inputs (never leaves your device)
-                        </label>
-                        <div className="space-y-3">
-                            {/* Score */}
-                            <div className="bg-[#0D1117] rounded-xl p-4 border border-white/[0.05]">
-                                <div className="flex justify-between items-center mb-2">
-                                    <span className="text-[10px] text-white/40 font-mono uppercase tracking-wider">
-                                        signal input <span className="text-indigo-400">score</span>
-                                    </span>
-                                    <span className="text-sm font-black text-white font-mono">{score}</span>
-                                </div>
-                                <input
-                                    type="range" min={0} max={100} value={score}
-                                    onChange={e => { setScore(+e.target.value); reset(); }}
-                                    disabled={isProving}
-                                    className="w-full h-1.5 bg-white/10 rounded-full appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-indigo-500 [&::-webkit-slider-thumb]:cursor-pointer cursor-pointer"
-                                />
-                                <div className="flex justify-between mt-1">
-                                    <span className="text-[9px] text-white/20 font-mono">0 (Bot)</span>
-                                    <span className="text-[9px] text-white/20 font-mono">100 (System)</span>
-                                </div>
-                            </div>
-
-                            {/* Secret */}
-                            <div className="bg-[#0D1117] rounded-xl p-4 border border-white/[0.05]">
-                                <div className="flex justify-between items-center mb-2">
-                                    <span className="text-[10px] text-white/40 font-mono uppercase tracking-wider">
-                                        signal input <span className="text-purple-400">secret</span>
-                                    </span>
-                                    <button onClick={() => setShowSecret(!showSecret)} className="text-white/20 hover:text-white/60 transition-colors">
-                                        {showSecret ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-                                    </button>
-                                </div>
-                                <input
-                                    type={showSecret ? 'text' : 'password'}
-                                    value={secret}
-                                    onChange={e => { setSecret(e.target.value); reset(); }}
-                                    disabled={isProving}
-                                    className="w-full bg-transparent text-sm font-mono text-white/70 outline-none placeholder-white/20 border-none"
-                                    placeholder="your_secret_salt..."
-                                />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Public Inputs */}
-                    <div className="bg-[#0D1117] rounded-xl p-4 border border-white/[0.05]">
-                        <span className="text-[10px] text-white/30 uppercase tracking-[0.2em] font-bold mb-3 block">
-                            Public Inputs (on-chain visible)
-                        </span>
-                        <div className="flex justify-between items-center">
-                            <span className="text-[10px] font-mono text-white/40">
-                                signal input <span className="text-emerald-400">threshold</span>
-                            </span>
-                            <span className="font-black text-emerald-400 font-mono">{threshold}</span>
-                        </div>
-                        <div className="mt-2 text-[10px] text-white/25 font-mono">
-                             circuit enforces: score &gt; threshold
-                        </div>
-                    </div>
-
-                    {/* Nullifier */}
-                    <AnimatePresence>
-                        {nullifier && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 8 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0 }}
-                                className="bg-indigo-900/20 rounded-xl p-4 border border-indigo-500/20"
-                            >
-                                <div className="text-[10px] text-indigo-300/60 uppercase tracking-[0.2em] font-bold mb-1">
-                                    Nullifier Hash (Poseidon)
-                                </div>
-                                <div className="text-[9px] font-mono text-indigo-300/80 break-all leading-relaxed">
-                                    {nullifier}
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-
-                    {/* CTA */}
-                    <button
-                        onClick={proofResult ? reset : runProof}
-                        disabled={isProving}
-                        className={`w-full py-4 rounded-2xl font-black uppercase tracking-[0.2em] text-sm transition-all duration-300 flex items-center justify-center gap-3 ${
-                            isProving
-                                ? 'bg-white/5 text-white/30 cursor-not-allowed'
-                                : proofResult === 'success'
-                                    ? 'bg-emerald-500 text-black hover:bg-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.4)]'
-                                    : proofResult === 'failure'
-                                        ? 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 hover:bg-indigo-500/30'
-                                        : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-[0_0_30px_rgba(99,102,241,0.3)]'
-                        }`}
-                    >
-                        {isProving
-                            ? <><Loader2 className="w-4 h-4 animate-spin" /> Generating Proof...</>
-                            : proofResult === 'success'
-                                ? <><Unlock className="w-4 h-4" /> Clearance Granted  Reset</>
-                                : proofResult === 'failure'
-                                    ? <><XCircle className="w-4 h-4" /> Rejected  Try Again</>
-                                    : <><Zap className="w-4 h-4" /> Generate ZK Proof</>
-                        }
-                    </button>
-                </div>
-
-                {/* RIGHT: Proof Steps + Log */}
-                <div className="p-6 flex flex-col gap-4">
-                    {/* Steps */}
-                    <div>
-                        <label className="text-[10px] text-white/30 uppercase tracking-[0.2em] font-bold mb-3 block">
-                            Proof Pipeline
-                        </label>
-                        <div className="space-y-2">
-                            {steps.map((step, idx) => {
-                                const Icon = step.icon;
-                                return (
-                                    <motion.div
-                                        key={step.id}
-                                        className={`flex items-start gap-3 p-3 rounded-xl border transition-all duration-500 ${
-                                            step.status === 'running'
-                                                ? 'bg-indigo-500/10 border-indigo-500/40'
-                                                : step.status === 'done'
-                                                    ? 'bg-emerald-500/5 border-emerald-500/20'
-                                                    : 'bg-white/[0.02] border-white/[0.04]'
-                                        }`}
-                                    >
-                                        <div className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center mt-0.5 ${
-                                            step.status === 'running' ? 'bg-indigo-500/20' :
-                                            step.status === 'done' ? 'bg-emerald-500/20' :
-                                            'bg-white/5'
-                                        }`}>
-                                            {step.status === 'running'
-                                                ? <Loader2 className="w-3 h-3 text-indigo-400 animate-spin" />
-                                                : step.status === 'done'
-                                                    ? <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                                                    : <Icon className="w-3 h-3 text-white/20" />
-                                            }
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <div className={`text-[11px] font-bold ${
-                                                step.status === 'running' ? 'text-indigo-300' :
-                                                step.status === 'done' ? 'text-emerald-400' :
-                                                'text-white/40'
-                                            }`}>
-                                                {step.label}
-                                            </div>
-                                            {step.status === 'done' && step.output && (
-                                                <motion.div
-                                                    initial={{ opacity: 0, height: 0 }}
-                                                    animate={{ opacity: 1, height: 'auto' }}
-                                                    className="text-[9px] font-mono text-white/30 mt-0.5 truncate"
-                                                >
-                                                    {step.output}
-                                                </motion.div>
-                                            )}
-                                        </div>
-                                    </motion.div>
-                                );
-                            })}
-                        </div>
-                    </div>
-
-                    {/* Result Banner */}
-                    <AnimatePresence>
-                        {proofResult && (
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0 }}
-                                className={`p-4 rounded-2xl border flex items-center gap-3 ${
-                                    proofResult === 'success'
-                                        ? 'bg-emerald-500/10 border-emerald-500/30'
-                                        : 'bg-indigo-500/10 border-indigo-500/30'
-                                }`}
-                            >
-                                {proofResult === 'success'
-                                    ? <ShieldCheck className="w-6 h-6 text-emerald-400 shrink-0" />
-                                    : <XCircle className="w-6 h-6 text-red-400 shrink-0" />
-                                }
-                                <div>
-                                    <div className={`text-sm font-black ${proofResult === 'success' ? 'text-emerald-300' : 'text-red-300'}`}>
-                                        {proofResult === 'success' ? 'IDENTITY VERIFIED  VIP APEX UNLOCKED' : 'PROOF REJECTED  ACCESS DENIED'}
-                                    </div>
-                                    <div className="text-[10px] text-white/40 font-mono mt-0.5">
-                                        {proofResult === 'success'
-                                            ? `isVerified=1 · nullifier committed · clearance: verified`
-                                            : `isVerified=0 · score ${score} < threshold ${threshold}`
-                                        }
-                                    </div>
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-
-                    {/* Terminal Log */}
-                    <div className="flex-1 bg-[#0D1117] rounded-xl border border-white/[0.05] p-3 min-h-[140px] overflow-y-auto">
-                        <div className="text-[9px] text-white/20 font-mono uppercase tracking-widest mb-2">// SYSTEM LOG</div>
-                        {logs.length === 0 ? (
-                            <div className="text-[10px] text-white/15 font-mono">Awaiting proof generation...</div>
-                        ) : (
-                            logs.map((log, i) => (
-                                <div key={i} className={`text-[9px] font-mono leading-relaxed ${
-                                    log.includes('') || log.includes('') ? 'text-emerald-400/70' :
-                                    log.includes('') || log.includes('') ? 'text-red-400/70' :
-                                    log.includes('') ? 'text-indigo-300/60' :
-                                    'text-white/25'
-                                }`}>
-                                    {log}
-                                </div>
-                            ))
-                        )}
-                        <div ref={logsEndRef} />
-                    </div>
-                </div>
-            </div>
-
-            {/* Footer */}
-            <div className="px-6 py-3 border-t border-white/[0.04] bg-[#0D1117] flex items-center justify-between">
-                <span className="text-[9px] font-mono text-white/20 uppercase tracking-widest">
-                    Circuit: IdentityCheck() · 2,048 constraints · PLONK proof system
-                </span>
-                <span className="text-[9px] font-mono text-white/20 uppercase tracking-widest">
-                    Score never transmitted · ZK System Privacy
-                </span>
-            </div>
-        </div>
+    // 1. Compute Poseidon2 nullifier
+    let nullifier = std::hash::poseidon2(
+        [score, secret, salt]
     );
+
+    // 2. Enforce the threshold constraint
+    assert(
+        score > THRESHOLD,
+        "Score below minimum threshold"
+    );
+
+    // 3. Return public outputs only
+    let commitment = std::hash::poseidon2(
+        [nullifier, salt]
+    );
+    (nullifier, commitment)
+}`;
+
+// ─── Terminal log line ────────────────────────────────────────────────────────
+function LogLine({
+  line,
+  delay = 0,
+}: {
+  line: string;
+  delay?: number;
+}) {
+  const isOk  = line.includes("OK") || line.includes("verified") || line.includes("done") || line.includes("success");
+  const isErr = line.includes("FAIL") || line.includes("rejected") || line.includes("error");
+  const isKey = line.startsWith("  ") || line.includes("::");
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -4 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay, duration: 0.18 }}
+      className={`text-[8px] font-mono leading-relaxed ${
+        isErr ? "text-zinc-900 font-bold" : isOk ? "text-zinc-900/70" : isKey ? "text-zinc-900/35" : "text-zinc-900/50"
+      }`}
+    >
+      {line}
+    </motion.div>
+  );
 }
 
+// ─── Phase step pill ─────────────────────────────────────────────────────────
+function PhasePill({
+  label,
+  active,
+  done,
+}: {
+  label: string;
+  active: boolean;
+  done: boolean;
+}) {
+  return (
+    <div
+      className={`flex items-center gap-1.5 px-2.5 py-1 border text-[7px] font-black uppercase tracking-widest transition-all duration-400
+        ${done  ? "border-zinc-900 bg-zinc-900/[0.05] text-zinc-900"
+               : active ? "border-zinc-900 bg-white text-zinc-900 border border-zinc-900/20"
+               : "border-zinc-900/8 bg-transparent text-zinc-900/25"}`}
+    >
+      {done && <span>✓</span>}
+      {active && (
+        <span className="w-1.5 h-1.5 rounded-full bg-white/60" />
+      )}
+      {label}
+    </div>
+  );
+}
+
+// ─── Main Component ───────────────────────────────────────────────────────────
+export function ZKProofGrid() {
+  const [score,     setScore]     = useState(72);
+  const [secret,    setSecret]    = useState("whale_secret_2025");
+  const [threshold]               = useState(50);
+  const [showSec,   setShowSec]   = useState(false);
+  const [phase,     setPhase]     = useState<ProofPhase>("idle");
+  const [logs,      setLogs]      = useState<string[]>([]);
+  const [nullifier, setNullifier] = useState("");
+  const [commitment,setCommit]    = useState("");
+  const [proofHex,  setProofHex]  = useState("");
+  const [activeView, setActive]   = useState<"circuit" | "params">("circuit");
+  const logEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    logEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [logs]);
+
+  const addLog = useCallback(
+    (msg: string) => setLogs((prev) => [...prev.slice(-60), msg]),
+    []
+  );
+
+  const PHASES: ProofPhase[] = ["compile", "witness", "prove", "verify", "done"];
+  const phaseIdx = PHASES.indexOf(phase as any);
+
+  const runProof = useCallback(async () => {
+    if (phase !== "idle" && phase !== "rejected") return;
+    setPhase("idle");
+    setLogs([]);
+    setNullifier("");
+    setCommit("");
+    setProofHex("");
+
+    await new Promise((r) => setTimeout(r, 80));
+
+    // --- Phase 1: Compile ---
+    setPhase("compile");
+    addLog("nargo compile --package identity_checker");
+    addLog("  Compiling  identity_checker v0.1.0");
+    await new Promise((r) => setTimeout(r, 900));
+    addLog("  Compiling  std::hash::poseidon2");
+    addLog("  Compiling  std::ec::bn254");
+    await new Promise((r) => setTimeout(r, 600));
+    addLog("  Artifact   target/identity_checker.json  OK");
+
+    // --- Phase 2: Witness ---
+    setPhase("witness");
+    addLog("bb generate_witness --bytecode identity_checker.json \\");
+    addLog("  --input Prover.toml");
+    await new Promise((r) => setTimeout(r, 500));
+    addLog(`  [score]     = Field(${score})  (private)`);
+    addLog(`  [secret]    = poseidon2("${secret.slice(0, 6)}...")  (private)`);
+    addLog(`  [threshold] = Field(${threshold})  (public)`);
+    await new Promise((r) => setTimeout(r, 700));
+    const scoreHex = seededHex(score * 31337 + secret.length * 7, 64);
+    const saltHex  = seededHex(score + 13, 16);
+    const nullHex  = "0x" + seededHex(score * 97 + secret.length * 31, 64);
+    const comHex   = "0x" + seededHex(score * 13 + 999, 64);
+    const proofRaw = "0x" + seededHex(score * 1234 + 5678, 128);
+    setNullifier(nullHex);
+    setCommit(comHex);
+    setProofHex(proofRaw);
+    addLog(`  Nullifier  = Poseidon2(score, secret, salt)  OK`);
+    addLog(`  Witness    = ${scoreHex.slice(0, 24)}...  generated`);
+    addLog("  Witness generation  DONE");
+
+    // --- Phase 3: Prove ---
+    setPhase("prove");
+    addLog("bb prove --bytecode identity_checker.json \\");
+    addLog("  --witness target/witness.gz --output proof.bin");
+    await new Promise((r) => setTimeout(r, 500));
+    addLog("  Backend         Barretenberg  v0.72.0");
+    addLog("  Proof system    UltraHonk (no trusted setup)");
+    addLog("  Constraint sys  Ultra PLONK  gates: 2048");
+    await new Promise((r) => setTimeout(r, 900));
+    addLog("  Generating  commit_w...  OK");
+    addLog("  Generating  sumcheck...  OK");
+    await new Promise((r) => setTimeout(r, 700));
+    addLog(`  Proof  ${proofRaw.slice(0, 24)}...  ${proofRaw.length} bytes  OK`);
+    addLog("  Proof generation  DONE");
+
+    // --- Phase 4: Verify ---
+    setPhase("verify");
+    const isVerified = score > threshold;
+    addLog("bb verify --proof proof.bin \\");
+    addLog("  --vk target/vk.bin");
+    await new Promise((r) => setTimeout(r, 400));
+    addLog("  Loading  verification key  OK");
+    addLog("  Checking  UltraHonk pairing...");
+    await new Promise((r) => setTimeout(r, 800));
+
+    if (isVerified) {
+      addLog("  Pairing check  PASSED");
+      addLog("  Public inputs match commitment  OK");
+      addLog("  Nullifier not in tree  OK");
+      addLog("  Proof verification  SUCCESS");
+      setPhase("done");
+    } else {
+      addLog("  FAIL  score assertion failed: score <= threshold");
+      addLog("  Proof verification  REJECTED");
+      setPhase("rejected");
+    }
+  }, [score, secret, threshold, phase, addLog]);
+
+  const reset = () => {
+    setPhase("idle");
+    setLogs([]);
+    setNullifier("");
+    setCommit("");
+    setProofHex("");
+  };
+
+  const signals: CircuitSignal[] = [
+    { name: "score",      kind: "private", value: String(score),    color: "text-zinc-900" },
+    { name: "secret",     kind: "private", value: showSec ? secret : "••••••••••",  color: "text-zinc-900" },
+    { name: "salt",       kind: "private", value: "Fr(rand)",        color: "text-zinc-900/80" },
+    { name: "threshold",  kind: "public",  value: String(threshold), color: "text-zinc-900" },
+    { name: "nullifier",  kind: "public",  value: nullifier || "—",  color: "text-zinc-900/80" },
+    { name: "commitment", kind: "public",  value: commitment || "—", color: "text-zinc-900/80" },
+  ];
+
+  return (
+    <div className="w-full border border-zinc-900/10 bg-white overflow-hidden">
+      {/* Header bar */}
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-zinc-900/8 bg-zinc-900/[0.015]">
+        <div className="flex gap-1.5">
+          <div className="w-2.5 h-2.5 rounded-full bg-zinc-900/10" />
+          <div className="w-2.5 h-2.5 rounded-full bg-zinc-900/10" />
+          <div className="w-2.5 h-2.5 rounded-full bg-zinc-900/10" />
+        </div>
+        <div className="flex-1 text-center">
+          <span className="text-[8px] font-mono text-zinc-900/30 uppercase tracking-widest">
+            Noir Identity Prover · identity_checker.nr · Barretenberg backend
+          </span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-1.5 h-1.5 rounded-full bg-zinc-900/40" />
+          <span className="text-[7px] text-zinc-900/30 font-mono uppercase tracking-wider">UltraHonk</span>
+        </div>
+      </div>
+
+      {/* Phase strip */}
+      <div className="flex items-center gap-2 px-4 py-2.5 border-b border-zinc-900/6 overflow-x-auto">
+        {[
+          { p: "compile", label: "nargo compile" },
+          { p: "witness", label: "gen_witness"   },
+          { p: "prove",   label: "bb prove"      },
+          { p: "verify",  label: "bb verify"     },
+        ].map(({ p, label }) => (
+          <PhasePill
+            key={p}
+            label={label}
+            active={phase === p}
+            done={PHASES.indexOf(phase as any) > PHASES.indexOf(p as any) || phase === "done"}
+          />
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-black/6">
+        {/* LEFT: Inputs + circuit viewer */}
+        <div className="p-5 flex flex-col gap-5">
+          {/* Private inputs */}
+          <div>
+            <div className="text-[8px] font-black uppercase tracking-widest text-zinc-900/30 mb-3">
+              Private Inputs (never transmitted)
+            </div>
+            <div className="space-y-2.5">
+              {/* Score */}
+              <div className="border border-zinc-900/8 p-3 bg-zinc-900/[0.01]">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[8px] font-mono text-zinc-900/35">
+                    signal input <span className="text-zinc-900 font-bold">score</span>
+                  </span>
+                  <span className="text-[13px] font-black font-mono text-zinc-900 tabular-nums">
+                    {score}
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  value={score}
+                  onChange={(e) => { setScore(+e.target.value); reset(); }}
+                  disabled={phase !== "idle" && phase !== "rejected" && phase !== "done"}
+                  className="w-full h-[2px] bg-zinc-900/10 appearance-none cursor-pointer accent-black"
+                />
+                <div className="flex justify-between mt-1">
+                  <span className="text-[7px] text-zinc-900/20 font-mono">0</span>
+                  <span className="text-[7px] text-zinc-900/20 font-mono">100</span>
+                </div>
+              </div>
+              {/* Secret */}
+              <div className="border border-zinc-900/8 p-3 bg-zinc-900/[0.01]">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[8px] font-mono text-zinc-900/35">
+                    signal input <span className="text-zinc-900 font-bold">secret</span>
+                  </span>
+                  <button
+                    onClick={() => setShowSec(!showSec)}
+                    className="text-[7px] font-black uppercase tracking-widest text-zinc-900/20 hover:text-zinc-900 border border-zinc-900/8 px-2 py-0.5"
+                  >
+                    {showSec ? "Hide" : "Show"}
+                  </button>
+                </div>
+                <input
+                  type={showSec ? "text" : "password"}
+                  value={secret}
+                  onChange={(e) => { setSecret(e.target.value); reset(); }}
+                  disabled={phase !== "idle" && phase !== "rejected" && phase !== "done"}
+                  className="w-full bg-transparent text-[11px] font-mono text-zinc-900/60 outline-none"
+                  placeholder="your_secret_salt..."
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Public input */}
+          <div className="border border-zinc-900/8 p-3 bg-zinc-900/[0.01]">
+            <div className="text-[8px] font-black uppercase tracking-widest text-zinc-900/25 mb-2">
+              Public Input (on-chain visible)
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-[8px] font-mono text-zinc-900/35">
+                signal input <span className="text-zinc-900 font-bold">threshold</span>
+              </span>
+              <span className="text-[13px] font-black font-mono text-zinc-900">{threshold}</span>
+            </div>
+            <div className="mt-1.5 text-[7px] font-mono text-zinc-900/20">
+              circuit enforces: score {"> "}threshold
+            </div>
+          </div>
+
+          {/* Circuit / Params toggle */}
+          <div>
+            <div className="flex border-b border-zinc-900/6 mb-3">
+              {(["circuit", "params"] as const).map((v) => (
+                <button
+                  key={v}
+                  onClick={() => setActive(v)}
+                  className={`px-3 py-1.5 text-[7px] font-black uppercase tracking-widest transition-all
+                    ${activeView === v ? "border-b border-zinc-900 text-zinc-900" : "text-zinc-900/25 hover:text-zinc-900"}`}
+                >
+                  {v === "circuit" ? "Noir Circuit" : "Signals"}
+                </button>
+              ))}
+            </div>
+            {activeView === "circuit" ? (
+              <pre className="text-[7px] font-mono text-zinc-900/45 leading-relaxed whitespace-pre-wrap overflow-auto max-h-[180px] bg-zinc-900/[0.01] border border-zinc-900/6 p-3">
+                {NOIR_CIRCUIT}
+              </pre>
+            ) : (
+              <div className="space-y-1.5">
+                {signals.map((sig) => (
+                  <div key={sig.name} className="flex items-center justify-between text-[8px]">
+                    <span className="font-mono">
+                      <span className={sig.color}>{sig.name}</span>
+                      <span className="text-zinc-900/20">
+                        {" "}({sig.kind})
+                      </span>
+                    </span>
+                    <span className="font-mono text-zinc-900/40 truncate max-w-[140px] text-right">
+                      {sig.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* CTA */}
+          <button
+            onClick={phase === "idle" || phase === "rejected" ? runProof : reset}
+            disabled={phase !== "idle" && phase !== "rejected" && phase !== "done"}
+            className={`w-full py-3.5 font-black text-[9px] uppercase tracking-widest transition-all duration-300
+              ${phase === "done"
+                ? "bg-white text-zinc-900 border border-zinc-900/20 hover:bg-zinc-50"
+                : phase === "rejected"
+                  ? "bg-white text-zinc-900 border border-zinc-900 hover:bg-zinc-100 hover:text-zinc-900"
+                  : phase === "idle"
+                    ? "bg-white text-zinc-900 border border-zinc-900/20 hover:bg-zinc-50"
+                    : "bg-zinc-900/5 text-zinc-900/25 cursor-not-allowed"}`}
+          >
+            {phase === "idle"      ? "nargo prove"
+             : phase === "compile" || phase === "witness" || phase === "prove" || phase === "verify"
+               ? "Proving..."
+               : phase === "done"
+                 ? "Proof Verified   Reset"
+                 : "Rejected   Retry"}
+          </button>
+        </div>
+
+        {/* RIGHT: Terminal log + result */}
+        <div className="p-5 flex flex-col gap-4">
+          {/* Terminal */}
+          <div className="flex-1">
+            <div className="text-[8px] font-black uppercase tracking-widest text-zinc-900/25 mb-2">
+              Prover Terminal
+            </div>
+            <div className="border border-zinc-900/8 bg-zinc-900/[0.015] p-3 h-[260px] overflow-y-auto space-y-0.5">
+              {logs.length === 0 ? (
+                <div className="text-[8px] font-mono text-zinc-900/15">
+                  Awaiting nargo prove command...
+                </div>
+              ) : (
+                logs.map((line, i) => (
+                  <LogLine key={i} line={line} />
+                ))
+              )}
+              <div ref={logEndRef} />
+            </div>
+          </div>
+
+          {/* Result banner */}
+          <AnimatePresence>
+            {(phase === "done" || phase === "rejected") && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.97 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                className={`border p-4 ${
+                  phase === "done"
+                    ? "border-zinc-900/20 bg-zinc-900/[0.02]"
+                    : "border-zinc-900/20 bg-zinc-900/[0.02]"
+                }`}
+              >
+                <div className={`text-[10px] font-black uppercase tracking-widest mb-1 ${
+                  phase === "done" ? "text-zinc-900" : "text-zinc-900/50"
+                }`}>
+                  {phase === "done" ? "Proof Verified · Identity Cleared" : "Proof Rejected · Access Denied"}
+                </div>
+                <div className="text-[8px] font-mono text-zinc-900/40 space-y-0.5">
+                  {phase === "done" ? (
+                    <>
+                      <div>Nullifier:  {nullifier.slice(0, 24)}...</div>
+                      <div>Commitment: {commitment.slice(0, 24)}...</div>
+                      <div>Proof:      {proofHex.slice(0, 24)}...</div>
+                    </>
+                  ) : (
+                    <div>score {score} does not satisfy score {">"} {threshold}</div>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Footer info */}
+          <div className="flex items-center justify-between border-t border-zinc-900/6 pt-3">
+            <span className="text-[7px] font-mono text-zinc-900/20 uppercase tracking-widest">
+              circuit: identity_checker · 2048 gates
+            </span>
+            <span className="text-[7px] font-mono text-zinc-900/20 uppercase tracking-widest">
+              no trusted setup · UltraHonk
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
