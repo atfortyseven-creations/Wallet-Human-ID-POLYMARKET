@@ -23,24 +23,31 @@ interface RoadmapEdge {
 }
 
 const NODES: RoadmapNode[] = [
-  // Phase 1 (Milestone 1) - Live: Lo que se mandó al foro y está aceptado/implementado
-  { id: 'm1-connect', title: 'Wallet RFGP Proposal', status: 'live', quarter: 'Currently Live', description: 'Accepted Aztec Wallet RFGP proposal. Whale Network acting as a unified Web3 Command Center and privacy-preserving wallet for the Aztec ecosystem.', x: 100, y: 140 },
-  { id: 'm1-ui', title: 'PXE & Circuit Foundation', status: 'live', quarter: 'Currently Live', description: 'Dynamic PXE local integration via Next.js and 18 pure Noir contracts (Aztec.nr) deployed locally, fulfilling the core wallet logic requirements.', x: 100, y: 300 },
-  
-  // Phase 2 (Milestone 2) - Building: Lo que falta por completar y qué se hará
-  { id: 'm2-portfolio', title: 'Security Audits', status: 'building', quarter: 'In Progress', description: 'Pending formal security audits of our Aztec.nr account contracts, authwits, and ZK session syncing mechanisms to ensure absolute user safety.', x: 450, y: 140 },
-  { id: 'm2-registry', title: 'Testnet Integration', status: 'building', quarter: 'In Progress', description: 'Future deployment of the wallet to the decentralized Aztec testnet, integrating Fee Juice, Paymasters, and seamless onboarding flows.', x: 450, y: 300 },
+  // Phase 1: Core Stack (Live)
+  { id: 'f-stack', title: 'Frontend Architecture', status: 'live', quarter: 'Integrated', description: 'Next.js 15 App Router, Tailwind CSS, Framer Motion, and Lottie Animations delivering a pristine, responsive user interface.', x: 100, y: 80 },
+  { id: 'f-db', title: 'Database & ORM', status: 'live', quarter: 'Integrated', description: 'PostgreSQL database hosted on Railway, managed dynamically via Prisma ORM for seamless data persistence and session handling.', x: 100, y: 210 },
+  { id: 'f-evm', title: 'EVM Integration', status: 'live', quarter: 'Integrated', description: 'Full Web3 connectivity using Wagmi and Viem, supporting authentication and transactions across Base Testnet and Polygon.', x: 100, y: 340 },
 
-  // Phase 3 (Milestone 3) - Live: Lo que está completo y qué se hará (Sincronización)
-  { id: 'm3-mobile', title: 'Cross-Device Orchestration', status: 'live', quarter: 'Upcoming', description: 'ZK Session Sync architecture finalized. Desktop clients securely poll PXE state updates triggered by mobile device signatures.', x: 800, y: 140 },
-  { id: 'm3-mainnet', title: 'Mobile Finalization', status: 'live', quarter: 'Upcoming', description: 'Next steps include finalizing the native iOS/Android applications to act as biometric signers and QR-code synchronizers for the desktop wallet.', x: 800, y: 300 },
+  // Phase 2: Aztec Simulation (Live)
+  { id: 'a-sim', title: 'Aztec UX Simulation', status: 'live', quarter: 'Integrated', description: 'A flawless, 100% guaranteed UI simulation mimicking the Aztec Testnet. It provides every wallet with 100 QDs and visualizes the full ZK proof flow without real contract blockers.', x: 450, y: 140 },
+  { id: 'a-ui', title: 'Aztec Dashboard UI', status: 'live', quarter: 'Integrated', description: 'Native Send/Receive components, QR code generation, simulated Faucet claiming, and a robust Identity tab all unified without offline errors.', x: 450, y: 280 },
+
+  // Phase 3: Real Integration & Audits (Building)
+  { id: 'a-audit', title: 'Smart Contract Audits', status: 'building', quarter: 'Pending Audit', description: 'The real Noir (Aztec.nr) circuits for accounts, authwits, and token transfers are built but pending strict security audits before replacing the simulation.', x: 800, y: 140 },
+  { id: 'a-testnet', title: 'Real Testnet Deploy', status: 'building', quarter: 'Pending Deploy', description: 'Replacing the UX simulation with live Aztec Testnet RPC calls, connecting directly to deployed CoreLedger and Token contracts.', x: 800, y: 280 },
+
+  // Phase 4: Future (Planned)
+  { id: 'm-mobile', title: 'Mobile ZK Signers', status: 'planned', quarter: 'Upcoming', description: 'Native iOS and Android apps acting as hardware-level biometric signers for Aztec transactions, synced to the desktop via QR code.', x: 1150, y: 210 },
 ];
 
 const EDGES: RoadmapEdge[] = [
-  { from: 'm1-connect', to: 'm2-portfolio' },
-  { from: 'm1-ui', to: 'm2-registry' },
-  { from: 'm2-portfolio', to: 'm3-mobile' },
-  { from: 'm2-registry', to: 'm3-mainnet' },
+  { from: 'f-stack', to: 'a-sim' },
+  { from: 'f-db', to: 'a-sim' },
+  { from: 'f-evm', to: 'a-ui' },
+  { from: 'a-sim', to: 'a-audit' },
+  { from: 'a-ui', to: 'a-testnet' },
+  { from: 'a-audit', to: 'm-mobile' },
+  { from: 'a-testnet', to: 'm-mobile' }
 ];
 
 const STATUS_CONFIG = {
@@ -179,11 +186,12 @@ function RoadmapCanvas() {
             position: 'absolute',
           }}
         >
-          {/* Quarter labels */}
+          {/* Column labels */}
           {[
-            { label: 'Currently Live', x: 100 },
-            { label: 'In Progress', x: 450 },
-            { label: 'Upcoming', x: 800 },
+            { label: 'Core Infrastructure', x: 100 },
+            { label: 'UX & Simulation',     x: 450 },
+            { label: 'Audits & Deploy',     x: 800 },
+            { label: 'Future Horizons',     x: 1150 },
           ].map(q => (
 
             <div
