@@ -126,9 +126,9 @@ const BLOCK_STAGES = [
 ];
 
 function BlockConfirmingAnimation({ amount, to, blockNum }: { amount: string; to: string; blockNum: number }) {
-  const GRID = 7;
-  const TOTAL = GRID * GRID; // 49 cells
-  const ANIM_MS = 2600;
+  const GRID = 20; // 20x20 = 400 cells for maximum complexity
+  const TOTAL = GRID * GRID; 
+  const ANIM_MS = 2800;
   const CELL_MS = ANIM_MS / TOTAL;
 
   const [lit, setLit]         = useState<boolean[]>(Array(TOTAL).fill(false));
@@ -167,10 +167,10 @@ function BlockConfirmingAnimation({ amount, to, blockNum }: { amount: string; to
       {/* The Block */}
       <div className="relative">
         <div
-          className="grid p-[3px] border transition-colors duration-500"
+          className="grid p-[2px] border transition-colors duration-500 bg-white"
           style={{
             gridTemplateColumns: `repeat(${GRID}, 1fr)`,
-            gap: '3px',
+            gap: '1px',
             borderColor: done ? '#22c55e' : 'rgba(0,0,0,0.15)',
           }}
         >
@@ -178,11 +178,12 @@ function BlockConfirmingAnimation({ amount, to, blockNum }: { amount: string; to
             <div
               key={i}
               style={{
-                width: 20, height: 20,
-                background: on ? (done ? '#22c55e' : '#0a0a0a') : 'rgba(0,0,0,0.04)',
-                transform: on ? 'scale(1)' : 'scale(0.55)',
-                opacity: on ? 1 : 0.12,
-                transition: 'all 0.18s cubic-bezier(0.34,1.56,0.64,1)',
+                width: 5, height: 5,
+                background: on ? (done ? '#22c55e' : '#0a0a0a') : 'rgba(0,0,0,0.03)',
+                transform: on ? 'scale(1)' : 'scale(0.8)',
+                opacity: on ? 1 : 0.4,
+                transition: 'all 0.1s ease-out',
+                borderRadius: '1px',
               }}
             />
           ))}
@@ -426,15 +427,21 @@ function SendQDsPanel() {
 }
 
 // ─── Receive QDs panel ────────────────────────────────────────────────────────
+import { QRCodeSVG } from 'qrcode.react';
+
 function ReceiveQDsPanel() {
   const { balance, aztecAddress } = useQDsStore();
   const { copied, copy } = useCopy(aztecAddress || '', 'Aztec address');
   return (
     <div className="space-y-5">
       <div className="bg-black/[0.02] border border-black/8 p-5 flex flex-col items-center gap-3">
-        {/* QR placeholder */}
-        <div className="w-32 h-32 bg-black/5 border border-black/10 flex items-center justify-center">
-          <QrCode size={48} className="text-black/20" />
+        {/* Real Dynamic QR Code */}
+        <div className="w-32 h-32 bg-white border border-black/10 flex items-center justify-center p-2 shadow-sm">
+          {aztecAddress ? (
+            <QRCodeSVG value={aztecAddress} size={112} level="H" includeMargin={false} fgColor="#000000" bgColor="#FFFFFF" />
+          ) : (
+            <QrCode size={48} className="text-black/20" />
+          )}
         </div>
         <span className="text-[8px] text-black/30 uppercase tracking-widest font-black">Scan to send QDs here</span>
       </div>
