@@ -55,6 +55,7 @@ export const useQDsStore = create<QDsStore>()(
     }),
     {
       name: 'qds-storage',
+      version: 1, // Bumping version clears out old dirty states and forces a clean sync from DB
     }
   )
 );

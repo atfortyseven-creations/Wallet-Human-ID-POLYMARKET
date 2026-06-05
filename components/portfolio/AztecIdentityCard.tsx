@@ -16,8 +16,8 @@ const AZTEC_ADDRESS  = '0x1c952fed9de9a283da0393cb9b9fb0c0443fc9128c549c1f9d6593
 const AZTEC_EXPLORER = 'https://testnet.aztecscan.xyz';
 const CLAIM_TX_HASH  = '0x085abad7f0a1bc596e570079d209e6f5251efa5988f01d57bb165c4fa3691e8a';
 const CLAIM_TX_BLOCK = 103861;
-const CLAIM_AMOUNT   = '100 FJ';
-const CLAIM_FEE      = '2.2694 FJ';
+const CLAIM_AMOUNT   = '100 QDs';
+const CLAIM_FEE      = '2.2694 QDs';
 const LAST_UPDATED   = '2026-06-05';
 
 // ─── Copy hook ────────────────────────────────────────────────────────────────
@@ -511,10 +511,10 @@ export function AztecIdentityCard() {
                 </div>
                 <div>
                   <div className="text-[10px] font-black uppercase tracking-widest text-emerald-700 mb-0.5">
-                    Fee Juice Claimed Successfully
+                    QDs Claimed Successfully
                   </div>
                   <div className="text-[9px] text-emerald-600/70">
-                    100 FJ deployed + claimed atomically · Block {CLAIM_TX_BLOCK.toLocaleString()}
+                    100 QDs deployed + claimed atomically · Block {CLAIM_TX_BLOCK.toLocaleString()}
                   </div>
                 </div>
               </div>
@@ -629,7 +629,7 @@ wsl bash claim-master.sh \\
                     ['Proving System', 'UltraHonk (Barretenberg)'],
                     ['Privacy Layer',  'ZK-SNARK · Noir Language'],
                     ['Account Type',   'Schnorr (ECC Grumpkin)'],
-                    ['Fee Token',      'Fee Juice (FJ) — native'],
+                    ['Fee Token',      'QDs (Quantum Dots)'],
                     ['L1 Bridge',      'Ethereum Sepolia'],
                   ].map(([k, v]) => (
                     <div key={k} className="flex justify-between text-[8px] font-mono">
