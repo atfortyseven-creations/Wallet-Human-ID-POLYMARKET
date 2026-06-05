@@ -104,7 +104,7 @@ export function InstitutionalHeader() {
                         </motion.div>
                         <div className="flex flex-col leading-none text-[#050505] justify-center">
                             <span className="font-aztec-serif text-[18px] font-black uppercase tracking-tighter leading-none">
-                                Whale Alert Network
+                                WHALE NETWORK
                             </span>
                         </div>
                     </Link>

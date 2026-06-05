@@ -710,10 +710,10 @@ function FinalCTASection() {
         <h2 className="text-[40px] md:text-[60px] font-black tracking-tighter leading-[1] text-black mb-6 drop-shadow-sm">
           Ready to reclaim
           <br />
-          <span className="text-black/60">your digital identity?</span>
+          <span className="text-black/60">your digital Aztec Identity?</span>
         </h2>
         <p className="text-[16px] md:text-[18px] text-black/70 font-medium max-w-[500px] mb-12 drop-shadow-sm">
-          Join the ecosystem of users and developers bringing absolute, verifiable privacy to the decentralized web.
+          Join Whale Network — the privacy-first ecosystem where your Aztec Identity is yours alone, protected by Zero-Knowledge proofs on L2.
         </p>
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <Link

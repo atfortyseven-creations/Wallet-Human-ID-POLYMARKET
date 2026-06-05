@@ -1,9 +1,9 @@
-﻿import { MetadataRoute } from 'next';
+import { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Whale Alert Network',
-    short_name: 'Whale Alert',
+    name: 'Whale Network',
+    short_name: 'Whale Network',
     description: 'Professional institutional records management and network telemetry.',
     start_url: '/',
     display: 'standalone',
