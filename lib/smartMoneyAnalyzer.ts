@@ -58,8 +58,9 @@ export async function analyzeWalletSmartMoney(
     const uniqueTokenCount = netWorth?.chains?.reduce((acc: number, c: any) => acc + (parseInt(c.token_balance_usd) > 0 ? 1 : 0), 0) || 5;
     const diversificationScore = calculateDiversification(uniqueTokenCount);
 
-    const avgTradeUSD = history.length > 0 
-      ? history.reduce((acc: number, tx: any) => acc + (parseFloat(tx.value_usd || '0')), 0) / history.length 
+    const historyData = Array.isArray(history) ? history : (history.result || []);
+    const avgTradeUSD = historyData.length > 0 
+      ? historyData.reduce((acc: number, tx: any) => acc + (parseFloat(tx.value_usd || '0')), 0) / historyData.length 
       : 0;
     const tradeSizeScore = calculateTradeSizeScore(avgTradeUSD);
 

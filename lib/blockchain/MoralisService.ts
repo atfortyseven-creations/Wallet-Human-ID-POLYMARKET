@@ -47,6 +47,9 @@ const ALCHEMY_KEYS = [
   '9-PrperNlQe6nEXGOkKLh',
   'TX3Ly34OF3eQYcQIQUF0o',
   'HzFcJZLmeduTs9XfgcpOl',
+  'eJ8JYm5NbVJXQ6U6rkBgK',
+  'WSmHi-tN2D_KMM-wC1qWI',
+  'UwKeAtmk7pKtXwfFEUDrx',
 ];
 
 // ─── Cache TTLs (seconds) ──────────────────────────────────────────────────────
@@ -91,11 +94,14 @@ export class MoralisService {
   private async cached<T>(key: string, ttl: number, fn: () => Promise<T>): Promise<T> {
     try {
       const hit = await safeRedisGet(key);
-      if (hit) return safeJsonParse(hit) as T;
+      if (hit) {
+        const parsed = safeJsonParse(hit, null);
+        if (parsed !== null) return parsed as T;
+      }
     } catch { /* Redis miss — proceed */ }
 
     const data = await fn();
-    try { await safeRedisSet(key, JSON.stringify(data), ttl); } catch { /* ignore */ }
+    try { await safeRedisSet(key, JSON.stringify(data), 'EX', ttl); } catch { /* ignore */ }
     return data;
   }
 
@@ -198,7 +204,7 @@ export class MoralisService {
       await Promise.allSettled(chains.map(async (chain) => {
         try {
           const { balance } = await this.getNativeBalance(address, chain);
-          const symbol = { eth: 'ETH', polygon: 'MATIC', arbitrum: 'ETH', base: 'ETH', bsc: 'BNB' }[chain] || 'ETH';
+          const symbol = ({ eth: 'ETH', polygon: 'MATIC', arbitrum: 'ETH', base: 'ETH', bsc: 'BNB', avalanche: 'AVAX', optimism: 'ETH' } as Record<string, string>)[chain] || 'ETH';
           const prices = await PriceService.getBulkPrices([{ symbol, address: '', chainId: 1 }]).catch(() => ({}));
           const price = (prices as any)[symbol]?.price ?? 0;
           const usdValue = parseFloat(balance) * price;
