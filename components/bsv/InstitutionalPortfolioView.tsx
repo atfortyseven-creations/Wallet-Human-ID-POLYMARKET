@@ -23,6 +23,7 @@ import { MetaMaskNetworkSelector } from '@/components/portfolio/MetaMaskNetworkS
 import { QuantumHoldingsEngine } from '@/components/portfolio/QuantumHoldingsEngine';
 
 import { AztecPrivacyTerminal } from '@/components/portfolio/AztecPrivacyTerminal';
+import { AztecIdentityCard } from '@/components/portfolio/AztecIdentityCard';
 import { SecurityAllowances } from '@/components/portfolio/SecurityAllowances';
 import { ContractDeployerView } from '@/components/portfolio/ContractDeployerView';
 import { TransactionManagerView } from '@/components/portfolio/TransactionManager';
@@ -298,7 +299,7 @@ export function InstitutionalPortfolioView() {
 function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, loading, onRefresh, onSend, onReceive, onScan, onCreate, onBuy, onSwap, onBridge, onNetworkClick, onSettingsClick, onAccountsClick, scannerBase, onShield, onSecurity, onSmartAccount, onDeploy, onOmnichain, onMempool, onQds, assets, displayCurrency, setDisplayCurrency, rate, symbol }: any) {
     const [copied, setCopied] = useState(false);
     const [isDisconnecting, setIsDisconnecting] = useState(false);
-    const [activeTab, setActiveTab] = useState<'TOKENS'|'DEFI'|'ACTIVITY'>('TOKENS');
+    const [activeTab, setActiveTab] = useState<'TOKENS'|'DEFI'|'ACTIVITY'|'AZTEC'>('TOKENS');
     const { nuclearDisconnect } = useSystemSignOut();
     const networkInfo = NETWORKS[activeNetwork as NetworkId] || NETWORKS.polygon;
 
@@ -493,7 +494,7 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                     <div className="lg:col-span-9">
                         <div className="bg-white border border-black/10 overflow-hidden flex flex-col min-h-[520px]">
                             <div className="flex border-b border-black/10 overflow-x-auto">
-                                {(['TOKENS', 'DEFI', 'ACTIVITY'] as const).map(t => (
+                                {(['TOKENS', 'DEFI', 'ACTIVITY', 'AZTEC'] as const).map(t => (
                                     <button
                                         key={t}
                                         onClick={() => setActiveTab(t)}
@@ -503,7 +504,7 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                                                 : 'text-black/50 hover:text-black hover:bg-black/[0.03] border-r border-black/10'
                                         }`}
                                     >
-                                        {t === 'TOKENS' ? 'Assets' : t === 'DEFI' ? 'DeFi' : 'History'}
+                                        {t === 'TOKENS' ? 'Assets' : t === 'DEFI' ? 'DeFi' : t === 'ACTIVITY' ? 'History' : 'Aztec Identity'}
                                     </button>
                                 ))}
                             </div>
@@ -511,6 +512,7 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                                 {activeTab === 'TOKENS' && <QuantumHoldingsEngine address={address} activeNetwork={activeNetwork} scannerBase={scannerBase} userAssets={assets} displayCurrency={displayCurrency} rate={rate} symbol={symbol} onSwapRequest={onSwap} onBridgeRequest={onBridge} onQdsTransfer={onQds} />}
                                 {activeTab === 'DEFI' && <QuantumDeFiPositions address={address} activeNetwork={activeNetwork} />}
                                 {activeTab === 'ACTIVITY' && <TransactionHistory address={address} scannerBase={scannerBase} activeNetwork={activeNetwork} />}
+                                {activeTab === 'AZTEC' && <div className="p-6 max-w-4xl mx-auto w-full"><AztecIdentityCard /></div>}
                             </div>
                         </div>
                     </div>
