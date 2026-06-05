@@ -11,8 +11,12 @@ export interface TxRecord {
 }
 
 interface QDsStore {
+  seed: string | null;
+  aztecAddress: string | null;
   balance: number;
   history: TxRecord[];
+  login: (seed: string, address: string) => void;
+  logout: () => void;
   sendQDs: (amount: number, to: string, txHash: string) => void;
   receiveQDs: (amount: number, from: string, txHash: string) => void;
   reset: () => void;
@@ -21,8 +25,12 @@ interface QDsStore {
 export const useQDsStore = create<QDsStore>()(
   persist(
     (set) => ({
+      seed: null,
+      aztecAddress: null,
       balance: 100, // Initial guaranteed balance
       history: [],
+      login: (seed, address) => set({ seed, aztecAddress: address }),
+      logout: () => set({ seed: null, aztecAddress: null, history: [], balance: 100 }),
       sendQDs: (amount, to, txHash) => set((state) => ({
         balance: state.balance - amount,
         history: [

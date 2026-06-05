@@ -12,13 +12,24 @@ import { useQDsStore } from '../../lib/aztec/mockStore';
 import { LottiePlayer } from '../ui/LottiePlayer';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
-const AZTEC_ADDRESS  = '0x1c952fed9de9a283da0393cb9b9fb0c0443fc9128c549c1f9d659390323d1483';
 const AZTEC_EXPLORER = 'https://testnet.aztecscan.xyz';
 const CLAIM_TX_HASH  = '0x085abad7f0a1bc596e570079d209e6f5251efa5988f01d57bb165c4fa3691e8a';
 const CLAIM_TX_BLOCK = 103861;
 const CLAIM_AMOUNT   = '100 QDs';
 const CLAIM_FEE      = '2.2694 QDs';
 const LAST_UPDATED   = '2026-06-05';
+
+function deriveDeterministicAztecAddress(seed: string): string {
+  // Ultra-simple deterministic hex generator for UI simulation of Aztec Schnorr derivation
+  // In a real PXE, this would be: getSchnorrAccount(pxe, secret, signingKey).getAddress()
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) hash = Math.imul(31, hash) + seed.charCodeAt(i) | 0;
+  const hex = Math.abs(hash).toString(16).padStart(8, '0');
+  // Pad out to a 64-char hex (32 bytes)
+  let fullHex = '';
+  for (let i = 0; i < 8; i++) fullHex += hex;
+  return `0x${fullHex.slice(0, 64)}`;
+}
 
 // ─── Copy hook ────────────────────────────────────────────────────────────────
 function useCopy(value: string, label = '') {
@@ -95,7 +106,7 @@ function useSyncFromDB(address: string) {
 
 // ─── Send QDs panel ───────────────────────────────────────────────────────────
 function SendQDsPanel() {
-  const { balance, sendQDs } = useQDsStore();
+  const { balance, sendQDs, aztecAddress } = useQDsStore();
   const [to, setTo]               = useState('');
   const [amount, setAmount]       = useState('');
   const [note, setNote]           = useState('');
@@ -122,13 +133,13 @@ function SendQDsPanel() {
   }, [to]);
 
   const doSend = async () => {
-    if (!formOk) return;
+    if (!formOk || !aztecAddress) return;
     setStep('sending');
     try {
       const res = await fetch('/api/aztec/transfer', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ from: AZTEC_ADDRESS, to, amount }),
+        body: JSON.stringify({ from: aztecAddress, to, amount }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Transfer failed');
@@ -359,14 +370,15 @@ function HistoryPanel() {
 }
 // ─── Main Component ───────────────────────────────────────────────────────────
 export function AztecIdentityCard() {
-  const { balance } = useQDsStore();
-  const { copied: addrCopied, copy: copyAddr } = useCopy(AZTEC_ADDRESS, 'Aztec address');
+  const { balance, aztecAddress, login, logout } = useQDsStore();
+  const [inputSeed, setInputSeed]              = useState('');
+  const { copied: addrCopied, copy: copyAddr } = useCopy(aztecAddress || '', 'Aztec address');
   const { copied: txCopied,   copy: copyTx }   = useCopy(CLAIM_TX_HASH, 'TX hash');
   const [activeTab, setActiveTab]              = useState<'IDENTITY'|'SEND'|'RECEIVE'|'HISTORY'|'CLAIM'|'NODE'>('IDENTITY');
   const [checking, setChecking]                = useState(false);
 
   // Actively poll database for incoming/outgoing QDs transfers
-  useSyncFromDB(AZTEC_ADDRESS);
+  useSyncFromDB(aztecAddress || '');
 
   const pingNode = async () => {
     setChecking(true);
@@ -383,6 +395,42 @@ export function AztecIdentityCard() {
     { id: 'CLAIM'    as const, label: 'Claim' },
     { id: 'NODE'     as const, label: 'Node' },
   ];
+
+  if (!aztecAddress) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
+        className="w-full border border-black/10 bg-white overflow-hidden p-8 flex flex-col items-center justify-center min-h-[300px]"
+      >
+        <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center mb-5">
+          <Lock size={20} className="text-white" />
+        </div>
+        <h3 className="text-[12px] font-black uppercase tracking-[0.3em] text-black mb-2">Aztec PXE Login</h3>
+        <p className="text-[9px] text-black/40 uppercase tracking-widest mb-6 text-center max-w-[250px]">
+          Enter your EVM Address or Seed to deterministically derive your Aztec Schnorr Account.
+        </p>
+        <div className="w-full max-w-[280px] space-y-3">
+          <input 
+            type="text" 
+            placeholder="e.g. 0xABC... or 'alice'" 
+            value={inputSeed}
+            onChange={(e) => setInputSeed(e.target.value)}
+            className="w-full border border-black/10 px-4 py-3 font-mono text-[10px] text-black focus:outline-none focus:border-black"
+          />
+          <button 
+            onClick={() => {
+              if (inputSeed.trim().length < 3) return toast.error('Seed must be at least 3 characters');
+              const derived = deriveDeterministicAztecAddress(inputSeed.trim());
+              login(inputSeed.trim(), derived);
+            }}
+            className="w-full bg-black text-white py-3 font-black text-[10px] uppercase tracking-widest hover:bg-black/80 transition-all"
+          >
+            Connect Wallet
+          </button>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -403,6 +451,9 @@ export function AztecIdentityCard() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <button onClick={logout} className="text-[8px] font-black uppercase tracking-widest text-black/40 hover:text-black border border-black/10 hover:border-black px-2 py-1 transition-all mr-2">
+            Logout
+          </button>
           <StatusBadge />
           <button onClick={pingNode} disabled={checking} className="text-black/30 hover:text-black transition-colors p-1" title="Refresh">
             <RefreshCw size={12} className={checking ? 'animate-spin' : ''} />
@@ -442,7 +493,7 @@ export function AztecIdentityCard() {
                   Aztec Address (Schnorr · Salt=0)
                 </div>
                 <div className="flex items-center gap-2 bg-black/[0.02] border border-black/8 px-4 py-3">
-                  <span className="font-mono text-[10px] text-black/70 flex-1 break-all">{AZTEC_ADDRESS}</span>
+                  <span className="font-mono text-[10px] text-black/70 flex-1 break-all">{aztecAddress}</span>
                   <button onClick={copyAddr} className="shrink-0 text-black/30 hover:text-black transition-colors p-1">
                     {addrCopied ? <Check size={12} className="text-emerald-500" /> : <Copy size={12} />}
                   </button>
@@ -483,7 +534,7 @@ export function AztecIdentityCard() {
               </div>
 
               <a
-                href={`${AZTEC_EXPLORER}/accounts/${AZTEC_ADDRESS}`}
+                href={`${AZTEC_EXPLORER}/accounts/${aztecAddress}`}
                 target="_blank" rel="noopener noreferrer"
                 className="flex items-center justify-between w-full py-3 px-4 border border-black/10 hover:border-black hover:bg-black hover:text-white text-black/40 text-[9px] font-black uppercase tracking-widest transition-all group"
               >
@@ -648,7 +699,7 @@ wsl bash claim-master.sh \\
       <div className="px-6 py-3 border-t border-black/8 bg-black/[0.01] flex items-center justify-between">
         <span className="text-[7px] text-black/20 uppercase tracking-widest">Updated {LAST_UPDATED}</span>
         <a
-          href={`${AZTEC_EXPLORER}/accounts/${AZTEC_ADDRESS}`}
+          href={`${AZTEC_EXPLORER}/accounts/${aztecAddress}`}
           target="_blank" rel="noopener noreferrer"
           className="text-[7px] text-black/20 hover:text-black uppercase tracking-widest transition-colors flex items-center gap-1"
         >
