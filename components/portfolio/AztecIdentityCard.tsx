@@ -134,7 +134,7 @@ const BLOCK_STAGES = [
   { label: 'Block Confirmed',         sub: 'Transaction finalized on Aztec L2'  },
 ];
 
-function BlockConfirmingAnimation({ amount, to, blockNum }: { amount: string; to: string; blockNum: number }) {
+function BlockConfirmingAnimation({ amount, to, blockNum }: { amount: string; to: string; blockNum: number | string }) {
   const GRID = 20; // 20x20 = 400 cells for maximum complexity
   const TOTAL = GRID * GRID; 
   const ANIM_MS = 2800;
@@ -282,7 +282,7 @@ function SendQDsPanel() {
     setToValid(to.startsWith('0x') && to.length >= 42);
   }, [to]);
 
-  const pendingBlock = 103860 + Math.floor(Math.random() * 700);
+  const pendingBlock = 'Sequencing...';
 
   const doSend = async () => {
     if (!formOk || !aztecAddress) return;
