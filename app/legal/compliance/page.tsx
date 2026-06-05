@@ -35,10 +35,10 @@ export default function RegulatoryCompliancePage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              Whale Alert Network is built with regulatory compliance as a core architectural consideration, not merely a legal obligation. In the rapidly evolving landscape of decentralised finance, we proactively engage with regulatory developments across all major jurisdictions to ensure our platform and services consistently meet the highest standards of legal and ethical conduct.
+              Humanity Ledger S.L., as the operator of the Whale Alert Network platform, builds with regulatory compliance as a core architectural consideration, not merely a legal obligation. In the rapidly evolving landscape of decentralised finance, we proactively engage with regulatory developments across all major jurisdictions to ensure our platform and services consistently meet the highest standards of legal and ethical conduct.
             </p>
             <p>
-              Our Compliance team monitors regulatory changes across the EU, UK, USA, and international frameworks on a continuous basis. We maintain direct dialogue with regulatory bodies and consult with leading specialist legal counsel to ensure we remain ahead of developments in digital assets, cryptographic identity, and data protection law.
+              Our Compliance team monitors regulatory changes across the EU, UK, USA, and international frameworks on a continuous basis. Humanity Ledger S.L. maintains direct dialogue with regulatory bodies and consults with leading specialist legal counsel to ensure we remain ahead of developments in digital assets, cryptographic identity, and data protection law.
             </p>
           </div>
         </section>
@@ -86,7 +86,7 @@ export default function RegulatoryCompliancePage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              In compliance with the European Union Anti-Money Laundering Directives (AMLD6) and equivalent international standards, Whale Alert Network maintains rigorous AML and KYC policies.
+              In compliance with the European Union Anti-Money Laundering Directives (AMLD6) and equivalent international standards, Humanity Ledger S.L. maintains rigorous AML and KYC policies for the Whale Alert Network platform.
             </p>
             <p>
               Where applicable to specific services, we implement identity verification through government-issued documentation review, biometric liveness checks, and real-time screening against global PEP (Politically Exposed Persons), Adverse Media, and sanctions databases.
@@ -149,7 +149,7 @@ export default function RegulatoryCompliancePage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              Whale Alert Network maintains a real-time sanctions screening programme covering all major international sanction lists, including:
+              Humanity Ledger S.L. maintains a real-time sanctions screening programme for the Whale Alert Network platform covering all major international sanction lists, including:
             </p>
             <ul className="space-y-2 pl-5">
               {[
@@ -177,7 +177,7 @@ export default function RegulatoryCompliancePage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              We are acutely aware of the ongoing global regulatory discourse regarding the classification of digital assets as securities under applicable laws. Whale Alert Network does not issue, market, or facilitate the trading of tokens classified as securities under any applicable jurisdiction.
+              We are acutely aware of the ongoing global regulatory discourse regarding the classification of digital assets as securities under applicable laws. Humanity Ledger S.L. does not issue, market, or facilitate the trading of tokens classified as securities under any applicable jurisdiction through the Whale Alert Network platform.
             </p>
             <p>
               Our blockchain analytics services provide informational data derived from public ledgers. We do not constitute a regulated investment firm, broker-dealer, or collective investment undertaking. Our services do not constitute investment advice.
@@ -242,7 +242,7 @@ export default function RegulatoryCompliancePage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              Where mandated by applicable law, Whale Alert Network fulfils its legal reporting obligations to relevant financial intelligence units and regulatory authorities. Our reporting procedures are designed to be timely, accurate, and fully auditable.
+              Where mandated by applicable law, Humanity Ledger S.L. fulfils its legal reporting obligations to relevant financial intelligence units and regulatory authorities. Our reporting procedures are designed to be timely, accurate, and fully auditable.
             </p>
             <p>
               We cooperate fully with lawful court orders, regulatory investigations, and legally binding information requests from competent authorities, while rigorously challenging any requests that we believe to be disproportionate or unlawful.
@@ -273,9 +273,9 @@ export default function RegulatoryCompliancePage() {
                 </a>
               </div>
               <div>
-                <p className="text-[11px] font-mono font-bold uppercase tracking-widest text-black/40 mb-1">LinkedIn — Founder</p>
-                <a href="https://www.linkedin.com/in/stefan-antonio-cirisanu-40116140b/" target="_blank" rel="noopener noreferrer" className="text-black text-[14px] underline underline-offset-2 hover:text-black/60 transition-colors break-all">
-                  Stefan Antonio Cirisanu
+                <p className="text-[11px] font-mono font-bold uppercase tracking-widest text-black/40 mb-1">Legal Counsel & Compliance</p>
+                <a href="mailto:legal@humanityledger.com" className="text-black text-[14px] underline underline-offset-2 hover:text-black/60 transition-colors break-all">
+                  Humanity Ledger S.L. Legal Team
                 </a>
               </div>
             </div>

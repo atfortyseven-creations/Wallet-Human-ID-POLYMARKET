@@ -8,13 +8,13 @@ export default function WhitepaperPage() {
     <AztecDocPage
       eyebrow="Protocol · Technical Whitepaper"
       title="Humanity Ledger: Privacy-Native Social State"
-      subtitle="How we combine shielded notes, Noir circuits, and Ethereum settlement so people can interact with proof—not permanent public exposure."
+      subtitle="A formal technical exposition of how Humanity Ledger S.L. combines shielded notes, Noir circuits, and Ethereum settlement to enable provable interactions — without permanent public exposure."
       sections={WHITEPAPER_SECTIONS}
     >
       <div className="p-8 rounded-2xl border border-black/10 bg-black/[0.02]">
-        <h3 className="text-lg font-black text-[#050505] mb-2">Build with the stack</h3>
+        <h3 className="text-lg font-black text-[#050505] mb-2">Integrate with the stack</h3>
         <p className="text-[14px] text-[#050505]/60 mb-6 leading-relaxed">
-          Review circuits, run the sandbox, and integrate via the Developer Hub.
+          Review our Noir circuits, run the Aztec sandbox locally, and integrate via the Developer Hub.
         </p>
         <div className="flex flex-wrap gap-4">
           <Link

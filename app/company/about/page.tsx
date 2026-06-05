@@ -48,7 +48,7 @@ export default function AboutPage() {
   return (
     <LegalDocLayout
       title="About Us"
-      subtitle="The mission, vision, and people behind Whale Alert Network — a platform built to make advanced decentralised finance accessible, transparent, and secure for everyone."
+      subtitle="The mission, vision, and people behind Humanity Ledger S.L. and our flagship platform, Whale Alert Network — built to make advanced decentralised finance accessible, transparent, and secure for everyone."
       lastUpdated="May 25, 2026"
       category="Company"
       toc={TOC}
@@ -64,7 +64,7 @@ export default function AboutPage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              Whale Alert Network was founded with a simple, profound realisation: the technological tools and market analytics used by professional traders and large financial institutions were vastly superior to those available to everyday users. Moreover, the decentralised finance (DeFi) space, while promising absolute transparency and democratisation, was becoming increasingly complex, fragmented, and fraught with security risks.
+              Humanity Ledger S.L. was founded with a simple, profound realisation: the technological tools and market analytics used by professional traders and large financial institutions were vastly superior to those available to everyday users. Moreover, the decentralised finance (DeFi) space, while promising absolute transparency and democratisation, was becoming increasingly complex, fragmented, and fraught with security risks.
             </p>
             <p>
               A specialised group of passionate software engineers, financial analysts, and user experience designers came together to bridge this growing gap. We set out to build a holistic platform that strips away the daunting complexity of blockchain technology, presenting users with a clean, intuitive, and highly professional interface that rivals the best consumer applications in the world.
@@ -152,7 +152,7 @@ export default function AboutPage() {
               </div>
               <div className="space-y-3">
                 <p>
-                  The team behind Whale Alert Network is a diverse, globally distributed group of professionals. Our leadership brings together extensive experience from top-tier technology companies, traditional financial institutions, and leading blockchain research organisations. We operate in a flat, meritocratic structure where the best ideas win, regardless of who proposes them.
+                  The team at Humanity Ledger S.L. is a diverse, globally distributed group of professionals. Our leadership brings together extensive experience from top-tier technology companies, traditional financial institutions, and leading blockchain research organisations. We operate in a flat, meritocratic structure where the best ideas win, regardless of who proposes them.
                 </p>
                 <p>
                   We foster a culture of continuous learning and intense focus on user experience. Our team is united by a shared passion for decentralisation and a profound respect for individual privacy.

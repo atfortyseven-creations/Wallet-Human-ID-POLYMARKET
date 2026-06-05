@@ -32,7 +32,8 @@ export class EtherscanPortfolioService {
     const portfolio = await getEtherscanPortfolio(address);
     
     if (!portfolio || (portfolio.totalTokens === 0 && parseFloat(portfolio.ethBalance) === 0)) {
-      console.warn('[EtherscanPortfolio] Empty portfolio returned');
+      // An empty result is expected for new wallets — use debug to avoid PM2 stderr routing.
+      console.debug('[EtherscanPortfolio] Empty portfolio returned — address has no recorded activity.');
       return {
         chainId: ChainId.MAINNET,
         address,

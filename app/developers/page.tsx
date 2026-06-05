@@ -107,14 +107,14 @@ const BuilderAnnouncements = () => {
 // 2. The Full Stack (01-08)
 const FullStack = () => {
   const stacks = [
-    { num: "01", title: "Cryptographic Identity", desc: "Identity is established through provable ownership of a secp256k1 private key. This enforces deterministic authentication." },
-    { num: "02", title: "Ephemeral Key Exchange", desc: "Cross-device authentication is secured via an ephemeral X25519 key exchange. The payload is encrypted via AES-256-GCM." },
-    { num: "03", title: "Asymmetric Verification", desc: "Ed25519 cryptography allows edge routing to verify JWT structures mathematically, mitigating symmetric key extraction risks." },
-    { num: "04", title: "Distributed Telemetry", desc: "A robust Redis topology governs session rate-limiting, ensuring atomic enforcement of request ceilings per authenticated identity." },
-    { num: "05", title: "Graph Database Topologies", desc: "Neo4j maps structural interactions between accounts, separating systemic capital flow topologies from isolated transactions." },
-    { num: "06", title: "Heuristic Block Analysis", desc: "Continuous state monitoring evaluates computational expenditure to identify institutional behavioral patterns statistically." },
-    { num: "07", title: "Encrypted Messaging", desc: "A protocol layer where peer-to-peer communications are secured using end-to-end encryption anchored to wallet keys." },
-    { num: "08", title: "Zero-Trust Service Level", desc: "Automated verification routines evaluate subscription states cryptographically to provision API access without human intervention." }
+    { num: "01", title: "Cryptographic Identity", desc: "Every session is anchored to provable ownership of a secp256k1 private key. No username, no password. Authentication is a mathematical fact." },
+    { num: "02", title: "Ephemeral Key Exchange", desc: "Cross-device authentication uses a one-time X25519 key exchange. The resulting shared secret is used to encrypt the session payload via AES-256-GCM and is discarded immediately after use." },
+    { num: "03", title: "Asymmetric Verification", desc: "Edge nodes verify JWTs using Ed25519 public keys. The signing key never leaves the issuing server, eliminating the symmetric key exposure risk present in HS256 schemes." },
+    { num: "04", title: "Distributed Telemetry", desc: "A Redis topology enforces per-identity rate limits atomically. Usage ceilings are validated at the edge before any request reaches the application layer." },
+    { num: "05", title: "Graph Database Topologies", desc: "Neo4j maps structural relationships between accounts, separating systemic capital flow patterns from isolated transaction events with precision that relational databases cannot match." },
+    { num: "06", title: "Heuristic Block Analysis", desc: "Continuous state monitoring evaluates gas expenditure, contract interaction patterns, and timing characteristics to surface institutional behavioural signals in real time." },
+    { num: "07", title: "Encrypted Messaging", desc: "Peer-to-peer communications are end-to-end encrypted at the protocol layer, anchored to wallet keys. No server holds the decryption material." },
+    { num: "08", title: "Zero-Trust Service Layer", desc: "API access is provisioned programmatically by verifying cryptographic subscription proofs. No manual intervention or privileged human access is involved in the authorisation path." }
   ];
 
   return (
@@ -409,20 +409,20 @@ const FAQs = () => {
 
   const faqs = [
     {
-      q: "Why employ EdDSA (Ed25519) asymmetric JWT validation?",
-      a: "Symmetric signature verification (e.g. HS256) requires edge servers to retain the identical secret used to generate the token, establishing a vast attack surface. Asymmetric validation mathematically isolates the private signing node from the public verifying nodes."
+      q: "Why use Ed25519 asymmetric signatures for JWT validation instead of a shared secret?",
+      a: "Symmetric schemes like HS256 require every edge node to hold the same secret used to sign tokens. If any one of those nodes is compromised, the entire token infrastructure is at risk. With Ed25519, only the issuing server holds the private signing key. Edge nodes verify using the corresponding public key, so a breach of a verification node reveals nothing exploitable."
     },
     {
-      q: "How does the X25519 Ephemeral Handshake neutralize interception vulnerabilities?",
-      a: "Standard WebSocket authentications risk local network packet analysis. The protocol mandates out-of-band X25519 key derivation followed by AES-256-GCM symmetric encryption for all initial token routing."
+      q: "How does the X25519 ephemeral handshake protect the QR session transfer?",
+      a: "Standard WebSocket flows are susceptible to local network interception. Our protocol generates a fresh X25519 keypair for every session transfer, computes a shared secret out-of-band, and encrypts the session credentials with AES-256-GCM before transmitting them. The ephemeral keys are discarded once the handshake completes, so past sessions cannot be decrypted even if future keys are compromised."
     },
     {
-      q: "What dictates the usage of Cross-Origin policies?",
-      a: "COOP and COEP headers execute strict memory boundaries in V8 engines, effectively eliminating hardware-adjacent timing extraction attacks such as Spectre."
+      q: "What is the purpose of the Cross-Origin-Opener-Policy and Cross-Origin-Embedder-Policy headers?",
+      a: "These headers instruct the browser to enforce strict memory boundaries within the JavaScript engine. Without them, timing side-channel attacks such as Spectre can read memory across origin boundaries. Enforcing COOP and COEP eliminates the shared memory state that those attacks depend on."
     },
     {
-      q: "How is data destruction verified?",
-      a: "Invoking data deletion replaces database arrays with immutable SHA-256 checksums, guaranteeing mathematical impossibility of reconstruction."
+      q: "How is data deletion cryptographically verified?",
+      a: "When a deletion request is processed, database records are replaced with their SHA-256 hash. The original data is overwritten and cannot be recovered. The hash serves as a verifiable audit proof that the record existed and was destroyed, without retaining any of the original content."
     }
   ];
 
@@ -509,9 +509,9 @@ export default function DevelopersPage() {
                animate={{ opacity: 1 }}
                transition={{ delay: 0.2 }}
                className="font-sans text-[20px] md:text-[24px] text-[#1a1a1a] max-w-4xl leading-[1.7] mb-20 text-balance tracking-[0.01em]"
-            >
-               The definitive technical reference for integrators. We present the exact cryptographic models, zero-knowledge constraints, and state transition paradigms powering the underlying architecture. Update: June 3, 2026.
-            </motion.p>
+             >
+               The definitive technical reference for builders integrating with Whale Alert Network. This document covers the exact cryptographic models, zero-knowledge constraints, and state transition logic that power the underlying architecture. Last updated June 5, 2026.
+             </motion.p>
 
          </div>
       </section>

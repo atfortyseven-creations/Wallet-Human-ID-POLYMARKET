@@ -23,7 +23,7 @@ export default function TermsOfServicePage() {
   return (
     <LegalDocLayout
       title="Terms of Service"
-      subtitle="These Terms of Service set forth the legal terms and conditions governing your use of the Whale Alert Network platform and all associated services."
+      subtitle="These Terms of Service set forth the legal terms and conditions governing your use of the Whale Alert Network platform, developed and operated by Humanity Ledger S.L."
       lastUpdated="May 25, 2026"
       category="Legal"
       toc={TOC}
@@ -39,13 +39,13 @@ export default function TermsOfServicePage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              Whale Alert Network ("our," "us," "we," or the "Company") is a decentralised analytics platform dedicated to providing institutional-grade on-chain intelligence, portfolio management, and real-time blockchain monitoring. We build open-source, privacy-first software applications with a focus on zero-knowledge cryptography and decentralised identity.
+              Humanity Ledger S.L. ("our," "us," "we," or the "Company") is the corporate entity that operates Whale Alert Network, a decentralised analytics platform dedicated to providing institutional-grade on-chain intelligence, portfolio management, and real-time blockchain monitoring. We build open-source, privacy-first software applications with a focus on zero-knowledge cryptography and decentralised identity.
             </p>
             <p>
-              Whale Alert Network is currently developing various products that utilise advanced cryptography and decentralised infrastructure to provide consumers, developers, and institutions with novel functionality on public blockchains.
+              Humanity Ledger S.L. is currently developing various products, including Whale Alert Network, that utilise advanced cryptography and decentralised infrastructure to provide consumers, developers, and institutions with novel functionality on public blockchains.
             </p>
             <p>
-              Whale Alert Network currently provides analytics access and informational services through the website located at{' '}
+              Humanity Ledger S.L. currently provides analytics access and informational services through the Whale Alert Network website located at{' '}
               <a href="https://whalecosystem.io" className="text-black underline underline-offset-2 hover:text-black/60 transition-colors">
                 https://whalecosystem.io
               </a>{' '}
@@ -56,7 +56,7 @@ export default function TermsOfServicePage() {
               <a href="/legal/privacy" className="text-black underline underline-offset-2 hover:text-black/60 transition-colors">
                 Privacy Policy
               </a>{' '}
-              and any other policies referenced herein, comprise the entire understanding between you and Whale Alert Network regarding the Services and supersede all prior agreements.
+              and any other policies referenced herein, comprise the entire understanding between you and Humanity Ledger S.L. regarding the Services and supersede all prior agreements.
             </p>
             <p>
               By accessing the Website and/or using our Services, you confirm that you accept these Terms and agree to be bound by them. If you do not agree to these Terms in their entirety, you may not use this Website or any Services.
@@ -77,7 +77,7 @@ export default function TermsOfServicePage() {
               You expressly acknowledge that your use of the Website and Services is provided on an "as is" and "as available" basis without any warranty. To the extent allowed by applicable law, all express or implied conditions, representations and warranties, including without limitation any implied warranties of merchantability, fitness for a particular purpose, or non-infringement, are disclaimed.
             </p>
             <p>
-              Whale Alert Network does not speak on behalf of, and lacks the authority to legally bind, any third-party blockchain network, protocol, or community. Whale Alert Network is a distinct, independent entity. While we contribute to the open-source ecosystem, we cannot contractually bind any external community or protocol in any manner.
+              Humanity Ledger S.L. does not speak on behalf of, and lacks the authority to legally bind, any third-party blockchain network, protocol, or community. Humanity Ledger S.L. is a distinct, independent entity. While we contribute to the open-source ecosystem, we cannot contractually bind any external community or protocol in any manner.
             </p>
             <p>
               In instances where we discuss future developments or potential features, we are expressing our vision and aspirations. This should not be interpreted as a binding commitment or guarantee that these concepts will be implemented or will prove effective.
@@ -95,7 +95,7 @@ export default function TermsOfServicePage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              Whale Alert Network is committed to protecting your privacy. In order to provide you with Services under these Terms and in accordance with our Privacy Policy, we may process certain personal data. For additional information about the type of personal data we process and how we collect, use and share it, please review our{' '}
+              Humanity Ledger S.L. is committed to protecting your privacy. In order to provide you with Services under these Terms and in accordance with our Privacy Policy, we may process certain personal data. For additional information about the type of personal data we process and how we collect, use and share it, please review our{' '}
               <a href="/legal/privacy" className="text-black underline underline-offset-2 hover:text-black/60 transition-colors">
                 Privacy Policy
               </a>{' '}
@@ -111,7 +111,7 @@ export default function TermsOfServicePage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              The Website and its entire contents, features, and functionality (including but not limited to all text, software, displays, graphics, and design) are owned by Whale Alert Network and its licensors and are protected by copyright, trademark, patent, trade secret, and other intellectual property laws. All copyright and intellectual property rights in our Website content are reserved.
+              The Website and its entire contents, features, and functionality (including but not limited to all text, software, displays, graphics, and design) are owned by Humanity Ledger S.L. and its licensors and are protected by copyright, trademark, patent, trade secret, and other intellectual property laws. All copyright and intellectual property rights in our Website content are reserved.
             </p>
             <p>
               Neither these Terms nor your access to the Website transfers to you any rights, title, or interest to such intellectual property. You agree not to take any action inconsistent with such ownership interests. We and our licensors reserve all rights, including the exclusive right to create derivative works.
@@ -167,7 +167,7 @@ export default function TermsOfServicePage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              You acknowledge and agree to, at your own expense, defend, indemnify and hold harmless Whale Alert Network and its affiliates and their respective equity holders, directors, officers, employees, managers, partners, service providers, licensors, and successors ("Indemnified Parties") from any claim, actions, liabilities, losses, damages, suits and expenses, including attorneys' and expert fees, that we incur in connection with or arising out of:
+              You acknowledge and agree to, at your own expense, defend, indemnify and hold harmless Humanity Ledger S.L. and its affiliates and their respective equity holders, directors, officers, employees, managers, partners, service providers, licensors, and successors ("Indemnified Parties") from any claim, actions, liabilities, losses, damages, suits and expenses, including attorneys' and expert fees, that we incur in connection with or arising out of:
             </p>
             <ul className="space-y-3 pl-5">
               {[
@@ -296,8 +296,8 @@ export default function TermsOfServicePage() {
                 <a href="https://t.me/humanityledger" target="_blank" rel="noopener noreferrer" className="text-black text-[15px] hover:text-black/60 transition-colors underline underline-offset-2">@humanityledger</a>
               </div>
               <div>
-                <p className="text-[11px] font-mono font-bold uppercase tracking-widest text-black/40 mb-1">LinkedIn — Founder</p>
-                <a href="https://www.linkedin.com/in/stefan-antonio-cirisanu-40116140b/" target="_blank" rel="noopener noreferrer" className="text-black text-[14px] hover:text-black/60 transition-colors underline underline-offset-2 break-all">Stefan Antonio Cirisanu</a>
+                <p className="text-[11px] font-mono font-bold uppercase tracking-widest text-black/40 mb-1">Legal Counsel & Compliance</p>
+                <a href="mailto:legal@humanityledger.com" className="text-black text-[14px] hover:text-black/60 transition-colors underline underline-offset-2 break-all">Humanity Ledger S.L. Legal Team</a>
               </div>
             </div>
           </div>

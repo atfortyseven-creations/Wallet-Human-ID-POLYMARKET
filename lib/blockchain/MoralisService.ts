@@ -177,7 +177,10 @@ export class MoralisService {
       const wei = BigInt(hex || '0');
       const balance = (Number(wei) / 1e18).toFixed(8);
       this.failures = 0;
-      return { balance };
+      // Return both the human-readable balance AND the raw wei string so
+      // consumers can safely call BigInt() on balanceWei without hitting
+      // "Cannot convert 0.00000000 to a BigInt" when balance is 0.
+      return { balance, balanceWei: wei.toString() };
     });
   }
 
@@ -185,6 +188,9 @@ export class MoralisService {
   async getWalletNetWorth(address: string) {
     const cacheKey = `alchemy:networth:${address}`;
     return this.cached(cacheKey, TTL_NETWORTH, async () => {
+      // Only query chains confirmed to work on the current Alchemy plan.
+      // Optimism and Avalanche return 403 on free-tier keys, so we exclude them here.
+      // PortfolioService will still query them independently via RPC fallback.
       const chains: MoralisChain[] = ['eth', 'polygon', 'arbitrum', 'base', 'bsc'];
       let totalUsd = 0;
       const chainDetails: any[] = [];

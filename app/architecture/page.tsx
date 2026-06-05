@@ -72,13 +72,9 @@ export default function ArchitecturePage() {
                         <p>
                             Cross-device synchronization is achieved through an Elliptic Curve Diffie-Hellman (ECDH) key exchange protocol, facilitating secure payload transfer without exposing plaintext credentials over intermediary signaling servers.
                         </p>
-                        <ul className="list-decimal pl-6 space-y-2">
-                            <li>The target device generates an ephemeral secp256k1 keypair and encodes the public key along with a routing UUID into an optical matrix barcode (QR code).</li>
-                            <li>The authenticated source device scans the barcode and generates its own ephemeral keypair.</li>
-                            <li>The source device computes the shared secret via ECDH using its private key and the target's public key.</li>
-                            <li>The session credentials are encrypted utilizing AES-256-GCM authenticated encryption, using a symmetric key derived from the shared secret.</li>
-                            <li>The encrypted payload is transmitted to the target device, which computes the identical shared secret to decrypt the payload locally.</li>
-                        </ul>
+                        <p>
+                            The process begins when the target device generates an ephemeral secp256k1 keypair, encoding its public key alongside a routing UUID into an optical matrix barcode. Once the authenticated source device scans this barcode, it generates its own ephemeral keypair and computes a shared secret via ECDH using its private key combined with the target's public key. The session credentials are then encrypted utilizing AES-256-GCM authenticated encryption based on a symmetric key derived from this shared secret. Finally, the encrypted payload is transmitted back to the target device, which computes the identical shared secret to seamlessly decrypt the payload locally.
+                        </p>
                     </div>
                 </section>
 
@@ -115,23 +111,15 @@ export default function ArchitecturePage() {
                         <div className="grid md:grid-cols-2 gap-8 mt-8">
                             <div className="bg-white p-6 border border-black/10 rounded-2xl">
                                 <h4 className="font-bold text-[#050505] mb-4 text-lg">Local Client Environment</h4>
-                                <ul className="space-y-2 text-sm text-[#050505]/70">
-                                    <li>• Base Private Keys (Never transmitted)</li>
-                                    <li>• Ephemeral Key Exchange Material</li>
-                                    <li>• Zero-Knowledge Proving Witnesses</li>
-                                    <li>• XMTP Decryption Keys</li>
-                                    <li>• IndexedDB State Cache</li>
-                                </ul>
+                                <p className="text-sm text-[#050505]/70 leading-relaxed">
+                                    The local boundary is strictly isolated to handle sensitive cryptographic material. This environment securely manages base private keys, which are never transmitted, alongside ephemeral key exchange material and zero-knowledge proving witnesses. Additionally, it locally processes XMTP decryption keys and maintains the IndexedDB state cache.
+                                </p>
                             </div>
                             <div className="bg-white p-6 border border-black/10 rounded-2xl">
                                 <h4 className="font-bold text-[#050505] mb-4 text-lg">Remote Infrastructure</h4>
-                                <ul className="space-y-2 text-sm text-[#050505]/70">
-                                    <li>• Public Wallet Identifiers</li>
-                                    <li>• Encrypted State Commitments</li>
-                                    <li>• Merkle Tree Nullifier Sets</li>
-                                    <li>• Network Routing Information</li>
-                                    <li>• Public Forum Ciphertexts</li>
-                                </ul>
+                                <p className="text-sm text-[#050505]/70 leading-relaxed">
+                                    The remote boundary is purposefully constrained to operate with minimal privilege. It exclusively processes public wallet identifiers, encrypted state commitments, and Merkle tree nullifier sets. Furthermore, the remote infrastructure handles necessary network routing information and stores public forum ciphertexts without ever accessing plaintext user data.
+                                </p>
                             </div>
                         </div>
                     </div>

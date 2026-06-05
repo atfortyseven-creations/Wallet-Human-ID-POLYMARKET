@@ -22,7 +22,7 @@ export default function PrivacyPolicyPage() {
   return (
     <LegalDocLayout
       title="Privacy Policy"
-      subtitle="This policy explains how Whale Alert Network collects, uses, and safeguards your personal data in compliance with GDPR, LOPDGDD, and international data protection standards."
+      subtitle="This policy explains how Humanity Ledger S.L. collects, uses, and safeguards your personal data on the Whale Alert Network platform in compliance with GDPR, LOPDGDD, and international data protection standards."
       lastUpdated="May 25, 2026"
       category="Legal"
       toc={TOC}
@@ -38,7 +38,7 @@ export default function PrivacyPolicyPage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              Welcome to Whale Alert Network ("we," "our," "us," or the "Company"). We are unequivocally committed to protecting your privacy, maintaining your trust, and ensuring the security of your personal data. This comprehensive Privacy Policy explains in detail how we collect, use, disclose, transfer, and safeguard your information when you access our decentralised analytics platform, mobile applications, APIs, and any related services (collectively, the "Services").
+              Welcome to Whale Alert Network, a platform operated by Humanity Ledger S.L. ("we," "our," "us," or the "Company"). We are unequivocally committed to protecting your privacy, maintaining your trust, and ensuring the security of your personal data. This comprehensive Privacy Policy explains in detail how we collect, use, disclose, transfer, and safeguard your information when you access our decentralised analytics platform, mobile applications, APIs, and any related services (collectively, the "Services").
             </p>
             <p>
               This policy has been drafted in strict compliance with the European Union General Data Protection Regulation (GDPR) 2016/679, the Spanish Organic Law 3/2018 on Data Protection and Guarantee of Digital Rights (LOPDGDD), the California Consumer Privacy Act (CCPA), and other applicable global data protection frameworks.
@@ -58,7 +58,7 @@ export default function PrivacyPolicyPage() {
             <p>For the purposes of the GDPR and applicable data protection laws, the Data Controller is:</p>
             <div className="border border-black/10 rounded-xl p-6 space-y-3 mt-2">
               {[
-                ['Legal Entity', 'Whale Alert Network, S.L.'],
+                ['Legal Entity', 'Humanity Ledger S.L.'],
                 ['Registered Office', 'Paseo de la Castellana, Madrid, 28046, Spain'],
                 ['General Email', 'humanityledger@humanidfi.es'],
                 ['Data Protection Officer (DPO)', 'humanityledger@humanidfi.es'],
@@ -400,9 +400,9 @@ export default function PrivacyPolicyPage() {
                 </a>
               </div>
               <div>
-                <p className="text-[11px] font-mono font-bold uppercase tracking-widest text-black/40 mb-1">LinkedIn — Founder</p>
-                <a href="https://www.linkedin.com/in/stefan-antonio-cirisanu-40116140b/" target="_blank" rel="noopener noreferrer" className="text-black text-[14px] underline underline-offset-2 hover:text-black/60 transition-colors break-all">
-                  Stefan Antonio Cirisanu
+                <p className="text-[11px] font-mono font-bold uppercase tracking-widest text-black/40 mb-1">Data Protection Officer</p>
+                <a href="mailto:legal@humanityledger.com" className="text-black text-[14px] underline underline-offset-2 hover:text-black/60 transition-colors break-all">
+                  Humanity Ledger S.L. DPO
                 </a>
               </div>
             </div>

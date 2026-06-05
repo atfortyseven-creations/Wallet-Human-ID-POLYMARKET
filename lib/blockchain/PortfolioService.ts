@@ -12,6 +12,29 @@ import { safeRedisGet, safeRedisSet } from '../redis/client';
 import { safeJsonParse } from '../utils/json';
 
 /**
+ * Safely convert a string to BigInt.
+ * Handles:
+ *   - Hex strings like "0x1a2b3c"  
+ *   - Integer strings like "1000000000000000000"
+ *   - Decimal strings like "0.00000000" (treated as 0)
+ *   - undefined / null / empty (treated as 0)
+ */
+function safeToBigInt(value: string | undefined | null): bigint {
+  if (!value) return 0n;
+  const s = value.trim();
+  if (!s || s === '0') return 0n;
+  // If it contains a decimal point it is already a human-readable float — not wei.
+  // We cannot convert it to BigInt, so treat it as zero to avoid a runtime crash.
+  if (s.includes('.')) return 0n;
+  try {
+    // BigInt() handles both '0x...' hex strings and plain integer strings.
+    return BigInt(s);
+  } catch {
+    return 0n;
+  }
+}
+
+/**
  * PortfolioService
  * LEGENDARY service for ultra-fast balance and portfolio fetching.
  * Uses Moralis Deep Index API to achieve <500ms response times.
@@ -99,7 +122,10 @@ export class PortfolioService {
     // Moralis v2.2 supports: ETH(1), Polygon(137), BSC(56), Avalanche(43114),
     // Arbitrum(42161), Optimism(10), Base(8453). All others (e.g. World Chain 480)
     // fall through to this path to prevent mis-routed 'eth' queries & timeouts.
-    const MORALIS_SUPPORTED = new Set([1, 137, 56, 43114, 42161, 10, 8453]);
+    // Chains 10 (Optimism) and 43114 (Avalanche) return HTTP 403 on the current
+    // Alchemy free-tier plan. Exclude them here so they are routed directly to
+    // the RPC fallback path below, eliminating noisy 403 error logs.
+    const MORALIS_SUPPORTED = new Set([1, 137, 56, 42161, 8453]);
     if (!MORALIS_SUPPORTED.has(chainId)) {
       console.log(`[Portfolio] Chain ${chainId} not Moralis-supported  routing to RPC fallback.`);
       try {
@@ -218,8 +244,9 @@ export class PortfolioService {
         preFetchedNetWorth ? Promise.resolve(preFetchedNetWorth) : moralisService.getWalletNetWorth(address).catch(() => null)
       ]);
 
-      // Parse native balance
-      const nativeBalance = BigInt(nativeData?.balance || '0');
+      // Parse native balance — prefer balanceWei (integer string) to avoid
+      // "Cannot convert 0.00000000 to a BigInt" when balance is a decimal.
+      const nativeBalance = safeToBigInt((nativeData as any)?.balanceWei ?? nativeData?.balance);
       const nativeSymbol = this.getNativeSymbol(chainId);
       const nativeBalanceFormatted = parseFloat(ethers.formatUnits(nativeBalance, 18));
       

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState } from 'react';
 import { ShieldCheck, ShieldAlert, Key, Zap, Building } from 'lucide-react';
@@ -7,9 +7,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 // Simulating data mapping from GraphQL/Prisma 
 const GOLD_CANDIDATES = [
   { id: 'binance', name: 'Binance Global', type: 'Exchange', typeLabel: 'Beginner-Friendly / Futures', reserveUsd: 115000000000, features: ['High Liquidity', 'Copy Trading'] },
-  { id: 'stake', name: 'Stake', type: 'Casino', typeLabel: 'Crypto Casino', reserveUsd: 250000000, features: ['No KYC', 'Provably Fair', 'High Roller'] },
+  { id: 'uniswap', name: 'Uniswap', type: 'DEX', typeLabel: 'Decentralised Exchange', reserveUsd: 3500000000, features: ['AMM', 'Permissionless', 'Liquidity Pools'] },
   { id: 'ledger', name: 'Ledger Nano', type: 'Wallet', typeLabel: 'Hardware Wallet', reserveUsd: 0, features: ['Cold Storage', 'EAL5+ Secure Element'] },
-  { id: 'polymarket', name: 'Polymarket', type: 'PredictionMarket', typeLabel: 'Web3 Predictions', reserveUsd: 300000000, features: ['Political', 'Sports', 'No Limit'] },
+  { id: 'aave', name: 'Aave', type: 'Lending', typeLabel: 'DeFi Lending Protocol', reserveUsd: 12000000000, features: ['Overcollateralised', 'Flash Loans', 'Yield'] },
 ];
 
 export default function GoldRegistryPage() {

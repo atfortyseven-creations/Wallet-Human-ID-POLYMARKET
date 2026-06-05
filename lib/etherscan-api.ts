@@ -75,7 +75,8 @@ export async function getEtherscanTokenBalances(address: string): Promise<Ethers
     const data = await throttledFetch(url);
     
     if (data.status !== '1' || !Array.isArray(data.result)) {
-      console.warn('[Etherscan] No token transactions found');
+      // Empty result is normal for new wallets — use debug, not warn, to avoid PM2 stderr routing.
+      console.debug('[Etherscan] No token transactions found for this address.');
       return [];
     }
 

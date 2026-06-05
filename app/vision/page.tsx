@@ -6,7 +6,7 @@ import { VisionAboutSection } from '@/components/vision/VisionAboutSection';
 export const metadata = {
   title: 'Our Vision — Whale Alert Network',
   description:
-    'Building a secure, decentralized identity ecosystem under the leadership of Stefan Antonio Cirisanu and Humanity Ledger.',
+    'Humanity Ledger S.L. is building a secure, decentralised identity ecosystem for the next generation of financial infrastructure, powered by zero-knowledge cryptography on Aztec Network.',
 };
 
 export default function VisionPage() {
@@ -33,23 +33,21 @@ export default function VisionPage() {
 
             <div className="space-y-5 text-black/65 font-sans text-base md:text-lg leading-relaxed max-w-2xl">
               <p>
-                At <strong className="text-black font-black">Whale Alert Network</strong>, our
-                primary goal is to establish a secure and transparent identity layer that protects
-                user data while ensuring full regulatory compliance. We believe that a robust
-                digital identity is the foundation for a safer and more efficient financial
-                ecosystem.
+                At <strong className="text-black font-black">Humanity Ledger S.L.</strong>, our
+                primary goal is to build a secure and transparent identity layer for the Whale Alert Network platform — one that protects
+                user data while ensuring full regulatory compliance. We believe that a credible
+                digital identity is the foundation of a safer and more efficient financial
+                ecosystem, not a barrier to it.
               </p>
               <p>
-                To achieve this, we are integrating directly with{' '}
-                <strong className="text-black font-black">Aztec Network</strong>. By leveraging
-                Aztec's advanced zero-knowledge privacy infrastructure, we can guarantee that all
-                user data remains completely confidential — mathematical proofs, not personal data.
+                To realise this, we have integrated directly with{' '}
+                <strong className="text-black font-black">Aztec Network</strong>. By building on
+                Aztec's zero-knowledge privacy infrastructure, we guarantee that user data
+                remains mathematically confidential. Proofs replace personal data. That is the standard we hold ourselves to.
               </p>
               <p>
-                Operating as an open-source initiative, we are actively expanding our integration
-                with Layer-2 protocols. We believe that true financial sovereignty requires
-                transparent code and trustless systems, giving you the power to monitor global
-                markets privately and securely.
+                As an open-source initiative, we are expanding our coverage of Layer-2 protocols continuously. Financial sovereignty, in our view, demands transparent code and trustless systems — giving every user the power to monitor global
+                markets privately and on their own terms.
               </p>
             </div>
 

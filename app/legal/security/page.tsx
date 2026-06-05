@@ -35,7 +35,7 @@ export default function SecurityArchitecturePage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              At Whale Alert Network, security is not an afterthought or a compliance checkbox — it is the fundamental pillar upon which our entire architecture is built. We understand that in the realm of decentralised finance, the integrity of data and the protection of user assets are absolutely paramount.
+              At Humanity Ledger S.L., security is not an afterthought or a compliance checkbox — it is the fundamental pillar upon which the entire Whale Alert Network architecture is built. We understand that in the realm of decentralised finance, the integrity of data and the protection of user assets are absolutely paramount.
             </p>
             <p>
               We employ a defence-in-depth strategy, combining cutting-edge cryptographic protocols, a strict zero-trust operational model, and continuous third-party auditing to ensure that our platform remains resilient against emerging threats. This document outlines the exhaustive measures we take to secure our infrastructure and protect your digital Privatety.
@@ -121,7 +121,7 @@ export default function SecurityArchitecturePage() {
             </p>
             <ul className="space-y-3 pl-5">
               {[
-                ['Rigorous Independent Auditing', 'Every smart contract deployed by Whale Alert Network undergoes exhaustive security audits by tier-1 independent blockchain security firms prior to mainnet launch.'],
+                ['Rigorous Independent Auditing', 'Every smart contract deployed for Whale Alert Network undergoes exhaustive security audits by tier-1 independent blockchain security firms prior to mainnet launch.'],
                 ['Formal Verification', 'We utilise formal mathematical verification techniques to prove the correctness of critical smart contract logic, ensuring immunity to common attack vectors such as reentrancy and integer overflow.'],
                 ['Bug Bounty Program', 'We operate a continuous, high-reward public bug bounty program, incentivising the global white-hat hacker community to scrutinise our codebase.'],
                 ['Multi-Signature Governance', 'Administrative controls over protocol parameters are secured by decentralised, multi-signature wallets requiring consensus from geographically distributed keyholders.'],
@@ -157,7 +157,7 @@ export default function SecurityArchitecturePage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              Technology is only as secure as the personnel operating it. Every member of the Whale Alert Network engineering and infrastructure team undergoes a rigorous, multi-stage background check before being granted access to internal systems.
+              Technology is only as secure as the personnel operating it. Every member of the Humanity Ledger S.L. engineering and infrastructure team undergoes a rigorous, multi-stage background check before being granted access to internal systems.
             </p>
             <p>
               Access to critical production databases and deployment pipelines operates on a strict Principle of Least Privilege (PoLP) and requires multi-party computation approvals. All employees participate in mandatory, quarterly security awareness training focused on mitigating advanced social engineering and phishing campaigns.
@@ -221,7 +221,7 @@ export default function SecurityArchitecturePage() {
             </p>
             <div className="border border-black/10 rounded-xl p-5 sm:p-6 space-y-4 mt-2">
               <div>
-                <p className="text-[11px] font-mono font-bold uppercase tracking-widest text-black/40 mb-1">Email</p>
+                <p className="text-[11px] font-mono font-bold uppercase tracking-widest text-black/40 mb-1">Humanity Ledger S.L. Security Team</p>
                 <a href="mailto:humanityledger@gmail.com" className="text-black text-[15px] underline underline-offset-2 hover:text-black/60 transition-colors break-all">humanityledger@gmail.com</a>
               </div>
               <div>
