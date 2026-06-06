@@ -34,7 +34,7 @@ export async function completeSessionHandshake(
       return {
         ok: false,
         message:
-          'QR code not recognized. Scan the desktop connect QR shown on this site (Whale Alert Network).',
+          'QR code not recognized. Scan the desktop connect QR shown on this site (Whale Network).',
       };
     }
   }

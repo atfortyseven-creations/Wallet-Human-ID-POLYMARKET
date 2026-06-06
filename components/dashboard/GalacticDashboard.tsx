@@ -23,8 +23,8 @@ import SecurityVault from '@/components/wallet/SecurityVault';
 import SettingsPanel from '@/components/wallet/SettingsPanel';
 import { MetaMaskNetworkSelector } from '@/components/portfolio/MetaMaskNetworkSelector';
 
-// Custom Polygon RPC for direct on-chain reads
-const POLYGON_RPC = "https://polygon-rpc.com";
+// Custom Polygon RPC for// High-rate limit alchemy RPC instead of free rate-limited public RPC
+const POLYGON_RPC = process.env.NEXT_PUBLIC_ALCHEMY_POLY_RPC_URL || "https://polygon-rpc.com";
 
 interface TokenInfo {
   symbol: string;

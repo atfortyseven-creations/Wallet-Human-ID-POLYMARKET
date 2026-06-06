@@ -89,7 +89,7 @@ export class AlchemyMonitor {
             // Also broadcast to generic channel for UI components listening globally
             await redis.publish('vitals.tx.new', JSON.stringify(eventData));
 
-            // Whale alert threshold: > 10 ETH
+            // Whale Network threshold: > 10 ETH
             if (Number(ethValue) / 1e18 > 10) {
                 await redis.publish('whale-alerts', JSON.stringify({
                     type: 'TRANSACTION',

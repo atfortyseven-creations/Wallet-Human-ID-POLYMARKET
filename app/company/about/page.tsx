@@ -48,7 +48,7 @@ export default function AboutPage() {
   return (
     <LegalDocLayout
       title="About Us"
-      subtitle="The mission, vision, and people behind Humanity Ledger S.L. and our flagship platform, Whale Alert Network — built to make advanced decentralised finance accessible, transparent, and secure for everyone."
+      subtitle="The mission, vision, and people behind Humanity Ledger S.L. and our flagship platform, Whale Network — built to make advanced decentralised finance accessible, transparent, and secure for everyone."
       lastUpdated="May 25, 2026"
       category="Company"
       toc={TOC}
@@ -172,7 +172,7 @@ export default function AboutPage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              Whale Alert Network is not confined by geopolitical borders. Our infrastructure is deployed across multiple regions, ensuring low-latency access and uninterrupted service for a truly global user base. We are actively localising our analytics engine to support multiple international languages and region-specific regulatory frameworks.
+              Whale Network is not confined by geopolitical borders. Our infrastructure is deployed across multiple regions, ensuring low-latency access and uninterrupted service for a truly global user base. We are actively localising our analytics engine to support multiple international languages and region-specific regulatory frameworks.
             </p>
             <p>
               Environmental, Social, and Governance (ESG) principles are embedded deep within our operational DNA. In an industry often criticised for its carbon footprint, we have strategically aligned our node infrastructure with data centres powered entirely by renewable energy sources. We actively support research into energy-efficient cryptographic proofs and aggressively optimise our server-side computational load to minimise our environmental impact.
@@ -214,7 +214,7 @@ export default function AboutPage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              Whale Alert Network is entirely <strong>Open Source</strong>. We believe that true financial Privatety and privacy can only be achieved when the underlying code is fully transparent, auditable, and verifiable by the community. We do not commercialise the system; our goal is to provide a robust, production-ready public good for the decentralised ecosystem.
+              Whale Network is entirely <strong>Open Source</strong>. We believe that true financial Privatety and privacy can only be achieved when the underlying code is fully transparent, auditable, and verifiable by the community. We do not commercialise the system; our goal is to provide a robust, production-ready public good for the decentralised ecosystem.
             </p>
             <p>
               We are deeply integrated with the <strong>Aztec Network</strong>, a programmable zero-knowledge (ZK) rollup. By leveraging Aztec’s Noir circuits and confidential execution environments, we obscure sensitive user interactions:

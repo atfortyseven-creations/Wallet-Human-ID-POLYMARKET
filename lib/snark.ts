@@ -15,7 +15,7 @@ export async function generateUniversalAttestation(wallet: `0x${string}`): Promi
   const crs = await loadPrecomputedCRS(); // CRS real pre-generado y almacenado en IndexedDB
 
   const statement: ZKStatement = {
-    institution: 'Whale Alert Network',
+    institution: 'Whale Network',
     jurisdiction: 'Singapore',
     AUM_threshold: BigInt(500000000),
     whale_score: 0.97,

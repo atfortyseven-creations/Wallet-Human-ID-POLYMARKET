@@ -1,6 +1,6 @@
 /**
  * 
- * WHALE ALERT NETWORK  Aggregation & Indexing Service
+ * Whale Network NETWORK  Aggregation & Indexing Service
  * 
  *
  * Purpose: Pre-computes expensive analytics across the 1TB Railway volume.

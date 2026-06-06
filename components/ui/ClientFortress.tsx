@@ -48,7 +48,7 @@ export function ClientFortress() {
       if (widthThreshold || heightThreshold) {
         // DevTools likely open
         console.clear();
-        console.log("%cWHALE ALERT NETWORK SYSTEM", "color: #d4ff28; font-size: 40px; font-weight: bold;");
+        console.log("%cWhale Network NETWORK SYSTEM", "color: #d4ff28; font-size: 40px; font-weight: bold;");
         console.log("%cACCESS RESTRICTED: Forensic Core Integrity Active", "color: #8b5cf6; font-size: 16px;");
       }
     }, 1000);

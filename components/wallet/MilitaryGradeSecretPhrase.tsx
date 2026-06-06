@@ -51,7 +51,7 @@ export function ProtocolRecoveryPhrase({ onConfirm }: { onConfirm?: (mnemonic: s
     const handleDownloadPDF = () => {
         // Create PDF with mnemonic
         const content = `
-Whale Alert Network Wallet - RECOVERY PHRASE
+Whale Network Wallet - RECOVERY PHRASE
 ================================
 
 CRITICAL: Store this phrase in a safe place. Never share it with anyone.
@@ -62,7 +62,7 @@ ${words.map((word, i) => `${i + 1}. ${word}`).join('\n')}
 
 ================================
 Generated: ${new Date().toLocaleString()}
-Wallet: Whale Alert Network Terminal v4.0
+Wallet: Whale Network Terminal v4.0
         `;
 
         const blob = new Blob([content], { type: 'text/plain' });

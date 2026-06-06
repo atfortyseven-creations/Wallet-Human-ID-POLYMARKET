@@ -117,7 +117,7 @@ const EDITION_MATRIX = {
 
 export async function GET() {
     return NextResponse.json({
-        product:      'Whale Alert Network',
+        product:      'Whale Network',
         version:      '3.0.0',
         philosophy:   'Enterprise support. System architecture. Non-custodial always.',
         editions:     EDITION_MATRIX,

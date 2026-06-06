@@ -20,6 +20,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
     // Legal & Regulatory — indexed for CNMV / Aztec evaluation
     { path: '/legal/compliance', priority: 0.9, frequency: 'weekly' },
+    { path: '/legal/aztec-architecture', priority: 0.9, frequency: 'weekly' },
     { path: '/legal/legal-notice', priority: 0.7, frequency: 'monthly' },
     { path: '/legal/privacy', priority: 0.7, frequency: 'monthly' },
     { path: '/legal/terms', priority: 0.7, frequency: 'monthly' },
@@ -35,4 +36,3 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route.priority,
   }))
 }
-

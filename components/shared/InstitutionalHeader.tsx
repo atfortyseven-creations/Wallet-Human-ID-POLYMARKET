@@ -95,7 +95,7 @@ export function InstitutionalHeader() {
                         >
                             <Image
                                 src="/official-whale-monochrome.png"
-                                alt="Whale Alert Network Logo"
+                                alt="Whale Network Logo"
                                 width={52}
                                 height={32}
                                 className="object-contain w-full h-full p-1 opacity-80 mix-blend-multiply"

@@ -9,7 +9,7 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 /**
  * [LEGENDARY] Whale Monitoring Quality Section
- * Explains why Whale Alert Network has the world's best real-time whale analytics
+ * Explains why Whale Network has the world's best real-time whale analytics
  */
 export function SwapQualitySection() {
   const { t } = useLanguage();
@@ -76,7 +76,7 @@ export function SwapQualitySection() {
             <div className="relative w-full aspect-square max-w-[500px] mx-auto rounded-[3rem] overflow-hidden border border-white/10 shadow-2xl bg-black/40">
               <Image
                 src="/models/update/Aztec Image_03.jpg"
-                alt="Whale Alert Network Whale Monitor"
+                alt="Whale Network Whale Monitor"
                 fill
                 className="object-cover transition-transform duration-1000 group-hover:scale-110"
                 style={{ 

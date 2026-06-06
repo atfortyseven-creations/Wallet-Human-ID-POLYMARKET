@@ -1,5 +1,5 @@
 ﻿/**
- * WHALE ALERT NETWORK - INSTITUTIONAL CONSTANTS
+ * Whale Network NETWORK - INSTITUTIONAL CONSTANTS
  * 
  * Centralized registry for visual assets, identities, and system parameters.
  */

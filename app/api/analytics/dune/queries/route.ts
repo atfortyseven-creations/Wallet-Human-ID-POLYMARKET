@@ -21,7 +21,7 @@ const Private_QUERIES = [
         category:    'macro',
         description: 'Aggregates total whale-grade USD volume per blockchain over the last 30 days. Ideal for cross-chain capital flow analysis.',
         sql: `
--- Whale Alert Network  System Dune Query: Volume by Chain
+-- Whale Network  System Dune Query: Volume by Chain
 SELECT
     chain,
     COUNT(*)                             AS tx_count,
@@ -44,7 +44,7 @@ ORDER BY total_volume_usd DESC
         category:    'high-conviction',
         description: 'Chronological log of all transactions exceeding $10M USD. Raw institutional-grade signals.',
         sql: `
--- Whale Alert Network  System Dune Query: Mega Whale Timeline
+-- Whale Network  System Dune Query: Mega Whale Timeline
 SELECT
     detected_at,
     chain,
@@ -67,7 +67,7 @@ LIMIT 500
         category:    'tokenomics',
         description: 'Ranks tokens by whale concentration score  high whale activity relative to total events signals institutional accumulation pressure.',
         sql: `
--- Whale Alert Network  System Dune Query: Token Concentration
+-- Whale Network  System Dune Query: Token Concentration
 SELECT
     token,
     COUNT(*)                              AS total_events,
@@ -93,7 +93,7 @@ LIMIT 50
         category:    'timing',
         description: 'Maps whale activity to UTC hour. Reveals institutional trading windows  critical for entry timing.',
         sql: `
--- Whale Alert Network  System Dune Query: Hourly Flow Pattern
+-- Whale Network  System Dune Query: Hourly Flow Pattern
 SELECT
     EXTRACT(HOUR FROM detected_at)        AS utc_hour,
     COUNT(*)                              AS event_count,
@@ -112,7 +112,7 @@ ORDER BY utc_hour ASC
         category:    'wallets',
         description: 'Identifies wallets that appear multiple times in whale-grade transactions. High-repeat wallets = institutional smart money.',
         sql: `
--- Whale Alert Network  System Dune Query: Repeat Whale Wallets
+-- Whale Network  System Dune Query: Repeat Whale Wallets
 SELECT
     from_address,
     COUNT(*)                              AS tx_count,
@@ -138,7 +138,7 @@ LIMIT 200
         category:    'research',
         description: 'Academic-grade Z-score analysis. Detects statistical anomalies in whale volume that precede significant price movements. Based on the EVM Thermodynamics paper.',
         sql: `
--- Whale Alert Network  EVM Thermodynamics Z-Score Query
+-- Whale Network  EVM Thermodynamics Z-Score Query
 WITH daily_stats AS (
     SELECT
         token,

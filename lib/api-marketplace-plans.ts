@@ -20,7 +20,7 @@ export const API_MARKETPLACE_PLANS = [
     ],
     sessionQualityBenefits: [
       "Faster data refresh rates",
-      "Reduced latency on whale alerts",
+      "Reduced latency on Whale Networks",
       "Priority queue for API requests",
       "Extended session timeout (24h)",
     ],
@@ -116,7 +116,7 @@ export const API_MARKETPLACE_PLANS = [
 export const SESSION_QUALITY_BENEFITS = {
   standard: [
     "Faster data refresh rates",
-    "Reduced latency on whale alerts",
+    "Reduced latency on Whale Networks",
     "Priority queue for API requests",
     "Extended session timeout (24h)",
   ],

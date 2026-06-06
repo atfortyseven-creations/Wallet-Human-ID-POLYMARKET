@@ -67,7 +67,7 @@ export default function WhaleAlertLanding({
               fontWeight: 500,
             }}
           >
-            Whale Alert Network
+            Whale Network
           </span>
           <button
             onClick={() => router.push("/")}
@@ -121,7 +121,7 @@ export default function WhaleAlertLanding({
               letterSpacing: "-0.01em",
             }}
           >
-            Whale Alert Network
+            Whale Network
           </h1>
           <p
             style={{
@@ -358,7 +358,7 @@ export default function WhaleAlertLanding({
               letterSpacing: "0.12em",
             }}
           >
-            © Whale Alert Network
+            © Whale Network
           </span>
           <button
             onClick={() => router.push("/")}

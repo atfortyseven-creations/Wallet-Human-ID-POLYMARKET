@@ -583,7 +583,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         if (attempts >= maxAttempts) {
           console.error('[WhaleChat] Init Error:', err);
           if (err?.name === 'ChunkLoadError' || errorMsg.includes('Loading chunk')) {
-            setInitError('Whale Alert Network module failed to load. Please check your network connection and reload the terminal.');
+            setInitError('Whale Network module failed to load. Please check your network connection and reload the terminal.');
           } else if (errorMsg.includes('No active wallet') || errorMsg.includes('connector') || errorMsg.includes('signMessage') || errorMsg.toLowerCase().includes('unknown signer')) {
             if (isSystemHandshake) {
                setInitError('Whale identity not yet synchronized from desktop. Please keep this browser open while the desktop terminal finishes the handshake.');
@@ -593,7 +593,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           } else if (errorMsg.includes('WASM') || errorMsg.includes('wasm')) {
             setInitError('Cryptographic Engine Failure. Hardware architecture error or restricted browser security settings.');
           } else {
-            setInitError(`Whale Alert Network handshake failure: ${errorMsg.slice(0, 80) || 'Unknown Protocol Error'}. Please retry.`);
+            setInitError(`Whale Network handshake failure: ${errorMsg.slice(0, 80) || 'Unknown Protocol Error'}. Please retry.`);
           }
           setIsInitializing(false);
           initInFlight.current = false;

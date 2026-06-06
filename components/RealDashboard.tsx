@@ -15,7 +15,7 @@ export default function RealDashboard() {
     if (!isConnected) {
         return (
             <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
-                <h1 className="text-4xl font-black mb-6">Whale Alert Network Engine</h1>
+                <h1 className="text-4xl font-black mb-6">Whale Network Engine</h1>
                 <button onClick={() => connect({ connector: injected() })} className="bg-black text-white px-8 py-4 rounded-full font-bold text-lg hover:scale-105 transition">
                     Connect Wallet
                 </button>

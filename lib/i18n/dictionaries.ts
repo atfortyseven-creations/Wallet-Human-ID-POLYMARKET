@@ -3,7 +3,7 @@ export type Locale = 'en';
 //  Base dictionary shape (English is the source of truth) 
 const en = {
   metadata: {
-    title: 'Whale Alert Network',
+    title: 'Whale Network',
     description: 'The leading system identity and whale analytics platform.',
   },
   nav: {
@@ -28,7 +28,7 @@ const en = {
   landing: {
     hero: {
         badge: 'Elite Tracking Protocol',
-        title: 'Whale Alert Network',
+        title: 'Whale Network',
         subtitle: 'System tracking with advanced security, real-time alerts, and unmatched precision.',
         keys: 'Real data. Deep insights.',
         identity: 'Tracking. Data. Alpha.',
@@ -103,10 +103,10 @@ const en = {
             benefits: ["Historical volume rankings", "Transaction frequency data", "Wallet label identification", "Direct profile deep-links"]
           },
           {
-            title: "Whale Alert Network",
+            title: "Whale Network",
             category: "Protocol",
             description: "Elite identity for the next billion.",
-            detailedInfo: "Whale Alert Network is built on the principle of market transparency. We provide verified data directly from the blockchain for professional traders.",
+            detailedInfo: "Whale Network is built on the principle of market transparency. We provide verified data directly from the blockchain for professional traders.",
             benefits: ["Verified data streams", "Encrypted data persistence", "Elite grade architecture", "On-chain verification"]
           }
         ]
@@ -234,7 +234,7 @@ const en = {
           security: 'Security',
           compliance: 'Compliance'
       },
-      rights: '© 2026 Whale Alert Network. All rights reserved.'
+      rights: '© 2026 Whale Network. All rights reserved.'
   },
   countdown: {
       badge: 'Beyond the Horizon',
@@ -246,7 +246,7 @@ const en = {
       seconds: 'SECONDS'
   },
   ecosystem: {
-    title: 'Whale Alert Network',
+    title: 'Whale Network',
     subtitle: "Engineering trust. We don't sell hype, we sell verifiable architecture.",
     cat_core: 'Core Ecosystem',
     cat_trading: 'Trading & Security',

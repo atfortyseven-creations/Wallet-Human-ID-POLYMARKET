@@ -119,7 +119,7 @@ export function WhaleDetectionVisual() {
                                     className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-400/50 to-transparent shadow-[0_0_20px_2px_rgba(16,185,129,0.3)]"
                                 />
 
-                                {/* Whale Alert Network Data Overlay */}
+                                {/* Whale Network Data Overlay */}
                                 <motion.div 
                                     initial={{ opacity: 0, scale: 0.9, y: 20 }}
                                     animate={{ opacity: 1, scale: 1, y: 0 }}

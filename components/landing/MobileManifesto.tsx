@@ -60,7 +60,7 @@ export function MobileManifesto() {
           </motion.h1>
 
           <motion.p variants={FADE_UP} className="font-serif text-[16px] text-[#555] leading-[1.7] mb-10 max-w-[340px] mx-auto px-2">
-            Spitalul Clinic Colțea (est. 1704) has partnered with Whale Alert Network. We are the first platform to successfully hash medical discharge records on the blockchain. Your history is completely protected and belongs entirely to you.
+            Spitalul Clinic Colțea (est. 1704) has partnered with Whale Network. We are the first platform to successfully hash medical discharge records on the blockchain. Your history is completely protected and belongs entirely to you.
           </motion.p>
 
           <motion.div variants={FADE_UP} className="w-full max-w-[300px] mx-auto">

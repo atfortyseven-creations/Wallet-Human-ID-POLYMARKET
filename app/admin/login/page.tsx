@@ -65,7 +65,7 @@ export default function AdminLoginPage() {
                     {/* Logo */}
                     <div className="text-center mb-10">
                         <h1 className="text-2xl font-extralight tracking-[0.5em] uppercase text-white">
-                            Whale Alert
+                            Whale Network
                         </h1>
                         <p className="text-xs text-neutral-500 mt-2 tracking-widest">
                             ADMIN PORTAL

@@ -160,7 +160,7 @@ export default function TelegramSettings({ wallet }: { wallet: string }) {
               <AlertCircle size={13} /> Confirm deactivation
             </p>
             <p className="text-[10px] text-[#888888] font-mono">
-              This will remove your Telegram Chat ID from the system. You won't receive any more whale alerts until you reconnect.
+              This will remove your Telegram Chat ID from the system. You won't receive any more Whale Networks until you reconnect.
             </p>
             <div className="flex gap-2">
               <button
@@ -190,7 +190,7 @@ export default function TelegramSettings({ wallet }: { wallet: string }) {
           <ol className="space-y-3">
             {[
               { n: '01', text: 'Open Telegram and search for ', link: '@BotFather', href: 'https://t.me/BotFather' },
-              { n: '02', text: 'Start a chat with the Whale Alert bot (ask the team for the bot username)' },
+              { n: '02', text: 'Start a chat with the Whale Network bot (ask the team for the bot username)' },
               { n: '03', text: 'Open ', link: '@userinfobot', href: 'https://t.me/userinfobot', suffix: ' to get your numeric Chat ID' },
             ].map((step, i) => (
               <li key={i} className="flex items-start gap-3">

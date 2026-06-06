@@ -99,11 +99,11 @@ class MarketStream {
 
       store.addTrade(symbol, trade);
 
-      // Whale Alert for large trades
+      // Whale Network for large trades
       const value = trade.quantity * trade.price;
       if (value > 50000) {
         import('sonner').then(({ toast }) => {
-          toast(` WHALE ALERT: ${symbol}`, {
+          toast(` Whale Network: ${symbol}`, {
             description: `${trade.side === 'buy' ? 'BOUGHT' : 'SOLD'} $${safeToLocaleString(value)}`,
             style: {
               background: trade.side === 'buy' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(244, 63, 94, 0.2)',

@@ -19,13 +19,13 @@ export async function POST(req: Request) {
     const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_SITE_URL || 'https://humanidfi.com';
     const secretLink = `${origin}/news?share_token=${tokenData}`;
 
-    // Construcción térmica del correo estilo "Whale Alert Network"
+    // Construcción térmica del correo estilo "Whale Network"
     const htmlEmail = `
       <!DOCTYPE html>
       <html>
       <body style="font-family: monospace; background-color: #f2ecd8; color: #000; padding: 40px; margin: 0;">
         <div style="max-width: 600px; margin: 0 auto; border: 4px solid #000; padding: 40px; background-color: #F7F2EA;">
-          <h1 style="text-transform: uppercase; border-bottom: 2px solid #000; padding-bottom: 10px;">WHALE ALERT NETWORK INFORMA</h1>
+          <h1 style="text-transform: uppercase; border-bottom: 2px solid #000; padding-bottom: 10px;">Whale Network NETWORK INFORMA</h1>
           <p style="font-size: 14px; text-transform: uppercase; font-weight: bold; margin-top: 30px;">
             Transmisión Segura: Lectura Única (One-Time Read)
           </p>
@@ -57,7 +57,7 @@ export async function POST(req: Request) {
     const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
 
     await resend.emails.send({
-      from: 'Whale Alert Network <onboarding@resend.dev>', // Usamos onboarding o el config correcto
+      from: 'Whale Network <onboarding@resend.dev>', // Usamos onboarding o el config correcto
       to: emailTarget,
       subject: `[CONFIDENTIAL] Inteligencia Criptográfica: ${articleTitle.substring(0, 30)}...`,
       html: htmlEmail,

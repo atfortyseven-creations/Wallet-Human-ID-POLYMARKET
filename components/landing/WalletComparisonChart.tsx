@@ -79,7 +79,7 @@ export function WalletComparisonChart() {
               <span className="text-[10px] font-mono font-black uppercase tracking-[0.3em] text-black/30">Evaluation Criteria</span>
             </div>
             <div className="flex flex-col p-6 bg-[#FFFFFF] rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-black/[0.04] scale-105 origin-bottom z-10">
-              <span className="text-[20px] font-black tracking-tight uppercase text-[#0A0A0A]">Whale Alert Wallet</span>
+              <span className="text-[20px] font-black tracking-tight uppercase text-[#0A0A0A]">Whale Network Wallet</span>
               <span className="text-[12px] font-mono text-emerald-600/80 uppercase tracking-widest mt-1">Total Systemty</span>
             </div>
             <div className="flex flex-col p-6 bg-black/[0.01] rounded-2xl border border-transparent">
@@ -108,7 +108,7 @@ export function WalletComparisonChart() {
                   </p>
                 </div>
 
-                {/* Whale Alert Column (Elevated & Emphasized) */}
+                {/* Whale Network Column (Elevated & Emphasized) */}
                 <div className="flex items-center p-6 lg:p-8 bg-[#FFFFFF] rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.04)] border border-black/[0.04] group-hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] group-hover:-translate-y-0.5 transition-all duration-500 relative z-10">
                   <div className="flex gap-4 items-start">
                     <CheckCircle2 size={22} className="text-emerald-500 shrink-0 mt-0.5" strokeWidth={2.5} />

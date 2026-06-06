@@ -17,7 +17,7 @@ export async function sendDiscordWebhook(message: string): Promise<boolean> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         content: message,
-        username: 'Whale Alert | Megalodon Alerts',
+        username: 'Whale Network | Megalodon Alerts',
       }),
     });
 

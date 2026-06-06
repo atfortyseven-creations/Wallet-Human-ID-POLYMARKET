@@ -32,7 +32,7 @@ export default function LoginCard() {
                         <Lock className="w-5 h-5 text-white/80" strokeWidth={2.5} />
                     </div>
                     <h1 className="text-3xl font-bold tracking-tight text-white drop-shadow-md">
-                        Whale Alert Network
+                        Whale Network
                     </h1>
                 </div>
                 <div className="flex items-center space-x-2 text-gray-400 text-sm tracking-[0.2em] font-medium uppercase">

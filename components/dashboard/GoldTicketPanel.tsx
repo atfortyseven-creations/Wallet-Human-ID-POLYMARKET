@@ -533,7 +533,7 @@ export function GoldTicketPanel() {
       // address (from useSystemAccount) can lag behind on mobile after connect.
       // Using wagmiAddress guarantees the API verification matches the actual signer.
       const signerAddress = (wagmiAddress || address) as string;
-      const messageToSign = `WHALE ALERT NETWORK GOLD ACCESS VERIFICATION: ${signerAddress}`;
+      const messageToSign = `Whale Network NETWORK GOLD ACCESS VERIFICATION: ${signerAddress}`;
       let cryptoSignature = '';
 
       const signToastId = toast.loading('Opening your wallet to sign — approve the request...');

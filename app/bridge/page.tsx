@@ -69,12 +69,12 @@ export default function BridgePage() {
       <div className="mb-12 flex flex-col items-center gap-3">
         <img
           src="/official-whale-monochrome.png"
-          alt="Whale Alert"
+          alt="Whale Network"
           className="w-10 h-10 brightness-0 invert opacity-60"
           onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
         />
         <span className="font-mono text-[10px] uppercase tracking-[0.4em] text-white/20">
-          Whale Alert Network
+          Whale Network
         </span>
       </div>
 

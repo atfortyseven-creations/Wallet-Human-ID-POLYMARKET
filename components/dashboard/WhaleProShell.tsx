@@ -342,7 +342,7 @@ export function WhaleProShell({ activeTab, onTabChange, children, isExternalEmbe
                         <div className="flex items-center gap-2.5 px-3 py-2">
                             <img src="/official-whale-monochrome.png" className="w-6 h-6 shrink-0" alt="WAN" />
                             <div className="flex flex-col leading-none">
-                                <span className="text-[11px] font-black uppercase tracking-tight text-[#050505] ">Whale Alert</span>
+                                <span className="text-[11px] font-black uppercase tracking-tight text-[#050505] ">Whale Network</span>
                                 <span className="text-[11px] font-black uppercase tracking-tight text-[#050505] ">Network</span>
                             </div>
                         </div>

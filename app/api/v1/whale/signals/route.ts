@@ -60,7 +60,7 @@ export async function GET(req: NextRequest) {
       Elite_exclusive: subscription.tier === 'Elite' ? {
         dark_pool_transfers: darkPool
       } : "Upgrade to Elite for Dark Pool monitoring.",
-      attribution: "Proprietary Analytics by Whale Alert Corporation."
+      attribution: "Proprietary Analytics by Whale Network Corporation."
     });
 
   } catch (error: any) {

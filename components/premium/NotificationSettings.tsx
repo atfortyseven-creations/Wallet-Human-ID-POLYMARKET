@@ -81,7 +81,7 @@ export default function NotificationSettings() {
       let endpoint = '';
       let body: any = {
         type: 'custom',
-        data: { message: 'Test notification from Whale Alert Network VIP ' },
+        data: { message: 'Test notification from Whale Network VIP ' },
       };
 
       switch (channelId) {

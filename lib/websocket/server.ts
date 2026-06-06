@@ -89,7 +89,7 @@ export function initializeWebSocket(httpServer: HttpServer): Server {
                 const data = JSON.parse(message) as TransactionEvent | WhaleAlertEvent;
 
                 if (channel === 'whale-alerts') {
-                    // Broadcast to all connected clients (whale alerts are global)
+                    // Broadcast to all connected clients (Whale Networks are global)
                     io.emit('new-whale-alert', data);
                 } else if (channel === 'vitals.tx.new') {
                     // Global broadcast  every client gets it and filters client-side

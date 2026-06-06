@@ -29,7 +29,7 @@ const FAQ_ITEMS = [
     a: "Yes, by architectural design. The platform does not store private keys, seed phrases, or biometric data under any circumstances. Wallet authentication produces a signed message that proves address ownership without exposing the private key. Portfolio data displayed within the terminal is fetched directly from public blockchain state via read-only RPC connections  it is never transmitted to or stored on the platform's servers. World ID verification, when used, employs zero-knowledge proofs that confirm personhood without linking the verification to any biometric record visible to the platform."
   },
   {
-    q: "How does the Whale Alert detection system identify significant movements?",
+    q: "How does the Whale Network detection system identify significant movements?",
     a: "The ingestion engine maintains persistent WebSocket connections to RPC nodes across sixteen parallel networks. For each incoming transaction, the engine applies a Z-score statistical filter calibrated against a rolling 30-day baseline of per-chain, per-asset-class transaction magnitude distributions. Transactions whose magnitude exceeds 3.5 standard deviations above the rolling mean are classified as candidate significant events. The classification pipeline then applies secondary filters: minimum USD-equivalent value, wallet tier assessment based on historical balance data, and temporal correlation against other events in the rolling 15-minute window to detect coordinated multi-address activity. Signals that pass all filters are written to the Redis System Mesh stream within milliseconds of blockchain confirmation."
   },
   {
@@ -114,7 +114,7 @@ function SupportHero() {
           Support Centre
         </div>
         <h1 className="text-5xl md:text-6xl font-black tracking-tighter" style={{ color: INK }}>
-          Whale Alert Network
+          Whale Network
           <span className="block font-light" style={{ color: MUTED }}>Support</span>
         </h1>
         <p className="text-base leading-relaxed max-w-lg mx-auto" style={{ color: MUTED }}>
@@ -425,7 +425,7 @@ function ChannelsSection() {
 //  Page 
 export default function SupportPage() {
   return (
-    <InstitutionalShell title="Support  Whale Alert Network" badge="SUPPORT" badgeVariant="emerald">
+    <InstitutionalShell title="Support  Whale Network" badge="SUPPORT" badgeVariant="emerald">
       <div className="w-full flex-1 flex flex-col bg-transparent text-white">
         <SupportHero />
         <StatsRow />
@@ -480,7 +480,7 @@ export default function SupportPage() {
                 Connecting from a mobile device?
               </div>
               <p className="text-sm leading-relaxed" style={{ color: MUTED }}>
-                Open the Whale Alert Network on your desktop browser, click Connect Wallet, and scan the QR code displayed with your mobile wallet application (MetaMask Mobile, Rainbow, Trust Wallet, or any WalletConnect v2-compatible wallet). Your session will synchronise automatically without requiring any additional configuration.
+                Open the Whale Network on your desktop browser, click Connect Wallet, and scan the QR code displayed with your mobile wallet application (MetaMask Mobile, Rainbow, Trust Wallet, or any WalletConnect v2-compatible wallet). Your session will synchronise automatically without requiring any additional configuration.
               </p>
             </div>
             <a

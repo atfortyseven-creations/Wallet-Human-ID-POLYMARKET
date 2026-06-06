@@ -67,7 +67,7 @@ export function PasskeyRegister({ userId, onSuccess }: PasskeyRegisterProps) {
             <Fingerprint size={20} />
           </div>
           <div>
-            <h4 className="text-[#1F1F1F] font-bold text-lg">Whale Alert Network ID Biometrics</h4>
+            <h4 className="text-[#1F1F1F] font-bold text-lg">Whale Network ID Biometrics</h4>
             <p className="text-xs text-[#1F1F1F]/40 font-medium tracking-tight uppercase">Security Standard v4.0</p>
           </div>
         </div>

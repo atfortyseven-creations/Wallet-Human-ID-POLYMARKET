@@ -9,7 +9,7 @@ const DEFAULT_CATEGORIES = [
     { name: 'Applications',   slug: 'applications',   description: 'Talk about dApps, DeFi protocols, tools, and ecosystem applications.', color: '#00C076', orderIndex: 3 },
     { name: 'Testnets',       slug: 'testnets',       description: 'Testing environments, devnet updates, and testnet coordination.', color: '#F59E0B', orderIndex: 4 },
     { name: 'Noir',           slug: 'noir',           description: 'Zero-knowledge circuit development with Noir, proving systems, and ZK research.', color: '#7C3AED', orderIndex: 5 },
-    { name: 'Site Feedback',  slug: 'site-feedback',  description: 'Report bugs, suggest improvements, and share feedback about Whale Alert Network.', color: '#64748B', orderIndex: 6 },
+    { name: 'Site Feedback',  slug: 'site-feedback',  description: 'Report bugs, suggest improvements, and share feedback about Whale Network.', color: '#64748B', orderIndex: 6 },
     { name: 'QDs Connect',    slug: 'qds-connect',    description: 'QDs ecosystem connectivity, integrations, and cross-platform collaboration.', color: '#EC4899', orderIndex: 7 },
     { name: 'Provenance',     slug: 'provenance',     description: 'Product passports, Humanity Provenance Framework, labels, GS1 Digital Link, and issuer discussion.', color: '#404040', orderIndex: 8 },
 ];

@@ -174,7 +174,7 @@ export const TokenChartOverlay = ({ symbol, onClose }: OverlayProps) => {
 
                         {/* Footer signature */}
                         <div className="px-5 py-3 border-t border-white/5 flex items-center justify-between">
-                            <span className="font-aztec-h2 text-[8px] uppercase tracking-[0.35em] text-white/15">Whale Alert Network.</span>
+                            <span className="font-aztec-h2 text-[8px] uppercase tracking-[0.35em] text-white/15">Whale Network.</span>
                             <div className="flex items-center gap-1.5">
                                 <div className="w-1 h-1 rounded-full bg-[var(--aztec-orchid)] animate-pulse" />
                                 <span className="font-aztec-h2 text-[8px] uppercase tracking-[0.35em] text-white/15">ha v1.02</span>

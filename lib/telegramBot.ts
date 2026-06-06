@@ -2,7 +2,7 @@ import { safeToFixed, safeToLocaleString } from '@/lib/utils/number-format';
 
 /**
  * Telegram Bot Helper
- * Simplified bot for sending whale alerts
+ * Simplified bot for sending Whale Networks
  * Setup: Talk to @BotFather on Telegram to get your bot token
  */
 
@@ -53,7 +53,7 @@ export async function sendTelegramMessage(message: TelegramMessage): Promise<boo
 }
 
 /**
- * Format whale alert for Telegram
+ * Format Whale Network for Telegram
  */
 export function formatWhaleAlertTelegram(data: {
   address: string;
@@ -76,7 +76,7 @@ export function formatWhaleAlertTelegram(data: {
   const typeTranslated = data.type === 'CONTRACT' ? 'Interaction' : 'Transfer';
 
   return `
-${emoji} <b>WHALE ALERT</b> | Base
+${emoji} <b>Whale Network</b> | Base
 
  <b>${formatMoney(data.amount)}</b>
 ${typeTranslated} of <b>${data.token}</b> successfully transferred

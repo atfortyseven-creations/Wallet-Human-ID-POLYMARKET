@@ -95,7 +95,7 @@ export default function SettingsPanel() {
       </section>
 
       <div className="text-center text-[9px] uppercase tracking-widest opacity-50 pt-4">
-        WHALE ALERT NETWORK TERMINAL V2
+        Whale Network NETWORK TERMINAL V2
       </div>
     </div>
   );

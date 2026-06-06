@@ -57,7 +57,7 @@ export default function ActivityFeedPanel() {
         {[
           { label: "Txns (24h)", value: "41,820", color: "#050505" },
           { label: "Volume (24h)", value: "$19.4B", color: "#00C076" },
-          { label: "Whale Alert Networks", value: "2,140", color: "#FF3B30" },
+          { label: "Whale Networks", value: "2,140", color: "#FF3B30" },
           { label: "Avg Tx Size", value: "$462K", color: "#D4AF37" },
         ].map((s, i) => (
           <div key={i} className="bg-[#FFFFFF] border border-[#E5E5E5] rounded-2xl p-6 flex flex-col items-center justify-center shadow-sm">

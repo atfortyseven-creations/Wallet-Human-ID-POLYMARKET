@@ -1,5 +1,5 @@
 /**
- *  WHALE ALERT NETWORK  NEWS INTELLIGENCE DOMAIN
+ *  Whale Network NETWORK  NEWS INTELLIGENCE DOMAIN
  * Institutional-grade type definitions for forensic news analysis.
  */
 

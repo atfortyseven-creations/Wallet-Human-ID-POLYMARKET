@@ -13,7 +13,7 @@ interface FAQItem {
 const FAQ_DATA: FAQItem[][] = [
     // PAGE 1: Core Architecture
     [
-        { q: "How does Whale Alert Network exceed standard transaction tracking?", a: "While explorers provide raw ledger data, we provide forensic reconstruction of intents. Our engine decodes complex multichain sequences that explorers often mislabel as generic transfers.", tag: "ARCHITECTURE" },
+        { q: "How does Whale Network exceed standard transaction tracking?", a: "While explorers provide raw ledger data, we provide forensic reconstruction of intents. Our engine decodes complex multichain sequences that explorers often mislabel as generic transfers.", tag: "ARCHITECTURE" },
         { q: "What is the real-time latency difference?", a: "We operate on a proprietary mempool stream that precedes traditional RPC providers by 50-150ms, allowing users to identify move signatures before they are finalized.", tag: "PERFORMANCE" },
         { q: "Does the system support L2 native forensic analysis?", a: "Yes. Unlike generic systems, we analyze Arbitrum and Optimism sequencer batches directly to identify liquidity shifts at the rollup level.", tag: "NETWORKS" },
         { q: "How is identity tracking superior to legacy platforms?", a: "Our system identifies 'Ghost Wallets'addresses that move funds without explicit entity labelingusing behavioral fingerprinting rather than simple public tags.", tag: "INTELLIGENCE" },
@@ -104,7 +104,7 @@ const FAQ_DATA: FAQItem[][] = [
     ],
     // PAGE 8: Privacy vs Forensics
     [
-        { q: "Is the Whale Alert Network system compliant with GDPR?", a: "Yes. We analyze public ledger data only and do not associate any PII (Personally Identifiable Information) with wallet addresses.", tag: "PRIVACY" },
+        { q: "Is the Whale Network system compliant with GDPR?", a: "Yes. We analyze public ledger data only and do not associate any PII (Personally Identifiable Information) with wallet addresses.", tag: "PRIVACY" },
         { q: "How can I keep my own movements private?", a: "Use private transfers and wallets that separate public activity from personal flows. Combine that with cautious address reuse and reputable privacy tools.", tag: "PRIVACY" },
         { q: "What is the 'Zero-Knowledge' alert verify?", a: "A feature allowing us to prove the existence of a move without revealing the destination address until it is settled.", tag: "ZK" },
         { q: "How do we manage 'Data Systemty'?", a: "Users own their alert filters; no data is shared with third-party advertising or surveillance firms.", tag: "ETHICS" },
@@ -117,14 +117,14 @@ const FAQ_DATA: FAQItem[][] = [
     ],
     // PAGE 9-10: Diverse institutional content
     [
-        { q: "Whale Alert Network v1.0: What is the current focus?", a: "Maximum sterilization of the interface and sub-15ms sync for institutional-grade terminals.", tag: "UPDATE" },
+        { q: "Whale Network v1.0: What is the current focus?", a: "Maximum sterilization of the interface and sub-15ms sync for institutional-grade terminals.", tag: "UPDATE" },
         { q: "Institutional Pipeline: How do we process 1M events?", a: "Using an event-driven Kafka architecture that ensures zero message loss even during peak volatility.", tag: "PIPE" },
         { q: "System Analytics: What is the Atlas of Networks?", a: "A specialized forensic map that visualizes the 'arteries' of value flow between primary and secondary blockchains.", tag: "ATLAS" },
         { q: "Web3 Integration: How do we compare with macro tools?", a: "Legacy tools are for macro analysis; we are for tactical, real-time capital execution alerts.", tag: "COMPARE" },
         { q: "Computational Power: What is the GPU advantage?", a: "We use CUDA-optimized kernels for fast pattern recognition of market-maker bot behavior.", tag: "COMPUTE" },
         { q: "API Performance: 99.99% Uptime SLA?", a: "Our globally redundant load balancers ensure institutional reliability during high-stress periods.", tag: "API" },
         { q: "Market Psychology: Can we predict sentiment?", a: "By analyzing the 'hold duration' of high-tier tokens, we can estimate if actors are in accumulation or distribution phase.", tag: "ML" },
-        { q: "Atomic Execution: What is a flash-sync event?", a: "When the entire Whale Alert Network synchronizes a high-impact move across all clients in under 100ms.", tag: "SYNC" },
+        { q: "Atomic Execution: What is a flash-sync event?", a: "When the entire Whale Network synchronizes a high-impact move across all clients in under 100ms.", tag: "SYNC" },
         { q: "Security Armor: How do we prevent DDoS?", a: "Our infrastructure is protected by an Anycast network that disperses malicious traffic across 150 points of presence.", tag: "CYBER" },
         { q: "Financial Freedom: Why Systemty matters?", a: "Information is the ultimate weapon in the Web3 space. Our tools empower individuals with institutional-grade data.", tag: "MISSION" }
     ],

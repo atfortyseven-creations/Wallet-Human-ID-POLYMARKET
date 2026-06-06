@@ -55,7 +55,7 @@ export class FixGateway {
   }
 
   /**
-   * Broadcasts a Whale Alert as a Market Data Snapshot
+   * Broadcasts a Whale Network as a Market Data Snapshot
    */
   public static createWhaleSignalMessage(whaleEvent: any): string {
     return this.constructMessage({

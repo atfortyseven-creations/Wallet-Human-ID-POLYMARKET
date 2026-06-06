@@ -14,12 +14,12 @@ export type ProtocolType = 'RPC' | 'WSS';
 export const NETWORKS: Record<NetworkId, { name: string; currency: string; rpc: string; wss: string; color: string; chainId: number }> = {
   ethereum: {
     name: 'Ethereum', currency: 'ETH', color: '#627EEA', chainId: 1,
-    rpc: getGbRpc('eth')  || process.env.ETH_RPC_URL  || 'https://cloudflare-eth.com',
+    rpc: process.env.NEXT_PUBLIC_ALCHEMY_RPC_URL || getGbRpc('eth') || 'https://cloudflare-eth.com',
     wss: getGbWss('eth')  || 'wss://ethereum-rpc.publicnode.com',
   },
   polygon: {
     name: 'Polygon', currency: 'MATIC', color: '#8247E5', chainId: 137,
-    rpc: getGbRpc('polygon') || 'https://polygon-rpc.com',
+    rpc: process.env.NEXT_PUBLIC_ALCHEMY_POLY_RPC_URL || getGbRpc('polygon') || 'https://polygon-rpc.com',
     wss: getGbWss('polygon') || 'wss://polygon-bor-rpc.publicnode.com',
   },
   arbitrum: {
@@ -29,7 +29,7 @@ export const NETWORKS: Record<NetworkId, { name: string; currency: string; rpc: 
   },
   optimism: {
     name: 'Optimism', currency: 'ETH', color: '#FF0420', chainId: 10,
-    rpc: getGbRpc('op') || 'https://mainnet.optimism.io',
+    rpc: process.env.NEXT_PUBLIC_OPTIMISM_RPC || getGbRpc('op') || 'https://mainnet.optimism.io',
     wss: getGbWss('op') || 'wss://optimism-rpc.publicnode.com',
   },
   base: {

@@ -1,7 +1,7 @@
 import { VOSS_MASTER_MATRIX } from '@/lib/vossAnalyticsEngine';
 
 export const metadata = {
-  title: 'VOSS 2026 Strategic Roadmap | Whale Alert Network',
+  title: 'VOSS 2026 Strategic Roadmap | Whale Network',
   description: 'The 500 Vectors of Institutional Deployment.',
 };
 

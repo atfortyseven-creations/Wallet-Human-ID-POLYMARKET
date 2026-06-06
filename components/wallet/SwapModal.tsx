@@ -133,7 +133,7 @@ export default function SwapModal({ isOpen, onClose }: SwapModalProps) {
         if (publicClient) await publicClient.waitForTransactionReceipt({ hash: hash as `0x${string}` });
       } else if (isSystemWallet && store.privateKey) {
         // System wallet flow
-        const rpc = store.activeNetwork === "polygon" ? "https://polygon-rpc.com" : "https://cloudflare-eth.com";
+        const rpc = store.activeNetwork === "polygon" ? process.env.NEXT_PUBLIC_ALCHEMY_POLY_RPC_URL || "https://polygon-rpc.com" : process.env.NEXT_PUBLIC_ALCHEMY_RPC_URL || "https://cloudflare-eth.com";
         const provider = new ethers.JsonRpcProvider(rpc);
         const wallet = new ethers.Wallet(store.privateKey, provider);
         setStatus("BROADCASTING");

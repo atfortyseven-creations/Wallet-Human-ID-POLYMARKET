@@ -1,6 +1,6 @@
 ﻿export const MEGA_MANIFESTO_TEXT = `
 ## Executive Foreword
-This document constitutes the complete technical specification, architectural narrative, historical context, and operational manual for the Whale Alert Network  a system-grade, real-time blockchain analytics system designed, engineered, and deployed entirely by one person...
+This document constitutes the complete technical specification, architectural narrative, historical context, and operational manual for the Whale Network  a system-grade, real-time blockchain analytics system designed, engineered, and deployed entirely by one person...
 
 ## Table of Contents
 1. The Origin and Vision
@@ -62,7 +62,7 @@ The clustering algorithm operates on a Neo4j graph database that indexes wallet 
 Sentinel nodes that produce signals for the System Mesh are required to construct a zero-knowledge proof demonstrating that their identity key satisfies the mesh membership predicate without revealing the key itself. This proof is constructed using SnarkJS with a Groth16 proving scheme over the BN254 elliptic curve.
 
 ### ANNEX I. LA FALLA SISTÉMICA DE MT. GOX (2014)
-Cuando Mt. Gox transaccionaba más del 70% del volumen global de Bitcoin, dependía de una base de datos MySQL centralizada (Ledger Caliente) desconectada lógicamente de la topología real de la cadena de bloques (Bóvedas Frías). Un ataque de "maleabilidad de transacciones" permitió alterar el Hash ID de los retiros. Cerca de 850,000 BTC se desintegraron. Mitigación System: Nuestro sistema jamás confía en firmas relacionales (SQL). El "Whale Alert" detecta flujos brutos directo de Opcodes.
+Cuando Mt. Gox transaccionaba más del 70% del volumen global de Bitcoin, dependía de una base de datos MySQL centralizada (Ledger Caliente) desconectada lógicamente de la topología real de la cadena de bloques (Bóvedas Frías). Un ataque de "maleabilidad de transacciones" permitió alterar el Hash ID de los retiros. Cerca de 850,000 BTC se desintegraron. Mitigación System: Nuestro sistema jamás confía en firmas relacionales (SQL). El "Whale Network" detecta flujos brutos directo de Opcodes.
 
 ### ANNEX II. THE DAO RECURSIVO (2016)
 El primer experimento de organización descentralizada en Ethereum albergaba 150 millones de dólares. Un ente minero inyectó un contrato fallback malicioso que reinvocaba infinitamente la función splitDAO(). Defensa System: Operamos un Nodo Local Teranode de 1TB. Monitoreamos Mempools operando pre-cálculos sintácticos sobre OPCODES de cada contrato invocado.

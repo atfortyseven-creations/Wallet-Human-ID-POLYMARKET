@@ -128,7 +128,7 @@ export const SECTION_FEATURES: SectionFeatureGroup[] = [
 export const PRICING_TIERS: PricingTier[] = [
   {
     id:           'FREE',
-    name:         'Whale Alert Network',
+    name:         'Whale Network',
     tagline:      'Start tracking whale movements for free, today.',
     priceMonthly: '0',
     priceAnnual:  '0',
@@ -142,13 +142,13 @@ export const PRICING_TIERS: PricingTier[] = [
       { text: 'Basic profit & loss and token balance overview', section: 'portfolio' },
       { text: 'Community forums & research post access', section: 'community' },
       { text: 'Privacy-first login — no password, no email required', section: 'core' },
-      { text: 'Whale Alert Academy — free educational content', section: 'core' },
+      { text: 'Whale Network Academy — free educational content', section: 'core' },
     ],
     buttonText: 'Get Started Free',
   },
   {
     id:           'STANDARD',
-    name:         'Whale Alert Network Pro',
+    name:         'Whale Network Pro',
     tagline:      'Every tool, every section, fully unlocked.',
     priceMonthly: '15',
     priceAnnual:  '150',

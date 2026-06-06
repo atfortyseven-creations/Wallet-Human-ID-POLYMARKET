@@ -79,7 +79,7 @@ export function CatchTheWhale() {
                 >
                     <img 
                         src="/official-whale-legendary.png" 
-                        alt="Whale Alert Network Logo"
+                        alt="Whale Network Logo"
                         className="w-full h-full object-contain p-4"
                     />
                 </motion.div>

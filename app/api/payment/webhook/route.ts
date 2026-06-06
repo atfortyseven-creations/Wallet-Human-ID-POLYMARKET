@@ -38,7 +38,7 @@ async function submitDisputeEvidence(dispute: Stripe.Dispute, subscription: any)
     });
 
     const evidenceText = `
-WHALE ALERT CORPORATION  DISPUTE EVIDENCE
+Whale Network CORPORATION  DISPUTE EVIDENCE
 ==========================================
 
 Transaction Details:
@@ -67,7 +67,7 @@ The service was delivered and API keys were provisioned as contracted.
         customer_purchase_ip: metadata?.purchase_ip,
         customer_name: customer.name || undefined,
         customer_email_address: customer.email || undefined,
-        product_description: `Whale Alert Corporation ${subscription.tier} API Subscription  Real-time whale transaction analytics`,
+        product_description: `Whale Network Corporation ${subscription.tier} API Subscription  Real-time whale transaction analytics`,
         customer_signature: evidenceText,
         service_date: (subscription.createdAt ?? new Date()).toISOString().split('T')[0],
         service_documentation: `${process.env.NEXT_PUBLIC_APP_URL}/terms`,
@@ -181,12 +181,12 @@ export async function POST(req: NextRequest) {
     const userEmail = (await stripe.customers.retrieve(stripeSession.customer as string) as Stripe.Customer).email;
     if (userEmail && process.env.RESEND_API_KEY) {
       await resend.emails.send({
-        from: 'Whale Alert Corporation <api@whalealert.corp>',
+        from: 'Whale Network Corporation <api@whalealert.corp>',
         to: userEmail,
-        subject: ' Tu API key de Whale Alert Corporation',
+        subject: ' Tu API key de Whale Network Corporation',
         html: `
           <div style="font-family: monospace; background: #0a0a0a; color: #fff; padding: 32px; border-radius: 12px;">
-            <h1 style="color: #a78bfa; font-size: 24px; margin-bottom: 8px;">Whale Alert Corporation</h1>
+            <h1 style="color: #a78bfa; font-size: 24px; margin-bottom: 8px;">Whale Network Corporation</h1>
             <p style="color: #888; margin-bottom: 24px;">Plan: <strong style="color: #fff">${planId.toUpperCase()}</strong></p>
             <div style="background: #111; border: 1px solid #333; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
               <p style="color: #888; font-size: 12px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.1em;">Tu API Key (guárdala de forma segura)</p>

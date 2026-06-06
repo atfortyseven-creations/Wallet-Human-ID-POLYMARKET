@@ -1,7 +1,7 @@
 ﻿/**
  * 
  *    LIQUIDITY DYNAMICS  Capital Velocity Index                        
- *    Whale Alert Network Pro · Infrastructure Suite                             
+ *    Whale Network Pro · Infrastructure Suite                             
  * 
  */
 

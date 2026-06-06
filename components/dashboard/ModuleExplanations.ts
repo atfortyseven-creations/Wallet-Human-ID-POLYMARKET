@@ -203,7 +203,7 @@ export const MODULE_EXPLANATIONS: Record<string, { title: string, subtitle: stri
     'academy': {
         title: 'Documentation',
         subtitle: 'Technical reference',
-        overview: 'Technical documentation covering the Humanity Ledger protocol, Aztec integration, Noir circuits, and the Whale Alert Network.',
+        overview: 'Technical documentation covering the Humanity Ledger protocol, Aztec integration, Noir circuits, and the Whale Network.',
         features: [
             { title: 'Protocol Guides', desc: 'Architecture overviews and component documentation.' },
             { title: 'API Reference', desc: 'Complete endpoint specifications with examples.' },

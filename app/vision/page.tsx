@@ -4,7 +4,7 @@ import { SystemFooter } from '@/components/landing/SystemFooter';
 import { VisionAboutSection } from '@/components/vision/VisionAboutSection';
 
 export const metadata = {
-  title: 'Our Vision — Whale Alert Network',
+  title: 'Our Vision — Whale Network',
   description:
     'Humanity Ledger S.L. is building a secure, decentralised identity ecosystem for the next generation of financial infrastructure, powered by zero-knowledge cryptography on Aztec Network.',
 };
@@ -28,13 +28,13 @@ export default function VisionPage() {
             <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-tight mb-8 text-black">
               The Vision of{' '}
               <br className="hidden md:block" />
-              <span className="text-black/30">Whale Alert Network.</span>
+              <span className="text-black/30">Whale Network.</span>
             </h1>
 
             <div className="space-y-5 text-black/65 font-sans text-base md:text-lg leading-relaxed max-w-2xl">
               <p>
                 At <strong className="text-black font-black">Humanity Ledger S.L.</strong>, our
-                primary goal is to build a secure and transparent identity layer for the Whale Alert Network platform — one that protects
+                primary goal is to build a secure and transparent identity layer for the Whale Network platform — one that protects
                 user data while ensuring full regulatory compliance. We believe that a credible
                 digital identity is the foundation of a safer and more efficient financial
                 ecosystem, not a barrier to it.

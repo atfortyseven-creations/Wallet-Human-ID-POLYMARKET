@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 /**
  *  WHALE BRAND IDENTITY ENGINE
- * Centrally manages the official Whale Alert Network logo visualization.
+ * Centrally manages the official Whale Network logo visualization.
  */
 export function WhaleLogo({ 
     className = "w-10 h-10", 
@@ -13,7 +13,7 @@ export function WhaleLogo({
         <div className={`relative flex items-center justify-center ${className}`}>
             <Image
                 src="/official-whale-monochrome.png"
-                alt="Whale Alert Network"
+                alt="Whale Network"
                 fill
                 className="object-contain transition-all duration-300 transform-gpu"
                 priority={priority}

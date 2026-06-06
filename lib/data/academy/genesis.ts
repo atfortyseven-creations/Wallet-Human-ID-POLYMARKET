@@ -565,7 +565,7 @@ export const genesisModules = [
                         <div class="technical-box">
                             <strong>Ecuación de Emisión:</strong>
                             <pre><code>Current Supply = Σ (210,000 * (50 / 2^n)) where n = Epoch (0 to 63)</code></pre>
-                            <p>Esta fórmula garantiza que el valor del ahorro individual no pueda ser diluido por una autoridad central, estableciendo el estándar de oro digital para la era de la inteligencia soberana.</p>
+                            <p>Esta fórmula garantiza que el valor del ahorro individual no pueda ser diluido por una autoridad central, estableciendo el estándar de oro digital para la era de la Análisis Institucional.</p>
                         </div>
                     </section>
                 </div>`

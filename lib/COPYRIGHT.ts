@@ -1,6 +1,6 @@
 /**
  * 
- *   WHALE ALERT NETWORK  INSTITUTIONAL ON-CHAIN INTELLIGENCE TERMINAL     
+ *   Whale Network NETWORK  INSTITUTIONAL ON-CHAIN INTELLIGENCE TERMINAL     
  *   © 20242026 humanityledger. All Rights Reserved.               
  *   PROPRIETARY & CONFIDENTIAL  TRADE SECRET                              
  *   Unauthorized copying, modification, distribution, or deployment of     
@@ -17,7 +17,7 @@
 
 export const COPYRIGHT = {
   owner:       'humanityledger',
-  product:     'Whale Alert Network',
+  product:     'Whale Network',
   description: 'Institutional On-Chain Analytics Terminal',
   years:       '20242026',
   contact:     'legal@humanidfi.com',
@@ -25,7 +25,7 @@ export const COPYRIGHT = {
   platform:    'https://www.humanidfi.com',
   license:     'Proprietary  All Rights Reserved',
   trademarks:  [
-    'Whale Alert Network',
+    'Whale Network',
     'WhaleCosystem',
     'System Access Protocol',
     'System Analytics Terminal',

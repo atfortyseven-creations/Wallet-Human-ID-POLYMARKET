@@ -3,24 +3,20 @@
 import LegalDocLayout, { TocItem } from '@/components/layout/LegalDocLayout';
 
 const TOC: TocItem[] = [
-  { id: 'overview', label: '1. Security Overview' },
-  { id: 'pillars', label: '2. Core Security Pillars' },
-  { id: 'cryptography', label: '3. Cryptographic Architecture' },
-  { id: 'smart-contracts', label: '4. Smart Contract Security' },
-  { id: 'key-management', label: '5. Cryptographic Key Management' },
-  { id: 'access-control', label: '6. Access Control & Personnel' },
-  { id: 'incident-response', label: '7. Incident Response' },
-  { id: 'penetration-testing', label: '8. Penetration Testing' },
-  { id: 'disaster-recovery', label: '9. Disaster Recovery' },
-  { id: 'reporting', label: '10. Vulnerability Reporting' },
+  { id: 'humanity-ledger-s-l-whale-network', label: `Humanity Ledger S.L. — Whale Network` },
+  { id: '1-objective-and-scope', label: `1. OBJECTIVE AND SCOPE` },
+  { id: '2-incident-response-team-internal-cert', label: `2. INCIDENT RESPONSE TEAM (Internal CERT)` },
+  { id: '3-incident-classification', label: `3. INCIDENT CLASSIFICATION` },
+  { id: '4-6-phase-response-procedure-sans-nist-methodology', label: `4. 6-PHASE RESPONSE PROCEDURE (SANS/NIST Methodology)` },
+  { id: '5-emergency-contacts', label: `5. EMERGENCY CONTACTS` }
 ];
 
-export default function SecurityArchitecturePage() {
+export default function LegalPage() {
   return (
     <LegalDocLayout
       title="Security Architecture"
-      subtitle="A detailed overview of the cryptographic measures, zero-trust infrastructure, and security protocols protecting the Whale Alert Network ecosystem."
-      lastUpdated="May 25, 2026"
+      subtitle="This policy sets forth the legal and compliance rules governing the Whale Network ecosystem."
+      lastUpdated="June 2026"
       category="Legal & Security"
       toc={TOC}
       backHref="/"
@@ -29,214 +25,206 @@ export default function SecurityArchitecturePage() {
       <div className="space-y-10 sm:space-y-14 text-black">
 
         {/* 1 */}
-        <section id="overview">
+        <section id="humanity-ledger-s-l-whale-network">
           <h2 className="text-[1.1rem] font-bold uppercase tracking-[0.08em] text-black mb-6 pb-3 border-b border-black/10">
-            1. Security Overview
+            Humanity Ledger S.L. — Whale Network
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              At Humanity Ledger S.L., security is not an afterthought or a compliance checkbox — it is the fundamental pillar upon which the entire Whale Alert Network architecture is built. We understand that in the realm of decentralised finance, the integrity of data and the protection of user assets are absolutely paramount.
-            </p>
-            <p>
-              We employ a defence-in-depth strategy, combining cutting-edge cryptographic protocols, a strict zero-trust operational model, and continuous third-party auditing to ensure that our platform remains resilient against emerging threats. This document outlines the exhaustive measures we take to secure our infrastructure and protect your digital Privatety.
+              <strong className="text-black font-semibold">Version:</strong> 1.0 | <strong className="text-black font-semibold">Date:</strong> 6 June 2026 | <strong className="text-black font-semibold">Classification:</strong> Confidential / Internal Use Only
             </p>
           </div>
         </section>
+
 
         {/* 2 */}
-        <section id="pillars">
+        <section id="1-objective-and-scope">
           <h2 className="text-[1.1rem] font-bold uppercase tracking-[0.08em] text-black mb-6 pb-3 border-b border-black/10">
-            2. Core Security Pillars
+            1. OBJECTIVE AND SCOPE
           </h2>
-          <div className="space-y-3 text-[15px] leading-[1.75]">
-            {[
-              {
-                title: 'Zero-Knowledge Architecture',
-                desc: 'We utilise advanced zk-SNARKs to cryptographically verify human uniqueness and identity without ever storing or transmitting personally identifiable information. Every identity attestation is purely mathematical.',
-              },
-              {
-                title: 'Non-Custodial Design',
-                desc: 'We never hold, store, or have access to your private cryptographic keys. Your funds remain entirely in your custody, secured by your local device enclave. We are architecturally incapable of moving your assets.',
-              },
-              {
-                title: 'Distributed Infrastructure',
-                desc: 'Our backend operates on a globally distributed, highly redundant server architecture equipped with multi-layered, automated DDoS mitigation systems and geographic load balancing.',
-              },
-              {
-                title: 'End-to-End Encryption',
-                desc: 'All data transmitted between your device and our servers, including all chat messages, is secured using TLS 1.3 and AES-256 encryption at rest. We apply encryption at the transport layer, application layer, and storage layer.',
-              },
-              {
-                title: 'Immutable Audit Trails',
-                desc: 'Critical system changes, smart contract deployments, and administrative actions are cryptographically signed and logged on an immutable ledger, providing complete forensic traceability.',
-              },
-              {
-                title: 'Hardware Authentication',
-                desc: 'Internal access to production environments strictly requires FIDO2 hardware security keys. We do not rely on vulnerable SMS or email-based multi-factor authentication for any privileged access.',
-              },
-            ].map(({ title, desc }) => (
-              <div key={title} className="border border-black/8 rounded-xl p-5">
-                <h3 className="font-semibold text-black text-[14px] mb-2">{title}</h3>
-                <p className="text-[14px] text-black/60 leading-relaxed">{desc}</p>
-              </div>
-            ))}
+          <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
+            <p>
+              This Cyber Security Incident Response Plan (CSIRP) establishes the technical, organisational, and legal procedures that Humanity Ledger S.L. must follow in the event of incidents compromising the confidentiality, integrity, or availability of the Whale Network infrastructure, user data (GDPR), or digital assets ($QDs).
+            </p>
+            <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">Scope of application:</h3>
+            <ul className="list-disc pl-5 space-y-2">
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Web servers, APIs, and centralised databases of humanidfi.com.</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Smart contracts deployed on Ethereum L1 or Aztec Network L2.</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Nodes, sequencers, or network infrastructure providers.</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Administrator accounts (hosting, cloud, social media, GitHub).</span></li>
+            </ul>
           </div>
         </section>
+
 
         {/* 3 */}
-        <section id="cryptography">
+        <section id="2-incident-response-team-internal-cert">
           <h2 className="text-[1.1rem] font-bold uppercase tracking-[0.08em] text-black mb-6 pb-3 border-b border-black/10">
-            3. Cryptographic Architecture
+            2. INCIDENT RESPONSE TEAM (Internal CERT)
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              Our cryptographic stack is built on proven, well-audited primitives. We do not use bespoke cryptographic schemes. Every cryptographic component has been subjected to independent peer review and formal security analysis.
+              In the event of a High or Critical severity incident, the Response Team is constituted, led by: 1. <strong className="text-black font-semibold">Incident Manager:</strong> [PENDING — CTO or Director]. Coordinates the overall response. 2. <strong className="text-black font-semibold">Tech Lead:</strong> Responsible for containment, forensic analysis, and mitigation. 3. <strong className="text-black font-semibold">Legal/Compliance Officer:</strong> Manages mandatory notifications (AEPD, CNMV, users). 4. <strong className="text-black font-semibold">Communications (PR):</strong> Manages public communication on networks (Twitter, Discord) to prevent misinformation and FUD.
             </p>
-            <ul className="space-y-3 pl-5">
-              {[
-                'zk-SNARKs (Groth16 and PLONK variants) for zero-knowledge identity proofs and verifiable computation.',
-                'Noir — Aztec Network\'s domain-specific language for writing auditable, custom zero-knowledge circuits deployed on the Aztec rollup.',
-                'ECDSA and EdDSA elliptic curve signatures for transaction authentication on supported blockchain networks.',
-                'AES-256-GCM for symmetric encryption of all data at rest across our storage infrastructure.',
-                'TLS 1.3 with Perfect Forward Secrecy (PFS) for all data in transit.',
-                'HKDF-based key derivation for session key management and key rotation protocols.',
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-3">
-                  <span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
           </div>
         </section>
+
 
         {/* 4 */}
-        <section id="smart-contracts">
+        <section id="3-incident-classification">
           <h2 className="text-[1.1rem] font-bold uppercase tracking-[0.08em] text-black mb-6 pb-3 border-b border-black/10">
-            4. Smart Contract and On-Chain Security
+            3. INCIDENT CLASSIFICATION
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
+            <div className="overflow-x-auto"><table className="min-w-full border text-sm text-left"><tbody className="divide-y divide-black/10">
+              <tr>
+                <td className="px-4 py-2 border-r border-black/10">Level</td>
+                <td className="px-4 py-2 border-r border-black/10">Description</td>
+                <td className="px-4 py-2 border-r border-black/10">Examples</td>
+                <td className="px-4 py-2 border-r border-black/10">Max. Response Time</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 border-r border-black/10"><strong>P1 - CRITICAL</strong></td>
+                <td className="px-4 py-2 border-r border-black/10">Total compromise, theft of funds, massive exposure of KYC data, or loss of control of the smart contract.</td>
+                <td className="px-4 py-2 border-r border-black/10">Theft of treasury private keys, critical exploit in the token contract (e.g., infinite minting), breach in the Sumsub/KYC DB.</td>
+                <td className="px-4 py-2 border-r border-black/10">Immediate (24/7)</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 border-r border-black/10"><strong>P2 - HIGH</strong></td>
+                <td className="px-4 py-2 border-r border-black/10">Critical service outage, severe DDoS attack, critical vulnerability discovered prior to exploitation.</td>
+                <td className="px-4 py-2 border-r border-black/10">Aztec RPC outage preventing transactions, massive DDoS on the website, critical flaw in the front-end.</td>
+                <td className="px-4 py-2 border-r border-black/10">&lt; 1 hour</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 border-r border-black/10"><strong>P3 - MEDIUM</strong></td>
+                <td className="px-4 py-2 border-r border-black/10">Isolated problems affecting few users, non-critical UI flaws, failed intrusion attempts.</td>
+                <td className="px-4 py-2 border-r border-black/10">Isolated users cannot connect wallet due to local RPC error, repelled brute-force attack.</td>
+                <td className="px-4 py-2 border-r border-black/10">&lt; 24 hours (business hours)</td>
+              </tr>
+            </tbody></table></div>
+          </div>
+        </section>
+
+
+        {/* 5 */}
+        <section id="4-6-phase-response-procedure-sans-nist-methodology">
+          <h2 className="text-[1.1rem] font-bold uppercase tracking-[0.08em] text-black mb-6 pb-3 border-b border-black/10">
+            4. 6-PHASE RESPONSE PROCEDURE (SANS/NIST Methodology)
+          </h2>
+          <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
+            <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">PHASE 1: PREPARATION (Continuous Maintenance)</h3>
+            <ul className="list-disc pl-5 space-y-2">
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Perform daily immutable backups of off-chain databases.</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Maintain multi-signature hardware wallets (Gnosis Safe) for treasury funds.</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Have pre-drafted crisis communications ready for Twitter/Discord.</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Conduct smart contract audits pre-TGE.</span></li>
+            </ul>
+            <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">PHASE 2: IDENTIFICATION</h3>
             <p>
-              The decentralised components of our platform are built with the highest standards of smart contract engineering. Given the immutable nature of blockchains, preventing vulnerabilities before deployment is our highest priority.
+              <em>Objective: Detect and confirm the existence and scope of the incident.</em>
             </p>
-            <ul className="space-y-3 pl-5">
-              {[
-                ['Rigorous Independent Auditing', 'Every smart contract deployed for Whale Alert Network undergoes exhaustive security audits by tier-1 independent blockchain security firms prior to mainnet launch.'],
-                ['Formal Verification', 'We utilise formal mathematical verification techniques to prove the correctness of critical smart contract logic, ensuring immunity to common attack vectors such as reentrancy and integer overflow.'],
-                ['Bug Bounty Program', 'We operate a continuous, high-reward public bug bounty program, incentivising the global white-hat hacker community to scrutinise our codebase.'],
-                ['Multi-Signature Governance', 'Administrative controls over protocol parameters are secured by decentralised, multi-signature wallets requiring consensus from geographically distributed keyholders.'],
-              ].map(([title, desc]) => (
-                <li key={title as string} className="flex items-start gap-3">
-                  <span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" />
-                  <span><strong className="text-black font-semibold">{title}:</strong> {desc}</span>
-                </li>
-              ))}
+            <ul className="list-disc pl-5 space-y-2">
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>If an alarm is triggered (e.g., Datadog, AWS CloudWatch, Forta on blockchain) or there is a community report:</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>The Tech Lead confirms whether it is a false positive.</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>If real, classifies the level (P1, P2, P3).</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>If P1/P2, the Internal CERT is activated and the "War Room" is initiated (secure communication channel, e.g., Signal).</span></li>
+            </ul>
+            <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">PHASE 3: CONTAINMENT</h3>
+            <p>
+              <em>Objective: Halt the bleeding (data exfiltration or loss of funds).</em> <strong className="text-black font-semibold">For off-chain incidents (Web/DB):</strong>
+            </p>
+            <ul className="space-y-2 pl-5">
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Isolate affected servers, block malicious IPs, immediately rotate ALL credentials (AWS, GitHub, Vercel).</span></li>
+            </ul>
+            <p>
+              <strong className="text-black font-semibold">For on-chain incidents (Smart Contracts):</strong>
+            </p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Activate the "Pause" mechanism (Pausable.nr) on the Noir $QDs token contract (if implemented) or on the dApp contracts.</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Send vulnerable treasury funds to a backup cold wallet (White Hat Rescue).</span></li>
+            </ul>
+            <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">PHASE 4: ERADICATION AND FORENSIC ANALYSIS</h3>
+            <p>
+              <em>Objective: Eliminate the root vulnerability.</em>
+            </p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Identify the attack vector (0-day, employee phishing, keylogger, logical flaw in Noir code).</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Deploy security patches.</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Purge compromised systems. Rebuild from clean, verified backups.</span></li>
+            </ul>
+            <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">PHASE 5: RECOVERY</h3>
+            <p>
+              <em>Objective: Restore the service to normal operations.</em>
+            </p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Reactivate services (remove on-chain "Pause") following technical validation.</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Enhanced monitoring for the subsequent 72 hours to ensure no persistent access (backdoors) remains.</span></li>
+            </ul>
+            <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">PHASE 6: MANDATORY LEGAL NOTIFICATIONS (GDPR / MiCA)</h3>
+            <p>
+              1. <strong className="text-black font-semibold">In the event of a personal data breach (KYC, IPs, emails):</strong>
+            </p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">To the AEPD:</strong> MANDATORY notification within a maximum period of <strong className="text-black font-semibold">72 hours</strong> from awareness (Art. 33 GDPR).</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">To users:</strong> If there is a high risk to their rights, individual notification by email must be sent "without undue delay" (Art. 34 GDPR).</span></li>
+            </ul>
+            <p>
+              2. <strong className="text-black font-semibold">If it affects the $QDs token or operations (MiCA):</strong>
+            </p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Notify the CNMV and users via the official website and social channels, documenting the incident.</span></li>
+            </ul>
+            <p>
+              3. <strong className="text-black font-semibold">Post-Incident Review (Post-Mortem):</strong>
+            </p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Within a maximum of 7 days post-resolution, the CERT shall draft a Post-Mortem report detailing what failed, how it was resolved, and what structural measures will be implemented to prevent recurrence.</span></li>
             </ul>
           </div>
         </section>
 
-        {/* 5 */}
-        <section id="key-management">
-          <h2 className="text-[1.1rem] font-bold uppercase tracking-[0.08em] text-black mb-6 pb-3 border-b border-black/10">
-            5. Cryptographic Key Management Lifecycle
-          </h2>
-          <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
-            <p>
-              The generation, storage, and rotation of cryptographic keys form the backbone of our data protection strategy. We employ Hardware Security Modules (HSMs) with FIPS 140-2 Level 3 certification to manage all root cryptographic material.
-            </p>
-            <p>
-              Our key rotation protocols are fully automated and trigger on a regular temporal schedule or instantly in the event of suspected compromise. No single employee possesses the clearance or technical capability to extract private keys from HSM enclaves, ensuring total mitigation against insider threats.
-            </p>
-          </div>
-        </section>
 
         {/* 6 */}
-        <section id="access-control">
+        <section id="5-emergency-contacts">
           <h2 className="text-[1.1rem] font-bold uppercase tracking-[0.08em] text-black mb-6 pb-3 border-b border-black/10">
-            6. Access Control and Personnel Security
+            5. EMERGENCY CONTACTS
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
+            <div className="overflow-x-auto"><table className="min-w-full border text-sm text-left"><tbody className="divide-y divide-black/10">
+              <tr>
+                <td className="px-4 py-2 border-r border-black/10">Provider / Body</td>
+                <td className="px-4 py-2 border-r border-black/10">Contact</td>
+                <td className="px-4 py-2 border-r border-black/10">Use</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 border-r border-black/10">AEPD (Data Protection)</td>
+                <td className="px-4 py-2 border-r border-black/10">AEPD Electronic Headquarters</td>
+                <td className="px-4 py-2 border-r border-black/10">Data breach notification (&lt;72h)</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 border-r border-black/10">CNMV</td>
+                <td className="px-4 py-2 border-r border-black/10">Electronic Headquarters</td>
+                <td className="px-4 py-2 border-r border-black/10">Notification of market impact</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 border-r border-black/10">Cloud Provider</td>
+                <td className="px-4 py-2 border-r border-black/10">[PENDING]</td>
+                <td className="px-4 py-2 border-r border-black/10">Off-chain infra blocking/support</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 border-r border-black/10">INCIBE-CERT</td>
+                <td className="px-4 py-2 border-r border-black/10">incidencias@incibe-cert.es</td>
+                <td className="px-4 py-2 border-r border-black/10">Technical support and reporting in Spain</td>
+              </tr>
+              <tr>
+                <td className="px-4 py-2 border-r border-black/10">National Police (BIT)</td>
+                <td className="px-4 py-2 border-r border-black/10">denuncias.bit@policia.es</td>
+                <td className="px-4 py-2 border-r border-black/10">Reporting cyberattacks / theft of funds</td>
+              </tr>
+            </tbody></table></div>
             <p>
-              Technology is only as secure as the personnel operating it. Every member of the Humanity Ledger S.L. engineering and infrastructure team undergoes a rigorous, multi-stage background check before being granted access to internal systems.
+              <em>Mandatory compliance document for all technical and managerial personnel.</em>
             </p>
-            <p>
-              Access to critical production databases and deployment pipelines operates on a strict Principle of Least Privilege (PoLP) and requires multi-party computation approvals. All employees participate in mandatory, quarterly security awareness training focused on mitigating advanced social engineering and phishing campaigns.
-            </p>
-          </div>
-        </section>
-
-        {/* 7 */}
-        <section id="incident-response">
-          <h2 className="text-[1.1rem] font-bold uppercase tracking-[0.08em] text-black mb-6 pb-3 border-b border-black/10">
-            7. Incident Response and Transparency
-          </h2>
-          <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
-            <p>
-              While we engineer our systems to be resilient against all known attack vectors, we maintain a highly structured Incident Response Plan (IRP) to address potential zero-day vulnerabilities or systemic anomalies rapidly and effectively.
-            </p>
-            <p>
-              In the event of a severe security incident, our protocol mandates immediate transparency. Users will be notified through all official channels within 24 hours, accompanied by a preliminary technical post-mortem and actionable guidance to protect their assets. We believe that hiding vulnerabilities is a greater risk than the vulnerabilities themselves.
-            </p>
-          </div>
-        </section>
-
-        {/* 8 */}
-        <section id="penetration-testing">
-          <h2 className="text-[1.1rem] font-bold uppercase tracking-[0.08em] text-black mb-6 pb-3 border-b border-black/10">
-            8. Continuous Penetration Testing
-          </h2>
-          <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
-            <p>
-              Our infrastructure is subjected to continuous, aggressive penetration testing by specialised red teams mimicking advanced persistent threats (APTs). These simulated cyberattacks target every layer of our technology stack, from cloud infrastructure and APIs down to individual smart contracts.
-            </p>
-            <p>
-              All discovered vulnerabilities are immediately patched, and the mitigation strategies are independently verified before any updates are pushed to the production environment. We adhere strictly to the principle of "secure by default" in every architectural decision.
-            </p>
-          </div>
-        </section>
-
-        {/* 9 */}
-        <section id="disaster-recovery">
-          <h2 className="text-[1.1rem] font-bold uppercase tracking-[0.08em] text-black mb-6 pb-3 border-b border-black/10">
-            9. Disaster Recovery and Business Continuity
-          </h2>
-          <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
-            <p>
-              We operate a highly resilient, globally distributed infrastructure engineered to withstand catastrophic failures, natural disasters, and coordinated regional attacks. Our databases are synchronously replicated across multiple independent geographical zones to ensure zero data loss (RPO = 0) and near-instantaneous failover (RTO &lt; 60 seconds).
-            </p>
-            <p>
-              Regular failover drills are conducted quarterly to validate our Business Continuity Plan (BCP) in real-world scenarios, ensuring that our analytics platforms and communication networks remain fully operational under any circumstances.
-            </p>
-          </div>
-        </section>
-
-        {/* 10 */}
-        <section id="reporting">
-          <h2 className="text-[1.1rem] font-bold uppercase tracking-[0.08em] text-black mb-6 pb-3 border-b border-black/10">
-            10. Vulnerability Reporting
-          </h2>
-          <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
-            <p>
-              If you are a security researcher and believe you have discovered a vulnerability in our platform, API, or smart contracts, we strongly encourage responsible disclosure. Please contact our security team before any public disclosure to allow us to investigate and remediate the issue.
-            </p>
-            <div className="border border-black/10 rounded-xl p-5 sm:p-6 space-y-4 mt-2">
-              <div>
-                <p className="text-[11px] font-mono font-bold uppercase tracking-widest text-black/40 mb-1">Humanity Ledger S.L. Security Team</p>
-                <a href="mailto:humanityledger@gmail.com" className="text-black text-[15px] underline underline-offset-2 hover:text-black/60 transition-colors break-all">humanityledger@gmail.com</a>
-              </div>
-              <div>
-                <p className="text-[11px] font-mono font-bold uppercase tracking-widest text-black/40 mb-1">Telegram</p>
-                <a href="https://t.me/humanityledger" target="_blank" rel="noopener noreferrer" className="text-black text-[15px] underline underline-offset-2 hover:text-black/60 transition-colors">@humanityledger</a>
-              </div>
-              <div>
-                <p className="text-[11px] font-mono font-bold uppercase tracking-widest text-black/40 mb-1">Expected Response Time</p>
-                <p className="text-black text-[15px]">Within 48 hours of submission</p>
-              </div>
-              <div>
-                <p className="text-[11px] font-mono font-bold uppercase tracking-widest text-black/40 mb-1">Disclosure Policy</p>
-                <p className="text-black/70 text-[14px] leading-relaxed">We request a minimum of 90 days to remediate reported vulnerabilities before any public disclosure. We do not pursue legal action against researchers who disclose in good faith.</p>
-              </div>
-            </div>
           </div>
         </section>
 

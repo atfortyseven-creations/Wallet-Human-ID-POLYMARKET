@@ -55,7 +55,7 @@ export function EpicFooter() {
             {/* Massive Background Typography */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-5 select-none">
                 <span className="text-[20vw] font-black uppercase tracking-tighter text-white whitespace-nowrap">
-                    Whale Alert Network
+                    Whale Network
                 </span>
             </div>
 
@@ -82,7 +82,7 @@ export function EpicFooter() {
             </div>
 
             <div className="absolute bottom-6 left-6 text-[9px] text-white/20 font-mono uppercase">
-                Whale Alert Network © 2026 // Nivel: Institucional
+                Whale Network © 2026 // Nivel: Institucional
             </div>
             
         </footer>

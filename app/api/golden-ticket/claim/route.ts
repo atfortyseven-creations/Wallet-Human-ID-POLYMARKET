@@ -194,7 +194,7 @@ export async function POST(req: NextRequest) {
             try {
                 isValidSig = await verifyMessage({
                     address:   walletAddress as `0x${string}`,
-                    message:   `WHALE ALERT NETWORK GOLD ACCESS VERIFICATION: ${walletAddress}`,
+                    message:   `Whale Network NETWORK GOLD ACCESS VERIFICATION: ${walletAddress}`,
                     signature: cryptoSignature as `0x${string}`,
                 });
             } catch {}
@@ -203,7 +203,7 @@ export async function POST(req: NextRequest) {
                 try {
                     isValidSig = await verifyMessage({
                         address:   walletAddress as `0x${string}`,
-                        message:   `WHALE ALERT NETWORK GOLD ACCESS: ${walletAddress}`,
+                        message:   `Whale Network NETWORK GOLD ACCESS: ${walletAddress}`,
                         signature: cryptoSignature as `0x${string}`,
                     });
                 } catch {}

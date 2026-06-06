@@ -79,7 +79,7 @@ export function FeaturesSection() {
                     <FeatureCard
                         icon={Blocks}
                         title="Universal Web3 Passport"
-                        description="A single login for the entire ecosystem. Access Whale Alert Network, Aave, DAOs, and metaverses without managing multiple accounts or passwords."
+                        description="A single login for the entire ecosystem. Access Whale Network, Aave, DAOs, and metaverses without managing multiple accounts or passwords."
                         delay={0.2}
                     />
                 </div>

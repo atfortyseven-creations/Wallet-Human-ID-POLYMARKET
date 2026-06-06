@@ -46,7 +46,7 @@ export function WhaleAlerts({ alerts, threshold, onThresholdChange }: Props) {
                     >
                         <span className="text-2xl"></span>
                         <div>
-                            <div className="font-bold text-red-300 text-sm">Whale Alert Network!</div>
+                            <div className="font-bold text-red-300 text-sm">Whale Network!</div>
                             <div className="text-xs text-gray-400">{a.btcAmount.toFixed(2)} BTC detected</div>
                         </div>
                     </motion.div>
@@ -76,7 +76,7 @@ export function WhaleAlerts({ alerts, threshold, onThresholdChange }: Props) {
                             </span>
                         )}
                     </div>
-                    <h2 className="text-white font-bold text-lg">Whale Alert Networks</h2>
+                    <h2 className="text-white font-bold text-lg">Whale Networks</h2>
                     <span className="text-[10px] font-black bg-yellow-500/20 text-yellow-300 px-2 py-0.5 rounded-full border border-yellow-500/30 ml-1">LIVE</span>
                 </div>
                 <div className="flex items-center gap-2">

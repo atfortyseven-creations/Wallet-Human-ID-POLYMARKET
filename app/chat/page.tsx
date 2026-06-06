@@ -1,7 +1,7 @@
 import ChatClientPage from '@/components/chat/ChatClientPage';
 
 export const metadata = {
-  title: 'Whale Chat · Whale Alert Network',
+  title: 'Whale Chat · Whale Network',
   description: 'End-to-end encrypted messaging with on-chain analytics.',
 };
 

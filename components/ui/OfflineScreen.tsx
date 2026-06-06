@@ -45,7 +45,7 @@ export function OfflineScreen() {
                 className="text-center space-y-3 px-6 max-w-md"
             >
                 <div className="text-xs font-black uppercase tracking-[0.3em] text-[#d4ff28] mb-4">
-                    Whale Alert Network
+                    Whale Network
                 </div>
                 <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight">
                     Connection Lost

@@ -104,7 +104,7 @@ const MUTED = "rgba(5,5,5,0.50)";
 function buildSystemMessage(address: string): string {
   return [
     '',
-    '  Whale Alert Network',
+    '  Whale Network',
     '  SECURE ACCESS HANDSHAKE',
     '',
     '',
@@ -1161,7 +1161,7 @@ export function MobileLanding() {
           >
             <WhaleLogo className="w-6 h-6" />
           </div>
-          <span className="text-[11px] font-black uppercase tracking-tight text-[#050505]">Whale Alert</span>
+          <span className="text-[11px] font-black uppercase tracking-tight text-[#050505]">Whale Network</span>
         </div>
         
         <div className="flex items-center gap-2">

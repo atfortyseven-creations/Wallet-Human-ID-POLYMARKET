@@ -229,7 +229,7 @@ export function ClearanceView({ onBack }: ClearanceViewProps) {
                 Destino Asegurado
               </span>
               <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-black font-black">
-                Tesorería Whale Alert Network
+                Tesorería Whale Network
               </p>
             </div>
             <span className="font-mono text-[10px] tracking-[0.2em] text-black/30 font-bold">

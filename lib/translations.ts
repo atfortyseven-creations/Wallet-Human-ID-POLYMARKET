@@ -1,7 +1,7 @@
 export const translations = {
     en: {
         // Nav & General
-        'nav.title': 'Whale Alert',
+        'nav.title': 'Whale Network',
         'nav.functions': 'FEATURES',
         'nav.developer': 'API & SIGNALS',
         'nav.human_card': 'WALLET',
@@ -77,7 +77,7 @@ export const translations = {
         'sec.card2_title': 'Audited',
         'sec.card2_desc': 'Smart contracts verified by leaders.',
         'sec.card3_title': 'Biometrics',
-        'sec.card3_desc': 'Access protected by Whale Alert ID.',
+        'sec.card3_desc': 'Access protected by Whale Network ID.',
         'sec.card4_title': 'Privacy',
         'sec.card4_desc': 'Your data never leaves your device.',
 
@@ -93,7 +93,7 @@ export const translations = {
         'growth.card4_desc': 'Best Web3 Wallet 2025.',
 
         // Lottie Stack
-        'lottie.wallet.title': 'Whale Alert Wallet',
+        'lottie.wallet.title': 'Whale Network Wallet',
         'lottie.wallet.desc': 'Non-custodial, biometric-secured vault for your digital assets.',
         'lottie.prediction.title': 'Prediction Markets',
         'lottie.prediction.desc': 'Trade on future outcomes with zero-knowledge privacy.',
@@ -104,7 +104,7 @@ export const translations = {
 
         // Web3 Access Section
         'web3.new_title': 'NEW TO\nWEB3?',
-        'web3.new_desc': 'Through a series of interactive lessons, Whale Alert Learn will teach you what web3 is, why it matters to you, and how to use your wallet in the process.',
+        'web3.new_desc': 'Through a series of interactive lessons, Whale Network Learn will teach you what web3 is, why it matters to you, and how to use your wallet in the process.',
         'web3.new_cta': 'START THE LESSON',
 
         // Subscription Section
@@ -114,7 +114,7 @@ export const translations = {
         'sub.placeholder': 'Email address',
         'sub.cta': 'SUBSCRIBE',
         'sub.cta_loading': 'SUBSCRIBING...',
-        'sub.disclaimer': 'Whale Alert may use the contact information you provide to contact you about our products and services. By clicking "subscribe", you agree to receive such communications. You can cancel your subscription at any time.',
+        'sub.disclaimer': 'Whale Network may use the contact information you provide to contact you about our products and services. By clicking "subscribe", you agree to receive such communications. You can cancel your subscription at any time.',
         'sub.success_title': 'THANKS FOR SUBSCRIBING!',
         'sub.success_desc': 'Check your inbox to confirm your subscription.',
         'sub.error_email': 'Please enter a valid email',
@@ -122,7 +122,7 @@ export const translations = {
         'sub.success_toast': 'Subscribed successfully!',
 
         // Ecosystem Section
-        'ecosystem.title': 'Whale Alert',
+        'ecosystem.title': 'Whale Network',
         'ecosystem.subtitle': "Engineering trust. We don't sell hype, we sell verifiable architecture.",
         'ecosystem.cat_core': 'Core Ecosystem',
         'ecosystem.cat_trading': 'Trading & Security',
@@ -178,12 +178,12 @@ export const translations = {
         'dev.contracts.title': 'Smart Contracts',
         'dev.contracts.desc': 'Core protocol interfaces and ABI references.',
         'dev.sdk.title': 'Identity SDK',
-        'dev.sdk.desc': 'Integrate Whale Alert ID verification into your dApp.',
+        'dev.sdk.desc': 'Integrate Whale Network ID verification into your dApp.',
         'dev.gov.title': 'Governance API',
         'dev.gov.desc': 'Interact with the decentralized decision engine.',
 
         // Footer
-        'footer.human_defi': 'Whale Alert',
+        'footer.human_defi': 'Whale Network',
         'footer.get_wallet': 'Get Wallet',
         'footer.buy': 'Buy',
         'footer.earn': 'Earn',
@@ -210,7 +210,7 @@ export const translations = {
         'footer.contact': 'Contact',
         'footer.privacy': 'Privacy Policy',
         'footer.terms': 'Terms of Use',
-        'footer.rights': '2026 Whale Alert. All rights reserved.',
+        'footer.rights': '2026 Whale Network. All rights reserved.',
         'footer.lang_name': 'English',
 
         // VIP Section

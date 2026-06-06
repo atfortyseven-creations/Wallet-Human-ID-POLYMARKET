@@ -38,7 +38,7 @@ const NATIVE_ASSET = (chainId: number): Asset => ({
   balance: "0.0000",
 });
 
-const POLYGON_RPC = "https://polygon-rpc.com";
+const POLYGON_RPC = process.env.NEXT_PUBLIC_ALCHEMY_POLY_RPC_URL || "https://polygon-rpc.com";
 
 export default function UniversalSendModal({ isOpen, onClose }: Props) {
   const wagmi = useAccount();

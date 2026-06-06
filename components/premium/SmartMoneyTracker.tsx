@@ -67,7 +67,7 @@ export function SmartMoneyTracker() {
   // 1. WebSocket Listener for Real-Time "Pushes"
   useEffect(() => {
     const handleNewWhale = (data: any) => {
-      console.log(" [WS] New Whale Alert Network Received:", data);
+      console.log(" [WS] New Whale Network Received:", data);
       
       // Map BullMQ format to WalletEvent UI format
       const newEvent: WalletEvent = {

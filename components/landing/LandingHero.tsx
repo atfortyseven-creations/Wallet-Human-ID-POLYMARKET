@@ -128,7 +128,7 @@ export function LandingHero({ onStart }: LandingHeroProps) {
                                         </div>
                                         
                                         <h3 className="text-2xl font-black text-white mb-2 tracking-tight uppercase">Access Terminal</h3>
-                                        <p className="text-white/60 text-sm mb-8 font-medium">Authenticate securely to enter the Whale Alert Network Analytics network.</p>
+                                        <p className="text-white/60 text-sm mb-8 font-medium">Authenticate securely to enter the Whale Network Analytics network.</p>
 
                                         <button 
                                             onClick={() => router.push('/login')}
