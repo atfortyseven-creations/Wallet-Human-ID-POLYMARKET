@@ -140,7 +140,7 @@ export default function CompliancePage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              The complete regulatory documentation suite comprises <strong className="text-black">25 documents</strong> across 6 categories.
+              The complete regulatory documentation suite comprises <strong className="text-black">27 documents</strong> across 6 categories.
               Documents displayed at <strong className="text-black">full opacity</strong> are finalised (v3.0) and available for review upon request.
               Documents displayed at <strong className="text-black">30% opacity</strong> contain placeholder fields that will be completed upon S.L. formal constitution.
             </p>
@@ -158,9 +158,9 @@ export default function CompliancePage() {
                     <td className="px-4 py-2.5">Docs 07, 08, 10, 11, 12, 22 (MiCA/AML suite) + Doc 18 (Checklist) + Doc 25 (Action Plan)</td>
                   </tr>
                   <tr>
-                    <td className="px-4 py-2.5 border-r border-black/10">✓ v2.0 — Ready to use as-is</td>
-                    <td className="px-4 py-2.5 border-r border-black/10">3</td>
-                    <td className="px-4 py-2.5">Doc 16 (Advertising Policy), Doc 17 (CSIRP), Doc 24 (NDA)</td>
+                    <td className="px-4 py-2.5 border-r border-black/10">✓ v2.0/v1.0 — Ready to use as-is</td>
+                    <td className="px-4 py-2.5 border-r border-black/10">5</td>
+                    <td className="px-4 py-2.5">Docs 16, 17, 24, 26 (API License), 27 (GDPR ZKP Erasure)</td>
                   </tr>
                   <tr>
                     <td className="px-4 py-2.5 border-r border-black/10 text-black/40">○ Pending — [PENDING] fields</td>
@@ -219,6 +219,7 @@ export default function CompliancePage() {
               <DocRow number="05" title="Cookie Policy (Política de Cookies)" status="pending" version="v2.0" authority="AEPD / ePrivacy Directive" description="Cookie classification and consent management framework compliant with ePrivacy Directive 2002/58/EC and AEPD guidance (2022). Requires simultaneous activation of a compliant cookie consent banner with a mandatory 'Reject All' option (Osano/Cookiebot/Iubenda free tier). Currently published at /legal/cookies." note="[PENDING] fields: NIF/address. Cookie consent banner must be live by 8 July 2026." />
               <DocRow number="06" title="Platform Terms & Conditions" status="pending" version="v2.0" description="Full contractual terms governing access to and use of Whale Network, the $QDs token, and all associated services. Includes: CASP exemption statement (Recital 22 MiCA); $QDs classification as utility token (Art. 3(1)(5) MiCA); MiCA Art. 13 right of withdrawal for EU consumers (14 calendar days from direct TGE acquisition); restricted jurisdictions (US citizens excluded, OFAC/EU/UN sanctions); user AML obligations (Travel Rule); limitation of liability. Currently published at /legal/terms." note="[PENDING] fields: definitive NIF and registered address." />
               <DocRow number="19" title="Legal Texts — Frontend Web Reference" status="pending" version="v2.0" description="Internal reference document compiling all legal text templates for display on humanidfi.com: MiCA Art. 8(4) risk warning texts (multiple language versions), KYC consent declarations, cookie consent banner text, wallet connection disclaimers, AML declaration checkboxes. For internal developer use — not a public-facing document." />
+              <DocRow number="27" title="GDPR Art. 17 ZKP Right to Erasure Protocol" status="ready" version="v1.0" authority="AEPD" description="World-class technical-legal protocol resolving the paradox of GDPR deletion on an immutable ledger. Establishes the Cryptographic Shredding procedure: upon a valid Art. 17 request (post AML retention), the escrowed viewing key is destroyed. This renders the on-chain Aztec TokenNote commitments irreversibly anonymous, satisfying the GDPR definition of erasure." note="Ready for AEPD and Aztec core team evaluation." />
             </div>
           </div>
         </section>
@@ -274,6 +275,7 @@ export default function CompliancePage() {
               <DocRow number="21" title="Intellectual Property Assignment Agreement" status="pending" version="v2.0" description="Agreement assigning all intellectual and industrial property rights in the Whale Network platform codebase, Noir smart contracts ($QDs token contract, mint_private_license circuit), graphical assets, trade marks, and all related technology to Humanity Ledger S.L. Mandatory for all contributing developers. Includes: warranty of non-infringement, confirmation of original authorship, waiver of moral rights to the extent permitted by Spanish law (Ley de Propiedad Intelectual, Real Decreto Legislativo 1/1996)." note="[PENDING]: company NIF and individual developer details. Sign by 25 July 2026." />
               <DocRow number="23" title="SAFT — Token Purchase Agreement" status="pending" version="v2.0" description="Simple Agreement for Future Tokens for any pre-TGE strategic investor agreements. Template only — for use exclusively if investment capital is raised prior to 1 January 2027. MiCA-compliant structure: investors acknowledge utility token classification, receive MiCA Art. 8(4) risk warnings, and acknowledge absence of guaranteed returns or repurchase obligations. Governing law: Kingdom of Spain." note="Conditional document — only to be executed if pre-TGE investors commit. Not currently required." />
               <DocRow number="24" title="Non-Disclosure Agreement (NDA)" status="ready" version="v2.0" description="Standard bilateral NDA for third-party disclosures. Applicable to: ZK security auditors (Nethermind Security, Sentnl, Trail of Bits), potential exchange partners, institutional investors, and technology integration partners. Governing law: Kingdom of Spain. Jurisdiction: Courts of Valencia. Confidentiality period: 5 years from signature date. Carve-outs: information already in the public domain; information disclosed pursuant to a regulatory or judicial order." note="Ready to use as-is. Execute before any third-party disclosure of technical or commercial confidential information." />
+              <DocRow number="26" title="Developer API & SDK License Agreement" status="ready" version="v1.0" description="Legal framework governing third-party developer access to the Whale Network API and Noir SDK. Sets rate limits (100 RPS), enforces non-custodial SLA, explicitly prohibits reverse-engineering of ZKP privacy guarantees, and disclaims liability for Aztec sequencer downtime." note="Ready to use as-is for the Developer Hub." />
             </div>
           </div>
         </section>
