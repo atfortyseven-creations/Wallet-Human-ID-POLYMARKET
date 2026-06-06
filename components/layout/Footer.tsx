@@ -36,6 +36,8 @@ export const Footer = () => {
                         <div className="flex flex-wrap gap-4 text-[11px] font-sans text-white/30 font-semibold tracking-wider">
                             <Link href="/legal/legal-notice" className="hover:text-white transition-colors">Legal Notice</Link>
                             <span className="opacity-30">•</span>
+                            <Link href="/legal/aztec-grant-transparency" className="hover:text-white transition-colors">Aztec Grant Transparency</Link>
+                            <span className="opacity-30">•</span>
                             <Link href="/legal/terms" className="hover:text-white transition-colors">Terms & Conditions</Link>
                             <span className="opacity-30">•</span>
                             <Link href="/legal/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
@@ -70,7 +72,7 @@ export const Footer = () => {
                             </h4>
                             <div className="flex flex-col gap-5">
                                 <FooterLink href="/legal/compliance" icon={<Shield size={15} />}>Compliance Docs</FooterLink>
-                                <FooterLink href="/legal/compliance" icon={<Scale size={15} />}>MiCA Package</FooterLink>
+                                <FooterLink href="/legal/aztec-grant-transparency" icon={<Scale size={15} />}>Aztec Grant Transparency</FooterLink>
                                 <FooterLink href="/legal/compliance" icon={<FileCheck size={15} />}>AML/KYC Policy</FooterLink>
                             </div>
                         </div>
