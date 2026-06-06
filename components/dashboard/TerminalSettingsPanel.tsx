@@ -4,9 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSettingsStore, SystemSettings } from '@/lib/store/useSettingsStore';
 import { useSystemTranslation } from '@/hooks/useSystemTranslation';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Shield, Scale, FileText, Lock, Globe, ExternalLink } from 'lucide-react';
 import { useSystemSignOut } from '@/hooks/useSystemSignOut';
 import { toast } from 'sonner';
+import Link from 'next/link';
 
 // We will construct categories inside the component to use the hook.
 
@@ -21,6 +22,16 @@ export function TerminalSettingsPanel() {
     { id: 'general', label: t('GENERAL_SETTINGS') },
     { id: 'display', label: t('APPEARANCE') },
     { id: 'privacy', label: t('PRIVACY_SECURITY') },
+    { id: 'legal', label: 'Legal & Regulatory' },
+  ];
+
+  const LEGAL_LINKS = [
+    { href: '/legal/compliance',              icon: Shield,   label: 'Regulatory Compliance Portal', desc: '27-document MiCA regulatory suite — full EU compliance documentation.' },
+    { href: '/legal/aztec-grant-transparency', icon: Scale,    label: 'Aztec Grant Transparency',       desc: 'Sincere current status report and grant utilization roadmap for Aztec Network.' },
+    { href: '/legal/aztec-architecture',       icon: Lock,     label: 'Aztec Technical Architecture',   desc: 'ZK-Rollup architecture, Noir circuits, PXE and viewing key compliance.' },
+    { href: '/legal/privacy',                  icon: FileText, label: 'Privacy Policy (GDPR)',          desc: 'Data processing, right of erasure and ZKP anonymization protocol.' },
+    { href: '/legal/terms',                    icon: FileText, label: 'Terms & Conditions',              desc: 'Platform terms, MiCA utility token classification and CASP exemption.' },
+    { href: '/legal/security',                 icon: Globe,    label: 'Security Architecture',          desc: 'Noir circuit audit status, key management and incident response policy.' },
   ];
 
   const handleTotalDisconnect = async () => {
@@ -231,14 +242,47 @@ export function TerminalSettingsPanel() {
                     </>
                  )}
 
-                 {activeTab === 'privacy' && (
-                    <>
-                       {renderInput('inactivityLockMinutes', t('INACTIVITY_TIMEOUT'), t('MINUTES_LOCK'), 'number', t('MIN'))}
-                       {renderToggle('stealthMode', t('STEALTH_MODE'), t('OBFUSCATE_VIS'))}
-                       {renderToggle('requireSignForExports', t('EXPORT_AUTH'), t('REQ_CRYPTO_SIGN'))}
-                    </>
-                 )}
-              </motion.div>
+                  {activeTab === 'privacy' && (
+                     <>
+                        {renderInput('inactivityLockMinutes', t('INACTIVITY_TIMEOUT'), t('MINUTES_LOCK'), 'number', t('MIN'))}
+                        {renderToggle('stealthMode', t('STEALTH_MODE'), t('OBFUSCATE_VIS'))}
+                        {renderToggle('requireSignForExports', t('EXPORT_AUTH'), t('REQ_CRYPTO_SIGN'))}
+                     </>
+                  )}
+
+                  {activeTab === 'legal' && (
+                     <div className="col-span-1 md:col-span-2 flex flex-col gap-4">
+                        <p className="text-[11px] font-mono text-black/40 uppercase tracking-widest leading-relaxed border-b border-black/10 pb-4">
+                          Humanity Ledger S.L. — MiCA Title II Utility Token Issuer — Regulated under Regulation (EU) 2023/1114.
+                          Full regulatory documentation suite: 27 documents. Access each document below.
+                        </p>
+                        {LEGAL_LINKS.map((item) => {
+                          const Icon = item.icon;
+                          return (
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              className="flex items-start gap-5 p-5 bg-white border border-black/10 rounded-2xl hover:border-black/40 hover:shadow-sm transition-all active:scale-[0.99] group"
+                            >
+                              <div className="mt-0.5 w-9 h-9 rounded-xl bg-black/5 flex items-center justify-center shrink-0 group-hover:bg-black group-hover:text-white transition-colors">
+                                <Icon size={16} className="text-black group-hover:text-white transition-colors" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between gap-2">
+                                  <span className="text-[12px] font-black uppercase tracking-widest text-black truncate">{item.label}</span>
+                                  <ExternalLink size={12} className="text-black/20 group-hover:text-black/60 transition-colors shrink-0" />
+                                </div>
+                                <span className="text-[10px] font-mono text-black/40 leading-relaxed mt-1 block">{item.desc}</span>
+                              </div>
+                            </Link>
+                          );
+                        })}
+                        <p className="text-[9px] font-mono text-black/25 uppercase tracking-widest text-center pt-2">
+                          © 2026 Humanity Ledger S.L. (In process of incorporation) · All rights reserved
+                        </p>
+                     </div>
+                  )}
+               </motion.div>
            </AnimatePresence>
          </div>
       </div>

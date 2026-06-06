@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, LineChart, Globe, Target, LayoutDashboard } from 'lucide-react';
+import { Home, LineChart, LayoutDashboard, Scale } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
@@ -10,9 +10,10 @@ export function MobileNavBar() {
     const pathname = usePathname();
 
     const navItems = [
-        { href: '/dashboard', label: 'Dashboard',     icon: LayoutDashboard },
-        { href: '/',          label: 'Home',          icon: Home },
-        { href: '/portfolio', label: 'Portfolio',     icon: LineChart },
+        { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+        { href: '/',          label: 'Home',       icon: Home },
+        { href: '/portfolio', label: 'Portfolio',  icon: LineChart },
+        { href: '/settings?tab=legal', label: 'Legal', icon: Scale },
     ];
 
     return (
