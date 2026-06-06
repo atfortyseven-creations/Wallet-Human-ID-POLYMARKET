@@ -38,12 +38,15 @@ export async function GET(req: Request) {
     const genesisAmount = 0; // Genesis removed. Users must sign in Identity to get QDs.
     const received = receivedAgg._sum.amount || 0;
     const sent = sentAgg._sum.amount || 0;
-    const trueBalance = genesisAmount + received - sent;
+    
+    // Fix precision
+    const rawBalance = genesisAmount + received - sent;
+    const trueBalance = Math.round(rawBalance * 1000000) / 1000000;
 
     // Ensure we don't go below 0 theoretically, though transfers prevent it
     const finalBalance = Math.max(0, trueBalance);
 
-    console.log(`[Aztec Ledger] ${aztecAddress} → ${finalBalance} QDs (Gen: ${genesisAmount}, In: ${received}, Out: ${sent})`);
+    console.log(`[Aztec Ledger] ${aztecAddress} → ${finalBalance} QDs (In: ${received}, Out: ${sent})`);
 
     return NextResponse.json({
       balance: finalBalance.toFixed(2),

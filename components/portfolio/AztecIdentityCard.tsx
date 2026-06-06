@@ -103,7 +103,7 @@ function useSyncFromDB(address: string) {
           amount:  tx.amount,
           address: tx.type === 'send' ? tx.toAddress : tx.fromAddress,
           txHash:  tx.txHash,
-          date:    tx.createdAt,
+          date:    tx.timestamp,
         }));
         setHistory(freshHistory);
 

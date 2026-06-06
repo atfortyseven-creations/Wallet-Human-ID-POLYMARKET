@@ -80,9 +80,11 @@ export async function POST(req: Request) {
       })
     ]);
     const genesisAmount = 0;
-    const trueBalance = genesisAmount + (receivedAgg._sum.amount || 0) - (sentAgg._sum.amount || 0);
+    // Fix floating point precision artifacts by rounding to 6 decimal places
+    const rawBalance = genesisAmount + (receivedAgg._sum.amount || 0) - (sentAgg._sum.amount || 0);
+    const trueBalance = Math.round(rawBalance * 1000000) / 1000000;
 
-    if (parsedAmount > trueBalance) {
+    if (parsedAmount > trueBalance + 0.000001) {
       console.warn(`[Aztec Security] 🚨 Exploit blocked: ${normalizedFrom} attempted to send ${parsedAmount} QDs, but only has ${trueBalance} QDs.`);
       return NextResponse.json({ error: 'Insufficient balance on ledger' }, { status: 400 });
     }
