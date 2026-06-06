@@ -65,6 +65,11 @@ export default function InstitutionalFooter() {
                 Terms
               </Link>
             </li>
+            <li>
+              <Link href="/legal/compliance" className="text-sm font-bold text-black/70 hover:text-black flex items-center gap-2 group">
+                Legal Compliance
+              </Link>
+            </li>
           </ul>
         </div>
 
