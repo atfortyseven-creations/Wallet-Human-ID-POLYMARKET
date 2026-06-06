@@ -97,25 +97,24 @@ export const WHITEPAPER_SECTIONS: AztecDocSection[] = [
     id: 'economic-model',
     title: '8. Economic Model and Token Distribution',
     paragraphs: [
-      'The Humanity Ledger protocol uses a native utility asset, QDs, to align participant incentives, facilitate private coordination, and secure the network through a Proof of Contribution mechanism. The total supply of QDs is fixed at 21,000,000 units. Issuance follows an algorithmic decay curve over ten years.',
-      'QDs are issued exclusively within the Aztec shielded pool. All token operations — transfers, staking, governance voting, and reward claims — occur as private state transitions. External observers cannot determine the distribution or flow of QDs among participants.',
+      'The Humanity Ledger protocol uses a native utility asset, QDs (Quantum Digital Signatures), to align participant incentives, facilitate private coordination, and fund ongoing development. The total supply of QDs is permanently fixed at 210,000,000 units. This hard cap is technically enforced by the Noir smart contract deployed natively on Aztec Mainnet — it cannot be modified by any entity, including the founding team. There is no minting authority beyond the schedule encoded in the contract at deployment.',
+      'QDs are issued exclusively within the Aztec shielded pool. All token operations — transfers, staking, governance voting, and reward claims — occur as private state transitions using the dual-state architecture of the Aztec Network. External observers cannot determine the distribution or flow of QDs among participants.',
       'Proof of Contribution rewards participants who provide verifiable value to the network: forensic analysis submissions, infrastructure uptime, open-source circuit contributions, and governance participation. Contributions are verified by zk-SNARKs submitted to the network. The network authorizes minting only after proof verification — without knowing the identity of the contributor.',
     ],
     bullets: [
-      'Community mining (50% — 10,500,000 QDs): Distributed over ten years to verified contributors via Proof of Contribution.',
-      'Ecosystem treasury (25% — 5,250,000 QDs): Governed by cryptographic community vote. Funds protocol development, audits, and integrations.',
-      'Core contributors (15% — 3,150,000 QDs): Four-year linear vesting with a one-year cliff.',
-      'Initial liquidity (10% — 2,100,000 QDs): Deployed at launch to establish protocol liquidity pools.',
+      'Community mining (50% — 105,000,000 QDs): Distributed over ten years to verified contributors via the Proof of Contribution mechanism.',
+      'Ecosystem treasury (25% — 52,500,000 QDs): Governed by cryptographic community vote. Funds protocol development, audits, and ecosystem integrations.',
+      'Core contributors (15% — 31,500,000 QDs): Four-year linear vesting with a one-year cliff. Ensures long-term alignment between the founding team and the protocol.',
+      'Initial liquidity (10% — 21,000,000 QDs): Deployed at the Token Generation Event (TGE — target: 1 January 2027) to establish initial trading liquidity under a multisignature arrangement.',
     ],
   },
   {
     id: 'development-roadmap',
     title: '9. Development Roadmap',
     paragraphs: [
-      'The protocol development is structured across sequential phases, each building on verified foundations before expanding to additional capabilities. The roadmap is governed by milestone-based funding unlocks, where treasury disbursements require cryptographic proof of milestone completion verified by the community.',
-      'Phase one established the core infrastructure: Aztec PXE integration, primary Noir circuits for private transfers, Whale Network v1 data feeds, and the identity layer. These components are live.',
-      'Phase two focuses on compliance and institutional tooling: selective disclosure SDK, threshold multi-signature circuits, and the cross-chain bridge. These components are in active development.',
-      'Phase three introduces scaled applications: real-world asset integration, dark pool liquidity matching, and decentralized governance. These are planned for delivery in 2026.',
+      'The protocol development is structured across sequential phases, each building on verified foundations before expanding to additional capabilities.',
+      'Current status (June 2026): The full frontend platform (humanidfi.com) and the complete MiCA regulatory compliance suite (27 documents) are live. The logical architecture for the Noir token contract and the mint_private_license KYC circuit are fully defined and documented. The formal S.L. incorporation of Humanity Ledger S.L. is in progress via CIRCE (target: June 2026).',
+      'Subject to the Aztec Foundation grant approval, the following execution phases are committed: Q3 2026 — Noir smart contract engineering (QDsToken.nr and mint_private_license circuit) by specialized cryptography engineers. Q4 2026 — Tier-1 security audit of all Noir circuits. 28 November 2026 — CNMV notification submission (MiCA White Paper + 5 annexes). 1 January 2027 — Target Token Generation Event on Aztec Mainnet.',
     ],
   },
   {
@@ -187,8 +186,8 @@ export const TOKENOMICS_SECTIONS: AztecDocSection[] = [
   {
     title: 'Overview',
     paragraphs: [
-      'QDs is the native utility asset of the Humanity Ledger protocol. It operates exclusively within the Aztec shielded pool, meaning all QDs activity — transfers, staking, governance participation, and reward claims — is conducted as private state transitions. External observers cannot observe the distribution or flow of QDs among participants.',
-      'The total supply of QDs is fixed at 21,000,000 units. There is no mechanism for supply expansion beyond the predetermined issuance schedule. Issuance follows an algorithmic decay curve over ten years, designed to reward early and sustained participation while ensuring long-term scarcity.',
+      'QDs (Quantum Digital Signatures) is the native utility token of the Humanity Ledger protocol, classified as a utility token under Article 3(1)(5) of Regulation (EU) 2023/1114 (MiCA). It is deployed natively on Aztec Network Mainnet as a Noir smart contract — it is not an ERC-20 token on Ethereum L1, and no bridge contract exists.',
+      'The total supply of QDs is permanently fixed at 210,000,000 units. This hard cap is enforced at the contract level inside the Noir program; no additional minting is possible once the supply ceiling is reached. All QDs activity — transfers, staking, governance participation, and reward claims — is conducted as private state transitions within the Aztec shielded pool.',
     ],
   },
   {
@@ -197,10 +196,10 @@ export const TOKENOMICS_SECTIONS: AztecDocSection[] = [
       'The QDs supply is allocated across four categories, each governed by distinct vesting and unlock conditions. The structure is designed to prevent concentration, align long-term incentives, and fund sustainable protocol development.',
     ],
     bullets: [
-      'Community mining — 50% (10,500,000 QDs): Distributed over ten years to participants who contribute verifiable value to the network through the Proof of Contribution mechanism. This is the largest allocation and is the primary source of circulating supply.',
-      'Ecosystem treasury — 25% (5,250,000 QDs): Locked at genesis and governed by verified community vote. Funds are disbursed for protocol development, security audits, ecosystem grants, and strategic integrations. No unilateral disbursements are possible.',
-      'Core contributors — 15% (3,150,000 QDs): Subject to a four-year linear vesting schedule with a one-year cliff. Ensures long-term alignment between the founding team and the protocol.',
-      'Initial liquidity provision — 10% (2,100,000 QDs): Deployed at launch to establish liquidity in approved trading venues. Managed under a multisignature arrangement with predefined operational parameters.',
+      'Community mining — 50% (105,000,000 QDs): Distributed over ten years to participants who contribute verifiable value to the network through the Proof of Contribution mechanism. This is the largest allocation and is the primary source of circulating supply.',
+      'Ecosystem treasury — 25% (52,500,000 QDs): Locked at genesis and governed by verified community vote. Funds are disbursed for protocol development, security audits, ecosystem grants, and strategic integrations. No unilateral disbursements are possible.',
+      'Core contributors — 15% (31,500,000 QDs): Subject to a four-year linear vesting schedule with a one-year cliff. Ensures long-term alignment between the founding team and the protocol.',
+      'Initial liquidity provision — 10% (21,000,000 QDs): Deployed at the TGE (target: 1 January 2027) to establish liquidity. Managed under a multisignature arrangement with predefined operational parameters.',
     ],
   },
   {
@@ -243,10 +242,11 @@ export const DEVELOPER_SECTIONS: AztecDocSection[] = [
       'The primary integration surface is the Humanity Ledger API, which provides REST endpoints for querying public protocol state and WebSocket streams for real-time event delivery. For applications requiring direct interaction with the shielded pool, the local Aztec PXE must be initialized and configured.',
     ],
     bullets: [
-      'Install the Aztec sandbox: npm install -g @aztec/aztec-cli',
-      'Initialize a local PXE: aztec start --sandbox',
-      'Deploy a test account: aztec create-account',
-      'Submit your first private transaction using the Humanity Ledger SDK',
+      'Install the Aztec sandbox: npm install -g @aztec/cli (requires Node.js 20+)',
+      'Start a local Aztec sandbox: aztec start --sandbox',
+      'Create a test account: aztec create-account',
+      'Compile a Noir circuit: nargo compile (requires nargo 1.0+)',
+      'Submit your first private transaction using the Humanity Ledger SDK (documentation available on GitHub)',
     ],
   },
   {
