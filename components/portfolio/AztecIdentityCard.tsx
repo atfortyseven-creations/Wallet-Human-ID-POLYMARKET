@@ -594,12 +594,28 @@ export function AztecIdentityCard() {
             className="w-full border border-zinc-900/10 px-4 py-3 font-mono text-[10px] text-zinc-900 focus:outline-none focus:border-zinc-900"
           />
           <button 
-            onClick={() => {
+            disabled={checking}
+            onClick={async () => {
               if (inputSeed.trim().length < 3) return toast.error('Seed must be at least 3 characters');
               const derived = deriveDeterministicAztecAddress(inputSeed.trim());
-              login(inputSeed.trim(), derived);
+              
+              setChecking(true);
+              try {
+                toast.loading('Deploying Aztec Identity & Funding...', { id: 'airdrop' });
+                await fetch('/api/aztec/airdrop', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ address: derived })
+                });
+                toast.success('Identity deployed. 10 QDs granted!', { id: 'airdrop' });
+              } catch (e) {
+                toast.dismiss('airdrop');
+              } finally {
+                setChecking(false);
+                login(inputSeed.trim(), derived);
+              }
             }}
-            className="w-full bg-white text-zinc-900 border border-zinc-900/20 py-3 font-black text-[10px] uppercase tracking-widest hover:bg-zinc-50 transition-all"
+            className="w-full bg-white text-zinc-900 border border-zinc-900/20 py-3 font-black text-[10px] uppercase tracking-widest hover:bg-zinc-50 transition-all disabled:opacity-50"
           >
             Connect Wallet
           </button>
