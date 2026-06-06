@@ -13,7 +13,7 @@ import { RemoteLottie } from '@/components/ui/RemoteLottie';
 import type { Client } from '@xmtp/browser-sdk';
 import { useSettingsStore } from '@/lib/store/useSettingsStore';
 import { useWalletStore } from '@/lib/store/wallet-store';
-import { useQDsStore } from '@/lib/aztec/mockStore';
+// NOTE: QDs state is sourced from AztecNativeContext (DB polling) — no local store needed.
 
 import { toast } from 'sonner';
 
@@ -555,8 +555,9 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                     const data = await res.json();
                     if (data.success) {
                         localStorage.setItem(mintKey, 'true');
-                        toast.success('Identity Minted: 10 QDs Granted!');
-                        useQDsStore.getState().receiveQDs(data.amount, 'AZTEC_SYSTEM', data.txHash, data.id);
+                        toast.success('Identity Minted: 10 QDs Granted! Balance updates automatically via Aztec Identity.', { duration: 5000 });
+                        // The airdrop is persisted to the DB — AztecNativeContext polling
+                        // will reflect the new balance within 10 seconds automatically.
                     }
                 } catch (e) {
                     console.error('Identity Mint Failed:', e);

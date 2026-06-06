@@ -1,77 +1,49 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+/**
+ * mockStore.ts — ELIMINATED
+ * ─────────────────────────────────────────────────────────────────────────────
+ * This module has been permanently deleted as part of the Native Aztec Purge.
+ *
+ * All QDs state (balance, history, address) is now managed exclusively by
+ * AztecNativeContext, which polls the PostgreSQL ledger (our L2 Sequencer
+ * Indexer) every 10 seconds.
+ *
+ * If you are importing `useQDsStore` anywhere, replace it with:
+ *
+ *   import { useAztecNative } from '@/context/AztecNativeContext';
+ *   const { balance, history, aztecAddress } = useAztecNative();
+ *
+ * There is NO Zustand store. There is NO localStorage state.
+ * There is NO simulation. There is only the on-chain ledger.
+ *
+ * @deprecated — DO NOT USE. This file exists only to prevent import crashes
+ *               during the migration period. Remove all imports of this file.
+ */
 
-export interface TxRecord {
-  id: string;
-  type: 'send' | 'receive';
-  amount: number;
-  address: string;
-  date: string;
-  txHash: string;
+// Re-export a no-op shim so any forgotten import doesn't crash at runtime.
+// Each getter returns the safe default for that field.
+
+function noopStore() {
+  return {
+    balance:      0,
+    history:      [],
+    aztecAddress: null,
+    seed:         null,
+    receiveQDs:   () => { console.error('[mockStore] DEPRECATED: use AztecNativeContext'); },
+    sendQDs:      () => { console.error('[mockStore] DEPRECATED: use AztecNativeContext'); },
+    setAddress:   () => { console.error('[mockStore] DEPRECATED: use AztecNativeContext'); },
+    reset:        () => { console.error('[mockStore] DEPRECATED: use AztecNativeContext'); },
+  };
 }
 
-interface QDsStore {
-  seed: string | null;
-  aztecAddress: string | null;
-  balance: number;
-  history: TxRecord[];
-  login: (seed: string, address: string) => void;
-  logout: () => void;
-  setBalance: (b: number) => void;
-  setHistory: (h: TxRecord[]) => void;
-  sendQDs: (amount: number, to: string, txHash: string, dbId?: string, isSync?: boolean) => void;
-  receiveQDs: (amount: number, from: string, txHash: string, dbId?: string) => void;
-  reset: () => void;
+/** @deprecated Use useAztecNative() from AztecNativeContext instead */
+export function useQDsStore() {
+  console.warn('[mockStore] DEPRECATED — This store has been purged. Use useAztecNative().');
+  return noopStore();
 }
 
-export const useQDsStore = create<QDsStore>()(
-  persist(
-    (set) => ({
-      seed: null,
-      aztecAddress: null,
-      balance: 0, // Initial guaranteed balance
-      history: [],
-      login: (seed, address) => set({ seed, aztecAddress: address }),
-      logout: () => set({ seed: null, aztecAddress: null, history: [], balance: 0 }),
-      setBalance: (balance) => set({ balance }),
-      setHistory: (history) => set({ history }),
-      sendQDs: (amount, to, txHash, dbId, isSync) => set((state) => ({
-        // Only deduct balance optimistically if this is a direct user action.
-        // If isSync is true, the balance is already managed by the master setBalance() from DB.
-        balance: isSync ? state.balance : state.balance - amount,
-        history: [
-          {
-            id: dbId || Math.random().toString(36).substr(2, 9),
-            type: 'send',
-            amount,
-            address: to,
-            date: new Date().toISOString(),
-            txHash
-          },
-          ...state.history
-        ]
-      })),
-      receiveQDs: (amount, from, txHash, dbId) => set((state) => ({
-        // DO NOT mutate balance here. The useSyncFromDB hook strictly enforces the 
-        // true balance directly from the DB via `setBalance`. Mutating it here would 
-        // cause a transient UI glitch (double counting the receive).
-        history: [
-          {
-            id: dbId || Math.random().toString(36).substr(2, 9),
-            type: 'receive',
-            amount,
-            address: from,
-            date: new Date().toISOString(),
-            txHash
-          },
-          ...state.history
-        ]
-      })),
-      reset: () => set({ balance: 0, history: [] })
-    }),
-    {
-      name: 'qds-storage',
-      version: 3, // Bump to v3 to wipe local storage and force true sync with dbIds
-    }
-  )
-);
+// Attach a static .getState() for any legacy calls like useQDsStore.getState().receiveQDs(...)
+useQDsStore.getState = () => ({
+  ...noopStore(),
+  receiveQDs: () => console.error('[mockStore.getState] DEPRECATED: use AztecNativeContext'),
+  sendQDs:    () => console.error('[mockStore.getState] DEPRECATED: use AztecNativeContext'),
+});
