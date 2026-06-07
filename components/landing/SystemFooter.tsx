@@ -35,6 +35,15 @@ const NAV_COLUMNS = [
     links: [
       { label: "Vision",   href: "/vision" },
     ]
+  },
+  {
+    label: "REGULATORY",
+    links: [
+      { label: "Compliance Docs", href: "/legal/compliance" },
+      { label: "Aztec Transparency", href: "/legal/aztec-grant-transparency" },
+      { label: "Terms & Conditions", href: "/legal/terms" },
+      { label: "Privacy Policy", href: "/legal/privacy" },
+    ]
   }
 ];
 
