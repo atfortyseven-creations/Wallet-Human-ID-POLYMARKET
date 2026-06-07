@@ -26,8 +26,10 @@ const NAV_COLUMNS = [
   {
     label: "DEVELOPERS",
     links: [
-      { label: "API Docs",  href: "/developers/api-docs" },
-      { label: "GitHub",    href: "https://github.com/humanityledger/Humanity-Ledger", isExternal: true },
+      { label: "API Docs",       href: "/developers/api-docs" },
+      { label: "ZK Sandbox",     href: "/developer/sandbox" },
+      { label: "Architecture",   href: "/architecture" },
+      { label: "GitHub",         href: "https://github.com/humanityledger/Humanity-Ledger", isExternal: true },
     ]
   },
   {
@@ -74,7 +76,7 @@ export function SystemFooter() {
           </div>
 
           {/* Links Columns */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-12 md:gap-24">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-16">
             {NAV_COLUMNS.map((col) => (
               <div key={col.label} className="flex flex-col gap-5">
                 <span className="font-sans text-[11px] font-bold uppercase tracking-wider text-black/30">
@@ -95,11 +97,16 @@ export function SystemFooter() {
         {/* Bottom Section */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-8 border-t border-black/10">
           <span className="text-[12px] font-medium text-black/30">
-            © 2026 Humanity Ledger · All rights reserved
+            © 2026 Humanity Ledger S.L. · All rights reserved
           </span>
-          <Link href="/privacy" className="text-[11px] font-bold uppercase tracking-wider text-black/30 hover:text-black transition-colors">
-            Privacy Policy
-          </Link>
+          <div className="flex items-center gap-4">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-black/20 border border-black/10 rounded px-2 py-1">
+              Aztec Native · MiCA Compliant
+            </span>
+            <Link href="/legal/compliance" className="text-[11px] font-bold uppercase tracking-wider text-black/30 hover:text-black transition-colors">
+              Legal &amp; Compliance
+            </Link>
+          </div>
         </div>
 
       </div>
