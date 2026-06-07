@@ -76,10 +76,13 @@ export function AntiTamperCore() {
     if (process.env.NODE_ENV !== "production") return; // Off in dev for DX
 
     // ── 1. Prototype Pollution Shield ─────────────────────────────────────
-    try {
-      Object.freeze(Object.prototype);
-      // Array.prototype freeze intentionally omitted — breaks many libs.
-    } catch {/* already frozen or runtime disallows */}
+    // NOTE: Object.freeze(Object.prototype) was intentionally REMOVED.
+    // Freezing Object.prototype breaks third-party libraries that assign to
+    // 'constructor' or other prototype properties at runtime (e.g. wagmi, viem,
+    // WalletConnect, framer-motion). The crash manifests as:
+    //   TypeError: Cannot assign to read only property 'constructor' of object '[object Object]'
+    // Alternative mitigation: CSP nonce + AntiTamperCore MutationObserver are
+    // sufficient to detect extension injection without freezing the prototype.
 
     // ── 2. Compute initial Merkle baseline ────────────────────────────────
     const computeBaseline = () => {
