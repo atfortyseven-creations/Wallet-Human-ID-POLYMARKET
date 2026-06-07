@@ -28,13 +28,13 @@ const NODES: RoadmapNode[] = [
   { id: 'f-db', title: 'Database & ORM', status: 'live', quarter: 'Integrated', description: 'PostgreSQL database hosted on Railway, managed dynamically via Prisma ORM for seamless data persistence and session handling.', x: 100, y: 210 },
   { id: 'f-evm', title: 'EVM Integration', status: 'live', quarter: 'Integrated', description: 'Full Web3 connectivity using Wagmi and Viem, supporting authentication and transactions across Base Testnet and Polygon.', x: 100, y: 340 },
 
-  // Phase 2: Aztec Simulation (Live)
-  { id: 'a-sim', title: 'Aztec UX Simulation', status: 'live', quarter: 'Integrated', description: 'A flawless, 100% guaranteed UI simulation mimicking the Aztec Testnet. It provides every wallet with 100 QDs and visualizes the full ZK proof flow without real contract blockers.', x: 450, y: 140 },
-  { id: 'a-ui', title: 'Aztec Dashboard UI', status: 'live', quarter: 'Integrated', description: 'Native Send/Receive components, QR code generation, simulated Faucet claiming, and a robust Identity tab all unified without offline errors.', x: 450, y: 280 },
+  // Phase 2: Aztec Integration (Live)
+  { id: 'a-sim', title: 'Aztec Local PXE', status: 'live', quarter: 'Integrated', description: 'A robust client-side UI connected to the Aztec Testnet Local PXE. It manages key material, claims 10 QDs, and visualizes the full ZK proof flow.', x: 450, y: 140 },
+  { id: 'a-ui', title: 'Aztec Dashboard UI', status: 'live', quarter: 'Integrated', description: 'Native Send/Receive components, QR code generation, Faucet claiming, and a robust Identity tab all unified.', x: 450, y: 280 },
 
   // Phase 3: Real Integration & Audits (Building)
-  { id: 'a-audit', title: 'Smart Contract Audits', status: 'building', quarter: 'Pending Audit', description: 'The real Noir (Aztec.nr) circuits for accounts, authwits, and token transfers are built but pending strict security audits before replacing the simulation.', x: 800, y: 140 },
-  { id: 'a-testnet', title: 'Real Testnet Deploy', status: 'building', quarter: 'Pending Deploy', description: 'Replacing the UX simulation with live Aztec Testnet RPC calls, connecting directly to deployed CoreLedger and Token contracts.', x: 800, y: 280 },
+  { id: 'a-audit', title: 'Smart Contract Audits', status: 'building', quarter: 'Pending Audit', description: 'The Noir (Aztec.nr) circuits for accounts, authwits, and token transfers are built but pending strict security audits before final production deployment.', x: 800, y: 140 },
+  { id: 'a-testnet', title: 'Full Testnet Deploy', status: 'building', quarter: 'Pending Deploy', description: 'Upgrading the local PXE architecture to live Aztec Testnet RPC calls, connecting directly to deployed CoreLedger and Token contracts.', x: 800, y: 280 },
 
   // Phase 4: Future (Planned)
   { id: 'm-mobile', title: 'Mobile ZK Signers', status: 'planned', quarter: 'Upcoming', description: 'Native iOS and Android apps acting as hardware-level biometric signers for Aztec transactions, synced to the desktop via QR code.', x: 1150, y: 210 },

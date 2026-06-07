@@ -155,7 +155,7 @@ export class MoralisService {
               logo:          meta.logo    ?? '',
               thumbnail:     meta.logo    ?? '',
               decimals,
-              balance,
+              balance:       raw.toString(),
               balance_formatted: balance,
               usd_price:     0,
               usd_value:     0,

@@ -267,7 +267,11 @@ function TransferFlowDiagram({
 
 function NullifierLog({ events }: { events: NullifierEvent[] }) {
   const endRef = useRef<HTMLDivElement>(null);
-  useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [events]);
+  useEffect(() => { 
+    if (endRef.current && endRef.current.parentElement) {
+      endRef.current.parentElement.scrollTop = endRef.current.parentElement.scrollHeight;
+    }
+  }, [events]);
 
   return (
     <div className="border border-zinc-900/8 bg-zinc-900/[0.015] overflow-hidden">

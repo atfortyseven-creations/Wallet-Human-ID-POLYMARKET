@@ -143,7 +143,9 @@ export function AztecShieldingTerminal() {
   }, []);
 
   useEffect(() => {
-    logEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (logEndRef.current && logEndRef.current.parentElement) {
+      logEndRef.current.parentElement.scrollTop = logEndRef.current.parentElement.scrollHeight;
+    }
   }, [logs]);
 
   const shieldPhaseSteps = [

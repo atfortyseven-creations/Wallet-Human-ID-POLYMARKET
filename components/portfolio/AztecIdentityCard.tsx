@@ -31,7 +31,7 @@ import { AztecShieldingTerminal } from './AztecShieldingTerminal';
 const AZTEC_EXPLORER    = 'https://testnet.aztecscan.xyz';
 const CLAIM_TX_HASH     = '0x085abad7f0a1bc596e570079d209e6f5251efa5988f01d57bb165c4fa3691e8a';
 const CLAIM_TX_BLOCK    = 103861;
-const CLAIM_AMOUNT      = '100 QDs';
+const CLAIM_AMOUNT      = '10 QDs';
 const CLAIM_FEE         = '2.2694 QDs';
 const LAST_UPDATED      = '2026-06-06';
 const L1_ROLLUP_ADDR    = '0xf6d0d42ace06829becb78c74f49879528fc632c1';
@@ -671,7 +671,7 @@ export function AztecIdentityCard() {
                 </div>
                 <div>
                   <div className="text-[10px] font-black uppercase tracking-widest text-emerald-700 mb-0.5">QDs Claimed Successfully</div>
-                  <div className="text-[9px] text-emerald-600/70">100 QDs deployed + claimed atomically · Block {CLAIM_TX_BLOCK.toLocaleString()}</div>
+                  <div className="text-[9px] text-emerald-600/70">10 QDs deployed + claimed atomically · Block {CLAIM_TX_BLOCK.toLocaleString()}</div>
                 </div>
               </div>
 
@@ -749,7 +749,7 @@ export function AztecIdentityCard() {
 # 2. Run:
 wsl bash claim-master.sh \\
   --secret <YOUR_SECRET> \\
-  --claim-amount 100000000000000000000 \\
+  --claim-amount 10000000000000000000 \\
   --claim-secret <FROM_FAUCET> \\
   --message-leaf-index <FROM_FAUCET>`}
                   </pre>
