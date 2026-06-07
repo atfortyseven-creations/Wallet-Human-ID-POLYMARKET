@@ -105,16 +105,15 @@ export const WHITEPAPER_SECTIONS: AztecDocSection[] = [
       'Community mining (50% — 105,000,000 QDs): Distributed over ten years to verified contributors via the Proof of Contribution mechanism.',
       'Ecosystem treasury (25% — 52,500,000 QDs): Governed by cryptographic community vote. Funds protocol development, audits, and ecosystem integrations.',
       'Core contributors (15% — 31,500,000 QDs): Four-year linear vesting with a one-year cliff. Ensures long-term alignment between the founding team and the protocol.',
-      'Initial liquidity (10% — 21,000,000 QDs): Deployed at the Token Generation Event (TGE — target: 1 January 2027) to establish initial trading liquidity under a multisignature arrangement.',
+      'Initial liquidity (10% — 21,000,000 QDs): Designated for initial trading liquidity at Token Generation. Managed under a multisignature arrangement with predefined operational parameters.',,
     ],
   },
   {
-    id: 'development-roadmap',
-    title: '9. Development Roadmap',
+    id: 'development-status',
+    title: '9. Development Status',
     paragraphs: [
-      'The protocol development is structured across sequential phases, each building on verified foundations before expanding to additional capabilities.',
-      'Current status (June 2026): The full frontend platform (humanidfi.com) and the complete MiCA regulatory compliance suite (27 documents) are live. The logical architecture for the Noir token contract and the mint_private_license KYC circuit are fully defined and documented. The formal S.L. incorporation of Humanity Ledger S.L. is in progress via CIRCE (target: June 2026).',
-      'Subject to the Aztec Foundation grant approval, the following execution phases are committed: Q3 2026 — Noir smart contract engineering (QDsToken.nr and mint_private_license circuit) by specialized cryptography engineers. Q4 2026 — Tier-1 security audit of all Noir circuits. 28 November 2026 — CNMV notification submission (MiCA White Paper + 5 annexes). 1 January 2027 — Target Token Generation Event on Aztec Mainnet.',
+      'The protocol development focuses on verified foundations built directly on the Aztec Network.',
+      'Current status (June 2026): The frontend platform (humanidfi.com) is live and connected to the Aztec testnet (rpc.testnet.aztec-labs.com). The Noir smart contracts — specifically QDsToken.nr as a native Aztec token and the mint_private_license KYC circuit — are fully specified and in active development. The legal and regulatory framework (25-document MiCA suite) is fully drafted and in the formal process of being executed.',
     ],
   },
   {
@@ -186,7 +185,7 @@ export const TOKENOMICS_SECTIONS: AztecDocSection[] = [
   {
     title: 'Overview',
     paragraphs: [
-      'QDs (Quantum Digital Signatures) is the native utility token of the Humanity Ledger protocol, classified as a utility token under Article 3(1)(5) of Regulation (EU) 2023/1114 (MiCA). It is deployed natively on Aztec Network Mainnet as a Noir smart contract — it is not an ERC-20 token on Ethereum L1, and no bridge contract exists.',
+      'QDs (Quantum Digital Signatures) is the native utility token of the Humanity Ledger protocol, classified as a utility token under Article 3(1)(5) of Regulation (EU) 2023/1114 (MiCA). It is designed to be deployed natively on Aztec Network as a Noir smart contract — it is not an ERC-20 token on Ethereum L1, and no bridge contract exists.',
       'The total supply of QDs is permanently fixed at 210,000,000 units. This hard cap is enforced at the contract level inside the Noir program; no additional minting is possible once the supply ceiling is reached. All QDs activity — transfers, staking, governance participation, and reward claims — is conducted as private state transitions within the Aztec shielded pool.',
     ],
   },
@@ -199,7 +198,7 @@ export const TOKENOMICS_SECTIONS: AztecDocSection[] = [
       'Community mining — 50% (105,000,000 QDs): Distributed over ten years to participants who contribute verifiable value to the network through the Proof of Contribution mechanism. This is the largest allocation and is the primary source of circulating supply.',
       'Ecosystem treasury — 25% (52,500,000 QDs): Locked at genesis and governed by verified community vote. Funds are disbursed for protocol development, security audits, ecosystem grants, and strategic integrations. No unilateral disbursements are possible.',
       'Core contributors — 15% (31,500,000 QDs): Subject to a four-year linear vesting schedule with a one-year cliff. Ensures long-term alignment between the founding team and the protocol.',
-      'Initial liquidity provision — 10% (21,000,000 QDs): Deployed at the TGE (target: 1 January 2027) to establish liquidity. Managed under a multisignature arrangement with predefined operational parameters.',
+      'Initial liquidity provision — 10% (21,000,000 QDs): Designated to establish liquidity upon token generation. Managed under a multisignature arrangement with predefined operational parameters.',
     ],
   },
   {
@@ -319,7 +318,7 @@ export const SECURITY_SECTIONS: AztecDocSection[] = [
     id: 'audits-verification',
     title: 'Audits and Formal Verification',
     paragraphs: [
-      'All critical protocol components — Noir circuits, Ethereum bridge contracts, and client-side proving pipelines — are subjected to independent third-party security audits before deployment. Audit scope includes cryptographic soundness, implementation correctness, and denial-of-service resistance.',
+      'All critical protocol components — Noir circuits, Ethereum bridge contracts, and client-side proving pipelines — are designed to undergo independent third-party security audits before any public deployment. Audit scope will include cryptographic soundness, implementation correctness, and denial-of-service resistance. Engaging Tier-1 ZK auditors (Trail of Bits, Nethermind Security) is a core prerequisite before mainnet launch.',,
       'In addition to external audits, we apply formal verification to the most critical circuit components. Formal verification uses mathematical proof techniques to demonstrate that a circuit correctly enforces its intended constraints under all possible inputs — providing a stronger guarantee than testing alone.',
       'Audit reports, formal verification certificates, and the specific scope of each engagement are published in full at the time of completion. We do not delay disclosure of audit findings.',
     ],
@@ -329,7 +328,7 @@ export const SECURITY_SECTIONS: AztecDocSection[] = [
     title: 'Vulnerability Disclosure and Bug Bounty',
     paragraphs: [
       'We maintain an active bug bounty program covering all components of the protocol. Scope includes Noir circuit soundness, Ethereum contract vulnerabilities, API authentication bypasses, and client-side proving pipeline integrity.',
-      'Critical vulnerabilities — those that could result in loss of user funds or deanonymization of users — are eligible for rewards up to $500,000 USD, payable in a combination of USDC and QDs at the reporter\'s election.',
+      'Critical vulnerabilities — those that could result in loss of user funds or deanonymization of users — are eligible for significant rewards. Specific bounty amounts are defined at the time of the formal bug bounty program launch, which occurs alongside our first public testnet deployment. Researchers are asked to submit findings to security@humanityledger.com with a clear proof-of-concept demonstrating the vulnerability. We commit to acknowledging receipt within 24 hours and providing an initial assessment within 72 hours.',
       'Researchers are asked to submit findings to security@humanityledger.com with a clear proof-of-concept demonstrating the vulnerability. We commit to acknowledging receipt within 24 hours and providing an initial assessment within 72 hours. We adhere to a responsible disclosure timeline of 90 days, after which findings are disclosed publicly regardless of remediation status.',
     ],
     callout: {
@@ -354,96 +353,24 @@ export const SECURITY_SECTIONS: AztecDocSection[] = [
 
 export const ROADMAP_SECTIONS: AztecDocSection[] = [
   {
-    title: 'System Architecture',
+    title: 'Current State — June 2026',
     paragraphs: [
-      'The Humanity Ledger architecture is built in five sequential phases. Each phase delivers specific, audited capabilities before the next begins. The protocol does not deploy components to production until they have been independently verified.',
-      'Every phase is structured around a concrete problem, a defined solution, a measurable deliverable, and an integrity guarantee. Progress is governed by milestone-based funding: each phase requires community verification of the previous phase before treasury resources are released.',
+      'Humanity Ledger is currently in active testnet development on the Aztec Network. The following documents what has been fully specified and designed. We do not make projections for unbuilt features — this page reflects only what exists today.',
     ],
   },
   {
-    id: 'phase-1',
-    title: 'Phase 1 — Core Cryptographic Primitives',
+    id: 'current-infrastructure',
+    title: 'What Is Complete Today',
     paragraphs: [
-      'Phase 1 establishes the fundamental cryptographic foundation. The current elliptic curve system (BN254) is optimized for efficient zero-knowledge proof verification. This phase introduces additional primitives to ensure long-term mathematical security and protocol resilience against theoretical cryptanalytic advancements.',
+      'The following components are fully specified, designed, and verified against the Aztec testnet documentation:',
     ],
     bullets: [
-      'Implementation of high-entropy Cryptographically Secure Pseudorandom Number Generators (CSPRNG) utilizing hardware-derived entropy oracles.',
-      'Integration of STARK and FRI-based proof systems within Noir circuits, eliminating the requirement for trusted setups in the existing SNARK architecture.',
-      'Deterministic signature generation utilizing EdDSA over the Baby Jubjub curve to facilitate efficient in-circuit verification.',
-      'Hash-based digital signatures serving as a fallback mechanism for treasury and governance multisignature wallets.',
-      'Circuit architecture designed for provable soundness under standard cryptographic assumptions.',
-      'Hybrid key exchange mechanisms combining standard X25519 with advanced asymmetric primitives for encrypted peer-to-peer state channels.',
+      'Native Aztec Token Architecture: The QDs utility token is designed exclusively as a Noir smart contract on Aztec, leveraging the Barretenberg (UltraHonk) proving backend. The contract specification is finalized. Testnet deployment is in progress.',
+      'Private Identity Circuit: The mint_private_license Noir circuit is fully specified — it gates token access behind a zero-knowledge KYC credential, without exposing user identity data on-chain. Circuit implementation is in active development.',
+      'Frontend Integration: The humanidfi.com platform is live and deployed to production on Railway. It connects to the Aztec testnet RPC endpoint (rpc.testnet.aztec-labs.com).',
+      'MiCA Legal Framework: A complete suite of 25 regulatory documents mapping the current protocol architecture to European MiCA standards has been drafted and is in the formal process of being signed.'
     ],
-  },
-  {
-    id: 'phase-2',
-    title: 'Phase 2 — Privacy Infrastructure',
-    paragraphs: [
-      'Phase 2 extends the privacy model beyond transaction shielding to cover identity, computation, and cross-chain movement. The goal is to make every interaction with the protocol — not just asset transfers — completely opaque to external observers.',
-    ],
-    bullets: [
-      'Partially homomorphic encryption for multi-note transactions, allowing balance validation without decrypting private inputs inside the circuit.',
-      'Zero-knowledge biometric verification: hardware hashes of biometric data validated locally, proving human uniqueness without transmitting any biometric information.',
-      'Client-side proof generation using web workers and local trusted execution environments, enabling complex proofs on mobile devices in under five seconds.',
-      'Selective disclosure: viewing key generation and ZK range proofs for regulators and auditors, with user-controlled scope.',
-      'Shadow note synchronization across multiple devices using an end-to-end encrypted channel, enabling instant state sync without exposing private data.',
-      'Anti-correlation layer: statistical noise injection to prevent timing and volume analysis from revealing transactional patterns.',
-      'Stealth addresses: each transaction generates a unique, single-use address, making it impossible to link sender and receiver on the public record.',
-      'Private cross-chain bridges: ZK proofs release funds on secondary chains to fresh addresses without revealing origin amounts or destinations.',
-    ],
-  },
-  {
-    id: 'phase-3',
-    title: 'Phase 3 — Enterprise Security Architecture',
-    paragraphs: [
-      'Phase 3 establishes the security architecture required for rigorous institutional and enterprise participation. This phase addresses the gap between the security requirements of professional financial entities and the trust models currently available in decentralized systems.',
-    ],
-    bullets: [
-      'Multi-layer defense: circuit logic, L1 verification, API rate limiting, and L2 timelocks operating independently — requiring simultaneous failure of all constraints to produce an exploit.',
-      'Continuous formal verification of all Noir circuits in the CI/CD pipeline, producing mathematical certificates of correctness on every deployment.',
-      'Continuous fuzzing and symbolic execution running against Barretenberg witnesses to identify underconstrained conditions before deployment.',
-      'Advanced key management protocols utilizing Shamir\'s Secret Sharing partition schemes, providing fault-tolerant custody for protocol treasury keys.',
-      'Hardware security module integration with Trusted Execution Environments (TEEs) such as Intel SGX for isolated server-side cryptographic operations.',
-      'Non-extractable key architecture leveraging local secure enclaves, mitigating the risks associated with plaintext mnemonic phrase exposure.',
-      'Decentralized gateway deployment via IPFS for the frontend interface, with strict content security policies.',
-      'Zero-knowledge circuit-breakers: programmatic constraints that automatically halt state transitions when proofs detect invariants violations.',
-      'Threshold signatures: M-of-N authorization proven inside a circuit without revealing the total number of signers or their identities to the verifier.',
-    ],
-  },
-  {
-    id: 'phase-4',
-    title: 'Phase 4 — On-Chain Analytics and Verifiable Credentials',
-    paragraphs: [
-      'Phase 4 builds the analytical layer on top of the privacy infrastructure. The objective is to provide robust analysis tools that operate securely without compromising user confidentiality or the privacy of the subjects undergoing heuristic evaluation.',
-    ],
-    bullets: [
-      'Private Information Retrieval (PIR): users filter large datasets locally; the server provides the encrypted dataset without learning the specific queries executed by the client.',
-      'Zero-knowledge order matching: intent verification using cryptographic commitments and multi-party computation. Order parameters remain encrypted prior to execution, mitigating front-running mathematically.',
-      'Cryptographic attestations: verified holders emit directional signals by proving control over assets without revealing their identity or total balance.',
-      'Encrypted state routing: transaction inputs are routed as encrypted data; the sequencer determines ordering, and state transitions are decrypted only post-finality.',
-      'Asset tokenization: representation of external assets under smart contract constraints, with ZK attestations confirming the underlying asset validity.',
-      'Selective disclosure APIs: Verifiable Credentials presented and cryptographically validated without exposing raw personal identifiable information (PII).',
-      'Forensic evaluation algorithms: automated constraints that return deterministic outputs regarding compliance without exposing the underlying legitimate transactional data.',
-      'Traffic obfuscation: randomized batching and delayed execution on L1 state transitions, converting observable entry patterns into high-entropy statistical noise.',
-    ],
-  },
-  {
-    id: 'phase-5',
-    title: 'Phase 5 — Adoption and Ecosystem',
-    paragraphs: [
-      'Phase 5 focuses on making the protocol accessible to developers, institutions, and users without requiring expertise in zero-knowledge cryptography. The goal is to reduce integration friction to the point where building on Humanity Ledger is no more complex than integrating any other financial API.',
-    ],
-    bullets: [
-      'Open-source post-quantum libraries for Noir: published packages containing optimized lattice-based hash and signature implementations for the broader developer community.',
-      'L1 to L2 bridge expansion: async bridge patterns for DeFi on Ethereum L1, enabling unified interactions from L2 without exposing amounts or counterparties.',
-      'Drop-in browser and mobile SDK: initializes the proving environment and private state management invisibly in the background, removing the requirement for users to manage a local node.',
-      'Institutional onboarding framework: compliance manuals, enterprise SLAs, tax audit guides, and integration documentation for hedge funds and custodians.',
-      'Developer sandbox: local CLI and GUI environment for simulating Aztec state, with full visibility into note flow, nullifier generation, and witness construction.',
-      'Educational programs: interactive modules teaching the Noir language and the fundamentals of private state design to university and developer communities.',
-      'Milestone-lock development structure: treasury disbursements cryptographically gated on verified proof of delivery for each roadmap commitment.',
-      'Macro metrics dashboard: network-level analytics (total active proofs, transaction throughput, private notes created) without exposing individual user data.',
-    ],
-  },
+  }
 ];
 
 

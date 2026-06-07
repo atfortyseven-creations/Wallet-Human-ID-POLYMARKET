@@ -8,12 +8,12 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 //  Page Data 
 
 const STATS = [
-  { label: 'Total Supply',      value: '21,000,000', sub: 'QDs  mathematically fixed' },
-  { label: 'Decimal Precision', value: '8 places',   sub: '2.1 quadrillion units total' },
-  { label: 'Distribution',      value: '100% mined', sub: 'Open participation only' },
-  { label: 'Team Allocation',   value: '0%',          sub: 'No pre-mine, no reserves' },
-  { label: 'Mainnet Launch',    value: 'Before 2027', sub: 'Genesis block before Dec 31 2026' },
-  { label: 'Governance',        value: 'None',        sub: 'Supply rule is immutable' },
+  { label: 'Total Supply',      value: '210,000,000', sub: 'QDs — mathematically fixed hard cap' },
+  { label: 'Decimal Precision', value: 'Noir Native',  sub: 'Aztec Network private state model' },
+  { label: 'Distribution',     value: '100% earned',  sub: 'Proof of Contribution mechanism' },
+  { label: 'Team Allocation',  value: '15%',           sub: '4-year vesting, 1-year cliff' },
+  { label: 'Network',          value: 'Aztec Testnet', sub: 'rpc.testnet.aztec-labs.com' },
+  { label: 'Governance',       value: 'On-chain ZK',   sub: 'Cryptographic community vote' },
 ];
 
 const SECTIONS = [
@@ -91,10 +91,10 @@ const SECTIONS = [
     num: '08',
     title: 'Technical specification',
     paragraphs: [
-      'Following the established project milestones, QDs will be deployed as an ERC-20 token on the Ethereum L1 mainnet. The contract inherits the standard interface to ensure compatibility with existing wallets, exchanges, and DeFi infrastructure without requiring custom integration work from third parties. This strategic decision prioritizes immediate interoperability over esoteric technical novelty.',
-      'The contract includes a single additional function beyond the ERC-20 standard: the mine() function, which allows eligible participants to claim block rewards during the mining period. No other non-standard functions exist. The attack surface of the contract is minimal by design, reducing the vector footprint to an absolute minimum.',
-      'Gas consumption for QDs transactions is comparable to any standard ERC-20 transfer. No exotic opcodes, delegatecall patterns, or proxy architectures are used. The contract is static  what is deployed at genesis is what runs for the lifetime of the token. Code is law, and the code is remarkably brief.',
-      'Security audits of the QDs contract will be published before mainnet launch. Multiple independent audit firms will review the contract. All findings, including any that are remediated before launch, will be disclosed in full in the public audit documentation. Transparency regarding the security perimeter is non-negotiable.'
+      'QDs is deployed natively on the Aztec Network as a Noir smart contract — it is not an ERC-20 token on Ethereum L1. There is no bridge contract, no wrapped asset, and no Solidity layer. All privacy is enforced at the ZK circuit level by the Barretenberg proving backend (UltraHonk proof system). Accounts use Schnorr signatures on the BN254 Grumpkin curve. The note commitment tree uses Poseidon2 hashing at depth 32. The nullifier tree is an Indexed Merkle tree at depth 20.',
+      'The token contract contains no administrative backdoors, no upgradeable proxy patterns, and no emergency override functions. The rules encoded at genesis govern QDs until the final token is mined. Enterprise integrators can rely on this stability to build deterministic financial models and automated settlement infrastructure without the counterparty risk associated with human intervention.',
+      'The full technical specification of QDs is publicly auditable. There are no hidden parameters and no admin keys. The codebase has been stripped of any redundant logic or centralized risk vectors.',
+      'Security audits of the QDs circuit will be conducted by Tier-1 ZK auditors before any public mainnet deployment. All findings will be disclosed in full in the public audit documentation.'
     ],
   },
   {
@@ -109,12 +109,11 @@ const SECTIONS = [
   },
   {
     num: '10',
-    title: 'Before 2027',
+    title: 'Testnet Status',
     paragraphs: [
-      'The QDs genesis block will be produced before December 31, 2026. This commitment is public and specific. The date is not contingent on market conditions, funding rounds, regulatory approvals, or any external variable within the control of the Whale Network team. The countdown is deterministic.',
-      'The period between now and mainnet launch is used for final contract auditing, infrastructure preparation, and public documentation of the protocol parameters. No tokens exist before the genesis block. There are no pre-launch sale events, no private rounds, and no initial coin offerings. The distribution starts at absolute zero.',
-      'Participants can prepare for mining by reviewing the hardware requirements and protocol documentation as they are published. No deposit, reservation, or registration is required or accepted in advance of launch. The network will bootstrap organically based purely on participant interest and computational deployment.',
-      'After the genesis block, the protocol operates autonomously. The Whale Network team contributes to the network as participants, not as administrators. The network is maintained by its participants, secured by its miners, and governed by its code. Any future evolution of the protocol must occur through decentralized consensus, not executive mandate.'
+      'QDs is currently active on the Aztec testnet (rpc.testnet.aztec-labs.com). The testnet phase is used for contract verification, circuit auditing, and infrastructure preparation. No tokens exist on mainnet. There are no pre-launch sale events, no private rounds, and no initial coin offerings.',
+      'Anyone wishing to participate in the testnet can review the technical documentation in the developer section of this site. No deposit, reservation, or registration is required or accepted. The network will transition to mainnet when the ZK security audit is complete and the circuit has been formally verified.',
+      'After mainnet deployment, the protocol operates autonomously. The Humanity Ledger team contributes to the network as participants, not as administrators. The network is maintained by its participants, secured by cryptographic proofs, and governed by on-chain community vote. Any future evolution of the protocol must occur through decentralized consensus, not executive mandate.'
     ],
   },
 ];
@@ -190,9 +189,9 @@ export default function QDsPage() {
               className="font-serif text-black/50 max-w-[560px] leading-relaxed"
               style={{ fontSize: 'clamp(16px, 2vw, 22px)' }}
             >
-              Quantum Dots. 21,000,000 units. Mined, not issued.
+              Quantum Dots. 210,000,000 units. Private by default.
               <br className="hidden md:block" />
-              Ethereum L1 ERC-20 token.
+              Native Aztec Network — Noir smart contract.
             </motion.p>
 
             {/* Scroll cue */}
@@ -286,7 +285,7 @@ export default function QDsPage() {
         <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white to-transparent pointer-events-none z-10" />
         <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none bg-white/20 backdrop-blur-[2px]">
           <span className="font-mono text-[10px] font-black uppercase tracking-[0.55em] text-black/40 drop-shadow-sm">
-            QDs · Quantum Dots · 21,000,000 · ERC-20
+            QDs · Quantum Dots · 210,000,000 · Noir / Aztec
           </span>
         </div>
       </section>
@@ -301,13 +300,13 @@ export default function QDsPage() {
           className="relative z-10 max-w-2xl flex flex-col items-center gap-8 px-6 text-center"
         >
           <span className="font-mono text-[10px] font-black uppercase tracking-[0.5em] text-black/40">
-            Genesis Block · Before 2027
+            Native Aztec Token · Testnet Active
           </span>
           <h2
             className="font-black tracking-tighter uppercase leading-[0.87] text-black text-balance"
             style={{ fontSize: 'clamp(36px, 7vw, 72px)' }}
           >
-            Mining starts soon.
+            Private by default.
           </h2>
           <p
             className="font-serif text-black/60 leading-relaxed max-w-xl"
