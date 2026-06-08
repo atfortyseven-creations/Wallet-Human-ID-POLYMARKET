@@ -116,7 +116,7 @@ interface CircuitAnalysis {
   usesStd:       boolean;
   usesAztec:     boolean;
   hasModules:    boolean;
-  estimatedType: 'binary' | 'lib';
+  estimatedType: 'bin' | 'lib';
 }
 
 function analyseCircuit(code: string): CircuitAnalysis {
@@ -126,7 +126,7 @@ function analyseCircuit(code: string): CircuitAnalysis {
     usesStd:       /use\s+std::/.test(code),
     usesAztec:     /use\s+dep::aztec/.test(code) || /aztec::/.test(code),
     hasModules:    /^mod\s+/m.test(code),
-    estimatedType: /\bfn\s+main\b/.test(code) ? 'binary' : 'lib',
+    estimatedType: /\bfn\s+main\b/.test(code) ? 'bin' : 'lib',
   };
 }
 
