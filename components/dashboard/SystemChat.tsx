@@ -519,9 +519,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
     const hasLocalWallet = isLocalSystemWallet && storePrivateKey;
 
     if (isSystemHandshake && !connector && !hasLocalWallet) {
-      if (isManual) {
-        setXmtpError('Connect your wallet in this browser to activate encrypted chat.');
-      }
+      setXmtpError('Chat requires signing. Please use your mobile device or connect a wallet on this browser.');
       return;
     }
 

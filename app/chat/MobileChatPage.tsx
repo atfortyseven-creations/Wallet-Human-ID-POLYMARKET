@@ -38,7 +38,9 @@ const ChatClientPage = dynamic(
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
+    setIsMounted(true);
     const check = () => {
       setIsMobile(window.innerWidth < 768);
     };
@@ -46,11 +48,11 @@ function useIsMobile() {
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
   }, []);
-  return isMobile;
+  return { isMobile, isMounted };
 }
 
 export default function MobileChatPage() {
-  const isMobile = useIsMobile();
+  const { isMobile, isMounted } = useIsMobile();
   const [viewportHeight, setViewportHeight] = useState<number | null>(null);
   const rafRef = useRef<number | null>(null);
 
@@ -93,6 +95,8 @@ export default function MobileChatPage() {
       document.body.style.overscrollBehavior = '';
     };
   }, [isMobile]);
+
+  if (!isMounted) return null;
 
   //  Desktop: simple flex-col filling the full viewport 
   if (!isMobile) {

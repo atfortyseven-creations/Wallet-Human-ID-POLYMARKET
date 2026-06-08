@@ -6,16 +6,20 @@ import { ProvenanceStudioContent } from '@/components/provenance/ProvenanceStudi
 
 function useIsMobileDevice() {
   const [isMobile, setIsMobile] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
+    setIsMounted(true);
     setIsMobile(
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(navigator.userAgent)
     );
   }, []);
-  return isMobile;
+  return { isMobile, isMounted };
 }
 
 export default function ProvenanceStudioPage() {
-  const isMobile = useIsMobileDevice();
+  const { isMobile, isMounted } = useIsMobileDevice();
+
+  if (!isMounted) return null;
 
   return (
     <ProvenanceSessionGate>
