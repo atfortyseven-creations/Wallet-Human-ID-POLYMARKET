@@ -491,7 +491,7 @@ function ConnectedScreen({
         mode={scanMode}
         initialScanData={initialScanData}
         onScan={async (result: string) => {
-          setShowScanner(false);
+          onCloseScanner();
           
           if (!result || !result.includes('uuid=')) {
             const toast = document.createElement('div');
@@ -504,7 +504,7 @@ function ConnectedScreen({
 
           try {
             const { completeSessionHandshake } = await import('@/lib/scan/sessionHandshake');
-            const handshakeRes = await completeSessionHandshake(result, () => effectiveAddress || "");
+            const handshakeRes = await completeSessionHandshake(result, () => address || "");
             
             const toast = document.createElement('div');
             toast.className = `fixed top-6 left-4 right-4 z-[99999] text-white text-[10px] border border-white/10 font-mono uppercase tracking-[0.3em] px-6 py-5 rounded-2xl shadow-2xl text-center ${handshakeRes.ok ? 'bg-black' : 'bg-red-600'}`;

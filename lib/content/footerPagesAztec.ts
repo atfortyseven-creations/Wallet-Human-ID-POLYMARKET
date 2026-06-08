@@ -105,7 +105,7 @@ export const WHITEPAPER_SECTIONS: AztecDocSection[] = [
       'Community mining (50% — 105,000,000 QDs): Distributed over ten years to verified contributors via the Proof of Contribution mechanism.',
       'Ecosystem treasury (25% — 52,500,000 QDs): Governed by cryptographic community vote. Funds protocol development, audits, and ecosystem integrations.',
       'Core contributors (15% — 31,500,000 QDs): Four-year linear vesting with a one-year cliff. Ensures long-term alignment between the founding team and the protocol.',
-      'Initial liquidity (10% — 21,000,000 QDs): Designated for initial trading liquidity at Token Generation. Managed under a multisignature arrangement with predefined operational parameters.',,
+      'Initial liquidity (10% — 21,000,000 QDs): Designated for initial trading liquidity at Token Generation. Managed under a multisignature arrangement with predefined operational parameters.',
     ],
   },
   {
@@ -318,7 +318,7 @@ export const SECURITY_SECTIONS: AztecDocSection[] = [
     id: 'audits-verification',
     title: 'Audits and Formal Verification',
     paragraphs: [
-      'All critical protocol components — Noir circuits, Ethereum bridge contracts, and client-side proving pipelines — are designed to undergo independent third-party security audits before any public deployment. Audit scope will include cryptographic soundness, implementation correctness, and denial-of-service resistance. Engaging Tier-1 ZK auditors (Trail of Bits, Nethermind Security) is a core prerequisite before mainnet launch.',,
+      'All critical protocol components — Noir circuits, Ethereum bridge contracts, and client-side proving pipelines — are designed to undergo independent third-party security audits before any public deployment. Audit scope will include cryptographic soundness, implementation correctness, and denial-of-service resistance. Engaging Tier-1 ZK auditors (Trail of Bits, Nethermind Security) is a core prerequisite before mainnet launch.',
       'In addition to external audits, we apply formal verification to the most critical circuit components. Formal verification uses mathematical proof techniques to demonstrate that a circuit correctly enforces its intended constraints under all possible inputs — providing a stronger guarantee than testing alone.',
       'Audit reports, formal verification certificates, and the specific scope of each engagement are published in full at the time of completion. We do not delay disclosure of audit findings.',
     ],
