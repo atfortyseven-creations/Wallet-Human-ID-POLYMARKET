@@ -64,10 +64,10 @@ fn main(
   signature:  [u8; 64],
   message_hash: [u8; 32],
 ) {
-  let valid = ecdsa_secp256k1::verify_signature(
+  let valid: bool = ecdsa_secp256k1::verify_signature(
     pub_key_x, pub_key_y, signature, message_hash
   );
-  assert(valid);
+  assert(valid == true);
 }
 `,
   },
@@ -113,7 +113,7 @@ fn main(
   pub expected_hash: [u8; 32],
   preimage: [u8; 32],
 ) {
-  let computed = keccak256(preimage, 32);
+  let computed = keccak256(preimage);
   assert(computed == expected_hash);
 }
 `,
@@ -368,7 +368,7 @@ export function NoirCircuitSandbox() {
           Aztec ZK Sandbox
         </span>
         <div style={{ marginLeft: "auto", display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <span style={{ background: "#f3f4f6", color: "#374151", fontSize: 11, padding: "2px 8px", borderRadius: 4, fontWeight: 700, border: "1px solid #d1d5db" }}>NARGO v{compileResult?.nargoVersion ?? "0.38"}</span>
+          <span style={{ background: "#f3f4f6", color: "#374151", fontSize: 11, padding: "2px 8px", borderRadius: 4, fontWeight: 700, border: "1px solid #d1d5db" }}>NARGO v{compileResult?.nargoVersion ?? "0.36"}</span>
           <span style={{ background: "#dcfce7", color: "#166534", fontSize: 11, padding: "2px 8px", borderRadius: 4, fontWeight: 700, border: "1px solid #bbf7d0" }}>LIVE COMPILER</span>
           <span style={{ background: "#dbeafe", color: "#1e40af", fontSize: 11, padding: "2px 8px", borderRadius: 4, fontWeight: 700, border: "1px solid #93c5fd" }}>BARRETENBERG</span>
         </div>

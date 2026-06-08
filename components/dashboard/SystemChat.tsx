@@ -772,9 +772,11 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletClient, needsWalletReconnect]);
 
-  // UI safety: never leave handshake spinner running forever
   useEffect(() => {
     if (!xmtpInitializing) return;
+    // Don't time out QR/handshake-only sessions — they physically cannot complete XMTP init
+    // without a local signer. Timing them out just produces false red errors.
+    if (isSystemHandshake && !connector && !(isLocalSystemWallet && storePrivateKey)) return;
     const timeoutId = setTimeout(() => {
       if (!xmtpReady) {
         xmtpInitLock.current = false;
@@ -783,7 +785,8 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
       }
     }, 45000);
     return () => clearTimeout(timeoutId);
-  }, [xmtpInitializing, xmtpReady]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [xmtpInitializing, xmtpReady, isSystemHandshake, connector, isLocalSystemWallet, storePrivateKey]);
 
   // ── Retry XMTP init when user returns from wallet app ──
   useEffect(() => {
@@ -1567,7 +1570,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                     {blockedList.includes(activeConv.peerAddress.toLowerCase()) ? <span className="text-red-400">BLOCKED</span> :
                      !isConnected ? <> <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div> OFFLINE </> :
                      xmtpError ? <span className="text-red-500">HANDSHAKE FAILED</span> :
-                     !xmtpReady ? <span className="text-amber-500">AWAITING HANDSHAKE...</span> :
+                     !xmtpReady ? <span className="text-amber-500">{xmtpInitializing ? 'ACTIVATING...' : 'AWAITING HANDSHAKE...'}</span> :
                      isTyping || sending || isUploading ? (
                        <span className="flex items-center gap-1">
                          <LottieInline animId="16b39f54-cb36-11ee-b44b-afd859f781c2" size={22} />

@@ -10,15 +10,16 @@ const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPE
 
 // Strict institutional schema
 const passportSchema = z.object({
-  title: z.string().min(3).max(150).regex(/^[a-zA-Z0-9\s\-_.,()]+$/, 'Title contains invalid characters'),
+  title: z.string().min(2).max(150),
   category: z.enum(['PHARMA', 'FOOD', 'TECH', 'INFRASTRUCTURE', 'TEXTILE', 'DOCUMENTS', 'OTHER']),
   payload: z.object({
-    batchId: z.string().min(3).max(64).regex(/^[a-zA-Z0-9\s\-_]+$/, 'Batch ID must be alphanumeric, spaces, and dashes only'),
+    batchId: z.string().min(1).max(64).optional(),
     origin: z.string().min(2).max(100).optional(),
     description: z.string().max(1000).optional(),
     carbonKg: z.number().nonnegative().optional(),
     certifications: z.array(z.string().max(50)).optional(),
   }),
+  events: z.array(z.any()).optional(),
   gs1Gtin: z.string().max(14).optional(),
   publicSlug: z.string().max(64).optional(),
 });

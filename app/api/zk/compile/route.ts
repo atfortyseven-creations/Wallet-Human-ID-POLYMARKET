@@ -12,7 +12,7 @@ const execFileAsync = promisify(execFile);
 // ─────────────────────────────────────────────────────────────
 //  NARGO VERSION & BINARY MANAGEMENT
 // ─────────────────────────────────────────────────────────────
-const NARGO_VERSION = '0.38.0'; // Latest stable as of June 2026
+const NARGO_VERSION = '0.36.0'; // Latest stable as of June 2026
 const NARGO_DIR     = path.join(os.tmpdir(), `nargo-bin-${NARGO_VERSION}`);
 
 let cachedNargoPath = '';
@@ -269,11 +269,11 @@ export async function POST(req: Request) {
     let compileStderr = '';
     try {
       const { stdout, stderr } = await execAsync(
-        `"${nargoPath}" compile --silence-warnings`,
+        `"${nargoPath}" compile`,
         {
           cwd:     workspaceDir,
           timeout: 90_000,            // 90 s hard cap
-          env:     { ...process.env, NARGO_BACKEND: 'barretenberg' },
+          env:     { ...process.env, NARGO_BACKEND: 'barretenberg', HOME: os.tmpdir() },
         }
       );
       compileStdout = stdout ?? '';
