@@ -17,8 +17,11 @@ export async function completeSessionHandshake(
   try {
     const url = new URL(decodedText.trim());
     uuid = url.searchParams.get('uuid') || url.searchParams.get('session');
+    // IMPORTANT: searchParams.get() already URL-decodes the value.
+    // Do NOT wrap with decodeURIComponent() — that causes double-decoding
+    // which corrupts the base64url-encoded public key.
     const rawPub = url.searchParams.get('pub') || url.searchParams.get('ekey');
-    ephemeralPub = rawPub ? decodeURIComponent(rawPub) : null;
+    ephemeralPub = rawPub ?? null;
     isECDH = url.searchParams.get('ecdh') === '1';
     const exp = url.searchParams.get('exp');
     if (exp && Date.now() > parseInt(exp, 10)) {

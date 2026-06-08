@@ -177,7 +177,7 @@ export default function ConnectPage() {
       const expiresAt = Date.now() + 300000;
       const qrUrl = new URL('/connect', origin);
       qrUrl.searchParams.set('uuid', sessId);
-      qrUrl.searchParams.set('pub', encodeURIComponent(pair.publicKey));
+      qrUrl.searchParams.set('pub', pair.publicKey);
       qrUrl.searchParams.set('ecdh', pair.isECDH ? '1' : '0');
       qrUrl.searchParams.set('exp', String(expiresAt));
       setQrData(qrUrl.toString());
@@ -284,7 +284,10 @@ export default function ConnectPage() {
             const urlParams = new URLSearchParams(window.location.search);
             const raw = urlParams.get('returnUrl') || urlParams.get('redirect_url') || '';
             // [SECURITY] Only allow same-origin relative paths — reject any http(s):// returnUrl
-            const safeReturn = raw.startsWith('/') && !raw.startsWith('//') && raw !== '/portfolio' ? raw : '/';
+            // Default to /dashboard (not /) so users land in the app after QR sync
+            const safeReturn = (raw.startsWith('/') && !raw.startsWith('//') && raw !== '/portfolio')
+              ? raw
+              : '/dashboard';
             window.location.replace(safeReturn);
           } else {
             const errData = await hydrateRes.json().catch(() => ({}));
@@ -608,7 +611,7 @@ export default function ConnectPage() {
                         fgColor="#0A0A0A"
                         bgColor="#FFFFFF"
                         level="M"
-                        includeMargin={false}
+                        includeMargin={true}
                       />
                       <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#0A0A0A]/40 text-center">
                         Connect Mobile

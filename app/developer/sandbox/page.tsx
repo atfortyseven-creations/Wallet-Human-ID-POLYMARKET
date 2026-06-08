@@ -4,12 +4,12 @@ import { NoirCircuitSandbox } from "@/components/developer/NoirCircuitSandbox";
 export const metadata: Metadata = {
   title: "ZK Circuit Prover Sandbox | Whale Network",
   description:
-    "Interactive Noir circuit IDE. Compile Aztec ZK circuits, generate Barretenberg UltraHonk proofs, " +
-    "and verify them on the Aztec L2 sequencer — all in your browser.",
+    "Interactive Noir circuit IDE. Compile Aztec ZK circuits, generate Barretenberg proofs, " +
+    "and verify them on the Aztec L2 sequencer.",
   keywords: ["Noir", "Aztec Network", "Zero-Knowledge", "ZK Proofs", "Barretenberg", "UltraHonk", "Whale Network"],
   openGraph: {
     title: "ZK Circuit Prover Sandbox | Whale Network",
-    description: "Compile, witness, prove, and verify Noir circuits in real-time. Powered by Barretenberg UltraHonk.",
+    description: "Compile, witness, prove, and verify Noir circuits in real-time.",
     url: "https://humanidfi.com/developer/sandbox",
     siteName: "Whale Network",
   },
@@ -21,12 +21,13 @@ export default function SandboxPage() {
       id="main-content"
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(180deg, #070712 0%, #0d0d1a 60%, #050510 100%)",
+        background: "#ffffff",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         padding: "60px 24px",
         gap: 48,
+        color: "#000000",
       }}
     >
       {/* Hero header */}
@@ -36,15 +37,15 @@ export default function SandboxPage() {
             display: "inline-flex",
             alignItems: "center",
             gap: 8,
-            background: "#7c6fcd18",
-            border: "1px solid #7c6fcd44",
+            background: "#f3f4f6",
+            border: "1px solid #e5e7eb",
             borderRadius: 20,
             padding: "4px 16px",
             marginBottom: 24,
           }}
         >
-          <span style={{ color: "#7c6fcd", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em" }}>
-            AZTEC NATIVE · NOIR v1.0 · BARRETENBERG ULTRAPLONK
+          <span style={{ color: "#374151", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }}>
+            Aztec Native · Noir v1.0 · Barretenberg
           </span>
         </div>
 
@@ -53,36 +54,26 @@ export default function SandboxPage() {
             fontFamily: "'Inter', 'Outfit', sans-serif",
             fontSize: "clamp(32px, 5vw, 56px)",
             fontWeight: 900,
-            color: "#f1f5f9",
+            color: "#000000",
             lineHeight: 1.1,
             letterSpacing: "-0.03em",
             margin: "0 0 20px",
           }}
         >
-          ZK Circuit&nbsp;
-          <span
-            style={{
-              background: "linear-gradient(135deg, #7c6fcd, #a855f7, #c084fc)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            Prover Sandbox
-          </span>
+          ZK Circuit Prover Sandbox
         </h1>
 
         <p
           style={{
             fontFamily: "'Inter', sans-serif",
             fontSize: 17,
-            color: "#64748b",
+            color: "#4b5563",
             lineHeight: 1.7,
             margin: 0,
           }}
         >
-          Write Noir circuits, inject private witnesses, generate{" "}
-          <span style={{ color: "#7c6fcd" }}>Barretenberg UltraHonk proofs</span>, and submit them to
-          the Aztec L2 sequencer — entirely client-side, inside your Private Execution Environment.
+          Write Noir circuits, provide private witnesses, generate Barretenberg proofs, 
+          and simulate submission to the Aztec L2 sequencer — entirely inside your browser.
         </p>
 
         {/* Feature pills */}
@@ -96,24 +87,25 @@ export default function SandboxPage() {
           }}
         >
           {[
-            "✦ Pedersen Commitments",
-            "✦ Merkle Range Proofs",
-            "✦ KYC ZK Credentials",
-            "✦ Viewing Key Escrow",
-            "✦ MiCA-Compliant",
+            "Pedersen Commitments",
+            "Merkle Range Proofs",
+            "KYC ZK Credentials",
+            "Viewing Key Escrow",
+            "MiCA-Compliant",
           ].map((pill) => (
             <span
               key={pill}
               style={{
-                background: "#1a1a2e",
-                border: "1px solid #2a2a4a",
-                color: "#7c6fcd",
+                background: "#ffffff",
+                border: "1px solid #d1d5db",
+                color: "#111827",
                 fontSize: 11,
                 fontWeight: 700,
                 padding: "5px 14px",
                 borderRadius: 20,
                 fontFamily: "'JetBrains Mono', monospace",
                 letterSpacing: "0.06em",
+                textTransform: "uppercase",
               }}
             >
               {pill}
@@ -139,41 +131,55 @@ export default function SandboxPage() {
       >
         {[
           {
-            icon: "🔐",
+            icon: "1",
             title: "Private Execution Environment",
-            text: "Every proof is generated locally on the user's machine. Whale Network's backend never sees private witness inputs, balance amounts, or identity secrets.",
+            text: "Every proof is generated locally. The backend never sees private witness inputs, balance amounts, or identity secrets.",
           },
           {
-            icon: "⚙",
-            title: "Barretenberg UltraHonk",
-            text: "The same proving backend used by Aztec Network's rollup. UltraHonk achieves sub-second proving for small circuits with a universal reference string.",
+            icon: "2",
+            title: "Barretenberg Backend",
+            text: "The same proving backend used by Aztec Network's rollup. Achieves sub-second proving for small circuits.",
           },
           {
-            icon: "🔑",
+            icon: "3",
             title: "Viewing Key Escrow",
-            text: "KYC'd users receive a cryptographic viewing key. Humanity Ledger S.L. holds this key in compliance escrow — disclosable only under a SEPBLAC or CNMV order.",
+            text: "Verified users receive a cryptographic viewing key. Held in compliance escrow, disclosable only under formal request.",
           },
           {
-            icon: "📋",
-            title: "MiCA & Travel Rule Ready",
-            text: "The KYC credential circuit embeds EU Travel Rule metadata as private inputs. The proof asserts compliance without leaking personal data to the sequencer.",
+            icon: "4",
+            title: "Travel Rule Ready",
+            text: "The credential circuit embeds compliance metadata as private inputs. The proof asserts compliance without leaking personal data.",
           },
         ].map(({ icon, title, text }) => (
           <div
             key={title}
             style={{
-              background: "#0d0d1a",
-              border: "1px solid #1e1e2e",
+              background: "#ffffff",
+              border: "1px solid #e5e7eb",
               borderRadius: 16,
               padding: "24px",
               transition: "border-color 0.3s",
             }}
           >
-            <div style={{ fontSize: 28, marginBottom: 12 }}>{icon}</div>
+            <div style={{ 
+              fontSize: 14, 
+              fontWeight: 900, 
+              color: "#6b7280", 
+              marginBottom: 12,
+              background: "#f3f4f6",
+              width: 32,
+              height: 32,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: "50%",
+            }}>
+              {icon}
+            </div>
             <h3
               style={{
                 fontFamily: "'Inter', sans-serif",
-                color: "#e2e8f0",
+                color: "#111827",
                 fontSize: 14,
                 fontWeight: 700,
                 margin: "0 0 8px",
@@ -181,7 +187,7 @@ export default function SandboxPage() {
             >
               {title}
             </h3>
-            <p style={{ fontFamily: "'Inter', sans-serif", color: "#475569", fontSize: 13, lineHeight: 1.7, margin: 0 }}>
+            <p style={{ fontFamily: "'Inter', sans-serif", color: "#4b5563", fontSize: 13, lineHeight: 1.7, margin: 0 }}>
               {text}
             </p>
           </div>
@@ -191,13 +197,13 @@ export default function SandboxPage() {
       <footer
         style={{
           fontFamily: "'JetBrains Mono', monospace",
-          color: "#2a2a4a",
+          color: "#9ca3af",
           fontSize: 11,
           textAlign: "center",
           letterSpacing: "0.08em",
         }}
       >
-        Whale Network · Humanity Ledger S.L. · Aztec Native Integration · humanidfi.com/developer/sandbox
+        Whale Network · Humanity Ledger S.L. · Aztec Native Integration
       </footer>
     </main>
   );

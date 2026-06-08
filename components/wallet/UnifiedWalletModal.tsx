@@ -350,7 +350,7 @@ function SendModule({ userAssets, forceToken, setStatus, setTxHash, setStatusMes
                     hash = await writeContractAsync({ address: selectedAsset.address as `0x${string}`, abi: ERC20_ABI, functionName: "transfer", args: [finalRecipient as `0x${string}`, parseUnits(amount, selectedAsset.decimals)] });
                 }
             } else if (store.privateKey) {
-                const rpcUrl = selectedAsset.chainId === 137 ? "https://polygon-rpc.com" : selectedAsset.chainId === 42161 ? "https://arb1.arbitrum.io/rpc" : selectedAsset.chainId === 10 ? "https://mainnet.optimism.io" : "https://cloudflare-eth.com";
+                const rpcUrl = selectedAsset.chainId === 137 ? process.env.NEXT_PUBLIC_ALCHEMY_POLY_RPC_URL || "https://polygon-rpc.com" : selectedAsset.chainId === 42161 ? "https://arb1.arbitrum.io/rpc" : selectedAsset.chainId === 10 ? "https://mainnet.optimism.io" : process.env.NEXT_PUBLIC_ALCHEMY_RPC_URL || "https://cloudflare-eth.com";
                 const provider = new ethers.JsonRpcProvider(rpcUrl);
                 const wallet = new ethers.Wallet(store.privateKey, provider);
                 const txManager = new TransactionManager(wallet);
@@ -847,7 +847,7 @@ function AdvancedRouterModule({ mode, userAssets, forceToken, setStatus, setTxHa
                 if (activeChain) {
                     await writeContractAsync({ address: payToken.address as `0x${string}`, abi: ERC20_ABI, functionName: "approve", args: [spenderAddress as `0x${string}`, maxUint256] });
                 } else if (store.privateKey) {
-                    const provider = new ethers.JsonRpcProvider(store.activeNetwork === "polygon" ? "https://polygon-rpc.com" : "https://cloudflare-eth.com");
+                    const provider = new ethers.JsonRpcProvider(store.activeNetwork === "polygon" ? process.env.NEXT_PUBLIC_ALCHEMY_POLY_RPC_URL || "https://polygon-rpc.com" : process.env.NEXT_PUBLIC_ALCHEMY_RPC_URL || "https://cloudflare-eth.com");
                     const wallet = new ethers.Wallet(store.privateKey, provider);
                     const contract = new ethers.Contract(payToken.address, ERC20_ABI, wallet);
                     const tx = await contract.approve(spenderAddress, maxUint256);
@@ -919,7 +919,7 @@ function AdvancedRouterModule({ mode, userAssets, forceToken, setStatus, setTxHa
                 if (activeChain) {
                     txHashStr = await sendTransactionAsync({ to: routerAddress as `0x${string}`, value: txValue, data: dataPayload });
                 } else if (store.privateKey) {
-                    const provider = new ethers.JsonRpcProvider(store.activeNetwork === "polygon" ? "https://polygon-rpc.com" : "https://cloudflare-eth.com");
+                    const provider = new ethers.JsonRpcProvider(store.activeNetwork === "polygon" ? process.env.NEXT_PUBLIC_ALCHEMY_POLY_RPC_URL || "https://polygon-rpc.com" : process.env.NEXT_PUBLIC_ALCHEMY_RPC_URL || "https://cloudflare-eth.com");
                     const wallet = new ethers.Wallet(store.privateKey, provider);
                     const tx = await wallet.sendTransaction({ to: routerAddress, value: txValue, data: dataPayload });
                     txHashStr = tx.hash;
@@ -962,7 +962,7 @@ function AdvancedRouterModule({ mode, userAssets, forceToken, setStatus, setTxHa
                         data: dataPayload
                     });
                 } else if (store.privateKey) {
-                    const provider = new ethers.JsonRpcProvider(store.activeNetwork === "polygon" ? "https://polygon-rpc.com" : "https://cloudflare-eth.com");
+                    const provider = new ethers.JsonRpcProvider(store.activeNetwork === "polygon" ? process.env.NEXT_PUBLIC_ALCHEMY_POLY_RPC_URL || "https://polygon-rpc.com" : process.env.NEXT_PUBLIC_ALCHEMY_RPC_URL || "https://cloudflare-eth.com");
                     const wallet = new ethers.Wallet(store.privateKey, provider);
                     const tx = await wallet.sendTransaction({ to: BRIDGE_ROUTER_ADDRESS, value, data: dataPayload });
                     txHashStr = tx.hash;

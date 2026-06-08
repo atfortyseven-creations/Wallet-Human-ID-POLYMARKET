@@ -7,6 +7,7 @@ import { X, Shield, Camera, Upload, Loader2, CheckCircle } from 'lucide-react';
 import jsQR from 'jsqr';
 import { useSecureCamera } from '@/hooks/useSecureCamera';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
+import { useAppKit } from '@reown/appkit/react';
 import { ATOM_PNGTREE } from '@/lib/constants/systemAssets';
 import { parseScanPayload } from '@/lib/scan/parseScanPayload';
 import { completeSessionHandshake } from '@/lib/scan/sessionHandshake';
@@ -92,8 +93,10 @@ export default function UniversalScanModal({
 }: UniversalScanModalProps) {
   const router = useRouter();
   const { address } = useSystemAccount();
+  const { open: openAppKit } = useAppKit();
   const [status, setStatus] = useState<'idle' | 'scanning' | 'success' | 'error'>('idle');
   const [errMsg, setErrMsg] = useState('');
+  const [needsWallet, setNeedsWallet] = useState(false);
   const [successLabel, setSuccessLabel] = useState('Done');
   const [tab, setTab] = useState<'camera' | 'file'>('camera');
   const [fileLoading, setFileLoading] = useState(false);
@@ -102,6 +105,7 @@ export default function UniversalScanModal({
   const onCloseRef = useRef(onClose);
   const onScanRef = useRef(onScan);
   const hasScannedRef = useRef(false);
+  const firstFrameRef = useRef(false); // transitions idle → scanning on first camera frame
   const handleRouteRef = useRef<(text: string) => Promise<void>>(async () => {});
 
   useEffect(() => {
@@ -127,6 +131,7 @@ export default function UniversalScanModal({
 
   const destroyScanner = useCallback(async () => {
     hasScannedRef.current = false;
+    firstFrameRef.current = false;
     stopCameraRef.current();
   }, []);
 
@@ -150,6 +155,9 @@ export default function UniversalScanModal({
           const result = await completeSessionHandshake(decodedText, getAddress);
           if (!result.ok) {
             setErrMsg(result.message);
+            if ('needsWallet' in result && result.needsWallet) {
+              setNeedsWallet(true);
+            }
             setStatus('error');
             hasScannedRef.current = false;
             return;
@@ -225,6 +233,11 @@ export default function UniversalScanModal({
     facingMode: 'environment',
     onFrame: useCallback((canvas: HTMLCanvasElement) => {
       if (hasScannedRef.current) return;
+      // Transition idle → scanning on first frame so the overlay shows camera is active
+      if (!firstFrameRef.current) {
+        firstFrameRef.current = true;
+        setStatus(prev => prev === 'idle' ? 'scanning' : prev);
+      }
       if (typeof window !== 'undefined' && 'BarcodeDetector' in window) {
         const BarcodeDetectorCtor = (window as unknown as { BarcodeDetector: new (opts: { formats: string[] }) => { detect: (c: HTMLCanvasElement) => Promise<Array<{ rawValue?: string }>> } }).BarcodeDetector;
         const barcodeDetector = new BarcodeDetectorCtor({ formats: ['qr_code'] });
@@ -256,8 +269,10 @@ export default function UniversalScanModal({
   stopCameraRef.current = stopCamera;
 
   const initScanner = useCallback(async () => {
+    setStatus('idle'); // Keep 'idle' while camera is starting
     await startCamera();
-    setStatus('scanning');
+    // Status will move to 'scanning' once the frame loop fires
+    // This prevents the overlay from disappearing before camera is ready
   }, [startCamera]);
 
   useEffect(() => {
@@ -265,6 +280,7 @@ export default function UniversalScanModal({
       destroyScanner();
       setStatus('idle');
       setErrMsg('');
+      setNeedsWallet(false);
       setTab('camera');
       return;
     }
@@ -369,7 +385,8 @@ export default function UniversalScanModal({
               {tab === 'camera' && (
                 <div className="relative w-full h-[300px] bg-black">
                   <video ref={videoRef} className="absolute inset-0 w-full h-full object-cover" autoPlay playsInline muted />
-                  <canvas ref={canvasRef} className="hidden" />
+                  {/* Canvas must NOT be display:none — hidden prevents pixel reads in some browsers */}
+                  <canvas ref={canvasRef} className="absolute opacity-0 pointer-events-none" style={{ width: 1, height: 1, top: 0, left: 0 }} />
                   <ScanLine active={status === 'scanning'} />
                   {status === 'idle' && (
                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 z-10">
@@ -389,20 +406,40 @@ export default function UniversalScanModal({
                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-white z-20 p-6 text-center gap-3">
                       <Shield className="text-red-500 mx-auto" size={28} />
                       <p className="text-[11px] font-black uppercase tracking-widest text-red-600 leading-relaxed">{errMsg}</p>
-                      <a href="/privacy#qr-sync" className="text-[10px] underline text-black/50">
-                        What codes are supported?
-                      </a>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          hasScannedRef.current = false;
-                          setErrMsg('');
-                          initScanner();
-                        }}
-                        className="text-[9px] font-black uppercase px-6 py-2 bg-black text-white rounded-full"
-                      >
-                        Retry
-                      </button>
+                      {needsWallet ? (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              onClose();
+                              setTimeout(() => openAppKit(), 200);
+                            }}
+                            className="text-[9px] font-black uppercase px-6 py-2.5 bg-black text-white rounded-full mt-1"
+                          >
+                            Connect Wallet
+                          </button>
+                          <p className="text-[9px] text-black/40">Connect your wallet, then scan again.</p>
+                        </>
+                      ) : (
+                        <>
+                          <a href="/privacy#qr-sync" className="text-[10px] underline text-black/50">
+                            What codes are supported?
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              hasScannedRef.current = false;
+                              firstFrameRef.current = false;
+                              setErrMsg('');
+                              setNeedsWallet(false);
+                              initScanner();
+                            }}
+                            className="text-[9px] font-black uppercase px-6 py-2 bg-black text-white rounded-full"
+                          >
+                            Retry
+                          </button>
+                        </>
+                      )}
                     </div>
                   )}
                 </div>

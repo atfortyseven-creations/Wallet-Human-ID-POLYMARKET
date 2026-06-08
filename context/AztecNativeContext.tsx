@@ -85,7 +85,7 @@ export interface AztecNativeState {
   error: string | null;
 
   /** Derive an Aztec address from seed and connect to the identity layer. */
-  connectIdentity: (seed: string) => Promise<void>;
+  connectIdentity: (seed: string, claimAirdrop?: boolean) => Promise<void>;
   /** Disconnect the current session (clears in-memory state only). */
   disconnectIdentity: () => void;
   /** Force-refresh balance & history from the DB immediately. */
@@ -202,7 +202,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
 
   // ─── Connect Identity ─────────────────────────────────────────────────────
 
-  const connectIdentity = useCallback(async (rawSeed: string) => {
+  const connectIdentity = useCallback(async (rawSeed: string, claimAirdrop: boolean = false) => {
     const trimmed = rawSeed.trim();
     if (trimmed.length < 3) {
       toast.error("Seed must be at least 3 characters");
@@ -225,13 +225,17 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       const { aztecAddress: derived } = await deriveRes.json();
 
       // Step 2 — Trigger genesis airdrop (idempotent — server skips if already claimed).
-      toast.loading("Deploying Aztec Identity & funding genesis...", { id: "az-connect" });
-      await fetch("/api/aztec/airdrop", {
-        method:  "POST",
-        headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify({ address: derived }),
-      });
-      toast.success("Identity deployed — 10 QDs genesis airdrop sent!", { id: "az-connect" });
+      if (claimAirdrop) {
+        toast.loading("Deploying Aztec Identity & funding genesis...", { id: "az-connect" });
+        await fetch("/api/aztec/airdrop", {
+          method:  "POST",
+          headers: { "Content-Type": "application/json" },
+          body:    JSON.stringify({ address: derived }),
+        });
+        toast.success("Identity deployed — 10 QDs genesis airdrop sent!", { id: "az-connect" });
+      } else {
+        toast.success("Identity deployed (No signature = 0 QDs granted)", { id: "az-connect" });
+      }
 
       // Step 3 — Set session state in memory.
       setSeed(trimmed);

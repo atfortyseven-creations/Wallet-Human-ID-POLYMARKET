@@ -295,7 +295,7 @@ export function NativeBridgeView({ onBack }: any) {
                     data: dataPayload
                 });
             } else if (isSystemWallet) {
-                const provider = new ethers.JsonRpcProvider(activeNetwork === "polygon" ? "https://polygon-rpc.com" : "https://cloudflare-eth.com");
+                const provider = new ethers.JsonRpcProvider(activeNetwork === "polygon" ? process.env.NEXT_PUBLIC_ALCHEMY_POLY_RPC_URL || "https://polygon-rpc.com" : process.env.NEXT_PUBLIC_ALCHEMY_RPC_URL || "https://cloudflare-eth.com");
                 const wallet = new ethers.Wallet(privateKey as string, provider);
                 const tx = await wallet.sendTransaction({ 
                     to: BRIDGE_ROUTER_ADDRESS, 

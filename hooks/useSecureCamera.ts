@@ -14,8 +14,10 @@ export function useSecureCamera({ facingMode = 'user', onFrame }: UseSecureCamer
   const streamRef = useRef<MediaStream | null>(null);
   const frameRafId = useRef<number>(0);
   const activeRequestRef = useRef<string | null>(null);
-  // Use a ref for the guard to avoid making startCamera unstable when isInitializing changes
   const isInitializingRef = useRef(false);
+  // Keep a stable ref to onFrame so the RAF loop always calls the latest version
+  const onFrameRef = useRef(onFrame);
+  useEffect(() => { onFrameRef.current = onFrame; }, [onFrame]);
 
   const startCamera = useCallback(async () => {
     // Use the ref guard — avoids startCamera getting a new reference on every state change
@@ -74,14 +76,44 @@ export function useSecureCamera({ facingMode = 'user', onFrame }: UseSecureCamer
         video.muted = true;
         video.playsInline = true;
 
-        video.onloadedmetadata = () => {
-          video.play().catch(e => {
-            console.error("Video play error:", e);
-            setTimeout(() => {
-              video.play().catch(() => {});
-            }, 300);
-          });
+        const startFrameLoop = () => {
+          cancelAnimationFrame(frameRafId.current);
+          const processFrame = () => {
+            if (
+              videoRef.current &&
+              canvasRef.current &&
+              videoRef.current.readyState >= videoRef.current.HAVE_ENOUGH_DATA &&
+              videoRef.current.videoWidth > 0
+            ) {
+              const canvas = canvasRef.current;
+              const ctx = canvas.getContext('2d', { willReadFrequently: true });
+              if (ctx) {
+                canvas.width = videoRef.current.videoWidth;
+                canvas.height = videoRef.current.videoHeight;
+                ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+                onFrameRef.current?.(canvas);
+              }
+            }
+            frameRafId.current = requestAnimationFrame(processFrame);
+          };
+          frameRafId.current = requestAnimationFrame(processFrame);
         };
+
+        video.onloadedmetadata = () => {
+          video.play()
+            .then(() => startFrameLoop())
+            .catch(e => {
+              console.error('Video play error:', e);
+              setTimeout(() => {
+                video.play().then(() => startFrameLoop()).catch(() => {});
+              }, 300);
+            });
+        };
+
+        // Also handle already-loaded streams (BFCache restore on iOS)
+        if (video.readyState >= video.HAVE_ENOUGH_DATA) {
+          video.play().then(() => startFrameLoop()).catch(() => {});
+        }
       }
     } catch (err: any) {
       if (activeRequestRef.current === activeRequestId) {
@@ -133,27 +165,33 @@ export function useSecureCamera({ facingMode = 'user', onFrame }: UseSecureCamer
     return null;
   }, []);
 
-  // Frame processing loop for intelligent overlay/tracking
+  // Frame loop is now started directly from video.onloadedmetadata → play()
+  // inside startCamera(). This useEffect is kept only as a fallback for components
+  // that mount after the stream is already active.
   useEffect(() => {
-    if (!onFrame || !hasPermission || !videoRef.current || !canvasRef.current) return;
-
-    const processFrame = () => {
-      if (videoRef.current && canvasRef.current && videoRef.current.readyState === videoRef.current.HAVE_ENOUGH_DATA) {
-        const video = videoRef.current;
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext('2d');
-        if (ctx && video.videoWidth > 0 && video.videoHeight > 0) {
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-          onFrame(canvas);
+    if (!onFrame || !hasPermission) return;
+    // If the frame loop is already running (frameRafId > 0), do nothing.
+    if (frameRafId.current) return;
+    // Fallback: start the loop if somehow video is already playing
+    const video = videoRef.current;
+    if (video && video.readyState >= video.HAVE_ENOUGH_DATA && video.videoWidth > 0) {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const processFrame = () => {
+        if (video && canvas && video.readyState >= video.HAVE_ENOUGH_DATA && video.videoWidth > 0) {
+          const ctx = canvas.getContext('2d', { willReadFrequently: true });
+          if (ctx) {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            onFrameRef.current?.(canvas);
+          }
         }
-      }
+        frameRafId.current = requestAnimationFrame(processFrame);
+      };
       frameRafId.current = requestAnimationFrame(processFrame);
-    };
-
-    frameRafId.current = requestAnimationFrame(processFrame);
-    return () => cancelAnimationFrame(frameRafId.current);
+      return () => cancelAnimationFrame(frameRafId.current);
+    }
   }, [onFrame, hasPermission]);
 
   useEffect(() => {

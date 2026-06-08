@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { QRCodeSVG } from 'qrcode.react';
+import { useAccount, useSignMessage } from 'wagmi';
 import { useAztecNative } from '../../context/AztecNativeContext';
 import { LottiePlayer } from '../ui/LottiePlayer';
 import { AztecPXEVisualizer } from './AztecPXEVisualizer';
@@ -479,11 +480,41 @@ function HistoryPanel() {
 
 export function AztecIdentityCard() {
   const { balance, aztecAddress, isLoading, isBusy, connectIdentity, disconnectIdentity, refresh } = useAztecNative();
+  const { address: evmAddress, isConnected, connector } = useAccount();
+  const { signMessageAsync } = useSignMessage();
+  
   const [inputSeed, setInputSeed]    = useState('');
   const [activeTab, setActiveTab]    = useState<'IDENTITY'|'SEND'|'RECEIVE'|'HISTORY'|'CLAIM'|'NODE'|'PXE'|'NOIR'|'SHIELD'>('IDENTITY');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { copied: addrCopied, copy: copyAddr } = useCopy(aztecAddress || '', 'Aztec address');
   const { copied: txCopied,   copy: copyTx }   = useCopy(CLAIM_TX_HASH, 'TX hash');
+
+  const handleConnectWithSignature = async () => {
+    if (!isConnected || !evmAddress) {
+      toast.error('Wallet not connected via WalletConnect');
+      return;
+    }
+    
+    const isHumanityLedger = connector?.id === 'humanity-ledger-login' || connector?.id === 'humanity-ledger-signup';
+    if (isHumanityLedger) {
+      toast.error('Airdrop is only available for WalletConnect wallets');
+      return;
+    }
+
+    try {
+      const signature = await signMessageAsync({
+        message: `Generate Aztec Identity for ${evmAddress}\nClaim 10 QDs Genesis Airdrop\nNonce: ${Date.now()}`
+      });
+      // Pass true to claim airdrop
+      await connectIdentity(evmAddress, true);
+    } catch (e) {
+      toast.error('Signature rejected');
+    }
+  };
+
+  const handleConnectBasic = () => {
+    connectIdentity(inputSeed, false);
+  };
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -518,20 +549,38 @@ export function AztecIdentityCard() {
           Enter your EVM address or seed phrase. Your Aztec Schnorr identity will be derived server-side via SHA-256.
         </p>
         <div className="w-full max-w-[280px] space-y-3">
+          {isConnected && evmAddress && connector?.id !== 'humanity-ledger-login' && connector?.id !== 'humanity-ledger-signup' ? (
+            <div className="flex flex-col gap-3 w-full pb-4 mb-4 border-b border-zinc-900/10">
+              <div className="text-[10px] font-black uppercase text-center text-emerald-600 mb-1">
+                WalletConnected Detected
+              </div>
+              <button
+                disabled={isBusy}
+                onClick={handleConnectWithSignature}
+                className="w-full bg-black text-white py-3 font-black text-[10px] uppercase tracking-widest hover:bg-black/80 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {isBusy ? <><Loader2 size={12} className="animate-spin" /> Signing...</> : 'Sign to Claim 10 QDs'}
+              </button>
+            </div>
+          ) : null}
+          
+          <div className="text-[9px] font-black uppercase tracking-widest text-zinc-900/40 text-center mb-2">
+            Basic Connection (No Airdrop)
+          </div>
           <input
             type="text"
             placeholder="e.g. 0xABC... or 'alice'"
             value={inputSeed}
             onChange={e => setInputSeed(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter' && !isBusy) connectIdentity(inputSeed); }}
+            onKeyDown={e => { if (e.key === 'Enter' && !isBusy) handleConnectBasic(); }}
             className="w-full border border-zinc-900/10 px-4 py-3 font-mono text-[10px] text-zinc-900 focus:outline-none focus:border-zinc-900"
           />
           <button
             disabled={isBusy || inputSeed.trim().length < 3}
-            onClick={() => connectIdentity(inputSeed)}
+            onClick={handleConnectBasic}
             className="w-full bg-white text-zinc-900 border border-zinc-900/20 py-3 font-black text-[10px] uppercase tracking-widest hover:bg-zinc-50 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            {isBusy ? <><Loader2 size={12} className="animate-spin" /> Connecting...</> : 'Connect Wallet'}
+            {isBusy ? <><Loader2 size={12} className="animate-spin" /> Connecting...</> : 'Connect Basic Identity'}
           </button>
         </div>
       </motion.div>
@@ -550,7 +599,7 @@ export function AztecIdentityCard() {
       <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-900/10 bg-zinc-900/[0.015]">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <img src="/system-shots/aztec-logo.png" className="w-8 h-8 object-contain" style={{ filter: 'drop-shadow(0px 2px 4px rgba(0,0,0,0.1))' }} alt="Aztec" />
+            <img src="/system-shots/aztec-logo.png" className="w-10 h-10 object-contain" alt="Aztec" />
           </div>
           <div>
             <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-zinc-900 leading-none">Aztec Identity</h3>

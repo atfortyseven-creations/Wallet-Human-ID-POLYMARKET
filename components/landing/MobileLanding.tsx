@@ -365,7 +365,7 @@ function ConnectedScreen({
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
              <img
                src="/system-shots/aztec-logo.png"
-               className="h-16 w-auto object-contain mix-blend-multiply opacity-90"
+               className="h-20 w-auto object-contain"
                alt="Aztec"
              />
           </div>
