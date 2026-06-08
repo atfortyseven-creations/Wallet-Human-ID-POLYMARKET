@@ -542,25 +542,40 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         await loadConversations();
         
         // Identity Mint logic for WalletConnect wallets
+        // CRITICAL FIX: Use the same derive-address + airdrop flow as the portfolio.
+        // The mintIdentity endpoint wrote to the raw EVM address, but the portfolio
+        // queries balance by the Aztec-derived address (SHA-256 of EVM address).
+        // Using /api/aztec/airdrop guarantees both flows use the same ledger entry.
         const isWalletConnect = connector?.id?.toLowerCase().includes('walletconnect');
         if (isWalletConnect || !isLocalSystemWallet) {
             const mintKey = `qds_identity_mint_${address}`;
             if (typeof localStorage !== 'undefined' && !localStorage.getItem(mintKey)) {
                 try {
-                    const res = await fetch('/api/aztec/mintIdentity', {
+                    // Step 1: Derive the canonical Aztec address for this EVM wallet
+                    const deriveRes = await fetch('/api/aztec/derive-address', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ to: address })
+                        body: JSON.stringify({ seed: address })
                     });
-                    const data = await res.json();
-                    if (data.success) {
-                        localStorage.setItem(mintKey, 'true');
-                        toast.success('Identity Minted: 10 QDs Granted! Balance updates automatically via Aztec Identity.', { duration: 5000 });
-                        // The airdrop is persisted to the DB — AztecNativeContext polling
-                        // will reflect the new balance within 10 seconds automatically.
+                    if (deriveRes.ok) {
+                        const { aztecAddress: derivedAztecAddr } = await deriveRes.json();
+                        // Step 2: Airdrop to the derived Aztec address (same as portfolio tab)
+                        const airdropRes = await fetch('/api/aztec/airdrop', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ address: derivedAztecAddr })
+                        });
+                        const airdropData = await airdropRes.json();
+                        if (airdropData.success) {
+                            localStorage.setItem(mintKey, 'true');
+                            toast.success('✅ Aztec Identity Active: 10 QDs received! Check Portfolio → Aztec tab.', { duration: 6000 });
+                        } else if (airdropData.message?.includes('Already received')) {
+                            localStorage.setItem(mintKey, 'true');
+                            // Already claimed — no toast needed
+                        }
                     }
                 } catch (e) {
-                    console.error('Identity Mint Failed:', e);
+                    console.error('Identity Airdrop Failed:', e);
                 }
             }
         }

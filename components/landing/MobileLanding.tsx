@@ -490,12 +490,30 @@ function ConnectedScreen({
         address={address}
         mode={scanMode}
         initialScanData={initialScanData}
-        onScan={(_result: string) => {
-          const toast = document.createElement('div');
-          toast.className = 'fixed top-6 left-4 right-4 z-[99999] bg-black text-white text-[10px] border border-white/10 font-mono uppercase tracking-[0.3em] px-6 py-5 rounded-2xl shadow-2xl text-center';
-          toast.textContent = scanMode === 'session-only' ? 'Session Synchronized' : 'Scan complete';
-          document.body.appendChild(toast);
-          setTimeout(() => toast.remove(), 3000);
+        onScan={async (result: string) => {
+          setShowScanner(false);
+          
+          if (!result || !result.includes('uuid=')) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-6 left-4 right-4 z-[99999] bg-red-600 text-white text-[10px] border border-white/10 font-mono uppercase tracking-[0.3em] px-6 py-5 rounded-2xl shadow-2xl text-center';
+            toast.textContent = 'Invalid Session QR Code';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+            return;
+          }
+
+          try {
+            const { completeSessionHandshake } = await import('@/lib/scan/sessionHandshake');
+            const handshakeRes = await completeSessionHandshake(result, () => effectiveAddress || "");
+            
+            const toast = document.createElement('div');
+            toast.className = `fixed top-6 left-4 right-4 z-[99999] text-white text-[10px] border border-white/10 font-mono uppercase tracking-[0.3em] px-6 py-5 rounded-2xl shadow-2xl text-center ${handshakeRes.ok ? 'bg-black' : 'bg-red-600'}`;
+            toast.textContent = handshakeRes.ok ? 'Session Synchronized' : handshakeRes.message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+          } catch (e) {
+            console.error('Handshake error', e);
+          }
         }}
       />
     </div>

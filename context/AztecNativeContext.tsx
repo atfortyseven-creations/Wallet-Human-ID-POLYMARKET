@@ -225,14 +225,32 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       const { aztecAddress: derived } = await deriveRes.json();
 
       // Step 2 — Trigger genesis airdrop (idempotent — server skips if already claimed).
+      // CRITICAL: We AWAIT the full response and check it before showing success.
+      let airdropGranted = false;
       if (claimAirdrop) {
         toast.loading("Deploying Aztec Identity & funding genesis...", { id: "az-connect" });
-        await fetch("/api/aztec/airdrop", {
-          method:  "POST",
-          headers: { "Content-Type": "application/json" },
-          body:    JSON.stringify({ address: derived }),
-        });
-        toast.success("Identity deployed — 10 QDs genesis airdrop sent!", { id: "az-connect" });
+        try {
+          const airdropRes = await fetch("/api/aztec/airdrop", {
+            method:  "POST",
+            headers: { "Content-Type": "application/json" },
+            body:    JSON.stringify({ address: derived }),
+          });
+          const airdropData = await airdropRes.json();
+          if (airdropRes.ok && airdropData.success) {
+            airdropGranted = true;
+            toast.success("✅ Identity deployed — 10 QDs genesis airdrop received!", { id: "az-connect", duration: 6000 });
+          } else if (airdropData.message?.includes('Already received')) {
+            // Already claimed — still a success state
+            toast.success("Identity restored — QDs already in your wallet", { id: "az-connect" });
+          } else {
+            console.warn('[Aztec Airdrop] Unexpected response:', airdropData);
+            toast.success("Identity deployed", { id: "az-connect" });
+          }
+        } catch (airdropErr: any) {
+          // Non-fatal: identity still connects even if airdrop fails
+          console.error('[Aztec Airdrop] Failed:', airdropErr?.message);
+          toast.warning("Identity deployed but airdrop pending — retry in 10s", { id: "az-connect" });
+        }
       } else {
         toast.success("Identity deployed (No signature = 0 QDs granted)", { id: "az-connect" });
       }
@@ -247,6 +265,14 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       await fetchLedgerState(derived);
       setIsLoading(false);
       startPolling(derived);
+
+      // Step 5 — If airdrop was freshly granted, do a second fetch after 1.5s
+      // to guarantee the DB write is reflected before the user sees the balance.
+      if (airdropGranted) {
+        setTimeout(async () => {
+          await fetchLedgerState(derived);
+        }, 1500);
+      }
 
     } catch (err: any) {
       const msg = err?.message ?? "Unknown error";

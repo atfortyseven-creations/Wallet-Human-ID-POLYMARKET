@@ -489,6 +489,37 @@ export function AztecIdentityCard() {
   const { copied: addrCopied, copy: copyAddr } = useCopy(aztecAddress || '', 'Aztec address');
   const { copied: txCopied,   copy: copyTx }   = useCopy(CLAIM_TX_HASH, 'TX hash');
 
+  // ── Auto-Migration: Fix existing users whose QDs landed on the wrong address ──
+  // Users who connected via WhaleChat before the fix have QDs at their raw EVM
+  // address instead of the derived Aztec address. We silently migrate them.
+  useEffect(() => {
+    if (!evmAddress || !isConnected) return;
+    const migrationKey = `qds_migrated_v2_${evmAddress.toLowerCase()}`;
+    if (typeof localStorage !== 'undefined' && localStorage.getItem(migrationKey)) return;
+
+    const runMigration = async () => {
+      try {
+        const res = await fetch('/api/aztec/migrate-identity', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ evmAddress })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          localStorage.setItem(migrationKey, 'true');
+          if (data.migrated) {
+            console.log(`[Aztec] Migration complete: ${evmAddress} → ${data.derivedAztecAddress}`);
+          }
+        }
+      } catch (e) {
+        // Non-fatal — migration will retry next visit
+        console.warn('[Aztec] Auto-migration failed (will retry):', e);
+      }
+    };
+
+    runMigration();
+  }, [evmAddress, isConnected]);
+
   const handleConnectWithSignature = async () => {
     if (!isConnected || !evmAddress) {
       toast.error('Wallet not connected via WalletConnect');
@@ -505,7 +536,8 @@ export function AztecIdentityCard() {
       const signature = await signMessageAsync({
         message: `Generate Aztec Identity for ${evmAddress}\nClaim 10 QDs Genesis Airdrop\nNonce: ${Date.now()}`
       });
-      // Pass true to claim airdrop
+      // Pass true to claim airdrop — connectIdentity derives the Aztec address
+      // from evmAddress and then calls /api/aztec/airdrop with the derived address
       await connectIdentity(evmAddress, true);
     } catch (e) {
       toast.error('Signature rejected');

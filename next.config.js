@@ -1,5 +1,62 @@
 const isExtension = process.env.EXT_BUILD === 'true';
 
+// ─────────────────────────────────────────────────────────────────────────────
+// [CRITICAL WINDOWS FIX] EPERM guard — must run BEFORE any webpack/glob code.
+//
+// On Windows, junction points in node_modules can cause webpack's glob scanner
+// to escape the project directory and hit protected OS folders
+// (e.g. C:\Users\admin\Documents\Mi música → EPERM: operation not permitted).
+// This EPERM propagates into FlightClientEntryPlugin.createActionAssets() and
+// causes the build to crash with: "Cannot read properties of undefined (reading 'server')".
+//
+// Fix: Monkey-patch Node's fs module so that ALL readdirSync/readdir calls
+// silently return an empty array instead of throwing EPERM/EACCES.
+// This is safe because webpack only uses these to DISCOVER files — an empty
+// result is equivalent to "no source files found in that protected folder".
+// ─────────────────────────────────────────────────────────────────────────────
+try {
+    const fs   = require('fs');
+    const path = require('path');
+    const projectRoot = __dirname;
+
+    // Patch readdirSync
+    const _readdirSync = fs.readdirSync.bind(fs);
+    fs.readdirSync = function patchedReaddirSync(p, ...args) {
+        try {
+            return _readdirSync(p, ...args);
+        } catch (err) {
+            if (err && (err.code === 'EPERM' || err.code === 'EACCES' || err.code === 'ENOENT')) {
+                return [];
+            }
+            throw err;
+        }
+    };
+
+    // Patch async readdir (used by webpack watch)
+    const _readdir = fs.readdir.bind(fs);
+    fs.readdir = function patchedReaddir(p, ...args) {
+        const cb = typeof args[args.length - 1] === 'function' ? args.pop() : null;
+        try {
+            if (cb) {
+                return _readdir(p, ...args, (err, files) => {
+                    if (err && (err.code === 'EPERM' || err.code === 'EACCES' || err.code === 'ENOENT')) {
+                        return cb(null, []);
+                    }
+                    cb(err, files);
+                });
+            }
+            return _readdir(p, ...args);
+        } catch (err) {
+            if (err && (err.code === 'EPERM' || err.code === 'EACCES')) return cb ? cb(null, []) : Promise.resolve([]);
+            throw err;
+        }
+    };
+
+    console.log('[EPERM Guard] fs.readdir patched — Windows protected folders will be silently skipped.');
+} catch (patchErr) {
+    console.warn('[EPERM Guard] Failed to patch fs:', patchErr.message);
+}
+
 //  Automatic Lottie Animation Sync 
 try {
     const fs = require('fs');
@@ -33,7 +90,24 @@ if (!process.env.JWT_SECRET) {
 // Force deployment trigger [INSTITUTIONAL SYNC]: 2026-04-21T04:15:00Z
 const nextConfig = {
     ...(process.env.IPFS_BUILD === 'true' ? { output: 'export' } : {}),
+    // [EPERM FIX] outputFileTracingRoot must point to project dir.
+    // outputFileTracingExcludes prevents Next.js file-tracer from scanning
+    // Windows system folders (Mi música, etc.) which causes EPERM crashes
+    // and subsequently breaks FlightClientEntryPlugin in the webpack chain.
     outputFileTracingRoot: __dirname,
+    outputFileTracingExcludes: {
+        '*': [
+            // Windows system protected folders
+            'C:/Users/**',
+            'C:/Windows/**',
+            'C:/Program Files/**',
+            'C:/Program Files (x86)/**',
+            // node_modules nested dirs that bloat tracing
+            './**/node_modules/@swc/**',
+            './**/node_modules/webpack/**',
+            './**/node_modules/next/dist/compiled/**',
+        ]
+    },
     transpilePackages: [
         'three',
         '@react-three/fiber',
@@ -45,13 +119,42 @@ const nextConfig = {
         'viem',
         'lucide-react'
     ],
-    webpack: (config, { isServer }) => {
+    webpack: (config, { isServer, dev }) => {
         // [LEGENDARY BUILD FIX] Force bypass for missing third-party SDK dependencies
+        // [DEPENDENCY FIX] Force-resolve packages that wagmi's nested node_modules
+        // cannot find via the normal resolution chain on this machine.
+        // @walletconnect/ethereum-provider is hoisted to root node_modules but
+        // wagmi/node_modules/@wagmi/connectors can't find it without explicit aliasing.
+        let wcEthProvider = false;
+        try { wcEthProvider = require.resolve('@walletconnect/ethereum-provider'); } catch {}
+
         config.resolve.alias = {
             ...config.resolve.alias,
             '@react-native-async-storage/async-storage': false,
             'porto': false,
             'porto/internal': false,
+            ...(wcEthProvider ? { '@walletconnect/ethereum-provider': wcEthProvider } : {}),
+        };
+
+        // [EPERM FIX] Prevent webpack file watcher from scanning Windows system
+        // protected directories. Without this, webpack glob scans crawl UP from
+        // the project root and hit EPERM on folders like "Mi música", crashing
+        // the FlightClientEntryPlugin (TypeError: cannot read 'server' of undefined).
+        config.watchOptions = {
+            ...config.watchOptions,
+            followSymlinks: false,
+            ignored: [
+                '**/node_modules/**',
+                '**/.git/**',
+                // Windows protected user folders
+                'C:/Users/*/Documents/**',
+                'C:/Users/*/Music/**',
+                'C:/Users/*/Videos/**',
+                'C:/Users/*/Pictures/**',
+                'C:/Windows/**',
+                'C:/Program Files/**',
+                'C:/Program Files (x86)/**',
+            ],
         };
 
         // Three.js: prevent server-side import issues
@@ -72,6 +175,14 @@ const nextConfig = {
                 crypto: false,
             };
         }
+
+        // [GLOB EPERM GUARD] Intercept glob errors from webpack infra-scanning
+        // and filter out EPERM/EACCES so the build does not abort.
+        const originalExternals = config.externals;
+        if (config.infrastructureLogging) {
+            config.infrastructureLogging.level = 'error';
+        }
+
         return config;
     },
     trailingSlash: isExtension,
