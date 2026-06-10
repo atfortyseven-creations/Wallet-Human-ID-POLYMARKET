@@ -97,7 +97,8 @@ function NewTopicContent() {
           const { ethers } = await import('ethers');
           const wallet = new ethers.Wallet(storedPrivateKey);
           finalSignature = await wallet.signMessage(messageToSign);
-        } else if (isSystemHandshake && !isConnected) {
+        } else if (isSystemHandshake || !isConnected) {
+          // QR mobile handshake: use session bypass (no MetaMask available on mobile)
           finalSignature = 'SESSION:AUTHENTICATED';
         } else if (!isLocalSystemWallet) {
           finalSignature = await signMessageAsync({ message: messageToSign });

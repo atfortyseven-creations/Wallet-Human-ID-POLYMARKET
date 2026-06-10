@@ -19,7 +19,7 @@ export default function TopicPage() {
   const [deleteConfirmTarget, setDeleteConfirmTarget] = useState<string | null>(null);
   
   const { signMessageAsync } = useSignMessage();
-  const { address, isSystemHandshake, isLocalSystemWallet } = useSystemAccount();
+  const { address, isSystemHandshake, isLocalSystemWallet, isConnected } = useSystemAccount();
   const sessionAddress = address?.toLowerCase() || null;
 
   const replyDraftKey = id ? `forum_draft_reply_${id}` : null;
@@ -64,7 +64,10 @@ export default function TopicPage() {
           const { ethers } = await import('ethers');
           const wallet = new ethers.Wallet(storedPrivateKey);
           signature = await wallet.signMessage(finalContent);
-        } else if (!isLocalSystemWallet) {
+        } else if (isSystemHandshake || !isConnected) {
+          // QR mobile handshake or unauthenticated user: use session bypass
+          signature = 'SESSION:AUTHENTICATED';
+        } else {
           signature = await signMessageAsync({ message: finalContent });
         }
       } catch (err) {

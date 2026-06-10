@@ -16,16 +16,39 @@ export async function completeSessionHandshake(
 
   try {
     const url = new URL(decodedText.trim());
-    uuid = url.searchParams.get('uuid') || url.searchParams.get('session');
-    // IMPORTANT: searchParams.get() already URL-decodes the value.
-    // Do NOT wrap with decodeURIComponent() — that causes double-decoding
-    // which corrupts the base64url-encoded public key.
-    const rawPub = url.searchParams.get('pub') || url.searchParams.get('ekey');
-    ephemeralPub = rawPub ?? null;
-    isECDH = url.searchParams.get('ecdh') === '1';
-    const exp = url.searchParams.get('exp');
-    if (exp && Date.now() > parseInt(exp, 10)) {
-      return { ok: false, message: 'QR code has expired. Please refresh it on the desktop terminal.' };
+    // NEW SHORT FORMAT: ?s=UUID  (pub key stored on server via qr-init)
+    const shortUuid = url.searchParams.get('s');
+    if (shortUuid) {
+      uuid = shortUuid;
+      // Fetch the ephemeral public key from the server
+      try {
+        const keyRes = await fetch(`/api/auth/qr-session-key?uuid=${encodeURIComponent(shortUuid)}`);
+        if (!keyRes.ok) {
+          return { ok: false, message: 'QR session not found or expired. Please refresh the QR code on the desktop.' };
+        }
+        const keyData = await keyRes.json();
+        ephemeralPub = keyData.pub ?? null;
+        isECDH = keyData.ecdh === '1';
+        const exp = keyData.exp;
+        if (exp && Date.now() > parseInt(exp, 10)) {
+          return { ok: false, message: 'QR code has expired. Please refresh it on the desktop terminal.' };
+        }
+      } catch {
+        return { ok: false, message: 'Could not contact server to validate QR code. Check your connection.' };
+      }
+    } else {
+      // LEGACY FORMAT: pub embedded in URL params
+      uuid = url.searchParams.get('uuid') || url.searchParams.get('session');
+      // IMPORTANT: searchParams.get() already URL-decodes the value.
+      // Do NOT wrap with decodeURIComponent() — that causes double-decoding
+      // which corrupts the base64url-encoded public key.
+      const rawPub = url.searchParams.get('pub') || url.searchParams.get('ekey');
+      ephemeralPub = rawPub ?? null;
+      isECDH = url.searchParams.get('ecdh') === '1';
+      const exp = url.searchParams.get('exp');
+      if (exp && Date.now() > parseInt(exp, 10)) {
+        return { ok: false, message: 'QR code has expired. Please refresh it on the desktop terminal.' };
+      }
     }
   } catch {
     try {

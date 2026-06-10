@@ -275,12 +275,13 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
       ? 'flex-1 flex flex-col relative w-full overflow-hidden min-h-0'
       : 'flex-1 flex flex-col relative w-full';
 
+  const isForumPage = pathname.startsWith('/forum');
   const mainClass = isDashboard || isChat
     ? 'relative z-10 w-full flex-1 flex flex-col min-h-0 overflow-hidden pb-[env(safe-area-inset-bottom)] md:pb-0'
     : isBounded
       // Scroll is fully contained here  no empty page-level void zones
-      ? `relative z-10 w-full flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain flex flex-col pb-20 md:pb-0 ${isCenteredPage ? 'items-center justify-center' : ''}`
-      : 'relative z-10 w-full flex-1 flex flex-col overscroll-none pb-20 md:pb-0';
+      ? `relative z-10 w-full flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain flex flex-col ${isForumPage ? '' : 'pb-20'} md:pb-0 ${isCenteredPage ? 'items-center justify-center' : ''}`
+      : `relative z-10 w-full flex-1 flex flex-col overscroll-none ${isForumPage ? '' : 'pb-20'} md:pb-0`;
 
   const showInstitutionalHeader =
     !pathname.startsWith('/sign-up') &&
@@ -337,7 +338,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
                 {displayContent}
               </main>
             </ZoomWrapper>
-            {!isLanding && !isPublicPath && <MobileNavBar />}
+            {!isLanding && !isPublicPath && !pathname.startsWith('/forum') && <MobileNavBar />}
           </div>
 
         </div>

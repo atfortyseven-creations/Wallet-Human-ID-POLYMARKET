@@ -168,15 +168,32 @@ export default function ConnectPage() {
       setEphemeral(pair);
       const sessId = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36);
       setQrSession(sessId);
-      // [FIX] Origin fallback updated to humanidfi.com to match WalletConnect Cloud registration
       const origin = typeof window !== 'undefined' ? window.location.origin : 'https://humanidfi.com';
       const expiresAt = Date.now() + 300000;
-      const qrUrl = new URL('/connect', origin);
-      qrUrl.searchParams.set('uuid', sessId);
-      qrUrl.searchParams.set('pub', pair.publicKey);
-      qrUrl.searchParams.set('ecdh', pair.isECDH ? '1' : '0');
-      qrUrl.searchParams.set('exp', String(expiresAt));
-      setQrData(qrUrl.toString());
+
+      // [FIX QR] Upload the ephemeral public key to the server so the QR only
+      // contains a short UUID. A full JWK key in the QR URL causes ~600-char payloads
+      // which need zoom-in to scan. Short UUIDs (~50 chars) are always scannable.
+      try {
+        await fetch('/api/auth/qr-init', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ uuid: sessId, pub: pair.publicKey, ecdh: pair.isECDH ? '1' : '0', exp: String(expiresAt) }),
+        });
+        // Short QR: only UUID in the URL
+        const shortQrUrl = new URL('/connect', origin);
+        shortQrUrl.searchParams.set('s', sessId);
+        setQrData(shortQrUrl.toString());
+      } catch {
+        // Fallback: embed key in URL (old behavior) if server upload fails
+        const qrUrl = new URL('/connect', origin);
+        qrUrl.searchParams.set('uuid', sessId);
+        qrUrl.searchParams.set('pub', pair.publicKey);
+        qrUrl.searchParams.set('ecdh', pair.isECDH ? '1' : '0');
+        qrUrl.searchParams.set('exp', String(expiresAt));
+        setQrData(qrUrl.toString());
+      }
+
       setSyncStatus("AWAITING");
       const t = setTimeout(() => { setQrSession(null); setSyncStatus("IDLE"); }, 270000);
       return () => clearTimeout(t);
@@ -617,10 +634,10 @@ export default function ConnectPage() {
                       </div>
                       <QRCodeSVG
                         value={qrData}
-                        size={261}
+                        size={280}
                         fgColor="#0A0A0A"
                         bgColor="#FFFFFF"
-                        level="M"
+                        level="L"
                         includeMargin={true}
                       />
                       <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#0A0A0A]/40 text-center">
