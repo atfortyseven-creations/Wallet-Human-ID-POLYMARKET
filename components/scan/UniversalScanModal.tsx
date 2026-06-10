@@ -107,6 +107,8 @@ export default function UniversalScanModal({
   const hasScannedRef = useRef(false);
   const firstFrameRef = useRef(false); // transitions idle → scanning on first camera frame
   const handleRouteRef = useRef<(text: string) => Promise<void>>(async () => {});
+  // Stores the raw QR data so we can auto-retry the handshake after wallet connect
+  const lastScanDataRef = useRef<string | null>(null);
 
   useEffect(() => {
     addressRef.current = address || externalAddress;
@@ -141,6 +143,9 @@ export default function UniversalScanModal({
       hasScannedRef.current = true;
       await destroyScanner();
       setStatus('scanning');
+
+      // Store raw data so we can retry after wallet connect
+      lastScanDataRef.current = decodedText;
 
       const route =
         mode === 'session-only'
@@ -410,15 +415,30 @@ export default function UniversalScanModal({
                         <>
                           <button
                             type="button"
-                            onClick={() => {
-                              onClose();
-                              setTimeout(() => openAppKit(), 200);
+                            onClick={async () => {
+                              // Open wallet selector — once connected, auto-retry the handshake
+                              openAppKit();
+                              // Poll briefly for a wallet address to appear after connecting
+                              let attempts = 0;
+                              const poll = setInterval(async () => {
+                                attempts++;
+                                const currentAddr = addressRef.current;
+                                if (currentAddr && lastScanDataRef.current) {
+                                  clearInterval(poll);
+                                  setErrMsg('');
+                                  setNeedsWallet(false);
+                                  hasScannedRef.current = false;
+                                  await handleRouteRef.current(lastScanDataRef.current);
+                                } else if (attempts > 60) {
+                                  clearInterval(poll);
+                                }
+                              }, 1000);
                             }}
                             className="text-[9px] font-black uppercase px-6 py-2.5 bg-black text-white rounded-full mt-1"
                           >
                             Connect Wallet
                           </button>
-                          <p className="text-[9px] text-black/40">Connect your wallet, then scan again.</p>
+                          <p className="text-[9px] text-black/40">Connect your wallet to link the session.</p>
                         </>
                       ) : (
                         <>

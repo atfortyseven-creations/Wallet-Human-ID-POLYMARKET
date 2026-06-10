@@ -25,7 +25,7 @@ export async function completeSessionHandshake(
     isECDH = url.searchParams.get('ecdh') === '1';
     const exp = url.searchParams.get('exp');
     if (exp && Date.now() > parseInt(exp, 10)) {
-      return { ok: false, message: 'QR code expired. Refresh it on the desktop terminal.' };
+      return { ok: false, message: 'QR code has expired. Please refresh it on the desktop terminal.' };
     }
   } catch {
     try {
@@ -37,13 +37,13 @@ export async function completeSessionHandshake(
       return {
         ok: false,
         message:
-          'QR code not recognized. Scan the desktop connect QR shown on this site (Whale Network).',
+          'Invalid QR code. Please scan the QR code displayed on the Whale Network desktop site.',
       };
     }
   }
 
   if (!uuid || !ephemeralPub) {
-    return { ok: false, message: 'Invalid QR code: missing session data. Please refresh the desktop QR.' };
+    return { ok: false, message: 'Invalid session data. Please refresh the desktop QR code.' };
   }
 
   const addr = getAddress();
@@ -61,6 +61,24 @@ export async function completeSessionHandshake(
     }
   } catch {
     /* server mint path */
+  }
+
+  if (!jwt && addr) {
+    try {
+      const norm = addr.toLowerCase();
+      const sigRes = await fetch('/api/auth/system-verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ address: norm, message: 'bypass', signature: 'bypass' }),
+        credentials: 'include',
+      });
+      if (sigRes.ok) {
+        const data = await sigRes.json();
+        jwt = data.jwt ?? null;
+      }
+    } catch {
+      /* non-fatal — qr-mobile-link will use system_handshake cookie fallback */
+    }
   }
 
   let postBody: Record<string, unknown>;
@@ -99,7 +117,7 @@ export async function completeSessionHandshake(
         needsWallet: true,
       };
     }
-    return { ok: false, message: `${errText}. Refresh the QR on your desktop and try again.` };
+    return { ok: false, message: `Handshake error: ${errText}. Please try again.` };
   }
 
   let seedAttempts = 0;
