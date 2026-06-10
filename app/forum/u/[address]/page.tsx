@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { format } from 'date-fns';
-import { ShieldCheck, Calendar, Activity, ChevronLeft, Hexagon } from 'lucide-react';
 
 export default function UserProfilePage() {
   const { address } = useParams();
@@ -28,17 +27,13 @@ export default function UserProfilePage() {
   }, [address]);
 
   if (!profile) return (
-    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest animate-pulse min-h-[100dvh] bg-white text-gray-500 flex flex-col items-center justify-center gap-4">
-      <div className="w-8 h-8 border-2 border-t-black border-r-black border-b-transparent border-l-transparent rounded-full animate-spin" />
+    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-gray-500 min-h-[100dvh] bg-white flex flex-col items-center justify-center gap-4">
       Locating Dossier...
     </div>
   );
 
   if (profile.error) return (
     <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-red-500 min-h-[100dvh] bg-white flex flex-col items-center justify-center gap-4">
-      <div className="w-12 h-12 border-2 border-red-500 flex items-center justify-center">
-        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-      </div>
       Dossier not found or classified.
     </div>
   );
@@ -54,16 +49,12 @@ export default function UserProfilePage() {
 
         <div className="w-full">
           <Link href="/forum" className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-gray-500 hover:text-black transition-colors mb-6">
-            <ChevronLeft size={14} /> Back to Nexus
+            BACK TO NEXUS
           </Link>
         </div>
 
         {/* Profile Card */}
         <div className="border-2 border-black p-8 md:p-12 relative overflow-hidden bg-white">
-          <div className="absolute top-0 right-0 p-8 text-gray-100 hidden md:block">
-             <Hexagon size={120} strokeWidth={0.5} />
-          </div>
-
           <div className="relative z-10 flex flex-col md:flex-row gap-8 items-start md:items-center">
             
             {/* Avatar */}
@@ -89,7 +80,7 @@ export default function UserProfilePage() {
                    </span>
                    {profile.isPro && (
                      <span className="flex items-center gap-1.5 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest bg-black text-white">
-                        <ShieldCheck size={12} /> Verified
+                        VERIFIED
                      </span>
                    )}
                 </div>
@@ -103,16 +94,14 @@ export default function UserProfilePage() {
 
               <div className="flex items-center gap-6 mt-4 pt-4 border-t border-gray-200">
                 <div className="flex items-center gap-2 text-gray-500">
-                  <Calendar size={14} />
                   <span className="text-[11px] font-black uppercase tracking-widest">Joined {joinDate}</span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-500">
-                  <Activity size={14} />
                   <span className="text-[11px] font-black uppercase tracking-widest">{topics.length} Transmissions</span>
                 </div>
                 {profile.isAdmin && (
                   <span className="text-[10px] font-black uppercase tracking-widest border border-red-500 text-red-500 px-2 py-0.5 ml-auto">
-                    Admin
+                    ADMIN
                   </span>
                 )}
               </div>
@@ -124,7 +113,7 @@ export default function UserProfilePage() {
         {/* User Topics */}
         <div className="flex flex-col gap-6">
           <h2 className="text-[14px] font-black uppercase tracking-[0.2em] text-black border-b-2 border-black pb-4 flex items-center gap-2">
-             <Activity size={16} /> Recent Activity
+             RECENT ACTIVITY
           </h2>
           
           <div className="flex flex-col">

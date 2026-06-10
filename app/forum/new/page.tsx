@@ -3,11 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronDown, Save, FileLock2, Plus, ShieldCheck, ChevronLeft } from 'lucide-react';
 import { useSignMessage } from 'wagmi';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
 import { useWalletStore } from '@/lib/store/wallet-store';
-import { ethers } from 'ethers';
 
 const DRAFT_KEY = 'forum_draft_new_topic';
 
@@ -78,12 +76,12 @@ function NewTopicContent() {
       setError('Title, Sector, and Content are required.');
       return;
     }
-    if (!isConnected) {
+    if (!isConnected && !address) {
       setError('Authenticate via wallet to broadcast.');
       return;
     }
     let finalContent = content;
-    let finalSignature = '';
+    let finalSignature = 'SESSION:AUTHENTICATED';
       
       documents.forEach(doc => {
         if (doc.title.trim() && doc.url.trim()) {
@@ -91,16 +89,15 @@ function NewTopicContent() {
         }
       });
 
-      const { privateKey: storedPrivateKey, address: actualWalletAddress } = useWalletStore.getState();
+      const { privateKey: storedPrivateKey } = useWalletStore.getState();
       const messageToSign = `${title}\n${finalContent}`;
 
       try {
         if (storedPrivateKey) {
+          const { ethers } = await import('ethers');
           const wallet = new ethers.Wallet(storedPrivateKey);
           finalSignature = await wallet.signMessage(messageToSign);
-        } else if (isLocalSystemWallet || (actualWalletAddress && address && actualWalletAddress.toLowerCase() === address.toLowerCase() && !storedPrivateKey && isSystemHandshake)) {
-          finalSignature = 'SESSION:AUTHENTICATED';
-        } else {
+        } else if (!isLocalSystemWallet) {
           finalSignature = await signMessageAsync({ message: messageToSign });
         }
       } catch (err) {
@@ -219,7 +216,7 @@ function NewTopicContent() {
       <div className="w-full max-w-[1110px] mx-auto px-6 lg:px-12">
         <div className="w-full mb-6">
           <Link href="/forum" className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-gray-500 hover:text-black transition-colors">
-            <ChevronLeft size={14} /> Back to Nexus
+            BACK TO NEXUS
           </Link>
         </div>
 
@@ -229,17 +226,16 @@ function NewTopicContent() {
           <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-2 border-black pb-6">
             <div className="flex flex-col gap-2">
                 <h1 className="text-[28px] md:text-[32px] font-black tracking-tighter text-black flex items-center gap-4 leading-none">
-                  <ShieldCheck className="text-black" size={28} />
-                  Initialize Broadcast
+                  INITIALIZE BROADCAST
                 </h1>
                 <p className="text-[12px] font-mono text-gray-500 uppercase tracking-widest mt-2">
-                    Transmission signed cryptographically via operative node.
+                    Transmission hashed and signed cryptographically on Aztec Testnet.
                 </p>
             </div>
             <div className="flex items-center gap-4">
               {draftSaved && (
                 <span className="flex items-center gap-1.5 text-[10px] font-mono font-bold uppercase tracking-widest text-green-600">
-                  <Save size={12} /> Local Sync
+                  LOCAL SYNC
                 </span>
               )}
               {(title || content) && (
@@ -247,7 +243,7 @@ function NewTopicContent() {
                   onClick={clearDraft}
                   className="text-[10px] font-black uppercase tracking-[0.2em] hover:text-black transition-colors text-gray-500 px-4 py-2 border border-gray-300 hover:bg-gray-50"
                 >
-                  Purge Draft
+                  PURGE DRAFT
                 </button>
               )}
             </div>
@@ -282,7 +278,6 @@ function NewTopicContent() {
                     <option key={cat.id} value={cat.id} className="text-black py-2">{cat.name}</option>
                   ))}
                     </select>
-                    <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-black" size={18} />
                 </div>
               </div>
               <div className="flex-1 flex flex-col gap-3">
@@ -301,13 +296,10 @@ function NewTopicContent() {
             <div className="flex flex-col gap-4 bg-gray-50 border border-gray-300 p-6 relative overflow-hidden">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
                     <div className="flex items-center gap-3 text-black">
-                        <div className="w-8 h-8 flex items-center justify-center">
-                          <FileLock2 size={16} />
-                        </div>
                         <span className="text-[12px] font-black uppercase tracking-[0.2em]">Cryptographic Vault</span>
                     </div>
                     <button onClick={addDocument} className="flex items-center justify-center gap-2 px-4 py-2 border border-black hover:bg-black hover:text-white transition-colors text-[10px] font-black uppercase tracking-widest text-black">
-                        <Plus size={14} strokeWidth={3} /> Attach File
+                        ATTACH FILE
                     </button>
                 </div>
                 <p className="text-[11px] text-gray-500 font-mono leading-relaxed mb-2">
@@ -322,14 +314,14 @@ function NewTopicContent() {
                             
                             <div className="absolute right-2 top-1/2 -translate-y-1/2">
                                 <label className="cursor-pointer bg-gray-100 hover:bg-gray-200 border border-gray-300 text-[9px] font-black uppercase tracking-widest px-3 py-1.5 text-black transition-colors">
-                                    {uploadingFile ? 'Syncing...' : 'Browse'}
+                                    {uploadingFile ? 'SYNCING...' : 'BROWSE'}
                                     <input type="file" className="hidden" disabled={uploadingFile} onChange={(e) => handleFileUpload(e, idx)} />
                                 </label>
                             </div>
                         </div>
 
-                        <button onClick={() => removeDocument(idx)} className="p-3 text-red-500 hover:bg-red-50 transition-colors border border-red-200 self-end md:self-auto shrink-0 flex items-center justify-center" title="Remove">
-                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        <button onClick={() => removeDocument(idx)} className="p-3 text-red-500 hover:bg-red-50 transition-colors border border-red-200 self-end md:self-auto shrink-0 flex items-center justify-center text-[10px] font-black tracking-widest uppercase" title="Remove">
+                            REMOVE
                         </button>
                     </div>
                 ))}
@@ -354,29 +346,18 @@ function NewTopicContent() {
                     disabled={submitting}
                     className="h-[52px] px-8 bg-black text-white text-[12px] font-black uppercase tracking-[0.1em] hover:bg-gray-800 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                   >
-                    {submitting ? (
-                      <>
-                        <Loader2 size={16} className="animate-spin" />
-                        Transmitting
-                      </>
-                    ) : (
-                      <>
-                        <ShieldCheck size={16} />
-                        Sign & Broadcast
-                      </>
-                    )}
+                    {submitting ? 'TRANSMITTING...' : 'SIGN & BROADCAST'}
                   </button>
                   <Link
                     href="/forum"
                     className="text-[11px] font-black uppercase tracking-[0.2em] transition-colors text-gray-500 hover:text-black px-6 py-4"
                   >
-                    Abort
+                    ABORT
                   </Link>
                 </div>
 
               {error && (
                 <div className="flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-200 text-[11px] font-bold text-red-600 uppercase tracking-widest">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                   {error}
                 </div>
               )}

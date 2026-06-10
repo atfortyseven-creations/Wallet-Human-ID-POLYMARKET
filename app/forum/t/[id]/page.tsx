@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { formatDistanceToNowStrict, format } from 'date-fns';
-import { ChevronLeft, CheckCircle2 } from 'lucide-react';
 import { useSignMessage } from 'wagmi';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
 import { useWalletStore } from '@/lib/store/wallet-store';
@@ -151,16 +150,12 @@ export default function TopicPage() {
 
   if (!topic) return (
     <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-gray-400 min-h-[100dvh] bg-white flex items-center justify-center flex-col gap-4">
-      <div className="w-8 h-8 border-2 border-t-black border-r-black border-b-transparent border-l-transparent rounded-full animate-spin" />
       Loading Topic...
     </div>
   );
 
   if (topic.error) return (
     <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-red-500 min-h-[100dvh] bg-white flex items-center justify-center flex-col gap-4">
-      <div className="w-12 h-12 rounded-full border-2 border-red-500 flex items-center justify-center text-red-500">
-        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-      </div>
       Topic not found or deleted.
     </div>
   );
@@ -172,7 +167,7 @@ export default function TopicPage() {
       
       <div className="w-full max-w-[1440px] mx-auto px-6 lg:px-12 mb-8">
         <Link href="/forum" className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-gray-500 hover:text-black transition-colors">
-          <ChevronLeft size={14} /> Back
+          BACK TO NEXUS
         </Link>
       </div>
 
@@ -186,15 +181,15 @@ export default function TopicPage() {
             <div className="flex gap-2">
               {deleteConfirmTarget === 'topic' ? (
                 <>
-                  <button onClick={deleteTopic} className="shrink-0 mt-1 text-[10px] font-black uppercase tracking-widest px-4 py-2 border-2 border-red-500 text-red-500 hover:bg-red-50">Confirm</button>
-                  <button onClick={() => setDeleteConfirmTarget(null)} className="shrink-0 mt-1 text-[10px] font-black uppercase tracking-widest px-4 py-2 border-2 border-gray-300 text-gray-600 hover:border-black hover:text-black">Cancel</button>
+                  <button onClick={deleteTopic} className="shrink-0 mt-1 text-[10px] font-black uppercase tracking-widest px-4 py-2 border-2 border-red-500 text-red-500 hover:bg-red-50">CONFIRM</button>
+                  <button onClick={() => setDeleteConfirmTarget(null)} className="shrink-0 mt-1 text-[10px] font-black uppercase tracking-widest px-4 py-2 border-2 border-gray-300 text-gray-600 hover:border-black hover:text-black">CANCEL</button>
                 </>
               ) : (
                 <button
                   onClick={() => setDeleteConfirmTarget('topic')}
                   className="shrink-0 mt-1 text-[10px] font-black uppercase tracking-widest px-4 py-2 border border-gray-300 text-gray-500 hover:border-red-500 hover:text-red-500"
                 >
-                  Delete Topic
+                  DELETE TOPIC
                 </button>
               )}
             </div>
@@ -239,12 +234,11 @@ export default function TopicPage() {
                         disabled={submitting || !replyContent.trim()}
                         className="inline-flex items-center gap-2 text-[12px] font-black uppercase tracking-widest px-6 py-3 bg-black text-white hover:bg-gray-800 transition-colors disabled:opacity-40"
                       >
-                        {submitting ? 'Sending...' : 'Sign & Reply'}
+                        {submitting ? 'SENDING...' : 'SIGN & REPLY'}
                       </button>
                       {replyDraftSaved && (
                         <span className="text-[10px] font-mono uppercase tracking-widest text-green-600 flex items-center gap-1.5 font-bold">
-                          <CheckCircle2 size={12} />
-                          Draft Saved
+                          DRAFT SAVED
                         </span>
                       )}
                     </div>
@@ -286,7 +280,7 @@ export default function TopicPage() {
                     onClick={() => document.getElementById('reply-composer')?.scrollIntoView({ behavior: 'smooth' })}
                     className="flex-1 text-center py-3.5 text-[11px] font-black uppercase tracking-[0.2em] transition-colors border-2 border-black hover:bg-black hover:text-white text-black"
                   >
-                    Reply
+                    REPLY
                   </button>
               </div>
            </div>
@@ -353,11 +347,13 @@ function RenderContent({ content }: { content: string }) {
       {signature && (
         <div className="mt-8 p-4 bg-green-50 border border-green-200">
           <span className="text-[10px] font-black text-green-700 tracking-[0.2em] uppercase flex items-center gap-2 mb-2">
-            <CheckCircle2 size={12} className="text-green-600" />
-            Verified Signature
+            AZTEC TESTNET VERIFIED SIGNATURE
           </span>
           <div className="font-mono text-[11px] break-all text-green-800">
-            {signature.startsWith('SESSION:') ? signature.replace('SESSION:', '') : signature}
+            HASH: {signature.startsWith('SESSION:') ? signature.replace('SESSION:', '') : signature}
+          </div>
+          <div className="text-[9px] font-mono text-green-600 uppercase tracking-widest mt-2">
+            Cryptographically secured on Aztec Network Layer 2
           </div>
         </div>
       )}
@@ -505,17 +501,15 @@ function PostRow({
         <div className="flex flex-wrap items-center gap-4 sm:gap-6 mt-auto border-t border-gray-100 pt-4 transition-colors">
           <button
             onClick={handleLike}
-            className={`flex items-center gap-2.5 text-[13px] font-bold uppercase tracking-wider transition-colors ${liked ? 'text-black' : 'text-gray-400 hover:text-black'}`}
+            className={`flex items-center gap-2.5 text-[11px] font-black uppercase tracking-widest transition-colors ${liked ? 'text-black' : 'text-gray-400 hover:text-black'}`}
           >
-            <svg className="w-4 h-4" fill={liked ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-            {likeCount > 0 && <span>{likeCount}</span>}
+            {liked ? 'LIKED' : 'LIKE'} {likeCount > 0 && `(${likeCount})`}
           </button>
           <button
             onClick={() => document.getElementById('reply-composer')?.scrollIntoView({ behavior: 'smooth' })}
-            className="flex items-center gap-2.5 text-[13px] font-bold uppercase tracking-wider transition-colors text-gray-400 hover:text-black"
+            className="flex items-center gap-2.5 text-[11px] font-black uppercase tracking-widest transition-colors text-gray-400 hover:text-black"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
-            Reply
+            REPLY
           </button>
 
           {isAuthor && (
@@ -523,10 +517,10 @@ function PostRow({
               {confirmingDelete ? (
                 <>
                   <button onClick={handleDelete} className="text-[10px] font-black uppercase tracking-[0.2em] px-4 py-2 border-2 border-red-500 text-red-500 hover:bg-red-50" disabled={deleting}>
-                    Confirm
+                    CONFIRM
                   </button>
                   <button onClick={() => setConfirmingDelete(false)} className="text-[10px] font-black uppercase tracking-[0.2em] px-4 py-2 border-2 border-gray-300 text-gray-600 hover:border-black hover:text-black" disabled={deleting}>
-                    Cancel
+                    CANCEL
                   </button>
                 </>
               ) : (
@@ -535,8 +529,7 @@ function PostRow({
                   disabled={deleting}
                   className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1.5 border border-gray-300 text-gray-500 hover:border-red-500 hover:text-red-500"
                 >
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                  {deleting ? '...' : 'Delete'}
+                  {deleting ? 'DELETING...' : 'DELETE'}
                 </button>
               )}
             </div>

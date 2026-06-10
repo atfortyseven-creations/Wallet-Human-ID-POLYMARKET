@@ -3,19 +3,15 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { formatDistanceToNowStrict } from 'date-fns';
-import { 
-  Search, Shield, Activity, Users, FileText, ChevronRight, Hash, Eye, 
-  MessageSquare, Radio, Globe, Zap, Settings, Command
-} from 'lucide-react';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
 
 const STATIC_SECTORS = [
-  { id: 'general', name: 'General', slug: 'general', description: 'Network-wide announcements and discussion', icon: <Globe size={18} /> },
-  { id: 'whale-network', name: 'Whale Network', slug: 'whale-network', description: 'Institutional architecture discussions', icon: <Activity size={18} /> },
-  { id: 'applications', name: 'Applications', slug: 'applications', description: 'DApp integrations and deployment', icon: <Hash size={18} /> },
-  { id: 'testnets', name: 'Testnets', slug: 'testnets', description: 'Testnet node operations', icon: <Radio size={18} /> },
-  { id: 'noir', name: 'Noir', slug: 'noir', description: 'ZK programming and circuits', icon: <Shield size={18} /> },
-  { id: 'site-feedback', name: 'Site Feedback', slug: 'site-feedback', description: 'Platform issues and feedback', icon: <MessageSquare size={18} /> }
+  { id: 'general', name: 'General', slug: 'general', description: 'Network-wide announcements and discussion' },
+  { id: 'whale-network', name: 'Whale Network', slug: 'whale-network', description: 'Institutional architecture discussions' },
+  { id: 'applications', name: 'Applications', slug: 'applications', description: 'DApp integrations and deployment' },
+  { id: 'testnets', name: 'Testnets', slug: 'testnets', description: 'Testnet node operations' },
+  { id: 'noir', name: 'Noir', slug: 'noir', description: 'ZK programming and circuits' },
+  { id: 'site-feedback', name: 'Site Feedback', slug: 'site-feedback', description: 'Platform issues and feedback' }
 ];
 
 export default function ForumPage() {
@@ -83,12 +79,12 @@ export default function ForumPage() {
         <div className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh] bg-white/90 backdrop-blur-sm p-4">
           <div className="w-full max-w-[640px] bg-white border-2 border-black shadow-[0_10px_30px_rgba(0,0,0,0.1)] flex flex-col overflow-hidden">
             <div className="flex items-center px-4 py-4 border-b-2 border-black gap-3">
-              <Search size={20} className="text-black" />
+              <span className="text-[12px] font-black uppercase tracking-widest text-black">SEARCH</span>
               <input 
                 autoFocus
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                placeholder="Search database..."
+                placeholder="Query database..."
                 className="flex-1 bg-transparent text-[18px] font-bold outline-none text-black placeholder:text-gray-400"
               />
               <button onClick={() => setSearchOpen(false)} className="text-[11px] font-black uppercase tracking-widest px-2 py-1 bg-black text-white hover:bg-gray-800 transition-colors">ESC</button>
@@ -120,10 +116,6 @@ export default function ForumPage() {
         {/* Header Section */}
         <div className="flex flex-col gap-8 md:flex-row md:items-end justify-between border-b-2 border-black pb-8">
           <div className="flex flex-col gap-3">
-             <div className="flex items-center gap-2 mb-2">
-                 <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_#10B981] animate-pulse" />
-                 <span className="text-[10px] font-black uppercase tracking-widest text-black">Network Active</span>
-             </div>
              <h1 className="text-[40px] md:text-[56px] font-black tracking-tighter text-black leading-none">
                Discourse
              </h1>
@@ -145,19 +137,19 @@ export default function ForumPage() {
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
            <div className="flex flex-wrap items-center gap-2">
               <Link href="/forum/new" className="flex items-center justify-center gap-2 px-5 py-2.5 bg-black text-white text-[11px] font-black uppercase tracking-[0.15em] hover:bg-gray-800 transition-colors shadow-sm">
-                New Topic
+                NEW TOPIC
               </Link>
               <button onClick={() => setSearchOpen(true)} className="flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-gray-300 text-black text-[11px] font-bold uppercase tracking-widest hover:border-black transition-colors shadow-sm">
-                <Search size={14} /> Search
+                SEARCH
                 <span className="hidden sm:inline-flex items-center gap-1 text-[9px] font-mono opacity-50 ml-1 bg-gray-100 px-1.5 py-0.5 rounded">
-                  <Command size={10} /> K
+                  CMD+K
                 </span>
               </button>
            </div>
            
            <div className="flex items-center gap-2">
-              <Link href="/forum/settings" className="p-2.5 border border-gray-300 hover:border-black transition-colors text-black bg-white shadow-sm flex items-center justify-center">
-                 <Settings size={16} />
+              <Link href="/forum/settings" className="px-5 py-2.5 border border-gray-300 hover:border-black transition-colors text-black text-[11px] font-black uppercase tracking-[0.15em] bg-white shadow-sm flex items-center justify-center">
+                 SETTINGS
               </Link>
            </div>
         </div>
@@ -169,15 +161,14 @@ export default function ForumPage() {
            <div className="lg:col-span-8 flex flex-col">
               <div className="flex items-center justify-between pb-4 mb-4 border-b-2 border-black">
                  <h2 className="text-[16px] font-black uppercase tracking-widest flex items-center gap-2">
-                   <Activity size={18} /> Live Feed
+                   DISCUSSIONS
                  </h2>
-                 <span className="text-[11px] font-mono text-gray-500 uppercase">Latest</span>
+                 <span className="text-[11px] font-mono text-gray-500 uppercase">LATEST</span>
               </div>
               
               <div className="flex flex-col">
                  {loading ? (
                     <div className="py-20 flex flex-col items-center justify-center gap-4 text-gray-400">
-                      <div className="w-8 h-8 border-2 border-t-black border-r-black border-b-transparent border-l-transparent rounded-full animate-spin" />
                       <span className="text-[10px] font-bold uppercase tracking-widest">Loading...</span>
                     </div>
                  ) : topics.length === 0 ? (
@@ -210,11 +201,11 @@ export default function ForumPage() {
                           
                           <div className="flex items-center gap-6 shrink-0 sm:w-auto w-full justify-between sm:justify-end">
                              <div className="flex items-center gap-1.5 text-black">
-                               <MessageSquare size={14} />
+                               <span className="text-[10px] uppercase font-black tracking-widest text-gray-500">Replies</span>
                                <span className="text-[14px] font-bold">{topic._count?.posts || 0}</span>
                              </div>
                              <div className="flex items-center gap-1.5 text-black">
-                               <Eye size={14} />
+                               <span className="text-[10px] uppercase font-black tracking-widest text-gray-500">Views</span>
                                <span className="text-[14px] font-bold">{topic.views || 0}</span>
                              </div>
                              <div className="text-[12px] font-mono text-gray-500 w-16 text-right">
@@ -232,35 +223,16 @@ export default function ForumPage() {
            <div className="lg:col-span-4 flex flex-col gap-8">
               <div className="bg-gray-50 border-2 border-black p-6">
                  <h2 className="text-[16px] font-black uppercase tracking-widest mb-6 flex items-center gap-2">
-                   <Globe size={18} /> Sectors
+                   SECTORS
                  </h2>
                  <div className="flex flex-col gap-1">
                    {STATIC_SECTORS.map(sec => (
                      <Link key={sec.id} href={`/forum/c/${sec.slug}`} className="group flex items-center justify-between p-3 border border-transparent hover:border-black hover:bg-white transition-colors">
                         <div className="flex items-center gap-3">
-                          <span className="text-black">{sec.icon}</span>
                           <span className="text-[13px] font-bold uppercase tracking-widest text-black">{sec.name}</span>
                         </div>
-                        <ChevronRight size={14} className="text-gray-400 group-hover:text-black transition-colors" />
                      </Link>
                    ))}
-                 </div>
-              </div>
-
-              {/* Status Box */}
-              <div className="border border-gray-300 p-6 flex flex-col gap-4">
-                 <h3 className="text-[12px] font-black uppercase tracking-widest border-b border-gray-200 pb-2">Protocol Status</h3>
-                 <div className="flex justify-between items-center text-[13px] font-mono">
-                    <span className="text-gray-500">Security</span>
-                    <span className="text-black font-bold">STRICT</span>
-                 </div>
-                 <div className="flex justify-between items-center text-[13px] font-mono">
-                    <span className="text-gray-500">Encryption</span>
-                    <span className="text-black font-bold">ACTIVE</span>
-                 </div>
-                 <div className="flex justify-between items-center text-[13px] font-mono">
-                    <span className="text-gray-500">Uptime</span>
-                    <span className="text-green-500 font-bold tracking-widest">99.99%</span>
                  </div>
               </div>
            </div>
