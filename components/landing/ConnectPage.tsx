@@ -210,7 +210,21 @@ export default function ConnectPage() {
               try { isECDHFlag = new URL(qrData).searchParams.get('ecdh') === '1'; } catch {}
               const shared = await deriveSharedSecret(ephemeral.privateKey, data.mobilePub, isECDHFlag);
               const decrypted = await decryptAESGCM(shared, data.encryptedPayload, data.iv);
-              if (decrypted && decrypted.split('.').length === 3) jwt = decrypted;
+              try {
+                const payloadRaw = JSON.parse(decrypted);
+                if (payloadRaw.jwt) {
+                  jwt = payloadRaw.jwt;
+                  const parts = jwt.split('.');
+                  if (parts.length === 3) {
+                    const jwtData = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+                    const addr = (jwtData.sub || jwtData.address || '').toLowerCase();
+                    if (payloadRaw.seed && addr) localStorage.setItem(`whale_chat_seed_${addr}`, payloadRaw.seed);
+                    if (payloadRaw.vault) localStorage.setItem('system_vault_v1', payloadRaw.vault);
+                  }
+                }
+              } catch {
+                if (decrypted && decrypted.split('.').length === 3) jwt = decrypted;
+              }
             } catch (decryptErr) {
               console.warn('[QR:Desktop] ECDH decrypt failed, falling back to serverJwt:', decryptErr);
             }
@@ -650,13 +664,6 @@ export default function ConnectPage() {
                 {DESKTOP_WALLETS.map((w) => (
                   <WalletButton key={w.id} logo={w.logo} name={w.name} badge={w.badge} onClick={() => handleDesktopWallet(w.id, w.rdns, w.installUrl)} loading={isPending && pendingId === w.id} delay={w.delay} />
                 ))}
-                <button
-                  onClick={() => openAppKit({ view: 'Connect' })}
-                  className="w-full flex items-center justify-center gap-4 py-10 mt-4 rounded-xl border-2 border-[#0A0A0A] bg-white font-black uppercase tracking-[0.2em] text-[24px] text-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-[#FFFFFF] transition-all shadow-xl hover:scale-[1.02]"
-                >
-                  <ScanLine size={28} />
-                  WalletConnect
-                </button>
               </div>
             )}
           </div>

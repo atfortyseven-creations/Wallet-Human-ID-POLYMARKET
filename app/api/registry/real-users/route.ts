@@ -9,6 +9,7 @@ export async function GET() {
   try {
     const users = await prisma.user.findMany({
       where: {
+        isPro: false,
         createdAt: {
           gte: new Date("2024-02-01T00:00:00Z"),
         },

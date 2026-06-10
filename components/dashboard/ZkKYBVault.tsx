@@ -4,13 +4,17 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { UploadCloud, FileText, CheckCircle, Shield, Key } from "lucide-react";
 import { useSignMessage, useAccount, useWalletClient } from "wagmi";
+import { useSystemAccount } from "@/hooks/useSystemAccount";
 
 export function ZkKYBVault() {
   const [stage, setStage] = useState<"IDLE" | "UPLOADING" | "VERIFYING" | "MINTING" | "COMPLETED">("IDLE");
 
   const { signMessageAsync } = useSignMessage();
   const { data: walletClient } = useWalletClient();
-  const { address } = useAccount();
+  const { address: wagmiAddress } = useAccount();
+  const { address: systemAddress, isConnected: isSystemConnected, isSystemHandshake } = useSystemAccount();
+  
+  const address = wagmiAddress || systemAddress;
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -48,16 +52,15 @@ export function ZkKYBVault() {
           }
       } else {
           try {
-             // CRITICAL FIX: Always use signMessageAsync first for Wagmi/WalletConnect.
-             // This is the ONLY way AppKit intercepts the signature to trigger iOS deep linking.
-             // Direct viem walletClient.signMessage calls bypass the state machine and hang iOS.
-             if (signMessageAsync) {
-                signature = await signMessageAsync({ message: mintMessage });
+             if (isSystemHandshake && !isSystemConnected) {
+                 signature = 'SESSION:AUTHENTICATED';
+             } else if (signMessageAsync) {
+                 signature = await signMessageAsync({ message: mintMessage });
              } else if (walletClient?.signMessage) {
-                signature = await walletClient.signMessage({
-                   account: walletClient.account || address as `0x${string}`,
-                   message: mintMessage
-                });
+                 signature = await walletClient.signMessage({
+                    account: walletClient.account || address as `0x${string}`,
+                    message: mintMessage
+                 });
              } else {
                  throw new Error("No signing method available in wallet.");
              }

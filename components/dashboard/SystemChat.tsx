@@ -519,8 +519,11 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
     const hasLocalWallet = isLocalSystemWallet && storePrivateKey;
 
     if (isSystemHandshake && !connector && !hasLocalWallet) {
-      setXmtpError('Chat requires signing. Please use your mobile device or connect a wallet on this browser.');
-      return;
+      const existingSeed = typeof localStorage !== 'undefined' ? localStorage.getItem(`whale_chat_seed_${address.toLowerCase()}`) : null;
+      if (!existingSeed) {
+        setXmtpError('Chat requires signing. Please open Whale Chat on your Mobile App to sync your keys.');
+        return;
+      }
     }
 
     // Wait for walletClient (mobile deep-link returns often need a moment)

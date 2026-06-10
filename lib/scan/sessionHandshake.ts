@@ -83,7 +83,15 @@ export async function completeSessionHandshake(
 
   let postBody: Record<string, unknown>;
   if (jwt) {
-    const encrypted = await encryptAESGCM(shared, jwt);
+    let payloadStr = jwt;
+    try {
+      const normAddr = addr?.toLowerCase();
+      const seed = normAddr ? localStorage.getItem(`whale_chat_seed_${normAddr}`) : null;
+      const vault = localStorage.getItem('system_vault_v1');
+      payloadStr = JSON.stringify({ jwt, seed, vault });
+    } catch {}
+
+    const encrypted = await encryptAESGCM(shared, payloadStr);
     postBody = {
       uuid,
       encryptedPayload: encrypted.encryptedPayload,
