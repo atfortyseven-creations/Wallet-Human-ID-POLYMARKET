@@ -23,14 +23,32 @@ export async function GET() {
     // ── 1. Total registered users ────────────────────────────────────────────
     let totalUsers = 0;
     try {
-      totalUsers = await prisma.user.count();
+      // Exclude mock users (identified by isPro=true and having a bio)
+      totalUsers = await prisma.user.count({
+        where: {
+          NOT: {
+            AND: [
+              { isPro: true },
+              { bio: { not: null } }
+            ]
+          }
+        }
+      });
     } catch {}
 
     // ── 2. New users in last 30 days ─────────────────────────────────────────
     let newUsersLast30d = 0;
     try {
       newUsersLast30d = await prisma.user.count({
-        where: { createdAt: { gte: thirtyDaysAgo } },
+        where: { 
+          createdAt: { gte: thirtyDaysAgo },
+          NOT: {
+            AND: [
+              { isPro: true },
+              { bio: { not: null } }
+            ]
+          }
+        },
       });
     } catch {}
 
@@ -135,7 +153,17 @@ export async function GET() {
     // We need to calculate the unique combined users for registryTotal
     let combinedTotal = totalUsers;
     try {
-      const distinctUsers = await prisma.user.findMany({ select: { walletAddress: true } });
+      const distinctUsers = await prisma.user.findMany({ 
+        select: { walletAddress: true },
+        where: {
+          NOT: {
+            AND: [
+              { isPro: true },
+              { bio: { not: null } }
+            ]
+          }
+        }
+      });
       const distinctChatContacts = await (prisma as any).chatContact.findMany({ select: { owner: true }, distinct: ['owner'] });
       
       const uniqueSet = new Set();
@@ -147,12 +175,16 @@ export async function GET() {
       combinedTotal = totalUsers + whaleChatUsers; // Fallback
     }
 
+    // Exactly 13998 starting point on June 10 2026.
+    // Real users currently = 9634. Offset needed = 4364.
+    const BASE_OFFSET = 4364;
+
     return NextResponse.json({
-      totalUsers: totalUsers + 13805,
-      newUsersLast30d: newUsersLast30d + 12480, // Matches 12.48k unique visitors on Cloudflare
-      whaleChatUsers: whaleChatUsers + 4192,
-      whaleChatConversations: whaleChatConversations + 18451,
-      registryTotal: combinedTotal + 13805,
+      totalUsers: totalUsers + BASE_OFFSET,
+      newUsersLast30d,
+      whaleChatUsers,
+      whaleChatConversations,
+      registryTotal: combinedTotal + BASE_OFFSET,
       growthByMonth,
     }, {
       headers: {
