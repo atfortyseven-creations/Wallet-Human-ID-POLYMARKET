@@ -223,9 +223,9 @@ try {
             ],
             features: {
                 analytics: false, //  INSTANT BOOT: Disable telemetry to avoid blocking network requests
-                email: true, // Re-enabled for Google login
-                socials: ['google', 'x', 'github', 'discord', 'apple'], // Re-enabled for Google login
-                emailShowWallets: true,
+                email: false, // Strictly Web3 - No Web2 Email logins
+                socials: false, // Strictly Web3 - No Google/Apple/X logins
+                emailShowWallets: false,
                 swaps: true,
                 onramp: true,
                 send: true,

@@ -26,34 +26,14 @@ import {
   AlertCircle,
   RefreshCw,
 } from 'lucide-react';
-import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import {
-  parseAbi,
-  parseEther,
-  keccak256,
-  toBytes,
-  encodeAbiParameters,
-  parseAbiParameters,
-} from 'viem';
+import { useAccount } from 'wagmi';
 import { passportPublicUrl } from '@/lib/scan/parseScanPayload';
 import type { ProductPassportPublic } from '@/lib/passport/types';
 
 /* ─────────────────────────────────────────────
    CONSTANTS
 ───────────────────────────────────────────── */
-const LEDGER_ABI = parseAbi([
-  'function transferWithReceipt(address to, uint256 amount, string calldata memo, uint256 coreEntropy, bytes calldata advancedMetadata) external returns (uint256)',
-]);
-
-const CHAIN_ID = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '8453', 10);
-const LEDGER_ADDR = (process.env.NEXT_PUBLIC_LEDGER_CONTRACT_ADDRESS || '0x') as `0x${string}`;
-
-const EXPLORER_BASE =
-  CHAIN_ID === 8453
-    ? 'https://basescan.org/tx/'
-    : CHAIN_ID === 1
-    ? 'https://etherscan.io/tx/'
-    : 'https://etherscan.io/tx/';
+const EXPLORER_BASE = 'https://testnet.aztecscan.xyz/tx-effects/';
 
 /* ─────────────────────────────────────────────
    TYPES
@@ -144,9 +124,6 @@ interface CreateTabProps {
 
 function CreateTab({ isMobile, onCreated }: CreateTabProps) {
   const { address } = useAccount();
-  const { writeContractAsync, data: txHash, isPending } = useWriteContract();
-  const { isLoading: confirming, isSuccess: confirmed } =
-    useWaitForTransactionReceipt({ hash: txHash });
 
   const inputClass =
     'mt-1 w-full border border-black/10 rounded-xl px-4 py-3 text-sm bg-white focus:outline-none focus:border-black/30 transition-colors';
@@ -160,7 +137,6 @@ function CreateTab({ isMobile, onCreated }: CreateTabProps) {
   const [creating, setCreating] = useState(false);
   const [passport, setPassport] = useState<ProductPassportPublic | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [anchorEntropy, setAnchorEntropy] = useState<string | null>(null);
   const [anchoring, setAnchoring] = useState(false);
 
   const passportUrl = passport ? passportPublicUrl(passport.slug) : '';
@@ -210,51 +186,53 @@ function CreateTab({ isMobile, onCreated }: CreateTabProps) {
       setError('Connect your wallet to confirm on-chain.');
       return;
     }
-    if (LEDGER_ADDR === '0x') {
-      setError('On-chain confirmation is not available on this network.');
-      return;
-    }
+    
     setAnchoring(true);
     setError(null);
+    
     const entropy = generateCoreEntropy();
-    const entropyHex = `0x${entropy.toString(16).padStart(64, '0')}` as `0x${string}`;
-    setAnchorEntropy(entropyHex);
-    const metadata = encodeAbiParameters(
-      parseAbiParameters('string platform, bytes32 passportSlug'),
-      ['StudioProvenance/v1', keccak256(toBytes(passport.slug)) as `0x${string}`]
-    );
-    try {
-      await writeContractAsync({
-        address: LEDGER_ADDR,
-        abi: LEDGER_ABI,
-        functionName: 'transferWithReceipt',
-        args: [address, parseEther('0'), `PASSPORT:${passport.slug}`, entropy, metadata],
-      });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'On-chain confirmation failed');
-      setAnchoring(false);
-    }
-  };
+    const entropyHex = `0x${entropy.toString(16).padStart(64, '0')}`;
+    
+    const metadataStr = `StudioProvenance/v1|${passport.slug}`;
 
-  useEffect(() => {
-    if (!confirmed || !txHash || !passport || !anchorEntropy) return;
-    (async () => {
+    try {
+      // Proceed directly to native anchor bypassing EVM
+      const res = await fetch('/api/aztec/anchor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          passportSlug: passport.slug,
+          metadata: metadataStr,
+          creatorAddress: address
+        })
+      });
+      
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Anchor failed');
+
+      const aztecTxHash = data.txHash;
+
+      // Update passport via PATCH
       await fetch(`/api/passport/${passport.slug}/anchor`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({
-          coreEntropy: anchorEntropy,
-          txHash,
-          chainId: CHAIN_ID,
+          coreEntropy: entropyHex,
+          txHash: aztecTxHash,
+          chainId: 2151908, // Aztec
         }),
       });
+      
       setPassport((p) =>
-        p ? { ...p, txHash, chainId: CHAIN_ID, coreEntropy: anchorEntropy } : p
+        p ? { ...p, txHash: aztecTxHash, chainId: 2151908, coreEntropy: entropyHex } : p
       );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'On-chain confirmation failed');
+    } finally {
       setAnchoring(false);
-    })();
-  }, [confirmed, txHash, passport, anchorEntropy]);
+    }
+  };
 
   const handleReset = () => {
     setPassport(null);
@@ -265,7 +243,6 @@ function CreateTab({ isMobile, onCreated }: CreateTabProps) {
     setDescription('');
     setGs1Gtin('');
     setError(null);
-    setAnchorEntropy(null);
   };
 
   /* ── PASSPORT CREATED VIEW ── */
@@ -331,15 +308,15 @@ function CreateTab({ isMobile, onCreated }: CreateTabProps) {
             <button
               type="button"
               onClick={handleAnchor}
-              disabled={anchoring || isPending || confirming}
+              disabled={anchoring}
               className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-[#050505] text-[11px] font-black uppercase tracking-widest active:scale-[0.98] transition-transform disabled:opacity-40"
             >
-              {anchoring || isPending || confirming ? (
+              {anchoring ? (
                 <Loader2 className="animate-spin" size={14} />
               ) : (
                 <Anchor size={14} />
               )}
-              {confirming ? 'Waiting for confirmation…' : 'Write to blockchain'}
+              {anchoring ? 'Writing to Aztec…' : 'Write to blockchain'}
             </button>
           </div>
         ) : (

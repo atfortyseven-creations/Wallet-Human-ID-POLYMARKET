@@ -64,6 +64,7 @@ export function InstitutionalHeader() {
 
     const MENU_ITEMS = [
       { label: 'Dashboard', href: "/dashboard" },
+      { label: 'Studio', href: "/studio/provenance" },
       { label: 'TOKEN', href: "/qds" },
       { label: 'MAP', href: "/registry" },
       { label: 'Chat', href: "/chat" },

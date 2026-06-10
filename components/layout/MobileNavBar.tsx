@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, LineChart, LayoutDashboard, Scale } from 'lucide-react';
+import { Home, LineChart, LayoutDashboard, Scale, ShieldCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
@@ -11,6 +11,7 @@ export function MobileNavBar() {
 
     const navItems = [
         { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+        { href: '/studio/provenance', label: 'Studio', icon: ShieldCheck },
         { href: '/',          label: 'Home',       icon: Home },
         { href: '/portfolio', label: 'Portfolio',  icon: LineChart },
         { href: '/settings?tab=legal', label: 'Legal', icon: Scale },
@@ -26,7 +27,7 @@ export function MobileNavBar() {
                 {navItems.map((item, index) => {
                     const isActive = pathname === item.href;
                     const Icon = item.icon;
-                    const isCenter = index === 1;
+                    const isCenter = index === 2;
                     
                     return (
                         <Link 

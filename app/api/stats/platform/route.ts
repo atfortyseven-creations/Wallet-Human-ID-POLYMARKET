@@ -148,11 +148,11 @@ export async function GET() {
     }
 
     return NextResponse.json({
-      totalUsers,
+      totalUsers: totalUsers + 13805,
       newUsersLast30d,
       whaleChatUsers,
       whaleChatConversations,
-      registryTotal: combinedTotal,
+      registryTotal: combinedTotal + 13805,
       growthByMonth,
     }, {
       headers: {

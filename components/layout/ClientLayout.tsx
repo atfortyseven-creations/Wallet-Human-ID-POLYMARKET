@@ -10,6 +10,7 @@ import { useSystemSessionLock } from '@/hooks/useSystemSessionLock';
 import { useWalletStore } from '@/lib/store/wallet-store';
 import { TitaniumGate } from '@/components/layout/TitaniumGate';
 import { InstitutionalHeader } from '@/components/shared/InstitutionalHeader';
+import { MobileNavBar } from '@/components/layout/MobileNavBar';
 
 import { ZoomWrapper } from './ZoomWrapper';
 import dynamic from 'next/dynamic';
@@ -262,10 +263,10 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
 
   // Root container
   const rootClass = isDashboard || isChat
-    ? 'fixed inset-0 w-full h-full overflow-hidden flex flex-col bg-transparent z-0'
+    ? 'fixed inset-0 w-full h-[100dvh] overflow-hidden flex flex-col bg-transparent z-0'
     : isBounded
-      ? 'fixed inset-0 w-full h-full overflow-hidden flex flex-col bg-transparent z-0'
-      : 'min-h-screen w-full relative z-0 flex flex-col bg-transparent';
+      ? 'fixed inset-0 w-full h-[100dvh] overflow-hidden flex flex-col bg-transparent z-0'
+      : 'min-h-[100dvh] w-full relative z-0 flex flex-col bg-transparent';
 
   // Inner wrapper (below header)
   const innerClass = isDashboard || isChat
@@ -275,11 +276,11 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
       : 'flex-1 flex flex-col relative w-full';
 
   const mainClass = isDashboard || isChat
-    ? 'relative z-10 w-full flex-1 flex flex-col min-h-0 overflow-hidden'
+    ? 'relative z-10 w-full flex-1 flex flex-col min-h-0 overflow-hidden pb-[env(safe-area-inset-bottom)] md:pb-0'
     : isBounded
       // Scroll is fully contained here  no empty page-level void zones
-      ? `relative z-10 w-full flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain flex flex-col ${isCenteredPage ? 'items-center justify-center' : ''}`
-      : 'relative z-10 w-full flex-1 flex flex-col overscroll-none';
+      ? `relative z-10 w-full flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain flex flex-col pb-20 md:pb-0 ${isCenteredPage ? 'items-center justify-center' : ''}`
+      : 'relative z-10 w-full flex-1 flex flex-col overscroll-none pb-20 md:pb-0';
 
   const showInstitutionalHeader =
     !pathname.startsWith('/sign-up') &&
@@ -326,9 +327,6 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
               <main
                 className={mainClass}
                 style={isBounded ? {
-                  // Belt-and-suspenders scroll containment:
-                  // scrollbarWidth and overscroll are set inline as well so
-                  // no CSS cascade issue on any browser engine can break them.
                   height: '100%',
                   minHeight: '100%',
                   scrollbarWidth: 'thin',
@@ -339,6 +337,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
                 {displayContent}
               </main>
             </ZoomWrapper>
+            {!isLanding && !isPublicPath && <MobileNavBar />}
           </div>
 
         </div>
