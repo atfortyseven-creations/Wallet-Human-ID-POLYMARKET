@@ -263,10 +263,10 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
 
   // Root container
   const rootClass = isDashboard || isChat
-    ? 'fixed inset-0 w-full h-[100dvh] overflow-hidden flex flex-col bg-transparent z-0'
+    ? 'fixed inset-0 w-full overflow-hidden flex flex-col bg-transparent z-0'
     : isBounded
-      ? 'fixed inset-0 w-full h-[100dvh] overflow-hidden flex flex-col bg-transparent z-0'
-      : 'min-h-[100dvh] w-full relative z-0 flex flex-col bg-transparent';
+      ? 'fixed inset-0 w-full overflow-hidden flex flex-col bg-transparent z-0'
+      : 'min-h-screen w-full relative z-0 flex flex-col bg-transparent';
 
   // Inner wrapper (below header)
   const innerClass = isDashboard || isChat

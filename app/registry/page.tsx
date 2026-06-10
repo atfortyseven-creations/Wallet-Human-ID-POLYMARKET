@@ -615,7 +615,7 @@ function AztecAnalyticsTab({ isDark }: { isDark: boolean }) {
 export default function RegistryPage() {
   // ── UI State
   const [activeTab, setActiveTab] = useState<TabType>("map");
-  const [network, setNetwork] = useState<NetworkType>("mainnet");
+  const [network, setNetwork] = useState<NetworkType>("testnet");
   const [isDark, setIsDark] = useState(false);
   const [netDropOpen, setNetDropOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -1083,7 +1083,7 @@ export default function RegistryPage() {
                       network === "mainnet" ? "#10b981" : "#f59e0b",
                   }}
                 />
-                {network === "mainnet" ? "Mainnet" : "Testnet"}
+                {network === "mainnet" ? "Mainnet" : "Aztec Testnet"}
                 <ChevronDown
                   size={11}
                   className="transition-transform duration-150"
@@ -1106,7 +1106,7 @@ export default function RegistryPage() {
                       backgroundColor: isDark ? "#111118" : "#fff",
                     }}
                   >
-                    {(["mainnet", "testnet"] as NetworkType[]).map((n) => (
+                    {(["testnet"] as NetworkType[]).map((n) => (
                       <button
                         key={n}
                         onClick={() => {
@@ -1138,7 +1138,7 @@ export default function RegistryPage() {
                               n === "mainnet" ? "#10b981" : "#f59e0b",
                           }}
                         />
-                        {n === "mainnet" ? "Mainnet" : "Testnet"}
+                        {n === "mainnet" ? "Mainnet" : "Aztec Testnet"}
                         {network === n && (
                           <CheckCircle2
                             size={11}

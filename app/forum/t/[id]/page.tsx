@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { formatDistanceToNowStrict, format } from 'date-fns';
-import { BarChart2, PieChart, MessageSquare, Menu } from 'lucide-react';
+import { ChevronLeft, CheckCircle2 } from 'lucide-react';
 import { useSignMessage } from 'wagmi';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
 import { useWalletStore } from '@/lib/store/wallet-store';
@@ -23,10 +23,8 @@ export default function TopicPage() {
   const { address, isSystemHandshake, isLocalSystemWallet } = useSystemAccount();
   const sessionAddress = address?.toLowerCase() || null;
 
-  // Draft persistence key is scoped per topic so different threads have independent drafts
   const replyDraftKey = id ? `forum_draft_reply_${id}` : null;
 
-  // Restore reply draft on mount (after topic id is known)
   useEffect(() => {
     if (!replyDraftKey) return;
     try {
@@ -35,7 +33,6 @@ export default function TopicPage() {
     } catch {}
   }, [replyDraftKey]);
 
-  // Auto-save reply draft on every keystroke
   useEffect(() => {
     if (!replyDraftKey || !replyContent) return;
     try {
@@ -108,7 +105,6 @@ export default function TopicPage() {
         body: JSON.stringify({ topicId: id, content: finalContent }),
       });
       if (res.ok) {
-        // Clear reply draft after successful submit
         try { if (replyDraftKey) localStorage.removeItem(replyDraftKey); } catch {}
         setReplyContent('');
         fetchTopic();
@@ -125,7 +121,6 @@ export default function TopicPage() {
 
   const deleteTopic = async () => {
     setDeleteConfirmTarget(null);
-    
     let csrfToken = '';
     try {
         const csrfRes = await fetch('/api/auth/csrf', {
@@ -151,48 +146,55 @@ export default function TopicPage() {
       }
     });
     if (res.ok) router.push('/forum');
-    else setReplyError('COULD NOT TERMINATE TOPIC');
+    else setReplyError('COULD NOT DELETE TOPIC');
   };
 
   if (!topic) return (
-    <div className="py-20 text-center text-[13px] font-sans animate-pulse min-h-screen bg-[#FFFFFF] dark:bg-[#050505] text-black/60 dark:text-[#555] transition-colors duration-300">
-      Decrypting Institutional Mandate...
+    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-gray-400 min-h-[100dvh] bg-white flex items-center justify-center flex-col gap-4">
+      <div className="w-8 h-8 border-2 border-t-black border-r-black border-b-transparent border-l-transparent rounded-full animate-spin" />
+      Loading Topic...
     </div>
   );
 
   if (topic.error) return (
-    <div className="py-20 text-center text-[13px] font-sans text-red-500 min-h-screen bg-[#FFFFFF] dark:bg-[#050505] transition-colors duration-300">
-      Mandate / Profile not found or restricted.
+    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-red-500 min-h-[100dvh] bg-white flex items-center justify-center flex-col gap-4">
+      <div className="w-12 h-12 rounded-full border-2 border-red-500 flex items-center justify-center text-red-500">
+        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+      </div>
+      Topic not found or deleted.
     </div>
   );
 
   const isTopicAuthor = sessionAddress && topic.author?.walletAddress?.toLowerCase() === sessionAddress;
 
   return (
-    <div className="w-full min-h-[100dvh] bg-white text-slate-900 py-10 font-sans relative">
-      {/* Subtle top accent */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent pointer-events-none" />
+    <div className="w-full min-h-[100dvh] bg-white text-black py-10 font-sans selection:bg-black selection:text-white">
       
+      <div className="w-full max-w-[1440px] mx-auto px-6 lg:px-12 mb-8">
+        <Link href="/forum" className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-gray-500 hover:text-black transition-colors">
+          <ChevronLeft size={14} /> Back
+        </Link>
+      </div>
+
       <div className="w-full max-w-[1440px] mx-auto px-6 lg:px-12">
-      {/* Topic Header */}
-      <div className="mb-10 pb-6 border-b border-slate-200">
+      <div className="mb-10 pb-8 border-b-2 border-black">
         <div className="flex items-start justify-between gap-4">
-          <h1 className="text-[26px] md:text-[32px] font-bold leading-[1.2] tracking-tight mb-4 flex-1 text-slate-900 break-words">
+          <h1 className="text-[28px] md:text-[36px] font-black leading-[1.1] tracking-tighter mb-5 flex-1 text-black break-words">
             {topic.title}
           </h1>
           {isTopicAuthor && (
             <div className="flex gap-2">
               {deleteConfirmTarget === 'topic' ? (
                 <>
-                  <button onClick={deleteTopic} className="shrink-0 mt-1 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-lg transition-colors bg-red-500/20 text-red-500 border border-red-500/30 hover:bg-red-500/30">Confirm</button>
-                  <button onClick={() => setDeleteConfirmTarget(null)} className="shrink-0 mt-1 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-lg transition-colors bg-black/5 dark:bg-white/5 text-black/60 dark:text-[#888888] hover:text-black dark:hover:text-white border border-black/10 dark:border-white/10">Cancel</button>
+                  <button onClick={deleteTopic} className="shrink-0 mt-1 text-[10px] font-black uppercase tracking-widest px-4 py-2 border-2 border-red-500 text-red-500 hover:bg-red-50">Confirm</button>
+                  <button onClick={() => setDeleteConfirmTarget(null)} className="shrink-0 mt-1 text-[10px] font-black uppercase tracking-widest px-4 py-2 border-2 border-gray-300 text-gray-600 hover:border-black hover:text-black">Cancel</button>
                 </>
               ) : (
                 <button
                   onClick={() => setDeleteConfirmTarget('topic')}
-                  className="shrink-0 mt-1 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-lg transition-colors bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500/20"
+                  className="shrink-0 mt-1 text-[10px] font-black uppercase tracking-widest px-4 py-2 border border-gray-300 text-gray-500 hover:border-red-500 hover:text-red-500"
                 >
-                  Revoke Mandate
+                  Delete Topic
                 </button>
               )}
             </div>
@@ -200,57 +202,54 @@ export default function TopicPage() {
         </div>
         <div className="flex items-center gap-3 flex-wrap">
           {topic.category && (
-            <Link href={`/forum/c/${topic.category.slug}`} className="flex items-center gap-2 px-3 py-1 rounded-full transition-colors bg-slate-100 border border-slate-200 hover:border-[#0088cc]/30">
-              <div className="w-2.5 h-2.5 rounded-full shadow-[0_0_8px_currentColor]" style={{ backgroundColor: topic.category.color || '#00C076', color: topic.category.color || '#00C076' }} />
-              <span className="text-[11px] font-bold tracking-widest uppercase text-slate-700">{topic.category.name}</span>
+            <Link href={`/forum/c/${topic.category.slug}`} className="flex items-center gap-2 px-3 py-1.5 border border-black hover:bg-gray-50 transition-colors">
+              <span className="text-[10px] font-black tracking-[0.2em] uppercase text-black">{topic.category.name}</span>
             </Link>
           )}
           {topic.tags?.map((tag: any) => (
-            <span key={tag.id} className="text-[11px] font-bold uppercase tracking-widest text-black/60 dark:text-[#555555] bg-black/5 dark:bg-black px-2 py-0.5 rounded-md border border-black/10 dark:border-white/5 transition-colors">
+            <span key={tag.id} className="text-[10px] font-bold uppercase tracking-widest text-gray-600 bg-gray-100 px-2.5 py-1 border border-gray-200">
               {tag.name}
             </span>
           ))}
         </div>
       </div>
 
-      {/* Main Grid: Posts (Left 9 cols) + Timeline (Right 3 cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-[40px]">
         
-        <div className="lg:col-span-9 flex flex-col pt-4">
+        <div className="lg:col-span-9 flex flex-col pt-2">
           <PostRow entity={topic} type="topic" onLike={fetchTopic} index={1} sessionAddress={sessionAddress} onDeleted={() => router.push('/forum')} />
           {(topic.posts || []).map((post: any, i: number) => (
             <PostRow key={post.id} entity={post} type="post" onLike={fetchTopic} index={i + 2} sessionAddress={sessionAddress} onDeleted={fetchTopic} />
           ))}
 
-        {/* Reply composer */}
-          <div id="reply-composer" className="mt-12 flex gap-6">
-             <div className="w-[60px] shrink-0 hidden sm:block"></div>
+          <div id="reply-composer" className="mt-16 flex gap-6">
+             <div className="w-[64px] shrink-0 hidden sm:block"></div>
              <div className="flex-1">
-                <div className="rounded-xl overflow-hidden bg-black/5 border border-slate-200 focus-within:border-[#0088cc]/50 transition-colors shadow-sm">
+                <div className="bg-white border-2 border-black focus-within:ring-2 focus-within:ring-black focus-within:ring-offset-2 transition-all duration-300">
                   <textarea
                     value={replyContent}
                     onChange={e => setReplyContent(e.target.value)}
-                    placeholder="Write your reply..."
-                    className="w-full px-6 py-5 text-[14px] font-sans bg-transparent text-slate-900 focus:outline-none resize-none min-h-[140px] leading-relaxed placeholder:text-slate-400"
+                    placeholder="Write a reply..."
+                    className="w-full px-6 py-6 text-[15px] font-sans bg-transparent text-black focus:outline-none resize-none min-h-[160px] leading-relaxed placeholder:text-gray-400"
                   />
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 py-3 border-t border-slate-200 bg-slate-100 gap-3">
-                    <div className="flex items-center gap-3 flex-wrap">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-5 py-4 border-t border-gray-200 bg-gray-50 gap-3">
+                    <div className="flex items-center gap-4 flex-wrap">
                       <button
                         onClick={submitReply}
                         disabled={submitting || !replyContent.trim()}
-                        className="inline-flex items-center gap-2 text-[13px] font-bold px-5 py-2.5 rounded bg-[#0088cc] text-white hover:bg-[#0077b3] transition-colors disabled:opacity-40"
+                        className="inline-flex items-center gap-2 text-[12px] font-black uppercase tracking-widest px-6 py-3 bg-black text-white hover:bg-gray-800 transition-colors disabled:opacity-40"
                       >
-                        {submitting ? 'Posting...' : 'Reply'}
+                        {submitting ? 'Sending...' : 'Sign & Reply'}
                       </button>
                       {replyDraftSaved && (
-                        <span className="text-[11px] font-medium text-emerald-600 flex items-center gap-1">
-                          <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" /></svg>
-                          Draft saved
+                        <span className="text-[10px] font-mono uppercase tracking-widest text-green-600 flex items-center gap-1.5 font-bold">
+                          <CheckCircle2 size={12} />
+                          Draft Saved
                         </span>
                       )}
                     </div>
                     {replyError && (
-                      <span className="text-[12px] font-medium text-red-500">{replyError}</span>
+                      <span className="text-[11px] font-bold text-red-500 uppercase tracking-wider">{replyError}</span>
                     )}
                   </div>
                 </div>
@@ -258,35 +257,34 @@ export default function TopicPage() {
           </div>
         </div>
 
-        {/* Timeline Sidebar (Sticky) */}
         <div className="hidden lg:block lg:col-span-3">
-           <div className="sticky top-[80px] border-l border-slate-200 pl-6 py-2">
-              <div className="flex flex-col gap-5">
-                 <div className="flex flex-col gap-1">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Created</span>
-                    <span className="text-[13px] font-medium text-slate-900">
+           <div className="sticky top-[100px] border-l-2 border-black pl-8 py-2">
+              <div className="flex flex-col gap-6">
+                 <div className="flex flex-col gap-1.5">
+                    <span className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500">Created</span>
+                    <span className="text-[13px] font-bold text-black">
                        {topic.createdAt && !isNaN(new Date(topic.createdAt).getTime()) ? format(new Date(topic.createdAt), 'MMM d, yyyy') : 'Unknown'}
                     </span>
                  </div>
-                 <div className="flex flex-col gap-1">
-                    <span className="text-[9px] font-black uppercase tracking-[0.2em] text-black/60 dark:text-[#555] transition-colors">Latest Proposal</span>
-                    <span className="text-[13px] font-bold text-black dark:text-white transition-colors">
+                 <div className="flex flex-col gap-1.5">
+                    <span className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500">Last Activity</span>
+                    <span className="text-[13px] font-bold text-black">
                        {topic.updatedAt && !isNaN(new Date(topic.updatedAt).getTime()) ? formatDistanceToNowStrict(new Date(topic.updatedAt)) + ' ago' : 'Recently'}
                     </span>
                  </div>
-                 <div className="flex flex-col gap-1">
-                    <span className="text-[9px] font-black uppercase tracking-[0.2em] text-black/60 dark:text-[#555] transition-colors">Proposals</span>
-                    <span className="text-[13px] font-bold text-black dark:text-white transition-colors">{topic._count?.posts || 0}</span>
+                 <div className="flex flex-col gap-1.5">
+                    <span className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500">Replies</span>
+                    <span className="text-[20px] font-black text-black tabular-nums leading-none">{topic._count?.posts || 0}</span>
                  </div>
-                 <div className="flex flex-col gap-1">
-                    <span className="text-[9px] font-black uppercase tracking-[0.2em] text-black/60 dark:text-[#555] transition-colors">Institutional Views</span>
-                    <span className="text-[13px] font-bold text-black dark:text-white transition-colors">{topic.views || 0}</span>
+                 <div className="flex flex-col gap-1.5">
+                    <span className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500">Views</span>
+                    <span className="text-[20px] font-black text-black tabular-nums leading-none">{topic.views || 0}</span>
                  </div>
               </div>
-               <div className="mt-8 pt-6 border-t border-slate-200 flex gap-2">
+               <div className="mt-10 pt-8 border-t border-gray-200 flex flex-col gap-3">
                   <button 
                     onClick={() => document.getElementById('reply-composer')?.scrollIntoView({ behavior: 'smooth' })}
-                    className="flex-1 text-center py-2.5 rounded text-[13px] font-medium transition-colors bg-[#0088cc] text-white hover:bg-[#0077b3]"
+                    className="flex-1 text-center py-3.5 text-[11px] font-black uppercase tracking-[0.2em] transition-colors border-2 border-black hover:bg-black hover:text-white text-black"
                   >
                     Reply
                   </button>
@@ -297,9 +295,7 @@ export default function TopicPage() {
       </div>
       </div>
       
-      {/* Semantic spacer so the content is not hidden behind the fixed mobile bottom nav */}
-      <div className="lg:hidden w-full" style={{ height: 'calc(64px + env(safe-area-inset-bottom, 0px))' }} />
-
+      <div className="lg:hidden w-full h-[64px]" />
     </div>
   );
 }
@@ -311,7 +307,6 @@ function RenderContent({ content }: { content: string }) {
   let signature: string | null = null;
   let docs: { title: string, url: string }[] = [];
   
-  // Extract Secure Docs
   const docRegex = /\[SECURE_DOC:([^|]+)\|([^\]]+)\]/g;
   let docMatch;
   while ((docMatch = docRegex.exec(text)) !== null) {
@@ -319,14 +314,12 @@ function RenderContent({ content }: { content: string }) {
   }
   text = text.replace(docRegex, '').trim();
   
-  // Check for the new token format  hex signature OR session fallback OR legacy strings
   const tokenMatch = text.match(/\[SIGNATURE:([^\]]+)\]/i);
   if (tokenMatch) {
     signature = tokenMatch[1];
     text = text.replace(tokenMatch[0], '').trim();
   }
   
-  // Check for the old raw HTML format (legacy support)
   if (text.includes('<div style="margin-top: 12px;') && text.includes('Cryptographic Signature Verified')) {
     const htmlMatch = text.match(/word-break:\s*break-all;">(0x[a-fA-F0-9]+)<\/div>/i);
     if (htmlMatch) {
@@ -337,25 +330,19 @@ function RenderContent({ content }: { content: string }) {
 
   return (
     <>
-      <div className="whitespace-pre-wrap break-words font-serif text-[15px] leading-relaxed text-black/80 dark:text-[#D0D0D0] transition-colors">{text}</div>
+      <div className="whitespace-pre-wrap break-words text-[15px] leading-relaxed text-black font-sans">{text}</div>
       
       {docs.length > 0 && (
-          <div className="mt-8 flex flex-col gap-3">
-              <div className="flex items-center gap-2 mb-2">
-                  <span className="text-[#00C076]">
-                      <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                  </span>
-                  <span className="text-[10px] font-black tracking-[0.2em] uppercase text-black dark:text-white transition-colors">Cryptographic Legal Vault</span>
+          <div className="mt-8 flex flex-col gap-4">
+              <div className="flex items-center gap-2.5 mb-1">
+                  <span className="text-[10px] font-black tracking-[0.2em] uppercase text-black">Documents</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {docs.map((doc, i) => (
-                      <a key={i} href={doc.url} target="_blank" rel="noreferrer" className="flex items-center gap-4 p-4 rounded-xl bg-black/[0.02] dark:bg-white/[0.02] border border-black/10 dark:border-white/10 hover:border-[#00C076]/50 hover:bg-[#00C076]/10 hover:shadow-[0_0_20px_rgba(0,192,118,0.15)] transition-all group">
-                          <div className="w-10 h-10 rounded-lg bg-black/5 dark:bg-black/50 border border-black/10 dark:border-white/5 flex items-center justify-center text-black/60 dark:text-[#888888] group-hover:text-[#00C076] transition-colors">
-                              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                          </div>
+                      <a key={i} href={doc.url} target="_blank" rel="noreferrer" className="flex items-center gap-4 p-4 bg-gray-50 border border-gray-200 hover:border-black transition-colors group">
                           <div className="flex flex-col min-w-0">
-                              <span className="text-[13px] font-bold text-black dark:text-white truncate transition-colors">{doc.title}</span>
-                              <span className="text-[10px] text-black/60 dark:text-[#555] font-mono truncate transition-colors">{doc.url}</span>
+                              <span className="text-[13px] font-bold text-black truncate group-hover:underline">{doc.title}</span>
+                              <span className="text-[10px] text-gray-500 font-mono truncate">{doc.url}</span>
                           </div>
                       </a>
                   ))}
@@ -364,12 +351,12 @@ function RenderContent({ content }: { content: string }) {
       )}
 
       {signature && (
-        <div className="mt-8 p-4 rounded-xl bg-[#00C076]/5 border border-[#00C076]/20">
-          <span className="text-[10px] font-black text-[#00C076] tracking-[0.1em] uppercase flex items-center gap-1.5 mb-2">
-            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 
-            Signature Verified
+        <div className="mt-8 p-4 bg-green-50 border border-green-200">
+          <span className="text-[10px] font-black text-green-700 tracking-[0.2em] uppercase flex items-center gap-2 mb-2">
+            <CheckCircle2 size={12} className="text-green-600" />
+            Verified Signature
           </span>
-          <div className="font-mono text-[10px] break-all text-[#00C076]/60">
+          <div className="font-mono text-[11px] break-all text-green-800">
             {signature.startsWith('SESSION:') ? signature.replace('SESSION:', '') : signature}
           </div>
         </div>
@@ -475,13 +462,12 @@ function PostRow({
   const likeCount = entity.likes?.length || 0;
 
   return (
-    <div className="flex gap-6 py-6 border-b border-slate-100 transition-colors">
+    <div className="flex gap-6 py-8 border-b border-gray-200 transition-colors">
       
-      {/* Left Sidebar (Author) */}
-      <div className="w-[56px] shrink-0 hidden sm:flex flex-col items-center">
+      <div className="w-[64px] shrink-0 hidden sm:flex flex-col items-center">
         <Link href={`/forum/u/${addr}`}>
           <div
-            className="w-[40px] h-[40px] rounded-full flex items-center justify-center text-[13px] font-bold overflow-hidden bg-slate-200 text-slate-600 border border-slate-300 hover:border-slate-400 transition-colors"
+            className="w-[48px] h-[48px] rounded-full flex items-center justify-center text-[13px] font-black overflow-hidden bg-gray-100 text-black border border-gray-300 hover:border-black transition-colors"
           >
             {!imgError && entity.author?.avatarUrl
               ? <img 
@@ -496,53 +482,50 @@ function PostRow({
         </Link>
       </div>
 
-      {/* Right Content Area */}
       <div className="flex-1 min-w-0 flex flex-col">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-5">
             <div className="flex items-center gap-3">
-              <Link href={`/forum/u/${addr}`} className="text-[15px] font-medium hover:text-[#0088cc] transition-colors text-slate-900">
+              <Link href={`/forum/u/${addr}`} className="text-[16px] font-bold hover:underline text-black">
                 {label}
               </Link>
               {type === 'topic' && (
-                <span className="text-[9px] font-bold uppercase tracking-widest bg-slate-100 text-slate-600 px-2 py-0.5 rounded-sm border border-slate-200">OP</span>
+                <span className="text-[9px] font-black uppercase tracking-widest bg-black text-white px-2.5 py-1">OP</span>
               )}
             </div>
-            <div className="flex items-center gap-3">
-               <span className="text-[12px] text-slate-500">{time}</span>
-               <span className="text-[11px] text-slate-400">#{index}</span>
+            <div className="flex items-center gap-4">
+               <span className="text-[12px] font-mono text-gray-500 uppercase">{time}</span>
+               <span className="text-[11px] font-black text-black tracking-widest">#{index}</span>
             </div>
           </div>
 
-        <div className="mb-6 overflow-hidden">
+        <div className="mb-8 overflow-hidden">
           <RenderContent content={entity.content} />
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-wrap items-center gap-3 sm:gap-5 mt-auto border-t border-slate-100 pt-3 transition-colors">
+        <div className="flex flex-wrap items-center gap-4 sm:gap-6 mt-auto border-t border-gray-100 pt-4 transition-colors">
           <button
             onClick={handleLike}
-            className={`flex items-center gap-2 text-[13px] transition-colors ${liked ? 'text-red-500' : 'text-slate-400 hover:text-slate-700'}`}
+            className={`flex items-center gap-2.5 text-[13px] font-bold uppercase tracking-wider transition-colors ${liked ? 'text-black' : 'text-gray-400 hover:text-black'}`}
           >
             <svg className="w-4 h-4" fill={liked ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
             {likeCount > 0 && <span>{likeCount}</span>}
           </button>
           <button
             onClick={() => document.getElementById('reply-composer')?.scrollIntoView({ behavior: 'smooth' })}
-            className="flex items-center gap-2 text-[13px] transition-colors text-slate-400 hover:text-slate-700"
+            className="flex items-center gap-2.5 text-[13px] font-bold uppercase tracking-wider transition-colors text-gray-400 hover:text-black"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
             Reply
           </button>
 
-          {/* Delete button */}
           {isAuthor && (
-            <div className="ml-auto flex items-center gap-2">
+            <div className="ml-auto flex items-center gap-3">
               {confirmingDelete ? (
                 <>
-                  <button onClick={handleDelete} className="text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-md transition-colors bg-red-500/20 text-red-500 border border-red-500/30 hover:bg-red-500/30" disabled={deleting}>
+                  <button onClick={handleDelete} className="text-[10px] font-black uppercase tracking-[0.2em] px-4 py-2 border-2 border-red-500 text-red-500 hover:bg-red-50" disabled={deleting}>
                     Confirm
                   </button>
-                  <button onClick={() => setConfirmingDelete(false)} className="text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-md transition-colors bg-black/5 dark:bg-white/5 text-black/60 dark:text-[#888888] hover:text-black dark:hover:text-white border border-black/10 dark:border-white/10" disabled={deleting}>
+                  <button onClick={() => setConfirmingDelete(false)} className="text-[10px] font-black uppercase tracking-[0.2em] px-4 py-2 border-2 border-gray-300 text-gray-600 hover:border-black hover:text-black" disabled={deleting}>
                     Cancel
                   </button>
                 </>
@@ -550,10 +533,10 @@ function PostRow({
                 <button
                   onClick={() => setConfirmingDelete(true)}
                   disabled={deleting}
-                  className="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-md transition-colors bg-red-500/5 text-red-500/70 border border-red-500/10 hover:bg-red-500/10 hover:text-red-500"
+                  className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1.5 border border-gray-300 text-gray-500 hover:border-red-500 hover:text-red-500"
                 >
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                  {deleting ? '...' : 'Revoke'}
+                  {deleting ? '...' : 'Delete'}
                 </button>
               )}
             </div>
