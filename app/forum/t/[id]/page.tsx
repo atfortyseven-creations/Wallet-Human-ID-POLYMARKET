@@ -64,11 +64,14 @@ export default function TopicPage() {
           const { ethers } = await import('ethers');
           const wallet = new ethers.Wallet(storedPrivateKey);
           signature = await wallet.signMessage(finalContent);
-        } else if (isSystemHandshake || !isConnected) {
-          // QR mobile handshake or unauthenticated user: use session bypass
-          signature = 'SESSION:AUTHENTICATED';
         } else {
-          signature = await signMessageAsync({ message: finalContent });
+          const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+          if (isSystemHandshake || !isConnected || isMobile) {
+            // QR mobile handshake or unauthenticated user: use session bypass
+            signature = 'SESSION:AUTHENTICATED';
+          } else {
+            signature = await signMessageAsync({ message: finalContent });
+          }
         }
       } catch (err) {
         setReplyError('SIGNATURE REQUIRED. PLEASE APPROVE IN YOUR WALLET.');

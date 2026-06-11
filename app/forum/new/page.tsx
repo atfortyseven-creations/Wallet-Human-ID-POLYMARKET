@@ -97,11 +97,15 @@ function NewTopicContent() {
           const { ethers } = await import('ethers');
           const wallet = new ethers.Wallet(storedPrivateKey);
           finalSignature = await wallet.signMessage(messageToSign);
-        } else if (isSystemHandshake || !isConnected) {
-          // QR mobile handshake: use session bypass (no MetaMask available on mobile)
-          finalSignature = 'SESSION:AUTHENTICATED';
-        } else if (!isLocalSystemWallet) {
-          finalSignature = await signMessageAsync({ message: messageToSign });
+        } else {
+          const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+          if (isSystemHandshake || !isConnected || isMobile) {
+            // Mobile wallets drop signMessage connections constantly.
+            // Since the user is already authenticated via session, we use the fallback.
+            finalSignature = 'SESSION:AUTHENTICATED';
+          } else if (!isLocalSystemWallet) {
+            finalSignature = await signMessageAsync({ message: messageToSign });
+          }
         }
       } catch (err) {
         setError('Cryptographic signature denied by user.');

@@ -540,7 +540,8 @@ export function AztecIdentityCard() {
 
     try {
       let finalSignature = 'SESSION:AUTHENTICATED';
-      if (!isSystemHandshake && !isLocalSystemWallet) {
+      const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (!isSystemHandshake && !isLocalSystemWallet && !isMobile) {
          finalSignature = await signMessageAsync({
            message: `Generate Aztec Identity for ${evmAddress}\nClaim 10 QDs Genesis Airdrop\nNonce: ${Date.now()}`
          });
