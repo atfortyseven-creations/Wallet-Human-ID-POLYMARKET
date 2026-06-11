@@ -517,13 +517,12 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
     if (xmtpInitLock.current) return; // Already in progress
 
     const hasLocalWallet = isLocalSystemWallet && storePrivateKey;
+    const existingSeed = typeof localStorage !== 'undefined' ? localStorage.getItem(`whale_chat_seed_${address.toLowerCase()}`) : null;
+    const canSignLocally = hasLocalWallet || existingSeed;
 
-    if (isSystemHandshake && !connector && !hasLocalWallet) {
-      const existingSeed = typeof localStorage !== 'undefined' ? localStorage.getItem(`whale_chat_seed_${address.toLowerCase()}`) : null;
-      if (!existingSeed) {
-        setXmtpError('Chat requires signing. Please open Whale Chat on your Mobile App to sync your keys.');
-        return;
-      }
+    if (isSystemHandshake && !connector && !canSignLocally) {
+      setXmtpError('Chat requires signing. Please open Whale Chat on your Mobile App to sync your keys.');
+      return;
     }
 
     // Wait for walletClient (mobile deep-link returns often need a moment)
@@ -553,9 +552,9 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
         if (attempts > 0) await new Promise(resolve => setTimeout(resolve, 2000 * Math.pow(1.5, attempts)));
 
         let signer: any;
-        if (hasLocalWallet) {
-          // ── Path A: Local private-key wallet (no external signing needed) ──
-          const ethersWallet = new ethers.Wallet(storePrivateKey);
+        if (canSignLocally) {
+          // ── Path A: Local private-key wallet or Synced Mobile Seed (no external signing needed) ──
+          const ethersWallet = new ethers.Wallet(storePrivateKey || existingSeed!);
           signer = {
             getAddress: async () => address,
             signMessage: async (msg: string | Uint8Array) => {

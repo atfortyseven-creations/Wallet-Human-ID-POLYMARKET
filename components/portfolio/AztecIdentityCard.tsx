@@ -482,9 +482,9 @@ function HistoryPanel() {
 export function AztecIdentityCard() {
   const { balance, aztecAddress, isLoading, isBusy, connectIdentity, disconnectIdentity, refresh } = useAztecNative();
   const { address: wagmiAddress, isConnected: isWagmiConnected, connector } = useAccount();
-  const { address: systemAddress, isConnected: isSystemConnected, isSystemHandshake } = useSystemAccount();
+  const { address: systemAddress, isConnected: isSystemConnected, isSystemHandshake, isLocalSystemWallet } = useSystemAccount();
   
-  const isConnected = isWagmiConnected || isSystemHandshake;
+  const isConnected = isWagmiConnected || isSystemConnected;
   const evmAddress = wagmiAddress || systemAddress;
 
   const { signMessageAsync } = useSignMessage();
@@ -540,7 +540,7 @@ export function AztecIdentityCard() {
 
     try {
       let finalSignature = 'SESSION:AUTHENTICATED';
-      if (!isSystemHandshake || isSystemConnected) {
+      if (!isSystemHandshake && !isLocalSystemWallet) {
          finalSignature = await signMessageAsync({
            message: `Generate Aztec Identity for ${evmAddress}\nClaim 10 QDs Genesis Airdrop\nNonce: ${Date.now()}`
          });
