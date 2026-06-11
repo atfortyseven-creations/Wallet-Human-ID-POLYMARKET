@@ -627,7 +627,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                   }
 
                   if (isRpcError) {
-                    throw new Error('Tu wallet tardó en responder. Abre MetaMask, acepta la firma pendiente y pulsa Reintentar Conexión.');
+                    throw new Error('Timeout de WalletConnect. Pulsa "Reconectar Billetera" o vuelve a intentarlo manualmente.');
                   }
                   if (errMsg.includes('reject') || errMsg.includes('deny') || errMsg.includes('user denied')) {
                     throw sigErr; // propagate so outer catch handles it
@@ -761,14 +761,18 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
   // Auto-init on mount
   useEffect(() => {
     if (needsWalletReconnect) return;
-    initXmtpClient(false);
+    const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (!isMobile) {
+      initXmtpClient(false);
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConnected, address, isLocalSystemWallet, storePrivateKey, needsWalletReconnect]);
 
   // Key fix: watch walletClient  when it goes from null  available, auto-trigger init
   useEffect(() => {
     if (needsWalletReconnect) return;
-    if (walletClient && isConnected && !xmtpReady && !xmtpInitLock.current) {
+    const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (walletClient && isConnected && !xmtpReady && !xmtpInitLock.current && !isMobile) {
       initXmtpClient(false);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -795,7 +799,8 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
     const onVisibility = () => {
       if (document.visibilityState !== 'visible') return;
       if (needsWalletReconnect || !isConnected || xmtpReady) return;
-      if (walletClientRef.current && !xmtpInitLock.current) {
+      const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (walletClientRef.current && !xmtpInitLock.current && !isMobile) {
         initXmtpClient(false);
       }
     };

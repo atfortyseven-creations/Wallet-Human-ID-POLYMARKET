@@ -223,8 +223,7 @@ export default function ConnectPage() {
           if (data.encryptedPayload && data.iv && ephemeral && data.mobilePub) {
             try {
               const { deriveSharedSecret, decryptAESGCM } = await import('@/lib/web-crypto');
-              let isECDHFlag = false;
-              try { isECDHFlag = new URL(qrData).searchParams.get('ecdh') === '1'; } catch {}
+              const isECDHFlag = ephemeral.isECDH;
               const shared = await deriveSharedSecret(ephemeral.privateKey, data.mobilePub, isECDHFlag);
               const decrypted = await decryptAESGCM(shared, data.encryptedPayload, data.iv);
               try {
