@@ -451,15 +451,19 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
     setMessages([]);
   }, [address]);
 
-  // Open conversation from universal scan (wallet QR)
+  // Open conversation from universal scan (wallet QR) - Polling to guarantee instant "butter" feel
   useEffect(() => {
     if (!address || typeof sessionStorage === 'undefined') return;
-    const peer = sessionStorage.getItem('whale_scan_peer');
-    if (!peer || !/^0x[a-fA-F0-9]{40}$/.test(peer)) return;
-    sessionStorage.removeItem('whale_scan_peer');
-    const displayName = peer.slice(0, 6) + '...' + peer.slice(-4);
-    setActiveConv({ peerAddress: peer, displayName, folder: 'inbox', unread: 0 });
-    toast.success('Wallet scanned — chat opened');
+    const interval = setInterval(() => {
+      const peer = sessionStorage.getItem('whale_scan_peer');
+      if (peer && /^0x[a-fA-F0-9]{40}$/.test(peer)) {
+        sessionStorage.removeItem('whale_scan_peer');
+        const displayName = peer.slice(0, 6) + '...' + peer.slice(-4);
+        setActiveConv({ peerAddress: peer, displayName, folder: 'inbox', unread: 0 });
+        toast.success('Wallet scanned — chat opened');
+      }
+    }, 500);
+    return () => clearInterval(interval);
   }, [address]);
 
   // Save conversations on change
@@ -582,7 +586,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
 
               // ── Retry loop for Unknown RPC errors (WalletConnect v2 bug) ──
               let rpcAttempts = 0;
-              const maxRpcAttempts = 3;
+              const maxRpcAttempts = 4;
               while (rpcAttempts < maxRpcAttempts) {
                 try {
                   // Primary: Wagmi hook (Integrated with AppKit iOS deep-linking)
@@ -594,7 +598,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                       message: typeof msg === 'string' ? msg : { raw: msg } as any
                     });
                     // Post-signing reconnection grace period for mobile
-                    if (isMobile) await new Promise(r => setTimeout(r, 250));
+                    if (isMobile) await new Promise(r => setTimeout(r, 400));
                     return sig;
                   }
 
@@ -605,7 +609,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                       // No explicit account — WalletConnect uses its own session account
                       message: typeof msg === 'string' ? msg : { raw: msg as unknown as `0x${string}` },
                     });
-                    if (isMobile) await new Promise(r => setTimeout(r, 250));
+                    if (isMobile) await new Promise(r => setTimeout(r, 400));
                     return sig;
                   }
                 } catch (sigErr: any) {
@@ -617,10 +621,11 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                                      errMsg.includes('rpc error') || 
                                      errMsg.includes('internal error') ||
                                      errMsg.includes('socket') ||
-                                     errMsg.includes('timeout');
+                                     errMsg.includes('timeout') ||
+                                     errMsg.includes('request rejected'); // Sometime mobile wallets close the socket early
                                      
                   if (isRpcError && rpcAttempts < maxRpcAttempts) {
-                    const waitMs = rpcAttempts * 1200;
+                    const waitMs = rpcAttempts * 1500;
                     console.warn(`[XMTP] WalletConnect RPC error (attempt ${rpcAttempts}), retrying in ${waitMs}ms...`);
                     await new Promise(r => setTimeout(r, waitMs));
                     continue;
@@ -639,7 +644,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                 }
               }
               // Should not reach here
-              throw new Error('Firma fallida después de 3 intentos. Abre tu wallet manualmente y reintenta.');
+              throw new Error('Firma fallida después de 4 intentos. Abre tu wallet manualmente y reintenta.');
             },
           };
         }
@@ -760,19 +765,23 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
 
   // Auto-init on mount
   useEffect(() => {
-    if (needsWalletReconnect) return;
-    const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    if (!isMobile) {
-      initXmtpClient(false);
+    if (needsWalletReconnect) {
+      // EXCEPTION: If they have a synced seed from a QR handshake, they CAN init XMTP
+      // even if their wallet extension (wagmi) isn't connected to this browser.
+      const existingSeed = typeof localStorage !== 'undefined' && address ? localStorage.getItem(`whale_chat_seed_${address.toLowerCase()}`) : null;
+      if (!existingSeed) return;
     }
+    initXmtpClient(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConnected, address, isLocalSystemWallet, storePrivateKey, needsWalletReconnect]);
 
   // Key fix: watch walletClient  when it goes from null  available, auto-trigger init
   useEffect(() => {
-    if (needsWalletReconnect) return;
-    const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    if (walletClient && isConnected && !xmtpReady && !xmtpInitLock.current && !isMobile) {
+    if (needsWalletReconnect) {
+      const existingSeed = typeof localStorage !== 'undefined' && address ? localStorage.getItem(`whale_chat_seed_${address.toLowerCase()}`) : null;
+      if (!existingSeed) return;
+    }
+    if (walletClient && isConnected && !xmtpReady && !xmtpInitLock.current) {
       initXmtpClient(false);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -798,16 +807,19 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
   useEffect(() => {
     const onVisibility = () => {
       if (document.visibilityState !== 'visible') return;
-      if (needsWalletReconnect || !isConnected || xmtpReady) return;
-      const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      if (walletClientRef.current && !xmtpInitLock.current && !isMobile) {
+      if (!isConnected || xmtpReady) return;
+      if (needsWalletReconnect) {
+        const existingSeed = typeof localStorage !== 'undefined' && address ? localStorage.getItem(`whale_chat_seed_${address.toLowerCase()}`) : null;
+        if (!existingSeed) return;
+      }
+      if (!xmtpInitLock.current) {
         initXmtpClient(false);
       }
     };
     document.addEventListener('visibilitychange', onVisibility);
     return () => document.removeEventListener('visibilitychange', onVisibility);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isConnected, xmtpReady, needsWalletReconnect]);
+  }, [isConnected, xmtpReady, needsWalletReconnect, address]);
 
   // ── Consume Offline Messages ──
   useEffect(() => {
@@ -1320,7 +1332,9 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
   }
 
   if (needsWalletReconnect) {
-    return (
+    const existingSeed = typeof localStorage !== 'undefined' && address ? localStorage.getItem(`whale_chat_seed_${address.toLowerCase()}`) : null;
+    if (!existingSeed) {
+      return (
       <div className="flex flex-1 w-full h-full bg-white items-center justify-center p-6">
         <div className="max-w-sm w-full flex flex-col items-center gap-5 text-center">
           <p className="font-mono text-[11px] uppercase tracking-widest text-black/40 leading-relaxed">
@@ -1346,6 +1360,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
         </div>
       </div>
     );
+    }
   }
 
   //  Render 
