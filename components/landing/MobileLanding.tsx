@@ -493,7 +493,7 @@ function ConnectedScreen({
         onScan={async (result: string) => {
           onCloseScanner();
           
-          if (!result || !result.includes('uuid=')) {
+          if (!result || !(result.includes('uuid=') || result.includes('s='))) {
             const toast = document.createElement('div');
             toast.className = 'fixed top-6 left-4 right-4 z-[99999] bg-red-600 text-white text-[10px] border border-white/10 font-mono uppercase tracking-[0.3em] px-6 py-5 rounded-2xl shadow-2xl text-center';
             toast.textContent = 'Invalid Session QR Code';
