@@ -159,6 +159,11 @@ contract ProvenanceRegistry {
         supplier_hash: Field,
         metadata_hash: Field,
     ) {
+        // [QUANTUM SECURITY FORTIFICATION] Prevent null-data insertion attacks
+        assert(slug_hash != 0, "Invalid slug_hash: cannot be zero");
+        assert(batch_id_hash != 0, "Invalid batch_id_hash: cannot be zero");
+        assert(supplier_hash != 0, "Invalid supplier_hash: cannot be zero");
+
         let sender = context.msg_sender();
 
         // 1. Create and emit the private batch note into the sender's note set.
