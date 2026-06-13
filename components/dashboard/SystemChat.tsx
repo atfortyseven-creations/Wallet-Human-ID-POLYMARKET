@@ -587,35 +587,53 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
               const isMobile = typeof navigator !== 'undefined' &&
                 /iPad|iPhone|iPod|Android/.test(navigator.userAgent);
 
-              try {
-                // Primary: Wagmi hook (Integrated with AppKit iOS deep-linking)
-                if (signMessageAsync) {
-                  const sig = await signMessageAsync({
-                    message: typeof msg === 'string' ? msg : { raw: msg } as any
-                  });
-                  // Post-signing reconnection grace period for mobile
-                  if (isMobile) await new Promise(r => setTimeout(r, 400));
-                  return sig;
-                }
+              let rpcAttempts = 0;
+              const maxRpcAttempts = 3;
+              while (rpcAttempts < maxRpcAttempts) {
+                const startTime = Date.now();
+                try {
+                  // Primary: Wagmi hook (Integrated with AppKit iOS deep-linking)
+                  if (signMessageAsync) {
+                    const sig = await signMessageAsync({
+                      message: typeof msg === 'string' ? msg : { raw: msg } as any
+                    });
+                    // Post-signing reconnection grace period for mobile
+                    if (isMobile) await new Promise(r => setTimeout(r, 400));
+                    return sig;
+                  }
 
-                // Fallback: viem walletClient (if wagmi hook is unavailable)
-                const wc = walletClientRef.current;
-                if (wc?.signMessage) {
-                  const sig = await wc.signMessage({
-                    message: typeof msg === 'string' ? msg : { raw: msg as unknown as `0x${string}` },
-                  });
-                  if (isMobile) await new Promise(r => setTimeout(r, 400));
-                  return sig;
+                  // Fallback: viem walletClient (if wagmi hook is unavailable)
+                  const wc = walletClientRef.current;
+                  if (wc?.signMessage) {
+                    const sig = await wc.signMessage({
+                      message: typeof msg === 'string' ? msg : { raw: msg as unknown as `0x${string}` },
+                    });
+                    if (isMobile) await new Promise(r => setTimeout(r, 400));
+                    return sig;
+                  }
+                  throw new Error('Wallet connection missing');
+                } catch (sigErr: any) {
+                  const duration = Date.now() - startTime;
+                  rpcAttempts++;
+                  const errMsg = (sigErr?.message || '').toLowerCase();
+                  
+                  if (errMsg.includes('reject') || errMsg.includes('deny') || errMsg.includes('user denied')) {
+                    throw new Error('Firma rechazada. Pulsa el botón para reintentar.');
+                  }
+
+                  // If it failed instantly (e.g. dead socket), wait a bit and retry 
+                  // It doesn't spam the user because the deep-link popup never had time to open.
+                  if (duration < 1500 && rpcAttempts < maxRpcAttempts) {
+                    console.warn(`[XMTP] WalletConnect dead socket detected (${duration}ms), retrying...`);
+                    await new Promise(r => setTimeout(r, 1500));
+                    continue;
+                  }
+                  
+                  // Any true RPC timeout from Wagmi (user took too long)
+                  throw new Error('Timeout de WalletConnect. Pulsa "Reconectar Billetera" o vuelve a intentarlo.');
                 }
-                throw new Error('Wallet connection missing');
-              } catch (sigErr: any) {
-                const errMsg = (sigErr?.message || '').toLowerCase();
-                if (errMsg.includes('reject') || errMsg.includes('deny') || errMsg.includes('user denied')) {
-                  throw new Error('Firma rechazada. Pulsa el botón para reintentar.');
-                }
-                // Any RPC timeout or socket error from Wagmi
-                throw new Error('Timeout de WalletConnect. Pulsa "Reconectar Billetera" o vuelve a intentarlo.');
               }
+              throw new Error('Timeout de WalletConnect.');
             },
           };
         }
