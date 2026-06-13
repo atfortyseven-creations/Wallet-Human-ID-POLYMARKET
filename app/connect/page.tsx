@@ -39,7 +39,7 @@ function RealDeviceRouter() {
     // Exception: if a 'uuid' parameter is present, the user is linking a desktop
     // session from mobile — MUST stay on this page so MobileLanding handles the sync.
     const urlParams = new URLSearchParams(window.location.search);
-    const hasUuid = urlParams.has('uuid');
+    const hasUuid = urlParams.has('uuid') || urlParams.has('s');
 
     // Check __disconnected__ guard first — if active, never auto-redirect.
     let isGuarded = false;

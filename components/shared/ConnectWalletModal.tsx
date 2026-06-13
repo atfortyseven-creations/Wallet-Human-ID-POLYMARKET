@@ -180,7 +180,6 @@ export function ConnectWalletModal() {
                                                 { id: 'metamask', name: 'MetaMask', logo: '/wallets/metamask.svg', handler: handleMetaMask },
                                                 { id: 'coinbase', name: 'Coinbase', logo: '/wallets/coinbase.png', handler: handleCoinbase },
                                                 { id: 'rainbow', name: 'Rainbow', logo: '/wallets/rainbow.png', handler: handleRainbow },
-                                                { id: 'humanity', name: 'Humanity Ledger', logo: '/system-shots/connect/Gemini_Generated_Image_dzte5edzte5edzte (1).png', handler: handleHumanityLedger },
                                             ].map((w) => (
                                                 <button 
                                                     key={w.id}
