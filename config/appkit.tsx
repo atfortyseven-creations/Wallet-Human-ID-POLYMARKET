@@ -1,7 +1,7 @@
 "use client";
 
 import { CreateConnectorFn, WagmiProvider } from 'wagmi';
-import { AppKitNetwork, mainnet, base, arbitrum, polygon, optimism, bsc } from "@reown/appkit/networks";
+import { AppKitNetwork, mainnet, base, arbitrum, polygon, optimism, bsc, linea, avalanche, zksync } from "@reown/appkit/networks";
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
 import { cookieToInitialState, createStorage, cookieStorage } from 'wagmi';
 import { createAppKit } from '@reown/appkit/react';
@@ -67,6 +67,20 @@ const worldchain: AppKitNetwork = {
     }
 } as any;
 
+const dedicatedMonadMainnet: AppKitNetwork = {
+    id: 10143, // Placeholder ID for Monad
+    name: 'Monad Mainnet',
+    caipNetworkId: 'eip155:10143',
+    chainNamespace: 'eip155',
+    nativeCurrency: { name: 'Monad', symbol: 'MONAD', decimals: 18 },
+    rpcUrls: {
+        default: { http: ['https://rpc.monad.xyz'] }
+    },
+    blockExplorers: {
+        default: { name: 'Monad Explorer', url: 'https://explorer.monad.xyz' }
+    }
+} as any;
+
 const dedicatedPolygon = {
     ...polygon,
     rpcUrls: {
@@ -94,7 +108,7 @@ const dedicatedOptimism = {
     }
 };
 
-export const networks: [AppKitNetwork, ...AppKitNetwork[]] = [dedicatedMainnet, dedicatedBsc, dedicatedPolygon, dedicatedBase, dedicatedArbitrum, dedicatedOptimism, worldchain];
+export const networks: [AppKitNetwork, ...AppKitNetwork[]] = [dedicatedMainnet, dedicatedBsc, dedicatedPolygon, dedicatedBase, dedicatedArbitrum, dedicatedOptimism, worldchain, linea, avalanche, zksync, dedicatedMonadMainnet];
 
 export const wagmiAdapter = new WagmiAdapter({
     ssr: true,

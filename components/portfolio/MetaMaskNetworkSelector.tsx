@@ -18,7 +18,9 @@ export function MetaMaskNetworkSelector({ activeNetworkId, onNetworkChange }: { 
     
     const fallbackNames: Record<number, string> = {
         1: 'Ethereum', 56: 'BNB Smart Chain', 137: 'Polygon', 8453: 'Base',
-        42161: 'Arbitrum One', 10: 'OP Mainnet', 480: 'World Chain'
+        42161: 'Arbitrum One', 10: 'OP Mainnet', 480: 'World Chain',
+        59144: 'Linea', 43114: 'Avalanche Mainnet', 10143: 'Monad Mainnet', 324: 'zkSync Era',
+        999001: 'Bitcoin', 999002: 'Solana', 999003: 'Tron'
     };
     
     const currentNetwork = {
@@ -27,8 +29,8 @@ export function MetaMaskNetworkSelector({ activeNetworkId, onNetworkChange }: { 
         icon: getChainLogo(currentId)
     };
     
-    const popularNetworkIds = [1, 56, 137, 8453]; // Ethereum, BNB, Polygon, Base
-    const additionalNetworkIds = [42161, 10, 480]; // Arbitrum, Optimism, World Chain
+    const popularNetworkIds = [1, 56, 137, 8453, 999002]; // added Solana
+    const additionalNetworkIds = [42161, 10, 480, 59144, 43114, 10143, 324, 999001, 999003];
 
     const getNetworkInfo = (id: number) => {
         const wagmiChain = chains.find(c => c.id === id);
@@ -56,6 +58,11 @@ export function MetaMaskNetworkSelector({ activeNetworkId, onNetworkChange }: { 
     }, []);
 
     const handleSelect = (id: number) => {
+        if (id >= 999000) {
+            if (onNetworkChange) onNetworkChange(id);
+            setIsOpen(false);
+            return;
+        }
         if (switchChain) switchChain({ chainId: id });
         if (onNetworkChange) onNetworkChange(id);
         setIsOpen(false);

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -32,15 +32,27 @@ export default function ReceiveModal({ isOpen, onClose, address: propAddress, us
     const activeChain = chains.find(c => c.id === selectedChainId);
     
     // Completely Dynamic Token Resolution (Purged of Mock Data)
-    const tokens = useMemo(() => {
-        // 1. Resolve Native Currency Dynamically from Wagmi Chain Config
+        // 3. Custom Non-EVM Chains for the Dropdown Display
+        const extraChains = [
+            { id: 999001, name: 'Bitcoin', isCustom: true, nativeCurrency: { symbol: 'BTC', decimals: 8, name: 'Bitcoin' }, isNonEVM: true },
+            { id: 999002, name: 'Solana', isCustom: true, nativeCurrency: { symbol: 'SOL', decimals: 9, name: 'Solana' }, isNonEVM: true },
+            { id: 999003, name: 'Tron', isCustom: true, nativeCurrency: { symbol: 'TRX', decimals: 6, name: 'Tron' }, isNonEVM: true }
+        ];
+
+        // Ensure active chain is found even if it's a custom one
+        const currentActive = chains.find(c => c.id === selectedChainId) || extraChains.find(c => c.id === selectedChainId);
+
+        // 1. Resolve Native Currency Dynamically
         const nativeToken = {
-            symbol: activeChain?.nativeCurrency.symbol || 'ETH',
-            name: activeChain?.name || 'Native Token',
+            symbol: currentActive?.nativeCurrency?.symbol || 'ETH',
+            name: currentActive?.name || 'Native Token',
             address: 'native',
-            decimals: activeChain?.nativeCurrency.decimals || 18,
-            logoURI: activeChain?.nativeCurrency.symbol === 'MATIC' || activeChain?.nativeCurrency.symbol === 'POL' ? 'https://cryptologos.cc/logos/polygon-matic-logo.png' : 
-                     activeChain?.nativeCurrency.symbol === 'ETH' ? 'https://cryptologos.cc/logos/ethereum-eth-logo.png' : undefined,
+            decimals: currentActive?.nativeCurrency?.decimals || 18,
+            logoURI: currentActive?.nativeCurrency?.symbol === 'MATIC' || currentActive?.nativeCurrency?.symbol === 'POL' ? 'https://cryptologos.cc/logos/polygon-matic-logo.png' : 
+                     currentActive?.nativeCurrency?.symbol === 'ETH' ? 'https://cryptologos.cc/logos/ethereum-eth-logo.png' : 
+                     currentActive?.nativeCurrency?.symbol === 'BTC' ? 'https://cryptologos.cc/logos/bitcoin-btc-logo.png' :
+                     currentActive?.nativeCurrency?.symbol === 'SOL' ? 'https://cryptologos.cc/logos/solana-sol-logo.png' :
+                     currentActive?.nativeCurrency?.symbol === 'TRX' ? 'https://cryptologos.cc/logos/tron-trx-logo.png' : undefined,
             chainId: selectedChainId
         };
 
@@ -60,8 +72,11 @@ export default function ReceiveModal({ isOpen, onClose, address: propAddress, us
         const merged = [nativeToken, ...networkAssets];
         const uniqueTokens = Array.from(new Map(merged.map(item => [item.symbol, item])).values());
         
-        return uniqueTokens;
-    }, [selectedChainId, activeChain, userAssets]);
+        return { uniqueTokens, allChains: [...chains, ...extraChains] };
+    }, [selectedChainId, chains, userAssets]);
+
+    const { uniqueTokens: tokens, allChains } = resolvedData;
+    const activeChain = allChains.find(c => c.id === selectedChainId);
 
     const [currentAsset, setCurrentAsset] = useState<any>(tokens[0]);
 
@@ -81,18 +96,25 @@ export default function ReceiveModal({ isOpen, onClose, address: propAddress, us
         }
     };
 
-    const handleNetworkChange = (targetChainId: number) => {
+    const handleNetworkChange = (targetChain: any) => {
+        const isCustom = 'isCustom' in targetChain && targetChain.isCustom;
+        if (isCustom) {
+            setSelectedChainId(targetChain.id);
+            setShowNetworkDropdown(false);
+            return;
+        }
+
         if (typeof switchChain !== 'function') {
-            setSelectedChainId(targetChainId);
+            setSelectedChainId(targetChain.id);
             setShowNetworkDropdown(false);
             return;
         }
         
         setStatusData({ status: 'LOADING', message: 'Syncing with requested network RPC...' });
         try {
-            switchChain({ chainId: targetChainId }, {
+            switchChain({ chainId: targetChain.id }, {
                 onSuccess: () => {
-                    setSelectedChainId(targetChainId);
+                    setSelectedChainId(targetChain.id);
                     setStatusData({ status: 'SUCCESS', message: 'Network synchronized' });
                     setShowNetworkDropdown(false);
                     setTimeout(() => setStatusData({ status: 'IDLE', message: '' }), 1500);
@@ -149,9 +171,9 @@ export default function ReceiveModal({ isOpen, onClose, address: propAddress, us
                                     </button>
 
                                     {showNetworkDropdown && (
-                                        <div className="absolute top-[110%] left-0 right-0 bg-white border border-black/10 rounded-2xl shadow-2xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
-                                            {chains.map((chain) => (
-                                                <button key={chain.id} onClick={() => handleNetworkChange(chain.id)} className={`w-full text-left px-4 py-4 font-black text-[11px] uppercase tracking-widest hover:bg-black/5 transition-colors flex items-center justify-between ${selectedChainId === chain.id ? 'text-black bg-black/5' : 'text-black/50'}`}>
+                                        <div className="absolute top-[110%] left-0 right-0 bg-white border border-black/10 rounded-2xl shadow-2xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200 max-h-[300px] overflow-y-auto">
+                                            {allChains.map((chain) => (
+                                                <button key={chain.id} onClick={() => handleNetworkChange(chain)} className={`w-full text-left px-4 py-4 font-black text-[11px] uppercase tracking-widest hover:bg-black/5 transition-colors flex items-center justify-between ${selectedChainId === chain.id ? 'text-black bg-black/5' : 'text-black/50'}`}>
                                                     {chain.name}
                                                     {selectedChainId === chain.id && <Check className="w-4 h-4" />}
                                                 </button>
@@ -168,11 +190,17 @@ export default function ReceiveModal({ isOpen, onClose, address: propAddress, us
                                             <div className="w-[180px] h-[180px] bg-black/5 animate-pulse rounded-2xl" />
                                         )}
                                     </div>
-                                    <div className="mt-6 text-center z-10">
-                                         <div className="text-black/40 text-[10px] font-black uppercase tracking-widest mb-3">Scan to resolve on-chain address</div>
-                                         <div className="font-mono text-black font-black text-xs bg-[#FFFFFF] px-5 py-3 rounded-2xl border border-black/10 shadow-sm flex items-center gap-3 cursor-pointer hover:bg-black hover:text-white transition-all group/btn" onClick={handleCopy}>
+                                    <div className="mt-6 text-center z-10 w-full px-4">
+                                         <div className="text-black/40 text-[10px] font-black uppercase tracking-widest mb-1">{activeChain?.name}</div>
+                                         <div className="text-black font-black text-sm mb-4">That's your address of {activeChain?.name}</div>
+                                         <div className="font-mono text-black font-black text-xs bg-[#FFFFFF] px-5 py-3 rounded-2xl border border-black/10 shadow-sm flex items-center gap-3 cursor-pointer hover:bg-black hover:text-white transition-all group/btn mx-auto w-fit" onClick={handleCopy}>
                                             {address ? `${address.slice(0, 8)}...${address.slice(-6)}` : "..."}
                                             {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4 text-black/30 group-hover/btn:text-white/60 transition-colors" />}
+                                         </div>
+                                         <div className="mt-4 p-3 bg-black/5 rounded-xl border border-black/10">
+                                             <p className="text-[10px] text-black/60 font-black tracking-widest uppercase leading-relaxed">
+                                                 use this QR to receive your assets on {activeChain?.name}
+                                             </p>
                                          </div>
                                     </div>
                                 </div>

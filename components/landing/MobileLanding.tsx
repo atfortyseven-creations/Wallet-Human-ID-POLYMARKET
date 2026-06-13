@@ -756,6 +756,7 @@ export function MobileLanding() {
       const verifyRes = await fetch('/api/auth/system-verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ address: norm, message, signature })
       });
 
