@@ -66,7 +66,13 @@ export default function MessageEngine({
       {(() => {
         let lastDate = '';
         return messages
-          .filter(msg => !(typeof msg.content === 'string' && msg.content.includes('initiatedByInboxId')))
+          .filter(msg => {
+            if (typeof msg.content === 'string') {
+              if (msg.content.includes('initiatedByInboxId')) return false;
+              if (msg.content.startsWith('synced ') && msg.content.includes('from cursor Some')) return false;
+            }
+            return true;
+          })
           .map((msg, index) => {
             const dateStr = formatDate(msg.sentAt);
             const showDate = dateStr !== lastDate;

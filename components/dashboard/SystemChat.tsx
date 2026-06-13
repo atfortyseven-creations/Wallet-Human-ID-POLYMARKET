@@ -213,7 +213,18 @@ function saveConversations(selfAddress: string, convs: Conversation[]) {
 //  XMTP message  RenderableMessage 
 
 function xmtpToRenderable(msg: any, selfInboxId: string): RenderableMessage {
-  const content = typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content);
+  // Safely extract content — may be a string, object, or null in v5.3.0
+  let rawContent = msg.content;
+  let content: string;
+  if (typeof rawContent === 'string') {
+    content = rawContent;
+  } else if (rawContent != null) {
+    // Codec-decoded objects (e.g. GroupUpdated) arrive as objects — stringify them
+    // but mark as internal so they get filtered out by the UI guards below
+    content = JSON.stringify(rawContent);
+  } else {
+    content = msg.fallback || 'Encrypted Data';
+  }
   const sentAt = msg.sentAtNs ? Number(nsToDate(msg.sentAtNs)) : Date.now();
   const isMine = msg.senderInboxId === selfInboxId;
   return {
@@ -811,8 +822,30 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [xmtpInitializing, xmtpReady, isSystemHandshake, connector, isLocalSystemWallet, storePrivateKey]);
 
-  // ── Removed visibilitychange auto-retry to prevent desktop infinite loops ──
-  // (This was causing "This site is trying to open another app" bombardment)
+  // ── Mobile-ONLY visibilitychange re-init ──────────────────────────────────
+  // When a user returns from the wallet app (iOS/Android) after approving the
+  // XMTP signature, the page becomes visible again. We trigger a re-init ONLY
+  // on mobile to recover from the app-switch state. On desktop this is a no-op
+  // to prevent the deep-link bombardment that plagued earlier versions.
+  useEffect(() => {
+    const isMobile = typeof navigator !== 'undefined' &&
+      /iPad|iPhone|iPod|Android/.test(navigator.userAgent);
+    if (!isMobile) return; // Desktop: never auto-trigger from visibility
+
+    const handler = () => {
+      if (document.visibilityState === 'visible') {
+        // Only retry if XMTP is NOT ready and we are not already initializing
+        if (!xmtpReady && !xmtpInitLock.current && xmtpInitializing) {
+          console.log('[SystemChat] Mobile returned from wallet app — retrying XMTP init');
+          xmtpInitLock.current = false;
+          initXmtpClient(true);
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handler);
+    return () => document.removeEventListener('visibilitychange', handler);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [xmtpReady, xmtpInitializing]);
 
   // ── Consume Offline Messages ──
   useEffect(() => {
@@ -908,8 +941,11 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
             retryDelay = 2000;
             
             const rendered = xmtpToRenderable(msg, selfInboxId);
-            if (typeof rendered.content === 'string' && rendered.content.includes('initiatedByInboxId')) {
-               continue;
+            // Filter all internal XMTP protocol messages from the live stream
+            if (typeof rendered.content === 'string') {
+              if (rendered.content.includes('initiatedByInboxId')) continue;
+              if (rendered.content.startsWith('synced ') && rendered.content.includes('from cursor Some')) continue;
+              if (rendered.content.startsWith('{"initiatedByInboxId')) continue;
             }
             const hydratedList = hydrateMessages([rendered]);
             if (hydratedList.length === 0) continue;
@@ -1014,7 +1050,13 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
         if (cancelled) return;
         const rendered = raw
           .map((m: any) => xmtpToRenderable(m, selfInboxId))
-          .filter((m: any) => !(typeof m.content === 'string' && m.content.includes('initiatedByInboxId')))
+          .filter((m: any) => {
+             if (typeof m.content === 'string') {
+                 if (m.content.includes('initiatedByInboxId')) return false;
+                 if (m.content.startsWith('synced ') && m.content.includes('from cursor Some')) return false;
+             }
+             return true;
+          })
         const hydrated = hydrateMessages(rendered);
         
         setMessages(prev => {
@@ -1503,7 +1545,8 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
               onChange={e => setNewPeer(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && startConversation()}
               placeholder="0x address"
-              className="flex-1 min-w-0 bg-black/[0.03] border border-black/10 rounded-xl px-3 py-2.5 text-[12px] font-mono text-black placeholder:text-black/25 focus:outline-none focus:border-black/30 transition-colors"
+              style={{ fontSize: '16px', touchAction: 'manipulation' }}
+              className="flex-1 min-w-0 bg-black/[0.03] border border-black/10 rounded-xl px-3 py-2.5 font-mono text-black placeholder:text-black/25 focus:outline-none focus:border-black/30 transition-colors"
             />
             <button
               onClick={() => setShowScanner(true)}

@@ -101,7 +101,10 @@ export default function ChatInput({
   };
 
   const handleKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
+    // On mobile, Enter key should NOT auto-submit (soft keyboard fires Enter differently)
+    // Only submit on desktop (Shift+Enter always adds newline)
+    const isMobile = typeof navigator !== 'undefined' && /iPad|iPhone|iPod|Android/.test(navigator.userAgent);
+    if (e.key === 'Enter' && !e.shiftKey && !isMobile) { e.preventDefault(); handleSend(); }
   };
 
   const triggerLocationSend = (durationMs: number) => {
@@ -414,7 +417,8 @@ export default function ChatInput({
               disabled={disabled}
               placeholder={disabled ? 'Connection unavailable' : 'Encrypted message'}
               rows={1}
-              className="w-full bg-transparent px-4 py-[14px] text-[15px] font-mono text-black resize-none focus:outline-none placeholder:text-black/30 transition-colors pr-[15px] leading-relaxed disabled:opacity-40"
+              style={{ fontSize: '16px', touchAction: 'manipulation' }}
+              className="w-full bg-transparent px-4 py-[14px] font-mono text-black resize-none focus:outline-none placeholder:text-black/30 transition-colors pr-[15px] leading-relaxed disabled:opacity-40"
             />
           </div>
 
