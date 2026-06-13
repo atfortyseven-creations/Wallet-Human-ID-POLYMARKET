@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { generateAztecTxHash, getAztecChainState, buildAztecMetadata } from '@/lib/aztec/realTx';
+import { logProvenanceEvent } from '@/lib/aztec/provenanceIndexer';
 
 export const dynamic = 'force-dynamic';
 
@@ -57,6 +58,13 @@ export async function POST(req: Request) {
           note:           `Product passport anchor: ${passportSlug}`,
         }),
       },
+    });
+
+    // [ATOMIC INDEXING]
+    await logProvenanceEvent('STUDIO_ACCESS', normalizedCreator, {
+        action: 'ANCHOR_PASSPORT',
+        passportSlug,
+        metadata
     });
 
     console.log(`[Aztec Anchor] ✅ Anchored "${passportSlug}" — hash: ${txHash}`);

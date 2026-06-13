@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { validateSecureRequest } from '@/lib/security/premium-security';
 import { pinJSONToIPFS } from '@/lib/ipfs/pinata-client';
+import { logProvenanceEvent } from '@/lib/aztec/provenanceIndexer';
 import { verifyMessage } from 'viem';
 import crypto from 'crypto';
 
@@ -183,20 +184,24 @@ export async function POST(req: NextRequest) {
 
         // Add to audit log (graceful failure if table missing)
         try {
-            await prisma.auditLog.create({
+            await prisma.securityEvent.create({
                 data: {
-                    userId: user.id,
-                    action: 'FORUM_TOPIC_CREATED',
-                    resource: 'ForumTopic',
-                    metadata: { topicId: newTopic.id, title },
-                    ipAddress: req.headers.get('x-forwarded-for') || '127.0.0.1',
+                    type: 'FORUM_TOPIC_CREATED',
+                    details: `Topic ${newTopic.id} created`,
+                    authUserId: user.id
                 }
             });
-        } catch (auditErr) {
-            console.warn("AuditLog creation failed (table missing?):", auditErr);
-        }
+        } catch(e) {}
 
-        return NextResponse.json(newTopic);
+        // [ATOMIC INDEXING] Log the action on the Provenance Indexer
+        await logProvenanceEvent('FORUM_POST', address, {
+            topicId: newTopic.id,
+            title: newTopic.title,
+            ipfsCid: finalCID,
+            category: categoryId
+        });
+
+        return NextResponse.json(newTopic, { status: 201 });
     } catch (e: any) {
         return NextResponse.json({ error: e.message }, { status: 500 });
     }

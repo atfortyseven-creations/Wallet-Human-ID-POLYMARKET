@@ -232,7 +232,7 @@ interface ZkEntry {
   l1Explorer: string;
 }
 
-type TabType = "map" | "wallets" | "block-roots" | "circuit-roots" | "overview" | "aztec-analytics";
+type TabType = "map" | "wallets" | "block-roots" | "circuit-roots" | "overview" | "aztec-analytics" | "humanidfi-activity";
 type NetworkType = "mainnet" | "testnet";
 
 const PER_PAGE = 30;
@@ -610,6 +610,265 @@ function AztecAnalyticsTab({ isDark }: { isDark: boolean }) {
   );
 }
 
+// ─── HumanIDFi Real Activity Tab ──────────────────────────────────────────────
+
+const EVENT_TYPE_META: Record<string, { label: string; color: string; icon: string }> = {
+  MINT_IDENTITY:  { label: "Identity Minted",     color: "#10b981", icon: "⬡" },
+  IDENTITY_PROOF: { label: "Identity Proof",      color: "#6366f1", icon: "🔐" },
+  FORUM_POST:     { label: "Forum Post / Reply",  color: "#f59e0b", icon: "📝" },
+  WHALE_CHAT_SYNC:{ label: "Whale Chat Activated",color: "#3b82f6", icon: "💬" },
+  PORTFOLIO_ACCESS:{ label: "Portfolio Accessed", color: "#8b5cf6", icon: "📊" },
+  STUDIO_ACCESS:  { label: "Studio Provenance",   color: "#ec4899", icon: "🎨" },
+  ANCHOR:         { label: "Passport Anchored",   color: "#14b8a6", icon: "⚓" },
+  SEND:           { label: "QDs Transfer",         color: "#f97316", icon: "→"  },
+  RECEIVE:        { label: "QDs Received",         color: "#22c55e", icon: "←"  },
+  REBALANCE:      { label: "Rebalance",            color: "#64748b", icon: "⇄"  },
+};
+
+interface ActivityTx {
+  id: string;
+  txHash: string;
+  type: string;
+  status: string;
+  amount: number;
+  token: string;
+  fromAddress: string;
+  toAddress: string;
+  timestamp: string;
+  chainId: number;
+  blockNumber: string;
+  explorerUrl: string;
+  provenance: boolean;
+  fingerprint: string | null;
+  actionDetails: any;
+}
+
+function HumanIDFiActivityTab({ isDark }: { isDark: boolean }) {
+  const [txs, setTxs] = useState<ActivityTx[]>([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [typeFilter, setTypeFilter] = useState<string>("");
+  const [expanded, setExpanded] = useState<string | null>(null);
+
+  const bg = isDark ? "#09090f" : "#ffffff";
+  const cardBg = isDark ? "#0f0f1a" : "#f8f8fa";
+  const border = `1px solid ${isDark ? "#1e1e2e" : "#e5e5ea"}`;
+  const textClr = isDark ? "#ffffff" : "#0a0a0a";
+  const labelClr = isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)";
+  const divClr = `1px solid ${isDark ? "#1e1e2e" : "#f0f0f2"}`;
+
+  const fetchActivity = async (p = 1, t = "") => {
+    setLoading(true);
+    setError(null);
+    try {
+      const params = new URLSearchParams({ page: String(p), limit: "50" });
+      if (t) params.set("type", t);
+      const res = await fetch(`/api/humanidfi/activity?${params}`);
+      if (!res.ok) throw new Error(`API error ${res.status}`);
+      const data = await res.json();
+      setTxs(data.transactions ?? []);
+      setTotal(data.total ?? 0);
+      setTotalPages(data.totalPages ?? 1);
+      setPage(p);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchActivity(1, typeFilter); }, [typeFilter]);
+
+  const meta = (type: string) => EVENT_TYPE_META[type] ?? { label: type, color: "#888", icon: "·" };
+
+  return (
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="rounded-2xl p-5 flex items-center justify-between gap-4 flex-wrap" style={{ border, backgroundColor: cardBg }}>
+        <div>
+          <div className="text-[9px] font-black uppercase tracking-[0.2em] mb-1" style={{ color: labelClr }}>
+            Live Activity Feed
+          </div>
+          <div className="text-[20px] font-black tracking-tight" style={{ color: textClr }}>
+            HumanIDFi Real Transactions
+          </div>
+          <div className="text-[11px] mt-1" style={{ color: labelClr }}>
+            {loading ? "Loading…" : `${total.toLocaleString()} events indexed from humanidfi.com`}
+          </div>
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          <select
+            value={typeFilter}
+            onChange={e => setTypeFilter(e.target.value)}
+            className="text-[11px] font-bold rounded-xl px-3 py-2 border outline-none"
+            style={{ backgroundColor: bg, color: textClr, borderColor: isDark ? "#1e1e2e" : "#e5e5ea" }}
+          >
+            <option value="">All Types</option>
+            {Object.entries(EVENT_TYPE_META).map(([k, v]) => (
+              <option key={k} value={k}>{v.icon} {v.label}</option>
+            ))}
+          </select>
+          <button
+            onClick={() => fetchActivity(page, typeFilter)}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-bold transition-all hover:opacity-70"
+            style={{ border, color: textClr }}
+          >
+            <RefreshCw size={12} /> Refresh
+          </button>
+        </div>
+      </div>
+
+      {/* Table */}
+      {error ? (
+        <div className="rounded-2xl p-8 text-center text-[12px]" style={{ border, backgroundColor: cardBg, color: "#ef4444" }}>
+          Error loading activity: {error}
+        </div>
+      ) : loading ? (
+        <div className="rounded-2xl p-12 text-center" style={{ border, backgroundColor: cardBg }}>
+          <div className="text-[10px] font-black uppercase tracking-[0.25em] animate-pulse" style={{ color: labelClr }}>
+            Indexing Activity…
+          </div>
+        </div>
+      ) : txs.length === 0 ? (
+        <div className="rounded-2xl p-12 text-center" style={{ border, backgroundColor: cardBg }}>
+          <div className="text-[10px] font-black uppercase tracking-[0.25em]" style={{ color: labelClr }}>
+            No activity recorded yet. Actions on humanidfi.com will appear here in real time.
+          </div>
+        </div>
+      ) : (
+        <div className="rounded-2xl overflow-hidden" style={{ border, backgroundColor: cardBg }}>
+          {/* Column Headers */}
+          <div className="grid grid-cols-[60px_1fr_120px_140px_120px_80px] px-4 py-3 text-[9px] font-black uppercase tracking-[0.15em]" style={{ borderBottom: divClr, color: labelClr }}>
+            <span>Type</span>
+            <span>Transaction Hash</span>
+            <span>From</span>
+            <span>Amount</span>
+            <span>When</span>
+            <span>Status</span>
+          </div>
+          {txs.map(tx => {
+            const m = meta(tx.type);
+            const isOpen = expanded === tx.id;
+            return (
+              <div key={tx.id} style={{ borderBottom: divClr }}>
+                {/* Row */}
+                <div
+                  className="grid grid-cols-[60px_1fr_120px_140px_120px_80px] px-4 py-3 items-center cursor-pointer hover:opacity-80 transition-opacity"
+                  onClick={() => setExpanded(isOpen ? null : tx.id)}
+                >
+                  {/* Type badge */}
+                  <span
+                    className="text-[10px] font-black px-2 py-0.5 rounded-lg w-fit"
+                    style={{ backgroundColor: m.color + "22", color: m.color }}
+                  >
+                    {m.icon}
+                  </span>
+                  {/* Hash */}
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-[11px] font-bold" style={{ color: textClr }}>
+                      {truncate(tx.txHash, 10, 8)}
+                    </span>
+                    <button
+                      onClick={e => { e.stopPropagation(); copyToClipboard(tx.txHash, "Hash"); }}
+                      className="opacity-40 hover:opacity-100 transition-opacity"
+                    >
+                      <Copy size={10} />
+                    </button>
+                    {tx.explorerUrl && (
+                      <a href={tx.explorerUrl} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="opacity-40 hover:opacity-100 transition-opacity">
+                        <ExternalLink size={10} />
+                      </a>
+                    )}
+                  </div>
+                  {/* From */}
+                  <span className="font-mono text-[10px]" style={{ color: labelClr }}>
+                    {truncate(tx.fromAddress, 6, 4)}
+                  </span>
+                  {/* Amount */}
+                  <span className="text-[11px] font-bold" style={{ color: tx.amount > 0 ? m.color : labelClr }}>
+                    {tx.amount > 0 ? `${tx.amount.toLocaleString()} ${tx.token}` : "–"}
+                  </span>
+                  {/* When */}
+                  <span className="text-[10px]" style={{ color: labelClr }}>
+                    {timeAgo(tx.timestamp)}
+                  </span>
+                  {/* Status */}
+                  <span
+                    className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full w-fit"
+                    style={{
+                      backgroundColor: tx.status === "SUCCESS" || tx.status === "COMPLETED" ? "#10b98122" : "#f5940022",
+                      color: tx.status === "SUCCESS" || tx.status === "COMPLETED" ? "#10b981" : "#f59400",
+                    }}
+                  >
+                    {tx.status}
+                  </span>
+                </div>
+                {/* Expanded detail */}
+                {isOpen && (
+                  <div className="px-6 pb-4 pt-1 text-[11px] space-y-1" style={{ borderTop: divClr }}>
+                    <div className="font-black uppercase tracking-wider text-[9px] mb-2" style={{ color: labelClr }}>Event Detail — {m.label}</div>
+                    <div className="flex gap-2"><span style={{ color: labelClr }}>Full Hash:</span><span className="font-mono break-all" style={{ color: textClr }}>{tx.txHash}</span></div>
+                    <div className="flex gap-2"><span style={{ color: labelClr }}>From:</span><span className="font-mono" style={{ color: textClr }}>{tx.fromAddress}</span></div>
+                    <div className="flex gap-2"><span style={{ color: labelClr }}>To:</span><span className="font-mono" style={{ color: textClr }}>{tx.toAddress}</span></div>
+                    <div className="flex gap-2"><span style={{ color: labelClr }}>Block:</span><span className="font-mono" style={{ color: textClr }}>{tx.blockNumber}</span></div>
+                    <div className="flex gap-2"><span style={{ color: labelClr }}>Time:</span><span style={{ color: textClr }}>{new Date(tx.timestamp).toUTCString()}</span></div>
+                    {tx.fingerprint && <div className="flex gap-2"><span style={{ color: labelClr }}>Fingerprint:</span><span className="font-mono break-all text-[10px]" style={{ color: textClr }}>{tx.fingerprint}</span></div>}
+                    {tx.actionDetails && (
+                      <div>
+                        <span style={{ color: labelClr }}>Action Details:</span>
+                        <pre className="mt-1 text-[9px] p-2 rounded-lg overflow-auto" style={{ backgroundColor: isDark ? "#07070f" : "#f0f0f4", color: textClr }}>
+                          {JSON.stringify(tx.actionDetails, null, 2)}
+                        </pre>
+                      </div>
+                    )}
+                    <a
+                      href={tx.explorerUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[10px] font-bold mt-1 hover:opacity-70 transition-opacity"
+                      style={{ color: m.color }}
+                    >
+                      <ExternalLink size={10} /> View on Explorer
+                    </a>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-3 pt-2">
+          <button
+            disabled={page <= 1}
+            onClick={() => fetchActivity(page - 1, typeFilter)}
+            className="flex items-center gap-1 px-3 py-2 rounded-xl text-[11px] font-bold disabled:opacity-30 transition-all hover:opacity-70"
+            style={{ border, color: textClr }}
+          >
+            <ChevronLeft size={12} /> Prev
+          </button>
+          <span className="text-[11px] font-bold" style={{ color: labelClr }}>
+            Page {page} of {totalPages}
+          </span>
+          <button
+            disabled={page >= totalPages}
+            onClick={() => fetchActivity(page + 1, typeFilter)}
+            className="flex items-center gap-1 px-3 py-2 rounded-xl text-[11px] font-bold disabled:opacity-30 transition-all hover:opacity-70"
+            style={{ border, color: textClr }}
+          >
+            Next <ChevronRight size={12} />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Main Component ────────────────────────────────────────────────────────────
 
 export default function RegistryPage() {
@@ -974,6 +1233,7 @@ export default function RegistryPage() {
 
   const TABS: { id: TabType; label: string }[] = [
     { id: "map", label: "Network Map"},
+    { id: "humanidfi-activity", label: "⬡ HumanIDFi Activity"},
     { id: "wallets", label: "Wallets"},
     { id: "block-roots", label: "Block Roots"},
     { id: "circuit-roots", label: "Circuit Roots"},
@@ -2571,6 +2831,20 @@ export default function RegistryPage() {
               transition={{ duration: 0.18 }}
             >
               <AztecAnalyticsTab isDark={isDark} />
+            </motion.div>
+          )}
+          {/* ══════════════════════════════════════════════════════════════
+              TAB: HUMANIDFI REAL ACTIVITY
+          ══════════════════════════════════════════════════════════════ */}
+          {activeTab === "humanidfi-activity" && (
+            <motion.div
+              key="humanidfi-activity"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.18 }}
+            >
+              <HumanIDFiActivityTab isDark={isDark} />
             </motion.div>
           )}
 

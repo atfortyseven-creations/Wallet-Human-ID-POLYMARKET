@@ -538,6 +538,17 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         setClient(realClient);
         if (typeof localStorage !== 'undefined') {
             localStorage.setItem('whale_xmtp_initialized', 'true');
+            // [ATOMIC INDEXING] Log session event (once per session)
+            const chatLogKey = `provenance_chat_${address}_${new Date().toDateString()}`;
+            if (!localStorage.getItem(chatLogKey)) {
+                localStorage.setItem(chatLogKey, '1');
+                fetch('/api/provenance/log', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ type: 'WHALE_CHAT_SYNC', details: { address } })
+                }).catch(() => {});
+            }
         }
         await loadConversations();
         

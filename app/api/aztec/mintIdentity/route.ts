@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { generateAztecTxHash, getAztecChainState, buildAztecMetadata } from '@/lib/aztec/realTx';
+import { logProvenanceEvent } from '@/lib/aztec/provenanceIndexer';
 
 export const dynamic = 'force-dynamic';
 
@@ -59,6 +60,13 @@ export async function POST(req: Request) {
           note:        'Aztec Identity Mint — 10 QDs genesis grant',
         }),
       },
+    });
+
+    // [ATOMIC INDEXING]
+    await logProvenanceEvent('IDENTITY_PROOF', normalizedTo, {
+      action: 'MINT',
+      amount: MINT_AMOUNT,
+      originalTxId: newTx.id
     });
 
     console.log(`[Aztec Mint] ✅ ${MINT_AMOUNT} QDs minted → ${normalizedTo} | block ${finalBlock} | hash ${txHash}`);

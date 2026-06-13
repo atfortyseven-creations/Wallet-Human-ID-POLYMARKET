@@ -24,6 +24,23 @@ export default function PortfolioPage() {
     } catch(e) {}
   }, []);
 
+  // [ATOMIC INDEXING] Log portfolio access once per day per wallet
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const address = (typeof window !== 'undefined' && (window as any).__wagmi_address__) || sessionStorage.getItem('wallet_address');
+    if (!address) return;
+    const key = `provenance_portfolio_${address}_${new Date().toDateString()}`;
+    if (!sessionStorage.getItem(key)) {
+      sessionStorage.setItem(key, '1');
+      fetch('/api/provenance/log', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ type: 'PORTFOLIO_ACCESS', details: { path: '/portfolio' } })
+      }).catch(() => {});
+    }
+  }, []);
+
   // CRITICAL FIX: Never return null here — TitaniumGate sees a blank page and
   // redirects to /connect, which then redirects back to /portfolio → infinite loop.
   // Instead render a proper loading screen that TitaniumGate won't misinterpret.

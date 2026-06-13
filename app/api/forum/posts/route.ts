@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { validateSecureRequest } from '@/lib/security/premium-security';
+import { logProvenanceEvent } from '@/lib/aztec/provenanceIndexer';
 
 export async function POST(req: NextRequest) {
     try {
@@ -78,6 +79,13 @@ export async function POST(req: NextRequest) {
 
         // Don't await  fire and forget
         sideEffects().catch(() => {});
+
+        // [ATOMIC INDEXING]
+        await logProvenanceEvent('FORUM_POST', address, {
+            topicId,
+            postId: newPost.id,
+            isReply: true
+        });
 
         return NextResponse.json(newPost);
     } catch (e: any) {
