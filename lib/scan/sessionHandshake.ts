@@ -6,6 +6,19 @@ export type SessionHandshakeResult =
   | { ok: true }
   | { ok: false; message: string; needsWallet?: boolean };
 
+/**
+ * Read the wallet address from the system_handshake cookie (JS-readable).
+ * Returns null if not set or invalid format.
+ */
+function getHandshakeCookieAddress(): string | null {
+  try {
+    const match = document.cookie.match(/system_handshake=(0x[0-9a-fA-F]{40})/i);
+    return match?.[1]?.toLowerCase() ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export async function completeSessionHandshake(
   decodedText: string,
   getAddress: () => string | null
@@ -60,30 +73,65 @@ export async function completeSessionHandshake(
     return { ok: false, message: 'Invalid session data. Please refresh the desktop QR code.' };
   }
 
-  const addr = getAddress();
+  // ────────────────────────────────────────────────────────────────
+  // STEP 1: Robustly resolve the wallet address from multiple sources
+  // Priority: wagmi hook > export-jwt payload > system_handshake cookie
+  // ────────────────────────────────────────────────────────────────
+  const wagmiAddr = getAddress();
 
-  const { generateX25519KeyPair, deriveSharedSecret, encryptAESGCM } = await import('@/lib/web-crypto');
-  const mobilePair = await generateX25519KeyPair();
-  const shared = await deriveSharedSecret(mobilePair.privateKey, ephemeralPub, isECDH);
-
+  // Try export-jwt first — gives us both the JWT and the address from the server
   let jwt: string | null = null;
+  let jwtAddress: string | null = null;
+
   try {
-    const exportRes = await fetch('/api/auth/export-jwt', { credentials: 'include' });
+    const exportRes = await fetch('/api/auth/export-jwt', { credentials: 'include', cache: 'no-store' });
     if (exportRes.ok) {
       const exportData = await exportRes.json();
-      jwt = exportData.jwt ?? null;
+      if (exportData.jwt) {
+        jwt = exportData.jwt;
+        // Extract address from JWT payload to verify it matches the current wallet
+        try {
+          const parts = jwt.split('.');
+          if (parts.length === 3) {
+            const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+            jwtAddress = (payload.sub || payload.address || '').toLowerCase() || null;
+          }
+        } catch { /* non-fatal */ }
+      }
     }
   } catch {
     /* server mint path */
   }
 
-  if (!jwt && addr) {
+  // Determine the authoritative address:
+  // - If wagmi has an address AND the JWT belongs to a DIFFERENT address, the user
+  //   switched wallets since the cookie was set → ignore the stale JWT, re-auth with new wallet
+  // - If wagmi has no address (wagmi not hydrated yet), trust the JWT address
+  // - Final fallback: read system_handshake cookie
+  let resolvedAddress: string | null = null;
+
+  if (wagmiAddr) {
+    const wagmiNorm = wagmiAddr.toLowerCase();
+    if (jwtAddress && jwtAddress !== wagmiNorm) {
+      // Wallet switched — stale JWT, need fresh token for the new wallet
+      console.warn(`[QR:Handshake] Wallet mismatch: jwt=${jwtAddress} wagmi=${wagmiNorm}. Re-minting for ${wagmiNorm}.`);
+      jwt = null;
+      jwtAddress = null;
+    }
+    resolvedAddress = wagmiNorm;
+  } else if (jwtAddress) {
+    resolvedAddress = jwtAddress;
+  } else {
+    resolvedAddress = getHandshakeCookieAddress();
+  }
+
+  // If we have a wagmi address but no JWT, mint a fresh one
+  if (!jwt && resolvedAddress) {
     try {
-      const norm = addr.toLowerCase();
       const sigRes = await fetch('/api/auth/system-verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address: norm, message: 'bypass', signature: 'bypass' }),
+        body: JSON.stringify({ address: resolvedAddress, message: 'bypass', signature: 'bypass' }),
         credentials: 'include',
       });
       if (sigRes.ok) {
@@ -95,11 +143,26 @@ export async function completeSessionHandshake(
     }
   }
 
+  if (!jwt && !resolvedAddress) {
+    return {
+      ok: false,
+      message: 'Wallet not connected. Connect your wallet first, then scan the QR code.',
+      needsWallet: true,
+    };
+  }
+
+  // ────────────────────────────────────────────────────────────────
+  // STEP 2: Generate ECDH keypair, encrypt payload, POST to server
+  // ────────────────────────────────────────────────────────────────
+  const { generateX25519KeyPair, deriveSharedSecret, encryptAESGCM } = await import('@/lib/web-crypto');
+  const mobilePair = await generateX25519KeyPair();
+  const shared = await deriveSharedSecret(mobilePair.privateKey, ephemeralPub, isECDH);
+
   let postBody: Record<string, unknown>;
   if (jwt) {
     let payloadStr = jwt;
     try {
-      const normAddr = addr?.toLowerCase();
+      const normAddr = resolvedAddress;
       const seed = normAddr ? localStorage.getItem(`whale_chat_seed_${normAddr}`) : null;
       const vault = localStorage.getItem('system_vault_v1');
       payloadStr = JSON.stringify({ jwt, seed, vault });
@@ -142,6 +205,9 @@ export async function completeSessionHandshake(
     return { ok: false, message: `Handshake error: ${errText}. Please try again.` };
   }
 
+  // ────────────────────────────────────────────────────────────────
+  // STEP 3: Optional seed sync back from desktop
+  // ────────────────────────────────────────────────────────────────
   let seedAttempts = 0;
   const pollSeed = setInterval(async () => {
     seedAttempts++;
@@ -159,16 +225,14 @@ export async function completeSessionHandshake(
           const decryptedRaw = await decryptAESGCM(shared, sData.encryptedSeed, sData.iv);
           try {
             const payload = JSON.parse(decryptedRaw);
-            const finalAddr = addr || getAddress();
+            const finalAddr = resolvedAddress;
             if (finalAddr) {
-              const normAddr = finalAddr.toLowerCase();
-              if (payload.seed) localStorage.setItem(`whale_chat_seed_${normAddr}`, payload.seed);
+              if (payload.seed) localStorage.setItem(`whale_chat_seed_${finalAddr}`, payload.seed);
               if (payload.vault) localStorage.setItem('system_vault_v1', payload.vault);
             }
           } catch {
-            const finalAddr = addr || getAddress();
-            if (finalAddr) {
-              localStorage.setItem(`whale_chat_seed_${finalAddr.toLowerCase()}`, decryptedRaw);
+            if (resolvedAddress) {
+              localStorage.setItem(`whale_chat_seed_${resolvedAddress}`, decryptedRaw);
             }
           }
         }
