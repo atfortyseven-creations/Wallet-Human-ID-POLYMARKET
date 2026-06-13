@@ -572,6 +572,9 @@ export default function ConnectPage() {
 
             ) : isMobile ? (
               <div className="flex flex-col gap-3 flex-1">
+                <span className="text-center text-[10px] font-mono uppercase tracking-[0.2em] text-black/40">
+                  QR synchronized
+                </span>
                 {MOBILE_WALLETS.map((w) => (
                   <WalletButton key={w.id} logo={w.logo} name={w.name} badge={w.badge} onClick={() => handleMobileWallet(w.id)} loading={isPending && pendingId === w.id} delay={w.delay} extraIcon={<ExternalLink size={14} />} />
                 ))}
