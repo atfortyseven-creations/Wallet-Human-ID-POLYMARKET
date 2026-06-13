@@ -33,7 +33,7 @@ import type { ProductPassportPublic } from '@/lib/passport/types';
 /* ─────────────────────────────────────────────
    CONSTANTS
 ───────────────────────────────────────────── */
-const EXPLORER_BASE = 'https://testnet.aztecscan.xyz/tx-effects/';
+const EXPLORER_BASE = 'https://testnet.aztecscan.xyz/tx/';
 
 /* ─────────────────────────────────────────────
    TYPES
@@ -709,7 +709,7 @@ function RegistryTab({ isMobile: _isMobile, refreshKey }: RegistryTabProps) {
                   {p.txHash ? (
                     <div className="rounded-lg bg-black/[0.03] p-3">
                       <div className="flex items-center gap-1.5 mb-1">
-                        <ShieldCheck size={12} className="text-[#050505]" />
+                        
                         <p className="text-[10px] font-black uppercase tracking-widest text-[#050505]">
                           On-chain confirmation
                         </p>
@@ -786,7 +786,7 @@ function AztecTab() {
       <div className="rounded-2xl border border-black/10 bg-white p-6">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-6 h-6 rounded-md bg-[#050505] flex items-center justify-center">
-            <ShieldCheck size={13} className="text-white" />
+            
           </div>
           <p className="text-[10px] font-black uppercase tracking-widest text-black/50">
             Integration with Aztec Network
@@ -956,7 +956,7 @@ export function ProvenanceStudioContent({
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: 'create', label: 'Create', icon: <Plus size={13} /> },
     { id: 'registry', label: 'All Records', icon: <LayoutList size={13} /> },
-    { id: 'aztec', label: 'Aztec Network', icon: <ShieldCheck size={13} /> },
+    { id: 'aztec', label: 'Aztec Network', icon: null },
   ];
 
   const handleCreated = (passport: ProductPassportPublic) => {
@@ -999,9 +999,6 @@ export function ProvenanceStudioContent({
           >
             Provenance Studio
           </h1>
-          <span className="text-[9px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-full bg-black/5 text-black/50">
-            Beta
-          </span>
         </div>
         <p className="text-sm text-black/50 mb-8 leading-relaxed">
           Create verifiable product records, generate scannable QR labels, and confirm them on the

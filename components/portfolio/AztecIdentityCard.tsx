@@ -278,7 +278,7 @@ function SendQDsPanel() {
           </button>
         </div>
         <a
-          href={`${AZTEC_EXPLORER}/tx-effects/${txHash}`}
+          href={`${AZTEC_EXPLORER}/tx/${txHash}`}
           target="_blank" rel="noopener noreferrer"
           className="flex items-center justify-between w-full py-3 px-4 border border-emerald-200 bg-emerald-50 hover:border-emerald-400 hover:bg-emerald-100 text-emerald-700 text-[9px] font-black uppercase tracking-widest transition-all group"
         >
@@ -455,7 +455,7 @@ function HistoryPanel() {
               <div className="text-[9px] font-black uppercase tracking-widest text-zinc-900/80 flex items-center gap-1.5">
                 {tx.type === 'send' ? 'Sent QDs' : 'Received QDs'}
                 {tx.txHash && (
-                  <a href={tx.explorerUrl || `${AZTEC_EXPLORER}/tx-effects/${tx.txHash}`} target="_blank" rel="noopener noreferrer" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                  <a href={tx.explorerUrl || `${AZTEC_EXPLORER}/tx/${tx.txHash}`} target="_blank" rel="noopener noreferrer" className="opacity-0 group-hover:opacity-100 transition-opacity">
                     <ExternalLink size={9} className="text-zinc-900/40 hover:text-zinc-900" />
                   </a>
                 )}
@@ -819,7 +819,7 @@ export function AztecIdentityCard() {
               </div>
 
               <a
-                href={`${AZTEC_EXPLORER}/tx-effects/${CLAIM_TX_HASH}`}
+                href={`${AZTEC_EXPLORER}/tx/${CLAIM_TX_HASH}`}
                 target="_blank" rel="noopener noreferrer"
                 className="flex items-center justify-between w-full py-3 px-4 border border-emerald-200 bg-emerald-50 hover:border-emerald-400 hover:bg-emerald-100 text-emerald-700 text-[9px] font-black uppercase tracking-widest transition-all group"
               >

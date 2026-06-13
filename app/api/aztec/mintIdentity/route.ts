@@ -54,7 +54,7 @@ export async function POST(req: Request) {
         metadata: { 
             aztecTxHash: realTxHash, 
             network: 'aztec-testnet',
-            explorerUrl: `https://testnet.aztecscan.xyz/tx-effects/${realTxHash}`
+            explorerUrl: `https://testnet.aztecscan.xyz/tx/${realTxHash}`
         },
       },
     });

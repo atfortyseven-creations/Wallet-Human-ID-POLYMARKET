@@ -75,7 +75,7 @@ export async function POST(req: Request) {
           chainId: 2151908,
           metadata: {
             aztecTxHash: txHash,
-            explorerUrl: `https://testnet.aztecscan.xyz/tx-effects/${txHash}`,
+            explorerUrl: `https://testnet.aztecscan.xyz/tx/${txHash}`,
             network: 'aztec-testnet',
             note: 'Migrated from MINT_IDENTITY (EVM address) to AIRDROP (Aztec derived address)',
             migratedFromEvm: normalizedEvm,

@@ -73,7 +73,7 @@ async function main() {
         chainId: 2151908,
         metadata: {
           aztecTxHash: txHash,
-          explorerUrl: `https://testnet.aztecscan.xyz/tx-effects/${txHash}`,
+          explorerUrl: `https://testnet.aztecscan.xyz/tx/${txHash}`,
           network: 'aztec-testnet',
           note: `Migrated from EVM MINT_IDENTITY. Original EVM: ${evmAddr}`,
           migratedFromEvm: evmAddr,

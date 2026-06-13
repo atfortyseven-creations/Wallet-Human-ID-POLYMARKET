@@ -726,17 +726,7 @@ export function GoldTicketPanel() {
       <div className="grid lg:grid-cols-2 gap-4 flex-shrink-0">
           
           <div className="bg-white/80 backdrop-blur-xl border border-black/5 rounded-2xl flex flex-col justify-center p-6 shadow-[0_8px_32px_rgba(0,0,0,0.04)]">
-               <div className="shrink-0 pt-2 pb-6 border-b border-black/5 w-full flex flex-col gap-0.5 mb-4">
-                    <div className="flex items-center gap-2 mb-1">
-                      <WhaleLogo className="w-5 h-5 opacity-80" />
-                      <h1 className="text-xl md:text-2xl font-black uppercase tracking-tighter text-[#050505]">
-                          Public Ticket Mint
-                      </h1>
-                    </div>
-                    <p className="text-[10px] text-[#050505]/40 font-bold uppercase tracking-[0.2em] leading-tight">
-                        Claim your unique public ticket on Optimism and sign the ledger.
-                    </p>
-                </div>
+               <div className="shrink-0 pt-2 pb-6 border-b border-black/5 w-full mb-4" />
                <div className="bg-[#FFFFFF] border border-black/[0.04] p-6 rounded-2xl space-y-6">
                   <SupplyBar minted={dbStats?.totalClaimed || 0} max={MAX_SUPPLY} />
                </div>

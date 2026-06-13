@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import Link from 'next/link';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
@@ -11,7 +11,13 @@ function hasHandshakeCookie(): boolean {
 
 export function ProvenanceSessionGate({ children }: { children: React.ReactNode }) {
   const { address, isConnected } = useSystemAccount();
-  const linked = Boolean(address) || isConnected || hasHandshakeCookie();
+  const [linked, setLinked] = React.useState<boolean>(true); // Optimistic initially to avoid flicker
+
+  React.useEffect(() => {
+    // If they have the cookie or are connected, they are linked. Once linked, don't drop them unless explicitly logged out.
+    const isCurrentlyLinked = Boolean(address) || isConnected || hasHandshakeCookie();
+    setLinked((prev) => prev || isCurrentlyLinked);
+  }, [address, isConnected]);
 
   if (!linked) {
     return (

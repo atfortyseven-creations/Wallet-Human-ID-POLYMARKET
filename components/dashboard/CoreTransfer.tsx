@@ -176,7 +176,7 @@ function ReceiptCard({ receipt, onClose }: { receipt: ReceiptData; onClose: () =
 
             <div className="px-5 pb-5 pt-2 flex gap-3">
                 <a
-                    href={`https://testnet.aztecscan.xyz/tx-effects/${receipt.txHash}`}
+                    href={`https://testnet.aztecscan.xyz/tx/${receipt.txHash}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex-1 flex items-center justify-center gap-2 py-3 border border-black/10 rounded-2xl text-xs font-black uppercase tracking-widest text-black/60 hover:bg-black/5 transition-all"

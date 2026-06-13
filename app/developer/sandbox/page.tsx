@@ -32,22 +32,7 @@ export default function SandboxPage() {
     >
       {/* Hero header */}
       <header style={{ textAlign: "center", maxWidth: 760 }}>
-        <div
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            background: "#f3f4f6",
-            border: "1px solid #e5e7eb",
-            borderRadius: 20,
-            padding: "4px 16px",
-            marginBottom: 24,
-          }}
-        >
-          <span style={{ color: "#374151", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }}>
-            Aztec Native · Noir v1.0 · Barretenberg
-          </span>
-        </div>
+
 
         <h1
           style={{
@@ -76,42 +61,7 @@ export default function SandboxPage() {
           and simulate submission to the Aztec L2 sequencer — entirely inside your browser.
         </p>
 
-        {/* Feature pills */}
-        <div
-          style={{
-            display: "flex",
-            gap: 10,
-            justifyContent: "center",
-            flexWrap: "wrap",
-            marginTop: 28,
-          }}
-        >
-          {[
-            "Pedersen Commitments",
-            "Merkle Range Proofs",
-            "KYC ZK Credentials",
-            "Viewing Key Escrow",
-            "MiCA-Compliant",
-          ].map((pill) => (
-            <span
-              key={pill}
-              style={{
-                background: "#ffffff",
-                border: "1px solid #d1d5db",
-                color: "#111827",
-                fontSize: 11,
-                fontWeight: 700,
-                padding: "5px 14px",
-                borderRadius: 20,
-                fontFamily: "'JetBrains Mono', monospace",
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
-              }}
-            >
-              {pill}
-            </span>
-          ))}
-        </div>
+
       </header>
 
       {/* Main sandbox */}

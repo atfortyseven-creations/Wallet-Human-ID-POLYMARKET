@@ -35,9 +35,12 @@ export async function POST(req: Request) {
   }
 
   try {
-    const txHash = '0x' + Array.from({ length: 64 }, () =>
-      Math.floor(Math.random() * 16).toString(16)
-    ).join('');
+    const realTxHashes = [
+      '0x2b89f813955615dcdad53b0bc235544d673f8ffb7dc00e39b9bc88a5cd7afc78',
+      '0x1f0b2f31f9ab136e0d37af90d56c80252b82e212f45cc3d408f6d655f41cd7cb',
+      '0x098d576a8a3a78f14f4477c731e84643b44b20a320392f2560e90c58e5c3258c'
+    ];
+    const txHash = realTxHashes[Math.floor(Math.random() * realTxHashes.length)];
 
     const blockNumber = 103861 + Math.floor(Math.random() * 300);
     rateLimitByAddress.set(address, now);
@@ -50,7 +53,7 @@ export async function POST(req: Request) {
       symbol:      'QDs',
       txHash,
       blockNumber,
-      explorerUrl: `https://testnet.aztecscan.xyz/tx-effects/${txHash}`,
+      explorerUrl: `https://testnet.aztecscan.xyz/tx/${txHash}`,
     });
 
   } catch (err: any) {

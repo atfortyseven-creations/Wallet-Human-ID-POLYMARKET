@@ -414,14 +414,7 @@ function HeroSection() {
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center"
         >
-          <h1 className="text-[40px] md:text-[56px] font-black tracking-tight leading-[1.05] text-black mb-6">
-            Studio Provenance &
-            <br />
-            <span className="text-black/70">Aztec Identity</span>
-          </h1>
-          <p className="text-[16px] md:text-[18px] text-black/60 max-w-[600px] mb-8 font-medium">
-            Whale Network is the premier privacy layer on the Aztec Network. Claim your decentralized identity, access Studio Provenance, and communicate securely via Whale Chat using zero-knowledge proofs.
-          </p>
+
 
           {/* Architecture Diagram (Sober, Minimalist SVG) */}
           <div className="w-full max-w-[500px] mx-auto mb-10 opacity-80 mix-blend-multiply">
