@@ -110,8 +110,9 @@ function buildSystemMessage(address: string): string {
     '',
     `Identity: ${address}`,
     `Nonce: ${Date.now()}`,
-    `Network: WHALE_ALERT_NETWORK_V1`,
-    '',
+    `Network: AZTEC_IDENTITY_NETWORK`,
+    `Connected at: ${new Date().toISOString().slice(0, 19).replace('T', ' ')}`,
+    `Status: VERIFIED_IDENTITY_CLAIM`,
     'By signing you confirm that',
     'you are the sole owner of this',
     'address and authorize access',
@@ -196,7 +197,7 @@ function SigningOverlay({
               ? "Could not cryptographically verify the wallet. Please try again."
               : isSigning
               ? "Please approve the signature request. If you used Google/Email, tap the button below to complete login."
-              : "Establishing encrypted tunnel with the Global Network... Please wait."}
+              : "Initializing Private Execution Environment on Aztec L2... Please wait."}
           </p>
         </div>
 
@@ -1184,7 +1185,7 @@ export function MobileLanding() {
         </div>
         
         <div className="flex items-center gap-2">
-          {/* Whale Hub — mobile-only direct scanner access (iOS + Android only) */}
+          {/* Identity Claim — mobile-only direct scanner access (iOS + Android only) */}
           <button
             id="whale-hub-btn"
             onClick={() => { 
@@ -1195,10 +1196,10 @@ export function MobileLanding() {
               }
             }}
             className="px-3 py-2 rounded-xl border border-black/20 bg-white text-[9px] font-black uppercase tracking-widest text-black/70 shadow-sm active:scale-95 transition-all flex items-center gap-1.5"
-            aria-label="Open Whale Hub"
+            aria-label="Open Identity Claim"
           >
             <ScanLine size={11} className="shrink-0" />
-            Whale Hub
+            Identity Claim
           </button>
 
           {isLinked && effectiveAddress ? (

@@ -19,9 +19,9 @@ const RealWorldMap = dynamic(
 // ─── Nav Data ────────────────────────────────────────────────────────────────
 
 const PRODUCT_LINKS = [
-  { label: "Whale Network", sub: "Real-time on-chain capital flow tracking", href: "/portfolio" },
-  { label: "Aztec API", sub: "Build privacy into your applications", href: "/developers/api-docs" },
-  { label: "Developer Hub", sub: "Circuits, SDKs, and sandbox tools", href: "/developer" },
+  { label: "Studio Provenance", sub: "Zero-knowledge verifiable provenance", href: "/portfolio" },
+  { label: "Aztec Identity", sub: "Privacy-preserving portfolio layer", href: "/developers/api-docs" },
+  { label: "Whale Chat", sub: "Encrypted, verifiable communications", href: "/developer" },
 ];
 
 const COMPANY_LINKS = [
@@ -33,46 +33,46 @@ const COMPANY_LINKS = [
 // ─── Network stat strip ───────────────────────────────────────────────────────
 
 const STATS = [
-  { label: "Network Layer", value: "Aztec L2 zkRollup" },
-  { label: "State Model", value: "Private Notes (UTXO)" },
-  { label: "Circuit Language", value: "Noir" },
+  { label: "Identity Layer", value: "Aztec Native Identity" },
+  { label: "Data Integrity", value: "Studio Provenance" },
+  { label: "Messaging", value: "Encrypted Whale Chat" },
   { label: "Settlement", value: "Ethereum L1" },
-  { label: "Identity", value: "ZK Biometric Activeness" },
-  { label: "Compliance", value: "W3C Verifiable Credentials" },
+  { label: "Authentication", value: "Zero-Knowledge Proofs" },
+  { label: "Compliance", value: "Verifiable Credentials" },
 ];
 
 // ─── Feature cards ───────────────────────────────────────────────────────────
 
 const FEATURES = [
   {
-    title: "Private Execution",
-    body: "All computation happens on your device. Your inputs and outputs never leave your machine — the network validates a proof, not your data.",
-    tag: "Zero-Knowledge",
+    title: "Claim Your Identity",
+    body: "Secure your decentralized identity via cryptographic signature directly from your dashboard. A foundation for all private interactions.",
+    tag: "Aztec Identity",
   },
   {
-    title: "Selective Disclosure",
-    body: "Generate viewing keys and range proofs for compliance or audits. Verifiable by regulators, invisible to observers.",
-    tag: "Compliance Ready",
+    title: "Studio Provenance",
+    body: "Establish absolute data provenance and asset tracking using zero-knowledge proofs. Verifiable history without public exposure.",
+    tag: "Provenance",
   },
   {
-    title: "On-Chain Analysis",
-    body: "Whale Network monitors capital flows across major chains in real time. Act on institutional-grade data without exposing your position.",
-    tag: "Whale Network",
+    title: "Whale Chat",
+    body: "Communicate securely with peers through an end-to-end encrypted protocol. Only cryptographic identities, no IP tracking.",
+    tag: "Encrypted Comms",
   },
   {
-    title: "Threshold Authorization",
-    body: "Multi-party approvals proven inside a zero-knowledge circuit. No signer identities leak. Built for treasury and governance.",
-    tag: "Multi-Sig ZK",
+    title: "Aztec Portfolio",
+    body: "Manage your assets privately. Your balances and transaction history are completely hidden from the public ledger.",
+    tag: "Private Wealth",
   },
   {
-    title: "Stealth Addresses",
-    body: "Each transaction generates a unique, single-use address. On-chain observers cannot link sender to receiver.",
-    tag: "Unlinkability",
+    title: "Zero-Knowledge Proofs",
+    body: "All computation happens on your device. The network validates a proof of your actions without ever accessing your raw data.",
+    tag: "Local Execution",
   },
   {
-    title: "Cross-Chain Bridges",
-    body: "Move assets across networks through encrypted bridge contracts. Capital flows become invisible to traditional forensic analysis.",
-    tag: "Omnichain",
+    title: "W3C Compliance",
+    body: "Generate verifiable credentials for audits or selective disclosure. Prove compliance without leaking your full identity.",
+    tag: "Verifiable Credentials",
   },
 ];
 
@@ -415,13 +415,38 @@ function HeroSection() {
           className="flex flex-col items-center"
         >
           <h1 className="text-[40px] md:text-[56px] font-black tracking-tight leading-[1.05] text-black mb-6">
-            Privacy-Preserving
+            Studio Provenance &
             <br />
-            <span className="text-black/70">Identity Verification</span>
+            <span className="text-black/70">Aztec Identity</span>
           </h1>
-          <p className="text-[16px] md:text-[18px] text-black/60 max-w-[600px] mb-10 font-medium">
-            Whale Network integrates zero-knowledge proofs to help you achieve compliance and verify users without ever compromising personal data.
+          <p className="text-[16px] md:text-[18px] text-black/60 max-w-[600px] mb-8 font-medium">
+            Whale Network is the premier privacy layer on the Aztec Network. Claim your decentralized identity, access Studio Provenance, and communicate securely via Whale Chat using zero-knowledge proofs.
           </p>
+
+          {/* Architecture Diagram (Sober, Minimalist SVG) */}
+          <div className="w-full max-w-[500px] mx-auto mb-10 opacity-80 mix-blend-multiply">
+            <svg viewBox="0 0 400 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+              {/* Client Layer */}
+              <rect x="20" y="40" width="100" height="40" rx="4" stroke="black" strokeWidth="1.5" strokeDasharray="4 4" fill="white" />
+              <text x="70" y="64" textAnchor="middle" fill="black" fontSize="11" fontWeight="600" fontFamily="monospace">Client PXE</text>
+              {/* Connection */}
+              <path d="M120 60 L180 60" stroke="black" strokeWidth="1.5" />
+              <circle cx="150" cy="60" r="14" fill="white" stroke="black" strokeWidth="1.5" />
+              <text x="150" y="64" textAnchor="middle" fill="black" fontSize="10" fontWeight="bold">ZK</text>
+              {/* L2 Layer */}
+              <rect x="180" y="40" width="100" height="40" rx="4" stroke="black" strokeWidth="1.5" fill="white" />
+              <text x="230" y="64" textAnchor="middle" fill="black" fontSize="11" fontWeight="600" fontFamily="monospace">Aztec L2</text>
+              {/* Connection */}
+              <path d="M280 60 L340 60" stroke="black" strokeWidth="1.5" />
+              {/* L1 Layer */}
+              <rect x="340" y="40" width="40" height="40" rx="4" stroke="black" strokeWidth="1.5" fill="black" />
+              <text x="360" y="64" textAnchor="middle" fill="white" fontSize="11" fontWeight="600" fontFamily="monospace">L1</text>
+              {/* Labels */}
+              <text x="70" y="95" textAnchor="middle" fill="black" fontSize="9" opacity="0.6">Identity Claim</text>
+              <text x="230" y="95" textAnchor="middle" fill="black" fontSize="9" opacity="0.6">Studio Provenance</text>
+            </svg>
+          </div>
+
           <div className="flex flex-col sm:flex-row items-center gap-3">
             <Link
               href="/portfolio"

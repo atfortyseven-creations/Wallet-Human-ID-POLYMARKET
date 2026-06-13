@@ -43,13 +43,13 @@ const robotoMono = Roboto_Mono({
 
 export const metadata = {
   title: {
-    default: 'Whale Network | Privacy-Preserving Identity Verification',
+    default: 'Whale Network | Studio Provenance & Aztec Identity',
     template: '%s | Whale Network'
   },
-  description: 'Whale Network is a privacy-preserving identity verification solution integrating zero-knowledge proofs to achieve compliance without compromising personal data.',
+  description: 'Whale Network is the premier privacy layer on the Aztec Network. Claim your decentralized identity, access Studio Provenance, and communicate securely via Whale Chat using zero-knowledge proofs.',
   keywords: [
-    'whale network', 'identity verification', 'zero-knowledge proofs', 'privacy', 'kyc',
-    'compliance', 'digital identity', 'zkp'
+    'whale network', 'aztec identity', 'studio provenance', 'whale chat', 'decentralized identity',
+    'zero-knowledge proofs', 'privacy', 'noir language', 'verifiable credentials'
   ],
   authors: [{ name: 'Whale Network' }],
   creator: 'Whale Network',
@@ -77,8 +77,8 @@ export const metadata = {
     statusBarStyle: 'default',
   },
   openGraph: {
-    title: 'Whale Network | Privacy-Preserving Identity Verification',
-    description: 'A privacy-preserving identity verification solution integrating zero-knowledge proofs to achieve compliance without compromising personal data.',
+    title: 'Whale Network | Studio Provenance & Aztec Identity',
+    description: 'Claim your decentralized identity, access Studio Provenance, and communicate securely via Whale Chat using zero-knowledge proofs.',
     url: 'https://humanidfi.com',
     siteName: 'Whale Network',
     images: [
@@ -94,8 +94,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Whale Network | Privacy-Preserving Identity Verification',
-    description: 'A privacy-preserving identity verification solution integrating zero-knowledge proofs.',
+    title: 'Whale Network | Studio Provenance & Aztec Identity',
+    description: 'Claim your decentralized identity, access Studio Provenance, and communicate securely via Whale Chat using zero-knowledge proofs.',
     images: ['/humanid_protocol_logo_1778714491433.png'],
     site: '@whalenetwork',
     creator: '@whalenetwork',
