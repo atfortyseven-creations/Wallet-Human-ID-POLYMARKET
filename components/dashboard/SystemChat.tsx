@@ -499,7 +499,10 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
   //  Self-destruct ticker 
   useEffect(() => {
     const id = setInterval(() => {
-      setMessages(prev => prev.filter(m => !m.destructsAt || m.destructsAt > Date.now()));
+      setMessages(prev => {
+        const next = prev.filter(m => !m.destructsAt || m.destructsAt > Date.now());
+        return next.length !== prev.length ? next : prev;
+      });
     }, 1000);
     return () => clearInterval(id);
   }, []);
