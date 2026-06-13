@@ -632,12 +632,9 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   }, [address, isMobile, signMessageAsync, isSystemHandshake, loadConversations, isLocalSystemWallet]);
 
   useEffect(() => {
-    // Aggressive Auto-Init: Trigger for all connected users.
+    // Aggressive Auto-Init: Trigger for all connected users including mobile.
     if (isConnected && address && !client && !initInFlight.current && !initError) {
-      const isMobileDevice = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0) && window.innerWidth < 768;
-      if (!isMobileDevice || forceAutoInit) {
-        initClient();
-      }
+      initClient();
     }
   }, [isConnected, address, client, initError, initClient, forceAutoInit]);
 
@@ -752,6 +749,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
           // Filter system metadata messages (XMTP internal group protocol frames)
           if (typeof content === 'string' && content.includes('initiatedByInboxId')) continue;
+          if (typeof content === 'string' && content.startsWith('synced ') && content.includes('from cursor Some')) continue;
 
           // ── ABSOLUTE DEDUPLICATION GATE ──────────────────────────────────────
           // If we have already processed this exact XMTP ID, skip unconditionally.
@@ -884,14 +882,23 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         } catch (e) { console.error('Failed to fetch pending messages', e); }
         
         const mappedMsgs = raw
-          .map((m: any) => ({
-            id: m.id,
-            senderInboxId: m.senderInboxId,
-            content: m.content || m.fallback || 'Encrypted Data',
-            sentAtNs: nsToDate(m.sentAtNs ?? m.sentAt).getTime(),
-            conversationId: `dm-${activePeer.toLowerCase()}`
-          }))
-          .filter((m: any) => !(typeof m.content === 'string' && m.content.includes('initiatedByInboxId')));
+          .map((m: any) => {
+            const content = typeof m.content === 'string' ? m.content : (m.content ? JSON.stringify(m.content) : m.fallback || 'Encrypted Data');
+            return {
+              id: m.id,
+              senderInboxId: m.senderInboxId,
+              content: content,
+              sentAtNs: nsToDate(m.sentAtNs ?? m.sentAt).getTime(),
+              conversationId: `dm-${activePeer.toLowerCase()}`
+            };
+          })
+          .filter((m: any) => {
+             if (typeof m.content === 'string') {
+                 if (m.content.includes('initiatedByInboxId')) return false;
+                 if (m.content.startsWith('synced ') && m.content.includes('from cursor Some')) return false;
+             }
+             return true;
+          });
         
         // ── POLL MERGE WITH FULL DEDUPLICATION ───────────────────────────────
         // Register all newly fetched real IDs in confirmedMsgIds so the stream
