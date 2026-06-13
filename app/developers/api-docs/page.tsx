@@ -1,39 +1,156 @@
-export default function ApiDocsPage() {
+"use client";
+
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { 
+  WHITEPAPER_SECTIONS, MANIFESTO_SECTIONS, TOKENOMICS_SECTIONS, 
+  DEVELOPER_SECTIONS, SECURITY_SECTIONS, ROADMAP_SECTIONS, 
+  API_REFERENCE_SECTIONS, NOIR_CIRCUITS_SECTIONS 
+} from '@/lib/content/footerPagesAztec';
+
+// We need to group all docs
+const ALL_DOCS = [
+  { id: 'manifesto', title: 'Manifesto', sections: MANIFESTO_SECTIONS },
+  { id: 'whitepaper', title: 'Whitepaper', sections: WHITEPAPER_SECTIONS },
+  { id: 'tokenomics', title: 'Tokenomics', sections: TOKENOMICS_SECTIONS },
+  { id: 'developer', title: 'Developer Guide', sections: DEVELOPER_SECTIONS },
+  { id: 'api-reference', title: 'API Reference', sections: API_REFERENCE_SECTIONS },
+  { id: 'noir-circuits', title: 'Noir Circuits', sections: NOIR_CIRCUITS_SECTIONS },
+  { id: 'security', title: 'Security', sections: SECURITY_SECTIONS },
+  { id: 'roadmap', title: 'Roadmap', sections: ROADMAP_SECTIONS },
+];
+
+export default function UnifiedDocsPage() {
+  const [activeId, setActiveId] = useState('');
+
+  // Simple intersection observer to highlight sidebar
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveId(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: '-20% 0px -80% 0px' }
+    );
+    
+    document.querySelectorAll('section[id], div[id]').forEach((section) => {
+      observer.observe(section);
+    });
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="min-h-screen bg-black text-white px-6 py-24 selection:bg-zinc-800">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-white mb-12 border-b border-zinc-900 pb-8">
-          API Documentation
-        </h1>
+    <div className="w-full min-h-screen bg-white text-[#050505] font-sans flex flex-col md:flex-row">
+      {/* LEFT SIDEBAR */}
+      <aside className="w-full md:w-[280px] shrink-0 border-r border-[#E8E8E8] md:h-screen md:sticky top-0 overflow-y-auto bg-[#FAFAFA] pt-12 md:pt-20 pb-10">
+        <div className="px-6 mb-6 flex flex-col gap-4">
+          <Link href="/" className="text-[12px] font-bold text-black/50 hover:text-black transition-colors flex items-center gap-2">
+            <span>←</span> Back to Home
+          </Link>
+          <h2 className="text-[12px] font-black uppercase tracking-widest text-[#050505] mt-4">Documentation</h2>
+        </div>
+        <nav className="flex flex-col gap-1 px-3">
+          {ALL_DOCS.map(doc => (
+            <div key={doc.id} className="mb-4">
+              <a 
+                href={`#${doc.id}`}
+                className={`block px-3 py-1.5 text-[14px] font-bold rounded-lg transition-colors ${activeId === doc.id || activeId.startsWith(doc.id + '-') ? 'bg-black/5 text-black' : 'text-black/60 hover:bg-black/5'}`}
+              >
+                {doc.title}
+              </a>
+              <div className="flex flex-col mt-1 ml-2 pl-3 border-l border-black/10">
+                {doc.sections.map((sec, idx) => {
+                  const secId = sec.id || `${doc.id}-sec-${idx}`;
+                  return (
+                    <a
+                      key={secId}
+                      href={`#${secId}`}
+                      className={`block px-2 py-1 text-[12.5px] rounded-md transition-colors ${activeId === secId ? 'text-black font-semibold' : 'text-black/50 hover:text-black hover:bg-black/5'}`}
+                    >
+                      {sec.title}
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </nav>
+      </aside>
 
-        <p className="text-sm md:text-base text-zinc-400 leading-loose text-justify mb-6">
-          The network provides a robust, high-performance Application Programming Interface designed for institutional developers and algorithmic integrators. This interface allows direct interaction with the zero-knowledge routing layers, shielding mechanisms, and the sovereign communication protocol without requiring deep proficiency in the underlying cryptographic primitives.
-        </p>
+      {/* MAIN CONTENT */}
+      <main className="flex-1 max-w-[920px] mx-auto px-6 py-16 md:py-24 overflow-x-hidden">
+        <header className="mb-14 border-b border-black/8 pb-10">
+          <p className="font-mono text-[10px] font-black uppercase tracking-[0.35em] text-[#050505]/60 mb-4">
+            Master Documentation
+          </p>
+          <h1 className="text-4xl md:text-6xl font-black tracking-tight text-[#050505] mb-5 leading-[1.05]">
+            Knowledge Base
+          </h1>
+          <p className="text-lg md:text-xl text-[#050505]/55 max-w-3xl leading-relaxed font-light">
+            Everything you need to build, integrate, and verify on the Humanity Ledger protocol. All documentation in one place.
+          </p>
+        </header>
 
-        <h2 className="text-xl md:text-2xl font-bold uppercase tracking-widest text-zinc-200 mt-16 mb-6">
-          Authentication and Access Control
-        </h2>
-
-        <p className="text-sm md:text-base text-zinc-400 leading-loose text-justify mb-6">
-          Access to the programmatic endpoints is strictly gated through cryptographic signature verification. Developers must authenticate by signing a standardized deterministic message using their registered cryptographic keypair. This process yields a session-specific JSON Web Token, which must be injected into the authorization header of all subsequent HTTPS requests. We employ ultra-short expiration windows for these tokens to aggressively mitigate the risk of session hijacking or replay attacks.
-        </p>
-
-        <p className="text-sm md:text-base text-zinc-400 leading-loose text-justify mb-6">
-          For persistent server-to-server connections, the network supports the generation of scoped API keys. These keys are mathematically bound to specific smart contract interaction permissions and can be instantly revoked through the decentralized registry. The API strictly enforces rate limits at the edge layer, ensuring extreme availability even during periods of intense market volatility.
-        </p>
-
-        <h2 className="text-xl md:text-2xl font-bold uppercase tracking-widest text-zinc-200 mt-16 mb-6">
-          WebSockets and Real-Time State
-        </h2>
-
-        <p className="text-sm md:text-base text-zinc-400 leading-loose text-justify mb-6">
-          To facilitate algorithmic trading and live data synchronization, the API exposes a low-latency WebSocket connection. This persistent channel streams encrypted state updates directly from the Aztec testnet, allowing client applications to maintain perfect synchronicity with the network without the overhead of continuous HTTP polling. The WebSocket connection requires an initial handshake carrying the cryptographic session token to validate the connection upgrade.
-        </p>
-
-        <p className="text-sm md:text-base text-zinc-400 leading-loose text-justify mb-6">
-          Developers utilizing the WebSocket endpoints must be prepared to handle transient disconnections gracefully. The network architecture mandates aggressive connection culling for dormant sockets to preserve core routing bandwidth. Implementing a standard exponential backoff algorithm for reconnection attempts is highly recommended for all institutional integrations.
-        </p>
-      </div>
+        <div className="space-y-24">
+          {ALL_DOCS.map(doc => (
+            <div key={doc.id} id={doc.id} className="scroll-mt-24 space-y-16 pt-8 border-t-2 border-black/5 first:border-0 first:pt-0">
+              <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#050505] mb-8">
+                {doc.title}
+              </h2>
+              
+              <div className="space-y-14">
+                {doc.sections.map((section, idx) => {
+                  const secId = section.id || `${doc.id}-sec-${idx}`;
+                  return (
+                    <section key={secId} id={secId} className="scroll-mt-24">
+                      <h3 className="text-2xl md:text-3xl font-black tracking-tight text-[#050505] mb-5">
+                        {section.title}
+                      </h3>
+                      <div className="space-y-4 text-[15px] md:text-base text-[#050505]/70 leading-relaxed">
+                        {section.paragraphs.map((p, i) => (
+                          <p key={i}>{p}</p>
+                        ))}
+                      </div>
+                      {section.bullets && section.bullets.length > 0 && (
+                        <ul className="mt-5 space-y-3 pl-0 list-none">
+                          {section.bullets.map((b, i) => (
+                            <li
+                              key={i}
+                              className="flex gap-3 text-[14px] md:text-[15px] text-[#050505]/65 leading-relaxed"
+                            >
+                              <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#050505] shrink-0" />
+                              <span>{b}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                      {section.callout && (
+                        <div className="mt-8 p-6 md:p-8 rounded-2xl border border-[#050505]/15 bg-[#050505]/[0.03]">
+                          <p className="font-mono text-[9px] font-black uppercase tracking-[0.25em] text-[#050505]/70 mb-2">
+                            {section.callout.title}
+                          </p>
+                          <p className="text-[14px] text-[#050505]/65 leading-relaxed mb-4">{section.callout.body}</p>
+                          {section.callout.href && section.callout.hrefLabel && (
+                            <a
+                              href={section.callout.href}
+                              className="inline-flex font-mono text-[10px] font-black uppercase tracking-widest text-[#050505] hover:opacity-70 transition-opacity"
+                            >
+                              {section.callout.hrefLabel} →
+                            </a>
+                          )}
+                        </div>
+                      )}
+                    </section>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      </main>
     </div>
   );
 }
