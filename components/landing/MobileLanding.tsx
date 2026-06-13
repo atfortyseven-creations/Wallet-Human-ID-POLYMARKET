@@ -592,7 +592,7 @@ export function MobileLanding() {
   const effectiveAddress = linkedAddress || address || cookieAddress || undefined;
 
   // Auto-sync for mobile camera scans
-  const uuidParam = searchParams?.get('uuid');
+  const uuidParam = searchParams?.get('uuid') || searchParams?.get('s');
   const [autoSyncStarted, setAutoSyncStarted] = useState(false);
 
   useEffect(() => {

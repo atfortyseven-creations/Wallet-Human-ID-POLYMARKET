@@ -97,8 +97,8 @@ function isSessionQr(text: string): boolean {
     if (
       shortUuid &&
       (url.pathname.includes('/connect') || url.pathname.includes('/mobile-kyc')) &&
-      // Basic UUID-like validation (hex + hyphens, 8-36 chars) — avoids false positives
-      /^[0-9a-f]{8}(-[0-9a-f]{4}){0,4}-?[0-9a-f]{4,12}$/i.test(shortUuid)
+      // Looser validation to allow crypto.randomUUID OR base36 timestamps (Date.now().toString(36))
+      /^[0-9a-z-]{6,36}$/i.test(shortUuid)
     ) {
       return true;
     }
