@@ -31,11 +31,10 @@ const ENDPOINT_LIMITS: Record<string, { max: number; windowSec: number }> = {
   '/api/defi/copy-trading':   { max: 30,   windowSec: 60    },  // 30 per minute
   '/api/defi/deposit':        { max: 20,   windowSec: 60    },
   '/api/polymarket':          { max: 100,  windowSec: 60    },
-  // [ANDROID FIX] Increased from 2040/min. Android auth flow legitimately makes
-  // 3-4 requests per cycle: verify-session + system-verify + optional nonce + siwe-verify.
-  // At 20/min, 5 concurrent users from same corporate NAT IP would hit the limit
-  // immediately, causing a cascade of 429s on login. Session cookie compound-key
-  // mitigates this for returning users, but first-time auth has no session yet.
+  // Desktop polls every 2 seconds. A user on the same WiFi (NAT) scanning with their phone 
+  // shares the IP. We must exempt qr-poll from the strict /api/auth limit.
+  '/api/auth/qr-poll':        { max: 200,  windowSec: 60    },
+  '/api/auth/qr-mobile-link': { max: 30,   windowSec: 60    },
   '/api/auth':                { max: 40,   windowSec: 60    },
   // [ANDROID FIX] SIWE endpoints separated from /api/auth for granular control.
   // The nonce endpoint generates a unique nonce per request  rate limit is tighter
