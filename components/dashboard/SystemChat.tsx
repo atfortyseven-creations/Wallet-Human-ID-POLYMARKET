@@ -587,67 +587,35 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
               const isMobile = typeof navigator !== 'undefined' &&
                 /iPad|iPhone|iPod|Android/.test(navigator.userAgent);
 
-              // ── Retry loop for Unknown RPC errors (WalletConnect v2 bug) ──
-              let rpcAttempts = 0;
-              const maxRpcAttempts = 4;
-              while (rpcAttempts < maxRpcAttempts) {
-                try {
-                  // Primary: Wagmi hook (Integrated with AppKit iOS deep-linking)
-                  // It is CRITICAL to use signMessageAsync first, because AppKit hooks into
-                  // wagmi to display the "Open Wallet" modal or trigger the iOS URI scheme.
-                  // Direct viem walletClient calls bypass this and fail silently on iOS.
-                  if (signMessageAsync) {
-                    const sig = await signMessageAsync({
-                      message: typeof msg === 'string' ? msg : { raw: msg } as any
-                    });
-                    // Post-signing reconnection grace period for mobile
-                    if (isMobile) await new Promise(r => setTimeout(r, 400));
-                    return sig;
-                  }
-
-                  // Fallback: viem walletClient (if wagmi hook is unavailable)
-                  const wc = walletClientRef.current;
-                  if (wc?.signMessage) {
-                    const sig = await wc.signMessage({
-                      // No explicit account — WalletConnect uses its own session account
-                      message: typeof msg === 'string' ? msg : { raw: msg as unknown as `0x${string}` },
-                    });
-                    if (isMobile) await new Promise(r => setTimeout(r, 400));
-                    return sig;
-                  }
-                } catch (sigErr: any) {
-                  rpcAttempts++;
-                  const errMsg = (sigErr?.message || '').toLowerCase();
-
-                  // WalletConnect v2 unknown RPC error — transient, retry with backoff
-                  const isRpcError = errMsg.includes('unknown rpc') || 
-                                     errMsg.includes('rpc error') || 
-                                     errMsg.includes('internal error') ||
-                                     errMsg.includes('socket') ||
-                                     errMsg.includes('timeout') ||
-                                     errMsg.includes('request rejected'); // Sometime mobile wallets close the socket early
-                                     
-                  if (isRpcError && rpcAttempts < maxRpcAttempts) {
-                    const waitMs = rpcAttempts * 1500;
-                    console.warn(`[XMTP] WalletConnect RPC error (attempt ${rpcAttempts}), retrying in ${waitMs}ms...`);
-                    await new Promise(r => setTimeout(r, waitMs));
-                    continue;
-                  }
-
-                  if (isRpcError) {
-                    throw new Error('Timeout de WalletConnect. Pulsa "Reconectar Billetera" o vuelve a intentarlo manualmente.');
-                  }
-                  if (errMsg.includes('reject') || errMsg.includes('deny') || errMsg.includes('user denied')) {
-                    throw sigErr; // propagate so outer catch handles it
-                  }
-                  if (errMsg.includes('connector') || errMsg.includes('not connected') || errMsg.includes('signmessage')) {
-                    throw new Error('Wallet did not respond to signature. Please reconnect your wallet.');
-                  }
-                  throw sigErr;
+              try {
+                // Primary: Wagmi hook (Integrated with AppKit iOS deep-linking)
+                if (signMessageAsync) {
+                  const sig = await signMessageAsync({
+                    message: typeof msg === 'string' ? msg : { raw: msg } as any
+                  });
+                  // Post-signing reconnection grace period for mobile
+                  if (isMobile) await new Promise(r => setTimeout(r, 400));
+                  return sig;
                 }
+
+                // Fallback: viem walletClient (if wagmi hook is unavailable)
+                const wc = walletClientRef.current;
+                if (wc?.signMessage) {
+                  const sig = await wc.signMessage({
+                    message: typeof msg === 'string' ? msg : { raw: msg as unknown as `0x${string}` },
+                  });
+                  if (isMobile) await new Promise(r => setTimeout(r, 400));
+                  return sig;
+                }
+                throw new Error('Wallet connection missing');
+              } catch (sigErr: any) {
+                const errMsg = (sigErr?.message || '').toLowerCase();
+                if (errMsg.includes('reject') || errMsg.includes('deny') || errMsg.includes('user denied')) {
+                  throw new Error('Firma rechazada. Pulsa el botón para reintentar.');
+                }
+                // Any RPC timeout or socket error from Wagmi
+                throw new Error('Timeout de WalletConnect. Pulsa "Reconectar Billetera" o vuelve a intentarlo.');
               }
-              // Should not reach here
-              throw new Error('Firma fallida después de 4 intentos. Abre tu wallet manualmente y reintenta.');
             },
           };
         }

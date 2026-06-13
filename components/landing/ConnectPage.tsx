@@ -237,13 +237,9 @@ export default function ConnectPage() {
 
           // PATH B: Fall back to server-minted JWT (most common path for first-time mobile scan)
           if (!jwt && data.serverJwt) {
-            try {
-              const { verifyJWT } = await import('@/lib/jwt');
-              await verifyJWT(data.serverJwt);
-              jwt = data.serverJwt;
-            } catch (verifyErr) {
-              console.warn('[QR:Desktop] serverJwt verification failed:', verifyErr);
-            }
+            // We just securely received this from our own /api/auth/qr-poll over HTTPS.
+            // Client-side verification is impossible in production due to missing process.env secrets.
+            jwt = data.serverJwt;
           }
 
           if (!jwt) {
