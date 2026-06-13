@@ -283,6 +283,8 @@ export default function ConnectPage() {
                   try {
                     sessionStorage.setItem('system_wallet_addr', normalized);
                     sessionStorage.setItem('portfolio_unlocked', 'true');
+                    sessionStorage.removeItem('__disconnected__');
+                    localStorage.removeItem('__disconnected__');
                   } catch {}
                   // Also set system_handshake client-side as belt-and-suspenders
                   document.cookie = `system_handshake=${normalized}; path=/; max-age=604800; SameSite=Lax`;
