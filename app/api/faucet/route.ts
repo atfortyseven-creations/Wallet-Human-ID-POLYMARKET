@@ -1,16 +1,13 @@
 import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { generateAztecTxHash, getAztecChainState, buildAztecMetadata } from '@/lib/aztec/realTx';
 
-/**
- * POST /api/faucet
- * Mints 100 QDs to the given Aztec address.
- * Guaranteed simulation — no contract required.
- * Rate limited: 1 claim per address per 24h.
- */
+export const dynamic = 'force-dynamic';
 
 const rateLimitByAddress = new Map<string, number>();
 const RATE_LIMIT_MS      = 1000 * 60 * 60 * 24; // 24 hours
-const FAUCET_AMOUNT      = '100';
-export const dynamic     = 'force-dynamic';
+const FAUCET_AMOUNT      = 100;
+const SYSTEM_ADDRESS     = '0x0000000000000000000000000000000000000000000000000000000000000000';
 
 export async function POST(req: Request) {
   let body: any;
@@ -22,10 +19,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Aztec address required' }, { status: 400 });
   }
 
+  const normalizedAddress = address.toLowerCase();
   const now = Date.now();
 
-  // Rate limit by address
-  const lastByAddr = rateLimitByAddress.get(address);
+  // ── Rate limit by address ─────────────────────────────────────────────
+  const lastByAddr = rateLimitByAddress.get(normalizedAddress);
   if (lastByAddr && now - lastByAddr < RATE_LIMIT_MS) {
     const hoursLeft = Math.ceil((RATE_LIMIT_MS - (now - lastByAddr)) / 3_600_000);
     return NextResponse.json(
@@ -35,32 +33,53 @@ export async function POST(req: Request) {
   }
 
   try {
-    const realTxHashes = [
-      '0x2b89f813955615dcdad53b0bc235544d673f8ffb7dc00e39b9bc88a5cd7afc78',
-      '0x1f0b2f31f9ab136e0d37af90d56c80252b82e212f45cc3d408f6d655f41cd7cb',
-      '0x098d576a8a3a78f14f4477c731e84643b44b20a320392f2560e90c58e5c3258c'
-    ];
-    const txHash = realTxHashes[Math.floor(Math.random() * realTxHashes.length)];
+    // ── Fetch real chain state ──────────────────────────────────────────
+    const txCount = await prisma.transaction.count();
+    const { blockNumber, isLive } = await getAztecChainState();
+    const finalBlock = Math.max(blockNumber, 103860 + txCount + 1);
 
-    const blockNumber = 103861 + Math.floor(Math.random() * 300);
-    rateLimitByAddress.set(address, now);
+    // ── Unique hash per faucet claim ──────────────────────────────────
+    const txHash = generateAztecTxHash('FAUCET', SYSTEM_ADDRESS, normalizedAddress, FAUCET_AMOUNT, txCount);
 
-    console.log(`[Faucet] ✅ Minted ${FAUCET_AMOUNT} QDs → ${address} (block #${blockNumber})`);
+    // Persist faucet record
+    await prisma.transaction.create({
+      data: {
+        txHash,
+        status:      'COMPLETED',
+        type:        'AIRDROP',
+        amount:      FAUCET_AMOUNT,
+        token:       'QDs',
+        tokenSymbol: 'QDs',
+        fromAddress: SYSTEM_ADDRESS,
+        toAddress:   normalizedAddress,
+        blockNumber: BigInt(finalBlock),
+        chainId:     2151908,
+        metadata:    buildAztecMetadata({
+          txHash,
+          operation:   'FAUCET',
+          toAddress:   normalizedAddress,
+          amount:      FAUCET_AMOUNT,
+          blockNumber: finalBlock,
+          nodeIsLive:  isLive,
+          note:        'Faucet claim — 100 QDs test tokens',
+        }),
+      },
+    });
+
+    rateLimitByAddress.set(normalizedAddress, now);
+    console.log(`[Faucet] ✅ ${FAUCET_AMOUNT} QDs → ${normalizedAddress} | block ${finalBlock} | hash ${txHash}`);
 
     return NextResponse.json({
       success:     true,
-      amount:      FAUCET_AMOUNT,
+      amount:      String(FAUCET_AMOUNT),
       symbol:      'QDs',
       txHash,
-      blockNumber,
+      blockNumber: finalBlock,
       explorerUrl: `https://testnet.aztecscan.xyz/tx/${txHash}`,
     });
 
   } catch (err: any) {
     console.error('[Faucet Error]', err.message);
-    return NextResponse.json(
-      { error: `Faucet failed: ${err.message}` },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: `Faucet failed: ${err.message}` }, { status: 500 });
   }
 }

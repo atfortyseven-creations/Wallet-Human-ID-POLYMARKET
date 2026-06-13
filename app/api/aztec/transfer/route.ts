@@ -1,24 +1,12 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import crypto from 'crypto';
-
-/**
- * POST /api/aztec/transfer
- *
- * Registers a QDs transfer between two Aztec addresses.
- * - Persists to DB (Transaction model) so the recipient can detect the credit.
- * - Returns a real Aztec testnet tx hash from the pool.
- *
- * Body: { from: string, to: string, amount: string }
- */
-
-const rateLimitMap = new Map<string, number>();
-const addressLockMap = new Set<string>(); // Mutex to prevent Double-Spend race conditions
-const RATE_LIMIT_MS = 10_000; // 10s between transfers per IP
+import { generateAztecTxHash, getAztecChainState, buildAztecMetadata } from '@/lib/aztec/realTx';
 
 export const dynamic = 'force-dynamic';
 
-// Hash generation is now fully cryptographic and deterministic (No mock pools)
+const rateLimitMap = new Map<string, number>();
+const addressLockMap = new Set<string>();
+const RATE_LIMIT_MS = 10_000;
 
 export async function POST(req: Request) {
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || '127.0.0.1';
@@ -42,17 +30,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'from, to, and amount are required' }, { status: 400 });
   }
 
-  // Accept any valid 0x-prefixed hex address (40 to 64 chars — covers both EVM and Aztec formats)
   const aztecRegex = /^0x[a-fA-F0-9]{40,64}$/;
   if (!aztecRegex.test(from) || !aztecRegex.test(to)) {
     return NextResponse.json({ error: 'Invalid address format (must be 0x followed by 40-64 hex chars)' }, { status: 400 });
   }
 
   const normalizedFrom = from.toLowerCase();
-  const normalizedTo = to.toLowerCase();
+  const normalizedTo   = to.toLowerCase();
 
   if (normalizedFrom === normalizedTo) {
-    return NextResponse.json({ error: 'Self-transfers are physically impossible on L3 Validium' }, { status: 400 });
+    return NextResponse.json({ error: 'Self-transfers are not allowed' }, { status: 400 });
   }
 
   const parsedAmount = parseFloat(amount);
@@ -60,106 +47,85 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'amount must be a positive number' }, { status: 400 });
   }
 
-  // ─── COSMIC MUTEX LOCK (Double-Spend Prevention) ─────────────────────
   if (addressLockMap.has(normalizedFrom)) {
     return NextResponse.json({ error: 'Concurrent transaction detected. Please wait.' }, { status: 409 });
   }
   addressLockMap.add(normalizedFrom);
 
   try {
-    // ─── LEDGER SECURITY CHECK (Zero-Trust Validation) ───────────────────
-    // We cannot trust the client's balance. Calculate absolute truth.
+    // ── Zero-trust balance check ─────────────────────────────────────────────
     const [receivedAgg, sentAgg] = await Promise.all([
       prisma.transaction.aggregate({
         where: { toAddress: normalizedFrom, token: 'QDs', status: 'COMPLETED' },
-        _sum: { amount: true }
+        _sum: { amount: true },
       }),
       prisma.transaction.aggregate({
         where: { fromAddress: normalizedFrom, token: 'QDs', status: 'COMPLETED' },
-        _sum: { amount: true }
-      })
+        _sum: { amount: true },
+      }),
     ]);
-    const genesisAmount = 0;
-    // Fix floating point precision artifacts by rounding to 6 decimal places
-    const rawBalance = genesisAmount + (receivedAgg._sum.amount || 0) - (sentAgg._sum.amount || 0);
-    const trueBalance = Math.round(rawBalance * 1000000) / 1000000;
+    const rawBalance  = (receivedAgg._sum.amount || 0) - (sentAgg._sum.amount || 0);
+    const trueBalance = Math.round(rawBalance * 1_000_000) / 1_000_000;
 
     if (parsedAmount > trueBalance + 0.000001) {
-      console.warn(`[Aztec Security] 🚨 Exploit blocked: ${normalizedFrom} attempted to send ${parsedAmount} QDs, but only has ${trueBalance} QDs.`);
       return NextResponse.json({ error: 'Insufficient balance on ledger' }, { status: 400 });
     }
 
-    console.log(`[Aztec Transfer] ZK proof generation for ${amount} QDs → ${to} (Sender Balance Verified: ${trueBalance})`);
+    // ── Fetch real chain state from Aztec testnet ────────────────────────────
+    const txCount  = await prisma.transaction.count();
+    const { blockNumber, isLive } = await getAztecChainState();
+    const finalBlock = Math.max(blockNumber, 103860 + txCount + 1);
 
-    // ─── L3 VALIDIUM DETERMINISTIC STATE (NO MOCK DATA) ───────────────────
-    const txCount = await prisma.transaction.count();
-    let blockNumber = 103860 + txCount + 1; // Perfectly sequential block height
-    
-    // Cryptographically unique transaction hash based on payload + sequence
-    const payload = `${normalizedFrom}-${normalizedTo}-${parsedAmount}-${Date.now()}-${blockNumber}`;
-    // Array of known valid Aztec Testnet transaction hashes
-    const realTxHashes = [
-      '0x2b89f813955615dcdad53b0bc235544d673f8ffb7dc00e39b9bc88a5cd7afc78',
-      '0x1f0b2f31f9ab136e0d37af90d56c80252b82e212f45cc3d408f6d655f41cd7cb',
-      '0x098d576a8a3a78f14f4477c731e84643b44b20a320392f2560e90c58e5c3258c'
-    ];
-    // Deterministically pick one based on the payload
-    const hashIndex = Array.from(payload).reduce((acc, char) => acc + char.charCodeAt(0), 0) % realTxHashes.length;
-    let realTxHash = realTxHashes[hashIndex];
-    let uniqueDbHash = realTxHash;
+    // ── Generate unique tx hash (BN254 Fr-compatible) ────────────────────────
+    const txHash = generateAztecTxHash('TRANSFER', normalizedFrom, normalizedTo, parsedAmount, txCount);
 
-    // ─── QUANTUM SEQUENCER (PostgreSQL Off-Chain Simulation) ──────────────
-    // PXE native calls require the user's raw Fr secret key which is never
-    // transmitted to the server. We simulate ZK proof generation client-side
-    // latency and persist the record to PostgreSQL so the recipient's DB sync
-    // hook detects the credit in real-time.
-    await new Promise(resolve => setTimeout(resolve, 800)); // ZK proof sim
+    console.log(`[Aztec Transfer] ZK proof sim — ${parsedAmount} QDs → ${normalizedTo} | block ${finalBlock} | node ${isLive ? 'LIVE' : 'estimated'}`);
 
-
-    // ─── Persist TRANSFER record ───────────────────────────────────
+    // ── Persist to Postgres ──────────────────────────────────────────────────
     const newTx = await prisma.transaction.create({
       data: {
-        txHash:      uniqueDbHash,
+        txHash,
         status:      'COMPLETED',
-        type:        'TRANSFER', // A single unified record
+        type:        'TRANSFER',
         amount:      parsedAmount,
         token:       'QDs',
         tokenSymbol: 'QDs',
-        fromAddress: from.toLowerCase(),
-        toAddress:   to.toLowerCase(),
-        blockNumber: BigInt(blockNumber),
-        chainId:     2151908, // Aztec testnet chain ID
-        metadata: {
-          aztecTxHash: realTxHash,
-          explorerUrl: `https://testnet.aztecscan.xyz/tx/${realTxHash}`,
-          network:     'aztec-testnet',
-        },
+        fromAddress: normalizedFrom,
+        toAddress:   normalizedTo,
+        blockNumber: BigInt(finalBlock),
+        chainId:     2151908,
+        metadata:    buildAztecMetadata({
+          txHash,
+          operation:   'TRANSFER',
+          fromAddress: normalizedFrom,
+          toAddress:   normalizedTo,
+          amount:      parsedAmount,
+          blockNumber: finalBlock,
+          nodeIsLive:  isLive,
+          note:        `QDs transfer: ${parsedAmount} QDs`,
+        }),
       },
     });
 
     rateLimitMap.set(ip, Date.now());
-    console.log(`[Aztec Transfer] ✅ TX persisted to DB — hash: ${realTxHash} (DB: ${uniqueDbHash})`);
+    console.log(`[Aztec Transfer] ✅ TX saved — hash: ${txHash}`);
 
     return NextResponse.json({
       success:     true,
       id:          newTx.id,
-      txHash:      realTxHash, // Frontend receives the exact real hash
-      from,
-      to,
-      amount,
+      txHash,
+      from:        normalizedFrom,
+      to:          normalizedTo,
+      amount:      parsedAmount,
       symbol:      'QDs',
-      blockNumber,
-      explorerUrl: `https://testnet.aztecscan.xyz/tx/${realTxHash}`,
+      blockNumber: finalBlock,
+      explorerUrl: `https://testnet.aztecscan.xyz/tx/${txHash}`,
     });
 
   } catch (err: any) {
     console.error('[Aztec Transfer Error]', err.message);
-    return NextResponse.json(
-      { error: `Transfer failed: ${err.message}` },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: `Transfer failed: ${err.message}` }, { status: 500 });
   } finally {
-    // ─── RELEASE COSMIC MUTEX LOCK ─────────────────────────────────────────
     addressLockMap.delete(normalizedFrom);
   }
 }
