@@ -159,6 +159,7 @@ export async function POST(req: NextRequest) {
     await safeRedisSet(`qr-session:${uuid}`, sessionPayload, 'EX', 300);
 
     //  5. Also set human_session on this response for the mobile 
+    const cookieDomain = process.env.NODE_ENV === 'production' ? 'humanidfi.com' : undefined;
     const response = NextResponse.json({ success: true });
     response.cookies.set('human_session', jwt, {
       httpOnly: true,
@@ -166,6 +167,7 @@ export async function POST(req: NextRequest) {
       sameSite: 'lax',
       maxAge: 604800,
       path: '/',
+      domain: cookieDomain,
     });
     response.cookies.set('system_handshake', walletAddress, {
       httpOnly: false,
@@ -173,6 +175,7 @@ export async function POST(req: NextRequest) {
       sameSite: 'lax',
       maxAge: 604800,
       path: '/',
+      domain: cookieDomain,
     });
 
     return response;

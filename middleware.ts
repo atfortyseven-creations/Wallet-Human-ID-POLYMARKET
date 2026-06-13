@@ -199,7 +199,16 @@ export default async function middleware(request: NextRequest) {
          // [ABYSMALLY COMPLEX OPTIMIZATION]: Defeat NAT overlap in Distributed Rate Limiter
          const uaHash = request.headers.get('user-agent') ? Array.from(request.headers.get('user-agent')!).reduce((s, c) => Math.imul(31, s) + c.charCodeAt(0) | 0, 0).toString(16) : 'noua';
          const sessionToken = request.cookies.get('whale_session')?.value || request.cookies.get('system_handshake')?.value;
-         const distributedKey = sessionToken ? `sess:${sessionToken.slice(0, 32)}` : `ip:${ip}:ua:${uaHash}`;
+         
+         // Extract uuid for qr-poll to prevent NAT blocking unauthenticated QR generation
+         let qrUuid = '';
+         if (pathname.startsWith('/api/auth/qr-poll')) {
+           qrUuid = request.nextUrl.searchParams.get('uuid') || '';
+         }
+         
+         const distributedKey = sessionToken 
+            ? `sess:${sessionToken.slice(0, 32)}` 
+            : (qrUuid ? `qr:${qrUuid}` : `ip:${ip}:ua:${uaHash}`);
          
          const limitCheck = await checkRateLimit(distributedKey, resolvedTier);
         if (!limitCheck.success) {

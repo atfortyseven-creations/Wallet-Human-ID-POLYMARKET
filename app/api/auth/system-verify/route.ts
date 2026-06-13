@@ -78,12 +78,15 @@ export async function POST(req: NextRequest) {
             }
         });
 
+        const cookieDomain = process.env.NODE_ENV === 'production' ? 'humanidfi.com' : undefined;
+
         const secureCookieBase = {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax' as const,
             maxAge: 604800, // 7 days
             path: '/',
+            domain: cookieDomain,
         };
 
         // Set all three session cookies so every auth gate works
@@ -97,6 +100,7 @@ export async function POST(req: NextRequest) {
             sameSite: 'lax',
             path: '/',
             maxAge: 604800,
+            domain: cookieDomain,
         });
 
         console.log(`[Auth:OK] Session established → ${rawAddress} (tier=${user.tier})`);

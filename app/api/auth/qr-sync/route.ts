@@ -109,6 +109,7 @@ export async function POST(req: Request) {
             issuedAt: new Date().toISOString()
         });
 
+        const cookieDomain = process.env.NODE_ENV === 'production' ? 'humanidfi.com' : undefined;
         const response = NextResponse.json({ status: 'queued' });
         
         response.cookies.set('human_session', jwt, {
@@ -117,12 +118,14 @@ export async function POST(req: Request) {
             sameSite: 'lax',
             maxAge: 604800,
             path: '/',
+            domain: cookieDomain,
         });
 
         response.cookies.set('system_handshake', normalizedAddress, {
             path: '/',
             maxAge: 604800,
             sameSite: 'lax',
+            domain: cookieDomain,
         });
 
         return response;

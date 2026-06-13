@@ -422,10 +422,15 @@ export async function runWAF(req: NextRequest): Promise<NextResponse | null> {
     const uaHash = ua ? Array.from(ua).reduce((s, c) => Math.imul(31, s) + c.charCodeAt(0) | 0, 0).toString(16) : 'noua';
     
     // Use session token if available (perfect isolation), otherwise fallback to IP + UA Hash
-    const rateLimitKey = sessionCookie 
+    let rateLimitKey = sessionCookie 
         ? `waf:sess:${sessionCookie.slice(0, 32)}:${prefix}` 
         : `waf:ip:${ip}:ua:${uaHash}:${prefix}`;
         
+    if (pathname.startsWith('/api/auth/qr-poll')) {
+      const qrUuid = req.nextUrl.searchParams.get('uuid');
+      if (qrUuid) rateLimitKey = `waf:qr:${qrUuid}:${prefix}`;
+    }
+    
     // Apple IP block (17.0.0.0/8) is massively NAT'd via iCloud Private Relay.
     // To prevent false positives while maintaining security, dynamically scale limits.
     const isAppleNAT = ip.startsWith('17.');

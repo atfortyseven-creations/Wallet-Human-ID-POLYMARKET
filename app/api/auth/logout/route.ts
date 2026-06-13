@@ -10,6 +10,8 @@ export async function POST(request: NextRequest) {
   // so the original cookie is never cleared — users stay authenticated after Disconnect.
   //
   // Rule: delete whale_session with Strict, everything else with Lax.
+  const cookieDomain = process.env.NODE_ENV === "production" ? "humanidfi.com" : undefined;
+
   const strictBase = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -17,6 +19,7 @@ export async function POST(request: NextRequest) {
     path: "/",
     maxAge: 0,
     expires: new Date(0),
+    domain: cookieDomain,
   };
 
   const laxBase = {
@@ -26,6 +29,7 @@ export async function POST(request: NextRequest) {
     path: "/",
     maxAge: 0,
     expires: new Date(0),
+    domain: cookieDomain,
   };
 
   const laxPublic = {
@@ -35,6 +39,7 @@ export async function POST(request: NextRequest) {
     path: "/",
     maxAge: 0,
     expires: new Date(0),
+    domain: cookieDomain,
   };
 
   // whale_session: created with SameSite=Strict by middleware — MUST delete with Strict
@@ -67,21 +72,23 @@ export async function POST(request: NextRequest) {
   // These headers arrive alongside the cookies above — the browser processes all of them.
   const expiredDate = "Thu, 01 Jan 1970 00:00:00 GMT";
   const secure = process.env.NODE_ENV === "production" ? "; Secure" : "";
+  const domainStr = process.env.NODE_ENV === "production" ? "; Domain=humanidfi.com" : "";
+
   response.headers.append(
     "Set-Cookie",
-    `whale_session=; Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Strict`
+    `whale_session=; Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Strict${domainStr}`
   );
   response.headers.append(
     "Set-Cookie",
-    `whale_session=; Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Lax`
+    `whale_session=; Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Lax${domainStr}`
   );
   response.headers.append(
     "Set-Cookie",
-    `human_session=; Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Lax`
+    `human_session=; Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Lax${domainStr}`
   );
   response.headers.append(
     "Set-Cookie",
-    `system_handshake=; Path=/; Expires=${expiredDate}${secure}; SameSite=Lax`
+    `system_handshake=; Path=/; Expires=${expiredDate}${secure}; SameSite=Lax${domainStr}`
   );
 
   return response;

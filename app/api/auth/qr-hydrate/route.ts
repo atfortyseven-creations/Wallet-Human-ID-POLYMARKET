@@ -27,12 +27,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'JWT payload missing valid address' }, { status: 400 });
     }
 
+    const cookieDomain = process.env.NODE_ENV === 'production' ? 'humanidfi.com' : undefined;
+
     const secureCookieBase = {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax' as const,
       maxAge: 604800, // 7 days — identical to system-verify
       path: '/',
+      domain: cookieDomain,
     };
 
     const response = NextResponse.json({ success: true });
@@ -53,6 +56,7 @@ export async function POST(req: NextRequest) {
       sameSite: 'lax',
       maxAge: 604800,
       path: '/',
+      domain: cookieDomain,
     });
 
     console.log(`[QR:Hydrate] Desktop session established for ${address}`);
