@@ -16,26 +16,17 @@ export async function completeSessionHandshake(
 
   try {
     const url = new URL(decodedText.trim());
-    // NEW SHORT FORMAT: ?s=UUID  (pub key stored on server via qr-init)
+    // NEW STATELESS FORMAT: ?s=UUID&p=Base64PubKey
     const shortUuid = url.searchParams.get('s');
     if (shortUuid) {
       uuid = shortUuid;
-      // Fetch the ephemeral public key from the server
-      try {
-        const keyRes = await fetch(`/api/auth/qr-session-key?uuid=${encodeURIComponent(shortUuid)}`);
-        if (!keyRes.ok) {
-          return { ok: false, message: 'QR session not found or expired. Please refresh the QR code on the desktop.' };
-        }
-        const keyData = await keyRes.json();
-        ephemeralPub = keyData.pub ?? null;
-        isECDH = keyData.ecdh === '1';
-        const exp = keyData.exp;
-        if (exp && Date.now() > parseInt(exp, 10)) {
-          return { ok: false, message: 'QR code has expired. Please refresh it on the desktop terminal.' };
-        }
-      } catch {
-        return { ok: false, message: 'Could not contact server to validate QR code. Check your connection.' };
+      // We read the public key directly from the URL to avoid server dependency issues on Edge/Railway
+      const pParam = url.searchParams.get('p');
+      if (!pParam) {
+        return { ok: false, message: 'Invalid QR format. Missing public key.' };
       }
+      ephemeralPub = pParam;
+      isECDH = url.searchParams.get('ecdh') === '1';
     } else {
       // LEGACY FORMAT: pub embedded in URL params
       uuid = url.searchParams.get('uuid') || url.searchParams.get('session');

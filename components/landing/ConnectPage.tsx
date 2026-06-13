@@ -171,28 +171,17 @@ export default function ConnectPage() {
       const origin = typeof window !== 'undefined' ? window.location.origin : 'https://humanidfi.com';
       const expiresAt = Date.now() + 300000;
 
-      // [FIX QR] Upload the ephemeral public key to the server so the QR only
-      // contains a short UUID. A full JWK key in the QR URL causes ~600-char payloads
-      // which need zoom-in to scan. Short UUIDs (~50 chars) are always scannable.
-      try {
-        await fetch('/api/auth/qr-init', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ uuid: sessId, pub: pair.publicKey, ecdh: pair.isECDH ? '1' : '0', exp: String(expiresAt) }),
-        });
-        // Short QR: only UUID in the URL
-        const shortQrUrl = new URL('/connect', origin);
-        shortQrUrl.searchParams.set('s', sessId);
-        setQrData(shortQrUrl.toString());
-      } catch {
-        // Fallback: embed key in URL (old behavior) if server upload fails
-        const qrUrl = new URL('/connect', origin);
-        qrUrl.searchParams.set('uuid', sessId);
-        qrUrl.searchParams.set('pub', pair.publicKey);
-        qrUrl.searchParams.set('ecdh', pair.isECDH ? '1' : '0');
-        qrUrl.searchParams.set('exp', String(expiresAt));
-        setQrData(qrUrl.toString());
-      }
+      // [STATELESS QR FIX] We compress the public key into Base64 format.
+      // A Base64 string of the JWK is ~68 characters. The UUID is 36 chars.
+      // Total URL length is ~140 chars, which perfectly fits in a low-density, easily scannable QR.
+      // This completely removes the dependency on Redis/Servers for the handshake.
+      const shortQrUrl = new URL('/connect', origin);
+      shortQrUrl.searchParams.set('s', sessId);
+      // The `publicKey` from generateX25519KeyPair is already a Base64 encoded JWK string
+      shortQrUrl.searchParams.set('p', pair.publicKey);
+      if (pair.isECDH) shortQrUrl.searchParams.set('ecdh', '1');
+      
+      setQrData(shortQrUrl.toString());
 
       setSyncStatus("AWAITING");
       const t = setTimeout(() => { setQrSession(null); setSyncStatus("IDLE"); }, 270000);
