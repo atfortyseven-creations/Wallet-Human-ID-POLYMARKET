@@ -934,9 +934,9 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
             const rendered = xmtpToRenderable(msg, selfInboxId);
             // Filter all internal XMTP protocol messages from the live stream
             if (typeof rendered.content === 'string') {
-              if (rendered.content.includes('initiatedByInboxId')) continue;
-              if (rendered.content.startsWith('synced ') && rendered.content.includes('from cursor Some')) continue;
-              if (rendered.content.startsWith('{"initiatedByInboxId')) continue;
+              const text = rendered.content.toLowerCase();
+              if (text.includes('initiatedbyinboxid')) continue;
+              if (text.includes('synced') && text.includes('cursor')) continue;
             }
             const hydratedList = hydrateMessages([rendered]);
             if (hydratedList.length === 0) continue;
@@ -1043,8 +1043,9 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
           .map((m: any) => xmtpToRenderable(m, selfInboxId))
           .filter((m: any) => {
              if (typeof m.content === 'string') {
-                 if (m.content.includes('initiatedByInboxId')) return false;
-                 if (m.content.startsWith('synced ') && m.content.includes('from cursor Some')) return false;
+                 const text = m.content.toLowerCase();
+                 if (text.includes('initiatedbyinboxid')) return false;
+                 if (text.includes('synced') && text.includes('cursor')) return false;
              }
              return true;
           })
