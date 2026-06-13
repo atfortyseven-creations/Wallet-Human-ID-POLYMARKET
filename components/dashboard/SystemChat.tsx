@@ -9,6 +9,7 @@ import { ethers } from 'ethers';
 import { QrCode, X, ChevronLeft, Menu, Settings, LogOut, ArrowLeft, UserX, UserCheck, Download, Trash2, UserPlus, User, MoreVertical, ExternalLink, Smartphone } from 'lucide-react';
 import { toast } from 'sonner';
 import { useSystemSignOut } from '@/hooks/useSystemSignOut';
+import { RemoteLottie } from '@/components/ui/RemoteLottie';
 // NOTE: QDs state is sourced from AztecNativeContext (DB polling) — no local store needed.
 
 // ─── iOS / Android detection ───────────────────────────────────────────────
@@ -486,23 +487,26 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
 
   //  Auto-scroll & Mobile Keyboard Stability 
   useEffect(() => {
-    const handleResize = () => {
-      bottomRef.current?.scrollIntoView({ behavior: 'auto' });
+    // Use rAF to throttle scroll — prevents layout thrash on mobile when
+    // keyboard opens/closes rapidly (can cause O(n) re-renders on window resize otherwise)
+    let rafId: number | null = null;
+    const doScroll = () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        bottomRef.current?.scrollIntoView({ behavior: 'auto' });
+      });
     };
-    
-    // Initial scroll when messages change
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-
-    // Handle viewport changes (mobile keyboard open/close)
-    window.addEventListener('resize', handleResize);
+    doScroll();
+    // ONLY listen to visualViewport (keyboard open/close), NOT window resize
+    // Window resize fires on every orientation change + soft keyboard + scroll on mobile
+    // causing cascading re-renders. visualViewport is precise and low-noise.
     if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', handleResize);
+      window.visualViewport.addEventListener('resize', doScroll, { passive: true });
     }
-
     return () => {
-      window.removeEventListener('resize', handleResize);
+      if (rafId !== null) cancelAnimationFrame(rafId);
       if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', handleResize);
+        window.visualViewport.removeEventListener('resize', doScroll);
       }
     };
   }, [messages]);
@@ -779,19 +783,6 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
     const existingSeed = typeof localStorage !== 'undefined' && address
       ? localStorage.getItem(`whale_chat_seed_${address.toLowerCase()}`)
       : null;
-
-    // connector present = external wallet (MetaMask injected or WalletConnect).
-    // These require an interactive signature — do NOT auto-init.
-    const isExternalWallet = !!connector;
-
-    if (isExternalWallet && !hasLocalWallet && !existingSeed) {
-      // External wallet connected but no local signing material.
-      // Set a specific error so the UI shows the manual "Connect to Whale Chat" button.
-      if (!xmtpReady && !xmtpInitLock.current) {
-        setXmtpError('NEEDS_MANUAL_INIT');
-      }
-      return;
-    }
 
     if (needsWalletReconnect && !existingSeed) return;
 
@@ -1689,8 +1680,10 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                   <div className="p-5 border-t border-black/6 bg-white flex flex-col items-center justify-center gap-3 shrink-0">
                     {xmtpInitializing ? (
                       <>
-                        <div className="w-5 h-5 border-2 border-black/10 border-t-black/60 rounded-full animate-spin" />
-                        <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest text-center">
+                        <div className="w-24 h-24 mb-4">
+                          <RemoteLottie path="/system-shots/LOTTIECHAT/f11799a0-d141-11ee-97cd-efa7b53770fd.json" className="w-full h-full" />
+                        </div>
+                        <p className="text-[10px] font-mono text-black/40 uppercase tracking-widest text-center mt-2">
                           Activating secure inbox
                         </p>
                       </>

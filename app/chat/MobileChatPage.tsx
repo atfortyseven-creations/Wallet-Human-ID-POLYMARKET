@@ -9,16 +9,6 @@ import { UniversalEliteWallpaper } from "@/components/shared/UniversalEliteWallp
 // ─── Chat stack ─────────────────────────────────────────────────────────────
 // IMPORTANT: We use ChatClientPage (which includes WhaleChatPINGate →
 // WhaleChatInitPhase → SystemChat) instead of rendering SystemChat directly.
-// Previously MobileChatPage rendered SystemChat raw, completely bypassing the
-// PIN gate. This meant Humanity Ledger users on mobile landed in SystemChat's
-// "needsWalletReconnect" screen and tapping "Connect Wallet" opened AppKit
-// which did nothing (HL users are not WalletConnect users).
-//
-// With ChatClientPage:
-//   1. WhaleChatPINGate detects the HL system_session_v2 session.
-//   2. If session is valid AND PIN is unlocked → auto-passes, opens chat.
-//   3. If PIN is needed → shows the PIN pad (correct UX).
-//   4. isChecking spinner prevents any premature "No Wallet Connected" flash.
 const ChatClientPage = dynamic(
   () => import("@/components/chat/ChatClientPage"),
   {
@@ -71,13 +61,17 @@ export default function MobileChatPage() {
       const update = () => {
         if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
         rafRef.current = requestAnimationFrame(() => {
+          // Use visualViewport height — this correctly shrinks when keyboard opens
+          // and expands when it closes. offsetTop accounts for iOS address bar offset.
           setViewportHeight(vv.height);
         });
       };
       update();
       vv.addEventListener("resize", update, { passive: true });
+      vv.addEventListener("scroll", update, { passive: true });
       return () => {
         vv.removeEventListener("resize", update);
+        vv.removeEventListener("scroll", update);
         if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
         document.body.style.overflow = '';
         document.body.style.position = '';
@@ -96,7 +90,17 @@ export default function MobileChatPage() {
     };
   }, [isMobile]);
 
-  if (!isMounted) return null;
+  // Before mount: show a subtle spinner — NEVER black flash
+  if (!isMounted) {
+    return (
+      <>
+        <UniversalEliteWallpaper />
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center">
+          <div className="w-8 h-8 rounded-full border-2 border-white/20 border-t-white/70 animate-spin" />
+        </div>
+      </>
+    );
+  }
 
   //  Desktop: simple flex-col filling the full viewport 
   if (!isMobile) {
@@ -141,6 +145,7 @@ export default function MobileChatPage() {
     top: 0,
     left: 0,
     right: 0,
+    // Use measured visualViewport height, fall back to 100dvh (better than 100vh on mobile)
     height: viewportHeight ? `${viewportHeight}px` : '100dvh',
     display: 'flex',
     flexDirection: 'column',
@@ -153,8 +158,15 @@ export default function MobileChatPage() {
     <>
       <UniversalEliteWallpaper />
       <div style={containerStyle} className="text-[#050505] dark:text-white">
-        {/*  Top Navigation Bar  */}
-        <header className="shrink-0 h-14 flex items-center justify-between px-5 bg-black/60 backdrop-blur-[60px] border-b border-white/5 z-10">
+        {/*  Top Navigation Bar with safe-area-inset for iPhone notch */}
+        <header
+          className="shrink-0 flex items-end justify-between px-5 bg-black/60 backdrop-blur-[60px] border-b border-white/5 z-10"
+          style={{
+            paddingTop: 'calc(env(safe-area-inset-top) + 0.75rem)',
+            paddingBottom: '0.75rem',
+            minHeight: '56px',
+          }}
+        >
           <Link
             href="/"
             className="flex items-center justify-center w-9 h-9 rounded-full hover:bg-white/5 text-white/50 transition-colors"
@@ -173,8 +185,10 @@ export default function MobileChatPage() {
           </div>
         </header>
 
-        {/* Full chat stack with PIN gate  wallpaper shows through */}
-        <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative">
+        {/* Full chat stack — wallpaper shows through. Safe-area-inset-bottom for home indicator */}
+        <div
+          className="flex-1 flex flex-col min-h-0 overflow-hidden relative"
+        >
           <ChatClientPage />
         </div>
       </div>
