@@ -12,7 +12,7 @@ import Link from 'next/link';
 export default function PortfolioPage() {
   const [sessionUnlocked, setSessionUnlocked] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const { isConnected: isSystemConnected, isChecking: isSystemChecking } = useSystemAccount();
+  const { address, isConnected: isSystemConnected, isChecking: isSystemChecking } = useSystemAccount();
   const { isLocked, passwordHash } = useWalletStore();
 
   useEffect(() => {
@@ -26,8 +26,7 @@ export default function PortfolioPage() {
 
   // [ATOMIC INDEXING] Log portfolio access once per day per wallet
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const address = (typeof window !== 'undefined' && (window as any).__wagmi_address__) || sessionStorage.getItem('wallet_address');
+    if (typeof window === 'undefined' || isSystemChecking || !isSystemConnected) return;
     if (!address) return;
     const key = `provenance_portfolio_${address}_${new Date().toDateString()}`;
     if (!sessionStorage.getItem(key)) {
@@ -36,10 +35,10 @@ export default function PortfolioPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ type: 'PORTFOLIO_ACCESS', details: { path: '/portfolio' } })
+        body: JSON.stringify({ type: 'PORTFOLIO_ACCESS', details: { path: '/portfolio', address } })
       }).catch(() => {});
     }
-  }, []);
+  }, [isSystemChecking, isSystemConnected]);
 
   // CRITICAL FIX: Never return null here — TitaniumGate sees a blank page and
   // redirects to /connect, which then redirects back to /portfolio → infinite loop.

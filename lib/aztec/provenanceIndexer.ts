@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { generateAztecTxHash } from './realTx';
-
-const prisma = new PrismaClient();
 
 export type ProvenanceEventType = 
   | 'IDENTITY_PROOF'
@@ -17,7 +15,7 @@ export async function logProvenanceEvent(
 ) {
   try {
     // Determine target based on event
-    let target = '0x0000000000000000000000000000000000000000000000000000000000000000';
+    let target = '0x0000000000000000000000000000000000000000';
     if (details.targetAddress) {
       target = details.targetAddress;
     }

@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
  *
  * Returns ALL real transactions produced on humanidfi.com, sorted newest first.
  * Never returns mocked or external data — only records from our PostgreSQL database.
- * Used by the Registry "HumanIDFi Activity" section.
+ * Used by the Registry "Whale Network Activity" section.
  */
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);

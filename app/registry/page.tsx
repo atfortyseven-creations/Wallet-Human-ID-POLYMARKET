@@ -610,7 +610,7 @@ function AztecAnalyticsTab({ isDark }: { isDark: boolean }) {
   );
 }
 
-// ─── HumanIDFi Real Activity Tab ──────────────────────────────────────────────
+// ─── Whale Network Real Activity Tab ──────────────────────────────────────────────
 
 const EVENT_TYPE_META: Record<string, { label: string; color: string; icon: string }> = {
   MINT_IDENTITY:  { label: "Identity Minted",     color: "#10b981", icon: "⬡" },
@@ -693,7 +693,7 @@ function HumanIDFiActivityTab({ isDark }: { isDark: boolean }) {
             Live Activity Feed
           </div>
           <div className="text-[20px] font-black tracking-tight" style={{ color: textClr }}>
-            HumanIDFi Real Transactions
+            Whale Network Real Transactions
           </div>
           <div className="text-[11px] mt-1" style={{ color: labelClr }}>
             {loading ? "Loading…" : `${total.toLocaleString()} events indexed from humanidfi.com`}
@@ -1233,7 +1233,7 @@ export default function RegistryPage() {
 
   const TABS: { id: TabType; label: string }[] = [
     { id: "map", label: "Network Map"},
-    { id: "humanidfi-activity", label: "⬡ HumanIDFi Activity"},
+    { id: "humanidfi-activity", label: "⬡ Whale Network Activity"},
     { id: "wallets", label: "Wallets"},
     { id: "block-roots", label: "Block Roots"},
     { id: "circuit-roots", label: "Circuit Roots"},
