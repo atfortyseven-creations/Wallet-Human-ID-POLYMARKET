@@ -434,14 +434,6 @@ export default function ConnectPage() {
   }, [isConnected, address, mounted, setLinked, signMessageAsync, authStatus]);
 
   const handleDesktopWallet = useCallback((walletId: string, rdns: string | null, installUrl: string | null) => {
-    if (walletId === "humanity-ledger-login") {
-        router.push("/login");
-        return;
-    }
-    if (walletId === "humanity-ledger-signup") {
-        router.push("/sign-up");
-        return;
-    }
     try { sessionStorage.removeItem("__disconnected__"); } catch {}
     try { localStorage.removeItem("__disconnected__"); } catch {}
     setPendingId(walletId);
@@ -457,20 +449,11 @@ export default function ConnectPage() {
   }, [connect, connectors, openAppKit]);
 
   const handleMobileWallet = useCallback((walletId: string) => {
-    if (walletId === "humanity-ledger-login-mobile") {
-        router.push("/login");
-        return;
-    }
-    if (walletId === "humanity-ledger-signup-mobile") {
-        router.push("/sign-up");
-        return;
-    }
     try { sessionStorage.removeItem("__disconnected__"); } catch {}
     try { localStorage.removeItem("__disconnected__"); } catch {}
     try { localStorage.setItem('system_pending_wakeup', '1'); } catch {}
     
-    // Instead of forcing the user into the dapp browser with metamask.app.link/dapp,
-    // we use AppKit which correctly uses standard Universal Links to sign and return to Chrome.
+    // Use AppKit which correctly uses standard Universal Links to sign and return to Chrome.
     openAppKit();
   }, [openAppKit]);
 
