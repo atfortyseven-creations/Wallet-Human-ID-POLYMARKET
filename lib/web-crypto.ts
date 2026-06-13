@@ -11,28 +11,54 @@ export async function generateX25519KeyPair() {
     isECDH = true;
     keyPair = (await crypto.subtle.generateKey({ name: 'ECDH', namedCurve: 'P-256' }, true, ['deriveKey', 'deriveBits'])) as CryptoKeyPair;
   }
-  
-  // Export as JWK to avoid 'raw' export errors on private keys (especially ECDH)
-  const pubJwk = await crypto.subtle.exportKey('jwk', keyPair.publicKey);
-  const privJwk = await crypto.subtle.exportKey('jwk', keyPair.privateKey);
-  
+
+  const pubJwk = await crypto.subtle.exportKey('jwk', keyPair.publicKey) as any;
+  const privJwk = await crypto.subtle.exportKey('jwk', keyPair.privateKey) as any;
+
+  // [QR DENSITY FIX] Export ONLY the raw public key coordinate(s).
+  // A full JWK serialized+base64 is ~136 chars including +/= chars that URL-encode
+  // to %2B/%2F/%3D, making a ~300-char URL and an extremely dense unreadable QR.
+  // Exporting just the x coord (or x,y for P-256) is 43-88 URL-safe base64url chars.
+  // The private key JWK is stored full because it never goes into a QR code.
+  const compactPub = isECDH
+    ? `${pubJwk.x},${pubJwk.y}`  // P-256 needs both coords (88 chars, no special chars)
+    : pubJwk.x;                   // X25519 only needs x (43-44 base64url chars)
+
   return {
-    publicKey: btoa(JSON.stringify(pubJwk)),
+    publicKey: compactPub,
     privateKey: btoa(JSON.stringify(privJwk)),
-    isECDH
+    isECDH,
   };
 }
 
-export async function deriveSharedSecret(privateKeyB64: string, publicKeyB64: string, isECDH: boolean = false) {
+export async function deriveSharedSecret(privateKeyB64: string, publicKeyCompact: string, isECDH: boolean = false) {
   const algo = isECDH ? { name: 'ECDH', namedCurve: 'P-256' } : { name: 'X25519' };
-  
-  const privJwk = JSON.parse(atob(privateKeyB64));
-  const pubJwk = JSON.parse(atob(publicKeyB64));
-  
+
+  const privJwk = JSON.parse(atob(privateKeyB64)) as any;
+
+  // Reconstruct the public JWK from the compact format.
+  // Compact = just the x coord (X25519) or "x,y" (P-256).
+  // Backward compat: if it looks like a legacy base64-encoded full JWK, decode it.
+  let pubJwk: any;
+  const isLegacyFull = publicKeyCompact.startsWith('ey'); // btoa'd JSON starts with 'ey'
+  if (isLegacyFull) {
+    pubJwk = JSON.parse(atob(publicKeyCompact));
+  } else if (isECDH) {
+    const [x, y] = publicKeyCompact.split(',');
+    pubJwk = { kty: 'EC', crv: 'P-256', x, y, ext: true, key_ops: [] };
+  } else {
+    // X25519 — only the x field
+    pubJwk = { kty: 'OKP', crv: 'X25519', x: publicKeyCompact, ext: true, key_ops: [] };
+  }
+
   const priv = await crypto.subtle.importKey('jwk', privJwk, algo, false, ['deriveBits']);
-  const pub = await crypto.subtle.importKey('jwk', pubJwk, algo, false, []);
-  
-  return await crypto.subtle.deriveBits(isECDH ? { name: 'ECDH', public: pub } : { name: 'X25519', public: pub }, priv, 256);
+  const pub  = await crypto.subtle.importKey('jwk', pubJwk,  algo, false, []);
+
+  return await crypto.subtle.deriveBits(
+    isECDH ? { name: 'ECDH', public: pub } : { name: 'X25519', public: pub },
+    priv,
+    256
+  );
 }
 
 export async function encryptAESGCM(sharedSecret: ArrayBuffer, data: string) {

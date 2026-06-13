@@ -766,27 +766,46 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
     }
   };
 
-  // Auto-init on mount
+  // Auto-init XMTP — ONLY for safe, local signers.
+  // [CRITICAL FIX] External wallets (MetaMask injected, WalletConnect) require a
+  // signature prompt to init XMTP. Calling this automatically when `isConnected`
+  // fires causes the OS-level "This site is trying to open another app" dialog
+  // to appear immediately and repeatedly (deep-link loop).
+  // Rule: auto-init ONLY when we can sign WITHOUT an external popup:
+  //   - isLocalSystemWallet + storePrivateKey  → in-memory ethers wallet, no popup
+  //   - existingSeed from QR handshake         → in-memory ethers wallet, no popup
+  // For connector-based wallets (MetaMask/WC), the user must click "Connect to Whale Chat".
   useEffect(() => {
-    if (needsWalletReconnect) {
-      // EXCEPTION: If they have a synced seed from a QR handshake, they CAN init XMTP
-      // even if their wallet extension (wagmi) isn't connected to this browser.
-      const existingSeed = typeof localStorage !== 'undefined' && address ? localStorage.getItem(`whale_chat_seed_${address.toLowerCase()}`) : null;
-      if (!existingSeed) return;
+    if (!isConnected || !address) return;
+
+    const hasLocalWallet = isLocalSystemWallet && storePrivateKey;
+    const existingSeed = typeof localStorage !== 'undefined' && address
+      ? localStorage.getItem(`whale_chat_seed_${address.toLowerCase()}`)
+      : null;
+
+    // connector present = external wallet (MetaMask injected or WalletConnect).
+    // These require an interactive signature — do NOT auto-init.
+    const isExternalWallet = !!connector;
+
+    if (isExternalWallet && !hasLocalWallet && !existingSeed) {
+      // External wallet connected but no local signing material.
+      // Set a specific error so the UI shows the manual "Connect to Whale Chat" button.
+      if (!xmtpReady && !xmtpInitLock.current) {
+        setXmtpError('NEEDS_MANUAL_INIT');
+      }
+      return;
     }
+
+    if (needsWalletReconnect && !existingSeed) return;
+
     initXmtpClient(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isConnected, address, isLocalSystemWallet, storePrivateKey, needsWalletReconnect]);
+  }, [isConnected, address, isLocalSystemWallet, storePrivateKey, needsWalletReconnect, connector]);
 
-  // Key fix: watch walletClient  when it goes from null  available, auto-trigger init
+  // Disabled auto-trigger on walletClient to prevent WalletConnect deep link loops on desktop.
+  // Users must click "Retry Connection" or wait for a deliberate manual action.
   useEffect(() => {
-    if (needsWalletReconnect) {
-      const existingSeed = typeof localStorage !== 'undefined' && address ? localStorage.getItem(`whale_chat_seed_${address.toLowerCase()}`) : null;
-      if (!existingSeed) return;
-    }
-    if (walletClient && isConnected && !xmtpReady && !xmtpInitLock.current) {
-      initXmtpClient(false);
-    }
+    // Intentionally empty. Manual action required.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletClient, needsWalletReconnect]);
 
@@ -806,23 +825,8 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [xmtpInitializing, xmtpReady, isSystemHandshake, connector, isLocalSystemWallet, storePrivateKey]);
 
-  // ── Retry XMTP init when user returns from wallet app ──
-  useEffect(() => {
-    const onVisibility = () => {
-      if (document.visibilityState !== 'visible') return;
-      if (!isConnected || xmtpReady) return;
-      if (needsWalletReconnect) {
-        const existingSeed = typeof localStorage !== 'undefined' && address ? localStorage.getItem(`whale_chat_seed_${address.toLowerCase()}`) : null;
-        if (!existingSeed) return;
-      }
-      if (!xmtpInitLock.current) {
-        initXmtpClient(false);
-      }
-    };
-    document.addEventListener('visibilitychange', onVisibility);
-    return () => document.removeEventListener('visibilitychange', onVisibility);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isConnected, xmtpReady, needsWalletReconnect, address]);
+  // ── Removed visibilitychange auto-retry to prevent desktop infinite loops ──
+  // (This was causing "This site is trying to open another app" bombardment)
 
   // ── Consume Offline Messages ──
   useEffect(() => {
@@ -1680,21 +1684,26 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                           </div>
                         ) : (
                           <>
-                            {xmtpError && (
+                            {xmtpError && xmtpError !== 'NEEDS_MANUAL_INIT' && (
                               <p className="text-[10px] font-mono text-rose-500 text-center leading-relaxed max-w-xs">{xmtpError}</p>
                             )}
-                            {!xmtpError && (
+                            {(!xmtpError || xmtpError === 'NEEDS_MANUAL_INIT') && (
                               <div className="flex flex-col items-center gap-4 text-center max-w-sm mt-2 mb-4">
                                 <p className="text-[11px] font-mono font-bold text-black uppercase tracking-widest leading-relaxed">
-                                  Activación de Alta Seguridad
+                                  {xmtpError === 'NEEDS_MANUAL_INIT' ? 'Whale Chat Listo' : 'Activación de Alta Seguridad'}
                                 </p>
                                 <p className="text-[9px] font-mono text-black/60 uppercase tracking-widest leading-[1.6]">
-                                  Para garantizar que <strong className="text-black">nadie</strong> pueda leer tus chats, el protocolo requiere firmar por única vez en este dispositivo:
+                                  {xmtpError === 'NEEDS_MANUAL_INIT'
+                                    ? 'Tu wallet está conectada. Pulsa el botón para activar el chat cifrado. Solo te pedirá una firma una vez.'
+                                    : <>Para garantizar que <strong className="text-black">nadie</strong> pueda leer tus chats, el protocolo requiere firmar por única vez en este dispositivo:</>
+                                  }
                                 </p>
-                                <ul className="text-[9px] font-mono text-black/55 uppercase tracking-widest leading-[1.7] text-left space-y-2 border-l-2 border-black/10 pl-3">
-                                  <li><strong className="text-black text-[9.5px]">Firma 1:</strong> Crea tu buzón encriptado descentralizado.</li>
-                                  <li><strong className="text-black text-[9.5px]">Firma 2:</strong> Autoriza este dispositivo (para no tener que firmar cada mensaje nuevo).</li>
-                                </ul>
+                                {xmtpError !== 'NEEDS_MANUAL_INIT' && (
+                                  <ul className="text-[9px] font-mono text-black/55 uppercase tracking-widest leading-[1.7] text-left space-y-2 border-l-2 border-black/10 pl-3">
+                                    <li><strong className="text-black text-[9.5px]">Firma 1:</strong> Crea tu buzón encriptado descentralizado.</li>
+                                    <li><strong className="text-black text-[9.5px]">Firma 2:</strong> Autoriza este dispositivo (para no tener que firmar cada mensaje nuevo).</li>
+                                  </ul>
+                                )}
                                 <p className="text-[8px] font-mono text-[#00C076] font-bold uppercase tracking-widest bg-[#00C076]/10 px-3 py-1.5 rounded-md mt-1">
                                   Firmas Gratuitas • Quedarás guardado automáticamente
                                 </p>

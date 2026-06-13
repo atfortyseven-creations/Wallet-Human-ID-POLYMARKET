@@ -616,17 +616,17 @@ export default function ConnectPage() {
                     transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                     className="flex justify-center mb-5"
                   >
-                    <div className="p-5 bg-white rounded-2xl border border-[#F0F0F0] flex flex-col items-center gap-3 shadow-sm relative w-[319px]">
+                    <div className="p-8 bg-white rounded-2xl border border-[#F0F0F0] flex flex-col items-center gap-4 shadow-sm relative">
                       <div className="flex items-center justify-center w-full mb-2 pb-2 border-b border-[#F0F0F0]">
                         <span className="text-[40px] font-black tracking-tight text-[#0A0A0A]">Login</span>
                       </div>
                       <QRCodeSVG
                         value={qrData}
-                        size={280}
+                        size={360}
                         fgColor="#0A0A0A"
                         bgColor="#FFFFFF"
-                        level="L"
-                        includeMargin={true}
+                        level="M"
+                        includeMargin={false}
                       />
                       <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#0A0A0A]/40 text-center">
                         Connect Mobile
@@ -635,8 +635,8 @@ export default function ConnectPage() {
                   </motion.div>
                 ) : syncStatus === "IDLE" || (syncStatus === "AWAITING" && !qrData) ? (
                   <div className="flex justify-center mb-5">
-                    <div className="p-5 bg-white rounded-2xl border border-[#F0F0F0] flex flex-col items-center gap-3 shadow-sm w-[319px]">
-                      <div className="w-[261px] h-[261px] bg-[#FFFFFF] rounded-xl animate-pulse flex items-center justify-center">
+                    <div className="p-8 bg-white rounded-2xl border border-[#F0F0F0] flex flex-col items-center gap-4 shadow-sm">
+                      <div className="w-[360px] h-[360px] bg-[#FFFFFF] rounded-xl animate-pulse flex items-center justify-center">
                         <Loader2 size={28} className="animate-spin text-black/20" />
                       </div>
                       <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-black/20 text-center">
