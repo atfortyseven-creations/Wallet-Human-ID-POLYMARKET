@@ -708,7 +708,7 @@ function WhaleNetworkActivityTab({ isDark }: { isDark: boolean }) {
           >
             <option value="">All Types</option>
             {Object.entries(EVENT_TYPE_META).map(([k, v]) => (
-              <option key={k} value={k}>{v.icon} {v.label}</option>
+              <option key={k} value={k}>{v.label}</option>
             ))}
           </select>
           <button
@@ -777,7 +777,7 @@ function WhaleNetworkActivityTab({ isDark }: { isDark: boolean }) {
                     >
                       <Copy size={10} />
                     </button>
-                    {tx.explorerUrl && (
+                    {tx.explorerUrl && tx.token !== 'ATOMIC_LOG' && (
                       <a href={tx.explorerUrl} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className="opacity-40 hover:opacity-100 transition-opacity">
                         <ExternalLink size={10} />
                       </a>
@@ -824,15 +824,17 @@ function WhaleNetworkActivityTab({ isDark }: { isDark: boolean }) {
                         </pre>
                       </div>
                     )}
-                    <a
-                      href={tx.explorerUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-[10px] font-bold mt-1 hover:opacity-70 transition-opacity"
-                      style={{ color: m.color }}
-                    >
-                      <ExternalLink size={10} /> View on Explorer
-                    </a>
+                    {tx.explorerUrl && tx.token !== 'ATOMIC_LOG' && (
+                      <a
+                        href={tx.explorerUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-[10px] font-bold mt-1 hover:opacity-70 transition-opacity"
+                        style={{ color: m.color }}
+                      >
+                        <ExternalLink size={10} /> View on Explorer
+                      </a>
+                    )}
                   </div>
                 )}
               </div>

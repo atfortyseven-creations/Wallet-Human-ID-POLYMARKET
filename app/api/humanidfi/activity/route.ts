@@ -17,7 +17,9 @@ export async function GET(req: Request) {
   const type = searchParams.get('type') || undefined;
 
   try {
-    const where: any = {};
+    const where: any = {
+      token: { in: ['ATOMIC_LOG', 'QDs'] }
+    };
     if (type) where.type = type;
 
     const [total, txs] = await Promise.all([
