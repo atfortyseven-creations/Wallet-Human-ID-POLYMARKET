@@ -643,7 +643,7 @@ interface ActivityTx {
   actionDetails: any;
 }
 
-function HumanIDFiActivityTab({ isDark }: { isDark: boolean }) {
+function WhaleNetworkActivityTab({ isDark }: { isDark: boolean }) {
   const [txs, setTxs] = useState<ActivityTx[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -2844,7 +2844,7 @@ export default function RegistryPage() {
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.18 }}
             >
-              <HumanIDFiActivityTab isDark={isDark} />
+              <WhaleNetworkActivityTab isDark={isDark} />
             </motion.div>
           )}
 
