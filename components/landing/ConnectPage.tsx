@@ -295,10 +295,10 @@ export default function ConnectPage() {
             const urlParams = new URLSearchParams(window.location.search);
             const raw = urlParams.get('returnUrl') || urlParams.get('redirect_url') || '';
             // [SECURITY] Only allow same-origin relative paths — reject any http(s):// returnUrl
-            // Default to /dashboard (not /) so users land in the app after QR sync
+            // Default to / (landing page) so users see their connected state after QR sync
             const safeReturn = (raw.startsWith('/') && !raw.startsWith('//') && raw !== '/portfolio')
               ? raw
-              : '/dashboard';
+              : '/';
             window.location.replace(safeReturn);
           } else {
             const errData = await hydrateRes.json().catch(() => ({}));

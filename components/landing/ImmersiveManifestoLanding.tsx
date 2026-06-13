@@ -118,11 +118,41 @@ function LandingNav() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [productOpen, setProductOpen] = useState(false);
   const [companyOpen, setCompanyOpen] = useState(false);
+  const [connectedAddress, setConnectedAddress] = useState<string | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Detect QR-linked or MetaMask session from system_handshake cookie
+  useEffect(() => {
+    const readSession = () => {
+      try {
+        const m = document.cookie.match(/system_handshake=(0x[a-fA-F0-9]{40})/i);
+        if (m?.[1]) {
+          setConnectedAddress(m[1].toLowerCase());
+          return;
+        }
+        const raw = localStorage.getItem('system_session_v2');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed?.wallet && parsed?.exp > Date.now()) {
+            setConnectedAddress(parsed.wallet.toLowerCase());
+            return;
+          }
+        }
+      } catch {}
+      setConnectedAddress(null);
+    };
+    readSession();
+    window.addEventListener('storage', readSession);
+    document.addEventListener('visibilitychange', readSession);
+    return () => {
+      window.removeEventListener('storage', readSession);
+      document.removeEventListener('visibilitychange', readSession);
+    };
   }, []);
 
   return (
@@ -222,7 +252,7 @@ function LandingNav() {
           </div>
         </div>
 
-        {/* Right: GitHub + Docs + Sign In */}
+        {/* Right: GitHub + Docs + Sign In / Connected */}
         <div className="hidden md:flex items-center gap-4">
           <a
             href="https://github.com/humanityledger/Humanity-Ledger"
@@ -241,12 +271,27 @@ function LandingNav() {
           >
             Docs
           </Link>
-          <Link
-            href="/portfolio"
-            className="px-4 py-1.5 bg-black text-white text-[13.5px] font-medium hover:bg-black/85 transition-colors"
-          >
-            Sign In
-          </Link>
+          {connectedAddress ? (
+            <div className="flex items-center gap-2">
+              <span className="flex items-center gap-1.5 px-3 py-1.5 bg-black/[0.04] border border-black/10 text-[12px] font-mono text-black/70">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                {connectedAddress.slice(0, 6)}…{connectedAddress.slice(-4)}
+              </span>
+              <Link
+                href="/dashboard"
+                className="px-4 py-1.5 bg-black text-white text-[13.5px] font-medium hover:bg-black/85 transition-colors"
+              >
+                Dashboard →
+              </Link>
+            </div>
+          ) : (
+            <Link
+              href="/portfolio"
+              className="px-4 py-1.5 bg-black text-white text-[13.5px] font-medium hover:bg-black/85 transition-colors"
+            >
+              Sign In
+            </Link>
+          )}
         </div>
 
         {/* Mobile toggle */}
