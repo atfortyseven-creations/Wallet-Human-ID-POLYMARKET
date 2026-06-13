@@ -470,7 +470,7 @@ export function AztecShieldingTerminal() {
                     rel="noopener noreferrer"
                     className="flex items-center justify-between w-full py-2.5 px-3 border border-zinc-900/8 hover:border-zinc-900 text-[8px] font-black uppercase tracking-widest text-zinc-900/40 hover:text-zinc-900 transition-all"
                   >
-                    <span>Verify on Sepolia Etherscan</span>
+                    <span>Verify on Aztecscan</span>
                     <span>→</span>
                   </a>
                 )}

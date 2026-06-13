@@ -55,9 +55,9 @@ function truncateTx(tx: string, len = 14): string {
 const EXPLORER_BASE =
   typeof window !== 'undefined'
     ? parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '8453', 10) === 1
-      ? 'https://etherscan.io/tx/'
-      : 'https://basescan.org/tx/'
-    : 'https://basescan.org/tx/';
+      ? 'https://testnet.aztecscan.xyz/tx/'
+      : 'https://testnet.aztecscan.xyz/tx/'
+    : 'https://testnet.aztecscan.xyz/tx/';
 
 /* ─────────────────────────────────────────────
    RECORD CARD — grid view

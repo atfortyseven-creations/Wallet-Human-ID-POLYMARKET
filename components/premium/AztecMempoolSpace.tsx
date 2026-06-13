@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -368,12 +368,11 @@ export default function AztecMempoolSpace() {
 
                                 <div className="mt-10 flex gap-4">
                                     <a
-                                        href={selectedBlock ? `https://etherscan.io/block/${selectedBlock.id}` : `https://etherscan.io/tx/${selectedTx?.hash}`}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="flex-1 py-3 bg-[#050505]  text-white  rounded font-bold uppercase tracking-[0.2em] text-[10px] hover:bg-[#A0A0A0] transition-colors text-center"
-                                    >
-                                        VERIFY ON ETHERSCAN
+                                        href={selectedBlock ? `https://testnet.aztecscan.xyz/block/${selectedBlock.id}` : `https://testnet.aztecscan.xyz/tx/${selectedTx?.hash}`}
+                                        target="_blank" rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-2 px-6 py-2.5 bg-black hover:bg-zinc-800 text-white text-[10px] font-bold uppercase tracking-[0.2em] transition-colors"
+                                      >
+                                        VERIFY ON AZTECSCAN
                                     </a>
                                 </div>
                             </div>

@@ -119,7 +119,7 @@ const TESTNET_CHAINS = [
     badge: "oSEP",
     color: "#000000",
     rpc: "https://opt-sepolia.g.alchemy.com/v2/tBBD_tGhqE9AOhsw9RIOZ",
-    explorer: "https://sepolia-optimism.etherscan.io",
+    explorer: "https://testnet.aztecscan.xyz",
   },
 ] as const;
 
@@ -160,7 +160,7 @@ const ZK_TESTNET_CHAINS = [
     rpc: "https://sepolia.era.zksync.dev",
     explorer: "https://sepolia.explorer.zksync.io",
     proofType: "SNARK" as const,
-    l1Explorer: "https://sepolia.etherscan.io",
+    l1Explorer: "https://testnet.aztecscan.xyz",
   },
   {
     chain: polygonZkEvmCardona,
@@ -170,7 +170,7 @@ const ZK_TESTNET_CHAINS = [
     rpc: "https://rpc.cardona.zkevm-rpc.com",
     explorer: "https://cardona-zkevm.polygonscan.com",
     proofType: "SNARK" as const,
-    l1Explorer: "https://sepolia.etherscan.io",
+    l1Explorer: "https://testnet.aztecscan.xyz",
   },
 ] as const;
 

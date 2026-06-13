@@ -495,12 +495,12 @@ function PendingPanel({ pendingDeposit, lastTx, onRefresh }: any) {
         </div>
         {lastTx && (
           <a
-            href={`https://etherscan.io/tx/${lastTx}`}
+            href={`https://testnet.aztecscan.xyz/tx/${lastTx}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest text-black/40 hover:text-black transition-colors"
           >
-            <ExternalLink size={10} /> View on Etherscan
+            <ExternalLink size={10} /> View on Aztecscan
           </a>
         )}
       </div>
