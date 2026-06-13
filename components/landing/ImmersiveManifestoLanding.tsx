@@ -505,7 +505,7 @@ function ValuePropositionSection() {
           <span className="text-black/30">without data custody.</span>
         </h2>
         <p className="mt-8 text-[16px] md:text-[18px] font-medium text-black/60 leading-relaxed max-w-[600px]">
-          Humanity Ledger uses zero-knowledge cryptography to prove who you are and what you hold, without ever revealing the underlying data to the applications you interact with.
+          Whale Network uses zero-knowledge cryptography to prove who you are and what you own, without exposing your data to anyone. From Studio Provenance to Whale Chat, every interaction is mathematically guaranteed to be private.
         </p>
       </div>
     </section>
@@ -582,22 +582,22 @@ function HowItWorksSection() {
 function IntegrationSection() {
   const cards = [
     {
-      title: "Identity Verification",
-      body: "Perform sybil-resistance, age, or nationality checks to gate access to your platform without storing PII.",
-      link: "Read documentation",
-      href: "/developers/api-docs"
+      title: "Studio Provenance",
+      body: "Establish zero-knowledge provenance for your creative and financial assets. Issue cryptographic proofs of origin that are verifiable by anyone and owned by no one.",
+      link: "Explore Provenance",
+      href: "/studio/provenance"
     },
     {
-      title: "Compliance & Audits",
-      body: "Generate viewing keys for regulators while keeping transactions fully shielded from the public.",
-      link: "Explore compliance",
-      href: "/security"
+      title: "Claim Identity",
+      body: "Sign once with your wallet to claim your permanent, decentralized identity on Aztec. No password, no custody, no third-party data storage.",
+      link: "Go to Dashboard",
+      href: "/dashboard"
     },
     {
-      title: "Private Portfolio",
-      body: "Track cross-chain capital flows and asset balances locally. No server ever sees your complete portfolio.",
-      link: "Open Dashboard",
-      href: "/portfolio"
+      title: "Whale Chat",
+      body: "Send and receive messages between verified identities. End-to-end encrypted, with no IP tracking and no metadata exposure.",
+      link: "Open Chat",
+      href: "/chat"
     }
   ];
 
