@@ -103,7 +103,7 @@ const TESTNET_CHAINS = [
     badge: "SEP",
     color: "#000000",
     rpc: "https://eth-sepolia.g.alchemy.com/v2/tBBD_tGhqE9AOhsw9RIOZ",
-    explorer: "https://sepolia.etherscan.io",
+    explorer: "https://testnet.aztecscan.xyz",
   },
   {
     chain: baseSepolia,

@@ -29,7 +29,7 @@ const CHAIN_EXPLORERS: Record<number, { name: string; base: string }> = {
   1:    { name: 'Etherscan',    base: 'https://etherscan.io/tx/' },
   8453: { name: 'Basescan',    base: 'https://basescan.org/tx/' },
   137:  { name: 'Polygonscan', base: 'https://polygonscan.com/tx/' },
-  11155111: { name: 'Sepolia', base: 'https://sepolia.etherscan.io/tx/' },
+  11155111: { name: 'Sepolia', base: 'https://testnet.aztecscan.xyz/tx/' },
 };
 
 /* ─────────────────────────────────────────────

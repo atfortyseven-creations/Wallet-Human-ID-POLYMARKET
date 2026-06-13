@@ -36,9 +36,9 @@ export default function ForumPage() {
       .then(data => {
         if (!data.error) {
           setStats({
-            totalTopics: data.topics || 1845,
-            totalPosts: data.posts || 45022,
-            activeUsers: data.personas || 1200
+            totalTopics: data.topics ?? 0,
+            totalPosts: data.posts ?? 0,
+            activeUsers: data.personas ?? 0
           });
         }
       });

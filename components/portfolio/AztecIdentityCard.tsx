@@ -807,7 +807,7 @@ export function AztecIdentityCard() {
                     <div key={label} className="flex items-start justify-between gap-2">
                       <span className="text-[8px] text-zinc-900/30 uppercase tracking-widest shrink-0 mt-0.5">{label}</span>
                       <a
-                        href={`https://sepolia.etherscan.io/address/${addr}`}
+                        href={`https://testnet.aztecscan.xyz/address/${addr}`}
                         target="_blank" rel="noopener noreferrer"
                         className="font-mono text-[8px] text-zinc-900/50 hover:text-zinc-900 underline underline-offset-2 text-right break-all"
                       >
