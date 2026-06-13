@@ -364,7 +364,7 @@ export default function ConnectPage() {
         clearTimeout(timeoutId);
         if (checkRes.ok) {
           const data = await checkRes.json();
-          if (data.authenticated) {
+          if (data.authenticated && data.user?.address?.toLowerCase() === addr.toLowerCase()) {
             setLinked(true);
             redirectingRef.current = true;
             const urlParams = new URLSearchParams(window.location.search);

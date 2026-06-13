@@ -732,7 +732,7 @@ export function MobileLanding() {
       const checkRes = await fetch('/api/auth/verify-session', { cache: 'no-store' });
       if (checkRes.ok) {
         const data = await checkRes.json();
-        if (data.authenticated) {
+        if (data.authenticated && data.user?.address?.toLowerCase() === norm) {
            console.log('[Auth] Existing session valid for:', norm);
            setLinkedAddress(norm);
            setIsLinked(true);
