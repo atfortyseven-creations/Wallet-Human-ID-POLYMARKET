@@ -143,7 +143,11 @@ export async function POST(req: NextRequest) {
             finalCID = ipfsResult.cid;
             console.log(`[Zero-Trust]  Forum post successfully anchored to IPFS: ${finalCID}`);
         } catch (ipfsErr) {
-            console.warn(`[Zero-Trust] ️ IPFS pinning failed or not configured. Falling back to deterministic pseudo-CID. Error:`, ipfsErr);
+            // [SECURITY] Suppress IPFS error details in production — prevents infrastructure fingerprinting.
+            // Fallback to deterministic pseudo-CID for integrity anchoring.
+            if (process.env.NODE_ENV !== 'production') {
+                console.warn('[Zero-Trust] IPFS pinning unavailable. Falling back to pseudo-CID.');
+            }
             const contentHash = crypto.createHash('sha256').update(content).digest('hex');
             finalCID = `Qm${contentHash.substring(0, 44)}`;
         }
