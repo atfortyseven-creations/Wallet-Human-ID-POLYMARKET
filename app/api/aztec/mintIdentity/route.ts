@@ -28,8 +28,14 @@ export async function POST(req: Request) {
 
   const normalizedTo = to.toLowerCase();
 
+  const crypto = await import('crypto');
+  const normalizedEvm = session.userId.toLowerCase();
+  const round1 = crypto.createHash('sha256').update(`aztec-schnorr:${normalizedEvm}`).digest();
+  const round2 = crypto.createHash('sha256').update(round1).digest('hex');
+  const derivedAztecAddress = `0x${round2}`;
+
   // [SECURITY FATAL FIX] The caller MUST cryptographically own the address receiving the identity.
-  if (normalizedTo !== session.userId) {
+  if (normalizedTo !== derivedAztecAddress) {
     return NextResponse.json({ error: 'FORBIDDEN: You can only mint identity for your own authenticated wallet.' }, { status: 403 });
   }
 

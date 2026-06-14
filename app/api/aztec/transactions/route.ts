@@ -15,7 +15,11 @@ export async function GET(req: Request) {
   if (!session?.userId) {
       return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
   }
-  const address = session.userId.toLowerCase();
+  const crypto = await import('crypto');
+  const normalizedEvm = session.userId.toLowerCase();
+  const round1 = crypto.createHash('sha256').update(`aztec-schnorr:${normalizedEvm}`).digest();
+  const round2 = crypto.createHash('sha256').update(round1).digest('hex');
+  const address = `0x${round2}`;
 
   try {
     const txs = await prisma.transaction.findMany({

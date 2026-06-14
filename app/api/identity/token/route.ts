@@ -9,15 +9,14 @@ import { prisma } from '@/lib/prisma';
  */
 export async function GET(req: NextRequest) {
     try {
-        const { getServerSession } = await import('next-auth');
-        const { authOptions } = await import('@/lib/auth');
-        const session = await getServerSession(authOptions);
+        const { getSession } = await import('@/lib/session');
+        const session = await getSession();
         
-        if (!session || !session.user || !session.user.email) {
+        if (!session || !session.userId) {
             return NextResponse.json({ error: 'Unauthorized. Must authenticate first.' }, { status: 401 });
         }
         
-        const userId = session.user.email; // Anchor identity to the unique session email or wallet
+        const userId = session.userId; // Anchor identity to the unique wallet
         
         // 2. Check existing status
         const kycRecord = await prisma.kYCRecord.findUnique({

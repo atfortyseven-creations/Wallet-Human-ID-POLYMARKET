@@ -11,8 +11,22 @@ import { mintJWT } from '@/lib/jwt';
  */
 export async function POST(req: NextRequest) {
     try {
+        const { getSession } = await import('@/lib/session');
+        const session = await getSession();
+        if (!session || !session.userId) {
+            return NextResponse.json({ error: 'UNAUTHORIZED: Cryptographic session required.' }, { status: 401 });
+        }
+
         const body = await req.json();
         const { address, signature, message } = body;
+
+        if (address.toLowerCase() !== session.userId.toLowerCase()) {
+             return NextResponse.json({ error: 'FORBIDDEN: Address mismatch with session.' }, { status: 403 });
+        }
+
+        if (!message.startsWith('System KYC Attestation') || !message.includes(`Identity: ${address}`)) {
+             return NextResponse.json({ error: 'FORBIDDEN: Invalid attestation message.' }, { status: 403 });
+        }
         
         if (!address || !signature || !message) {
             return NextResponse.json({ error: 'Missing cryptographic verification data' }, { status: 400 });

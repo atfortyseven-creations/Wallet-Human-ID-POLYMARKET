@@ -18,7 +18,13 @@ import { prisma } from '@/lib/prisma';
 export async function GET(req: NextRequest) {
   try {
     const uuid = req.nextUrl.searchParams.get('uuid');
-    const walletAddress = req.nextUrl.searchParams.get('walletAddress');
+
+    const { getSession } = await import('@/lib/session');
+    const sessionCookie = await getSession();
+    if (!sessionCookie || !sessionCookie.userId) {
+        return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
+    }
+    const walletAddress = sessionCookie.userId;
 
     if (!uuid) {
       return NextResponse.json({ error: 'Session UUID required' }, { status: 400 });

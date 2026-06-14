@@ -49,8 +49,14 @@ export async function POST(req: Request) {
   const normalizedFrom = from.toLowerCase();
   const normalizedTo   = to.toLowerCase();
 
+  const crypto = await import('crypto');
+  const normalizedEvm = session.userId.toLowerCase();
+  const round1 = crypto.createHash('sha256').update(`aztec-schnorr:${normalizedEvm}`).digest();
+  const round2 = crypto.createHash('sha256').update(round1).digest('hex');
+  const derivedAztecAddress = `0x${round2}`;
+
   // [SECURITY FATAL FIX] The caller MUST cryptographically own the `from` address.
-  if (normalizedFrom !== session.userId) {
+  if (normalizedFrom !== derivedAztecAddress) {
     return NextResponse.json({ error: 'FORBIDDEN: You can only transfer funds from your own authenticated wallet.' }, { status: 403 });
   }
 
