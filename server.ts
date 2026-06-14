@@ -22,6 +22,12 @@ app.prepare().then(() => {
         }
     });
 
+    // [QUANTUM HARDENING] Absolute Slowloris Protection
+    // Next.js standard is 5000ms. We increase this slightly above AWS ALB defaults
+    // but firmly reject slow headers.
+    server.keepAliveTimeout = 65000; 
+    server.headersTimeout = 66000;
+
     server.listen(port, () => {
         console.log(` [Terminal] Ready on http://${hostname}:${port}`);
         console.log(` [Microservices] Architecture: DECENTRALIZED CORE ACTIVE`);

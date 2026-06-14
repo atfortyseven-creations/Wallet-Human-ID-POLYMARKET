@@ -166,6 +166,8 @@ function getProductionUrl(): string | undefined {
         if (urlObj.protocol === 'postgresql:' || urlObj.protocol === 'postgres:') {
             // Force PgBouncer
             urlObj.searchParams.set('pgbouncer', 'true');
+            // [QUANTUM HARDENING] Enforce connection limits to prevent DB exhaustion during DDoS
+            urlObj.searchParams.set('connection_limit', '50');
             // Removed connect_timeout, pool_timeout, and statement_timeout as they cause Prisma to throw
             // "PANIC: timer has gone away" in serverless/edge environments and occasionally Node instances
             // when the Tokio runtime drops its internal timer handles.

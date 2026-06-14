@@ -230,7 +230,8 @@ const nextConfig = {
             'ethers'
         ],
         serverActions: {
-            bodySizeLimit: '10mb'
+            // [QUANTUM HARDENING] Block massive payloads at the framework level
+            bodySizeLimit: '500kb'
         }
     },
 

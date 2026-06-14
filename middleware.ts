@@ -95,7 +95,7 @@ const HONEYPOT_PATTERNS = [
 
 // KYC completely removed by institutional request
 const GEO_RESTRICTED_PATTERNS = ['/api/polymarket(.*)'];
-const RESTRICTED_COUNTRIES = ['US', 'CU', 'IR', 'KP', 'SY'];
+const RESTRICTED_COUNTRIES = ['US', 'CU', 'IR', 'KP', 'SY', 'CN', 'RU'];
 
 // SECURITY MIDDLEWARE  "THE IRON GATE v6 - WHALE FORTRESS Enterprise"
 // Absolute protection. Zero Clerk dependency. SIWE-native authentication.
@@ -144,6 +144,16 @@ export default async function middleware(request: NextRequest) {
     //  LAYER 0: OWASP WAF ENGINE (Before EVERYTHING) 
     const wafBlock = await runWAF(request);
     if (wafBlock) return wafBlock;
+
+    // [QUANTUM HARDENING] Strict Origin & CSRF Enforcement (Zero-Trust POST)
+    if (request.method !== 'GET' && request.method !== 'OPTIONS' && request.method !== 'HEAD') {
+        const origin = request.headers.get('origin');
+        const allowedOrigins = ['https://humanidfi.com', 'https://www.humanidfi.com', 'http://localhost:3000'];
+        if (origin && !allowedOrigins.some(o => origin === o)) {
+            console.error(`[WhaleFortress] ⛔ CSRF Block: Invalid Origin detected -> ${origin} from IP: ${ip}`);
+            return new NextResponse(JSON.stringify({ error: 'INVALID_ORIGIN' }), { status: 403, headers: { 'Content-Type': 'application/json' } });
+        }
+    }
 
     // [VIRTUAL ROUTE] Canonical Sync Bridge
     if (pathname === '/sync') {
