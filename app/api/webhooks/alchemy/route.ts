@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-
+import crypto from 'crypto';
 
 /**
  * [Elite] Alchemy Webhook Handler
@@ -8,9 +8,30 @@ import { prisma } from '@/lib/prisma';
  */
 export async function POST(req: Request) {
     try {
-        const body = await req.json();
+        const rawBody = await req.text();
         
-        // Alchemy notify webhook format
+        // [SECURITY HARDENING] Mandatory cryptographic validation
+        const secret = process.env.ALCHEMY_WEBHOOK_SECRET;
+        if (!secret) {
+            console.error('[ALCHEMY WEBHOOK] CRITICAL: Webhook secret not configured.');
+            return NextResponse.json({ error: 'Webhook not configured' }, { status: 503 });
+        }
+
+        const signature = req.headers.get('x-alchemy-signature');
+        if (!signature) {
+            return NextResponse.json({ error: 'Missing signature' }, { status: 401 });
+        }
+
+        const hmac = crypto.createHmac('sha256', secret);
+        hmac.update(rawBody);
+        const digest = hmac.digest('hex');
+
+        if (signature.length !== digest.length || !crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest))) {
+            console.error('[ALCHEMY WEBHOOK] Signature mismatch. Spoofing attempt blocked.');
+            return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
+        }
+
+        const body = JSON.parse(rawBody);
         const { event } = body;
         if (!event || !event.activity) {
             return NextResponse.json({ status: 'ignored' });
