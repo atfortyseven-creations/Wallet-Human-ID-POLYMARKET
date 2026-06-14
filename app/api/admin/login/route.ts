@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
         })
             .setProtectedHeader({ alg: "HS256" })
             .setExpirationTime("24h")
-            .sign(JWT_SECRET);
+            .sign(getJwtSecret());
 
         const response = NextResponse.json({
             success: true,

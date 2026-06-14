@@ -13,7 +13,12 @@ async function isAdminAuthenticated(request: NextRequest): Promise<boolean> {
     }
 
     try {
-        await verifyJWT(adminToken.value);
+        const payload = await verifyJWT(adminToken.value);
+        // [SECURITY FIX] Must strictly verify the role inside the payload.
+        // Otherwise, a normal user's valid session JWT would bypass this check.
+        if (payload.role !== 'admin' && payload.role !== 'superadmin') {
+            return false;
+        }
         return true;
     } catch {
         return false;
