@@ -4,10 +4,16 @@ import AdminUser from "@/models/AdminUser";
 import bcrypt from "bcryptjs";
 import { SignJWT } from "jose";
 
-if (!JWT_SECRET_STR && process.env.NODE_ENV === 'production') {
-    throw new Error('[SECURITY FATAL] JWT_SECRET is not set. Admin login disabled.');
+// [SECURITY HARDENING] Read JWT secret lazily at request time — NEVER at module scope.
+// Reading process.env at module scope causes webpack to inline the value or crash
+// with ReferenceError if the variable name is used before declaration.
+function getJwtSecret(): Uint8Array {
+    const secret = process.env.JWT_SECRET || process.env.ADMIN_JWT_SECRET;
+    if (!secret && process.env.NODE_ENV === 'production') {
+        throw new Error('[SECURITY FATAL] JWT_SECRET env var is not set. Admin login is disabled.');
+    }
+    return new TextEncoder().encode(secret || 'dev-build-only-not-for-prod');
 }
-const JWT_SECRET = new TextEncoder().encode(JWT_SECRET_STR || 'dev-build-only-not-for-prod');
 
 //  Brute-Force Protection: In-memory rate limiter 
 // Max 5 failed attempts per IP within a 15-minute window.
