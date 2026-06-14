@@ -49,34 +49,11 @@ export async function GET(request: NextRequest) {
     }
 
     //  Priority 2: system_handshake cookie (raw wallet address) 
-    const handshake = request.cookies.get('system_handshake')?.value;
-    if (handshake && /^0x[a-fA-F0-9]{40}$/.test(handshake)) {
-      const user = await prisma.user.findUnique({
-        where: { walletAddress: handshake.toLowerCase() },
-      });
-      const subscription = await prisma.subscription.findUnique({
-        where: { userId: handshake.toLowerCase() }
-      });
-      const userTransactions = await prisma.transaction.findMany({
-        where: { fromAddress: handshake.toLowerCase(), type: 'SUBSCRIPTION_PAYMENT' },
-        orderBy: { timestamp: 'desc' }
-      });
-      return NextResponse.json(serializeData({
-        authenticated: !!user,
-        user: user
-          ? { 
-              id: handshake, 
-              email: user.email || '', 
-              tier: user.tier, 
-              isZkVerified: user.isZkVerified,
-              humanityScore: user.humanityScore, 
-              walletAddress: user.walletAddress, 
-              subscription: subscription, 
-              transactions: userTransactions 
-            }
-          : null,
-      }));
-    }
+    // [SECURITY PATCH] system_handshake is a JS-readable cookie set by the QR handshake flow.
+    // It is NOT a cryptographic proof of identity. Trusting it alone is equivalent to
+    // allowing anyone who can forge a cookie to impersonate any wallet.
+    // Removed: this block was the last remaining "blind trust" IDOR pattern.
+    // The user must have a valid signed JWT (human_session / whale_session) to be authenticated.
 
     return NextResponse.json({ authenticated: false, user: null });
   } catch (error) {

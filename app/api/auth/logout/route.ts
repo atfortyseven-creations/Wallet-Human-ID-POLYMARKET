@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revokeToken } from "@/lib/security/jwt-blacklist";
 
 export async function POST(request: NextRequest) {
+  // [QUANTUM HARDENING] Cryptographically revoke the active JWTs at logout.
+  // Clearing cookies alone is insufficient — a captured token can still be replayed.
+  // We blacklist both session tokens so the middleware rejects them instantly.
+  const whaleSession = request.cookies.get("whale_session")?.value;
+  const humanSession = request.cookies.get("human_session")?.value;
+  if (whaleSession) revokeToken(whaleSession);
+  if (humanSession && humanSession !== whaleSession) revokeToken(humanSession);
+
   const response = NextResponse.json({ success: true, message: "Logged out successfully" });
 
   // [FIX] The middleware (middleware.ts:367) adds SameSite=Strict to whale_session cookies
