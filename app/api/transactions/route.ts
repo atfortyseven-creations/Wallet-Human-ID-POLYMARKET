@@ -7,11 +7,18 @@ import { prisma } from '@/lib/prisma';
  */
 export async function POST(req: Request) {
     try {
-        const data = await req.json();
-        const { hash, userId, type, fromChain, toChain, fromToken, toToken, fromAmount, metadata } = data;
+        const { getSession } = await import('@/lib/session');
+        const session = await getSession();
+        if (!session?.userId) {
+            return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
+        }
+        const userId = session.userId;
 
-        if (!hash || !userId) {
-            return NextResponse.json({ error: 'Missing hash or userId' }, { status: 400 });
+        const data = await req.json();
+        const { hash, type, fromChain, toChain, fromToken, toToken, fromAmount, metadata } = data;
+
+        if (!hash) {
+            return NextResponse.json({ error: 'Missing hash' }, { status: 400 });
         }
 
         const tx = await prisma.blockchainTransaction.upsert({
@@ -52,12 +59,12 @@ import {
  */
 export async function GET(req: Request) {
     try {
-        const { searchParams } = new URL(req.url);
-        const userId = searchParams.get('userId');
-
-        if (!userId) {
-            return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
+        const { getSession } = await import('@/lib/session');
+        const session = await getSession();
+        if (!session?.userId) {
+            return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
         }
+        const userId = session.userId;
 
         //  UNIFICACIÓN DE EXPLORADOR (5000T) 
         // Ya no consultamos una sola tabla; usamos el motor de unificación.

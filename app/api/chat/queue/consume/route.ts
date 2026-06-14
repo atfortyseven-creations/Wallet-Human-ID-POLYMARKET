@@ -3,6 +3,12 @@ import { getPrisma } from '@/lib/prisma';
 
 export async function POST(req: Request) {
   try {
+    const { getSession } = await import('@/lib/session');
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ error: 'Unauthorized: Authentication required' }, { status: 401 });
+    }
+
     const { address } = await req.json();
 
     if (!address || typeof address !== 'string') {
@@ -14,6 +20,12 @@ export async function POST(req: Request) {
     }
 
     const recipient = address.toLowerCase();
+    
+    // [SECURITY HARDENING] The caller MUST be the recipient to consume these messages.
+    if (recipient !== session.userId.toLowerCase()) {
+      return NextResponse.json({ error: 'Forbidden: You can only consume your own messages' }, { status: 403 });
+    }
+
     const prisma = getPrisma();
 
     // BUG FIX: Use interactive transaction (callback form) for TRUE atomicity.

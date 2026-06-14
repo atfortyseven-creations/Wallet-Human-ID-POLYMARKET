@@ -48,16 +48,19 @@ export async function POST(req: NextRequest) {
     }
 
     const key = generateApiKey();
+    const hashedKey = crypto.createHash('sha256').update(key).digest('hex');
 
     const apiKey = await prisma.apiKey.create({
       data: {
-        key,
+        key: hashedKey, // Store only the hash
         userId: user.walletAddress, // Securely obtained from DB
         plan: 'whale',
       },
     });
 
-    return NextResponse.json({ apiKey });
+    return NextResponse.json({ 
+        apiKey: { ...apiKey, key } // Return plaintext key ONCE
+    });
   } catch (error) {
     console.error('Create API Key Error:', error);
     return NextResponse.json({ error: 'Failed to create API key' }, { status: 500 });
@@ -82,7 +85,12 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: 'desc' },
     });
 
-    return NextResponse.json({ keys });
+    const maskedKeys = keys.map(k => ({
+        ...k,
+        key: `wh_live_***...***` // Hash is in DB, never expose it
+    }));
+
+    return NextResponse.json({ keys: maskedKeys });
   } catch (error) {
     console.error('List API Keys Error:', error);
     return NextResponse.json({ error: 'Failed to list keys' }, { status: 500 });

@@ -8,6 +8,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifyWorldIDProof } from '@/lib/worldid';
+import { getSession } from '@/lib/session';
 
 interface VoteRequest {
     proposalId: string;
@@ -25,8 +26,18 @@ export async function POST(request: NextRequest) {
     try {
         const body: VoteRequest = await request.json();
 
+        // [SECURITY HARDENING] Derive voterAddress from cryptographic session.
+        // Previously trusted body.voterAddress, enabling an attacker to use a valid
+        // World ID proof but attribute the vote to any arbitrary wallet address,
+        // corrupting governance records and user metrics of innocent parties.
+        const session = await getSession();
+        if (!session?.userId) {
+            return NextResponse.json({ error: 'Unauthorized: Authentication required to vote.' }, { status: 401 });
+        }
+        const voterAddress = session.userId; // Cryptographically verified
+
         // Validate input
-        if (!body.proposalId || !body.vote || !body.voterAddress || !body.worldIdProof) {
+        if (!body.proposalId || !body.vote || !body.worldIdProof) {
             return NextResponse.json(
                 { error: 'Missing required fields' },
                 { status: 400 }

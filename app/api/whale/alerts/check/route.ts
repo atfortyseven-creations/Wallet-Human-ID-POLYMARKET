@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getSession } from '@/lib/session';
 import { prisma } from '@/lib/prisma';
 import { Alchemy, Network } from 'alchemy-sdk';
 import { getRealTimePrice } from '@/lib/priceHelper';
@@ -6,7 +7,7 @@ import { getRealTimePrice } from '@/lib/priceHelper';
 import { safeToFixed, safeToLocaleString } from '@/lib/utils/number-format';
 // Configure Alchemy
 const config = {
-  apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID || process.env.ALCHEMY_API_KEY,
+  apiKey: process.env.ALCHEMY_API_KEY,
   network: Network.BASE_MAINNET,
 };
 
@@ -27,14 +28,13 @@ const alchemy = new Alchemy(config);
  * This simulates a "worker" by running on-demand when the user loads the dashboard.
  */
 export async function GET(req: NextRequest) {
-    const { searchParams } = new URL(req.url);
-    const userId = searchParams.get('userId');
-
-    if (!userId) {
-        return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
-    }
-
     try {
+        // Use cryptographically secure session instead of trusting query params
+        const session = await getSession();
+        if (!session?.userId) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+        const userId = session.userId;
         // 1. Get User's Alert Rules
         const rules = await prisma.alertRule.findMany({
             where: { userId, isActive: true }

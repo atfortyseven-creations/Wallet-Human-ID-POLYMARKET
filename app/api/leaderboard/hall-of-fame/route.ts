@@ -146,16 +146,23 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
+        const { getSession } = await import('@/lib/session');
+        const session = await getSession();
+        if (!session?.userId) {
+            return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
+        }
+        const walletAddress = session.userId;
+
         const body = await req.json();
-        const { walletAddress, txHash, chain, description } = body;
+        const { txHash, chain, description } = body;
 
         // Invalidate Hall of Fame CACHE if new detection enters CACHE_KEY might vary by params, so we can wipe the base if we used a wildcard mechanism, but here we update records async.
         const INVALIDATE_CACHE_KEY = `api:hall-of-fame:limit-20:min-1`;
         await safeRedisSet(INVALIDATE_CACHE_KEY, '', 'EX', 1);
 
-        if (!walletAddress || !txHash || !chain) {
+        if (!txHash || !chain) {
             return NextResponse.json(
-                { error: 'Missing required fields: walletAddress, txHash, chain' },
+                { error: 'Missing required fields: txHash, chain' },
                 { status: 400 }
             );
         }

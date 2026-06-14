@@ -11,21 +11,29 @@ export async function POST(req: Request) {
     try {
         const rawBody = await req.text();
         
-        //  INHUMAN OPTIMIZATION: Cryptographic Signature Validation 
-        const signature = req.headers.get('x-alchemy-signature') || req.headers.get('x-quicknode-signature');
+        //  MANDATORY Cryptographic Signature Validation 
+        // [SECURITY HARDENING] Previously used `if (secret && signature)` which made
+        // authentication OPTIONAL. If ALCHEMY_WEBHOOK_SECRET was unset, ANY anonymous
+        // actor could flood the system with fake whale signals to manipulate trading.
         const secret = process.env.ALCHEMY_WEBHOOK_SECRET || process.env.WEBHOOK_SECRET;
+        if (!secret) {
+            console.error('[WEBHOOK SECURITY] CRITICAL: No webhook secret configured. Rejecting all requests.');
+            return NextResponse.json({ success: false, error: 'Webhook not configured' }, { status: 503 });
+        }
+
+        const signature = req.headers.get('x-alchemy-signature') || req.headers.get('x-quicknode-signature');
+        if (!signature) {
+            return NextResponse.json({ success: false, error: 'Missing signature header' }, { status: 401 });
+        }
+
+        const hmac = crypto.createHmac('sha256', secret);
+        hmac.update(rawBody);
+        const digest = hmac.digest('hex');
         
-        if (secret && signature) {
-            const hmac = crypto.createHmac('sha256', secret);
-            hmac.update(rawBody);
-            const digest = hmac.digest('hex');
-            
-            // Prevent timing attacks
-            const isValid = crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest));
-            if (!isValid) {
-                console.error('[WEBHOOK ERROR] Cryptographic signature mismatch. Possible spoofing attack.');
-                return NextResponse.json({ success: false, error: 'Unauthorized: Invalid Cryptographic Signature' }, { status: 401 });
-            }
+        // Prevent timing attacks with constant-time comparison
+        if (signature.length !== digest.length || !crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest))) {
+            console.error('[WEBHOOK ERROR] Cryptographic signature mismatch. Possible spoofing attack.');
+            return NextResponse.json({ success: false, error: 'Unauthorized: Invalid Cryptographic Signature' }, { status: 401 });
         }
 
         const body = safeJsonParse(rawBody, null, 'WHALE_WEBHOOK') as any;

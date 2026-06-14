@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { cookies } from 'next/headers';
 import { isAdmin } from '@/lib/admin';
+import { getSession } from '@/lib/session';
 
 export const dynamic = 'force-dynamic';
 
@@ -12,9 +13,9 @@ export const dynamic = 'force-dynamic';
  */
 export async function GET(req: Request) {
   try {
-    const cookieStore = await cookies();
-    const address = cookieStore.get('system_handshake')?.value;
-    if (!isAdmin(address)) {
+    const session = await getSession();
+    const address = session?.userId;
+    if (!address || !isAdmin(address)) {
         return NextResponse.json({ error: 'Unauthorized: System Admin Only' }, { status: 403 });
     }
     // Find all topics

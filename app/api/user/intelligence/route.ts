@@ -2,8 +2,12 @@ import { NextResponse } from 'next/server';
 import { analyticsService } from '@/lib/blockchain/AnalyticsService';
 
 export async function GET(request: Request) {
-    const { searchParams } = new URL(request.url);
-    const address = searchParams.get('address') || '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
+    const { getSession } = await import('@/lib/session');
+    const session = await getSession();
+    if (!session?.userId) {
+        return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
+    }
+    const address = session.userId.toLowerCase();
 
     try {
         const report = await analyticsService.getAnalyticsReport(address);

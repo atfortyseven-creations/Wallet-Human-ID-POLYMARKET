@@ -1,7 +1,13 @@
 import { SignJWT, jwtVerify, JWTPayload, importJWK } from 'jose';
 
 const alg = 'EdDSA';
-const secretHS256 = process.env.JWT_SECRET || 'dev-only-not-for-production-jwt-secret-change-me';
+const _rawJwtSecret = process.env.JWT_SECRET;
+if (!_rawJwtSecret && process.env.NODE_ENV === 'production' && process.env.SKIP_ENV_VALIDATION !== 'true') {
+    throw new Error('[SECURITY FATAL] JWT_SECRET not set. Cannot mint or verify JWT safely.');
+}
+// Quantum Aegis: No hardcoded fallbacks allowed. If secret is missing in dev, it forces developers to set it, or throws.
+const secretHS256 = _rawJwtSecret || ''; 
+if (secretHS256 === '') throw new Error('JWT_SECRET must be provided in environment variables.');
 
 const migrationCutoff = process.env.JWT_MIGRATION_CUTOFF 
   ? new Date(process.env.JWT_MIGRATION_CUTOFF).getTime() 
@@ -44,7 +50,7 @@ export const mintJWT = async (payload: JWTPayload): Promise<string> => {
       .sign(keys.privateKey);
   }
 
-  // Fallback HS256
+  // Fallback HS256 with strictly enforced env secret
   return new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()

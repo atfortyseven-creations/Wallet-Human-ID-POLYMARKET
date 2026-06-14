@@ -31,6 +31,26 @@ export async function POST(request: NextRequest) {
     // Hash password
     const passwordHash = await hashPassword(password);
 
+    // [QUANTUM AEGIS] Zero-Trust Session Validation 
+    // Prevent Account Takeover: Callers cannot pass an arbitrary email in the body.
+    // They must have an active session for the email they are completing signup for.
+    const { getSession } = await import('@/lib/session');
+    const session = await getSession();
+    
+    if (!session || !session.email) {
+      return NextResponse.json(
+        { error: 'UNAUTHORIZED: Cryptographic session required to complete signup.' },
+        { status: 401 }
+      );
+    }
+    
+    if (session.email !== email) {
+      return NextResponse.json(
+        { error: 'FORBIDDEN: You cannot complete signup for an email you do not own.' },
+        { status: 403 }
+      );
+    }
+
     // Update user with password and marked as verified
     // Also store the generated wallet if provided
     const user = await (prisma.authUser as any).update({

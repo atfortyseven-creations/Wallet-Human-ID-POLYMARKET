@@ -1,11 +1,12 @@
+import { getSession } from '@/lib/session';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { cookies } from 'next/headers';
 
 export async function GET(req: Request) {
     try {
-        const cookieStore = await cookies();
-        const address = cookieStore.get('system_handshake')?.value;
+        const session = await getSession();
+    const address = session?.userId;
         if (!address) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
         const users = await (prisma as any).user.findMany({

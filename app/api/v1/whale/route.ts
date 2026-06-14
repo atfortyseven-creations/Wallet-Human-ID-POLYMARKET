@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { createHash } from 'crypto';
 
 // [PRODUCTION] Public V1 Whale API
 // "Whale Real Time" - 100% Data Integrity
@@ -29,14 +30,24 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  // [SECURITY] Validate Key
-  // Note: Prisma might fail if DB is down, handled by catch
+  // [SECURITY HARDENING] Compare hashed key against stored hash to prevent
+  // plaintext API key exposure in case of database breach.
+  // Keys stored as SHA-256 hashes; incoming key is hashed before lookup.
+  const keyHash = createHash('sha256').update(apiKeyHeader).digest('hex');
+
   try {
-      const validKey = await prisma.apiKey.findUnique({
-          where: { key: apiKeyHeader }
+      // Try hash-based lookup first (secure), fall back to plaintext for legacy keys
+      let validKey = await prisma.apiKey.findFirst({
+          where: { 
+            OR: [
+              { keyHash: keyHash },    // New secure format
+              { key: apiKeyHeader }    // Legacy plaintext (migrate gradually)
+            ],
+            isActive: true
+          }
       });
 
-      if (!validKey || !validKey.isActive) {
+      if (!validKey) {
            return NextResponse.json({ error: 'Invalid or expired API Key' }, { status: 403, headers: corsHeaders() });
       }
 

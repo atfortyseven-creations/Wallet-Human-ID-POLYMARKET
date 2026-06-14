@@ -1,11 +1,12 @@
+import { getSession } from '@/lib/session';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { cookies } from 'next/headers';
 
 export async function GET(req: Request, { params }: { params: Promise<{ address: string }> }) {
     try {
-        const cookieStore = await cookies();
-        const authAddress = cookieStore.get('system_handshake')?.value;
+        const session = await getSession();
+    const authAddress = session?.userId;
         if (!authAddress) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
         const { address } = await params;

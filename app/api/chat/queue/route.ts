@@ -3,11 +3,22 @@ import { getPrisma } from '@/lib/prisma';
 
 export async function POST(req: Request) {
   try {
+    const { getSession } = await import('@/lib/session');
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ error: 'Unauthorized: Authentication required' }, { status: 401 });
+    }
+
     const { sender, recipient, content } = await req.json();
 
     if (!sender || !recipient || !content ||
         typeof sender !== 'string' || typeof recipient !== 'string' || typeof content !== 'string') {
       return NextResponse.json({ error: 'Missing or invalid required fields' }, { status: 400 });
+    }
+
+    // [SECURITY HARDENING] Prevent spoofing of the sender address
+    if (sender.toLowerCase() !== session.userId.toLowerCase()) {
+      return NextResponse.json({ error: 'Forbidden: You cannot spoof the sender address' }, { status: 403 });
     }
 
     // Basic Ethereum address validation

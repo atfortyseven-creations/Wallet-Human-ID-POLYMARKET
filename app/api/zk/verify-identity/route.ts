@@ -9,10 +9,18 @@ import { verifyWorldIDProof } from '@/lib/worldid';
  */
 export async function POST(request: NextRequest) {
     try {
-        const { address, proof, merkle_root, nullifier_hash, verification_level } = await request.json();
+        // [SECURITY HARDENING] Derive identity from cryptographic session.
+        const { getSession } = await import('@/lib/session');
+        const session = await getSession();
+        if (!session?.userId) {
+            return NextResponse.json({ error: 'Unauthorized: Authentication required to verify identity.' }, { status: 401 });
+        }
+        const address = session.userId;
+
+        const { proof, merkle_root, nullifier_hash, verification_level } = await request.json();
         
-        if (!address || !proof || !nullifier_hash) {
-            return NextResponse.json({ error: 'Missing required ZK fields: address, proof, nullifier_hash' }, { status: 400 });
+        if (!proof || !nullifier_hash) {
+            return NextResponse.json({ error: 'Missing required ZK fields: proof, nullifier_hash' }, { status: 400 });
         }
 
         // Phase 6: Real WorldID ZK Verification (Mathematical Certainty)

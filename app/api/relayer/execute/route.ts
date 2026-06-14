@@ -37,6 +37,20 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Relayer out of funds" }, { status: 503 });
         }
 
+        // Simulate transaction to prevent gas exhaustion from bad signatures
+        try {
+            await governanceContract.executeProposalWithSignature.staticCall(
+                executor,
+                proposalId,
+                nonce,
+                deadline,
+                signature
+            );
+        } catch (simError: any) {
+            console.error("[Relayer] Simulation failed. Invalid signature or state:", simError);
+            return NextResponse.json({ error: "Simulation failed. Signature or parameters are invalid." }, { status: 400 });
+        }
+
         // Execute transaction
         const tx = await governanceContract.executeProposalWithSignature(
             executor,

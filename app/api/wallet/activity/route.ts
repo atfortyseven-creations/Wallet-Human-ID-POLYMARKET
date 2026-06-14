@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getSession } from '@/lib/session';
 
 /**
  * Elite Activity Logger
@@ -7,11 +8,20 @@ import { prisma } from '@/lib/prisma';
  */
 export async function POST(req: NextRequest) {
     try {
+        const session = await getSession();
+        if (!session?.userId) {
+            return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
+        }
+
         const body = await req.json();
         const { userAddress, type, action, chainId, txHash, metadata } = body;
 
         if (!userAddress || !type || !action) {
             return NextResponse.json({ error: 'Missing required activity fields' }, { status: 400 });
+        }
+
+        if (session.userId.toLowerCase() !== userAddress.toLowerCase()) {
+            return NextResponse.json({ error: 'Forbidden: Cannot log activity for another wallet.' }, { status: 403 });
         }
 
         // Ensure user exists (Upsert logic for seamless onboarding)

@@ -16,6 +16,7 @@ interface QRScannerModalProps {
 import jsQR from 'jsqr';
 import { useSecureCamera } from '@/hooks/useSecureCamera';
 import { completeSessionHandshake } from '@/lib/scan/sessionHandshake';
+import { useSignMessage } from 'wagmi';
 
 //  File/gallery scanner (fallback for restricted camera environments) 
 async function scanFileForQR(file: File): Promise<string> {
@@ -182,6 +183,7 @@ function ScannedOverlay() {
 //  Main component 
 export default function QRScannerModal({ isOpen, onClose, onScan, address: externalAddress, initialScanData }: QRScannerModalProps) {
   const { address } = useSystemAccount();
+  const { signMessageAsync } = useSignMessage();
 
   const [status, setStatus]   = useState<'idle' | 'scanning' | 'success' | 'error' | 'signing'>('idle');
   const [errMsg, setErrMsg]   = useState('');
@@ -267,7 +269,7 @@ export default function QRScannerModal({ isOpen, onClose, onScan, address: exter
         return null;
       })();
 
-    const result = await completeSessionHandshake(decodedText, getAddress);
+    const result = await completeSessionHandshake(decodedText, getAddress, signMessageAsync);
 
     if (!result.ok) {
       setErrMsg(result.message);

@@ -12,12 +12,12 @@ const getUserId = async () => {
 
 export async function GET(request: Request) {
     try {
-        const { searchParams } = new URL(request.url);
-        const userId = searchParams.get('userId');
-
-        if (!userId) {
-            return NextResponse.json({ error: 'User ID required' }, { status: 400 });
+        const { getSession } = await import('@/lib/session');
+        const session = await getSession();
+        if (!session?.userId) {
+            return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
         }
+        const userId = session.userId;
 
         const referral = await (prisma as any).referral.findFirst({
             where: { referrerId: userId },
@@ -50,15 +50,24 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
     try {
+        const { getSession } = await import('@/lib/session');
+        const session = await getSession();
+        if (!session?.userId) {
+            return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
+        }
+        
         const body = await request.json();
-        const { referrerId, refereeId } = body;
+        const { refereeId } = body;
+        
+        // [SECURITY HARDENING] Referrer must be the authenticated user.
+        const referrerId = session.userId;
 
-        if (!referrerId || !refereeId) {
-            return NextResponse.json({ error: 'Missing Data' }, { status: 400 });
+        if (!refereeId) {
+            return NextResponse.json({ error: 'Missing Data: refereeId required' }, { status: 400 });
         }
 
         // Prevent self-referral
-        if (referrerId === refereeId) {
+        if (referrerId.toLowerCase() === refereeId.toLowerCase()) {
             return NextResponse.json({ error: 'Cannot refer self' }, { status: 400 });
         }
 

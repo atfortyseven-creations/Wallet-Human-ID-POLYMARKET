@@ -4,13 +4,10 @@ import AdminUser from "@/models/AdminUser";
 import bcrypt from "bcryptjs";
 import { SignJWT } from "jose";
 
-const JWT_SECRET_STR = process.env.JWT_SECRET;
-if (!JWT_SECRET_STR) {
-    if (process.env.NODE_ENV === 'production') {
-        console.error("[Admin Login] ️ JWT_SECRET not defined. Admin logins disabled.");
-    }
+if (!JWT_SECRET_STR && process.env.NODE_ENV === 'production') {
+    throw new Error('[SECURITY FATAL] JWT_SECRET is not set. Admin login disabled.');
 }
-const JWT_SECRET = new TextEncoder().encode(JWT_SECRET_STR || 'build-fallback-secret');
+const JWT_SECRET = new TextEncoder().encode(JWT_SECRET_STR || 'dev-build-only-not-for-prod');
 
 //  Brute-Force Protection: In-memory rate limiter 
 // Max 5 failed attempts per IP within a 15-minute window.

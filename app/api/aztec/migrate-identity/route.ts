@@ -7,10 +7,20 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   try {
+    const { getSession } = await import('@/lib/session');
+    const session = await getSession();
+    if (!session?.userId) {
+        return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
+    }
+
     const { evmAddress } = await req.json();
 
     if (!evmAddress || typeof evmAddress !== 'string') {
       return NextResponse.json({ error: 'evmAddress is required' }, { status: 400 });
+    }
+
+    if (evmAddress.toLowerCase() !== session.userId.toLowerCase()) {
+        return NextResponse.json({ error: 'Forbidden: You can only migrate your own identity.' }, { status: 403 });
     }
 
     const normalizedEvm = evmAddress.toLowerCase();

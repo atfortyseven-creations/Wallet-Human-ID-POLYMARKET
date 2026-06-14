@@ -9,8 +9,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
     }
 
-    const apiKey = process.env.NEXT_PUBLIC_MOONPAY_KEY || process.env.MOONPAY_API_KEY || '';
-    const secretKey = process.env.MOONPAY_SECRET_KEY || process.env.STRIPE_SECRET_KEY || '';
+    // [SECURITY HARDENING] Use server-side env vars ONLY.
+    // NEXT_PUBLIC_MOONPAY_KEY is visible in the browser bundle and MUST NOT be used
+    // as a cryptographic signing key. Only private server-side vars are safe.
+    // Also removed the dangerous fallback to STRIPE_SECRET_KEY which would cross-contaminate secrets.
+    const apiKey = process.env.MOONPAY_API_KEY || '';
+    const secretKey = process.env.MOONPAY_SECRET_KEY || '';
 
     if (!apiKey) {
       return NextResponse.json(

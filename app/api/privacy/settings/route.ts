@@ -5,10 +5,12 @@ export const dynamic = 'force-dynamic';
 
 /** GET /api/privacy/settings?userId=xxx */
 export async function GET(request: NextRequest) {
-    const userId = request.nextUrl.searchParams.get('userId');
-    if (!userId) {
-        return NextResponse.json({ success: false, profile: null, error: 'userId required' }, { status: 400 });
+    const { getSession } = await import('@/lib/session');
+    const session = await getSession();
+    if (!session?.userId) {
+        return NextResponse.json({ success: false, profile: null, error: 'Unauthorized' }, { status: 401 });
     }
+    const userId = session.userId;
     try {
         const profile = await (prisma as any).userPrivacyProfile.findUnique({ where: { userId } });
         return NextResponse.json({ success: true, profile });
@@ -21,9 +23,16 @@ export async function GET(request: NextRequest) {
 /** POST /api/privacy/settings  body: { userId, field, value } */
 export async function POST(request: NextRequest) {
     try {
-        const { userId, field, value } = await request.json();
-        if (!userId || !field) {
-            return NextResponse.json({ success: false, error: 'userId and field required' }, { status: 400 });
+        const { getSession } = await import('@/lib/session');
+        const session = await getSession();
+        if (!session?.userId) {
+            return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
+        }
+        const userId = session.userId;
+
+        const { field, value } = await request.json();
+        if (!field) {
+            return NextResponse.json({ success: false, error: 'field required' }, { status: 400 });
         }
 
         const profile = await (prisma as any).userPrivacyProfile.upsert({

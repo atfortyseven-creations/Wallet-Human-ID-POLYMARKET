@@ -89,27 +89,30 @@ export async function POST(req: NextRequest) {
             }, { status: 400 });
         }
 
-        const { address: normalizedAddress } = validation.data;
+        // [QUANTUM AEGIS] Zero-Trust Session Verification
+        // Ignore the address provided by the user in the payload. 
+        // We MUST strictly use the cryptographically verified ID from the SIWE session.
+        const authenticAddress = authUserId.toLowerCase();
 
         // Atomic Upsert Operation mapping authentic wallet securely
         let user;
         try {
             user = await prisma.user.upsert({
-                where: { walletAddress: normalizedAddress },
+                where: { walletAddress: authenticAddress },
                 update: { 
                     lastActive: new Date(),
                 },
                 create: {
-                    walletAddress: normalizedAddress,
+                    walletAddress: authenticAddress,
                     createdAt: new Date(),
                     lastActive: new Date(),
                     tier: 'GHOST',
                 }
             });
         } catch (upsertError: any) {
-            console.warn(`${logger} Upsert collision for ${normalizedAddress}, attempting direct update.`);
+            console.warn(`${logger} Upsert collision for ${authenticAddress}, attempting direct update.`);
             user = await prisma.user.update({
-                where: { walletAddress: normalizedAddress },
+                where: { walletAddress: authenticAddress },
                 data: { lastActive: new Date() }
             });
         }
@@ -118,7 +121,7 @@ export async function POST(req: NextRequest) {
             throw new Error("Persistencia fallida tras 2 intentos.");
         }
 
-        console.info(`${logger} Synced authentic SIWE wallet ${normalizedAddress}`);
+        console.info(`${logger} Synced authentic SIWE wallet ${authenticAddress}`);
 
         return NextResponse.json({ 
             success: true, 

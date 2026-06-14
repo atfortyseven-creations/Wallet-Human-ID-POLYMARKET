@@ -178,7 +178,10 @@ export default async function middleware(request: NextRequest) {
         console.error(`[WhaleFortress:SECURITY]  SHADOW_PROBE BLOCKED: ${ip} -> ${pathname}`);
       }
       
-      // We removed banIPGlobal(ip) here to prevent freezing legitimate users on shared IPs.
+      // [QUANTUM AEGIS FORTIFICATION] Absolute Zero Tolerance.
+      // Any IP hitting a honeypot is immediately globally banned at the Edge.
+      banIPGlobal(ip);
+      
       logAuditSafe(request, 'SECURITY_HONEYPOT_HIT', 'anonymous', ip, { path: pathname, isNoise: isCommonNoise });
       return new NextResponse(null, { status: 404 });
     }
@@ -295,22 +298,12 @@ export default async function middleware(request: NextRequest) {
       }
     }
 
-    // R1 FIX REVERT  system_handshake is a raw Ethereum address issued by the client
-    // during the Mobile UX Zero-Friction flow or QR Handshake. 
-    // Attempting to verify it as a JWT crashes the middleware and locks out legitimate users.
-    // Security note: Spoofing this cookie only grants read-only UI access. Actual mutations
-    // require cryptographic signatures (EIP-191/EIP-712) via the non-custodial wallet.
+    // [SECURITY PATCH] system_handshake bypass REMOVED.
+    // It was causing catastrophic IDOR and Account Takeover vulnerabilities. 
+    // Authentication must rely purely on cryptographically verified JWTs (whale_session / nextAuth).
     let systemHandshakeValid = false;
-    const systemHandshakeValue = systemHandshakeCookie?.value;
-    if (systemHandshakeValue && typeof systemHandshakeValue === 'string') {
-        if (/^0x[a-fA-F0-9]{40}$/.test(systemHandshakeValue)) {
-            systemHandshakeValid = true;
-        } else {
-            console.warn(`[WhaleFortress]  Malformed system_handshake address intercepted from IP: ${ip}`);
-        }
-    }
 
-    const isAuthenticated = siweSessionValid || !!nextAuthToken || systemHandshakeValid;
+    const isAuthenticated = siweSessionValid || !!nextAuthToken;
 
     if (matchesPattern(pathname, PROTECTED_PATTERNS)) {
       if (!isAuthenticated) {

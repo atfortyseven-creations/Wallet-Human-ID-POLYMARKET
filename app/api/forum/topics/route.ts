@@ -117,17 +117,15 @@ export async function POST(req: NextRequest) {
         }
         const messageToVerify = `${title}\n${signedContent}`;
         try {
-            if (cryptoSignature !== 'SESSION:AUTHENTICATED') {
-                const isValidSig = await verifyMessage({
-                    address: address as `0x${string}`,
-                    message: messageToVerify,
-                    signature: cryptoSignature as `0x${string}`,
-                });
-                
-                if (!isValidSig) {
-                    console.warn(`[Forum Security]  Invalid ECDSA signature intercepted for ${address}`);
-                    return NextResponse.json({ error: 'Cryptographic signature verification failed' }, { status: 401 });
-                }
+            const isValidSig = await verifyMessage({
+                address: address as `0x${string}`,
+                message: messageToVerify,
+                signature: cryptoSignature as `0x${string}`,
+            });
+            
+            if (!isValidSig) {
+                console.warn(`[Forum Security]  Invalid ECDSA signature intercepted for ${address}`);
+                return NextResponse.json({ error: 'Cryptographic signature verification failed' }, { status: 401 });
             }
         } catch (sigErr) {
             return NextResponse.json({ error: 'Malformed cryptographic signature payload' }, { status: 400 });

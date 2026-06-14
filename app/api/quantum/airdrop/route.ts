@@ -78,7 +78,21 @@ export async function POST(req: NextRequest) {
 
     const signature = await walletClient.signTypedData({ domain, types, primaryType: 'Claim', message });
 
-    // 6. Submit the claim transaction on behalf of the user (gasless for them)
+    // 6. Simulate the claim transaction to prevent gas drain if it reverts
+    try {
+      await publicClient.simulateContract({
+        address: AIRDROP_CONTRACT,
+        abi: parseAbi(['function claimWelcomeBonus(bytes calldata signature) external']),
+        functionName: 'claimWelcomeBonus',
+        args: [signature],
+        account: signerAccount,
+      });
+    } catch (simErr: any) {
+      console.error('[QUANTUM_AIRDROP] Simulation failed:', simErr?.message);
+      return NextResponse.json({ error: 'La transacción fallaría. Es posible que el contrato esté pausado o ya reclamaste.' }, { status: 400 });
+    }
+
+    // 7. Submit the claim transaction on behalf of the user (gasless for them)
     const txHash = await walletClient.writeContract({
       address: AIRDROP_CONTRACT,
       abi: parseAbi(['function claimWelcomeBonus(bytes calldata signature) external']),

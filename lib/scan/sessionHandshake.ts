@@ -21,7 +21,8 @@ function getHandshakeCookieAddress(): string | null {
 
 export async function completeSessionHandshake(
   decodedText: string,
-  getAddress: () => string | null
+  getAddress: () => string | null,
+  signMessageAsync?: (args: { message: string }) => Promise<string>
 ): Promise<SessionHandshakeResult> {
   let uuid: string | null = null;
   let ephemeralPub: string | null = null;
@@ -127,19 +128,32 @@ export async function completeSessionHandshake(
 
   // If we have a wagmi address but no JWT, mint a fresh one
   if (!jwt && resolvedAddress) {
-    try {
-      const sigRes = await fetch('/api/auth/system-verify', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ address: resolvedAddress, message: 'bypass', signature: 'bypass' }),
-        credentials: 'include',
-      });
-      if (sigRes.ok) {
-        const data = await sigRes.json();
-        jwt = data.jwt ?? null;
+    if (!signMessageAsync) {
+      console.error('[QR:Handshake] Missing signMessageAsync function for secure SIWE verification.');
+    } else {
+      try {
+        // [QUANTUM AEGIS] Real SIWE Signature Generation
+        const nonceRes = await fetch('/api/auth/nonce');
+        if (nonceRes.ok) {
+          const { nonce } = await nonceRes.json();
+          const message = `Authenticate to Whale Network.\n\nNonce: ${nonce}`;
+          const signature = await signMessageAsync({ message });
+
+          const sigRes = await fetch('/api/auth/system-verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ address: resolvedAddress, message, signature, nonce }),
+            credentials: 'include',
+          });
+          if (sigRes.ok) {
+            const data = await sigRes.json();
+            jwt = data.jwt ?? null;
+          }
+        }
+      } catch (err) {
+        console.warn('[QR:Handshake] SIWE verification failed during handshake recovery:', err);
+        /* non-fatal — qr-mobile-link will use system_handshake cookie fallback */
       }
-    } catch {
-      /* non-fatal — qr-mobile-link will use system_handshake cookie fallback */
     }
   }
 

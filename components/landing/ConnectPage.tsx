@@ -387,9 +387,13 @@ export default function ConnectPage() {
       try {
         const norm = address.toLowerCase();
         
-        // [SECURITY: ZERO-DAY PATCH] Generate SIWE message and request signature
-        const message = 'bypass';
-        const signature = 'bypass';
+        // [QUANTUM AEGIS] Real SIWE Signature Generation
+        const nonceRes = await fetch('/api/auth/nonce');
+        if (!nonceRes.ok) throw new Error('Failed to fetch authentication nonce');
+        const { nonce } = await nonceRes.json();
+        
+        const message = `Authenticate to Whale Network.\n\nNonce: ${nonce}`;
+        const signature = await signMessageAsync({ message });
 
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 15000);
@@ -397,7 +401,7 @@ export default function ConnectPage() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
-          body: JSON.stringify({ address: norm, message, signature }),
+          body: JSON.stringify({ address: norm, message, signature, nonce }),
           signal: controller.signal
         });
         clearTimeout(timeoutId);

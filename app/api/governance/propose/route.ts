@@ -36,9 +36,16 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        if (!body.creatorAddress || !body.worldIdProof) {
+        // [SECURITY HARDENING] Derive creatorAddress from cryptographic session.
+        const session = await getSession();
+        if (!session?.userId) {
+            return NextResponse.json({ error: 'Unauthorized: Authentication required to propose.' }, { status: 401 });
+        }
+        const creatorAddress = session.userId;
+
+        if (!body.worldIdProof) {
             return NextResponse.json(
-                { error: 'Missing creator address or World ID proof' },
+                { error: 'Missing World ID proof' },
                 { status: 400 }
             );
         }
@@ -75,14 +82,14 @@ export async function POST(request: NextRequest) {
 
         // 1. Ensure User exists FIRST (Foreign Key Constraint)
         await prisma.user.upsert({
-            where: { walletAddress: body.creatorAddress },
+            where: { walletAddress: creatorAddress },
             update: {
                 updatedAt: new Date(),
                 // Update nullifier if it changed (unlikely but possible)
                 worldIdNullifierHash: body.worldIdProof.nullifier_hash,
             },
             create: {
-                walletAddress: body.creatorAddress,
+                walletAddress: creatorAddress,
                 worldIdNullifierHash: body.worldIdProof.nullifier_hash,
             },
         });
@@ -98,7 +105,7 @@ export async function POST(request: NextRequest) {
                 outcomes: body.outcomes,
                 resolutionCriteria: body.resolutionCriteria,
                 category: body.category,
-                creatorAddress: body.creatorAddress,
+                creatorAddress: creatorAddress,
                 creatorNullifier: body.worldIdProof.nullifier_hash,
                 votingEndsAt,
                 status: 'VOTING',
@@ -107,13 +114,13 @@ export async function POST(request: NextRequest) {
 
         // 3. Update user metrics
         await (prisma as any).userMetrics.upsert({
-            where: { userAddress: body.creatorAddress },
+            where: { userAddress: creatorAddress },
             update: {
                 proposalsCreated: { increment: 1 },
                 lastActiveAt: new Date(),
             },
             create: {
-                userAddress: body.creatorAddress,
+                userAddress: creatorAddress,
                 proposalsCreated: 1,
             },
         });

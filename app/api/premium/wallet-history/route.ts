@@ -5,11 +5,14 @@ import { PriceService } from '@/lib/blockchain/PriceService';
 
 export async function GET(req: NextRequest) {
   try {
+    const { getSession } = await import('@/lib/session');
+    const session = await getSession();
+    if (!session?.userId) {
+        return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
+    }
+    const address = session.userId.toLowerCase();
     const { searchParams } = new URL(req.url);
-    const address = searchParams.get('address')?.toLowerCase();
     const timeframe = searchParams.get('timeframe') || '7d';
-
-    if (!address) return NextResponse.json({ error: 'Address required' }, { status: 400 });
 
     console.log(`[MASTER-HISTORY-SYNC] Tracing cross-chain assets for ${address} (${timeframe})...`);
 

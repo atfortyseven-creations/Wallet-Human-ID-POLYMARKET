@@ -1,4 +1,4 @@
-﻿import { SignJWT, jwtVerify, JWTPayload } from 'jose';
+import { SignJWT, jwtVerify, JWTPayload } from 'jose';
 import { cookies } from 'next/headers';
 import crypto from 'crypto';
 
@@ -168,17 +168,9 @@ export async function getSession(): Promise<SessionPayload | null> {
         if (verified) return verified;
     }
 
-    //  Priority 3: System QR Handshake 
-    const handshakeToken = cookieStore.get('system_handshake')?.value;
-    if (handshakeToken && /^0x[a-fA-F0-9]{40}$/.test(handshakeToken)) {
-        return {
-            userId: handshakeToken.toLowerCase(),
-            email: '',
-            type: 'access',
-            sub: handshakeToken.toLowerCase()
-        };
-    }
-
+    // [SECURITY PATCh] Removed Priority 3: System QR Handshake. 
+    // It was blindly trusting an unencrypted, client-side mutable cookie, leading to massive IDOR vulnerabilities.
+    
     return null;
 }
 

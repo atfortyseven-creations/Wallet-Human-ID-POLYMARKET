@@ -1,3 +1,4 @@
+import { getSession } from '@/lib/session';
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { cookies } from 'next/headers';
@@ -14,8 +15,8 @@ import { isAdmin } from '@/lib/admin';
  */
 export async function GET(request: NextRequest) {
   try {
-    const cookieStore = await cookies();
-    const address = cookieStore.get('system_handshake')?.value;
+    const session = await getSession();
+    const address = session?.userId;
     if (!isAdmin(address)) {
       return NextResponse.json({ error: 'Unauthorized: System Admin Only' }, { status: 403 });
     }

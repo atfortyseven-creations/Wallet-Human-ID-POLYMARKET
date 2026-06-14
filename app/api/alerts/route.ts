@@ -1,10 +1,11 @@
+import { getSession } from '@/lib/session';
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 export async function GET(req: NextRequest) {
     try {
-        const { searchParams } = new URL(req.url);
-        const wallet = searchParams.get('address')?.toLowerCase();
+        const session = await getSession();
+        const wallet = session?.userId;
         
         if (!wallet) {
              return NextResponse.json({ success: true, alerts: [] });
@@ -34,8 +35,9 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
+        const session = await getSession();
+        const wallet = session?.userId;
         const body = await req.json();
-        const wallet = body.address?.toLowerCase();
         
         if (!wallet) {
             return NextResponse.json({ success: false, error: 'Wallet address required' }, { status: 400 });
@@ -67,9 +69,10 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
     try {
+        const session = await getSession();
+        const wallet = session?.userId;
         const url = new URL(req.url);
         const id = url.searchParams.get('id');
-        const wallet = url.searchParams.get('address')?.toLowerCase();
 
         if (id && wallet) {
             await prisma.alert.deleteMany({ where: { id, userId: wallet } }); // Strict permission L1

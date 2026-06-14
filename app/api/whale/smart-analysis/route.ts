@@ -9,7 +9,7 @@ import { analyzeWalletSmartMoney } from '@/lib/smartMoneyAnalyzer';
 
 // Configure Alchemy
 const config = {
-  apiKey: process.env.NEXT_PUBLIC_ALCHEMY_ID || process.env.ALCHEMY_API_KEY || process.env.NEXT_PUBLIC_ALCHEMY_API_KEY,
+  apiKey: process.env.ALCHEMY_API_KEY,
   network: Network.BASE_MAINNET,
   url: process.env.BASE_RPC_URL || undefined,
 };

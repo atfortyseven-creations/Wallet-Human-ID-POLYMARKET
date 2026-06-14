@@ -8,10 +8,21 @@ const rateLimitMap = new Map<string, number>();
 const addressLockMap = new Set<string>();
 const RATE_LIMIT_MS = 10_000;
 
-export async function POST(req: Request) {
-  const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || '127.0.0.1';
+import { getSession } from '@/lib/session';
 
-  const lastTx = rateLimitMap.get(ip);
+export async function POST(req: Request) {
+  // [SECURITY HARDENING] Rate limit keyed by session.userId (cryptographically proven wallet address),
+  // NOT by x-forwarded-for IP which is trivially spoofable by any client.
+
+  // [QUANTUM AEGIS] Zero-Trust Session Verification — must happen BEFORE rate limit check
+  const session = await getSession();
+  if (!session || !session.userId) {
+    return NextResponse.json({ error: 'UNAUTHORIZED: Cryptographic session required.' }, { status: 401 });
+  }
+
+  // Rate limit by wallet identity, not IP
+  const rateKey = session.userId;
+  const lastTx = rateLimitMap.get(rateKey);
   if (lastTx && Date.now() - lastTx < RATE_LIMIT_MS) {
     const wait = Math.ceil((RATE_LIMIT_MS - (Date.now() - lastTx)) / 1000);
     return NextResponse.json(
@@ -37,6 +48,11 @@ export async function POST(req: Request) {
 
   const normalizedFrom = from.toLowerCase();
   const normalizedTo   = to.toLowerCase();
+
+  // [SECURITY FATAL FIX] The caller MUST cryptographically own the `from` address.
+  if (normalizedFrom !== session.userId) {
+    return NextResponse.json({ error: 'FORBIDDEN: You can only transfer funds from your own authenticated wallet.' }, { status: 403 });
+  }
 
   if (normalizedFrom === normalizedTo) {
     return NextResponse.json({ error: 'Self-transfers are not allowed' }, { status: 400 });
@@ -107,7 +123,7 @@ export async function POST(req: Request) {
       },
     });
 
-    rateLimitMap.set(ip, Date.now());
+    rateLimitMap.set(rateKey, Date.now());
     console.log(`[Aztec Transfer] ✅ TX saved — hash: ${txHash}`);
 
     return NextResponse.json({

@@ -22,17 +22,14 @@ function safeStringify(data: unknown): string {
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const authUserId = searchParams.get('authUserId');
-    const chainIds = searchParams.get('chainIds')?.split(',').map(id => parseInt(id)).filter(id => !isNaN(id));
-    const chainId = searchParams.get('chainId');
-    const type = searchParams.get('type') as TransactionType | null;
-    const limit = searchParams.get('limit');
-    const offset = searchParams.get('offset');
-    const format = searchParams.get('format');
-
-    if (!authUserId) {
-      return NextResponse.json({ error: 'Missing authUserId (wallet address)' }, { status: 400 });
+    const { getSession } = await import('@/lib/session');
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
     }
+    const authUserId = session.userId;
+
+    const chainIds = searchParams.get('chainIds')?.split(',').map(id => parseInt(id)).filter(id => !isNaN(id));
 
     const transactions = await getTransactionHistory(authUserId, {
       chainId: chainId ? parseInt(chainId) : undefined,
@@ -73,12 +70,12 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { authUserId } = body;
-
-    if (!authUserId) {
-      return NextResponse.json({ error: 'Missing authUserId' }, { status: 400 });
+    const { getSession } = await import('@/lib/session');
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
     }
+    const authUserId = session.userId;
 
     const stats = await getTransactionStats(authUserId);
 

@@ -77,6 +77,27 @@ export async function POST(req: NextRequest) {
         // EXECUTE TRANSACTION
         // ====================================================================
 
+        console.log("[Relayer] Simulating zap on-chain to prevent gas exhaustion...");
+
+        try {
+            await zapContract.executeZapWithSignature.staticCall(
+                user,
+                wldAmount,
+                minUSDC || 0,
+                conditionId,
+                outcomeIndex,
+                minSharesOut || 0,
+                deadline,
+                signature
+            );
+        } catch (simError: any) {
+            console.error("[Relayer] Simulation failed. Invalid signature or state:", simError);
+            return NextResponse.json(
+                { error: "Simulation failed. Signature or parameters are invalid." },
+                { status: 400 }
+            );
+        }
+
         console.log("[Relayer] Executing zap on-chain...");
 
         const tx = await zapContract.executeZapWithSignature(

@@ -16,9 +16,10 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 
-//  THRESHOLDS (OWASP Paranoia Level 2 equivalent) 
-const BLOCK_THRESHOLD     = 10;
-const CHALLENGE_THRESHOLD = 5;
+//  THRESHOLDS (OWASP Paranoia Level 3 equivalent - QUANTUM FORTRESS) 
+// Dropped to 8 so NO_UA (5) + MISSING_ACCEPT_LANGUAGE (3) instantly bans the IP.
+const BLOCK_THRESHOLD     = 8;
+const CHALLENGE_THRESHOLD = 4;
 
 //  BYPASS IPS (Institutional Whitelist) 
 const BYPASS_IPS = ['127.0.0.1'];

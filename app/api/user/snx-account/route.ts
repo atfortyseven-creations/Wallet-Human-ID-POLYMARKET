@@ -60,12 +60,12 @@ export async function POST(req: NextRequest) {
  * GET: Retrieve the SNX account for the user
  */
 export async function GET(req: NextRequest) {
-    const { searchParams } = new URL(req.url);
-    const address = searchParams.get('address');
-
-    if (!address) {
-        return NextResponse.json({ snxAccountId: null });
+    const { getSession } = await import('@/lib/session');
+    const session = await getSession();
+    if (!session?.userId) {
+        return NextResponse.json({ snxAccountId: null }, { status: 401 });
     }
+    const address = session.userId.toLowerCase();
 
     try {
         const user = await prisma.user.findUnique({

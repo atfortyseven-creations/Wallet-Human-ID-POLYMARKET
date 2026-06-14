@@ -5,10 +5,15 @@ import { appendAuditEntry } from '@/lib/audit/audit-trail';
 export const runtime = 'nodejs';
 
 export async function POST(req: Request) {
-  // Simple internal security check to prevent external spam
+  // [SECURITY HARDENING] The AUDIT_SECRET must be a real cryptographic secret set via env.
+  // Previously defaulted to 'true', meaning any attacker who sent x-internal-audit: true
+  // had full write access to forge audit log entries and corrupt the tamper-evident trail.
+  const expectedSecret = process.env.AUDIT_SECRET;
+  if (!expectedSecret || expectedSecret === 'true' || expectedSecret.length < 32) {
+    console.error('[AUDIT_ROUTE] CRITICAL: AUDIT_SECRET is not set or is too weak. Route is disabled.');
+    return NextResponse.json({ error: 'Service Unavailable: Audit route not configured.' }, { status: 503 });
+  }
   const isInternal = req.headers.get('x-internal-audit');
-  const expectedSecret = process.env.AUDIT_SECRET || 'true';
-  
   if (!isInternal || isInternal !== expectedSecret) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }

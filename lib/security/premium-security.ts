@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/session';
 import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
@@ -13,8 +13,26 @@ export function rateLimit(
   identifier: string,
   tier: 'FREE' | 'PREMIUM' | 'CRITICAL' = 'FREE'
 ): { allowed: boolean; remaining: number; resetIn: number } {
-  // EMERGENCY BYPASS
-  return { allowed: true, remaining: 1000, resetIn: 0 };
+  const now = Date.now();
+  const config = RATE_LIMITS[tier];
+  const entry = rateLimitStore.get(identifier);
+
+  if (!entry || now > entry.resetTime) {
+    rateLimitStore.set(identifier, { count: 1, resetTime: now + config.window, blacklisted: false });
+    return { allowed: true, remaining: config.requests - 1, resetIn: config.window };
+  }
+
+  if (entry.blacklisted) {
+    return { allowed: false, remaining: 0, resetIn: entry.resetTime - now };
+  }
+
+  entry.count++;
+  if (entry.count > config.requests) {
+    entry.blacklisted = true;
+    return { allowed: false, remaining: 0, resetIn: entry.resetTime - now };
+  }
+
+  return { allowed: true, remaining: config.requests - entry.count, resetIn: entry.resetTime - now };
 }
 
 // ============================================
@@ -193,17 +211,10 @@ export async function validateSecureRequest(
   const session = await getSession();
   let userId = session?.userId;
 
-  // FALLBACK: system_handshake cookie (mobile QR auth flow)
-  // This allows users who connected via mobile wallet to also call
-  // authenticated forum and API endpoints without a full SIWE JWT.
-  if (!userId) {
-    const systemHandshake = req.cookies.get('system_handshake')?.value;
-    const webAddress = req.headers.get('x-web3-address');
-    const rawAddress = systemHandshake || webAddress;
-    if (rawAddress && /^0x[a-fA-F0-9]{40}$/.test(rawAddress)) {
-      userId = rawAddress.toLowerCase();
-    }
-  }
+  // [QUANTUM AEGIS FIX]
+  // Completely removed the `system_handshake` cookie and `x-web3-address` header fallbacks.
+  // Those fallbacks allowed complete Account Takeover / Spoofing of any address by simply 
+  // setting an HTTP header. All authentication must strictly derive from the cryptographic JWT.
 
   if (!userId) {
     return { valid: false, error: 'Unauthorized' };

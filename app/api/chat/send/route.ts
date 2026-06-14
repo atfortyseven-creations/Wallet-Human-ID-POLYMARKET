@@ -7,6 +7,7 @@
  * so the route never crashes regardless of environment.
  */
 import { NextRequest, NextResponse } from 'next/server';
+import { getSession } from '@/lib/session';
 
 //  Lazy Upstash client  only created when env vars are present 
 // Previously: `new Redis({url: process.env.UPSTASH_REDIS_REST_URL!, token: ...})`
@@ -39,15 +40,23 @@ const memoryStore = global.__whaleChatMemStore;
 
 export async function POST(req: NextRequest) {
   try {
-    const { channelId, sender, content } = await req.json();
+    // [SECURITY HARDENING] Sender identity MUST be derived from the cryptographic session.
+    // Previously, body-supplied 'sender' was trusted directly, enabling any attacker to
+    // impersonate ANY wallet in the chat — including admins or high-reputation users.
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ error: 'Unauthorized: Authentication required to send messages.' }, { status: 401 });
+    }
 
-    if (!channelId || !sender || !content?.trim()) {
+    const { channelId, content } = await req.json();
+
+    if (!channelId || !content?.trim()) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     const message = {
       id:      crypto.randomUUID(),
-      sender:  sender.toLowerCase(),
+      sender:  session.userId, // Cryptographically verified — cannot be spoofed
       content: content.trim(),
       sentAt:  new Date().toISOString(),
     };

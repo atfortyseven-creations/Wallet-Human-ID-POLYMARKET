@@ -138,23 +138,14 @@ export async function GET(req: NextRequest) {
     }
 
     const userId = validation.userId!;
-    const web3Address = req.headers.get('x-web3-address')?.toLowerCase();
-
+    
     // Resolve primary User UUID from walletAddress
     const primaryUser = await prisma.user.findUnique({
         where: { walletAddress: userId },
         select: { id: true }
     });
     const primaryUuid = primaryUser?.id || userId;
-
     const userUuids = [primaryUuid];
-    if (web3Address && web3Address !== userId) {
-        const secondaryUser = await prisma.user.findUnique({
-            where: { walletAddress: web3Address },
-            select: { id: true }
-        });
-        if (secondaryUser) userUuids.push(secondaryUser.id);
-    }
 
     const wallets = await prisma.watchedWallet.findMany({
       where: { userId: { in: userUuids } },
@@ -256,20 +247,18 @@ export async function DELETE(req: NextRequest) {
     }
 
     const userId = validation.userId!;
-    const web3Address = req.headers.get('x-web3-address')?.toLowerCase();
     const { searchParams } = new URL(req.url);
     const walletId = searchParams.get('id');
 
-    console.log('[DELETE-WALLET] Request params:', { userId, web3Address, walletId });
+    console.log('[DELETE-WALLET] Request params:', { userId, walletId });
 
     if (!walletId) {
       console.error('[DELETE-WALLET] Missing wallet ID');
       return NextResponse.json({ error: 'ID required' }, { status: 400 });
     }
 
-    //  [IDENTITY FUSION] Check BOTH potential owner IDs
+    //  [IDENTITY FUSION] Strict cryptographically verified user
     const userIds = [userId];
-    if (web3Address && web3Address !== userId) userIds.push(web3Address);
 
     // First, try to find the wallet
     const wallet = await prisma.watchedWallet.findFirst({

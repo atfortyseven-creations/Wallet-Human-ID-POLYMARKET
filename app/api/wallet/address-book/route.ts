@@ -118,9 +118,9 @@ export async function PATCH(request: NextRequest) {
     let entry;
 
     if (toggleFavoriteFlag) {
-      entry = await toggleFavorite(id);
+      entry = await toggleFavorite(id, userId);
     } else {
-      entry = await updateAddressBookEntry(id, {
+      entry = await updateAddressBookEntry(id, userId, {
         name,
         label,
         note,
@@ -161,7 +161,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    await deleteAddressBookEntry(id);
+    await deleteAddressBookEntry(id, userId);
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -19,6 +19,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { getSession } from '@/lib/session';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -65,8 +66,9 @@ const PROGRAM_INFO = {
 //  GET  Program Info 
 
 export async function GET(req: NextRequest) {
-    const { searchParams } = req.nextUrl;
-    const walletAddress    = searchParams.get('address');
+    const { getSession } = await import('@/lib/session');
+    const session = await getSession();
+    const walletAddress = session?.userId?.toLowerCase();
 
     // If wallet provided, include their current tier status
     let applicantStatus = null;
@@ -115,8 +117,17 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
+        // [SECURITY HARDENING] Derive walletAddress from authenticated session,
+        // NOT from the request body. Previously, any caller could impersonate
+        // any wallet address to register ambassador applications fraudulently.
+        const session = await getSession();
+        if (!session?.userId) {
+            return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
+        }
+
         const body = await req.json();
-        const { walletAddress, worldIdProof, telegram, twitter, motivation } = body;
+        const walletAddress = session.userId; // Cryptographically verified identity
+        const { worldIdProof, telegram, twitter, motivation } = body;
 
         if (!walletAddress || !worldIdProof) {
             return NextResponse.json(

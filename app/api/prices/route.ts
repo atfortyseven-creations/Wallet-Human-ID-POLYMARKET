@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const apiKey = process.env.NEXT_PUBLIC_COINGECKO_KEY || process.env.COINGECKO_KEY || '';
+    const apiKey = process.env.COINGECKO_KEY || '';
     const response = await fetch(
       `https://api.coingecko.com/api/v3/simple/price?ids=${coinIds}&vs_currencies=usd${apiKey ? `&x_cg_demo_api_key=${apiKey}` : ''}`,
       {

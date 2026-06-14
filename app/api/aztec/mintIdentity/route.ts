@@ -8,7 +8,15 @@ export const dynamic = 'force-dynamic';
 const MINT_AMOUNT    = 10;
 const SYSTEM_ADDRESS = '0x0000000000000000000000000000000000000000';
 
+import { getSession } from '@/lib/session';
+
 export async function POST(req: Request) {
+  // [QUANTUM AEGIS] Zero-Trust Session Verification
+  const session = await getSession();
+  if (!session || !session.userId) {
+    return NextResponse.json({ error: 'UNAUTHORIZED: Cryptographic session required to mint identity.' }, { status: 401 });
+  }
+
   let body: any;
   try { body = await req.json(); }
   catch { return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 }); }
@@ -19,6 +27,11 @@ export async function POST(req: Request) {
   }
 
   const normalizedTo = to.toLowerCase();
+
+  // [SECURITY FATAL FIX] The caller MUST cryptographically own the address receiving the identity.
+  if (normalizedTo !== session.userId) {
+    return NextResponse.json({ error: 'FORBIDDEN: You can only mint identity for your own authenticated wallet.' }, { status: 403 });
+  }
 
   try {
     // ── One mint per address ──────────────────────────────────────────────

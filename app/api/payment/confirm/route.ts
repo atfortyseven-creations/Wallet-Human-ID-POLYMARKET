@@ -20,16 +20,15 @@ const BANK_DETAILS = {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { reference, planId, billingCycle, priceEur, email, walletAddress: rawWalletAddress } = body;
-    
-    //  STRICT IDENTITY ENFORCEMENT 
-    // Zero-Trust policy: A connected Web3 wallet is strictly required to bind the institutional license.
-    if (!rawWalletAddress || rawWalletAddress === 'manual_sepa_user') {
-      return NextResponse.json({ error: 'A connected Web3 Wallet is strictly required to issue an Institutional License. Please connect your wallet first.' }, { status: 401 });
+    const { getSession } = await import('@/lib/session');
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
     }
+    const walletAddress = session.userId.toLowerCase();
 
-    const walletAddress = rawWalletAddress.toLowerCase();
+    const body = await request.json();
+    const { reference, planId, billingCycle, priceEur, email } = body;
 
     if (!reference || !planId || !walletAddress || !billingCycle || !priceEur || !email) {
       return NextResponse.json({ error: 'Missing required billing fields (email, reference, etc.)' }, { status: 400 });

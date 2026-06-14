@@ -9,10 +9,12 @@ import { prisma } from '@/lib/prisma';
  */
 export async function GET(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
-    const address = searchParams.get('address');
-    
-    if (!address) return NextResponse.json({ error: 'Address required' }, { status: 400 });
+    const { getSession } = await import('@/lib/session');
+    const session = await getSession();
+    if (!session?.userId) {
+        return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
+    }
+    const address = session.userId.toLowerCase();
 
     // Find the internal user ID associated with this wallet address
     // If none exists, we might need to create a shadow record or use the address as ID

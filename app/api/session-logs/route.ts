@@ -1,13 +1,24 @@
 // @ts-nocheck
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getSession } from '@/lib/session';
+import { isAdmin } from '@/lib/admin';
 
 export async function GET(req: Request) {
   try {
+    // [SECURITY HARDENING] Session logs contain sensitive PII (IPs, user agents, activity patterns).
+    // Previously fully unauthenticated — any attacker could enumerate all users' sessions.
+    // Now requires admin authentication.
+    const session = await getSession();
+    if (!session?.userId || !isAdmin(session.userId)) {
+      return NextResponse.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
+    }
+
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get('userId');
     const action = searchParams.get('action');
-    const limit = parseInt(searchParams.get('limit') || '50');
+    const rawLimit = parseInt(searchParams.get('limit') || '50');
+    const limit = Math.min(rawLimit, 500); // Cap to prevent full-table dumps
     const offset = parseInt(searchParams.get('offset') || '0');
 
     const where: any = {};
@@ -21,9 +32,7 @@ export async function GET(req: Request) {
       skip: offset,
     });
 
-    // Zero-Mock Mandate: return live DB data only  no synthetic padding.
     const total = await prisma.userSessionLog.count({ where });
-
     return NextResponse.json({ logs, total: total > 0 ? total : logs.length });
   } catch (error) {
     console.error('Session Logs GET Error:', error);
@@ -34,10 +43,15 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { exportFormat, action, userId } = body;
+    const { exportFormat, action } = body;
+
+    // [SECURITY HARDENING] For export, require admin. For insertion, bind userId to session.
+    const session = await getSession();
 
     //  Active insertion 
     if (!exportFormat && action) {
+      // Bind userId to the authenticated session — never trust body-supplied userId
+      const sessionUserId = session?.userId || null;
       const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || '127.0.0.1';
       const ua = req.headers.get('user-agent') || 'System';
 
@@ -69,7 +83,7 @@ export async function POST(req: Request) {
       try {
         const newLog = await prisma.userSessionLog.create({
           data: {
-            userId: userId || null,
+            userId: sessionUserId,
             sessionId,
             action,
             ipAddress: ip,
@@ -83,7 +97,11 @@ export async function POST(req: Request) {
       }
     }
 
-    //  Bulk CSV export 
+    // Bulk CSV export — admin only
+    if (!session?.userId || !isAdmin(session.userId)) {
+      return NextResponse.json({ error: 'Forbidden: Admin access required for export' }, { status: 403 });
+    }
+
     let logs = await prisma.userSessionLog.findMany({
       orderBy: { timestamp: 'desc' },
       take: 5000,

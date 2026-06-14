@@ -7,8 +7,16 @@ export const dynamic = 'force-dynamic';
 const AIRDROP_AMOUNT = 10;
 const SYSTEM_ADDRESS = '0x0000000000000000000000000000000000000000000000000000000000000000';
 
+import { getSession } from '@/lib/session';
+
 export async function POST(req: Request) {
   try {
+    // [QUANTUM AEGIS] Zero-Trust Session Verification
+    const session = await getSession();
+    if (!session || !session.userId) {
+      return NextResponse.json({ error: 'UNAUTHORIZED: Cryptographic session required to claim airdrop.' }, { status: 401 });
+    }
+
     const { address } = await req.json();
 
     if (!address) {
@@ -16,6 +24,11 @@ export async function POST(req: Request) {
     }
 
     const normalizedAddress = address.toLowerCase();
+
+    // [SECURITY FATAL FIX] The caller MUST cryptographically own the address receiving the airdrop.
+    if (normalizedAddress !== session.userId) {
+      return NextResponse.json({ error: 'FORBIDDEN: You can only claim airdrops for your own authenticated wallet.' }, { status: 403 });
+    }
 
     // ── One airdrop per address ────────────────────────────────────────────
     const existingTx = await prisma.transaction.findFirst({

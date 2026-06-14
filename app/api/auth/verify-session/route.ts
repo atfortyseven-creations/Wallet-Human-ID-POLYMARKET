@@ -61,14 +61,8 @@ export async function GET(request: NextRequest) {
             }
         }
 
-        // Priority 2: system_handshake cookie (raw Ethereum address)
-        // Set by QR hydration and system-verify. JS-readable (httpOnly: false).
-        if (handshake && /^0x[a-fA-F0-9]{40}$/.test(handshake)) {
-            return NextResponse.json({
-                authenticated: true,
-                user: { address: handshake, tier: 'FREE' }
-            });
-        }
+        // [SECURITY PATCH] Removed Priority 2: system_handshake cookie blind trust.
+        // Returning true just because a cookie matches a hex regex was causing massive spoofing.
 
         return NextResponse.json(
             { authenticated: false },

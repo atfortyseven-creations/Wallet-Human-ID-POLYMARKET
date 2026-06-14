@@ -125,8 +125,12 @@ export async function getAddressBookEntry(
  */
 export async function updateAddressBookEntry(
   id: string,
+  authUserId: string,
   updates: Partial<Omit<AddressBookEntry, 'id' | 'authUserId' | 'address' | 'createdAt' | 'updatedAt'>>
 ): Promise<AddressBookEntry> {
+  const entry = await (prisma as any).addressBookEntry.findFirst({ where: { id, authUserId } });
+  if (!entry) throw new Error('Address book entry not found or unauthorized');
+
   return (prisma as any).addressBookEntry.update({
     where: { id },
     data: updates,
@@ -136,20 +140,20 @@ export async function updateAddressBookEntry(
 /**
  * Delete address book entry
  */
-export async function deleteAddressBookEntry(id: string): Promise<void> {
-  await (prisma as any).addressBookEntry.delete({
-    where: { id },
+export async function deleteAddressBookEntry(id: string, authUserId: string): Promise<void> {
+  await (prisma as any).addressBookEntry.deleteMany({
+    where: { id, authUserId },
   });
 }
 
 /**
  * Toggle favorite status
  */
-export async function toggleFavorite(id: string): Promise<AddressBookEntry> {
-  const entry = await (prisma as any).addressBookEntry.findUnique({ where: { id } });
+export async function toggleFavorite(id: string, authUserId: string): Promise<AddressBookEntry> {
+  const entry = await (prisma as any).addressBookEntry.findFirst({ where: { id, authUserId } });
   
   if (!entry) {
-    throw new Error('Address book entry not found');
+    throw new Error('Address book entry not found or unauthorized');
   }
 
   return (prisma as any).addressBookEntry.update({

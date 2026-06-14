@@ -1,3 +1,4 @@
+import { getSession } from '@/lib/session';
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
@@ -5,8 +6,8 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
     try {
-        const { searchParams } = new URL(req.url);
-        const wallet = searchParams.get('address')?.toLowerCase();
+        const session = await getSession();
+        const wallet = session?.userId;
         
         if (!wallet) return NextResponse.json({ nodes: [], edges: [] });
 
@@ -23,8 +24,9 @@ export async function GET(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
     try {
+        const session = await getSession();
+        const wallet = session?.userId;
         const body = await req.json();
-        const wallet = body.address?.toLowerCase();
         if (!wallet) return NextResponse.json({ error: 'Missing Identity' }, { status: 400 });
 
         const state = await prisma.canvasState.upsert({

@@ -12,17 +12,8 @@ async function resolveUserId(req: NextRequest, queryAddress: string | null): Pro
   const session = await getSession();
   if (session?.userId) return session.userId.toLowerCase();
 
-  // Priority 2: x-web3-address header (sent by WhaleChat for wagmi/WalletConnect users)
-  const headerAddr = req.headers.get('x-web3-address')?.toLowerCase();
-  if (
-    headerAddr &&
-    /^0x[a-f0-9]{40}$/.test(headerAddr) &&
-    queryAddress &&
-    headerAddr === queryAddress.toLowerCase()
-  ) {
-    return headerAddr;
-  }
-
+  // Priority 2 (DELETED): `x-web3-address` was removed because it allowed
+  // trivial spoofing of any identity by injecting HTTP headers.
   return null;
 }
 

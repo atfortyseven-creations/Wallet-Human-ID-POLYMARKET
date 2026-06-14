@@ -6,15 +6,12 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const address = searchParams.get('address');
-
-  if (!address) {
-    return NextResponse.json(
-      { error: 'Address parameter is required' },
-      { status: 400 }
-    );
+  const { getSession } = await import('@/lib/session');
+  const session = await getSession();
+  if (!session?.userId) {
+      return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
   }
+  const address = session.userId;
 
   try {
     console.log(`[API] Fetching net worth for ${address.slice(0, 10)}...`);

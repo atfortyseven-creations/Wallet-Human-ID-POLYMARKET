@@ -27,19 +27,38 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Invalid or missing authentication parameters' }, { status: 400 });
         }
 
-        // [SECURITY: ZERO-DAY PATCH] Strict SIWE Cryptographic Verification
-        if (message !== 'bypass' && signature !== 'bypass') {
-            try {
-                const recoveredAddress = ethers.verifyMessage(message, signature);
-                if (recoveredAddress.toLowerCase() !== rawAddress) {
-                    console.error(`[Auth:Spoof] Signature mismatch: recovered ${recoveredAddress} !== expected ${rawAddress}`);
-                    return NextResponse.json({ error: 'Cryptographic verification failed: Unauthorized' }, { status: 401 });
-                }
-            } catch (cryptoErr) {
-                console.error('[Auth:CryptoError] Failed to verify message:', cryptoErr);
-                return NextResponse.json({ error: 'Invalid cryptographic signature format' }, { status: 401 });
-            }
+        // [QUANTUM AEGIS] Strict SIWE Cryptographic Verification
+        // The backdoor bypass has been DESTROYED.
+        if (message === 'bypass' || signature === 'bypass') {
+             return NextResponse.json({ error: 'FORBIDDEN: Bypass backdoor has been eradicated.' }, { status: 403 });
         }
+
+        // Validate the cryptographic signature
+        try {
+            const recoveredAddress = ethers.verifyMessage(message, signature);
+            if (recoveredAddress.toLowerCase() !== rawAddress) {
+                console.error(`[Auth:Spoof] Signature mismatch: recovered ${recoveredAddress} !== expected ${rawAddress}`);
+                return NextResponse.json({ error: 'Cryptographic verification failed: Unauthorized' }, { status: 401 });
+            }
+        } catch (cryptoErr) {
+            console.error('[Auth:CryptoError] Failed to verify message:', cryptoErr);
+            return NextResponse.json({ error: 'Invalid cryptographic signature format' }, { status: 401 });
+        }
+
+        // Nonce Verification (Replay Attack Prevention)
+        // Extract nonce from message or body. Assuming body.nonce for cleaner structure.
+        const nonce = body.nonce;
+        if (!nonce) {
+            return NextResponse.json({ error: 'Missing cryptographic nonce' }, { status: 400 });
+        }
+
+        const validNonce = await prisma.siweNonce.findUnique({ where: { nonce } });
+        if (!validNonce || validNonce.expiresAt < new Date()) {
+            return NextResponse.json({ error: 'Nonce invalid or expired. Replay attack prevented.' }, { status: 401 });
+        }
+        
+        // Burn the nonce
+        await prisma.siweNonce.delete({ where: { nonce } });
 
         // [INDEXATION FIX] Upsert — never fail with "account not found".
         // If the user somehow never got indexed on signup, this catches them now.

@@ -13,12 +13,12 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
     try {
-        const { searchParams } = new URL(req.url);
-        const address = searchParams.get('address');
-
-        if (!address || !/^0x[a-fA-F0-9]{40}$/.test(address)) {
-            return NextResponse.json({ error: 'Invalid address' }, { status: 400 });
+        const { getSession } = await import('@/lib/session');
+        const session = await getSession();
+        if (!session?.userId) {
+            return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
         }
+        const address = session.userId;
 
         const { ethBalance, tokens } = await getUserPortfolio(address);
 

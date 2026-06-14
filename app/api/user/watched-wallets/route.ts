@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getServerSession } from 'next-auth'; // Or your auth provider
+import { getSession } from '@/lib/session';
 
 export async function GET(req: NextRequest) {
-    const userId = req.nextUrl.searchParams.get('userId');
+    const session = await getSession();
+    const userId = session?.userId;
+
     if (!userId) {
-        return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     try {
@@ -21,10 +23,17 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
-        const body = await req.json();
-        const { userId, address, label } = body;
+        const session = await getSession();
+        const userId = session?.userId;
 
-        if (!userId || !address) {
+        if (!userId) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const body = await req.json();
+        const { address, label } = body;
+
+        if (!address) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
@@ -46,12 +55,18 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
     try {
+        const session = await getSession();
+        const userId = session?.userId;
+
+        if (!userId) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
         const { searchParams } = new URL(req.url);
         const id = searchParams.get('id');
-        const userId = searchParams.get('userId');
 
-        if (!id || !userId) {
-            return NextResponse.json({ error: 'Missing id or userId' }, { status: 400 });
+        if (!id) {
+            return NextResponse.json({ error: 'Missing id' }, { status: 400 });
         }
 
         // Verify ownership

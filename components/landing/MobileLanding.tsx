@@ -505,7 +505,7 @@ function ConnectedScreen({
 
           try {
             const { completeSessionHandshake } = await import('@/lib/scan/sessionHandshake');
-            const handshakeRes = await completeSessionHandshake(result, () => address || "");
+            const handshakeRes = await completeSessionHandshake(result, () => address || "", signMessageAsync);
             
             const toast = document.createElement('div');
             toast.className = `fixed top-6 left-4 right-4 z-[99999] text-white text-[10px] border border-white/10 font-mono uppercase tracking-[0.3em] px-6 py-5 rounded-2xl shadow-2xl text-center ${handshakeRes.ok ? 'bg-black' : 'bg-red-600'}`;
@@ -605,7 +605,7 @@ export function MobileLanding() {
         const runHandshake = async () => {
           try {
             const { completeSessionHandshake } = await import('@/lib/scan/sessionHandshake');
-            const result = await completeSessionHandshake(window.location.href, () => effectiveAddress);
+            const result = await completeSessionHandshake(window.location.href, () => effectiveAddress, signMessageAsync);
             
             const toast = document.createElement('div');
             toast.className = `fixed top-6 left-4 right-4 z-[99999] text-white text-[10px] border border-white/10 font-mono uppercase tracking-[0.3em] px-6 py-5 rounded-2xl shadow-2xl text-center ${result.ok ? 'bg-black' : 'bg-red-600'}`;
@@ -750,15 +750,19 @@ export function MobileLanding() {
     setSigningError(null);
 
     try {
-      // [SECURITY: ZERO-DAY PATCH] Generate SIWE message and request signature
-      const message = 'bypass';
-      const signature = 'bypass';
+      // [QUANTUM AEGIS] Real SIWE Signature Generation
+      const nonceRes = await fetch('/api/auth/nonce');
+      if (!nonceRes.ok) throw new Error('Failed to fetch cryptographic nonce');
+      const { nonce } = await nonceRes.json();
+
+      const message = `Authenticate to Whale Network.\n\nNonce: ${nonce}`;
+      const signature = await signMessageAsync({ message });
 
       const verifyRes = await fetch('/api/auth/system-verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ address: norm, message, signature })
+        body: JSON.stringify({ address: norm, message, signature, nonce })
       });
 
       if (!verifyRes.ok) {

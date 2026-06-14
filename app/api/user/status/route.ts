@@ -32,35 +32,11 @@ export async function GET(req: NextRequest) {
             nullifierHash: user?.worldIdNullifierHash || null
         });
 
-        // Auto-Hydrate Security Cookies for Middleware if record exists
-        if (isVerified) {
-            const cookieOptions = {
-                path: '/',
-                maxAge: 60 * 60 * 24 * 7,
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'lax' as const
-            };
-
-            // CRITICAL SECURITY FIX: Same hardcoded secret removed as in verify-human.
-            const rawSecret = process.env.KYC_SECRET;
-            if (!rawSecret) {
-                console.error('[UserStatus]  CRITICAL: KYC_SECRET not set. Cannot issue kyc_token.');
-                // Still return user status  just don't issue the cookie
-                return response;
-            }
-
-            const JWT_SECRET = new TextEncoder().encode(rawSecret);
-            const token = await new SignJWT({ address: address.toLowerCase(), status: 'APPROVED' })
-                .setProtectedHeader({ alg: 'HS256' })
-                .setIssuedAt()
-                .setExpirationTime('7d')
-                .sign(JWT_SECRET);
-
-            response.cookies.set('kyc_token', token, cookieOptions);
-            response.cookies.set('kyc_status', 'APPROVED', { ...cookieOptions, httpOnly: false });
-            response.cookies.set('human_session', 'true', cookieOptions);
-        }
+        // [SECURITY HARDENING] Removed cookie auto-hydration here.
+        // Previously, if an attacker queried ?address=<verified_whale_address>,
+        // the server would issue them valid kyc_token and human_session cookies
+        // for that whale, allowing instant account takeover. Sessions must only
+        // be established via cryptographic proof in /auth endpoints.
 
         return response;
 

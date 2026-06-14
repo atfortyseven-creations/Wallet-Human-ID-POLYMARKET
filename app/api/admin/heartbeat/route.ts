@@ -4,7 +4,8 @@ import { verifyMessage } from 'viem';
 
 export const dynamic = 'force-dynamic';
 
-const ADMIN_WALLET = process.env.NEXT_PUBLIC_Private_ADMIN_WALLET || '0x0000000000000000000000000000000000000000'; 
+// [QUANTUM AEGIS FIX] Removed NEXT_PUBLIC prefix to prevent leaking admin address to client bundle
+const ADMIN_WALLET = process.env.PRIVATE_ADMIN_WALLET || process.env.ADMIN_WALLET_ADDRESS || '0x0000000000000000000000000000000000000000'; 
 
 export async function POST(req: NextRequest) {
     try {

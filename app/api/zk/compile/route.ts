@@ -1,10 +1,24 @@
 import { NextResponse } from 'next/server';
-import { exec, execFile } from 'child_process';
+import { exec } from 'child_process';
 import { promisify } from 'util';
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import crypto from 'crypto';
+import { getSession } from '@/lib/session';
+
+// [SECURITY] Per-session compile rate limit: max 5 compilations per minute
+const compileRateLimit = new Map<string, { count: number; resetAt: number }>();
+function checkCompileLimit(userId: string): boolean {
+  const now = Date.now();
+  const WINDOW = 60_000;
+  const MAX = 5;
+  const entry = compileRateLimit.get(userId) ?? { count: 0, resetAt: now + WINDOW };
+  if (now > entry.resetAt) { entry.count = 0; entry.resetAt = now + WINDOW; }
+  entry.count++;
+  compileRateLimit.set(userId, entry);
+  return entry.count <= MAX;
+}
 
 const execAsync  = promisify(exec);
 const execFileAsync = promisify(execFile);
@@ -209,6 +223,19 @@ export async function POST(req: Request) {
   let workspaceDir = '';
 
   try {
+    // [SECURITY HARDENING] Require authenticated session before triggering server-side compilation.
+    // Previously unauthenticated — any internet actor could consume server CPU/memory
+    // for 90 seconds per request with complex circuits (DoS attack vector).
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ success: false, error: 'Authentication required to use the ZK Sandbox.' }, { status: 401 });
+    }
+
+    // Rate limit: max 5 compilations per minute per wallet
+    if (!checkCompileLimit(session.userId)) {
+      return NextResponse.json({ success: false, error: 'Rate limit exceeded: max 5 compilations per minute.' }, { status: 429 });
+    }
+
     const body = await req.json();
     const sourceCode: string = body.sourceCode ?? '';
 

@@ -257,30 +257,33 @@ export async function POST(req: NextRequest) {
             create: { walletAddress: address }
         });
 
-        //  On-Chain Payment Verification (BETA: SPONSORED GASLESS) 
-        // During the Beta Phase, payment is not strictly enforced. The protocol sponsors the mint.
+        // [QUANTUM AEGIS] Strict On-Chain Payment Verification
+        // The "Gasless Sponsored" backdoor has been DESTROYED.
+        // We MUST verify that the user actually paid the 0.00111 ETH fee on Optimism.
+        // Otherwise, a simple script could drain the entire 1000 MAX_SUPPLY.
         let paymentVerified = false;
         let paymentGraceMode = false;
         
-        if (txHash && typeof txHash === 'string' && txHash.startsWith('0x')) {
-            const paymentCheck = await verifyOnChainPayment(txHash, address);
-            if (paymentCheck.verified) {
-                paymentVerified = true;
-                console.log(JSON.stringify({ level: 'INFO', event: 'PAYMENT_CONFIRMED', address, txHash }));
-            } else if (paymentCheck.graceMode) {
-                paymentGraceMode = true;
-                console.warn(JSON.stringify({ level: 'WARN', event: 'PAYMENT_GRACE_MODE', address, txHash, reason: paymentCheck.reason }));
-            } else {
-                console.warn(JSON.stringify({ level: 'SECURITY', event: 'PAYMENT_REJECTED', address, txHash, reason: paymentCheck.reason }));
-                // If they provided a bad txHash, we can still reject, or just let them through as sponsored.
-                // Let's reject bad tx hashes to prevent spoofing attempts, but allow empty ones.
-                return NextResponse.json({
-                    error: `Payment verification failed: ${paymentCheck.reason}.`,
-                    txHash,
-                }, { status: 402 });
-            }
+        if (!txHash || typeof txHash !== 'string' || !txHash.startsWith('0x')) {
+             console.warn(JSON.stringify({ level: 'SECURITY', event: 'SYBIL_DRAIN_ATTEMPT_BLOCKED', address }));
+             return NextResponse.json({
+                 error: 'Payment verification failed: txHash is required to prevent Sybil exhaustion attacks.',
+             }, { status: 402 });
+        }
+
+        const paymentCheck = await verifyOnChainPayment(txHash, address);
+        if (paymentCheck.verified) {
+            paymentVerified = true;
+            console.log(JSON.stringify({ level: 'INFO', event: 'PAYMENT_CONFIRMED', address, txHash }));
+        } else if (paymentCheck.graceMode) {
+            paymentGraceMode = true;
+            console.warn(JSON.stringify({ level: 'WARN', event: 'PAYMENT_GRACE_MODE', address, txHash, reason: paymentCheck.reason }));
         } else {
-            console.log(JSON.stringify({ level: 'INFO', event: 'GASLESS_MINT_SPONSORED', address }));
+            console.warn(JSON.stringify({ level: 'SECURITY', event: 'PAYMENT_REJECTED', address, txHash, reason: paymentCheck.reason }));
+            return NextResponse.json({
+                error: `Payment verification failed: ${paymentCheck.reason}.`,
+                txHash,
+            }, { status: 402 });
         }
 
 

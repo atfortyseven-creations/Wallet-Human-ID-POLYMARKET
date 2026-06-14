@@ -189,7 +189,7 @@ function getRpcUrl(chainId: number): string {
   if (!chain) throw new Error(`Chain ${chainId} not found`);
 
   // Use public RPCs (in production, use Alchemy with API key from env)
-  const alchemyKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY;
+  const alchemyKey = process.env.ALCHEMY_API_KEY;
   
   if (alchemyKey && chain.rpcUrls[0].includes('alchemy')) {
     return `${chain.rpcUrls[0]}${alchemyKey}`;

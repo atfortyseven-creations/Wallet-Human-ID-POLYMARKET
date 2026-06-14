@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { getSession } from '@/lib/session';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,9 +10,14 @@ export const dynamic = 'force-dynamic';
  */
 export async function POST(request: NextRequest) {
     try {
-        const { address, lessonId, txHash, proofUrl = '' } = await request.json();
-        if (!address || !lessonId) {
-            return NextResponse.json({ ok: false, error: 'address and lessonId required' }, { status: 400 });
+        const session = await getSession();
+        if (!session?.userId) {
+            return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 });
+        }
+        const address = session.userId;
+        const { lessonId, txHash, proofUrl = '' } = await request.json();
+        if (!lessonId) {
+            return NextResponse.json({ ok: false, error: 'lessonId required' }, { status: 400 });
         }
 
         const user = await prisma.user.findUnique({ where: { walletAddress: address } });

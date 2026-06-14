@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getSession } from '@/lib/session';
 
 const ETHERSCAN_KEY = process.env.ETHERSCAN_API_KEY || '';
 
@@ -11,13 +12,27 @@ const CHAIN_IDS: Record<string, number> = {
 };
 
 export async function GET(req: NextRequest) {
+  // [SECURITY HARDENING] Require session and enforce that the queried address
+  // matches the authenticated user. Previously fully open — any anonymous caller
+  // could pull full transaction history and balances for any wallet on the platform.
+  const session = await getSession();
+  if (!session?.userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const { searchParams } = req.nextUrl;
   const address = searchParams.get('address');
   const chain   = searchParams.get('chain') ?? 'ethereum';
-  const type    = searchParams.get('type') ?? 'txlist'; // txlist | balance
+  const type    = searchParams.get('type') ?? 'txlist';
 
   if (!address) return NextResponse.json({ error: 'Missing address' }, { status: 400 });
-  if (!ETHERSCAN_KEY) return NextResponse.json({ error: 'Etherscan key not configured' }, { status: 503 });
+
+  // Enforce that users can only query their own address
+  if (address.toLowerCase() !== session.userId.toLowerCase()) {
+    return NextResponse.json({ error: 'Forbidden: You may only query your own wallet activity.' }, { status: 403 });
+  }
+
+  if (!ETHERSCAN_KEY) return NextResponse.json({ error: 'Chain data service not configured' }, { status: 503 });
 
   const chainId = chain === 'humanity' ? 8453 : (CHAIN_IDS[chain] ?? 1);
   const base_url = `https://api.etherscan.io/v2/api?chainid=${chainId}&apikey=${ETHERSCAN_KEY}`;

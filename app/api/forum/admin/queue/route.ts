@@ -1,3 +1,4 @@
+import { getSession } from '@/lib/session';
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { cookies } from 'next/headers';
@@ -5,8 +6,8 @@ import { isAdmin } from '@/lib/admin';
 
 export async function GET(req: Request) {
     try {
-        const cookieStore = await cookies();
-        const address = cookieStore.get('system_handshake')?.value;
+        const session = await getSession();
+    const address = session?.userId;
         if (!isAdmin(address)) return NextResponse.json({ error: 'Unauthorized: System Admin Only' }, { status: 403 });
 
         const pendingTopics = await (prisma as any).forumTopic.findMany({
@@ -34,8 +35,8 @@ export async function GET(req: Request) {
 
 export async function PUT(req: Request) {
     try {
-        const cookieStore = await cookies();
-        const address = cookieStore.get('system_handshake')?.value;
+        const session = await getSession();
+    const address = session?.userId;
         if (!isAdmin(address)) return NextResponse.json({ error: 'Unauthorized: System Admin Only' }, { status: 403 });
 
         const { id, type } = await req.json(); // type: 'topic' | 'post'

@@ -36,7 +36,7 @@ const KNOWN_TOKENS: Array<{
 async function getPrices(ids: string[]): Promise<Record<string, { usd: number; usd_24h_change: number }>> {
   try {
     const unique = [...new Set(ids)].join(',');
-    const apiKey = process.env.NEXT_PUBLIC_COINGECKO_KEY || process.env.COINGECKO_KEY || '';
+    const apiKey = process.env.COINGECKO_KEY || '';
     const res = await fetch(
       `https://api.coingecko.com/api/v3/simple/price?ids=${unique}&vs_currencies=usd&include_24hr_change=true${apiKey ? `&x_cg_demo_api_key=${apiKey}` : ''}`,
       // [REAL-TIME] cache:no-store  never serve stale prices for portfolio valuation

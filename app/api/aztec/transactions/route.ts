@@ -10,12 +10,12 @@ export const dynamic = 'force-dynamic';
  * Used by the client to detect incoming transfers and credit the recipient's balance.
  */
 export async function GET(req: Request) {
-  const { searchParams } = new URL(req.url);
-  const address = searchParams.get('address')?.toLowerCase();
-
-  if (!address) {
-    return NextResponse.json({ error: 'address query param required' }, { status: 400 });
+  const { getSession } = await import('@/lib/session');
+  const session = await getSession();
+  if (!session?.userId) {
+      return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
   }
+  const address = session.userId.toLowerCase();
 
   try {
     const txs = await prisma.transaction.findMany({
