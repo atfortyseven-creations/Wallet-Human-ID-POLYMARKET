@@ -20,8 +20,7 @@ function checkCompileLimit(userId: string): boolean {
   return entry.count <= MAX;
 }
 
-const execAsync  = promisify(exec);
-const execFileAsync = promisify(execFile);
+const execAsync = promisify(exec);
 
 // ─────────────────────────────────────────────────────────────
 //  NARGO VERSION & BINARY MANAGEMENT
