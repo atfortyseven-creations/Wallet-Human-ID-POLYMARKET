@@ -1,26 +1,50 @@
 'use client';
 
 import Link from 'next/link';
-import { useSystemAccount } from '@/hooks/useSystemAccount';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 
-function hasHandshakeCookie(): boolean {
-  if (typeof document === 'undefined') return false;
-  return document.cookie.split('; ').some((r) => r.startsWith('system_handshake=0x'));
-}
+// SECURITY FIX VULN-03: The previous implementation trusted the JS-readable
+// `system_handshake` cookie which any user could forge via browser console:
+//   document.cookie = 'system_handshake=0xAnyAddress'
+// This would grant full access to Studio Provenance without a real session.
+// Now we verify against the server-side JWT endpoint — the only cryptographic
+// source of truth for authentication.
 
 export function ProvenanceSessionGate({ children }: { children: React.ReactNode }) {
-  const { address, isConnected } = useSystemAccount();
-  const [linked, setLinked] = useState<boolean>(true); // Optimistic initially to avoid flicker
+  // null = loading, true = authenticated, false = not authenticated
+  const [authState, setAuthState] = useState<null | boolean>(null);
 
   useEffect(() => {
-    // If they have the cookie or are connected, they are linked. Once linked, don't drop them unless explicitly logged out.
-    const isCurrentlyLinked = Boolean(address) || isConnected || hasHandshakeCookie();
-    setLinked((prev) => prev || isCurrentlyLinked);
-  }, [address, isConnected]);
+    let cancelled = false;
+    async function checkSession() {
+      try {
+        const res = await fetch('/api/auth/verify-session', { credentials: 'include', cache: 'no-store' });
+        if (cancelled) return;
+        if (res.ok) {
+          const data = await res.json();
+          setAuthState(data.authenticated === true);
+        } else {
+          setAuthState(false);
+        }
+      } catch {
+        if (!cancelled) setAuthState(false);
+      }
+    }
+    checkSession();
+    return () => { cancelled = true; };
+  }, []);
 
-  if (!linked) {
+  // Loading state — show nothing to prevent flicker
+  if (authState === null) {
+    return (
+      <div className="min-h-[100dvh] bg-[#FFFFFF] flex items-center justify-center">
+        <Loader2 size={20} className="animate-spin text-black/30" />
+      </div>
+    );
+  }
+
+  if (!authState) {
     return (
       <div className="min-h-[100dvh] bg-[#FFFFFF] text-[#050505] flex flex-col px-6 pt-[calc(1.5rem+env(safe-area-inset-top))] pb-[calc(2rem+env(safe-area-inset-bottom))]">
         <Link

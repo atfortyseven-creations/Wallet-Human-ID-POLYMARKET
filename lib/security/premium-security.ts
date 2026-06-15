@@ -47,25 +47,28 @@ export async function verifyPremiumAccess(userId: string): Promise<{
   try {
     const normalizedUserId = userId.toLowerCase();
 
-    // [ON-CHAIN ARTICULATION] 0. Cryptographic ZK/Token Validation
-    // Query the blockchain directly. If the wallet holds the System NFT,
-    // grant absolute access without consulting the centralized database.
-    try {
+    // SECURITY FIX VULN-06: NFT contract was set to 0x000...000 (zero address).
+    // Querying balanceOf on the zero address is either a no-op or could return unexpected
+    // values depending on the chain/RPC, potentially granting Enterprise tier to any wallet.
+    // This block is DISABLED until a real NFT contract address is configured via env.
+    // To enable: set NFT_CONTRACT_ADDRESS=0x<real_contract> in Railway environment variables.
+    const nftContract = process.env.NFT_CONTRACT_ADDRESS;
+    if (nftContract && /^0x[a-fA-F0-9]{40}$/.test(nftContract) && nftContract !== '0x0000000000000000000000000000000000000000') {
+      try {
         const publicClient = createPublicClient({ chain: optimism, transport: http() });
-        const Private_NFT_CONTRACT = '0x0000000000000000000000000000000000000000'; // Replace with real contract
         const balance = await publicClient.readContract({
-            address: Private_NFT_CONTRACT as `0x${string}`,
+            address: nftContract as `0x${string}`,
             abi: parseAbi(['function balanceOf(address) view returns (uint256)']),
             functionName: 'balanceOf',
             args: [normalizedUserId as `0x${string}`],
         });
-
         if (balance > 0n) {
-            console.log(`[Zero-Trust] ️ Validated System NFT holding for ${normalizedUserId}`);
+            console.log(`[Zero-Trust] ✅ Validated System NFT holding for ${normalizedUserId}`);
             return { valid: true, tier: 'Enterprise' };
         }
-    } catch (rpcErr) {
+      } catch (rpcErr) {
         // Silent fallback to database if RPC fails (Network Resilience)
+      }
     }
 
     // 1. Native DB TIER check (One-time payments and System tier)
@@ -135,7 +138,17 @@ export function verifyCSRFToken(token: string, userId: string): boolean {
     if (Date.now() - parseInt(timestamp) > 900000) return false;
     const hmac = crypto.createHmac('sha256', ENCRYPTION_KEY);
     const expectedSignature = hmac.update(payload).digest('hex');
-    return signature === expectedSignature;
+    // SECURITY FIX VULN-05: Use timingSafeEqual to prevent HMAC timing side-channel attacks.
+    // A normal `===` comparison leaks the number of matching characters via measurable
+    // latency differences, allowing brute-force recovery of valid CSRF tokens.
+    try {
+      return crypto.timingSafeEqual(
+        Buffer.from(signature, 'hex'),
+        Buffer.from(expectedSignature, 'hex')
+      );
+    } catch {
+      return false; // Malformed hex (wrong length) — reject
+    }
   } catch (error) {
     return false;
   }

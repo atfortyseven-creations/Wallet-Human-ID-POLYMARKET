@@ -97,7 +97,13 @@ export async function POST(req: NextRequest) {
             }
         });
 
-        const cookieDomain = process.env.NODE_ENV === 'production' ? 'humanidfi.com' : undefined;
+        // SECURITY FIX VULN-01: Never hardcode a domain. Read from env so Studio Provenance
+        // (studio-provenance-production.up.railway.app) gets cookies on its own domain,
+        // not on humanidfi.com which would silently block all sessions.
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || '';
+        const cookieDomain = (process.env.NODE_ENV === 'production' && appUrl)
+            ? (() => { try { return new URL(appUrl).hostname; } catch { return undefined; } })()
+            : undefined;
 
         const secureCookieBase = {
             httpOnly: true,

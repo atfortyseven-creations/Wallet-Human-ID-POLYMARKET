@@ -146,9 +146,20 @@ export default async function middleware(request: NextRequest) {
     if (wafBlock) return wafBlock;
 
     // [QUANTUM HARDENING] Strict Origin & CSRF Enforcement (Zero-Trust POST)
+    // SECURITY FIX VULN-02: Read allowed origin from env so any Railway deployment (Studio Provenance,
+    // Whale Network, etc.) is automatically whitelisted without hardcoding domain names.
     if (request.method !== 'GET' && request.method !== 'OPTIONS' && request.method !== 'HEAD') {
         const origin = request.headers.get('origin');
-        const allowedOrigins = ['https://humanidfi.com', 'https://www.humanidfi.com', 'http://localhost:3000'];
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://humanidfi.com';
+        const allowedOrigins = [
+            appUrl,
+            appUrl.replace('https://', 'https://www.'),
+            'https://humanidfi.com',
+            'https://www.humanidfi.com',
+            'https://studio-provenance-production.up.railway.app',
+            'http://localhost:3000',
+            'http://localhost:8080',
+        ].filter(Boolean);
         if (origin && !allowedOrigins.some(o => origin === o)) {
             console.error(`[WhaleFortress] ⛔ CSRF Block: Invalid Origin detected -> ${origin} from IP: ${ip}`);
             return new NextResponse(JSON.stringify({ error: 'INVALID_ORIGIN' }), { status: 403, headers: { 'Content-Type': 'application/json' } });

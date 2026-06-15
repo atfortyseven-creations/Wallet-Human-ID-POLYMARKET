@@ -17,16 +17,12 @@ export async function POST(req: NextRequest) {
 
     // Try to get authenticated address from session
     const validation = await validateSecureRequest(req);
-    let address = validation.userId;
+    const address = validation.userId;
 
-    // Fallback: if no session but body provides a valid address (from frontend), use it
-    // This allows passive logging from pages that have a connected wallet but no SIWE session
-    if (!address && details?.address && /^0x[a-fA-F0-9]{40}$/i.test(details.address)) {
-      address = details.address.toLowerCase();
-    }
-
-    // If still no address, silently skip — don't return 401, just succeed silently
-    // so the frontend fire-and-forget never throws visible errors
+    // SECURITY FIX VULN-04: The previous code fell back to trusting details.address from
+    // the request body if no session was present. This allowed any unauthenticated attacker
+    // to log provenance events under any wallet address (Log Injection / Identity Spoofing).
+    // Now: no valid JWT → silently skip. Fire-and-forget never exposes errors anyway.
     if (!address) {
       return NextResponse.json({ success: true, skipped: true });
     }
