@@ -1,5 +1,5 @@
 import { redisClient } from '../redis/client';
-import { NODE_TIERS, PlanTier } from '../node/plans';
+import { NODE_TIERS, PlanTier } from '../node_infrastructure/tiers';
 
 /** Safely coerce string to PlanTier, defaulting to FREE. */
 function toPlanTier(raw: string): PlanTier {

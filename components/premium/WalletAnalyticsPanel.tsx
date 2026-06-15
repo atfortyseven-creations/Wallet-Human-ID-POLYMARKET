@@ -191,7 +191,7 @@ export default function WalletAnalyticsPanel({ address, label, analytics: initia
                             </button>
                             {isAuthError && (
                                 <a 
-                                    href="https://dashboard.alchemy.com/" 
+                                    href="https://terminal.alchemy.com/" 
                                     target="_blank" 
                                     rel="noopener noreferrer"
                                     className="flex-1 px-8 py-4 bg-blue-600 hover:bg-blue-500 rounded-2xl text-white transition-all font-bold text-sm shadow-lg shadow-blue-900/40 flex items-center justify-center gap-2"

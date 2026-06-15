@@ -185,7 +185,7 @@ export default function WhaleAlertProWhite() {
           </Link>
           
           <div className="hidden lg:flex items-center gap-2 bg-white/90 backdrop-blur-xl border border-slate-200 px-2 py-1.5 rounded-2xl shadow-sm">
-            <Link href="/dashboard" className="flex items-center gap-2 px-4 py-2 hover:bg-black/5 rounded-xl transition-all group">
+            <Link href="/terminal" className="flex items-center gap-2 px-4 py-2 hover:bg-black/5 rounded-xl transition-all group">
               <Activity size={16} className="text-[#0044CC]" />
               <span className="text-[11px] font-bold tracking-wide text-slate-600 group-hover:text-slate-950">Terminal</span>
             </Link>

@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import { useAiSentiment } from '@/hooks/useAiSentiment';
 import { useGovSniper } from '@/hooks/useGovSniper';
 import { useYieldHunter } from '@/hooks/useYieldHunter';
-import { GovernanceProposals } from '@/components/dashboard/GovernanceProposals';
+import { GovernanceProposals } from '@/components/terminal/GovernanceProposals';
 
 import { ZapButton } from '@/components/defi/ZapButton'; // [NEW] Phase 3
 

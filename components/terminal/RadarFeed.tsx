@@ -1,4 +1,4 @@
-// components/dashboard/RadarFeed.tsx
+// components/terminal/RadarFeed.tsx
 "use client";
 
 import React, { useEffect } from 'react';

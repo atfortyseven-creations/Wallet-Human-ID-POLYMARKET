@@ -3,7 +3,7 @@
  *
  * GET  /api/ambassador            Fetch ambassador program info + application form
  * POST /api/ambassador            Submit ambassador application
- * GET  /api/ambassador/dashboard  Authenticated ambassador stats (referrals, commissions)
+ * GET  /api/ambassador/terminal  Authenticated ambassador stats (referrals, commissions)
  *
  * Tier System:
  *   WATCHER    MIN_REFERRALS = 0   (applicant)
@@ -13,7 +13,7 @@
  *
  * On approval, ambassador receives:
  *   - Unique referral code  (ref=ABC123)
- *   - Dashboard access      (/ambassador/dashboard)
+ *   - Dashboard access      (/ambassador/terminal)
  *   - Commission tracking   (Prisma referral model)
  *   - System badge       (NFT-mintable via WhalePass contract)
  */

@@ -63,8 +63,8 @@ export function InstitutionalHeader() {
     const pathname = usePathname();
 
     const MENU_ITEMS = [
-      { label: 'Dashboard', href: "/dashboard" },
-      { label: 'Studio', href: "/dashboard" },
+      { label: 'Dashboard', href: "/terminal" },
+      { label: 'Studio', href: "/terminal" },
       { label: 'TOKEN', href: "/qds" },
       { label: 'MAP', href: "/registry" },
       { label: 'Chat', href: "/chat" },

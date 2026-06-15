@@ -34,7 +34,7 @@ export default function InstitutionalFooter() {
               </a>
             </li>
               <li>
-              <Link href="/dashboard" className="text-sm font-bold text-black/70 hover:text-black flex items-center gap-2 group">
+              <Link href="/terminal" className="text-sm font-bold text-black/70 hover:text-black flex items-center gap-2 group">
                 Dashboard Terminal
               </Link>
             </li>

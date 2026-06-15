@@ -1,4 +1,4 @@
-// components/dashboard/Security ProtocolStation.tsx
+// components/terminal/Security ProtocolStation.tsx
 "use client";
 
 import React, { useState } from 'react';

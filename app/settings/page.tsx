@@ -1,7 +1,7 @@
 ﻿'use client';
 
 import React from 'react';
-import { TerminalSettingsPanel } from '@/components/dashboard/TerminalSettingsPanel';
+import { TerminalSettingsPanel } from '@/components/terminal/TerminalSettingsPanel';
 
 export default function SettingsPage() {
     return (

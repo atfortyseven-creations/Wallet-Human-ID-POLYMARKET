@@ -129,7 +129,7 @@ export function DropdownNav() {
 
                     {/* Desktop Navigation */}
                     <div className="hidden lg:flex items-center gap-1">
-                        <NavLink href="/dashboard" label="Dashboard" icon={LayoutDashboard} isActive={pathname === '/dashboard'} />
+                        <NavLink href="/terminal" label="Dashboard" icon={LayoutDashboard} isActive={pathname === '/terminal'} />
                         <NavLink href="/portfolio" label="Portfolio" icon={TrendingUp} isActive={pathname === '/portfolio'} />
                         <NavLink href="/chat" label="Whale Chat" icon={MessageCircle} isActive={pathname === '/chat'} />
                         <NavLink href="/registry" label="Registry" icon={Map} isActive={pathname === '/registry'} badge="LIVE" />
@@ -328,7 +328,7 @@ export function DropdownNav() {
                         >
                             <div className="flex flex-col p-4 gap-2">
                                 <Link 
-                                    href="/dashboard" 
+                                    href="/terminal" 
                                     className="flex items-center gap-3 px-4 py-4 bg-white/5 rounded-xl text-white font-bold"
                                     onClick={() => setIsMenuOpen(false)}
                                 >

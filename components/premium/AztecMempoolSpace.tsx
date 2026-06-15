@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ModuleHeader } from '../dashboard/ModuleHeader';
+import { ModuleHeader } from '../terminal/ModuleHeader';
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { usePublicClient, useBlockNumber } from 'wagmi';
 import { formatEther } from 'viem';

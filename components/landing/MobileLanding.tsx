@@ -433,7 +433,7 @@ function ConnectedScreen({
           className="w-full flex flex-col items-center gap-6 mb-14"
         >
           {[
-            { label: 'Dashboard', href: '/dashboard' },
+            { label: 'Dashboard', href: '/terminal' },
             { label: 'Link Session', action: onScan },
             { label: 'Portfolio', href: '/portfolio' },
             { label: 'Whale Chat', href: '/chat' },

@@ -172,7 +172,7 @@ export function MobileEnforcer({ children }: { children: React.ReactNode }) {
     if (isMobile) {
         //  [DIRECT ACCESS ROUTES] 
         // These are PUBLIC or informational routes that render normally on mobile.
-        // ️  PC-ONLY routes (/dashboard, /portfolio, /settings, /system-intel,
+        // ️  PC-ONLY routes (/terminal, /portfolio, /settings, /system-intel,
         //     /predictions, /vip, /whalepost) are intentionally EXCLUDED here.
         //     A mobile user  even with a connected wallet  must NOT reach those
         //     pages because they are designed exclusively for the PC terminal.
@@ -202,7 +202,7 @@ export function MobileEnforcer({ children }: { children: React.ReactNode }) {
         ];
 
         // [Enterprise-GATE] Always allow dashboard/chat/portfolio so they can reach the ZK-Gate and connect from there
-        DIRECT_ACCESS_ROUTES.push('/dashboard', '/chat', '/portfolio');
+        DIRECT_ACCESS_ROUTES.push('/terminal', '/chat', '/portfolio');
 
         const isDirectAccessRoute = DIRECT_ACCESS_ROUTES.some(r => pathname === r || pathname.startsWith(r + '/'));
 

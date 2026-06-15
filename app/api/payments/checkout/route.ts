@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
                 update: { tier: tier },
                 create: { walletAddress: normalizedUserId, tier: tier }
             });
-            return NextResponse.json({ url: '/dashboard?upgrade=success' });
+            return NextResponse.json({ url: '/terminal?upgrade=success' });
         }
 
         // SIWE-native: userId is always a walletAddress
@@ -85,8 +85,8 @@ export async function POST(req: NextRequest) {
                 },
             ],
             mode: 'subscription',
-            success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?upgrade=success&session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url:  `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?upgrade=canceled`,
+            success_url: `${process.env.NEXT_PUBLIC_APP_URL}/terminal?upgrade=success&session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url:  `${process.env.NEXT_PUBLIC_APP_URL}/terminal?upgrade=canceled`,
             metadata: {
                 userId: normalizedUserId,
                 tier: tier,

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../prisma';
 import { RedisRateLimiter } from '../redis/rate-limiter';
-import { NODE_TIERS, PlanTier } from '../node/plans';
+import { NODE_TIERS, PlanTier } from '../node_infrastructure/tiers';
 import * as crypto from 'crypto';
 
 /** Safely coerce an arbitrary string to a PlanTier enum value, defaulting to FREE. */

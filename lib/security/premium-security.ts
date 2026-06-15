@@ -9,6 +9,14 @@ import { optimism } from 'viem/chains';
 // SECURITY LAYER 1: Rate Limiting
 // ============================================
 
+const RATE_LIMITS = {
+  FREE: { window: 60000, requests: 10 },
+  PREMIUM: { window: 60000, requests: 100 },
+  CRITICAL: { window: 60000, requests: 1000 }
+};
+
+const rateLimitStore = new Map<string, { count: number, resetTime: number, blacklisted: boolean }>();
+
 export function rateLimit(
   identifier: string,
   tier: 'FREE' | 'PREMIUM' | 'CRITICAL' = 'FREE'

@@ -133,7 +133,7 @@ export default function BridgePage() {
         {/* Retry for error */}
         {stage === 'error' && (
           <a
-            href="/dashboard"
+            href="/terminal"
             className="font-mono text-[11px] uppercase tracking-widest text-white/30 hover:text-white/60 transition-colors"
           >
              Back to Dashboard

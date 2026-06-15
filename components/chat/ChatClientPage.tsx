@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 
 const WhaleChatPINGate = dynamic(() => import('@/components/chat/WhaleChatPINGate'), { ssr: false });
 const WhaleChatInitPhase = dynamic(() => import('@/components/chat/WhaleChatInitPhase'), { ssr: false });
-const SystemChat = dynamic(() => import('@/components/dashboard/SystemChat'), { ssr: false });
+const SystemChat = dynamic(() => import('@/components/terminal/SystemChat'), { ssr: false });
 
 import { useSystemAccount as useAccount } from '@/hooks/useSystemAccount';
 

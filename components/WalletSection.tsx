@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import SuperWallet from './dashboard/SuperWallet';
+import SuperWallet from './terminal/SuperWallet';
 
 export default function WalletSection() {
     return (

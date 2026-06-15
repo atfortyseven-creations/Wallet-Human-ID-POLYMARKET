@@ -338,7 +338,7 @@ export default function ConnectPage() {
   }, [isConnected]);
 
   // [CRITICAL FIX] Wallet connect  SIWE system-verify  then redirect.
-  // The old code went directly to /dashboard without calling system-verify,
+  // The old code went directly to /terminal without calling system-verify,
   // meaning no whale_session/human_session/system_handshake cookie was set.
   // Every subsequent API call to a protected route returned 401.
   const signingRef = useRef(false);
@@ -499,7 +499,7 @@ export default function ConnectPage() {
             <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#0A0A0A]/60 font-medium flex-1">
               Secure Authentication
             </span>
-            <Link href="/dashboard" className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-600 font-black rounded-lg text-[10px] uppercase tracking-widest hover:bg-blue-100 transition-all active:scale-95 shadow-sm">
+            <Link href="/terminal" className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-600 font-black rounded-lg text-[10px] uppercase tracking-widest hover:bg-blue-100 transition-all active:scale-95 shadow-sm">
               <QrCode size={12} />
               Studio
             </Link>

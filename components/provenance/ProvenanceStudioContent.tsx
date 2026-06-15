@@ -1004,7 +1004,7 @@ function AztecTab() {
 /* ─────────────────────────────────────────────
    TAB: BILLING / SUBSCRIPTION
 ───────────────────────────────────────────── */
-function BillingTab() {
+function BandwidthTab() {
   const { address, isConnected } = useAccount();
   const [isAnnual, setIsAnnual] = useState(false);
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
@@ -1016,7 +1016,7 @@ function BillingTab() {
     NODE_TIERS[PlanTier.ARCHIVE_PROVER],
   ];
 
-  const handleSubscription = async (tier: string) => {
+  const handleNode Allocation = async (tier: string) => {
     if (!isConnected) {
       alert('Connect your wallet to subscribe.');
       return;
@@ -1047,7 +1047,7 @@ function BillingTab() {
       <div className="rounded-2xl border border-black/10 bg-white p-6">
         <div className="flex items-center gap-2 mb-1">
           <CreditCard size={16} className="text-black/40" />
-          <p className="text-[10px] font-black uppercase tracking-widest text-black/40">Subscription</p>
+          <p className="text-[10px] font-black uppercase tracking-widest text-black/40">Node Allocation</p>
         </div>
         <h2 className="text-xl font-black tracking-tight text-[#050505] mb-2">Manage your plan</h2>
         <p className="text-sm text-black/50 leading-relaxed">
@@ -1055,7 +1055,7 @@ function BillingTab() {
         </p>
       </div>
 
-      {/* Billing toggle */}
+      {/* Bandwidth toggle */}
       <div className="flex items-center gap-4">
         <span className={`text-xs font-black uppercase tracking-widest ${!isAnnual ? 'text-[#050505]' : 'text-black/30'}`}>Monthly</span>
         <button
@@ -1114,7 +1114,7 @@ function BillingTab() {
                 {[
                   ['Daily Requests', plan.limits.requestsPerDay === -1 ? 'Unlimited' : plan.limits.requestsPerDay.toLocaleString()],
                   ['Max Tokens', plan.limits.maxTokens === -1 ? 'All' : String(plan.limits.maxTokens)],
-                  ['API Keys', String(plan.limits.maxApiKeys)],
+                  ['Node Relay Keys', String(plan.limits.maxApiKeys)],
                   ['Data History', plan.limits.dataWindowHours >= 720 ? `${plan.limits.dataWindowHours / 24 / 30} months` : `${plan.limits.dataWindowHours} hours`],
                 ].map(([label, value]) => (
                   <div key={label} className="flex justify-between items-center text-[12px] py-1 border-b border-black/5">
@@ -1140,7 +1140,7 @@ function BillingTab() {
               </div>
 
               <button
-                onClick={() => handleSubscription(plan.tier)}
+                onClick={() => handleNode Allocation(plan.tier)}
                 disabled={loadingTier === plan.tier}
                 className={`w-full py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-between px-5 ${
                   isElite
@@ -1180,7 +1180,7 @@ export function ProvenanceStudioContent({
     { id: 'create', label: 'Create', icon: <Plus size={13} /> },
     { id: 'registry', label: 'All Records', icon: <LayoutList size={13} /> },
     { id: 'aztec', label: 'Aztec Network', icon: null },
-    { id: 'billing', label: 'Subscription', icon: <CreditCard size={13} /> },
+    { id: 'billing', label: 'Node Allocation', icon: <CreditCard size={13} /> },
   ];
 
   const handleCreated = (passport: ProductPassportPublic) => {
@@ -1226,7 +1226,7 @@ export function ProvenanceStudioContent({
             </h1>
           </div>
           <Link 
-            href="/dashboard"
+            href="/terminal"
             className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-5 py-2.5 bg-black text-white rounded-full hover:bg-black/80 transition-all shadow-sm"
           >
             Return to Dashboard
@@ -1264,7 +1264,7 @@ export function ProvenanceStudioContent({
           <RegistryTab isMobile={isMobile} refreshKey={registryRefreshKey} />
         )}
         {activeTab === 'aztec' && <AztecTab />}
-        {activeTab === 'billing' && <BillingTab />}
+        {activeTab === 'billing' && <BandwidthTab />}
       </div>
     </div>
   );

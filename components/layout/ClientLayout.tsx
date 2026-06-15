@@ -46,7 +46,7 @@ const PUBLIC_PREFIXES = ['/privacy', '/terms', '/connect', '/sign-up', '/login',
 // Routes that must NOT get the legacy black Downhead footer
 // 
 const NO_DOWNHEAD_PREFIXES = [
-  '/dashboard', '/portfolio', '/academy', '/support',
+  '/terminal', '/portfolio', '/academy', '/support',
   '/privacy', '/terms', '/ticket', '/news', '/connect',
   '/voss-supremacy', '/predictions', '/ledger',
   '/gold-registry', '/infrastructure', '/directory', '/company',
@@ -116,7 +116,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
       // Funnel step tracking
       const step = pathname === '/' ? 'LANDING'
         : pathname.startsWith('/connect') ? 'WALLET_CONNECT'
-        : pathname.startsWith('/dashboard') ? 'DASHBOARD'
+        : pathname.startsWith('/terminal') ? 'DASHBOARD'
         : null;
       if (step) {
         fetch('/api/analytics/funnel', {
@@ -132,7 +132,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   // DASHBOARD   fixed inset-0 overflow-hidden   (WhaleProShell owns scroll)
   // BOUNDED     h-[100dvh] overflow-hidden       (header + inner scroll box)
   // LANDING     min-h-screen natural document scroll (immersive manifesto)
-  const isDashboard = pathname.startsWith('/dashboard');
+  const isDashboard = pathname.startsWith('/terminal');
   const isBounded = !isDashboard && BOUNDED_PREFIXES.some(p => pathname.startsWith(p));
   const isLanding = pathname === '/';
 
@@ -288,7 +288,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     !pathname.startsWith('/login') &&
     !pathname.startsWith('/connect') &&
     (
-      pathname.startsWith('/dashboard') ||
+      pathname.startsWith('/terminal') ||
       pathname === '/ledger' ||
       (pathname === '/portfolio' && isConnected) ||
       pathname === '/support' ||

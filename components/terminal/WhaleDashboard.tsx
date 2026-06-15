@@ -1,9 +1,9 @@
 "use client";
-// WhaleDashboard v3  11 tabs, KYC removed
+// TerminalDashboard v3  11 tabs, KYC removed
 import React, { useMemo } from 'react';
 
-import { WhaleProShell } from '@/components/dashboard/WhaleProShell';
-import { DashboardErrorBoundary } from '@/components/dashboard/DashboardErrorBoundary';
+import { WhaleProShell } from '@/components/terminal/WhaleProShell';
+import { DashboardErrorBoundary } from '@/components/terminal/DashboardErrorBoundary';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
 import dynamic from 'next/dynamic';
 
@@ -12,7 +12,7 @@ import { useQuantumSessionVisibility } from '@/hooks/useQuantumSessionVisibility
 import { useAztecStateSync } from '@/hooks/useAztecStateSync';
 
 // --- Static Imports ---
-import { GoldTicketPanel } from '@/components/dashboard/GoldTicketPanel';
+import { GoldTicketPanel } from '@/components/terminal/GoldTicketPanel';
 import { PricingTable } from '@/components/node_infrastructure/PricingTable';
 
 // --- Dynamic Module Registry ---
@@ -23,18 +23,18 @@ const LoadingPanel = () => (
 );
 
 const Registry = {
-  WhaleSupport: dynamic(() => import('@/components/dashboard/WhaleSupport').then(m => ({ default: m.WhaleSupport })), { ssr: false, loading: LoadingPanel }),
-  InstitutionalLedger: dynamic(() => import('@/components/dashboard/InstitutionalLedger'), { ssr: false, loading: LoadingPanel }),
-  MassTransferIntel: dynamic(() => import('@/components/dashboard/MassTransferIntel').then(m => ({ default: m.MassTransferIntel })), { ssr: false, loading: LoadingPanel }),
-  SessionLogsPanel: dynamic(() => import('@/components/dashboard/SessionLogsPanel').then(m => ({ default: m.SessionLogsPanel })), { ssr: false, loading: LoadingPanel }),
+  WhaleSupport: dynamic(() => import('@/components/terminal/WhaleSupport').then(m => ({ default: m.WhaleSupport })), { ssr: false, loading: LoadingPanel }),
+  InstitutionalLedger: dynamic(() => import('@/components/terminal/InstitutionalLedger'), { ssr: false, loading: LoadingPanel }),
+  MassTransferIntel: dynamic(() => import('@/components/terminal/MassTransferIntel').then(m => ({ default: m.MassTransferIntel })), { ssr: false, loading: LoadingPanel }),
+  SessionLogsPanel: dynamic(() => import('@/components/terminal/SessionLogsPanel').then(m => ({ default: m.SessionLogsPanel })), { ssr: false, loading: LoadingPanel }),
 
-  HumanityLedger: dynamic(() => import('@/components/dashboard/HumanityLedger'), { ssr: false, loading: LoadingPanel }),
-  PortfolioDashboard: dynamic(() => import('@/components/dashboard/PortfolioDashboard'), { ssr: false, loading: LoadingPanel }),
-  InstitutionalMarkets: dynamic(() => import('@/components/dashboard/InstitutionalMarkets').then(m => ({ default: m.InstitutionalMarkets })), { ssr: false, loading: LoadingPanel }),
-  WhaleChat: dynamic(() => import('@/components/dashboard/WhaleChat').then(m => ({ default: m.WhaleChat })), { ssr: false, loading: LoadingPanel })
+  HumanityLedger: dynamic(() => import('@/components/terminal/HumanityLedger'), { ssr: false, loading: LoadingPanel }),
+  PortfolioDashboard: dynamic(() => import('@/components/terminal/PortfolioDashboard'), { ssr: false, loading: LoadingPanel }),
+  InstitutionalMarkets: dynamic(() => import('@/components/terminal/InstitutionalMarkets').then(m => ({ default: m.InstitutionalMarkets })), { ssr: false, loading: LoadingPanel }),
+  WhaleChat: dynamic(() => import('@/components/terminal/WhaleChat').then(m => ({ default: m.WhaleChat })), { ssr: false, loading: LoadingPanel })
 } as const;
 
-import "@/app/dashboard/dashboard.css";
+import "@/app/terminal/terminal.css";
 
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -85,7 +85,7 @@ const RouteRenderer = React.memo(({ route, reconciliationKey }: RouteRendererPro
 RouteRenderer.displayName = 'RouteRenderer';
 
 // --- Main Architecture ---
-export default function WhaleDashboard() {
+export default function TerminalDashboard() {
     const { isChecking } = useSystemAccount();
     
     const [reconciliationKey, forceReconciliation] = useQuantumSessionVisibility();

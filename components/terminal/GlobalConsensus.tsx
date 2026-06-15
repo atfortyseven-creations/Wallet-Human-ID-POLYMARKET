@@ -1,4 +1,4 @@
-// components/dashboard/GlobalConsensus.tsx
+// components/terminal/GlobalConsensus.tsx
 "use client";
 
 import React, { useState, useEffect } from 'react';

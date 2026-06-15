@@ -71,7 +71,7 @@ export function WhaleAlertFooter() {
             links: [
                 { name: t('footer.developers'), href: "/developer" },
 
-                { name: t('footer.dashboard'), href: "/dashboard" },
+                { name: t('footer.dashboard'), href: "/terminal" },
                 { name: t('footer.sdk'), href: "#" },
                 { name: t('footer.web3_services'), href: "#" }
             ]
@@ -106,7 +106,7 @@ export function WhaleAlertFooter() {
                     <div>
                         <h3 className="text-sm font-black uppercase tracking-widest text-slate-900 mb-4">Navigation</h3>
                         <ul className="space-y-2">
-                            <li><Link href="/dashboard" className="text-sm text-slate-600 hover:text-slate-900">Dashboard</Link></li>
+                            <li><Link href="/terminal" className="text-sm text-slate-600 hover:text-slate-900">Dashboard</Link></li>
                             <li><Link href="/portfolio" className="text-sm text-slate-600 hover:text-slate-900">Portfolio</Link></li>
                         </ul>
                     </div>

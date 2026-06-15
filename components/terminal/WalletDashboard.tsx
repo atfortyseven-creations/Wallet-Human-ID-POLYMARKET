@@ -14,7 +14,7 @@ import { useState } from "react";
 import SendModal from "@/components/wallet/SendModal";
 import ReceiveModal from "@/components/wallet/ReceiveModal";
 
-import SuperWallet from "@/components/dashboard/SuperWallet";
+import SuperWallet from "@/components/terminal/SuperWallet";
 
 export default function WalletDashboard() {
     return <SuperWallet />;

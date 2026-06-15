@@ -45,7 +45,7 @@ export function CanvasEngine() {
         const load = async () => {
             if (!address) { setIsLoading(false); return; }
             try {
-                const res = await fetch(`/api/dashboard?address=${address}`, { cache: 'no-store' });
+                const res = await fetch(`/api/terminal?address=${address}`, { cache: 'no-store' });
                 if (!res.ok) throw new Error('Failed to load canvas');
                 const data = await res.json();
                 setNodes(Array.isArray(data.nodes) ? data.nodes : []);
@@ -73,7 +73,7 @@ export function CanvasEngine() {
         const save = async () => {
             setIsSaving(true);
             try {
-                const res = await fetch('/api/dashboard', {
+                const res = await fetch('/api/terminal', {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 

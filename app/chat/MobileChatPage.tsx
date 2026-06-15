@@ -112,7 +112,7 @@ export default function MobileChatPage() {
             {/*  Top Navigation Bar  */}
             <header className="shrink-0 h-14 flex items-center justify-between px-8 bg-black/60 backdrop-blur-[60px] border-b border-white/5 relative z-10 w-full">
               <Link
-                href="/dashboard"
+                href="/terminal"
                 className="flex items-center justify-center w-9 h-9 rounded-full hover:bg-white/10 text-white/50 hover:text-white transition-colors"
                 aria-label="Back to dashboard"
               >

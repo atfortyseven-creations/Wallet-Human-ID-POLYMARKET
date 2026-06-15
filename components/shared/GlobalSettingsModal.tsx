@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useSettingsStore } from '@/lib/store/useSettingsStore';
 import { X, Settings, LogOut } from 'lucide-react';
 import { useSystemSignOut } from '@/hooks/useSystemSignOut';
-import { TerminalSettingsPanel } from '@/components/dashboard/TerminalSettingsPanel';
+import { TerminalSettingsPanel } from '@/components/terminal/TerminalSettingsPanel';
 
 export function GlobalSettingsModal() {
     const { isSettingsOpen, setSettingsOpen } = useSettingsStore();

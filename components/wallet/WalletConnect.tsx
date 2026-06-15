@@ -151,7 +151,7 @@ export default function WalletConnect() {
 
                                         <div className="pt-4 space-y-2">
                                             <NextLink
-                                                href="/dashboard?tab=chat"
+                                                href="/terminal?tab=chat"
                                                 className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-[#9945FF]/10 text-[#9945FF] hover:bg-[#9945FF]/20 transition-all text-xs font-black uppercase tracking-wider"
                                             >
                                                 <MessageCircle size={14} />

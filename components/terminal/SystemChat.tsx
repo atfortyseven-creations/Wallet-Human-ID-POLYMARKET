@@ -91,8 +91,8 @@ async function resolveENSName(address: string): Promise<string> {
 function resolveZKName(address: string): string {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
-import AttestationEngine from '@/components/dashboard/AttestationEngine';
-import { QrScanner } from '@/components/dashboard/QrScanner';
+import AttestationEngine from '@/components/terminal/AttestationEngine';
+import { QrScanner } from '@/components/terminal/QrScanner';
 import { QRCodeSVG } from 'qrcode.react';
 
 

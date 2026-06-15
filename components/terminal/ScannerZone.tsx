@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { Camera, MessageCircle, QrCode } from 'lucide-react';
-import { QrScanner } from '@/components/dashboard/QrScanner';
-import { WhaleChat } from '@/components/dashboard/WhaleChat';
+import { QrScanner } from '@/components/terminal/QrScanner';
+import { WhaleChat } from '@/components/terminal/WhaleChat';
 
 export function ScannerZone() {
     const [mode, setMode] = useState<'chat' | 'project'>('chat');

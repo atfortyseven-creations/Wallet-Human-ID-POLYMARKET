@@ -6,7 +6,7 @@ import { PieChart, Users, Settings, X, Gift, CreditCard, Wifi, Shield, Zap, Netw
 import ReceiveHub from '@/components/wallet/ReceiveHub';
 import QRScannerModal from '@/components/wallet/QRScannerModal';
 import FiatOnRamp from '@/components/wallet/FiatOnRamp';
-import PortfolioDashboard from '@/components/dashboard/PortfolioDashboard';
+import PortfolioDashboard from '@/components/terminal/PortfolioDashboard';
 import WalletAnalyticsPanel from '@/components/premium/WalletAnalyticsPanel';
 import NotificationCenter from '@/components/notifications/NotificationCenter';
 import ReferralDashboard from '@/components/wallet/ReferralDashboard';
@@ -23,7 +23,7 @@ import AddressBook from '@/components/wallet/AddressBook';
 import AccountSwitcher from '@/components/wallet/AccountSwitcher';
 import TransactionHistory from '@/components/wallet/TransactionHistory';
 import WatchOnlyInput from '@/components/wallet/WatchOnlyInput';
-import AppChainStatus from '@/components/dashboard/AppChainStatus';
+import AppChainStatus from '@/components/terminal/AppChainStatus';
 import { getAccountColor, type WalletAccount } from '@/lib/wallet/accounts';
 import { resolveENSName } from '@/lib/wallet/ens';
 import { isAddress } from 'viem';

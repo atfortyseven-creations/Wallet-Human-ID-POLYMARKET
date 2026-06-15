@@ -1,4 +1,4 @@
-// components/dashboard/CryptographicID.tsx
+// components/terminal/CryptographicID.tsx
 "use client";
 
 import React, { useState } from 'react';

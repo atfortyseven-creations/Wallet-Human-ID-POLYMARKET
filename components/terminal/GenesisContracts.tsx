@@ -1,4 +1,4 @@
-// components/dashboard/GenesisContracts.tsx
+// components/terminal/GenesisContracts.tsx
 "use client";
 
 import React, { useState, useEffect } from 'react';

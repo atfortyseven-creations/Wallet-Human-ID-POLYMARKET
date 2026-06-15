@@ -19,11 +19,11 @@ export function MobileBottomNav() {
                         key={tab.id}
                         onClick={() => {
                             if (tab.id === 'menu') {
-                                router.push('/dashboard?tab=menu');
+                                router.push('/terminal?tab=menu');
                             }
                             else if (tab.id === 'chat') router.push('/chat');
                             else if (tab.id === 'portfolio') router.push('/portfolio');
-                            else router.push('/dashboard?tab=markets');
+                            else router.push('/terminal?tab=markets');
                         }}
                         style={{ minHeight: 0, minWidth: 0 }}
                         className={`relative flex flex-col items-center justify-center flex-1 h-full space-y-1 transition-colors py-2 text-[var(--forum-text-muted)] hover:text-[var(--forum-text)]`}

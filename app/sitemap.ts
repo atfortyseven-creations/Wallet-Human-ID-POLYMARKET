@@ -6,7 +6,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
     // Core Platform
     { path: '', priority: 1.0, frequency: 'daily' },
-    { path: '/dashboard', priority: 1.0, frequency: 'always' },
+    { path: '/terminal', priority: 1.0, frequency: 'always' },
     { path: '/chat', priority: 0.9, frequency: 'always' },
     { path: '/portfolio', priority: 0.9, frequency: 'always' },
     { path: '/forum', priority: 0.9, frequency: 'always' },

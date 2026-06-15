@@ -70,7 +70,7 @@ export async function POST(req: Request) {
 
 /**
  * GET: Returns the current metrics snapshot for a wallet's nodes (for frontend polling)
- * Called every 5 seconds by DashboardClient useEffect
+ * Called every 5 seconds by TerminalClient useEffect
  */
 export async function GET(req: Request) {
     try {

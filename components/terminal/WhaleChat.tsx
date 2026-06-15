@@ -8,7 +8,7 @@ import { useSignMessage, useReconnect } from 'wagmi';
 
 import { useAppKit } from '@reown/appkit/react';
 import { getXMTPClient, canReceiveMessages, sendMessage, getMessages, destroyXMTPClient, nsToDate, discoverNewPeers, streamMessages } from '@/lib/xmtp/client';
-import { QrScanner } from '@/components/dashboard/QrScanner';
+import { QrScanner } from '@/components/terminal/QrScanner';
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
 import type { Client } from '@xmtp/browser-sdk';
 import { useSettingsStore } from '@/lib/store/useSettingsStore';

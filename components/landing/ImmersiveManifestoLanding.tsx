@@ -278,7 +278,7 @@ function LandingNav() {
                 {connectedAddress.slice(0, 6)}…{connectedAddress.slice(-4)}
               </span>
               <Link
-                href="/dashboard"
+                href="/terminal"
                 className="px-4 py-1.5 bg-black text-white text-[13.5px] font-medium hover:bg-black/85 transition-colors"
               >
                 Dashboard →
@@ -584,7 +584,7 @@ function IntegrationSection() {
       title: "Claim Identity",
       body: "Sign once with your wallet to claim your permanent, decentralized identity on Aztec. No password, no custody, no third-party data storage.",
       link: "Go to Dashboard",
-      href: "/dashboard"
+      href: "/terminal"
     },
     {
       title: "Whale Chat",

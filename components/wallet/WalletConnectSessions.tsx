@@ -90,7 +90,7 @@ export function WalletConnectSessions() {
                 </div>
 
                 <NextLink
-                    href="/dashboard?tab=chat"
+                    href="/terminal?tab=chat"
                     className="w-full py-4 mt-4 bg-black/5 hover:bg-black/10 text-black border border-black/20 rounded-xl font-bold flex items-center justify-center gap-2 transition-all"
                 >
                     Enter Whale Chat
