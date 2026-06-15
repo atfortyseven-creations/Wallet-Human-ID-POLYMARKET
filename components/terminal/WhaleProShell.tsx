@@ -52,8 +52,6 @@ const SIDEBAR_ITEMS: NavItem[] = [
     { id: 'logs',            label: 'Logs',           icon: Icon.logs },
     { id: 'gold',            label: 'Identity',       icon: Icon.identity },
     { id: 'studio',          label: 'Studio',         icon: Icon.studio },
-    { id: 'dashboard',       label: 'Dashboard',      icon: <span className="font-mono text-[10px] tracking-widest font-black">[DSH]</span> },
-    { id: 'node-allocation', label: 'Node Allocation', icon: <span className="font-mono text-[10px] tracking-widest font-black">[NOD]</span> },
 ];
 
 

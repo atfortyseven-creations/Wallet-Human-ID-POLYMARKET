@@ -13,8 +13,7 @@ import { useAztecStateSync } from '@/hooks/useAztecStateSync';
 
 // --- Static Imports ---
 import { GoldTicketPanel } from '@/components/terminal/GoldTicketPanel';
-import { PricingTable } from '@/components/node_infrastructure/PricingTable';
-import { SubscriptionDashboard } from '@/components/terminal/SubscriptionDashboard';
+
 
 // --- Dynamic Module Registry ---
 const LoadingPanel = () => (
@@ -61,13 +60,6 @@ const RouteRenderer = React.memo(({ route, reconciliationKey, mutateRoute }: Rou
         'inst-ledger': <Registry.InstitutionalLedger />,
         'privacy': <Registry.SessionLogsPanel />,
         'logs': <Registry.SessionLogsPanel />,
-        // [REMOVED] billing tab replaced by dashboard
-        'dashboard': <SubscriptionDashboard />,
-        'node-allocation': (
-            <div className="w-full h-full overflow-y-auto p-4 md:p-8 bg-[#050505]">
-                <PricingTable />
-            </div>
-        ),
         'studio': <Registry.ProvenanceStudioContent variant="desktop" />,
     };
 
