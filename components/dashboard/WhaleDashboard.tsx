@@ -13,6 +13,7 @@ import { useAztecStateSync } from '@/hooks/useAztecStateSync';
 
 // --- Static Imports ---
 import { GoldTicketPanel } from '@/components/dashboard/GoldTicketPanel';
+import { PricingTable } from '@/components/saas/PricingTable';
 
 // --- Dynamic Module Registry ---
 const LoadingPanel = () => (
@@ -55,10 +56,8 @@ const RouteRenderer = React.memo(({ route, reconciliationKey }: RouteRendererPro
         'humanity-ledger': <Registry.HumanityLedger />,
         'markets': <Registry.InstitutionalMarkets />,
         'inst-ledger': <Registry.InstitutionalLedger />,
-        'mass-transfer': <Registry.MassTransferIntel />,
-        'logs': <Registry.SessionLogsPanel />,
-        'community': <Registry.WhaleChat />,
-        'privacy': <Registry.SessionLogsPanel />
+        'privacy': <Registry.SessionLogsPanel />,
+        'billing': <div className="w-full h-full overflow-y-auto p-4 md:p-8 bg-[#050505]"><PricingTable /></div>
     };
 
     const targetComponent = ComponentMap[route] || <GoldTicketPanel />;

@@ -50,6 +50,7 @@ const SIDEBAR_ITEMS: NavItem[] = [
     { id: 'humanity-ledger', label: 'Roadmap',        icon: Icon.roadmap },
     { id: 'logs',            label: 'Logs',           icon: Icon.logs },
     { id: 'gold',            label: 'Identity',       icon: Icon.identity },
+    { id: 'billing',         label: 'Upgrade Plan',   icon: <span className="font-mono text-[10px] tracking-widest font-black">[UPG]</span> },
 ];
 
 
