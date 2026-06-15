@@ -4,7 +4,7 @@ import Stripe from 'stripe';
 // No module-level console.warn  it would pollute Railway [err] logs.
 // Fallback to a dummy key because the SDK throws 'Neither apiKey nor config.authenticator provided' during static generation without it
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_dummy_key_for_build_validation', {
-  apiVersion: '2026-01-28.clover' as any,
+  apiVersion: '2025-03-31.basil' as any,
   typescript: true,
 });
 

@@ -66,12 +66,7 @@ export async function POST(req: NextRequest) {
 
         // Create Stripe Checkout Session payload
         const sessionPayload: any = {
-            payment_method_types: ['card'],
-            payment_method_options: {
-                card: {
-                    request_three_d_secure: 'automatic',
-                },
-            },
+            managed_payments: { enabled: true },
             line_items: [
                 {
                     price: priceId,
