@@ -31,7 +31,8 @@ const Registry = {
   HumanityLedger: dynamic(() => import('@/components/terminal/HumanityLedger'), { ssr: false, loading: LoadingPanel }),
   PortfolioDashboard: dynamic(() => import('@/components/terminal/PortfolioDashboard'), { ssr: false, loading: LoadingPanel }),
   InstitutionalMarkets: dynamic(() => import('@/components/terminal/InstitutionalMarkets').then(m => ({ default: m.InstitutionalMarkets })), { ssr: false, loading: LoadingPanel }),
-  WhaleChat: dynamic(() => import('@/components/terminal/WhaleChat').then(m => ({ default: m.WhaleChat })), { ssr: false, loading: LoadingPanel })
+  WhaleChat: dynamic(() => import('@/components/terminal/WhaleChat').then(m => ({ default: m.WhaleChat })), { ssr: false, loading: LoadingPanel }),
+  ProvenanceStudioContent: dynamic(() => import('@/components/provenance/ProvenanceStudioContent').then(m => ({ default: m.ProvenanceStudioContent })), { ssr: false, loading: LoadingPanel })
 } as const;
 
 import "@/app/terminal/terminal.css";
@@ -57,7 +58,8 @@ const RouteRenderer = React.memo(({ route, reconciliationKey }: RouteRendererPro
         'markets': <Registry.InstitutionalMarkets />,
         'inst-ledger': <Registry.InstitutionalLedger />,
         'privacy': <Registry.SessionLogsPanel />,
-        'billing': <div className="w-full h-full overflow-y-auto p-4 md:p-8 bg-[#050505]"><PricingTable /></div>
+        'billing': <div className="w-full h-full overflow-y-auto p-4 md:p-8 bg-[#050505]"><PricingTable /></div>,
+        'studio': <Registry.ProvenanceStudioContent variant="desktop" />
     };
 
     const targetComponent = ComponentMap[route] || <GoldTicketPanel />;

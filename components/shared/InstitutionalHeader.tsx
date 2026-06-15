@@ -64,7 +64,10 @@ export function InstitutionalHeader() {
 
     const MENU_ITEMS = [
       { label: 'Dashboard', href: "/terminal" },
-      { label: 'Studio', href: "/terminal" },
+      { label: 'Studio', href: "/terminal?tab=studio" },
+      { label: 'Markets', href: "/terminal?tab=markets" },
+      { label: 'Roadmap', href: "/terminal?tab=humanity-ledger" },
+      { label: 'Identity', href: "/terminal?tab=gold" },
       { label: 'TOKEN', href: "/qds" },
       { label: 'MAP', href: "/registry" },
       { label: 'Chat', href: "/chat" },

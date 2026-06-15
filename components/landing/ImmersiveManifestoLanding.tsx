@@ -5,8 +5,6 @@ import Link from "next/link";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
-import { VisionStatsSection } from '@/components/vision/VisionStatsSection';
-
 // Lottie cargado dinámicamente para evitar SSR issues
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
@@ -723,6 +721,22 @@ function FAQSection() {
     {
       q: "Can regulators audit my activity?",
       a: "Yes, but only if you explicitly authorize them. You can generate a specific 'viewing key' that grants read-only access to specific transactions for compliance purposes."
+    },
+    {
+      q: "How do I participate in prediction markets?",
+      a: "Whale Network provides seamless, private integration with Polymarket and similar protocols. Your identity is verified on-chain without exposing your personal details, allowing you to trade with complete privacy."
+    },
+    {
+      q: "How do you handle KYC requirements?",
+      a: "We utilize Zero-Knowledge (ZK) proofs to attest to your compliance. You undergo verification once, and from then on, you prove you've met KYC standards mathematically without repeatedly sharing your documents."
+    },
+    {
+      q: "What makes Whale Chat different from other messengers?",
+      a: "Whale Chat is tied to your verified cryptographic identity rather than a phone number or IP address. It offers true end-to-end encryption anchored on-chain."
+    },
+    {
+      q: "Is the Studio Provenance module public?",
+      a: "While cryptographic proofs are published to the network for public verifiability, the raw assets and documentation remain entirely private, unlocked only for intended recipients."
     }
   ];
 
@@ -813,7 +827,6 @@ export function ImmersiveManifestoLanding(_props: ImmersiveManifestoLandingProps
       <IntegrationSection />
       <GlobalRegistrySection />
       <FAQSection />
-      <VisionStatsSection />
       <FinalCTASection />
     </div>
   );

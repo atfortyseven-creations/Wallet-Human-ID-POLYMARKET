@@ -5,17 +5,22 @@ import { motion } from 'framer-motion';
 import { Check, X, Shield, Zap, Globe, Database, ArrowRight } from 'lucide-react';
 import { NODE_TIERS, PlanTier } from '@/lib/node_infrastructure/tiers';
 import { Button } from '@/components/ui/button';
-import { useAccount } from 'wagmi';
+import { useSystemAccount } from '@/hooks/useSystemAccount';
 
 export function PricingTable() {
-    const { address, isConnected } = useAccount();
-    const isSignedIn = isConnected;
+    const { address } = useSystemAccount();
+    const isSignedIn = !!address;
     const [isAnnual, setIsAnnual] = useState(false);
     const [loadingTier, setLoadingTier] = useState<string | null>(null);
 
     const handleSubscription = async (tier: string) => {
         if (!isSignedIn) {
             alert("Please sign in to upgrade your tier.");
+            return;
+        }
+
+        if (tier === PlanTier.FREE) {
+            alert("Your account includes the Free tier by default. Please select a premium tier to upgrade.");
             return;
         }
 
@@ -44,10 +49,10 @@ export function PricingTable() {
         }
     };
 
-    // Get ordered plans skipping FREE
+    // Get ordered plans
     const plansToShow = [
+        NODE_TIERS[PlanTier.FREE],
         NODE_TIERS[PlanTier.LIGHT_NODE],
-        NODE_TIERS[PlanTier.FULL_NODE],
         NODE_TIERS[PlanTier.FULL_NODE],
         NODE_TIERS[PlanTier.ARCHIVE_PROVER],
     ];
@@ -158,17 +163,19 @@ export function PricingTable() {
 
                             <Button 
                                 onClick={() => handleSubscription(plan.tier)}
-                                disabled={loadingTier === plan.tier}
+                                disabled={loadingTier === plan.tier || plan.tier === PlanTier.FREE}
                                 className={`w-full h-12 flex items-center justify-between px-6 transition-all ${
                                     isInst 
                                     ? 'bg-indigo-500 hover:bg-indigo-600 text-white hover:scale-[1.02]' 
-                                    : 'bg-white/10 hover:bg-white/20 text-white'
+                                    : plan.tier === PlanTier.FREE 
+                                        ? 'bg-white/5 text-white/50 cursor-not-allowed'
+                                        : 'bg-white/10 hover:bg-white/20 text-white'
                                 }`}
                             >
                                 <span className="uppercase font-bold tracking-widest text-xs">
-                                    {loadingTier === plan.tier ? 'Launching...' : (isInst ? 'Get Elite' : 'Select Plan')}
+                                    {loadingTier === plan.tier ? 'Launching...' : (plan.tier === PlanTier.FREE ? 'Included' : (isInst ? 'Get Elite' : 'Select Plan'))}
                                 </span>
-                                <ArrowRight size={16} />
+                                {plan.tier !== PlanTier.FREE && <ArrowRight size={16} />}
                             </Button>
                         </motion.div>
                     );

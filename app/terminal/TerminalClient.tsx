@@ -1,12 +1,12 @@
 "use client";
 
 import { ProvenanceSessionGate } from '@/components/provenance/ProvenanceSessionGate';
-import { ProvenanceStudioContent } from '@/components/provenance/ProvenanceStudioContent';
+import TerminalDashboard from '@/components/terminal/WhaleDashboard';
 
 export default function TerminalClient() {
   return (
     <ProvenanceSessionGate>
-      <ProvenanceStudioContent variant="desktop" />
+      <TerminalDashboard />
     </ProvenanceSessionGate>
   );
 }

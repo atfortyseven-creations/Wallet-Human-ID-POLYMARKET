@@ -14,6 +14,7 @@ const Icon = {
   identity:   <span className="font-mono text-[10px] tracking-widest font-black">[ID]</span>,
   support:    <span className="font-mono text-[10px] tracking-widest font-black">[SUP]</span>,
   forum:      <span className="font-mono text-[10px] tracking-widest font-black">[FRM]</span>,
+  studio:     <span className="font-mono text-[10px] tracking-widest font-black">[STU]</span>,
 };
 import { MODULE_EXPLANATIONS } from './ModuleExplanations';
 import { useSettingsStore } from '@/lib/store/useSettingsStore';
@@ -50,6 +51,7 @@ const SIDEBAR_ITEMS: NavItem[] = [
     { id: 'humanity-ledger', label: 'Roadmap',        icon: Icon.roadmap },
     { id: 'logs',            label: 'Logs',           icon: Icon.logs },
     { id: 'gold',            label: 'Identity',       icon: Icon.identity },
+    { id: 'studio',          label: 'Studio',         icon: Icon.studio },
     { id: 'billing',         label: 'Upgrade Plan',   icon: <span className="font-mono text-[10px] tracking-widest font-black">[UPG]</span> },
 ];
 

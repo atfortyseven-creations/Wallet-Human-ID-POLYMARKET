@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
             const tier = (session.metadata?.tier || session.metadata?.plan_id) as string;
             const billingCycle = session.metadata?.billingCycle === 'ANNUAL' ? 'ANNUAL' : 'MONTHLY';
 
-            if (session.payment_status !== 'paid') {
+            if (session.payment_status !== 'paid' && session.payment_status !== 'no_payment_required') {
                 console.log(`[CHECKOUT_UNPAID] Session ${session.id} is unpaid. Waiting for invoice.payment_succeeded.`);
                 break;
             }
