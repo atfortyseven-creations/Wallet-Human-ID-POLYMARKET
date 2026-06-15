@@ -18,16 +18,16 @@ export const PRICE_IDS: Record<string, Record<string, string>> = {
   MONTHLY: {
     STANDARD: process.env.STRIPE_STANDARD_PRICE_ID_MO || 'prod_UVQSatw61ksVah',
     FREE:     'prod_UVQPgIwLPGfUiY', // Basic Free (No payment required, but mapped for structural consistency if needed)
-    STARTER:  process.env.STRIPE_STARTER_PRICE_ID_MO  || process.env.STRIPE_PRICE_STARTER  || '',
-    PRO:      process.env.STRIPE_PRO_PRICE_ID_MO      || process.env.STRIPE_PRICE_PRO       || '',
-    ELITE:    process.env.STRIPE_ELITE_PRICE_ID_MO    || process.env.STRIPE_PRICE_INSTITUTIONAL || '',
+    STARTER:  process.env.STRIPE_STARTER_PRICE_ID_MO  || process.env.STRIPE_PRICE_STARTER  || 'prod_UVQSatw61ksVah',
+    PRO:      process.env.STRIPE_PRO_PRICE_ID_MO      || process.env.STRIPE_PRICE_PRO       || 'prod_UVQSatw61ksVah',
+    ELITE:    process.env.STRIPE_ELITE_PRICE_ID_MO    || process.env.STRIPE_PRICE_INSTITUTIONAL || 'prod_UVQSatw61ksVah',
   },
   ANNUAL: {
     STANDARD: process.env.STRIPE_STANDARD_PRICE_ID_YR || 'prod_UVQSatw61ksVah',
     FREE:     'prod_UVQPgIwLPGfUiY',
-    STARTER:  process.env.STRIPE_STARTER_PRICE_ID_YR  || process.env.STRIPE_PRICE_STARTER  || '',
-    PRO:      process.env.STRIPE_PRO_PRICE_ID_YR      || process.env.STRIPE_PRICE_PRO       || '',
-    ELITE:    process.env.STRIPE_ELITE_PRICE_ID_YR    || process.env.STRIPE_PRICE_INSTITUTIONAL || '',
+    STARTER:  process.env.STRIPE_STARTER_PRICE_ID_YR  || process.env.STRIPE_PRICE_STARTER  || 'prod_UVQSatw61ksVah',
+    PRO:      process.env.STRIPE_PRO_PRICE_ID_YR      || process.env.STRIPE_PRICE_PRO       || 'prod_UVQSatw61ksVah',
+    ELITE:    process.env.STRIPE_ELITE_PRICE_ID_YR    || process.env.STRIPE_PRICE_INSTITUTIONAL || 'prod_UVQSatw61ksVah',
   }
 };
 
