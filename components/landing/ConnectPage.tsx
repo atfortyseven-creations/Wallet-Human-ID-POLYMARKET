@@ -499,7 +499,7 @@ export default function ConnectPage() {
             <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#0A0A0A]/60 font-medium flex-1">
               Secure Authentication
             </span>
-            <Link href="/studio/provenance" className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-600 font-black rounded-lg text-[10px] uppercase tracking-widest hover:bg-blue-100 transition-all active:scale-95 shadow-sm">
+            <Link href="/dashboard" className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-600 font-black rounded-lg text-[10px] uppercase tracking-widest hover:bg-blue-100 transition-all active:scale-95 shadow-sm">
               <QrCode size={12} />
               Studio
             </Link>
