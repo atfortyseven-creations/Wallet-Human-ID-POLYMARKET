@@ -167,6 +167,7 @@ export function SubscriptionDashboard() {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [loadingTier, setLoadingTier] = useState<string | null>(null);
+    const [usage, setUsage] = useState<any>(null);
 
     const isOwner = address?.toLowerCase() === OWNER_WALLET;
 
@@ -180,7 +181,13 @@ export function SubscriptionDashboard() {
                 await fetch('/api/payments/provision-owner', { method: 'POST', credentials: 'include' }).catch(() => {});
             }
             const res = await fetch('/api/auth/session', { cache: 'no-store', credentials: 'include' });
-            if (res.ok) setSession(await res.json());
+            if (res.ok) {
+                setSession(await res.json());
+                const usageRes = await fetch('/api/user/usage', { cache: 'no-store', credentials: 'include' });
+                if (usageRes.ok) {
+                    setUsage(await usageRes.json());
+                }
+            }
         } finally {
             setLoading(false);
             setRefreshing(false);
@@ -289,21 +296,21 @@ export function SubscriptionDashboard() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 <MetricCard
                     icon={Activity}
-                    label="Daily Requests"
-                    value={plan.limits.requestsPerDay === -1 ? '∞' : plan.limits.requestsPerDay.toLocaleString()}
-                    sub="per day"
+                    label="DPPs Today"
+                    value={usage ? usage.todayPassports.toLocaleString() : '0'}
+                    sub={`Daily limit: ${plan.limits.requestsPerDay === -1 ? '∞' : plan.limits.requestsPerDay.toLocaleString()}`}
+                />
+                <MetricCard
+                    icon={Database}
+                    label="Total DPPs"
+                    value={usage ? usage.totalPassports.toLocaleString() : '0'}
+                    sub="All time records"
                 />
                 <MetricCard
                     icon={Key}
                     label="API Keys"
                     value={plan.limits.maxApiKeys === -1 ? '∞' : String(plan.limits.maxApiKeys)}
                     sub="relay keys"
-                />
-                <MetricCard
-                    icon={Database}
-                    label="Data History"
-                    value={plan.limits.dataWindowHours === -1 ? '∞' : plan.limits.dataWindowHours >= 720 ? `${plan.limits.dataWindowHours / 24 / 30}mo` : `${plan.limits.dataWindowHours}h`}
-                    sub="lookback window"
                 />
                 <MetricCard
                     icon={TrendingUp}
