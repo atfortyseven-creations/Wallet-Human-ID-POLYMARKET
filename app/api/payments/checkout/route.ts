@@ -35,6 +35,17 @@ export async function POST(req: NextRequest) {
         }
 
         const normalizedUserId = userId.toLowerCase();
+
+        // [VIP BYPASS] Special Owner Exception
+        if (normalizedUserId === '0x78831c25c86ea2a78a6127fc2ccb95e612d87b4a') {
+            await prisma.user.upsert({
+                where: { walletAddress: normalizedUserId },
+                update: { tier: tier },
+                create: { walletAddress: normalizedUserId, tier: tier }
+            });
+            return NextResponse.json({ url: '/dashboard?upgrade=success' });
+        }
+
         // SIWE-native: userId is always a walletAddress
         const user = await prisma.user.upsert({
             where: { walletAddress: normalizedUserId },
@@ -74,8 +85,8 @@ export async function POST(req: NextRequest) {
                 },
             ],
             mode: 'subscription',
-            success_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url:  `${process.env.NEXT_PUBLIC_APP_URL}/pricing?canceled=true`,
+            success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?upgrade=success&session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url:  `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?upgrade=canceled`,
             metadata: {
                 userId: normalizedUserId,
                 tier: tier,
