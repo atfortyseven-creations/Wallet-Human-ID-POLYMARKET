@@ -1189,6 +1189,18 @@ export function MobileLanding() {
         </div>
         
         <div className="flex items-center gap-2">
+          {/* DPP — Studio Provenance access */}
+          <a
+            href="https://studio-provenance-production.up.railway.app"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-3 py-2 rounded-xl border border-blue-300/50 bg-blue-50 text-[9px] font-black uppercase tracking-widest text-blue-600 shadow-sm active:scale-95 transition-all flex items-center gap-1.5"
+            aria-label="Studio Provenance DPP"
+          >
+            <Briefcase size={11} className="shrink-0" />
+            DPP
+          </a>
+
           {/* Identity Claim — mobile-only direct scanner access (iOS + Android only) */}
           <button
             id="whale-hub-btn"

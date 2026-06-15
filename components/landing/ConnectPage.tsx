@@ -24,6 +24,7 @@ import {
   Shield,
   CheckCircle,
   MessageSquare,
+  Briefcase,
 } from "lucide-react";
 
 const DynamicUniversalScanModal = dynamic(
@@ -487,6 +488,22 @@ export default function ConnectPage() {
 
       <div className="relative z-10 w-full flex-1 flex flex-col items-center justify-center px-4 pt-0 mx-auto min-h-0" style={{ pointerEvents: 'none' }}>
         
+        {/* STUDIO PROVENANCE PROMO */}
+        <div className="w-full max-w-[480px] mb-6 flex-shrink-0 bg-gradient-to-br from-[#1A1F2C] to-[#0A0D14] rounded-[24px] border border-blue-900/30 shadow-[0_8px_60px_rgba(0,120,255,0.15)] p-8 z-20 text-white" style={{ pointerEvents: 'all' }}>
+           <div className="flex items-center gap-3 mb-3">
+               <Briefcase size={22} className="text-blue-400" />
+               <h3 className="text-2xl font-black tracking-tight text-white">Studio Provenance</h3>
+               <span className="ml-auto px-2 py-1 bg-blue-500/20 text-blue-300 text-[10px] font-black uppercase tracking-widest rounded-full border border-blue-500/30">DPP</span>
+           </div>
+           <p className="text-sm text-blue-100/70 mb-6 leading-relaxed">
+             Enterprise Data Provenance Protocol (DPP). Access our dedicated server for institutional-grade IP protection and isolated architectural plans.
+           </p>
+           <a href="https://studio-provenance-production.up.railway.app" target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 py-4 bg-blue-600 text-white font-black rounded-xl text-xs uppercase tracking-[0.2em] hover:bg-blue-500 transition-all active:scale-[0.98] shadow-lg shadow-blue-900/50">
+              Access & Pricing
+              <ExternalLink size={14} />
+           </a>
+        </div>
+
         {/* Login Panel — positioned on the right */}
         <div className="w-full max-w-[480px] flex-shrink-0 flex flex-col bg-white/96 backdrop-blur-sm rounded-[24px] border border-[#F0F0F0] shadow-[0_8px_60px_rgba(0,0,0,0.18)] p-8 z-20" style={{ pointerEvents: 'all' }}>
           
