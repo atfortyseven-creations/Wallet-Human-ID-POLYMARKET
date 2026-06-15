@@ -26,6 +26,7 @@ import {
   CheckCircle,
   MessageSquare,
   Briefcase,
+  QrCode,
 } from "lucide-react";
 
 const DynamicUniversalScanModal = dynamic(
