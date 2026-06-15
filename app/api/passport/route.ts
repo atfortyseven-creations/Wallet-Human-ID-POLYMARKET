@@ -4,6 +4,7 @@ import { getSession } from '@/lib/session';
 import { serializePassport, slugifyTitle } from '@/lib/passport/serialize';
 import { z } from 'zod';
 import OpenAI from 'openai';
+import { NODE_TIERS, PlanTier } from '@/lib/node_infrastructure/tiers';
 
 // Init OpenAI for semantic validation
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
@@ -42,12 +43,44 @@ export async function POST(req: NextRequest) {
 
   if (recentCount >= 5) {
     return NextResponse.json(
-      { error: 'Rate limit exceeded. Maximum 5 records per minute allowed.' },
+      { error: 'Rate limit exceeded. Maximum 5 records per minute allowed to prevent spam.' },
       { status: 429 }
     );
   }
 
-  // 2. Parse and validate syntax
+  // 2. Strict Plan Enforcement: Check daily limit based on acquired tier
+  const user = await prisma.user.findUnique({
+    where: { walletAddress: issuerAddress },
+    select: { tier: true }
+  });
+
+  // Default to FREE if no user found, or parse their tier
+  const userTierStr = user?.tier || 'FREE';
+  const tierKey = NODE_TIERS[userTierStr as PlanTier] ? (userTierStr as PlanTier) : PlanTier.FREE;
+  const planConfig = NODE_TIERS[tierKey];
+  
+  const dailyLimit = planConfig.limits.requestsPerDay;
+
+  if (dailyLimit !== -1) {
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0);
+
+    const todayCount = await prisma.productPassport.count({
+      where: {
+        issuerAddress,
+        createdAt: { gte: startOfToday },
+      },
+    });
+
+    if (todayCount >= dailyLimit) {
+      return NextResponse.json(
+        { error: `Daily limit reached. Your ${planConfig.name} allows exclusively ${dailyLimit} DPPs per day. Please upgrade your plan.` },
+        { status: 403 }
+      );
+    }
+  }
+
+  // 3. Parse and validate syntax
   let body;
   try {
     body = await req.json();
