@@ -1,14 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getSession } from '@/lib/session';
+import { prisma } from '@/lib/prisma';
+import { PlanTier } from '@/lib/node_infrastructure/tiers';
 
 export async function POST(req: NextRequest) {
   try {
-    const sessionCookie = req.cookies.get('whale_session')?.value;
-    if (!sessionCookie) {
+    const session = await getSession();
+    if (!session?.userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const issuerAddress = session.userId.toLowerCase();
 
     const body = await req.json();
-    const { transactionPayload, tier, signature, nonce, timestamp } = body;
+    const { transactionPayload, signature, nonce, timestamp } = body;
 
     // 1. Abysmal Security Check: Prevent Replay Attacks
     const now = Date.now();
@@ -24,8 +28,17 @@ export async function POST(req: NextRequest) {
     // const isValidSignature = verifyECDSA(transactionPayload.creatorAddress, signature, { nonce, timestamp });
     // if (!isValidSignature) return NextResponse.json({ error: 'Security Exception: Invalid ECDSA Handshake.' }, { status: 401 });
 
-    if (!['PRO', 'ELITE', 'Private'].includes(tier)) {
-      return NextResponse.json({ error: 'Paymaster services are only available for PRO, ELITE, and Private tiers.' }, { status: 403 });
+    // 3. Strict Plan Enforcement via Database
+    const user = await prisma.user.findUnique({
+      where: { walletAddress: issuerAddress },
+      select: { tier: true }
+    });
+
+    const userTier = (user?.tier as PlanTier) || PlanTier.FREE;
+
+    // Only FULL_NODE (Professional) and ARCHIVE_PROVER (Empresa) get gasless transactions
+    if (![PlanTier.FULL_NODE, PlanTier.ARCHIVE_PROVER].includes(userTier)) {
+      return NextResponse.json({ error: 'Paymaster gasless services are exclusively available for Professional and Empresa tiers.' }, { status: 403 });
     }
 
     // Abstract the gas fee: 

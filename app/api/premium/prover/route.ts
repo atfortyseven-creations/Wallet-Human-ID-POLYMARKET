@@ -1,14 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getSession } from '@/lib/session';
+import { prisma } from '@/lib/prisma';
+import { PlanTier } from '@/lib/node_infrastructure/tiers';
 
 export async function POST(req: NextRequest) {
   try {
-    const sessionCookie = req.cookies.get('whale_session')?.value;
-    if (!sessionCookie) {
+    const session = await getSession();
+    if (!session?.userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const issuerAddress = session.userId.toLowerCase();
 
     const body = await req.json();
-    const { circuitConstraints, tier, nonce, timestamp } = body;
+    const { circuitConstraints, nonce, timestamp } = body;
 
     // 1. Abysmal Security Check: Prevent Replay Attacks
     const now = Date.now();
@@ -20,8 +24,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Security Exception: Cryptographic nonce missing or too weak.' }, { status: 403 });
     }
 
-    if (!['ELITE', 'Private'].includes(tier)) {
-      return NextResponse.json({ error: 'Server-side Proving is an exclusive feature for ELITE and Private tiers.' }, { status: 403 });
+    // 2. Strict Plan Enforcement via Database
+    const user = await prisma.user.findUnique({
+      where: { walletAddress: issuerAddress },
+      select: { tier: true }
+    });
+
+    const userTier = (user?.tier as PlanTier) || PlanTier.FREE;
+
+    if (userTier !== PlanTier.ARCHIVE_PROVER) {
+      return NextResponse.json({ error: 'Server-side ZK Proving is an exclusive feature for the Archive Prover (Empresa) tier.' }, { status: 403 });
     }
 
     // In a real implementation, this forwards the zk-SNARK constraints to a GPU cluster
