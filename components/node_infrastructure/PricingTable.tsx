@@ -114,7 +114,7 @@ export function PricingTable() {
                                 </h3>
                                 <div className="flex items-baseline gap-1">
                                     <span className="text-4xl font-mono font-bold text-white tracking-tight">
-                                        {isAnnual ? plan.priceMetrics.annual : plan.priceMetrics.monthly}
+                                        ${((isAnnual ? plan.priceMetrics.annual : plan.priceMetrics.monthly) / 100).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
                                     </span>
                                     <span className="text-white/40 text-[10px] font-mono uppercase tracking-widest">
                                         / {isAnnual ? 'YR' : 'MO'}

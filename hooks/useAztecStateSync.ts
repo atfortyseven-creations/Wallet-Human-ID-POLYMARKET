@@ -3,11 +3,18 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 
+// These old route names get redirected to the default
 const LEGACY_ROUTE_MAP = new Set([
-    'dashboard', 'watchlist', 'firehose', 'sov-intel', 'live-port',
+    'watchlist', 'firehose', 'sov-intel', 'live-port',
     'whale-port', 'graph', 'vault', 'trade', 'forensics',
     'reputation', 'scanner'
 ]);
+
+// Route aliases / redirects — old route → new route
+const ROUTE_ALIAS: Record<string, string> = {
+    'billing': 'node-allocation',
+    'upgrade': 'node-allocation',
+};
 
 const DEFAULT_ROUTE = 'gold';
 
@@ -26,6 +33,7 @@ export function useAztecStateSync(onStateChange: () => void) {
     const resolveInitialRoute = (): string => {
         const param = searchParams.get('tab');
         if (!param) return DEFAULT_ROUTE;
+        if (ROUTE_ALIAS[param]) return ROUTE_ALIAS[param];
         if (LEGACY_ROUTE_MAP.has(param)) return DEFAULT_ROUTE;
         return param;
     };
@@ -36,7 +44,10 @@ export function useAztecStateSync(onStateChange: () => void) {
     useEffect(() => {
         const param = searchParams.get('tab');
         if (param && param !== activeRoute) {
-            if (LEGACY_ROUTE_MAP.has(param)) {
+            if (ROUTE_ALIAS[param]) {
+                setActiveRoute(ROUTE_ALIAS[param]);
+                window.history.replaceState(null, '', `?tab=${ROUTE_ALIAS[param]}`);
+            } else if (LEGACY_ROUTE_MAP.has(param)) {
                 setActiveRoute(DEFAULT_ROUTE);
                 window.history.replaceState(null, '', `?tab=${DEFAULT_ROUTE}`);
             } else {

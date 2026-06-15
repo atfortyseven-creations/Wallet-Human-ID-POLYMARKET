@@ -1103,7 +1103,7 @@ function BandwidthTab() {
                 <p className="text-[10px] font-black uppercase tracking-widest text-black/40 mb-1">{plan.name}</p>
                 <div className="flex items-baseline gap-1">
                   <span className="text-3xl font-black text-[#050505] tracking-tight">
-                    {isAnnual ? plan.priceMetrics.annual : plan.priceMetrics.monthly}
+                    ${((isAnnual ? plan.priceMetrics.annual : plan.priceMetrics.monthly) / 100).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}
                   </span>
                   <span className="text-[10px] text-black/30 font-mono uppercase">/ {isAnnual ? 'yr' : 'mo'}</span>
                 </div>

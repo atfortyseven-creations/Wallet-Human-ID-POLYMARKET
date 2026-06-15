@@ -92,8 +92,8 @@ export async function verifyPremiumAccess(userId: string): Promise<{
       });
     }
 
-    if (user?.tier === 'Enterprise' || user?.tier === 'HUMAN') {
-       return { valid: true, tier: 'Enterprise' };
+    if (user?.tier === 'Enterprise' || user?.tier === 'HUMAN' || user?.tier === 'FULL_NODE' || user?.tier === 'ARCHIVE_PROVER') {
+       return { valid: true, tier: 'Enterprise' }; // Note: returns Enterprise to unlock features
     }
 
     // 2. Subscription check from native DB (case insensitive fallback)

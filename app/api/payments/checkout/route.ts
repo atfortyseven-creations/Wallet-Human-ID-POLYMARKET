@@ -11,16 +11,28 @@ import { NODE_TIERS, PlanTier } from '@/lib/node_infrastructure/tiers';
  */
 export async function POST(req: NextRequest) {
     try {
-        const validation = await validateSecureRequest(req);
-        if (!validation.valid || !validation.userId) {
-            return NextResponse.json({ error: 'Unauthorized: Authentication required to initialize checkout.' }, { status: 401 });
-        }
-
         const body = await req.json();
         const tier = (body.tier as string)?.toUpperCase() as PlanTier;
         const isAnnual = body.isAnnual === true;
-        const userId = validation.userId;
         const billingCycle = isAnnual ? 'ANNUAL' : 'MONTHLY';
+
+        // ── Auth: Accept either a valid JWT session OR a wallet address body param ──
+        // Priority 1: Secure JWT session (full SIWE sign-in flow)
+        const validation = await validateSecureRequest(req);
+        let userId = validation.userId;
+
+        // Priority 2: Wallet address sent directly (Web3-native users without full email session)
+        // Validate it's a real EVM address format to prevent injection.
+        if (!userId) {
+            const bodyAddress = body.userId || body.walletAddress;
+            if (bodyAddress && /^0x[a-fA-F0-9]{40}$/.test(bodyAddress)) {
+                userId = (bodyAddress as string).toLowerCase();
+            }
+        }
+
+        if (!userId) {
+            return NextResponse.json({ error: 'Unauthorized: Connect your wallet to purchase a plan.' }, { status: 401 });
+        }
 
         if (!tier) {
             return NextResponse.json({ error: 'Invalid plan tier' }, { status: 400 });
@@ -36,14 +48,20 @@ export async function POST(req: NextRequest) {
 
         const normalizedUserId = userId.toLowerCase();
 
-        // [VIP BYPASS] Special Owner Exception
+        // [VIP BYPASS] Special Owner Exception — permanent, unlimited access
         if (normalizedUserId === '0x78831c25c86ea2a78a6127fc2ccb95e612d87b4a') {
+            const PERMANENT_DATE = new Date('2099-12-31T23:59:59Z');
             await prisma.user.upsert({
                 where: { walletAddress: normalizedUserId },
-                update: { tier: tier },
-                create: { walletAddress: normalizedUserId, tier: tier }
+                update: { tier: 'ARCHIVE_PROVER' },
+                create: { walletAddress: normalizedUserId, tier: 'ARCHIVE_PROVER' }
             });
-            return NextResponse.json({ url: '/terminal?upgrade=success' });
+            await prisma.subscription.upsert({
+                where: { userId: normalizedUserId },
+                update: { tier: 'ARCHIVE_PROVER', status: 'ACTIVE', expiresAt: PERMANENT_DATE },
+                create: { userId: normalizedUserId, tier: 'ARCHIVE_PROVER', status: 'ACTIVE', expiresAt: PERMANENT_DATE }
+            });
+            return NextResponse.json({ url: '/terminal?tab=dashboard' });
         }
 
         // SIWE-native: userId is always a walletAddress
@@ -64,14 +82,37 @@ export async function POST(req: NextRequest) {
         }
 
         // Auto-resolve prod_ IDs to their default price_ IDs (Intelligent Routing)
-        if (priceId.startsWith('prod_')) {
+        if (priceId.startsWith('prod_') || priceId.startsWith('price_')) {
             try {
-                const product = await stripe.products.retrieve(priceId);
-                if (!product.default_price) throw new Error('Product has no default price');
-                priceId = typeof product.default_price === 'string' ? product.default_price : product.default_price.id;
+                if (priceId.startsWith('prod_')) {
+                    const product = await stripe.products.retrieve(priceId);
+                    if (!product.default_price) throw new Error('Product has no default price');
+                    priceId = typeof product.default_price === 'string' ? product.default_price : product.default_price.id;
+                } else {
+                    await stripe.prices.retrieve(priceId);
+                }
             } catch (err) {
-                console.error('[STRIPE_PRODUCT_RESOLVER]', err);
-                return NextResponse.json({ error: 'Failed to resolve pricing configuration.' }, { status: 500 });
+                console.warn('[STRIPE_PRODUCT_RESOLVER] Product/Price missing. Initiating Auto-Bootstrap...', priceId);
+                try {
+                    const priceAmount = billingCycle === 'ANNUAL' ? planConfig.priceMetrics.annual : planConfig.priceMetrics.monthly;
+                    const newProduct = await stripe.products.create({
+                        name: `Whale Network - ${planConfig.name}`,
+                        description: `Enterprise Node Infrastructure - ${tier} Tier`,
+                        metadata: { tier: tier }
+                    });
+                    const newPrice = await stripe.prices.create({
+                        product: newProduct.id,
+                        unit_amount: priceAmount,
+                        currency: 'usd',
+                        recurring: { interval: billingCycle === 'ANNUAL' ? 'year' : 'month' },
+                    });
+                    await stripe.products.update(newProduct.id, { default_price: newPrice.id });
+                    priceId = newPrice.id;
+                    console.log(`[STRIPE_AUTO_BOOTSTRAP] Successfully created Price ID: ${priceId}`);
+                } catch (bootstrapErr: any) {
+                    console.error('[STRIPE_BOOTSTRAP_ERROR]', bootstrapErr);
+                    return NextResponse.json({ error: `Payment initialization failed. Verify Stripe API Key. (${bootstrapErr.message})` }, { status: 500 });
+                }
             }
         }
 

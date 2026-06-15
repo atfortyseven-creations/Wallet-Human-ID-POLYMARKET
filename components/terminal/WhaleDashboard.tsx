@@ -1,5 +1,5 @@
 "use client";
-// TerminalDashboard v3  11 tabs, KYC removed
+// TerminalDashboard v4 — dashboard tab replaces billing
 import React, { useMemo } from 'react';
 
 import { WhaleProShell } from '@/components/terminal/WhaleProShell';
@@ -14,6 +14,7 @@ import { useAztecStateSync } from '@/hooks/useAztecStateSync';
 // --- Static Imports ---
 import { GoldTicketPanel } from '@/components/terminal/GoldTicketPanel';
 import { PricingTable } from '@/components/node_infrastructure/PricingTable';
+import { SubscriptionDashboard } from '@/components/terminal/SubscriptionDashboard';
 
 // --- Dynamic Module Registry ---
 const LoadingPanel = () => (
@@ -43,11 +44,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 interface RouteRendererProps {
     route: string;
     reconciliationKey: number;
+    mutateRoute: (id: string) => void;
 }
 
 const PANEL_STYLE = "flex-1 w-full h-full min-h-0 flex flex-col";
 
-const RouteRenderer = React.memo(({ route, reconciliationKey }: RouteRendererProps) => {
+const RouteRenderer = React.memo(({ route, reconciliationKey, mutateRoute }: RouteRendererProps) => {
     const ComponentMap: Record<string, JSX.Element> = {
         'zk-identity': <GoldTicketPanel />,
         'gold': <GoldTicketPanel />,
@@ -58,8 +60,15 @@ const RouteRenderer = React.memo(({ route, reconciliationKey }: RouteRendererPro
         'markets': <Registry.InstitutionalMarkets />,
         'inst-ledger': <Registry.InstitutionalLedger />,
         'privacy': <Registry.SessionLogsPanel />,
-        'billing': <div className="w-full h-full overflow-y-auto p-4 md:p-8 bg-[#050505]"><PricingTable /></div>,
-        'studio': <Registry.ProvenanceStudioContent variant="desktop" />
+        'logs': <Registry.SessionLogsPanel />,
+        // [REMOVED] billing tab replaced by dashboard
+        'dashboard': <SubscriptionDashboard onUpgrade={() => mutateRoute('node-allocation')} />,
+        'node-allocation': (
+            <div className="w-full h-full overflow-y-auto p-4 md:p-8 bg-[#050505]">
+                <PricingTable />
+            </div>
+        ),
+        'studio': <Registry.ProvenanceStudioContent variant="desktop" />,
     };
 
     const targetComponent = ComponentMap[route] || <GoldTicketPanel />;
@@ -110,7 +119,7 @@ export default function TerminalDashboard() {
             isZkVerified={true}
         >
             <div className="flex flex-col w-full h-full min-h-0">
-                <RouteRenderer route={activeRoute} reconciliationKey={reconciliationKey} />
+                <RouteRenderer route={activeRoute} reconciliationKey={reconciliationKey} mutateRoute={mutateRoute} />
             </div>
         </WhaleProShell>
     );
