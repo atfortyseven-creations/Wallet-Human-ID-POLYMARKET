@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     switch (event.type) {
         case 'checkout.session.completed':
             const session = event.data.object as any;
-            const userId = session.metadata?.userId || session.metadata?.system_user_id;
+            const userId = session.client_reference_id || session.metadata?.userId || session.metadata?.system_user_id;
             const tier = (session.metadata?.tier || session.metadata?.plan_id) as string;
             const billingCycle = session.metadata?.billingCycle === 'ANNUAL' ? 'ANNUAL' : 'MONTHLY';
 

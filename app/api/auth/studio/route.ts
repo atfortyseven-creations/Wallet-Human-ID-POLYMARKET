@@ -8,14 +8,22 @@ const STUDIO_B2B_URL = process.env.STUDIO_B2B_URL || 'http://localhost:3001';
 export async function GET(req: NextRequest) {
   try {
     // 1. Verify user is logged into the B2C Wallet
-    const session = await getServerSession();
-    if (!session || !session.user) {
-      return NextResponse.redirect(new URL('/login?error=unauthorized_for_studio', req.url));
+    const whaleSessionCookie = req.cookies.get('whale_session')?.value;
+    
+    if (!whaleSessionCookie) {
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://humanidfi.com';
+      return NextResponse.redirect(new URL('/?error=unauthorized_for_studio', appUrl));
     }
 
-    const walletAddress = session.user.name || session.user.email || 'unknown_wallet';
-
-    // 2. Generate the Cryptographic Identity Token for the B2B SaaS
+    let walletAddress = 'unknown_wallet';
+    try {
+      const { verifyJWT } = await import('@/lib/jwt');
+      const payload = await verifyJWT(whaleSessionCookie);
+      walletAddress = payload.walletAddress || payload.sub || 'unknown_wallet';
+    } catch (e) {
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://humanidfi.com';
+      return NextResponse.redirect(new URL('/?error=invalid_session', appUrl));
+    }
     const payload = {
       walletId: walletAddress,
       origin: 'B2C_WALLET_IDP',
