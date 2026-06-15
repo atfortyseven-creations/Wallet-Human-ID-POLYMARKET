@@ -1012,11 +1012,10 @@ function BandwidthTab() {
   const plansToShow = [
     NODE_TIERS[PlanTier.LIGHT_NODE],
     NODE_TIERS[PlanTier.FULL_NODE],
-    NODE_TIERS[PlanTier.FULL_NODE],
     NODE_TIERS[PlanTier.ARCHIVE_PROVER],
   ];
 
-  const handleNode Allocation = async (tier: string) => {
+  const handleNodeAllocation = async (tier: string) => {
     if (!isConnected) {
       alert('Connect your wallet to subscribe.');
       return;
@@ -1140,7 +1139,7 @@ function BandwidthTab() {
               </div>
 
               <button
-                onClick={() => handleNode Allocation(plan.tier)}
+                onClick={() => handleNodeAllocation(plan.tier)}
                 disabled={loadingTier === plan.tier}
                 className={`w-full py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-between px-5 ${
                   isElite
