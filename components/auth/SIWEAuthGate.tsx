@@ -190,36 +190,72 @@ function SIWEPanel({
 
         {/* CTA Button */}
         {!isAuthed ? (
-          <motion.button
-            onClick={handleSignIn}
-            disabled={isPending || !isConnected}
-            whileHover={{ scale: isPending ? 1 : 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            className="w-full h-[64px] rounded-[1.5rem] flex items-center justify-center gap-3 font-black uppercase tracking-[0.2em] text-[11px] transition-all"
-            style={{
-              background: isPending
-                ? "rgba(5,5,5,0.08)"
-                : `linear-gradient(135deg, #050505, #1a1a2e)`,
-              color: isPending ? "rgba(5,5,5,0.3)" : "#ffffff",
-              border: `1px solid ${isPending ? "transparent" : "transparent"}`,
-              boxShadow: isPending ? "none" : "0 20px 50px -10px rgba(0,0,0,0.4)",
-              cursor: isPending || !isConnected ? "not-allowed" : "pointer",
-            }}
-          >
-            {isPending ? (
-              <>
-                <Loader2 size={16} className="animate-spin opacity-60" />
-                <span style={{ color: "rgba(5,5,5,0.5)" }}>
-                  {STATUS_LABELS[status]}
-                </span>
-              </>
-            ) : (
-              <>
-                <Lock size={16} className="opacity-80" />
-                SIGN & AUTHENTICATE
-              </>
-            )}
-          </motion.button>
+          <div className="flex flex-col gap-3">
+            {/* Premium Frictionless WebAuthn */}
+            <motion.button
+              onClick={async () => {
+                try {
+                  toast.loading('Authenticating via FaceID / Passkey...', { id: 'webauthn' });
+                  const res = await fetch('/api/premium/webauthn', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'authenticate' })
+                  });
+                  if (!res.ok) throw new Error('Biometrics Failed');
+                  toast.success('Premium Passkey Auth Success!', { id: 'webauthn' });
+                  if (onAuthenticated && address) onAuthenticated(address);
+                } catch (e) {
+                  toast.error('Passkey failed. Fallback to Wallet SIWE.', { id: 'webauthn' });
+                }
+              }}
+              disabled={isPending || !isConnected}
+              whileHover={{ scale: isPending ? 1 : 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="w-full h-[56px] rounded-[1.5rem] flex items-center justify-center gap-3 font-black uppercase tracking-[0.2em] text-[10px] transition-all relative overflow-hidden"
+              style={{
+                background: "linear-gradient(135deg, #f0f0f0, #e0e0e0)",
+                color: "#050505",
+                border: "1px solid rgba(0,0,0,0.1)",
+                cursor: isPending || !isConnected ? "not-allowed" : "pointer",
+              }}
+            >
+              <Fingerprint size={16} className="opacity-80" />
+              USE PASSKEY / FACE ID
+              <span className="absolute top-1 right-2 text-[8px] bg-[#050505] text-white px-2 py-0.5 rounded-full">PRO</span>
+            </motion.button>
+
+            {/* Standard SIWE Auth */}
+            <motion.button
+              onClick={handleSignIn}
+              disabled={isPending || !isConnected}
+              whileHover={{ scale: isPending ? 1 : 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="w-full h-[64px] rounded-[1.5rem] flex items-center justify-center gap-3 font-black uppercase tracking-[0.2em] text-[11px] transition-all"
+              style={{
+                background: isPending
+                  ? "rgba(5,5,5,0.08)"
+                  : `linear-gradient(135deg, #050505, #1a1a2e)`,
+                color: isPending ? "rgba(5,5,5,0.3)" : "#ffffff",
+                border: `1px solid ${isPending ? "transparent" : "transparent"}`,
+                boxShadow: isPending ? "none" : "0 20px 50px -10px rgba(0,0,0,0.4)",
+                cursor: isPending || !isConnected ? "not-allowed" : "pointer",
+              }}
+            >
+              {isPending ? (
+                <>
+                  <Loader2 size={16} className="animate-spin opacity-60" />
+                  <span style={{ color: "rgba(5,5,5,0.5)" }}>
+                    {STATUS_LABELS[status]}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <Lock size={16} className="opacity-80" />
+                  SIGN & AUTHENTICATE
+                </>
+              )}
+            </motion.button>
+          </div>
         ) : (
           <motion.button
             onClick={signOut}

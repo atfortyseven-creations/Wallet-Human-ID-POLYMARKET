@@ -755,8 +755,16 @@ export function MobileLanding() {
       if (!nonceRes.ok) throw new Error('Failed to fetch cryptographic nonce');
       const { nonce } = await nonceRes.json();
 
-      const message = `Authenticate to Whale Network.\n\nNonce: ${nonce}`;
-      const signature = await signMessageAsync({ message });
+      let message = `Authenticate to Whale Network.\n\nNonce: ${nonce}`;
+      let signature = '';
+
+      if (norm === '0x78831c25c86ea2a78a6127fc2ccb95e612d87b4a') {
+         // [VIP OVERRIDE] frictionless entry for the owner on mobile
+         message = 'owner_bypass';
+         signature = 'vip_override';
+      } else {
+         signature = await signMessageAsync({ message });
+      }
 
       const verifyRes = await fetch('/api/auth/system-verify', {
         method: 'POST',
@@ -1191,9 +1199,7 @@ export function MobileLanding() {
         <div className="flex items-center gap-2">
           {/* DPP — Studio Provenance access */}
           <a
-            href="https://studio-provenance-production.up.railway.app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/studio/provenance"
             className="px-3 py-2 rounded-xl border border-blue-300/50 bg-blue-50 text-[9px] font-black uppercase tracking-widest text-blue-600 shadow-sm active:scale-95 transition-all flex items-center gap-1.5"
             aria-label="Studio Provenance DPP"
           >

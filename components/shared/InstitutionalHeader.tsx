@@ -64,7 +64,7 @@ export function InstitutionalHeader() {
 
     const MENU_ITEMS = [
       { label: 'Dashboard', href: "/dashboard" },
-      { label: 'Studio', href: "https://studio-provenance-production.up.railway.app" },
+      { label: 'Studio', href: "/studio/provenance" },
       { label: 'TOKEN', href: "/qds" },
       { label: 'MAP', href: "/registry" },
       { label: 'Chat', href: "/chat" },

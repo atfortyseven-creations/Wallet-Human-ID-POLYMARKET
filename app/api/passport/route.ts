@@ -65,50 +65,31 @@ export async function POST(req: NextRequest) {
 
   const validData = parseResult.data;
 
-  // 3. AI Semantic Coherence Check
-  // We ask OpenAI to evaluate if the input makes logical sense for a physical product registry.
-  // We do this to prevent spam like "Book" with "Water bottle" batch ID.
-  if (openai) {
-    try {
-      const aiResponse = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: `You are an AI auditor for an institutional supply chain registry. 
-Evaluate the provided product data for semantic coherence and realism.
-Reject fake, spam, testing, or mismatched data (e.g., category 'FOOD' but title 'iPhone', or description 'test test').
-Respond ONLY with a JSON object: {"valid": boolean, "reason": "Short explanation if invalid"}`,
-          },
-          {
-            role: 'user',
-            content: JSON.stringify({
-              title: validData.title,
-              category: validData.category,
-              description: validData.payload.description,
-              batchId: validData.payload.batchId,
-            }),
-          },
-        ],
-        response_format: { type: 'json_object' },
-        max_tokens: 150,
-        temperature: 0.1,
-      });
+  // 3. Static Profanity / Obscenity Filter (Deterministic Blacklist)
+  const PROFANITY_BLACKLIST = [
+    'fuck', 'shit', 'bitch', 'asshole', 'cunt', 'dick', 'pussy', 'whore', 'slut', 'fag', 'nigger', 'cock', 'bastard',
+    'puta', 'mierda', 'pendejo', 'cabron', 'maricon', 'verga', 'culo', 'zorra', 'puto', 'gilipollas', 'concha', 'cojones'
+  ];
 
-      const result = JSON.parse(aiResponse.choices[0].message.content || '{"valid": false, "reason": "AI validation failed"}');
-      if (!result.valid) {
-        console.warn(`⚠️ [Studio-AI-Auditor] Validation failed but bypassing for demo: ${result.reason}`);
-      }
-    } catch (error: any) {
-      if (error.status === 429 || error.code === 'insufficient_quota' || error.message?.includes('quota')) {
-        console.warn('⚠️ [Studio-AI-Auditor] OpenAI API Quota Exceeded (429). Bypassing semantic validation gracefully.');
-      } else {
-        console.error('⚠️ [Studio-AI-Auditor] OpenAI validation error:', error.message || error);
-      }
-      // Fail-open: continue execution so institutional registry doesn't block due to AI downtime
-    }
-  } else {
-    console.warn('⚠️ [Studio-AI-Auditor] OpenAI API Key missing. Bypassing semantic validation gracefully.');
+  function containsProfanity(text: string): boolean {
+    if (!text) return false;
+    const lower = text.toLowerCase();
+    // Use word boundaries to avoid false positives (e.g. "assassin" -> "ass")
+    return PROFANITY_BLACKLIST.some(word => new RegExp(`\\b${word}\\b`, 'i').test(lower));
+  }
+
+  const fieldsToCheck = [
+    validData.title,
+    validData.category,
+    validData.payload?.description,
+    validData.payload?.batchId
+  ];
+
+  if (fieldsToCheck.some(field => typeof field === 'string' && containsProfanity(field))) {
+    return NextResponse.json(
+      { error: 'Inappropriate content detected. Please use normal words.' },
+      { status: 400 }
+    );
   }
 
   // 4. Create the passport
