@@ -1050,12 +1050,20 @@ export function ProvenanceStudioContent({
             Studio
           </p>
         )}
-        <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-          <h1
-            className={`font-black tracking-tight ${isMobile ? 'text-2xl' : 'text-3xl'}`}
+        <div className="flex items-center justify-between gap-4 mb-1.5 flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap">
+            <h1
+              className={`font-black tracking-tight ${isMobile ? 'text-2xl' : 'text-3xl'}`}
+            >
+              Provenance Studio
+            </h1>
+          </div>
+          <Link 
+            href="/dashboard"
+            className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-5 py-2.5 bg-black text-white rounded-full hover:bg-black/80 transition-all shadow-sm"
           >
-            Provenance Studio
-          </h1>
+            Return to Dashboard
+          </Link>
         </div>
         <p className="text-sm text-black/50 mb-8 leading-relaxed">
           Create verifiable product records, generate scannable QR labels, and confirm them on the
