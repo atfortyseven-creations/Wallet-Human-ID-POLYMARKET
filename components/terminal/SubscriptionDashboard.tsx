@@ -245,9 +245,34 @@ export function SubscriptionDashboard() {
     }
 
     return (
-        <div className="w-full h-full overflow-y-auto p-4 md:p-8 space-y-6 bg-[#FAFAFA]">
+        <div className="w-full h-full overflow-y-auto p-4 md:p-8 space-y-8 bg-[#F5F5F5]">
 
-            {/* Header */}
+            {/* Header / Plan Section like Google AI Studio */}
+            <div className="space-y-3">
+                <h2 className="text-lg font-black text-[#050505]">Plan</h2>
+                <div className="rounded-2xl border border-black/5 bg-white p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h3 className="text-[15px] font-black text-[#050505]">Your Plan: {effectiveTierName}</h3>
+                        <p className="text-[13px] text-black/50 mt-1">
+                            {isOwner 
+                                ? "This wallet has permanent VIP access to all network features."
+                                : "This account is subject to the limits and features of the currently active tier."
+                            }
+                        </p>
+                    </div>
+                    {!isOwner && (
+                        <button 
+                            onClick={openPortal} 
+                            disabled={loading}
+                            className="shrink-0 bg-[#5A67D8] hover:bg-[#4C51BF] text-white px-5 py-2 rounded-lg text-[13px] font-bold transition-colors"
+                        >
+                            Manage Plan
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            {/* VIP banner */}
             <div className="flex items-start justify-between gap-4 flex-wrap">
                 <div>
                     <div className="flex items-center gap-2 mb-1">
@@ -275,49 +300,102 @@ export function SubscriptionDashboard() {
                 </button>
             </div>
 
-            {/* VIP owner banner */}
-            {isOwner && (
-                <motion.div
-                    initial={{ opacity: 0, y: -8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="rounded-2xl border border-purple-500/20 bg-gradient-to-r from-purple-500/5 to-indigo-500/5 p-5 flex items-center gap-4"
-                >
-                    <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center shrink-0">
-                        <Crown size={18} className="text-purple-600" />
-                    </div>
-                    <div>
-                        <p className="text-[12px] font-black uppercase tracking-widest text-purple-700 mb-0.5">Permanent VIP Access</p>
-                        <p className="text-[12px] text-purple-600/80">Wallet <span className="font-mono">{OWNER_WALLET.slice(0, 8)}...{OWNER_WALLET.slice(-6)}</span> has been granted lifetime, unlimited Archive Prover access.</p>
-                    </div>
-                </motion.div>
-            )}
+            {/* Quotas Section */}
+            <div className="space-y-4">
+                <div className="space-y-1.5">
+                    <h2 className="text-lg font-black text-[#050505]">Network Quotas</h2>
+                    <p className="text-[13px] text-black/50 max-w-3xl">
+                        Within your active plan, usage is constrained by daily limits. Quota is consumed for every Digital Product Passport (DPP) created on the network. Your limits will automatically reset at UTC midnight.
+                    </p>
+                </div>
 
-            {/* Metrics row */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                <MetricCard
-                    icon={Activity}
-                    label="DPPs Today"
-                    value={usage ? usage.todayPassports.toLocaleString() : '0'}
-                    sub={`Daily limit: ${plan.limits.requestsPerDay === -1 ? '∞' : plan.limits.requestsPerDay.toLocaleString()}`}
-                />
-                <MetricCard
-                    icon={Database}
-                    label="Total DPPs"
-                    value={usage ? usage.totalPassports.toLocaleString() : '0'}
-                    sub="All time records"
-                />
-                <MetricCard
-                    icon={Key}
-                    label="API Keys"
-                    value={plan.limits.maxApiKeys === -1 ? '∞' : String(plan.limits.maxApiKeys)}
-                    sub="relay keys"
-                />
-                <MetricCard
-                    icon={TrendingUp}
-                    label="Max Tokens"
-                    value={plan.limits.maxTokens === -1 ? '∞' : String(plan.limits.maxTokens)}
-                    sub="tracked assets"
-                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    {/* DPP Quota Card */}
+                    <div className="rounded-2xl border border-black/5 bg-white p-6 flex flex-col justify-between min-h-[140px]">
+                        <div className="flex items-center gap-2 text-[#050505] mb-6">
+                            <Activity size={16} />
+                            <span className="font-bold text-[14px]">Daily DPP Creation Limit</span>
+                        </div>
+                        
+                        <div className="flex items-end justify-between gap-4">
+                            <div>
+                                <h4 className="text-[14px] font-bold text-[#050505]">Daily Limit</h4>
+                                <p className="text-[12px] text-black/50 mt-1">
+                                    {plan.limits.requestsPerDay === -1 
+                                        ? "You have unlimited DPP creation." 
+                                        : `You have used ${usage?.todayPassports || 0} of your ${plan.limits.requestsPerDay.toLocaleString()} daily passports.`
+                                    }
+                                </p>
+                            </div>
+                            <div className="flex items-center gap-3 shrink-0">
+                                {plan.limits.requestsPerDay === -1 ? (
+                                    <span className="text-xl font-bold text-emerald-600">∞</span>
+                                ) : (
+                                    <>
+                                        <span className="text-[15px] font-bold text-[#050505]">
+                                            {Math.round(((usage?.todayPassports || 0) / plan.limits.requestsPerDay) * 100)}%
+                                        </span>
+                                        <div className="relative flex items-center justify-center w-8 h-8">
+                                            <svg className="transform -rotate-90 w-8 h-8">
+                                                <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="4" fill="transparent" className="text-black/10" />
+                                                <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="4" fill="transparent" 
+                                                    strokeDasharray={2 * Math.PI * 12} 
+                                                    strokeDashoffset={(2 * Math.PI * 12) - (((usage?.todayPassports || 0) / plan.limits.requestsPerDay) * (2 * Math.PI * 12))} 
+                                                    className="text-emerald-500" 
+                                                    strokeLinecap="round" 
+                                                />
+                                            </svg>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* API Keys Quota Card */}
+                    <div className="rounded-2xl border border-black/5 bg-white p-6 flex flex-col justify-between min-h-[140px]">
+                        <div className="flex items-center gap-2 text-[#050505] mb-6">
+                            <Key size={16} />
+                            <span className="font-bold text-[14px]">API Keys Limit</span>
+                        </div>
+                        
+                        <div className="flex items-end justify-between gap-4">
+                            <div>
+                                <h4 className="text-[14px] font-bold text-[#050505]">Total Keys</h4>
+                                <p className="text-[12px] text-black/50 mt-1">
+                                    {plan.limits.maxApiKeys === -1 
+                                        ? "You have unlimited API Keys." 
+                                        : `You can create up to ${plan.limits.maxApiKeys} API relay keys.`
+                                    }
+                                </p>
+                            </div>
+                            <div className="flex items-center gap-3 shrink-0">
+                                {plan.limits.maxApiKeys === -1 ? (
+                                    <span className="text-xl font-bold text-emerald-600">∞</span>
+                                ) : (
+                                    <>
+                                        <span className="text-[15px] font-bold text-[#050505]">
+                                            0%
+                                        </span>
+                                        <div className="relative flex items-center justify-center w-8 h-8">
+                                            <svg className="transform -rotate-90 w-8 h-8">
+                                                <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="4" fill="transparent" className="text-black/10" />
+                                                <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="4" fill="transparent" 
+                                                    strokeDasharray={2 * Math.PI * 12} 
+                                                    strokeDashoffset={2 * Math.PI * 12} 
+                                                    className="text-emerald-500" 
+                                                    strokeLinecap="round" 
+                                                />
+                                            </svg>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
 
             {/* Plan + billing details */}
