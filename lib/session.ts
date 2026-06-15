@@ -139,7 +139,9 @@ export async function getSession(): Promise<SessionPayload | null> {
     const cookieStore = await cookies();
 
     //  Priority 1: SIWE system session 
-    const siweToken = cookieStore.get('human_session')?.value;
+    const whaleSession = cookieStore.get('whale_session')?.value;
+    const humanSession = cookieStore.get('human_session')?.value;
+    const siweToken = whaleSession || humanSession;
     if (siweToken) {
         try {
             const { verifyJWT } = await import('@/lib/jwt');
