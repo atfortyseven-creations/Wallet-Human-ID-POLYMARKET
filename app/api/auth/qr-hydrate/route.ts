@@ -27,7 +27,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'JWT payload missing valid address' }, { status: 400 });
     }
 
-    const cookieDomain = process.env.NODE_ENV === 'production' ? 'humanidfi.com' : undefined;
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || '';
+    const cookieDomain = (process.env.NODE_ENV === 'production' && appUrl)
+        ? (() => { try { return new URL(appUrl).hostname; } catch { return undefined; } })()
+        : undefined;
 
     const secureCookieBase = {
       httpOnly: true,
