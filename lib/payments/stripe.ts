@@ -15,16 +15,16 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_dummy
  */
 export const PRICE_IDS: Record<string, Record<string, string>> = {
   MONTHLY: {
-    LIGHT_NODE: process.env.STRIPE_STANDARD_PRICE_ID_MO || 'prod_UVQSatw61ksVah',
-    FREE:     'prod_UVQPgIwLPGfUiY', // Basic Free (No payment required, but mapped for structural consistency if needed)
-    FULL_NODE:  process.env.STRIPE_STARTER_PRICE_ID_MO  || process.env.STRIPE_PRICE_STARTER  || 'prod_UVQSatw61ksVah',
-    ARCHIVE_PROVER:    process.env.STRIPE_ELITE_PRICE_ID_MO    || process.env.STRIPE_PRICE_INSTITUTIONAL || 'prod_UVQSatw61ksVah',
+    LIGHT_NODE: 'prod_Ui1lTChYcr2ZPD',
+    FREE:     'prod_UVQPgIwLPGfUiY', // Basic Free
+    FULL_NODE:  'prod_Ui1niXKGGBjJap',
+    ARCHIVE_PROVER: 'prod_Ui1paRrFjq4Cig',
   },
   ANNUAL: {
-    LIGHT_NODE: process.env.STRIPE_STANDARD_PRICE_ID_YR || 'prod_UVQSatw61ksVah',
+    LIGHT_NODE: 'prod_Ui1lTChYcr2ZPD',
     FREE:     'prod_UVQPgIwLPGfUiY',
-    FULL_NODE:  process.env.STRIPE_STARTER_PRICE_ID_YR  || process.env.STRIPE_PRICE_STARTER  || 'prod_UVQSatw61ksVah',
-    ARCHIVE_PROVER:    process.env.STRIPE_ELITE_PRICE_ID_YR    || process.env.STRIPE_PRICE_INSTITUTIONAL || 'prod_UVQSatw61ksVah',
+    FULL_NODE:  'prod_Ui1niXKGGBjJap',
+    ARCHIVE_PROVER: 'prod_Ui1paRrFjq4Cig',
   }
 };
 
