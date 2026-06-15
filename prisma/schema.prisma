@@ -184,7 +184,7 @@ model User {
   watchedWallets     WatchedWallet[]
   exchangePositions  ExchangePosition[]
 
-  // System Credits & Humanity Ledger (SaaS V4.0)
+  // System Credits & Humanity Ledger (Node V4.0)
   creditsBalance     Int             @default(2500)
   humanityScore      Int             @default(0)
   creditLedgers      CreditLedger[]
@@ -350,7 +350,7 @@ model ExchangePosition {
 }
 
 // 
-// SAAS SUBSCRIPTIONS & STRIPE
+// NODE SUBSCRIPTIONS & STRIPE
 // FIX: Missing Subscription model referenced by Stripe webhooks
 // 
 model Subscription {

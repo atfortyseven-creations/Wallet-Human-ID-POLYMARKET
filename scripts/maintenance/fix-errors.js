@@ -99,7 +99,7 @@ for (const file of filesToFix) {
   }
   
   if (file.includes('lib/redis/rate-limiter.ts')) {
-      newContent = newContent.replace(/const planConfig = SAAS_PLANS\[tier\];/g, 'const planConfig = SAAS_PLANS[tier as PlanTier] || SAAS_PLANS["whale"];');
+      newContent = newContent.replace(/const planConfig = NODE_TIERS\[tier\];/g, 'const planConfig = NODE_TIERS[tier as PlanTier] || NODE_TIERS["whale"];');
   }
 
   if (file.includes('lib/services/DilutionService.ts')) {

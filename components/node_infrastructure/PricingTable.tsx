@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, X, Shield, Zap, Globe, Database, ArrowRight } from 'lucide-react';
-import { SAAS_PLANS, PlanTier } from '@/lib/saas/plans';
+import { NODE_TIERS, PlanTier } from '@/lib/node_infrastructure/tiers';
 import { Button } from '@/components/ui/button';
 import { useAccount } from 'wagmi';
 
@@ -46,10 +46,10 @@ export function PricingTable() {
 
     // Get ordered plans skipping FREE
     const plansToShow = [
-        SAAS_PLANS[PlanTier.STANDARD],
-        SAAS_PLANS[PlanTier.STARTER],
-        SAAS_PLANS[PlanTier.PRO],
-        SAAS_PLANS[PlanTier.ELITE],
+        NODE_TIERS[PlanTier.LIGHT_NODE],
+        NODE_TIERS[PlanTier.FULL_NODE],
+        NODE_TIERS[PlanTier.FULL_NODE],
+        NODE_TIERS[PlanTier.ARCHIVE_PROVER],
     ];
 
     return (
@@ -75,8 +75,8 @@ export function PricingTable() {
             {/* Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {plansToShow.map((plan, idx) => {
-                    const isPro = plan.tier === PlanTier.PRO;
-                    const isInst = plan.tier === PlanTier.ELITE;
+                    const isPro = plan.tier === PlanTier.FULL_NODE;
+                    const isInst = plan.tier === PlanTier.ARCHIVE_PROVER;
                     
                     return (
                         <motion.div

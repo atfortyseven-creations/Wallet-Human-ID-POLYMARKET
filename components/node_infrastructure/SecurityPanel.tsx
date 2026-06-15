@@ -2,11 +2,11 @@
 
 import { motion } from 'framer-motion';
 import { ShieldAlert, Network, Lock, Info, Server } from 'lucide-react';
-import { SAAS_PLANS } from '@/lib/saas/plans';
+import { NODE_TIERS } from '@/lib/node_infrastructure/tiers';
 import { Button } from '@/components/ui/button';
 
 export function SecurityPanel({ tier }: { tier: string }) {
-    const config = SAAS_PLANS[tier as keyof typeof SAAS_PLANS];
+    const config = NODE_TIERS[tier as keyof typeof NODE_TIERS];
     const isPremium = config.features.ipWhitelist || config.features.hmacRequired;
 
     if (!isPremium) {

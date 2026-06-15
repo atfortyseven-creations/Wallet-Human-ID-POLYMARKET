@@ -13,7 +13,7 @@ import { useAztecStateSync } from '@/hooks/useAztecStateSync';
 
 // --- Static Imports ---
 import { GoldTicketPanel } from '@/components/dashboard/GoldTicketPanel';
-import { PricingTable } from '@/components/saas/PricingTable';
+import { PricingTable } from '@/components/node_infrastructure/PricingTable';
 
 // --- Dynamic Module Registry ---
 const LoadingPanel = () => (

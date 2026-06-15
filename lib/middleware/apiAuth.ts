@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../prisma';
 import { RedisRateLimiter } from '../redis/rate-limiter';
-import { SAAS_PLANS, PlanTier } from '../saas/plans';
+import { NODE_TIERS, PlanTier } from '../node/plans';
 import * as crypto from 'crypto';
 
 /** Safely coerce an arbitrary string to a PlanTier enum value, defaulting to FREE. */
@@ -24,7 +24,7 @@ export interface ApiAuthResult {
 }
 
 /**
- * Universal Access Control Middleware for SaaS API Endpoints
+ * Universal Access Control Middleware for Node API Endpoints
  * 1. API Key Auth
  * 2. IP Whitelisting (Pro/Elite)
  * 3. HMAC Signature Validation (Pro/Elite)
@@ -53,7 +53,7 @@ export async function withApiAuth(
   }
 
   const userTier = toPlanTier(apiKeyRecord.plan);
-  const planConfig = SAAS_PLANS[userTier];
+  const planConfig = NODE_TIERS[userTier];
 
   // 4. Rate Limiting via Redis
   const rateLimitResult = await RedisRateLimiter.check(apiKeyRecord.id, userTier);

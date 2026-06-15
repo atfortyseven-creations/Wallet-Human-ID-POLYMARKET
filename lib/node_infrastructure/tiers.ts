@@ -1,9 +1,8 @@
 export enum PlanTier {
   FREE = "FREE",
-  STANDARD = "STANDARD",
-  STARTER = "STARTER",
-  PRO = "PRO",
-  ELITE = "ELITE"
+  LIGHT_NODE = "LIGHT_NODE",
+  FULL_NODE = "FULL_NODE",
+  ARCHIVE_PROVER = "ARCHIVE_PROVER"
 }
 
 export interface PlanConfig {
@@ -28,13 +27,12 @@ export interface PlanConfig {
         darkPoolDetection: boolean;
         csvExport: boolean;
     };
-    // The exact token list if limited
     allowedTokens?: string[];
 }
 
-export const SAAS_PLANS: Record<PlanTier, PlanConfig> = {
+export const NODE_TIERS: Record<PlanTier, PlanConfig> = {
     [PlanTier.FREE]: {
-        name: 'Free',
+        name: 'Free Node',
         tier: PlanTier.FREE,
         priceMetrics: { monthly: 0, annual: 0 },
         limits: {
@@ -54,56 +52,14 @@ export const SAAS_PLANS: Record<PlanTier, PlanConfig> = {
         },
         allowedTokens: ['BTC']
     },
-    [PlanTier.STANDARD]: {
-        name: 'Standard',
-        tier: PlanTier.STANDARD,
-        priceMetrics: { monthly: 15, annual: 144 },
+    [PlanTier.LIGHT_NODE]: {
+        name: 'Light Node',
+        tier: PlanTier.LIGHT_NODE,
+        priceMetrics: { monthly: 4995, annual: 49950 },
         limits: {
-            requestsPerDay: 5000,
-            maxApiKeys: 1,
-            maxTokens: 3,
-            dataWindowHours: 12,
-        },
-        features: {
-            webSockets: false,
-            fixProtocol: false,
-            hmacRequired: false,
-            ipWhitelist: false,
-            heikinAshiSignals: false,
-            darkPoolDetection: false,
-            csvExport: false,
-        },
-        allowedTokens: ['BTC', 'ETH', 'BNB']
-    },
-    [PlanTier.STARTER]: {
-        name: 'Starter',
-        tier: PlanTier.STARTER,
-        priceMetrics: { monthly: 130, annual: 1300 },
-        limits: {
-            requestsPerDay: 10000,
-            maxApiKeys: 1,
-            maxTokens: 5,
-            dataWindowHours: 24,
-        },
-        features: {
-            webSockets: false,
-            fixProtocol: false,
-            hmacRequired: false,
-            ipWhitelist: false,
-            heikinAshiSignals: false,
-            darkPoolDetection: false,
-            csvExport: false,
-        },
-        allowedTokens: ['BTC', 'ETH', 'BNB', 'SOL', 'XRP']
-    },
-    [PlanTier.PRO]: {
-        name: 'Pro',
-        tier: PlanTier.PRO,
-        priceMetrics: { monthly: 350, annual: 3500 },
-        limits: {
-            requestsPerDay: 500000,
+            requestsPerDay: 50000,
             maxApiKeys: 3,
-            maxTokens: 24,
+            maxTokens: 5,
             dataWindowHours: 720, // 30 days
         },
         features: {
@@ -111,20 +67,42 @@ export const SAAS_PLANS: Record<PlanTier, PlanConfig> = {
             fixProtocol: false,
             hmacRequired: true,
             ipWhitelist: true,
+            heikinAshiSignals: false,
+            darkPoolDetection: false,
+            csvExport: true,
+        },
+        allowedTokens: ['BTC', 'ETH']
+    },
+    [PlanTier.FULL_NODE]: {
+        name: 'Full Node',
+        tier: PlanTier.FULL_NODE,
+        priceMetrics: { monthly: 14995, annual: 149950 },
+        limits: {
+            requestsPerDay: 500000,
+            maxApiKeys: 10,
+            maxTokens: 20,
+            dataWindowHours: 8760, // 1 year
+        },
+        features: {
+            webSockets: true,
+            fixProtocol: true,
+            hmacRequired: true,
+            ipWhitelist: true,
             heikinAshiSignals: true,
             darkPoolDetection: true,
-            csvExport: false,
-        }
+            csvExport: true,
+        },
+        allowedTokens: ['BTC', 'ETH', 'SOL', 'BNB']
     },
-    [PlanTier.ELITE]: {
-        name: 'Elite',
-        tier: PlanTier.ELITE,
-        priceMetrics: { monthly: 950, annual: 9500 },
+    [PlanTier.ARCHIVE_PROVER]: {
+        name: 'Archive Prover',
+        tier: PlanTier.ARCHIVE_PROVER,
+        priceMetrics: { monthly: 24995, annual: 249950 },
         limits: {
             requestsPerDay: -1, // Unlimited
-            maxApiKeys: 10,
+            maxApiKeys: 50,
             maxTokens: -1,
-            dataWindowHours: 8760, // 1 year
+            dataWindowHours: -1, // Unlimited
         },
         features: {
             webSockets: true,
@@ -138,14 +116,10 @@ export const SAAS_PLANS: Record<PlanTier, PlanConfig> = {
     }
 };
 
-/**
- * Validates if a token is accessible under the given plan tier
- */
 export function isTokenAllowed(tier: PlanTier, symbol: string): boolean {
-    const config = SAAS_PLANS[tier];
+    const config = NODE_TIERS[tier];
     if (config.limits.maxTokens === -1 || !config.allowedTokens) {
         return true;
     }
     return config.allowedTokens.includes(symbol.toUpperCase());
 }
-

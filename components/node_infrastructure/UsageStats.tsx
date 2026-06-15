@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Activity, Zap } from 'lucide-react';
-import { SAAS_PLANS } from '@/lib/saas/plans';
+import { NODE_TIERS } from '@/lib/node_infrastructure/tiers';
 
 type Stats = {
     dailyRequests: number;
@@ -10,7 +10,7 @@ type Stats = {
 };
 
 export function UsageStats({ tier, stats }: { tier: string; stats: Stats }) {
-    const config = SAAS_PLANS[tier as keyof typeof SAAS_PLANS];
+    const config = NODE_TIERS[tier as keyof typeof NODE_TIERS];
     const limit = config.limits.requestsPerDay;
     const isUnlimited = limit === -1;
     

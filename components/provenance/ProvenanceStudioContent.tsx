@@ -32,7 +32,7 @@ import {
 import { useAccount } from 'wagmi';
 import { passportPublicUrl } from '@/lib/scan/parseScanPayload';
 import type { ProductPassportPublic } from '@/lib/passport/types';
-import { SAAS_PLANS, PlanTier } from '@/lib/saas/plans';
+import { NODE_TIERS, PlanTier } from '@/lib/node_infrastructure/tiers';
 
 /* ─────────────────────────────────────────────
    CONSTANTS
@@ -1010,10 +1010,10 @@ function BillingTab() {
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
 
   const plansToShow = [
-    SAAS_PLANS[PlanTier.STANDARD],
-    SAAS_PLANS[PlanTier.STARTER],
-    SAAS_PLANS[PlanTier.PRO],
-    SAAS_PLANS[PlanTier.ELITE],
+    NODE_TIERS[PlanTier.LIGHT_NODE],
+    NODE_TIERS[PlanTier.FULL_NODE],
+    NODE_TIERS[PlanTier.FULL_NODE],
+    NODE_TIERS[PlanTier.ARCHIVE_PROVER],
   ];
 
   const handleSubscription = async (tier: string) => {
@@ -1078,8 +1078,8 @@ function BillingTab() {
       {/* Plans grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {plansToShow.map((plan) => {
-          const isElite = plan.tier === PlanTier.ELITE;
-          const isPro = plan.tier === PlanTier.PRO;
+          const isElite = plan.tier === PlanTier.ARCHIVE_PROVER;
+          const isPro = plan.tier === PlanTier.FULL_NODE;
           return (
             <div
               key={plan.tier}

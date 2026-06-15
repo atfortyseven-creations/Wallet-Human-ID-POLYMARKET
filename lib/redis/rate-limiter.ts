@@ -1,5 +1,5 @@
 import { redisClient } from '../redis/client';
-import { SAAS_PLANS, PlanTier } from '../saas/plans';
+import { NODE_TIERS, PlanTier } from '../node/plans';
 
 /** Safely coerce string to PlanTier, defaulting to FREE. */
 function toPlanTier(raw: string): PlanTier {
@@ -21,7 +21,7 @@ export class RedisRateLimiter {
     tier: string = 'FREE'
   ): Promise<{ success: boolean; current: number; limit: number; remaining: number }> {
     
-    const config = SAAS_PLANS[toPlanTier(tier)];
+    const config = NODE_TIERS[toPlanTier(tier)];
     const limit = config.limits.requestsPerDay;
     const windowSeconds = 86400; // 24 hours sliding window
 

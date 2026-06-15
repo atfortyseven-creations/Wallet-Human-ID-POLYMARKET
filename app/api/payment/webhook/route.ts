@@ -135,7 +135,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // --- SaaS V4.0 System Credits Integration ---
+    // --- Node V4.0 System Credits Integration ---
     if (dbUser) {
        const creditsToAdd = planId.toLowerCase() === 'elite' ? 30000 : 8000;
        await db.user.update({
@@ -152,7 +152,7 @@ export async function POST(req: NextRequest) {
            userId: dbUser.id,
            amount: creditsToAdd,
            action: 'STRIPE_SUBSCRIPTION_ACTIVATION',
-           description: `SaaS V4.0 ${planId.toUpperCase()} Tier Activation`
+           description: `Node V4.0 ${planId.toUpperCase()} Tier Activation`
          }
        });
     }
@@ -223,7 +223,7 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      // --- SaaS V4.0 System Credits Renewal ---
+      // --- Node V4.0 System Credits Renewal ---
       const dbUser = await db.user.findFirst({ where: { walletAddress: systemUserId } });
       if (dbUser) {
         const planId = stripeSub.metadata?.plan_id || 'pro';
@@ -237,7 +237,7 @@ export async function POST(req: NextRequest) {
             userId: dbUser.id,
             amount: creditsToAdd,
             action: 'STRIPE_SUBSCRIPTION_RENEWAL',
-            description: `SaaS V4.0 ${planId.toUpperCase()} Tier Monthly Renewal`
+            description: `Node V4.0 ${planId.toUpperCase()} Tier Monthly Renewal`
           }
         });
       }
@@ -276,7 +276,7 @@ export async function POST(req: NextRequest) {
         data: { status: 'CANCELLED', updatedAt: new Date() },
       });
 
-      // --- SaaS V4.0 System Downgrade ---
+      // --- Node V4.0 System Downgrade ---
       const dbUser = await db.user.findFirst({ where: { walletAddress: systemId } });
       if (dbUser) {
         await db.user.update({

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { stripe, PRICE_IDS } from '@/lib/payments/stripe';
 import { prisma } from '@/lib/prisma';
 import { validateSecureRequest } from '@/lib/security/premium-security';
-import { SAAS_PLANS, PlanTier } from '@/lib/saas/plans';
+import { NODE_TIERS, PlanTier } from '@/lib/node_infrastructure/tiers';
 
 /**
  * Elite Checkout Tunnel
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Stripe price not configured for this plan. Contact support.' }, { status: 503 });
         }
 
-        const planConfig = SAAS_PLANS[tier];
+        const planConfig = NODE_TIERS[tier];
         if (!planConfig) {
             return NextResponse.json({ error: 'Plan configuration not found' }, { status: 400 });
         }

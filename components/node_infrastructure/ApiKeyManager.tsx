@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Key, Plus, Trash2, Shield, Eye, EyeOff, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { SAAS_PLANS } from '@/lib/saas/plans';
+import { NODE_TIERS } from '@/lib/node_infrastructure/tiers';
 
 // Types for the UI
 type ApiKey = {
@@ -16,8 +16,8 @@ type ApiKey = {
     lastUsedAt: string | null;
 };
 
-export function ApiKeyManager({ tier, keys }: { tier: keyof typeof SAAS_PLANS; keys: ApiKey[] }) {
-    const config = SAAS_PLANS[tier as keyof typeof SAAS_PLANS];
+export function ApiKeyManager({ tier, keys }: { tier: keyof typeof NODE_TIERS; keys: ApiKey[] }) {
+    const config = NODE_TIERS[tier as keyof typeof NODE_TIERS];
     const maxKeys = config.limits.maxApiKeys;
     const canCreate = keys.length < maxKeys;
 

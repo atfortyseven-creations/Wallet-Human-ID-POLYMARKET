@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { withApiAuth, withRateLimitHeaders } from '@/lib/middleware/apiAuth';
-import { isTokenAllowed, PlanTier } from '@/lib/saas/plans';
+import { isTokenAllowed, PlanTier } from '@/lib/node_infrastructure/tiers';
 import { prisma } from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {

@@ -254,7 +254,7 @@ For institutions requiring formal compliance, **selective disclosure** is suppor
 
 ## 9. Portfolio — On-Chain Execution Vectors
 
-The portfolio interface rejects iframe-based SaaS chokepoints and connects natively to decentralized protocols:
+The portfolio interface rejects iframe-based Node chokepoints and connects natively to decentralized protocols:
 
 - **Swaps:** Routed directly through Uniswap V2/V3 smart contracts via Ethers.js. No intermediary.
 - **Bridging:** Cross-chain capital leverages LayerZero Omnichain messaging for guaranteed finality.
@@ -412,7 +412,7 @@ Critical vulnerabilities (fund loss or user deanonymization) are eligible for up
 
 | Dimension | Nansen / Arkham | Whale Alert Network |
 |---|---|---|
-| Data Custody | Cloud SaaS (your data on their servers) | Local-first (your data stays on your hardware) |
+| Data Custody | Cloud Node (your data on their servers) | Local-first (your data stays on your hardware) |
 | Latency | 15–120 seconds | 8–90ms average |
 | Source Exposure | Query patterns stored server-side | Zero-trust; queries run locally |
 | Pricing | $500–$2,500/month | Self-hosted (infrastructure costs only) |

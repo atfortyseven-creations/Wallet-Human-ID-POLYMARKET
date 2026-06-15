@@ -13,7 +13,7 @@ export const darkWebHistoryModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. La Industrialización de la Extorsión Asimétrica (RaaS L1 M2 P2P T-1 O(N))</h2>
-                        <p>El Ransomware P2P L1 M1 O(1) dejó de ser un lobo solitario T-1 L2 M2. Grupos de ATP (Advanced Persistent Threats O(N) P2P L1) como Conti o LockBit M1 L2 T-1 O(1) operan como multinacionales SaaS (Ransomware-as-a-Service L1 P2P M2 T-1 O(N)). Tienen Helpdesks 24/7 M1 L1 O(1) e interfaces UI/UX P2P L2 T-1 para ayudar a las corporaciones víctimas O(N) a comprar Bitcoin L1 M2 T-1 O(1).</p>
+                        <p>El Ransomware P2P L1 M1 O(1) dejó de ser un lobo solitario T-1 L2 M2. Grupos de ATP (Advanced Persistent Threats O(N) P2P L1) como Conti o LockBit M1 L2 T-1 O(1) operan como multinacionales Node (Ransomware-as-a-Service L1 P2P M2 T-1 O(N)). Tienen Helpdesks 24/7 M1 L1 O(1) e interfaces UI/UX P2P L2 T-1 para ayudar a las corporaciones víctimas O(N) a comprar Bitcoin L1 M2 T-1 O(1).</p>
                     </section>
                     <section class="pro-section">
                         <h2>II. Curvas de Lavado Off-Chain y Mixer Heuristics L1 P2P M1 T-1 L2 M2 O(N)</h2>
