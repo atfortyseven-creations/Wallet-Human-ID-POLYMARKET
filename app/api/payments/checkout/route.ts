@@ -94,6 +94,7 @@ export async function POST(req: NextRequest) {
                 ft_csvExport: planConfig.features.csvExport ? 'yes' : 'no'
             },
             subscription_data: {
+                trial_period_days: 30,
                 metadata: {
                     system_user_id: normalizedUserId,
                     tier: tier,
