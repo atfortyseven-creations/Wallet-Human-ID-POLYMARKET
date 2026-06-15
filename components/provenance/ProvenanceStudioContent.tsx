@@ -25,10 +25,14 @@ import {
   ChevronUp,
   AlertCircle,
   RefreshCw,
+  CreditCard,
+  ArrowRight,
+  X,
 } from 'lucide-react';
 import { useAccount } from 'wagmi';
 import { passportPublicUrl } from '@/lib/scan/parseScanPayload';
 import type { ProductPassportPublic } from '@/lib/passport/types';
+import { SAAS_PLANS, PlanTier } from '@/lib/saas/plans';
 
 /* ─────────────────────────────────────────────
    CONSTANTS
@@ -38,7 +42,7 @@ const EXPLORER_BASE = 'https://testnet.aztecscan.xyz/tx/';
 /* ─────────────────────────────────────────────
    TYPES
 ───────────────────────────────────────────── */
-type Tab = 'create' | 'registry' | 'aztec';
+type Tab = 'create' | 'registry' | 'aztec' | 'billing';
 
 /* ─────────────────────────────────────────────
    UTILITIES
@@ -998,6 +1002,168 @@ function AztecTab() {
 }
 
 /* ─────────────────────────────────────────────
+   TAB: BILLING / SUBSCRIPTION
+───────────────────────────────────────────── */
+function BillingTab() {
+  const { address, isConnected } = useAccount();
+  const [isAnnual, setIsAnnual] = useState(false);
+  const [loadingTier, setLoadingTier] = useState<string | null>(null);
+
+  const plansToShow = [
+    SAAS_PLANS[PlanTier.STANDARD],
+    SAAS_PLANS[PlanTier.STARTER],
+    SAAS_PLANS[PlanTier.PRO],
+    SAAS_PLANS[PlanTier.ELITE],
+  ];
+
+  const handleSubscription = async (tier: string) => {
+    if (!isConnected) {
+      alert('Connect your wallet to subscribe.');
+      return;
+    }
+    setLoadingTier(tier);
+    try {
+      const response = await fetch('/api/payments/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tier, userId: address, isAnnual }),
+      });
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.error || 'Failed to start checkout');
+      }
+    } catch (error: any) {
+      alert(`Checkout error: ${error.message}`);
+    } finally {
+      setLoadingTier(null);
+    }
+  };
+
+  return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="rounded-2xl border border-black/10 bg-white p-6">
+        <div className="flex items-center gap-2 mb-1">
+          <CreditCard size={16} className="text-black/40" />
+          <p className="text-[10px] font-black uppercase tracking-widest text-black/40">Subscription</p>
+        </div>
+        <h2 className="text-xl font-black tracking-tight text-[#050505] mb-2">Manage your plan</h2>
+        <p className="text-sm text-black/50 leading-relaxed">
+          Select the plan that fits your needs. All plans include REST API access and a 30-day free trial.
+        </p>
+      </div>
+
+      {/* Billing toggle */}
+      <div className="flex items-center gap-4">
+        <span className={`text-xs font-black uppercase tracking-widest ${!isAnnual ? 'text-[#050505]' : 'text-black/30'}`}>Monthly</span>
+        <button
+          type="button"
+          onClick={() => setIsAnnual(!isAnnual)}
+          className="w-12 h-6 bg-black/10 rounded-full relative border border-black/10 transition-all hover:border-black/30"
+        >
+          <div
+            className={`w-6 h-6 absolute top-[-1px] left-[-1px] bg-[#050505] rounded-full transition-transform duration-200 ${
+              isAnnual ? 'translate-x-6' : 'translate-x-0'
+            }`}
+          />
+        </button>
+        <span className={`text-xs font-black uppercase tracking-widest flex items-center gap-2 ${isAnnual ? 'text-[#050505]' : 'text-black/30'}`}>
+          Annual
+          <span className="text-[9px] bg-black/5 text-black/50 px-2 py-0.5 rounded-full border border-black/10">Save 20%</span>
+        </span>
+      </div>
+
+      {/* Plans grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {plansToShow.map((plan) => {
+          const isElite = plan.tier === PlanTier.ELITE;
+          const isPro = plan.tier === PlanTier.PRO;
+          return (
+            <div
+              key={plan.tier}
+              className={`relative rounded-2xl border p-6 flex flex-col gap-4 bg-white transition-all ${
+                isElite
+                  ? 'border-[#050505] shadow-[0_2px_20px_rgba(0,0,0,0.08)]'
+                  : 'border-black/10 hover:border-black/20'
+              }`}
+            >
+              {isElite && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#050505] text-white px-4 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">
+                  Maximum Power
+                </div>
+              )}
+              {isPro && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-black/10 text-[#050505] px-4 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border border-black/10">
+                  Most Popular
+                </div>
+              )}
+
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-black/40 mb-1">{plan.name}</p>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-3xl font-black text-[#050505] tracking-tight">
+                    {isAnnual ? plan.priceMetrics.annual : plan.priceMetrics.monthly}
+                  </span>
+                  <span className="text-[10px] text-black/30 font-mono uppercase">/ {isAnnual ? 'yr' : 'mo'}</span>
+                </div>
+              </div>
+
+              <div className="space-y-2 flex-1">
+                {[
+                  ['Daily Requests', plan.limits.requestsPerDay === -1 ? 'Unlimited' : plan.limits.requestsPerDay.toLocaleString()],
+                  ['Max Tokens', plan.limits.maxTokens === -1 ? 'All' : String(plan.limits.maxTokens)],
+                  ['API Keys', String(plan.limits.maxApiKeys)],
+                  ['Data History', plan.limits.dataWindowHours >= 720 ? `${plan.limits.dataWindowHours / 24 / 30} months` : `${plan.limits.dataWindowHours} hours`],
+                ].map(([label, value]) => (
+                  <div key={label} className="flex justify-between items-center text-[12px] py-1 border-b border-black/5">
+                    <span className="text-black/50">{label}</span>
+                    <span className="font-mono font-medium text-[#050505]">{value}</span>
+                  </div>
+                ))}
+                <div className="pt-2 space-y-1.5">
+                  {[
+                    ['WebSockets', plan.features.webSockets],
+                    ['FIX Protocol', plan.features.fixProtocol],
+                    ['Dark Pool Detection', plan.features.darkPoolDetection],
+                    ['CSV Export', plan.features.csvExport],
+                  ].map(([label, active]) => (
+                    <div key={String(label)} className={`flex items-center gap-2 text-[11px] ${active ? 'text-[#050505]' : 'text-black/20'}`}>
+                      {active
+                        ? <Check size={11} className="text-[#050505]" />
+                        : <X size={11} className="text-black/20" />}
+                      {label}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                onClick={() => handleSubscription(plan.tier)}
+                disabled={loadingTier === plan.tier}
+                className={`w-full py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-between px-5 ${
+                  isElite
+                    ? 'bg-[#050505] text-white hover:bg-[#222]'
+                    : 'bg-black/5 text-[#050505] hover:bg-black/10 border border-black/10'
+                }`}
+              >
+                <span>{loadingTier === plan.tier ? 'Launching...' : isElite ? 'Get Elite' : 'Select Plan'}</span>
+                <ArrowRight size={14} />
+              </button>
+            </div>
+          );
+        })}
+      </div>
+
+      <p className="text-[10px] text-black/30 text-center">
+        All plans include a 30-day free trial. No charge until the trial ends.
+      </p>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
    MAIN EXPORT
 ───────────────────────────────────────────── */
 export function ProvenanceStudioContent({
@@ -1014,6 +1180,7 @@ export function ProvenanceStudioContent({
     { id: 'create', label: 'Create', icon: <Plus size={13} /> },
     { id: 'registry', label: 'All Records', icon: <LayoutList size={13} /> },
     { id: 'aztec', label: 'Aztec Network', icon: null },
+    { id: 'billing', label: 'Subscription', icon: <CreditCard size={13} /> },
   ];
 
   const handleCreated = (passport: ProductPassportPublic) => {
@@ -1097,6 +1264,7 @@ export function ProvenanceStudioContent({
           <RegistryTab isMobile={isMobile} refreshKey={registryRefreshKey} />
         )}
         {activeTab === 'aztec' && <AztecTab />}
+        {activeTab === 'billing' && <BillingTab />}
       </div>
     </div>
   );
