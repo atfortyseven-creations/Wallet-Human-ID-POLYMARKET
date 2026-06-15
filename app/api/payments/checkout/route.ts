@@ -118,7 +118,6 @@ export async function POST(req: NextRequest) {
 
         // Create Stripe Checkout Session payload
         const sessionPayload: any = {
-            managed_payments: { enabled: true },
             line_items: [
                 {
                     price: priceId,

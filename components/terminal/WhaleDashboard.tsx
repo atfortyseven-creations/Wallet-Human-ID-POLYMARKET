@@ -62,7 +62,7 @@ const RouteRenderer = React.memo(({ route, reconciliationKey, mutateRoute }: Rou
         'privacy': <Registry.SessionLogsPanel />,
         'logs': <Registry.SessionLogsPanel />,
         // [REMOVED] billing tab replaced by dashboard
-        'dashboard': <SubscriptionDashboard onUpgrade={() => mutateRoute('node-allocation')} />,
+        'dashboard': <SubscriptionDashboard />,
         'node-allocation': (
             <div className="w-full h-full overflow-y-auto p-4 md:p-8 bg-[#050505]">
                 <PricingTable />

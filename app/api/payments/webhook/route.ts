@@ -68,6 +68,22 @@ export async function POST(req: NextRequest) {
                     }
                 });
 
+                // Save Invoice Transaction
+                const amountTotal = session.amount_total || 0;
+                await prisma.transaction.upsert({
+                    where: { txHash: session.id },
+                    update: { status: 'CONFIRMED' },
+                    create: {
+                        txHash: session.id,
+                        type: 'SUBSCRIPTION_PAYMENT',
+                        status: 'CONFIRMED',
+                        amount: amountTotal,
+                        token: 'USD',
+                        fromAddress: finalUserId,
+                        toAddress: 'WhaleNetwork'
+                    }
+                });
+
                 const stripeCustomerId = session.customer as string;
                 const stripeSubscriptionId = session.subscription as string;
 
@@ -196,6 +212,22 @@ export async function POST(req: NextRequest) {
                         await prisma.user.updateMany({
                             where: { walletAddress: { equals: subUserId, mode: 'insensitive' } },
                             data: { tier: tier }
+                        });
+                        
+                        // Save Invoice Transaction
+                        const amountPaid = invoice.amount_paid || 0;
+                        await prisma.transaction.upsert({
+                            where: { txHash: invoice.id },
+                            update: { status: 'CONFIRMED' },
+                            create: {
+                                txHash: invoice.id,
+                                type: 'SUBSCRIPTION_PAYMENT',
+                                status: 'CONFIRMED',
+                                amount: amountPaid,
+                                token: 'USD',
+                                fromAddress: subUserId,
+                                toAddress: 'WhaleNetwork'
+                            }
                         });
                     }
                 } catch (e) {

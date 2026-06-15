@@ -130,15 +130,6 @@ function ManageButton({ tier, onUpgrade }: { tier: string; onUpgrade: () => void
 
     return (
         <div className="flex gap-3 flex-wrap">
-            {tier !== 'FREE' && tier !== 'ARCHIVE_PROVER' && (
-                <button
-                    onClick={onUpgrade}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#050505] text-white text-[10px] font-black uppercase tracking-widest hover:bg-black/80 active:scale-[0.98] transition-all"
-                >
-                    <Zap size={12} />
-                    Upgrade Plan
-                </button>
-            )}
             <button
                 onClick={openPortal}
                 disabled={loading}
@@ -170,7 +161,7 @@ function InvoiceRow({ tx }: { tx: { id: string; amount: number; timestamp: strin
 }
 
 // ── Main Component ─────────────────────────────────────────────────────────────
-export function SubscriptionDashboard({ onUpgrade }: { onUpgrade: () => void }) {
+export function SubscriptionDashboard() {
     const { address } = useSystemAccount();
     const [session, setSession] = useState<SessionData | null>(null);
     const [loading, setLoading] = useState(true);
@@ -216,7 +207,7 @@ export function SubscriptionDashboard({ onUpgrade }: { onUpgrade: () => void }) 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
-                body: JSON.stringify({ tier, isAnnual: false }),
+                body: JSON.stringify({ tier, isAnnual: false, userId: address }),
             });
             const data = await response.json();
             if (data.url) window.location.href = data.url;
@@ -383,47 +374,12 @@ export function SubscriptionDashboard({ onUpgrade }: { onUpgrade: () => void }) 
 
                     {!isOwner && (
                         <div className="pt-2">
-                            <ManageButton tier={tierKey} onUpgrade={onUpgrade} />
+                            <ManageButton tier={tierKey} onUpgrade={() => {}} />
                         </div>
                     )}
                 </div>
             </div>
 
-            {/* Upgrade teaser (shown if not on top plan) */}
-            {!isOwner && tierKey !== PlanTier.ARCHIVE_PROVER && (
-                <div className="rounded-2xl border border-black/8 bg-white p-6">
-                    <div className="flex items-center gap-2 mb-4">
-                        <Globe size={13} className="text-black/40" />
-                        <p className="text-[10px] font-black uppercase tracking-widest text-black/40">Available Upgrades</p>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        {[PlanTier.LIGHT_NODE, PlanTier.FULL_NODE, PlanTier.ARCHIVE_PROVER]
-                            .filter(t => {
-                                const order = [PlanTier.FREE, PlanTier.LIGHT_NODE, PlanTier.FULL_NODE, PlanTier.ARCHIVE_PROVER];
-                                return order.indexOf(t) > order.indexOf(tierKey);
-                            })
-                            .map(t => {
-                                const p = NODE_TIERS[t];
-                                return (
-                                    <button
-                                        key={t}
-                                        onClick={() => handleSubscription(t)}
-                                        disabled={loadingTier === t}
-                                        className={`relative rounded-xl border p-4 text-left hover:border-black/25 hover:shadow-sm active:scale-[0.98] transition-all ${t === PlanTier.ARCHIVE_PROVER ? 'border-[#050505] bg-[#050505] text-white' : 'border-black/10 bg-white text-[#050505]'}`}
-                                    >
-                                        <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${t === PlanTier.ARCHIVE_PROVER ? 'text-white/60' : 'text-black/40'}`}>{p.name}</p>
-                                        <p className={`text-xl font-black mb-3 ${t === PlanTier.ARCHIVE_PROVER ? 'text-white' : 'text-[#050505]'}`}>
-                                            ${(p.priceMetrics.monthly / 100).toLocaleString('en-US', { minimumFractionDigits: 0 })}<span className={`text-[10px] font-mono font-normal ml-1 ${t === PlanTier.ARCHIVE_PROVER ? 'text-white/50' : 'text-black/30'}`}>/mo</span>
-                                        </p>
-                                        <span className={`text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-lg ${t === PlanTier.ARCHIVE_PROVER ? 'bg-white/10 text-white' : 'bg-black/5 text-[#050505]'}`}>
-                                            {loadingTier === t ? 'Launching...' : 'Select →'}
-                                        </span>
-                                    </button>
-                                );
-                            })}
-                    </div>
-                </div>
-            )}
 
             {/* Invoice history */}
             <div className="rounded-2xl border border-black/8 bg-white p-6">

@@ -34,6 +34,8 @@ import { passportPublicUrl } from '@/lib/scan/parseScanPayload';
 import type { ProductPassportPublic } from '@/lib/passport/types';
 import { NODE_TIERS, PlanTier } from '@/lib/node_infrastructure/tiers';
 
+import { SubscriptionDashboard } from '@/components/terminal/SubscriptionDashboard';
+
 /* ─────────────────────────────────────────────
    CONSTANTS
 ───────────────────────────────────────────── */
@@ -42,7 +44,7 @@ const EXPLORER_BASE = 'https://testnet.aztecscan.xyz/tx/';
 /* ─────────────────────────────────────────────
    TYPES
 ───────────────────────────────────────────── */
-type Tab = 'create' | 'registry' | 'aztec' | 'billing';
+type Tab = 'create' | 'registry' | 'aztec' | 'billing' | 'dashboard';
 
 /* ─────────────────────────────────────────────
    UTILITIES
@@ -1174,6 +1176,18 @@ export function ProvenanceStudioContent({
   const isMobile = variant === 'mobile';
   const [activeTab, setActiveTab] = useState<Tab>('create');
   const [registryRefreshKey, setRegistryRefreshKey] = useState(0);
+  const [hasPlan, setHasPlan] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/auth/session')
+      .then(res => res.json())
+      .then(data => {
+        if (data?.user?.tier && data.user.tier !== 'FREE') {
+          setHasPlan(true);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: 'create', label: 'Create', icon: <Plus size={13} /> },
@@ -1181,6 +1195,10 @@ export function ProvenanceStudioContent({
     { id: 'aztec', label: 'Aztec Network', icon: null },
     { id: 'billing', label: 'Node Allocation', icon: <CreditCard size={13} /> },
   ];
+
+  if (hasPlan) {
+    tabs.push({ id: 'dashboard', label: 'Dashboard', icon: <ShieldCheck size={13} /> });
+  }
 
   const handleCreated = (passport: ProductPassportPublic) => {
     // After creation, bump the refresh key so the registry reloads when user switches to it
@@ -1264,6 +1282,11 @@ export function ProvenanceStudioContent({
         )}
         {activeTab === 'aztec' && <AztecTab />}
         {activeTab === 'billing' && <BandwidthTab />}
+        {activeTab === 'dashboard' && (
+          <div className="bg-white rounded-2xl border border-black/10 overflow-hidden min-h-[400px]">
+            <SubscriptionDashboard />
+          </div>
+        )}
       </div>
     </div>
   );
