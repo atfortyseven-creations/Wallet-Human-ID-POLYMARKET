@@ -92,7 +92,7 @@ export async function completeSessionHandshake(
         jwt = exportData.jwt;
         // Extract address from JWT payload to verify it matches the current wallet
         try {
-          const parts = jwt.split('.');
+          const parts = jwt!.split('.');
           if (parts.length === 3) {
             const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
             jwtAddress = (payload.sub || payload.address || '').toLowerCase() || null;

@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     try {
       const { verifyJWT } = await import('@/lib/jwt');
       const payload = await verifyJWT(whaleSessionCookie);
-      walletAddress = payload.walletAddress || payload.sub || 'unknown_wallet';
+      walletAddress = String(payload.walletAddress || payload.sub || 'unknown_wallet');
     } catch (e) {
       const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://humanidfi.com';
       return NextResponse.redirect(new URL('/?error=invalid_session', appUrl));

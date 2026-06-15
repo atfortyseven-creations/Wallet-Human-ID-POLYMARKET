@@ -37,6 +37,7 @@ export async function POST(request: NextRequest) {
         }
 
         // [SECURITY HARDENING] Derive creatorAddress from cryptographic session.
+        const { getSession } = await import('@/lib/session');
         const session = await getSession();
         if (!session?.userId) {
             return NextResponse.json({ error: 'Unauthorized: Authentication required to propose.' }, { status: 401 });

@@ -99,14 +99,14 @@ export default function DeadMansSwitchModal({ isOpen, onClose }: DeadMansSwitchM
     setTxHash(null);
     setTxSuccess(null);
     try {
-      const { request } = await publicClient.simulateContract({
+      const { request } = await (publicClient as any).simulateContract({
         address: CONTRACT_ADDRESS,
         abi: DEADMAN_ABI,
         functionName: functionName as any,
-        args,
+        args: args as any,
         account: walletAddress,
       });
-      const hash = await walletClient.writeContract(request);
+      const hash = await walletClient.writeContract(request as any);
       setTxHash(hash);
       await publicClient.waitForTransactionReceipt({ hash });
       setTxSuccess('Transaction confirmed on-chain!');

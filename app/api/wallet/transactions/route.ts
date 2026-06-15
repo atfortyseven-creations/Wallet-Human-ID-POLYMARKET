@@ -29,7 +29,12 @@ export async function GET(request: NextRequest) {
     }
     const authUserId = session.userId;
 
+    const chainId = searchParams.get('chainId');
     const chainIds = searchParams.get('chainIds')?.split(',').map(id => parseInt(id)).filter(id => !isNaN(id));
+    const type = searchParams.get('type');
+    const limit = searchParams.get('limit');
+    const offset = searchParams.get('offset');
+    const format = searchParams.get('format');
 
     const transactions = await getTransactionHistory(authUserId, {
       chainId: chainId ? parseInt(chainId) : undefined,

@@ -222,7 +222,7 @@ export default function ConnectPage() {
                 const payloadRaw = JSON.parse(decrypted);
                 if (payloadRaw.jwt) {
                   jwt = payloadRaw.jwt;
-                  const parts = jwt.split('.');
+                  const parts = jwt!.split('.');
                   if (parts.length === 3) {
                     const jwtData = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
                     const addr = (jwtData.sub || jwtData.address || '').toLowerCase();

@@ -10,7 +10,7 @@ import { useSystemSessionLock } from '@/hooks/useSystemSessionLock';
 import { useWalletStore } from '@/lib/store/wallet-store';
 import { TitaniumGate } from '@/components/layout/TitaniumGate';
 import { InstitutionalHeader } from '@/components/shared/InstitutionalHeader';
-import { HumanityLedgerHeader } from '@/components/bsv/HumanityLedgerHeader';
+
 
 import { ZoomWrapper } from './ZoomWrapper';
 import dynamic from 'next/dynamic';

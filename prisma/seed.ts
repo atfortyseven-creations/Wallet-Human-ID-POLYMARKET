@@ -1,4 +1,4 @@
-﻿// prisma/seed.ts
+// prisma/seed.ts
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
@@ -49,7 +49,7 @@ async function main() {
     }
 
     // 7. Seed Humanity Ledger Blocks and Transactions
-    const ledgerBlockCount = await prisma.humanityLedgerBlock.count();
+    const ledgerBlockCount = await (prisma as any).humanityLedgerBlock.count();
     if (ledgerBlockCount === 0) {
         console.log(' Seeding Humanity Ledger genesis blocks...');
         const blockId1 = 20392811n;
@@ -57,7 +57,7 @@ async function main() {
         const blockId3 = 20392809n;
 
         // Create Block 3 (oldest)
-        await prisma.humanityLedgerBlock.create({
+        await (prisma as any).humanityLedgerBlock.create({
             data: {
                 id: blockId3,
                 hash: '0x7b2fa1bc8b9dbf8a7d3c0de82a0b12fe3e4da1b9875f28c29375e82104fa28cd',
@@ -86,7 +86,7 @@ async function main() {
         });
 
         // Create Block 2
-        await prisma.humanityLedgerBlock.create({
+        await (prisma as any).humanityLedgerBlock.create({
             data: {
                 id: blockId2,
                 hash: '0xa8f2b7cd831f298e3b4a2e5d93bc8bde920af847cb201df82ea29b87cf01f2ac',
@@ -115,7 +115,7 @@ async function main() {
         });
 
         // Create Block 1 (newest)
-        await prisma.humanityLedgerBlock.create({
+        await (prisma as any).humanityLedgerBlock.create({
             data: {
                 id: blockId1,
                 hash: '0x3e4da1b9875f28c29375e82104fa28cd7b29381c8b9dbf8a7d3c0de82a0b12fe',

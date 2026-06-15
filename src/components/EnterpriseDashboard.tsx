@@ -1,5 +1,5 @@
 import React from 'react';
-import { IntelFeed } from '@/components/dashboard/IntelFeed';
+import { IntelFeed } from '@/components/terminal/IntelFeed';
 
 export default function EnterpriseDashboard({ initialData }: { initialData?: any }) {
     // Use initialData for treasury/intel if provided

@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
 
   try {
       // Try hash-based lookup first (secure), fall back to plaintext for legacy keys
-      let validKey = await prisma.apiKey.findFirst({
+      let validKey = await (prisma as any).apiKey.findFirst({
           where: { 
             OR: [
               { keyHash: keyHash },    // New secure format
