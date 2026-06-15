@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_VERIFICATION_SECRET || 'super-secret-sso-key';
-const STUDIO_B2B_URL = process.env.STUDIO_B2B_URL || 'http://localhost:3001';
+const STUDIO_B2B_URL = process.env.STUDIO_B2B_URL || 'https://studio-provenance-production.up.railway.app';
 
 export async function GET(req: NextRequest) {
   try {
