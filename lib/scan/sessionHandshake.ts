@@ -83,16 +83,21 @@ export async function completeSessionHandshake(
   // Try export-jwt first — gives us both the JWT and the address from the server
   let jwt: string | null = null;
   let jwtAddress: string | null = null;
+  let hasValidSession = false;
 
   try {
     const exportRes = await fetch('/api/auth/export-jwt', { credentials: 'include', cache: 'no-store' });
     if (exportRes.ok) {
       const exportData = await exportRes.json();
+      if (exportData.authenticated) {
+        hasValidSession = true;
+        jwtAddress = exportData.address;
+      }
       if (exportData.jwt) {
         jwt = exportData.jwt;
         // Extract address from JWT payload to verify it matches the current wallet
         try {
-          const parts = jwt!.split('.');
+          const parts = jwt.split('.');
           if (parts.length === 3) {
             const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
             jwtAddress = (payload.sub || payload.address || '').toLowerCase() || null;
@@ -118,6 +123,7 @@ export async function completeSessionHandshake(
       console.warn(`[QR:Handshake] Wallet mismatch: jwt=${jwtAddress} wagmi=${wagmiNorm}. Re-minting for ${wagmiNorm}.`);
       jwt = null;
       jwtAddress = null;
+      hasValidSession = false;
     }
     resolvedAddress = wagmiNorm;
   } else if (jwtAddress) {
@@ -126,8 +132,8 @@ export async function completeSessionHandshake(
     resolvedAddress = getHandshakeCookieAddress();
   }
 
-  // If we have a wagmi address but no JWT, mint a fresh one
-  if (!jwt && resolvedAddress) {
+  // If we have a wagmi address but no valid session, mint a fresh one via SIWE
+  if (!hasValidSession && resolvedAddress) {
     if (!signMessageAsync) {
       console.error('[QR:Handshake] Missing signMessageAsync function for secure SIWE verification.');
     } else {
@@ -149,6 +155,7 @@ export async function completeSessionHandshake(
           if (sigRes.ok) {
             const data = await sigRes.json();
             jwt = data.jwt ?? null;
+            hasValidSession = true;
           } else {
             return { ok: false, message: 'Server rejected cryptographic signature.' };
           }
@@ -162,7 +169,7 @@ export async function completeSessionHandshake(
     }
   }
 
-  if (!jwt && !resolvedAddress) {
+  if (!hasValidSession && !resolvedAddress) {
     return {
       ok: false,
       message: 'Wallet not connected. Connect your wallet first, then scan the QR code.',
@@ -170,8 +177,8 @@ export async function completeSessionHandshake(
     };
   }
 
-  // ATOMIC SECURITY: If we still don't have a JWT after the SIWE attempt, abort the handshake.
-  if (!jwt) {
+  // ATOMIC SECURITY: If we still don't have a valid session after the SIWE attempt, abort the handshake.
+  if (!hasValidSession) {
     return {
       ok: false,
       message: 'A cryptographically signed session is required to link devices. Please sign the message in your wallet.',
@@ -187,8 +194,8 @@ export async function completeSessionHandshake(
   const shared = await deriveSharedSecret(mobilePair.privateKey, ephemeralPub, isECDH);
 
   let postBody: Record<string, unknown>;
-  if (jwt) {
-    let payloadStr = jwt;
+  if (hasValidSession) {
+    let payloadStr = jwt || '';
     try {
       const normAddr = resolvedAddress;
       const seed = normAddr ? localStorage.getItem(`whale_chat_seed_${normAddr}`) : null;

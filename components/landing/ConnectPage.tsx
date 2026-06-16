@@ -220,9 +220,16 @@ export default function ConnectPage() {
               const decrypted = await decryptAESGCM(shared, data.encryptedPayload, data.iv);
               try {
                 const payloadRaw = JSON.parse(decrypted);
+                
+                // If mobile provided its JWT, use it; otherwise fallback to serverJwt.
                 if (payloadRaw.jwt) {
                   jwt = payloadRaw.jwt;
-                  const parts = jwt!.split('.');
+                }
+                
+                // Derive address from whichever JWT we have so far
+                const activeJwt = jwt || data.serverJwt;
+                if (activeJwt) {
+                  const parts = activeJwt.split('.');
                   if (parts.length === 3) {
                     const jwtData = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
                     const addr = (jwtData.sub || jwtData.address || '').toLowerCase();
