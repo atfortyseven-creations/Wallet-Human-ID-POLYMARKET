@@ -15,6 +15,7 @@ const Icon = {
   support:    <span className="font-mono text-[10px] tracking-widest font-black">[SUP]</span>,
   forum:      <span className="font-mono text-[10px] tracking-widest font-black">[FRM]</span>,
   studio:     <span className="font-mono text-[10px] tracking-widest font-black">[STU]</span>,
+  map:        <span className="font-mono text-[10px] tracking-widest font-black">[MAP]</span>,
 };
 import { MODULE_EXPLANATIONS } from './ModuleExplanations';
 import { useSettingsStore } from '@/lib/store/useSettingsStore';
@@ -51,6 +52,7 @@ const SIDEBAR_ITEMS: NavItem[] = [
     { id: 'humanity-ledger', label: 'Roadmap',        icon: Icon.roadmap },
     { id: 'logs',            label: 'Logs',           icon: Icon.logs },
     { id: 'gold',            label: 'Identity',       icon: Icon.identity },
+    { id: 'map',             label: 'Network Map',    icon: Icon.map },
     { id: 'studio',          label: 'Studio',         icon: Icon.studio },
 ];
 

@@ -27,6 +27,8 @@ const Registry = {
   InstitutionalLedger: dynamic(() => import('@/components/terminal/InstitutionalLedger'), { ssr: false, loading: LoadingPanel }),
   MassTransferIntel: dynamic(() => import('@/components/terminal/MassTransferIntel').then(m => ({ default: m.MassTransferIntel })), { ssr: false, loading: LoadingPanel }),
   SessionLogsPanel: dynamic(() => import('@/components/terminal/SessionLogsPanel').then(m => ({ default: m.SessionLogsPanel })), { ssr: false, loading: LoadingPanel }),
+  NetworkMapPanel: dynamic(() => import('@/components/terminal/NetworkMapPanel').then(m => ({ default: m.NetworkMapPanel })), { ssr: false, loading: LoadingPanel }),
+
 
   HumanityLedger: dynamic(() => import('@/components/terminal/HumanityLedger'), { ssr: false, loading: LoadingPanel }),
   PortfolioDashboard: dynamic(() => import('@/components/terminal/PortfolioDashboard'), { ssr: false, loading: LoadingPanel }),
@@ -60,6 +62,7 @@ const RouteRenderer = React.memo(({ route, reconciliationKey, mutateRoute }: Rou
         'inst-ledger': <Registry.InstitutionalLedger />,
         'privacy': <Registry.SessionLogsPanel />,
         'logs': <Registry.SessionLogsPanel />,
+        'map': <Registry.NetworkMapPanel />,
         'studio': <Registry.ProvenanceStudioContent variant="desktop" />,
     };
 
