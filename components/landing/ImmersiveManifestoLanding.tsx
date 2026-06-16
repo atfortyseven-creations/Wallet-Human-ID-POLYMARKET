@@ -706,20 +706,6 @@ function FinalCTASection() {
         <p className="text-[16px] md:text-[18px] text-white/90 font-medium max-w-[520px] mb-12 drop-shadow-md leading-relaxed">
           Built on the full Aztec stack — Noir circuits, a Private Execution Environment (PXE), zk-SNARK note commitments, and nullifier-based Sybil resistance. Your Aztec Identity is cryptographically yours: provable on-chain, invisible to the world.
         </p>
-        <div className="flex flex-col sm:flex-row items-center gap-4">
-          <Link
-            href="/portfolio"
-            className="w-full sm:w-auto px-10 py-4 bg-white text-black text-[14px] font-black uppercase tracking-wider hover:bg-white/90 transition-transform active:scale-95 shadow-xl"
-          >
-            Open Application
-          </Link>
-          <Link
-            href="/developers/api-docs"
-            className="w-full sm:w-auto px-10 py-4 border-2 border-white/80 text-white bg-black/40 backdrop-blur text-[14px] font-black uppercase tracking-wider hover:bg-black/60 transition-transform active:scale-95 shadow-xl"
-          >
-            Read Documentation
-          </Link>
-        </div>
       </div>
     </section>
   );

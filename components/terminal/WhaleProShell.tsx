@@ -47,6 +47,7 @@ interface NavItem {
 }
 
 const SIDEBAR_ITEMS: NavItem[] = [
+    { id: 'portfolio',       label: 'Portfolio',      icon: <span className="font-mono text-[10px] tracking-widest font-black">[PTF]</span>, requiresZK: false },
     { id: 'markets',         label: 'Markets',        icon: Icon.markets,  requiresZK: true },
     { id: 'inst-ledger',     label: 'Explorer',       icon: Icon.explorer, requiresZK: true },
     { id: 'humanity-ledger', label: 'Roadmap',        icon: Icon.roadmap },

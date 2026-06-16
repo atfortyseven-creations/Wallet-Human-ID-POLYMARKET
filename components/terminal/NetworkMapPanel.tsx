@@ -130,61 +130,7 @@ export function NetworkMapPanel() {
             </div>
           </div>
 
-          {/* SECTION 3: System Modules Hierarchy */}
-          <div className="flex flex-col gap-4 mt-8">
-            <div className="text-[10px] font-mono font-black uppercase tracking-[0.2em] text-black/50 bg-white px-2 self-start border border-black/10 rounded-sm">
-              3. System Modules Hierarchy
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              
-              <ModuleGroup title="Dashboard" items={[
-                "Markets", "Explorer", "Roadmap", "Logs", "Identity", "Studio Provenance"
-              ]} />
-              
-              <ModuleGroup title="Registry" items={[
-                "Network Map", "Whale Network Activity", "Wallets", "Block Roots", "Circuit Roots", "Overview"
-              ]} />
-
-              <ModuleGroup title="Developers" items={[
-                "API Docs", 
-                <Link href="/developer/sandbox" className="text-blue-600 hover:underline">ZK Sandbox (↗)</Link>, 
-                "Architecture", 
-                "GitHub"
-              ]} />
-
-              <ModuleGroup title="Portfolio" items={["Aztec Identity"]} />
-              
-              <ModuleGroup title="Communications" items={["Whale Chat"]} />
-              
-              <ModuleGroup title="Token Economics" items={["QDs (Quantum Dust)"]} />
-
-              <ModuleGroup title="Company" items={["Vision"]} />
-              
-              <ModuleGroup title="Regulatory" items={["Compliance Docs"]} />
-
-            </div>
-          </div>
-
         </div>
-      </div>
-    </div>
-  );
-}
-
-function ModuleGroup({ title, items }: { title: string, items: (string | React.ReactNode)[] }) {
-  return (
-    <div className="flex flex-col p-5 border border-black/10 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow">
-      <div className="text-[11px] font-black uppercase tracking-widest border-b border-black/5 pb-2 mb-3">
-        {title}
-      </div>
-      <div className="flex flex-col gap-2">
-        {items.map((item, i) => (
-          <div key={i} className="flex items-center gap-2 text-sm font-mono text-black/70">
-            <div className="w-1 h-1 bg-black/20 rounded-full"></div>
-            {item}
-          </div>
-        ))}
       </div>
     </div>
   );
