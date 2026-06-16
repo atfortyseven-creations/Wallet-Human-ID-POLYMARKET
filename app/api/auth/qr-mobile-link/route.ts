@@ -49,19 +49,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing encrypted payload fields' }, { status: 400 });
     }
 
-    //  2. Verify mobile identity  3-layer auth resolution 
-    // LAYER 1: Secure JWT (human_session / whale_session)  preferred path
-    // LAYER 2: system_handshake cookie  set after wallet connection on mobile.
-    //          No JWT exists yet but the wallet just connected: this is the valid
-    //          "first QR scan" path that was previously returning 401 incorrectly.
-    // LAYER 3: Reject 401 if neither is present.
+    //  2. Verify mobile identity via secure JWT ONLY 
+    // We STRICTLY require a cryptographic SIWE JWT (human_session or whale_session).
+    // The insecure 'system_handshake' cookie fallback has been entirely removed 
+    // to prevent identity spoofing / authentication bypass vulnerabilities.
     const humanSession = req.cookies.get('human_session')?.value || req.cookies.get('whale_session')?.value;
-    const systemHandshake = req.cookies.get('system_handshake')?.value;
 
-    if (!humanSession && !systemHandshake) {
-      console.error(`[QR:Handshake:FAILURE] No session found for UUID: ${uuid}. IP: ${req.headers.get('x-forwarded-for')}`);
+    if (!humanSession) {
+      console.error(`[QR:Handshake:FAILURE] No secure JWT session found for UUID: ${uuid}. IP: ${req.headers.get('x-forwarded-for')}`);
       return NextResponse.json(
-        { error: 'Session expired or unauthenticated. Connect your wallet first, then scan the QR code.' },
+        { error: 'Session unauthenticated. Sign the cryptographic message in your wallet first.' },
         { status: 401 }
       );
     }
@@ -69,33 +66,18 @@ export async function POST(req: NextRequest) {
     let walletAddress: string | null = null;
 
     // PATH A: Validate via secure JWT
-    if (humanSession) {
-      try {
-        const { verifyJWT } = await import('@/lib/jwt');
-        const payload = await verifyJWT(humanSession);
-        walletAddress = (payload.sub as string) || (payload.address as string) || null;
-        if (walletAddress) {
-          console.log(`[QR:Handshake] [JWT] Resolved wallet: ${walletAddress}`);
-        } else {
-          throw new Error('JWT payload missing address');
-        }
-      } catch (err: any) {
-        // JWT failed  fall through to system_handshake path
-        console.warn(`[QR:Handshake] JWT failed (${err.message}), falling back to system_handshake`);
-        walletAddress = null;
-      }
-    }
-
-    // PATH B: Derive address from system_handshake (wallet-connect first-time flow on mobile)
-    if (!walletAddress && systemHandshake) {
-      const normalized = systemHandshake.toLowerCase().trim();
-      if (/^0x[0-9a-f]{40}$/.test(normalized)) {
-        walletAddress = normalized;
-        console.log(`[QR:Handshake] [system_handshake] Resolved wallet: ${walletAddress}`);
+    try {
+      const { verifyJWT } = await import('@/lib/jwt');
+      const payload = await verifyJWT(humanSession);
+      walletAddress = (payload.sub as string) || (payload.address as string) || null;
+      if (walletAddress) {
+        console.log(`[QR:Handshake] [JWT] Resolved wallet: ${walletAddress}`);
       } else {
-        console.error(`[QR:Handshake] system_handshake contains invalid address: ${normalized}`);
-        return NextResponse.json({ error: 'Invalid session token. Please reconnect your wallet.' }, { status: 401 });
+        throw new Error('JWT payload missing address');
       }
+    } catch (err: any) {
+      console.error(`[QR:Handshake] JWT validation failed: ${err.message}`);
+      return NextResponse.json({ error: 'Invalid or expired session. Please reconnect.' }, { status: 401 });
     }
 
     if (!walletAddress) {

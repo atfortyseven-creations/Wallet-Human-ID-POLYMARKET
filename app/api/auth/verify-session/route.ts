@@ -82,17 +82,9 @@ export async function GET(request: NextRequest) {
             return res;
         }
 
-        // ─── Priority 2: system_handshake fast-path (QR sessions) ─────────────
-        // [SECURITY NOTE] We only accept this if no JWT cookies existed at all.
-        // This prevents a spoofed handshake cookie from bypassing a revoked JWT.
-        // The handshake value itself is just an address string, not cryptographic —
-        // but in this branch there is nothing to spoof against, so it is safe.
-        if (handshake && /^0x[a-fA-F0-9]{40}$/.test(handshake)) {
-            return NextResponse.json({
-                authenticated: true,
-                user: { address: handshake.toLowerCase(), tier: 'FREE' }
-            });
-        }
+        // ─── Priority 2: [REMOVED INSECURE FALLBACK] ─────────────
+        // The system_handshake cookie is no longer trusted for authentication bypass.
+        // All sessions MUST be cryptographically verified via SIWE/JWT.
 
         return NextResponse.json(
             { authenticated: false },

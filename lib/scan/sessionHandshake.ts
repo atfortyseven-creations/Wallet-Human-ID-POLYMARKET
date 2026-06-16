@@ -145,14 +145,19 @@ export async function completeSessionHandshake(
             body: JSON.stringify({ address: resolvedAddress, message, signature, nonce }),
             credentials: 'include',
           });
+          
           if (sigRes.ok) {
             const data = await sigRes.json();
             jwt = data.jwt ?? null;
+          } else {
+            return { ok: false, message: 'Server rejected cryptographic signature.' };
           }
+        } else {
+          return { ok: false, message: 'Failed to retrieve nonce from server.' };
         }
       } catch (err) {
-        console.warn('[QR:Handshake] SIWE verification failed during handshake recovery:', err);
-        /* non-fatal — qr-mobile-link will use system_handshake cookie fallback */
+        console.error('[QR:Handshake] SIWE verification failed during handshake recovery:', err);
+        return { ok: false, message: 'Failed to verify wallet signature. Please try again.' };
       }
     }
   }
@@ -161,6 +166,15 @@ export async function completeSessionHandshake(
     return {
       ok: false,
       message: 'Wallet not connected. Connect your wallet first, then scan the QR code.',
+      needsWallet: true,
+    };
+  }
+
+  // ATOMIC SECURITY: If we still don't have a JWT after the SIWE attempt, abort the handshake.
+  if (!jwt) {
+    return {
+      ok: false,
+      message: 'A cryptographically signed session is required to link devices. Please sign the message in your wallet.',
       needsWallet: true,
     };
   }
