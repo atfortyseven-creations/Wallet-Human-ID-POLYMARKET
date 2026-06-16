@@ -228,12 +228,10 @@ export default function LoginPage() {
       {/* Background */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 z-0 opacity-40 pointer-events-none"
           style={{
-            backgroundImage: "url('/system-shots/Devine-Lu-Linvega-monochrome-pixel-art-illustration-arch-2268374-wallhere.com.jpg')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
+            backgroundImage: 'radial-gradient(#d1d5db 1px, transparent 1px)',
+            backgroundSize: '24px 24px'
           }}
         />
       </div>

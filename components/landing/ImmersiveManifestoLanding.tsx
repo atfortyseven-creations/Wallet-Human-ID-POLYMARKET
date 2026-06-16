@@ -4,6 +4,7 @@ import React, { useRef, useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
+import { NetworkMapPanel } from '@/components/terminal/NetworkMapPanel';
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
 // Lottie cargado dinámicamente para evitar SSR issues
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
@@ -363,33 +364,11 @@ function HeroSection() {
         backgroundColor: '#ffffff',
       }}
     >
-      {/* ── Global pixelated-rendering rule ─────────────────────────────── */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        .hero-pixel-img {
-          image-rendering: -webkit-optimize-contrast;
-          image-rendering: crisp-edges;
-          image-rendering: pixelated;
-          -ms-interpolation-mode: nearest-neighbor;
-        }
-      `}} />
-
-      <img
-        src="/system-shots/Devine-Lu-Linvega-monochrome-pixel-art-illustration-arch-2268374-wallhere.com.jpg"
-        alt="Humanity Ledger"
-        loading="eager"
-        // @ts-ignore
-        fetchPriority="high"
-        decoding="sync"
-        draggable="false"
-        className="hero-pixel-img absolute select-none"
+      <div 
+        className="absolute inset-0 z-0 opacity-40 pointer-events-none"
         style={{
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-          opacity: 0.12,
+          backgroundImage: 'radial-gradient(#d1d5db 1px, transparent 1px)',
+          backgroundSize: '24px 24px'
         }}
       />
 
@@ -415,27 +394,14 @@ function HeroSection() {
 
 
           {/* Architecture Diagram (Sober, Minimalist SVG) */}
-          <div className="w-full max-w-[500px] mx-auto mb-10 opacity-80 mix-blend-multiply">
-            <svg viewBox="0 0 400 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
-              {/* Client Layer */}
-              <rect x="20" y="40" width="100" height="40" rx="4" stroke="black" strokeWidth="1.5" strokeDasharray="4 4" fill="white" />
-              <text x="70" y="64" textAnchor="middle" fill="black" fontSize="11" fontWeight="600" fontFamily="monospace">Client PXE</text>
-              {/* Connection */}
-              <path d="M120 60 L180 60" stroke="black" strokeWidth="1.5" />
-              <circle cx="150" cy="60" r="14" fill="white" stroke="black" strokeWidth="1.5" />
-              <text x="150" y="64" textAnchor="middle" fill="black" fontSize="10" fontWeight="bold">ZK</text>
-              {/* L2 Layer */}
-              <rect x="180" y="40" width="100" height="40" rx="4" stroke="black" strokeWidth="1.5" fill="white" />
-              <text x="230" y="64" textAnchor="middle" fill="black" fontSize="11" fontWeight="600" fontFamily="monospace">Aztec L2</text>
-              {/* Connection */}
-              <path d="M280 60 L340 60" stroke="black" strokeWidth="1.5" />
-              {/* L1 Layer */}
-              <rect x="340" y="40" width="40" height="40" rx="4" stroke="black" strokeWidth="1.5" fill="black" />
-              <text x="360" y="64" textAnchor="middle" fill="white" fontSize="11" fontWeight="600" fontFamily="monospace">L1</text>
-              {/* Labels */}
-              <text x="70" y="95" textAnchor="middle" fill="black" fontSize="9" opacity="0.6">Identity Claim</text>
-              <text x="230" y="95" textAnchor="middle" fill="black" fontSize="9" opacity="0.6">Studio Provenance</text>
-            </svg>
+          {/* Architecture Diagram (Full High-Fidelity Network Map) */}
+          <div className="w-full max-w-[1200px] mx-auto mb-10 h-[500px] md:h-[600px] overflow-hidden rounded-2xl border border-black/10 shadow-2xl relative bg-white">
+            <div className="w-full h-full overflow-auto no-scrollbar relative z-10">
+              <NetworkMapPanel />
+            </div>
+            {/* Soft fade gradients for embedded scrolling */}
+            <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-white to-transparent z-20 pointer-events-none"></div>
+            <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent z-20 pointer-events-none"></div>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-3">
