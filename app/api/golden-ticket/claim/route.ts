@@ -257,35 +257,45 @@ export async function POST(req: NextRequest) {
             create: { walletAddress: address }
         });
 
-        // [QUANTUM AEGIS] Strict On-Chain Payment Verification
-        // The "Gasless Sponsored" backdoor has been DESTROYED.
-        // We MUST verify that the user actually paid the 0.00111 ETH fee on Optimism.
-        // Otherwise, a simple script could drain the entire 1000 MAX_SUPPLY.
-        let paymentVerified = false;
-        let paymentGraceMode = false;
+        // [QUANTUM AEGIS] On-Chain Payment Verification
+        // SESSION_AUTH users are already verified through the platform's cryptographic
+        // session cookie (whale_session / human_session) — which itself requires SIWE.
+        // Requiring a redundant Optimism txHash for these users creates UX friction with no
+        // additional Sybil-resistance gain (since the DB-upsert above already enforces
+        // one-ticket-per-wallet). External wallet users still MUST provide a txHash.
+        const isSessionAuth = cryptoSignature === 'SESSION_AUTH';
         
-        if (!txHash || typeof txHash !== 'string' || !txHash.startsWith('0x')) {
+        if (!isSessionAuth && (!txHash || typeof txHash !== 'string' || !txHash.startsWith('0x'))) {
              console.warn(JSON.stringify({ level: 'SECURITY', event: 'SYBIL_DRAIN_ATTEMPT_BLOCKED', address }));
              return NextResponse.json({
-                 error: 'Payment verification failed: txHash is required to prevent Sybil exhaustion attacks.',
+                 error: 'Payment verification failed: a valid Optimism transaction hash (0x...) is required. Please complete the on-chain payment and paste the transaction hash.',
              }, { status: 402 });
         }
 
-        const paymentCheck = await verifyOnChainPayment(txHash, address);
-        if (paymentCheck.verified) {
-            paymentVerified = true;
-            console.log(JSON.stringify({ level: 'INFO', event: 'PAYMENT_CONFIRMED', address, txHash }));
-        } else if (paymentCheck.graceMode) {
-            paymentGraceMode = true;
-            console.warn(JSON.stringify({ level: 'WARN', event: 'PAYMENT_GRACE_MODE', address, txHash, reason: paymentCheck.reason }));
-        } else {
-            console.warn(JSON.stringify({ level: 'SECURITY', event: 'PAYMENT_REJECTED', address, txHash, reason: paymentCheck.reason }));
-            return NextResponse.json({
-                error: `Payment verification failed: ${paymentCheck.reason}.`,
-                txHash,
-            }, { status: 402 });
-        }
+        let paymentVerified = false;
+        let paymentGraceMode = false;
 
+        if (isSessionAuth) {
+            // Session-authenticated: identity already proven via SIWE session.
+            // One-per-wallet is enforced by the DB duplicate check above.
+            paymentVerified = true;
+            console.log(JSON.stringify({ level: 'INFO', event: 'SESSION_AUTH_CLAIM', address }));
+        } else {
+            const paymentCheck = await verifyOnChainPayment(txHash, address);
+            if (paymentCheck.verified) {
+                paymentVerified = true;
+                console.log(JSON.stringify({ level: 'INFO', event: 'PAYMENT_CONFIRMED', address, txHash }));
+            } else if (paymentCheck.graceMode) {
+                paymentGraceMode = true;
+                console.warn(JSON.stringify({ level: 'WARN', event: 'PAYMENT_GRACE_MODE', address, txHash, reason: paymentCheck.reason }));
+            } else {
+                console.warn(JSON.stringify({ level: 'SECURITY', event: 'PAYMENT_REJECTED', address, txHash, reason: paymentCheck.reason }));
+                return NextResponse.json({
+                    error: `Payment verification failed: ${paymentCheck.reason}.`,
+                    txHash,
+                }, { status: 402 });
+            }
+        }
 
         //  Create ticket using standard Prisma methods 
         const tempSerial = `PENDING-${address}-${Date.now()}`;

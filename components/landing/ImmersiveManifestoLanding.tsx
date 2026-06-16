@@ -780,12 +780,12 @@ function FinalCTASection() {
 
       <div className="relative z-10 w-full max-w-[800px] mx-auto px-6 py-32 md:py-48 flex flex-col items-center text-center">
         <h2 className="text-[40px] md:text-[60px] font-black tracking-tighter leading-[1] text-white mb-6 drop-shadow-md">
-          Ready to reclaim
+          Your identity,
           <br />
-          <span className="text-white/80">your digital Aztec Identity?</span>
+          <span className="text-white/80">proven without disclosure.</span>
         </h2>
-        <p className="text-[16px] md:text-[18px] text-white/90 font-medium max-w-[500px] mb-12 drop-shadow-md">
-          Join Whale Network — the privacy-first ecosystem where your Aztec Identity is yours alone, protected by Zero-Knowledge proofs on L2.
+        <p className="text-[16px] md:text-[18px] text-white/90 font-medium max-w-[520px] mb-12 drop-shadow-md leading-relaxed">
+          Built on the full Aztec stack — Noir circuits, a Private Execution Environment (PXE), zk-SNARK note commitments, and nullifier-based Sybil resistance. Your Aztec Identity is cryptographically yours: provable on-chain, invisible to the world.
         </p>
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <Link
