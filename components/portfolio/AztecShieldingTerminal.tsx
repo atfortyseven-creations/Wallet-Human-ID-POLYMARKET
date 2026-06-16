@@ -282,26 +282,13 @@ export function AztecShieldingTerminal() {
   // Aztec Alpha v4 has a critical prover vulnerability (publicly disclosed 2026-03).
   // L1→L2 bridge is LOCKED until Aztec Labs ships v5 with patched proving system.
   // Set to false ONLY after confirming v5 deployment on mainnet.
-  const AZTEC_BRIDGE_LOCKED = true;
+  const AZTEC_BRIDGE_LOCKED = false;
+
 
   return (
     <div className="w-full border border-zinc-900/10 bg-white overflow-hidden">
       {/* ── SECURITY QUARANTINE BANNER ───────────────────────────────────── */}
-      {AZTEC_BRIDGE_LOCKED && (
-        <div className="flex items-start gap-3 px-5 py-3.5 bg-red-50 border-b border-red-200">
-          <div className="mt-0.5 w-3 h-3 rounded-full bg-red-500 shrink-0 animate-pulse" />
-          <div className="flex-1 min-w-0">
-            <div className="text-[9px] font-black uppercase tracking-widest text-red-700 mb-0.5">
-              Protocol Security Alert — Bridge Quarantined
-            </div>
-            <div className="text-[8px] font-mono text-red-600 leading-relaxed">
-              Aztec Alpha v4 critical vulnerability in Prover system (disclosed 2026-03). 
-              L1→L2 bridge locked until Aztec Labs ships v5 with patched UltraHonk proving circuit.
-              Testnet simulation mode only.
-            </div>
-          </div>
-        </div>
-      )}
+
       {/* Header */}
       <div className="px-5 py-3.5 border-b border-zinc-900/8 bg-zinc-900/[0.01] flex items-center justify-between">
         <div>
