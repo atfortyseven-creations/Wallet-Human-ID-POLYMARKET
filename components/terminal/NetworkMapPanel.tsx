@@ -46,8 +46,8 @@ export function NetworkMapPanel() {
                 <div className="absolute -top-2.5 left-4 bg-white px-2 text-[9px] font-mono font-black uppercase tracking-widest text-black">
                   Web Domain (PC)
                 </div>
-                <div className="text-sm font-bold mb-1">HumanIDFi Web Client</div>
-                <div className="text-[10px] font-mono text-black/60 mb-4">humanidfi.com · Browser Context</div>
+                <div className="text-sm font-bold mb-1">Whale Network Web Client</div>
+                <div className="text-[10px] font-mono text-black/60 mb-4">whalenetwork.io · Browser Context</div>
                 <div className="flex gap-2">
                   <div className="px-2 py-1 bg-black/5 border border-black/10 rounded text-[9px] font-mono font-bold">Session State</div>
                   <div className="px-2 py-1 bg-black/5 border border-black/10 rounded text-[9px] font-mono font-bold">Local PXE Node</div>

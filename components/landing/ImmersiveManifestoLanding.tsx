@@ -357,77 +357,30 @@ function HeroSection() {
 
   return (
     <section
-      className="relative w-full flex flex-col items-center justify-center overflow-hidden flex-shrink-0"
-      style={{
-        height: 'calc(100dvh - 64px)',
-        minHeight: '560px',
-        backgroundColor: '#ffffff',
-      }}
+      className="relative w-full overflow-hidden flex-shrink-0"
+      style={{ minHeight: '100dvh', backgroundColor: '#ffffff' }}
     >
-      <div 
+      {/* Dotted grid */}
+      <div
         className="absolute inset-0 z-0 opacity-40 pointer-events-none"
-        style={{
-          backgroundImage: 'radial-gradient(#d1d5db 1px, transparent 1px)',
-          backgroundSize: '24px 24px'
-        }}
+        style={{ backgroundImage: 'radial-gradient(#d1d5db 1px, transparent 1px)', backgroundSize: '24px 24px' }}
       />
 
       {mounted && <DvhPolyfill />}
 
-      {/* ── Bottom fade to white ──────────────────────────────────────────── */}
-      <div
-        className="absolute inset-x-0 bottom-0 pointer-events-none z-10"
-        style={{
-          height: '180px',
-          background: 'linear-gradient(to top, #ffffff 0%, rgba(255,255,255,0.85) 40%, transparent 100%)',
-        }}
-      />
-
-      {/* ── Text Content & CTA — always visible, no mounted gate ─────────── */}
-      <div className="relative z-20 flex flex-col items-center justify-center text-center px-6 w-full max-w-[880px] mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col items-center"
-        >
-
-
-          {/* Architecture Diagram (Sober, Minimalist SVG) */}
-          {/* Architecture Diagram (Full High-Fidelity Network Map) */}
-          <div className="w-full max-w-[1200px] mx-auto mb-10 h-[500px] md:h-[600px] overflow-hidden rounded-2xl border border-black/10 shadow-2xl relative bg-white">
-            <div className="w-full h-full overflow-auto no-scrollbar relative z-10">
-              <NetworkMapPanel />
-            </div>
-            {/* Soft fade gradients for embedded scrolling */}
-            <div className="absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-white to-transparent z-20 pointer-events-none"></div>
-            <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent z-20 pointer-events-none"></div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center gap-3">
-            <Link
-              href="/portfolio"
-              className="w-full sm:w-auto px-8 py-3.5 bg-black text-white text-[13px] font-semibold hover:bg-black/85 transition-colors shadow-2xl"
-            >
-              Open Application
-            </Link>
-            <Link
-              href="/developers/api-docs"
-              className="w-full sm:w-auto px-8 py-3.5 border border-black/30 bg-white/80 backdrop-blur-md text-black text-[13px] font-semibold hover:bg-white hover:border-black/60 transition-colors shadow-xl"
-            >
-              Read Documentation
-            </Link>
-          </div>
-        </motion.div>
+      {/* Architecture — full viewport width, borderless */}
+      <div className="relative z-10 w-full">
+        <NetworkMapPanel />
       </div>
 
-      {/* ── Scroll cue ──────────────────────────────────────────────────── */}
+      {/* Scroll cue */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-30 pointer-events-none">
         <div className="w-[1px] h-12 bg-gradient-to-b from-black/30 to-transparent" />
       </div>
     </section>
   );
 }
+
 
 /**
  * DvhPolyfill — sets `--vh` CSS custom property to the actual inner viewport
