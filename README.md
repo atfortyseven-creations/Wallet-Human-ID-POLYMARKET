@@ -4,6 +4,7 @@
 flowchart TD
     classDef layer fill:none,stroke:#94a3b8,stroke-width:2px,stroke-dasharray: 5 5,rx:10px
     classDef box fill:#0f172a,stroke:#3b82f6,stroke-width:2px,color:#f8fafc,rx:8px
+    classDef highlight fill:#1e1b4b,stroke:#8b5cf6,stroke-width:2px,color:#f8fafc,rx:8px
 
     subgraph L1 ["1. Client-Side Browser / Mobile"]
         PXE["Aztec PXE"]:::box
@@ -12,10 +13,10 @@ flowchart TD
     end
     class L1 layer
 
-    subgraph L2 ["2. Frontend Middleware"]
+    subgraph L2 ["2. Frontend Middleware & Signing"]
         Next["Next.js 15 & Tailwind"]:::box
-        Wagmi["WalletConnect & Wagmi"]:::box
-        Edge["WhaleFortress Edge"]:::box
+        Wagmi["Wagmi + WalletConnect"]:::box
+        Sign["ECDSA / SIWE Signing"]:::highlight
     end
     class L2 layer
 
@@ -26,11 +27,11 @@ flowchart TD
     end
     class L3 layer
 
-    subgraph L4 ["4. Core Products"]
+    subgraph L4 ["4. Core Products & Identity"]
         Chat["Whale Chat"]:::box
         Port["Portfolio"]:::box
-        HL["Humanity Ledger"]:::box
-        Studio["Studio Provenance"]:::box
+        HL["Identity (ZK Passport)"]:::highlight
+        Studio["Studio Provenance"]:::highlight
     end
     class L4 layer
 
