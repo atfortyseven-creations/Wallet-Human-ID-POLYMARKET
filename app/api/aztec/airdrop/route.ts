@@ -11,11 +11,11 @@ import { getSession } from '@/lib/session';
 
 export async function POST(req: Request) {
   try {
-    // [QUANTUM AEGIS] Zero-Trust Session Verification
-    const session = await getSession();
-    if (!session || !session.userId) {
-      return NextResponse.json({ error: 'UNAUTHORIZED: Cryptographic session required to claim airdrop.' }, { status: 401 });
-    }
+    // [QUANTUM AEGIS] Relaxed for Testnet Faucet: Web3 WalletConnect users 
+    // do not have a Next.js server session. We rely on the DB-level 
+    // one-per-address constraint below for testnet Sybil resistance.
+    // const session = await getSession();
+    // if (!session || !session.userId) { ... }
 
     const { address } = await req.json();
 
