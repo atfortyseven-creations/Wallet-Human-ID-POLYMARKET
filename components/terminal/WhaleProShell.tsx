@@ -47,17 +47,10 @@ interface NavItem {
 }
 
 const SIDEBAR_ITEMS: NavItem[] = [
-    { id: 'dashboard',       label: 'Dashboard',      icon: <span className="font-mono text-[10px] tracking-widest font-black">[DSH]</span> },
-    { id: 'portfolio',       label: 'Portfolio',      icon: <span className="font-mono text-[10px] tracking-widest font-black">[PTF]</span>, requiresZK: false },
-    { id: 'studio',          label: 'Studio',         icon: Icon.studio },
-    { id: 'markets',         label: 'Markets',        icon: Icon.markets,  requiresZK: true },
     { id: 'humanity-ledger', label: 'Roadmap',        icon: Icon.roadmap },
     { id: 'gold',            label: 'Identity',       icon: Icon.identity },
     { id: 'token',           label: 'Token',          icon: <span className="font-mono text-[10px] tracking-widest font-black">[TKN]</span> },
     { id: 'map',             label: 'Network Map',    icon: Icon.map },
-    { id: 'chat',            label: 'Chat',           icon: <span className="font-mono text-[10px] tracking-widest font-black">[CHT]</span> },
-    { id: 'community',       label: 'Community',      icon: <span className="font-mono text-[10px] tracking-widest font-black">[COM]</span> },
-    { id: 'status',          label: 'Status',         icon: <span className="font-mono text-[10px] tracking-widest font-black">[STS]</span> },
     { id: 'logs',            label: 'Privacy',        icon: Icon.logs },
 ];
 
