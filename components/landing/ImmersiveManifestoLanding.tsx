@@ -642,8 +642,8 @@ function FAQSection() {
       a: "Yes, but only if you explicitly authorize them. You can generate a specific 'viewing key' that grants read-only access to specific transactions for compliance purposes."
     },
     {
-      q: "How do I participate in prediction markets?",
-      a: "Whale Network provides seamless, private integration with Polymarket and similar protocols. Your identity is verified on-chain without exposing your personal details, allowing you to trade with complete privacy."
+      q: "What can I do once my identity is verified?",
+      a: "Once your zero-knowledge identity is established, you gain access to the full Whale Network terminal: encrypted peer-to-peer messaging via Whale Chat, provenance registration in the Studio, on-chain analytics in the Dashboard, and cryptographic session management across all twelve platform modules."
     },
     {
       q: "How do you handle KYC requirements?",
