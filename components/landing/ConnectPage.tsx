@@ -482,15 +482,20 @@ export default function ConnectPage() {
   const isVerified = mounted && isLinked;
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center bg-white relative overflow-hidden">
-      {/* Background Image — Responsive without zoom */}
+    <div className="w-full min-h-screen flex flex-col items-center relative overflow-hidden" style={{ background: '#0a0a0a' }}>
+      {/* Background Image — Full native resolution, zero quality loss */}
       <div 
-        className="absolute inset-0 z-0 bg-no-repeat bg-center"
+        className="absolute inset-0 z-0"
         style={{
-          backgroundImage: "url('/system-shots/connect-wallpaper.jpg')",
-          backgroundSize: 'cover',
+          backgroundImage: "url('/connect-wallpaper.jpg')",
+          backgroundSize: '100% auto',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'top center',
+          imageRendering: 'auto',
         }}
       />
+      {/* Subtle bottom gradient so buttons read clearly */}
+      <div className="absolute inset-0 z-[1] pointer-events-none" style={{ background: 'linear-gradient(to bottom, transparent 55%, rgba(0,0,0,0.72) 100%)' }} />
       
       {/* Interactive Particle Animation Overlay */}
       {mounted && <CanvasParticles isMobile={isMobile} />}
@@ -694,7 +699,91 @@ export default function ConnectPage() {
         />
       )}
 
-      {/* Bottom bar removed — image must show fully including Humanity Ledger text */}
+      {/* ─── Bottom Overlay: logos + store buttons ─────────────────────── */}
+      <div className="absolute bottom-0 left-0 right-0 z-30 flex flex-col items-center pb-6 pt-4 px-4 gap-5">
+
+        {/* Partners logo — centered */}
+        <img
+          src="/partners-logo.png"
+          alt="Humanity Ledger Partners"
+          className="h-10 md:h-12 w-auto object-contain opacity-95"
+          style={{ filter: 'drop-shadow(0 2px 12px rgba(0,0,0,0.45))' }}
+        />
+
+        {/* Whale Network ballena logo + wordmark */}
+        <div className="flex items-center gap-2.5">
+          <img
+            src="/ballena-checkpoint.png"
+            alt="Whale Network"
+            className="h-8 w-8 object-contain"
+            style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.6)) brightness(0) invert(1)' }}
+          />
+          <span className="text-white font-black text-[11px] uppercase tracking-[0.35em] opacity-90">Whale Network</span>
+        </div>
+
+        {/* Action buttons row */}
+        <div className="flex flex-wrap items-center justify-center gap-2.5">
+
+          {/* GitHub */}
+          <a
+            href="https://github.com/whalenetwork"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/95 backdrop-blur-sm border border-white/40 text-[#0a0a0a] hover:bg-white transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-95"
+          >
+            {/* GitHub SVG */}
+            <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0" fill="currentColor">
+              <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+            </svg>
+            <div className="text-left">
+              <div className="text-[10px] font-black uppercase tracking-widest leading-none">GitHub</div>
+              <div className="text-[8px] font-mono text-black/50 leading-none mt-0.5">whalenetwork</div>
+            </div>
+          </a>
+
+          {/* App Store */}
+          <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/95 backdrop-blur-sm border border-white/40 text-[#0a0a0a] shadow-lg cursor-not-allowed select-none">
+            {/* Apple SVG */}
+            <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0" fill="currentColor">
+              <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+            </svg>
+            <div className="text-left">
+              <div className="text-[10px] font-black uppercase tracking-widest leading-none">App Store</div>
+              <div className="text-[8px] font-mono text-[#D4AF37] leading-none mt-0.5 font-bold">Coming 01/01/2027</div>
+            </div>
+          </div>
+
+          {/* Google Play */}
+          <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/95 backdrop-blur-sm border border-white/40 text-[#0a0a0a] shadow-lg cursor-not-allowed select-none">
+            {/* Google Play SVG */}
+            <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0" fill="currentColor">
+              <path d="M3.18 23.76c.3.17.65.19.96.07l12.75-7.37-2.79-2.79L3.18 23.76zm-1.13-1.49V1.73c0-.43.23-.82.6-1.03L15.19 12l-13.14 12.3c0-.01 0-.02-.01-.03zm15.53-8.12l2.38 2.38c.41.41.41 1.07 0 1.48L17.72 20l-2.79-2.79 2.65-3.06zM3.18.24c.31-.12.66-.1.96.07L16.9 7.68l-2.79 2.79L3.18.24z"/>
+            </svg>
+            <div className="text-left">
+              <div className="text-[10px] font-black uppercase tracking-widest leading-none">Google Play</div>
+              <div className="text-[8px] font-mono text-[#D4AF37] leading-none mt-0.5 font-bold">Coming 01/01/2027</div>
+            </div>
+          </div>
+
+          {/* Chrome Extension */}
+          <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/95 backdrop-blur-sm border border-white/40 text-[#0a0a0a] shadow-lg cursor-not-allowed select-none">
+            {/* Chrome SVG */}
+            <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0" fill="currentColor">
+              <path d="M12 0C8.21 0 4.831 1.757 2.632 4.501l3.953 6.848A5.454 5.454 0 0 1 12 6.545h10.691A12 12 0 0 0 12 0zM1.931 5.47A11.943 11.943 0 0 0 0 12c0 6.012 4.42 10.991 10.189 11.864l3.953-6.847a5.45 5.45 0 0 1-6.865-2.29zm13.342 2.166a5.446 5.446 0 0 1 1.45 7.09l.002.001h-.002l-5.344 9.257c.206.01.413.016.621.016 6.627 0 12-5.373 12-12 0-1.54-.29-3.011-.818-4.364zM12 16.364a4.364 4.364 0 1 1 0-8.728 4.364 4.364 0 0 1 0 8.728Z"/>
+            </svg>
+            <div className="text-left">
+              <div className="text-[10px] font-black uppercase tracking-widest leading-none">Chrome Extension</div>
+              <div className="text-[8px] font-mono text-[#D4AF37] leading-none mt-0.5 font-bold">Coming Soon</div>
+            </div>
+          </div>
+
+        </div>{/* end buttons row */}
+
+        {/* Copyright */}
+        <p className="text-white/35 text-[8px] font-mono uppercase tracking-[0.25em]">
+          © 2027 Humanity Ledger · Whale Network · All rights reserved
+        </p>
+      </div>
     </div>
   );
 }
