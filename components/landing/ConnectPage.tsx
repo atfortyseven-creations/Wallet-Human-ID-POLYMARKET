@@ -269,38 +269,54 @@ export default function ConnectPage() {
           const hydrateRes = await fetch('/api/auth/qr-hydrate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify({ jwt })
           });
 
           if (hydrateRes.ok) {
-            // [SESSION PERSISTENCE] Decode the wallet address from the JWT payload
-            // and persist it in localStorage so useSystemAccount auto-restores
-            // the session on page reload — making QR sessions identical in durability
-            // to Humanity Ledger and MetaMask sessions.
+            // [SESSION PERSISTENCE] Use address returned from qr-hydrate body directly
+            // — avoids JWT base64 decode fragility and cookie propagation timing races.
+            // The API verifies the JWT and returns a clean lowercase address.
             try {
-              const parts = jwt.split('.');
-              if (parts.length === 3) {
-                const payloadRaw = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
-                const addr = (payloadRaw.sub || payloadRaw.address || '') as string;
-                if (addr && addr.startsWith('0x') && addr.length === 42) {
-                  const normalized = addr.toLowerCase();
-                  // 7-day expiry — same as cookie maxAge
-                  localStorage.setItem('system_session_v2', JSON.stringify({
-                    wallet: normalized,
-                    exp: Date.now() + 604800 * 1000,
-                    source: 'qr-handshake',
-                  }));
-                  try {
-                    sessionStorage.setItem('system_wallet_addr', normalized);
-                    sessionStorage.setItem('portfolio_unlocked', 'true');
-                    sessionStorage.removeItem('__disconnected__');
-                    localStorage.removeItem('__disconnected__');
-                  } catch {}
-                  // Also set system_handshake client-side as belt-and-suspenders
-                  document.cookie = `system_handshake=${normalized}; path=/; max-age=604800; SameSite=Lax`;
+              const hydrateData = await hydrateRes.json().catch(() => ({}));
+              // Use API-supplied address first, fall back to JWT decode
+              let normalized: string | null = (hydrateData as any).address || null;
+              if (!normalized) {
+                // Fallback: decode JWT locally
+                const parts = jwt.split('.');
+                if (parts.length === 3) {
+                  const payloadRaw = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+                  const addr = (payloadRaw.sub || payloadRaw.address || '') as string;
+                  if (addr && addr.startsWith('0x') && addr.length === 42) {
+                    normalized = addr.toLowerCase();
+                  }
                 }
               }
-            } catch {}
+
+              if (normalized) {
+                // [FULL SESSION PERSISTENCE] Write system_session_v2 so useSystemAccount
+                // auto-restores the QR session on every subsequent page load — identical
+                // durability to MetaMask and Humanity Ledger sessions.
+                localStorage.setItem('system_session_v2', JSON.stringify({
+                  wallet: normalized,
+                  exp: Date.now() + 604800 * 1000, // 7 days
+                  source: 'qr-handshake',
+                }));
+                // Seed sessionStorage immediately so guards see the session before redirect
+                sessionStorage.setItem('system_wallet_addr', normalized);
+                sessionStorage.setItem('portfolio_unlocked', 'true');
+                // Clear any stale disconnect guard
+                sessionStorage.removeItem('__disconnected__');
+                localStorage.removeItem('__disconnected__');
+                // belt-and-suspenders: set client-readable handshake cookie
+                // so useSystemAccount.readHandshakeCookie() sees it instantly
+                document.cookie = `system_handshake=${normalized}; path=/; max-age=604800; SameSite=Lax`;
+                // Also update UI store so linked state is immediate
+                setLinked(true);
+              }
+            } catch (persistErr) {
+              console.warn('[QR:Desktop] Session persistence error (non-fatal):', persistErr);
+            }
 
             // Small delay so the SYNCED animation plays before redirect
             await new Promise(r => setTimeout(r, 800));

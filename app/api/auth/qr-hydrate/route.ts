@@ -11,9 +11,13 @@ import { verifyJWT } from '@/lib/jwt';
  * Sets the same cookie trio as /api/auth/system-verify so every auth
  * path (Humanity Ledger, MetaMask, Rainbow, QR scan) is fully equivalent:
  *
- *   whale_session   — HttpOnly JWT for server-side middleware validation
- *   human_session   — HttpOnly JWT for client-facing session reads
+ *   whale_session    — HttpOnly JWT for server-side middleware validation
+ *   human_session    — HttpOnly JWT for client-facing session reads
  *   system_handshake — JS-readable Ethereum address for TitaniumGate / MobileEnforcer
+ *
+ * [AUDIT FIX] Also returns the address and jwt in the JSON body so ConnectPage
+ * can seed localStorage (system_session_v2) and sessionStorage client-side
+ * WITHOUT relying on cookie propagation timing races.
  */
 export async function POST(req: NextRequest) {
   try {
@@ -41,7 +45,13 @@ export async function POST(req: NextRequest) {
       domain: cookieDomain,
     };
 
-    const response = NextResponse.json({ success: true });
+    // [AUDIT FIX] Return address + jwt in body so client can immediately seed
+    // localStorage (system_session_v2) and sessionStorage without cookie race.
+    const response = NextResponse.json({
+      success: true,
+      address: address.toLowerCase(),
+      jwt,
+    });
 
     // [PARITY FIX] Set whale_session so middleware siweSessionValid = true.
     // Previously only human_session was set, causing middleware to fall back
