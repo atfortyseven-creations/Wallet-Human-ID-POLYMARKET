@@ -362,9 +362,9 @@ export function NetworkMapPanel() {
 
                 {/* Identity */}
                 <motion.div variants={item} className="flex flex-col p-7 rounded-3xl bg-black text-white shadow-2xl hover:-translate-y-1 transition-all duration-500 col-span-1 md:col-span-2">
-                  <div className="text-[10px] font-mono font-black uppercase tracking-[0.3em] text-white/40 mb-3">ZK Identity System</div>
-                  <h3 className="text-2xl font-black mb-1">Identity — ZK Passport</h3>
-                  <p className="text-xs text-white/50 font-mono mb-6">Humanity Ledger · Gold Ticket · Genesis Claims</p>
+                  <div className="text-[10px] font-mono font-black uppercase tracking-[0.3em] text-white/40 mb-3">Cryptographic Identity System</div>
+                  <h3 className="text-2xl font-black mb-1">Humanity Ledger Identity</h3>
+                  <p className="text-xs text-white/50 font-mono mb-6">Indexed Wallet Signature · Gold Ticket · Beta Supply: max 200</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="p-4 bg-white/5 border border-white/10 rounded-2xl">
                       <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-white/30 mb-2">Signing Flow</div>

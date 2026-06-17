@@ -30,7 +30,7 @@ flowchart TD
     subgraph L4 ["4. Core Products & Identity"]
         Chat["Whale Chat"]:::box
         Port["Portfolio"]:::box
-        HL["Identity (ZK Passport)"]:::highlight
+        HL["Humanity Ledger Identity"]:::highlight
         Studio["Studio Provenance"]:::highlight
     end
     class L4 layer
