@@ -659,7 +659,6 @@ export default function ConnectPage() {
                 </svg>
                 <span className="text-[10px] font-black uppercase tracking-widest text-black">iOS</span>
               </div>
-              </div>
               {/* Google Play */}
               <div className="flex items-center gap-2 px-3 py-2 bg-black/[0.04] rounded-xl border border-black/5">
                 <svg viewBox="0 0 24 24" className="w-4 h-4 text-black" fill="currentColor">
