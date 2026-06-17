@@ -503,7 +503,7 @@ export default function ConnectPage() {
       <div className="relative z-10 w-full flex-1 flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-16 px-4 py-8 lg:px-12 min-h-screen" style={{ pointerEvents: 'none' }}>
 
         {/* ── LEFT: Login Panel ── */}
-        <div className="w-full max-w-[440px] flex-shrink-0 flex flex-col bg-white/95 backdrop-blur-md rounded-[24px] border border-[#F0F0F0] shadow-[0_8px_60px_rgba(0,0,0,0.22)] p-8 z-20" style={{ pointerEvents: 'all' }}>
+        <div className="w-full max-w-md flex-shrink-0 flex flex-col bg-white/95 backdrop-blur-md rounded-[24px] border border-[#F0F0F0] shadow-[0_8px_60px_rgba(0,0,0,0.22)] p-8 z-20" style={{ pointerEvents: 'all' }}>
 
           <div className="flex items-center gap-3 mb-8 pb-5 border-b border-black/5">
             <Lock size={16} strokeWidth={1.2} className="text-[#0A0A0A]" />
@@ -635,7 +635,7 @@ export default function ConnectPage() {
         </div>
 
         {/* ── RIGHT: Whale Network Info + Coming Soon Panel ── */}
-        <div className="w-full max-w-[360px] flex-shrink-0 flex flex-col gap-4" style={{ pointerEvents: 'all' }}>
+        <div className="w-full max-w-sm flex-shrink-0 flex flex-col gap-4" style={{ pointerEvents: 'all' }}>
           
           {/* Main Info Card - Small Button style */}
           <div className="bg-white rounded-2xl shadow-lg p-5 flex flex-col gap-3 items-center text-center">
