@@ -659,10 +659,41 @@ export default function ConnectPage() {
                 </svg>
                 <span className="text-[10px] font-black uppercase tracking-widest text-black">iOS</span>
               </div>
+              </div>
               {/* Google Play */}
-              </a>
-
+              <div className="flex items-center gap-2 px-3 py-2 bg-black/[0.04] rounded-xl border border-black/5">
+                <svg viewBox="0 0 24 24" className="w-4 h-4 text-black" fill="currentColor">
+                  <path d="M3.18 23.76c.3.17.65.19.96.07l12.75-7.37-2.79-2.79L3.18 23.76zm-1.13-1.49V1.73c0-.43.23-.82.6-1.03L15.19 12l-13.14 12.3c0-.01 0-.02-.01-.03zm15.53-8.12l2.38 2.38c.41.41.41 1.07 0 1.48L17.72 20l-2.79-2.79 2.65-3.06zM3.18.24c.31-.12.66-.1.96.07L16.9 7.68l-2.79 2.79L3.18.24z"/>
+                </svg>
+                <span className="text-[10px] font-black uppercase tracking-widest text-black">Android</span>
+              </div>
+              {/* Chrome Ext */}
+              <div className="flex items-center gap-2 px-3 py-2 bg-black/[0.04] rounded-xl border border-black/5">
+                <svg viewBox="0 0 24 24" className="w-4 h-4 text-black" fill="currentColor">
+                  <path d="M12 0C8.21 0 4.831 1.757 2.632 4.501l3.953 6.848A5.454 5.454 0 0 1 12 6.545h10.691A12 12 0 0 0 12 0zM1.931 5.47A11.943 11.943 0 0 0 0 12c0 6.012 4.42 10.991 10.189 11.864l3.953-6.847a5.45 5.45 0 0 1-6.865-2.29zm13.342 2.166a5.446 5.446 0 0 1 1.45 7.09l.002.001h-.002l-5.344 9.257c.206.01.413.016.621.016 6.627 0 12-5.373 12-12 0-1.54-.29-3.011-.818-4.364zM12 16.364a4.364 4.364 0 1 1 0-8.728 4.364 4.364 0 0 1 0 8.728Z"/>
+                </svg>
+                <span className="text-[10px] font-black uppercase tracking-widest text-black">Chrome</span>
+              </div>
             </div>
+          </div>
+
+          {/* Socials Row */}
+          <div className="flex gap-3 justify-center">
+            <a href="https://github.com/whalenetwork" target="_blank" rel="noopener noreferrer" className="flex flex-1 items-center justify-center gap-2 px-3 py-3 rounded-2xl bg-white shadow-lg text-black hover:-translate-y-0.5 transition-all">
+              <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor">
+                <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+              </svg>
+            </a>
+            <a href="https://t.me/humanityledger" target="_blank" rel="noopener noreferrer" className="flex flex-1 items-center justify-center gap-2 px-3 py-3 rounded-2xl bg-white shadow-lg text-[#2AABEE] hover:-translate-y-0.5 transition-all">
+              <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor">
+                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.94z"/>
+              </svg>
+            </a>
+            <a href="https://linkedin.com/in/stefan-antonio-cirisanu" target="_blank" rel="noopener noreferrer" className="flex flex-1 items-center justify-center gap-2 px-3 py-3 rounded-2xl bg-white shadow-lg text-[#0A66C2] hover:-translate-y-0.5 transition-all">
+              <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+            </a>
           </div>
 
           {/* Copyright */}
