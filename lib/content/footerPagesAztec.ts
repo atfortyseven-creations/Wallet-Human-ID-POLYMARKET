@@ -355,21 +355,57 @@ export const ROADMAP_SECTIONS: AztecDocSection[] = [
   {
     title: 'Current State — June 2026',
     paragraphs: [
-      'Humanity Ledger is currently in active testnet development on the Aztec Network. The following documents what has been fully specified and designed. We do not make projections for unbuilt features — this page reflects only what exists today.',
+      'Humanity Ledger is currently in active testnet development on the Aztec Network. We have successfully completed the native integration of Noir and Aztec components (v0.67.0 & Noir v0.36.0), standardizing our cryptographic primitives across all 18 core circuits.',
     ],
   },
   {
     id: 'current-infrastructure',
     title: 'What Is Complete Today',
     paragraphs: [
-      'The following components are fully specified, designed, and verified against the Aztec testnet documentation:',
+      'The following components are fully specified, designed, and natively verified against the Aztec infrastructure:',
     ],
     bullets: [
-      'Native Aztec Token Architecture: The QDs utility token is designed exclusively as a Noir smart contract on Aztec, leveraging the Barretenberg (UltraHonk) proving backend. The contract specification is finalized. Testnet deployment is in progress.',
-      'Private Identity Circuit: The mint_private_license Noir circuit is fully specified — it gates token access behind a zero-knowledge KYC credential, without exposing user identity data on-chain. Circuit implementation is in active development.',
-      'Frontend Integration: The humanidfi.com platform is live and deployed to production on Railway. It connects to the Aztec testnet RPC endpoint (rpc.testnet.aztec-labs.com).',
-      'MiCA Legal Framework: A complete suite of 25 regulatory documents mapping the current protocol architecture to European MiCA standards has been drafted and is in the formal process of being signed.'
+      'Native Aztec Architecture: Standardized all Noir circuits to use the `0.67.0` Aztec toolchain, enforcing robust Barretenberg Verifier capabilities (`bb write_solidity_verifier`).',
+      'Whale Chat & Messaging: Deployed XMTP-powered End-to-End Encrypted messaging. Initial architecture audit complete, laying the groundwork for future Noir-shielded metadata integration.',
+      'Cryptographic Identity Portfolio: The Identity interface strictly polls from the `AztecNativeContext` without mock data. A resilient, sybil-resistant 200 Beta Supply Indexed Wallet Signature is fully implemented.',
+      'MiCA Legal Framework: A complete suite of 25 regulatory documents mapping the current protocol architecture to European MiCA standards has been formally drafted and is in the execution process.'
     ],
+  },
+  {
+    id: 'q3-2026',
+    title: 'Q3 2026: Security & Formal Verification',
+    paragraphs: [
+      'The focus shifts to rigorous auditing and mathematical proofs.'
+    ],
+    bullets: [
+      'Security Audits: Comprehensive third-party audits of Whale Chat encryption bridges and the Aztec Identity logic.',
+      'Formal Verification: Mathematical proofs of the `mint_private_license` Noir circuit to guarantee sound constraint execution.',
+      'Private Portfolio Integration: Connecting the frontend Identity interface with live on-chain private state transitions.'
+    ]
+  },
+  {
+    id: 'q4-2026',
+    title: 'Q4 2026: Institutional Pilots',
+    paragraphs: [
+      'Preparing the infrastructure for enterprise and high-volume usage.'
+    ],
+    bullets: [
+      'Pre-Mainnet Shadow Deployment: Running the entire architecture against an Aztec mainnet shadow fork.',
+      'Dark Pool Testing: Institutional pilot testing for the zero-knowledge Dark Pool and Sentiment nodes.',
+      'Performance Tuning: Optimizing WASM/PXE execution speeds on mobile devices.'
+    ]
+  },
+  {
+    id: 'january-2027',
+    title: 'January 2027: Genesis & Open Network',
+    paragraphs: [
+      'The official launch of Humanity Ledger on Aztec Mainnet.'
+    ],
+    bullets: [
+      'Aztec Mainnet Readiness: Full deployment of the verified smart contracts.',
+      'Token Generation Event (TGE): The Genesis claims for the 200 Beta Supply of the Indexed Identity open to the whitelisted Gold Ticket holders.',
+      'Sentinel Network Rollout: Public availability of the private market intelligence and Whale alerts.'
+    ]
   }
 ];
 

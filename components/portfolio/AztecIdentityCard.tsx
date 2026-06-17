@@ -40,7 +40,7 @@ const L1_ROLLUP_ADDR    = '0xf6d0d42ace06829becb78c74f49879528fc632c1';
 const L1_FEE_JUICE_ADDR = '0x762c132040fda6183066fa3b14d985ee55aa3c18';
 const L1_INBOX_ADDR     = '0xf1bb424ac888aa239f1e658b5bddabc65a1c94e6';
 const L1_REGISTRY_ADDR  = '0xa0bfb1b494fb49041e5c6e8c2c1be09cd171c6ba';
-const NODE_VERSION      = '4.3.1';
+const NODE_VERSION      = '0.67.0';
 const LIVE_BLOCK_HEIGHT = 104431;
 
 // ─── Utility ──────────────────────────────────────────────────────────────────
