@@ -3,12 +3,12 @@
 import Link from 'next/link';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { useAccount } from 'wagmi';
+import { useSystemAccount } from '@/hooks/useSystemAccount';
 
 // SECURITY: Session gate for Studio Provenance / Terminal.
 // Authentication priority:
 //   1. Server-side JWT (human_session / whale_session) via /api/auth/verify-session
-//   2. Live wagmi wallet connection (address present = wallet connected in browser)
+//   2. Live system/wagmi wallet connection (address present = wallet connected in browser)
 //
 // Rationale: The terminal is a read-heavy dashboard. A connected wallet is
 // sufficient to view your own data. Destructive write operations within each
@@ -17,7 +17,7 @@ import { useAccount } from 'wagmi';
 export function ProvenanceSessionGate({ children }: { children: React.ReactNode }) {
   // null = loading, true = authenticated, false = not authenticated
   const [authState, setAuthState] = useState<null | boolean>(null);
-  const { address, isConnected } = useAccount();
+  const { address, isConnected } = useSystemAccount();
 
   useEffect(() => {
     let cancelled = false;

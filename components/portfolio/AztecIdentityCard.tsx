@@ -531,12 +531,6 @@ export function AztecIdentityCard() {
       toast.error('Wallet not connected via WalletConnect');
       return;
     }
-    
-    const isHumanityLedger = connector?.id === 'humanity-ledger-login' || connector?.id === 'humanity-ledger-signup';
-    if (isHumanityLedger) {
-      toast.error('Airdrop is only available for WalletConnect wallets');
-      return;
-    }
 
     try {
       let finalSignature = 'SESSION:AUTHENTICATED';
@@ -591,7 +585,7 @@ export function AztecIdentityCard() {
           Enter your EVM address or seed phrase. Your Aztec Schnorr identity will be derived server-side via SHA-256.
         </p>
         <div className="w-full max-w-[280px] space-y-3">
-          {isConnected && evmAddress && connector?.id !== 'humanity-ledger-login' && connector?.id !== 'humanity-ledger-signup' ? (
+          {isConnected && evmAddress ? (
             <div className="flex flex-col gap-3 w-full pb-4 mb-4 border-b border-zinc-900/10">
               <div className="text-[10px] font-black uppercase text-center text-emerald-600 mb-1">
                 WalletConnected Detected

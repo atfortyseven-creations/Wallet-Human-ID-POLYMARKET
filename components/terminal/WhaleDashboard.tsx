@@ -34,7 +34,10 @@ const Registry = {
   PortfolioDashboard: dynamic(() => import('@/components/terminal/PortfolioDashboard'), { ssr: false, loading: LoadingPanel }),
   InstitutionalMarkets: dynamic(() => import('@/components/terminal/InstitutionalMarkets').then(m => ({ default: m.InstitutionalMarkets })), { ssr: false, loading: LoadingPanel }),
   WhaleChat: dynamic(() => import('@/components/terminal/WhaleChat').then(m => ({ default: m.WhaleChat })), { ssr: false, loading: LoadingPanel }),
-  ProvenanceStudioContent: dynamic(() => import('@/components/provenance/ProvenanceStudioContent').then(m => ({ default: m.ProvenanceStudioContent })), { ssr: false, loading: LoadingPanel })
+  ProvenanceStudioContent: dynamic(() => import('@/components/provenance/ProvenanceStudioContent').then(m => ({ default: m.ProvenanceStudioContent })), { ssr: false, loading: LoadingPanel }),
+  GalacticDashboard: dynamic(() => import('@/components/terminal/GalacticDashboard').then(m => ({ default: m.GalacticDashboard })), { ssr: false, loading: LoadingPanel }),
+  SubscriptionDashboard: dynamic(() => import('@/components/terminal/SubscriptionDashboard').then(m => ({ default: m.SubscriptionDashboard })), { ssr: false, loading: LoadingPanel }),
+  NetworkDashboard: dynamic(() => import('@/components/network/NetworkDashboard').then(m => ({ default: m.NetworkDashboard })), { ssr: false, loading: LoadingPanel })
 } as const;
 
 import "@/app/terminal/terminal.css";
@@ -52,6 +55,7 @@ const PANEL_STYLE = "flex-1 w-full h-full min-h-0 flex flex-col";
 
 const RouteRenderer = React.memo(({ route, reconciliationKey, mutateRoute }: RouteRendererProps) => {
     const ComponentMap: Record<string, JSX.Element> = {
+        'dashboard': <Registry.GalacticDashboard />,
         'zk-identity': <GoldTicketPanel />,
         'gold': <GoldTicketPanel />,
         'chat': <Registry.WhaleChat />,
@@ -64,6 +68,10 @@ const RouteRenderer = React.memo(({ route, reconciliationKey, mutateRoute }: Rou
         'logs': <Registry.SessionLogsPanel />,
         'map': <Registry.NetworkMapPanel />,
         'studio': <Registry.ProvenanceStudioContent variant="desktop" />,
+        
+        'token': <Registry.SubscriptionDashboard />,
+        'community': <Registry.WhaleSupport />,
+        'status': <Registry.NetworkDashboard />,
     };
 
     const targetComponent = ComponentMap[route] || <GoldTicketPanel />;
