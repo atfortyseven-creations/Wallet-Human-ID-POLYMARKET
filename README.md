@@ -1,41 +1,59 @@
-# Humanity Ledger
+# Whale Network
 
-A Web3 Wallet interface built to support advanced privacy networks, with a core focus on **Aztec Network** integration. The application provides a seamless user experience for managing digital assets, performing private transactions, and interacting with decentralized applications (dApps).
-
-## Aztec Network Integration
-
-This repository is optimized to work with the Aztec Network ecosystem, leveraging its privacy-preserving architecture.
-
-### Key Components
-
-1.  **Noir Circuits & Smart Contracts:** The protocol logic is designed to be compiled in Noir (Aztec's Rust-based DSL). This allows for the generation of Zero-Knowledge proofs that enforce state transitions without revealing user data.
-2.  **Honk & UltraPlonk Proving Backends:** The application supports WebAssembly (WASM) proof generation directly in the browser, allowing users to generate ZK proofs client-side for maximum privacy and low latency.
-3.  **Private Execution Environment (PXE):** The system relies on the Aztec PXE to run entirely on the client side. It maintains the user's private note database, manages key derivations, and syncs with the L2 RPC to fetch encrypted logs, ensuring that private keys never leave the browser environment.
-4.  **Public/Private Composability:** The interface is built to handle cross-domain calls between the private execution context and public state contracts (e.g., L2 AMMs).
+Whale Network is an advanced Web3 ecosystem and decentralized terminal designed for secure identity management, asset tracking, and private zero-knowledge interactions. The architecture integrates cross-device synchronization with deep blockchain analytics.
 
 ## System Architecture
 
-The application is built using modern web standards:
+The platform operates on a modular, 12-component terminal interface built to handle extensive real-time data and cryptographic operations without compromising performance.
 
-- **Frontend:** React and Next.js (App Router) for server-side rendering and optimized client delivery.
-- **Authentication:** WalletConnect and Wagmi for standard Web3 wallet connections.
-- **Styling:** Tailwind CSS for responsive design across Desktop, iOS, and Android platforms.
-- **Database:** Prisma ORM for relational data management and indexing.
+### 1. Terminal Modules
+The ecosystem is divided into twelve dedicated functional areas:
+- **Dashboard**: Unified tracking of global on-chain metrics and user portfolio.
+- **Studio**: Digital asset provenance and registration interface.
+- **Markets**: Institutional-grade tracking for token metrics, market cap, and live pricing.
+- **Roadmap**: Interactive visualization of protocol development phases.
+- **Identity**: Zero-knowledge passport system utilizing Aztec network infrastructure.
+- **Token**: Utility and subscription tier management.
+- **Map**: Visual representation of global node distribution and connectivity.
+- **Chat**: Encrypted peer-to-peer communication layer (XMTP integration).
+- **Portfolio**: Detailed breakdown of holding allocations across EVM networks.
+- **Community**: Access to governance and support forums.
+- **Status**: Live network health and block latency monitoring.
+- **Privacy**: Transparent review of session routing and cryptographic handshakes.
+
+### 2. Cryptographic Synchronization
+Whale Network implements a highly secure, out-of-band device linking protocol. By scanning a QR code, the mobile application establishes an ephemeral X25519 Elliptic Curve Diffie-Hellman (ECDH) handshake with the desktop terminal. This allows seamless session transfers and cryptographic signing delegation without exposing private keys over the network.
+
+### 3. Zero-Knowledge Integration
+The application interfaces directly with the Aztec Network Local Private Execution Environment (PXE). 
+- **Identity Management**: Users generate zero-knowledge proofs client-side to verify their identity and execute actions without revealing underlying data.
+- **Claim Processing**: The system supports secure token claims and airdrops through strictly validated cryptographic signatures.
+
+### 4. Local Vaults and EVM Support
+- **Native Vaults**: System-level password protection for local encrypted key storage.
+- **Multi-Chain Connectivity**: Full integration with Wagmi and Viem to support standard Web3 wallet connections across Ethereum, Polygon, and Base.
+
+## Technical Stack
+
+- **Frontend**: Next.js 15 (App Router), React, and Tailwind CSS.
+- **State Management**: React hooks paired with Zustand for global and wallet state.
+- **Database**: PostgreSQL database indexed and managed via Prisma ORM.
+- **Web3 Integrations**: WalletConnect, Wagmi, Viem, and Aztec SDKs.
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js (v18+)
+- Node.js (v18 or higher)
 - npm or pnpm
-- PostgreSQL (if running the indexer locally)
+- PostgreSQL instance
 
 ### Installation
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/humanityledger/Humanity-Ledger.git
-   cd Humanity-Ledger
+   git clone https://github.com/whalenetwork/whale-wallet.git
+   cd whale-wallet
    ```
 
 2. Install dependencies:
@@ -43,27 +61,23 @@ The application is built using modern web standards:
    npm install
    ```
 
-3. Set up your environment variables:
-   Copy `.env.example` to `.env` and fill in your RPC URLs and database connection strings.
+3. Configure environment variables:
+   Copy `.env.example` to `.env` and provide your specific RPC URLs and database connection strings.
 
-4. Run the development server:
+4. Initialize the database:
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+
+5. Run the development server:
    ```bash
    npm run dev
    ```
 
-## Contributing
-
-We welcome contributions from the community, especially regarding Aztec Network integrations and ZK-circuit optimizations. 
-
-1. Fork the repository.
-2. Create your feature branch (`git checkout -b feature/AztecIntegration`).
-3. Commit your changes (`git commit -m 'feat: add Noir circuit support'`).
-4. Push to the branch (`git push origin feature/AztecIntegration`).
-5. Open a Pull Request.
-
 ## Security
 
-If you discover a security vulnerability within this project, please report it directly to the maintainers via email rather than opening a public issue. We take security seriously and will address any reports promptly.
+If you discover a security vulnerability within this project, please report it directly to the maintainers rather than opening a public issue. We adhere to strict security protocols and will address any vulnerabilities immediately.
 
 ## License
 
