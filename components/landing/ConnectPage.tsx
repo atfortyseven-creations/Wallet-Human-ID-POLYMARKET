@@ -482,10 +482,10 @@ export default function ConnectPage() {
   const isVerified = mounted && isLinked;
 
   return (
-    <div className="w-full min-h-screen flex flex-col relative overflow-hidden" style={{ background: '#0a1628' }}>
+    <div className="w-full min-h-screen flex flex-col relative overflow-y-auto overflow-x-hidden" style={{ background: '#0a1628' }}>
       {/* Background — cover fills every pixel at any viewport size, no black bleed */}
       <div
-        className="absolute inset-0 z-0"
+        className="fixed inset-0 z-0"
         style={{
           backgroundImage: "url('/connect-wallpaper.jpg')",
           backgroundSize: 'cover',
@@ -503,7 +503,7 @@ export default function ConnectPage() {
       <div className="relative z-10 w-full flex-1 flex flex-col lg:flex-row items-center justify-center gap-6 px-4 py-8 lg:px-12 min-h-screen" style={{ pointerEvents: 'none' }}>
 
         {/* ── LEFT: Login Panel ── */}
-        <div className="w-full max-w-[440px] flex-shrink-0 flex flex-col bg-white/97 backdrop-blur-sm rounded-[24px] border border-[#F0F0F0] shadow-[0_8px_60px_rgba(0,0,0,0.22)] p-8 z-20" style={{ pointerEvents: 'all' }}>
+        <div className="w-full max-w-[440px] flex-shrink-0 flex flex-col bg-white/95 backdrop-blur-md rounded-[24px] border border-[#F0F0F0] shadow-[0_8px_60px_rgba(0,0,0,0.22)] p-8 z-20" style={{ pointerEvents: 'all' }}>
 
           <div className="flex items-center gap-3 mb-8 pb-5 border-b border-black/5">
             <Lock size={16} strokeWidth={1.2} className="text-[#0A0A0A]" />
@@ -636,133 +636,30 @@ export default function ConnectPage() {
 
         {/* ── RIGHT: Whale Network Info + Coming Soon Panel ── */}
         <div className="w-full max-w-[360px] flex-shrink-0 flex flex-col gap-4" style={{ pointerEvents: 'all' }}>
-
-          {/* Main Info Card */}
-          <div className="bg-white rounded-[24px] border border-white/60 shadow-[0_8px_60px_rgba(0,0,0,0.22)] p-6">
-
-            {/* Header: logos */}
-            <div className="flex items-center gap-3 mb-5 pb-4 border-b border-black/6">
-              <img src="/ballena-checkpoint.png" alt="Whale Network" className="h-9 w-9 object-contain" />
-              <div>
-                <div className="text-[13px] font-black uppercase tracking-[0.25em] text-[#0a0a0a] leading-none">Whale Network</div>
-                <div className="text-[9px] font-mono text-black/40 uppercase tracking-widest mt-0.5">by Humanity Ledger</div>
-              </div>
-              <img src="/partners-logo.png" alt="Aztec" className="h-7 w-auto object-contain ml-auto" style={{ filter: 'brightness(0) opacity(0.75)' }} />
+          
+          {/* Main Info Card - Small Button style */}
+          <div className="bg-white rounded-2xl shadow-lg p-5 flex flex-col gap-3 items-center text-center">
+            <div className="flex items-center gap-2">
+              <img src="/ballena-checkpoint.png" alt="Whale Network" className="h-6 w-6 object-contain" />
+              <div className="text-[12px] font-black uppercase tracking-[0.25em] text-[#0a0a0a] leading-none">Whale Network</div>
             </div>
-
-            {/* Description */}
-            <p className="text-[12px] text-[#333] leading-relaxed mb-5 font-medium">
+            <p className="text-[11px] text-[#333] leading-relaxed font-medium">
               Whale Network is an advanced ecosystem for the management of digital assets and zero knowledge identities. The platform unites cross device state synchronisation and client side proof generation into a secure architecture powered by the Aztec Network.
             </p>
-
-            {/* Tag pills */}
-            <div className="flex flex-wrap gap-1.5 mb-5">
-              {['ZK Identity', 'Encrypted Chat', 'Portfolio Management', 'Network Telemetry', 'Noir Circuits'].map(tag => (
-                <span key={tag} className="px-2.5 py-1 rounded-full bg-black/5 text-[9px] font-black uppercase tracking-widest text-black/60">{tag}</span>
-              ))}
-            </div>
-
-            {/* ── Platform Availability ── */}
-            <div className="text-[9px] font-black uppercase tracking-[0.25em] text-black/35 mb-3">Soon in all platforms</div>
-            <div className="flex flex-col gap-2">
-
-              {/* App Store */}
-              <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/[0.03] border border-black/6">
-                {/* Apple gradient icon */}
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(145deg,#1a93d9,#3eceff)' }}>
-                  <svg viewBox="0 0 24 24" className="w-5 h-5" fill="white">
-                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-                  </svg>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[11px] font-black text-[#0a0a0a] leading-none">App Store</div>
-                  <div className="text-[9px] text-black/40 mt-0.5">iOS — Available 01/01/2027</div>
-                </div>
-                <span className="text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-full" style={{ background: '#D4AF3720', color: '#b8902a' }}>Soon</span>
-              </div>
-
-              {/* Google Play */}
-              <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/[0.03] border border-black/6">
-                {/* Google Play multicolor icon */}
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-white border border-black/8 shadow-sm">
-                  <svg viewBox="0 0 512 512" className="w-5 h-5">
-                    <path fill="#00C4FF" d="M32 32 272 272 32 512z"/>
-                    <path fill="#FF3D00" d="M32 32l240 135L32 272z"/>
-                    <path fill="#FFD400" d="M32 272l240-105 208 105z"/>
-                    <path fill="#00E676" d="M32 512l240-240 208 105z"/>
-                  </svg>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[11px] font-black text-[#0a0a0a] leading-none">Google Play</div>
-                  <div className="text-[9px] text-black/40 mt-0.5">Android — Available 01/01/2027</div>
-                </div>
-                <span className="text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-full" style={{ background: '#D4AF3720', color: '#b8902a' }}>Soon</span>
-              </div>
-
-              {/* Chrome Extension */}
-              <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/[0.03] border border-black/6">
-                {/* Chrome Web Store bag icon */}
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-[#F1F3F4] border border-black/8">
-                  <svg viewBox="0 0 192 192" className="w-5 h-5">
-                    <circle cx="96" cy="112" r="62" fill="none" stroke="#EA4335" strokeWidth="22"/>
-                    <circle cx="96" cy="112" r="28" fill="#4285F4"/>
-                    <path fill="#FBBC05" d="M96 50h74l-37 64z"/>
-                    <path fill="#34A853" d="M22 50h74L59 114z"/>
-                    <rect x="66" y="22" width="60" height="14" rx="7" fill="#bbb"/>
-                  </svg>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-[11px] font-black text-[#0a0a0a] leading-none">Chrome Extension</div>
-                  <div className="text-[9px] text-black/40 mt-0.5">Browser — Coming soon</div>
-                </div>
-                <span className="text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-full" style={{ background: '#D4AF3720', color: '#b8902a' }}>Soon</span>
-              </div>
-
-            </div>
           </div>
 
-          {/* Social Links Card */}
-          <div className="bg-white rounded-[20px] border border-white/60 shadow-[0_4px_30px_rgba(0,0,0,0.18)] p-5">
-            <div className="text-[9px] font-black uppercase tracking-[0.25em] text-black/35 mb-3">Connect with us</div>
-            <div className="flex flex-col gap-2">
-
-              {/* GitHub */}
-              <a href="https://github.com/whalenetwork" target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 rounded-xl bg-black/[0.03] border border-black/6 hover:bg-black/[0.07] hover:border-black/15 transition-all group">
-                <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0 text-[#0a0a0a]" fill="currentColor">
-                  <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+          {/* Apps Row */}
+          <div className="bg-white rounded-2xl shadow-lg p-4 flex flex-col gap-3 items-center">
+            <div className="text-[9px] font-black uppercase tracking-[0.2em] text-black/40">Whale Network soon in all platforms</div>
+            <div className="flex items-center gap-3 w-full justify-center">
+              {/* App Store */}
+              <div className="flex items-center gap-2 px-3 py-2 bg-black/[0.04] rounded-xl border border-black/5">
+                <svg viewBox="0 0 24 24" className="w-4 h-4 text-black" fill="currentColor">
+                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
                 </svg>
-                <div className="flex-1">
-                  <div className="text-[11px] font-black text-black leading-none">GitHub</div>
-                  <div className="text-[9px] text-black/40 mt-0.5">whalenetwork</div>
-                </div>
-                <ArrowRight size={12} className="text-black/20 group-hover:text-black/60 group-hover:translate-x-0.5 transition-all" />
-              </a>
-
-              {/* Telegram */}
-              <a href="https://t.me/humanityledger" target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 rounded-xl bg-black/[0.03] border border-black/6 hover:bg-[#229ED9]/5 hover:border-[#229ED9]/20 transition-all group">
-                <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0" fill="#229ED9">
-                  <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L6.24 13.99l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.908.569z"/>
-                </svg>
-                <div className="flex-1">
-                  <div className="text-[11px] font-black text-black leading-none">Telegram</div>
-                  <div className="text-[9px] text-black/40 mt-0.5">@humanityledger</div>
-                </div>
-                <ArrowRight size={12} className="text-black/20 group-hover:text-[#229ED9]/60 group-hover:translate-x-0.5 transition-all" />
-              </a>
-
-              {/* LinkedIn */}
-              <a href="https://linkedin.com/in/stefan-antonio-cirisanu" target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 rounded-xl bg-black/[0.03] border border-black/6 hover:bg-[#0A66C2]/5 hover:border-[#0A66C2]/20 transition-all group">
-                <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0" fill="#0A66C2">
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                </svg>
-                <div className="flex-1">
-                  <div className="text-[11px] font-black text-black leading-none">LinkedIn</div>
-                  <div className="text-[9px] text-black/40 mt-0.5">Stefan Antonio Cirisanu</div>
-                </div>
-                <ArrowRight size={12} className="text-black/20 group-hover:text-[#0A66C2]/60 group-hover:translate-x-0.5 transition-all" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-black">iOS</span>
+              </div>
+              {/* Google Play */}
               </a>
 
             </div>
