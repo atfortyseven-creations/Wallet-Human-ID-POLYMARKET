@@ -1,92 +1,124 @@
-# Whale Network Platform Guide
+# Whale Network: Official Platform Documentation
 
-Whale Network is an advanced cryptographic terminal and digital asset management platform. This document serves as a comprehensive functional guide detailing the exact capabilities and tools available to users across the entire ecosystem.
+Whale Network is an advanced cryptographic terminal and digital asset management ecosystem. Designed for institutional and retail operations alike, the platform integrates cross-device synchronization, zero-knowledge proofs, and multi-chain analytics into a single unified architecture.
 
-## Core Platform Access
-
-### Cross-Device Synchronization
-Users can securely link their mobile device to the desktop environment without entering credentials. By scanning a QR code presented on the desktop, an ephemeral cryptographic handshake establishes a secure session. This allows the desktop terminal to read public states while delegating all transaction signing directly to the mobile device.
-
-### Multi-Chain Connectivity
-The platform supports direct connectivity with standard Web3 wallets (e.g., MetaMask, WalletConnect) across multiple EVM-compatible networks, prioritizing Base, Polygon, and Ethereum. Users can also utilize native, password-protected local vaults generated client-side.
+This documentation provides a comprehensive operational guide detailing the exact capabilities available to users across the platform's terminal modules, developer tools, and regulatory frameworks.
 
 ---
 
-## Terminal Ecosystem Capabilities
+## 1. Terminal Ecosystem
 
-The platform operates through a unified terminal interface comprising twelve distinct modules. Below is the functional breakdown of what a user can accomplish within each module.
+The core interface operates through twelve dedicated modules, allowing users to orchestrate complex cryptographic and financial actions securely.
 
-### 1. Dashboard
+### Dashboard
 The central command center for account oversight.
 - **Global Portfolio Tracking**: View aggregate balances and total net worth calculated in real-time.
 - **Transaction History**: Monitor recent incoming and outgoing on-chain transfers.
 - **Quick Actions**: Access rapid execution pathways for sending, receiving, or swapping assets across supported networks.
 
-### 2. Studio
+### Studio
 A dedicated environment for digital asset provenance and registration.
 - **Asset Minting**: Register new physical or digital assets on-chain with customized metadata.
 - **Provenance Tracking**: Review the chronological lifecycle and transfer history of registered assets.
 - **Zero-Knowledge Anchoring**: Anchor asset states securely using Aztec Network integration to ensure privacy of supply chain or ownership data.
 
-### 3. Markets
+### Markets
 Institutional-grade analytics for tracking token metrics and market movements.
 - **Live Price Feeds**: Monitor real-time valuations across a wide range of digital assets.
 - **Deep Analytics**: Access advanced metrics including market capitalization, 24-hour volume, and circulating supply.
 - **Filtering and Sorting**: Isolate assets by specific blockchain networks or sort by performance indicators.
 
-### 4. Roadmap
+### Roadmap
 An interactive visualization of protocol development and ecosystem progression.
 - **Phase Tracking**: Review current, completed, and upcoming architectural deployments.
 - **Technical Milestones**: Access detailed descriptions of backend integrations, ranging from database indexing structures to smart contract audit statuses.
 
-### 5. Identity
+### Identity
 The user's zero-knowledge cryptographic passport.
 - **Aztec Network Integration**: Generate client-side proofs to verify identity without exposing public addresses or transaction history.
-- **Airdrop Claims**: Securely claim network incentives (such as QD tokens) utilizing local cryptographic signatures.
+- **Airdrop Claims**: Securely claim network incentives utilizing local cryptographic signatures.
 - **Access Tiering**: Review current subscription tiers and cryptographic clearances assigned to the wallet.
 
-### 6. Token
+### Token
 Utility and subscription management interface.
-- **Tier Upgrades**: Subscribe to advanced platform tiers (e.g., Elite or Institutional) using supported digital assets.
+- **Tier Upgrades**: Subscribe to advanced platform tiers using supported digital assets.
 - **Utility Tracking**: Monitor the specific benefits and expanded limits associated with the current subscription level.
 
-### 7. Map
+### Map
 A geographic and infrastructural visualization of the network.
 - **Node Distribution**: Observe the global distribution of active network validators and relayers.
 - **Connectivity Mapping**: Visualize the real-time routing of encrypted traffic across the decentralized infrastructure.
 
-### 8. Chat
+### Chat
 An encrypted, peer-to-peer communication layer utilizing the XMTP protocol.
 - **Secure Messaging**: Send and receive end-to-end encrypted messages directly to other EVM addresses.
 - **Address Book Management**: Save, block, or manage frequent contacts.
 - **Audio and Media Support**: Transmit encrypted voice memos and file attachments securely to peers.
 
-### 9. Portfolio
+### Portfolio
 A granular breakdown of the user's financial holdings.
 - **Asset Allocation**: View detailed charts representing the distribution of wealth across different tokens and networks.
 - **Historical Performance**: Analyze the growth or depreciation of the portfolio over custom timeframes.
 - **Yield Tracking**: Monitor passive income generation from staked assets or liquidity provision.
 
-### 10. Community
+### Community
 The center for governance and user support.
 - **Support Ticketing**: Open direct communication lines with platform maintainers for technical assistance.
 - **Governance Proposals**: Review and vote on upcoming protocol upgrades or parameter adjustments.
 
-### 11. Status
+### Status
 Live telemetry and health monitoring of the underlying infrastructure.
 - **RPC Latency**: Monitor the response times of the various blockchain nodes the platform relies on.
-- **Database Synchronization**: Verify that the local indexing engine is perfectly synced with the latest blockchain blocks.
 - **System Health**: Check the operational status of secondary services, including the Prover network and Paymaster relays.
 
-### 12. Privacy
+### Privacy
 Transparent oversight of local session data and cryptographic routing.
 - **Session Logs**: Review a detailed, localized audit trail of all actions, logins, and signatures performed during the current session.
 - **Data Clearing**: Manually purge local caches, ephemeral keys, and session data to maintain absolute device hygiene.
 
 ---
 
-## Security Architecture
+## 2. Product Architecture
 
-The Whale Network platform is designed with a strict zero-trust philosophy.
-- **Client-Side Execution**: All private keys, zero-knowledge proofs, and decryption operations are processed entirely within the user's local browser memory.
-- **No Data Harvesting**: The server infrastructure acts exclusively as an encrypted relay and data indexer. It cannot access, read, or modify user funds or private identity credentials.
+### Architecture Overview
+Deep technical documentation detailing the integration between the Next.js frontend, the PostgreSQL database, and the Aztec Network Local Private Execution Environment (PXE).
+
+### Registry
+The smart contract index utilized by the platform to resolve verified token addresses, decentralized exchanges, and bridging protocols.
+
+### Whitepaper
+The foundational academic and technical document outlining the mission, cryptographic models, and tokenomic structure of the Whale Network.
+
+---
+
+## 3. Developers & Infrastructure
+
+### API Docs
+Comprehensive integration guidelines for third-party developers, covering RESTful endpoints, WebSocket streams, and authentication requirements for interacting with Whale Network data.
+
+### ZK Sandbox
+An interactive testing environment allowing developers to compile Noir circuits, simulate zero-knowledge proofs, and test cross-chain state verifications without risking mainnet funds.
+
+### GitHub
+Open-source repositories providing full access to the platform's client-side components, UI libraries, and public smart contracts.
+
+---
+
+## 4. Company Vision
+A strategic outline of the long-term goals for Whale Network. This section covers future expansion plans, institutional partnerships, and the broader objective of merging robust privacy layers with mainstream decentralized finance.
+
+---
+
+## 5. Regulatory & Legal Framework
+
+### Compliance Docs
+Detailed documentation outlining the platform's adherence to international financial regulations, KYC/AML frameworks (where applicable), and jurisdictional operating standards.
+
+### Aztec Transparency
+A transparent breakdown of how the Aztec Network integration functions, explaining the mathematics of the zero-knowledge proofs and ensuring users understand the limits and guarantees of the privacy features provided.
+
+### Terms & Conditions
+The legally binding agreement dictating the rules, limitations of liability, and acceptable use policies for all users accessing the Whale Network ecosystem.
+
+### Privacy Policy
+A strict data handling manifesto explaining exactly what data is stored locally, what is relayed to servers, and the platform's absolute commitment to non-tracking and user data protection.
