@@ -702,12 +702,14 @@ export default function ConnectPage() {
       {/* ─── Bottom Overlay: logos + store buttons ─────────────────────── */}
       <div className="absolute bottom-0 left-0 right-0 z-30 flex flex-col items-center pb-6 pt-4 px-4 gap-5">
 
-        {/* Partners logo — centered */}
+        {/* Partners logo — centered, inverted to show white on dark */}
         <img
           src="/partners-logo.png"
           alt="Humanity Ledger Partners"
-          className="h-10 md:h-12 w-auto object-contain opacity-95"
-          style={{ filter: 'drop-shadow(0 2px 12px rgba(0,0,0,0.45))' }}
+          className="h-10 md:h-14 w-auto object-contain"
+          style={{
+            filter: 'brightness(0) invert(1) drop-shadow(0 2px 12px rgba(0,0,0,0.5))',
+          }}
         />
 
         {/* Whale Network ballena logo + wordmark */}
