@@ -158,3 +158,12 @@ NOTICE
 !ecosystem.config.json
 !server.js
 !server.ts
+
+node_modules
+.git
+.next
+.vscode
+.gemini
+**/node_modules
+**/.git
+**/.next

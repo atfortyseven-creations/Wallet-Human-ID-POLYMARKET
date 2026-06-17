@@ -32,9 +32,31 @@ jobs:
 
       - name: Compile Noir Circuits
         run: |
+          # Setup path for nargo
+          export PATH="$HOME/.nargo/bin:$PATH"
+          
+          # Install bb (Barretenberg) which is now required for vk and solidity verifier generation
+          curl -L https://raw.githubusercontent.com/AztecProtocol/barretenberg/master/cpp/scripts/bberg_pkg.sh | bash
+          export PATH="$HOME/.bb:$PATH"
+          
           cd noir-projects/circuits
-          # Iterate through circuits and compile
-          # aztec-nargo compile
+          
+          # Iterate over all circuit directories
+          for dir in */; do
+            if [ -f "$dir/Nargo.toml" ]; then
+              echo "Compiling $dir"
+              cd "$dir"
+              
+              # Standard compilation
+              aztec-nargo compile
+              
+              # New Noir updates for Verifier generation
+              bb write_vk -b ./target/program.json -o ./target --oracle_hash keccak
+              bb write_solidity_verifier -k ./target/vk -o ./target/Verifier.sol
+              
+              cd ..
+            fi
+          done
 
       - name: Security Scan (noir-audit)
         run: |

@@ -17,11 +17,13 @@ export async function GET(req: Request) {
   if (!session?.userId) {
       return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
   }
-  const crypto = await import('crypto');
-  const normalizedEvm = session.userId.toLowerCase();
-  const round1 = crypto.createHash('sha256').update(`aztec-schnorr:${normalizedEvm}`).digest();
-  const round2 = crypto.createHash('sha256').update(round1).digest('hex');
-  const aztecAddress = `0x${round2}`;
+
+  const { searchParams } = new URL(req.url);
+  const aztecAddress = searchParams.get('aztecAddress');
+
+  if (!aztecAddress) {
+      return NextResponse.json({ error: 'Missing aztecAddress parameter.' }, { status: 400 });
+  }
 
   const normalizedAddress = aztecAddress.toLowerCase();
 

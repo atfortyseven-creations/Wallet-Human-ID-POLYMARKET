@@ -257,45 +257,23 @@ export async function POST(req: NextRequest) {
             create: { walletAddress: address }
         });
 
-        // [QUANTUM AEGIS] On-Chain Payment Verification
-        // SESSION_AUTH users are already verified through the platform's cryptographic
-        // session cookie (whale_session / human_session) — which itself requires SIWE.
-        // Requiring a redundant Optimism txHash for these users creates UX friction with no
-        // additional Sybil-resistance gain (since the DB-upsert above already enforces
-        // one-ticket-per-wallet). External wallet users still MUST provide a txHash.
+        // ── Identity Claim — Free Mint (ECDSA or Session verified) ───────────
+        // The Gold Identity claim is free — it is a cryptographic proof of wallet
+        // ownership, not a payment transaction.  ECDSA-verified claims have already
+        // passed the verifyMessage check above.  SESSION_AUTH claims are proven by
+        // the HTTP session cookie (SIWE-backed).
+        // One-ticket-per-wallet Sybil resistance is enforced by the DB unique check above.
         const isSessionAuth = cryptoSignature === 'SESSION_AUTH';
-        
-        if (!isSessionAuth && (!txHash || typeof txHash !== 'string' || !txHash.startsWith('0x'))) {
-             console.warn(JSON.stringify({ level: 'SECURITY', event: 'SYBIL_DRAIN_ATTEMPT_BLOCKED', address }));
-             return NextResponse.json({
-                 error: 'Payment verification failed: a valid Optimism transaction hash (0x...) is required. Please complete the on-chain payment and paste the transaction hash.',
-             }, { status: 402 });
-        }
 
-        let paymentVerified = false;
+        let paymentVerified = true;   // Always true — mint is free
         let paymentGraceMode = false;
 
-        if (isSessionAuth) {
-            // Session-authenticated: identity already proven via SIWE session.
-            // One-per-wallet is enforced by the DB duplicate check above.
-            paymentVerified = true;
-            console.log(JSON.stringify({ level: 'INFO', event: 'SESSION_AUTH_CLAIM', address }));
-        } else {
-            const paymentCheck = await verifyOnChainPayment(txHash, address);
-            if (paymentCheck.verified) {
-                paymentVerified = true;
-                console.log(JSON.stringify({ level: 'INFO', event: 'PAYMENT_CONFIRMED', address, txHash }));
-            } else if (paymentCheck.graceMode) {
-                paymentGraceMode = true;
-                console.warn(JSON.stringify({ level: 'WARN', event: 'PAYMENT_GRACE_MODE', address, txHash, reason: paymentCheck.reason }));
-            } else {
-                console.warn(JSON.stringify({ level: 'SECURITY', event: 'PAYMENT_REJECTED', address, txHash, reason: paymentCheck.reason }));
-                return NextResponse.json({
-                    error: `Payment verification failed: ${paymentCheck.reason}.`,
-                    txHash,
-                }, { status: 402 });
-            }
-        }
+        console.log(JSON.stringify({
+            level: 'INFO',
+            event: isSessionAuth ? 'SESSION_AUTH_CLAIM' : 'ECDSA_CLAIM',
+            address,
+            txHash: txHash || null,
+        }));
 
         //  Create ticket using standard Prisma methods 
         const tempSerial = `PENDING-${address}-${Date.now()}`;
