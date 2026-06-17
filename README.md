@@ -1,84 +1,92 @@
-# Whale Network
+# Whale Network Platform Guide
 
-Whale Network is an advanced Web3 ecosystem and decentralized terminal designed for secure identity management, asset tracking, and private zero-knowledge interactions. The architecture integrates cross-device synchronization with deep blockchain analytics.
+Whale Network is an advanced cryptographic terminal and digital asset management platform. This document serves as a comprehensive functional guide detailing the exact capabilities and tools available to users across the entire ecosystem.
 
-## System Architecture
+## Core Platform Access
 
-The platform operates on a modular, 12-component terminal interface built to handle extensive real-time data and cryptographic operations without compromising performance.
+### Cross-Device Synchronization
+Users can securely link their mobile device to the desktop environment without entering credentials. By scanning a QR code presented on the desktop, an ephemeral cryptographic handshake establishes a secure session. This allows the desktop terminal to read public states while delegating all transaction signing directly to the mobile device.
 
-### 1. Terminal Modules
-The ecosystem is divided into twelve dedicated functional areas:
-- **Dashboard**: Unified tracking of global on-chain metrics and user portfolio.
-- **Studio**: Digital asset provenance and registration interface.
-- **Markets**: Institutional-grade tracking for token metrics, market cap, and live pricing.
-- **Roadmap**: Interactive visualization of protocol development phases.
-- **Identity**: Zero-knowledge passport system utilizing Aztec network infrastructure.
-- **Token**: Utility and subscription tier management.
-- **Map**: Visual representation of global node distribution and connectivity.
-- **Chat**: Encrypted peer-to-peer communication layer (XMTP integration).
-- **Portfolio**: Detailed breakdown of holding allocations across EVM networks.
-- **Community**: Access to governance and support forums.
-- **Status**: Live network health and block latency monitoring.
-- **Privacy**: Transparent review of session routing and cryptographic handshakes.
+### Multi-Chain Connectivity
+The platform supports direct connectivity with standard Web3 wallets (e.g., MetaMask, WalletConnect) across multiple EVM-compatible networks, prioritizing Base, Polygon, and Ethereum. Users can also utilize native, password-protected local vaults generated client-side.
 
-### 2. Cryptographic Synchronization
-Whale Network implements a highly secure, out-of-band device linking protocol. By scanning a QR code, the mobile application establishes an ephemeral X25519 Elliptic Curve Diffie-Hellman (ECDH) handshake with the desktop terminal. This allows seamless session transfers and cryptographic signing delegation without exposing private keys over the network.
+---
 
-### 3. Zero-Knowledge Integration
-The application interfaces directly with the Aztec Network Local Private Execution Environment (PXE). 
-- **Identity Management**: Users generate zero-knowledge proofs client-side to verify their identity and execute actions without revealing underlying data.
-- **Claim Processing**: The system supports secure token claims and airdrops through strictly validated cryptographic signatures.
+## Terminal Ecosystem Capabilities
 
-### 4. Local Vaults and EVM Support
-- **Native Vaults**: System-level password protection for local encrypted key storage.
-- **Multi-Chain Connectivity**: Full integration with Wagmi and Viem to support standard Web3 wallet connections across Ethereum, Polygon, and Base.
+The platform operates through a unified terminal interface comprising twelve distinct modules. Below is the functional breakdown of what a user can accomplish within each module.
 
-## Technical Stack
+### 1. Dashboard
+The central command center for account oversight.
+- **Global Portfolio Tracking**: View aggregate balances and total net worth calculated in real-time.
+- **Transaction History**: Monitor recent incoming and outgoing on-chain transfers.
+- **Quick Actions**: Access rapid execution pathways for sending, receiving, or swapping assets across supported networks.
 
-- **Frontend**: Next.js 15 (App Router), React, and Tailwind CSS.
-- **State Management**: React hooks paired with Zustand for global and wallet state.
-- **Database**: PostgreSQL database indexed and managed via Prisma ORM.
-- **Web3 Integrations**: WalletConnect, Wagmi, Viem, and Aztec SDKs.
+### 2. Studio
+A dedicated environment for digital asset provenance and registration.
+- **Asset Minting**: Register new physical or digital assets on-chain with customized metadata.
+- **Provenance Tracking**: Review the chronological lifecycle and transfer history of registered assets.
+- **Zero-Knowledge Anchoring**: Anchor asset states securely using Aztec Network integration to ensure privacy of supply chain or ownership data.
 
-## Getting Started
+### 3. Markets
+Institutional-grade analytics for tracking token metrics and market movements.
+- **Live Price Feeds**: Monitor real-time valuations across a wide range of digital assets.
+- **Deep Analytics**: Access advanced metrics including market capitalization, 24-hour volume, and circulating supply.
+- **Filtering and Sorting**: Isolate assets by specific blockchain networks or sort by performance indicators.
 
-### Prerequisites
+### 4. Roadmap
+An interactive visualization of protocol development and ecosystem progression.
+- **Phase Tracking**: Review current, completed, and upcoming architectural deployments.
+- **Technical Milestones**: Access detailed descriptions of backend integrations, ranging from database indexing structures to smart contract audit statuses.
 
-- Node.js (v18 or higher)
-- npm or pnpm
-- PostgreSQL instance
+### 5. Identity
+The user's zero-knowledge cryptographic passport.
+- **Aztec Network Integration**: Generate client-side proofs to verify identity without exposing public addresses or transaction history.
+- **Airdrop Claims**: Securely claim network incentives (such as QD tokens) utilizing local cryptographic signatures.
+- **Access Tiering**: Review current subscription tiers and cryptographic clearances assigned to the wallet.
 
-### Installation
+### 6. Token
+Utility and subscription management interface.
+- **Tier Upgrades**: Subscribe to advanced platform tiers (e.g., Elite or Institutional) using supported digital assets.
+- **Utility Tracking**: Monitor the specific benefits and expanded limits associated with the current subscription level.
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/whalenetwork/whale-wallet.git
-   cd whale-wallet
-   ```
+### 7. Map
+A geographic and infrastructural visualization of the network.
+- **Node Distribution**: Observe the global distribution of active network validators and relayers.
+- **Connectivity Mapping**: Visualize the real-time routing of encrypted traffic across the decentralized infrastructure.
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+### 8. Chat
+An encrypted, peer-to-peer communication layer utilizing the XMTP protocol.
+- **Secure Messaging**: Send and receive end-to-end encrypted messages directly to other EVM addresses.
+- **Address Book Management**: Save, block, or manage frequent contacts.
+- **Audio and Media Support**: Transmit encrypted voice memos and file attachments securely to peers.
 
-3. Configure environment variables:
-   Copy `.env.example` to `.env` and provide your specific RPC URLs and database connection strings.
+### 9. Portfolio
+A granular breakdown of the user's financial holdings.
+- **Asset Allocation**: View detailed charts representing the distribution of wealth across different tokens and networks.
+- **Historical Performance**: Analyze the growth or depreciation of the portfolio over custom timeframes.
+- **Yield Tracking**: Monitor passive income generation from staked assets or liquidity provision.
 
-4. Initialize the database:
-   ```bash
-   npx prisma generate
-   npx prisma db push
-   ```
+### 10. Community
+The center for governance and user support.
+- **Support Ticketing**: Open direct communication lines with platform maintainers for technical assistance.
+- **Governance Proposals**: Review and vote on upcoming protocol upgrades or parameter adjustments.
 
-5. Run the development server:
-   ```bash
-   npm run dev
-   ```
+### 11. Status
+Live telemetry and health monitoring of the underlying infrastructure.
+- **RPC Latency**: Monitor the response times of the various blockchain nodes the platform relies on.
+- **Database Synchronization**: Verify that the local indexing engine is perfectly synced with the latest blockchain blocks.
+- **System Health**: Check the operational status of secondary services, including the Prover network and Paymaster relays.
 
-## Security
+### 12. Privacy
+Transparent oversight of local session data and cryptographic routing.
+- **Session Logs**: Review a detailed, localized audit trail of all actions, logins, and signatures performed during the current session.
+- **Data Clearing**: Manually purge local caches, ephemeral keys, and session data to maintain absolute device hygiene.
 
-If you discover a security vulnerability within this project, please report it directly to the maintainers rather than opening a public issue. We adhere to strict security protocols and will address any vulnerabilities immediately.
+---
 
-## License
+## Security Architecture
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+The Whale Network platform is designed with a strict zero-trust philosophy.
+- **Client-Side Execution**: All private keys, zero-knowledge proofs, and decryption operations are processed entirely within the user's local browser memory.
+- **No Data Harvesting**: The server infrastructure acts exclusively as an encrypted relay and data indexer. It cannot access, read, or modify user funds or private identity credentials.
