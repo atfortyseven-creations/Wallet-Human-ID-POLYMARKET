@@ -80,10 +80,10 @@ export function NetworkMapPanel() {
                 <div className="flex-1 h-px bg-gradient-to-r from-black/10 to-transparent ml-4" />
               </motion.div>
               
-              <div className="flex flex-col xl:flex-row items-center justify-between gap-12 lg:gap-16 w-full">
+              <div className="grid grid-cols-1 xl:grid-cols-[1fr_auto_1fr] items-center gap-12 lg:gap-16 w-full">
                 
                 {/* Desktop Web Client */}
-                <motion.div variants={itemVariants} className="w-full xl:w-[45%] flex flex-col p-8 md:p-10 border border-black/[0.08] rounded-3xl bg-white shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 group relative overflow-hidden">
+                <motion.div variants={itemVariants} className="flex flex-col p-8 md:p-10 border border-black/[0.08] rounded-3xl bg-white shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 group relative overflow-hidden">
                   <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
                     <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M4 6h16v12H4zM2 6c0-1.1.9-2 2-2h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6zm4 2v2h2V8H6z"/></svg>
                   </div>
@@ -115,13 +115,13 @@ export function NetworkMapPanel() {
                 </motion.div>
 
                 {/* Mobile Authenticator */}
-                <motion.div variants={itemVariants} className="w-full xl:w-[45%] flex flex-col p-8 md:p-10 border border-black/[0.08] rounded-3xl bg-white shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 group relative overflow-hidden">
+                <motion.div variants={itemVariants} className="flex flex-col p-8 md:p-10 border border-black/[0.08] rounded-3xl bg-white shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 group relative overflow-hidden">
                   <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
                      <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M7 2h10a2 2 0 012 2v16a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2zm0 2v16h10V4H7zm4 13h2v2h-2v-2z"/></svg>
                   </div>
                   <div className="text-[10px] md:text-xs font-mono font-black uppercase tracking-[0.3em] text-black/50 mb-4">Mobile Domain</div>
                   <h3 className="text-2xl md:text-3xl font-black mb-2">Native Authenticator</h3>
-                  <p className="text-sm text-black/60 font-mono mb-8">iOS / Android • Secure Enclave</p>
+                  <p className="text-sm text-black/60 font-mono mb-8 break-words">iOS / Android • Secure Enclave</p>
                   <div className="flex flex-wrap gap-3 mt-auto">
                     <span className="px-4 py-2 bg-blue-50 border border-blue-100 text-blue-900 rounded-lg text-[10px] md:text-xs font-bold font-mono">Key Custody</span>
                     <span className="px-4 py-2 bg-emerald-50 border border-emerald-100 text-emerald-900 rounded-lg text-[10px] md:text-xs font-bold font-mono">Signature Gen</span>
@@ -145,10 +145,10 @@ export function NetworkMapPanel() {
                 <div className="flex-1 h-px bg-gradient-to-r from-black/10 to-transparent ml-4" />
               </motion.div>
 
-              <motion.div variants={itemVariants} className="relative w-full rounded-3xl bg-white border border-black/10 shadow-[0_30px_100px_-20px_rgba(0,0,0,0.1)] p-8 md:p-12 lg:p-16 flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-4 overflow-visible">
+              <motion.div variants={itemVariants} className="relative w-full rounded-3xl bg-white border border-black/10 shadow-[0_30px_100px_-20px_rgba(0,0,0,0.1)] p-8 md:p-12 lg:p-16 grid grid-cols-1 lg:grid-cols-4 gap-12 lg:gap-6 items-center overflow-visible">
                 
                 {/* Continuous Background Line for Desktop */}
-                <div className="hidden lg:block absolute top-1/2 left-[10%] right-[10%] h-[4px] bg-black/10 -translate-y-1/2 rounded-full z-0 overflow-hidden">
+                <div className="hidden lg:block absolute top-1/2 left-[12.5%] right-[12.5%] h-[4px] bg-black/10 -translate-y-1/2 rounded-full z-0 overflow-hidden">
                    <motion.div 
                      className="w-1/3 h-full bg-gradient-to-r from-transparent via-black to-transparent opacity-50"
                      animate={{ x: ['-100%', '300%'] }}
@@ -166,7 +166,7 @@ export function NetworkMapPanel() {
                 </div>
 
                 {/* Node 1: Client PXE */}
-                <div className="relative z-10 flex flex-col items-center group w-full lg:w-1/4">
+                <div className="relative z-10 flex flex-col items-center group w-full">
                   <div className="w-full max-w-[280px] h-28 md:h-32 bg-white border-2 border-dashed border-black/40 rounded-2xl flex flex-col items-center justify-center shadow-md group-hover:border-black transition-colors duration-300">
                     <span className="font-mono font-black text-xl md:text-2xl text-black">Client PXE</span>
                   </div>
@@ -177,7 +177,7 @@ export function NetworkMapPanel() {
                 </div>
 
                 {/* Node 2: ZK Prover */}
-                <div className="relative z-10 flex flex-col items-center group w-full lg:w-1/5 py-8 lg:py-0">
+                <div className="relative z-10 flex flex-col items-center group w-full py-8 lg:py-0">
                   <div className="w-24 h-24 md:w-32 md:h-32 bg-white border-[3px] border-black rounded-full flex flex-col items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.15)] group-hover:scale-110 group-hover:rotate-12 transition-all duration-500">
                     <span className="font-mono font-black text-2xl md:text-3xl text-black">ZK</span>
                   </div>
@@ -188,7 +188,7 @@ export function NetworkMapPanel() {
                 </div>
 
                 {/* Node 3: Aztec L2 */}
-                <div className="relative z-10 flex flex-col items-center group w-full lg:w-1/4">
+                <div className="relative z-10 flex flex-col items-center group w-full">
                   <div className="w-full max-w-[280px] h-28 md:h-32 bg-white border-2 border-black rounded-2xl flex flex-col items-center justify-center shadow-lg group-hover:-translate-y-2 transition-transform duration-300 relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                     <span className="font-mono font-black text-2xl md:text-3xl text-black relative z-10">Aztec L2</span>
@@ -200,7 +200,7 @@ export function NetworkMapPanel() {
                 </div>
 
                 {/* Node 4: Ethereum L1 */}
-                <div className="relative z-10 flex flex-col items-center group w-full lg:w-1/4">
+                <div className="relative z-10 flex flex-col items-center group w-full">
                   <div className="w-28 h-28 md:w-36 md:h-36 bg-black rounded-[2rem] flex flex-col items-center justify-center shadow-2xl group-hover:scale-105 group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.4)] transition-all duration-500 relative overflow-hidden">
                     <div className="absolute inset-0 border border-white/20 rounded-[2rem] m-2 pointer-events-none" />
                     <span className="font-mono font-black text-4xl md:text-5xl text-white">L1</span>
