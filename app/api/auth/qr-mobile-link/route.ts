@@ -34,7 +34,7 @@ import { isAddress } from 'viem';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { uuid, encryptedPayload, iv, tag, mobilePub, isServerMint } = body;
+    const { uuid, encryptedPayload, iv, tag, mobilePub, isServerMint, fallbackJwt } = body;
 
     //  1. Validate required fields 
     if (!uuid || typeof uuid !== 'string' || uuid.length < 8) {
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
     // We STRICTLY require a cryptographic SIWE JWT (human_session or whale_session).
     // The insecure 'system_handshake' cookie fallback has been entirely removed 
     // to prevent identity spoofing / authentication bypass vulnerabilities.
-    const humanSession = req.cookies.get('human_session')?.value || req.cookies.get('whale_session')?.value;
+    const humanSession = req.cookies.get('human_session')?.value || req.cookies.get('whale_session')?.value || fallbackJwt;
 
     if (!humanSession) {
       console.error(`[QR:Handshake:FAILURE] No secure JWT session found for UUID: ${uuid}. IP: ${req.headers.get('x-forwarded-for')}`);

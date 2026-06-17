@@ -94,6 +94,7 @@ export async function POST(req: NextRequest) {
 
         const response = NextResponse.json({
             success: true,
+            jwt: jwt,
             user: { address: rawAddress, tier: user.tier }
         }, {
             headers: {

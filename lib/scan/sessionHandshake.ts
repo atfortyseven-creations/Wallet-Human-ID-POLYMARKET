@@ -211,12 +211,14 @@ export async function completeSessionHandshake(
       tag: encrypted.tag,
       mobilePub: mobilePair.publicKey,
       isServerMint: false,
+      fallbackJwt: jwt,
     };
   } else {
     postBody = {
       uuid,
       mobilePub: mobilePair.publicKey,
       isServerMint: true,
+      fallbackJwt: jwt,
     };
   }
 
