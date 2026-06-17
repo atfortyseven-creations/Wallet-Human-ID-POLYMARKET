@@ -684,7 +684,7 @@ function FAQSection() {
 
 function FinalCTASection() {
   return (
-    <section className="w-full relative overflow-hidden" style={{ minHeight: '540px' }}>
+    <section className="w-full relative overflow-hidden flex flex-col justify-center items-center bg-[#050505] min-h-[500px] md:min-h-[600px]">
       {/*
         Using the requested custom image, adjusted with absolute precision quantum scaling:
         object-fit: cover ensures the image fills the container beautifully.
@@ -692,18 +692,18 @@ function FinalCTASection() {
       <img
         src="/system-shots/Aztec Image_17.jpg"
         alt="Humanity Ledger Background"
-        className="absolute inset-0 w-full h-full object-cover"
+        className="absolute inset-0 w-full h-full object-cover opacity-50"
       />
       {/* Dark overlay to ensure text readability against the vibrant background */}
-      <div className="absolute inset-0 bg-black/60" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#050505]/90 via-[#050505]/40 to-[#050505]/90" />
 
-      <div className="relative z-10 w-full max-w-[800px] mx-auto px-6 py-32 md:py-48 flex flex-col items-center text-center">
-        <h2 className="text-[40px] md:text-[60px] font-black tracking-tighter leading-[1] text-white mb-6 drop-shadow-md">
+      <div className="relative z-20 w-full max-w-[800px] mx-auto px-6 py-24 md:py-32 flex flex-col items-center text-center">
+        <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-tight text-white mb-6 drop-shadow-2xl">
           Your identity,
-          <br />
-          <span className="text-white/80">proven without disclosure.</span>
+          <br className="hidden md:block" />
+          <span className="text-white/90">proven without disclosure.</span>
         </h2>
-        <p className="text-[16px] md:text-[18px] text-white/90 font-medium max-w-[520px] mb-12 drop-shadow-md leading-relaxed">
+        <p className="text-base md:text-lg lg:text-xl text-white/90 font-medium max-w-[600px] mb-8 drop-shadow-xl leading-relaxed">
           Built on the full Aztec stack — Noir circuits, a Private Execution Environment (PXE), zk-SNARK note commitments, and nullifier-based Sybil resistance. Your Aztec Identity is cryptographically yours: provable on-chain, invisible to the world.
         </p>
       </div>
