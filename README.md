@@ -1,5 +1,61 @@
 ![Humanity Ledger](https://github.com/humanityledger.png)
 
+```mermaid
+flowchart TD
+    classDef layer fill:none,stroke:#94a3b8,stroke-width:2px,stroke-dasharray: 5 5,rx:10px
+    classDef box fill:#0f172a,stroke:#3b82f6,stroke-width:2px,color:#f8fafc,rx:8px
+
+    subgraph L1 ["1. Client-Side Browser / Mobile"]
+        PXE["Aztec PXE"]:::box
+        WASM["WASM Prover"]:::box
+        Mobile["Mobile Enclave"]:::box
+    end
+    class L1 layer
+
+    subgraph L2 ["2. Frontend Middleware"]
+        Next["Next.js 15 & Tailwind"]:::box
+        Wagmi["WalletConnect & Wagmi"]:::box
+        Edge["WhaleFortress Edge"]:::box
+    end
+    class L2 layer
+
+    subgraph L3 ["3. Aztec Privacy Layer"]
+        Noir["Noir Circuits (ZK)"]:::box
+        State["Private State Trees"]:::box
+        Logs["Encrypted Logs"]:::box
+    end
+    class L3 layer
+
+    subgraph L4 ["4. Core Products"]
+        Chat["Whale Chat"]:::box
+        Port["Portfolio"]:::box
+        HL["Humanity Ledger"]:::box
+        Studio["Studio Provenance"]:::box
+    end
+    class L4 layer
+
+    subgraph L5 ["5. Data & Indexing Layer"]
+        DB["Prisma + PostgreSQL"]:::box
+        Neo["Neo4j Graph DB"]:::box
+        Graph["TheGraph Indexing"]:::box
+    end
+    class L5 layer
+
+    subgraph L6 ["6. Base Cryptographic Layer"]
+        Aztec["Aztec L2 Network"]:::box
+        EVM["Optimism & Base L2"]:::box
+        L1Eth["Ethereum L1"]:::box
+    end
+    class L6 layer
+
+    %% Core Connections
+    L1 --> L2
+    L2 --> L3
+    L3 --> L4
+    L4 --> L5
+    L5 --> L6
+```
+
 # Whale Network: Official Platform Documentation & Aztec Integration Manual
 
 Whale Network is an advanced terminal ecosystem for the comprehensive management of digital assets and zero knowledge identities. Designed to meet the demands of institutional operations and retail users alike, the platform unites cross device state synchronisation, client side zero knowledge proof generation, and omnichannel network telemetry into a singular architecture.
