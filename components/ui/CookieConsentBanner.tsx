@@ -4,7 +4,10 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function CookieConsentBanner() {
-  const [show, setShow] = useState(false);
+  // Cookie banner permanently disabled per product decision
+  return null;
+
+  const [show, setShow] = React.useState(false);
 
   useEffect(() => {
     // Solo mostramos si no hay decisión tomada

@@ -482,30 +482,29 @@ export default function ConnectPage() {
   const isVerified = mounted && isLinked;
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center relative overflow-hidden" style={{ background: '#0a0a0a' }}>
-      {/* Background Image — Full native resolution, zero quality loss */}
-      <div 
+    <div className="w-full min-h-screen flex flex-col relative overflow-hidden" style={{ background: '#0a1628' }}>
+      {/* Background — cover fills every pixel at any viewport size, no black bleed */}
+      <div
         className="absolute inset-0 z-0"
         style={{
           backgroundImage: "url('/connect-wallpaper.jpg')",
-          backgroundSize: '100% auto',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'top center',
-          imageRendering: 'auto',
         }}
       />
-      {/* Subtle bottom gradient so buttons read clearly */}
-      <div className="absolute inset-0 z-[1] pointer-events-none" style={{ background: 'linear-gradient(to bottom, transparent 55%, rgba(0,0,0,0.72) 100%)' }} />
+      {/* Vignette: keeps the center bright, edges slightly darker for contrast */}
+      <div className="absolute inset-0 z-[1] pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, transparent 30%, rgba(0,0,0,0.18) 100%)' }} />
       
       {/* Interactive Particle Animation Overlay */}
       {mounted && <CanvasParticles isMobile={isMobile} />}
 
-      <div className="relative z-10 w-full flex-1 flex flex-col items-center justify-center px-4 pt-0 mx-auto min-h-0" style={{ pointerEvents: 'none' }}>
-        
-        {/* STUDIO PROVENANCE PROMO REMOVED */}
-        {/* Login Panel — positioned on the right */}
-        <div className="w-full max-w-[480px] flex-shrink-0 flex flex-col bg-white/96 backdrop-blur-sm rounded-[24px] border border-[#F0F0F0] shadow-[0_8px_60px_rgba(0,0,0,0.18)] p-8 z-20" style={{ pointerEvents: 'all' }}>
-          
+      {/* Main content — 2-col desktop, 1-col mobile */}
+      <div className="relative z-10 w-full flex-1 flex flex-col lg:flex-row items-center justify-center gap-6 px-4 py-8 lg:px-12 min-h-screen" style={{ pointerEvents: 'none' }}>
+
+        {/* ── LEFT: Login Panel ── */}
+        <div className="w-full max-w-[440px] flex-shrink-0 flex flex-col bg-white/97 backdrop-blur-sm rounded-[24px] border border-[#F0F0F0] shadow-[0_8px_60px_rgba(0,0,0,0.22)] p-8 z-20" style={{ pointerEvents: 'all' }}>
+
           <div className="flex items-center gap-3 mb-8 pb-5 border-b border-black/5">
             <Lock size={16} strokeWidth={1.2} className="text-[#0A0A0A]" />
             <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-[#0A0A0A]/60 font-medium flex-1">
@@ -541,7 +540,6 @@ export default function ConnectPage() {
                     <RemoteLottie path="/system-shots/Transaction Complete.json" loop={false} className="w-full h-full object-contain scale-[1.2]" />
                   </div>
                 </div>
-
                 <div className="absolute bottom-4 flex flex-col items-center gap-2">
                   <button
                     onClick={handleTotalDisconnect}
@@ -567,120 +565,213 @@ export default function ConnectPage() {
                 </div>
                 {authStatus === 'failed' ? (
                   <div className="flex flex-col gap-3 w-full mt-4">
-                    <button
-                      onClick={triggerManualVerify}
-                      className="w-full py-4 rounded-xl bg-[#0A0A0A] text-white font-mono text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#222] transition-all shadow-md active:scale-[0.98]"
-                    >
-                      Sign Message
-                    </button>
-                    <button
-                      onClick={handleTotalDisconnect}
-                      className="w-full py-4 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 font-mono text-[10px] font-black uppercase tracking-[0.2em] transition-all active:scale-[0.98]"
-                    >
-                      Disconnect
-                    </button>
+                    <button onClick={triggerManualVerify} className="w-full py-4 rounded-xl bg-[#0A0A0A] text-white font-mono text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#222] transition-all shadow-md active:scale-[0.98]">Sign Message</button>
+                    <button onClick={handleTotalDisconnect} className="w-full py-4 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 font-mono text-[10px] font-black uppercase tracking-[0.2em] transition-all active:scale-[0.98]">Disconnect</button>
                   </div>
                 ) : (
                   <div className="flex flex-col items-center gap-3 mt-4">
                     <Loader2 size={20} className="animate-spin text-black/40" />
-                    <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black/40 animate-pulse">
-                      Awaiting signature...
-                    </span>
+                    <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black/40 animate-pulse">Awaiting signature...</span>
                   </div>
                 )}
               </div>
 
             ) : !mounted ? (
               <div className="flex flex-col gap-3 flex-1">
-                {[0, 1, 2].map((i) => (
-                  <div key={i} className="w-full h-[60px] rounded-xl bg-[#F5F5F5] animate-pulse" />
-                ))}
+                {[0, 1, 2].map((i) => <div key={i} className="w-full h-[60px] rounded-xl bg-[#F5F5F5] animate-pulse" />)}
               </div>
 
             ) : isMobile ? (
               <div className="flex flex-col gap-3 flex-1">
-                <span className="text-center text-[10px] font-mono uppercase tracking-[0.2em] text-black/40">
-                  QR synchronized
-                </span>
+                <span className="text-center text-[10px] font-mono uppercase tracking-[0.2em] text-black/40">QR synchronized</span>
                 {MOBILE_WALLETS.map((w) => (
                   <WalletButton key={w.id} logo={w.logo} name={w.name} badge={w.badge} onClick={() => handleMobileWallet(w.id)} loading={isPending && pendingId === w.id} delay={w.delay} extraIcon={<ExternalLink size={14} />} />
                 ))}
-                <button
-                  onClick={() => setShowMobileScanner(true)}
-                  className="w-full flex items-center justify-center gap-3 py-4 mt-2 rounded-xl border border-[#E8E8E8] bg-white font-black uppercase tracking-[0.2em] text-[10px] text-[#0A0A0A] active:scale-[0.98] transition-all hover:bg-black/5"
-                >
-                  <ScanLine size={14} />
-                  Scan QR Code
+                <button onClick={() => setShowMobileScanner(true)} className="w-full flex items-center justify-center gap-3 py-4 mt-2 rounded-xl border border-[#E8E8E8] bg-white font-black uppercase tracking-[0.2em] text-[10px] text-[#0A0A0A] active:scale-[0.98] transition-all hover:bg-black/5">
+                  <ScanLine size={14} /> Scan QR Code
                 </button>
               </div>
 
             ) : (
               <div className="flex flex-col gap-3 flex-1 w-full">
-                {/* QR Panel */}
                 {syncStatus === "AWAITING" && qrData ? (
-                  <motion.div
-                    key="qr-ready"
-                    initial={{ opacity: 0, scale: 0.96 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex justify-center mb-5"
-                  >
+                  <motion.div key="qr-ready" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }} className="flex justify-center mb-5">
                     <div className="p-8 bg-white rounded-2xl border border-[#F0F0F0] flex flex-col items-center gap-4 shadow-sm relative">
                       <div className="flex items-center justify-center w-full mb-2 pb-2 border-b border-[#F0F0F0]">
                         <span className="text-[40px] font-black tracking-tight text-[#0A0A0A]">Login</span>
                       </div>
-                      <QRCodeSVG
-                        value={qrData}
-                        size={360}
-                        fgColor="#0A0A0A"
-                        bgColor="#FFFFFF"
-                        level="M"
-                        includeMargin={false}
-                      />
-                      <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#0A0A0A]/40 text-center">
-                        Connect Mobile
-                      </span>
+                      <QRCodeSVG value={qrData} size={280} fgColor="#0A0A0A" bgColor="#FFFFFF" level="M" includeMargin={false} />
+                      <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#0A0A0A]/40 text-center">Connect Mobile</span>
                     </div>
                   </motion.div>
                 ) : syncStatus === "IDLE" || (syncStatus === "AWAITING" && !qrData) ? (
                   <div className="flex justify-center mb-5">
                     <div className="p-8 bg-white rounded-2xl border border-[#F0F0F0] flex flex-col items-center gap-4 shadow-sm">
-                      <div className="w-[360px] h-[360px] bg-[#FFFFFF] rounded-xl animate-pulse flex items-center justify-center">
+                      <div className="w-[280px] h-[280px] bg-[#FFFFFF] rounded-xl animate-pulse flex items-center justify-center">
                         <Loader2 size={28} className="animate-spin text-black/20" />
                       </div>
-                      <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-black/20 text-center">
-                        Generating secure link...
-                      </span>
+                      <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-black/20 text-center">Generating secure link...</span>
                     </div>
                   </div>
                 ) : syncStatus === "ERROR" ? (
                   <div className="flex justify-center mb-5">
-                    <div className="p-5 bg-rose-50 rounded-2xl border border-rose-100 flex flex-col items-center gap-3 w-[319px]">
-                      <div className="w-[261px] h-[261px] rounded-xl bg-rose-50 flex flex-col items-center justify-center gap-3">
+                    <div className="p-5 bg-rose-50 rounded-2xl border border-rose-100 flex flex-col items-center gap-3">
+                      <div className="w-[240px] h-[240px] rounded-xl bg-rose-50 flex flex-col items-center justify-center gap-3">
                         <Shield size={24} className="text-rose-300" />
-                        <p className="text-[10px] font-mono text-rose-400 text-center leading-relaxed">
-                          QR generation failed
-                        </p>
-                        <button
-                          onClick={() => { setSyncStatus("IDLE"); setQrSession(null); setQrData(''); }}
-                          className="px-4 py-2 rounded-xl bg-rose-500 text-white text-[9px] font-black uppercase tracking-widest hover:bg-rose-600 transition-colors active:scale-[0.97]"
-                        >
-                          Retry
-                        </button>
+                        <p className="text-[10px] font-mono text-rose-400 text-center leading-relaxed">QR generation failed</p>
+                        <button onClick={() => { setSyncStatus("IDLE"); setQrSession(null); setQrData(''); }} className="px-4 py-2 rounded-xl bg-rose-500 text-white text-[9px] font-black uppercase tracking-widest hover:bg-rose-600 transition-colors active:scale-[0.97]">Retry</button>
                       </div>
-                      <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-rose-300 text-center">
-                        Tap retry to regenerate
-                      </span>
+                      <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-rose-300 text-center">Tap retry to regenerate</span>
                     </div>
                   </div>
                 ) : null}
-                
+
                 {DESKTOP_WALLETS.map((w) => (
                   <WalletButton key={w.id} logo={w.logo} name={w.name} badge={w.badge} onClick={() => handleDesktopWallet(w.id, w.rdns, w.installUrl)} loading={isPending && pendingId === w.id} delay={w.delay} />
                 ))}
               </div>
             )}
           </div>
+        </div>
+
+        {/* ── RIGHT: Whale Network Info + Coming Soon Panel ── */}
+        <div className="w-full max-w-[360px] flex-shrink-0 flex flex-col gap-4" style={{ pointerEvents: 'all' }}>
+
+          {/* Main Info Card */}
+          <div className="bg-white rounded-[24px] border border-white/60 shadow-[0_8px_60px_rgba(0,0,0,0.22)] p-6">
+
+            {/* Header: logos */}
+            <div className="flex items-center gap-3 mb-5 pb-4 border-b border-black/6">
+              <img src="/ballena-checkpoint.png" alt="Whale Network" className="h-9 w-9 object-contain" />
+              <div>
+                <div className="text-[13px] font-black uppercase tracking-[0.25em] text-[#0a0a0a] leading-none">Whale Network</div>
+                <div className="text-[9px] font-mono text-black/40 uppercase tracking-widest mt-0.5">by Humanity Ledger</div>
+              </div>
+              <img src="/partners-logo.png" alt="Aztec" className="h-7 w-auto object-contain ml-auto" style={{ filter: 'brightness(0) opacity(0.75)' }} />
+            </div>
+
+            {/* Description */}
+            <p className="text-[12px] text-[#333] leading-relaxed mb-5 font-medium">
+              The first <span className="font-black text-black">privacy-first</span> Web3 intelligence platform — zero-knowledge whale alerts, encrypted P2P messaging, and on-chain identity, all powered by the Aztec Network.
+            </p>
+
+            {/* Tag pills */}
+            <div className="flex flex-wrap gap-1.5 mb-5">
+              {['ZK Identity', 'E2E Encrypted Chat', 'Whale Alerts', 'Dark Pool', 'Noir Circuits'].map(tag => (
+                <span key={tag} className="px-2.5 py-1 rounded-full bg-black/5 text-[9px] font-black uppercase tracking-widest text-black/60">{tag}</span>
+              ))}
+            </div>
+
+            {/* ── Platform Availability ── */}
+            <div className="text-[9px] font-black uppercase tracking-[0.25em] text-black/35 mb-3">Soon in all platforms</div>
+            <div className="flex flex-col gap-2">
+
+              {/* App Store */}
+              <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/[0.03] border border-black/6">
+                {/* Apple gradient icon */}
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(145deg,#1a93d9,#3eceff)' }}>
+                  <svg viewBox="0 0 24 24" className="w-5 h-5" fill="white">
+                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[11px] font-black text-[#0a0a0a] leading-none">App Store</div>
+                  <div className="text-[9px] text-black/40 mt-0.5">iOS — Available 01/01/2027</div>
+                </div>
+                <span className="text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-full" style={{ background: '#D4AF3720', color: '#b8902a' }}>Soon</span>
+              </div>
+
+              {/* Google Play */}
+              <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/[0.03] border border-black/6">
+                {/* Google Play multicolor icon */}
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-white border border-black/8 shadow-sm">
+                  <svg viewBox="0 0 512 512" className="w-5 h-5">
+                    <path fill="#00C4FF" d="M32 32 272 272 32 512z"/>
+                    <path fill="#FF3D00" d="M32 32l240 135L32 272z"/>
+                    <path fill="#FFD400" d="M32 272l240-105 208 105z"/>
+                    <path fill="#00E676" d="M32 512l240-240 208 105z"/>
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[11px] font-black text-[#0a0a0a] leading-none">Google Play</div>
+                  <div className="text-[9px] text-black/40 mt-0.5">Android — Available 01/01/2027</div>
+                </div>
+                <span className="text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-full" style={{ background: '#D4AF3720', color: '#b8902a' }}>Soon</span>
+              </div>
+
+              {/* Chrome Extension */}
+              <div className="flex items-center gap-3 p-3 rounded-2xl bg-black/[0.03] border border-black/6">
+                {/* Chrome Web Store bag icon */}
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-[#F1F3F4] border border-black/8">
+                  <svg viewBox="0 0 192 192" className="w-5 h-5">
+                    <circle cx="96" cy="112" r="62" fill="none" stroke="#EA4335" strokeWidth="22"/>
+                    <circle cx="96" cy="112" r="28" fill="#4285F4"/>
+                    <path fill="#FBBC05" d="M96 50h74l-37 64z"/>
+                    <path fill="#34A853" d="M22 50h74L59 114z"/>
+                    <rect x="66" y="22" width="60" height="14" rx="7" fill="#bbb"/>
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[11px] font-black text-[#0a0a0a] leading-none">Chrome Extension</div>
+                  <div className="text-[9px] text-black/40 mt-0.5">Browser — Coming soon</div>
+                </div>
+                <span className="text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded-full" style={{ background: '#D4AF3720', color: '#b8902a' }}>Soon</span>
+              </div>
+
+            </div>
+          </div>
+
+          {/* Social Links Card */}
+          <div className="bg-white rounded-[20px] border border-white/60 shadow-[0_4px_30px_rgba(0,0,0,0.18)] p-5">
+            <div className="text-[9px] font-black uppercase tracking-[0.25em] text-black/35 mb-3">Connect with us</div>
+            <div className="flex flex-col gap-2">
+
+              {/* GitHub */}
+              <a href="https://github.com/whalenetwork" target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-3 p-3 rounded-xl bg-black/[0.03] border border-black/6 hover:bg-black/[0.07] hover:border-black/15 transition-all group">
+                <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0 text-[#0a0a0a]" fill="currentColor">
+                  <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                </svg>
+                <div className="flex-1">
+                  <div className="text-[11px] font-black text-black leading-none">GitHub</div>
+                  <div className="text-[9px] text-black/40 mt-0.5">whalenetwork</div>
+                </div>
+                <ArrowRight size={12} className="text-black/20 group-hover:text-black/60 group-hover:translate-x-0.5 transition-all" />
+              </a>
+
+              {/* Telegram */}
+              <a href="https://t.me/humanityledger" target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-3 p-3 rounded-xl bg-black/[0.03] border border-black/6 hover:bg-[#229ED9]/5 hover:border-[#229ED9]/20 transition-all group">
+                <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0" fill="#229ED9">
+                  <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L6.24 13.99l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.908.569z"/>
+                </svg>
+                <div className="flex-1">
+                  <div className="text-[11px] font-black text-black leading-none">Telegram</div>
+                  <div className="text-[9px] text-black/40 mt-0.5">@humanityledger</div>
+                </div>
+                <ArrowRight size={12} className="text-black/20 group-hover:text-[#229ED9]/60 group-hover:translate-x-0.5 transition-all" />
+              </a>
+
+              {/* LinkedIn */}
+              <a href="https://linkedin.com/in/stefan-antonio-cirisanu" target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-3 p-3 rounded-xl bg-black/[0.03] border border-black/6 hover:bg-[#0A66C2]/5 hover:border-[#0A66C2]/20 transition-all group">
+                <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0" fill="#0A66C2">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+                <div className="flex-1">
+                  <div className="text-[11px] font-black text-black leading-none">LinkedIn</div>
+                  <div className="text-[9px] text-black/40 mt-0.5">Stefan Antonio Cirisanu</div>
+                </div>
+                <ArrowRight size={12} className="text-black/20 group-hover:text-[#0A66C2]/60 group-hover:translate-x-0.5 transition-all" />
+              </a>
+
+            </div>
+          </div>
+
+          {/* Copyright */}
+          <p className="text-white/50 text-[8px] font-mono uppercase tracking-[0.25em] text-center">
+            © 2027 Humanity Ledger · Whale Network
+          </p>
         </div>
 
       </div>
@@ -698,94 +789,6 @@ export default function ConnectPage() {
           }}
         />
       )}
-
-      {/* ─── Bottom Overlay: logos + store buttons ─────────────────────── */}
-      <div className="absolute bottom-0 left-0 right-0 z-30 flex flex-col items-center pb-6 pt-4 px-4 gap-5">
-
-        {/* Partners logo — centered, inverted to show white on dark */}
-        <img
-          src="/partners-logo.png"
-          alt="Humanity Ledger Partners"
-          className="h-10 md:h-14 w-auto object-contain"
-          style={{
-            filter: 'brightness(0) invert(1) drop-shadow(0 2px 12px rgba(0,0,0,0.5))',
-          }}
-        />
-
-        {/* Whale Network ballena logo + wordmark */}
-        <div className="flex items-center gap-2.5">
-          <img
-            src="/ballena-checkpoint.png"
-            alt="Whale Network"
-            className="h-8 w-8 object-contain"
-            style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.6)) brightness(0) invert(1)' }}
-          />
-          <span className="text-white font-black text-[11px] uppercase tracking-[0.35em] opacity-90">Whale Network</span>
-        </div>
-
-        {/* Action buttons row */}
-        <div className="flex flex-wrap items-center justify-center gap-2.5">
-
-          {/* GitHub */}
-          <a
-            href="https://github.com/whalenetwork"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/95 backdrop-blur-sm border border-white/40 text-[#0a0a0a] hover:bg-white transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:scale-95"
-          >
-            {/* GitHub SVG */}
-            <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0" fill="currentColor">
-              <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
-            </svg>
-            <div className="text-left">
-              <div className="text-[10px] font-black uppercase tracking-widest leading-none">GitHub</div>
-              <div className="text-[8px] font-mono text-black/50 leading-none mt-0.5">whalenetwork</div>
-            </div>
-          </a>
-
-          {/* App Store */}
-          <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/95 backdrop-blur-sm border border-white/40 text-[#0a0a0a] shadow-lg cursor-not-allowed select-none">
-            {/* Apple SVG */}
-            <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0" fill="currentColor">
-              <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-            </svg>
-            <div className="text-left">
-              <div className="text-[10px] font-black uppercase tracking-widest leading-none">App Store</div>
-              <div className="text-[8px] font-mono text-[#D4AF37] leading-none mt-0.5 font-bold">Coming 01/01/2027</div>
-            </div>
-          </div>
-
-          {/* Google Play */}
-          <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/95 backdrop-blur-sm border border-white/40 text-[#0a0a0a] shadow-lg cursor-not-allowed select-none">
-            {/* Google Play SVG */}
-            <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0" fill="currentColor">
-              <path d="M3.18 23.76c.3.17.65.19.96.07l12.75-7.37-2.79-2.79L3.18 23.76zm-1.13-1.49V1.73c0-.43.23-.82.6-1.03L15.19 12l-13.14 12.3c0-.01 0-.02-.01-.03zm15.53-8.12l2.38 2.38c.41.41.41 1.07 0 1.48L17.72 20l-2.79-2.79 2.65-3.06zM3.18.24c.31-.12.66-.1.96.07L16.9 7.68l-2.79 2.79L3.18.24z"/>
-            </svg>
-            <div className="text-left">
-              <div className="text-[10px] font-black uppercase tracking-widest leading-none">Google Play</div>
-              <div className="text-[8px] font-mono text-[#D4AF37] leading-none mt-0.5 font-bold">Coming 01/01/2027</div>
-            </div>
-          </div>
-
-          {/* Chrome Extension */}
-          <div className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/95 backdrop-blur-sm border border-white/40 text-[#0a0a0a] shadow-lg cursor-not-allowed select-none">
-            {/* Chrome SVG */}
-            <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0" fill="currentColor">
-              <path d="M12 0C8.21 0 4.831 1.757 2.632 4.501l3.953 6.848A5.454 5.454 0 0 1 12 6.545h10.691A12 12 0 0 0 12 0zM1.931 5.47A11.943 11.943 0 0 0 0 12c0 6.012 4.42 10.991 10.189 11.864l3.953-6.847a5.45 5.45 0 0 1-6.865-2.29zm13.342 2.166a5.446 5.446 0 0 1 1.45 7.09l.002.001h-.002l-5.344 9.257c.206.01.413.016.621.016 6.627 0 12-5.373 12-12 0-1.54-.29-3.011-.818-4.364zM12 16.364a4.364 4.364 0 1 1 0-8.728 4.364 4.364 0 0 1 0 8.728Z"/>
-            </svg>
-            <div className="text-left">
-              <div className="text-[10px] font-black uppercase tracking-widest leading-none">Chrome Extension</div>
-              <div className="text-[8px] font-mono text-[#D4AF37] leading-none mt-0.5 font-bold">Coming Soon</div>
-            </div>
-          </div>
-
-        </div>{/* end buttons row */}
-
-        {/* Copyright */}
-        <p className="text-white/35 text-[8px] font-mono uppercase tracking-[0.25em]">
-          © 2027 Humanity Ledger · Whale Network · All rights reserved
-        </p>
-      </div>
     </div>
   );
 }
