@@ -285,7 +285,7 @@ export function WhaleProShell({ activeTab, onTabChange, children, isExternalEmbe
     useEffect(() => {
         if (RESTRICTED_TABS.includes(activeTab)) {
             if (!isWalletConnected) {
-                onTabChange('markets');
+                onTabChange('humanity-ledger');
             }
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -344,8 +344,8 @@ export function WhaleProShell({ activeTab, onTabChange, children, isExternalEmbe
                         <div className="flex items-center gap-2.5 px-3 py-2">
                             <img src="/official-whale-monochrome.png" className="w-6 h-6 shrink-0" alt="WAN" />
                             <div className="flex flex-col leading-none">
-                                <span className="text-[11px] font-black uppercase tracking-tight text-[#050505] ">Whale Network</span>
-                                <span className="text-[11px] font-black uppercase tracking-tight text-[#050505] ">Network</span>
+                                <span className="text-[11px] font-black uppercase tracking-tight text-[#050505]">Whale</span>
+                                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#888888]">Network</span>
                             </div>
                         </div>
                     </div>
