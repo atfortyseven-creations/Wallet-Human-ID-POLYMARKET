@@ -4,7 +4,7 @@ import { signalEngine } from '@/lib/signals/SignalEngine';
 /**
  * GET /api/signals/[symbol]
  * 
- * Returns AI-generated trading signal for the specified symbol
+ * Returns AI-generated attesting signal for the specified symbol
  * 
  * Example: /api/signals/AUTHUSDT
  * 
@@ -108,7 +108,7 @@ export async function GET(
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to generate trading signal',
+        error: error.message || 'Failed to generate attesting signal',
         timestamp: Date.now()
       },
       { status: 500 }

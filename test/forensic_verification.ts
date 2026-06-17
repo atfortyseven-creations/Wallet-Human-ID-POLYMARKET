@@ -26,19 +26,19 @@ async function runForensicVerification() {
         console.warn('️  NOTICE: Cache optimization non-deterministic in this environment.');
     }
 
-    // 2. Wash-Trading Memory Forensics
-    console.log('\n Verification 2: Memory-Based Wash-Trading Detection');
+    // 2. Wash-Attesting Memory Forensics
+    console.log('\n Verification 2: Memory-Based Wash-Attesting Detection');
     const mockHistory = [
         { from_address: TEST_ADDRESS, to_address: '0xTarget1', value: '1.5', block_timestamp: new Date().toISOString() },
         { from_address: '0xTarget1', to_address: TEST_ADDRESS, value: '1.45', block_timestamp: new Date().toISOString() },
     ];
     
-    const metrics = (analyticsService as any).detectWashTrading(TEST_ADDRESS, mockHistory);
+    const metrics = (analyticsService as any).detectWashAttesting(TEST_ADDRESS, mockHistory);
     console.log('Patterns detected:', metrics.patterns);
     if (metrics.patterns.length > 0) {
         console.log(' PASS: Cycle detection identified patterns in local memory.');
     } else {
-        console.error(' FAIL: Wash-trading patterns were not recognized.');
+        console.error(' FAIL: Wash-attesting patterns were not recognized.');
     }
 
     // 3. Infrastructure Integrity

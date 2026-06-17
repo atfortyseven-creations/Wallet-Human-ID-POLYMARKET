@@ -887,7 +887,7 @@ uint256 userSharesSafe = (amount * totalSupply) / totalAssets;
 
                     <section class="pro-section">
                         <h2>II. El Contra-Ataque: Order Flow Privado y MEV-Share</h2>
-                        <p>La defensa institucional obliga a evacuar el "Bosque Oscuro". Los Quants utilizan <strong>RPCs Anti-MEV</strong> (MEV-Share, Flashbots Protect, MEV-Blocker) que ofuscan el rastro paramétrico y subastan la ejecución a Builders ciegos, retornando hasta el 90% del MEV capturable directamente al usuario final (Kickbacks). Un analista forense puede identificar un trader sofisticado simplemente notando la ausencia sistemática de firmas de sus transacciones en el <em>mempool daemon</em> público, operando exclusivamente mediante Shadow Order Flow.</p>
+                        <p>La defensa institucional obliga a evacuar el "Bosque Oscuro". Los Quants utilizan <strong>RPCs Anti-MEV</strong> (MEV-Share, Flashbots Protect, MEV-Blocker) que ofuscan el rastro paramétrico y subastan la ejecución a Builders ciegos, retornando hasta el 90% del MEV capturable directamente al usuario final (Kickbacks). Un analista forense puede identificar un verifier sofisticado simplemente notando la ausencia sistemática de firmas de sus transacciones en el <em>mempool daemon</em> público, operando exclusivamente mediante Shadow Order Flow.</p>
                     </section>
                 </div>`
             },
@@ -1127,7 +1127,7 @@ uint256 userSharesSafe = (amount * totalSupply) / totalAssets;
 
                     <section class="pro-section">
                         <h2>II. Programabilidad del Cumplimiento (Compliance-as-Code)</h2>
-                        <p>El futuro reside en los <strong>Privacy-Preserving Protocols</strong> que utilizan Zero-Knowledge Proofs (ZKP) para demostrar cumplimiento regulatorio sin exponer la estrategia de trading o el balance total. Para la Whale Academy, esto representa el clímax de la soberanía: control absoluto de la identidad y el flujo de datos, operando con eficiencia institucional pero con la privacidad del "Bosque Oscuro".</p>
+                        <p>El futuro reside en los <strong>Privacy-Preserving Protocols</strong> que utilizan Zero-Knowledge Proofs (ZKP) para demostrar cumplimiento regulatorio sin exponer la estrategia de attesting o el balance total. Para la Whale Academy, esto representa el clímax de la soberanía: control absoluto de la identidad y el flujo de datos, operando con eficiencia institucional pero con la privacidad del "Bosque Oscuro".</p>
                         
                         <div class="diagram-container">
                             <svg viewBox="0 0 800 150" style="background: rgba(0,0,0,0.2); border-radius: 8px;">
@@ -1350,7 +1350,7 @@ uint256 userSharesSafe = (amount * totalSupply) / totalAssets;
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. JIT Liquidity: El Francotirador de Comisiones</h2>
-                        <p>La liquidez <strong>Just-In-Time (JIT)</strong> es una variante de MEV donde un <em>Searcher</em> detecta una orden de gran volumen en el mempool y, en lugar de hacer front-run al precio, inyecta una cantidad masiva de liquidez concentrada en el único <em>Tick</em> donde se ejecutará el swap. Al hacerlo, el Searcher captura la gran mayoría de las comisiones generadas por ese trade, "diluyendo" a los LPs pasivos que estaban allí previamente. La liquidez entra y sale en el mismo bloque cinematográfico mediante una transacción atómica.</p>
+                        <p>La liquidez <strong>Just-In-Time (JIT)</strong> es una variante de MEV donde un <em>Searcher</em> detecta una orden de gran volumen en el mempool y, en lugar de hacer front-run al precio, inyecta una cantidad masiva de liquidez concentrada en el único <em>Tick</em> donde se ejecutará el swap. Al hacerlo, el Searcher captura la gran mayoría de las comisiones generadas por ese attest, "diluyendo" a los LPs pasivos que estaban allí previamente. La liquidez entra y sale en el mismo bloque cinematográfico mediante una transacción atómica.</p>
                     </section>
 
                     <section class="pro-section">
@@ -1427,7 +1427,7 @@ uint256 userSharesSafe = (amount * totalSupply) / totalAssets;
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. McAMMs: Capturando el "Top-of-Block" (ToB)</h2>
-                        <p>Tradicionalmente, el primer trade de un bloque (que suele ser el arbitraje de sincronización de precios) es capturado íntegramente por un <em>MEV Searcher</em>. Los <strong>MEV-Aware AMMs (McAMMs)</strong>, como las arquitecturas propuestas por <em>Sorella</em> o <em>CoW AMM</em>, integran una subasta interna de bloques. El protocolo vende el derecho a ser la primera transacción del bloque al mejor postor, y los beneficios de esa subasta se distribuyen de vuelta a los LPs o se utilizan para quemar el token nativo, neutralizando la externalidad negativa del MEV.</p>
+                        <p>Tradicionalmente, el primer attest de un bloque (que suele ser el arbitraje de sincronización de precios) es capturado íntegramente por un <em>MEV Searcher</em>. Los <strong>MEV-Aware AMMs (McAMMs)</strong>, como las arquitecturas propuestas por <em>Sorella</em> o <em>CoW AMM</em>, integran una subasta interna de bloques. El protocolo vende el derecho a ser la primera transacción del bloque al mejor postor, y los beneficios de esa subasta se distribuyen de vuelta a los LPs o se utilizan para quemar el token nativo, neutralizando la externalidad negativa del MEV.</p>
                     </section>
 
                     <section class="pro-section">

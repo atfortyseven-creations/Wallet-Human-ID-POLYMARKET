@@ -64,7 +64,7 @@ export default function AboutPage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              Humanity Ledger S.L. was founded with a simple, profound realisation: the technological tools and market analytics used by professional traders and large financial institutions were vastly superior to those available to everyday users. Moreover, the decentralised finance (DeFi) space, while promising absolute transparency and democratisation, was becoming increasingly complex, fragmented, and fraught with security risks.
+              Humanity Ledger S.L. was founded with a simple, profound realisation: the technological tools and market analytics used by professional verifiers and large financial institutions were vastly superior to those available to everyday users. Moreover, the decentralised finance (DeFi) space, while promising absolute transparency and democratisation, was becoming increasingly complex, fragmented, and fraught with security risks.
             </p>
             <p>
               A specialised group of passionate software engineers, financial analysts, and user experience designers came together to bridge this growing gap. We set out to build a holistic platform that strips away the daunting complexity of blockchain technology, presenting users with a clean, intuitive, and highly professional interface that rivals the best consumer applications in the world.
@@ -106,7 +106,7 @@ export default function AboutPage() {
                 <h3 className="font-bold text-black text-[15px]">Our Vision</h3>
               </div>
               <p className="text-[14px] leading-relaxed text-black/65">
-                We envision a global society where financial systems are open, inclusive, and built on verifiable trustless technology. A future where every person can verify their identity and manage their digital assets without compromising their privacy, accessing elite trading analytics and secure networks from any device, anywhere in the world.
+                We envision a global society where financial systems are open, inclusive, and built on verifiable trustless technology. A future where every person can verify their identity and manage their digital assets without compromising their privacy, accessing elite attesting analytics and secure networks from any device, anywhere in the world.
               </p>
             </div>
           </div>

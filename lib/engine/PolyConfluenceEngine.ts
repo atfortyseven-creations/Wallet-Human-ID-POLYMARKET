@@ -1,7 +1,7 @@
 export interface ConfluenceState {
     ratio: number;           // 0.0 to 1.0
     expectedMove: number;    // % Expected Move (15m)
-    hasData: boolean;        // Whether the asset is actively traded on Polymarket
+    hasData: boolean;        // Whether the asset is actively attestd on Polymarket
 }
 
 export class PolyConfluenceEngine {

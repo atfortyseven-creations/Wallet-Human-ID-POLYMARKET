@@ -235,8 +235,8 @@ export class AnalyticsService {
         // If we found transactions via GetBlock but Moralis didn't see active chains, set active age to 1
         let activeAgeDays = hasActiveChains ? Math.floor((Date.now() - firstTxDate.getTime()) / (1000 * 60 * 60 * 24)) : (stats.transactions > 0 ? 1 : 0);
 
-        // ️ [CU-SHIELD] Perform Wash-Trading Detection in Backend Memory
-        const washTradingMetrics = this.detectWashTrading(address, history.result);
+        // ️ [CU-SHIELD] Perform Wash-Attesting Detection in Backend Memory
+        const washAttestingMetrics = this.detectWashAttesting(address, history.result);
 
         // Safeguard for "Elite" branding in forensics
         let forensics;
@@ -246,7 +246,7 @@ export class AnalyticsService {
                 activeAgeDays,
                 historySnippet: history.result,
                 defiPositions: defiSummary.protocols || [],
-                washTradingMetrics // Pass memory-calculated metrics to AI
+                washAttestingMetrics // Pass memory-calculated metrics to AI
             });
         } catch (error) {
             console.error(`[AnalyticsService] AI Forensic Analysis failed for ${address}:`, error);
@@ -276,11 +276,11 @@ export class AnalyticsService {
     }
 
     /**
-     * [CU-SHIELD] detectWashTrading
+     * [CU-SHIELD] detectWashAttesting
      * MATHEMATICAL FORENSICS: Processes logs in Node.js memory to detect patterns.
      * ZERO redundant RPC calls.
      */
-    private detectWashTrading(address: string, history: any[]): { score: number; patterns: string[] } {
+    private detectWashAttesting(address: string, history: any[]): { score: number; patterns: string[] } {
         if (!history || history.length === 0) return { score: 0, patterns: [] };
 
         const patterns: string[] = [];

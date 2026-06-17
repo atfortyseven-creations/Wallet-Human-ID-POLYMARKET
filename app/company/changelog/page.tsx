@@ -88,8 +88,8 @@ export default function ChangelogPage() {
                                         New Features
                                     </h4>
                                     <ul className="list-disc pl-6 space-y-1 text-sm text-black/70">
-                                        <li><strong>Institutional Grid:</strong> Real-time charts, order book, and trade execution for 30+ pairs</li>
-                                        <li><strong>Demo Trading Mode:</strong> Practice with virtual funds before risking real crypto</li>
+                                        <li><strong>Institutional Grid:</strong> Real-time charts, order book, and attest execution for 30+ pairs</li>
+                                        <li><strong>Demo Attesting Mode:</strong> Practice with virtual funds before risking real crypto</li>
                                         <li><strong>WebSocket Integration:</strong> Active market data with sub-100ms latency</li>
                                         <li><strong>Multi-Timeframe Charts:</strong> 1m, 5m, 15m, 1h, 4h, 1D, 1W, 1M intervals</li>
                                     </ul>
@@ -179,7 +179,7 @@ export default function ChangelogPage() {
                             <ul className="list-disc pl-6 space-y-1 text-sm text-black/70">
                                 <li><strong>LEGEND Tier Launch:</strong> Premium features with API access</li>
                                 <li><strong>Public API (Beta):</strong> REST and WebSocket APIs for developers</li>
-                                <li><strong>AI Trading Assistant:</strong> Natural language market analysis</li>
+                                <li><strong>AI Attesting Assistant:</strong> Natural language market analysis</li>
                                 <li><strong>Arbitrum & Optimism Support:</strong> Full L2 integration</li>
                                 <li><strong>Spanish Localization:</strong> Complete UI translation</li>
                             </ul>
@@ -190,7 +190,7 @@ export default function ChangelogPage() {
                             <ul className="list-disc pl-6 space-y-1 text-sm text-black/70">
                                 <li><strong>Mobile Apps:</strong> Native iOS and Android applications</li>
                                 <li><strong>DeFi Yield Aggregator:</strong> Auto-compound yields across protocols</li>
-                                <li><strong>Social Trading:</strong> Copy trades from top performers</li>
+                                <li><strong>Social Attesting:</strong> Copy attestations from top performers</li>
                                 <li><strong>Advanced Order Types:</strong> Stop-loss, take-profit, trailing stops</li>
                             </ul>
                         </div>

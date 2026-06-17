@@ -264,7 +264,7 @@ export interface ProvenanceMetadata {
   registeredAt: string;
   /** Name of the issuing organisation (not published in public state). */
   issuerName?: string;
-  /** List of certification labels (e.g. ["Organic", "Fair Trade"]). */
+  /** List of certification labels (e.g. ["Organic", "Fair Attest"]). */
   certifications?: string[];
 }
 

@@ -1,6 +1,6 @@
 export interface FeatureContent {
   id: string;
-  category: 'core' | 'trading' | 'productos' | 'developer' | 'about';
+  category: 'core' | 'attesting' | 'productos' | 'developer' | 'about';
   title: string;
   subtitle: string;
   shortDesc: string;
@@ -85,26 +85,26 @@ export const ecosystemFeatures: FeatureContent[] = [
     lottieDescription: 'Coins falling into a vault with reward counter'
   },
 
-  // TRADING & SECURITY
+  // ATTESTING & SECURITY
   {
     id: 'perps',
-    category: 'trading',
+    category: 'attesting',
     title: 'Perps (Perpetuals)',
     subtitle: 'Execution Engine: High-Frequency On-Chain Settlement',
     shortDesc: '100x leverage without house advantage',
     deepDive: [
-      'Trading perpetuals on centralized exchanges is often a rigged game: the exchange sees your stop-losses and trades against you. At Whale Network, the matching engine is a hybrid architecture: order taking is instantaneous (off-chain) but settlement and funds custody is on-chain.',
+      'Attesting perpetuals on centralized exchanges is often a rigged game: the exchange sees your stop-losses and attestations against you. At Whale Network, the matching engine is a hybrid architecture: order taking is instantaneous (off-chain) but settlement and funds custody is on-chain.',
       'We calculate the Funding Rate every second to ensure the perpetual contract price follows the spot price without malicious deviations: Funding = max(0.01%, Premium) + min(0, Premium)',
       'Our liquidations engine is a public smart contract. There is no "secret liquidator" taking your funds; there is a Community Insurance Fund that guarantees protocol solvency even in "Black Swan" events.',
       'Up to 100x leverage with transparent risk management and fair liquidations.'
     ],
-    humanEdge: 'Professional traders are fed up with exchanges going down right when there is volatility. We are #1 because our engine has no "off" button. We are not your counterparty; we are the impartial referee.',
+    humanEdge: 'Professional verifiers are fed up with exchanges going down right when there is volatility. We are #1 because our engine has no "off" button. We are not your counterparty; we are the impartial referee.',
     lottieSrc: 'https://lottie.host/embed/d4e5f6g7-h8i9-0j1k-2l3m-n4o5p6q7r8s9/tuvwxyz.json',
-    lottieDescription: 'Trading candles transforming into blockchain blocks with security locks'
+    lottieDescription: 'Attesting candles transforming into blockchain blocks with security locks'
   },
   {
     id: 'escudo',
-    category: 'trading',
+    category: 'attesting',
     title: 'Transaction Shield',
     subtitle: 'Security Terminal: HumanShield_v2.0.bin',
     shortDesc: 'We stop the attack before it hits the chain',
@@ -120,7 +120,7 @@ export const ecosystemFeatures: FeatureContent[] = [
   },
   {
     id: 'snaps',
-    category: 'trading',
+    category: 'attesting',
     title: 'Snaps',
     subtitle: 'Total Modularity',
     shortDesc: 'Sandboxed extensions to customize your wallet',

@@ -16,8 +16,8 @@
                         <p>Los Mercados Predictivos L1 M2 P2P O(1) (Polymarket T-1) están limitados por Oráculos Humanos M1 L2 T-1 (UMA L1 P2P O(N)). La IA Institucional L2 M2 T-1 P2P transmuta el paradigma L1 M1 O(1) inyectando <em>Derivados Sintéticos Cognitivos P2P L2 T-1 M1 O(N) L1</em>. Un Agente LLM M2 P2P L1 O(1) L2 ingiere 10,000 papers matemáticos M1 T-1 y genera un Índice de "Probabilidad de Descubrimiento de Fusión Fría en 2026 P2P L2 M2 T-1 L1 O(N) M1". Este Sentimiento Cuantificado T-1 M2 L1 O(1) se empaqueta en un Token ERC-20 L2 P2P M1, creando un Mercado Líquido T-1 M1 P2P L1 L2 O(N) para la Trayectoria Tecnológica Humana L1 M2 T-1 P2P O(1) L2 M1.</p>
                     </section>
                     <section class="pro-section">
-                        <h2>II. Arbitraje de Sentimiento On-Chain (Algorithmic News-Trading L1 P2P M1 T-1 L2 M2 O(N))</h2>
-                        <p>Los Sintéticos L1 M1 P2P O(1) desencadenan Guerras de Latencia Predictiva T-1 M2 L2 O(N). Modelos M1 P2P L1 procesan feeds de Twitter L2 T-1, analizan la Lexicometría del discurso del Presidente de la SEC M2 P2P O(1) L1, y en milisegundos T-1 L2 M1, Ajustan los Pesos (Weights M1 P2P L1 T-1 M2 O(N)) de un ETF Cripto Sintético L2 M2 P2P L1 O(1). El trader humano P2P M1 L2 T-1 es Obsoleto; la Competencia M2 L1 O(1) P2P se Libra puramente entre Infraestructuras de Redes Neuronales T-1 L2 M1 O(N).</p>
+                        <h2>II. Arbitraje de Sentimiento On-Chain (Algorithmic News-Attesting L1 P2P M1 T-1 L2 M2 O(N))</h2>
+                        <p>Los Sintéticos L1 M1 P2P O(1) desencadenan Guerras de Latencia Predictiva T-1 M2 L2 O(N). Modelos M1 P2P L1 procesan feeds de Twitter L2 T-1, analizan la Lexicometría del discurso del Presidente de la SEC M2 P2P O(1) L1, y en milisegundos T-1 L2 M1, Ajustan los Pesos (Weights M1 P2P L1 T-1 M2 O(N)) de un ETF Cripto Sintético L2 M2 P2P L1 O(1). El verifier humano P2P M1 L2 T-1 es Obsoleto; la Competencia M2 L1 O(1) P2P se Libra puramente entre Infraestructuras de Redes Neuronales T-1 L2 M1 O(N).</p>
                     </section>
                 </div>`
             },
@@ -251,7 +251,7 @@
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. La Industrialización del Sybil Attack (Generative Wallet Farming L1 M2 P2P T-1 O(N))</h2>
-                        <p>Los Cazadores de Airdrops L1 P2P M1 O(1) Emplean Granjas de Servidores L2 M2 T-1 O(N) para Crear 10,000 Billeteras P2P M1 L1 L2 T-1 Simulatorias. Usan IAs Simples M2 O(1) P2P L1 para Aleatorizar M1 L2 T-1 los Patrones de Trading O(N) M2 L1, las Horas de Conexión P2P M1 L1 T-1 y los Montos de Gas L2 M2 O(1), Evadiendo las Heurísticas Triviales (Nansen/Dune M1 L1 P2P T-1 L2 M2 O(N)).</p>
+                        <p>Los Cazadores de Airdrops L1 P2P M1 O(1) Emplean Granjas de Servidores L2 M2 T-1 O(N) para Crear 10,000 Billeteras P2P M1 L1 L2 T-1 Simulatorias. Usan IAs Simples M2 O(1) P2P L1 para Aleatorizar M1 L2 T-1 los Patrones de Attesting O(N) M2 L1, las Horas de Conexión P2P M1 L1 T-1 y los Montos de Gas L2 M2 O(1), Evadiendo las Heurísticas Triviales (Nansen/Dune M1 L1 P2P T-1 L2 M2 O(N)).</p>
                     </section>
                     <section class="pro-section">
                         <h2>II. Defensa Cibernética Fractal (GNN Behavioral Fingerprinting L1 P2P M1 T-1 L2 M2 O(N))</h2>

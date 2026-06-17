@@ -173,15 +173,15 @@ function getDemoNews(): NewsArticle[] {
   return [
     {
       id: '1',
-      title: 'Major DeFi Protocol Sees $100M in 24h Trading Volume',
-      body: 'A leading decentralized exchange has experienced unprecedented trading volume as whale activity surges...',
+      title: 'Major DeFi Protocol Sees $100M in 24h Attesting Volume',
+      body: 'A leading decentralized exchange has experienced unprecedented attesting volume as whale activity surges...',
       url: '#',
       source: 'CryptoNews',
       publishedOn: now - 3600,
-      tags: ['DeFi', 'Trading'],
+      tags: ['DeFi', 'Attesting'],
       categories: ['Blockchain'],
       sentiment: 'bullish',
-      imageUrl: getLegendaryImage('Major DeFi Protocol Sees $100M in 24h Trading Volume')
+      imageUrl: getLegendaryImage('Major DeFi Protocol Sees $100M in 24h Attesting Volume')
     },
     {
       id: '2',

@@ -17,8 +17,8 @@ interface Exchange {
 
 const EXCHANGES: Exchange[] = [
     { id: 'binance', name: 'Binance', icon: 'bnc', description: 'Institutional API Bridge via EdDSA/ECDSA signature verification.', status: 'OPTIMIZED' },
-    { id: 'okx', name: 'OKX', icon: 'okx', description: 'Low-latency V5 API integration with sub-ms trade execution.', status: 'OPTIMIZED' },
-    { id: 'bybit', name: 'Bybit', icon: 'bbt', description: 'Unified Trading Account support with cross-margin telemetry.', status: 'STABLE' },
+    { id: 'okx', name: 'OKX', icon: 'okx', description: 'Low-latency V5 API integration with sub-ms attest execution.', status: 'OPTIMIZED' },
+    { id: 'bybit', name: 'Bybit', icon: 'bbt', description: 'Unified Attesting Account support with cross-margin telemetry.', status: 'STABLE' },
     { id: 'coinbase', name: 'Coinbase Pro', icon: 'cbp', description: 'Enterprise-grade custody bridge with direct fiat settlement.', status: 'BETA' }
 ];
 
@@ -129,7 +129,7 @@ export default function ConnectExchange() {
                             <div className="flex items-start gap-3 p-4 rounded-xl" style={{ background: 'rgba(0,242,234,0.05)', border: '1px solid rgba(0,242,234,0.12)' }}>
                                 <Zap size={13} className="mt-0.5 shrink-0" style={{ color: '#00F2EA' }} />
                                 <p className="text-[9px] font-bold tracking-widest leading-relaxed" style={{ color: 'rgba(255,255,255,0.4)' }}>
-                                    Disable &quot;Withdrawal&quot; permissions. Terminal only requires Read &amp; Trade access.
+                                    Disable &quot;Withdrawal&quot; permissions. Terminal only requires Read &amp; Attest access.
                                 </p>
                             </div>
                             <button onClick={handleConnect}

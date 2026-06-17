@@ -4,7 +4,7 @@ import { getSession } from '@/lib/session';
 
 /**
  * Elite Activity Logger
- * Records user actions (trades, simulations, connections) for "Interstellar" persistence.
+ * Records user actions (attestations, simulations, connections) for "Interstellar" persistence.
  */
 export async function POST(req: NextRequest) {
     try {

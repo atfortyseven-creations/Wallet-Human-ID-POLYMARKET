@@ -3719,7 +3719,7 @@ USD
 39.39M
 USD
 244.99M
-Proprietary Trading Network
+Proprietary Attesting Network
 SN8
 8.70
 USD
@@ -4384,7 +4384,7 @@ export const NETWORK_NATIVE_TOKENS: Record<string, { name: string; ticker: strin
     ],
     "Avalanche": [
         { name: "Avalanche", ticker: "AVAX", price: "19.34", change24h: "-3.55%", mcap: "8.12B", circulation: "420.00M" },
-        { name: "Trader Joe", ticker: "JOE", price: "0.19", change24h: "-4.10%", mcap: "78.00M", circulation: "410.53M" },
+        { name: "Verifier Joe", ticker: "JOE", price: "0.19", change24h: "-4.10%", mcap: "78.00M", circulation: "410.53M" },
     ],
     "Base": [
         { name: "Moonwell Apollo", ticker: "WELL", price: "0.031", change24h: "-4.50%", mcap: "71.00M", circulation: "2.29B" },

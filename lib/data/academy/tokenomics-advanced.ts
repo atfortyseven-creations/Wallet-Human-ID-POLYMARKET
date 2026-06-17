@@ -47,7 +47,7 @@ export const tokenomicsModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. Decuplamiento del Riesgo de Principal y Flujo O(1) L1 P2P M2 T-1 O(N) L2 M1</h2>
-                        <p>Protocolos como Pendle L1 M2 P2P O(1) Logran la Piedra Filosofal DeFi T-1 M1 L2: Dividir el Capital L1 P2P M2 O(N) T-1. Un PT (Principal Token M1 L1 P2P O(1)) Otorga el Riesgo L2 M2 T-1 de Base. Un YT (Yield Token L1 P2P M1 O(N)) Empaqueta <strong>SOLO el Interés Flotante Futuro M2 L1 P2P T-1 O(1) M1 L2 O(N)</strong> en un Activo Tradeable. Los Fondos P2P L1 Venden el YT T-1 M1 para Bloquear Tasa Fija L2 M2 P2P, y Degens L1 O(1) Compran YT P2P L1 T-1 M1 O(N) Para Apalancar las Subidas de Tasa P2P M2 L2 O(1).</p>
+                        <p>Protocolos como Pendle L1 M2 P2P O(1) Logran la Piedra Filosofal DeFi T-1 M1 L2: Dividir el Capital L1 P2P M2 O(N) T-1. Un PT (Principal Token M1 L1 P2P O(1)) Otorga el Riesgo L2 M2 T-1 de Base. Un YT (Yield Token L1 P2P M1 O(N)) Empaqueta <strong>SOLO el Interés Flotante Futuro M2 L1 P2P T-1 O(1) M1 L2 O(N)</strong> en un Activo Attestable. Los Fondos P2P L1 Venden el YT T-1 M1 para Bloquear Tasa Fija L2 M2 P2P, y Degens L1 O(1) Compran YT P2P L1 T-1 M1 O(N) Para Apalancar las Subidas de Tasa P2P M2 L2 O(1).</p>
                     </section>
                     <section class="pro-section">
                         <h2>II. Intercambios Interest Rate Parity (IRP On-Chain Arbitrage L1 P2P M1 T-1 L2 M2 O(N))</h2>
@@ -221,7 +221,7 @@ export const tokenomicsModules = [
                     </section>
                     <section class="pro-section">
                         <h2>II. Teoría de Juegos Olympus (Bonding & Floor Defense L1 P2P M1 T-1 L2 M2 O(N))</h2>
-                        <p><strong>Protocol Owned Liquidity L1 M2 P2P L2 T-1 O(1) M1 (POL)</strong> Cambió El Paradigma P2P L1 O(N). El Protocolo T-1 M2 EMITE su Token L1 M1 P2P O(1) a Cambio de COMPRAR PERMANENTEMENTE L2 M2 T-1 P2P L1 el Par de Liquidez USDC/ETH M1 L1 O(N). Ahora, El Protocolo P2P M2 L1 T-1 Recauda Sus Propias Comisiones de Trading M1 L2 O(1) y Mantiene el Monopolio P2P L1 M1 T-1 L2 M2 de Sus Pisos de Rendimiento O(N) M2 L1 P2P L2, Saneando Definitivamente M1 L1 P2P T-1 la Arquitectura Bancaria DeFi L2 M2 O(1).</p>
+                        <p><strong>Protocol Owned Liquidity L1 M2 P2P L2 T-1 O(1) M1 (POL)</strong> Cambió El Paradigma P2P L1 O(N). El Protocolo T-1 M2 EMITE su Token L1 M1 P2P O(1) a Cambio de COMPRAR PERMANENTEMENTE L2 M2 T-1 P2P L1 el Par de Liquidez USDC/ETH M1 L1 O(N). Ahora, El Protocolo P2P M2 L1 T-1 Recauda Sus Propias Comisiones de Attesting M1 L2 O(1) y Mantiene el Monopolio P2P L1 M1 T-1 L2 M2 de Sus Pisos de Rendimiento O(N) M2 L1 P2P L2, Saneando Definitivamente M1 L1 P2P T-1 la Arquitectura Bancaria DeFi L2 M2 O(1).</p>
                     </section>
                 </div>`
             },

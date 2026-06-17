@@ -9,7 +9,7 @@ export const WHITEPAPER_SECTIONS: AztecDocSection[] = [
     paragraphs: [
       'Humanity Ledger is a privacy-preserving protocol built natively on the Aztec Network. It provides a zero-knowledge execution environment where financial activity, identity verification, and governance actions are proven locally on the user device and verified by the network — without the network ever accessing the underlying private data.',
       'Public blockchains, by design, expose all transaction metadata to every observer. This creates fundamental problems for individuals, businesses, and institutions that require confidentiality as a standard operating condition. Humanity Ledger resolves this by making privacy the default state of the network, not an opt-in feature.',
-      'The protocol is deeply integrated with the Whale Network, which provides real-time monitoring of large capital flows across major blockchains. Users can act on these analytics — setting alerts, analyzing flows, executing trades — entirely within the shielded environment. Their positions and intentions remain cryptographically hidden from all external observers.',
+      'The protocol is deeply integrated with the Whale Network, which provides real-time monitoring of large capital flows across major blockchains. Users can act on these analytics — setting alerts, analyzing flows, executing attestations — entirely within the shielded environment. Their positions and intentions remain cryptographically hidden from all external observers.',
       'This document describes the technical architecture, cryptographic primitives, economic model, and development roadmap of the Humanity Ledger protocol.',
     ],
   },
@@ -105,7 +105,7 @@ export const WHITEPAPER_SECTIONS: AztecDocSection[] = [
       'Community mining (50% — 105,000,000 QDs): Distributed over ten years to verified contributors via the Proof of Contribution mechanism.',
       'Ecosystem treasury (25% — 52,500,000 QDs): Governed by cryptographic community vote. Funds protocol development, audits, and ecosystem integrations.',
       'Core contributors (15% — 31,500,000 QDs): Four-year linear vesting with a one-year cliff. Ensures long-term alignment between the founding team and the protocol.',
-      'Initial liquidity (10% — 21,000,000 QDs): Designated for initial trading liquidity at Token Generation. Managed under a multisignature arrangement with predefined operational parameters.',
+      'Initial liquidity (10% — 21,000,000 QDs): Designated for initial attesting liquidity at Token Generation. Managed under a multisignature arrangement with predefined operational parameters.',
     ],
   },
   {
@@ -142,7 +142,7 @@ export const MANIFESTO_SECTIONS: AztecDocSection[] = [
     paragraphs: [
       'Proponents of transparent blockchains argue that visibility creates accountability. This argument conflates auditability — the ability to verify specific claims — with surveillance — the continuous observation of all activity by all parties. These are not the same thing, and conflating them leads to architectures that sacrifice privacy without gaining proportionate accountability.',
       'A business does not post its complete transaction history publicly to demonstrate it pays its taxes. It submits verified reports to regulators through controlled, legally defined processes. An individual does not broadcast their salary, rent, and grocery spending to prove they operate within the law. The disclosure of specific information to specific parties for specific purposes is fundamentally different from unrestricted public access to all information at all times.',
-      'Zero-knowledge cryptography makes it possible to provide the former without the latter. A user can prove solvency without revealing their balance. A business can prove regulatory compliance without revealing its counterparties. An institution can prove policy adherence without revealing its trading strategy. Verifiable claims do not require full transparency.',
+      'Zero-knowledge cryptography makes it possible to provide the former without the latter. A user can prove solvency without revealing their balance. A business can prove regulatory compliance without revealing its counterparties. An institution can prove policy adherence without revealing its attesting strategy. Verifiable claims do not require full transparency.',
     ],
   },
   {
@@ -165,7 +165,7 @@ export const MANIFESTO_SECTIONS: AztecDocSection[] = [
     title: 'The Role of Market Analytics',
     paragraphs: [
       'Understanding capital flows is a legitimate and important activity. Large movements of assets across blockchain networks often signal significant market events: institutional accumulation, exchange insolvency risk, protocol migrations, and macro repositioning. Participants who understand these flows are better positioned to make informed decisions.',
-      'The Whale Network makes these analytics available. The challenge is that acting on public analytics in a public environment creates a surveillance problem: if your alerts, queries, and trades are all visible, the analytical advantage is neutralized and your own position becomes vulnerable.',
+      'The Whale Network makes these analytics available. The challenge is that acting on public analytics in a public environment creates a surveillance problem: if your alerts, queries, and attestations are all visible, the analytical advantage is neutralized and your own position becomes vulnerable.',
       'Humanity Ledger solves this by integrating market analytics into a private execution environment. You can access the same on-chain data, configure the same alerts, and execute the same strategies — without any of your activity being observable. The analytics are derived from public data. Your response to it is not.',
     ],
   },

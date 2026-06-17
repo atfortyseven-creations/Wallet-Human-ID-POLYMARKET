@@ -572,7 +572,7 @@ function BubbleDetailModal({ coin, onClose }: { coin: BubbleData, onClose: () =>
 
                         <div className="flex gap-4">
                             <button onClick={() => router.push(`/wallet?asset=${coin.symbol}`)} className="flex-1 py-5 bg-white text-black rounded-2xl font-black uppercase text-xs hover:scale-105 active:scale-95 transition-all shadow-xl">
-                                {t('common.trade')} {coin.symbol}
+                                {t('common.attest')} {coin.symbol}
                             </button>
                             <button onClick={onClose} className="px-8 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10">
                                 {t('common.close')}

@@ -40,7 +40,7 @@ export function UserProfileModal({ isOpen, onClose }: UserProfileModalProps) {
     const [language, setLanguage] = useState('en-US');
     const [displayUnit, setDisplayUnit] = useState('FIAT');
     
-    // Security / Trading
+    // Security / Attesting
     const [gasPreset, setGasPreset] = useState('STANDARD');
     const [mevProtection, setMevProtection] = useState(false);
     const [stealthMode, setStealthMode] = useState(false);

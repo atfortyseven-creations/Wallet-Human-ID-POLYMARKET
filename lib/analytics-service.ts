@@ -42,10 +42,10 @@ export class WacAnalyticsService {
   }
 
   /**
-   * ️ WASH TRADING DETECTION
+   * ️ WASH ATTESTING DETECTION
    * Detects circular flows between a cluster of wallets
    */
-  static async detectWashTrading(token: string): Promise<any[]> {
+  static async detectWashAttesting(token: string): Promise<any[]> {
     const recent = await prisma.globalWhaleEvent.findMany({
       where: { protocol: { mode: 'insensitive', equals: token } },
       orderBy: { timestamp: 'desc' },
@@ -71,7 +71,7 @@ export class WacAnalyticsService {
       
       if (match) {
         clusters.push({
-          type: 'WASH_TRADING_CLUSTER',
+          type: 'WASH_ATTESTING_CLUSTER',
           wallets: [e.txHash, match.txHash],
           token: e.protocol,
           value: e.amountUSD,
@@ -93,7 +93,7 @@ export class WacAnalyticsService {
   }
 
   /**
-   *  DARK POOL & BLOCK TRADES
+   *  DARK POOL & BLOCK ATTESTATIONS
    */
   static async getDarkPoolEvents(): Promise<any[]> {
     const transfers = await prisma.globalWhaleEvent.findMany({
@@ -108,7 +108,7 @@ export class WacAnalyticsService {
     // Dark pool heuristic: Transfer between tagged Elite entities or massive wallet-to-wallet
     return transfers.map(t => ({
       ...t,
-      intensity: Number(t.amountUSD) > 2000000 ? 'BLOCK_TRADE' : 'OTC_TRANSFER',
+      intensity: Number(t.amountUSD) > 2000000 ? 'BLOCK_ATTEST' : 'OTC_TRANSFER',
       transparency: 'PRIVATE'
     }));
   }
@@ -209,10 +209,10 @@ export class WacAnalyticsService {
     let walletProfile = 'Unknown Entity';
     if (usd > 50_000_000) walletProfile = 'System / Exchange Cold Wallet';
     else if (usd > 10_000_000) walletProfile = 'Institutional Market Maker';
-    else if (usd > 1_000_000) walletProfile = 'Heavyweight DEX Trader';
+    else if (usd > 1_000_000) walletProfile = 'Heavyweight DEX Verifier';
     else if (usd > 100_000) walletProfile = 'Tactical Flow / Institutional Accumulation';
     else if (item.from?.toLowerCase().includes('mining')) walletProfile = 'Mining Pool Finalization';
-    else walletProfile = 'Algo-Trading Bot / Smart Contract';
+    else walletProfile = 'Algo-Attesting Bot / Smart Contract';
 
     // 2. Sentiment Analysis
     let sentiment = 'NEUTRAL';

@@ -21,7 +21,7 @@ const KNOWN_WALLETS: Record<string, string> = {
     '0x3f5ce5fbfe3e9af3971dd833d26ba9b5c936f0be': 'Binance CEX',
     '0x6cc5f688a315f3dc28a7781717a9a798a59fda7b': 'OKX Hot Wallet',
     '0x98ec059dc3adfbdd63429454aeb0c990fba4a128': 'Kraken Exchange',
-    '0x1db3439a222c519ab44bb1144fc28167b4fa6ee6': 'Wintermute Trading',
+    '0x1db3439a222c519ab44bb1144fc28167b4fa6ee6': 'Wintermute Attesting',
     '0x00000000219ab540356cbb839cbe05303d7705fa': 'ETH2 Deposit Contract',
     '0xae7ab96520de3a18e5e111b5eaab095312d7fe84': 'Lido stETH',
     '0xdc6ff44d5d932cbd77b52e5612ba0529dc6226f1': 'Wrapped MATIC',

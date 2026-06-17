@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { TrendingUp, TrendingDown, Activity, DollarSign, Percent, Zap, Brain, AlertTriangle, BarChart3, ShieldCheck } from 'lucide-react';
-import TradingViewChart from './TradingViewChart';
+import AttestingViewChart from './AttestingViewChart';
 import PremiumLocked from './PremiumLocked';
 import { useAccount } from 'wagmi';
 import { useAuth } from '@/hooks/useAuth';
@@ -228,7 +228,7 @@ export default function AdvancedAnalytics({ walletAddress, isPremium, hasTrialed
             <TrendingUp size={16} className="text-orange-500" />
             Binance Active Tracker: BTC / USDT
         </h3>
-        <TradingViewChart 
+        <AttestingViewChart 
             symbol="BTCUSDT" 
             height={300} 
             transfers={unifiedWhaleFeed
@@ -344,7 +344,7 @@ export default function AdvancedAnalytics({ walletAddress, isPremium, hasTrialed
         {portfolioData.smartMoneyMetrics && (
             <StatCard 
                 title="Smart Conviction" 
-                value={`${portfolioData.smartMoneyMetrics.metadata.profitableTradesPercent}%`} 
+                value={`${portfolioData.smartMoneyMetrics.metadata.profitableAttestationsPercent}%`} 
                 icon="brain"
                 subtitle="Est. Accuracy Rate"
             />

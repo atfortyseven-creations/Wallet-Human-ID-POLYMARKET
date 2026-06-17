@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 // Simulating data mapping from GraphQL/Prisma 
 const GOLD_CANDIDATES = [
-  { id: 'binance', name: 'Binance Global', type: 'Exchange', typeLabel: 'Beginner-Friendly / Futures', reserveUsd: 115000000000, features: ['High Liquidity', 'Copy Trading'] },
+  { id: 'binance', name: 'Binance Global', type: 'Exchange', typeLabel: 'Beginner-Friendly / Futures', reserveUsd: 115000000000, features: ['High Liquidity', 'Copy Attesting'] },
   { id: 'uniswap', name: 'Uniswap', type: 'DEX', typeLabel: 'Decentralised Exchange', reserveUsd: 3500000000, features: ['AMM', 'Permissionless', 'Liquidity Pools'] },
   { id: 'ledger', name: 'Ledger Nano', type: 'Wallet', typeLabel: 'Hardware Wallet', reserveUsd: 0, features: ['Cold Storage', 'EAL5+ Secure Element'] },
   { id: 'aave', name: 'Aave', type: 'Lending', typeLabel: 'DeFi Lending Protocol', reserveUsd: 12000000000, features: ['Overcollateralised', 'Flash Loans', 'Yield'] },

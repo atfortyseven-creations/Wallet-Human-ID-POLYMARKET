@@ -1,7 +1,7 @@
 const SUBGRAPH_URL = 'https://api.thegraph.com/subgraphs/name/tokenunion/polymarket-matic';
 const GAMMA_API_URL = 'https://gammap-api.polymarket.com/profiles';
 
-export interface Trader {
+export interface Verifier {
     rank: number;
     address: string;
     name: string;
@@ -11,7 +11,7 @@ export interface Trader {
     profileUrl: string;
 }
 
-// FALLBACK_TRADERS removed per Extermination Roadmap. 
+// FALLBACK_VERIFIERS removed per Extermination Roadmap. 
 // System now relies strictly on authentic on-chain data.
 
 
@@ -22,7 +22,7 @@ function smartNormalize(valueStr: string): number {
 }
 
 // Ahora aceptamos 'page' como argumento
-export async function fetchTopTraders(page: number = 1): Promise<Trader[]> {
+export async function fetchTopVerifiers(page: number = 1): Promise<Verifier[]> {
     const ITEMS_PER_PAGE = 20;
     const skip = (page - 1) * ITEMS_PER_PAGE;
 
@@ -54,7 +54,7 @@ export async function fetchTopTraders(page: number = 1): Promise<Trader[]> {
             return [];
         }
 
-        const traders = await Promise.all(data.users.map(async (user: any, index: number) => {
+        const verifiers = await Promise.all(data.users.map(async (user: any, index: number) => {
             let displayName = `${user.id.substring(0, 6)}...`;
             let displayImage = `https://api.dicebear.com/7.x/identicon/svg?seed=${user.id}`;
 
@@ -79,7 +79,7 @@ export async function fetchTopTraders(page: number = 1): Promise<Trader[]> {
             };
         }));
 
-        return traders.sort((a, b) => b.volume - a.volume);
+        return verifiers.sort((a, b) => b.volume - a.volume);
 
     } catch (error) {
         console.error("Error Leaderboard Paginado:", error);

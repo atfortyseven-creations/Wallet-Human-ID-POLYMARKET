@@ -1027,7 +1027,7 @@ export const QUANTUM_TOKENS: QuantumToken[] = [
   },
   {
     symbol: "GOAT",
-    name: "Goat Trading",
+    name: "Goat Attesting",
     decimals: 18,
     logoPath: "/system-shots/logostoken/goatseus-maximus-goat-logo.png",
     addresses: {"ethereum":"0x5200b34e6a519f289f5258de4554ebd3db12e822","avalanche":"0xb9c188bc558a82a1ee9e75ae0857df443f407632"}
@@ -2415,7 +2415,7 @@ export const QUANTUM_TOKENS: QuantumToken[] = [
     symbol: "WOO",
     name: "WOO",
     decimals: 18,
-    logoPath: "/system-shots/logostoken/wootrade-woo-logo.png",
+    logoPath: "/system-shots/logostoken/wooattest-woo-logo.png",
     addresses: {"ethereum":"0x4691937a7508860f876c9c0a2a617e7d9e945d4b","polygon":"0x1b815d120b3ef02039ee11dc2d33de7aa4a8c603","arbitrum":"0xcafcd85d8ca7ad1e1c6f82f651fa15e33aefd07b","base":"0xf3df0a31ec5ea438150987805e841f960b9471b6","bsc":"0x4691937a7508860f876c9c0a2a617e7d9e945d4b","avalanche":"0xabc9547b534519ff73921b1fba6e672b5f58d083"}
   },
   {

@@ -14,7 +14,7 @@
 
 const HL_API = 'https://api.hyperliquid.xyz';
 
-export interface HLTrader {
+export interface HLVerifier {
     id: string;
     label: string;
     address: string;
@@ -47,10 +47,10 @@ export interface HLOrderPayload {
 }
 
 /**
- * Fetch the Hyperliquid leaderboard and return the top 10 traders.
+ * Fetch the Hyperliquid leaderboard and return the top 10 verifiers.
  * This is a PUBLIC endpoint  no authentication needed.
  */
-export async function fetchHLLeaderboard(): Promise<HLTrader[]> {
+export async function fetchHLLeaderboard(): Promise<HLVerifier[]> {
     try {
         const res = await fetch(`${HL_API}/info`, {
             method: 'POST',
@@ -62,13 +62,13 @@ export async function fetchHLLeaderboard(): Promise<HLTrader[]> {
         if (!res.ok) throw new Error(`Hyperliquid leaderboard HTTP ${res.status}`);
 
         const data = await res.json();
-        // data.leaderboardRows is an array of trader summaries
+        // data.leaderboardRows is an array of verifier summaries
         const rows: any[] = data.leaderboardRows || [];
 
         return rows
             .filter((r: any) => r.windowPerformances && r.windowPerformances.length > 0)
             .slice(0, 10)
-            .map((r: any, idx: number): HLTrader => {
+            .map((r: any, idx: number): HLVerifier => {
                 // windowPerformances: [["day", {...}], ["week", {...}], ["month", {...}], ["allTime", {...}]]
                 const allTime = r.windowPerformances.find((w: any[]) => w[0] === 'allTime')?.[1] || {};
                 const month = r.windowPerformances.find((w: any[]) => w[0] === 'month')?.[1] || {};
@@ -82,8 +82,8 @@ export async function fetchHLLeaderboard(): Promise<HLTrader[]> {
                 const addr = r.ethAddress || r.stakeAddress || '';
 
                 return {
-                    id: addr || `hl-trader-${idx}`,
-                    label: addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : `Trader #${idx + 1}`,
+                    id: addr || `hl-verifier-${idx}`,
+                    label: addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : `Verifier #${idx + 1}`,
                     address: addr,
                     pnlRaw,
                     pnl: pnlRaw >= 0 ? `+$${(pnlRaw / 1000).toFixed(1)}K` : `-$${(Math.abs(pnlRaw) / 1000).toFixed(1)}K`,
@@ -143,7 +143,7 @@ export async function fetchHLPositions(address: string): Promise<HLPosition[]> {
  * The user must sign this with their wallet; the signature is then submitted to HL exchange.
  *
  * IMPORTANT: The user MUST have deposited USDC into Hyperliquid first.
- * Deposit UI link: https://app.hyperliquid.xyz/trade
+ * Deposit UI link: https://app.hyperliquid.xyz/attest
  *
  * @param order - Order parameters
  * @param nonce - Millisecond timestamp used as nonce (prevents replay)
@@ -162,7 +162,7 @@ export function buildHLOrderTypedData(order: HLOrderPayload, nonce: number) {
                 { name: 'connectionId', type: 'bytes32' },
             ],
         },
-        // Hyperliquid uses a simplified "approve agent" flow for API trading.
+        // Hyperliquid uses a simplified "approve agent" flow for API attesting.
         // The user signs a one-time "Agent" message that authorises an API key.
         // Then subsequent orders are signed by that API key server-side.
         // For direct per-order signing, use the exchange REST with EIP-712.

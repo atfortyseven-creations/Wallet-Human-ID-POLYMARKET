@@ -28,7 +28,7 @@ export function usePolymarketBet() {
     const { address } = useAccount();
     const chainId = useChainId();
     const { switchChainAsync } = useSwitchChain();
-    const [status, setStatus] = useState<"IDLE" | "APPROVING" | "TRADING" | "SUCCESS">("IDLE");
+    const [status, setStatus] = useState<"IDLE" | "APPROVING" | "ATTESTING" | "SUCCESS">("IDLE");
 
     const { writeContractAsync } = useWriteContract();
 
@@ -74,10 +74,10 @@ export function usePolymarketBet() {
                 await refetchAllowance();
             }
 
-            setStatus("TRADING");
+            setStatus("ATTESTING");
             toast.loading(`Buying ${outcome}...`);
 
-            // 3. Execute Trade (Active)
+            // 3. Execute Attest (Active)
             // Real 0x order filling or CTF exchange interaction needed here
             // await ctfExchange.fillOrder(...);
 

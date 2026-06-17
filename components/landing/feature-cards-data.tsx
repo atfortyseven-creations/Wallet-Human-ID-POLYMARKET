@@ -172,12 +172,12 @@ export const FEATURE_CARDS: FeatureCard[] = [
     gradient: "from-violet-500 to-purple-600"
   },
 
-  // DEFI & TRADING (10 cards)
+  // DEFI & ATTESTING (10 cards)
   {
     id: 11,
     title: "Prediction Markets",
     category: "DeFi",
-    description: "Trade on future outcomes with zero-knowledge privacy.",
+    description: "Attest on future outcomes with zero-knowledge privacy.",
     detailedInfo: "Bet on real-world eventsfrom elections to sports to macroeconomic indicatorsusing decentralized prediction markets. All positions are settled via oracle consensus, ensuring fairness and transparency.",
     benefits: [
       "No counterparty risk",
@@ -190,9 +190,9 @@ export const FEATURE_CARDS: FeatureCard[] = [
   },
   {
     id: 12,
-    title: "Spot Trading",
-    category: "Trading",
-    description: "Trade 1000+ tokens with Elite liquidity.",
+    title: "Spot Attesting",
+    category: "Attesting",
+    description: "Attest 1000+ tokens with Elite liquidity.",
     detailedInfo: "Access deep liquidity pools aggregated from Uniswap, Curve, Balancer, and centralized exchanges. Smart order routing guarantees best execution prices with minimal slippage.",
     benefits: [
       "Sub-second order execution",
@@ -206,9 +206,9 @@ export const FEATURE_CARDS: FeatureCard[] = [
   {
     id: 13,
     title: "Perpetual Futures",
-    category: "Trading",
-    description: "Leverage trade with up to 100x on perpetual contracts.",
-    detailedInfo: "Trade perpetual futures with no expiration dates. Built on decentralized protocols like dYdX and GMX, offering leverage without custodial risk. Automated liquidation protection keeps you safe.",
+    category: "Attesting",
+    description: "Leverage attest with up to 100x on perpetual contracts.",
+    detailedInfo: "Attest perpetual futures with no expiration dates. Built on decentralized protocols like dYdX and GMX, offering leverage without custodial risk. Automated liquidation protection keeps you safe.",
     benefits: [
       "No KYC required",
       "Funding rate arbitrage opportunities",
@@ -237,10 +237,10 @@ export const FEATURE_CARDS: FeatureCard[] = [
     id: 15,
     title: "Liquidity Pools",
     category: "DeFi",
-    description: "Become a market maker and earn trading fees.",
-    detailedInfo: "Provide liquidity to automated market makers (AMMs) and earn a share of trading fees. Advanced analytics help you identify the most profitable pairs and minimize impermanent loss risk.",
+    description: "Become a market maker and earn attesting fees.",
+    detailedInfo: "Provide liquidity to automated market makers (AMMs) and earn a share of attesting fees. Advanced analytics help you identify the most profitable pairs and minimize impermanent loss risk.",
     benefits: [
-      "0.3% fees on every trade",
+      "0.3% fees on every attest",
       "Impermanent loss calculators",
       "Range order strategies (Uniswap V3)",
       "LP token staking for boosted rewards"
@@ -253,7 +253,7 @@ export const FEATURE_CARDS: FeatureCard[] = [
     title: "Token Swaps",
     category: "DeFi",
     description: "Swap any token instantly with optimal routing.",
-    detailedInfo: "Our smart routing engine scans 20+ DEX aggregators to find the best price across fragmented liquidity. Split orders across multiple venues to minimize slippage on large trades.",
+    detailedInfo: "Our smart routing engine scans 20+ DEX aggregators to find the best price across fragmented liquidity. Split orders across multiple venues to minimize slippage on large attestations.",
     benefits: [
       "Gas-optimized transactions",
       "Price impact simulation",
@@ -298,7 +298,7 @@ export const FEATURE_CARDS: FeatureCard[] = [
     title: "Flash Loans",
     category: "Advanced DeFi",
     description: "Borrow millions instantly with zero collateral.",
-    detailedInfo: "Execute complex arbitrage, liquidations, or collateral swaps using uncollateralized loans that must be repaid within a single transaction. Perfect for advanced traders seeking capital efficiency.",
+    detailedInfo: "Execute complex arbitrage, liquidations, or collateral swaps using uncollateralized loans that must be repaid within a single transaction. Perfect for advanced verifiers seeking capital efficiency.",
     benefits: [
       "No upfront capital required",
       "Atomic transaction safety",
@@ -311,7 +311,7 @@ export const FEATURE_CARDS: FeatureCard[] = [
   {
     id: 20,
     title: "Arbitrage Detection",
-    category: "Trading",
+    category: "Attesting",
     description: "Real-time alerts for cross-DEX arbitrage opportunities.",
     detailedInfo: "Our mempool scanner identifies price discrepancies across exchanges in real-time. Execute profitable arbs before the market corrects, with built-in MEV protection.",
     benefits: [
@@ -390,7 +390,7 @@ export const FEATURE_CARDS: FeatureCard[] = [
     title: "Transaction History Analysis",
     category: "Analytics",
     description: "Forensic-level insights into your on-chain activity.",
-    detailedInfo: "Visualize your complete transaction history with smart categorization (trades, transfers, staking, airdrops). Export for tax reporting in secondssupports all major accounting software.",
+    detailedInfo: "Visualize your complete transaction history with smart categorization (attestations, transfers, staking, airdrops). Export for tax reporting in secondssupports all major accounting software.",
     benefits: [
       "Tax-ready CSV exports",
       "Cost-basis tracking (FIFO, LIFO, HIFO)",
@@ -420,7 +420,7 @@ export const FEATURE_CARDS: FeatureCard[] = [
     title: "Activity Heatmaps",
     category: "Analytics",
     description: "Visualize transaction patterns over time.",
-    detailedInfo: "See when you're most active on-chain with hourly, daily, and weekly heatmaps. Identify behavioral patterns and optimize your trading schedule for maximum profitability.",
+    detailedInfo: "See when you're most active on-chain with hourly, daily, and weekly heatmaps. Identify behavioral patterns and optimize your attesting schedule for maximum profitability.",
     benefits: [
       "Time-based activity clustering",
       "Network congestion overlays",
@@ -631,9 +631,9 @@ export const FEATURE_CARDS: FeatureCard[] = [
   // ADVANCED FEATURES (10 cards)
   {
     id: 41,
-    title: "AI Trading Concierge",
+    title: "AI Attesting Concierge",
     category: "AI",
-    description: "Natural language trading powered by GPT-4.",
+    description: "Natural language attesting powered by GPT-4.",
     detailedInfo: "Simply tell our AI what you want to do: 'Swap 1 ETH for USDC' or 'Show me the best yield farms.' It executes complex multi-step strategies on your behalf with a single command.",
     benefits: [
       "Voice and text command support",
@@ -649,7 +649,7 @@ export const FEATURE_CARDS: FeatureCard[] = [
     title: "Referral Programs",
     category: "Social",
     description: "Earn rewards for bringing friends.",
-    detailedInfo: "Share your referral link and earn 10% of your referrals' trading fees for life. Built on-chain with transparent trackingno hidden clauses or clawbacks.",
+    detailedInfo: "Share your referral link and earn 10% of your referrals' attesting fees for life. Built on-chain with transparent trackingno hidden clauses or clawbacks.",
     benefits: [
       "Lifetime revenue share",
       "On-chain tracking",
@@ -739,7 +739,7 @@ export const FEATURE_CARDS: FeatureCard[] = [
     title: "Reputation Systems",
     category: "Social",
     description: "Earn trust through verified on-chain actions.",
-    detailedInfo: "Accumulate reputation points for trading volume, governance participation, and protocol contributions. Unlock exclusive perks, fee discounts, and VIP access.",
+    detailedInfo: "Accumulate reputation points for attesting volume, governance participation, and protocol contributions. Unlock exclusive perks, fee discounts, and VIP access.",
     benefits: [
       "Gamified achievement system",
       "Leaderboard rankings",

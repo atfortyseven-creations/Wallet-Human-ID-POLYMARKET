@@ -270,7 +270,7 @@ export default function WhaleAlertProWhite() {
                     Global Mempool Interception.
                 </h2>
                 <p className="text-[18px] text-slate-500 leading-relaxed font-medium">
-                    The blockchain is a global ledger, but retail traders only see transactions after they are confirmed. By the time the news breaks, the market has already moved.
+                    The blockchain is a global ledger, but retail verifiers only see transactions after they are confirmed. By the time the news breaks, the market has already moved.
                 </p>
                 <p className="text-[18px] text-slate-500 leading-relaxed font-medium">
                     Our infrastructure intercepts pending transactions directly from the mempools of 14 major networks. We parse this raw data in milliseconds, allowing you to witness institutional capital flight or accumulation before it reflects on the price chart. You see the future; they see the past.
@@ -293,7 +293,7 @@ export default function WhaleAlertProWhite() {
                     <Activity size={24} className="text-[#0044CC]" />
                 </div>
                 <h2 className="text-[36px] sm:text-[48px] font-black text-[#0A0A0A] leading-[1.1] tracking-tight">
-                    Institutional Trade Detection.
+                    Institutional Attest Detection.
                 </h2>
                 <p className="text-[18px] text-slate-500 leading-relaxed font-medium">
                     Whales attempt to hide their massive orders by splitting them across decentralized exchanges or utilizing dark pools. Our heuristic engine acts as an inescapable net.
@@ -303,7 +303,7 @@ export default function WhaleAlertProWhite() {
                 </p>
             </div>
             <div className="w-full lg:w-1/2 bg-white rounded-[3rem] border border-slate-100 shadow-sm p-12 flex items-center justify-center aspect-square">
-                <RemoteLottie path="Trade.json" className="w-full max-w-[600px] scale-125" />
+                <RemoteLottie path="Attest.json" className="w-full max-w-[600px] scale-125" />
             </div>
         </div>
 

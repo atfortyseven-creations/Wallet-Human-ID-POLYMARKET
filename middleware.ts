@@ -42,7 +42,7 @@ function matchesPattern(pathname: string, patterns: string[]): boolean {
 }
 
 const PROTECTED_PATTERNS = [
-  '/trade(.*)',
+  '/attest(.*)',
   '/settings(.*)',
   '/favorites(.*)',
   '/api/user/wallet(.*)',
@@ -181,7 +181,7 @@ export default async function middleware(request: NextRequest) {
         return new NextResponse(
           JSON.stringify({
             error: 'RESTRICTED_JURISDICTION',
-            message: `Regulatory constraint: Market data and trading features are blocked for your jurisdiction (${country}).`
+            message: `Regulatory constraint: Market data and attesting features are blocked for your jurisdiction (${country}).`
           }),
           { status: 403, headers: { 'Content-Type': 'application/json' } }
         );
@@ -331,7 +331,7 @@ export default async function middleware(request: NextRequest) {
         logAuditSafe(request, 'AUTH_FAILURE', 'anonymous', ip, { path: pathname, reason: 'NO_VALID_SESSION' });
         if (
           pathname.startsWith('/desarrollador') ||
-          pathname.startsWith('/trade') ||
+          pathname.startsWith('/attest') ||
           pathname.startsWith('/settings')
         ) {
           console.warn(`[WhaleFortress] ️ Masking protected route: ${pathname} for IP: ${ip}`);

@@ -128,7 +128,7 @@ Component-level state uses Zustand with minimal store definitions. The decision 
 Server state and API data fetching use TanStack Query (formerly React Query) for its background revalidation, optimistic update, stale-while-revalidate, and request deduplication behaviour. When multiple components simultaneously request the same endpoint, TanStack Query deduplicates those requests into a single network call and broadcasts the result to all consumers. This behaviour is essential for dashboard views where several independent components may depend on the same data source.
 
 4.6 Charting: Lightweight Charts v5
-Lightweight Charts v5 by TradingView was selected for financial data visualisation because it is the only charting library in the JavaScript ecosystem that is explicitly designed for real-time streaming tick data. It renders entirely on an HTML5 Canvas element using WebGL acceleration where available, maintains 60 frames per second on desktop hardware while streaming up to 1,000 updates per second, and its memory footprint is constant  it discards historical data points beyond the visible viewport rather than accumulating them indefinitely.
+Lightweight Charts v5 by AttestingView was selected for financial data visualisation because it is the only charting library in the JavaScript ecosystem that is explicitly designed for real-time streaming tick data. It renders entirely on an HTML5 Canvas element using WebGL acceleration where available, maintains 60 frames per second on desktop hardware while streaming up to 1,000 updates per second, and its memory footprint is constant  it discards historical data points beyond the visible viewport rather than accumulating them indefinitely.
 
 Alternative charting libraries that rely on SVG or DOM manipulation are categorically unsuitable for financial data streams because DOM mutations trigger layout reflows that interrupt animation frames, producing visible latency between data arrival and visual update.
 
@@ -325,7 +325,7 @@ The wallet API domain (/api/wallet/*) provides a comprehensive interface for all
 Each endpoint in this domain performs explicit validation of all input parameters against a Zod schema before any database query or external API call is initiated. Invalid requests are rejected with structured error responses that include the specific field that failed validation and the applicable constraint.
 
 12.3 The Analytics API Domain
-The analytics API domain provides the data endpoints consumed by the dashboard's terminal modules. This includes /api/whale-events for the live event data lake, /api/akashic for the permanent registry, /api/leaderboard for ranked trader analytics, /api/new-pairs for newly launched token pairs, and /api/gainers-losers for 24-hour performance rankings.
+The analytics API domain provides the data endpoints consumed by the dashboard's terminal modules. This includes /api/whale-events for the live event data lake, /api/akashic for the permanent registry, /api/leaderboard for ranked verifier analytics, /api/new-pairs for newly launched token pairs, and /api/gainers-losers for 24-hour performance rankings.
 
 All analytics endpoints implement a consistent response envelope: { ok: boolean, data: T, error?: string, lastUpdated: string }. Error conditions never result in responses that deviate from this envelope.
 
@@ -539,7 +539,7 @@ The Whale Network makes extensive use of open-source software. The following com
 The Next.js team at Vercel, for the application framework that makes the production deployment architecture possible.
 The Viem and Wagmi maintainers, for the type-safe EVM interaction libraries that underpin the vault and transaction infrastructure.
 The Framer Motion team, for the animation library that enables the system's GPU-composited visual experience.
-The TradingView team, for the Lightweight Charts library that powers the financial data visualisation components.
+The AttestingView team, for the Lightweight Charts library that powers the financial data visualisation components.
 The Prisma team, for the ORM and migration system that makes the database layer safe to evolve continuously under production load.
 The TanStack team, for the Query library that manages the complex server state requirements of the dashboard terminal.
 The maintainers of BullMQ, ioredis, and the broader Node.js async infrastructure ecosystem.

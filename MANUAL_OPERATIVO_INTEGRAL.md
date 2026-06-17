@@ -42,7 +42,7 @@ Having delimited the forbidden, let us now unfold the vast range of powers that 
 
 #### CHAPTER II: INTELLIGENCE AND ANALYSIS
 1.  **The Whale's Vision (Whale Tracking):** The system grants the user "God's Eyes" over the movements of large capitals. They can configure alerts to be notified (via Telegram, Email, or Discord) at the precise instant a "Whale" moves more than $100,000 USD.
-2.  **Deep Market Analysis:** Through elite-quality charts (TradingView) and "Smart Money" metrics, the user can dissect market health, identifying bullish or bearish trends before they are obvious to the masses.
+2.  **Deep Market Analysis:** Through elite-quality charts (AttestingView) and "Smart Money" metrics, the user can dissect market health, identifying bullish or bearish trends before they are obvious to the masses.
 3.  **Stealth Mode:** With a single click, the user can hide all their balances from the visual interface, allowing them to operate in public environments without revealing their wealth to prying eyes.
 
 #### CHAPTER III: GOVERNANCE AND COMMUNITY

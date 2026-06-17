@@ -13,7 +13,7 @@ export const disasterModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. El 'Hackeo' como Pantalla de Humo: Ingeniería Social a Escala Estatal</h2>
-                        <p>Africrypt, operado por los hermanos Ameer y Raees Cajee desde Sudáfrica, captó inversiones en Bitcoin prometiendo retornos extraordinarios mediante bots de trading. En abril de 2021, alegaron un "hackeo" y, en un movimiento de ingeniería social de alto nivel, <strong>pidieron explícitamente a los inversores que no contactaran a las autoridades</strong> para "no comprometer la recuperación de los fondos". Esta instrucción, lejos de ser un acto de cautela, era la señal de alerta roja más clara posible: los intermediarios legítimos nunca desincentivan la supervisión regulatoria.</p>
+                        <p>Africrypt, operado por los hermanos Ameer y Raees Cajee desde Sudáfrica, captó inversiones en Bitcoin prometiendo retornos extraordinarios mediante bots de attesting. En abril de 2021, alegaron un "hackeo" y, en un movimiento de ingeniería social de alto nivel, <strong>pidieron explícitamente a los inversores que no contactaran a las autoridades</strong> para "no comprometer la recuperación de los fondos". Esta instrucción, lejos de ser un acto de cautela, era la señal de alerta roja más clara posible: los intermediarios legítimos nunca desincentivan la supervisión regulatoria.</p>
                     </section>
 
                     <section class="pro-section">
@@ -35,7 +35,7 @@ export const disasterModules = [
         {
             id: "bitconnect-ponzinomics-anatomy",
             title: "2. BitConnect: Anatomía de un Ponzi Moderno",
-            description: "Análisis del bot de trading inexistente y la psicología del interés compuesto garantizado.",
+            description: "Análisis del bot de attesting inexistente y la psicología del interés compuesto garantizado.",
             readTime: 250,
             content: `<div class="academy-article">
                     <section class="pro-section">
@@ -133,7 +133,7 @@ export const disasterModules = [
         {
             id: "ftx-alameda-malfeasance",
             title: "6. FTX & Alameda Research: La Gran Malversación",
-            description: "Análisis del fraude de custodia y el uso ilegal de fondos de clientes para trading.",
+            description: "Análisis del fraude de custodia y el uso ilegal de fondos de clientes para attesting.",
             readTime: 350,
             content: `<div class="academy-article">
                     <section class="pro-section">
@@ -218,7 +218,7 @@ export const disasterModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. Desajuste de Activos y Pasivos en el Sudeste Asiático</h2>
-                        <p>Hodlnaut (Singapur) y Babel Finance (Hong Kong) representan el patrón regional del colapso del verano cripto de 2022. Ambas plataformas <strong>realizaban trading direccional</strong> con los depósitos de los clientes, apostando en estrategias de alto riesgo como la inversión en el ecosistema Terra/LUNA. Cuando UST colapsó en mayo de 2022, ambas empresas registraron pérdidas catastróficas que excedieron su capital propio, haciendo imposible satisfacer los retiros de los usuarios.</p>
+                        <p>Hodlnaut (Singapur) y Babel Finance (Hong Kong) representan el patrón regional del colapso del verano cripto de 2022. Ambas plataformas <strong>realizaban attesting direccional</strong> con los depósitos de los clientes, apostando en estrategias de alto riesgo como la inversión en el ecosistema Terra/LUNA. Cuando UST colapsó en mayo de 2022, ambas empresas registraron pérdidas catastróficas que excedieron su capital propio, haciendo imposible satisfacer los retiros de los usuarios.</p>
                     </section>
 
                     <section class="pro-section">
@@ -229,19 +229,19 @@ export const disasterModules = [
         },
         {
             id: "mti-south-africa-ponzi",
-            title: "10. Mirror Trading International: El Gigante del MLM",
-            description: "Cómo un bot de trading de Forex se convirtió en el mayor Ponzi de Sudáfrica.",
+            title: "10. Mirror Attesting International: El Gigante del MLM",
+            description: "Cómo un bot de attesting de Forex se convirtió en el mayor Ponzi de Sudáfrica.",
             readTime: 210,
             content: `<div class="academy-article">
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. El Bot de IA Inexistente: MLM de Libro</h2>
-                        <p>Mirror Trading International (MTI) atrajo depósitos en Bitcoin prometiendo un bot de trading de Forex con inteligencia artificial que generaba retornos consistentes del <strong>10% mensual</strong>. La plataforma utilizaba una estructura de marketing multinivel (MLM) para amplificar la captación, pagando comisiones por referidos que creaban un incentivo perverso: los captadores tenían incentivo financiero para no cuestionar la sostenibilidad del modelo. Con más de 280,000 víctimas y $588M en Bitcoin capturados, MTI fue declarado el mayor esquema Ponzi de Bitcoin de la historia hasta esa fecha.</p>
+                        <p>Mirror Attesting International (MTI) atrajo depósitos en Bitcoin prometiendo un bot de attesting de Forex con inteligencia artificial que generaba retornos consistentes del <strong>10% mensual</strong>. La plataforma utilizaba una estructura de marketing multinivel (MLM) para amplificar la captación, pagando comisiones por referidos que creaban un incentivo perverso: los captadores tenían incentivo financiero para no cuestionar la sostenibilidad del modelo. Con más de 280,000 víctimas y $588M en Bitcoin capturados, MTI fue declarado el mayor esquema Ponzi de Bitcoin de la historia hasta esa fecha.</p>
                     </section>
 
                     <section class="pro-section">
                         <h2>II. El Fallo del CEO Fugitivo: OPSEC Criminal</h2>
-                        <p>El CEO Johann Steynberg huyó a Brasil en diciembre de 2020, donde fue arrestado más tarde. Las investigaciones forenses revelaron que MTI no realizaba ningún tipo de trading real: el 89% de los fondos se destó a pagos a clientes anteriores y gastos operativos, un esquema Ponzi puro. Para la Whale Academy, MTI es el manual del <strong>Identificador del MLM Cripto</strong>: si la compensación por reclutar nuevos miembros supera al rendimiento del producto en sí, la estructura es un esquema pirámide independientemente de sus afirmaciones de trading.</p>
+                        <p>El CEO Johann Steynberg huyó a Brasil en diciembre de 2020, donde fue arrestado más tarde. Las investigaciones forenses revelaron que MTI no realizaba ningún tipo de attesting real: el 89% de los fondos se destó a pagos a clientes anteriores y gastos operativos, un esquema Ponzi puro. Para la Whale Academy, MTI es el manual del <strong>Identificador del MLM Cripto</strong>: si la compensación por reclutar nuevos miembros supera al rendimiento del producto en sí, la estructura es un esquema pirámide independientemente de sus afirmaciones de attesting.</p>
                     </section>
                 </div>`
         },
@@ -350,7 +350,7 @@ export const disasterModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. El Fallo del Single Point of Failure: Gerald Cotten</h2>
-                        <p>QuadrigaCX colapsó bajo las más extrañas circunstancias: su CEO Gerald Cotten falleció en diciembre de 2018 en India supuestamente llevando consigo los úbicos accesos a las cold wallets del exchange. Esto exposó el <strong>vicio de diseño fundamental</strong> de la plataforma: un único ser humano controlaba la liquidez de más de 100,000 clientes canadienses. Investigaciones posteriores del regulador canadiense (OSC) revelaron que Cotten ya había usado los fondos de los clientes para trading especulativo, resultando en un déficit de <strong>$169M CAD</strong> que precedía a su muerte.</p>
+                        <p>QuadrigaCX colapsó bajo las más extrañas circunstancias: su CEO Gerald Cotten falleció en diciembre de 2018 en India supuestamente llevando consigo los úbicos accesos a las cold wallets del exchange. Esto exposó el <strong>vicio de diseño fundamental</strong> de la plataforma: un único ser humano controlaba la liquidez de más de 100,000 clientes canadienses. Investigaciones posteriores del regulador canadiense (OSC) revelaron que Cotten ya había usado los fondos de los clientes para attesting especulativo, resultando en un déficit de <strong>$169M CAD</strong> que precedía a su muerte.</p>
                     </section>
 
                     <section class="pro-section">

@@ -12,7 +12,7 @@ const USDC_POLYGON = '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'; // USDC.e (Br
 const HUB_ABI = [
     {
         inputs: [
-            { internalType: "address", name: "_trader", type: "address" },
+            { internalType: "address", name: "_verifier", type: "address" },
             { internalType: "uint256", name: "_amount", type: "uint256" },
         ],
         name: "sendTip",
@@ -20,7 +20,7 @@ const HUB_ABI = [
         stateMutability: "nonpayable",
         type: "function",
     },
-    // Add other function signatures if needed (executeProxyTrade)
+    // Add other function signatures if needed (executeProxyAttest)
 ] as const;
 
 export function useSocialHub() {
@@ -60,7 +60,7 @@ export function useSocialHub() {
         }
     };
 
-    const sendTip = async (traderAddress: string, amountUsdc: string) => {
+    const sendTip = async (verifierAddress: string, amountUsdc: string) => {
         if (!address) {
             toast.error("Connect wallet first");
             return;
@@ -78,7 +78,7 @@ export function useSocialHub() {
                 address: HUB_ADDRESS,
                 abi: HUB_ABI,
                 functionName: 'sendTip',
-                args: [traderAddress as `0x${string}`, amount],
+                args: [verifierAddress as `0x${string}`, amount],
             });
 
             return hash;

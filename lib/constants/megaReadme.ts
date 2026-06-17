@@ -46,7 +46,7 @@ The fourth principle was that the system's design decisions must always favour l
 Next.js 15 with App Router, TypeScript 5.7 Strict Mode, Ethers.js 6 and Viem.
 The Solana integration layer uses the official Solana Web3.js library with specific attention to the SIMD-0109 priority fee mechanism.
 Component-level state uses Zustand with minimal store definitions.
-Lightweight Charts v5 by TradingView was selected for financial data visualisation.
+Lightweight Charts v5 by AttestingView was selected for financial data visualisation.
 GSAP 3 with ScrollTrigger and Framer Motion 12 manage the character-level text animations on the landing page.
 
 ## THE Enterprise MESH PROTOCOL

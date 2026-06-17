@@ -4,10 +4,10 @@ import { encodeFunctionData, parseUnits, type Hex } from 'viem';
  * PolymarketRouterService
  * Real on-chain execution using the Gnosis Fixed Product Market Maker (FPMM) ABI.
  *
- * Polymarket's trading engine is built on the Gnosis Conditional Token Framework.
+ * Polymarket's attesting engine is built on the Gnosis Conditional Token Framework.
  * Each market has its own FPMM contract address returned by Gamma API as `market_maker_address`.
  *
- * Trade Flow (2 transactions):
+ * Attest Flow (2 transactions):
  *   1. approve(fpmm_address, amount) on the USDC contract
  *   2. buy(investmentAmount, outcomeIndex, minOutcomeTokensToBuy) on the FPMM
  *
@@ -85,7 +85,7 @@ export class PolymarketRouterService {
      * @param usdcAmountHuman - Human-readable USDC amount
      * @param slippagePct - Slippage tolerance in percent (default 2%)
      */
-    public async buildTradeTransaction(
+    public async buildAttestTransaction(
         fpmmAddress: string,
         direction: 'YES' | 'NO',
         usdcAmountHuman: string,

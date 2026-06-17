@@ -123,7 +123,7 @@ export function ApiKeyManager({ tier, keys }: { tier: keyof typeof NODE_TIERS; k
                         <h4 className="text-sm font-bold text-white mb-3">Create New API Key</h4>
                         <div className="flex gap-3">
                             <Input 
-                                placeholder="Key Name (e.g., Trading Bot)"
+                                placeholder="Key Name (e.g., Attesting Bot)"
                                 value={newName}
                                 onChange={(e) => setNewName(e.target.value)}
                                 className="bg-black/50 border-white/10 focus-visible:ring-indigo-500"

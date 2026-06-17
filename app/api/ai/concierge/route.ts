@@ -26,7 +26,7 @@ export async function POST(request: Request) {
         } 
         else if (q.includes('fee') || q.includes('gas')) {
             answer = "In the last 30 days, you spent **$142.50** on gas fees. 85% was on Ethereum Mainnet. Moving to Polygon could save you ~$120/month.";
-            suggestions = ["Optimize my trades", "Bridge to Polygon"];
+            suggestions = ["Optimize my attestations", "Bridge to Polygon"];
         } 
         else if (q.includes('scam') || q.includes('risk')) {
             answer = "Audit Complete: No malicious approvals found on your main wallet. However, you interacted with a high-risk contract (0x82...a9) 4 months ago. I recommend revoking permissions.";

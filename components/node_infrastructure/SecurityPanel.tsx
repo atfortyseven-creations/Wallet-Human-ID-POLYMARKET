@@ -59,7 +59,7 @@ export function SecurityPanel({ tier }: { tier: string }) {
                         <h4 className="text-white font-bold">HMAC Signatures</h4>
                     </div>
                     <p className="text-xs text-white/50 mb-4">
-                        Cryptographically sign your requests to prevent Man-in-the-Middle and Replay attacks. Required for trade executions and WebSocket streams.
+                        Cryptographically sign your requests to prevent Man-in-the-Middle and Replay attacks. Required for attest executions and WebSocket streams.
                     </p>
                     
                     <div className="flex items-center gap-2 mb-4 p-2 bg-indigo-500/10 rounded-lg border border-indigo-500/20 text-xs text-indigo-300">

@@ -16,7 +16,7 @@ interface TokenFlow {
   type: 'IN' | 'OUT' | 'SWAP';
 }
 
-interface CopyTradingSignal {
+interface CopyAttestingSignal {
   id: string;
   walletLabel: string;
   walletAddress: string;
@@ -77,10 +77,10 @@ export default function TokenFlowVisualizer({ isPremium }: { isPremium: boolean 
     },
   ];
 
-  const copySignals: CopyTradingSignal[] = [
+  const copySignals: CopyAttestingSignal[] = [
     {
       id: '1',
-      walletLabel: 'Smart Trader #1',
+      walletLabel: 'Smart Verifier #1',
       walletAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
       action: 'BUY',
       token: 'AAVE',
@@ -134,8 +134,8 @@ export default function TokenFlowVisualizer({ isPremium }: { isPremium: boolean 
   if (!isPremium) {
     return (
       <PremiumLocked
-        feature="Token Flow & Copy Trading"
-        description="Visualize money flow between wallets and copy successful traders automatically. Track whale movements in real-time."
+        feature="Token Flow & Copy Attesting"
+        description="Visualize money flow between wallets and copy successful verifiers automatically. Track whale movements in real-time."
         icon="trending"
         onUpgrade={() => {
           const upgradeBtn = document.querySelector('[data-upgrade-trigger="true"]') as HTMLButtonElement;
@@ -199,12 +199,12 @@ export default function TokenFlowVisualizer({ isPremium }: { isPremium: boolean 
         </div>
       </div>
 
-      {/* Copy Trading Signals */}
+      {/* Copy Attesting Signals */}
       <div>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-black text-[#1F1F1F] flex items-center gap-2">
             <Copy className="text-green-600" />
-            Copy Trading Signals
+            Copy Attesting Signals
             <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
               LIVE
             </span>
@@ -226,7 +226,7 @@ export default function TokenFlowVisualizer({ isPremium }: { isPremium: boolean 
         <div className="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200">
           <div className="text-sm text-green-700 font-bold mb-1">Total P&L</div>
           <div className="text-2xl font-black text-green-600">+$125,900</div>
-          <div className="text-sm text-green-700 mt-1">From copy trading</div>
+          <div className="text-sm text-green-700 mt-1">From copy attesting</div>
         </div>
 
         <div className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200">
@@ -237,7 +237,7 @@ export default function TokenFlowVisualizer({ isPremium }: { isPremium: boolean 
 
         <div className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl border border-purple-200">
           <div className="text-sm text-purple-700 font-bold mb-1">Following</div>
-          <div className="text-2xl font-black text-purple-600">12 Traders</div>
+          <div className="text-2xl font-black text-purple-600">12 Verifiers</div>
           <div className="text-sm text-purple-700 mt-1">Auto-copy enabled</div>
         </div>
       </div>
@@ -245,7 +245,7 @@ export default function TokenFlowVisualizer({ isPremium }: { isPremium: boolean 
   );
 }
 
-function CopySignalCard({ signal, index }: { signal: CopyTradingSignal; index: number }) {
+function CopySignalCard({ signal, index }: { signal: CopyAttestingSignal; index: number }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -275,7 +275,7 @@ function CopySignalCard({ signal, index }: { signal: CopyTradingSignal; index: n
             </span>
           </div>
 
-          {/* Trade Details */}
+          {/* Attest Details */}
           <div className="flex items-center gap-3 mb-3">
             <div className={`px-3 py-1 rounded-lg font-bold ${
               signal.action === 'BUY' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
@@ -342,7 +342,7 @@ function CopySignalCard({ signal, index }: { signal: CopyTradingSignal; index: n
           ) : (
             <>
               <Copy size={20} />
-              Copy Trade
+              Copy Attest
             </>
           )}
         </button>

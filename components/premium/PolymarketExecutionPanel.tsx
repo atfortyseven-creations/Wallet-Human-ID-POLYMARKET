@@ -50,7 +50,7 @@ export function PolymarketExecutionPanel({ symbol, probability, direction, marke
 
         try {
             setIsBuildingTx(true);
-            const { tx } = await polymarketRouterService.buildTradeTransaction(marketId, outcome, amount);
+            const { tx } = await polymarketRouterService.buildAttestTransaction(marketId, outcome, amount);
             
             sendTransaction({
                 to: tx.to,

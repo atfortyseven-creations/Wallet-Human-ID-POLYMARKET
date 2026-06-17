@@ -5,14 +5,14 @@ const prisma = new PrismaClient();
 
 const DOMAINS = [
     'capital.xyz', 'ventures.eth', 'grid.fund', 'global.institution',
-    'alpha.org', 'system.io', 'blackbox.fi', 'core.trades',
+    'alpha.org', 'system.io', 'blackbox.fi', 'core.attestations',
     'genesis.block', 'omega.capital'
 ];
 
 const JOB_TITLES = [
     'Senior MEV Arbitrageur', 'Head of ZK-Rollup Research', 'Principal Smart Contract Auditor',
     'Quantitative DeFi Analyst', 'Director of On-Chain Liquidity', 'Chief Cryptographer',
-    'Algorithmic Trading Lead', 'EVM Architecture Specialist', 'Tokenomics Engineer',
+    'Algorithmic Attesting Lead', 'EVM Architecture Specialist', 'Tokenomics Engineer',
     'Institutional Portfolio Manager'
 ];
 

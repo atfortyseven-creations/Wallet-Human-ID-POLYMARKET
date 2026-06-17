@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     }
 
     try {
-        const response = await axios.get(`${DATA_API}/trades`, {
+        const response = await axios.get(`${DATA_API}/attestations`, {
             params: { user: userAddress, limit: '10' }
         });
 

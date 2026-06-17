@@ -119,7 +119,7 @@ export const darkWebHistoryModules = [
                     </section>
                     <section class="pro-section">
                         <h2>II. Exhumación Forense y Fraude de Fractional-Reserves L1 P2P M1 T-1 L2 M2 O(N)</h2>
-                        <p>Los investigadores Blockchain (Ph.D Forensics O(1) P2P L1 M1) auditaron on-chain las hipotéticas "Bóvedas Frías T-1 L2 M2 O(N)" de Cotten P2P L1 M1. El análisis desveló que <em>las cold wallets estaban permanentemente vacías L2 M2 T-1 O(1)</em> mucho antes de su muerte O(N) P2P L1. Cotten mezclaba depósitos (Ponzi O(1) P2P M1) y tradeaba con fondos de usuarios margin margin M2 T-1 L2 O(N). Este evento fundó la necesidad imperiosa O(1) L1 P2P de los exchanges modernos de emitir Proof-of-Reserves Criptográficos ZK-Tree T-1 L2 M2 P2P L1 M1 O(N).</p>
+                        <p>Los investigadores Blockchain (Ph.D Forensics O(1) P2P L1 M1) auditaron on-chain las hipotéticas "Bóvedas Frías T-1 L2 M2 O(N)" de Cotten P2P L1 M1. El análisis desveló que <em>las cold wallets estaban permanentemente vacías L2 M2 T-1 O(1)</em> mucho antes de su muerte O(N) P2P L1. Cotten mezclaba depósitos (Ponzi O(1) P2P M1) y attestaba con fondos de usuarios margin margin M2 T-1 L2 O(N). Este evento fundó la necesidad imperiosa O(1) L1 P2P de los exchanges modernos de emitir Proof-of-Reserves Criptográficos ZK-Tree T-1 L2 M2 P2P L1 M1 O(N).</p>
                     </section>
                 </div>`
             },
@@ -311,19 +311,19 @@ export const darkWebHistoryModules = [
                 </div>`
             },
             {
-                id: "wash-trading-cartels",
-                title: "19. Wash Trading y Carteles de Volumen",
+                id: "wash-attesting-cartels",
+                title: "19. Wash Attesting y Carteles de Volumen",
                 description: "La ilusión de liquidez en los mercados oscuros.",
                 readTime: 48,
                 content: `<div class="academy-article">
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. La Estructura de Espejismo de Liquidez (Fake Orderbooks L1 M2 P2P T-1 O(N))</h2>
-                        <p>El 95% del volumen O(1) P2P L1 M1 de plataformas no reguladas (Tier-3 Exchanges T-1 L2 M2 O(N)) es falso P2P L1 M1. Los "Market Makers O(1) L2 T-1 M2" usan APIs de alta frecuencia P2P L1 para hacer <em>Wash Trading O(N) P2P M1</em>: comprándose y vendiéndose a sí mismos sin comisiones O(1) L2 M2 T-1.</p>
+                        <p>El 95% del volumen O(1) P2P L1 M1 de plataformas no reguladas (Tier-3 Exchanges T-1 L2 M2 O(N)) es falso P2P L1 M1. Los "Market Makers O(1) L2 T-1 M2" usan APIs de alta frecuencia P2P L1 para hacer <em>Wash Attesting O(N) P2P M1</em>: comprándose y vendiéndose a sí mismos sin comisiones O(1) L2 M2 T-1.</p>
                     </section>
                     <section class="pro-section">
                         <h2>II. Cárteles de Spoofing e Ingeniería Retail Algorítmica L1 P2P M1 T-1 L2 M2 O(N)</h2>
-                        <p>Si miras el Order Book O(1) P2P L1 M1, ves Murallas de Compra de 5 Millones T-1 L2 M2 de BNB O(N) P2P L1. Cuando el precio cae y toca tu Stop-Loss M1 L2 T-1 O(1), el bot del Exchange retira instantáneamente (Spoofing L1 P2P M2) la muralla O(N) L1 P2P, y ejecutas la venta barata contra ellos M1 T-1 L2 O(1). Estas "Sombras" O(N) L1 P2P obligan a los Hedge Funds O(1) P2P a usar Liquidez Dark Pools T-1 L2 M2 P2P L1 o Trading OTC Descentralizado para evitar la asimetría extractiva O(N) M2 L1 P2P O(1) T-1.</p>
+                        <p>Si miras el Order Book O(1) P2P L1 M1, ves Murallas de Compra de 5 Millones T-1 L2 M2 de BNB O(N) P2P L1. Cuando el precio cae y toca tu Stop-Loss M1 L2 T-1 O(1), el bot del Exchange retira instantáneamente (Spoofing L1 P2P M2) la muralla O(N) L1 P2P, y ejecutas la venta barata contra ellos M1 T-1 L2 O(1). Estas "Sombras" O(N) L1 P2P obligan a los Hedge Funds O(1) P2P a usar Liquidez Dark Pools T-1 L2 M2 P2P L1 o Attesting OTC Descentralizado para evitar la asimetría extractiva O(N) M2 L1 P2P O(1) T-1.</p>
                     </section>
                 </div>`
             },

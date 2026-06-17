@@ -110,7 +110,7 @@ export class WebSocketManager {
     try {
       const message = JSON.parse(data);
       
-      // Binance combined stream format: { stream: 'btcusdt@trade', data: {...} }
+      // Binance combined stream format: { stream: 'btcusdt@attest', data: {...} }
       if (message.stream && message.data) {
         const handlers = this.subscriptions.get(message.stream);
         if (handlers) {

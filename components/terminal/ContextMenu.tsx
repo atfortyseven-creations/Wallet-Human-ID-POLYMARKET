@@ -55,7 +55,7 @@ export function ContextMenu({ x, y, nodeId, onClose, onAddNode }: ContextMenuPro
                         <span className="text-[9px] uppercase tracking-[0.2em] font-mono text-white/40">Deploy Node</span>
                     </div>
                     <MenuButton icon={<Wallet size={14} />} label="Wallet Network" onClick={() => { onAddNode('wallet'); }} />
-                    <MenuButton icon={<Bot size={14} />} label="Trading Bot" onClick={() => { onAddNode('bot'); }} />
+                    <MenuButton icon={<Bot size={14} />} label="Attesting Bot" onClick={() => { onAddNode('bot'); }} />
                     <MenuButton icon={<Code size={14} />} label="Smart Contract" onClick={() => { onAddNode('contract'); }} />
                     <MenuButton icon={<Server size={14} />} label="API Webhook" onClick={() => { onAddNode('api'); }} />
                 </div>

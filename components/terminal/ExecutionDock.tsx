@@ -20,7 +20,7 @@ export default function ExecutionDock() {
   const { isConnected, address } = useAccount();
   const filters = useSniperStore((state) => state.filters);
   const currentPrice = useSniperStore((state) => state.currentPrice);
-  const addExecutedTrade = useSniperStore((state) => state.addExecutedTrade);
+  const addExecutedAttest = useSniperStore((state) => state.addExecutedAttest);
   const isArmed = useSniperStore((state) => state.isArmed);
   const setArmed = useSniperStore((state) => state.setArmed);
   
@@ -43,9 +43,9 @@ export default function ExecutionDock() {
 
   useEffect(() => {
       if (isConfirmed && localHash) {
-          addExecutedTrade(localHash, 0, currentPrice);
+          addExecutedAttest(localHash, 0, currentPrice);
       }
-  }, [isConfirmed, localHash, currentPrice, addExecutedTrade]);
+  }, [isConfirmed, localHash, currentPrice, addExecutedAttest]);
 
   const handleLethalExecution = async () => {
     if (!isConnected || !address) {

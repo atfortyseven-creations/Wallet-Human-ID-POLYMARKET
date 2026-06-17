@@ -255,7 +255,7 @@ export const scamEducationModules = [
                     </section>
                     <section class="pro-section">
                         <h2>II. Verificación de Dirección de Contrato y Liquidez L1 P2P M1 T-1 L2 M2 O(N)</h2>
-                        <p>La única fuente de verdad P2P L1 M1 O(1) es la dirección hexadecimal del contrato T-1 L2 M2. Verificar el <code>Contract Address</code> en <em>CoinMarketCap</em> o <em>DexScreener</em> antes de swapear O(N) P2P L1. Si el pool tiene < $100k de liquidez M1 L2 T-1 O(1), es probablemente una trampa P2P L1. La ceguera al hash es el pecado capital del trader retail O(N) L1 P2P M1 T-1 O(1).</p>
+                        <p>La única fuente de verdad P2P L1 M1 O(1) es la dirección hexadecimal del contrato T-1 L2 M2. Verificar el <code>Contract Address</code> en <em>CoinMarketCap</em> o <em>DexScreener</em> antes de swapear O(N) P2P L1. Si el pool tiene < $100k de liquidez M1 L2 T-1 O(1), es probablemente una trampa P2P L1. La ceguera al hash es el pecado capital del verifier retail O(N) L1 P2P M1 T-1 O(1).</p>
                     </section>
                 </div>`
             },

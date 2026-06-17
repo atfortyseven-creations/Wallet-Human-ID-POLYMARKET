@@ -200,7 +200,7 @@ export function NewPairsTable() {
                                     const priceChange = p.priceChange || { m5: 0, h1: 0, h6: 0, h24: 0 };
                                     const txns = p.txns || { m5: { buys: 0, sells: 0 } };
                                     const liquidity = p.liquidity || { usd: 0 };
-                                    const traders = p.traders || { makers: 0, snipers: 0 };
+                                    const verifiers = p.verifiers || { makers: 0, snipers: 0 };
                                     const taxes = p.taxes || { buy: 0, sell: 0 };
                                     const chainName = p.chain || p.chainId || 'unknown';
                                     const isRug = (security.score ?? 50) < 65;
@@ -282,11 +282,11 @@ export function NewPairsTable() {
                                                 <div className="px-3 text-right">
                                                     <div className="flex flex-col items-end gap-0.5">
                                                         <span className="text-[10px] font-bold font-mono text-[#050505] flex items-center gap-1">
-                                                            <Users size={9} className="text-[#888888]" />{traders.makers || 0}
+                                                            <Users size={9} className="text-[#888888]" />{verifiers.makers || 0}
                                                         </span>
-                                                        {(traders.snipers || 0) > 0 && (
+                                                        {(verifiers.snipers || 0) > 0 && (
                                                             <span className="text-[8px] font-bold text-[#FF3B30] flex items-center gap-0.5">
-                                                                <Zap size={8}/>{traders.snipers}
+                                                                <Zap size={8}/>{verifiers.snipers}
                                                             </span>
                                                         )}
                                                     </div>

@@ -134,9 +134,9 @@ export default function SmartAlertsEngine({ isPremium, selectedWalletAddress }: 
 
   const unreadCount = alerts.filter(a => !a.read).length;
 
-  const handleCopyTrade = (alert: SmartAlert) => {
+  const handleCopyAttest = (alert: SmartAlert) => {
     if (!alert.copyable || !alert.action) return;
-    window.alert(` Copy Trade Executed!\n\n${alert.action.type} ${safeToLocaleString(alert.action.amount)} ${alert.action.token}\nValue: $${safeToLocaleString(alert.action.usdValue)}`);
+    window.alert(` Copy Attest Executed!\n\n${alert.action.type} ${safeToLocaleString(alert.action.amount)} ${alert.action.token}\nValue: $${safeToLocaleString(alert.action.usdValue)}`);
   };
 
   const handleMarkRead = async (id: string) => {
@@ -213,7 +213,7 @@ export default function SmartAlertsEngine({ isPremium, selectedWalletAddress }: 
     return (
       <PremiumLocked
         feature="Smart Alerts Engine"
-        description="Get instant notifications when whales make moves, prices spike, or unusual volume is detected. Never miss a trading opportunity."
+        description="Get instant notifications when whales make moves, prices spike, or unusual volume is detected. Never miss a attesting opportunity."
         icon="zap"
         onUpgrade={() => {
           const upgradeBtn = document.querySelector('[data-upgrade-trigger="true"]') as HTMLButtonElement;
@@ -279,7 +279,7 @@ export default function SmartAlertsEngine({ isPremium, selectedWalletAddress }: 
               key={alert.id}
               alert={alert}
               index={index}
-              onCopyTrade={handleCopyTrade}
+              onCopyAttest={handleCopyAttest}
               onMarkRead={() => handleMarkRead(alert.id)}
             />
           ))}
@@ -404,10 +404,10 @@ function CreateRuleModal({ isOpen, onClose, onCreate }: { isOpen: boolean, onClo
   );
 }
 
-function AlertCard({ alert, index, onCopyTrade, onMarkRead }: {
+function AlertCard({ alert, index, onCopyAttest, onMarkRead }: {
   alert: SmartAlert;
   index: number;
-  onCopyTrade: (alert: SmartAlert) => void;
+  onCopyAttest: (alert: SmartAlert) => void;
   onMarkRead: () => void;
 }) {
   const getPriorityStyles = (priority: string) => {
@@ -487,7 +487,7 @@ function AlertCard({ alert, index, onCopyTrade, onMarkRead }: {
             </div>
             {alert.copyable && (
               <button
-                onClick={() => onCopyTrade(alert)}
+                onClick={() => onCopyAttest(alert)}
                 className="text-[10px] font-black text-blue-400 hover:text-blue-300 flex items-center gap-2 uppercase tracking-widest ml-auto"
               >
                 <Copy size={14} />

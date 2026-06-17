@@ -13,7 +13,7 @@ export class AgentRuntimeService {
      */
     public async registerAgent(agentConfig: {
         id: string;
-        type: 'TRADING' | 'LIQUIDITY' | 'RISK';
+        type: 'ATTESTING' | 'LIQUIDITY' | 'RISK';
         permissions: string[];
     }): Promise<boolean> {
         console.log(`[AgentRuntime] Registering agent ${agentConfig.id} with type ${agentConfig.type}`);

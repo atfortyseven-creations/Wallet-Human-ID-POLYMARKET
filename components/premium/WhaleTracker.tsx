@@ -566,7 +566,7 @@ export default function WhaleTracker({
         <WhaleVerificationReport
           address={selectedReportWallet.address}
           label={selectedReportWallet.label}
-          category={selectedReportWallet.category || (selectedReportWallet.isWhale ? 'Whale' : 'Active Trader')}
+          category={selectedReportWallet.category || (selectedReportWallet.isWhale ? 'Whale' : 'Active Verifier')}
           influenceScore={selectedReportWallet.influenceScore || (selectedReportWallet.isWhale ? 85 : 45)}
           evidence={selectedReportWallet.whaleEvidence || []}
           totalValue={selectedReportWallet.totalValue}

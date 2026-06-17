@@ -106,7 +106,7 @@ const en = {
             title: "Whale Network",
             category: "Protocol",
             description: "Elite identity for the next billion.",
-            detailedInfo: "Whale Network is built on the principle of market transparency. We provide verified data directly from the blockchain for professional traders.",
+            detailedInfo: "Whale Network is built on the principle of market transparency. We provide verified data directly from the blockchain for professional verifiers.",
             benefits: ["Verified data streams", "Encrypted data persistence", "Elite grade architecture", "On-chain verification"]
           }
         ]
@@ -154,7 +154,7 @@ const en = {
       alerts: 'Alerts',
       alertsDesc: 'Personalized surveillance suite. Configure the specific threshold of BTC that triggers your "Whale Sonar" and never miss a critical elite move again with instant visual and audio feedback.',
       aiSignals: 'AI Signals',
-      aiSignalsDesc: 'Neural-network powered pattern recognition. Our proprietary AI scans thousands of transactions to detect complex market manipulation, wash-trading, and hidden strategic accumulation phases.',
+      aiSignalsDesc: 'Neural-network powered pattern recognition. Our proprietary AI scans thousands of transactions to detect complex market manipulation, wash-attesting, and hidden strategic accumulation phases.',
       leaderboard: 'Ranking',
       leaderboardDesc: 'The Hall of Titans. A dynamic ranking of the world\'s most powerful Bitcoin entities based on 24-hour transactional volume, revealing who is currently dominating the liquidity of the network.',
       watchlist: 'Watch List',
@@ -249,7 +249,7 @@ const en = {
     title: 'Whale Network',
     subtitle: "Engineering trust. We don't sell hype, we sell verifiable architecture.",
     cat_core: 'Core Ecosystem',
-    cat_trading: 'Trading & Security',
+    cat_attesting: 'Attesting & Security',
     cat_products: 'Products',
     cat_dev: 'Developer Hub',
     cat_about: 'About',
@@ -333,13 +333,13 @@ const en = {
       l1: 'Layer 1', l2: 'Layer 2', gaming: 'Gaming', other: 'Other',
     },
   },
-  trade: {
+  attest: {
     buy: 'Buy', sell: 'Sell', limit: 'Limit', market: 'Market',
     amount: 'Amount', price: 'Price', total: 'Total', balance: 'Balance',
     connectWallet: 'Connect Wallet', positions: 'Positions',
     openOrders: 'Open Orders', orderHistory: 'Order History',
     assets: 'Assets', noActivity: 'No activity yet',
-    tradingActivity: 'Your trading activity will appear here',
+    attestingActivity: 'Your attesting activity will appear here',
   },
   vip: {
       heroTitle: 'Elite Analytics',

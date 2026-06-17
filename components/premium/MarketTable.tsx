@@ -335,11 +335,11 @@ export default function MarketTable() {
                                         </a>
 
                                         <button 
-                                            onClick={() => window.location.href = `/token-trade?symbol=${coin.symbol}&id=${coin.id}`}
+                                            onClick={() => window.location.href = `/token-attest?symbol=${coin.symbol}&id=${coin.id}`}
                                             className="px-4 py-2 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all flex items-center gap-2 shadow-lg"
                                         >
                                             <ShoppingCart size={12} />
-                                            {t('common.trade')}
+                                            {t('common.attest')}
                                         </button>
 
                                     </div>

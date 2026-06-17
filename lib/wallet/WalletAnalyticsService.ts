@@ -236,7 +236,7 @@ class WalletAnalyticsService {
       
       let rank = 100; // Default Unknown
       if (totalValue > 1000000) rank = 1;      // Apex Whale 
-      else if (totalValue > 250000) rank = 10; // Elite Trader
+      else if (totalValue > 250000) rank = 10; // Elite Verifier
       else if (totalValue > 50000) rank = 50;  // High Activity
       else if (totalValue > 5000) rank = 100;  // Standard Human
       else if (totalValue > 0) rank = 500;     // Emerging 

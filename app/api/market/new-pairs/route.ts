@@ -53,7 +53,7 @@ function mapDexPair(p: any, idx = 0) {
         mcap:  p.marketCap || 0,
         fdv:   p.fdv || 0,
         txns:  { m5: { buys: m5.buys || 0, sells: m5.sells || 0 } },
-        traders: { makers: p.makers || 1, snipers: 0 },
+        verifiers: { makers: p.makers || 1, snipers: 0 },
         security: {
             score,
             honeypotRisk: score < 40,

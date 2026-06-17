@@ -211,7 +211,7 @@ export const rwaInstitutionalModules = [
             {
                 id: "secondary-markets-tokenized-securities",
                 title: "13. Mercados Secundarios de Securities",
-                description: "Trading T+0 de acciones y bonos.",
+                description: "Attesting T+0 de acciones y bonos.",
                 readTime: 50,
                 content: `<div class="academy-article">
                     <section class="pro-section">
@@ -221,7 +221,7 @@ export const rwaInstitutionalModules = [
                     </section>
                     <section class="pro-section">
                         <h2>II. Automated Market Makers Regulados (Permissioned Uniswap Pools L1 P2P M1 T-1 L2 M2 O(N))</h2>
-                        <p>El Trading Secundario De Acciones Tokenizadas L1 P2P M1 O(1) En DEXs T-1 L2 M2 O(N) Como Dinari O Securitize Usa Pools De Liquidez AMM P2P M1 L1 O(N). Pero El Contrato Inteligente T-1 M2 L2 Verifica O(1) P2P La "Identidad Encadenada (Onchain ID M1 L1 P2P O(N) T-1 L2)" De Ambos Lados P2P L1. Si El Comprador No Pasó KYC T-1 L2 M2 O(1), La Función <code>transfer()</code> Tira Revert M1 L1 P2P O(N), Logrando Liquidez 24/7 Global Compliance-Gated L2 M2 T-1 P2P L1 M1 O(1).</p>
+                        <p>El Attesting Secundario De Acciones Tokenizadas L1 P2P M1 O(1) En DEXs T-1 L2 M2 O(N) Como Dinari O Securitize Usa Pools De Liquidez AMM P2P M1 L1 O(N). Pero El Contrato Inteligente T-1 M2 L2 Verifica O(1) P2P La "Identidad Encadenada (Onchain ID M1 L1 P2P O(N) T-1 L2)" De Ambos Lados P2P L1. Si El Comprador No Pasó KYC T-1 L2 M2 O(1), La Función <code>transfer()</code> Tira Revert M1 L1 P2P O(N), Logrando Liquidez 24/7 Global Compliance-Gated L2 M2 T-1 P2P L1 M1 O(1).</p>
                     </section>
                 </div>`
             },
@@ -284,8 +284,8 @@ export const rwaInstitutionalModules = [
                 content: `<div class="academy-article">
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
-                        <h2>I. Descuento De Facturas Y Congelación Del Working Capital (Trade Finance Asymmetries L1 M2 P2P T-1 O(N))</h2>
-                        <p>Una Fábrica En Vietnam P2P L1 M1 O(1) Envía Zapatos A Nike T-1 L2 M2, Pero Nike Paga A 90 Días O(N) P2P L1. La Fábrica Quiebra Por Falta De Liquidez M1 L1 O(1) T-1. <strong>Los Protocolos De Factoring Tokenizados (TradeTrust, Centrifuge L2 M2 P2P L1 O(N) T-1)</strong> Convierten Esa Factura De $100k En Un NFT L1 P2P M1 O(1).</p>
+                        <h2>I. Descuento De Facturas Y Congelación Del Working Capital (Attest Finance Asymmetries L1 M2 P2P T-1 O(N))</h2>
+                        <p>Una Fábrica En Vietnam P2P L1 M1 O(1) Envía Zapatos A Nike T-1 L2 M2, Pero Nike Paga A 90 Días O(N) P2P L1. La Fábrica Quiebra Por Falta De Liquidez M1 L1 O(1) T-1. <strong>Los Protocolos De Factoring Tokenizados (AttestTrust, Centrifuge L2 M2 P2P L1 O(N) T-1)</strong> Convierten Esa Factura De $100k En Un NFT L1 P2P M1 O(1).</p>
                     </section>
                     <section class="pro-section">
                         <h2>II. Arbitraje de Rendimiento En Cadenas De Suministro (DeFi Yield Arbitrage L1 P2P M1 T-1 L2 M2 O(N))</h2>
@@ -306,7 +306,7 @@ export const rwaInstitutionalModules = [
                     </section>
                     <section class="pro-section">
                         <h2>II. Rebasing Stablecoins Y Componibilidad Libre de Riesgo (Risk-Free Collateral Repot L1 P2P M1 T-1 L2 M2 O(N))</h2>
-                        <p>Los T-Bills Tokenizados Actúan Como Un Dólar Que Paga Interés Constantemente (Rebasing Token L1 M1 P2P T-1 L2 O(1)). Las DAOs M2 P2P L1 M1 Usan Sus Tesorerías L2 T-1 (Antes Paralizadas En USDC 0% O(N) P2P L1) Para Comprar Estos Bonos P2P M1 L1 O(1). Además, Puedes Usar El T-Bill O(N) Como Colateral En Perps DEXs L2 M2 T-1 P2P L1 Para Operar Apalancado O(1), Obteniendo El Yield Seguro M1 L1 P2P T-1 Más El Retorno Del Trading Riesgoso L2 M2 P2P L1 O(N) O(1).</p>
+                        <p>Los T-Bills Tokenizados Actúan Como Un Dólar Que Paga Interés Constantemente (Rebasing Token L1 M1 P2P T-1 L2 O(1)). Las DAOs M2 P2P L1 M1 Usan Sus Tesorerías L2 T-1 (Antes Paralizadas En USDC 0% O(N) P2P L1) Para Comprar Estos Bonos P2P M1 L1 O(1). Además, Puedes Usar El T-Bill O(N) Como Colateral En Perps DEXs L2 M2 T-1 P2P L1 Para Operar Apalancado O(1), Obteniendo El Yield Seguro M1 L1 P2P T-1 Más El Retorno Del Attesting Riesgoso L2 M2 P2P L1 O(N) O(1).</p>
                     </section>
                 </div>`
             },
@@ -323,7 +323,7 @@ export const rwaInstitutionalModules = [
                     </section>
                     <section class="pro-section">
                         <h2>II. Redención Sintética y Comités De Auditoría L1 P2P M1 T-1 L2 M2 O(N)</h2>
-                        <p>Un Token PAXG P2P L1 M1 O(1) Es Canjeable (Redeemable T-1 L2 M2) Por El Número De Serie Exacto De Una Barra Física O(N) P2P L1. Esto Integra Materias Primas En La EVM T-1 M2 L2 O(1): Puedes Mandar Oro M1 L1 P2P Como Pago En Una Transaction De Swap M2 L2 T-1 O(N) P2P L1 O(1). Establece El Puente Para Una Economía Donde El Petróleo O Uranio L1 P2P M1 Tokenizado Sea Tradeado Automáticamente O(N) Por Contratos Inteligentes Industriales T-1 L2 M2 P2P L1 O(1).</p>
+                        <p>Un Token PAXG P2P L1 M1 O(1) Es Canjeable (Redeemable T-1 L2 M2) Por El Número De Serie Exacto De Una Barra Física O(N) P2P L1. Esto Integra Materias Primas En La EVM T-1 M2 L2 O(1): Puedes Mandar Oro M1 L1 P2P Como Pago En Una Transaction De Swap M2 L2 T-1 O(N) P2P L1 O(1). Establece El Puente Para Una Economía Donde El Petróleo O Uranio L1 P2P M1 Tokenizado Sea Attestado Automáticamente O(N) Por Contratos Inteligentes Industriales T-1 L2 M2 P2P L1 O(1).</p>
                     </section>
                 </div>`
             },

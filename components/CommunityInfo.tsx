@@ -57,7 +57,7 @@ export function CommunityInfo() {
         {
             lottieSrc: "https://lottie.host/0a1b2c3d-4e5f-6g7h-8i9j-0k1l2m3n4o5p/CoinSwap3D.lottie",
             title: "$50M Volume",
-            subtitle: "Total cumulative trading volume",
+            subtitle: "Total cumulative attesting volume",
             color: "bg-green-600"
         },
         {

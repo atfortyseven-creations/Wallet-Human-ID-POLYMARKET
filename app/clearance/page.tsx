@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Lock, Navigation, Scale, FileText, ArrowRight } from 'lucide-react';
 
 const OTC_COUNTERS = [
-  { id: 'itrust', name: 'iTrustCapital', tier: 'System IRA', minDeposit: 100000, fee: '1% Trade', color: '#1A365D' },
+  { id: 'itrust', name: 'iTrustCapital', tier: 'System IRA', minDeposit: 100000, fee: '1% Attest', color: '#1A365D' },
   { id: 'galaxy', name: 'Galaxy Digital OTC', tier: 'Institutional Dark-Pool', minDeposit: 5000000, fee: 'Bespoke', color: '#000000' },
   { id: 'falconx', name: 'FalconX Prime', tier: 'Execution Desk', minDeposit: 1000000, fee: 'Spread Base', color: '#4F46E5' }
 ];

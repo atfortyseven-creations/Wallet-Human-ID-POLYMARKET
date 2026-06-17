@@ -4,7 +4,7 @@
  * 
  * InstitutionalQuantChart  Epicentro 3: Quant Terminal
  * 
- * Native lightweight-charts (TradingView engine) integrated with
+ * Native lightweight-charts (AttestingView engine) integrated with
  * the Zustand whale event store for real-time volume visualization.
  *
  * Architecture decisions:
@@ -56,7 +56,7 @@ const RES_BARS:    Record<Resolution, number> = { '1H': 72,   '4H': 60,    '1D':
  * Builds OHLCV bars from the raw whale event feed kept in the Zustand store.
  * Each "close" is the aggregate USD volume in that bar's window.
  * This is not financial price data  it is a *volume-flow proxy chart*
- * used for visual pattern recognition of whale activity, not trading signals.
+ * used for visual pattern recognition of whale activity, not attesting signals.
  */
 function buildBarsFromStore(resolution: Resolution): {
   candles: CandlestickData[];

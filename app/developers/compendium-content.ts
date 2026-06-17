@@ -126,7 +126,7 @@ export const CHAPTERS: Chapter[] = [
         id: "2-2",
         title: "2.2 B2B Integration Architecture and Low Latency",
         content: [
-          { type: "p", text: "Institutional access to Whale Network analytics pipelines is furnished via a multi-protocol distribution stack, calibrated to guarantee sub-100ms latency beneath sustained load conditions. This is not marketing hyperbole; it is a relentless engineering requisite driven by the institutional algorithmic trading use cases that define the primary demographic." },
+          { type: "p", text: "Institutional access to Whale Network analytics pipelines is furnished via a multi-protocol distribution stack, calibrated to guarantee sub-100ms latency beneath sustained load conditions. This is not marketing hyperbole; it is a relentless engineering requisite driven by the institutional algorithmic attesting use cases that define the primary demographic." },
           { type: "h4", text: "2.2.1 Multi-RPC Ingestion Topology and Active Failover" },
           { type: "p", text: "A monolithic reliance on a solitary RPC provider constitutes an unacceptable single point of failure. Whale Network topology implements a Source Multiplexer operating over N concurrent RPC nodes. The routing model allocates dynamic weights to every source contingent upon its historical latency and recent error velocity. The heaviest-weighted source is perpetually the primary. Should the error quotient eclipse a critical threshold, that origin is sequestered from the pool pending confirmed recovery across N consecutive successful validations." },
           { type: "h4", text: "2.2.2 Protobuf Serialization: From JSON-RPC to High-Efficiency Binary" },

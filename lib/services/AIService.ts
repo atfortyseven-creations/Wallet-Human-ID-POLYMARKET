@@ -31,7 +31,7 @@ export class AIService {
         activeAgeDays: number;
         historySnippet: any[];
         defiPositions: any[];
-        washTradingMetrics?: { score: number; patterns: string[] };
+        washAttestingMetrics?: { score: number; patterns: string[] };
     }): Promise<ForensicAnalysis> {
         
         if (!process.env.OPENAI_API_KEY) {
@@ -53,7 +53,7 @@ export class AIService {
         ### RECOGNITION PATTERNS (Detect & Tag)
         - "Whale Accumulation" (Systematic buying over time)
         - "Exit Liquidity Hunter" (Large transfers to CEX during high volatility)
-        - "Flash-Loan Arbitrageur" (Complex multi-hop atomic trades)
+        - "Flash-Loan Arbitrageur" (Complex multi-hop atomic attestations)
         - "Alpha-Capture Bot" (Sub-second reaction to pool imbalances)
         - "Cold Storage Reserve" (Ultra-low activity, massive native balance)
 

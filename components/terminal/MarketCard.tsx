@@ -100,7 +100,7 @@ export default function MarketCard({ market, isLoading }: MarketCardProps) {
                     >
                         <div className="relative z-10 flex flex-col">
                             <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-0.5">
-                                {status === "TRADING" || status === "APPROVING" ? <Loader2 className="w-3 h-3 animate-spin" /> : "Bet Yes"}
+                                {status === "ATTESTING" || status === "APPROVING" ? <Loader2 className="w-3 h-3 animate-spin" /> : "Bet Yes"}
                             </span>
                             <span className="text-lg font-bold text-white">{yesPrice}%</span>
                         </div>
@@ -118,7 +118,7 @@ export default function MarketCard({ market, isLoading }: MarketCardProps) {
                     >
                         <div className="relative z-10 flex flex-col">
                             <span className="text-[10px] font-bold text-rose-400 uppercase tracking-widest mb-0.5">
-                                {status === "TRADING" || status === "APPROVING" ? <Loader2 className="w-3 h-3 animate-spin" /> : "Bet No"}
+                                {status === "ATTESTING" || status === "APPROVING" ? <Loader2 className="w-3 h-3 animate-spin" /> : "Bet No"}
                             </span>
                             <span className="text-lg font-bold text-white">{noPrice}%</span>
                         </div>

@@ -46,7 +46,7 @@ export const defiModules = [
 
                     <section class="pro-section">
                         <h2>II. Curve Wars y el Control de los Flujos de Emisión</h2>
-                        <p>La importancia de Curve va más allá del trading. Los protocolos que obtienen más emisiones de CRV para sus pools atraen más liquidez, reduciendo el slippage de sus tokens y fortaleciendo sus pegs. Esto creó las famosas <strong>Curve Wars</strong>: una batalla de gobernanza donde Convex, Yearn y otros acumulaban veCRV para dirigir millones en incentivos. Para la Whale Academy, esta guerra es el primer ejemplo de <strong>Meta-Gobernanza DeFi</strong>: el control de la infraestructura de liquidez es equivalente al control del flujo de capital en TradFi.</p>
+                        <p>La importancia de Curve va más allá del attesting. Los protocolos que obtienen más emisiones de CRV para sus pools atraen más liquidez, reduciendo el slippage de sus tokens y fortaleciendo sus pegs. Esto creó las famosas <strong>Curve Wars</strong>: una batalla de gobernanza donde Convex, Yearn y otros acumulaban veCRV para dirigir millones en incentivos. Para la Whale Academy, esta guerra es el primer ejemplo de <strong>Meta-Gobernanza DeFi</strong>: el control de la infraestructura de liquidez es equivalente al control del flujo de capital en TradFi.</p>
                     </section>
                 </div>`
         },
@@ -82,7 +82,7 @@ export const defiModules = [
 
                     <section class="pro-section">
                         <h2>II. Synthetix: El Modelo de Deuda Colectiva y Riesgo Global</h2>
-                        <p>Synthetix utiliza un modelo radicalmente diferente: los <em>stakers</em> de SNX actúan colectivamente como contraparte de todos los traders. Al abrir una posición en sETH o sBTC, el trader no tiene una contraparte individual; tiene contra sí a todos los stakers. Esto permite liquidez teóricamente infinita pero introduce una <strong>cuenta de deuda dinámica</strong>: si los traders tienen éxito, los stakers asumen las pérdidas. Para la Whale Academy, este es el modelo de riesgo más sofisticado de DeFi: el <em>Delta Neto del Pool</em>.</p>
+                        <p>Synthetix utiliza un modelo radicalmente diferente: los <em>stakers</em> de SNX actúan colectivamente como contraparte de todos los verifiers. Al abrir una posición en sETH o sBTC, el verifier no tiene una contraparte individual; tiene contra sí a todos los stakers. Esto permite liquidez teóricamente infinita pero introduce una <strong>cuenta de deuda dinámica</strong>: si los verifiers tienen éxito, los stakers asumen las pérdidas. Para la Whale Academy, este es el modelo de riesgo más sofisticado de DeFi: el <em>Delta Neto del Pool</em>.</p>
                     </section>
                 </div>`
         },
@@ -293,7 +293,7 @@ export const defiModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. Liquidez Infinita y el Modelo de Contraparte Colectiva</h2>
-                        <p>Synthetix implementa un mecanismo donde los stakers de <strong>SNX</strong> actúan como contraparte colectiva de todos los traders. La liquidez es teóricamente infinita porque no hay un libro de órdenes: el precio del activo sintético (sETH, sBTC, sUSD) se obtiene de oráculos externos (Chainlink). Los swaps atómicos entre Synths se ejecutan con <strong>cero slippage</strong> al instante, convirtiéndolo en el motor de liquidez preferido de los agregadores para swaps de gran volumen.</p>
+                        <p>Synthetix implementa un mecanismo donde los stakers de <strong>SNX</strong> actúan como contraparte colectiva de todos los verifiers. La liquidez es teóricamente infinita porque no hay un libro de órdenes: el precio del activo sintético (sETH, sBTC, sUSD) se obtiene de oráculos externos (Chainlink). Los swaps atómicos entre Synths se ejecutan con <strong>cero slippage</strong> al instante, convirtiéndolo en el motor de liquidez preferido de los agregadores para swaps de gran volumen.</p>
                     </section>
 
                     <section class="pro-section">
@@ -370,7 +370,7 @@ export const defiModules = [
 
                     <section class="pro-section">
                         <h2>II. La Sostenibilidad del Yield: APR Real vs. Nominal</h2>
-                        <p>El reto forense del Yield Farming es distinguir entre APR real y APR nominal. Un APR del 500% en tokens del protocolo implica que el token se deprecia un 80% en un año (dilución inflacionaria) si la demanda no absorbe la emisión. Para la Whale Academy, el <strong>Yield Sostenible</strong> es el generado por actividad económica real (comisiones de trading, intereses de préstamos) y no por emisión inflacionaria. El ratio <code>Protocol Revenue / Token Emissions</code> es el indicador definitivo de si un protocolo DeFi tiene futuro o es un Ponzi de liquidez.</p>
+                        <p>El reto forense del Yield Farming es distinguir entre APR real y APR nominal. Un APR del 500% en tokens del protocolo implica que el token se deprecia un 80% en un año (dilución inflacionaria) si la demanda no absorbe la emisión. Para la Whale Academy, el <strong>Yield Sostenible</strong> es el generado por actividad económica real (comisiones de attesting, intereses de préstamos) y no por emisión inflacionaria. El ratio <code>Protocol Revenue / Token Emissions</code> es el indicador definitivo de si un protocolo DeFi tiene futuro o es un Ponzi de liquidez.</p>
                     </section>
                 </div>`
         }

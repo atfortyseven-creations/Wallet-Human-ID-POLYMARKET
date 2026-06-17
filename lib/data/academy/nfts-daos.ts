@@ -161,7 +161,7 @@ export const nftDaoModules = [
                     </section>
 
                     <section class="pro-section">
-                        <h2>II. High-Frequency Governance Trading</h2>
+                        <h2>II. High-Frequency Governance Attesting</h2>
                         <p>La IA evalúa 24/7 datos de sentimiento de X, rates de MakerDAO, y eventos geopolíticos; automáticamente draftea, simula localmente, firma y ejecuta Propuestas de Gobernanza On-Chain en segundos. En este ecosistema híbrido, los humanos no intervienen tácticamente; actúan únicamente en el nivel basal modificando las "Leyes de la Robótica" (Smart Contract Boundary Guardrails) de la IA si su modelo de riesgo diverge de la intención fundacional de la DAO.</p>
                     </section>
                 </div>`
@@ -193,7 +193,7 @@ export const nftDaoModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. La Iliquidez del Arte y la Colateralización Peer-to-Pool</h2>
-                        <p>Los NFTs son intrínsecamente ilíquidos: encontrar un comprador spot para un JPEG de $200k toma semanas. La <strong>Financialización NFT (NFTfi)</strong> resuelve esto permitiendo apalancamiento. Protocolos Peer-to-Pool como BendDAO transforman un CryptoPunk en una hipoteca instantánea. El usuario deposita el JPEG en un Smart Contract y extrae el 40% de su "Floor Price" (Precio Suelo) en wETH. El protocolo subyacente depende de Oráculos que promedian el Floor Price de marketplaces (OpenSea/Blur) descontando outliers atípicos (Lavado de dinero/Wash Trading).</p>
+                        <p>Los NFTs son intrínsecamente ilíquidos: encontrar un comprador spot para un JPEG de $200k toma semanas. La <strong>Financialización NFT (NFTfi)</strong> resuelve esto permitiendo apalancamiento. Protocolos Peer-to-Pool como BendDAO transforman un CryptoPunk en una hipoteca instantánea. El usuario deposita el JPEG en un Smart Contract y extrae el 40% de su "Floor Price" (Precio Suelo) en wETH. El protocolo subyacente depende de Oráculos que promedian el Floor Price de marketplaces (OpenSea/Blur) descontando outliers atípicos (Lavado de dinero/Wash Attesting).</p>
                     </section>
 
                     <section class="pro-section">
@@ -247,12 +247,12 @@ export const nftDaoModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. El Espejismo del Contrato Inteligente de Regalías</h2>
-                        <p>En el génesis, se promocionaba que el "Smart Contract garantizaba al artista un 10% perpetuo de cada reventa". <strong>Es una falsedad técnica</strong>. El estándar ERC-721 original solo regula la <em>transferencia de propiedad</em>, no sabe nada sobre "Precio de Venta" o "Comisión", ya que la economía (el emparejamiento con WETH) sucede en un Contrato de Mercado periférico (Marketplace). OpenSea implementó royalties como una cortesía centralizada en su Web2 off-chain, cobrándola al ejecutar el trade.</p>
+                        <p>En el génesis, se promocionaba que el "Smart Contract garantizaba al artista un 10% perpetuo de cada reventa". <strong>Es una falsedad técnica</strong>. El estándar ERC-721 original solo regula la <em>transferencia de propiedad</em>, no sabe nada sobre "Precio de Venta" o "Comisión", ya que la economía (el emparejamiento con WETH) sucede en un Contrato de Mercado periférico (Marketplace). OpenSea implementó royalties como una cortesía centralizada en su Web2 off-chain, cobrándola al ejecutar el attest.</p>
                     </section>
 
                     <section class="pro-section">
                         <h2>II. Blur, Bidding Pools y el Colapso de las Regalías</h2>
-                        <p>La utopía artística se fracturó con <strong>Blur</strong>, un marketplace diseñado para traders de alta frecuencia (Bidding Pools pro-ratas) que redujo los fees y <em>eliminó las regalías de los creadores a discreción del comprador para ganar volumen</em> ("Vampire Attack"). OpenSea intentó defenderse forzando a los creadores a usar listas negras de código (Operator Filter Registry) para bloquear transferencias hacia Blur. Pero Blur ganó, demostrando el darwinismo de DeFi: la eficiencia del liquidador de mercado siempre somete a los ideales románticos del creador.</p>
+                        <p>La utopía artística se fracturó con <strong>Blur</strong>, un marketplace diseñado para verifiers de alta frecuencia (Bidding Pools pro-ratas) que redujo los fees y <em>eliminó las regalías de los creadores a discreción del comprador para ganar volumen</em> ("Vampire Attack"). OpenSea intentó defenderse forzando a los creadores a usar listas negras de código (Operator Filter Registry) para bloquear transferencias hacia Blur. Pero Blur ganó, demostrando el darwinismo de DeFi: la eficiencia del liquidador de mercado siempre somete a los ideales románticos del creador.</p>
                     </section>
                 </div>`
             },

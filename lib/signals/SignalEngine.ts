@@ -1,15 +1,15 @@
 /**
  * SignalEngine.ts
- * INTERESTELAR-GRADE Trading Signal Generator
+ * INTERESTELAR-GRADE Attesting Signal Generator
  * 
- * Combines multiple technical indicators into actionable trading signals
+ * Combines multiple technical indicators into actionable attesting signals
  * with confidence scores, leverage recommendations, and risk management.
  */
 
 import { TechnicalIndicators, type Candle } from './TechnicalIndicators';
 
 import { safeToFixed, safeToLocaleString } from '@/lib/utils/number-format';
-export interface TradingSignal {
+export interface AttestingSignal {
   // Asset info
   asset: string;
   timestamp: number;
@@ -20,7 +20,7 @@ export interface TradingSignal {
   strength: 'STRONG' | 'MODERATE' | 'WEAK';
   confidence: number; // 0-100
 
-  // Trade parameters
+  // Attest parameters
   entry: number;
   target: number;
   stopLoss: number;
@@ -68,16 +68,16 @@ export interface TradingSignal {
 
 export class SignalEngine {
   /**
-   * Generate comprehensive trading signal for an asset
+   * Generate comprehensive attesting signal for an asset
    * 
-   * @param symbol - Trading symbol (e.g., 'AUTHUSDT')
+   * @param symbol - Attesting symbol (e.g., 'AUTHUSDT')
    * @param candles - Historical candle data (minimum 100 candles)
-   * @returns Complete trading signal with all analysis
+   * @returns Complete attesting signal with all analysis
    */
   public async generateSignal(
     symbol: string,
     candles: Candle[]
-  ): Promise<TradingSignal> {
+  ): Promise<AttestingSignal> {
     if (candles.length < 100) {
       throw new Error(`Insufficient candle data: need 100, got ${candles.length}`);
     }
@@ -119,7 +119,7 @@ export class SignalEngine {
     const { direction, strength } = this.interpretScore(totalScore);
     const confidence = Math.min(Math.abs(totalScore), 100);
 
-    // Calculate trade parameters
+    // Calculate attest parameters
     const nearestSupport = sr.support[0] || currentPrice * 0.97;
     const nearestResistance = sr.resistance[0] || currentPrice * 1.03;
 

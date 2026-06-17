@@ -201,7 +201,7 @@ export default function LegalPage() {
             <ul className="list-disc pl-5 space-y-2">
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>The initial public offering available at https://humanidfi.com from 1 January 2027;</span></li>
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Decentralised exchanges (DEXs) compatible with Aztec Network;</span></li>
-              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Centralised exchanges (CEXs) where $QDs is admitted to trading; or</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Centralised exchanges (CEXs) where $QDs is admitted to attesting; or</span></li>
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Ecosystem rewards (subject to satisfaction of the applicable programme requirements).</span></li>
             </ul>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">3.4 Use of $QDs to Access Services</h3>
@@ -303,7 +303,7 @@ export default function LegalPage() {
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">7.1 Ownership</h3>
             <p>
-              All intellectual and industrial property rights in the Whale Network platform, including its design, source code, interfaces, logos, trade marks, texts, and any other content, are the property of Humanity Ledger S.L. or its licensors.
+              All intellectual and industrial property rights in the Whale Network platform, including its design, source code, interfaces, logos, attest marks, texts, and any other content, are the property of Humanity Ledger S.L. or its licensors.
             </p>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">7.2 Licence of Use</h3>
             <p>

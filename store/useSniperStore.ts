@@ -4,16 +4,16 @@ import { create } from 'zustand';
 // 1. STRICT INTERFACES
 // -----------------------------------------------------------------------------
 
-export interface BinanceTradePayload {
+export interface BinanceAttestPayload {
   e: string;  // Event type
   E: number;  // Event time
   s: string;  // Symbol
-  t: number;  // Trade ID
+  t: number;  // Attest ID
   p: string;  // Price
   q: string;  // Quantity
   b: number;  // Buyer order ID
   a: number;  // Seller order ID
-  T: number;  // Trade time
+  T: number;  // Attest time
   m: boolean; // Is the buyer the market maker?
   M: boolean; // Ignore
 }
@@ -57,7 +57,7 @@ interface SniperState {
   metrics: SniperMetrics;
 
   // Tactical History
-  executedTrades: { hash: string; amount: number; priceAtExecution: number; timestamp: number }[];
+  executedAttestations: { hash: string; amount: number; priceAtExecution: number; timestamp: number }[];
 
   // Global UI States
   isArmed: boolean;
@@ -67,7 +67,7 @@ interface SniperState {
   pushAlert: (alert: Web3WhaleAlert) => void;
   updateFilters: (updates: Partial<SniperFilters>) => void;
   setConnectionStatus: (status: boolean) => void;
-  addExecutedTrade: (hash: string, amount: number, priceAtExecution: number) => void;
+  addExecutedAttest: (hash: string, amount: number, priceAtExecution: number) => void;
   setArmed: (armed: boolean) => void;
 }
 
@@ -118,7 +118,7 @@ export const useSniperStore = create<SniperState>((set) => ({
   // Initial State
   currentPrice: 0,
   alerts: [],
-  executedTrades: [],
+  executedAttestations: [],
   isArmed: false,
   filters: {
     minVolumeUsd: 1000000, // 1M USD Default
@@ -166,9 +166,9 @@ export const useSniperStore = create<SniperState>((set) => ({
   setConnectionStatus: (status) =>
     set((state) => ({ metrics: { ...state.metrics, activeConnection: status } })),
 
-  addExecutedTrade: (hash, amount, priceAtExecution) =>
+  addExecutedAttest: (hash, amount, priceAtExecution) =>
     set((state) => ({
-      executedTrades: [{ hash, amount, priceAtExecution, timestamp: Date.now() }, ...state.executedTrades].slice(0, 50)
+      executedAttestations: [{ hash, amount, priceAtExecution, timestamp: Date.now() }, ...state.executedAttestations].slice(0, 50)
     })),
     
   setArmed: (armed) => set({ isArmed: armed }),

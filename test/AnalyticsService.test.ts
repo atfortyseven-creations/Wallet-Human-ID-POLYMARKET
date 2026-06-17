@@ -31,7 +31,7 @@ describe('AnalyticsService CU-Shield Verification', () => {
         expect(cacheTime).toBeLessThan(rpcTime);
     });
 
-    it('should perform wash-trading detection in memory only', async () => {
+    it('should perform wash-attesting detection in memory only', async () => {
         const mockHistory = [
             { from_address: TEST_ADDRESS, to_address: '0xTarget1', value: '1.5', block_timestamp: new Date().toISOString() },
             { from_address: '0xTarget1', to_address: TEST_ADDRESS, value: '1.45', block_timestamp: new Date().toISOString() },
@@ -40,7 +40,7 @@ describe('AnalyticsService CU-Shield Verification', () => {
         ];
 
         // Access private method for verification via casting
-        const metrics = (analyticsService as any).detectWashTrading(TEST_ADDRESS, mockHistory);
+        const metrics = (analyticsService as any).detectWashAttesting(TEST_ADDRESS, mockHistory);
         
         expect(metrics.score).toBeGreaterThan(0);
         expect(metrics.patterns).toContain('High volume cycling detected');

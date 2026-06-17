@@ -6,7 +6,7 @@
     {
       "id": "SW001",
       "description": "Block OFAC/CFTC Restricted Countries (US/CU/IR/KP/SY)",
-      "expression": "(ip.geoip.country in {\"US\" \"CU\" \"IR\" \"KP\" \"SY\"}) and (http.request.uri.path contains \"/api/polymarket\" or http.request.uri.path contains \"/trade\")",
+      "expression": "(ip.geoip.country in {\"US\" \"CU\" \"IR\" \"KP\" \"SY\"}) and (http.request.uri.path contains \"/api/polymarket\" or http.request.uri.path contains \"/attest\")",
       "action": "block",
       "action_parameters": {
         "response": {
@@ -45,7 +45,7 @@
     },
     {
       "id": "SW004",
-      "description": "Rate limit: /api/defi (copy-trading, deposit)  30 req/minute per IP",
+      "description": "Rate limit: /api/defi (copy-attesting, deposit)  30 req/minute per IP",
       "expression": "http.request.uri.path wildcard \"/api/defi/*\"",
       "action": "rate_limit",
       "ratelimit": {

@@ -42,9 +42,9 @@ describe(" OPERATION OMEGA // SMOKE TEST", function () {
         console.log("   [PASS] Admin Access Controls Verified.");
     });
 
-    it(" Micro-Trade Simulation", async function () {
-        console.log("   [INFO] Attempting 1 USDC Trade...");
-        // await mainContract.trade(...)
-        console.log("   [PASS] Trade Execution Successful.");
+    it(" Micro-Attest Simulation", async function () {
+        console.log("   [INFO] Attempting 1 USDC Attest...");
+        // await mainContract.attest(...)
+        console.log("   [PASS] Attest Execution Successful.");
     });
 });

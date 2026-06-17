@@ -129,7 +129,7 @@ export function ReputationDashboard() {
             </div>
             <h3 className="text-[13px] font-bold text-[#050505] uppercase tracking-widest mb-2">Access Credentials</h3>
             <p className="text-[12px] text-black/50 leading-relaxed">
-              Your credential serves as a non-transferable cryptographic proof of your trading history and institutional access level.
+              Your credential serves as a non-transferable cryptographic proof of your attesting history and institutional access level.
             </p>
           </div>
           

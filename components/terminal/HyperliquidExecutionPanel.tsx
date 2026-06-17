@@ -55,7 +55,7 @@ export function HyperliquidExecutionPanel() {
   const [isLoadingMarkets, setIsLoadingMarkets] = useState(true);
   const [isLoadingPositions, setIsLoadingPositions] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [activeTab, setActiveTab] = useState<'trade' | 'positions'>('trade');
+  const [activeTab, setActiveTab] = useState<'attest' | 'positions'>('attest');
 
 
   // Fetch live market data from Hyperliquid or fallback gracefully
@@ -243,7 +243,7 @@ export function HyperliquidExecutionPanel() {
             ))}
       </div>
 
-      {/* Main trading area */}
+      {/* Main attesting area */}
       <div className="flex gap-6 flex-col lg:flex-row px-2">
         {/* Order form */}
         <div className="flex flex-col gap-4 w-full lg:w-[340px] shrink-0">
@@ -369,8 +369,8 @@ export function HyperliquidExecutionPanel() {
           {/* Tab selector */}
           <div className="flex gap-1 p-1.5 rounded-xl bg-black/[0.03] w-fit border border-black/5">
             <button
-              onClick={() => setActiveTab('trade')}
-              className={`px-5 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'trade' ? 'bg-white shadow-sm text-[#050505]' : 'text-black/40 hover:text-black/70'}`}
+              onClick={() => setActiveTab('attest')}
+              className={`px-5 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'attest' ? 'bg-white shadow-sm text-[#050505]' : 'text-black/40 hover:text-black/70'}`}
             >
               Market Structure
             </button>
@@ -382,7 +382,7 @@ export function HyperliquidExecutionPanel() {
             </button>
           </div>
 
-          {activeTab === 'trade' && selectedMarket && (
+          {activeTab === 'attest' && selectedMarket && (
             <div className="rounded-3xl border border-black/[0.05] bg-white shadow-sm p-8 grid grid-cols-2 md:grid-cols-3 gap-8">
               {[
                 { label: 'Index Price', value: fmtUsd(parseFloat(selectedMarket.markPx)) },

@@ -25,11 +25,11 @@ const CHALLENGE_THRESHOLD = 4;
 const BYPASS_IPS = ['127.0.0.1'];
 
 //  PER-ENDPOINT RATE LIMITS (requests / window in seconds) 
-// Tighter limits on write/trade endpoints to prevent automation abuse.
+// Tighter limits on write/attest endpoints to prevent automation abuse.
 const ENDPOINT_LIMITS: Record<string, { max: number; windowSec: number }> = {
   '/api/user/nuke':           { max: 2,    windowSec: 86400 },  // 2 per day  absolute
   '/api/verify-human':        { max: 10,   windowSec: 3600  },  // 10 per hour
-  '/api/defi/copy-trading':   { max: 30,   windowSec: 60    },  // 30 per minute
+  '/api/defi/copy-attesting':   { max: 30,   windowSec: 60    },  // 30 per minute
   '/api/defi/deposit':        { max: 20,   windowSec: 60    },
   '/api/polymarket':          { max: 100,  windowSec: 60    },
   // Desktop polls every 2 seconds. A user on the same WiFi (NAT) scanning with their phone 

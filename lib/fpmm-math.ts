@@ -26,7 +26,7 @@ export const calcBuyAmount = (
     // In Gnosis FPMM, buying "YES" means providing Collateral, which effectively increases the "Liquidity" slightly or changes ratio.
 
     // Simplified for Estimation:
-    // If we assume a trade against the pool reserves R_yes and R_no.
+    // If we assume a attest against the pool reserves R_yes and R_no.
     // Price of YES = R_no / (R_yes + R_no)
     // Shares = Investment / Price (roughly)
 

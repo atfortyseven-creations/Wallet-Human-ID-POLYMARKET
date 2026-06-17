@@ -37,7 +37,7 @@ export class NewsDataService {
         'economy': ['fed rate prediction', 'inflation betting', 'recession odds', 'market sentiment', 'macro prediction'],
         'sports': ['sports betting', 'betting odds', 'draftkings', 'fanduel', 'prediction market sports'],
         'culture': ['oscars betting', 'novelty bets', 'prediction challenges', 'social betting', 'speculative markets'],
-        'world': ['geopolitical prediction', 'war betting markets', 'global risk forecast', 'event contracts', 'outcome trading'],
+        'world': ['geopolitical prediction', 'war betting markets', 'global risk forecast', 'event contracts', 'outcome attesting'],
     };
 
     static async fetchLatest(query: string = 'actualidad'): Promise<NewsArticle[]> {

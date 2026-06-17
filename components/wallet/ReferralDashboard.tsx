@@ -185,7 +185,7 @@ export default function ReferralDashboard() {
                 >
                     <Share2 size={32} className="mb-2 opacity-80" />
                     <h3 className="font-bold text-lg">Share Invite Link</h3>
-                    <p className="text-white/60 text-xs mt-1">Earn 10% of trading fees</p>
+                    <p className="text-white/60 text-xs mt-1">Earn 10% of attesting fees</p>
                 </motion.div>
             </div>
 

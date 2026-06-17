@@ -9,14 +9,14 @@ export async function POST(req: NextRequest) {
         const { marketId, direction, amount, userAddress } = body;
 
         if (!marketId || !direction || !amount || !userAddress) {
-            return NextResponse.json({ error: 'Faltan parámetros de ejecución (Trade Payload)' }, { status: 400 });
+            return NextResponse.json({ error: 'Faltan parámetros de ejecución (Attest Payload)' }, { status: 400 });
         }
 
         if (direction !== 'YES' && direction !== 'NO') {
             return NextResponse.json({ error: 'Dirección inválida, debe ser YES o NO' }, { status: 400 });
         }
 
-        const txPayload = await polymarketRouterService.buildTradeTransaction(
+        const txPayload = await polymarketRouterService.buildAttestTransaction(
             marketId,
             direction,
             amount
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
         });
 
     } catch (error: any) {
-        console.error('[POLY_API_TRADE]', error.message);
+        console.error('[POLY_API_ATTEST]', error.message);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }

@@ -94,7 +94,7 @@ export function WhaleProfiler({ address, onClose }: Props) {
                 velocityColor = "text-purple-400";
                 temporalDensity = 95;
             } else if (avgHours < 24) {
-                velocityLabel = "Active Daily Trader";
+                velocityLabel = "Active Daily Verifier";
                 velocityColor = "text-emerald-400";
                 temporalDensity = 75;
             } else {

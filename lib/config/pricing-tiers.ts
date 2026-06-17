@@ -95,7 +95,7 @@ export const SECTION_FEATURES: SectionFeatureGroup[] = [
     proFeatures: [
       'Unlimited wallets & multi-chain tracking',
       'Advanced P&L with cost basis & tax optimization',
-      'Whale copy-trading signals — follow the best wallets',
+      'Whale copy-attesting signals — follow the best wallets',
       'DeFi yield optimization & opportunity alerts',
       'Smart portfolio rebalancing recommendations',
       'NFT collection valuation & floor price tracking',
@@ -165,7 +165,7 @@ export const PRICING_TIERS: PricingTier[] = [
       { text: 'VIP Whale Analytics Channel & analyst alpha signals', highlight: true, section: 'chat' },
       { text: 'AI market sentiment engine & unlimited chat history', section: 'chat' },
       // Portfolio
-      { text: 'Multi-wallet tracking & whale copy-trading signals', highlight: true, section: 'portfolio' },
+      { text: 'Multi-wallet tracking & whale copy-attesting signals', highlight: true, section: 'portfolio' },
       { text: 'DeFi yield alerts, NFT valuation & tax export reports', section: 'portfolio' },
       // Community
       { text: 'Verified Whale badge & institutional forum access', highlight: true, section: 'community' },

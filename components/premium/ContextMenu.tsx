@@ -63,7 +63,7 @@ export default function ContextMenu({ onAction, children }: ContextMenuProps) {
 
   const menuItems = [
     { id: "terminal", label: "Open Terminal", icon: Terminal, hotkey: "T" },
-    { id: "trade", label: "Execute Order", icon: LineChart, hotkey: "E" },
+    { id: "attest", label: "Execute Order", icon: LineChart, hotkey: "E" },
     { id: "copy", label: "Copy Address", icon: Copy, hotkey: "C", separator: true },
     { id: "alert", label: "Set Whale Network", icon: ShieldAlert, hotkey: "A" },
     { id: "ai", label: "AI Analysis", icon: Cpu, hotkey: "I" },

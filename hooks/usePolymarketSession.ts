@@ -41,14 +41,14 @@ export function usePolymarketSession() {
         }
     }, [hasProxy]);
 
-    // 2. Login / Enable Trading (Simulated for Demo)
+    // 2. Login / Enable Attesting (Simulated for Demo)
     const login = async () => {
         if (!address) return;
         setSessionLoading(true);
 
         try {
             // STEP 1: Request Signature
-            const message = `Enable Polymarket Trading\nTimestamp: ${Date.now()}`;
+            const message = `Enable Polymarket Attesting\nTimestamp: ${Date.now()}`;
             await signMessageAsync({ message });
 
             // STEP 2: Deploy Proxy Wallet (Active logic needed here)

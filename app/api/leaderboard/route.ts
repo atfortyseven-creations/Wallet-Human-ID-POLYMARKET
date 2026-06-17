@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
-import { fetchTopTraders } from '@/lib/leaderboard-service';
+import { fetchTopVerifiers } from '@/lib/leaderboard-service';
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     // Leemos la página, por defecto es 1 si no viene nada
     const page = parseInt(searchParams.get('page') || '1');
 
-    const traders = await fetchTopTraders(page);
+    const verifiers = await fetchTopVerifiers(page);
 
-    return NextResponse.json(traders, {
+    return NextResponse.json(verifiers, {
         headers: {
             'Cache-Control': 's-maxage=60, stale-while-revalidate=300',
         },

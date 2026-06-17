@@ -55,7 +55,7 @@ export async function GET(req: NextRequest) {
       const token = searchParams.get('token') || undefined;
       const alerts = await WacAnalyticsService.getAnomalyAlerts(token);
       const flashLoans = await WacAnalyticsService.detectFlashLoan(token || 'ETH');
-      const washTraders = token ? await WacAnalyticsService.detectWashTrading(token) : [];
+      const washVerifiers = token ? await WacAnalyticsService.detectWashAttesting(token) : [];
       
       await logApiRequest(req, subscription.id, endpoint, 200);
       return NextResponse.json({ 
@@ -64,7 +64,7 @@ export async function GET(req: NextRequest) {
         data: { 
           alerts, 
           flashLoans, 
-          washTraders,
+          washVerifiers,
           timestamp: new Date().toISOString() 
         } 
       });

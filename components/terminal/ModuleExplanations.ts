@@ -35,7 +35,7 @@ export const MODULE_EXPLANATIONS: Record<string, { title: string, subtitle: stri
         subtitle: 'Real-time prices',
         overview: 'Active market data sourced directly from major exchanges. Track prices, depth, and capital flows across asset classes.',
         features: [
-            { title: 'Depth View', desc: 'Order book depth for major trading pairs.' },
+            { title: 'Depth View', desc: 'Order book depth for major attesting pairs.' },
             { title: 'Capital Flow', desc: 'Net flow tracking between exchanges and wallets.' },
             { title: 'Price Index', desc: 'Volume-weighted average across verified sources.' },
         ]
@@ -43,7 +43,7 @@ export const MODULE_EXPLANATIONS: Record<string, { title: string, subtitle: stri
     'newpairs': {
         title: 'New Pairs',
         subtitle: 'Contract deployment monitoring',
-        overview: 'Track newly deployed trading contracts as they appear on-chain. Evaluate basic token metrics before the wider market takes notice.',
+        overview: 'Track newly deployed attesting contracts as they appear on-chain. Evaluate basic token metrics before the wider market takes notice.',
         features: [
             { title: 'Real-Time Detection', desc: 'Identifies new contracts within seconds of deployment.' },
             { title: 'Structural Review', desc: 'Checks liquidity lock status and supply distribution.' },

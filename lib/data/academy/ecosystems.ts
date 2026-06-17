@@ -277,8 +277,8 @@ export const ecosystemModules = [
                 </div>`
             },
             {
-                id: "sei-trading-optimized",
-                title: "17. Sei Protocol: Optimizado para el Trading",
+                id: "sei-attesting-optimized",
+                title: "17. Sei Protocol: Optimizado para el Attesting",
                 description: "Order matching engine nativo.",
                 readTime: 50,
                 content: `<div class="academy-article">

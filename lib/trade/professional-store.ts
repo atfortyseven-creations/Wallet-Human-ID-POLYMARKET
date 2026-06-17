@@ -3,7 +3,7 @@ import { OrderBookSnapshot, OrderBookEngine } from './orderbook-engine';
 import { wsManager } from './websocket-manager';
 import { usePortfolioStore } from '../portfolio/store';
 
-export interface Trade {
+export interface Attest {
   id: string;
   price: number;
   quantity: number;
@@ -22,7 +22,7 @@ export interface Ticker24h {
   quoteVolume: number;
 }
 
-interface ProfessionalTradeState {
+interface ProfessionalAttestationstate {
   // Current pair
   currentPair: string;
   
@@ -30,9 +30,9 @@ interface ProfessionalTradeState {
   orderBook: OrderBookSnapshot | null;
   orderBookEngine: OrderBookEngine;
   
-  // Recent trades
-  recentTrades: Trade[];
-  maxTrades: number;
+  // Recent attestations
+  recentAttestations: Attest[];
+  maxAttestations: number;
   
   // 24h ticker data
   ticker: Ticker24h | null; // Current pair ticker
@@ -48,7 +48,7 @@ interface ProfessionalTradeState {
   // Actions
   setCurrentPair: (pair: string) => void;
   updateOrderBook: (snapshot: OrderBookSnapshot) => void;
-  addTrade: (trade: Trade) => void;
+  addAttest: (attest: Attest) => void;
   updateTicker: (ticker: Ticker24h) => void;
   setConnectionStatus: (status: 'disconnected' | 'connecting' | 'connected' | 'error') => void;
   
@@ -74,12 +74,12 @@ interface ProfessionalTradeState {
   isRestricted: boolean;
 }
 
-export const useProfessionalTradeStore = create<ProfessionalTradeState>((set, get) => ({
+export const useProfessionalAttestationstore = create<ProfessionalAttestationstate>((set, get) => ({
   currentPair: 'BTCUSDT',
   orderBook: null,
   orderBookEngine: new OrderBookEngine(),
-  recentTrades: [],
-  maxTrades: 50,
+  recentAttestations: [],
+  maxAttestations: 50,
   // Initialize with default ticker to PREVENT BLANK SCREEN
   ticker: null,
   globalTickers: {}, //  Stores real-time prices for ALL 31 pairs
@@ -101,7 +101,7 @@ export const useProfessionalTradeStore = create<ProfessionalTradeState>((set, ge
 
   fetchPositions: async (address: string) => {
     try {
-      const res = await fetch(`/api/trade/positions?address=${address}`);
+      const res = await fetch(`/api/attest/positions?address=${address}`);
       const data = await res.json();
       set({ positions: data.positions || [] });
     } catch (e) {
@@ -119,8 +119,8 @@ export const useProfessionalTradeStore = create<ProfessionalTradeState>((set, ge
   
   updateOrderBook: (snapshot) => set({ orderBook: snapshot }),
   
-  addTrade: (trade) => set((state) => ({
-    recentTrades: [trade, ...state.recentTrades].slice(0, state.maxTrades)
+  addAttest: (attest) => set((state) => ({
+    recentAttestations: [attest, ...state.recentAttestations].slice(0, state.maxAttestations)
   })),
   
   updateTicker: (ticker) => set({ ticker }),
@@ -132,7 +132,7 @@ export const useProfessionalTradeStore = create<ProfessionalTradeState>((set, ge
 
   fetchHistoricalCandles: async (symbol, interval = '1m') => {
       try {
-          const res = await fetch(`/api/trade/candles?symbol=${symbol}&interval=${interval}`);
+          const res = await fetch(`/api/attest/candles?symbol=${symbol}&interval=${interval}`);
           
           if (res.status === 451) {
               set({ isRestricted: true, connectionStatus: 'error' });
@@ -153,7 +153,7 @@ export const useProfessionalTradeStore = create<ProfessionalTradeState>((set, ge
 
   saveCandle: async (symbol, interval, candle) => {
       try {
-          await fetch('/api/trade/candles/save', {
+          await fetch('/api/attest/candles/save', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ symbol, interval, candle })
@@ -169,7 +169,7 @@ export const useProfessionalTradeStore = create<ProfessionalTradeState>((set, ge
   connectToMarket: async (symbol, rawInterval = '1m') => {
     const lowerSymbol = symbol.toLowerCase();
     
-    //  FIX: Map TradingView resolution to Binance Interval
+    //  FIX: Map AttestingView resolution to Binance Interval
     const intervalMap: Record<string, string> = {
         '1': '1m', '3': '3m', '5': '5m', '15': '15m', '30': '30m',
         '60': '1h', '120': '2h', '240': '4h', '360': '6h', '480': '8h', '720': '12h',
@@ -191,7 +191,7 @@ export const useProfessionalTradeStore = create<ProfessionalTradeState>((set, ge
     // Subscribe to multiple streams
     const streams = [
       `${lowerSymbol}@depth20@100ms`,  // Order book (20 levels, 100ms updates)
-      `${lowerSymbol}@trade`,           // Recent trades
+      `${lowerSymbol}@attest`,           // Recent attestations
       `${lowerSymbol}@ticker`,           // 24h ticker
       `${lowerSymbol}@kline_${interval}`, // Dynamic interval candles
       '!miniTicker@arr'                 // Global Tickers
@@ -225,9 +225,9 @@ export const useProfessionalTradeStore = create<ProfessionalTradeState>((set, ge
         set({ orderBook: snapshot });
       });
 
-      // Subscribe to trades
-      wsManager.subscribe(`${lowerSymbol}@trade`, (data) => {
-        const trade: Trade = {
+      // Subscribe to attestations
+      wsManager.subscribe(`${lowerSymbol}@attest`, (data) => {
+        const attest: Attest = {
           id: data.t?.toString() || Date.now().toString(),
           price: parseFloat(data.p),
           quantity: parseFloat(data.q),
@@ -235,19 +235,19 @@ export const useProfessionalTradeStore = create<ProfessionalTradeState>((set, ge
           isBuyerMaker: data.m // true = sell order filled (red)
         };
         
-        get().addTrade(trade);
+        get().addAttest(attest);
 
         //  REAL-TIME CANDLE UPDATE
         // Update the current candle immediately for "running to the second" feel
         const currentCandle = get().lastCandle;
         if (currentCandle) {
-            const price = trade.price;
+            const price = attest.price;
             const newCandle = {
                 ...currentCandle,
                 close: price,
                 high: Math.max(currentCandle.high, price),
                 low: Math.min(currentCandle.low, price),
-                volume: currentCandle.volume + trade.quantity 
+                volume: currentCandle.volume + attest.quantity 
             };
             set({ lastCandle: newCandle });
         }

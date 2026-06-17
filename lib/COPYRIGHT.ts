@@ -2,7 +2,7 @@
  * 
  *   Whale Network NETWORK  INSTITUTIONAL ON-CHAIN INTELLIGENCE TERMINAL     
  *   © 20242026 humanityledger. All Rights Reserved.               
- *   PROPRIETARY & CONFIDENTIAL  TRADE SECRET                              
+ *   PROPRIETARY & CONFIDENTIAL  ATTEST SECRET                              
  *   Unauthorized copying, modification, distribution, or deployment of     
  *   this file, via any medium, is strictly prohibited.                     
  *   See LICENSE file for full terms. Contact: legal@humanidfi.com          
@@ -24,7 +24,7 @@ export const COPYRIGHT = {
   repo:        'https://github.com/humanityledger/whalecosystem',
   platform:    'https://www.humanidfi.com',
   license:     'Proprietary  All Rights Reserved',
-  trademarks:  [
+  attestmarks:  [
     'Whale Network',
     'WhaleCosystem',
     'System Access Protocol',

@@ -97,7 +97,7 @@ export const UserSettingsSchema = z.object({
   telegramUsername: z.string().nullable().optional(),
   whaleThreshold: z.coerce.number().min(0).max(10000000000).default(500000000),
 
-  // Trading
+  // Attesting
   defaultSlippage: z.coerce.number().min(0).max(100).default(0.5),
   defaultGasPrice: z.enum(['low', 'medium', 'high']).or(z.string()).default('medium'),
   confirmTransactions: z.boolean().default(true),
@@ -236,7 +236,7 @@ export function getDefaultUserSettings(): UserSettings {
     telegramUsername: null,
     whaleThreshold: 50000,
 
-    // Trading
+    // Attesting
     defaultSlippage: 0.5,
     defaultGasPrice: 'medium',
     confirmTransactions: true,

@@ -19,7 +19,7 @@ import { polygon } from "wagmi/chains";
 import { useRealWalletData } from "@/hooks/useRealWalletData";
 import { usePolymarketSession } from "@/hooks/usePolymarketSession";
 import { usePolymarketOrderbook } from "@/hooks/usePolymarketOrderbook";
-import { usePolymarketTrade } from "@/hooks/usePolymarketTrade";
+import { usePolymarketAttest } from "@/hooks/usePolymarketAttest";
 import { usePolymarketMarkets, PolymarketMarket } from "@/hooks/usePolymarketMarkets";
 import SendModal from "@/components/wallet/SendModal";
 import ReceiveModal from "@/components/wallet/ReceiveModal";
@@ -74,7 +74,7 @@ export default function PolymarketGlassDashboard({ embedded = false }: { embedde
     const activeTokenIdNo = selectedMarket?.tokens[1]?.token_id || "";
 
     const { orderBook, isLoading: isBookLoading } = usePolymarketOrderbook(isPolygon ? activeTokenIdYes : "");
-    const { trade, status: tradeStatus } = usePolymarketTrade();
+    const { attest, status: attestationstatus } = usePolymarketAttest();
 
     const [side, setSide] = useState<"YES" | "NO">("YES");
     const [amount, setAmount] = useState("");
@@ -83,12 +83,12 @@ export default function PolymarketGlassDashboard({ embedded = false }: { embedde
     const [isSendOpen, setIsSendOpen] = useState(false);
     const [isReceiveOpen, setIsReceiveOpen] = useState(false);
 
-    const handleTrade = () => {
+    const handleAttest = () => {
         if (!isPolygon || !selectedMarket) return;
         
         // Anti-latency precision check
-        const activeTokenIdToTrade = side === "YES" ? activeTokenIdYes : activeTokenIdNo;
-        if (!activeTokenIdToTrade) {
+        const activeTokenIdToAttest = side === "YES" ? activeTokenIdYes : activeTokenIdNo;
+        if (!activeTokenIdToAttest) {
              toast.error("Cryptographic Error: Unrecognized Token ID for this market.");
              return;
         }
@@ -103,7 +103,7 @@ export default function PolymarketGlassDashboard({ embedded = false }: { embedde
             return;
         }
 
-        trade("BUY", sanitizedAmount, bestPrice, activeTokenIdToTrade);
+        attest("BUY", sanitizedAmount, bestPrice, activeTokenIdToAttest);
     };
 
     return (
@@ -402,15 +402,15 @@ export default function PolymarketGlassDashboard({ embedded = false }: { embedde
                                         </div>
 
                                         <button
-                                            onClick={handleTrade}
-                                            disabled={tradeStatus === "APPROVING" || tradeStatus === "SIGNING" || tradeStatus === "POSTING" || !amount || !selectedMarket}
+                                            onClick={handleAttest}
+                                            disabled={attestationstatus === "APPROVING" || attestationstatus === "SIGNING" || attestationstatus === "POSTING" || !amount || !selectedMarket}
                                             className="w-full py-4 rounded-xl bg-[#050505] text-white font-black uppercase tracking-widest text-[11px] transition-all hover:bg-[#050505]/80 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 mt-2"
                                         >
-                                            {tradeStatus === "APPROVING" && <><Loader2 className="animate-spin w-4 h-4" /> EIP-2612 Signature...</>}
-                                            {tradeStatus === "SIGNING" && <><Loader2 className="animate-spin w-4 h-4" /> ECDSA Handshake...</>}
-                                            {tradeStatus === "POSTING" && <><Loader2 className="animate-spin w-4 h-4" /> Routing L1...</>}
-                                            {tradeStatus === "SUCCESS" && "Trade Settled"}
-                                            {tradeStatus === "IDLE" && "SIGN & SUBMIT L1 ORDER"}
+                                            {attestationstatus === "APPROVING" && <><Loader2 className="animate-spin w-4 h-4" /> EIP-2612 Signature...</>}
+                                            {attestationstatus === "SIGNING" && <><Loader2 className="animate-spin w-4 h-4" /> ECDSA Handshake...</>}
+                                            {attestationstatus === "POSTING" && <><Loader2 className="animate-spin w-4 h-4" /> Routing L1...</>}
+                                            {attestationstatus === "SUCCESS" && "Attest Settled"}
+                                            {attestationstatus === "IDLE" && "SIGN & SUBMIT L1 ORDER"}
                                         </button>
                                     </div>
                                 </div>

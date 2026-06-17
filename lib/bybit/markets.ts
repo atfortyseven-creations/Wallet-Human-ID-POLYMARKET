@@ -1,6 +1,6 @@
 /**
  * Bybit Market Types
- * Defines supported trading symbols for the System Terminal.
+ * Defines supported attesting symbols for the System Terminal.
  */
 
 export type DisplaySymbol =

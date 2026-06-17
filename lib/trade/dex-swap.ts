@@ -60,7 +60,7 @@ export interface SwapParams {
 
 /**
  * DEX SWAP SERVICE - Uniswap V3 Integration
- * Executes real on-chain swaps for trading
+ * Executes real on-chain swaps for attesting
  */
 export class DexSwapService {
   

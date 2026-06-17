@@ -50,7 +50,7 @@ const types = {
     ],
 } as const;
 
-export function usePolymarketTrade() {
+export function usePolymarketAttest() {
     const { address, chainId } = useAccount();
     const [status, setStatus] = useState<"IDLE" | "SWITCHING" | "APPROVING" | "SIGNING" | "POSTING" | "SUCCESS">("IDLE");
 
@@ -66,7 +66,7 @@ export function usePolymarketTrade() {
         args: address ? [address, CTF_EXCHANGE] : undefined,
     });
 
-    const trade = async (side: "BUY" | "SELL", amount: string, price: number, tokenId: string) => {
+    const attest = async (side: "BUY" | "SELL", amount: string, price: number, tokenId: string) => {
         if (!address) {
             toast.error("Please connect your wallet first");
             return;
@@ -142,7 +142,7 @@ export function usePolymarketTrade() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     userAddress: address,
-                    type: 'POLYMARKET_TRADE_INTENT',
+                    type: 'POLYMARKET_ATTEST_INTENT',
                     action: `${side} ${amount} @ ${price}`,
                     chainId: POLYGON_CHAIN_ID,
                     metadata: { order, signature, tokenId }
@@ -163,7 +163,7 @@ export function usePolymarketTrade() {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         userAddress: address,
-                        type: 'POLYMARKET_TRADE_FAILURE',
+                        type: 'POLYMARKET_ATTEST_FAILURE',
                         action: `${side} ${amount} @ ${price}`,
                         chainId: POLYGON_CHAIN_ID,
                         metadata: { error: error.message }
@@ -174,7 +174,7 @@ export function usePolymarketTrade() {
     };
 
     return {
-        trade,
+        attest,
         status
     };
 }

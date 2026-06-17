@@ -902,8 +902,8 @@ export const ALLOWED_TOKEN_LOGOS: Record<string, { path: string; name: string }>
         "name": "Hedera"
     },
     "HEDG": {
-        "path": "/system-shots/logostoken/hedgetrade-hedg-logo.png",
-        "name": "Hedgetrade"
+        "path": "/system-shots/logostoken/hedgeattest-hedg-logo.png",
+        "name": "Hedgeattest"
     },
     "HNT": {
         "path": "/system-shots/logostoken/helium-hnt-logo.png",
@@ -2194,8 +2194,8 @@ export const ALLOWED_TOKEN_LOGOS: Record<string, { path: string; name: string }>
         "name": "Wings"
     },
     "WOO": {
-        "path": "/system-shots/logostoken/wootrade-woo-logo.png",
-        "name": "Wootrade"
+        "path": "/system-shots/logostoken/wooattest-woo-logo.png",
+        "name": "Wooattest"
     },
     "WLD": {
         "path": "/system-shots/logostoken/worldcoin-org-wld-logo.png",

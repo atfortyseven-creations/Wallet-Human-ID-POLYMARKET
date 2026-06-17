@@ -43,7 +43,7 @@ describe('Audit Trail', () => {
   });
 
   it('creates a genesis entry with prevHash=GENESIS', async () => {
-    await appendAuditEntry('AUTH_SUCCESS', '0xabc123', '1.2.3.4', { path: '/trade' });
+    await appendAuditEntry('AUTH_SUCCESS', '0xabc123', '1.2.3.4', { path: '/attest' });
     expect(mockEntries).toHaveLength(1);
     expect(mockEntries[0].prevHash).toBe('GENESIS');
     expect(mockEntries[0].payloadHash).toHaveLength(64); // SHA-256 hex

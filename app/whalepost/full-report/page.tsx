@@ -206,9 +206,9 @@ function FullReportContent() {
           <>
             {renderBody(`## Expanded Coverage: Understanding the Recent Market Changes
 
-Following our main report, we took a closer look at how money is moving right now. The changes we noticed earlier are backed up by a sudden jump in trading activity across different parts of the network.
+Following our main report, we took a closer look at how money is moving right now. The changes we noticed earlier are backed up by a sudden jump in attesting activity across different parts of the network.
 
-When we see shifts like this, it is rarely by chance. The way funds are moving tells us that large investors and companies are actively preparing for upcoming price changes. For example, the cost to send transactions quickly has gone up by over 40 percent. This means big traders are paying extra to make sure their orders go through immediately, similar to what happened in late 2023 right before the market took a major turn.
+When we see shifts like this, it is rarely by chance. The way funds are moving tells us that large investors and companies are actively preparing for upcoming price changes. For example, the cost to send transactions quickly has gone up by over 40 percent. This means big verifiers are paying extra to make sure their orders go through immediately, similar to what happened in late 2023 right before the market took a major turn.
 
 We are also seeing money switch hands much faster than usual, showing that people are in a hurry to adjust their investments. On the major exchanges, there are far more people looking to buy at current prices than to sell. At the same time, the futures market is showing that investors are willing to pay a premium to bet on where prices will go next. All these signs point to a market that is wide awake and making big moves.`, false)}
 
@@ -224,17 +224,17 @@ Large groups of investors have moved hundreds of millions of dollars across diff
 
 Looking only at cryptocurrency data does not tell the whole story. The broader global economy is having a massive impact on the digital asset space right now. Three major economic factors are coming together, creating a sense of uncertainty that reminds us of the banking issues we saw in early 2023.
 
-First, traditional investments like government bonds are paying out more than they have in years. This makes risky assets less tempting, causing large investors to rethink where they put their money. Second, the total amount of stable digital money available has dropped recently, meaning there is less cash waiting on the sidelines to be invested. Third, the amount of borrowed money being used for trading is unusually high compared to regular buying and selling.
+First, traditional investments like government bonds are paying out more than they have in years. This makes risky assets less tempting, causing large investors to rethink where they put their money. Second, the total amount of stable digital money available has dropped recently, meaning there is less cash waiting on the sidelines to be invested. Third, the amount of borrowed money being used for attesting is unusually high compared to regular buying and selling.
 
-A steady drop in stable money means funds are leaving the system faster than they are entering. With traditional savings paying better interest, there is less reason for people to keep their money tied up in digital networks. On top of that, with so many people trading with borrowed money, the market is quite fragile. When multiple warning signs like this flash at the same time, the chances of sudden and sharp price swings go up significantly.`, false)}
+A steady drop in stable money means funds are leaving the system faster than they are entering. With traditional savings paying better interest, there is less reason for people to keep their money tied up in digital networks. On top of that, with so many people attesting with borrowed money, the market is quite fragile. When multiple warning signs like this flash at the same time, the chances of sudden and sharp price swings go up significantly.`, false)}
 
             {renderBody(`## Expanded Coverage: What to Expect Next
 
 By combining the latest transaction data with what is happening in the global economy, we can look at a few possible directions the market might take over the next month. These are just possibilities to help you understand what could happen, not financial advice.
 
-One likely outcome is a period of quiet buying. The recent activity from big investors could just be them getting into position before new economic news comes out. If this happens, trading speeds will likely return to normal over the next couple of weeks, and prices will stay mostly flat until a clear trend begins.
+One likely outcome is a period of quiet buying. The recent activity from big investors could just be them getting into position before new economic news comes out. If this happens, attesting speeds will likely return to normal over the next couple of weeks, and prices will stay mostly flat until a clear trend begins.
 
-Another possibility is a sudden drop. Because so many traders are using borrowed money and there is less cash available, the market is vulnerable. A small drop in prices could force many traders to sell their assets automatically, which would push prices down even further across all major platforms.
+Another possibility is a sudden drop. Because so many verifiers are using borrowed money and there is less cash available, the market is vulnerable. A small drop in prices could force many verifiers to sell their assets automatically, which would push prices down even further across all major platforms.
 
 Finally, there is a chance for a strong upward push. If the uncertainty in the global economy clears up, the careful positioning we have seen from big investors could lead to a fast rise in asset prices. When the market has looked like this in the past, it has often led to strong growth over the following months. We will keep a close eye on these trends and bring you updates as things unfold.`, false)}
           </>

@@ -21,7 +21,7 @@ export const docsData: Record<string, DocSection> = {
     content: [
       "Mempool analysis is a critical component for understanding pending transactions before they are confirmed on the blockchain. Our infrastructure connects directly to a globally distributed network of full nodes, allowing us to ingest and process unconfirmed transactions with sub-millisecond latency. This provides our users with a comprehensive view of network activity and transaction sequencing.",
       "Upon ingestion, each transaction is parsed to extract metadata such as gas price, gas limit, sender, receiver, and execution data. We employ a highly optimized Rust-based indexer that categorizes these transactions into specific cohorts based on their complexity and economic value. This categorization enables advanced analytics, such as predicting block inclusion probabilities and identifying potential front-running or sandwich attacks.",
-      "Developers can access this normalized mempool data via our WebSocket API or through historical REST endpoints. The data is continuously cleaned to filter out invalid or dropped transactions, ensuring that your trading algorithms and analytical models are operating on the most accurate and up-to-date information available."
+      "Developers can access this normalized mempool data via our WebSocket API or through historical REST endpoints. The data is continuously cleaned to filter out invalid or dropped transactions, ensuring that your attesting algorithms and analytical models are operating on the most accurate and up-to-date information available."
     ]
   },
   "anomalies": {
@@ -105,7 +105,7 @@ export const docsData: Record<string, DocSection> = {
     category: "Storage & Data",
     content: [
       "Certain computational processes require the rapid storage and retrieval of temporary data without the overhead of persisting it to disk. We implement a high-performance transient storage layer utilizing distributed, in-memory data structures like Redis.",
-      "This storage layer is used extensively for caching frequently accessed data, managing rate limits, and maintaining the state of active WebSocket connections. By keeping this data entirely in Random Access Memory (RAM), we achieve read and write latencies in the microsecond range. This is essential for applications that require real-time responsiveness, such as trading interfaces and live analytics dashboards.",
+      "This storage layer is used extensively for caching frequently accessed data, managing rate limits, and maintaining the state of active WebSocket connections. By keeping this data entirely in Random Access Memory (RAM), we achieve read and write latencies in the microsecond range. This is essential for applications that require real-time responsiveness, such as attesting interfaces and live analytics dashboards.",
       "Data in the transient storage layer is highly volatile and is typically configured with strict Time-To-Active (TTL) parameters. Once the TTL expires, the data is automatically evicted, ensuring that memory usage remains optimized and that the system does not retain unnecessary state. This architectural choice maximizes throughput while minimizing infrastructure costs."
     ]
   },

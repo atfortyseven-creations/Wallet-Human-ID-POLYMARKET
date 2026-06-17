@@ -216,7 +216,7 @@ export const regulationModules = [
 
                     <section class="pro-section">
                         <h2>II. El Cisma de CFTC commodities y la Supremacía Estatal L1 T-1</h2>
-                        <p>El Campo de Batalla Fiduciario M2 enfrenta a la SEC contra la <em>CFTC (Commodity Futures Trading Commission L2 P2P M1)</em>. Numeroso Cripto (Bitcoin, Ethereum O(N)) se cataloga como Commodities M2 T-1. Quien posea la Autoridad P2P M1 (L1) dictaminará Billones de Dólares en Tarifas Regulatorias L2. Este impasse asintótico provoca un Éxodo Tecnológico T-1: Fondos Cripto y Desarrolladores M2 O(1) abandonan EE.UU. hacia jurisdicciones Deterministas P2P L1, exiliando el Monopolio Tecnológico Americano L2 de la Próxima Década Web3 M1 T-1.</p>
+                        <p>El Campo de Batalla Fiduciario M2 enfrenta a la SEC contra la <em>CFTC (Commodity Futures Attesting Commission L2 P2P M1)</em>. Numeroso Cripto (Bitcoin, Ethereum O(N)) se cataloga como Commodities M2 T-1. Quien posea la Autoridad P2P M1 (L1) dictaminará Billones de Dólares en Tarifas Regulatorias L2. Este impasse asintótico provoca un Éxodo Tecnológico T-1: Fondos Cripto y Desarrolladores M2 O(1) abandonan EE.UU. hacia jurisdicciones Deterministas P2P L1, exiliando el Monopolio Tecnológico Americano L2 de la Próxima Década Web3 M1 T-1.</p>
                     </section>
                 </div>`
             },

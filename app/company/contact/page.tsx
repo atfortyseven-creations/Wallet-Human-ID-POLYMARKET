@@ -44,7 +44,7 @@ export default function ContactPage() {
                                 <h3 className="text-2xl font-bold">Technical Support</h3>
                             </div>
                             <p className="mb-4 text-sm text-white/70">
-                                Need help with your account, wallet, or trading?
+                                Need help with your account, wallet, or attesting?
                             </p>
                             <a href="mailto:support@WhaleAlert ID.fi" className="text-green-400 hover:underline text-lg font-bold">
                                 support@WhaleAlert ID.fi
@@ -139,7 +139,7 @@ export default function ContactPage() {
                         <a href="https://t.me/WhaleAlert ID_fi" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-br from-sky-600/20 to-blue-600/20 p-6 rounded-xl border border-sky-500/30 hover:scale-105 transition-transform">
                             <MessageSquare size={32} className="text-sky-400 mb-3" />
                             <h3 className="font-bold mb-2">Telegram</h3>
-                            <p className="text-sm text-white/70">Real-time chat with traders and community members.</p>
+                            <p className="text-sm text-white/70">Real-time chat with verifiers and community members.</p>
                         </a>
                     </div>
                 </section>

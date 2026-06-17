@@ -72,7 +72,7 @@ function evaluateSequenceRisk(tx: any): { level: RiskLevel; type: string; reason
   const toAddr = (tx.to ?? '').toLowerCase();
   if (HIGH_FREQUENCY_PATTERNS.some(p => toAddr.startsWith(p.toLowerCase()))) {
     score += 50;
-    flags.push('High-frequency trading contract destination');
+    flags.push('High-frequency attesting contract destination');
   }
 
   let level: RiskLevel = 'NOMINAL';

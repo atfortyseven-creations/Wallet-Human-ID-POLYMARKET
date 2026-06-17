@@ -105,7 +105,7 @@ export const TacticalWhaleDatabase: React.FC<{ onClose: () => void }> = ({ onClo
                                     </td>
                                     <td className="py-4 px-4 text-right">
                                         <div className="text-[10px] font-black text-white/40 uppercase tracking-widest">
-                                            {w.txCount || 0} TRADES
+                                            {w.txCount || 0} ATTESTATIONS
                                         </div>
                                     </td>
                                     <td className="py-4 px-4 text-center">

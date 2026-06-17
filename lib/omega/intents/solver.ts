@@ -19,7 +19,7 @@ const INTENT_TYPE = {
     ]
 };
 
-export interface TradeIntent {
+export interface AttestIntent {
     tokenIn: string;
     tokenOut: string;
     amountIn: string; // BigInt string
@@ -30,7 +30,7 @@ export interface TradeIntent {
 /**
  * Creates and broadcasts a signed Intent to the Solver Network.
  */
-export async function submitIntent(signer: ethers.Signer | any, intent: TradeIntent) {
+export async function submitIntent(signer: ethers.Signer | any, intent: AttestIntent) {
     console.log(" Broadcasting Intent to Solver Network...", intent);
     
     // 1. Sign off-chain (EIP-712)

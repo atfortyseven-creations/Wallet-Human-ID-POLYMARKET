@@ -216,7 +216,7 @@ export const layer2Modules = [
 
                     <section class="pro-section">
                         <h2>II. El Argumento Definitivo: ¿Cuál Gana?</h2>
-                        <p>Para la Whale Academy, no hay un ganador único: <strong>Solana</strong> es óptimo para aplicaciones que requieren alta frecuencia de transacciones y baja latencia (trading, pagos, gaming). <strong>Ethereum + L2</strong> es óptimo cuando la máxima descentralización, la componibilidad y la seguridad cripto-económica son no-negociables (DeFi, settlements institucionales, tesorerías DAO). La coexistencia de ambos modelos es el estado natural del ecosistema, no la hegemonia de uno sobre el otro.</p>
+                        <p>Para la Whale Academy, no hay un ganador único: <strong>Solana</strong> es óptimo para aplicaciones que requieren alta frecuencia de transacciones y baja latencia (attesting, pagos, gaming). <strong>Ethereum + L2</strong> es óptimo cuando la máxima descentralización, la componibilidad y la seguridad cripto-económica son no-negociables (DeFi, settlements institucionales, tesorerías DAO). La coexistencia de ambos modelos es el estado natural del ecosistema, no la hegemonia de uno sobre el otro.</p>
                     </section>
                 </div>`
         },

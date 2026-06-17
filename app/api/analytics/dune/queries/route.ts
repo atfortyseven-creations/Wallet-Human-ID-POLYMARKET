@@ -91,7 +91,7 @@ LIMIT 50
         id:          'hourly-flow-pattern',
         title:       'Hourly Whale Flow Pattern (UTC)',
         category:    'timing',
-        description: 'Maps whale activity to UTC hour. Reveals institutional trading windows  critical for entry timing.',
+        description: 'Maps whale activity to UTC hour. Reveals institutional attesting windows  critical for entry timing.',
         sql: `
 -- Whale Network  System Dune Query: Hourly Flow Pattern
 SELECT
@@ -119,7 +119,7 @@ SELECT
     SUM(usd_value)                        AS total_volume_usd,
     MIN(detected_at)                      AS first_seen,
     MAX(detected_at)                      AS last_seen,
-    ARRAY_AGG(DISTINCT token)             AS tokens_traded,
+    ARRAY_AGG(DISTINCT token)             AS tokens_attestd,
     ARRAY_AGG(DISTINCT chain)             AS chains_used
 FROM dune_upload.whalealert_system_events
 WHERE

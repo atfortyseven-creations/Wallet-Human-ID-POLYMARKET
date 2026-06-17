@@ -2,7 +2,7 @@ import { createHash, createHmac } from 'crypto';
 
 /**
  * Elite FIX (Financial Information eXchange) Gateway
- * Provides a standardized protocol for high-frequency algorithmic trading.
+ * Provides a standardized protocol for high-frequency algorithmic attesting.
  * This implementation deploys an authentic FIX/4.4 protocol engine.
  */
 

@@ -5,7 +5,7 @@ import { createChart, IChartApi, ISeriesApi, CandlestickData, Time, CandlestickS
 import { TrendingUp, TrendingDown, Activity, Wifi } from 'lucide-react';
 
 import { safeToFixed, safeToLocaleString } from '@/lib/utils/number-format';
-interface TradingViewChartProps {
+interface AttestingViewChartProps {
   symbol: string; // e.g., "ETHUSDT"
   days?: number; // Not strictly used for WS, but kept for interface compatibility
   height?: number;
@@ -25,7 +25,7 @@ interface PriceStats {
   low24h: number;
 }
 
-export default function TradingViewChart({ symbol = "ETHUSDT", height = 400, transfers = [] }: TradingViewChartProps) {
+export default function AttestingViewChart({ symbol = "ETHUSDT", height = 400, transfers = [] }: AttestingViewChartProps) {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const candlestickSeriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
@@ -213,14 +213,14 @@ export default function TradingViewChart({ symbol = "ETHUSDT", height = 400, tra
 
         const streams = [
             `${symbol.toLowerCase()}@kline_1m`,
-            `${symbol.toLowerCase()}@aggTrade`
+            `${symbol.toLowerCase()}@aggAttest`
         ].join('/');
 
         const wsUrl = `wss://stream.binance.com/stream?streams=${streams}`;
         ws = new WebSocket(wsUrl);
         wsRef.current = ws;
 
-        // Track last candle to update it with trades
+        // Track last candle to update it with attestations
         let lastCandle: CandlestickData | null = null;
 
         ws.onopen = () => {
@@ -255,7 +255,7 @@ export default function TradingViewChart({ symbol = "ETHUSDT", height = 400, tra
             } : null);
           }
 
-          if (stream.includes('@aggTrade') && lastCandle) {
+          if (stream.includes('@aggAttest') && lastCandle) {
               const price = parseFloat(data.p);
               
               const updatedCandle = {

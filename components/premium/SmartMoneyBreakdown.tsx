@@ -9,7 +9,7 @@ interface SmartMoneyMetrics {
   breakdown: {
     transactionFrequency: number;
     portfolioDiversification: number;
-    averageTradeSize: number;
+    averageAttestationsize: number;
     estimatedWinRate: number;
     walletAge: number;
   };
@@ -19,9 +19,9 @@ interface SmartMoneyMetrics {
   metadata: {
     totalTransactions: number;
     uniqueTokens: number;
-    avgTradeUSD: number;
+    avgAttestUSD: number;
     walletAgeInDays: number;
-    profitableTradesPercent: number;
+    profitableAttestationsPercent: number;
   };
 }
 
@@ -193,7 +193,7 @@ export default function SmartMoneyBreakdown({ address }: SmartMoneyBreakdownProp
             <div className="grid grid-cols-2 gap-3 pt-4">
               <StatPill icon={<Activity size={16} />} label="Total TXs" value={metadata.totalTransactions.toString()} />
               <StatPill icon={<TrendingUp size={16} />} label="Tokens" value={metadata.uniqueTokens.toString()} />
-              <StatPill icon={<DollarSign size={16} />} label="Avg Trade" value={`$${Math.round(metadata.avgTradeUSD / 1000)}K`} />
+              <StatPill icon={<DollarSign size={16} />} label="Avg Attest" value={`$${Math.round(metadata.avgAttestUSD / 1000)}K`} />
               <StatPill icon={<Clock size={16} />} label="Age" value={`${metadata.walletAgeInDays}d`} />
             </div>
           </div>
@@ -217,8 +217,8 @@ export default function SmartMoneyBreakdown({ address }: SmartMoneyBreakdownProp
           color="purple"
         />
         <MetricBar
-          label="Average Trade Size"
-          value={breakdown.averageTradeSize}
+          label="Average Attest Size"
+          value={breakdown.averageAttestationsize}
           max={20}
           color="green"
         />

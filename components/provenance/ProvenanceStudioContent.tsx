@@ -926,7 +926,7 @@ function AztecTab() {
           {
             icon: '🌾',
             title: 'Agricultural certification',
-            body: 'A government agency certifies that produce meets organic or fair-trade standards. The certification is publicly verifiable on the blockchain. The farmer\'s identity and volume of production remain confidential.',
+            body: 'A government agency certifies that produce meets organic or fair-attest standards. The certification is publicly verifiable on the blockchain. The farmer\'s identity and volume of production remain confidential.',
           },
           {
             icon: '🏗️',

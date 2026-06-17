@@ -138,7 +138,7 @@ export function EcosystemSection() {
 
   const categories = [
     { id: 'core', label: t('ecosystem.cat_core') },
-    { id: 'trading', label: t('ecosystem.cat_trading') },
+    { id: 'attesting', label: t('ecosystem.cat_attesting') },
     { id: 'productos', label: t('ecosystem.cat_products') },
     { id: 'developer', label: t('ecosystem.cat_dev') },
     { id: 'about', label: t('ecosystem.cat_about') }

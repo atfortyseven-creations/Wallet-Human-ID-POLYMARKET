@@ -65,7 +65,7 @@ export function SystemManifesto() {
                    title="04 / Settlement Fluidity" 
                    description="The terminal phase of execution rigorously guarantees deterministic transaction finality. Overcoming geographical frictions involves atomic algorithmic settlement parameters, replacing legacy liquidity pipelines with direct peer-to-peer economic kinetic transfer layers."
                    lotties={[
-                     { file: "Trade.json", title: "Algorithmic Market Execution", desc: "Programmatic order routing ensuring zero slippage and MEV resistance." },
+                     { file: "Attest.json", title: "Algorithmic Market Execution", desc: "Programmatic order routing ensuring zero slippage and MEV resistance." },
                      { file: "Online Payment.json", title: "Frictionless Decentralized Transfer", desc: "Censorship-resistant cross-chain value transmission models." },
                      { file: "Payments.json", title: "Cross-Border Terminal Liquidity", desc: "Atomic swapping infrastructure eliminating intermediary banks." },
                      { file: "Payment Success.json", title: "Immutable Transaction Finality", desc: "Deterministic block validation proving unequivocal ownership transfer." }

@@ -348,14 +348,14 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     problem: "Large holders suffer severe price impact and are front-run by MEV bots on public AMMs.",
     solution: "Blind Order Books and institutional Dark Pools design; order crosses are discovered with ZK proofs and Multiparty Computation (MPC) without prior intent publication.",
     contribution: "The largest native L2 liquidity incentive in the industry.",
-    deliverable: "Zero slippage against L1 trades exceeding $1M.",
+    deliverable: "Zero slippage against L1 attestations exceeding $1M.",
     integrity: "Extractive MEV arbitrage becomes mathematically unexecutable."
   },
   {
     id: 38, phase: 4, phaseTitle: "Analytics and Humanity Ledger Tools",
     title: "ZK-Signal Generation",
     problem: "Tracking wallets requires knowing exact addresses, deanonymizing successful investors.",
-    solution: "Sentiment signals emitted cryptographically by anonymous verified holders. The trader proves management of large capital and emits a buy/sell signal without revealing their identity.",
+    solution: "Sentiment signals emitted cryptographically by anonymous verified holders. The verifier proves management of large capital and emits a buy/sell signal without revealing their identity.",
     contribution: "Creation of a trustless and native information economy.",
     deliverable: "Creation of the verified signal market.",
     integrity: "Pure meritocracy of information; value is measured by verified skin-in-the game via SNARKs."

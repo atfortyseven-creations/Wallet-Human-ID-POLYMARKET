@@ -41,7 +41,7 @@ export const TacticalPulseAnalytics: React.FC = () => {
         const derivedMetrics: TacticalMetric[] = [
             { label: 'Whale Activity', value: `${whaleVigor.toFixed(1)}%`, intensity: whaleVigor/100, trend: whaleVigor > 50 ? 'up' : 'down', description: 'Real-time observation of large-scale buy and sell pressure.' },
             { label: 'Market Sentiment', value: buyVolume > sellVolume ? 'BULLISH' : 'BEARISH', intensity: buyRatio, trend: buyRatio > 0.5 ? 'up' : 'down', description: 'The prevailing bias derived from high-volume transaction clusters.' },
-            { label: 'Order Concentration', value: concentration.toFixed(2), intensity: concentration, trend: concentration > 0.6 ? 'up' : 'neutral', description: 'Distribution density of pending large-block trade operations.' },
+            { label: 'Order Concentration', value: concentration.toFixed(2), intensity: concentration, trend: concentration > 0.6 ? 'up' : 'neutral', description: 'Distribution density of pending large-block attest operations.' },
             { label: 'Market Volatility', value: volIntensity > 0.7 ? 'EXTREME' : (volIntensity > 0.4 ? 'DYNAMIC' : 'STABLE'), intensity: volIntensity, trend: volIntensity > 0.5 ? 'up' : 'neutral', description: 'Calculated deviation in price action and liquidity depth.' },
             { label: 'Whale Confidence', value: Math.floor(confidence).toString(), intensity: confidence/1000, trend: confidence > 800 ? 'up' : 'neutral', description: 'The absolute conviction level of non-retail participants.' }
         ];

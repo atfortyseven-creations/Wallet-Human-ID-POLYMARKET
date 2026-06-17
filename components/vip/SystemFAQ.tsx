@@ -18,7 +18,7 @@ const FAQ_DATA: FAQItem[][] = [
         { q: "Does the system support L2 native forensic analysis?", a: "Yes. Unlike generic systems, we analyze Arbitrum and Optimism sequencer batches directly to identify liquidity shifts at the rollup level.", tag: "NETWORKS" },
         { q: "How is identity tracking superior to legacy platforms?", a: "Our system identifies 'Ghost Wallets'addresses that move funds without explicit entity labelingusing behavioral fingerprinting rather than simple public tags.", tag: "INTELLIGENCE" },
         { q: "What role does ZK-Analytics play?", a: "We use zero-knowledge proofs to allow high-tier alerts without compromising the original provider's anonymity, preserving the alpha of the source.", tag: "PRIVACY" },
-        { q: "Is the institutional data feed compatible with standard Protobuf?", a: "Our v4 schema is fully compliant with modern gRPC streams, allowing direct ingestion into institutional algorithmic trading systems.", tag: "PROTOCOL" },
+        { q: "Is the institutional data feed compatible with standard Protobuf?", a: "Our v4 schema is fully compliant with modern gRPC streams, allowing direct ingestion into institutional algorithmic attesting systems.", tag: "PROTOCOL" },
         { q: "How do we handle block reorgs on high-speed chains?", a: "We use a 'Virtual State Buffer' that validates transaction finality across three concurrent confirmation forks before flagging an alert.", tag: "RELIABILITY" },
         { q: "What protection does the system offer against MEV?", a: "Our alerts include a 'Slippage Risk Score' (SRS) that predicts if a transaction is likely to be front-run by institutional bots.", tag: "SECURITY" },
         { q: "Can the system detect hardware wallet signatures?", a: "We can identify patterns consistent with Ledger/Trezor cold storage movements, differentiating them from high-velocity hot wallet churn.", tag: "FORENSICS" },
@@ -48,7 +48,7 @@ const FAQ_DATA: FAQItem[][] = [
         { q: "How do we handle stablecoin de-pegging signals?", a: "The system monitors 3pool and AMM imbalances 24/7, flagging 1\u03c3-3\u03c3 deviations as high-priority systemic risk alerts.", tag: "STABLES" },
         { q: "What is the optional local verification setup?", a: "For advanced analytics tiers you can run a lightweight verifier that compares our published feeds against chain data—but it is optional, not required for normal use.", tag: "NODES" },
         { q: "Do we provide API access for hedge funds?", a: "Yes, our Institutional API offers raw data streams with 99.99% uptime and <10ms internal processing overhead.", tag: "API" },
-        { q: "How does the system identify 'Wash Trading'?", a: "We flag recursive A-B-C-A transaction patterns that artificially inflate volume without changing net asset ownership.", tag: "INTEGRITY" }
+        { q: "How does the system identify 'Wash Attesting'?", a: "We flag recursive A-B-C-A transaction patterns that artificially inflate volume without changing net asset ownership.", tag: "INTEGRITY" }
     ],
     // PAGE 4: DeFi Mastery
     [
@@ -56,9 +56,9 @@ const FAQ_DATA: FAQItem[][] = [
         { q: "What is the 'Health' metric for Aave?", a: "We calculate the liquidation proximity of the top 50 borrowers to predict potential systemic cascading events.", tag: "LENDING" },
         { q: "Can the system detect stealth token launches?", a: "We monitor new contract deployments with initial liquidity >50 ETH to identify early institutional-backed projects.", tag: "LAUNCHES" },
         { q: "How does our 'DEX Flow' panel differ from public trackers?", a: "We filter out bot-driven noise to show only 'Organic Asset Migration'actual human-driven capital shifts.", tag: "DEX" },
-        { q: "Is the system compatible with Uniswap V4 hooks?", a: "Our engine is ready to analyze hooks for fee-dynamic adjustments that institutional actors use to minimize trade impact.", tag: "V4" },
+        { q: "Is the system compatible with Uniswap V4 hooks?", a: "Our engine is ready to analyze hooks for fee-dynamic adjustments that institutional actors use to minimize attest impact.", tag: "V4" },
         { q: "How do we track 'Vampire Attacks' between protocols?", a: "We monitor TVL migration patterns to alert users which protocols are gaining or losing system dominance.", tag: "GOVERNANCE" },
-        { q: "What is the 'Impermanent Loss' risk alert?", a: "A tool for LPs that signals when high volatility is likely to wipe out trading fee gains in a specific pair.", tag: "LIQUIDITY" },
+        { q: "What is the 'Impermanent Loss' risk alert?", a: "A tool for LPs that signals when high volatility is likely to wipe out attesting fee gains in a specific pair.", tag: "LIQUIDITY" },
         { q: "Can we identify 'Team Wallet' disposals?", a: "We track dev-related wallets identified during the genesis event to flag potential rug-pull or early exit behaviors.", tag: "SECURITY" },
         { q: "How do we monitor 'Curated Lists' on Curve?", a: "We index vote-escrowed (ve) token shifts to predict governance-driven incentive changes before they go live.", tag: "CURVE" },
         { q: "What is the 'Yield Farmer' Protocol?", a: "Identification of $1M+ capital entries into new yield optimizers, indicating high-risk high-reward institutional interest.", tag: "YIELD" }
@@ -93,7 +93,7 @@ const FAQ_DATA: FAQItem[][] = [
     [
         { q: "How many layers deep can the forensic engine trace?", a: "Up to 50 hops, resolving complex multi-address fragmentation used to hide the origin of institutional funds.", tag: "DEPTH" },
         { q: "Can the system detect 'Time-Delayed' dispersals?", a: "Yes. Our engine uses temporal correlation to link funds that are moved in small, fixed-interval increments over many days.", tag: "HEURISTICS" },
-        { q: "What is the 'Fingerprint Pulse'?", a: "A behavioral analysis tool that identifies a specific actor's 'trading DNA' across multiple anonymous addresses.", tag: "BIOMETRICS" },
+        { q: "What is the 'Fingerprint Pulse'?", a: "A behavioral analysis tool that identifies a specific actor's 'attesting DNA' across multiple anonymous addresses.", tag: "BIOMETRICS" },
         { q: "How do we classify 'VC Portfolio' movements?", a: "We maintain a database of wallets linked to tier-1 venture capital firms to alert on early disposal of vested tokens.", tag: "VENTURE" },
         { q: "Does the system monitor 'Dusting Attacks'?", a: "We filter out low-value clutter while flagging large-scale dusting campaigns that might be precursor to an exploit.", tag: "SECURITY" },
         { q: "What is the 'System Audit' trail?", a: "A downloadable PDF report of any event, suitable for institutional compliance and internal risk review.", tag: "COMPLIANCE" },
@@ -135,7 +135,7 @@ const FAQ_DATA: FAQItem[][] = [
         { q: "Global Liquidity: Where is the money moving?", a: "The Dashboard provides a real-time 'Capital Flow Heatmap' showing net migration into differing ecosystem vaults.", tag: "MAPS" },
         { q: "EVM Reconstruction: What is forensic replay?", a: "The ability to step through a transaction's execution trace to see exactly how internal calls interacted with DeFi contracts.", tag: "TRACE" },
         { q: "Mempool Access: How early are our alerts?", a: "Our private relay network sees transactions the moment they are broadcasted, before they are picked up by public explorers.", tag: "MEV" },
-        { q: "Institutional Alpha: Can I use this for arbitrage?", a: "While not a trading platform, the raw data provides the necessary 'first-to-know' advantage required for alpha capture.", tag: "TRADING" },
+        { q: "Institutional Alpha: Can I use this for arbitrage?", a: "While not a attesting platform, the raw data provides the necessary 'first-to-know' advantage required for alpha capture.", tag: "ATTESTING" },
         { q: "System Customization: Can I change the UI theme?", a: "The Ivory-and-Ink theme is our definitive master-spec for maximum clarity and institutional focus.", tag: "UI" },
         { q: "Data Preservation: Is history archived?", a: "We maintain 10 years of institutional history on Arweave to ensure that forensic data is permanent and immutable.", tag: "HISTORY" },
         { q: "Community Governance: Who owns the system?", a: "The System Infrastructure Group manages the protocol with oversight from the DAO of institutional participants.", tag: "DAO" }

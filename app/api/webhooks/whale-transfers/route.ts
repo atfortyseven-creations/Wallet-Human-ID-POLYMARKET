@@ -14,7 +14,7 @@ export async function POST(req: Request) {
         //  MANDATORY Cryptographic Signature Validation 
         // [SECURITY HARDENING] Previously used `if (secret && signature)` which made
         // authentication OPTIONAL. If ALCHEMY_WEBHOOK_SECRET was unset, ANY anonymous
-        // actor could flood the system with fake whale signals to manipulate trading.
+        // actor could flood the system with fake whale signals to manipulate attesting.
         const secret = process.env.ALCHEMY_WEBHOOK_SECRET || process.env.WEBHOOK_SECRET;
         if (!secret) {
             console.error('[WEBHOOK SECURITY] CRITICAL: No webhook secret configured. Rejecting all requests.');

@@ -6,7 +6,7 @@ import { safeToFixed, safeToLocaleString } from '@/lib/utils/number-format';
 /**
  * SynthetixService
  * Elite-grade service for interacting with Synthetix V3 on Base Mainnet.
- * Provides 100% real on-chain trading capabilities for Perpetuals.
+ * Provides 100% real on-chain attesting capabilities for Perpetuals.
  */
 export class SynthetixService {
   // Synthetix V3 Base Mainnet Addresses (Chain ID: 8453)

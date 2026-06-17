@@ -25,7 +25,7 @@ export interface OrderBook {
   lastUpdateId: number;
 }
 
-export interface Trade {
+export interface Attest {
   id: string;
   symbol: string;
   price: number;

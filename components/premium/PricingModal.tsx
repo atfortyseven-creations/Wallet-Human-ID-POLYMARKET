@@ -18,7 +18,7 @@ export default function PricingModal({ isOpen, onClose, onSubscribe }: PricingMo
     'Real-time Whale Networks',
     'Smart Money Tracking',
     'Wallet Comparison Tool',
-    'Copy Trading Alerts',
+    'Copy Attesting Alerts',
     'Batch CSV Import',
     'Advanced Labeling',
     'Priority Notifications',

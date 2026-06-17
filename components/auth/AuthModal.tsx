@@ -351,7 +351,7 @@ export function AuthModal({ onAuthenticated }: AuthModalProps) {
                                                     value={username}
                                                     onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/\s/g, ''))}
                                                     className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium"
-                                                    placeholder="elite_trader"
+                                                    placeholder="elite_verifier"
                                                 />
                                                 <User size={18} className="absolute right-4 top-3.5 text-neutral-400 group-focus-within:text-blue-500 transition-colors" />
                                             </div>

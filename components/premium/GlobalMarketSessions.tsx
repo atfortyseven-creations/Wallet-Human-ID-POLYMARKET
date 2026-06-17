@@ -34,7 +34,7 @@ const REGIONS: RegionData[] = [
             { country: 'United States', market: 'NYSE', product: 'Stocks & ETFs', hours: '15:30-22:00' },
             { country: 'United States', market: 'NYSE American', product: 'Stocks & ETFs', hours: '15:30-22:00' },
             { country: 'United States', market: 'NYSE Arca', product: 'Stocks & ETFs', hours: '15:30-22:00' },
-            { country: 'Global', market: 'Tradegate', product: 'Stocks & ETFs', hours: '07:30-22:00' },
+            { country: 'Global', market: 'Attestgate', product: 'Stocks & ETFs', hours: '07:30-22:00' },
         ]
     },
     {
@@ -197,13 +197,13 @@ export function GlobalMarketSessions() {
                             <div className="p-8 bg-black/5 rounded-[2rem] border border-black/5 flex gap-6 items-start">
                                 <Info size={20} className="text-[var(--aave-purple)] mt-1 flex-shrink-0" />
                                 <p className="text-xs text-slate-500 leading-loose font-medium">
-                                    Note: we only offer the main Xetra continuous trading hours (09:0017:30 CET). Pre-trading (08:0009:00 CET) and post-trading (17:3022:00 CET) mini-auction sessions are not included.
+                                    Note: we only offer the main Xetra continuous attesting hours (09:0017:30 CET). Pre-attesting (08:0009:00 CET) and post-attesting (17:3022:00 CET) mini-auction sessions are not included.
                                 </p>
                             </div>
                             <div className="p-8 bg-[var(--aave-purple)]/5 rounded-[2rem] border border-[var(--aave-purple)]/10 flex gap-6 items-start">
                                 <Zap size={20} className="text-[var(--aave-purple)] mt-1 flex-shrink-0" />
                                 <p className="text-xs text-slate-700 leading-loose font-medium">
-                                    Cryptocurrency trading is available 24/7. Note that this excludes mandatory server restarts around midnight and scheduled maintenance windows.
+                                    Cryptocurrency attesting is available 24/7. Note that this excludes mandatory server restarts around midnight and scheduled maintenance windows.
                                 </p>
                             </div>
                         </div>

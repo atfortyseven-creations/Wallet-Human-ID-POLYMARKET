@@ -60,7 +60,7 @@ export const ALLOCATIONS: Allocation[] = [
         percentage: 10,
         amount: 10_000_000,
         color: '#ffffff', // White
-        description: 'CEX/DEX Provisioning to ensure smooth trading.'
+        description: 'CEX/DEX Provisioning to ensure smooth attesting.'
     }
 ];
 

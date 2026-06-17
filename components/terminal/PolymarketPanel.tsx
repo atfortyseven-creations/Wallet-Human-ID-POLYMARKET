@@ -103,7 +103,7 @@ export default function PolymarketPanel() {
     const [search, setSearch] = useState('');
     const [category, setCategory] = useState('all');
     const [selected, setSelected] = useState<PolyMarket | null>(null);
-    const [tradeAmount, setTradeAmount] = useState('100');
+    const [attestAmount, setAttestAmount] = useState('100');
     const [isExecuting, setIsExecuting] = useState<'YES' | 'NO' | null>(null);
     const [mounted, setMounted] = useState(false);
 
@@ -121,9 +121,9 @@ export default function PolymarketPanel() {
         .filter(m => category === 'all' || m.category?.toLowerCase() === category)
         .filter(m => m.question.toLowerCase().includes(search.toLowerCase()));
 
-    const handleTrade = async (direction: 'YES' | 'NO') => {
+    const handleAttest = async (direction: 'YES' | 'NO') => {
         if (!isConnected) {
-            toast.error('Wallet Not Connected', { description: 'Please connect your wallet to trade on Polymarket.' });
+            toast.error('Wallet Not Connected', { description: 'Please connect your wallet to attest on Polymarket.' });
             return;
         }
         if (!selected) return;
@@ -151,7 +151,7 @@ export default function PolymarketPanel() {
             toast.loading('Step 1/2: Authorizing USDC for FPMM...', { id: toastId });
             const approvalPayload = polymarketRouterService.buildApprovalTransaction(
                 selected.fpmmAddress,
-                tradeAmount
+                attestAmount
             );
             const approvalHash = await sendTransactionAsync({
                 to: approvalPayload.tx.to as `0x${string}`,
@@ -165,20 +165,20 @@ export default function PolymarketPanel() {
 
             // Step 2 of 2: Execute the real FPMM buy()
             toast.loading('Step 2/2: Buying shares on FPMM...', { id: toastId });
-            const tradePayload = await polymarketRouterService.buildTradeTransaction(
+            const attestPayload = await polymarketRouterService.buildAttestTransaction(
                 selected.fpmmAddress,
                 direction,
-                tradeAmount
+                attestAmount
             );
-            const tradeHash = await sendTransactionAsync({
-                to: tradePayload.tx.to as `0x${string}`,
-                data: tradePayload.tx.data as `0x${string}`,
+            const attestHash = await sendTransactionAsync({
+                to: attestPayload.tx.to as `0x${string}`,
+                data: attestPayload.tx.data as `0x${string}`,
                 value: BigInt(0),
             });
 
-            toast.success('Trade Executed On-Chain', {
+            toast.success('Attest Executed On-Chain', {
                 id: toastId,
-                description: `Successfully purchased ${tradeAmount} USDC in ${direction} shares. Tx: ${tradeHash.slice(0, 18)}...`,
+                description: `Successfully purchased ${attestAmount} USDC in ${direction} shares. Tx: ${attestHash.slice(0, 18)}...`,
             });
 
             setSelected(null);
@@ -231,7 +231,7 @@ export default function PolymarketPanel() {
                             <ShieldCheck size={64} className="text-red-500 mb-6 opacity-80" />
                             <h3 className="text-2xl font-black text-[#111111]  uppercase tracking-tighter mb-3">GEO-RESTRICTED AREA</h3>
                             <p className="text-xs font-bold font-mono text-red-800  uppercase tracking-widest leading-relaxed">
-                                Market data and trading features are blocked for your jurisdiction due to regulatory constraints (CFTC/OFAC).
+                                Market data and attesting features are blocked for your jurisdiction due to regulatory constraints (CFTC/OFAC).
                             </p>
                             <a href="/docs/legal/TERMS_OF_SERVICE.md" target="_blank" className="mt-8 text-[10px] font-black uppercase text-red-900  border border-red-300  px-6 py-3 rounded-full hover:bg-red-200  transition-colors inline-block">
                                 Review Terms of Service
@@ -361,13 +361,13 @@ export default function PolymarketPanel() {
                                     <div className="relative">
                                         <input 
                                             type="number" 
-                                            value={tradeAmount} 
-                                            onChange={e => setTradeAmount(e.target.value)}
+                                            value={attestAmount} 
+                                            onChange={e => setAttestAmount(e.target.value)}
                                             className="w-full bg-[#FFFFFF]  border-2 border-[#E5E5E5]  rounded-2xl py-4 pl-6 pr-20 text-[#111111]  font-mono font-black text-2xl outline-none focus:border-[#111111]  transition-all"
                                             placeholder="0"
                                         />
                                         <button 
-                                            onClick={() => setTradeAmount(usdcBalance || '1000')} 
+                                            onClick={() => setAttestAmount(usdcBalance || '1000')} 
                                             className="absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-sans font-black bg-[#E5E5E5]/50  hover:bg-[#111111]  hover:text-[#FFFFFF]  text-[#111111]  px-4 py-2 rounded-xl transition-all"
                                         >
                                             MAX
@@ -382,25 +382,25 @@ export default function PolymarketPanel() {
                                 <div className="space-y-3 pt-2">
                                     <div className="flex justify-between items-center text-[12px] font-mono font-bold text-[#888888] ">
                                         <span>Potential Payout (YES):</span>
-                                        <span className="text-[#00e699] font-black">{fmtUsd(Number(tradeAmount) / selected.yesPrice)}</span>
+                                        <span className="text-[#00e699] font-black">{fmtUsd(Number(attestAmount) / selected.yesPrice)}</span>
                                     </div>
                                     <div className="flex justify-between items-center text-[12px] font-mono font-bold text-[#888888] ">
                                         <span>Potential Payout (NO):</span>
-                                        <span className="text-[#f43f5e] font-black">{fmtUsd(Number(tradeAmount) / (1 - selected.yesPrice))}</span>
+                                        <span className="text-[#f43f5e] font-black">{fmtUsd(Number(attestAmount) / (1 - selected.yesPrice))}</span>
                                     </div>
                                 </div>
                                 {/* BUY BUTTONS REPLICA */}
                                 <div className="p-6 border-t border-[#E5E5E5]  bg-white  flex gap-4">
                                     <button 
-                                        onClick={() => handleTrade('YES')}
-                                        disabled={isExecuting !== null || !tradeAmount || parseFloat(tradeAmount) <= 0}
+                                        onClick={() => handleAttest('YES')}
+                                        disabled={isExecuting !== null || !attestAmount || parseFloat(attestAmount) <= 0}
                                         className="flex-1 py-5 rounded-2xl bg-[#00C076] text-white font-black uppercase tracking-widest text-sm flex flex-col items-center justify-center gap-1 transition-all disabled:opacity-50 shadow-lg hover:shadow-[#00C076]/20"
                                     >
                                         {isExecuting === 'YES' ? <Loader2 size={24} className="animate-spin" /> : <>BUY YES <span className="text-[10px] font-bold opacity-80 mt-0.5">@{Math.round(selected.yesPrice * 100)}¢</span></>}
                                     </button>
                                     <button 
-                                        onClick={() => handleTrade('NO')}
-                                        disabled={isExecuting !== null || !tradeAmount || parseFloat(tradeAmount) <= 0}
+                                        onClick={() => handleAttest('NO')}
+                                        disabled={isExecuting !== null || !attestAmount || parseFloat(attestAmount) <= 0}
                                         className="flex-1 py-5 rounded-2xl bg-[#FF3B30] text-white font-black uppercase tracking-widest text-sm flex flex-col items-center justify-center gap-1 transition-all disabled:opacity-50 shadow-lg hover:shadow-[#FF3B30]/20"
                                     >
                                         {isExecuting === 'NO' ? <Loader2 size={24} className="animate-spin" /> : <>BUY NO <span className="text-[10px] font-bold opacity-80 mt-0.5">@{Math.round((1 - selected.yesPrice) * 100)}¢</span></>}

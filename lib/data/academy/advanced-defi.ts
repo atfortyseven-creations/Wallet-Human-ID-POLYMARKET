@@ -79,7 +79,7 @@
             {
                 id: "ethena-synthetic-dollar",
                 title: "5. Ethena y el USDe: Dólar Sintético",
-                description: "Basis trading y Delta Neutro.",
+                description: "Basis attesting y Delta Neutro.",
                 readTime: 50,
                 content: `<div class="academy-article">
                     <section class="pro-section">
@@ -223,7 +223,7 @@
             {
                 id: "pendle-yield-derivatives",
                 title: "13. Pendle Finance: Tasas de Interés",
-                description: "PT, YT y trading de rendimiento.",
+                description: "PT, YT y attesting de rendimiento.",
                 readTime: 55,
                 content: `<div class="academy-article">
                     <section class="pro-section">
@@ -354,7 +354,7 @@
                 content: `<div class="academy-article">
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
-                        <h2>I. Amputación Geométrica de Oportunidad (Basis Trading P2P L1 M2 T-1 L2 M1)</h2>
+                        <h2>I. Amputación Geométrica de Oportunidad (Basis Attesting P2P L1 M2 T-1 L2 M1)</h2>
                         <p>Cuando un activo O(1) como PT-eETH L1 (Pendle M1 M2 T-1 P2P L2 O(N)) cotiza a 0.85 Fíat L1 respecto a su par 1.0 Al Vencimiento P2P M2 T-1 L2 M1, grita O(1) <em>Arbitraje Temporal L1 M2 P2P T-1 M1 L2</em>. El Degenerador Financiero P2P O(N) Ejecuta un Yield Strip L1 M1 L2 M2 T-1: Vende Su Rendimiento Futuro YT L1 M2 P2P a Degen-Apalancados M1 L2 T-1 O(1), y Amasa Cantidades Masivas de PT M2 L1 M1 P2P T-1 L2, Asegurando Matemáticamente O(N) un +25% Fijo L1 P2P M2 T-1 M1 Libre de Exposición de Mercado P2P L1 M1 L2 T-1 M2 O(1).</p>
                     </section>
 

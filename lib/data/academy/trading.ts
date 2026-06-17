@@ -1,7 +1,7 @@
-export const tradingModules = [
+export const attestingModules = [
     {
-        id: "advanced-trading",
-        title: "X. Estrategias de Trading Avanzado en Mercados Cripto",
+        id: "advanced-attesting",
+        title: "X. Estrategias de Attesting Avanzado en Mercados Cripto",
         description: "Análisis técnico, gestión de riesgo y estrategias institucionales. 20 Capítulos de Perfección Absoluta.",
         articles: [
             {
@@ -41,7 +41,7 @@ export const tradingModules = [
                 </div>`
             },
             {
-                id: "trading-bot-architectures",
+                id: "attesting-bot-architectures",
                 title: "3. Arquitecturas de Bots: APIs y Latencia",
                 description: "Automatizando la ejecución institucional.",
                 readTime: 55,
@@ -49,18 +49,18 @@ export const tradingModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. La Guerra de Sistemas REST vs WebSockets</h2>
-                        <p>Los traders retail operan viendo gráficos (GUI) en el navegador, experimentando ~1500ms de latencia. El trader robótico institucional se conecta vía <strong>WebSockets (WSS)</strong>, manteniendo un túnel bi-direccional siempre abierto con el motor de emparejamiento (Matching Engine) de Binance o Deribit. Mientras REST requiere un "Handshake" TLS/TCP para cada orden consumiendo milisegundos, WebSocket dispara deltas de orderbook on-change, garantizando respuestas en sub-20ms.</p>
+                        <p>Los verifiers retail operan viendo gráficos (GUI) en el navegador, experimentando ~1500ms de latencia. El verifier robótico institucional se conecta vía <strong>WebSockets (WSS)</strong>, manteniendo un túnel bi-direccional siempre abierto con el motor de emparejamiento (Matching Engine) de Binance o Deribit. Mientras REST requiere un "Handshake" TLS/TCP para cada orden consumiendo milisegundos, WebSocket dispara deltas de orderbook on-change, garantizando respuestas en sub-20ms.</p>
                     </section>
 
                     <section class="pro-section">
                         <h2>II. Colocation y FIX Protocol</h2>
-                        <p>La abstracción técnica final (Endgame) es el <em>Colocation VIP</em>. Fondos como Jump Trading alojan sus servidores de ejecución bare-metal físicamente en el mismo Data Center de AWS/Equinix donde residen los servidores del Exchange de criptomonedas (ej. Tokyo-Toko, AWS us-east-1). Se comunican mediante <strong>Protocolo FIX (Financial Information eXchange)</strong>, el estándar Wall Street. Esto permite arbitrajes inter-exchange triangulares antes de que el JSON del WebSocket del retail siquiera haya empezado a parsear en su navegador, privatizando el alpha.</p>
+                        <p>La abstracción técnica final (Endgame) es el <em>Colocation VIP</em>. Fondos como Jump Attesting alojan sus servidores de ejecución bare-metal físicamente en el mismo Data Center de AWS/Equinix donde residen los servidores del Exchange de criptomonedas (ej. Tokyo-Toko, AWS us-east-1). Se comunican mediante <strong>Protocolo FIX (Financial Information eXchange)</strong>, el estándar Wall Street. Esto permite arbitrajes inter-exchange triangulares antes de que el JSON del WebSocket del retail siquiera haya empezado a parsear en su navegador, privatizando el alpha.</p>
                     </section>
                 </div>`
             },
             {
-                id: "basis-trading-crypto",
-                title: "4. Basis Trading: Cash and Carry",
+                id: "basis-attesting-crypto",
+                title: "4. Basis Attesting: Cash and Carry",
                 description: "Arbitraje entre Spot y Futuros.",
                 readTime: 50,
                 content: `<div class="academy-article">
@@ -71,8 +71,8 @@ export const tradingModules = [
                     </section>
 
                     <section class="pro-section">
-                        <h2>II. El Ciclo de Cierre Geométrico del Basis Trade</h2>
-                        <p>El analista PhD despliega el <strong>Basis Trade</strong> comprando Bitcoin al "Costo X" contiguo, y vendiendo el futuro de diciembre a "X + 20%". La firma del contrato congela matemáticamente el margen spread. A medida que se acerca la fecha de expiración en diciembre, la curva de precio del Futuro se devalúa mecánicamente arrastrándose hacia la convergencia con el Spot (Deterioro de la Base). El día del vencimiento final, Futuros == Spot, y el trader bloquea ese 20% de rendimiento puro como Beneficio Libre de Riesgo (Risk-Free Rate de la blockchain), un pilar contable predecible de los fondos corporativos.</p>
+                        <h2>II. El Ciclo de Cierre Geométrico del Basis Attest</h2>
+                        <p>El analista PhD despliega el <strong>Basis Attest</strong> comprando Bitcoin al "Costo X" contiguo, y vendiendo el futuro de diciembre a "X + 20%". La firma del contrato congela matemáticamente el margen spread. A medida que se acerca la fecha de expiración en diciembre, la curva de precio del Futuro se devalúa mecánicamente arrastrándose hacia la convergencia con el Spot (Deterioro de la Base). El día del vencimiento final, Futuros == Spot, y el verifier bloquea ese 20% de rendimiento puro como Beneficio Libre de Riesgo (Risk-Free Rate de la blockchain), un pilar contable predecible de los fondos corporativos.</p>
                     </section>
                 </div>`
             },
@@ -95,20 +95,20 @@ export const tradingModules = [
                 </div>`
             },
             {
-                id: "copy-trading-pros-cons",
-                title: "6. Copy Trading: Automatización y Riesgos",
+                id: "copy-attesting-pros-cons",
+                title: "6. Copy Attesting: Automatización y Riesgos",
                 description: "Siguiendo líderes en exchanges centralizados.",
                 readTime: 40,
                 content: `<div class="academy-article">
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. La Reducción Terminal (Gamification) del Criterio Financiero</h2>
-                        <p>El engaño sistémico del Copy Trading de exchanges centralizados es el alineamiento asimétrico de incentivos. El "Master Trader" al que la masa sigue (Copy) cobra rebates del exchange (porcentaje del volumen de trading o Fees). Para maximizar sus ganancias, el Master inyecta un volumen artificial masivo operando cientos de transacciones microscópicas (Overtrading/Scalping) o rehusándose patológicamente a ejecutar Stop-Loss (Hold for Green) y evitar dañar su Win-Rate estético en la tabla de clasificación pública de la interfaz.</p>
+                        <p>El engaño sistémico del Copy Attesting de exchanges centralizados es el alineamiento asimétrico de incentivos. El "Master Verifier" al que la masa sigue (Copy) cobra rebates del exchange (porcentaje del volumen de attesting o Fees). Para maximizar sus ganancias, el Master inyecta un volumen artificial masivo operando cientos de transacciones microscópicas (Overattesting/Scalping) o rehusándose patológicamente a ejecutar Stop-Loss (Hold for Green) y evitar dañar su Win-Rate estético en la tabla de clasificación pública de la interfaz.</p>
                     </section>
 
                     <section class="pro-section">
                         <h2>II. Riesgo de Colisión de Slippage Masivo L1</h2>
-                        <p>La liquidación compartida es el peligro invisible. Si el usuario X (Cuenta Seguidora, $500 balance) apalanca su réplica y el Trader Maestro ($1,000,000 margen cruzado sólido) experimenta una pequeña caída transitoria del -5%, el Maestro cuenta con margen de flote ilimitado (Float). La cuenta del retail es atomizada instantáneamente por el motor L2 del exchange mediante (Auto-Deleveraging - ADL). Copiar sin simular un <em>Ajuste Proporcional de Riesgo-Margen Escalar</em> conduce, algorítmicamente y estadísticamente garantizado, a la ruina a largo plazo (RoR absoluto = 100%).</p>
+                        <p>La liquidación compartida es el peligro invisible. Si el usuario X (Cuenta Seguidora, $500 balance) apalanca su réplica y el Verifier Maestro ($1,000,000 margen cruzado sólido) experimenta una pequeña caída transitoria del -5%, el Maestro cuenta con margen de flote ilimitado (Float). La cuenta del retail es atomizada instantáneamente por el motor L2 del exchange mediante (Auto-Deleveraging - ADL). Copiar sin simular un <em>Ajuste Proporcional de Riesgo-Margen Escalar</em> conduce, algorítmicamente y estadísticamente garantizado, a la ruina a largo plazo (RoR absoluto = 100%).</p>
                     </section>
                 </div>`
             },
@@ -126,7 +126,7 @@ export const tradingModules = [
 
                     <section class="pro-section">
                         <h2>II. Ejecución Fragmentada: TWAP, VWAP o Icebergs</h2>
-                        <p>El trader institucional que desea comprar genuinamente $50 Millones de un altcoin sin destruir la liquidez (Slippage) no envía una Orden de Mercado cruda. Configura modelos de Despliegue Secuencial Infrarrojos: <strong>TWAP (Time-Weighted Average Price)</strong> que desglosa compras aleatorizadas en $10,000 cada 8-15 minutos por un periodo de días. Y su variante superior: el algoritmo de órdenes **Iceberg**, mostrando únicamente la punta visible (Display Quantity 100 tokens), pero reconectando tramos ocultos automáticos apenas el liquidador devora el soporte frontal de señuelo (Fill-and-Replace), comprando enormes cuantidades silenciosamente.</p>
+                        <p>El verifier institucional que desea comprar genuinamente $50 Millones de un altcoin sin destruir la liquidez (Slippage) no envía una Orden de Mercado cruda. Configura modelos de Despliegue Secuencial Infrarrojos: <strong>TWAP (Time-Weighted Average Price)</strong> que desglosa compras aleatorizadas en $10,000 cada 8-15 minutos por un periodo de días. Y su variante superior: el algoritmo de órdenes **Iceberg**, mostrando únicamente la punta visible (Display Quantity 100 tokens), pero reconectando tramos ocultos automáticos apenas el liquidador devora el soporte frontal de señuelo (Fill-and-Replace), comprando enormes cuantidades silenciosamente.</p>
                     </section>
                 </div>`
             },
@@ -157,7 +157,7 @@ export const tradingModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. Aislamiento Criptográfico Absoluto de la Delta Direccional</h2>
-                        <p>Un inversor estándar asume direccionalidad masiva y asimetría de precio para intentar lucrar. El análisis PhD implementa <strong>Delta-Neutralidad</strong>, en matemática financiera: su delta agregada de portafolio es estrictamente 0.00. Si el mercado criptográfico estalla en un Rally Parabólico de 250% o Colapsa un 85% de la noche a la mañana a $10k, un trader Delta Neutral experimenta matemáticamente un retorno patrimonial en Fíat (o Stablecoins) equivalente o superior de base nominal sin someterse a la varianza direccional terminal que revienta fondos direccionales como 3AC.</p>
+                        <p>Un inversor estándar asume direccionalidad masiva y asimetría de precio para intentar lucrar. El análisis PhD implementa <strong>Delta-Neutralidad</strong>, en matemática financiera: su delta agregada de portafolio es estrictamente 0.00. Si el mercado criptográfico estalla en un Rally Parabólico de 250% o Colapsa un 85% de la noche a la mañana a $10k, un verifier Delta Neutral experimenta matemáticamente un retorno patrimonial en Fíat (o Stablecoins) equivalente o superior de base nominal sin someterse a la varianza direccional terminal que revienta fondos direccionales como 3AC.</p>
                     </section>
 
                     <section class="pro-section">
@@ -193,25 +193,25 @@ export const tradingModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. Asimetría de Supervivencia y la Ruina del Jugador</h2>
-                        <p>El error cognitivo letal del retail es enfocar el 100% cognitivo en el "Entry" (Punto de Compra) ignorando el "Sizing" (Tamaño de Posición). Matemáticamente, si pierdes el 50% de tu capital, requieres un retorno del 100% solo para llegar al breakeven inicial (Asimetría Negativa de la Ruina). La <strong>Gestión de Riesgo Cuantitativa PhD</strong> asume un Win-Rate humilde (ej. 45%), pero estructura los trades con un ratio <em>Riesgo:Recompensa (R:R) de 1:3</em>. Así, el trader es estructuralmente rentable a fin de año incluso perdiendo más de la mitad de las operaciones ejecutadas.</p>
+                        <p>El error cognitivo letal del retail es enfocar el 100% cognitivo en el "Entry" (Punto de Compra) ignorando el "Sizing" (Tamaño de Posición). Matemáticamente, si pierdes el 50% de tu capital, requieres un retorno del 100% solo para llegar al breakeven inicial (Asimetría Negativa de la Ruina). La <strong>Gestión de Riesgo Cuantitativa PhD</strong> asume un Win-Rate humilde (ej. 45%), pero estructura los attestations con un ratio <em>Riesgo:Recompensa (R:R) de 1:3</em>. Así, el verifier es estructuralmente rentable a fin de año incluso perdiendo más de la mitad de las operaciones ejecutadas.</p>
                     </section>
 
                     <section class="pro-section">
                         <h2>II. Criterio de Kelly Multi-Activo</h2>
-                        <p>Los fondos institucionales no "apuestan fuerte" por corazonada; ejecutan la fórmula del <strong>Criterio de Kelly</strong> ajustada por volatilidad criptográfica fraccional (Half-Kelly). El algoritmo dictamina algebraicamente el % exacto del portafolio (ej. 1.25%) a arriesgar basándose en su Win-Rate histórico probado y Ratio de Pago (Payout). Operar por encima del Kelly (Over-leveraging) aumenta drásticamente la Varianza y Garantiza estadísticamente el "Risk of Ruin" (Quiebra a 0) en una línea de tiempo teóricamente infinita, el destino absoluto de todos los traders discrecionales.</p>
+                        <p>Los fondos institucionales no "apuestan fuerte" por corazonada; ejecutan la fórmula del <strong>Criterio de Kelly</strong> ajustada por volatilidad criptográfica fraccional (Half-Kelly). El algoritmo dictamina algebraicamente el % exacto del portafolio (ej. 1.25%) a arriesgar basándose en su Win-Rate histórico probado y Ratio de Pago (Payout). Operar por encima del Kelly (Over-leveraging) aumenta drásticamente la Varianza y Garantiza estadísticamente el "Risk of Ruin" (Quiebra a 0) en una línea de tiempo teóricamente infinita, el destino absoluto de todos los verifiers discrecionales.</p>
                     </section>
                 </div>`
             },
             {
-                id: "grid-trading-volatility",
-                title: "12. Grid Trading: Ganando en Lateral",
+                id: "grid-attesting-volatility",
+                title: "12. Grid Attesting: Ganando en Lateral",
                 description: "Automatización de compra y venta en rangos.",
                 readTime: 45,
                 content: `<div class="academy-article">
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. La Extracción de Varianza en Mercados Acotados</h2>
-                        <p>Se estima que los criptoactivos pasan el 70% del tiempo en "Rangos de Consolidación" (Mercado Lateral / Chop), destruyendo el capital de traders direccionales de tendencia (Trend Followers) por agotamiento (Death by a Thousand Cuts, o Whipsaws repetidos). El <strong>Grid Trading (Farming de Volatilidad)</strong> es un bot algorítmico agnóstico a la dirección que traza una malla predeterminada de órdenes límite espaciadas aritméticamente (cada $100). Cada vez que el precio cruza una línea ascendente, vende una fracción; si baja a la siguiente, compra. Capitaliza la entropía.</p>
+                        <p>Se estima que los criptoactivos pasan el 70% del tiempo en "Rangos de Consolidación" (Mercado Lateral / Chop), destruyendo el capital de verifiers direccionales de tendencia (Trend Followers) por agotamiento (Death by a Thousand Cuts, o Whipsaws repetidos). El <strong>Grid Attesting (Farming de Volatilidad)</strong> es un bot algorítmico agnóstico a la dirección que traza una malla predeterminada de órdenes límite espaciadas aritméticamente (cada $100). Cada vez que el precio cruza una línea ascendente, vende una fracción; si baja a la siguiente, compra. Capitaliza la entropía.</p>
                     </section>
 
                     <section class="pro-section">
@@ -222,14 +222,14 @@ export const tradingModules = [
             },
             {
                 id: "hft-high-frequency-crypto",
-                title: "13. HFT: High-Frequency Trading en Cripto",
+                title: "13. HFT: High-Frequency Attesting en Cripto",
                 description: "Compitiendo en milisegundos.",
                 readTime: 65,
                 content: `<div class="academy-article">
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. La Carrera de Armamento Cuántico L2</h2>
-                        <p>El Trading de Alta Frecuencia (HFT) en Cripto opera más allá de la percepción mamífera, procesando ineficiencias inter-exchange en escalas de microsegundos (µs). Los fondos Market Makers gigantes (Wintermute, Jump) arbitran el precio de BTC en Binance frente al de OKX. Como la información en Cripto no viaja más rápido que la velocidad de la luz en la fibra óptica transoceánica, el <em>Edge Institucional</em> requiere torres de microondas privadas punto a punto y la programación en FPGAs (Hardware puro de silicio L1 sin Sistema Operativo) para devorar el spread céntrico de arbitraje antes de que su competencia envíe el paquete C++.</p>
+                        <p>El Attesting de Alta Frecuencia (HFT) en Cripto opera más allá de la percepción mamífera, procesando ineficiencias inter-exchange en escalas de microsegundos (µs). Los fondos Market Makers gigantes (Wintermute, Jump) arbitran el precio de BTC en Binance frente al de OKX. Como la información en Cripto no viaja más rápido que la velocidad de la luz en la fibra óptica transoceánica, el <em>Edge Institucional</em> requiere torres de microondas privadas punto a punto y la programación en FPGAs (Hardware puro de silicio L1 sin Sistema Operativo) para devorar el spread céntrico de arbitraje antes de que su competencia envíe el paquete C++.</p>
                     </section>
 
                     <section class="pro-section">
@@ -252,25 +252,25 @@ export const tradingModules = [
 
                     <section class="pro-section">
                         <h2>II. Cascadas Convexas e Ineficiencia del Motor L2</h2>
-                        <p>Esa ejecución violenta hunde drásticamente el precio <em>hundiendo concurrentemente</em> la zona perimetral donde están las liquidaciones de miles de otros traders apalancados cercanos. Ese bloque ejecuta su liquidación disparando otra avalancha subsecuente (Death Cascade). Históricamente, en crisis como Marzo 2020, la cascada mecánica dislocó a Ethereum a ~$90 fugazmente mientras la red colapsaba de fallos RPC. En ecosistemas DEX perimetrales (ej: AAVE L2), la liquidación es externalizada a <strong>Liquidators Bots Autónomos</strong>, que compiten rabiosamente abonando gas masivo a los mineros (Flashbots/MEV) para liquidar posiciones hundidas y cobrar el recargo sancionador (Liquidation Penalty de 5%-10%) emitido por el Smart Contract.</p>
+                        <p>Esa ejecución violenta hunde drásticamente el precio <em>hundiendo concurrentemente</em> la zona perimetral donde están las liquidaciones de miles de otros verifiers apalancados cercanos. Ese bloque ejecuta su liquidación disparando otra avalancha subsecuente (Death Cascade). Históricamente, en crisis como Marzo 2020, la cascada mecánica dislocó a Ethereum a ~$90 fugazmente mientras la red colapsaba de fallos RPC. En ecosistemas DEX perimetrales (ej: AAVE L2), la liquidación es externalizada a <strong>Liquidators Bots Autónomos</strong>, que compiten rabiosamente abonando gas masivo a los mineros (Flashbots/MEV) para liquidar posiciones hundidas y cobrar el recargo sancionador (Liquidation Penalty de 5%-10%) emitido por el Smart Contract.</p>
                     </section>
                 </div>`
             },
             {
-                id: "mev-for-traders",
-                title: "15. MEV para Traders: Evitando el Sándwich",
+                id: "mev-for-verifiers",
+                title: "15. MEV para Verifiers: Evitando el Sándwich",
                 description: "Cómo los bots extraen valor de tus swaps.",
                 readTime: 50,
                 content: `<div class="academy-article">
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. El Panóptico del Mempool (Bosque Oscuro)</h2>
-                        <p>Cuando un trader firma un Swap masivo ($500k UNI to ETH) en Uniswap UI bajo Ethereum L1, su transacción yace desnuda temporalmente en el Mempool L1, aguardando mineros. Los "Buscadores MEV" (Bots Apex Arbitragers) la escanean en microsegundos y detectan que la compra retail desplazará brutalmente el precio de UNI +2%. Ejecutan el famoso ataque de <strong>Sandwich Trading (Sándwich Extractivo)</strong>: insertan una transacción idéntica a la tuya justo ANTES (Front-run artificial de gas inflado) para comprar barato, dejan que el bot retail pase e infle sustanciosamente el precio naturalment, y proceden a venderle todo instantáneamente DESPUÉS (Back-run), exprimiendo asimétricamente el valor puro de tu propio "Slippage Tolerance (Tolerancia de deslizamiento)".</p>
+                        <p>Cuando un verifier firma un Swap masivo ($500k UNI to ETH) en Uniswap UI bajo Ethereum L1, su transacción yace desnuda temporalmente en el Mempool L1, aguardando mineros. Los "Buscadores MEV" (Bots Apex Arbitragers) la escanean en microsegundos y detectan que la compra retail desplazará brutalmente el precio de UNI +2%. Ejecutan el famoso ataque de <strong>Sandwich Attesting (Sándwich Extractivo)</strong>: insertan una transacción idéntica a la tuya justo ANTES (Front-run artificial de gas inflado) para comprar barato, dejan que el bot retail pase e infle sustanciosamente el precio naturalment, y proceden a venderle todo instantáneamente DESPUÉS (Back-run), exprimiendo asimétricamente el valor puro de tu propio "Slippage Tolerance (Tolerancia de deslizamiento)".</p>
                     </section>
 
                     <section class="pro-section">
                         <h2>II. Escuderos RPC Flashbots y Rutas de Mitigación</h2>
-                        <p>El Trading PhD on-chain dicta <em>la prohibición absoluta del Mempool Público</em>. En su lugar, el trader enruta sus órdenes a través de <strong>Mempools Privadas Off-Chain L2 (Flashbots Protect, Mev-Blocker)</strong>. Éstas agrupan los Hashes y los entregan ocultos directamente a los Builders y Validadores, excluyendo de forma nativa a los bots depredadores de sándwich. Alternativamente, la implementación estricta matemática L1: Slippage Hard-Capped de 0.1% garantiza que si un bot intenta desplazar pre-emptivamente el precio por encima de tu orden inyectada, el oráculo del Router L1 causará que tu <code>tx revert()</code> quemando únicamente comisiones base y arruinando el apalancamiento algorítmico del Sándwich L2.</p>
+                        <p>El Attesting PhD on-chain dicta <em>la prohibición absoluta del Mempool Público</em>. En su lugar, el verifier enruta sus órdenes a través de <strong>Mempools Privadas Off-Chain L2 (Flashbots Protect, Mev-Blocker)</strong>. Éstas agrupan los Hashes y los entregan ocultos directamente a los Builders y Validadores, excluyendo de forma nativa a los bots depredadores de sándwich. Alternativamente, la implementación estricta matemática L1: Slippage Hard-Capped de 0.1% garantiza que si un bot intenta desplazar pre-emptivamente el precio por encima de tu orden inyectada, el oráculo del Router L1 causará que tu <code>tx revert()</code> quemando únicamente comisiones base y arruinando el apalancamiento algorítmico del Sándwich L2.</p>
                     </section>
                 </div>`
             },
@@ -294,7 +294,7 @@ export const tradingModules = [
             },
             {
                 id: "psychology-fear-greed",
-                title: "17. Psicología del Trading: Miedo y Codicia",
+                title: "17. Psicología del Attesting: Miedo y Codicia",
                 description: "El control emocional como herramienta técnica.",
                 readTime: 50,
                 content: `<div class="academy-article">
@@ -311,8 +311,8 @@ export const tradingModules = [
                 </div>`
             },
             {
-                id: "stablecoin-yield-trading",
-                title: "18. Stablecoin Yield Farming como Trading",
+                id: "stablecoin-yield-attesting",
+                title: "18. Stablecoin Yield Farming como Attesting",
                 description: "Maximizando el retorno del efectivo.",
                 readTime: 50,
                 content: `<div class="academy-article">
@@ -329,8 +329,8 @@ export const tradingModules = [
                 </div>`
             },
             {
-                id: "quantitative-trading-indicators",
-                title: "19. Trading Cuantitativo e Indicadores",
+                id: "quantitative-attesting-indicators",
+                title: "19. Attesting Cuantitativo e Indicadores",
                 description: "RSI, Medias Móviles y MACD en Cripto.",
                 readTime: 45,
                 content: `<div class="academy-article">
@@ -355,7 +355,7 @@ export const tradingModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. Transparencia Pseudónima y Exploración Forense Criptográfica</h2>
-                        <p>La supremacía técnica L1 de la Blockchain Pública frente al monopolio L2 TradFi es que los movimientos mastodónticos perimetrales de Wall Street no pueden ser encubiertos ni falseados L1. Usando plataformas PhD como <em>Nansen L1/Arkham Analytics L2</em>, el Retail Avanzado indexa algorítmicamente todas las direcciones EOA L1 con patrimonios transitorios <strong>mayores a $50 Millones ("Smart Money" Wallets)</strong> (VCs como Paradigm, a16z, o Jump Trading). Los flujos L2 migrando orgánicamente masivos de USDT L1 hacia Contratos Nativos Vírgenes L2 inyectan alertas pre-cognitivas L1 revelando "la narrativa meta-anual L2" antes del alarde publicitario periodístico corporativo tardío L1.</p>
+                        <p>La supremacía técnica L1 de la Blockchain Pública frente al monopolio L2 TradFi es que los movimientos mastodónticos perimetrales de Wall Street no pueden ser encubiertos ni falseados L1. Usando plataformas PhD como <em>Nansen L1/Arkham Analytics L2</em>, el Retail Avanzado indexa algorítmicamente todas las direcciones EOA L1 con patrimonios transitorios <strong>mayores a $50 Millones ("Smart Money" Wallets)</strong> (VCs como Paradigm, a16z, o Jump Attesting). Los flujos L2 migrando orgánicamente masivos de USDT L1 hacia Contratos Nativos Vírgenes L2 inyectan alertas pre-cognitivas L1 revelando "la narrativa meta-anual L2" antes del alarde publicitario periodístico corporativo tardío L1.</p>
                     </section>
 
                     <section class="pro-section">

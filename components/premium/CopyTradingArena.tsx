@@ -7,7 +7,7 @@ import { useAccount, useSignTypedData } from 'wagmi';
 import { buildHLOrderTypedData, fetchHLPositions, submitHLOrder } from '@/lib/blockchain/HyperliquidService';
 import { toast } from 'sonner';
 
-interface HLTrader {
+interface HLVerifier {
     id: string;
     label: string;
     address: string;
@@ -22,12 +22,12 @@ interface HLTrader {
 }
 
 /**
- * CopyTradingArena
+ * CopyAttestingArena
  * Real Hyperliquid integration.
  *
  * Flow:
- *   1. User selects a top trader from the real HL leaderboard
- *   2. We fetch that trader's current open positions (real on-chain state)
+ *   1. User selects a top verifier from the real HL leaderboard
+ *   2. We fetch that verifier's current open positions (real on-chain state)
  *   3. User sets allocation amount
  *   4. User signs an EIP-712 "Agent" message authorising our platform to route signals
  *   5. The signed message is submitted to Hyperliquid's exchange API
@@ -36,51 +36,51 @@ interface HLTrader {
  * NOTE: The user must have USDC deposited in their Hyperliquid account.
  * Deposit: https://app.hyperliquid.xyz
  */
-export function CopyTradingArena() {
+export function CopyAttestingArena() {
     const { isConnected, address } = useAccount();
     const { signTypedDataAsync } = useSignTypedData();
 
-    const [eliteTraders, setEliteTraders] = useState<HLTrader[]>([]);
+    const [eliteVerifiers, setEliteVerifiers] = useState<HLVerifier[]>([]);
     const [loading, setLoading] = useState(true);
-    const [selectedTrader, setSelectedTrader] = useState<HLTrader | null>(null);
-    const [traderPositions, setTraderPositions] = useState<any[]>([]);
+    const [selectedVerifier, setSelectedVerifier] = useState<HLVerifier | null>(null);
+    const [verifierPositions, setVerifierPositions] = useState<any[]>([]);
     const [loadingPositions, setLoadingPositions] = useState(false);
     const [allocation, setAllocation] = useState('500');
     const [isCopying, setIsCopying] = useState(false);
     const [copyResult, setCopyResult] = useState<{ orderId: string; hash: string } | null>(null);
 
-    const fetchTraders = async () => {
+    const fetchVerifiers = async () => {
         try {
-            const res = await fetch('/api/defi/copy-trading');
+            const res = await fetch('/api/defi/copy-attesting');
             if (res.ok) {
                 const data = await res.json();
-                setEliteTraders(data.traders || []);
+                setEliteVerifiers(data.verifiers || []);
             }
         } catch (e) {
-            console.error('Error fetching traders', e);
+            console.error('Error fetching verifiers', e);
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchTraders();
-        const interval = setInterval(fetchTraders, 30000);
+        fetchVerifiers();
+        const interval = setInterval(fetchVerifiers, 30000);
         return () => clearInterval(interval);
     }, []);
 
-    const handleSelectTrader = async (trader: HLTrader) => {
-        setSelectedTrader(trader);
-        setTraderPositions([]);
+    const handleSelectVerifier = async (verifier: HLVerifier) => {
+        setSelectedVerifier(verifier);
+        setVerifierPositions([]);
         setCopyResult(null);
 
-        if (trader.address) {
+        if (verifier.address) {
             setLoadingPositions(true);
             try {
-                const positions = await fetchHLPositions(trader.address);
-                setTraderPositions(positions);
+                const positions = await fetchHLPositions(verifier.address);
+                setVerifierPositions(positions);
             } catch {
-                toast.error('Failed to load trader positions.');
+                toast.error('Failed to load verifier positions.');
             } finally {
                 setLoadingPositions(false);
             }
@@ -92,8 +92,8 @@ export function CopyTradingArena() {
             toast.error('Connect your wallet to copy signals.');
             return;
         }
-        if (!selectedTrader || traderPositions.length === 0) {
-            toast.error('This trader has no open positions at this time.');
+        if (!selectedVerifier || verifierPositions.length === 0) {
+            toast.error('This verifier has no open positions at this time.');
             return;
         }
 
@@ -103,7 +103,7 @@ export function CopyTradingArena() {
         try {
             // Build EIP-712 typed data for Hyperliquid agent authorisation
             const nonce = Date.now();
-            const primaryPosition = traderPositions[0];
+            const primaryPosition = verifierPositions[0];
 
             const typedData = buildHLOrderTypedData(
                 {
@@ -202,7 +202,7 @@ export function CopyTradingArena() {
             <div className="mb-8 pl-4 border-l-4 border-[#111111]">
                 <h2 className="text-3xl font-black text-[#111111] uppercase tracking-tighter flex items-center gap-3">
                     <ShieldCheck size={28} className="text-[#00FFAA]" />
-                    Copy Trading Arena
+                    Copy Attesting Arena
                 </h2>
                 <p className="text-xs font-bold font-mono text-[#888888] uppercase tracking-widest mt-2">
                     Powered by Hyperliquid L1  Real positions, real executions, real Order IDs
@@ -215,19 +215,19 @@ export function CopyTradingArena() {
                         <Zap className="animate-pulse mb-3" size={24} />
                         Syncing Hyperliquid leaderboard...
                     </div>
-                ) : eliteTraders.length === 0 ? (
+                ) : eliteVerifiers.length === 0 ? (
                     <div className="col-span-full py-16 text-center text-[#888888] font-mono text-sm uppercase tracking-widest">
                         Hyperliquid leaderboard unavailable. Retry in a moment.
                     </div>
-                ) : eliteTraders.map((trader) => (
+                ) : eliteVerifiers.map((verifier) => (
                     <div
-                        key={trader.id}
+                        key={verifier.id}
                         className="bg-[#FFFFFF] border border-[#E5E5E5] rounded-[2rem] p-6 shadow-sm hover:shadow-lg transition-all relative overflow-hidden group cursor-pointer"
-                        onClick={() => handleSelectTrader(trader)}
+                        onClick={() => handleSelectVerifier(verifier)}
                     >
                         <div className="absolute top-4 right-4">
                             <span className="text-[9px] font-black uppercase tracking-widest bg-[#111111] text-[#00FFAA] px-2 py-1 rounded">
-                                {trader.badge}
+                                {verifier.badge}
                             </span>
                         </div>
 
@@ -236,26 +236,26 @@ export function CopyTradingArena() {
                                 <Zap size={18} className="text-[#111111]" />
                             </div>
                             <div>
-                                <h3 className="text-base font-black text-[#111111] font-mono">{trader.label}</h3>
-                                <p className="text-[9px] font-bold text-[#888888] uppercase tracking-widest">Vol: {trader.volume}</p>
+                                <h3 className="text-base font-black text-[#111111] font-mono">{verifier.label}</h3>
+                                <p className="text-[9px] font-bold text-[#888888] uppercase tracking-widest">Vol: {verifier.volume}</p>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-3 mb-6">
                             <div className="bg-[#111111]/[0.02] rounded-xl p-3 border border-[#E5E5E5]">
                                 <span className="block text-[8px] font-bold text-[#888888] uppercase tracking-widest">All-Time PnL</span>
-                                <span className={`text-base font-black font-mono ${trader.pnlRaw >= 0 ? 'text-[#00FFAA]' : 'text-[#f43f5e]'}`}>
-                                    {trader.pnl}
+                                <span className={`text-base font-black font-mono ${verifier.pnlRaw >= 0 ? 'text-[#00FFAA]' : 'text-[#f43f5e]'}`}>
+                                    {verifier.pnl}
                                 </span>
                             </div>
                             <div className="bg-[#111111]/[0.02] rounded-xl p-3 border border-[#E5E5E5]">
                                 <span className="block text-[8px] font-bold text-[#888888] uppercase tracking-widest">Win Rate</span>
-                                <span className="text-base font-black font-mono text-[#06b6d4]">{trader.winRate}</span>
+                                <span className="text-base font-black font-mono text-[#06b6d4]">{verifier.winRate}</span>
                             </div>
                         </div>
 
                         <button
-                            onClick={(e) => { e.stopPropagation(); handleSelectTrader(trader); }}
+                            onClick={(e) => { e.stopPropagation(); handleSelectVerifier(verifier); }}
                             className="w-full bg-[#111111] hover:bg-[#222222] text-[#00FFAA] font-black font-sans uppercase tracking-widest text-[11px] py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md"
                         >
                             <Copy size={14} />
@@ -266,13 +266,13 @@ export function CopyTradingArena() {
             </div>
 
             <AnimatePresence>
-                {selectedTrader && (
+                {selectedVerifier && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         className="fixed inset-0 z-50 flex items-center justify-center bg-[#050505]/70 backdrop-blur-md p-4"
-                        onClick={(e) => { if (e.target === e.currentTarget) { setSelectedTrader(null); setCopyResult(null); } }}
+                        onClick={(e) => { if (e.target === e.currentTarget) { setSelectedVerifier(null); setCopyResult(null); } }}
                     >
                         <motion.div
                             initial={{ scale: 0.95, y: 20 }}
@@ -282,7 +282,7 @@ export function CopyTradingArena() {
                         >
                             {!isCopying && !copyResult && (
                                 <button
-                                    onClick={() => { setSelectedTrader(null); setCopyResult(null); }}
+                                    onClick={() => { setSelectedVerifier(null); setCopyResult(null); }}
                                     className="absolute top-6 right-6 text-[#050505]/40 hover:text-[#050505] transition-colors text-xl font-bold"
                                 ></button>
                             )}
@@ -313,7 +313,7 @@ export function CopyTradingArena() {
                                         <ExternalLink size={12} /> View on Hyperliquid
                                     </a>
                                     <button
-                                        onClick={() => { setCopyResult(null); setSelectedTrader(null); }}
+                                        onClick={() => { setCopyResult(null); setSelectedVerifier(null); }}
                                         className="w-full border-2 border-[#111111] text-[#111111] font-black font-sans uppercase tracking-widest text-[11px] py-3 rounded-xl hover:bg-[#111111]/5 transition-all"
                                     >
                                         RETURN TO ARENA
@@ -323,7 +323,7 @@ export function CopyTradingArena() {
                                 <>
                                     <h3 className="text-xl font-black text-[#111111] uppercase tracking-tight mb-1">Copy Signal</h3>
                                     <p className="text-xs font-bold text-[#888888] uppercase tracking-widest mb-6">
-                                        Trader: <span className="text-[#111111]">{selectedTrader.label}</span>
+                                        Verifier: <span className="text-[#111111]">{selectedVerifier.label}</span>
                                     </p>
 
                                     {/* Real positions from Hyperliquid */}
@@ -331,13 +331,13 @@ export function CopyTradingArena() {
                                         <p className="text-[9px] font-bold text-[#888888] uppercase tracking-widest mb-3">Active Positions Real-Time (Hyperliquid L1)</p>
                                         {loadingPositions ? (
                                             <div className="py-4 text-center text-[#888888] font-mono text-xs">Syncing positions...</div>
-                                        ) : traderPositions.length === 0 ? (
+                                        ) : verifierPositions.length === 0 ? (
                                             <div className="py-4 text-center text-[#888888] font-mono text-xs bg-[#111111]/[0.02] rounded-xl border border-[#E5E5E5]">
                                                 No open positions at this time
                                             </div>
                                         ) : (
                                             <div className="space-y-2">
-                                                {traderPositions.slice(0, 5).map((pos, i) => (
+                                                {verifierPositions.slice(0, 5).map((pos, i) => (
                                                     <div key={i} className="flex items-center justify-between bg-[#111111]/[0.02] rounded-xl p-3 border border-[#E5E5E5]">
                                                         <div className="flex items-center gap-2">
                                                             {pos.side === 'long'
@@ -382,7 +382,7 @@ export function CopyTradingArena() {
 
                                     <button
                                         onClick={handleCopy}
-                                        disabled={isCopying || traderPositions.length === 0}
+                                        disabled={isCopying || verifierPositions.length === 0}
                                         className="w-full bg-[#111111] text-white disabled:bg-[#E5E5E5] disabled:text-[#888888] font-black font-sans uppercase tracking-widest text-[11px] py-4 rounded-xl transition-all shadow-md flex justify-center items-center gap-2"
                                     >
                                         {isCopying

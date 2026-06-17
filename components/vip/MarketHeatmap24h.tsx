@@ -40,7 +40,7 @@ const DISPLAY_TOKENS = [
 ];
 
 const TABS: { key: MetricKey; label: string; icon: React.ReactNode; desc: string }[] = [
-  { key: "volume24h", label: "Volume", icon: <BarChart3 size={13} />, desc: "24h Trading Volume" },
+  { key: "volume24h", label: "Volume", icon: <BarChart3 size={13} />, desc: "24h Attesting Volume" },
   { key: "chgPct", label: "Chg%", icon: <Activity size={13} />, desc: "24h Price Change" },
   { key: "liquidation", label: "Liquidation", icon: <Flame size={13} />, desc: "24h Liquidations" }
 ];

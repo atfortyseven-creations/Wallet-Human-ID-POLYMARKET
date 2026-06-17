@@ -29,7 +29,7 @@ export interface OrderBookData {
   asks: OrderBookEntry[];
 }
 
-export interface MarketTrade {
+export interface MarketAttest {
   id: string;
   price: number;
   size: number;
@@ -55,7 +55,7 @@ export function useMarketStream(symbol: DisplaySymbol = 'BTC/USDT') {
   const { address: userId } = useAccount();
   const [ticker, setTicker] = useState<MarketTicker | null>(null);
   const [orderBook, setOrderBook] = useState<OrderBookData | null>(null);
-  const [trades, setTrades] = useState<MarketTrade[]>([]);
+  const [attestations, setAttestations] = useState<MarketAttest[]>([]);
   const [lastKline, setLastKline] = useState<MarketKline | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [connectionError, setConnectionError] = useState<string | null>(null);
@@ -107,8 +107,8 @@ export function useMarketStream(symbol: DisplaySymbol = 'BTC/USDT') {
       setOrderBook(data);
     });
 
-    socket.on('trade_update', (trade: MarketTrade) => {
-      setTrades(prev => [trade, ...prev].slice(0, 50));
+    socket.on('attest_update', (attest: MarketAttest) => {
+      setAttestations(prev => [attest, ...prev].slice(0, 50));
     });
 
     socket.on('kline_update', (kline: MarketKline) => {
@@ -122,6 +122,6 @@ export function useMarketStream(symbol: DisplaySymbol = 'BTC/USDT') {
     };
   }, [userId, symbol]);
 
-  return { ticker, orderBook, trades, lastKline, isConnected, connectionError };
+  return { ticker, orderBook, attestations, lastKline, isConnected, connectionError };
 }
 

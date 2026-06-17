@@ -65,7 +65,7 @@ async function cacheNewPair(chain, dex, t0, t1, poolAddress) {
         fdv: 0,
         txns: { m5: { buys: 0, sells: 0 } },
         priceChange: { m5: 0, h1: 0, h6: 0, h24: 0 },
-        traders: { makers: 1, snipers: 0 },
+        verifiers: { makers: 1, snipers: 0 },
         security: { score: 50, honeypotRisk: true, lpBurned: false, mintRevoked: false },
         taxes: { buy: 0, sell: 0 }
     };

@@ -87,7 +87,7 @@ export interface SettingsContextType {
     lastBackupAt: Date | null;
     triggerBackup: () => void;
 
-    // Trading
+    // Attesting
     defaultSlippage: number;
     setDefaultSlippage: (s: number) => void;
     defaultGasPrice: string;
@@ -148,7 +148,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     // Backup
     const [backupFrequency, setBackupFrequency] = useState<BackupFrequency>('weekly');
 
-    // Trading
+    // Attesting
     const [defaultSlippage, setDefaultSlippage] = useState(0.5);
     const [defaultGasPrice, setDefaultGasPrice] = useState('medium');
 

@@ -1,14 +1,14 @@
 import { create } from 'zustand';
-import { Trade, OrderBook, Ticker } from './types';
+import { Attest, OrderBook, Ticker } from './types';
 import { toast } from 'sonner';
-import { TRADING_PAIRS } from './pairs';
+import { ATTESTING_PAIRS } from './pairs';
 
 interface PairData {
   ticker: Ticker | null;
-  recentTrades: Trade[];
+  recentAttestations: Attest[];
 }
 
-interface TradeState {
+interface Attestationstate {
   currentPair: string;
   
   // Multi-pair data structure
@@ -29,7 +29,7 @@ interface TradeState {
   
   // Multi-pair updates
   updateTicker: (symbol: string, ticker: Ticker) => void;
-  addTrade: (symbol: string, trade: Trade) => void;
+  addAttest: (symbol: string, attest: Attest) => void;
   
   // Current pair updates
   setOrderBook: (book: OrderBook) => void;
@@ -58,7 +58,7 @@ interface TradeState {
   
   // Getters
   getCurrentTicker: () => Ticker | null;
-  getCurrentTrades: () => Trade[];
+  getCurrentAttestations: () => Attest[];
   getAllTickers: () => Record<string, Ticker | null>;
 }
 
@@ -66,16 +66,16 @@ interface TradeState {
 // Initialize data structure for all 30 pairs
 const initializePairData = (): Record<string, PairData> => {
   const data: Record<string, PairData> = {};
-  TRADING_PAIRS.forEach(pair => {
+  ATTESTING_PAIRS.forEach(pair => {
     data[pair] = {
       ticker: null,
-      recentTrades: []
+      recentAttestations: []
     };
   });
   return data;
 };
 
-export const useTradeStore = create<TradeState>((set, get) => ({
+export const useAttestationstore = create<Attestationstate>((set, get) => ({
   currentPair: 'ETHUSDT',
   pairData: initializePairData(),
   orderBook: null,
@@ -102,12 +102,12 @@ export const useTradeStore = create<TradeState>((set, get) => ({
     }
   })),
 
-  addTrade: (symbol, trade) => set((state) => ({
+  addAttest: (symbol, attest) => set((state) => ({
     pairData: {
       ...state.pairData,
       [symbol]: {
         ...state.pairData[symbol],
-        recentTrades: [trade, ...state.pairData[symbol].recentTrades].slice(0, 50)
+        recentAttestations: [attest, ...state.pairData[symbol].recentAttestations].slice(0, 50)
       }
     }
   })),
@@ -122,9 +122,9 @@ export const useTradeStore = create<TradeState>((set, get) => ({
     return state.pairData[state.currentPair]?.ticker || null;
   },
 
-  getCurrentTrades: () => {
+  getCurrentAttestations: () => {
     const state = get();
-    return state.pairData[state.currentPair]?.recentTrades || [];
+    return state.pairData[state.currentPair]?.recentAttestations || [];
   },
 
   getAllTickers: () => {
@@ -139,7 +139,7 @@ export const useTradeStore = create<TradeState>((set, get) => ({
   // API Actions
   fetchOrders: async (address?: string) => {
       try {
-          const url = address ? `/api/trade/orders?address=${address}` : '/api/trade/orders';
+          const url = address ? `/api/attest/orders?address=${address}` : '/api/attest/orders';
           const res = await fetch(url);
           if (res.ok) {
               const orders = await res.json();
@@ -171,7 +171,7 @@ export const useTradeStore = create<TradeState>((set, get) => ({
           });
           if (res.ok) {
               set({ snxAccountId: accountId });
-              toast.success('ACCOUNT SYNCED', { description: 'Trading terminal ready.' });
+              toast.success('ACCOUNT SYNCED', { description: 'Attesting terminal ready.' });
           }
       } catch (err) {
           console.error("Failed to sync SNX account", err);
@@ -199,7 +199,7 @@ export const useTradeStore = create<TradeState>((set, get) => ({
           const isHuman = get().isHuman || await get().checkHumanity(orderData.walletAddress);
           if (!isHuman) {
               toast.error('HUMANITY REQUIRED', {
-                  description: 'Verification via World ID is mandatory for Elite trades.',
+                  description: 'Verification via World ID is mandatory for Elite attestations.',
                   action: {
                       label: 'Verify Now',
                       onClick: () => window.dispatchEvent(new CustomEvent('TRIGGER_WORLD_ID_MODAL'))
@@ -207,7 +207,7 @@ export const useTradeStore = create<TradeState>((set, get) => ({
               });
               return null;
           }
-          const res = await fetch('/api/trade/order', {
+          const res = await fetch('/api/attest/order', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
@@ -253,7 +253,7 @@ export const useTradeStore = create<TradeState>((set, get) => ({
     if (!address) return;
     set({ isLoadingPositions: true });
     try {
-      const res = await fetch(`/api/trade/positions?address=${address}`);
+      const res = await fetch(`/api/attest/positions?address=${address}`);
       const data = await res.json();
       set({ positions: data.positions || [], isLoadingPositions: false });
     } catch (err) {

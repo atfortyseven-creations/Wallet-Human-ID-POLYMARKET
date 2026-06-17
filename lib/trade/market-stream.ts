@@ -1,10 +1,10 @@
-import { useTradeStore } from './store';
-import { TRADING_PAIRS } from './pairs';
+import { useAttestationstore } from './store';
+import { ATTESTING_PAIRS } from './pairs';
 
 import { safeToFixed, safeToLocaleString } from '@/lib/utils/number-format';
 /**
  * LEGENDARY MULTI-PAIR MARKET STREAM
- * Connects to 30 trading pairs simultaneously using Binance combined streams
+ * Connects to 30 attesting pairs simultaneously using Binance combined streams
  */
 class MarketStream {
   private ws: WebSocket | null = null;
@@ -20,11 +20,11 @@ class MarketStream {
     }
 
     // Build combined stream for all 30 pairs
-    // We subscribe to: trade (real-time trades) + miniTicker (24h stats)
-    const streams = TRADING_PAIRS.flatMap(pair => {
+    // We subscribe to: attest (real-time attestations) + miniTicker (24h stats)
+    const streams = ATTESTING_PAIRS.flatMap(pair => {
       const symbol = pair.toLowerCase();
       return [
-        `${symbol}@trade`,        // Real-time trades
+        `${symbol}@attest`,        // Real-time attestations
         `${symbol}@miniTicker`    // 24h price, volume, change
       ];
     }).join('/');
@@ -35,7 +35,7 @@ class MarketStream {
 
     this.ws.onopen = () => {
       console.log(' MULTI-PAIR STREAM CONNECTED - 30 PAIRS ACTIVE');
-      this.activeStreams = new Set(TRADING_PAIRS);
+      this.activeStreams = new Set(ATTESTING_PAIRS);
     };
 
     this.ws.onmessage = (event) => {
@@ -81,14 +81,14 @@ class MarketStream {
 
   private handleMessage(payload: any) {
     const { stream, data } = payload;
-    const store = useTradeStore.getState();
+    const store = useAttestationstore.getState();
 
-    // Extract symbol from stream name (e.g., "btcusdt@trade" -> "BTCUSDT")
+    // Extract symbol from stream name (e.g., "btcusdt@attest" -> "BTCUSDT")
     const symbol = stream.split('@')[0].toUpperCase();
 
-    if (stream.includes('@trade')) {
-      // Real-time trade execution
-      const trade = {
+    if (stream.includes('@attest')) {
+      // Real-time attest execution
+      const attest = {
         id: data.t.toString(),
         symbol: symbol,
         price: parseFloat(data.p),
@@ -97,17 +97,17 @@ class MarketStream {
         timestamp: data.T
       };
 
-      store.addTrade(symbol, trade);
+      store.addAttest(symbol, attest);
 
-      // Whale Network for large trades
-      const value = trade.quantity * trade.price;
+      // Whale Network for large attestations
+      const value = attest.quantity * attest.price;
       if (value > 50000) {
         import('sonner').then(({ toast }) => {
           toast(` Whale Network: ${symbol}`, {
-            description: `${trade.side === 'buy' ? 'BOUGHT' : 'SOLD'} $${safeToLocaleString(value)}`,
+            description: `${attest.side === 'buy' ? 'BOUGHT' : 'SOLD'} $${safeToLocaleString(value)}`,
             style: {
-              background: trade.side === 'buy' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(244, 63, 94, 0.2)',
-              border: `1px solid ${trade.side === 'buy' ? '#10b981' : '#f43f5e'}`,
+              background: attest.side === 'buy' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(244, 63, 94, 0.2)',
+              border: `1px solid ${attest.side === 'buy' ? '#10b981' : '#f43f5e'}`,
               color: '#fff'
             }
           });
@@ -132,7 +132,7 @@ class MarketStream {
 
   private handlePairMessage(payload: any) {
     const { stream, data } = payload;
-    const store = useTradeStore.getState();
+    const store = useAttestationstore.getState();
 
     if (stream.includes('@depth20')) {
       // Order Book Update

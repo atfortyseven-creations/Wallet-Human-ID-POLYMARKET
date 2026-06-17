@@ -11,7 +11,7 @@ export function ActiveTerminalWidgets({
   type, 
   workerRef 
 }: { 
-  type: 'ORDER_BOOK' | 'WHALE_FLOW' | 'MARKETS' | 'COPY_TRADING';
+  type: 'ORDER_BOOK' | 'WHALE_FLOW' | 'MARKETS' | 'COPY_ATTESTING';
   workerRef: React.MutableRefObject<Worker | null>;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -27,7 +27,7 @@ export function ActiveTerminalWidgets({
     let whaleContainer: HTMLDivElement | null = null;
     let marketsOiNode: HTMLSpanElement | null = null;
     let marketsFundNode: HTMLSpanElement | null = null;
-    let copyTradeLogNode: HTMLDivElement | null = null;
+    let copyAttestLogNode: HTMLDivElement | null = null;
 
     if (type === 'ORDER_BOOK' && canvasRef.current) {
         ctx = canvasRef.current.getContext('2d');
@@ -39,8 +39,8 @@ export function ActiveTerminalWidgets({
         marketsOiNode = containerRef.current.querySelector('#markets-oi-value');
         marketsFundNode = containerRef.current.querySelector('#markets-fund-value');
     }
-    if (type === 'COPY_TRADING') {
-        copyTradeLogNode = containerRef.current.querySelector('#copy-trade-log');
+    if (type === 'COPY_ATTESTING') {
+        copyAttestLogNode = containerRef.current.querySelector('#copy-attest-log');
     }
 
     // Handlers
@@ -126,7 +126,7 @@ export function ActiveTerminalWidgets({
             }, 100);
         }
 
-        if (type === 'COPY_TRADING' && data.type === 'COPY_TRADE' && copyTradeLogNode) {
+        if (type === 'COPY_ATTESTING' && data.type === 'COPY_ATTEST' && copyAttestLogNode) {
             const html = `
                 <div class="flex flex-col gap-0.5 py-1.5 border-b border-[#050505]/5 animate-fade-in-down last:border-0">
                     <div class="flex items-center justify-between">
@@ -139,9 +139,9 @@ export function ActiveTerminalWidgets({
                     </div>
                 </div>
             `;
-            copyTradeLogNode.insertAdjacentHTML('afterbegin', html);
-            if (copyTradeLogNode.children.length > 3) {
-                copyTradeLogNode.lastElementChild?.remove();
+            copyAttestLogNode.insertAdjacentHTML('afterbegin', html);
+            if (copyAttestLogNode.children.length > 3) {
+                copyAttestLogNode.lastElementChild?.remove();
             }
         }
     };
@@ -195,14 +195,14 @@ export function ActiveTerminalWidgets({
       );
   }
 
-  if (type === 'COPY_TRADING') {
+  if (type === 'COPY_ATTESTING') {
       return (
           <div ref={containerRef} className="w-full bg-[#050505] text-white rounded-xl p-3 mt-3 shadow-inner max-h-[96px] overflow-hidden border border-white/10 relative">
               <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-white/10">
                   <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
                   <span className="text-[8px] font-black tracking-widest uppercase text-white/50">Elite Intent Engine Active</span>
               </div>
-              <div id="copy-trade-log" className="flex flex-col">
+              <div id="copy-attest-log" className="flex flex-col">
                   {/* Imperative nodes injected here */}
                   <div className="text-[8.5px] text-center py-2 font-mono text-cyan-400/40 animate-pulse">[ STANDBY ] Listening to target mempool</div>
               </div>

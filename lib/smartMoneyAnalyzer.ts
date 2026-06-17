@@ -7,7 +7,7 @@ import { moralisService } from './blockchain/MoralisService';
  * 5-Factor Scoring System:
  * 1. Transaction Frequency (0-25 pts)
  * 2. Portfolio Diversification (0-20 pts)
- * 3. Average Trade Size (0-20 pts)
+ * 3. Average Attest Size (0-20 pts)
  * 4. Estimated Win Rate (0-20 pts)
  * 5. Wallet Age (0-15 pts)
  */
@@ -17,20 +17,20 @@ export interface SmartMoneyMetrics {
   breakdown: {
     transactionFrequency: number;
     portfolioDiversification: number;
-    averageTradeSize: number;
+    averageAttestationsize: number;
     estimatedWinRate: number;
     walletAge: number;
   };
   insights: string[];
   confidence: 'high' | 'medium' | 'low';
-  category: 'Beginner' | 'Casual Trader' | 'Active Trader' | 'Expert Trader' | 'Elite Whale' | 'Legendary Apex';
+  category: 'Beginner' | 'Casual Verifier' | 'Active Verifier' | 'Expert Verifier' | 'Elite Whale' | 'Legendary Apex';
   influenceScore: number;
   metadata: {
     totalTransactions: number;
     uniqueTokens: number;
-    avgTradeUSD: number;
+    avgAttestUSD: number;
     walletAgeInDays: number;
-    profitableTradesPercent: number;
+    profitableAttestationsPercent: number;
   };
 }
 
@@ -59,10 +59,10 @@ export async function analyzeWalletSmartMoney(
     const diversificationScore = calculateDiversification(uniqueTokenCount);
 
     const historyData = Array.isArray(history) ? history : (history.result || []);
-    const avgTradeUSD = historyData.length > 0 
+    const avgAttestUSD = historyData.length > 0 
       ? historyData.reduce((acc: number, tx: any) => acc + (parseFloat(tx.value_usd || '0')), 0) / historyData.length 
       : 0;
-    const tradeSizeScore = calculateTradeSizeScore(avgTradeUSD);
+    const attestationsizeScore = calculateAttestationsizeScore(avgAttestUSD);
 
     // Moralis Profitability is the gold standard for Win Rate
     const profitability = await moralisService.getWalletProfitability(address).catch(() => null);
@@ -77,7 +77,7 @@ export async function analyzeWalletSmartMoney(
     const totalScore = Math.round(
       txFrequencyScore +
       diversificationScore +
-      tradeSizeScore +
+      attestationsizeScore +
       winRateScore +
       ageScore
     );
@@ -86,7 +86,7 @@ export async function analyzeWalletSmartMoney(
     const insights = generateInsights({
       txCount: stats?.transactions || 0,
       tokenCount: uniqueTokenCount,
-      avgTradeUSD,
+      avgAttestUSD,
       winRate: winRatePercent,
       ageDays: walletAgeDays,
     });
@@ -96,7 +96,7 @@ export async function analyzeWalletSmartMoney(
       breakdown: {
         transactionFrequency: txFrequencyScore,
         portfolioDiversification: diversificationScore,
-        averageTradeSize: tradeSizeScore,
+        averageAttestationsize: attestationsizeScore,
         estimatedWinRate: winRateScore,
         walletAge: Math.round(ageScore),
       },
@@ -106,11 +106,11 @@ export async function analyzeWalletSmartMoney(
       metadata: {
         totalTransactions: stats?.transactions || 0,
         uniqueTokens: uniqueTokenCount,
-        avgTradeUSD,
+        avgAttestUSD,
         walletAgeInDays: walletAgeDays,
-        profitableTradesPercent: winRatePercent,
+        profitableAttestationsPercent: winRatePercent,
       },
-      influenceScore: Math.round((tradeSizeScore * 2) + (txFrequencyScore / 2)),
+      influenceScore: Math.round((attestationsizeScore * 2) + (txFrequencyScore / 2)),
     };
   } catch (error) {
     console.error('Smart Money Analysis Error:', error);
@@ -126,7 +126,7 @@ function calculateDiversification(count: number): number {
   return Math.min(count * 2, 20);
 }
 
-function calculateTradeSizeScore(avgUSD: number): number {
+function calculateAttestationsizeScore(avgUSD: number): number {
   if (avgUSD < 1000) return (avgUSD / 1000) * 5;
   if (avgUSD < 10000) return 5 + ((avgUSD - 1000) / 9000) * 5;
   if (avgUSD < 50000) return 10 + ((avgUSD - 10000) / 40000) * 5;
@@ -136,19 +136,19 @@ function calculateTradeSizeScore(avgUSD: number): number {
 function generateInsights(data: any): string[] {
   const insights: string[] = [];
   if (data.txCount > 500) insights.push(` Power User: High transaction frequency detected`);
-  if (data.avgTradeUSD > 10000) insights.push(` Significant capital: Average trade size is Elite level`);
+  if (data.avgAttestUSD > 10000) insights.push(` Significant capital: Average attest size is Elite level`);
   if (data.winRate > 60) insights.push(` Profitable: Historic performance indicates high win rate`);
   if (data.ageDays > 730) insights.push(` Veteran: Wallet has been active for over 2 years`);
   if (data.tokenCount > 15) insights.push(` Diversified: Strategic allocation across multiple assets`);
-  return insights.length > 0 ? insights : [' Normal trading behavior detected'];
+  return insights.length > 0 ? insights : [' Normal attesting behavior detected'];
 }
 
 function determineCategory(score: number): SmartMoneyMetrics['category'] {
   if (score >= 90) return 'Legendary Apex';
   if (score >= 75) return 'Elite Whale';
-  if (score >= 60) return 'Expert Trader';
-  if (score >= 40) return 'Active Trader';
-  if (score >= 20) return 'Casual Trader';
+  if (score >= 60) return 'Expert Verifier';
+  if (score >= 40) return 'Active Verifier';
+  if (score >= 20) return 'Casual Verifier';
   return 'Beginner';
 }
 
@@ -158,7 +158,7 @@ function getFallbackMetrics(): SmartMoneyMetrics {
     breakdown: {
       transactionFrequency: 0,
       portfolioDiversification: 0,
-      averageTradeSize: 0,
+      averageAttestationsize: 0,
       estimatedWinRate: 0,
       walletAge: 0,
     },
@@ -168,9 +168,9 @@ function getFallbackMetrics(): SmartMoneyMetrics {
     metadata: {
       totalTransactions: 0,
       uniqueTokens: 0,
-      avgTradeUSD: 0,
+      avgAttestUSD: 0,
       walletAgeInDays: 0,
-      profitableTradesPercent: 0,
+      profitableAttestationsPercent: 0,
     },
     influenceScore: 0,
   };

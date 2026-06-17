@@ -20,7 +20,7 @@ export default function GlobalConsensus() {
     // Simulating deep macro-sentiment analysis from global on-chain signals
     setTimeout(() => {
       setMetrics([
-        { label: 'Macro_Sentiment_Ratio', value: '62.4%', change: 2.1, description: 'Aggregated social & trade sentiment derived from institutional order flows.' },
+        { label: 'Macro_Sentiment_Ratio', value: '62.4%', change: 2.1, description: 'Aggregated social & attest sentiment derived from institutional order flows.' },
         { label: 'Liquidity_Density', value: '$842.1B', change: -0.5, description: 'Available stablecoin liquidity across core DEX/CEX clusters.' },
         { label: 'Whale_Confidence_Score', value: '84/100', change: 5.4, description: 'Predictive score based on top-100 wallet accumulation velocity.' },
         { label: 'Supply_Shock_Probability', value: 'LOW', change: 0, description: 'Probability of massive sell-off events within a 48H window.' }

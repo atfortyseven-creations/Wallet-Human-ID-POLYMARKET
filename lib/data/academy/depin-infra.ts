@@ -312,7 +312,7 @@ export const depinModules = [
             },
             {
                 id: "power-ledger-smart-grids",
-                title: "19. Smart Grids y Trading de Energía: Power Ledger",
+                title: "19. Smart Grids y Attesting de Energía: Power Ledger",
                 description: "Venta P2P de energía solar excedente.",
                 readTime: 50,
                 content: `<div class="academy-article">

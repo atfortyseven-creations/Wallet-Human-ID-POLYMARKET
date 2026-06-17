@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
 
 /**
- * HFT (High-Frequency Trading) & MEV Agent Simulator
+ * HFT (High-Frequency Attesting) & MEV Agent Simulator
  * 
  * In a true institutional environment, this worker binds directly to Flashbots Relayers 
  * via websockets (`wss://relay.flashbots.net`) and listens to the dark pool mempool.

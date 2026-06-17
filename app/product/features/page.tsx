@@ -5,16 +5,16 @@ export default function FeaturesPage() {
     return (
         <DocLayout
             title="Features"
-            description="Discover WhaleAlert ID.fi's powerful features: zero-knowledge identity, multi-chain wallet, professional trading tools, and Elite-grade analytics."
+            description="Discover WhaleAlert ID.fi's powerful features: zero-knowledge identity, multi-chain wallet, professional attesting tools, and Elite-grade analytics."
             lastUpdated="February 7, 2026"
             category="Product"
         >
             <div className="space-y-8">
                 {/* Hero */}
                 <section className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 p-8 rounded-xl border border-white/10">
-                    <h2 className="text-4xl font-bold mb-4">The Future of DeFi Identity & Trading</h2>
+                    <h2 className="text-4xl font-bold mb-4">The Future of DeFi Identity & Attesting</h2>
                     <p className="text-lg text-white/80">
-                        WhaleAlert ID.fi combines cutting-edge zero-knowledge technology with professional-grade trading tools to deliver an unparalleled DeFi experience.
+                        WhaleAlert ID.fi combines cutting-edge zero-knowledge technology with professional-grade attesting tools to deliver an unparalleled DeFi experience.
                     </p>
                 </section>
 
@@ -84,23 +84,23 @@ export default function FeaturesPage() {
                             </ul>
                         </div>
 
-                        {/* Trading Terminal */}
+                        {/* Attesting Terminal */}
                         <div className="bg-gradient-to-br from-green-600/10 to-emerald-600/10 p-6 rounded-xl border border-green-500/30">
                             <div className="flex items-center gap-3 mb-4">
                                 <TrendingUp className="text-green-400" size={32} />
-                                <h3 className="text-2xl font-bold">Professional Trading Terminal</h3>
+                                <h3 className="text-2xl font-bold">Professional Attesting Terminal</h3>
                             </div>
                             <p className="mb-4 text-white/70">
-                                Elite-grade trading interface with real-time data, advanced charting, and order types.
+                                Elite-grade attesting interface with real-time data, advanced charting, and order types.
                             </p>
                             <ul className="space-y-2 text-sm">
                                 <li className="flex items-start gap-2">
                                     <span className="text-green-400"></span>
-                                    <span><strong>30+ Trading Pairs:</strong> BTC, ETH, SOL, and more</span>
+                                    <span><strong>30+ Attesting Pairs:</strong> BTC, ETH, SOL, and more</span>
                                 </li>
                                 <li className="flex items-start gap-2">
                                     <span className="text-green-400"></span>
-                                    <span><strong>Real-Time Charts:</strong> TradingView-style candles with indicators</span>
+                                    <span><strong>Real-Time Charts:</strong> AttestingView-style candles with indicators</span>
                                 </li>
                                 <li className="flex items-start gap-2">
                                     <span className="text-green-400"></span>
@@ -188,11 +188,11 @@ export default function FeaturesPage() {
                         </div>
                     </div>
 
-                    {/* Trading Features */}
+                    {/* Attesting Features */}
                     <div className="mb-8">
                         <h3 className="text-2xl font-bold mb-4 flex items-center gap-2">
                             <TrendingUp className="text-green-400" />
-                            Trading Tools
+                            Attesting Tools
                         </h3>
 
                         <div className="grid md:grid-cols-3 gap-4">
@@ -207,8 +207,8 @@ export default function FeaturesPage() {
                             </div>
 
                             <div className="bg-white/5 p-4 rounded-lg border border-white/10">
-                                <h4 className="font-bold mb-2">️ Recent Trades</h4>
-                                <p className="text-sm text-white/70">Active trade feed showing market activity and price action.</p>
+                                <h4 className="font-bold mb-2">️ Recent Attestations</h4>
+                                <p className="text-sm text-white/70">Active attest feed showing market activity and price action.</p>
                             </div>
 
                             <div className="bg-white/5 p-4 rounded-lg border border-white/10">
@@ -309,13 +309,13 @@ export default function FeaturesPage() {
                                     <td className="border border-white/10 p-3 text-center"></td>
                                 </tr>
                                 <tr>
-                                    <td className="border border-white/10 p-3">Demo Trading</td>
+                                    <td className="border border-white/10 p-3">Demo Attesting</td>
                                     <td className="border border-white/10 p-3 text-center"></td>
                                     <td className="border border-white/10 p-3 text-center"></td>
                                     <td className="border border-white/10 p-3 text-center"></td>
                                 </tr>
                                 <tr className="bg-white/5">
-                                    <td className="border border-white/10 p-3">Trading Pairs</td>
+                                    <td className="border border-white/10 p-3">Attesting Pairs</td>
                                     <td className="border border-white/10 p-3 text-center">30+</td>
                                     <td className="border border-white/10 p-3 text-center">30+</td>
                                     <td className="border border-white/10 p-3 text-center">50+</td>
@@ -364,8 +364,8 @@ export default function FeaturesPage() {
 
                     <div className="grid md:grid-cols-3 gap-4">
                         <div className="bg-gradient-to-br from-yellow-600/10 to-orange-600/10 p-4 rounded-lg border border-yellow-500/30">
-                            <h4 className="font-bold mb-2"> AI Trading Assistant</h4>
-                            <p className="text-sm text-white/70">Natural language interface for market analysis and trade execution.</p>
+                            <h4 className="font-bold mb-2"> AI Attesting Assistant</h4>
+                            <p className="text-sm text-white/70">Natural language interface for market analysis and attest execution.</p>
                             <p className="text-xs text-yellow-400 mt-2">Q2 2026</p>
                         </div>
 
@@ -394,8 +394,8 @@ export default function FeaturesPage() {
                         </div>
 
                         <div className="bg-gradient-to-br from-indigo-600/10 to-blue-600/10 p-4 rounded-lg border border-indigo-500/30">
-                            <h4 className="font-bold mb-2"> Social Trading</h4>
-                            <p className="text-sm text-white/70">Copy trades from top performers, share strategies, earn commissions.</p>
+                            <h4 className="font-bold mb-2"> Social Attesting</h4>
+                            <p className="text-sm text-white/70">Copy attestations from top performers, share strategies, earn commissions.</p>
                             <p className="text-xs text-indigo-400 mt-2">Q3 2027</p>
                         </div>
                     </div>
