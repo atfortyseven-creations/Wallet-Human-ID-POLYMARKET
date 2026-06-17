@@ -652,12 +652,12 @@ export default function ConnectPage() {
 
             {/* Description */}
             <p className="text-[12px] text-[#333] leading-relaxed mb-5 font-medium">
-              The first <span className="font-black text-black">privacy-first</span> Web3 intelligence platform — zero-knowledge whale alerts, encrypted P2P messaging, and on-chain identity, all powered by the Aztec Network.
+              Whale Network is an advanced ecosystem for the management of digital assets and zero knowledge identities. The platform unites cross device state synchronisation and client side proof generation into a secure architecture powered by the Aztec Network.
             </p>
 
             {/* Tag pills */}
             <div className="flex flex-wrap gap-1.5 mb-5">
-              {['ZK Identity', 'E2E Encrypted Chat', 'Whale Alerts', 'Dark Pool', 'Noir Circuits'].map(tag => (
+              {['ZK Identity', 'Encrypted Chat', 'Portfolio Management', 'Network Telemetry', 'Noir Circuits'].map(tag => (
                 <span key={tag} className="px-2.5 py-1 rounded-full bg-black/5 text-[9px] font-black uppercase tracking-widest text-black/60">{tag}</span>
               ))}
             </div>
