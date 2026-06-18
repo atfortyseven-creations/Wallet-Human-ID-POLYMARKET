@@ -109,30 +109,38 @@ export async function completeSessionHandshake(
     /* server mint path */
   }
 
-  // Determine the authoritative address:
-  // - If wagmi has an address AND the JWT belongs to a DIFFERENT address, the user
-  //   switched wallets since the cookie was set → ignore the stale JWT, re-auth with new wallet
-  // - If wagmi has no address (wagmi not hydrated yet), trust the JWT address
-  // - Final fallback: read system_handshake cookie
+  // Determine the authoritative address
   let resolvedAddress: string | null = null;
-
   if (wagmiAddr) {
-    const wagmiNorm = wagmiAddr.toLowerCase();
-    if (jwtAddress && jwtAddress !== wagmiNorm) {
-      // Wallet switched — stale JWT, need fresh token for the new wallet
-      console.warn(`[QR:Handshake] Wallet mismatch: jwt=${jwtAddress} wagmi=${wagmiNorm}. Re-minting for ${wagmiNorm}.`);
-      jwt = null;
-      jwtAddress = null;
-      hasValidSession = false;
-    }
-    resolvedAddress = wagmiNorm;
-  } else if (jwtAddress) {
-    resolvedAddress = jwtAddress;
+    resolvedAddress = wagmiAddr.toLowerCase();
   } else {
     resolvedAddress = getHandshakeCookieAddress();
   }
 
-  // If we have a wagmi address but no valid session, mint a fresh one via SIWE
+  // 1. Verify if the server already recognizes our session (via HttpOnly cookies)
+  // We CANNOT check document.cookie for human_session because it is HttpOnly.
+  try {
+    const checkRes = await fetch('/api/auth/verify-session', { cache: 'no-store' });
+    if (checkRes.ok) {
+      const data = await checkRes.json();
+      if (data.authenticated && data.user?.address) {
+        hasValidSession = true;
+        jwtAddress = data.user.address.toLowerCase();
+        
+        // If wagmiAddr doesn't match the server session, we must re-mint
+        if (resolvedAddress && jwtAddress !== resolvedAddress) {
+          console.warn(`[QR:Handshake] Wallet mismatch: server=${jwtAddress} wagmi=${resolvedAddress}. Re-minting.`);
+          hasValidSession = false;
+        } else {
+          resolvedAddress = jwtAddress;
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('[QR:Handshake] Error verifying session with server:', e);
+  }
+
+  // If we have a wagmi address but no valid session on the server, mint a fresh one via SIWE
   if (!hasValidSession && resolvedAddress) {
     if (!signMessageAsync) {
       console.error('[QR:Handshake] Missing signMessageAsync function for secure SIWE verification.');
