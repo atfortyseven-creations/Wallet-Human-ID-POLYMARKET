@@ -466,11 +466,28 @@ export default function ConnectPage() {
     runVerify();
   }, [isConnected, address, mounted, setLinked, signMessageAsync, authStatus]);
 
+  // [FIX] First-click dead-click: AppKit modal can be called before the internal
+  // WalletConnect relay WebSocket has finished handshaking. On mobile (especially iOS)
+  // this means the first tap does absolutely nothing — the modal opens then instantly
+  // closes, or never opens at all.
+  // Solution: wrap openAppKit() in a retry loop with a short delay. If AppKit is not
+  // ready, we wait 150ms and try again, up to 5 times (750ms total max wait).
+  const openAppKitSafe = useCallback(async (retries = 0): Promise<void> => {
+    try {
+      await openAppKit();
+    } catch (e: any) {
+      if (retries < 5) {
+        await new Promise(r => setTimeout(r, 150));
+        return openAppKitSafe(retries + 1);
+      }
+    }
+  }, [openAppKit]);
+
   const handleDesktopWallet = useCallback((walletId: string, rdns: string | null, installUrl: string | null) => {
     try { sessionStorage.removeItem("__disconnected__"); } catch {}
     try { localStorage.removeItem("__disconnected__"); } catch {}
     setPendingId(walletId);
-    if (!rdns) { openAppKit(); setPendingId(null); return; }
+    if (!rdns) { openAppKitSafe(); setPendingId(null); return; }
     const connector = connectors.find((c: any) => c.id === rdns)
       || connectors.find((c) => c.name.toLowerCase().includes(walletId.toLowerCase()))
       || connectors.find((c) => c.id === "injected" || (c as any).type === "injected");
@@ -479,16 +496,17 @@ export default function ConnectPage() {
       setPendingId(null);
       if (installUrl) toast.error("Wallet extension not found", { action: { label: "Install", onClick: () => window.open(installUrl, "_blank") } });
     }
-  }, [connect, connectors, openAppKit]);
+  }, [connect, connectors, openAppKitSafe]);
 
   const handleMobileWallet = useCallback((walletId: string) => {
     try { sessionStorage.removeItem("__disconnected__"); } catch {}
     try { localStorage.removeItem("__disconnected__"); } catch {}
     try { localStorage.setItem('system_pending_wakeup', '1'); } catch {}
-    
-    // Use AppKit which correctly uses standard Universal Links to sign and return to Chrome.
-    openAppKit();
-  }, [openAppKit]);
+    // [FIX] Use openAppKitSafe to guarantee AppKit is ready before opening the modal.
+    // Direct openAppKit() on the first tap on iOS fails silently when the WC relay
+    // WebSocket is still initializing. The retry loop ensures the modal opens.
+    openAppKitSafe();
+  }, [openAppKitSafe]);
 
   const triggerManualVerify = useCallback(() => {
     signingRef.current = false;

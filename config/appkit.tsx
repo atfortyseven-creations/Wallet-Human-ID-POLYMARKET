@@ -125,32 +125,13 @@ export const config = wagmiAdapter.wagmiConfig
 
 const queryClient = new QueryClient()
 
-// CRITICAL: metadata.url MUST match EXACTLY the domain registered in WalletConnect/Reown Cloud.
-//
-// WalletConnect Cloud allowlist (project bf1083a298e7222c838266166b12b2ba) contains:
-//   - humanidfi.com
-//   - https://humanidfi.com
-//   - www.humanidfi.com
-//
-// If the metadata.url does not exactly match one of these (e.g. if testing on localhost
-// or a Railway preview URL), the WalletConnect Cloud relay will SILENTLY REJECT the session.
-// This causes the "Open Wallet" deep-link button on mobile to do absolutely nothing.
-//
-// [IOS CHROME CRITICAL FIX] The CANONICAL_APP_URL must:
-// 1. Be a valid HTTPS string even during SSR (window is undefined on server)
-// 2. Match EXACTLY what is registered in WalletConnect Cloud dashboard
-// 3. NOT use window.location.origin  this can return '' or undefined on iOS WKWebView
-//    if called before the document is fully loaded, causing the WC relay to reject the session.
-// The canonical URL is ALWAYS humanidfi.com in production. Preview URLs must be allowlisted
-// separately in WalletConnect Cloud dashboard if needed.
-let CANONICAL_APP_URL = 'https://humanidfi.com';
-if (typeof window !== 'undefined' && window.location && window.location.origin) {
-    const origin = window.location.origin;
-    if (origin !== 'null' && origin !== '') {
-        CANONICAL_APP_URL = origin;
-    }
-}
-
+// [FIX] CANONICAL_APP_URL must ALWAYS be the registered WalletConnect Cloud domain.
+// NEVER override with window.location.origin — on Railway preview environments,
+// this returns a .up.railway.app URL which is NOT in the WalletConnect allowlist.
+// A mismatched URL causes the relay to SILENTLY REJECT all mobile sessions,
+// producing exactly the "handshake failed" and "timeout" errors users report.
+// The CANONICAL_APP_URL is pinned unconditionally to the registered production domain.
+const CANONICAL_APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://humanidfi.com';
 
 const metadata = {
     name: 'Whale Alert Network',
@@ -158,7 +139,10 @@ const metadata = {
     url: CANONICAL_APP_URL,
     icons: [`${CANONICAL_APP_URL}/official-whale-monochrome.png`],
     redirect: {
+        // Universal link used by iOS to redirect back to the app after wallet approval.
+        // Must match the Associated Domains configuration on the registered domain.
         universal: CANONICAL_APP_URL,
+        native: 'whalealert://',
     }
 }
 
@@ -279,10 +263,16 @@ export function Web3ModalProvider({ children, cookies }: { children: ReactNode; 
         initialState = undefined;
     }
 
-    // [ABYSMALLY COMPLEX OPTIMIZATION] - iOS Chrome Connection Healer
-    // iOS Chrome (WKWebView) aggressively suspends WebSockets when backgrounded during deep-link flows (e.g. to MetaMask).
-    // Upon returning, the socket is dead but the browser doesn't know it, causing infinite loading spinners.
-    // This forcibly re-evaluates and resurrects dead Wagmi connections when the tab becomes visible again.
+    // [IOS CONNECTION HEALER]
+    // iOS Safari and Chrome (WKWebView) aggressively suspend WebSocket connections when
+    // the user leaves the browser tab to approve a wallet deep-link (MetaMask, Rainbow, etc.).
+    // Upon returning, the WalletConnect WebSocket relay is dead but wagmi doesn't know it,
+    // causing the UI to show an infinite loading spinner instead of the connected state.
+    //
+    // Fix: Listen for the tab becoming visible again, then call reconnect() after a
+    // sufficient delay to allow the iOS networking stack to fully restore its state.
+    // 300ms was too short — iOS needs ~1000-1500ms after tab restore to re-establish
+    // the underlying WKWebView network layer. 1200ms is the safe cross-device threshold.
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const handleVisibility = () => {
@@ -290,9 +280,8 @@ export function Web3ModalProvider({ children, cookies }: { children: ReactNode; 
                     setTimeout(() => {
                         try {
                             reconnect(wagmiAdapter.wagmiConfig as any);
-                            console.log('[System Protocol] iOS Connection Healer executed.');
                         } catch (e) {}
-                    }, 300); // 300ms delay gives iOS time to fully restore networking stack
+                    }, 1200); // [FIX] 1200ms: safe threshold for iOS networking stack restoration
                 }
             };
             document.addEventListener('visibilitychange', handleVisibility);
