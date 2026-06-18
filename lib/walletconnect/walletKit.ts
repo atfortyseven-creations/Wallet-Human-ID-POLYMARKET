@@ -30,8 +30,8 @@ export async function createWeb3Wallet() {
         metadata: {
             name: 'Whale Portfolio',
             description: 'Institutional System Wallet',
-            url: 'https://humanidfi.com',
-            icons: ['https://humanidfi.com/official-whale-monochrome.png'],
+            url: process.env.NEXT_PUBLIC_APP_URL || 'https://www.humanidfi.com',
+            icons: ['https://www.humanidfi.com/official-whale-monochrome.png'],
         },
     });
 

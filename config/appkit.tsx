@@ -131,7 +131,7 @@ const queryClient = new QueryClient()
 // A mismatched URL causes the relay to SILENTLY REJECT all mobile sessions,
 // producing exactly the "handshake failed" and "timeout" errors users report.
 // The CANONICAL_APP_URL is pinned unconditionally to the registered production domain.
-const CANONICAL_APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://humanidfi.com';
+const CANONICAL_APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.humanidfi.com';
 
 const metadata = {
     name: 'Whale Alert Network',
