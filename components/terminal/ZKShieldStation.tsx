@@ -12,8 +12,10 @@ export function ZKShieldStation() {
     const [lastProof, setLastProof] = useState<any>(null);
 
     const handleShield = async () => {
-        if (!targetAddress || targetAddress.length < 42) {
-            toast.error("IDENTIFIER_INVALID: Requirement 42 characters hex.");
+        // [SECURITY HARDENING] Strict input validation to prevent XSS or malformed payloads
+        const ethRegex = /^0x[a-fA-F0-9]{40}$/;
+        if (!ethRegex.test(targetAddress)) {
+            toast.error("IDENTIFIER_INVALID: Must be a valid 42-character Ethereum hex address.");
             return;
         }
 

@@ -120,7 +120,7 @@ export async function completeSessionHandshake(
   // 1. Verify if the server already recognizes our session (via HttpOnly cookies)
   // We CANNOT check document.cookie for human_session because it is HttpOnly.
   try {
-    const checkRes = await fetch('/api/auth/verify-session', { cache: 'no-store' });
+    const checkRes = await fetch('/api/auth/verify-session', { cache: 'no-store', credentials: 'include' });
     if (checkRes.ok) {
       const data = await checkRes.json();
       if (data.authenticated && data.user?.address) {

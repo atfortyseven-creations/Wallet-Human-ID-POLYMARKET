@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Studio Provenance - Live Presentation</title>
+    <title>Whale Network Presentation</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600;700&display=swap');
 
@@ -182,7 +182,7 @@
             left: 8%;
             top: 40%; 
             transform: translateY(-50%); 
-            width: 40%; /* Made slightly narrower so it doesn't overlap the center */
+            width: 40%; 
             z-index: 50;
         }
 
@@ -199,8 +199,8 @@
 
         .highlight {
             font-weight: 600;
-            color: #eab308;
-            text-shadow: 0 2px 10px rgba(234, 179, 8, 0.2);
+            color: #3b82f6;
+            text-shadow: 0 2px 10px rgba(59, 130, 246, 0.2);
         }
 
         .code-highlight {
@@ -259,39 +259,31 @@
 <body>
 
     <div id="intro-screen">
-        <h1>Studio Provenance</h1>
-        <p class="subtitle-intro">Technical Demonstration: Zero-Knowledge Privacy in the Supply Chain</p>
+        <h1>Whale Network</h1>
+        <p class="subtitle-intro">Institutional Grade Identity Terminal and Cryptographic Analytics Ecosystem</p>
         <button class="play-btn" onclick="startTrailer()">Start Experience</button>
     </div>
 
     <div id="player">
         
-        <!-- High-DPI Aztec Branding - ABSOLUTE CENTER AND MASSIVE -->
         <img src="file:///C:/Users/admin/Desktop/stu%20dioprovenance/Gemini_Generated_Image_dzte5edzte5edzte%20(2).png" class="aztec-premium-logo" alt="Aztec Network Logo">
 
-        <!-- Text Area (Left) -->
         <div class="text-container" id="text-wrapper">
-            <!-- Texts injected by JS -->
         </div>
 
-        <!-- Phone Area (Right) -->
         <div class="phone-container" id="main-phone">
-            <!-- Dynamic Island -->
             <div class="phone-notch"></div>
-            <!-- Medias mapped exactly as requested by the user -->
             <img src="file:///C:/Users/admin/Desktop/stu%20dioprovenance/photo_2026-06-02_09-40-16%20(2).jpg" class="screenshot" id="screen-create">
             <img src="file:///C:/Users/admin/Desktop/stu%20dioprovenance/photo_2026-06-02_09-40-16%20(3).jpg" class="screenshot" id="screen-dashboard">
             <img src="file:///C:/Users/admin/Desktop/stu%20dioprovenance/photo_2026-06-02_09-40-16.jpg" class="screenshot" id="screen-passport">
         </div>
         
-        <!-- Under Phone Credits -->
         <div class="powered-by" id="credits">
             Powered by <strong>Whale Network</strong> | Engineered by <strong>Aztec Network</strong>
         </div>
 
-        <!-- Final Logo -->
         <div id="logo-final">
-            <h2>Studio Provenance</h2>
+            <h2>Whale Network</h2>
             <p style="color: #666; font-size: 1.5rem; margin-top: 10px; font-weight: 300;">Public verification. Private data.</p>
             <div class="tags">
                 <strong>@whalecosystem</strong> &nbsp;&nbsp;|&nbsp;&nbsp; <strong>@AztecLabs_</strong>
@@ -302,59 +294,55 @@
 
     <script>
         const timeline = [
-            // SCENE 1: The Concept (Oranges) (Total ~18s)
+            // SCENE 1: Introduction
             { time: 1000, 
-              text: "Imagine a box of <span class='highlight'>Valencia Oranges</span>.", 
-              spokenText: "Imagine a shipment of premium Valencia Oranges. As a supplier, you are required to prove their authenticity and organic origin to the public.",
+              text: "Welcome to <span class='highlight'>Whale Network</span>.", 
+              spokenText: "Welcome to Whale Network. An advanced terminal ecosystem for the comprehensive management of digital assets and zero knowledge identities.",
               duration: 8000 },
             { time: 9500, 
-              text: "You need to prove its authenticity to the public and to inspectors...", 
-              spokenText: "However, your proprietary supplier identity, profit margins, and commercial trade volumes must remain absolutely confidential to protect your business advantage.",
+              text: "Designed for institutional operations and retail users alike.", 
+              spokenText: "Designed to meet the demands of institutional operations and retail users alike. The platform unites cross device state synchronisation and client side zero knowledge proof generation.",
               duration: 10000 },
             
-            // SCENE 2: The Smart Contract Logic (Total ~22s)
+            // SCENE 2: Dual Architecture
             { time: 20000, 
-              text: "The supplier fills in the product name, category, description, emission site, batch ID, and GS1 barcode.", 
-              spokenText: "To solve this, the supplier accesses the Provenance Registry smart contract. Here, they input essential product metadata, including the GS1 barcode.",
+              text: "Operating under a <span class='highlight'>Unified Domain Dual Architecture</span>.", 
+              spokenText: "Whale Network operates under a Unified Domain Dual Architecture. The web ecosystem dynamically adapts its execution layer to your device.",
               duration: 9000, 
               screen: 'screen-create' },
             { time: 29500, 
-              text: "Clicking 'Create product record' instantly triggers the <span class='highlight'>ProvenanceRegistry</span> smart contract.", 
-              spokenText: "By clicking 'Create product record', the system seamlessly integrates with the Aztec Network.",
-              duration: 7000 },
-            { time: 37000, 
-              text: "Aztec Network mints a <span class='code-highlight'>PrivateBatchNote</span> encrypting all commercial data.", 
-              spokenText: "Under the hood, Aztec mints a Zero-Knowledge Private Batch Note, instantly and permanently encrypting all sensitive commercial data, securing your trade secrets on-chain.",
-              duration: 11000 },
+              text: "Desktop acts as a high computation channel with <span class='code-highlight'>Client Side Prover</span>.", 
+              spokenText: "For users accessing the platform from desktop environments, the system establishes a high computation channel. Witness generation and circuit execution are wholly client side operations.",
+              duration: 10000 },
 
-            // SCENE 3: The Public Record (Total ~18s)
-            { time: 48500, 
-              text: "Instantly, the product's registry zone is created, securely storing all details.", 
-              spokenText: "Instantly, the product's secure registry zone is generated. The supplier's dashboard elegantly tracks all pending and confirmed assets in real time.",
-              duration: 9000, 
+            // SCENE 3: Mobile Handshake
+            { time: 40000, 
+              text: "Mobile functions as a <span class='highlight'>Handshake Enclave</span>.", 
+              spokenText: "Mobile devices operate as a secure authorisation enclave. The interface asynchronously routes the encrypted request through secure tunnels to the linked PC session.",
+              duration: 10000, 
               screen: 'screen-dashboard' },
-            { time: 58000, 
-              text: "Simultaneously, a <span class='code-highlight'>PublicProductRecord</span> is emitted on-chain.", 
-              spokenText: "Simultaneously, while the private data remains locked, a Public Product Record is emitted on the blockchain. This architecture beautifully isolates public identity from private reality.",
-              duration: 11000 },
+            { time: 50500, 
+              text: "Omnipresent Session Continuity across all your devices.", 
+              spokenText: "This provides omnipresent session continuity. You experience an absolute fusion of your environments while all critical operations remain entrenched within the desktop layer.",
+              duration: 10000 },
 
-            // SCENE 4: Zero-Knowledge Verification (Total ~22s)
-            { time: 69500, 
-              text: "Scanning the generated QR code reveals the absolute traceability of the product.", 
-              spokenText: "Finally, the end consumer interacts with the physical product. By simply scanning the generated QR code, they unlock the absolute traceability of the item.",
+            // SCENE 4: Terminal Ecosystem
+            { time: 61000, 
+              text: "The core interface provides five dedicated <span class='highlight'>Analytical Modules</span>.", 
+              spokenText: "The core interface is partitioned into five dedicated modules. Roadmap, Identity, Token, Network Map, and Privacy.",
               duration: 9000, 
               screen: 'screen-passport' },
-            { time: 79000, 
-              text: "The consumer sees everything the supplier did to guarantee authenticity.", 
-              spokenText: "They can verify every certified step the supplier took to guarantee its authenticity and origin.",
-              duration: 7000 },
-            { time: 86500, 
-              text: "Mathematical verification powered by <span class='highlight'>Zero-Knowledge</span> proofs.", 
-              spokenText: "This is made possible through mathematical verification powered by Zero-Knowledge proofs—ensuring absolute public trust, without ever exposing the underlying corporate data.",
+            { time: 70500, 
+              text: "Uniqueness is proved. Identity is never revealed.", 
+              spokenText: "The Identity tab empowers users to attest complex compliance criteria using locally compiled Noir circuits. Uniqueness is proved. Identity is never revealed.",
+              duration: 9000 },
+            { time: 80000, 
+              text: "Absolute control of the local environment returned to the user.", 
+              spokenText: "The Privacy module guarantees that all encryption and secret storage operations function purely within a local Zero Knowledge context. Absolute control is returned to the user.",
               duration: 11000 },
 
             // OUTRO
-            { time: 98000, triggerFinal: true }
+            { time: 91500, triggerFinal: true }
         ];
 
         // Ensure voices are loaded ahead of time
@@ -429,9 +417,6 @@
                             
                             // Remove HTML tags for clean reading
                             let cleanText = rawText.replace(/<[^>]*>?/gm, '');
-                            
-                            // Adjust text slightly for better pronunciation
-                            cleanText = cleanText.replace('GS1', 'G S 1');
                             
                             let utterance = new SpeechSynthesisUtterance(cleanText);
                             utterance.lang = 'en-GB'; 

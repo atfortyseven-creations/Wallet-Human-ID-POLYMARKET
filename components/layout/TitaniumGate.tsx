@@ -131,7 +131,7 @@ export function TitaniumGate({ children }: TitaniumGateProps) {
             // This is the fallback for QR-hydrated sessions where system_handshake
             // may briefly lag behind the HttpOnly cookies.
             try {
-                const res = await fetch('/api/auth/verify-session', { cache: 'no-store' });
+                const res = await fetch('/api/auth/verify-session', { cache: 'no-store', credentials: 'include' });
                 if (res.ok) {
                     const data = await res.json();
                     if (data.authenticated) {

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { exec } from 'child_process';
+import { exec, execFile } from 'child_process';
 import { promisify } from 'util';
 import fs from 'fs';
 import path from 'path';
@@ -21,6 +21,7 @@ function checkCompileLimit(userId: string): boolean {
 }
 
 const execAsync = promisify(exec);
+const execFileAsync = promisify(execFile);
 
 // ─────────────────────────────────────────────────────────────
 //  NARGO VERSION & BINARY MANAGEMENT
@@ -238,6 +239,11 @@ export async function POST(req: Request) {
     const body = await req.json();
     const sourceCode: string = body.sourceCode ?? '';
 
+    // [SECURITY HARDENING] Prevent Disk/Memory Exhaustion DoS
+    if (sourceCode.length > 100_000) {
+      return NextResponse.json({ success: false, error: 'Payload too large. Maximum circuit size is 100KB.' }, { status: 413 });
+    }
+
     // ── Validate input ───────────────────────────────────────
     if (!sourceCode.trim()) {
       return NextResponse.json({ success: false, error: 'No source code provided.' }, { status: 400 });
@@ -294,11 +300,13 @@ export async function POST(req: Request) {
     let compileStdout = '';
     let compileStderr = '';
     try {
-      const { stdout, stderr } = await execAsync(
-        `"${nargoPath}" compile`,
+      // [SECURITY HARDENING] Use execFileAsync instead of execAsync to bypass the shell completely and prevent RCE.
+      const { stdout, stderr } = await execFileAsync(
+        nargoPath,
+        ['compile'],
         {
           cwd:     workspaceDir,
-          timeout: 90_000,            // 90 s hard cap
+          timeout: 30_000,            // [SECURITY HARDENING] Reduced from 90s to 30s to prevent CPU exhaustion
           env:     { ...process.env, NARGO_BACKEND: 'barretenberg', HOME: os.tmpdir() },
         }
       );

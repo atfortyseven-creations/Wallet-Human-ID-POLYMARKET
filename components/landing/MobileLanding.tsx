@@ -730,7 +730,7 @@ export function MobileLanding() {
 
     // 1. First, check if we already have a valid server session
     try {
-      const checkRes = await fetch('/api/auth/verify-session', { cache: 'no-store' });
+      const checkRes = await fetch('/api/auth/verify-session', { cache: 'no-store', credentials: 'include' });
       if (checkRes.ok) {
         const data = await checkRes.json();
         if (data.authenticated && data.user?.address?.toLowerCase() === norm) {
