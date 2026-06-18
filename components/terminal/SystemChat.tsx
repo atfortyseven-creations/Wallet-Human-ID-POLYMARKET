@@ -214,15 +214,20 @@ function saveConversations(selfAddress: string, convs: Conversation[]) {
 //  XMTP message  RenderableMessage 
 
 function xmtpToRenderable(msg: any, selfInboxId: string): RenderableMessage {
-  // Safely extract content — may be a string, object, or null in v5.3.0
+  // Safely extract content - may be a string, object, or null in v5.3.0
   let rawContent = msg.content;
   let content: string;
   if (typeof rawContent === 'string') {
     content = rawContent;
   } else if (rawContent != null) {
-    // Codec-decoded objects (e.g. GroupUpdated) arrive as objects — stringify them
+    // Codec-decoded objects (e.g. GroupUpdated) arrive as objects - stringify them
     // but mark as internal so they get filtered out by the UI guards below
-    content = JSON.stringify(rawContent);
+    const stringified = JSON.stringify(rawContent);
+    if (msg.contentType?.typeId === 'group_updated' || stringified.includes('synced') || stringified.includes('cursor')) {
+      content = '[XMTP_SYNC_LOG]';
+    } else {
+      content = stringified;
+    }
   } else {
     content = msg.fallback || 'Encrypted Data';
   }
@@ -543,7 +548,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
     const canSignLocally = hasLocalWallet || existingSeed;
 
     if (isSystemHandshake && !connector && !canSignLocally) {
-      setXmtpError('Chat requires signing. Please open Whale Chat on your Mobile App to sync your keys.');
+      setXmtpError('Chat and Identity require end-to-end encryption. Please Connect Wallet to sign.');
       return;
     }
 
@@ -937,6 +942,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
               const text = rendered.content.toLowerCase();
               if (text.includes('initiatedbyinboxid')) continue;
               if (text.includes('synced') && text.includes('cursor')) continue;
+              if (rendered.content === '[XMTP_SYNC_LOG]') continue;
             }
             const hydratedList = hydrateMessages([rendered]);
             if (hydratedList.length === 0) continue;
@@ -960,6 +966,18 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                   }
                 }
               } catch (e) {}
+
+              // Fallback for missing peerAddress (XMTP v5.3.0 MLS empty addresses)
+              if (!msgConvPeer && fromPeer && msg.senderInboxId) {
+                  try {
+                      const state = await (xmtpClient.current as any).getLatestInboxState?.(msg.senderInboxId);
+                      const addr = state?.identifiers?.find((i: any) => i.identifierKind === 'Ethereum')?.identifier || state?.addresses?.[0];
+                      if (addr) {
+                          msgConvPeer = addr.toLowerCase();
+                          msg.conversation.peerAddress = addr;
+                      }
+                  } catch {}
+              }
             }
 
             const currentActivePeer = activeConvRef.current?.peerAddress.toLowerCase();
@@ -1046,6 +1064,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                  const text = m.content.toLowerCase();
                  if (text.includes('initiatedbyinboxid')) return false;
                  if (text.includes('synced') && text.includes('cursor')) return false;
+                 if (m.content === '[XMTP_SYNC_LOG]') return false;
              }
              return true;
           })

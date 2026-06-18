@@ -321,7 +321,11 @@ export async function getMessages(client: Client, peerAddress: string): Promise<
         const rawMembers = (dm as any).members;
         const members: any[] = typeof rawMembers === 'function' ? await rawMembers() : (rawMembers ?? []);
         
+        let targetInboxId: string | null = null;
+        try { targetInboxId = await Client.getInboxIdForIdentifier({ identifier: normalizedPeer, identifierKind: 'Ethereum' }, XMTP_ENV); } catch {}
+
         const hasPeer = members.some((m: any) => {
+          if (targetInboxId && m.inboxId && m.inboxId.toLowerCase() === targetInboxId.toLowerCase()) return true;
           const addrs: string[] = m.accountAddresses ?? m.addresses ?? [];
           return addrs.some((a: string) => a.toLowerCase() === normalizedPeer);
         });
@@ -362,18 +366,18 @@ export async function getMessages(client: Client, peerAddress: string): Promise<
         };
         // v5.3.0: Use getInboxIdForAddress for reliable resolution
         let resolvedInboxId: string | null = null;
-        // v5.3.0: In some versions, it's on the client, in others it's getInboxIdByAddress
         try {
-          resolvedInboxId = await (client as any).getInboxIdForAddress?.(peerAddress) ?? 
-                            await (client as any).getInboxIdByAddress?.(peerAddress);
-        } catch {
-          // Fallback to canMessage check if specific inbox methods fail
+          resolvedInboxId = await Client.getInboxIdForIdentifier({ identifier: peerAddress, identifierKind: 'Ethereum' }, XMTP_ENV);
+        } catch {}
+
+        if (!resolvedInboxId) {
           const result = await Client.canMessage([identifier], XMTP_ENV);
           if (result instanceof Map) {
             const entry = Array.from(result.entries()).find(([k]) => k.toLowerCase() === normalizedPeer);
-            // If canMessage returns a boolean, we can't use it as an inboxId.
-            // But if it returns the inboxId in some versions, we handle it.
             if (entry && typeof entry[1] === 'string') resolvedInboxId = entry[1];
+            if (!resolvedInboxId && entry && typeof entry[1] === 'boolean' && entry[1] === true) {
+              resolvedInboxId = 'unknown'; // Reachable but ID unknown
+            }
           }
         }
 

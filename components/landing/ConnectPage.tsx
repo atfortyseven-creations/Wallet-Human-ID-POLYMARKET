@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
 import { QRCodeSVG } from 'qrcode.react';
 import { useSystemSignOut } from '@/hooks/useSystemSignOut';
-import { CanvasParticles } from '@/components/ui/CanvasParticles';
+import { JapaneseWaveBackground } from '@/components/ui/JapaneseWaveBackground';
 
 import {
   ArrowRight,
@@ -530,8 +530,8 @@ export default function ConnectPage() {
       {/* Vignette: keeps the center bright, edges slightly darker for contrast */}
       <div className="absolute inset-0 z-[1] pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, transparent 30%, rgba(0,0,0,0.18) 100%)' }} />
       
-      {/* Interactive Particle Animation Overlay */}
-      {mounted && <CanvasParticles isMobile={isMobile} />}
+      {/* Interactive Japanese Wave 3D Background */}
+      {mounted && <JapaneseWaveBackground />}
 
       {/* Main content — Stacked vertically, perfectly centered, 2cm (80px) gap */}
       <div className="relative z-10 w-full flex-1 flex flex-col items-center justify-center gap-[80px] px-4 py-8 min-h-screen" style={{ pointerEvents: 'none' }}>
