@@ -104,20 +104,8 @@ export async function GET() {
       byCountry["Spain"] = 1; 
     }
 
-    // Distribute Cloudflare historical 4364 connections realistically
-    byCountry["Spain"] = (byCountry["Spain"] || 0) + 3500;
-    byCountry["United States of America"] = (byCountry["United States of America"] || 0) + 500;
-    byCountry["Peru"] = (byCountry["Peru"] || 0) + 70;
-    byCountry["Netherlands"] = (byCountry["Netherlands"] || 0) + 70;
-    byCountry["Canada"] = (byCountry["Canada"] || 0) + 50;
-    byCountry["Singapore"] = (byCountry["Singapore"] || 0) + 34;
-    byCountry["Portugal"] = (byCountry["Portugal"] || 0) + 29;
-    byCountry["United Kingdom"] = (byCountry["United Kingdom"] || 0) + 25;
-    byCountry["Brazil"] = (byCountry["Brazil"] || 0) + 22;
-    byCountry["Germany"] = (byCountry["Germany"] || 0) + 20;
-    byCountry["Argentina"] = (byCountry["Argentina"] || 0) + 44; // Total = 4364
-
-    const total = totalRealUsers + sessionCount + addedFromRedis + 4364;
+    // We only use strictly real, verified sessions to maintain absolute credibility with Aztec/Regulators.
+    const total = totalRealUsers + sessionCount + addedFromRedis;
     const activeRegions = Object.keys(byCountry).length;
 
     return NextResponse.json(

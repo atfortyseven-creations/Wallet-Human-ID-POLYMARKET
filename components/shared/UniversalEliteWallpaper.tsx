@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useSettingsStore } from '@/lib/store/useSettingsStore';
+import { usePathname } from 'next/navigation';
 
 /**
  * UniversalEliteWallpaper  Global fixed background layer
@@ -9,9 +10,14 @@ import { useSettingsStore } from '@/lib/store/useSettingsStore';
  * - backgroundSize: cover  zero white side bands, fills edge-to-edge
  * - Dark mode   wallpaper fully visible, 55% dark overlay for contrast
  * - Light mode  wallpaper at full size, 88% white overlay for readability
+ * - /connect    hidden — page manages its own background
  */
 export function UniversalEliteWallpaper() {
+    const pathname = usePathname();
     const theme = useSettingsStore((s) => s.theme);
+
+    // /connect has its own full-bleed wallpaper — skip the global overlay
+    if (pathname.startsWith('/connect')) return null;
 
     const isDark = theme === 'dark' || (
         theme === 'system' &&

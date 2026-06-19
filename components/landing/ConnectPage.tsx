@@ -12,7 +12,6 @@ import { toast } from "sonner";
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
 import { QRCodeSVG } from 'qrcode.react';
 import { useSystemSignOut } from '@/hooks/useSystemSignOut';
-import { JapaneseWaveBackground } from '@/components/ui/JapaneseWaveBackground';
 
 import {
   ArrowRight,
@@ -516,9 +515,14 @@ export default function ConnectPage() {
   const isVerified = mounted && isLinked;
 
   return (
-    <div className="w-full min-h-screen flex flex-col relative overflow-y-auto overflow-x-hidden" style={{ background: '#0a1628' }}>
-      {/* 3D WebGL Wave Background (Desktop only) + static fallback for mobile */}
-      {mounted && <JapaneseWaveBackground />}
+    <div className="w-full min-h-screen flex flex-col relative overflow-y-auto overflow-x-hidden" style={{ background: 'transparent' }}>
+      {/* Static Wallpaper Background — Japanese Wave */}
+      <img
+        src="/system-shots/152713-vector_de_patron_de_onda_japonesa-graficos_vectoriales-ilustracion-japon-dibujo-2560x1440.jpg"
+        alt="Background"
+        className="fixed inset-0 w-full h-full pointer-events-none select-none"
+        style={{ objectFit: 'cover', objectPosition: 'center', zIndex: 0, opacity: 1 }}
+      />
 
       {/* Main content — Stacked vertically, perfectly centered, 2cm (80px) gap */}
       <div className="relative z-10 w-full flex-1 flex flex-col items-center justify-center gap-[80px] px-4 py-8 min-h-screen" style={{ pointerEvents: 'none' }}>
