@@ -375,9 +375,9 @@ function HeroSection() {
 
           {/* Badge */}
           <div className="flex items-center gap-2 mb-8">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-black/10 bg-black/[0.03] text-[11px] font-bold uppercase tracking-widest text-black/50">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 border border-black/10 bg-black/[0.03] text-[11px] font-bold uppercase tracking-widest text-black/40">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              Beta · Aztec Testnet
+              Beta — Aztec Testnet
             </span>
           </div>
 
@@ -390,38 +390,48 @@ function HeroSection() {
 
           {/* Subheadline */}
           <p className="text-[16px] md:text-[19px] font-medium text-black/55 leading-relaxed text-center max-w-[620px] mb-12">
-            Whale Network is a data platform for tracking large wallet movements, managing your on-chain identity, and communicating privately — all running on the Aztec zero-knowledge network.
+            Whale Network is a data platform for tracking large wallet movements, managing your on-chain identity, and communicating privately. All of it running on the Aztec zero-knowledge network.
           </p>
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row items-center gap-3 mb-20">
             <Link
               href="/connect"
-              className="px-7 py-3.5 bg-black text-white text-[14px] font-bold tracking-wide hover:bg-black/80 transition-all active:scale-[0.98] rounded-sm"
+              className="px-7 py-3.5 bg-black text-white text-[14px] font-bold tracking-wide hover:bg-black/80 transition-all active:scale-[0.98]"
             >
-              Connect Wallet →
+              Connect Wallet
             </Link>
             <Link
               href="/developers/api-docs"
-              className="px-7 py-3.5 border border-black/15 text-black text-[14px] font-medium hover:bg-black/[0.04] transition-all active:scale-[0.98] rounded-sm"
+              className="px-7 py-3.5 border border-black/15 text-black text-[14px] font-medium hover:bg-black/[0.04] transition-all active:scale-[0.98]"
             >
               Read the Docs
             </Link>
           </div>
 
-          {/* Three-pill feature summary */}
-          <div className="flex flex-col sm:flex-row items-center gap-4 w-full max-w-[800px]">
+          {/* Three feature cards — no emojis, same style as the rest of the landing */}
+          <div className="flex flex-col sm:flex-row items-stretch gap-4 w-full max-w-[900px]">
             {[
-              { icon: "📊", label: "Whale Analytics", desc: "Real-time tracking of large on-chain positions across Ethereum, Base and Polygon" },
-              { icon: "🪪", label: "Humanity Ledger", desc: "Zero-knowledge identity verification — prove you're human without exposing personal data" },
-              { icon: "💬", label: "Whale Chat", desc: "End-to-end encrypted messaging between wallets, powered by XMTP" },
+              {
+                tag: "Analytics",
+                label: "Whale Analytics",
+                desc: "Track large wallet movements in real time across Ethereum, Base and Polygon. Follow the flow of capital before it moves the market.",
+              },
+              {
+                tag: "Identity",
+                label: "Humanity Ledger",
+                desc: "Zero-knowledge identity verification. Prove you are a unique human without sharing any personal data. No biometrics, no documents stored.",
+              },
+              {
+                tag: "Messaging",
+                label: "Whale Chat",
+                desc: "End-to-end encrypted messaging between wallets powered by XMTP. Only cryptographic identities. No phone numbers, no email addresses.",
+              },
             ].map((f) => (
-              <div key={f.label} className="flex-1 bg-[#fafafa] border border-black/8 rounded-xl px-5 py-4 flex flex-col gap-2 w-full">
-                <div className="flex items-center gap-2">
-                  <span className="text-[18px]">{f.icon}</span>
-                  <span className="text-[13px] font-black text-black">{f.label}</span>
-                </div>
-                <p className="text-[12px] text-black/50 leading-relaxed font-medium">{f.desc}</p>
+              <div key={f.label} className="flex-1 bg-[#fafafa] border border-black/10 px-6 py-6 flex flex-col gap-3">
+                <span className="text-[10px] font-black uppercase tracking-widest text-black/30">{f.tag}</span>
+                <h3 className="text-[16px] font-black text-black leading-tight">{f.label}</h3>
+                <p className="text-[13px] text-black/50 leading-relaxed font-medium flex-1">{f.desc}</p>
               </div>
             ))}
           </div>
