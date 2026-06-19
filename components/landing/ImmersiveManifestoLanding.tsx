@@ -356,28 +356,111 @@ function HeroSection() {
   }, []);
 
   return (
-    <section
-      className="relative w-full overflow-hidden flex-shrink-0"
-      style={{ minHeight: '100dvh', backgroundColor: '#ffffff' }}
-    >
-      {/* Dotted grid */}
-      <div
-        className="absolute inset-0 z-0 opacity-40 pointer-events-none"
-        style={{ backgroundImage: 'radial-gradient(#d1d5db 1px, transparent 1px)', backgroundSize: '24px 24px' }}
-      />
+    <>
+      {/* ── Presentation hero ── */}
+      <section
+        className="relative w-full bg-white overflow-hidden flex-shrink-0"
+        style={{ minHeight: '100dvh' }}
+      >
+        {/* Subtle dotted grid */}
+        <div
+          className="absolute inset-0 z-0 opacity-30 pointer-events-none"
+          style={{ backgroundImage: 'radial-gradient(#d1d5db 1px, transparent 1px)', backgroundSize: '24px 24px' }}
+        />
 
-      {mounted && <DvhPolyfill />}
+        {mounted && <DvhPolyfill />}
 
-      {/* Architecture — full viewport width, borderless */}
-      <div className="relative z-10 w-full">
-        <NetworkMapPanel />
-      </div>
+        {/* Centered content */}
+        <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-6 pt-28 pb-20 min-h-[100dvh]">
 
-      {/* Scroll cue */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-30 pointer-events-none">
-        <div className="w-[1px] h-12 bg-gradient-to-b from-black/30 to-transparent" />
-      </div>
-    </section>
+          {/* Badge */}
+          <div className="flex items-center gap-2 mb-8">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-black/10 bg-black/[0.03] text-[11px] font-bold uppercase tracking-widest text-black/50">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              Beta · Aztec Testnet
+            </span>
+          </div>
+
+          {/* Main headline */}
+          <h1 className="text-[40px] sm:text-[56px] md:text-[72px] font-black tracking-tighter leading-[1.0] text-black text-center max-w-[900px] mb-6">
+            On-chain analytics
+            <br />
+            <span className="text-black/25">with built-in privacy.</span>
+          </h1>
+
+          {/* Subheadline */}
+          <p className="text-[16px] md:text-[19px] font-medium text-black/55 leading-relaxed text-center max-w-[620px] mb-12">
+            Whale Network is a data platform for tracking large wallet movements, managing your on-chain identity, and communicating privately — all running on the Aztec zero-knowledge network.
+          </p>
+
+          {/* CTAs */}
+          <div className="flex flex-col sm:flex-row items-center gap-3 mb-20">
+            <Link
+              href="/connect"
+              className="px-7 py-3.5 bg-black text-white text-[14px] font-bold tracking-wide hover:bg-black/80 transition-all active:scale-[0.98] rounded-sm"
+            >
+              Connect Wallet →
+            </Link>
+            <Link
+              href="/developers/api-docs"
+              className="px-7 py-3.5 border border-black/15 text-black text-[14px] font-medium hover:bg-black/[0.04] transition-all active:scale-[0.98] rounded-sm"
+            >
+              Read the Docs
+            </Link>
+          </div>
+
+          {/* Three-pill feature summary */}
+          <div className="flex flex-col sm:flex-row items-center gap-4 w-full max-w-[800px]">
+            {[
+              { icon: "📊", label: "Whale Analytics", desc: "Real-time tracking of large on-chain positions across Ethereum, Base and Polygon" },
+              { icon: "🪪", label: "Humanity Ledger", desc: "Zero-knowledge identity verification — prove you're human without exposing personal data" },
+              { icon: "💬", label: "Whale Chat", desc: "End-to-end encrypted messaging between wallets, powered by XMTP" },
+            ].map((f) => (
+              <div key={f.label} className="flex-1 bg-[#fafafa] border border-black/8 rounded-xl px-5 py-4 flex flex-col gap-2 w-full">
+                <div className="flex items-center gap-2">
+                  <span className="text-[18px]">{f.icon}</span>
+                  <span className="text-[13px] font-black text-black">{f.label}</span>
+                </div>
+                <p className="text-[12px] text-black/50 leading-relaxed font-medium">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+
+        </div>
+
+        {/* Scroll cue */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-30 pointer-events-none">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-black/25">Architecture</span>
+          <div className="w-[1px] h-10 bg-gradient-to-b from-black/20 to-transparent" />
+        </div>
+      </section>
+
+      {/* ── Architecture Map ── */}
+      <section
+        className="relative w-full overflow-hidden flex-shrink-0 bg-white border-t border-black/10"
+        style={{ minHeight: '100dvh' }}
+      >
+        <div
+          className="absolute inset-0 z-0 opacity-30 pointer-events-none"
+          style={{ backgroundImage: 'radial-gradient(#d1d5db 1px, transparent 1px)', backgroundSize: '24px 24px' }}
+        />
+
+        {/* Section label */}
+        <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 pt-16 pb-4">
+          <span className="text-[11px] font-black uppercase tracking-widest text-black/30 block mb-2">System Architecture</span>
+          <h2 className="text-[28px] md:text-[38px] font-black tracking-tight text-black">
+            How Whale Network is built
+          </h2>
+          <p className="text-[15px] text-black/50 font-medium mt-2 max-w-[560px]">
+            A live map of the protocol stack — from L1 settlement on Ethereum to private execution on Aztec, and the data layers in between.
+          </p>
+        </div>
+
+        <div className="relative z-10 w-full">
+          <NetworkMapPanel />
+        </div>
+      </section>
+    </>
   );
 }
 
