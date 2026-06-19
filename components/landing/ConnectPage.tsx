@@ -517,20 +517,7 @@ export default function ConnectPage() {
 
   return (
     <div className="w-full min-h-screen flex flex-col relative overflow-y-auto overflow-x-hidden" style={{ background: '#0a1628' }}>
-      {/* Background — cover fills every pixel at any viewport size, no black bleed */}
-      <div
-        className="fixed inset-0 z-0"
-        style={{
-          backgroundImage: "url('/connect-wallpaper.jpg')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center',
-          backgroundRepeat: 'no-repeat',
-        }}
-      />
-      {/* Vignette: keeps the center bright, edges slightly darker for contrast */}
-      <div className="absolute inset-0 z-[1] pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 40%, transparent 30%, rgba(0,0,0,0.18) 100%)' }} />
-      
-      {/* Interactive Japanese Wave 3D Background */}
+      {/* 3D WebGL Wave Background (Desktop only) + static fallback for mobile */}
       {mounted && <JapaneseWaveBackground />}
 
       {/* Main content — Stacked vertically, perfectly centered, 2cm (80px) gap */}

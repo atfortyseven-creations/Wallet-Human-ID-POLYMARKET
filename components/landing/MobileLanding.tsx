@@ -19,7 +19,6 @@ import {
   Newspaper, GraduationCap, Briefcase, Activity, TrendingUp, Package, LayoutDashboard, Target
 } from 'lucide-react';
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
-import { JapaneseWaveBackground } from '@/components/ui/JapaneseWaveBackground';
 
 //  Reown AppKit + WagmiAdapter localStorage key patterns 
 // These are ALL the keys that Reown AppKit v1/v2 and its WagmiAdapter write
@@ -1173,8 +1172,8 @@ export function MobileLanding() {
   //  Render: Unified Mobile Landing & Login Modal 
   // CRITICAL: This block must be AFTER all isLinked guards above.
   return (
-    <div className="w-full min-h-[100dvh] relative font-sans text-white">
-      {mounted && <JapaneseWaveBackground />}
+    <div className="w-full min-h-[100dvh] bg-[#F9F8F6] relative font-sans text-[#050505]">
+      
       {/*  Sticky Header  */}
       <motion.header
         initial={{ opacity: 0, y: -12 }}
