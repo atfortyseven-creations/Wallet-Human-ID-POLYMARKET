@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createAztecNodeClient, waitForNode } from '@aztec/aztec.js/node';
+import { createAztecNodeClient } from '@aztec/aztec.js/node';
 import { AccountManager } from '@aztec/aztec.js/wallet';
 import { SchnorrAccountContract } from '@aztec/accounts/schnorr';
 import { Fr } from '@aztec/aztec.js/fields';
@@ -10,14 +10,20 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const PXE_URL = 'https://v4-devnet-2.aztec-labs.com';
-    const RELAYER_SECRET_KEY = '0x0b2cda0c07982cced5c5bbbc01dc76a5b2ef4e8111926bb4d8a14f15104d8e36';
+    const PXE_URL = process.env.AZTEC_NODE_URL || 'http://localhost:8080';
+    const RELAYER_SECRET_KEY = process.env.RELAYER_SECRET_KEY || '0x0b2cda0c07982cced5c5bbbc01dc76a5b2ef4e8111926bb4d8a14f15104d8e36';
 
     const pxe = createAztecNodeClient(PXE_URL);
-    await waitForNode(pxe);
     
-    // Check connection
-    const nodeInfo = await pxe.getNodeInfo();
+    // Quick check to avoid infinite waitForNode loops if server is down
+    let nodeInfo;
+    try {
+        nodeInfo = await pxe.getNodeInfo();
+    } catch (e: any) {
+        console.error(`❌ Aztec network unreachable at ${PXE_URL}. Ensure Sandbox is running.`);
+        return NextResponse.json({ success: false, error: 'Aztec network unreachable. Start the Sandbox.' }, { status: 503 });
+    }
+
     console.log(`✅ Connected to PXE! Rollup version: ${nodeInfo.rollupVersion}`);
 
     const secretKey = Fr.fromString(RELAYER_SECRET_KEY);
