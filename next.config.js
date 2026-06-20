@@ -215,7 +215,7 @@ const nextConfig = {
     },
 
     // Moved from experimental in Next.js 15
-    serverExternalPackages: ['@prisma/client', 'prisma', 'ioredis', 'neo4j-driver', 'snarkjs'],
+    serverExternalPackages: ['@prisma/client', 'prisma', 'ioredis', 'neo4j-driver', 'snarkjs', '@aztec/aztec.js', '@aztec/foundation', 'pino'],
 
     experimental: {
         optimizePackageImports: [
