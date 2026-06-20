@@ -210,6 +210,10 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
     setError(null);
 
     try {
+      const pxeUrl = typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== 'www.humanidfi.com' && window.location.hostname !== 'humanidfi.com'
+        ? `http://${window.location.hostname}:8080` 
+        : 'http://localhost:8080';
+
       // Step 1: Request signature via WalletConnect to generate entropy for Aztec
       toast.loading("Sign message in your wallet to generate Aztec identity...", { id: "az-connect" });
       const signature = await signMessageAsync({
@@ -220,7 +224,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       const entropy = keccak256(toBytes(signature));
 
       // Note: In a fully decentralized Option B, we would instantiate @aztec/aztec.js 
-      // here on the client and connect to http://localhost:8080.
+      // here on the client and connect to pxeUrl.
       // However, due to browser WASM constraints, we pass the entropy to our backend 
       // temporarily to compute the canonical Aztec address, OR we use the hash as the address identifier.
       
@@ -264,8 +268,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       }
 
       // Step 3 — Set session state in memory.
-      setSeed(trimmed);
-      setAztecAddress(derived);
+      notifiedRef.current = new Set(); // Reset notification tracking on new login.
       notifiedRef.current = new Set(); // Reset notification tracking on new login.
 
       // Step 4 — Immediate first fetch, then start polling loop.
