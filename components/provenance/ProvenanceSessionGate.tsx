@@ -58,24 +58,24 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
   if (!authState) {
     return (
       <div className="min-h-[100dvh] bg-[#FFFFFF] text-[#050505] flex flex-col px-6 pt-[calc(1.5rem+env(safe-area-inset-top))] pb-[calc(2rem+env(safe-area-inset-bottom))]">
-        <Link
-          href="/connect"
+        <a
+          href="https://humanidfi.com/connect"
           className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-black/50 mb-8"
         >
           <ArrowLeft size={14} />
           Back
-        </Link>
+        </a>
         <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto text-center gap-4">
           <h1 className="text-xl font-black tracking-tight">Connect your wallet</h1>
           <p className="text-sm text-black/60 leading-relaxed">
-            Connect your wallet to access the Whale Network terminal and all its modules.
+            Connect your wallet to access the Whale Network terminal and all its modules. By logging in through humanidfi.com/connect, you will receive 3 free passport creations.
           </p>
-          <Link
-            href="/connect"
+          <a
+            href="https://humanidfi.com/connect"
             className="w-full py-4 rounded-2xl bg-[#050505] text-white text-[11px] font-black uppercase tracking-widest"
           >
             Connect Wallet
-          </Link>
+          </a>
         </div>
       </div>
     );

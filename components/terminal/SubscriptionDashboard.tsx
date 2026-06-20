@@ -261,13 +261,7 @@ export function SubscriptionDashboard() {
                         </p>
                     </div>
                     {!isOwner && (
-                        <button 
-                            onClick={openPortal} 
-                            disabled={loading}
-                            className="shrink-0 bg-[#5A67D8] hover:bg-[#4C51BF] text-white px-5 py-2 rounded-lg text-[13px] font-bold transition-colors"
-                        >
-                            Manage Plan
-                        </button>
+                        <ManageButton tier={tierKey} onUpgrade={() => loadSession(true)} />
                     )}
                 </div>
             </div>

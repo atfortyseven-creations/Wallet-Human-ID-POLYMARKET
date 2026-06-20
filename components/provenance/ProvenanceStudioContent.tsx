@@ -27,13 +27,25 @@ import {
   CreditCard,
   ArrowRight,
   X,
+  Eye,
 } from 'lucide-react';
 import { useAccount } from 'wagmi';
 import { passportPublicUrl } from '@/lib/scan/parseScanPayload';
 import type { ProductPassportPublic } from '@/lib/passport/types';
 import { NODE_TIERS, PlanTier } from '@/lib/node_infrastructure/tiers';
 import { ShieldCheck } from 'lucide-react';
-import { SubscriptionDashboard } from '@/components/terminal/SubscriptionDashboard';
+import dynamic from 'next/dynamic';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+
+const SubscriptionDashboard = dynamic(
+  () => import('@/components/terminal/SubscriptionDashboard').then(mod => mod.SubscriptionDashboard),
+  { ssr: false, loading: () => <div className="p-8 text-center text-xs text-black/50 uppercase tracking-widest">Loading Dashboard...</div> }
+);
+
+const SightInsightTab = dynamic(
+  () => import('./SightInsightTab').then(mod => mod.SightInsightTab),
+  { ssr: false, loading: () => <div className="p-8 text-center text-xs text-black/50 uppercase tracking-widest">Waking up Insight Engine...</div> }
+);
 
 /* ─────────────────────────────────────────────
    CONSTANTS
@@ -43,7 +55,7 @@ const EXPLORER_BASE = 'https://testnet.aztecscan.xyz/tx/';
 /* ─────────────────────────────────────────────
    TYPES
 ───────────────────────────────────────────── */
-type Tab = 'create' | 'registry' | 'aztec' | 'billing' | 'dashboard';
+type Tab = 'create' | 'registry' | 'aztec' | 'billing' | 'dashboard' | 'insight';
 
 /* ─────────────────────────────────────────────
    UTILITIES
@@ -1010,67 +1022,67 @@ function BandwidthTab() {
   const [isAnnual, setIsAnnual] = useState(false);
   const [loadingTier, setLoadingTier] = useState<string | null>(null);
 
-  /* ---- Los 3 productos reales de Stripe en castellano ---- */
+  /* ---- Stripe products translated to English ---- */
   const PLANES = [
     {
       tier: PlanTier.LIGHT_NODE,
-      nombre: 'Plan Básico',
-      tagline: 'Para empezar con garantías',
+      nombre: 'Basic Plan',
+      tagline: 'To start with guarantees',
       precio: { mensual: 4995, anual: 47952 }, // €49.95/mo → €3996/yr
       popular: false,
       elite: false,
-      descripcion: 'Acceso verificable a registros de procedencia. Perfecto para pequeñas empresas y productores independientes.',
+      descripcion: 'Verifiable access to provenance records. Perfect for small businesses and independent producers.',
       caracteristicas: [
-        'Registros de procedencia ilimitados',
-        'Códigos QR verificables',
-        'Confirmación en Aztec Network',
-        'API REST básica',
-        'Soporte por correo',
+        'Unlimited provenance records',
+        'Verifiable QR codes',
+        'Aztec Network confirmation',
+        'Basic REST API',
+        'Email support',
       ],
       noIncluye: [
-        'WebSockets en tiempo real',
-        'Detección Dark Pool',
-        'Exportación CSV',
+        'Real-time WebSockets',
+        'Dark Pool detection',
+        'CSV export',
       ],
     },
     {
       tier: PlanTier.FULL_NODE,
-      nombre: 'Plan Profesional',
-      tagline: 'Para organizaciones en crecimiento',
+      nombre: 'Professional Plan',
+      tagline: 'For growing organizations',
       precio: { mensual: 14995, anual: 143952 },
       popular: true,
       elite: false,
-      descripcion: 'Infraestructura completa para cadenas de suministro industriales con trazabilidad en tiempo real.',
+      descripcion: 'Complete infrastructure for industrial supply chains with real-time traceability.',
       caracteristicas: [
-        'Todo lo del Plan Básico',
-        'WebSockets en tiempo real',
-        'Protocolo FIX incluido',
-        'Hasta 18 claves de nodo relay',
-        'Historial de datos 12 meses',
-        'Exportación CSV / Parquet',
-        'Soporte prioritario',
+        'Everything in Basic Plan',
+        'Real-time WebSockets',
+        'FIX protocol included',
+        'Up to 18 relay node keys',
+        '12-month data history',
+        'CSV / Parquet export',
+        'Priority support',
       ],
       noIncluye: [
-        'Detección Dark Pool avanzada',
+        'Advanced Dark Pool detection',
       ],
     },
     {
       tier: PlanTier.ARCHIVE_PROVER,
-      nombre: 'Plan Empresa',
-      tagline: 'Máxima potencia institucional',
+      nombre: 'Enterprise Plan',
+      tagline: 'Maximum institutional power',
       precio: { mensual: 24995, anual: 239952 },
       popular: false,
       elite: true,
-      descripcion: 'Solución completa para instituciones públicas, organismos reguladores y grandes empresas con necesidades de privacidad ZK.',
+      descripcion: 'Complete solution for public institutions, regulatory bodies, and large enterprises with ZK privacy needs.',
       caracteristicas: [
-        'Todo lo del Plan Profesional',
-        'Solicitudes diarias ilimitadas',
-        'Todos los tokens de acceso',
-        '50 claves de nodo relay',
-        'Detección Dark Pool avanzada',
-        'Historial completo de archivo',
+        'Everything in Professional Plan',
+        'Unlimited daily requests',
+        'All access tokens',
+        '50 relay node keys',
+        'Advanced Dark Pool detection',
+        'Full archive history',
         'IP Whitelist + HMAC',
-        'SLA dedicado y gestor de cuenta',
+        'Dedicated SLA and account manager',
       ],
       noIncluye: [],
     },
@@ -1078,7 +1090,7 @@ function BandwidthTab() {
 
   const handleCompra = async (tier: string) => {
     if (!isConnected) {
-      alert('Conecta tu cartera para suscribirte.');
+      alert('Connect your wallet to subscribe.');
       return;
     }
     setLoadingTier(tier);
@@ -1092,10 +1104,10 @@ function BandwidthTab() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        throw new Error(data.error || 'Error al iniciar el pago');
+        throw new Error(data.error || 'Error starting payment');
       }
     } catch (err: any) {
-      alert(`Error de pago: ${err.message}`);
+      alert(`Payment error: ${err.message}`);
     } finally {
       setLoadingTier(null);
     }
@@ -1107,14 +1119,14 @@ function BandwidthTab() {
       {/* Hero header */}
       <div className="text-center space-y-3 pt-2">
         <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30">
-          Asignación de Nodo
+          Node Allocation
         </p>
         <h2 className="text-3xl font-black tracking-tight text-[#050505] leading-tight">
-          Elige tu plan
+          Choose your plan
         </h2>
         <p className="text-sm text-black/50 leading-relaxed max-w-md mx-auto">
-          Todos los planes incluyen registros ZK en Aztec Network, etiquetas QR imprimibles
-          y un período de prueba de 30&nbsp;días sin cargo.
+          All plans include ZK registries on Aztec Network, printable QR tags,
+          and a 30-day free trial.
         </p>
       </div>
 
@@ -1122,7 +1134,7 @@ function BandwidthTab() {
       <div className="flex justify-center items-center gap-4">
         <span className={`text-[11px] font-black uppercase tracking-widest ${
           !isAnnual ? 'text-[#050505]' : 'text-black/30'
-        }`}>Mensual</span>
+        }`}>Monthly</span>
         <button
           type="button"
           onClick={() => setIsAnnual(!isAnnual)}
@@ -1137,9 +1149,9 @@ function BandwidthTab() {
         <span className={`text-[11px] font-black uppercase tracking-widest flex items-center gap-2 ${
           isAnnual ? 'text-[#050505]' : 'text-black/30'
         }`}>
-          Anual
+          Annually
           <span className="text-[9px] bg-black/5 text-black/60 px-2 py-0.5 rounded-full border border-black/10">
-            Ahorra 20%
+            Save 20%
           </span>
         </span>
       </div>
@@ -1166,12 +1178,12 @@ function BandwidthTab() {
               {/* Badge popular / elite */}
               {plan.popular && (
                 <div className="absolute -top-3 left-6 bg-black/8 text-[#050505] border border-black/10 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">
-                  Más popular
+                  Most popular
                 </div>
               )}
               {plan.elite && (
                 <div className="absolute -top-3 left-6 bg-[#050505] text-white px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">
-                  Máxima potencia
+                  Maximum power
                 </div>
               )}
 
@@ -1213,13 +1225,13 @@ function BandwidthTab() {
                         {precioFormateado}€
                       </span>
                       <span className="text-[10px] font-mono text-black/30 uppercase">
-                        /{isAnnual ? 'año' : 'mes'}
+                        /{isAnnual ? 'year' : 'month'}
                       </span>
                     </div>
                     {isAnnual && (
                       <p className="text-[10px] text-black/40 sm:text-right mt-0.5">
-                        {(plan.precio.mensual / 100).toLocaleString('es-ES', { minimumFractionDigits: 2 })}€/mes
-                        &nbsp;×&nbsp;12, facturado anualmente
+                        {(plan.precio.mensual / 100).toLocaleString('es-ES', { minimumFractionDigits: 2 })}€/mo
+                        &nbsp;×&nbsp;12, billed annually
                       </p>
                     )}
                   </div>
@@ -1236,18 +1248,18 @@ function BandwidthTab() {
                     {cargando ? (
                       <>
                         <span className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin" />
-                        Procesando…
+                        Processing…
                       </>
                     ) : (
                       <>
-                        {plan.elite ? 'Contratar Empresa' : plan.popular ? 'Contratar Profesional' : 'Contratar Básico'}
+                        {plan.elite ? 'Get Enterprise' : plan.popular ? 'Get Professional' : 'Get Basic'}
                         <ArrowRight size={13} />
                       </>
                     )}
                   </button>
 
                   <p className="text-[9px] text-black/30 sm:text-right">
-                    30 días gratis · Sin compromiso
+                    30 days free · No commitment
                   </p>
                 </div>
               </div>
@@ -1260,22 +1272,22 @@ function BandwidthTab() {
       <div className="rounded-2xl border border-black/8 bg-black/[0.015] p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
           <p className="text-xs font-bold text-[#050505] mb-0.5">
-            ¿Necesitas una solución a medida?
+            Need a custom solution?
           </p>
           <p className="text-[11px] text-black/50">
-            Para instituciones públicas, organismos reguladores o volumen alto, contacta con nuestro equipo.
+            For public institutions, regulatory bodies, or high volume, contact our team.
           </p>
         </div>
         <a
-          href="mailto:enterprise@humanidfi.com"
+          href="mailto:enterprise@whalenetwork.com"
           className="shrink-0 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-[#050505] hover:opacity-60 transition-opacity"
         >
-          Contactar<ArrowRight size={11} />
+          Contact<ArrowRight size={11} />
         </a>
       </div>
 
       <p className="text-[10px] text-black/25 text-center">
-        Los precios no incluyen IVA. Facturación recurrente cancelable en cualquier momento.
+        Prices exclude VAT. Recurring billing cancelable at any time.
       </p>
     </div>
   );
@@ -1293,7 +1305,56 @@ export function ProvenanceStudioContent({
   const isMobile = variant === 'mobile';
   const [activeTab, setActiveTab] = useState<Tab>('create');
   const [registryRefreshKey, setRegistryRefreshKey] = useState(0);
-  const [hasPlan, setHasPlan] = useState(false);
+  const [hasPlan, setHasPlan] = useState<boolean | null>(null);
+  
+  // Phase 0: Syncing, Phase 1: Completed, Phase 2: Ready
+  const [initPhase, setInitPhase] = useState<0 | 1 | 2>(0);
+
+  // Smooth delayed initialization ("de forma lenta" con animación de completado)
+  useEffect(() => {
+    const timer1 = setTimeout(() => {
+      setInitPhase(1); // Switch to completed animation
+    }, 2500);
+    
+    const timer2 = setTimeout(() => {
+      setInitPhase(2); // Reveal UI
+    }, 4500);
+    
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
+  }, []);
+
+  if (initPhase < 2) {
+    return (
+      <div className="flex min-h-[50vh] w-full flex-col items-center justify-center bg-[#fdfdfd] text-center p-8">
+        <div className="h-48 w-48 opacity-90 transition-all duration-500 ease-in-out">
+          {initPhase === 0 ? (
+            <DotLottieReact 
+              src="/lotties/block abstract.json" 
+              loop 
+              autoplay 
+              className="w-full h-full object-contain"
+            />
+          ) : (
+            <DotLottieReact 
+              src="/lotties/Transaction Complete.json" 
+              loop={false}
+              autoplay 
+              className="w-full h-full object-contain scale-110"
+            />
+          )}
+        </div>
+        <h2 className="mt-8 text-sm font-black uppercase tracking-[0.3em] text-[#050505] transition-opacity duration-300">
+          {initPhase === 0 ? 'Initializing Quantum Sequencer' : 'Sequencer Certified'}
+        </h2>
+        <p className="mt-2 text-[10px] font-bold uppercase tracking-widest text-black/40 transition-opacity duration-300">
+          {initPhase === 0 ? 'Syncing with Aztec Testnet v5' : 'Connection Established'}
+        </p>
+      </div>
+    );
+  }
 
   useEffect(() => {
     // Check if user has an active plan to show Dashboard tab
@@ -1306,9 +1367,11 @@ export function ProvenanceStudioContent({
           setHasPlan(true);
         } else if (data?.user?.id?.toLowerCase() === '0x78831c25c86ea2a78a6127fc2ccb95e612d87b4a') {
           setHasPlan(true); // Owner VIP
+        } else {
+          setHasPlan(false);
         }
       })
-      .catch(() => {});
+      .catch(() => setHasPlan(false));
   }, []);
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
@@ -1316,6 +1379,7 @@ export function ProvenanceStudioContent({
     { id: 'registry', label: 'All Records', icon: <LayoutList size={13} /> },
     { id: 'aztec', label: 'Aztec Network', icon: null },
     { id: 'billing', label: 'Node Allocation', icon: <CreditCard size={13} /> },
+    { id: 'insight', label: 'Sight Insight', icon: <Eye size={13} /> },
   ];
 
   if (hasPlan) {
@@ -1328,6 +1392,52 @@ export function ProvenanceStudioContent({
     // Stay on create tab to show the QR — user can navigate to registry manually
     void passport;
   };
+
+  if (hasPlan === null) {
+    return (
+      <div className="w-full min-h-[100dvh] flex items-center justify-center bg-[#FFFFFF]">
+        <Loader2 size={24} className="animate-spin text-black/30" />
+      </div>
+    );
+  }
+
+  if (hasPlan === false) {
+    return (
+      <div className={`min-h-[100dvh] bg-[#FFFFFF] flex flex-col ${isMobile ? 'pb-[calc(2rem+env(safe-area-inset-bottom))]' : ''}`}>
+        {isMobile && (
+          <header className="sticky top-0 z-20 bg-[#FFFFFF]/95 backdrop-blur-md border-b border-black/8 px-5 py-3 pt-[calc(0.75rem+env(safe-area-inset-top))]">
+            <button
+              type="button"
+              onClick={() => router.push('/terminal')}
+              className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-black/50"
+            >
+              <ArrowLeft size={16} />
+              Return
+            </button>
+          </header>
+        )}
+        <div className="w-full flex-1 flex flex-col relative" style={{ minHeight: '100dvh' }}>
+           {!isMobile && (
+             <div className="absolute top-6 left-6 z-10">
+                <Link 
+                  href="/terminal"
+                  className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-6 py-3 bg-black text-white rounded-full hover:bg-black/80 transition-all shadow-xl"
+                >
+                  <ArrowLeft size={14} />
+                  Return to Dashboard
+                </Link>
+             </div>
+           )}
+           <iframe 
+             src="https://studio-provenance-production.up.railway.app" 
+             className="w-full flex-1 border-0"
+             title="Studio Provenance Bridge"
+             style={{ minHeight: '100dvh' }}
+           />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -1405,6 +1515,7 @@ export function ProvenanceStudioContent({
         {activeTab === 'aztec' && <AztecTab />}
         {activeTab === 'billing' && <BandwidthTab />}
         {activeTab === 'dashboard' && <SubscriptionDashboard />}
+        {activeTab === 'insight' && <SightInsightTab />}
       </div>
     </div>
   );

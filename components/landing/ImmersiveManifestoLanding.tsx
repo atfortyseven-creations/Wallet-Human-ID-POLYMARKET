@@ -383,14 +383,14 @@ function HeroSection() {
 
           {/* Main headline */}
           <h1 className="text-[40px] sm:text-[56px] md:text-[72px] font-black tracking-tighter leading-[1.0] text-black text-center max-w-[900px] mb-6">
-            On-chain analytics
+            Programmable privacy.
             <br />
-            <span className="text-black/25">with built-in privacy.</span>
+            <span className="text-black/25">Shielded execution.</span>
           </h1>
 
           {/* Subheadline */}
           <p className="text-[16px] md:text-[19px] font-medium text-black/55 leading-relaxed text-center max-w-[620px] mb-12">
-            Whale Network is a data platform for tracking large wallet movements, managing your on-chain identity, and communicating privately. All of it running on the Aztec zero-knowledge network.
+            Whale Network is the privacy first portfolio and identity layer built exclusively on the Aztec zero-knowledge network. Track capital, manage identity, and communicate securely without exposing data to the public ledger.
           </p>
 
           {/* CTAs */}
@@ -415,17 +415,17 @@ function HeroSection() {
               {
                 tag: "Analytics",
                 label: "Whale Analytics",
-                desc: "Track large wallet movements in real time across Ethereum, Base and Polygon. Follow the flow of capital before it moves the market.",
+                desc: "Shielded portfolio tracking across Ethereum L1 and L2s. Monitor the flow of capital through encrypted transactions before it moves the market.",
               },
               {
                 tag: "Identity",
                 label: "Humanity Ledger",
-                desc: "Zero-knowledge identity verification. Prove you are a unique human without sharing any personal data. No biometrics, no documents stored.",
+                desc: "Noir based identity verification. Prove you are a unique human using local zero-knowledge circuits without exposing any personal data to the public.",
               },
               {
                 tag: "Messaging",
                 label: "Whale Chat",
-                desc: "End-to-end encrypted messaging between wallets powered by XMTP. Only cryptographic identities. No phone numbers, no email addresses.",
+                desc: "End to end encrypted messaging between wallets anchored to your private state. Only cryptographic identities, no IP tracking, no metadata.",
               },
             ].map((f) => (
               <div key={f.label} className="flex-1 bg-[#fafafa] border border-black/10 px-6 py-6 flex flex-col gap-3">
@@ -503,12 +503,12 @@ function ValuePropositionSection() {
           Absolute Privacy
         </span>
         <h2 className="text-[36px] md:text-[56px] font-black tracking-tighter leading-[1.05] text-black max-w-[800px]">
-          Identity and asset verification
+          Ethereum security.
           <br />
-          <span className="text-black/30">without data custody.</span>
+          <span className="text-black/30">Absolute privacy.</span>
         </h2>
         <p className="mt-8 text-[16px] md:text-[18px] font-medium text-black/60 leading-relaxed max-w-[600px]">
-          Whale Network uses zero-knowledge cryptography to prove who you are and what you own, without exposing your data to anyone. From Studio Provenance to Whale Chat, every interaction is mathematically guaranteed to be private.
+          By leveraging the Aztec Network Private Execution Environment, Whale Network shifts all computation to your local device. The network verifies a zero-knowledge proof of your actions without ever seeing your raw balances, chat metadata, or identity documents. This is the foundation of programmable privacy.
         </p>
       </div>
     </section>
@@ -521,24 +521,24 @@ function HowItWorksSection() {
   const steps = [
     {
       step: "01",
-      title: "Secure Authentication",
-      description: "Access your dashboard using a robust cryptographic handshake. Whether connecting via a mobile QR scan or a Web3 wallet, your session is authenticated without relying on vulnerable passwords.",
+      title: "Local Proving",
+      description: "Your device runs the Noir circuits locally, generating a zero-knowledge proof of your transaction or identity claim before it ever touches the network.",
       icon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       )
     },
     {
       step: "02",
-      title: "Private Data Environment",
-      description: "Your assets, identity attributes, and transaction history are encrypted locally on your device. The network processes encrypted states, ensuring complete confidentiality.",
+      title: "Encrypted State",
+      description: "Balances and identity credentials are stored as encrypted UTXO notes on the Aztec L2. Only your private viewing key can decrypt them.",
       icon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
       )
     },
     {
       step: "03",
-      title: "Verifiable Proofs",
-      description: "When an application requests verification (like age, jurisdiction, or solvency), your device generates a mathematical proof. The app verifies the proof instantly, receiving absolute certainty but zero personal data.",
+      title: "Nullifier Resistance",
+      description: "When you execute an action, the protocol emits a deterministic nullifier, preventing double spending and Sybil attacks while keeping the actor completely anonymous.",
       icon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
       )
@@ -586,19 +586,19 @@ function IntegrationSection() {
   const cards = [
     {
       title: "Studio Provenance",
-      body: "Establish zero-knowledge provenance for your creative and financial assets. Issue cryptographic proofs of origin that are verifiable by anyone and owned by no one.",
+      body: "Establish zero-knowledge provenance for your creative and financial assets. Written in Noir and deployed on the decentralized Aztec rollup.",
       link: "Explore Provenance",
       href: "/studio/provenance"
     },
     {
       title: "Claim Identity",
-      body: "Sign once with your wallet to claim your permanent, decentralized identity on Aztec. No password, no custody, no third-party data storage.",
+      body: "Cryptographic identity verification through local zero-knowledge circuits. No password, no custody, no public data exposure.",
       link: "Go to Dashboard",
       href: "/terminal"
     },
     {
       title: "Whale Chat",
-      body: "Send and receive messages between verified identities. End-to-end encrypted, with no IP tracking and no metadata exposure.",
+      body: "Send and receive messages between verified identities. End to end encrypted messaging anchored to your private state.",
       link: "Open Chat",
       href: "/chat"
     }
@@ -609,9 +609,9 @@ function IntegrationSection() {
       <div className="w-full max-w-[1100px] mx-auto px-6">
         <div className="mb-16">
           <h2 className="text-[32px] md:text-[42px] font-black tracking-tight text-black max-w-[500px] leading-[1.1]">
-            One integration for
+            Built on
             <br />
-            <span className="text-black/30">complete security.</span>
+            <span className="text-black/30">Noir circuits.</span>
           </h2>
         </div>
 
@@ -773,6 +773,23 @@ function FAQSection() {
 
 
 
+// ─── Powered By Aztec ─────────────────────────────────────────────────────────
+
+function PoweredBySection() {
+  return (
+    <section className="w-full bg-[#fcfcfc] py-20 flex flex-col items-center justify-center border-t border-black/5">
+      <span className="text-[11px] font-bold uppercase tracking-widest text-black/40 mb-6">
+        Powered by
+      </span>
+      <img 
+        src="/aztec-logo-black.png" 
+        alt="Aztec Network" 
+        className="h-10 md:h-12 object-contain mix-blend-multiply opacity-85 hover:opacity-100 transition-opacity"
+      />
+    </section>
+  );
+}
+
 // ─── Final CTA ────────────────────────────────────────────────────────────────
 
 function FinalCTASection() {
@@ -825,6 +842,7 @@ export function ImmersiveManifestoLanding(_props: ImmersiveManifestoLandingProps
       <IntegrationSection />
       <GlobalRegistrySection />
       <FAQSection />
+      <PoweredBySection />
       <FinalCTASection />
     </div>
   );

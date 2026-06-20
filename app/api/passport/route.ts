@@ -2,9 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/session';
 import { serializePassport, slugifyTitle } from '@/lib/passport/serialize';
+import { sequencer } from '@/lib/provenance/qd-sequencer';
 import { z } from 'zod';
 import OpenAI from 'openai';
 import { NODE_TIERS, PlanTier } from '@/lib/node_infrastructure/tiers';
+import crypto from 'crypto';
 
 // Init OpenAI for semantic validation
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
@@ -19,11 +21,10 @@ const passportSchema = z.object({
     description: z.string().max(1000).optional(),
     carbonKg: z.number().nonnegative().optional(),
     certifications: z.array(z.string().max(50)).optional(),
-  }),
-  events: z.array(z.any()).optional(),
+  }).strict(),
   gs1Gtin: z.string().max(14).optional(),
   publicSlug: z.string().max(64).optional(),
-});
+}).strict();
 
 export async function POST(req: NextRequest) {
   const session = await getSession();
@@ -125,26 +126,50 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // 4. Create the passport
+  // 4. Create the passport (Atomic Collision Fix)
   let publicSlug = (validData.publicSlug || '').trim();
   if (!publicSlug) publicSlug = slugifyTitle(validData.title);
 
   const existing = await prisma.productPassport.findUnique({ where: { publicSlug } });
-  if (existing) publicSlug = slugifyTitle(validData.title);
+  if (existing) {
+    publicSlug = `${slugifyTitle(validData.title)}-${crypto.randomUUID().split('-')[0]}`;
+  }
 
-  const passport = await prisma.productPassport.create({
-    data: {
-      publicSlug,
-      title: validData.title,
-      category: validData.category,
-      issuerAddress,
-      payload: validData.payload as any,
-      gs1Gtin: validData.gs1Gtin?.replace(/\D/g, '') || null,
-      events: {
-        create: [{ eventType: 'manufactured', payload: { note: 'Registered via Studio Provenance API' } }],
+  let passport;
+  try {
+    passport = await prisma.productPassport.create({
+      data: {
+        publicSlug,
+        title: validData.title,
+        category: validData.category,
+        issuerAddress,
+        payload: validData.payload,
+        gs1Gtin: validData.gs1Gtin?.replace(/\D/g, '') || null,
+        events: {
+          create: [{ eventType: 'manufactured', payload: { note: 'Registered via Studio Provenance API' } }],
+        },
       },
-    },
-    include: { events: { orderBy: { createdAt: 'desc' } } },
+      include: { events: { orderBy: { createdAt: 'desc' } } },
+    });
+  } catch (error: any) {
+    console.error('[WhaleFortress] Atomic DB Guard caught Prisma exception:', error);
+    // P2002: Unique constraint failed
+    if (error.code === 'P2002') {
+      return NextResponse.json({ error: 'Unique constraint violation (Slug collision). Please try again.' }, { status: 409 });
+    }
+    return NextResponse.json({ error: 'Internal database error during quantum registry.' }, { status: 500 });
+  }
+
+  // 5. Instantly trigger the robust Aztec Sequencer (Async Queue)
+  // This executes "como la mantequilla": it won't block the API response
+  // but will safely handle PXE init, proof generation, and txHash DB sync.
+  sequencer.submitPassportToAztec(passport.id, {
+    slug: publicSlug,
+    batchId: validData.payload?.batchId,
+    supplierId: issuerAddress, // For this initial system, issuer acts as supplier
+    metadata: validData.payload
+  }).catch(err => {
+    console.error(`[API] Failed to trigger sequencer for ${passport.id}:`, err);
   });
 
   return NextResponse.json(serializePassport(passport), { status: 201 });
