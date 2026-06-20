@@ -71,11 +71,10 @@ function generateCoreEntropy(): bigint {
 }
 
 function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  });
+  if (!iso) return '';
+  const d = new Date(iso);
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${d.getUTCDate().toString().padStart(2, '0')} ${months[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
 }
 
 function truncate(str: string, len = 16): string {
@@ -1314,6 +1313,7 @@ export function ProvenanceStudioContent({
   // Phase 0: Syncing, Phase 1: Completed, Phase 2: Ready
   const [initPhase, setInitPhase] = useState<0 | 1 | 2>(0);
 
+  // [FIX] React Error #310 — ALL hooks MUST be declared before any conditional return.
   // Smooth delayed initialization ("de forma lenta" con animación de completado)
   useEffect(() => {
     const timer1 = setTimeout(() => {
@@ -1330,6 +1330,47 @@ export function ProvenanceStudioContent({
     };
   }, []);
 
+  // [FIX] Moved here above all conditional returns so hook order is ALWAYS stable.
+  // Previously this useEffect was placed AFTER the `if (initPhase < 2) return` guard,
+  // which violated Rules of Hooks (hooks cannot be called conditionally).
+  useEffect(() => {
+    if (initPhase < 2) return; // Guard inside effect — hook itself is always called
+    // Check if user has an active plan to show Dashboard tab
+    fetch('/api/auth/session')
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (data?.user?.tier && data.user.tier !== 'FREE') {
+          setHasPlan(true);
+        } else if (data?.user?.subscription?.status === 'ACTIVE') {
+          setHasPlan(true);
+        } else if (data?.user?.id?.toLowerCase() === '0x78831c25c86ea2a78a6127fc2ccb95e612d87b4a') {
+          setHasPlan(true); // Owner VIP
+        } else {
+          setHasPlan(false);
+        }
+      })
+      .catch(() => setHasPlan(false));
+  }, [initPhase]);
+
+  // Derived values — computed after hooks, safe to reference in early returns below
+  const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
+    { id: 'create', label: 'Create', icon: <Plus size={13} /> },
+    { id: 'registry', label: 'All Records', icon: <LayoutList size={13} /> },
+    { id: 'aztec', label: 'Aztec Network', icon: null },
+    { id: 'billing', label: 'Node Allocation', icon: <CreditCard size={13} /> },
+    { id: 'insight', label: 'Sight Insight', icon: <Eye size={13} /> },
+  ];
+
+  if (hasPlan) {
+    tabs.push({ id: 'dashboard', label: 'Dashboard', icon: <ShieldCheck size={13} /> });
+  }
+
+  const handleCreated = (passport: ProductPassportPublic) => {
+    setRegistryRefreshKey((k) => k + 1);
+    void passport;
+  };
+
+  // ─── Phase guard: show loading animation until Sequencer initializes ───
   if (initPhase < 2) {
     return (
       <div className="flex min-h-[50vh] w-full flex-col items-center justify-center bg-[#fdfdfd] text-center p-8">
@@ -1359,43 +1400,6 @@ export function ProvenanceStudioContent({
       </div>
     );
   }
-
-  useEffect(() => {
-    // Check if user has an active plan to show Dashboard tab
-    fetch('/api/auth/session')
-      .then(res => res.ok ? res.json() : null)
-      .then(data => {
-        if (data?.user?.tier && data.user.tier !== 'FREE') {
-          setHasPlan(true);
-        } else if (data?.user?.subscription?.status === 'ACTIVE') {
-          setHasPlan(true);
-        } else if (data?.user?.id?.toLowerCase() === '0x78831c25c86ea2a78a6127fc2ccb95e612d87b4a') {
-          setHasPlan(true); // Owner VIP
-        } else {
-          setHasPlan(false);
-        }
-      })
-      .catch(() => setHasPlan(false));
-  }, []);
-
-  const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
-    { id: 'create', label: 'Create', icon: <Plus size={13} /> },
-    { id: 'registry', label: 'All Records', icon: <LayoutList size={13} /> },
-    { id: 'aztec', label: 'Aztec Network', icon: null },
-    { id: 'billing', label: 'Node Allocation', icon: <CreditCard size={13} /> },
-    { id: 'insight', label: 'Sight Insight', icon: <Eye size={13} /> },
-  ];
-
-  if (hasPlan) {
-    tabs.push({ id: 'dashboard', label: 'Dashboard', icon: <ShieldCheck size={13} /> });
-  }
-
-  const handleCreated = (passport: ProductPassportPublic) => {
-    // After creation, bump the refresh key so the registry reloads when user switches to it
-    setRegistryRefreshKey((k) => k + 1);
-    // Stay on create tab to show the QR — user can navigate to registry manually
-    void passport;
-  };
 
   if (hasPlan === null) {
     return (

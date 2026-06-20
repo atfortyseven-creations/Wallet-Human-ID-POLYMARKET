@@ -93,7 +93,7 @@ export default function WalletConnect() {
                                     open();
                                 }
                             }}
-                            className="p-2 rounded-full bg-[#F6851B]/10 text-[#F6851B] border border-[#F6851B]/20 hover:bg-[#F6851B]/20 transition-all"
+                            className="hidden md:flex p-2 rounded-full bg-[#F6851B]/10 text-[#F6851B] border border-[#F6851B]/20 hover:bg-[#F6851B]/20 transition-all"
                             title="Direct MetaMask Connect"
                         >
                             <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" className="w-5 h-5" alt="MM" />

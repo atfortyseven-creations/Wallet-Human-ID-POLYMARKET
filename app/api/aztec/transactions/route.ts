@@ -10,16 +10,14 @@ export const dynamic = 'force-dynamic';
  * Used by the client to detect incoming transfers and credit the recipient's balance.
  */
 export async function GET(req: Request) {
-  const { getSession } = await import('@/lib/session');
-  const session = await getSession();
-  if (!session?.userId) {
-      return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
+  const { searchParams } = new URL(req.url);
+  const rawAddress = searchParams.get('address');
+
+  if (!rawAddress || !/^0x[0-9a-f]{64}$/i.test(rawAddress)) {
+    return NextResponse.json({ error: 'Valid Aztec address required (0x + 64 hex chars)' }, { status: 400 });
   }
-  const crypto = await import('crypto');
-  const normalizedEvm = session.userId.toLowerCase();
-  const round1 = crypto.createHash('sha256').update(`aztec-schnorr:${normalizedEvm}`).digest();
-  const round2 = crypto.createHash('sha256').update(round1).digest('hex');
-  const address = `0x${round2}`;
+
+  const address = rawAddress.toLowerCase();
 
   try {
     const txs = await prisma.transaction.findMany({

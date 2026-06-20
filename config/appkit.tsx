@@ -108,7 +108,7 @@ const dedicatedOptimism = {
     }
 };
 
-export const networks: [AppKitNetwork, ...AppKitNetwork[]] = [dedicatedMainnet, dedicatedBsc, dedicatedPolygon, dedicatedBase, dedicatedArbitrum, dedicatedOptimism, worldchain, linea, avalanche, zksync, dedicatedMonadMainnet];
+export const networks: [AppKitNetwork, ...AppKitNetwork[]] = [mainnet, bsc, polygon, base, arbitrum, optimism, worldchain, linea, avalanche, zksync, dedicatedMonadMainnet];
 
 export const wagmiAdapter = new WagmiAdapter({
     ssr: true,

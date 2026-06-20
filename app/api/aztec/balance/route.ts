@@ -12,12 +12,6 @@ export const dynamic = 'force-dynamic';
  * No simulation. No fallbacks. Real on-chain data only.
  */
 export async function GET(req: Request) {
-  const { getSession } = await import('@/lib/session');
-  const session = await getSession();
-  if (!session?.userId) {
-      return NextResponse.json({ error: 'Unauthorized: Authentication required.' }, { status: 401 });
-  }
-
   const { searchParams } = new URL(req.url);
   const aztecAddress = searchParams.get('aztecAddress');
 
