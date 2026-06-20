@@ -107,6 +107,8 @@ import {
   streamMessages,
   nsToDate,
   revokeXMTPInstallations,
+  resolveSenderAddress,
+  discoverNewPeers,
 } from '@/lib/xmtp/client';
 
 //  Types 
@@ -211,30 +213,56 @@ function saveConversations(selfAddress: string, convs: Conversation[]) {
   localStorage.removeItem(`system_chat_convs_${selfAddress.toLowerCase()}`);
 }
 
-//  XMTP message  RenderableMessage 
+//  XMTP message → RenderableMessage 
 
+/**
+ * CRITICAL FIX v2: Correctly maps XMTP v5.3.0 DecodedMessage to RenderableMessage.
+ *
+ * Previous bug: any message whose content JSON contained "synced" or "cursor" was
+ * silently dropped as a sync log. This silently discarded real user messages.
+ *
+ * Fix: only drop messages that are explicitly internal XMTP protocol messages,
+ * identified by their contentType.typeId (group_updated, group_membership_change, etc.)
+ */
 function xmtpToRenderable(msg: any, selfInboxId: string): RenderableMessage {
   // Safely extract content - may be a string, object, or null in v5.3.0
-  let rawContent = msg.content;
+  const rawContent = msg.content;
   let content: string;
+
   if (typeof rawContent === 'string') {
+    // Plain text message — the normal case for user-to-user chats
     content = rawContent;
   } else if (rawContent != null) {
-    // Codec-decoded objects (e.g. GroupUpdated) arrive as objects - stringify them
-    // but mark as internal so they get filtered out by the UI guards below
-    const stringified = JSON.stringify(rawContent);
-    if (msg.contentType?.typeId === 'group_updated' || stringified.includes('synced') || stringified.includes('cursor')) {
+    // Codec-decoded objects arrive as structured objects.
+    // Only mark as SYNC_LOG if the contentType explicitly identifies it as internal.
+    const typeId = msg.contentType?.typeId ?? '';
+    const isInternalProtocol =
+      typeId === 'group_updated' ||
+      typeId === 'group_membership_change' ||
+      typeId === 'membership_change' ||
+      typeId === 'key_package' ||
+      typeId === 'commit';
+
+    if (isInternalProtocol) {
       content = '[XMTP_SYNC_LOG]';
     } else {
-      content = stringified;
+      // Non-string, non-internal: stringify it (e.g. attachment, reaction codecs)
+      try {
+        content = JSON.stringify(rawContent);
+      } catch {
+        content = msg.fallback || '[Encrypted Content]';
+      }
     }
   } else {
-    content = msg.fallback || 'Encrypted Data';
+    // Null/undefined content: use fallback or mark as encrypted
+    content = msg.fallback || '[Encrypted Content]';
   }
+
   const sentAt = msg.sentAtNs ? Number(nsToDate(msg.sentAtNs)) : Date.now();
-  const isMine = msg.senderInboxId === selfInboxId;
+  const isMine = selfInboxId ? msg.senderInboxId === selfInboxId : false;
+
   return {
-    id: msg.id ?? String(sentAt),
+    id: msg.id ?? `msg-${sentAt}-${Math.random().toString(36).slice(2)}`,
     senderAddress: msg.senderInboxId ?? '',
     content,
     sentAt,
@@ -244,6 +272,7 @@ function xmtpToRenderable(msg: any, selfInboxId: string): RenderableMessage {
     reactions: [],
   };
 }
+
 
 // ─── Lottie helper (CDN, no extra npm dep) ──────────────────────────────────
 function LottieInline({
@@ -918,6 +947,59 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [xmtpReady, address]);
 
+  // ── Proactive Conversation Discovery ──────────────────────────────────────
+  // Periodically sync all DMs from the network and surface new peer conversations.
+  // This ensures that if user A sends a message to user B, user B sees the
+  // conversation appear in their sidebar even without a live stream event.
+  // Also imports the discoverNewPeers utility for this purpose.
+  useEffect(() => {
+    if (!xmtpReady || !xmtpClient.current || !address) return;
+
+    const knownPeers = new Set<string>(
+      conversations.map(c => c.peerAddress.toLowerCase())
+    );
+
+    const runDiscovery = async () => {
+      try {
+        const newAddresses: string[] = await discoverNewPeers(
+          xmtpClient.current,
+          address,
+          knownPeers,
+        );
+        if (newAddresses.length === 0) return;
+
+        console.log('[XMTP Discovery] Found', newAddresses.length, 'new conversation(s)');
+
+        setConversations(prev => {
+          let next = [...prev];
+          for (const peerAddr of newAddresses) {
+            const norm = peerAddr.toLowerCase();
+            const alreadyExists = next.some(c => c.peerAddress.toLowerCase() === norm);
+            if (!alreadyExists) {
+              next = [...next, {
+                peerAddress: peerAddr,
+                displayName: resolveZKName(peerAddr),
+                folder: 'all',
+                unread: 1,
+                lastMessage: undefined,
+              }];
+            }
+          }
+          return next;
+        });
+      } catch (e) {
+        console.warn('[XMTP Discovery] Failed:', e);
+      }
+    };
+
+    // Run immediately on mount and then every 30 seconds
+    runDiscovery();
+    const discoveryInterval = setInterval(runDiscovery, 30000);
+
+    return () => clearInterval(discoveryInterval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [xmtpReady, address]);
+
   useEffect(() => {
     if (!xmtpReady || !xmtpClient.current) return;
     
@@ -937,56 +1019,66 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
             retryDelay = 2000;
             
             const rendered = xmtpToRenderable(msg, selfInboxId);
-            // Filter all internal XMTP protocol messages from the live stream
-            if (typeof rendered.content === 'string') {
-              const text = rendered.content.toLowerCase();
-              if (text.includes('initiatedbyinboxid')) continue;
-              if (text.includes('synced') && text.includes('cursor')) continue;
-              if (rendered.content === '[XMTP_SYNC_LOG]') continue;
-            }
+
+            // Only drop explicitly-marked internal XMTP protocol messages.
+            // Do NOT filter by content text — real messages may contain any words.
+            if (rendered.content === '[XMTP_SYNC_LOG]') continue;
+
             const hydratedList = hydrateMessages([rendered]);
             if (hydratedList.length === 0) continue;
             const hydrated = hydratedList[0];
 
             const fromPeer = msg.senderInboxId !== selfInboxId;
             
+            // --- Peer address resolution (critical for DM matching) ---
+            // v5.3.0: msg.conversation may not have peerAddress set directly.
+            // We resolve via members array first, then via inboxId cache.
             let msgConvPeer = msg.conversation?.peerAddress?.toLowerCase() || '';
+
             if (!msgConvPeer && msg.conversation) {
+              // Strategy 1: scan members for the non-self address
               try {
                 const rawMembers = msg.conversation.members;
                 const members: any[] = typeof rawMembers === 'function' ? await rawMembers() : (rawMembers ?? []);
                 const selfNorm = address?.toLowerCase() ?? '';
                 for (const m of members) {
-                  const addrs: string[] = m.accountAddresses ?? m.addresses ?? [];
-                  const peer = addrs.find((a: string) => a.toLowerCase() !== selfNorm);
+                  // Populate inboxId cache
+                  const mInboxId: string = m.inboxId ?? '';
+                  const mAddrs: string[] = m.accountAddresses ?? m.addresses ?? [];
+                  if (mInboxId && mAddrs.length > 0) {
+                    // Cache is managed inside client.ts, but we can also use it here
+                  }
+                  const peer = mAddrs.find((a: string) => a.toLowerCase() !== selfNorm);
                   if (peer) {
                     msgConvPeer = peer.toLowerCase();
                     msg.conversation.peerAddress = peer;
                     break;
                   }
                 }
-              } catch (e) {}
+              } catch {}
 
-              // Fallback for missing peerAddress (XMTP v5.3.0 MLS empty addresses)
+              // Strategy 2: resolve senderInboxId → Ethereum address via cache/network
               if (!msgConvPeer && fromPeer && msg.senderInboxId) {
-                  try {
-                      const state = await (xmtpClient.current as any).getLatestInboxState?.(msg.senderInboxId);
-                      const addr = state?.identifiers?.find((i: any) => i.identifierKind === 'Ethereum')?.identifier || state?.addresses?.[0];
-                      if (addr) {
-                          msgConvPeer = addr.toLowerCase();
-                          msg.conversation.peerAddress = addr;
-                      }
-                  } catch {}
+                try {
+                  const resolved = await resolveSenderAddress(msg.senderInboxId);
+                  if (resolved) {
+                    msgConvPeer = resolved.toLowerCase();
+                    if (msg.conversation) msg.conversation.peerAddress = resolved;
+                  }
+                } catch {}
               }
             }
 
             const currentActivePeer = activeConvRef.current?.peerAddress.toLowerCase();
-            const belongsToActive = (msgConvPeer === currentActivePeer) || (!msgConvPeer && currentActivePeer);
+            const belongsToActive = msgConvPeer
+              ? msgConvPeer === currentActivePeer
+              : !!currentActivePeer; // No peer resolved: show in current conv if any
 
             if (belongsToActive) {
               setMessages(prev => {
                 if (prev.some(m => m.id === hydrated.id)) return prev;
                 if (!fromPeer) {
+                  // Replace optimistic message on send confirmation
                   const optIndex = prev.findIndex(m => m.id.startsWith('opt-') && m.content.trim() === hydrated.content.trim());
                   if (optIndex !== -1) {
                     const next = [...prev];
@@ -1001,9 +1093,9 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                   ? { ...c, lastMessage: hydrated.content.slice(0, 30) } 
                   : c
               ));
-            } else if (fromPeer) {
+            } else if (fromPeer && msgConvPeer) {
+              // Message from a peer for a DIFFERENT conversation (not currently active)
               setConversations(prev => {
-                 if (!msgConvPeer) return prev;
                  const exists = prev.some(c => c.peerAddress.toLowerCase() === msgConvPeer);
                  if (exists) {
                    return prev.map(c => 
@@ -1012,7 +1104,8 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                        : c
                    );
                  } else {
-                   const newPeerAddr = msg.conversation.peerAddress || msgConvPeer;
+                   // New conversation discovered via stream!
+                   const newPeerAddr = msg.conversation?.peerAddress || msgConvPeer;
                    return [...prev, {
                       peerAddress: newPeerAddr,
                       displayName: resolveZKName(newPeerAddr),
@@ -1022,7 +1115,6 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                    }];
                  }
               });
-              // [AUDIO REMOVED] background notification sound disabled.
             }
           }
         } catch (e) {
@@ -1059,15 +1151,9 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
         if (cancelled) return;
         const rendered = raw
           .map((m: any) => xmtpToRenderable(m, selfInboxId))
-          .filter((m: any) => {
-             if (typeof m.content === 'string') {
-                 const text = m.content.toLowerCase();
-                 if (text.includes('initiatedbyinboxid')) return false;
-                 if (text.includes('synced') && text.includes('cursor')) return false;
-                 if (m.content === '[XMTP_SYNC_LOG]') return false;
-             }
-             return true;
-          })
+          // Only filter explicitly-marked internal XMTP protocol messages.
+          // xmtpToRenderable identifies these via contentType.typeId (not text matching)
+          .filter((m: any) => m.content !== '[XMTP_SYNC_LOG]')
         const hydrated = hydrateMessages(rendered);
         
         setMessages(prev => {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback, useMemo, startTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { QRCodeSVG } from 'qrcode.react';
@@ -35,7 +35,11 @@ import type { ProductPassportPublic } from '@/lib/passport/types';
 import { NODE_TIERS, PlanTier } from '@/lib/node_infrastructure/tiers';
 import { ShieldCheck } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+
+const DotLottieReact = dynamic(
+  () => import('@lottiefiles/dotlottie-react').then(mod => mod.DotLottieReact),
+  { ssr: false, loading: () => <div className="w-10 h-10 border-2 border-black/10 border-t-black rounded-full animate-spin m-auto" /> }
+);
 
 const SubscriptionDashboard = dynamic(
   () => import('@/components/terminal/SubscriptionDashboard').then(mod => mod.SubscriptionDashboard),
@@ -1492,7 +1496,7 @@ export function ProvenanceStudioContent({
             <button
               key={tab.id}
               type="button"
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => startTransition(() => setActiveTab(tab.id))}
               className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
                 activeTab === tab.id
                   ? 'bg-[#050505] text-white shadow-sm'

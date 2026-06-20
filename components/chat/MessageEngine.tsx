@@ -67,10 +67,10 @@ export default function MessageEngine({
         let lastDate = '';
         return messages
           .filter(msg => {
-            if (typeof msg.content === 'string') {
-              if (msg.content.includes('initiatedByInboxId')) return false;
-              if (msg.content.startsWith('synced ') && msg.content.includes('from cursor Some')) return false;
-            }
+            // Only drop explicitly-marked XMTP internal protocol messages.
+            // These are identified by xmtpToRenderable via contentType.typeId.
+            // NEVER filter by raw text content — real user messages may contain any words.
+            if (msg.content === '[XMTP_SYNC_LOG]') return false;
             return true;
           })
           .map((msg, index) => {

@@ -1,6 +1,6 @@
 /**
  * XMTP E2E Encrypted Chat Client
- * 
+ *
  * Wraps @xmtp/browser-sdk v5.3.0 for system wallet-to-wallet encrypted messaging.
  *
  * v5.3.0 Signer interface (mandatory):
@@ -14,7 +14,7 @@
  *   - DecodedMessage: senderInboxId, sentAtNs (BigInt ns), content (decoded)
  *   - Dm.peerInboxId()                         async, returns inboxId string
  *   - conversations.sync() required before list/stream
- * 
+ *
  */
 
 'use client';
@@ -40,7 +40,10 @@ const XMTP_ENV: XmtpEnv =
 //  Singleton client registry (one client per lowercase address) 
 const clientRegistry = new Map<string, Client>();
 
-//  Hex string  Uint8Array 
+// InboxId → Ethereum address cache (populated during message stream/fetch)
+const inboxIdToAddressCache = new Map<string, string>();
+
+//  Hex string → Uint8Array 
 function hexToBytes(hex: string): Uint8Array {
   const clean = hex.startsWith('0x') ? hex.slice(2) : hex;
   if (clean.length % 2 !== 0) throw new Error('[XMTP] Malformed hex signature');
@@ -51,13 +54,78 @@ function hexToBytes(hex: string): Uint8Array {
   return bytes;
 }
 
-//  BigInt nanoseconds  Date 
+//  BigInt nanoseconds → Date 
 export function nsToDate(ns: bigint | undefined | null): Date {
   if (ns == null) return new Date();
   try {
     return new Date(Number(BigInt(String(ns)) / 1_000_000n));
   } catch {
     return new Date();
+  }
+}
+
+/**
+ * Resolve inboxId → Ethereum address using the XMTP network.
+ * Results are cached to avoid repeated network calls.
+ */
+export async function resolveInboxIdToAddress(inboxId: string): Promise<string | null> {
+  if (!inboxId) return null;
+  const cached = inboxIdToAddressCache.get(inboxId.toLowerCase());
+  if (cached) return cached;
+
+  try {
+    // getLatestInboxState is available on Client static or instance
+    const states = await (Client as any).getInboxStates?.([inboxId], XMTP_ENV)
+      ?? await (Client as any).inboxStateFromInboxIds?.([inboxId], XMTP_ENV);
+
+    if (states && states[0]) {
+      const state = states[0];
+      const identifiers: any[] = state.identifiers ?? state.accountIdentifiers ?? [];
+      for (const id of identifiers) {
+        if (id?.identifierKind === 'Ethereum' && id?.identifier) {
+          const addr = id.identifier.toLowerCase();
+          inboxIdToAddressCache.set(inboxId.toLowerCase(), addr);
+          return addr;
+        }
+      }
+      // Fallback: check accountAddresses array
+      const addrs: string[] = state.accountAddresses ?? state.addresses ?? [];
+      if (addrs.length > 0) {
+        const addr = addrs[0].toLowerCase();
+        inboxIdToAddressCache.set(inboxId.toLowerCase(), addr);
+        return addr;
+      }
+    }
+  } catch (e) {
+    // Silently fail — not all installations expose this
+  }
+
+  return null;
+}
+
+/**
+ * Populate inboxIdToAddressCache by scanning all DM member data.
+ * Call once after client init to warm up the cache.
+ */
+export async function warmInboxIdCache(client: Client): Promise<void> {
+  try {
+    await client.conversations.sync();
+    const dms: any[] = await client.conversations.listDms();
+    for (const dm of dms) {
+      try {
+        const rawMembers = (dm as any).members;
+        const members: any[] = typeof rawMembers === 'function' ? await rawMembers() : (rawMembers ?? []);
+        for (const m of members) {
+          const inboxId: string = m.inboxId ?? '';
+          const addrs: string[] = m.accountAddresses ?? m.addresses ?? [];
+          if (inboxId && addrs.length > 0) {
+            inboxIdToAddressCache.set(inboxId.toLowerCase(), addrs[0].toLowerCase());
+          }
+        }
+      } catch {}
+    }
+  } catch (e) {
+    console.warn('[XMTP] warmInboxIdCache failed:', e);
   }
 }
 
@@ -149,10 +217,14 @@ export async function getXMTPClient(
   }
 
   clientRegistry.set(address, client);
+
+  // Warm up the inboxId → address cache in the background
+  warmInboxIdCache(client).catch(() => {});
+
   return client;
 }
 
-/** 
+/**
  * Revokes all previous installations for a given Inbox ID to fix the 10/10 limit error.
  */
 export async function revokeXMTPInstallations(
@@ -180,6 +252,9 @@ export function destroyXMTPClient(address: string): void {
 /**
  * Check if a given Ethereum address has an active XMTP identity.
  * v5.3.0: Client.canMessage returns Map<string, boolean>.
+ * 
+ * CRITICAL FIX: We try multiple casing variants because the Map key can be
+ * checksummed or lowercase depending on the XMTP network response.
  */
 export async function canReceiveMessages(
   _client: Client,
@@ -194,21 +269,28 @@ export async function canReceiveMessages(
     const result = await Client.canMessage([identifier], XMTP_ENV);
 
     if (result instanceof Map) {
-      return result.get(address.toLowerCase()) ?? result.get(address) ?? false;
+      // Try all casing variants
+      const lower = address.toLowerCase();
+      for (const [key, val] of result.entries()) {
+        if (key.toLowerCase() === lower) return !!val;
+      }
+      return false;
     }
 
     if (result && typeof result === 'object') {
-      return (
-        (result as any)[address.toLowerCase()] ??
-        (result as any)[address] ??
-        false
-      );
+      const lower = address.toLowerCase();
+      for (const key of Object.keys(result as object)) {
+        if (key.toLowerCase() === lower) return !!(result as any)[key];
+      }
+      return false;
     }
 
     return false;
   } catch (err) {
     console.warn('[XMTP] canReceiveMessages error:', err);
-    return false;
+    // On error, ASSUME they can receive — let newDmWithIdentifier handle it
+    // This prevents all messages from going to the offline queue on network blips
+    return true;
   }
 }
 
@@ -235,41 +317,56 @@ export async function sendMessage(
   toAddress: string,
   content: string,
 ): Promise<void> {
-  const canMsg = await canReceiveMessages(client, toAddress);
-
-  if (!canMsg) {
-    // If recipient has NEVER connected to XMTP, we queue the message offline
-    // with maximum galactic precision so they receive it upon first login.
-    const senderAddr: string =
-      (client as any).accountAddress ??
-      (client as any).address ??
-      (client as any).inboxId ??
-      'unknown';
-
-    const res = await fetch('/api/chat/queue', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        sender: senderAddr,
-        recipient: toAddress,
-        content,
-      }),
-    });
-    if (!res.ok) {
-      throw new Error('[XMTP Offline Queue] Failed to queue offline message');
-    }
-    return;
-  }
-
   const identifier: XmtpIdentifier = {
     identifier: toAddress,
     identifierKind: 'Ethereum',
   };
-  // v5.3.0: newDmWithIdentifier takes an Identifier object
-  const dm = await client.conversations.newDmWithIdentifier(identifier);
-  await dm.send(content);
-  // Sync after send to confirm delivery is committed to the network
-  try { await dm.sync(); } catch {}
+
+  try {
+    // Always try direct XMTP send first (newDmWithIdentifier handles
+    // both "already exists" and "create new" cases atomically)
+    const dm = await client.conversations.newDmWithIdentifier(identifier);
+    await dm.send(content);
+    // Sync after send to confirm delivery is committed to the network
+    try { await dm.sync(); } catch {}
+    return;
+  } catch (sendErr: any) {
+    const errMsg = (sendErr?.message || '').toLowerCase();
+
+    // If the error is "recipient not on XMTP", fall through to offline queue
+    if (
+      errMsg.includes('not on xmtp') ||
+      errMsg.includes('no inbox') ||
+      errMsg.includes('identity not found') ||
+      errMsg.includes('recipient') ||
+      errMsg.includes('not found')
+    ) {
+      console.warn('[XMTP] Recipient not on XMTP, queuing offline:', toAddress);
+    } else {
+      // For any other error (network, timeout), re-throw to caller
+      throw sendErr;
+    }
+  }
+
+  // Fallback: queue offline if recipient is not yet on XMTP
+  const senderAddr: string =
+    (client as any).accountAddress ??
+    (client as any).address ??
+    (client as any).inboxId ??
+    'unknown';
+
+  const res = await fetch('/api/chat/queue', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      sender: senderAddr,
+      recipient: toAddress,
+      content,
+    }),
+  });
+  if (!res.ok) {
+    throw new Error('[XMTP Offline Queue] Failed to queue offline message');
+  }
 }
 
 /**
@@ -282,54 +379,82 @@ export async function listConversations(client: Client): Promise<any[]> {
 }
 
 /**
+ * Extract the peer Ethereum address from a DM conversation object.
+ * Checks members array first, then peerInboxId resolution, with cache.
+ */
+async function extractPeerAddress(dm: any, selfInboxId: string): Promise<string | null> {
+  try {
+    const rawMembers = (dm as any).members;
+    const members: any[] = typeof rawMembers === 'function' ? await rawMembers() : (rawMembers ?? []);
+
+    // Populate cache while we're here
+    for (const m of members) {
+      const inboxId: string = m.inboxId ?? '';
+      const addrs: string[] = m.accountAddresses ?? m.addresses ?? [];
+      if (inboxId && addrs.length > 0) {
+        inboxIdToAddressCache.set(inboxId.toLowerCase(), addrs[0].toLowerCase());
+      }
+    }
+
+    // Find the peer (not self)
+    for (const m of members) {
+      if (m.inboxId?.toLowerCase() === selfInboxId?.toLowerCase()) continue;
+      const addrs: string[] = m.accountAddresses ?? m.addresses ?? [];
+      if (addrs.length > 0) return addrs[0].toLowerCase();
+    }
+  } catch {}
+
+  // Fallback: peerInboxId → cache lookup
+  try {
+    const rawPeerInboxId = (dm as any).peerInboxId;
+    const peerInboxId: string = typeof rawPeerInboxId === 'function'
+      ? await rawPeerInboxId()
+      : (rawPeerInboxId ?? '');
+    if (peerInboxId) {
+      const cached = inboxIdToAddressCache.get(peerInboxId.toLowerCase());
+      if (cached) return cached;
+      // Try network resolution
+      const resolved = await resolveInboxIdToAddress(peerInboxId);
+      if (resolved) return resolved;
+    }
+  } catch {}
+
+  return null;
+}
+
+/**
  * Retrieve message history for a specific peer conversation.
  *
- * FIX v3  Dual-perspective DM discovery:
- *  The core problem: XMTP DMs are asymmetric at creation time.
- *  - SENDER calls newDmWithIdentifier(peer)  creates a DM object locally.
- *  - RECEIVER never created that DM locally  they need conversations.sync()
- *    to pull it from the network, then listDms() to find it by member address.
+ * FIX v4 — Simplified + more robust:
+ * 1. Sync all conversations from the network
+ * 2. List DMs and find the one matching the peer address
+ * 3. Sync that specific DM to get latest messages
+ * 4. Return messages
  *
- * Strategy (in order of reliability):
- *  1. conversations.sync()  pulls ALL new DMs from the p2p network (critical for receiver)
- *  2. listDms()  find by peer Ethereum address in dm.members[]  works for both parties
- *  3. listDms()  find by peerInboxId()  slower but covers edge cases
- *  4. newDmWithIdentifier() fallback  creates/reuses via identifier (sender path)
- *
- * Each found DM is individually sync()d before messages() to guarantee
- * the latest messages are returned, not a stale local snapshot.
+ * The key improvement: we now use extractPeerAddress() which properly
+ * resolves both accountAddresses and inboxId-based lookups with caching.
  */
 export async function getMessages(client: Client, peerAddress: string): Promise<any[]> {
+  const selfInboxId = (client as any).inboxId ?? '';
   const normalizedPeer = peerAddress.toLowerCase();
 
-  //  Step 1: Global sync  CRITICAL for receiver discovery 
-  // Without this, the receiver's client never knows about DMs created by the sender.
+  //  Step 1: Global sync — CRITICAL for receiver discovery 
   try {
     await client.conversations.sync();
   } catch (e) {
     console.warn('[XMTP] conversations.sync() failed:', e);
   }
 
-  //  Step 2: Search by Ethereum address in dm.members (fastest, most reliable) 
+  //  Step 2: Find the DM for this peer
   try {
     const dms = await client.conversations.listDms();
+
     let targetDm: any = null;
 
     for (const dm of dms) {
       try {
-        // v5.3.0: dm.members can be a function or a property depending on the specific implementation/version
-        const rawMembers = (dm as any).members;
-        const members: any[] = typeof rawMembers === 'function' ? await rawMembers() : (rawMembers ?? []);
-        
-        let targetInboxId: string | null = null;
-        try { targetInboxId = await Client.getInboxIdForIdentifier({ identifier: normalizedPeer, identifierKind: 'Ethereum' }, XMTP_ENV); } catch {}
-
-        const hasPeer = members.some((m: any) => {
-          if (targetInboxId && m.inboxId && m.inboxId.toLowerCase() === targetInboxId.toLowerCase()) return true;
-          const addrs: string[] = m.accountAddresses ?? m.addresses ?? [];
-          return addrs.some((a: string) => a.toLowerCase() === normalizedPeer);
-        });
-        if (hasPeer) {
+        const peerAddr = await extractPeerAddress(dm, selfInboxId);
+        if (peerAddr && peerAddr.toLowerCase() === normalizedPeer) {
           targetDm = dm;
           break;
         }
@@ -337,62 +462,16 @@ export async function getMessages(client: Client, peerAddress: string): Promise<
     }
 
     if (targetDm) {
-      // Individual DM sync  pulls latest messages for this specific conversation
+      // Individual DM sync — pulls latest messages for this specific conversation
       try { await targetDm.sync(); } catch {}
       const msgs = await targetDm.messages();
       return msgs ?? [];
     }
   } catch (e) {
-    console.warn('[XMTP] Member-address DM search failed:', e);
+    console.warn('[XMTP] DM search failed:', e);
   }
 
-  //  Step 3: Search by peerInboxId()  covers identity-key-only DMs 
-  try {
-    const dms = await client.conversations.listDms();
-
-    for (const dm of dms) {
-      try {
-        const rawPeerInboxId = (dm as any).peerInboxId;
-        const peerInboxId: string = await (typeof rawPeerInboxId === 'function'
-          ? rawPeerInboxId()
-          : (rawPeerInboxId ?? ''));
-
-        if (!peerInboxId) continue;
-
-        // Cross-reference: resolve peer address  inboxId via canMessage
-        const identifier: XmtpIdentifier = {
-          identifier: peerAddress,
-          identifierKind: 'Ethereum',
-        };
-        // v5.3.0: Use getInboxIdForAddress for reliable resolution
-        let resolvedInboxId: string | null = null;
-        try {
-          resolvedInboxId = await Client.getInboxIdForIdentifier({ identifier: peerAddress, identifierKind: 'Ethereum' }, XMTP_ENV);
-        } catch {}
-
-        if (!resolvedInboxId) {
-          const result = await Client.canMessage([identifier], XMTP_ENV);
-          if (result instanceof Map) {
-            const entry = Array.from(result.entries()).find(([k]) => k.toLowerCase() === normalizedPeer);
-            if (entry && typeof entry[1] === 'string') resolvedInboxId = entry[1];
-            if (!resolvedInboxId && entry && typeof entry[1] === 'boolean' && entry[1] === true) {
-              resolvedInboxId = 'unknown'; // Reachable but ID unknown
-            }
-          }
-        }
-
-        if (resolvedInboxId && peerInboxId.toLowerCase() === resolvedInboxId.toLowerCase()) {
-          try { await dm.sync(); } catch {}
-          const msgs = await dm.messages();
-          return msgs ?? [];
-        }
-      } catch {}
-    }
-  } catch (e) {
-    console.warn('[XMTP] peerInboxId DM search failed:', e);
-  }
-
-  //  Step 4: Fallback  newDmWithIdentifier (creates/reuses, sender path) 
+  //  Step 3: Fallback — newDmWithIdentifier (creates/reuses, sender path) 
   try {
     const identifier: XmtpIdentifier = {
       identifier: peerAddress,
@@ -418,6 +497,7 @@ export async function discoverNewPeers(
   knownPeers: Set<string>,
 ): Promise<string[]> {
   try {
+    const selfInboxId = (client as any).inboxId ?? '';
     await client.conversations.sync();
     const dms: any[] = await client.conversations.listDms();
     const newPeers: string[] = [];
@@ -425,21 +505,15 @@ export async function discoverNewPeers(
 
     for (const dm of dms) {
       try {
-        const rawMembers = (dm as any).members;
-        const members: any[] = typeof rawMembers === 'function' ? await rawMembers() : (rawMembers ?? []);
-        for (const m of members) {
-          const addrs: string[] = m.accountAddresses ?? m.addresses ?? [];
-          for (const addr of addrs) {
-            const norm = addr.toLowerCase();
-            if (
-              /^0x[a-fA-F0-9]{40}$/i.test(norm) &&
-              norm !== selfNorm &&
-              !knownPeers.has(norm)
-            ) {
-              newPeers.push(addr);
-              knownPeers.add(norm);
-            }
-          }
+        const peerAddr = await extractPeerAddress(dm, selfInboxId);
+        if (
+          peerAddr &&
+          /^0x[a-fA-F0-9]{40}$/i.test(peerAddr) &&
+          peerAddr !== selfNorm &&
+          !knownPeers.has(peerAddr)
+        ) {
+          newPeers.push(peerAddr);
+          knownPeers.add(peerAddr);
         }
       } catch {}
     }
@@ -452,8 +526,11 @@ export async function discoverNewPeers(
 
 /** Async generator streaming all incoming messages in real time with AbortSignal support */
 export async function* streamMessages(client: Client, signal?: AbortSignal) {
+  // Sync before streaming to ensure we have the latest state
+  try { await client.conversations.sync(); } catch {}
+
   const stream = await client.conversations.streamAllMessages();
-  
+
   if (signal) {
     const onAbort = () => {
       try {
@@ -477,4 +554,15 @@ export async function* streamMessages(client: Client, signal?: AbortSignal) {
       }
     } catch {}
   }
+}
+
+/**
+ * Given a senderInboxId from a streamed/fetched message, resolve
+ * the Ethereum address of the sender using the cache or network.
+ */
+export async function resolveSenderAddress(senderInboxId: string): Promise<string | null> {
+  if (!senderInboxId) return null;
+  const cached = inboxIdToAddressCache.get(senderInboxId.toLowerCase());
+  if (cached) return cached;
+  return resolveInboxIdToAddress(senderInboxId);
 }

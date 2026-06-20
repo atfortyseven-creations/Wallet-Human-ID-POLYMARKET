@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
 
     // In a real implementation, this forwards the zk-SNARK constraints to a GPU cluster
     // which generates the proof in < 1 second instead of doing it in WASM on the client.
-    console.log(`[Prover] Delegating ZK proof generation for tier: ${tier}`);
+    console.log(`[Prover] Delegating ZK proof generation for tier: ${userTier}`);
 
     // Mock delay to simulate GPU cluster proving time
     await new Promise(resolve => setTimeout(resolve, 300));

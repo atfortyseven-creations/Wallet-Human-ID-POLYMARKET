@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { TrendingUp, TrendingDown, Activity, DollarSign, Percent, Zap, Brain, AlertTriangle, BarChart3, ShieldCheck } from 'lucide-react';
-import AttestingViewChart from './AttestingViewChart';
+import AttestingViewChart from './TradingViewChart';
 import PremiumLocked from './PremiumLocked';
 import { useAccount } from 'wagmi';
 import { useAuth } from '@/hooks/useAuth';

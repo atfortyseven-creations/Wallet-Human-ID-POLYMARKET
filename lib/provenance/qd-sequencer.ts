@@ -1,5 +1,4 @@
 import { createAztecNodeClient } from '@aztec/aztec.js/node';
-import { getContractAt } from '@aztec/aztec.js/contracts';
 import { SchnorrAccountContract } from '@aztec/accounts/schnorr';
 import { AccountManager } from '@aztec/aztec.js/wallet';
 import { Fr, GrumpkinScalar } from '@aztec/aztec.js/fields';
@@ -85,14 +84,15 @@ class AztecQDSequencer {
       // but the API is acting as a relay/sequencer for the QDs.
       const secretKey = Fr.random();
       const signingKey = GrumpkinScalar.random();
-      const account = new AccountManager(pxe, secretKey, new SchnorrAccountContract(signingKey), Fr.random());
-      const wallet = await account.getWallet();
+      // AccountManager constructor is private in newer versions, must use .create()
+      const accountManager = await AccountManager.create(pxe, secretKey, new SchnorrAccountContract(signingKey), Fr.random());
+      // const wallet = await accountManager.getWallet();
 
       // 3. Resolve the Contract
       // NOTE: We assume the ABI is available. In a fully implemented system, we'd import the Noir ABI here.
       // For this sequencer certification, we map the generic structure.
       // const mockAbi: any = { /* Placeholder for actual Noir ABI */ };
-      // const contract = await getContractAt(this.contractAddress as any, mockAbi, wallet);
+      // const contract = await Contract.at(this.contractAddress as any, mockAbi, wallet);
 
       // 4. Construct Calldata using our aztec-client helpers
       const args = buildRegisterProductArgs({
