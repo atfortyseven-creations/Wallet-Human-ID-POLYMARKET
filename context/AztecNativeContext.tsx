@@ -1,5 +1,4 @@
 "use client";
-
 /**
  * AztecNativeContext.tsx
  * ─────────────────────────────────────────────────────────────────────────────
@@ -54,6 +53,8 @@ import React, {
   useState,
 } from "react";
 import { toast } from "sonner";
+import { useSignMessage } from "wagmi";
+import { keccak256, toBytes } from "viem";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -202,24 +203,31 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
 
   // ─── Connect Identity ─────────────────────────────────────────────────────
 
-  const connectIdentity = useCallback(async (rawSeed: string, claimAirdrop: boolean = false) => {
-    const trimmed = rawSeed.trim();
-    if (trimmed.length < 3) {
-      toast.error("Seed must be at least 3 characters");
-      return;
-    }
+  const { signMessageAsync } = useSignMessage();
 
+  const connectIdentity = useCallback(async (rawSeed: string, claimAirdrop: boolean = false) => {
     setIsBusy(true);
     setError(null);
 
     try {
-      // Step 1 — Derive the deterministic Aztec address from the server.
-      // The server performs the canonical SHA-256 derivation so the address
-      // format always matches what is stored in the Transaction table.
+      // Step 1: Request signature via WalletConnect to generate entropy for Aztec
+      toast.loading("Sign message in your wallet to generate Aztec identity...", { id: "az-connect" });
+      const signature = await signMessageAsync({
+        message: "Welcome to Aztec Testnet.\n\nSign this message to derive your zero-knowledge private key for the local PXE."
+      });
+
+      // Step 2: Use viem to hash the signature into a 32-byte scalar
+      const entropy = keccak256(toBytes(signature));
+
+      // Note: In a fully decentralized Option B, we would instantiate @aztec/aztec.js 
+      // here on the client and connect to http://localhost:8080.
+      // However, due to browser WASM constraints, we pass the entropy to our backend 
+      // temporarily to compute the canonical Aztec address, OR we use the hash as the address identifier.
+      
       const deriveRes = await fetch("/api/aztec/derive-address", {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify({ seed: trimmed }),
+        body:    JSON.stringify({ seed: entropy }),
       });
       if (!deriveRes.ok) throw new Error("Address derivation failed");
       const { aztecAddress: derived } = await deriveRes.json();

@@ -138,13 +138,11 @@ export function NativeSendView({ onBack, initialTokenSymbol }: { onBack: () => v
     const activeNetwork = useWalletStore(s => s.activeNetwork);
     const privateKey = useWalletStore(s => s.privateKey);
     const systemAddress = useWalletStore(s => s.address);
-    const networkInfo = NETWORKS[activeNetwork as NetworkId] || NETWORKS.ethereum;
     
-    const { isConnected: isWagmiConnected, address: wagmiAddress } = useAccount();
-    const { data: walletClient } = useWalletClient();
+    const { activeAddress, isWagmiConnected, walletClient, networkInfo } = useNativeWallet();
+    const { balance, seed } = useAztecNative();
 
     const isSystemWallet = !!privateKey && !!systemAddress;
-    const activeAddress = isWagmiConnected ? wagmiAddress : systemAddress;
     
     const [recipient, setRecipient] = useState('');
     const [amount, setAmount] = useState('');
@@ -241,19 +239,30 @@ export function NativeSendView({ onBack, initialTokenSymbol }: { onBack: () => v
                     finalRecipient = `0x${recipient.slice(2).padStart(64, '0').slice(0, 64)}`;
                 }
                 
-                const res = await fetch('/api/aztec/transfer', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        from: aztecSender,
-                        to: finalRecipient,
-                        amount: amount
-                    })
-                });
-                
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.error || "Aztec transfer failed");
-                txHash = data.txHash || "0x_aztec_receipt";
+                try {
+                    if (!seed) throw new Error("Aztec identity not connected. Please connect first.");
+                    
+                    toast.loading("Generating Zero-Knowledge Proof locally via Sandbox...", { id: "send-tx" });
+                    const { executeLocalAztecTransfer } = await import('@/lib/aztec/clientPxe');
+                    txHash = await executeLocalAztecTransfer(seed, finalRecipient, parseFloat(amount));
+                } catch (pxeErr: any) {
+                    console.warn("Client-Side PXE unavailable or polyfills missing. Falling back to Server Relayer.", pxeErr);
+                    
+                    const res = await fetch('/api/aztec/transfer', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            from: aztecSender,
+                            to: finalRecipient,
+                            amount: amount,
+                            seed: seed
+                        })
+                    });
+                    
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error || "Aztec transfer failed");
+                    txHash = data.txHash || "0x_aztec_receipt";
+                }
             } else if (isWagmiConnected && walletClient) {
                 // MetaMask / WalletConnect User
                 if (isNative) {

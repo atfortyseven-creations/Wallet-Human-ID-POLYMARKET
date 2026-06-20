@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { generateAztecTxHash, getAztecChainState, buildAztecMetadata } from '@/lib/aztec/realTx';
+import { mintPrivateQDs } from '@/lib/aztec/realAztecLogic';
 
 export const dynamic = 'force-dynamic';
 
@@ -44,8 +45,17 @@ export async function POST(req: Request) {
     const { blockNumber, isLive } = await getAztecChainState();
     const finalBlock = Math.max(blockNumber, 103860 + txCount + 1);
 
-    // ── Unique hash per recipient ─────────────────────────────────────────
-    const txHash = generateAztecTxHash('AIRDROP', SYSTEM_ADDRESS, normalizedAddress, AIRDROP_AMOUNT, txCount);
+    // ── Execute Real Aztec TX (Option B / Custodial Hybrid) ───────────────
+    let txHash = generateAztecTxHash('AIRDROP', SYSTEM_ADDRESS, normalizedAddress, AIRDROP_AMOUNT, txCount);
+    
+    try {
+      const realTxHash = await mintPrivateQDs(normalizedAddress, AIRDROP_AMOUNT);
+      if (realTxHash) {
+        txHash = realTxHash; // Override with the real Aztec testnet hash!
+      }
+    } catch (e: any) {
+      console.warn("Real Aztec tx failed (offline/sandbox not running). Using fallback hash.", e.message);
+    }
 
     await prisma.transaction.create({
       data: {
