@@ -110,11 +110,20 @@ export async function POST(req: Request) {
             const realTxHash = await transferPrivateQDs(seed, normalizedTo, parsedAmount);
             if (realTxHash) {
                 txHash = realTxHash;
+            } else if (process.env.STRICT_AZTEC_MODE === 'true') {
+                throw new Error('STRICT_AZTEC_MODE is enabled but Aztec environment variables are missing.');
             }
         } catch (e: any) {
+            if (process.env.STRICT_AZTEC_MODE === 'true') {
+                console.error("Real Aztec tx failed in STRICT mode. Aborting.", e.message);
+                throw new Error(`Real Aztec Testnet TX Failed: ${e.message}`);
+            }
             console.warn("Real Aztec tx failed (offline/sandbox not running). Using fallback hash.", e.message);
         }
     } else {
+        if (process.env.STRICT_AZTEC_MODE === 'true') {
+            throw new Error('STRICT_AZTEC_MODE is enabled but no seed was provided for real transfer.');
+        }
         console.warn("No seed provided for hybrid transfer. Using fallback hash.");
     }
 

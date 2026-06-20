@@ -52,8 +52,14 @@ export async function POST(req: Request) {
       const realTxHash = await mintPrivateQDs(normalizedAddress, AIRDROP_AMOUNT);
       if (realTxHash) {
         txHash = realTxHash; // Override with the real Aztec testnet hash!
+      } else if (process.env.STRICT_AZTEC_MODE === 'true') {
+        throw new Error('STRICT_AZTEC_MODE is enabled but Aztec environment variables are missing (CONTRACT_ADDRESS or RELAYER_SECRET).');
       }
     } catch (e: any) {
+      if (process.env.STRICT_AZTEC_MODE === 'true') {
+        console.error("Real Aztec tx failed in STRICT mode. Aborting.", e.message);
+        throw new Error(`Real Aztec Testnet TX Failed: ${e.message}`);
+      }
       console.warn("Real Aztec tx failed (offline/sandbox not running). Using fallback hash.", e.message);
     }
 

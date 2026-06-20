@@ -18,14 +18,22 @@
  * use the relayer wallet only for sponsored mints (faucet/airdrop).
  * The relayer's AZTEC_RELAYER_SECRET_KEY is safely stored in Railway env vars.
  *
- * Public RPC: https://rpc.testnet.aztec-labs.com
- * Explorer:   https://testnet.aztecscan.xyz
+ * V4 Devnet 2 RPC: https://v4-devnet-2.aztec-labs.com/ (announced by alejo|Aztec 19/02/2026)
+ * Old Devnet RPC:   https://devnet.aztec-labs.com/ (v3, L1 ChainID: 11155111)
+ * Old Testnet:      https://rpc.testnet.aztec-labs.com (CONFIRMED DOWN 19/06/2026 by Xish[QUIλ])
+ * Explorer:         https://testnet.aztecscan.xyz
+ * 
+ * NOTE: V4 devnet requires aztec version 4.0.0-devnet.2-patch.0
  */
 
 import crypto from 'crypto';
 
-export const AZTEC_NODE_URL = process.env.AZTEC_NODE_URL || process.env.AZTEC_PXE_URL || 'https://rpc.testnet.aztec-labs.com';
+// V4 Devnet 2 is the current live network (alejo | Aztec announcement 19/02/2026)
+// Old testnet rpc.testnet.aztec-labs.com confirmed DOWN as of 19/06/2026
+export const AZTEC_NODE_URL = process.env.AZTEC_NODE_URL || process.env.AZTEC_PXE_URL || 'https://v4-devnet-2.aztec-labs.com';
 export const AZTEC_EXPLORER = 'https://testnet.aztecscan.xyz';
+// L1 Chain ID for V4 Devnet is Sepolia (11155111), Rollup Version: 1667575857
+export const AZTEC_L1_CHAIN_ID = 11155111;
 
 // BN254 field prime — all Aztec Fr values must be < this
 const BN254_PRIME = BigInt('0x30644e72e131a029b85045b68181585d2833e84879b9709142e1f74cb0328d11');
