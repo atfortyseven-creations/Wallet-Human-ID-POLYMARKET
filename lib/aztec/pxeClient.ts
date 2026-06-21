@@ -1,6 +1,6 @@
 // @ts-nocheck
 // lib/aztec/pxeClient.ts
-import { createPXEClient } from '@aztec/aztec.js';
+import { createPXEClient } from '@aztec/aztec.js/wallet';
 import { getContractAt } from '@aztec/aztec.js/contracts';
 import { getWallet } from '@aztec/aztec.js/wallet';
 // createAccount removed in v4 — use getSchnorrAccount from @aztec/accounts/schnorr

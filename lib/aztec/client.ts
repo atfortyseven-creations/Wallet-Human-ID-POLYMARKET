@@ -30,7 +30,7 @@ let _pxeClient: any = null;
 export async function getPXEClient() {
   if (_pxeClient) return _pxeClient;
 
-  const { createPXEClient } = await import('@aztec/aztec.js');
+  const { createPXEClient } = await import('@aztec/aztec.js/wallet');
   _pxeClient = await createPXEClient(AZTEC_PXE_URL);
   console.log(`[Aztec] ✅ PXE client connected → ${AZTEC_PXE_URL}`);
   return _pxeClient;
