@@ -741,8 +741,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     //    the sender's own message back through the stream.
     // 4. If no optimistic placeholder exists (e.g. opened in a second tab) →
     //    insert normally, but only after confirming the ID is not already present.
+    // Self-healing stream loop: if GroupInactive kills the stream, restart it with backoff.
     (async () => {
-      try {
+      let streamRestarts = 0;
+      while (!cancelled) {
+        try {
         const gen = streamMessages(client);
         for await (const msg of gen as any) {
           if (cancelled) break;
@@ -754,9 +757,26 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           const msgConvPeer = msg.conversation?.peerAddress?.toLowerCase() ?? '';
           const realId = msg.id ?? `real-${sentAtNs}-${Math.random()}`;
 
-          // Filter system metadata messages (XMTP internal group protocol frames)
-          if (typeof content === 'string' && content.includes('initiatedByInboxId')) continue;
-          if (typeof content === 'string' && content.startsWith('synced ') && content.includes('from cursor Some')) continue;
+          // ── XMTP MLS PROTOCOL NOISE FILTER ─────────────────────────────────
+          // XMTP v3 uses MLS groups internally for DMs. The Rust/WASM layer
+          // emits internal protocol frames that must never reach the UI.
+          // These are not real messages — they are sequencer coordination frames.
+          const isSystemNoise = (
+            typeof content === 'string' && (
+              content.includes('initiatedByInboxId') ||
+              (content.startsWith('synced ') && content.includes('from cursor')) ||
+              content.startsWith('Group is inactive') ||
+              content === 'Group is inactive' ||
+              content.includes('GroupInactive') ||
+              content.includes('group_inactive') ||
+              content.includes('failed to send') && content.includes('sequence_id') ||
+              content.includes('originator_id') ||
+              content.includes('sequence_id') ||
+              /^synced \d+ messages?,/.test(content)
+            )
+          );
+          if (isSystemNoise) continue;
+          // ────────────────────────────────────────────────────────────────────
 
           // ── ABSOLUTE DEDUPLICATION GATE ──────────────────────────────────────
           // If we have already processed this exact XMTP ID, skip unconditionally.
@@ -847,9 +867,28 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             });
           }
         }
-      } catch (e) {
-        console.warn('[Chat] global stream failed:', e);
-      }
+      } catch (e: any) {
+          const errMsg = (e?.message || String(e) || '').toLowerCase();
+          // GroupInactive = stale MLS epoch. Silently re-sync and restart stream.
+          const isGroupInactive = (
+            errMsg.includes('group is inactive') ||
+            errMsg.includes('groupinactive') ||
+            errMsg.includes('group_inactive') ||
+            errMsg.includes('inactive group')
+          );
+          if (isGroupInactive && streamRestarts < 5 && !cancelled) {
+            streamRestarts++;
+            const backoffMs = Math.min(1000 * Math.pow(1.5, streamRestarts), 15000);
+            console.info(`[Chat] MLS GroupInactive — re-sync + stream restart #${streamRestarts} in ${backoffMs}ms`);
+            try { await client.conversations.sync(); } catch {}
+            await new Promise(resolve => setTimeout(resolve, backoffMs));
+            continue; // restart the while loop → restart stream
+          } else if (!cancelled) {
+            console.warn('[Chat] global stream failed:', e);
+          }
+          break; // exit while loop for non-recoverable errors
+        }
+      } // end while
     })();
 
     return () => { cancelled = true; clearInterval(globalPoll); };
