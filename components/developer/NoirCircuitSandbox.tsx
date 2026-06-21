@@ -273,13 +273,15 @@ export function NoirCircuitSandbox() {
         throw new Error(proofResult.error || "Proof generation failed");
       }
 
-      addLog(\`[PROVER] Proof synthesized. ID: \${proofResult.proofId}\`, "success");
+      addLog(`[PROVER] Proof synthesized. ID: ${proofResult.proofId}`, "success");
+      addLog(`[PROVER] Nullifier: ${proofResult.nullifierHash?.substring(0, 20)}…`, "info");
 
-      addLog("> SUBMITTING TO SEQUENCER...", "system");
+      addLog("> SUBMITTING TO SEQUENCER FOR VERIFICATION...", "system");
       const verifyRes = await fetch('/api/zk/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ proofId: proofResult.proofId }),
+        // Pass BOTH proofId and nullifierHash — required by the replay-attack prevention system
+        body: JSON.stringify({ proofId: proofResult.proofId, nullifierHash: proofResult.nullifierHash }),
       });
       const okResult = await verifyRes.json();
       const proveMs = Date.now() - t2;
