@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
 
         const receipt = await tx.wait();
         aztecTxHash  = receipt.txHash.toString();
-        explorerUrl  = `${AZTEC_EXPLORER}/tx/${aztecTxHash}`;
+        explorerUrl  = `${AZTEC_EXPLORER}/tx-effect/${aztecTxHash}`;
         onChainSuccess = true;
 
         console.log(`[Aztec Transfer] ✅ On-chain success! AztecScan: ${explorerUrl}`);
@@ -138,7 +138,7 @@ export async function POST(req: NextRequest) {
 
     // Use real Aztec hash if available, else local deterministic hash
     const displayTxHash = aztecTxHash ?? localTxHash;
-    const displayExplorerUrl = explorerUrl ?? `${AZTEC_EXPLORER}/tx/${localTxHash}`;
+    const displayExplorerUrl = explorerUrl ?? `${AZTEC_EXPLORER}/tx-effect/${localTxHash}`;
 
     // ── Write to off-chain ledger (always) ───────────────────────────────────
     await prisma.transaction.create({
