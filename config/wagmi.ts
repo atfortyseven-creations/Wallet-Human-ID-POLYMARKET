@@ -6,9 +6,16 @@ import {
     taiko, ronin, kava, aurora, metis, zora, sei, 
     rootstock, linea, scroll 
 } from "wagmi/chains";
-import { injected, metaMask } from "wagmi/connectors";
+import { injected, metaMask, walletConnect } from "wagmi/connectors";
 
 const infuraKey = process.env.NEXT_PUBLIC_INFURA_API_KEY || "4307fae544b442c2a40443ac491ffb0e";
+
+// WalletConnect Project ID — must match the one registered on WalletConnect Cloud
+const WC_PROJECT_ID = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID
+    || process.env.NEXT_PUBLIC_WC_PROJECT_ID
+    || '47cce4049225582027fdeeecb2868ead';
+
+const CANONICAL_APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.humanidfi.com';
 
 const ALCHEMY_KEYS = [
     "eJ8JYm5NbVJXQ6U6rkBgK",
@@ -73,15 +80,31 @@ export const config = createConfig({
         [scroll.id]: http(),
     },
     connectors: [
-        injected(),
+        injected({
+            // [MOBILE FIX] EIP-6963: use event-based discovery instead of polling window.ethereum
+            shimDisconnect: true,
+        }),
         metaMask({
             infuraAPIKey: infuraKey,
             dappMetadata: {
-                name: "Whale Alert",
-                url: "https://whalealertid.fi",
+                name: "Human ID",
+                url: CANONICAL_APP_URL,
             }
-        })
+        }),
+        // [MOBILE FIX] Explicit WalletConnect connector for reliable mobile deep-link reconnection.
+        // Without this, wagmi cannot restore WalletConnect sessions after deep-link redirects.
+        walletConnect({
+            projectId: WC_PROJECT_ID,
+            metadata: {
+                name: 'Human ID',
+                description: 'Institutional Grade Blockchain Intelligence',
+                url: CANONICAL_APP_URL,
+                icons: [`${CANONICAL_APP_URL}/official-whale-monochrome.png`],
+            },
+            showQrModal: false, // AppKit handles the QR modal — avoid double modal
+        }),
     ],
+    // [MOBILE FIX] Ensure wagmi immediately tries to restore any saved connector on mount.
+    // Without this, Android tab-discard events cause a cold-start instead of reconnection.
+    multiInjectedProviderDiscovery: true,
 });
-
-

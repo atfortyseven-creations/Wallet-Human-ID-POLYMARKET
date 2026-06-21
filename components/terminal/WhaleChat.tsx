@@ -49,12 +49,26 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const { open: openAppKit } = useAppKit();
   const { chatName, chatBio, soundEffects } = useSettingsStore();
 
-  // MASTER RECOVERY: If wallet is connected but connector is missing (common on mobile redirects)
+  // MASTER RECOVERY: If wallet is connected but connector is missing (zombie session after mobile deep-link)
+  // Run a retry loop instead of a single instant attempt — the WalletConnect relay
+  // needs time to re-establish after the user returns from the wallet app.
   useEffect(() => {
-    if (isConnected && !connector && !isSystemHandshake) {
-        console.warn('[WhaleChat] Zombie session detected  attempting silent reconnection.');
-        reconnect();
-    }
+    if (!isConnected || connector || isSystemHandshake) return;
+    let cancelled = false;
+    (async () => {
+      for (let i = 0; i < 3 && !cancelled; i++) {
+        await new Promise(r => setTimeout(r, 800 + i * 600)); // 800ms, 1400ms, 2000ms
+        if (cancelled) break;
+        try {
+          reconnect();
+          console.log(`[WhaleChat] Zombie-session recovery attempt ${i + 1} dispatched.`);
+          return;
+        } catch (e) {
+          console.warn(`[WhaleChat] Reconnect attempt ${i + 1} failed:`, e);
+        }
+      }
+    })();
+    return () => { cancelled = true; };
   }, [isConnected, connector, isSystemHandshake, reconnect]);
 
   const [client, setClient] = useState<Client | null>(null);

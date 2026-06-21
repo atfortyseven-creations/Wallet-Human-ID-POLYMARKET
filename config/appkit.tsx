@@ -133,6 +133,10 @@ export const wagmiAdapter = new WagmiAdapter({
     storage: createStorage({ storage: cookieStorage as any }),
     projectId,
     networks,
+    // [MOBILE FIX] Enable multi-injected provider discovery via EIP-6963.
+    // This replaces the slow window.ethereum polling with an event-based approach,
+    // dramatically improving initial detection speed on Android Chrome.
+    multiInjectedProviderDiscovery: true,
 })
 
 export const config = wagmiAdapter.wagmiConfig
@@ -223,6 +227,9 @@ try {
             projectId,
             metadata,
             allowUnsupportedChain: true,
+            // [MOBILE FIX] Enable EIP-6963 multi-injected provider discovery
+            // Replaces slow window.ethereum polling — wallets appear instantly on Android
+            multiInjectedProviderDiscovery: true,
             featuredWalletIds: [
                 'c57ca95b47569778a828d19178114f4d' + 'b188b89b763c899ba0be274e97267d96', // MetaMask
                 '4622a2b2d6af1c9844944291e5e7351a' + '6aa24cd7b23099efac1b2fd875da31a0', // Trust Wallet
@@ -277,30 +284,61 @@ export function Web3ModalProvider({ children, cookies }: { children: ReactNode; 
         initialState = undefined;
     }
 
-    // [IOS CONNECTION HEALER]
-    // iOS Safari and Chrome (WKWebView) aggressively suspend WebSocket connections when
-    // the user leaves the browser tab to approve a wallet deep-link (MetaMask, Rainbow, etc.).
-    // Upon returning, the WalletConnect WebSocket relay is dead but wagmi doesn't know it,
-    // causing the UI to show an infinite loading spinner instead of the connected state.
+    // [MOBILE CONNECTION HEALER v3]
+    // Problem: wagmi 2.x reports "connector not connected" on iOS/Android after:
+    //   1. User taps wallet deep-link → leaves browser → approves → returns
+    //   2. Android Chrome kills the tab when backgrounded (tab discard)
+    //   3. iOS Safari suspends all WebSocket connections during app-switch
     //
-    // Fix: Listen for the tab becoming visible again, then call reconnect() after a
-    // sufficient delay to allow the iOS networking stack to fully restore its state.
-    // 300ms was too short — iOS needs ~1000-1500ms after tab restore to re-establish
-    // the underlying WKWebView network layer. 1200ms is the safe cross-device threshold.
+    // Root cause: WalletConnect's WebSocket relay is still re-establishing
+    //   when wagmi tries to restore state. The previous 1200ms was too short
+    //   for slower Android devices and iOS 17+ with stricter WKWebView suspension.
+    //
+    // Fix: Triple-trigger reconnect (visibilitychange + focus + pageshow)
+    //   with a retry loop that attempts reconnection up to 3 times with
+    //   progressive delays, covering all device/browser combinations.
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const handleVisibility = () => {
-                if (document.visibilityState === 'visible') {
-                    setTimeout(() => {
-                        try {
-                            reconnect(wagmiAdapter.wagmiConfig as any);
-                        } catch (e) {}
-                    }, 1200); // [FIX] 1200ms: safe threshold for iOS networking stack restoration
+        if (typeof window === 'undefined') return;
+
+        const doReconnect = async (trigger: string) => {
+            // Attempt 1 at 1200ms, Attempt 2 at 2400ms, Attempt 3 at 3800ms
+            const delays = [1200, 2400, 3800];
+            for (const delay of delays) {
+                await new Promise(r => setTimeout(r, delay));
+                try {
+                    await reconnect(wagmiAdapter.wagmiConfig as any);
+                    console.log(`[AppKit:${trigger}] Reconnect succeeded at ${delay}ms`);
+                    return; // success — stop retrying
+                } catch (e: any) {
+                    console.warn(`[AppKit:${trigger}] Reconnect attempt at ${delay}ms failed:`, e?.message);
                 }
-            };
-            document.addEventListener('visibilitychange', handleVisibility);
-            return () => document.removeEventListener('visibilitychange', handleVisibility);
-        }
+            }
+        };
+
+        // Trigger 1: Tab becomes visible (back from wallet app)
+        const handleVisibility = () => {
+            if (document.visibilityState === 'visible') {
+                doReconnect('visibilitychange');
+            }
+        };
+
+        // Trigger 2: Window regains focus (Android Chrome / desktop fallback)
+        const handleFocus = () => doReconnect('focus');
+
+        // Trigger 3: iOS pageshow (bfcache restore — page was cached, not reloaded)
+        const handlePageShow = (e: PageTransitionEvent) => {
+            if (e.persisted) doReconnect('pageshow:bfcache');
+        };
+
+        document.addEventListener('visibilitychange', handleVisibility);
+        window.addEventListener('focus', handleFocus);
+        window.addEventListener('pageshow', handlePageShow);
+
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibility);
+            window.removeEventListener('focus', handleFocus);
+            window.removeEventListener('pageshow', handlePageShow);
+        };
     }, []);
 
     return (
