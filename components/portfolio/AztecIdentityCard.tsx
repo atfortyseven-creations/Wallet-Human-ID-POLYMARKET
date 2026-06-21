@@ -533,18 +533,11 @@ export function AztecIdentityCard() {
     }
 
     try {
-      let finalSignature = 'SESSION:AUTHENTICATED';
-      const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      if (!isSystemHandshake && !isLocalSystemWallet && !isMobile) {
-         finalSignature = await signMessageAsync({
-           message: `Generate Aztec Identity for ${evmAddress}\nClaim 10 QDs Genesis Airdrop\nNonce: ${Date.now()}`
-         });
-      }
-      // Pass true to claim airdrop — connectIdentity derives the Aztec address
-      // from evmAddress and then calls /api/aztec/airdrop with the derived address
+      // Pass true to claim airdrop — connectIdentity handles the signature internally
+      // and derives the Aztec address, then calls /api/aztec/airdrop with it.
       await connectIdentity(evmAddress, true);
     } catch (e) {
-      toast.error('Signature rejected');
+      toast.error('Connection failed or rejected');
     }
   };
 
