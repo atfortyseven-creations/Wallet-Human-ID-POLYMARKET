@@ -1,11 +1,9 @@
 "use client";
 
-import React, { useRef, useState, useCallback, useEffect } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { MermaidDiagram } from '@/components/privacy/MermaidDiagram';
-import { AZTEC_ROADMAP, AztecRoadmapItem } from '@/lib/content/aztecRoadmapData';
 
-// ─── Roadmap Data ─────────────────────────────────────────────────────────────
+// ─── Roadmap Data — Full Demencial Architecture ────────────────────────────────
 
 interface RoadmapNode {
   id: string;
@@ -22,38 +20,272 @@ interface RoadmapEdge {
   to: string;
 }
 
+// Column X positions (phases)
+const C1 = 80;   // Phase 1 — Completed (Core)
+const C2 = 360;  // Phase 2 — Completed (Identity & Auth)
+const C3 = 640;  // Phase 3 — Completed (ZK & Studio)
+const C4 = 920;  // Phase 4 — Building (Markets & Compliance)
+const C5 = 1200; // Phase 5 — Planned (Protocol & DAO)
+const C6 = 1480; // Phase 6 — Planned (Jan 2027 Genesis)
+
 const NODES: RoadmapNode[] = [
-  // Phase 1: Core Stack (Live)
-  { id: 'f-stack', title: 'Frontend Architecture', status: 'live', quarter: 'Integrated', description: 'Next.js 15 App Router, Tailwind CSS, Framer Motion, and Lottie Animations delivering a pristine, responsive user interface.', x: 100, y: 80 },
-  { id: 'f-db', title: 'Database & ORM', status: 'live', quarter: 'Integrated', description: 'PostgreSQL database hosted on Railway, managed dynamically via Prisma ORM for seamless data persistence and session handling.', x: 100, y: 210 },
-  { id: 'f-evm', title: 'EVM Integration', status: 'live', quarter: 'Integrated', description: 'Full Web3 connectivity using Wagmi and Viem, supporting authentication and transactions across Base Testnet and Polygon.', x: 100, y: 340 },
 
-  // Phase 2: Aztec Integration (Live)
-  { id: 'a-sim', title: 'Aztec Local PXE', status: 'live', quarter: 'Integrated', description: 'A robust client-side UI connected to the Aztec Testnet Local PXE. It manages key material, claims 10 QDs, and visualizes the full ZK proof flow.', x: 450, y: 140 },
-  { id: 'a-ui', title: 'Aztec Dashboard UI', status: 'live', quarter: 'Integrated', description: 'Native Send/Receive components, QR code generation, Faucet claiming, and a robust Identity tab all unified.', x: 450, y: 280 },
+  // ─── PHASE 1: Core Infrastructure (LIVE) ─────────────────────────────────
+  {
+    id: 'frontend',
+    title: 'Next.js 15 Frontend',
+    status: 'live',
+    quarter: 'Completed — Q1 2026',
+    description: 'Next.js 15 App Router, Tailwind CSS, Framer Motion. Monorepo deployed to Railway with zero-downtime CI/CD from GitHub main branch.',
+    x: C1, y: 60,
+  },
+  {
+    id: 'db',
+    title: 'PostgreSQL + Prisma ORM',
+    status: 'live',
+    quarter: 'Completed — Q1 2026',
+    description: 'Production database on Railway with Prisma ORM. Handles users, sessions, Product Passports, Whale memberships, VIP tiers, and transaction history.',
+    x: C1, y: 190,
+  },
+  {
+    id: 'evm',
+    title: 'EVM Wallet Integration',
+    status: 'live',
+    quarter: 'Completed — Q1 2026',
+    description: 'Wagmi + Viem + AppKit (WalletConnect). Full multi-wallet support including MetaMask, Trust Wallet, and mobile deep-link flows for iOS and Android.',
+    x: C1, y: 320,
+  },
+  {
+    id: 'siwe',
+    title: 'SIWE Auth + Sessions',
+    status: 'live',
+    quarter: 'Completed — Q2 2026',
+    description: 'Sign-In with Ethereum session management. Fixed mobile SIWE double-signature bug — manual deep-link trigger avoids the MetaMask App-Switch Loop on iOS/Android.',
+    x: C1, y: 450,
+  },
 
-  // Phase 3: Real Integration & Audits (Building)
-  { id: 'a-audit', title: 'Smart Contract Audits', status: 'building', quarter: 'Pending Audit', description: 'The Noir (Aztec.nr) circuits for accounts, authwits, and token transfers are built but pending strict security audits before final production deployment.', x: 800, y: 140 },
-  { id: 'a-testnet', title: 'Full Testnet Deploy', status: 'building', quarter: 'Pending Deploy', description: 'Upgrading the local PXE architecture to live Aztec Testnet RPC calls, connecting directly to deployed CoreLedger and Token contracts.', x: 800, y: 280 },
+  // ─── PHASE 2: Identity & Membership (LIVE) ───────────────────────────────
+  {
+    id: 'humanid',
+    title: 'Human ID (DID)',
+    status: 'live',
+    quarter: 'Completed — Q2 2026',
+    description: 'Decentralized Identity layer. Each wallet generates a cryptographic Human ID linked to a Merkle-proof KYC attestation. Forms the root of the Humanity Ledger.',
+    x: C2, y: 60,
+  },
+  {
+    id: 'vip',
+    title: 'VIP Whale Membership',
+    status: 'live',
+    quarter: 'Completed — Q2 2026',
+    description: 'Tiered membership system (Whale, Orca, Shark) with on-chain verification. Unlocks premium terminal modules, Studio Provenance, and priority liquidity routing.',
+    x: C2, y: 190,
+  },
+  {
+    id: 'portfolio',
+    title: 'VIP Portfolio Dashboard',
+    status: 'live',
+    quarter: 'Completed — Q2 2026',
+    description: 'Institutional terminal for VIP members. Displays real-time portfolio, Studio Provenance passports, Whale Chat, and transaction forensics in a unified shell.',
+    x: C2, y: 320,
+  },
+  {
+    id: 'whalechat',
+    title: 'Whale Chat (E2E)',
+    status: 'live',
+    quarter: 'Completed — Q2 2026',
+    description: 'End-to-end encrypted P2P chat for verified Whale members. Fully functional on iOS and Android. Real-time messaging with no message-send bugs.',
+    x: C2, y: 450,
+  },
 
-  // Phase 4: Future (Planned)
-  { id: 'm-mobile', title: 'Mobile ZK Signers', status: 'planned', quarter: 'Upcoming', description: 'Native iOS and Android apps acting as hardware-level biometric signers for Aztec transactions, synced to the desktop via QR code.', x: 1150, y: 210 },
+  // ─── PHASE 3: ZK Circuits & Studio Provenance (LIVE) ─────────────────────
+  {
+    id: 'zksandbox',
+    title: 'ZK Circuit Sandbox',
+    status: 'live',
+    quarter: 'Completed — Q2 2026',
+    description: 'In-browser Noir compiler pipeline with real Nargo backend (deployed on Railway). 4-stage pipeline: AST Linter → ACIR Compile → Witness → UltraHonk Prove & Verify.',
+    x: C3, y: 60,
+  },
+  {
+    id: 'linter',
+    title: 'Quantum Security Linter',
+    status: 'live',
+    quarter: 'Completed — Q2 2026',
+    description: 'Frontend AST-level security analyser runs before every compilation. Detects Soundness vulnerabilities (unconstrained key hashes, range overflow exploits) and guides devs to safe fixes.',
+    x: C3, y: 190,
+  },
+  {
+    id: 'circuits',
+    title: 'Abysmal Complexity Circuits',
+    status: 'live',
+    quarter: 'Completed — Q2 2026',
+    description: 'Production ZK circuit library: Dark Pool Order Matching (Pedersen commitments), AML Travel Rule (Merkle OFAC), Omnichain MPT State Proof (L1→L2), Recursive SNARK Verification (Plonk-in-Plonk).',
+    x: C3, y: 320,
+  },
+  {
+    id: 'studio',
+    title: 'Studio Provenance',
+    status: 'live',
+    quarter: 'Completed — Q2 2026',
+    description: 'Product Passport creation system. Users create up to 3 passports (Owner: unlimited). Each passport generates a QR code that forces wallet connection before revealing provenance data.',
+    x: C3, y: 450,
+  },
+  {
+    id: 'passportqr',
+    title: 'Passport QR Guard',
+    status: 'live',
+    quarter: 'Completed — Q2 2026',
+    description: 'PassportWalletGuard component intercepts QR scan attempts. Any public visitor scanning a product QR must connect their wallet to decrypt the full provenance chain.',
+    x: C3, y: 580,
+  },
+
+  // ─── PHASE 4: Markets, Compliance & DeFi (BUILDING) ──────────────────────
+  {
+    id: 'darkpool',
+    title: 'Dark Pool Orderbook',
+    status: 'building',
+    quarter: 'Building — Q3 2026',
+    description: 'Institutional-grade private orderbook using ZK Order Matching circuit. Makers and takers cross without revealing price or volume. Powered by the compiled UltraHonk SNARK pipeline.',
+    x: C4, y: 60,
+  },
+  {
+    id: 'aml',
+    title: 'AML / Travel Rule Oracle',
+    status: 'building',
+    quarter: 'Building — Q3 2026',
+    description: 'Real-time compliance oracle. Screens every Whale-to-Whale transfer against a Merkle-anchored OFAC sanction tree. Proof generated in <2s via the Travel Rule Noir circuit.',
+    x: C4, y: 190,
+  },
+  {
+    id: 'aztecpxe',
+    title: 'Aztec Network PXE',
+    status: 'building',
+    quarter: 'Building — Q3 2026',
+    description: 'Private Execution Environment connecting to Aztec Testnet. Manages key material, claims tokens from the faucet, and executes private transfers with full ZK proof generation locally.',
+    x: C4, y: 320,
+  },
+  {
+    id: 'polymarket',
+    title: 'Polymarket Intelligence',
+    status: 'building',
+    quarter: 'Building — Q3 2026',
+    description: 'Institutional Polymarket panel aggregating whale position intelligence. Tracks large bet entries, shifting probabilities, and generates AI-based signal alerts for VIP members.',
+    x: C4, y: 450,
+  },
+  {
+    id: 'hyperliquid',
+    title: 'Hyperliquid Execution',
+    status: 'building',
+    quarter: 'Building — Q3 2026',
+    description: 'Direct perpetual DEX execution panel. Place, modify, and cancel orders on Hyperliquid L1 from within the Whale terminal with institutional slippage controls.',
+    x: C4, y: 580,
+  },
+
+  // ─── PHASE 5: Protocol Expansion (PLANNED Q4 2026) ───────────────────────
+  {
+    id: 'omnichain',
+    title: 'Omnichain MPT Bridge',
+    status: 'planned',
+    quarter: 'Planned — Q4 2026',
+    description: 'Cross-chain state proof bridge using the Omnichain MPT Noir circuit. Allows Ethereum L1 storage slots to be verified inside Aztec L2 without trusting an oracle.',
+    x: C5, y: 60,
+  },
+  {
+    id: 'recursion',
+    title: 'Recursive Proof Aggregation',
+    status: 'planned',
+    quarter: 'Planned — Q4 2026',
+    description: 'Plonk-in-Plonk recursive accumulation for batch compliance proofs. One UltraHonk proof will aggregate thousands of AML checks for a single on-chain verification call.',
+    x: C5, y: 190,
+  },
+  {
+    id: 'audit',
+    title: 'Smart Contract Audits',
+    status: 'planned',
+    quarter: 'Planned — Q4 2026',
+    description: 'Third-party security audit of all Aztec.nr (Noir) circuits: CoreLedger, Token, AuthWit, AML Oracle, and Dark Pool Matcher. Required before Mainnet Alpha launch.',
+    x: C5, y: 320,
+  },
+  {
+    id: 'reputation',
+    title: 'On-Chain Reputation System',
+    status: 'planned',
+    quarter: 'Planned — Q4 2026',
+    description: 'ZK-attested reputation scoring for Whale identities. Score is computed from on-chain activity, compliance history, and staking tenure. Revealed as a range proof, never raw.',
+    x: C5, y: 450,
+  },
+  {
+    id: 'mobile',
+    title: 'Mobile ZK Signers',
+    status: 'planned',
+    quarter: 'Planned — Q4 2026',
+    description: 'Native iOS and Android apps acting as hardware-level biometric signers for Aztec transactions. Synced to the desktop terminal via QR code pairing and SIWE session bridge.',
+    x: C5, y: 580,
+  },
+
+  // ─── PHASE 6: Genesis — January 2027 ─────────────────────────────────────
+  {
+    id: 'mainnet',
+    title: 'Aztec Mainnet Alpha',
+    status: 'planned',
+    quarter: 'Genesis — Jan 2027',
+    description: 'Production deployment of the full Whale Network protocol on Aztec Mainnet. CoreLedger contract, Token contract, and the first private institutional liquidity pool go live.',
+    x: C6, y: 120,
+  },
+  {
+    id: 'dao',
+    title: 'Whale DAO + Governance',
+    status: 'planned',
+    quarter: 'Genesis — Jan 2027',
+    description: 'On-chain governance via ZK-private voting. Token holders vote on treasury allocations, protocol upgrades, and partner integrations — without revealing their identity or stake.',
+    x: C6, y: 290,
+  },
+  {
+    id: 'cnmv',
+    title: 'CNMV / MiCA Compliance',
+    status: 'planned',
+    quarter: 'Genesis — Jan 2027',
+    description: 'Full regulatory compliance package for EU/Spain (CNMV notification, MiCA readiness). ZK Travel Rule proofs submitted automatically for transfers >€1,000.',
+    x: C6, y: 460,
+  },
 ];
 
 const EDGES: RoadmapEdge[] = [
-  { from: 'f-stack', to: 'a-sim' },
-  { from: 'f-db', to: 'a-sim' },
-  { from: 'f-evm', to: 'a-ui' },
-  { from: 'a-sim', to: 'a-audit' },
-  { from: 'a-ui', to: 'a-testnet' },
-  { from: 'a-audit', to: 'm-mobile' },
-  { from: 'a-testnet', to: 'm-mobile' }
+  // Phase 1 → Phase 2
+  { from: 'frontend', to: 'humanid' },
+  { from: 'db',       to: 'vip' },
+  { from: 'evm',      to: 'portfolio' },
+  { from: 'siwe',     to: 'whalechat' },
+  // Phase 2 → Phase 3
+  { from: 'humanid',  to: 'zksandbox' },
+  { from: 'vip',      to: 'studio' },
+  { from: 'portfolio',to: 'studio' },
+  { from: 'whalechat',to: 'linter' },
+  // Phase 3 → Phase 4
+  { from: 'zksandbox',to: 'darkpool' },
+  { from: 'linter',   to: 'darkpool' },
+  { from: 'circuits', to: 'aml' },
+  { from: 'circuits', to: 'aztecpxe' },
+  { from: 'studio',   to: 'polymarket' },
+  { from: 'passportqr',to: 'hyperliquid' },
+  // Phase 4 → Phase 5
+  { from: 'darkpool', to: 'omnichain' },
+  { from: 'aml',      to: 'recursion' },
+  { from: 'aztecpxe', to: 'audit' },
+  { from: 'polymarket',to: 'reputation' },
+  { from: 'hyperliquid',to: 'mobile' },
+  // Phase 5 → Phase 6
+  { from: 'omnichain',to: 'mainnet' },
+  { from: 'audit',    to: 'mainnet' },
+  { from: 'reputation',to: 'dao' },
+  { from: 'mobile',   to: 'cnmv' },
 ];
 
 const STATUS_CONFIG = {
-  live:     { label: 'Active',     dot: 'bg-black',       text: 'text-black',       border: 'border-black' },
-  building: { label: 'Building', dot: 'bg-black/40',    text: 'text-black/60',    border: 'border-black/40' },
-  planned:  { label: 'Planned',  dot: 'bg-black/15',    text: 'text-black/35',    border: 'border-black/15' },
+  live:     { label: 'Completed',  dot: 'bg-black',       text: 'text-black',       border: 'border-black' },
+  building: { label: 'Building',   dot: 'bg-black/40',    text: 'text-black/60',    border: 'border-black/40' },
+  planned:  { label: 'Planned',    dot: 'bg-black/15',    text: 'text-black/35',    border: 'border-black/15' },
 };
 
 const NODE_W = 200;
@@ -63,13 +295,13 @@ const NODE_H = 88;
 
 function RoadmapCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [transform, setTransform] = useState({ x: 40, y: 60, scale: 0.9 });
+  const [transform, setTransform] = useState({ x: 30, y: 60, scale: 0.78 });
   const [dragging, setDragging] = useState(false);
   const [selected, setSelected] = useState<RoadmapNode | null>(null);
   const dragStart = useRef<{ mx: number; my: number; tx: number; ty: number } | null>(null);
 
-  const CANVAS_W = 1740;
-  const CANVAS_H = 620;
+  const CANVAS_W = 1980;
+  const CANVAS_H = 780;
 
   const onMouseDown = useCallback((e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest('[data-node]')) return;
@@ -80,30 +312,21 @@ function RoadmapCanvas() {
   const onMouseMove = useCallback((e: React.MouseEvent) => {
     if (!dragging || !dragStart.current) return;
     const { mx, my, tx, ty } = dragStart.current;
-    const dx = e.clientX - mx;
-    const dy = e.clientY - my;
-    setTransform(t => ({ ...t, x: tx + dx, y: ty + dy }));
+    setTransform(t => ({ ...t, x: tx + (e.clientX - mx), y: ty + (e.clientY - my) }));
   }, [dragging]);
 
-  const onMouseUp = useCallback(() => {
-    setDragging(false);
-    dragStart.current = null;
-  }, []);
+  const onMouseUp = useCallback(() => { setDragging(false); dragStart.current = null; }, []);
 
   const onWheel = useCallback((e: React.WheelEvent) => {
     e.preventDefault();
     const delta = -e.deltaY * 0.001;
-    setTransform(t => {
-      const next = Math.min(2, Math.max(0.3, t.scale + delta));
-      return { ...t, scale: next };
-    });
+    setTransform(t => ({ ...t, scale: Math.min(2, Math.max(0.3, t.scale + delta)) }));
   }, []);
 
   const zoomIn  = () => setTransform(t => ({ ...t, scale: Math.min(2, t.scale + 0.15) }));
   const zoomOut = () => setTransform(t => ({ ...t, scale: Math.max(0.3, t.scale - 0.15) }));
-  const reset   = () => setTransform({ x: 40, y: 60, scale: 0.9 });
+  const reset   = () => setTransform({ x: 30, y: 60, scale: 0.78 });
 
-  // Build edge path between node centers
   function edgePath(from: RoadmapNode, to: RoadmapNode) {
     const x1 = from.x + NODE_W;
     const y1 = from.y + NODE_H / 2;
@@ -122,19 +345,23 @@ function RoadmapCanvas() {
   const onTouchMove = useCallback((e: React.TouchEvent) => {
     if (!dragging || !dragStart.current) return;
     const { mx, my, tx, ty } = dragStart.current;
-    const dx = e.touches[0].clientX - mx;
-    const dy = e.touches[0].clientY - my;
-    setTransform(t => ({ ...t, x: tx + dx, y: ty + dy }));
+    setTransform(t => ({ ...t, x: tx + (e.touches[0].clientX - mx), y: ty + (e.touches[0].clientY - my) }));
   }, [dragging]);
 
-  const onTouchEnd = useCallback(() => {
-    setDragging(false);
-    dragStart.current = null;
-  }, []);
+  const onTouchEnd = useCallback(() => { setDragging(false); dragStart.current = null; }, []);
+
+  const COLUMNS = [
+    { label: 'Phase 1 — Core',          x: C1 },
+    { label: 'Phase 2 — Identity',       x: C2 },
+    { label: 'Phase 3 — ZK & Studio',    x: C3 },
+    { label: 'Phase 4 — Markets',        x: C4 },
+    { label: 'Phase 5 — Protocol',       x: C5 },
+    { label: 'Phase 6 — Genesis Jan 27', x: C6 },
+  ];
 
   return (
     <div className="relative w-full h-full flex flex-col overflow-hidden bg-white">
-      {/* Toolbar - floating absolute so it doesn't block dragging in the main area */}
+      {/* Legend + zoom controls */}
       <div className="absolute bottom-4 left-4 right-4 sm:bottom-8 sm:left-1/2 sm:-translate-x-1/2 sm:right-auto z-20 flex items-center justify-between sm:justify-center px-4 py-3 border border-black/10 bg-white/90 backdrop-blur-md rounded-2xl shadow-lg">
         <div className="flex items-center gap-4 sm:gap-5">
           {Object.entries(STATUS_CONFIG).map(([k, v]) => (
@@ -144,7 +371,7 @@ function RoadmapCanvas() {
             </div>
           ))}
         </div>
-        <div className="w-[1px] h-4 bg-black/10 mx-2 sm:mx-4 hidden sm:block"></div>
+        <div className="w-[1px] h-4 bg-black/10 mx-2 sm:mx-4 hidden sm:block" />
         <div className="flex items-center gap-1 sm:gap-2">
           <button onClick={zoomOut} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-black/5 transition-colors text-black/60 font-bold text-lg leading-none">−</button>
           <button onClick={zoomIn}  className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-black/5 transition-colors text-black/60 font-bold text-lg leading-none">+</button>
@@ -167,7 +394,7 @@ function RoadmapCanvas() {
         onTouchCancel={onTouchEnd}
         onWheel={onWheel}
       >
-        {/* Dot grid background */}
+        {/* Dot grid */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -187,37 +414,31 @@ function RoadmapCanvas() {
           }}
         >
           {/* Column labels */}
-          {[
-            { label: 'Core Infrastructure', x: 100 },
-            { label: 'UX & Simulation',     x: 450 },
-            { label: 'Audits & Deploy',     x: 800 },
-            { label: 'Future Horizons',     x: 1150 },
-          ].map(q => (
-
+          {COLUMNS.map(q => (
             <div
               key={q.label}
               style={{ position: 'absolute', left: q.x, top: 0, width: NODE_W }}
               className="flex items-center justify-center"
             >
-              <span className="font-mono text-[10px] font-black uppercase tracking-[0.22em] text-black/25">
+              <span className="font-mono text-[10px] font-black uppercase tracking-[0.18em] text-black/25 whitespace-nowrap">
                 {q.label}
               </span>
             </div>
           ))}
 
           {/* SVG Edges */}
-          <svg
-            style={{ position: 'absolute', top: 0, left: 0, width: CANVAS_W, height: CANVAS_H, pointerEvents: 'none', overflow: 'visible' }}
-          >
+          <svg style={{ position: 'absolute', top: 0, left: 0, width: CANVAS_W, height: CANVAS_H, pointerEvents: 'none', overflow: 'visible' }}>
             {EDGES.map(e => {
               const fromNode = NODES.find(n => n.id === e.from);
               const toNode   = NODES.find(n => n.id === e.to);
               if (!fromNode || !toNode) return null;
+              // Dimmer edges for planned nodes
+              const opacity = toNode.status === 'planned' ? 0.08 : toNode.status === 'building' ? 0.2 : 0.14;
               return (
                 <path
                   key={`${e.from}-${e.to}`}
                   d={edgePath(fromNode, toNode)}
-                  stroke="rgba(0,0,0,0.12)"
+                  stroke={`rgba(0,0,0,${opacity})`}
                   strokeWidth="1.5"
                   fill="none"
                   strokeDasharray={toNode.status === 'planned' ? '5 4' : undefined}
@@ -253,7 +474,7 @@ function RoadmapCanvas() {
                       {cfg.label}
                     </span>
                   </div>
-                  <p className="text-[12px] font-bold tracking-tight text-black leading-snug">
+                  <p className={`text-[12px] font-bold tracking-tight leading-snug ${node.status === 'live' ? 'text-black' : node.status === 'building' ? 'text-black/55' : 'text-black/30'}`}>
                     {node.title}
                   </p>
                 </div>
@@ -299,20 +520,18 @@ function RoadmapCanvas() {
 export default function HumanityLedger() {
   return (
     <div className="relative w-full h-full min-h-0 bg-white overflow-y-auto flex flex-col">
-      {/* Header overlaid with pointer-events-none to let drag pass through */}
       <div className="absolute top-0 left-0 right-0 px-6 py-6 sm:py-8 z-10 pointer-events-none bg-gradient-to-b from-white via-white/90 to-transparent">
         <div className="max-w-[900px]">
           <h1 className="text-[22px] font-black tracking-tight text-black mb-2 pointer-events-auto">
             Protocol Roadmap
           </h1>
           <p className="text-[12px] sm:text-[13.5px] text-black/50 leading-relaxed pointer-events-auto max-w-xl">
-            The development timeline for Whale Network on Aztec Network. Drag the canvas to explore,
-            scroll to zoom, and click any node for details.
+            La arquitectura completa de Whale Network sobre Aztec Network — desde el core hasta el Genesis de Enero 2027.
+            Arrastra el canvas para explorar, haz scroll para hacer zoom, y haz clic en cualquier nodo para ver detalles.
           </p>
         </div>
       </div>
 
-      {/* Fullscreen Roadmap Canvas Container - Real Time Panel */}
       <div className="relative w-full flex-1">
         <RoadmapCanvas />
       </div>
