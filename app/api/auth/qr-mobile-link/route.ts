@@ -141,7 +141,10 @@ export async function POST(req: NextRequest) {
     await safeRedisSet(`qr-session:${uuid}`, sessionPayload, 'EX', 300);
 
     //  5. Also set human_session on this response for the mobile 
-    const cookieDomain = process.env.NODE_ENV === 'production' ? 'humanidfi.com' : undefined;
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || '';
+    const cookieDomain = (process.env.NODE_ENV === 'production' && appUrl)
+        ? (() => { try { return new URL(appUrl).hostname; } catch { return undefined; } })()
+        : undefined;
     const response = NextResponse.json({ success: true });
     response.cookies.set('human_session', jwt, {
       httpOnly: true,
