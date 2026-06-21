@@ -136,9 +136,9 @@ export default function TransactionHistory({ authUserId, transactions: propTrans
   return (
     <div className="space-y-6 h-full flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between shrink-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between shrink-0 gap-4">
         <div className="flex items-center gap-3">
-          <h2 className="text-2xl font-black text-[#1F1F1F] tracking-tighter">Activity Analytics</h2>
+          <h2 className="text-xl md:text-2xl font-black text-[#1F1F1F] tracking-tighter">Activity Analytics</h2>
           <div className="flex items-center gap-1.5 px-2 py-1 bg-emerald-500/10 rounded-lg border border-emerald-500/20">
             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
             <span className="text-[9px] font-black text-emerald-600 uppercase tracking-wider">Active</span>

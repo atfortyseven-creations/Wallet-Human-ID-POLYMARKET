@@ -89,16 +89,16 @@ export default function PortfolioDashboard({ walletAddress }: { walletAddress?: 
                         Identity authentication required for ledger access
                     </p>
                 </div>
-                <div className="flex gap-4 relative z-10">
+                <div className="flex flex-col md:flex-row gap-4 relative z-10 w-full max-w-sm px-4">
                     <button
                         onClick={() => open()}
-                        className="px-8 py-4 bg-black text-white font-black rounded-xl uppercase tracking-[0.2em] text-[10px] hover:bg-slate-800 transition-colors"
+                        className="w-full px-8 py-4 bg-black text-white font-black rounded-xl uppercase tracking-[0.2em] text-[10px] hover:bg-slate-800 transition-colors"
                     >
                         AUTHENTICATE
                     </button>
                     <button
                         onClick={() => useWalletStore.getState().createWallet()}
-                        className="px-8 py-4 bg-white border border-slate-200 text-black font-black rounded-xl uppercase tracking-[0.2em] text-[10px] hover:bg-black/5 transition-colors"
+                        className="w-full px-8 py-4 bg-white border border-slate-200 text-black font-black rounded-xl uppercase tracking-[0.2em] text-[10px] hover:bg-black/5 transition-colors"
                     >
                         INITIALIZE VAULT
                     </button>
@@ -108,8 +108,8 @@ export default function PortfolioDashboard({ walletAddress }: { walletAddress?: 
     }
 
     return (
-        <div className="w-full h-full min-h-0 flex flex-col p-4 md:p-8 bg-white overflow-y-auto no-scrollbar font-sans text-black relative">
-            <div className="w-full max-w-[880px] mx-auto bg-white/80 backdrop-blur-2xl border border-slate-200/60 rounded-[2rem] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.07)] p-7 md:p-10 flex flex-col transition-all duration-500 z-10">
+        <div className="w-full h-full min-h-0 flex flex-col p-2 sm:p-4 md:p-8 bg-white overflow-x-hidden overflow-y-auto no-scrollbar font-sans text-black relative">
+            <div className="w-full max-w-[880px] mx-auto bg-white/80 backdrop-blur-2xl border border-slate-200/60 rounded-[1.5rem] md:rounded-[2rem] shadow-[0_40px_80px_-20px_rgba(0,0,0,0.07)] p-5 sm:p-7 md:p-10 flex flex-col transition-all duration-500 z-10 overflow-hidden">
 
 
 
@@ -121,26 +121,26 @@ export default function PortfolioDashboard({ walletAddress }: { walletAddress?: 
                             <span className="font-mono text-[10px] font-black">[EYE]</span>
                         </button>
                     </div>
-                    <div className="flex flex-col md:flex-row md:items-end gap-6">
-                        <div className="text-5xl md:text-6xl font-black tracking-tighter text-black">
+                    <div className="flex flex-col md:flex-row md:items-end gap-2 md:gap-6 mt-2">
+                        <div className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter text-black truncate">
                             {isEyesOff ? "*****" : <AnimatedCounter value={totalValue} isCurrency={true} />}
                         </div>
-                        <div className="flex items-center gap-2 text-sm font-bold tracking-widest font-mono">
+                        <div className="flex items-center gap-2 text-[10px] md:text-sm font-bold tracking-widest font-mono mb-1 md:mb-2">
                             {isProfit ? <span className="font-mono font-black">[+]</span> : <span className="font-mono font-black">[-]</span>}
                             {isEyesOff ? "***" : <><AnimatedCounter value={Math.abs(totalChange24h)} isCurrency={false} />%</>}
                         </div>
                     </div>
-                    <div className="mt-4 font-mono text-[10px] uppercase tracking-widest text-slate-500 truncate">
+                    <div className="mt-4 md:mt-6 font-mono text-[9px] md:text-[10px] uppercase tracking-widest text-slate-500 truncate">
                         IDENTITY: {effectiveAddress}
                     </div>
                 </div>
 
                 {/* Tabs */}
-                <div className="flex items-center gap-6 border-b border-slate-200/60 mb-6">
+                <div className="flex overflow-x-auto no-scrollbar items-center gap-4 md:gap-6 border-b border-slate-200/60 mb-6 pb-2 w-full">
                     <button
                         onClick={() => setActiveTab('tokens')}
                         className={cn(
-                            "pb-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all border-b-2 relative",
+                            "flex-shrink-0 pb-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all border-b-2 relative",
                             activeTab === 'tokens' ? "text-black border-black" : "text-slate-400 border-transparent hover:text-black"
                         )}
                     >
@@ -149,7 +149,7 @@ export default function PortfolioDashboard({ walletAddress }: { walletAddress?: 
                     <button
                         onClick={() => setActiveTab('activity')}
                         className={cn(
-                            "pb-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all border-b-2 relative",
+                            "flex-shrink-0 pb-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all border-b-2 relative",
                             activeTab === 'activity' ? "text-black border-black" : "text-slate-400 border-transparent hover:text-black"
                         )}
                     >
@@ -158,7 +158,7 @@ export default function PortfolioDashboard({ walletAddress }: { walletAddress?: 
                     <button
                         onClick={() => setActiveTab('aztec')}
                         className={cn(
-                            "pb-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all border-b-2 relative",
+                            "flex-shrink-0 pb-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all border-b-2 relative",
                             activeTab === 'aztec' ? "text-black border-black" : "text-slate-400 border-transparent hover:text-black"
                         )}
                     >

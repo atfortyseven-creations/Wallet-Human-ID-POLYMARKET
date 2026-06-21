@@ -625,7 +625,7 @@ export function AztecIdentityCard() {
       className="w-full border border-zinc-900/10 bg-white overflow-hidden"
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-900/10 bg-zinc-900/[0.015]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-4 md:px-6 py-4 border-b border-zinc-900/10 bg-zinc-900/[0.015]">
         <div className="flex items-center gap-3">
           <div className="relative">
             <img src="/system-shots/aztec-logo.png" className="w-10 h-10 object-contain" alt="Aztec" />
@@ -635,7 +635,7 @@ export function AztecIdentityCard() {
             <p className="text-[8px] text-zinc-900/40 uppercase tracking-widest mt-0.5">Testnet · Zero-Knowledge L2</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 self-end sm:self-auto">
           <button onClick={disconnectIdentity} className="text-[8px] font-black uppercase tracking-widest text-zinc-900/40 hover:text-zinc-900 border border-zinc-900/10 hover:border-zinc-900 px-2 py-1 transition-all mr-2">
             Logout
           </button>
@@ -647,13 +647,13 @@ export function AztecIdentityCard() {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-zinc-900/10 overflow-x-auto custom-scrollbar">
+      <div className="flex border-b border-zinc-900/10 overflow-x-auto no-scrollbar w-full">
         {TABS.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex-1 py-3 text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap px-2
-              ${activeTab === tab.id ? 'bg-white text-zinc-900 border border-zinc-900/20' : 'text-zinc-900/30 hover:text-zinc-900 hover:bg-zinc-900/5'}`}
+            className={`flex-none md:flex-1 py-3 text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap px-4 md:px-2
+              ${activeTab === tab.id ? 'bg-white text-zinc-900 border border-zinc-900/20' : 'text-zinc-900/40 hover:text-zinc-900 hover:bg-zinc-900/5'}`}
           >
             {tab.label}
           </button>
