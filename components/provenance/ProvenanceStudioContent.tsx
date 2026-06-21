@@ -1,1 +1,1 @@
-export default function Component() { return null; }
+export function ProvenanceStudioContent() { return null; }
