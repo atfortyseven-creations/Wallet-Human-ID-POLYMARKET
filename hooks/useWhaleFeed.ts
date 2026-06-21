@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useEffect, useRef, useState } from 'react';
-import { WacAnalyticsService } from '@/lib/analytics-service';
+import { generateTacticalIntel } from '@/lib/tactical-intel';
 import { useVIPStore, VIPStoreState, EMPTY_ARRAY } from '@/lib/vip-store';
 
 const LOCAL_EMPTY: any[] = [];
@@ -328,7 +328,7 @@ export function useWhaleFeed() {
         const merged = [...filteredMempool, ...filteredEvm, ...confirmed].sort((a, b) => b.timestamp - a.timestamp);
         
         return merged.map(item => {
-            const intel = WacAnalyticsService.generateTacticalIntel({
+            const intel = generateTacticalIntel({
                 usdValue: item.usdValue || 0, from: item.from, to: item.to, type: item.type, asset: item.asset, chain: item.chain
             });
             const chainIcons: Record<string, { color: string; icon: string }> = {
