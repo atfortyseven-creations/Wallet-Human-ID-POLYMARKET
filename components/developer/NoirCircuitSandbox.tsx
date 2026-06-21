@@ -226,14 +226,14 @@ export function NoirCircuitSandbox() {
       }
 
       setCompileResult(compiled);
-      addLog(\`[ACIR] Compiled successfully. Bytecode size: \${compiled.bytecodeSize?.toLocaleString()} bytes\`, "success");
-      addLog(\`[ACIR] Nargo v\${compiled.nargoVersion} compiled in \${compiled.compileMs} ms\`, "info");
+      addLog("[ACIR] Compiled successfully. Bytecode size: " + (compiled.bytecodeSize?.toLocaleString() ?? "?") + " bytes", "success");
+      addLog("[ACIR] Nargo v" + compiled.nargoVersion + " compiled in " + compiled.compileMs + " ms", "info");
       
       if (compiled.warnings?.length > 0) {
-        for (const w of compiled.warnings) addLog(\`[COMPILER_WARN] \${w}\`, "warn");
+        for (const w of compiled.warnings) addLog("[COMPILER_WARN] " + w, "warn");
       }
       
-      updateStage("compile", { status: "done", durationMs: compileMs, output: \`ACIR: \${compiled.bytecodeSize} bytes\` });
+      updateStage("compile", { status: "done", durationMs: compileMs, output: "ACIR: " + compiled.bytecodeSize + " bytes" });
 
       // ── STAGE 3: REAL WITNESS GENERATION ──────────────────────────────────────
       updateStage("witness", { status: "running" });
@@ -253,7 +253,7 @@ export function NoirCircuitSandbox() {
         throw new Error(witness.error || "Witness generation failed");
       }
 
-      addLog(\`[PXE] Generated witness map with ID: \${witness.witnessId}\`, "success");
+      addLog("[PXE] Generated witness map with ID: " + witness.witnessId, "success");
       updateStage("witness", { status: "done", durationMs: witnessMs, output: "Witness Map Generated" });
 
       // ── STAGE 4: REAL PROVING & VERIFY ────────────────────────────────────────
@@ -300,7 +300,7 @@ export function NoirCircuitSandbox() {
       addLog("==================================", "system");
 
     } catch (e: any) {
-      addLog(\`Fatal error: \${e.message}\`, "error");
+      addLog("Fatal error: " + (e.message ?? "Unknown error"), "error");
     } finally {
       setRunning(false);
     }
@@ -329,7 +329,7 @@ export function NoirCircuitSandbox() {
           <button
             key={i}
             onClick={() => { setSelectedExample(i); setNoirCode(ex.code); resetAll(); }}
-            className={\`px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded transition-all whitespace-nowrap \${selectedExample === i ? 'bg-black text-white' : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'}\`}
+            className={selectedExample === i ? 'px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded transition-all whitespace-nowrap bg-black text-white' : 'px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded transition-all whitespace-nowrap bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'}
           >
             {ex.label} <span className="opacity-50 ml-1">[{ex.difficulty}]</span>
           </button>
@@ -354,7 +354,7 @@ export function NoirCircuitSandbox() {
           <button
             onClick={simulateQuantumCompilation}
             disabled={running}
-            className={\`w-full py-5 font-bold text-[12px] uppercase tracking-[0.2em] transition-all \${running ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-black text-white hover:bg-slate-800'}\`}
+            className={running ? 'w-full py-5 font-bold text-[12px] uppercase tracking-[0.2em] transition-all bg-slate-100 text-slate-400 cursor-not-allowed' : 'w-full py-5 font-bold text-[12px] uppercase tracking-[0.2em] transition-all bg-black text-white hover:bg-slate-800'}
           >
             {running ? "COMPILING KERNEL..." : "RUN SECURITY COMPILER"}
           </button>
@@ -365,7 +365,7 @@ export function NoirCircuitSandbox() {
           <div className="p-6 border-b border-slate-200 bg-white">
             <h3 className="text-slate-400 text-[10px] font-bold tracking-[0.2em] uppercase mb-4">Pipeline Status</h3>
             {stages.map(stage => (
-              <div key={stage.id} className={\`flex items-center gap-3 p-3 mb-2 rounded-lg border \${stage.status === 'error' ? 'border-red-200 bg-red-50' : stage.status === 'done' ? 'border-green-200 bg-green-50' : 'border-slate-200 bg-white'}\`}>
+              <div key={stage.id} className={'flex items-center gap-3 p-3 mb-2 rounded-lg border ' + (stage.status === 'error' ? 'border-red-200 bg-red-50' : stage.status === 'done' ? 'border-green-200 bg-green-50' : 'border-slate-200 bg-white')}>
                 <div className="min-w-[20px] flex justify-center">
                   {stage.status === 'running' ? <Loader2 size={14} className="animate-spin text-black" /> :
                    stage.status === 'error' ? <ShieldAlert size={14} className="text-red-500" /> :
@@ -390,7 +390,7 @@ export function NoirCircuitSandbox() {
               <div className="flex flex-col gap-2">
                 {compileResult.abi.map((p, i) => (
                   <div key={i} className="flex items-center gap-2 text-[11px]">
-                    <span className={\`px-1.5 py-0.5 rounded font-bold text-[9px] tracking-wider \${p.visibility === 'public' ? 'bg-blue-100 text-blue-700 border border-blue-200' : 'bg-slate-100 text-slate-500 border border-slate-200'}\`}>
+                    <span className={p.visibility === 'public' ? 'px-1.5 py-0.5 rounded font-bold text-[9px] tracking-wider bg-blue-100 text-blue-700 border border-blue-200' : 'px-1.5 py-0.5 rounded font-bold text-[9px] tracking-wider bg-slate-100 text-slate-500 border border-slate-200'}>
                       {p.visibility === 'public' ? 'PUB' : 'PRIV'}
                     </span>
                     <span className="text-black font-bold">{p.name}</span>
