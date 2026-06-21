@@ -133,10 +133,9 @@ export const wagmiAdapter = new WagmiAdapter({
     storage: createStorage({ storage: cookieStorage as any }),
     projectId,
     networks,
-    // [MOBILE FIX] Enable multi-injected provider discovery via EIP-6963.
-    // This replaces the slow window.ethereum polling with an event-based approach,
-    // dramatically improving initial detection speed on Android Chrome.
-    multiInjectedProviderDiscovery: true,
+    // [MOBILE STABILITY] Disabled EIP-6963 to prevent the 'connector not connect' crash on iOS/Android
+    // specifically triggered by wagmi/core 2.22.1 + AppKit conflicts.
+    multiInjectedProviderDiscovery: false,
 })
 
 export const config = wagmiAdapter.wagmiConfig
@@ -156,12 +155,6 @@ const metadata = {
     description: 'Institutional Grade Whale Tracking',
     url: CANONICAL_APP_URL,
     icons: [`${CANONICAL_APP_URL}/official-whale-monochrome.png`],
-    redirect: {
-        // Universal link used by iOS to redirect back to the app after wallet approval.
-        // Must match the Associated Domains configuration on the registered domain.
-        universal: CANONICAL_APP_URL,
-        native: 'whalealert://',
-    }
 }
 
 //  1-Click Auth (SIWE) Configuration 
@@ -256,7 +249,7 @@ try {
                 '--w3m-z-index': 9999,
             },
             enableInjected: true,
-            enableEIP6963: true, //  FAST INJECT: Bypass polling by using standard EIP-6963 window events
+            enableEIP6963: false, //  DISABLED: Fixes "connector not connect" error on mobile devices
             enableWalletConnect: true,
             enableCoinbase: true,
             customWallets: []

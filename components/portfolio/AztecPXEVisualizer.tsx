@@ -343,7 +343,7 @@ export function AztecPXEVisualizer() {
         status:      "COMMITTED",
         blockNumber: "live",
         txHash:      syntheticHash,
-        explorerUrl: `https://testnet.aztecscan.xyz/accounts/${aztecAddress}`,
+        explorerUrl: `https://testnet.aztecscan.xyz/address/${aztecAddress}`,
       };
       resultNotes.push(balanceNote);
     }

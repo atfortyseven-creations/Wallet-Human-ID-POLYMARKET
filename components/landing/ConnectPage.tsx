@@ -418,7 +418,25 @@ export default function ConnectPage() {
         const { nonce } = await nonceRes.json();
         
         const message = `Authenticate to Whale Network.\n\nNonce: ${nonce}`;
-        const signature = await signMessageAsync({ message });
+        
+        // [MOBILE CONNECTION HEALER] Retry signMessageAsync to bypass "connector not connected" race condition.
+        let signature = '';
+        let signAttempts = 0;
+        while (signAttempts < 4) {
+          try {
+            if (signAttempts > 0) await new Promise(r => setTimeout(r, 1200));
+            signature = await signMessageAsync({ message });
+            break;
+          } catch (signErr: any) {
+            const errMsg = signErr?.message?.toLowerCase() || '';
+            if (errMsg.includes('connector not connected') && signAttempts < 3) {
+              signAttempts++;
+              console.warn(`[Auth] Connector not ready, retrying sign (${signAttempts}/3)...`);
+              continue;
+            }
+            throw signErr;
+          }
+        }
 
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 15000);

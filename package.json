@@ -55,7 +55,8 @@
     "k8s:status": "kubectl get all -n whale-alert",
     "helm:install": "helm install whale-alert k8s/helm --namespace whale-alert --create-namespace",
     "helm:upgrade": "helm upgrade whale-alert k8s/helm --namespace whale-alert --reuse-values",
-    "helm:uninstall": "helm uninstall whale-alert --namespace whale-alert"
+    "helm:uninstall": "helm uninstall whale-alert --namespace whale-alert",
+    "prepare": "husky"
   },
   "engines": {
     "node": ">=20.0.0"

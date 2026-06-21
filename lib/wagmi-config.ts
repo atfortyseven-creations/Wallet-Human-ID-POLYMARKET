@@ -26,7 +26,7 @@ export const config = createConfig({
         taiko, ronin, kava, aurora, metis, zora, sei,
         rootstock, linea, scroll
     ],
-    multiInjectedProviderDiscovery: true,   //  EIP-6963: auto-discovers Rabby, Frame, etc.
+    multiInjectedProviderDiscovery: false,  //  EIP-6963 disabled: stabilizes WalletConnect and AppKit on iOS/Android
     connectors: [
         // CRITICAL: injected must be listed FIRST so MetaMask/Rabby are
         // the default connector and contract writes get proper RPC params.

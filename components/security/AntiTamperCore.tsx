@@ -59,9 +59,7 @@ const SENTINEL_SELECTOR = [
   '[data-role="auth-gate"]',
   '[data-role="cookie-banner"]',
   '[data-role="claim-modal"]',
-  '[data-role="balance-display"]',
-  'form',
-  'input[type="hidden"]',
+  '[data-role="balance-display"]'
 ].join(", ");
 
 export function AntiTamperCore() {

@@ -85,6 +85,7 @@ export default function TopicPage() {
       let csrfToken = '';
       try {
           const csrfRes = await fetch('/api/auth/csrf', {
+              credentials: 'include',
               headers: { 'x-web3-address': sessionAddress || '' }
           });
           if (!csrfRes.ok) throw new Error('CSRF fetch failed');
@@ -102,6 +103,7 @@ export default function TopicPage() {
 
       const res = await fetch('/api/forum/posts', {
         method: 'POST',
+        credentials: 'include',
         headers: { 
           'Content-Type': 'application/json',
           'x-csrf-token': csrfToken,
@@ -129,6 +131,7 @@ export default function TopicPage() {
     let csrfToken = '';
     try {
         const csrfRes = await fetch('/api/auth/csrf', {
+            credentials: 'include',
             headers: { 'x-web3-address': sessionAddress || '' }
         });
         if (!csrfRes.ok) throw new Error('CSRF fetch failed');
@@ -145,6 +148,7 @@ export default function TopicPage() {
 
     const res = await fetch(`/api/forum/topics/${id}`, { 
       method: 'DELETE',
+      credentials: 'include',
       headers: {
         'x-csrf-token': csrfToken,
         'x-web3-address': sessionAddress || ''
@@ -393,6 +397,7 @@ function PostRow({
       let csrfToken = '';
       try {
           const csrfRes = await fetch('/api/auth/csrf', {
+              credentials: 'include',
               headers: { 'x-web3-address': sessionAddress || '' }
           });
           if (!csrfRes.ok) throw new Error('CSRF fetch failed');
@@ -409,6 +414,7 @@ function PostRow({
 
       const res = await fetch('/api/forum/likes', {
         method: 'POST',
+        credentials: 'include',
         headers: { 
           'Content-Type': 'application/json',
           'x-csrf-token': csrfToken,
@@ -427,6 +433,7 @@ function PostRow({
       let csrfToken = '';
       try {
           const csrfRes = await fetch('/api/auth/csrf', {
+              credentials: 'include',
               headers: { 'x-web3-address': sessionAddress || '' }
           });
           if (!csrfRes.ok) throw new Error('CSRF fetch failed');
@@ -447,6 +454,7 @@ function PostRow({
         : `/api/forum/posts/${entity.id}`;
       const res = await fetch(endpoint, { 
         method: 'DELETE',
+        credentials: 'include',
         headers: {
           'x-csrf-token': csrfToken,
           'x-web3-address': sessionAddress || ''

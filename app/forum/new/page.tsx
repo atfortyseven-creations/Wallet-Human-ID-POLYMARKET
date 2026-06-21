@@ -119,6 +119,7 @@ function NewTopicContent() {
       let csrfToken = '';
       try {
           const csrfRes = await fetch('/api/auth/csrf', {
+              credentials: 'include',
               headers: { 'x-web3-address': address || '' }
           });
           if (!csrfRes.ok) throw new Error('CSRF fetch failed');
@@ -137,6 +138,7 @@ function NewTopicContent() {
 
       const res = await fetch('/api/forum/topics', {
         method: 'POST',
+        credentials: 'include',
         headers: { 
             'Content-Type': 'application/json',
             'x-csrf-token': csrfToken,

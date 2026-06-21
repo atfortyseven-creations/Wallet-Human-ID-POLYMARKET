@@ -763,7 +763,23 @@ export function MobileLanding() {
          message = 'owner_bypass';
          signature = 'vip_override';
       } else {
-         signature = await signMessageAsync({ message });
+         // [MOBILE CONNECTION HEALER] Retry signMessageAsync to bypass "connector not connected" race condition on iOS/Android.
+         let signAttempts = 0;
+         while (signAttempts < 4) {
+           try {
+             if (signAttempts > 0) await new Promise(r => setTimeout(r, 1200)); // Delay for WS relay to heal
+             signature = await signMessageAsync({ message });
+             break; // success
+           } catch (signErr: any) {
+             const errMsg = signErr?.message?.toLowerCase() || '';
+             if (errMsg.includes('connector not connected') && signAttempts < 3) {
+               signAttempts++;
+               console.warn(`[Auth] Connector not ready, retrying sign (${signAttempts}/3)...`);
+               continue;
+             }
+             throw signErr; // Not a race condition error or out of retries
+           }
+         }
       }
 
       const verifyRes = await fetch('/api/auth/system-verify', {

@@ -253,8 +253,8 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
             toast.success(
               <span className="flex flex-col gap-1">
                 <span>✅ Identity deployed — 10 QDs genesis airdrop received!</span>
-                {airdropData.txHash && (
-                  <a href={`https://testnet.aztecscan.xyz/tx/${airdropData.txHash}`} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-400 hover:text-blue-300 underline font-mono truncate max-w-[200px]">
+                {airdropData.onChain && airdropData.explorerUrl && (
+                  <a href={airdropData.explorerUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-400 hover:text-blue-300 underline font-mono truncate max-w-[200px]">
                     Verify on AztecScan
                   </a>
                 )}

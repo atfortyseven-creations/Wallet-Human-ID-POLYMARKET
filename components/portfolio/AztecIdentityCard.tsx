@@ -454,8 +454,8 @@ function HistoryPanel() {
             <div>
               <div className="text-[9px] font-black uppercase tracking-widest text-zinc-900/80 flex items-center gap-1.5">
                 {tx.type === 'send' ? 'Sent QDs' : 'Received QDs'}
-                {tx.txHash && (
-                  <a href={tx.explorerUrl || `${AZTEC_EXPLORER}/tx/${tx.txHash}`} target="_blank" rel="noopener noreferrer" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                {tx.txHash && tx.explorerUrl && (
+                  <a href={tx.explorerUrl} target="_blank" rel="noopener noreferrer" className="opacity-0 group-hover:opacity-100 transition-opacity">
                     <ExternalLink size={9} className="text-zinc-900/40 hover:text-zinc-900" />
                   </a>
                 )}
@@ -805,14 +805,6 @@ export function AztecIdentityCard() {
                 </div>
               </div>
 
-              <a
-                href={`${AZTEC_EXPLORER}/tx/${CLAIM_TX_HASH}`}
-                target="_blank" rel="noopener noreferrer"
-                className="flex items-center justify-between w-full py-3 px-4 border border-emerald-200 bg-emerald-50 hover:border-emerald-400 hover:bg-emerald-100 text-emerald-700 text-[9px] font-black uppercase tracking-widest transition-all group"
-              >
-                <span>🔗 View Claim TX on AztecScan</span>
-                <ExternalLink size={11} className="group-hover:translate-x-0.5 transition-transform" />
-              </a>
 
               <details className="border border-zinc-900/10 group">
                 <summary className="flex items-center justify-between px-4 py-3 cursor-pointer text-[9px] font-black uppercase tracking-widest text-zinc-900/40 hover:text-zinc-900 select-none list-none">

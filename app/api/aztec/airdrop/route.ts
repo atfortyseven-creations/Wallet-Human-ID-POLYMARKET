@@ -112,12 +112,11 @@ export async function POST(req: NextRequest) {
       console.warn('[Aztec Airdrop] AZTEC_TOKEN_CONTRACT_ADDRESS or AZTEC_RELAYER_SECRET_KEY not set — ledger-only mode.');
     }
 
-    // ── Generate fallback deterministic hash ─────────────────────────────────
     const nonce         = crypto.randomBytes(16).toString('hex');
     const txPayload     = `aztec-airdrop:${normalizedAddress}:${AIRDROP_AMOUNT}:${Date.now()}:${nonce}`;
     const localTxHash   = `0x${crypto.createHash('sha256').update(txPayload).digest('hex')}`;
     const displayTxHash = aztecTxHash ?? localTxHash;
-    const displayExplorerUrl = explorerUrl ?? `${AZTEC_EXPLORER}/tx/${localTxHash}`;
+    const displayExplorerUrl = explorerUrl ?? null;
     const blockNum      = Math.floor(Date.now() / 12_000);
 
     // ── Record in DB (always) ────────────────────────────────────────────────

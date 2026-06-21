@@ -433,87 +433,44 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                 )}
             </section>
 
-            {/* ── Main Grid: Actions + Portfolio Tabs ── */}
+            {/* ── Main Layout: Minimalist Stacked Architecture ── */}
             {address && (
-                <section className="w-full max-w-[1400px] mx-auto px-6 md:px-10 py-10 grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-                    {/* Left sidebar – actions */}
-                    <div className="lg:col-span-3 space-y-4">
-                        <div className="bg-white border border-zinc-900/10 p-5">
-                            <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-900/40 border-b border-zinc-900/10 pb-3 mb-4 block">
-                                MULTI-CHAIN EXPOSURE
-                            </h4>
-                            <div className="flex w-full h-3 bg-zinc-900/5 rounded-full overflow-hidden mb-4">
-                                {Object.entries(
-                                    assets.reduce((acc: any, asset: any) => {
-                                        const v = parseFloat(asset.value || '0');
-                                        if (v > 0) {
-                                            acc[asset.network] = (acc[asset.network] || 0) + v;
-                                        }
-                                        return acc;
-                                    }, {})
-                                ).map(([net, val]: any) => {
-                                    const total = assets.reduce((sum: number, a: any) => sum + parseFloat(a.value || '0'), 0);
-                                    if (total === 0) return null;
-                                    const pct = (val / total) * 100;
-                                    const colors: any = { 'Ethereum': '#627EEA', 'Polygon': '#8247E5', 'Arbitrum': '#28A0F0', 'Optimism': '#FF0420', 'Base': '#0052FF', 'Humanity Ledger': '#000000' };
-                                    return (
-                                        <div key={net} style={{ width: `${pct}%`, backgroundColor: colors[net] || '#333' }} className="h-full" title={`${net}: ${pct.toFixed(1)}%`} />
-                                    );
-                                })}
-                            </div>
-                            <div className="flex flex-col gap-2 mb-6">
-                                {Object.entries(
-                                    assets.reduce((acc: any, asset: any) => {
-                                        const v = parseFloat(asset.value || '0') * rate;
-                                        if (v > 0) acc[asset.network] = (acc[asset.network] || 0) + v;
-                                        return acc;
-                                    }, {})
-                                ).sort((a: any, b: any) => b[1] - a[1]).slice(0, 3).map(([net, val]: any) => (
-                                    <div key={net} className="flex items-center justify-between text-[10px]">
-                                        <span className="font-bold tracking-widest uppercase">{net}</span>
-                                        <span className="font-mono text-zinc-900/50">{symbol}{displayCurrency === 'BTC' ? val.toFixed(4) : val.toFixed(2)}</span>
-                                    </div>
-                                ))}
-                            </div>
-                            <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-zinc-900/40 border-b border-zinc-900/10 pb-3 mb-4 block">
-                                ACTIONS
-                            </h4>
-                            <div className="grid grid-cols-2 gap-2">
-                                <ActionBtn label="Deposit" icon={<Download size={16} />} onClick={onBuy} />
-                                <ActionBtn label="Swap" icon={<ArrowRightLeft size={16} />} onClick={onSwap} />
-                                <ActionBtn label="Bridge" icon={<Route size={16} />} onClick={onBridge} />
-                                <ActionBtn label="Send" icon={<Send size={16} />} onClick={onSend} />
-                                <ActionBtn label="Receive" icon={<QrCode size={16} />} onClick={onReceive} />
-                                <ActionBtn label="Scan" icon={<Scan size={16} />} onClick={onScan} />
-                            </div>
+                <section className="w-full max-w-6xl mx-auto px-4 md:px-10 py-6">
+                    
+                    {/* Horizontal scrollable Action buttons (Mobile First) */}
+                    <div className="mb-8">
+                        <div className="flex gap-3 overflow-x-auto no-scrollbar pb-4 -mx-4 px-4 md:mx-0 md:px-0 md:flex-wrap md:justify-center">
+                            <ActionPill label="Deposit" icon={<Download size={14} />} onClick={onBuy} />
+                            <ActionPill label="Swap" icon={<ArrowRightLeft size={14} />} onClick={onSwap} />
+                            <ActionPill label="Bridge" icon={<Route size={14} />} onClick={onBridge} />
+                            <ActionPill label="Send" icon={<Send size={14} />} onClick={onSend} />
+                            <ActionPill label="Receive" icon={<QrCode size={14} />} onClick={onReceive} />
+                            <ActionPill label="Scan" icon={<Scan size={14} />} onClick={onScan} />
                         </div>
                     </div>
 
-                    {/* Right: Tabs panel */}
-                    <div className="lg:col-span-9">
-                        <div className="bg-white border border-zinc-900/10 overflow-hidden flex flex-col min-h-[520px]">
-                            <div className="flex border-b border-zinc-900/10 overflow-x-auto">
-                                {(['TOKENS', 'DEFI', 'ACTIVITY', 'AZTEC'] as const).map(t => (
-                                    <button
-                                        key={t}
-                                        onClick={() => setActiveTab(t)}
-                                        className={`px-8 py-4 text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all ${
-                                            activeTab === t
-                                                ? 'bg-zinc-900 text-white'
-                                                : 'text-zinc-900/50 hover:text-zinc-900 hover:bg-zinc-900/[0.03] border-r border-zinc-900/10'
-                                        }`}
-                                    >
-                                        {t === 'TOKENS' ? 'Assets' : t === 'DEFI' ? 'DeFi' : t === 'ACTIVITY' ? 'History' : 'Aztec Identity'}
-                                    </button>
-                                ))}
-                            </div>
-                            <div className="flex-1 bg-white flex flex-col">
-                                {activeTab === 'TOKENS' && <QuantumHoldingsEngine address={address} activeNetwork={activeNetwork} scannerBase={scannerBase} userAssets={assets} displayCurrency={displayCurrency} rate={rate} symbol={symbol} onSwapRequest={onSwap} onBridgeRequest={onBridge} onQdsTransfer={onQds} />}
-                                {activeTab === 'DEFI' && <QuantumDeFiPositions address={address} activeNetwork={activeNetwork} />}
-                                {activeTab === 'ACTIVITY' && <TransactionHistory address={address} scannerBase={scannerBase} activeNetwork={activeNetwork} />}
-                                {activeTab === 'AZTEC' && <div className="p-6 max-w-4xl mx-auto w-full"><AztecIdentityCard /></div>}
-                            </div>
+                    {/* Minimalist Tabs Panel */}
+                    <div className="bg-white border border-zinc-900/10 overflow-hidden flex flex-col shadow-sm rounded-sm">
+                        <div className="flex border-b border-zinc-900/10 overflow-x-auto no-scrollbar snap-x">
+                            {(['TOKENS', 'DEFI', 'ACTIVITY', 'AZTEC'] as const).map(t => (
+                                <button
+                                    key={t}
+                                    onClick={() => setActiveTab(t)}
+                                    className={`snap-start px-6 py-4 text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all flex-1 text-center ${
+                                        activeTab === t
+                                            ? 'bg-zinc-900 text-white'
+                                            : 'text-zinc-900/50 hover:text-zinc-900 hover:bg-zinc-900/[0.03] border-r border-zinc-900/10 last:border-0'
+                                    }`}
+                                >
+                                    {t === 'TOKENS' ? 'Assets' : t === 'DEFI' ? 'DeFi' : t === 'ACTIVITY' ? 'History' : 'Aztec Identity'}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="flex-1 bg-white flex flex-col p-4 md:p-8 min-h-[400px]">
+                            {activeTab === 'TOKENS' && <QuantumHoldingsEngine address={address} activeNetwork={activeNetwork} scannerBase={scannerBase} userAssets={assets} displayCurrency={displayCurrency} rate={rate} symbol={symbol} onSwapRequest={onSwap} onBridgeRequest={onBridge} onQdsTransfer={onQds} />}
+                            {activeTab === 'DEFI' && <QuantumDeFiPositions address={address} activeNetwork={activeNetwork} />}
+                            {activeTab === 'ACTIVITY' && <TransactionHistory address={address} scannerBase={scannerBase} activeNetwork={activeNetwork} />}
+                            {activeTab === 'AZTEC' && <div className="w-full max-w-4xl mx-auto"><AztecIdentityCard /></div>}
                         </div>
                     </div>
                 </section>
@@ -536,6 +493,20 @@ function ActionBtn({ label, icon, onClick }: any) {
                 {icon}
             </div>
             <span className="text-[10px] font-bold uppercase tracking-widest">{label}</span>
+        </button>
+    );
+}
+
+function ActionPill({ label, icon, onClick }: any) {
+    return (
+        <button
+            onClick={onClick}
+            className="flex items-center justify-center px-6 py-3 border border-zinc-900/10 hover:border-zinc-900 hover:bg-zinc-900 hover:text-white transition-all rounded-full bg-white gap-2 flex-none"
+        >
+            <div className="text-zinc-900/60 group-hover:text-white transition-colors">
+                {icon}
+            </div>
+            <span className="text-[10px] font-bold uppercase tracking-widest whitespace-nowrap">{label}</span>
         </button>
     );
 }
