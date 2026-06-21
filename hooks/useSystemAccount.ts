@@ -114,9 +114,17 @@ export function useSystemAccount() {
     useEffect(() => {
         const run = async () => {
             // === Step 0: Handle Logout Guard ===
+            // MOBILE FIX: If wagmi has successfully reconnected (WalletConnect session restored
+            // after tab kill on iOS/Android), clear the stale __disconnected__ guard so the
+            // user is not blocked. The guard is only meaningful when explicitly logged out.
+            if (wagmiAccount.isConnected) {
+                try { localStorage.removeItem('__disconnected__'); } catch {}
+                try { sessionStorage.removeItem('__disconnected__'); } catch {}
+            }
+
             // Purge wagmi/session tokens. Do NOT touch whale_hw_session_token — that
             // must survive so the user can log back in without re-creating a wallet.
-            if (isGuarded) {
+            if (isGuarded && !wagmiAccount.isConnected) {
                 try { localStorage.removeItem('system_session_v2'); } catch {}
                 try { sessionStorage.removeItem('system_wallet_addr'); } catch {}
                 try { sessionStorage.removeItem('portfolio_unlocked'); } catch {}
@@ -126,16 +134,11 @@ export function useSystemAccount() {
             }
 
             // === Step 1: Hardware-Bound Auto-Unlock (Revolut-style) ===
-            // If the vault is locked (isLocked=true after hydration) but has credentials,
-            // silently decrypt using the IndexedDB CryptoKey. This restores privateKey to
-            // memory without any user interaction — across ALL page loads and browser restarts.
             if (!autoUnlockRan.current && storePasswordHash && storeEncryptedVault && !storePrivateKey) {
                 autoUnlockRan.current = true;
                 try {
                     const unlocked = await autoUnlockVault();
                     if (unlocked) {
-                        // autoUnlockVault sets address + privateKey in the store.
-                        // The store update will trigger a re-render and Priority 1 will fire.
                         console.log('[useSystemAccount] Hardware auto-unlock SUCCESS.');
                     } else {
                         console.warn('[useSystemAccount] Hardware auto-unlock FAILED — user will need to enter password.');
