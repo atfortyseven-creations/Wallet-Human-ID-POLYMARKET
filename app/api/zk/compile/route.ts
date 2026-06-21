@@ -5,18 +5,16 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import crypto from 'crypto';
-import { getSession } from '@/lib/session';
-
-// [SECURITY] Per-session compile rate limit: max 5 compilations per minute
+// [SECURITY] Per-IP compile rate limit: max 5 compilations per minute
 const compileRateLimit = new Map<string, { count: number; resetAt: number }>();
-function checkCompileLimit(userId: string): boolean {
+function checkCompileLimit(ip: string): boolean {
   const now = Date.now();
   const WINDOW = 60_000;
   const MAX = 5;
-  const entry = compileRateLimit.get(userId) ?? { count: 0, resetAt: now + WINDOW };
+  const entry = compileRateLimit.get(ip) ?? { count: 0, resetAt: now + WINDOW };
   if (now > entry.resetAt) { entry.count = 0; entry.resetAt = now + WINDOW; }
   entry.count++;
-  compileRateLimit.set(userId, entry);
+  compileRateLimit.set(ip, entry);
   return entry.count <= MAX;
 }
 
@@ -26,7 +24,7 @@ const execFileAsync = promisify(execFile);
 // ─────────────────────────────────────────────────────────────
 //  NARGO VERSION & BINARY MANAGEMENT
 // ─────────────────────────────────────────────────────────────
-const NARGO_VERSION = '0.36.0'; // Latest stable as of June 2026
+const NARGO_VERSION = process.env.NOIR_VERSION || '0.36.0';
 const NARGO_DIR     = path.join(os.tmpdir(), `nargo-bin-${NARGO_VERSION}`);
 
 let cachedNargoPath = '';
@@ -61,10 +59,15 @@ async function getOrDownloadNargo(): Promise<string> {
   // 3. Determine download URL for this platform
   const BASE = `https://github.com/noir-lang/noir/releases/download/v${NARGO_VERSION}`;
   let archiveName: string;
-  if      (platform === 'win32')                        archiveName = 'nargo-x86_64-pc-windows-msvc.zip';
-  else if (platform === 'darwin' && arch === 'arm64')   archiveName = 'nargo-aarch64-apple-darwin.tar.gz';
-  else if (platform === 'darwin')                       archiveName = 'nargo-x86_64-apple-darwin.tar.gz';
-  else                                                  archiveName = 'nargo-x86_64-unknown-linux-gnu.tar.gz';
+  if (platform === 'win32') {
+    throw new Error('Native Windows is not supported by modern Noir release binaries. Please run the development server in WSL or deploy to Linux (Railway).');
+  } else if (platform === 'darwin' && arch === 'arm64') {
+    archiveName = 'nargo-aarch64-apple-darwin.tar.gz';
+  } else if (platform === 'darwin') {
+    archiveName = 'nargo-x86_64-apple-darwin.tar.gz';
+  } else {
+    archiveName = 'nargo-x86_64-unknown-linux-gnu.tar.gz';
+  }
 
   const downloadUrl   = `${BASE}/${archiveName}`;
   const archivePath   = path.join(NARGO_DIR, archiveName);
@@ -78,27 +81,17 @@ async function getOrDownloadNargo(): Promise<string> {
   fs.writeFileSync(archivePath, buf);
 
   // 4. Extract
-  if (platform === 'win32') {
-    await execAsync(
-      `powershell -NoProfile -Command "Expand-Archive -Force '${archivePath}' '${NARGO_DIR}'"`,
-      { timeout: 120_000 }
-    );
-    // The zip contains a folder — find nargo.exe recursively
-    const found = findFile(NARGO_DIR, 'nargo.exe');
-    if (found && found !== binPath) fs.copyFileSync(found, binPath);
-  } else {
-    await execAsync(`tar -xzf "${archivePath}" -C "${NARGO_DIR}"`, { timeout: 120_000 });
-    const found = findFile(NARGO_DIR, 'nargo');
-    if (found && found !== binPath) {
-      fs.copyFileSync(found, binPath);
-      fs.chmodSync(binPath, 0o755);
-    }
+  await execAsync(`tar -xzf "${archivePath}" -C "${NARGO_DIR}"`, { timeout: 120_000 });
+  const found = findFile(NARGO_DIR, 'nargo');
+  if (found && found !== binPath) {
+    fs.copyFileSync(found, binPath);
+    fs.chmodSync(binPath, 0o755);
   }
 
   if (!fs.existsSync(binPath)) {
     throw new Error('Nargo binary extraction failed — binary not found after unpacking.');
   }
-  if (platform !== 'win32') fs.chmodSync(binPath, 0o755);
+  fs.chmodSync(binPath, 0o755);
 
   cachedNargoPath = binPath;
   console.log(`[ZK:Nargo] Binary ready at ${binPath}`);
@@ -199,12 +192,15 @@ function buildWorkspace(workspaceDir: string, sourceCode: string, analysis: Circ
   const packageType = analysis.estimatedType;
   const entryFile   = packageType === 'lib' ? 'lib.nr' : 'main.nr';
 
-  // Nargo.toml — minimal, no compiler_version to avoid version mismatch errors
+  // Nargo.toml — minimal
+  // Aztec Sandbox older versions like 0.33 don't support edition = "2024"
+  const isModern = NARGO_VERSION.startsWith('0.36') || NARGO_VERSION.startsWith('0.37');
+  const editionLine = isModern ? '\nedition = "2024"' : '';
+
   const toml = `[package]
 name = "sandbox_circuit"
 type = "${packageType}"
-authors = ["Whale Network Sandbox"]
-edition = "2024"
+authors = ["Whale Network Sandbox"]${editionLine}
 
 [dependencies]
 `;
@@ -223,16 +219,9 @@ export async function POST(req: Request) {
   let workspaceDir = '';
 
   try {
-    // [SECURITY HARDENING] Require authenticated session before triggering server-side compilation.
-    // Previously unauthenticated — any internet actor could consume server CPU/memory
-    // for 90 seconds per request with complex circuits (DoS attack vector).
-    const session = await getSession();
-    if (!session?.userId) {
-      return NextResponse.json({ success: false, error: 'Authentication required to use the ZK Sandbox.' }, { status: 401 });
-    }
-
-    // Rate limit: max 5 compilations per minute per wallet
-    if (!checkCompileLimit(session.userId)) {
+    // [SECURITY HARDENING] Rate limit: max 5 compilations per minute per IP
+    const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
+    if (!checkCompileLimit(ip)) {
       return NextResponse.json({ success: false, error: 'Rate limit exceeded: max 5 compilations per minute.' }, { status: 429 });
     }
 
