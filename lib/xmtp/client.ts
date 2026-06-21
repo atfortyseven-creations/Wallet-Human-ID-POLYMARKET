@@ -337,24 +337,18 @@ export async function sendMessage(
     } catch (sendErr: any) {
       const errMsg = (sendErr?.message || '').toLowerCase();
 
-      if (errMsg.includes('group is inactive') || errMsg.includes('inactive')) {
-        console.warn('[XMTP] Group is inactive, attempting to recreate DM...');
-        try {
-          await client.conversations.sync();
-          const dm = await client.conversations.newDmWithIdentifier(identifier);
-          await dm.send(content);
-          return;
-        } catch (recreateErr) {
-          lastErr = recreateErr;
-        }
-      } else if (
+      if (
+        errMsg.includes('group is inactive') ||
+        errMsg.includes('inactive') ||
+        errMsg.includes('synced') ||
+        errMsg.includes('cursor') ||
         errMsg.includes('not on xmtp') ||
         errMsg.includes('no inbox') ||
         errMsg.includes('identity not found') ||
         errMsg.includes('recipient') ||
         errMsg.includes('not found')
       ) {
-        console.warn('[XMTP] Recipient not on XMTP, queuing offline:', toAddress);
+        console.warn('[XMTP] Network delivery blocked, queuing offline:', toAddress, errMsg);
         shouldQueueOffline = true;
         break; // Stop retries, fall through to queue
       } else {
