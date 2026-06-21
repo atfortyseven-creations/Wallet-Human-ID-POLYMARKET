@@ -1097,7 +1097,7 @@ function BandwidthTab() {
       const res = await fetch('/api/payments/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier, userId: address, isAnnual }),
+        body: JSON.stringify({ tier, userId: address, isAnnual, returnTab: 'studio' }),
       });
       const data = await res.json();
       if (data.url) {

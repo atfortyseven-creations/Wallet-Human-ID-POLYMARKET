@@ -15,6 +15,7 @@ export async function POST(req: NextRequest) {
         const tier = (body.tier as string)?.toUpperCase() as PlanTier;
         const isAnnual = body.isAnnual === true;
         const billingCycle = isAnnual ? 'ANNUAL' : 'MONTHLY';
+        const returnTab = body.returnTab || 'dashboard';
 
         // ── Auth: Accept either a valid JWT session OR a wallet address body param ──
         // Priority 1: Secure JWT session (full SIWE sign-in flow)
@@ -61,7 +62,7 @@ export async function POST(req: NextRequest) {
                 update: { tier: 'ARCHIVE_PROVER', status: 'ACTIVE', expiresAt: PERMANENT_DATE },
                 create: { userId: normalizedUserId, tier: 'ARCHIVE_PROVER', status: 'ACTIVE', expiresAt: PERMANENT_DATE }
             });
-            return NextResponse.json({ url: '/terminal?tab=dashboard' });
+            return NextResponse.json({ url: `/terminal?tab=${returnTab}&upgrade=success` });
         }
 
         // SIWE-native: userId is always a walletAddress
@@ -125,8 +126,8 @@ export async function POST(req: NextRequest) {
                 },
             ],
             mode: 'subscription',
-            success_url: `${process.env.NEXT_PUBLIC_APP_URL}/terminal?upgrade=success&session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url:  `${process.env.NEXT_PUBLIC_APP_URL}/terminal?upgrade=canceled`,
+            success_url: `${process.env.NEXT_PUBLIC_APP_URL}/terminal?tab=${returnTab}&upgrade=success&session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url:  `${process.env.NEXT_PUBLIC_APP_URL}/terminal?tab=${returnTab}&upgrade=canceled`,
             metadata: {
                 userId: normalizedUserId,
                 tier: tier,
