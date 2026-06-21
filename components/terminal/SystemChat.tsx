@@ -643,6 +643,9 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                 try {
                   // Primary: Wagmi hook (Integrated with AppKit iOS deep-linking)
                   if (signMessageAsync) {
+                    if (isMobile) {
+                      setTimeout(() => openWalletOnIOS(getWalletConnectDeepLink()), 50);
+                    }
                     const sig = await signMessageAsync({
                       message: typeof msg === 'string' ? msg : { raw: msg } as any
                     });
@@ -654,6 +657,9 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                   // Fallback: viem walletClient (if wagmi hook is unavailable)
                   const wc = walletClientRef.current;
                   if (wc?.signMessage) {
+                    if (isMobile) {
+                      setTimeout(() => openWalletOnIOS(getWalletConnectDeepLink()), 50);
+                    }
                     const sig = await wc.signMessage({
                       message: typeof msg === 'string' ? msg : { raw: msg as unknown as `0x${string}` },
                     });

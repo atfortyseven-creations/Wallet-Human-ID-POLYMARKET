@@ -219,7 +219,7 @@ try {
             networks,
             projectId,
             metadata,
-            siweConfig, // [CRITICAL MOBILE FIX] Enables 1-Click Auth to prevent double tab-discard loops
+            // siweConfig, // [CRITICAL MOBILE FIX] Disabled automatic SIWE. AppKit CAIP-122 blocks MetaMask mobile. We handle signature manually.
             allowUnsupportedChain: true,
             featuredWalletIds: [
                 'c57ca95b47569778a828d19178114f4d' + 'b188b89b763c899ba0be274e97267d96', // MetaMask

@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { serializePassport } from '@/lib/passport/serialize';
 import { PassportView } from '@/components/passport/PassportView';
+import { PassportWalletGuard } from '@/components/passport/PassportWalletGuard';
 
 export const revalidate = 60;
 
@@ -31,5 +32,9 @@ export default async function PassportPage({ params }: Props) {
 
   if (!passport) notFound();
 
-  return <PassportView passport={serializePassport(passport)} />;
+  return (
+    <PassportWalletGuard passportTitle={passport.title}>
+      <PassportView passport={serializePassport(passport)} />
+    </PassportWalletGuard>
+  );
 }

@@ -19,25 +19,79 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
   const [authState, setAuthState] = useState<null | boolean>(null);
   const { address, isConnected } = useSystemAccount();
 
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const { signMessageAsync } = import('wagmi').then(() => require('wagmi')).catch(() => ({ signMessageAsync: undefined })) as any;
+
+  const handleManualSiwe = async () => {
+    if (!address) return;
+    try {
+      setIsAuthenticating(true);
+      const { signMessage } = await import('@wagmi/core');
+      const { wagmiAdapter } = await import('@/lib/wagmi-config');
+      
+      const resNonce = await fetch('/api/siwe/nonce');
+      const nonce = await resNonce.text();
+      
+      const { SiweMessage } = await import('siwe');
+      const message = new SiweMessage({
+        domain: window.location.host,
+        address: address as string,
+        statement: 'Sign in to Whale Alert Network',
+        uri: window.location.origin,
+        version: '1',
+        chainId: 1,
+        nonce,
+      });
+
+      // Mobile Safari / Chrome Deep Link Helper
+      const isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase());
+      if (isMobile) {
+        setTimeout(() => {
+          window.location.href = 'wc://';
+        }, 50);
+      }
+
+      const signature = await signMessage(wagmiAdapter.wagmiConfig as any, {
+        message: message.prepareMessage(),
+      });
+
+      if (isMobile) {
+        await new Promise(r => setTimeout(r, 400));
+      }
+
+      const verifyRes = await fetch('/api/siwe/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: message.prepareMessage(), signature }),
+      });
+
+      if (verifyRes.ok) {
+        setAuthState(true);
+      } else {
+        alert('Fallo al verificar la firma. Intenta de nuevo.');
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsAuthenticating(false);
+    }
+  };
+
   useEffect(() => {
     let cancelled = false;
     async function checkSession() {
-      // Fast path: wagmi has a connected address — let them through immediately
-      if (isConnected && address) {
-        if (!cancelled) setAuthState(true);
-        return;
-      }
-
-      // Slow path: no wagmi address, check server JWT
+      // Slow path: check server JWT always for security
       try {
-        const res = await fetch('/api/auth/verify-session', { credentials: 'include', cache: 'no-store' });
+        const res = await fetch('/api/siwe/session', { cache: 'no-store' });
         if (cancelled) return;
         if (res.ok) {
           const data = await res.json();
-          setAuthState(data.authenticated === true);
-        } else {
-          setAuthState(false);
+          if (data.address && isConnected) {
+             setAuthState(true);
+             return;
+          }
         }
+        setAuthState(false);
       } catch {
         if (!cancelled) setAuthState(false);
       }
@@ -47,7 +101,7 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
   }, [isConnected, address]);
 
   // Loading state
-  if (authState === null) {
+  if (authState === null || isAuthenticating) {
     return (
       <div className="min-h-[100dvh] bg-[#FFFFFF] flex items-center justify-center">
         <Loader2 size={20} className="animate-spin text-black/30" />
@@ -55,27 +109,31 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
     );
   }
 
+  // Not authenticated via Wagmi OR SIWE
   if (!authState) {
     return (
       <div className="min-h-[100dvh] bg-[#FFFFFF] text-[#050505] flex flex-col px-6 pt-[calc(1.5rem+env(safe-area-inset-top))] pb-[calc(2rem+env(safe-area-inset-bottom))]">
-        <a
-          href="https://humanidfi.com/connect"
-          className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-black/50 mb-8"
-        >
-          <ArrowLeft size={14} />
-          Back
-        </a>
         <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto text-center gap-4">
-          <h1 className="text-xl font-black tracking-tight">Connect your wallet</h1>
+          <h1 className="text-xl font-black tracking-tight">{isConnected ? 'Verificar Identidad' : 'Connect your wallet'}</h1>
           <p className="text-sm text-black/60 leading-relaxed">
-            Connect your wallet to access the Whale Network terminal and all its modules. By logging in through humanidfi.com/connect, you will receive 3 free passport creations.
+            {isConnected 
+              ? 'Por favor, firma el mensaje en tu billetera para verificar tu identidad y habilitar la escritura en la base de datos de Studio Provenance.'
+              : 'Connect your wallet to access the Whale Network terminal and all its modules.'}
           </p>
-          <a
-            href="https://humanidfi.com/connect"
-            className="w-full py-4 rounded-2xl bg-[#050505] text-white text-[11px] font-black uppercase tracking-widest"
-          >
-            Connect Wallet
-          </a>
+          
+          {isConnected ? (
+            <button
+              onClick={handleManualSiwe}
+              className="w-full py-4 rounded-2xl bg-[#050505] text-white text-[11px] font-black uppercase tracking-widest mt-4 flex items-center justify-center gap-2 hover:bg-black/90 active:scale-95 transition-all"
+            >
+              Firmar Conexión Segura
+            </button>
+          ) : (
+            <div className="mt-4 w-full">
+              {/* @ts-ignore */}
+              <appkit-button />
+            </div>
+          )}
         </div>
       </div>
     );

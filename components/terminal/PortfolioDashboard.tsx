@@ -14,6 +14,7 @@ import TransactionHistory from '@/components/wallet/TransactionHistory';
 import { useChainId, useChains, useSwitchChain } from 'wagmi';
 import { toast } from 'sonner';
 import { AztecIdentityCard } from '@/components/portfolio/AztecIdentityCard';
+import { ProductPassportsPanel } from '@/components/portfolio/ProductPassportsPanel';
 
 import { safeToFixed, safeToLocaleString } from '@/lib/utils/number-format';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
@@ -56,7 +57,7 @@ export default function PortfolioDashboard({ walletAddress }: { walletAddress?: 
 
     const [mounted, setMounted] = useState(false);
     const [isEyesOff, setIsEyesOff] = useState(false);
-    const [activeTab, setActiveTab] = useState<'tokens' | 'activity' | 'aztec'>('tokens');
+    const [activeTab, setActiveTab] = useState<'tokens' | 'activity' | 'aztec' | 'passports'>('tokens');
 
     useEffect(() => { setMounted(true); }, []);
 
@@ -164,6 +165,15 @@ export default function PortfolioDashboard({ walletAddress }: { walletAddress?: 
                     >
                         AZTEC IDENTITY
                     </button>
+                    <button
+                        onClick={() => setActiveTab('passports')}
+                        className={cn(
+                            "flex-shrink-0 pb-3 text-[10px] font-black uppercase tracking-[0.2em] transition-all border-b-2 relative",
+                            activeTab === 'passports' ? "text-black border-black" : "text-slate-400 border-transparent hover:text-black"
+                        )}
+                    >
+                        STUDIO PROVENANCE
+                    </button>
                 </div>
 
                 {/* Tab Content */}
@@ -225,7 +235,7 @@ export default function PortfolioDashboard({ walletAddress }: { walletAddress?: 
                         >
                             <TransactionHistory authUserId={effectiveAddress} />
                         </motion.div>
-                    ) : (
+                    ) : activeTab === 'aztec' ? (
                         <motion.div
                             key="aztec"
                             initial={{ opacity: 0, y: 10 }}
@@ -235,6 +245,17 @@ export default function PortfolioDashboard({ walletAddress }: { walletAddress?: 
                             className="w-full"
                         >
                             <AztecIdentityCard />
+                        </motion.div>
+                    ) : (
+                        <motion.div
+                            key="passports"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            transition={{ duration: 0.3 }}
+                            className="w-full"
+                        >
+                            <ProductPassportsPanel />
                         </motion.div>
                     )}
                 </AnimatePresence>
