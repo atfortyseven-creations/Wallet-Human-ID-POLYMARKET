@@ -58,9 +58,9 @@ describe('Z-Score Engine  Property-Based Tests (fast-check)', () => {
   it('P1: Z-Score always bounded in [-10, 10]', () => {
     fc.assert(
       fc.property(
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: -1e12, max: 1e12 }),
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: -1e12, max: 1e12 }),
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1e12 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: -1e12, max: 1e12 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: -1e12, max: 1e12 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1e12 }),
         (value, mean, stdDev) => {
           const z = computeZScore(value, mean, stdDev);
           return z >= -10 && z <= 10;
@@ -74,9 +74,9 @@ describe('Z-Score Engine  Property-Based Tests (fast-check)', () => {
   it('P2: Z-Score never produces NaN or Infinity', () => {
     fc.assert(
       fc.property(
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: -1e15, max: 1e15 }),
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: -1e15, max: 1e15 }),
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1e15 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: -1e15, max: 1e15 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: -1e15, max: 1e15 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1e15 }),
         (value, mean, stdDev) => {
           const z = computeZScore(value, mean, stdDev);
           return isFinite(z) && !isNaN(z);
@@ -90,8 +90,8 @@ describe('Z-Score Engine  Property-Based Tests (fast-check)', () => {
   it('P3: Z-Score = 0 when value equals mean (for any stdDev > 0)', () => {
     fc.assert(
       fc.property(
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1e10 }),
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: 0.001, max: 1e8 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1e10 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: 0.001, max: 1e8 }),
         (mean, stdDev) => {
           const z = computeZScore(mean, mean, stdDev);
           return Math.abs(z) < 1e-9; // floating point tolerance
@@ -106,11 +106,11 @@ describe('Z-Score Engine  Property-Based Tests (fast-check)', () => {
     fc.assert(
       fc.property(
         fc.tuple(
-          fc.float({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1e9 }),
-          fc.float({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1e9 })
+          fc.double({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1e9 }),
+          fc.double({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1e9 })
         ).filter(([a, b]) => a !== b),
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1e8 }),
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: 0.001, max: 1e6 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1e8 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: 0.001, max: 1e6 }),
         ([v1, v2], mean, stdDev) => {
           const z1 = computeZScore(v1, mean, stdDev);
           const z2 = computeZScore(v2, mean, stdDev);
@@ -127,9 +127,9 @@ describe('Z-Score Engine  Property-Based Tests (fast-check)', () => {
   it('P5: Symmetry  Z(mean + Δ) = -Z(mean - Δ)', () => {
     fc.assert(
       fc.property(
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: 1e3, max: 1e9 }),
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: 1e2, max: 1e7 }),
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: 1e2, max: 1e7 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: 1e3, max: 1e9 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: 1e2, max: 1e7 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: 1e2, max: 1e7 }),
         (mean, delta, stdDev) => {
           const zAbove = computeZScore(mean + delta, mean, stdDev);
           const zBelow = computeZScore(mean - delta, mean, stdDev);
@@ -144,8 +144,8 @@ describe('Z-Score Engine  Property-Based Tests (fast-check)', () => {
   it('P6: stdDev = 0  Z-Score = 0 for any value', () => {
     fc.assert(
       fc.property(
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: -1e12, max: 1e12 }),
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: -1e12, max: 1e12 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: -1e12, max: 1e12 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: -1e12, max: 1e12 }),
         (value, mean) => {
           const z = computeZScore(value, mean, 0);
           return z === 0;
@@ -159,7 +159,7 @@ describe('Z-Score Engine  Property-Based Tests (fast-check)', () => {
   it('P7: computeConvictionTier always returns a valid tier', () => {
     fc.assert(
       fc.property(
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: -10, max: 10 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: -10, max: 10 }),
         (z) => {
           const tier = computeConvictionTier(z);
           return ['LOW', 'MEDIUM', 'HIGH', 'EXTREME'].includes(tier);
@@ -173,10 +173,10 @@ describe('Z-Score Engine  Property-Based Tests (fast-check)', () => {
   it('P8: Institutional flag always increases or maintains Z-Score', () => {
     fc.assert(
       fc.property(
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1e9 }),
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1e8 }),
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: 1, max: 1e7 }),
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1e9 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1e8 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: 1, max: 1e7 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1 }),
         (volume, mean, stdDev, velocity) => {
           const base = computeWhaleZScore({ volumeUSD: volume, historicalMeanUSD: mean, historicalStdDevUSD: stdDev, velocityFactor: velocity, institutionalFlag: false });
           const institutional = computeWhaleZScore({ volumeUSD: volume, historicalMeanUSD: mean, historicalStdDevUSD: stdDev, velocityFactor: velocity, institutionalFlag: true });
@@ -192,10 +192,10 @@ describe('Z-Score Engine  Property-Based Tests (fast-check)', () => {
   it('P9: Scale invariance  Z(kv, km, kσ) = Z(v, m, σ)', () => {
     fc.assert(
       fc.property(
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: 1, max: 1e6 }),
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1e5 }),
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: 1, max: 1e4 }),
-        fc.float({ noNaN: true, noDefaultInfinity: true, min: 0.01, max: 100 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: 1, max: 1e6 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1e5 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: 1, max: 1e4 }),
+        fc.double({ noNaN: true, noDefaultInfinity: true, min: 0.01, max: 100 }),
         (value, mean, stdDev, k) => {
           const z1 = computeZScore(value, mean, stdDev);
           const z2 = computeZScore(value * k, mean * k, stdDev * k);

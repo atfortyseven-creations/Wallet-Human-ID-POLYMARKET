@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Enterprise CRYPTOGRAPHIC VERIFICATION  Test Suite
  *
  * Tests the formal EIP-191 implementation with all security hardening layers:
@@ -100,11 +100,9 @@ describe('enforceLoSValue (EIP-2 anti-malleability)', () => {
     const sig = ethers.Signature.from(validSignature);
     const n = BigInt('0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141');
     const highS = (n - BigInt(sig.s)).toString(16).padStart(64, '0');
-    const highSSig = ethers.Signature.from({
-      r: sig.r,
-      s: '0x' + highS,
-      v: sig.v,
-    }).serialized;
+    const rHex = sig.r.slice(2).padStart(64, '0');
+    const vHex = sig.v.toString(16).padStart(2, '0');
+    const highSSig = '0x' + rHex + highS + vHex;
     expect(enforceLoSValue(highSSig)).toBe(false);
   });
 

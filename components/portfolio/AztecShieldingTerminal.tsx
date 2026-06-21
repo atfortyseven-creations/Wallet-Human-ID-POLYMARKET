@@ -478,7 +478,7 @@ export function AztecShieldingTerminal() {
               >
                 {txHashes.l1 && (
                   <a
-                    href={`https://testnet.aztecscan.xyz/tx/${txHashes.l1}`}
+                    href={`https://testnet.aztecscan.xyz/tx-effect/${txHashes.l1}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-between w-full py-2.5 px-3 border border-zinc-900/8 hover:border-zinc-900 text-[8px] font-black uppercase tracking-widest text-zinc-900/40 hover:text-zinc-900 transition-all"
@@ -489,7 +489,7 @@ export function AztecShieldingTerminal() {
                 )}
                 {txHashes.l2 && (
                   <a
-                    href={`https://testnet.aztecscan.xyz/tx/${txHashes.l2}`}
+                    href={`https://testnet.aztecscan.xyz/tx-effect/${txHashes.l2}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-between w-full py-2.5 px-3 border border-zinc-900/8 hover:border-zinc-900 text-[8px] font-black uppercase tracking-widest text-zinc-900/40 hover:text-zinc-900 transition-all"

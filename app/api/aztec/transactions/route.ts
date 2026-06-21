@@ -42,7 +42,7 @@ export async function GET(req: Request) {
       timestamp:   tx.timestamp.toISOString(),
       blockNumber: tx.blockNumber?.toString() ?? '0',
       explorerUrl: (tx.metadata as any)?.onChain 
-        ? ((tx.metadata as any)?.explorerUrl ?? `https://testnet.aztecscan.xyz/tx/${(tx.metadata as any)?.aztecTxHash ?? tx.txHash}`)
+        ? ((tx.metadata as any)?.explorerUrl ?? `https://testnet.aztecscan.xyz/tx-effect/${(tx.metadata as any)?.aztecTxHash ?? tx.txHash}`)
         : ((tx.metadata as any)?.explorerUrl ?? null),
     }));
 

@@ -60,7 +60,7 @@ export async function GET(req: Request) {
         timestamp: tx.timestamp.toISOString(),
         chainId: tx.chainId,
         blockNumber: tx.blockNumber?.toString() ?? '0',
-        explorerUrl: meta.explorerUrl ?? `https://testnet.aztecscan.xyz/tx/${tx.txHash}`,
+        explorerUrl: meta.explorerUrl ?? `https://testnet.aztecscan.xyz/tx-effect/${tx.txHash}`,
         provenance: meta.provenance === true,
         fingerprint: meta.fingerprint ?? null,
         actionDetails: meta.actionDetails ?? null,

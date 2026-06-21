@@ -68,7 +68,7 @@ async function main() {
             metadata: {
               ...meta,
               aztecTxHash: newHash,
-              explorerUrl: `https://testnet.aztecscan.xyz/tx/${newHash}`,
+              explorerUrl: `https://testnet.aztecscan.xyz/tx-effect/${newHash}`,
               upgradedFromLegacy: true,
               originalLegacyHash: tx.txHash
             }

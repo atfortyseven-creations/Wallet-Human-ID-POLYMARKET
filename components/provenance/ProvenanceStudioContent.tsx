@@ -50,7 +50,7 @@ const SubscriptionDashboard = dynamic(
 /* ─────────────────────────────────────────────
    CONSTANTS
 ───────────────────────────────────────────── */
-const EXPLORER_BASE = 'https://testnet.aztecscan.xyz/tx/';
+const EXPLORER_BASE = 'https://testnet.aztecscan.xyz/tx-effect/';
 
 /* ─────────────────────────────────────────────
    TYPES
