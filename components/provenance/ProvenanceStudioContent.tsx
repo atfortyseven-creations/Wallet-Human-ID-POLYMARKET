@@ -136,9 +136,11 @@ function FieldLabel({
 interface CreateTabProps {
   isMobile: boolean;
   onCreated: (passport: ProductPassportPublic) => void;
+  hasPlan: boolean;
+  isOwner: boolean;
 }
 
-function CreateTab({ isMobile, onCreated }: CreateTabProps) {
+function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
   const { address } = useAccount();
 
   const inputClass =
@@ -154,8 +156,19 @@ function CreateTab({ isMobile, onCreated }: CreateTabProps) {
   const [passport, setPassport] = useState<ProductPassportPublic | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [anchoring, setAnchoring] = useState(false);
+  const [passportCount, setPassportCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!hasPlan && !isOwner) {
+      fetch('/api/passport/mine')
+        .then(res => res.ok ? res.json() : { passports: [] })
+        .then(data => setPassportCount(data.passports?.length || 0))
+        .catch(() => setPassportCount(0));
+    }
+  }, [hasPlan, isOwner]);
 
   const passportUrl = passport ? passportPublicUrl(passport.slug) : '';
+  const isLimitReached = !isOwner && !hasPlan && passportCount !== null && passportCount >= 3;
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -426,6 +439,18 @@ function CreateTab({ isMobile, onCreated }: CreateTabProps) {
   }
 
   /* ── CREATION FORM ── */
+  if (isLimitReached) {
+    return (
+      <div className="space-y-4 rounded-2xl border border-[#cc0000]/10 bg-[#cc0000]/5 p-6 text-center">
+        <AlertCircle size={32} className="mx-auto text-[#cc0000]/50 mb-3" />
+        <p className="text-sm font-bold text-[#050505]">Free Tier Limit Reached</p>
+        <p className="text-xs text-black/60 leading-relaxed max-w-sm mx-auto">
+          You have created the maximum of 3 passports allowed on the Free tier. To create unlimited passports, please upgrade to a paid plan.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <form onSubmit={handleCreate} className="space-y-4 rounded-2xl border border-black/10 bg-white p-5 sm:p-6">
       <FieldLabel label="Product name *">
@@ -517,9 +542,11 @@ function CreateTab({ isMobile, onCreated }: CreateTabProps) {
 interface RegistryTabProps {
   isMobile: boolean;
   refreshKey: number;
+  userTier?: string;
+  isOwner?: boolean;
 }
 
-function RegistryTab({ isMobile: _isMobile, refreshKey }: RegistryTabProps) {
+function RegistryTab({ isMobile: _isMobile, refreshKey, userTier = 'FREE', isOwner = false }: RegistryTabProps) {
   const [passports, setPassports] = useState<ProductPassportPublic[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -668,7 +695,7 @@ function RegistryTab({ isMobile: _isMobile, refreshKey }: RegistryTabProps) {
           ))}
         </div>
         <div className="flex items-center gap-2">
-          {filtered.length > 0 && (
+          {filtered.length > 0 && (isOwner || (userTier !== 'FREE' && userTier !== 'LIGHT_NODE')) && (
             <button
               onClick={handleExportCSV}
               className="px-3 py-1.5 rounded-lg bg-[#050505] text-white hover:opacity-80 transition-opacity text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5"
@@ -1305,6 +1332,8 @@ export function ProvenanceStudioContent({
   const [activeTab, setActiveTab] = useState<Tab>('create');
   const [registryRefreshKey, setRegistryRefreshKey] = useState(0);
   const [hasPlan, setHasPlan] = useState<boolean | null>(null);
+  const [userTier, setUserTier] = useState<string>('FREE');
+  const [isOwner, setIsOwner] = useState(false);
   
   // Phase 0: Syncing, Phase 1: Completed, Phase 2: Ready
   const [initPhase, setInitPhase] = useState<0 | 1 | 2>(0);
@@ -1335,12 +1364,19 @@ export function ProvenanceStudioContent({
     fetch('/api/auth/session')
       .then(res => res.ok ? res.json() : null)
       .then(data => {
-        if (data?.user?.tier && data.user.tier !== 'FREE') {
+        const id = data?.user?.id?.toLowerCase();
+        const tier = data?.user?.tier || 'FREE';
+        const owner = id === '0x78831c25c86ea2a78a6127fc2ccb95e612d87b4a';
+        
+        setUserTier(tier);
+        setIsOwner(owner);
+
+        if (owner) {
+          setHasPlan(true); // Owner VIP
+        } else if (tier && tier !== 'FREE') {
           setHasPlan(true);
         } else if (data?.user?.subscription?.status === 'ACTIVE') {
           setHasPlan(true);
-        } else if (data?.user?.id?.toLowerCase() === '0x78831c25c86ea2a78a6127fc2ccb95e612d87b4a') {
-          setHasPlan(true); // Owner VIP
         } else {
           setHasPlan(false);
         }
@@ -1473,10 +1509,10 @@ export function ProvenanceStudioContent({
 
         {/* Tab content */}
         {activeTab === 'create' && (
-          <CreateTab isMobile={isMobile} onCreated={handleCreated} />
+          <CreateTab isMobile={isMobile} onCreated={handleCreated} hasPlan={!!hasPlan} isOwner={isOwner} />
         )}
         {activeTab === 'registry' && (
-          <RegistryTab isMobile={isMobile} refreshKey={registryRefreshKey} />
+          <RegistryTab isMobile={isMobile} refreshKey={registryRefreshKey} userTier={userTier} isOwner={isOwner} />
         )}
         {activeTab === 'aztec' && <AztecTab />}
         {activeTab === 'billing' && <BandwidthTab />}

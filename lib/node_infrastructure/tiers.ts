@@ -69,7 +69,7 @@ export const NODE_TIERS: Record<PlanTier, PlanConfig> = {
             ipWhitelist: true,
             heikinAshiSignals: false,
             darkPoolDetection: false,
-            csvExport: true,
+            csvExport: false,
         },
         allowedTokens: ['BTC', 'ETH']
     },

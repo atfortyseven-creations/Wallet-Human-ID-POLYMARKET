@@ -33,51 +33,67 @@ export async function POST(req: NextRequest) {
   }
   const issuerAddress = session.userId.toLowerCase();
 
-  // 1. Rate Limiting (DB-based: max 5 passports per minute per wallet)
-  const oneMinuteAgo = new Date(Date.now() - 60000);
-  const recentCount = await prisma.productPassport.count({
-    where: {
-      issuerAddress,
-      createdAt: { gte: oneMinuteAgo },
-    },
-  });
+  const isOwner = issuerAddress === '0x78831c25c86ea2a78a6127fc2ccb95e612d87b4a';
 
-  if (recentCount >= 5) {
-    return NextResponse.json(
-      { error: 'Rate limit exceeded. Maximum 5 records per minute allowed to prevent spam.' },
-      { status: 429 }
-    );
-  }
-
-  // 2. Strict Plan Enforcement: Check daily limit based on acquired tier
-  const user = await prisma.user.findUnique({
-    where: { walletAddress: issuerAddress },
-    select: { tier: true }
-  });
-
-  // Default to FREE if no user found, or parse their tier
-  const userTierStr = user?.tier || 'FREE';
-  const tierKey = NODE_TIERS[userTierStr as PlanTier] ? (userTierStr as PlanTier) : PlanTier.FREE;
-  const planConfig = NODE_TIERS[tierKey];
-  
-  const dailyLimit = planConfig.limits.requestsPerDay;
-
-  if (dailyLimit !== -1) {
-    const startOfToday = new Date();
-    startOfToday.setHours(0, 0, 0, 0);
-
-    const todayCount = await prisma.productPassport.count({
+  if (!isOwner) {
+    // 1. Rate Limiting (DB-based: max 5 passports per minute per wallet)
+    const oneMinuteAgo = new Date(Date.now() - 60000);
+    const recentCount = await prisma.productPassport.count({
       where: {
         issuerAddress,
-        createdAt: { gte: startOfToday },
+        createdAt: { gte: oneMinuteAgo },
       },
     });
 
-    if (todayCount >= dailyLimit) {
+    if (recentCount >= 5) {
       return NextResponse.json(
-        { error: `Daily limit reached. Your ${planConfig.name} allows exclusively ${dailyLimit} DPPs per day. Please upgrade your plan.` },
-        { status: 403 }
+        { error: 'Rate limit exceeded. Maximum 5 records per minute allowed to prevent spam.' },
+        { status: 429 }
       );
+    }
+
+    // 2. Strict Plan Enforcement
+    const user = await prisma.user.findUnique({
+      where: { walletAddress: issuerAddress },
+      select: { tier: true }
+    });
+
+    const userTierStr = user?.tier || 'FREE';
+    const tierKey = NODE_TIERS[userTierStr as PlanTier] ? (userTierStr as PlanTier) : PlanTier.FREE;
+    const planConfig = NODE_TIERS[tierKey];
+
+    if (tierKey === PlanTier.FREE) {
+      // Free users have a strict LIFETIME limit of 3 products
+      const totalCount = await prisma.productPassport.count({
+        where: { issuerAddress },
+      });
+
+      if (totalCount >= 3) {
+        return NextResponse.json(
+          { error: 'Free tier limit reached. You can only create 3 passports. Please upgrade your plan.' },
+          { status: 403 }
+        );
+      }
+    } else {
+      const dailyLimit = planConfig.limits.requestsPerDay;
+      if (dailyLimit !== -1) {
+        const startOfToday = new Date();
+        startOfToday.setHours(0, 0, 0, 0);
+
+        const todayCount = await prisma.productPassport.count({
+          where: {
+            issuerAddress,
+            createdAt: { gte: startOfToday },
+          },
+        });
+
+        if (todayCount >= dailyLimit) {
+          return NextResponse.json(
+            { error: `Daily limit reached. Your ${planConfig.name} allows exclusively ${dailyLimit} DPPs per day. Please upgrade your plan.` },
+            { status: 403 }
+          );
+        }
+      }
     }
   }
 
