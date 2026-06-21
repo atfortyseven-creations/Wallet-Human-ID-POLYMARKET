@@ -250,7 +250,17 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
           const airdropData = await airdropRes.json();
           if (airdropRes.ok && airdropData.success) {
             airdropGranted = true;
-            toast.success("✅ Identity deployed — 10 QDs genesis airdrop received!", { id: "az-connect", duration: 6000 });
+            toast.success(
+              <span className="flex flex-col gap-1">
+                <span>✅ Identity deployed — 10 QDs genesis airdrop received!</span>
+                {airdropData.txHash && (
+                  <a href={`https://testnet.aztecscan.xyz/tx/${airdropData.txHash}`} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-400 hover:text-blue-300 underline font-mono truncate max-w-[200px]">
+                    Verify on AztecScan
+                  </a>
+                )}
+              </span>, 
+              { id: "az-connect", duration: 8000 }
+            );
           } else if (airdropData.message?.includes('Already received')) {
             // Already claimed — still a success state
             toast.success("Identity restored — QDs already in your wallet", { id: "az-connect" });
