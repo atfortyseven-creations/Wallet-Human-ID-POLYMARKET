@@ -33,7 +33,8 @@ export async function POST(req: NextRequest) {
   }
   const issuerAddress = session.userId.toLowerCase();
 
-  const isOwner = issuerAddress === '0x78831c25c86ea2a78a6127fc2ccb95e612d87b4a';
+  const adminWallet = (process.env.ADMIN_WALLET_ADDRESS || '0x78831c25c86ea2a78a6127fc2ccb95e612d87b4a').toLowerCase();
+  const isOwner = issuerAddress === adminWallet;
 
   if (!isOwner) {
     // 1. Rate Limiting (DB-based: max 5 passports per minute per wallet)
@@ -89,11 +90,19 @@ export async function POST(req: NextRequest) {
     'puta', 'mierda', 'pendejo', 'cabron', 'maricon', 'verga', 'culo', 'zorra', 'puto', 'gilipollas', 'concha', 'cojones'
   ];
 
+  // Anti-XSS Payload Sanitization Function
+  const sanitizeHTML = (str: string) => str.replace(/[&<>'"]/g, 
+    tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+  );
+
   function containsProfanity(text: string): boolean {
     if (!text) return false;
     const lower = text.toLowerCase();
-    // Use word boundaries to avoid false positives (e.g. "assassin" -> "ass")
-    return PROFANITY_BLACKLIST.some(word => new RegExp(`\\b${word}\\b`, 'i').test(lower));
+    // Escape special chars to prevent ReDoS attacks
+    return PROFANITY_BLACKLIST.some(word => {
+      const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      return new RegExp(`\\b${escaped}\\b`, 'i').test(lower);
+    });
   }
 
   const fieldsToCheck = [
@@ -110,38 +119,52 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // 4. Create the passport (Atomic Collision Fix)
+  // 4. Create the passport with resilient Anti-Collision Retry Loop
   let publicSlug = (validData.publicSlug || '').trim();
   if (!publicSlug) publicSlug = slugifyTitle(validData.title);
+  
+  // Fortification: Strip invalid URL characters
+  publicSlug = publicSlug.replace(/[^a-z0-9-]/gi, '').toLowerCase();
 
-  const existing = await prisma.productPassport.findUnique({ where: { publicSlug } });
-  if (existing) {
-    publicSlug = `${slugifyTitle(validData.title)}-${crypto.randomUUID().split('-')[0]}`;
+  let passport = null;
+  let attempts = 0;
+  const MAX_ATTEMPTS = 3;
+
+  while (attempts < MAX_ATTEMPTS) {
+    try {
+      passport = await prisma.productPassport.create({
+        data: {
+          publicSlug,
+          title: sanitizeHTML(validData.title),
+          category: validData.category,
+          issuerAddress,
+          payload: validData.payload ? {
+            ...validData.payload,
+            description: validData.payload.description ? sanitizeHTML(validData.payload.description) : undefined,
+            origin: validData.payload.origin ? sanitizeHTML(validData.payload.origin) : undefined,
+            batchId: validData.payload.batchId ? sanitizeHTML(validData.payload.batchId) : undefined,
+          } : undefined,
+          gs1Gtin: validData.gs1Gtin?.replace(/\D/g, '') || null,
+          events: {
+            create: [{ eventType: 'manufactured', payload: { note: 'Registered via Studio Provenance API' } }],
+          },
+        },
+        include: { events: { orderBy: { createdAt: 'desc' } } },
+      });
+      break; // Success, break loop
+    } catch (error: any) {
+      if (error.code === 'P2002' && error.meta?.target?.includes('publicSlug')) {
+        attempts++;
+        publicSlug = `${slugifyTitle(validData.title)}-${crypto.randomUUID().split('-')[0]}`;
+      } else {
+        console.error('[WhaleFortress] Atomic DB Guard caught Prisma exception:', error);
+        return NextResponse.json({ error: 'Internal database error during quantum registry.' }, { status: 500 });
+      }
+    }
   }
 
-  let passport;
-  try {
-    passport = await prisma.productPassport.create({
-      data: {
-        publicSlug,
-        title: validData.title,
-        category: validData.category,
-        issuerAddress,
-        payload: validData.payload,
-        gs1Gtin: validData.gs1Gtin?.replace(/\D/g, '') || null,
-        events: {
-          create: [{ eventType: 'manufactured', payload: { note: 'Registered via Studio Provenance API' } }],
-        },
-      },
-      include: { events: { orderBy: { createdAt: 'desc' } } },
-    });
-  } catch (error: any) {
-    console.error('[WhaleFortress] Atomic DB Guard caught Prisma exception:', error);
-    // P2002: Unique constraint failed
-    if (error.code === 'P2002') {
-      return NextResponse.json({ error: 'Unique constraint violation (Slug collision). Please try again.' }, { status: 409 });
-    }
-    return NextResponse.json({ error: 'Internal database error during quantum registry.' }, { status: 500 });
+  if (!passport) {
+    return NextResponse.json({ error: 'System under heavy load. Unique slug generation failed. Try again.' }, { status: 409 });
   }
 
   // 5. Instantly trigger the robust Aztec Sequencer (Async Queue)
