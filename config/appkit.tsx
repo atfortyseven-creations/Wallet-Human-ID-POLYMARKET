@@ -274,61 +274,13 @@ export function Web3ModalProvider({ children, cookies }: { children: ReactNode; 
         initialState = undefined;
     }
 
-    // [MOBILE CONNECTION HEALER v3]
-    // Problem: wagmi 2.x reports "connector not connected" on iOS/Android after:
-    //   1. User taps wallet deep-link → leaves browser → approves → returns
-    //   2. Android Chrome kills the tab when backgrounded (tab discard)
-    //   3. iOS Safari suspends all WebSocket connections during app-switch
-    //
-    // Root cause: WalletConnect's WebSocket relay is still re-establishing
-    //   when wagmi tries to restore state. The previous 1200ms was too short
-    //   for slower Android devices and iOS 17+ with stricter WKWebView suspension.
-    //
-    // Fix: Triple-trigger reconnect (visibilitychange + focus + pageshow)
-    //   with a retry loop that attempts reconnection up to 3 times with
-    //   progressive delays, covering all device/browser combinations.
+    // [MOBILE CONNECTION HEALER v3] - REMOVED
+    // Manual `reconnect(wagmiAdapter.wagmiConfig)` calls on visibilitychange/pageshow 
+    // conflict with Reown AppKit's native hydration on wagmi 2.22.1, causing the 
+    // "Connector not connected" race condition when returning from background mobile wallets.
+    // We now rely purely on WalletConnect's built-in WebSocket ping/hydration.
     useEffect(() => {
-        if (typeof window === 'undefined') return;
-
-        const doReconnect = async (trigger: string) => {
-            // Attempt 1 at 1200ms, Attempt 2 at 2400ms, Attempt 3 at 3800ms
-            const delays = [1200, 2400, 3800];
-            for (const delay of delays) {
-                await new Promise(r => setTimeout(r, delay));
-                try {
-                    await reconnect(wagmiAdapter.wagmiConfig as any);
-                    console.log(`[AppKit:${trigger}] Reconnect succeeded at ${delay}ms`);
-                    return; // success — stop retrying
-                } catch (e: any) {
-                    console.warn(`[AppKit:${trigger}] Reconnect attempt at ${delay}ms failed:`, e?.message);
-                }
-            }
-        };
-
-        // Trigger 1: Tab becomes visible (back from wallet app)
-        const handleVisibility = () => {
-            if (document.visibilityState === 'visible') {
-                doReconnect('visibilitychange');
-            }
-        };
-
-        // Trigger 2: Window regains focus (Android Chrome / desktop fallback)
-        const handleFocus = () => doReconnect('focus');
-
-        // Trigger 3: iOS pageshow (bfcache restore — page was cached, not reloaded)
-        const handlePageShow = (e: PageTransitionEvent) => {
-            if (e.persisted) doReconnect('pageshow:bfcache');
-        };
-
-        document.addEventListener('visibilitychange', handleVisibility);
-        window.addEventListener('focus', handleFocus);
-        window.addEventListener('pageshow', handlePageShow);
-
-        return () => {
-            document.removeEventListener('visibilitychange', handleVisibility);
-            window.removeEventListener('focus', handleFocus);
-            window.removeEventListener('pageshow', handlePageShow);
-        };
+        // Hydration is handled internally by AppKit.
     }, []);
 
     return (
