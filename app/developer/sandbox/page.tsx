@@ -18,23 +18,23 @@ export const metadata: Metadata = {
 export default function SandboxPage() {
   return (
     <main
-      className="min-h-screen bg-[#050505] text-white selection:bg-blue-500/30 flex flex-col items-center py-24 px-6 gap-16 font-sans relative overflow-hidden"
+      className="min-h-screen bg-white text-black selection:bg-black/10 flex flex-col items-center py-24 px-6 gap-16 font-sans relative overflow-hidden"
     >
       {/* Background Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-500/10 blur-[120px] pointer-events-none rounded-full" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-slate-100 blur-[120px] pointer-events-none rounded-full" />
 
       {/* Hero header */}
       <header className="text-center max-w-3xl relative z-10 flex flex-col items-center">
-        <div className="bg-white/5 border border-white/10 text-white/60 text-[10px] font-bold tracking-[0.3em] px-4 py-1.5 rounded-full uppercase mb-8 flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+        <div className="bg-slate-50 border border-slate-200 text-slate-500 text-[10px] font-bold tracking-[0.3em] px-4 py-1.5 rounded-full uppercase mb-8 flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse" />
           Institutional ZK Environment
         </div>
         
-        <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter leading-[1.1] mb-6">
-          Quantum Circuit <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-600">Prover Sandbox</span>
+        <h1 className="text-4xl md:text-6xl font-black text-black tracking-tighter leading-[1.1] mb-6">
+          Quantum Circuit Sandbox
         </h1>
 
-        <p className="text-white/50 text-sm md:text-base leading-relaxed max-w-2xl font-mono">
+        <p className="text-slate-500 text-sm md:text-base leading-relaxed max-w-2xl font-mono">
           Write deeply complex Noir architectures, parse them through the Quantum Security Linter, generate UltraHonk SNARKs, and simulate Barretenberg rollup submissions entirely in-browser.
         </p>
       </header>
@@ -68,22 +68,22 @@ export default function SandboxPage() {
             text: "The Quantum Linter detects Soundness vulnerabilities, overflow risks, and constraint leaks during AST parsing.",
           },
         ].map(({ icon, title, text }) => (
-          <div key={title} className="bg-white/[0.02] border border-white/10 rounded-2xl p-6 hover:bg-white/[0.04] transition-colors group">
-            <div className="text-blue-500/50 font-mono text-[10px] font-bold tracking-widest mb-4 flex items-center gap-2">
+          <div key={title} className="bg-white border border-slate-200 rounded-2xl p-6 hover:border-slate-300 transition-colors group shadow-sm">
+            <div className="text-slate-400 font-mono text-[10px] font-bold tracking-widest mb-4 flex items-center gap-2">
                <span>[{icon}]</span>
-               <div className="h-px bg-white/10 flex-1 group-hover:bg-blue-500/30 transition-colors" />
+               <div className="h-px bg-slate-100 flex-1 group-hover:bg-slate-300 transition-colors" />
             </div>
-            <h3 className="text-white/90 text-sm font-bold tracking-tight mb-2">
+            <h3 className="text-black text-sm font-bold tracking-tight mb-2">
               {title}
             </h3>
-            <p className="text-white/40 text-[11px] leading-[1.7] font-mono">
+            <p className="text-slate-500 text-[11px] leading-[1.7] font-mono">
               {text}
             </p>
           </div>
         ))}
       </section>
 
-      <footer className="mt-20 text-white/30 text-[10px] font-mono tracking-[0.2em] text-center w-full uppercase border-t border-white/5 pt-12">
+      <footer className="mt-20 text-slate-400 text-[10px] font-mono tracking-[0.2em] text-center w-full uppercase border-t border-slate-100 pt-12">
         Whale Network • Humanity Ledger S.L. • Aztec Native Integration
       </footer>
     </main>

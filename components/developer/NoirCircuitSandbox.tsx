@@ -304,30 +304,30 @@ export function NoirCircuitSandbox() {
     }
   }, [noirCode, resetAll, updateStage, addLog]);
 
-  const logColour = { info: "#9ca3af", success: "#10b981", warn: "#f59e0b", error: "#ef4444", system: "#3b82f6" };
+  const logColour = { info: "#6b7280", success: "#10b981", warn: "#f59e0b", error: "#ef4444", system: "#3b82f6" };
 
   return (
-    <section className="font-mono bg-[#050505] rounded-2xl border border-white/10 overflow-hidden w-full shadow-2xl text-white">
+    <section className="font-mono bg-white rounded-2xl border border-slate-200 overflow-hidden w-full shadow-xl text-black">
       {/* Header */}
-      <div className="bg-[#0a0a0a] border-b border-white/10 px-6 py-4 flex items-center justify-between">
+      <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Terminal size={18} className="text-blue-500" />
+          <Terminal size={18} className="text-black" />
           <span className="font-bold text-sm tracking-widest uppercase">Noir Quantum Compiler</span>
         </div>
         <div className="flex gap-2">
-          <span className="bg-blue-500/10 text-blue-400 text-[10px] px-2 py-1 rounded border border-blue-500/20 font-bold">V {compileResult?.nargoVersion ?? "0.36.0"}</span>
-          <span className="bg-green-500/10 text-green-400 text-[10px] px-2 py-1 rounded border border-green-500/20 font-bold">WASM JIT</span>
+          <span className="bg-blue-50 text-blue-600 text-[10px] px-2 py-1 rounded border border-blue-200 font-bold">V {compileResult?.nargoVersion ?? "0.36.0"}</span>
+          <span className="bg-green-50 text-green-600 text-[10px] px-2 py-1 rounded border border-green-200 font-bold">WASM JIT</span>
         </div>
       </div>
 
       {/* Example Selector */}
-      <div className="bg-[#0f0f0f] border-b border-white/10 px-4 py-3 flex gap-2 overflow-x-auto items-center no-scrollbar">
-        <span className="text-white/40 text-[10px] font-bold tracking-[0.2em] uppercase mr-2">Architectures:</span>
+      <div className="bg-slate-100 border-b border-slate-200 px-4 py-3 flex gap-2 overflow-x-auto items-center no-scrollbar">
+        <span className="text-slate-500 text-[10px] font-bold tracking-[0.2em] uppercase mr-2">Architectures:</span>
         {CIRCUIT_EXAMPLES.map((ex, i) => (
           <button
             key={i}
             onClick={() => { setSelectedExample(i); setNoirCode(ex.code); resetAll(); }}
-            className={\`px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded transition-all whitespace-nowrap \${selectedExample === i ? 'bg-white text-black' : 'bg-white/5 text-white/60 hover:bg-white/10'}\`}
+            className={\`px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded transition-all whitespace-nowrap \${selectedExample === i ? 'bg-black text-white' : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'}\`}
           >
             {ex.label} <span className="opacity-50 ml-1">[{ex.difficulty}]</span>
           </button>
@@ -336,63 +336,63 @@ export function NoirCircuitSandbox() {
 
       <div className="flex flex-col md:flex-row min-h-[600px]">
         {/* Editor */}
-        <div className="flex-1 border-b md:border-b-0 md:border-r border-white/10 flex flex-col min-w-[320px]">
-          <div className="px-4 py-2 bg-[#0a0a0a] border-b border-white/10 flex justify-between items-center">
-            <div className="flex items-center gap-2 text-white/50 text-[11px]">
+        <div className="flex-1 border-b md:border-b-0 md:border-r border-slate-200 flex flex-col min-w-[320px]">
+          <div className="px-4 py-2 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+            <div className="flex items-center gap-2 text-slate-500 text-[11px]">
               <Code2 size={14} /> main.nr
             </div>
-            <span className="text-white/30 text-[10px]">{noirCode.split('\\n').length} lines</span>
+            <span className="text-slate-400 text-[10px]">{noirCode.split('\\n').length} lines</span>
           </div>
           <textarea
             value={noirCode}
             onChange={e => { setNoirCode(e.target.value); resetAll(); }}
             spellCheck={false}
-            className="flex-1 bg-transparent text-white/90 p-6 text-[13px] leading-relaxed resize-none outline-none font-mono focus:bg-white/[0.02] transition-colors"
+            className="flex-1 bg-white text-black p-6 text-[13px] leading-relaxed resize-none outline-none font-mono focus:bg-slate-50/50 transition-colors"
           />
           <button
             onClick={simulateQuantumCompilation}
             disabled={running}
-            className={\`w-full py-5 font-bold text-[12px] uppercase tracking-[0.2em] transition-all \${running ? 'bg-white/5 text-white/30 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-500'}\`}
+            className={\`w-full py-5 font-bold text-[12px] uppercase tracking-[0.2em] transition-all \${running ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-black text-white hover:bg-slate-800'}\`}
           >
             {running ? "COMPILING KERNEL..." : "RUN SECURITY COMPILER"}
           </button>
         </div>
 
         {/* Output Panel */}
-        <div className="flex-[0.8] flex flex-col bg-[#050505] min-w-[300px]">
-          <div className="p-6 border-b border-white/10">
-            <h3 className="text-white/40 text-[10px] font-bold tracking-[0.2em] uppercase mb-4">Pipeline Status</h3>
+        <div className="flex-[0.8] flex flex-col bg-slate-50 min-w-[300px]">
+          <div className="p-6 border-b border-slate-200 bg-white">
+            <h3 className="text-slate-400 text-[10px] font-bold tracking-[0.2em] uppercase mb-4">Pipeline Status</h3>
             {stages.map(stage => (
-              <div key={stage.id} className={\`flex items-center gap-3 p-3 mb-2 rounded-lg border \${stage.status === 'error' ? 'border-red-500/30 bg-red-500/5' : stage.status === 'done' ? 'border-green-500/30 bg-green-500/5' : 'border-white/5 bg-white/[0.02]'}\`}>
+              <div key={stage.id} className={\`flex items-center gap-3 p-3 mb-2 rounded-lg border \${stage.status === 'error' ? 'border-red-200 bg-red-50' : stage.status === 'done' ? 'border-green-200 bg-green-50' : 'border-slate-200 bg-white'}\`}>
                 <div className="min-w-[20px] flex justify-center">
-                  {stage.status === 'running' ? <Loader2 size={14} className="animate-spin text-blue-500" /> :
+                  {stage.status === 'running' ? <Loader2 size={14} className="animate-spin text-black" /> :
                    stage.status === 'error' ? <ShieldAlert size={14} className="text-red-500" /> :
                    stage.status === 'done' ? <ShieldCheck size={14} className="text-green-500" /> :
-                   <div className="w-1.5 h-1.5 rounded-full bg-white/20" />}
+                   <div className="w-1.5 h-1.5 rounded-full bg-slate-300" />}
                 </div>
                 <div className="flex-1">
-                  <div className="text-[11px] font-bold text-white/90">{stage.label}</div>
-                  <div className="text-[10px] text-white/40 mt-0.5">{stage.output ?? stage.subtitle}</div>
+                  <div className="text-[11px] font-bold text-black">{stage.label}</div>
+                  <div className="text-[10px] text-slate-500 mt-0.5">{stage.output ?? stage.subtitle}</div>
                 </div>
-                {stage.durationMs && <span className="text-[10px] text-white/30">{stage.durationMs}ms</span>}
+                {stage.durationMs && <span className="text-[10px] text-slate-400">{stage.durationMs}ms</span>}
               </div>
             ))}
           </div>
 
           {/* ABI Panel - Real Compilation Results */}
           {compileResult && compileResult.abi.length > 0 && (
-            <div className="p-4 border-b border-white/10 bg-blue-900/10">
-              <div className="text-blue-400 text-[10px] font-bold tracking-[0.1em] uppercase mb-3">
+            <div className="p-4 border-b border-slate-200 bg-blue-50">
+              <div className="text-blue-700 text-[10px] font-bold tracking-[0.1em] uppercase mb-3">
                 Circuit ABI Interface — {compileResult.abi.length} parameter{compileResult.abi.length !== 1 ? 's' : ''}
               </div>
               <div className="flex flex-col gap-2">
                 {compileResult.abi.map((p, i) => (
                   <div key={i} className="flex items-center gap-2 text-[11px]">
-                    <span className={\`px-1.5 py-0.5 rounded font-bold text-[9px] tracking-wider \${p.visibility === 'public' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-white/10 text-white/50 border border-white/10'}\`}>
+                    <span className={\`px-1.5 py-0.5 rounded font-bold text-[9px] tracking-wider \${p.visibility === 'public' ? 'bg-blue-100 text-blue-700 border border-blue-200' : 'bg-slate-100 text-slate-500 border border-slate-200'}\`}>
                       {p.visibility === 'public' ? 'PUB' : 'PRIV'}
                     </span>
-                    <span className="text-white font-bold">{p.name}</span>
-                    <span className="text-white/40">{p.type.replace(/"/g, '').replace(/\\{kind:\\s*([^,}]+)[^}]*\\}/g, '$1')}</span>
+                    <span className="text-black font-bold">{p.name}</span>
+                    <span className="text-slate-500">{p.type.replace(/"/g, '').replace(/\\{kind:\\s*([^,}]+)[^}]*\\}/g, '$1')}</span>
                   </div>
                 ))}
               </div>
@@ -400,12 +400,12 @@ export function NoirCircuitSandbox() {
           )}
 
           <div className="flex-1 flex flex-col">
-            <div className="px-6 py-2 bg-[#0a0a0a] border-b border-white/10 flex items-center gap-2">
+            <div className="px-6 py-2 bg-slate-100 border-b border-slate-200 flex items-center gap-2">
                <Zap size={12} className="text-yellow-500" />
-               <span className="text-white/40 text-[10px] font-bold tracking-[0.2em] uppercase">Diagnostic Output</span>
+               <span className="text-slate-500 text-[10px] font-bold tracking-[0.2em] uppercase">Diagnostic Output</span>
             </div>
-            <div ref={logRef} className="flex-1 p-6 overflow-y-auto max-h-[300px]">
-               {logLines.length === 0 && <div className="text-white/20 text-[11px]">Awaiting kernel execution...</div>}
+            <div ref={logRef} className="flex-1 p-6 overflow-y-auto max-h-[300px] bg-white">
+               {logLines.length === 0 && <div className="text-slate-400 text-[11px]">Awaiting kernel execution...</div>}
                {logLines.map((line, i) => (
                  <div key={i} className="text-[11px] leading-[1.7] mb-1 font-mono break-words" style={{ color: logColour[line.type] }}>
                    {line.text}
