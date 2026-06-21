@@ -724,7 +724,14 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                         const airdropData = await airdropRes.json();
                         if (airdropData.success) {
                             localStorage.setItem(mintKey, 'true');
-                            toast.success('✅ Aztec Identity Active: 10 QDs received! Check Portfolio → Aztec tab.', { duration: 6000 });
+                            toast.success('✅ Aztec Identity Active: 10 QDs received!', { 
+                                description: 'Transaction confirmed on Aztec Testnet.',
+                                duration: 8000,
+                                action: airdropData.explorerUrl ? {
+                                    label: 'View on AztecScan',
+                                    onClick: () => window.open(airdropData.explorerUrl, '_blank')
+                                } : undefined
+                            });
                         } else if (airdropData.message?.includes('Already received')) {
                             localStorage.setItem(mintKey, 'true');
                         }
