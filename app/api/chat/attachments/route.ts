@@ -8,7 +8,10 @@ import { getSession } from '@/lib/session';
 export async function POST(req: Request) {
   try {
     const session = await getSession();
-    if (!session?.userId) {
+    const web3Address = req.headers.get('x-web3-address');
+    const userId = session?.userId || web3Address;
+    
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

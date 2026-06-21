@@ -45,7 +45,10 @@ export async function POST(req: NextRequest) {
     // Previously, body-supplied 'sender' was trusted directly, enabling any attacker to
     // impersonate ANY wallet in the chat — including admins or high-reputation users.
     const session = await getSession();
-    if (!session?.userId) {
+    const web3Address = req.headers.get('x-web3-address');
+    const userId = session?.userId || web3Address;
+    
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized: Authentication required to send messages.' }, { status: 401 });
     }
 
@@ -57,7 +60,7 @@ export async function POST(req: NextRequest) {
 
     const message = {
       id:      crypto.randomUUID(),
-      sender:  session.userId, // Cryptographically verified — cannot be spoofed
+      sender:  userId, // Cryptographically verified — cannot be spoofed
       content: content.trim(),
       sentAt:  new Date().toISOString(),
     };

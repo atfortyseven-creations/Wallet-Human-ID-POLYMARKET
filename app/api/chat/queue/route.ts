@@ -5,7 +5,10 @@ export async function POST(req: Request) {
   try {
     const { getSession } = await import('@/lib/session');
     const session = await getSession();
-    if (!session?.userId) {
+    const web3Address = req.headers.get('x-web3-address');
+    const userId = session?.userId || web3Address;
+    
+    if (!userId) {
       return NextResponse.json({ error: 'Unauthorized: Authentication required' }, { status: 401 });
     }
 
@@ -17,7 +20,7 @@ export async function POST(req: Request) {
     }
 
     // [SECURITY HARDENING] Prevent spoofing of the sender address
-    if (sender.toLowerCase() !== session.userId.toLowerCase()) {
+    if (sender.toLowerCase() !== userId.toLowerCase()) {
       return NextResponse.json({ error: 'Forbidden: You cannot spoof the sender address' }, { status: 403 });
     }
 

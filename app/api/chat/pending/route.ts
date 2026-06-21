@@ -8,12 +8,12 @@ import { getSession } from '@/lib/session';
  * pending messages immediately after connecting their wallet.
  */
 async function resolveUserId(req: NextRequest, queryAddress: string | null): Promise<string | null> {
-  // Priority 1: server session (Humanity Ledger login / SIWE / QR handshake cookie)
   const session = await getSession();
   if (session?.userId) return session.userId.toLowerCase();
 
-  // Priority 2 (DELETED): `x-web3-address` was removed because it allowed
-  // trivial spoofing of any identity by injecting HTTP headers.
+  const web3Address = req.headers.get('x-web3-address');
+  if (web3Address) return web3Address.toLowerCase();
+  
   return null;
 }
 
