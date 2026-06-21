@@ -52,48 +52,16 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 2. Strict Plan Enforcement
-    const user = await prisma.user.findUnique({
-      where: { walletAddress: issuerAddress },
-      select: { tier: true }
+    // 2. Strict Global Limit for non-owners (3 passports max)
+    const totalCount = await prisma.productPassport.count({
+      where: { issuerAddress },
     });
 
-    const userTierStr = user?.tier || 'FREE';
-    const tierKey = NODE_TIERS[userTierStr as PlanTier] ? (userTierStr as PlanTier) : PlanTier.FREE;
-    const planConfig = NODE_TIERS[tierKey];
-
-    if (tierKey === PlanTier.FREE) {
-      // Free users have a strict LIFETIME limit of 3 products
-      const totalCount = await prisma.productPassport.count({
-        where: { issuerAddress },
-      });
-
-      if (totalCount >= 3) {
-        return NextResponse.json(
-          { error: 'Free tier limit reached. You can only create 3 passports. Please upgrade your plan.' },
-          { status: 403 }
-        );
-      }
-    } else {
-      const dailyLimit = planConfig.limits.requestsPerDay;
-      if (dailyLimit !== -1) {
-        const startOfToday = new Date();
-        startOfToday.setHours(0, 0, 0, 0);
-
-        const todayCount = await prisma.productPassport.count({
-          where: {
-            issuerAddress,
-            createdAt: { gte: startOfToday },
-          },
-        });
-
-        if (todayCount >= dailyLimit) {
-          return NextResponse.json(
-            { error: `Daily limit reached. Your ${planConfig.name} allows exclusively ${dailyLimit} DPPs per day. Please upgrade your plan.` },
-            { status: 403 }
-          );
-        }
-      }
+    if (totalCount >= 3) {
+      return NextResponse.json(
+        { error: 'Limit reached. You can only create 3 Product Passports maximum.' },
+        { status: 403 }
+      );
     }
   }
 
