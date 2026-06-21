@@ -3,7 +3,7 @@
 import React, { useRef, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 
-// ─── Roadmap Data — Full Demencial Architecture ────────────────────────────────
+// ─── Roadmap Data — Whale Network Full Architecture ───────────────────────────
 
 interface RoadmapNode {
   id: string;
@@ -21,265 +21,240 @@ interface RoadmapEdge {
 }
 
 // Column X positions (phases)
-const C1 = 80;   // Phase 1 — Completed (Core)
-const C2 = 360;  // Phase 2 — Completed (Identity & Auth)
-const C3 = 640;  // Phase 3 — Completed (ZK & Studio)
-const C4 = 920;  // Phase 4 — Building (Markets & Compliance)
-const C5 = 1200; // Phase 5 — Planned (Protocol & DAO)
-const C6 = 1480; // Phase 6 — Planned (Jan 2027 Genesis)
+const C1 = 80;   // Phase 1 — Core Infrastructure
+const C2 = 360;  // Phase 2 — Auth & Membership
+const C3 = 640;  // Phase 3 — ZK & Studio
+const C4 = 920;  // Phase 4 — Markets & Intelligence (Jul–Sep 2026)
+const C5 = 1200; // Phase 5 — Protocol Expansion (Oct–Nov 2026)
+const C6 = 1480; // Phase 6 — Genesis December 2026
 
 const NODES: RoadmapNode[] = [
 
-  // ─── PHASE 1: Core Infrastructure (LIVE) ─────────────────────────────────
+  // ─── PHASE 1: Core Infrastructure (COMPLETED) ────────────────────────────
   {
     id: 'frontend',
-    title: 'Next.js 15 Frontend',
+    title: 'Next.js 15 App Router',
     status: 'live',
-    quarter: 'Completed — Q1 2026',
-    description: 'Next.js 15 App Router, Tailwind CSS, Framer Motion. Monorepo deployed to Railway with zero-downtime CI/CD from GitHub main branch.',
+    quarter: 'Completed',
+    description: 'Next.js 15 App Router, Tailwind CSS, Framer Motion animations. Full monorepo deployed on Railway with GitHub CI/CD. Responsive across desktop, tablet, and mobile.',
     x: C1, y: 60,
   },
   {
     id: 'db',
     title: 'PostgreSQL + Prisma ORM',
     status: 'live',
-    quarter: 'Completed — Q1 2026',
-    description: 'Production database on Railway with Prisma ORM. Handles users, sessions, Product Passports, Whale memberships, VIP tiers, and transaction history.',
-    x: C1, y: 190,
+    quarter: 'Completed',
+    description: 'Production database on Railway. Prisma ORM handles users, sessions, memberships, product passports, transaction history, and Whale tier data.',
+    x: C1, y: 200,
   },
   {
     id: 'evm',
-    title: 'EVM Wallet Integration',
+    title: 'EVM Wallet + AppKit',
     status: 'live',
-    quarter: 'Completed — Q1 2026',
-    description: 'Wagmi + Viem + AppKit (WalletConnect). Full multi-wallet support including MetaMask, Trust Wallet, and mobile deep-link flows for iOS and Android.',
-    x: C1, y: 320,
+    quarter: 'Completed',
+    description: 'Full multi-wallet connectivity via Wagmi, Viem, and WalletConnect AppKit. Supports MetaMask, Trust Wallet, Coinbase Wallet, and mobile deep-link flows on iOS and Android.',
+    x: C1, y: 340,
   },
   {
-    id: 'siwe',
-    title: 'SIWE Auth + Sessions',
+    id: 'railway',
+    title: 'Railway Deployment',
     status: 'live',
-    quarter: 'Completed — Q2 2026',
-    description: 'Sign-In with Ethereum session management. Fixed mobile SIWE double-signature bug — manual deep-link trigger avoids the MetaMask App-Switch Loop on iOS/Android.',
-    x: C1, y: 450,
+    quarter: 'Completed',
+    description: 'Production infrastructure on Railway: Next.js server, PostgreSQL, Nargo ZK backend, and all API routes deployed with zero-downtime rolling updates.',
+    x: C1, y: 480,
   },
 
-  // ─── PHASE 2: Identity & Membership (LIVE) ───────────────────────────────
+  // ─── PHASE 2: Auth, Membership & Terminal (COMPLETED) ────────────────────
   {
-    id: 'humanid',
-    title: 'Human ID (DID)',
+    id: 'siwe',
+    title: 'SIWE Mobile Auth',
     status: 'live',
-    quarter: 'Completed — Q2 2026',
-    description: 'Decentralized Identity layer. Each wallet generates a cryptographic Human ID linked to a Merkle-proof KYC attestation. Forms the root of the Humanity Ledger.',
+    quarter: 'Completed',
+    description: 'Sign-In with Ethereum with full iOS/Android support. Fixed the MetaMask App-Switch Loop — manual deep-link trigger prevents the double-signature bug on mobile wallets.',
     x: C2, y: 60,
   },
   {
     id: 'vip',
     title: 'VIP Whale Membership',
     status: 'live',
-    quarter: 'Completed — Q2 2026',
-    description: 'Tiered membership system (Whale, Orca, Shark) with on-chain verification. Unlocks premium terminal modules, Studio Provenance, and priority liquidity routing.',
-    x: C2, y: 190,
+    quarter: 'Completed',
+    description: 'Tiered Whale membership (Whale, Orca, Shark). On-chain verified access to premium terminal modules, Studio Provenance creation, and Whale Chat.',
+    x: C2, y: 200,
   },
   {
-    id: 'portfolio',
-    title: 'VIP Portfolio Dashboard',
+    id: 'terminal',
+    title: 'Whale Terminal',
     status: 'live',
-    quarter: 'Completed — Q2 2026',
-    description: 'Institutional terminal for VIP members. Displays real-time portfolio, Studio Provenance passports, Whale Chat, and transaction forensics in a unified shell.',
-    x: C2, y: 320,
+    quarter: 'Completed',
+    description: 'Institutional-grade multi-tab terminal: Portfolio Dashboard, Markets, Roadmap, Whale Chat, Studio Provenance, Alerts, Session Logs, and ZK Developer Sandbox — all in one shell.',
+    x: C2, y: 340,
   },
   {
     id: 'whalechat',
     title: 'Whale Chat (E2E)',
     status: 'live',
-    quarter: 'Completed — Q2 2026',
-    description: 'End-to-end encrypted P2P chat for verified Whale members. Fully functional on iOS and Android. Real-time messaging with no message-send bugs.',
-    x: C2, y: 450,
+    quarter: 'Completed',
+    description: 'End-to-end encrypted P2P messaging for verified Whale members. Real-time send/receive fully functional on iOS and Android with no message delivery bugs.',
+    x: C2, y: 480,
   },
 
-  // ─── PHASE 3: ZK Circuits & Studio Provenance (LIVE) ─────────────────────
+  // ─── PHASE 3: ZK Circuits & Studio Provenance (COMPLETED) ───────────────
   {
     id: 'zksandbox',
     title: 'ZK Circuit Sandbox',
     status: 'live',
-    quarter: 'Completed — Q2 2026',
-    description: 'In-browser Noir compiler pipeline with real Nargo backend (deployed on Railway). 4-stage pipeline: AST Linter → ACIR Compile → Witness → UltraHonk Prove & Verify.',
+    quarter: 'Completed',
+    description: 'In-browser Noir circuit compiler with real Nargo backend on Railway. Full 4-stage pipeline: AST Security Linter → ACIR Compile → Witness → UltraHonk Prove & Verify with anti-replay nullifiers.',
     x: C3, y: 60,
   },
   {
-    id: 'linter',
-    title: 'Quantum Security Linter',
-    status: 'live',
-    quarter: 'Completed — Q2 2026',
-    description: 'Frontend AST-level security analyser runs before every compilation. Detects Soundness vulnerabilities (unconstrained key hashes, range overflow exploits) and guides devs to safe fixes.',
-    x: C3, y: 190,
-  },
-  {
     id: 'circuits',
-    title: 'Abysmal Complexity Circuits',
+    title: 'Institutional ZK Circuits',
     status: 'live',
-    quarter: 'Completed — Q2 2026',
-    description: 'Production ZK circuit library: Dark Pool Order Matching (Pedersen commitments), AML Travel Rule (Merkle OFAC), Omnichain MPT State Proof (L1→L2), Recursive SNARK Verification (Plonk-in-Plonk).',
-    x: C3, y: 320,
+    quarter: 'Completed',
+    description: 'Production circuit library: Dark Pool Order Matching (Pedersen commitments), AML Travel Rule (Merkle OFAC tree), Omnichain MPT State Proof (L1→L2), and Recursive SNARK aggregation.',
+    x: C3, y: 200,
   },
   {
     id: 'studio',
     title: 'Studio Provenance',
     status: 'live',
-    quarter: 'Completed — Q2 2026',
-    description: 'Product Passport creation system. Users create up to 3 passports (Owner: unlimited). Each passport generates a QR code that forces wallet connection before revealing provenance data.',
-    x: C3, y: 450,
+    quarter: 'Completed',
+    description: 'Product Passport creation engine. Regular users create up to 3 passports; Owners unlimited. Each passport generates a tamper-proof QR code tied to the wallet that created it.',
+    x: C3, y: 340,
   },
   {
     id: 'passportqr',
-    title: 'Passport QR Guard',
+    title: 'Passport QR Wall',
     status: 'live',
-    quarter: 'Completed — Q2 2026',
-    description: 'PassportWalletGuard component intercepts QR scan attempts. Any public visitor scanning a product QR must connect their wallet to decrypt the full provenance chain.',
-    x: C3, y: 580,
+    quarter: 'Completed',
+    description: 'Wallet authentication gate on all public passport URLs. Any person scanning a product QR code must connect a wallet before the provenance chain is decrypted and revealed.',
+    x: C3, y: 480,
   },
 
-  // ─── PHASE 4: Markets, Compliance & DeFi (BUILDING) ──────────────────────
-  {
-    id: 'darkpool',
-    title: 'Dark Pool Orderbook',
-    status: 'building',
-    quarter: 'Building — Q3 2026',
-    description: 'Institutional-grade private orderbook using ZK Order Matching circuit. Makers and takers cross without revealing price or volume. Powered by the compiled UltraHonk SNARK pipeline.',
-    x: C4, y: 60,
-  },
-  {
-    id: 'aml',
-    title: 'AML / Travel Rule Oracle',
-    status: 'building',
-    quarter: 'Building — Q3 2026',
-    description: 'Real-time compliance oracle. Screens every Whale-to-Whale transfer against a Merkle-anchored OFAC sanction tree. Proof generated in <2s via the Travel Rule Noir circuit.',
-    x: C4, y: 190,
-  },
-  {
-    id: 'aztecpxe',
-    title: 'Aztec Network PXE',
-    status: 'building',
-    quarter: 'Building — Q3 2026',
-    description: 'Private Execution Environment connecting to Aztec Testnet. Manages key material, claims tokens from the faucet, and executes private transfers with full ZK proof generation locally.',
-    x: C4, y: 320,
-  },
+  // ─── PHASE 4: Markets & Intelligence (Jul – Sep 2026) ────────────────────
   {
     id: 'polymarket',
     title: 'Polymarket Intelligence',
     status: 'building',
-    quarter: 'Building — Q3 2026',
-    description: 'Institutional Polymarket panel aggregating whale position intelligence. Tracks large bet entries, shifting probabilities, and generates AI-based signal alerts for VIP members.',
-    x: C4, y: 450,
+    quarter: 'Jul 2026',
+    description: 'Institutional Polymarket panel with live prediction market data, whale position tracking, and AI-generated signal alerts. Flags large bet entries and shifting probabilities for VIP members.',
+    x: C4, y: 60,
   },
   {
     id: 'hyperliquid',
     title: 'Hyperliquid Execution',
     status: 'building',
-    quarter: 'Building — Q3 2026',
-    description: 'Direct perpetual DEX execution panel. Place, modify, and cancel orders on Hyperliquid L1 from within the Whale terminal with institutional slippage controls.',
-    x: C4, y: 580,
+    quarter: 'Jul 2026',
+    description: 'Direct perpetuals execution panel. Place, modify, and cancel orders on Hyperliquid L1 from within the Whale terminal with institutional-grade slippage and position controls.',
+    x: C4, y: 200,
+  },
+  {
+    id: 'alerts',
+    title: 'Whale Alert Engine',
+    status: 'building',
+    quarter: 'Aug 2026',
+    description: 'Real-time on-chain whale movement alerts. Monitors wallets >$1M, flags suspicious clustering, and pushes notifications to Telegram + in-terminal alerts for VIP subscribers.',
+    x: C4, y: 340,
+  },
+  {
+    id: 'aztectestnet',
+    title: 'Aztec Testnet Live',
+    status: 'building',
+    quarter: 'Sep 2026',
+    description: 'Upgrade from local PXE simulation to live Aztec Testnet RPC. Private token transfers and ZK identity proofs running against deployed CoreLedger and Token contracts on testnet.',
+    x: C4, y: 480,
   },
 
-  // ─── PHASE 5: Protocol Expansion (PLANNED Q4 2026) ───────────────────────
+  // ─── PHASE 5: Protocol Expansion (Oct – Nov 2026) ────────────────────────
   {
-    id: 'omnichain',
-    title: 'Omnichain MPT Bridge',
+    id: 'darkpool',
+    title: 'Dark Pool Orderbook',
     status: 'planned',
-    quarter: 'Planned — Q4 2026',
-    description: 'Cross-chain state proof bridge using the Omnichain MPT Noir circuit. Allows Ethereum L1 storage slots to be verified inside Aztec L2 without trusting an oracle.',
+    quarter: 'Oct 2026',
+    description: 'Private institutional orderbook using the compiled ZK Order Matching circuit. Makers and takers cross price without revealing order size or price. Beta access for Whale tier members only.',
     x: C5, y: 60,
   },
   {
-    id: 'recursion',
-    title: 'Recursive Proof Aggregation',
+    id: 'aml',
+    title: 'AML Compliance Oracle',
     status: 'planned',
-    quarter: 'Planned — Q4 2026',
-    description: 'Plonk-in-Plonk recursive accumulation for batch compliance proofs. One UltraHonk proof will aggregate thousands of AML checks for a single on-chain verification call.',
-    x: C5, y: 190,
+    quarter: 'Oct 2026',
+    description: 'Automated AML screening for all wallet-to-wallet transfers above €1,000. Merkle-proof against OFAC sanction list. Travel Rule proof generated in <2s and stored on-chain for auditors.',
+    x: C5, y: 200,
   },
   {
-    id: 'audit',
-    title: 'Smart Contract Audits',
+    id: 'whaletoken',
+    title: 'Whale Token Launch',
     status: 'planned',
-    quarter: 'Planned — Q4 2026',
-    description: 'Third-party security audit of all Aztec.nr (Noir) circuits: CoreLedger, Token, AuthWit, AML Oracle, and Dark Pool Matcher. Required before Mainnet Alpha launch.',
-    x: C5, y: 320,
+    quarter: 'Nov 2026',
+    description: 'Native utility token for Whale Network. Used for membership fees, governance voting weight, and staking rewards. Fair launch on Base network with vesting schedule for early members.',
+    x: C5, y: 340,
   },
   {
-    id: 'reputation',
-    title: 'On-Chain Reputation System',
+    id: 'mobileapp',
+    title: 'Mobile App (iOS + Android)',
     status: 'planned',
-    quarter: 'Planned — Q4 2026',
-    description: 'ZK-attested reputation scoring for Whale identities. Score is computed from on-chain activity, compliance history, and staking tenure. Revealed as a range proof, never raw.',
-    x: C5, y: 450,
-  },
-  {
-    id: 'mobile',
-    title: 'Mobile ZK Signers',
-    status: 'planned',
-    quarter: 'Planned — Q4 2026',
-    description: 'Native iOS and Android apps acting as hardware-level biometric signers for Aztec transactions. Synced to the desktop terminal via QR code pairing and SIWE session bridge.',
-    x: C5, y: 580,
+    quarter: 'Nov 2026',
+    description: 'Native iOS and Android app wrapping the Whale terminal. Biometric wallet signing, push notifications for whale alerts, Whale Chat, and Studio Provenance QR scanning from the camera.',
+    x: C5, y: 480,
   },
 
-  // ─── PHASE 6: Genesis — January 2027 ─────────────────────────────────────
+  // ─── PHASE 6: Genesis — December 2026 ────────────────────────────────────
   {
     id: 'mainnet',
     title: 'Aztec Mainnet Alpha',
     status: 'planned',
-    quarter: 'Genesis — Jan 2027',
-    description: 'Production deployment of the full Whale Network protocol on Aztec Mainnet. CoreLedger contract, Token contract, and the first private institutional liquidity pool go live.',
-    x: C6, y: 120,
+    quarter: 'Dec 2026',
+    description: 'Full production deployment on Aztec Mainnet. CoreLedger contract, private Token, and the first institutional Dark Pool liquidity pool live. Audited circuits only.',
+    x: C6, y: 100,
   },
   {
     id: 'dao',
-    title: 'Whale DAO + Governance',
+    title: 'Whale DAO Governance',
     status: 'planned',
-    quarter: 'Genesis — Jan 2027',
-    description: 'On-chain governance via ZK-private voting. Token holders vote on treasury allocations, protocol upgrades, and partner integrations — without revealing their identity or stake.',
-    x: C6, y: 290,
+    quarter: 'Dec 2026',
+    description: 'On-chain governance with ZK-private voting. Whale Token holders vote on treasury, protocol upgrades, and fee structures without revealing wallet identity or token balance.',
+    x: C6, y: 280,
   },
   {
-    id: 'cnmv',
-    title: 'CNMV / MiCA Compliance',
+    id: 'mica',
+    title: 'MiCA / CNMV Filing',
     status: 'planned',
-    quarter: 'Genesis — Jan 2027',
-    description: 'Full regulatory compliance package for EU/Spain (CNMV notification, MiCA readiness). ZK Travel Rule proofs submitted automatically for transfers >€1,000.',
+    quarter: 'Dec 2026',
+    description: 'Full EU regulatory compliance package. MiCA white paper, CNMV sandbox notification for Humanity Ledger S.L., and automated Travel Rule proof submission pipeline for financial authorities.',
     x: C6, y: 460,
   },
 ];
 
 const EDGES: RoadmapEdge[] = [
-  // Phase 1 → Phase 2
-  { from: 'frontend', to: 'humanid' },
-  { from: 'db',       to: 'vip' },
-  { from: 'evm',      to: 'portfolio' },
-  { from: 'siwe',     to: 'whalechat' },
-  // Phase 2 → Phase 3
-  { from: 'humanid',  to: 'zksandbox' },
-  { from: 'vip',      to: 'studio' },
-  { from: 'portfolio',to: 'studio' },
-  { from: 'whalechat',to: 'linter' },
-  // Phase 3 → Phase 4
-  { from: 'zksandbox',to: 'darkpool' },
-  { from: 'linter',   to: 'darkpool' },
-  { from: 'circuits', to: 'aml' },
-  { from: 'circuits', to: 'aztecpxe' },
-  { from: 'studio',   to: 'polymarket' },
-  { from: 'passportqr',to: 'hyperliquid' },
-  // Phase 4 → Phase 5
-  { from: 'darkpool', to: 'omnichain' },
-  { from: 'aml',      to: 'recursion' },
-  { from: 'aztecpxe', to: 'audit' },
-  { from: 'polymarket',to: 'reputation' },
-  { from: 'hyperliquid',to: 'mobile' },
-  // Phase 5 → Phase 6
-  { from: 'omnichain',to: 'mainnet' },
-  { from: 'audit',    to: 'mainnet' },
-  { from: 'reputation',to: 'dao' },
-  { from: 'mobile',   to: 'cnmv' },
+  // P1 → P2
+  { from: 'frontend',    to: 'siwe' },
+  { from: 'db',          to: 'vip' },
+  { from: 'evm',         to: 'terminal' },
+  { from: 'railway',     to: 'whalechat' },
+  // P2 → P3
+  { from: 'siwe',        to: 'zksandbox' },
+  { from: 'vip',         to: 'studio' },
+  { from: 'terminal',    to: 'studio' },
+  { from: 'whalechat',   to: 'circuits' },
+  // P3 → P4
+  { from: 'zksandbox',   to: 'polymarket' },
+  { from: 'circuits',    to: 'hyperliquid' },
+  { from: 'studio',      to: 'alerts' },
+  { from: 'passportqr',  to: 'aztectestnet' },
+  // P4 → P5
+  { from: 'polymarket',  to: 'darkpool' },
+  { from: 'hyperliquid', to: 'darkpool' },
+  { from: 'alerts',      to: 'aml' },
+  { from: 'aztectestnet',to: 'whaletoken' },
+  { from: 'aztectestnet',to: 'mobileapp' },
+  // P5 → P6
+  { from: 'darkpool',    to: 'mainnet' },
+  { from: 'aml',         to: 'mainnet' },
+  { from: 'whaletoken',  to: 'dao' },
+  { from: 'mobileapp',   to: 'dao' },
+  { from: 'aml',         to: 'mica' },
 ];
 
 const STATUS_CONFIG = {
@@ -301,7 +276,7 @@ function RoadmapCanvas() {
   const dragStart = useRef<{ mx: number; my: number; tx: number; ty: number } | null>(null);
 
   const CANVAS_W = 1980;
-  const CANVAS_H = 780;
+  const CANVAS_H = 720;
 
   const onMouseDown = useCallback((e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest('[data-node]')) return;
@@ -319,8 +294,7 @@ function RoadmapCanvas() {
 
   const onWheel = useCallback((e: React.WheelEvent) => {
     e.preventDefault();
-    const delta = -e.deltaY * 0.001;
-    setTransform(t => ({ ...t, scale: Math.min(2, Math.max(0.3, t.scale + delta)) }));
+    setTransform(t => ({ ...t, scale: Math.min(2, Math.max(0.3, t.scale + (-e.deltaY * 0.001))) }));
   }, []);
 
   const zoomIn  = () => setTransform(t => ({ ...t, scale: Math.min(2, t.scale + 0.15) }));
@@ -351,12 +325,12 @@ function RoadmapCanvas() {
   const onTouchEnd = useCallback(() => { setDragging(false); dragStart.current = null; }, []);
 
   const COLUMNS = [
-    { label: 'Phase 1 — Core',          x: C1 },
-    { label: 'Phase 2 — Identity',       x: C2 },
-    { label: 'Phase 3 — ZK & Studio',    x: C3 },
-    { label: 'Phase 4 — Markets',        x: C4 },
-    { label: 'Phase 5 — Protocol',       x: C5 },
-    { label: 'Phase 6 — Genesis Jan 27', x: C6 },
+    { label: 'Phase 1 — Core',         x: C1 },
+    { label: 'Phase 2 — Auth & UX',    x: C2 },
+    { label: 'Phase 3 — ZK & Studio',  x: C3 },
+    { label: 'Phase 4 — Jul–Sep 26',   x: C4 },
+    { label: 'Phase 5 — Oct–Nov 26',   x: C5 },
+    { label: 'Phase 6 — Dec 26',       x: C6 },
   ];
 
   return (
@@ -432,7 +406,6 @@ function RoadmapCanvas() {
               const fromNode = NODES.find(n => n.id === e.from);
               const toNode   = NODES.find(n => n.id === e.to);
               if (!fromNode || !toNode) return null;
-              // Dimmer edges for planned nodes
               const opacity = toNode.status === 'planned' ? 0.08 : toNode.status === 'building' ? 0.2 : 0.14;
               return (
                 <path
@@ -474,8 +447,19 @@ function RoadmapCanvas() {
                       {cfg.label}
                     </span>
                   </div>
-                  <p className={`text-[12px] font-bold tracking-tight leading-snug ${node.status === 'live' ? 'text-black' : node.status === 'building' ? 'text-black/55' : 'text-black/30'}`}>
+                  <p className={`text-[12px] font-bold tracking-tight leading-snug ${
+                    node.status === 'live' ? 'text-black' :
+                    node.status === 'building' ? 'text-black/55' :
+                    'text-black/30'
+                  }`}>
                     {node.title}
+                  </p>
+                  <p className={`text-[10px] font-mono ${
+                    node.status === 'live' ? 'text-black/40' :
+                    node.status === 'building' ? 'text-black/30' :
+                    'text-black/20'
+                  }`}>
+                    {node.quarter}
                   </p>
                 </div>
               </div>
@@ -526,8 +510,8 @@ export default function HumanityLedger() {
             Protocol Roadmap
           </h1>
           <p className="text-[12px] sm:text-[13.5px] text-black/50 leading-relaxed pointer-events-auto max-w-xl">
-            La arquitectura completa de Whale Network sobre Aztec Network — desde el core hasta el Genesis de Enero 2027.
-            Arrastra el canvas para explorar, haz scroll para hacer zoom, y haz clic en cualquier nodo para ver detalles.
+            Whale Network development timeline — from core infrastructure to Genesis in December 2026.
+            Drag the canvas to explore, scroll to zoom, and click any node for details.
           </p>
         </div>
       </div>
