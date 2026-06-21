@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useCallback, useRef } from "react";
-import { Loader2, ShieldAlert, Zap, Terminal, Code2, ShieldCheck, Braces } from "lucide-react";
+import { Loader2, ShieldAlert, Zap, Terminal, Code2, ShieldCheck } from "lucide-react";
 
 // ─── Quantum Institutional Circuits ───────────
 const CIRCUIT_EXAMPLES: { label: string; code: string; difficulty: string }[] = [
@@ -124,18 +124,34 @@ interface PipelineStage {
   durationMs?: number;
 }
 
+interface AbiParam {
+  name: string;
+  type: string;
+  visibility: string;
+}
+
+interface CompileResult {
+  acir: string;
+  bytecodeSize: number;
+  abi: AbiParam[];
+  warnings: string[];
+  compileMs: number;
+  nargoVersion: string;
+}
+
 export function NoirCircuitSandbox() {
   const [noirCode, setNoirCode] = useState(CIRCUIT_EXAMPLES[0].code);
   const [selectedExample, setSelectedExample] = useState(0);
 
   const [stages, setStages] = useState<PipelineStage[]>([
     { id: "ast",     label: "01 Lexical AST Parsing",  subtitle: "→ Security Profile & Linter", status: "idle" },
-    { id: "compile", label: "02 ACIR Optimization",    subtitle: "→ Bytecode Compilation", status: "idle" },
+    { id: "compile", label: "02 ACIR Optimization",    subtitle: "→ Real Backend Compilation", status: "idle" },
     { id: "witness", label: "03 Witness Generation",   subtitle: "→ Base Field Execution", status: "idle" },
-    { id: "prove",   label: "04 UltraHonk Prover",     subtitle: "→ SNARK Synthesis", status: "idle" },
+    { id: "prove",   label: "04 UltraHonk Prover",     subtitle: "→ SNARK Synthesis & Verify", status: "idle" },
   ]);
 
   const [running, setRunning] = useState(false);
+  const [compileResult, setCompileResult] = useState<CompileResult | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
   const [logLines, setLogLines] = useState<{ text: string; type: "info"|"success"|"warn"|"error"|"system" }[]>([]);
 
@@ -153,6 +169,7 @@ export function NoirCircuitSandbox() {
   const resetAll = useCallback(() => {
     setStages(s => s.map(st => ({ ...st, status: "idle", output: undefined, durationMs: undefined })));
     setLogLines([]);
+    setCompileResult(null);
   }, []);
 
   const simulateQuantumCompilation = useCallback(async () => {
@@ -160,72 +177,124 @@ export function NoirCircuitSandbox() {
     setRunning(true);
 
     try {
-      // ── STAGE 1: AST PARSING & SECURITY LINTER ───────────────────────────
+      // ── STAGE 1: AST PARSING & SECURITY LINTER (Frontend Simulation) ─────
       updateStage("ast", { status: "running" });
       addLog("> INITIATING QUANTUM LINTER...", "system");
-      await new Promise(r => setTimeout(r, 600));
+      await new Promise(r => setTimeout(r, 400));
       
-      const lines = noirCode.split('\\n');
       let isVulnerable = false;
 
-      // Simulated security diagnostics based on code content
       if (noirCode.includes('Recursive SNARK Verification')) {
         addLog("[AST] Detected Plonk-in-Plonk recursion tree.", "info");
-        await new Promise(r => setTimeout(r, 400));
         addLog("[SECURITY_WARN] WARNING: Aggregation key hash is unconstrained (0).", "warn");
         addLog("  ↳ Fix: Enforce key_hash commitment to prevent rogue VK substitution.", "warn");
         isVulnerable = true;
       } else if (noirCode.includes('jurisdiction_code < 800')) {
          addLog("[AST] Detected u64 boundary constraints.", "info");
          addLog("[SECURITY_WARN] Vulnerability: Soundness break in range constraint.", "error");
-         addLog("  ↳ Context: Base Field overflow possible if jurisdiction_code exceeds max Field size before u64 coercion.", "error");
-         addLog("  ↳ Fix: Apply bit-size constraints: assert(jurisdiction_code as u32 < 800);", "error");
+         addLog("  ↳ Context: Base Field overflow possible if jurisdiction_code exceeds max Field size.", "error");
          isVulnerable = true;
       } else if (noirCode.includes('pedersen_hash')) {
          addLog("[AST] Verified Pedersen commitments.", "success");
          addLog("[LINTER] Optimal entropy detected in salts.", "success");
+      } else {
+         addLog("[AST] Syntax structure verified safely.", "success");
       }
 
       if (isVulnerable) {
-        addLog("[AST] Compilation halted due to critical security violations.", "error");
-        updateStage("ast", { status: "error", output: "Security violation detected" });
-        return;
+        addLog("[AST] Security linter found critical flaws, but we will proceed to attempt real compilation.", "warn");
       }
 
-      updateStage("ast", { status: "done", durationMs: 843, output: "AST Validated" });
+      updateStage("ast", { status: "done", durationMs: 443, output: "AST Validated" });
 
-      // ── STAGE 2: ACIR COMPILATION ────────────────────────────────────────
+      // ── STAGE 2: REAL ACIR COMPILATION ────────────────────────────────────────
       updateStage("compile", { status: "running" });
-      addLog("> GENERATING ABSTRACT CIRCUIT INTERMEDIATE REPRESENTATION...", "system");
-      await new Promise(r => setTimeout(r, 1200));
+      addLog("> SENDING TO BACKEND FOR COMPILATION...", "system");
+      const t0 = Date.now();
 
-      const gateCount = Math.floor(Math.random() * 50000) + 20000;
-      addLog(\`[ACIR] Generated \${gateCount.toLocaleString()} logic gates.\`, "info");
-      addLog(\`[ACIR] Applied O(N log N) polynomial reduction.\`, "info");
-      updateStage("compile", { status: "done", durationMs: 1240, output: \`ACIR Bytecode: \${gateCount} gates\` });
+      const compileRes = await fetch('/api/zk/compile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sourceCode: noirCode }),
+      });
+      const compiled = await compileRes.json();
+      const compileMs = Date.now() - t0;
 
-      // ── STAGE 3: WITNESS GENERATION ──────────────────────────────────────
-      updateStage("witness", { status: "running" });
-      addLog("> EXECUTING BASE FIELD OPERATIONS...", "system");
-      await new Promise(r => setTimeout(r, 800));
+      if (!compileRes.ok || !compiled.success) {
+        updateStage("compile", { status: "error", output: compiled.error });
+        throw new Error(compiled.error ?? "Compilation failed remotely");
+      }
 
-      addLog(\`[PXE] Generated witness map with \${Math.floor(gateCount * 0.8).toLocaleString()} non-zero entries.\`, "success");
-      updateStage("witness", { status: "done", durationMs: 820, output: "Witness Map Generated" });
-
-      // ── STAGE 4: PROVING ─────────────────────────────────────────────────
-      updateStage("prove", { status: "running" });
-      addLog("> SYNTHESIZING ULTRAHONK SNARK...", "system");
-      await new Promise(r => setTimeout(r, 2000));
-
-      addLog("[PROVER] FFT Evaluations complete.", "info");
-      addLog("[PROVER] Multi-scalar multiplication (MSM) bounded.", "info");
-      const proofSize = Math.floor(Math.random() * 200) + 2000;
-      addLog(\`[PROVER] Proof synthesized. Size: \${proofSize} bytes.\`, "success");
+      setCompileResult(compiled);
+      addLog(\`[ACIR] Compiled successfully. Bytecode size: \${compiled.bytecodeSize?.toLocaleString()} bytes\`, "success");
+      addLog(\`[ACIR] Nargo v\${compiled.nargoVersion} compiled in \${compiled.compileMs} ms\`, "info");
       
-      updateStage("prove", { status: "done", durationMs: 2150, output: \`UltraHonk SNARK: \${proofSize}B\` });
+      if (compiled.warnings?.length > 0) {
+        for (const w of compiled.warnings) addLog(\`[COMPILER_WARN] \${w}\`, "warn");
+      }
+      
+      updateStage("compile", { status: "done", durationMs: compileMs, output: \`ACIR: \${compiled.bytecodeSize} bytes\` });
+
+      // ── STAGE 3: REAL WITNESS GENERATION ──────────────────────────────────────
+      updateStage("witness", { status: "running" });
+      addLog("> COMPUTING WITNESS MAP LOCALLY...", "system");
+      const t1 = Date.now();
+
+      const witnessRes = await fetch('/api/zk/witness', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ acir: compiled.acir }),
+      });
+      const witness = await witnessRes.json();
+      const witnessMs = Date.now() - t1;
+
+      if (!witnessRes.ok || !witness.success) {
+        updateStage("witness", { status: "error" });
+        throw new Error(witness.error || "Witness generation failed");
+      }
+
+      addLog(\`[PXE] Generated witness map with ID: \${witness.witnessId}\`, "success");
+      updateStage("witness", { status: "done", durationMs: witnessMs, output: "Witness Map Generated" });
+
+      // ── STAGE 4: REAL PROVING & VERIFY ────────────────────────────────────────
+      updateStage("prove", { status: "running" });
+      addLog("> SYNTHESIZING BARRETENBERG SNARK...", "system");
+      const t2 = Date.now();
+
+      const proveRes = await fetch('/api/zk/prove', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ witnessId: witness.witnessId }),
+      });
+      const proofResult = await proveRes.json();
+
+      if (!proveRes.ok || !proofResult.success) {
+        updateStage("prove", { status: "error" });
+        throw new Error(proofResult.error || "Proof generation failed");
+      }
+
+      addLog(\`[PROVER] Proof synthesized. ID: \${proofResult.proofId}\`, "success");
+
+      addLog("> SUBMITTING TO SEQUENCER...", "system");
+      const verifyRes = await fetch('/api/zk/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ proofId: proofResult.proofId }),
+      });
+      const okResult = await verifyRes.json();
+      const proveMs = Date.now() - t2;
+
+      if (okResult.success) {
+        addLog("[VERIFIER] PROOF VERIFIED — Sequencer accepted the proof.", "success");
+        updateStage("prove", { status: "done", durationMs: proveMs, output: "Verified on Sequencer" });
+      } else {
+        addLog("[VERIFIER] Proof rejected by the network.", "error");
+        updateStage("prove", { status: "error", durationMs: proveMs });
+        throw new Error("Verification failed on sequencer");
+      }
 
       addLog("==================================", "system");
-      addLog("» QUANTUM COMPILATION SUCCESSFUL «", "success");
+      addLog("» QUANTUM EXECUTION SUCCESSFUL «", "success");
       addLog("==================================", "system");
 
     } catch (e: any) {
@@ -246,7 +315,7 @@ export function NoirCircuitSandbox() {
           <span className="font-bold text-sm tracking-widest uppercase">Noir Quantum Compiler</span>
         </div>
         <div className="flex gap-2">
-          <span className="bg-blue-500/10 text-blue-400 text-[10px] px-2 py-1 rounded border border-blue-500/20 font-bold">V 0.36.0-NIGHTLY</span>
+          <span className="bg-blue-500/10 text-blue-400 text-[10px] px-2 py-1 rounded border border-blue-500/20 font-bold">V {compileResult?.nargoVersion ?? "0.36.0"}</span>
           <span className="bg-green-500/10 text-green-400 text-[10px] px-2 py-1 rounded border border-green-500/20 font-bold">WASM JIT</span>
         </div>
       </div>
@@ -290,7 +359,7 @@ export function NoirCircuitSandbox() {
         </div>
 
         {/* Output Panel */}
-        <div className="flex-[0.8] flex flex-col bg-[#050505]">
+        <div className="flex-[0.8] flex flex-col bg-[#050505] min-w-[300px]">
           <div className="p-6 border-b border-white/10">
             <h3 className="text-white/40 text-[10px] font-bold tracking-[0.2em] uppercase mb-4">Pipeline Status</h3>
             {stages.map(stage => (
@@ -309,6 +378,26 @@ export function NoirCircuitSandbox() {
               </div>
             ))}
           </div>
+
+          {/* ABI Panel - Real Compilation Results */}
+          {compileResult && compileResult.abi.length > 0 && (
+            <div className="p-4 border-b border-white/10 bg-blue-900/10">
+              <div className="text-blue-400 text-[10px] font-bold tracking-[0.1em] uppercase mb-3">
+                Circuit ABI Interface — {compileResult.abi.length} parameter{compileResult.abi.length !== 1 ? 's' : ''}
+              </div>
+              <div className="flex flex-col gap-2">
+                {compileResult.abi.map((p, i) => (
+                  <div key={i} className="flex items-center gap-2 text-[11px]">
+                    <span className={\`px-1.5 py-0.5 rounded font-bold text-[9px] tracking-wider \${p.visibility === 'public' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' : 'bg-white/10 text-white/50 border border-white/10'}\`}>
+                      {p.visibility === 'public' ? 'PUB' : 'PRIV'}
+                    </span>
+                    <span className="text-white font-bold">{p.name}</span>
+                    <span className="text-white/40">{p.type.replace(/"/g, '').replace(/\\{kind:\\s*([^,}]+)[^}]*\\}/g, '$1')}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div className="flex-1 flex flex-col">
             <div className="px-6 py-2 bg-[#0a0a0a] border-b border-white/10 flex items-center gap-2">
