@@ -790,15 +790,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           const isSystemNoise = (
             typeof content === 'string' && (
               content.includes('initiatedByInboxId') ||
-              (content.startsWith('synced ') && content.includes('from cursor')) ||
-              content.startsWith('Group is inactive') ||
-              content === 'Group is inactive' ||
-              content.includes('GroupInactive') ||
-              content.includes('group_inactive') ||
-              content.includes('failed to send') && content.includes('sequence_id') ||
+              content.includes('from cursor') ||
+              content.toLowerCase().includes('group is inactive') ||
+              content.toLowerCase().includes('groupinactive') ||
+              content.toLowerCase().includes('group_inactive') ||
               content.includes('originator_id') ||
               content.includes('sequence_id') ||
-              /^synced \d+ messages?,/.test(content)
+              content.includes('synced')
             )
           );
           if (isSystemNoise) continue;
@@ -966,12 +964,14 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           })
           .filter((m: any) => {
              if (typeof m.content === 'string') {
-                 if (m.content.includes('initiatedByInboxId')) return false;
-                 if (m.content.startsWith('synced ') && m.content.includes('from cursor Some')) return false;
+                 const lc = m.content.toLowerCase();
+                 if (lc.includes('initiatedbyinboxid')) return false;
+                 if (lc.includes('from cursor')) return false;
+                 if (lc.includes('group is inactive') || lc.includes('groupinactive')) return false;
+                 if (lc.includes('synced') || lc.includes('originator_id') || lc.includes('sequence_id')) return false;
              }
              return true;
           });
-        
         // ── POLL MERGE WITH FULL DEDUPLICATION ───────────────────────────────
         // Register all newly fetched real IDs in confirmedMsgIds so the stream
         // cannot double-insert them when the echo arrives after the poll.
