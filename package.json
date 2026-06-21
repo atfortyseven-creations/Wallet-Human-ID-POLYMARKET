@@ -56,7 +56,7 @@
     "helm:install": "helm install whale-alert k8s/helm --namespace whale-alert --create-namespace",
     "helm:upgrade": "helm upgrade whale-alert k8s/helm --namespace whale-alert --reuse-values",
     "helm:uninstall": "helm uninstall whale-alert --namespace whale-alert",
-    "prepare": "husky"
+    "prepare": "husky || true"
   },
   "engines": {
     "node": ">=20.0.0"
