@@ -263,28 +263,26 @@ import { useEffect } from 'react';
 import { reconnect } from '@wagmi/core';
 
 export function Web3ModalProvider({ children, cookies }: { children: ReactNode; cookies: string | null }) {
-    let initialState;
-    try {
-        initialState = cookieToInitialState(wagmiAdapter.wagmiConfig, cookies);
-    } catch (error: any) {
-        // Safe silent fallback: cookie state parsing failed (common with URLEncoded cookies).
-        // Wagmi automatically recovers and falls back to client-side localStorage state.
-        // We log a clean, single-line stdout message to prevent scary PM2 stderr/[err] stack traces.
-        console.log('[AppKit] Wagmi cookie state fallback active (Client-side state will be used)');
-        initialState = undefined;
-    }
+    // [FIX] wagmi 2.22.1 + AppKit: DO NOT pass initialState from SSR cookies to WagmiProvider.
+    // The cookieToInitialState restores a serialized connector reference from the server,
+    // but on mobile the actual WalletConnect WebSocket hasn't re-established yet.
+    // This mismatch causes wagmi to believe a connector exists (from cookie) but
+    // the connector's underlying transport is dead → "Connector not connected".
+    // Solution: let wagmi start fresh client-side and call reconnect() once on mount.
+    // Reown official recommendation for SSR + mobile: https://docs.reown.com/appkit/next/core/installation
 
-    // [MOBILE CONNECTION HEALER v3] - REMOVED
-    // Manual `reconnect(wagmiAdapter.wagmiConfig)` calls on visibilitychange/pageshow 
-    // conflict with Reown AppKit's native hydration on wagmi 2.22.1, causing the 
-    // "Connector not connected" race condition when returning from background mobile wallets.
-    // We now rely purely on WalletConnect's built-in WebSocket ping/hydration.
     useEffect(() => {
-        // Hydration is handled internally by AppKit.
+        // Single-shot reconnect on mount: syncs AppKit internal state with wagmi connector state.
+        // This is the official Reown pattern for wagmi 2.x with SSR.
+        // It runs ONCE when the page loads, not on every focus/visibility change.
+        reconnect(wagmiAdapter.wagmiConfig as any).catch(() => {
+            // Silently ignore: reconnect fails when no previous session exists (new user).
+            // This is expected and not an error.
+        });
     }, []);
 
     return (
-        <WagmiProvider config={wagmiAdapter.wagmiConfig as any} initialState={initialState}>
+        <WagmiProvider config={wagmiAdapter.wagmiConfig as any}>
             <QueryClientProvider client={queryClient}>
                 {children}
             </QueryClientProvider>
