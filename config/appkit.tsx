@@ -219,6 +219,7 @@ try {
             networks,
             projectId,
             metadata,
+            siweConfig, // [CRITICAL MOBILE FIX] Enables 1-Click Auth to prevent double tab-discard loops
             allowUnsupportedChain: true,
             featuredWalletIds: [
                 'c57ca95b47569778a828d19178114f4d' + 'b188b89b763c899ba0be274e97267d96', // MetaMask
@@ -263,26 +264,16 @@ import { useEffect } from 'react';
 import { reconnect } from '@wagmi/core';
 
 export function Web3ModalProvider({ children, cookies }: { children: ReactNode; cookies: string | null }) {
-    // [FIX] wagmi 2.22.1 + AppKit: DO NOT pass initialState from SSR cookies to WagmiProvider.
-    // The cookieToInitialState restores a serialized connector reference from the server,
-    // but on mobile the actual WalletConnect WebSocket hasn't re-established yet.
-    // This mismatch causes wagmi to believe a connector exists (from cookie) but
-    // the connector's underlying transport is dead → "Connector not connected".
-    // Solution: let wagmi start fresh client-side and call reconnect() once on mount.
-    // Reown official recommendation for SSR + mobile: https://docs.reown.com/appkit/next/core/installation
-
-    useEffect(() => {
-        // Single-shot reconnect on mount: syncs AppKit internal state with wagmi connector state.
-        // This is the official Reown pattern for wagmi 2.x with SSR.
-        // It runs ONCE when the page loads, not on every focus/visibility change.
-        reconnect(wagmiAdapter.wagmiConfig as any).catch(() => {
-            // Silently ignore: reconnect fails when no previous session exists (new user).
-            // This is expected and not an error.
-        });
-    }, []);
+    let initialState;
+    try {
+        initialState = cookieToInitialState(wagmiAdapter.wagmiConfig, cookies);
+    } catch (error: any) {
+        console.log('[AppKit] Wagmi cookie state fallback active (Client-side state will be used)');
+        initialState = undefined;
+    }
 
     return (
-        <WagmiProvider config={wagmiAdapter.wagmiConfig as any}>
+        <WagmiProvider config={wagmiAdapter.wagmiConfig as any} initialState={initialState}>
             <QueryClientProvider client={queryClient}>
                 {children}
             </QueryClientProvider>
