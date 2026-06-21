@@ -26,8 +26,8 @@ const dedicatedBase = {
     ...base,
     rpcUrls: {
         ...base.rpcUrls,
-        default: { http: [process.env.GETBLOCK_BASE_RPC || 'https://base.llamarpc.com'] },
-        public: { http: [process.env.GETBLOCK_BASE_RPC || 'https://base.llamarpc.com'] }
+        default: { http: [process.env.GETBLOCK_BASE_RPC || 'https://base.drpc.org'] },
+        public: { http: [process.env.GETBLOCK_BASE_RPC || 'https://base.drpc.org'] }
     }
 };
 
@@ -38,8 +38,8 @@ const dedicatedMainnet = {
     ...mainnet,
     rpcUrls: {
         ...mainnet.rpcUrls,
-        default: { http: [process.env.ETH_RPC_URL || 'https://eth.llamarpc.com'] },
-        public: { http: [process.env.ETH_RPC_URL || 'https://eth.llamarpc.com'] }
+        default: { http: [process.env.ETH_RPC_URL || 'https://cloudflare-eth.com'] },
+        public: { http: [process.env.ETH_RPC_URL || 'https://cloudflare-eth.com'] }
     }
 };
 
@@ -99,8 +99,8 @@ const dedicatedPolygon = {
     ...polygon,
     rpcUrls: {
         ...polygon.rpcUrls,
-        default: { http: ['https://polygon.llamarpc.com'] },
-        public: { http: ['https://polygon.llamarpc.com'] }
+        default: { http: ['https://polygon.drpc.org'] },
+        public: { http: ['https://polygon.drpc.org'] }
     }
 };
 
@@ -108,8 +108,8 @@ const dedicatedArbitrum = {
     ...arbitrum,
     rpcUrls: {
         ...arbitrum.rpcUrls,
-        default: { http: ['https://arbitrum.llamarpc.com'] },
-        public: { http: ['https://arbitrum.llamarpc.com'] }
+        default: { http: ['https://arbitrum.drpc.org'] },
+        public: { http: ['https://arbitrum.drpc.org'] }
     }
 };
 
@@ -117,8 +117,8 @@ const dedicatedOptimism = {
     ...optimism,
     rpcUrls: {
         ...optimism.rpcUrls,
-        default: { http: ['https://optimism.llamarpc.com'] },
-        public: { http: ['https://optimism.llamarpc.com'] }
+        default: { http: ['https://optimism.drpc.org'] },
+        public: { http: ['https://optimism.drpc.org'] }
     }
 };
 
