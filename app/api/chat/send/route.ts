@@ -8,6 +8,7 @@
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/session';
+import { prisma } from '@/lib/prisma';
 
 //  Lazy Upstash client  only created when env vars are present 
 // Previously: `new Redis({url: process.env.UPSTASH_REDIS_REST_URL!, token: ...})`
@@ -82,6 +83,15 @@ export async function POST(req: NextRequest) {
     msgs.push({ ...message, _score: Date.now() });
     if (msgs.length > 100) msgs.shift();
 
+    // Persist to Prisma DB for offline routing
+    try {
+      await prisma.pendingChatMessage.create({
+        data: { sender: message.sender, recipient: channelId, content: message.content }
+      });
+    } catch (dbErr) {
+      console.warn('[Whale Chat] Prisma DB write failed:', dbErr);
+    }
+
     return NextResponse.json({ ok: true, message });
   } catch (err) {
     console.error('[Whale Chat] Send error:', err);
@@ -95,6 +105,11 @@ export async function POST(req: NextRequest) {
  */
 export async function GET(req: NextRequest) {
   try {
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const channelId = req.nextUrl.searchParams.get('channelId');
     if (!channelId) return NextResponse.json({ messages: [] });
 

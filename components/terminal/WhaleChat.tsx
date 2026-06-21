@@ -2,6 +2,7 @@
 import { MoreVertical, MapPin, Copy, Trash2, UserPlus, Download, Slash } from 'lucide-react';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
 
 import { useSignMessage, useReconnect } from 'wagmi';
@@ -91,6 +92,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   //  Audio recording state 
   const [isRecording, setIsRecording] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
+  const [keyboardOffset, setKeyboardOffset] = useState(0);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const recordingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -210,16 +212,26 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       if (messagesEndRef.current) {
         messagesEndRef.current.scrollIntoView({ behavior: 'auto' });
       }
+      
+      // Calculate keyboard offset for iOS
+      if (window.visualViewport) {
+        const offset = window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop;
+        setKeyboardOffset(Math.max(0, offset));
+      }
     };
     window.addEventListener('resize', handleResize);
+    window.addEventListener('scroll', handleResize);
     // Also track visualViewport if available for more precision
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', handleResize);
+      window.visualViewport.addEventListener('scroll', handleResize);
     }
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('scroll', handleResize);
       if (window.visualViewport) {
         window.visualViewport.removeEventListener('resize', handleResize);
+        window.visualViewport.removeEventListener('scroll', handleResize);
       }
     };
   }, [isMobile]);
@@ -1194,11 +1206,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // Displayed while the XMTP client initialises automatically post-connection.
   // On returning sessions, encryption keys are retrieved from IndexedDB instantly.
   // On first-time sessions, a single gasless wallet signature derives the keys.
-  if (!client) {
+    if (!client) {
     return (
-      <div className="flex flex-col h-full min-h-[500px] bg-white  rounded-2xl border border-black/5  shadow-sm overflow-y-auto">
+      <div className="flex flex-col h-full min-h-[500px] bg-white rounded-2xl border border-gray-100 shadow-sm overflow-y-auto">
         {/* Minimalist Protocol Header */}
-        <div className="flex items-center justify-between px-8 py-6 border-b border-black/5  bg-[#FFFFFF]  shrink-0">
+        <div className="flex items-center justify-between px-8 py-6 border-b border-gray-50 bg-white shrink-0">
           <div className="flex items-center gap-3">
           </div>
           <div className="w-4" />
@@ -1206,52 +1218,34 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
         {/* Hero Institutional Section */}
         <div className="flex-1 px-8 py-16 flex flex-col items-center justify-center text-center gap-10">
-          <div className="relative w-64 h-64 md:w-80 md:h-80 flex items-center justify-center">
+          <div className="relative w-48 h-48 md:w-56 md:h-56 flex items-center justify-center">
             {isInitializing ? (
-              <div className="w-16 h-16 rounded-full border-2 border-black/5  border-t-black  animate-spin" />
+              <div className="w-12 h-12 rounded-full border-2 border-blue-100 border-t-blue-500 animate-spin" />
             ) : (
-              <div className="w-48 h-48 rounded-full border border-black/5  flex flex-col items-center justify-center bg-white  shadow-sm gap-4">
-                <img src="/official-whale-monochrome.png" alt="Whale" className="w-16 h-16 opacity-80" style={{ filter: 'invert(var(--dark-invert, 0))' }} />
-                <div className="text-[10px] font-black tracking-[0.2em] uppercase text-black/20 ">Protocol Initialized</div>
+              <div className="w-32 h-32 rounded-full border border-gray-100 flex flex-col items-center justify-center bg-gray-50 shadow-sm gap-3">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <div className="text-[11px] font-medium tracking-wide text-gray-500">Ready</div>
               </div>
             )}
           </div>
 
           <div className="space-y-4 max-w-2xl">
-            <h2 className="text-[#050505]  text-[24px] sm:text-[32px] md:text-[44px] font-black uppercase tracking-tighter leading-tight">
-                Whale Chat <br /> <span className="text-black/30 ">Secure Terminal.</span>
+            <h2 className="text-gray-900 text-[28px] sm:text-[36px] md:text-[44px] font-semibold leading-tight">
+                Web3 Messages <br /> <span className="text-gray-400">Secure & Private.</span>
             </h2>
-            <div className="w-12 h-px bg-black/10  mx-auto my-6" />
+            <div className="w-12 h-px bg-gray-200 mx-auto my-6" />
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left max-w-xl mx-auto mb-10">
-              <div className="space-y-2">
-                <span className="text-[10px] font-black text-black/20  uppercase tracking-widest">01</span>
-                <p className="text-[11px] font-black uppercase text-black/60 ">Connect Wallet</p>
-                <p className="text-[10px] text-black/30  font-serif">Authorize browser session via AppKit.</p>
-              </div>
-              <div className="space-y-2">
-                <span className="text-[10px] font-black text-black/20  uppercase tracking-widest">02</span>
-                <p className={`text-[11px] font-black uppercase ${isZkVerified ? 'text-[#00C076]' : 'text-black/60 '}`}>Whale Identity</p>
-                <p className="text-[10px] text-black/30  font-serif">System identity verified via cryptographic handshake.</p>
-              </div>
-              <div className="space-y-2">
-                <span className="text-[10px] font-black text-black/20  uppercase tracking-widest">03</span>
-                <p className="text-[11px] font-black uppercase text-black/60 ">Connection Secured</p>
-                <p className="text-[10px] text-black/30  font-serif">Persistent encryption across all devices.</p>
-              </div>
-            </div>
-
-            <p className="text-[#050505]/40  text-[13px] md:text-[15px] font-serif leading-relaxed px-6 max-w-sm mx-auto text-center">
-              Mathematical identity. System communication.
+            <p className="text-gray-500 text-[15px] leading-relaxed px-6 max-w-sm mx-auto text-center">
+              Connect your wallet to start messaging. All conversations are end-to-end encrypted natively.
             </p>
           </div>
         </div>
 
         {/* Action Area */}
-        <div className="bg-[#FFFFFF]  p-8 md:p-12 border-t border-black/5  flex flex-col items-center">
+        <div className="bg-white p-8 md:p-12 border-t border-gray-50 flex flex-col items-center">
           {initError ? (
             <div className="flex flex-col items-center gap-6 w-full max-w-md">
-              <div className="w-full bg-red-50  text-red-700  text-[12px] font-mono p-5 rounded-xl border border-red-100  text-center leading-relaxed">
+              <div className="w-full bg-red-50 text-red-600 text-[13px] p-4 rounded-2xl border border-red-100 text-center">
                 {initError}
               </div>
               
@@ -1260,13 +1254,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 <div className="flex flex-col gap-3 w-full">
                   <button
                     onClick={() => openAppKit()}
-                    className="w-full py-5 rounded-xl bg-[#050505]  text-white  text-[12px] font-black uppercase tracking-widest hover:bg-black/80  transition-all flex items-center justify-center gap-3 active:scale-[0.97]"
+                    className="w-full py-4 rounded-2xl bg-blue-500 text-white text-[14px] font-medium hover:bg-blue-600 transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
                   >
                     Reconnect Wallet
                   </button>
                   <button
                     onClick={() => { reconnect(); initClient(); }}
-                    className="w-full py-4 rounded-xl bg-white  border border-black/10  text-black/60  text-[10px] font-black uppercase tracking-widest hover:bg-black/[0.02]  transition-all"
+                    className="w-full py-3.5 rounded-2xl bg-white border border-gray-200 text-gray-600 text-[13px] font-medium hover:bg-gray-50 transition-all"
                   >
                     Refresh Session
                   </button>
@@ -1275,22 +1269,22 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 <button
                   onClick={initClient}
                   disabled={isInitializing}
-                  className="w-full py-5 rounded-xl bg-[#050505] text-white text-[12px] font-black uppercase tracking-widest hover:bg-black/80 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                  className="w-full py-4 rounded-2xl bg-blue-500 text-white text-[14px] font-medium hover:bg-blue-600 transition-all flex items-center justify-center gap-3 disabled:opacity-50 active:scale-[0.98]"
                 >
                   {isInitializing ? (
-                    <>Establish Tunnel...</>
+                    <>Connecting...</>
                   ) : (
-                    <>Retry Initialization</>
+                    <>Try Again</>
                   )}
                 </button>
               )}
             </div>
           ) : isInitializing ? (
             <div className="flex flex-col items-center gap-5">
-              <p className="text-[12px] text-black/40  font-mono uppercase tracking-[0.2em] font-black">Establishing Secure Tunnel...</p>
+              <p className="text-[14px] text-gray-500 font-medium">Connecting to Network...</p>
               {isMobile && (
-                <p className="text-[10px] text-black  font-black uppercase max-w-[260px] leading-relaxed mx-auto text-center">
-                  Action Required: Confirm identity in wallet.
+                <p className="text-[13px] text-blue-600 font-medium max-w-[260px] mx-auto text-center bg-blue-50 py-2 px-4 rounded-xl">
+                  Please confirm the signature in your wallet.
                 </p>
               )}
             </div>
@@ -1315,25 +1309,30 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
   return (
     // Transparent container  wallpaper shows through via parent backdrop
-    <div className="relative flex w-full h-full overflow-hidden" style={{ borderRadius: isMobile ? 0 : '1rem', border: isMobile ? 'none' : '1px solid rgba(0,0,0,0.08)' }}>
+    <div className={`relative flex w-full h-full overflow-hidden shadow-2xl ${(showScanner || showMyQR || showProfile) ? 'overflow-visible' : ''}`} style={{ 
+      borderRadius: isMobile ? 0 : '1rem', 
+      background: isMobile ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.70)',
+      backdropFilter: isMobile ? 'none' : 'blur(24px)',
+      WebkitBackdropFilter: isMobile ? 'none' : 'blur(24px)'
+    }}>
       {/*  Sidebar: Conversation List  */}
-      <div className={`${showList ? 'flex' : 'hidden md:flex'} w-full md:w-72 flex-col border-r border-black/5  bg-white/50  backdrop-blur-[40px]`}>
-        <div className="p-4 border-b border-black/6 ">
+      <div className={`${showList ? 'flex' : 'hidden md:flex'} w-full md:w-80 flex-col border-r border-white/40 bg-white/40 backdrop-blur-md`}>
+        <div className="p-4 border-b border-white/30">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setShowScanner(true)}
-                className="p-2.5 rounded-xl bg-black  text-white  hover:bg-black/80  transition-all text-[10px] font-black uppercase tracking-widest"
-                title="Scan Identity QR"
+                className="p-2.5 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all text-[12px] font-medium"
+                title="Scan QR"
               >
-                SCAN
+                Scan QR
               </button>
               <button
                 onClick={() => setShowMyQR(true)}
-                className="p-2.5 rounded-xl bg-black/[0.03]  text-black/40  hover:bg-black/5  transition-all text-[10px] font-black uppercase"
+                className="p-2.5 rounded-xl bg-gray-50 text-gray-500 hover:bg-gray-100 transition-all text-[12px] font-medium"
                 title="Show My QR"
               >
-                QR
+                My QR
               </button>
             </div>
           </div>
@@ -1345,12 +1344,12 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               value={peerInput}
               onChange={e => setPeerInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleStartConversation()}
-              className="flex-1 bg-white  border border-black/10  rounded-lg px-3 py-2 text-[11px] font-mono focus:outline-none focus:border-[#9945FF]/40  placeholder:text-black/25  text-[#050505] "
+              className="flex-1 bg-gray-50 border-none rounded-xl px-3 py-2.5 text-[13px] focus:outline-none focus:ring-1 focus:ring-gray-200 placeholder:text-gray-400 text-gray-900"
             />
             <button
               onClick={handleStartConversation}
               disabled={sending}
-              className="w-9 h-9 bg-[#050505]  rounded-lg flex items-center justify-center text-white  hover:bg-black/80  transition-colors active:scale-95 disabled:opacity-50 text-[18px] font-light"
+              className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center text-white hover:bg-blue-600 transition-colors active:scale-95 disabled:opacity-50 text-[18px]"
             >
               +
             </button>
@@ -1369,8 +1368,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 <button
                   key={i}
                   onClick={() => { setActivePeer(conv.peerAddress); setShowList(false); }}
-                  className={`w-full text-left p-3.5 border-b border-black/4  transition-all ${
-                    isActive ? 'bg-black/[0.03]  border-l-2 border-l-black ' : 'hover:bg-black/[0.02] '
+                  className={`w-full text-left p-3.5 border-b border-white/20 transition-all ${
+                    isActive ? 'bg-white/60 shadow-sm' : 'hover:bg-white/40'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-3 w-full">
@@ -1406,7 +1405,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       <div className={`${!showList ? 'flex' : 'hidden md:flex'} flex-1 flex-col min-w-0`}>
         {activePeer ? (
           <>
-            <div className="h-12 px-4 border-b border-black/5  flex items-center justify-between bg-white/50  backdrop-blur-[40px] shrink-0">
+            <div className="h-16 px-4 border-b border-white/40 flex items-center justify-between bg-white/40 backdrop-blur-md shrink-0 z-10 shadow-sm">
               <div className="flex items-center gap-3">
                 <button onClick={() => setShowList(true)} className="md:hidden p-1.5 rounded-lg hover:bg-black/5  text-black/50  text-[10px] font-black">
                   BACK
@@ -1417,14 +1416,14 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                     <span className="text-[11px] font-bold text-[#050505]  font-mono flex items-center gap-1.5">
                       {shortAddr(activePeer!)}
                     </span>
-                    <span className="text-[8px] font-black text-black/20  uppercase tracking-widest">End-to-End Encrypted</span>
+                    <span className="text-[11px] text-gray-400 font-medium">Encrypted</span>
                   </div>
                 </button>
               </div>
               <div className="flex items-center gap-2">
                 <button 
                   onClick={() => setShowScanner(true)}
-                  className="lg:hidden px-3 py-2 bg-black  text-white  rounded-lg text-[9px] font-black uppercase tracking-widest"
+                  className="lg:hidden px-3 py-2 bg-blue-50 text-blue-600 rounded-lg text-[12px] font-medium"
                 >
                   SCAN
                 </button>
@@ -1446,7 +1445,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   <div className="flex-1 flex flex-col items-center justify-center">
                     <div className="flex flex-col items-center max-w-[280px] text-center gap-6">
                       <div className="flex flex-col items-center opacity-40">
-                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#050505] ">Tunnel Established</p>
+                        <p className="text-[12px] font-medium text-gray-400">No messages yet. Start the conversation!</p>
                       </div>
                     </div>
                   </div>
@@ -1503,10 +1502,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                           />
                         </div>
                       ) : isLocation && locationCoords ? (
-                        <div className={`px-4 py-3 rounded-2xl flex flex-col gap-2 relative z-20 ${
+                        <div className={`px-4 py-3 rounded-2xl flex flex-col gap-2 relative z-20 shadow-sm ${
                           isMe
-                            ? 'bg-[#050505]  text-white  rounded-br-sm'
-                            : 'bg-white  text-[#050505]  rounded-bl-sm border border-black/8  shadow-sm'
+                            ? 'bg-blue-500 text-white rounded-br-sm'
+                            : 'bg-gray-100 text-gray-900 rounded-bl-sm'
                         }`}>
                           <div className="flex items-center gap-2">
                              <MapPin size={14} className={isMe ? 'text-white/70 ' : 'text-blue-500'} />
@@ -1517,7 +1516,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                           </a>
                         </div>
                       ) : attachment ? (
-                        <div className={`mt-1 overflow-hidden rounded-xl border ${isMe ? 'border-black/10  shadow-sm bg-black/5 ' : 'border-black/10  shadow-sm bg-white '}`}>
+                        <div className={`mt-1 overflow-hidden rounded-xl border shadow-sm ${isMe ? 'border-transparent bg-blue-500' : 'border-transparent bg-gray-100'}`}>
                           {attachment.mime.startsWith('image/') || ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(attachment.name.split('.').pop()?.toLowerCase() || '') ? (
                             <a href={attachment.url} target="_blank" rel="noopener noreferrer">
                               <img src={attachment.url} alt={attachment.name} className="max-w-[240px] max-h-[300px] object-cover" />
@@ -1525,16 +1524,16 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                           ) : attachment.mime.startsWith('video/') || ['mp4', 'webm', 'mov'].includes(attachment.name.split('.').pop()?.toLowerCase() || '') ? (
                             <video src={attachment.url} controls className="max-w-[260px] max-h-[300px] object-contain bg-black" />
                           ) : (
-                            <a href={attachment.url} download={attachment.name} target="_blank" rel="noopener noreferrer" className={`flex items-center gap-2 px-4 py-3 ${isMe ? 'text-[#050505] ' : 'text-[#050505] '}`}>
+                            <a href={attachment.url} download={attachment.name} target="_blank" rel="noopener noreferrer" className={`flex items-center gap-2 px-4 py-3 ${isMe ? 'text-white' : 'text-gray-900'}`}>
                                <span className="font-mono text-[11px] underline break-all line-clamp-2">{attachment.name}</span>
                             </a>
                           )}
                         </div>
                       ) : (
-                        <div className={`px-4 py-2.5 rounded-2xl text-[13px] leading-relaxed break-words ${
+                        <div className={`px-4 py-2.5 rounded-2xl text-[14px] leading-relaxed break-words shadow-md animate-in fade-in slide-in-from-bottom-2 duration-300 ${
                           isMe
-                            ? 'bg-[#050505]  text-white  rounded-br-sm'
-                            : 'bg-white  text-[#050505]  rounded-bl-sm border border-black/8  shadow-sm'
+                            ? 'bg-blue-500/90 backdrop-blur-md text-white rounded-br-sm border border-blue-400/50'
+                            : 'bg-white/80 backdrop-blur-md text-gray-900 rounded-bl-sm border border-white/60'
                         }`}>
                           {content}
                         </div>
@@ -1548,9 +1547,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 });
               })()}
               {peerStatus.isTyping && (
-                  <div className="flex self-start items-start mt-2">
-                      <div className="w-12 h-12 opacity-80">
-                        <RemoteLottie path="/system-shots/LOTTIECHAT/16b39f54-cb36-11ee-b44b-afd859f781c2.json" />
+                  <div className="flex self-start items-start mt-2 ml-4">
+                      <div className="px-4 py-3 bg-white/70 backdrop-blur-md rounded-2xl rounded-bl-sm border border-white shadow-sm flex items-center gap-1.5 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                        <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                        <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                       </div>
                   </div>
               )}
@@ -1566,61 +1567,27 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             </div>
 
             <div
-              className="shrink-0 bg-white/60  backdrop-blur-[60px] border-t border-black/5  pb-2"
+              className="shrink-0 bg-white/50 backdrop-blur-xl border-t border-white/40 z-10 shadow-[0_-4px_24px_rgba(0,0,0,0.02)]"
+              style={{ paddingBottom: `max(8px, env(safe-area-inset-bottom, 0px), ${keyboardOffset}px)` }}
             >
               {/*  Audio recording indicator  */}
               {isRecording && (
                 <div className="flex items-center gap-2 px-4 pt-3 pb-1">
-                    <div className="flex items-center gap-1.5 bg-[#FFFFFF]  border border-black/5  px-2 py-1 rounded-md">
-                        <span className="text-[10px] font-mono text-black  uppercase font-black">REC</span>
-                        <span className="text-[9px] font-mono text-black/40 ">{recordingSeconds}s</span>
+                    <div className="flex items-center gap-1.5 bg-red-50 text-red-500 px-3 py-1.5 rounded-full">
+                        <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                        <span className="text-[12px] font-medium">{recordingSeconds}s</span>
                     </div>
                 </div>
               )}
-              <form onSubmit={handleSend} className="flex gap-2 p-3">
-                <button
-                  type="button"
-                  onPointerDown={startRecording}
-                  onPointerUp={stopRecording}
-                  onPointerLeave={stopRecording}
-                  className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all active:scale-95 shrink-0 ${
-                    isRecording
-                      ? 'bg-black  text-white  shadow-xl'
-                      : 'bg-black/[0.05]  text-black/50  hover:bg-black/10 '
-                  }`}
-                  style={{ touchAction: 'none' }}
-                  title={isRecording ? 'Release to send audio' : 'Hold to record voice'}
-                >
-                  <span className="text-[9px] font-black uppercase tracking-widest">{isRecording ? 'OFF' : 'REC'}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={async () => {
-                    if (navigator.geolocation) {
-                      navigator.geolocation.getCurrentPosition(async (pos) => {
-                        const loc = `[LOCATION]${pos.coords.latitude},${pos.coords.longitude}`;
-                        await executeSend(loc);
-                      });
-                    }
-                  }}
-                  disabled={sending}
-                  className="w-11 h-11 rounded-xl flex items-center justify-center transition-all active:scale-95 shrink-0 bg-black/[0.05]  text-black/50  hover:bg-black/10 "
-                  title="Share Location"
-                >
-                  <MapPin size={16} />
-                </button>
-
-                <input type="file" ref={fileRef} onChange={handleFileChange} className="hidden" accept="image/*,video/*,.pdf,.doc,.docx,.txt" />
-                
+              <form onSubmit={handleSend} className="flex gap-2 p-3 items-center">
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
                   disabled={isUploading || sending}
-                  className="w-11 h-11 rounded-xl flex items-center justify-center transition-all active:scale-95 shrink-0 bg-black/[0.05]  text-black/50  hover:bg-black/10 "
+                  className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:bg-gray-100 text-gray-500 shrink-0"
                   title="Attach File"
                 >
-                  {isUploading ? <span className="font-mono text-[10px] animate-spin inline-block">[...]</span> : <span className="font-mono text-[10px] font-black">[+]</span>}
+                  {isUploading ? <span className="text-[12px] animate-spin">⌛</span> : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>}
                 </button>
 
                 <input
@@ -1630,99 +1597,77 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   value={inputText}
                   onChange={e => setInputText(e.target.value)}
                   disabled={isUploading}
-                  placeholder={isUploading ? "Uploading..." : "Encrypted transmission..."}
-                  className="flex-1 bg-black/[0.03]  border border-black/8  rounded-xl px-4 py-3 text-[#050505]  focus:outline-none focus:border-black/20  placeholder:text-black/30  disabled:opacity-50"
-                  style={{ WebkitAppearance: 'none', fontSize: '16px', lineHeight: '1.4' }}
+                  placeholder={isUploading ? "Uploading..." : "Type a message..."}
+                  className="flex-1 bg-gray-50 border-none rounded-2xl px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-200 placeholder:text-gray-400 disabled:opacity-50 text-[15px]"
                 />
-                <button
-                  type="submit"
-                  disabled={(!inputText.trim() && !isRecording) || sending || isUploading}
-                  className="w-11 h-11 rounded-xl bg-[#050505]  flex items-center justify-center text-white  disabled:opacity-30 hover:bg-black/80  transition-all active:scale-95 shrink-0 text-[10px] font-black uppercase"
-                >
-                  SEND
-                </button>
+                
+                {inputText.trim() ? (
+                  <button
+                    type="submit"
+                    disabled={sending || isUploading}
+                    className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white disabled:opacity-30 hover:bg-blue-600 transition-all shrink-0"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="ml-0.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onPointerDown={startRecording}
+                    onPointerUp={stopRecording}
+                    onPointerLeave={stopRecording}
+                    onContextMenu={(e) => e.preventDefault()}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shrink-0 ${
+                      isRecording ? 'bg-red-500 text-white shadow-md scale-110' : 'hover:bg-gray-100 text-gray-500'
+                    }`}
+                    style={{ touchAction: 'none', WebkitUserSelect: 'none', userSelect: 'none' }}
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                  </button>
+                )}
               </form>
             </div>
           </>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center bg-white relative overflow-hidden p-6 md:p-12 border-l border-black/5">
-            <div className="w-full max-w-3xl flex flex-col">
+          <div className="flex-1 flex flex-col items-center justify-center bg-white/30 backdrop-blur-lg relative overflow-hidden p-6 md:p-12 border-l border-white/40">
+            {/* Ambient glows */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-400/10 rounded-full blur-[100px] pointer-events-none" />
+            <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-teal-400/10 rounded-full blur-[80px] pointer-events-none" />
+
+            <div className="w-full max-w-lg flex flex-col items-center text-center relative z-10 animate-in fade-in zoom-in-95 duration-700">
               
-              {/* Header / Badges */}
-              <div className="flex items-center gap-3 mb-10 md:mb-16">
-                <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-black/10 bg-black/[0.02] shadow-sm">
-                  <div className="w-2 h-2 rounded-full bg-[#050505] animate-pulse" />
-                  <span className="text-[9px] font-black uppercase tracking-[0.2em] text-black/60">
-                    E2E Encrypted Session
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-black/5 bg-white shadow-sm">
-                  <span className="text-[9px] font-mono uppercase tracking-[0.1em] text-black/40">
-                    Port: 443 (Secure)
-                  </span>
-                </div>
+              {/* Whale Logo */}
+              <div className="w-40 h-40 mb-8 rounded-full bg-white/50 backdrop-blur-xl shadow-2xl border border-white flex items-center justify-center relative">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/40 to-transparent pointer-events-none" />
+                <img src="/official-whale-monochrome.png" alt="Whale Network" className="w-24 h-24 object-contain opacity-90 drop-shadow-md" style={{ filter: 'invert(var(--dark-invert, 0))' }} />
               </div>
 
               {/* Main Typography */}
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-black uppercase tracking-tighter text-black leading-[1.05] mb-8">
-                Decentralized <br />
-                <span className="text-black/25">Communication.</span>
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 mb-4 bg-clip-text text-transparent bg-gradient-to-b from-gray-900 to-gray-600">
+                WHALE CHAT
+              </h1>
+              <h2 className="text-sm md:text-base font-semibold tracking-[0.2em] uppercase text-blue-500 mb-8">
+                The Native Web3 Social Network
               </h2>
 
-              <p className="font-sans text-[14px] md:text-[15px] text-black/60 leading-relaxed max-w-xl mb-14">
-                You are securely connected to the Whale Chat protocol. All messages, documents, and voice transmissions are encrypted end-to-end locally on your device. We utilize zero-knowledge architecture to ensure absolute privacy—no third party can intercept or read your communications.
-              </p>
-
-              {/* Technical Specifications Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full border-t border-black/10 pt-10">
-                
-                {/* Protocol */}
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-center justify-between border-b border-black/5 pb-2.5">
-                    <span className="text-[10px] font-black uppercase tracking-[0.15em] text-black/40">Encryption Standard</span>
-                    <span className="text-[11px] font-mono font-bold text-black">AES-256-GCM / X3DH</span>
-                  </div>
-                  <div className="flex items-center justify-between border-b border-black/5 pb-2.5">
-                    <span className="text-[10px] font-black uppercase tracking-[0.15em] text-black/40">Network Protocol</span>
-                    <span className="text-[11px] font-mono font-bold text-black">XMTP Layer-2</span>
-                  </div>
-                  <div className="flex items-center justify-between border-b border-black/5 pb-2.5">
-                    <span className="text-[10px] font-black uppercase tracking-[0.15em] text-black/40">Identity Verification</span>
-                    <span className="text-[11px] font-mono font-bold text-black">Cryptographic Signatures</span>
-                  </div>
+              {/* Marketing Banner */}
+              <div className="w-full bg-white/60 backdrop-blur-md border border-white/60 rounded-3xl p-6 shadow-xl mb-12 transform hover:scale-[1.02] transition-transform duration-500">
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-gray-500">Global Release</span>
                 </div>
-
-                {/* Features */}
-                <div className="flex flex-col justify-center pl-0 md:pl-8 space-y-5">
-                  <div className="flex items-start gap-3">
-                    <div className="mt-0.5 w-4 h-4 shrink-0 rounded-[3px] border border-black/20 flex items-center justify-center">
-                      <div className="w-1.5 h-1.5 bg-black rounded-[1px]" />
-                    </div>
-                    <div>
-                      <p className="text-[11px] font-black uppercase tracking-wide text-black">Peer-to-Peer Routing</p>
-                      <p className="text-[12px] font-sans text-black/50 mt-1 leading-snug">Direct connections established without centralized relay servers.</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="mt-0.5 w-4 h-4 shrink-0 rounded-[3px] border border-black/20 flex items-center justify-center">
-                      <div className="w-1.5 h-1.5 bg-black rounded-[1px]" />
-                    </div>
-                    <div>
-                      <p className="text-[11px] font-black uppercase tracking-wide text-black">Forward Secrecy</p>
-                      <p className="text-[12px] font-sans text-black/50 mt-1 leading-snug">Cryptographic keys are rotated continuously to protect past sessions.</p>
-                    </div>
-                  </div>
+                <p className="text-2xl font-black text-gray-800 tracking-tight mb-2">01 / 01 / 2027</p>
+                <div className="flex items-center justify-center gap-4 text-gray-400 mt-4">
+                   <span className="text-[12px] font-medium border border-gray-200/50 bg-white/50 px-3 py-1 rounded-full">App Store</span>
+                   <span className="text-[12px] font-medium border border-gray-200/50 bg-white/50 px-3 py-1 rounded-full">Google Play</span>
                 </div>
-
               </div>
 
               {/* Action Call */}
-              <div className="mt-16 pt-8 flex items-center gap-6">
-                <div className="flex-1 h-px bg-black/10" />
-                <span className="text-[9px] font-mono uppercase tracking-widest text-black/35 select-none">
-                  Select a peer from the sidebar to initialize secure tunnel
+              <div className="w-full px-8 py-5 bg-white/40 backdrop-blur-sm rounded-2xl border border-white/50 shadow-sm">
+                <span className="text-[14px] font-medium text-gray-600 flex items-center justify-center gap-2">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                  Select a wallet to initialize an encrypted tunnel
                 </span>
-                <div className="flex-1 h-px bg-black/10" />
               </div>
 
             </div>
@@ -1764,18 +1709,21 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                    mode="project" 
                    projectValue={address} 
                    projectTitle={chatName || "KYC Identity"} 
-                   projectDescription={chatBio || "Present this code to a peer. Once scanned, a zero-knowledge encrypted tunnel will be initialized between your identities."} 
+                   projectDescription={chatBio || "Present this code to a peer. Once scanned, you can start messaging securely."} 
                />
            </div>
         </div>
       )}
 
        {/* Context Menu Overlay */}
-       {contextMenu && (
+       {contextMenu && typeof document !== 'undefined' && createPortal(
          <div className="fixed inset-0 z-[200]" onClick={() => setContextMenu(null)}>
            <div 
              className="absolute bg-white  border border-black/10  rounded-2xl shadow-xl p-2 min-w-[160px] flex flex-col"
-             style={{ top: Math.min(contextMenu.y, window.innerHeight - 150), left: Math.min(contextMenu.x, window.innerWidth - 180) }}
+             style={{ 
+               top: Math.min(contextMenu.y / (typeof window !== 'undefined' ? parseFloat(getComputedStyle(document.documentElement).zoom || '1') : 1), window.innerHeight - 150), 
+               left: Math.min(contextMenu.x / (typeof window !== 'undefined' ? parseFloat(getComputedStyle(document.documentElement).zoom || '1') : 1), window.innerWidth - 180) 
+             }}
              onClick={e => e.stopPropagation()}
            >
              <button onClick={() => {
@@ -1791,7 +1739,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 <Trash2 size={14} /> Delete
              </button>
            </div>
-         </div>
+         </div>,
+         document.body
        )}
 
        {/* Profile Popover Overlay */}
@@ -1808,8 +1757,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                    <Avatar address={activePeer} />
                    <div className="text-center">
                      <p className="text-[13px] font-mono font-bold text-[#050505] ">{activePeer}</p>
-                     <p className="text-[10px] text-[#00C076] font-black uppercase tracking-widest mt-1">End-to-End Encrypted Tunnel</p>
-                   </div>
+                     <p className="text-[12px] text-blue-500 font-medium mt-1">End-to-End Encrypted</p>
+                  </div>
                </div>
                <div className="flex flex-col gap-2">
                    <button onClick={() => { syncToAddressBook(activePeer); setShowProfile(false); }} className="w-full flex items-center gap-3 px-4 py-3.5 bg-black/5  hover:bg-black/10  rounded-xl transition-colors text-[11px] font-mono font-bold text-[#050505] ">

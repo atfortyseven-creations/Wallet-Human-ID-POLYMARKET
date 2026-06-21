@@ -37,10 +37,16 @@ if (!global.__whaleChatMemStore) {
 }
 const memoryStore = global.__whaleChatMemStore;
 
+import { getSession } from '@/lib/session';
+
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ channelId: string }> }
 ) {
+  const session = await getSession();
+  if (!session?.userId) {
+    return new Response('Unauthorized', { status: 401 });
+  }
   const { channelId } = await params;
 
   const encoder = new TextEncoder();

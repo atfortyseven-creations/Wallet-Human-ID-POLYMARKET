@@ -330,6 +330,7 @@ model PendingChatMessage {
   timestamp DateTime @default(now())
 
   @@index([recipient])
+  @@index([sender])
 }
 
 model ExchangePosition {

@@ -3,8 +3,15 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 
+import { getSession } from '@/lib/session';
+
 export async function POST(req: Request) {
   try {
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const formData = await req.formData();
     const file = formData.get('file') as File | null;
     

@@ -322,30 +322,53 @@ export async function sendMessage(
     identifierKind: 'Ethereum',
   };
 
-  try {
-    // Always try direct XMTP send first (newDmWithIdentifier handles
-    // both "already exists" and "create new" cases atomically)
-    const dm = await client.conversations.newDmWithIdentifier(identifier);
-    await dm.send(content);
-    // Sync after send to confirm delivery is committed to the network
-    try { await dm.sync(); } catch {}
-    return;
-  } catch (sendErr: any) {
-    const errMsg = (sendErr?.message || '').toLowerCase();
+  let lastErr: any;
+  let shouldQueueOffline = false;
 
-    // If the error is "recipient not on XMTP", fall through to offline queue
-    if (
-      errMsg.includes('not on xmtp') ||
-      errMsg.includes('no inbox') ||
-      errMsg.includes('identity not found') ||
-      errMsg.includes('recipient') ||
-      errMsg.includes('not found')
-    ) {
-      console.warn('[XMTP] Recipient not on XMTP, queuing offline:', toAddress);
-    } else {
-      // For any other error (network, timeout), re-throw to caller
-      throw sendErr;
+  for (let i = 0; i < 3; i++) {
+    try {
+      // Always try direct XMTP send first (newDmWithIdentifier handles
+      // both "already exists" and "create new" cases atomically)
+      const dm = await client.conversations.newDmWithIdentifier(identifier);
+      await dm.send(content);
+      // Sync after send to confirm delivery is committed to the network
+      try { await dm.sync(); } catch {}
+      return;
+    } catch (sendErr: any) {
+      const errMsg = (sendErr?.message || '').toLowerCase();
+
+      if (errMsg.includes('group is inactive') || errMsg.includes('inactive')) {
+        console.warn('[XMTP] Group is inactive, attempting to recreate DM...');
+        try {
+          await client.conversations.sync();
+          const dm = await client.conversations.newDmWithIdentifier(identifier);
+          await dm.send(content);
+          return;
+        } catch (recreateErr) {
+          lastErr = recreateErr;
+        }
+      } else if (
+        errMsg.includes('not on xmtp') ||
+        errMsg.includes('no inbox') ||
+        errMsg.includes('identity not found') ||
+        errMsg.includes('recipient') ||
+        errMsg.includes('not found')
+      ) {
+        console.warn('[XMTP] Recipient not on XMTP, queuing offline:', toAddress);
+        shouldQueueOffline = true;
+        break; // Stop retries, fall through to queue
+      } else {
+        lastErr = sendErr;
+      }
+
+      if (!shouldQueueOffline && i < 2) {
+        await new Promise(r => setTimeout(r, 1000 * Math.pow(2, i))); // exponential backoff
+      }
     }
+  }
+
+  if (lastErr && !shouldQueueOffline) {
+    throw lastErr;
   }
 
   // Fallback: queue offline if recipient is not yet on XMTP
@@ -531,8 +554,9 @@ export async function* streamMessages(client: Client, signal?: AbortSignal) {
 
   const stream = await client.conversations.streamAllMessages();
 
+  let onAbort: (() => void) | undefined;
   if (signal) {
-    const onAbort = () => {
+    onAbort = () => {
       try {
         if (typeof (stream as any).return === 'function') {
           (stream as any).return();
@@ -548,6 +572,9 @@ export async function* streamMessages(client: Client, signal?: AbortSignal) {
       yield message;
     }
   } finally {
+    if (signal && onAbort) {
+      signal.removeEventListener('abort', onAbort);
+    }
     try {
       if (typeof (stream as any).return === 'function') {
         (stream as any).return();

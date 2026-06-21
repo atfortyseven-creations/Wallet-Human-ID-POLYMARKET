@@ -58,16 +58,16 @@ export async function POST(req: NextRequest) {
 
     const owner = address.toLowerCase();
 
-    const promises = peers.map(async (peerAddr: string) => {
-      const peer = peerAddr.toLowerCase();
-      return prisma.chatContact.upsert({
-        where: { owner_peer: { owner, peer } },
-        update: { updatedAt: new Date() },
-        create: { owner, peer }
-      });
-    });
-
-    await Promise.all(promises);
+    await prisma.$transaction(
+      peers.map((peerAddr: string) => {
+        const peer = peerAddr.toLowerCase();
+        return prisma.chatContact.upsert({
+          where: { owner_peer: { owner, peer } },
+          update: { updatedAt: new Date() },
+          create: { owner, peer }
+        });
+      })
+    );
 
     return NextResponse.json({ success: true });
   } catch (error) {

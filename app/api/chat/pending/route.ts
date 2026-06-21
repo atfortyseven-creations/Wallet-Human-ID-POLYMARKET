@@ -81,7 +81,7 @@ export async function DELETE(req: NextRequest) {
     if (!address || address !== userId) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     await prisma.pendingChatMessage.deleteMany({
-      where: { recipient: address }
+      where: { OR: [{ recipient: address }, { sender: address }] }
     });
 
     return NextResponse.json({ success: true });
