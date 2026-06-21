@@ -1305,3 +1305,17 @@ model LoginGeoEvent {
   @@index([wasSuccessful, timestamp(sort: Desc)])
   @@map("login_geo_events")
 }
+
+// 
+// QUANTUM PIPELINE & ZERO-KNOWLEDGE STATE
+// Stores spent nullifiers to prevent ZK replay attacks.
+// 
+
+model ZkNullifier {
+  id            String   @id @default(uuid())
+  nullifierHash String   @unique
+  proofId       String?
+  spentAt       DateTime @default(now())
+
+  @@index([nullifierHash])
+}

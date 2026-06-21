@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
+import crypto from 'crypto';
+import prisma from '@/lib/prisma'; // Assumes Prisma client is available here
 
-// [SECURITY HARDENING] Global Nullifier Registry to prevent replay attacks
-// In production this would be a persistent DB (Redis/Postgres)
-const nullifierRegistry = new Set<string>();
+const ZK_SECRET = process.env.ZK_PIPELINE_SECRET || 'quantum-abysmal-fallback-secret-key-3948';
 
 export async function POST(req: Request) {
   try {
@@ -25,16 +25,46 @@ export async function POST(req: Request) {
       }, { status: 400 });
     }
 
-    // [SECURITY HARDENING] Replay Attack Prevention
-    if (nullifierRegistry.has(nullifierHash)) {
+    // [SECURITY HARDENING 1] Stateless Cryptographic Verification of the Proof ID
+    const parts = proofId.substring(9).split('.');
+    if (parts.length !== 2) {
+      return NextResponse.json({ success: false, error: "Malformed proofId structure. Forgery detected." }, { status: 403 });
+    }
+
+    const [base64Payload, signature] = parts;
+    const payload = Buffer.from(base64Payload, 'base64').toString('utf-8');
+    const expectedSignature = crypto.createHmac('sha256', ZK_SECRET).update(payload).digest('hex');
+
+    if (signature !== expectedSignature) {
+      return NextResponse.json({ success: false, error: "CRYPTOGRAPHIC_ERROR: Proof signature mismatch. Tampering detected." }, { status: 403 });
+    }
+
+    // Ensure the proof's signed payload contains the exact nullifier passed to us
+    const [signedNullifier] = payload.split(':');
+    if (signedNullifier !== nullifierHash) {
+       return NextResponse.json({ success: false, error: "NULLIFIER_MISMATCH: Proof payload does not match the provided nullifier." }, { status: 403 });
+    }
+
+    // [SECURITY HARDENING 2] Replay Attack Prevention via PostgreSQL (Prisma)
+    // Check if nullifier is already spent globally
+    const existingNullifier = await prisma.zkNullifier.findUnique({
+      where: { nullifierHash }
+    });
+
+    if (existingNullifier) {
       return NextResponse.json({
         success: false,
         error: "REPLAY_ATTACK_DETECTED: This proof has already been submitted and the nullifier is spent."
       }, { status: 403 });
     }
 
-    // Mark nullifier as spent
-    nullifierRegistry.add(nullifierHash);
+    // Mark nullifier as spent securely in the DB
+    await prisma.zkNullifier.create({
+      data: {
+        nullifierHash,
+        proofId,
+      }
+    });
 
     return NextResponse.json({
       success: true,

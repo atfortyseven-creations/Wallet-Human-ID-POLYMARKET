@@ -6,11 +6,23 @@ import path from 'path';
 import os from 'os';
 import crypto from 'crypto';
 // [SECURITY] Per-IP compile rate limit: max 5 compilations per minute
+// LRU/Cleanup mechanism to prevent Memory Exhaustion DoS
 const compileRateLimit = new Map<string, { count: number; resetAt: number }>();
+
 function checkCompileLimit(ip: string): boolean {
   const now = Date.now();
   const WINDOW = 60_000;
   const MAX = 5;
+
+  // Prevent DoS: Clean up map if it grows too large (e.g. distributed pinging)
+  if (compileRateLimit.size > 1000) {
+    for (const [key, value] of compileRateLimit.entries()) {
+      if (now > value.resetAt) compileRateLimit.delete(key);
+    }
+    // If still too large after cleanup, clear completely
+    if (compileRateLimit.size > 1000) compileRateLimit.clear();
+  }
+
   const entry = compileRateLimit.get(ip) ?? { count: 0, resetAt: now + WINDOW };
   if (now > entry.resetAt) { entry.count = 0; entry.resetAt = now + WINDOW; }
   entry.count++;

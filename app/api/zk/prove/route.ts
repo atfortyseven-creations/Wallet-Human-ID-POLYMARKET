@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 
-// In-memory store of witness data keyed by witnessId
-// In production this would be a Redis/DB store
-const witnessStore = new Map<string, { witnessId: string; acirHash: string; createdAt: number }>();
+const ZK_SECRET = process.env.ZK_PIPELINE_SECRET || 'quantum-abysmal-fallback-secret-key-3948';
 
 export async function POST(req: Request) {
   try {
@@ -14,14 +12,34 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Invalid or missing witnessId. Run witness generation first." }, { status: 400 });
     }
 
+    // [SECURITY HARDENING] Stateless Cryptographic Verification
+    // Format is wtns_base64(payload).signature
+    const parts = witnessId.substring(5).split('.');
+    if (parts.length !== 2) {
+      return NextResponse.json({ success: false, error: "Malformed witnessId structure. Forgery detected." }, { status: 403 });
+    }
+
+    const [base64Payload, signature] = parts;
+    const payload = Buffer.from(base64Payload, 'base64').toString('utf-8');
+    const expectedSignature = crypto.createHmac('sha256', ZK_SECRET).update(payload).digest('hex');
+
+    if (signature !== expectedSignature) {
+      return NextResponse.json({ success: false, error: "CRYPTOGRAPHIC_ERROR: Witness signature mismatch. Tampering detected." }, { status: 403 });
+    }
+
     // Derive proof data from the witnessId
     const baseHash = crypto.createHash('sha256').update(witnessId + 'ultrahonk').digest('hex');
-    const proofId = `proof_uh_${baseHash.substring(0, 12)}`;
     const nullifierHash = `0x${crypto.createHash('sha256').update(witnessId + 'nullifier').digest('hex')}`;
+    
+    // Sign the proofId for the verifier to consume losslessly
+    const proofPayload = `${nullifierHash}:${Date.now()}`;
+    const proofSig = crypto.createHmac('sha256', ZK_SECRET).update(proofPayload).digest('hex');
+    const proofBase64 = Buffer.from(proofPayload).toString('base64');
+    const secureProofId = `proof_uh_${proofBase64}.${proofSig}`;
 
     return NextResponse.json({
       success: true,
-      proofId,
+      proofId: secureProofId,
       nullifierHash,
       proofBytes: baseHash.length,
       backend: 'UltraHonk/Barretenberg',

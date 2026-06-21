@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 
+const ZK_SECRET = process.env.ZK_PIPELINE_SECRET || 'quantum-abysmal-fallback-secret-key-3948';
+
 export async function POST(req: Request) {
   try {
     const { acir } = await req.json();
@@ -9,16 +11,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: "Missing ACIR bytecode" }, { status: 400 });
     }
 
-    // Derive a deterministic witness ID from the ACIR bytecode + timestamp
-    const wId = crypto
-      .createHash('sha256')
-      .update(acir + Date.now().toString())
-      .digest('hex')
-      .substring(0, 16);
+    // [SECURITY HARDENING] Stateless Cryptographic Validation
+    // Create a payload to sign
+    const payload = `${acir}:${Date.now()}`;
+    const signature = crypto.createHmac('sha256', ZK_SECRET).update(payload).digest('hex');
+    
+    // The witnessId embeds the payload and its cryptographic signature
+    // Format: wtns_base64(payload).signature
+    const base64Payload = Buffer.from(payload).toString('base64');
+    const secureWitnessId = `wtns_${base64Payload}.${signature}`;
 
     return NextResponse.json({
       success: true,
-      witnessId: `wtns_${wId}`,
+      witnessId: secureWitnessId,
       acirHash: crypto.createHash('sha256').update(acir).digest('hex').substring(0, 32),
     });
   } catch (err: any) {
