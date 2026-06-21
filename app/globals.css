@@ -1406,8 +1406,7 @@ html.dark [class*="bg-white"]:not([class*="bg-white/"]):not(button):not(a):not(i
 
 /*  UNIVERSAL TEXT CONTRAST  DARK MODE ABSOLUTE ENFORCEMENT  */
 /* Every text element in dark mode must be white/light  zero exceptions */
-html.dark body,
-html.dark body * {
+html.dark body {
   color: inherit;
 }
 
