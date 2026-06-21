@@ -135,7 +135,7 @@ export const wagmiAdapter = new WagmiAdapter({
     networks,
     // [MOBILE STABILITY] Disabled EIP-6963 to prevent the 'connector not connect' crash on iOS/Android
     // specifically triggered by wagmi/core 2.22.1 + AppKit conflicts.
-    multiInjectedProviderDiscovery: false,
+    // multiInjectedProviderDiscovery: false,
 })
 
 export const config = wagmiAdapter.wagmiConfig
@@ -249,7 +249,7 @@ try {
                 '--w3m-z-index': 9999,
             },
             enableInjected: true,
-            enableEIP6963: false, //  DISABLED: Fixes "connector not connect" error on mobile devices
+            enableEIP6963: true, // MUST BE TRUE for wagmi 2.x to detect injected wallets like MetaMask properly
             enableWalletConnect: true,
             enableCoinbase: true,
             customWallets: []
