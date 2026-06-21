@@ -1,4 +1,4 @@
-import { createAztecNodeClient } from '@aztec/aztec.js/node';
+import { createPXEClient } from '@aztec/foundation/json-rpc/client';
 import { AccountManager } from '@aztec/aztec.js/wallet';
 import { SchnorrAccountContract } from '@aztec/accounts/schnorr';
 import { Fr } from '@aztec/aztec.js/fields';
@@ -27,7 +27,7 @@ export async function mintPrivateQDs(toAddressHex: string, amount: number) {
         return null;
     }
 
-    const pxe = createAztecNodeClient(PXE_URL);
+    const pxe = createPXEClient(PXE_URL);
     if (!(await ensureNodeConnection(pxe))) return null;
 
     const secretKey = Fr.fromString(RELAYER_SECRET);
@@ -47,7 +47,7 @@ export async function mintPrivateQDs(toAddressHex: string, amount: number) {
 }
 
 export async function transferPrivateQDs(senderSecretHex: string, toAddressHex: string, amount: number) {
-    const pxe = createAztecNodeClient(PXE_URL);
+    const pxe = createPXEClient(PXE_URL);
     if (!(await ensureNodeConnection(pxe))) return null;
 
     const secretKey = Fr.fromString(senderSecretHex);

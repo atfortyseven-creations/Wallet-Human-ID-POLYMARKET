@@ -10,13 +10,13 @@
  * Users get deterministic Schnorr accounts derived from their EVM address.
  */
 
-export const AZTEC_TESTNET_NODE  = process.env.AZTEC_NODE_URL  || 'https://rpc.testnet.aztec-labs.com';
-export const AZTEC_PXE_URL       = process.env.AZTEC_PXE_URL   || process.env.AZTEC_NODE_URL || 'https://rpc.testnet.aztec-labs.com';
+export const AZTEC_TESTNET_NODE  = process.env.AZTEC_NODE_URL  || 'https://v5.testnet.rpc.aztec-labs.com';
+export const AZTEC_PXE_URL       = process.env.AZTEC_PXE_URL   || 'http://127.0.0.1:18080';
 export const AZTEC_EXPLORER      = 'https://testnet.aztecscan.xyz';
 export const AZTEC_NETWORK       = 'aztec-testnet';
 
 // SponsoredFPC — allows gas-free transactions on the Aztec Testnet
-export const SPONSORED_FPC_ADDRESS = '0x254082b62f9108d044b8998f212bb145619d91bfcd049461d74babb840181257';
+export const SPONSORED_FPC_ADDRESS = '0x261366b3c0a9b4c30864629556cf282be409e6822b1f3a065fcb7e34f36d7880';
 
 // Cache the PXE client across hot-reloads
 let _pxeClient: any = null;
@@ -29,8 +29,8 @@ let _pxeClient: any = null;
 export async function getPXEClient() {
   if (_pxeClient) return _pxeClient;
 
-  const { createAztecNodeClient } = await import('@aztec/aztec.js/node');
-  _pxeClient = await createAztecNodeClient(AZTEC_PXE_URL);
+  const { createPXEClient } = await import('@aztec/aztec.js');
+  _pxeClient = await createPXEClient(AZTEC_PXE_URL);
   console.log(`[Aztec] ✅ PXE client connected → ${AZTEC_PXE_URL}`);
   return _pxeClient;
 }

@@ -86,3 +86,11 @@ evacuate.js
 powershell.bat
 task.md
 snapshot-config.json
+
+.env.relayer
+scripts/probe-aztec-testnet.mjs
+scripts/test-v4-devnet.mjs
+scripts/tcp-probe.mjs
+scripts/tls-probe.mjs
+scripts/ip-probe.mjs
+scripts/generate-relayer-key.mjs

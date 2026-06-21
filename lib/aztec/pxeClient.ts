@@ -1,6 +1,6 @@
 // @ts-nocheck
 // lib/aztec/pxeClient.ts
-import { createAztecNodeClient } from '@aztec/aztec.js/node';
+import { createPXEClient } from '@aztec/aztec.js';
 import { getContractAt } from '@aztec/aztec.js/contracts';
 import { getWallet } from '@aztec/aztec.js/wallet';
 // createAccount removed in v4 — use getSchnorrAccount from @aztec/accounts/schnorr
@@ -9,8 +9,8 @@ import { getWallet } from '@aztec/aztec.js/wallet';
 // Private System direct connection to Aztec PXE
 export const initializePrivatePXE = async () => {
     try {
-        const pxeUrl = process.env.AZTEC_PXE_URL || 'http://localhost:8080';
-        const pxe = createAztecNodeClient(pxeUrl);
+        const pxeUrl = process.env.AZTEC_PXE_URL || 'http://localhost:18080';
+        const pxe = createPXEClient(pxeUrl);
         
         // Wait for Active Sandbox initialization
         await pxe.getNodeInfo();
