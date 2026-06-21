@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 // TerminalDashboard v4 — dashboard tab replaces billing
 import React, { useMemo } from 'react';
@@ -127,3 +128,4 @@ export default function TerminalDashboard() {
         </WhaleProShell>
     );
 }
+

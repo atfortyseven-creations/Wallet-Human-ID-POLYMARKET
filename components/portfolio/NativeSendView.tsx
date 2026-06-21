@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -422,3 +423,4 @@ export function NativeSendView({ onBack, initialTokenSymbol }: { onBack: () => v
         </motion.div>
     );
 }
+

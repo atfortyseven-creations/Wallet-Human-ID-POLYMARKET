@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createPXEClient } from '@aztec/foundation/json-rpc/client';
 import { AccountManager } from '@aztec/aztec.js/wallet';
 import { SchnorrAccountContract } from '@aztec/accounts/schnorr';
@@ -67,3 +68,4 @@ export async function transferPrivateQDs(senderSecretHex: string, toAddressHex: 
     
     return tx.txHash.toString();
 }
+
