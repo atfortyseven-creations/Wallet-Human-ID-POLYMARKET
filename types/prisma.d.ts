@@ -1,4 +1,4 @@
-import { 
+import type { 
   PrismaClient as OriginalPrismaClient,
   Prisma
 } from '@prisma/client'

@@ -234,35 +234,54 @@ export function NativeSendView({ onBack, initialTokenSymbol }: { onBack: () => v
             const isNative = selectedToken.symbol === 'ETH' || selectedToken.address === 'native' || selectedToken.address === '0x0000000000000000000000000000000000000000';
 
             if (selectedToken.symbol === 'QDs') {
-                const aztecSender = `0x${activeAddress.slice(2).padStart(64, '0').slice(0, 64)}`;
-                let finalRecipient = recipient;
-                if (ethers.isAddress(recipient)) {
-                    finalRecipient = `0x${recipient.slice(2).padStart(64, '0').slice(0, 64)}`;
+                // Derive Aztec address from active EVM address (deterministic)
+                const evmHex = activeAddress.replace('0x', '').toLowerCase();
+                const aztecSender = `0x${evmHex.padStart(64, '0').slice(0, 64)}`;
+
+                let finalRecipient = recipient.trim();
+                // If the user pasted an EVM address, convert it to Aztec format
+                if (ethers.isAddress(finalRecipient)) {
+                    const rHex = finalRecipient.replace('0x', '').toLowerCase();
+                    finalRecipient = `0x${rHex.padStart(64, '0').slice(0, 64)}`;
                 }
-                
-                try {
-                    if (!seed) throw new Error("Aztec identity not connected. Please connect first.");
-                    
-                    toast.loading("Generating Zero-Knowledge Proof locally via Sandbox...", { id: "send-tx" });
-                    const { executeLocalAztecTransfer } = await import('@/lib/aztec/clientPxe');
-                    txHash = await executeLocalAztecTransfer(seed, finalRecipient, parseFloat(amount));
-                } catch (pxeErr: any) {
-                    console.warn("Client-Side PXE unavailable or polyfills missing. Falling back to Server Relayer.", pxeErr);
-                    
-                    const res = await fetch('/api/aztec/transfer', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            from: aztecSender,
-                            to: finalRecipient,
-                            amount: amount,
-                            seed: seed
-                        })
+                // Validate Aztec address format
+                if (!/^0x[0-9a-f]{64}$/i.test(finalRecipient)) {
+                    throw new Error('Invalid recipient — enter an Aztec address (0x + 64 hex chars) or an EVM address.');
+                }
+
+                toast.loading('Submitting QD transfer to Aztec Network...', { id: 'send-tx' });
+
+                const res = await fetch('/api/aztec/transfer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        from:   aztecSender,
+                        to:     finalRecipient,
+                        amount: parseFloat(amount),  // always send as number
+                        seed:   seed ?? null,         // enables on-chain tx if available
+                    })
+                });
+
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Aztec transfer failed');
+
+                txHash = data.txHash || '0x_aztec_receipt';
+
+                // Show AztecScan link if available
+                if (data.explorerUrl && data.onChain) {
+                    toast.success('QD Transfer On-Chain! 🔗', {
+                        id: 'send-tx',
+                        description: `${amount} QDs sent. View on AztecScan →`,
+                        action: {
+                            label: 'AztecScan',
+                            onClick: () => window.open(data.explorerUrl, '_blank')
+                        },
+                        duration: 10000,
                     });
-                    
-                    const data = await res.json();
-                    if (!res.ok) throw new Error(data.error || "Aztec transfer failed");
-                    txHash = data.txHash || "0x_aztec_receipt";
+                    setAmount('');
+                    setRecipient('');
+                    setIsSending(false);
+                    return; // skip the generic success toast below
                 }
             } else if (isWagmiConnected && walletClient) {
                 // MetaMask / WalletConnect User

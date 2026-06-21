@@ -27,7 +27,6 @@ import {
   CreditCard,
   ArrowRight,
   X,
-  Eye,
 } from 'lucide-react';
 import { useAccount } from 'wagmi';
 import { passportPublicUrl } from '@/lib/scan/parseScanPayload';
@@ -46,10 +45,7 @@ const SubscriptionDashboard = dynamic(
   { ssr: false, loading: () => <div className="p-8 text-center text-xs text-black/50 uppercase tracking-widest">Loading Dashboard...</div> }
 );
 
-const SightInsightTab = dynamic(
-  () => import('./SightInsightTab').then(mod => mod.SightInsightTab),
-  { ssr: false, loading: () => <div className="p-8 text-center text-xs text-black/50 uppercase tracking-widest">Waking up Insight Engine...</div> }
-);
+// SightInsightTab removed by user request
 
 /* ─────────────────────────────────────────────
    CONSTANTS
@@ -59,7 +55,7 @@ const EXPLORER_BASE = 'https://testnet.aztecscan.xyz/tx/';
 /* ─────────────────────────────────────────────
    TYPES
 ───────────────────────────────────────────── */
-type Tab = 'create' | 'registry' | 'aztec' | 'billing' | 'dashboard' | 'insight';
+type Tab = 'create' | 'registry' | 'aztec' | 'billing' | 'dashboard';
 
 /* ─────────────────────────────────────────────
    UTILITIES
@@ -1358,7 +1354,6 @@ export function ProvenanceStudioContent({
     { id: 'registry', label: 'All Records', icon: <LayoutList size={13} /> },
     { id: 'aztec', label: 'Aztec Network', icon: null },
     { id: 'billing', label: 'Node Allocation', icon: <CreditCard size={13} /> },
-    { id: 'insight', label: 'Sight Insight', icon: <Eye size={13} /> },
   ];
 
   if (hasPlan) {
@@ -1486,7 +1481,6 @@ export function ProvenanceStudioContent({
         {activeTab === 'aztec' && <AztecTab />}
         {activeTab === 'billing' && <BandwidthTab />}
         {activeTab === 'dashboard' && <SubscriptionDashboard />}
-        {activeTab === 'insight' && <SightInsightTab />}
       </div>
     </div>
   );

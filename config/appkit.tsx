@@ -81,6 +81,20 @@ const dedicatedMonadMainnet: AppKitNetwork = {
     }
 } as any;
 
+const galactica: AppKitNetwork = {
+    id: 9302,
+    name: 'Galactica Reticulum',
+    caipNetworkId: 'eip155:9302',
+    chainNamespace: 'eip155',
+    nativeCurrency: { name: 'GNET', symbol: 'GNET', decimals: 18 },
+    rpcUrls: {
+        default: { http: ['https://evm-rpc-http-reticulum.galactica.com/'] }
+    },
+    blockExplorers: {
+        default: { name: 'Galactica Explorer', url: 'https://explorer-reticulum.galactica.com/' }
+    }
+} as any;
+
 const dedicatedPolygon = {
     ...polygon,
     rpcUrls: {
@@ -108,7 +122,7 @@ const dedicatedOptimism = {
     }
 };
 
-export const networks: [AppKitNetwork, ...AppKitNetwork[]] = [mainnet, bsc, polygon, base, arbitrum, optimism, worldchain, linea, avalanche, zksync, dedicatedMonadMainnet];
+export const networks: [AppKitNetwork, ...AppKitNetwork[]] = [galactica, mainnet, bsc, polygon, base, arbitrum, optimism, worldchain, linea, avalanche, zksync, dedicatedMonadMainnet];
 
 export const wagmiAdapter = new WagmiAdapter({
     ssr: true,

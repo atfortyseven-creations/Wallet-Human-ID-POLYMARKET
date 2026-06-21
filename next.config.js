@@ -1,3 +1,4 @@
+const path = require('path');
 const isExtension = process.env.EXT_BUILD === 'true';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -134,6 +135,14 @@ const nextConfig = {
             'porto': false,
             'porto/internal': false,
             ...(wcEthProvider ? { '@walletconnect/ethereum-provider': wcEthProvider } : {}),
+            // [PRISMA GUARD] Prevent @prisma/client from leaking into client bundles.
+            // serverExternalPackages handles this for Server Components, but this alias
+            // provides defense-in-depth for any edge cases where the bundler tries to
+            // include prisma in client-side JS (causes PrismaClient browser error).
+            ...(!isServer ? {
+                '@prisma/client': path.resolve(__dirname, './lib/prisma-browser-stub.js'),
+                'server-only': false,
+            } : {}),
         };
 
         // [EPERM FIX] Prevent webpack file watcher from scanning Windows system
