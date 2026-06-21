@@ -1409,44 +1409,7 @@ export function ProvenanceStudioContent({
     );
   }
 
-  if (hasPlan === false) {
-    return (
-      <div className={`min-h-[100dvh] bg-[#FFFFFF] flex flex-col ${isMobile ? 'pb-[calc(2rem+env(safe-area-inset-bottom))]' : ''}`}>
-        {isMobile && (
-          <header className="sticky top-0 z-20 bg-[#FFFFFF]/95 backdrop-blur-md border-b border-black/8 px-5 py-3 pt-[calc(0.75rem+env(safe-area-inset-top))]">
-            <button
-              type="button"
-              onClick={() => router.push('/terminal')}
-              className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-black/50"
-            >
-              <ArrowLeft size={16} />
-              Return
-            </button>
-          </header>
-        )}
-        <div className="w-full flex-1 flex flex-col relative" style={{ minHeight: '100dvh' }}>
-           {!isMobile && (
-             <div className="absolute top-6 left-6 z-10">
-                <Link 
-                  href="/terminal"
-                  className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest px-6 py-3 bg-black text-white rounded-full hover:bg-black/80 transition-all shadow-xl"
-                >
-                  <ArrowLeft size={14} />
-                  Return to Dashboard
-                </Link>
-             </div>
-           )}
-           <iframe 
-             src="https://studio-provenance-production.up.railway.app" 
-             className="w-full flex-1 border-0"
-             title="Studio Provenance Bridge"
-             style={{ minHeight: '100dvh' }}
-           />
-        </div>
-      </div>
-    );
-  }
-
+  // Removed legacy hasPlan iframe fallback to allow native Studio UI to render.
   return (
     <div
       className={`min-h-[100dvh] bg-[#FFFFFF] text-[#050505] ${

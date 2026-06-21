@@ -278,9 +278,9 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       }
 
       // Step 3 — Set session state in memory.
+      setAztecAddress(derived);
+      setSeed(entropy);
       notifiedRef.current = new Set(); // Reset notification tracking on new login.
-      notifiedRef.current = new Set(); // Reset notification tracking on new login.
-
       // Step 4 — Immediate first fetch, then start polling loop.
       setIsLoading(true);
       await fetchLedgerState(derived);
