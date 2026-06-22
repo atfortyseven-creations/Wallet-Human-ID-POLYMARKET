@@ -20,13 +20,16 @@ export async function POST(req: Request) {
     }
 
     // [SECURITY HARDENING] Prevent spoofing of the sender address
-    if (sender.toLowerCase() !== userId.toLowerCase()) {
+    // If sender is an inboxId (no 0x), we allow it because session is already verified via cookie
+    const isSenderEthereum = /^0x[a-fA-F0-9]{40}$/.test(sender);
+    if (isSenderEthereum && sender.toLowerCase() !== userId.toLowerCase()) {
       return NextResponse.json({ error: 'Forbidden: You cannot spoof the sender address' }, { status: 403 });
     }
 
-    // Basic Ethereum address validation
-    if (!/^0x[a-fA-F0-9]{40}$/.test(sender) || !/^0x[a-fA-F0-9]{40}$/.test(recipient)) {
-      return NextResponse.json({ error: 'Invalid Ethereum address format' }, { status: 400 });
+    // Basic Ethereum address or XMTP inboxId validation
+    const isValidFormat = (id: string) => /^0x[a-fA-F0-9]{40}$/.test(id) || /^[a-zA-Z0-9]+$/.test(id);
+    if (!isValidFormat(sender) || !isValidFormat(recipient)) {
+      return NextResponse.json({ error: 'Invalid address or inboxId format' }, { status: 400 });
     }
 
     const prisma = getPrisma();
