@@ -1,0 +1,6 @@
+fix: resolve Railway OOM restarts and Noir circuit syntax errors
+
+- ecosystem.config.json: fix PM2 memory conflict - heap 512MB to 460MB, max_memory_restart 600M to 700M
+- NoirCircuitSandbox.tsx: fix all 4 circuit examples to modern Noir syntax (param: pub Type)
+- mint_private_license/src/main.nr: fix assert(is_valid == true) to assert(is_valid)
+- ProvenanceStudioContent.tsx: accessibility and privacy UI improvements

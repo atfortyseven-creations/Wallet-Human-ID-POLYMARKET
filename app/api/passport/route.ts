@@ -9,14 +9,13 @@ import { NODE_TIERS, PlanTier } from '@/lib/node_infrastructure/tiers';
 import crypto from 'crypto';
 
 // Init OpenAI for semantic validation
-const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
-
+// It will be instantiated inside the POST request to respect dynamic env vars
 // Strict institutional schema
 const passportSchema = z.object({
-  title: z.string().min(2).max(150),
+  title: z.string().min(2).max(150).regex(/^[a-zA-Z0-9\s\-_.]+$/, "Invalid characters in title"),
   category: z.enum(['PHARMA', 'FOOD', 'TECH', 'INFRASTRUCTURE', 'TEXTILE', 'DOCUMENTS', 'OTHER']),
   payload: z.object({
-    batchId: z.string().min(1).max(64).optional(),
+    batchId: z.string().min(1).max(64).regex(/^[A-Z0-9\-_]+$/, "Batch ID must be uppercase alphanumeric").optional(),
     origin: z.string().min(2).max(100).optional(),
     description: z.string().max(1000).optional(),
     carbonKg: z.number().nonnegative().optional(),
@@ -79,14 +78,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 2. Strict Global Limit for non-owners (3 passports max)
+    // 2. Strict Global Limit based on Tier
+    const userNode = await prisma.user.findUnique({ where: { walletAddress: issuerAddress } });
+    const tier = userNode?.tier || 'FREE';
+    
     const totalCount = await prisma.productPassport.count({
       where: { issuerAddress },
     });
 
-    if (totalCount >= 100) {
+    const maxPassports = tier === 'FREE' ? 3 : 100;
+
+    if (totalCount >= maxPassports) {
       return NextResponse.json(
-        { error: 'Limit reached. You can only create 100 Product Passports maximum.' },
+        { error: `Free tier limit reached. You can only create ${maxPassports} Product Passports maximum on the ${tier} tier.` },
         { status: 403 }
       );
     }
@@ -103,7 +107,7 @@ export async function POST(req: NextRequest) {
   const parseResult = passportSchema.safeParse(body);
   if (!parseResult.success) {
     // Build a human-readable error pointing to the first invalid field
-    const firstError = (parseResult.error as any).errors[0];
+    const firstError = parseResult.error.issues?.[0] || (parseResult.error as any).errors?.[0];
     const fieldName = firstError?.path?.join('.') || 'unknown field';
     const message = firstError?.message || 'Validation failed';
     return NextResponse.json(
@@ -155,6 +159,28 @@ export async function POST(req: NextRequest) {
       { error: 'Inappropriate content detected. Please use normal words.' },
       { status: 400 }
     );
+  }
+
+  // 3.5 Semantic AI Validation
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (apiKey) {
+    const openai = new OpenAI({ apiKey });
+    try {
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: 'You are a strict institutional provenance auditor. Evaluate the JSON and return {"valid": true} or {"valid": false, "reason": "..."}.' },
+          { role: 'user', content: JSON.stringify(validData) }
+        ],
+        response_format: { type: 'json_object' }
+      });
+      const aiResult = JSON.parse(completion.choices[0]?.message?.content || '{"valid": true}');
+      if (!aiResult.valid) {
+        return NextResponse.json({ error: `Semantic validation failed: ${aiResult.reason}` }, { status: 400 });
+      }
+    } catch (e) {
+      console.error('[OpenAI] Semantic validation error:', e);
+    }
   }
 
   // 4. Create the passport with resilient Anti-Collision Retry Loop

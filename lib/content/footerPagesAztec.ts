@@ -113,7 +113,7 @@ export const WHITEPAPER_SECTIONS: AztecDocSection[] = [
     title: '9. Development Status',
     paragraphs: [
       'The protocol development focuses on verified foundations built directly on the Aztec Network.',
-      'Current status (June 2026): The frontend platform (humanidfi.com) is live and connected to the Aztec testnet (rpc.testnet.aztec-labs.com). The Noir smart contracts — specifically QDsToken.nr as a native Aztec token and the mint_private_license KYC circuit — are fully specified and in active development. The legal and regulatory framework (25-document MiCA suite) is fully drafted and in the formal process of being executed.',
+      'Current status (June 22, 2026): The frontend platform (humanidfi.com) is live and connected to the Aztec testnet (rpc.testnet.aztec-labs.com). The Noir smart contracts — specifically QDsToken.nr as a native Aztec token and the mint_private_license KYC circuit — are fully specified and in active development. The legal and regulatory framework (25-document MiCA suite) is fully drafted and in the formal process of being executed.',
     ],
   },
   {
@@ -353,7 +353,7 @@ export const SECURITY_SECTIONS: AztecDocSection[] = [
 
 export const ROADMAP_SECTIONS: AztecDocSection[] = [
   {
-    title: 'Current State — June 2026',
+    title: 'Current State - June 22, 2026',
     paragraphs: [
       'Humanity Ledger is currently in active testnet development on the Aztec Network. We have successfully completed the native integration of Noir and Aztec components (v0.67.0 & Noir v0.36.0), standardizing our cryptographic primitives across all 18 core circuits.',
     ],

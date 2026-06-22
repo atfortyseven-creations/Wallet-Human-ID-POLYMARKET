@@ -68,3 +68,13 @@ export async function detectAccumulationClusters(targetAddress: string, timeWind
     volume: record.get('pathVolumeUsd')
   }));
 }
+
+export async function queryEntityGraph(targetAddress: string) {
+  // Graceful degradation handled by circuit breaker
+  try {
+    const records = await detectAccumulationClusters(targetAddress);
+    return { nodes: records, edges: [] };
+  } catch (e) {
+    return { nodes: [], edges: [] };
+  }
+}

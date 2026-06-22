@@ -777,14 +777,14 @@ function FAQSection() {
 
 function PoweredBySection() {
   return (
-    <section className="w-full bg-[#fcfcfc] py-20 flex flex-col items-center justify-center border-t border-black/5">
-      <span className="text-[11px] font-bold uppercase tracking-widest text-black/40 mb-6">
+    <section className="w-full bg-[#fcfcfc] py-24 flex flex-col items-center justify-center border-t border-black/5">
+      <span className="text-sm md:text-base font-black uppercase tracking-[0.3em] text-black/50 mb-8">
         Powered by
       </span>
       <img 
         src="/aztec-logo-black.png" 
         alt="Aztec Network" 
-        className="h-10 md:h-12 object-contain mix-blend-multiply opacity-85 hover:opacity-100 transition-opacity"
+        className="h-40 md:h-56 lg:h-64 object-contain mix-blend-multiply opacity-90 hover:opacity-100 transition-all transform hover:scale-105 duration-500"
       />
     </section>
   );

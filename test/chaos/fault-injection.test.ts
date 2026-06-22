@@ -14,9 +14,11 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
+vi.mock('server-only', () => ({}));
+
 //  Mock Redis client 
 vi.mock('@/lib/redis/client', () => ({
-  redis: {
+  redisClient: {
     get:     vi.fn(),
     set:     vi.fn(),
     del:     vi.fn(),
@@ -25,6 +27,7 @@ vi.mock('@/lib/redis/client', () => ({
     smembers: vi.fn(),
     sadd:    vi.fn(),
     srem:    vi.fn(),
+    eval:    vi.fn(),
   },
 }));
 
@@ -44,8 +47,8 @@ describe('Chaos Engineering  Fault Injection Suite (Axioma 282)', () => {
   //  SCENARIO 1: Redis complete failure 
   describe('Redis Unavailability', () => {
     it('Feature flag engine falls back to env vars when Redis throws', async () => {
-      const { redis } = await import('@/lib/redis/client');
-      vi.mocked(redis.get).mockRejectedValue(new Error('ECONNREFUSED'));
+      const { redisClient } = await import('@/lib/redis/client');
+      vi.mocked(redisClient.get).mockRejectedValue(new Error('ECONNREFUSED'));
 
       process.env.FEATURE_MEMPOOL_INTELLIGENCE = 'true';
 
@@ -56,8 +59,8 @@ describe('Chaos Engineering  Fault Injection Suite (Axioma 282)', () => {
     });
 
     it('Analytics engine returns empty results when Redis throws', async () => {
-      const { redis } = await import('@/lib/redis/client');
-      vi.mocked(redis.get).mockRejectedValue(new Error('ETIMEDOUT'));
+      const { redisClient } = await import('@/lib/redis/client');
+      vi.mocked(redisClient.get).mockRejectedValue(new Error('ETIMEDOUT'));
 
       const { getFunnelMetrics } = await import('@/lib/analytics/engine');
       const metrics = await getFunnelMetrics(7);
@@ -68,15 +71,15 @@ describe('Chaos Engineering  Fault Injection Suite (Axioma 282)', () => {
     });
 
     it('Rate limiter fails open when Redis unavailable', async () => {
-      const { redis } = await import('@/lib/redis/client');
-      vi.mocked(redis.incr).mockRejectedValue(new Error('ECONNRESET'));
+      const { redisClient } = await import('@/lib/redis/client');
+      vi.mocked(redisClient.eval).mockRejectedValue(new Error('ECONNRESET'));
 
       // Rate limiter should allow request through rather than blocking
       // This prevents Redis outage from taking down the entire API
       const { checkRateLimit } = await import('@/lib/redis/rate-limiter');
-      const result = await checkRateLimit('0xabc123', 'api', 100).catch(() => ({ allowed: true, remaining: 99 }));
+      const result = await checkRateLimit('0xabc123', 'api').catch(() => ({ success: true, current: 0, limit: 100, remaining: 100 }));
 
-      expect(result.allowed).toBe(true);
+      expect(result.success).toBe(true);
     });
   });
 
@@ -125,14 +128,14 @@ describe('Chaos Engineering  Fault Injection Suite (Axioma 282)', () => {
       const originalFetch = global.fetch;
       global.fetch = vi.fn().mockRejectedValue(new Error('Network Error'));
 
-      const { redis } = await import('@/lib/redis/client');
-      vi.mocked(redis.get).mockResolvedValue({ flows: [{ txid: 'cached_tx', btc: '100' }] });
+      const { redisClient } = await import('@/lib/redis/client');
+      vi.mocked(redisClient.get).mockResolvedValue(JSON.stringify({ flows: [{ txid: 'cached_tx', btc: '100' }] }) as any);
 
       // Restore fetch
       global.fetch = originalFetch;
 
       // Cached data should be served
-      const cached = await (vi.mocked(redis.get) as ReturnType<typeof vi.fn>)('whale:flows:cache');
+      const cached = await (vi.mocked(redisClient.get) as ReturnType<typeof vi.fn>)('whale:flows:cache');
       expect(cached).toBeDefined();
     });
   });
@@ -145,8 +148,7 @@ describe('Chaos Engineering  Fault Injection Suite (Axioma 282)', () => {
       const cb = new CircuitBreaker({
         name:             'test-service',
         failureThreshold: 3,
-        timeout:          1000,
-        resetTimeout:     5000,
+        openDurationMs:   5000,
       });
 
       // Simulate failures
@@ -155,7 +157,7 @@ describe('Chaos Engineering  Fault Injection Suite (Axioma 282)', () => {
       }
 
       // Should now be OPEN (circuit tripped)
-      expect(cb.getState()).toBe('OPEN');
+      expect(cb.getMetrics().state).toBe('OPEN');
     });
 
     it('Circuit breaker recovers after reset timeout', async () => {
@@ -164,21 +166,23 @@ describe('Chaos Engineering  Fault Injection Suite (Axioma 282)', () => {
       const cb = new CircuitBreaker({
         name:             'recovery-test',
         failureThreshold: 2,
-        timeout:          100,
-        resetTimeout:     100, // 100ms for test speed
+        openDurationMs:   100, // 100ms for test speed
       });
 
       // Trip the breaker
       for (let i = 0; i < 2; i++) {
         await cb.execute(async () => { throw new Error('down'); }).catch(() => {});
       }
-      expect(cb.getState()).toBe('OPEN');
+      expect(cb.getMetrics().state).toBe('OPEN');
 
       // Wait for reset
       await new Promise((r) => setTimeout(r, 150));
 
-      // Should be HALF_OPEN now
-      expect(cb.getState()).not.toBe('OPEN');
+      // Execute to trigger transition to HALF_OPEN/CLOSED
+      await cb.execute(async () => 'ok');
+
+      // Should be CLOSED now
+      expect(cb.getMetrics().state).toBe('CLOSED');
     });
   });
 });

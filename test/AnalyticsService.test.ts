@@ -1,12 +1,33 @@
 import { analyticsService } from '../lib/blockchain/AnalyticsService';
 import { ChainId } from '../lib/blockchain/BlockchainService';
 import { redisClient as redis } from '../lib/redis/client';
+import { vi } from 'vitest';
+
+// Mock ethers
+vi.mock('ethers', async () => {
+    const actual = await vi.importActual('ethers');
+    return {
+        ...(actual as any),
+        ethers: {
+            ...(actual as any).ethers,
+            Contract: vi.fn().mockImplementation(() => ({
+                symbol: vi.fn().mockResolvedValue('USDC'),
+                decimals: vi.fn().mockResolvedValue(6),
+                name: vi.fn().mockResolvedValue('USD Coin')
+            }))
+        }
+    };
+});
 
 describe('AnalyticsService CU-Shield Verification', () => {
     const TEST_ADDRESS = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'; // vitalik.eth
 
     beforeAll(async () => {
         // Ensure Redis is healthy for caching tests
+    });
+
+    afterAll(() => {
+        vi.restoreAllMocks();
     });
 
     it('should respect the metadata cache (Shield Test)', async () => {

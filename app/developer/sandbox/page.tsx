@@ -30,8 +30,12 @@ export default function SandboxPage() {
           Institutional ZK Environment
         </div>
         
-        <h1 className="text-4xl md:text-6xl font-black text-black tracking-tighter leading-[1.1] mb-6">
-          Quantum Circuit Sandbox
+        <h1 className="text-4xl md:text-6xl font-black text-black tracking-tighter leading-[1.1] mb-6 flex flex-col items-center gap-6">
+          ZK SandBox
+          <div className="flex flex-col items-center gap-3 text-lg md:text-xl text-slate-500 font-medium tracking-wide uppercase mt-4">
+            <span>powered by</span>
+            <img src="/aztec-logo-black.png" alt="Aztec Network" className="h-32 md:h-48 lg:h-56 object-contain" />
+          </div>
         </h1>
 
         <p className="text-slate-500 text-sm md:text-base leading-relaxed max-w-2xl font-mono">

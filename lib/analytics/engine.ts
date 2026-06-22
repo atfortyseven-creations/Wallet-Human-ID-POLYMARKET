@@ -11,14 +11,22 @@ import { prisma } from '@/lib/prisma';
 import { redisClient as redis } from '@/lib/redis/client';
 
 async function getRedisValue<T>(key: string): Promise<T | null> {
-  const val = await redis.get(key);
-  if (!val) return null;
-  try { return typeof val === 'string' ? JSON.parse(val) as T : val as T; } catch { return val as unknown as T; }
+  try {
+    const val = await redis.get(key);
+    if (!val) return null;
+    return typeof val === 'string' ? JSON.parse(val) as T : val as T;
+  } catch {
+    return null;
+  }
 }
 async function getRedisNumber(key: string): Promise<number | null> {
-  const val = await redis.get(key);
-  if (!val) return null;
-  return Number(val);
+  try {
+    const val = await redis.get(key);
+    if (!val) return null;
+    return Number(val);
+  } catch {
+    return null;
+  }
 }
 async function setRedisValue(key: string, value: any, ttlSeconds?: number): Promise<void> {
   const val = typeof value === 'string' ? value : JSON.stringify(value);

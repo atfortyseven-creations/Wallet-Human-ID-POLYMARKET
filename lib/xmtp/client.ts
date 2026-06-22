@@ -473,54 +473,24 @@ async function extractPeerAddress(dm: any, selfInboxId: string): Promise<string 
  * resolves both accountAddresses and inboxId-based lookups with caching.
  */
 export async function getMessages(client: Client, peerAddress: string): Promise<any[]> {
-  const selfInboxId = (client as any).inboxId ?? '';
-  const normalizedPeer = peerAddress.toLowerCase();
-
-  //  Step 1: Global sync — CRITICAL for receiver discovery 
   try {
-    await client.conversations.sync();
-  } catch (e) {
-    console.warn('[XMTP] conversations.sync() failed:', e);
-  }
+    // 1. Sync globally
+    await client.conversations.sync().catch(console.warn);
 
-  //  Step 2: Find the DM for this peer
-  try {
-    const dms = await client.conversations.listDms();
-
-    let targetDm: any = null;
-
-    for (const dm of dms) {
-      try {
-        const peerAddr = await extractPeerAddress(dm, selfInboxId);
-        if (peerAddr && peerAddr.toLowerCase() === normalizedPeer) {
-          targetDm = dm;
-          break;
-        }
-      } catch {}
-    }
-
-    if (targetDm) {
-      // Individual DM sync — pulls latest messages for this specific conversation
-      try { await targetDm.sync(); } catch {}
-      const msgs = await targetDm.messages();
-      return msgs ?? [];
-    }
-  } catch (e) {
-    console.warn('[XMTP] DM search failed:', e);
-  }
-
-  //  Step 3: Fallback — newDmWithIdentifier (creates/reuses, sender path) 
-  try {
+    // 2. Get active DM with peer
     const identifier: XmtpIdentifier = {
       identifier: peerAddress,
       identifierKind: 'Ethereum',
     };
     const dm = await client.conversations.newDmWithIdentifier(identifier);
-    try { await dm.sync(); } catch {}
+    
+    // 3. Sync DM and fetch messages
+    await dm.sync().catch(console.warn);
     const msgs = await dm.messages();
+    
     return msgs ?? [];
   } catch (e) {
-    console.warn('[XMTP] newDmWithIdentifier fallback failed:', e);
+    console.warn('[XMTP] getMessages failed:', e);
     return [];
   }
 }

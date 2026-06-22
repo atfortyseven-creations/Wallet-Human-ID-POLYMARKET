@@ -72,7 +72,7 @@ async function getOrDownloadNargo(): Promise<string> {
   const BASE = `https://github.com/noir-lang/noir/releases/download/v${NARGO_VERSION}`;
   let archiveName: string;
   if (platform === 'win32') {
-    throw new Error('Native Windows is not supported by modern Noir release binaries. Please run the development server in WSL or deploy to Linux (Railway).');
+    archiveName = 'nargo-x86_64-pc-windows-msvc.zip';
   } else if (platform === 'darwin' && arch === 'arm64') {
     archiveName = 'nargo-aarch64-apple-darwin.tar.gz';
   } else if (platform === 'darwin') {
@@ -93,11 +93,16 @@ async function getOrDownloadNargo(): Promise<string> {
   fs.writeFileSync(archivePath, buf);
 
   // 4. Extract
-  await execAsync(`tar -xzf "${archivePath}" -C "${NARGO_DIR}"`, { timeout: 120_000 });
-  const found = findFile(NARGO_DIR, 'nargo');
+  if (archiveName.endsWith('.zip')) {
+    await execAsync(`tar -xf "${archivePath}" -C "${NARGO_DIR}"`, { timeout: 120_000 });
+  } else {
+    await execAsync(`tar -xzf "${archivePath}" -C "${NARGO_DIR}"`, { timeout: 120_000 });
+  }
+  
+  const found = findFile(NARGO_DIR, platform === 'win32' ? 'nargo.exe' : 'nargo');
   if (found && found !== binPath) {
     fs.copyFileSync(found, binPath);
-    fs.chmodSync(binPath, 0o755);
+    if (platform !== 'win32') fs.chmodSync(binPath, 0o755);
   }
 
   if (!fs.existsSync(binPath)) {

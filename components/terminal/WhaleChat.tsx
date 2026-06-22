@@ -838,11 +838,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   }
                 }
                 // Strategy 2: fallback — find any optimistic with identical content
-                // within a 10-second window (handles encoding edge cases)
+                // within a 30-second window (handles slow networks and retry delays)
                 const optIdx = prev.findIndex(
                   m => m.id.startsWith('optimistic-') &&
                        m.content === content &&
-                       Math.abs(m.sentAtNs - sentAtNs) < 10_000
+                       Math.abs(m.sentAtNs - sentAtNs) < 30_000
                 );
                 if (optIdx !== -1) {
                   const next = [...prev];
@@ -978,29 +978,52 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         mappedMsgs.forEach((m: any) => confirmedMsgIds.current.add(m.id));
         pendingServer.forEach((p: any) => confirmedMsgIds.current.add(p.id));
 
+        // ─────────────────────────────────────────────────────────────────────
+        // CRITICAL FIX: PURELY ADDITIVE MERGE
+        // We NEVER replace the message list — we only add messages not yet present.
+        // This prevents poll failures (empty array from XMTP) from wiping optimistic
+        // messages or stream-received messages that haven't been confirmed yet.
+        // ─────────────────────────────────────────────────────────────────────
         setMessages(prev => {
           const activeId = `dm-${activePeer.toLowerCase()}`;
-          const others = prev.filter(p => p.conversationId !== activeId);
           
-          const mappedIds = new Set(mappedMsgs.map((m: any) => m.id));
-          const pendingIds = new Set(pendingServer.map((p: any) => p.id));
-
-          // Preserve ONLY optimistic messages whose content does NOT match any
-          // already-confirmed real message. This is the critical guard that
-          // prevents stale optimistics from appearing alongside their confirmed twins.
-          const optimistic = prev.filter(m => {
-            if (m.conversationId !== activeId) return false;
-            if (!m.id.startsWith('optimistic-')) return false;
-            // If a confirmed message exists with identical content, drop optimistic
-            const alreadyConfirmed = mappedMsgs.some((r: any) => r.content === m.content);
-            // DO NOT drop optimistic messages if they exist in pendingServer, because pendingServer items might not have their ID formatted correctly yet or might just be our own unconfirmed messages
-            const inPendingServer = pendingServer.some((p: any) => p.content === m.content);
-            if (inPendingServer) return false; // Hide optimistic if it's already in pendingServer to prevent duplicates
-            return !alreadyConfirmed;
-          });
+          // Build a set of all IDs currently in state for O(1) lookup
+          const existingIds = new Set(prev.map(m => m.id));
           
-          return [...others, ...mappedMsgs, ...pendingServer, ...optimistic].sort((a, b) => a.sentAtNs - b.sentAtNs);
+          // Only add messages we haven't seen before (truly new from poll)
+          const newConfirmed = [...mappedMsgs, ...pendingServer].filter(m => !existingIds.has(m.id));
+          
+          // ── KEY GUARD ──────────────────────────────────────────────────────
+          // If the poll returned NOTHING new, return prev UNCHANGED.
+          // This is what prevents an empty XMTP response from wiping all messages.
+          // ──────────────────────────────────────────────────────────────────
+          if (newConfirmed.length === 0) return prev;
+          
+          // For each NEW confirmed message, find and remove its optimistic twin
+          const optimisticToRemove = new Set<string>();
+          for (const confirmed of newConfirmed) {
+            // Strategy 1: exact match via optimisticContentMap (fastest)
+            const knownOptId = optimisticContentMap.current.get(confirmed.content);
+            if (knownOptId && existingIds.has(knownOptId)) {
+              optimisticToRemove.add(knownOptId);
+              optimisticContentMap.current.delete(confirmed.content);
+            } else {
+              // Strategy 2: content + time window match (handles encoding edge cases)
+              const twin = prev.find(
+                m => m.id.startsWith('optimistic-') &&
+                     m.conversationId === activeId &&
+                     m.content === confirmed.content &&
+                     Math.abs(m.sentAtNs - confirmed.sentAtNs) < 30_000
+              );
+              if (twin) optimisticToRemove.add(twin.id);
+            }
+          }
+          
+          // Drop only the replaced optimistic twins, keep everything else
+          const base = prev.filter(m => !optimisticToRemove.has(m.id));
+          return [...base, ...newConfirmed].sort((a, b) => a.sentAtNs - b.sentAtNs);
         });
+
       } catch (e) {
         console.warn('[Chat] load messages failed:', e);
       } finally {

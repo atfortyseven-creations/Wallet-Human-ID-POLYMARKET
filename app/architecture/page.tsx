@@ -7,7 +7,8 @@ export default function ArchitecturePage() {
         <DocLayout
             title="System Architecture Protocol"
             description="A formal technical specification of the Humanity Ledger infrastructure, detailing cryptographic primitives, state transitions, and privacy-preserving consensus mechanisms."
-            lastUpdated="June 6, 2026"
+            subtitle="An in-depth look at our integration with Aztec Network and the components that power the Private Portfolio and Identity modules."
+            lastUpdated="June 22, 2026"
             category="Technical"
         >
             <div className="space-y-16 text-[#050505]">

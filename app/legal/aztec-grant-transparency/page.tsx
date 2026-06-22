@@ -13,8 +13,8 @@ export default function AztecGrantTransparencyPage() {
   return (
     <LegalDocLayout
       title="Aztec Grant Alignment & Scaling Report"
-      subtitle="A transparent assessment of Whale Network's integration with Aztec Network and the roadmap for scaling our native privacy infrastructure."
-      lastUpdated="6 June 2026"
+      subtitle="A transparent breakdown of Humanity Ledger S.L.'s commitments, grant allocations, and milestone deliverables for the Aztec Network grant."
+      lastUpdated="22 June 2026"
       category="Transparency & Scaling"
       toc={TOC}
       backHref="/legal/compliance"

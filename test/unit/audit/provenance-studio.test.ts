@@ -23,6 +23,9 @@ vi.mock('../../../lib/prisma', () => ({
         createdAt: new Date(),
         events: []
       })
+    },
+    user: {
+      findUnique: vi.fn().mockResolvedValue({ tier: 'ENTERPRISE' })
     }
   }
 }));

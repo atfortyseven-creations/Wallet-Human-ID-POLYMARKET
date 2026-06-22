@@ -69,3 +69,4 @@ export class RedisRateLimiter {
   }
 }
 
+export const checkRateLimit = RedisRateLimiter.check.bind(RedisRateLimiter);

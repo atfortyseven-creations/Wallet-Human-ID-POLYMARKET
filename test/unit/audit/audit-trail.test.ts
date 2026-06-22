@@ -13,7 +13,7 @@ vi.mock('@/lib/prisma', () => ({
   prisma: {
     $queryRaw: vi.fn(),
     // @ts-ignore
-    systemAuditLog: {
+    auditLog: {
       findFirst: vi.fn(async ({ orderBy, select }: any) => {
         if (!mockEntries.length) return null;
         return { payloadHash: mockEntries[mockEntries.length - 1].payloadHash };

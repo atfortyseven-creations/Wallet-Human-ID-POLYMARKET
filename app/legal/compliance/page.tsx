@@ -94,8 +94,8 @@ export default function CompliancePage() {
   return (
     <LegalDocLayout
       title="Regulatory Compliance Documentation"
-      subtitle="Complete MiCA regulatory filing package for the $QDs Utility Token (Aztec Network — Noir). Prepared for evaluation by Aztec Labs, the CNMV, and SEPBLAC. Documents shown at full opacity are finalised. "
-      lastUpdated="6 June 2026 — Version 3.0"
+      subtitle="This unified compliance hub centralizes all regulatory documents, audits, risk disclaimers, and procedures relevant to the Humanity Ledger S.L. ecosystem operating under MiCA and related frameworks."
+      lastUpdated="22 June 2026 - Version 3.0"
       category="Legal & Regulatory"
       toc={TOC}
       backHref="/"
