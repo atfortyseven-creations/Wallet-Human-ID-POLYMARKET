@@ -97,7 +97,7 @@ function WalletButton({ logo, name, badge, onClick, loading = false, delay = 0, 
 export default function ConnectPage() {
   const router = useRouter();
   const isMobile = useIsMobile();
-  const { isConnected, address } = useAccount();
+  const { isConnected, address, connector } = useAccount();
   const { connect, connectors, isPending, isError, error } = useConnect();
   const { signMessageAsync } = useSignMessage();
   const { open: openAppKit } = useAppKit();
@@ -419,21 +419,26 @@ export default function ConnectPage() {
         
         const message = `Authenticate to Whale Network.\n\nNonce: ${nonce}`;
         
-        // [MOBILE CONNECTION HEALER] Retry signMessageAsync to bypass "connector not connected" race condition.
+        // [CONNECTION HEALER] Bypass "connector not connected" race condition.
         let signature = '';
-        let signAttempts = 0;
-        while (signAttempts < 4) {
-          try {
-            if (signAttempts > 0) await new Promise(r => setTimeout(r, 1200));
-            signature = await signMessageAsync({ message });
-            break;
-          } catch (signErr: any) {
-            const errMsg = signErr?.message?.toLowerCase() || '';
-            if (errMsg.includes('connector not connected') && signAttempts < 3) {
-              signAttempts++;
-              console.warn(`[Auth] Connector not ready, retrying sign (${signAttempts}/3)...`);
-              continue;
+        try {
+          signature = await signMessageAsync({ message });
+        } catch (signErr: any) {
+          const errMsg = signErr?.message?.toLowerCase() || '';
+          if (errMsg.includes('connector not connected') || errMsg.includes('not connected')) {
+            console.warn('[Auth] Wagmi signMessage failed. Bypassing Wagmi via raw EIP-1193 provider...');
+            try {
+               const provider = (await connector?.getProvider()) as any;
+               if (!provider?.request) throw new Error("No provider request method");
+               const hexMessage = '0x' + Array.from(new TextEncoder().encode(message)).map(b => b.toString(16).padStart(2, '0')).join('');
+               signature = await provider.request({
+                  method: 'personal_sign',
+                  params: [hexMessage, norm]
+               });
+            } catch (fallbackErr) {
+               throw signErr;
             }
+          } else {
             throw signErr;
           }
         }
@@ -481,7 +486,7 @@ export default function ConnectPage() {
     };
 
     runVerify();
-  }, [isConnected, address, mounted, setLinked, signMessageAsync, authStatus]);
+  }, [isConnected, address, mounted, setLinked, signMessageAsync, authStatus, connector]);
 
   // [FIX] First-click dead-click: AppKit modal can be called before the internal
   // WalletConnect relay WebSocket has finished handshaking. On mobile (especially iOS)

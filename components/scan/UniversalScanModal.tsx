@@ -11,7 +11,7 @@ import { useAppKit } from '@reown/appkit/react';
 import { ATOM_PNGTREE } from '@/lib/constants/systemAssets';
 import { parseScanPayload } from '@/lib/scan/parseScanPayload';
 import { completeSessionHandshake } from '@/lib/scan/sessionHandshake';
-import { useSignMessage } from 'wagmi';
+import { useSignMessage, useAccount } from 'wagmi';
 
 const VIEWFINDER_SIZE = 240;
 
@@ -96,6 +96,7 @@ export default function UniversalScanModal({
   const { address } = useSystemAccount();
   const { open: openAppKit } = useAppKit();
   const { signMessageAsync } = useSignMessage();
+  const { connector } = useAccount();
   const [status, setStatus] = useState<'idle' | 'scanning' | 'success' | 'error'>('idle');
   const [errMsg, setErrMsg] = useState('');
   const [needsWallet, setNeedsWallet] = useState(false);
@@ -159,7 +160,7 @@ export default function UniversalScanModal({
       try {
         if (route.type === 'session') {
           setSuccessLabel('Session linked');
-          const result = await completeSessionHandshake(decodedText, getAddress, signMessageAsync);
+          const result = await completeSessionHandshake(decodedText, getAddress, signMessageAsync, connector);
           if (!result.ok) {
             setErrMsg(result.message);
             if ('needsWallet' in result && result.needsWallet) {

@@ -1,6 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   ExternalLink,
   Package,
@@ -137,6 +139,7 @@ export function PassportView({ passport }: { passport: ProductPassportPublic }) 
   const txUrl = explorerUrl(passport.chainId, passport.txHash);
   const passportUrl = passportPublicUrl(passport.slug);
   const isAnchored = !!passport.txHash;
+  const [activeModal, setActiveModal] = useState<'records' | 'how' | null>(null);
 
   // Separate on_chain_confirmed events from other events for the timeline
   const timelineEvents = passport.events.filter(
@@ -400,20 +403,20 @@ export function PassportView({ passport }: { passport: ProductPassportPublic }) 
               </p>
               <p className="text-[10px] font-mono text-black/40 break-all">{passportUrl}</p>
               <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-                <Link
-                  href="/studio/provenance/registry"
-                  className="inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-black/40 hover:text-black/70 transition-colors"
+                <button
+                  onClick={() => setActiveModal('records')}
+                  className="inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-black/40 hover:text-black/70 transition-colors cursor-pointer"
                 >
                   <Globe size={10} />
                   All records
-                </Link>
-                <Link
-                  href="/studio/provenance/aztec"
-                  className="inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-black/40 hover:text-black/70 transition-colors"
+                </button>
+                <button
+                  onClick={() => setActiveModal('how')}
+                  className="inline-flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-black/40 hover:text-black/70 transition-colors cursor-pointer"
                 >
                   How this works
                   <ArrowUpRight size={10} />
-                </Link>
+                </button>
               </div>
             </div>
           </div>
@@ -448,6 +451,68 @@ export function PassportView({ passport }: { passport: ProductPassportPublic }) 
           </Link>
         </p>
       </main>
+
+      <AnimatePresence>
+        {activeModal && (
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 px-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setActiveModal(null)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="relative w-full max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden border border-black/10"
+            >
+              {activeModal === 'how' ? (
+                <div className="p-6">
+                  <div className="w-10 h-10 rounded-full bg-black/5 flex items-center justify-center mb-4">
+                    <ShieldCheck size={20} className="text-black" />
+                  </div>
+                  <h3 className="text-lg font-black tracking-tight mb-2">Zero-Knowledge Provenance</h3>
+                  <p className="text-sm text-black/60 leading-relaxed mb-4">
+                    This Product Passport is cryptographically anchored to the <span className="font-bold text-black">Aztec Network</span>. 
+                    It uses Zero-Knowledge Proofs (ZK-SNARKs) to prove the item's authenticity and origin without exposing sensitive manufacturing or supply chain data.
+                  </p>
+                  <p className="text-xs text-black/40 mb-6 leading-relaxed">
+                    The QR code you scanned contains a unique signature that was verified mathematically on your device, ensuring it was created by the verified issuer.
+                  </p>
+                  <button
+                    onClick={() => setActiveModal(null)}
+                    className="w-full py-3 bg-black text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-black/80 transition-colors"
+                  >
+                    Understood
+                  </button>
+                </div>
+              ) : (
+                <div className="p-6">
+                  <div className="w-10 h-10 rounded-full bg-black/5 flex items-center justify-center mb-4">
+                    <Globe size={20} className="text-black" />
+                  </div>
+                  <h3 className="text-lg font-black tracking-tight mb-2">Whale Network Registry</h3>
+                  <p className="text-sm text-black/60 leading-relaxed mb-4">
+                    You are currently viewing an isolated, public-facing record. The Global Registry is a private environment restricted to verified manufacturers and auditors.
+                  </p>
+                  <div className="bg-[#FAFAFA] border border-black/5 rounded-xl p-3 mb-6">
+                    <p className="text-[10px] uppercase tracking-widest text-black/40 font-black mb-1">Issuer Status</p>
+                    <p className="text-xs font-medium text-black">Verified & Anchored</p>
+                  </div>
+                  <button
+                    onClick={() => setActiveModal(null)}
+                    className="w-full py-3 bg-black text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-black/80 transition-colors"
+                  >
+                    Close
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

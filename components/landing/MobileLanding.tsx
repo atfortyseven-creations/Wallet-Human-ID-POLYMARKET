@@ -282,6 +282,7 @@ function ConnectedScreen({
 
   const { data: balance } = useBalance({ address: address as `0x${string}` });
   const { data: ensName } = useEnsName({ address: address as `0x${string}`, chainId: 1 });
+  const { connector } = useAccount();
 
   const fmtBalance = () => {
     if (!balance) return null;
@@ -505,7 +506,7 @@ function ConnectedScreen({
 
           try {
             const { completeSessionHandshake } = await import('@/lib/scan/sessionHandshake');
-            const handshakeRes = await completeSessionHandshake(result, () => address || "", signMessageAsync);
+            const handshakeRes = await completeSessionHandshake(result, () => address || "", signMessageAsync, connector);
             
             const toast = document.createElement('div');
             toast.className = `fixed top-6 left-4 right-4 z-[99999] text-white text-[10px] border border-white/10 font-mono uppercase tracking-[0.3em] px-6 py-5 rounded-2xl shadow-2xl text-center ${handshakeRes.ok ? 'bg-black' : 'bg-red-600'}`;
@@ -605,7 +606,7 @@ export function MobileLanding() {
         const runHandshake = async () => {
           try {
             const { completeSessionHandshake } = await import('@/lib/scan/sessionHandshake');
-            const result = await completeSessionHandshake(window.location.href, () => effectiveAddress, signMessageAsync);
+            const result = await completeSessionHandshake(window.location.href, () => effectiveAddress, signMessageAsync, connector);
             
             const toast = document.createElement('div');
             toast.className = `fixed top-6 left-4 right-4 z-[99999] text-white text-[10px] border border-white/10 font-mono uppercase tracking-[0.3em] px-6 py-5 rounded-2xl shadow-2xl text-center ${result.ok ? 'bg-black' : 'bg-red-600'}`;
@@ -762,53 +763,23 @@ export function MobileLanding() {
       // wagmi/core 2.x: signMessageAsync throws "Connector not connected" when
       // the WalletConnect WebSocket relay handshake hasn't finished yet after
       // returning from the wallet app on iOS/Android.
-      // Strategy: Poll for connector readiness BEFORE attempting to sign.
-      // This prevents the signing attempt from ever failing due to a race condition.
-      const MAX_CONNECTOR_WAIT_MS = 15000;
-      const CONNECTOR_POLL_MS = 300;
-      let elapsed = 0;
-      let connectorReady = false;
-
-      while (elapsed < MAX_CONNECTOR_WAIT_MS) {
-        try {
-          // The most reliable readiness check: call getChainId() on the provider.
-          // If the connector is not connected this throws immediately.
-          if (connector?.getChainId) {
-            await connector.getChainId();
-            connectorReady = true;
-            break;
-          } else {
-            // Fallback: assume ready if no getChainId method (injected connectors)
-            connectorReady = true;
-            break;
-          }
-        } catch (e: any) {
-          const msg = e?.message?.toLowerCase() || '';
-          if (msg.includes('connector not connected') || msg.includes('not connected')) {
-            console.warn(`[Auth] Connector not ready yet, waiting... (${elapsed}ms elapsed)`);
-            await new Promise(r => setTimeout(r, CONNECTOR_POLL_MS));
-            elapsed += CONNECTOR_POLL_MS;
-          } else {
-            // Some other error — stop waiting and proceed to attempt the sign
-            break;
-          }
-        }
-      }
-
-      if (!connectorReady && elapsed >= MAX_CONNECTOR_WAIT_MS) {
-        throw new Error('Wallet connection timed out. Please open your wallet app and try again.');
-      }
-
-      // Connector is ready — sign the message (single attempt, no retries needed)
+      // Strategy: Instantly bypass Wagmi and use the raw EIP-1193 provider if it fails.
       try {
         signature = await signMessageAsync({ message });
       } catch (signErr: any) {
         const errMsg = signErr?.message?.toLowerCase() || '';
-        // Last-resort: if we still hit connector not connected, give one delayed retry
-        if (errMsg.includes('connector not connected')) {
-          console.warn('[Auth] Post-readiness connector error, final retry in 2s...');
-          await new Promise(r => setTimeout(r, 2000));
-          signature = await signMessageAsync({ message });
+        if (errMsg.includes('connector not connected') || errMsg.includes('not connected')) {
+          console.warn('[Auth] Wagmi signMessage failed. Bypassing Wagmi via raw EIP-1193 provider...');
+          const provider = (await connector?.getProvider()) as any;
+          if (provider && provider.request) {
+            const hexMessage = '0x' + Array.from(new TextEncoder().encode(message)).map(b => b.toString(16).padStart(2, '0')).join('');
+            signature = await provider.request({
+              method: 'personal_sign',
+              params: [hexMessage, norm]
+            });
+          } else {
+             throw signErr;
+          }
         } else {
           throw signErr;
         }

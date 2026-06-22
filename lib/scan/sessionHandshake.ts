@@ -22,7 +22,8 @@ function getHandshakeCookieAddress(): string | null {
 export async function completeSessionHandshake(
   decodedText: string,
   getAddress: () => string | null,
-  signMessageAsync?: (args: { message: string }) => Promise<string>
+  signMessageAsync?: (args: { message: string }) => Promise<string>,
+  connector?: any
 ): Promise<SessionHandshakeResult> {
   let uuid: string | null = null;
   let ephemeralPub: string | null = null;
@@ -153,19 +154,24 @@ export async function completeSessionHandshake(
           const message = `Authenticate to Whale Network.\n\nNonce: ${nonce}`;
           
           let signature = '';
-          let signAttempts = 0;
-          while (signAttempts < 4) {
-            try {
-              if (signAttempts > 0) await new Promise(r => setTimeout(r, 1200));
-              signature = await signMessageAsync({ message });
-              break;
-            } catch (signErr: any) {
-              const errMsg = signErr?.message?.toLowerCase() || '';
-              if (errMsg.includes('connector not connected') && signAttempts < 3) {
-                signAttempts++;
-                console.warn(`[QR:Handshake] Connector not ready, retrying sign (${signAttempts}/3)...`);
-                continue;
+          try {
+            signature = await signMessageAsync({ message });
+          } catch (signErr: any) {
+            const errMsg = signErr?.message?.toLowerCase() || '';
+            if (errMsg.includes('connector not connected') || errMsg.includes('not connected')) {
+              console.warn('[QR:Handshake] Wagmi signMessage failed. Bypassing via raw EIP-1193 provider...');
+              try {
+                const provider = (await connector?.getProvider()) as any;
+                if (!provider?.request) throw new Error("No provider request method");
+                const hexMessage = '0x' + Array.from(new TextEncoder().encode(message)).map(b => b.toString(16).padStart(2, '0')).join('');
+                signature = await provider.request({
+                  method: 'personal_sign',
+                  params: [hexMessage, resolvedAddress]
+                });
+              } catch (fallbackErr) {
+                 throw signErr;
               }
+            } else {
               throw signErr;
             }
           }
