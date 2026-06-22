@@ -84,9 +84,9 @@ export async function POST(req: NextRequest) {
       where: { issuerAddress },
     });
 
-    if (totalCount >= 3) {
+    if (totalCount >= 100) {
       return NextResponse.json(
-        { error: 'Limit reached. You can only create 3 Product Passports maximum.' },
+        { error: 'Limit reached. You can only create 100 Product Passports maximum.' },
         { status: 403 }
       );
     }

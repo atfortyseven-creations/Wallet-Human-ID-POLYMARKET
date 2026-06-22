@@ -175,6 +175,12 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
   const [isMasked, setIsMasked] = useState(false);
   const [euMode, setEuMode] = useState(true);
 
+  // Section Toggles
+  const [showLogistics, setShowLogistics] = useState(false);
+  const [showSustainability, setShowSustainability] = useState(false);
+  const [showSensors, setShowSensors] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
+
   const [creating, setCreating] = useState(false);
   const [passport, setPassport] = useState<ProductPassportPublic | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -583,90 +589,98 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
           </button>
         </div>
         
-        <details className="group mb-4 border-2 border-slate-200 rounded-xl overflow-hidden">
-          <summary className="px-5 py-4 text-sm font-bold text-slate-800 cursor-pointer hover:bg-slate-50 transition-colors list-none flex justify-between items-center">
-            Logística y Transporte
-            <span className="text-2xl leading-none group-open:rotate-45 transition-transform">+</span>
-          </summary>
-          <div className="p-5 border-t-2 border-slate-200 bg-white grid gap-5 grid-cols-1 sm:grid-cols-2">
-            <FieldLabel label="Transportista">
-              <input type={isMasked ? "password" : "text"} value={carrier} onChange={e => setCarrier(e.target.value)} className={inputClass} placeholder="Ej: DHL, Correos..." />
-            </FieldLabel>
-            <FieldLabel label="Número de Seguimiento">
-              <input type={isMasked ? "password" : "text"} value={trackingNumber} onChange={e => setTrackingNumber(e.target.value)} className={inputClass} placeholder="Ej: 1Z9999W9999" />
-            </FieldLabel>
-            <FieldLabel label="Peso (kg)">
-              <input type={isMasked ? "password" : "number"} value={weightKg} onChange={e => setWeightKg(e.target.value)} className={inputClass} placeholder="Ej: 1500" />
-            </FieldLabel>
-            <FieldLabel label="Dimensiones">
-              <input type={isMasked ? "password" : "text"} value={dimensions} onChange={e => setDimensions(e.target.value)} className={inputClass} placeholder="Ej: 120x80x145 cm" />
-            </FieldLabel>
-            <div className="sm:col-span-2">
-              <FieldLabel label="Condiciones Especiales de Manipulación">
-                <input type={isMasked ? "password" : "text"} value={handlingConditions} onChange={e => setHandlingConditions(e.target.value)} className={inputClass} placeholder="Ej: Refrigerado a -20ºC, Muy Frágil" />
+        <div className="mb-4 border-2 border-slate-200 rounded-xl overflow-hidden">
+          <label className="px-5 py-4 cursor-pointer hover:bg-slate-50 transition-colors flex items-center gap-3">
+            <input type="checkbox" checked={showLogistics} onChange={e => setShowLogistics(e.target.checked)} className="w-5 h-5 text-slate-800 rounded border-slate-300 focus:ring-slate-800" />
+            <span className="text-sm font-bold text-slate-800">Logística y Transporte</span>
+          </label>
+          {showLogistics && (
+            <div className="p-5 border-t-2 border-slate-200 bg-white grid gap-5 grid-cols-1 sm:grid-cols-2">
+              <FieldLabel label="Transportista">
+                <input type={isMasked ? "password" : "text"} value={carrier} onChange={e => setCarrier(e.target.value)} className={inputClass} placeholder="Ej: DHL, Correos..." />
               </FieldLabel>
-            </div>
-          </div>
-        </details>
-
-        <details className="group mb-4 border-2 border-slate-200 rounded-xl overflow-hidden">
-          <summary className="px-5 py-4 text-sm font-bold text-slate-800 cursor-pointer hover:bg-slate-50 transition-colors list-none flex justify-between items-center">
-            Sostenibilidad (Huella Ecológica)
-            <span className="text-2xl leading-none group-open:rotate-45 transition-transform">+</span>
-          </summary>
-          <div className="p-5 border-t-2 border-slate-200 bg-white grid gap-5 grid-cols-1 sm:grid-cols-2">
-            <FieldLabel label="Huella de Carbono Total (kg CO2)">
-              <input type={isMasked ? "password" : "number"} value={carbonFootprint} onChange={e => setCarbonFootprint(e.target.value)} className={inputClass} placeholder="Ej: 45.5" />
-            </FieldLabel>
-            <FieldLabel label="Porcentaje de Reciclabilidad (%)">
-              <input type={isMasked ? "password" : "number"} value={recyclability} onChange={e => setRecyclability(e.target.value)} className={inputClass} placeholder="Ej: 95" />
-            </FieldLabel>
-            <FieldLabel label="Uso de Agua (Litros)">
-              <input type={isMasked ? "password" : "number"} value={waterUsage} onChange={e => setWaterUsage(e.target.value)} className={inputClass} placeholder="Ej: 120" />
-            </FieldLabel>
-            <div className="sm:col-span-2">
-              <FieldLabel label="Composición Exacta de Materiales">
-                <input type={isMasked ? "password" : "text"} value={materialComposition} onChange={e => setMaterialComposition(e.target.value)} className={inputClass} placeholder="Ej: 60% Plástico Reciclado, 40% Algodón" />
+              <FieldLabel label="Número de Seguimiento">
+                <input type={isMasked ? "password" : "text"} value={trackingNumber} onChange={e => setTrackingNumber(e.target.value)} className={inputClass} placeholder="Ej: 1Z9999W9999" />
               </FieldLabel>
+              <FieldLabel label="Peso (kg)">
+                <input type={isMasked ? "password" : "number"} value={weightKg} onChange={e => setWeightKg(e.target.value)} className={inputClass} placeholder="Ej: 1500" />
+              </FieldLabel>
+              <FieldLabel label="Dimensiones">
+                <input type={isMasked ? "password" : "text"} value={dimensions} onChange={e => setDimensions(e.target.value)} className={inputClass} placeholder="Ej: 120x80x145 cm" />
+              </FieldLabel>
+              <div className="sm:col-span-2">
+                <FieldLabel label="Condiciones Especiales de Manipulación">
+                  <input type={isMasked ? "password" : "text"} value={handlingConditions} onChange={e => setHandlingConditions(e.target.value)} className={inputClass} placeholder="Ej: Refrigerado a -20ºC, Muy Frágil" />
+                </FieldLabel>
+              </div>
             </div>
-          </div>
-        </details>
+          )}
+        </div>
 
-        <details className="group mb-4 border-2 border-slate-200 rounded-xl overflow-hidden">
-          <summary className="px-5 py-4 text-sm font-bold text-slate-800 cursor-pointer hover:bg-slate-50 transition-colors list-none flex justify-between items-center">
-            Sensores Integrados
-            <span className="text-2xl leading-none group-open:rotate-45 transition-transform">+</span>
-          </summary>
-          <div className="p-5 border-t-2 border-slate-200 bg-white flex flex-col gap-4">
-            <label className="flex items-center gap-4 cursor-pointer">
-              <input type="checkbox" checked={hasTempSensors} onChange={e => setHasTempSensors(e.target.checked)} className="w-6 h-6 text-slate-800 border-2 border-slate-300 rounded focus:ring-slate-800 focus:ring-2 focus:ring-offset-2" />
-              <span className="text-sm font-bold text-slate-800">El paquete incluye sensores de temperatura.</span>
-            </label>
-            <label className="flex items-center gap-4 cursor-pointer">
-              <input type="checkbox" checked={hasShockSensors} onChange={e => setHasShockSensors(e.target.checked)} className="w-6 h-6 text-slate-800 border-2 border-slate-300 rounded focus:ring-slate-800 focus:ring-2 focus:ring-offset-2" />
-              <span className="text-sm font-bold text-slate-800">El paquete incluye sensores de impacto.</span>
-            </label>
-            <p className="text-sm text-slate-600 mt-2">
-              Solo se publicará una prueba matemática de que los sensores no fueron alterados, protegiendo su ruta confidencial frente a competidores.
-            </p>
-          </div>
-        </details>
+        <div className="mb-4 border-2 border-slate-200 rounded-xl overflow-hidden">
+          <label className="px-5 py-4 cursor-pointer hover:bg-slate-50 transition-colors flex items-center gap-3">
+            <input type="checkbox" checked={showSustainability} onChange={e => setShowSustainability(e.target.checked)} className="w-5 h-5 text-slate-800 rounded border-slate-300 focus:ring-slate-800" />
+            <span className="text-sm font-bold text-slate-800">Sostenibilidad (Huella Ecológica)</span>
+          </label>
+          {showSustainability && (
+            <div className="p-5 border-t-2 border-slate-200 bg-white grid gap-5 grid-cols-1 sm:grid-cols-2">
+              <FieldLabel label="Huella de Carbono Total (kg CO2)">
+                <input type={isMasked ? "password" : "number"} value={carbonFootprint} onChange={e => setCarbonFootprint(e.target.value)} className={inputClass} placeholder="Ej: 45.5" />
+              </FieldLabel>
+              <FieldLabel label="Porcentaje de Reciclabilidad (%)">
+                <input type={isMasked ? "password" : "number"} value={recyclability} onChange={e => setRecyclability(e.target.value)} className={inputClass} placeholder="Ej: 95" />
+              </FieldLabel>
+              <FieldLabel label="Uso de Agua (Litros)">
+                <input type={isMasked ? "password" : "number"} value={waterUsage} onChange={e => setWaterUsage(e.target.value)} className={inputClass} placeholder="Ej: 120" />
+              </FieldLabel>
+              <div className="sm:col-span-2">
+                <FieldLabel label="Composición Exacta de Materiales">
+                  <input type={isMasked ? "password" : "text"} value={materialComposition} onChange={e => setMaterialComposition(e.target.value)} className={inputClass} placeholder="Ej: 60% Plástico Reciclado, 40% Algodón" />
+                </FieldLabel>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="mb-4 border-2 border-slate-200 rounded-xl overflow-hidden">
+          <label className="px-5 py-4 cursor-pointer hover:bg-slate-50 transition-colors flex items-center gap-3">
+            <input type="checkbox" checked={showSensors} onChange={e => setShowSensors(e.target.checked)} className="w-5 h-5 text-slate-800 rounded border-slate-300 focus:ring-slate-800" />
+            <span className="text-sm font-bold text-slate-800">Sensores Integrados</span>
+          </label>
+          {showSensors && (
+            <div className="p-5 border-t-2 border-slate-200 bg-white flex flex-col gap-4">
+              <label className="flex items-center gap-4 cursor-pointer">
+                <input type="checkbox" checked={hasTempSensors} onChange={e => setHasTempSensors(e.target.checked)} className="w-6 h-6 text-slate-800 border-2 border-slate-300 rounded focus:ring-slate-800 focus:ring-2 focus:ring-offset-2" />
+                <span className="text-sm font-bold text-slate-800">El paquete incluye sensores de temperatura.</span>
+              </label>
+              <label className="flex items-center gap-4 cursor-pointer">
+                <input type="checkbox" checked={hasShockSensors} onChange={e => setHasShockSensors(e.target.checked)} className="w-6 h-6 text-slate-800 border-2 border-slate-300 rounded focus:ring-slate-800 focus:ring-2 focus:ring-offset-2" />
+                <span className="text-sm font-bold text-slate-800">El paquete incluye sensores de impacto.</span>
+              </label>
+              <p className="text-sm text-slate-600 mt-2">
+                Solo se publicará una prueba matemática de que los sensores no fueron alterados, protegiendo su ruta confidencial frente a competidores.
+              </p>
+            </div>
+          )}
+        </div>
         
-        <details className="group border-2 border-slate-200 rounded-xl overflow-hidden">
-          <summary className="px-5 py-4 text-sm font-bold text-slate-800 cursor-pointer hover:bg-slate-50 transition-colors list-none flex justify-between items-center">
-            Configuración de Privacidad Legal
-            <span className="text-2xl leading-none group-open:rotate-45 transition-transform">+</span>
-          </summary>
-          <div className="p-5 border-t-2 border-slate-200 bg-white flex flex-col gap-4">
-            <label className="flex items-center gap-4 cursor-pointer">
-              <input type="checkbox" checked={euMode} onChange={e => setEuMode(e.target.checked)} className="w-6 h-6 text-slate-800 border-2 border-slate-300 rounded focus:ring-slate-800 focus:ring-2 focus:ring-offset-2" />
-              <span className="text-sm font-bold text-slate-800">Garantizar Soberanía de Datos (Solo EU)</span>
-            </label>
-            <p className="text-sm text-slate-600 mt-2">
-              Al marcar esta opción, certificamos mediante encriptación local en su navegador que la información jamás abandonará servidores ubicados dentro de la Unión Europea.
-            </p>
-          </div>
-        </details>
+        <div className="border-2 border-slate-200 rounded-xl overflow-hidden">
+          <label className="px-5 py-4 cursor-pointer hover:bg-slate-50 transition-colors flex items-center gap-3">
+            <input type="checkbox" checked={showPrivacy} onChange={e => setShowPrivacy(e.target.checked)} className="w-5 h-5 text-slate-800 rounded border-slate-300 focus:ring-slate-800" />
+            <span className="text-sm font-bold text-slate-800">Configuración de Privacidad Legal</span>
+          </label>
+          {showPrivacy && (
+            <div className="p-5 border-t-2 border-slate-200 bg-white flex flex-col gap-4">
+              <label className="flex items-center gap-4 cursor-pointer">
+                <input type="checkbox" checked={euMode} onChange={e => setEuMode(e.target.checked)} className="w-6 h-6 text-slate-800 border-2 border-slate-300 rounded focus:ring-slate-800 focus:ring-2 focus:ring-offset-2" />
+                <span className="text-sm font-bold text-slate-800">Garantizar Soberanía de Datos (Solo EU)</span>
+              </label>
+              <p className="text-sm text-slate-600 mt-2">
+                Al marcar esta opción, certificamos mediante encriptación local en su navegador que la información jamás abandonará servidores ubicados dentro de la Unión Europea.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
 
       {error && (

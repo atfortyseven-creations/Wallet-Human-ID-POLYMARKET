@@ -374,7 +374,10 @@ export async function sendMessage(
 
   const res = await fetch('/api/chat/queue', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      'x-web3-address': senderAddr
+    },
     body: JSON.stringify({
       sender: senderAddr,
       recipient: toAddress,
