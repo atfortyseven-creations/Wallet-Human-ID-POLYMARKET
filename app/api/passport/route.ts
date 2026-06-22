@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
   const parseResult = passportSchema.safeParse(body);
   if (!parseResult.success) {
     // Build a human-readable error pointing to the first invalid field
-    const firstError = parseResult.error.errors[0];
+    const firstError = (parseResult.error as any).errors[0];
     const fieldName = firstError?.path?.join('.') || 'unknown field';
     const message = firstError?.message || 'Validation failed';
     return NextResponse.json(
@@ -150,12 +150,12 @@ export async function POST(req: NextRequest) {
           title: sanitizeHTML(validData.title),
           category: validData.category,
           issuerAddress,
-          payload: validData.payload ? {
+          payload: validData.payload ? JSON.parse(JSON.stringify({
             ...validData.payload,
             description: validData.payload.description ? sanitizeHTML(validData.payload.description) : undefined,
             origin: validData.payload.origin ? sanitizeHTML(validData.payload.origin) : undefined,
             batchId: validData.payload.batchId ? sanitizeHTML(validData.payload.batchId) : undefined,
-          } : undefined,
+          })) : {},
           gs1Gtin: validData.gs1Gtin?.replace(/\D/g, '') || null,
           events: {
             create: [{ eventType: 'manufactured', payload: { note: 'Registered via Studio Provenance API' } }],

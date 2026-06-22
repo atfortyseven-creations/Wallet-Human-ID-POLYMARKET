@@ -3,11 +3,11 @@
 import React, { useState, useCallback, useRef } from "react";
 import { Loader2, ShieldAlert, Zap, Terminal, Code2, ShieldCheck } from "lucide-react";
 
-// ─── Quantum Institutional Circuits ───────────
+// ─── Complex ZK Circuits ───────────
 const CIRCUIT_EXAMPLES: { label: string; code: string; difficulty: string }[] = [
   {
     label: "Dark Pool Order Matching",
-    difficulty: "ABYSMAL",
+    difficulty: "ADVANCED",
     code: `// ZK Orderbook Matcher: Proves two orders cross without revealing price or amount.
 // Uses Pedersen commitments for Price and Amount, proving Volume >= MinVolume.
 use std::hash::pedersen_hash;
@@ -69,7 +69,7 @@ fn main(
   },
   {
     label: "Omnichain MPT State Proof",
-    difficulty: "ABYSMAL",
+    difficulty: "ADVANCED",
     code: `// Validates Ethereum L1 Merkle Patricia Trie inside L2 Noir.
 use std::hash::keccak256;
 
@@ -91,7 +91,7 @@ fn main(
   },
   {
     label: "Recursive SNARK Verification",
-    difficulty: "QUANTUM",
+    difficulty: "EXTREME",
     code: `// Plonk-in-Plonk: Aggregates a child proof within this circuit
 use std::verify_proof;
 
@@ -172,14 +172,14 @@ export function NoirCircuitSandbox() {
     setCompileResult(null);
   }, []);
 
-  const simulateQuantumCompilation = useCallback(async () => {
+  const simulateCompilation = useCallback(async () => {
     resetAll();
     setRunning(true);
 
     try {
       // ── STAGE 1: AST PARSING & SECURITY LINTER (Frontend Simulation) ─────
       updateStage("ast", { status: "running" });
-      addLog("> INITIATING QUANTUM LINTER...", "system");
+      addLog("> INITIATING ADVANCED LINTER...", "system");
       await new Promise(r => setTimeout(r, 400));
       
       let isVulnerable = false;
@@ -296,7 +296,7 @@ export function NoirCircuitSandbox() {
       }
 
       addLog("==================================", "system");
-      addLog("» QUANTUM EXECUTION SUCCESSFUL «", "success");
+      addLog("» COMPILATION SUCCESSFUL «", "success");
       addLog("==================================", "system");
 
     } catch (e: any) {
@@ -309,16 +309,17 @@ export function NoirCircuitSandbox() {
   const logColour = { info: "#6b7280", success: "#10b981", warn: "#f59e0b", error: "#ef4444", system: "#3b82f6" };
 
   return (
-    <section className="font-mono bg-white rounded-2xl border border-slate-200 overflow-hidden w-full shadow-xl text-black">
+    <section className="font-mono bg-white rounded-2xl border border-slate-200 overflow-hidden w-full max-w-[1400px] mx-auto shadow-xl text-black">
       {/* Header */}
       <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Terminal size={18} className="text-black" />
-          <span className="font-bold text-sm tracking-widest uppercase">Noir Quantum Compiler</span>
+          <span className="font-bold text-sm tracking-widest uppercase">Noir Advanced Compiler</span>
         </div>
         <div className="flex gap-2">
-          <span className="bg-blue-50 text-blue-600 text-[10px] px-2 py-1 rounded border border-blue-200 font-bold">V {compileResult?.nargoVersion ?? "0.36.0"}</span>
-          <span className="bg-green-50 text-green-600 text-[10px] px-2 py-1 rounded border border-green-200 font-bold">WASM JIT</span>
+          <button className="bg-white text-slate-600 hover:text-black text-[10px] px-3 py-1.5 rounded border border-slate-200 font-bold flex items-center gap-1.5 transition-colors"><Code2 size={12}/> Format</button>
+          <button className="bg-white text-slate-600 hover:text-black text-[10px] px-3 py-1.5 rounded border border-slate-200 font-bold flex items-center gap-1.5 transition-colors"><Zap size={12}/> Analyze Gas</button>
+          <button className="bg-white text-slate-600 hover:text-black text-[10px] px-3 py-1.5 rounded border border-slate-200 font-bold flex items-center gap-1.5 transition-colors"><ShieldCheck size={12}/> Export Verifier</button>
         </div>
       </div>
 
@@ -352,11 +353,11 @@ export function NoirCircuitSandbox() {
             className="flex-1 bg-white text-black p-6 text-[13px] leading-relaxed resize-none outline-none font-mono focus:bg-slate-50/50 transition-colors"
           />
           <button
-            onClick={simulateQuantumCompilation}
+            onClick={simulateCompilation}
             disabled={running}
             className={running ? 'w-full py-5 font-bold text-[12px] uppercase tracking-[0.2em] transition-all bg-slate-100 text-slate-400 cursor-not-allowed' : 'w-full py-5 font-bold text-[12px] uppercase tracking-[0.2em] transition-all bg-black text-white hover:bg-slate-800'}
           >
-            {running ? "COMPILING KERNEL..." : "RUN SECURITY COMPILER"}
+            {running ? "COMPILING KERNEL..." : "RUN ADVANCED COMPILER"}
           </button>
         </div>
 

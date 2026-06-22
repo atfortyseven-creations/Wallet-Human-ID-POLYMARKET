@@ -27,7 +27,7 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
     try {
       setIsAuthenticating(true);
       const { signMessage } = await import('@wagmi/core');
-      const { wagmiAdapter } = await import('@/lib/wagmi-config');
+      const { config } = await import('@/lib/wagmi-config');
       
       const resNonce = await fetch('/api/siwe/nonce');
       const nonce = await resNonce.text();
@@ -51,7 +51,7 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
         }, 50);
       }
 
-      const signature = await signMessage(wagmiAdapter.wagmiConfig as any, {
+      const signature = await signMessage(config, {
         message: message.prepareMessage(),
       });
 
