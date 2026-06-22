@@ -187,12 +187,22 @@ export async function getXMTPClient(
   //  Retrieve or Generate Local DB Encryption Key 
   // Passing this key prevents XMTP from prompting a signature on every reload
   const storageKey = `whale_xmtp_db_key_${address}`;
-  let dbKeyHex = localStorage.getItem(storageKey);
+  let dbKeyHex: string | null = null;
+  try {
+    dbKeyHex = localStorage.getItem(storageKey);
+  } catch (e) {
+    console.warn('[XMTP] localStorage access denied (private mode?). Regenerating key in memory.');
+  }
+
   if (!dbKeyHex) {
     const keyBytes = new Uint8Array(32);
     crypto.getRandomValues(keyBytes);
     dbKeyHex = Buffer.from(keyBytes).toString('hex');
-    localStorage.setItem(storageKey, dbKeyHex);
+    try {
+      localStorage.setItem(storageKey, dbKeyHex);
+    } catch (e) {
+      // Ignore setItem error in private mode
+    }
   }
   const dbEncryptionKey = new Uint8Array(Buffer.from(dbKeyHex, 'hex'));
 
@@ -385,7 +395,15 @@ export async function sendMessage(
     }),
   });
   if (!res.ok) {
-    throw new Error('[XMTP Offline Queue] Failed to queue offline message');
+    let errMsg = '[XMTP Offline Queue] Failed to queue offline message';
+    try {
+      const errBody = await res.json();
+      errMsg = `[XMTP Offline Queue] Failed to queue offline message: ${errBody.error || errBody.message || res.statusText}`;
+      console.error(errMsg);
+    } catch {
+      // Ignore
+    }
+    throw new Error(errMsg);
   }
 }
 
