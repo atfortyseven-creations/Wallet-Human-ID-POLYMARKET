@@ -22,9 +22,17 @@ const passportSchema = z.object({
     carbonKg: z.number().nonnegative().optional(),
     certifications: z.array(z.string().max(50)).optional(),
   }).strict(),
-  gs1Gtin: z.string().max(14).optional(),
+  // GS1 GTIN: 8, 12, 13, or 14 digit numeric string (EAN-8, UPC-A, EAN-13, ITF-14)
+  gs1Gtin: z.string().regex(/^\d{8}(\d{4}|\d{5}|\d{6})?$/, {
+    message: 'GS1 barcode must be a valid GTIN: 8, 12, 13, or 14 numeric digits.'
+  }).optional(),
   publicSlug: z.string().max(64).optional(),
-}).strict();
+  // Events are accepted from the frontend but handled server-side separately
+  events: z.array(z.object({
+    eventType: z.string(),
+    payload: z.record(z.any()),
+  })).optional(),
+});
 
 export async function POST(req: NextRequest) {
   const session = await getSession();
@@ -76,8 +84,12 @@ export async function POST(req: NextRequest) {
 
   const parseResult = passportSchema.safeParse(body);
   if (!parseResult.success) {
+    // Build a human-readable error pointing to the first invalid field
+    const firstError = parseResult.error.errors[0];
+    const fieldName = firstError?.path?.join('.') || 'unknown field';
+    const message = firstError?.message || 'Validation failed';
     return NextResponse.json(
-      { error: 'Invalid data format', details: (parseResult.error as any).errors },
+      { error: `${message} (field: ${fieldName})` },
       { status: 400 }
     );
   }
