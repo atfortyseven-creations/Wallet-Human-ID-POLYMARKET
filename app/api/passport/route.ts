@@ -117,7 +117,9 @@ export async function POST(req: NextRequest) {
   // 3. Static Profanity / Obscenity Filter (Deterministic Blacklist)
   const PROFANITY_BLACKLIST = [
     'fuck', 'shit', 'bitch', 'asshole', 'cunt', 'dick', 'pussy', 'whore', 'slut', 'fag', 'nigger', 'cock', 'bastard',
-    'puta', 'mierda', 'pendejo', 'cabron', 'maricon', 'verga', 'culo', 'zorra', 'puto', 'gilipollas', 'concha', 'cojones'
+    'puta', 'mierda', 'pendejo', 'cabron', 'maricon', 'verga', 'culo', 'zorra', 'puto', 'gilipollas', 'concha', 'cojones',
+    // Enterprise Strict Mode / Anti-Nonsense
+    'scam', 'ponzi', 'rugpull', 'fake', 'bullshit', 'crap', 'idiot', 'moron', 'stupid', 'tonto', 'estupido', 'estúpido', 'basura', 'engaño'
   ];
 
   // Anti-XSS Payload Sanitization Function
@@ -139,7 +141,13 @@ export async function POST(req: NextRequest) {
     validData.title,
     validData.category,
     validData.payload?.description,
-    validData.payload?.batchId
+    validData.payload?.batchId,
+    validData.payload?.origin,
+    validData.payload?.logistics?.carrier,
+    validData.payload?.logistics?.trackingNumber,
+    validData.payload?.logistics?.dimensions,
+    validData.payload?.logistics?.handlingConditions,
+    validData.payload?.lifecycle?.materialComposition
   ];
 
   if (fieldsToCheck.some(field => typeof field === 'string' && containsProfanity(field))) {
