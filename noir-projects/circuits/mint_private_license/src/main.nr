@@ -55,7 +55,7 @@ contract PrivateLicense {
             signature,
             message_bytes
         );
-        assert(is_valid == true, "INVALID_COMPLIANCE_SIGNATURE");
+        assert(is_valid, "INVALID_COMPLIANCE_SIGNATURE");
 
         // --- B. DETERMINISTIC ANTI-DUPLICATION NULLIFIER ---
         

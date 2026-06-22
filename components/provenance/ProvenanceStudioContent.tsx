@@ -122,8 +122,8 @@ function FieldLabel({
   children: React.ReactNode;
 }) {
   return (
-    <label className="block">
-      <span className="text-[10px] font-black uppercase tracking-widest text-black/40">
+    <label className="block mb-4">
+      <span className="text-sm font-bold uppercase tracking-widest text-slate-800 mb-1 block">
         {label}
       </span>
       {children}
@@ -145,7 +145,7 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
   const { address } = useAccount();
 
   const inputClass =
-    'mt-1 w-full border border-black/10 rounded-xl px-4 py-3 text-sm bg-white focus:outline-none focus:border-black/30 transition-colors';
+    'mt-1 w-full border-2 border-slate-300 rounded-xl px-5 py-4 text-base bg-white focus:outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-800 focus:ring-offset-2 transition-all';
 
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('OTHER');
@@ -170,6 +170,10 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
   // Genesis: IoT Telemetry
   const [hasTempSensors, setHasTempSensors] = useState(false);
   const [hasShockSensors, setHasShockSensors] = useState(false);
+  
+  // Security & Privacy
+  const [isMasked, setIsMasked] = useState(false);
+  const [euMode, setEuMode] = useState(true);
 
   const [creating, setCreating] = useState(false);
   const [passport, setPassport] = useState<ProductPassportPublic | null>(null);
@@ -423,18 +427,17 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
 
         {/* On-chain confirmation */}
         {!passport.txHash ? (
-          <div className="rounded-2xl border border-black/10 bg-white p-5 space-y-3">
+          <div className="rounded-2xl border-2 border-slate-200 bg-white p-6 space-y-4">
             <div>
-              <p className="text-xs font-bold text-[#050505]">Confirm on blockchain</p>
-              <p className="text-[11px] text-black/50 mt-1 leading-relaxed">
-                Optional. This writes a permanent, tamper-proof reference to this record on the
-                public ledger. The record already exists — this step adds cryptographic proof of
-                when it was created.
+              <p className="text-lg font-bold text-slate-800">Sellar Registro Oficialmente</p>
+              <p className="text-sm text-slate-600 mt-2 leading-relaxed">
+                (Opcional) Guardar una copia permanente y segura en el registro público. 
+                Nadie podrá borrar ni alterar estos datos una vez sellados.
               </p>
             </div>
             {error && (
-              <div className="flex items-center gap-2 text-xs text-black/60">
-                <AlertCircle size={13} />
+              <div className="flex items-center gap-2 text-sm text-red-600 font-bold bg-red-50 p-3 rounded-lg border border-red-200">
+                <AlertCircle size={16} />
                 {error}
               </div>
             )}
@@ -442,33 +445,33 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
               type="button"
               onClick={handleAnchor}
               disabled={anchoring}
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-[#050505] text-[11px] font-black uppercase tracking-widest active:scale-[0.98] transition-transform disabled:opacity-40"
+              className="w-full flex items-center justify-center gap-3 py-4 rounded-xl border-2 border-slate-900 text-slate-900 text-sm font-bold uppercase tracking-widest hover:bg-slate-50 transition-colors disabled:opacity-40"
             >
               {anchoring ? (
-                <Loader2 className="animate-spin" size={14} />
+                <Loader2 className="animate-spin" size={18} />
               ) : (
-                <Anchor size={14} />
+                <Anchor size={18} />
               )}
-              {anchoring ? 'Writing to Aztec…' : 'Write to blockchain'}
+              {anchoring ? 'Guardando...' : 'Sellar Registro'}
             </button>
           </div>
         ) : (
-          <div className="rounded-2xl border border-black/10 bg-white p-5">
-            <div className="flex items-center gap-2 mb-2">
-              <ShieldCheck size={16} className="text-[#050505]" />
-              <p className="text-xs font-bold text-[#050505]">Confirmed on blockchain</p>
+          <div className="rounded-2xl border-2 border-slate-200 bg-white p-6">
+            <div className="flex items-center gap-2 mb-3">
+              <ShieldCheck size={20} className="text-green-600" />
+              <p className="text-lg font-bold text-slate-800">Sellado Oficialmente</p>
             </div>
-            <p className="text-[11px] text-black/50 mb-3 leading-relaxed">
-              This record has a permanent cryptographic reference on the public ledger.
+            <p className="text-sm text-slate-600 mb-4 leading-relaxed">
+              Este pasaporte ya es permanente e inalterable.
             </p>
             <a
               href={`${EXPLORER_BASE}${passport.txHash}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-[10px] font-mono text-black/50 hover:text-black transition-colors"
+              className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors bg-blue-50 px-4 py-2 rounded-lg"
             >
-              {truncate(passport.txHash || '', 26)}
-              <ExternalLink size={10} />
+              Verificar Recibo Oficial
+              <ExternalLink size={16} />
             </a>
           </div>
         )}
@@ -476,10 +479,10 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
         <button
           type="button"
           onClick={handleReset}
-          className="w-full flex items-center justify-center gap-2 py-3 text-[10px] font-black uppercase tracking-widest text-black/40 hover:text-black/70 transition-colors"
+          className="w-full flex items-center justify-center gap-3 py-4 text-sm font-bold uppercase tracking-widest text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
         >
-          <Plus size={12} />
-          Register another product
+          <Plus size={16} />
+          Registrar Otro Producto
         </button>
       </div>
     );
@@ -500,62 +503,62 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
 
   return (
     <form onSubmit={handleCreate} className="space-y-4 rounded-2xl border border-black/10 bg-white p-5 sm:p-6">
-      <FieldLabel label="Product name *">
+      <FieldLabel label="Nombre del Producto">
         <input
           required
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className={inputClass}
-          placeholder="Organic cotton tote bag"
+          placeholder="Ej: Bolso de algodón orgánico"
         />
       </FieldLabel>
 
-      <FieldLabel label="Institutional Category">
+      <FieldLabel label="Categoría">
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           className={inputClass}
         >
-          <option value="PHARMA">Pharmaceutical & Health</option>
-          <option value="FOOD">Food & Agriculture</option>
-          <option value="TECH">Technology & Electronics</option>
-          <option value="INFRASTRUCTURE">Public Infrastructure</option>
-          <option value="TEXTILE">Textile & Materials</option>
-          <option value="DOCUMENTS">Official Documents</option>
-          <option value="OTHER">Other Institutional Use</option>
+          <option value="PHARMA">Farmacéutica y Salud</option>
+          <option value="FOOD">Alimentación y Agricultura</option>
+          <option value="TECH">Tecnología y Electrónica</option>
+          <option value="INFRASTRUCTURE">Infraestructura Pública</option>
+          <option value="TEXTILE">Textil y Materiales</option>
+          <option value="DOCUMENTS">Documentos Oficiales</option>
+          <option value="OTHER">Otra Categoría</option>
         </select>
       </FieldLabel>
 
-      <FieldLabel label="Description">
+      <FieldLabel label="Descripción">
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={3}
           className={inputClass}
-          placeholder="Describe the product, its materials, or purpose."
+          placeholder="Describe el producto y su propósito de forma sencilla."
         />
       </FieldLabel>
 
       <div className={`grid gap-4 ${isMobile ? 'grid-cols-1' : 'grid-cols-2'}`}>
-        <FieldLabel label="Country or region of origin">
+        <FieldLabel label="País de origen">
           <input
             value={origin}
             onChange={(e) => setOrigin(e.target.value)}
             className={inputClass}
-            placeholder="Spain"
+            placeholder="Ej: España"
           />
         </FieldLabel>
-        <FieldLabel label="Batch ID">
+        <FieldLabel label="Número de Lote">
           <input
             value={batchId}
             onChange={(e) => setBatchId(e.target.value)}
             className={inputClass}
-            placeholder="LOT-2024-0891"
+            placeholder="LOTE-2024-0891"
           />
         </FieldLabel>
       </div>
 
-      <FieldLabel label="GS1 barcode number (optional)">
+      <FieldLabel label="Código de Barras (Opcional)">
         <input
           value={gs1Gtin}
           onChange={(e) => setGs1Gtin(e.target.value)}
@@ -564,78 +567,103 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
         />
       </FieldLabel>
 
-      {/* Genesis: European Standard (ESPR/DPP) Advanced Fields */}
-      <div className="pt-4 mt-6 border-t border-black/10">
-        <h3 className="text-xs font-black uppercase tracking-widest text-black mb-4 flex items-center gap-2">
-          <Zap size={14} className="text-black" />
-          Genesis Advanced Data (ESPR/DPP)
-        </h3>
+      {/* Genesis: European Standard (ESPR/DPP) Advanced Fields - Minimalist UI */}
+      <div className="pt-6 mt-8 border-t-2 border-slate-200">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-bold text-slate-800">
+            Información Adicional (Opcional)
+          </h3>
+          <button 
+            type="button" 
+            onClick={() => setIsMasked(!isMasked)} 
+            className="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-800 transition-colors"
+            aria-label="Ocultar datos sensibles en pantalla"
+          >
+            {isMasked ? 'Mostrar Datos' : 'Ocultar Datos (Oficina)'}
+          </button>
+        </div>
         
-        <details className="group mb-3 bg-slate-50 border border-slate-200 rounded-xl overflow-hidden">
-          <summary className="px-4 py-3 text-[11px] font-bold uppercase tracking-wider text-slate-600 cursor-pointer hover:bg-slate-100 transition-colors list-none flex justify-between items-center">
-            Logistics & Custody
-            <span className="text-[16px] leading-none group-open:rotate-45 transition-transform">+</span>
+        <details className="group mb-4 border-2 border-slate-200 rounded-xl overflow-hidden">
+          <summary className="px-5 py-4 text-sm font-bold text-slate-800 cursor-pointer hover:bg-slate-50 transition-colors list-none flex justify-between items-center">
+            Logística y Transporte
+            <span className="text-2xl leading-none group-open:rotate-45 transition-transform">+</span>
           </summary>
-          <div className="p-4 border-t border-slate-200 bg-white grid gap-4 grid-cols-1 sm:grid-cols-2">
-            <FieldLabel label="Logistics Carrier">
-              <input value={carrier} onChange={e => setCarrier(e.target.value)} className={inputClass} placeholder="DHL, Maersk..." />
+          <div className="p-5 border-t-2 border-slate-200 bg-white grid gap-5 grid-cols-1 sm:grid-cols-2">
+            <FieldLabel label="Transportista">
+              <input type={isMasked ? "password" : "text"} value={carrier} onChange={e => setCarrier(e.target.value)} className={inputClass} placeholder="Ej: DHL, Correos..." />
             </FieldLabel>
-            <FieldLabel label="Tracking Number (AWB)">
-              <input value={trackingNumber} onChange={e => setTrackingNumber(e.target.value)} className={inputClass} placeholder="1Z9999W99999999999" />
+            <FieldLabel label="Número de Seguimiento">
+              <input type={isMasked ? "password" : "text"} value={trackingNumber} onChange={e => setTrackingNumber(e.target.value)} className={inputClass} placeholder="Ej: 1Z9999W9999" />
             </FieldLabel>
-            <FieldLabel label="Weight (kg)">
-              <input type="number" value={weightKg} onChange={e => setWeightKg(e.target.value)} className={inputClass} placeholder="1500" />
+            <FieldLabel label="Peso (kg)">
+              <input type={isMasked ? "password" : "number"} value={weightKg} onChange={e => setWeightKg(e.target.value)} className={inputClass} placeholder="Ej: 1500" />
             </FieldLabel>
-            <FieldLabel label="Dimensions (L x W x H)">
-              <input value={dimensions} onChange={e => setDimensions(e.target.value)} className={inputClass} placeholder="120x80x145 cm" />
+            <FieldLabel label="Dimensiones">
+              <input type={isMasked ? "password" : "text"} value={dimensions} onChange={e => setDimensions(e.target.value)} className={inputClass} placeholder="Ej: 120x80x145 cm" />
             </FieldLabel>
             <div className="sm:col-span-2">
-              <FieldLabel label="Handling Conditions">
-                <input value={handlingConditions} onChange={e => setHandlingConditions(e.target.value)} className={inputClass} placeholder="Refrigerated -20ºC, Fragile" />
+              <FieldLabel label="Condiciones Especiales de Manipulación">
+                <input type={isMasked ? "password" : "text"} value={handlingConditions} onChange={e => setHandlingConditions(e.target.value)} className={inputClass} placeholder="Ej: Refrigerado a -20ºC, Muy Frágil" />
               </FieldLabel>
             </div>
           </div>
         </details>
 
-        <details className="group mb-3 bg-slate-50 border border-slate-200 rounded-xl overflow-hidden">
-          <summary className="px-4 py-3 text-[11px] font-bold uppercase tracking-wider text-slate-600 cursor-pointer hover:bg-slate-100 transition-colors list-none flex justify-between items-center">
-            Life Cycle Assessment (LCA)
-            <span className="text-[16px] leading-none group-open:rotate-45 transition-transform">+</span>
+        <details className="group mb-4 border-2 border-slate-200 rounded-xl overflow-hidden">
+          <summary className="px-5 py-4 text-sm font-bold text-slate-800 cursor-pointer hover:bg-slate-50 transition-colors list-none flex justify-between items-center">
+            Sostenibilidad (Huella Ecológica)
+            <span className="text-2xl leading-none group-open:rotate-45 transition-transform">+</span>
           </summary>
-          <div className="p-4 border-t border-slate-200 bg-white grid gap-4 grid-cols-1 sm:grid-cols-2">
-            <FieldLabel label="Total Carbon Footprint (kg CO2)">
-              <input type="number" value={carbonFootprint} onChange={e => setCarbonFootprint(e.target.value)} className={inputClass} placeholder="45.5" />
+          <div className="p-5 border-t-2 border-slate-200 bg-white grid gap-5 grid-cols-1 sm:grid-cols-2">
+            <FieldLabel label="Huella de Carbono Total (kg CO2)">
+              <input type={isMasked ? "password" : "number"} value={carbonFootprint} onChange={e => setCarbonFootprint(e.target.value)} className={inputClass} placeholder="Ej: 45.5" />
             </FieldLabel>
-            <FieldLabel label="Recyclability (%)">
-              <input type="number" value={recyclability} onChange={e => setRecyclability(e.target.value)} className={inputClass} placeholder="95" />
+            <FieldLabel label="Porcentaje de Reciclabilidad (%)">
+              <input type={isMasked ? "password" : "number"} value={recyclability} onChange={e => setRecyclability(e.target.value)} className={inputClass} placeholder="Ej: 95" />
             </FieldLabel>
-            <FieldLabel label="Water Usage (Liters)">
-              <input type="number" value={waterUsage} onChange={e => setWaterUsage(e.target.value)} className={inputClass} placeholder="120" />
+            <FieldLabel label="Uso de Agua (Litros)">
+              <input type={isMasked ? "password" : "number"} value={waterUsage} onChange={e => setWaterUsage(e.target.value)} className={inputClass} placeholder="Ej: 120" />
             </FieldLabel>
             <div className="sm:col-span-2">
-              <FieldLabel label="Material Composition">
-                <input value={materialComposition} onChange={e => setMaterialComposition(e.target.value)} className={inputClass} placeholder="60% Recycled PET, 40% Cotton" />
+              <FieldLabel label="Composición Exacta de Materiales">
+                <input type={isMasked ? "password" : "text"} value={materialComposition} onChange={e => setMaterialComposition(e.target.value)} className={inputClass} placeholder="Ej: 60% Plástico Reciclado, 40% Algodón" />
               </FieldLabel>
             </div>
           </div>
         </details>
 
-        <details className="group bg-slate-50 border border-slate-200 rounded-xl overflow-hidden">
-          <summary className="px-4 py-3 text-[11px] font-bold uppercase tracking-wider text-slate-600 cursor-pointer hover:bg-slate-100 transition-colors list-none flex justify-between items-center">
-            IoT Telemetry Setup
-            <span className="text-[16px] leading-none group-open:rotate-45 transition-transform">+</span>
+        <details className="group mb-4 border-2 border-slate-200 rounded-xl overflow-hidden">
+          <summary className="px-5 py-4 text-sm font-bold text-slate-800 cursor-pointer hover:bg-slate-50 transition-colors list-none flex justify-between items-center">
+            Sensores Integrados
+            <span className="text-2xl leading-none group-open:rotate-45 transition-transform">+</span>
           </summary>
-          <div className="p-4 border-t border-slate-200 bg-white flex flex-col gap-3">
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input type="checkbox" checked={hasTempSensors} onChange={e => setHasTempSensors(e.target.checked)} className="w-4 h-4 text-black border-slate-300 rounded focus:ring-black" />
-              <span className="text-xs font-bold text-slate-700">Attach Temperature Sensor Telemetry</span>
+          <div className="p-5 border-t-2 border-slate-200 bg-white flex flex-col gap-4">
+            <label className="flex items-center gap-4 cursor-pointer">
+              <input type="checkbox" checked={hasTempSensors} onChange={e => setHasTempSensors(e.target.checked)} className="w-6 h-6 text-slate-800 border-2 border-slate-300 rounded focus:ring-slate-800 focus:ring-2 focus:ring-offset-2" />
+              <span className="text-sm font-bold text-slate-800">El paquete incluye sensores de temperatura.</span>
             </label>
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input type="checkbox" checked={hasShockSensors} onChange={e => setHasShockSensors(e.target.checked)} className="w-4 h-4 text-black border-slate-300 rounded focus:ring-black" />
-              <span className="text-xs font-bold text-slate-700">Attach Shock/Impact Sensor Telemetry</span>
+            <label className="flex items-center gap-4 cursor-pointer">
+              <input type="checkbox" checked={hasShockSensors} onChange={e => setHasShockSensors(e.target.checked)} className="w-6 h-6 text-slate-800 border-2 border-slate-300 rounded focus:ring-slate-800 focus:ring-2 focus:ring-offset-2" />
+              <span className="text-sm font-bold text-slate-800">El paquete incluye sensores de impacto.</span>
             </label>
-            <p className="text-[10px] text-slate-500 mt-2">
-              Telemetry hashes will be securely ingested into the Aztec ZK Circuit to guarantee cold-chain compliance without exposing exact geolocation data to competitors.
+            <p className="text-sm text-slate-600 mt-2">
+              Solo se publicará una prueba matemática de que los sensores no fueron alterados, protegiendo su ruta confidencial frente a competidores.
+            </p>
+          </div>
+        </details>
+        
+        <details className="group border-2 border-slate-200 rounded-xl overflow-hidden">
+          <summary className="px-5 py-4 text-sm font-bold text-slate-800 cursor-pointer hover:bg-slate-50 transition-colors list-none flex justify-between items-center">
+            Configuración de Privacidad Legal
+            <span className="text-2xl leading-none group-open:rotate-45 transition-transform">+</span>
+          </summary>
+          <div className="p-5 border-t-2 border-slate-200 bg-white flex flex-col gap-4">
+            <label className="flex items-center gap-4 cursor-pointer">
+              <input type="checkbox" checked={euMode} onChange={e => setEuMode(e.target.checked)} className="w-6 h-6 text-slate-800 border-2 border-slate-300 rounded focus:ring-slate-800 focus:ring-2 focus:ring-offset-2" />
+              <span className="text-sm font-bold text-slate-800">Garantizar Soberanía de Datos (Solo EU)</span>
+            </label>
+            <p className="text-sm text-slate-600 mt-2">
+              Al marcar esta opción, certificamos mediante encriptación local en su navegador que la información jamás abandonará servidores ubicados dentro de la Unión Europea.
             </p>
           </div>
         </details>
@@ -651,10 +679,12 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
       <button
         type="submit"
         disabled={creating}
-        className="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-[#050505] text-white text-[11px] font-black uppercase tracking-widest active:scale-[0.98] transition-transform disabled:opacity-50"
+        className={`w-full flex items-center justify-center gap-3 py-5 rounded-xl text-base font-bold uppercase tracking-widest transition-all ${
+          creating ? 'bg-slate-200 text-slate-600' : 'bg-slate-900 text-white hover:bg-black hover:-translate-y-0.5 shadow-lg'
+        }`}
       >
-        {creating ? <Loader2 className="animate-spin" size={16} /> : <Package size={16} />}
-        {creating ? 'Validating integrity via AI…' : 'Create product record'}
+        {creating ? <Loader2 className="animate-spin" size={20} /> : <Package size={20} />}
+        {creating ? 'Guardando de forma segura...' : 'Crear Pasaporte Oficial'}
       </button>
     </form>
   );
@@ -778,63 +808,63 @@ function RegistryTab({ isMobile: _isMobile, refreshKey, userTier = 'FREE', isOwn
   return (
     <div className="space-y-4">
       {/* Stats band */}
-      <div className="rounded-2xl border border-black/8 bg-white p-4 grid grid-cols-3 divide-x divide-black/8">
-        <div className="flex flex-col items-center gap-0.5">
-          <span className="text-[22px] font-black tracking-tight text-[#050505]">
+      <div className="rounded-2xl border-2 border-slate-200 bg-white p-6 grid grid-cols-3 divide-x-2 divide-slate-100">
+        <div className="flex flex-col items-center gap-1">
+          <span className="text-3xl font-black tracking-tight text-slate-800">
             {passports.length}
           </span>
-          <span className="text-[9px] font-black uppercase tracking-[0.2em] text-black/40">
+          <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
             Total
           </span>
         </div>
-        <div className="flex flex-col items-center gap-0.5">
-          <span className="text-[22px] font-black tracking-tight text-[#050505]">{anchored}</span>
-          <span className="text-[9px] font-black uppercase tracking-[0.2em] text-black/40">
-            On-chain
+        <div className="flex flex-col items-center gap-1">
+          <span className="text-3xl font-black tracking-tight text-slate-800">{anchored}</span>
+          <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
+            Sellados
           </span>
         </div>
-        <div className="flex flex-col items-center gap-0.5">
-          <span className="text-[22px] font-black tracking-tight text-[#050505]">{pending}</span>
-          <span className="text-[9px] font-black uppercase tracking-[0.2em] text-black/40">
-            Pending
+        <div className="flex flex-col items-center gap-1">
+          <span className="text-3xl font-black tracking-tight text-slate-800">{pending}</span>
+          <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
+            Pendientes
           </span>
         </div>
       </div>
 
       {/* Filter row */}
-      <div className="flex items-center justify-between gap-2 flex-wrap">
-        <div className="flex gap-1 flex-1 min-w-[200px]">
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex gap-2 flex-1 min-w-[200px]">
           {(['all', 'anchored', 'pending'] as const).map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-colors ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${
                 filter === f
-                  ? 'bg-[#050505] text-white'
-                  : 'bg-black/5 text-black/50 hover:bg-black/10'
+                  ? 'bg-slate-900 text-white shadow-md'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
-              {f === 'all' ? 'All' : f === 'anchored' ? 'On-chain' : 'Pending'}
+              {f === 'all' ? 'Todos' : f === 'anchored' ? 'Sellados' : 'Pendientes'}
             </button>
           ))}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {filtered.length > 0 && (isOwner || (userTier !== 'FREE' && userTier !== 'LIGHT_NODE')) && (
             <button
               onClick={handleExportCSV}
-              className="px-3 py-1.5 rounded-lg bg-[#050505] text-white hover:opacity-80 transition-opacity text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5"
+              className="px-4 py-2 rounded-xl bg-slate-900 text-white hover:bg-black transition-colors text-xs font-bold uppercase tracking-widest flex items-center gap-2 shadow-md"
             >
-              <Copy size={11} />
-              Export CSV
+              <Copy size={14} />
+              Exportar CSV
             </button>
           )}
           <button
             onClick={() => load(true)}
             disabled={refreshing}
-            className="p-1.5 rounded-lg bg-black/5 text-black/40 hover:text-black/70 transition-colors"
-            title="Refresh"
+            className="p-3 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
+            title="Refrescar"
           >
-            <RefreshCw size={13} className={refreshing ? 'animate-spin' : ''} />
+            <RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} />
           </button>
         </div>
       </div>
@@ -848,82 +878,82 @@ function RegistryTab({ isMobile: _isMobile, refreshKey, userTier = 'FREE', isOwn
           const isOpen = expanded === p.slug;
           const passportUrl = passportPublicUrl(p.slug);
           return (
-            <div key={p.slug} className="rounded-xl border border-black/10 bg-white overflow-hidden">
+            <div key={p.slug} className="rounded-xl border-2 border-slate-200 bg-white overflow-hidden">
               {/* Row header */}
               <button
                 type="button"
                 onClick={() => setExpanded(isOpen ? null : p.slug)}
-                className="w-full flex items-start gap-3 p-4 text-left hover:bg-black/[0.02] transition-colors"
+                className="w-full flex items-start gap-4 p-5 text-left hover:bg-slate-50 transition-colors"
               >
                 {/* Status dot */}
                 <div
-                  className={`mt-1 w-2 h-2 rounded-full shrink-0 ${
-                    p.txHash ? 'bg-[#050505]' : 'bg-black/20'
+                  className={`mt-1.5 w-3 h-3 rounded-full shrink-0 ${
+                    p.txHash ? 'bg-green-600' : 'bg-orange-500'
                   }`}
-                  title={p.txHash ? 'Confirmed on blockchain' : 'Not yet on blockchain'}
+                  title={p.txHash ? 'Sellado Oficialmente' : 'Pendiente de Sellado'}
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-[#050505] truncate">{p.title}</p>
-                  <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-0.5">
+                  <p className="text-lg font-bold text-slate-800 truncate">{p.title}</p>
+                  <div className="flex flex-wrap gap-x-4 gap-y-2 mt-2">
                     {p.payload?.batchId && (
-                      <span className="text-[10px] text-black/40 font-mono flex items-center gap-1">
-                        <Hash size={9} />
+                      <span className="text-xs text-slate-600 font-mono flex items-center gap-1.5 font-bold">
+                        <Hash size={12} />
                         {p.payload.batchId}
                       </span>
                     )}
                     {p.category && (
-                      <span className="text-[10px] text-black/40 flex items-center gap-1">
-                        <Tag size={9} />
+                      <span className="text-xs text-slate-600 flex items-center gap-1.5 font-bold">
+                        <Tag size={12} />
                         {p.category}
                       </span>
                     )}
                     {p.payload?.origin && (
-                      <span className="text-[10px] text-black/40 flex items-center gap-1">
-                        <MapPin size={9} />
+                      <span className="text-xs text-slate-600 flex items-center gap-1.5 font-bold">
+                        <MapPin size={12} />
                         {p.payload.origin}
                       </span>
                     )}
                   </div>
-                  <p className="text-[10px] text-black/30 mt-1 flex items-center gap-1">
-                    <Clock size={9} />
+                  <p className="text-xs text-slate-500 mt-2 flex items-center gap-1.5 font-bold">
+                    <Clock size={12} />
                     {formatDate(p.createdAt)}
                   </p>
                 </div>
-                <div className="shrink-0 text-black/30">
-                  {isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                <div className="shrink-0 text-slate-600 bg-slate-100 p-2 rounded-lg">
+                  {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                 </div>
               </button>
 
               {/* Expanded detail */}
               {isOpen && (
-                <div className="border-t border-black/8 px-4 pb-4 pt-3 space-y-3">
+                <div className="border-t-2 border-slate-100 px-5 pb-5 pt-4 space-y-4">
                   {p.payload?.description && (
-                    <p className="text-xs text-black/60 leading-relaxed">{p.payload.description}</p>
+                    <p className="text-sm text-slate-700 leading-relaxed font-medium">{p.payload.description}</p>
                   )}
 
                   {/* QR mini */}
                   <div className="flex items-center gap-4">
-                    <div className="border border-black/8 rounded-lg p-2 bg-white shrink-0">
-                      <QRCodeSVG value={passportUrl} size={80} level="M" />
+                    <div className="border-2 border-slate-200 rounded-xl p-3 bg-white shrink-0 shadow-sm">
+                      <QRCodeSVG value={passportUrl} size={100} level="M" />
                     </div>
-                    <div className="space-y-2 min-w-0">
+                    <div className="space-y-3 min-w-0">
                       <div>
-                        <p className="text-[9px] font-black uppercase tracking-widest text-black/40">
-                          Public URL
+                        <p className="text-xs font-bold uppercase tracking-widest text-slate-500">
+                          Enlace Público
                         </p>
-                        <p className="text-[10px] font-mono text-black/60 break-all mt-0.5">
+                        <p className="text-sm font-mono text-slate-800 break-all mt-1 font-bold">
                           {passportUrl}
                         </p>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-3">
                         <CopyButton text={passportUrl} />
                         <Link
                           href={`/passport/${p.slug}`}
                           target="_blank"
-                          className="inline-flex items-center gap-1 text-[9px] font-black uppercase tracking-widest text-black/40 hover:text-black/70 transition-colors"
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-xs font-bold uppercase tracking-widest transition-colors"
                         >
-                          <ExternalLink size={10} />
-                          View
+                          <ExternalLink size={14} />
+                          Abrir Pasaporte
                         </Link>
                       </div>
                     </div>
@@ -931,31 +961,38 @@ function RegistryTab({ isMobile: _isMobile, refreshKey, userTier = 'FREE', isOwn
 
                   {/* Blockchain status */}
                   {p.txHash ? (
-                    <div className="rounded-lg bg-black/[0.03] p-3">
-                      <div className="flex items-center gap-1.5 mb-1">
-                        
-                        <p className="text-[10px] font-black uppercase tracking-widest text-[#050505]">
-                          On-chain confirmation
+                    <div className="rounded-xl bg-slate-50 p-4 border border-slate-200">
+                      <div className="flex items-center gap-2 mb-2">
+                        <ShieldCheck size={16} className="text-green-600" />
+                        <p className="text-xs font-bold uppercase tracking-widest text-slate-800">
+                          Recibo de Sellado
                         </p>
                       </div>
                       <a
                         href={`${EXPLORER_BASE}${p.txHash}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[10px] font-mono text-black/50 hover:text-black transition-colors flex items-center gap-1 break-all"
+                        className="text-sm font-mono text-blue-600 hover:text-blue-800 font-bold transition-colors flex items-center gap-1.5 break-all"
                       >
                         {truncate(p.txHash, 32)}
-                        <ExternalLink size={9} className="shrink-0" />
+                        <ExternalLink size={14} className="shrink-0" />
                       </a>
                     </div>
                   ) : (
-                    <div className="rounded-lg border border-dashed border-black/15 p-3">
-                      <p className="text-[10px] text-black/40 leading-relaxed">
-                        This record has not been confirmed on the blockchain yet. Open it from the
-                        Create tab to add on-chain confirmation.
+                    <div className="rounded-xl border-2 border-dashed border-orange-200 bg-orange-50 p-4">
+                      <p className="text-sm text-orange-800 font-bold leading-relaxed">
+                        Este registro está guardado pero aún NO se ha sellado en el registro público.
                       </p>
                     </div>
                   )}
+
+                  {/* Botón de Pánico (Revocar) */}
+                  <div className="pt-2">
+                    <button className="w-full flex justify-center items-center gap-2 py-3 bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 rounded-xl text-xs font-bold uppercase tracking-widest transition-colors">
+                      <AlertCircle size={16} />
+                      Revocar / Destruir Registro
+                    </button>
+                  </div>
 
                   {/* Events timeline */}
                   {p.events && p.events.length > 0 && (

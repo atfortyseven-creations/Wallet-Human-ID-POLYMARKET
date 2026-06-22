@@ -21,7 +21,7 @@ struct Order {
 fn main(
   maker: Order,
   taker: Order,
-  pub matched_volume_commitment: Field,
+  matched_volume_commitment: pub Field,
   maker_price: u64,
   taker_price: u64,
   matched_amount: u64
@@ -46,11 +46,10 @@ fn main(
     label: "AML / Travel Rule Compliance",
     difficulty: "EXTREME",
     code: `// Proves an identity is verified (Merkle) and not in a sanctioned region (Range)
-use std::hash::pedersen_hash;
 use std::merkle::compute_merkle_root;
 
 fn main(
-  pub kyc_merkle_root: Field,
+  kyc_merkle_root: pub Field,
   identity_hash: Field,
   jurisdiction_code: u64,
   hash_path: [Field; 20],
@@ -74,18 +73,18 @@ fn main(
 use std::hash::keccak256;
 
 fn main(
-  pub l1_state_root: [u8; 32],
-  pub contract_address: [u8; 20],
+  l1_state_root: pub [u8; 32],
+  contract_address: pub [u8; 20],
   storage_slot: [u8; 32],
   storage_value: [u8; 32],
-  mpt_proof_nodes: [[u8; 532]; 4] // Bounded depth for L1 Trie
+  mpt_proof_nodes: [[u8; 532]; 4]
 ) {
   // In a real omnichain circuit, we verify the RLP encoded nodes
   // against the keccak hashes tracing up to the l1_state_root.
-  let leaf_hash = keccak256(storage_value);
+  let leaf_hash = keccak256(storage_value, 32);
   
-  // Simulated Constraint
-  assert(leaf_hash != [0; 32]);
+  // Simulated Constraint: leaf hash must be non-zero
+  assert(leaf_hash[0] as u64 + leaf_hash[1] as u64 > 0);
 }
 `,
   },
@@ -96,18 +95,17 @@ fn main(
 use std::verify_proof;
 
 fn main(
-  pub verification_key: [Field; 114],
-  pub public_inputs: [Field; 4],
+  verification_key: pub [Field; 114],
+  public_inputs: pub [Field; 4],
   proof: [Field; 93]
 ) {
   // Verifies an UltraHonk / Plonk proof from another execution
-  let is_valid = verify_proof(
+  verify_proof(
     verification_key,
     proof,
     public_inputs,
     0 // key_hash
   );
-  assert(is_valid == true);
 }
 `,
   }
