@@ -27,6 +27,7 @@ import {
   CreditCard,
   ArrowRight,
   X,
+  Zap,
 } from 'lucide-react';
 import { useAccount } from 'wagmi';
 import { passportPublicUrl } from '@/lib/scan/parseScanPayload';
@@ -152,6 +153,24 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
   const [batchId, setBatchId] = useState('');
   const [description, setDescription] = useState('');
   const [gs1Gtin, setGs1Gtin] = useState('');
+  
+  // Genesis: Logistics & Custody
+  const [carrier, setCarrier] = useState('');
+  const [trackingNumber, setTrackingNumber] = useState('');
+  const [weightKg, setWeightKg] = useState('');
+  const [dimensions, setDimensions] = useState('');
+  const [handlingConditions, setHandlingConditions] = useState('');
+  
+  // Genesis: Life Cycle Assessment (LCA)
+  const [carbonFootprint, setCarbonFootprint] = useState('');
+  const [recyclability, setRecyclability] = useState('');
+  const [waterUsage, setWaterUsage] = useState('');
+  const [materialComposition, setMaterialComposition] = useState('');
+  
+  // Genesis: IoT Telemetry
+  const [hasTempSensors, setHasTempSensors] = useState(false);
+  const [hasShockSensors, setHasShockSensors] = useState(false);
+
   const [creating, setCreating] = useState(false);
   const [passport, setPassport] = useState<ProductPassportPublic | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -188,6 +207,23 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
             description: description.trim() || undefined,
             origin: origin.trim() || undefined,
             batchId: batchId.trim() || undefined,
+            logistics: (carrier || trackingNumber || weightKg) ? {
+              carrier: carrier.trim() || undefined,
+              trackingNumber: trackingNumber.trim() || undefined,
+              weightKg: weightKg ? Number(weightKg) : undefined,
+              dimensions: dimensions.trim() || undefined,
+              handlingConditions: handlingConditions.trim() || undefined,
+            } : undefined,
+            lifecycle: (carbonFootprint || recyclability || waterUsage || materialComposition) ? {
+              carbonFootprintTotal: carbonFootprint ? Number(carbonFootprint) : undefined,
+              recyclabilityPercent: recyclability ? Number(recyclability) : undefined,
+              waterUsageLiters: waterUsage ? Number(waterUsage) : undefined,
+              materialComposition: materialComposition.trim() || undefined,
+            } : undefined,
+            telemetry: (hasTempSensors || hasShockSensors) ? {
+              hasTemperatureSensors: hasTempSensors,
+              hasShockSensors: hasShockSensors,
+            } : undefined,
           },
           events: origin
             ? [
@@ -328,6 +364,17 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
     setBatchId('');
     setDescription('');
     setGs1Gtin('');
+    setCarrier('');
+    setTrackingNumber('');
+    setWeightKg('');
+    setDimensions('');
+    setHandlingConditions('');
+    setCarbonFootprint('');
+    setRecyclability('');
+    setWaterUsage('');
+    setMaterialComposition('');
+    setHasTempSensors(false);
+    setHasShockSensors(false);
     setError(null);
   };
 
@@ -516,6 +563,83 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
           placeholder="00812345678901"
         />
       </FieldLabel>
+
+      {/* Genesis: European Standard (ESPR/DPP) Advanced Fields */}
+      <div className="pt-4 mt-6 border-t border-black/10">
+        <h3 className="text-xs font-black uppercase tracking-widest text-black mb-4 flex items-center gap-2">
+          <Zap size={14} className="text-black" />
+          Genesis Advanced Data (ESPR/DPP)
+        </h3>
+        
+        <details className="group mb-3 bg-slate-50 border border-slate-200 rounded-xl overflow-hidden">
+          <summary className="px-4 py-3 text-[11px] font-bold uppercase tracking-wider text-slate-600 cursor-pointer hover:bg-slate-100 transition-colors list-none flex justify-between items-center">
+            Logistics & Custody
+            <span className="text-[16px] leading-none group-open:rotate-45 transition-transform">+</span>
+          </summary>
+          <div className="p-4 border-t border-slate-200 bg-white grid gap-4 grid-cols-1 sm:grid-cols-2">
+            <FieldLabel label="Logistics Carrier">
+              <input value={carrier} onChange={e => setCarrier(e.target.value)} className={inputClass} placeholder="DHL, Maersk..." />
+            </FieldLabel>
+            <FieldLabel label="Tracking Number (AWB)">
+              <input value={trackingNumber} onChange={e => setTrackingNumber(e.target.value)} className={inputClass} placeholder="1Z9999W99999999999" />
+            </FieldLabel>
+            <FieldLabel label="Weight (kg)">
+              <input type="number" value={weightKg} onChange={e => setWeightKg(e.target.value)} className={inputClass} placeholder="1500" />
+            </FieldLabel>
+            <FieldLabel label="Dimensions (L x W x H)">
+              <input value={dimensions} onChange={e => setDimensions(e.target.value)} className={inputClass} placeholder="120x80x145 cm" />
+            </FieldLabel>
+            <div className="sm:col-span-2">
+              <FieldLabel label="Handling Conditions">
+                <input value={handlingConditions} onChange={e => setHandlingConditions(e.target.value)} className={inputClass} placeholder="Refrigerated -20ºC, Fragile" />
+              </FieldLabel>
+            </div>
+          </div>
+        </details>
+
+        <details className="group mb-3 bg-slate-50 border border-slate-200 rounded-xl overflow-hidden">
+          <summary className="px-4 py-3 text-[11px] font-bold uppercase tracking-wider text-slate-600 cursor-pointer hover:bg-slate-100 transition-colors list-none flex justify-between items-center">
+            Life Cycle Assessment (LCA)
+            <span className="text-[16px] leading-none group-open:rotate-45 transition-transform">+</span>
+          </summary>
+          <div className="p-4 border-t border-slate-200 bg-white grid gap-4 grid-cols-1 sm:grid-cols-2">
+            <FieldLabel label="Total Carbon Footprint (kg CO2)">
+              <input type="number" value={carbonFootprint} onChange={e => setCarbonFootprint(e.target.value)} className={inputClass} placeholder="45.5" />
+            </FieldLabel>
+            <FieldLabel label="Recyclability (%)">
+              <input type="number" value={recyclability} onChange={e => setRecyclability(e.target.value)} className={inputClass} placeholder="95" />
+            </FieldLabel>
+            <FieldLabel label="Water Usage (Liters)">
+              <input type="number" value={waterUsage} onChange={e => setWaterUsage(e.target.value)} className={inputClass} placeholder="120" />
+            </FieldLabel>
+            <div className="sm:col-span-2">
+              <FieldLabel label="Material Composition">
+                <input value={materialComposition} onChange={e => setMaterialComposition(e.target.value)} className={inputClass} placeholder="60% Recycled PET, 40% Cotton" />
+              </FieldLabel>
+            </div>
+          </div>
+        </details>
+
+        <details className="group bg-slate-50 border border-slate-200 rounded-xl overflow-hidden">
+          <summary className="px-4 py-3 text-[11px] font-bold uppercase tracking-wider text-slate-600 cursor-pointer hover:bg-slate-100 transition-colors list-none flex justify-between items-center">
+            IoT Telemetry Setup
+            <span className="text-[16px] leading-none group-open:rotate-45 transition-transform">+</span>
+          </summary>
+          <div className="p-4 border-t border-slate-200 bg-white flex flex-col gap-3">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" checked={hasTempSensors} onChange={e => setHasTempSensors(e.target.checked)} className="w-4 h-4 text-black border-slate-300 rounded focus:ring-black" />
+              <span className="text-xs font-bold text-slate-700">Attach Temperature Sensor Telemetry</span>
+            </label>
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" checked={hasShockSensors} onChange={e => setHasShockSensors(e.target.checked)} className="w-4 h-4 text-black border-slate-300 rounded focus:ring-black" />
+              <span className="text-xs font-bold text-slate-700">Attach Shock/Impact Sensor Telemetry</span>
+            </label>
+            <p className="text-[10px] text-slate-500 mt-2">
+              Telemetry hashes will be securely ingested into the Aztec ZK Circuit to guarantee cold-chain compliance without exposing exact geolocation data to competitors.
+            </p>
+          </div>
+        </details>
+      </div>
 
       {error && (
         <div className="flex items-start gap-2 text-xs text-[#cc0000] bg-[#cc0000]/5 p-3 rounded-xl border border-[#cc0000]/10">

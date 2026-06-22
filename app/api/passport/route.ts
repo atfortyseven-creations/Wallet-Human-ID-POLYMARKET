@@ -21,6 +21,24 @@ const passportSchema = z.object({
     description: z.string().max(1000).optional(),
     carbonKg: z.number().nonnegative().optional(),
     certifications: z.array(z.string().max(50)).optional(),
+    logistics: z.object({
+      carrier: z.string().max(100).optional(),
+      trackingNumber: z.string().max(100).optional(),
+      weightKg: z.number().nonnegative().optional(),
+      dimensions: z.string().max(50).optional(),
+      handlingConditions: z.string().max(100).optional(),
+    }).optional(),
+    lifecycle: z.object({
+      carbonFootprintTotal: z.number().nonnegative().optional(),
+      recyclabilityPercent: z.number().min(0).max(100).optional(),
+      waterUsageLiters: z.number().nonnegative().optional(),
+      materialComposition: z.string().max(500).optional(),
+    }).optional(),
+    telemetry: z.object({
+      hasTemperatureSensors: z.boolean().optional(),
+      hasShockSensors: z.boolean().optional(),
+      lastReportedLocation: z.string().max(100).optional(),
+    }).optional(),
   }).strict(),
   // GS1 GTIN: 8, 12, 13, or 14 digit numeric string (EAN-8, UPC-A, EAN-13, ITF-14)
   gs1Gtin: z.string().regex(/^\d{8}(\d{4}|\d{5}|\d{6})?$/, {
@@ -155,6 +173,9 @@ export async function POST(req: NextRequest) {
             description: validData.payload.description ? sanitizeHTML(validData.payload.description) : undefined,
             origin: validData.payload.origin ? sanitizeHTML(validData.payload.origin) : undefined,
             batchId: validData.payload.batchId ? sanitizeHTML(validData.payload.batchId) : undefined,
+            logistics: validData.payload.logistics,
+            lifecycle: validData.payload.lifecycle,
+            telemetry: validData.payload.telemetry,
           })) : {},
           gs1Gtin: validData.gs1Gtin?.replace(/\D/g, '') || null,
           events: {

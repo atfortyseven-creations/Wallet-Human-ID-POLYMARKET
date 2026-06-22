@@ -30,8 +30,8 @@ const MAX_BATCH_ID_BYTES = 64;
 /** Maximum byte length of a supplier identifier string. */
 const MAX_SUPPLIER_BYTES = 64;
 
-/** Maximum byte length for a metadata JSON string hashed for the private note. */
-const MAX_METADATA_BYTES = 256;
+/** Maximum byte length for a metadata JSON string hashed for the private note. Expanded for Genesis (DPP/ESPR). */
+const MAX_METADATA_BYTES = 8192;
 
 /* ─────────────────────────────────────────────────────────────────────────────
    HASH HELPERS
