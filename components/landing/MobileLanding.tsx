@@ -755,31 +755,63 @@ export function MobileLanding() {
       if (!nonceRes.ok) throw new Error('Failed to fetch cryptographic nonce');
       const { nonce } = await nonceRes.json();
 
-      let message = `Authenticate to Whale Network.\n\nNonce: ${nonce}`;
+      const message = `Authenticate to Whale Network.\n\nNonce: ${nonce}`;
       let signature = '';
 
-      if (norm === '0x78831c25c86ea2a78a6127fc2ccb95e612d87b4a') {
-         // [VIP OVERRIDE] frictionless entry for the owner on mobile
-         message = 'owner_bypass';
-         signature = 'vip_override';
-      } else {
-         // [MOBILE CONNECTION HEALER] Retry signMessageAsync to bypass "connector not connected" race condition on iOS/Android.
-         let signAttempts = 0;
-         while (signAttempts < 4) {
-           try {
-             if (signAttempts > 0) await new Promise(r => setTimeout(r, 1200)); // Delay for WS relay to heal
-             signature = await signMessageAsync({ message });
-             break; // success
-           } catch (signErr: any) {
-             const errMsg = signErr?.message?.toLowerCase() || '';
-             if (errMsg.includes('connector not connected') && signAttempts < 3) {
-               signAttempts++;
-               console.warn(`[Auth] Connector not ready, retrying sign (${signAttempts}/3)...`);
-               continue;
-             }
-             throw signErr; // Not a race condition error or out of retries
-           }
-         }
+      // [MOBILE CONNECTION FIX - ROOT CAUSE]
+      // wagmi/core 2.x: signMessageAsync throws "Connector not connected" when
+      // the WalletConnect WebSocket relay handshake hasn't finished yet after
+      // returning from the wallet app on iOS/Android.
+      // Strategy: Poll for connector readiness BEFORE attempting to sign.
+      // This prevents the signing attempt from ever failing due to a race condition.
+      const MAX_CONNECTOR_WAIT_MS = 15000;
+      const CONNECTOR_POLL_MS = 300;
+      let elapsed = 0;
+      let connectorReady = false;
+
+      while (elapsed < MAX_CONNECTOR_WAIT_MS) {
+        try {
+          // The most reliable readiness check: call getChainId() on the provider.
+          // If the connector is not connected this throws immediately.
+          if (connector?.getChainId) {
+            await connector.getChainId();
+            connectorReady = true;
+            break;
+          } else {
+            // Fallback: assume ready if no getChainId method (injected connectors)
+            connectorReady = true;
+            break;
+          }
+        } catch (e: any) {
+          const msg = e?.message?.toLowerCase() || '';
+          if (msg.includes('connector not connected') || msg.includes('not connected')) {
+            console.warn(`[Auth] Connector not ready yet, waiting... (${elapsed}ms elapsed)`);
+            await new Promise(r => setTimeout(r, CONNECTOR_POLL_MS));
+            elapsed += CONNECTOR_POLL_MS;
+          } else {
+            // Some other error — stop waiting and proceed to attempt the sign
+            break;
+          }
+        }
+      }
+
+      if (!connectorReady && elapsed >= MAX_CONNECTOR_WAIT_MS) {
+        throw new Error('Wallet connection timed out. Please open your wallet app and try again.');
+      }
+
+      // Connector is ready — sign the message (single attempt, no retries needed)
+      try {
+        signature = await signMessageAsync({ message });
+      } catch (signErr: any) {
+        const errMsg = signErr?.message?.toLowerCase() || '';
+        // Last-resort: if we still hit connector not connected, give one delayed retry
+        if (errMsg.includes('connector not connected')) {
+          console.warn('[Auth] Post-readiness connector error, final retry in 2s...');
+          await new Promise(r => setTimeout(r, 2000));
+          signature = await signMessageAsync({ message });
+        } else {
+          throw signErr;
+        }
       }
 
       const verifyRes = await fetch('/api/auth/system-verify', {
