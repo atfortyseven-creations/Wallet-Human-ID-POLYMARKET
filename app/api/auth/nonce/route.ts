@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Private CRYPTOGRAPHIC NONCE GENERATOR
  * Generates a military-grade, single-use challenge token to prevent replay attacks.

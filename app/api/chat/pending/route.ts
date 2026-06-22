@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/session';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Resolve the authenticated address from session OR x-web3-address header fallback.
  * This allows WalletConnect-only users (no server session cookie) to read their own

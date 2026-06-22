@@ -752,7 +752,7 @@ export function MobileLanding() {
 
     try {
       // [QUANTUM AEGIS] Real SIWE Signature Generation
-      const nonceRes = await fetch('/api/auth/nonce');
+      const nonceRes = await fetch('/api/auth/nonce', { cache: 'no-store' });
       if (!nonceRes.ok) throw new Error('Failed to fetch cryptographic nonce');
       const { nonce } = await nonceRes.json();
 

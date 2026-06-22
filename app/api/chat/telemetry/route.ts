@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { safeRedisGet, safeRedisSet } from '@/lib/redis/client';
 import { isAddress } from 'viem';
 
+export const dynamic = 'force-dynamic';
+
 // Extreme Security: Rate limit in-memory or via Edge (simplified for robust execution)
 const PRESENCE_TTL_S = 30; // 30 seconds online window
 const TYPING_TTL_S = 5; // 5 seconds typing window

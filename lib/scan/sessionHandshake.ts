@@ -148,7 +148,7 @@ export async function completeSessionHandshake(
     } else {
       try {
         // [QUANTUM AEGIS] Real SIWE Signature Generation
-        const nonceRes = await fetch('/api/auth/nonce');
+        const nonceRes = await fetch('/api/auth/nonce', { cache: 'no-store' });
         if (nonceRes.ok) {
           const { nonce } = await nonceRes.json();
           const message = `Authenticate to Whale Network.\n\nNonce: ${nonce}`;

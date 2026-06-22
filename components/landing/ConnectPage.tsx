@@ -413,7 +413,7 @@ export default function ConnectPage() {
         const norm = address.toLowerCase();
         
         // [QUANTUM AEGIS] Real SIWE Signature Generation
-        const nonceRes = await fetch('/api/auth/nonce');
+        const nonceRes = await fetch('/api/auth/nonce', { cache: 'no-store' });
         if (!nonceRes.ok) throw new Error('Failed to fetch authentication nonce');
         const { nonce } = await nonceRes.json();
         

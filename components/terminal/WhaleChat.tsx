@@ -285,7 +285,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       let isMounted = true;
       const pollPeer = async () => {
           try {
-              const res = await fetch(`/api/chat/telemetry?peer=${activePeer}&self=${address}`);
+              const res = await fetch(`/api/chat/telemetry?peer=${activePeer}&self=${address}`, { cache: 'no-store' });
               if (!res.ok) return;
               const data = await res.json();
               if (isMounted) setPeerStatus(data);
@@ -457,7 +457,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       if (address) {
         const authHeader = { 'x-web3-address': address };
         try {
-          const res = await fetch(`/api/chat/contacts?address=${address}`, { headers: authHeader });
+          const res = await fetch(`/api/chat/contacts?address=${address}`, { headers: authHeader, cache: 'no-store' });
           if (res.ok) {
             const data = await res.json();
             if (data.peers && Array.isArray(data.peers)) {
@@ -471,7 +471,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           }
           
           // FETCH PENDING MESSAGES (OFFLINE ROUTING) — works for both HL and WalletConnect users
-          const pRes = await fetch(`/api/chat/pending?address=${address}`, { headers: authHeader });
+          const pRes = await fetch(`/api/chat/pending?address=${address}`, { headers: authHeader, cache: 'no-store' });
           if (pRes.ok) {
              const pData = await pRes.json();
              if (pData.pending && Array.isArray(pData.pending)) {
@@ -935,7 +935,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         // FETCH PENDING MESSAGES (OFFLINE ROUTING)
         let pendingServer: any[] = [];
         try {
-          const pRes = await fetch(`/api/chat/pending?address=${address}`);
+          const pRes = await fetch(`/api/chat/pending?address=${address}`, { cache: 'no-store' });
           if (pRes.ok) {
             const pData = await pRes.json();
             if (pData.pending && Array.isArray(pData.pending)) {
