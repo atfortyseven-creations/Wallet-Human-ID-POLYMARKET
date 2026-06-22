@@ -51,7 +51,7 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
         }, 50);
       }
 
-      const signature = await signMessage(config, {
+      const signature = await signMessage(config as any, {
         message: message.prepareMessage(),
       });
 

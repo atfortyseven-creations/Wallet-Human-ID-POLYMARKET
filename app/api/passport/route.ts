@@ -30,7 +30,7 @@ const passportSchema = z.object({
   // Events are accepted from the frontend but handled server-side separately
   events: z.array(z.object({
     eventType: z.string(),
-    payload: z.record(z.any()),
+    payload: z.record(z.string(), z.any()),
   })).optional(),
 });
 
