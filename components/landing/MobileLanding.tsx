@@ -998,10 +998,14 @@ export function MobileLanding() {
     };
     document.addEventListener('visibilitychange', handleVisibility);
     window.addEventListener('focus', handleVisibility);
+    // [QUANTUM WAKEUP] Listen for the signal emitted by ClientFortress when the user
+    // returns from a wallet app. This fires BEFORE visibilitychange in some iOS versions.
+    window.addEventListener('quantum_wakeup_signal', handleVisibility as EventListener);
     onFocusRecheck(); // Run on mount for full-reload case
     return () => {
       document.removeEventListener('visibilitychange', handleVisibility);
       window.removeEventListener('focus', handleVisibility);
+      window.removeEventListener('quantum_wakeup_signal', handleVisibility as EventListener);
       if (pollIntervalRef.current) { clearInterval(pollIntervalRef.current); pollIntervalRef.current = null; }
     };
   }, [mounted, isLinked, reconnect, onFocusRecheck, forceFullReconnect]);

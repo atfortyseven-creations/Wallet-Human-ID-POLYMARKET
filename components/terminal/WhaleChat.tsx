@@ -249,6 +249,34 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     }
   }, [isConnected, address, client]);
 
+  // [QUANTUM WEBSOCKET RESURRECTION] iOS Safari suspends WebSocket connections when the
+  // user switches to their wallet app to sign. When they return, XMTP stream may be dead.
+  // We listen for the ClientFortress wakeup signal and force a conversations.sync() 
+  // to resurrect the stream without requiring a full page reload.
+  useEffect(() => {
+    if (!client || !address) return;
+    let resurrecting = false;
+    const handleWakeup = async () => {
+      if (resurrecting || document.visibilityState !== 'visible') return;
+      resurrecting = true;
+      console.log('[WhaleChat:Quantum] App returned from background — resyncing XMTP stream...');
+      try {
+        await client.conversations.sync();
+        console.log('[WhaleChat:Quantum] XMTP sync complete. Stream resurrected.');
+      } catch (e) {
+        console.warn('[WhaleChat:Quantum] Sync failed, stream may self-recover:', e);
+      } finally {
+        resurrecting = false;
+      }
+    };
+    window.addEventListener('quantum_wakeup_signal', handleWakeup);
+    document.addEventListener('visibilitychange', handleWakeup);
+    return () => {
+      window.removeEventListener('quantum_wakeup_signal', handleWakeup);
+      document.removeEventListener('visibilitychange', handleWakeup);
+    };
+  }, [client, address]);
+
   // AUTO-INITIALIZE: When wallet is connected and XMTP not yet started, auto-init.
   // XMTP v3 stores session keys in IndexedDB  after the first sign,
   // subsequent loads are silent (no wallet prompt needed).
@@ -344,11 +372,22 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const startRecording = useCallback(async () => {
     if (isRecording || !activePeer) return;
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-        ? 'audio/webm;codecs=opus'
-        : MediaRecorder.isTypeSupported('audio/mp4')
+      // [iOS FIX] Safari requires explicit constraint hints to enable microphone.
+      // echoCancellation and noiseSuppression are critical for call quality on iPhone.
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          sampleRate: 44100,
+          channelCount: 1,
+        }
+      });
+      // [iOS FIX] Safari does NOT support audio/webm or audio/webm;codecs=opus.
+      // It only supports audio/mp4 (AAC). We must check in correct priority order.
+      const mimeType = MediaRecorder.isTypeSupported('audio/mp4')
         ? 'audio/mp4'
+        : MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+        ? 'audio/webm;codecs=opus'
         : 'audio/webm';
 
       const recorder = new MediaRecorder(stream, { mimeType });
@@ -1520,6 +1559,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                           <audio
                             controls
                             src={audioSrc}
+                            playsInline
+                            preload="metadata"
                             className="h-8 max-w-[200px]"
                             style={{ filter: isMe ? 'invert(1) brightness(0.8)' : 'invert(var(--dark-invert, 0))' }}
                           />

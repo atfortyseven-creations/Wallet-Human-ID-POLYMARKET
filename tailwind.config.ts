@@ -11,6 +11,9 @@ const config: Config = {
     // are inert. The light-mode firewall in globals.css also overrides any
     // accidental .dark injection from AppKit/Wagmi disconnect cycles.
     darkMode: ['class', '.never-trigger-dark-mode-ever'],
+    future: {
+        hoverOnlyWhenSupported: true,
+    },
     theme: {
         extend: {
             fontFamily: {

@@ -682,13 +682,19 @@ html.hide-balances [data-balance]:active {
 
   /* Safe Area / Fallback VP utilities for iOS 15 */
   .min-h-safe {
-    min-height: 100vh;
+    min-height: 100dvh;
     /* iOS fallback using webkit */
     min-height: -webkit-fill-available;
   }
   .h-safe {
-    height: 100vh;
+    height: 100dvh;
     height: -webkit-fill-available;
+  }
+
+  /* Quantum Mobile Touch Optimizations */
+  button, a, [role="button"] {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
 
@@ -1614,4 +1620,63 @@ html.dark .doc-content code {
 html.dark .doc-content .callout {
   background: rgba(0,0,0,0.02) !important;
   border-left-color: rgba(0,0,0,0.3) !important;
+}
+
+/* ============================================================
+   QUANTUM MOBILE FORTRESS V2 — iOS & ANDROID ATOMIC SHIELD
+   Applied at the end of globals.css to override any prior rules.
+   ============================================================ */
+
+/* 1. Dynamic Viewport — Fixed bars that respect iOS notch & home bar */
+.quantum-fixed-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding-top: env(safe-area-inset-top, 0px);
+  z-index: 9999;
+}
+
+.quantum-fixed-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  z-index: 9999;
+}
+
+/* 2. Chat input container — never hidden behind iOS home bar */
+.whale-chat-input-bar {
+  padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+}
+
+/* 3. Full-height chat container using dynamic viewport */
+.whale-chat-container {
+  height: 100dvh;
+  max-height: 100dvh;
+}
+
+/* 4. iOS momentum scrolling on ALL scrollable elements */
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 5. Prevent text selection on UI chrome (but allow in content) */
+button, label, nav, header, footer, [role="button"] {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* 6. Prevent iOS callout popup (magnifying glass) on long press of images/links */
+img, a, canvas, svg {
+  -webkit-touch-callout: none;
+}
+
+/* 7. Force hardware-accelerated compositing on animated elements */
+.animate-pulse, .animate-spin, .animate-bounce, [class*="transition-"] {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }

@@ -65,10 +65,45 @@ export function ClientFortress() {
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('beforeprint', handleBeforePrint);
 
+    // 5. QUANTUM MOBILE WALLET RECONNECTION & WEBSOCKET RESURRECTION
+    // iOS Safari suspends WebSockets when backgrounded. When returning from a wallet app,
+    // we must force a reconnect signal to Wagmi/XMTP.
+    const handleVisibilityChange = () => {
+        if (document.visibilityState === 'visible') {
+            console.log('[Fortress] Quantum Wakeup: Re-establishing mobile sockets...');
+            window.dispatchEvent(new Event('quantum_wakeup_signal'));
+            if (navigator.onLine) {
+                window.dispatchEvent(new Event('online'));
+            }
+        }
+    };
+    window.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // 6. AUDIO CONTEXT PRE-WARMER (Mobile Safari Autoplay Bypass)
+    const warmAudioContext = () => {
+        try {
+            const AudioCtor = window.AudioContext || (window as any).webkitAudioContext;
+            if (AudioCtor) {
+                const ctx = new AudioCtor();
+                ctx.resume().then(() => {
+                    console.log('[Fortress] AudioContext Pre-warmed & Unlocked.');
+                    (window as any).__unlockedAudioContext = ctx;
+                });
+            }
+        } catch (e) {}
+        window.removeEventListener('touchstart', warmAudioContext);
+        window.removeEventListener('click', warmAudioContext);
+    };
+    window.addEventListener('touchstart', warmAudioContext, { once: true });
+    window.addEventListener('click', warmAudioContext, { once: true });
+
     return () => {
       window.removeEventListener('contextmenu', handleContextMenu);
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('beforeprint', handleBeforePrint);
+      window.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('touchstart', warmAudioContext);
+      window.removeEventListener('click', warmAudioContext);
       clearInterval(detector);
     };
   }, []);
