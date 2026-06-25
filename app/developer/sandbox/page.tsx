@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default function SandboxPage() {
   return (
     <main
-      className="min-h-screen bg-white text-black selection:bg-black/10 flex flex-col items-center py-24 px-6 gap-16 font-sans relative overflow-hidden"
+      className="min-h-screen bg-white text-black selection:bg-black/10 flex flex-col items-center py-24 px-6 gap-16 font-sans relative overflow-x-hidden"
     >
       {/* Background Glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-slate-100 blur-[120px] pointer-events-none rounded-full" />
