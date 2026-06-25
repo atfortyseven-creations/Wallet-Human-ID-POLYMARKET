@@ -436,7 +436,7 @@ export default async function middleware(request: NextRequest) {
           let secureCookie = cookie;
           if (!secureCookie.toLowerCase().includes('secure')) secureCookie += '; Secure';
           if (!secureCookie.toLowerCase().includes('httponly') && secureCookie.includes('whale_session=')) secureCookie += '; HttpOnly';
-          if (!secureCookie.toLowerCase().includes('samesite')) secureCookie += '; SameSite=Strict';
+          if (!secureCookie.toLowerCase().includes('samesite')) secureCookie += '; SameSite=Lax';
           response.headers.append('Set-Cookie', secureCookie);
         });
       }

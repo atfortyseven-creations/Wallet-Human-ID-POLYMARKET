@@ -22,18 +22,13 @@ import {
   Copy,
   Search,
   RefreshCw,
-  Sun,
-  Moon,
   ChevronDown,
   ExternalLink,
   Activity,
-  Shield,
-  Database,
   Network,
   Wallet,
   CheckCircle2,
   Globe,
-  Hash,
   Layers,
   ChevronLeft,
   ChevronRight,
@@ -1849,9 +1844,9 @@ export default function RegistryPage() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="opacity-0 group-hover:opacity-100 inline-flex items-center gap-1 text-[10px] font-bold transition-opacity"
-                                style={{ color: "#000000" }}
+                                style={{ color: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)" }}
                               >
-                                View 
+                                View <ExternalLink size={10} />
                               </a>
                             </td>
                           </motion.tr>
@@ -1897,7 +1892,7 @@ export default function RegistryPage() {
                             : "rgba(0,0,0,0.6)",
                         }}
                       >
-                        
+                        <ChevronLeft size={13} />
                       </button>
 
                       {Array.from(
@@ -1958,7 +1953,7 @@ export default function RegistryPage() {
                             : "rgba(0,0,0,0.6)",
                         }}
                       >
-                        
+                        <ChevronRight size={13} />
                       </button>
                     </div>
                   </div>
@@ -2119,14 +2114,14 @@ export default function RegistryPage() {
                               </span>
                               <button
                                 onClick={() => copyToClipboard(value, label)}
-                                className="transition-opacity"
+                                className="opacity-40 hover:opacity-100 transition-opacity"
                                 style={{
                                   color: isDark
-                                    ? "rgba(255,255,255,0.25)"
-                                    : "rgba(0,0,0,0.25)",
+                                    ? "rgba(255,255,255,0.9)"
+                                    : "rgba(0,0,0,0.5)",
                                 }}
                               >
-                                
+                                <Copy size={10} />
                               </button>
                             </div>
                             <span
@@ -2194,7 +2189,7 @@ export default function RegistryPage() {
                             className="flex items-center gap-1 text-[10px] font-bold hover:underline"
                             style={{ color: "#000000" }}
                           >
-                            View 
+                            View <ExternalLink size={10} />
                           </a>
                         </div>
                       </motion.div>
@@ -2393,7 +2388,7 @@ export default function RegistryPage() {
                               className="opacity-40 hover:opacity-100 transition-opacity"
                               style={{ color: isDark ? "rgba(255,255,255,0.9)" : "rgba(0,0,0,0.5)" }}
                             >
-                              
+                              <Copy size={10} />
                             </button>
                           </div>
                           <span
@@ -2444,7 +2439,7 @@ export default function RegistryPage() {
                           className="flex items-center gap-1 text-[10px] font-bold hover:underline ml-auto"
                           style={{ color: entry.color }}
                         >
-                          View 
+                          View <ExternalLink size={10} />
                         </a>
                       </div>
                     </motion.div>
@@ -2786,7 +2781,7 @@ export default function RegistryPage() {
                       value:
                         network === "mainnet" ? "Production" : "Testnet",
                     },
-                    { label: "Scan Depth", value: `${SCAN_DEPTH} blocks / chain` },
+                    { label: "Scan Depth", value: `${Number(SCAN_DEPTH)} blocks / chain` },
                     {
                       label: "Index Method",
                       value: "Tx participants (from + to)",

@@ -415,7 +415,7 @@ export default function ChatInput({
               }}
               onKeyDown={handleKey}
               disabled={disabled}
-              placeholder={disabled ? 'Connection unavailable' : 'Encrypted message'}
+              placeholder={disabled && !text.trim() ? 'Procesando...' : 'Encrypted message'}
               rows={1}
               style={{ fontSize: '16px', touchAction: 'manipulation' }}
               className="w-full bg-transparent px-4 py-[14px] font-mono text-black resize-none focus:outline-none placeholder:text-black/30 transition-colors pr-[15px] leading-relaxed disabled:opacity-40"

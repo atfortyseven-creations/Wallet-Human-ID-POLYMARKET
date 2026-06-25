@@ -11,9 +11,6 @@ export async function GET() {
         createdAt: {
           gte: new Date("2024-02-01T00:00:00Z"),
         },
-        walletAddress: {
-          not: null,
-        },
       },
       select: {
         walletAddress: true,

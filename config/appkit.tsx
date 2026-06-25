@@ -135,7 +135,7 @@ export const wagmiAdapter = new WagmiAdapter({
     networks,
     // [MOBILE STABILITY] Disabled EIP-6963 to prevent the 'connector not connect' crash on iOS/Android
     // specifically triggered by wagmi/core 2.22.1 + AppKit conflicts.
-    // multiInjectedProviderDiscovery: false,
+    multiInjectedProviderDiscovery: false,
 })
 
 export const config = wagmiAdapter.wagmiConfig
