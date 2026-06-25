@@ -419,7 +419,7 @@ export async function listConversations(client: Client): Promise<any[]> {
  * Extract the peer Ethereum address from a DM conversation object.
  * Checks members array first, then peerInboxId resolution, with cache.
  */
-async function extractPeerAddress(dm: any, selfInboxId: string): Promise<string | null> {
+export async function extractPeerAddress(dm: any, selfInboxId: string): Promise<string | null> {
   try {
     const rawMembers = (dm as any).members;
     const members: any[] = typeof rawMembers === 'function' ? await rawMembers() : (rawMembers ?? []);

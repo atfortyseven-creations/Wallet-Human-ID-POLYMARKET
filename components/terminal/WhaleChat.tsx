@@ -8,7 +8,7 @@ import { useSystemAccount } from '@/hooks/useSystemAccount';
 import { useSignMessage, useReconnect } from 'wagmi';
 
 import { useAppKit } from '@reown/appkit/react';
-import { getXMTPClient, canReceiveMessages, sendMessage, getMessages, destroyXMTPClient, nsToDate, discoverNewPeers, streamMessages, resolveSenderAddress } from '@/lib/xmtp/client';
+import { getXMTPClient, canReceiveMessages, sendMessage, getMessages, destroyXMTPClient, nsToDate, discoverNewPeers, streamMessages, resolveSenderAddress, extractPeerAddress } from '@/lib/xmtp/client';
 import { QrScanner } from '@/components/terminal/QrScanner';
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
 import type { Client } from '@xmtp/browser-sdk';
@@ -821,9 +821,14 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           const currentActivePeer = activePeerRef.current?.toLowerCase();
           
           let resolvedPeerAddr = msg.conversation?.peerAddress?.toLowerCase() || '';
-          if (!resolvedPeerAddr && fromPeer) {
-            const senderAddr = await resolveSenderAddress(msg.senderInboxId);
-            resolvedPeerAddr = senderAddr?.toLowerCase() || '';
+          if (!resolvedPeerAddr) {
+            if (fromPeer) {
+              const senderAddr = await resolveSenderAddress(msg.senderInboxId);
+              resolvedPeerAddr = senderAddr?.toLowerCase() || '';
+            } else if (msg.conversation) {
+              const dmPeer = await extractPeerAddress(msg.conversation, selfInboxId);
+              resolvedPeerAddr = dmPeer?.toLowerCase() || '';
+            }
           }
           const msgConvPeer = resolvedPeerAddr;
           const realId = msg.id ?? `real-${sentAtNs}-${Math.random()}`;
@@ -841,7 +846,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             conversationId: msgConvPeer ? `dm-${msgConvPeer}` : `dm-${currentActivePeer}`
           };
 
-          const belongsToActive = (msgConvPeer === currentActivePeer) || (!msgConvPeer && currentActivePeer);
+          const belongsToActive = !!msgConvPeer && (msgConvPeer === currentActivePeer);
 
           if (belongsToActive) {
 
@@ -892,7 +897,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               persistToLocal(updated);
               return updated;
             });
-          } else if (fromPeer) {
+          } else {
             // Belongs to a different (background) conversation
             setConversations(prev => {
               if (!msgConvPeer) return prev;
