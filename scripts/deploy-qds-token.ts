@@ -22,8 +22,10 @@ import { getSchnorrAccount } from '@aztec/accounts/schnorr';
 import { TokenContract } from '@aztec/noir-contracts.js/Token';
 
 const PXE_URL  = process.env.AZTEC_PXE_URL  || 'http://localhost:8080';
+const NODE_URL = process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
 const SECRET   = process.env.AZTEC_RELAYER_SECRET_KEY;
-const SPONSORED_FPC = '0x254082b62f9108d044b8998f212bb145619d91bfcd049461d74babb840181257';
+// V5 Testnet SponsoredFPC — use: aztec get-canonical-sponsored-fpc-address to verify
+const SPONSORED_FPC = process.env.SPONSORED_FPC_ADDRESS || '0x261366b3c0a9b4c30864629556cf282be409e6822b1f3a065fcb7e34f36d7880';
 
 async function main() {
   if (!SECRET) {

@@ -91,10 +91,12 @@ const MAINNET_CHAINS = [
   },
 ] as const;
 
+// NOTE: Testnet chains below are used only for block root scanning (ZK proof data).
+// The Wallets tab shows OUR registered users from the DB, not Sepolia Etherscan wallets.
 const TESTNET_CHAINS = [
   {
     chain: sepolia,
-    label: "Sepolia",
+    label: "Ethereum Sepolia",
     badge: "SEP",
     color: "#000000",
     rpc: "https://eth-sepolia.g.alchemy.com/v2/tBBD_tGhqE9AOhsw9RIOZ",
@@ -1014,24 +1016,26 @@ export default function RegistryPage() {
     const roots: BlockRoot[] = [];
     let totalTxs = 0;
 
-    // ── FETCH REAL CONNECTED ACCOUNTS ─────────────────────────────────────────
-    // This correctly articulates all accounts connected since February, ensuring no simulations.
+    // ── FETCH OUR REGISTERED USERS FROM DB (primary wallet source) ────────────
+    // These are real wallets registered on humanidfi.com — shown in the wallets tab.
+    // The explorer link points to our own registry profile, NOT Etherscan.
     try {
       const res = await fetch("/api/registry/real-users");
       if (res.ok) {
         const { users } = await res.json();
         for (const u of users) {
-          const key = `real-${u.walletAddress.toLowerCase()}`;
+          const key = `humanid-${u.walletAddress.toLowerCase()}`;
           walletMap.set(key, {
             address: u.walletAddress,
-            chain: "Real Person connected",
-            chainId: 1,
-            badge: "REAL",
-            color: "#000000",
+            chain: "HumanID · Registered",
+            chainId: 0,
+            badge: "HUMANID",
+            color: "#6366f1",
             txCount: 1,
             blockNumber: 0,
             timestamp: u.updatedAt,
-            explorer: "https://etherscan.io",
+            // Link to our own registry profile page, not Etherscan!
+            explorer: "https://www.humanidfi.com/registry?wallet=",
             network: selectedNetwork,
             role: "both",
           });
