@@ -98,7 +98,7 @@ export default function AztecArchitecturePage() {
               The system utilizes a <code>mint_private_license</code> Noir circuit. When a user completes biometric identity verification via our specialist provider (Sumsub), an off-chain oracle attestation is generated. The user submits this attestation alongside a zero-knowledge proof to mint an on-chain, non-transferable KYC credential (represented as a private note in the Aztec state tree).
             </p>
             <ul className="list-disc pl-5 space-y-2">
-              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong>Threshold Enforcement:</strong> The Noir <code>transfer()</code> function evaluates the transaction amount. If the transfer exceeds the regulatory threshold (e.g., 1,000 QDs), the circuit strictly requires the sender to prove ownership of a valid KYC credential note.</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong>Threshold Enforcement:</strong> The Noir <code>transfer()</code> function evaluates the transaction amount. If the transfer exceeds the regulatory threshold (e.g., €1,000 equivalent), the circuit strictly requires the sender to prove ownership of a valid KYC credential note.</span></li>
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong>Atomic Rejection:</strong> If the proof fails, the transaction cannot be generated or validated by the Aztec sequencer. Protocol-level anonymity for high-value transfers is mathematically impossible.</span></li>
             </ul>
           </div>
@@ -129,7 +129,7 @@ export default function AztecArchitecturePage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              The synergy between the Aztec Network's Noir-based ZK-Rollup architecture and Humanity Ledger S.L.'s legal framework produces a compliance standard previously thought impossible in decentralized finance. By combining client-side proof generation, escrowed viewing keys, and protocol-level KYC gating, the Whale Network provides users with uncompromising data sovereignty while guaranteeing regulators absolute protection against money laundering and illicit finance.
+              The synergy between the Aztec Network's Noir-based ZK-Rollup architecture and Humanity Ledger S.L.'s legal framework produces a compliance standard previously thought impossible in decentralized finance. By combining client-side proof generation, escrowed viewing keys, and protocol-level KYC gating, the Whale Network provides users with uncompromising data control while guaranteeing regulators absolute protection against money laundering and illicit finance.
             </p>
             <p>
               This document forms part of the regulatory submission package prepared for Aztec Labs and the Comisión Nacional del Mercado de Valores (CNMV).

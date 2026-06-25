@@ -4,12 +4,12 @@ import { NoirCircuitSandbox } from "@/components/developer/NoirCircuitSandbox";
 export const metadata: Metadata = {
   title: "ZK Aztec Sandbox | Whale Network",
   description:
-    "Entorno interactivo Noir para compilar circuitos ZK de Aztec, generar pruebas Barretenberg " +
-    "y verificarlas sobre el secuenciador Aztec L2.",
+    "Interactive Noir environment to compile Aztec ZK circuits, generate Barretenberg proofs " +
+    "and verify them on the Aztec L2 sequencer.",
   keywords: ["Noir", "Aztec Network", "Zero-Knowledge", "ZK Proofs", "Barretenberg", "UltraHonk", "Whale Network"],
   openGraph: {
     title: "ZK Aztec Sandbox | Whale Network",
-    description: "Compila, genera testigos, prueba y verifica circuitos Noir en tiempo real.",
+    description: "Compile, generate witnesses, prove and verify Noir circuits in real-time.",
     url: "https://humanidfi.com/developer/sandbox",
     siteName: "Whale Network",
   },
@@ -53,23 +53,23 @@ export default function SandboxPage() {
         {[
           {
             icon: "01",
-            title: "Ejecución Privada",
-            text: "Cada prueba se genera localmente. El servidor nunca ve los valores privados, balances ni secretos de identidad.",
+            title: "Private Execution",
+            text: "Every proof is generated locally. The server never sees private values, balances, or identity secrets.",
           },
           {
             icon: "02",
-            title: "Backend UltraHonk",
-            text: "El mismo motor de prueba que usa el secuenciador de Aztec Network. Sub-segundo gracias a WASM optimizado.",
+            title: "UltraHonk Backend",
+            text: "The same proving engine used by the Aztec Network sequencer. Sub-second performance via optimized WASM.",
           },
           {
             icon: "03",
-            title: "Cumplimiento ZK",
-            text: "Simula Compliance Oracles con restricciones de rango y pruebas de pertenencia Merkle sobre listas sancionadas.",
+            title: "ZK Compliance",
+            text: "Simulate Compliance Oracles with range constraints and Merkle membership proofs over sanctioned lists.",
           },
           {
             icon: "04",
-            title: "Diagnósticos de Circuito",
-            text: "El linter ZK detecta vulnerabilidades de solidez, riesgos de desbordamiento y fugas de restricciones durante el análisis AST.",
+            title: "Circuit Diagnostics",
+            text: "The ZK linter detects soundness vulnerabilities, overflow risks, and constraint leaks during AST analysis.",
           },
         ].map(({ icon, title, text }) => (
           <div key={title} className="bg-white border border-slate-200 rounded-2xl p-6 hover:border-slate-300 transition-colors group shadow-sm">

@@ -124,7 +124,7 @@ const TESTNET_CHAINS = [
 ] as const;
 
 // ─── ZK Chains (real ZK proof data) ───────────────────────────────────────────
-// These chains produce real SNARK/STARK proofs committed Network.
+// These chains produce real SNARK/STARK proofs committed to the Network.
 // zkSync Era: each block carries l1BatchNumber referencing the L1 proof batch.
 // Polygon zkEVM: each block's stateRoot is the ZK-proven state commitment.
 
@@ -219,7 +219,7 @@ interface ZkEntry {
   blockHash: string;
   // Real parent hash
   parentHash: string;
-  // zkSync Era specific: L1 batch number referencing the Network proof
+  // zkSync Era specific: L1 batch number referencing the Aztec Network proof
   l1BatchNumber: number | null;
   // Whether we got a non-empty stateRoot (i.e. proof was actually available)
   proofVerified: boolean;

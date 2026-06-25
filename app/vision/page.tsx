@@ -46,7 +46,7 @@ export default function VisionPage() {
                 remains mathematically confidential. Proofs replace personal data. That is the standard we hold ourselves to.
               </p>
               <p>
-                As an open-source initiative, we are expanding our coverage of Layer-2 protocols continuously. Financial sovereignty, in our view, demands transparent code and trustless systems — giving every user the power to monitor global
+                As an open-source initiative, we are expanding our coverage of Layer-2 protocols continuously. Financial independence, in our view, demands transparent code and trustless systems — giving every user the power to monitor global
                 markets privately and on their own terms.
               </p>
             </div>

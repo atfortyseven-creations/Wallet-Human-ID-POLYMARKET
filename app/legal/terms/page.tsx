@@ -106,7 +106,7 @@ export default function LegalPage() {
               <strong className="text-black font-semibold">2.1.1 Private Premium Dashboard.</strong> A personalised control panel for the management of your digital assets and activity on the Aztec Network. All portfolio data is processed locally on the user's device through Aztec Network's Private Execution Environment (PXE). Humanity Ledger S.L. has no technical access to this data at any time.
             </p>
             <p>
-              <strong className="text-black font-semibold">2.1.2 Whale Chat — End-to-End Encrypted Messaging.</strong> An inter-wallet messaging service with end-to-end encryption (E2EE). Cryptographic keys are derived from the user's private wallet. Humanity Ledger S.L. has no technical capacity to access the content of any communication.
+              <strong className="text-black font-semibold">2.1.2 Whale Chat — End-to-End Encrypted Messaging.</strong> An inter-wallet messaging service with end-to-end encryption (E2EE) powered by the Extensible Message Transport Protocol (XMTP). Cryptographic keys are derived from the user's private wallet. Humanity Ledger S.L. has no technical capacity to access the content of any communication, nor are messages stored on the Aztec PXE.
             </p>
             <p>
               <strong className="text-black font-semibold">2.1.3 Claim Identity — Decentralised Digital Identities.</strong> A module for the creation and management of decentralised digital identities (DIDs), verified by means of zero-knowledge proofs (ZKPs). This service enables users to demonstrate identity attributes — such as age of majority, place of residence, or solvency — without disclosing the underlying personal data to any third party.
@@ -201,7 +201,7 @@ export default function LegalPage() {
             <ul className="list-disc pl-5 space-y-2">
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>The initial public offering available at https://humanidfi.com from 1 January 2027;</span></li>
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Decentralised exchanges (DEXs) compatible with Aztec Network;</span></li>
-              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Centralised exchanges (CEXs) where $QDs is admitted to attesting; or</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Centralised exchanges (CEXs) where $QDs is admitted to trading; or</span></li>
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Ecosystem rewards (subject to satisfaction of the applicable programme requirements).</span></li>
             </ul>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">3.4 Use of $QDs to Access Services</h3>

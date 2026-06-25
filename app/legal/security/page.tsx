@@ -140,8 +140,8 @@ export default function LegalPage() {
               <strong className="text-black font-semibold">For on-chain incidents (Smart Contracts):</strong>
             </p>
             <ul className="list-disc pl-5 space-y-2">
-              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Activate the "Pause" mechanism (Pausable.nr) on the Noir $QDs token contract (if implemented) or on the dApp contracts.</span></li>
-              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Send vulnerable treasury funds to a backup cold wallet (White Hat Rescue).</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>The Noir $QDs token contract is strictly immutable and non-custodial by design. There is NO central pause mechanism. Containment relies exclusively on front-end isolation.</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Send vulnerable company treasury funds to a backup cold wallet (White Hat Rescue). Note: User non-custodial funds cannot be accessed or rescued by the team.</span></li>
             </ul>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">PHASE 4: ERADICATION AND FORENSIC ANALYSIS</h3>
             <p>
@@ -157,7 +157,7 @@ export default function LegalPage() {
               <em>Objective: Restore the service to normal operations.</em>
             </p>
             <ul className="list-disc pl-5 space-y-2">
-              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Reactivate services (remove on-chain "Pause") following technical validation.</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Reactivate front-end services and routing following technical validation.</span></li>
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Enhanced monitoring for the subsequent 72 hours to ensure no persistent access (backdoors) remains.</span></li>
             </ul>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">PHASE 6: MANDATORY LEGAL NOTIFICATIONS (GDPR / MiCA)</h3>
