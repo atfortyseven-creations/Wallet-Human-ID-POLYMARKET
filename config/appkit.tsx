@@ -133,9 +133,10 @@ export const wagmiAdapter = new WagmiAdapter({
     storage: createStorage({ storage: cookieStorage as any }),
     projectId,
     networks,
-    // [MOBILE STABILITY] Disabled EIP-6963 to prevent the 'connector not connect' crash on iOS/Android
-    // specifically triggered by wagmi/core 2.22.1 + AppKit conflicts.
-    multiInjectedProviderDiscovery: false,
+    // [MOBILE STABILITY] Re-enabled multiInjectedProviderDiscovery so AppKit
+    // constructs proper WalletConnect deep-links on iOS/Android Safari instead
+    // of erroneously intercepting clicks looking for a non-existent window.ethereum.
+    multiInjectedProviderDiscovery: true,
 })
 
 export const config = wagmiAdapter.wagmiConfig

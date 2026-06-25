@@ -8,7 +8,7 @@ import { useSystemAccount } from '@/hooks/useSystemAccount';
 import { useSignMessage, useReconnect } from 'wagmi';
 
 import { useAppKit } from '@reown/appkit/react';
-import { getXMTPClient, canReceiveMessages, sendMessage, getMessages, destroyXMTPClient, nsToDate, discoverNewPeers, streamMessages } from '@/lib/xmtp/client';
+import { getXMTPClient, canReceiveMessages, sendMessage, getMessages, destroyXMTPClient, nsToDate, discoverNewPeers, streamMessages, resolveSenderAddress } from '@/lib/xmtp/client';
 import { QrScanner } from '@/components/terminal/QrScanner';
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
 import type { Client } from '@xmtp/browser-sdk';
@@ -819,30 +819,16 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           const content = typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content);
           const sentAtNs = nsToDate(msg.sentAtNs ?? msg.sentAt).getTime();
           const currentActivePeer = activePeerRef.current?.toLowerCase();
-          const msgConvPeer = msg.conversation?.peerAddress?.toLowerCase() ?? '';
+          
+          let resolvedPeerAddr = msg.conversation?.peerAddress?.toLowerCase() || '';
+          if (!resolvedPeerAddr && fromPeer) {
+            const senderAddr = await resolveSenderAddress(msg.senderInboxId);
+            resolvedPeerAddr = senderAddr?.toLowerCase() || '';
+          }
+          const msgConvPeer = resolvedPeerAddr;
           const realId = msg.id ?? `real-${sentAtNs}-${Math.random()}`;
 
-          // ── XMTP MLS PROTOCOL NOISE FILTER ─────────────────────────────────
-          // XMTP v3 uses MLS groups internally for DMs. The Rust/WASM layer
-          // emits internal protocol frames that must never reach the UI.
-          // These are not real messages — they are sequencer coordination frames.
-          const isSystemNoise = (
-            typeof content === 'string' && (
-              content.includes('initiatedByInboxId') ||
-              content.includes('from cursor') ||
-              content.toLowerCase().includes('group is inactive') ||
-              content.toLowerCase().includes('groupinactive') ||
-              content.toLowerCase().includes('group_inactive') ||
-              content.includes('originator_id') ||
-              content.includes('sequence_id') ||
-              content.includes('synced')
-            )
-          );
-          if (isSystemNoise) continue;
-          // ────────────────────────────────────────────────────────────────────
-
           // ── ABSOLUTE DEDUPLICATION GATE ──────────────────────────────────────
-          // If we have already processed this exact XMTP ID, skip unconditionally.
           if (confirmedMsgIds.current.has(realId)) continue;
           confirmedMsgIds.current.add(realId);
           // ─────────────────────────────────────────────────────────────────────
