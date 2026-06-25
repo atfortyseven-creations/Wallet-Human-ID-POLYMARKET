@@ -22,7 +22,8 @@ vi.mock('../../../lib/prisma', () => ({
         publicSlug: 'mock-slug',
         createdAt: new Date(),
         events: []
-      })
+      }),
+      update: vi.fn().mockResolvedValue({})
     },
     user: {
       findUnique: vi.fn().mockResolvedValue({ tier: 'ENTERPRISE' })
