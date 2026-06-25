@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState } from "react";
 import { AztecZKMetrics } from "./AztecZKMetrics";
@@ -13,8 +13,8 @@ const SECURITY_PILLARS = [
   {
     index: "02",
     label: "Absolute Privacy",
-    protocol: "Zero-Knowledge",
-    body: "Your identity, assets, and activities remain completely secure. Our infrastructure guarantees that your interactions stay private at all times."
+    protocol: "Anonymity Sets",
+    body: "By employing the \"Mixing Effect\", your assets are indistinguishable from others in the network. Aztec provides true privacy on L1 bridging through massive anonymity sets, obscuring senders and receivers."
   },
   {
     index: "03",
@@ -57,8 +57,8 @@ const AZTEC_EXTENDED_POINTS = [
     desc: "We maintain network health securely without exposing any of your personal data."
   },
   {
-    title: "Seamless Flow",
-    desc: "Easily mix private and public actions in a single step without complicated bridging."
+    title: "Seamless Flow & Fee Juice",
+    desc: "Easily mix private and public actions. Gas is paid via non-transferable 'Fee Juice', abstracting away complexity while distinguishing governance ($AZTEC) from utility."
   },
   {
     title: "Secure Messaging",

@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import { NoirCircuitSandbox } from "@/components/developer/NoirCircuitSandbox";
 
 export const metadata: Metadata = {
-  title: "ZK Circuit Prover Sandbox | Whale Network",
+  title: "ZK Aztec Sandbox | Whale Network",
   description:
-    "Interactive Noir circuit IDE. Compile Aztec ZK circuits, generate Barretenberg proofs, " +
-    "and verify them on the Aztec L2 sequencer.",
+    "Entorno interactivo Noir para compilar circuitos ZK de Aztec, generar pruebas Barretenberg " +
+    "y verificarlas sobre el secuenciador Aztec L2.",
   keywords: ["Noir", "Aztec Network", "Zero-Knowledge", "ZK Proofs", "Barretenberg", "UltraHonk", "Whale Network"],
   openGraph: {
-    title: "ZK Circuit Prover Sandbox | Whale Network",
-    description: "Compile, witness, prove, and verify Noir circuits in real-time.",
+    title: "ZK Aztec Sandbox | Whale Network",
+    description: "Compila, genera testigos, prueba y verifica circuitos Noir en tiempo real.",
     url: "https://humanidfi.com/developer/sandbox",
     siteName: "Whale Network",
   },
@@ -27,7 +27,7 @@ export default function SandboxPage() {
       <header className="text-center max-w-3xl relative z-10 flex flex-col items-center">
         <div className="bg-slate-50 border border-slate-200 text-slate-500 text-[10px] font-bold tracking-[0.3em] px-4 py-1.5 rounded-full uppercase mb-8 flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse" />
-          Institutional ZK Environment
+          ZK Aztec Sandbox
         </div>
         
         <h1 className="text-4xl md:text-6xl font-black text-black tracking-tighter leading-[1.1] mb-6 flex flex-col items-center gap-6">
@@ -39,7 +39,7 @@ export default function SandboxPage() {
         </h1>
 
         <p className="text-slate-500 text-sm md:text-base leading-relaxed max-w-2xl font-mono">
-          Write deeply complex Noir architectures, parse them through the Quantum Security Linter, generate UltraHonk SNARKs, and simulate Barretenberg rollup submissions entirely in-browser.
+          Write deeply complex Noir architectures, parse them through the ZK Linter, generate UltraHonk SNARKs, and simulate Barretenberg rollup submissions entirely in-browser.
         </p>
       </header>
 
@@ -53,23 +53,23 @@ export default function SandboxPage() {
         {[
           {
             icon: "01",
-            title: "Private Execution Environment",
-            text: "Every proof is generated locally. The backend never sees private witness inputs, balance amounts, or identity secrets.",
+            title: "Ejecución Privada",
+            text: "Cada prueba se genera localmente. El servidor nunca ve los valores privados, balances ni secretos de identidad.",
           },
           {
             icon: "02",
-            title: "UltraHonk Backend",
-            text: "The exact same proving engine used by the Aztec Network's sequencer. Achieves sub-second proving via highly optimized WASM.",
+            title: "Backend UltraHonk",
+            text: "El mismo motor de prueba que usa el secuenciador de Aztec Network. Sub-segundo gracias a WASM optimizado.",
           },
           {
             icon: "03",
-            title: "Zero-Knowledge AML",
-            text: "Simulate complex Compliance Oracles using Range constraints and Merkle Membership proofs over sanctioned datasets.",
+            title: "Cumplimiento ZK",
+            text: "Simula Compliance Oracles con restricciones de rango y pruebas de pertenencia Merkle sobre listas sancionadas.",
           },
           {
             icon: "04",
-            title: "Security Diagnostics",
-            text: "The Quantum Linter detects Soundness vulnerabilities, overflow risks, and constraint leaks during AST parsing.",
+            title: "Diagnósticos de Circuito",
+            text: "El linter ZK detecta vulnerabilidades de solidez, riesgos de desbordamiento y fugas de restricciones durante el análisis AST.",
           },
         ].map(({ icon, title, text }) => (
           <div key={title} className="bg-white border border-slate-200 rounded-2xl p-6 hover:border-slate-300 transition-colors group shadow-sm">

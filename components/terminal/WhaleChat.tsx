@@ -434,7 +434,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               conversationId: `dm-${activePeer.toLowerCase()}`
             }]);
             try { 
-                await sendMessage(client, activePeer, audioMsg); 
+                await sendMessage(client, activePeer, audioMsg, address); 
                 console.log('[Voice] P2P Audio transmission successful.');
             } catch (sendErr: any) {
                 console.error('[Voice] P2P Send Failed:', sendErr?.message);
@@ -1170,25 +1170,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
       // [AUDIO REMOVED] send ping disabled.
       
-      let canMsg = canReceiveCache.current.get(activePeer.toLowerCase());
-      if (canMsg !== true) {
-        canMsg = await canReceiveMessages(client, activePeer);
-        if (canMsg) canReceiveCache.current.set(activePeer.toLowerCase(), true);
-      }
-
-      if (canMsg) {
-        await sendMessage(client, activePeer, content);
-      } else {
-        // QUEUE TO SERVER FOR UNREGISTERED WALLET
-        await fetch('/api/chat/pending', {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'x-web3-address': address
-          },
-          body: JSON.stringify({ sender: address, recipient: activePeer, content })
-        });
-      }
+      // Always attempt to send directly via XMTP.
+      // sendMessage() handles canReceive checks, retries with backoff,
+      // and graceful offline queue internally — no need to pre-check here.
+      await sendMessage(client, activePeer, content, address);
 
       // UPDATE LOCAL ADDRESS BOOK
       setConversations(prev => {

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 
-const ZK_SECRET = process.env.ZK_PIPELINE_SECRET || 'quantum-abysmal-fallback-secret-key-3948';
+const ZK_SECRET = process.env.ZK_PIPELINE_SECRET || 'aztec-zk-pipeline-secret-key-3948';
 
 export async function POST(req: Request) {
   try {

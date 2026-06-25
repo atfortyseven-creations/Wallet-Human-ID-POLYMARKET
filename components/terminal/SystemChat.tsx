@@ -1238,7 +1238,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
     ));
 
     try {
-      const sendPromise = xmtpSend(xmtpClient.current, activeConv.peerAddress, finalContent);
+      const sendPromise = xmtpSend(xmtpClient.current, activeConv.peerAddress, finalContent, address ?? undefined);
       const timeoutPromise = new Promise<never>((_, reject) => 
           setTimeout(() => reject(new Error('El mensaje tardó demasiado en enviarse (posible problema de red 5G)')), 45000)
       );

@@ -326,6 +326,7 @@ export async function sendMessage(
   client: Client,
   toAddress: string,
   content: string,
+  senderEthAddress?: string, // Pass the real wallet address explicitly
 ): Promise<void> {
   const identifier: XmtpIdentifier = {
     identifier: toAddress,
@@ -333,7 +334,6 @@ export async function sendMessage(
   };
 
   let lastErr: any;
-  let shouldQueueOffline = false;
 
   for (let i = 0; i < 3; i++) {
     try {
@@ -341,69 +341,68 @@ export async function sendMessage(
       // both "already exists" and "create new" cases atomically)
       const dm = await client.conversations.newDmWithIdentifier(identifier);
       await dm.send(content);
-      // Sync after send to confirm delivery is committed to the network
+      // Sync after send to confirm delivery — ignore sync errors, message is already sent
       try { await dm.sync(); } catch {}
-      return;
+      return; // SUCCESS — do not fall through to offline queue
     } catch (sendErr: any) {
       const errMsg = (sendErr?.message || '').toLowerCase();
 
-      if (
-        errMsg.includes('group is inactive') ||
-        errMsg.includes('inactive') ||
-        errMsg.includes('synced') ||
-        errMsg.includes('cursor') ||
+      // These are fatal errors meaning the recipient definitely cannot receive on XMTP
+      // Fall through to offline queue
+      const isRecipientOffline =
         errMsg.includes('not on xmtp') ||
         errMsg.includes('no inbox') ||
         errMsg.includes('identity not found') ||
-        errMsg.includes('recipient') ||
-        errMsg.includes('not found')
-      ) {
-        console.warn('[XMTP] Network delivery blocked, queuing offline:', toAddress, errMsg);
-        shouldQueueOffline = true;
-        break; // Stop retries, fall through to queue
-      } else {
-        lastErr = sendErr;
+        errMsg.includes('recipient not found');
+
+      if (isRecipientOffline) {
+        console.warn('[XMTP] Recipient confirmed offline, queuing:', toAddress);
+        break; // Stop retries, fall through to offline queue
       }
 
-      if (!shouldQueueOffline && i < 2) {
-        await new Promise(r => setTimeout(r, 1000 * Math.pow(2, i))); // exponential backoff
+      // Non-fatal send error (network blip, timeout, relay issue)
+      // Store the error and retry with backoff
+      lastErr = sendErr;
+
+      if (i < 2) {
+        await new Promise(r => setTimeout(r, 1000 * Math.pow(2, i))); // 1s, 2s backoff
       }
     }
   }
 
-  if (lastErr && !shouldQueueOffline) {
+  // If we exhausted retries on a non-fatal error, re-throw so the caller
+  // can show the user a retry option instead of silently queuing.
+  if (lastErr) {
     throw lastErr;
   }
 
-  // Fallback: queue offline if recipient is not yet on XMTP
-  const senderAddr: string =
-    (client as any).accountAddress ??
-    (client as any).address ??
-    (client as any).inboxId ??
-    'unknown';
+  // === OFFLINE QUEUE FALLBACK ===
+  // Only reached if recipient is definitively NOT on XMTP.
+  // Use the explicitly passed Ethereum address (never the inboxId).
+  const senderAddr: string = senderEthAddress ?? 'unknown';
 
-  const res = await fetch('/api/chat/queue', {
-    method: 'POST',
-    headers: { 
-      'Content-Type': 'application/json',
-      'x-web3-address': senderAddr
-    },
-    body: JSON.stringify({
-      sender: senderAddr,
-      recipient: toAddress,
-      content,
-    }),
-  });
-  if (!res.ok) {
-    let errMsg = '[XMTP Offline Queue] Failed to queue offline message';
-    try {
-      const errBody = await res.json();
-      errMsg = `[XMTP Offline Queue] Failed to queue offline message: ${errBody.error || errBody.message || res.statusText}`;
-      console.error(errMsg);
-    } catch {
-      // Ignore
+  try {
+    const res = await fetch('/api/chat/queue', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-web3-address': senderAddr,
+      },
+      body: JSON.stringify({
+        sender: senderAddr,
+        recipient: toAddress,
+        content,
+      }),
+    });
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      console.warn('[XMTP Offline Queue] Could not queue message (non-fatal):', errBody.error || res.statusText);
     }
-    throw new Error(errMsg);
+    // Do NOT throw — offline queue failure is non-fatal
+    // The message was optimistically shown to the sender already
+  } catch (queueErr) {
+    console.warn('[XMTP Offline Queue] Network error queuing (non-fatal):', queueErr);
+    // Still do NOT throw
   }
 }
 
