@@ -35,13 +35,13 @@ const CLAIM_TX_HASH     = '0x085abad7f0a1bc596e570079d209e6f5251efa5988f01d57bb1
 const CLAIM_TX_BLOCK    = 103861;
 const CLAIM_AMOUNT      = '10 QDs';
 const CLAIM_FEE         = '2.2694 QDs';
-const LAST_UPDATED      = '2026-06-06';
+const LAST_UPDATED      = '2026-06-26';
 const L1_ROLLUP_ADDR    = '0xf6d0d42ace06829becb78c74f49879528fc632c1';
 const L1_FEE_JUICE_ADDR = '0x762c132040fda6183066fa3b14d985ee55aa3c18';
 const L1_INBOX_ADDR     = '0xf1bb424ac888aa239f1e658b5bddabc65a1c94e6';
 const L1_REGISTRY_ADDR  = '0xa0bfb1b494fb49041e5c6e8c2c1be09cd171c6ba';
 const NODE_VERSION      = '0.67.0';
-const LIVE_BLOCK_HEIGHT = 104431;
+const LIVE_BLOCK_HEIGHT = 144318;
 
 // ─── Utility ──────────────────────────────────────────────────────────────────
 
