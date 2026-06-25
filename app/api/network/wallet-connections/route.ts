@@ -1,8 +1,5 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-// Ensure a single prisma instance
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 export const revalidate = 0; // always fresh
 
@@ -53,59 +50,46 @@ const ISO2_TO_NAME: Record<string, string> = {
 
 export async function GET() {
   try {
-    // We fetch the REAL number of accounts connected since February
-    // The user requested: "TIENE QUE INDEXAR DE FORMA REAL LAS CUENTAS QUE SE HAN CONECTADO DESDE FEBRERO DE FORMA REAL"
+    // Count real registered users since February 2024
     const totalRealUsers = await prisma.user.count({
       where: {
-        isPro: false,
         createdAt: {
           gte: new Date("2024-02-01T00:00:00Z"),
         },
       },
     });
 
-    // We also count unique sessions
-    const uniqueSessions = await prisma.userSessionLog.groupBy({
-      by: ['sessionId'],
-      _count: true,
-    });
-    
-    // We can also fetch the redis data if available.
-    const { redisClient } = await import('@/lib/redis/client');
-    const redisCountries = await (redisClient as any).hgetall('wc:country').catch(() => ({}));
-
-    // Real dynamic total is registered users + temporary active sessions + whatever redis tracks
-    let sessionCount = uniqueSessions.length;
+    // Try to load Redis country data if available
+    let byCountry: Record<string, number> = {};
     let addedFromRedis = 0;
-    
-    const byCountry: Record<string, number> = {};
-    
-    // Process redis cache
-    for (const [code, countStr] of Object.entries(redisCountries)) {
-      const countryName = ISO2_TO_NAME[code] || code;
-      const count = parseInt(countStr as string) || 0;
-      byCountry[countryName] = (byCountry[countryName] || 0) + count;
-      addedFromRedis += count;
+
+    try {
+      const { redisClient } = await import("@/lib/redis/client");
+      const redisCountries = await (redisClient as any)
+        .hgetall("wc:country")
+        .catch(() => ({}));
+
+      for (const [code, countStr] of Object.entries(redisCountries || {})) {
+        const countryName = ISO2_TO_NAME[code] || code;
+        const count = parseInt(countStr as string) || 0;
+        byCountry[countryName] = (byCountry[countryName] || 0) + count;
+        addedFromRedis += count;
+      }
+    } catch {
+      // Redis unavailable — continue without it
     }
-    
-    // Distribute remaining numbers to Spain or the real users list
+
+    // Ensure real users appear on the map (attributed to Spain as primary market)
     if (totalRealUsers > 0) {
       byCountry["Spain"] = (byCountry["Spain"] || 0) + totalRealUsers;
     }
-    
-    // If sessions > redis, add the delta
-    const remainingSessions = Math.max(0, sessionCount - addedFromRedis);
-    if (remainingSessions > 0) {
-      byCountry["Spain"] = (byCountry["Spain"] || 0) + remainingSessions;
-    }
-    
-    // Avoid having 0
+
+    // Guarantee at least one entry so the map renders
     if (Object.keys(byCountry).length === 0) {
-      byCountry["Spain"] = 1; 
+      byCountry["Spain"] = 1;
     }
 
-    // We only use strictly real, verified sessions to maintain absolute credibility with Aztec/Regulators.
-    const total = totalRealUsers + sessionCount + addedFromRedis;
+    const total = Math.max(totalRealUsers + addedFromRedis, 1);
     const activeRegions = Object.keys(byCountry).length;
 
     return NextResponse.json(
@@ -113,8 +97,9 @@ export async function GET() {
       { headers: { "Cache-Control": "no-store, no-cache" } }
     );
   } catch (err: any) {
+    console.error("[wallet-connections]", err?.message);
     return NextResponse.json(
-      { byCountry: { "Spain": 1 }, total: 1, activeRegions: 1, updatedAt: Date.now() },
+      { byCountry: { Spain: 1 }, total: 1, activeRegions: 1, updatedAt: Date.now() },
       { headers: { "Cache-Control": "no-store, no-cache" } }
     );
   }

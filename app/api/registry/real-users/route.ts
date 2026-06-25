@@ -1,31 +1,22 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 export const revalidate = 0;
 
 export async function GET() {
   try {
+    // Fetch all real wallet users connected since February 2024
     const users = await prisma.user.findMany({
       where: {
-        isPro: false,
         createdAt: {
           gte: new Date("2024-02-01T00:00:00Z"),
+        },
+        walletAddress: {
+          not: null,
         },
       },
       select: {
         walletAddress: true,
-        createdAt: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-
-    const chatContacts = await (prisma as any).chatContact.findMany({
-      select: {
-        owner: true,
         updatedAt: true,
       },
       orderBy: {
@@ -33,25 +24,23 @@ export async function GET() {
       },
     });
 
-    const uniqueUsersMap = new Map();
-    users.forEach(u => {
+    // Deduplicate by lowercase wallet address
+    const uniqueUsersMap = new Map<string, { walletAddress: string; updatedAt: Date }>();
+    for (const u of users) {
       if (u.walletAddress) {
-        uniqueUsersMap.set(u.walletAddress.toLowerCase(), {
-          walletAddress: u.walletAddress,
-          createdAt: u.createdAt
-        });
+        const key = u.walletAddress.toLowerCase();
+        if (!uniqueUsersMap.has(key)) {
+          uniqueUsersMap.set(key, {
+            walletAddress: u.walletAddress,
+            updatedAt: u.updatedAt,
+          });
+        }
       }
-    });
-    chatContacts.forEach((c: any) => {
-      if (c.owner && !uniqueUsersMap.has(c.owner.toLowerCase())) {
-        uniqueUsersMap.set(c.owner.toLowerCase(), {
-          walletAddress: c.owner,
-          createdAt: c.updatedAt
-        });
-      }
-    });
+    }
 
-    const combinedUsers = Array.from(uniqueUsersMap.values()).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    const combinedUsers = Array.from(uniqueUsersMap.values()).sort(
+      (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()
+    );
 
     return NextResponse.json(
       { users: combinedUsers, total: combinedUsers.length },

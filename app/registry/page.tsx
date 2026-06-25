@@ -1754,7 +1754,7 @@ export default function RegistryPage() {
                                       : "rgba(0,0,0,0.3)",
                                   }}
                                 >
-                                  
+                                  <Copy size={10} />
                                 </button>
                               </div>
                             </td>
@@ -2491,13 +2491,13 @@ export default function RegistryPage() {
                   {
                     label: "Wallets",
                     value: stats.totalWallets.toLocaleString(),
-                    
+                    icon: <Wallet size={13} />,
                     color: "#000000",
                   },
                   {
                     label: "Chains",
                     value: stats.totalChains.toString(),
-                    
+                    icon: <Network size={13} />,
                     color: "#000000",
                   },
                   {
@@ -2505,25 +2505,25 @@ export default function RegistryPage() {
                     value: stats.latestBlock
                       ? `#${stats.latestBlock.toLocaleString()}`
                       : "–",
-                    
+                    icon: <Layers size={13} />,
                     color: "#000000",
                   },
                   {
                     label: "Txns Scanned",
                     value: stats.totalTxs.toLocaleString(),
-                    
+                    icon: <Activity size={13} />,
                     color: "#000000",
                   },
                   {
                     label: "Senders",
                     value: stats.senders.toLocaleString(),
-                    
+                    icon: <Zap size={13} />,
                     color: "#000000",
                   },
                   {
                     label: "Receivers",
                     value: stats.receivers.toLocaleString(),
-                    
+                    icon: <Globe size={13} />,
                     color: "#000000",
                   },
                 ].map((s: any, i) => (
