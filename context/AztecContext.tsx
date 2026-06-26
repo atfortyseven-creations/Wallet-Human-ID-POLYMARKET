@@ -84,19 +84,31 @@ export const AztecProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       try {
         console.log('🟡 [Aztec] Loading SDK via dynamic import...');
 
-        // ─ Dynamic import: only executes in the browser at runtime ─
-        const { createPXEClient, waitForPXE } = (await import(
-          /* webpackIgnore: true */
-          '@aztec/aztec.js'
-        )) as any;
+        // PXE Locking / Multi-Tab Concurrency (Security Hardening Task 8)
+        // Ensure only one tab initializes the PXE at a time to prevent WASM state corruption
+        const executeInit = async () => {
+            // ─ Dynamic import: only executes in the browser at runtime ─
+            const { createPXEClient, waitForPXE } = (await import(
+              /* webpackIgnore: true */
+              '@aztec/aztec.js'
+            )) as any;
 
-        const PXE_URL = process.env.NEXT_PUBLIC_AZTEC_PXE_URL || 'http://localhost:8080';
-        console.log(`🟡 [Aztec] Connecting to PXE at ${PXE_URL}...`);
+            const PXE_URL = process.env.NEXT_PUBLIC_AZTEC_PXE_URL || 'http://localhost:8080';
+            console.log(`🟡 [Aztec] Connecting to PXE at ${PXE_URL}...`);
 
-        const pxeClient = createPXEClient(PXE_URL) as unknown as PXE;
+            const pxeClient = createPXEClient(PXE_URL) as unknown as PXE;
 
-        // waitForPXE polls until the Sandbox is ready (max 10 retries × 1s)
-        await waitForPXE(pxeClient as any, 10);
+            // waitForPXE polls until the Sandbox is ready (max 10 retries × 1s)
+            await waitForPXE(pxeClient as any, 10);
+            return pxeClient;
+        };
+
+        let pxeClient: PXE;
+        if (typeof navigator !== 'undefined' && navigator.locks) {
+            pxeClient = await navigator.locks.request('aztec-pxe-init', executeInit);
+        } else {
+            pxeClient = await executeInit();
+        }
 
         // Fetch node metadata
         const info = await pxeClient.getNodeInfo();

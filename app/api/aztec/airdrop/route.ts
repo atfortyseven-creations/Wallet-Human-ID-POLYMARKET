@@ -3,8 +3,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/session';
 import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
+import rateLimit from '@/lib/rate-limit';
+import { z } from 'zod';
 
 export const dynamic = 'force-dynamic';
+
+const limiter = rateLimit({
+    interval: 60 * 1000, // 1 minute
+    uniqueTokenPerInterval: 500,
+});
+
+const AirdropSchema = z.object({
+    address: z.string().regex(/^0x[0-9a-fA-F]{40,64}$/, "Invalid Aztec address format")
+});
 
 const AZTEC_EXPLORER        = 'https://testnet.aztecscan.xyz';
 const SPONSORED_FPC_ADDRESS = '0x261366b3c0a9b4c30864629556cf282be409e6822b1f3a065fcb7e34f36d7880';
@@ -20,19 +31,46 @@ const AIRDROP_AMOUNT        = 10;  // 10 QDs per airdrop
  */
 export async function POST(req: NextRequest) {
   try {
+    const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
+    try {
+        await limiter.check(5, ip); // Max 5 airdrop attempts per minute
+    } catch {
+        return NextResponse.json({ error: 'Too many airdrop requests. Try again later.' }, { status: 429 });
+    }
+
     const session = await getSession();
     if (!session?.userId) {
       return NextResponse.json({ error: 'Unauthorized: sign in first.' }, { status: 401 });
     }
 
     const body = await req.json();
-    const { address } = body;
-
-    if (!address || !/^0x[0-9a-fA-F]{40,64}$/.test(address)) {
-      return NextResponse.json({ error: 'Missing or invalid Aztec address.' }, { status: 400 });
+    
+    // Zod Validation
+    const parsedBody = AirdropSchema.safeParse(body);
+    if (!parsedBody.success) {
+      return NextResponse.json({ error: 'Missing or invalid Aztec address.', details: parsedBody.error.errors }, { status: 400 });
     }
 
-    const normalizedAddress = address.toLowerCase();
+    const normalizedAddress = parsedBody.data.address.toLowerCase();
+
+    // ── Global Gas Exhaustion / Airdrop Limit Check ─────────────────────────
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const dailyAirdrops = await prisma.transaction.count({
+      where: {
+        token: 'QDs',
+        type: 'AIRDROP',
+        createdAt: { gte: today },
+      }
+    });
+
+    // Hard limit to 1000 airdrops per day to prevent FPC drain
+    if (dailyAirdrops >= 1000) {
+      return NextResponse.json(
+        { error: 'Daily airdrop limit reached. Please try again tomorrow.' },
+        { status: 429 }
+      );
+    }
 
     // ── One-per-wallet check ─────────────────────────────────────────────────
     const existingAirdrop = await prisma.transaction.findFirst({

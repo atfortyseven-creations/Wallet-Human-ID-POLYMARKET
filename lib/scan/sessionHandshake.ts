@@ -23,7 +23,8 @@ export async function completeSessionHandshake(
   decodedText: string,
   getAddress: () => string | null,
   signMessageAsync?: (args: { message: string }) => Promise<string>,
-  connector?: any
+  connector?: any,
+  visualPin?: string
 ): Promise<SessionHandshakeResult> {
   let uuid: string | null = null;
   let ephemeralPub: string | null = null;
@@ -179,7 +180,7 @@ export async function completeSessionHandshake(
           const sigRes = await fetch('/api/auth/system-verify', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ address: resolvedAddress, message, signature, nonce }),
+            body: JSON.stringify({ address: resolvedAddress, message, signature, nonce, _qrHandshake: true }),
             credentials: 'include',
           });
           
@@ -222,7 +223,9 @@ export async function completeSessionHandshake(
   // ────────────────────────────────────────────────────────────────
   const { generateX25519KeyPair, deriveSharedSecret, encryptAESGCM } = await import('@/lib/web-crypto');
   const mobilePair = await generateX25519KeyPair();
-  const shared = await deriveSharedSecret(mobilePair.privateKey, ephemeralPub, isECDH);
+  // [VISUAL PIN HKDF] Pass the PIN to derive a unique session key
+  // If PIN is wrong/missing the desktop will fail to decrypt the AES-GCM payload
+  const shared = await deriveSharedSecret(mobilePair.privateKey, ephemeralPub, isECDH, visualPin);
 
   let postBody: Record<string, unknown>;
   if (hasValidSession) {

@@ -75,10 +75,10 @@ const NODES: RoadmapNode[] = [
   },
   {
     id: 'vip',
-    title: 'VIP Whale Membership',
+    title: 'Whale Tier Access',
     status: 'live',
     quarter: 'Completed',
-    description: 'Tiered Whale membership (Whale, Orca, Shark). On-chain verified access to premium terminal modules, Studio Provenance creation, and Whale Chat.',
+    description: 'Tiered membership system (Whale, Orca, Shark, Initiate). Each tier unlocks progressively deeper access: Whale Chat, Studio Provenance creation, institutional circuit library, and advanced terminal modules. Tiers are verified cryptographically via wallet signature.',
     x: C2, y: 200,
   },
   {
@@ -132,13 +132,13 @@ const NODES: RoadmapNode[] = [
     x: C3, y: 480,
   },
 
-  // ─── PHASE 4: Markets & Intelligence (Jul – Sep 2026) ────────────────────
+  // ─── PHASE 4: Markets & On-Chain Intelligence (Jul – Sep 2026) ─────────────
   {
-    id: 'polymarket',
-    title: 'Polymarket Intelligence',
+    id: 'stealth-transfers',
+    title: 'ZK Stealth Transfers',
     status: 'building',
     quarter: 'Jul 2026',
-    description: 'Institutional Polymarket panel with live prediction market data, whale position tracking, and AI-generated signal alerts. Flags large bet entries and shifting probabilities for VIP members.',
+    description: 'Private peer-to-peer capital routing leveraging Aztec\'s shielded state. Transfer significant capital between wallets with absolute cryptographic privacy, obscuring sender, receiver, and transaction size from public chain analysis.',
     x: C4, y: 60,
   },
   {
@@ -154,7 +154,7 @@ const NODES: RoadmapNode[] = [
     title: 'Whale Alert Engine',
     status: 'building',
     quarter: 'Aug 2026',
-    description: 'Real-time on-chain whale movement alerts. Monitors wallets >$1M, flags suspicious clustering, and pushes notifications to Telegram + in-terminal alerts for VIP subscribers.',
+    description: 'Real-time on-chain whale movement monitoring. Tracks wallets above $1M threshold, detects suspicious clustering and wash-trading patterns, and delivers push notifications through the in-terminal alert panel.',
     x: C4, y: 340,
   },
   {
@@ -162,7 +162,7 @@ const NODES: RoadmapNode[] = [
     title: 'Aztec Testnet Live',
     status: 'building',
     quarter: 'Sep 2026',
-    description: 'Upgrade from local PXE simulation to live Aztec Testnet RPC. Private token transfers and ZK identity proofs running against deployed CoreLedger and Token contracts on testnet.',
+    description: 'Full migration from local PXE sandbox to the live Aztec Testnet RPC. Private QDs token transfers, ZK identity proofs, and CoreLedger contract interactions all running against the public testnet chain.',
     x: C4, y: 480,
   },
 
@@ -239,12 +239,12 @@ const EDGES: RoadmapEdge[] = [
   { from: 'terminal',    to: 'studio' },
   { from: 'whalechat',   to: 'circuits' },
   // P3 → P4
-  { from: 'zksandbox',   to: 'polymarket' },
+  { from: 'zksandbox',   to: 'stealth-transfers' },
   { from: 'circuits',    to: 'hyperliquid' },
   { from: 'studio',      to: 'alerts' },
   { from: 'passportqr',  to: 'aztectestnet' },
   // P4 → P5
-  { from: 'polymarket',  to: 'darkpool' },
+  { from: 'stealth-transfers', to: 'darkpool' },
   { from: 'hyperliquid', to: 'darkpool' },
   { from: 'alerts',      to: 'aml' },
   { from: 'aztectestnet',to: 'whaletoken' },

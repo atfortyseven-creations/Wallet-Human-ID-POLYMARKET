@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { NoirCircuitSandbox } from "@/components/developer/NoirCircuitSandbox";
 
 export const metadata: Metadata = {
-  title: "ZK Aztec Sandbox | Whale Network",
+  title: "Noir Circuit Lab | Whale Network",
   description:
     "Interactive Noir environment to compile Aztec ZK circuits, generate Barretenberg proofs " +
     "and verify them on the Aztec L2 sequencer.",
   keywords: ["Noir", "Aztec Network", "Zero-Knowledge", "ZK Proofs", "Barretenberg", "UltraHonk", "Whale Network"],
   openGraph: {
-    title: "ZK Aztec Sandbox | Whale Network",
+    title: "Noir Circuit Lab | Whale Network",
     description: "Compile, generate witnesses, prove and verify Noir circuits in real-time.",
     url: "https://humanidfi.com/developer/sandbox",
     siteName: "Whale Network",
@@ -25,13 +25,8 @@ export default function SandboxPage() {
 
       {/* Hero header */}
       <header className="text-center max-w-3xl relative z-10 flex flex-col items-center">
-        <div className="bg-slate-50 border border-slate-200 text-slate-500 text-[10px] font-bold tracking-[0.3em] px-4 py-1.5 rounded-full uppercase mb-8 flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse" />
-          ZK Aztec Sandbox
-        </div>
-        
         <h1 className="text-4xl md:text-6xl font-black text-black tracking-tighter leading-[1.1] mb-6 flex flex-col items-center gap-6">
-          ZK SandBox
+          Noir Circuit Lab
           <div className="flex flex-col items-center gap-3 text-lg md:text-xl text-slate-500 font-medium tracking-wide uppercase mt-4">
             <span>powered by</span>
             <img src="/aztec-logo-black.png" alt="Aztec Network" className="h-32 md:h-48 lg:h-56 object-contain" />

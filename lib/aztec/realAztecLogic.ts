@@ -22,6 +22,28 @@ async function ensureNodeConnection(pxe: any) {
     }
 }
 
+async function sendWithRetry(methodCall: any, maxRetries = 3) {
+    let attempt = 0;
+    while (attempt < maxRetries) {
+        try {
+            const tx = await methodCall.send().wait();
+            return tx;
+        } catch (error: any) {
+            attempt++;
+            const msg = error?.message || '';
+            // Detect nullifier collision or state sync issues
+            if (msg.includes('nullifier') || msg.includes('dropped') || msg.includes('UTXO')) {
+                console.warn(`[Aztec] Tx failed due to nullifier collision (attempt ${attempt}/${maxRetries}). Retrying...`);
+                // Exponential backoff
+                await new Promise(r => setTimeout(r, Math.pow(2, attempt) * 1000));
+            } else {
+                throw error;
+            }
+        }
+    }
+    throw new Error('Transaction failed after max retries due to nullifier collisions.');
+}
+
 export async function mintPrivateQDs(toAddressHex: string, amount: number) {
     if (!CONTRACT_ADDRESS || !RELAYER_SECRET) {
         console.warn('⚠️ Missing AZTEC_QDS_CONTRACT_ADDRESS or RELAYER_SECRET_KEY. Skipping real Aztec tx.');
@@ -41,8 +63,8 @@ export async function mintPrivateQDs(toAddressHex: string, amount: number) {
 
     console.log(`Minting ${amount} QDs to ${toAddress.toString()} on Aztec Testnet...`);
     
-    // Call the Noir smart contract mint function
-    const tx = await contract.methods.mint_private(toAddress, BigInt(amount)).send().wait();
+    // Call the Noir smart contract mint function with retry logic
+    const tx = await sendWithRetry(contract.methods.mint_private(toAddress, BigInt(amount)));
     
     return tx.txHash.toString();
 }
@@ -64,7 +86,8 @@ export async function transferPrivateQDs(senderSecretHex: string, toAddressHex: 
     // Nonce is required for private transfers in some Noir contracts
     const nonce = Fr.random();
     
-    const tx = await contract.methods.transfer(wallet.getAddress(), toAddress, BigInt(amount), nonce).send().wait();
+    // Call the Noir smart contract transfer function with retry logic
+    const tx = await sendWithRetry(contract.methods.transfer(wallet.getAddress(), toAddress, BigInt(amount), nonce));
     
     return tx.txHash.toString();
 }

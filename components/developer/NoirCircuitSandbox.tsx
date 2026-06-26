@@ -397,7 +397,7 @@ contract ZKVerifier {
       <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Terminal size={18} className="text-black" />
-          <span className="font-bold text-sm tracking-widest uppercase">ZK Aztec Sandbox</span>
+          <span className="font-bold text-sm tracking-widest uppercase">Noir Circuit Lab</span>
         </div>
         <div className="flex gap-2">
           <button

@@ -373,24 +373,18 @@ function HeroSection() {
         {/* Centered content */}
         <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-6 pt-28 pb-20 min-h-[100dvh]">
 
-          {/* Badge */}
-          <div className="flex items-center gap-2 mb-8">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 border border-black/10 bg-black/[0.03] text-[11px] font-bold uppercase tracking-widest text-black/40">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              Beta — Aztec Testnet
-            </span>
-          </div>
+          {/* Badge removed — no longer in beta */}
 
           {/* Main headline */}
-          <h1 className="text-[40px] sm:text-[56px] md:text-[72px] font-black tracking-tighter leading-[1.0] text-black text-center max-w-[900px] mb-6">
-            Programmable privacy.
+          <h1 className="text-[40px] sm:text-[56px] md:text-[68px] font-black tracking-tighter leading-[1.0] text-black text-center max-w-[900px] mb-6">
+            The institutional gateway
             <br />
-            <span className="text-black/25">Shielded execution.</span>
+            <span className="text-black/25">to Aztec Network.</span>
           </h1>
 
           {/* Subheadline */}
-          <p className="text-[16px] md:text-[19px] font-medium text-black/55 leading-relaxed text-center max-w-[620px] mb-12">
-            Whale Network is the privacy first portfolio and identity layer built exclusively on the Aztec zero-knowledge network. Track capital, manage identity, and communicate securely without exposing data to the public ledger.
+          <p className="text-[16px] md:text-[19px] font-medium text-black/60 leading-relaxed text-center max-w-[700px] mb-12">
+            Whale Network operates as the sovereign application layer over Aztec's zero-knowledge execution environment. We abstract the complexity of ZK circuits into an institutional-grade terminal—providing high-net-worth individuals and enterprises with cryptographic identity verification, end-to-end encrypted messaging, and fully shielded portfolio management. All executed privately, settled securely on Ethereum.
           </p>
 
           {/* CTAs */}

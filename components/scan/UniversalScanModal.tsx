@@ -97,12 +97,15 @@ export default function UniversalScanModal({
   const { open: openAppKit } = useAppKit();
   const { signMessageAsync } = useSignMessage();
   const { connector } = useAccount();
-  const [status, setStatus] = useState<'idle' | 'scanning' | 'success' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'scanning' | 'pin_required' | 'verifying_pin' | 'success' | 'error'>('idle');
   const [errMsg, setErrMsg] = useState('');
   const [needsWallet, setNeedsWallet] = useState(false);
   const [successLabel, setSuccessLabel] = useState('Done');
   const [tab, setTab] = useState<'camera' | 'file'>('camera');
   const [fileLoading, setFileLoading] = useState(false);
+  const [pinInput, setPinInput] = useState('');
+  const [pinScanData, setPinScanData] = useState<string | null>(null);
+  const pinInputRefs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];
 
   const addressRef = useRef(address || externalAddress);
   const onCloseRef = useRef(onClose);
@@ -159,17 +162,11 @@ export default function UniversalScanModal({
 
       try {
         if (route.type === 'session') {
-          setSuccessLabel('Session linked');
-          const result = await completeSessionHandshake(decodedText, getAddress, signMessageAsync, connector);
-          if (!result.ok) {
-            setErrMsg(result.message);
-            if ('needsWallet' in result && result.needsWallet) {
-              setNeedsWallet(true);
-            }
-            setStatus('error');
-            hasScannedRef.current = false;
-            return;
-          }
+          // [VISUAL PIN] For QR session handshakes, require PIN before completing
+          setPinScanData(decodedText);
+          setPinInput('');
+          setStatus('pin_required');
+          return; // don't call completeSessionHandshake yet — wait for PIN
         } else if (mode === 'session-only') {
           setErrMsg(
             'This code is not a desktop session QR. On the mobile home screen use “Scan label” for product URLs, wallet codes, or GS1 links.'
@@ -290,6 +287,8 @@ export default function UniversalScanModal({
       setErrMsg('');
       setNeedsWallet(false);
       setTab('camera');
+      setPinInput('');
+      setPinScanData(null);
       return;
     }
     if (initialScanData) {
@@ -302,6 +301,32 @@ export default function UniversalScanModal({
       destroyScanner();
     };
   }, [isOpen, initialScanData, destroyScanner, initScanner, handleDecoded]);
+
+  // Handle PIN submission after QR scan
+  const handlePinConfirm = useCallback(async () => {
+    if (pinInput.length !== 4 || !pinScanData) return;
+    setStatus('verifying_pin');
+    try {
+      setSuccessLabel('Session linked');
+      const result = await completeSessionHandshake(pinScanData, getAddress, signMessageAsync, connector, pinInput);
+      if (!result.ok) {
+        setErrMsg(result.message);
+        if ('needsWallet' in result && result.needsWallet) {
+          setNeedsWallet(true);
+        }
+        setStatus('error');
+        hasScannedRef.current = false;
+        return;
+      }
+      setStatus('success');
+      onScanRef.current?.(pinScanData);
+      setTimeout(() => onCloseRef.current(), 1400);
+    } catch {
+      setErrMsg('PIN verification failed. Please check the code and try again.');
+      setStatus('error');
+      hasScannedRef.current = false;
+    }
+  }, [pinInput, pinScanData, getAddress, signMessageAsync, connector]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -402,6 +427,76 @@ export default function UniversalScanModal({
                       <span className="text-[10px] font-black uppercase tracking-widest text-white/90">
                         Starting camera…
                       </span>
+                    </div>
+                  )}
+                  {status === 'pin_required' && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white z-20 p-6 gap-4">
+                      <div className="w-14 h-14 rounded-2xl bg-black flex items-center justify-center mb-1">
+                        <Shield className="text-white" size={26} />
+                      </div>
+                      <p className="text-[13px] font-black uppercase tracking-widest text-black text-center leading-tight">
+                        Visual PIN
+                      </p>
+                      <p className="text-[10px] text-black/50 text-center max-w-[220px] leading-relaxed">
+                        Enter the 4-digit code displayed on your desktop screen
+                      </p>
+                      {/* 4-box PIN input */}
+                      <div className="flex gap-3 mt-1">
+                        {[0,1,2,3].map((i) => (
+                          <input
+                            key={i}
+                            ref={pinInputRefs[i]}
+                            id={`pin-digit-${i}`}
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={1}
+                            value={pinInput[i] || ''}
+                            className="w-12 h-14 text-center text-xl font-black bg-black/5 border-2 border-black/10 rounded-xl focus:outline-none focus:border-black transition-all"
+                            onChange={(e) => {
+                              const val = e.target.value.replace(/\D/g, '');
+                              const next = (pinInput.split(''));
+                              next[i] = val.slice(-1);
+                              const newPin = next.join('');
+                              setPinInput(newPin);
+                              if (val && i < 3) pinInputRefs[i + 1].current?.focus();
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Backspace' && !pinInput[i] && i > 0) {
+                                pinInputRefs[i - 1].current?.focus();
+                              }
+                            }}
+                          />
+                        ))}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handlePinConfirm}
+                        disabled={pinInput.length < 4}
+                        className="mt-2 px-8 py-3 bg-black text-white text-[10px] font-black uppercase tracking-widest rounded-full disabled:opacity-30 transition-opacity"
+                      >
+                        Confirm & Link
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          hasScannedRef.current = false;
+                          setPinInput('');
+                          setPinScanData(null);
+                          setStatus('idle');
+                          initScanner();
+                        }}
+                        className="text-[9px] text-black/40 underline"
+                      >
+                        Cancel, re-scan
+                      </button>
+                    </div>
+                  )}
+                  {status === 'verifying_pin' && (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/95 z-20 gap-3">
+                      <Loader2 className="animate-spin text-black" size={28} />
+                      <p className="text-[10px] font-black uppercase tracking-widest text-black/60">
+                        Verifying PIN…
+                      </p>
                     </div>
                   )}
                   {status === 'success' && (

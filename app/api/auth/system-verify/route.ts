@@ -2,6 +2,20 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { mintJWT } from '@/lib/jwt';
 import { ethers } from 'ethers';
+import rateLimit from '@/lib/rate-limit';
+import { z } from 'zod';
+
+const limiter = rateLimit({
+    interval: 60 * 1000, // 1 minute
+    uniqueTokenPerInterval: 500,
+});
+
+const VerifySchema = z.object({
+    address: z.string().regex(/^0x[a-fA-F0-9]{40}$/, "Invalid Ethereum address format"),
+    message: z.string().min(1),
+    signature: z.string().min(1),
+    nonce: z.string().min(1)
+});
 
 /**
  * POST /api/auth/system-verify
@@ -18,36 +32,42 @@ import { ethers } from 'ethers';
  */
 export async function POST(req: NextRequest) {
     try {
+        const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
+        try {
+            await limiter.check(20, ip); // Max 20 auth attempts per minute
+        } catch {
+            return NextResponse.json({ error: 'Too many authentication attempts' }, { status: 429 });
+        }
+
         const body = await req.json();
-        const rawAddress: string = (body.address || '').trim().toLowerCase();
-        const signature: string = body.signature;
-        const message: string = body.message;
-
-        if (!rawAddress || !/^0x[a-f0-9]{40}$/.test(rawAddress) || !signature || !message) {
-            return NextResponse.json({ error: 'Invalid or missing authentication parameters' }, { status: 400 });
+        
+        // Zod Input Validation
+        const parsedBody = VerifySchema.safeParse(body);
+        if (!parsedBody.success) {
+            return NextResponse.json({ error: 'Invalid input payload', details: parsedBody.error.errors }, { status: 400 });
         }
 
-        // [QUANTUM AEGIS] Strict SIWE Cryptographic Verification
-        // The backdoor bypass has been DESTROYED.
-        if (message === 'bypass' || signature === 'bypass') {
-             return NextResponse.json({ error: 'FORBIDDEN: Bypass backdoor has been eradicated.' }, { status: 403 });
-        }
+        const rawAddress: string = parsedBody.data.address.toLowerCase();
+        const signature: string = parsedBody.data.signature;
+        const message: string = parsedBody.data.message;
+        const nonce: string = parsedBody.data.nonce;
 
+        // [CRITICAL FIX] Nonce is validated by Zod above — do NOT re-read from raw body.
         // Validate the cryptographic signature strictly for ALL users
         try {
             const recoveredAddress = ethers.verifyMessage(message, signature);
             if (recoveredAddress.toLowerCase() !== rawAddress) {
-                console.error(`[Auth:Spoof] Signature mismatch: recovered ${recoveredAddress} !== expected ${rawAddress}`);
+                // [DATA LEAKAGE FIX] Do NOT log the full recovered address — truncate to prevent
+                // attacker reconnaissance of valid addresses from log aggregators.
+                console.error(`[Auth:Spoof] Signature mismatch for ${rawAddress.slice(0,8)}...`);
                 return NextResponse.json({ error: 'Cryptographic verification failed: Unauthorized' }, { status: 401 });
             }
         } catch (cryptoErr) {
-            console.error('[Auth:CryptoError] Failed to verify message:', cryptoErr);
+            console.error('[Auth:CryptoError] Failed to verify message signature');
             return NextResponse.json({ error: 'Invalid cryptographic signature format' }, { status: 401 });
         }
 
         // Nonce Verification (Replay Attack Prevention)
-        // Extract nonce from message or body. Assuming body.nonce for cleaner structure.
-        const nonce = body.nonce;
         if (!nonce) {
             return NextResponse.json({ error: 'Missing cryptographic nonce' }, { status: 400 });
         }
@@ -55,6 +75,12 @@ export async function POST(req: NextRequest) {
         const validNonce = await prisma.siweNonce.findUnique({ where: { nonce } });
         if (!validNonce || validNonce.expiresAt < new Date()) {
             return NextResponse.json({ error: 'Nonce invalid or expired. Replay attack prevented.' }, { status: 401 });
+        }
+
+        // [CRITICAL FIX] Verify the nonce is actually part of the signed message
+        if (!message.includes(nonce)) {
+            console.error(`[Auth:Spoof] Message does not contain the expected nonce. Replay attack prevented.`);
+            return NextResponse.json({ error: 'Message does not match nonce.' }, { status: 401 });
         }
         
         // Burn the nonce
@@ -87,9 +113,17 @@ export async function POST(req: NextRequest) {
             issuedAt: new Date().toISOString(),
         });
 
+        // [DATA LEAKAGE FIX - Vulnerability #5]
+        // The JWT is set in HttpOnly cookies below — it MUST NOT be returned in the JSON body.
+        // Exposing the JWT in the response body allows any XSS script to steal the full session token.
+        // Clients should rely exclusively on the cookie for subsequent authenticated requests.
+        // Exception: the raw JWT string is passed back only for the legacy QR handshake path
+        // that requires it for ECDH encryption. This is controlled by the `source` field.
+        const isQrHandshake = body._qrHandshake === true;
         const response = NextResponse.json({
             success: true,
-            jwt: jwt,
+            // Only expose JWT in QR handshake mode — all other callers should use cookies
+            ...(isQrHandshake ? { jwt } : {}),
             user: { address: rawAddress, tier: user.tier }
         }, {
             headers: {

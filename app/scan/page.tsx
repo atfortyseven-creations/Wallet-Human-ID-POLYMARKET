@@ -1,6 +1,6 @@
-﻿'use client';
+'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { ScanLine } from 'lucide-react';
 
@@ -8,6 +8,15 @@ const UniversalScanModal = dynamic(() => import('@/components/scan/UniversalScan
 
 export default function ScanPage() {
   const [open, setOpen] = useState(true);
+  const [payload, setPayload] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const p = urlParams.get('payload');
+      if (p) setPayload(p);
+    }
+  }, []);
 
   return (
     <div className="min-h-[100dvh] bg-[#FFFFFF] flex flex-col items-center justify-center px-6 text-center">
@@ -23,7 +32,7 @@ export default function ScanPage() {
       >
         Open scanner
       </button>
-      <UniversalScanModal isOpen={open} onClose={() => setOpen(false)} mode="universal" />
+      <UniversalScanModal isOpen={open} onClose={() => setOpen(false)} mode="universal" initialScanData={payload} />
     </div>
   );
 }

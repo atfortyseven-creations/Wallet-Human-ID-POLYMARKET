@@ -114,6 +114,7 @@ export default function ConnectPage() {
   const [qrData, setQrData] = useState('');
   const [ephemeral, setEphemeral] = useState<{ publicKey: string; privateKey: string; isECDH?: boolean } | null>(null);
   const [authStatus, setAuthStatus] = useState<"idle" | "verifying" | "failed">("idle");
+  const [pinCode, setPinCode] = useState<string | null>(null);
   const redirectingRef = useRef(false);
 
   let isGuarded = false;
@@ -139,7 +140,16 @@ export default function ConnectPage() {
     }
   }, [isError, error]);
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => { 
+    setMounted(true); 
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      // If the URL has 's' (session) and 'p' (pubkey), this is a mobile user scanning the desktop QR
+      if (urlParams.has('s') && urlParams.has('p')) {
+        window.location.replace('/scan?payload=' + encodeURIComponent(window.location.href));
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -167,9 +177,12 @@ export default function ConnectPage() {
 
   const initEphemeral = useCallback(async () => {
     try {
-      const { generateX25519KeyPair } = await import('@/lib/web-crypto');
+      const { generateX25519KeyPair, generateVisualPin } = await import('@/lib/web-crypto');
       const pair = await generateX25519KeyPair();
       setEphemeral(pair);
+      // [VISUAL PIN] Generate a new 4-digit PIN for every QR session
+      const pin = generateVisualPin();
+      setPinCode(pin);
       const sessId = crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36);
       setQrSession(sessId);
       const origin = typeof window !== 'undefined' ? window.location.origin : 'https://humanidfi.com';
@@ -188,7 +201,7 @@ export default function ConnectPage() {
       setQrData(shortQrUrl.toString());
 
       setSyncStatus("AWAITING");
-      const t = setTimeout(() => { setQrSession(null); setSyncStatus("IDLE"); }, 270000);
+      const t = setTimeout(() => { setQrSession(null); setSyncStatus("IDLE"); setPinCode(null); }, 270000);
       return () => clearTimeout(t);
     } catch (e: any) {
       setSyncStatus("ERROR");
@@ -217,7 +230,9 @@ export default function ConnectPage() {
             try {
               const { deriveSharedSecret, decryptAESGCM } = await import('@/lib/web-crypto');
               const isECDHFlag = ephemeral.isECDH;
-              const shared = await deriveSharedSecret(ephemeral.privateKey, data.mobilePub, isECDHFlag);
+              // [VISUAL PIN HKDF] Desktop uses the same PIN to derive the session key
+              // If mobile used wrong PIN, decryption will silently fail (AES-GCM auth tag mismatch)
+              const shared = await deriveSharedSecret(ephemeral.privateKey, data.mobilePub, isECDHFlag, pinCode ?? undefined);
               const decrypted = await decryptAESGCM(shared, data.encryptedPayload, data.iv);
               try {
                 const payloadRaw = JSON.parse(decrypted);
@@ -766,6 +781,44 @@ export default function ConnectPage() {
                       </div>
                       <QRCodeSVG value={qrData} size={280} fgColor="#0A0A0A" bgColor="#FFFFFF" level="M" includeMargin={false} />
                       <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#0A0A0A]/40 text-center">Connect Mobile</span>
+
+                      {/* ─── VISUAL PIN ─────────────────────────────────────── */}
+                      {pinCode && (
+                        <div className="w-full mt-1 rounded-xl overflow-hidden border border-black/8">
+                          {/* Header bar */}
+                          <div className="flex items-center gap-2 px-4 py-2.5 bg-[#0A0A0A]">
+                            <Shield size={12} className="text-white/70" />
+                            <span className="text-[9px] font-black uppercase tracking-[0.25em] text-white/70">
+                              Visual Security PIN
+                            </span>
+                            <span className="ml-auto text-[8px] font-mono text-white/30">
+                              HKDF·SHA-256
+                            </span>
+                          </div>
+                          {/* PIN digits */}
+                          <div className="flex items-center justify-center gap-3 py-4 px-4 bg-black/[0.03]">
+                            {pinCode.split('').map((digit, idx) => (
+                              <motion.div
+                                key={idx}
+                                initial={{ opacity: 0, y: 6 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: idx * 0.07, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                                className="w-14 h-16 rounded-xl bg-white border-2 border-black/10 flex items-center justify-center shadow-sm"
+                              >
+                                <span className="text-3xl font-black text-[#0A0A0A] select-none">{digit}</span>
+                              </motion.div>
+                            ))}
+                          </div>
+                          {/* Footer label */}
+                          <div className="px-4 py-2.5 bg-[#0A0A0A]/[0.03] border-t border-black/5 flex items-center gap-2">
+                            <Lock size={9} className="text-black/30" />
+                            <span className="text-[8.5px] text-black/35 font-mono tracking-wide">
+                              Enter this code in the mobile scanner to authenticate
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                      {/* ─── END VISUAL PIN ──────────────────────────────────── */}
                     </div>
                   </motion.div>
                 ) : syncStatus === "IDLE" || (syncStatus === "AWAITING" && !qrData) ? (

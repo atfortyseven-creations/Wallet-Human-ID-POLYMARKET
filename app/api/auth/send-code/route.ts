@@ -10,17 +10,18 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { email } = body;
 
-    if (!email) {
+    if (!email || typeof email !== 'string' || !email.includes('@')) {
       return NextResponse.json(
-        { error: 'Email is required' },
+        { error: 'Valid email is required' },
         { status: 400 }
       );
     }
 
-    console.log(`[Auth] Attempting to send code to: ${email}`);
+    // [DATA LEAKAGE FIX] Never log the full email address in plaintext
+    const emailMasked = email.replace(/(.{2})(.*)(@.*)/, '$1***$3');
+    console.log(`[Auth] Sending verification code to: ${emailMasked}`);
 
     // Create or update AuthUser
-    // We use upsert to handle cases where the user might already exist but not be verified
     const user = await (prisma.authUser as any).upsert({
       where: { email },
       update: {},
@@ -34,8 +35,6 @@ export async function POST(request: NextRequest) {
     // Generate verification code
     const code = generateVerificationCode();
     const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
-    
-
 
     await (prisma as any).verificationCode.create({
       data: {
@@ -45,52 +44,45 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    // [LEGENDARY BYPASS] Print code to server logs for manual recovery
-    console.log(`
-    
-     [AUTH BYPASS] VERIFICATION CODE FOR: ${email.padEnd(25)} 
-     CODE: ${code.padEnd(54)} 
-    
-    `);
+    // [DATA LEAKAGE FIX] REMOVED: "AUTH BYPASS" that printed codes in plaintext to server logs.
+    // The code is ONLY sent via the secure email channel. Railway log access must not
+    // be sufficient to compromise any user account. This was a critical vulnerability.
 
     // Send verification email
     try {
         await sendVerificationEmail(email, code);
-        console.log(`[Auth] Code sent successfully to: ${email}`);
+        console.log(`[Auth] Code delivered successfully to: ${emailMasked}`);
     } catch (emailError: any) {
         const errorMessage = emailError?.message || 'Unknown provider error';
         const errorCode = emailError?.code || 'EMAIL_PROVIDER_ERROR';
         
-        console.error('[Auth] Failed to send email via Resend:', {
+        // [DATA LEAKAGE FIX] Never log API key fragments — check presence only
+        console.error('[Auth] Failed to send email:', {
             error: errorMessage,
             code: errorCode,
-            email: email,
-            apiKeyPrefix: process.env.RESEND_API_KEY ? process.env.RESEND_API_KEY.substring(0, 5) : 'MISSING'
+            apiKeyPresent: !!process.env.RESEND_API_KEY,
         });
         
-        // Return a legendary detailed error so the user knows exactly why it failed
         return NextResponse.json(
             { 
-                error: `Email delivery failed: ${errorMessage}`,
-                code: errorCode,
-                details: 'Please ensure your email is valid and that the project domain is correctly verified in Resend.'
+                error: 'Email delivery failed. Please try again.',
+                details: 'Ensure your email address is valid.'
             },
-            { status: 503 } // Service Unavailable
+            { status: 503 }
         );
     }
 
+    // [DATA LEAKAGE FIX] Do NOT return internal userId to the client
     return NextResponse.json({
       success: true,
-      message: 'Verification code sent',
-      userId: user.id
+      message: 'Verification code sent'
     });
 
   } catch (error: any) {
-    console.error('[Auth] Send code general error:', error);
+    console.error('[Auth] Send code error');
     return NextResponse.json(
-      { error: error.message || 'Failed to send code' },
+      { error: 'Failed to send verification code' },
       { status: 500 }
     );
   }
 }
-

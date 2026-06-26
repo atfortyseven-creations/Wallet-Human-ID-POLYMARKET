@@ -200,6 +200,23 @@ export function useSecureCamera({ facingMode = 'user', onFrame }: UseSecureCamer
     };
   }, [stopCamera]);
 
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && hasPermission && !isInitializingRef.current) {
+        const stream = streamRef.current;
+        const tracks = stream?.getTracks() || [];
+        const isActive = tracks.some(t => t.readyState === 'live');
+        
+        // If the video is stuck, paused, or the tracks died in the background, restart
+        if (!isActive || (videoRef.current && videoRef.current.paused)) {
+          startCamera();
+        }
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [hasPermission, startCamera]);
+
   return {
     videoRef,
     canvasRef,
