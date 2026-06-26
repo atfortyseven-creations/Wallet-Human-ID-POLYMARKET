@@ -128,10 +128,10 @@ export function useDeadmanSwitch(): DeadmanHookReturn {
       const contract = getContract({ address: contractAddress, abi: DEADMAN_ABI, client: publicClient });
 
       const [rawStatus, secondsLeft, pendingBackup, pendingBackupTime] = await Promise.all([
-        contract.read.getStatus()             as Promise<any>,
-        contract.read.secondsUntilExpiry()    as Promise<bigint>,
-        contract.read.pendingBackupWallet()   as Promise<Address>,
-        contract.read.pendingBackupTime()     as Promise<bigint>,
+        contract.read.getStatus([])             as unknown as Promise<any>,
+        contract.read.secondsUntilExpiry([])    as unknown as Promise<bigint>,
+        contract.read.pendingBackupWallet([])   as unknown as Promise<Address>,
+        contract.read.pendingBackupTime([])     as unknown as Promise<bigint>,
       ]);
 
       const [ownerAddr, backupAddr, lastPing, timeoutPeriod, expiresAt, triggered, paused] = rawStatus;

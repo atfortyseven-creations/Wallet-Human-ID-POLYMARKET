@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
     const domain = {
       name: 'CoreAirdrop',
       version: '1',
-      chainId: BigInt(chainId),
+      chainId: Number(chainId),
       verifyingContract: AIRDROP_CONTRACT,
     };
     const types = {

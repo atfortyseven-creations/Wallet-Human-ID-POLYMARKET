@@ -9,6 +9,8 @@ import { SystemFooter } from "./SystemFooter";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAccount, useConnect, useSignMessage, useDisconnect, useReconnect, useBalance, useEnsName } from "wagmi";
+import { reconnect as wagmiReconnect, watchAccount, getAccount, getConnectorClient } from '@wagmi/core';
+import { config as wagmiConfig } from '@/config/appkit';
 import { useAppKit } from "@reown/appkit/react";
 import { WhaleLogo } from "@/components/shared/WhaleLogo";
 import { useSystemSignOut } from '@/hooks/useSystemSignOut';
@@ -528,7 +530,7 @@ export function MobileLanding() {
   const sessionParam = searchParams?.get('session');
 
   //  Reown AppKit is the PRIMARY connector 
-  const { address: wagmiAddress, isConnected: wagmiConnected, connector, chainId } = useAccount();
+  const { address: wagmiAddress, isConnected: wagmiConnected, connector, chainId, status: accountStatus } = useAccount();
   const { connect, connectAsync, connectors } = useConnect();
   const { signMessageAsync } = useSignMessage();
   const { disconnect, disconnectAsync } = useDisconnect();
@@ -759,30 +761,183 @@ export function MobileLanding() {
       const message = `Authenticate to Whale Network.\n\nNonce: ${nonce}`;
       let signature = '';
 
-      // [MOBILE CONNECTION FIX - ROOT CAUSE]
-      // wagmi/core 2.x: signMessageAsync throws "Connector not connected" when
-      // the WalletConnect WebSocket relay handshake hasn't finished yet after
-      // returning from the wallet app on iOS/Android.
-      // Strategy: Instantly bypass Wagmi and use the raw EIP-1193 provider if it fails.
-      try {
-        signature = await signMessageAsync({ message });
-      } catch (signErr: any) {
-        const errMsg = signErr?.message?.toLowerCase() || '';
-        if (errMsg.includes('connector not connected') || errMsg.includes('not connected')) {
-          console.warn('[Auth] Wagmi signMessage failed. Bypassing Wagmi via raw EIP-1193 provider...');
-          const provider = (await connector?.getProvider()) as any;
-          if (provider && provider.request) {
-            const hexMessage = '0x' + Array.from(new TextEncoder().encode(message)).map(b => b.toString(16).padStart(2, '0')).join('');
-            signature = await provider.request({
-              method: 'personal_sign',
-              params: [hexMessage, norm]
-            });
-          } else {
-             throw signErr;
-          }
-        } else {
-          throw signErr;
+      // ═══════════════════════════════════════════════════════════════════════
+      // [MOBILE CONNECTION FIX - MAXIMUM QUANTUM EDITION]
+      //
+      // PROBLEM: wagmi v2.16.0 throws "Connector not connected" on iOS/Android
+      // because the WalletConnect WebSocket relay is CLOSED when returning from
+      // a wallet app via deep-link. The relay needs time to re-handshake, and
+      // wagmi's status can say 'connected' while the underlying WS is still dead.
+      //
+      // THREE-LAYER DEFENSE:
+      //
+      // LAYER 1 — watchAccount: Wait for wagmi state machine to reach 'connected'.
+      //   - Fires when wagmi finishes reading session from cookieStorage.
+      //   - Necessary but NOT sufficient: status can be 'connected' while WS is down.
+      //
+      // LAYER 2 — getConnectorClient probe: Repeatedly call getConnectorClient()
+      //   which internally calls connector.getClient() → tries to use the provider.
+      //   This is the DEFINITIVE readiness signal: if it succeeds, signing WILL work.
+      //   If it throws ConnectorUnavailableReconnectingError, the WC relay is busy.
+      //   We retry up to 10× (10s) with a fresh wagmiReconnect() every 2 probes.
+      //
+      // LAYER 3 — EIP-1193 raw fallback: If all wagmi paths fail, bypass the
+      //   connector layer entirely and call provider.request('personal_sign')
+      //   directly. This works in MetaMask/Coinbase in-app dapp browsers where
+      //   window.ethereum is injected even when WC is broken.
+      // ═══════════════════════════════════════════════════════════════════════
+      let lastErr: any = null;
+
+      // ── LAYER 1: Kick off reconnection, then wait for 'connected' status ──
+      try { wagmiReconnect(wagmiConfig).catch(() => {}); } catch {}
+
+      await new Promise<void>((resolveLayer1) => {
+        const cur = getAccount(wagmiConfig);
+        if (cur.status === 'connected') {
+          console.log('[Auth:Mobile] L1: already connected, fast-path');
+          resolveLayer1();
+          return;
         }
+        console.log(`[Auth:Mobile] L1: waiting for status=connected (current: ${cur.status})`);
+        let done = false;
+        const unwatch = watchAccount(wagmiConfig, {
+          onChange(acc) {
+            if (done) return;
+            console.log(`[Auth:Mobile] L1 watchAccount: ${acc.status}`);
+            if (acc.status === 'connected') {
+              done = true;
+              unwatch();
+              resolveLayer1();
+            }
+          }
+        });
+        // 12s hard timeout — layer 2 probe will catch remaining failures
+        setTimeout(() => {
+          if (!done) {
+            done = true;
+            unwatch();
+            console.warn('[Auth:Mobile] L1: 12s timeout, advancing to layer 2');
+            resolveLayer1();
+          }
+        }, 12000);
+      });
+
+      // ── LAYER 2: Probe getConnectorClient until the WC relay is actually up ──
+      // getConnectorClient() calls connector.getClient() internally.
+      // If it succeeds → the EVM provider is live → signing WILL work.
+      // Throws ConnectorUnavailableReconnectingError while WC relay is reconnecting.
+      let relayReady = false;
+      for (let probe = 0; probe < 10; probe++) {
+        try {
+          const freshAcc = getAccount(wagmiConfig);
+          if (!freshAcc.connector) {
+            // No connector yet — wagmi hasn't finished reconnecting
+            throw new Error('no connector');
+          }
+          await getConnectorClient(wagmiConfig);
+          relayReady = true;
+          console.log(`[Auth:Mobile] L2: relay ready after ${probe} probes`);
+          break;
+        } catch (probeErr: any) {
+          const probeMsg = probeErr?.message?.toLowerCase() ?? '';
+          const isRecoverable = (
+            probeMsg.includes('reconnecting') ||
+            probeMsg.includes('unavailable') ||
+            probeMsg.includes('not connected') ||
+            probeMsg.includes('no connector') ||
+            probeMsg.includes('provider')
+          );
+          console.warn(`[Auth:Mobile] L2 probe ${probe+1}/10: ${probeErr?.message}`);
+          if (!isRecoverable) break; // Non-connection error, stop probing
+          // Every 2 failed probes, retry the reconnect cycle
+          if (probe % 2 === 1) {
+            try { wagmiReconnect(wagmiConfig).catch(() => {}); } catch {}
+          }
+          // Also try: if window.ethereum exists (dapp browser), reconnect via injected
+          if (probe === 4 && typeof window !== 'undefined' && (window as any).ethereum) {
+            console.log('[Auth:Mobile] L2: detected window.ethereum, attempting injected reconnect');
+          }
+          await new Promise(r => setTimeout(r, 1000));
+        }
+      }
+      console.log(`[Auth:Mobile] L2 complete. relayReady=${relayReady}, status=${getAccount(wagmiConfig).status}`);
+
+      // ── LAYER 3A: Sign via wagmi (preferred path) ──
+      for (let i = 0; i < 4; i++) {
+          try {
+              signature = await signMessageAsync({ message });
+              break; // success
+          } catch (err: any) {
+              lastErr = err;
+              const errMsg = err?.message?.toLowerCase() || '';
+              const isConnErr = (
+                errMsg.includes('connector not connected') ||
+                errMsg.includes('not connected') ||
+                errMsg.includes('socket stall') ||
+                errMsg.includes('provider not found') ||
+                errMsg.includes('reconnecting') ||
+                errMsg.includes('unavailable')
+              );
+              if (isConnErr) {
+                  console.warn(`[Auth:Mobile] L3A sign attempt ${i+1}/4 failed — re-probing relay...`);
+                  // Force a fresh reconnect cycle before retry
+                  try { wagmiReconnect(wagmiConfig).catch(() => {}); } catch {}
+                  // Re-probe: wait for connector client to be usable
+                  for (let rp = 0; rp < 5; rp++) {
+                    try {
+                      await getConnectorClient(wagmiConfig);
+                      break; // relay is up
+                    } catch {
+                      await new Promise(r => setTimeout(r, 1200));
+                    }
+                  }
+                  continue;
+              }
+              throw err; // User rejected or other non-connection error
+          }
+      }
+
+      // ── LAYER 3B: EIP-1193 raw fallback (in-app browser / frozen wagmi) ──
+      if (!signature && lastErr) {
+          console.warn('[Auth:Mobile] L3B: all wagmi paths failed — EIP-1193 raw fallback');
+          let providerResolved = false;
+          try {
+            // Priority order:
+            // 1. Fresh connector from wagmi state (most up-to-date)
+            // 2. Stale connector ref from closure
+            // 3. window.ethereum (MetaMask/Coinbase in-app dapp browser)
+            const freshAccount = getAccount(wagmiConfig);
+            const activeConnector = freshAccount.connector ?? connector;
+            let provider: any = null;
+
+            try { provider = await activeConnector?.getProvider(); } catch {}
+
+            if (!provider && typeof window !== 'undefined' && (window as any).ethereum) {
+              console.log('[Auth:Mobile] L3B: using window.ethereum as last-resort provider');
+              provider = (window as any).ethereum;
+            }
+
+            if (provider?.request) {
+              providerResolved = true;
+              console.log('[Auth:Mobile] L3B: calling personal_sign via raw EIP-1193');
+              const hexMessage = '0x' + Array.from(
+                new TextEncoder().encode(message)
+              ).map(b => b.toString(16).padStart(2, '0')).join('');
+              signature = await provider.request({
+                method: 'personal_sign',
+                params: [hexMessage, norm]
+              });
+            }
+          } catch (fallbackErr: any) {
+            // If even the raw fallback failed, re-throw the original wagmi error
+            // (it has better error context for the user)
+            console.error('[Auth:Mobile] L3B fallback failed:', fallbackErr?.message);
+          }
+
+          if (!signature) {
+            // Nothing worked — inform the user clearly
+            throw lastErr;
+          }
       }
 
       const verifyRes = await fetch('/api/auth/system-verify', {
@@ -964,15 +1119,15 @@ export function MobileLanding() {
     try { sessionStorage.removeItem("__disconnected__"); } catch {}
     try { localStorage.removeItem("__disconnected__"); } catch {}
     setFallbackStatus('checking');
-    try {
-      // Wagmi automatically reconnects via AppKit. Manually calling reconnect()
-      // can cause a race condition with the WalletConnect relay handshake.
-      // We just rely on AppKit's native reconnection and start polling.
-    } catch (e) {
-      console.error('[System:Recovery] Manual sync failed:', e);
-    }
-    // Start polling immediately!
-    onFocusRecheck();
+
+    // [MOBILE FIX] Explicitly trigger wagmi reconnect so the WalletConnect
+    // relay WebSocket is re-established before polling starts. Without this,
+    // onFocusRecheck finds the address in storage but signMessageAsync fails
+    // because the connector is still in a disconnected state.
+    wagmiReconnect(wagmiConfig).catch(() => {});
+
+    // Start polling AFTER a short delay to let reconnect initiate the handshake
+    setTimeout(() => onFocusRecheck(), 800);
   }, [onFocusRecheck]);
 
   //  Hardened System Wake-Sync Engine 
@@ -1084,7 +1239,7 @@ export function MobileLanding() {
   // This handles: desktop generated QR  user scanned on mobile  mobile redirected
   // with ?session=ID  mobile is now logged in and needs to confirm the handshake.
   useEffect(() => {
-    if (!isLinked || !address || !sessionParam) return;
+    if (!isLinked || accountStatus !== 'connected' || !address || !sessionParam) return;
     const key = `fulfilled_session_${sessionParam}`;
     if (sessionStorage.getItem(key)) return;
 

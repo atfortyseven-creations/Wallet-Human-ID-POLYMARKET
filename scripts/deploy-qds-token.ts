@@ -4,63 +4,76 @@
  * One-time deployment script for the QDs TokenContract on Aztec Testnet.
  *
  * Requirements:
- *   - AZTEC_PXE_URL pointing to a running PXE connected to Aztec Testnet
- *   - AZTEC_RELAYER_SECRET_KEY = a funded 32-byte hex key (has Fee Juice)
+ *   - AZTEC_PXE_URL pointing to a running PXE connected to Aztec V5 Testnet
+ *   - AZTEC_RELAYER_SECRET_KEY = a 32-byte hex Fr key
  *
  * Usage:
+ *   AZTEC_PXE_URL=http://localhost:18080 \
+ *   AZTEC_RELAYER_SECRET_KEY=0x... \
  *   npx tsx scripts/deploy-qds-token.ts
  *
- * After running, set AZTEC_QDS_CONTRACT_ADDRESS in your Railway environment.
+ * After running, copy AZTEC_TOKEN_CONTRACT_ADDRESS → Railway Variables.
  */
 
-import { createAztecNodeClient } from '@aztec/aztec.js/node';
 import { Fr } from '@aztec/aztec.js/fields';
 import { deriveSigningKey } from '@aztec/stdlib/keys';
 import { AztecAddress } from '@aztec/aztec.js/addresses';
 import { SponsoredFeePaymentMethod } from '@aztec/aztec.js/fee';
 import { getSchnorrAccount } from '@aztec/accounts/schnorr';
 import { TokenContract } from '@aztec/noir-contracts.js/Token';
+import { EmbeddedWallet } from '@aztec/wallets/embedded';
 
-const PXE_URL  = process.env.AZTEC_PXE_URL  || 'http://localhost:8080';
-const NODE_URL = process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
-const SECRET   = process.env.AZTEC_RELAYER_SECRET_KEY;
+const NODE_URL     = process.env.AZTEC_NODE_URL  || 'https://v5.testnet.rpc.aztec-labs.com';
+const SECRET       = process.env.AZTEC_RELAYER_SECRET_KEY;
 // V5 Testnet SponsoredFPC — use: aztec get-canonical-sponsored-fpc-address to verify
 const SPONSORED_FPC = process.env.SPONSORED_FPC_ADDRESS || '0x261366b3c0a9b4c30864629556cf282be409e6822b1f3a065fcb7e34f36d7880';
 
 async function main() {
   if (!SECRET) {
     console.error('❌ AZTEC_RELAYER_SECRET_KEY not set');
+    console.error('   Set it: export AZTEC_RELAYER_SECRET_KEY=0x...');
     process.exit(1);
   }
 
-  console.log('🔗 Connecting to PXE:', PXE_URL);
-  const pxe = await createAztecNodeClient(PXE_URL);
+  console.log('');
+  console.log('══════════════════════════════════════════════════════');
+  console.log('  QDs Token Deploy — Aztec V5 Testnet');
+  console.log('══════════════════════════════════════════════════════');
+  console.log(`🌐 Node URL:  ${NODE_URL}`);
+  console.log(`⛽ FPC Addr:  ${SPONSORED_FPC}`);
+  console.log('');
+
+  console.log('\n🔗 Initializing embedded PXE via EmbeddedWallet...');
+  const pxe = await EmbeddedWallet.create(NODE_URL, {
+    ephemeral: true,
+    pxeConfig: { proverEnabled: true }
+  });
 
   const nodeInfo = await pxe.getNodeInfo();
-  console.log('🌐 Connected to Aztec Network:', JSON.stringify(nodeInfo, null, 2));
+  console.log(`🌐 Aztec Network: chain=${nodeInfo.l2ChainId} version=${nodeInfo.protocolVersion}`);
 
   console.log('🔑 Loading relayer account...');
   const secretKey  = Fr.fromString(SECRET);
   const signingKey = deriveSigningKey(secretKey);
   const account    = getSchnorrAccount(pxe, secretKey, signingKey);
   await account.register();
-  const wallet     = await account.getWallet();
-  const adminAddr  = wallet.getAddress();
+  const wallet    = await account.getWallet();
+  const adminAddr = wallet.getAddress();
 
-  console.log('👛 Relayer address:', adminAddr.toString());
+  console.log(`👛 Relayer Aztec address: ${adminAddr.toString()}`);
 
-  console.log('📦 Deploying QDs TokenContract...');
+  console.log('\n📦 Deploying QDs TokenContract...');
+  console.log('   (This may take 30-120 seconds for proof generation)');
 
-  // Use SponsoredFPC for gas-free deployment on testnet
-  const fpcAddress = AztecAddress.fromString(SPONSORED_FPC);
+  const fpcAddress    = AztecAddress.fromString(SPONSORED_FPC);
   const paymentMethod = new SponsoredFeePaymentMethod(fpcAddress);
 
   const token = await TokenContract.deploy(
     wallet,
-    adminAddr,   // admin
-    'Quantum Dots',
-    'QDs',
-    18           // decimals
+    adminAddr,       // admin
+    'Quantum Dots',  // name
+    'QDs',           // symbol
+    18               // decimals
   )
     .send({ fee: { paymentMethod } })
     .deployed();
@@ -68,19 +81,19 @@ async function main() {
   const contractAddress = token.address.toString();
 
   console.log('');
-  console.log('✅ QDs TokenContract deployed!');
-  console.log('══════════════════════════════════════════════════');
-  console.log('Contract Address:', contractAddress);
-  console.log('══════════════════════════════════════════════════');
+  console.log('✅ QDs TokenContract deployed successfully!');
+  console.log('══════════════════════════════════════════════════════');
+  console.log('AZTEC_TOKEN_CONTRACT_ADDRESS=' + contractAddress);
+  console.log('AZTEC_RELAYER_ADDRESS=' + adminAddr.toString());
+  console.log('══════════════════════════════════════════════════════');
   console.log('');
-  console.log('Next step — set this in Railway and your .env:');
-  console.log(`AZTEC_QDS_CONTRACT_ADDRESS=${contractAddress}`);
+  console.log('👉 Copy both values above into Railway → Variables');
+  console.log('👉 Also set AZTEC_RELAYER_SECRET_KEY in Railway if not already set');
   console.log('');
-  console.log('Also set AZTEC_RELAYER_ADDRESS for minting:');
-  console.log(`AZTEC_RELAYER_ADDRESS=${adminAddr.toString()}`);
+  console.log(`🔍 View on AztecScan: https://testnet.aztecscan.xyz/address/${contractAddress}`);
 }
 
 main().catch(err => {
-  console.error('💥 Deployment failed:', err);
+  console.error('\n💥 Deployment failed:', err?.message || err);
   process.exit(1);
 });

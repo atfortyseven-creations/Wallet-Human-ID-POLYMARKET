@@ -455,7 +455,7 @@ export default function AdvancedAnalytics({ walletAddress, isPremium, hasTrialed
                     <Tooltip 
                       contentStyle={{ backgroundColor: '#000', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.5)', color: '#fff' }}
                       itemStyle={{ color: '#fff', fontWeight: 'bold' }}
-                      formatter={(value: number | undefined) => formatValue(value || 0)}
+                      formatter={(value: any) => formatValue(Number(value) || 0) as any}
                     />
                   </PieChart>
                 </ResponsiveContainer>

@@ -101,9 +101,8 @@ const makeTransport = (urls: string[]) =>
   fallback(
     urls.filter(Boolean).map(url =>
       http(url, {
-        fetchOptions: { cache: 'no-store' },
+        fetchOptions: { cache: 'no-store', fetch: memoizedFetch(url) } as any,
         batch: { batchSize: 512, wait: 50 },
-        fetchFn: memoizedFetch(url),
         retryCount: 2,
         retryDelay: 500,
         timeout: 8_000,

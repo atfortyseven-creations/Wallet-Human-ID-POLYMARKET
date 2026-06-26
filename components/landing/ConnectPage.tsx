@@ -6,6 +6,8 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAccount, useConnect, useDisconnect, useSignMessage } from "wagmi";
+import { reconnect as wagmiReconnect, watchAccount, getAccount, getConnectorClient } from '@wagmi/core';
+import { config as wagmiConfig } from '@/config/appkit';
 import { useAppKit } from "@reown/appkit/react";
 import { useUIStore } from "@/lib/store/ui-store";
 import { toast } from "sonner";
@@ -97,7 +99,7 @@ function WalletButton({ logo, name, badge, onClick, loading = false, delay = 0, 
 export default function ConnectPage() {
   const router = useRouter();
   const isMobile = useIsMobile();
-  const { isConnected, address, connector } = useAccount();
+  const { isConnected, address, connector, status: accountStatus } = useAccount();
   const { connect, connectors, isPending, isError, error } = useConnect();
   const { signMessageAsync } = useSignMessage();
   const { open: openAppKit } = useAppKit();
@@ -365,7 +367,7 @@ export default function ConnectPage() {
   // Every subsequent API call to a protected route returned 401.
   const signingRef = useRef(false);
   useEffect(() => {
-    if (!mounted || !isConnected || !address) return;
+    if (!mounted || accountStatus !== 'connected' || !address) return;
     if (redirectingRef.current || signingRef.current || authStatus === 'failed') return;
     try {
       // [CRITICAL FIX] After hard page reload, sessionStorage is CLEARED by the browser.
@@ -419,28 +421,135 @@ export default function ConnectPage() {
         
         const message = `Authenticate to Whale Network.\n\nNonce: ${nonce}`;
         
-        // [CONNECTION HEALER] Bypass "connector not connected" race condition.
+        // ═══════════════════════════════════════════════════════════════════════
+        // [MOBILE CONNECTION FIX - MAXIMUM QUANTUM EDITION]
+        // Identical three-layer strategy as MobileLanding.tsx
+        // L1: watchAccount → L2: getConnectorClient probe → L3: raw EIP-1193
+        // ═══════════════════════════════════════════════════════════════════════
         let signature = '';
-        try {
-          signature = await signMessageAsync({ message });
-        } catch (signErr: any) {
-          const errMsg = signErr?.message?.toLowerCase() || '';
-          if (errMsg.includes('connector not connected') || errMsg.includes('not connected')) {
-            console.warn('[Auth] Wagmi signMessage failed. Bypassing Wagmi via raw EIP-1193 provider...');
+        let lastErr: any = null;
+
+        // ── LAYER 1: Kick off reconnection, then wait for 'connected' status ──
+        try { wagmiReconnect(wagmiConfig).catch(() => {}); } catch {}
+
+        await new Promise<void>((resolveLayer1) => {
+          const cur = getAccount(wagmiConfig);
+          if (cur.status === 'connected') {
+            console.log('[Auth:CP] L1: already connected, fast-path');
+            resolveLayer1();
+            return;
+          }
+          console.log(`[Auth:CP] L1: waiting for status=connected (current: ${cur.status})`);
+          let done = false;
+          const unwatch = watchAccount(wagmiConfig, {
+            onChange(acc) {
+              if (done) return;
+              console.log(`[Auth:CP] L1 watchAccount: ${acc.status}`);
+              if (acc.status === 'connected') {
+                done = true;
+                unwatch();
+                resolveLayer1();
+              }
+            }
+          });
+          setTimeout(() => {
+            if (!done) {
+              done = true;
+              unwatch();
+              console.warn('[Auth:CP] L1: 12s timeout, advancing to layer 2');
+              resolveLayer1();
+            }
+          }, 12000);
+        });
+
+        // ── LAYER 2: Probe getConnectorClient until the WC relay is actually up ──
+        let relayReady = false;
+        for (let probe = 0; probe < 10; probe++) {
+          try {
+            const freshAcc = getAccount(wagmiConfig);
+            if (!freshAcc.connector) throw new Error('no connector');
+            await getConnectorClient(wagmiConfig);
+            relayReady = true;
+            console.log(`[Auth:CP] L2: relay ready after ${probe} probes`);
+            break;
+          } catch (probeErr: any) {
+            const probeMsg = probeErr?.message?.toLowerCase() ?? '';
+            const isRecoverable = (
+              probeMsg.includes('reconnecting') ||
+              probeMsg.includes('unavailable') ||
+              probeMsg.includes('not connected') ||
+              probeMsg.includes('no connector') ||
+              probeMsg.includes('provider')
+            );
+            console.warn(`[Auth:CP] L2 probe ${probe+1}/10: ${probeErr?.message}`);
+            if (!isRecoverable) break;
+            if (probe % 2 === 1) {
+              try { wagmiReconnect(wagmiConfig).catch(() => {}); } catch {}
+            }
+            await new Promise(r => setTimeout(r, 1000));
+          }
+        }
+        console.log(`[Auth:CP] L2 complete. relayReady=${relayReady}, status=${getAccount(wagmiConfig).status}`);
+
+        // ── LAYER 3A: Sign via wagmi (preferred path) ──
+        for (let i = 0; i < 4; i++) {
             try {
-               const provider = (await connector?.getProvider()) as any;
-               if (!provider?.request) throw new Error("No provider request method");
-               const hexMessage = '0x' + Array.from(new TextEncoder().encode(message)).map(b => b.toString(16).padStart(2, '0')).join('');
-               signature = await provider.request({
+                signature = await signMessageAsync({ message });
+                break;
+            } catch (err: any) {
+                lastErr = err;
+                const errMsg = err?.message?.toLowerCase() || '';
+                const isConnErr = (
+                  errMsg.includes('connector not connected') ||
+                  errMsg.includes('not connected') ||
+                  errMsg.includes('socket stall') ||
+                  errMsg.includes('provider not found') ||
+                  errMsg.includes('reconnecting') ||
+                  errMsg.includes('unavailable')
+                );
+                if (isConnErr) {
+                    console.warn(`[Auth:CP] L3A sign attempt ${i+1}/4 failed — re-probing relay...`);
+                    try { wagmiReconnect(wagmiConfig).catch(() => {}); } catch {}
+                    for (let rp = 0; rp < 5; rp++) {
+                      try {
+                        await getConnectorClient(wagmiConfig);
+                        break;
+                      } catch {
+                        await new Promise(r => setTimeout(r, 1200));
+                      }
+                    }
+                    continue;
+                }
+                throw err;
+            }
+        }
+
+        // ── LAYER 3B: EIP-1193 raw fallback ──
+        if (!signature && lastErr) {
+            console.warn('[Auth:CP] L3B: all wagmi paths failed — EIP-1193 raw fallback');
+            try {
+              const freshAccount = getAccount(wagmiConfig);
+              const activeConnector = freshAccount.connector ?? connector;
+              let provider: any = null;
+              try { provider = await activeConnector?.getProvider(); } catch {}
+              if (!provider && typeof window !== 'undefined' && (window as any).ethereum) {
+                console.log('[Auth:CP] L3B: using window.ethereum as last-resort provider');
+                provider = (window as any).ethereum;
+              }
+              if (provider?.request) {
+                console.log('[Auth:CP] L3B: calling personal_sign via raw EIP-1193');
+                const hexMessage = '0x' + Array.from(
+                  new TextEncoder().encode(message)
+                ).map(b => b.toString(16).padStart(2, '0')).join('');
+                signature = await provider.request({
                   method: 'personal_sign',
                   params: [hexMessage, norm]
-               });
-            } catch (fallbackErr) {
-               throw signErr;
+                });
+              }
+            } catch (fallbackErr: any) {
+              console.error('[Auth:CP] L3B fallback failed:', fallbackErr?.message);
             }
-          } else {
-            throw signErr;
-          }
+            if (!signature) throw lastErr;
         }
 
         const controller = new AbortController();
@@ -486,7 +595,7 @@ export default function ConnectPage() {
     };
 
     runVerify();
-  }, [isConnected, address, mounted, setLinked, signMessageAsync, authStatus, connector]);
+  }, [accountStatus, address, mounted, setLinked, signMessageAsync, authStatus, connector]);
 
   // [FIX] First-click dead-click: AppKit modal can be called before the internal
   // WalletConnect relay WebSocket has finished handshaking. On mobile (especially iOS)

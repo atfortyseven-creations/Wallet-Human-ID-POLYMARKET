@@ -1844,13 +1844,17 @@ export default function RegistryPage() {
                             {/* Explorer link */}
                             <td className="px-5 py-4">
                               <a
-                                href={`${w.explorer}/address/${w.address}`}
+                                href={
+                                  w.badge === "HUMANID"
+                                    ? `${w.explorer}${w.address}` // humanidfi.com/registry?wallet=0x...
+                                    : `${w.explorer}/address/${w.address}` // Etherscan/Polygonscan etc.
+                                }
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="opacity-0 group-hover:opacity-100 inline-flex items-center gap-1 text-[10px] font-bold transition-opacity"
                                 style={{ color: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)" }}
                               >
-                                View <ExternalLink size={10} />
+                                {w.badge === "HUMANID" ? "Profile" : "View"} <ExternalLink size={10} />
                               </a>
                             </td>
                           </motion.tr>

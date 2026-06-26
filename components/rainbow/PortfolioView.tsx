@@ -23,6 +23,14 @@
  * - Full chain selector integrated in header
  */
 
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'appkit-button': any;
+    }
+  }
+}
+
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { TokenRow } from "./TokenRow";
