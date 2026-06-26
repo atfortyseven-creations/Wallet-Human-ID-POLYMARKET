@@ -161,10 +161,16 @@ function WalletOption({
 
 //  Signing overlay 
 function SigningOverlay({
-  address, onSigned, onRetry, error, isSigning, wcDeepLink,
+  address, onSigned, onRetry, onOpenWallet, error, isSigning, wcDeepLink,
 }: {
-  address: string; onSigned: () => void; onRetry: () => void;
-  error: string | null; isSigning: boolean; wcDeepLink?: string | null;
+  address: string;
+  onSigned: () => void;
+  onRetry: () => void;
+  /** Opens the Reown AppKit / WalletConnect wallet-selector so the user can approve the signature */
+  onOpenWallet: () => void;
+  error: string | null;
+  isSigning: boolean;
+  wcDeepLink?: string | null;
 }) {
   return (
     <motion.div
@@ -192,14 +198,14 @@ function SigningOverlay({
 
         <div className="space-y-2">
           <h2 className="text-[24px] font-black tracking-tighter text-[#050505] leading-none">
-          {isSigning ? "Signature Required" : error ? "Connection Failed" : "Connecting..."}
+            {isSigning ? "Signature Required" : error ? "Connection Failed" : "Connecting..."}
           </h2>
           <p className="text-[12px] text-[#050505]/50 leading-relaxed">
             {error
               ? "Could not cryptographically verify the wallet. Please try again."
               : isSigning
-              ? "Please approve the signature request. If you used Google/Email, tap the button below to complete login."
-              : "Initializing Private Execution Environment on Aztec L2... Please wait."}
+              ? "Open your wallet and approve the signature request to complete login."
+              : "Initializing secure session... Please wait."}
           </p>
         </div>
 
@@ -214,31 +220,44 @@ function SigningOverlay({
         )}
 
         {error ? (
-          <button
-            onClick={onRetry}
-            className="w-full py-4 rounded-2xl bg-[#050505] text-white font-black uppercase tracking-widest text-[12px] flex items-center justify-center gap-3 shadow-lg active:scale-[0.97] transition-all hover:bg-black/90"
-          >
-            <RefreshCw size={16} />
-            Retry Connection
-          </button>
+          /* Error state: primary = open wallet to retry, secondary = just retry session */
+          <div className="w-full flex flex-col gap-3">
+            <button
+              onClick={onOpenWallet}
+              className="w-full py-4 rounded-2xl bg-[#050505] text-white font-black uppercase tracking-widest text-[12px] flex items-center justify-center gap-3 shadow-lg active:scale-[0.97] transition-all hover:bg-black/90"
+            >
+              <Fingerprint size={16} />
+              Open Wallet & Retry
+            </button>
+            <button
+              onClick={onRetry}
+              className="w-full py-3 rounded-2xl bg-transparent border border-black/15 text-[#050505]/60 font-black uppercase tracking-widest text-[11px] flex items-center justify-center gap-2 active:scale-[0.97] transition-all"
+            >
+              <RefreshCw size={13} />
+              Retry Without Opening Wallet
+            </button>
+          </div>
         ) : isSigning ? (
           <div className="w-full flex flex-col gap-3 mt-2">
-             {wcDeepLink ? (
-               <a
-                  href={wcDeepLink}
-                  rel="noopener noreferrer"
-                  className="w-full py-4 rounded-2xl bg-[#050505] text-white font-black uppercase tracking-widest text-[12px] flex items-center justify-center gap-3 shadow-lg active:scale-[0.97] transition-transform select-none hover:bg-black/90"
-               >
-                 Open Wallet App
-               </a>
-             ) : (
-                <button
-                  onClick={onRetry}
-                  className="w-full py-4 rounded-2xl bg-[#050505] text-white font-black uppercase tracking-widest text-[12px] flex items-center justify-center gap-3 shadow-lg active:scale-[0.97] transition-all hover:bg-black/90"
-                >
-                  Tap to Sign & Complete Login
-                </button>
-             )}
+            {wcDeepLink ? (
+              /* Deep-link available (WalletConnect QR scanned on desktop → mobile deep-link) */
+              <a
+                href={wcDeepLink}
+                rel="noopener noreferrer"
+                className="w-full py-4 rounded-2xl bg-[#050505] text-white font-black uppercase tracking-widest text-[12px] flex items-center justify-center gap-3 shadow-lg active:scale-[0.97] transition-transform select-none hover:bg-black/90"
+              >
+                Open Wallet App
+              </a>
+            ) : (
+              /* No deep-link → open the Reown AppKit modal so user picks their wallet */
+              <button
+                onClick={onOpenWallet}
+                className="w-full py-4 rounded-2xl bg-[#050505] text-white font-black uppercase tracking-widest text-[12px] flex items-center justify-center gap-3 shadow-lg active:scale-[0.97] transition-all hover:bg-black/90"
+              >
+                <Fingerprint size={16} />
+                Tap to Sign &amp; Complete Login
+              </button>
+            )}
           </div>
         ) : (
           <div className="w-full px-4 py-3 rounded-2xl border border-black/10 bg-white flex items-center justify-center gap-3">
@@ -1330,15 +1349,24 @@ export function MobileLanding() {
   if (!signingOverlayGuarded && ((isConnected && address && !isLinked) || isActuallySigning)) {
     return (
       <div className="w-full h-full">
-        <SigningOverlay 
+        <SigningOverlay
           address={address || effectiveAddress || '0x...'}
           isSigning={isActuallySigning}
           error={signingError}
           wcDeepLink={wcDeepLink}
           onSigned={() => {}}
+          onOpenWallet={() => {
+            // Open the Reown AppKit wallet selector modal.
+            // This is THE primary CTA on iOS/Android — it pops MetaMask / WalletConnect
+            // so the user can approve the personal_sign request.
+            // After the user approves, the wagmi watchAccount listener fires and
+            // establishSession completes automatically.
+            try { rkOpenModal(); } catch (e) { console.error('[SigningOverlay] rkOpenModal failed:', e); }
+          }}
           onRetry={() => {
-            // Clear error + cached auth so the retry always signs fresh
+            // Secondary: clear error + retry signing directly (no modal open)
             setSigningError(null);
+            signingInProgressRef.current = false;
             try { localStorage.removeItem(`system_auth_${(address || '').toLowerCase()}`); } catch {}
             if (address) establishSession(address);
           }}

@@ -722,13 +722,20 @@ export default function ConnectPage() {
                 </div>
                 {authStatus === 'failed' ? (
                   <div className="flex flex-col gap-3 w-full mt-4">
-                    <button onClick={triggerManualVerify} className="w-full py-4 rounded-xl bg-[#0A0A0A] text-white font-mono text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#222] transition-all shadow-md active:scale-[0.98]">Sign Message</button>
-                    <button onClick={handleTotalDisconnect} className="w-full py-4 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 font-mono text-[10px] font-black uppercase tracking-[0.2em] transition-all active:scale-[0.98]">Disconnect</button>
+                    <button onClick={() => { openAppKitSafe(); triggerManualVerify(); }} className="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-[#0A0A0A] text-white font-mono text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#222] transition-all shadow-md active:scale-[0.98]">
+                      <ExternalLink size={14} /> Open Wallet & Retry
+                    </button>
+                    <button onClick={handleTotalDisconnect} className="w-full py-3 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 font-mono text-[10px] font-black uppercase tracking-[0.2em] transition-all active:scale-[0.98]">Disconnect</button>
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center gap-3 mt-4">
-                    <Loader2 size={20} className="animate-spin text-black/40" />
-                    <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black/40 animate-pulse">Awaiting signature...</span>
+                  <div className="flex flex-col gap-3 w-full mt-4">
+                    <button onClick={() => openAppKitSafe()} className="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-[#0A0A0A] text-white font-mono text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#222] transition-all shadow-md active:scale-[0.98]">
+                      <ExternalLink size={14} /> Tap to Sign / Open Wallet
+                    </button>
+                    <div className="flex items-center justify-center gap-2 mt-2">
+                      <Loader2 size={12} className="animate-spin text-black/40" />
+                      <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black/40 animate-pulse">Awaiting signature...</span>
+                    </div>
                   </div>
                 )}
               </div>
