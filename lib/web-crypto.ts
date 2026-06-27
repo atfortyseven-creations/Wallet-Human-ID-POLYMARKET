@@ -2,27 +2,21 @@ export async function generateX25519KeyPair() {
   if (typeof crypto === 'undefined' || !crypto.subtle) {
     throw new Error('Web Crypto API is not available (secure context required)');
   }
-  let keyPair;
-  let isECDH = false;
-  try {
-    keyPair = (await crypto.subtle.generateKey({ name: 'X25519' }, true, ['deriveKey', 'deriveBits'])) as CryptoKeyPair;
-  } catch (e) {
-    console.warn("X25519 not natively supported, falling back to ECDH P-256", e);
-    isECDH = true;
-    keyPair = (await crypto.subtle.generateKey({ name: 'ECDH', namedCurve: 'P-256' }, true, ['deriveKey', 'deriveBits'])) as CryptoKeyPair;
-  }
+  
+  // ALWAYS use ECDH P-256 for cross-device compatibility 
+  // (iOS Safari lacks X25519 support, causing key exchange to fail if Desktop uses X25519)
+  const isECDH = true;
+  const keyPair = (await crypto.subtle.generateKey(
+    { name: 'ECDH', namedCurve: 'P-256' }, 
+    true, 
+    ['deriveKey', 'deriveBits']
+  )) as CryptoKeyPair;
 
   const pubJwk = await crypto.subtle.exportKey('jwk', keyPair.publicKey) as any;
   const privJwk = await crypto.subtle.exportKey('jwk', keyPair.privateKey) as any;
 
-  // [QR DENSITY FIX] Export ONLY the raw public key coordinate(s).
-  // A full JWK serialized+base64 is ~136 chars including +/= chars that URL-encode
-  // to %2B/%2F/%3D, making a ~300-char URL and an extremely dense unreadable QR.
-  // Exporting just the x coord (or x,y for P-256) is 43-88 URL-safe base64url chars.
-  // The private key JWK is stored full because it never goes into a QR code.
-  const compactPub = isECDH
-    ? `${pubJwk.x},${pubJwk.y}`  // P-256 needs both coords (88 chars, no special chars)
-    : pubJwk.x;                   // X25519 only needs x (43-44 base64url chars)
+  // Compact = x,y (88 chars, no special chars)
+  const compactPub = `${pubJwk.x},${pubJwk.y}`;
 
   return {
     publicKey: compactPub,

@@ -356,7 +356,7 @@ export default function ConnectPage() {
       }
     }, 1000);
     return () => clearInterval(poll);
-  }, [qrSession, ephemeral, qrData, syncStatus]);
+  }, [qrSession, ephemeral, qrData, syncStatus, pinCode]);
 
   const { disconnect } = useDisconnect();
 
