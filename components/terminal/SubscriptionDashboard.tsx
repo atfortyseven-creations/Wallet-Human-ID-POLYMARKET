@@ -412,9 +412,9 @@ export function SubscriptionDashboard() {
                     <div className="space-y-0">
                         <FeatureRow label="REST API Access" active={true} />
                         <FeatureRow label="WebSocket Streams" active={plan.features.webSockets} />
-                        <FeatureRow label="FIX Protocol" active={plan.features.fixProtocol} />
-                        <FeatureRow label="Dark Pool Detection" active={plan.features.darkPoolDetection} />
-                        <FeatureRow label="Heikin-Ashi Signals" active={plan.features.heikinAshiSignals} />
+                        <FeatureRow label="Supply Chain ERP Integration" active={plan.features.fixProtocol} />
+                        <FeatureRow label="Advanced Audit Trails" active={plan.features.darkPoolDetection} />
+                        <FeatureRow label="Digital Product Passports" active={plan.features.heikinAshiSignals} />
                         <FeatureRow label="CSV / Parquet Export" active={plan.features.csvExport} />
                         <FeatureRow label="IP Whitelist & HMAC" active={plan.features.hmacRequired} />
                     </div>

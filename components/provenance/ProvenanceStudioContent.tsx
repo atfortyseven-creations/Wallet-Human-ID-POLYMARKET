@@ -1242,8 +1242,8 @@ function BandwidthTab() {
       ],
       noIncluye: [
         'Real-time WebSockets',
-        'Dark Pool detection',
-        'CSV export',
+        'Digital Product Passports',
+        'Advanced Supply Chain Analytics',
       ],
     },
     {
@@ -1257,14 +1257,14 @@ function BandwidthTab() {
       caracteristicas: [
         'Everything in Basic Plan',
         'Real-time WebSockets',
-        'FIX protocol included',
+        'Supply Chain ERP integration',
         'Up to 18 relay node keys',
         '12-month data history',
-        'CSV / Parquet export',
+        'Advanced Supply Chain Analytics',
         'Priority support',
       ],
       noIncluye: [
-        'Advanced Dark Pool detection',
+        'Advanced Audit Trails',
       ],
     },
     {
@@ -1280,7 +1280,7 @@ function BandwidthTab() {
         'Unlimited daily requests',
         'All access tokens',
         '50 relay node keys',
-        'Advanced Dark Pool detection',
+        'Advanced Audit Trails',
         'Full archive history',
         'IP Whitelist + HMAC',
         'Dedicated SLA and account manager',

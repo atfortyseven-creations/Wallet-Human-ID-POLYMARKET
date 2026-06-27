@@ -153,9 +153,9 @@ export function PricingTable() {
                                 <div className="pt-2 space-y-3">
                                     <FeatureRow label="REST API" active={true} />
                                     <FeatureRow label="WebSockets Streams" active={plan.features.webSockets} highlight={plan.features.webSockets && !isPro && !isInst} />
-                                    <FeatureRow label="FIX Protocol" active={plan.features.fixProtocol} highlight={plan.features.fixProtocol} />
-                                    <FeatureRow label="Dark Pool Detection" active={plan.features.darkPoolDetection} highlight={plan.features.darkPoolDetection && (isPro || isInst)} />
-                                    <FeatureRow label="Heikin-Ashi Signals" active={plan.features.heikinAshiSignals} />
+                                    <FeatureRow label="Supply Chain ERP Integration" active={plan.features.fixProtocol} highlight={plan.features.fixProtocol} />
+                                    <FeatureRow label="Advanced Audit Trails" active={plan.features.darkPoolDetection} highlight={plan.features.darkPoolDetection && (isPro || isInst)} />
+                                    <FeatureRow label="Digital Product Passports" active={plan.features.heikinAshiSignals} />
                                     <FeatureRow label="CSV/Parquet Export" active={plan.features.csvExport} highlight={plan.features.csvExport} />
                                     <FeatureRow label="IP Whitelist & HMAC" active={plan.features.ipWhitelist} />
                                 </div>
