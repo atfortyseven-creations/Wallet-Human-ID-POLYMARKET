@@ -515,28 +515,14 @@ function ConnectedScreen({
         initialScanData={initialScanData}
         onScan={async (result: string) => {
           onCloseScanner();
-          
-          if (!result || !(result.includes('uuid=') || result.includes('s='))) {
-            const toast = document.createElement('div');
-            toast.className = 'fixed top-6 left-4 right-4 z-[99999] bg-red-600 text-white text-[10px] border border-white/10 font-mono uppercase tracking-[0.3em] px-6 py-5 rounded-2xl shadow-2xl text-center';
-            toast.textContent = 'Invalid Session QR Code';
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 4000);
-            return;
-          }
-
-          try {
-            const { completeSessionHandshake } = await import('@/lib/scan/sessionHandshake');
-            const handshakeRes = await completeSessionHandshake(result, () => address || "", signMessageAsync, connector);
-            
-            const toast = document.createElement('div');
-            toast.className = `fixed top-6 left-4 right-4 z-[99999] text-white text-[10px] border border-white/10 font-mono uppercase tracking-[0.3em] px-6 py-5 rounded-2xl shadow-2xl text-center ${handshakeRes.ok ? 'bg-black' : 'bg-red-600'}`;
-            toast.textContent = handshakeRes.ok ? 'Session Synchronized' : handshakeRes.message;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 4000);
-          } catch (e) {
-            console.error('Handshake error', e);
-          }
+          // We no longer call completeSessionHandshake here!
+          // UniversalScanModal already handles the handshake and PIN verification internally.
+          // This callback is only for dismissing the scanner and showing a generic toast if needed.
+          const toast = document.createElement('div');
+          toast.className = 'fixed top-6 left-4 right-4 z-[99999] bg-black text-white text-[10px] border border-white/10 font-mono uppercase tracking-[0.3em] px-6 py-5 rounded-2xl shadow-2xl text-center';
+          toast.textContent = 'Scan complete';
+          document.body.appendChild(toast);
+          setTimeout(() => toast.remove(), 3000);
         }}
       />
     </div>
@@ -623,27 +609,9 @@ export function MobileLanding() {
       if (isLinked && effectiveAddress) {
         setAutoSyncStarted(true);
         
-        // Execute the session handshake directly using the URL
-        const runHandshake = async () => {
-          try {
-            const { completeSessionHandshake } = await import('@/lib/scan/sessionHandshake');
-            const result = await completeSessionHandshake(window.location.href, () => effectiveAddress, signMessageAsync, connector);
-            
-            const toast = document.createElement('div');
-            toast.className = `fixed top-6 left-4 right-4 z-[99999] text-white text-[10px] border border-white/10 font-mono uppercase tracking-[0.3em] px-6 py-5 rounded-2xl shadow-2xl text-center ${result.ok ? 'bg-black' : 'bg-red-600'}`;
-            toast.textContent = result.ok ? 'Session Synchronized' : result.message;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 4000);
-            
-            if (result.ok) {
-              // Clean up the URL to prevent re-triggering
-              window.history.replaceState({}, '', window.location.pathname);
-            }
-          } catch (e) {
-            console.error('Handshake error', e);
-          }
-        };
-        runHandshake();
+        // [PIN FIX] Do NOT call completeSessionHandshake directly here!
+        // We must pass the URL to UniversalScanModal so it can prompt the user for the 4-digit PIN.
+        setShowScanner(true);
         
       } else {
         // If they are not linked, we wait until they connect. The useEffect will re-run

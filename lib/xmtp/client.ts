@@ -305,12 +305,29 @@ export async function canReceiveMessages(
 }
 
 /**
+ * Normalize an Ethereum address to EIP-55 checksum format.
+ * XMTP v5.3.0 uses the identifier string as a key and is case-sensitive.
+ * Always pass checksummed addresses to avoid silent DM mismatches.
+ */
+async function checksumAddress(addr: string): Promise<string> {
+  try {
+    const { getAddress } = await import('viem');
+    return getAddress(addr);
+  } catch {
+    // Fallback: return as-is if viem not available
+    return addr;
+  }
+}
+
+/**
  * Get or create a DM with a peer and return its conversation ID.
  * v5.3.0 FIX: use newDmWithIdentifier()  newDm() takes inboxId, NOT Identifier.
+ * CRITICAL: always pass EIP-55 checksummed address as identifier.
  */
 export async function getDmId(client: Client, peerAddress: string): Promise<string> {
+  const normalized = await checksumAddress(peerAddress);
   const identifier: XmtpIdentifier = {
-    identifier: peerAddress,
+    identifier: normalized,
     identifierKind: 'Ethereum',
   };
   const dm = await client.conversations.newDmWithIdentifier(identifier);
@@ -320,16 +337,22 @@ export async function getDmId(client: Client, peerAddress: string): Promise<stri
 /**
  * Send an end-to-end encrypted message to a wallet address.
  * v5.3.0 FIX: use newDmWithIdentifier() which accepts an Identifier object.
+ * CRITICAL FIX: always checksum the toAddress before creating the DM.
+ * XMTP v5.3.0 treats identifier strings as case-sensitive keys — a lowercase
+ * address will NOT match the peer's checksummed registration and the DM will
+ * appear to succeed locally but the peer will never receive the message.
  * After sending, syncs the conversation to confirm delivery.
  */
 export async function sendMessage(
   client: Client,
   toAddress: string,
   content: string,
-  senderEthAddress?: string, // Pass the real wallet address explicitly
+  senderEthAddress?: string,
 ): Promise<void> {
+  // CRITICAL: normalize to EIP-55 checksum format before any XMTP call
+  const normalizedTo = await checksumAddress(toAddress);
   const identifier: XmtpIdentifier = {
-    identifier: toAddress,
+    identifier: normalizedTo,
     identifierKind: 'Ethereum',
   };
 
@@ -471,14 +494,21 @@ export async function extractPeerAddress(dm: any, selfInboxId: string): Promise<
  * The key improvement: we now use extractPeerAddress() which properly
  * resolves both accountAddresses and inboxId-based lookups with caching.
  */
+/**
+ * Retrieve message history for a specific peer conversation.
+ *
+ * CRITICAL FIX v5: Always checksum peerAddress before XMTP lookup.
+ * XMTP v5.3.0 identifier matching is case-sensitive.
+ */
 export async function getMessages(client: Client, peerAddress: string): Promise<any[]> {
   try {
     // 1. Sync globally
     await client.conversations.sync().catch(console.warn);
 
-    // 2. Get active DM with peer
+    // 2. Get active DM with peer — ALWAYS use checksummed address
+    const normalizedPeer = await checksumAddress(peerAddress);
     const identifier: XmtpIdentifier = {
-      identifier: peerAddress,
+      identifier: normalizedPeer,
       identifierKind: 'Ethereum',
     };
     const dm = await client.conversations.newDmWithIdentifier(identifier);
