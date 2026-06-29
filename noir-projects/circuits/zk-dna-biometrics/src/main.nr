@@ -8,6 +8,7 @@ contract ZkDnaBiometrics {
         AztecAddress, PrivateContext, Map, PublicMutable, PrivateSet
     };
     use dep::value_note::note::{ValueNote, VALUE_NOTE_LEN};
+    use dep::std::hash::pedersen_hash;
 
     #[aztec(storage)]
     struct Storage {
@@ -29,7 +30,14 @@ contract ZkDnaBiometrics {
     /// Raw biometrics are NEVER transmitted or stored on-chain.
     #[aztec(private)]
     fn register_identity(owner: AztecAddress, identity_commitment: Field) {
-        // Store a nullifier to prevent re-registration
+        assert(owner == context.msg_sender(), "Unauthorized: must be self");
+        assert(identity_commitment != 0, "Invalid identity commitment");
+
+        // Protocol-level deterministic nullifier for Sybil resistance
+        let nullifier = pedersen_hash([owner.to_field(), identity_commitment]);
+        context.push_new_nullifier(nullifier, 0);
+
+        // Store a private receipt note for the user's PXE
         let mut nullifier_note = ValueNote::new(identity_commitment, owner);
         storage.used_proof_nullifiers.at(owner).insert(&mut nullifier_note, true);
 
@@ -47,6 +55,13 @@ contract ZkDnaBiometrics {
         claim_type: Field,   // 1=is_human, 2=is_adult, 3=is_unique
         proof_hash: Field,   // Hash of the off-chain ZK proof
     ) {
+        // Mathematical soundness: explicitly bound the claim_type field
+        assert((claim_type == 1) | (claim_type == 2) | (claim_type == 3), "Invalid claim type bounds");
+        
+        // Authorization constraint: prevent claimant spoofing
+        assert(claimant == context.msg_sender(), "Unauthorized claimant");
+        assert(proof_hash != 0, "Invalid proof hash bounds");
+
         ZkDnaBiometrics::at(context.this_address())
             .record_claim(claimant, claim_type, proof_hash)
             .enqueue(&mut context);

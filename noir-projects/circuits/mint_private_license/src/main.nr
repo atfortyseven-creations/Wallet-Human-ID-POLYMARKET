@@ -40,6 +40,9 @@ contract PrivateLicense {
         // Schnorr signature (r, s) array
         signature: [u8; 64]
     ) {
+        // Aztec Alignment: Absolute authorization constraint. Only the true owner can mint.
+        assert(user == context.msg_sender(), "UNAUTHORIZED_MINTER");
+
         // --- A. CRYPTOGRAPHIC VERIFICATION (SCHNORR) ---
         
         // Construct the message payload that the server signed.
