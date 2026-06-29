@@ -329,11 +329,12 @@ function TransactionRow({ item }: { item: any }) {
                                                 <div className="text-[16px] font-black text-[#050505] mb-2 tracking-tight">
                                                     {realWalletProfile}
                                                 </div>
-                                                <div className="text-[12px] font-mono text-[#555555] mb-4">
-                                                    Core Execution: {realAction}
+                                                <div className="text-[11px] text-[#555555] mb-4 leading-relaxed">
+                                                    <span className="font-black text-[#888888] uppercase tracking-widest text-[9px]">Core Execution: </span>
+                                                    {realAction}
                                                 </div>
-                                                <div className="text-[10px] bg-[#050505] text-white px-3 py-1.5 rounded-lg font-bold inline-flex items-center gap-2 shadow-md">
-                                                    <Shield size={12} /> Humanity Sentinel Network
+                                                <div className="inline-flex items-center gap-2 text-[10px] bg-[#050505] text-white px-3 py-1.5 rounded-lg font-bold shadow-md">
+                                                    <Shield size={12} className="text-white" /> Humanity Sentinel Network
                                                 </div>
                                             </div>
 
@@ -343,15 +344,16 @@ function TransactionRow({ item }: { item: any }) {
                                                     <Database size={14} className="text-[#888888]" />
                                                     <div className="text-[9px] font-black uppercase tracking-widest text-[#888888]">Market Impact Assessment</div>
                                                 </div>
-                                                <div className="text-xl font-black text-[#050505] tracking-tighter mb-2">
+                                                <div className="text-[15px] font-black text-[#050505] tracking-tight mb-2 leading-snug">
                                                     {realMarketImpact}
                                                 </div>
                                                 <div className="mt-4 pt-4 border-t border-[#E5E5E5] flex items-center justify-between">
                                                     <span className="text-[10px] font-black text-[#888888] uppercase tracking-widest">Internal Sentiment</span>
-                                                    <span className={`text-[11px] font-mono font-black px-2 py-1 rounded ${
-                                                        realSentiment.includes('BULLISH') ? 'bg-emerald-500/10 text-emerald-700' :
-                                                        realSentiment.includes('BEARISH') ? 'bg-red-500/10 text-red-700' :
-                                                        'bg-gray-500/10 text-gray-700'
+                                                    <span className={`text-[11px] font-mono font-black px-3 py-1 rounded-lg border ${
+                                                        realSentiment.includes('BULLISH') ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
+                                                        realSentiment.includes('BEARISH') ? 'bg-red-50 border-red-200 text-red-700' :
+                                                        realSentiment.includes('HIGH CONVICTION') ? 'bg-blue-50 border-blue-200 text-blue-700' :
+                                                        'bg-[#F5F5F5] border-[#E5E5E5] text-[#555555]'
                                                     }`}>
                                                         {realSentiment}
                                                     </span>
