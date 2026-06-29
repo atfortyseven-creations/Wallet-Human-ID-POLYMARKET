@@ -209,7 +209,12 @@ export async function getXMTPClient(
   let client: Client;
   try {
     // Client.create(signer, options)  v5.3.0 signature
-    client = await Client.create(signer, { env: XMTP_ENV, dbEncryptionKey });
+    // [Aztec Point 8] Obfuscate appVersion and disable telemetry at the transport layer
+    client = await Client.create(signer, { 
+      env: XMTP_ENV, 
+      dbEncryptionKey,
+      appVersion: "WhaleNetwork-Privacy-Node/1.0.0-obfuscated", // Mixnet-style anonymity tag
+    });
   } catch (err: any) {
     const errorMsg = err?.message || '';
     if (

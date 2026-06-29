@@ -22,8 +22,14 @@ contract AnalyticsQueryProof {
     fn commit_query_result(
         querier: AztecAddress,
         result_commitment: Field,  // Pedersen commitment to the query result
+        obfuscation_salt: Field,   // [Point 13] Mixnet salt to prevent dictionary attacks on query results
     ) {
-        let mut note = ValueNote::new(result_commitment, querier);
+        // Absolute authorization constraint
+        assert(querier == context.msg_sender(), "UNAUTHORIZED_ANALYTICS_COMMIT");
+
+        // The stored note explicitly includes the obfuscation salt, guaranteeing 
+        // that identical query results from the same user yield different note hashes.
+        let mut note = ValueNote::new(result_commitment + obfuscation_salt, querier);
         storage.query_commitments.at(querier).insert(&mut note, true);
     }
 }
