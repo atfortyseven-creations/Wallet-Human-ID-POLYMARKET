@@ -169,8 +169,8 @@ describe('Z-Score Engine  Property-Based Tests (fast-check)', () => {
     );
   });
 
-  // PROPERTY 8: Whale Z-Score with institutional flag always >= base Z-Score
-  it('P8: Institutional flag always increases or maintains Z-Score', () => {
+  // PROPERTY 8: Whale Z-Score with sovereign flag always >= base Z-Score
+  it('P8: Sovereign flag always increases or maintains Z-Score', () => {
     fc.assert(
       fc.property(
         fc.double({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1e9 }),
@@ -179,9 +179,9 @@ describe('Z-Score Engine  Property-Based Tests (fast-check)', () => {
         fc.double({ noNaN: true, noDefaultInfinity: true, min: 0, max: 1 }),
         (volume, mean, stdDev, velocity) => {
           const base = computeWhaleZScore({ volumeUSD: volume, historicalMeanUSD: mean, historicalStdDevUSD: stdDev, velocityFactor: velocity, institutionalFlag: false });
-          const institutional = computeWhaleZScore({ volumeUSD: volume, historicalMeanUSD: mean, historicalStdDevUSD: stdDev, velocityFactor: velocity, institutionalFlag: true });
-          // Institutional Z should be >= base (clamped at 10)
-          return institutional >= base || (base >= 10 && institutional >= 10);
+          const sovereign = computeWhaleZScore({ volumeUSD: volume, historicalMeanUSD: mean, historicalStdDevUSD: stdDev, velocityFactor: velocity, institutionalFlag: true });
+          // Sovereign Z should be >= base (clamped at 10)
+          return sovereign >= base || (base >= 10 && sovereign >= 10);
         }
       ),
       { numRuns: 5_000 }

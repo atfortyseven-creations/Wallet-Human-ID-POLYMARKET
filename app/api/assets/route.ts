@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 
 /**
- * Institutional Asset Bridge API
+ * Sovereign Asset Bridge API
  * 
  * Streams high-fidelity wallpapers from the system root to the frontend, 
  * bypassing filesystem isolation to incorporate user-provided assets.

@@ -1,7 +1,7 @@
 /**
  * deploy-system.ts
  *
- * Institutional-grade deployment script for Whale Alert system contracts:
+ * Sovereign-grade deployment script for Whale Alert system contracts:
  *   - WhaleDeadmanSwitch (security/WhaleDeadmanSwitch.sol)
  *   - HumanTimeLock (civilization/HumanTimeLock.sol)
  *

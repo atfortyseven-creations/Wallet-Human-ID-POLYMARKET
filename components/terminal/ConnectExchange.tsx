@@ -16,10 +16,10 @@ interface Exchange {
 }
 
 const EXCHANGES: Exchange[] = [
-    { id: 'binance', name: 'Binance', icon: 'bnc', description: 'Institutional API Bridge via EdDSA/ECDSA signature verification.', status: 'OPTIMIZED' },
+    { id: 'binance', name: 'Binance', icon: 'bnc', description: 'Sovereign API Bridge via EdDSA/ECDSA signature verification.', status: 'OPTIMIZED' },
     { id: 'okx', name: 'OKX', icon: 'okx', description: 'Low-latency V5 API integration with sub-ms attest execution.', status: 'OPTIMIZED' },
     { id: 'bybit', name: 'Bybit', icon: 'bbt', description: 'Unified Attesting Account support with cross-margin telemetry.', status: 'STABLE' },
-    { id: 'coinbase', name: 'Coinbase Pro', icon: 'cbp', description: 'Enterprise-grade custody bridge with direct fiat settlement.', status: 'BETA' }
+    { id: 'coinbase', name: 'Coinbase Pro', icon: 'cbp', description: 'Cryptographic-grade custody bridge with direct fiat settlement.', status: 'BETA' }
 ];
 
 export default function ConnectExchange() {

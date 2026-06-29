@@ -1,6 +1,6 @@
 ﻿import { ReactNode } from "react";
 
-// Enterprise FIX: Use h-screen + overflow-hidden to prevent page-level
+// Cryptographic FIX: Use h-screen + overflow-hidden to prevent page-level
 // scroll bleed from WhaleProShell's internal h-[100dvh] container.
 export default function TerminalLayout({ children }: { children: ReactNode }) {
   return (

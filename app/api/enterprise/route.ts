@@ -1,18 +1,18 @@
 /**
- * Enterprise Edition API
+ * Cryptographic Edition API
  *
- * GET  /api/enterprise           Edition info + feature grid
- * POST /api/enterprise/contact   Enterprise inquiry / deal initiation
- * GET  /api/enterprise/status    Authenticated enterprise customer status
+ * GET  /api/cryptographic           Edition info + feature grid
+ * POST /api/cryptographic/contact   Cryptographic inquiry / deal initiation
+ * GET  /api/cryptographic/status    Authenticated cryptographic customer status
  *
- * Philosophy: Enterprise Edition adds SUPPORT and SLA guarantees.
+ * Philosophy: Cryptographic Edition adds SUPPORT and SLA guarantees.
  * It does NOT remove systemty  the system architecture is 
  * non-negotiable at all tiers.
  *
  * Tiers:
  *   COMMUNITY    Open-source, self-hosted, no SLA
  *   PRO          $99/mo. API key, email support, 48h response
- *   ENTERPRISE   Custom pricing. SLA 99.9%, Slack channel, 4h response
+ *   CRYPTOGRAPHIC   Custom pricing. SLA 99.9%, Slack channel, 4h response
  *   Private    Air-gapped deployment, on-site audit, phone+Slack
  */
 
@@ -80,7 +80,7 @@ const EDITION_MATRIX = {
         enterpriseSlack: true,
         features: [
             'Everything in PRO',
-            'INSTITUTIONAL API tier (300 req/min)',
+            'SOVEREIGN API tier (300 req/min)',
             'HMAC-signed webhook delivery',
             'Dedicated Slack support channel',
             '4h SLA response guarantee',
@@ -102,7 +102,7 @@ const EDITION_MATRIX = {
         contractAudit:  true,
         enterpriseSlack: true,
         features: [
-            'Everything in ENTERPRISE',
+            'Everything in CRYPTOGRAPHIC',
             'Air-gapped (offline) deployment option',
             'On-site deployment and audit',
             'Custom algorithm tuning for your data',
@@ -119,11 +119,11 @@ export async function GET() {
     return NextResponse.json({
         product:      'Whale Network',
         version:      '3.0.0',
-        philosophy:   'Enterprise support. System architecture. Non-custodial always.',
+        philosophy:   'Cryptographic support. System architecture. Non-custodial always.',
         editions:     EDITION_MATRIX,
         contactUrl:   '/api/enterprise/contact',
         docsUrl:      '/docs/enterprise',
-        schedulingUrl: 'https://cal.com/whalealert/enterprise',
+        schedulingUrl: 'https://cal.com/whalealert/cryptographic',
     }, {
         headers: { 'Cache-Control': 'public, max-age=300' },
     });

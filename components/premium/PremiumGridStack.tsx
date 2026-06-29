@@ -36,11 +36,11 @@ function MacroMetricsCard() {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const res = await fetch('/api/institutional/stats');
+                const res = await fetch('/api/sovereign/stats');
                 const data = await res.json();
                 setStats(data);
             } catch (e) {
-                console.error('Failed to fetch institutional stats');
+                console.error('Failed to fetch sovereign stats');
             } finally {
                 setLoading(false);
             }
@@ -72,7 +72,7 @@ function MacroMetricsCard() {
                         {volumeFormatted}
                     </h2>
                     <p className="text-[10px] font-mono text-[#888888] uppercase tracking-widest mt-2 relative z-10">
-                        Institutional Net Flow (24H)
+                        Sovereign Net Flow (24H)
                     </p>
                     {stats?.topPairs && (
                         <div className="mt-4 pt-4 border-t border-[#E5E5E5] relative z-10">
@@ -338,7 +338,7 @@ export function PremiumGridStack() {
                     )}
                     <div className="hidden lg:flex items-center gap-3 bg-white border border-[#E5E5E5] px-4 py-2 rounded-full shadow-sm">
                         <span className="w-2 h-2 rounded-full bg-[#00C076] animate-pulse"/>
-                        <span className="text-[9px] font-black text-[#555] uppercase tracking-[0.2em]">Institutional Mesh Active</span>
+                        <span className="text-[9px] font-black text-[#555] uppercase tracking-[0.2em]">Sovereign Mesh Active</span>
                     </div>
 
                 </div>

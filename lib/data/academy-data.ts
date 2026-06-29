@@ -58,7 +58,7 @@ export const ACADEMY_MODULES: AcademyModule[] = [
     },
     {
         id: "institutional-custody",
-        title: "Institutional Custody & Security",
+        title: "Sovereign Custody & Security",
         description: "Estableciendo el estándar de titanio puro para la bóveda digital definitiva. La custodia a macro-escala exige esquemas multifirma distribuidos (MPC), entornos de ejecución altamente confiables (TEE) y políticas de gobernanza ciegas. El creador implementará en el PDF consecuente un blueprint arquitectónico de seguridad impenetrable. El archivo proporcionará configuraciones de Hardware Security Modules (HSM) paso a paso, flujos de autorización mediante sharding (fragmentación) de llaves criptográficas y auditorías de red.",
         articles: [
             {

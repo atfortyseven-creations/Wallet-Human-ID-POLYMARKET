@@ -9,7 +9,7 @@ import { formatUnits } from 'viem';
 import { motion } from 'framer-motion';
 
 // ================================================================
-// INSTITUTIONAL DEFI POSITIONS ENGINE
+// SOVEREIGN DEFI POSITIONS ENGINE
 // Interrogates AAVE V3, Compound V3 via parallelized on-chain reads
 // ================================================================
 export function QuantumDeFiPositions({ address, activeNetwork }: { address: string, activeNetwork: string }) {
@@ -103,7 +103,7 @@ export function QuantumDeFiPositions({ address, activeNetwork }: { address: stri
             <div className="flex-1 flex flex-col items-center justify-center text-center p-8 bg-black/5 border border-black/10 min-h-[400px]">
                 <Layers size={24} className="text-black/20 mb-4" />
                 <p className="text-[11px] text-black/60 uppercase tracking-widest font-black mb-2">Cross-Chain DeFi Analytics</p>
-                <p className="text-[10px] text-black/40 max-w-[280px]">DeFi tracking for <span className="uppercase text-black/60 font-bold">{activeNetwork}</span> is syncing. Currently, full institutional tracking is optimized for Ethereum Mainnet.</p>
+                <p className="text-[10px] text-black/40 max-w-[280px]">DeFi tracking for <span className="uppercase text-black/60 font-bold">{activeNetwork}</span> is syncing. Currently, full sovereign tracking is optimized for Ethereum Mainnet.</p>
             </div>
         );
     }
@@ -176,7 +176,7 @@ export function QuantumDeFiPositions({ address, activeNetwork }: { address: stri
                                     <div className="flex flex-col items-center justify-center text-center">
                                         <Landmark size={24} className="text-black/20 mb-3" />
                                         <p className="text-[10px] text-black/40 uppercase tracking-widest font-black mb-1">Zero Mathematical Exposure</p>
-                                        <p className="text-[9px] text-black/30 max-w-[300px]">The institutional analytics engine found no active liquidity concentrated positions, options, or over-collateralized debt structures.</p>
+                                        <p className="text-[9px] text-black/30 max-w-[300px]">The sovereign analytics engine found no active liquidity concentrated positions, options, or over-collateralized debt structures.</p>
                                     </div>
                                 </td>
                             </tr>
@@ -188,7 +188,7 @@ export function QuantumDeFiPositions({ address, activeNetwork }: { address: stri
             <div className="border-t border-black/10 p-3 bg-black/5 flex items-center justify-between">
                 <div className="flex items-center gap-2 text-black/40">
                     <Activity size={12} className="text-black/60" />
-                    <span className="text-[9px] font-black uppercase tracking-widest">Institutional Analytics Engine Online</span>
+                    <span className="text-[9px] font-black uppercase tracking-widest">Sovereign Analytics Engine Online</span>
                 </div>
             </div>
         </div>

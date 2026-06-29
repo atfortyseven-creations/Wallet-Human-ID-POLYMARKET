@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => ({}));
     const { walletAddress, signature, message } = body;
 
-    //  INSTITUTIONAL AUTHENTICATION RESOLUTION 
+    //  SOVEREIGN AUTHENTICATION RESOLUTION 
     const hasHandshakeCookie = req.cookies.get('system_handshake')?.value;
     let rawUserId = walletAddress || hasHandshakeCookie || (session as any)?.user?.email;
     let userId = rawUserId ? rawUserId.toLowerCase() : undefined;

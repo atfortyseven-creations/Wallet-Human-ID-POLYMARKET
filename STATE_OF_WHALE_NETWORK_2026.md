@@ -11,14 +11,14 @@
 
 ## Executive Summary
 
-The year 2026 marked the institutionalization of on-chain capital. For the first time in crypto history, verified institutional flows ($10M+ per transaction) exceeded retail aggregate volume across all major EVM chains by a factor of **3.2x**. This report synthesizes 12 months of live observation from the Whale Alert system detection network, covering BASE, ETHEREUM, BSC, SOLANA, and BITCOIN.
+The year 2026 marked the institutionalization of on-chain capital. For the first time in crypto history, verified sovereign flows ($10M+ per transaction) exceeded retail aggregate volume across all major EVM chains by a factor of **3.2x**. This report synthesizes 12 months of live observation from the Whale Alert system detection network, covering BASE, ETHEREUM, BSC, SOLANA, and BITCOIN.
 
 **Key Findings:**
 - **842,000+** whale-grade transactions detected ($50K+ threshold)
 - **$4.7 Trillion** total USD volume captured across chains
 - **217** "Mega Whale" transactions exceeding $100M in a single move
 - **Q1 2026**: 68% of ETH price moves >5% were preceded by detectable whale accumulation 72h prior
-- **BASE L2**: 4× growth in whale activity vs 2025, driven by institutional BASE-native deployments
+- **BASE L2**: 4× growth in whale activity vs 2025, driven by sovereign BASE-native deployments
 - **DeFi Dark Pools**: 23% of detected whales routed through Uniswap V4 pools with custom hooks, obscuring capital intent
 
 ---
@@ -35,11 +35,11 @@ The year 2026 marked the institutionalization of on-chain capital. For the first
 | SOLANA    | 91,204    | $612B           | $6.71M       | +89%       |
 | BITCOIN   | 52,003    | $298B           | $5.73M       | +34%       |
 
-### 1.2 Institutional Migration Pattern
+### 1.2 Sovereign Migration Pattern
 
-2026 evidenced the first systematic institutional migration from ETHEREUM mainnet to BASE as a primary execution layer. The primary driver: gas cost predictability under Ethereum's EIP-4844 blob transactions reduced BASE execution costs by 87% versus Ethereum mainnet while maintaining identical security guarantees.
+2026 evidenced the first systematic sovereign migration from ETHEREUM mainnet to BASE as a primary execution layer. The primary driver: gas cost predictability under Ethereum's EIP-4844 blob transactions reduced BASE execution costs by 87% versus Ethereum mainnet while maintaining identical security guarantees.
 
-**Detected Pattern**: *Pre-migration accumulation signal*  48h before large institutional ETHBASE bridge operations, we consistently detected reduced ETH sell pressure on Ethereum combined with increased WETH wrapping activity, followed by systematic LP provision on BASE Aerodrome.
+**Detected Pattern**: *Pre-migration accumulation signal*  48h before large sovereign ETHBASE bridge operations, we consistently detected reduced ETH sell pressure on Ethereum combined with increased WETH wrapping activity, followed by systematic LP provision on BASE Aerodrome.
 
 ---
 
@@ -49,11 +49,11 @@ The year 2026 marked the institutionalization of on-chain capital. For the first
 
 Our thesis  that gas expenditure patterns function as thermodynamic signatures of capital intent  was validated across 3 independent time windows in 2026:
 
-**Q1 Validation (January 1418):** A 340% spike in `SSTORE` operations across Ethereum addresses ending with institutional multi-sig patterns preceded the January 19 BTC breakout from $95K by exactly 72 hours. The energy model (gas × block density) achieved an R² = 0.847 correlation with subsequent price movement.
+**Q1 Validation (January 1418):** A 340% spike in `SSTORE` operations across Ethereum addresses ending with sovereign multi-sig patterns preceded the January 19 BTC breakout from $95K by exactly 72 hours. The energy model (gas × block density) achieved an R² = 0.847 correlation with subsequent price movement.
 
 **Q2 Validation (April 37):** `EIP-1153 TSTORE` operation density increased 890% in the 48h preceding the ETH Pectra upgrade coordination activities. Institutions were pre-positioning via transient storage before the upgrade went live.
 
-**Q3 Validation (AugustSeptember):** Base chain `CREATE2` factory deployments spiked 3.2σ above 90-day moving average during a 72h period that preceded a $2.1B institutional DeFi position being established across 14 protocols simultaneously.
+**Q3 Validation (AugustSeptember):** Base chain `CREATE2` factory deployments spiked 3.2σ above 90-day moving average during a 72h period that preceded a $2.1B sovereign DeFi position being established across 14 protocols simultaneously.
 
 ### 2.2 Z-Score Threshold Calibration
 
@@ -62,7 +62,7 @@ Based on 12 months of live observation, we refine our Z-Score thresholds:
 | Z-Score | Signal Classification | Action Confidence |
 |---------|----------------------|--------------------|
 | 1.52.0 | Accumulation Whisper | Monitor (Low)      |
-| 2.03.0 | Institutional Probe  | Alert (Medium)     |
+| 2.03.0 | Sovereign Probe  | Alert (Medium)     |
 | 3.04.5 | High-Conviction Move | Priority Alert (High) |
 | >4.5    | Mega Event Precursor | Emergency Signal   |
 
@@ -121,7 +121,7 @@ The Whale Alert Hall of Fame  launched in Q2 2026  enabled community Sentinels t
 2. **Solana SIMD-0109**: Program-derived address monitoring will enable sub-500ms detection on Solana.
 3. **ZK-Proof Analytics**: Detection proofs (not raw data) will be shareable on-chain without revealing source wallet addresses  enabling trustless analytics markets.
 4. **Cross-Chain Correlation**: Multi-chain pattern recognition to detect coordinated operations spanning ETH+BASE+SOL simultaneously.
-5. **MiCA Compliance Layer**: European institutional editions with mandatory reporting thresholds built into the system detection engine.
+5. **MiCA Attestation Layer**: European sovereign editions with mandatory reporting thresholds built into the system detection engine.
 
 ---
 

@@ -10,7 +10,7 @@
 
 Humanity Ledger is a privacy-preserving financial coordination protocol built natively on the **Aztec Network**. It delivers a zero-knowledge execution environment where financial activity, identity verification, and governance actions are proven locally on the user device and verified by the network — without the network ever accessing the underlying private data.
 
-The protocol is deeply integrated with the **Whale Alert Network**, which provides real-time monitoring of large capital flows across 20+ major blockchain networks via EVM Thermodynamics and Neo4j Graph Correlation. Users act on this institutional-grade intelligence entirely within the shielded environment — their positions, queries, and intentions remaining cryptographically sealed from all external observers.
+The protocol is deeply integrated with the **Whale Alert Network**, which provides real-time monitoring of large capital flows across 20+ major blockchain networks via EVM Thermodynamics and Neo4j Graph Correlation. Users act on this sovereign-grade intelligence entirely within the shielded environment — their positions, queries, and intentions remaining cryptographically sealed from all external observers.
 
 The entire codebase — all smart contracts, Noir ZK circuits, API workers, and UI components — is **100% public and open source**. Verification supersedes trust. Every security property of the protocol is guaranteed by mathematics, not by policy.
 
@@ -56,7 +56,7 @@ State is managed using a private UTXO model structured as an encrypted Merkle tr
 The live ZK Shield Station (`/api/zk/prove`) generates **Groth16 proofs over the BN128 elliptic curve** — the same proving system used by Ethereum's `ecPairing` precompile. This ensures on-chain verifiability at minimal gas cost.
 
 ### 3.4 Authorization Witnesses (AuthWit)
-Allow smart contracts to execute actions on a user's behalf through in-circuit proofs, eliminating the need for linkable on-chain signatures. Institutional delegations are enforced in-circuit, not through traditional approvals.
+Allow smart contracts to execute actions on a user's behalf through in-circuit proofs, eliminating the need for linkable on-chain signatures. Sovereign delegations are enforced in-circuit, not through traditional approvals.
 
 ### 3.5 Barretenberg Backend
 The proving system is implemented using the Barretenberg library, supporting the UltraPlonk constraint system with efficient proof generation in both browser (WebAssembly) and native environments.
@@ -150,7 +150,7 @@ A secure, one-per-wallet welcome bonus system using **EIP-712 typed structured s
 
 ## 5. EVM Thermodynamics & The Mempool Sonar
 
-The Whale Alert Network models Ethereum state transitions as thermodynamic processes to extract institutional capital intent from gas expenditure patterns.
+The Whale Alert Network models Ethereum state transitions as thermodynamic processes to extract sovereign capital intent from gas expenditure patterns.
 
 ### 5.1 Thermodynamic Energy Index
 
@@ -177,7 +177,7 @@ Confidence tiers:
 Empirical validation: R² = 0.847 correlation with subsequent 72-hour price movements when Z-Score anomalies exceed σ = 3.0.
 
 ### 5.2 EIP-1153 Transient Storage Signal (TSTORE/TLOAD)
-Institutional flash loan coordinators and MEV searchers adopted transient storage (introduced in the Cancun upgrade) for cross-contract state sharing within single blocks. The system monitors `TSTORE` density per block as a leading indicator of coordinated multi-contract institutional operations.
+Sovereign flash loan coordinators and MEV searchers adopted transient storage (introduced in the Cancun upgrade) for cross-contract state sharing within single blocks. The system monitors `TSTORE` density per block as a leading indicator of coordinated multi-contract sovereign operations.
 
 *Empirical validation:* 73.4% of detected `TSTORE` spikes above 2σ were followed by a ≥3% price movement in the affected token within 24 hours (N = 847, 2026 dataset).
 
@@ -200,9 +200,9 @@ Wallets accumulating from 3+ independent whale sources within 6 hours precede an
 
 ## 6. The Golden Ticket System
 
-A limited-edition institutional access system operating on **Optimism L2**.
+A Sybil-resistance Genesis artifact operating on **Optimism L2**.
 
-- **Total Supply:** Exactly 200 tickets. Hard limit enforced server-side with database constraints.
+- **Total Supply:** Exactly 200 tickets. Deterministically scarce to ensure network stability during the initial rollout. This parameter is designed for the genesis state and will transition to native on-chain community governance.
 - **Mint Fee:** 0.00111 ETH paid directly to `TREASURY_WALLET` (`0x78831C25c86eA2a78A6127fC2Ccb95E612D87b4a`) on Optimism L2.
 - **Signature Pad:** Every ticket requires a hand-drawn biometric signature captured via `PointerEvent` on an HTML5 Canvas, exported as a compressed JPEG thumbnail.
 - **ECDSA Endorsement:** After payment, the user signs the message `WHALE ALERT NETWORK ACCESS VERIFICATION: {address}` with their connected wallet. This creates a cryptographic proof of ownership linking the physical signature to the wallet address.
@@ -243,12 +243,12 @@ Standard circuit patterns used:
 - **Nullifier generation circuits**: Prevent double-spending without revealing which note was spent.
 - **Private transfer circuits**: Prove that inputs balance outputs without revealing amounts or parties.
 - **Authorization witness circuits**: Allow contract delegation without linkable on-chain signatures.
-- **Threshold signature circuits**: M-of-N authorization proven in-circuit for institutional custody.
+- **Threshold signature circuits**: M-of-N authorization proven in-circuit for sovereign custody.
 
 ### 8.3 Identity & Sybil Resistance
 Users authenticate via ZK proofs of credential possession — including World ID integration — proving unique human status without exposing personally identifiable information. The network verifies humanness without learning identity, device, or the specific credential used.
 
-For institutions requiring formal compliance, **selective disclosure** is supported via viewing keys and W3C Verifiable Credentials. Institutions can prove specific attributes to regulators (balance thresholds, transaction limits, jurisdictional compliance) without revealing their full transactional history.
+For any sovereign user or entity requiring verifiable attestations, **selective disclosure** is an emergent cryptographic primitive supported via viewing keys and W3C Verifiable Credentials. Users can mathematically prove specific attributes (e.g., balance thresholds, transaction limits) to any third party without revealing their full transactional history, maintaining absolute sovereignty. There is no special "attestation" backdoor; the mathematics apply equally to individuals and institutions.
 
 ---
 
@@ -259,7 +259,7 @@ The portfolio interface rejects iframe-based Node chokepoints and connects nativ
 - **Swaps:** Routed directly through Uniswap V2/V3 smart contracts via Ethers.js. No intermediary.
 - **Bridging:** Cross-chain capital leverages LayerZero Omnichain messaging for guaranteed finality.
 - **DeFi Yield:** Direct integration with Morpho Protocol for optimized lending yield.
-- **Hyperliquid Execution:** Institutional-grade perpetual execution via the Hyperliquid on-chain order book.
+- **Hyperliquid Execution:** Sovereign-grade perpetual execution via the Hyperliquid on-chain order book.
 - **Polymarket:** On-chain prediction market integration — positions taken directly against the AMM.
 - **Fiat Ingress:** Handled via secure, isolated popups with compliant providers — never touching internal state.
 
@@ -298,7 +298,7 @@ The protocol includes a structured knowledge base (`WhaleAcademy`) covering:
 - EVM Thermodynamics and gas pattern interpretation.
 - Historical case studies of large capital movements and their market impact.
 - Sybil detection and wallet clustering techniques.
-- Risk management frameworks for institutional DeFi participation.
+- Risk management frameworks for sovereign DeFi participation.
 
 ---
 
@@ -345,7 +345,7 @@ The timestamp must be within ±300 seconds of server time to prevent replay atta
 
 ### Rate Limits
 - **Standard:** 100 req/min, 10 concurrent WebSocket connections.
-- **Enterprise:** Custom rate limits, 99.9% uptime SLA, dedicated infrastructure.
+- **Cryptographic:** Custom rate limits, 99.9% uptime SLA, dedicated infrastructure.
 
 ---
 
@@ -375,36 +375,29 @@ Critical vulnerabilities (fund loss or user deanonymization) are eligible for up
 
 ---
 
-## 15. Roadmap
+## 15. Native Protocol Capabilities
 
-### Phase 1 — Core Protocol ( Delivered)
-- Aztec PXE integration and Barretenberg browser proving.
+The protocol does not follow a "Native Decentralization" roadmap. It is deployed with its core privacy and decentralization axioms intact from genesis. The following capabilities are fully integrated or in active deployment as native extensions of the ZK infrastructure:
+
+### Core Execution Environment (Active)
+- Aztec PXE integration and Barretenberg browser proving (Local-First execution).
 - CoreDots ERC-20 with ERC-2612 Permit and ERC-5805 Votes.
 - CoreLedger on-chain receipt registry with MEV-protected permit transfer.
 - CoreMiner SHA-256 PoW with dynamic difficulty adjustment.
-- CoreAirdrop EIP-712 welcome bonus (500 QDs/wallet).
-- Golden Ticket System — 200 supply cap, Optimism L2, ECDSA + biometric signature.
 - Groth16 ZK Shield Station (BN128 curve, `/api/zk/prove`).
-- Whale Alert Network v1 — real-time capital flow monitoring across 20+ networks.
-- Portfolio — native Uniswap, Morpho, Hyperliquid, Polymarket integration.
-- Quantum QR Bridge — ECDH-secured mobile session transfer.
-- Whale Chat — XMTP v5 end-to-end encrypted messaging.
-- Full public open-source repository release.
 
-### Phase 2 — Institutional Tooling ( In Progress — Q3 2026)
-- Selective disclosure SDK: viewing keys and ZK range proofs for regulatory compliance.
+### Public Entropy & Sybil Resistance (Active)
+- Golden Ticket System — Genesis Sybil resistance, Optimism L2, ECDSA + biometric signature.
+- Whale Alert Network — Public state indexer monitoring capital flows across 20+ networks.
+- CoreAirdrop EIP-712 welcome bonus (500 QDs/wallet).
+
+### Cryptographic Sovereignty Primitives (Rolling Deployment)
+- Selective disclosure SDK: viewing keys and ZK range proofs for sovereign attestation.
 - W3C Verifiable Credential issuance and verification.
 - Threshold multi-signature: M-of-N authorization proven in Noir circuit.
 - Cross-chain ZK bridge: encrypted asset transfers between Aztec L2 and Ethereum L1.
-- Compliance API: endpoints for regulated financial activity attestation.
-- Post-quantum circuit migration planning (BN128 → Pasta curves).
-
-### Phase 3 — Scale Applications ( Planned — 2027)
-- Real-world asset (RWA) tokenization with ZK attestation of underlying validity.
 - Dark pool liquidity: blind order matching with ZK proofs — MEV structurally impossible.
-- Full decentralized governance: community control of all protocol parameters.
-- Developer SDK: embeddable browser/mobile PXE initialization and proving.
-- Local CLI developer sandbox with full note flow and witness visibility.
+- Post-quantum circuit migration planning (BN128 → Pasta curves).
 
 ---
 

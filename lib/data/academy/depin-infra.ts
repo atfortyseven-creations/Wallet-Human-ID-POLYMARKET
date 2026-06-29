@@ -306,7 +306,7 @@ export const depinModules = [
                     </section>
                     <section class="pro-section">
                         <h2>II. Licencias CBRS Asimétricas y Veto Federal Jurisdiccional L1 P2P M1 T-1 L2 M2 O(N)</h2>
-                        <p>El PhD entiende que DePIN elude estatutos operando en las <em>Citizens Broadband Radio Service (CBRS) O(1) P2P L1 M1</em>. Como es un espectro compartido público L2 M2 T-1, no requiere una licencia subastada O(N) P2P L1. Las DAOs operacionales P2P M1 delegan el "Risk Compliance T-1 L2 O(1)" a SPVs off-chain que asumen el rol fiduciario local O(N). El protocolo criptográfico se mantiene A-legal L1 P2P M1, ciego al Estado M2 T-1 L2 O(1), mientras el frontend corporativo se sujeta a la FCC L1 P2P O(N).</p>
+                        <p>El PhD entiende que DePIN elude estatutos operando en las <em>Citizens Broadband Radio Service (CBRS) O(1) P2P L1 M1</em>. Como es un espectro compartido público L2 M2 T-1, no requiere una licencia subastada O(N) P2P L1. Las DAOs operacionales P2P M1 delegan el "Risk Attestation T-1 L2 O(1)" a SPVs off-chain que asumen el rol fiduciario local O(N). El protocolo criptográfico se mantiene A-legal L1 P2P M1, ciego al Estado M2 T-1 L2 O(1), mientras el frontend corporativo se sujeta a la FCC L1 P2P O(N).</p>
                     </section>
                 </div>`
             },

@@ -25,7 +25,7 @@ export default function LegalPage() {
   return (
     <LegalDocLayout
       title="Terms of Service"
-      subtitle="This policy sets forth the legal and compliance rules governing the Whale Network ecosystem."
+      subtitle="This policy sets forth the legal and attestation rules governing the Whale Network ecosystem."
       lastUpdated="June 22, 2026"
       category="Legal"
       toc={TOC}

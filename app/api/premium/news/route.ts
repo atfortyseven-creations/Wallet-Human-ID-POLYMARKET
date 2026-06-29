@@ -10,7 +10,7 @@ const RSS_FEEDS = [
 
 export async function GET() {
     try {
-        // For "Maximum Impolutez", we fetch from multiple institutional sources
+        // For "Maximum Impolutez", we fetch from multiple sovereign sources
         const apiKeyRow = process.env.CRYPTOPANIC_API_KEYS || '';
         const token = apiKeyRow.split(',')[0]; // Use the primary key
 

@@ -9,7 +9,7 @@ const categories = [
   "PARTNERSHIPS, INTEGRACIONES Y ALIANZAS ESTRATÉGICAS",
   "MONETIZACIÓN, TOKENOMICS Y SOSTENIBILIDAD ECONÓMICA",
   "UI/UX, PRODUCT EXPERIENCE Y DISEÑO CÓSMICO",
-  "SEGURIDAD, COMPLIANCE Y SOBERANÍA EXTREMA",
+  "SEGURIDAD, ATTESTATION Y SOBERANÍA EXTREMA",
   "ESCALABILIDAD, INFRA Y PERFORMANCE GLOBAL",
   "ROADMAP EJECUCIÓN, METRICS Y PLAN DE CONQUISTA 2026-2027"
 ];
@@ -70,7 +70,7 @@ const impacts = [
   "-80% ancho de banda en servidor central.", "0 downtime ante forks de L2s.",
   "+300% de retención institucional.", "Respuestas percibidas en 0ms por ballenas.",
   "+$50M TVL flow el primer mes.", "Aprobación inmediata por fondos mutuos.",
-  "Monopolio del mercado Institutional DeFi."
+  "Monopolio del mercado Sovereign DeFi."
 ];
 const riesgos = [
   "Carga de CPU en worker nodes.", "Migración masiva de BD en live state.",
@@ -85,7 +85,7 @@ function getRandom(arr) {
 
 let markdown = `# VOSS 2026 SUPREME DIRECTIVE: THE 500 DIMENSIONS OF APEX DOMINANCE
 *System-grade analytics output. Direct integration to System Architecture (v4.2.0).*
-*Constructed on the principles of Zero-Mock Mandate, Akashic Permanence, and Institutional Ivory.*
+*Constructed on the principles of Zero-Mock Mandate, Akashic Permanence, and Sovereign Ivory.*
 
 `;
 

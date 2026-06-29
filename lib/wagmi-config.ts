@@ -13,7 +13,7 @@ const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || process.en
 
 export const AUTH_TOKEN_ADDRESS = (process.env.NEXT_PUBLIC_AUTH_TOKEN_ADDRESS || '0xdc6f18f83959cd25095c2453192f16d08b496666') as `0x${string}`;
 
-//  INSTITUTIONAL CHAIN SET 
+//  SOVEREIGN CHAIN SET 
 // These chains MUST match what the EVM workers actually monitor (evm-worker.ts):
 // ETHEREUM Mainnet, BASE Mainnet, BSC Mainnet.
 // Using testnets here would cause SystemVault to lock funds on testnets

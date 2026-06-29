@@ -56,7 +56,7 @@ export default function GenesisContracts() {
         <div>
           <h2 className="text-sm font-black uppercase tracking-[0.4em]">Genesis_Contracts // SMART_CONTRACT_INVENTORY</h2>
           <p className="text-[10px] text-white/40 uppercase tracking-widest mt-1 leading-relaxed max-w-2xl">
-            Audit of verified institutional contracts and operational proxies. Monitors bytecode integrity and drift vs official repositories.
+            Audit of verified sovereign contracts and operational proxies. Monitors bytecode integrity and drift vs official repositories.
           </p>
         </div>
         <button 

@@ -97,7 +97,7 @@ export const MODULE_EXPLANATIONS: Record<string, { title: string, subtitle: stri
         features: [
             { title: 'State Root History', desc: 'Chronological record of Aztec L2 state anchors.' },
             { title: 'Commitment Search', desc: 'Look up specific note commitments or nullifiers.' },
-            { title: 'Export Ready', desc: 'Data structured for compliance and audit use.' },
+            { title: 'Export Ready', desc: 'Data structured for attestation and audit use.' },
         ]
     },
     'mass-transfer': {

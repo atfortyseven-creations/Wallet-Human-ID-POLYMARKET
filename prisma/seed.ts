@@ -39,7 +39,7 @@ async function main() {
             data: [
                 { name: 'Announcements',    slug: 'announcements', description: 'Official network updates and protocol changes.',                         color: '#2D0A59', orderIndex: 1 },
                 { name: 'Governance',       slug: 'governance',    description: 'Proposals, voting discussions, and treasury allocations.',              color: '#D4AF37', orderIndex: 2 },
-                { name: 'Research & Alpha', slug: 'research',      description: 'High-level macro analysis, on-chain data, and institutional insights.',  color: '#0066FF', orderIndex: 3 },
+                { name: 'Research & Alpha', slug: 'research',      description: 'High-level macro analysis, on-chain data, and sovereign insights.',  color: '#0066FF', orderIndex: 3 },
                 { name: 'Technical Support',slug: 'support',       description: 'Smart contract debugging, SDK assistance, and bug reports.',             color: '#E11D48', orderIndex: 4 },
             ]
         });

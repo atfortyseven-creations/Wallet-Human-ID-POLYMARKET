@@ -238,7 +238,7 @@ export function QrScanner({ className, mode = 'scan', onScanSuccess, projectValu
                 <div className="flex flex-col items-center gap-4 text-center">
                     <h3 className="font-mono text-xl font-black tracking-[0.2em] uppercase text-[#050505]">{projectTitle || 'Link Device'}</h3>
                     <p className="text-xs text-black/50 max-w-xs leading-relaxed font-serif">
-                        {projectDescription || 'Scan this QR code from the HumanID mobile terminal to securely link your institutional session.'}
+                        {projectDescription || 'Scan this QR code from the HumanID mobile terminal to securely link your sovereign session.'}
                     </p>
                 </div>
                 

@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         username: 'Whale Network VIP',
-        avatar_url: 'https://institutional.pro/official-whale-legendary.png', // Optional
+        avatar_url: 'https://sovereign.pro/official-whale-legendary.png', // Optional
         embeds: [embed],
       }),
     });

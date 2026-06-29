@@ -73,7 +73,7 @@ export function WhaleChatComparison() {
             </div>
             <div className="flex flex-col p-6 bg-white rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.04)] border border-black/[0.03]">
               <span className="text-[20px] font-black tracking-tight uppercase text-[#0A0A0A]">Whale Chat</span>
-              <span className="text-[12px] font-mono text-emerald-600/80 uppercase tracking-widest mt-1">Institutional Level</span>
+              <span className="text-[12px] font-mono text-emerald-600/80 uppercase tracking-widest mt-1">Sovereign Level</span>
             </div>
             <div className="flex flex-col p-6 bg-black/[0.02] rounded-2xl border border-transparent">
               <span className="text-[20px] font-bold tracking-tight text-[#0A0A0A]/50">Common Apps</span>

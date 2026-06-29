@@ -9,7 +9,7 @@ interface PriceCache {
 }
 
 let priceCache: PriceCache | null = null;
-const CACHE_DURATION = 15000; // 15 seconds  real-time institutional data
+const CACHE_DURATION = 15000; // 15 seconds  real-time sovereign data
 
 // CoinGecko ID mapping
 const COIN_IDS: Record<string, string> = {

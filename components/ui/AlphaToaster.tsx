@@ -23,7 +23,7 @@ export function AlphaToaster() {
     const USD_TO_EUR = 0.93;
 
     useEffect(() => {
-        // [INSTITUTIONAL GUARD] Do not trigger alerts in Genesis mode (System Isolation)
+        // [SOVEREIGN GUARD] Do not trigger alerts in Genesis mode (System Isolation)
         if (!isConnected) {
             if (activeAlert) setActiveAlert(null);
             return;
@@ -54,7 +54,7 @@ export function AlphaToaster() {
     const sanitizeLabel = (label: string) => {
         const tacky = ["ALPHA CLEARANCE", "LIVE ALERT", "CLEARANCE ALERT"];
         const upperLabel = label.toUpperCase();
-        if (tacky.some(t => upperLabel.includes(t))) return "Institutional Signal";
+        if (tacky.some(t => upperLabel.includes(t))) return "Sovereign Signal";
         return label;
     };
 

@@ -24,7 +24,7 @@ const AGGREGATION_KEYS = {
     TOKEN_VOLUME_24H:       'idx:tokens:volume:24h',         // TTL: 60s
     CHAIN_SUMMARY:          'idx:chains:summary',            // TTL: 120s
     TOP_WHALE_EVENTS_24H:   'idx:whaleevents:top:24h',       // TTL: 30s
-    ZK_VERIFIED_FEED:       'idx:feed:zk-verified',          // TTL: 15s (institutional)
+    ZK_VERIFIED_FEED:       'idx:feed:zk-verified',          // TTL: 15s (sovereign)
 };
 
 //  Aggregators 
@@ -139,7 +139,7 @@ async function aggregateChainSummary() {
 }
 
 /**
- * Extracts the latest ZK-verified whale activity feed for institutional tier.
+ * Extracts the latest ZK-verified whale activity feed for sovereign tier.
  */
 async function aggregateZkVerifiedFeed() {
     const events = await prisma.whaleActivity.findMany({

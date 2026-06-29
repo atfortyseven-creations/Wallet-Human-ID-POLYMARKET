@@ -6,7 +6,7 @@ import crypto from 'crypto';
 // FIX: 'VOID_SECRET_99_POLY' was the hardcoded fallback. This secret is now
 // publicly visible in source code, making every SIWE+session JWT forgeable.
 // An attacker could craft:
-//   { alg:'HS256' }.{ sub:'0x<any_address>', clearance:'Enterprise', exp:... }
+//   { alg:'HS256' }.{ sub:'0x<any_address>', clearance:'Cryptographic', exp:... }
 // sign it with the known secret and bypass ALL middleware authentication checks.
 // We now fail loud at module load  an unconfigured secret must halt the server.
 const _rawJwtSecret = process.env.JWT_SECRET;

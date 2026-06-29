@@ -67,7 +67,7 @@ export function WalletComparisonChart() {
             <span className="text-black/20">vs The Rest.</span>
           </motion.h2>
           <motion.p variants={FADE_UP} className="font-serif text-[18px] md:text-[24px] text-black/60 leading-relaxed max-w-[700px] font-medium">
-            The world's most advanced institutional infrastructure. Designed to be unbreakable, ultra-fast, and exceptionally beautiful.
+            The world's most advanced sovereign infrastructure. Designed to be unbreakable, ultra-fast, and exceptionally beautiful.
           </motion.p>
         </motion.div>
 

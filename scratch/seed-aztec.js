@@ -44,13 +44,13 @@ async function main() {
     const content = `Welcome to the **System Forum**, powered by the structural integrity of the Aztec Network and forged by the visionary engineering of Atfortyseven.
 
 ### A New Era of Cryptographic Discourse
-This space has been meticulously architected to provide an environment of absolute clarity, institutional-grade performance, and "Cosmic Perfection." We have purged the noise and the visual latency of legacy web applications to offer you a 12-column, split-view interface where ideas, research, and technical implementations can breathe.
+This space has been meticulously architected to provide an environment of absolute clarity, sovereign-grade performance, and "Cosmic Perfection." We have purged the noise and the visual latency of legacy web applications to offer you a 12-column, split-view interface where ideas, research, and technical implementations can breathe.
 
 * **To the Atfortyseven Collective**: Your relentless pursuit of architectural perfection has manifested here. The intersection of System Terminal infrastructure and the Discourse paradigm is now complete.
 * **To the Aztec Network**: We honor the robust, minimalist foundations you have pioneered. This environment replicates and respects that legacy, ensuring zero-mock performance across all telemetry layers.
-* **To Our Users**: Whether you are a Genesis Founder, an Institutional Pro, or a newly Verified Human, this is your sanctuary. 
+* **To Our Users**: Whether you are a Genesis Founder, an Sovereign Pro, or a newly Verified Human, this is your sanctuary. 
 
-Engage in governance, share your alpha, and help us build the next generation of privacy-first, institutional cryptography. 
+Engage in governance, share your alpha, and help us build the next generation of privacy-first, sovereign cryptography. 
 
 **Welcome to the System Terminal.**`;
 

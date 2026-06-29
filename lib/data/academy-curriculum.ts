@@ -2,7 +2,7 @@ export const TOPIC_CATEGORIES = [
     "Blockchain Base-Layer Architecture",
     "Cryptographic Verification Systems",
     "DeFi Protocol Risk Management",
-    "Institutional Custody & Security",
+    "Sovereign Custody & Security",
     "Layer 2 Economics & Scalability",
     "Market Microstructure & Order Flow",
     "Quantitative Financial Analysis"
@@ -16,7 +16,7 @@ const PRE_MATRIX = [
     "Dynamics within",
     "Protocol Engineering for",
     "Advanced Implementations of",
-    "Institutional Validation of",
+    "Sovereign Validation of",
     "Zero-Knowledge Scaling of",
     "Algorithmic Stability in"
 ];
@@ -80,11 +80,11 @@ function generateCosmicTopics(count: number) {
                 desc = `Complex operational models focusing on high-efficiency vectors and protocol-scale security.`;
                 content = `Requires pre-requisite knowledge of layer mechanics. We dive into the depths of ${pre.toLowerCase()} using real-world exploit analysis and mitigation.`;
             } else {
-                // Institutional Master (51-70)
-                const pre = PRE_MATRIX[7 + (i % 3)]; // Institutional, Zero-Knowledge, Algorithmic
+                // Sovereign Master (51-70)
+                const pre = PRE_MATRIX[7 + (i % 3)]; // Sovereign, Zero-Knowledge, Algorithmic
                 const suf = SUF_MATRIX[(c + i) % SUF_MATRIX.length];
                 title = `INS-${level}: ${pre} ${suf} (Mastery)`;
-                desc = `Terminal-grade research and applied cryptographic science for institutional asset management.`;
+                desc = `Terminal-grade research and applied cryptographic science for sovereign asset management.`;
                 content = `The pinnacle of ${catName}. Students manipulate raw bytecodes and zero-knowledge proofs to achieve unprecedented scale in ${suf.toLowerCase()}.`;
             }
 

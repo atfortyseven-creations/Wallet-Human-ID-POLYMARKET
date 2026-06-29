@@ -37,7 +37,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     solution: "Progressive replacement of the authorization scheme with the NIST Dilithium standard, optimized for L2 operations.",
     contribution: "Open-source implementation of Dilithium validation in Noir.",
     deliverable: "Minimized L2 gas cost for post-quantum signatures (< 50k gas equivalent).",
-    integrity: "Absolute cryptographic security for institutional user authentication."
+    integrity: "Absolute cryptographic security for sovereign user authentication."
   },
   {
     id: 4, phase: 1, phaseTitle: "Post-Quantum and Hybrid Cryptographic Architecture",
@@ -46,7 +46,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     solution: "Complementary use of the Falcon algorithm for compact signatures in high-frequency state channels.",
     contribution: "Expansion of cryptographic primitives supported by the account abstraction ecosystem.",
     deliverable: "Integration into the client SDK with signature latency < 50ms.",
-    integrity: "Maintains institutional performance without sacrificing quantum resistance."
+    integrity: "Maintains sovereign performance without sacrificing quantum resistance."
   },
   {
     id: 5, phase: 1, phaseTitle: "Post-Quantum and Hybrid Cryptographic Architecture",
@@ -90,7 +90,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     problem: "Transitioning keys directly to Post-Quantum Cryptography (PQC) is risky without battle-testing.",
     solution: "Use of hybrid schemes combining classical X25519 with Kyber (CRYSTALS-Kyber) for payload encryption.",
     contribution: "Hybrid encrypted messaging library for the Aztec communication layer.",
-    deliverable: "100% of institutional alert traffic encrypted with hybrid KEM.",
+    deliverable: "100% of sovereign alert traffic encrypted with hybrid KEM.",
     integrity: "If either of the two algorithms fails, the communication remains secure."
   },
   {
@@ -116,7 +116,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
   {
     id: 12, phase: 2, phaseTitle: "Absolute Privacy for Data, Identity, and Compute",
     title: "Anonymous Zero-Knowledge Biometrics",
-    problem: "Institutional identity requires KYC, but biometric storage creates data honeypots.",
+    problem: "Sovereign identity requires KYC, but biometric storage creates data honeypots.",
     solution: "Hardware hashes (Wallet) of biometric data validated via local ZK-SNARKs; proving unique human status without transmitting fingerprints or facial data.",
     contribution: "Human-proof identity primitive without privacy compromise.",
     deliverable: "0% biometric data leakage; validation in < 3 seconds.",
@@ -125,7 +125,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
   {
     id: 13, phase: 2, phaseTitle: "Absolute Privacy for Data, Identity, and Compute",
     title: "Perfected Parallel Client-Side Proving",
-    problem: "Mobile devices and lightweight institutional terminals struggle to compile heavy proofs.",
+    problem: "Mobile devices and lightweight sovereign terminals struggle to compile heavy proofs.",
     solution: "Decoupling of Barretenberg into web workers and secure delegation to local Trusted Execution Environments (TEEs).",
     contribution: "WASM optimization libraries and multi-threading for Aztec.js.",
     deliverable: "Complex transfer proof generation on mobile client in < 5 seconds.",
@@ -136,8 +136,8 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     title: "Compliant Selective Disclosure",
     problem: "Institutions need to report holdings to auditors without exposing their transactional graph to the public.",
     solution: "Generation of granular viewing keys and ZK range proofs for regulatory authorities.",
-    contribution: "Open-source standard for regulatory compliance in private DeFi.",
-    deliverable: "Institutional audit SDK with target adoption of 3 auditing firms within 18 months.",
+    contribution: "Open-source standard for regulatory attestation in private DeFi.",
+    deliverable: "Sovereign audit SDK with target adoption of 3 auditing firms within 18 months.",
     integrity: "Exact balance between absolute network privacy and on-demand legal transparency."
   },
   {
@@ -164,7 +164,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     problem: "Reusing addresses on Aztec L2 can create association metadata at the social level.",
     solution: "Implementation of the standardized Stealth Address protocol (EIP-5564 adapted to Noir); each transaction generates a unique, single-use address.",
     contribution: "Reusable anonymous billing standard for the entire Noir ecosystem.",
-    deliverable: "Native integration in the institutional transfer UI.",
+    deliverable: "Native integration in the sovereign transfer UI.",
     integrity: "Mathematical impossibility of linking sender and receiver on the public ledger."
   },
   {
@@ -197,16 +197,16 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
 
   // PHASE 3
   {
-    id: 21, phase: 3, phaseTitle: "Institutional Security and Threat Modeling",
+    id: 21, phase: 3, phaseTitle: "Sovereign Security and Threat Modeling",
     title: "Multi-Layer Defense Architecture",
     problem: "Traditional DeFi systems rely solely on smart contract security, collapsing upon a single bug.",
     solution: "Defense-in-depth architecture: Circuit logic (Layer 1), L1 Verification (Layer 2), API rate-limits (Layer 3), and L2 Timelocks (Layer 4).",
-    contribution: "Reference design for enterprise applications built on the rollup.",
+    contribution: "Reference design for cryptographic applications built on the rollup.",
     deliverable: "Formally documented security architecture; 0 security breaches.",
     integrity: "Requires the simultaneous and improbable failure of pure mathematics, Ethereum code, and perimeter infrastructure to suffer an exploit."
   },
   {
-    id: 22, phase: 3, phaseTitle: "Institutional Security and Threat Modeling",
+    id: 22, phase: 3, phaseTitle: "Sovereign Security and Threat Modeling",
     title: "Continuous Formal Verification of Noir Circuits",
     problem: "Human audits are fallible when dealing with complex constraint systems.",
     solution: "CI/CD integration of mathematical formal verifiers that logically demonstrate the impossibility of creating false proofs in key circuits.",
@@ -215,7 +215,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     integrity: "The code is guaranteed by pure logic, eliminating human error in financial rules."
   },
   {
-    id: 23, phase: 3, phaseTitle: "Institutional Security and Threat Modeling",
+    id: 23, phase: 3, phaseTitle: "Sovereign Security and Threat Modeling",
     title: "Continuous Fuzzing & Symbolic Execution",
     problem: "Unexpected malformed inputs can trigger underconstrained circuit conditions.",
     solution: "Server batteries executing millions of random mutations (Fuzzing) and symbolic analysis on Barretenberg witnesses 24/7.",
@@ -224,7 +224,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     integrity: "Exhaustive pre-emption of any real-time exploitation by attackers."
   },
   {
-    id: 24, phase: 3, phaseTitle: "Institutional Security and Threat Modeling",
+    id: 24, phase: 3, phaseTitle: "Sovereign Security and Threat Modeling",
     title: "Quantum-Resistant Key Management (Q-KMS)",
     problem: "Protocol master private keys are stored using classical HSM algorithms.",
     solution: "Quantum Key Management Module; Shamir's Secret Sharing partition schemes secured by post-quantum cryptography.",
@@ -233,7 +233,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     integrity: "Critical ecosystem keys are physically protected against future computing hardware."
   },
   {
-    id: 25, phase: 3, phaseTitle: "Institutional Security and Threat Modeling",
+    id: 25, phase: 3, phaseTitle: "Sovereign Security and Threat Modeling",
     title: "Hardware Security Modules (HSM) + TEE Integration",
     problem: "Server RAM can be read via operating system exploits (e.g., Cold Boot attacks).",
     solution: "Exclusive execution of back-end cryptographic operations within hardware-isolated enclaves (Intel SGX, AWS Nitro Enclaves).",
@@ -242,7 +242,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     integrity: "Impossibility of remote manipulation; even the root server administrator cannot view the secret."
   },
   {
-    id: 26, phase: 3, phaseTitle: "Institutional Security and Threat Modeling",
+    id: 26, phase: 3, phaseTitle: "Sovereign Security and Threat Modeling",
     title: "Anti-Extraction Key Architectures",
     problem: "Physical attackers or malware can extract the user's seed phrase.",
     solution: "Biometric authentication tied to the device's cryptographic modules (Wallet, TPM); the key is non-extractable and only authorizes local signatures.",
@@ -251,7 +251,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     integrity: "Protects the human user from their own cybersecurity errors."
   },
   {
-    id: 27, phase: 3, phaseTitle: "Institutional Security and Threat Modeling",
+    id: 27, phase: 3, phaseTitle: "Sovereign Security and Threat Modeling",
     title: "Nation-State Actor Resilience",
     problem: "Cloud-centralized protocols can be shut down or coerced via DNS/IP blocking.",
     solution: "Deployment of decentralized gateways (IPFS/Arweave) for interfaces and routing through integrated Tor/I2P mixnets in the client.",
@@ -260,7 +260,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     integrity: "Immutable survival without jurisdictional single points of failure."
   },
   {
-    id: 28, phase: 3, phaseTitle: "Institutional Security and Threat Modeling",
+    id: 28, phase: 3, phaseTitle: "Sovereign Security and Threat Modeling",
     title: "Automated Incident Response via ZK-Rollback",
     problem: "In an emergency, pausing a protocol centrally betrays decentralization.",
     solution: "Smart contracts with ZK circuit-breakers that automatically pause flows if proofs detect algorithmic anomalies, privately votable by the DAO.",
@@ -269,16 +269,16 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     integrity: "Algorithmic self-defense without administrator dictatorship."
   },
   {
-    id: 29, phase: 3, phaseTitle: "Institutional Security and Threat Modeling",
-    title: "Institutional Multi-Sig via Threshold ZK-Signatures",
+    id: 29, phase: 3, phaseTitle: "Sovereign Security and Threat Modeling",
+    title: "Sovereign Multi-Sig via Threshold ZK-Signatures",
     problem: "Traditional multi-sigs expose who has signed and the organizational topology.",
     solution: "Threshold Signatures evaluated within a ZK circuit; mathematically proves that M of N validly signed without revealing total N or the specific signers.",
-    contribution: "Perfect and anonymous substitute for Gnosis Safe for private institutional operations.",
+    contribution: "Perfect and anonymous substitute for Gnosis Safe for private sovereign operations.",
     deliverable: "Integration of the Threshold ZK SDK into the corporate dashboard.",
     integrity: "Corporate internal governance completely undetectable to competitors."
   },
   {
-    id: 30, phase: 3, phaseTitle: "Institutional Security and Threat Modeling",
+    id: 30, phase: 3, phaseTitle: "Sovereign Security and Threat Modeling",
     title: "Cryptographic Sandboxing of Executables",
     problem: "Analysis code or network connectors can execute malicious dependencies (Supply Chain Attack).",
     solution: "MicroVM-based isolated environments where each analysis module runs without free internet access, validating binary signatures.",
@@ -301,7 +301,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     id: 32, phase: 4, phaseTitle: "Analytics and Humanity Ledger Tools",
     title: "Market Simulation at Classically Impossible Scale",
     problem: "DeFi liquidity simulation tools ignore complex ramifications of multiple actors.",
-    solution: "Quantum Monte Carlo platform based on the Aztec state, predicting liquidity flows, exchange drops, and institutional migrations.",
+    solution: "Quantum Monte Carlo platform based on the Aztec state, predicting liquidity flows, exchange drops, and sovereign migrations.",
     contribution: "Attracts major financial quants to the privacy ecosystem by providing superior models.",
     deliverable: "Model accuracy >90% in forecasting the price impact of large L1/L2 movements.",
     integrity: "The platform becomes statistically predictive rather than merely reactive."
@@ -313,7 +313,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     solution: "Unidirectional transmission of encrypted states (Private Information Retrieval - PIR). The user filters locally on the client (PXE); the server sends everything without knowing what is relevant.",
     contribution: "Pioneers in 100% private push data architecture.",
     deliverable: "PIR WebSockets integration with bandwidth optimized to 80%.",
-    integrity: "Customized institutional alerts where the broker never knows the client's position."
+    integrity: "Customized sovereign alerts where the broker never knows the client's position."
   },
   {
     id: 34, phase: 4, phaseTitle: "Analytics and Humanity Ledger Tools",
@@ -328,16 +328,16 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     id: 35, phase: 4, phaseTitle: "Analytics and Humanity Ledger Tools",
     title: "Private Integration of Real World Assets (RWA)",
     problem: "Tokenizing gold or bonds on L1 exposes real corporate holdings to industrial espionage.",
-    solution: "Institutional bridges that tokenize RWAs on Aztec under smart contract custody, converting them into ZK-RWAs.",
-    contribution: "Unlocks billions of dollars in institutional capital stagnant due to transparent L1 fears.",
+    solution: "Sovereign bridges that tokenize RWAs on Aztec under smart contract custody, converting them into ZK-RWAs.",
+    contribution: "Unlocks billions of dollars in sovereign capital stagnant due to transparent L1 fears.",
     deliverable: "Successful pilot with RWA provider tokenizing $50M in private notes.",
     integrity: "Military-grade stock exchange functionality operating with global Ethereum liquidity."
   },
   {
     id: 36, phase: 4, phaseTitle: "Analytics and Humanity Ledger Tools",
-    title: "Private Institutional Compliance APIs",
-    problem: "AML/KYC regulation exposes platforms, but rejecting it drives away institutional capital.",
-    solution: "API that issues and consumes Verifiable Credentials (VCs) where an oracle affirms compliance without sharing passport, name, or L1 wallet address.",
+    title: "Private Sovereign Attestation APIs",
+    problem: "AML/KYC regulation exposes platforms, but rejecting it drives away sovereign capital.",
+    solution: "API that issues and consumes Verifiable Credentials (VCs) where an oracle affirms attestation without sharing passport, name, or L1 wallet address.",
     contribution: "Foundation of a legal and regulatory viable system for Web3.",
     deliverable: "Certified SDK for regulated funds.",
     integrity: "Perfect integration with traditional finance while maintaining cryptographic orthodoxy."
@@ -346,7 +346,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     id: 37, phase: 4, phaseTitle: "Analytics and Humanity Ledger Tools",
     title: "Dark-Pool Liquidity Aggregation",
     problem: "Large holders suffer severe price impact and are front-run by MEV bots on public AMMs.",
-    solution: "Blind Order Books and institutional Dark Pools design; order crosses are discovered with ZK proofs and Multiparty Computation (MPC) without prior intent publication.",
+    solution: "Blind Order Books and sovereign Dark Pools design; order crosses are discovered with ZK proofs and Multiparty Computation (MPC) without prior intent publication.",
     contribution: "The largest native L2 liquidity incentive in the industry.",
     deliverable: "Zero slippage against L1 attestations exceeding $1M.",
     integrity: "Extractive MEV arbitrage becomes mathematically unexecutable."
@@ -396,7 +396,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     solution: "Reactivation and modern refactoring of asynchronous bridge patterns for DeFi on L1, batching L2 transactions for unified L1 interactions.",
     contribution: "Reopens L1-L2 communication cheaply, efficiently, and anonymously.",
     deliverable: "Total Value Locked (TVL) facilitated by the bridge > $500M.",
-    integrity: "Seamless integration between institutional privacy and the deep liquidity ocean of Ethereum."
+    integrity: "Seamless integration between sovereign privacy and the deep liquidity ocean of Ethereum."
   },
   {
     id: 43, phase: 5, phaseTitle: "Aztec Ecosystem Contributions, Adoption, and Roadmap",
@@ -409,9 +409,9 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
   },
   {
     id: 44, phase: 5, phaseTitle: "Aztec Ecosystem Contributions, Adoption, and Roadmap",
-    title: "Institutional Adoption Frameworks",
+    title: "Sovereign Adoption Frameworks",
     problem: "Hedge Funds lack the legal/technical understanding to use a ZK-rollup.",
-    solution: "Drafting and distribution of compliance manuals, enterprise SLAs, tax audit guides, and integration with institutional custody providers.",
+    solution: "Drafting and distribution of attestation manuals, cryptographic SLAs, tax audit guides, and integration with sovereign custody providers.",
     contribution: "Direct entry of the most profitable B2B distribution channel in the world to the Aztec ecosystem.",
     deliverable: "Onboarding of 5 Tier-1 capital managers in the first year.",
     integrity: "Moves Web3 into the financial epicenter of traditional finance under total data obscurity."

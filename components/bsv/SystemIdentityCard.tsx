@@ -9,7 +9,7 @@ import { toast } from 'sonner';
  * KYC IDENTITY CARD (Pillar 2)
  * --------------------------------
  * A high-end UI component displaying decentralized identity (Paymail/DID).
- * Features real-time resolution and 10000% institutional fidelity.
+ * Features real-time resolution and 10000% sovereign fidelity.
  */
 export const SystemIdentityCard = ({ handle = 'ceo@humanidfi.com' }: { handle?: string }) => {
     const [identity, setIdentity] = useState<any>(null);
@@ -63,7 +63,7 @@ export const SystemIdentityCard = ({ handle = 'ceo@humanidfi.com' }: { handle?: 
                     </div>
                     <div className="flex items-center gap-2 px-3 py-1 bg-[var(--aztec-chartreuse)]/10 border border-[var(--aztec-chartreuse)]/20 rounded-full">
                         <CheckCircle2 size={12} className="text-[var(--aztec-chartreuse)]" />
-                        <span className="text-[8px] font-black uppercase tracking-widest text-[var(--aztec-chartreuse)]">Institutional Verified</span>
+                        <span className="text-[8px] font-black uppercase tracking-widest text-[var(--aztec-chartreuse)]">Sovereign Verified</span>
                     </div>
                 </div>
 

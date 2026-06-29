@@ -88,7 +88,7 @@ if (!process.env.JWT_SECRET) {
     process.env.JWT_SECRET = 'dummy_jwt_secret_to_pass_build';
 }
 /** @type {import('next').NextConfig} */
-// Force deployment trigger [INSTITUTIONAL SYNC]: 2026-04-21T04:15:00Z
+// Force deployment trigger [SOVEREIGN SYNC]: 2026-04-21T04:15:00Z
 const nextConfig = {
     ...(process.env.IPFS_BUILD === 'true' ? { output: 'export' } : {}),
     // [EPERM FIX] outputFileTracingRoot must point to project dir.

@@ -194,7 +194,7 @@ export function AnalyticsDashboard() {
                                 Flow<br /><span className="text-indigo-600">Forensics</span>
                             </h1>
                             <p className="text-slate-500 text-xl leading-relaxed max-w-2xl font-medium">
-                                Advanced on-chain telemetry and global capital migration. Dynamic monitoring of protocol health, liquidation vectors, and institutional positioning.
+                                Advanced on-chain telemetry and global capital migration. Dynamic monitoring of protocol health, liquidation vectors, and sovereign positioning.
                             </p>
                             <div className="flex flex-col md:flex-row md:items-center gap-6">
                                 <div className="flex items-center gap-4 px-6 py-3 rounded-[1.5rem] border border-slate-100 bg-black/5">

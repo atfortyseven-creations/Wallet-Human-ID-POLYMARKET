@@ -51,7 +51,7 @@ Get the Whale Alert Network up and running locally in under 5 minutes.
    http://localhost:3000/landing
    ```
 
-You are now observing institutional flows without compromising your privacy.
+You are now observing sovereign flows without compromising your privacy.
 
 > [!TIP]
 > For advanced configurations, please refer to `DEPLOYMENT.md` and `PRODUCTION_READINESS.md`.

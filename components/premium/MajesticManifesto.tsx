@@ -21,7 +21,7 @@ export function MajesticManifesto() {
                     <ManifestoItem 
                         icon={<Landmark size={18} />}
                         title="Liquidity Grid"
-                        desc="Tracking the cross-chain migration of capital, identifying institutional pivots and systemic rebalancing with millimetric precision."
+                        desc="Tracking the cross-chain migration of capital, identifying sovereign pivots and systemic rebalancing with millimetric precision."
                     />
                 </div>
             </motion.div>

@@ -72,7 +72,7 @@ export class EntityGraphMiner {
 
         const nodes: GraphNode[] = entities.map(e => ({
             id: e.address,
-            group: e.category === 'MEV Bot' ? 1 : e.category === 'Institutional' ? 2 : 3,
+            group: e.category === 'MEV Bot' ? 1 : e.category === 'Sovereign' ? 2 : 3,
             label: e.label || '',
             size: Math.max(1, (e.totalVolumeUSD || 0) / 1_000_000)
         }));
@@ -123,7 +123,7 @@ export class EntityGraphMiner {
 
             const nodes: GraphNode[] = rawNodes.map((n: any) => ({
                 id: n.properties.address,
-                group: n.properties.category === 'MEV Bot' ? 1 : n.properties.category === 'Institutional' ? 2 : 3,
+                group: n.properties.category === 'MEV Bot' ? 1 : n.properties.category === 'Sovereign' ? 2 : 3,
                 label: n.properties.label ?? n.properties.address.slice(0, 8),
                 size: Math.max(1, (n.properties.volumeUSD || 0) / 1_000_000)
             }));

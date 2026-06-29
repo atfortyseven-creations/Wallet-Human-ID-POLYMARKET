@@ -108,7 +108,7 @@ function deriveSignals(items: any[]): WhaleSignal[] {
             id: `accumulation_${now}`,
             type: 'accumulation',
             severity: 'high',
-            title: ' Institutional Accumulation',
+            title: ' Sovereign Accumulation',
             body: `Whales are aggressively accumulating ${[...new Set(accumulation.map(t => t.asset))].join(', ')}. Strong bullish conviction.`,
             btcAmount: 0,
             txCount: accumulation.length,
@@ -358,7 +358,7 @@ export function useWhaleFeed() {
         const events = unifiedWhaleFeed.map(item => ({
             id: item.id || item.hash,
             wallet: item.from,
-            label: item.walletProfile || 'Institutional Wallet',
+            label: item.walletProfile || 'Sovereign Wallet',
             tier: item.tier || 'ELITE',
             action: item.action === 'COMPRA' || item.action === 'BUY' ? 'BUY' : 'SELL',
             token: item.asset?.toUpperCase() || 'BTC',

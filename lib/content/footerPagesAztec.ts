@@ -19,7 +19,7 @@ export const WHITEPAPER_SECTIONS: AztecDocSection[] = [
     paragraphs: [
       'Every transaction recorded on a public blockchain is permanently visible to any observer. Wallet addresses, transaction amounts, timing, counterparties, and accumulated balances are all stored in plain view. This level of transparency is fundamentally incompatible with standard expectations of financial privacy.',
       'For individuals, this creates risks of targeted attacks, social engineering, and surveillance by both commercial actors and adversarial entities. For businesses, it exposes operational data, counterparty relationships, and treasury movements that would normally be protected by commercial confidentiality. For institutions, the absence of privacy prevents participation in decentralized finance entirely.',
-      'Current privacy tools — such as mixing services and coin-join implementations — are additive patches to transparent systems. They introduce additional trust assumptions, compliance risks, and forensic vulnerabilities. A fundamentally private architecture requires that privacy be embedded at the execution layer, not grafted on afterward.',
+      'Current privacy tools — such as mixing services and coin-join implementations — are additive patches to transparent systems. They introduce additional trust assumptions, attestation risks, and forensic vulnerabilities. A fundamentally private architecture requires that privacy be embedded at the execution layer, not grafted on afterward.',
     ],
     bullets: [
       'Front-running: Transaction intent is publicly visible in the mempool before confirmation, allowing adversarial actors to exploit pending activity.',
@@ -142,14 +142,14 @@ export const MANIFESTO_SECTIONS: AztecDocSection[] = [
     paragraphs: [
       'Proponents of transparent blockchains argue that visibility creates accountability. This argument conflates auditability — the ability to verify specific claims — with surveillance — the continuous observation of all activity by all parties. These are not the same thing, and conflating them leads to architectures that sacrifice privacy without gaining proportionate accountability.',
       'A business does not post its complete transaction history publicly to demonstrate it pays its taxes. It submits verified reports to regulators through controlled, legally defined processes. An individual does not broadcast their salary, rent, and grocery spending to prove they operate within the law. The disclosure of specific information to specific parties for specific purposes is fundamentally different from unrestricted public access to all information at all times.',
-      'Zero-knowledge cryptography makes it possible to provide the former without the latter. A user can prove solvency without revealing their balance. A business can prove regulatory compliance without revealing its counterparties. An institution can prove policy adherence without revealing its attesting strategy. Verifiable claims do not require full transparency.',
+      'Zero-knowledge cryptography makes it possible to provide the former without the latter. A user can prove solvency without revealing their balance. A business can prove regulatory attestation without revealing its counterparties. An institution can prove policy adherence without revealing its attesting strategy. Verifiable claims do not require full transparency.',
     ],
   },
   {
     title: 'Default Privacy, Selective Disclosure',
     paragraphs: [
       'Humanity Ledger is built on a simple principle: privacy is the default, and disclosure is a controlled choice made by the user. This is not a technical limitation — it is an architectural decision made deliberately, because we believe users should control their data, not the other way around.',
-      'When a user needs to demonstrate compliance, they generate a viewing key or a cryptographic range proof. The auditor receives verifiable evidence of the specific claim being made. Nothing else is disclosed. The process is controlled, auditable, and mathematically precise.',
+      'When a user needs to demonstrate attestation, they generate a viewing key or a cryptographic range proof. The auditor receives verifiable evidence of the specific claim being made. Nothing else is disclosed. The process is controlled, auditable, and mathematically precise.',
       'This model resolves the apparent conflict between privacy and regulation. Regulators get the evidence they need. Users retain control over what is disclosed, to whom, and under what conditions. The network enforces these properties cryptographically — not through policy statements or terms of service, but through mathematics.',
     ],
   },
@@ -164,7 +164,7 @@ export const MANIFESTO_SECTIONS: AztecDocSection[] = [
   {
     title: 'The Role of Market Analytics',
     paragraphs: [
-      'Understanding capital flows is a legitimate and important activity. Large movements of assets across blockchain networks often signal significant market events: institutional accumulation, exchange insolvency risk, protocol migrations, and macro repositioning. Participants who understand these flows are better positioned to make informed decisions.',
+      'Understanding capital flows is a legitimate and important activity. Large movements of assets across blockchain networks often signal significant market events: sovereign accumulation, exchange insolvency risk, protocol migrations, and macro repositioning. Participants who understand these flows are better positioned to make informed decisions.',
       'The Whale Network makes these analytics available. The challenge is that acting on public analytics in a public environment creates a surveillance problem: if your alerts, queries, and attestations are all visible, the analytical advantage is neutralized and your own position becomes vulnerable.',
       'Humanity Ledger solves this by integrating market analytics into a private execution environment. You can access the same on-chain data, configure the same alerts, and execute the same strategies — without any of your activity being observable. The analytics are derived from public data. Your response to it is not.',
     ],
@@ -174,7 +174,7 @@ export const MANIFESTO_SECTIONS: AztecDocSection[] = [
     paragraphs: [
       'We are building the private coordination layer for decentralized finance. A system where individuals and institutions can participate in open financial networks without sacrificing the confidentiality that is a basic requirement of professional financial activity.',
       'We are not building privacy as an afterthought or as a feature. We are building it as the foundational operating condition of the network. Every component — the proving environment, the state model, the identity layer, the analytics integrations — is designed with privacy as the primary constraint.',
-      'We believe this is the architecture that allows decentralized finance to reach its potential. Not because privacy is necessary to hide illicit activity — the protocol provides compliance tools precisely because legitimate activity sometimes requires disclosure — but because privacy is necessary for every participant who does not want to operate in permanent public view.',
+      'We believe this is the architecture that allows decentralized finance to reach its potential. Not because privacy is necessary to hide illicit activity — the protocol provides attestation tools precisely because legitimate activity sometimes requires disclosure — but because privacy is necessary for every participant who does not want to operate in permanent public view.',
     ],
   },
 ];
@@ -344,7 +344,7 @@ export const SECURITY_SECTIONS: AztecDocSection[] = [
     paragraphs: [
       'User private keys are generated, stored, and used exclusively on the user device. The protocol does not provide a key custody service. Users are responsible for maintaining secure backups of their key material.',
       'For devices supporting hardware security modules — including iOS Wallet and Android StrongBox — the Humanity Ledger client uses hardware-backed key storage. In this configuration, the private key is non-extractable: it cannot be read from the device even by the application itself. All signing operations are performed inside the secure hardware element.',
-      'For institutional users requiring multi-party key management, the protocol supports threshold signatures proven inside a Noir circuit. M-of-N signers are required to authorize a transaction, with the proof confirming that the threshold was met without revealing the total number of signers or their individual identities.',
+      'For sovereign users requiring multi-party key management, the protocol supports threshold signatures proven inside a Noir circuit. M-of-N signers are required to authorize a transaction, with the proof confirming that the threshold was met without revealing the total number of signers or their individual identities.',
     ],
   },
 ];
@@ -385,13 +385,13 @@ export const ROADMAP_SECTIONS: AztecDocSection[] = [
   },
   {
     id: 'q4-2026',
-    title: 'Q4 2026: Institutional Pilots',
+    title: 'Q4 2026: Sovereign Pilots',
     paragraphs: [
-      'Preparing the infrastructure for enterprise and high-volume usage.'
+      'Preparing the infrastructure for cryptographic and high-volume usage.'
     ],
     bullets: [
       'Pre-Mainnet Shadow Deployment: Running the entire architecture against an Aztec mainnet shadow fork.',
-      'Dark Pool Testing: Institutional pilot testing for the zero-knowledge Dark Pool and Sentiment nodes.',
+      'Dark Pool Testing: Sovereign pilot testing for the zero-knowledge Dark Pool and Sentiment nodes.',
       'Performance Tuning: Optimizing WASM/PXE execution speeds on mobile devices.'
     ]
   },
@@ -416,7 +416,7 @@ export const API_REFERENCE_SECTIONS: AztecDocSection[] = [
   {
     title: 'API Overview & Network Architecture',
     paragraphs: [
-      'The Humanity Ledger Institutional API provides deterministic, cryptographically secure programmatic access to network analytics, Aztec L2 state commitments, and real-time Whale Network event streams. The API architecture separates read-only analytics endpoints from write-heavy state-transition relay layers.',
+      'The Humanity Ledger Sovereign API provides deterministic, cryptographically secure programmatic access to network analytics, Aztec L2 state commitments, and real-time Whale Network event streams. The API architecture separates read-only analytics endpoints from write-heavy state-transition relay layers.',
       'All interactions operate over TLS 1.3 with strict cypher suite enforcement. The base URL for the production environment is `https://api.humanidfi.com/v1`. Testnet environments operate on `https://testnet-api.humanidfi.com/v1`.',
       'The API Gateway implements a sophisticated bucket-algorithm rate limiter based on the caller\'s institutional tier, verifying HMAC-SHA256 signatures derived from assigned API keys in sub-millisecond latencies using edge-deployed WebAssembly verifiers.'
     ],
@@ -426,7 +426,7 @@ export const API_REFERENCE_SECTIONS: AztecDocSection[] = [
     paragraphs: [
       'Authentication relies on stateless HMAC-SHA256 signatures to eliminate the attack vectors inherent in session tokens. Every request must be independently signed using a secret key strictly guarded by the calling institution\'s HSM (Hardware Security Module) or secrets manager.',
       'Three mandatory headers must accompany every request:',
-      '`X-API-Key`: Your institutional public identifier.',
+      '`X-API-Key`: Your sovereign public identifier.',
       '`X-Timestamp`: The Unix timestamp in seconds. The gateway rejects requests older than 300 seconds to prevent replay attacks.',
       '`X-Signature`: The computed Hex-encoded HMAC-SHA256 signature.'
     ],
@@ -442,7 +442,7 @@ export const API_REFERENCE_SECTIONS: AztecDocSection[] = [
       'The REST API is structured around immutable event streams, private state proofs, and network telemetry. Responses strictly adhere to `application/json` formatting with deterministic schemas.',
     ],
     bullets: [
-      'GET /v1/events/mempool : Stream raw, pre-processed mempool anomalies matching standard institutional Z-Score deviations (requires Enterprise tier).',
+      'GET /v1/events/mempool : Stream raw, pre-processed mempool anomalies matching standard sovereign Z-Score deviations (requires Cryptographic tier).',
       'POST /v1/pxe/proof_relay : Submits a Barretenberg-compiled zk-SNARK proof. The payload requires the base64-encoded proof, public inputs array, and target contract address. The gateway validates the structure but cannot read the private inputs.',
       'GET /v1/state/roots : Returns the latest finalized L2 state roots (Note Tree, Nullifier Tree, Public Data Tree, and Global Variables) necessary for constructing localized proofs.'
     ],

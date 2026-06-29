@@ -131,7 +131,7 @@ export const attestingModules = [
                 </div>`
             },
             {
-                id: "future-institutional-etf-era",
+                id: "future-sovereign-etf-era",
                 title: "8. El Futuro: La Era del ETF Institucional",
                 description: "Cómo Wall Street cambió para siempre a Bitcoin.",
                 readTime: 80,

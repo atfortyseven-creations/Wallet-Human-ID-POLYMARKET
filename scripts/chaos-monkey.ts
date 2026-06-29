@@ -3,7 +3,7 @@ import { prisma } from '../lib/prisma';
 import { circuitBreaker } from '../lib/blockchain/CircuitBreaker';
 
 //  Chaos Engineering: System Monkey 
-// Institutional-grade chaos testing script.
+// Sovereign-grade chaos testing script.
 // Injects random latencies and forceful disconnects into the data pipeline
 // to guarantee the Circuit Breaker and ResilientProvider can recover 
 // without crashing the main Node process or losing transaction data.

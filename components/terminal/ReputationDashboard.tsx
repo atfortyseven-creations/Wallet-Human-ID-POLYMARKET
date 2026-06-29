@@ -49,13 +49,13 @@ export function ReputationDashboard() {
 
   const issueCredential = async () => {
     setIsMinting(true);
-    const t = toast.loading('Initiating institutional verification sequence...');
+    const t = toast.loading('Initiating sovereign verification sequence...');
     await new Promise(r => setTimeout(r, 1200));
     toast.loading('Allocating Access Credential to the decentralized ledger...', { id: t });
     await new Promise(r => setTimeout(r, 1500));
     setHasCredential(true);
     setScore(score + 150);
-    toast.success('Credential Issued Successfully. Your institutional access is verified.', { id: t });
+    toast.success('Credential Issued Successfully. Your sovereign access is verified.', { id: t });
     setIsMinting(false);
   };
 
@@ -66,7 +66,7 @@ export function ReputationDashboard() {
           <Building size={28} strokeWidth={1.4} className="text-[#050505]" />
         </div>
         <div className="flex flex-col items-center gap-2 text-center">
-          <h3 className="text-xl font-bold text-[#050505] uppercase tracking-widest">Institutional Portal</h3>
+          <h3 className="text-xl font-bold text-[#050505] uppercase tracking-widest">Sovereign Portal</h3>
           <p className="text-sm text-black/50 max-w-[360px] leading-relaxed">
             Connect your wallet to analyze your on-chain footprint and access your decentralized identity ledger.
           </p>
@@ -94,7 +94,7 @@ export function ReputationDashboard() {
           <div className="flex justify-between items-start mb-8 relative z-10">
             <div>
               <p className="text-[10px] font-semibold uppercase tracking-widest text-black/40 mb-2">Decentralized Verification</p>
-              <h2 className="text-3xl font-bold text-[#050505] tracking-tight mb-1">Institutional Identity Ledger</h2>
+              <h2 className="text-3xl font-bold text-[#050505] tracking-tight mb-1">Sovereign Identity Ledger</h2>
               <p className="text-xs text-black/50 font-mono">{address}</p>
             </div>
             {hasCredential ? (
@@ -129,7 +129,7 @@ export function ReputationDashboard() {
             </div>
             <h3 className="text-[13px] font-bold text-[#050505] uppercase tracking-widest mb-2">Access Credentials</h3>
             <p className="text-[12px] text-black/50 leading-relaxed">
-              Your credential serves as a non-transferable cryptographic proof of your attesting history and institutional access level.
+              Your credential serves as a non-transferable cryptographic proof of your attesting history and sovereign access level.
             </p>
           </div>
           

@@ -11,12 +11,12 @@ export class DarkPoolService {
     private orders: Map<string, any> = new Map();
 
     constructor() {
-        // Institutional Dark Pool Relay URL
+        // Sovereign Dark Pool Relay URL
         this.socket = io(process.env.NEXT_PUBLIC_DARK_POOL_RELAY_URL || 'wss://relay.arctic.protocol');
     }
 
     /**
-     * Submits a private institutional order (Intent).
+     * Submits a private sovereign order (Intent).
      * The order size and price are signed but only revealed to the ZK-Matcher.
      */
     public async submitOrder(order: {
@@ -38,7 +38,7 @@ export class DarkPoolService {
     }
 
     /**
-     * Listens for institutional match events.
+     * Listens for sovereign match events.
      * Triggers the ZK-Settlement process when a match is found.
      */
     public onMatch(callback: (match: any) => void) {

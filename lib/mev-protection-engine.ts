@@ -105,7 +105,7 @@ export async function executeMevProtectedTransaction(
 
 /**
  * Flashbots Bundles API Simulation (High-level wrapper)
- * In a true institutional environment, transactions are grouped into bundles.
+ * In a true sovereign environment, transactions are grouped into bundles.
  */
 export async function compileFlashbotsBundle(
   signedTransactions: string[],

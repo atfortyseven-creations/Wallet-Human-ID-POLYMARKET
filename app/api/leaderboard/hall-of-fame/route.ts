@@ -7,7 +7,7 @@
  *   Body: { walletAddress, txHash, chain, description }
  *
  * A "detection" is a whale event that was:
- *   1. First flagged by a non-institutional community member, AND
+ *   1. First flagged by a non-sovereign community member, AND
  *   2. Verified on-chain (transactionHash exists in whaleActivity)
  *
  * Each verified submission earns the submitter:

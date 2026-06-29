@@ -189,7 +189,7 @@ function SuperWalletContent({ recentNews = [] }: { recentNews?: NewsItem[] }) {
 
 
     const handleAddAccount = async () => {        
-        // [INSTITUTIONAL GRADE] Erradicación de Mocking. Ya no generamos strings falsos.
+        // [SOVEREIGN GRADE] Erradicación de Mocking. Ya no generamos strings falsos.
         // Llamada real al backend para generar un nuevo Managed Wallet asociado a este usuario.
         try {
             const res = await fetch('/api/wallet/create', { method: 'POST' });

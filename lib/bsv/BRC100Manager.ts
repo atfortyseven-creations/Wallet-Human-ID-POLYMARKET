@@ -1,7 +1,7 @@
 import { Transaction, P2PKH, PrivateKey } from '@bsv/sdk';
 
 /**
- * BRC-100 INSTITUTIONAL MANAGER
+ * BRC-100 SOVEREIGN MANAGER
  * ----------------------------
  * Handles BRC-100 token standard operations: balance tracking, transfers, and metadata resolution.
  */
@@ -13,7 +13,7 @@ export class BRC100Manager {
      * (Simulation of high-fidelity BRC-100 indexing)
      */
     public async getBalances(address: string): Promise<any[]> {
-        console.log(` [BRC-100] Fetching institutional assets for ${address}...`);
+        console.log(` [BRC-100] Fetching sovereign assets for ${address}...`);
         
         // In a real-world scenario, we would query a BRC-100 indexer like Gorilla Pool or similar.
         // Returning strictly empty rather than synthetic mock data.

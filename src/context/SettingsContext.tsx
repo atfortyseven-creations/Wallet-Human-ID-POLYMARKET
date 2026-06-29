@@ -162,7 +162,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     const setUiConfig = (c: Partial<UiConfig>) => setUiState(prev => ({ ...prev, ...c }));
 
 
-    //  Enterprise DOM LIGHT MODE LOCK (runs on every theme change) 
+    //  Cryptographic DOM LIGHT MODE LOCK (runs on every theme change) 
     // The SettingsContext `theme` state may be set to 'dark' from an old saved
     // preference, but this platform enforces light mode for ALL users at all
     // connection states. We intercept here and hard-pin the DOM to light.
@@ -175,7 +175,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         root.style.colorScheme = 'light';
     }, [theme]);
 
-    // --- Enterprise SIWE AUTH --- 
+    // --- Cryptographic SIWE AUTH --- 
     const { address } = useAccount();
     // The system user identity is the wallet address
     const userId = address || null;

@@ -47,7 +47,7 @@ export const TelemetryTerminal = React.memo(function TelemetryTerminal({ nodes }
         let logCounter = 0;
 
         setLogs([
-            { id: -2, timestamp: 'SYSCALL', type: 'info', message: 'Initializing Institutional WebSocket Topology...' },
+            { id: -2, timestamp: 'SYSCALL', type: 'info', message: 'Initializing Sovereign WebSocket Topology...' },
             { id: -1, timestamp: 'GATEWAY', type: 'info', message: <span className="text-[#888888]">Establishing system connection...</span> }
         ]);
 

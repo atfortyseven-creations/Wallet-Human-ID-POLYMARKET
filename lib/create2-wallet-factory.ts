@@ -4,7 +4,7 @@
  * ============================================================
  * Implements deterministic smart contract deployments.
  * This is the foundation of Account Abstraction (EIP-4337) and
- * advanced institutional wallets like Gnosis Safe / Argent.
+ * advanced sovereign wallets like Gnosis Safe / Argent.
  * Allows calculating the contract address BEFORE it is deployed.
  * ============================================================
  */
@@ -88,7 +88,7 @@ export async function executeDeterministicDeployment(
     "function deploy(uint256 value, bytes32 salt, bytes memory code) public returns (address)"
   ];
   
-  // NOTE: For pure institutional architecture, we might deploy our own factory.
+  // NOTE: For pure sovereign architecture, we might deploy our own factory.
   // Here we assume interaction with a standard factory implementation.
   const factory = new ethers.Contract(DETERMINISTIC_DEPLOYER_PROXY, CREATE2_FACTORY_ABI, wallet);
 

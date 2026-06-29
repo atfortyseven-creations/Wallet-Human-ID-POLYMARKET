@@ -76,7 +76,7 @@ export default function PaperPortfolioView({ totalValue, balances, prices, chang
     <div className="relative min-h-screen bg-transparent text-[var(--aztec-ink)] font-sans selection:bg-cyan-100 selection:text-cyan-900 overflow-x-hidden">
 
       <div className="relative z-10 w-full max-w-[2560px] mx-auto min-h-screen flex flex-col">
-        {/* Institutional Header is handled by ClientLayout */}
+        {/* Sovereign Header is handled by ClientLayout */}
 
         <main className="flex-1 max-w-[1400px] mx-auto w-full pt-12 pb-32 px-10 space-y-12 relative z-20">
         
@@ -154,7 +154,7 @@ export default function PaperPortfolioView({ totalValue, balances, prices, chang
             {/* Extended Ledger & Allocation */}
             <div className="space-y-12">
                 
-                {/* Asset Portfolio Table - INSTITUTIONAL GRADE */}
+                {/* Asset Portfolio Table - SOVEREIGN GRADE */}
                 <div className="bg-white/80 border border-slate-200 rounded-[3rem] overflow-hidden backdrop-blur-3xl shadow-xl shadow-slate-200/50">
                     <div className="p-10 border-b border-slate-100 flex items-center justify-between bg-white/[0.01]">
                         <div className="flex items-center gap-5">

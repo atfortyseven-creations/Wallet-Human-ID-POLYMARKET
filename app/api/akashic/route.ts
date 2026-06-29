@@ -22,7 +22,7 @@ const AKASHIC_THRESHOLD_USD = 50_000_000; // $50M minimum for Akashic entry
 
 //  Curated historical registry (editorial-grade, used as fallback) 
 const CURATED_REGISTRY = [
-  { id: '00001', chain: 'ETH', amount: '$2.4B', amountUsd: 2_400_000_000, from: '0x3f918D2a', to: '0xCb77F01e', editorial: 'First recorded movement of >$2B in a single Ethereum transaction. Institutional repositioning detected 4 minutes before public mempool propagation.', timestamp: '2026-01-12T08:14:22Z', blockNumber: 21_847_332, source: 'CURATED' },
+  { id: '00001', chain: 'ETH', amount: '$2.4B', amountUsd: 2_400_000_000, from: '0x3f918D2a', to: '0xCb77F01e', editorial: 'First recorded movement of >$2B in a single Ethereum transaction. Sovereign repositioning detected 4 minutes before public mempool propagation.', timestamp: '2026-01-12T08:14:22Z', blockNumber: 21_847_332, source: 'CURATED' },
   { id: '00002', chain: 'SOL',  amount: '$890M', amountUsd: 890_000_000,   from: 'DtSJ8vKq2',  to: '9fmXrW3nP',  editorial: 'Solana dark pool consolidation at peak network congestion. Mempool signal: 9 minutes pre-clearance. Z-score deviation: 4.8σ above 30-day average.',      timestamp: '2026-01-29T21:30:07Z', blockNumber: 312_441_009,  source: 'CURATED' },
   { id: '00003', chain: 'BTC',  amount: '$1.7B', amountUsd: 1_700_000_000, from: '1A1zPGKDT', to: 'bc1qgm44k', editorial: 'First Bitcoin movement exceeding $1.5B since 2024 halving. Temporal correlation with US Treasury bond auction: 43 minutes. Classified as macro-hedge repositioning.', timestamp: '2026-02-14T14:00:00Z', blockNumber: 884_201,        source: 'CURATED' },
   { id: '00004', chain: 'OP',   amount: '$340M', amountUsd: 340_000_000,   from: '0xF4aB9c01', to: '0x2eD34A77', editorial: 'Largest single Optimism L2 transfer in recorded history. ZK state transition verified by Whale Network sentinel nodes.', timestamp: '2026-03-03T06:44:11Z', blockNumber: 128_904_554, source: 'CURATED' },
@@ -63,9 +63,9 @@ function formatActiveEntry(row: any, index: number) {
     to:   toAddr.length   > 12 ? `${toAddr.slice(0, 6)}${toAddr.slice(-4)}`   : toAddr,
     token: row.token,
     type: row.type,
-    institutional: row.institutional,
-    editorial: row.institutional
-      ? `Institutional capital movement detected on ${row.chain}. Transfer exceeds $50M system threshold. Classified as ${row.type}.`
+    sovereign: row.sovereign,
+    editorial: row.sovereign
+      ? `Sovereign capital movement detected on ${row.chain}. Transfer exceeds $50M system threshold. Classified as ${row.type}.`
       : `Large capital movement on ${row.chain}. Token: ${row.token}. Type: ${row.type}.`,
     timestamp,
     blockNumber,

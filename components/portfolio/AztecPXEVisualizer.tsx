@@ -533,7 +533,7 @@ export function AztecPXEVisualizer() {
               { label: "Fee Mechanism",            value: "Fee Juice (gas abstraction)"              },
               { label: "L1 Bridge",                value: "Portal Contracts (Sepolia)"               },
               { label: "Sequencer",                value: "rpc.testnet.aztec-labs.com"               },
-              { label: "Compliance Circuit",       value: "mint_private_license · Schnorr-gated"     },
+              { label: "Attestation Circuit",       value: "mint_private_license · Schnorr-gated"     },
               { label: "Node Version",             value: "4.3.1"                                    },
             ].map(({ label, value }) => (
               <div key={label} className="flex items-center justify-between py-2 border-b border-zinc-900/5 last:border-0">

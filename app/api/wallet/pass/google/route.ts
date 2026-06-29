@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
               hexBackgroundColor: '#1F1F1F',
               logo: {
                 sourceUri: {
-                  uri: 'https://institutional.pro/official-whale-legendary.png',
+                  uri: 'https://sovereign.pro/official-whale-legendary.png',
                 },
               },
               cardTitle: {
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
               },
               barcode: {
                 type: 'QR_CODE',
-                value: card.linkedAddress || 'https://institutional.pro',
+                value: card.linkedAddress || 'https://sovereign.pro',
               },
               hexFontColor: '#FFFFFF'
             },

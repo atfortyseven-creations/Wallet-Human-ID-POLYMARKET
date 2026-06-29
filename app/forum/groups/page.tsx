@@ -26,7 +26,7 @@ export default async function ForumGroupsPage() {
   }
 
   const groups = [
-    { id: 'ELITE',    label: 'Enterprise Members',    sub: 'Full platform access  all features unlocked',  count: groupsData.ELITE    },
+    { id: 'ELITE',    label: 'Cryptographic Members',    sub: 'Full platform access  all features unlocked',  count: groupsData.ELITE    },
     { id: 'PRO',      label: 'Professional Members',  sub: 'Advanced analytics and real-time data access',  count: groupsData.PRO      },
     { id: 'STANDARD', label: 'Explorer Members',      sub: 'Market data and community access',               count: groupsData.STANDARD },
     { id: 'FREE',     label: 'Free Members',           sub: 'Forum and news access',                          count: groupsData.FREE     },

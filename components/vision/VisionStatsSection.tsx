@@ -23,11 +23,11 @@ const FAQ_DATA = [
   },
   {
     question: "What are the benefits of the Elite Archive Prover node?",
-    answer: "The Elite Archive Prover node gives you maximum power: unlimited daily requests, full data history, FIX protocol access, dark pool detection, and WebSockets streams. It is designed for institutional players and high-frequency predictive market participants."
+    answer: "The Elite Archive Prover node gives you maximum power: unlimited daily requests, full data history, FIX protocol access, dark pool detection, and WebSockets streams. It is designed for sovereign players and high-frequency predictive market participants."
   },
   {
     question: "Can I use the Studio Provenance for supply chain tracking?",
-    answer: "Absolutely. Studio Provenance leverages the Aztec Network to provide institutional-grade private proofs for product records. You can register batches, generate scannable QR codes, and confirm authenticity on the public ledger without exposing your private supplier data."
+    answer: "Absolutely. Studio Provenance leverages the Aztec Network to provide sovereign-grade private proofs for product records. You can register batches, generate scannable QR codes, and confirm authenticity on the public ledger without exposing your private supplier data."
   }
 ];
 
@@ -49,7 +49,7 @@ export function VisionStatsSection() {
             Frequently Asked Questions
           </h2>
           <p className="text-sm md:text-base text-[#050505]/50 max-w-2xl mx-auto leading-relaxed">
-            Everything you need to know about the Humanity Ledger ecosystem, Zero-Knowledge proofs, and institutional node infrastructure.
+            Everything you need to know about the Humanity Ledger ecosystem, Zero-Knowledge proofs, and sovereign node infrastructure.
           </p>
         </div>
 

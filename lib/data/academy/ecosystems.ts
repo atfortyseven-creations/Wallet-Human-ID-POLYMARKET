@@ -175,7 +175,7 @@ export const ecosystemModules = [
                 </div>`
             },
             {
-                id: "hedera-hashgraph-enterprise",
+                id: "hedera-hashgraph-cryptographic",
                 title: "11. Hedera: Hashgraph frente al Blockchain",
                 description: "Gobernanza corporativa y DAG.",
                 readTime: 50,

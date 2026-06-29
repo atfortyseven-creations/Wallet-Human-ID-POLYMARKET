@@ -144,7 +144,7 @@ export function BtcTransferLegend() {
         <div>
           <div className="flex items-center gap-2 mb-2">
             <span className="text-[10px] font-black uppercase tracking-widest text-black/40">
-              Active BTC Institutional Flows
+              Active BTC Sovereign Flows
             </span>
             {!error && !flows[0]?.loading && (
               <span className="w-1.5 h-1.5 rounded-full bg-[#00C076] animate-pulse" />
@@ -153,7 +153,7 @@ export function BtcTransferLegend() {
           <p className="text-[11px] text-black/60 leading-relaxed font-medium max-w-lg">
             {error
               ? 'Connecting to mempool.space  on-chain data loading.'
-              : 'Real-time institutional BTC transfers fetched from mempool.space. Addresses mapped to known exchange wallets.'
+              : 'Real-time sovereign BTC transfers fetched from mempool.space. Addresses mapped to known exchange wallets.'
             }
           </p>
         </div>

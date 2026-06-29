@@ -59,9 +59,9 @@ flowchart TD
 
 # Whale Network: Official Platform Documentation & Aztec Integration Manual
 
-Whale Network is an advanced terminal ecosystem for the comprehensive management of digital assets and zero knowledge identities. Designed to meet the demands of institutional operations and retail users alike, the platform unites cross device state synchronisation, client side zero knowledge proof generation, and omnichannel network telemetry into a singular architecture.
+Whale Network is an advanced terminal ecosystem for the comprehensive management of digital assets and zero knowledge identities. Designed to meet the demands of sovereign operations and retail users alike, the platform unites cross device state synchronisation, client side zero knowledge proof generation, and omnichannel network telemetry into a singular architecture.
 
-This document serves as the platform's main operational manual and architectural guide. It has been structured to provide absolute transparency to independent auditors, corporate grade institutional partners, and the core engineering team at Aztec Network. Within this manual, we detail how Whale Network orchestrates private execution environments, implements zero knowledge primitives without friction, and deploys its terminal modules atop an underlying infrastructure that prioritises privacy and cryptographic integrity.
+This document serves as the platform's main operational manual and architectural guide. It has been structured to provide absolute transparency to independent auditors, corporate grade sovereign partners, and the core engineering team at Aztec Network. Within this manual, we detail how Whale Network orchestrates private execution environments, implements zero knowledge primitives without friction, and deploys its terminal modules atop an underlying infrastructure that prioritises privacy and cryptographic integrity.
 
 ## 1. The Unified Domain Dual Architecture: PC and Mobile Symbiosis
 
@@ -92,7 +92,7 @@ An immersive and interactive visualisation charting the technical evolution and 
 
 ### 2. Identity
 
-The core of the project and the primary reason for the Aztec Network integration. The Identity tab empowers users to attest complex compliance criteria using a locally compiled Noir circuit. The smart contract on L1 or L2 accepts this proof and grants the pertinent permissions, whilst ensuring that the user's public address, balance, transaction history, and personally identifying information are never associated on chain. Uniqueness is proved; identity is never revealed.
+The core of the project and the primary reason for the Aztec Network integration. The Identity tab empowers users to attest complex attestation criteria using a locally compiled Noir circuit. The smart contract on L1 or L2 accepts this proof and grants the pertinent permissions, whilst ensuring that the user's public address, balance, transaction history, and personally identifying information are never associated on chain. Uniqueness is proved; identity is never revealed.
 
 ### 3. Token
 
@@ -108,7 +108,7 @@ The ultimate safeguard, returning absolute control of the local environment to t
 
 ## 3. Documentation Topology
 
-The knowledge structure and operational directives of Whale Network have been segmented to serve the precise requirements of distinct institutional profiles, from core protocol engineers to regulatory compliance officers.
+The knowledge structure and operational directives of Whale Network have been segmented to serve the precise requirements of distinct sovereign profiles, from core protocol engineers to regulatory attestation officers.
 
 ### PRODUCT
 
@@ -124,7 +124,7 @@ The knowledge structure and operational directives of Whale Network have been se
 
 ### REGULATORY
 
-*   **Compliance Docs**: Robust legal documentation certifying the platform's alignment with applicable international financial regulatory frameworks. The AML prevention architectures, implemented under ZK compliant schemes, are detailed here.
+*   **Attestation Docs**: Robust legal documentation certifying the platform's alignment with applicable international financial regulatory frameworks. The AML prevention architectures, implemented under ZK compliant schemes, are detailed here.
 *   **Aztec Transparency**: This document mathematically decomposes the true guarantees and the precise technical boundaries of Aztec's privacy model, explaining with meticulous accuracy which metadata remains concealed and what cryptographic footprints are inevitably produced.
 *   **Terms and Conditions**: The legal clauses governing the ecosystem. They delineate liability exculpations pertaining to decentralised software, the user's exclusive obligations regarding private key custody, and the acceptable use policies for the terminal and all associated APIs.
 *   **Privacy Policy**: Our data privacy manifesto. It legally stipulates that Humanity Ledger S.L. is technically incapable of decrypting any user state, documenting that all encryption, attestation, and secret storage operations function purely within a local Zero Knowledge context within the user's own browser or mobile device.
@@ -132,6 +132,6 @@ The knowledge structure and operational directives of Whale Network have been se
 ---
 
 **© 2026 Humanity Ledger S.L. All rights reserved.**
-Institutional Grade Identity Terminal and Cryptographic Analytics Ecosystem.
+Sovereign Grade Identity Terminal and Cryptographic Analytics Ecosystem.
 Aztec Native Architecture. MiCA Compliant. W3C Verifiable Credentials Certified.
 Humanity Ledger S.L. — Registered in Spain.

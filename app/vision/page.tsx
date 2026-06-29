@@ -35,7 +35,7 @@ export default function VisionPage() {
               <p>
                 At <strong className="text-black font-black">Humanity Ledger S.L.</strong>, our
                 primary goal is to build a secure and transparent identity layer for the Whale Network platform — one that protects
-                user data while ensuring full regulatory compliance. We believe that a credible
+                user data while ensuring full regulatory attestation. We believe that a credible
                 digital identity is the foundation of a safer and more efficient financial
                 ecosystem, not a barrier to it.
               </p>

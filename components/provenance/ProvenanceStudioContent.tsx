@@ -338,7 +338,7 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
          method: 'POST',
          headers: { 'Content-Type': 'application/json' },
          body: JSON.stringify({
-           webhookUrl: 'https://api.my-enterprise-erp.com/webhooks/provenance',
+           webhookUrl: 'https://api.my-cryptographic-erp.com/webhooks/provenance',
            eventTypes: ['PASSPORT_ANCHORED'],
            tier: 'ELITE'
          })
@@ -1052,7 +1052,7 @@ function RegistryTab({ isMobile: _isMobile, refreshKey, userTier = 'FREE', isOwn
 
 /* ─────────────────────────────────────────────
    TAB: AZTEC NETWORK EXPLAINER
-   Language: plain institutional — no jargon.
+   Language: plain sovereign — no jargon.
 ───────────────────────────────────────────── */
 function AztecTab() {
   return (
@@ -1144,7 +1144,7 @@ function AztecTab() {
           {
             icon: '🏗️',
             title: 'Public procurement',
-            body: 'Construction materials used in public infrastructure can be tracked from manufacturer to site. Auditors confirm compliance without access to commercial pricing data.',
+            body: 'Construction materials used in public infrastructure can be tracked from manufacturer to site. Auditors confirm attestation without access to commercial pricing data.',
           },
           {
             icon: '🛃',
@@ -1153,8 +1153,8 @@ function AztecTab() {
           },
           {
             icon: '♻️',
-            title: 'Environmental compliance',
-            body: 'Companies prove they meet recycling or emissions targets using verifiable records. Regulators confirm compliance without requiring full access to internal production data.',
+            title: 'Environmental attestation',
+            body: 'Companies prove they meet recycling or emissions targets using verifiable records. Regulators confirm attestation without requiring full access to internal production data.',
           },
         ].map(({ icon, title, body }) => (
           <div key={title} className="flex gap-3">
@@ -1183,7 +1183,7 @@ function AztecTab() {
             ['No code required', 'Create verifiable records through a standard web form.'],
             ['Printable labels', 'Generate QR codes ready for product packaging.'],
             ['Full audit trail', 'Every event in a product\'s life is recorded.'],
-            ['Institutional grade', 'Designed for public bodies and regulated industries.'],
+            ['Sovereign grade', 'Designed for public bodies and regulated industries.'],
           ].map(([title, desc]) => (
             <div key={title} className="rounded-xl border border-black/8 p-3">
               <p className="text-xs font-bold text-[#050505] mb-1">{title}</p>
@@ -1269,8 +1269,8 @@ function BandwidthTab() {
     },
     {
       tier: PlanTier.ARCHIVE_PROVER,
-      nombre: 'Enterprise Plan',
-      tagline: 'Maximum institutional power',
+      nombre: 'Cryptographic Plan',
+      tagline: 'Maximum sovereign power',
       precio: { mensual: 24995, anual: 239952 },
       popular: false,
       elite: true,
@@ -1453,7 +1453,7 @@ function BandwidthTab() {
                       </>
                     ) : (
                       <>
-                        {plan.elite ? 'Get Enterprise' : plan.popular ? 'Get Professional' : 'Get Basic'}
+                        {plan.elite ? 'Get Cryptographic' : plan.popular ? 'Get Professional' : 'Get Basic'}
                         <ArrowRight size={13} />
                       </>
                     )}

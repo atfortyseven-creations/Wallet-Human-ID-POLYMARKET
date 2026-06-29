@@ -27,7 +27,7 @@ const FEATURED_INTEGRATIONS = [
         id:          'whale-alert-native',
         name:        'Whale Network',
         url:         'https://whalealert.network',
-        description: 'The system terminal. EVM Thermodynamics engine, ZK identity layer, institutional analytics.',
+        description: 'The system terminal. EVM Thermodynamics engine, ZK identity layer, sovereign analytics.',
         category:    'analytics',
         tier:        'Private',
         since:       '2026-01-01',

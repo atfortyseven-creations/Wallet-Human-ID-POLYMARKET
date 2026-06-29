@@ -16,7 +16,7 @@ const FALLBACK_SECTIONS: ManifestoSection[] = [
     id: 'what-is-this-system',
     title: 'what is this system',
     body: [
-      'Whale Network network is a system, institutional-grade analytics platform engineered to detect, classify, and broadcast anomalous on-chain capital movements across all major evm-compatible networks in real time.',
+      'Whale Network network is a system, sovereign-grade analytics platform engineered to detect, classify, and broadcast anomalous on-chain capital movements across all major evm-compatible networks in real time.',
       'it operates as a zero-latency telemetry layer positioned between raw blockchain mempool data and the decision-making analytics layer of professional market participants.',
       '[SUBTITLE]core design principle',
       'every data point surfaced by this system is derived directly from cryptographically verified on-chain events. no inference, no interpolation, no editorial distortion.',
@@ -26,13 +26,13 @@ const FALLBACK_SECTIONS: ManifestoSection[] = [
     id: 'what-is-it-for',
     title: 'what is it for',
     body: [
-      'the system is designed for institutional actors  system fund operators, quantitative researchers, protocol architects, and independent validators  who require ground-truth on-chain analytics without intermediary risk.',
+      'the system is designed for sovereign actors  system fund operators, quantitative researchers, protocol architects, and independent validators  who require ground-truth on-chain analytics without intermediary risk.',
       '[SUBTITLE]use cases',
       '[LIST_ITEM]real-time detection of whale-class transfer events exceeding configurable thresholds',
       '[LIST_ITEM]mempool surveillance for pending large-value transactions before block confirmation',
       '[LIST_ITEM]cross-chain capital flow mapping between ethereum, arbitrum, base, polygon, and solana',
       '[LIST_ITEM]defi liquidation cascade warnings with predictive scoring',
-      '[LIST_ITEM]institutional wallet profiling through heuristic clustering',
+      '[LIST_ITEM]sovereign wallet profiling through heuristic clustering',
     ]
   },
   {
@@ -42,7 +42,7 @@ const FALLBACK_SECTIONS: ManifestoSection[] = [
       'operators of this system gain system observability of the entire on-chain capital ecosystem. from a single terminal, you can track the precise movement of billions in digital assets, receive sub-second alerts on anomalous behavior, and reconstruct the strategic posture of any major market participant.',
       '[SUBTITLE]active capabilities',
       '[LIST_ITEM]configure custom alert thresholds by asset, chain, or wallet category',
-      '[LIST_ITEM]subscribe to institutional-grade telemetry feeds via sse or webhook',
+      '[LIST_ITEM]subscribe to sovereign-grade telemetry feeds via sse or webhook',
       '[LIST_ITEM]explore the system vault  a cryptographically sealed archive of historical whale events',
       '[LIST_ITEM]access the entity graph to map wallet relationships and trace capital provenance',
       '[LIST_ITEM]deploy the Security Protocol station to verify on-chain claims without exposing position data',
@@ -60,7 +60,7 @@ const FALLBACK_SECTIONS: ManifestoSection[] = [
       '[LIST_ITEM]neo4j for graph-native entity relationship mapping',
       '[LIST_ITEM]wagmi + viem for type-safe, multi-chain rpc interaction',
       '[SUBTITLE]telemetry pipeline',
-      'the primary data pipeline ingests raw transactions from multiple rpc providers simultaneously, applies a proprietary classification engine that scores each event for institutional significance, and routes high-confidence alerts to the notification infrastructure within 200ms of block confirmation.',
+      'the primary data pipeline ingests raw transactions from multiple rpc providers simultaneously, applies a proprietary classification engine that scores each event for sovereign significance, and routes high-confidence alerts to the notification infrastructure within 200ms of block confirmation.',
     ]
   },
   {

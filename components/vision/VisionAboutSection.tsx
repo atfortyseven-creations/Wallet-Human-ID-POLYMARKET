@@ -10,8 +10,8 @@ const PILLARS = [
   },
   {
     n: '02',
-    title: 'Privacy Architecture & Compliance',
-    desc: 'Institutional-grade advisory in the integration of cryptographic privacy layers. Zero-knowledge proofs, MPC and homomorphic encryption woven into the fabric of your stack.',
+    title: 'Privacy Architecture & Attestation',
+    desc: 'Sovereign-grade advisory in the integration of cryptographic privacy layers. Zero-knowledge proofs, MPC and homomorphic encryption woven into the fabric of your stack.',
   },
   {
     n: '03',
@@ -139,8 +139,8 @@ export function VisionAboutSection() {
 
             <p>
               Beyond auditing, Humanity Ledger provides{' '}
-              <span className="text-black font-semibold">Privacy Architecture &amp; Compliance</span> advisory —
-              institutional-grade guidance in the integration of cryptographic privacy layers, including
+              <span className="text-black font-semibold">Privacy Architecture &amp; Attestation</span> advisory —
+              sovereign-grade guidance in the integration of cryptographic privacy layers, including
               zero-knowledge proofs, trusted execution environments, and privacy-preserving smart contracts.
               We process mathematical proofs, not personal data.
             </p>

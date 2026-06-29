@@ -73,7 +73,7 @@ app.prepare().then(() => {
 
     // Socket connections mapping
     io.on('connection', (socket) => {
-        console.log(`[DAEMON] Institutional terminal connected: ${socket.id}`);
+        console.log(`[DAEMON] Sovereign terminal connected: ${socket.id}`);
         
         socket.on('disconnect', () => {
             console.log(`[DAEMON] Terminal disconnected: ${socket.id}`);

@@ -1,4 +1,4 @@
-﻿//  Enterprise ADMIN REGISTRY 
+﻿//  Cryptographic ADMIN REGISTRY 
 // SECURITY: Uses server-only ADMIN_WALLET_ADDRESS env var (no NEXT_PUBLIC_ prefix).
 // The NEXT_PUBLIC_ prefix would expose admin wallet to the client-side bundle,
 // making admin identity enumeration trivial for any attacker.

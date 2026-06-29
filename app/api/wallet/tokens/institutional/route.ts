@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getInstitutionalTokens } from '@/lib/wallet/tokens';
 
 /**
- * GET /api/wallet/tokens/institutional?chainId=1
- * Get curated institutional-grade tokens for a chain
+ * GET /api/wallet/tokens/sovereign?chainId=1
+ * Get curated sovereign-grade tokens for a chain
  */
 export async function GET(request: NextRequest) {
   try {
@@ -21,9 +21,9 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ tokens });
   } catch (error) {
-    console.error('Error fetching institutional tokens:', error);
+    console.error('Error fetching sovereign tokens:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch institutional tokens' },
+      { error: 'Failed to fetch sovereign tokens' },
       { status: 500 }
     );
   }

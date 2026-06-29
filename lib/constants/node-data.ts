@@ -54,7 +54,7 @@ export const NODE_SOLUTIONS: NodeSolution[] = [
     { id: 'berachain', name: 'Berachain', description: 'DeFi-focused L1 on Cosmos SDK.', price: '$1000', performance: ['Standard'], mode: ['Archive', 'Full'], networks: ['Mainnet'], category: 'NON-EVM' },
     { id: 'blast', name: 'Blast', description: 'The only L2 with native yield.', price: '$1000', performance: ['Standard'], mode: ['Full'], networks: ['Mainnet', 'Sepolia'], category: 'L2' },
     { id: 'celo', name: 'Celo', description: 'Mobile-first carbon neutral EVM.', price: '$1000', performance: ['High', 'Standard'], mode: ['Archive', 'Full'], networks: ['Mainnet', 'Sepolia'], category: 'EVM' },
-    { id: 'factom', name: 'Factom', description: 'Data integrity for enterprise logic.', price: '$', performance: ['Standard', 'High'], mode: ['Full'], networks: ['Mainnet'], category: 'NON-EVM' },
+    { id: 'factom', name: 'Factom', description: 'Data integrity for cryptographic logic.', price: '$', performance: ['Standard', 'High'], mode: ['Full'], networks: ['Mainnet'], category: 'NON-EVM' },
     { id: 'flow', name: 'Flow', description: 'Consumer-scale blockchain for creators.', price: '$', performance: ['Standard', 'High'], mode: ['Full'], networks: ['Mainnet'], category: 'NON-EVM' },
     { id: 'gnosis', name: 'Gnosis Chain', description: 'Resilient and community-run network.', price: '$1000', performance: ['High', 'Standard'], mode: ['Archive', 'Full'], networks: ['Mainnet', 'Testnet'], category: 'EVM' },
     { id: 'hive', name: 'Hive', description: 'Social media network on the blockchain.', price: '$', performance: ['Standard', 'High'], mode: ['Full'], networks: ['Mainnet'], category: 'NON-EVM' },

@@ -7,21 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [3.0.0]  2026-04-09  "Institutional Hardening & System Array"
+## [3.0.0]  2026-04-09  "Sovereign Hardening & System Array"
 
 ### Phase 7: System Array (Q3/Q4 2026)
 - `feat(avs)`: Eigenlayer AVS Architecture: `WhaleAVS.sol` and `WhaleZKVerifier.sol` establishing cryptographically verified thermodynamic signals.
 - `feat(solana)`: Solana SIMD-0109 Engine: Ultralow latency websocket module intercepting `ComputeBudget` priorities <500ms before AMM state reflection.
 - `feat(mesh)`: System Mesh P2P: Decentralized DGRAM/UDP multicast networking entirely replacing external Redis dependencies for cluster-wide node sync.
-- `feat(mica)`: MiCA Compliance Suite: GDPR Article 72 Right to Be Forgotten architecture isolating PII wipe commands from immutable ledger telemetry.
-- `docs(audit)`: Enterprise Audit Dossier generated and `slither` static analysis integrated into pipeline.
+- `feat(mica)`: MiCA Attestation Suite: GDPR Article 72 Right to Be Forgotten architecture isolating PII wipe commands from immutable ledger telemetry.
+- `docs(audit)`: Cryptographic Audit Dossier generated and `slither` static analysis integrated into pipeline.
 
-### Phase 6: Enterprise & Kubernetes
+### Phase 6: Cryptographic & Kubernetes
 - `feat(k8s)`: Full Kubernetes production manifests  Namespace, ConfigMap, 3 Deployments (app/scanner/telegram), Service, HPA (210 pods, CPU+memory triggers), PodDisruptionBudget (minAvailable:1), ServiceAccount (no auto-token), NGINX Ingress with cert-manager TLS, SSE proxy-buffering disabled
-- `feat(k8s)`: Helm chart for institutional one-command deploy (`helm install whale-alert`) with full values.yaml surface
-- `feat(enterprise)`: `/api/enterprise`  4-tier feature grid (COMMUNITY/PRO/ENTERPRISE/Enterprise) with SLA guarantees and pricing
-- `feat(enterprise)`: `/api/enterprise/contact`  inquiry handler with Telegram admin notification and reference ID generation
-- `docs(enterprise)`: `ENTERPRISE.md`  complete enterprise guide including air-gapped deployment option
+- `feat(k8s)`: Helm chart for sovereign one-command deploy (`helm install whale-alert`) with full values.yaml surface
+- `feat(cryptographic)`: `/api/cryptographic`  4-tier feature grid (COMMUNITY/PRO/CRYPTOGRAPHIC/Cryptographic) with SLA guarantees and pricing
+- `feat(cryptographic)`: `/api/cryptographic/contact`  inquiry handler with Telegram admin notification and reference ID generation
+- `docs(cryptographic)`: `CRYPTOGRAPHIC.md`  complete cryptographic guide including air-gapped deployment option
 - `chore(semver)`: Bumped version to 3.0.0; added npm scripts for K8s, Helm, and system contract deployment
 
 ### Phase 5: Analytics & Analytics Commons
@@ -39,7 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `test(contracts)`: `test/HumanTimeLock.test.ts`  13 test cases, 100% branch coverage: lock accumulation, reverts, multi-user, withdraw timing, ETH balance, re-entrancy prevention
 - `feat(api)`: `/api/contracts/status`  live on-chain state reader (view-only ethers calls); WhaleDeadmanSwitch + HumanTimeLock per wallet; ?chain=base|ethereum; returns daysRemaining/expiresAtIso
 - `feat(scripts)`: `scripts/deploy-system.ts`  ethers v6, balance pre-check, confirmation blocks, post-deploy sanity assertions, Etherscan verification, JSON manifest
-- `feat(api)`: `/api/market/signals`  System API Marketplace: 3-tier HMAC auth (FREE/PRO/INSTITUTIONAL), 30s replay protection, Redis rate limit, address masking
+- `feat(api)`: `/api/market/signals`  System API Marketplace: 3-tier HMAC auth (FREE/PRO/SOVEREIGN), 30s replay protection, Redis rate limit, address masking
 - `feat(ui)`: `SystemVault.tsx`  `OnChainStatusPanel`: SWR 30s refresh, DeadMansSwitch countdown bar + Basescan link, HumanTimeLock per-wallet, block number footer
 - `ci(contracts)`: `.github/workflows/system-core.yml`  3-job workflow: contract tests, API typecheck, deploy dry-run
 

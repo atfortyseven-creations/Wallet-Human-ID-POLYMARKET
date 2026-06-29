@@ -14,7 +14,7 @@ const fetcher = (url: string) => fetch(url).then(r => r.json());
 const NODE_COLORS: Record<number, { fill: string; glow: string; label: string }> = {
     0: { fill: '#050505', glow: '#ffffff',  label: 'Genesis Node' },
     1: { fill: '#FF3B30', glow: '#FF3B30',  label: 'High Risk' },
-    2: { fill: '#00C076', glow: '#00C076',  label: 'Institutional' },
+    2: { fill: '#00C076', glow: '#00C076',  label: 'Sovereign' },
     3: { fill: '#0052FF', glow: '#0052FF',  label: 'Wallet' },
 };
 const getNodeColor = (group: number) => NODE_COLORS[group] ?? NODE_COLORS[3];
@@ -408,7 +408,7 @@ export function EntityGraphVis() {
                                 </div>
 
                                 {[
-                                    { label: 'Layer Type', value: selectedNode.group === 0 ? 'Genesis Origin' : selectedNode.group === 1 ? 'Flagged High-Risk' : selectedNode.group === 2 ? 'Institutional Hub' : 'Standard Wallet', color: getNodeColor(selectedNode.group).glow },
+                                    { label: 'Layer Type', value: selectedNode.group === 0 ? 'Genesis Origin' : selectedNode.group === 1 ? 'Flagged High-Risk' : selectedNode.group === 2 ? 'Sovereign Hub' : 'Standard Wallet', color: getNodeColor(selectedNode.group).glow },
                                     { label: 'Wallet Address', value: selectedNode.address || '', color: 'rgba(255,255,255,0.4)' },
                                     { label: 'Network Weight', value: String(selectedNode.weight ?? selectedNode.size ?? ''), color: '#00C076' },
                                     { label: 'Connections', value: String(selectedNode.connections ?? ''), color: 'rgba(255,255,255,0.4)' },

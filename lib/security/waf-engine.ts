@@ -1,7 +1,7 @@
 /**
  * 
  *    WHALE FORTRESS WAF  OWASP Core Rule Set v3.3 (Edge Runtime)              
- *    WhaleFortress v6  Institutional Anomaly Scoring Engine                   
+ *    WhaleFortress v6  Sovereign Anomaly Scoring Engine                   
  *                                                                               
  *    Architecture:                                                              
  *      1. OWASP Anomaly Score accumulates across 6 detection vectors           
@@ -21,7 +21,7 @@ import { NextRequest, NextResponse } from 'next/server';
 const BLOCK_THRESHOLD     = 8;
 const CHALLENGE_THRESHOLD = 4;
 
-//  BYPASS IPS (Institutional Whitelist) 
+//  BYPASS IPS (Sovereign Whitelist) 
 const BYPASS_IPS = ['127.0.0.1'];
 
 //  PER-ENDPOINT RATE LIMITS (requests / window in seconds) 
@@ -43,7 +43,7 @@ const ENDPOINT_LIMITS: Record<string, { max: number; windowSec: number }> = {
   '/api/siwe/nonce':          { max: 15,   windowSec: 60    },  // 15 nonce requests/min (legitimate: ~1 per auth)
   '/api/siwe':                { max: 30,   windowSec: 60    },  // verify = max 1 per auth, but allow retries
   '/api/user/status':         { max: 60,   windowSec: 60    },
-  '/api':                     { max: 1200, windowSec: 60    },  // Increased for high-frequency institutional telemetry
+  '/api':                     { max: 1200, windowSec: 60    },  // Increased for high-frequency sovereign telemetry
 };
 
 //  LEGITIMATE BROWSER UA WHITELIST (bypass scoring entirely) 
@@ -160,7 +160,7 @@ function buildBlockResponse(anomalyScore: number, reason: string, ip: string): N
   console.error(`[WhaleFortress:WAF]  BLOCKED & JAILED score=${anomalyScore} reason="${reason}" ip=${ip}`);
   banIPGlobal(ip); // Instant Jail on Hard Block
   return new NextResponse(
-    JSON.stringify({ error: 'WAF_BLOCK', code: 403, message: 'Request blocked by Institutional Security Policy.' }),
+    JSON.stringify({ error: 'WAF_BLOCK', code: 403, message: 'Request blocked by Sovereign Security Policy.' }),
     { status: 403, headers: { 'Content-Type': 'application/json', 'X-WAF-Block': 'true' } }
   );
 }

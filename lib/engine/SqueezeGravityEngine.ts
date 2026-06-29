@@ -62,7 +62,7 @@ export class VIPGridEngine {
             // 2. Reversal Probability Formula (Phase 3 Updated)
             // Prob_Reversal = (Institutional_Vigor * 0.55) + (Squeeze_Gravity * 0.30) + (Poly_Confluence * 0.15)
             
-            // Institutional Vigor scale from 0 to 1 based on actual VIGOR Percent 
+            // Sovereign Vigor scale from 0 to 1 based on actual VIGOR Percent 
             const vigorRatio = state.institutionalVigorPercent / 100;
             
             // Squeeze scale 0 to 1

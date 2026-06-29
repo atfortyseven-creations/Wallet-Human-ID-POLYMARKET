@@ -1254,7 +1254,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           <div className="w-4" />
         </div>
 
-        {/* Hero Institutional Section */}
+        {/* Hero Sovereign Section */}
         <div className="flex-1 px-8 py-16 flex flex-col items-center justify-center text-center gap-10">
           <div className="relative w-48 h-48 md:w-56 md:h-56 flex items-center justify-center">
             {isInitializing ? (

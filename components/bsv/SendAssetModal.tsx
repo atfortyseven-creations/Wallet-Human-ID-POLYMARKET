@@ -16,7 +16,7 @@ import { Transaction, P2PKH, PrivateKey } from '@bsv/sdk';
 import { UtxoManager } from '@/lib/bsv/UtxoManager';
 
 /**
- * INSTITUTIONAL SEND MODAL (Phase 34)
+ * SOVEREIGN SEND MODAL (Phase 34)
  * Real-world transaction building interface with 10000% SirDeggen fidelity.
  */
 export const SendAssetModal = ({ isOpen, onClose, initialAddress = '' }: SendAssetModalProps) => {
@@ -163,7 +163,7 @@ export const SendAssetModal = ({ isOpen, onClose, initialAddress = '' }: SendAss
               <div className="p-6 bg-[var(--aztec-orchid)]/5 border border-[var(--aztec-orchid)]/10 rounded-3xl flex gap-4">
                  <Shield size={24} className="text-[var(--aztec-orchid)] shrink-0" />
                  <div className="space-y-1">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-white">Institutional Auth Required</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-white">Sovereign Auth Required</p>
                     <p className="text-[10px] text-white/40 font-aztec-mono">This transaction will be signed with BIP32 Key (m/0/0) using the ECIES substrate.</p>
                  </div>
               </div>

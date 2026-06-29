@@ -17,7 +17,7 @@ const JOB_TITLES = [
     'Senior MEV Arbitrageur', 'Head of ZK-Rollup Research', 'Principal Smart Contract Auditor',
     'Quantitative DeFi Analyst', 'Director of On-Chain Liquidity', 'Chief Cryptographer',
     'Algorithmic Attesting Lead', 'EVM Architecture Specialist', 'Tokenomics Engineer',
-    'Institutional Portfolio Manager'
+    'Sovereign Portfolio Manager'
 ];
 
 const TOPIC_TEMPLATES = [
@@ -49,7 +49,7 @@ Our automated heuristic engines have flagged significant anomalies regarding {Me
 2. Dark pool activity suggests accumulation by 3 major system wallets.
 3. Network congestion metrics correlate with these hidden spikes.
 
-### Institutional Strategy
+### Sovereign Strategy
 We are deploying a {Method} approach to front-run this transition. We invite other tier-1 researchers to cross-verify our findings.
 
 [SIGNATURE:0x{Signature}]`
@@ -146,7 +146,7 @@ export async function POST(req: Request) {
                 data: {
                     walletAddress,
                     displayName: displayName,
-                    bio: `Managing tier-1 liquidity on EVM. Institutional grade execution. [Verified via ${domain}]`,
+                    bio: `Managing tier-1 liquidity on EVM. Sovereign grade execution. [Verified via ${domain}]`,
                     isPro: Math.random() > 0.5,
                     tier: Math.random() > 0.8 ? 'Private' : 'PRO',
                 }
@@ -198,7 +198,7 @@ export async function POST(req: Request) {
                                 `We strongly advise auditing the ${getRandomItem(CHAINS)} bridge architecture before executing this strategy. We noticed potential MEV leakage vectors last week.`,
                                 `Our heuristic models align perfectly with your briefing. Constructing a ZK-proof for our proposal now.`,
                                 `Can you confirm the slippage tolerance? We can guarantee 0.1% execution via our private mempool infrastructure.`,
-                                `Institutional mandate acknowledged. Our firm will pass on this tranche but will monitor the on-chain results.`
+                                `Sovereign mandate acknowledged. Our firm will pass on this tranche but will monitor the on-chain results.`
                             ];
                             
                             await prisma.forumPost.create({
@@ -217,7 +217,7 @@ export async function POST(req: Request) {
 
         return NextResponse.json({
             success: true,
-            message: 'Forum seeded with 65 Institutional Personas and 8 Cryptographic Sectors successfully.',
+            message: 'Forum seeded with 65 Sovereign Personas and 8 Cryptographic Sectors successfully.',
             results,
         });
 

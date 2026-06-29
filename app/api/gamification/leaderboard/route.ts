@@ -6,7 +6,7 @@ import { safeJsonParse } from '@/lib/utils/json';
 /**
  * GET /api/gamification/leaderboard
  * 
- * CORE PERFORMANCE: Ranks institutional identities by on-chain volume.
+ * CORE PERFORMANCE: Ranks sovereign identities by on-chain volume.
  * UTILIZES: Pre-computed Redis index with a 120s freshness window.
  */
 export const dynamic = 'force-dynamic';

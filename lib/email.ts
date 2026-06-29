@@ -139,7 +139,7 @@ export async function sendWelcomeEmail(email: string, name?: string): Promise<vo
                   <tr>
                     <td style="padding: 60px 60px 40px; border-bottom: 2px solid #1D1A10;">
                       <div style="font-family: 'Roboto Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5em; margin-bottom: 20px; opacity: 0.4;">
-                        Institutional Access Protocol // Node Initialized
+                        Sovereign Access Protocol // Node Initialized
                       </div>
                       <h1 style="font-family: 'Martel', serif; font-size: 48px; font-weight: 900; text-transform: uppercase; line-height: 0.9; margin: 0; letter-spacing: -2px;">
                         WHALE <br/><span style="font-style: italic; color: #D125C7;">ALERT</span>
@@ -188,7 +188,7 @@ export async function sendWelcomeEmail(email: string, name?: string): Promise<vo
                         Whale Network Corporation // All Rights Reserved © 2026
                       </div>
                       <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.3;">
-                        Confidential Transmission // Institutional Eyes Only
+                        Confidential Transmission // Sovereign Eyes Only
                       </div>
                     </td>
                   </tr>

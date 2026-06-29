@@ -245,7 +245,7 @@ export class ResilientProvider {
 
   /**
    * [HIGH FIDELITY] Subscribe to blockchain events with automatic rotation recovery.
-   * This is the institutional standard for long-running telemetry daemons.
+   * This is the sovereign standard for long-running telemetry daemons.
    */
   public on(type: 'block' | any, callbackOrFilter: any, callback?: any) {
     if (type === 'block') {

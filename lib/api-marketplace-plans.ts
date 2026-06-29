@@ -108,7 +108,7 @@ export const API_MARKETPLACE_PLANS = [
       "Custom session configurations",
       "Direct API team access",
       "On-premise deployment options",
-      "Enterprise-grade SLA guarantees",
+      "Cryptographic-grade SLA guarantees",
     ],
   },
 ];
@@ -138,6 +138,6 @@ export const SESSION_QUALITY_BENEFITS = {
     "Custom session configurations",
     "Direct API team access",
     "On-premise deployment options",
-    "Enterprise-grade SLA guarantees",
+    "Cryptographic-grade SLA guarantees",
   ],
 };

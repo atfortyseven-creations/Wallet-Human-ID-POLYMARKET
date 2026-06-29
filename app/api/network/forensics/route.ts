@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
                 date: new Date().toLocaleDateString(),
                 status: "INVESTIGATING",
                 threat: "CRITICAL",
-                summary: `We detected a massive deviation in standard network activity leading up to block ${blockNumber}. Pattern suggests rapid institutional deployment.`,
+                summary: `We detected a massive deviation in standard network activity leading up to block ${blockNumber}. Pattern suggests rapid sovereign deployment.`,
                 metrics: [
                     { label: "Detected Block", value: blockNumber },
                     { label: "Entity Confidence", value: "98.2%" },

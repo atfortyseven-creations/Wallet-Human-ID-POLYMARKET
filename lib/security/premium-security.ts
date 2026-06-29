@@ -44,7 +44,7 @@ export function rateLimit(
 }
 
 // ============================================
-// SECURITY LAYER 2: Subscription Verification  NATIVE Enterprise
+// SECURITY LAYER 2: Subscription Verification  NATIVE Cryptographic
 // ============================================
 
 export async function verifyPremiumAccess(userId: string): Promise<{
@@ -57,7 +57,7 @@ export async function verifyPremiumAccess(userId: string): Promise<{
 
     // SECURITY FIX VULN-06: NFT contract was set to 0x000...000 (zero address).
     // Querying balanceOf on the zero address is either a no-op or could return unexpected
-    // values depending on the chain/RPC, potentially granting Enterprise tier to any wallet.
+    // values depending on the chain/RPC, potentially granting Cryptographic tier to any wallet.
     // This block is DISABLED until a real NFT contract address is configured via env.
     // To enable: set NFT_CONTRACT_ADDRESS=0x<real_contract> in Railway environment variables.
     const nftContract = process.env.NFT_CONTRACT_ADDRESS;
@@ -72,7 +72,7 @@ export async function verifyPremiumAccess(userId: string): Promise<{
         });
         if (balance > 0n) {
             console.log(`[Zero-Trust] ✅ Validated System NFT holding for ${normalizedUserId}`);
-            return { valid: true, tier: 'Enterprise' };
+            return { valid: true, tier: 'Cryptographic' };
         }
       } catch (rpcErr) {
         // Silent fallback to database if RPC fails (Network Resilience)
@@ -92,8 +92,8 @@ export async function verifyPremiumAccess(userId: string): Promise<{
       });
     }
 
-    if (user?.tier === 'Enterprise' || user?.tier === 'HUMAN' || user?.tier === 'FULL_NODE' || user?.tier === 'ARCHIVE_PROVER') {
-       return { valid: true, tier: 'Enterprise' }; // Note: returns Enterprise to unlock features
+    if (user?.tier === 'Cryptographic' || user?.tier === 'HUMAN' || user?.tier === 'FULL_NODE' || user?.tier === 'ARCHIVE_PROVER') {
+       return { valid: true, tier: 'Cryptographic' }; // Note: returns Cryptographic to unlock features
     }
 
     // 2. Subscription check from native DB (case insensitive fallback)
@@ -216,7 +216,7 @@ export async function logAuditEvent(log: {
 }
 
 // ============================================
-// SECURITY LAYER 9: Request Validation  Enterprise SIWE
+// SECURITY LAYER 9: Request Validation  Cryptographic SIWE
 // ============================================
 
 export async function validateSecureRequest(

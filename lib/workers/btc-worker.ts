@@ -1,16 +1,16 @@
 // lib/workers/btc-worker.ts
 // BTC Worker  100% on-chain data via Mempool.space + CoinGecko
-// Unified Institutional Analytics
+// Unified Sovereign Analytics
 
 import db from '@/lib/db';
 
 const MEMPOOL_API   = 'https://mempool.space/api';
 const COINGECKO_API = 'https://api.coingecko.com/api/v3';
-const MIN_USD_VALUE = 50_000_000;   // $50M institutional threshold
+const MIN_USD_VALUE = 50_000_000;   // $50M sovereign threshold
 const POLL_INTERVAL = 60_000;       // review every 60s
 
-//  Map of known institutional entities 
-//  Map of known institutional entities with elite metadata 
+//  Map of known sovereign entities 
+//  Map of known sovereign entities with elite metadata 
 const INSTITUTIONAL_WALLETS: Record<string, { name: string; sector: string; confirmed: boolean }> = {
   'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh': { name: 'MicroStrategy', sector: 'CORPORATE', confirmed: true },
   '1P5ZEDWTKTFGxQjZphgWPQUpe554WKDfHQ':          { name: 'MicroStrategy', sector: 'CORPORATE', confirmed: true },
@@ -65,7 +65,7 @@ function generateSystemId(txHash: string): string {
   return `SOV-${seg1}-${seg2}-${seg3}`;
 }
 
-//  Institutional Attribution 
+//  Sovereign Attribution 
 function attributeTransaction(tx: MempoolTx) {
   const fromAddresses = tx.vin.map(v => v.prevout?.scriptpubkey_address).filter(Boolean);
   const toAddresses   = tx.vout.map(o => o.scriptpubkey_address).filter(Boolean);
@@ -74,13 +74,13 @@ function attributeTransaction(tx: MempoolTx) {
   for (const addr of all) {
     if (INSTITUTIONAL_WALLETS[addr]) {
       const { name, sector } = INSTITUTIONAL_WALLETS[addr];
-      return { entity: name, institutional: true, metadata: { sector } };
+      return { entity: name, sovereign: true, metadata: { sector } };
     }
   }
 
   const totalSats = tx.vout.reduce((sum, o) => sum + (o.value ?? 0), 0);
   if (totalSats > 1500 * 1e8 && tx.vout.length <= 3) {
-    return { entity: 'Unknown Institutional Whale', institutional: true, metadata: { sector: 'UNKNOWN_INSTITUTIONAL' } };
+    return { entity: 'Unknown Sovereign Whale', institutional: true, metadata: { sector: 'UNKNOWN_INSTITUTIONAL' } };
   }
 
   return { entity: 'Unknown Whale', institutional: false, metadata: { sector: 'RETAIL' } };
@@ -120,7 +120,7 @@ export async function scanBlock(height: number, btcPrice: number) {
             amount:      valueBTC.toString(),
             chain:       'BTC',
             entityName:  attribution.entity,
-            institutional: attribution.institutional,
+            sovereign: attribution.sovereign,
             blockHeight: height,
             timestamp:   new Date(tx.status.block_time * 1000),
             confirmed:   tx.status.confirmed,

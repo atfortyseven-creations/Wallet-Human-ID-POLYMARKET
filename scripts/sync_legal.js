@@ -23,7 +23,7 @@ const MAPPINGS = [
   {
     md: 'C:\\Users\\admin\\Desktop\\Documentoslegales\\07_AML_CFT_Prevention_Manual.md',
     tsx: 'app\\legal\\compliance\\page.tsx',
-    title: 'Regulatory Compliance',
+    title: 'Regulatory Attestation',
     category: 'Legal & Security'
   }
 ];
@@ -40,7 +40,7 @@ function processMarkdown(mdContent, title, category) {
   const sections = [];
   
   // Extract subtitle from first part if possible
-  let subtitle = "This policy sets forth the legal and compliance rules governing the Whale Network ecosystem.";
+  let subtitle = "This policy sets forth the legal and attestation rules governing the Whale Network ecosystem.";
   
   let sectionIndex = 1;
   for (let i = 1; i < parts.length; i++) {

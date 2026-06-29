@@ -23,7 +23,7 @@ export class IdentityService {
 
     /**
      * Critical logic: Verify World ID
-     * This elevates the user Tier to Enterprise
+     * This elevates the user Tier to Cryptographic
      */
     static async verifyWorldID(walletAddress: string, proof: any) {
         // Real ZK proof cryptographic validation would go here

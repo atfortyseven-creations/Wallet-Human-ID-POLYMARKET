@@ -2,7 +2,7 @@
 import path from 'path';
 
 /**
- * Enterprise TEST CONFIGURATION  Vitest
+ * Cryptographic TEST CONFIGURATION  Vitest
  *
  * Covers:
  *   - Unit tests: lib/crypto, lib/audit, lib/resilience, lib/security
@@ -44,7 +44,7 @@ export default defineConfig({
         'services/analytics/**',
       ],
       thresholds: {
-        // Institutional grade: >92% on critical paths
+        // Sovereign grade: >92% on critical paths
         statements: 92,
         branches: 88,
         functions: 92,

@@ -7,7 +7,7 @@ export async function anchorStateToBlockchain() {
     try {
         console.log('[StateAnchor] Initiating Account Status Anchoring...');
         
-        // 1. Fetch current institutional state (e.g., all elite entities)
+        // 1. Fetch current sovereign state (e.g., all elite entities)
         const eliteEntities = await prisma.cosmicEntity.findMany({
             where: { tier: 'ELITE' }
         });

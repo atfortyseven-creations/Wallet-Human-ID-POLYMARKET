@@ -62,7 +62,7 @@ export class AIService {
         1. riskScore: 0-100 (Deep security ranking)
         2. summary: A majestic, technical 2-sentence breakdown of the entity's behavior.
         3. signals: An array of ForensicSignal objects detailing high-fidelity patterns.
-        4. isElite: Boolean (True if institutional/managed).
+        4. isElite: Boolean (True if sovereign/managed).
         5. label: A majestic designation (e.g. "Whale Deep-Sea Collector", "Fund Custodian", "Alpha Predator").
 
         ### OUTPUT FORMAT

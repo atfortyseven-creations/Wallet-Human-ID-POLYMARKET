@@ -33,7 +33,7 @@ export interface WalletAnalytics {
   historicalBalance?: { date: string; balance: number }[];
   error?: string;
   errorMessage?: string;
-  identityTier?: 'GHOST' | 'INITIATE' | 'HUMAN' | 'Enterprise' | 'PROTOCOL';
+  identityTier?: 'GHOST' | 'INITIATE' | 'HUMAN' | 'Cryptographic' | 'PROTOCOL';
   entityInfo?: BlockchainEntity;
   totalFlow30d?: number;
   recentTransfers?: AnalyticsTransfer[];

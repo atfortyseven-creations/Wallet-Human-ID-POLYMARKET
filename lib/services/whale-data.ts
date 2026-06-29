@@ -167,7 +167,7 @@ class WhaleDataService {
 
             const tokenAddresses = Object.keys(BINANCE_24_TOKENS[chain]);
             
-            // [INSTITUTIONAL OPTIMIZATION]
+            // [SOVEREIGN OPTIMIZATION]
             // Batch all 20 tokens into a SINGLE getLogs request.
             // This reduces Compute Unit usage by 95% and completely eliminates
             // HTTP 429 'Too Many Requests' rate-limits on public and free RPCs.

@@ -153,7 +153,7 @@ const CANONICAL_APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://humanidfi.
 
 const metadata = {
     name: 'Whale Alert Network',
-    description: 'Institutional Grade Whale Tracking',
+    description: 'Sovereign Grade Whale Tracking',
     url: CANONICAL_APP_URL,
     icons: [`${CANONICAL_APP_URL}/official-whale-monochrome.png`],
 }

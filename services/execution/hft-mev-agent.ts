@@ -4,7 +4,7 @@ import crypto from 'crypto';
 /**
  * HFT (High-Frequency Attesting) & MEV Agent Simulator
  * 
- * In a true institutional environment, this worker binds directly to Flashbots Relayers 
+ * In a true sovereign environment, this worker binds directly to Flashbots Relayers 
  * via websockets (`wss://relay.flashbots.net`) and listens to the dark pool mempool.
  * Version 7.0: No Math.random(). Operates deterministically over Active Price Oracles.
  */

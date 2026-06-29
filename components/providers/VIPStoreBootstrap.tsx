@@ -16,7 +16,7 @@ import { useVIPStore, WhaleEvent, parseAlphaEvents } from '@/lib/vip-store';
 
 
 /**
- * VIPStoreBootstrap: The Institutional Oracle Hub
+ * VIPStoreBootstrap: The Sovereign Oracle Hub
  */
 export function VIPStoreBootstrap() {
     const mergeWhaleEvents  = useVIPStore(s => s.mergeWhaleEvents);
@@ -54,7 +54,7 @@ export function VIPStoreBootstrap() {
                     pricesRef.current = { ...pricesRef.current, ...pMap };
                 }
             } catch (err) {
-                console.warn("[Oracle Failure] Reverting to last known institutional coordinates.", err);
+                console.warn("[Oracle Failure] Reverting to last known sovereign coordinates.", err);
             }
         };
 

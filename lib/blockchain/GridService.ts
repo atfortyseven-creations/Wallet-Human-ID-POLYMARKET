@@ -1,6 +1,6 @@
 /**
  *  MIGRATION LIQUIDITY MATRIX SERVICE 
- * Detects "Institutional Pivots" and Capital Migration across the grid.
+ * Detects "Sovereign Pivots" and Capital Migration across the grid.
  */
 
 export interface MigrationEvent {

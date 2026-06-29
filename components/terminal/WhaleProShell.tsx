@@ -571,7 +571,7 @@ export function WhaleProShell({ activeTab, onTabChange, children, isExternalEmbe
             </div>
         </div>
 
-        {/*  INFO MODAL  Noble Institutional  */}
+        {/*  INFO MODAL  Noble Sovereign  */}
         <AnimatePresence>
         {false && (
             <motion.div

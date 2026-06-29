@@ -193,7 +193,7 @@ export class BlockchainService {
 
   /**
    * Relay a UserOperation to the network's Bundler.
-   * This is the entry point for Gasless institutional execution.
+   * This is the entry point for Gasless sovereign execution.
    */
   public async relayUserOperation(chainId: ChainId, userOp: any): Promise<string> {
     const config = this.getChainConfig(chainId);

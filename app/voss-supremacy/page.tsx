@@ -2,7 +2,7 @@ import { VOSS_MASTER_MATRIX } from '@/lib/vossAnalyticsEngine';
 
 export const metadata = {
   title: 'VOSS 2026 Strategic Roadmap | Whale Network',
-  description: 'The 500 Vectors of Institutional Deployment.',
+  description: 'The 500 Vectors of Sovereign Deployment.',
 };
 
 export default function VossSupremacyPage() {
@@ -17,7 +17,7 @@ export default function VossSupremacyPage() {
             VOSS 2026: The 500 Vectors of Strategic Deployment
           </h1>
           <p className="text-lg md:text-xl text-[#666666] max-w-3xl leading-relaxed">
-            Institutional-grade analytics deployment. Constructed on the principles of Zero-Trust Architecture, Cryptographic Permanence, and Enterprise Standards. Every signal sourced directly from live blockchain state. 100% Non-Custodial. 100% Trustless.
+            Sovereign-grade analytics deployment. Constructed on the principles of Zero-Trust Architecture, Cryptographic Permanence, and Cryptographic Standards. Every signal sourced directly from live blockchain state. 100% Non-Custodial. 100% Trustless.
           </p>
         </header>
 
@@ -89,13 +89,13 @@ export default function VossSupremacyPage() {
             </div>
             <div className="bg-[#1A1A1A] text-white p-8">
                <h3 className="font-mono text-sm tracking-widest text-[#8C8C8C] mb-4">PHASE 2 // DAYS 31-90</h3>
-               <p className="text-lg font-medium mb-2">Institutional Distribution</p>
+               <p className="text-lg font-medium mb-2">Sovereign Distribution</p>
                <p className="text-sm text-gray-400">Deployment 126-250. Activation of Secure Enclaves and P2P WebRTC Data Ingestion. Global latency optimization {`<`} 2ms.</p>
             </div>
             <div className="bg-[#1A1A1A] text-white p-8">
                <h3 className="font-mono text-sm tracking-widest text-[#8C8C8C] mb-4">PHASE 3 // DAYS 91-180</h3>
                <p className="text-lg font-medium mb-2">Sustained Growth Engine</p>
-               <p className="text-sm text-gray-400">Elements 251-500. Protocol state validation via EigenLayer. Formal establishment as the institutional industry standard for on-chain intelligence.</p>
+               <p className="text-sm text-gray-400">Elements 251-500. Protocol state validation via EigenLayer. Formal establishment as the sovereign industry standard for on-chain intelligence.</p>
             </div>
           </div>
         </footer>

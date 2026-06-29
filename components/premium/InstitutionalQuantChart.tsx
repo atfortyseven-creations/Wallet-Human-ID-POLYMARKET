@@ -11,7 +11,7 @@
  * - NO React re-renders on data updates: reads store directly inside
  *   a setInterval loop and calls chart API imperatively.
  * - GPU Canvas renderer (lightweight-charts)  zero DOM overhead.
- * - Hardware-accelerated dark mode institutional palette.
+ * - Hardware-accelerated dark mode sovereign palette.
  * 
  */
 
@@ -303,7 +303,7 @@ export function InstitutionalQuantChart() {
             Volume Bars
           </span>
         </div>
-        <span>Whale Network NETWORK · INSTITUTIONAL ENGINE</span>
+        <span>Whale Network NETWORK · SOVEREIGN ENGINE</span>
       </div>
     </div>
   );

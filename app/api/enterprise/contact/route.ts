@@ -1,9 +1,9 @@
 /**
- * POST /api/enterprise/contact
+ * POST /api/cryptographic/contact
  *
- * Enterprise Inquiry Handler
+ * Cryptographic Inquiry Handler
  *
- * Receives enterprise deal inquiries, validates input, persists to DB,
+ * Receives cryptographic deal inquiries, validates input, persists to DB,
  * and sends a confirmation notification to the Telegram admin channel.
  *
  * Body:
@@ -11,7 +11,7 @@
  *     companyName:    string,   // Required
  *     contactName:    string,   // Required
  *     email:          string,   // Required
- *     tier:           'PRO' | 'ENTERPRISE' | 'Private',
+ *     tier:           'PRO' | 'CRYPTOGRAPHIC' | 'Private',
  *     useCase:        string,   // Min 50 chars
  *     teamSize:       number,
  *     currentStack:   string,   // Optional: "Nansen + Arkham + custom"
@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
             });
         } catch {
             // Table not yet migrated  log locally, don't block the user
-            console.log(`[Enterprise] New inquiry ${inquiryId}: ${companyName} (${email})  ${tier}`);
+            console.log(`[Cryptographic] New inquiry ${inquiryId}: ${companyName} (${email})  ${tier}`);
         }
 
         //  Notify Admin via Telegram 
@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
 
         if (botToken && adminChatId) {
             const msg = [
-                `️ <b>NEW ENTERPRISE INQUIRY</b>`,
+                `️ <b>NEW CRYPTOGRAPHIC INQUIRY</b>`,
                 `ID: <code>${inquiryId}</code>`,
                 ``,
                 ` <b>${companyName}</b>`,
@@ -119,13 +119,13 @@ export async function POST(req: NextRequest) {
             success:   true,
             inquiryId,
             tier,
-            message:   ` Enterprise inquiry received. Our team will contact you within 24 hours.`,
+            message:   ` Cryptographic inquiry received. Our team will contact you within 24 hours.`,
             nextSteps: [
                 `Reference ID <${inquiryId}> in all communications`,
                 'Check your email for confirmation',
                 tier === 'Private'
                     ? 'A strategic partnership call will be scheduled within 48h'
-                    : `Schedule a call: https://cal.com/whalealert/enterprise`,
+                    : `Schedule a call: https://cal.com/whalealert/cryptographic`,
             ],
         });
 

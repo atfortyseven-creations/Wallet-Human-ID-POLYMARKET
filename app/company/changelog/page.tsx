@@ -88,7 +88,7 @@ export default function ChangelogPage() {
                                         New Features
                                     </h4>
                                     <ul className="list-disc pl-6 space-y-1 text-sm text-black/70">
-                                        <li><strong>Institutional Grid:</strong> Real-time charts, order book, and attest execution for 30+ pairs</li>
+                                        <li><strong>Sovereign Grid:</strong> Real-time charts, order book, and attest execution for 30+ pairs</li>
                                         <li><strong>Demo Attesting Mode:</strong> Practice with virtual funds before risking real crypto</li>
                                         <li><strong>WebSocket Integration:</strong> Active market data with sub-100ms latency</li>
                                         <li><strong>Multi-Timeframe Charts:</strong> 1m, 5m, 15m, 1h, 4h, 1D, 1W, 1M intervals</li>

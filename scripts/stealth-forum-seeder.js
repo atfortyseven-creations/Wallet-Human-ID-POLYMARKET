@@ -73,7 +73,7 @@ const replyContents = [
     "Try reaching out to Zellic or Trail of Bits, they have ZK teams.",
     "Good point on unconstrained functions. It's an easy vector for bugs if you aren't careful.",
     "The UTXO model for private state combined with account model for public is genius.",
-    "Agreed. Zero knowledge KYC is going to be massive for institutional adoption.",
+    "Agreed. Zero knowledge KYC is going to be massive for sovereign adoption.",
     "A token is needed for sybil resistance on the sequencer layer.",
     "Optimization is key. Avoid loops if you can, unroll them manually."
 ];

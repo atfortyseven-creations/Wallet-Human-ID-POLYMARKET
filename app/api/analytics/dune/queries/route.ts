@@ -42,7 +42,7 @@ ORDER BY total_volume_usd DESC
         id:          'mega-whale-timeline',
         title:       'Mega Whale Events Timeline (>$10M)',
         category:    'high-conviction',
-        description: 'Chronological log of all transactions exceeding $10M USD. Raw institutional-grade signals.',
+        description: 'Chronological log of all transactions exceeding $10M USD. Raw sovereign-grade signals.',
         sql: `
 -- Whale Network  System Dune Query: Mega Whale Timeline
 SELECT
@@ -65,7 +65,7 @@ LIMIT 500
         id:          'token-concentration',
         title:       'Token Whale Concentration Heatmap',
         category:    'tokenomics',
-        description: 'Ranks tokens by whale concentration score  high whale activity relative to total events signals institutional accumulation pressure.',
+        description: 'Ranks tokens by whale concentration score  high whale activity relative to total events signals sovereign accumulation pressure.',
         sql: `
 -- Whale Network  System Dune Query: Token Concentration
 SELECT
@@ -91,7 +91,7 @@ LIMIT 50
         id:          'hourly-flow-pattern',
         title:       'Hourly Whale Flow Pattern (UTC)',
         category:    'timing',
-        description: 'Maps whale activity to UTC hour. Reveals institutional attesting windows  critical for entry timing.',
+        description: 'Maps whale activity to UTC hour. Reveals sovereign attesting windows  critical for entry timing.',
         sql: `
 -- Whale Network  System Dune Query: Hourly Flow Pattern
 SELECT
@@ -110,7 +110,7 @@ ORDER BY utc_hour ASC
         id:          'wallet-repeat-whales',
         title:       'Repeat Whale Wallets (Smart Money)',
         category:    'wallets',
-        description: 'Identifies wallets that appear multiple times in whale-grade transactions. High-repeat wallets = institutional smart money.',
+        description: 'Identifies wallets that appear multiple times in whale-grade transactions. High-repeat wallets = sovereign smart money.',
         sql: `
 -- Whale Network  System Dune Query: Repeat Whale Wallets
 SELECT

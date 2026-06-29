@@ -10,7 +10,7 @@ Humanity Ledger is built on the **Aztec Network**, ensuring that privacy is a fo
 
 ## 2. Timelock Policy
 
-To protect institutional and retail capital against malicious governance upgrades or compromised administrative keys, all protocol smart contracts enforce a strict **Timelock Policy**.
+To protect sovereign and retail capital against malicious governance upgrades or compromised administrative keys, all protocol smart contracts enforce a strict **Timelock Policy**.
 
 ### Timelock Specifications
 - **Delay Period:** 7 Days (168 hours)

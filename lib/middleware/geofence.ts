@@ -61,7 +61,7 @@ export function evaluateGeofence(req: NextRequest): GeoResult {
     return {
       allowed:   false,
       country,
-      reason:    `Access restricted in ${country} per OFAC/EU sanctions compliance`,
+      reason:    `Access restricted in ${country} per OFAC/EU sanctions attestation`,
       system: false,
     };
   }

@@ -93,11 +93,11 @@ const HONEYPOT_PATTERNS = [
   '/actuator(.*)',
 ];
 
-// KYC completely removed by institutional request
+// KYC completely removed by sovereign request
 const GEO_RESTRICTED_PATTERNS = ['/api/polymarket(.*)'];
 const RESTRICTED_COUNTRIES = ['US', 'CU', 'IR', 'KP', 'SY', 'CN', 'RU'];
 
-// SECURITY MIDDLEWARE  "THE IRON GATE v6 - WHALE FORTRESS Enterprise"
+// SECURITY MIDDLEWARE  "THE IRON GATE v6 - WHALE FORTRESS Cryptographic"
 // Absolute protection. Zero Clerk dependency. SIWE-native authentication.
 
 export default async function middleware(request: NextRequest) {
@@ -356,7 +356,7 @@ export default async function middleware(request: NextRequest) {
     const scriptSrc = [
       "'self'",
       `'nonce-${nonce}'`,
-      // R2: 'unsafe-eval' REMOVED  violates CSP Level 3 and institutional audit requirements.
+      // R2: 'unsafe-eval' REMOVED  violates CSP Level 3 and sovereign audit requirements.
       // R2: 'unsafe-inline' REMOVED  nonce-based policy replaces this.
       // 'wasm-unsafe-eval' REQUIRED for @xmtp/browser-sdk WebAssembly execution
       "'wasm-unsafe-eval'",

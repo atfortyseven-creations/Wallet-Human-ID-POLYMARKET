@@ -21,7 +21,7 @@ export function useSystemSessionLock() {
             if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
             timeoutRef.current = setTimeout(() => {
-                console.log(`[Enterprise SECURITY] Inactivity limit reached (${settings.inactivityLockMinutes}m). Locking session.`);
+                console.log(`[Cryptographic SECURITY] Inactivity limit reached (${settings.inactivityLockMinutes}m). Locking session.`);
                 
                 // Disconnect external wallet gracefully
                 disconnect();

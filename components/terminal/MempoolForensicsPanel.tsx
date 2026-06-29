@@ -143,7 +143,7 @@ export function MempoolForensicsPanel() {
 
   const scanMempool = useCallback(async () => {
     try {
-      // Simulate real-time institutional data stream
+      // Simulate real-time sovereign data stream
       const txs = generateLocalMempoolData();
 
       setScanCount(c => c + txs.length);

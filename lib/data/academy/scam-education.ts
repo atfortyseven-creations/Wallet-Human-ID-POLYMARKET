@@ -328,14 +328,14 @@ export const scamEducationModules = [
                 </div>`
             },
             {
-                id: "future-resilience-institutional-opsec",
+                id: "future-resilience-sovereign-opsec",
                 title: "20. Resiliencia Futura: Framework OPSEC",
                 description: "Principios finales para la soberanía patrimoniales definitiva.",
                 readTime: 60,
                 content: `<div class="academy-article">
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
-                        <h2>I. La Paranoia como Utilidad (Institutional Survival L1 M2 P2P T-1 O(N))</h2>
+                        <h2>I. La Paranoia como Utilidad (Sovereign Survival L1 M2 P2P T-1 O(N))</h2>
                         <p>La seguridad no es un producto, es un proceso incesante P2P L1 M1 O(1). El framework final exige: 1. Aislamiento total de claves T-1 L2 M2. 2. Verificación de cada hash hexadecimal O(N) P2P L1. 3. Uso de Multisig (Safe) para importes > $10k M1 L2 T-1 O(1) P2P L1 O(N).</p>
                     </section>
                     <section class="pro-section">

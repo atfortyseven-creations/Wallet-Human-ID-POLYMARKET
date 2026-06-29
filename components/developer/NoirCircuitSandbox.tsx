@@ -43,7 +43,7 @@ fn main(
 `,
   },
   {
-    label: "AML / Travel Rule Compliance",
+    label: "AML / Travel Rule Attestation",
     difficulty: "EXTREME",
     code: `// Proves an identity is verified (Merkle) and not in a sanctioned region (Range)
 use std::merkle::compute_merkle_root;

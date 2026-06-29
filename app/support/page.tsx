@@ -34,19 +34,19 @@ const FAQ_ITEMS = [
   },
   {
     q: "Which blockchain networks does the platform monitor?",
-    a: "The platform currently monitors sixteen EVM-compatible networks (Ethereum Mainnet, BNB Smart Chain, Arbitrum One, Arbitrum Nova, Optimism, Base, Polygon PoS, zkSync Era, Linea, Scroll, Mantle, Blast, Mode, Zora, Avalanche C-Chain, and Celo) plus Solana via WebSocket subscription to priority fee auction activity. The chain set is expanded continuously as network liquidity and institutional activity levels on candidate networks reach the threshold required to generate statistically meaningful signals."
+    a: "The platform currently monitors sixteen EVM-compatible networks (Ethereum Mainnet, BNB Smart Chain, Arbitrum One, Arbitrum Nova, Optimism, Base, Polygon PoS, zkSync Era, Linea, Scroll, Mantle, Blast, Mode, Zora, Avalanche C-Chain, and Celo) plus Solana via WebSocket subscription to priority fee auction activity. The chain set is expanded continuously as network liquidity and sovereign activity levels on candidate networks reach the threshold required to generate statistically meaningful signals."
   },
   {
     q: "What is the Akashic Ledger and how does it differ from the live feed?",
-    a: "The Akashic Ledger is the platform's permanent institutional record. It documents capital movements that satisfy a higher entry threshold than the live feed: a USD-equivalent value above $50 million, confirmed blockchain finality, corroboration by at least one secondary sentinel node, and an editorial determination that the movement represents genuine institutional repositioning rather than routine custodial treasury management. Each entry carries a SHA-256 integrity hash that enables independent tamper detection. The live feed surfaces all events above the configurable threshold in real time; the Akashic Ledger preserves only those of historic macroeconomic significance, with editorial context that contextualizes each movement within the geopolitical and derivatives market conditions prevailing at the time."
+    a: "The Akashic Ledger is the platform's permanent sovereign record. It documents capital movements that satisfy a higher entry threshold than the live feed: a USD-equivalent value above $50 million, confirmed blockchain finality, corroboration by at least one secondary sentinel node, and an editorial determination that the movement represents genuine sovereign repositioning rather than routine custodial treasury management. Each entry carries a SHA-256 integrity hash that enables independent tamper detection. The live feed surfaces all events above the configurable threshold in real time; the Akashic Ledger preserves only those of historic macroeconomic significance, with editorial context that contextualizes each movement within the geopolitical and derivatives market conditions prevailing at the time."
   },
   {
-    q: "How does the Mass Transfer Analytics module detect coordinated institutional flows?",
-    a: "Institutional actors rarely execute large position adjustments as single transactions, as doing so telegraphs the attest and moves the market against them before execution completes. The Mass Transfer Analytics module addresses this by applying Neo4j graph clustering to identify groups of transactions that share temporal proximity (within a 15-minute sliding window), directional alignment, and origin wallet relationships derived from historical transaction graph analysis. Clusters whose aggregate USD value exceeds the Megalodon threshold and whose origin addresses share a graph distance of three or fewer hops are surfaced as coordinated movement events. This methodology successfully reconstructed the coordination structure of the November 2022 FTX pre-collapse withdrawal cascade across seventeen wallet clusters and four chains, which no single-transaction monitoring system detected as a coordinated event in real time."
+    q: "How does the Mass Transfer Analytics module detect coordinated sovereign flows?",
+    a: "Sovereign actors rarely execute large position adjustments as single transactions, as doing so telegraphs the attest and moves the market against them before execution completes. The Mass Transfer Analytics module addresses this by applying Neo4j graph clustering to identify groups of transactions that share temporal proximity (within a 15-minute sliding window), directional alignment, and origin wallet relationships derived from historical transaction graph analysis. Clusters whose aggregate USD value exceeds the Megalodon threshold and whose origin addresses share a graph distance of three or fewer hops are surfaced as coordinated movement events. This methodology successfully reconstructed the coordination structure of the November 2022 FTX pre-collapse withdrawal cascade across seventeen wallet clusters and four chains, which no single-transaction monitoring system detected as a coordinated event in real time."
   },
   {
-    q: "How do I access institutional-grade features and what are the tier requirements?",
-    a: "The platform operates on a tiered access model. The Community tier provides access to the live whale feed, basic portfolio analytics, and the public API. The Institutional tier, activated via World ID proof-of-personhood verification combined with the requisite Gold Whale Network membership credential, provides access to the Akashic Ledger, Mass Transfer Analytics, the System Vault transaction suite, and the full 99-endpoint institutional API with HMAC-signed request authentication. Tier credentials are issued as EIP-712 signed off-chain documents and optionally registered as non-transferable ERC-1155 tokens on Ethereum Mainnet for on-chain verifiability."
+    q: "How do I access sovereign-grade features and what are the tier requirements?",
+    a: "The platform operates on a tiered access model. The Community tier provides access to the live whale feed, basic portfolio analytics, and the public API. The Sovereign tier, activated via World ID proof-of-personhood verification combined with the requisite Gold Whale Network membership credential, provides access to the Akashic Ledger, Mass Transfer Analytics, the System Vault transaction suite, and the full 99-endpoint sovereign API with HMAC-signed request authentication. Tier credentials are issued as EIP-712 signed off-chain documents and optionally registered as non-transferable ERC-1155 tokens on Ethereum Mainnet for on-chain verifiability."
   },
   {
     q: "What should I do if a transaction fails or is stuck pending?",
@@ -74,7 +74,7 @@ const CHANNELS = [
   {
     icon: Twitter,
     label: "X (Twitter)",
-    desc: "Follow @whalecosystem for real-time analytics pulses, system status announcements, and institutional market commentary. Direct messages for time-sensitive operational issues are monitored continuously.",
+    desc: "Follow @whalecosystem for real-time analytics pulses, system status announcements, and sovereign market commentary. Direct messages for time-sensitive operational issues are monitored continuously.",
     link: "https://x.com/whalecosystem",
     cta: "Follow @whalecosystem",
   },
@@ -118,7 +118,7 @@ function SupportHero() {
           <span className="block font-light" style={{ color: MUTED }}>Support</span>
         </h1>
         <p className="text-base leading-relaxed max-w-lg mx-auto" style={{ color: MUTED }}>
-          Institutional-grade assistance for every participant in the network. The support centre operates continuously to ensure your access to analytics infrastructure remains uninterrupted.
+          Sovereign-grade assistance for every participant in the network. The support centre operates continuously to ensure your access to analytics infrastructure remains uninterrupted.
         </p>
       </motion.div>
     </div>

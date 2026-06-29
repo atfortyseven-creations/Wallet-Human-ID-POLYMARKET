@@ -97,7 +97,7 @@ export const config = createConfig({
             projectId: WC_PROJECT_ID,
             metadata: {
                 name: 'Human ID',
-                description: 'Institutional Grade Blockchain Intelligence',
+                description: 'Sovereign Grade Blockchain Intelligence',
                 url: CANONICAL_APP_URL,
                 icons: [`${CANONICAL_APP_URL}/official-whale-monochrome.png`],
             },

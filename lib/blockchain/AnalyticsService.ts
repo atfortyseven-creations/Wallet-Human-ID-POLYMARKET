@@ -317,7 +317,7 @@ export class AnalyticsService {
     }
 
     /**
-     *  [Enterprise DISCOVERY] getActiveYieldOpportunities
+     *  [Cryptographic DISCOVERY] getActiveYieldOpportunities
      * Scans real on-chain liquidity pools via Premium RPCs. 
      * Eradicates the need for static mock lists.
      */
@@ -356,7 +356,7 @@ export class AnalyticsService {
     }
 
     /**
-     *  [Enterprise DISCOVERY] getActiveGovProposals
+     *  [Cryptographic DISCOVERY] getActiveGovProposals
      * Fetches real-time DAO proposals (Optimism, Uniswap, Aave) via Snapshot/Tally logic blueprints.
      */
     public async getActiveGovProposals(): Promise<any[]> {

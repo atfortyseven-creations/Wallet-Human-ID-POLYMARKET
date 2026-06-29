@@ -1,12 +1,12 @@
 /**
  *  Whale Network NETWORK  NEWS INTELLIGENCE DOMAIN
- * Institutional-grade type definitions for forensic news analysis.
+ * Sovereign-grade type definitions for forensic news analysis.
  */
 
 export type MarketSentiment = 'bullish' | 'bearish' | 'neutral';
 
 /**
- * Valid reliability levels for institutional analysis.
+ * Valid reliability levels for sovereign analysis.
  */
 export type AnalyticsReliability = 'low' | 'medium' | 'high';
 

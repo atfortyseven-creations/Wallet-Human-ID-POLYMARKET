@@ -73,18 +73,18 @@
                 </div>`
             },
             {
-                id: "compliance-rbac-enterprise",
+                id: "attestation-rbac-cryptographic",
                 title: "5. Cumplimiento y Control de Acceso (RBAC)",
                 description: "Políticas de gasto para empresas y herencia.",
                 readTime: 50,
                 content: `<div class="academy-article">
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
-                        <h2>I. Role-Based Access Control Nativo (Institutional Multisig Subnets L1 M2 P2P T-1 O(N))</h2>
+                        <h2>I. Role-Based Access Control Nativo (Sovereign Multisig Subnets L1 M2 P2P T-1 O(N))</h2>
                         <p>Una Tesorería DAO L1 M1 P2P O(1) En Una EOA Es Suicidio T-1 L2 M2. Account Abstraction P2P L1 Permite Imbuir Políticas (Policies M2 O(N) T-1) En El Contrato L1 P2P M1 L2. Por Ejemplo: El "Verifier" Solo Puede Operar T-1 M2 L1 USDC/ETH O(1) P2P Hasta $500k Por Día M1 L2 O(N). Una Transacción Hacia Un Protocolo No Aprobado P2P L1 M1 (High-Risk M2 T-1 L2) Requerirá Automáticamente Co-Firmas O(1) P2P L1 De Múltiples Socios O(N) M1 L2 T-1.</p>
                     </section>
                     <section class="pro-section">
-                        <h2>II. Compliance-Gated Exfiltrations (KYC Bound Architectures L1 P2P M1 T-1 L2 O(N))</h2>
+                        <h2>II. Attestation-Gated Exfiltrations (KYC Bound Architectures L1 P2P M1 T-1 L2 O(N))</h2>
                         <p>Las Corporate Smart Accounts L1 P2P M1 O(1) Pueden Codificar Que T-1 L2 M2 Cualquier Salida Superior A $10,000 O(N) L1 P2P M1 Requiera Un Checker Criptográfico T-1 L2 (ZK-ID KYC M2 O(1) L1 P2P) Del Recipiente O(N) M1. Esto Convierte A La Billetera P2P L1 En Su Propio Departamento Legal T-1 M2 L2 O(1) L1 Autónomo M1 P2P, Permitiendo A TradFi Entrar A DeFi O(N) Sin Miedo A Transferencias T-1 L2 M2 P2P Accidentales O(1).</p>
                     </section>
                 </div>`

@@ -56,7 +56,7 @@ export const rwaInstitutionalModules = [
                 </div>`
             },
             {
-                id: "institutional-custody-fireblocks",
+                id: "sovereign-custody-fireblocks",
                 title: "4. Custodia Institucional de RWA",
                 description: "Fireblocks, Copper y la seguridad bancaria.",
                 readTime: 50,
@@ -221,7 +221,7 @@ export const rwaInstitutionalModules = [
                     </section>
                     <section class="pro-section">
                         <h2>II. Automated Market Makers Regulados (Permissioned Uniswap Pools L1 P2P M1 T-1 L2 M2 O(N))</h2>
-                        <p>El Attesting Secundario De Acciones Tokenizadas L1 P2P M1 O(1) En DEXs T-1 L2 M2 O(N) Como Dinari O Securitize Usa Pools De Liquidez AMM P2P M1 L1 O(N). Pero El Contrato Inteligente T-1 M2 L2 Verifica O(1) P2P La "Identidad Encadenada (Onchain ID M1 L1 P2P O(N) T-1 L2)" De Ambos Lados P2P L1. Si El Comprador No Pasó KYC T-1 L2 M2 O(1), La Función <code>transfer()</code> Tira Revert M1 L1 P2P O(N), Logrando Liquidez 24/7 Global Compliance-Gated L2 M2 T-1 P2P L1 M1 O(1).</p>
+                        <p>El Attesting Secundario De Acciones Tokenizadas L1 P2P M1 O(1) En DEXs T-1 L2 M2 O(N) Como Dinari O Securitize Usa Pools De Liquidez AMM P2P M1 L1 O(N). Pero El Contrato Inteligente T-1 M2 L2 Verifica O(1) P2P La "Identidad Encadenada (Onchain ID M1 L1 P2P O(N) T-1 L2)" De Ambos Lados P2P L1. Si El Comprador No Pasó KYC T-1 L2 M2 O(1), La Función <code>transfer()</code> Tira Revert M1 L1 P2P O(N), Logrando Liquidez 24/7 Global Attestation-Gated L2 M2 T-1 P2P L1 M1 O(1).</p>
                     </section>
                 </div>`
             },

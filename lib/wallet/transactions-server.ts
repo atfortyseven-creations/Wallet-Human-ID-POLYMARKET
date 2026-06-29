@@ -78,7 +78,7 @@ export async function getTransactionHistory(authUserId: string, options?: any) {
       type: w.type,
       timestamp: w.timestamp,
       isWhale: true,
-      institutional: w.institutional,
+      sovereign: w.sovereign,
       valueBTC: w.valueBTC,
       source: 'WHALE_INTEL'
     })),

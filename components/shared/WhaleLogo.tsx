@@ -8,7 +8,7 @@ export function WhaleLogo({
     className = "w-10 h-10", 
     priority = true 
 }: { className?: string; priority?: boolean }) {
-    // Reference the institutional logo
+    // Reference the sovereign logo
     return (
         <div className={`relative flex items-center justify-center ${className}`}>
             <Image

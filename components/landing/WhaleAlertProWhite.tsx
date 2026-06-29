@@ -74,7 +74,7 @@ const PRICING_TIERS: PricingTier[] = [
     tagline: 'Zero-latency execution.',
     accentColor: '#FF9500',
     features: [
-      { text: 'All Institutional Features', included: true },
+      { text: 'All Sovereign Features', included: true },
       { text: 'Co-located Node Hosting', included: true },
       { text: 'Direct Market Execution', included: true },
       { text: '24/7 Forensic Concierge', included: true }
@@ -233,7 +233,7 @@ export default function WhaleAlertProWhite() {
           </h1>
           
           <p className="text-[18px] sm:text-[22px] font-medium text-slate-500 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-            Whale Network is the institutional platform for self-managing crypto portfolios. We intercept global mempool data so you can track massive liquidity shifts instantly.
+            Whale Network is the sovereign platform for self-managing crypto portfolios. We intercept global mempool data so you can track massive liquidity shifts instantly.
           </p>
           
           <div className="flex flex-col sm:flex-row items-center gap-6 justify-center lg:justify-start pt-4">
@@ -273,7 +273,7 @@ export default function WhaleAlertProWhite() {
                     The blockchain is a global ledger, but retail verifiers only see transactions after they are confirmed. By the time the news breaks, the market has already moved.
                 </p>
                 <p className="text-[18px] text-slate-500 leading-relaxed font-medium">
-                    Our infrastructure intercepts pending transactions directly from the mempools of 14 major networks. We parse this raw data in milliseconds, allowing you to witness institutional capital flight or accumulation before it reflects on the price chart. You see the future; they see the past.
+                    Our infrastructure intercepts pending transactions directly from the mempools of 14 major networks. We parse this raw data in milliseconds, allowing you to witness sovereign capital flight or accumulation before it reflects on the price chart. You see the future; they see the past.
                 </p>
                 <div className="flex items-center gap-6 pt-4 border-t border-slate-100 mt-8">
                     <div className="flex items-center gap-2">
@@ -293,7 +293,7 @@ export default function WhaleAlertProWhite() {
                     <Activity size={24} className="text-[#0044CC]" />
                 </div>
                 <h2 className="text-[36px] sm:text-[48px] font-black text-[#0A0A0A] leading-[1.1] tracking-tight">
-                    Institutional Attest Detection.
+                    Sovereign Attest Detection.
                 </h2>
                 <p className="text-[18px] text-slate-500 leading-relaxed font-medium">
                     Whales attempt to hide their massive orders by splitting them across decentralized exchanges or utilizing dark pools. Our heuristic engine acts as an inescapable net.

@@ -183,7 +183,7 @@ export async function safeRedisGet(key: string): Promise<string | null | 'TIMEOU
             return await (redisClient as any).get(key);
         }
         
-        // Institutional grade timeout: 1500ms.
+        // Sovereign grade timeout: 1500ms.
         return await Promise.race([
             redisClient.get(key),
             new Promise<'TIMEOUT'>((resolve) => setTimeout(() => resolve('TIMEOUT'), 1500))

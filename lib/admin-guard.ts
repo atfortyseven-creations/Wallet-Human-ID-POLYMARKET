@@ -1,7 +1,7 @@
 /**
  * lib/admin-guard.ts
  * 
- * Institutional-grade authorization guard for all /api/admin/* routes.
+ * Sovereign-grade authorization guard for all /api/admin/* routes.
  *
  * Strategy:
  *   1. Header-based secret: `X-Admin-Secret: <ADMIN_SECRET env var>`  used for

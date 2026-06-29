@@ -17,7 +17,7 @@ export default function InstitutionalHeader() {
 
   const handleMenuAction = async (actionId: string, payload?: any) => {
     try {
-      const res = await fetch('/api/institutional', {
+      const res = await fetch('/api/sovereign', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: actionId, payload }),
@@ -74,7 +74,7 @@ export default function InstitutionalHeader() {
              </button>
              {activeMenu === 'view' && (
                <div className="absolute top-full left-0 mt-1 w-56 bg-white border border-black/10 shadow-2xl py-2 z-50 rounded-xl overflow-hidden">
-                 <button onClick={() => handleMenuAction('view_toggle_mode', 'institutional')} className="w-full text-left px-5 py-3 hover:bg-[#FFFFFF] transition-colors text-[9px]">Forensic Mode</button>
+                 <button onClick={() => handleMenuAction('view_toggle_mode', 'sovereign')} className="w-full text-left px-5 py-3 hover:bg-[#FFFFFF] transition-colors text-[9px]">Forensic Mode</button>
                  <button onClick={() => handleMenuAction('view_toggle_mode', 'standard')} className="w-full text-left px-5 py-3 hover:bg-[#FFFFFF] transition-colors text-[9px]">Standard Mode</button>
                </div>
              )}

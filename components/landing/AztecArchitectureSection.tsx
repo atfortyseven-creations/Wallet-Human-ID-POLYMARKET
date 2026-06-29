@@ -88,7 +88,7 @@ export function AztecArchitectureSection() {
   return (
     <section
       className="w-full bg-[#FFFFFF] border-t border-black/8"
-      aria-label="Institutional Security Architecture"
+      aria-label="Sovereign Security Architecture"
     >
       <div className="w-full max-w-[2560px] mx-auto px-5 sm:px-8 py-24 flex flex-col gap-16 items-center">
 
@@ -196,7 +196,7 @@ export function AztecArchitectureSection() {
               Deep Integration Substrate
             </h3>
             <p className="font-serif text-[15px] text-[#444] leading-relaxed text-left">
-              The fusion of the Humanity Ledger and Aztec Network creates an impenetrable cryptographic shield. This integration relies on specialized primitives operating in perfect synchrony, designed strictly for entities requiring institutional-grade execution without compromising strategic opacity.
+              The fusion of the Humanity Ledger and Aztec Network creates an impenetrable cryptographic shield. This integration relies on specialized primitives operating in perfect synchrony, designed strictly for entities requiring sovereign-grade execution without compromising strategic opacity.
             </p>
             <div className="w-full bg-white rounded-[2rem] border border-black/10 shadow-sm flex items-center justify-center p-6 overflow-hidden relative mt-4">
                <div className="absolute inset-0 bg-gradient-to-b from-[#FFFFFF]/50 to-transparent mix-blend-multiply pointer-events-none" />
@@ -221,7 +221,7 @@ export function AztecArchitectureSection() {
         {/*  Closing Statement  */}
         <div className="w-full max-w-[850px] border-l-2 border-black pl-5 flex flex-col gap-2">
           <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-black/35 font-bold">
-            The Institutional Edge
+            The Sovereign Edge
           </span>
           <p className="font-serif text-[14px] text-[#444] leading-relaxed text-left">
             Your analytics is only as valuable as your ability to protect it. 

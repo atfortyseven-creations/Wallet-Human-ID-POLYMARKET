@@ -266,7 +266,7 @@ export const HeikinAshiChart = memo(({
                     {/* Momentum Grid */}
                     <div className="bg-white border border-slate-200 rounded-3xl p-8 flex flex-col justify-center gap-5 shadow-sm">
                         <div className="flex justify-between items-end">
-                            <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em]">Institutional Conviction</span>
+                            <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em]">Sovereign Conviction</span>
                             <span className="text-3xl font-black text-emerald-600 font-mono bg-emerald-50 px-4 py-1 rounded-xl border border-emerald-100">{buyPct.toFixed(1)}% <span className="text-[10px] text-emerald-600/60 uppercase tracking-widest ml-1">Buy Side</span></span>
                         </div>
                         <div className="relative h-3 w-full bg-slate-100 rounded-full overflow-hidden flex shadow-inner">

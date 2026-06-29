@@ -13,9 +13,9 @@ const PLAN_PRICE_IDS: Record<string, string> = {
 };
 
 const PLAN_NAMES: Record<string, string> = {
-  STARTER: 'Institutional License Lease  STARTER',
-  PRO:     'Institutional License Lease  PRO',
-  ELITE:   'Institutional License Lease  ELITE',
+  STARTER: 'Sovereign License Lease  STARTER',
+  PRO:     'Sovereign License Lease  PRO',
+  ELITE:   'Sovereign License Lease  ELITE',
 };
 
 /**
@@ -132,7 +132,7 @@ export async function createCheckoutSession(planId: string) {
 }
 
 /**
- * Creates a Stripe Customer Portal session for EU DSA Compliance (Self-Service Cancel/Upgrade)
+ * Creates a Stripe Customer Portal session for EU DSA Attestation (Self-Service Cancel/Upgrade)
  */
 export async function createCustomerPortalSession() {
   const siweSession = await getSession();

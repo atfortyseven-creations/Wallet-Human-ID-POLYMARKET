@@ -34,7 +34,7 @@ export function ConnectWalletModal() {
         }
     }, [isConnectModalOpen]);
 
-    //  [Enterprise MANDATE] QR Handshake Completion Listener 
+    //  [Cryptographic MANDATE] QR Handshake Completion Listener 
     // This event is only fired by WalletConnectionBridge when the SSE
     // auth-complete event is received (i.e. a QR scan was completed on
     // a connected mobile device). We close the modal but do NOT force
@@ -169,7 +169,7 @@ export function ConnectWalletModal() {
                                             Select Provider
                                         </h2>
                                         <p className="text-[10px] sm:text-[11px] text-black/60 font-sans leading-relaxed">
-                                            Connect your wallet to access institutional tools and on-chain analytics.
+                                            Connect your wallet to access sovereign tools and on-chain analytics.
                                         </p>
                                     </div>
 

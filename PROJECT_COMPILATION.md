@@ -1,10 +1,10 @@
 #  WHALE ALERT NETWORK  MASTER COMPILATION v3.0.0
-## System Analytics Terminal  Institutional Hardening Edition
+## System Analytics Terminal  Sovereign Hardening Edition
 
 > *"The most dangerous market participant is not the largest whale,*  
 > *but the one whose capital trajectory is invisible to all observers except one."*
 
-**Version**: 3.0.0  Institutional Hardening  
+**Version**: 3.0.0  Sovereign Hardening  
 **Status**: PRODUCTION READY  
 **arXiv**: 10.48550/arXiv.2026.WAN.EVMThermo.v1 (submitted)
 
@@ -12,7 +12,7 @@
 
 ## ️ 1. ARCHITECTURAL OVERVIEW
 
-Whale Alert Network is a **System On-Chain Analytics Terminal**  a local-first, zero-trust platform that delivers institutional-grade whale detection with sub-900ms latency across 5 blockchains, without storing user query patterns on any cloud server.
+Whale Alert Network is a **System On-Chain Analytics Terminal**  a local-first, zero-trust platform that delivers sovereign-grade whale detection with sub-900ms latency across 5 blockchains, without storing user query patterns on any cloud server.
 
 ### Core Pillars
 
@@ -59,7 +59,7 @@ Z(t) = (E(t) - μ_E(t-14..t-1)) / σ_E(t-14..t-1)
 | Z-Score | Classification | Action |
 |---------|----------------|--------|
 | 1.52.0 | Accumulation Whisper | Monitor |
-| 2.03.0 | Institutional Probe | Alert |
+| 2.03.0 | Sovereign Probe | Alert |
 | 3.04.5 | High-Conviction Move | Priority Alert |
 | >4.5    | Mega Event Precursor | Emergency Signal |
 
@@ -122,8 +122,8 @@ WhaleStreamContext (React)
 | `/api/leaderboard/hall-of-fame` | GET/POST | Community detection registry |
 | `/api/ambassador` | GET/POST | Ambassador program + referral codes |
 | `/api/powered-by` | GET/POST | dApp integration registry |
-| `/api/enterprise` | GET | Edition feature grid |
-| `/api/enterprise/contact` | POST | Enterprise inquiry (Telegram admin notification) |
+| `/api/cryptographic` | GET | Edition feature grid |
+| `/api/cryptographic/contact` | POST | Cryptographic inquiry (Telegram admin notification) |
 | `/api/systemty/vault` | GET/POST | System vault state management |
 | `/api/alerts` | GET/POST/DELETE | User alert rules |
 
@@ -156,7 +156,7 @@ docker build -t whale-alert:3.0.0 .
 docker run -p 3000:3000 --env-file .env.production whale-alert:3.0.0
 ```
 
-### Kubernetes (Institutional)
+### Kubernetes (Sovereign)
 ```bash
 kubectl apply -f k8s/           # All manifests (namespace  ingress)
 # OR one-command via Helm:
@@ -187,7 +187,7 @@ BASE_TIMELOCK_ADDRESS # Deployed HumanTimeLock contract
 - [x] Dune Analytics integration (export + 6 queries)
 - [x] Hall of Fame + Ambassador Program
 - [x] Kubernetes + Helm chart
-- [x] Enterprise Edition (4-tier, SLA guarantees)
+- [x] Cryptographic Edition (4-tier, SLA guarantees)
 - [x] Academic paper (arXiv submitted)
 - [x] State of Whale Analytics 2026 report
 
@@ -199,7 +199,7 @@ BASE_TIMELOCK_ADDRESS # Deployed HumanTimeLock contract
 
 ###  Q4 2026  v1.0 General Availability
 - [ ] Full security audit by Trail of Bits / Spearbit
-- [ ] MiCA Compliance Layer (European institutional tier)
+- [ ] MiCA Attestation Layer (European sovereign tier)
 - [ ] 10,000 system node network
 - [ ] Ethereum Improvement Proposal submission (EVM Thermodynamics standard)
 
@@ -220,7 +220,7 @@ BASE_TIMELOCK_ADDRESS # Deployed HumanTimeLock contract
 
 ---
 
-**[System Status: INSTITUTIONAL GRADE. Protocol v3.0.0 Active.]**  
+**[System Status: SOVEREIGN GRADE. Protocol v3.0.0 Active.]**  
 *Compiled by Whale Network Team  April 2026  Phase 6 Complete*
 
 ```

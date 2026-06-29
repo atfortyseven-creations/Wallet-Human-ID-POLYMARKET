@@ -967,7 +967,7 @@ uint256 userSharesSafe = (amount * totalSupply) / totalAssets;
         ]
     },
     {
-        id: "institutional-flow",
+        id: "sovereign-flow",
         title: "II. Dinámicas Estocásticas del Flujo Institucional",
         description: "Estudio profundo de la liquidez algorítmica y el flujo en AMMs. 20 Módulos de Máxima Perfección.",
         articles: [
@@ -1114,7 +1114,7 @@ uint256 userSharesSafe = (amount * totalSupply) / totalAssets;
                 </div>`
             },
             {
-                id: "institutional-future",
+                id: "sovereign-future",
                 title: "5. El Futuro del Flujo Institucional: Redes Privadas y Permissioned",
                 description: "Convergencia entre regulación financiera y descentralización programable.",
                 readTime: 300,
@@ -1122,11 +1122,11 @@ uint256 userSharesSafe = (amount * totalSupply) / totalAssets;
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. La Red Privada vs Mempool Público</h2>
-                        <p>El flujo institucional está migrando del mempool público hacia entornos <strong>Permissioned</strong> y Order Flow Privado. La adopción de redes como <em>Enterprise Ethereum</em> o subnets privadas permite a las instituciones cumplir con KYC/AML a nivel de protocolo, garantizando que sus transacciones no interactúen con billeteras sancionadas. Esto crea un mercado de dos niveles: el DeFi público permissionless y el DeFi institucional amurallado.</p>
+                        <p>El flujo institucional está migrando del mempool público hacia entornos <strong>Permissioned</strong> y Order Flow Privado. La adopción de redes como <em>Cryptographic Ethereum</em> o subnets privadas permite a las instituciones cumplir con KYC/AML a nivel de protocolo, garantizando que sus transacciones no interactúen con billeteras sancionadas. Esto crea un mercado de dos niveles: el DeFi público permissionless y el DeFi institucional amurallado.</p>
                     </section>
 
                     <section class="pro-section">
-                        <h2>II. Programabilidad del Cumplimiento (Compliance-as-Code)</h2>
+                        <h2>II. Programabilidad del Cumplimiento (Attestation-as-Code)</h2>
                         <p>El futuro reside en los <strong>Privacy-Preserving Protocols</strong> que utilizan Zero-Knowledge Proofs (ZKP) para demostrar cumplimiento regulatorio sin exponer la estrategia de attesting o el balance total. Para la Whale Academy, esto representa el clímax de la soberanía: control absoluto de la identidad y el flujo de datos, operando con eficiencia institucional pero con la privacidad del "Bosque Oscuro".</p>
                         
                         <div class="diagram-container">
@@ -1138,7 +1138,7 @@ uint256 userSharesSafe = (amount * totalSupply) / totalAssets;
                                 <text x="250" y="65" fill="#fff" text-anchor="middle" style="font-size: 10px;">ZK-Proof</text>
                                 
                                 <rect x="300" y="40" width="200" height="70" fill="rgba(255,166,0,0.1)" stroke="#ffa600" stroke-width="2" />
-                                <text x="400" y="70" fill="#ffa600" text-anchor="middle" style="font-weight: bold;">Compliance Validator</text>
+                                <text x="400" y="70" fill="#ffa600" text-anchor="middle" style="font-weight: bold;">Attestation Validator</text>
                                 <text x="400" y="90" fill="#fff" text-anchor="middle" style="font-size: 10px;">(Protocol Level)</text>
                                 
                                 <path d="M500 75 L600 75" stroke="#4d94ff" marker-end="url(#arrowhead)" />

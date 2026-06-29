@@ -1,5 +1,5 @@
 ﻿/**
- * Whale Network NETWORK - INSTITUTIONAL CONSTANTS
+ * Whale Network NETWORK - SOVEREIGN CONSTANTS
  * 
  * Centralized registry for visual assets, identities, and system parameters.
  */
@@ -18,7 +18,7 @@ export const VISUAL_ASSETS = {
 };
 
 export const SYSTEM_THEME = {
-    BG: '#FFFFFF', // Institutional Ivory-and-Ink Standard
+    BG: '#FFFFFF', // Sovereign Ivory-and-Ink Standard
     INK: '#0A0A0A',
     MUTED: 'rgba(10, 10, 10, 0.60)',
     ACCENT: '#0044CC', // Blue highlight

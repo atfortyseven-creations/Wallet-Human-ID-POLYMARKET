@@ -298,8 +298,8 @@ export function PassportView({ passport }: { passport: ProductPassportPublic }) 
       <div
         className={`w-full px-5 py-3 flex items-center justify-center gap-2 text-[11px] font-black uppercase tracking-widest ${
           isAnchored
-            ? \`\${theme.bannerVerifiedBg} \${theme.bannerVerifiedText}\`
-            : \`\${theme.bannerPendingBg} \${theme.bannerPendingText}\`
+            ? `${theme.bannerVerifiedBg} ${theme.bannerVerifiedText}`
+            : `${theme.bannerPendingBg} ${theme.bannerPendingText}`
         }`}
       >
         {isAnchored ? (
@@ -370,7 +370,7 @@ export function PassportView({ passport }: { passport: ProductPassportPublic }) 
                   theme={theme}
                   icon={<Leaf size={15} />}
                   label="Reported carbon footprint"
-                  value={\`\${p.carbonKg} kg CO₂e\`}
+                  value={`${p.carbonKg} kg CO₂e`}
                 />
               )}
               {passport.gs1Gtin && (
@@ -415,11 +415,11 @@ export function PassportView({ passport }: { passport: ProductPassportPublic }) 
                   )}
                   {/* Dot */}
                   <div
-                    className={\`mt-1 w-3.5 h-3.5 rounded-full border-2 shrink-0 z-10 \${
+                    className={`mt-1 w-3.5 h-3.5 rounded-full border-2 shrink-0 z-10 ${
                       ev.eventType === 'revoked'
                         ? 'border-black/50 bg-black/20'
-                        : \`\${theme.cardBg} border-black/80\`
-                    }\`}
+                        : `${theme.cardBg} border-black/80`
+                    }`}
                   />
                   <div className="pb-5 min-w-0 flex-1">
                     <p className={`text-[10px] font-black uppercase tracking-widest ${theme.textMuted}`}>

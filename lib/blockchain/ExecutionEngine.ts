@@ -5,7 +5,7 @@ import { type Address, type Hex } from 'viem';
 
 /**
  * ExecutionEngine
- * The heart of deterministic institutional execution.
+ * The heart of deterministic sovereign execution.
  * Orchestrates signal transformation, UserOp construction, and high-frequency relaying.
  */
 export class ExecutionEngine {
@@ -30,7 +30,7 @@ export class ExecutionEngine {
                 host: process.env.REDIS_HOST || 'localhost',
                 port: parseInt(process.env.REDIS_PORT || '6379'),
             },
-            concurrency: 50 // High-concurrency for institutional scale
+            concurrency: 50 // High-concurrency for sovereign scale
         });
     }
 
@@ -55,7 +55,7 @@ export class ExecutionEngine {
         const { chainId, owner, calls } = data;
         const saService = SmartAccountService.createForChain(chainId);
 
-        // Note: In an institutional agent flow, we would retrieve the session key
+        // Note: In an sovereign agent flow, we would retrieve the session key
         // and its scoped signer here.
         const account = await saService.getKernelAccount({ address: owner });
         const client = await saService.createClient(account);

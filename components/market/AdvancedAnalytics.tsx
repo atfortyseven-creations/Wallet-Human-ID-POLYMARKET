@@ -100,7 +100,7 @@ export function AdvancedAnalytics() {
                     {/* "Backend" Indicator */}
                     <div className="absolute bottom-4 left-4 text-[10px] font-mono text-[#00ff9d] flex items-center gap-1.5 opacity-50 group-hover:opacity-100 transition-opacity">
                         <span className="w-1.5 h-1.5 bg-[#00ff9d] rounded-full animate-pulse" />
-                        WebSocket Connected: wss://feed.institutional.pro/v1/stream
+                        WebSocket Connected: wss://feed.sovereign.pro/v1/stream
                     </div>
                 </div>
 

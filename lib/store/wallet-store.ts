@@ -7,7 +7,7 @@ import CryptoJS from 'crypto-js';
 import { TransactionManager } from '@/lib/tx-manager';
 import { sealSessionKey, unsealSessionKey, clearSessionKey } from '@/lib/wallet-persistence';
 
-// 100M-User Scalability & Enterprise Grid Configuration
+// 100M-User Scalability & Cryptographic Grid Configuration
 export type NetworkId = 'ethereum' | 'polygon' | 'arbitrum' | 'optimism' | 'base' | 'avalanche' | 'bitcoin' | 'bsc' | 'zksync' | 'celo' | 'fantom' | 'linea' | 'scroll' | 'blast' | 'gnosis' | 'ronin' | 'kava' | 'mantle' | 'worldchain';
 export type ProtocolType = 'RPC' | 'WSS';
 
@@ -512,7 +512,7 @@ export const useWalletStore = create<WalletState>()(
           return true;
         } catch (error) {
           console.error("Invalid private key during import:", error);
-          toast.error("Import Rejected", { description: "Invalid institutional private key format." });
+          toast.error("Import Rejected", { description: "Invalid sovereign private key format." });
           return false;
         }
       },

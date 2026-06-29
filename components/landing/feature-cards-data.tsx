@@ -44,7 +44,7 @@ export const FEATURE_CARDS: FeatureCard[] = [
     detailedInfo: "Integrate industry-standard hardware security modules to create a multi-layered defense system. Your private keys never leave the secure element, ensuring complete isolation from potential attack vectors.",
     benefits: [
       "Air-gapped transaction signing",
-      "FIDO2 and U2F compliance",
+      "FIDO2 and U2F attestation",
       "Resistant to malware and keyloggers",
       "Compatible with 10+ hardware providers"
     ],
@@ -56,7 +56,7 @@ export const FEATURE_CARDS: FeatureCard[] = [
     title: "Multi-Signature Accounts",
     category: "Security",
     description: "Require multiple approvals for high-value transactions.",
-    detailedInfo: "Implement enterprise-grade multi-sig wallets requiring M-of-N signatures before execution. Perfect for DAOs, treasury management, or shared family accounts where collective consensus prevents unauthorized transfers.",
+    detailedInfo: "Implement cryptographic-grade multi-sig wallets requiring M-of-N signatures before execution. Perfect for DAOs, treasury management, or shared family accounts where collective consensus prevents unauthorized transfers.",
     benefits: [
       "Prevent single-point-of-failure attacks",
       "Customizable approval thresholds (2-of-3, 3-of-5, etc.)",
@@ -86,10 +86,10 @@ export const FEATURE_CARDS: FeatureCard[] = [
     title: "Zero-Knowledge Proofs",
     category: "Privacy",
     description: "Prove ownership without revealing your identity.",
-    detailedInfo: "Utilize advanced cryptographic techniques like zk-SNARKs to verify transactions and credentials without exposing sensitive data. Participate in DeFi protocols, governance, or compliance checks while maintaining complete anonymity.",
+    detailedInfo: "Utilize advanced cryptographic techniques like zk-SNARKs to verify transactions and credentials without exposing sensitive data. Participate in DeFi protocols, governance, or attestation checks while maintaining complete anonymity.",
     benefits: [
       "Privacy-preserving credential verification",
-      "Regulatory compliance without KYC exposure",
+      "Regulatory attestation without KYC exposure",
       "Untraceable transaction paths",
       "Core-resistant cryptography"
     ],
@@ -165,7 +165,7 @@ export const FEATURE_CARDS: FeatureCard[] = [
     benefits: [
       "Untraceable transaction graphs",
       "Variable delay randomization",
-      "Compliance certificate generation",
+      "Attestation certificate generation",
       "Multi-hop relay networks"
     ],
     icon: <Lock />,
@@ -487,7 +487,7 @@ export const FEATURE_CARDS: FeatureCard[] = [
       "24/7/365 availability",
       "Settlement finality in under 30 seconds",
       "Multi-currency support (USDC, USDT, DAI)",
-      "Compliance-ready transaction proofs"
+      "Attestation-ready transaction proofs"
     ],
     icon: <Send />,
     gradient: "from-green-500 to-teal-600"
@@ -547,7 +547,7 @@ export const FEATURE_CARDS: FeatureCard[] = [
       "Native USDC support",
       "Zero slippage",
       "Instant finality",
-      "Bank-level compliance"
+      "Bank-level attestation"
     ],
     icon: <DollarSign />,
     gradient: "from-green-500 to-emerald-600"

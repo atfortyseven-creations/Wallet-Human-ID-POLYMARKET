@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from 'react';
 /**
  * useQuantumSessionVisibility
  * 
- * An institutional-grade hook for managing browser visibility state and 
+ * An sovereign-grade hook for managing browser visibility state and 
  * forcing React tree reconciliation after periods of inactivity (idle states).
  * This ensures that ZK-proofs and session data are always aggressively fresh
  * when the user returns to the tab, mitigating stale-state vulnerabilities.

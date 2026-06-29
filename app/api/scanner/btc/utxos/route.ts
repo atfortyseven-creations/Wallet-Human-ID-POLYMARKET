@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
     try {
-        // Query institutional-grade whale movements from the real blockchain index
+        // Query sovereign-grade whale movements from the real blockchain index
         const activities = await prisma.whaleActivity.findMany({
             take: 100,
             where: {

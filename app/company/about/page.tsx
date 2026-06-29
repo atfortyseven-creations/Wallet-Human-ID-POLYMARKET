@@ -40,7 +40,7 @@ const STACK = [
   },
   {
     title: 'Blockchain Integration',
-    items: ['EVM-compatible, deeply audited smart contract infrastructure', 'Viem & Wagmi for resilient, agnostic wallet connection layers', 'Enterprise-tier node providers (Alchemy, Infura) for uptime', 'Advanced real-time mempool monitoring and transaction simulation', 'Aztec Network (programmable ZK rollup) for private on-chain state transitions', 'Noir — domain-specific language for writing custom zero-knowledge circuits'],
+    items: ['EVM-compatible, deeply audited smart contract infrastructure', 'Viem & Wagmi for resilient, agnostic wallet connection layers', 'Cryptographic-tier node providers (Alchemy, Infura) for uptime', 'Advanced real-time mempool monitoring and transaction simulation', 'Aztec Network (programmable ZK rollup) for private on-chain state transitions', 'Noir — domain-specific language for writing custom zero-knowledge circuits'],
   },
 ];
 
@@ -73,7 +73,7 @@ export default function AboutPage() {
               The result is a comprehensive Web3 dashboard that seamlessly integrates nine core modules — including the Humanity Ledger (a real-time on-chain scanner and private portfolio tracker) and Whale Chat (end-to-end encrypted wallet-to-wallet messaging) — accessible across devices via a frictionless, cryptographically secure QR-code session synchronisation.
             </p>
             <p>
-              From our early days developing simple portfolio trackers, we have rapidly evolved into a comprehensive global ecosystem. Today, we offer real-time market analysis, secure end-to-end encrypted communication channels, advanced asset management tools, and institutional-grade charting — all packaged into an accessible web application. Our fundamental commitment to never compromising on user privacy has guided every architectural decision we have made since day one.
+              From our early days developing simple portfolio trackers, we have rapidly evolved into a comprehensive global ecosystem. Today, we offer real-time market analysis, secure end-to-end encrypted communication channels, advanced asset management tools, and sovereign-grade charting — all packaged into an accessible web application. Our fundamental commitment to never compromising on user privacy has guided every architectural decision we have made since day one.
             </p>
             <p>
               We maintain 100% operational status across our distributed node infrastructure with zero reported outages, demonstrating a proven track record of shipping complex features without compromising security or uptime.

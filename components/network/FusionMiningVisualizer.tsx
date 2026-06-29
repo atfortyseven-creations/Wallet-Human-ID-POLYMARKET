@@ -206,7 +206,7 @@ export function FusionMiningVisualizer({ theme = 'default' }: { theme?: 'default
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3">
             <div className="max-w-xs sm:max-w-[45%]">
                <p className={`text-[9px] md:text-[10px] font-medium leading-relaxed uppercase tracking-wider ${isArctic ? 'text-slate-500' : 'text-white/40'}`}>
-                 Each point represents a pending institutional transaction. Upon detection of a new block, data atoms fuse into a unified assertion.
+                 Each point represents a pending sovereign transaction. Upon detection of a new block, data atoms fuse into a unified assertion.
                </p>
             </div>
            

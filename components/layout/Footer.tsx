@@ -45,7 +45,7 @@ export const Footer = () => {
                             <Link href="/legal/cookies" className="hover:text-white transition-colors">Cookie Policy</Link>
                             <span className="opacity-30">•</span>
                             <Link href="/legal/compliance" className="hover:text-[#c084fc] transition-colors flex items-center gap-1">
-                                <Shield size={10} /> Compliance Docs
+                                <Shield size={10} /> Attestation Docs
                             </Link>
                         </div>
                     </div>
@@ -71,7 +71,7 @@ export const Footer = () => {
                                 <span className="w-4 h-[1px] bg-[#c084fc]/40" /> Regulatory
                             </h4>
                             <div className="flex flex-col gap-5">
-                                <FooterLink href="/legal/compliance" icon={<Shield size={15} />}>Compliance Docs</FooterLink>
+                                <FooterLink href="/legal/compliance" icon={<Shield size={15} />}>Attestation Docs</FooterLink>
                                 <FooterLink href="/legal/aztec-grant-transparency" icon={<Scale size={15} />}>Aztec Grant Transparency</FooterLink>
                                 <FooterLink href="/legal/compliance" icon={<FileCheck size={15} />}>AML/KYC Policy</FooterLink>
                             </div>

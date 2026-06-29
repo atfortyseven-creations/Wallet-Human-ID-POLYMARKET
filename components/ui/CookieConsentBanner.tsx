@@ -48,7 +48,7 @@ export function CookieConsentBanner() {
             <div className="flex-1 relative z-10 flex flex-col md:flex-row items-start md:items-center gap-6">
               <div className="flex flex-col gap-2">
                 <h3 className="text-[13px] md:text-[14px] font-black uppercase tracking-[0.25em] text-[#050505]">
-                  Institutional Telemetry & Privacy
+                  Sovereign Telemetry & Privacy
                 </h3>
                 <p className="text-[10px] md:text-[11px] text-black/50 leading-relaxed font-mono uppercase tracking-[0.1em] max-w-2xl">
                   Whale Network utilizes cryptographic local storage to maintain System identity sessions (Zero-Knowledge) and standard cookies for platform functionality. You must authorize data retention policies before operating the terminal.

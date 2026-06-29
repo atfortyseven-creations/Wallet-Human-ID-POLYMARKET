@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   return NextResponse.json({
-    project: "System Institutional Vault",
+    project: "System Sovereign Vault",
     architecture: {
       type: "Dual-Hybrid Next.js + PWA Webview",
-      persistence: ["Prisma (PostgreSQL)", "Neo4j (Institutional Graph)"],
+      persistence: ["Prisma (PostgreSQL)", "Neo4j (Sovereign Graph)"],
       caching: ["Upstash Redis", "BullMQ Tasks", "PWA Local SW Cache"],
     },
     cryptography: {

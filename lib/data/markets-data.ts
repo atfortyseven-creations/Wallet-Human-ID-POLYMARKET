@@ -143,7 +143,7 @@ USD
 2.68B
 USD
 592.45K
-BlackRock USD Institutional Digital Liquidity Fund
+BlackRock USD Sovereign Digital Liquidity Fund
 BUIDL
 1.00
 USD

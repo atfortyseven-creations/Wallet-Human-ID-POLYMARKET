@@ -20,7 +20,7 @@ export function GoogleTagManager({ gtmId }: { gtmId: string }) {
 
     return (
         <>
-            {/* GTM snippet — loaded via external src for strict CSP compliance */}
+            {/* GTM snippet — loaded via external src for strict CSP attestation */}
             <Script
                 id="gtm-loader"
                 strategy="afterInteractive"

@@ -10,7 +10,7 @@ const STREAM_KEY = 'global_crypto_alerts';
 // We inject directly into Redis Streams.
 export async function POST(request: Request) {
     try {
-        // [INSTITUTIONAL HARDENING]: Authentication mandatory for ingestion
+        // [SOVEREIGN HARDENING]: Authentication mandatory for ingestion
         const authKey = request.headers.get('X-Ingest-Key');
         const internalKey = process.env.INTERNAL_INGEST_KEY || 'whale_ingest_institutional_v1';
         

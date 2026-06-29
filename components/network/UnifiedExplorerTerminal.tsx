@@ -24,7 +24,7 @@ export function UnifiedExplorerTerminal() {
             <UniversalEliteWallpaper />
             
             <div className="relative z-10 flex flex-col min-h-screen">
-                {/* Institutional Header is handled by ClientLayout */}
+                {/* Sovereign Header is handled by ClientLayout */}
                 
                 <main className="flex-1 w-full max-w-[1400px] mx-auto px-6 py-12 flex flex-col gap-12">
                     
@@ -38,7 +38,7 @@ export function UnifiedExplorerTerminal() {
                             Unified <span className="text-slate-300">Network Grid</span>
                         </h1>
                         <p className="text-slate-500 text-sm font-bold uppercase tracking-widest mt-2 max-w-2xl">
-                            Epoch 4 institutional grade synchronization. Resolving global liquidity, computational armor, and atomic execution layers in real-time.
+                            Epoch 4 sovereign grade synchronization. Resolving global liquidity, computational armor, and atomic execution layers in real-time.
                         </p>
                     </header>
 

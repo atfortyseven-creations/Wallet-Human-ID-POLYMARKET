@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { RpcRelayerManager } from '@/lib/blockchain/rpc-relayer';
 import { getPriceCached } from '@/lib/price-cache';
 
-const WHALE_USD_THRESHOLD = 0; // $0 minimum to guarantee system vitality and Zero-Mock compliance
+const WHALE_USD_THRESHOLD = 0; // $0 minimum to guarantee system vitality and Zero-Mock attestation
 
 // Token registry: (address lowercase) -> { symbol, decimals }
 const TOKEN_REGISTRY: Record<string, { symbol: string; decimals: number }> = {
@@ -46,7 +46,7 @@ interface ChainConfig {
   priceKey: string;
 }
 
-// The GETBLOCK_POOL and hardcoded public RPCs are deleted in favor of the Institutional Multi-Account RpcRelayerManager.
+// The GETBLOCK_POOL and hardcoded public RPCs are deleted in favor of the Sovereign Multi-Account RpcRelayerManager.
 
 // Build chain configs lazily at request time so environment variables are
 // guaranteed to be populated (static init runs before .env is injected in
@@ -78,7 +78,7 @@ function getChains(): ChainConfig[] {
       label: 'BSC',
       chainId: 56,
       rpcUrls: [
-        // Priority 1: institutional GetBlock endpoint (keyed, highest reliability)
+        // Priority 1: sovereign GetBlock endpoint (keyed, highest reliability)
         process.env.GB_BSC_RPC_1 || null,
         // Priority 2: env override
         process.env.BSC_RPC_URL || null,

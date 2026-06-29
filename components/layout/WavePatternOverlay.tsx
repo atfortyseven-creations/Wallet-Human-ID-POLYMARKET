@@ -45,7 +45,7 @@ export function WavePatternOverlay() {
   const TILE_BASE  = 280; // px at 1x
   const tileSize   = Math.round(TILE_BASE / Math.max(dpr, 1));
 
-  // Institutional White constants
+  // Sovereign White constants
   const cosmicoOpacity = 0.05;
   const hokusaiOpacity = 0.12;
 

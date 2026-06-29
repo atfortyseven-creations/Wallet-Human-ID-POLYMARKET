@@ -204,7 +204,7 @@ export default function PolymarketPanel() {
                     <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#888888] " />
                     <input 
                         value={search} onChange={e => setSearch(e.target.value)}
-                        placeholder="Search institutional markets..." 
+                        placeholder="Search sovereign markets..." 
                         className="w-full bg-white  border border-[#E5E5E5]  rounded-xl pl-11 pr-4 py-3 text-xs font-bold text-[#050505]  outline-none focus:border-[#050505]  transition-all shadow-sm"
                     />
                 </div>

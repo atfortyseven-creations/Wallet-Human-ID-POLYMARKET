@@ -18,7 +18,7 @@ interface CryptoPanicArticle {
 
 /**
  * Interface for the flattened article structure used in the UI
- * NOTE: Images removed per institutional mandate.
+ * NOTE: Images removed per sovereign mandate.
  */
 export interface UINewsArticle {
   id: string; 

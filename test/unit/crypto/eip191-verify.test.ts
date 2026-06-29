@@ -1,5 +1,5 @@
 /**
- * Enterprise CRYPTOGRAPHIC VERIFICATION  Test Suite
+ * Cryptographic CRYPTOGRAPHIC VERIFICATION  Test Suite
  *
  * Tests the formal EIP-191 implementation with all security hardening layers:
  *   - Correct signature verification

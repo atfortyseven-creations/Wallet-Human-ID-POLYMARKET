@@ -56,10 +56,10 @@ export default function ContactPage() {
                         <div className="bg-white/5 p-6 rounded-xl border border-white/10">
                             <div className="flex items-center gap-3 mb-4">
                                 <Mail className="text-purple-400" size={32} />
-                                <h3 className="text-2xl font-bold">Legal & Compliance</h3>
+                                <h3 className="text-2xl font-bold">Legal & Attestation</h3>
                             </div>
                             <p className="mb-4 text-sm text-white/70">
-                                GDPR requests, regulatory inquiries, compliance matters.
+                                GDPR requests, regulatory inquiries, attestation matters.
                             </p>
                             <a href="mailto:legal@WhaleAlert ID.fi" className="text-purple-400 hover:underline text-lg font-bold">
                                 legal@WhaleAlert ID.fi

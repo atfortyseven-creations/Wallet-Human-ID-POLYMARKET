@@ -47,17 +47,17 @@ const intros = [
 ];
 
 const bodies = [
-  "To ensure absolute compliance with enterprise-grade security standards, all data transmitted through this layer undergoes rigorous validation. The architecture relies on deterministic algorithms to prevent race conditions and eliminate single points of failure. By decoupling the presentation layer from the underlying state machine, the system maintains strict isolation of concerns.",
+  "To ensure absolute attestation with cryptographic-grade security standards, all data transmitted through this layer undergoes rigorous validation. The architecture relies on deterministic algorithms to prevent race conditions and eliminate single points of failure. By decoupling the presentation layer from the underlying state machine, the system maintains strict isolation of concerns.",
   "Performance optimization at this scale requires a distributed approach to resource allocation. Nodes operating within the network dynamically adjust their throughput limits based on realtime topological latency. Furthermore, the cryptographic verification of payloads guarantees that unauthorized modifications are instantly discarded before entering the consensus queue.",
   "Data integrity is maintained through continuous checksum validation across all shards. When deploying in a production environment, administrators should configure their load balancers to distribute connections evenly across the cluster. This prevents localized bottlenecking and ensures that the 99th percentile response times remain within acceptable thresholds.",
-  "Integration with legacy systems is achieved through standardized RESTful boundaries, while internal node communication strictly adheres to low-latency binary protocols. This dual-interface strategy provides the necessary flexibility for enterprise adoption without compromising the strict performance requirements of the core consensus layer.",
+  "Integration with legacy systems is achieved through standardized RESTful boundaries, while internal node communication strictly adheres to low-latency binary protocols. This dual-interface strategy provides the necessary flexibility for cryptographic adoption without compromising the strict performance requirements of the core consensus layer.",
   "Failover mechanisms are intrinsically woven into the deployment topology. If a primary service degradation is detected, traffic is automatically routed to passive read-replicas within milliseconds. The state synchronization process then resolves any temporary discrepancies through eventual consistency models.",
-  "Security at the edge is enforced using robust identity verification workflows. Each session is bound to a cryptographic token that rotates at unpredictable intervals, rendering replay attacks mathematically infeasible. The audit logging subsystem asynchronously writes all authorization events to append-only storage for regulatory compliance."
+  "Security at the edge is enforced using robust identity verification workflows. Each session is bound to a cryptographic token that rotates at unpredictable intervals, rendering replay attacks mathematically infeasible. The audit logging subsystem asynchronously writes all authorization events to append-only storage for regulatory attestation."
 ];
 
 const out = [];
 out.push(`// AUTO-GENERATED CONTENT FILE`);
-out.push(`// Normalized, professional, enterprise-grade terminology.`);
+out.push(`// Normalized, professional, cryptographic-grade terminology.`);
 out.push(`export const DOCS_CONTENT = [`);
 
 topics.forEach((t, index) => {

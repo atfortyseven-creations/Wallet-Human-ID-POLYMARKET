@@ -62,7 +62,7 @@ export function ActivePortfolio() {
             
             <div className="bg-[#FFFFFF] border border-[#E5E5E5] rounded-[3.5rem] p-10 shadow-sm relative overflow-hidden">
 
-                <h2 className="text-[11px] font-black text-[#888888] uppercase tracking-[0.2em] mb-3">Institutional Net Worth (USDC + Assets)</h2>
+                <h2 className="text-[11px] font-black text-[#888888] uppercase tracking-[0.2em] mb-3">Sovereign Net Worth (USDC + Assets)</h2>
                 <div className="flex items-end gap-6">
                     <h1 className="text-6xl font-black text-[#050505] font-mono tracking-tighter shadow-sm">
                         ${Number(totalPnl).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}

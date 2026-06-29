@@ -59,20 +59,20 @@
                 </div>`
             },
             {
-                id: "institutional-staking-kyc",
+                id: "sovereign-staking-kyc",
                 title: "4. El Futuro: Staking Institucional y KYC",
-                description: "Compliance en la capa de consenso.",
+                description: "Attestation en la capa de consenso.",
                 readTime: 80,
                 content: `<div class="academy-article">
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. El Muro Cortafuegos ESG y la Fricción Institucional L1 T-1 M2</h2>
-                        <p>Bancos Centrales M1 P2P y Fondos Soberanos L2 (BlackRock, Vanguard L1 O(1)) enfrentan la Asimetría Ineludible Asintótica T-1 M2: Está estrictamente prohibido (Compliance AML/TF L2 P2P M1) derivar Beneficios Financieros Fíat L1 ruteando transacciones Cripto O(N) provenientes de Actores Sancionados (Tornado Cash M2 T-1, Lazarus L2 P2P). En los 'Permissionless Staking Pools L1', el Validador M1 ignora el Origen Fiduciario P2P T-1 de la TX, incapacitando la entrada Trillonaria M2 L2.</p>
+                        <p>Bancos Centrales M1 P2P y Fondos Soberanos L2 (BlackRock, Vanguard L1 O(1)) enfrentan la Asimetría Ineludible Asintótica T-1 M2: Está estrictamente prohibido (Attestation AML/TF L2 P2P M1) derivar Beneficios Financieros Fíat L1 ruteando transacciones Cripto O(N) provenientes de Actores Sancionados (Tornado Cash M2 T-1, Lazarus L2 P2P). En los 'Permissionless Staking Pools L1', el Validador M1 ignora el Origen Fiduciario P2P T-1 de la TX, incapacitando la entrada Trillonaria M2 L2.</p>
                     </section>
 
                     <section class="pro-section">
                         <h2>II. Enclaves Institucionales (Permissioned Validation Clusters P2P L1 O(N))</h2>
-                        <p>La maduración Terminal M2 del Proof-of-Stake L1 exige la bifurcación Asintótica T-1 P2P L2: <strong>Enterprise-Grade Liquid Staking (Ej. Liquid Collective, Kiln M1)</strong>. Erigen Redes de Validadores KYC/AML O(1) M2 L1 en Bunkers de Grado Militar P2P. Bloquean Criptográficamente M1 en el Mempool T-1 las Tramas (TXs L2) de Carteras Listadas en la OFAC M2 P2P. Proveen Recibos LST (LsETH L1) "Certificados Limpios T-1" que las Instituciones TradFi M2 L2 pueden ingresar a sus Balances Auditados O(N) P2P sin temor a Perforación Jurídica Punitiva Estatal L1 T-1 M1.</p>
+                        <p>La maduración Terminal M2 del Proof-of-Stake L1 exige la bifurcación Asintótica T-1 P2P L2: <strong>Cryptographic-Grade Liquid Staking (Ej. Liquid Collective, Kiln M1)</strong>. Erigen Redes de Validadores KYC/AML O(1) M2 L1 en Bunkers de Grado Militar P2P. Bloquean Criptográficamente M1 en el Mempool T-1 las Tramas (TXs L2) de Carteras Listadas en la OFAC M2 P2P. Proveen Recibos LST (LsETH L1) "Certificados Limpios T-1" que las Instituciones TradFi M2 L2 pueden ingresar a sus Balances Auditados O(N) P2P sin temor a Perforación Jurídica Punitiva Estatal L1 T-1 M1.</p>
                     </section>
                 </div>`
             },

@@ -13,7 +13,7 @@ interface QrScannerModalProps {
 }
 
 /**
- * INSTITUTIONAL QR SCANNER MODAL (Phase 34)
+ * SOVEREIGN QR SCANNER MODAL (Phase 34)
  * High-fidelity hardware bridge for BSV address and dApp Handshaking.
  */
 export const QrScannerModal = ({ isOpen, onClose, onScan }: QrScannerModalProps) => {

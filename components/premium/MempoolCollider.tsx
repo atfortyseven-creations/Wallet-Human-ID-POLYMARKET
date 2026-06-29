@@ -164,14 +164,14 @@ function VelocityCanvas({
 const DIR_CONFIG = {
   EXPAND: {
     label: "INFLOW",
-    sublabel: "Institutional Accumulation",
+    sublabel: "Sovereign Accumulation",
     Icon: TrendingUp,
     color: "text-emerald-600",
     ring: "border-emerald-100",
     shadow: "shadow-[0_20px_60px_rgba(16,185,129,0.05)]",
     bg: "from-emerald-50/50 via-white to-white",
     bar: "from-emerald-500 to-emerald-400",
-    desc: "Whale and institutional activity is currently expanding capital positions. Real-time network demand indicates high settlement priority and intense liquidity flow.",
+    desc: "Whale and sovereign activity is currently expanding capital positions. Real-time network demand indicates high settlement priority and intense liquidity flow.",
   },
   NEUTRAL: {
     label: "STABLE",
@@ -241,7 +241,7 @@ export function MempoolCollider() {
         value: `${whalePct.toFixed(1)}%`,
         prev: prev.whale ?? whalePct,
         current: whalePct,
-        unit: "institutional share",
+        unit: "sovereign share",
         color: "text-slate-950",
       },
       {
@@ -300,7 +300,7 @@ export function MempoolCollider() {
             </div>
         </div>
         <p className="text-sm font-medium text-slate-400 leading-relaxed max-w-2xl">
-            Monitoring mempool pressure vectors through transactional velocity, utilization rates, and institutional participant ratios to determine high-fidelity capital direction.
+            Monitoring mempool pressure vectors through transactional velocity, utilization rates, and sovereign participant ratios to determine high-fidelity capital direction.
         </p>
       </div>
 

@@ -100,7 +100,7 @@ function TransactionRow({ item, index }: { item: any, index: number }) {
                 <div className="flex-1 min-w-0 space-y-2 sm:space-y-3 w-full">
                     <div className="hidden sm:flex items-center gap-4">
                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">
-                            {item.tier?.replace(' tier', '') || 'Institutional'}
+                            {item.tier?.replace(' tier', '') || 'Sovereign'}
                         </span>
                         <div className="h-1 w-1 rounded-full bg-white/20" />
                         <span className={`text-[10px] font-black uppercase tracking-[0.2em] text-white/80`}>

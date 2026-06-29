@@ -170,7 +170,7 @@ export default function WhaleVerificationReport({
                     </div>
                     <div className="flex items-center gap-1">
                         <CheckCircle2 size={14} className="text-green-500" />
-                        {identityTier === 'Enterprise' || identityTier === 'HUMAN' ? 'World ID Verified' : 'History Scanned'}
+                        {identityTier === 'Cryptographic' || identityTier === 'HUMAN' ? 'World ID Verified' : 'History Scanned'}
                     </div>
                 </div>
                 <button 

@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'Whale Network',
     short_name: 'Whale Network',
-    description: 'Professional institutional records management and network telemetry.',
+    description: 'Professional sovereign records management and network telemetry.',
     start_url: '/',
     display: 'standalone',
     background_color: '#FFFFFF',

@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
  * Beta Tester Provisioning Script
  * 
  * Generates 30 Golden Tickets with unique serial codes for the Closed Beta cohort.
- * This simulates the zero-knowledge credential issuance process for institutional evaluators.
+ * This simulates the zero-knowledge credential issuance process for sovereign evaluators.
  */
 
 const BETA_COHORT_SIZE = 30;
@@ -18,7 +18,7 @@ function generateSerialCode(): string {
 }
 
 async function provisionBeta() {
-  console.log(`\n[Cosmic Command] Provisioning ${BETA_COHORT_SIZE} Institutional Beta Tickets...`);
+  console.log(`\n[Cosmic Command] Provisioning ${BETA_COHORT_SIZE} Sovereign Beta Tickets...`);
 
   let successCount = 0;
   const generatedSerials: string[] = [];

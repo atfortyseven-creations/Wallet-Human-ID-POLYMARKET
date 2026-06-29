@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
 // ============================================================================
-// Enterprise ENDPOINT REGISTRY
+// Cryptographic ENDPOINT REGISTRY
 // ============================================================================
 // The user will inject the production on-chain endpoints here in the next step.
 export const REGISTRY = {

@@ -311,7 +311,7 @@ export const regulationModules = [
                 </div>`
             },
             {
-                id: "institutional-custody-requirements",
+                id: "sovereign-custody-requirements",
                 title: "18. Requisitos de Custodia Institucional",
                 description: "Segregar fondos y solvencia probada.",
                 readTime: 50,

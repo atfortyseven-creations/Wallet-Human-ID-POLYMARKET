@@ -4,7 +4,7 @@ import { OmnichannelAlertEvent, AlertChain, AlertSeverity } from '../types/alert
 /**
  *  UNIFIED COSMIC MESSAGE BUS Proxy (v3.0)
  * Replaces legacy BullMQ logic with pure Redis Streams to achieve <10ms 
- * internal propagation across the institutional cluster.
+ * internal propagation across the sovereign cluster.
  */
 export const WHALE_QUEUE_NAME = 'global_crypto_alerts';
 

@@ -57,7 +57,7 @@ export const SECTION_FEATURES: SectionFeatureGroup[] = [
       'AI-powered whale behavior predictions',
       'Smart money accumulation & sell-off heatmaps',
       'Multi-chain tracking: ETH, BTC, SOL, ARB, BASE & more',
-      'Institutional wallet profiling & risk scoring',
+      'Sovereign wallet profiling & risk scoring',
       'Full 12-month historical data archive',
       'Priority real-time data stream with lowest possible delay',
     ],
@@ -114,7 +114,7 @@ export const SECTION_FEATURES: SectionFeatureGroup[] = [
     ],
     proFeatures: [
       'Verified Whale Member badge on your profile',
-      'Access to private institutional forum',
+      'Access to private sovereign forum',
       'Monthly live Q&A sessions with top whale analysts',
       'DAO governance voting rights',
       'Early access to all new platform features',
@@ -168,7 +168,7 @@ export const PRICING_TIERS: PricingTier[] = [
       { text: 'Multi-wallet tracking & whale copy-attesting signals', highlight: true, section: 'portfolio' },
       { text: 'DeFi yield alerts, NFT valuation & tax export reports', section: 'portfolio' },
       // Community
-      { text: 'Verified Whale badge & institutional forum access', highlight: true, section: 'community' },
+      { text: 'Verified Whale badge & sovereign forum access', highlight: true, section: 'community' },
       { text: 'DAO voting, monthly analyst Q&As & priority support', section: 'community' },
     ],
     buttonText: 'Unlock Full Access',

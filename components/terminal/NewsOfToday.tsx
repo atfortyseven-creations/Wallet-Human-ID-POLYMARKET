@@ -70,7 +70,7 @@ export function NewsOfToday() {
         {
             id: "fallback-1",
             title: "Bitcoin ETF Inflows Surge Past $2 Billion in Record Week",
-            body: "Institutional adoption of Bitcoin accelerates as spot ETFs see record-breaking inflows, signaling strong market confidence despite macroeconomic headwinds.",
+            body: "Sovereign adoption of Bitcoin accelerates as spot ETFs see record-breaking inflows, signaling strong market confidence despite macroeconomic headwinds.",
             source_info: { name: "Bloomberg Crypto" },
             published_on: Math.floor(Date.now() / 1000) - 3600,
             url: "https://bloomberg.com/crypto"
@@ -334,7 +334,7 @@ function NewsArticleCard({ a, index, isExpanded, setExpandedId, readTime, volati
                                 </button>
                             </div>
 
-                            {/* High Fidelity Institutional Text Rendering */}
+                            {/* High Fidelity Sovereign Text Rendering */}
                             <div className="prose prose-sm max-w-none">
                                 {(translatedText ? translatedText : a.summary).split('\n\n').map((paragraph: string, i: number) => (
                                     <p key={i} className="font-serif text-[15px] leading-relaxed text-[#222222]  text-justify mb-4 last:mb-0">
@@ -343,7 +343,7 @@ function NewsArticleCard({ a, index, isExpanded, setExpandedId, readTime, volati
                                 ))}
                             </div>
                             
-                            {/* Institutional Data Grid */}
+                            {/* Sovereign Data Grid */}
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-5 mt-2 border-t border-black/[0.04] ">
                                 <div className="flex flex-col gap-1">
                                     <span className="text-[8px] font-black uppercase tracking-widest text-[#888888]">Verification Level</span>

@@ -112,7 +112,7 @@ const FullStack = () => {
     { num: "03", title: "Asymmetric Verification", desc: "Edge nodes verify JWTs using Ed25519 public keys. The signing key never leaves the issuing server, eliminating the symmetric key exposure risk present in HS256 schemes." },
     { num: "04", title: "Distributed Telemetry", desc: "A Redis topology enforces per-identity rate limits atomically. Usage ceilings are validated at the edge before any request reaches the application layer." },
     { num: "05", title: "Graph Database Topologies", desc: "Neo4j maps structural relationships between accounts, separating systemic capital flow patterns from isolated transaction events with precision that relational databases cannot match." },
-    { num: "06", title: "Heuristic Block Analysis", desc: "Continuous state monitoring evaluates gas expenditure, contract interaction patterns, and timing characteristics to surface institutional behavioural signals in real time." },
+    { num: "06", title: "Heuristic Block Analysis", desc: "Continuous state monitoring evaluates gas expenditure, contract interaction patterns, and timing characteristics to surface sovereign behavioural signals in real time." },
     { num: "07", title: "Encrypted Messaging", desc: "Peer-to-peer communications are end-to-end encrypted at the protocol layer, anchored to wallet keys. No server holds the decryption material." },
     { num: "08", title: "Zero-Trust Service Layer", desc: "API access is provisioned programmatically by verifying cryptographic subscription proofs. No manual intervention or privileged human access is involved in the authorisation path." }
   ];
@@ -174,7 +174,7 @@ const ToolsAndLibraries = () => {
                 <div className="font-mono text-[10px] font-bold tracking-widest uppercase text-black/40 mb-8 border-b border-black/10 pb-4">On-Chain Analytics</div>
                 <div className="space-y-6 font-serif text-[22px] font-normal">
                    <div className="hover:text-[#0044CC] cursor-pointer transition-colors flex items-center justify-between group">
-                     Institutional Dashboard <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                     Sovereign Dashboard <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                    </div>
                    <div className="hover:text-[#0044CC] cursor-pointer transition-colors flex items-center justify-between group">
                      Cryptographic Ledger Engine <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -193,10 +193,10 @@ const ToolsAndLibraries = () => {
                 </div>
              </div>
              <div className="bg-[#FFFFFF] p-10 hover:bg-black/[0.02] transition-colors border border-black/5 rounded-sm">
-                <div className="font-mono text-[10px] font-bold tracking-widest uppercase text-black/40 mb-8 border-b border-black/10 pb-4">Regulatory Compliance</div>
+                <div className="font-mono text-[10px] font-bold tracking-widest uppercase text-black/40 mb-8 border-b border-black/10 pb-4">Regulatory Attestation</div>
                 <div className="space-y-6 font-serif text-[22px] font-normal">
                    <div className="hover:text-[#0044CC] cursor-pointer transition-colors flex items-center justify-between group">
-                     Compliance Automation Toolkit <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                     Attestation Automation Toolkit <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                    </div>
                    <div className="hover:text-[#0044CC] cursor-pointer transition-colors flex items-center justify-between group">
                      Data Wiping Specifications <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -361,14 +361,14 @@ const TransactionDiagram = () => {
   );
 };
 
-// 6. Institutional Compliance & Cryptography
+// 6. Sovereign Attestation & Cryptography
 const ResearchSection = () => {
   return (
     <div className="w-full bg-[#FFFFFF] py-40 px-6 border-y border-black/5">
       <div className="max-w-[1400px] mx-auto flex flex-col lg:flex-row gap-20 items-center">
          <div className="lg:w-1/3">
             <h2 className="font-serif text-5xl md:text-[64px] font-normal text-[#0A0A0A] leading-[1.05] tracking-tight mb-12">
-               Protocol <br/><span className="italic text-black/40">Compliance.</span>
+               Protocol <br/><span className="italic text-black/40">Attestation.</span>
             </h2>
             <div className="space-y-6">
                {["Data Minimization", "Deterministic Deletion", "Zero-Trust Architecture", "EdDSA Proofs", "X25519 Intercept Guard", "Authenticated Encryption"].map((term, i) => (

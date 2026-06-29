@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
         );
         
         if (result.success) {
-            // Update the user to Private tier in the institutional database
+            // Update the user to Private tier in the sovereign database
             await (prisma as any).user.update({
                 where: { walletAddress: address.toLowerCase() },
                 data: { 

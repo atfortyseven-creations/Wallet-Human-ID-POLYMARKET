@@ -4,7 +4,7 @@ import { SystemFooter } from '@/components/landing/SystemFooter';
 
 export const metadata = {
   title: 'Contact Us - Humanity Ledger',
-  description: 'Get in touch with the Humanity Ledger enterprise team.',
+  description: 'Get in touch with the Humanity Ledger cryptographic team.',
 };
 
 const BG = "url('/rectangle_large_type_2_a9c6cc1e1738c43864683c13c43314d9.jpg')";
@@ -27,7 +27,7 @@ export default function ContactPage() {
         <div className="max-w-3xl w-full">
 
           <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full border border-black/10 bg-black/5 mb-8">
-            <span className="text-[10px] font-black uppercase tracking-widest text-black/60">Enterprise</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-black/60">Cryptographic</span>
           </div>
 
           <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter leading-tight mb-6 text-black">

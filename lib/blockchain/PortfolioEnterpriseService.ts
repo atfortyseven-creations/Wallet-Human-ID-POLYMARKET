@@ -13,7 +13,7 @@ export interface WalletPortfolioResponse {
 
 export class PortfolioEnterpriseService {
     static async getCrossChainPortfolio(address: string): Promise<WalletPortfolioResponse> {
-        console.log(`[Enterprise Portfolio] Sweeping cross-chain portfolio for ${address} via GetBlock Proxy...`);
+        console.log(`[Cryptographic Portfolio] Sweeping cross-chain portfolio for ${address} via GetBlock Proxy...`);
 
         const chainIds = [1, 10, 56, 137, 42161, 8453];
         const tokensToReturn: any[] = [];
@@ -69,7 +69,7 @@ export class PortfolioEnterpriseService {
                 });
 
             } catch (e) {
-                console.warn(`[Enterprise Portfolio] Sweeping chain ${chainId} failed:`, e);
+                console.warn(`[Cryptographic Portfolio] Sweeping chain ${chainId} failed:`, e);
             }
         }));
 

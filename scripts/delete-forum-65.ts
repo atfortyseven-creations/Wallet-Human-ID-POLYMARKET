@@ -9,7 +9,7 @@ async function main() {
     const mockUsers = await prisma.user.findMany({
         where: {
             bio: {
-                contains: 'Managing tier-1 liquidity on EVM. Institutional grade execution.'
+                contains: 'Managing tier-1 liquidity on EVM. Sovereign grade execution.'
             }
         }
     });

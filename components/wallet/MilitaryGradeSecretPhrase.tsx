@@ -125,7 +125,7 @@ Wallet: Whale Network Terminal v4.0
                     icon={<Lock className="text-[#050505]" />}
                     label="Entropy"
                     value="256-bit"
-                    description="Institutional Protocol"
+                    description="Sovereign Protocol"
                     active
                 />
                 <StatCard

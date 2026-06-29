@@ -1231,7 +1231,7 @@ export function MobileLanding() {
     if (sessionStorage.getItem(key)) return;
 
     // Sign then fulfill  API requires EIP-191 proof
-    const message = `Authorize Institutional Platform Access for session: ${sessionParam}\nAddress: ${address}\nTimestamp: ${Date.now()}`;
+    const message = `Authorize Sovereign Platform Access for session: ${sessionParam}\nAddress: ${address}\nTimestamp: ${Date.now()}`;
     signMessageAsync({ message })
       .then((signature) =>
         fetch(`/api/auth/qr-session?id=${sessionParam}`, {

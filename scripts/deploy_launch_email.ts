@@ -64,7 +64,7 @@ CONFIDENTIAL & TIME-SENSITIVE // EXECUTIVE CORRESPONDENCE...
       await resend.emails.send({
         from: 'The Infrastructure Council <council@whalealertnetwork.com>',
         to: batch,
-        subject: 'DECLASSIFIED: Official Genesis of the Whale Alert Network (v6.12.0)  Institutional Analytics Output',
+        subject: 'DECLASSIFIED: Official Genesis of the Whale Alert Network (v6.12.0)  Sovereign Analytics Output',
         text: messagePayload
       });
       */

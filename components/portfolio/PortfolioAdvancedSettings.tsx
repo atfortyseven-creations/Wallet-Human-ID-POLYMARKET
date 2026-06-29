@@ -506,7 +506,7 @@ export function PortfolioAdvancedSettings({ isOpen, onClose, userAddress }: Port
                                 <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                     <div>
                                         <h3 className="text-2xl font-black uppercase tracking-tighter mb-2" style={{ color: INK }}>About</h3>
-                                        <p className="text-xs font-mono" style={{ color: MUTED }}>Version 14.12.0 - Institutional Release</p>
+                                        <p className="text-xs font-mono" style={{ color: MUTED }}>Version 14.12.0 - Sovereign Release</p>
                                     </div>
 
                                     <div className="space-y-4">
@@ -525,7 +525,7 @@ export function PortfolioAdvancedSettings({ isOpen, onClose, userAddress }: Port
                                     </div>
                                     <div className="pt-8 text-center opacity-40">
                                         <Fingerprint size={24} className="mx-auto mb-2" />
-                                        <p className="text-[10px] font-mono uppercase tracking-widest">Built for the Enterprise Web</p>
+                                        <p className="text-[10px] font-mono uppercase tracking-widest">Built for the Cryptographic Web</p>
                                     </div>
                                 </div>
                             )}

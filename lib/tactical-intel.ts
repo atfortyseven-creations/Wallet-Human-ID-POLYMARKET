@@ -11,9 +11,9 @@ export function generateTacticalIntel(item: {
   // 1. Wallet Profile
   let walletProfile = 'Unknown Entity';
   if (usd > 50_000_000) walletProfile = 'System / Exchange Cold Wallet';
-  else if (usd > 10_000_000) walletProfile = 'Institutional Market Maker';
+  else if (usd > 10_000_000) walletProfile = 'Sovereign Market Maker';
   else if (usd > 1_000_000) walletProfile = 'Heavyweight DEX Verifier';
-  else if (usd > 100_000) walletProfile = 'Tactical Flow / Institutional Accumulation';
+  else if (usd > 100_000) walletProfile = 'Tactical Flow / Sovereign Accumulation';
   else if (item.from?.toLowerCase().includes('mining')) walletProfile = 'Mining Pool Finalization';
   else walletProfile = 'Algo-Attesting Bot / Smart Contract';
 

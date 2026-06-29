@@ -11,7 +11,7 @@ import { Alchemy, Network, AssetTransfersCategory, SortingOrder } from 'alchemy-
 
 const ALCHEMY_KEY = process.env.ALCHEMY_API_KEY || process.env.NEXT_PUBLIC_ALCHEMY_ID || '';
 
-// Labelled known institutional wallets
+// Labelled known sovereign wallets
 const KNOWN_WALLETS: Record<string, string> = {
     '0x28c6c06298d514db089934071355e5743bf21d60': 'Binance Hot Wallet 14',
     '0x21a31ee1afc51d94c2efccaa2092ad1028285549': 'Binance Hot Wallet 20',

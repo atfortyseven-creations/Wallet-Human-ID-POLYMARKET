@@ -37,7 +37,7 @@ const STATS = [
   { label: "Messaging", value: "Encrypted Whale Chat" },
   { label: "Settlement", value: "Ethereum L1" },
   { label: "Authentication", value: "Zero-Knowledge Proofs" },
-  { label: "Compliance", value: "Verifiable Credentials" },
+  { label: "Attestation", value: "Verifiable Credentials" },
 ];
 
 // ─── Feature cards ───────────────────────────────────────────────────────────
@@ -69,8 +69,8 @@ const FEATURES = [
     tag: "Local Execution",
   },
   {
-    title: "W3C Compliance",
-    body: "Generate verifiable credentials for audits or selective disclosure. Prove compliance without leaking your full identity.",
+    title: "W3C Attestation",
+    body: "Generate verifiable credentials for audits or selective disclosure. Prove attestation without leaking your full identity.",
     tag: "Verifiable Credentials",
   },
 ];
@@ -94,7 +94,7 @@ const DOC_CARDS = [
     body: "Write, test, and deploy zero-knowledge circuits using the Noir language with Barretenberg.",
   },
   {
-    label: "Compliance SDK",
+    label: "Attestation SDK",
     href: "/security",
     body: "Generate viewing keys, range proofs, and Verifiable Credentials for regulatory disclosure.",
   },
@@ -377,14 +377,14 @@ function HeroSection() {
 
           {/* Main headline */}
           <h1 className="text-[40px] sm:text-[56px] md:text-[68px] font-black tracking-tighter leading-[1.0] text-black text-center max-w-[900px] mb-6">
-            The institutional gateway
+            The sovereign gateway
             <br />
             <span className="text-black/25">to Aztec Network.</span>
           </h1>
 
           {/* Subheadline */}
           <p className="text-[16px] md:text-[19px] font-medium text-black/60 leading-relaxed text-center max-w-[700px] mb-12">
-            Whale Network operates as the sovereign application layer over Aztec's zero-knowledge execution environment. We abstract the complexity of ZK circuits into an institutional-grade terminal—providing high-net-worth individuals and enterprises with cryptographic identity verification, end-to-end encrypted messaging, and fully shielded portfolio management. All executed privately, settled securely on Ethereum.
+            Whale Network operates as the sovereign application layer over Aztec's zero-knowledge execution environment. We abstract the complexity of ZK circuits into an sovereign-grade terminal—providing high-net-worth individuals and enterprises with cryptographic identity verification, end-to-end encrypted messaging, and fully shielded portfolio management. All executed privately, settled securely on Ethereum.
           </p>
 
           {/* CTAs */}
@@ -726,7 +726,7 @@ function FAQSection() {
     },
     {
       q: "Can regulators audit my activity?",
-      a: "Yes, but only if you explicitly authorize them. You can generate a specific 'viewing key' that grants read-only access to specific transactions for compliance purposes."
+      a: "Yes, but only if you explicitly authorize them. You can generate a specific 'viewing key' that grants read-only access to specific transactions for attestation purposes."
     },
     {
       q: "What can I do once my identity is verified?",
@@ -734,7 +734,7 @@ function FAQSection() {
     },
     {
       q: "How do you handle KYC requirements?",
-      a: "We utilize Zero-Knowledge (ZK) proofs to attest to your compliance. You undergo verification once, and from then on, you prove you've met KYC standards mathematically without repeatedly sharing your documents."
+      a: "We utilize Zero-Knowledge (ZK) proofs to attest to your attestation. You undergo verification once, and from then on, you prove you've met KYC standards mathematically without repeatedly sharing your documents."
     },
     {
       q: "What makes Whale Chat different from other messengers?",

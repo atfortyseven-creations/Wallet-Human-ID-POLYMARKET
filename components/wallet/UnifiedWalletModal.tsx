@@ -258,7 +258,7 @@ function SendModule({ userAssets, forceToken, setStatus, setTxHash, setStatusMes
     const [gasStrategy, setGasStrategy] = useState<'MARKET'|'AGGRESSIVE'>('MARKET');
     const [isContactsOpen, setIsContactsOpen] = useState(false);
 
-    // Hardcoded trusted institutional addresses
+    // Hardcoded trusted sovereign addresses
     const TRUSTED_CONTACTS = [
         { name: "Binance Deposit Wallet", address: "0x28C6c06298d514Db089934071355E22Af164f195" },
         { name: "Ledger Cold Vault", address: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e" }
@@ -392,7 +392,7 @@ function SendModule({ userAssets, forceToken, setStatus, setTxHash, setStatusMes
     const handleReviewClick = () => {
         setIsSimulating(true);
         setIsReviewing(true);
-        setTimeout(() => setIsSimulating(false), 1500); // Institutional grade artificial simulation delay
+        setTimeout(() => setIsSimulating(false), 1500); // Sovereign grade artificial simulation delay
     };
 
     if (isReviewing) {

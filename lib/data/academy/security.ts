@@ -185,7 +185,7 @@
                 </div>`
         },
         {
-            id: "institutional-multisig-safe-standard-phd",
+            id: "sovereign-multisig-safe-standard-phd",
             title: "11. Multi-sig Institucional: El Estándar Safe y Umbrales de Control",
             description: "Arquitectura de custodia para tesorerías y capitales de gran escala.",
             readTime: 370,

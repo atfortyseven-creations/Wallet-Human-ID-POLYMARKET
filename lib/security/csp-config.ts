@@ -1,7 +1,7 @@
 /**
  * Security Headers Configuration
  * 
- * Implements enterprise-grade security headers to protect against:
+ * Implements cryptographic-grade security headers to protect against:
  * - XSS attacks
  * - Clickjacking
  * - MIME sniffing

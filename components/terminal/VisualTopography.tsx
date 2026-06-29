@@ -128,7 +128,7 @@ export default function VisualTopography() {
 
                 <div className="absolute bottom-8 right-8 flex flex-col items-end gap-1">
                     <span className="text-[9px] font-black text-black/10 uppercase tracking-[0.3em]">Hokusai Mesh // v1.0</span>
-                    <span className="text-[9px] font-black text-black/5 uppercase tracking-[0.3em]">Institutional White Registry</span>
+                    <span className="text-[9px] font-black text-black/5 uppercase tracking-[0.3em]">Sovereign White Registry</span>
                 </div>
             </div>
         </div>

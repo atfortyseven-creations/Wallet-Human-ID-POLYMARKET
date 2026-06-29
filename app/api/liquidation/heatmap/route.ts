@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
     const interval = searchParams.get('interval') || '24h';
 
     // 1. Fetch real current price from Binance
-    let basePrice = 69420; // Institutional fallback  never Math.random()
+    let basePrice = 69420; // Sovereign fallback  never Math.random()
     try {
       const binanceSymbol = `${symbol}${pair === 'EUR' ? 'EUR' : 'USDT'}`;
       const priceRes = await fetch(

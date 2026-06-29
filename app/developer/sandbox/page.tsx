@@ -58,8 +58,8 @@ export default function SandboxPage() {
           },
           {
             icon: "03",
-            title: "ZK Compliance",
-            text: "Simulate Compliance Oracles with range constraints and Merkle membership proofs over sanctioned lists.",
+            title: "ZK Attestation",
+            text: "Simulate Attestation Oracles with range constraints and Merkle membership proofs over sanctioned lists.",
           },
           {
             icon: "04",

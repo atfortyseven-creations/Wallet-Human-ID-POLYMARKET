@@ -2,7 +2,7 @@
  * GET /api/network/whale-flows
  *
  * Fetches REAL large BTC transactions from mempool.space for known
- * institutional/exchange wallet addresses.
+ * sovereign/exchange wallet addresses.
  * Maps wallet addresses to entity names and geographic nodes.
  * Calculates real confirmations from current block height.
  *
@@ -14,7 +14,7 @@ import { NextResponse } from 'next/server';
 
 export const revalidate = 60; // ISR: cache for 60 seconds
 
-//  Known institutional BTC wallet registry (publicly documented on-chain) 
+//  Known sovereign BTC wallet registry (publicly documented on-chain) 
 // Sources: Arkham Analytics, Blockchain.com labels, community research
 const ENTITY_REGISTRY: Record<string, { name: string; city: string; type: string }> = {
   // Binance
@@ -38,7 +38,7 @@ const ENTITY_REGISTRY: Record<string, { name: string; city: string; type: string
   // Cumberland DRW (known OTC desk)
   'bc1qa5wkgaew2dkv56kfvj49j0av5nml45x9ek9hz6': { name: 'Cumberland', city: 'Chicago',   type: 'OTC Desk'    },
   // Galaxy Digital
-  'bc1qjasf9z3h7w3jspkhtgatgpyvvzgpa2wwd2lr38': { name: 'Galaxy',    city: 'New York',   type: 'Institutional' },
+  'bc1qjasf9z3h7w3jspkhtgatgpyvvzgpa2wwd2lr38': { name: 'Galaxy',    city: 'New York',   type: 'Sovereign' },
 };
 
 // Geographic routing city pool for unknown wallets (derived deterministically)
@@ -47,7 +47,7 @@ const CITY_POOL = [
   'Dubai', 'Zurich', 'Frankfurt', 'Paris', 'Seoul', 'Sydney',
   'Toronto', 'Chicago', 'Amsterdam', 'Geneva', 'Abu Dhabi',
 ];
-const TYPE_POOL = ['OTC Desk', 'Exchange', 'Whale Wallet', 'Institutional', 'Dark Pool'];
+const TYPE_POOL = ['OTC Desk', 'Exchange', 'Whale Wallet', 'Sovereign', 'Dark Pool'];
 
 function hashStr(s: string): number {
   let h = 5381;

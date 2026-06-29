@@ -6,10 +6,10 @@ const COURSES = [
     {
         id: 'whale-basics',
         title: 'Whale Analytics Fundamentals',
-        description: 'Learn how to identify and track institutional whale wallets, interpret on-chain signals, and build your first watchlist.',
+        description: 'Learn how to identify and track sovereign whale wallets, interpret on-chain signals, and build your first watchlist.',
         totalDuration: '2h 30m', badge: 'Popular', level: 'Beginner',
         lessons: [
-            { id: 'w1', title: 'What is a Whale?', duration: '8m', level: 'Beginner', description: 'Defining institutional wallets vs retail. Size thresholds and behavioral patterns.', orderIndex: 1 },
+            { id: 'w1', title: 'What is a Whale?', duration: '8m', level: 'Beginner', description: 'Defining sovereign wallets vs retail. Size thresholds and behavioral patterns.', orderIndex: 1 },
             { id: 'w2', title: 'Reading On-Chain Data', duration: '15m', level: 'Beginner', description: 'Understanding Etherscan, Solscan, block explorers.', orderIndex: 2 }
         ],
     },

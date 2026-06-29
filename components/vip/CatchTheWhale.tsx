@@ -155,7 +155,7 @@ export function CatchTheWhale() {
                                     <div className="p-4 bg-[var(--aztec-ink)]/5 border border-[var(--aztec-ink)]/10 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-500">
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
-                                                <div className="text-[8px] font-black uppercase tracking-widest text-[var(--aztec-ink)]/40 mb-1">Institutional PnL</div>
+                                                <div className="text-[8px] font-black uppercase tracking-widest text-[var(--aztec-ink)]/40 mb-1">Sovereign PnL</div>
                                                 <div className="text-xl font-black text-[var(--aztec-ink)] font-aztec-serif leading-none">{unlockedIntel.historical_pnl}</div>
                                             </div>
                                             <div>

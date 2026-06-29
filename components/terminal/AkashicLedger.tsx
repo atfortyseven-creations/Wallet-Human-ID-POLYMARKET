@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * AkashicLedger  Permanent Record of Institutional Capital Movements
+ * AkashicLedger  Permanent Record of Sovereign Capital Movements
  *
  * Renders the SHA-256 verified registry of all movements exceeding the
  * systemic significance threshold ($50M USD equivalent). Each entry is
@@ -428,7 +428,7 @@ export default function AkashicLedger() {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    toast.success("Ledger Exported", { description: `${sortedRecords.length} institutional entries saved to CSV.`});
+    toast.success("Ledger Exported", { description: `${sortedRecords.length} sovereign entries saved to CSV.`});
   };
 
   return (
@@ -443,7 +443,7 @@ export default function AkashicLedger() {
             </h2>
           </div>
           <p className="text-[11px] font-bold uppercase tracking-widest" style={{ color: "rgba(0,0,0,0.3)" }}>
-            Permanent SHA-256 verified record of institutional capital movements above $50M
+            Permanent SHA-256 verified record of sovereign capital movements above $50M
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">

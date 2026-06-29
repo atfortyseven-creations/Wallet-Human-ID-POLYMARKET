@@ -1,6 +1,6 @@
 /**
  * 
- *   Whale Network NETWORK  INSTITUTIONAL ON-CHAIN INTELLIGENCE TERMINAL     
+ *   Whale Network NETWORK  SOVEREIGN ON-CHAIN INTELLIGENCE TERMINAL     
  *   © 20242026 humanityledger. All Rights Reserved.               
  *   PROPRIETARY & CONFIDENTIAL  ATTEST SECRET                              
  *   Unauthorized copying, modification, distribution, or deployment of     
@@ -18,7 +18,7 @@
 export const COPYRIGHT = {
   owner:       'humanityledger',
   product:     'Whale Network',
-  description: 'Institutional On-Chain Analytics Terminal',
+  description: 'Sovereign On-Chain Analytics Terminal',
   years:       '20242026',
   contact:     'legal@humanidfi.com',
   repo:        'https://github.com/humanityledger/whalecosystem',

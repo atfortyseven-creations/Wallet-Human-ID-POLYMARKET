@@ -115,7 +115,7 @@ export function useSIWE(): UseSIWEReturn {
       //  Step 5: Session active 
       setStatus("authenticated");
       setAuthedAddress(result.address);
-      toast.success("Enterprise ACCESS GRANTED", {
+      toast.success("Cryptographic ACCESS GRANTED", {
         description: `Identity verified: ${result.address.slice(0, 6)}...${result.address.slice(-4)}`,
       });
 

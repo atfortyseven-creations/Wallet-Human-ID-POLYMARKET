@@ -169,7 +169,7 @@ export default async function RootLayout({
         "featureList": [
           "Identity Verification",
           "Zero-Knowledge Proofs",
-          "Compliance Tools",
+          "Attestation Tools",
           "Privacy-Preserving Infrastructure"
         ]
       },

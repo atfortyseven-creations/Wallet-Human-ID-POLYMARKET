@@ -7,9 +7,9 @@ import { useCWI } from '@/lib/bsv/CWIContext';
 import { toast } from 'sonner';
 
 /**
- * Enterprise INTEL PAYWALL (Pillar 2 - Phase 2)
+ * Cryptographic INTEL PAYWALL (Pillar 2 - Phase 2)
  * -----------------------------------------
- * Institutional UI for unlocking premium blockchain analytics.
+ * Sovereign UI for unlocking premium blockchain analytics.
  * Requires a cryptographically verified micropayment in BSV.
  */
 export const IntelPaywall = ({ intelId, onUnlock }: { intelId: string; onUnlock: (data: any) => void }) => {
@@ -84,7 +84,7 @@ export const IntelPaywall = ({ intelId, onUnlock }: { intelId: string; onUnlock:
                 <h2 className="text-3xl font-bold font-aztec-serif uppercase tracking-tighter">Whale <span className="text-[var(--aztec-orchid)]">De-Masking</span> Required</h2>
                 <p className="text-[11px] font-aztec-mono text-white/40 leading-relaxed mb-6">
                     This high-tier alert contains identifying metadata and historical PnL analysis. 
-                    Unlocking requires an institutional micropayment.
+                    Unlocking requires an sovereign micropayment.
                 </p>
 
                 <div className="flex flex-col gap-3">
@@ -120,7 +120,7 @@ export const IntelPaywall = ({ intelId, onUnlock }: { intelId: string; onUnlock:
             {/* Subtle Warning Overlay */}
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 p-3 bg-[var(--aztec-orchid)]/5 border border-[var(--aztec-orchid)]/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity">
                 <AlertTriangle size={12} className="text-[var(--aztec-orchid)]" />
-                <span className="text-[8px] font-black text-[var(--aztec-orchid)] uppercase tracking-widest italic">Non-Refundable Institutional Fee</span>
+                <span className="text-[8px] font-black text-[var(--aztec-orchid)] uppercase tracking-widest italic">Non-Refundable Sovereign Fee</span>
             </div>
         </motion.div>
     );

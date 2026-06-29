@@ -292,7 +292,7 @@ export const generalLimiter = new RateLimiter({
 export default RateLimiter
 
 // 
-// Enterprise DISTRIBUTED RATE LIMITER  Upstash Sliding Window (Edge-compatible)
+// Cryptographic DISTRIBUTED RATE LIMITER  Upstash Sliding Window (Edge-compatible)
 // Used by middleware.ts for cross-instance enforcement across all Edge nodes.
 // The in-memory RateLimiter above handles server-side API routes only.
 // 

@@ -44,7 +44,7 @@ export default function LoginCard() {
             {/* Content Area */}
             <div className="w-full space-y-6">
                 <p className="text-center text-white/60 text-sm leading-relaxed">
-                    Access the future of institutional analytics with your verified identity.
+                    Access the future of sovereign analytics with your verified identity.
                 </p>
 
             </div>

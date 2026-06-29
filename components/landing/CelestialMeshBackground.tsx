@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
  * CelestialMeshBackground  System Wallpaper System, v2
  *
  * Layer stack:
- *   L0  Institutional ivory base (#FFFFFF)
+ *   L0  Sovereign ivory base (#FFFFFF)
  *   L1  Patron Cosmico 4K  slow parallax drift, opacity 6%, multiply blend
  *   L2  Hokusai 4K  bottom-anchored, full-width, natural aspect ratio
  *   L3  Gradient vignette  top-to-bottom for typography legibility

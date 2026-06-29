@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 
 /**
  * CollateralGridService
- * Manages institutional collateral valuation and risk parameters.
+ * Manages sovereign collateral valuation and risk parameters.
  * Supports multi-asset LTV (Loan-to-Value) mapping for the Dark Pool.
  */
 export class CollateralGridService {
@@ -35,7 +35,7 @@ export class CollateralGridService {
     }
 
     /**
-     * Evaluates health factor for institutional positions.
+     * Evaluates health factor for sovereign positions.
      */
     public getHealthFactor(collateralValueUsd: bigint, borrowedValueUsd: bigint): number {
         if (borrowedValueUsd === 0n) return 999; // Peak health

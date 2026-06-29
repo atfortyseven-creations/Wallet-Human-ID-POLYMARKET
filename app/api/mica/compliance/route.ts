@@ -6,7 +6,7 @@ import crypto from 'crypto';
 export const dynamic = 'force-dynamic';
 
 /**
- * Enterprise Endpoint: MiCA & GDPR Compliance Toolkit
+ * Cryptographic Endpoint: MiCA & GDPR Attestation Toolkit
  * Handles European user data residency and the "Right to Be Forgotten".
  * 
  * Required Clearance: Private or ADMIN
@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     try {
         const authHeader = req.headers.get('authorization');
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return NextResponse.json({ error: 'Missing Institutional Clearance token' }, { status: 401 });
+            return NextResponse.json({ error: 'Missing Sovereign Clearance token' }, { status: 401 });
         }
 
         const token = authHeader.split(' ')[1];
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 
         // Only Private clearance users or full Admins can execute EU Data wipes
         if (payload.clearance !== 'Private' && payload.role !== 'ADMIN') {
-            return NextResponse.json({ error: 'Clearance level too low for compliance tooling' }, { status: 403 });
+            return NextResponse.json({ error: 'Clearance level too low for attestation tooling' }, { status: 403 });
         }
 
         const body = await req.json();
@@ -50,12 +50,12 @@ export async function POST(req: NextRequest) {
                 // Hash the address to verify the wipe in the future without storing the PII
                 const wipeHash = crypto.createHash('sha256').update(address).digest('hex');
                 
-                // Track the compliance execution
+                // Track the attestation execution
                 await prisma.securityEvent.create({
                     data: {
                         type: 'MICA_PDI_ANONYMIZATION',
                         severity: 'WARNING',
-                        ipAddress: 'System', // IP masked for compliance
+                        ipAddress: 'System', // IP masked for attestation
                         userAgent: `Operator: ${payload.sub || payload.id}`,
                         details: `Executed GDPR wipe for EntityHash: ${wipeHash}`,
                         timestamp: new Date()
@@ -77,11 +77,11 @@ export async function POST(req: NextRequest) {
                 });
 
             default:
-                return NextResponse.json({ error: 'Invalid compliance action' }, { status: 400 });
+                return NextResponse.json({ error: 'Invalid attestation action' }, { status: 400 });
         }
 
     } catch (error: any) {
-        console.error('[MiCA Compliance] Error:', error);
-        return NextResponse.json({ error: 'Internal server error processing compliance packet' }, { status: 500 });
+        console.error('[MiCA Attestation] Error:', error);
+        return NextResponse.json({ error: 'Internal server error processing attestation packet' }, { status: 500 });
     }
 }

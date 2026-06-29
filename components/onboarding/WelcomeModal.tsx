@@ -28,8 +28,8 @@ export function WelcomeModal() {
 
   const steps = [
     {
-      title: "INSTITUTIONAL ON-CHAIN INTELLIGENCE",
-      desc: "Welcome to the Humanity Ledger infrastructure. You now have direct access to real-time on-chain capital flow surveillance, large-position tracking, and cross-chain portfolio analytics at an institutional resolution.",
+      title: "SOVEREIGN ON-CHAIN INTELLIGENCE",
+      desc: "Welcome to the Humanity Ledger infrastructure. You now have direct access to real-time on-chain capital flow surveillance, large-position tracking, and cross-chain portfolio analytics at an sovereign resolution.",
       icon: <WhaleLogo className="w-12 h-12" />,
       action: "BEGIN ORIENTATION"
     },

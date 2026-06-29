@@ -12,7 +12,7 @@ import { useSystemIntel } from "@/lib/api-client";
 const TIER_CONFIG: Record<string, { bg: string; text: string; border: string; label: string }> = {
   ULTRA_CAPITAL_FLOW:  { bg: "#D4AF37", text: "#FFFFFF", border: "#D4AF37", label: "ULTRA FLOW"    },
   PRINCIPAL_BLOCK:     { bg: "#050505", text: "#FFFFFF", border: "#050505", label: "PRINCIPAL"     },
-  ENTERPRISE_TRANSFER: { bg: "#333333", text: "#FFFFFF", border: "#333333", label: "ENTERPRISE"    },
+  ENTERPRISE_TRANSFER: { bg: "#333333", text: "#FFFFFF", border: "#333333", label: "CRYPTOGRAPHIC"    },
   LIQUIDITY_NODE:      { bg: "#F0F0F0", text: "#050505", border: "#CCCCCC", label: "LIQUIDITY"     },
   STANDARD_FLOW:       { bg: "#FAFAFA", text: "#444444", border: "#EAEAEA", label: "STANDARD FLOW" },
   RETAIL_PRO:          { bg: "#FFFFFF", text: "#888888", border: "#E5E5E5", label: "RETAIL"        },

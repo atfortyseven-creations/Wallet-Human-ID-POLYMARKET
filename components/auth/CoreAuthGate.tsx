@@ -414,7 +414,7 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
     await new Promise(r => setTimeout(r, 60));
 
     try {
-      //  Enterprise UPGRADE: Use fast AES-256-GCM (PBKDF2-SHA256 × 600k)
+      //  Cryptographic UPGRADE: Use fast AES-256-GCM (PBKDF2-SHA256 × 600k)
       //    instead of the legacy ethers scrypt which crashes on mobile.
       //    We store the mnemonic phrase so it can be restored from any device.
       // [PERSISTENCE FIX] Always sanitize to prevent mobile-keyboard trailing-space bug
@@ -531,7 +531,7 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
       const cleanPassword = sanitizePassword(password);
 
       if (!isLegacyVault) {
-        //  Enterprise UPGRADE: tryDecryptAny handles ALL formats atomically:
+        //  Cryptographic UPGRADE: tryDecryptAny handles ALL formats atomically:
         //    New AES-GCM blobs (system v1/v2)
         //    Legacy ethers scrypt keystores (V3)
         //    Transparently migrates legacy keystores to AES-GCM on first login
@@ -683,7 +683,7 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
       // [PERSISTENCE FIX] Sanitize password before encryption
       const cleanPassword = sanitizePassword(password);
 
-      //  Enterprise UPGRADE: Encrypt with fast AES-GCM (not ethers scrypt)
+      //  Cryptographic UPGRADE: Encrypt with fast AES-GCM (not ethers scrypt)
       const encryptedBlob = await encryptWithPassword(phrase, cleanPassword);
       
       const restoredAccount: SystemAccount = {

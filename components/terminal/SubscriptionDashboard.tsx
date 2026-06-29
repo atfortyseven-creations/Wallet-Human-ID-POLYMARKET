@@ -57,7 +57,7 @@ function getTierKey(tierStr: string): PlanTier {
         FULL_NODE: PlanTier.FULL_NODE,
         ARCHIVE: PlanTier.ARCHIVE_PROVER,
         ARCHIVE_PROVER: PlanTier.ARCHIVE_PROVER,
-        ENTERPRISE: PlanTier.ARCHIVE_PROVER,
+        CRYPTOGRAPHIC: PlanTier.ARCHIVE_PROVER,
         HUMAN: PlanTier.ARCHIVE_PROVER,
     };
     return map[tierStr?.toUpperCase()] ?? PlanTier.FREE;

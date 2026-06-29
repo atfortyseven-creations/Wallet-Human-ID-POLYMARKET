@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * DeadmanSwitchPanel  Full Institutional-Grade Dashboard Component
+ * DeadmanSwitchPanel  Full Sovereign-Grade Dashboard Component
  *
  * Shows live on-chain state from SystemDeadmanSwitch.sol
  * All buttons fire real Polygon transactions via wagmi.

@@ -30,7 +30,7 @@ export function SystemManifesto() {
             <div className="flex flex-col gap-32 lg:gap-48 w-full">
                 <ManifestoSection 
                    title="01 / Architectural Foundation" 
-                   description="The basal layer of the protocol operates autonomously via decentralized cryptographic ledgers. Distributed networks ensure redundancy while asset management relies strictly on programmatic mathematical guarantees, avoiding institutional custodianship entirely."
+                   description="The basal layer of the protocol operates autonomously via decentralized cryptographic ledgers. Distributed networks ensure redundancy while asset management relies strictly on programmatic mathematical guarantees, avoiding sovereign custodianship entirely."
                    lotties={[
                      { file: "Earth globe rotating with Seamless loop animation.json", title: "Global Node Distribution Geometry", desc: "Topographic dispersion of decentralized validating machines." },
                      { file: "DeeWork About Blockchain.json", title: "Decentralized Ledger Cryptography", desc: "Cryptographic hashing algorithms binding immutable chained state." },
@@ -50,10 +50,10 @@ export function SystemManifesto() {
                 />
 
                 <ManifestoSection 
-                   title="03 / Institutional Execution" 
-                   description="Achieving cross-border infrastructure synchronization requires zero-latency operational efficiency. Protocol scalability relies on an enterprise-grade execution framework, ensuring that consensus engines function symmetrically under immense infrastructural load logic."
+                   title="03 / Sovereign Execution" 
+                   description="Achieving cross-border infrastructure synchronization requires zero-latency operational efficiency. Protocol scalability relies on an cryptographic-grade execution framework, ensuring that consensus engines function symmetrically under immense infrastructural load logic."
                    lotties={[
-                     { file: "enterprice.json", title: "Enterprise Redundancy Grid", desc: "Fail-over clustering preventing catastrophic single-point failures." },
+                     { file: "enterprice.json", title: "Cryptographic Redundancy Grid", desc: "Fail-over clustering preventing catastrophic single-point failures." },
                      { file: "Manufacturing Industry Working Staff.json", title: "Infrastructural Load Balancing", desc: "Dynamic resource allocation across synchronized cluster nodes." },
                      { file: "Business Analysis.json", title: "Yield Assessment Heuristics", desc: "Yield aggregation evaluation across diverse decentralized exchanges." },
                      { file: "Browser Loading.json", title: "Sub-Second State Synchronization", desc: "Light-client propagation over decentralized peer gossip networks." },

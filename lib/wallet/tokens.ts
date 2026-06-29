@@ -420,7 +420,7 @@ export async function getPopularTokens(chainId: number): Promise<TokenMetadata[]
 }
 
 /**
- * Get highly curated institutional-grade tokens for the Elite panel
+ * Get highly curated sovereign-grade tokens for the Elite panel
  */
 export async function getInstitutionalTokens(chainId: number): Promise<TokenMetadata[]> {
     const registry: Record<number, TokenMetadata[]> = {

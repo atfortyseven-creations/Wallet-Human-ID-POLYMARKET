@@ -10,7 +10,7 @@ import crypto from 'crypto';
 
 // Init OpenAI for semantic validation
 // It will be instantiated inside the POST request to respect dynamic env vars
-// Strict institutional schema
+// Strict sovereign schema
 const passportSchema = z.object({
   title: z.string().min(2).max(150).regex(/^[a-zA-Z0-9\s\-_.]+$/, "Invalid characters in title"),
   category: z.enum(['PHARMA', 'FOOD', 'TECH', 'INFRASTRUCTURE', 'TEXTILE', 'DOCUMENTS', 'OTHER']),
@@ -122,7 +122,7 @@ export async function POST(req: NextRequest) {
   const PROFANITY_BLACKLIST = [
     'fuck', 'shit', 'bitch', 'asshole', 'cunt', 'dick', 'pussy', 'whore', 'slut', 'fag', 'nigger', 'cock', 'bastard',
     'puta', 'mierda', 'pendejo', 'cabron', 'maricon', 'verga', 'culo', 'zorra', 'puto', 'gilipollas', 'concha', 'cojones',
-    // Enterprise Strict Mode / Anti-Nonsense
+    // Cryptographic Strict Mode / Anti-Nonsense
     'scam', 'ponzi', 'rugpull', 'fake', 'bullshit', 'crap', 'idiot', 'moron', 'stupid', 'tonto', 'estupido', 'estúpido', 'basura', 'engaño'
   ];
 
@@ -169,7 +169,7 @@ export async function POST(req: NextRequest) {
       const completion = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [
-          { role: 'system', content: 'You are a strict institutional provenance auditor. Evaluate the JSON and return {"valid": true} or {"valid": false, "reason": "..."}.' },
+          { role: 'system', content: 'You are a strict sovereign provenance auditor. Evaluate the JSON and return {"valid": true} or {"valid": false, "reason": "..."}.' },
           { role: 'user', content: JSON.stringify(validData) }
         ],
         response_format: { type: 'json_object' }

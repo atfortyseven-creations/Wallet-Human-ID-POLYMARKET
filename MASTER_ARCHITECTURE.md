@@ -63,10 +63,10 @@ graph TD
     L2 -->|Settlement| Azt
 ```
 
-###  State & Persistence Layer
-- **PostgreSQL - Prisma ORM**: Primary relational store for user profiles, identity mappings, and transaction metadata.
+###  Public Entropy & Ephemeral Sync Layer
+- **PostgreSQL - Prisma ORM (Public Entropy Indexer)**: Primary relational store acting strictly as an indexer for public L1/L2 data (EVM Thermodynamics). No private user state is stored here.
 - **MongoDB - Mongoose**: Dynamic storage for Polymarket event data and complex market indices.
-- **Redis / Upstash (PubSub & Cache)**:
+- **Redis / Upstash (Ephemeral State Sync)**:
   - **Zero-Crash Safeguard**: Implements a "Degraded Mode" mock client if `REDIS_URL` is unavailable.
   - **PubSub**: Facilitates real-time event broadcasting from workers to the WebSocket gateway.
   - **Caching**: 10-minute TTL on heavy Analytics Reports and portfolio snapshots.

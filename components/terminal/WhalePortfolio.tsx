@@ -143,7 +143,7 @@ export function WhalePortfolio() {
                 </ScrollFloat>
                 <div className="flex items-center gap-2 mt-2 opacity-40">
                     <div className="w-1.5 h-1.5 rounded-full bg-[#050505] " />
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] ">Institutional Depth Tracking Active</span>
+                    <span className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] ">Sovereign Depth Tracking Active</span>
                 </div>
             </div>
 

@@ -1,4 +1,4 @@
-// app/api/institutional/stats/route.ts
+// app/api/sovereign/stats/route.ts
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
@@ -19,7 +19,7 @@ export async function GET() {
 
     const totalUsdVolume = records24h.reduce((acc, curr) => acc + parseFloat(curr.usdValue), 0);
     const institutionalRatio = records24h.length > 0 
-      ? records24h.filter(r => r.institutional).length / records24h.length 
+      ? records24h.filter(r => r.sovereign).length / records24h.length 
       : 0;
 
     // 2. Telemetry: Throughput

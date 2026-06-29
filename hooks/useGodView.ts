@@ -5,7 +5,7 @@ import { Howl } from 'howler';
 export function useGodView() {
     const [isFullscreen, setIsFullscreen] = useState(false);
 
-    // Institutional Sound Effects
+    // Sovereign Sound Effects
     const playOrderSound = () => {
         try {
             const sound = new Howl({

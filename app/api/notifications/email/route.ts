@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
 
     // Send via Resend
     const result = await resend.emails.send({
-      from: 'Whale Network Institutional <alerts@institutional.pro>',
+      from: 'Whale Network Sovereign <alerts@sovereign.pro>',
       to: [to],
       subject,
       html,

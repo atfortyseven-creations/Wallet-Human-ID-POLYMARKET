@@ -43,7 +43,7 @@ async function main() {
     } catch (err: any) {
         console.error("\n [FAILURE] DB Sync Failed.");
         console.error("Details:", err.message);
-        console.log("\n Institutional Recommendation:");
+        console.log("\n Sovereign Recommendation:");
         console.log("1. Check if DATABASE_URL contains an invalid specialized character.");
         console.log("2. Ensure Railway PostgreSQL is not in 'Read-Only' state due to usage limits.");
         console.log("3. Try running 'npx prisma generate' before syncing.");

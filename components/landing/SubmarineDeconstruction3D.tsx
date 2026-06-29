@@ -135,7 +135,7 @@ function TyphoonRig({ scrollProgress }: { scrollProgress: number }) {
             </mesh>
           </group>
 
-          {/* The Inner Core (Institutional Reactor) */}
+          {/* The Inner Core (Sovereign Reactor) */}
           <mesh rotation={[0, 0, Math.PI / 2]} scale={0.5 + phaseDeconstruct * 0.2 + phaseZoom * 0.5}>
             <cylinderGeometry args={[0.4, 0.4, 6, 16]} />
             <meshStandardMaterial 
@@ -235,7 +235,7 @@ function DOMAnnotations({ scrollProgress }: { scrollProgress: number }) {
             </div>
             <h3 className="text-white font-aztec-serif italic text-3xl mb-2">Absolute <span className="text-[var(--aztec-orchid)]">Immersion</span></h3>
             <p className="text-white/50 text-[11px] uppercase font-aztec-mono tracking-widest leading-relaxed">
-              Unveiling the System Architecture. Scroll to descend into the ultimate institutional data engine.
+              Unveiling the System Architecture. Scroll to descend into the ultimate sovereign data engine.
             </p>
           </motion.div>
         )}
@@ -275,7 +275,7 @@ function DOMAnnotations({ scrollProgress }: { scrollProgress: number }) {
                   <Cpu size={80} />
               </div>
               <h3 className="text-white font-aztec-serif italic text-2xl mb-3 relative z-10">
-                Institutional <span className="text-[var(--aztec-orchid)]">Logic Core</span>
+                Sovereign <span className="text-[var(--aztec-orchid)]">Logic Core</span>
               </h3>
               <p className="text-white/60 text-[10px] uppercase font-aztec-mono tracking-widest leading-relaxed relative z-10">
                 Programmable zero-knowledge execution nodes. 100% mathematical certainty, 0% data leakage.

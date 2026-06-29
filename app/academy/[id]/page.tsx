@@ -81,7 +81,7 @@ export default async function AcademyModulePage({ params }: { params: Promise<{ 
                                 <div className="p-6 md:p-8 rounded-3xl bg-white dark:bg-[#111111] border border-black/5 dark:border-white/5 shadow-sm text-[13px] md:text-[15px] font-mono text-black/80 dark:text-white/80 leading-loose">
                                     <p className="mb-6">{moduleData.content}</p>
                                     <p className="mb-6">
-                                        In institutional environments, the precise architecture defined in this module governs billions in capital flow. A complete mastery of 
+                                        In sovereign environments, the precise architecture defined in this module governs billions in capital flow. A complete mastery of 
                                         this specific vector allows an operator to predict, simulate, and potentially capitalize on systemic inefficiencies.
                                     </p>
                                     <p>

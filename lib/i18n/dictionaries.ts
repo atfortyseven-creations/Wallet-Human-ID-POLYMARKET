@@ -232,7 +232,7 @@ const en = {
           privacy: 'Privacy',
           terms: 'Terms',
           security: 'Security',
-          compliance: 'Compliance'
+          attestation: 'Compliance'
       },
       rights: '© 2026 Whale Network. All rights reserved.'
   },

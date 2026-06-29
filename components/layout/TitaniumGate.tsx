@@ -36,7 +36,7 @@ export function TitaniumGate({ children }: TitaniumGateProps) {
     const [forceVisible, setForceVisible] = useState(false);
 
     useEffect(() => {
-        // [INSTITUTIONAL FAIL-SAFE] 
+        // [SOVEREIGN FAIL-SAFE] 
         // Force system visibility after 4 seconds regardless of state.
         // This is a zero-trust measure against hydration hangs.
         const emergency = setTimeout(() => {

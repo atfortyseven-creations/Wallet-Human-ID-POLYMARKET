@@ -97,7 +97,7 @@ export const docsData: Record<string, DocSection> = {
     content: [
       "To analyze the complex relationships between millions of entities, traditional relational databases are insufficient. We utilize an advanced Graph Database to store and query highly interconnected data, allowing us to uncover hidden patterns and dependencies that would otherwise remain invisible.",
       "In our graph model, entities such as wallets, smart contracts, and IP addresses are represented as nodes, while transactions and interactions are represented as edges connecting these nodes. This architecture allows us to perform deep, multi-hop traversals in milliseconds. For example, we can instantly trace the flow of funds through dozens of intermediary addresses to identify the ultimate source or destination.",
-      "Developers can query this graph database using standardized query languages. This capability is invaluable for compliance monitoring, risk assessment, and advanced market research, providing an unprecedented level of visibility into the structural dynamics of the network."
+      "Developers can query this graph database using standardized query languages. This capability is invaluable for attestation monitoring, risk assessment, and advanced market research, providing an unprecedented level of visibility into the structural dynamics of the network."
     ]
   },
   "storage": {
@@ -202,7 +202,7 @@ export const docsData: Record<string, DocSection> = {
     content: [
       "Data independence is a fundamental tenet of our operational philosophy. We engineer our systems to ensure that users maintain complete control and ownership over their personal and financial data. We reject the standard industry practice of monetizing user telemetry or selling access to third-party data brokers.",
       "Our architecture is designed to minimize data collection. We only process the information strictly necessary to provide our services. Wherever possible, data is anonymized or pseudonymized at the point of ingestion. For instance, user sessions are managed via ephemeral cryptographic hashes rather than permanent identifiers.",
-      "Users have the right to request the complete deletion of their data at any time. Our systems are built to ensure that such deletion requests are executed thoroughly and irreversibly across all active databases and backups, ensuring absolute compliance with global data systemty regulations."
+      "Users have the right to request the complete deletion of their data at any time. Our systems are built to ensure that such deletion requests are executed thoroughly and irreversibly across all active databases and backups, ensuring absolute attestation with global data systemty regulations."
     ]
   },
   "user-rights": {

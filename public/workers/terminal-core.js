@@ -47,7 +47,7 @@ function processDepth(bids, asks) {
 }
 
 /**
- * Evaluates trade flow and simulates institutional metadata
+ * Evaluates trade flow and simulates sovereign metadata
  */
 function processTrade(e) {
     const price = parseFloat(e.p);

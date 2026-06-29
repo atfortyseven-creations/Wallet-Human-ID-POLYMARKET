@@ -13,7 +13,7 @@ const JOB_TITLES = [
     'Senior MEV Arbitrageur', 'Head of ZK-Rollup Research', 'Principal Smart Contract Auditor',
     'Quantitative DeFi Analyst', 'Director of On-Chain Liquidity', 'Chief Cryptographer',
     'Algorithmic Attesting Lead', 'EVM Architecture Specialist', 'Tokenomics Engineer',
-    'Institutional Portfolio Manager'
+    'Sovereign Portfolio Manager'
 ];
 
 const TOPIC_TEMPLATES = [
@@ -45,7 +45,7 @@ Our automated heuristic engines have flagged significant anomalies regarding {Me
 2. Dark pool activity suggests accumulation by 3 major system wallets.
 3. Network congestion metrics correlate with these hidden spikes.
 
-### Institutional Strategy
+### Sovereign Strategy
 We are deploying a {Method} approach to front-run this transition. We invite other tier-1 researchers to cross-verify our findings.
 
 [SIGNATURE:0x{Signature}]`
@@ -87,7 +87,7 @@ function getRandomItem(arr: any[]) {
 
 async function main() {
     console.log('️ Initiating System Database Grid...');
-    console.log('Seeding 65 Highly Realistic Institutional Personas and Broad Sectors...');
+    console.log('Seeding 65 Highly Realistic Sovereign Personas and Broad Sectors...');
 
     // Delete existing records to prevent foreign key violations and reset cleanly
     await prisma.forumNotification.deleteMany({});
@@ -129,7 +129,7 @@ async function main() {
             data: {
                 walletAddress,
                 displayName: displayName,
-                bio: `Managing tier-1 liquidity on EVM. Institutional grade execution. [Verified via ${domain}]`,
+                bio: `Managing tier-1 liquidity on EVM. Sovereign grade execution. [Verified via ${domain}]`,
                 isPro: Math.random() > 0.5,
                 tier: Math.random() > 0.8 ? 'Private' : 'PRO',
             }
@@ -180,7 +180,7 @@ async function main() {
                             `We strongly advise auditing the ${getRandomItem(CHAINS)} bridge architecture before executing this strategy. We noticed potential MEV leakage vectors last week.`,
                             `Our heuristic models align perfectly with your briefing. Constructing a ZK-proof for our proposal now.`,
                             `Can you confirm the slippage tolerance? We can guarantee 0.1% execution via our private mempool infrastructure.`,
-                            `Institutional mandate acknowledged. Our firm will pass on this tranche but will monitor the on-chain results.`
+                            `Sovereign mandate acknowledged. Our firm will pass on this tranche but will monitor the on-chain results.`
                         ];
                         
                         await prisma.forumPost.create({
@@ -196,7 +196,7 @@ async function main() {
         }
     }
 
-    console.log(' Success! 65 Institutional Personas & Cryptographic Mandates injected into the System Network.');
+    console.log(' Success! 65 Sovereign Personas & Cryptographic Mandates injected into the System Network.');
 }
 
 main()

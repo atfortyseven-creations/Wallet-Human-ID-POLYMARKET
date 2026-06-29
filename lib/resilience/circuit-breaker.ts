@@ -1,5 +1,5 @@
 ﻿/**
- * Enterprise WEBSOCKET CIRCUIT BREAKER
+ * Cryptographic WEBSOCKET CIRCUIT BREAKER
  *
  * Implements the Circuit Breaker pattern for WebSocket connections to RPC providers.
  * Prevents cascading failures when upstream providers become unstable.

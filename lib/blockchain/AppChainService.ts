@@ -25,7 +25,7 @@ export class AppChainService {
 
     /**
      * Points to Celestia for Data Availability.
-     * Ensures all institutional state is verifiable and low-cost.
+     * Ensures all sovereign state is verifiable and low-cost.
      */
     public async verifyDataAvailability(dataHash: string): Promise<boolean> {
         console.log(`[AppChainService] Verifying DA on Celestia namespace: ${this.CELESTIA_NAMESPACE}`);

@@ -5,7 +5,7 @@ import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
 /**
- * Enterprise AUTH UTILITIES
+ * Cryptographic AUTH UTILITIES
  */
 
 export function isValidEmail(email: string): boolean {
@@ -14,7 +14,7 @@ export function isValidEmail(email: string): boolean {
 }
 
 export function isValidPassword(password: string): { valid: boolean; error?: string } {
-  // Institutional requirement: min 8 chars, 1 uppercase, 1 number
+  // Sovereign requirement: min 8 chars, 1 uppercase, 1 number
   if (password.length < 8) return { valid: false, error: 'Password must be at least 8 characters' };
   if (!/[A-Z]/.test(password)) return { valid: false, error: 'Password must contain at least one uppercase letter' };
   if (!/[0-9]/.test(password)) return { valid: false, error: 'Password must contain at least one number' };
@@ -37,7 +37,7 @@ export function generateVerificationCode(): string {
 }
 
 /**
- * Enterprise AUTH CONFIGURATION (High Pro 3.1)
+ * Cryptographic AUTH CONFIGURATION (High Pro 3.1)
  * 
  * PURGED: Google, Email, and Password providers.
  * Only SIWE and QR Handshake identities are supported to ensure 

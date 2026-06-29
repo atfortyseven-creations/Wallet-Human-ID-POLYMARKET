@@ -7,7 +7,7 @@ export class TreasuryService {
      */
     static async getProtocolMetrics() {
         try {
-            // TreasurySnapshot removed from schema, returning mock institutional data.
+            // TreasurySnapshot removed from schema, returning mock sovereign data.
             // 3. Fallback (First deployment)
             return {
                 tvl: 8492000.00, // Seed value

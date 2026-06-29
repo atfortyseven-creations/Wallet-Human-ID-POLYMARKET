@@ -248,7 +248,7 @@ export function WhaleAlertProLanding() {
                       <span className="text-white/20">PURE INTENSITY.</span>
                    </h2>
                    <p className="text-xl text-white/40 leading-relaxed font-light mb-10">
-                      Raw data is noise. Our quantitative engine filters billions of bytes into institutional-grade signals. 
+                      Raw data is noise. Our quantitative engine filters billions of bytes into sovereign-grade signals. 
                       Transforming blockchain chaos into <span className="text-white">Forensic Guidance</span>.
                    </p>
                    <div className="flex flex-wrap gap-4">
@@ -298,7 +298,7 @@ export function WhaleAlertProLanding() {
                             <Bell size={48} className="text-cyan-500 mx-auto mb-6 animate-bounce" />
                             <div className="text-xs font-mono text-cyan-400 mb-2">WHALE_DETECTED [ETH]</div>
                             <div className="text-2xl font-black mb-2">$48,291,029</div>
-                            <div className="text-[10px] text-white/40 uppercase tracking-widest">Institutional Accumulation Detected</div>
+                            <div className="text-[10px] text-white/40 uppercase tracking-widest">Sovereign Accumulation Detected</div>
                          </div>
                       </div>
                    </div>

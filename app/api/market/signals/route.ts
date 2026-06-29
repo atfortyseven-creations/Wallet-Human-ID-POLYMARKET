@@ -1,23 +1,23 @@
 /**
  * GET /api/market/signals
  *
- * System API Marketplace  Institutional Signal Distribution
+ * System API Marketplace  Sovereign Signal Distribution
  *
  * Serves on-chain whale analytics signals to paying subscribers
  * WITHOUT exposing source wallets, RPC endpoints, or detection methodology.
  *
  * Authentication:
  *   Header: X-API-Key: <api-key>
- *   Each API key is associated with a tier: FREE | PRO | INSTITUTIONAL
+ *   Each API key is associated with a tier: FREE | PRO | SOVEREIGN
  *
- * HMAC Request Signing (INSTITUTIONAL tier):
+ * HMAC Request Signing (SOVEREIGN tier):
  *   Header: X-Signature: HMAC-SHA256(timestamp + "." + body, secret)
  *   Header: X-Timestamp: Unix timestamp (must be within 30s)
  *
  * Rate Limits:
  *   FREE:          10 req/min, last 10 events, no filters
  *   PRO:           60 req/min, last 100 events, chain filter
- *   INSTITUTIONAL: 300 req/min, last 500 events, full filters
+ *   SOVEREIGN: 300 req/min, last 500 events, full filters
  *
  * Response shape: { signals[], tier, quota, remaining, timestamp }
  * Signals omit: walletAddress, fromAddress, toAddress (system source protection)
@@ -32,7 +32,7 @@ export const runtime = 'nodejs';
 
 //  Tier Configuration 
 
-type Tier = 'FREE' | 'PRO' | 'INSTITUTIONAL';
+type Tier = 'FREE' | 'PRO' | 'SOVEREIGN';
 
 const TIER_CONFIG: Record<Tier, {
     rateLimit: number;
@@ -55,7 +55,7 @@ const TIER_CONFIG: Record<Tier, {
         chainsAllowed: true,
         filtersAllowed: false,
     },
-    INSTITUTIONAL: {
+    SOVEREIGN: {
         rateLimit:     300,
         eventLimit:    500,
         requiresHmac:  true,
@@ -71,7 +71,7 @@ interface ApiKeyRecord { tier: Tier; secret?: string; ownerId: string }
 async function resolveApiKey(key: string): Promise<ApiKeyRecord | null> {
     // Tier 1: Check static env keys (for bootstrap / internal use)
     if (key === process.env.Private_API_KEY_INSTITUTIONAL) {
-        return { tier: 'INSTITUTIONAL', secret: process.env.Private_HMAC_SECRET, ownerId: 'internal' };
+        return { tier: 'SOVEREIGN', secret: process.env.Private_HMAC_SECRET, ownerId: 'internal' };
     }
     if (key === process.env.Private_API_KEY_PRO) {
         return { tier: 'PRO', ownerId: 'internal-pro' };
@@ -183,7 +183,7 @@ export async function GET(req: NextRequest) {
 
     const tierCfg = TIER_CONFIG[keyRecord.tier];
 
-    // HMAC verification for INSTITUTIONAL tier
+    // HMAC verification for SOVEREIGN tier
     if (tierCfg.requiresHmac && keyRecord.secret) {
         if (!sigHeader || !tsHeader || !verifyHmac(keyRecord.secret, tsHeader, '', sigHeader)) {
             return NextResponse.json({ error: 'Invalid HMAC signature or timestamp expired' }, { status: 401 });

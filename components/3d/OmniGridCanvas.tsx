@@ -2,7 +2,7 @@
 
 /**
  * 
- * OmniGridCanvas  Epicentro 2: 2D Institutional Visualizer
+ * OmniGridCanvas  Epicentro 2: 2D Sovereign Visualizer
  * 
  * Pure HTML5 Canvas 2D implementation. Zero WebGL / Three.js.
  * Zero external dependencies. Runs on any device, any browser.

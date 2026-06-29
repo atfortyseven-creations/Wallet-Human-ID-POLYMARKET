@@ -120,7 +120,7 @@ export async function POST(req: NextRequest) {
         // SAVE TO DATABASE (PENDING)
         // ====================================================================
 
-        // Fetch real-time Oracle pricing for true institutional telemtry (Zero-Mock)
+        // Fetch real-time Oracle pricing for true sovereign telemtry (Zero-Mock)
         const realWldPrice = await getRealTimePrice("AUTH") || 2.5;
 
         await prisma.blockchainTransaction.create({

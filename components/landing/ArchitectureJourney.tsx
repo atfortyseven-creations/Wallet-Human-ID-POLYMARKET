@@ -20,7 +20,7 @@ const ARCHITECTURE_NODES = [
   { icon: Zap, label: "Signal Generation", desc: "Confluence of Heikin-Ashi Signals with whale flows to generate high-conviction alerts." },
   { icon: Database, label: "Analytics Archive", desc: "Persistence in Postgres/Prisma with 12 months of complete history for retroactive analysis." },
   { icon: Activity, label: "Real-Time Stream (SSE)", desc: "Event delivery via Server-Sent Events with sub-500ms latency after detection." },
-  { icon: Terminal, label: "Enterprise API Gateway", desc: "Dedicated REST and WebSocket infrastructure for mass access with IP Whitelisting." },
+  { icon: Terminal, label: "Cryptographic API Gateway", desc: "Dedicated REST and WebSocket infrastructure for mass access with IP Whitelisting." },
   { icon: Webhook, label: "Webhook Dispatcher", desc: "Asynchronous alert dispatch to external endpoints with retries and HMAC-SHA256 signatures." },
   { icon: Code2, label: "Portfolio Fusion Engine", desc: "Active balance and USD value calculation integrating real-time prices via GetBlock RPC nodes." },
   { icon: Lock, label: "FIX Protocol Gateway", desc: "HFT (Financial Information eXchange) interface with Checksum validation for Hedge Funds." },

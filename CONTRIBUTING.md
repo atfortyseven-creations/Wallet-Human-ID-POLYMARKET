@@ -1,8 +1,8 @@
-﻿# Enterprise ARCHITECTURE CONTRIBUTING PROTOCOL
+﻿# Cryptographic ARCHITECTURE CONTRIBUTING PROTOCOL
 
 > [!WARNING]
 > **STRICT PROCEDURAL MANDATE**
-> The System Terminal is an institutional-grade codebase. We do not accept casual contributions, unverified logic modifications, or superficial UI tweaks. Every pull request is subjected to rigorous academic peer review and mathematical scrutiny. If you cannot abide by these Draconian standards, do not attempt to contribute.
+> The System Terminal is an sovereign-grade codebase. We do not accept casual contributions, unverified logic modifications, or superficial UI tweaks. Every pull request is subjected to rigorous academic peer review and mathematical scrutiny. If you cannot abide by these Draconian standards, do not attempt to contribute.
 
 ## 1. Architectural Philosophy & Zero-Simulation
 
@@ -19,7 +19,7 @@ If you believe your optimization or feature is worthy of inclusion in the System
 Branches must reflect the absolute precision of the work contained within.
 * **Cryptography/Security:** `grid/crypto-enhancement-[descriptor]`
 * **High-Frequency Backend:** `engine/telemetry-optimization-[descriptor]`
-* **Institutional Frontend:** `terminal/ui-refinement-[descriptor]`
+* **Sovereign Frontend:** `terminal/ui-refinement-[descriptor]`
 * **Example:** `engine/eip1153-transient-storage-parser`
 
 ### 2.2 Cryptographic Commit Signatures

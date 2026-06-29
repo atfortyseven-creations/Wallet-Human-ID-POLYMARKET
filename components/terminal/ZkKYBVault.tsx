@@ -98,7 +98,7 @@ export function ZkKYBVault() {
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-[14px] font-black uppercase tracking-widest text-[#050505]">Institutional KYB Vault</h2>
+            <h2 className="text-[14px] font-black uppercase tracking-widest text-[#050505]">Sovereign KYB Vault</h2>
             <p className="text-[10px] text-black/40 uppercase tracking-[0.2em] mt-1">Zk-Proof Corporate Identity Protocol</p>
           </div>
           <div className="w-10 h-10 rounded-full bg-black/5 border border-black/10 flex items-center justify-center">

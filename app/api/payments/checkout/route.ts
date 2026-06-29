@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
                     const priceAmount = billingCycle === 'ANNUAL' ? planConfig.priceMetrics.annual : planConfig.priceMetrics.monthly;
                     const newProduct = await stripe.products.create({
                         name: `Whale Network - ${planConfig.name}`,
-                        description: `Enterprise Node Infrastructure - ${tier} Tier`,
+                        description: `Cryptographic Node Infrastructure - ${tier} Tier`,
                         metadata: { tier: tier }
                     });
                     const newPrice = await stripe.prices.create({

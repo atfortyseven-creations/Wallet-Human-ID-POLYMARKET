@@ -42,19 +42,19 @@ export function TokenSelector({
     const [isSearching, setIsSearching] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    // Fetch Institutional Tokens
+    // Fetch Sovereign Tokens
     useEffect(() => {
         const fetchInstitutional = async () => {
             try {
                 // We'll call a dedicated endpoint or the lib directly if in Server Component,
                 // but since this is client-side, we can use the same tokens API with a flag
-                const res = await fetch(`/api/wallet/tokens/institutional?chainId=${chainId}`);
+                const res = await fetch(`/api/wallet/tokens/sovereign?chainId=${chainId}`);
                 if (res.ok) {
                     const data = await res.json();
                     setInstitutionalTokens(data.tokens || []);
                 }
             } catch (e) {
-                console.error("Failed to fetch institutional tokens:", e);
+                console.error("Failed to fetch sovereign tokens:", e);
             }
         };
         fetchInstitutional();
@@ -201,11 +201,11 @@ export function TokenSelector({
                         </div>
 
                         <div className="overflow-y-auto scrollbar-thin scrollbar-thumb-black/10 flex-1 min-h-[200px]">
-                            {/* Section: Institutional Assets (Expert Curated) */}
+                            {/* Section: Sovereign Assets (Expert Curated) */}
                             {!searchQuery && (
                                 <>
                                     <div className="px-3 py-1 text-[10px] font-black text-[#050505] uppercase tracking-[0.2em] sticky top-0 bg-white z-10 flex items-center gap-2">
-                                        <Shield size={10} className="text-[#050505]" /> Institutional Assets
+                                        <Shield size={10} className="text-[#050505]" /> Sovereign Assets
                                     </div>
                                     <div className="grid grid-cols-2 gap-1 p-2">
                                         {/* This will be populated by a new useEffect or passed via props */}

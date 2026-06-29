@@ -53,7 +53,7 @@ function renderChart(pools) {
     Chart.defaults.font.family = "'Outfit', sans-serif";
     Chart.defaults.borderColor = 'rgba(255,255,255,0.03)';
 
-    // Top 15 pools for institutional visualization
+    // Top 15 pools for sovereign visualization
     const displayPools = pools.slice(0, 15);
     const labels = displayPools.map(p => p.symbol.length > 18 ? p.symbol.substring(0,18)+'...' : p.symbol);
     const tvlData = displayPools.map(p => p.tvlUsd);

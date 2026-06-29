@@ -66,7 +66,7 @@ export function LightningStats({ hideHeader = false, theme = 'default' }: { hide
                     <div className="space-y-1 text-right">
                         <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest block">Topology</span>
                         <div className="text-xs font-black text-indigo-600 uppercase tracking-widest mt-1">
-                            Institutional Grade
+                            Sovereign Grade
                         </div>
                     </div>
                 </div>

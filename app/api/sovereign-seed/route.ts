@@ -13,7 +13,7 @@ const JOB_TITLES = [
     'Senior MEV Arbitrageur', 'Head of ZK-Rollup Research', 'Principal Smart Contract Auditor',
     'Quantitative DeFi Analyst', 'Director of On-Chain Liquidity', 'Chief Cryptographer',
     'Algorithmic Attesting Lead', 'EVM Architecture Specialist', 'Tokenomics Engineer',
-    'Institutional Portfolio Manager'
+    'Sovereign Portfolio Manager'
 ];
 
 const TOPIC_TEMPLATES = [
@@ -45,7 +45,7 @@ Our automated heuristic engines have flagged significant anomalies regarding {Me
 2. Dark pool activity suggests accumulation by 3 major system wallets.
 3. Network congestion metrics correlate with these hidden spikes.
 
-### Institutional Strategy
+### Sovereign Strategy
 We are deploying a {Method} approach to front-run this transition. We invite other tier-1 researchers to cross-verify our findings.
 
 [SIGNATURE:0x{Signature}]`
@@ -100,11 +100,11 @@ export async function GET() {
         await prisma.forumTopic.deleteMany({});
         await prisma.forumCategory.deleteMany({});
 
-        // 1. Create 5 Institutional Categories
+        // 1. Create 5 Sovereign Categories
         const categoriesData = [
-            { slug: 'institutional-grid', name: 'Institutional Grid', description: 'Core strategic discussions and macroeconomic allocation.', color: '#4F46E5', orderIndex: 1 },
+            { slug: 'sovereign-grid', name: 'Sovereign Grid', description: 'Core strategic discussions and macroeconomic allocation.', color: '#4F46E5', orderIndex: 1 },
             { slug: 'live-feed', name: 'Active Feed', description: 'Real-time analytics and network anomalies.', color: '#10B981', orderIndex: 2 },
-            { slug: 'recent-profiles', name: 'Recent Profiles', description: 'New verified entities and institutional nodes.', color: '#F59E0B', orderIndex: 3 },
+            { slug: 'recent-profiles', name: 'Recent Profiles', description: 'New verified entities and sovereign nodes.', color: '#F59E0B', orderIndex: 3 },
             { slug: 'pending-review', name: 'Pending Review', description: 'Proposals, audits, and smart contract verification queues.', color: '#EF4444', orderIndex: 4 },
             { slug: 'highest-yield', name: 'Highest Yield', description: 'Algorithmic stablecoins, DeFi yields, and delta-neutral strategies.', color: '#8B5CF6', orderIndex: 5 }
         ];
@@ -130,7 +130,7 @@ export async function GET() {
                 data: {
                     walletAddress,
                     displayName: displayName,
-                    bio: `Managing tier-1 liquidity on EVM. Institutional grade execution. [Verified via ${domain}]`,
+                    bio: `Managing tier-1 liquidity on EVM. Sovereign grade execution. [Verified via ${domain}]`,
                     isPro: Math.random() > 0.5,
                     tier: Math.random() > 0.8 ? 'Private' : 'PRO',
                 }
@@ -182,7 +182,7 @@ export async function GET() {
                                 `We strongly advise auditing the ${getRandomItem(CHAINS)} bridge architecture before executing this strategy. We noticed potential MEV leakage vectors last week.`,
                                 `Our heuristic models align perfectly with your briefing. Constructing a ZK-proof for our proposal now.`,
                                 `Can you confirm the slippage tolerance? We can guarantee 0.1% execution via our private mempool infrastructure.`,
-                                `Institutional mandate acknowledged. Our firm will pass on this tranche but will monitor the on-chain results.`
+                                `Sovereign mandate acknowledged. Our firm will pass on this tranche but will monitor the on-chain results.`
                             ];
                             
                             await prisma.forumPost.create({
@@ -201,7 +201,7 @@ export async function GET() {
 
         return NextResponse.json({
             success: true,
-            message: 'Forum seeded with 65 Institutional Personas and 5 Strategic Sectors successfully.',
+            message: 'Forum seeded with 65 Sovereign Personas and 5 Strategic Sectors successfully.',
             results,
         });
 

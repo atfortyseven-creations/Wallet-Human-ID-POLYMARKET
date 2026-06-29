@@ -39,7 +39,7 @@ export default function UseCasesPage() {
             <div className="p-8 border border-black/10 rounded-2xl bg-white/80 flex flex-col gap-4 shadow-sm">
               <h3 className="text-xl font-black uppercase tracking-wider text-black">Financial Services &amp; DeFi</h3>
               <p className="text-black/60 font-sans text-sm leading-relaxed">
-                Streamline identity checks and compliance without storing personal data. Users prove their identity and accreditation status on-chain instantly, enabling frictionless onboarding for exchanges, lending platforms, and institutional attesting services.
+                Streamline identity checks and attestation without storing personal data. Users prove their identity and accreditation status on-chain instantly, enabling frictionless onboarding for exchanges, lending platforms, and sovereign attesting services.
               </p>
             </div>
 

@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * PortfolioView  Enterprise TERMINAL v5
+ * PortfolioView  Cryptographic TERMINAL v5
  *
  * PERFORMANCE CONTRACT (IPAD / IOS ZERO-LAG):
  * - ZERO blur() CSS filters on animated elements
@@ -489,7 +489,7 @@ export default function PortfolioView({
       className="relative min-h-screen text-black font-sans selection:bg-black/10"
       style={{ background: "#fdfcf9" }}
     >
-      {/* Institutional Grid Pattern - Client Only to fix SSR Glitch */}
+      {/* Sovereign Grid Pattern - Client Only to fix SSR Glitch */}
       {mounted && (
         <div className="absolute inset-0 pointer-events-none opacity-[0.05]"
             style={{ backgroundImage: 'repeating-linear-gradient(0deg,#000 0,#000 1px,transparent 1px,transparent 60px),repeating-linear-gradient(90deg,#000 0,#000 1px,transparent 1px,transparent 60px)' }} />
@@ -517,7 +517,7 @@ export default function PortfolioView({
           <ChainSelector />
            <div className="flex items-center gap-6">
             <div className="flex flex-col items-end">
-                <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">Institutional Node</span>
+                <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">Sovereign Node</span>
                 <div className="flex items-center gap-2">
                     <div className="w-1.2 h-1.2 rounded-full bg-green-500 animate-pulse" />
                     <span className="text-[10px] font-bold text-white uppercase tracking-widest">{userAddress?.slice(0, 6)}...{userAddress?.slice(-4)}</span>

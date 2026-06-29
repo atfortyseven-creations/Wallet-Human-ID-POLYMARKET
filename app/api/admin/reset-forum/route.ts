@@ -54,10 +54,10 @@ export async function POST(req: Request) {
 
     const welcomeContent = `Welcome to the newly reorganized System Forum!
 
-Here you will find a premium, secure environment for institutional discussion and analytics sharing.
+Here you will find a premium, secure environment for sovereign discussion and analytics sharing.
 
 ### Key Features
-1. **Institutional Grid**: Deep-dive analysis and structured data.
+1. **Sovereign Grid**: Deep-dive analysis and structured data.
 2. **Active Feed**: Real-time discussions and updates.
 3. **Recent Profiles**: Track new system identities joining the network.
 4. **Highest Yield**: The most valuable and upvoted analytics.

@@ -188,7 +188,7 @@ export function MorphoYieldDashboard() {
       {/* Main Chart */}
       <div className="bg-white border border-black/5 shadow-sm rounded-2xl p-6 h-[400px]">
         <div className="flex justify-between items-center mb-6">
-          <h3 className="text-[12px] font-bold text-[#050505] uppercase tracking-widest">Institutional Yield Allocation (Base)</h3>
+          <h3 className="text-[12px] font-bold text-[#050505] uppercase tracking-widest">Sovereign Yield Allocation (Base)</h3>
           <div className="px-3 py-1.5 rounded-lg bg-[#0052FF]/5 text-[#0052FF] border border-[#0052FF]/10 text-[10px] font-bold uppercase tracking-widest flex items-center gap-1.5">
             <div className="w-1.5 h-1.5 rounded-full bg-[#0052FF] animate-pulse" /> Active Feed
           </div>

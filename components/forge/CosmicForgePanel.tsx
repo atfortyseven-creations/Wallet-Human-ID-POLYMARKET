@@ -57,7 +57,7 @@ export function CosmicForgePanel() {
               Akashic Data Studio
             </h1>
             <p className="text-[11px] font-mono uppercase tracking-widest text-black/50 max-w-md">
-              Living entities spawned by institutional whale volume. Evolution determined by macro market entropy and network activity.
+              Living entities spawned by sovereign whale volume. Evolution determined by macro market entropy and network activity.
             </p>
           </div>
 
@@ -114,7 +114,7 @@ export function CosmicForgePanel() {
                 <div className="col-span-full py-20 flex flex-col items-center justify-center border-2 border-dashed border-black/10 rounded-3xl">
                   <Box size={42} className="text-black/10 mb-4" />
                   <p className="text-[12px] font-black uppercase tracking-widest text-black/30">Dormant State</p>
-                  <p className="text-[10px] text-black/20 font-medium">No institutional anomalies detected.</p>
+                  <p className="text-[10px] text-black/20 font-medium">No sovereign anomalies detected.</p>
                 </div>
               )}
             </AnimatePresence>

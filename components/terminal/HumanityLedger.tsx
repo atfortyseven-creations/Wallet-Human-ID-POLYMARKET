@@ -78,7 +78,7 @@ const NODES: RoadmapNode[] = [
     title: 'Whale Tier Access',
     status: 'live',
     quarter: 'Completed',
-    description: 'Tiered membership system (Whale, Orca, Shark, Initiate). Each tier unlocks progressively deeper access: Whale Chat, Studio Provenance creation, institutional circuit library, and advanced terminal modules. Tiers are verified cryptographically via wallet signature.',
+    description: 'Tiered membership system (Whale, Orca, Shark, Initiate). Each tier unlocks progressively deeper access: Whale Chat, Studio Provenance creation, sovereign circuit library, and advanced terminal modules. Tiers are verified cryptographically via wallet signature.',
     x: C2, y: 200,
   },
   {
@@ -86,7 +86,7 @@ const NODES: RoadmapNode[] = [
     title: 'Whale Terminal',
     status: 'live',
     quarter: 'Completed',
-    description: 'Institutional-grade multi-tab terminal: Portfolio Dashboard, Markets, Roadmap, Whale Chat, Studio Provenance, Alerts, Session Logs, and ZK Developer Sandbox — all in one shell.',
+    description: 'Sovereign-grade multi-tab terminal: Portfolio Dashboard, Markets, Roadmap, Whale Chat, Studio Provenance, Alerts, Session Logs, and ZK Developer Sandbox — all in one shell.',
     x: C2, y: 340,
   },
   {
@@ -109,7 +109,7 @@ const NODES: RoadmapNode[] = [
   },
   {
     id: 'circuits',
-    title: 'Institutional ZK Circuits',
+    title: 'Sovereign ZK Circuits',
     status: 'live',
     quarter: 'Completed',
     description: 'Production circuit library: Dark Pool Order Matching (Pedersen commitments), AML Travel Rule (Merkle OFAC tree), Omnichain MPT State Proof (L1→L2), and Recursive SNARK aggregation.',

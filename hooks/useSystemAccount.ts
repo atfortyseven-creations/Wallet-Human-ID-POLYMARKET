@@ -6,7 +6,7 @@ import { useWalletStore } from '@/lib/store/wallet-store';
 import { getAddress } from 'viem';
 
 /**
- * [Enterprise HANDSHAKE] Account Bridge — Hardware-Bound Persistence Edition
+ * [Cryptographic HANDSHAKE] Account Bridge — Hardware-Bound Persistence Edition
  *
  * Priority ladder:
  *   0. Nuclear Disconnect Guard (explicit user logout)

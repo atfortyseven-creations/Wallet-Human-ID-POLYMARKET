@@ -15,7 +15,7 @@ export default function LegalPage() {
   return (
     <LegalDocLayout
       title="Security Architecture"
-      subtitle="This policy sets forth the legal and compliance rules governing the Whale Network ecosystem."
+      subtitle="This policy sets forth the legal and attestation rules governing the Whale Network ecosystem."
       lastUpdated="June 2026"
       category="Legal & Security"
       toc={TOC}
@@ -64,7 +64,7 @@ export default function LegalPage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              In the event of a High or Critical severity incident, the Response Team is constituted, led by: 1. <strong className="text-black font-semibold">Incident Manager:</strong> [PENDING — CTO or Director]. Coordinates the overall response. 2. <strong className="text-black font-semibold">Tech Lead:</strong> Responsible for containment, forensic analysis, and mitigation. 3. <strong className="text-black font-semibold">Legal/Compliance Officer:</strong> Manages mandatory notifications (AEPD, CNMV, users). 4. <strong className="text-black font-semibold">Communications (PR):</strong> Manages public communication on networks (Twitter, Discord) to prevent misinformation and FUD.
+              In the event of a High or Critical severity incident, the Response Team is constituted, led by: 1. <strong className="text-black font-semibold">Incident Manager:</strong> [PENDING — CTO or Director]. Coordinates the overall response. 2. <strong className="text-black font-semibold">Tech Lead:</strong> Responsible for containment, forensic analysis, and mitigation. 3. <strong className="text-black font-semibold">Legal/Attestation Officer:</strong> Manages mandatory notifications (AEPD, CNMV, users). 4. <strong className="text-black font-semibold">Communications (PR):</strong> Manages public communication on networks (Twitter, Discord) to prevent misinformation and FUD.
             </p>
           </div>
         </section>
@@ -223,7 +223,7 @@ export default function LegalPage() {
               </tr>
             </tbody></table></div>
             <p>
-              <em>Mandatory compliance document for all technical and managerial personnel.</em>
+              <em>Mandatory attestation document for all technical and managerial personnel.</em>
             </p>
           </div>
         </section>

@@ -6,7 +6,7 @@ import { Lock, Navigation, Scale, FileText, ArrowRight } from 'lucide-react';
 
 const OTC_COUNTERS = [
   { id: 'itrust', name: 'iTrustCapital', tier: 'System IRA', minDeposit: 100000, fee: '1% Attest', color: '#1A365D' },
-  { id: 'galaxy', name: 'Galaxy Digital OTC', tier: 'Institutional Dark-Pool', minDeposit: 5000000, fee: 'Bespoke', color: '#000000' },
+  { id: 'galaxy', name: 'Galaxy Digital OTC', tier: 'Sovereign Dark-Pool', minDeposit: 5000000, fee: 'Bespoke', color: '#000000' },
   { id: 'falconx', name: 'FalconX Prime', tier: 'Execution Desk', minDeposit: 1000000, fee: 'Spread Base', color: '#4F46E5' }
 ];
 
@@ -27,7 +27,7 @@ export default function ClearanceTab() {
         </div>
         <h1 className="text-6xl font-black uppercase tracking-tighter mb-4">Whale Clearance / OTC</h1>
         <p className="text-sm font-medium tracking-wide opacity-50 max-w-2xl leading-relaxed">
-          Access heavily vetted, institutional-grade Over-The-Counter (OTC) desks and System IRA gateways. Bypassing public order books eliminates slippage on high-velocity wealth transfers.
+          Access heavily vetted, sovereign-grade Over-The-Counter (OTC) desks and System IRA gateways. Bypassing public order books eliminates slippage on high-velocity wealth transfers.
         </p>
       </header>
 
@@ -35,7 +35,7 @@ export default function ClearanceTab() {
         
         {/* Desks Selection */}
         <div className="col-span-1 md:col-span-2 space-y-4">
-          <h2 className="text-[10px] font-black uppercase tracking-[0.3em] opacity-30 mb-6 border-b border-white/10 pb-2">Institutional Routing Endpoints</h2>
+          <h2 className="text-[10px] font-black uppercase tracking-[0.3em] opacity-30 mb-6 border-b border-white/10 pb-2">Sovereign Routing Endpoints</h2>
           {OTC_COUNTERS.map((desk) => (
             <div 
               key={desk.id}

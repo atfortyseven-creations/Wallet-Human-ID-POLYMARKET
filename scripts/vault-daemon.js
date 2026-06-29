@@ -42,7 +42,7 @@ const server = http.createServer((req, res) => {
             return;
         }
 
-        // 2. Pre-flight Disk Check (Institutional Safety)
+        // 2. Pre-flight Disk Check (Sovereign Safety)
         try {
             const stats = fs.statfsSync(STORAGE_DIR);
             const freeSpaceGB = (Number(stats.bavail) * Number(stats.bsize)) / (1024 ** 3);

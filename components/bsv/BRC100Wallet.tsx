@@ -8,7 +8,7 @@ import { useCWI } from '@/lib/bsv/CWIContext';
 import { toast } from 'sonner';
 
 /**
- * BRC-100 INSTITUTIONAL WALLET (Pillar 1 - Phase 2)
+ * BRC-100 SOVEREIGN WALLET (Pillar 1 - Phase 2)
  * -----------------------------------------------
  * High-performance UI for managing BRC-100 token assets.
  * Integrates with the System Identity and CWI Substrate.
@@ -47,7 +47,7 @@ export const BRC100Wallet = () => {
                         <Coins className="text-[var(--aztec-chartreuse)]" size={20} />
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold font-aztec-serif uppercase tracking-tight">Institutional <span className="text-[var(--aztec-chartreuse)]">Assets</span></h3>
+                        <h3 className="text-lg font-bold font-aztec-serif uppercase tracking-tight">Sovereign <span className="text-[var(--aztec-chartreuse)]">Assets</span></h3>
                         <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30">BRC-100 Substrate v2</p>
                     </div>
                 </div>

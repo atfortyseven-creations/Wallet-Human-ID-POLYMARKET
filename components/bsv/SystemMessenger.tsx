@@ -10,10 +10,10 @@ import { toast } from 'sonner';
 import useSWR from 'swr';
 
 /**
- * Enterprise MESSENGER (Pillar 3 - Phase 2)
+ * Cryptographic MESSENGER (Pillar 3 - Phase 2)
  * -------------------------------------
  * High-performance P2P communication interface.
- * Features signed message substrate and 10000% institutional fidelity.
+ * Features signed message substrate and 10000% sovereign fidelity.
  */
 export const SystemMessenger = () => {
     const { identity } = useCWI();

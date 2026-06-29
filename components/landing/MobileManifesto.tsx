@@ -114,22 +114,22 @@ export function MobileManifesto() {
           </div>
 
           <h2 className="text-[40px] font-black tracking-tighter uppercase leading-[0.95] text-white mb-6 text-center">
-            Absolute <span className="text-emerald-500">Secrecy.</span>
+            Sovereign <span className="text-emerald-500">Privacy.</span>
           </h2>
 
           <div className="space-y-6 font-serif text-[16px] text-white/70 leading-[1.7] text-center max-w-[340px] mx-auto mb-10 px-2">
             <p>
-              Centralized messaging platforms are liabilities for medical confidentiality. Whale Chat is built on XMTP  encrypted directly with authorized personnel keys.
+              Centralized messaging platforms are liabilities for sovereign operations. Whale Chat is built on XMTP  encrypted directly with authorized personnel keys.
             </p>
             
             <AnimatePresence>
               {noteExpanded && (
                 <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="space-y-6 overflow-hidden">
                   <p className="pt-2 text-white/50">
-                    No telecom provider or unauthorized staff can intercept the data. 
+                    No telecom provider or unauthorized entity can intercept the data. 
                   </p>
                   <p className="text-white/50">
-                    Used daily for inter-departmental transfers, remote diagnostics, and legal compliance where perfect secrecy is mandatory.
+                    Used daily for secure transfers and cryptographic attestation where perfect sovereign privacy is mandatory.
                   </p>
                 </motion.div>
               )}
@@ -155,7 +155,7 @@ export function MobileManifesto() {
             Powered by <br/><span className="text-black/30">Aztec Network.</span>
           </h2>
           <p className="font-serif text-[15px] text-[#666] leading-[1.6] max-w-[320px] mx-auto px-2">
-            The foundation of this absolute transparency and security is built upon the Aztec Network L2 zk-Rollup. It is the definitive infrastructure for institutional systemty.
+            The foundation of this absolute transparency and security is built upon the Aztec Network L2 zk-Rollup. It is the definitive infrastructure for sovereign systemty.
           </p>
         </motion.div>
       </section>

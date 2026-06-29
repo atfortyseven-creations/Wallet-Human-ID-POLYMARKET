@@ -35,7 +35,7 @@ export class WacAnalyticsService {
     if (events.length === 0) score += 15; // Unknown/New wallet risk
     if (events.some(e => e.protocol.includes('VENTA'))) score += 5; // Direct distribution signature
     
-    // 3. Institutional Entities (Lower risk platform profile)
+    // 3. Sovereign Entities (Lower risk platform profile)
     const isExchange = ['binance', 'coinbase', 'kraken', 'okx'].some(ex => addr.includes(ex));
     if (isExchange) score = 10;
 

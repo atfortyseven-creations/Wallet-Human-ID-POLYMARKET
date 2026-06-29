@@ -1,5 +1,5 @@
 /**
- * checkpoint-image API  Institutional Asset Serving
+ * checkpoint-image API  Sovereign Asset Serving
  * 
  * Serves high-fidelity 4K pattern assets from the local filesystem.
  */

@@ -27,7 +27,7 @@ export default function LegalPage() {
   return (
     <LegalDocLayout
       title="Privacy Policy"
-      subtitle="This policy sets forth the legal and compliance rules governing the Whale Network ecosystem."
+      subtitle="This policy sets forth the legal and attestation rules governing the Whale Network ecosystem."
       lastUpdated="June 22, 2026"
       category="Legal"
       toc={TOC}
@@ -271,16 +271,16 @@ export default function LegalPage() {
               </tr>
             </tbody></table></div>
             <p>
-              <strong className="text-black font-semibold">Purpose of processing:</strong> Compliance with the customer due diligence obligations established in Law 10/2010 of 28 April on the prevention of money laundering and terrorist financing, and its implementing regulation approved by Royal Decree 304/2014; verification of user identity (Know Your Customer — KYC); AML risk profile assessment; detection and prevention of suspicious transactions; reporting to SEPBLAC in the legally established circumstances.
+              <strong className="text-black font-semibold">Purpose of processing:</strong> Attestation with the customer due diligence obligations established in Law 10/2010 of 28 April on the prevention of money laundering and terrorist financing, and its implementing regulation approved by Royal Decree 304/2014; verification of user identity (Know Your Customer — KYC); AML risk profile assessment; detection and prevention of suspicious transactions; reporting to SEPBLAC in the legally established circumstances.
             </p>
             <p>
-              <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(c) GDPR — <strong className="text-black font-semibold">Compliance with a legal obligation</strong> applicable to the data controller, in particular Law 10/2010 and Royal Decree 304/2014. With regard to biometric data, which constitute a special category of data pursuant to Article 9 GDPR, the legal basis is Article 9(2)(g) GDPR, in conjunction with Article 9(2)(b), for reasons of substantial public interest and compliance with legal obligations.
+              <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(c) GDPR — <strong className="text-black font-semibold">Attestation with a legal obligation</strong> applicable to the data controller, in particular Law 10/2010 and Royal Decree 304/2014. With regard to biometric data, which constitute a special category of data pursuant to Article 9 GDPR, the legal basis is Article 9(2)(g) GDPR, in conjunction with Article 9(2)(b), for reasons of substantial public interest and attestation with legal obligations.
             </p>
             <p>
               <strong className="text-black font-semibold">Mandatory nature:</strong> The provision of these data is <strong className="text-black font-semibold">legally mandatory</strong>. Refusal to provide KYC/AML data will prevent access to certain platform functionalities subject to regulatory thresholds, as well as the execution of transactions that exceed the limits established by applicable regulations.
             </p>
             <div className="bg-black/5 p-4 rounded-lg font-medium border-l-4 border-black">
-              <strong>Note on biometric data:</strong> Biometric data collected during the KYC verification process are processed exclusively by our specialist identity verification providers (identified in Section 6) and are not permanently stored in Humanity Ledger S.L.'s systems. The outcome of the verification process (approved/rejected and risk level) is retained by Humanity Ledger S.L. in compliance with AML regulations.
+              <strong>Note on biometric data:</strong> Biometric data collected during the KYC verification process are processed exclusively by our specialist identity verification providers (identified in Section 6) and are not permanently stored in Humanity Ledger S.L.'s systems. The outcome of the verification process (approved/rejected and risk level) is retained by Humanity Ledger S.L. in attestation with AML regulations.
             </div>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">4.3. Blockchain Transaction Data</h3>
             <p>
@@ -348,7 +348,7 @@ export default function LegalPage() {
               </tr>
             </tbody></table></div>
             <p>
-              <strong className="text-black font-semibold">Purpose of processing:</strong> Ensuring the security of the platform and detecting unauthorised or fraudulent access; diagnosis and resolution of technical incidents; aggregate analysis of platform performance; compliance with logging obligations imposed by applicable information security regulations.
+              <strong className="text-black font-semibold">Purpose of processing:</strong> Ensuring the security of the platform and detecting unauthorised or fraudulent access; diagnosis and resolution of technical incidents; aggregate analysis of platform performance; attestation with logging obligations imposed by applicable information security regulations.
             </p>
             <p>
               <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(f) GDPR — <strong className="text-black font-semibold">Legitimate interests</strong> of Humanity Ledger S.L. in maintaining the security, availability, and integrity of the platform, and in protecting users against unauthorised access and fraudulent activities. Recital 49 of the GDPR recognises the processing of technical data for security purposes as a legitimate prevailing interest.
@@ -383,10 +383,10 @@ export default function LegalPage() {
               </tr>
             </tbody></table></div>
             <p>
-              <strong className="text-black font-semibold">Purpose of processing:</strong> Compliance with the obligations to report information on crypto-assets to tax authorities established in Council Directive (EU) 2023/2226 (<em>DAC8</em>), amending Directive 2011/16/EU on administrative cooperation in the field of taxation, and its transposition into Spanish law. Data will be reported to the Spanish Tax Agency (AEAT), which will proceed with the automatic exchange of information with the tax authorities of the relevant Member States.
+              <strong className="text-black font-semibold">Purpose of processing:</strong> Attestation with the obligations to report information on crypto-assets to tax authorities established in Council Directive (EU) 2023/2226 (<em>DAC8</em>), amending Directive 2011/16/EU on administrative cooperation in the field of taxation, and its transposition into Spanish law. Data will be reported to the Spanish Tax Agency (AEAT), which will proceed with the automatic exchange of information with the tax authorities of the relevant Member States.
             </p>
             <p>
-              <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(c) GDPR — <strong className="text-black font-semibold">Compliance with a legal obligation</strong> applicable to the data controller, arising from the DAC8 Directive and its Spanish implementing legislation.
+              <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(c) GDPR — <strong className="text-black font-semibold">Attestation with a legal obligation</strong> applicable to the data controller, arising from the DAC8 Directive and its Spanish implementing legislation.
             </p>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">4.6. Support and Complaints Management Data</h3>
             <p>
@@ -411,7 +411,7 @@ export default function LegalPage() {
               </tr>
             </tbody></table></div>
             <p>
-              <strong className="text-black font-semibold">Purpose of processing:</strong> Handling and resolving queries, technical incidents, and complaints raised by users; maintaining a record of support communications for quality purposes and to demonstrate compliance with our obligations to users; legal defence in the event of disputes.
+              <strong className="text-black font-semibold">Purpose of processing:</strong> Handling and resolving queries, technical incidents, and complaints raised by users; maintaining a record of support communications for quality purposes and to demonstrate attestation with our obligations to users; legal defence in the event of disputes.
             </p>
             <p>
               <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(f) GDPR — <strong className="text-black font-semibold">Legitimate interests</strong> of Humanity Ledger S.L. in adequately managing its relationships with users, ensuring service quality, and protecting its rights in the event of complaints or litigation.
@@ -545,7 +545,7 @@ export default function LegalPage() {
               </tr>
               <tr>
                 <td className="px-4 py-2 border-r border-black/10"><strong>Travel Rule Provider</strong> (Notabene or equivalent)</td>
-                <td className="px-4 py-2 border-r border-black/10">Compliance with the FATF Travel Rule protocol for crypto-asset transfers</td>
+                <td className="px-4 py-2 border-r border-black/10">Attestation with the FATF Travel Rule protocol for crypto-asset transfers</td>
                 <td className="px-4 py-2 border-r border-black/10">International</td>
               </tr>
               <tr>
@@ -771,7 +771,7 @@ export default function LegalPage() {
               <strong className="text-black font-semibold">9.2.1. Article 29 Working Party Report (WP248) and EDPB Guidance:</strong> The European Data Protection Board (EDPB) has acknowledged that technical immutability may constitute an objective limitation on the exercise of the right to erasure where the processing affects records in distributed ledger technologies.
             </p>
             <p>
-              <strong className="text-black font-semibold">9.2.2. Article 17(3) GDPR — Exceptions to the Right to Erasure:</strong> The right to erasure is not absolute. Article 17(3) GDPR provides that that right shall not apply where processing is necessary for compliance with a legal obligation (Art. 17(3)(b)) or for the establishment, exercise, or defence of legal claims (Art. 17(3)(e)), both of which circumstances frequently arise in the context of financial transactions recorded on a blockchain.
+              <strong className="text-black font-semibold">9.2.2. Article 17(3) GDPR — Exceptions to the Right to Erasure:</strong> The right to erasure is not absolute. Article 17(3) GDPR provides that that right shall not apply where processing is necessary for attestation with a legal obligation (Art. 17(3)(b)) or for the establishment, exercise, or defence of legal claims (Art. 17(3)(e)), both of which circumstances frequently arise in the context of financial transactions recorded on a blockchain.
             </p>
             <p>
               <strong className="text-black font-semibold">9.2.3. Aztec Network's Privacy Architecture:</strong> Whale Network uses Aztec Network precisely to <strong className="text-black font-semibold">minimise the exposure of identifiable data on-chain</strong>. Private transactions on Aztec are encrypted using ZK proofs, such that their content is not readable by third parties or by Humanity Ledger S.L. without the user's corresponding viewing key. Only the <strong className="text-black font-semibold">transaction hash</strong> and minimal consensus metadata are accessible in the public ledger.
@@ -875,7 +875,7 @@ export default function LegalPage() {
             <p>
               These data are processed <strong className="text-black font-semibold">exclusively by the external KYC provider</strong> (acting as a data processor on behalf of Humanity Ledger S.L.) and/or managed locally on the user's device through the PXE, without transmission to Humanity Ledger S.L.'s servers.
             </p>
-            <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">10.4. Compliance with the Principle of Privacy by Design (Art. 25 GDPR)</h3>
+            <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">10.4. Attestation with the Principle of Privacy by Design (Art. 25 GDPR)</h3>
             <p>
               Whale Network's ZKP architecture gives practical effect to the principle of <strong className="text-black font-semibold">privacy by design and by default</strong> under Article 25 GDPR through the following measures:
             </p>
@@ -1027,7 +1027,7 @@ export default function LegalPage() {
               <strong className="text-black font-semibold">13.1.</strong> Humanity Ledger S.L. does <strong className="text-black font-semibold">not make automated decisions</strong> that produce legal effects or similarly significant effects on users, within the meaning of Article 22 GDPR.
             </p>
             <p>
-              <strong className="text-black font-semibold">13.2.</strong> With regard to the KYC/AML process, the identity verification and risk screening systems used by our external KYC provider may apply automated tools to verify document authenticity and check against sanctions lists. Where a negative result is produced, a <strong className="text-black font-semibold">human review</strong> is carried out by a qualified compliance officer before any definitive decision affecting the user is made.
+              <strong className="text-black font-semibold">13.2.</strong> With regard to the KYC/AML process, the identity verification and risk screening systems used by our external KYC provider may apply automated tools to verify document authenticity and check against sanctions lists. Where a negative result is produced, a <strong className="text-black font-semibold">human review</strong> is carried out by a qualified attestation officer before any definitive decision affecting the user is made.
             </p>
             <p>
               <strong className="text-black font-semibold">13.3.</strong> Users who believe they have been affected by an automated decision have the right to: (i) request human review of the decision; (ii) express their point of view; and (iii) contest the decision. To exercise this right, please contact legal@humanidfi.com.

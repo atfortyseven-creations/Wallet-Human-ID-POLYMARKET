@@ -37,7 +37,7 @@ export function TokenActivityBar({ symbol }: TokenActivityBarProps) {
     const fmt = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', notation: n > 1000 ? 'compact' : 'standard', maximumFractionDigits: 2 }).format(n);
     const fmtCompact = (n: number) => new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(n);
 
-    // Institutional Fallback for Price Discovery
+    // Sovereign Fallback for Price Discovery
     const fallbackPrices: Record<string, number> = { BTC: 68420.50, ETH: 3512.20, BNB: 590.10, SOL: 145.40, LINK: 18.20, MATIC: 0.72 };
     const finalPrice = prices[symbol.toUpperCase()] || fallbackPrices[symbol.toUpperCase()] || 0;
     const finalChange: number | null = (changes || {})[symbol.toUpperCase()] ?? null; // null when unavailable  no fake fallback

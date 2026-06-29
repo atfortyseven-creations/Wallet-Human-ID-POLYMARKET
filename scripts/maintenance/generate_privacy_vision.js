@@ -5,7 +5,7 @@ const visionSections = [
   {
     title: "Introduction to the System Epoch",
     paragraphs: [
-      "The digital landscape stands at the precipice of a foundational transformation. For decades, the asymmetry of information has empowered monolithic entities while systematically disenfranchising the system individual. In the realm of decentralized finance, this asymmetry manifests as an invisible architecture where latency, mempool visibility, and cryptographic correlation are monopolized by institutional actors.",
+      "The digital landscape stands at the precipice of a foundational transformation. For decades, the asymmetry of information has empowered monolithic entities while systematically disenfranchising the system individual. In the realm of decentralized finance, this asymmetry manifests as an invisible architecture where latency, mempool visibility, and cryptographic correlation are monopolized by sovereign actors.",
       "The Whale Alert Network is not merely an analytical interface; it is a declaration of cryptographic independence. By re-engineering the very thermodynamic structure of how on-chain data is ingested, processed, and visualized, we establish a new paradigm of absolute equity.",
       "Our vision transcends the rudimentary tracking of capital. We are constructing an omniscient, zero-knowledge exoskeleton for the human mind, enabling any individual to perceive the mathematical reality of global liquidity in real-time, without ever surrendering their right to absolute privacy."
     ]
@@ -23,13 +23,13 @@ const visionSections = [
     paragraphs: [
       "The physical constraints of human existence demand mobility. Yet, the computational demands of high-frequency on-chain analytics require immense local processing power. The System Protocol resolves this dichotomy through the PWA QR Handshakea seamless bridge between terrestrial hardware and mobile freedom.",
       "Your desktop operates as the heavy computational node, ingesting thousands of mempool events per second, executing Neo4j graph traversals, and calculating thermodynamic gas vectors. Your mobile device, through an end-to-end encrypted WebSocket tunnel, becomes the terminal of consciousness.",
-      "You carry the omniscient power of an institutional trading desk in your pocket, powered by a localized zero-knowledge bridge. This is the realization of ubiquitous, system analytics."
+      "You carry the omniscient power of an sovereign trading desk in your pocket, powered by a localized zero-knowledge bridge. This is the realization of ubiquitous, system analytics."
     ]
   },
   {
     title: "Thermodynamics of Capital",
     paragraphs: [
-      "We do not observe static balances; we observe kinetic energy. The Ethereum Virtual Machine operates as a thermodynamic engine. By analyzing the execution of specific opcodessuch as the EIP-1153 Transient Storage vectorswe detect the gathering storm of institutional capital before it manifests on public markets.",
+      "We do not observe static balances; we observe kinetic energy. The Ethereum Virtual Machine operates as a thermodynamic engine. By analyzing the execution of specific opcodessuch as the EIP-1153 Transient Storage vectorswe detect the gathering storm of sovereign capital before it manifests on public markets.",
       "Our Z-Score anomaly detectors operate continuously across a rolling 14-block window, measuring the physical density of computational intention. This is not predictive modeling; it is the mathematical observation of reality unfolding.",
       "Through the System interface, you are granted the capability to perceive these energetic shifts, allowing you to navigate the volatility of global markets with the precision of a high-frequency algorithmic protocol."
     ]
@@ -37,7 +37,7 @@ const visionSections = [
   {
     title: "The Akashic Ledger and Multi-Hop Reality",
     paragraphs: [
-      "Capital obfuscates itself through complexity. Institutional actors distribute value across thousands of intermediary addresses to conceal their intentions. To combat this, we have engineered the Akashic Ledgera Neo4j graph grid capable of instantaneous multi-hop traversal.",
+      "Capital obfuscates itself through complexity. Sovereign actors distribute value across thousands of intermediary addresses to conceal their intentions. To combat this, we have engineered the Akashic Ledgera Neo4j graph grid capable of instantaneous multi-hop traversal.",
       "When a single digital asset shifts, the graph ripples. Our algorithms instantly correlate the source, tracing the provenance of capital through seven degrees of separation in under 200 milliseconds. The invisible networks of global liquidity are illuminated.",
       "This capability is no longer the exclusive domain of state actors and quantitative hedge funds. It is now embedded within the local hardware of every System operator."
     ]
@@ -55,7 +55,7 @@ const visionSections = [
     paragraphs: [
       "Freedom of expression is absolute only when it cannot be censored or repudiated. The System Forum replaces the antiquated mechanisms of username and password with the undeniable reality of ECDSA signatures.",
       "Every transmission is signed by your localized private key. The network validates the signature without knowing the biological entity behind it. The message is persisted to an immutable log.",
-      "This architecture guarantees that speech is free, authentic, and immune to central algorithmic suppression. It is a sanctuary for institutional analytics and system coordination."
+      "This architecture guarantees that speech is free, authentic, and immune to central algorithmic suppression. It is a sanctuary for sovereign analytics and system coordination."
     ]
   },
   {

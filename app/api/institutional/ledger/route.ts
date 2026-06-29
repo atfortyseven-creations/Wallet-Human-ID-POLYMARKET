@@ -1,4 +1,4 @@
-// app/api/institutional/ledger/route.ts
+// app/api/sovereign/ledger/route.ts
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 

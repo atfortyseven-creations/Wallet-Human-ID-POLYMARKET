@@ -5,10 +5,10 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { action, payload } = body;
 
-    // Simulate legendary-quality backend processing for the Institutional Menu
+    // Simulate legendary-quality backend processing for the Sovereign Menu
     switch (action) {
       case 'file_save':
-        return NextResponse.json({ success: true, message: 'Institutional state successfully encrypted and saved to Whale Network.' });
+        return NextResponse.json({ success: true, message: 'Sovereign state successfully encrypted and saved to Whale Network.' });
       case 'file_export':
         return NextResponse.json({ success: true, message: 'Data grid exported with military-grade zk-SNARK proof.' });
       case 'edit_preferences':
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
       case 'analytics_generate':
         return NextResponse.json({ success: true, reportId: `ANLTX-${Date.now()}`, message: 'Deep core analytics report generation initiated.' });
       default:
-        return NextResponse.json({ success: false, message: 'Unrecognized institutional command protocol.' }, { status: 400 });
+        return NextResponse.json({ success: false, message: 'Unrecognized sovereign command protocol.' }, { status: 400 });
     }
   } catch (error) {
     return NextResponse.json({ success: false, message: 'Protocol communication failure.' }, { status: 500 });

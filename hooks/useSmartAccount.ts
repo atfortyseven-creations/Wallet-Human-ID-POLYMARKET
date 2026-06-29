@@ -7,13 +7,13 @@ import { useMemo } from 'react';
 /**
  * useSmartAccount
  * Hook to bridge the EOA identity to the ERC-4337 Smart Account layer.
- * Standardizes institutional identity within the Arctic Protocol.
+ * Standardizes sovereign identity within the Arctic Protocol.
  */
 export function useSmartAccount() {
     const { address, isConnected, connector } = useAccount();
 
     const saService = useMemo(() => {
-        // In a real institutional deployment, RPCs and Bundlers would be pulled from secure config
+        // In a real sovereign deployment, RPCs and Bundlers would be pulled from secure config
         return new SmartAccountService(mainnet, 'https://cloudflare-eth.com');
     }, []);
 

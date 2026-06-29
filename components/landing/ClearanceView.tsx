@@ -152,7 +152,7 @@ export function ClearanceView({ onBack }: ClearanceViewProps) {
 
         {/* BODY */}
         <div className="px-10 py-12 space-y-12">
-          {/* INSTITUTIONAL INFO HEADER */}
+          {/* SOVEREIGN INFO HEADER */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-black/[0.04] pb-8 gap-6">
             <div className="space-y-4">
               <div className="flex items-center gap-3 text-black/40">

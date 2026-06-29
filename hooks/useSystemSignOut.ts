@@ -7,7 +7,7 @@ import { useWalletStore } from '@/lib/store/wallet-store';
 import { useUIStore } from '@/lib/store/ui-store';
 
 /**
- * [Enterprise SYSTEM LOGOUT]
+ * [Cryptographic SYSTEM LOGOUT]
  * Secures the local session. Locks the wallet vault but PRESERVES the encrypted 
  * blob so the user can log in again with their Humanity Ledger password.
  */

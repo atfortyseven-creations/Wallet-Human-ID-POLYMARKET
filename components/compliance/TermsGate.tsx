@@ -43,7 +43,7 @@ export const TermsGate = () => {
                     <ul className="list-disc pl-4 space-y-2 mt-2">
                         <li>You are <strong>NOT</strong> a citizen or resident of the United States, North Korea, Iran, or any OFAC-sanctioned jurisdiction.</li>
                         <li>You understand that this is a <strong>Simulation & Testnet Environment</strong> (Base Sepolia). No real assets are at risk, but no guarantees are made.</li>
-                        <li>You are accessing this software as a System Individual, responsible for your own compliance.</li>
+                        <li>You are accessing this software as a System Individual, responsible for your own attestation.</li>
                     </ul>
                 </div>
 

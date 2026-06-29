@@ -145,7 +145,7 @@ export function ExternalEmbed({
     return (
         <div className="flex flex-col h-full overflow-hidden">
 
-            {/*  Institutional Address Bar  */}
+            {/*  Sovereign Address Bar  */}
             <div
                 className="shrink-0 h-11 border-b border-[#E5E5E5] bg-[#FDFDFB] flex items-center px-4 gap-3 z-10"
             >

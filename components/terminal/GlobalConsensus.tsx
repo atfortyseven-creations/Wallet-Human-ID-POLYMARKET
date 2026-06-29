@@ -20,7 +20,7 @@ export default function GlobalConsensus() {
     // Simulating deep macro-sentiment analysis from global on-chain signals
     setTimeout(() => {
       setMetrics([
-        { label: 'Macro_Sentiment_Ratio', value: '62.4%', change: 2.1, description: 'Aggregated social & attest sentiment derived from institutional order flows.' },
+        { label: 'Macro_Sentiment_Ratio', value: '62.4%', change: 2.1, description: 'Aggregated social & attest sentiment derived from sovereign order flows.' },
         { label: 'Liquidity_Density', value: '$842.1B', change: -0.5, description: 'Available stablecoin liquidity across core DEX/CEX clusters.' },
         { label: 'Whale_Confidence_Score', value: '84/100', change: 5.4, description: 'Predictive score based on top-100 wallet accumulation velocity.' },
         { label: 'Supply_Shock_Probability', value: 'LOW', change: 0, description: 'Probability of massive sell-off events within a 48H window.' }
@@ -49,7 +49,7 @@ export default function GlobalConsensus() {
         </div>
         <p className="text-[10px] text-white/20 uppercase tracking-widest leading-relaxed max-w-3xl">
            The Global Consensus module aggregates disparate on-chain data points to synthesize a deterministic view of market sentiment. 
-           It factors in exchange inflows, derivative funding rates, social volume, and institutional treasury movements.
+           It factors in exchange inflows, derivative funding rates, social volume, and sovereign treasury movements.
         </p>
       </div>
 

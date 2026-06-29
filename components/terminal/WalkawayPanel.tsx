@@ -61,7 +61,7 @@ export const WalkawayPanel = () => {
 
     const handleHeartbeat = async () => {
         if (!(window as any).ethereum) {
-            toast.error("Web3 Provider Required", { description: "Install MetaMask or use an institutional browser." });
+            toast.error("Web3 Provider Required", { description: "Install MetaMask or use an sovereign browser." });
             return;
         }
 

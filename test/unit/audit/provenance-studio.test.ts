@@ -26,7 +26,7 @@ vi.mock('../../../lib/prisma', () => ({
       update: vi.fn().mockResolvedValue({})
     },
     user: {
-      findUnique: vi.fn().mockResolvedValue({ tier: 'ENTERPRISE' })
+      findUnique: vi.fn().mockResolvedValue({ tier: 'CRYPTOGRAPHIC' })
     }
   }
 }));
@@ -66,7 +66,7 @@ function createMockRequest(body: any): NextRequest {
   });
 }
 
-describe('Studio Provenance - Institutional Mass Testing', () => {
+describe('Studio Provenance - Sovereign Mass Testing', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -113,11 +113,11 @@ describe('Studio Provenance - Institutional Mass Testing', () => {
     expect(failedCount).toBe(50);
   });
 
-  it('Executes 50 VALID requests (Real products passing strict institutional filters)', async () => {
+  it('Executes 50 VALID requests (Real products passing strict sovereign filters)', async () => {
     let successCount = 0;
     const validScenarios = [];
 
-    // Generate 50 perfectly valid institutional products
+    // Generate 50 perfectly valid sovereign products
     for (let i = 0; i < 50; i++) {
       validScenarios.push({
         title: `Paracetamol 500mg Pfizer Box ${i}`,

@@ -41,7 +41,7 @@ const NAV_COLUMNS = [
   {
     label: "REGULATORY",
     links: [
-      { label: "Compliance Docs", href: "/legal/compliance" },
+      { label: "Attestation Docs", href: "/legal/attestation" },
       { label: "Aztec Transparency", href: "/legal/aztec-grant-transparency" },
       { label: "Terms & Conditions", href: "/legal/terms" },
       { label: "Privacy Policy", href: "/legal/privacy" },
@@ -104,7 +104,7 @@ export function SystemFooter() {
               Aztec Native · MiCA Compliant
             </span>
             <Link href="/legal/compliance" className="text-[11px] font-bold uppercase tracking-wider text-black/30 hover:text-black transition-colors">
-              Legal &amp; Compliance
+              Legal &amp; Attestation
             </Link>
           </div>
         </div>

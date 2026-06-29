@@ -53,7 +53,7 @@ const PROGRAM_INFO = {
             name:         'Private',
             minReferrals: 50,
             commission:   20,
-            perks:        ['20% lifetime commission', 'INSTITUTIONAL API access free', 'Private alpha channel', 'System NFT badge', '"State of Whale Analytics" co-authorship'],
+            perks:        ['20% lifetime commission', 'SOVEREIGN API access free', 'Private alpha channel', 'System NFT badge', '"State of Whale Analytics" co-authorship'],
         },
     ],
     requirements: [

@@ -115,7 +115,7 @@ export default function AdvancedSettingsModal({
               {tab === 'privacy' && (
                 <>
                   <Section title="PRIVACY MODE">
-                    {(['stealth', 'standard', 'institutional'] as PrivacyMode[]).map((m, idx) => (
+                    {(['stealth', 'standard', 'sovereign'] as PrivacyMode[]).map((m, idx) => (
                       <ActionRow
                         key={m}
                         label={m.charAt(0).toUpperCase() + m.slice(1)}

@@ -7,7 +7,7 @@ const limiter = rateLimit({
 });
 
 /**
- * Institutional Historical Price Data (Klines)
+ * Sovereign Historical Price Data (Klines)
  * Zero-Latency Binance Backend
  */
 

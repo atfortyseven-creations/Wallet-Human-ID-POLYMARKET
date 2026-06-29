@@ -1,5 +1,5 @@
 ﻿/**
- * Enterprise CRYPTOGRAPHIC VERIFICATION ENGINE
+ * Cryptographic CRYPTOGRAPHIC VERIFICATION ENGINE
  *
  * Formal EIP-191 signature verification with full security hardening:
  *   1. Exact EIP-191 prefix enforcement (\x19Ethereum Signed Message:\n)

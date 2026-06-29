@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 
 /**
- * SUMSUB PROVIDER (Strict Regulatory Compliance)
+ * SUMSUB PROVIDER (Strict Regulatory Attestation)
  * 
  * Handles interaction with Sumsub API for identity verification.
  * Implements secure token generation and webhook signature validation.

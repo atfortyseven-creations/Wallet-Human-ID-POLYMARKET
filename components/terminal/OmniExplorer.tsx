@@ -22,7 +22,7 @@ export function OmniExplorer() {
     const wagmiClient = usePublicClient();
     const { data: wagmiBlock } = useBlockNumber({ watch: true });
     
-    // [INSTITUTIONAL FALLBACK] Maintain data stream even if Wagmi is disconnected
+    // [SOVEREIGN FALLBACK] Maintain data stream even if Wagmi is disconnected
     const [fallbackClient, setFallbackClient] = useState<any>(null);
     const [fallbackBlock, setFallbackBlock] = useState<bigint | null>(null);
 
@@ -383,7 +383,7 @@ export function OmniExplorer() {
                     </div>
                  )}
 
-                 {/* Institutional Footer */}
+                 {/* Sovereign Footer */}
                  <div className="text-center pt-8 pb-4">
                      <span className="text-[11px] text-[#A0A0A0]">Real-time on-chain data</span>
                  </div>
