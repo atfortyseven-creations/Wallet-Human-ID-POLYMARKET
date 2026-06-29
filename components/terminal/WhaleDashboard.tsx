@@ -56,20 +56,18 @@ const PANEL_STYLE = "flex-1 w-full h-full min-h-0 flex flex-col";
 
 const RouteRenderer = React.memo(({ route, reconciliationKey, mutateRoute }: RouteRendererProps) => {
     const ComponentMap: Record<string, JSX.Element> = {
-        'dashboard': <Registry.WhaleTrackerDashboard />,
-        'zk-identity': <GoldTicketPanel />,
         'gold': <GoldTicketPanel />,
+        'zk-identity': <GoldTicketPanel />,
         'chat': <Registry.WhaleChat />,
         'portfolio': <Registry.PortfolioDashboard />,
-
         'humanity-ledger': <Registry.HumanityLedger />,
         'markets': <Registry.InstitutionalMarkets />,
+        'dashboard': <Registry.InstitutionalMarkets />,  // legacy alias
         'inst-ledger': <Registry.InstitutionalLedger />,
         'privacy': <Registry.SessionLogsPanel />,
         'logs': <Registry.SessionLogsPanel />,
         'map': <Registry.NetworkMapPanel />,
         'studio': <Registry.ProvenanceStudioContent variant="desktop" />,
-        
         'token': <Registry.SubscriptionDashboard />,
         'community': <Registry.WhaleSupport />,
         'status': <Registry.NetworkDashboard />,
