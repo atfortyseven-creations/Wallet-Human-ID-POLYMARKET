@@ -854,7 +854,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
     // without a local signer. Timing them out just produces false red errors.
     if (isSystemHandshake && !connector && !(isLocalSystemWallet && storePrivateKey)) return;
     const timeoutId = setTimeout(() => {
-      if (!xmtpReady) {
+      if (!xmtpClient.current) {
         xmtpInitLock.current = false;
         setXmtpInitializing(false);
         setXmtpError((prev) => prev ?? 'Connection timed out. Please reconnect your wallet and retry.');
