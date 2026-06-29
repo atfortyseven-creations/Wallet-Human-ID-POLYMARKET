@@ -80,13 +80,19 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
   useEffect(() => {
     let cancelled = false;
     async function checkSession() {
-      // Slow path: check server JWT always for security
+      // Fast path: Live wallet connection is sufficient for viewing the terminal/dashboard
+      if (isConnected && address) {
+        setAuthState(true);
+        return;
+      }
+
+      // Slow path: check server JWT for persistent sessions if wallet is not live
       try {
         const res = await fetch('/api/siwe/session', { cache: 'no-store' });
         if (cancelled) return;
         if (res.ok) {
           const data = await res.json();
-          if (data.address && isConnected) {
+          if (data.address) {
              setAuthState(true);
              return;
           }
