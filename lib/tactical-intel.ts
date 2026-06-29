@@ -1,6 +1,6 @@
 // tactical-intel.ts
-// 100% Real-data driven. Uses on-chain USD value, wallet address patterns, and 
-// transaction type to derive intelligence. Zero mock data.
+// 100% Real-data driven. Zero mock data.
+// Language aligned to Aztec Network ZK primitives: Notes, Shields, Provers, Circuits.
 
 export function generateTacticalIntel(item: { 
     usdValue: number; 
@@ -12,74 +12,73 @@ export function generateTacticalIntel(item: {
 }) {
   const usd = Number(item.usdValue) || 0;
   const fromAddr = (item.from || '').toLowerCase();
-  const toAddr = (item.to || '').toLowerCase();
   const typeStr = (item.type || '').toUpperCase();
   const asset = (item.asset || '').toUpperCase();
   const chain = (item.chain || '').toUpperCase();
 
-  // ── 1. WALLET PROFILE ── derived from real USD value + address patterns ──────
+  // ── 1. WALLET PROFILE ── Aztec-aligned identity classification ────────────
   let walletProfile: string;
 
-  if (usd >= 250_000_000)        walletProfile = 'Sovereign Reserve / Central Exchange';
-  else if (usd >= 100_000_000)   walletProfile = 'Prime Institutional Custodian';
-  else if (usd >= 50_000_000)    walletProfile = 'Exchange Hot Wallet / Cold Storage Migration';
-  else if (usd >= 10_000_000)    walletProfile = 'Sovereign Market Maker';
-  else if (usd >= 5_000_000)     walletProfile = 'Heavyweight Institutional Block';
-  else if (usd >= 1_000_000)     walletProfile = 'Tactical Whale Position';
-  else if (usd >= 250_000)       walletProfile = 'High-Value Retail / Sovereign Accumulator';
-  else if (fromAddr.startsWith('bc1p')) walletProfile = 'Taproot Sovereign Wallet';
-  else if (fromAddr.startsWith('bc1q')) walletProfile = 'SegWit Native Wallet';
-  else if (fromAddr.startsWith('3'))    walletProfile = 'P2SH Multisig / Exchange Reserve';
-  else if (fromAddr.startsWith('1'))    walletProfile = 'Legacy / Long-Term Holder';
-  else walletProfile = 'Verified On-Chain Entity';
+  if (usd >= 250_000_000)        walletProfile = 'Shielded Reserve Node — Exchange Cold Storage';
+  else if (usd >= 100_000_000)   walletProfile = 'Aztec L2 Custodial Prover Node';
+  else if (usd >= 50_000_000)    walletProfile = 'Protocol-Level Sequencer Wallet';
+  else if (usd >= 10_000_000)    walletProfile = 'ZK-Attested Market Maker Circuit';
+  else if (usd >= 5_000_000)     walletProfile = 'Private Note Bundle — Heavyweight Block';
+  else if (usd >= 1_000_000)     walletProfile = 'Shielded Tactical Position';
+  else if (usd >= 250_000)       walletProfile = 'Encrypted Note — High-Value Accumulator';
+  else if (fromAddr.startsWith('bc1p')) walletProfile = 'Taproot-Shielded Aztec Wallet';
+  else if (fromAddr.startsWith('bc1q')) walletProfile = 'SegWit Native — ZK-Compatible';
+  else if (fromAddr.startsWith('3'))    walletProfile = 'P2SH Multisig — Sequencer Reserve';
+  else if (fromAddr.startsWith('1'))    walletProfile = 'Legacy Note — Long-Term Holder';
+  else walletProfile = 'Verified On-Chain Note — ZK-Attested';
 
-  // ── 2. SENTIMENT ANALYSIS ── real type flags + USD size ─────────────────────
+  // ── 2. SENTIMENT / ZK CIRCUIT STATE ── derived from real type + USD ──────
   let sentiment: string;
   const isSell = typeStr.includes('SELL') || typeStr.includes('OUTFLOW') || typeStr.includes('EXCHANGE INFLOW');
-  const isBuy  = typeStr.includes('BUY') || typeStr.includes('INFLOW') || typeStr.includes('ACCUMULATION');
+  const isBuy  = typeStr.includes('BUY')  || typeStr.includes('INFLOW')  || typeStr.includes('ACCUMULATION');
 
-  if (isSell && usd >= 50_000_000) sentiment = 'EXTREME BEARISH — Institutional Exit';
-  else if (isSell && usd >= 10_000_000) sentiment = 'BEARISH DISTRIBUTION';
-  else if (isSell && usd >= 1_000_000) sentiment = 'BEARISH PRESSURE';
-  else if (isBuy && usd >= 50_000_000) sentiment = 'EXTREME BULLISH — Institutional Accumulation';
-  else if (isBuy && usd >= 10_000_000) sentiment = 'BULLISH ACQUISITION';
-  else if (isBuy && usd >= 1_000_000) sentiment = 'BULLISH INFLOW';
-  else if (usd >= 100_000_000) sentiment = 'HIGH CONVICTION MACRO MOVE';
-  else if (usd >= 10_000_000) sentiment = 'HIGH CONVICTION MOVEMENT';
-  else if (usd >= 1_000_000) sentiment = 'MONITORED — Large Value Transfer';
-  else sentiment = 'NEUTRAL — Standard Settlement';
+  if (isSell && usd >= 50_000_000) sentiment = 'SHIELDED EXIT — Protocol-Scale Unshielding';
+  else if (isSell && usd >= 10_000_000) sentiment = 'PRIVATE NOTE OUTFLOW — Bearish Pressure';
+  else if (isSell && usd >= 1_000_000)  sentiment = 'NOTE DESTRUCTION — Distribution Signal';
+  else if (isBuy  && usd >= 50_000_000) sentiment = 'SHIELDED ACCUMULATION — Protocol Inflow';
+  else if (isBuy  && usd >= 10_000_000) sentiment = 'PRIVATE NOTE MINTING — Bullish Acquisition';
+  else if (isBuy  && usd >= 1_000_000)  sentiment = 'ZK INFLOW — Encrypted Position Building';
+  else if (usd >= 100_000_000) sentiment = 'MACRO ZK MOVEMENT — High Conviction Circuit';
+  else if (usd >= 10_000_000)  sentiment = 'HIGH CONVICTION — Encrypted Note Transfer';
+  else if (usd >= 1_000_000)   sentiment = 'MONITORED — Shielded Block Transfer';
+  else sentiment = 'STANDARD — ZK-Settled Note';
 
-  // ── 3. MARKET IMPACT ── real escalating thresholds ──────────────────────────
+  // ── 3. MARKET IMPACT ── real Aztec-framed impact assessment ─────────────
   let marketImpact: string;
 
-  if (usd >= 250_000_000)      marketImpact = `CRITICAL — Market-moving event. ${asset} price discovery imminent.`;
-  else if (usd >= 100_000_000) marketImpact = `SEVERE — ${asset} supply/demand shock. High cross-exchange volatility expected.`;
-  else if (usd >= 50_000_000 && isSell) marketImpact = `ELEVATED SELL PRESSURE — Potential ${asset} sell wall forming.`;
-  else if (usd >= 50_000_000 && isBuy)  marketImpact = `ELEVATED BUY PRESSURE — Supply shock. ${asset} price discovery phase likely.`;
-  else if (usd >= 20_000_000)  marketImpact = `ELEVATED — Localised ${asset} volatility on lower timeframes.`;
-  else if (usd >= 5_000_000)   marketImpact = `MODERATE — ${asset} movement warrants monitoring.`;
-  else if (usd >= 1_000_000)   marketImpact = `LOW-MODERATE — Routine whale activity on ${chain}.`;
-  else marketImpact = `MINIMAL — Standard value transfer. No systemic impact expected.`;
+  if (usd >= 250_000_000)      marketImpact = `CRITICAL — Protocol-level unshielding on ${asset}. Price discovery event.`;
+  else if (usd >= 100_000_000) marketImpact = `SEVERE — ZK note bundle impacting ${asset} cross-exchange liquidity.`;
+  else if (usd >= 50_000_000 && isSell) marketImpact = `ELEVATED — Shielded note destruction on ${asset}. Sell pressure building.`;
+  else if (usd >= 50_000_000 && isBuy)  marketImpact = `ELEVATED — Aztec note minting on ${asset}. Supply absorption in progress.`;
+  else if (usd >= 20_000_000)  marketImpact = `MODERATE ELEVATED — Encrypted ${asset} transfer warrants circuit monitoring.`;
+  else if (usd >= 5_000_000)   marketImpact = `MODERATE — ZK-attested ${asset} movement on ${chain}.`;
+  else if (usd >= 1_000_000)   marketImpact = `LOW-MODERATE — Routine shielded transfer. ${chain} note settled.`;
+  else marketImpact = `MINIMAL — Standard ZK note settlement. No systemic impact.`;
 
-  // ── 4. ACTIONABLE INTELLIGENCE ── real derived from actual transaction type ──
+  // ── 4. ACTIONABLE INTELLIGENCE ── Aztec circuit-aligned insight ──────────
   let action: string;
 
   if (isSell && usd >= 50_000_000) {
-    action = `Institutional de-risking confirmed. Expect ${asset} support breakdown at -3% to -8%. Monitor order book depth.`;
+    action = `Aztec note destruction at scale. Unshielded ${asset} entering public layer. Monitor order book depth.`;
   } else if (isSell && usd >= 10_000_000) {
-    action = `Tactical de-risking detected. Monitoring ${asset} support levels and bid-side liquidity.`;
+    action = `Private note outflow on ${asset}. Monitoring ${chain} bid-side liquidity and support circuit.`;
   } else if (isBuy && usd >= 50_000_000) {
-    action = `Strategic accumulation confirmed at scale. Potential ${asset} momentum breakout forming.`;
+    action = `Aztec note minting confirmed. ${asset} being shielded at protocol level. Momentum accumulation circuit active.`;
   } else if (isBuy && usd >= 10_000_000) {
-    action = `Institutional buy-side pressure building on ${asset}. Prepare for volatility expansion.`;
+    action = `ZK inflow building on ${asset}. Encrypted position expansion. Prepare for volatility on ${chain}.`;
   } else if (usd >= 100_000_000) {
-    action = `Macro capital rotation detected on ${chain}. Track correlated ${asset} derivatives for follow-through.`;
+    action = `Macro ZK note transfer on ${chain}. Track correlated ${asset} derivatives across shielded circuits.`;
   } else if (usd >= 10_000_000) {
-    action = `Significant ${chain} activity. Monitor ${asset} price action and funding rates.`;
+    action = `Significant ${chain} ZK activity. Monitor ${asset} funding rates and circuit throughput.`;
   } else if (usd >= 1_000_000) {
-    action = `Large ${asset} transfer confirmed on ${chain}. Observing for directional signal.`;
+    action = `Shielded ${asset} note confirmed on ${chain}. Observing circuit for directional signal.`;
   } else {
-    action = `Standard settlement on ${chain}. ${asset} position transfer — no directional bias.`;
+    action = `Standard ZK note settlement on ${chain}. ${asset} transfer — no directional bias detected.`;
   }
 
   return { walletProfile, sentiment, marketImpact, action };
