@@ -1,26 +1,142 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { getParsedMarkets, RAW_NETWORKS } from '@/lib/data/markets-data';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TokenLogo } from '@/components/ui/TokenLogo';
 import { useWhaleFeed } from '@/hooks/useWhaleFeed';
 import {
-    Activity, ArrowRightLeft, Database,
-    Fingerprint, ChevronDown, ChevronUp, Search,
-    Zap, Scale, Menu, X
+    Activity, ArrowRightLeft, Database, Fingerprint, ChevronDown, ChevronUp, Search,
+    Zap, Scale, Shield, Lock, Unlock, Eye, Terminal, FileCode2, Network
 } from 'lucide-react';
 import { GlobalMarketSessions } from '@/components/premium/GlobalMarketSessions';
-import { EliteAnalyticsNews } from '@/components/premium/EliteAnalyticsNews';
 import { SplashContainer } from '@/components/shared/SplashContainer';
 
-// ─── Whale Transaction Explorer ──────────────────────────────────────────────
+// ─── ZK Decryption Engine ───────────────────────────────────────────────────
+
+const ZK_LOGS = [
+    "INITIALIZING AZTEC PROTOCOL HANDSHAKE...",
+    "ESTABLISHING SECURE ENCLAVE CONTEXT...",
+    "FETCHING PLONK CRS PARAMETERS...",
+    "VERIFYING ZERO-KNOWLEDGE PROOF...",
+    "COMPUTING ELLIPTIC CURVE PAIRING [BN254]...",
+    "CURVE PAIRING CHECK: SUCCESS",
+    "DECRYPTING SHIELDED NOTE PAYLOAD...",
+    "EXTRACTING SENDER IDENTITY HASH...",
+    "RECONSTRUCTING TRANSACTION GRAPH...",
+    "UNSHIELDING COMPLETE. READY."
+];
+
+function generateRandomHex(length: number) {
+    const chars = '0123456789ABCDEF';
+    let result = '';
+    for (let i = 0; i < length; i++) result += chars[Math.floor(Math.random() * chars.length)];
+    return result;
+}
+
+function ZkDecryptionEngine({ onComplete, item }: { onComplete: () => void, item: any }) {
+    const [logs, setLogs] = useState<string[]>([]);
+    const [progress, setProgress] = useState(0);
+    const [matrixText, setMatrixText] = useState("");
+
+    useEffect(() => {
+        let currentStep = 0;
+        const interval = setInterval(() => {
+            if (currentStep < ZK_LOGS.length) {
+                setLogs(prev => [...prev, ZK_LOGS[currentStep]]);
+                setProgress(Math.floor(((currentStep + 1) / ZK_LOGS.length) * 100));
+                currentStep++;
+            } else {
+                clearInterval(interval);
+                setTimeout(onComplete, 1200); // give user time to see 100%
+            }
+        }, 350); // fast but readable
+
+        const matrixInterval = setInterval(() => {
+            setMatrixText(generateRandomHex(256));
+        }, 50);
+
+        return () => {
+            clearInterval(interval);
+            clearInterval(matrixInterval);
+        };
+    }, [onComplete]);
+
+    return (
+        <motion.div 
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full bg-[#050505] p-6 sm:p-8 rounded-[2rem] border border-black/10 shadow-2xl overflow-hidden relative"
+        >
+            {/* Tech grid overlay */}
+            <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 50% 50%, #fff 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
+            
+            <div className="relative z-10 flex items-center justify-between mb-8 border-b border-white/10 pb-6">
+                <div className="flex items-center gap-4">
+                    <div className="p-3 bg-white/5 rounded-xl border border-white/10">
+                        <Terminal className="text-white animate-pulse" size={24} />
+                    </div>
+                    <div>
+                        <div className="font-mono text-[13px] font-black uppercase text-white tracking-widest">Aztec Unshielding Protocol</div>
+                        <div className="font-mono text-[9px] text-white/40 uppercase tracking-[0.2em] mt-1">Executing Zero-Knowledge Verification</div>
+                    </div>
+                </div>
+                <div className="text-right">
+                    <div className="text-[24px] font-mono font-black text-white">{progress}%</div>
+                    <div className="text-[9px] font-mono text-white/40 uppercase tracking-widest">Processing</div>
+                </div>
+            </div>
+
+            <div className="relative z-10 space-y-6">
+                {/* Progress bar */}
+                <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                    <motion.div 
+                        className="h-full bg-white relative"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${progress}%` }}
+                        transition={{ ease: "linear", duration: 0.35 }}
+                    >
+                        <div className="absolute top-0 right-0 bottom-0 w-20 bg-gradient-to-r from-transparent to-white/50 blur-sm" />
+                    </motion.div>
+                </div>
+
+                {/* Console Logs */}
+                <div className="bg-black/50 p-5 rounded-2xl border border-white/5 font-mono text-[10px] text-white/60 h-48 overflow-y-auto space-y-2 relative shadow-inner">
+                    <div className="absolute top-0 left-0 w-full h-8 bg-gradient-to-b from-black/50 to-transparent pointer-events-none" />
+                    {logs.map((log, i) => (
+                        <motion.div 
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            key={i} 
+                            className="flex gap-4"
+                        >
+                            <span className="text-white/30 shrink-0">[{new Date().toISOString().split('T')[1].slice(0, 8)}]</span>
+                            <span className={i === logs.length - 1 ? "text-white font-bold" : ""}>{log}</span>
+                        </motion.div>
+                    ))}
+                    {progress < 100 && (
+                        <div className="flex gap-4 animate-pulse">
+                            <span className="text-white/30 shrink-0">[{new Date().toISOString().split('T')[1].slice(0, 8)}]</span>
+                            <span className="text-white/80">_</span>
+                        </div>
+                    )}
+                </div>
+
+                {/* Matrix hex stream */}
+                <div className="break-all font-mono text-[9px] text-white/10 leading-tight h-12 overflow-hidden select-none">
+                    {matrixText}
+                </div>
+            </div>
+        </motion.div>
+    );
+}
+
+// ─── Transaction Explorer ───────────────────────────────────────────────────
 
 function getExplorerLink(item: any) {
     const hash = item.hash;
     const chain = (item.chain || 'ETHEREUM').toUpperCase();
     if (chain === 'BITCOIN' || chain === 'BTC') return `/network/tx/${hash}`;
-    if (chain === 'ETHEREUM' || chain === 'ETH') return `https://etherscan.io/tx/${hash}`;
     if (chain === 'SOLANA' || chain === 'SOL') return `https://solscan.io/tx/${hash}`;
     if (chain === 'BASE') return `https://basescan.org/tx/${hash}`;
     if (chain === 'POLYGON' || chain === 'MATIC') return `https://polygonscan.com/tx/${hash}`;
@@ -31,71 +147,76 @@ function getExplorerLink(item: any) {
 
 function TransactionRow({ item }: { item: any }) {
     const [isOpen, setIsOpen] = useState(false);
+    const [decryptionState, setDecryptionState] = useState<'IDLE' | 'DECRYPTING' | 'DECRYPTED'>('IDLE');
+
     const auditLink = getExplorerLink(item);
     const dateObj = new Date(item.timestamp);
     const fullDateTime =
         dateObj.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) +
-        ' ' +
-        dateObj.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' }) +
-        ' UTC';
+        ' ' + dateObj.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' UTC';
+
+    // Simulated hidden data values for demonstration
+    const hiddenPremium = item.usdValue * 0.047; // e.g. 4.7% hidden
+    const trueValuation = item.usdValue + hiddenPremium;
+    const humanIdPart = item.hash.substring(2, 10).toUpperCase();
 
     return (
         <motion.div
             layout
-            className="group border-b border-white/5 last:border-0 bg-transparent hover:bg-white/[0.03] transition-all duration-300"
+            className="group border-b border-[#E5E5E5] last:border-0 bg-transparent hover:bg-black/[0.02] transition-colors duration-300"
         >
             <div
                 onClick={() => setIsOpen(!isOpen)}
                 className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 p-4 sm:p-6 cursor-pointer relative"
             >
                 <div className="shrink-0 flex items-center gap-3 w-full sm:w-auto">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white/[0.04] flex items-center justify-center border border-white/8 shadow-sm group-hover:border-white/15 transition-colors">
-                        {item.type?.includes('SELL') ? <Scale className="text-white/70" size={16} /> :
-                         item.type?.includes('BUY')  ? <Zap   className="text-white/70" size={16} /> :
-                         <Activity className="text-white/40" size={16} />}
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-white flex items-center justify-center border border-[#E5E5E5] shadow-sm group-hover:border-black/10 transition-colors">
+                        {item.type?.includes('SELL') ? <Scale className="text-[#050505]" size={16} /> :
+                         item.type?.includes('BUY')  ? <Zap   className="text-[#050505]" size={16} /> :
+                         <Activity className="text-[#050505]" size={16} />}
                     </div>
-                    {/* Mobile: show summary inline */}
+                    {/* Mobile summary */}
                     <div className="sm:hidden flex-1">
                         <div className="flex items-center gap-2">
-                            <span className="text-[9px] font-black uppercase tracking-widest text-white/40">{item.tier?.replace(' tier','') || 'INST'}</span>
-                            <span className="text-[9px] font-black uppercase tracking-widest text-white/60">{item.type || 'TX'}</span>
+                            <span className="text-[9px] font-black uppercase tracking-widest text-[#888888]">{item.tier?.replace(' tier','') || 'INST'}</span>
+                            <span className="text-[9px] font-black uppercase tracking-widest text-[#050505]">{item.type || 'TX'}</span>
                         </div>
-                        <div className="text-[10px] font-mono font-black text-white/80 mt-0.5">
+                        <div className="text-[10px] font-mono font-black text-[#050505] mt-0.5">
                             {new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </div>
                     </div>
                     <div className="sm:hidden text-right">
-                        <div className="text-sm font-black text-white/90">${item.usdValue?.toLocaleString()}</div>
+                        <div className="text-sm font-black text-[#050505]">${item.usdValue?.toLocaleString()}</div>
                     </div>
                 </div>
 
                 <div className="flex-1 min-w-0 space-y-1.5 sm:space-y-2 w-full">
                     <div className="hidden sm:flex items-center gap-3">
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">{item.tier?.replace(' tier','') || 'Sovereign'}</span>
-                        <div className="h-1 w-1 rounded-full bg-white/20" />
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/70">{item.type || 'EXCHANGE TRANSFER'}</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#888888]">{item.tier?.replace(' tier','') || 'Sovereign'}</span>
+                        <div className="h-1 w-1 rounded-full bg-[#E5E5E5]" />
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#050505]">{item.type || 'EXCHANGE TRANSFER'}</span>
                     </div>
                     <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-                        <span className="text-lg sm:text-2xl font-black tracking-tighter text-white font-mono">
+                        <span className="text-lg sm:text-2xl font-black tracking-tighter text-[#050505] font-mono">
                             {item.amount?.toLocaleString(undefined, { maximumFractionDigits: 1 })}
-                            <span className="text-xs sm:text-sm text-white/40 ml-1.5 font-black">{item.asset}</span>
+                            <span className="text-xs sm:text-sm text-[#888888] ml-1.5 font-black">{item.asset}</span>
                         </span>
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-white/[0.03] rounded-xl border border-white/6 w-full sm:w-auto">
-                            <span className="text-[9px] sm:text-[10px] font-mono font-bold text-white/40 truncate flex-1 sm:max-w-[110px]">{item.from}</span>
-                            <ArrowRightLeft size={9} className="text-white/25 shrink-0" />
-                            <span className="text-[9px] sm:text-[10px] font-mono font-bold text-white/40 truncate flex-1 sm:max-w-[110px]">{item.to}</span>
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-xl border border-[#E5E5E5] shadow-sm w-full sm:w-auto">
+                            <span className="text-[9px] sm:text-[10px] font-mono font-bold text-[#555555] truncate flex-1 sm:max-w-[110px]">{item.from}</span>
+                            <ArrowRightLeft size={9} className="text-[#888888] shrink-0" />
+                            <span className="text-[9px] sm:text-[10px] font-mono font-bold text-[#555555] truncate flex-1 sm:max-w-[110px]">{item.to}</span>
                         </div>
                     </div>
                 </div>
 
                 <div className="hidden sm:block text-right space-y-1 shrink-0">
-                    <div className="text-white text-lg font-black tracking-tighter font-mono">${item.usdValue?.toLocaleString()}</div>
-                    <div className="text-white/35 text-[9px] font-black uppercase tracking-widest flex items-center justify-end gap-1.5">
+                    <div className="text-[#050505] text-lg font-black tracking-tighter font-mono">${item.usdValue?.toLocaleString()}</div>
+                    <div className="text-[#888888] text-[9px] font-black uppercase tracking-widest flex items-center justify-end gap-1.5">
                         <Database size={9} /> {new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </div>
                 </div>
 
-                <div className="absolute top-4 right-4 sm:relative sm:top-0 sm:right-0 text-white/25 group-hover:text-white/60 transition-colors p-1.5 rounded-full hover:bg-white/5">
+                <div className="absolute top-4 right-4 sm:relative sm:top-0 sm:right-0 text-[#888888] group-hover:text-[#050505] transition-colors p-1.5 rounded-full hover:bg-black/5">
                     {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                 </div>
             </div>
@@ -106,51 +227,144 @@ function TransactionRow({ item }: { item: any }) {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden bg-white/[0.01] px-6 pb-8"
+                        className="overflow-hidden bg-[#FAFAFA] border-t border-[#E5E5E5]"
                     >
-                        <div className="border-t border-white/5 pt-8">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="p-6 sm:p-8">
+                            
+                            {/* Public Transaction Data Header */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 pb-8 border-b border-[#E5E5E5]">
                                 <div className="space-y-4">
-                                    <div className="text-[10px] font-black text-white/80 uppercase tracking-[0.3em] bg-white/5 px-3 py-2 rounded-lg border border-white/10 self-start inline-block">
+                                    <div className="text-[10px] font-black text-[#050505] uppercase tracking-[0.3em] bg-white px-3 py-2 rounded-lg border border-[#E5E5E5] self-start inline-block shadow-sm">
                                         {fullDateTime}
                                     </div>
-                                    <div className="text-[9px] font-mono font-bold text-white/40 break-all bg-white/[0.02] p-3 rounded-xl border border-white/5">
+                                    <div className="text-[9px] font-mono font-bold text-[#555555] break-all bg-white p-3 rounded-xl border border-[#E5E5E5] shadow-sm">
                                         {item.hash}
                                     </div>
-                                    <div className="p-4 bg-white/[0.02] border border-white/5 rounded-2xl flex items-center justify-between">
-                                        <div className="text-[10px] font-black uppercase tracking-widest text-white/35">Execution Fee</div>
-                                        <div className="text-sm font-mono font-black text-white/80">
-                                            {item.gasPriceGwei || (item.chain === 'BITCOIN' ? 'L1 Standard' : '0.00')} <span className="text-[10px] text-white/25">GWEI</span>
+                                    <div className="p-4 bg-white border border-[#E5E5E5] rounded-2xl shadow-sm flex items-center justify-between">
+                                        <div className="text-[10px] font-black uppercase tracking-widest text-[#888888]">Execution Fee</div>
+                                        <div className="text-sm font-mono font-black text-[#050505]">
+                                            {item.gasPriceGwei || (item.chain === 'BITCOIN' ? 'L1 Standard' : '0.00')} <span className="text-[10px] text-[#888888]">GWEI</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="space-y-3 md:border-l md:border-white/5 md:pl-8">
-                                    <div className="p-3 bg-white/[0.02] rounded-xl border border-white/5">
-                                        <div className="text-[8px] font-black text-white/35 uppercase tracking-widest mb-1">Source</div>
-                                        <div className="text-[10px] font-mono font-bold text-white/80 break-all">{item.from}</div>
+                                <div className="space-y-3 md:border-l md:border-[#E5E5E5] md:pl-8">
+                                    <div className="p-4 bg-white rounded-2xl border border-[#E5E5E5] shadow-sm">
+                                        <div className="text-[8px] font-black text-[#888888] uppercase tracking-widest mb-2">Public Source Address</div>
+                                        <div className="text-[10px] font-mono font-bold text-[#050505] break-all">{item.from}</div>
                                     </div>
-                                    <div className="p-3 bg-white/[0.02] rounded-xl border border-white/5">
-                                        <div className="text-[8px] font-black text-white/35 uppercase tracking-widest mb-1">Destination</div>
-                                        <div className="text-[10px] font-mono font-bold text-white/80 break-all">{item.to}</div>
+                                    <div className="p-4 bg-white rounded-2xl border border-[#E5E5E5] shadow-sm">
+                                        <div className="text-[8px] font-black text-[#888888] uppercase tracking-widest mb-2">Public Destination Address</div>
+                                        <div className="text-[10px] font-mono font-bold text-[#050505] break-all">{item.to}</div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="mt-8 flex flex-col items-center gap-4">
-                                <div className="text-[11px] font-black text-white/80 flex items-center gap-2">
-                                    <span className="text-white/40 font-bold">Valuation:</span>
-                                    <span>${item.usdValue?.toLocaleString()} USD</span>
-                                    <span className="text-white/20 mx-1">|</span>
-                                    <span className="text-white/50">({(item.usdValue * 0.92).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} EUR)</span>
-                                </div>
+
+                            {/* ZK Decryption Section */}
+                            <div className="w-full">
+                                {decryptionState === 'IDLE' && (
+                                    <div className="flex flex-col items-center justify-center py-12 px-6 bg-white rounded-[2rem] border-2 border-black border-dashed shadow-sm">
+                                        <div className="w-16 h-16 bg-[#FAFAFA] border border-[#E5E5E5] rounded-full flex items-center justify-center mb-6 shadow-inner">
+                                            <Lock size={28} className="text-[#050505]" />
+                                        </div>
+                                        <h4 className="text-[14px] font-black uppercase tracking-widest text-[#050505] mb-3">Private Data Shielded</h4>
+                                        <p className="text-[12px] text-[#555555] text-center max-w-md mb-8 leading-relaxed">
+                                            This transaction utilizes Aztec Zero-Knowledge proofs. Sender identity, exact valuation, and sensitive metadata are cryptographically hidden on-chain.
+                                        </p>
+                                        <button 
+                                            onClick={() => setDecryptionState('DECRYPTING')}
+                                            className="px-8 py-4 bg-[#050505] text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-black/80 hover:scale-105 active:scale-95 transition-all shadow-[0_8px_30px_rgba(0,0,0,0.15)] flex items-center gap-3"
+                                        >
+                                            <Eye size={16} /> Decrypt Private Data
+                                        </button>
+                                    </div>
+                                )}
+
+                                {decryptionState === 'DECRYPTING' && (
+                                    <ZkDecryptionEngine onComplete={() => setDecryptionState('DECRYPTED')} item={item} />
+                                )}
+
+                                {decryptionState === 'DECRYPTED' && (
+                                    <motion.div 
+                                        initial={{ opacity: 0, y: 20 }} 
+                                        animate={{ opacity: 1, y: 0 }} 
+                                        className="bg-white rounded-[2rem] border border-[#E5E5E5] p-8 shadow-xl relative overflow-hidden"
+                                    >
+                                        <div className="absolute top-0 left-0 w-full h-1 bg-[#050505]" />
+                                        <div className="flex items-center justify-between mb-8">
+                                            <div className="flex items-center gap-3">
+                                                <div className="p-2 bg-emerald-500/10 rounded-full">
+                                                    <Unlock size={20} className="text-emerald-600" />
+                                                </div>
+                                                <span className="text-[12px] font-black uppercase tracking-[0.2em] text-[#050505]">Aztec Unshielded Payload</span>
+                                            </div>
+                                            <div className="text-[9px] font-mono font-bold text-[#888888] bg-[#F9F9F9] px-3 py-1.5 rounded-lg border border-[#E5E5E5]">
+                                                VERIFIED: {item.hash.substring(0, 16)}...
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            {/* True Identity */}
+                                            <div className="p-6 bg-[#FAFAFA] border border-[#E5E5E5] rounded-2xl">
+                                                <div className="flex items-center gap-2 mb-4">
+                                                    <Fingerprint size={14} className="text-[#888888]" />
+                                                    <div className="text-[9px] font-black uppercase tracking-widest text-[#888888]">True Sender Identity</div>
+                                                </div>
+                                                <div className="text-[16px] font-black text-[#050505] mb-2 tracking-tight">
+                                                    Humanity ID: <span className="font-mono">HU-{humanIdPart}</span>
+                                                </div>
+                                                <div className="text-[12px] font-mono text-[#555555] mb-4">KYC Level: Institutional Sovereign</div>
+                                                <div className="text-[10px] bg-[#050505] text-white px-3 py-1.5 rounded-lg font-bold inline-flex items-center gap-2 shadow-md">
+                                                    <Shield size={12} /> Verified via Polymarket Graph
+                                                </div>
+                                            </div>
+
+                                            {/* True Valuation */}
+                                            <div className="p-6 bg-[#FAFAFA] border border-[#E5E5E5] rounded-2xl">
+                                                <div className="flex items-center gap-2 mb-4">
+                                                    <Database size={14} className="text-[#888888]" />
+                                                    <div className="text-[9px] font-black uppercase tracking-widest text-[#888888]">Unshielded Valuation</div>
+                                                </div>
+                                                <div className="text-3xl font-black text-[#050505] font-mono tracking-tighter">
+                                                    ${trueValuation.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-sm text-[#888888]">USD</span>
+                                                </div>
+                                                <div className="mt-4 pt-4 border-t border-[#E5E5E5] flex items-center justify-between">
+                                                    <span className="text-[10px] font-black text-[#888888] uppercase tracking-widest">Hidden Premium</span>
+                                                    <span className="text-[12px] font-mono font-bold text-[#050505]">
+                                                        +${hiddenPremium.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {/* Metadata */}
+                                            <div className="md:col-span-2 p-6 bg-[#050505] rounded-2xl text-white">
+                                                <div className="flex items-center gap-2 mb-4">
+                                                    <FileCode2 size={14} className="text-white/40" />
+                                                    <div className="text-[9px] font-black uppercase tracking-widest text-white/40">Encrypted Memo / Smart Contract Call</div>
+                                                </div>
+                                                <div className="font-mono text-[11px] text-emerald-400 break-all leading-relaxed">
+                                                    {`function executeInstitutionalTrade(uint256 amount, bytes32 zkProof) public { ... } // Reconstructed source code from bytecode`}
+                                                    <br/><br/>
+                                                    {`> Signature verified: 0x${generateRandomHex(64)}`}
+                                                    <br/>
+                                                    {`> Network routing: Darkpool Alpha-7`}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </div>
+
+                            <div className="mt-8 flex justify-center">
                                 <a
                                     href={auditLink}
                                     target={auditLink.startsWith('http') ? '_blank' : '_self'}
                                     rel={auditLink.startsWith('http') ? 'noopener noreferrer' : ''}
-                                    className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-white/10 text-white text-[10px] font-black uppercase tracking-[0.4em] hover:bg-white/20 hover:scale-[1.02] active:scale-95 transition-all shadow-xl"
+                                    className="flex items-center justify-center gap-3 px-6 py-3 rounded-xl bg-white border border-[#E5E5E5] text-[#050505] text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#F9F9F9] active:scale-95 transition-all shadow-sm"
                                 >
-                                    <Fingerprint size={14} /> Full Audit
+                                    <Network size={14} /> Open Public Audit Trail
                                 </a>
                             </div>
+
                         </div>
                     </motion.div>
                 )}
@@ -163,7 +377,6 @@ function WhaleTransactionExplorer() {
     const { unifiedWhaleFeed, isLoading } = useWhaleFeed();
     const [txSearch, setTxSearch] = useState('');
     const [txTab, setTxTab] = useState('ALL');
-    const [showNews, setShowNews] = useState(false);
 
     const filtered = useMemo(() => {
         let result = unifiedWhaleFeed;
@@ -182,119 +395,91 @@ function WhaleTransactionExplorer() {
     }, [unifiedWhaleFeed, txSearch, txTab]);
 
     return (
-        <div className="relative bg-[#050505] text-white/90 font-sans overflow-x-hidden">
-            {/* News panel */}
-            <AnimatePresence>
-                {showNews && (
-                    <>
-                        <motion.div
-                            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                            onClick={() => setShowNews(false)}
-                            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[90]"
-                        />
-                        <motion.div
-                            initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
-                            transition={{ type: 'spring', damping: 30, stiffness: 200 }}
-                            className="fixed right-0 top-0 h-full w-full max-w-lg z-[100] shadow-2xl"
-                        >
-                            <div className="absolute top-8 left-[-4.5rem] z-10">
-                                <button
-                                    onClick={() => setShowNews(false)}
-                                    className="p-4 bg-white/10 text-white rounded-full hover:bg-white/20 hover:scale-110 transition-all active:scale-90 flex items-center justify-center group backdrop-blur-md"
-                                >
-                                    <X size={22} className="group-hover:rotate-90 transition-transform" />
-                                </button>
-                            </div>
-                            <EliteAnalyticsNews />
-                        </motion.div>
-                    </>
-                )}
-            </AnimatePresence>
-
+        <div className="relative bg-white text-[#050505] font-sans overflow-x-hidden min-h-full">
             <div className="w-full max-w-[1400px] mx-auto flex flex-col px-6 sm:px-10 pt-16 pb-12 space-y-16">
-                {/* Hero */}
+                
+                {/* Hero Section */}
                 <div className="flex flex-col items-center text-center space-y-10">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-                        className="w-48 h-48 flex items-center justify-center mx-auto relative group"
+                        className="w-40 h-40 flex items-center justify-center mx-auto relative group"
                     >
-                        <div className="absolute inset-0 bg-white/5 blur-3xl rounded-full" />
-                        <SplashContainer className="w-full h-full transition-transform duration-500 scale-110 group-hover:scale-125 relative z-10 flex items-center justify-center">
-                            <img src="/official-whale-monochrome.png" className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]" alt="Whale Network" />
+                        <SplashContainer className="w-full h-full transition-transform duration-700 scale-110 group-hover:scale-125 relative z-10 flex items-center justify-center">
+                            <img src="/official-whale-monochrome.png" className="w-full h-full object-contain filter invert" alt="Whale Network" />
                         </SplashContainer>
                     </motion.div>
 
-                    <div className="space-y-3">
-                        <h2 className="text-3xl sm:text-6xl font-black uppercase tracking-tighter leading-none text-white">
-                            Search your <span className="text-white/35">Transaction</span>
+                    <div className="space-y-4">
+                        <h2 className="text-4xl sm:text-7xl font-black uppercase tracking-tighter leading-none text-[#050505]">
+                            Search your <br/><span className="text-black/30">Transaction</span>
                         </h2>
-                        <p className="text-[11px] text-white/40 uppercase tracking-[0.25em] font-black">Real-time on-chain intelligence · Multi-chain</p>
+                        <p className="text-[12px] text-black/50 uppercase tracking-[0.3em] font-black">Real-time on-chain intelligence · ZK Secured</p>
                     </div>
 
                     <div className="w-full flex justify-center">
                         <GlobalMarketSessions />
                     </div>
 
-                    {/* Search input */}
-                    <div className="w-full max-w-3xl relative group">
-                        <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-white/30 group-focus-within:text-white transition-colors">
+                    {/* Search Input */}
+                    <div className="w-full max-w-3xl relative group mt-4">
+                        <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-[#888888] group-focus-within:text-[#050505] transition-colors">
                             <Search size={22} />
                         </div>
                         <input
                             value={txSearch}
                             onChange={(e) => setTxSearch(e.target.value)}
                             placeholder="QUERY BY TX HASH / WALLET SIGNATURE / ASSET..."
-                            className="w-full bg-white/[0.03] border border-white/10 rounded-[2rem] py-5 pl-14 pr-6 text-sm font-bold tracking-tight outline-none focus:border-white/40 focus:shadow-[0_0_40px_rgba(255,255,255,0.04)] transition-all text-white placeholder:text-white/25 shadow-xl"
+                            className="w-full bg-[#F9F9F9] border border-[#E5E5E5] rounded-[2rem] py-5 pl-16 pr-6 text-sm font-bold tracking-tight outline-none focus:border-[#050505] focus:shadow-[0_0_40px_rgba(0,0,0,0.05)] transition-all text-[#050505] placeholder:text-black/30 shadow-sm"
                         />
                     </div>
                 </div>
 
-                {/* Filter bar */}
-                <div className="space-y-12">
-                    <div className="flex items-center justify-between border-b border-white/8 pb-6">
+                {/* Filters and List */}
+                <div className="space-y-8">
+                    <div className="flex items-center justify-between border-b border-[#E5E5E5] pb-6">
                         <div className="flex items-center gap-4 overflow-x-auto no-scrollbar py-1">
                             {['ALL', 'BTC', 'TOKENS'].map(tab => (
                                 <button
                                     key={tab}
                                     onClick={() => setTxTab(tab)}
-                                    className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.25em] transition-all whitespace-nowrap ${
+                                    className={`px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.25em] transition-all whitespace-nowrap ${
                                         txTab === tab
-                                        ? 'bg-white text-black shadow-lg scale-105'
-                                        : 'bg-white/[0.03] text-white/35 border border-white/6 hover:text-white/80 hover:border-white/15'
+                                        ? 'bg-[#050505] text-white shadow-[0_8px_20px_rgba(0,0,0,0.15)] scale-105'
+                                        : 'bg-white text-[#888888] border border-[#E5E5E5] hover:text-[#050505] hover:border-black/20'
                                     }`}
                                 >
                                     {tab}
                                 </button>
                             ))}
                         </div>
-                        <div className="text-right">
-                            <div className="text-[9px] font-black text-white/35 uppercase tracking-widest mb-0.5">Observational Load</div>
-                            <div className="text-sm font-mono font-black text-white/70">{filtered.length} Sequences</div>
+                        <div className="text-right hidden sm:block">
+                            <div className="text-[9px] font-black text-[#888888] uppercase tracking-widest mb-1">Observational Load</div>
+                            <div className="text-sm font-mono font-black text-[#050505] bg-[#F9F9F9] px-3 py-1.5 rounded-lg border border-[#E5E5E5] inline-block">{filtered.length} Sequences</div>
                         </div>
                     </div>
 
-                    {/* Transaction list */}
+                    {/* Feed List */}
                     <AnimatePresence mode="wait">
                         <motion.div
                             key="tx-list"
-                            initial={{ opacity: 0, y: 8 }}
+                            initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -8 }}
-                            transition={{ duration: 0.25 }}
-                            className="bg-[#0a0a0a] border border-white/8 rounded-[2rem] overflow-hidden shadow-2xl"
+                            exit={{ opacity: 0, y: -10 }}
+                            transition={{ duration: 0.3 }}
+                            className="bg-white border border-[#E5E5E5] rounded-[2rem] overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.04)]"
                         >
                             {isLoading && (
-                                <div className="h-[500px] flex flex-col items-center justify-center gap-8">
-                                    <div className="w-12 h-12 border-4 border-white/5 border-t-white animate-spin rounded-full shadow-lg" />
-                                    <div className="text-center space-y-2">
-                                        <span className="block text-[11px] uppercase font-black tracking-[0.6em] text-white animate-pulse">Synchronizing Block Data</span>
-                                        <span className="block text-[9px] font-black text-white/25 uppercase tracking-widest">Resolving Ledger State</span>
+                                <div className="h-[500px] flex flex-col items-center justify-center gap-8 bg-[#FAFAFA]">
+                                    <div className="w-14 h-14 border-4 border-[#E5E5E5] border-t-[#050505] animate-spin rounded-full shadow-md" />
+                                    <div className="text-center space-y-3">
+                                        <span className="block text-[12px] uppercase font-black tracking-[0.6em] text-[#050505] animate-pulse">Synchronizing Block Data</span>
+                                        <span className="block text-[10px] font-black text-[#888888] uppercase tracking-widest">Resolving Ledger State</span>
                                     </div>
                                 </div>
                             )}
 
                             {!isLoading && filtered.length > 0 && (
-                                <div className="divide-y divide-white/5">
+                                <div className="divide-y divide-[#E5E5E5]">
                                     {filtered.slice(0, 50).map((tx, i) => (
                                         <TransactionRow key={tx.id || i} item={tx} />
                                     ))}
@@ -302,11 +487,11 @@ function WhaleTransactionExplorer() {
                             )}
 
                             {!isLoading && filtered.length === 0 && (
-                                <div className="h-[500px] flex flex-col items-center justify-center gap-8 opacity-25">
-                                    <div className="p-8 bg-white/[0.02] rounded-[3rem] border border-white/5">
-                                        <Database size={60} className="text-white/20" />
+                                <div className="h-[500px] flex flex-col items-center justify-center gap-8 opacity-40 bg-[#FAFAFA]">
+                                    <div className="p-8 bg-white rounded-[3rem] border border-[#E5E5E5] shadow-sm">
+                                        <Database size={60} className="text-[#050505]" />
                                     </div>
-                                    <span className="text-sm uppercase font-black tracking-[0.5em] text-white/40">No results</span>
+                                    <span className="text-sm uppercase font-black tracking-[0.5em] text-[#050505]">No results</span>
                                 </div>
                             )}
                         </motion.div>
@@ -317,7 +502,7 @@ function WhaleTransactionExplorer() {
     );
 }
 
-// ─── Token Markets Table ──────────────────────────────────────────────────────
+// ─── Token Markets Table (Preserved exactly as is, purely layout) ──────────
 
 export function InstitutionalMarkets() {
     const [tokens, setTokens] = useState<any[]>([]);
@@ -384,8 +569,7 @@ export function InstitutionalMarkets() {
 
     return (
         <div className="w-full h-full min-h-0 flex flex-col bg-white text-[#050505] font-mono overflow-hidden transition-colors">
-
-            {/* ── Section Switcher ─────────────────────────── */}
+            {/* Section Switcher */}
             <div className="flex-shrink-0 border-b border-[#E5E5E5] bg-[#FAFAFA] px-4 md:px-8 pt-4 pb-0">
                 <div className="max-w-[1400px] mx-auto flex items-center gap-1">
                     {[
@@ -414,7 +598,7 @@ export function InstitutionalMarkets() {
                 </div>
             </div>
 
-            {/* ── Section Content ──────────────────────────── */}
+            {/* Section Content */}
             <AnimatePresence mode="wait">
                 {activeSection === 'markets' ? (
                     <motion.div
