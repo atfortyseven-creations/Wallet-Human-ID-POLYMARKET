@@ -3,6 +3,8 @@
 /// Allows users to prove biometric identity claims (e.g. "I am human",
 /// "I am over 18") without revealing any raw biometric data on-chain.
 /// Biometric data is processed off-chain; only a ZK commitment is stored.
+mod fuzz;
+
 contract ZkDnaBiometrics {
     use dep::aztec::prelude::{
         AztecAddress, PrivateContext, Map, PublicMutable, PrivateSet

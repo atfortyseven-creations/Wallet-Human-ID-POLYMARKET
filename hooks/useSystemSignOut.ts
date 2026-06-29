@@ -55,6 +55,22 @@ export function useSystemSignOut() {
                 console.warn('[System:Logout] Cookie purge failed:', e);
             }
 
+            // STEP 1.5 — [FASE 7] Memory Sovereignty (Cryptographic Wiping)
+            // Prevent Cold-Boot / Memory Dump attacks by actively overwriting critical keys
+            // with cryptographic noise before they are handed to the garbage collector.
+            try {
+                const keysToWipe = ['system_session_v2', 'system_vault_v1', 'system_handshake'];
+                keysToWipe.forEach(key => {
+                    if (localStorage.getItem(key)) {
+                        const noise = new Uint8Array(64);
+                        crypto.getRandomValues(noise);
+                        localStorage.setItem(key, btoa(String.fromCharCode(...noise)));
+                    }
+                });
+            } catch(e) {
+                console.warn('[System:Logout] Memory wiping failed', e);
+            }
+
             // STEP 2 — Clear LocalStorage (includes system_session_v2 which feeds auto-restore).
             try {
                 const targets = [

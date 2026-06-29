@@ -6,6 +6,10 @@ Whale Network is a sovereign-grade identity terminal and cryptographic analytics
 
 This system is structurally incapable of collecting user state. Data is sealed via SNARKs *before* reaching any network layer.
 
+> [!NOTE]
+> **Aztec Foundation Grant Acknowledgement:**
+> Humanity Ledger & Whale Network are built as public goods for the Zero-Knowledge ecosystem. This repository is proudly fully open-source (MIT License) and architected to meet the strictest cypherpunk requirements of the Aztec Foundation Grant program.
+
 ## The Cypherpunk Mandate
 
 We embrace the Aztec Cypherpunk manifesto. In an era of pervasive telemetry and centralized tracking, Whale Network represents a hard cryptographic boundary.

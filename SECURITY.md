@@ -1,8 +1,8 @@
 # Security Model & Timelock Policy
 
-## 1. Zero-Trust Architecture
+## 1. Zero-Trust Architecture & Open-Source Mandate (MIT)
 
-Humanity Ledger is built on the **Aztec Network**, ensuring that privacy is a foundational architectural component, not an optional overlay.
+Humanity Ledger is built on the **Aztec Network**, ensuring that privacy is a foundational architectural component, not an optional overlay. The entire project is licensed under the **MIT License**, guaranteeing absolute transparency, code auditability, and cypherpunk alignment for the Aztec Grant program and the open-source Web3 ecosystem.
 
 - **Client-Side Proving:** Zero-knowledge proofs (Noir circuits) are generated exclusively on the user's local hardware. No raw, unencrypted state is ever transmitted to the sequencer.
 - **Encrypted UTXOs:** All asset balances (QDs) and reputational scores are maintained as encrypted UTXOs. Sequencers cannot censor or front-run operations because payloads are fully opaque.

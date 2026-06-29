@@ -1,160 +1,27 @@
-PROPRIETARY SOFTWARE LICENSE
-Humanity Ledger — All Rights Reserved
-
-Copyright (c) 2026-2027 Stefan Antonio Cirisanu
-Organization: humanityledger (https://github.com/humanityledger)
-Project: Humanity Ledger / Whale Network / QDs Protocol
-Contact: atfortyseven2@humanidfi.es
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-1. OWNERSHIP AND INTELLECTUAL PROPERTY
-
-This software, including all source code, design files, documentation,
-cryptographic circuit definitions, protocol specifications, tokenomics models,
-user interface components, and all associated intellectual property
-(collectively, the "Software"), is the exclusive proprietary property of
-Stefan Antonio Cirisanu ("Author") and the humanityledger GitHub organization
-("Organization"). All rights are reserved.
-
-The Software is protected by copyright law, trade secret law, and international
-intellectual property treaties, including but not limited to the Berne
-Convention for the Protection of Literary and Artistic Works and the Agreement
-on Trade-Related Aspects of Intellectual Property Rights (TRIPS).
-
-2. GRANT OF LICENSE — NONE
-
-No license, right, title, or interest in or to the Software is granted to any
-person or entity by reason of the public availability of this repository.
-The publication of this repository on GitHub or any other platform constitutes
-an act of transparency and public disclosure for the sole purpose of technical
-review, audit, and collaboration with specifically authorized parties. It does
-NOT constitute an open-source license of any kind.
-
-3. PROHIBITED USES
-
-The following acts are expressly prohibited without the prior written and
-signed authorization of Stefan Antonio Cirisanu:
-
-  a) Copying, reproducing, or duplicating the Software, in whole or in part,
-     for any purpose, whether commercial or non-commercial.
-
-  b) Modifying, adapting, translating, or creating derivative works based
-     upon the Software.
-
-  c) Distributing, publishing, sublicensing, selling, renting, leasing, or
-     otherwise transferring the Software or any portion thereof to any
-     third party.
-
-  d) Deploying the Software, or any modified or unmodified version thereof,
-     as a publicly accessible service, application, protocol, or platform,
-     whether free of charge or for payment.
-
-  e) Presenting, representing, or misrepresenting the Software — or any
-     derivative, copy, or redeployment thereof — to any third party,
-     investor, partner, institution, or organisation (including, without
-     limitation, Aztec Network, Ethereum Foundation, or any other blockchain
-     protocol or standards body) as one's own original work, without
-     express attribution to Stefan Antonio Cirisanu and humanityledger as
-     the sole original authors.
-
-  f) Using the Software, its name, branding, tokenomics design, user interface
-     design, or protocol architecture to raise funds, attract investment, or
-     solicit any commercial or financial engagement from third parties without
-     the written consent of the Author.
-
-  g) Using the Software to create, launch, or operate any blockchain token,
-     protocol, or decentralised application that competes with or imitates
-     Humanity Ledger, Whale Network, or the QDs token protocol.
-
-  h) Removing, obscuring, or altering any copyright notice, attribution
-     statement, or ownership identifier contained within the Software.
-
-4. AUTHORIZED USE
-
-The only uses permitted without express written authorization from the Author
-are:
-
-  a) Private, local inspection and technical review of the source code for the
-     sole purpose of evaluating the protocol for a potential collaboration,
-     partnership, or investment with Stefan Antonio Cirisanu and humanityledger.
-
-  b) Forking the repository on GitHub exclusively for the purpose of submitting
-     a pull request with a proposed contribution to the official repository
-     maintained by humanityledger. Any such fork must be closed or deleted if
-     the pull request is not merged within 30 days.
-
-  c) Reference to the Software in academic or journalistic writing, provided
-     that full attribution is given to Stefan Antonio Cirisanu and
-     humanityledger, and that no substantial portion of the source code is
-     reproduced.
-
-5. ATTRIBUTION REQUIREMENT
-
-Any permitted reference to this Software in any public context must include
-the following attribution statement in a clearly visible location:
-
-  "Humanity Ledger and the Whale Network are original works of Stefan Antonio
-   Cirisanu, developed and maintained under the humanityledger organization.
-   All rights reserved."
-
-6. ENFORCEMENT AND REMEDIES
-
-Violation of any provision of this License constitutes copyright infringement
-and may constitute trade secret misappropriation, unfair competition, and
-fraud. The Author reserves the right to pursue all available legal remedies,
-including but not limited to:
-
-  a) Injunctive relief to immediately cease the infringing activity.
-
-  b) Recovery of all actual damages sustained as a result of the infringement,
-     including lost profits and reputational harm.
-
-  c) Statutory damages available under applicable copyright law, which may
-     amount to USD 150,000 per work infringed in jurisdictions recognising
-     enhanced damages for wilful infringement.
-
-  d) Recovery of attorney's fees and litigation costs.
-
-  e) Criminal referral where the infringement constitutes a criminal offence
-     under applicable law.
-
-The Author further reserves the right to issue formal notices of infringement
-to any hosting platform (including GitHub, Vercel, Cloudflare, AWS, and
-others), blockchain networks, and domain registrars, demanding immediate
-takedown of any infringing deployment.
-
-7. NO WARRANTY
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. THE AUTHOR
-MAKES NO REPRESENTATION OR WARRANTY THAT THE SOFTWARE IS FREE OF ERRORS,
-SECURE, OR FIT FOR ANY PARTICULAR PURPOSE. THE AUTHOR SHALL NOT BE LIABLE FOR
-ANY CLAIM, LOSS, OR DAMAGE ARISING FROM THE USE OR INABILITY TO USE THE
-SOFTWARE BY ANY UNAUTHORIZED PARTY.
-
-8. GOVERNING LAW
-
-This License shall be governed by and construed in accordance with the laws
-of the European Union, including applicable Directives on the enforcement of
-intellectual property rights (Directive 2004/48/EC), and the national laws of
-the jurisdiction of residence of Stefan Antonio Cirisanu. Any dispute arising
-under this License shall be subject to the exclusive jurisdiction of the
-competent courts of that jurisdiction.
-
-9. CONTACT AND AUTHORIZATION REQUESTS
-
-All requests for authorization, licensing inquiries, partnership proposals, and
-legal notices must be directed to:
-
-  Stefan Antonio Cirisanu
-  Organization: humanityledger
-  GitHub: https://github.com/humanityledger
-  Email: atfortyseven2@humanidfi.es
-
-Unauthorized use will be prosecuted to the fullest extent of the law.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MIT License
 
 Copyright (c) 2026-2027 Stefan Antonio Cirisanu / humanityledger
-ALL RIGHTS RESERVED — NO PART OF THIS SOFTWARE MAY BE USED, COPIED,
-MODIFIED, OR DISTRIBUTED WITHOUT EXPRESS WRITTEN PERMISSION.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Special Acknowledgement:
+This project has been aligned for public good financing via the Aztec Network Grant program. 
+The MIT licensing ensures strict compliance with Aztec Foundation's open-source requirements 
+for building sovereign and cypherpunk Web3 infrastructure.
