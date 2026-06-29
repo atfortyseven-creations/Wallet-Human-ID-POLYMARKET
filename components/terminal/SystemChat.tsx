@@ -10,6 +10,7 @@ import { QrCode, X, ChevronLeft, Menu, Settings, LogOut, ArrowLeft, UserX, UserC
 import { toast } from 'sonner';
 import { useSystemSignOut } from '@/hooks/useSystemSignOut';
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
+import { useAztec, type AztecAddress } from '@/context/AztecContext';
 // NOTE: QDs state is sourced from AztecNativeContext (DB polling) — no local store needed.
 
 // ─── iOS / Android detection ───────────────────────────────────────────────

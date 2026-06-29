@@ -113,15 +113,25 @@ export const AztecProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             pxeClient = await executeInit();
         }
 
-        // Fetch node metadata
-        const info = await pxeClient.getNodeInfo();
-        setNodeInfo(info);
+        // Fetch node metadata (May fail if Sequencer is down, but PXE is local)
+        let info = { chainId: 31337, protocolVersion: 1 }; // Fallback values
+        try {
+            info = await pxeClient.getNodeInfo();
+            setNodeInfo(info);
+        } catch (e) {
+            console.warn('🟡 [Aztec] Sequencer unreachable, entering Offline Read-Only Mode.');
+            setNodeInfo(info); // Set fallback
+        }
 
         // Fetch registered accounts (populated by Aztec Sandbox by default)
-        const accounts = await pxeClient.getRegisteredAccounts();
-        if (accounts && accounts.length > 0) {
-          setWalletAddress(accounts[0].address);
-          console.log(`🟢 [Aztec] Wallet address: ${accounts[0].address.toString()}`);
+        try {
+            const accounts = await pxeClient.getRegisteredAccounts();
+            if (accounts && accounts.length > 0) {
+              setWalletAddress(accounts[0].address);
+              console.log(`🟢 [Aztec] Wallet address: ${accounts[0].address.toString()}`);
+            }
+        } catch (e) {
+            console.warn('🟡 [Aztec] Could not fetch accounts (Offline Mode).');
         }
 
         setPxe(pxeClient);

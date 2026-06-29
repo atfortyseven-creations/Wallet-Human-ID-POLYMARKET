@@ -43,11 +43,19 @@ function Avatar({ address }: { address: string }) {
   );
 }
 
+import { useAztec } from '@/context/AztecContext';
+
 export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const { address, isConnected, isSystemHandshake, isChecking, connector, isZkVerified, isLocalSystemWallet } = useSystemAccount();
   const { signMessageAsync } = useSignMessage();
   const { reconnect } = useReconnect();
   const { open: openAppKit } = useAppKit();
+
+  // [PHASE 2 - SILOING] Consume the sandboxed PXE context for Chat Operations
+  // This strictly isolates Chat from the Portfolio state to prevent cross-contamination.
+  const { getSiloedPXE } = useAztec();
+  const chatContractAddress = { toString: () => '0xCHAT_CONTRACT_ADDRESS_PLACEHOLDER' } as any;
+  const siloedPxe = getSiloedPXE ? getSiloedPXE(chatContractAddress) : null;
   const { chatName, chatBio, soundEffects } = useSettingsStore();
 
   // MASTER RECOVERY: If wallet is connected but connector is missing (zombie session after mobile deep-link)

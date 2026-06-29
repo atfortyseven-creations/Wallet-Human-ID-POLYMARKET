@@ -110,17 +110,26 @@ export default async function middleware(request: NextRequest) {
     }
 
     // Aegis Fix: Prioritize Cloudflare Header to prevent IP spoofing
-    const ip = request.headers.get('cf-connecting-ip') ||
+    const rawIp = request.headers.get('cf-connecting-ip') ||
                request.headers.get('x-forwarded-for')?.split(',')[0] ||
                request.headers.get('x-real-ip') ||
                '127.0.0.1';
+    
+    // [PHASE 3: ZERO-METADATA ROUTING] Onion-like IP obfuscation.
+    // Plaintext IP addresses are NEVER logged or stored in the database.
+    const encoder = new TextEncoder();
+    const data = encoder.encode(rawIp + (process.env.NEXTAUTH_SECRET || 'whale-salt'));
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const ip = 'onion_' + hashArray.map(b => b.toString(16).padStart(2, '0')).join('').substring(0, 16);
+
     const country = request.headers.get('cf-ipcountry') ||
                     request.headers.get('x-vercel-ip-country') ||
                     'UNKNOWN';
 
     // Aegis Fix: Removed external IP from whitelist to prevent header spoofing bypass
-    const BYPASS_IPS = ['127.0.0.1'];
-    const isBypassIP = BYPASS_IPS.includes(ip);
+    const BYPASS_IPS = ['127.0.0.1', '::1'];
+    const isBypassIP = BYPASS_IPS.includes(rawIp);
 
     //  LAYER -1.2: CLOUD-SHIELD STRICT VALIDATION (Anti-Direct IP Attacks)
     // Drops any traffic that bypasses Cloudflare and hits Railway directly.
@@ -356,16 +365,18 @@ export default async function middleware(request: NextRequest) {
     const scriptSrc = [
       "'self'",
       `'nonce-${nonce}'`,
-      // R2: 'unsafe-eval' REMOVED  violates CSP Level 3 and sovereign audit requirements.
-      // R2: 'unsafe-inline' REMOVED  nonce-based policy replaces this.
+      // R2: 'unsafe-eval' REMOVED — violates CSP Level 3 and sovereign audit requirements.
+      // R2: 'unsafe-inline' REMOVED — nonce-based policy replaces this.
+      // [PHASE 5 PURGE] 'googletagmanager.com' and 'google-analytics.com' REMOVED.
+      // These domains were whitelisted as a legacy artifact from when GTM was active.
+      // GTM has been fully excised from the layout. Whitelisting dead-tracker origins
+      // in CSP is a zero-tolerance security violation under the cypherpunk mandate.
       // 'wasm-unsafe-eval' REQUIRED for @xmtp/browser-sdk WebAssembly execution
       "'wasm-unsafe-eval'",
       "https://*.walletconnect.com",
       "https://*.walletconnect.org",
       "https://*.reown.com",
       "https://*.reown.app",
-      "https://*.google-analytics.com",
-      "https://*.googletagmanager.com",
       "https://accounts.google.com",
       "'strict-dynamic'",  // Allows nonce-whitelisted scripts to load their own dependencies
     ].join(' ');
@@ -375,13 +386,17 @@ export default async function middleware(request: NextRequest) {
       `script-src ${scriptSrc}`,
       "worker-src 'self' blob:",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "img-src 'self' blob: data: https://*.google-analytics.com https://*.googletagmanager.com https://res.cloudinary.com https://*.walletconnect.com https://*.walletconnect.org https://*.reown.com https://*.reown.app https://whalealert.network https://*.googleusercontent.com https://*.gstatic.com",
+      // [PHASE 5 PURGE] google-analytics.com and googletagmanager.com removed from img-src.
+      // These were used for 1x1 tracking pixels (beacon tracking). Purged under Zero-Tracker mandate.
+      "img-src 'self' blob: data: https://res.cloudinary.com https://*.walletconnect.com https://*.walletconnect.org https://*.reown.com https://*.reown.app https://whalealert.network https://*.googleusercontent.com https://*.gstatic.com",
       "font-src 'self' https://fonts.gstatic.com data:",
       // [IOS CHROME FIX] connect-src expanded with all Reown OAuth + social auth API endpoints.
       // accounts.reown.com is the Reown Auth service for Google/Apple/GitHub social logins.
       // Without it, the OAuth token exchange (POST to accounts.reown.com) is blocked by CSP
       // causing SILENT failures for social logins on iOS WKWebView (Chrome + Safari).
-      "connect-src 'self' https://api.web3modal.org https://pulse.walletconnect.org https://*.google-analytics.com https://*.googletagmanager.com wss://*.reown.com https://*.reown.com wss://*.reown.org https://*.reown.org wss://*.reown.app https://*.reown.app https://accounts.reown.com https://auth.reown.com wss://*.walletconnect.com https://*.walletconnect.com https://*.walletconnect.org wss://*.walletconnect.org https://api.walletconnect.com wss://api.walletconnect.com https://relay.walletconnect.com wss://relay.walletconnect.com https://*.alchemy.com https://*.infura.io https://go.getblock.us https://go.getblock.io wss://go.getblock.io https://shared.us-east-1.getblock.io wss://shared.us-east-1.getblock.io https://cca-lite.coinbase.com https://*.coinbase.com wss://stream.binance.com:9443 https://stream.binance.com https://cdn.jsdelivr.net https://raw.githubusercontent.com https://*.githubusercontent.com https://*.xmtp.network wss://*.xmtp.network https://grpc.xmtp.network wss://grpc.xmtp.network https://production.xmtp.network wss://production.xmtp.network https://dev.xmtp.network wss://dev.xmtp.network https://oauth2.googleapis.com https://accounts.google.com",
+      // [PHASE 5 PURGE] google-analytics.com and googletagmanager.com removed from connect-src.
+      // These domains enabled server-side GA beacon pings which constituted covert data exfiltration.
+      "connect-src 'self' https://api.web3modal.org https://pulse.walletconnect.org wss://*.reown.com https://*.reown.com wss://*.reown.org https://*.reown.org wss://*.reown.app https://*.reown.app https://accounts.reown.com https://auth.reown.com wss://*.walletconnect.com https://*.walletconnect.com https://*.walletconnect.org wss://*.walletconnect.org https://api.walletconnect.com wss://api.walletconnect.com https://relay.walletconnect.com wss://relay.walletconnect.com https://*.alchemy.com https://*.infura.io https://go.getblock.us https://go.getblock.io wss://go.getblock.io https://shared.us-east-1.getblock.io wss://shared.us-east-1.getblock.io https://cca-lite.coinbase.com https://*.coinbase.com wss://stream.binance.com:9443 https://stream.binance.com https://cdn.jsdelivr.net https://raw.githubusercontent.com https://*.githubusercontent.com https://*.xmtp.network wss://*.xmtp.network https://grpc.xmtp.network wss://grpc.xmtp.network https://production.xmtp.network wss://production.xmtp.network https://dev.xmtp.network wss://dev.xmtp.network https://oauth2.googleapis.com https://accounts.google.com",
       // [IOS CHROME FIX] frame-src expanded: accounts.reown.com is used as the OAuth redirect
       // host for Reown social logins. On iOS, AppKit renders the Google Auth flow inside an
       // iframe which is blocked if accounts.reown.com is not in frame-src.
@@ -400,7 +415,10 @@ export default async function middleware(request: NextRequest) {
       'X-Frame-Options': 'SAMEORIGIN',
       'X-XSS-Protection': '1; mode=block',
       'Referrer-Policy': 'strict-origin-when-cross-origin',
-      'Permissions-Policy': 'camera=(self), microphone=(), geolocation=(), payment=(self), usb=(), bluetooth=()',
+      // [PHASE 5] Anti-Fingerprinting Permissions-Policy.
+      // Denies access to all browser APIs that can be used to build fingerprint vectors.
+      // This prevents passive fingerprinting via GPU, sensors, or hardware access APIs.
+      'Permissions-Policy': 'camera=(self), microphone=(), geolocation=(), payment=(self), usb=(), bluetooth=(), interest-cohort=(), browsing-topics=(), join-ad-interest-group=(), run-ad-auction=(), attribution-reporting=()',
       'Expect-CT': 'enforce, max-age=86400',
       'X-Permitted-Cross-Domain-Policies': 'none',
       'Cross-Origin-Opener-Policy': 'unsafe-none', // [IOS CHROME FIX] Relaxed to allow Google Auth/WalletConnect iframes to bridge popups successfully

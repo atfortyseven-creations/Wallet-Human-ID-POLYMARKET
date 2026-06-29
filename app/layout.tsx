@@ -11,8 +11,8 @@ import "@fontsource/roboto-mono/400.css";
 import { ClientLayout } from "@/components/layout/ClientLayout";
 import { Toaster } from 'sonner'
 import { CookieProvider } from "@/components/privacy/CookieContext";
+// [PHASE 5] CookieConsent is now the Zero-Data Privacy Notice (not an analytics banner)
 import { CookieConsent } from "@/components/privacy/CookieConsent";
-import { GoogleTagManager } from "@/components/privacy/GoogleTagManager";
 import { ErrorSuppressor } from "@/components/ui/ErrorSuppressor";
 import { ReactNode } from "react";
 import { MobileEnforcer } from '@/components/layout/MobileEnforcer';
@@ -339,10 +339,10 @@ export default async function RootLayout({
                   <AztecNativeProvider>
                     <CookieProvider>
                       <ErrorSuppressor />
-                      <GoogleTagManager gtmId="GTM-52B9SCRM" />
                       <AntiTamperCore />
                       {children}
                       <Toaster richColors position="top-right" />
+                      {/* [PHASE 5] Zero-Data Privacy Notice — NOT an analytics consent banner */}
                       <CookieConsent />
                       <ClientOverlays />
                       <WalletConnectProvider />

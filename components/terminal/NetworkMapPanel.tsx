@@ -148,6 +148,22 @@ export function NetworkMapPanel() {
           <h1 className="text-4xl md:text-6xl lg:text-[80px] font-black tracking-tighter leading-none text-black drop-shadow-sm">
             Architecture <span className="text-black/25">Map</span>
           </h1>
+
+          {/* [PHASE 4] Tor/I2P Awareness Banner */}
+          {typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && (
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5 }}
+              className="mt-6 px-4 py-3 bg-black text-white text-xs md:text-sm font-mono rounded-xl border border-white/20 shadow-xl max-w-2xl flex items-center gap-3"
+            >
+              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+              <span>
+                <strong className="text-emerald-400 uppercase tracking-widest mr-2">Local Node Detected:</strong>
+                Para máxima privacidad y resistencia a la censura, recomendamos ejecutar este nodo local sobre la red <strong className="text-white">Tor</strong> o <strong className="text-white">I2P</strong>.
+              </span>
+            </motion.div>
+          )}
           <p className="mt-6 text-sm md:text-base text-black/55 font-medium max-w-2xl leading-relaxed">
             A high-level technical overview of the humanidfi.com infrastructure, spanning from dual-client synchronisation through the Noir ZK proving pipeline to the core Aztec Protocol on Ethereum L1.
           </p>

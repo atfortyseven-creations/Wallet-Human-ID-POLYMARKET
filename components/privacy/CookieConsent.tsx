@@ -1,35 +1,26 @@
 'use client';
 
+/**
+ * [PHASE 5 — CYPHERPUNK PRIVACY NOTICE]
+ *
+ * This is NOT a cookie consent banner. Whale Network does not collect analytics.
+ * This is a one-time privacy notice that informs users of our zero-data architecture.
+ *
+ * Architecture: The notice is shown once, persisted in localStorage with key
+ * `privacy-acknowledged`. Once dismissed, it never re-appears.
+ * No server call is made. No consent is "stored" in a database.
+ * Privacy is enforced at the cryptographic layer, not at the UI layer.
+ */
+
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCookieConsent } from './CookieContext';
+import { Lock } from 'lucide-react';
 
 export function CookieConsent() {
-    const { showBanner, acceptAll, rejectAll } = useCookieConsent();
+    const { showBanner, acceptAll } = useCookieConsent();
 
     if (!showBanner) return null;
-
-    const handleEssential = async () => {
-        rejectAll();
-        try {
-            await fetch('/api/cookies', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ consent: { essential: true, analytics: false, marketing: false } })
-            });
-        } catch(e) {}
-    };
-
-    const handleAcceptAll = async () => {
-        acceptAll();
-        try {
-            await fetch('/api/cookies', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ consent: { essential: true, analytics: true, marketing: true } })
-            });
-        } catch(e) {}
-    };
 
     return (
         <AnimatePresence>
@@ -40,36 +31,31 @@ export function CookieConsent() {
                 transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
                 className="fixed bottom-0 left-0 right-0 z-[99999] p-3 sm:p-5 pointer-events-none"
             >
-                {/*  Outer container  */}
                 <div className="w-full max-w-2xl mx-auto pointer-events-auto relative">
-                    {/* Card */}
-                    <div
-                        className="relative rounded-2xl overflow-hidden bg-white  border border-black/5  shadow-2xl"
-                    >
+                    <div className="relative rounded-2xl overflow-hidden bg-black border border-white/10 shadow-2xl">
                         <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-4 p-5 sm:p-6">
-                            {/* Text */}
-                            <div className="flex-1 min-w-0">
-                                <p className="text-[12px] font-bold text-black  mb-1.5">
-                                    Cookie Preferences
-                                </p>
-                                <p className="text-[11px] text-black/60  leading-relaxed font-sans">
-                                    We use essential cookies for session integrity and optional analytics to improve your experience. Your data is never sold.
+                            {/* Icon */}
+                            <div className="flex items-center gap-3 shrink-0">
+                                <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                                    <Lock size={14} className="text-emerald-400" />
+                                </div>
+                                <p className="text-[11px] font-black uppercase tracking-[0.3em] text-emerald-400">
+                                    Zero Data Policy
                                 </p>
                             </div>
-
-                            {/* Buttons */}
-                            <div className="flex items-center gap-2.5 shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
+                            {/* Text */}
+                            <div className="flex-1 min-w-0">
+                                <p className="text-[11px] text-white/60 leading-relaxed font-mono">
+                                    This platform collects <strong className="text-white">zero analytics</strong> and <strong className="text-white">zero marketing data</strong>. Your state is sealed cryptographically before reaching any network layer. Privacy is enforced by architecture, not by policy.
+                                </p>
+                            </div>
+                            {/* Dismiss button */}
+                            <div className="shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
                                 <button
-                                    onClick={handleEssential}
-                                    className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-[11px] font-semibold transition-all duration-200 active:scale-[0.97] bg-black/5  text-black/60  hover:text-black hover: hover:bg-black/10 hover:"
+                                    onClick={acceptAll}
+                                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 active:scale-[0.97] bg-white text-black hover:bg-white/90"
                                 >
-                                    Essential Only
-                                </button>
-                                <button
-                                    onClick={handleAcceptAll}
-                                    className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-[11px] font-semibold transition-all duration-200 active:scale-[0.97] bg-black text-white   hover:opacity-90"
-                                >
-                                    Accept All
+                                    Understood
                                 </button>
                             </div>
                         </div>

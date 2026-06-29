@@ -339,10 +339,10 @@ export default function ConnectPage() {
             const urlParams = new URLSearchParams(window.location.search);
             const raw = urlParams.get('returnUrl') || urlParams.get('redirect_url') || '';
             // [SECURITY] Only allow same-origin relative paths — reject any http(s):// returnUrl
-            // Default to / (landing page) so users see their connected state after QR sync
+            // Default to /terminal so users see their connected state after QR sync
             const safeReturn = (raw.startsWith('/') && !raw.startsWith('//') && raw !== '/portfolio')
               ? raw
-              : '/';
+              : '/terminal';
             window.location.replace(safeReturn);
           } else {
             const errData = await hydrateRes.json().catch(() => ({}));
@@ -418,7 +418,7 @@ export default function ConnectPage() {
                     window.location.replace(returnUrl);
                 }
             } else {
-                window.location.replace("/");
+                window.location.replace("/terminal");
             }
             return;
           }
@@ -861,7 +861,7 @@ export default function ConnectPage() {
               <div className="text-[12px] font-black uppercase tracking-[0.25em] text-[#0a0a0a] leading-none">Whale Network</div>
             </div>
             <p className="text-[11px] text-[#333] leading-relaxed font-medium">
-              Whale Network is an advanced ecosystem for the management of digital assets and zero knowledge identities. The platform unites cross device state synchronisation and client side proof generation into a secure architecture powered by the Aztec Network.
+              Privacy is a fundamental right. Architecture is a declaration of values. Whale Network is structurally incapable of collecting user state. Data is sealed via SNARKs before reaching any network layer, providing a sovereign enclave powered by the Aztec Network.
             </p>
           </div>
 

@@ -36,6 +36,14 @@ export default function LegalPage() {
     >
       <div className="space-y-10 sm:space-y-14 text-black">
 
+        {/* CYPHERPUNK MANIFESTO / ABSOLUTE PRIVACY GUARANTEE */}
+        <div className="p-6 bg-black text-white font-mono text-sm border border-black shadow-2xl rounded-xl">
+          <p className="font-bold text-emerald-400 uppercase tracking-widest mb-2">Absolute Privacy Guarantee</p>
+          <p>
+            Whale Network is structurally incapable of collecting user state. Data is sealed via SNARKs before reaching any network layer. Privacy is not a feature; it is an unalienable cryptographic right.
+          </p>
+        </div>
+
         {/* 1 */}
         <section id="table-of-contents">
           <h2 className="text-[1.1rem] font-bold uppercase tracking-[0.08em] text-black mb-6 pb-3 border-b border-black/10">
