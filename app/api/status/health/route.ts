@@ -19,20 +19,9 @@ interface ServiceResult {
 // AZTEC ZK & WHALE NETWORK - 18 CIRCUIT HEALTH CHECK API
 // 
 
-async function probe(name: string, category: string, url: string, timeoutMs = 9000, isSimulatedZk = false): Promise<ServiceResult> {
+async function probe(name: string, category: string, url: string, timeoutMs = 9000): Promise<ServiceResult> {
   const start = Date.now();
   const checkedAt = new Date().toISOString();
-  
-  if (isSimulatedZk) {
-    // For internal encrypted nodes (like ZK circuits) that don't expose public HTTP GET routes,
-    // we simulate a protocol ping to represent their internal health state.
-    const latency = 120 + Math.floor(Math.random() * 80);
-    await new Promise(resolve => setTimeout(resolve, latency));
-    return {
-      name, category, url: 'zk://enclave.internal', status: 'operational',
-      latencyMs: latency, httpCode: 200, checkedAt, accessible: true
-    };
-  }
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -83,8 +72,8 @@ export async function GET() {
 
   const results = await Promise.all([
     // Aztec ZK & Privacy Enclave
-    probe('Aztec PLONK Prover', 'ZK & Privacy Layer', '', 5000, true),
-    probe('ZK Shielded Pool', 'ZK & Privacy Layer', '', 5000, true),
+    probe('Aztec PLONK Prover', 'ZK & Privacy Layer', `${baseUrl}/api/zk/prove`),
+    probe('ZK Shielded Pool', 'ZK & Privacy Layer', `${baseUrl}/api/aztec/account`),
     probe('Humanity Identity Registry', 'ZK & Privacy Layer', `${baseUrl}/registry`),
     probe('Passport KYC Oracles', 'ZK & Privacy Layer', `${baseUrl}/passport`),
 
