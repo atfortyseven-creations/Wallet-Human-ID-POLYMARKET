@@ -82,29 +82,30 @@ function ZkDecryptionEngine({ onComplete, item }: { onComplete: () => void, item
         <motion.div 
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full bg-[#050505] p-6 sm:p-8 rounded-[2rem] border border-black/10 shadow-2xl overflow-hidden relative"
+            className="w-full rounded-[2rem] border border-black/20 shadow-2xl overflow-hidden relative"
+            style={{ backgroundColor: '#050505', color: '#ffffff' }}
         >
             <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 50% 50%, #fff 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
             
-            <div className="relative z-10 flex items-center justify-between mb-8 border-b border-white/10 pb-6">
+            <div className="relative z-10 flex items-center justify-between mb-8 border-b pb-6 p-6 sm:p-8" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
                 <div className="flex items-center gap-4">
-                    <div className="p-3 bg-white/5 rounded-xl border border-white/10">
-                        <Terminal className="text-white animate-pulse" size={24} />
+                    <div className="p-3 rounded-xl border" style={{ backgroundColor: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.1)' }}>
+                        <Terminal style={{ color: '#ffffff' }} className="animate-pulse" size={24} />
                     </div>
                     <div>
-                        <div className="font-mono text-[13px] font-black uppercase text-white tracking-widest">Aztec Unshielding Protocol</div>
-                        <div className="font-mono text-[9px] text-white/40 uppercase tracking-[0.2em] mt-1">Executing Zero-Knowledge Verification</div>
+                        <div className="font-mono text-[13px] font-black uppercase tracking-widest" style={{ color: '#ffffff' }}>Aztec Unshielding Protocol</div>
+                        <div className="font-mono text-[9px] uppercase tracking-[0.2em] mt-1" style={{ color: 'rgba(255,255,255,0.45)' }}>Executing Zero-Knowledge Verification</div>
                     </div>
                 </div>
                 <div className="text-right">
-                    <div className="text-[24px] font-mono font-black text-white">{progress}%</div>
-                    <div className="text-[9px] font-mono text-white/40 uppercase tracking-widest">Processing</div>
+                    <div className="text-[24px] font-mono font-black" style={{ color: '#ffffff' }}>{progress}%</div>
+                    <div className="text-[9px] font-mono uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.45)' }}>Processing</div>
                 </div>
             </div>
 
-            <div className="relative z-10 space-y-6">
+            <div className="relative z-10 space-y-6 px-6 sm:px-8 pb-6 sm:pb-8">
                 {/* Progress bar */}
-                <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                <div className="h-1.5 w-full rounded-full overflow-hidden" style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}>
                     <motion.div 
                         className="h-full bg-white relative"
                         initial={{ width: 0 }}
@@ -116,7 +117,9 @@ function ZkDecryptionEngine({ onComplete, item }: { onComplete: () => void, item
                 </div>
 
                 {/* Console Logs */}
-                <div className="bg-black/50 p-5 rounded-2xl border border-white/5 font-mono text-[10px] text-white/60 h-48 overflow-y-auto space-y-2 relative shadow-inner">
+                <div className="p-5 rounded-2xl border h-48 overflow-y-auto space-y-2 relative shadow-inner font-mono text-[10px]"
+                    style={{ backgroundColor: 'rgba(0,0,0,0.6)', borderColor: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.7)' }}
+                >
                     <div className="absolute top-0 left-0 w-full h-8 bg-gradient-to-b from-black/50 to-transparent pointer-events-none" />
                     {logs.map((log, i) => (
                         <motion.div 
@@ -125,20 +128,21 @@ function ZkDecryptionEngine({ onComplete, item }: { onComplete: () => void, item
                             key={i} 
                             className="flex gap-4"
                         >
-                            <span className="text-white/30 shrink-0">[{new Date().toISOString().split('T')[1].slice(0, 8)}]</span>
-                            <span className={i === logs.length - 1 ? "text-white font-bold" : ""}>{log}</span>
+                            <span className="shrink-0 font-mono" style={{ color: 'rgba(255,255,255,0.3)' }}>[{new Date().toISOString().split('T')[1].slice(0, 8)}]</span>
+                            <span style={{ color: i === logs.length - 1 ? '#ffffff' : 'rgba(255,255,255,0.75)', fontWeight: i === logs.length - 1 ? 700 : 400 }}>{log}</span>
                         </motion.div>
                     ))}
                     {progress < 100 && (
                         <div className="flex gap-4 animate-pulse">
-                            <span className="text-white/30 shrink-0">[{new Date().toISOString().split('T')[1].slice(0, 8)}]</span>
-                            <span className="text-white/80">_</span>
+                            <span className="font-mono shrink-0" style={{ color: 'rgba(255,255,255,0.3)' }}>[{new Date().toISOString().split('T')[1].slice(0, 8)}]</span>
+                            <span style={{ color: 'rgba(255,255,255,0.8)' }}>_</span>
                         </div>
                     )}
                 </div>
 
                 {/* Cryptographic string reveal */}
-                <div className="break-all font-mono text-[9px] text-white/10 leading-tight min-h-[3rem] overflow-hidden select-none">
+                <div className="break-all font-mono text-[9px] leading-tight min-h-[3rem] overflow-hidden select-none"
+                    style={{ color: 'rgba(52,211,153,0.6)' }}>
                     {deterministicNoise(realPayload, progress, tick)}
                 </div>
             </div>
