@@ -47,9 +47,9 @@ interface NavItem {
 }
 
 const SIDEBAR_ITEMS: NavItem[] = [
-    { id: 'dashboard',       label: 'Dashboard',      icon: <span className="font-mono text-[10px] tracking-widest font-black">[DSH]</span> },
     { id: 'humanity-ledger', label: 'Roadmap',        icon: Icon.roadmap },
     { id: 'gold',            label: 'Identity',       icon: Icon.identity },
+    { id: 'markets',         label: 'Markets',        icon: Icon.markets },
     { id: 'chat',            label: 'Whale Chat',     icon: <span className="font-mono text-[10px] tracking-widest font-black">[CHT]</span> },
     { id: 'token',           label: 'Token',          icon: <span className="font-mono text-[10px] tracking-widest font-black">[TKN]</span> },
     { id: 'map',             label: 'Network Map',    icon: Icon.map },

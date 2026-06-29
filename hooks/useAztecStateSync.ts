@@ -14,6 +14,7 @@ const LEGACY_ROUTE_MAP = new Set([
 const ROUTE_ALIAS: Record<string, string> = {
     'billing': 'node-allocation',
     'upgrade': 'node-allocation',
+    'dashboard': 'markets',
 };
 
 const DEFAULT_ROUTE = 'gold';
