@@ -50,6 +50,9 @@ function ZkDecryptionEngine({ onComplete, item }: { onComplete: () => void, item
     const [progress, setProgress] = useState(0);
     const [tick, setTick] = useState(0);
 
+    const onCompleteRef = useRef(onComplete);
+    useEffect(() => { onCompleteRef.current = onComplete; }, [onComplete]);
+
     useEffect(() => {
         let currentStep = 0;
         const interval = setInterval(() => {
@@ -59,7 +62,7 @@ function ZkDecryptionEngine({ onComplete, item }: { onComplete: () => void, item
                 currentStep++;
             } else {
                 clearInterval(interval);
-                setTimeout(onComplete, 1200); 
+                setTimeout(() => onCompleteRef.current(), 1200); 
             }
         }, 350); 
 
@@ -71,7 +74,7 @@ function ZkDecryptionEngine({ onComplete, item }: { onComplete: () => void, item
             clearInterval(interval);
             clearInterval(renderInterval);
         };
-    }, [onComplete]);
+    }, []);
 
     const realPayload = `TX_HASH:${item.hash} | SRC:${item.from} | DEST:${item.to} | VAL:${item.usdValue} | MTD:${item.method || 'UNKNOWN'}`;
 
@@ -425,7 +428,7 @@ function WhaleTransactionExplorer() {
                         className="w-40 h-40 flex items-center justify-center mx-auto relative group"
                     >
                         <SplashContainer className="w-full h-full transition-transform duration-700 scale-110 group-hover:scale-125 relative z-10 flex items-center justify-center">
-                            <img src="/official-whale-monochrome.png" className="w-full h-full object-contain filter invert" alt="Whale Network" />
+                            <img src="/official-whale-monochrome.png" className="w-full h-full object-contain brightness-0 opacity-90" alt="Whale Network" />
                         </SplashContainer>
                     </motion.div>
 
