@@ -67,15 +67,56 @@ async function probe(name: string, category: string, url: string, timeoutMs = 90
   }
 }
 
+async function rpcProbe(name: string, category: string, url: string, timeoutMs = 9000): Promise<ServiceResult> {
+  const start = Date.now();
+  const checkedAt = new Date().toISOString();
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      signal: controller.signal,
+      cache: 'no-store',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', method: 'node_getNodeInfo', params: [], id: 1 })
+    });
+    clearTimeout(timer);
+    
+    const latencyMs = Date.now() - start;
+    const httpCode = res.status;
+    let serviceStatus: 'operational' | 'degraded' | 'outage' = 'outage';
+    let accessible = false;
+
+    if (httpCode === 200) {
+      const data = await res.json();
+      accessible = true;
+      serviceStatus = latencyMs > 3500 ? 'degraded' : 'operational';
+      
+      // We append network info to the name directly so it displays in the UI
+      const rollupVersion = data.result?.rollupVersion || 'Unknown';
+      const chainId = data.result?.l1ChainId || 'Unknown';
+      name = `${name} [L1: ${chainId} | Rollup: ${rollupVersion}]`;
+    }
+
+    return { name, category, url, status: serviceStatus, latencyMs, httpCode, checkedAt, accessible };
+  } catch (err: unknown) {
+    clearTimeout(timer);
+    const latencyMs = Date.now() - start;
+    const isTimeout = err instanceof Error && err.name === 'AbortError';
+    return { name, category, url, status: isTimeout ? 'degraded' : 'outage', latencyMs, httpCode: null, checkedAt, accessible: false };
+  }
+}
+
 export async function GET() {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.humanidfi.com';
 
   const results = await Promise.all([
-    // Aztec ZK & Privacy Enclave
+    // Aztec ZK & Privacy Enclave (Real Testnet Connectivity)
+    rpcProbe('Aztec v5 Live Testnet RPC', 'ZK & Privacy Layer', 'https://v5.testnet.rpc.aztec-labs.com'),
     probe('Aztec PLONK Prover', 'ZK & Privacy Layer', `${baseUrl}/api/zk/prove`),
     probe('ZK Shielded Pool', 'ZK & Privacy Layer', `${baseUrl}/api/aztec/account`),
     probe('Humanity Identity Registry', 'ZK & Privacy Layer', `${baseUrl}/registry`),
-    probe('Passport KYC Oracles', 'ZK & Privacy Layer', `${baseUrl}/passport`),
 
     // Whale Network & Liquidity
     probe('Whale Terminal Core', 'Whale Network & Markets', `${baseUrl}/terminal`),
