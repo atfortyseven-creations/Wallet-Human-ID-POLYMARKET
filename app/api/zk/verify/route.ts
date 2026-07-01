@@ -35,7 +35,7 @@ export async function POST(req: Request) {
     const payload = Buffer.from(base64Payload, 'base64').toString('utf-8');
     const expectedSignature = crypto.createHmac('sha256', ZK_SECRET).update(payload).digest('hex');
 
-    if (signature !== expectedSignature) {
+    if (signature.length !== expectedSignature.length || !crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))) {
       return NextResponse.json({ success: false, error: "CRYPTOGRAPHIC_ERROR: Proof signature mismatch. Tampering detected." }, { status: 403 });
     }
 
