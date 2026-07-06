@@ -4,14 +4,14 @@ import { getSession } from '@/lib/session';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { slug: string } }
 ) {
   const session = await getSession();
   if (!session?.userId) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const passportId = params.id;
+  const passportId = params.slug;
 
   try {
     const passport = await prisma.productPassport.findUnique({
