@@ -98,9 +98,19 @@ export function createRedisClient(config: { name?: string; isSubscriber?: boolea
     const Redis = require('ioredis').default || require('ioredis');
     const client = new Redis(REDIS_URL, {
         maxRetriesPerRequest: 3,
+        enableOfflineQueue: false,
+        keepAlive: 10000,
+        pingInterval: 30000,
+        reconnectOnError: (err: any) => {
+            const targetError = "READONLY";
+            if (err.message.includes(targetError) || err.message.includes("ECONNRESET")) {
+                return true;
+            }
+            return false;
+        },
         retryStrategy(times: number) {
-            if (times > 3) return null;
-            return Math.min(times * 200, 1000);
+            if (times > 10) return null;
+            return Math.min(times * 1000, 5000);
         },
         ...config
     });
@@ -116,9 +126,19 @@ try {
         const Redis = require('ioredis').default || require('ioredis');
         redisClient = new Redis(REDIS_URL, {
             maxRetriesPerRequest: 3,
+            enableOfflineQueue: false,
+            keepAlive: 10000,
+            pingInterval: 30000,
+            reconnectOnError: (err: any) => {
+                const targetError = "READONLY";
+                if (err.message.includes(targetError) || err.message.includes("ECONNRESET")) {
+                    return true;
+                }
+                return false;
+            },
             retryStrategy(times: number) {
-                if (times > 3) return null;
-                return Math.min(times * 200, 1000);
+                if (times > 10) return null;
+                return Math.min(times * 1000, 5000);
             }
         });
 
