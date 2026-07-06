@@ -1,4 +1,4 @@
 #!/bin/bash
-source ~/.nvm/nvm.sh
-nvm use 20 --silent
-./node_modules/.bin/aztec get-canonical-sponsored-fpc-address -r https://v5.testnet.rpc.aztec-labs.com
+cd "/mnt/d/Projects/Wallet Human Polymarket ID"
+git show HEAD~1:scripts/deploy-qds-token.mjs | grep SPONSORED_FPC > /tmp/fpc.txt
+cat /tmp/fpc.txt
