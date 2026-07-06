@@ -6,18 +6,18 @@ import { motion } from 'framer-motion';
 const features = [
   {
     icon: <Lock className="w-8 h-8 text-ink" />,
-    title: 'Programmable Privacy',
-    description: 'You choose exactly what data is encrypted and what is visible. Keep your balances and strategies entirely private while still participating in DeFi.'
-  },
-  {
-    icon: <Cpu className="w-8 h-8 text-ink" />,
-    title: 'Hybrid State',
-    description: 'Perform private transactions that seamlessly interact with public Ethereum smart contracts without ever leaking your personal activity.'
+    title: 'Selective Disclosure',
+    description: 'Provide regulators and partners with exactly the data they need to verify compliance, while keeping your proprietary supply chain data completely private using Zero-Knowledge proofs.'
   },
   {
     icon: <Shield className="w-8 h-8 text-ink" />,
-    title: 'Client-Side Proving',
-    description: 'Your sensitive data never leaves your device. Execute transactions locally and submit only the cryptographic proof to the network.'
+    title: 'EU DPP Compliant',
+    description: 'Built specifically to meet the February 2027 Battery Passport requirements and future European Digital Product Passport regulations.'
+  },
+  {
+    icon: <Cpu className="w-8 h-8 text-ink" />,
+    title: 'Powered by Aztec',
+    description: 'We leverage Aztec Network\'s privacy-preserving L2 infrastructure on Ethereum to guarantee immutable, verifiable, yet completely confidential product passports.'
   }
 ];
 
@@ -27,10 +27,10 @@ export default function About() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-serif font-bold text-ink mb-6">
-            What is Whale Network?
+            Why Studio Provenance?
           </h2>
           <p className="text-xl text-ink/80 max-w-3xl mx-auto">
-            We are transforming Ethereum into a private world computer. Powered by Aztec Network, Whale Network provides native, programmable privacy at the L2 infrastructure layer using Noir ZK circuits—bringing true decentralization and confidentiality to Web3.
+            European companies face strict new regulations like the 2027 Battery Passport, requiring them to digitize their supply chains. Studio Provenance allows you to comply with these laws without exposing your trade secrets, suppliers, or sensitive data to the public.
           </p>
         </div>
 

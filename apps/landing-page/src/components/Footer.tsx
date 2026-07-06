@@ -26,6 +26,14 @@ export default function Footer() {
               <li><a href="#" className="hover:text-chartreuse transition-colors text-ink">Blog</a></li>
             </ul>
           </div>
+          <div>
+            <h4 className="font-bold text-ink mb-4">Legal & Compliance</h4>
+            <ul className="space-y-2 text-ink/70">
+              <li><a href="/legal/privacy-policy" className="hover:text-orchid transition-colors">Privacy Policy</a></li>
+              <li><a href="/legal/terms-of-service" className="hover:text-orchid transition-colors">Terms of Service</a></li>
+              <li><a href="/legal/dpa" className="hover:text-orchid transition-colors">Data Processing Agreement</a></li>
+            </ul>
+          </div>
         </div>
       </div>
       <div className="max-w-6xl mx-auto mt-16 text-center text-ink/40 text-sm">

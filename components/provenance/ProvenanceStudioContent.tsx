@@ -46,6 +46,8 @@ const SubscriptionDashboard = dynamic(
   { ssr: false, loading: () => <div className="p-8 text-center text-xs text-black/50 uppercase tracking-widest">Loading Dashboard...</div> }
 );
 
+import TestnetExplorer from '@/components/TestnetExplorer';
+
 // SightInsightTab removed by user request
 
 /* ─────────────────────────────────────────────
@@ -185,6 +187,7 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
   const [passport, setPassport] = useState<ProductPassportPublic | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [anchoring, setAnchoring] = useState(false);
+  const [explorerStatus, setExplorerStatus] = useState<'PENDING' | 'PROVING' | 'SUBMITTING' | 'CONFIRMED' | 'FAILED'>('PENDING');
   const [passportCount, setPassportCount] = useState<number | null>(null);
 
   useEffect(() => {
@@ -264,6 +267,7 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
     
     setAnchoring(true);
     setError(null);
+    setExplorerStatus('PROVING');
     
     const entropy = generateCoreEntropy();
     const entropyHex = `0x${entropy.toString(16).padStart(64, '0')}`;
@@ -321,6 +325,8 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
         console.warn('Paymaster unavailable, proceeding with standard gas.');
       }
 
+      setExplorerStatus('SUBMITTING');
+
       // 3. Proceed directly to native anchor bypassing EVM
       const res = await fetch('/api/aztec/anchor', {
         method: 'POST',
@@ -359,8 +365,10 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
       setPassport((p) =>
         p ? { ...p, txHash: aztecTxHash, chainId: 2151908, coreEntropy: entropyHex } : p
       );
+      setExplorerStatus('CONFIRMED');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'On-chain confirmation failed');
+      setExplorerStatus('FAILED');
     } finally {
       setAnchoring(false);
     }
@@ -431,8 +439,15 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
           </Link>
         </div>
 
-        {/* On-chain confirmation */}
-        {!passport.txHash ? (
+        {/* On-chain confirmation / Testnet Explorer */}
+        {anchoring || passport.txHash ? (
+           <TestnetExplorer 
+             passportId={passport.id} 
+             txHash={passport.txHash || ''} 
+             slug={passport.slug}
+             status={explorerStatus} 
+           />
+        ) : (
           <div className="rounded-2xl border-2 border-slate-200 bg-white p-6 space-y-4">
             <div>
               <p className="text-lg font-bold text-slate-800">Sellar Registro Oficialmente</p>
@@ -453,32 +468,9 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
               disabled={anchoring}
               className="w-full flex items-center justify-center gap-3 py-4 rounded-xl border-2 border-slate-900 text-slate-900 text-sm font-bold uppercase tracking-widest hover:bg-slate-50 transition-colors disabled:opacity-40"
             >
-              {anchoring ? (
-                <Loader2 className="animate-spin" size={18} />
-              ) : (
-                <Anchor size={18} />
-              )}
-              {anchoring ? 'Guardando...' : 'Sellar Registro'}
+              <Anchor size={18} />
+              Sellar Registro
             </button>
-          </div>
-        ) : (
-          <div className="rounded-2xl border-2 border-slate-200 bg-white p-6">
-            <div className="flex items-center gap-2 mb-3">
-              <ShieldCheck size={20} className="text-green-600" />
-              <p className="text-lg font-bold text-slate-800">Sellado Oficialmente</p>
-            </div>
-            <p className="text-sm text-slate-600 mb-4 leading-relaxed">
-              Este pasaporte ya es permanente e inalterable.
-            </p>
-            <a
-              href={`${EXPLORER_BASE}${passport.txHash}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm font-bold text-blue-600 hover:text-blue-800 transition-colors bg-blue-50 px-4 py-2 rounded-lg"
-            >
-              Verificar Recibo Oficial
-              <ExternalLink size={16} />
-            </a>
           </div>
         )}
 

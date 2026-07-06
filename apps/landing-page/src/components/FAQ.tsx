@@ -6,20 +6,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const faqs = [
   {
-    q: "Is Whale Network fully decentralized?",
-    a: "Yes. Whale Network operates with its own decentralized sequencer set and bridges directly to Ethereum L1, inheriting its finality and security without centralized points of failure."
+    q: "What is the EU Digital Product Passport (DPP)?",
+    a: "The EU DPP is a mandatory framework requiring businesses to share detailed product data across the value chain to ensure sustainability and circularity. The Battery Passport is the first category, becoming mandatory in February 2027."
   },
   {
-    q: "How does it protect my privacy?",
-    a: "We use zero-knowledge proofs (zk-SNARKs) computed entirely on your device. Only a mathematical proof is sent to the network, meaning nobody—not even the sequencers—can see your balances or transaction details."
+    q: "How does Studio Provenance protect our supply chain data?",
+    a: "We use Zero-Knowledge proofs (zk-SNARKs) powered by Aztec Network. You can prove to regulators and auditors that your materials meet compliance standards without ever revealing your actual suppliers, costs, or proprietary trade secrets."
   },
   {
-    q: "Can I use existing Ethereum apps on Whale Network?",
-    a: "Through our Hybrid State architecture, you can execute private logic that seamlessly interacts with public Ethereum contracts. It's the best of both worlds."
+    q: "Is it GDPR compliant?",
+    a: "Yes. By utilizing cryptography and selective disclosure, Studio Provenance ensures that sensitive personal or corporate data never touches public infrastructure in plain text. It is privacy-by-design."
   },
   {
     q: "When will the mobile apps launch?",
-    a: "El día 1 de enero de 2027, las primeras apps (Whale Chat, Portfolio y Markets) se subirán oficialmente a la App Store y Google Play, perfectamente renderizadas y listas para todo el público."
+    a: "On January 1, 2027, the first ecosystem apps (Whale Chat, Portfolio, and Markets) will be officially launched on the App Store and Google Play, fully integrating our compliance and privacy layers for a broader audience."
   }
 ];
 

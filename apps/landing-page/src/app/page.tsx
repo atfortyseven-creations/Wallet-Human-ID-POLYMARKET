@@ -4,6 +4,7 @@ import About from '@/components/About';
 import Ecosystem from '@/components/Ecosystem';
 import TechnologyGraph from '@/components/TechnologyGraph';
 import LiveMap from '@/components/LiveMap';
+import Pricing from '@/components/Pricing';
 import FAQ from '@/components/FAQ';
 import Footer from '@/components/Footer';
 
@@ -17,6 +18,7 @@ export default function Home() {
         <About />
         <TechnologyGraph />
         <Ecosystem />
+        <Pricing />
         <LiveMap />
         <FAQ />
         <Footer />
