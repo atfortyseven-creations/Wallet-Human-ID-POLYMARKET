@@ -3,6 +3,12 @@ import { MoreVertical, MapPin, Copy, Trash2, UserPlus, Download, Slash } from 'l
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
+
+import { Video, Phone, PhoneOff, Mic, MicOff, Smile } from 'lucide-react';
+import dynamic from 'next/dynamic';
+const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
+import type Peer from 'peerjs';
+
 import { useSystemAccount } from '@/hooks/useSystemAccount';
 
 import { useSignMessage, useReconnect } from 'wagmi';
@@ -115,7 +121,26 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // Telegram-style features
   const [showProfile, setShowProfile] = useState(false);
   const [blockedPeers, setBlockedPeers] = useState<Set<string>>(new Set());
+
   const [contextMenu, setContextMenu] = useState<{ id: string, content: string, x: number, y: number } | null>(null);
+
+  // WebRTC State
+  const [peerInstance, setPeerInstance] = useState<Peer | null>(null);
+  const [myPeerId, setMyPeerId] = useState<string>('');
+  const [callActive, setCallActive] = useState<boolean>(false);
+  const [incomingCall, setIncomingCall] = useState<any>(null);
+  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+  const [callType, setCallType] = useState<'audio'|'video'|null>(null);
+  const myVideoRef = useRef<HTMLVideoElement>(null);
+  const remoteVideoRef = useRef<HTMLVideoElement>(null);
+
+  // Emoji State
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  // Offline Queue State
+  const [isOffline, setIsOffline] = useState(false);
+
 
   useEffect(() => {
     try {
@@ -333,6 +358,40 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       return () => { isMounted = false; clearInterval(interval); };
   }, [activePeer, address]);
 
+
+  // Detect Offline Status & Process Queue
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOffline(false);
+      // Process outbox
+      if (client && activePeer && address) {
+        const outboxKey = `whale_outbox_${address.toLowerCase()}`;
+        const queueStr = localStorage.getItem(outboxKey);
+        if (queueStr) {
+          try {
+            const queue = JSON.parse(queueStr);
+            localStorage.removeItem(outboxKey);
+            queue.forEach(async (msgContent: string) => {
+              if (activePeer) {
+                await executeSend(msgContent);
+              }
+            });
+          } catch (e) {}
+        }
+      }
+    };
+    const handleOffline = () => setIsOffline(true);
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    setIsOffline(!navigator.onLine);
+    
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [client, activePeer, address]);
+
   // Extreme Security: Draft Persistence & Typing Telemetry
   useEffect(() => {
     if (!activePeer || !address) return;
@@ -374,6 +433,79 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         body: JSON.stringify({ address, type: 'stop_typing', peer: activePeer })
       });
     } catch {}
+  };
+
+
+  // Initialize PeerJS
+  useEffect(() => {
+    if (address && !peerInstance) {
+      import('peerjs').then(({ default: Peer }) => {
+        const peer = new Peer();
+        peer.on('open', (id) => setMyPeerId(id));
+        peer.on('call', (call) => {
+          setIncomingCall(call);
+        });
+        setPeerInstance(peer);
+      });
+    }
+  }, [address, peerInstance]);
+
+  // Handle incoming XMTP WebRTC signaling
+  useEffect(() => {
+    const lastMsg = messages[messages.length - 1];
+    if (lastMsg && lastMsg.content.startsWith('__CALL_OFFER__:')) {
+       // We received a call offer, the peerId is inside the message
+       const callerPeerId = lastMsg.content.split(':')[1];
+       if (callerPeerId && !callActive) {
+          toast(`Incoming Call! Accept it in the call modal.`, { duration: 5000 });
+          // In a real app we'd auto-trigger the incoming call logic, 
+          // but Peer.on('call') also triggers so this XMTP signal is mostly for notification/wakeup.
+       }
+    }
+  }, [messages, callActive]);
+  
+  const startCall = async (type: 'audio'|'video') => {
+      if (!peerInstance || !activePeer) return;
+      try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: type === 'video' });
+          setLocalStream(stream);
+          setCallType(type);
+          setCallActive(true);
+          
+          if (myVideoRef.current) myVideoRef.current.srcObject = stream;
+          
+          // Send XMTP Signal with our Peer ID
+          await executeSend(`__CALL_OFFER__:${myPeerId}`);
+          toast.success("Call signal sent to peer.");
+      } catch (e) {
+          toast.error("Microphone/Camera access denied");
+      }
+  };
+  
+  const answerCall = async () => {
+      if (!incomingCall) return;
+      try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: incomingCall.options?.metadata?.type === 'video' });
+          setLocalStream(stream);
+          incomingCall.answer(stream);
+          incomingCall.on('stream', (remoteStream: MediaStream) => {
+              setRemoteStream(remoteStream);
+              if (remoteVideoRef.current) remoteVideoRef.current.srcObject = remoteStream;
+          });
+          setCallActive(true);
+      } catch (e) {
+          toast.error("Failed to answer call");
+      }
+  };
+  
+  const endCall = () => {
+      if (localStream) localStream.getTracks().forEach(t => t.stop());
+      if (remoteStream) remoteStream.getTracks().forEach(t => t.stop());
+      if (incomingCall) incomingCall.close();
+      setCallActive(false);
+      setIncomingCall(null);
+      setLocalStream(null);
+      setRemoteStream(null);
   };
 
   //  Voice Recording: Hold-to-Record 
@@ -1172,7 +1304,15 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       // Always attempt to send directly via XMTP.
       // sendMessage() handles canReceive checks, retries with backoff,
       // and graceful offline queue internally — no need to pre-check here.
-      await sendMessage(client, activePeer, content, address);
+      if (isOffline) {
+        const outboxKey = `whale_outbox_${address.toLowerCase()}`;
+        const existing = JSON.parse(localStorage.getItem(outboxKey) || '[]');
+        existing.push(content);
+        localStorage.setItem(outboxKey, JSON.stringify(existing));
+        toast.info("You are offline. Message queued to outbox.");
+      } else {
+        await sendMessage(client, activePeer, content, address);
+      }
 
       // UPDATE LOCAL ADDRESS BOOK
       setConversations(prev => {
@@ -1467,6 +1607,12 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 </button>
               </div>
               <div className="flex items-center gap-2">
+                <button onClick={() => startCall('audio')} className="p-2 hover:bg-black/5 rounded-full transition-colors text-black/50" title="Audio Call">
+                  <Phone size={16} />
+                </button>
+                <button onClick={() => startCall('video')} className="p-2 hover:bg-black/5 rounded-full transition-colors text-black/50" title="Video Call">
+                  <Video size={16} />
+                </button>
                 <button 
                   onClick={() => setShowScanner(true)}
                   className="lg:hidden px-3 py-2 bg-blue-50 text-blue-600 rounded-lg text-[12px] font-medium"
@@ -1583,7 +1729,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                             ? 'bg-blue-500/90 backdrop-blur-md text-white rounded-br-sm border border-blue-400/50'
                             : 'bg-white/80 backdrop-blur-md text-gray-900 rounded-bl-sm border border-white/60'
                         }`}>
-                          {content}
+                          {content.startsWith('__CALL_OFFER__') ? "📞 Initiated a Call" : content}
                         </div>
                       )}
                       <span className="text-[9px] text-black/25  mt-1 px-1 font-mono">
@@ -1723,6 +1869,44 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         )}
 
       </div>
+
+
+      {/* WebRTC Call Overlay */}
+      {callActive && (
+          <div className="absolute inset-0 z-[300] bg-black/90 backdrop-blur-xl flex flex-col items-center justify-center p-6 animate-in fade-in duration-300">
+             <div className="w-full max-w-2xl bg-black rounded-3xl overflow-hidden relative border border-white/20 shadow-2xl flex flex-col h-[70vh]">
+                <div className="flex-1 bg-black/50 relative flex items-center justify-center">
+                   {remoteStream ? (
+                       <video ref={remoteVideoRef} autoPlay playsInline className="w-full h-full object-cover" />
+                   ) : (
+                       <div className="animate-pulse text-white/50 font-mono text-sm uppercase tracking-widest">Waiting for peer...</div>
+                   )}
+                   {localStream && (
+                       <video ref={myVideoRef} autoPlay playsInline muted className="absolute bottom-6 right-6 w-32 h-48 object-cover rounded-xl border border-white/30 shadow-lg" />
+                   )}
+                </div>
+                <div className="h-24 bg-black flex items-center justify-center gap-6 border-t border-white/10">
+                   <button onClick={endCall} className="w-14 h-14 bg-red-500 rounded-full flex items-center justify-center text-white hover:bg-red-600 transition-colors shadow-[0_0_15px_rgba(239,68,68,0.5)]">
+                      <PhoneOff size={24} />
+                   </button>
+                </div>
+             </div>
+          </div>
+      )}
+      
+      {incomingCall && !callActive && (
+          <div className="absolute top-4 right-4 z-[300] bg-black text-white p-4 rounded-2xl shadow-2xl border border-white/20 animate-in slide-in-from-top-10 flex items-center gap-4">
+             <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
+             <div>
+                <p className="font-bold text-sm">Incoming Call</p>
+                <p className="text-xs text-white/60">Peer is calling you</p>
+             </div>
+             <div className="flex gap-2 ml-4">
+                 <button onClick={answerCall} className="px-4 py-2 bg-green-500 rounded-lg text-xs font-bold hover:bg-green-600">Answer</button>
+                 <button onClick={() => { setIncomingCall(null); incomingCall.close(); }} className="px-4 py-2 bg-red-500 rounded-lg text-xs font-bold hover:bg-red-600">Decline</button>
+             </div>
+          </div>
+      )}
 
       {/*  Overlays  */}
       {showScanner && (
