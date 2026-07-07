@@ -17,7 +17,6 @@ Se ha construido desde cero una experiencia inmersiva para los usuarios que act�
 - Implementación de animaciones basadas en `framer-motion` para transiciones fluidas de scroll.
 - Incorporación de la sección **Verification Registry Map**, un mapa vectorial en vivo.
 - Diseño minimalista, limpio, utilizando el sistema "White-on-White" para transmitir institucionalidad.
-- Se ha eliminado permanentemente cualquier mención a "hospital coltea" para alinear la narrativa estrictamente con "Programmable Privacy" e infraestructura de Aztec.
 
 ### Móvil (`MobileManifesto.tsx`)
 - Soporte nativo para áreas seguras de iOS y Android (`env(safe-area-inset)`), evitando que la "Dynamic Island" o la barra de inicio tapen contenido.
