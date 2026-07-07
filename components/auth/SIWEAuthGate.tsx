@@ -15,6 +15,7 @@ import {
   Lock,
 } from "lucide-react";
 import { useSIWE } from "@/hooks/useSIWE";
+import { useAppKit } from "@reown/appkit/react";
 import { toast } from "sonner";
 
 interface SIWEAuthGateProps {
@@ -59,6 +60,7 @@ function SIWEPanel({
 }) {
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
+  const { open: openAppKit } = useAppKit();
   const { status, signIn, signOut, error, address: authedAddress } = useSIWE();
 
   const isPending = ["pending-nonce", "pending-sign", "pending-verify"].includes(status);
@@ -226,8 +228,8 @@ function SIWEPanel({
 
             {/* Standard SIWE Auth */}
             <motion.button
-              onClick={handleSignIn}
-              disabled={isPending || !isConnected}
+              onClick={!isConnected ? () => openAppKit() : handleSignIn}
+              disabled={isPending}
               whileHover={{ scale: isPending ? 1 : 1.03 }}
               whileTap={{ scale: 0.97 }}
               className="w-full h-[64px] rounded-[1.5rem] flex items-center justify-center gap-3 font-black uppercase tracking-[0.2em] text-[11px] transition-all"
@@ -238,7 +240,7 @@ function SIWEPanel({
                 color: isPending ? "rgba(5,5,5,0.3)" : "#ffffff",
                 border: `1px solid ${isPending ? "transparent" : "transparent"}`,
                 boxShadow: isPending ? "none" : "0 20px 50px -10px rgba(0,0,0,0.4)",
-                cursor: isPending || !isConnected ? "not-allowed" : "pointer",
+                cursor: isPending ? "not-allowed" : "pointer",
               }}
             >
               {isPending ? (
@@ -247,6 +249,11 @@ function SIWEPanel({
                   <span style={{ color: "rgba(5,5,5,0.5)" }}>
                     {STATUS_LABELS[status]}
                   </span>
+                </>
+              ) : !isConnected ? (
+                <>
+                  <Wallet size={16} className="opacity-80" />
+                  CONNECT WALLET
                 </>
               ) : (
                 <>
