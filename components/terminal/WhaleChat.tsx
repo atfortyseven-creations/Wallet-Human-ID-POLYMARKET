@@ -236,7 +236,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // Auto-scroll to bottom on new messages
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      const container = messagesEndRef.current.parentElement;
+      if (container) {
+        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+      }
     }
   }, [messages]);
 
@@ -245,7 +248,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     if (typeof window === 'undefined' || !isMobile) return;
     const handleResize = () => {
       if (messagesEndRef.current) {
-        messagesEndRef.current.scrollIntoView({ behavior: 'auto' });
+        const container = messagesEndRef.current.parentElement;
+        if (container) {
+          container.scrollTo({ top: container.scrollHeight, behavior: 'auto' });
+        }
       }
       
       // Calculate keyboard offset for iOS
@@ -1606,7 +1612,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       </div>
 
       {/*  Chat Area  */}
-      <div className={`${!showList ? 'flex' : 'hidden md:flex'} flex-1 flex-col min-w-0`}>
+      <div className={`${!showList ? 'flex' : 'hidden md:flex'} flex-1 flex-col min-w-0 min-h-0`}>
         {activePeer ? (
           <>
             <div className="h-16 px-4 border-b border-white/40 flex items-center justify-between bg-white/40 backdrop-blur-md shrink-0 z-10 shadow-sm">

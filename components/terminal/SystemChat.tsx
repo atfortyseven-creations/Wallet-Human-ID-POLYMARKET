@@ -532,7 +532,10 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
     const doScroll = () => {
       if (rafId !== null) cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
-        bottomRef.current?.scrollIntoView({ behavior: 'auto' });
+        const container = bottomRef.current?.parentElement;
+        if (container) {
+          container.scrollTo({ top: container.scrollHeight, behavior: 'auto' });
+        }
       });
     };
     doScroll();
@@ -1739,8 +1742,8 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
         </div>
       </div>
 
-      {/* 3  Chat Area */}
-      <div className={`flex-1 flex-col min-w-0 bg-white ${activeConv ? 'flex' : 'hidden md:flex'}`}>
+      {/* Main Area */}
+      <div className="flex-1 flex flex-col min-w-0 min-h-0 bg-white shadow-sm overflow-hidden relative border-l border-gray-100">
         {activeConv ? (
           <>
             {/* Header */}
