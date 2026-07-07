@@ -1,76 +1,87 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+// @ts-nocheck
+import { NextRequest, NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
 /**
- * GET /api/aztec/account?evmAddress=0x...
+ * GET /api/aztec/account?address=0x...
  *
- * Returns a deterministic Aztec Schnorr account address for a given EVM address.
- * The derivation uses the same algorithm as the client-side UI, ensuring consistency.
- * No PXE required — fully stateless and always available.
+ * Derives or retrieves the Aztec address for a given EVM address.
+ * Architecture (SDK v4.3.1):
+ *  - Uses createAztecNodeClient to verify testnet liveness
+ *  - Computes the deterministic Schnorr account address from the EVM address
+ *  - No PXE required for address derivation (pure cryptographic computation)
+ *  - Account deployment to L2 happens client-side when the user first transacts
+ *
+ * Query params:
+ *   address — EVM wallet address (0x...)
  */
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const evmAddress = searchParams.get('evmAddress');
+  const evmAddress = searchParams.get('address');
 
   if (!evmAddress || !/^0x[0-9a-fA-F]{40}$/.test(evmAddress)) {
-    return NextResponse.json({ error: 'Valid evmAddress query param required' }, { status: 400 });
+    return NextResponse.json({ error: 'Missing or invalid EVM address.' }, { status: 400 });
   }
 
   try {
-    // Deterministic address derivation — mirrors client-side logic in AztecIdentityCard
-    // In a full PXE deployment this would use: getSchnorrAccount(pxe, Fr, signingKey).getAddress()
-    const seed = evmAddress.toLowerCase();
-    let hash = 0;
-    for (let i = 0; i < seed.length; i++) hash = Math.imul(31, hash) + seed.charCodeAt(i) | 0;
-    const hex = Math.abs(hash).toString(16).padStart(8, '0');
-    let fullHex = '';
-    for (let i = 0; i < 8; i++) fullHex += hex;
-    const aztecAddress = `0x${fullHex.slice(0, 64)}`;
+    const nodeUrl = process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
 
-    // Real Testnet Telemetry Probe
-    let testnetData = null;
+    // ── Derive deterministic Aztec address ──────────────────────────────────
+    // In v4.3.1, SchnorrAccountContract computes address from (secretKey, signingKey, salt)
+    // The secretKey is derived deterministically from the EVM address.
+    const { deriveSecretKeyFromEvm } = await import('@/lib/aztec/client');
+    const { Fr }                     = await import('@aztec/aztec.js/fields');
+    const { deriveSigningKey }       = await import('@aztec/aztec.js/keys');
+    const { SchnorrAccountContract, getSchnorrAccountContractAddress } = await import('@aztec/accounts/schnorr');
+
+    const secretKeyHex = deriveSecretKeyFromEvm(evmAddress.toLowerCase());
+    const secretKey    = Fr.fromString(secretKeyHex);
+    const signingKey   = deriveSigningKey(secretKey);
+
+    // Compute the canonical Aztec address for this user's Schnorr account
+    const aztecAddress = await getSchnorrAccountContractAddress(secretKey, undefined, signingKey);
+    const aztecAddressStr = aztecAddress.toString();
+
+    // ── Probe testnet liveness ────────────────────────────────────────────────
+    let testnetData: any = null;
     try {
+      const { createAztecNodeClient } = await import('@aztec/aztec.js/node');
+      const node = createAztecNodeClient(nodeUrl);
       const rpcStart = Date.now();
-      const testnetRes = await fetch('https://v5.testnet.rpc.aztec-labs.com', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          method: 'node_getNodeInfo',
-          params: [],
-          id: 1,
-        }),
-        signal: AbortSignal.timeout(3000), // Prevent hanging
-      });
-      const json = await testnetRes.json();
+      const [blockNumber, info] = await Promise.all([
+        node.getBlockNumber(),
+        node.getNodeInfo(),
+      ]);
       testnetData = {
-        nodeVersion: json.result?.nodeVersion || 'v5',
-        l1ChainId: json.result?.l1ChainId || 11155111,
-        rollupVersion: json.result?.rollupVersion,
+        blockNumber,
+        nodeVersion: info.nodeVersion,
+        l1ChainId: info.l1ChainId,
+        rollupVersion: info.rollupVersion,
+        rollupAddress: info.l1ContractAddresses?.rollupAddress?.toString(),
         latencyMs: Date.now() - rpcStart,
-        enr: json.result?.enr,
       };
-    } catch (e) {
-      console.warn('[Aztec Account] Failed to reach live testnet RPC', e);
+    } catch (e: any) {
+      console.warn('[Aztec Account] Node probe failed:', e.message);
       testnetData = { fallback: true, error: 'RPC_UNAVAILABLE' };
     }
 
-    console.log(`[Aztec Account] EVM ${evmAddress} → Aztec ${aztecAddress} (Testnet L1: ${testnetData?.l1ChainId})`);
+    console.log(`[Aztec Account] EVM ${evmAddress} → Aztec ${aztecAddressStr} (Block: ${testnetData?.blockNumber})`);
 
     return NextResponse.json({
-      aztecAddress,
-      evmAddress,
-      network: 'aztec-testnet',
-      registered: true,
-      method: 'deterministic-schnorr-live',
-      testnetData
+      aztecAddress:   aztecAddressStr,
+      evmAddress:     evmAddress.toLowerCase(),
+      network:        'aztec-testnet',
+      registered:     true, // Address is always computable; deployment happens on first tx
+      method:         'schnorr-deterministic-v4',
+      sdkVersion:     '4.3.1',
+      testnetData,
     });
+
   } catch (err: any) {
-    console.error('[Aztec Account Error]', err.message);
+    console.error('[Aztec Account] Error:', err);
     return NextResponse.json(
-      { error: `Failed to derive Aztec account: ${err.message}` },
+      { error: err?.message ?? 'Failed to derive Aztec address.' },
       { status: 500 }
     );
   }

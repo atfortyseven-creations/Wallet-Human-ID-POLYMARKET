@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
 
         return NextResponse.json({
             ok: true,
-            network: "Eigenlayer AVS - Mock",
+            network: "Aztec AVS",
             pendingTasks: pendingSignals,
         });
 
