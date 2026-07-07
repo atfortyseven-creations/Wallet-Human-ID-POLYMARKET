@@ -38,7 +38,8 @@ const Registry = {
   ProvenanceStudioContent: dynamic(() => import('@/components/provenance/ProvenanceStudioContent').then(m => ({ default: m.ProvenanceStudioContent })), { ssr: false, loading: LoadingPanel }),
   WhaleTrackerDashboard: dynamic(() => import('@/components/network/whale/WhaleTrackerDashboard').then(m => ({ default: m.WhaleTrackerDashboard })), { ssr: false, loading: LoadingPanel }),
   SubscriptionDashboard: dynamic(() => import('@/components/terminal/SubscriptionDashboard').then(m => ({ default: m.SubscriptionDashboard })), { ssr: false, loading: LoadingPanel }),
-  NetworkDashboard: dynamic(() => import('@/components/network/NetworkDashboard').then(m => ({ default: m.NetworkDashboard })), { ssr: false, loading: LoadingPanel })
+  NetworkDashboard: dynamic(() => import('@/components/network/NetworkDashboard').then(m => ({ default: m.NetworkDashboard })), { ssr: false, loading: LoadingPanel }),
+  GovernanceDashboard: dynamic(() => import('@/components/terminal/GovernanceProposals').then(m => ({ default: m.GovernanceProposals })), { ssr: false, loading: LoadingPanel })
 } as const;
 
 import "@/app/terminal/terminal.css";
@@ -71,6 +72,7 @@ const RouteRenderer = React.memo(({ route, reconciliationKey, mutateRoute }: Rou
         'token': <Registry.SubscriptionDashboard />,
         'community': <Registry.WhaleSupport />,
         'status': <Registry.NetworkDashboard />,
+        'governance': <div className="p-4 sm:p-8 overflow-y-auto w-full"><Registry.GovernanceDashboard /></div>,
     };
 
     const targetComponent = ComponentMap[route] || <GoldTicketPanel />;
