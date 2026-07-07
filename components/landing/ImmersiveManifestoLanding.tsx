@@ -1,795 +1,309 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import { NetworkMapPanel } from '@/components/terminal/NetworkMapPanel';
-import { RemoteLottie } from '@/components/ui/RemoteLottie';
-// Lottie cargado dinámicamente para evitar SSR issues
+import { ChevronDown, ArrowRight, Shield, Zap, Lock, Database } from "lucide-react";
+
+// Lottie cargado dinámicamente
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
-// Real world map — client only (uses browser projection APIs)
+// Real world map
 const RealWorldMap = dynamic(
   () => import("@/components/landing/RealWorldMap").then((m) => m.RealWorldMap),
-  { ssr: false, loading: () => <div className="w-full h-full bg-[#f0f0f0] animate-pulse rounded-xl" /> }
+  { ssr: false, loading: () => <div className="w-full h-[400px] bg-black/[0.02] animate-pulse rounded-xl" /> }
 );
 
-// ─── Nav Data ────────────────────────────────────────────────────────────────
+// ─── Animation Variants ───────────────────────────────────────────────────────
 
-const PRODUCT_LINKS = [
-  { label: "Studio Provenance", sub: "Zero-knowledge verifiable provenance", href: "/portfolio" },
-  { label: "Aztec Identity", sub: "Privacy-preserving portfolio layer", href: "/developers/api-docs" },
-  { label: "Whale Chat", sub: "Encrypted, verifiable communications", href: "/developer" },
-];
+const FADE_UP = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+};
 
-const COMPANY_LINKS = [
-  { label: "About", href: "/company" },
-  { label: "Security", href: "/security" },
-  { label: "Blog", href: "/blog" },
-];
+const STAGGER_CONTAINER = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.1 } }
+};
 
-// ─── Network stat strip ───────────────────────────────────────────────────────
+const REVEAL_TEXT = {
+  hidden: { opacity: 0, clipPath: "inset(100% 0 0 0)" },
+  visible: { opacity: 1, clipPath: "inset(0 0 0 0)", transition: { duration: 1, ease: [0.16, 1, 0.3, 1] } }
+};
 
-const STATS = [
-  { label: "Identity Layer", value: "Aztec Native Identity" },
-  { label: "Data Integrity", value: "Studio Provenance" },
-  { label: "Messaging", value: "Encrypted Whale Chat" },
-  { label: "Settlement", value: "Ethereum L1" },
-  { label: "Authentication", value: "Zero-Knowledge Proofs" },
-  { label: "Attestation", value: "Verifiable Credentials" },
-];
-
-// ─── Feature cards ───────────────────────────────────────────────────────────
-
-const FEATURES = [
-  {
-    title: "Claim Your Identity",
-    body: "Secure your decentralized identity via cryptographic signature directly from your dashboard. A foundation for all private interactions.",
-    tag: "Aztec Identity",
-  },
-  {
-    title: "Studio Provenance",
-    body: "Establish absolute data provenance and asset tracking using zero-knowledge proofs. Verifiable history without public exposure.",
-    tag: "Provenance",
-  },
-  {
-    title: "Whale Chat",
-    body: "Communicate securely with peers through an end-to-end encrypted protocol. Only cryptographic identities, no IP tracking.",
-    tag: "Encrypted Comms",
-  },
-  {
-    title: "Aztec Portfolio",
-    body: "Manage your assets privately. Your balances and transaction history are completely hidden from the public ledger.",
-    tag: "Private Wealth",
-  },
-  {
-    title: "Zero-Knowledge Proofs",
-    body: "All computation happens on your device. The network validates a proof of your actions without ever accessing your raw data.",
-    tag: "Local Execution",
-  },
-  {
-    title: "W3C Attestation",
-    body: "Generate verifiable credentials for audits or selective disclosure. Prove attestation without leaking your full identity.",
-    tag: "Verifiable Credentials",
-  },
-];
-
-// ─── Documentation cards ─────────────────────────────────────────────────────
-
-const DOC_CARDS = [
-  {
-    label: "Getting Started",
-    href: "/developers/api-docs",
-    body: "Connect your wallet, initialize the proving environment, and submit your first private transaction.",
-  },
-  {
-    label: "API Reference",
-    href: "/developers/api-docs",
-    body: "REST and WebSocket endpoints with authentication, rate limits, and full response schemas.",
-  },
-  {
-    label: "Noir Circuit Guides",
-    href: "/developer",
-    body: "Write, test, and deploy zero-knowledge circuits using the Noir language with Barretenberg.",
-  },
-  {
-    label: "Attestation SDK",
-    href: "/security",
-    body: "Generate viewing keys, range proofs, and Verifiable Credentials for regulatory disclosure.",
-  },
-  {
-    label: "Architecture Overview",
-    href: "/architecture",
-    body: "System diagrams, state machine specs, and protocol flow documentation for the full L1–L2 stack.",
-  },
-  {
-    label: "Security Audits",
-    href: "/security",
-    body: "Formal verification certificates, circuit audit summaries, and threat assessments from independent reviewers.",
-  },
-];
-
-// ─── Sub-components ──────────────────────────────────────────────────────────
+// ─── Nav ──────────────────────────────────────────────────────────────────────
 
 function LandingNav() {
   const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [productOpen, setProductOpen] = useState(false);
-  const [companyOpen, setCompanyOpen] = useState(false);
   const [connectedAddress, setConnectedAddress] = useState<string | null>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
+    const onScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Detect QR-linked or MetaMask session from system_handshake cookie
-  useEffect(() => {
+    
+    // Check session
     const readSession = () => {
       try {
         const m = document.cookie.match(/system_handshake=(0x[a-fA-F0-9]{40})/i);
-        if (m?.[1]) {
-          setConnectedAddress(m[1].toLowerCase());
-          return;
-        }
-        const raw = localStorage.getItem('system_session_v2');
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          if (parsed?.wallet && parsed?.exp > Date.now()) {
-            setConnectedAddress(parsed.wallet.toLowerCase());
-            return;
-          }
-        }
+        if (m?.[1]) { setConnectedAddress(m[1].toLowerCase()); return; }
       } catch {}
       setConnectedAddress(null);
     };
     readSession();
-    window.addEventListener('storage', readSession);
-    document.addEventListener('visibilitychange', readSession);
-    return () => {
-      window.removeEventListener('storage', readSession);
-      document.removeEventListener('visibilitychange', readSession);
-    };
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
-    <header
-      className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-white/95 backdrop-blur-md border-b border-black/10 shadow-sm"
-          : "bg-transparent"
+    <motion.header
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      className={`fixed top-0 inset-x-0 z-50 transition-colors duration-500 ${
+        scrolled ? "bg-white/90 backdrop-blur-xl border-b border-black/5" : "bg-transparent"
       }`}
     >
-      <nav className="w-full max-w-[1400px] mx-auto px-6 h-14 flex items-center justify-between">
-
-        {/* Left: Logo + nav links */}
-        <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-6 h-6 shrink-0">
-              <img
-                src="/atom_3d_silver.jpg"
-                alt="Humanity Ledger"
-                className="w-full h-full object-contain mix-blend-multiply"
-              />
-            </div>
-            <span className="font-serif text-[17px] font-black tracking-tight text-black leading-none">
-              Humanity Ledger
-            </span>
-          </Link>
-
-          <div className="hidden md:flex items-center gap-5">
-            <Link href="/architecture" className="text-[13.5px] font-medium text-black/65 hover:text-black transition-colors">
-              Architecture
-            </Link>
-            <Link href="/roadmap" className="text-[13.5px] font-medium text-black/65 hover:text-black transition-colors">
-              Roadmap
-            </Link>
-
-            {/* Product Dropdown */}
-            <div
-              className="relative group h-14 flex items-center"
-              onMouseEnter={() => setProductOpen(true)}
-              onMouseLeave={() => setProductOpen(false)}
-            >
-              <button className="flex items-center gap-1 text-[13.5px] font-medium text-black/65 hover:text-black transition-colors">
-                Product
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={`transition-transform duration-200 ${productOpen ? "rotate-180" : ""}`}><path d="m6 9 6 6 6-6"/></svg>
-              </button>
-              <AnimatePresence>
-                {productOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute top-14 left-0 bg-white border border-black/10 shadow-xl w-[300px] z-50"
-                  >
-                    {PRODUCT_LINKS.map((l) => (
-                      <Link key={l.label} href={l.href} className="flex flex-col px-5 py-4 hover:bg-black/[0.03] border-b border-black/5 last:border-b-0 transition-colors">
-                        <div className="flex items-center justify-between mb-0.5">
-                          <span className="text-[13.5px] font-semibold text-black">{l.label}</span>
-                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-black/30"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
-                        </div>
-                        <span className="text-[11.5px] text-black/45">{l.sub}</span>
-                      </Link>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* Company Dropdown */}
-            <div
-              className="relative group h-14 flex items-center"
-              onMouseEnter={() => setCompanyOpen(true)}
-              onMouseLeave={() => setCompanyOpen(false)}
-            >
-              <button className="flex items-center gap-1 text-[13.5px] font-medium text-black/65 hover:text-black transition-colors">
-                Company
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={`transition-transform duration-200 ${companyOpen ? "rotate-180" : ""}`}><path d="m6 9 6 6 6-6"/></svg>
-              </button>
-              <AnimatePresence>
-                {companyOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -4 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute top-14 left-0 bg-white border border-black/10 shadow-xl w-[180px] z-50"
-                  >
-                    {COMPANY_LINKS.map((l) => (
-                      <Link key={l.label} href={l.href} className="flex items-center px-5 py-3 hover:bg-black/[0.03] border-b border-black/5 last:border-b-0 transition-colors">
-                        <span className="text-[13.5px] font-medium text-black">{l.label}</span>
-                      </Link>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+      <nav className="w-full max-w-[1400px] mx-auto px-8 h-20 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="w-7 h-7 overflow-hidden">
+            <img src="/atom_3d_silver.jpg" alt="Logo" className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-110" />
           </div>
+          <span className="font-serif text-[18px] font-black tracking-tight text-black">
+            Whale Network
+          </span>
+        </Link>
+
+        <div className="hidden md:flex items-center gap-8">
+          {["Architecture", "Security", "Ecosystem", "Docs"].map((item) => (
+            <Link key={item} href={`/${item.toLowerCase()}`} className="text-[13px] font-bold uppercase tracking-widest text-black/50 hover:text-black transition-colors">
+              {item}
+            </Link>
+          ))}
         </div>
 
-        {/* Right: GitHub + Docs + Sign In / Connected */}
-        <div className="hidden md:flex items-center gap-4">
-          <a
-            href="https://github.com/humanityledger/Humanity-Ledger"
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-1.5 text-[13.5px] font-medium text-black/70 hover:text-black transition-colors"
-          >
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
-            </svg>
-            GitHub
-          </a>
-          <Link
-            href="/developers/api-docs"
-            className="px-4 py-1.5 border border-black/15 text-[13.5px] font-medium text-black hover:bg-black/[0.04] transition-colors"
-          >
-            Docs
-          </Link>
+        <div className="flex items-center gap-4">
           {connectedAddress ? (
-            <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1.5 px-3 py-1.5 bg-black/[0.04] border border-black/10 text-[12px] font-mono text-black/70">
-                <span className="w-1.5 h-1.5 rounded-full bg-black/70 shrink-0" />
-                {connectedAddress.slice(0, 6)}…{connectedAddress.slice(-4)}
-              </span>
-              <Link
-                href="/terminal"
-                className="px-4 py-1.5 bg-black text-white text-[13.5px] font-medium hover:bg-black/85 transition-colors"
-              >
-                Dashboard →
-              </Link>
-            </div>
+            <Link href="/terminal" className="flex items-center gap-2 px-6 py-2.5 bg-black text-white text-[13px] font-bold uppercase tracking-widest hover:bg-black/80 transition-all rounded-full">
+              Dashboard <ArrowRight size={14} />
+            </Link>
           ) : (
-            <Link
-              href="/portfolio"
-              className="px-4 py-1.5 bg-black text-white text-[13.5px] font-medium hover:bg-black/85 transition-colors"
-            >
-              Sign In
+            <Link href="/connect" className="flex items-center gap-2 px-6 py-2.5 bg-black text-white text-[13px] font-bold uppercase tracking-widest hover:bg-black/80 transition-all rounded-full hover:scale-105">
+              Connect <ArrowRight size={14} />
             </Link>
           )}
         </div>
-
-        {/* Mobile toggle */}
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden w-8 h-8 flex flex-col items-center justify-center gap-[5px]"
-          aria-label="Toggle navigation"
-        >
-          <span className={`w-5 h-[1.5px] bg-black transition-all duration-300 ${mobileOpen ? "rotate-45 translate-y-[6.5px]" : ""}`} />
-          <span className={`w-5 h-[1.5px] bg-black transition-all duration-300 ${mobileOpen ? "opacity-0" : ""}`} />
-          <span className={`w-5 h-[1.5px] bg-black transition-all duration-300 ${mobileOpen ? "-rotate-45 -translate-y-[6.5px]" : ""}`} />
-        </button>
       </nav>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.18 }}
-            className="md:hidden bg-white border-t border-black/10 px-6 py-6 flex flex-col gap-4"
-          >
-            <Link href="/architecture" onClick={() => setMobileOpen(false)} className="text-[15px] font-medium text-black/70 hover:text-black">Architecture</Link>
-            <Link href="/roadmap" onClick={() => setMobileOpen(false)} className="text-[15px] font-medium text-black/70 hover:text-black">Roadmap</Link>
-            <Link href="/portfolio" onClick={() => setMobileOpen(false)} className="text-[15px] font-medium text-black/70 hover:text-black">Product</Link>
-            <Link href="/company" onClick={() => setMobileOpen(false)} className="text-[15px] font-medium text-black/70 hover:text-black">Company</Link>
-            <div className="flex gap-3 mt-2">
-              <Link href="/developers/api-docs" onClick={() => setMobileOpen(false)} className="flex-1 text-center py-2.5 border border-black/15 text-[14px] font-medium text-black">Docs</Link>
-              <Link href="/portfolio" onClick={() => setMobileOpen(false)} className="flex-1 text-center py-2.5 bg-black text-[14px] font-medium text-white">Sign In</Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </header>
+    </motion.header>
   );
 }
 
-// ─── Hero ─────────────────────────────────────────────────────────────────────
+// ─── Hero Section with Parallax ──────────────────────────────────────────────
 
-/**
- * HeroSection — Maximum fidelity pixel-art rendering.
- *
- * Rendering pipeline:
- *  1. `image-rendering: pixelated` → browser must NOT apply bilinear interpolation.
- *     This is the single most important rule for pixel art: keep every pixel a
- *     hard-edged rectangle, never a blurred quad.
- *  2. `fetchpriority="high"` + `loading="eager"` + `decoding="sync"` → image
- *     is fetched at the top of the network queue and decoded on the main thread
- *     before first paint — zero layout shift, zero flash of black.
- *  3. `100dvh` on mobile (accounts for collapsible browser chrome) and
- *     `100vh` on desktop via CSS class override.
- *  4. `object-fit: cover` with smart `object-position` fills the container
- *     using the image's natural pixel density — never scaling up beyond 1:1.
- *  5. Global `<style>` injection ensures `pixelated` survives any Tailwind reset.
- */
 function HeroSection() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const { scrollY } = useScroll();
+  const y1 = useTransform(scrollY, [0, 1000], [0, 200]);
+  const opacity = useTransform(scrollY, [0, 400], [1, 0]);
+  const scale = useTransform(scrollY, [0, 400], [1, 0.95]);
 
   return (
-    <>
-      {/* ── Presentation hero ── */}
-      <section
-        className="relative w-full bg-white overflow-hidden flex-shrink-0"
-        style={{ minHeight: 'var(--dvh-100, 100dvh)' }}
+    <section className="relative w-full bg-[#fcfcfc] overflow-hidden min-h-[100vh] flex flex-col items-center justify-center pt-20">
+      {/* Animated Topographic Background */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-20"
+           style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent via-[#fcfcfc]/80 to-[#fcfcfc]" />
+
+      <motion.div 
+        style={{ y: y1, opacity, scale }}
+        className="relative z-10 w-full max-w-[1200px] mx-auto px-6 flex flex-col items-center text-center"
       >
-        {/* Subtle dotted grid */}
-        <div
-          className="absolute inset-0 z-0 opacity-30 pointer-events-none"
-          style={{ backgroundImage: 'radial-gradient(#d1d5db 1px, transparent 1px)', backgroundSize: '24px 24px' }}
-        />
-
-        {/* DvhPolyfill always renders — fixes iOS Safari viewport height bug */}
-        <DvhPolyfill />
-
-        {/* Centered content — iOS-safe min-height using calc(var(--vh, 1vh) * 100) */}
-        <div
-          className="relative z-10 w-full h-full flex flex-col items-center justify-center px-6 pt-28 pb-20"
-          style={{ minHeight: 'var(--dvh-100, calc(var(--vh, 1vh) * 100))' }}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="flex items-center gap-3 mb-10 px-4 py-2 bg-white border border-black/10 rounded-full shadow-sm"
         >
+          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-black/60">
+            Aztec Testnet V5 Active
+          </span>
+        </motion.div>
 
-          {/* Badge removed — no longer in beta */}
+        <motion.h1 
+          initial="hidden"
+          animate="visible"
+          variants={STAGGER_CONTAINER}
+          className="text-[60px] md:text-[90px] lg:text-[110px] font-black tracking-tighter leading-[0.9] text-black mb-8"
+        >
+          <motion.span variants={FADE_UP} className="block">Absolute</motion.span>
+          <motion.span variants={FADE_UP} className="block text-black/30 italic font-serif font-light">Sovereignty.</motion.span>
+        </motion.h1>
 
-          {/* Main headline */}
-          <h1 className="text-[36px] xs:text-[42px] sm:text-[56px] md:text-[68px] font-black tracking-tighter leading-[0.97] text-black text-center max-w-[900px] mb-6 px-2">
-            The sovereign gateway
-            <br />
-            <span className="text-black/45">to Aztec Network.</span>
-          </h1>
+        <motion.p 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.8 }}
+          className="text-[18px] md:text-[22px] font-medium text-black/60 max-w-[700px] leading-[1.6] mb-12"
+        >
+          The definitive application layer over Aztec&apos;s zero-knowledge execution environment. Programmable privacy, encrypted state, and trustless L1 settlement.
+        </motion.p>
 
-          {/* Subheadline */}
-          <p className="text-[15px] md:text-[18px] font-medium text-black/65 leading-relaxed text-center max-w-[600px] mb-12 px-4 sm:px-0">
-            Whale Network is the sovereign application layer over Aztec&apos;s zero-knowledge execution environment — providing cryptographic identity verification, end-to-end encrypted messaging, and fully shielded portfolio management. All executed privately, settled securely on Ethereum.
-          </p>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.8 }}
+          className="flex flex-col sm:flex-row items-center gap-4 w-full justify-center"
+        >
+          <Link href="/connect" className="group relative flex items-center justify-center px-10 py-5 bg-black text-white text-[14px] font-bold uppercase tracking-widest overflow-hidden">
+            <div className="absolute inset-0 w-full h-full bg-white/20 -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out" />
+            <span className="relative flex items-center gap-3">Initialize Terminal <ArrowRight size={16} /></span>
+          </Link>
+          <Link href="/architecture" className="flex items-center justify-center px-10 py-5 border border-black text-black text-[14px] font-bold uppercase tracking-widest hover:bg-black/5 transition-colors">
+            Read the Docs
+          </Link>
+        </motion.div>
+      </motion.div>
 
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-20 w-full max-w-[340px] sm:max-w-none sm:w-auto">
-            <Link
-              href="/connect"
-              className="flex items-center justify-center px-8 py-4 sm:py-3.5 bg-black text-white text-[14px] font-bold tracking-wide hover:bg-black/80 transition-all active:scale-[0.98] shadow-sm min-h-[52px] sm:min-h-0"
-            >
-              Connect Wallet
-            </Link>
-            <Link
-              href="/developers/api-docs"
-              className="flex items-center justify-center px-8 py-4 sm:py-3.5 border-2 border-black/20 text-black text-[14px] font-semibold hover:bg-black/[0.04] transition-all active:scale-[0.98] min-h-[52px] sm:min-h-0"
-            >
-              Read the Docs
-            </Link>
-          </div>
-
-          {/* Three feature cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-[900px] px-2 sm:px-0">
-            {[
-              {
-                tag: "Analytics",
-                label: "Whale Analytics",
-                desc: "Shielded portfolio tracking across Ethereum L1 and L2s. Monitor capital flows before they move the market.",
-              },
-              {
-                tag: "Identity",
-                label: "Humanity Ledger",
-                desc: "Noir-based ZK identity verification. Prove you are a unique human without exposing any personal data.",
-              },
-              {
-                tag: "Messaging",
-                label: "Whale Chat",
-                desc: "End-to-end encrypted messaging between wallets. Only cryptographic identities — no IP tracking, no metadata.",
-              },
-            ].map((f) => (
-              <div key={f.label} className="bg-white border border-black/12 px-5 py-5 sm:px-6 sm:py-6 flex flex-col gap-3 hover:border-black/25 hover:shadow-sm transition-all rounded-sm">
-                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-black/45">{f.tag}</span>
-                <h3 className="text-[15px] sm:text-[16px] font-black text-black leading-tight">{f.label}</h3>
-                <p className="text-[13px] text-black/60 leading-relaxed font-medium flex-1">{f.desc}</p>
-              </div>
-            ))}
-          </div>
-
-        </div>
-
-        {/* Scroll cue */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-30 pointer-events-none">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-black/50">Architecture</span>
-          <div className="w-[1px] h-10 bg-gradient-to-b from-black/40 to-transparent" />
-        </div>
-      </section>
-
-      {/* ── Architecture Map ── */}
-      <section
-        className="relative w-full overflow-hidden flex-shrink-0 bg-white border-t border-black/10"
-        style={{ minHeight: 'var(--dvh-100, 100dvh)' }}
+      <motion.div 
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5, duration: 1 }}
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4"
       >
-        <div
-          className="absolute inset-0 z-0 opacity-30 pointer-events-none"
-          style={{ backgroundImage: 'radial-gradient(#d1d5db 1px, transparent 1px)', backgroundSize: '24px 24px' }}
-        />
-
-        {/* Section label */}
-        <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 pt-16 pb-4">
-          <span className="text-[11px] font-black uppercase tracking-widest text-black/50 block mb-2">System Architecture</span>
-          <h2 className="text-[28px] md:text-[38px] font-black tracking-tight text-black">
-            How Whale Network is built
-          </h2>
-          <p className="text-[15px] text-black/65 font-medium mt-2 max-w-[560px]">
-            A live map of the protocol stack — from L1 settlement on Ethereum to private execution on Aztec, and the data layers in between.
-          </p>
-        </div>
-
-        <div className="relative z-10 w-full">
-          <NetworkMapPanel />
-        </div>
-      </section>
-    </>
-  );
-}
-
-
-/**
- * DvhPolyfill — sets `--vh` CSS custom property to the actual inner viewport
- * height in pixels, updated on every resize. This corrects the `100vh`
- * bug on iOS/Android where the browser chrome collapses/expands.
- * Also sets --dvh-100 as a calc() ready value so we don't need dvh unit support.
- */
-function DvhPolyfill() {
-  useEffect(() => {
-    const setVh = () => {
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-      document.documentElement.style.setProperty('--dvh-100', `${window.innerHeight}px`);
-    };
-    setVh();
-    window.addEventListener('resize', setVh, { passive: true });
-    window.addEventListener('orientationchange', setVh);
-    return () => {
-      window.removeEventListener('resize', setVh);
-      window.removeEventListener('orientationchange', setVh);
-    };
-  }, []);
-  return null;
-}
-
-// ─── Value Proposition ─────────────────────────────────────────────────────────
-
-function ValuePropositionSection() {
-  return (
-    <section className="w-full bg-white py-24 md:py-32 border-t border-black/10">
-      <div className="w-full max-w-[1000px] mx-auto px-6 text-center flex flex-col items-center">
-        <span className="text-[12px] font-bold uppercase tracking-widest text-black/55 mb-6">
-          Absolute Privacy
-        </span>
-        <h2 className="text-[36px] md:text-[56px] font-black tracking-tighter leading-[1.05] text-black max-w-[800px]">
-          Ethereum security.
-          <br />
-          <span className="text-black/55">Absolute privacy.</span>
-        </h2>
-        <p className="mt-8 text-[16px] md:text-[18px] font-medium text-black/65 leading-relaxed max-w-[600px]">
-          By leveraging the Aztec Network Private Execution Environment, Whale Network shifts all computation to your local device. The network verifies a zero-knowledge proof of your actions without ever seeing your raw balances, chat metadata, or identity documents. This is the foundation of programmable privacy.
-        </p>
-      </div>
+        <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-black/30">Scroll to explore</span>
+        <div className="w-[1px] h-16 bg-gradient-to-b from-black/30 to-transparent" />
+      </motion.div>
     </section>
   );
 }
 
-// ─── How It Works (Steps) ────────────────────────────────────────────────────
+// ─── Immersive Features ───────────────────────────────────────────────────────
 
-function HowItWorksSection() {
-  const steps = [
-    {
-      step: "01",
-      title: "Local Proving",
-      description: "Your device runs the Noir circuits locally, generating a zero-knowledge proof of your transaction or identity claim before it ever touches the network.",
-      icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      )
-    },
-    {
-      step: "02",
-      title: "Encrypted State",
-      description: "Balances and identity credentials are stored as encrypted UTXO notes on the Aztec L2. Only your private viewing key can decrypt them.",
-      icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      )
-    },
-    {
-      step: "03",
-      title: "Nullifier Resistance",
-      description: "When you execute an action, the protocol emits a deterministic nullifier, preventing double spending and Sybil attacks while keeping the actor completely anonymous.",
-      icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      )
-    }
+function ManifestoFeatures() {
+  const features = [
+    { title: "Zero-Knowledge Execution", desc: "Local proving via Noir circuits. Your device generates the cryptographic proof; the network only verifies the math. Absolute data privacy.", icon: Shield },
+    { title: "Nullifier Resistance", desc: "Cryptographic nullifiers prevent double-spending and Sybil attacks while keeping the actor completely anonymous on the public ledger.", icon: Lock },
+    { title: "Cross-Chain Liquidity", desc: "Trustless L1 to L2 message boxes enable seamless capital movement from Ethereum mainnet directly into the shielded pool.", icon: Zap }
   ];
 
   return (
-    <section className="w-full bg-[#fcfcfc] py-24 md:py-32 border-t border-black/5">
-      <div className="w-full max-w-[1100px] mx-auto px-6">
-        <div className="text-center mb-20">
-          <h2 className="text-[32px] md:text-[42px] font-black tracking-tight text-black">
-            Built so there's <i className="font-serif italic font-normal">nothing to leak</i>
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
-          {/* Connecting line for desktop */}
-          <div className="hidden md:block absolute top-[28px] left-[10%] right-[10%] h-[1px] bg-black/10 z-0" />
-
-          {steps.map((s, i) => (
-            <div key={i} className="relative z-10 flex flex-col items-center text-center">
-              <div className="w-14 h-14 bg-white border border-black/15 rounded-full flex items-center justify-center mb-6 shadow-md">
-                <span className="text-black">{s.icon}</span>
-              </div>
-              <span className="text-[11px] font-bold tracking-widest uppercase text-black/55 mb-3">
-                Step {s.step}
-              </span>
-              <h3 className="text-[20px] font-black text-black mb-4 tracking-tight">
-                {s.title}
-              </h3>
-              <p className="text-[15px] font-medium text-black/65 leading-relaxed px-2">
-                {s.description}
-              </p>
-            </div>
-          ))}
-        </div>
+    <section className="w-full bg-black text-white py-32 px-6">
+      <div className="max-w-[1400px] mx-auto">
+        <motion.div 
+          initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}
+          variants={STAGGER_CONTAINER}
+          className="grid grid-cols-1 md:grid-cols-3 gap-px bg-white/10 border border-white/10"
+        >
+          {features.map((f, i) => {
+            const Icon = f.icon;
+            return (
+              <motion.div key={i} variants={FADE_UP} className="bg-black p-12 flex flex-col group hover:bg-[#0a0a0a] transition-colors duration-500">
+                <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
+                  <Icon size={20} className="text-white/70" />
+                </div>
+                <h3 className="text-[22px] font-black tracking-tight mb-4">{f.title}</h3>
+                <p className="text-[15px] text-white/50 leading-relaxed font-medium">{f.desc}</p>
+              </motion.div>
+            );
+          })}
+        </motion.div>
       </div>
     </section>
   );
 }
 
-// ─── Integration & Features ───────────────────────────────────────────────────
+// ─── Architecture Scroll Section ──────────────────────────────────────────────
 
-function IntegrationSection() {
-  const cards = [
-    {
-      title: "Studio Provenance",
-      body: "Establish zero-knowledge provenance for your creative and financial assets. Written in Noir and deployed on the decentralized Aztec rollup.",
-      link: "Explore Provenance",
-      href: "/studio/provenance"
-    },
-    {
-      title: "Claim Identity",
-      body: "Cryptographic identity verification through local zero-knowledge circuits. No password, no custody, no public data exposure.",
-      link: "Go to Dashboard",
-      href: "/terminal"
-    },
-    {
-      title: "Whale Chat",
-      body: "Send and receive messages between verified identities. End to end encrypted messaging anchored to your private state.",
-      link: "Open Chat",
-      href: "/chat"
-    }
-  ];
+function ArchitectureSection() {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
 
   return (
-    <section className="w-full bg-white py-24 md:py-32 border-t border-black/10">
-      <div className="w-full max-w-[1100px] mx-auto px-6">
-        <div className="mb-16">
-          <h2 className="text-[32px] md:text-[42px] font-black tracking-tight text-black max-w-[500px] leading-[1.1]">
-            Built on
-            <br />
-            <span className="text-black/55">Noir circuits.</span>
-          </h2>
-        </div>
+    <section ref={ref} className="w-full bg-white py-40 overflow-hidden relative border-t border-black/10">
+      <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+        
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={STAGGER_CONTAINER} className="relative z-10">
+          <motion.span variants={FADE_UP} className="font-mono text-[11px] font-black uppercase tracking-[0.3em] text-black/40 mb-6 block">
+            System Architecture
+          </motion.span>
+          <motion.h2 variants={FADE_UP} className="text-[50px] md:text-[70px] font-black tracking-tighter leading-[0.95] text-black mb-8">
+            Engineered for <br/>
+            <span className="text-black/30">stealth.</span>
+          </motion.h2>
+          <motion.p variants={FADE_UP} className="text-[18px] text-black/60 leading-[1.6] max-w-[500px] mb-12 font-medium">
+            Whale Network operates entirely on encrypted UTXO state. By leveraging Aztec's Private Execution Environment (PXE), balances and historical states remain mathematically opaque.
+          </motion.p>
+          <motion.div variants={FADE_UP}>
+            <Link href="/architecture" className="inline-flex items-center gap-4 text-[14px] font-bold uppercase tracking-widest text-black group">
+              <span className="border-b border-black pb-1">View Full Specification</span>
+              <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
+            </Link>
+          </motion.div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {cards.map((c, i) => (
-            <div key={i} className="bg-[#fafafa] border border-black/15 rounded-2xl p-8 flex flex-col items-start transition-all hover:bg-[#f0f0f0] hover:border-black/25">
-              <h3 className="text-[18px] font-black text-black mb-3">{c.title}</h3>
-              <p className="text-[14.5px] font-medium text-black/65 leading-relaxed mb-8 flex-1">
-                {c.body}
-              </p>
-              <Link href={c.href} className="text-[13px] font-bold text-black flex items-center gap-1.5 hover:opacity-70 transition-opacity">
-                {c.link}
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </Link>
-            </div>
-          ))}
-        </div>
+        <motion.div style={{ y }} className="relative h-[600px] w-full rounded-2xl border border-black/10 bg-[#f5f5f5] overflow-hidden">
+            <NetworkMapPanel />
+        </motion.div>
+
       </div>
     </section>
   );
 }
 
-// ─── Global Registry Map ────────────────────────────────────────────────────────
+// ─── Global Registry (RealWorldMap) ──────────────────────────────────────────
 
 function GlobalRegistrySection() {
-  const [totalFlows, setTotalFlows] = useState<number>(14_800_295);
-
-  useEffect(() => {
-    const fetchRealData = async () => {
-      try {
-        const res = await fetch('/api/network/whale-flows', { cache: 'no-store' });
-        const data = await res.json();
-        if (data.flows && data.flows.length > 0) {
-          setTotalFlows(prev => prev + data.flows.length);
-        }
-      } catch { /* silent */ }
-    };
-    fetchRealData();
-    const interval = setInterval(fetchRealData, 15_000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <section className="w-full bg-[#fafafa] py-24 md:py-32 border-t border-black/10">
-      <div className="w-full max-w-[1200px] mx-auto px-6">
-        
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
-          <div>
-            <span className="text-[11px] font-black uppercase tracking-widest text-black/55 mb-3 block">
-              Global Network
-            </span>
-            <h2 className="text-[28px] md:text-[36px] font-black text-black tracking-tight">
-              Verification Registry Map
-            </h2>
-            <p className="text-[14px] text-black/65 font-medium mt-2 max-w-[500px]">
-              Hover any country to see coverage level and accepted document types.
-            </p>
-          </div>
-          <Link
-            href="/registry"
-            className="flex items-center gap-2 text-[13px] font-black uppercase tracking-wider text-black hover:opacity-60 transition-opacity shrink-0"
-          >
-            View Full Map
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </Link>
-        </div>
+    <section className="w-full bg-[#050505] text-white py-32 border-t border-white/10">
+      <div className="w-full max-w-[1400px] mx-auto px-6">
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={STAGGER_CONTAINER} className="mb-16">
+          <motion.span variants={FADE_UP} className="font-mono text-[11px] font-black uppercase tracking-[0.3em] text-white/40 mb-4 block">
+            Global State
+          </motion.span>
+          <motion.h2 variants={FADE_UP} className="text-[40px] md:text-[60px] font-black tracking-tighter leading-[1.0]">
+            The Verifiable <br/>
+            <span className="text-white/40">Registry.</span>
+          </motion.h2>
+        </motion.div>
 
-        {/* Real map */}
-        <div style={{ aspectRatio: "21/9" }}>
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          viewport={{ once: true }}
+          style={{ aspectRatio: "21/9" }} 
+          className="border border-white/10 rounded-2xl overflow-hidden bg-black relative"
+        >
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10 pointer-events-none" />
           <RealWorldMap />
-        </div>
-
+        </motion.div>
       </div>
     </section>
   );
 }
 
-// ─── FAQ Section ──────────────────────────────────────────────────────────────
+// ─── Hospital Partnership ─────────────────────────────────────────────────────
 
-// ─── FAQ Item (extracted to fix React Hooks Rules violation) ─────────────────
-// useState CANNOT be called inside .map(). Each FAQ needs its own component.
-function FAQItem({ faq, index }: { faq: { q: string; a: string }; index: number }) {
-  const [isOpen, setIsOpen] = React.useState(false);
+function PartnershipSection() {
   return (
-    <div className="border-b border-black/10">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full py-6 flex items-center justify-between text-left hover:bg-black/[0.02] transition-colors px-2"
-      >
-        <span className="text-[16px] font-bold text-black pr-8">{faq.q}</span>
-        <span className="text-[20px] text-black/40 font-light w-6 h-6 flex items-center justify-center shrink-0">
-          {isOpen ? "−" : "+"}
-        </span>
-      </button>
-      {isOpen && (
-        <div className="pb-6 px-2 text-[15px] font-medium text-black/60 leading-relaxed">
-          {faq.a}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function FAQSection() {
-  const faqs = [
-    {
-      q: "What user data is stored?",
-      a: "None. All identity attributes and financial data are encrypted and stored locally on your device. The network only processes mathematical proofs that attest to the validity of your data."
-    },
-    {
-      q: "How does the verification actually work?",
-      a: "When you prove a statement (e.g., 'I am over 18'), your device generates a zero-knowledge proof. The verifying application checks this proof against a smart contract or SDK, receiving a simple true/false answer without seeing your birthdate."
-    },
-    {
-      q: "Are my wallet keys safe?",
-      a: "Yes. Your private keys never leave your device. They are encrypted using military-grade AES-GCM and require your password or biometric approval to unlock."
-    },
-    {
-      q: "Can regulators audit my activity?",
-      a: "Yes, but only if you explicitly authorize them. You can generate a specific 'viewing key' that grants read-only access to specific transactions for attestation purposes."
-    },
-    {
-      q: "What can I do once my identity is verified?",
-      a: "Once your zero-knowledge identity is established, you gain access to the full Whale Network terminal: encrypted peer-to-peer messaging via Whale Chat, provenance registration in the Studio, on-chain analytics in the Dashboard, and cryptographic session management across all twelve platform modules."
-    },
-    {
-      q: "How do you handle KYC requirements?",
-      a: "We utilize Zero-Knowledge (ZK) proofs to attest to your attestation. You undergo verification once, and from then on, you prove you've met KYC standards mathematically without repeatedly sharing your documents."
-    },
-    {
-      q: "What makes Whale Chat different from other messengers?",
-      a: "Whale Chat is tied to your verified cryptographic identity rather than a phone number or IP address. It offers true end-to-end encryption anchored on-chain."
-    },
-    {
-      q: "Is the Studio Provenance module public?",
-      a: "While cryptographic proofs are published to the network for public verifiability, the raw assets and documentation remain entirely private, unlocked only for intended recipients."
-    }
-  ];
-
-  return (
-    <section className="w-full bg-white py-24 border-t border-black/10">
-      <div className="w-full max-w-[800px] mx-auto px-6">
-        <div className="mb-12 text-center">
-          <h2 className="text-[32px] md:text-[42px] font-black tracking-tight text-black">
-            The questions prospects ask
-          </h2>
-        </div>
-
-        <div className="flex flex-col border-t border-black/10">
-          {faqs.map((faq, i) => (
-            <FAQItem key={i} faq={faq} index={i} />
-          ))}
-        </div>
+    <section className="w-full bg-white py-32 border-t border-black/10">
+      <div className="max-w-[1200px] mx-auto px-6 text-center">
+        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={STAGGER_CONTAINER} className="flex flex-col items-center">
+          <motion.div variants={FADE_UP} className="mb-8">
+            <img src="/coltea_logo.png" alt="Coltea Hospital" className="h-16 opacity-60 grayscale" />
+          </motion.div>
+          <motion.h2 variants={FADE_UP} className="text-[32px] md:text-[50px] font-black tracking-tighter leading-[1.0] text-black mb-8 max-w-[800px]">
+            The first hospital in history to secure medical records on Ethereum via zero-knowledge proofs.
+          </motion.h2>
+          <motion.p variants={FADE_UP} className="text-[16px] md:text-[18px] text-black/50 font-medium max-w-[600px] mx-auto mb-12">
+            Spitalul Clinic Colțea (est. 1704) partners with Whale Network to hash medical discharge records directly into the Aztec L2 state, ensuring absolute privacy and verifiable integrity.
+          </motion.p>
+          <motion.div variants={FADE_UP}>
+            <Link href="/connect" className="px-8 py-4 border border-black text-black font-bold uppercase tracking-widest text-[13px] hover:bg-black hover:text-white transition-all">
+              Enterprise Partnerships
+            </Link>
+          </motion.div>
+        </motion.div>
       </div>
-    </section>
-  );
-}
-
-
-
-// ─── Powered By Aztec ─────────────────────────────────────────────────────────
-
-function PoweredBySection() {
-  return (
-    <section className="w-full bg-[#f5f5f5] py-24 flex flex-col items-center justify-center border-t border-black/10">
-      <span className="text-sm md:text-base font-black uppercase tracking-[0.3em] text-black/60 mb-8">
-        Powered by
-      </span>
-      <img 
-        src="/aztec-logo-black.png" 
-        alt="Aztec Network" 
-        className="h-40 md:h-56 lg:h-64 object-contain mix-blend-multiply opacity-95 hover:opacity-100 transition-all transform hover:scale-105 duration-500"
-      />
     </section>
   );
 }
@@ -798,63 +312,46 @@ function PoweredBySection() {
 
 function FinalCTASection() {
   return (
-    <section
-      className="w-full relative overflow-hidden flex flex-col justify-center items-center bg-[#050505]"
-      style={{ minHeight: 'var(--dvh-100, 500px)' }}
-    >
-      <img
-        src="/system-shots/Aztec Image_17.jpg"
-        alt="Humanity Ledger Background"
-        className="absolute inset-0 w-full h-full object-cover opacity-50"
-        loading="lazy"
-      />
-      {/* Dark overlay — ensures absolute text readability on any device */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#050505]/95 via-[#050505]/60 to-[#050505]/90" />
-
-      <div className="relative z-20 w-full max-w-[800px] mx-auto px-6 py-24 md:py-32 flex flex-col items-center text-center">
-        <h2
-          className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-tight mb-6"
-          style={{ color: '#ffffff', textShadow: '0 2px 20px rgba(0,0,0,0.8)' }}
-        >
-          Your identity,
-          <br className="hidden md:block" />
-          <span style={{ color: 'rgba(255,255,255,0.92)' }}>proven without disclosure.</span>
-        </h2>
-        <p
-          className="text-base md:text-lg lg:text-xl font-medium max-w-[600px] mb-8 leading-relaxed"
-          style={{ color: 'rgba(255,255,255,0.90)', textShadow: '0 1px 12px rgba(0,0,0,0.6)' }}
-        >
-          Built on the full Aztec stack — Noir circuits, a Private Execution Environment (PXE), zk-SNARK note commitments, and nullifier-based Sybil resistance. Your Aztec Identity is cryptographically yours: provable on-chain, invisible to the world.
-        </p>
+    <section className="w-full relative overflow-hidden flex flex-col justify-center items-center bg-black min-h-[80vh]">
+      <div className="absolute inset-0 z-0 opacity-40">
+        <img src="/system-shots/Aztec Image_17.jpg" alt="Aztec Background" className="w-full h-full object-cover" />
       </div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60 z-10" />
+
+      <motion.div 
+        initial="hidden" whileInView="visible" viewport={{ once: true }} variants={STAGGER_CONTAINER}
+        className="relative z-20 w-full max-w-[900px] mx-auto px-6 text-center flex flex-col items-center"
+      >
+        <motion.img variants={FADE_UP} src="/aztec-logo-white.png" alt="Powered by Aztec" className="h-12 opacity-80 mb-12" />
+        <motion.h2 variants={FADE_UP} className="text-[50px] md:text-[80px] lg:text-[100px] font-black tracking-tighter leading-[0.9] text-white mb-8">
+          Enter the <br/>
+          <span className="text-emerald-400">Network.</span>
+        </motion.h2>
+        <motion.div variants={FADE_UP} className="flex flex-col sm:flex-row gap-6 mt-8">
+          <Link href="/connect" className="px-12 py-5 bg-white text-black font-black uppercase tracking-widest text-[14px] hover:scale-105 transition-transform">
+            Connect Wallet
+          </Link>
+          <Link href="/architecture" className="px-12 py-5 border border-white/30 text-white font-bold uppercase tracking-widest text-[14px] hover:bg-white/10 transition-colors">
+            Read Docs
+          </Link>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }
 
 // ─── Main Export ──────────────────────────────────────────────────────────────
 
-export interface ImmersiveManifestoLandingProps {
-  onOpenScanner?: () => void;
-  hideMap?: boolean;
-}
-
-export function ImmersiveManifestoLanding(_props: ImmersiveManifestoLandingProps = {}) {
+export function ImmersiveManifestoLanding() {
   return (
-    <div className="relative text-[#050505] font-sans antialiased overflow-x-hidden w-full flex flex-col bg-white">
-      {/* LandingNav is HIDDEN: InstitutionalHeader (from ClientLayout) already
-          renders as fixed top-0 on the landing page '/'. Rendering both causes
-          two overlapping fixed navbars. ImmersiveManifestoLanding's own nav is
-          only needed if this component is embedded in a context WITHOUT a global header. */}
-      {/* <LandingNav /> */}
+    <div className="relative font-sans antialiased bg-white w-full flex flex-col">
+      <LandingNav />
       <HeroSection />
-      <ValuePropositionSection />
-      <HowItWorksSection />
-      <IntegrationSection />
+      <ManifestoFeatures />
+      <ArchitectureSection />
       <GlobalRegistrySection />
-      <FAQSection />
-      <PoweredBySection />
+      <PartnershipSection />
       <FinalCTASection />
     </div>
   );
 }
-
