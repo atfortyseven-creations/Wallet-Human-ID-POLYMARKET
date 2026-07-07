@@ -139,7 +139,7 @@ export function ConnectWalletModal() {
                 {/* Modal Container */}
                 <motion.div
                     initial={{ opacity: 0, scale: 0.98, y: 15 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.98, y: 15 }}
-                    className="relative w-full sm:max-w-[440px] max-h-[92dvh] bg-[#FFFFFF] border border-[#050505]/10 rounded-[24px] overflow-hidden flex flex-col shadow-2xl"
+                    className="relative w-full sm:max-w-[440px] bg-[#FFFFFF] border border-[#050505]/10 rounded-[24px] overflow-hidden flex flex-col shadow-2xl" style={{ maxHeight: 'min(92dvh, 92vh, 680px)' }}
                 >
                     {/* Header Bar */}
                     <div className="flex items-center justify-between px-6 py-5 border-b border-[#050505]/10 bg-[#FFFFFF]">
@@ -175,7 +175,7 @@ export function ConnectWalletModal() {
 
                                     <div className="space-y-3 pt-2">
                                         {/* QUICK ACCESS GRID  compact */}
-                                        <div className="grid grid-cols-2 gap-2">
+                                        <div className="grid grid-cols-3 xs:grid-cols-3 gap-1.5 sm:gap-2">
                                             {[
                                                 { id: 'metamask', name: 'MetaMask', logo: '/wallets/metamask.svg', handler: handleMetaMask },
                                                 { id: 'coinbase', name: 'Coinbase', logo: '/wallets/coinbase.png', handler: handleCoinbase },
@@ -184,7 +184,7 @@ export function ConnectWalletModal() {
                                                 <button 
                                                     key={w.id}
                                                     onClick={w.handler}
-                                                    className="group relative flex flex-col items-center justify-center p-3 sm:p-5 border border-[#050505]/10 hover:border-[#050505] bg-[#FFFFFF] rounded-xl transition-all shadow-sm shadow-black/5 hover:shadow-md active:scale-[0.96]"
+                                                    className="group relative flex flex-col items-center justify-center p-2.5 sm:p-5 border border-[#050505]/10 hover:border-[#050505] bg-[#FFFFFF] rounded-xl transition-all shadow-sm shadow-black/5 hover:shadow-md active:scale-[0.96] min-w-0"
                                                 >
                                                     <div className="w-8 h-8 sm:w-10 sm:h-10 mb-1.5 sm:mb-2.5 relative flex items-center justify-center transition-transform group-hover:scale-110 duration-300">
                                                         <img 
