@@ -380,56 +380,56 @@ function HeroSection() {
           {/* Badge removed — no longer in beta */}
 
           {/* Main headline */}
-          <h1 className="text-[40px] sm:text-[56px] md:text-[68px] font-black tracking-tighter leading-[1.0] text-black text-center max-w-[900px] mb-6">
+          <h1 className="text-[36px] xs:text-[42px] sm:text-[56px] md:text-[68px] font-black tracking-tighter leading-[0.97] text-black text-center max-w-[900px] mb-6 px-2">
             The sovereign gateway
             <br />
-            <span className="text-black/50">to Aztec Network.</span>
+            <span className="text-black/45">to Aztec Network.</span>
           </h1>
 
           {/* Subheadline */}
-          <p className="text-[16px] md:text-[19px] font-medium text-black/70 leading-relaxed text-center max-w-[700px] mb-12">
-            Whale Network operates as the sovereign application layer over Aztec's zero-knowledge execution environment. We abstract the complexity of ZK circuits into a sovereign-grade terminal — providing high-net-worth individuals and enterprises with cryptographic identity verification, end-to-end encrypted messaging, and fully shielded portfolio management. All executed privately, settled securely on Ethereum.
+          <p className="text-[15px] md:text-[18px] font-medium text-black/65 leading-relaxed text-center max-w-[600px] mb-12 px-4 sm:px-0">
+            Whale Network is the sovereign application layer over Aztec&apos;s zero-knowledge execution environment — providing cryptographic identity verification, end-to-end encrypted messaging, and fully shielded portfolio management. All executed privately, settled securely on Ethereum.
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row items-center gap-3 mb-20">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-20 w-full max-w-[340px] sm:max-w-none sm:w-auto">
             <Link
               href="/connect"
-              className="px-8 py-3.5 bg-black text-white text-[14px] font-bold tracking-wide hover:bg-black/80 transition-all active:scale-[0.98] shadow-sm"
+              className="flex items-center justify-center px-8 py-4 sm:py-3.5 bg-black text-white text-[14px] font-bold tracking-wide hover:bg-black/80 transition-all active:scale-[0.98] shadow-sm min-h-[52px] sm:min-h-0"
             >
               Connect Wallet
             </Link>
             <Link
               href="/developers/api-docs"
-              className="px-8 py-3.5 border-2 border-black/20 text-black text-[14px] font-semibold hover:bg-black/[0.04] transition-all active:scale-[0.98]"
+              className="flex items-center justify-center px-8 py-4 sm:py-3.5 border-2 border-black/20 text-black text-[14px] font-semibold hover:bg-black/[0.04] transition-all active:scale-[0.98] min-h-[52px] sm:min-h-0"
             >
               Read the Docs
             </Link>
           </div>
 
-          {/* Three feature cards — no emojis, same style as the rest of the landing */}
-          <div className="flex flex-col sm:flex-row items-stretch gap-4 w-full max-w-[900px]">
+          {/* Three feature cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-[900px] px-2 sm:px-0">
             {[
               {
                 tag: "Analytics",
                 label: "Whale Analytics",
-                desc: "Shielded portfolio tracking across Ethereum L1 and L2s. Monitor the flow of capital through encrypted transactions before it moves the market.",
+                desc: "Shielded portfolio tracking across Ethereum L1 and L2s. Monitor capital flows before they move the market.",
               },
               {
                 tag: "Identity",
                 label: "Humanity Ledger",
-                desc: "Noir based identity verification. Prove you are a unique human using local zero-knowledge circuits without exposing any personal data to the public.",
+                desc: "Noir-based ZK identity verification. Prove you are a unique human without exposing any personal data.",
               },
               {
                 tag: "Messaging",
                 label: "Whale Chat",
-                desc: "End to end encrypted messaging between wallets anchored to your private state. Only cryptographic identities, no IP tracking, no metadata.",
+                desc: "End-to-end encrypted messaging between wallets. Only cryptographic identities — no IP tracking, no metadata.",
               },
             ].map((f) => (
-              <div key={f.label} className="flex-1 bg-white border border-black/15 px-6 py-6 flex flex-col gap-3 hover:border-black/30 transition-colors">
-                <span className="text-[10px] font-black uppercase tracking-widest text-black/50">{f.tag}</span>
-                <h3 className="text-[16px] font-black text-black leading-tight">{f.label}</h3>
-                <p className="text-[13px] text-black/65 leading-relaxed font-medium flex-1">{f.desc}</p>
+              <div key={f.label} className="bg-white border border-black/12 px-5 py-5 sm:px-6 sm:py-6 flex flex-col gap-3 hover:border-black/25 hover:shadow-sm transition-all rounded-sm">
+                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-black/45">{f.tag}</span>
+                <h3 className="text-[15px] sm:text-[16px] font-black text-black leading-tight">{f.label}</h3>
+                <p className="text-[13px] text-black/60 leading-relaxed font-medium flex-1">{f.desc}</p>
               </div>
             ))}
           </div>
