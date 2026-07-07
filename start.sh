@@ -109,6 +109,9 @@ clean();
 
 npx prisma db push --accept-data-loss 2>&1 | grep -v 'npm notice' | grep -v 'Update available' | grep -v 'major update' | grep -v 'pris.ly' | grep -v 'npm i ' || echo "[System] WARNING: db push failed"
 
+echo "[System] Phase 2.1: Database Seeding..."
+npm run db:seed || echo "[System] WARNING: db seed failed"
+
 # ─── PHASE 3: Launch PM2 ─────────────────────────────────────────────────────
 echo "[System] "
 echo "[System] Phase 3: Launching PM2 process mesh..."
