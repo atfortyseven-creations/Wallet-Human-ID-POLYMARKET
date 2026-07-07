@@ -75,13 +75,9 @@ export function MobileManifesto() {
             Whale Network operates as the sovereign application layer over Aztec's zero-knowledge execution environment. We abstract the complexity of ZK circuits into a sovereign-grade terminal.
           </motion.p>
 
-          <motion.div variants={FADE_UP} className="w-full max-w-[300px] mx-auto flex flex-col gap-3">
-            <Link
-              href="/connect"
-              className="flex items-center justify-center w-full h-[56px] bg-[#0A0A0A] text-white rounded-2xl text-[14px] font-bold tracking-wide active:scale-[0.98] transition-transform shadow-lg"
-            >
-              Connect Wallet
-            </Link>
+          <motion.div variants={FADE_UP} className="w-full max-w-[300px] mx-auto flex flex-col items-center gap-3">
+            {/* @ts-expect-error */}
+            <appkit-button />
             <Link
               href="/developers/api-docs"
               className="flex items-center justify-center w-full h-[56px] bg-transparent border border-black/15 text-black rounded-2xl text-[14px] font-bold tracking-wide active:scale-[0.98] transition-transform"

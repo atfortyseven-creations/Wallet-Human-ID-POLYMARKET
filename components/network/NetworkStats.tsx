@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { Server, Activity, Database, Zap, Cpu } from 'lucide-react';
-import { createPXEClient } from '@aztec/aztec.js';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AZTEC_RPC_URL = 'http://localhost:8080';
@@ -42,6 +41,7 @@ export function NetworkStats({ theme = 'default' }: { theme?: 'default' | 'arcti
             setLogs(prev => [...prev, `[RPC] Handshake with ${AZTEC_RPC_URL}`]);
         }
 
+        const { createPXEClient } = await import('@aztec/aztec.js');
         const pxe = createPXEClient(AZTEC_RPC_URL);
         const nodeInfo = await pxe.getNodeInfo();
         const blockNumber = await pxe.getBlockNumber();

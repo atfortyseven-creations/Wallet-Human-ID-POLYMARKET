@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useRef, useEffect, useState } from "react";
 import Link from "next/link";
@@ -9,25 +9,13 @@ import { RemoteLottie } from '@/components/ui/RemoteLottie';
 // Lottie cargado din├ímicamente para evitar SSR issues
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
-// Real world map — client only (uses browser projection APIs)
+// Real world map ÔÇö client only (uses browser projection APIs)
 const RealWorldMap = dynamic(
   () => import("@/components/landing/RealWorldMap").then((m) => m.RealWorldMap),
   { ssr: false, loading: () => <div className="w-full h-full bg-[#f0f0f0] animate-pulse rounded-xl" /> }
 );
 
-const FADE_UP: any = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } }
-};
-const STAGGER_CONTAINER: any = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.15, delayChildren: 0.1 }
-  }
-};
-
-// ─── Nav Data ────────────────────────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇ Nav Data ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 
 const PRODUCT_LINKS = [
   { label: "Studio Provenance", sub: "Zero-knowledge verifiable provenance", href: "/portfolio" },
@@ -41,7 +29,7 @@ const COMPANY_LINKS = [
   { label: "Blog", href: "/blog" },
 ];
 
-// ─── Network stat strip ────────────────────────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇ Network stat strip ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 
 const STATS = [
   { label: "Identity Layer", value: "Aztec Native Identity" },
@@ -52,7 +40,7 @@ const STATS = [
   { label: "Attestation", value: "Verifiable Credentials" },
 ];
 
-// ─── Feature cards ────────────────────────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇ Feature cards ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 
 const FEATURES = [
   {
@@ -87,7 +75,7 @@ const FEATURES = [
   },
 ];
 
-// ─── Documentation cards ────────────────────────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇ Documentation cards ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 
 const DOC_CARDS = [
   {
@@ -113,7 +101,7 @@ const DOC_CARDS = [
   {
     label: "Architecture Overview",
     href: "/architecture",
-    body: "System diagrams, state machine specs, and protocol flow documentation for the full L1–L2 stack.",
+    body: "System diagrams, state machine specs, and protocol flow documentation for the full L1ÔÇôL2 stack.",
   },
   {
     label: "Security Audits",
@@ -122,7 +110,7 @@ const DOC_CARDS = [
   },
 ];
 
-// ─── Sub-components ────────────────────────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇ Sub-components ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 
 function LandingNav() {
   const [scrolled, setScrolled] = useState(false);
@@ -286,13 +274,13 @@ function LandingNav() {
             <div className="flex items-center gap-2">
               <span className="flex items-center gap-1.5 px-3 py-1.5 bg-black/[0.04] border border-black/10 text-[12px] font-mono text-black/70">
                 <span className="w-1.5 h-1.5 rounded-full bg-black/70 shrink-0" />
-                {connectedAddress.slice(0, 6)}…{connectedAddress.slice(-4)}
+                {connectedAddress.slice(0, 6)}ÔÇª{connectedAddress.slice(-4)}
               </span>
               <Link
                 href="/terminal"
                 className="px-4 py-1.5 bg-black text-white text-[13.5px] font-medium hover:bg-black/85 transition-colors"
               >
-                Dashboard →
+                Dashboard ÔåÆ
               </Link>
             </div>
           ) : (
@@ -342,22 +330,22 @@ function LandingNav() {
   );
 }
 
-// ─── Hero ────────────────────────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇ Hero ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 
 /**
- * HeroSection — Maximum fidelity pixel-art rendering.
+ * HeroSection ÔÇö Maximum fidelity pixel-art rendering.
  *
  * Rendering pipeline:
- *  1. `image-rendering: pixelated` → browser must NOT apply bilinear interpolation.
+ *  1. `image-rendering: pixelated` ÔåÆ browser must NOT apply bilinear interpolation.
  *     This is the single most important rule for pixel art: keep every pixel a
  *     hard-edged rectangle, never a blurred quad.
- *  2. `fetchpriority="high"` + `loading="eager"` + `decoding="sync"` → image
+ *  2. `fetchpriority="high"` + `loading="eager"` + `decoding="sync"` ÔåÆ image
  *     is fetched at the top of the network queue and decoded on the main thread
- *     before first paint — zero layout shift, zero flash of black.
+ *     before first paint ÔÇö zero layout shift, zero flash of black.
  *  3. `100dvh` on mobile (accounts for collapsible browser chrome) and
  *     `100vh` on desktop via CSS class override.
  *  4. `object-fit: cover` with smart `object-position` fills the container
- *     using the image's natural pixel density — never scaling up beyond 1:1.
+ *     using the image's natural pixel density ÔÇö never scaling up beyond 1:1.
  *  5. Global `<style>` injection ensures `pixelated` survives any Tailwind reset.
  */
 function HeroSection() {
@@ -369,7 +357,7 @@ function HeroSection() {
 
   return (
     <>
-      {/* ── Presentation hero ── */}
+      {/* ÔöÇÔöÇ Presentation hero ÔöÇÔöÇ */}
       <section
         className="relative w-full bg-white overflow-hidden flex-shrink-0"
         style={{ minHeight: 'var(--dvh-100, 100dvh)' }}
@@ -380,70 +368,73 @@ function HeroSection() {
           style={{ backgroundImage: 'radial-gradient(#d1d5db 1px, transparent 1px)', backgroundSize: '24px 24px' }}
         />
 
-        {/* DvhPolyfill always renders — fixes iOS Safari viewport height bug */}
+        {/* DvhPolyfill always renders ÔÇö fixes iOS Safari viewport height bug */}
         <DvhPolyfill />
 
-        {/* Centered content — iOS-safe min-height using calc(var(--vh, 1vh) * 100) */}
-        <motion.div
-          initial="hidden" animate="visible" variants={STAGGER_CONTAINER}
+        {/* Centered content ÔÇö iOS-safe min-height using calc(var(--vh, 1vh) * 100) */}
+        <div
           className="relative z-10 w-full h-full flex flex-col items-center justify-center px-6 pt-28 pb-20"
           style={{ minHeight: 'var(--dvh-100, calc(var(--vh, 1vh) * 100))' }}
         >
-          {/* Subtle premium glow behind text */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
+
+          {/* Badge removed ÔÇö no longer in beta */}
 
           {/* Main headline */}
-          <motion.h1 variants={FADE_UP} className="text-[40px] sm:text-[56px] md:text-[68px] font-black tracking-tighter leading-[1.0] text-black text-center max-w-[900px] mb-6">
+          <h1 className="text-[36px] xs:text-[42px] sm:text-[56px] md:text-[68px] font-black tracking-tighter leading-[0.97] text-black text-center max-w-[900px] mb-6 px-2">
             The sovereign gateway
             <br />
-            <span className="text-black/50">to Aztec Network.</span>
-          </motion.h1>
+            <span className="text-black/45">to Aztec Network.</span>
+          </h1>
 
           {/* Subheadline */}
-          <motion.p variants={FADE_UP} className="text-[16px] md:text-[19px] font-medium text-black/70 leading-relaxed text-center max-w-[700px] mb-12">
-            Whale Network operates as the sovereign application layer over Aztec's zero-knowledge execution environment. We abstract the complexity of ZK circuits into a sovereign-grade terminal — providing high-net-worth individuals and enterprises with cryptographic identity verification, end-to-end encrypted messaging, and fully shielded portfolio management. All executed privately, settled securely on Ethereum.
-          </motion.p>
+          <p className="text-[15px] md:text-[18px] font-medium text-black/65 leading-relaxed text-center max-w-[600px] mb-12 px-4 sm:px-0">
+            Whale Network is the sovereign application layer over Aztec&apos;s zero-knowledge execution environment ÔÇö providing cryptographic identity verification, end-to-end encrypted messaging, and fully shielded portfolio management. All executed privately, settled securely on Ethereum.
+          </p>
 
           {/* CTAs */}
-          <motion.div variants={FADE_UP} className="flex flex-col sm:flex-row items-center gap-3 mb-20">
-            {/* @ts-expect-error */}
-            <appkit-button />
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-20 w-full max-w-[340px] sm:max-w-none sm:w-auto">
+            <Link
+              href="/connect"
+              className="flex items-center justify-center px-8 py-4 sm:py-3.5 bg-black text-white text-[14px] font-bold tracking-wide hover:bg-black/80 transition-all active:scale-[0.98] shadow-sm min-h-[52px] sm:min-h-0"
+            >
+              Connect Wallet
+            </Link>
             <Link
               href="/developers/api-docs"
-              className="px-8 py-3.5 border-2 border-black/20 text-black text-[14px] font-semibold hover:bg-black/[0.04] transition-all active:scale-[0.98]"
+              className="flex items-center justify-center px-8 py-4 sm:py-3.5 border-2 border-black/20 text-black text-[14px] font-semibold hover:bg-black/[0.04] transition-all active:scale-[0.98] min-h-[52px] sm:min-h-0"
             >
               Read the Docs
             </Link>
-          </motion.div>
+          </div>
 
-          {/* Three feature cards — animated stagger */}
-          <motion.div variants={STAGGER_CONTAINER} initial="hidden" animate="visible" className="flex flex-col sm:flex-row items-stretch gap-6 w-full max-w-[1000px] relative z-20">
+          {/* Three feature cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-[900px] px-2 sm:px-0">
             {[
               {
                 tag: "Analytics",
                 label: "Whale Analytics",
-                desc: "Shielded portfolio tracking across Ethereum L1 and L2s. Monitor the flow of capital through encrypted transactions before it moves the market.",
+                desc: "Shielded portfolio tracking across Ethereum L1 and L2s. Monitor capital flows before they move the market.",
               },
               {
                 tag: "Identity",
                 label: "Humanity Ledger",
-                desc: "Noir based identity verification. Prove you are a unique human using local zero-knowledge circuits without exposing any personal data to the public.",
+                desc: "Noir-based ZK identity verification. Prove you are a unique human without exposing any personal data.",
               },
               {
                 tag: "Messaging",
                 label: "Whale Chat",
-                desc: "End to end encrypted messaging between wallets anchored to your private state. Only cryptographic identities, no IP tracking, no metadata.",
+                desc: "End-to-end encrypted messaging between wallets. Only cryptographic identities ÔÇö no IP tracking, no metadata.",
               },
             ].map((f) => (
-              <motion.div variants={FADE_UP} key={f.label} className="flex-1 bg-white/80 backdrop-blur-md border border-black/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] px-8 py-8 flex flex-col gap-4 rounded-2xl hover:border-black/30 hover:-translate-y-1 transition-all duration-300">
-                <span className="text-[11px] font-black uppercase tracking-widest text-indigo-500">{f.tag}</span>
-                <h3 className="text-[18px] font-black text-black leading-tight">{f.label}</h3>
-                <p className="text-[14px] text-black/60 leading-relaxed font-medium flex-1">{f.desc}</p>
-              </motion.div>
+              <div key={f.label} className="bg-white border border-black/12 px-5 py-5 sm:px-6 sm:py-6 flex flex-col gap-3 hover:border-black/25 hover:shadow-sm transition-all rounded-sm">
+                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-black/45">{f.tag}</span>
+                <h3 className="text-[15px] sm:text-[16px] font-black text-black leading-tight">{f.label}</h3>
+                <p className="text-[13px] text-black/60 leading-relaxed font-medium flex-1">{f.desc}</p>
+              </div>
             ))}
-          </motion.div>
+          </div>
 
-        </motion.div>
+        </div>
 
         {/* Scroll cue */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-30 pointer-events-none">
@@ -483,7 +474,7 @@ function HeroSection() {
 
 
 /**
- * DvhPolyfill — sets `--vh` CSS custom property to the actual inner viewport
+ * DvhPolyfill ÔÇö sets `--vh` CSS custom property to the actual inner viewport
  * height in pixels, updated on every resize. This corrects the `100vh`
  * bug on iOS/Android where the browser chrome collapses/expands.
  * Also sets --dvh-100 as a calc() ready value so we don't need dvh unit support.
@@ -506,32 +497,29 @@ function DvhPolyfill() {
   return null;
 }
 
-// ─── Value Proposition ────────────────────────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇ Value Proposition ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 
 function ValuePropositionSection() {
   return (
-    <section className="w-full bg-white py-24 md:py-32 border-t border-black/10 relative overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald-500/5 blur-[120px] rounded-full pointer-events-none" />
-
-      <motion.div variants={STAGGER_CONTAINER} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="w-full max-w-[1000px] mx-auto px-6 text-center flex flex-col items-center relative z-10">
-        <motion.span variants={FADE_UP} className="text-[12px] font-black uppercase tracking-[0.2em] text-emerald-600 mb-6 border border-emerald-600/20 px-4 py-1.5 rounded-full bg-emerald-500/5">
+    <section className="w-full bg-white py-24 md:py-32 border-t border-black/10">
+      <div className="w-full max-w-[1000px] mx-auto px-6 text-center flex flex-col items-center">
+        <span className="text-[12px] font-bold uppercase tracking-widest text-black/55 mb-6">
           Absolute Privacy
-        </motion.span>
-        <motion.h2 variants={FADE_UP} className="text-[36px] md:text-[64px] font-black tracking-tighter leading-[1.0] text-black max-w-[800px]">
+        </span>
+        <h2 className="text-[36px] md:text-[56px] font-black tracking-tighter leading-[1.05] text-black max-w-[800px]">
           Ethereum security.
           <br />
           <span className="text-black/55">Absolute privacy.</span>
-        </motion.h2>
+        </h2>
         <p className="mt-8 text-[16px] md:text-[18px] font-medium text-black/65 leading-relaxed max-w-[600px]">
           By leveraging the Aztec Network Private Execution Environment, Whale Network shifts all computation to your local device. The network verifies a zero-knowledge proof of your actions without ever seeing your raw balances, chat metadata, or identity documents. This is the foundation of programmable privacy.
         </p>
-      </motion.div>
+      </div>
     </section>
   );
 }
 
-// ─── How It Works (Steps) ────────────────────────────────────────────────────────────────
+// ÔöÇÔöÇÔöÇ How It Works (Steps) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 
 function HowItWorksSection() {
   const steps = [
@@ -563,35 +551,35 @@ function HowItWorksSection() {
 
   return (
     <section className="w-full bg-[#fcfcfc] py-24 md:py-32 border-t border-black/5">
-      <motion.div variants={STAGGER_CONTAINER} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="w-full max-w-[1100px] mx-auto px-6">
-        <motion.div variants={FADE_UP} className="text-center mb-24">
-          <h2 className="text-[36px] md:text-[50px] font-black tracking-tighter text-black">
-            Built so there's <i className="font-serif italic font-normal text-black/50">nothing to leak</i>
+      <div className="w-full max-w-[1100px] mx-auto px-6">
+        <div className="text-center mb-20">
+          <h2 className="text-[32px] md:text-[42px] font-black tracking-tight text-black">
+            Built so there's <i className="font-serif italic font-normal">nothing to leak</i>
           </h2>
-        </motion.div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
           {/* Connecting line for desktop */}
-          <div className="hidden md:block absolute top-[28px] left-[10%] right-[10%] h-[2px] bg-gradient-to-r from-transparent via-black/10 to-transparent z-0" />
+          <div className="hidden md:block absolute top-[28px] left-[10%] right-[10%] h-[1px] bg-black/10 z-0" />
 
           {steps.map((s, i) => (
-            <motion.div variants={FADE_UP} key={i} className="relative z-10 flex flex-col items-center text-center group">
-              <div className="w-16 h-16 bg-white border border-black/10 rounded-2xl flex items-center justify-center mb-8 shadow-sm group-hover:scale-110 group-hover:shadow-md transition-all duration-300">
+            <div key={i} className="relative z-10 flex flex-col items-center text-center">
+              <div className="w-14 h-14 bg-white border border-black/15 rounded-full flex items-center justify-center mb-6 shadow-md">
                 <span className="text-black">{s.icon}</span>
               </div>
-              <span className="text-[12px] font-black tracking-widest uppercase text-indigo-500 mb-4 block">
+              <span className="text-[11px] font-bold tracking-widest uppercase text-black/55 mb-3">
                 Step {s.step}
               </span>
-              <h3 className="text-[22px] font-black text-black mb-4 tracking-tight">
+              <h3 className="text-[20px] font-black text-black mb-4 tracking-tight">
                 {s.title}
               </h3>
-              <p className="text-[16px] font-medium text-black/60 leading-relaxed px-2">
+              <p className="text-[15px] font-medium text-black/65 leading-relaxed px-2">
                 {s.description}
               </p>
-            </motion.div>
+            </div>
           ))}
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }
@@ -869,5 +857,4 @@ export function ImmersiveManifestoLanding(_props: ImmersiveManifestoLandingProps
     </div>
   );
 }
-
 
