@@ -18,7 +18,7 @@ const AirdropSchema = z.object({
 });
 
 const AZTEC_EXPLORER        = 'https://testnet.aztecscan.xyz';
-const SPONSORED_FPC_ADDRESS = '0x261366b3c0a9b4c30864629556cf282be409e6822b1f3a065fcb7e34f36d7880';
+const SPONSORED_FPC_ADDRESS = '0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7';
 const AIRDROP_AMOUNT        = 10;  // 10 QDs per airdrop
 
 /**
@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
       throw new Error("AZTEC_TOKEN_CONTRACT_ADDRESS or AZTEC_RELAYER_SECRET_KEY is not set. Zero-Mock mode requires real Aztec config.");
     }
 
-    const pxeUrl = process.env.AZTEC_PXE_URL || 'http://127.0.0.1:18080';
+    const pxeUrl = process.env.AZTEC_PXE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
 
     const { createPXEClient }           = await import('@aztec/aztec.js/wallet');
     const { getSchnorrAccount }         = await import('@aztec/accounts/schnorr');

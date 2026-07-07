@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 const AZTEC_EXPLORER = 'https://testnet.aztecscan.xyz';
 const AZTEC_NODE_URL = process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
-const SPONSORED_FPC_ADDRESS = '0x261366b3c0a9b4c30864629556cf282be409e6822b1f3a065fcb7e34f36d7880';
+const SPONSORED_FPC_ADDRESS = '0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7';
 
 /**
  * POST /api/aztec/transfer
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
     const { SponsoredFeePaymentMethod } = await import('@aztec/aztec.js/fee');
     const { deriveSecretKeyFromEvm } = await import('@/lib/aztec/client');
 
-    const pxeUrl = process.env.AZTEC_PXE_URL || 'http://127.0.0.1:18080';
+    const pxeUrl = process.env.AZTEC_PXE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
     const pxe = createPXEClient(pxeUrl);
 
     // Derive sender's secret key deterministically (testnet custodial model)

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 // removed node client imports
-import { Fr } from '@aztec/aztec.js/fields';
+// Dynamic import only — @aztec/aztec.js does not export its root path in v4.3.1
 
 export const dynamic = 'force-dynamic';
 
@@ -23,8 +23,8 @@ async function callPXE(pxeUrl: string, method: string, params: unknown[] = []) {
 // ─── Route ────────────────────────────────────────────────────────────────────
 
 export async function GET() {
-  const PXE_URL    = process.env.AZTEC_PXE_URL  || 'http://127.0.0.1:8080';
-  const NODE_URL   = process.env.AZTEC_NODE_URL || 'http://127.0.0.1:8081';
+  const PXE_URL    = process.env.AZTEC_PXE_URL  || 'https://v5.testnet.rpc.aztec-labs.com';
+  const NODE_URL   = process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
   const SECRET_KEY = process.env.RELAYER_SECRET_KEY
     || '0x0b2cda0c07982cced5c5bbbc01dc76a5b2ef4e8111926bb4d8a14f15104d8e36';
 

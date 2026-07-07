@@ -13,7 +13,7 @@
  */
 
 export const AZTEC_TESTNET_NODE  = process.env.AZTEC_NODE_URL  || 'https://v5.testnet.rpc.aztec-labs.com';
-export const AZTEC_PXE_URL       = process.env.AZTEC_PXE_URL   || 'http://127.0.0.1:18080';
+export const AZTEC_PXE_URL       = process.env.AZTEC_PXE_URL   || 'https://v5.testnet.rpc.aztec-labs.com';
 export const AZTEC_EXPLORER      = 'https://testnet.aztecscan.xyz';
 export const AZTEC_NETWORK       = 'aztec-testnet';
 

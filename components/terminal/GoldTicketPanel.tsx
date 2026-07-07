@@ -474,7 +474,8 @@ export function GoldTicketPanel() {
         
         try {
             const { createPXEClient } = await import('@aztec/aztec.js');
-            const pxe = createPXEClient('http://localhost:8080');
+            const rpcUrl = process.env.NEXT_PUBLIC_AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
+            const pxe = createPXEClient(rpcUrl);
             toast.loading('[Aztec] Connecting to RPC Node...', { id: 'aztec-rpc' });
             await pxe.getNodeInfo(); // Real time interaction
             toast.loading('[Aztec] Connected! Generating Shielded Account...', { id: 'aztec-rpc' });
