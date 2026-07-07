@@ -1,9 +1,45 @@
-﻿# Changelog
+# Changelog
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+---
+
+## [4.0.0] — 2026-07-07 — "Immersive Landing & Aztec Testnet Integration"
+
+### Phase 8: Sovereign Landing & Aztec Production Readiness
+
+#### Landing Page — Complete Immersive Redesign
+- `feat(landing/desktop)`: Full immersive manifesto landing page (`ImmersiveManifestoLanding.tsx`) with Framer Motion scroll animations, hero section, value proposition, how-it-works, integration cards, global registry map, FAQ, and final CTA — all in a clean, minimalist white-on-white aesthetic
+- `feat(landing/mobile)`: Premium mobile landing page (`MobileManifesto.tsx`) with iOS/Android safe-area insets, `100dvh` dynamic viewport, hero section with appkit-button native wallet connection, Whale Chat dark section, and Aztec partnership section
+- `feat(landing/router)`: `SmartLandingRouter` SSR-aware device detection — UA-based routing to mobile/desktop versions, eliminates 3s blank white screen flash on mobile
+- `feat(landing/nav)`: `ClientRootRouter` desktop landing with `ImmersiveManifestoLanding` + `SystemFooter` composition
+- `feat(landing/appkit)`: Replaced all `/connect` redirect links on both desktop and mobile landing with native `<appkit-button />` — wallet connection works directly on landing page without page change, for iOS, Android, and desktop browsers
+- `feat(landing/map)`: Real-time `RealWorldMap` SVG coverage map with hover country details and live data feed
+- `feat(landing/network)`: `NetworkMapPanel` embedded in Architecture section — live Aztec sequencer topology visualisation
+
+#### Aztec Testnet Integration
+- `fix(aztec/rpc)`: `NetworkStats.tsx` — changed hardcoded `localhost:8080` to `https://v5.testnet.rpc.aztec-labs.com` (public Aztec Alpha Testnet), confirmed by @joshc [AZTC] 2026-07-07
+- `fix(aztec/rpc)`: `lib/aztec/client.ts` — canonical `AZTEC_TESTNET_NODE` = `https://v5.testnet.rpc.aztec-labs.com`, SponsoredFPC address `0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7` (rc.2 canonical)
+- `fix(aztec/build)`: `NetworkStats.tsx` — converted static `@aztec/aztec.js` import to dynamic `await import()` inside `useEffect` — webpack no longer rejects the package path (v4.3.1 does not export its root path)
+- `fix(aztec/build)`: `GoldTicketPanel.tsx` — same dynamic import fix applied
+- `feat(aztec/pxe)`: `lib/aztec/client.ts` — `getPXEClient()`, `getRelayerWallet()`, `deriveSecretKeyFromEvm()` utilities ready for production PXE sidecar on Railway
+- `feat(aztec/contract)`: `lib/aztec/qds-contract.ts` — QDs token wrapper with `rawToQds()`/`qdsToRaw()` helpers and `getQDsBalance()`
+
+#### Build & Infrastructure
+- `fix(build)`: Resolved all TS errors across 11 files in pre-push cleanup (Phase 3 cleanup)
+- `fix(ui/layout)`: Resolved infinite layout shift / scrollbar jitter on desktop landing page
+- `fix(ui/layout)`: Eliminated missing asset black voids; all images now use `loading="lazy"` with proper aspect ratios
+- `fix(ui/layout)`: `globals.css` — `overflow-x: hidden` on `html` prevents Windows scrollbar phantom overflow
+- `feat(ui/footer)`: `SystemFooter.tsx` — clean white footer with PRODUCT / DEVELOPERS / COMPANY / REGULATORY nav columns, GDPR statement, MiCA compliance badge
+- `feat(ui/wallpaper)`: `UniversalEliteWallpaper` — `fixed inset-0` white background layer, dark mode overlay support, `/connect` bypass
+
+#### Mobile Wallet Connection — iOS & Android
+- `feat(mobile/wallet)`: `<appkit-button />` native component replaces all custom connect flows on landing pages — single source of truth for wallet connection across all devices
+- `fix(mobile/viewport)`: `DvhPolyfill` — `--vh` and `--dvh-100` CSS custom properties set on mount and updated on `resize`/`orientationchange` — fixes iOS Safari collapsible chrome viewport bug
+- `fix(mobile/safe-area)`: Hero section uses `env(safe-area-inset-top)` and `env(safe-area-inset-bottom)` for Dynamic Island and home indicator compatibility
 
 ---
 

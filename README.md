@@ -2,6 +2,9 @@
 
 *Privacy is a fundamental right. Architecture is a declaration of values.*
 
+> **Version 4.0.0 \u2014 July 7, 2026**
+> **Aztec Alpha Testnet Live** \u2014 RPC: `https://v5.testnet.rpc.aztec-labs.com`
+
 Whale Network is a sovereign-grade identity terminal and cryptographic analytics ecosystem built natively for the **Aztec Network**. It provides absolute user state privacy, data siloing, and mathematically provable censorship resistance via Zero-Knowledge (ZK) cryptography.
 
 This system is structurally incapable of collecting user state. Data is sealed via SNARKs *before* reaching any network layer.
@@ -9,6 +12,14 @@ This system is structurally incapable of collecting user state. Data is sealed v
 > [!NOTE]
 > **Aztec Foundation Grant Acknowledgement:**
 > Humanity Ledger & Whale Network are built as public goods for the Zero-Knowledge ecosystem. This repository is proudly fully open-source (MIT License) and architected to meet the strictest cypherpunk requirements of the Aztec Foundation Grant program.
+
+## What's New \u2014 July 7, 2026
+
+- **Immersive Landing Page**: Full desktop and mobile redesign with Framer Motion scroll animations, global registry map, and Aztec integration showcase
+- **Native Wallet Connection**: `<appkit-button />` directly on landing page \u2014 no redirect required. Works on iOS, Android, and all desktop browsers
+- **Aztec Testnet**: All RPC endpoints updated to `https://v5.testnet.rpc.aztec-labs.com` (Alpha Testnet rc.2). SponsoredFPC address confirmed by @joshc [AZTC]
+- **Build Fix**: Dynamic imports for `@aztec/aztec.js` v4.3.1 \u2014 webpack compatibility resolved across all components
+- **Mobile Viewport**: iOS/Android safe-area insets + `100dvh` + `DvhPolyfill` \u2014 zero clipping on Dynamic Island devices
 
 ## The Cypherpunk Mandate
 
@@ -39,18 +50,38 @@ The frontend is built to operate under adversarial network conditions.
 - **IPFS / Arweave Ready:** The terminal supports purely static exports (`output: 'export'`), ensuring it can be hosted on decentralized, unstoppable storage networks without server-side dependencies.
 - **Tor/I2P Awareness:** Running the node locally will trigger a recommendation to route traffic through Tor or I2P for maximum privacy.
 
+## Network Configuration
+
+| Parameter | Value |
+|-----------|-------|
+| **Testnet Node** | `https://v5.testnet.rpc.aztec-labs.com` |
+| **Explorer** | `https://testnet.aztecscan.xyz` |
+| **SponsoredFPC** | `0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7` |
+| **Aztec.js** | `v4.3.1` |
+| **Network** | Aztec Alpha Testnet (rc.2) |
+
 ## Documentation Topology
 
 - **Identity**: The core of the project. Attest complex criteria using locally compiled Noir circuits. Uniqueness is proved; identity is never revealed.
 - **Network Map**: Real-time supervision of the global network topology, including Aztec sequencers and Ethereum L1 validators.
 - **Whale Chat**: Peer-to-Peer encrypted communications using Perfect Forward Secrecy (ephemeral X25519 keys) and zero-metadata routing.
+- **QDs Token**: Quantum Dots — the native token of the Humanity Ledger protocol on Aztec Alpha Testnet.
 
 ## Development & Deployment
 
-### Run Locally (Tor/I2P Recommended)
+### Run Locally
 ```bash
 npm install
 npm run dev
+```
+
+### Environment Variables
+```env
+NEXT_PUBLIC_AZTEC_NODE_URL=https://v5.testnet.rpc.aztec-labs.com
+AZTEC_PXE_URL=http://127.0.0.1:18080
+AZTEC_RELAYER_SECRET_KEY=0x...
+AZTEC_QDS_CONTRACT_ADDRESS=0x...
+SPONSORED_FPC_ADDRESS=0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7
 ```
 
 ### IPFS Distributed Build
@@ -62,3 +93,4 @@ npm run build:ipfs
 ---
 **Humanity Ledger S.L.**
 *Aztec Native Architecture. ZKP Secured. Cypherpunk Aligned.*
+*Last updated: 2026-07-07*
