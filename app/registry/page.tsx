@@ -271,15 +271,27 @@ function AztecAnalyticsTab({ isDark }: { isDark: boolean }) {
     setFetching(true);
     setFetchError(null);
     try {
-      const res = await fetch(
-        "https://full-node.alpha-testnet.aztec.network/aztec/v1/node-info",
-        { signal: AbortSignal.timeout(12_000) }
-      );
-      if (!res.ok) throw new Error(`Node returned ${res.status}`);
-      const data = await res.json();
-      setNodeInfo(data);
+      const { createPXEClient } = await import("@aztec/aztec.js");
+      const rpcUrl = process.env.NEXT_PUBLIC_AZTEC_NODE_URL || "https://v5.testnet.rpc.aztec-labs.com";
+      const pxe = createPXEClient(rpcUrl);
+      const nodeInfoData = await pxe.getNodeInfo();
+      const l2BlockNumber = await pxe.getBlockNumber();
+      
+      let l2ProvenBlockNumber = null;
+      try {
+        l2ProvenBlockNumber = await pxe.getProvenBlockNumber();
+      } catch (e) {
+        // Fallback if not available
+        l2ProvenBlockNumber = l2BlockNumber;
+      }
+
+      setNodeInfo({
+        ...nodeInfoData,
+        l2BlockNumber,
+        l2ProvenBlockNumber
+      });
       setLastFetched(new Date());
-    } catch {
+    } catch (e: any) {
       setFetchError(
         "The Aztec network node is currently unreachable. Data will appear when a connection is established."
       );
