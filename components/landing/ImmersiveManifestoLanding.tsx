@@ -363,9 +363,11 @@ function TopographySection() {
           </motion.div>
         </motion.div>
 
-        <motion.div style={{ y }} className="relative h-[700px] w-full rounded-3xl border border-black/10 bg-white shadow-2xl overflow-hidden">
-            <NetworkMapPanel />
-        </motion.div>
+        <div className="relative h-[700px] w-full">
+          <motion.div style={{ y }} className="absolute inset-0 rounded-3xl border border-black/10 bg-white shadow-2xl overflow-hidden">
+              <NetworkMapPanel />
+          </motion.div>
+        </div>
 
       </div>
     </section>
@@ -376,11 +378,9 @@ function TopographySection() {
 
 function FinalCTASection() {
   return (
-    <section className="w-full relative overflow-hidden flex flex-col justify-center items-center bg-black min-h-[90vh]">
-      <div className="absolute inset-0 z-0 opacity-30">
-        <img src="/system-shots/Aztec Image_17.jpg" alt="Aztec Background" className="w-full h-full object-cover" />
-      </div>
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/40 z-10" />
+    <section className="w-full relative overflow-hidden flex flex-col justify-center items-center bg-black py-40">
+      <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-900/20 via-black to-black" />
+      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay"></div>
 
       <motion.div 
         initial="hidden" whileInView="visible" viewport={{ once: true }} variants={STAGGER_CONTAINER}
@@ -413,7 +413,7 @@ function FinalCTASection() {
 
 export function ImmersiveManifestoLanding() {
   return (
-    <div className="relative font-sans antialiased bg-white w-full flex flex-col">
+    <div className="relative font-sans antialiased bg-white w-full flex flex-col overflow-x-hidden">
       <LandingNav />
       <HeroSection />
       <TechnicalArchitecture />
