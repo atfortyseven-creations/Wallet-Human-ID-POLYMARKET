@@ -89,7 +89,9 @@ export default function Pricing() {
               <ul className="space-y-4 mb-8 flex-grow">
                 {plan.features.map((feature, fIdx) => (
                   <li key={fIdx} className="flex items-start gap-3">
-                    <Check className="w-5 h-5 text-chartreuse shrink-0 mt-0.5" />
+                    <div className="bg-chartreuse border-2 border-ink rounded-full p-0.5 shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 text-ink stroke-[3]" />
+                    </div>
                     <span className="text-ink/80">{feature}</span>
                   </li>
                 ))}

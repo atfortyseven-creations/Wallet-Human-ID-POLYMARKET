@@ -70,41 +70,69 @@ export async function POST(req: NextRequest) {
     }
 
     // ── Attempt Aztec On-Chain Transaction ───────────────────────────────
-    let aztecTxHash: string | null = null;
-    let explorerUrl: string | null = null;
-    let onChainSuccess = false;
+    let aztecTxHash: string;
+    let explorerUrl: string;
 
-    try {
-      console.log(`[Aztec Transfer] Connecting to Aztec Testnet: ${roundedAmount} QDs → ${toAddr.slice(0, 16)}...`);
-      
-      // Simulate network latency and ZK proof generation for the testnet
-      await new Promise(resolve => setTimeout(resolve, 2200));
-      
-      // We generate a deterministic valid testnet hash format
-      const mockTxPayload = `aztec-testnet-v5:${fromAddr}:${toAddr}:${roundedAmount}:${Date.now()}`;
-      aztecTxHash = `0x${crypto.createHash('sha256').update(mockTxPayload).digest('hex')}`;
-      explorerUrl = `${AZTEC_EXPLORER}/tx-effect/${aztecTxHash}`;
-      onChainSuccess = true;
-      
-      console.log(`[Aztec Transfer] ✅ On-chain success (Testnet v5)! AztecScan: ${explorerUrl}`);
-    } catch (aztecErr: any) {
-      console.warn(`[Aztec Transfer] On-chain tx failed: ${aztecErr?.message?.slice(0, 200)}`);
+    console.log(`[Aztec Transfer] Connecting to Aztec Testnet: ${roundedAmount} QDs → ${toAddr.slice(0, 16)}...`);
+    
+    const tokenAddressStr = process.env.AZTEC_TOKEN_CONTRACT_ADDRESS;
+    if (!tokenAddressStr) {
+      throw new Error("AZTEC_TOKEN_CONTRACT_ADDRESS is not set. Zero-Mock mode requires a real Aztec token contract.");
     }
 
-    // ── Generate deterministic tx identifier ─────────────────────────────────
-    const nonce       = crypto.randomBytes(16).toString('hex');
-    const txPayload   = `aztec-transfer:${fromAddr}:${toAddr}:${roundedAmount}:${Date.now()}:${nonce}`;
-    const localTxHash = `0x${crypto.createHash('sha256').update(txPayload).digest('hex')}`;
-    const blockNum    = Math.floor(Date.now() / 12_000);
+    const { createPXEClient } = await import('@aztec/aztec.js/wallet');
+    const { getSchnorrAccount } = await import('@aztec/accounts/schnorr');
+    const { Fr } = await import('@aztec/aztec.js/fields');
+    const { deriveSigningKey } = await import('@aztec/aztec.js/keys');
+    const { AztecAddress } = await import('@aztec/aztec.js/addresses');
+    const { TokenContract } = await import('@aztec/noir-contracts.js/Token');
+    const { SponsoredFeePaymentMethod } = await import('@aztec/aztec.js/fee');
+    const { deriveSecretKeyFromEvm } = await import('@/lib/aztec/client');
 
-    // Use real Aztec hash if available, else local deterministic hash
-    const displayTxHash = aztecTxHash ?? localTxHash;
-    const displayExplorerUrl = explorerUrl ?? `${AZTEC_EXPLORER}/tx-effect/${localTxHash}`;
+    const pxeUrl = process.env.AZTEC_PXE_URL || 'http://127.0.0.1:18080';
+    const pxe = createPXEClient(pxeUrl);
 
-    // ── Write to off-chain ledger (always) ───────────────────────────────────
+    // Derive sender's secret key deterministically (testnet custodial model)
+    const secretKeyHex = deriveSecretKeyFromEvm(fromAddr);
+    const secretKey = Fr.fromString(secretKeyHex);
+    const signingKey = deriveSigningKey(secretKey);
+    const account = getSchnorrAccount(pxe, secretKey, signingKey);
+    
+    // Register sender account if not already registered on this PXE
+    await account.register();
+    const senderWallet = await account.getWallet();
+
+    const tokenAddress = AztecAddress.fromString(tokenAddressStr);
+    const recipientAztecAddr = AztecAddress.fromString(toAddr);
+    const tokenContract = await TokenContract.at(tokenAddress, senderWallet);
+
+    const amountBigInt = BigInt(Math.floor(roundedAmount * 1e18));
+    const SPONSORED_FPC = process.env.SPONSORED_FPC_ADDRESS || '0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7';
+
+    console.log(`[Aztec Transfer] Sending tx to mempool via SponsoredFPC...`);
+    const tx = await tokenContract.methods
+      .transfer_public(senderWallet.getAddress(), recipientAztecAddr, amountBigInt, 0)
+      .send({
+        fee: {
+          paymentMethod: new SponsoredFeePaymentMethod(
+            AztecAddress.fromString(SPONSORED_FPC)
+          )
+        }
+      });
+
+    const receipt = await tx.wait();
+    aztecTxHash = receipt.txHash.toString();
+    explorerUrl = `${AZTEC_EXPLORER}/tx/${aztecTxHash}`;
+    
+    console.log(`[Aztec Transfer] ✅ On-chain success (Testnet v5)! AztecScan: ${explorerUrl}`);
+
+    const blockNum = Math.floor(Date.now() / 12_000);
+    const nonce = crypto.randomBytes(16).toString('hex');
+
+    // ── Write to off-chain ledger ───────────────────────────────────
     await prisma.transaction.create({
       data: {
-        txHash:      localTxHash, // unique DB key always uses local hash
+        txHash:      aztecTxHash, 
         fromAddress: fromAddr,
         toAddress:   toAddr,
         amount:      roundedAmount,
@@ -112,34 +140,28 @@ export async function POST(req: NextRequest) {
         tokenSymbol: 'QDs',
         type:        'TRANSFER',
         status:      'COMPLETED',
-        chainId:     9302, // Galactica Reticulum / Aztec testnet
+        chainId:     89021716, // Aztec Testnet v5
         blockNumber: BigInt(blockNum),
         metadata:    {
           network:      'aztec-testnet',
           aztecTxHash:  aztecTxHash,
-          explorerUrl:  displayExplorerUrl,
-          onChain:      onChainSuccess,
+          explorerUrl:  explorerUrl,
+          onChain:      true,
           nonce,
         },
       },
     });
 
-    console.log(
-      `[Aztec Transfer] ✅ ${roundedAmount} QDs: ${fromAddr.slice(0, 10)}... → ${toAddr.slice(0, 10)}... | ${onChainSuccess ? '🔗 On-Chain' : '📒 Ledger-Only'} | tx: ${displayTxHash.slice(0, 18)}...`
-    );
-
     return NextResponse.json({
       success:      true,
-      txHash:       displayTxHash,
+      txHash:       aztecTxHash,
       blockNumber:  String(blockNum),
       from:         fromAddr,
       to:           toAddr,
       amount:       roundedAmount,
-      onChain:      onChainSuccess,
-      explorerUrl:  displayExplorerUrl,
-      message:      onChainSuccess
-        ? `${roundedAmount} QDs transferred on Aztec Testnet ✅ — View on AztecScan`
-        : `${roundedAmount} QDs transferred successfully (ledger-recorded)`,
+      onChain:      true,
+      explorerUrl:  explorerUrl,
+      message:      `${roundedAmount} QDs transferred on Aztec Testnet ✅ — View on AztecScan`
     });
 
   } catch (err: any) {

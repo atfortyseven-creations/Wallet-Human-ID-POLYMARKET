@@ -221,17 +221,9 @@ export async function verifyGoldenTicketProof(
       const vKeyRaw = await fs.readFile(vKeyPath, 'utf-8');
       vKey = JSON.parse(vKeyRaw);
     } catch {
-      // Development fallback: log warning and return mock success
-      // In production, missing vKey is a CRITICAL failure
-      if (process.env.NODE_ENV === 'production') {
-        return { valid: false, error: 'ZK_VKEY_MISSING: verification key not found' };
-      }
-      console.warn('[ZK-VERIFY] Development mode: vKey not found, returning mock success. DO NOT deploy without real vKey.');
-      return {
-        valid: true,
-        nullifierHash: publicSignals.nullifier_hash,
-        tierCommitment: publicSignals.tier_commitment,
-      };
+      // Zero-mock mandate: Missing vKey is a CRITICAL cryptographic failure in ALL environments
+      console.error('[ZK-VERIFY] FATAL: Verification key not found. Strict cryptographic enforcement active. Denying proof.');
+      return { valid: false, error: 'ZK_VKEY_MISSING: verification key not found' };
     }
 
     const signals = [

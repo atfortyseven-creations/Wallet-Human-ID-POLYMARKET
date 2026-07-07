@@ -1125,7 +1125,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         // FETCH PENDING MESSAGES (OFFLINE ROUTING)
         let pendingServer: any[] = [];
         try {
-          const pRes = await fetch(`/api/chat/pending?address=${address}`, { cache: 'no-store' });
+          const pRes = await fetch(`/api/chat/pending?address=${address}`, { 
+            cache: 'no-store',
+            headers: { 'x-web3-address': address }
+          });
           if (pRes.ok) {
             const pData = await pRes.json();
             if (pData.pending && Array.isArray(pData.pending)) {
@@ -1343,10 +1346,15 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         return updated;
       });
 
-    } catch (err) {
-      // On failure, remove the optimistic message and clean up the map
+    } catch (err: any) {
+      // On failure, keep the message but mark it as failed so the user knows what happened
       optimisticContentMap.current.delete(content);
-      setMessages(prev => prev.filter(m => m.id !== optimisticId));
+      const errString = err?.message || String(err);
+      setMessages(prev => prev.map(m => 
+        m.id === optimisticId 
+          ? { ...m, failed: true, error: errString } 
+          : m
+      ));
       console.error('[Chat] executeSend failed:', err);
     } finally {
       setSending(false);

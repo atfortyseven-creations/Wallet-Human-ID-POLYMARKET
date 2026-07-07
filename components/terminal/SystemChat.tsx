@@ -1184,12 +1184,12 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
           const hydratedContents = new Set(hydrated.map(h => h.content.trim()));
           
           // Only keep optimistic messages if they aren't already represented by a real hydrated message from the network.
-          // Also filter out any optimistic message older than 15 seconds to prevent permanent ghost messages.
+          // Also filter out any optimistic message older than 45 seconds to prevent permanent ghost messages.
           const now = Date.now();
           const survivingOptimistic = optimistic.filter(o => 
             !renderedIds.has(o.id) && 
             !hydratedContents.has(o.content.trim()) &&
-            (now - o.sentAt < 15000)
+            (now - o.sentAt < 45000)
           );
           
           return [...hydrated, ...survivingOptimistic].sort((a, b) => a.sentAt - b.sentAt);
@@ -1254,8 +1254,9 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
       // Mark as sent (remove optimistic tag)
       setMessages(prev => prev.map(m => m.id === optimistic.id ? { ...m, readAt: undefined } : m));
     } catch (e: any) {
-      // Remove optimistic on failure
-      setMessages(prev => prev.filter(m => m.id !== optimistic.id));
+      // On failure, keep the message but mark it as failed so the user knows what happened
+      const errString = e?.message || String(e);
+      setMessages(prev => prev.map(m => m.id === optimistic.id ? { ...m, failed: true, error: errString } : m));
       console.error('[Chat] send failed:', e);
       const msg = e?.message?.toLowerCase() || '';
       if (msg.includes('network') || msg.includes('recipient') || msg.includes('not found')) {

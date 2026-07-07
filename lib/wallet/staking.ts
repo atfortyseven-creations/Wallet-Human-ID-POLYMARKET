@@ -89,9 +89,8 @@ export async function stakeETH(
   walletAddress: string
 ): Promise<{ txHash: string }> {
   // Zero-Mock Mandate
-  return {
-    txHash: 'GETBLOCK_RPC_REQUIRED_FOR_STAKING',
-  };
+  console.error('[Staking] FATAL: Real on-chain staking transaction not fully connected to provider RPC. Strict mode active.');
+  throw new Error('GETBLOCK_RPC_REQUIRED_FOR_STAKING: Zero-mock mode prohibits simulated staking transactions.');
 }
 
 /**
@@ -99,6 +98,7 @@ export async function stakeETH(
  */
 export async function getStakingPositions(walletAddress: string): Promise<StakingPosition[]> {
   // Zero-Mock: Awaiting Moralis/GetBlock indexer to fetch real on-chain Lido/RocketPool tokens
+  console.warn('[Staking] No on-chain indexer connected. Returning empty positions (strictly no fake data).');
   return [];
 }
 

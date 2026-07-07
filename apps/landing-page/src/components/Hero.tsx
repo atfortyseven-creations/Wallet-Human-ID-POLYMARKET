@@ -8,20 +8,20 @@ export default function Hero() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <section className="relative min-h-[90vh] flex flex-col justify-center items-center text-center px-4 overflow-hidden border-b-2 border-ink">
+    <section className="relative min-h-[90svh] flex flex-col justify-center items-center text-center px-4 overflow-hidden border-b-2 border-ink">
       <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay pointer-events-none"></div>
       
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="max-w-4xl mx-auto z-10"
+        className="max-w-4xl mx-auto z-10 w-full"
       >
-        <h1 className="text-6xl md:text-8xl font-serif font-semibold tracking-tight text-ink mb-6">
-          Digital Product<br/>Passports with Privacy.
+        <h1 className="text-5xl sm:text-6xl md:text-8xl font-serif font-semibold tracking-tight text-ink mb-6 px-2 break-words">
+          Digital Product<br className="hidden sm:block" /> Passports with Privacy.
         </h1>
         
-        <p className="text-xl md:text-2xl text-ink/80 max-w-2xl mx-auto mb-10 font-sans">
+        <p className="text-lg sm:text-xl md:text-2xl text-ink/80 max-w-2xl mx-auto mb-10 font-sans px-4">
           Comply with the 2027 EU Battery Passport regulation without exposing your sensitive supply chain data. Built on Aztec Network.
         </p>
         

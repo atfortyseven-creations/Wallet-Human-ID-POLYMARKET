@@ -75,8 +75,32 @@ export class VoidPaymasterService {
     }
 
     private async getHash(userOp: any, timeData: string, chainId: number): Promise<string> {
-        // Mock hash calculation for the stub
-        return ethers.keccak256(ethers.toUtf8Bytes("MOCK_HASH"));
+        // Strict real-world hashing for EntryPoint v0.6
+        // Pack: [sender, nonce, initCode, callData, callGasLimit, verificationGasLimit, preVerificationGas, maxFeePerGas, maxPriorityFeePerGas, paymasterAndData (without signature), signature (empty)]
+        // Since we are creating the hash to sign, we only hash the relevant parts according to ERC-4337 specs
+        const userOpHash = ethers.keccak256(ethers.AbiCoder.defaultAbiCoder().encode(
+            ["address", "uint256", "bytes32", "bytes32", "uint256", "uint256", "uint256", "uint256", "uint256", "bytes32"],
+            [
+                userOp.sender,
+                userOp.nonce,
+                ethers.keccak256(userOp.initCode || "0x"),
+                ethers.keccak256(userOp.callData || "0x"),
+                userOp.callGasLimit,
+                userOp.verificationGasLimit,
+                userOp.preVerificationGas,
+                userOp.maxFeePerGas,
+                userOp.maxPriorityFeePerGas,
+                ethers.keccak256(ethers.concat([this.paymasterAddress, timeData]))
+            ]
+        ));
+        
+        // Final pack with EntryPoint address and ChainID
+        const ENTRY_POINT = "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789"; // Standard v0.6 EntryPoint
+        const pack = ethers.AbiCoder.defaultAbiCoder().encode(
+            ["bytes32", "address", "uint256"],
+            [userOpHash, ENTRY_POINT, chainId]
+        );
+        return ethers.keccak256(pack);
     }
 }
 

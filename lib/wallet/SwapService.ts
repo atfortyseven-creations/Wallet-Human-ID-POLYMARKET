@@ -28,8 +28,11 @@ export const swapService = {
         sellAmount: string, // in ether units (e.g. "1.5")
         decimals: number = 18
     ): Promise<SwapQuote | null> {
-        // Mocking Real Quote for "Demo" until API Key is set, 
-        // OR fetching if Key exists.
+        // Zero-mock Mandate: Real Quote strictly enforced.
+        if (!ZERO_EX_API_KEY) {
+            console.error('[SwapService] FATAL: NEXT_PUBLIC_ZERO_EX_API_KEY is missing. Strict mode active, denying mock quote.');
+            throw new Error('Missing 0x API Key. Zero-mock mode active.');
+        }
         
         // 1. Base API URL mapping
         let baseUrl = ZERO_EX_API_URL;
@@ -49,8 +52,6 @@ export const swapService = {
         });
 
         try {
-            // [DEMO MODE] If no API key, we might need a fallback or just fail gracefully.
-            // But for "User WANTS REAL", we try the public endpoint which might be rate limited.
             const res = await fetch(`${baseUrl}?${params.toString()}`, {
                 headers: {
                     '0x-api-key': ZERO_EX_API_KEY

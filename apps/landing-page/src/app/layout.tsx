@@ -2,6 +2,13 @@ import type { Metadata } from "next";
 import { WalletProvider } from '@/components/WalletProvider';
 import "./globals.css";
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export const metadata: Metadata = {
   title: "Whale Network | Powered by Aztec",
   description: "The Private Plaza for Ethereum. Build and transact with total confidentiality using Noir and Zero-Knowledge proofs.",

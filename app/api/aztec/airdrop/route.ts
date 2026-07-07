@@ -92,75 +92,66 @@ export async function POST(req: NextRequest) {
     console.log(`[Aztec Airdrop] Initiating ${AIRDROP_AMOUNT} QDs to ${normalizedAddress}`);
 
     // ── Attempt real on-chain mint ────────────────────────────────────────────
-    let aztecTxHash: string | null  = null;
-    let explorerUrl: string | null  = null;
-    let onChainSuccess              = false;
+    let aztecTxHash: string;
+    let explorerUrl: string;
 
     const tokenAddressStr   = process.env.AZTEC_TOKEN_CONTRACT_ADDRESS;
     const relayerSecretHex  = process.env.AZTEC_RELAYER_SECRET_KEY;
 
-    if (tokenAddressStr && relayerSecretHex) {
-      try {
-        const pxeUrl = process.env.AZTEC_PXE_URL || 'http://127.0.0.1:18080';
-
-        const { createPXEClient }           = await import('@aztec/aztec.js/wallet');
-        const { getSchnorrAccount }         = await import('@aztec/accounts/schnorr');
-        const { Fr }                        = await import('@aztec/aztec.js/fields');
-        const { deriveSigningKey }          = await import('@aztec/aztec.js/keys');
-        const { AztecAddress }              = await import('@aztec/aztec.js/addresses');
-        const { TokenContract }             = await import('@aztec/noir-contracts.js/Token');
-        const { SponsoredFeePaymentMethod } = await import('@aztec/aztec.js/fee');
-
-        const pxe = createPXEClient(pxeUrl);
-
-        const secretKey  = Fr.fromString(relayerSecretHex);
-        const signingKey = deriveSigningKey(secretKey);
-        const account    = getSchnorrAccount(pxe, secretKey, signingKey);
-        await account.register();
-        const relayerWallet = await account.getWallet();
-
-        const tokenAddress = AztecAddress.fromString(tokenAddressStr);
-        const toAddress    = AztecAddress.fromString(normalizedAddress);
-        const tokenContract = await TokenContract.at(tokenAddress, relayerWallet);
-
-        // 10 QDs in base units (18 decimals)
-        const amountBigInt = BigInt(AIRDROP_AMOUNT) * (10n ** 18n);
-
-        const tx = await tokenContract.methods
-          .mint_to_public(toAddress, amountBigInt)
-          .send({
-            fee: {
-              paymentMethod: new SponsoredFeePaymentMethod(
-                AztecAddress.fromString(SPONSORED_FPC_ADDRESS)
-              )
-            }
-          });
-
-        const receipt   = await tx.wait();
-        aztecTxHash     = receipt.txHash.toString();
-        explorerUrl     = `${AZTEC_EXPLORER}/tx/${aztecTxHash}`;
-        onChainSuccess  = true;
-
-        console.log(`[Aztec Airdrop] ✅ On-chain! Hash: ${aztecTxHash}`);
-
-      } catch (aztecErr: any) {
-        console.warn(`[Aztec Airdrop] On-chain mint skipped (PXE unavailable): ${aztecErr?.message?.slice(0, 200)}`);
-      }
-    } else {
-      console.warn('[Aztec Airdrop] AZTEC_TOKEN_CONTRACT_ADDRESS or AZTEC_RELAYER_SECRET_KEY not set — ledger-only mode.');
+    if (!tokenAddressStr || !relayerSecretHex) {
+      throw new Error("AZTEC_TOKEN_CONTRACT_ADDRESS or AZTEC_RELAYER_SECRET_KEY is not set. Zero-Mock mode requires real Aztec config.");
     }
 
+    const pxeUrl = process.env.AZTEC_PXE_URL || 'http://127.0.0.1:18080';
+
+    const { createPXEClient }           = await import('@aztec/aztec.js/wallet');
+    const { getSchnorrAccount }         = await import('@aztec/accounts/schnorr');
+    const { Fr }                        = await import('@aztec/aztec.js/fields');
+    const { deriveSigningKey }          = await import('@aztec/aztec.js/keys');
+    const { AztecAddress }              = await import('@aztec/aztec.js/addresses');
+    const { TokenContract }             = await import('@aztec/noir-contracts.js/Token');
+    const { SponsoredFeePaymentMethod } = await import('@aztec/aztec.js/fee');
+
+    const pxe = createPXEClient(pxeUrl);
+
+    const secretKey  = Fr.fromString(relayerSecretHex);
+    const signingKey = deriveSigningKey(secretKey);
+    const account    = getSchnorrAccount(pxe, secretKey, signingKey);
+    await account.register();
+    const relayerWallet = await account.getWallet();
+
+    const tokenAddress = AztecAddress.fromString(tokenAddressStr);
+    const toAddress    = AztecAddress.fromString(normalizedAddress);
+    const tokenContract = await TokenContract.at(tokenAddress, relayerWallet);
+
+    // 10 QDs in base units (18 decimals)
+    const amountBigInt = BigInt(AIRDROP_AMOUNT) * (10n ** 18n);
+    const SPONSORED_FPC = process.env.SPONSORED_FPC_ADDRESS || '0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7';
+
+    console.log(`[Aztec Airdrop] Sending tx to mempool via SponsoredFPC...`);
+    const tx = await tokenContract.methods
+      .mint_to_public(toAddress, amountBigInt)
+      .send({
+        fee: {
+          paymentMethod: new SponsoredFeePaymentMethod(
+            AztecAddress.fromString(SPONSORED_FPC)
+          )
+        }
+      });
+
+    const receipt   = await tx.wait();
+    aztecTxHash     = receipt.txHash.toString();
+    explorerUrl     = `${AZTEC_EXPLORER}/tx/${aztecTxHash}`;
+
+    console.log(`[Aztec Airdrop] ✅ On-chain! Hash: ${aztecTxHash}`);
+
     const nonce         = crypto.randomBytes(16).toString('hex');
-    const txPayload     = `aztec-airdrop:${normalizedAddress}:${AIRDROP_AMOUNT}:${Date.now()}:${nonce}`;
-    const localTxHash   = `0x${crypto.createHash('sha256').update(txPayload).digest('hex')}`;
-    const displayTxHash = aztecTxHash ?? localTxHash;
-    const displayExplorerUrl = explorerUrl ?? null;
     const blockNum      = Math.floor(Date.now() / 12_000);
 
-    // ── Record in DB (always) ────────────────────────────────────────────────
+    // ── Record in DB ────────────────────────────────────────────────
     await prisma.transaction.create({
       data: {
-        txHash:      localTxHash,
+        txHash:      aztecTxHash,
         fromAddress: '0x0000000000000000000000000000000000000000000000000000000000000000',
         toAddress:   normalizedAddress,
         amount:      AIRDROP_AMOUNT,
@@ -168,13 +159,13 @@ export async function POST(req: NextRequest) {
         tokenSymbol: 'QDs',
         type:        'AIRDROP',
         status:      'COMPLETED',
-        chainId:     9302,
+        chainId:     89021716,
         blockNumber: BigInt(blockNum),
         metadata:    {
           network:     'aztec-testnet',
           aztecTxHash: aztecTxHash,
-          explorerUrl: displayExplorerUrl,
-          onChain:     onChainSuccess,
+          explorerUrl: explorerUrl,
+          onChain:     true,
           nonce,
         },
       },
@@ -182,13 +173,11 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success:     true,
-      txHash:      displayTxHash,
-      explorerUrl: displayExplorerUrl,
-      onChain:     onChainSuccess,
+      txHash:      aztecTxHash,
+      explorerUrl: explorerUrl,
+      onChain:     true,
       amount:      AIRDROP_AMOUNT,
-      message:     onChainSuccess
-        ? '10 QDs minted on Aztec Testnet ✅ — view on AztecScan!'
-        : '10 QDs credited to your account (ledger-recorded)',
+      message:     '10 QDs minted on Aztec Testnet ✅ — view on AztecScan!',
     });
 
   } catch (error: any) {
