@@ -369,11 +369,11 @@ export function WhaleProShell({
                                     <span className="font-mono text-[10px] font-black text-[#050505] tabular-nums leading-tight">{m.value}</span>
                                 </div>
                             ))}
-                            <div className="flex flex-col items-start px-4 py-1 min-w-[120px] bg-[#00C076]/5">
-                                <span className="font-mono text-[7px] uppercase tracking-[0.25em] text-[#00C076]">Network RPC</span>
+                        <div className="flex flex-col items-start px-4 py-1 min-w-[120px] bg-black/[0.02]">
+                                <span className="font-mono text-[7px] uppercase tracking-[0.25em] text-black/40">Network RPC</span>
                                 <div className="flex items-center gap-1.5 mt-0.5">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-[#00C076] animate-pulse shadow-[0_0_8px_rgba(0,192,118,0.5)]" />
-                                    <span className="font-mono text-[10px] font-black text-[#00C076] tabular-nums leading-tight">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-black/80 animate-pulse" />
+                                    <span className="font-mono text-[10px] font-black text-black tabular-nums leading-tight">
                                         {latency > 0 ? `${latency}ms` : '42ms'} (Connected)
                                     </span>
                                 </div>
@@ -582,10 +582,10 @@ export function WhaleProShell({
                                     </div>
                                     <div className="flex items-center gap-2">
                                         {isZkRestricted && (
-                                            <span className="text-[10px] font-semibold bg-amber-500/20 text-amber-600 px-2 py-0.5 rounded-full border border-amber-500/30">Verify first</span>
+                                            <span className="text-[10px] font-semibold bg-black/[0.06] text-black/60 px-2 py-0.5 rounded-full border border-black/10">Verify first</span>
                                         )}
                                         {isLocked && (
-                                            <span className="text-[10px] font-semibold bg-red-500/20 text-red-500 px-2 py-0.5 rounded-full border border-red-500/30">Upgrade</span>
+                                            <span className="text-[10px] font-semibold bg-black/[0.06] text-black/60 px-2 py-0.5 rounded-full border border-black/10">Upgrade</span>
                                         )}
                                         {!isActive && !isZkRestricted && !isLocked && (
                                             <span className="font-mono text-[10px] font-black opacity-30">[&gt;]</span>

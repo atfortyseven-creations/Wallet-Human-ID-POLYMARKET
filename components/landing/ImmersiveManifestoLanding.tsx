@@ -273,7 +273,7 @@ function LandingNav() {
           {connectedAddress ? (
             <div className="flex items-center gap-2">
               <span className="flex items-center gap-1.5 px-3 py-1.5 bg-black/[0.04] border border-black/10 text-[12px] font-mono text-black/70">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                <span className="w-1.5 h-1.5 rounded-full bg-black/70 shrink-0" />
                 {connectedAddress.slice(0, 6)}…{connectedAddress.slice(-4)}
               </span>
               <Link

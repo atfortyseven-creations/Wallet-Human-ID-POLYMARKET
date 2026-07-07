@@ -48,11 +48,11 @@ function VoteButton({
     const [widgetOpen, setWidgetOpen] = useState(false);
     const isFor = idx === 0;
     const activeClass = isFor
-        ? 'bg-[#00C076]/10 border-[#00C076]/30 text-[#00C076] hover:bg-[#00C076] hover:text-white'
-        : 'bg-[#FF3B30]/10 border-[#FF3B30]/30 text-[#FF3B30] hover:bg-[#FF3B30] hover:text-white';
+        ? 'bg-black/5 border-black/20 text-black hover:bg-black hover:text-white'
+        : 'bg-black/5 border-black/20 text-black/60 hover:bg-black/80 hover:text-white';
     const idleClass = isFor
-        ? 'bg-white border-[#E5E5E5] text-[#050505] hover:border-[#00C076] hover:text-[#00C076]'
-        : 'bg-white border-[#E5E5E5] text-[#050505] hover:border-[#FF3B30] hover:text-[#FF3B30]';
+        ? 'bg-white border-[#E5E5E5] text-[#050505] hover:border-black hover:text-black'
+        : 'bg-white border-[#E5E5E5] text-[#050505] hover:border-black/60 hover:text-black/60';
 
     if (widgetOpen) {
         return (
@@ -158,7 +158,7 @@ export function GovernanceProposals() {
             <div className="flex items-center justify-between mb-2">
                 <div>
                     <h2 className="text-sm font-black text-[#050505] uppercase tracking-widest flex items-center gap-2">
-                        <Vote size={18} className="text-[#00C076]" />
+                        <Vote size={18} className="text-black" />
                         Active Network Proposals
                     </h2>
                     <p className="text-[10px] text-[#888888] mt-1">
@@ -166,7 +166,7 @@ export function GovernanceProposals() {
                     </p>
                 </div>
                 <div className="px-3 py-1.5 border border-[#E5E5E5] rounded-lg bg-white shadow-sm flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-[#00C076] animate-pulse" />
+                    <div className="w-2 h-2 rounded-full bg-black/80 animate-pulse" />
                     <span className="text-[9px] font-black uppercase text-[#050505] tracking-widest">
                         {proposals.length} Active
                     </span>
@@ -176,7 +176,7 @@ export function GovernanceProposals() {
             <div className="space-y-4">
                 {proposals.map((proposal) => (
                     <div key={proposal.id} className="bg-white border border-[#E5E5E5] hover:border-[#050505]/20 rounded-2xl p-6 shadow-sm transition-all relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#00C076]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-bl-full z-0" />
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-bl-full z-0" />
                         
                         <div className="relative z-10">
                             <div className="flex items-center justify-between mb-4">

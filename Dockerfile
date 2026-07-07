@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Install Aztec CLI (provides `aztec start --pxe` for testnet connectivity)
 # Version pinned to match our @aztec/aztec.js package version (4.3.1)
 RUN curl -s https://install.aztec.network | bash -s -- --version 0.87.9 --no-sandbox 2>/dev/null || \
-    npm install -g @aztec/aztec@4.3.1 2>/dev/null || \
+    npm install -g @aztec/cli@4.3.1 2>/dev/null || \
     echo "[Docker] Aztec CLI install skipped — PXE must be external"
 
 #  STAGE 2: BUILD DEPENDENCIES 

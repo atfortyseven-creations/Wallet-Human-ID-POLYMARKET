@@ -1395,7 +1395,7 @@ html.no-hw-accel * {
     */
 @media screen and (min-width: 1024px) {
   html {
-    zoom: 0.6;
+    /* zoom: 0.6; - REMOVED: Caused critical layout bugs */
   }
 }
 

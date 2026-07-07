@@ -28,13 +28,14 @@ function SectionHeader({ number, label }: { number: string; label: string }) {
 }
 
 function Tag({ children, color = "gray" }: { children: React.ReactNode; color?: "gray" | "blue" | "green" | "purple" | "amber" | "rose" }) {
+  // All color variants resolve to strict monochrome — zero color noise
   const colors = {
-    gray:   "bg-[#F5F5F5] border-black/5 text-black/70",
-    blue:   "bg-blue-50 border-blue-100 text-blue-800",
-    green:  "bg-emerald-50 border-emerald-100 text-emerald-800",
-    purple: "bg-violet-50 border-violet-100 text-violet-800",
-    amber:  "bg-amber-50 border-amber-100 text-amber-800",
-    rose:   "bg-rose-50 border-rose-100 text-rose-800",
+    gray:   "bg-black/[0.04] border-black/[0.08] text-black/70",
+    blue:   "bg-black/[0.04] border-black/[0.08] text-black/70",
+    green:  "bg-black/[0.05] border-black/[0.10] text-black/80",
+    purple: "bg-black/[0.04] border-black/[0.08] text-black/70",
+    amber:  "bg-black/[0.04] border-black/[0.08] text-black/65",
+    rose:   "bg-black/[0.04] border-black/[0.08] text-black/65",
   };
   return (
     <span className={`px-3 py-1.5 border rounded-lg text-[10px] md:text-xs font-bold font-mono ${colors[color]}`}>
