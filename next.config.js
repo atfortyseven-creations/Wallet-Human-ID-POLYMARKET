@@ -145,6 +145,20 @@ const nextConfig = {
             } : {}),
         };
 
+        // [AZTEC BUILD FIX] @aztec/aztec.js v0.x does not export its root path
+        // in the package.json exports field. Webpack rejects static imports with:
+        // "Package path . is not exported from package @aztec/aztec.js".
+        // All Aztec usage in client components uses dynamic import() at runtime,
+        // so we stub the package at build time with `false` on the client.
+        // The dynamic import() calls still work in the browser via the CDN/node resolution
+        // because they are evaluated at runtime, not bundled.
+        if (!isServer) {
+            config.resolve.alias = {
+                ...config.resolve.alias,
+                '@aztec/aztec.js': false,
+            };
+        }
+
         // [EPERM FIX] Prevent webpack file watcher from scanning Windows system
         // protected directories. Without this, webpack glob scans crawl UP from
         // the project root and hit EPERM on folders like "Mi música", crashing
