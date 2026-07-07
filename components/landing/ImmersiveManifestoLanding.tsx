@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import { NetworkMapPanel } from '@/components/terminal/NetworkMapPanel';
-import { ChevronDown, ArrowRight, Shield, Zap, Lock, Database, Terminal, Cpu, Key, Activity } from "lucide-react";
+import { ChevronDown, ArrowRight, Shield, Zap, Lock, Database, Terminal, Cpu, Key, Activity, MessageSquare } from "lucide-react";
 
 // Lottie cargado dinámicamente
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
