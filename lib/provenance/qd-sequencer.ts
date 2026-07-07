@@ -1,7 +1,3 @@
-import { createAztecNodeClient } from '@aztec/aztec.js/node';
-import { SchnorrAccountContract } from '@aztec/accounts/schnorr';
-import { AccountManager } from '@aztec/aztec.js/wallet';
-import { Fr, GrumpkinScalar } from '@aztec/aztec.js/fields';
 import { buildRegisterProductArgs } from './aztec-client';
 import { prisma } from '../prisma';
 
@@ -48,6 +44,7 @@ class AztecQDSequencer {
     try {
       console.log(`[Sequencer] Connecting to Aztec PXE: ${this.pxeUrl}`);
       // For demo/sandbox stability, if Aztec network is unreachable we simulate a client
+      const { createAztecNodeClient } = await import('@aztec/aztec.js/node');
       const pxe = createAztecNodeClient(this.pxeUrl);
       
       try {
@@ -88,6 +85,9 @@ class AztecQDSequencer {
       // Generate an ephemeral account for the submission if the user isn't locally connected
       // In a pure client-side architecture this would happen in the browser,
       // but the API is acting as a relay/sequencer for the QDs.
+      const { Fr, GrumpkinScalar } = await import('@aztec/aztec.js/fields');
+      const { SchnorrAccountContract } = await import('@aztec/accounts/schnorr');
+      const { AccountManager } = await import('@aztec/aztec.js/wallet');
       const secretKey = Fr.random();
       const signingKey = GrumpkinScalar.random();
       // AccountManager constructor is private in newer versions, must use .create()
@@ -104,7 +104,7 @@ class AztecQDSequencer {
       if (!targetContractAddr) throw new Error('AZTEC_TOKEN_CONTRACT_ADDRESS is missing. Zero-mock mode requires a real target contract.');
       
       const { TokenContract } = await import('@aztec/noir-contracts.js/Token');
-      const { AztecAddress } = await import('@aztec/aztec.js/addresses');
+      const { AztecAddress } = await import('@aztec/stdlib/aztec-address');
       const { SponsoredFeePaymentMethod } = await import('@aztec/aztec.js/fee');
       
       const wallet = await (accountManager as any).getWallet();

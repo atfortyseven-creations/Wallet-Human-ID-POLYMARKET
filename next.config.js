@@ -196,6 +196,9 @@ const nextConfig = {
                 os: false,
                 path: false,
                 crypto: false,
+                // [METAMASK SDK FIX] @wagmi/connectors embeds @metamask/sdk which tries to
+                // load the 'encoding' node built-in. Stub it out for browser bundles.
+                encoding: false,
             };
         }
 
@@ -238,7 +241,26 @@ const nextConfig = {
     },
 
     // Moved from experimental in Next.js 15
-    serverExternalPackages: ['@prisma/client', 'prisma', 'ioredis', 'neo4j-driver', 'snarkjs', '@aztec/aztec.js', '@aztec/foundation', 'pino'],
+    // [AZTEC SERVER GUARD] All @aztec packages are ESM-only and must never be
+    // bundled by Webpack. serverExternalPackages tells Next.js to load them via
+    // native Node.js require() at runtime, bypassing the Webpack bundler entirely.
+    // This is the canonical fix for "j is not a function" and missing export errors.
+    serverExternalPackages: [
+        '@prisma/client',
+        'prisma',
+        'ioredis',
+        'neo4j-driver',
+        'snarkjs',
+        'pino',
+        '@aztec/aztec.js',
+        '@aztec/foundation',
+        '@aztec/stdlib',
+        '@aztec/accounts',
+        '@aztec/pxe',
+        '@aztec/wallets',
+        '@aztec/noir-contracts.js',
+        '@aztec/bb.js',
+    ],
 
     experimental: {
         optimizePackageImports: [

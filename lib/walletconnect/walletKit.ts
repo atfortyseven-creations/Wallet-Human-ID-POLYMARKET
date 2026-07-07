@@ -22,6 +22,7 @@ export async function createWeb3Wallet() {
 
     const core = new Core({
         projectId,
+        customStoragePrefix: 'wc-wallet-system',
     });
 
     web3wallet = await Web3Wallet.init({

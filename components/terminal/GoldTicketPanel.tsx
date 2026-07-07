@@ -473,11 +473,9 @@ export function GoldTicketPanel() {
         await new Promise(r => setTimeout(r, 800));
         
         try {
-            const { createPXEClient } = await import('@aztec/aztec.js');
             const rpcUrl = process.env.NEXT_PUBLIC_AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
-            const pxe = createPXEClient(rpcUrl);
             toast.loading('[Aztec] Connecting to RPC Node...', { id: 'aztec-rpc' });
-            await pxe.getNodeInfo(); // Real time interaction
+            await fetch(rpcUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "node_getNodeInfo", params: [] }) });
             toast.loading('[Aztec] Connected! Generating Shielded Account...', { id: 'aztec-rpc' });
         } catch (e) {
             toast.loading('[Aztec] Sandbox offline. Optimistic fallback: Generating Shielded Account...', { id: 'aztec-rpc' });

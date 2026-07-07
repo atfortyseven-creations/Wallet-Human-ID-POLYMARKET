@@ -43,10 +43,10 @@ export function NetworkStats({ theme = 'default' }: { theme?: 'default' | 'arcti
             setLogs(prev => [...prev, `[RPC] Handshake with ${AZTEC_RPC_URL}`]);
         }
 
-        const { createPXEClient } = await import('@aztec/aztec.js');
-        const pxe = createPXEClient(AZTEC_RPC_URL);
-        const nodeInfo = await pxe.getNodeInfo();
-        const blockNumber = await pxe.getBlockNumber();
+        const nodeInfoRes = await fetch(AZTEC_RPC_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "node_getNodeInfo", params: [] }) });
+        const blockRes = await fetch(AZTEC_RPC_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "node_getBlockNumber", params: [] }) });
+        const nodeInfo = (await nodeInfoRes.json()).result || {};
+        const blockNumber = (await blockRes.json()).result || 0;
         
         // Optimistically calculate txCount from block number for UI demonstration
         // (Aztec node doesn't expose a global txCount easily without querying all blocks)

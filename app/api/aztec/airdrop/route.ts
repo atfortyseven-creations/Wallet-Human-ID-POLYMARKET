@@ -98,13 +98,13 @@ export async function POST(req: NextRequest) {
       const { AccountManager }          = await import('@aztec/aztec.js/wallet');
       const { SchnorrAccountContract }  = await import('@aztec/accounts/schnorr');
       const { Fr }                      = await import('@aztec/aztec.js/fields');
-      const { deriveSigningKey }        = await import('@aztec/aztec.js/keys');
-      const { AztecAddress }            = await import('@aztec/aztec.js/addresses');
+      const { deriveSigningKey }        = await import('@aztec/stdlib/keys');
+      const { AztecAddress }            = await import('@aztec/stdlib/aztec-address');
       const { TokenContract }           = await import('@aztec/noir-contracts.js/Token');
       const { SponsoredFeePaymentMethod } = await import('@aztec/aztec.js/fee');
 
       const pxe        = createSafeJsonRpcClient(pxeUrl, PXE);
-      const secretKey  = Fr.fromString(relayerSecretHex);
+      const secretKey  = Fr.fromHexString(relayerSecretHex.replace('0x', ''));
       const signingKey = deriveSigningKey(secretKey);
       const contract   = new SchnorrAccountContract(signingKey);
       const manager    = await AccountManager.create(pxe, secretKey, contract);

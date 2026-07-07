@@ -32,11 +32,11 @@ export async function GET(req: NextRequest) {
     // The secretKey is derived deterministically from the EVM address.
     const { deriveSecretKeyFromEvm } = await import('@/lib/aztec/client');
     const { Fr }                     = await import('@aztec/aztec.js/fields');
-    const { deriveSigningKey }       = await import('@aztec/aztec.js/keys');
+    const { deriveSigningKey }       = await import('@aztec/stdlib/keys');
     const { SchnorrAccountContract, getSchnorrAccountContractAddress } = await import('@aztec/accounts/schnorr');
 
     const secretKeyHex = deriveSecretKeyFromEvm(evmAddress.toLowerCase());
-    const secretKey    = Fr.fromString(secretKeyHex);
+    const secretKey    = Fr.fromHexString(secretKeyHex.replace('0x', ''));
     const signingKey   = deriveSigningKey(secretKey);
 
     // Compute the canonical Aztec address for this user's Schnorr account

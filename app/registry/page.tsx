@@ -271,15 +271,16 @@ function AztecAnalyticsTab({ isDark }: { isDark: boolean }) {
     setFetching(true);
     setFetchError(null);
     try {
-      const { createPXEClient } = await import("@aztec/aztec.js");
       const rpcUrl = process.env.NEXT_PUBLIC_AZTEC_NODE_URL || "https://v5.testnet.rpc.aztec-labs.com";
-      const pxe = createPXEClient(rpcUrl);
-      const nodeInfoData = await pxe.getNodeInfo();
-      const l2BlockNumber = await pxe.getBlockNumber();
+      const nodeInfoRes = await fetch(rpcUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "node_getNodeInfo", params: [] }) });
+      const blockRes = await fetch(rpcUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "node_getBlockNumber", params: [] }) });
+      const nodeInfoData = (await nodeInfoRes.json()).result || {};
+      const l2BlockNumber = (await blockRes.json()).result || 0;
       
       let l2ProvenBlockNumber = null;
       try {
-        l2ProvenBlockNumber = await pxe.getProvenBlockNumber();
+        const provenRes = await fetch(rpcUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "node_getProvenBlockNumber", params: [] }) });
+        l2ProvenBlockNumber = (await provenRes.json()).result;
       } catch (e) {
         // Fallback if not available
         l2ProvenBlockNumber = l2BlockNumber;

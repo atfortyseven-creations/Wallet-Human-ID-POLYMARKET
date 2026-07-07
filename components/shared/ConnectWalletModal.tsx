@@ -54,10 +54,10 @@ export function ConnectWalletModal() {
 
     const handleAppKitConnect = () => {
         closeConnectModal();
-        setTimeout(() => openAppKit({ view: 'Connect' }), 50);
+        openAppKit({ view: 'Connect' });
     };
 
-    // \u2500\u2500 Smart connector detector \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+    // ──────────────────────────────── Smart connector detector ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
     // Priority: exact SDK ID > injected window.ethereum > AppKit fallback
     const connectViaExtension = async (ids: string[]) => {
         if (typeof window === 'undefined') return;
