@@ -717,13 +717,13 @@ export function NetworkMapPanel() {
                          <div className="space-y-4">
                             <div className="bg-black/50 border border-slate-700 p-4 rounded-2xl shadow-sm hover:border-slate-500 transition-colors cursor-default relative overflow-hidden group">
                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400" />
-                               <h4 className="font-black text-sm text-white mb-1">L2 Outbox</h4>
-                               <p className="text-xs font-mono text-slate-400">Pushes messages to L1 via Rollup Block</p>
+                               <h4 className="font-black text-sm !text-white mb-1">L2 Outbox</h4>
+                               <p className="text-xs font-mono !text-slate-300">Pushes messages to L1 via Rollup Block</p>
                             </div>
                             <div className="bg-black/50 border border-slate-700 p-4 rounded-2xl shadow-sm hover:border-slate-500 transition-colors cursor-default relative overflow-hidden">
                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-400" />
-                               <h4 className="font-black text-sm text-white mb-1 flex items-center gap-2">L2 Inbox <span className="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-400 text-[8px] uppercase">Active</span></h4>
-                               <p className="text-xs font-mono text-slate-400">Reads cross-chain calls securely</p>
+                               <h4 className="font-black text-sm !text-white mb-1 flex items-center gap-2">L2 Inbox <span className="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-400 text-[8px] uppercase">Active</span></h4>
+                               <p className="text-xs font-mono !text-slate-300">Reads cross-chain calls securely</p>
                             </div>
                          </div>
                       </div>

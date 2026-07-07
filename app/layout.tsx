@@ -322,7 +322,7 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className="bg-[#050505] text-[#FFFFFF] antialiased selection:bg-white/10 selection:text-white transition-colors duration-300"
+        className="bg-white text-black antialiased selection:bg-black/10 transition-colors duration-300"
         suppressHydrationWarning
       >
 
