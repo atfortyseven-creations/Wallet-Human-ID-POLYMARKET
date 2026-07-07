@@ -207,6 +207,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
    */
   const confirmedMsgIds = useRef<Set<string>>(new Set());
   const optimisticContentMap = useRef<Map<string, string>>(new Map()); // content -> optimisticId
+  // Always-fresh ref to executeSend — avoids stale closure in event listeners
+  const executeSendRef = useRef<((content: string) => Promise<void>) | null>(null);
 
   // Detect physical device type (touch + narrow screen = mobile)
   useEffect(() => {
@@ -360,27 +362,38 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
 
   // Detect Offline Status & Process Queue
+  // Uses executeSendRef to avoid stale closure — safe for production at scale
   useEffect(() => {
-    const handleOnline = () => {
+    const handleOnline = async () => {
       setIsOffline(false);
-      // Process outbox
-      if (client && activePeer && address) {
+      // Flush the outbox — uses ref to always get the latest executeSend fn
+      if (address) {
         const outboxKey = `whale_outbox_${address.toLowerCase()}`;
         const queueStr = localStorage.getItem(outboxKey);
         if (queueStr) {
           try {
-            const queue = JSON.parse(queueStr);
-            localStorage.removeItem(outboxKey);
-            queue.forEach(async (msgContent: string) => {
-              if (activePeer) {
-                await executeSend(msgContent);
+            const queue: string[] = JSON.parse(queueStr);
+            if (queue.length > 0) {
+              localStorage.removeItem(outboxKey);
+              toast.info(`📤 Back online — sending ${queue.length} queued message${queue.length > 1 ? 's' : ''}...`);
+              for (const msgContent of queue) {
+                if (executeSendRef.current) {
+                  await executeSendRef.current(msgContent);
+                  await new Promise(r => setTimeout(r, 300)); // throttle to avoid XMTP rate limit
+                }
               }
-            });
-          } catch (e) {}
+              toast.success('✅ All queued messages delivered.');
+            }
+          } catch (e) {
+            console.warn('[Outbox] Failed to flush queue:', e);
+          }
         }
       }
     };
-    const handleOffline = () => setIsOffline(true);
+    const handleOffline = () => {
+      setIsOffline(true);
+      toast.warning('📶 No internet connection. Messages will be queued.');
+    };
     
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
@@ -390,7 +403,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
     };
-  }, [client, activePeer, address]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address]); // address is the only real dep — executeSend accessed via ref
 
   // Extreme Security: Draft Persistence & Typing Telemetry
   useEffect(() => {
@@ -1333,6 +1347,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     }
   };
 
+  // Wire the always-fresh ref — this is read by the offline outbox flush event listener
+  // Using a ref avoids stale closures across render cycles (production-critical for scale)
+  executeSendRef.current = executeSend;
+
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputText.trim()) return;
@@ -1764,6 +1782,15 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               className="shrink-0 bg-white/50 backdrop-blur-xl border-t border-white/40 z-10 shadow-[0_-4px_24px_rgba(0,0,0,0.02)]"
               style={{ paddingBottom: `max(8px, env(safe-area-inset-bottom, 0px), ${keyboardOffset}px)` }}
             >
+              {/*  Offline Banner  */}
+              {isOffline && (
+                <div className="flex items-center gap-2 px-4 pt-2 pb-1 bg-gray-950/5 border-b border-black/5">
+                  <span className="flex items-center gap-1.5 text-[11px] font-mono font-bold text-gray-600 uppercase tracking-wider">
+                    <span className="w-2 h-2 rounded-full bg-gray-400 animate-pulse inline-block" />
+                    OFFLINE — Messages queued to outbox
+                  </span>
+                </div>
+              )}
               {/*  Audio recording indicator  */}
               {isRecording && (
                 <div className="flex items-center gap-2 px-4 pt-3 pb-1">
