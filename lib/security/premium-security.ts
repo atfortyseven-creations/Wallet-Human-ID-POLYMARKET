@@ -72,7 +72,7 @@ export async function verifyPremiumAccess(userId: string): Promise<{
         });
         if (balance > 0n) {
             console.log(`[Zero-Trust] ✅ Validated System NFT holding for ${normalizedUserId}`);
-            return { valid: true, tier: 'Cryptographic' };
+            return { valid: true, tier: 'PREMIUM' };
         }
       } catch (rpcErr) {
         // Silent fallback to database if RPC fails (Network Resilience)
@@ -93,7 +93,7 @@ export async function verifyPremiumAccess(userId: string): Promise<{
     }
 
     if (user?.tier === 'Cryptographic' || user?.tier === 'HUMAN' || user?.tier === 'FULL_NODE' || user?.tier === 'ARCHIVE_PROVER') {
-       return { valid: true, tier: 'Cryptographic' }; // Note: returns Cryptographic to unlock features
+       return { valid: true, tier: 'PREMIUM' }; // Note: returns PREMIUM to unlock features
     }
 
     // 2. Subscription check from native DB (case insensitive fallback)

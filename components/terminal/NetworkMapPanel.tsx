@@ -650,6 +650,89 @@ export function NetworkMapPanel() {
             </div>
           </div>
 
+          {/* ══════════════════════════════════════════════════
+              SECTION 7 — L1 <-> L2 MESSAGE BOXES (AZTEC REGISTRY)
+          ══════════════════════════════════════════════════ */}
+          <div className="relative flex flex-col w-full">
+             <div className="absolute -inset-8 md:-inset-12 bg-indigo-50/40 backdrop-blur-md rounded-[3rem] border border-indigo-100 z-0" />
+             <div className="relative z-10 w-full">
+                <SectionHeader number="7" label="L1 <-> L2 Message Registry" />
+
+                <motion.div variants={item} className="w-full bg-white border border-slate-200 rounded-[2rem] shadow-xl p-8 md:p-12 overflow-hidden relative">
+                   <div className="flex flex-col lg:flex-row items-center justify-between gap-12 relative z-10">
+                      
+                      {/* L1 Side */}
+                      <div className="flex-1 w-full bg-slate-50 border border-slate-200 rounded-3xl p-6 relative">
+                         <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-6">Ethereum Mainnet (L1)</div>
+                         
+                         <div className="space-y-4">
+                            <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm hover:border-slate-400 transition-colors cursor-default relative overflow-hidden group">
+                               <div className="absolute right-0 top-0 bottom-0 w-1 bg-emerald-400" />
+                               <h4 className="font-black text-sm text-slate-800 mb-1 flex items-center gap-2">L1 Inbox <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-700 text-[8px] uppercase">Active</span></h4>
+                               <p className="text-xs font-mono text-slate-500">Consumes L1-&gt;L2 messages via Rollup</p>
+                            </div>
+                            <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm hover:border-slate-400 transition-colors cursor-default relative overflow-hidden">
+                               <div className="absolute right-0 top-0 bottom-0 w-1 bg-indigo-400" />
+                               <h4 className="font-black text-sm text-slate-800 mb-1">L1 Outbox</h4>
+                               <p className="text-xs font-mono text-slate-500">Resolves L2-&gt;L1 state proofs</p>
+                            </div>
+                         </div>
+                      </div>
+
+                      {/* Bridging Animation (Center) */}
+                      <div className="shrink-0 flex flex-col items-center justify-center gap-4 py-8 lg:py-0 w-full lg:w-48 relative">
+                          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-slate-200 -translate-x-1/2 hidden lg:block" />
+                          <div className="absolute top-1/2 left-0 right-0 h-px bg-slate-200 -translate-y-1/2 block lg:hidden" />
+                          
+                          <motion.div 
+                              className="w-16 h-16 bg-black text-white rounded-2xl flex items-center justify-center shadow-2xl relative z-10"
+                              animate={{ rotate: 360 }}
+                              transition={{ duration: 20, ease: "linear", repeat: Infinity }}
+                          >
+                             <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                             </svg>
+                          </motion.div>
+                          <div className="text-[9px] font-black uppercase tracking-widest text-slate-400 bg-white px-2 relative z-10">
+                              Message Bridge
+                          </div>
+                          
+                          {/* Data packets */}
+                          <motion.div 
+                             className="absolute z-20 w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]"
+                             animate={{ x: [-100, 100], opacity: [0, 1, 1, 0] }}
+                             transition={{ duration: 2, ease: "easeInOut", repeat: Infinity, repeatDelay: 1 }}
+                          />
+                          <motion.div 
+                             className="absolute z-20 w-3 h-3 rounded-full bg-indigo-400 shadow-[0_0_10px_rgba(129,140,248,0.8)]"
+                             animate={{ x: [100, -100], opacity: [0, 1, 1, 0] }}
+                             transition={{ duration: 2, ease: "easeInOut", repeat: Infinity, repeatDelay: 1, delay: 1 }}
+                          />
+                      </div>
+
+                      {/* L2 Side */}
+                      <div className="flex-1 w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 relative">
+                         <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-6">Aztec Testnet (L2)</div>
+                         
+                         <div className="space-y-4">
+                            <div className="bg-black/50 border border-slate-700 p-4 rounded-2xl shadow-sm hover:border-slate-500 transition-colors cursor-default relative overflow-hidden group">
+                               <div className="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400" />
+                               <h4 className="font-black text-sm text-white mb-1">L2 Outbox</h4>
+                               <p className="text-xs font-mono text-slate-400">Pushes messages to L1 via Rollup Block</p>
+                            </div>
+                            <div className="bg-black/50 border border-slate-700 p-4 rounded-2xl shadow-sm hover:border-slate-500 transition-colors cursor-default relative overflow-hidden">
+                               <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-400" />
+                               <h4 className="font-black text-sm text-white mb-1 flex items-center gap-2">L2 Inbox <span className="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-400 text-[8px] uppercase">Active</span></h4>
+                               <p className="text-xs font-mono text-slate-400">Reads cross-chain calls securely</p>
+                            </div>
+                         </div>
+                      </div>
+
+                   </div>
+                </motion.div>
+             </div>
+          </div>
+
         </motion.div>
       </div>
     </div>

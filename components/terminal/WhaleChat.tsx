@@ -76,7 +76,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         if (cancelled) break;
         try {
           reconnect();
-          console.log(`[WhaleChat] Zombie-session recovery attempt ${i + 1} dispatched.`);
+          // Zombie-session recovery dispatched (attempt ${i + 1})
           return;
         } catch (e) {
           console.warn(`[WhaleChat] Reconnect attempt ${i + 1} failed:`, e);
@@ -300,10 +300,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     const handleWakeup = async () => {
       if (resurrecting || document.visibilityState !== 'visible') return;
       resurrecting = true;
-      console.log('[WhaleChat:Quantum] App returned from background — resyncing XMTP stream...');
       try {
         await client.conversations.sync();
-        console.log('[WhaleChat:Quantum] XMTP sync complete. Stream resurrected.');
       } catch (e) {
         console.warn('[WhaleChat:Quantum] Sync failed, stream may self-recover:', e);
       } finally {
@@ -595,7 +593,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             }]);
             try { 
                 await sendMessage(client, activePeer, audioMsg, address); 
-                console.log('[Voice] P2P Audio transmission successful.');
+                // Voice: P2P Audio transmission successful.
             } catch (sendErr: any) {
                 console.error('[Voice] P2P Send Failed:', sendErr?.message);
                 setMessages(prev => prev.filter(m => m.id !== optimisticId));
@@ -1127,7 +1125,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         try {
           const pRes = await fetch(`/api/chat/pending?address=${address}`, { 
             cache: 'no-store',
-            headers: { 'x-web3-address': address }
+            headers: { 'x-web3-address': address || '' }
           });
           if (pRes.ok) {
             const pData = await pRes.json();
@@ -1498,11 +1496,38 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               )}
             </div>
           ) : isInitializing ? (
-            <div className="flex flex-col items-center gap-5">
-              <p className="text-[14px] text-gray-500 font-medium">Connecting to Network...</p>
+            <div className="flex flex-col items-center gap-5 w-full max-w-sm px-4">
+               <div className="w-16 h-16 rounded-2xl bg-black border border-slate-800 flex items-center justify-center shadow-2xl relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/20 to-transparent animate-pulse" />
+                  <svg className="w-8 h-8 text-emerald-400 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+               </div>
+               
+               <div className="text-center w-full space-y-3">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-black">
+                     Cryptographic Handshake
+                  </div>
+                  
+                  <div className="space-y-2 text-left bg-black/[0.03] p-4 rounded-xl border border-black/[0.05]">
+                     <div className="flex items-center gap-2 text-[9px] font-mono text-black/60">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        Deriving Aztec Schnorr Address
+                     </div>
+                     <div className="flex items-center gap-2 text-[9px] font-mono text-black/60">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        Fetching XMTP Public Key
+                     </div>
+                     <div className="flex items-center gap-2 text-[9px] font-mono text-black/60">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        Zero-Knowledge Verification...
+                     </div>
+                  </div>
+               </div>
+
               {isMobile && (
-                <p className="text-[13px] text-blue-600 font-medium max-w-[260px] mx-auto text-center bg-blue-50 py-2 px-4 rounded-xl">
-                  Please confirm the signature in your wallet.
+                <p className="text-[9px] font-mono uppercase tracking-widest text-black/40 mt-2 text-center">
+                  Please confirm signature in wallet
                 </p>
               )}
             </div>

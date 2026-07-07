@@ -123,7 +123,6 @@ export function WhaleAlertFooter() {
                         <ul className="space-y-2">
 
                             <li><Link href="/privacy" className="text-sm text-slate-600 hover:text-slate-900">Privacy</Link></li>
-                            <li><Link href="/status" className="text-sm text-slate-600 hover:text-slate-900">Status</Link></li>
                         </ul>
                     </div>
                     <div>

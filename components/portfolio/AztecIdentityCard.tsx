@@ -513,9 +513,7 @@ export function AztecIdentityCard() {
         if (res.ok) {
           const data = await res.json();
           localStorage.setItem(migrationKey, 'true');
-          if (data.migrated) {
-            console.log(`[Aztec] Migration complete: ${evmAddress} → ${data.derivedAztecAddress}`);
-          }
+          // Migration complete: evmAddress → data.derivedAztecAddress
         }
       } catch (e) {
         // Non-fatal — migration will retry next visit
@@ -700,17 +698,23 @@ export function AztecIdentityCard() {
               </div>
 
               {/* QDs Balance — live from ledger */}
-              <div className="border border-emerald-200 bg-emerald-50 p-4 flex items-center justify-between">
-                <div>
-                  <div className="text-[8px] font-black uppercase tracking-widest text-emerald-600/70 mb-0.5">QDs Balance · Live Ledger</div>
-                  {isLoading ? (
-                    <Loader2 size={20} className="animate-spin text-emerald-400 my-1" />
-                  ) : (
-                    <div className="text-2xl font-black font-mono text-emerald-700">{balance.toFixed(2)}</div>
-                  )}
-                  <div className="text-[8px] text-emerald-600/60 uppercase tracking-widest">Quantum Dots · Aztec Testnet</div>
-                </div>
-                <div className="flex gap-2">
+              <div className="border border-emerald-200 bg-emerald-50 p-4 flex flex-col justify-center">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-[8px] font-black uppercase tracking-widest text-emerald-600/70 mb-0.5">QDs Balance · Live Ledger</div>
+                    {(isLoading || isRefreshing) ? (
+                      <div className="flex flex-col gap-1 my-1 min-h-[32px] justify-center">
+                          <div className="flex items-center gap-2">
+                             <Loader2 size={14} className="animate-spin text-emerald-500" />
+                             <span className="text-[10px] font-mono text-emerald-700 tracking-widest uppercase animate-pulse">Syncing Aztec PXE...</span>
+                          </div>
+                      </div>
+                    ) : (
+                      <div className="text-2xl font-black font-mono text-emerald-700">{balance.toFixed(2)}</div>
+                    )}
+                    <div className="text-[8px] text-emerald-600/60 uppercase tracking-widest">Quantum Dots · Aztec Testnet</div>
+                  </div>
+                  <div className="flex gap-2">
                   <button onClick={() => setActiveTab('SEND')}
                     className="flex items-center gap-1 px-3 py-2 bg-white text-zinc-900 border border-zinc-900/20 text-[9px] font-black uppercase tracking-widest hover:bg-zinc-50 transition-all">
                     <Send size={10} /> Send
@@ -719,6 +723,7 @@ export function AztecIdentityCard() {
                     className="flex items-center gap-1 px-3 py-2 border border-zinc-900 text-[9px] font-black uppercase tracking-widest hover:bg-zinc-100 hover:text-zinc-900 transition-all">
                     <Download size={10} /> Receive
                   </button>
+                  </div>
                 </div>
               </div>
 

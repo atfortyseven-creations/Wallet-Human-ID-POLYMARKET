@@ -29,15 +29,6 @@ export function SiteNavigationPill() {
                 </Link>
             ))}
             <div className="w-px h-4 bg-black/5" />
-            <Link 
-                href="/status"
-                className={`text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center gap-2 ${
-                    pathname.startsWith('/status') ? 'text-[var(--aztec-orchid)]' : 'text-[var(--aztec-ink)]/40 hover:text-[var(--aztec-orchid)]'
-                }`}
-            >
-                <div className={`w-1.5 h-1.5 rounded-full ${pathname.startsWith('/status') ? 'bg-[var(--aztec-orchid)] animate-pulse' : 'bg-[var(--aztec-ink)]/40'}`} />
-                Status
-            </Link>
             <div className="w-px h-4 bg-black/5 " />
             <Link 
                 href="/terminal" 

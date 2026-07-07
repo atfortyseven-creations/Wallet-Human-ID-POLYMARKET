@@ -120,7 +120,7 @@ export async function scanBlock(height: number, btcPrice: number) {
             amount:      valueBTC.toString(),
             chain:       'BTC',
             entityName:  attribution.entity,
-            sovereign: attribution.sovereign,
+            // sovereign: attribution.sovereign,
             blockHeight: height,
             timestamp:   new Date(tx.status.block_time * 1000),
             confirmed:   tx.status.confirmed,

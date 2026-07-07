@@ -30,7 +30,7 @@ ts-debug.log*
 .env.production.template
 .env.example
 .env.getblock
-
+.env.aztec
 
 # vercel
 .vercel

@@ -73,7 +73,6 @@ export function InstitutionalHeader() {
       { label: 'Chat', href: "/chat" },
       { label: 'Portfolio', href: "/portfolio" },
       { label: 'Community', href: "#", subItems: [{ label: 'ACADEMY', href: "/academy" }, { label: 'FORUM', href: "/forum" }] },
-      { label: 'STATUS', href: '/status' },
       { label: 'PRIVACY', href: '/privacy' }
     ];
 

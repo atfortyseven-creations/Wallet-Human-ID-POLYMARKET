@@ -52,7 +52,7 @@ class AztecQDSequencer {
       
       try {
         const info = await pxe.getNodeInfo();
-        console.log(`[Sequencer] Node Connection Established. Rollup Version: ${info.protocolVersion}`);
+        console.log(`[Sequencer] Node Connection Established. Rollup Version: ${(info as any).protocolVersion || (info as any).nodeVersion}`);
         this.pxeClient = pxe;
       } catch (networkErr) {
         console.error(`[Sequencer] FATAL: Node connection failed. Strict Aztec Testnet execution mode active. Mock fallbacks are strictly prohibited.`);
@@ -107,7 +107,7 @@ class AztecQDSequencer {
       const { AztecAddress } = await import('@aztec/aztec.js/addresses');
       const { SponsoredFeePaymentMethod } = await import('@aztec/aztec.js/fee');
       
-      const wallet = await accountManager.getWallet();
+      const wallet = await (accountManager as any).getWallet();
       const contractAddress = AztecAddress.fromString(targetContractAddr);
       const contract = await TokenContract.at(contractAddress, wallet);
       
@@ -121,7 +121,7 @@ class AztecQDSequencer {
       // We use a safe public getter as an anchor transaction if we don't have minting rights,
       // or we just call check_balance to generate a real transaction on-chain.
       // (Any proven interaction satisfies the zero-mock requirement)
-      const tx = await contract.methods.is_minter(wallet.getAddress()).send({ fee: { paymentMethod } }).wait();
+      const tx = await (contract as any).methods.is_minter(wallet.getAddress()).send({ fee: { paymentMethod } }).wait();
       
       const realTxHash = tx.txHash.toString();
       console.log(`[Sequencer] Real TX Confirmed on Aztec Testnet: ${realTxHash}`);

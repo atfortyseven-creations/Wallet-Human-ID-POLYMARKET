@@ -442,8 +442,8 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
         {/* On-chain confirmation / Testnet Explorer */}
         {anchoring || passport.txHash ? (
            <TestnetExplorer 
-             passportId={passport.id} 
-             txHash={passport.txHash || ''} 
+             passportId={(passport as any).id || passport.slug} 
+             txHash={(passport as any).txHash || ''} 
              slug={passport.slug}
              status={explorerStatus} 
            />

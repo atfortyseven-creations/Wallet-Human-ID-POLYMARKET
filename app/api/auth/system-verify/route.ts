@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
         // Zod Input Validation
         const parsedBody = VerifySchema.safeParse(body);
         if (!parsedBody.success) {
-            return NextResponse.json({ error: 'Invalid input payload', details: parsedBody.error.errors }, { status: 400 });
+            return NextResponse.json({ error: 'Invalid input payload', details: (parsedBody.error as any).errors }, { status: 400 });
         }
 
         const rawAddress: string = parsedBody.data.address.toLowerCase();

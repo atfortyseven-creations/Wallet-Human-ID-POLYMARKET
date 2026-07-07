@@ -23,13 +23,9 @@
  * - Full chain selector integrated in header
  */
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'appkit-button': any;
-    }
-  }
-}
+// appkit-button is a native web component from @reown/appkit
+// Its JSX type is declared globally by the package itself
+
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
@@ -289,6 +285,7 @@ function RainbowOnboarding() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 px-8 text-center">
         <div className="scale-90 origin-center">
+            {/* @ts-expect-error appkit web component */}
             <appkit-button />
         </div>
         <p className="text-white/30 text-xs hover:text-white/70 transition-colors cursor-pointer" onClick={() => setStep("choosing")}>
@@ -538,6 +535,7 @@ export default function PortfolioView({
             {isDark ? <Sun size={15} /> : <Moon size={15} />}
           </button>
           <div className="scale-90 origin-right">
+            {/* @ts-expect-error appkit web component */}
             <appkit-button />
           </div>
         </div>

@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
 
         // Update database
         // @ts-ignore - proposalId is unique but typescript definition might lag in CI
-        await prisma.marketProposal.update({
+        await (prisma.marketProposal as any).update({
             where: { proposalId },
             data: {
                 status: "EXECUTED",

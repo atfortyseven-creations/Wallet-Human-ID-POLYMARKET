@@ -195,7 +195,6 @@ export function MobileEnforcer({ children }: { children: React.ReactNode }) {
             '/product',
             '/academy',
             '/support',
-            '/status',
             '/passport',
             '/scan',
             '/studio',
