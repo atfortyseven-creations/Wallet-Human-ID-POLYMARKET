@@ -360,7 +360,7 @@ function HeroSection() {
       {/* ── Presentation hero ── */}
       <section
         className="relative w-full bg-white overflow-hidden flex-shrink-0"
-        style={{ minHeight: '100dvh' }}
+        style={{ minHeight: 'var(--dvh-100, 100dvh)' }}
       >
         {/* Subtle dotted grid */}
         <div
@@ -368,10 +368,14 @@ function HeroSection() {
           style={{ backgroundImage: 'radial-gradient(#d1d5db 1px, transparent 1px)', backgroundSize: '24px 24px' }}
         />
 
-        {mounted && <DvhPolyfill />}
+        {/* DvhPolyfill always renders — fixes iOS Safari viewport height bug */}
+        <DvhPolyfill />
 
-        {/* Centered content */}
-        <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-6 pt-28 pb-20 min-h-[100dvh]">
+        {/* Centered content — iOS-safe min-height using calc(var(--vh, 1vh) * 100) */}
+        <div
+          className="relative z-10 w-full h-full flex flex-col items-center justify-center px-6 pt-28 pb-20"
+          style={{ minHeight: 'var(--dvh-100, calc(var(--vh, 1vh) * 100))' }}
+        >
 
           {/* Badge removed — no longer in beta */}
 
@@ -379,25 +383,25 @@ function HeroSection() {
           <h1 className="text-[40px] sm:text-[56px] md:text-[68px] font-black tracking-tighter leading-[1.0] text-black text-center max-w-[900px] mb-6">
             The sovereign gateway
             <br />
-            <span className="text-black/25">to Aztec Network.</span>
+            <span className="text-black/50">to Aztec Network.</span>
           </h1>
 
           {/* Subheadline */}
-          <p className="text-[16px] md:text-[19px] font-medium text-black/60 leading-relaxed text-center max-w-[700px] mb-12">
-            Whale Network operates as the sovereign application layer over Aztec's zero-knowledge execution environment. We abstract the complexity of ZK circuits into an sovereign-grade terminal—providing high-net-worth individuals and enterprises with cryptographic identity verification, end-to-end encrypted messaging, and fully shielded portfolio management. All executed privately, settled securely on Ethereum.
+          <p className="text-[16px] md:text-[19px] font-medium text-black/70 leading-relaxed text-center max-w-[700px] mb-12">
+            Whale Network operates as the sovereign application layer over Aztec's zero-knowledge execution environment. We abstract the complexity of ZK circuits into a sovereign-grade terminal — providing high-net-worth individuals and enterprises with cryptographic identity verification, end-to-end encrypted messaging, and fully shielded portfolio management. All executed privately, settled securely on Ethereum.
           </p>
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row items-center gap-3 mb-20">
             <Link
               href="/connect"
-              className="px-7 py-3.5 bg-black text-white text-[14px] font-bold tracking-wide hover:bg-black/80 transition-all active:scale-[0.98]"
+              className="px-8 py-3.5 bg-black text-white text-[14px] font-bold tracking-wide hover:bg-black/80 transition-all active:scale-[0.98] shadow-sm"
             >
               Connect Wallet
             </Link>
             <Link
               href="/developers/api-docs"
-              className="px-7 py-3.5 border border-black/15 text-black text-[14px] font-medium hover:bg-black/[0.04] transition-all active:scale-[0.98]"
+              className="px-8 py-3.5 border-2 border-black/20 text-black text-[14px] font-semibold hover:bg-black/[0.04] transition-all active:scale-[0.98]"
             >
               Read the Docs
             </Link>
@@ -422,10 +426,10 @@ function HeroSection() {
                 desc: "End to end encrypted messaging between wallets anchored to your private state. Only cryptographic identities, no IP tracking, no metadata.",
               },
             ].map((f) => (
-              <div key={f.label} className="flex-1 bg-[#fafafa] border border-black/10 px-6 py-6 flex flex-col gap-3">
-                <span className="text-[10px] font-black uppercase tracking-widest text-black/30">{f.tag}</span>
+              <div key={f.label} className="flex-1 bg-white border border-black/15 px-6 py-6 flex flex-col gap-3 hover:border-black/30 transition-colors">
+                <span className="text-[10px] font-black uppercase tracking-widest text-black/50">{f.tag}</span>
                 <h3 className="text-[16px] font-black text-black leading-tight">{f.label}</h3>
-                <p className="text-[13px] text-black/50 leading-relaxed font-medium flex-1">{f.desc}</p>
+                <p className="text-[13px] text-black/65 leading-relaxed font-medium flex-1">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -434,15 +438,15 @@ function HeroSection() {
 
         {/* Scroll cue */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-30 pointer-events-none">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-black/25">Architecture</span>
-          <div className="w-[1px] h-10 bg-gradient-to-b from-black/20 to-transparent" />
+          <span className="text-[10px] font-mono uppercase tracking-widest text-black/50">Architecture</span>
+          <div className="w-[1px] h-10 bg-gradient-to-b from-black/40 to-transparent" />
         </div>
       </section>
 
       {/* ── Architecture Map ── */}
       <section
         className="relative w-full overflow-hidden flex-shrink-0 bg-white border-t border-black/10"
-        style={{ minHeight: '100dvh' }}
+        style={{ minHeight: 'var(--dvh-100, 100dvh)' }}
       >
         <div
           className="absolute inset-0 z-0 opacity-30 pointer-events-none"
@@ -451,11 +455,11 @@ function HeroSection() {
 
         {/* Section label */}
         <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 pt-16 pb-4">
-          <span className="text-[11px] font-black uppercase tracking-widest text-black/30 block mb-2">System Architecture</span>
+          <span className="text-[11px] font-black uppercase tracking-widest text-black/50 block mb-2">System Architecture</span>
           <h2 className="text-[28px] md:text-[38px] font-black tracking-tight text-black">
             How Whale Network is built
           </h2>
-          <p className="text-[15px] text-black/50 font-medium mt-2 max-w-[560px]">
+          <p className="text-[15px] text-black/65 font-medium mt-2 max-w-[560px]">
             A live map of the protocol stack — from L1 settlement on Ethereum to private execution on Aztec, and the data layers in between.
           </p>
         </div>
@@ -473,16 +477,22 @@ function HeroSection() {
  * DvhPolyfill — sets `--vh` CSS custom property to the actual inner viewport
  * height in pixels, updated on every resize. This corrects the `100vh`
  * bug on iOS/Android where the browser chrome collapses/expands.
+ * Also sets --dvh-100 as a calc() ready value so we don't need dvh unit support.
  */
 function DvhPolyfill() {
   useEffect(() => {
     const setVh = () => {
       const vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty('--vh', `${vh}px`);
+      document.documentElement.style.setProperty('--dvh-100', `${window.innerHeight}px`);
     };
     setVh();
     window.addEventListener('resize', setVh, { passive: true });
-    return () => window.removeEventListener('resize', setVh);
+    window.addEventListener('orientationchange', setVh);
+    return () => {
+      window.removeEventListener('resize', setVh);
+      window.removeEventListener('orientationchange', setVh);
+    };
   }, []);
   return null;
 }
@@ -493,15 +503,15 @@ function ValuePropositionSection() {
   return (
     <section className="w-full bg-white py-24 md:py-32 border-t border-black/10">
       <div className="w-full max-w-[1000px] mx-auto px-6 text-center flex flex-col items-center">
-        <span className="text-[12px] font-bold uppercase tracking-widest text-black/40 mb-6">
+        <span className="text-[12px] font-bold uppercase tracking-widest text-black/55 mb-6">
           Absolute Privacy
         </span>
         <h2 className="text-[36px] md:text-[56px] font-black tracking-tighter leading-[1.05] text-black max-w-[800px]">
           Ethereum security.
           <br />
-          <span className="text-black/30">Absolute privacy.</span>
+          <span className="text-black/55">Absolute privacy.</span>
         </h2>
-        <p className="mt-8 text-[16px] md:text-[18px] font-medium text-black/60 leading-relaxed max-w-[600px]">
+        <p className="mt-8 text-[16px] md:text-[18px] font-medium text-black/65 leading-relaxed max-w-[600px]">
           By leveraging the Aztec Network Private Execution Environment, Whale Network shifts all computation to your local device. The network verifies a zero-knowledge proof of your actions without ever seeing your raw balances, chat metadata, or identity documents. This is the foundation of programmable privacy.
         </p>
       </div>
@@ -554,16 +564,16 @@ function HowItWorksSection() {
 
           {steps.map((s, i) => (
             <div key={i} className="relative z-10 flex flex-col items-center text-center">
-              <div className="w-14 h-14 bg-white border border-black/10 rounded-full flex items-center justify-center mb-6 shadow-sm">
+              <div className="w-14 h-14 bg-white border border-black/15 rounded-full flex items-center justify-center mb-6 shadow-md">
                 <span className="text-black">{s.icon}</span>
               </div>
-              <span className="text-[11px] font-bold tracking-widest uppercase text-black/40 mb-3">
+              <span className="text-[11px] font-bold tracking-widest uppercase text-black/55 mb-3">
                 Step {s.step}
               </span>
               <h3 className="text-[20px] font-black text-black mb-4 tracking-tight">
                 {s.title}
               </h3>
-              <p className="text-[15px] font-medium text-black/60 leading-relaxed px-2">
+              <p className="text-[15px] font-medium text-black/65 leading-relaxed px-2">
                 {s.description}
               </p>
             </div>
@@ -605,15 +615,15 @@ function IntegrationSection() {
           <h2 className="text-[32px] md:text-[42px] font-black tracking-tight text-black max-w-[500px] leading-[1.1]">
             Built on
             <br />
-            <span className="text-black/30">Noir circuits.</span>
+            <span className="text-black/55">Noir circuits.</span>
           </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {cards.map((c, i) => (
-            <div key={i} className="bg-[#fafafa] border border-black/10 rounded-2xl p-8 flex flex-col items-start transition-all hover:bg-[#f5f5f5] hover:border-black/20">
+            <div key={i} className="bg-[#fafafa] border border-black/15 rounded-2xl p-8 flex flex-col items-start transition-all hover:bg-[#f0f0f0] hover:border-black/25">
               <h3 className="text-[18px] font-black text-black mb-3">{c.title}</h3>
-              <p className="text-[14.5px] font-medium text-black/60 leading-relaxed mb-8 flex-1">
+              <p className="text-[14.5px] font-medium text-black/65 leading-relaxed mb-8 flex-1">
                 {c.body}
               </p>
               <Link href={c.href} className="text-[13px] font-bold text-black flex items-center gap-1.5 hover:opacity-70 transition-opacity">
@@ -655,13 +665,13 @@ function GlobalRegistrySection() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
           <div>
-            <span className="text-[11px] font-black uppercase tracking-widest text-black/30 mb-3 block">
+            <span className="text-[11px] font-black uppercase tracking-widest text-black/55 mb-3 block">
               Global Network
             </span>
             <h2 className="text-[28px] md:text-[36px] font-black text-black tracking-tight">
               Verification Registry Map
             </h2>
-            <p className="text-[14px] text-black/50 font-medium mt-2 max-w-[500px]">
+            <p className="text-[14px] text-black/65 font-medium mt-2 max-w-[500px]">
               Hover any country to see coverage level and accepted document types.
             </p>
           </div>
@@ -771,14 +781,14 @@ function FAQSection() {
 
 function PoweredBySection() {
   return (
-    <section className="w-full bg-[#fcfcfc] py-24 flex flex-col items-center justify-center border-t border-black/5">
-      <span className="text-sm md:text-base font-black uppercase tracking-[0.3em] text-black/50 mb-8">
+    <section className="w-full bg-[#f5f5f5] py-24 flex flex-col items-center justify-center border-t border-black/10">
+      <span className="text-sm md:text-base font-black uppercase tracking-[0.3em] text-black/60 mb-8">
         Powered by
       </span>
       <img 
         src="/aztec-logo-black.png" 
         alt="Aztec Network" 
-        className="h-40 md:h-56 lg:h-64 object-contain mix-blend-multiply opacity-90 hover:opacity-100 transition-all transform hover:scale-105 duration-500"
+        className="h-40 md:h-56 lg:h-64 object-contain mix-blend-multiply opacity-95 hover:opacity-100 transition-all transform hover:scale-105 duration-500"
       />
     </section>
   );
@@ -788,26 +798,32 @@ function PoweredBySection() {
 
 function FinalCTASection() {
   return (
-    <section className="w-full relative overflow-hidden flex flex-col justify-center items-center bg-[#050505] min-h-[500px] md:min-h-[600px]">
-      {/*
-        Using the requested custom image, adjusted with absolute precision quantum scaling:
-        object-fit: cover ensures the image fills the container beautifully.
-      */}
+    <section
+      className="w-full relative overflow-hidden flex flex-col justify-center items-center bg-[#050505]"
+      style={{ minHeight: 'var(--dvh-100, 500px)' }}
+    >
       <img
         src="/system-shots/Aztec Image_17.jpg"
         alt="Humanity Ledger Background"
         className="absolute inset-0 w-full h-full object-cover opacity-50"
+        loading="lazy"
       />
-      {/* Dark overlay to ensure text readability against the vibrant background */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#050505]/90 via-[#050505]/40 to-[#050505]/90" />
+      {/* Dark overlay — ensures absolute text readability on any device */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#050505]/95 via-[#050505]/60 to-[#050505]/90" />
 
       <div className="relative z-20 w-full max-w-[800px] mx-auto px-6 py-24 md:py-32 flex flex-col items-center text-center">
-        <h2 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-tight text-white mb-6 drop-shadow-2xl">
+        <h2
+          className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-tight mb-6"
+          style={{ color: '#ffffff', textShadow: '0 2px 20px rgba(0,0,0,0.8)' }}
+        >
           Your identity,
           <br className="hidden md:block" />
-          <span className="text-white/90">proven without disclosure.</span>
+          <span style={{ color: 'rgba(255,255,255,0.92)' }}>proven without disclosure.</span>
         </h2>
-        <p className="text-base md:text-lg lg:text-xl text-white/90 font-medium max-w-[600px] mb-8 drop-shadow-xl leading-relaxed">
+        <p
+          className="text-base md:text-lg lg:text-xl font-medium max-w-[600px] mb-8 leading-relaxed"
+          style={{ color: 'rgba(255,255,255,0.90)', textShadow: '0 1px 12px rgba(0,0,0,0.6)' }}
+        >
           Built on the full Aztec stack — Noir circuits, a Private Execution Environment (PXE), zk-SNARK note commitments, and nullifier-based Sybil resistance. Your Aztec Identity is cryptographically yours: provable on-chain, invisible to the world.
         </p>
       </div>

@@ -361,7 +361,7 @@ function ConnectedScreen({
   const fmtDate   = (d: Date) => d.toLocaleDateString('en-US', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
 
   return (
-    <div className="relative min-h-[100dvh] w-full overflow-x-hidden font-sans flex flex-col bg-white text-black selection:bg-black/10 selection:text-black">
+    <div className="relative w-full overflow-x-hidden font-sans flex flex-col bg-white selection:bg-black/10 selection:text-black" style={{ color: '#000000', minHeight: 'var(--dvh-100, 100dvh)' }}>
       {/* Background soft ambient noise/gradient */}
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-black/[0.01] via-white to-white" />
       
@@ -1346,7 +1346,7 @@ export function MobileLanding() {
   //  Render: Unified Mobile Landing & Login Modal 
   // CRITICAL: This block must be AFTER all isLinked guards above.
   return (
-    <div className="w-full min-h-[100dvh] bg-[#F9F8F6] relative font-sans text-[#050505]">
+    <div className="w-full bg-[#F9F8F6] relative font-sans" style={{ color: '#050505', minHeight: 'var(--dvh-100, 100dvh)' }}>
       
       {/*  Sticky Header  */}
       <motion.header

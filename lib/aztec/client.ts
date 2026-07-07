@@ -3,9 +3,10 @@
  * lib/aztec/client.ts
  *
  * Real Aztec Testnet integration.
- * RPC Node:   https://rpc.testnet.aztec-labs.com
+ * RPC Node:   https://v5.testnet.rpc.aztec-labs.com
  * Explorer:   https://testnet.aztecscan.xyz
- * SponsoredFPC (gas-free): 0x254082b62f9108d044b8998f212bb145619d91bfcd049461d74babb840181257
+ * SponsoredFPC (gas-free): 0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7
+ * Source: https://docs.aztec.network/networks — confirmed by @joshc [AZTC] 2026-07-07
  *
  * The PXE runs server-side, pointing at the public Aztec Testnet node.
  * Users get deterministic Schnorr accounts derived from their EVM address.
@@ -16,8 +17,11 @@ export const AZTEC_PXE_URL       = process.env.AZTEC_PXE_URL   || 'http://127.0.
 export const AZTEC_EXPLORER      = 'https://testnet.aztecscan.xyz';
 export const AZTEC_NETWORK       = 'aztec-testnet';
 
-// SponsoredFPC — allows gas-free transactions on the Aztec Testnet
-export const SPONSORED_FPC_ADDRESS = '0x261366b3c0a9b4c30864629556cf282be409e6822b1f3a065fcb7e34f36d7880';
+// SponsoredFPC — canonical rc.2 address from docs.aztec.network/networks
+// Confirmed by @joshc [AZTC] on 2026-07-07. The old 0x2613... address is NOT deployed on rc.2.
+export const SPONSORED_FPC_ADDRESS =
+  process.env.SPONSORED_FPC_ADDRESS ||
+  '0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7';
 
 // Cache the PXE client across hot-reloads
 let _pxeClient: any = null;
