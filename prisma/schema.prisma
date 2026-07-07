@@ -1319,3 +1319,60 @@ model ZkNullifier {
 
   @@index([nullifierHash])
 }
+
+// 
+// SOVEREIGN GOVERNANCE & PROVER NETWORK (AZIP)
+// 
+
+model MarketProposal {
+  id              String   @id @default(uuid())
+  question        String
+  description     String   @db.Text
+  outcomes        String[] @default(["FOR", "AGAINST", "ABSTAIN"])
+  category        String   @default("CORE")
+  creatorAddress  String
+  status          String   @default("VOTING") // VOTING, APPROVED, REJECTED, EXECUTED
+  votesFor        Int      @default(0)
+  votesAgainst    Int      @default(0)
+  votingThreshold Int      @default(100) // Minimum votes required to pass
+  votingEndsAt    DateTime
+  approvedAt      DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  votes           ProposalVote[]
+
+  @@index([status, createdAt(sort: Desc)])
+  @@index([category])
+}
+
+model ProposalVote {
+  id                String   @id @default(uuid())
+  proposalId        String
+  voterAddress      String
+  vote              String   // FOR, AGAINST, ABSTAIN
+  nullifierHash     String   @unique // Cryptographic proof against double voting
+  merkleRoot        String
+  proof             String   @db.Text
+  verificationLevel String
+  votedAt           DateTime @default(now())
+
+  proposal          MarketProposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+
+  @@unique([proposalId, nullifierHash])
+  @@index([proposalId, vote])
+  @@index([voterAddress, votedAt(sort: Desc)])
+}
+
+model UserMetrics {
+  id            String   @id @default(uuid())
+  userAddress   String   @unique
+  votescast     Int      @default(0)
+  proposalsMade Int      @default(0)
+  reputation    Float    @default(1.0)
+  lastActiveAt  DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([votescast(sort: Desc)])
+}
