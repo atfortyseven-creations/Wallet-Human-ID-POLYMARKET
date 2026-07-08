@@ -6,7 +6,7 @@ import { privateKeyToAccount } from 'viem/accounts';
 export const dynamic = 'force-dynamic';
 
 //  Chain config (reads same RPC as rest of app) 
-const rpcUrl = process.env.NEXT_PUBLIC_RPC_URL || 'http://127.0.0.1:8545';
+const rpcUrl = process.env.NEXT_PUBLIC_RPC_URL || 'https://rpc-amoy.polygon.technology';
 const chainId = parseInt(process.env.NEXT_PUBLIC_CHAIN_ID || '1337', 10);
 
 const localChain = {
