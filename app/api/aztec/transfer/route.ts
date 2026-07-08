@@ -55,35 +55,32 @@ export async function POST(req: NextRequest) {
     //   b) An Aztec address derived from the EVM address via SHA-256
     // In both cases, the session owner must be the one initiating the spend.
     const session = await getSession();
-    const isMockTesting = fromAddr === '0x9999999999999999999999999999999999999999999999999999999999999999';
 
-    if (!isMockTesting) {
-      if (!session || !session.userId) {
-        return NextResponse.json({ error: 'Unauthorized: Session missing. Please authenticate.' }, { status: 401 });
-      }
-      
-      const sessionAddr = session.userId.toLowerCase().trim();
-      
-      // Check 1: exact EVM match
-      const isEvmMatch = sessionAddr === fromAddr;
-      
-      // Check 2: Aztec address derived from this EVM address
-      // The Aztec address is SHA-256(evmAddress) — same derivation as /api/aztec/derive-address
-      let isDerivedMatch = false;
-      if (!isEvmMatch) {
-        try {
-          const { createHash } = await import('crypto');
-          const derivedAztec = '0x' + createHash('sha256').update(sessionAddr).digest('hex');
-          isDerivedMatch = derivedAztec.toLowerCase() === fromAddr.toLowerCase();
-        } catch {}
-      }
-      
-      if (!isEvmMatch && !isDerivedMatch) {
-        return NextResponse.json(
-          { error: `Forbidden: Identity mismatch. Authenticated as ${sessionAddr.slice(0,10)}, but trying to spend from ${fromAddr.slice(0,10)}.` }, 
-          { status: 403 }
-        );
-      }
+    if (!session || !session.userId) {
+      return NextResponse.json({ error: 'Unauthorized: Session missing. Please authenticate.' }, { status: 401 });
+    }
+    
+    const sessionAddr = session.userId.toLowerCase().trim();
+    
+    // Check 1: exact EVM match
+    const isEvmMatch = sessionAddr === fromAddr;
+    
+    // Check 2: Aztec address derived from this EVM address
+    // The Aztec address is SHA-256(evmAddress) — same derivation as /api/aztec/derive-address
+    let isDerivedMatch = false;
+    if (!isEvmMatch) {
+      try {
+        const { createHash } = await import('crypto');
+        const derivedAztec = '0x' + createHash('sha256').update(sessionAddr).digest('hex');
+        isDerivedMatch = derivedAztec.toLowerCase() === fromAddr.toLowerCase();
+      } catch {}
+    }
+    
+    if (!isEvmMatch && !isDerivedMatch) {
+      return NextResponse.json(
+        { error: `Forbidden: Identity mismatch. Authenticated as ${sessionAddr.slice(0,10)}…, but trying to spend from ${fromAddr.slice(0,10)}…` }, 
+        { status: 403 }
+      );
     }
 
     // ── Connect to Real Aztec Testnet Node (pre-computation) ──────────────────

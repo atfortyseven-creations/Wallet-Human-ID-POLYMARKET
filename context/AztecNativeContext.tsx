@@ -433,7 +433,9 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
     if (!activeAddr || balance < amount) return false;
     
     setIsBusy(true);
-    setBalance(prev => prev - amount); // Optimistic update
+    // Optimistic update: immediately show the deducted balance in the UI.
+    // Clamped to >= 0 to prevent the counter ever showing a negative number.
+    setBalance(prev => Math.max(0, Math.round((prev - amount) * 1_000_000) / 1_000_000));
     try {
       // [ON-CHAIN REAL SPEND] 
       // Burn address on Aztec — tokens sent here are permanently destroyed

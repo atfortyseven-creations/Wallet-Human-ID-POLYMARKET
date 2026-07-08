@@ -52,7 +52,25 @@ export async function POST(req: NextRequest) {
 
     const normalizedAddress = parsedBody.data.address.toLowerCase();
 
-    // ── Daily limit ───────────────────────────────────────────────────────────
+    // ── Session must own the target address (EVM or derived Aztec) ─────────────────
+    const sessionAddr = session.userId.toLowerCase().trim();
+    const isEvmOwner = sessionAddr === normalizedAddress;
+    let isDerivedOwner = false;
+    if (!isEvmOwner) {
+      try {
+        const derivedAztec = '0x' + crypto.createHash('sha256').update(sessionAddr).digest('hex');
+        isDerivedOwner = derivedAztec.toLowerCase() === normalizedAddress;
+      } catch {}
+    }
+    // Also allow airdrop to EVM address itself (some wallets call airdrop with their EVM addr)
+    if (!isEvmOwner && !isDerivedOwner) {
+      return NextResponse.json(
+        { error: 'Forbidden: You can only airdrop to your own wallet address.' },
+        { status: 403 }
+      );
+    }
+
+    // ── Daily limit ──────────────────────────────────────────────────────
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const dailyAirdrops = await prisma.transaction.count({
@@ -65,7 +83,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ── One-per-wallet check ──────────────────────────────────────────────────
+    // ── One-per-wallet check (pre-flight — definitive check is inside the Serializable tx below) ─
     const existingAirdrop = await prisma.transaction.findFirst({
       where: { toAddress: normalizedAddress, token: 'QDs', type: 'AIRDROP', status: 'COMPLETED' },
     });
@@ -159,31 +177,52 @@ export async function POST(req: NextRequest) {
       onChain         = false;
     }
 
-    // ── Record in DB ──────────────────────────────────────────────────────────
+    // ── Record in DB (ATOMIC — Serializable to prevent double-airdrop race condition) ──
+    // The pre-flight check above is a fast-path optimisation only.
+    // The DEFINITIVE one-per-wallet enforcement lives HERE, inside the
+    // Serializable transaction, which acquires an exclusive row-range lock.
+    // Two concurrent requests both pass the pre-flight → only one wins the lock.
     const nonce = crypto.randomBytes(16).toString('hex');
-    await prisma.transaction.create({
-      data: {
-        txHash:      aztecTxHash,
-        fromAddress: '0x0000000000000000000000000000000000000000000000000000000000000000',
-        toAddress:   normalizedAddress,
-        amount:      AIRDROP_AMOUNT,
-        token:       'QDs',
-        tokenSymbol: 'QDs',
-        type:        'AIRDROP',
-        status:      'COMPLETED',
-        chainId:     89021716,
-        blockNumber: BigInt(blockNum ?? Math.floor(Date.now() / 12_000)),
-        metadata:    {
-          network:          'aztec-testnet',
-          aztecTxHash:      aztecTxHash,
-          explorerUrl:      explorerUrl,
-          onChain:          onChain,
-          tokenContractSet: !!tokenAddressStr,
-          nodeInfo:         nodeInfo,
-          nonce,
-        },
-      },
-    });
+    try {
+      await prisma.$transaction(async (txCtx) => {
+        // Re-check inside the lock — this is the atomic guard
+        const alreadyClaimed = await txCtx.transaction.findFirst({
+          where: { toAddress: normalizedAddress, token: 'QDs', type: 'AIRDROP', status: 'COMPLETED' },
+        });
+        if (alreadyClaimed) {
+          throw new Error('ALREADY_CLAIMED');
+        }
+
+        await txCtx.transaction.create({
+          data: {
+            txHash:      aztecTxHash,
+            fromAddress: '0x0000000000000000000000000000000000000000000000000000000000000000',
+            toAddress:   normalizedAddress,
+            amount:      AIRDROP_AMOUNT,
+            token:       'QDs',
+            tokenSymbol: 'QDs',
+            type:        'AIRDROP',
+            status:      'COMPLETED',
+            chainId:     89021716,
+            blockNumber: BigInt(blockNum ?? Math.floor(Date.now() / 12_000)),
+            metadata:    {
+              network:          'aztec-testnet',
+              aztecTxHash:      aztecTxHash,
+              explorerUrl:      explorerUrl,
+              onChain:          onChain,
+              tokenContractSet: !!tokenAddressStr,
+              nodeInfo:         nodeInfo,
+              nonce,
+            },
+          },
+        });
+      }, { isolationLevel: 'Serializable' });
+    } catch (atomicErr: any) {
+      if (atomicErr.message === 'ALREADY_CLAIMED' || atomicErr.code === 'P2002') {
+        return NextResponse.json({ error: 'Already claimed. Each wallet receives 200 QDs once.' }, { status: 409 });
+      }
+      throw atomicErr;
+    }
 
     return NextResponse.json({
       success:     true,
