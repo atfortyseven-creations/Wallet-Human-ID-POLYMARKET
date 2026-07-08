@@ -126,7 +126,7 @@ function mapTx(tx: any, forAddress: string): TxRecord {
     date:        tx.timestamp,
     txHash:      tx.txHash,
     blockNumber: tx.blockNumber ?? "0",
-    explorerUrl: tx.explorerUrl ?? `https://testnet.aztecscan.xyz`,
+    explorerUrl: tx.explorerUrl ?? null, // null = off-chain tx, no AztecScan link
   };
 }
 
