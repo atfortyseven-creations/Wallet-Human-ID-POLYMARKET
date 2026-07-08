@@ -1551,11 +1551,25 @@ html,
 html.dark,
 html.light {
   color-scheme: light !important;
+  background-color: #FFFFFF !important;
+}
+
+/* ANTI-VOID ZONE: Ensure nothing below the last section shows black.
+   The html element background is the ultimate fallback for any empty space
+   below the last component. Force it permanently white. */
+html::after {
+  content: '';
+  display: block;
+  position: fixed;
+  inset: 0;
+  background: #FFFFFF;
+  z-index: -999;
+  pointer-events: none;
 }
 
 /* Neutralize the dark-body text inversion */
 html.dark body {
-  background-color: transparent !important;
+  background-color: #FFFFFF !important;
   color: #1C1917 !important; /* Slate-900  system light-mode text */
 }
 
@@ -1593,6 +1607,13 @@ html.dark [class*="text-black/"] {
 /* Restore bg-white containers  do NOT make them transparent */
 html.dark [class*="bg-white"]:not([class*="bg-white/"]):not(button):not(a):not(input):not(textarea):not(select):not(img):not(svg):not(span):not(p):not(h1):not(h2):not(h3):not(h4):not(h5):not(h6) {
   background-color: #ffffff !important;
+}
+
+/* RIGHT SIDEBAR + PANEL FIX: Any element with explicit bg-white Tailwind class
+   must always show white, even if the parent is transparent (avoids the
+   black bleed-through from UniversalEliteWallpaper on dark sidebars) */
+[class*="bg-white"]:not([class*="bg-white/"]) {
+  background-color: #ffffff;
 }
 
 /* Restore cream/ivory inline-style backgrounds */

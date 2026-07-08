@@ -110,13 +110,14 @@ export async function POST(req: NextRequest) {
           .digest('hex');
 
         // Trigger real Aztec on-chain mint by calling the airdrop endpoint with the reward amount
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://humanidfi.com';
+        const baseUrl = new URL(req.url).origin;
         let onChainResult: any = null;
         try {
           const mintRes = await fetch(`${baseUrl}/api/aztec/airdrop`, {
             method: 'POST',
             headers: { 
               'Content-Type': 'application/json',
+              'cookie': req.headers.get('cookie') || '',
               'X-Oracle-Sig': oracleSig,
               'X-Oracle-Payload': oraclePayload,
               'X-Internal-Call': 'quest-reward',
@@ -134,27 +135,31 @@ export async function POST(req: NextRequest) {
         }
 
         // Record in DB as audit trail (not source of truth — on-chain is)
-        await prisma.transaction.create({
-            data: {
-                txHash: onChainResult?.txHash || `quest_oracle_${crypto.randomBytes(16).toString('hex')}`,
-                status: 'COMPLETED',
-                type: 'RECEIVE',
-                amount: rewardAmount,
-                token: 'QDs',
-                tokenSymbol: 'QDs',
-                fromAddress: '0xAztecQuestTreasury',
-                toAddress: aztecAddress.toLowerCase(),
-                chainId: 89021716,
-                metadata: {
-                    network: 'aztec-testnet',
-                    onChain: onChainResult?.onChain ?? false,
-                    txHash: onChainResult?.txHash || null,
-                    explorerUrl: onChainResult?.explorerUrl || null,
-                    oracleSig,
-                    reason: `Quest reward: ${slug} (+${rewardAmount} QDs)`
+        try {
+            await prisma.transaction.create({
+                data: {
+                    txHash: onChainResult?.txHash || `quest_oracle_${crypto.randomBytes(16).toString('hex')}`,
+                    status: 'COMPLETED',
+                    type: 'RECEIVE',
+                    amount: rewardAmount,
+                    token: 'QDs',
+                    tokenSymbol: 'QDs',
+                    fromAddress: '0xAztecQuestTreasury',
+                    toAddress: aztecAddress.toLowerCase(),
+                    chainId: 89021716,
+                    metadata: {
+                        network: 'aztec-testnet',
+                        onChain: onChainResult?.onChain ?? false,
+                        txHash: onChainResult?.txHash || null,
+                        explorerUrl: onChainResult?.explorerUrl || null,
+                        oracleSig,
+                        reason: `Quest reward: ${slug} (+${rewardAmount} QDs)`
+                    }
                 }
-            }
-        });
+            });
+        } catch (dbErr: any) {
+            console.error('[Quest] Failed to record transaction in DB:', dbErr?.message);
+        }
 
         return NextResponse.json({ 
             success: true, 

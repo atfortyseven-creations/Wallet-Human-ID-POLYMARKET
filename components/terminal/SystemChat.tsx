@@ -599,9 +599,9 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
           const res = await fetch(`/api/aztec/transactions?address=${senderAddress}`);
           const data = await res.json();
           const hasPaid = data.transactions?.some((t: any) => 
-            t.type === 'SPEND' && 
+            t.txType === 'SPEND' && 
             t.amount === 0.5 && 
-            (Date.now() - new Date(t.createdAt).getTime()) < 120_000 // Paid in the last 2 minutes
+            (Date.now() - new Date(t.timestamp).getTime()) < 120_000 // Paid in the last 2 minutes
           );
           
           if (!hasPaid) {
@@ -1369,16 +1369,27 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
             if (belongsToActive) {
               setMessages(prev => {
                 if (prev.some(m => m.id === hydrated.id)) return prev;
+                let next;
                 if (!fromPeer) {
                   // Replace optimistic message on send confirmation
                   const optIndex = prev.findIndex(m => m.id.startsWith('opt-') && m.content.trim() === hydrated.content.trim());
                   if (optIndex !== -1) {
-                    const next = [...prev];
+                    next = [...prev];
                     next[optIndex] = hydrated;
-                    return next.sort((a, b) => a.sentAt - b.sentAt);
+                    next.sort((a, b) => a.sentAt - b.sentAt);
+                  } else {
+                    next = [...prev, hydrated].sort((a, b) => a.sentAt - b.sentAt);
                   }
+                } else {
+                  next = [...prev, hydrated].sort((a, b) => a.sentAt - b.sentAt);
                 }
-                return [...prev, hydrated].sort((a, b) => a.sentAt - b.sentAt);
+                
+                try {
+                  const localKey = `whale_chat_msgs_${address?.toLowerCase()}_${currentActivePeer}`;
+                  localStorage.setItem(localKey, JSON.stringify(next.slice(-200)));
+                } catch {}
+                
+                return next;
               });
               setConversations(prev => prev.map(c => 
                 c.peerAddress.toLowerCase() === currentActivePeer 
@@ -1429,7 +1440,27 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
 
   //  Load messages when conversation changes 
   useEffect(() => {
-    if (!xmtpClient.current || !activeConv) { setMessages([]); return; }
+    if (!activeConv) { setMessages([]); return; }
+
+    const localKey = `whale_chat_msgs_${address?.toLowerCase()}_${activeConv.peerAddress.toLowerCase()}`;
+
+    // ── INSTANT LOAD: restore locally-saved messages immediately while XMTP loads ──
+    // CRITICAL FIX: Load from localStorage BEFORE checking xmtpClient.current.
+    // Previously, `setMessages([])` was called when xmtpClient was null (during page reload),
+    // which wiped all cached messages before XMTP had a chance to reconnect.
+    try {
+      const localRaw = localStorage.getItem(localKey);
+      if (localRaw) {
+        const localMsgs: RenderableMessage[] = JSON.parse(localRaw);
+        if (localMsgs.length > 0) {
+          setMessages(localMsgs);
+        }
+      }
+    } catch {}
+
+    // If XMTP is not ready, we've already shown localStorage messages — stop here.
+    // The effect will re-run when activeConv changes again after XMTP reconnects.
+    if (!xmtpClient.current) return;
 
     let cancelled = false;
     const selfInboxId = (xmtpClient.current as any).inboxId ?? '';
@@ -1455,15 +1486,23 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
           const hydratedContents = new Set(hydrated.map(h => h.content.trim()));
           
           // Only keep optimistic messages if they aren't already represented by a real hydrated message from the network.
-          // Also filter out any optimistic message older than 45 seconds to prevent permanent ghost messages.
+          // Extended timeout to 5 minutes to allow XMTP propagation delays (was 45s — too short for slow connections).
           const now = Date.now();
           const survivingOptimistic = optimistic.filter(o => 
             !renderedIds.has(o.id) && 
             !hydratedContents.has(o.content.trim()) &&
-            (now - o.sentAt < 45000)
+            (now - o.sentAt < 300_000) // 5 minutes — XMTP propagation safety window
           );
           
-          return [...hydrated, ...survivingOptimistic].sort((a, b) => a.sentAt - b.sentAt);
+          const merged = [...hydrated, ...survivingOptimistic].sort((a, b) => a.sentAt - b.sentAt);
+          
+          // Persist the merged set to localStorage (only my-sent + confirmed messages, not optimistic)
+          try {
+            const toSave = merged.slice(-200); // keep last 200 messages max
+            localStorage.setItem(localKey, JSON.stringify(toSave));
+          } catch {}
+          
+          return merged;
         });
       } catch (e) {
         console.warn('[Chat] load messages failed:', e);
@@ -1516,6 +1555,16 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
 
     setMessages(prev => [...prev, optimistic]);
     setReplyingTo(undefined);
+    
+    // PERSIST sent message to localStorage immediately — this survives page reloads
+    // and prevents the "message disappeared" bug while XMTP propagates.
+    try {
+      const localKey = `whale_chat_msgs_${address?.toLowerCase()}_${activeConv.peerAddress.toLowerCase()}`;
+      const existing: RenderableMessage[] = JSON.parse(localStorage.getItem(localKey) || '[]');
+      // Add optimistic message (it will be replaced by the confirmed one from XMTP on next poll)
+      const updated = [...existing, optimistic].slice(-200);
+      localStorage.setItem(localKey, JSON.stringify(updated));
+    } catch {}
     
     // Update last message locally
     setConversations(prev => prev.map(c => 

@@ -280,7 +280,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     ? 'relative z-10 w-full flex-1 flex flex-col min-h-0 overflow-hidden md:pb-0'
     : isBounded
       // Scroll is fully contained here  no empty page-level void zones
-      ? `relative z-10 w-full flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain flex flex-col md:pb-0 ${isCenteredPage ? 'items-center justify-center' : ''}`
+      ? `relative z-10 w-full flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain flex flex-col md:pb-0 bg-white dark:bg-[#0a0a0a] ${isCenteredPage ? 'items-center justify-center' : ''}`
       : `relative z-10 w-full flex-1 flex flex-col overscroll-none md:pb-0`;
 
   const showInstitutionalHeader =

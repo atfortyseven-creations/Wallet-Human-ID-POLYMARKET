@@ -248,7 +248,7 @@ try {
                 '--w3m-color-mix': '#000000',
                 '--w3m-border-radius-master': '1.5rem',       // slightly less extreme for mobile hit areas
                 '--w3m-font-family': 'FT Regola Neue, Inter, sans-serif',
-                '--w3m-z-index': 99999,                       // ensure above all overlays on iOS Safari
+                '--w3m-z-index': 9999,                       
             },
             enableInjected: true,
             enableEIP6963: true, // MUST BE TRUE for wagmi 2.x to detect injected wallets like MetaMask properly

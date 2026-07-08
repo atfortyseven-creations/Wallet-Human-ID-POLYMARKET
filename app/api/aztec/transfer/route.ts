@@ -54,11 +54,11 @@ export async function POST(req: NextRequest) {
     const isMockTesting = fromAddr === '0x9999999999999999999999999999999999999999999999999999999999999999';
 
     if (!isMockTesting) {
-      if (!session || !session.walletAddress) {
+      if (!session || !session.userId) {
         return NextResponse.json({ error: 'Unauthorized: Session missing. Please authenticate.' }, { status: 401 });
       }
       
-      const sessionAddr = session.walletAddress.toLowerCase().trim();
+      const sessionAddr = session.userId.toLowerCase().trim();
       if (sessionAddr !== fromAddr) {
         return NextResponse.json(
           { error: `Forbidden: Identity mismatch. Authenticated as ${sessionAddr.slice(0,10)}, but trying to spend from ${fromAddr.slice(0,10)}.` }, 

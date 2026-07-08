@@ -1494,8 +1494,10 @@ export function MobileLanding() {
                 const openWalletModal = (walletId: string) => {
                   if (isLinked && effectiveAddress) return;
 
+                  // Close custom modal overlay to let AppKit take over completely, preventing any z-index or pointer-event conflicts on mobile devices
+                  setShowConnectOverlay(false);
+
                   // ── STEP 1: Open the AppKit modal IMMEDIATELY (synchronous, user-gesture) ──
-                  // Must be first — iOS Safari's user-gesture tracking ends after first setState.
                   try {
                     rkOpenModal({ view: 'Connect' });
                   } catch (e) {
