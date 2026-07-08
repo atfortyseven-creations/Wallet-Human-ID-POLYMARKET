@@ -13,6 +13,6 @@ export default function robots(): MetadataRoute.Robots {
         allow: ['/llms.txt', '/humans.txt', '/.well-known/security.txt', '/'],
       }
     ],
-    sitemap: 'https://whalecosystem.io/sitemap.xml',
+    sitemap: 'https://humanidfi.com/sitemap.xml',
   }
 }
