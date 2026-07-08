@@ -53,7 +53,7 @@ import React, {
   useState,
 } from "react";
 import { toast } from "sonner";
-import { useSignMessage } from "wagmi";
+import { useSignMessage, useAccount } from "wagmi";
 import { keccak256, toBytes } from "viem";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -141,6 +141,9 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
   const [isBusy, setIsBusy]             = useState(false);
   const [error, setError]               = useState<string | null>(null);
 
+  // EVM address from wagmi — used as fallback seed when Aztec identity is not yet initialized
+  const { address: evmAddress } = useAccount();
+
   // Tracks which tx IDs have already fired a "received QDs" toast.
   const notifiedRef = useRef<Set<string>>(new Set());
   // Polling interval ref for cleanup.
@@ -165,6 +168,57 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // ─── Auto-Init from EVM address (WalletConnect users who haven't clicked Aztec Identity) ──
+  // When a user connects their wallet but never visits the Aztec Identity tab,
+  // aztecAddress is null and spendQDs returns false. This effect auto-derives the
+  // Aztec address from the EVM address via the server-side SHA-256 derivation
+  // (same algorithm used in /api/aztec/derive-address) so ALL users get a working
+  // QD balance the moment they connect their wallet.
+  const autoInitRef = useRef(false);
+  useEffect(() => {
+    if (!evmAddress || aztecAddress || autoInitRef.current) return;
+    autoInitRef.current = true;
+    (async () => {
+      try {
+        const res = await fetch('/api/aztec/derive-address', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ seed: evmAddress }),
+        });
+        if (!res.ok) return;
+        const { aztecAddress: derived } = await res.json();
+        if (!derived) return;
+        setAztecAddress(derived);
+        setSeed(evmAddress);
+        // Store session so it persists on reload
+        try { localStorage.setItem('aztec_session', JSON.stringify({ address: derived, seed: evmAddress })); } catch {}
+        setIsLoading(true);
+        await fetchLedgerState(derived);
+        setIsLoading(false);
+        startPolling(derived);
+
+        // Auto-airdrop 200 QDs if this wallet has never received any
+        const balRes = await fetch(`/api/aztec/balance?aztecAddress=${encodeURIComponent(derived.toLowerCase())}`);
+        if (balRes.ok) {
+          const { balance: rawBal } = await balRes.json();
+          if (parseFloat(rawBal) === 0) {
+            // First time — give them 200 QDs automatically
+            await fetch('/api/aztec/airdrop', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ address: derived }),
+            });
+            await fetchLedgerState(derived);
+          }
+        }
+      } catch (e) {
+        console.warn('[AztecNative] Auto-init from EVM failed:', e);
+        autoInitRef.current = false; // allow retry
+      }
+    })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [evmAddress, aztecAddress]);
 
   // ─── Core Poll Function ────────────────────────────────────────────────────
 
@@ -375,9 +429,11 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
   // ─── Spend QDs Utility ────────────────────────────────────────────────────
 
   const spendQDs = useCallback(async (amount: number, reason: string): Promise<boolean> => {
-    if (!aztecAddress || balance < amount) return false;
+    const activeAddr = aztecAddress || evmAddress;
+    if (!activeAddr || balance < amount) return false;
     
     setIsBusy(true);
+    setBalance(prev => prev - amount); // Optimistic update
     try {
       // [ON-CHAIN REAL SPEND] 
       // Burn address on Aztec — tokens sent here are permanently destroyed
@@ -433,16 +489,20 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            from: aztecAddress,
+            from: activeAddr,
             to: AZTEC_BURN_ADDRESS,
             amount,
             reason,
           })
         });
-        if (!res.ok) throw new Error("Payment failed");
+        if (!res.ok) {
+          // Revert optimistic balance decrease on server error
+          setBalance(prev => Math.round((prev + amount) * 1_000_000) / 1_000_000);
+          throw new Error("Payment failed");
+        }
       }
 
-      await fetchLedgerState(aztecAddress); // force refresh balance
+      await fetchLedgerState(activeAddr); // reconcile with DB
       return true;
     } catch (err: any) {
       console.error("[Aztec Spend] Failed:", err);
@@ -451,7 +511,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
     } finally {
       setIsBusy(false);
     }
-  }, [aztecAddress, balance, fetchLedgerState]);
+  }, [aztecAddress, evmAddress, balance, fetchLedgerState]);
 
   // ─── Context Value ────────────────────────────────────────────────────────
 

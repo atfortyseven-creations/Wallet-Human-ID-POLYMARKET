@@ -49,7 +49,11 @@ export async function POST(req: NextRequest) {
     const roundedAmount = Math.round(rawAmount * 1_000_000) / 1_000_000;
 
     // ── Session Authorization (CSRF / Replay Protection) ──────────────────────
-    // Mathematical guarantee that only the owner of the wallet can spend QDs
+    // The session.userId is always the EVM address (from SIWE).
+    // fromAddr can be either:
+    //   a) The EVM address itself (direct spend)
+    //   b) An Aztec address derived from the EVM address via SHA-256
+    // In both cases, the session owner must be the one initiating the spend.
     const session = await getSession();
     const isMockTesting = fromAddr === '0x9999999999999999999999999999999999999999999999999999999999999999';
 
@@ -59,7 +63,22 @@ export async function POST(req: NextRequest) {
       }
       
       const sessionAddr = session.userId.toLowerCase().trim();
-      if (sessionAddr !== fromAddr) {
+      
+      // Check 1: exact EVM match
+      const isEvmMatch = sessionAddr === fromAddr;
+      
+      // Check 2: Aztec address derived from this EVM address
+      // The Aztec address is SHA-256(evmAddress) — same derivation as /api/aztec/derive-address
+      let isDerivedMatch = false;
+      if (!isEvmMatch) {
+        try {
+          const { createHash } = await import('crypto');
+          const derivedAztec = '0x' + createHash('sha256').update(sessionAddr).digest('hex');
+          isDerivedMatch = derivedAztec.toLowerCase() === fromAddr.toLowerCase();
+        } catch {}
+      }
+      
+      if (!isEvmMatch && !isDerivedMatch) {
         return NextResponse.json(
           { error: `Forbidden: Identity mismatch. Authenticated as ${sessionAddr.slice(0,10)}, but trying to spend from ${fromAddr.slice(0,10)}.` }, 
           { status: 403 }
