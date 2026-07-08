@@ -13,4 +13,4 @@ fi
 
 # Start the Next.js production server
 echo "[start.sh] Starting Next.js server on port ${PORT:-3000}..."
-exec node server.js
+exec npm run start:prod
