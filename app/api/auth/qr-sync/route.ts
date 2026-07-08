@@ -109,7 +109,8 @@ export async function POST(req: Request) {
             issuedAt: new Date().toISOString()
         });
 
-        const cookieDomain = process.env.NODE_ENV === 'production' ? 'humanidfi.com' : undefined;
+        const host = request.headers.get("host") || "";
+        const cookieDomain = (process.env.NODE_ENV === 'production' && host.includes("humanidfi.com")) ? 'humanidfi.com' : undefined;
         const response = NextResponse.json({ status: 'queued' });
         
         response.cookies.set('human_session', jwt, {

@@ -19,8 +19,8 @@ export async function POST(request: NextRequest) {
   // so the original cookie is never cleared — users stay authenticated after Disconnect.
   //
   // Rule: delete whale_session with Strict, everything else with Lax.
-  const cookieDomain = process.env.NODE_ENV === "production" ? "humanidfi.com" : undefined;
-
+  const host = request.headers.get("host") || "";
+  const cookieDomain = (process.env.NODE_ENV === "production" && host.includes("humanidfi.com")) ? "humanidfi.com" : undefined;
   const strictBase = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -79,26 +79,28 @@ export async function POST(request: NextRequest) {
   // [FIX] Belt-and-suspenders: also emit raw Set-Cookie headers to cover edge cases
   // where response.cookies.set() de-duplicates keys and drops the Strict variant.
   // These headers arrive alongside the cookies above — the browser processes all of them.
+  // To guarantee clearing cookies across all possible domain permutations (e.g. localhost, railway, production),
+  // we emit headers for BOTH the current implied domain and the explicit production domain.
   const expiredDate = "Thu, 01 Jan 1970 00:00:00 GMT";
   const secure = process.env.NODE_ENV === "production" ? "; Secure" : "";
-  const domainStr = process.env.NODE_ENV === "production" ? "; Domain=humanidfi.com" : "";
+  const explicitDomain = (process.env.NODE_ENV === "production" && host.includes("humanidfi.com")) ? "; Domain=humanidfi.com" : "";
 
-  response.headers.append(
-    "Set-Cookie",
-    `whale_session=; Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Strict${domainStr}`
-  );
-  response.headers.append(
-    "Set-Cookie",
-    `whale_session=; Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Lax${domainStr}`
-  );
-  response.headers.append(
-    "Set-Cookie",
-    `human_session=; Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Lax${domainStr}`
-  );
-  response.headers.append(
-    "Set-Cookie",
-    `system_handshake=; Path=/; Expires=${expiredDate}${secure}; SameSite=Lax${domainStr}`
-  );
+  const permutations = [
+    { name: "whale_session", opts: `Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Strict` },
+    { name: "whale_session", opts: `Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Lax` },
+    { name: "human_session", opts: `Path=/; Expires=${expiredDate}; HttpOnly${secure}; SameSite=Lax` },
+    { name: "system_handshake", opts: `Path=/; Expires=${expiredDate}${secure}; SameSite=Lax` },
+    { name: "wallet-auth", opts: `Path=/; Expires=${expiredDate}${secure}; SameSite=Lax` }
+  ];
+
+  permutations.forEach(p => {
+    // 1. Without domain (current host)
+    response.headers.append("Set-Cookie", `${p.name}=; ${p.opts}`);
+    // 2. With explicit domain (if applicable)
+    if (explicitDomain) {
+      response.headers.append("Set-Cookie", `${p.name}=; ${p.opts}${explicitDomain}`);
+    }
+  });
 
   return response;
 }
