@@ -407,14 +407,10 @@ function ReceiveQDsPanel() {
         ))}
       </div>
 
-      <a
-        href={`${AZTEC_EXPLORER}/accounts/${aztecAddress}`}
-        target="_blank" rel="noopener noreferrer"
-        className="flex items-center justify-between w-full py-3 px-4 border border-zinc-900/10 hover:border-zinc-900 hover:bg-zinc-100 hover:text-zinc-900 text-zinc-900/40 text-[9px] font-black uppercase tracking-widest transition-all group"
-      >
-        <span>View on AztecScan</span>
-        <ExternalLink size={11} className="group-hover:translate-x-0.5 transition-transform" />
-      </a>
+      <div className="flex items-center justify-between w-full py-3 px-4 border border-zinc-900/10 text-zinc-900/30 text-[9px] font-black uppercase tracking-widest">
+        <span>On-Chain Explorer</span>
+        <span className="text-[7px] font-normal">Available after token deploy</span>
+      </div>
     </div>
   );
 }
@@ -885,14 +881,10 @@ export function AztecIdentityCard() {
                 </div>
               </div>
 
-              <a
-                href={`${AZTEC_EXPLORER}/accounts/${aztecAddress}`}
-                target="_blank" rel="noopener noreferrer"
-                className="flex items-center justify-between w-full py-3 px-4 border border-zinc-900/10 hover:border-zinc-900 hover:bg-zinc-100 hover:text-zinc-900 text-zinc-900/40 text-[9px] font-black uppercase tracking-widest transition-all group"
-              >
-                <span>View on AztecScan</span>
-                <ExternalLink size={11} className="group-hover:translate-x-0.5 transition-transform" />
-              </a>
+              <div className="flex items-center justify-between w-full py-3 px-4 border border-zinc-900/10 text-zinc-900/30 text-[9px] font-black uppercase tracking-widest">
+                <span>On-Chain Explorer</span>
+                <span className="text-[7px] font-normal">Available after token deploy</span>
+              </div>
             </div>
           )}
 
@@ -980,13 +972,7 @@ export function AztecIdentityCard() {
       {/* Footer */}
       <div className="px-6 py-3 border-t border-zinc-900/8 bg-zinc-900/[0.01] flex items-center justify-between">
         <span className="text-[7px] text-zinc-900/20 uppercase tracking-widest">Updated {LAST_UPDATED}</span>
-        <a
-          href={`${AZTEC_EXPLORER}/accounts/${aztecAddress}`}
-          target="_blank" rel="noopener noreferrer"
-          className="text-[7px] text-zinc-900/20 hover:text-zinc-900 uppercase tracking-widest transition-colors flex items-center gap-1"
-        >
-          AztecScan <ExternalLink size={8} />
-        </a>
+        <span className="text-[7px] text-zinc-900/20 uppercase tracking-widest">Aztec Testnet · Modo B</span>
       </div>
     </motion.div>
   );
