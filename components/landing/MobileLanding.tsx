@@ -1494,15 +1494,15 @@ export function MobileLanding() {
                 const openWalletModal = (walletId: string) => {
                   if (isLinked && effectiveAddress) return;
 
-                  // Close custom modal overlay to let AppKit take over completely, preventing any z-index or pointer-event conflicts on mobile devices
-                  setShowConnectOverlay(false);
-
                   // ── STEP 1: Open the AppKit modal IMMEDIATELY (synchronous, user-gesture) ──
                   try {
                     rkOpenModal({ view: 'Connect' });
                   } catch (e) {
                     console.warn('[MobileWallet] rkOpenModal failed:', e);
                   }
+
+                  // Close custom modal overlay to let AppKit take over completely
+                  setShowConnectOverlay(false);
 
                   // ── STEP 2: State updates (safe AFTER modal open call) ──
                   try { sessionStorage.removeItem("__disconnected__"); } catch {}

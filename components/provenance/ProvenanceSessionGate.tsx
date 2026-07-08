@@ -80,19 +80,14 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
   useEffect(() => {
     let cancelled = false;
     async function checkSession() {
-      // Fast path: Live wallet connection is sufficient for viewing the terminal/dashboard
-      if (isConnected && address) {
-        setAuthState(true);
-        return;
-      }
-
-      // Slow path: check server JWT for persistent sessions if wallet is not live
+      // Fast path removed to enforce backend sessions for Aztec Native Wallet QDs.
+      // Slow path: check server JWT for persistent sessions
       try {
         const res = await fetch('/api/siwe/session', { cache: 'no-store' });
         if (cancelled) return;
         if (res.ok) {
           const data = await res.json();
-          if (data.address) {
+          if (data.address && (!address || data.address.toLowerCase() === address.toLowerCase())) {
              setAuthState(true);
              return;
           }

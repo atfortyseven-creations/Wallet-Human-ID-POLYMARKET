@@ -897,7 +897,10 @@ export function AztecIdentityCard() {
 
           {/* CLAIM */}
           {activeTab === 'CLAIM' && (
-            <AztecAirdropCalendar />
+            <div className="space-y-4">
+              <AztecRewardsCard />
+              <AztecAirdropCalendar />
+            </div>
           )}
 
           {/* NODE */}
