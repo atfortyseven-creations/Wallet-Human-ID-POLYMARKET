@@ -719,7 +719,7 @@ export default function ConnectPage() {
                 ))}
               </div>
               <p className="text-[10px] font-medium text-[#666] mt-4 leading-relaxed ml-1">
-                Authenticate and receive <span className="font-black text-[#0A0A0A]">10 QDs</span> on entry. Spend them. Earn more. Climb the protocol.
+                Authenticate and receive <span className="font-black text-[#0A0A0A]">200 QDs</span> on entry. Spend them. Earn more. Climb the protocol.
               </p>
             </div>
           </motion.div>

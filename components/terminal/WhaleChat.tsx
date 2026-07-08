@@ -802,7 +802,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                         const airdropData = await airdropRes.json();
                         if (airdropData.success) {
                             localStorage.setItem(mintKey, 'true');
-                            toast.success('✅ Aztec Identity Active: 10 QDs received!', { 
+                            toast.success('⚡ Aztec Identity Active: 200 QDs received!', { 
                                 description: 'Transaction confirmed on Aztec Testnet.',
                                 duration: 8000,
                                 action: airdropData.explorerUrl ? {

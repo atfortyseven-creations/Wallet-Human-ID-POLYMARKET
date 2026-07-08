@@ -42,7 +42,7 @@ export function AztecAirdropCalendar() {
             const data = await res.json();
             
             if (res.ok) {
-                toast.success(`10 QDs Airdrop Claimed! Tx: ${data.txHash || 'Simulated'}`);
+                toast.success(`200 QDs Airdrop Claimed! Tx: ${data.txHash || 'Simulated'}`);
                 
                 const now = new Date();
                 const m = now.getUTCMonth() + 1;
@@ -131,7 +131,7 @@ export function AztecAirdropCalendar() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="p-3 border border-zinc-900/10 bg-white">
                         <div className="text-[9px] font-black uppercase tracking-widest text-zinc-900/40 mb-1">Airdrop Rule</div>
-                        <div className="text-[10px] font-mono text-zinc-800">10 QDs drop on the 1st of every month. Claim window is strictly 24 hours.</div>
+                        <div className="text-[10px] font-mono text-zinc-800">200 QDs drop on the 1st of every month. Claim window is strictly 24 hours.</div>
                     </div>
                     
                     {/* Anti-Hoarding Directive */}

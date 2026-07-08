@@ -340,7 +340,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
   const { reconnect } = useReconnect();
   const { signMessageAsync } = useSignMessage();
   const { nuclearDisconnect } = useSystemSignOut();
-  const { spendQDs } = useAztecNative();
+  const { spendQDs, balance } = useAztecNative();
 
   // walletClientRef: keeps a stable ref to the latest walletClient so the
   // XMTP signer can always access the current client even after async awaits.
@@ -993,7 +993,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                         const airdropData = await airdropRes.json();
                         if (airdropData.success) {
                             localStorage.setItem(mintKey, 'true');
-                            toast.success('✅ Aztec Identity Active: 10 QDs received!', { 
+                            toast.success('⚡ Aztec Identity Active: 200 QDs received!', { 
                                 description: 'Transaction confirmed on Aztec Testnet.',
                                 duration: 8000,
                                 action: airdropData.explorerUrl ? {
@@ -2330,6 +2330,11 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                     )}
                   </div>
                 )}
+                {/* Balance & Cost Indicator */}
+                <div className="flex items-center justify-between px-5 py-2 bg-[#00C076]/10 border-t border-[#00C076]/20">
+                  <span className="text-[10px] font-mono font-bold text-[#00C076] uppercase tracking-widest">Mensaje ZK-Seguro: 0.01 QDs</span>
+                  <span className="text-[10px] font-mono font-bold text-[#00C076] uppercase tracking-widest">Tus QDs: {balance.toFixed(2)}</span>
+                </div>
                 {/* ChatInput — always visible, disabled while XMTP not ready */}
                 <ChatInput
                   onSendText={handleSendText}

@@ -1478,90 +1478,87 @@ export function MobileLanding() {
         <div className="w-full flex flex-col gap-3">
 
           {/* 
-              WALLET BUTTONS  Using Reown AppKit's useAppKit hook.
-              Flow: click  pre-flight disconnect  AppKit modal opens 
-              user picks wallet  WC v2 deep link  Android "Open with" dialog.
-               */}
+              WALLET BUTTONS — Native Reown AppKit web component.
+              Using <appkit-button> directly avoids the iOS Safari user-gesture
+              invalidation that happens when rkOpenModal() is called after any
+              React state update. The web component handles the tap event
+              natively without going through React's synthetic event system.
+           */}
           <div className="w-full flex flex-col gap-3">
-              {(() => {
-              // Helper: open the correct wallet flow
-              // [CRITICAL MOBILE FIX] iOS Safari invalidates user-gesture context after
-              // any React state update or async boundary. rkOpenModal() MUST be the FIRST
-              // operation called — before setConnecting(), before any storage writes.
-              // Placing it after setState() triggers a React re-render, which causes
-              // Safari to classify subsequent navigations/popup-opens as non-user-initiated
-              // and silently blocks them. This is THE root cause of "click → nothing happens".
-                const openWalletModal = (walletId: string) => {
-                  if (isLinked && effectiveAddress) return;
 
-                  // ── STEP 1: Open the AppKit modal IMMEDIATELY (synchronous, user-gesture) ──
+            {/* Primary connect button — native AppKit web component */}
+            <div className="w-full">
+              {/* @ts-ignore */}
+              <appkit-button
+                label="Connect Wallet"
+                loadingLabel="Connecting..."
+                balance="hide"
+                style={{
+                  width: '100%',
+                  '--wui-color-accent-100': '#5200FF',
+                  '--wui-border-radius-5xl': '16px',
+                }}
+              />
+            </div>
+
+            {/* Fallback: JS-based button if the web component doesn't render */}
+            <button
+              type="button"
+              onClick={() => {
+                // This fires synchronously in the user-gesture context.
+                // DO NOT move any code before this call.
+                try {
+                  rkOpenModal({ view: 'Connect' });
+                } catch (e) {
+                  // Last resort: directly manipulate the w3m-modal web component
                   try {
-                    rkOpenModal({ view: 'Connect' });
-                  } catch (e) {
-                    console.warn('[MobileWallet] rkOpenModal failed:', e);
-                  }
+                    const modal = document.querySelector('w3m-modal') as any;
+                    if (modal) {
+                      modal.open = true;
+                      modal.setAttribute('open', '');
+                    }
+                  } catch {}
+                  console.warn('[MobileWallet] all open attempts failed', e);
+                }
+                // Clear disconnect guard so the session can be established
+                try { sessionStorage.removeItem("__disconnected__"); } catch {}
+                try { localStorage.removeItem("__disconnected__"); } catch {}
+                try { localStorage.setItem('system_pending_wakeup', '1'); } catch {}
+                try { sessionStorage.setItem('system_show_reconnect', '1'); } catch {}
+              }}
+              className="group w-full flex items-center gap-4 p-4 rounded-2xl border border-black/10 bg-white hover:bg-black/[0.02] hover:border-black/20 active:scale-[0.97] transition-all duration-200 shadow-sm"
+            >
+              <div className="w-11 h-11 rounded-xl bg-[#5200FF]/10 border border-[#5200FF]/20 flex items-center justify-center p-2 overflow-hidden shrink-0">
+                <img src="/official-whale-monochrome.png" alt="Connect" className="w-full h-full object-contain" />
+              </div>
+              <div className="flex-1 text-left">
+                <p className="text-[13px] font-black uppercase tracking-tight text-[#050505]">Open Wallet Selector</p>
+                <p className="text-[10px] font-mono text-[#050505]/40 uppercase tracking-widest mt-0.5">
+                  MetaMask · Trust · Coinbase · Rainbow · OKX · 300+ Wallets
+                </p>
+              </div>
+              <ArrowRight size={14} className="text-[#050505]/20 group-hover:text-[#050505] transition-all shrink-0" />
+            </button>
 
-                  // Close custom modal overlay to let AppKit take over completely
-                  setShowConnectOverlay(false);
+            {/* Secondary: Scan QR from desktop — opens native scanner */}
+            <WalletOption
+              logo="/system-shots/aztec-logo.png"
+              name="Scan QR Code"
+              badge="Link your desktop session via camera"
+              loading={false}
+              onClick={() => {
+                setShowConnectOverlay(false);
+                setScanMode('session-only');
+                setShowScanner(true);
+              }}
+              delay={0.18}
+            />
 
-                  // ── STEP 2: State updates (safe AFTER modal open call) ──
-                  try { sessionStorage.removeItem("__disconnected__"); } catch {}
-                  try { localStorage.removeItem("__disconnected__"); } catch {}
-
-                  setConnecting(walletId);
-                  setWcTargetWallet(walletId);
-                  setWcDeepLink(null);
-                  setShowFallbackBtn(false);
-
-                  // [ANDROID RECOVERY FIX] Set the wakeup flag so if Chrome kills the tab
-                  // when deep-linking to MetaMask, the Ultra Recovery Effect can reconnect on return.
-                  try { localStorage.setItem('system_pending_wakeup', '1'); } catch {}
-                  try { sessionStorage.setItem('system_show_reconnect', '1'); } catch {}
-
-                  // [ANDROID UX FIX] Show the "I already connected" fallback button after 3.5s.
-                  const fallbackTimer = setTimeout(() => setShowFallbackBtn(true), 3500);
-                  // Clear the loading indicator after 10s (UX: don't spin forever)
-                  setTimeout(() => {
-                    setConnecting(null);
-                    clearTimeout(fallbackTimer);
-                  }, 10000);
-                };
-
-
-              return (
-                <>
-                  {/* Primary: Universal WalletConnect v2 — opens AppKit modal with full wallet list */}
-                  <WalletOption
-                    logo="/official-whale-monochrome.png"
-                    name="Connect Wallet"
-                    badge="MetaMask · Trust · Coinbase · Rainbow · OKX · 300+ Wallets"
-                    loading={connecting === 'wc'}
-                    onClick={() => openWalletModal('wc')}
-                    delay={0.1}
-                  />
-
-                  {/* Secondary: Scan QR from desktop — opens native scanner */}
-                  <WalletOption
-                    logo="/system-shots/aztec-logo.png"
-                    name="Scan QR Code"
-                    badge="Link your desktop session via camera"
-                    loading={false}
-                    onClick={() => {
-                      setShowConnectOverlay(false);
-                      setScanMode('session-only');
-                      setShowScanner(true);
-                    }}
-                    delay={0.18}
-                  />
-
-                  <div className="w-full flex justify-center mt-2 mb-1">
-                    <RemoteLottie path="system-shots/Paper airplane.json" className="w-full max-w-[180px] h-[100px] object-contain" />
-                  </div>
-                </>
-              );
-            })()
-}
+            <div className="w-full flex justify-center mt-2 mb-1">
+              <RemoteLottie path="system-shots/Paper airplane.json" className="w-full max-w-[180px] h-[100px] object-contain" />
+            </div>
           </div>
+}
 
               <div className="flex items-start gap-3 p-4 rounded-2xl bg-black/[0.03] border border-black/5 mt-6 w-full">
                 <Fingerprint size={14} className="text-black/40 mt-0.5 shrink-0" />

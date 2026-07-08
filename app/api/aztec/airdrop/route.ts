@@ -18,12 +18,12 @@ const AirdropSchema = z.object({
 });
 
 const AZTEC_EXPLORER        = 'https://testnet.aztecscan.xyz';
-const AIRDROP_AMOUNT        = 10;  // 10 QDs per airdrop
+const AIRDROP_AMOUNT        = 200;  // 200 QDs per airdrop
 
 /**
  * POST /api/aztec/airdrop
  *
- * Mints 10 QDs to the caller's Aztec address.
+ * Mints 200 QDs to the caller's Aztec address.
  * Architecture (SDK v4.3.1):
  *  - Mode A: Full on-chain mint via PXE + TokenContract (requires AZTEC_TOKEN_CONTRACT_ADDRESS)
  *  - Mode B: Node-verified DB airdrop — real testnet block hash, no token contract needed
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
     });
     if (existingAirdrop) {
       return NextResponse.json(
-        { error: 'Already claimed. Each wallet receives 10 QDs once.' },
+        { error: 'Already claimed. Each wallet receives 200 QDs once.' },
         { status: 409 }
       );
     }
@@ -194,8 +194,8 @@ export async function POST(req: NextRequest) {
       network:     'aztec-testnet',
       nodeInfo:    nodeInfo,
       message:     onChain
-        ? '10 QDs minted on Aztec Testnet ✅ — view on AztecScan!'
-        : `10 QDs airdropped. Aztec Testnet verified at block #${blockNum}.`,
+        ? '200 QDs minted on Aztec Testnet ⚡ - view on AztecScan!'
+        : `200 QDs airdropped. Aztec Testnet verified at block #${blockNum}.`,
     });
 
   } catch (error: any) {
