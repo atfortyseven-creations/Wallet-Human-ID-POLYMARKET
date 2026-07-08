@@ -138,7 +138,13 @@ const nextConfig = {
             // [PRISMA GUARD] Prevent @prisma/client from leaking into client bundles.
             // serverExternalPackages handles this for Server Components, but this alias
             // provides defense-in-depth for any edge cases where the bundler tries to
-            '@prisma/client': false,
+            // include prisma in client-side JS (causes PrismaClient browser error).
+            ...(!isServer ? {
+                '@prisma/client': path.resolve(__dirname, './lib/prisma-browser-stub.js'),
+                'server-only': false,
+            } : {
+                '@prisma/client': false,
+            }),
         };
 
         // [AZTEC NATIVE CLIENT FIX] Webpack polyfills required for running Aztec SDK
@@ -161,12 +167,6 @@ const nextConfig = {
                 url: require.resolve('url/'),
             };
         }
-            // include prisma in client-side JS (causes PrismaClient browser error).
-            ...(!isServer ? {
-                '@prisma/client': path.resolve(__dirname, './lib/prisma-browser-stub.js'),
-                'server-only': false,
-            } : {}),
-        };
 
         // [AZTEC BUILD FIX] @aztec/aztec.js v0.x does not export its root path
         // in the package.json exports field. Webpack rejects static imports with:
