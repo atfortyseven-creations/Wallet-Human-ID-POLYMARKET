@@ -15,7 +15,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCookieConsent } from './CookieContext';
-import { Lock, X } from 'lucide-react';
+import { ShieldCheck, X } from 'lucide-react';
 
 export function CookieConsent() {
     const { showBanner, acceptAll } = useCookieConsent();
@@ -29,54 +29,55 @@ export function CookieConsent() {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: 120, opacity: 0, transition: { duration: 0.4, ease: 'easeIn' } }}
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="fixed bottom-0 left-0 right-0 z-[99999] p-3 sm:p-5 pointer-events-none"
+                className="fixed bottom-0 left-0 right-0 z-[99999] p-4 sm:p-6 pointer-events-none"
             >
-                <div className="w-full max-w-2xl mx-auto pointer-events-auto relative">
-                    {/* Glow ring for visibility on any background */}
-                    <div className="absolute -inset-[1px] rounded-2xl bg-gradient-to-r from-emerald-500/30 via-transparent to-emerald-500/10 pointer-events-none" />
-
-                    <div className="relative rounded-2xl overflow-hidden border border-white/15 shadow-[0_0_60px_rgba(0,0,0,0.8),0_0_30px_rgba(16,185,129,0.08)]"
-                         style={{ background: 'rgba(8,8,10,0.97)', backdropFilter: 'blur(24px)' }}
+                <div className="w-full max-w-3xl mx-auto pointer-events-auto">
+                    <div 
+                        className="relative rounded-2xl overflow-hidden border border-[#050505]/10 shadow-[0_20px_60px_rgba(0,0,0,0.08)] bg-white/95 backdrop-blur-xl"
                     >
-                        {/* Subtle top accent line */}
-                        <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
+                        {/* Top Accent Line */}
+                        <div className="h-[2px] w-full bg-[#050505]" />
 
-                        <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-4 p-5 sm:p-6">
-                            {/* Icon + Label */}
-                            <div className="flex items-center gap-3 shrink-0">
-                                <div className="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shadow-[0_0_12px_rgba(16,185,129,0.2)]">
-                                    <Lock size={15} className="text-emerald-400" />
+                        <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center gap-5 p-6 sm:px-8">
+                            
+                            {/* Icon & Label */}
+                            <div className="flex flex-col sm:items-center gap-2 shrink-0">
+                                <div className="w-10 h-10 rounded-full border border-[#050505]/10 flex items-center justify-center bg-white shadow-sm">
+                                    <ShieldCheck size={18} className="text-[#050505]" />
                                 </div>
-                                <p className="text-[11px] font-black uppercase tracking-[0.3em] text-emerald-400 whitespace-nowrap">
-                                    Zero Data Policy
-                                </p>
+                                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#050505]">
+                                    Zero Data
+                                </span>
                             </div>
 
-                            {/* Text */}
-                            <div className="flex-1 min-w-0">
-                                <p className="text-[11px] text-white/70 leading-relaxed font-mono">
-                                    This platform collects{' '}
-                                    <strong className="text-white font-black">zero analytics</strong>{' '}
-                                    and{' '}
-                                    <strong className="text-white font-black">zero marketing data</strong>.
-                                    {' '}Your state is sealed cryptographically before reaching any network layer.
+                            {/* Divider (Desktop) */}
+                            <div className="hidden sm:block w-[1px] h-12 bg-[#050505]/10 shrink-0 mx-2" />
+
+                            {/* Text Content */}
+                            <div className="flex-1 min-w-0 pr-2">
+                                <p className="text-[12px] text-black/70 leading-relaxed font-sans">
+                                    This platform enforces a <strong className="text-[#050505] font-black">zero-analytics</strong> and <strong className="text-[#050505] font-black">zero-marketing</strong> architecture. 
+                                    Your portfolio state and identity remain cryptographically sealed. 
+                                    <span className="block mt-1 text-[10px] font-mono text-black/50 uppercase tracking-widest">
+                                        Powered by Aztec Network Privacy Primitives
+                                    </span>
                                 </p>
                             </div>
 
                             {/* Actions */}
-                            <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto">
+                            <div className="flex items-center gap-3 shrink-0 w-full sm:w-auto mt-2 sm:mt-0 pt-4 sm:pt-0 border-t sm:border-t-0 border-[#050505]/5">
                                 <button
                                     onClick={acceptAll}
-                                    className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 active:scale-[0.97] bg-white text-[#050505] hover:bg-white/90 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+                                    className="flex-1 sm:flex-none px-6 py-3 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-200 active:scale-[0.97] bg-[#050505] text-white hover:bg-[#222] shadow-md"
                                 >
-                                    Understood
+                                    Acknowledge
                                 </button>
                                 <button
                                     onClick={acceptAll}
-                                    className="w-9 h-9 rounded-xl border border-white/10 flex items-center justify-center text-white/40 hover:text-white hover:border-white/25 hover:bg-white/5 transition-all"
+                                    className="w-11 h-11 rounded-xl border border-[#050505]/10 flex items-center justify-center text-black/40 hover:text-black hover:border-[#050505]/30 hover:bg-black/5 transition-all"
                                     aria-label="Dismiss"
                                 >
-                                    <X size={14} />
+                                    <X size={16} />
                                 </button>
                             </div>
                         </div>

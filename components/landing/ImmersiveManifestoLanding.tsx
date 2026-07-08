@@ -811,8 +811,7 @@ function PoweredBySection() {
 function FinalCTASection() {
   return (
     <section
-      className="w-full relative overflow-hidden flex flex-col justify-center items-center bg-[#050505]"
-      style={{ minHeight: 'var(--dvh-100, 500px)' }}
+      className="w-full relative overflow-hidden flex flex-col justify-center items-center bg-[#050505] py-12"
     >
       <img
         src="/system-shots/Aztec Image_17.jpg"
