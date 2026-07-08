@@ -32,7 +32,7 @@ export function AztecRewardsCard() {
 
     useEffect(() => {
         if (!aztecAddress) return;
-        fetch(\`/api/aztec/quests?aztecAddress=\${aztecAddress}\`)
+        fetch(`/api/aztec/quests?aztecAddress=\${aztecAddress}`)
             .then(res => res.json())
             .then(data => {
                 if (data.quests) {
@@ -77,7 +77,7 @@ export function AztecRewardsCard() {
                 const data = await res.json();
                 if (res.ok) {
                     setClaimed(prev => ({ ...prev, [quest.slug]: true }));
-                    toast.success(\`+\${quest.reward} QDs Claimed! \${data.message || ''}\`);
+                    toast.success(`+\${quest.reward} QDs Claimed! \${data.message || ''}`);
                     refresh(); // Update the global balance
                 } else {
                     toast.error(data.error || "Failed to claim reward. You may have already claimed this on this IP.");
@@ -112,7 +112,7 @@ export function AztecRewardsCard() {
                     return (
                         <div key={quest.slug} className="flex items-center justify-between p-4 border border-zinc-900/10 bg-zinc-50 hover:bg-zinc-100/50 transition-colors">
                             <div className="flex items-center gap-4">
-                                <div className={\`w-10 h-10 rounded-full flex items-center justify-center border \${quest.color}\`}>
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center border \${quest.color}`}>
                                     {quest.icon}
                                 </div>
                                 <div>
@@ -124,18 +124,18 @@ export function AztecRewardsCard() {
                             <button
                                 onClick={() => handleClaim(quest)}
                                 disabled={isClaimed || isLoading}
-                                className={\`flex items-center justify-center min-w-[80px] h-8 px-4 text-[9px] font-black uppercase tracking-widest transition-all \${
+                                className={`flex items-center justify-center min-w-[80px] h-8 px-4 text-[9px] font-black uppercase tracking-widest transition-all \${
                                     isClaimed 
                                     ? 'bg-emerald-50 text-emerald-600 border border-emerald-200 cursor-not-allowed'
                                     : 'bg-zinc-900 text-white hover:bg-zinc-800 active:scale-95 shadow-sm'
-                                }\`}
+                                }`}
                             >
                                 {isLoading ? (
                                     <Loader2 size={12} className="animate-spin" />
                                 ) : isClaimed ? (
                                     <span className="flex items-center gap-1"><CheckCircle2 size={10} /> DONE</span>
                                 ) : (
-                                    \`+\${quest.reward} QD\`
+                                    `+\${quest.reward} QD`
                                 )}
                             </button>
                         </div>

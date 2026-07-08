@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
         // We simulate calling the sequencer or just update the DB balance
         await prisma.transaction.create({
             data: {
-                txHash: \`quest_\${crypto.randomBytes(16).toString('hex')}\`,
+                txHash: `quest_\${crypto.randomBytes(16).toString('hex')}`,
                 status: 'CONFIRMED',
                 type: 'RECEIVE',
                 amount: rewardAmount,
@@ -116,7 +116,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ 
             success: true, 
-            message: \`Successfully claimed \${rewardAmount} QDs for \${slug}\`,
+            message: `Successfully claimed \${rewardAmount} QDs for \${slug}`,
             rewardAmount 
         });
 
@@ -145,7 +145,7 @@ export async function DELETE(req: NextRequest) {
         // Deduct from ledger
         await prisma.transaction.create({
             data: {
-                txHash: \`slash_\${crypto.randomBytes(16).toString('hex')}\`,
+                txHash: `slash_\${crypto.randomBytes(16).toString('hex')}`,
                 status: 'CONFIRMED',
                 type: 'SEND', // Sending out of the wallet back to treasury
                 amount: slashAmount,
