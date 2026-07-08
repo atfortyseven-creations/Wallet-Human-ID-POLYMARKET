@@ -21,7 +21,7 @@ interface Quest {
 const QUESTS: Quest[] = [
     { slug: 'youtube-follow', title: 'Subscribe to YouTube', description: 'Follow @WhaleNetwork for ultimate alpha.', reward: 200, icon: <Youtube size={16} />, color: 'text-red-500 bg-red-500/10 border-red-500/20', actionUrl: 'https://www.youtube.com/@WhaleNetwork' },
     { slug: 'tg-join', title: 'Join Telegram', description: 'Enter t.me/humanityledger.', reward: 200, icon: <Send size={16} />, color: 'text-blue-500 bg-blue-500/10 border-blue-500/20', actionUrl: 'https://t.me/humanityledger' },
-    { slug: 'twitter-follow', title: 'Follow on Twitter', description: 'Follow @WhaleNetwork.', reward: 50, icon: <Twitter size={16} />, color: 'text-sky-400 bg-sky-400/10 border-sky-400/20', actionUrl: 'https://twitter.com/WhaleNetwork' },
+    { slug: 'twitter-follow', title: 'Follow on Twitter', description: 'Follow @whalecosystem.', reward: 50, icon: <Twitter size={16} />, color: 'text-sky-400 bg-sky-400/10 border-sky-400/20', actionUrl: 'https://x.com/whalecosystem' },
     { slug: 'page-share', title: 'Share Humanity Ledger', description: 'Share this page with your network.', reward: 15, icon: <Share2 size={16} />, color: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20' }
 ];
 
