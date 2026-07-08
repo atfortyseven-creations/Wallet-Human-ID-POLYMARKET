@@ -100,11 +100,43 @@ export async function POST(req: NextRequest) {
             // If DB doesn't exist, we still want to reward the user for testing the UI, but we log it.
         }
 
-        // Perform the QD Airdrop transfer via existing Aztec system
-        // We simulate calling the sequencer or just update the DB balance
+        // ─── REAL ON-CHAIN QD MINT via Aztec Airdrop ──────────────────────────
+        // Generate a server-side oracle signature that proves this server authorized
+        // this reward. This signature binds: wallet + quest + amount + timestamp.
+        const oraclePayload = `${aztecAddress}:${slug}:${rewardAmount}:${Date.now()}`;
+        const oracleSig = crypto
+          .createHmac('sha256', process.env.JWT_SECRET || 'whale-oracle-secret')
+          .update(oraclePayload)
+          .digest('hex');
+
+        // Trigger real Aztec on-chain mint by calling the airdrop endpoint with the reward amount
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://humanidfi.com';
+        let onChainResult: any = null;
+        try {
+          const mintRes = await fetch(`${baseUrl}/api/aztec/airdrop`, {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'X-Oracle-Sig': oracleSig,
+              'X-Oracle-Payload': oraclePayload,
+              'X-Internal-Call': 'quest-reward',
+            },
+            body: JSON.stringify({ 
+              address: aztecAddress, 
+              amount: rewardAmount,
+              reason: `Quest: ${slug}`,
+              oracleSig,
+            }),
+          });
+          onChainResult = await mintRes.json();
+        } catch (mintErr: any) {
+          console.error('[Quest] On-chain mint failed:', mintErr?.message);
+        }
+
+        // Record in DB as audit trail (not source of truth — on-chain is)
         await prisma.transaction.create({
             data: {
-                txHash: `quest_${crypto.randomBytes(16).toString('hex')}`,
+                txHash: onChainResult?.txHash || `quest_oracle_${crypto.randomBytes(16).toString('hex')}`,
                 status: 'COMPLETED',
                 type: 'RECEIVE',
                 amount: rewardAmount,
@@ -115,7 +147,10 @@ export async function POST(req: NextRequest) {
                 chainId: 89021716,
                 metadata: {
                     network: 'aztec-testnet',
-                    onChain: false,
+                    onChain: onChainResult?.onChain ?? false,
+                    txHash: onChainResult?.txHash || null,
+                    explorerUrl: onChainResult?.explorerUrl || null,
+                    oracleSig,
                     reason: `Quest reward: ${slug} (+${rewardAmount} QDs)`
                 }
             }
@@ -123,8 +158,11 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ 
             success: true, 
-            message: `Successfully claimed \${rewardAmount} QDs for \${slug}`,
-            rewardAmount 
+            message: `Successfully claimed ${rewardAmount} QDs for ${slug}`,
+            rewardAmount,
+            onChain: onChainResult?.onChain ?? false,
+            txHash: onChainResult?.txHash || null,
+            explorerUrl: onChainResult?.explorerUrl || null,
         });
 
     } catch (err: any) {
@@ -149,10 +187,34 @@ export async function DELETE(req: NextRequest) {
         };
         const slashAmount = rewardMap[slug] || 0;
 
-        // Deduct from ledger
+        const AZTEC_BURN_ADDRESS = '0x0000000000000000000000000000000000000000000000000000000000000000';
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://humanidfi.com';
+
+        // Trigger real on-chain transfer-to-burn-address for slashing
+        let burnResult: any = null;
+        try {
+          const burnRes = await fetch(`${baseUrl}/api/aztec/transfer`, {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'X-Internal-Call': 'slash',
+            },
+            body: JSON.stringify({
+              from: aztecAddress,
+              to: AZTEC_BURN_ADDRESS,
+              amount: slashAmount,
+              reason: `Slash: unfollow ${slug}`,
+            }),
+          });
+          burnResult = await burnRes.json();
+        } catch (burnErr: any) {
+          console.error('[Quest Slash] On-chain burn failed:', burnErr?.message);
+        }
+
+        // Deduct from ledger as audit trail
         await prisma.transaction.create({
             data: {
-                txHash: `slash_${crypto.randomBytes(16).toString('hex')}`,
+                txHash: burnResult?.txHash || `slash_${crypto.randomBytes(16).toString('hex')}`,
                 status: 'COMPLETED',
                 type: 'SLASH',
                 amount: slashAmount,
@@ -163,7 +225,8 @@ export async function DELETE(req: NextRequest) {
                 chainId: 89021716,
                 metadata: {
                     network: 'aztec-testnet',
-                    onChain: false,
+                    onChain: burnResult?.onChain ?? false,
+                    txHash: burnResult?.txHash || null,
                     reason: `Quest unfollow penalty: ${slug} (-${slashAmount} QDs)`
                 }
             }
@@ -176,8 +239,14 @@ export async function DELETE(req: NextRequest) {
             `;
         } catch(e) {}
 
-        return NextResponse.json({ success: true, slashedAmount: slashAmount });
+        return NextResponse.json({ 
+          success: true, 
+          slashedAmount: slashAmount,
+          onChain: burnResult?.onChain ?? false,
+          txHash: burnResult?.txHash || null,
+        });
     } catch(err: any) {
         return NextResponse.json({ error: err.message }, { status: 500 });
     }
 }
+

@@ -138,6 +138,29 @@ const nextConfig = {
             // [PRISMA GUARD] Prevent @prisma/client from leaking into client bundles.
             // serverExternalPackages handles this for Server Components, but this alias
             // provides defense-in-depth for any edge cases where the bundler tries to
+            '@prisma/client': false,
+        };
+
+        // [AZTEC NATIVE CLIENT FIX] Webpack polyfills required for running Aztec SDK
+        // (which is heavily dependent on Node built-ins) directly in the browser.
+        if (!isServer) {
+            config.resolve.fallback = {
+                ...config.resolve.fallback,
+                fs: false,
+                net: false,
+                tls: false,
+                child_process: false,
+                crypto: require.resolve('crypto-browserify'),
+                stream: require.resolve('stream-browserify'),
+                os: require.resolve('os-browserify/browser'),
+                path: require.resolve('path-browserify'),
+                http: require.resolve('http-browserify'),
+                https: require.resolve('https-browserify'),
+                zlib: require.resolve('browserify-zlib'),
+                assert: require.resolve('assert/'),
+                url: require.resolve('url/'),
+            };
+        }
             // include prisma in client-side JS (causes PrismaClient browser error).
             ...(!isServer ? {
                 '@prisma/client': path.resolve(__dirname, './lib/prisma-browser-stub.js'),
