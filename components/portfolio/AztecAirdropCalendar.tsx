@@ -7,7 +7,7 @@ import { useAztecNative } from '@/context/AztecNativeContext';
 
 export function AztecAirdropCalendar() {
     const { aztecAddress, refresh } = useAztecNative();
-    const [claimedMonths, setClaimedMonths] = useState<Set<string>>(new Set());
+    const [claimedMonths, setClaimedMonths] = useState<Set<string>>(new Set<string>());
     const [isLoading, setIsLoading] = useState(false);
     const [selectedYear, setSelectedYear] = useState<number>(new Date().getUTCFullYear());
 

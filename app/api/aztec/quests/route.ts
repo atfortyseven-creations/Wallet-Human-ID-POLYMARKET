@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
  * Body: { questId, slug, aztecAddress }
  */
 export async function POST(req: NextRequest) {
-    const ip = req.headers.get('x-forwarded-for') || req.ip || '127.0.0.1';
+    const ip = req.headers.get('x-forwarded-for') || (req as any).ip || '127.0.0.1';
     const ipHash = crypto.createHash('sha256').update(ip).digest('hex');
 
     try {

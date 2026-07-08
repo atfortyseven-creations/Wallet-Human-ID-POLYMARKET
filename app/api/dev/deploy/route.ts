@@ -43,7 +43,7 @@ export async function GET() {
     const contract   = new SchnorrAccountContract(signingKey);
 
     const manager = await AccountManager.create(pxe, secretKey, contract);
-    const wallet  = await manager.getWallet();
+    const wallet  = await manager.getWallet() as any;
     const adminAddress = wallet.getAddress();
 
     const { AztecAddress } = await import('@aztec/stdlib/aztec-address');
@@ -55,10 +55,10 @@ export async function GET() {
     const { TokenContract } = await import('@aztec/noir-contracts.js/Token');
     const deployTx  = await TokenContract.deploy(wallet, adminAddress, 'Quantum Dollars', 'QDs', 18)
       .send({
-        fee: { paymentMethod }
+        from: (await account.getWallet() as any).getAddress(), fee: { paymentMethod }
       });
 
-    const receipt = await deployTx.wait();
+    const receipt = await deployTx;
     const tokenAddress = receipt.contract.address.toString();
 
     console.log(`[Deploy] ✅ TokenContract deployed at: ${tokenAddress}`);

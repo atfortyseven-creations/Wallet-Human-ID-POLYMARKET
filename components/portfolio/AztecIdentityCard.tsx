@@ -916,7 +916,7 @@ export function AztecIdentityCard() {
                   { label: 'RPC Endpoint', value: 'https://rpc.testnet.aztec-labs.com', link: false },
                   { label: 'Explorer',     value: AZTEC_EXPLORER,                        link: true  },
                   { label: 'Faucet',       value: 'aztec-faucet.nethermind.io',          link: true  },
-                  { label: 'Node Version', value: `Aztec v${NODE_VERSION}`,              link: false },
+                  { label: 'Node Version', value: `Aztec v${"v5.testnet"}`,              link: false },
                   { label: 'Block Height', value: `#${LIVE_BLOCK_HEIGHT.toLocaleString()}`, link: false },
                   { label: 'L1 Chain',     value: 'Ethereum Sepolia (11155111)',         link: false },
                 ].map(({ label, value, link }) => (
