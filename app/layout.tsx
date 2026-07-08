@@ -334,9 +334,9 @@ export default async function RootLayout({
         <Providers cookies={cookies}>
           <GlobalErrorBoundary>
             <MobileEnforcer>
-              <ClientLayout>
-                <AztecProvider>
-                  <AztecNativeProvider>
+              <AztecProvider>
+                <AztecNativeProvider>
+                  <ClientLayout>
                     <CookieProvider>
                       <ErrorSuppressor />
                       <AntiTamperCore />
@@ -347,9 +347,9 @@ export default async function RootLayout({
                       <ClientOverlays />
                       <WalletConnectProvider />
                     </CookieProvider>
-                  </AztecNativeProvider>
-                </AztecProvider>
-              </ClientLayout>
+                  </ClientLayout>
+                </AztecNativeProvider>
+              </AztecProvider>
             </MobileEnforcer>
           </GlobalErrorBoundary>
         </Providers>
