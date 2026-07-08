@@ -216,7 +216,7 @@ export async function POST(req: NextRequest) {
             metadata:    {
               network:          'aztec-testnet',
               aztecTxHash:      aztecTxHash,
-              explorerUrl:      explorerUrl,
+              explorerUrl:      onChain ? explorerUrl : null,
               onChain:          onChain,
               tokenContractSet: !!tokenAddressStr,
               nodeInfo:         nodeInfo,

@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
           metadata: {
             network: 'aztec-testnet',
             aztecTxHash: aztecTxHash,
-            explorerUrl: explorerUrl,
+            explorerUrl: null,
             onChain: false,
             reason: `Monthly Airdrop (${currentMonth}/${currentYear})`
           }

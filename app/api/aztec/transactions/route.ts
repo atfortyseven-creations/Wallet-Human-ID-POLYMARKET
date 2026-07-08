@@ -43,9 +43,9 @@ export async function GET(req: Request) {
       toAddress:   tx.toAddress,
       timestamp:   tx.timestamp.toISOString(),
       blockNumber: tx.blockNumber?.toString() ?? '0',
-      explorerUrl: (tx.metadata as any)?.onChain
-        ? ((tx.metadata as any)?.explorerUrl ?? `https://testnet.aztecscan.xyz/tx-effect/${(tx.metadata as any)?.aztecTxHash ?? tx.txHash}`)
-        : ((tx.metadata as any)?.explorerUrl ?? null),
+      explorerUrl: (tx.metadata as any)?.onChain === true
+        ? ((tx.metadata as any)?.explorerUrl ?? null)
+        : null, // Off-chain simulated txs: no explorer link (avoids 404 on AztecScan)
     }));
 
     return NextResponse.json({ transactions: formatted });
