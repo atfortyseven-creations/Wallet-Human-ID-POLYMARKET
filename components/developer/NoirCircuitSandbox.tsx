@@ -2,6 +2,8 @@
 
 import React, { useState, useCallback, useRef } from "react";
 import { Loader2, ShieldAlert, Zap, Terminal, Code2, ShieldCheck } from "lucide-react";
+import { useAztecNative } from "@/context/AztecNativeContext";
+import { toast } from "sonner";
 
 // ─── Complex ZK Circuits ───────────
 const CIRCUIT_EXAMPLES: { label: string; code: string; difficulty: string }[] = [
@@ -138,6 +140,7 @@ interface CompileResult {
 }
 
 export function NoirCircuitSandbox() {
+  const { spendQDs } = useAztecNative();
   const [noirCode, setNoirCode] = useState(CIRCUIT_EXAMPLES[0].code);
   const [selectedExample, setSelectedExample] = useState(0);
 
@@ -171,6 +174,12 @@ export function NoirCircuitSandbox() {
   }, []);
 
   const simulateCompilation = useCallback(async () => {
+    const paid = await spendQDs(1, "Noir Compilation & Proving");
+    if (!paid) {
+      toast.error("Insufficient QDs", { description: "You need 1 QD to compile and prove Noir circuits." });
+      return;
+    }
+
     resetAll();
     setRunning(true);
 

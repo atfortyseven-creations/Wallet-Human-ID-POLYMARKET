@@ -835,7 +835,7 @@ function FinalCTASection() {
           className="text-base md:text-lg lg:text-xl font-medium max-w-[600px] mb-8 leading-relaxed"
           style={{ color: 'rgba(255,255,255,0.90)', textShadow: '0 1px 12px rgba(0,0,0,0.6)' }}
         >
-          Built on the full Aztec stack — Noir circuits, a Private Execution Environment (PXE), zk-SNARK note commitments, and nullifier-based Sybil resistance. Your Aztec Identity is cryptographically yours: provable on-chain, invisible to the world.
+          Built on the full Aztec stack &mdash; Noir circuits, a Private Execution Environment (PXE), zk-SNARK note commitments, and nullifier-based Sybil resistance. Your Aztec Identity is cryptographically yours: provable on-chain, invisible to the world.
         </p>
       </div>
     </section>
@@ -864,7 +864,9 @@ export function ImmersiveManifestoLanding(_props: ImmersiveManifestoLandingProps
       <GlobalRegistrySection />
       <FAQSection />
       <PoweredBySection />
-      <FinalCTASection />
+      {/* FinalCTASection intentionally excluded: dark 'downpage' section is
+          restricted to authenticated users only. Unauthenticated visitors should
+          not see the black zone below the PoweredBy section. */}
     </div>
   );
 }

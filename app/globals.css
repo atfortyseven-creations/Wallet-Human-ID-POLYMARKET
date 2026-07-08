@@ -50,6 +50,12 @@ body {
 
   /*  LANDING PAGE BOUNDARY SEAL: no empty space or scroll past footer  */
   overscroll-behavior: none;
+
+  /* ANTI BLACK VOID: Ensure the document background is always white.
+     The UniversalEliteWallpaper is an absolutely-positioned overlay.
+     Without this, the raw html/body background (transparent or dark)
+     can bleed through below the last landing section as a black gap. */
+  background-color: #FFFFFF;
 }
 
 /*  STRICT DESKTOP SCROLL BLEED LOCK  */

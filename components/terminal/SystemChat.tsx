@@ -6,11 +6,12 @@ import { useAppKit } from '@reown/appkit/react';
 import { useSystemAccount as useAccount } from '@/hooks/useSystemAccount';
 import { useWalletStore } from '@/lib/store/wallet-store';
 import { ethers } from 'ethers';
-import { QrCode, X, ChevronLeft, Menu, Settings, LogOut, ArrowLeft, UserX, UserCheck, Download, Trash2, UserPlus, User, MoreVertical, ExternalLink, Smartphone } from 'lucide-react';
+import { QrCode, X, ChevronLeft, Menu, Settings, LogOut, ArrowLeft, UserX, UserCheck, Download, Trash2, UserPlus, User, MoreVertical, ExternalLink, Smartphone, Phone, Video, PhoneOff, VideoOff, Mic, MicOff, MonitorOff } from 'lucide-react';
 import { toast } from 'sonner';
 import { useSystemSignOut } from '@/hooks/useSystemSignOut';
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
 import { useAztec, type AztecAddress } from '@/context/AztecContext';
+import { useAztecNative } from '@/context/AztecNativeContext';
 // NOTE: QDs state is sourced from AztecNativeContext (DB polling) — no local store needed.
 
 // ─── iOS / Android detection ───────────────────────────────────────────────
@@ -339,6 +340,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
   const { reconnect } = useReconnect();
   const { signMessageAsync } = useSignMessage();
   const { nuclearDisconnect } = useSystemSignOut();
+  const { spendQDs } = useAztecNative();
 
   // walletClientRef: keeps a stable ref to the latest walletClient so the
   // XMTP signer can always access the current client even after async awaits.
@@ -476,6 +478,259 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
   
   const activeConvRef = useRef<Conversation | null>(null);
   useEffect(() => { activeConvRef.current = activeConv; }, [activeConv]);
+
+  // ─── WebRTC Native Call State ─────────────────────────────────────────────
+  type CallState = 'idle' | 'calling' | 'receiving' | 'connected' | 'ended';
+  const [callState, setCallState]       = useState<CallState>('idle');
+  const [callType, setCallType]         = useState<'audio' | 'video'>('video');
+  const [callMuted, setCallMuted]       = useState(false);
+  const [callVideoOff, setCallVideoOff] = useState(false);
+  const localVideoRef  = useRef<HTMLVideoElement>(null);
+  const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  const peerConnRef    = useRef<RTCPeerConnection | null>(null);
+  const localStreamRef = useRef<MediaStream | null>(null);
+  const callSignalBuffer = useRef<string[]>([]); // buffer incoming ICE before remoteDesc
+
+  // Stop all tracks + close peer connection cleanly
+  const stopCall = useCallback(() => {
+    localStreamRef.current?.getTracks().forEach(t => t.stop());
+    localStreamRef.current = null;
+    peerConnRef.current?.close();
+    peerConnRef.current = null;
+    callSignalBuffer.current = [];
+    setCallState('idle');
+    setCallMuted(false);
+    setCallVideoOff(false);
+  }, []);
+
+  // Toggle mute on local audio track
+  const toggleMute = useCallback(() => {
+    localStreamRef.current?.getAudioTracks().forEach(t => { t.enabled = !t.enabled; });
+    setCallMuted(m => !m);
+  }, []);
+
+  // Toggle video on local video track
+  const toggleVideo = useCallback(() => {
+    localStreamRef.current?.getVideoTracks().forEach(t => { t.enabled = !t.enabled; });
+    setCallVideoOff(v => !v);
+  }, []);
+
+  // Build RTCPeerConnection with Google STUN
+  const buildPeer = useCallback(() => {
+    const pc = new RTCPeerConnection({
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' },
+      ],
+    });
+    return pc;
+  }, []);
+
+  // Initiate an outgoing call (Caller side)
+  const handleStartCall = useCallback(async (type: 'audio' | 'video') => {
+    if (!activeConv || callState !== 'idle') return;
+    if (!xmtpReady || !xmtpClient.current) {
+      toast.error('Activa Whale Chat primero para llamar.');
+      return;
+    }
+    // QD gate: 0.5 QDs per call
+    const paid = await spendQDs(0.5, type === 'video' ? 'Encrypted Video Call' : 'Encrypted Audio Call');
+    if (!paid) {
+      toast.error('QDs insuficientes', { description: 'Necesitas 0.5 QDs para iniciar una llamada encriptada.' });
+      return;
+    }
+
+    setCallType(type);
+    setCallState('calling');
+
+    try {
+      const constraints: MediaStreamConstraints = {
+        audio: true,
+        video: type === 'video' ? { width: { ideal: 1280 }, height: { ideal: 720 } } : false,
+      };
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      localStreamRef.current = stream;
+      if (localVideoRef.current) {
+        localVideoRef.current.srcObject = stream;
+        localVideoRef.current.muted = true;
+      }
+
+      const pc = buildPeer();
+      peerConnRef.current = pc;
+      stream.getTracks().forEach(t => pc.addTrack(t, stream));
+
+      pc.onicecandidate = async (e) => {
+        if (e.candidate && xmtpClient.current) {
+          const msg = JSON.stringify({ type: 'ICE', candidate: e.candidate.toJSON(), callType: type });
+          await xmtpSend(xmtpClient.current, activeConvRef.current!.peerAddress, `[CALL_SIGNAL]${msg}`, address ?? undefined);
+        }
+      };
+
+      pc.ontrack = (e) => {
+        if (remoteVideoRef.current) {
+          remoteVideoRef.current.srcObject = e.streams[0];
+        }
+        setCallState('connected');
+      };
+
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      const offerMsg = JSON.stringify({ type: 'OFFER', sdp: offer.sdp, callType: type });
+      await xmtpSend(xmtpClient.current, activeConvRef.current!.peerAddress, `[CALL_SIGNAL]${offerMsg}`, address ?? undefined);
+      toast.success('Llamada enviada — esperando respuesta…');
+    } catch (err: any) {
+      console.error('[WebRTC] Call failed:', err);
+      toast.error('No se pudo iniciar la llamada', { description: err?.message });
+      stopCall();
+    }
+  }, [activeConv, callState, xmtpReady, spendQDs, buildPeer, stopCall, address]);
+
+  // Handle incoming call signals over XMTP
+  const handleIncomingCallSignal = useCallback(async (raw: string, senderAddress?: string) => {
+    if (!raw.startsWith('[CALL_SIGNAL]')) return;
+    const payload = raw.slice('[CALL_SIGNAL]'.length);
+    let msg: any;
+    try { msg = JSON.parse(payload); } catch { return; }
+
+    if (msg.type === 'OFFER') {
+      if (senderAddress) {
+        // ── Anti-Bypass Hardening: Verify Ledger Payment ──
+        try {
+          const res = await fetch(`/api/aztec/transactions?address=${senderAddress}`);
+          const data = await res.json();
+          const hasPaid = data.transactions?.some((t: any) => 
+            t.type === 'SPEND' && 
+            t.amount === 0.5 && 
+            (Date.now() - new Date(t.createdAt).getTime()) < 120_000 // Paid in the last 2 minutes
+          );
+          
+          if (!hasPaid) {
+            console.warn('[WebRTC Security] Call rejected. Sender bypassed client-side payment execution.');
+            return;
+          }
+        } catch (err) {
+          console.error('Failed to verify caller payment:', err);
+          return;
+        }
+      }
+
+      setCallType(msg.callType ?? 'video');
+      setCallState('receiving');
+      // Store offer so user can accept
+      callSignalBuffer.current = [payload];
+    }
+
+    if (msg.type === 'ANSWER' && peerConnRef.current) {
+      await peerConnRef.current.setRemoteDescription({ type: 'answer', sdp: msg.sdp });
+      // Drain buffered ICE
+      for (const ice of callSignalBuffer.current) {
+        try {
+          const iceMsg = JSON.parse(ice);
+          if (iceMsg.type === 'ICE') await peerConnRef.current.addIceCandidate(iceMsg.candidate);
+        } catch {}
+      }
+      callSignalBuffer.current = [];
+    }
+
+    if (msg.type === 'ICE') {
+      if (peerConnRef.current?.remoteDescription) {
+        await peerConnRef.current.addIceCandidate(msg.candidate);
+      } else {
+        callSignalBuffer.current.push(payload);
+      }
+    }
+
+    if (msg.type === 'HANGUP') {
+      stopCall();
+      toast('La otra parte ha colgado la llamada.');
+    }
+  }, [stopCall]);
+
+  // Accept incoming call (Callee side)
+  const handleAcceptCall = useCallback(async () => {
+    if (callState !== 'receiving' || !activeConv) return;
+    const offerRaw = callSignalBuffer.current[0];
+    if (!offerRaw) return;
+    let offerMsg: any;
+    try { offerMsg = JSON.parse(offerRaw); } catch { return; }
+
+    const paid = await spendQDs(0.5, callType === 'video' ? 'Encrypted Video Call' : 'Encrypted Audio Call');
+    if (!paid) {
+      toast.error('QDs insuficientes para contestar la llamada.');
+      stopCall();
+      return;
+    }
+
+    try {
+      const constraints: MediaStreamConstraints = {
+        audio: true,
+        video: callType === 'video' ? { width: { ideal: 1280 }, height: { ideal: 720 } } : false,
+      };
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      localStreamRef.current = stream;
+      if (localVideoRef.current) {
+        localVideoRef.current.srcObject = stream;
+        localVideoRef.current.muted = true;
+      }
+
+      const pc = buildPeer();
+      peerConnRef.current = pc;
+      stream.getTracks().forEach(t => pc.addTrack(t, stream));
+
+      pc.onicecandidate = async (e) => {
+        if (e.candidate && xmtpClient.current) {
+          const msg = JSON.stringify({ type: 'ICE', candidate: e.candidate.toJSON() });
+          await xmtpSend(xmtpClient.current, activeConvRef.current!.peerAddress, `[CALL_SIGNAL]${msg}`, address ?? undefined);
+        }
+      };
+
+      pc.ontrack = (e) => {
+        if (remoteVideoRef.current) remoteVideoRef.current.srcObject = e.streams[0];
+        setCallState('connected');
+      };
+
+      await pc.setRemoteDescription({ type: 'offer', sdp: offerMsg.sdp });
+      // Drain buffered ICE from OFFER phase
+      for (const raw of callSignalBuffer.current.slice(1)) {
+        try {
+          const iceMsg = JSON.parse(raw);
+          if (iceMsg.type === 'ICE') await pc.addIceCandidate(iceMsg.candidate);
+        } catch {}
+      }
+      callSignalBuffer.current = [];
+
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+      const answerMsg = JSON.stringify({ type: 'ANSWER', sdp: answer.sdp });
+      await xmtpSend(xmtpClient.current, activeConvRef.current!.peerAddress, `[CALL_SIGNAL]${answerMsg}`, address ?? undefined);
+    } catch (err: any) {
+      console.error('[WebRTC] Accept failed:', err);
+      toast.error('Error al contestar', { description: err?.message });
+      stopCall();
+    }
+  }, [callState, callType, activeConv, spendQDs, buildPeer, stopCall, address]);
+
+  // Hang up and notify peer
+  const handleHangUp = useCallback(async () => {
+    if (xmtpClient.current && activeConvRef.current) {
+      try {
+        await xmtpSend(xmtpClient.current, activeConvRef.current.peerAddress, '[CALL_SIGNAL]{"type":"HANGUP"}', address ?? undefined);
+      } catch {}
+    }
+    stopCall();
+  }, [stopCall, address]);
+
+  // Intercept incoming messages to detect call signals
+  const processIncomingForCall = useCallback((content: string) => {
+    if (content.startsWith('[CALL_SIGNAL]')) {
+      handleIncomingCallSignal(content);
+      return true; // consumed
+    }
+    return false;
+  }, [handleIncomingCallSignal]);
+
+  // Cleanup WebRTC on unmount
+  useEffect(() => () => stopCall(), [stopCall]);
 
   // Local typing state — true while the user is actively typing in ChatInput
   const [isTyping, setIsTyping] = React.useState(false);
@@ -1045,6 +1300,25 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
             // Do NOT filter by content text — real messages may contain any words.
             if (rendered.content === '[XMTP_SYNC_LOG]') continue;
 
+            // ─── WebRTC Call Signal Intercept ──────────────────────────────────────────
+            // If this message is a call signal from a peer, route it to the WebRTC
+            // state machine and do NOT render it in the chat log.
+            if (rendered.content.startsWith('[CALL_SIGNAL]') && !rendered.isMine) {
+              // Wait, we need msgConvPeer early here, but we can resolve it quickly
+              let earlyConvPeer = msg.conversation?.peerAddress?.toLowerCase() || '';
+              if (!earlyConvPeer && msg.senderInboxId && msg.senderInboxId !== selfInboxId) {
+                  try {
+                      const res = await resolveSenderAddress(msg.senderInboxId);
+                      if (res) earlyConvPeer = res.toLowerCase();
+                  } catch {}
+              }
+              handleIncomingCallSignal(rendered.content, earlyConvPeer);
+              continue;
+            }
+            // Also skip our own call signals from appearing as chat messages
+            if (rendered.content.startsWith('[CALL_SIGNAL]')) continue;
+            // ─────────────────────────────────────────────────────────────
+
             const hydratedList = hydrateMessages([rendered]);
             if (hydratedList.length === 0) continue;
             const hydrated = hydratedList[0];
@@ -1056,29 +1330,26 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
             // We resolve via members array first, then via inboxId cache.
             let msgConvPeer = msg.conversation?.peerAddress?.toLowerCase() || '';
 
-            if (!msgConvPeer && msg.conversation) {
-              // Strategy 1: scan members for the non-self address
-              try {
-                const rawMembers = msg.conversation.members;
-                const members: any[] = typeof rawMembers === 'function' ? await rawMembers() : (rawMembers ?? []);
-                const selfNorm = address?.toLowerCase() ?? '';
-                for (const m of members) {
-                  // Populate inboxId cache
-                  const mInboxId: string = m.inboxId ?? '';
-                  const mAddrs: string[] = m.accountAddresses ?? m.addresses ?? [];
-                  if (mInboxId && mAddrs.length > 0) {
-                    // Cache is managed inside client.ts, but we can also use it here
+            if (!msgConvPeer) {
+              // Strategy 1: scan members for the non-self address if conversation exists
+              if (msg.conversation) {
+                try {
+                  const rawMembers = msg.conversation.members;
+                  const members: any[] = typeof rawMembers === 'function' ? await rawMembers() : (rawMembers ?? []);
+                  const selfNorm = address?.toLowerCase() ?? '';
+                  for (const m of members) {
+                    const peer = (m.accountAddresses ?? m.addresses ?? []).find((a: string) => a.toLowerCase() !== selfNorm);
+                    if (peer) {
+                      msgConvPeer = peer.toLowerCase();
+                      msg.conversation.peerAddress = peer;
+                      break;
+                    }
                   }
-                  const peer = mAddrs.find((a: string) => a.toLowerCase() !== selfNorm);
-                  if (peer) {
-                    msgConvPeer = peer.toLowerCase();
-                    msg.conversation.peerAddress = peer;
-                    break;
-                  }
-                }
-              } catch {}
+                } catch {}
+              }
 
               // Strategy 2: resolve senderInboxId → Ethereum address via cache/network
+              // This works even if msg.conversation is undefined, as long as it's from a peer.
               if (!msgConvPeer && fromPeer && msg.senderInboxId) {
                 try {
                   const resolved = await resolveSenderAddress(msg.senderInboxId);
@@ -1174,7 +1445,7 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
           .map((m: any) => xmtpToRenderable(m, selfInboxId))
           // Only filter explicitly-marked internal XMTP protocol messages.
           // xmtpToRenderable identifies these via contentType.typeId (not text matching)
-          .filter((m: any) => m.content !== '[XMTP_SYNC_LOG]')
+          .filter((m: any) => m.content !== '[XMTP_SYNC_LOG]' && !m.content.startsWith('[CALL_SIGNAL]'))
         const hydrated = hydrateMessages(rendered);
         
         setMessages(prev => {
@@ -1216,6 +1487,14 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
   //  Send via XMTP 
   const sendXmtp = useCallback(async (content: string) => {
     if (!xmtpClient.current || !activeConv) return;
+    
+    // Spend 0.01 QDs to use Whale Chat
+    const paid = await spendQDs(0.01, "Whale Chat message");
+    if (!paid) {
+      toast.error("Insufficient QDs", { description: "You need 0.01 QDs to send a message." });
+      return;
+    }
+
     setSending(true);
     const selfInboxId = (xmtpClient.current as any).inboxId ?? '';
 
@@ -1533,8 +1812,110 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
   }
 
   //  Render 
+
+  // ─── Video Call Overlay ─────────────────────────────────────────────────────
+  const VideoCallOverlay = callState !== 'idle' ? (
+    <div className="fixed inset-0 z-[300] bg-black/95 flex flex-col items-center justify-center" style={{ backdropFilter: 'blur(24px)' }}>
+      {/* Remote video (fills background) */}
+      <video
+        ref={remoteVideoRef}
+        autoPlay
+        playsInline
+        className={`absolute inset-0 w-full h-full object-cover ${
+          callState !== 'connected' ? 'opacity-0' : 'opacity-100'
+        } transition-opacity duration-500`}
+      />
+
+      {/* Status overlay when not yet connected */}
+      {callState !== 'connected' && (
+        <div className="relative z-10 flex flex-col items-center gap-6">
+          <div className="w-24 h-24 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
+            <span className="font-mono text-3xl font-black text-white">
+              {activeConv?.displayName.slice(0, 2).toUpperCase()}
+            </span>
+          </div>
+          <div className="text-center">
+            <p className="font-mono text-white font-black text-lg uppercase tracking-widest">
+              {activeConv?.displayName}
+            </p>
+            <p className="font-mono text-white/40 text-xs uppercase tracking-widest mt-1">
+              {callState === 'calling' ? '🔐 Llamando… cifrado E2EE' :
+               callState === 'receiving' ? '📲 Llamada entrante' : 'Conectando…'}
+            </p>
+          </div>
+          {callState === 'receiving' && (
+            <div className="flex gap-4">
+              <button
+                onClick={handleAcceptCall}
+                className="w-16 h-16 rounded-full bg-emerald-500 flex items-center justify-center hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/30"
+              >
+                <Phone size={24} className="text-white" />
+              </button>
+              <button
+                onClick={handleHangUp}
+                className="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center hover:bg-red-400 transition-all shadow-lg shadow-red-500/30"
+              >
+                <PhoneOff size={24} className="text-white" />
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Local video (picture-in-picture) */}
+      {callType === 'video' && (
+        <div className="absolute bottom-28 right-6 w-40 h-28 rounded-2xl overflow-hidden border-2 border-white/20 shadow-2xl z-20">
+          <video
+            ref={localVideoRef}
+            autoPlay
+            playsInline
+            muted
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
+
+      {/* Controls bar */}
+      <div className="absolute bottom-10 left-0 right-0 flex items-center justify-center gap-5 z-20">
+        <button
+          onClick={toggleMute}
+          className={`w-14 h-14 rounded-full flex items-center justify-center border transition-all ${
+            callMuted ? 'bg-red-500/20 border-red-500/50 text-red-400' : 'bg-white/10 border-white/20 text-white hover:bg-white/20'
+          }`}
+          title={callMuted ? 'Activar micrófono' : 'Silenciar'}
+        >
+          {callMuted ? <MicOff size={20} /> : <Mic size={20} />}
+        </button>
+        {callType === 'video' && (
+          <button
+            onClick={toggleVideo}
+            className={`w-14 h-14 rounded-full flex items-center justify-center border transition-all ${
+              callVideoOff ? 'bg-red-500/20 border-red-500/50 text-red-400' : 'bg-white/10 border-white/20 text-white hover:bg-white/20'
+            }`}
+            title={callVideoOff ? 'Activar cámara' : 'Desactivar cámara'}
+          >
+            {callVideoOff ? <VideoOff size={20} /> : <Video size={20} />}
+          </button>
+        )}
+        <button
+          onClick={handleHangUp}
+          className="w-16 h-16 rounded-full bg-red-600 flex items-center justify-center hover:bg-red-500 transition-all shadow-xl shadow-red-600/40"
+          title="Colgar"
+        >
+          <PhoneOff size={24} className="text-white" />
+        </button>
+      </div>
+
+      {/* QD cost badge */}
+      <div className="absolute top-6 left-6 bg-black/50 border border-white/10 px-3 py-1.5 rounded-full">
+        <span className="font-mono text-[9px] text-white/60 uppercase tracking-widest">🔐 E2EE · 0.5 QD/llamada</span>
+      </div>
+    </div>
+  ) : null;
+
   return (
     <div className="w-full h-full flex-1 flex text-black overflow-hidden chat-theme-wrapper bg-white relative" data-chat-theme={settings.theme} data-privacy={settings.privacyMode} onClick={() => showPeerMenu && setShowPeerMenu(false)}>
+      {VideoCallOverlay}
 
       {/* Settings overlay removed permanently for now */}
       {/* Scanner overlay */}
@@ -1774,6 +2155,24 @@ export default function SystemChat({ onReturnToGate }: { onReturnToGate?: () => 
                 </div>
               </div>
               <div className="flex items-center gap-2">
+                {/* Audio Call — 0.5 QDs */}
+                <button
+                  onClick={() => handleStartCall('audio')}
+                  disabled={callState !== 'idle' || !xmtpReady}
+                  className="w-9 h-9 rounded-xl bg-black/[0.03] border border-black/8 flex items-center justify-center text-black/50 hover:text-emerald-600 hover:bg-emerald-50 hover:border-emerald-200 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                  title="Llamada de voz encriptada (0.5 QDs)"
+                >
+                  <Phone size={16} />
+                </button>
+                {/* Video Call — 0.5 QDs */}
+                <button
+                  onClick={() => handleStartCall('video')}
+                  disabled={callState !== 'idle' || !xmtpReady}
+                  className="w-9 h-9 rounded-xl bg-black/[0.03] border border-black/8 flex items-center justify-center text-black/50 hover:text-emerald-600 hover:bg-emerald-50 hover:border-emerald-200 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                  title="Videollamada encriptada (0.5 QDs)"
+                >
+                  <Video size={16} />
+                </button>
                 <button
                   onClick={() => setShowPeerMenu(p => !p)}
                   className="w-9 h-9 rounded-xl bg-black/[0.03] border border-black/8 flex items-center justify-center text-black/50 hover:text-black hover:bg-black/[0.07] transition-all"

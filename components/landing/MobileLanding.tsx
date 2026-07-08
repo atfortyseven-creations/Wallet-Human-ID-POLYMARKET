@@ -1485,8 +1485,24 @@ export function MobileLanding() {
           <div className="w-full flex flex-col gap-3">
               {(() => {
               // Helper: open the correct wallet flow
-                const openWalletModal = async (walletId: string) => {
+              // [CRITICAL MOBILE FIX] iOS Safari invalidates user-gesture context after
+              // any React state update or async boundary. rkOpenModal() MUST be the FIRST
+              // operation called — before setConnecting(), before any storage writes.
+              // Placing it after setState() triggers a React re-render, which causes
+              // Safari to classify subsequent navigations/popup-opens as non-user-initiated
+              // and silently blocks them. This is THE root cause of "click → nothing happens".
+                const openWalletModal = (walletId: string) => {
                   if (isLinked && effectiveAddress) return;
+
+                  // ── STEP 1: Open the AppKit modal IMMEDIATELY (synchronous, user-gesture) ──
+                  // Must be first — iOS Safari's user-gesture tracking ends after first setState.
+                  try {
+                    rkOpenModal({ view: 'Connect' });
+                  } catch (e) {
+                    console.warn('[MobileWallet] rkOpenModal failed:', e);
+                  }
+
+                  // ── STEP 2: State updates (safe AFTER modal open call) ──
                   try { sessionStorage.removeItem("__disconnected__"); } catch {}
                   try { localStorage.removeItem("__disconnected__"); } catch {}
 
@@ -1495,32 +1511,17 @@ export function MobileLanding() {
                   setWcDeepLink(null);
                   setShowFallbackBtn(false);
 
-                  // [ANDROID RECOVERY FIX] Set the wakeup flag BEFORE opening the modal.
-                  // On Android, Chrome may kill the tab when the user deep-links to MetaMask.
-                  // On return (full reload, not bfcache), the Ultra Recovery Effect checks
-                  // localStorage for this flag to activate the reconnect UI and polling.
-                  // Without this flag, the recovery UI never shows and the user sees a blank
-                  // connect screen with no feedback after returning from their wallet app.
+                  // [ANDROID RECOVERY FIX] Set the wakeup flag so if Chrome kills the tab
+                  // when deep-linking to MetaMask, the Ultra Recovery Effect can reconnect on return.
                   try { localStorage.setItem('system_pending_wakeup', '1'); } catch {}
                   try { sessionStorage.setItem('system_show_reconnect', '1'); } catch {}
 
-                  // Close custom modal overlay to let AppKit take over completely, preventing any z-index or pointer-event conflicts on mobile devices
-                  setShowConnectOverlay(false);
-
-                  // Pure AppKit usage to avoid forcing the dapp browser
-                  // AppKit native connection correctly uses standard Universal Links to sign and return to Chrome.
-                  rkOpenModal({ view: 'Connect' });
-
                   // [ANDROID UX FIX] Show the "I already connected" fallback button after 3.5s.
-                  // The comment documenting this was present but the implementation was missing.
-                  // On Android, if the user approves in MetaMask but the WC relay is slow, the
-                  // loading state clears after 10s but the user has no CTA to force re-check.
-                  // The fallback button triggers forceFullReconnect() to re-poll for the address.
                   const fallbackTimer = setTimeout(() => setShowFallbackBtn(true), 3500);
                   // Clear the loading indicator after 10s (UX: don't spin forever)
                   setTimeout(() => {
                     setConnecting(null);
-                    clearTimeout(fallbackTimer); // Only clear if connecting resolves first
+                    clearTimeout(fallbackTimer);
                   }, 10000);
                 };
 

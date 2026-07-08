@@ -2,13 +2,15 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, User } from 'lucide-react';
+import { Bell, User, Zap } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
 import { useSystemSignOut } from '@/hooks/useSystemSignOut';
 import { useUIStore } from '@/lib/store/ui-store';
 import { useSettingsStore } from '@/lib/store/useSettingsStore';
 import { CurrencySwitcher } from './CurrencySwitcher';
+import { useAztecNative } from '@/context/AztecNativeContext';
+import Link from 'next/link';
 
 //  IVORY SYSTEMS UTILITY HEADER 
 // Perfectly visible on cream/ivory background
@@ -17,6 +19,7 @@ export function SystemsUtilityHeader() {
     const { activePanel, setActivePanel } = useUIStore();
     const { nuclearDisconnect } = useSystemSignOut();
     const router = useRouter();
+    const { balance, aztecAddress } = useAztecNative();
 
     const icons: any[] = [];
 
@@ -98,6 +101,40 @@ export function SystemsUtilityHeader() {
 
                 {/* Removed Ivory Dropdown in favor of Global Settings drawer */}
             </div>
+
+            {/* QD Balance Pill — visible only when wallet is connected */}
+            {isConnected && (
+                <Link
+                    href="/portfolio"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-all hover:shadow-md group"
+                    style={{
+                        background: aztecAddress ? 'rgba(0,0,0,0.05)' : 'rgba(255,165,0,0.08)',
+                        borderColor: aztecAddress ? 'rgba(0,0,0,0.1)' : 'rgba(255,140,0,0.25)',
+                    }}
+                    title={aztecAddress ? `${balance.toFixed(2)} QDs available` : 'Claim your QDs → Aztec Identity'}
+                >
+                    <Zap
+                        size={10}
+                        className="transition-colors"
+                        style={{ color: aztecAddress ? '#f59e0b' : '#f97316' }}
+                    />
+                    {aztecAddress ? (
+                        <span
+                            className="font-mono text-[9px] font-black uppercase tracking-widest"
+                            style={{ color: 'rgba(0,0,0,0.7)' }}
+                        >
+                            {balance.toFixed(2)} QD
+                        </span>
+                    ) : (
+                        <span
+                            className="font-mono text-[9px] font-black uppercase tracking-widest animate-pulse"
+                            style={{ color: '#f97316' }}
+                        >
+                            CLAIM QDs
+                        </span>
+                    )}
+                </Link>
+            )}
 
             {isConnected && (
                 <button

@@ -1,0 +1,169 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import crypto from 'crypto';
+
+/**
+ * GET /api/aztec/quests
+ * Returns available quests and the claim status for a given aztecAddress
+ */
+export async function GET(req: NextRequest) {
+    const { searchParams } = new URL(req.url);
+    const aztecAddress = searchParams.get('aztecAddress');
+
+    if (!aztecAddress) {
+        return NextResponse.json({ error: 'Missing aztecAddress' }, { status: 400 });
+    }
+
+    try {
+        // Fetch all active quests. If the table doesn't exist yet, we catch the error.
+        // We use queryRaw to avoid Prisma Client generation issues if schema is fresh.
+        const quests: any[] = await prisma.$queryRaw`SELECT * FROM "AztecQuest" WHERE "isActive" = true ORDER BY "createdAt" ASC`;
+        
+        const claims: any[] = await prisma.$queryRaw`SELECT * FROM "QuestClaim" WHERE "aztecAddress" = ${aztecAddress}`;
+        const claimMap = new Map(claims.map(c => [c.questId, c.status]));
+
+        const result = quests.map(q => ({
+            id: q.id,
+            slug: q.slug,
+            title: q.title,
+            description: q.description,
+            qdReward: q.qdReward,
+            status: claimMap.get(q.id) || 'UNCLAIMED'
+        }));
+
+        return NextResponse.json({ quests: result });
+    } catch (error: any) {
+        // Fallback mock if tables aren't created yet during dev
+        if (error.message.includes('does not exist')) {
+            const fallbackQuests = [
+                { id: '1', slug: 'twitter-follow', title: 'Follow on Twitter', description: 'Follow @WhaleNetwork for 50 QDs', qdReward: 50, status: 'UNCLAIMED' },
+                { id: '2', slug: 'youtube-follow', title: 'Subscribe to YouTube', description: 'Subscribe to Humanity Ledger for 200 QDs', qdReward: 200, status: 'UNCLAIMED' },
+                { id: '3', slug: 'tg-join', title: 'Join Telegram', description: 'Join t.me/humanityledger for 200 QDs', qdReward: 200, status: 'UNCLAIMED' },
+                { id: '4', slug: 'page-share', title: 'Share Page', description: 'Share this page for 15 QDs', qdReward: 15, status: 'UNCLAIMED' }
+            ];
+            return NextResponse.json({ quests: fallbackQuests, notice: 'Database tables not yet initialized.' });
+        }
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+}
+
+/**
+ * POST /api/aztec/quests
+ * Claims a quest reward
+ * Body: { questId, slug, aztecAddress }
+ */
+export async function POST(req: NextRequest) {
+    const ip = req.headers.get('x-forwarded-for') || req.ip || '127.0.0.1';
+    const ipHash = crypto.createHash('sha256').update(ip).digest('hex');
+
+    try {
+        const body = await req.json();
+        const { questId, slug, aztecAddress } = body;
+
+        if (!aztecAddress || (!questId && !slug)) {
+            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+        }
+
+        // Hardcoded rewards to ensure secure payouts even if DB fails
+        const rewardMap: Record<string, number> = {
+            'twitter-follow': 50,
+            'page-share': 15,
+            'youtube-follow': 200,
+            'tg-join': 200
+        };
+
+        const rewardAmount = rewardMap[slug] || 0;
+        if (rewardAmount === 0) {
+            return NextResponse.json({ error: 'Invalid quest slug' }, { status: 400 });
+        }
+
+        try {
+            // Check if claim exists by IP or Wallet using raw query
+            const existingClaims: any[] = await prisma.$queryRaw`
+                SELECT * FROM "QuestClaim" 
+                WHERE ("aztecAddress" = ${aztecAddress} OR "ipHash" = ${ipHash})
+                  AND ("questId" = ${questId} OR "questId" = ${slug})
+            `;
+
+            if (existingClaims.length > 0) {
+                return NextResponse.json({ error: 'Quest already claimed by this wallet or IP', status: existingClaims[0].status }, { status: 403 });
+            }
+
+            // Record the claim
+            const claimId = crypto.randomUUID();
+            await prisma.$executeRaw`
+                INSERT INTO "QuestClaim" (id, "questId", "aztecAddress", "ipHash", status) 
+                VALUES (${claimId}, ${questId || slug}, ${aztecAddress}, ${ipHash}, 'CLAIMED')
+            `;
+        } catch(dbErr: any) {
+            console.log("DB Quest Insert error (might not exist yet):", dbErr.message);
+            // If DB doesn't exist, we still want to reward the user for testing the UI, but we log it.
+        }
+
+        // Perform the QD Airdrop transfer via existing Aztec system
+        // We simulate calling the sequencer or just update the DB balance
+        await prisma.transaction.create({
+            data: {
+                txHash: \`quest_\${crypto.randomBytes(16).toString('hex')}\`,
+                status: 'CONFIRMED',
+                type: 'RECEIVE',
+                amount: rewardAmount,
+                token: 'QD',
+                fromAddress: '0xAztecQuestTreasury',
+                toAddress: aztecAddress.toLowerCase()
+            }
+        });
+
+        return NextResponse.json({ 
+            success: true, 
+            message: \`Successfully claimed \${rewardAmount} QDs for \${slug}\`,
+            rewardAmount 
+        });
+
+    } catch (err: any) {
+        return NextResponse.json({ error: err.message }, { status: 500 });
+    }
+}
+
+/**
+ * DELETE /api/aztec/quests
+ * Slashing logic: Admin/System endpoint to slash QDs if user unfollows
+ */
+export async function DELETE(req: NextRequest) {
+    try {
+        const body = await req.json();
+        const { aztecAddress, slug } = body;
+
+        const rewardMap: Record<string, number> = {
+            'twitter-follow': 50,
+            'page-share': 15,
+            'youtube-follow': 200,
+            'tg-join': 200
+        };
+        const slashAmount = rewardMap[slug] || 0;
+
+        // Deduct from ledger
+        await prisma.transaction.create({
+            data: {
+                txHash: \`slash_\${crypto.randomBytes(16).toString('hex')}\`,
+                status: 'CONFIRMED',
+                type: 'SEND', // Sending out of the wallet back to treasury
+                amount: slashAmount,
+                token: 'QD',
+                fromAddress: aztecAddress.toLowerCase(),
+                toAddress: '0xAztecSlashingTreasury'
+            }
+        });
+
+        try {
+            await prisma.$executeRaw`
+                UPDATE "QuestClaim" SET status = 'SLASHED', "slashedAt" = NOW() 
+                WHERE "aztecAddress" = ${aztecAddress} AND ("questId" = ${slug} OR "questId" IN (SELECT id FROM "AztecQuest" WHERE slug = ${slug}))
+            `;
+        } catch(e) {}
+
+        return NextResponse.json({ success: true, slashedAmount: slashAmount });
+    } catch(err: any) {
+        return NextResponse.json({ error: err.message }, { status: 500 });
+    }
+}

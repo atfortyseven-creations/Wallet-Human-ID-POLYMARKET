@@ -61,6 +61,8 @@ import { keccak256, toBytes } from "viem";
 export interface TxRecord {
   id: string;
   type: "send" | "receive";
+  txType?: string;  // TRANSFER | SPEND | AIRDROP
+  reason?: string;  // e.g. 'Whale Chat message', 'Encrypted Video Call', 'Noir ZK Proof Generation'
   amount: number;
   address: string; // counterparty
   date: string;    // ISO timestamp
@@ -91,6 +93,8 @@ export interface AztecNativeState {
   disconnectIdentity: () => void;
   /** Force-refresh balance & history from the DB immediately. */
   refresh: () => Promise<void>;
+  /** Spend QDs for utility actions (Chat, Noir, Passports, etc) */
+  spendQDs: (amount: number, reason: string) => Promise<boolean>;
 }
 
 // ─── Context ──────────────────────────────────────────────────────────────────
@@ -111,15 +115,14 @@ const POLL_INTERVAL = 10_000; // 10 seconds
 
 /** Maps raw DB transaction rows to the typed TxRecord. */
 function mapTx(tx: any, forAddress: string): TxRecord {
+  const isSend = tx.type === "send" || tx.toAddress?.toLowerCase() !== forAddress.toLowerCase();
   return {
     id:          tx.id,
-    type:        tx.type === "send" || tx.toAddress?.toLowerCase() !== forAddress.toLowerCase()
-                   ? "send"
-                   : "receive",
+    type:        isSend ? "send" : "receive",
+    txType:      tx.txType ?? undefined,
+    reason:      tx.reason ?? undefined,
     amount:      typeof tx.amount === "number" ? tx.amount : parseFloat(tx.amount),
-    address:     tx.type === "send" || tx.toAddress?.toLowerCase() !== forAddress.toLowerCase()
-                   ? tx.toAddress
-                   : tx.fromAddress,
+    address:     isSend ? tx.toAddress : tx.fromAddress,
     date:        tx.timestamp,
     txHash:      tx.txHash,
     blockNumber: tx.blockNumber ?? "0",
@@ -142,6 +145,26 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
   const notifiedRef = useRef<Set<string>>(new Set());
   // Polling interval ref for cleanup.
   const pollRef     = useRef<NodeJS.Timeout | null>(null);
+
+  // ─── Auto-Restore Session ──────────────────────────────────────────────────
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('aztec_session');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed.address && parsed.seed) {
+          setAztecAddress(parsed.address);
+          setSeed(parsed.seed);
+          setIsLoading(true);
+          fetchLedgerState(parsed.address).finally(() => setIsLoading(false));
+          startPolling(parsed.address);
+        }
+      }
+    } catch (e) {
+      console.warn("Could not restore Aztec session", e);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // ─── Core Poll Function ────────────────────────────────────────────────────
 
@@ -277,9 +300,13 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
         toast.success("Identity deployed (No signature = 0 QDs granted)", { id: "az-connect" });
       }
 
-      // Step 3 — Set session state in memory.
+      // Step 3 — Set session state in memory & local storage.
       setAztecAddress(derived);
       setSeed(entropy);
+      try {
+        localStorage.setItem('aztec_session', JSON.stringify({ address: derived, seed: entropy }));
+      } catch (e) {}
+      
       notifiedRef.current = new Set(); // Reset notification tracking on new login.
       // Step 4 — Immediate first fetch, then start polling loop.
       setIsLoading(true);
@@ -314,6 +341,9 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
     setHistory([]);
     setError(null);
     notifiedRef.current = new Set();
+    try {
+      localStorage.removeItem('aztec_session');
+    } catch (e) {}
   }, [stopPolling]);
 
   // ─── Manual Refresh ───────────────────────────────────────────────────────
@@ -322,6 +352,37 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
     if (!aztecAddress) return;
     await fetchLedgerState(aztecAddress);
   }, [aztecAddress, fetchLedgerState]);
+
+  // ─── Spend QDs Utility ────────────────────────────────────────────────────
+
+  const spendQDs = useCallback(async (amount: number, reason: string): Promise<boolean> => {
+    if (!aztecAddress || balance < amount) return false;
+    
+    setIsBusy(true);
+    try {
+      const res = await fetch("/api/aztec/transfer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from: aztecAddress,
+          to: "0xdead000000000000000000000000000000000000000000000000000000000000",
+          amount: amount,
+          reason,
+        })
+      });
+
+      if (!res.ok) throw new Error("Payment failed");
+      
+      await fetchLedgerState(aztecAddress); // force refresh balance
+      return true;
+    } catch (err: any) {
+      console.error("[Aztec Spend] Failed:", err);
+      toast.error(`Payment failed for ${reason}`);
+      return false;
+    } finally {
+      setIsBusy(false);
+    }
+  }, [aztecAddress, balance, fetchLedgerState]);
 
   // ─── Context Value ────────────────────────────────────────────────────────
 
@@ -336,6 +397,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
     connectIdentity,
     disconnectIdentity,
     refresh,
+    spendQDs,
   };
 
   return (

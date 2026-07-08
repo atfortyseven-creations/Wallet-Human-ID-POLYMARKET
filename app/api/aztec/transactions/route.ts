@@ -33,15 +33,17 @@ export async function GET(req: Request) {
     });
 
     const formatted = txs.map(tx => ({
-      id:          tx.id,          // ← unique PG row ID — used for client deduplication
-      txHash:      (tx.metadata as any)?.aztecTxHash ?? tx.txHash, // display only
+      id:          tx.id,
+      txHash:      (tx.metadata as any)?.aztecTxHash ?? tx.txHash,
       type:        tx.toAddress === address ? 'receive' : 'send',
+      txType:      tx.type,  // TRANSFER | SPEND | AIRDROP
+      reason:      (tx.metadata as any)?.reason ?? null,
       amount:      tx.amount,
       fromAddress: tx.fromAddress,
       toAddress:   tx.toAddress,
       timestamp:   tx.timestamp.toISOString(),
       blockNumber: tx.blockNumber?.toString() ?? '0',
-      explorerUrl: (tx.metadata as any)?.onChain 
+      explorerUrl: (tx.metadata as any)?.onChain
         ? ((tx.metadata as any)?.explorerUrl ?? `https://testnet.aztecscan.xyz/tx-effect/${(tx.metadata as any)?.aztecTxHash ?? tx.txHash}`)
         : ((tx.metadata as any)?.explorerUrl ?? null),
     }));

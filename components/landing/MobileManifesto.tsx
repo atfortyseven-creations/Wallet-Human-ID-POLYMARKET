@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import { useAppKit } from '@reown/appkit/react';
 
 //  Constants 
 
@@ -22,6 +23,7 @@ const STAGGER: Variants = {
 export function MobileManifesto() {
   const [hasSession, setHasSession] = useState(false);
   const [noteExpanded, setNoteExpanded] = useState(false);
+  const { open } = useAppKit();
 
   useEffect(() => {
     setHasSession(document.cookie.includes("system_handshake=") || document.cookie.includes("siwe_session="));
@@ -76,8 +78,12 @@ export function MobileManifesto() {
           </motion.p>
 
           <motion.div variants={FADE_UP} className="w-full max-w-[300px] mx-auto flex flex-col items-center gap-3">
-            {/* @ts-expect-error */}
-            <appkit-button />
+            <button
+              onClick={() => open()}
+              className="flex items-center justify-center w-full h-[56px] bg-black text-white rounded-2xl text-[14px] font-bold tracking-wide active:scale-[0.98] transition-transform shadow-lg shadow-black/20"
+            >
+              Connect Wallet
+            </button>
             <Link
               href="/developers/api-docs"
               className="flex items-center justify-center w-full h-[56px] bg-transparent border border-black/15 text-black rounded-2xl text-[14px] font-bold tracking-wide active:scale-[0.98] transition-transform"

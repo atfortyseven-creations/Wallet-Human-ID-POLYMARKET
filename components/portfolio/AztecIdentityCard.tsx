@@ -27,6 +27,8 @@ import { LottiePlayer } from '../ui/LottiePlayer';
 import { AztecPXEVisualizer } from './AztecPXEVisualizer';
 import { ZKProofGrid } from '../premium/ZKProofGrid';
 import { AztecShieldingTerminal } from './AztecShieldingTerminal';
+import { AztecRewardsCard } from './AztecRewardsCard';
+import { AztecAirdropCalendar } from './AztecAirdropCalendar';
 
 // ─── On-Chain Verified Network Constants ─────────────────────────────────────
 // All addresses & hashes verified via node_getNodeInfo / node_getBlock RPC.
@@ -37,10 +39,6 @@ const CLAIM_AMOUNT      = '10 QDs';
 const CLAIM_FEE         = '2.2694 QDs';
 const LAST_UPDATED      = '2026-06-26';
 const L1_ROLLUP_ADDR    = '0xf6d0d42ace06829becb78c74f49879528fc632c1';
-const L1_FEE_JUICE_ADDR = '0x762c132040fda6183066fa3b14d985ee55aa3c18';
-const L1_INBOX_ADDR     = '0xf1bb424ac888aa239f1e658b5bddabc65a1c94e6';
-const L1_REGISTRY_ADDR  = '0xa0bfb1b494fb49041e5c6e8c2c1be09cd171c6ba';
-const NODE_VERSION      = '0.67.0';
 const LIVE_BLOCK_HEIGHT = 144318;
 
 // ─── Utility ──────────────────────────────────────────────────────────────────
@@ -423,8 +421,31 @@ function ReceiveQDsPanel() {
 
 // ─── History Panel ────────────────────────────────────────────────────────────
 
+function getSpendMeta(tx: any): { icon: string; label: string; color: string; bg: string; border: string } {
+  const reason = tx.reason ?? '';
+  const txType = tx.txType ?? '';
+  const dir    = tx.type; // 'send' | 'receive'
+
+  if (txType === 'AIRDROP' || reason.toLowerCase().includes('airdrop')) {
+    return { icon: '🎁', label: 'Monthly Airdrop',      color: 'text-purple-700',  bg: 'bg-purple-50',  border: 'border-purple-200' };
+  }
+  if (reason.toLowerCase().includes('video call') || reason.toLowerCase().includes('audio call')) {
+    return { icon: '📹', label: reason,                 color: 'text-blue-700',    bg: 'bg-blue-50',    border: 'border-blue-200'   };
+  }
+  if (reason.toLowerCase().includes('noir') || reason.toLowerCase().includes('zk proof')) {
+    return { icon: '🔐', label: reason,                 color: 'text-amber-700',   bg: 'bg-amber-50',   border: 'border-amber-200'  };
+  }
+  if (reason.toLowerCase().includes('chat') || reason.toLowerCase().includes('message')) {
+    return { icon: '💬', label: reason,                 color: 'text-sky-700',     bg: 'bg-sky-50',     border: 'border-sky-200'    };
+  }
+  if (dir === 'receive') {
+    return { icon: '↙', label: 'QDs Received',          color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200'};
+  }
+  return       { icon: '↗', label: reason || 'Transfer', color: 'text-zinc-700',    bg: 'bg-zinc-50',    border: 'border-zinc-200'   };
+}
+
 function HistoryPanel() {
-  const { history, isLoading } = useAztecNative();
+  const { history, isLoading, aztecAddress } = useAztecNative();
 
   if (isLoading) {
     return (
@@ -436,40 +457,88 @@ function HistoryPanel() {
 
   if (history.length === 0) {
     return (
-      <div className="py-10 text-center flex flex-col items-center">
-        <div className="text-[10px] font-black uppercase tracking-widest text-zinc-900/40">No transactions yet</div>
-        <div className="text-[8px] text-zinc-900/30 mt-1">Your ledger is empty. Send or receive QDs to populate it.</div>
+      <div className="py-10 text-center flex flex-col items-center gap-2">
+        <div className="text-[10px] font-black uppercase tracking-widest text-zinc-900/40">No hay transacciones</div>
+        <div className="text-[8px] text-zinc-900/30">Los gastos de QDs (Chat, Videollamadas, Noir ZK) aparecerán aquí.</div>
       </div>
     );
   }
 
+  // Group by date for cleaner timeline display
+  const grouped = history.reduce<Record<string, typeof history>>((acc, tx) => {
+    const day = new Date(tx.date).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+    acc[day] = acc[day] ? [...acc[day], tx] : [tx];
+    return acc;
+  }, {});
+
   return (
-    <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-      {history.map(tx => (
-        <div key={tx.id} className="border border-zinc-900/10 bg-zinc-900/[0.015] p-3 flex items-center justify-between group">
-          <div className="flex items-center gap-3">
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${tx.type === 'send' ? 'bg-zinc-900/5' : 'bg-emerald-50'}`}>
-              {tx.type === 'send' ? <Send size={9} className="text-zinc-900/60" /> : <Download size={9} className="text-emerald-600" />}
-            </div>
-            <div>
-              <div className="text-[9px] font-black uppercase tracking-widest text-zinc-900/80 flex items-center gap-1.5">
-                {tx.type === 'send' ? 'Sent QDs' : 'Received QDs'}
-                {tx.txHash && tx.explorerUrl && (
-                  <a href={tx.explorerUrl} target="_blank" rel="noopener noreferrer" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                    <ExternalLink size={9} className="text-zinc-900/40 hover:text-zinc-900" />
-                  </a>
-                )}
-              </div>
-              <div className="text-[8px] font-mono text-zinc-900/40 mt-0.5">{trunc(tx.address || '', 6, 4)}</div>
+    <div className="space-y-4 max-h-[420px] overflow-y-auto pr-1">
+      {/* Economy summary bar */}
+      <div className="grid grid-cols-3 gap-2 sticky top-0 bg-white pb-2 pt-1 z-10">
+        {[
+          { label: 'Gastados',  val: history.filter(t => t.type === 'send').reduce((s, t) => s + t.amount, 0), color: 'text-zinc-800' },
+          { label: 'Recibidos', val: history.filter(t => t.type === 'receive').reduce((s, t) => s + t.amount, 0), color: 'text-emerald-700' },
+          { label: 'Txs',      val: history.length, color: 'text-zinc-800' },
+        ].map(({ label, val, color }) => (
+          <div key={label} className="border border-zinc-900/8 p-2 text-center">
+            <div className="text-[7px] font-black uppercase tracking-widest text-zinc-900/30">{label}</div>
+            <div className={`text-[11px] font-black font-mono mt-0.5 ${color}`}>
+              {typeof val === 'number' && label !== 'Txs' ? val.toFixed(2) : val}
+              {label !== 'Txs' && <span className="text-[7px] ml-0.5">QD</span>}
             </div>
           </div>
-          <div className="text-right">
-            <div className={`text-[10px] font-black font-mono ${tx.type === 'send' ? 'text-zinc-900' : 'text-emerald-600'}`}>
-              {tx.type === 'send' ? '-' : '+'}{tx.amount}
-            </div>
-            <div className="text-[7px] text-zinc-900/30 uppercase tracking-widest mt-0.5">
-              {new Date(tx.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            </div>
+        ))}
+      </div>
+
+      {Object.entries(grouped).map(([day, txs]) => (
+        <div key={day}>
+          <div className="text-[7px] font-black uppercase tracking-widest text-zinc-900/25 mb-2 px-1 flex items-center gap-2">
+            <div className="h-px flex-1 bg-zinc-900/6" />
+            {day}
+            <div className="h-px flex-1 bg-zinc-900/6" />
+          </div>
+          <div className="space-y-1.5">
+            {txs.map(tx => {
+              const meta = getSpendMeta(tx);
+              const time = new Date(tx.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+              const sign = tx.type === 'send' ? '-' : '+';
+              return (
+                <div key={tx.id} className={`flex items-center gap-3 p-3 border ${meta.border} ${meta.bg} group`}>
+                  {/* Icon */}
+                  <div className="text-base shrink-0 w-7 text-center">{meta.icon}</div>
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className={`text-[9px] font-black uppercase tracking-widest truncate ${meta.color}`}>
+                      {meta.label}
+                    </div>
+                    <div className="text-[7px] font-mono text-zinc-900/35 mt-0.5 flex items-center gap-2">
+                      <span>{time}</span>
+                      {tx.blockNumber && tx.blockNumber !== '0' && (
+                        <span>· Blk #{tx.blockNumber}</span>
+                      )}
+                    </div>
+                  </div>
+                  {/* Amount + Explorer */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className={`text-[10px] font-black font-mono ${tx.type === 'send' ? 'text-zinc-800' : 'text-emerald-600'}`}>
+                      {sign}{Number(tx.amount).toFixed(tx.amount < 1 ? 3 : 2)}
+                      <span className="text-[7px] ml-0.5 font-normal">QD</span>
+                    </span>
+                    {tx.explorerUrl && (
+                      <a
+                        href={tx.explorerUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity"
+                        title="Ver en AztecScan"
+                      >
+                        <ExternalLink size={9} className="text-zinc-900/40 hover:text-zinc-900" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       ))}
@@ -557,58 +626,120 @@ export function AztecIdentityCard() {
     { id: 'SEND'     as const, label: 'Send' },
     { id: 'RECEIVE'  as const, label: 'Receive' },
     { id: 'HISTORY'  as const, label: 'History' },
-    { id: 'CLAIM'    as const, label: 'Claim' },
+    { id: 'CLAIM'    as const, label: 'Airdrop 🎁' },
     { id: 'NODE'     as const, label: 'Node' },
   ];
+
+  // ─── Aztec-Native Account Tiers (Williamson / Pocock nomenclature) ───
+  // Based on the core roles of the Aztec protocol stack:
+  // Witness → Prover → Sequencer → Shielder → Sovereign → Architect
+  let userRank = 'WITNESS';
+  let rankColor = 'text-zinc-500';
+  if (balance >= 1000) { userRank = 'ARCHITECT'; rankColor = 'text-zinc-900'; }
+  else if (balance >= 500) { userRank = 'SOVEREIGN'; rankColor = 'text-zinc-800'; }
+  else if (balance >= 100) { userRank = 'SHIELDER'; rankColor = 'text-zinc-700'; }
+  else if (balance >= 50)  { userRank = 'SEQUENCER'; rankColor = 'text-zinc-700'; }
+  else if (balance >= 10)  { userRank = 'PROVER'; rankColor = 'text-zinc-600'; }
+
 
   // ── Login Screen ─────────────────────────────────────────────────────────────
   if (!aztecAddress) {
     return (
       <motion.div
         initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
-        className="w-full border border-zinc-900/10 bg-white overflow-hidden p-8 flex flex-col items-center justify-center min-h-[300px]"
+        className="w-full border border-zinc-900/10 bg-white overflow-hidden flex flex-col md:flex-row min-h-[300px]"
       >
-        <div className="w-12 h-12 rounded-full bg-zinc-900 flex items-center justify-center mb-5">
-          <Lock size={20} className="text-white" />
-        </div>
-        <h3 className="text-[12px] font-black uppercase tracking-[0.3em] text-zinc-900 mb-2">Aztec PXE Login</h3>
-        <p className="text-[9px] text-zinc-900/40 uppercase tracking-widest mb-6 text-center max-w-[250px]">
-          Enter your EVM address or seed phrase. Your Aztec Schnorr identity will be derived server-side via SHA-256.
-        </p>
-        <div className="w-full max-w-[280px] space-y-3">
-          {isConnected && evmAddress ? (
-            <div className="flex flex-col gap-3 w-full pb-4 mb-4 border-b border-zinc-900/10">
-              <div className="text-[10px] font-black uppercase text-center text-emerald-600 mb-1">
-                WalletConnected Detected
-              </div>
-              <button
-                disabled={isBusy}
-                onClick={handleConnectWithSignature}
-                className="w-full bg-black text-white py-3 font-black text-[10px] uppercase tracking-widest hover:bg-black/80 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                {isBusy ? <><Loader2 size={12} className="animate-spin" /> Signing...</> : 'Sign to Claim 10 QDs'}
-              </button>
-            </div>
-          ) : null}
-          
-          <div className="text-[9px] font-black uppercase tracking-widest text-zinc-900/40 text-center mb-2">
-            Basic Connection (No Airdrop)
+        {/* Left Side: Login Form */}
+        <div className="flex-1 p-8 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-zinc-900/10">
+          <div className="w-12 h-12 rounded-full bg-zinc-900 flex items-center justify-center mb-5">
+            <Lock size={20} className="text-white" />
           </div>
-          <input
-            type="text"
-            placeholder="e.g. 0xABC... or 'alice'"
-            value={inputSeed}
-            onChange={e => setInputSeed(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter' && !isBusy) handleConnectBasic(); }}
-            className="w-full border border-zinc-900/10 px-4 py-3 font-mono text-[10px] text-zinc-900 focus:outline-none focus:border-zinc-900"
-          />
-          <button
-            disabled={isBusy || inputSeed.trim().length < 3}
-            onClick={handleConnectBasic}
-            className="w-full bg-white text-zinc-900 border border-zinc-900/20 py-3 font-black text-[10px] uppercase tracking-widest hover:bg-zinc-50 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-          >
-            {isBusy ? <><Loader2 size={12} className="animate-spin" /> Connecting...</> : 'Connect Basic Identity'}
-          </button>
+          <h3 className="text-[12px] font-black uppercase tracking-[0.3em] text-zinc-900 mb-2">System Identity</h3>
+          <p className="text-[9px] text-zinc-900/40 uppercase tracking-widest mb-6 text-center max-w-[250px]">
+            Enter your EVM address or seed phrase. Your Schnorr identity will be derived server-side via SHA-256.
+          </p>
+          <div className="w-full max-w-[280px] space-y-3">
+            {isConnected && evmAddress ? (
+              <div className="flex flex-col gap-3 w-full pb-4 mb-4 border-b border-zinc-900/10">
+                <div className="text-[10px] font-black uppercase text-center text-emerald-600 mb-1">
+                  Wallet Connected
+                </div>
+                <button
+                  disabled={isBusy}
+                  onClick={handleConnectWithSignature}
+                  className="w-full bg-black text-white py-3 font-black text-[10px] uppercase tracking-widest hover:bg-black/80 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                >
+                  {isBusy ? <><Loader2 size={12} className="animate-spin" /> Authenticating...</> : 'Authenticate to Enter'}
+                </button>
+              </div>
+            ) : null}
+            
+            <div className="text-[9px] font-black uppercase tracking-widest text-zinc-900/40 text-center mb-2">
+              Basic Authentication (No Social Airdrop)
+            </div>
+            <input
+              type="text"
+              placeholder="e.g. 0xABC... or 'alice'"
+              value={inputSeed}
+              onChange={e => setInputSeed(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter' && !isBusy) handleConnectBasic(); }}
+              className="w-full border border-zinc-900/10 px-4 py-3 font-mono text-[10px] text-zinc-900 focus:outline-none focus:border-zinc-900"
+            />
+            <button
+              disabled={isBusy || inputSeed.trim().length < 3}
+              onClick={handleConnectBasic}
+              className="w-full bg-white text-zinc-900 border border-zinc-900/20 py-3 font-black text-[10px] uppercase tracking-widest hover:bg-zinc-50 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {isBusy ? <><Loader2 size={12} className="animate-spin" /> Connecting...</> : 'Connect Basic Identity'}
+            </button>
+          </div>
+        </div>
+
+        {/* Right Side: Marketing / Utility */}
+        <div className="flex-1 bg-zinc-900/[0.02] p-8 flex flex-col justify-center">
+          <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-900 mb-6 flex items-center gap-2">
+            <Shield size={14} /> Protocol Utilities
+          </h4>
+          <div className="space-y-4">
+            <div className="flex gap-3 items-start">
+              <div className="w-6 h-6 rounded border border-zinc-900/20 flex items-center justify-center shrink-0 bg-white">
+                <Terminal size={12} className="text-zinc-900" />
+              </div>
+              <div>
+                <div className="text-[10px] font-black uppercase tracking-widest text-zinc-900">E2E Video Network</div>
+                <div className="text-[9px] text-zinc-900/50 mt-1 leading-relaxed">
+                  Establish encrypted WebRTC calls through the XMTP network. Uncensorable bandwidth.
+                  <br /><span className="font-mono text-zinc-900 font-bold mt-1 inline-block border-b border-zinc-900/20">Cost: 0.5 QDs</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3 items-start">
+              <div className="w-6 h-6 rounded border border-zinc-900/20 flex items-center justify-center shrink-0 bg-white">
+                <Zap size={12} className="text-zinc-900" />
+              </div>
+              <div>
+                <div className="text-[10px] font-black uppercase tracking-widest text-zinc-900">Noir ZK Sandbox</div>
+                <div className="text-[9px] text-zinc-900/50 mt-1 leading-relaxed">
+                  Compile and generate Barretenberg Zero-Knowledge proofs purely on your device.
+                  <br /><span className="font-mono text-zinc-900 font-bold mt-1 inline-block border-b border-zinc-900/20">Cost: 0.1 QDs</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3 items-start">
+              <div className="w-6 h-6 rounded border border-zinc-900/20 flex items-center justify-center shrink-0 bg-white">
+                <Shield size={12} className="text-zinc-900" />
+              </div>
+              <div>
+                <div className="text-[10px] font-black uppercase tracking-widest text-zinc-900">Aztec L2 Shielding</div>
+                <div className="text-[9px] text-zinc-900/50 mt-1 leading-relaxed">
+                  Execute confidential state transitions and transfer private assets globally.
+                  <br /><span className="font-mono text-zinc-900 font-bold mt-1 inline-block border-b border-zinc-900/20">Cost: Variable</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </motion.div>
     );
@@ -646,16 +777,25 @@ export function AztecIdentityCard() {
 
       {/* Tabs */}
       <div className="flex border-b border-zinc-900/10 overflow-x-auto no-scrollbar w-full">
-        {TABS.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex-none md:flex-1 py-3 text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap px-4 md:px-2
-              ${activeTab === tab.id ? 'bg-white text-zinc-900 border border-zinc-900/20' : 'text-zinc-900/40 hover:text-zinc-900 hover:bg-zinc-900/5'}`}
-          >
-            {tab.label}
-          </button>
-        ))}
+        {TABS.map(tab => {
+          const isAirdropDay = new Date().getUTCDate() === 1 && tab.id === 'CLAIM';
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`relative flex-none md:flex-1 py-3 text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap px-4 md:px-2
+                ${activeTab === tab.id ? 'bg-white text-zinc-900 border border-zinc-900/20 shadow-[0_-2px_0_#000]' : 'text-zinc-900/40 hover:text-zinc-900 hover:bg-zinc-900/5'}`}
+            >
+              {tab.label}
+              {isAirdropDay && (
+                <span className="absolute top-1 right-1 flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {/* Tab Content */}
@@ -670,7 +810,25 @@ export function AztecIdentityCard() {
         >
           {/* IDENTITY */}
           {activeTab === 'IDENTITY' && (
-            <div className="space-y-5">
+            <div className="space-y-6">
+              {/* Gamified Status Bar */}
+              <div className="flex flex-col sm:flex-row gap-4 items-stretch">
+                <div className="flex-1 bg-zinc-900/[0.02] border border-zinc-900/10 p-4 flex items-center justify-between">
+                  <div>
+                    <div className="text-[8px] font-black uppercase tracking-widest text-zinc-900/40 mb-1">Account Class</div>
+                    <div className={`text-lg font-black uppercase tracking-wider flex items-center gap-2 ${rankColor}`}>
+                      {userRank}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-[8px] font-black uppercase tracking-widest text-zinc-900/40 mb-1">Total Balance</div>
+                    <div className="text-2xl font-black font-mono tracking-tighter text-zinc-900">
+                      {balance.toFixed(2)} <span className="text-sm text-zinc-900/40 tracking-widest">QDs</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div>
                 <div className="text-[8px] font-black uppercase tracking-widest text-zinc-900/30 mb-2">
                   Aztec Address · Schnorr Account (SHA-256 · BN254)
@@ -747,90 +905,7 @@ export function AztecIdentityCard() {
 
           {/* CLAIM */}
           {activeTab === 'CLAIM' && (
-            <div className="space-y-5">
-              <div className="bg-emerald-50 border border-emerald-200 p-4 flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shrink-0 mt-0.5">
-                  <Check size={12} className="text-white" strokeWidth={3} />
-                </div>
-                <div>
-                  <div className="text-[10px] font-black uppercase tracking-widest text-emerald-700 mb-0.5">QDs Claimed Successfully</div>
-                  <div className="text-[9px] text-emerald-600/70">10 QDs deployed + claimed atomically · Block {CLAIM_TX_BLOCK.toLocaleString()}</div>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                {[
-                  { label: 'Amount Claimed',  value: CLAIM_AMOUNT,  accent: true },
-                  { label: 'Gas Fee Paid',    value: CLAIM_FEE,     accent: false },
-                  { label: 'Block',           value: `#${CLAIM_TX_BLOCK.toLocaleString()}`, accent: false },
-                  { label: 'Date',            value: LAST_UPDATED,  accent: false },
-                  { label: 'Network Height',  value: `#${LIVE_BLOCK_HEIGHT.toLocaleString()}`, accent: false },
-                ].map(({ label, value, accent }) => (
-                  <div key={label} className="flex items-center justify-between py-2 border-b border-zinc-900/5 last:border-0">
-                    <span className="text-[9px] text-zinc-900/40 uppercase tracking-widest">{label}</span>
-                    <span className={`text-[10px] font-black font-mono ${accent ? 'text-emerald-600' : 'text-zinc-900/70'}`}>{value}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div>
-                <div className="text-[8px] font-black uppercase tracking-widest text-zinc-900/30 mb-2 flex items-center gap-1.5">
-                  Transaction Hash <span className="text-emerald-500 text-[7px]">✓ ON-CHAIN</span>
-                </div>
-                <div className="flex items-center gap-2 bg-zinc-900/[0.02] border border-zinc-900/8 px-4 py-3">
-                  <span className="font-mono text-[9px] text-zinc-900/50 flex-1">{trunc(CLAIM_TX_HASH, 20, 12)}</span>
-                  <button onClick={copyTx} className="shrink-0 text-zinc-900/30 hover:text-zinc-900 transition-colors p-1">
-                    {txCopied ? <Check size={11} className="text-emerald-500" /> : <Copy size={11} />}
-                  </button>
-                </div>
-              </div>
-
-              <div className="bg-zinc-900/[0.015] border border-zinc-900/8 p-4">
-                <div className="text-[8px] font-black uppercase tracking-widest text-zinc-900/30 mb-3 flex items-center gap-1.5">
-                  Verified L1 Sepolia Contracts <span className="text-emerald-500 text-[7px]">✓ LIVE</span>
-                </div>
-                <div className="space-y-2">
-                  {[
-                    { label: 'Rollup',    addr: L1_ROLLUP_ADDR    },
-                    { label: 'Fee Juice', addr: L1_FEE_JUICE_ADDR },
-                    { label: 'Inbox',     addr: L1_INBOX_ADDR     },
-                    { label: 'Registry', addr: L1_REGISTRY_ADDR  },
-                  ].map(({ label, addr }) => (
-                    <div key={label} className="flex items-start justify-between gap-2">
-                      <span className="text-[8px] text-zinc-900/30 uppercase tracking-widest shrink-0 mt-0.5">{label}</span>
-                      <a
-                        href={`https://testnet.aztecscan.xyz/address/${addr}`}
-                        target="_blank" rel="noopener noreferrer"
-                        className="font-mono text-[8px] text-zinc-900/50 hover:text-zinc-900 underline underline-offset-2 text-right break-all"
-                      >
-                        {trunc(addr, 10, 8)}
-                      </a>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-
-              <details className="border border-zinc-900/10 group">
-                <summary className="flex items-center justify-between px-4 py-3 cursor-pointer text-[9px] font-black uppercase tracking-widest text-zinc-900/40 hover:text-zinc-900 select-none list-none">
-                  <span className="flex items-center gap-1.5"><Check size={9} className="text-emerald-500" /> How to claim more QDs</span>
-                  <ChevronRight size={11} className="group-open:rotate-90 transition-transform" />
-                </summary>
-                <div className="px-4 pb-4 pt-2">
-                  <pre className="text-[8px] font-mono text-zinc-900/50 bg-zinc-900/[0.03] p-3 overflow-x-auto whitespace-pre-wrap break-all border border-zinc-900/5">
-{`# 1. Get claim values from:
-#    https://aztec-faucet.nethermind.io
-
-# 2. Run:
-wsl bash claim-master.sh \\
-  --secret <YOUR_SECRET> \\
-  --claim-amount 10000000000000000000 \\
-  --claim-secret <FROM_FAUCET> \\
-  --message-leaf-index <FROM_FAUCET>`}
-                  </pre>
-                </div>
-              </details>
-            </div>
+            <AztecAirdropCalendar />
           )}
 
           {/* NODE */}

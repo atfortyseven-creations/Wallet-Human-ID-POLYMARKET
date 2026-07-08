@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAztecNative } from "@/context/AztecNativeContext";
+import { toast } from "sonner";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type ProofPhase =
@@ -111,6 +113,10 @@ function PhasePill({
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 export function ZKProofGrid() {
+  const { balance, aztecAddress, spendQDs } = useAztecNative();
+  const QD_COST = 0.1;
+  const canAfford = aztecAddress && balance >= QD_COST;
+
   const [score,     setScore]     = useState(72);
   const [secret,    setSecret]    = useState("whale_secret_2025");
   const [threshold]               = useState(50);
@@ -137,6 +143,44 @@ export function ZKProofGrid() {
 
   const runProof = useCallback(async () => {
     if (phase !== "idle" && phase !== "rejected") return;
+
+    // QD gate: 0.1 QDs per proof generation
+    if (!canAfford) {
+      toast.error("QDs insuficientes", {
+        description: `Necesitas ${QD_COST} QDs para generar una prueba ZK. Balance actual: ${balance.toFixed(2)} QDs.`,
+      });
+      return;
+    }
+    const paid = await spendQDs(QD_COST, "Noir ZK Proof Generation");
+    if (!paid) {
+      toast.error("El pago de QDs fallo. Intenta de nuevo.");
+      return;
+    }
+
+    // ── Anti-Bypass Hardening: Backend Payment Verification ──
+    try {
+      addLog("  Verifying cryptographic payment on ledger...");
+      const sessionAddr = typeof localStorage !== 'undefined' ? localStorage.getItem('system_last_address') : '';
+      if (sessionAddr) {
+        const res = await fetch(`/api/aztec/transactions?address=${sessionAddr}`);
+        const data = await res.json();
+        const hasPaid = data.transactions?.some((t: any) => 
+          t.type === 'SPEND' && 
+          t.amount === QD_COST && 
+          (Date.now() - new Date(t.createdAt).getTime()) < 60_000
+        );
+        if (data.transactions && data.transactions.length > 0 && !hasPaid) {
+          throw new Error('Payment bypassed or not confirmed by DB');
+        }
+      }
+    } catch (e) {
+      toast.error("Security Error: Payment verification failed.");
+      addLog("  [SECURITY] Payment verification failed. Halting.");
+      return;
+    }
+
+    toast.success(`${QD_COST} QDs debitados del ledger Aztec — generando prueba…`);
+
     setPhase("idle");
     setLogs([]);
     setNullifier("");
@@ -245,9 +289,25 @@ export function ZKProofGrid() {
             Noir Identity Prover · identity_checker.nr · Barretenberg backend
           </span>
         </div>
-        <div className="flex items-center gap-1.5">
-          <div className="w-1.5 h-1.5 rounded-full bg-zinc-900/40" />
-          <span className="text-[7px] text-zinc-900/30 font-mono uppercase tracking-wider">UltraHonk</span>
+        <div className="flex items-center gap-3">
+          {/* QD Balance & cost badge */}
+          {aztecAddress ? (
+            <div className={`flex items-center gap-1.5 px-2 py-1 border text-[7px] font-black uppercase tracking-widest ${
+              canAfford ? 'border-emerald-300 bg-emerald-50 text-emerald-700' : 'border-red-300 bg-red-50 text-red-700'
+            }`}>
+              <span>{balance.toFixed(2)} QDs</span>
+              <span className="text-zinc-900/30">·</span>
+              <span>costo {QD_COST} QD</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1.5 px-2 py-1 border border-zinc-900/10 text-[7px] font-black uppercase tracking-widest text-zinc-900/30">
+              Conecta Aztec Identity
+            </div>
+          )}
+          <div className="flex items-center gap-1.5">
+            <div className="w-1.5 h-1.5 rounded-full bg-zinc-900/40" />
+            <span className="text-[7px] text-zinc-900/30 font-mono uppercase tracking-wider">UltraHonk</span>
+          </div>
         </div>
       </div>
 
@@ -380,6 +440,20 @@ export function ZKProofGrid() {
           </div>
 
           {/* CTA */}
+          {/* If user has no Aztec identity or insufficient balance, show a gate */}
+          {!aztecAddress ? (
+            <div className="w-full py-3.5 border border-zinc-900/20 bg-zinc-900/[0.02] text-center">
+              <span className="text-[9px] font-black uppercase tracking-widest text-zinc-900/40">
+                Conecta tu Aztec Identity para generar pruebas ZK
+              </span>
+            </div>
+          ) : !canAfford ? (
+            <div className="w-full py-3.5 border border-red-300 bg-red-50 text-center">
+              <span className="text-[9px] font-black uppercase tracking-widest text-red-600">
+                Balance insuficiente — necesitas {QD_COST} QDs (tienes {balance.toFixed(2)})
+              </span>
+            </div>
+          ) : (
           <button
             onClick={phase === "idle" || phase === "rejected" ? runProof : reset}
             disabled={phase !== "idle" && phase !== "rejected" && phase !== "done"}
@@ -389,16 +463,17 @@ export function ZKProofGrid() {
                 : phase === "rejected"
                   ? "bg-white text-zinc-900 border border-zinc-900 hover:bg-zinc-100 hover:text-zinc-900"
                   : phase === "idle"
-                    ? "bg-white text-zinc-900 border border-zinc-900/20 hover:bg-zinc-50"
+                    ? "bg-zinc-900 text-white hover:bg-zinc-700"
                     : "bg-zinc-900/5 text-zinc-900/25 cursor-not-allowed"}`}
           >
-            {phase === "idle"      ? "nargo prove"
+            {phase === "idle"      ? `nargo prove — ${QD_COST} QD`
              : phase === "compile" || phase === "witness" || phase === "prove" || phase === "verify"
                ? "Proving..."
                : phase === "done"
-                 ? "Proof Verified   Reset"
-                 : "Rejected   Retry"}
+                 ? "Proof Verified ✓  Reset"
+                 : "Rejected — Retry"}
           </button>
+          )}
         </div>
 
         {/* RIGHT: Terminal log + result */}

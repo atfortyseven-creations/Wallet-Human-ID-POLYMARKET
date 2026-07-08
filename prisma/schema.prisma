@@ -1376,3 +1376,101 @@ model UserMetrics {
 
   @@index([votescast(sort: Desc)])
 }
+
+// 
+// AZTEC QUests & REWARDS ENGINE
+// Tracking social interactions, IP-based indexation, and slashing logic
+// 
+
+model AztecQuest {
+  id          String   @id @default(uuid())
+  slug        String   @unique // twitter-follow, youtube-follow, tg-join, page-share
+  title       String
+  description String   @db.Text
+  qdReward    Float
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  
+  claims      QuestClaim[]
+}
+
+model QuestClaim {
+  id             String   @id @default(uuid())
+  questId        String
+  aztecAddress   String   // The L2 Identity address
+  ipHash         String   // SHA-256(ip) to prevent multi-account farming
+  status         String   @default("CLAIMED") // CLAIMED, SLASHED
+  claimedAt      DateTime @default(now())
+  slashedAt      DateTime?
+  
+  quest          AztecQuest @relation(fields: [questId], references: [id], onDelete: Cascade)
+
+  @@unique([questId, aztecAddress])
+  @@unique([questId, ipHash]) // IP can only claim a specific quest once
+  @@index([aztecAddress, status])
+}
+
+// 
+// AIRDROP CALENDAR & QD TRANSACTIONS
+// Tracking 1st-of-month airdrops and QD spending history
+// 
+
+model AirdropClaim {
+  id           String   @id @default(uuid())
+  aztecAddress String   // The L2 Identity address
+  month        Int      // 1-12
+  year         Int      // e.g., 2026
+  amount       Float    @default(10.0)
+  claimedAt    DateTime @default(now())
+
+  @@unique([aztecAddress, month, year])
+  @@index([aztecAddress])
+}
+
+model QdTransaction {
+  id           String   @id @default(uuid())
+  aztecAddress String   // The L2 Identity address spending/receiving QDs
+  type         String   // "EARN", "SPEND", "SLASH"
+  amount       Float
+  description  String   @db.Text
+  txHash       String?  // Optional L2 Tx hash if executed on-chain
+  createdAt    DateTime @default(now())
+
+  @@index([aztecAddress, createdAt(sort: Desc)])
+  @@index([type])
+}
+
+// 
+// SOCIAL VERIFICATION & PENALTIES
+// 
+model SocialVerification {
+  id            String   @id @default(uuid())
+  walletAddress String   @unique
+  twitterId     String?
+  twitterFollow Boolean  @default(false)
+  youtubeId     String?
+  youtubeFollow Boolean  @default(false)
+  telegramId    String?
+  telegramFollow Boolean @default(false)
+  lastVerifiedAt DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([walletAddress])
+}
+
+// 
+// AIRDROP CALENDAR 2100 & ANTI-SYBIL
+// 
+model AirdropClaim {
+  id            String   @id @default(uuid())
+  walletAddress String
+  year          Int
+  month         Int
+  amount        Float    @default(10.0)
+  txHash        String?  @unique
+  claimedAt     DateTime @default(now())
+
+  // Ensure one claim per wallet per month/year
+  @@unique([walletAddress, year, month])
+  @@index([walletAddress])
+}

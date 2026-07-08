@@ -35,6 +35,8 @@ import type { ProductPassportPublic } from '@/lib/passport/types';
 import { NODE_TIERS, PlanTier } from '@/lib/node_infrastructure/tiers';
 import { ShieldCheck } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import { useAztecNative } from '@/context/AztecNativeContext';
+import { toast } from 'sonner';
 
 const DotLottieReact = dynamic(
   () => import('@lottiefiles/dotlottie-react').then(mod => mod.DotLottieReact),
@@ -145,6 +147,7 @@ interface CreateTabProps {
 
 function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
   const { address } = useAccount();
+  const { spendQDs } = useAztecNative();
 
   const inputClass =
     'mt-1 w-full border-2 border-slate-300 rounded-xl px-5 py-4 text-base bg-white focus:outline-none focus:border-slate-800 focus:ring-2 focus:ring-slate-800 focus:ring-offset-2 transition-all';
@@ -205,6 +208,12 @@ function CreateTab({ isMobile, onCreated, hasPlan, isOwner }: CreateTabProps) {
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
+    // Charge 5 QDs for ZK Passport issuance
+    const paid = await spendQDs(5, 'ZK Passport Issuance');
+    if (!paid) {
+      toast.error('Insufficient QDs', { description: 'You need 5 QDs to issue a ZK Passport. Visit Aztec Identity to claim your QDs.' });
+      return;
+    }
     setCreating(true);
     setError(null);
     try {

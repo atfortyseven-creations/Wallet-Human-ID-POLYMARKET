@@ -400,35 +400,52 @@ export function UtilityPanels() {
     return (
         <>
         <AnimatePresence>
-            <div className="fixed inset-0 z-[100] pointer-events-none">
-                <motion.div 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    onClick={() => setActivePanel(null)}
-                    className="absolute inset-0 bg-black/20 backdrop-blur-md pointer-events-auto"
-                />
-                
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                    className="absolute top-24 right-6 w-[420px] bg-[#FFFFFF] backdrop-blur-3xl border border-black/10 rounded-[2.5rem] shadow-[0_40px_100px_rgba(0,0,0,0.15)] p-8 pointer-events-auto overflow-hidden text-[#050505] font-sans"
-                >
-                    <div className="absolute top-0 right-0 p-6 z-50">
-                        <button 
-                            onClick={() => setActivePanel(null)}
-                            className="p-2 bg-black/5 border border-black/10 rounded-full hover:bg-black/10 hover:border-black/20 transition-all active:scale-95"
-                        >
-                            <X size={14} className="text-[#050505]/60" />
-                        </button>
-                    </div>
+            {/* Full-screen backdrop — always covers the viewport */}
+            <motion.div
+                key="panel-backdrop"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setActivePanel(null)}
+                className="fixed inset-0 z-[100] bg-black/25 backdrop-blur-sm"
+            />
 
-                    <div className="relative z-10">
-                        {panels[activePanel as keyof typeof panels]}
-                    </div>
-                </motion.div>
-            </div>
+            {/* Panel — bottom drawer on mobile, floating card on desktop */}
+            <motion.div
+                key="panel-content"
+                initial={{ opacity: 0, y: 40, scale: 0.97 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 40, scale: 0.97 }}
+                transition={{ type: 'spring', damping: 28, stiffness: 260 }}
+                className={[
+                    'fixed z-[101] bg-white border border-black/10 shadow-[0_24px_80px_rgba(0,0,0,0.18)] text-[#050505] font-sans overflow-hidden',
+                    // Mobile: full-width sheet from bottom
+                    'bottom-0 left-0 right-0 rounded-t-[2rem] max-h-[88dvh] overflow-y-auto',
+                    // Desktop: top-right floating card
+                    'sm:bottom-auto sm:top-20 sm:left-auto sm:right-6 sm:w-[420px] sm:max-w-[calc(100vw-3rem)] sm:rounded-[2.5rem] sm:max-h-[calc(100dvh-6rem)]',
+                ].join(' ')}
+            >
+                {/* Drag handle (mobile only) */}
+                <div className="flex justify-center pt-3 pb-1 sm:hidden">
+                    <div className="w-10 h-1 rounded-full bg-black/10" />
+                </div>
+
+                {/* Close button */}
+                <div className="absolute top-4 right-4 sm:top-5 sm:right-5 z-50">
+                    <button
+                        onClick={() => setActivePanel(null)}
+                        className="p-2 bg-black/5 border border-black/10 rounded-full hover:bg-black/10 hover:border-black/20 transition-all active:scale-95"
+                        aria-label="Close panel"
+                    >
+                        <X size={14} className="text-[#050505]/60" />
+                    </button>
+                </div>
+
+                {/* Panel content */}
+                <div className="relative z-10 p-6 sm:p-8">
+                    {panels[activePanel as keyof typeof panels]}
+                </div>
+            </motion.div>
         </AnimatePresence>
 
         {showScanner && <WCScannerModal onClose={() => setShowScanner(false)} />}
@@ -478,7 +495,7 @@ export function BillionWhaleNotification() {
     }, [whaleEvents]);
 
     return (
-        <div className="fixed bottom-10 right-10 z-[200] flex flex-col gap-4 items-end pointer-events-none">
+        <div className="fixed bottom-4 right-4 sm:bottom-10 sm:right-10 z-[200] flex flex-col gap-3 items-end pointer-events-none max-w-[calc(100vw-2rem)] sm:max-w-[420px]">
             <AnimatePresence mode="popLayout">
                 {activeTransfers.map((whale) => (
                     <motion.div

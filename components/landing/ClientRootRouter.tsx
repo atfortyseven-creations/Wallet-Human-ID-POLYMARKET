@@ -43,7 +43,7 @@ export function ClientRootRouter() {
   }, [isConnected]);
 
   return (
-    <div className="flex flex-col w-full min-w-full flex-1 bg-white" style={{width:'100%',minWidth:'100%'}}>
+    <div className="flex flex-col w-full min-h-screen flex-1 bg-white" style={{width:'100%',minWidth:'100%'}}>
       <ImmersiveManifestoLanding />
       <SystemFooter />
     </div>

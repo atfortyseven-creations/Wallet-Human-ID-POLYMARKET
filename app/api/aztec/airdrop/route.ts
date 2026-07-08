@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const dailyAirdrops = await prisma.transaction.count({
-      where: { token: 'QDs', type: 'AIRDROP', createdAt: { gte: today } }
+      where: { token: 'QDs', type: 'AIRDROP', timestamp: { gte: today } }
     });
     if (dailyAirdrops >= 1000) {
       return NextResponse.json(
