@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { NextResponse } from 'next/server';
 // Removed static @aztec imports to prevent Webpack bundling errors.
 

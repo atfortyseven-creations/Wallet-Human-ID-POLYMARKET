@@ -21,7 +21,7 @@ export function AztecAirdropCalendar() {
             .then(res => res.json())
             .then(data => {
                 if (data.claims) {
-                    const claimed = new Set(data.claims.map((c: any) => `${c.year}-${c.month}`));
+                    const claimed = new Set<string>(data.claims.map((c: any) => `${c.year}-${c.month}`));
                     setClaimedMonths(claimed);
                 }
             })
