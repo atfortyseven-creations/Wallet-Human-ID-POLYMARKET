@@ -104,13 +104,20 @@ export async function POST(req: NextRequest) {
         // We simulate calling the sequencer or just update the DB balance
         await prisma.transaction.create({
             data: {
-                txHash: `quest_\${crypto.randomBytes(16).toString('hex')}`,
-                status: 'CONFIRMED',
+                txHash: `quest_${crypto.randomBytes(16).toString('hex')}`,
+                status: 'COMPLETED',
                 type: 'RECEIVE',
                 amount: rewardAmount,
-                token: 'QD',
+                token: 'QDs',
+                tokenSymbol: 'QDs',
                 fromAddress: '0xAztecQuestTreasury',
-                toAddress: aztecAddress.toLowerCase()
+                toAddress: aztecAddress.toLowerCase(),
+                chainId: 89021716,
+                metadata: {
+                    network: 'aztec-testnet',
+                    onChain: false,
+                    reason: `Quest reward: ${slug} (+${rewardAmount} QDs)`
+                }
             }
         });
 
@@ -145,13 +152,20 @@ export async function DELETE(req: NextRequest) {
         // Deduct from ledger
         await prisma.transaction.create({
             data: {
-                txHash: `slash_\${crypto.randomBytes(16).toString('hex')}`,
-                status: 'CONFIRMED',
-                type: 'SEND', // Sending out of the wallet back to treasury
+                txHash: `slash_${crypto.randomBytes(16).toString('hex')}`,
+                status: 'COMPLETED',
+                type: 'SLASH',
                 amount: slashAmount,
-                token: 'QD',
+                token: 'QDs',
+                tokenSymbol: 'QDs',
                 fromAddress: aztecAddress.toLowerCase(),
-                toAddress: '0xAztecSlashingTreasury'
+                toAddress: '0xAztecSlashingTreasury',
+                chainId: 89021716,
+                metadata: {
+                    network: 'aztec-testnet',
+                    onChain: false,
+                    reason: `Quest unfollow penalty: ${slug} (-${slashAmount} QDs)`
+                }
             }
         });
 
