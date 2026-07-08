@@ -2,13 +2,25 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Cpu, Zap, QrCode, ChevronRight, Loader2, CheckCircle2, Wallet, Radio, Terminal, Lock } from 'lucide-react';
+import { X, Cpu, Zap, QrCode, ChevronRight, Loader2, CheckCircle2, Wallet, Terminal, Lock } from 'lucide-react';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import { useAppKit } from '@reown/appkit/react';
 import { useUIStore } from '@/lib/store/ui-store';
 
+// Mobile detection hook — true when no injected ethereum or touch UA detected
+function useIsMobile() {
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const noEthereum = typeof (window as any).ethereum === 'undefined';
+        const touchUA = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        setIsMobile(noEthereum || touchUA);
+    }, []);
+    return isMobile;
+}
+
 
 export function ConnectWalletModal() {
+    const isMobile = useIsMobile();
     const { isConnectModalOpen, closeConnectModal } = useUIStore();
     const { isConnected, address } = useAccount();
     const { connect, connectors, connectAsync } = useConnect();
@@ -52,9 +64,13 @@ export function ConnectWalletModal() {
 
     if (!isConnectModalOpen) return null;
 
-    const handleAppKitConnect = () => {
-        closeConnectModal();
+    // CRITICAL: On iOS Safari and Android, openAppKit MUST be called synchronously
+    // within the same user-gesture event tick. Calling closeConnectModal() first or
+    // any async/await before openAppKit() breaks Safari's popup guard and Android
+    // WalletConnect deep-link dispatch. We open AppKit first, then close our overlay.
+    const openAppKitSafe = () => {
         openAppKit({ view: 'Connect' });
+        setTimeout(closeConnectModal, 80);
     };
 
     // ──────────────────────────────── Smart connector detector ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -83,14 +99,15 @@ export function ConnectWalletModal() {
                 try { await connectAsync({ connector: injected }); return; } catch(e) {}
             }
         }
-        // Nothing found locally  fall back to AppKit (QR/WalletConnect flow)
-        openAppKit({ view: 'Connect' });
+        // Fallback: open AppKit — synchronously to preserve mobile gesture
+        openAppKitSafe();
     };
 
-    const handleMetaMask = () => connectViaExtension(['io.metamask', 'metaMaskSDK', 'metaMask']);
-    const handleCoinbase = () => connectViaExtension(['coinbaseWalletSDK', 'coinbaseWallet']);
-    const handleRainbow  = () => connectViaExtension(['rainbow', 'me.rainbow']);
-    const handleHumanityLedger = () => { window.location.href = "/sign-up"; };
+    // On mobile: skip async extension lookup — go straight to AppKit deep-link
+    const handleMetaMask = () => isMobile ? openAppKitSafe() : connectViaExtension(['io.metamask', 'metaMaskSDK', 'metaMask']);
+    const handleCoinbase = () => isMobile ? openAppKitSafe() : connectViaExtension(['coinbaseWalletSDK', 'coinbaseWallet']);
+    const handleRainbow  = () => isMobile ? openAppKitSafe() : connectViaExtension(['rainbow', 'me.rainbow']);
+    const handleAllWallets = () => openAppKitSafe();
 
     const handleMobileSync = async () => {
         setView('qr');
@@ -115,12 +132,13 @@ export function ConnectWalletModal() {
         }
     };
 
-    const handleLedger = async () => {
+    const handleLedger = () => {
         setView('ledger');
         setLedgerLoading(true);
+        // Open AppKit synchronously to preserve user gesture on mobile
+        openAppKit({ view: 'Connect' });
         setTimeout(() => {
             closeConnectModal();
-            setTimeout(() => openAppKit({ view: 'Connect' }), 50);
             setLedgerLoading(false);
         }, 800);
     };
@@ -128,18 +146,19 @@ export function ConnectWalletModal() {
     return (
         <AnimatePresence>
             {isConnectModalOpen && (
-                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 font-sans">
-                {/* Clean Backdrop */}
+                <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center sm:p-4 font-sans">
+                {/* Backdrop */}
                 <motion.div
                     initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                     onClick={closeConnectModal}
                     className="absolute inset-0 bg-[#050505]/40 backdrop-blur-md"
                 />
 
-                {/* Modal Container */}
+                {/* Modal — slides up from bottom on mobile, scales in on desktop */}
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.98, y: 15 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.98, y: 15 }}
-                    className="relative w-full sm:max-w-[440px] bg-[#FFFFFF] border border-[#050505]/10 rounded-[24px] overflow-hidden flex flex-col shadow-2xl" style={{ maxHeight: 'min(92dvh, 92vh, 680px)' }}
+                    initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 40 }}
+                    transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+                    className="relative w-full sm:max-w-[440px] bg-[#FFFFFF] border border-[#050505]/10 rounded-t-[28px] sm:rounded-[24px] overflow-hidden flex flex-col shadow-2xl" style={{ maxHeight: 'min(92dvh, 92vh, 680px)' }}
                 >
                     {/* Header Bar */}
                     <div className="flex items-center justify-between px-6 py-5 border-b border-[#050505]/10 bg-[#FFFFFF]">
@@ -158,7 +177,7 @@ export function ConnectWalletModal() {
                     </div>
 
                     {/* Content  scrollable interior so header/footer stay fixed */}
-                    <div className="px-4 py-4 sm:px-6 sm:py-6 relative overflow-y-auto flex-1">
+                    <div className="px-4 py-4 sm:px-6 sm:py-6 relative overflow-y-auto flex-1 overscroll-contain">
 
                         <AnimatePresence mode="wait">
                             {/*  SELECTION VIEW  */}
@@ -174,8 +193,8 @@ export function ConnectWalletModal() {
                                     </div>
 
                                     <div className="space-y-3 pt-2">
-                                        {/* QUICK ACCESS GRID  compact */}
-                                        <div className="grid grid-cols-3 xs:grid-cols-3 gap-1.5 sm:gap-2">
+                                        {/* QUICK ACCESS GRID — 3 columns */}
+                                        <div className="grid grid-cols-3 gap-2">
                                             {[
                                                 { id: 'metamask', name: 'MetaMask', logo: '/wallets/metamask.svg', handler: handleMetaMask },
                                                 { id: 'coinbase', name: 'Coinbase', logo: '/wallets/coinbase.png', handler: handleCoinbase },
@@ -184,16 +203,16 @@ export function ConnectWalletModal() {
                                                 <button 
                                                     key={w.id}
                                                     onClick={w.handler}
-                                                    className="group relative flex flex-col items-center justify-center p-2.5 sm:p-5 border border-[#050505]/10 hover:border-[#050505] bg-[#FFFFFF] rounded-xl transition-all shadow-sm shadow-black/5 hover:shadow-md active:scale-[0.96] min-w-0"
+                                                    className="flex flex-col items-center justify-center p-2.5 sm:p-4 border border-[#050505]/10 hover:border-[#050505] active:border-[#050505] bg-white rounded-xl transition-all shadow-sm active:scale-[0.95] min-w-0"
                                                 >
-                                                    <div className="w-8 h-8 sm:w-10 sm:h-10 mb-1.5 sm:mb-2.5 relative flex items-center justify-center transition-transform group-hover:scale-110 duration-300">
+                                                    <div className="w-8 h-8 sm:w-10 sm:h-10 mb-1.5 relative flex items-center justify-center">
                                                         <img 
                                                             src={w.logo} 
                                                             alt={w.name} 
                                                             className="max-w-full max-h-full object-contain"
                                                         />
                                                     </div>
-                                                    <span className="text-[8px] sm:text-[10px] font-black text-[#050505] uppercase tracking-widest transition-colors text-center leading-tight">
+                                                    <span className="text-[8px] sm:text-[10px] font-black text-[#050505] uppercase tracking-widest text-center leading-tight truncate w-full">
                                                         {w.name}
                                                     </span>
                                                 </button>
@@ -208,12 +227,15 @@ export function ConnectWalletModal() {
 
                                         {/* WALLET_CONNECT & LEDGER  compact on mobile */}
                                         <div className="space-y-1.5">
-                                            <button onClick={handleAppKitConnect} className="group w-full flex items-center justify-between px-3 py-2.5 sm:p-4 border border-[#050505]/10 hover:border-[#050505] bg-[#FFFFFF] rounded-xl transition-all">
+                                            <button onClick={handleAllWallets} className="group w-full flex items-center justify-between px-3 py-2.5 sm:p-4 border border-[#050505] bg-[#050505] hover:bg-[#222] active:bg-[#111] text-white rounded-xl transition-all shadow-md">
                                                 <div className="flex items-center gap-2.5">
-                                                    <Wallet size={14} className="text-[#050505]" />
-                                                    <span className="text-[11px] font-black text-[#050505] uppercase tracking-wide">All Wallets</span>
+                                                    <Wallet size={14} className="text-white" />
+                                                    <div>
+                                                        <div className="text-[11px] font-black uppercase tracking-wide">All Wallets</div>
+                                                        <div className="text-[8px] text-white/60 font-mono uppercase tracking-widest">WalletConnect · 400+ wallets</div>
+                                                    </div>
                                                 </div>
-                                                <ChevronRight size={13} className="text-black/40 group-hover:text-black" />
+                                                <ChevronRight size={13} className="text-white/60 group-hover:text-white" />
                                             </button>
 
                                             <button onClick={handleMobileSync} className="group w-full flex items-center justify-between px-3 py-2.5 sm:p-4 border border-[#050505] bg-[#050505] hover:bg-[#222] rounded-xl transition-all shadow-md">
