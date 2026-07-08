@@ -114,7 +114,8 @@ export async function POST(req: NextRequest) {
       const toAddress     = AztecAddress.fromString(normalizedAddress);
       const tokenContract = await TokenContract.at(tokenAddress, wallet);
       const amountBigInt  = BigInt(AIRDROP_AMOUNT) * (10n ** 18n);
-      const SPONSORED_FPC = process.env.SPONSORED_FPC_ADDRESS || '0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7';
+      const { getFpcAddress } = await import('@/lib/aztec/client');
+      const SPONSORED_FPC = getFpcAddress();
 
       const tx      = await tokenContract.methods.mint_to_public(toAddress, amountBigInt).send({
         fee: { paymentMethod: new SponsoredFeePaymentMethod(AztecAddress.fromString(SPONSORED_FPC)) }

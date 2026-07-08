@@ -49,7 +49,8 @@ export async function GET() {
 
     const { AztecAddress } = await import('@aztec/stdlib/aztec-address');
     const { SponsoredFeePaymentMethod } = await import('@aztec/aztec.js/fee');
-    const SPONSORED_FPC = process.env.SPONSORED_FPC_ADDRESS || '0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7';
+    const { getFpcAddress } = await import('@/lib/aztec/client');
+    const SPONSORED_FPC = getFpcAddress();
     const fpcAddress = AztecAddress.fromString(SPONSORED_FPC);
     const paymentMethod = new SponsoredFeePaymentMethod(fpcAddress);
 
