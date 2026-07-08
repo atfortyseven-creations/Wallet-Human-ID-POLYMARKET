@@ -160,8 +160,8 @@ export function TitaniumGate({ children }: TitaniumGateProps) {
             {/* THE APPLICATION (or EMERGENCY BYPASS)  zero loading UI */}
             {(state === 'APP' || forceVisible) ? (
                 <div 
-                    className="relative z-10 h-full w-full"
-                    style={forceVisible ? { opacity: 1, zIndex: 999, display: 'block', height: '100%', width: '100%' } : { height: '100%', width: '100%' }}
+                    className="relative z-10 min-h-full w-full"
+                    style={forceVisible ? { opacity: 1, zIndex: 999, display: 'block', minHeight: '100%', width: '100%' } : { minHeight: '100%', width: '100%' }}
                 >
                     <SafeErrorBoundary>
                         {children}

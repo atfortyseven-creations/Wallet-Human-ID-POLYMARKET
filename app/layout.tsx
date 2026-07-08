@@ -203,7 +203,7 @@ export default async function RootLayout({
   };
 
   return (
-    <html lang="en" className="light" suppressHydrationWarning data-scroll-behavior="smooth">
+    <html lang="en" className="light bg-white" suppressHydrationWarning data-scroll-behavior="smooth">
       <head>
         {/* Proper viewport already handled by Next.js `viewport` export above */}
         <meta name="apple-mobile-web-app-capable" content="yes" />

@@ -469,7 +469,7 @@ function HeroSection() {
             How Whale Network is built
           </h2>
           <p className="text-[15px] text-black/65 font-medium mt-2 max-w-[560px]">
-            A live map of the protocol stack ÔÇö from L1 settlement on Ethereum to private execution on Aztec, and the data layers in between.
+            A live map of the protocol stack — from L1 settlement on Ethereum to private execution on Aztec, and the data layers in between.
           </p>
         </div>
 
@@ -835,7 +835,7 @@ function FinalCTASection() {
           className="text-base md:text-lg lg:text-xl font-medium max-w-[600px] mb-8 leading-relaxed"
           style={{ color: 'rgba(255,255,255,0.90)', textShadow: '0 1px 12px rgba(0,0,0,0.6)' }}
         >
-          Built on the full Aztec stack ÔÇö Noir circuits, a Private Execution Environment (PXE), zk-SNARK note commitments, and nullifier-based Sybil resistance. Your Aztec Identity is cryptographically yours: provable on-chain, invisible to the world.
+          Built on the full Aztec stack — Noir circuits, a Private Execution Environment (PXE), zk-SNARK note commitments, and nullifier-based Sybil resistance. Your Aztec Identity is cryptographically yours: provable on-chain, invisible to the world.
         </p>
       </div>
     </section>
