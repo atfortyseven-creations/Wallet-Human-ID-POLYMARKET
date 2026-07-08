@@ -1528,17 +1528,32 @@ export function MobileLanding() {
 
               return (
                 <>
-                  {/* Universal WC v2 */}
+                  {/* Primary: Universal WalletConnect v2 — opens AppKit modal with full wallet list */}
                   <WalletOption
                     logo="/official-whale-monochrome.png"
-                    name="Sign In / Connect Wallet"
-                    badge="Google, Email, Apple, Wallets"
+                    name="Connect Wallet"
+                    badge="MetaMask · Trust · Coinbase · Rainbow · OKX · 300+ Wallets"
                     loading={connecting === 'wc'}
                     onClick={() => openWalletModal('wc')}
                     delay={0.1}
                   />
-                  <div className="w-full flex justify-center mt-4 mb-2">
-                    <RemoteLottie path="system-shots/Paper airplane.json" className="w-full max-w-[200px] h-[120px] object-contain" />
+
+                  {/* Secondary: Scan QR from desktop — opens native scanner */}
+                  <WalletOption
+                    logo="/system-shots/aztec-logo.png"
+                    name="Scan QR Code"
+                    badge="Link your desktop session via camera"
+                    loading={false}
+                    onClick={() => {
+                      setShowConnectOverlay(false);
+                      setScanMode('session-only');
+                      setShowScanner(true);
+                    }}
+                    delay={0.18}
+                  />
+
+                  <div className="w-full flex justify-center mt-2 mb-1">
+                    <RemoteLottie path="system-shots/Paper airplane.json" className="w-full max-w-[180px] h-[100px] object-contain" />
                   </div>
                 </>
               );
