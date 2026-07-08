@@ -1415,17 +1415,7 @@ model QuestClaim {
 // Tracking 1st-of-month airdrops and QD spending history
 // 
 
-model AirdropClaim {
-  id           String   @id @default(uuid())
-  aztecAddress String   // The L2 Identity address
-  month        Int      // 1-12
-  year         Int      // e.g., 2026
-  amount       Float    @default(10.0)
-  claimedAt    DateTime @default(now())
-
-  @@unique([aztecAddress, month, year])
-  @@index([aztecAddress])
-}
+// duplicate AirdropClaim removed
 
 model QdTransaction {
   id           String   @id @default(uuid())
