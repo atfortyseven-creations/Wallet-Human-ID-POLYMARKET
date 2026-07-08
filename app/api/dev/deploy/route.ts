@@ -55,12 +55,10 @@ export async function GET() {
     const paymentMethod = new SponsoredFeePaymentMethod(fpcAddress);
 
     const { TokenContract } = await import('@aztec/noir-contracts.js/Token');
-    const deployTx  = await TokenContract.deploy(wallet, adminAddress, 'Quantum Dollars', 'QDs', 18)
-      .send({
-        from: (await account.getWallet() as any).getAddress(), fee: { paymentMethod }
-      });
+    const deployTx = TokenContract.deploy(wallet, adminAddress, 'Quantum Dollars', 'QDs', 18)
+      .send({ fee: { paymentMethod } });
 
-    const receipt = await deployTx;
+    const receipt = await deployTx.wait();
     const tokenAddress = receipt.contract.address.toString();
 
     console.log(`[Deploy] ✅ TokenContract deployed at: ${tokenAddress}`);
