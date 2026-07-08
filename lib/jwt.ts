@@ -3,9 +3,9 @@ import { SignJWT, jwtVerify, JWTPayload, importJWK } from 'jose';
 const alg = 'EdDSA';
 const _rawJwtSecret = process.env.JWT_SECRET;
 if (!_rawJwtSecret && process.env.NODE_ENV === 'production' && process.env.SKIP_ENV_VALIDATION !== 'true') {
-    console.error('[SECURITY CRITICAL] JWT_SECRET not set in production. All sessions will fail to verify.');
+    throw new Error('[SECURITY CRITICAL] JWT_SECRET not set in production. Halting to prevent forged JWTs.');
 }
-// Safe fallback: use a dev secret if missing (never hardfail — Railway cold starts need to boot)
+// Safe fallback only in dev
 const secretHS256 = _rawJwtSecret || 'dev-only-fallback-jwt-secret-change-me-in-production';
 
 const migrationCutoff = process.env.JWT_MIGRATION_CUTOFF 
@@ -61,17 +61,11 @@ export const verifyJWT = async (token: string): Promise<JWTPayload> => {
 
   // Try EdDSA first if keys are available
   if (keys) {
-    try {
-      const { payload } = await jwtVerify(token, keys.publicKey, { algorithms: [alg] });
-      return payload;
-    } catch {
-      // EdDSA failed — fall through to HS256
-    }
+    const { payload } = await jwtVerify(token, keys.publicKey, { algorithms: [alg] });
+    return payload; // Strict mode: do not downgrade to HS256 if EdDSA is configured
   }
 
-  // Always attempt HS256 as primary or fallback
-  // This handles both: tokens minted with HS256 AND EdDSA-minted tokens on systems
-  // where EdDSA keys are misconfigured or missing.
+  // Only attempt HS256 if EdDSA is NOT configured
   const { payload } = await jwtVerify(token, new TextEncoder().encode(secretHS256), { algorithms: ['HS256'] });
   return payload;
 };

@@ -1558,7 +1558,7 @@ export function MobileLanding() {
               <RemoteLottie path="system-shots/Paper airplane.json" className="w-full max-w-[180px] h-[100px] object-contain" />
             </div>
           </div>
-}
+
 
               <div className="flex items-start gap-3 p-4 rounded-2xl bg-black/[0.03] border border-black/5 mt-6 w-full">
                 <Fingerprint size={14} className="text-black/40 mt-0.5 shrink-0" />
