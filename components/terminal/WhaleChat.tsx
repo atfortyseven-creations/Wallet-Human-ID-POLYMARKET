@@ -51,6 +51,8 @@ function Avatar({ address }: { address: string }) {
   );
 }
 
+const shortAddr = (addr: string) => addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : '';
+
 
 
 export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {

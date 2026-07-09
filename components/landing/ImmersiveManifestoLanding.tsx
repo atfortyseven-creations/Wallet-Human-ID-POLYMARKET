@@ -303,13 +303,10 @@ function LandingNav() {
               {/* Email login — no wallet needed */}
               <button
                 onClick={() => setEmailModalOpen(true)}
-                className="flex items-center gap-1.5 px-4 py-1.5 border border-black/15 text-[13.5px] font-medium text-black/70 hover:text-black hover:bg-black/[0.04] transition-colors"
+                className="flex items-center gap-2 px-4 py-1.5 border border-black/15 text-[13.5px] font-medium text-black/70 hover:text-black hover:bg-black/[0.04] transition-colors"
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="2" y="4" width="20" height="16" rx="2" />
-                  <path d="M2 7l10 6 10-6" />
-                </svg>
-                Email
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-4 h-4 opacity-75" alt="Google" />
+                Gmail / Email
               </button>
               {/* Wallet login */}
               <Link
