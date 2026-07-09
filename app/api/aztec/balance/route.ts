@@ -46,15 +46,21 @@ export async function GET(req: Request) {
     // Ensure we don't go below 0 theoretically, though transfers prevent it
     const finalBalance = Math.max(0, trueBalance);
 
+    // QDs use 8-decimal fixed-point (1 QD = 10^8 base units — like satoshis for Bitcoin).
+    // The `raw` field represents the balance in base units for on-chain use.
+    const rawBaseUnits = Math.round(finalBalance * 1e8);
+
     console.log(`[Aztec Ledger] ${aztecAddress} → ${finalBalance} QDs (In: ${received}, Out: ${sent})`);
 
     return NextResponse.json({
       balance: finalBalance.toFixed(2),
-      raw: (finalBalance * 1e18).toLocaleString('fullwide', { useGrouping: false }),
+      raw: rawBaseUnits.toString(),
+      rawScale: '1e8',
       symbol: 'QDs',
       network: 'aztec-testnet',
       address: aztecAddress,
     });
+
   } catch (err: any) {
     console.error('[Aztec Balance Error]', err.message);
     return NextResponse.json(

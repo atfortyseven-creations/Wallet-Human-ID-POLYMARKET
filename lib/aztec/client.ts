@@ -24,29 +24,23 @@ export const L1_CHAIN_ID         = 11155111; // Sepolia
 export const ROLLUP_VERSION      = 2787991301;
 export const ROLLUP_ADDRESS      = '0xfe6061806cac748085904a010d2d9e33b8031741';
 
-// SponsoredFPC — canonical rc.2 address from docs.aztec.network/networks
-// Fallback pool implemented for high-availability.
+// SponsoredFPC — canonical address from docs.aztec.network/networks
+// Only the confirmed canonical address is listed. Do NOT add speculative/mocked addresses.
 export const PRIMARY_FPC_ADDRESS =
   process.env.SPONSORED_FPC_ADDRESS ||
   '0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7';
 
-export const FALLBACK_FPCS = [
-  '0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7', // Canonical
-  '0x2078835536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7', // Alt 1 (Mocked)
-  '0x3189926536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7'  // Alt 2 (Mocked)
-];
-
-/**
- * Returns a robust FPC address from the fallback pool to prevent Single Point of Failure.
- */
-export function getFpcAddress(): string {
-  // Simple round-robin or random fallback strategy could go here.
-  // For now, if PRIMARY_FPC_ADDRESS is somehow empty, fallback to the pool.
-  return PRIMARY_FPC_ADDRESS || FALLBACK_FPCS[0];
-}
-
 // Canonical alias for backward compatibility and test imports
 export const SPONSORED_FPC_ADDRESS = PRIMARY_FPC_ADDRESS;
+
+/**
+ * Returns the canonical SponsoredFPC address.
+ * In a future version this may rotate between multiple real FPC instances
+ * as Aztec Labs deploys additional relayers on mainnet.
+ */
+export function getFpcAddress(): string {
+  return PRIMARY_FPC_ADDRESS;
+}
 
 // Cache the node client across hot-reloads
 let _nodeClient: any = null;
