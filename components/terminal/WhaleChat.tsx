@@ -1553,6 +1553,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       </TuringShieldGate>
     );
   }
+
+  return (
     <TuringShieldGate>
     {/* Transparent container  wallpaper shows through via parent backdrop */}
     <div className={`relative flex w-full h-full overflow-hidden shadow-2xl ${(showScanner || showMyQR || showProfile) ? 'overflow-visible' : ''}`} style={{ 
