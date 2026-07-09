@@ -1417,15 +1417,18 @@ export function MobileLanding() {
               </button>
             </>
           ) : (
-            /* Disconnected state: show Connect button */
-            !showConnectOverlay && (
-              <button
-                onClick={() => setShowConnectOverlay(true)}
-                className="px-4 py-2 rounded-xl bg-black text-white text-[10px] font-black uppercase tracking-widest shadow-lg active:scale-95 transition-all"
-              >
-                Connect
-              </button>
-            )
+            /* Disconnected state: always show Connect button regardless of overlay state */
+            <button
+              onClick={() => {
+                // Clear disconnect guard so the session can be established after connecting
+                try { sessionStorage.removeItem("__disconnected__"); } catch {}
+                try { localStorage.removeItem("__disconnected__"); } catch {}
+                setShowConnectOverlay(true);
+              }}
+              className="px-4 py-2 rounded-xl bg-black text-white text-[10px] font-black uppercase tracking-widest shadow-lg active:scale-95 transition-all"
+            >
+              Connect
+            </button>
           )}
         </div>
 
@@ -1476,68 +1479,62 @@ export function MobileLanding() {
 
         {/* Wallet Buttons */}
         <div className="w-full flex flex-col gap-3">
-
-          {/* 
-              WALLET BUTTONS — Native Reown AppKit web component.
-              Using <appkit-button> directly avoids the iOS Safari user-gesture
-              invalidation that happens when rkOpenModal() is called after any
-              React state update. The web component handles the tap event
-              natively without going through React's synthetic event system.
-           */}
           <div className="w-full flex flex-col gap-3">
 
-            {/* Primary connect button — native AppKit web component */}
-            <div className="w-full">
-              {/* @ts-ignore */}
-              <appkit-button
-                label="Connect Wallet"
-                loadingLabel="Connecting..."
-                balance="hide"
-                style={{
-                  width: '100%',
-                  '--wui-color-accent-100': '#5200FF',
-                  '--wui-border-radius-5xl': '16px',
-                }}
-              />
-            </div>
-
-            {/* Fallback: JS-based button if the web component doesn't render */}
+            {/*
+              PRIMARY CONNECT BUTTON — Pure JS, fires synchronously inside the user-gesture.
+              CRITICAL: We do NOT use the <appkit-button> web component here because:
+              1. On iOS Safari/Chrome, the web component may not be registered by the time
+                 the user taps, causing the tap to be swallowed silently.
+              2. React synthetic events break the "user gesture" requirement for wallet deep-links
+                 on iOS WKWebView when state updates happen before the open() call.
+              This button calls rkOpenModal() as the VERY FIRST thing in the handler,
+              synchronously in the user-gesture context, which iOS treats as user-initiated.
+            */}
             <button
               type="button"
               onClick={() => {
-                // This fires synchronously in the user-gesture context.
-                // DO NOT move any code before this call.
+                // MUST be the very first call — any state update before this
+                // causes iOS to classify the subsequent window.open as a popup
+                // and block it silently.
                 try {
                   rkOpenModal({ view: 'Connect' });
                 } catch (e) {
-                  // Last resort: directly manipulate the w3m-modal web component
+                  // AppKit not ready yet — force-open the w3m-modal DOM element directly.
                   try {
                     const modal = document.querySelector('w3m-modal') as any;
-                    if (modal) {
+                    if (modal?.open !== undefined) {
                       modal.open = true;
+                    } else if (modal) {
                       modal.setAttribute('open', '');
                     }
                   } catch {}
-                  console.warn('[MobileWallet] all open attempts failed', e);
+                  // Last resort: query any reown modal variant
+                  try {
+                    const appkitModal = document.querySelector('appkit-modal') as any;
+                    if (appkitModal) appkitModal.open = true;
+                  } catch {}
+                  console.warn('[MobileWallet] rkOpenModal failed, used DOM fallback', e);
                 }
-                // Clear disconnect guard so the session can be established
+                // Clear disconnect guard AFTER opening modal so the session
+                // establishment flow can run once the wallet connects.
                 try { sessionStorage.removeItem("__disconnected__"); } catch {}
                 try { localStorage.removeItem("__disconnected__"); } catch {}
                 try { localStorage.setItem('system_pending_wakeup', '1'); } catch {}
                 try { sessionStorage.setItem('system_show_reconnect', '1'); } catch {}
               }}
-              className="group w-full flex items-center gap-4 p-4 rounded-2xl border border-black/10 bg-white hover:bg-black/[0.02] hover:border-black/20 active:scale-[0.97] transition-all duration-200 shadow-sm"
+              className="group w-full flex items-center gap-4 p-5 rounded-2xl border-2 border-[#5200FF]/30 bg-gradient-to-r from-[#5200FF]/5 to-[#5200FF]/10 hover:from-[#5200FF]/10 hover:to-[#5200FF]/15 hover:border-[#5200FF]/50 active:scale-[0.97] transition-all duration-200 shadow-sm"
             >
-              <div className="w-11 h-11 rounded-xl bg-[#5200FF]/10 border border-[#5200FF]/20 flex items-center justify-center p-2 overflow-hidden shrink-0">
-                <img src="/official-whale-monochrome.png" alt="Connect" className="w-full h-full object-contain" />
+              <div className="w-12 h-12 rounded-xl bg-[#5200FF] flex items-center justify-center p-2.5 overflow-hidden shrink-0 shadow-lg">
+                <img src="/official-whale-monochrome.png" alt="Connect" className="w-full h-full object-contain invert" />
               </div>
               <div className="flex-1 text-left">
-                <p className="text-[13px] font-black uppercase tracking-tight text-[#050505]">Open Wallet Selector</p>
-                <p className="text-[10px] font-mono text-[#050505]/40 uppercase tracking-widest mt-0.5">
-                  MetaMask · Trust · Coinbase · Rainbow · OKX · 300+ Wallets
+                <p className="text-[14px] font-black uppercase tracking-tight text-[#050505]">Connect Wallet</p>
+                <p className="text-[10px] font-mono text-[#050505]/50 uppercase tracking-widest mt-0.5">
+                  MetaMask · Trust · Coinbase · Rainbow · OKX · 300+
                 </p>
               </div>
-              <ArrowRight size={14} className="text-[#050505]/20 group-hover:text-[#050505] transition-all shrink-0" />
+              <ArrowRight size={16} className="text-[#5200FF]/60 group-hover:text-[#5200FF] group-hover:translate-x-1 transition-all shrink-0" />
             </button>
 
             {/* Secondary: Scan QR from desktop — opens native scanner */}

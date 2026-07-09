@@ -70,23 +70,74 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ── Daily limit ──────────────────────────────────────────────────────
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const dailyAirdrops = await prisma.transaction.count({
-      where: { token: 'QDs', type: 'AIRDROP', timestamp: { gte: today } }
-    });
-    if (dailyAirdrops >= 1000) {
+    // ══════════════════════════════════════════════════════════════════════════════
+    // ANTI-SYBIL DEFENSE — THREE LAYERS (all run in parallel for speed)
+    // ══════════════════════════════════════════════════════════════════════════════
+    //
+    // LAYER 1: Global identity cap.
+    //   The Aztec testnet identity is scarce by design. There are a maximum of
+    //   IDENTITY_CAP identities (default 200) that can ever be claimed across ALL
+    //   wallets. Once this cap is reached, the airdrop closes permanently.
+    //   This prevents a single actor from industrially farming all identities.
+    //
+    // LAYER 2: One airdrop per IP per 24 hours.
+    //   A user controlling 200 wallets from the same machine/VPN gets a SINGLE
+    //   identity claim per day. This forces genuine Sybil attacks to require
+    //   200 unique IPs (real proxy farms), making mass-farming economically
+    //   impractical at the testnet scale.
+    //
+    // LAYER 3: One airdrop per wallet (enforced in DB + Serializable tx).
+    //   The existing check remains as the final guard.
+    // ══════════════════════════════════════════════════════════════════════════════
+
+    const IDENTITY_CAP = Number(process.env.IDENTITY_CAP ?? 200);
+
+    // Normalise IP: x-forwarded-for can be "1.2.3.4, 5.6.7.8" — take only the FIRST address
+    // (the client's real IP) and strip whitespace to prevent trivial bypass via padding.
+    const rawIp = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || '127.0.0.1';
+    const clientIp = rawIp.split(',')[0].trim();
+
+    const [globalCount, ipCountToday, existingAirdrop] = await Promise.all([
+      // LAYER 1: total ever claimed
+      prisma.transaction.count({
+        where: { token: 'QDs', type: 'AIRDROP', status: 'COMPLETED' }
+      }),
+      // LAYER 2: this IP in the last 24 hours
+      prisma.transaction.count({
+        where: {
+          token: 'QDs',
+          type: 'AIRDROP',
+          status: 'COMPLETED',
+          metadata: { string_contains: `"ip":"${clientIp}"` },
+          timestamp: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
+        }
+      }),
+      // LAYER 3: this wallet ever
+      prisma.transaction.findFirst({
+        where: { toAddress: normalizedAddress, token: 'QDs', type: 'AIRDROP', status: 'COMPLETED' },
+        select: { id: true }
+      })
+    ]);
+
+    // ── LAYER 1: Global cap ─────────────────────────────────────────────────────
+    if (globalCount >= IDENTITY_CAP) {
+      console.warn(`[Aztec Airdrop] GLOBAL CAP reached (${globalCount}/${IDENTITY_CAP}). Rejecting ${normalizedAddress}`);
       return NextResponse.json(
-        { error: 'Daily airdrop limit reached. Please try again tomorrow.' },
+        { error: `All ${IDENTITY_CAP} Aztec identities have been claimed. The network is now closed to new members.` },
+        { status: 410 } // 410 Gone — intentionally permanent
+      );
+    }
+
+    // ── LAYER 2: One per IP per 24h ────────────────────────────────────────────
+    if (ipCountToday >= 1) {
+      console.warn(`[Aztec Airdrop] IP LIMIT: ${clientIp} already claimed in the last 24h. Rejecting ${normalizedAddress}`);
+      return NextResponse.json(
+        { error: 'Your network has already claimed an identity in the last 24 hours. Each network can claim once per day.' },
         { status: 429 }
       );
     }
 
-    // ── One-per-wallet check (pre-flight — definitive check is inside the Serializable tx below) ─
-    const existingAirdrop = await prisma.transaction.findFirst({
-      where: { toAddress: normalizedAddress, token: 'QDs', type: 'AIRDROP', status: 'COMPLETED' },
-    });
+    // ── LAYER 3: One per wallet ─────────────────────────────────────────────────
     if (existingAirdrop) {
       return NextResponse.json(
         { error: 'Already claimed. Each wallet receives 200 QDs once.' },
@@ -213,6 +264,8 @@ export async function POST(req: NextRequest) {
               tokenContractSet: !!tokenAddressStr,
               nodeInfo:         nodeInfo,
               nonce,
+              // ANTI-SYBIL: store the client IP so the per-IP rate-limit query works
+              ip:               clientIp,
             },
           },
         });
