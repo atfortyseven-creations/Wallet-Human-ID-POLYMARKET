@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useAppKit } from '@reown/appkit/react';
+import { EmailLoginModal } from '@/components/auth/EmailLoginModal';
 
 //  Constants 
 
@@ -23,6 +24,7 @@ const STAGGER: Variants = {
 export function MobileManifesto() {
   const [hasSession, setHasSession] = useState(false);
   const [noteExpanded, setNoteExpanded] = useState(false);
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
   const { open } = useAppKit();
 
   useEffect(() => {
@@ -84,16 +86,33 @@ export function MobileManifesto() {
             >
               Connect Wallet
             </button>
+            {/* Email login — no wallet required, works on iOS & Android */}
+            <button
+              onClick={() => setEmailModalOpen(true)}
+              className="flex items-center justify-center gap-2 w-full h-[56px] bg-white border border-black/15 text-black rounded-2xl text-[14px] font-bold tracking-wide active:scale-[0.98] transition-transform shadow-sm"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+                <path d="M2 7l10 6 10-6" />
+              </svg>
+              Sign in with Email
+            </button>
             <Link
               href="/developers/api-docs"
-              className="flex items-center justify-center w-full h-[56px] bg-transparent border border-black/15 text-black rounded-2xl text-[14px] font-bold tracking-wide active:scale-[0.98] transition-transform"
+              className="flex items-center justify-center w-full h-[48px] bg-transparent text-black/50 text-[13px] font-semibold tracking-wide active:scale-[0.98] transition-transform"
             >
-              Read the Docs
+              Read the Docs →
             </Link>
           </motion.div>
 
         </motion.div>
       </section>
+
+      {/* Email OTP Login Modal — handles the full 3-step flow on mobile */}
+      <EmailLoginModal
+        isOpen={emailModalOpen}
+        onClose={() => setEmailModalOpen(false)}
+      />
 
       {/* 
           2. ARCHITECTURE

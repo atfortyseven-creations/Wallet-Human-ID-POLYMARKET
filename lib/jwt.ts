@@ -2,7 +2,18 @@ import { SignJWT, jwtVerify, JWTPayload, importJWK } from 'jose';
 
 const alg = 'EdDSA';
 const _rawJwtSecret = process.env.JWT_SECRET;
-if (!_rawJwtSecret && process.env.NODE_ENV === 'production') {
+
+// [BUILD-TIME GUARD] JWT_SECRET is a runtime secret — it is NOT available during
+// `next build` (Docker build phase). Next.js sets NODE_ENV=production during build,
+// which previously caused a false-positive throw that broke Railway deployments.
+// We skip the hard check when NEXT_PHASE indicates we are in the build phase,
+// or when SKIP_ENV_VALIDATION is set (CI / local builds without secrets).
+// The check still fires at server RUNTIME in production as intended.
+const _isBuildPhase =
+  process.env.NEXT_PHASE === 'phase-production-build' ||
+  process.env.SKIP_ENV_VALIDATION === '1';
+
+if (!_rawJwtSecret && process.env.NODE_ENV === 'production' && !_isBuildPhase) {
     throw new Error('[SECURITY CRITICAL] JWT_SECRET not set in production. Halting to prevent forged JWTs.');
 }
 // Safe fallback only in dev
