@@ -29,6 +29,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
                 tags: true,
                 posts: {
                     orderBy: { createdAt: 'asc' },
+                    take: 20,
                     include: {
                         author: { select: { walletAddress: true, displayName: true, avatarUrl: true, bio: true, isPro: true } },
                         likes: { select: { userId: true } }

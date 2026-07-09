@@ -34,27 +34,44 @@ export async function GET(req: Request) {
       .filter((t: any) => !keepIds.includes(t.id))
       .map((t: any) => t.id);
 
+    // Helper to safely chunk arrays for Postgres IN queries
+    const chunkArray = (arr: any[], size: number) =>
+      Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+        arr.slice(i * size, i * size + size)
+      );
+
     if (deleteIds.length === 0) {
       return NextResponse.json({ message: 'Nothing to delete  only welcome posts found.', kept: keepIds.length });
     }
 
-    // Cascade-delete everything for each topic being deleted
-    const postsToDelete = await (prisma as any).forumPost.findMany({
-      where: { topicId: { in: deleteIds } },
-      select: { id: true },
-    });
-    const postIds = postsToDelete.map((p: any) => p.id);
+    // Cascade-delete everything for each topic being deleted using chunks
+    const deleteIdChunks = chunkArray(deleteIds, 5000);
+    
+    for (const dChunk of deleteIdChunks) {
+      const postsToDelete = await (prisma as any).forumPost.findMany({
+        where: { topicId: { in: dChunk } },
+        select: { id: true },
+      });
+      const postIds = postsToDelete.map((p: any) => p.id);
+      const postIdChunks = chunkArray(postIds, 5000);
 
-    // 1. Likes on posts
-    await (prisma as any).forumLike.deleteMany({ where: { postId: { in: postIds } } });
-    // 2. Posts themselves
-    await (prisma as any).forumPost.deleteMany({ where: { topicId: { in: deleteIds } } });
-    // 3. Likes on topics
-    await (prisma as any).forumLike.deleteMany({ where: { topicId: { in: deleteIds } } });
-    // 4. Notifications (best-effort)
-    try { await (prisma as any).forumNotification.deleteMany({ where: { topicId: { in: deleteIds } } }); } catch {}
-    // 5. Topics
-    await (prisma as any).forumTopic.deleteMany({ where: { id: { in: deleteIds } } });
+      // 1. Likes on posts
+      for (const pChunk of postIdChunks) {
+        await (prisma as any).forumLike.deleteMany({ where: { postId: { in: pChunk } } });
+      }
+      
+      // 2. Posts themselves
+      await (prisma as any).forumPost.deleteMany({ where: { topicId: { in: dChunk } } });
+      
+      // 3. Likes on topics
+      await (prisma as any).forumLike.deleteMany({ where: { topicId: { in: dChunk } } });
+      
+      // 4. Notifications (best-effort)
+      try { await (prisma as any).forumNotification.deleteMany({ where: { topicId: { in: dChunk } } }); } catch {}
+      
+      // 5. Topics
+      await (prisma as any).forumTopic.deleteMany({ where: { id: { in: dChunk } } });
+    }
 
     return NextResponse.json({
       success: true,

@@ -53,18 +53,20 @@ export async function GET(req: NextRequest) {
  * Body: { questId, slug, aztecAddress }
  */
 export async function POST(req: NextRequest) {
-    const ip = req.headers.get('x-forwarded-for') || (req as any).ip || '127.0.0.1';
-    const ipHash = crypto.createHash('sha256').update(ip).digest('hex');
+    // Use the first IP from x-forwarded-for (actual client, not proxy chain)
+    const rawIp = (req.headers.get('x-forwarded-for') || '127.0.0.1').split(',')[0].trim();
+    // Salt IP hash with server secret to prevent rainbow table reversal
+    const ipHash = crypto.createHash('sha256').update(rawIp + (process.env.JWT_SECRET || 'whale-oracle-secret')).digest('hex');
 
     try {
         const body = await req.json();
         const { questId, slug, aztecAddress } = body;
 
-        if (!aztecAddress || (!questId && !slug)) {
-            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+        if (!aztecAddress || !slug) {
+            return NextResponse.json({ error: 'Missing required fields: aztecAddress and slug' }, { status: 400 });
         }
 
-        // Hardcoded rewards to ensure secure payouts even if DB fails
+        // Validate slug against hardcoded allowlist — cannot be spoofed via questId injection
         const rewardMap: Record<string, number> = {
             'twitter-follow': 50,
             'page-share': 15,
@@ -72,44 +74,67 @@ export async function POST(req: NextRequest) {
             'tg-join': 200
         };
 
-        const rewardAmount = rewardMap[slug] || 0;
-        if (rewardAmount === 0) {
+        const rewardAmount = rewardMap[slug];
+        if (!rewardAmount) {
             return NextResponse.json({ error: 'Invalid quest slug' }, { status: 400 });
         }
 
+        // Resolve canonical questId from slug to prevent ID/slug mismatch attacks
+        let resolvedQuestId: string = questId || slug;
         try {
-            // Check if claim exists by IP or Wallet using raw query
-            const existingClaims: any[] = await prisma.$queryRaw`
-                SELECT * FROM "QuestClaim" 
-                WHERE ("aztecAddress" = ${aztecAddress} OR "ipHash" = ${ipHash})
-                  AND ("questId" = ${questId} OR "questId" = ${slug})
+            const questRows: any[] = await prisma.$queryRaw`
+                SELECT id FROM "AztecQuest" WHERE slug = ${slug} AND "isActive" = true LIMIT 1
             `;
+            if (questRows.length > 0) resolvedQuestId = questRows[0].id;
+        } catch (_) { /* table may not exist in dev — use slug as fallback */ }
 
-            if (existingClaims.length > 0) {
-                return NextResponse.json({ error: 'Quest already claimed by this wallet or IP', status: existingClaims[0].status }, { status: 403 });
-            }
-
-            // Record the claim
-            const claimId = crypto.randomUUID();
-            await prisma.$executeRaw`
-                INSERT INTO "QuestClaim" (id, "questId", "aztecAddress", "ipHash", status) 
-                VALUES (${claimId}, ${questId || slug}, ${aztecAddress}, ${ipHash}, 'CLAIMED')
+        // ── STEP 1: WALLET deduplication — atomic ON CONFLICT ─────────────────────
+        // @@unique([questId, aztecAddress]) in schema is the source of truth.
+        // If this INSERT succeeds → wallet has never claimed this quest. Safe to proceed.
+        // If it returns 0 rows inserted → already claimed. Abort immediately. No mint.
+        const claimId = crypto.randomUUID();
+        let walletInserted: number | bigint = 0;
+        try {
+            walletInserted = await prisma.$executeRaw`
+                INSERT INTO "QuestClaim" (id, "questId", "aztecAddress", "ipHash", status, "claimedAt")
+                VALUES (${claimId}, ${resolvedQuestId}, ${aztecAddress}, ${ipHash}, 'CLAIMED', NOW())
+                ON CONFLICT ("questId", "aztecAddress") DO NOTHING
             `;
-        } catch(dbErr: any) {
-            console.log("DB Quest Insert error (might not exist yet):", dbErr.message);
-            // If DB doesn't exist, we still want to reward the user for testing the UI, but we log it.
+        } catch (dbErr: any) {
+            // Any DB error (connection, table missing, etc.) = hard fail — NEVER mint on uncertainty
+            console.error('[Quest] CRITICAL: DB INSERT failed — aborting mint to prevent exploit:', dbErr?.message);
+            return NextResponse.json({ error: 'Claim registration failed. Please try again.', code: 'DB_ERROR' }, { status: 503 });
         }
 
-        // ─── REAL ON-CHAIN QD MINT via Aztec Airdrop ──────────────────────────
-        // Generate a server-side oracle signature that proves this server authorized
-        // this reward. This signature binds: wallet + quest + amount + timestamp.
+        if (!walletInserted || walletInserted === BigInt(0) || walletInserted === 0) {
+            return NextResponse.json({ error: 'Quest already claimed by this wallet.', alreadyClaimed: true }, { status: 403 });
+        }
+
+        // ── STEP 2: IP deduplication check (read-after-write, non-atomic but sufficient) ───
+        // The @@unique([questId, ipHash]) is enforced. We already inserted with this ipHash.
+        // If another row exists with the same questId + ipHash, the insert above would have
+        // inserted a new row (since it was a different aztecAddress), so we check explicitly.
+        try {
+            const ipConflict: any[] = await prisma.$queryRaw`
+                SELECT id FROM "QuestClaim"
+                WHERE "questId" = ${resolvedQuestId} AND "ipHash" = ${ipHash} AND id != ${claimId}
+                LIMIT 1
+            `;
+            if (ipConflict.length > 0) {
+                // Same IP already claimed this quest from a different wallet — anti-sybil block
+                // Rollback our insert
+                await prisma.$executeRaw`DELETE FROM "QuestClaim" WHERE id = ${claimId}`;
+                return NextResponse.json({ error: 'This IP address has already claimed this quest.', alreadyClaimed: true }, { status: 403 });
+            }
+        } catch (_) { /* Non-fatal: if IP check fails, wallet uniqueness already guaranteed */ }
+
+        // 2. MINT ON-CHAIN ONLY AFTER DB COMMIT
         const oraclePayload = `${aztecAddress}:${slug}:${rewardAmount}:${Date.now()}`;
         const oracleSig = crypto
           .createHmac('sha256', process.env.JWT_SECRET || 'whale-oracle-secret')
           .update(oraclePayload)
           .digest('hex');
 
-        // Trigger real Aztec on-chain mint by calling the airdrop endpoint with the reward amount
         const baseUrl = new URL(req.url).origin;
         let onChainResult: any = null;
         try {
@@ -117,7 +142,6 @@ export async function POST(req: NextRequest) {
             method: 'POST',
             headers: { 
               'Content-Type': 'application/json',
-              'cookie': req.headers.get('cookie') || '',
               'X-Oracle-Sig': oracleSig,
               'X-Oracle-Payload': oraclePayload,
               'X-Internal-Call': 'quest-reward',
@@ -134,7 +158,7 @@ export async function POST(req: NextRequest) {
           console.error('[Quest] On-chain mint failed:', mintErr?.message);
         }
 
-        // Record in DB as audit trail (not source of truth — on-chain is)
+        // 3. AUDIT LOG
         try {
             await prisma.transaction.create({
                 data: {
@@ -151,9 +175,8 @@ export async function POST(req: NextRequest) {
                         network: 'aztec-testnet',
                         onChain: onChainResult?.onChain ?? false,
                         txHash: onChainResult?.txHash || null,
-                        explorerUrl: onChainResult?.explorerUrl || null,
                         oracleSig,
-                        reason: `Quest reward: ${slug} (+${rewardAmount} QDs)`
+                        reason: `Quest reward: ${slug}`
                     }
                 }
             });
@@ -163,11 +186,9 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ 
             success: true, 
-            message: `Successfully claimed ${rewardAmount} QDs for ${slug}`,
             rewardAmount,
             onChain: onChainResult?.onChain ?? false,
-            txHash: onChainResult?.txHash || null,
-            explorerUrl: onChainResult?.explorerUrl || null,
+            txHash: onChainResult?.txHash || null
         });
 
     } catch (err: any) {

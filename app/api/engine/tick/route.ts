@@ -18,8 +18,11 @@ export async function POST(req: Request) {
     }
 
     try {
-        // Fetch all active Canvas Spaces (Topologies)
-        const spaces = await (prisma as any).canvasSpace.findMany();
+        // VULN FIX: Avoid OOM by chunking. We process the oldest 100 topologies first in a round-robin fashion.
+        const spaces = await prisma.canvasState.findMany({
+            take: 100,
+            orderBy: { lastSyncedAt: 'asc' }
+        });
 
         const results = [];
 
@@ -67,6 +70,12 @@ export async function POST(req: Request) {
                         }))
                     });
                 }
+
+                // Update the round-robin timestamp so it goes to the back of the queue
+                await prisma.canvasState.update({
+                    where: { id: space.id },
+                    data: { lastSyncedAt: new Date() }
+                });
 
                 results.push({ userId: space.userId, success: result.success, computed: true });
             } catch (err: any) {

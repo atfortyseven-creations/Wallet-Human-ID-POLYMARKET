@@ -45,6 +45,9 @@ export function getFpcAddress(): string {
   return PRIMARY_FPC_ADDRESS || FALLBACK_FPCS[0];
 }
 
+// Canonical alias for backward compatibility and test imports
+export const SPONSORED_FPC_ADDRESS = PRIMARY_FPC_ADDRESS;
+
 // Cache the node client across hot-reloads
 let _nodeClient: any = null;
 

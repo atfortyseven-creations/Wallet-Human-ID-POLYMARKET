@@ -90,12 +90,14 @@ async function resolveOnChainEntity(q: string) {
     // 3. Fallback: Search Prisma database for Users / Topics matching the query
     try {
         const users = await (prisma as any).user.findMany({
-            where: {
-                OR: [
-                    { displayName: { contains: q, mode: 'insensitive' } },
-                    { walletAddress: { contains: q, mode: 'insensitive' } }
-                ]
-            },
+            where: q.startsWith('0x') 
+                ? { walletAddress: { contains: q, mode: 'insensitive' } }
+                : {
+                    OR: [
+                        { displayName: { contains: q, mode: 'insensitive' } },
+                        { walletAddress: { contains: q, mode: 'insensitive' } }
+                    ]
+                },
             take: 3
         });
 
