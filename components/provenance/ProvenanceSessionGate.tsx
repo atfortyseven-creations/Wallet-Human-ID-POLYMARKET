@@ -104,7 +104,7 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
   // Loading state
   if (authState === null || isAuthenticating) {
     return (
-      <div className="min-h-[100dvh] bg-[#FFFFFF] flex items-center justify-center">
+      <div className="h-full w-full flex-1 bg-[#FFFFFF] flex items-center justify-center">
         <Loader2 size={20} className="animate-spin text-black/30" />
       </div>
     );
@@ -113,7 +113,7 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
   // Not authenticated via Wagmi OR SIWE
   if (!authState) {
     return (
-      <div className="min-h-[100dvh] bg-[#FFFFFF] text-[#050505] flex flex-col px-6 pt-[calc(1.5rem+env(safe-area-inset-top))] pb-[calc(2rem+env(safe-area-inset-bottom))]">
+      <div className="h-full w-full flex-1 bg-[#FFFFFF] text-[#050505] flex flex-col px-6 pt-[calc(1.5rem+env(safe-area-inset-top))] pb-[calc(2rem+env(safe-area-inset-bottom))]">
         <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto text-center gap-4">
           <h1 className="text-xl font-black tracking-tight">{isConnected ? 'Verificar Identidad' : 'Connect your wallet'}</h1>
           <p className="text-sm text-black/60 leading-relaxed">
@@ -125,7 +125,7 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
           {isConnected ? (
             <button
               onClick={handleManualSiwe}
-              className="w-full py-4 rounded-2xl bg-[#050505] text-white text-[11px] font-black uppercase tracking-widest mt-4 flex items-center justify-center gap-2 hover:bg-black/90 active:scale-95 transition-all"
+              className="w-full py-4 rounded-2xl bg-[#050505] text-[#FFFFFF] text-sm font-bold uppercase tracking-widest mt-4 flex items-center justify-center gap-2 hover:bg-black/90 active:scale-95 transition-all shadow-lg"
             >
               Firmar Conexión Segura
             </button>
