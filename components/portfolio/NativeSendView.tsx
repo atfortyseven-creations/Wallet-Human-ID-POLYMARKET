@@ -253,7 +253,10 @@ export function NativeSendView({ onBack, initialTokenSymbol }: { onBack: () => v
 
                 const res = await fetch('/api/aztec/transfer', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-web3-address': activeAddress || '', // Auth fallback for WalletConnect users
+                    },
                     body: JSON.stringify({
                         from:   aztecSender,
                         to:     finalRecipient,

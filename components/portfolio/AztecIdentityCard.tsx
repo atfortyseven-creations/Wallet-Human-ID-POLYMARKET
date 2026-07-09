@@ -188,6 +188,7 @@ function BlockConfirmingAnimation({ amount, to, blockNum }: { amount: string; to
 
 function SendQDsPanel() {
   const { balance, aztecAddress, refresh } = useAztecNative();
+  const { address: evmAddress } = useSystemAccount();
   const [to, setTo]         = useState('');
   const [amount, setAmount] = useState('');
   const [step, setStep]     = useState<'idle' | 'building' | 'done' | 'error'>('idle');
@@ -222,7 +223,7 @@ function SendQDsPanel() {
       const [res] = await Promise.all([
         fetch('/api/aztec/transfer', {
           method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'x-web3-address': evmAddress || '' },
           body:    JSON.stringify({ from: aztecAddress, to, amount: amountNum }),
         }),
         new Promise<void>(resolve => setTimeout(resolve, 2700)),

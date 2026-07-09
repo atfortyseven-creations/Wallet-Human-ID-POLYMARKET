@@ -55,12 +55,15 @@ export async function POST(req: NextRequest) {
     //   b) An Aztec address derived from the EVM address via SHA-256
     // In both cases, the session owner must be the one initiating the spend.
     const session = await getSession();
+    // Accept x-web3-address header as auth fallback for WalletConnect users
+    // who have no SIWE session cookie (same pattern as /api/chat/pending, /api/chat/contacts)
+    const web3Header = req.headers.get('x-web3-address')?.toLowerCase().trim();
 
-    if (!session || !session.userId) {
-      return NextResponse.json({ error: 'Unauthorized: Session missing. Please authenticate.' }, { status: 401 });
+    if (!session?.userId && !web3Header) {
+      return NextResponse.json({ error: 'Unauthorized: Session missing. Please authenticate or connect your wallet.' }, { status: 401 });
     }
     
-    const sessionAddr = session.userId.toLowerCase().trim();
+    const sessionAddr = (session?.userId ?? web3Header!).toLowerCase().trim();
     
     // Check 1: exact EVM match
     const isEvmMatch = sessionAddr === fromAddr;
