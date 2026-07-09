@@ -8,23 +8,26 @@ import crypto from 'crypto';
 // An attacker could craft:
 //   { alg:'HS256' }.{ sub:'0x<any_address>', clearance:'Cryptographic', exp:... }
 // sign it with the known secret and bypass ALL middleware authentication checks.
-// We now fail loud at module load  an unconfigured secret must halt the server.
-const _rawJwtSecret = process.env.JWT_SECRET;
-if (!_rawJwtSecret && process.env.NODE_ENV === 'production' && process.env.SKIP_ENV_VALIDATION !== 'true') {
-    throw new Error(
-        '[SECURITY CRITICAL] JWT_SECRET environment variable is not set. '
-        + 'The server is halting INSECURELY. '
-        + 'Set JWT_SECRET in your Railway dashboard immediately.'
-    );
+//
+// [BUILD-TIME GUARD] Do NOT throw at module level — `next build` eagerly imports
+// all server modules with NODE_ENV=production but secrets are NOT injected until
+// the container starts. Validation fires lazily at request time via getSessionSecret().
+function getSessionSecret(): Uint8Array {
+    const secret = process.env.JWT_SECRET;
+    if (!secret && process.env.NODE_ENV === 'production') {
+        throw new Error(
+            '[SECURITY CRITICAL] JWT_SECRET is not set in production. '
+            + 'This fires at request time — set JWT_SECRET in Railway env vars immediately.'
+        );
+    }
+    if (!secret) {
+        console.warn(
+            '\x1b[33m[WARNING] JWT_SECRET not set. Using dev-only fallback secret.\n'
+            + 'This is INSECURE. Set JWT_SECRET before deploying to production.\x1b[0m'
+        );
+    }
+    return new TextEncoder().encode(secret || 'VOID_SECRET_99_POLY_DEV_ONLY_CHANGE_IN_PRODUCTION');
 }
-// In development: warn loudly but allow operation with a deterministic dev secret
-if (!_rawJwtSecret) {
-    console.warn(
-        '\x1b[33m[WARNING] JWT_SECRET not set. Using a temporary development secret.\n'
-        + 'This is INSECURE. Set JWT_SECRET before deploying to production.\x1b[0m'
-    );
-}
-const JWT_SECRET = new TextEncoder().encode(_rawJwtSecret || 'dev-only-not-for-production-jwt-secret-change-me');
 
 // Session configuration
 export const SESSION_CONFIG = {
@@ -63,7 +66,7 @@ export async function createAccessToken(userId: string, email: string, fingerpri
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
         .setExpirationTime(`${SESSION_CONFIG.ACCESS_TOKEN_DURATION}s`)
-        .sign(JWT_SECRET);
+        .sign(getSessionSecret());
 
     return token;
 }
@@ -81,7 +84,7 @@ export async function createRefreshToken(userId: string, email: string, fingerpr
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
         .setExpirationTime(`${SESSION_CONFIG.REFRESH_TOKEN_DURATION}s`)
-        .sign(JWT_SECRET);
+        .sign(getSessionSecret());
 
     return token;
 }
@@ -91,7 +94,7 @@ export async function createRefreshToken(userId: string, email: string, fingerpr
  */
 export async function verifyToken(token: string): Promise<SessionPayload | null> {
     try {
-        const verified = await jwtVerify(token, JWT_SECRET);
+        const verified = await jwtVerify(token, getSessionSecret());
         return verified.payload as SessionPayload;
     } catch (error) {
         console.error('Token verification failed:', error);
