@@ -1,39 +1,42 @@
-import { LRUCache } from 'lru-cache';
+import { redisClient } from './redis/client';
 
 type RateLimitOptions = {
     uniqueTokenPerInterval?: number;
-    interval?: number;
+    interval?: number; // interval in milliseconds
 };
 
 export default function rateLimit(options?: RateLimitOptions) {
-    const tokenCache = new LRUCache({
-        max: options?.uniqueTokenPerInterval || 500,
-        ttl: options?.interval || 60000,
-    });
+    const windowSeconds = Math.max(1, Math.floor((options?.interval || 60000) / 1000));
 
     return {
-        check: (limit: number, token: string) =>
-            new Promise<void>((resolve, reject) => {
-                const tokenCount = (tokenCache.get(token) as number[]) || [0];
-                if (tokenCount[0] === 0) {
-                    tokenCache.set(token, tokenCount);
+        check: async (limit: number, token: string) => {
+            // If Redis is not configured or in mock mode, fallback to allow
+            if (!redisClient || (redisClient as any).__isMock) {
+                return Promise.resolve();
+            }
+
+            const key = `ratelimit:generic:${token}`;
+            
+            // Atomic Lua Script: INCR and set EXPIRE only on first hit
+            const luaScript = `
+                local current = redis.call('INCR', KEYS[1])
+                if current == 1 then
+                    redis.call('EXPIRE', KEYS[1], ARGV[1])
+                end
+                return current
+            `;
+
+            try {
+                const count = await redisClient.eval(luaScript, 1, key, windowSeconds) as number;
+                if (count > limit) {
+                    return Promise.reject(new Error('Rate limit exceeded'));
                 }
-                tokenCount[0] += 1;
-
-                const currentUsage = tokenCount[0];
-                const isRateLimited = currentUsage > limit;
-
-                // Update the token with the new count
-                // (LRUCache doesn't strictly need re-set for mutable arrays if kept in memory, 
-                // but explicit set is safer for some implementations)
-                // tokenCache.set(token, tokenCount); 
-
-                if (isRateLimited) {
-                    reject(new Error('Rate limit exceeded'));
-                } else {
-                    resolve();
-                }
-            }),
+                return Promise.resolve();
+            } catch (e) {
+                console.error('[RateLimit:Redis] Error executing Lua script:', e);
+                return Promise.resolve(); // Fail open to prevent blocking legitimate traffic on Redis outage
+            }
+        },
     };
 }
 

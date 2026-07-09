@@ -5,30 +5,9 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import crypto from 'crypto';
-// [SECURITY] Per-IP compile rate limit: max 5 compilations per minute
-// LRU/Cleanup mechanism to prevent Memory Exhaustion DoS
-const compileRateLimit = new Map<string, { count: number; resetAt: number }>();
+import rateLimit from '@/lib/rate-limit';
 
-function checkCompileLimit(ip: string): boolean {
-  const now = Date.now();
-  const WINDOW = 60_000;
-  const MAX = 5;
-
-  // Prevent DoS: Clean up map if it grows too large (e.g. distributed pinging)
-  if (compileRateLimit.size > 1000) {
-    for (const [key, value] of compileRateLimit.entries()) {
-      if (now > value.resetAt) compileRateLimit.delete(key);
-    }
-    // If still too large after cleanup, clear completely
-    if (compileRateLimit.size > 1000) compileRateLimit.clear();
-  }
-
-  const entry = compileRateLimit.get(ip) ?? { count: 0, resetAt: now + WINDOW };
-  if (now > entry.resetAt) { entry.count = 0; entry.resetAt = now + WINDOW; }
-  entry.count++;
-  compileRateLimit.set(ip, entry);
-  return entry.count <= MAX;
-}
+const limiter = rateLimit({ interval: 60000 });
 
 const execAsync = promisify(exec);
 const execFileAsync = promisify(execFile);
@@ -236,9 +215,11 @@ export async function POST(req: Request) {
   let workspaceDir = '';
 
   try {
-    // [SECURITY HARDENING] Rate limit: max 5 compilations per minute per IP
+    // [SECURITY HARDENING] Rate limit: max 5 compilations per minute per IP globally across Edge nodes
     const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
-    if (!checkCompileLimit(ip)) {
+    try {
+      await limiter.check(5, ip);
+    } catch {
       return NextResponse.json({ success: false, error: 'Rate limit exceeded: max 5 compilations per minute.' }, { status: 429 });
     }
 

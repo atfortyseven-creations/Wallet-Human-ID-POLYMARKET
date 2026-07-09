@@ -6,6 +6,8 @@ import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import dynamic from "next/dynamic";
 import { NetworkMapPanel } from '@/components/terminal/NetworkMapPanel';
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
+import { ModuleShowcaseSections } from '@/components/landing/ModuleShowcaseSections';
+import { EmailLoginModal } from '@/components/auth/EmailLoginModal';
 // Lottie cargado din├ímicamente para evitar SSR issues
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
@@ -130,6 +132,7 @@ function LandingNav() {
   const [productOpen, setProductOpen] = useState(false);
   const [companyOpen, setCompanyOpen] = useState(false);
   const [connectedAddress, setConnectedAddress] = useState<string | null>(null);
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -296,14 +299,30 @@ function LandingNav() {
               </Link>
             </div>
           ) : (
-            <Link
-              href="/portfolio"
-              className="px-4 py-1.5 bg-black text-white text-[13.5px] font-medium hover:bg-black/85 transition-colors"
-            >
-              Sign In
-            </Link>
+            <div className="flex items-center gap-2">
+              {/* Email login — no wallet needed */}
+              <button
+                onClick={() => setEmailModalOpen(true)}
+                className="flex items-center gap-1.5 px-4 py-1.5 border border-black/15 text-[13.5px] font-medium text-black/70 hover:text-black hover:bg-black/[0.04] transition-colors"
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="4" width="20" height="16" rx="2" />
+                  <path d="M2 7l10 6 10-6" />
+                </svg>
+                Email
+              </button>
+              {/* Wallet login */}
+              <Link
+                href="/portfolio"
+                className="px-4 py-1.5 bg-black text-white text-[13.5px] font-medium hover:bg-black/85 transition-colors"
+              >
+                Connect Wallet
+              </Link>
+            </div>
           )}
         </div>
+        {/* Email Login Modal */}
+        <EmailLoginModal isOpen={emailModalOpen} onClose={() => setEmailModalOpen(false)} />
 
         {/* Mobile toggle */}
         <button
@@ -863,6 +882,8 @@ export function ImmersiveManifestoLanding(_props: ImmersiveManifestoLandingProps
       <IntegrationSection />
       <GlobalRegistrySection />
       <FAQSection />
+      {/* ── Module Showcase: expert presentations for all platform tabs ── */}
+      <ModuleShowcaseSections />
       <PoweredBySection />
       {/* FinalCTASection intentionally excluded: dark 'downpage' section is
           restricted to authenticated users only. Unauthenticated visitors should

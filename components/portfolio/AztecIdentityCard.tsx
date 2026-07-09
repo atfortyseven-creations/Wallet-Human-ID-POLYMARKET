@@ -591,14 +591,16 @@ export function AztecIdentityCard() {
 
   const handleConnectWithSignature = async () => {
     if (!isConnected || !evmAddress) {
-      toast.error('Wallet not connected via WalletConnect');
+      toast.error('Wallet not connected');
       return;
     }
 
     try {
-      // Pass true to claim airdrop — connectIdentity handles the signature internally
-      // and derives the Aztec address, then calls /api/aztec/airdrop with it.
-      await connectIdentity(evmAddress, true);
+      // [QR HANDSHAKE COMPAT] Pass signMessageAsync only when wagmi has an active connector.
+      // For QR handshake sessions (isSystemHandshake=true, wagmi connector=undefined),
+      // connectIdentity will derive the Aztec address from the EVM address without a signature.
+      const signerToPass = isWagmiConnected && !isSystemHandshake ? signMessageAsync : undefined;
+      await connectIdentity(evmAddress, true, signerToPass);
     } catch (e) {
       toast.error('Connection failed or rejected');
     }
@@ -655,17 +657,23 @@ export function AztecIdentityCard() {
             Enter your EVM address or seed phrase. Your Schnorr identity will be derived server-side via SHA-256.
           </p>
           <div className="w-full max-w-[280px] space-y-3">
-            {isConnected && evmAddress ? (
+          {isConnected && evmAddress ? (
               <div className="flex flex-col gap-3 w-full pb-4 mb-4 border-b border-zinc-900/10">
                 <div className="text-[10px] font-black uppercase text-center text-emerald-600 mb-1">
-                  Wallet Connected
+                  {isSystemHandshake ? 'Session Active (QR Link)' : 'Wallet Connected'}
                 </div>
+                {isSystemHandshake && (
+                  <div className="text-[9px] text-zinc-500 text-center mb-1 font-mono">
+                    No wallet popup needed — identity derived from your address
+                  </div>
+                )}
                 <button
                   disabled={isBusy}
                   onClick={handleConnectWithSignature}
                   className="w-full bg-black text-white py-3 font-black text-[10px] uppercase tracking-widest hover:bg-black/80 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                 >
-                  {isBusy ? <><Loader2 size={12} className="animate-spin" /> Authenticating...</> : 'Authenticate to Enter'}
+                  {isBusy ? <><Loader2 size={12} className="animate-spin" /> Authenticating...</> : 
+                    isSystemHandshake ? 'Connect Aztec Identity' : 'Authenticate to Enter'}
                 </button>
               </div>
             ) : null}

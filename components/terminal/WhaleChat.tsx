@@ -16,6 +16,7 @@ import { useSignMessage, useReconnect } from 'wagmi';
 import { useAppKit } from '@reown/appkit/react';
 import { getXMTPClient, canReceiveMessages, sendMessage, getMessages, destroyXMTPClient, nsToDate, discoverNewPeers, streamMessages, resolveSenderAddress, extractPeerAddress } from '@/lib/xmtp/client';
 import { QrScanner } from '@/components/terminal/QrScanner';
+import { TuringShieldGate } from '@/components/auth/TuringShieldGate';
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
 import type { Client } from '@xmtp/browser-sdk';
 import { useSettingsStore } from '@/lib/store/useSettingsStore';
@@ -1409,11 +1410,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
   if (!isConnected) {
     return (
+      <TuringShieldGate>
       <div className="flex flex-col items-center justify-center h-full min-h-[500px] gap-4">
         <h3 className="text-sm font-black uppercase tracking-widest text-[#050505] ">Whale Chat</h3>
         <p className="text-xs text-black/40  text-center max-w-xs">Connect your wallet to access maximum security decentralized messaging.</p>
         <button onClick={() => openAppKit()} className="px-8 py-4 bg-black  text-white  rounded-xl text-[11px] font-black uppercase tracking-widest active:scale-95 transition-transform shadow-xl">Connect Wallet</button>
       </div>
+      </TuringShieldGate>
     );
   }
 
@@ -1551,7 +1554,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const shortAddr = (a: string) => `${a.slice(0, 6)}${a.slice(-4)}`;
 
   return (
-    // Transparent container  wallpaper shows through via parent backdrop
+    <TuringShieldGate>
+    {/* Transparent container  wallpaper shows through via parent backdrop */}
     <div className={`relative flex w-full h-full overflow-hidden shadow-2xl ${(showScanner || showMyQR || showProfile) ? 'overflow-visible' : ''}`} style={{ 
       borderRadius: isMobile ? 0 : '1rem', 
       background: isMobile ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.70)',
@@ -2075,6 +2079,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
            </div>
          </div>
        )}
-     </div>
-   );
+      </div>
+    </TuringShieldGate>
+  );
 }

@@ -2,7 +2,7 @@ import { SignJWT, jwtVerify, JWTPayload, importJWK } from 'jose';
 
 const alg = 'EdDSA';
 const _rawJwtSecret = process.env.JWT_SECRET;
-if (!_rawJwtSecret && process.env.NODE_ENV === 'production' && process.env.SKIP_ENV_VALIDATION !== 'true') {
+if (!_rawJwtSecret && process.env.NODE_ENV === 'production') {
     throw new Error('[SECURITY CRITICAL] JWT_SECRET not set in production. Halting to prevent forged JWTs.');
 }
 // Safe fallback only in dev

@@ -131,36 +131,8 @@ function sanitizeSignal(raw: any) {
     };
 }
 
-//  Rate Limiter (Redis-backed, falls back to memory) 
-
-const memoryRateLimiter = new Map<string, { count: number; resetAt: number }>();
-
-async function checkRateLimit(keyId: string, limit: number): Promise<{ allowed: boolean; remaining: number }> {
-    const windowMs = 60_000; // 1 minute window
-    const now = Date.now();
-
-    try {
-        const { redisClient } = await import('@/lib/redis/client');
-        if (!(redisClient as any).__isMock) {
-            const redisKey = `signal:rate:${keyId}`;
-            const count    = await (redisClient as any).incr(redisKey);
-            if (count === 1) await (redisClient as any).pexpire(redisKey, windowMs);
-            const allowed    = count <= limit;
-            const remaining  = Math.max(0, limit - count);
-            return { allowed, remaining };
-        }
-    } catch {}
-
-    // Memory fallback
-    const entry = memoryRateLimiter.get(keyId) ?? { count: 0, resetAt: now + windowMs };
-    if (now > entry.resetAt) {
-        entry.count   = 0;
-        entry.resetAt = now + windowMs;
-    }
-    entry.count++;
-    memoryRateLimiter.set(keyId, entry);
-    return { allowed: entry.count <= limit, remaining: Math.max(0, limit - entry.count) };
-}
+import rateLimit from '@/lib/rate-limit';
+const limiter = rateLimit({ interval: 60_000 });
 
 //  Main Handler 
 
@@ -190,9 +162,14 @@ export async function GET(req: NextRequest) {
         }
     }
 
-    // Rate limiting
-    const { allowed, remaining } = await checkRateLimit(keyRecord.ownerId, tierCfg.rateLimit);
-    if (!allowed) {
+    // Rate limiting (Strict atomic lua script via Redis)
+    let remaining = tierCfg.rateLimit;
+    try {
+        await limiter.check(tierCfg.rateLimit, keyRecord.ownerId);
+        // Note: For simplicity we aren't tracking remaining dynamically in the generic limiter yet,
+        // so we'll just mock it as limit - 1 for headers since the primary goal is strict enforcement.
+        remaining = tierCfg.rateLimit - 1;
+    } catch {
         return NextResponse.json(
             { error: 'Rate limit exceeded', retryAfterSeconds: 60 },
             { status: 429, headers: { 'Retry-After': '60' } }

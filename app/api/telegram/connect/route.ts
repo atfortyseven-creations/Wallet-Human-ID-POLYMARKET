@@ -16,24 +16,10 @@ import { prisma } from '@/lib/prisma';
 
 export const runtime = 'nodejs';
 
-//  Rate Limiting 
-// Prevents DDoS/bot nets from abusing the Telegram API and getting the
-// corporate bot permanently banned by Telegram for flood violations.
-const RATE_LIMIT_WINDOW_MS = 60_000;
-const RATE_LIMIT_MAX       = 3;
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+import rateLimit from '@/lib/rate-limit';
 
-function checkRateLimit(ip: string): boolean {
-    const now   = Date.now();
-    const entry = rateLimitMap.get(ip);
-    if (!entry || now > entry.resetAt) {
-        rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-        return true;
-    }
-    if (entry.count >= RATE_LIMIT_MAX) return false;
-    entry.count++;
-    return true;
-}
+const limiter = rateLimit({ interval: 60_000 });
+// RATE_LIMIT_MAX is 3 in the route handler
 export async function GET(req: NextRequest) {
     const wallet = req.nextUrl.searchParams.get('wallet');
     if (!wallet) return NextResponse.json({ configured: false });
@@ -61,7 +47,9 @@ export async function POST(req: NextRequest) {
     try {
         //  Rate Limit check 
         const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-        if (!checkRateLimit(ip)) {
+        try {
+            await limiter.check(3, ip);
+        } catch {
             return NextResponse.json(
                 { error: 'Too many requests. Please wait 60 seconds before retrying.' },
                 { status: 429, headers: { 'Retry-After': '60' } }

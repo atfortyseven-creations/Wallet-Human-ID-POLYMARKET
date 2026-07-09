@@ -20,7 +20,6 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
   const { address, isConnected } = useSystemAccount();
 
   const [isAuthenticating, setIsAuthenticating] = useState(false);
-  const { signMessageAsync } = import('wagmi').then(() => require('wagmi')).catch(() => ({ signMessageAsync: undefined })) as any;
 
   const handleManualSiwe = async () => {
     if (!address) return;
@@ -68,7 +67,7 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
       if (verifyRes.ok) {
         setAuthState(true);
       } else {
-        alert('Fallo al verificar la firma. Intenta de nuevo.');
+        alert('Signature verification failed. Please try again.');
       }
     } catch (e) {
       console.error(e);
@@ -80,8 +79,22 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
   useEffect(() => {
     let cancelled = false;
     async function checkSession() {
-      // Fast path removed to enforce backend sessions for Aztec Native Wallet QDs.
-      // Slow path: check server JWT for persistent sessions
+      // Fast path: any connected user (wagmi direct OR QR handshake) gets in.
+      // Studio write operations do their own per-action SIWE re-auth.
+      if (isConnected) {
+        // Also verify server session if possible (non-blocking)
+        try {
+          const res = await fetch('/api/auth/verify-session', { cache: 'no-store', credentials: 'include' });
+          if (!cancelled && res.ok) {
+            const data = await res.json();
+            if (data.authenticated) { setAuthState(true); return; }
+          }
+        } catch {}
+        // Connected but server session not found — still allow read access
+        if (!cancelled) setAuthState(true);
+        return;
+      }
+      // Slow path: check SIWE session for non-wallet users
       try {
         const res = await fetch('/api/siwe/session', { cache: 'no-store' });
         if (cancelled) return;
@@ -115,10 +128,10 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
     return (
       <div className="h-full w-full flex-1 bg-[#FFFFFF] text-[#050505] flex flex-col px-6 pt-[calc(1.5rem+env(safe-area-inset-top))] pb-[calc(2rem+env(safe-area-inset-bottom))]">
         <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto text-center gap-4">
-          <h1 className="text-xl font-black tracking-tight">{isConnected ? 'Verificar Identidad' : 'Connect your wallet'}</h1>
+          <h1 className="text-xl font-black tracking-tight">{isConnected ? 'Verify Identity' : 'Connect your wallet'}</h1>
           <p className="text-sm text-black/60 leading-relaxed">
             {isConnected 
-              ? 'Por favor, firma el mensaje en tu billetera para verificar tu identidad y habilitar la escritura en la base de datos de Studio Provenance.'
+              ? 'Please sign the message in your wallet to verify your identity and enable write access to the Studio Provenance database.'
               : 'Connect your wallet to access the Whale Network terminal and all its modules.'}
           </p>
           
@@ -127,7 +140,7 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
               onClick={handleManualSiwe}
               className="w-full py-4 rounded-2xl bg-[#050505] text-[#FFFFFF] text-sm font-bold uppercase tracking-widest mt-4 flex items-center justify-center gap-2 hover:bg-black/90 active:scale-95 transition-all shadow-lg"
             >
-              Firmar Conexión Segura
+              Sign Secure Connection
             </button>
           ) : (
             <div className="mt-4 w-full">

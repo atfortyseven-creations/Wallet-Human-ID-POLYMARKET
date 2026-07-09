@@ -54,6 +54,7 @@ import React, {
 } from "react";
 import { toast } from "sonner";
 import { useSignMessage, useAccount } from "wagmi";
+import { useSystemAccount } from '@/hooks/useSystemAccount';
 import { keccak256, toBytes } from "viem";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -87,8 +88,10 @@ export interface AztecNativeState {
   /** Last error message from any API call. */
   error: string | null;
 
-  /** Derive an Aztec address from seed and connect to the identity layer. */
-  connectIdentity: (seed: string, claimAirdrop?: boolean) => Promise<void>;
+  /** Derive an Aztec address from seed and connect to the identity layer.
+   *  @param externalSignMessageAsync - optional wagmi signMessageAsync from the caller.
+   *  When omitted (QR handshake desktop sessions), derivation proceeds without wallet signature. */
+  connectIdentity: (seed: string, claimAirdrop?: boolean, externalSignMessageAsync?: (args: { message: string }) => Promise<string>) => Promise<void>;
   /** Disconnect the current session (clears in-memory state only). */
   disconnectIdentity: () => void;
   /** Force-refresh balance & history from the DB immediately. */
@@ -141,8 +144,10 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
   const [isBusy, setIsBusy]             = useState(false);
   const [error, setError]               = useState<string | null>(null);
 
-  // EVM address from wagmi — used as fallback seed when Aztec identity is not yet initialized
-  const { address: evmAddress } = useAccount();
+  // [QR HANDSHAKE FIX] Use useSystemAccount (not raw wagmi useAccount) so that
+  // evmAddress is populated even when wagmi has no connector (QR-linked PC sessions).
+  // Priority ladder: wagmi direct → QR cookie → local system wallet.
+  const { address: evmAddress } = useSystemAccount();
 
   // Tracks which tx IDs have already fired a "received QDs" toast.
   const notifiedRef = useRef<Set<string>>(new Set());
@@ -280,56 +285,90 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
 
   // ─── Connect Identity ─────────────────────────────────────────────────────
 
-  const { signMessageAsync } = useSignMessage();
+  const { signMessageAsync: wagmiSignMessageAsync } = useSignMessage();
 
-  const connectIdentity = useCallback(async (rawSeed: string, claimAirdrop: boolean = false) => {
+  // [QR HANDSHAKE COMPAT] connectIdentity accepts an external signMessageAsync.
+  // When called from AztecIdentityCard with a wagmi connector (direct wallet),
+  // the external signer is used. When the user is on PC via QR handshake (no
+  // wagmi connector), we skip the signature and derive the Aztec address
+  // deterministically from the EVM address alone — no wallet popup required.
+  const connectIdentity = useCallback(async (
+    rawSeed: string,
+    claimAirdrop: boolean = false,
+    externalSignMessageAsync?: (args: { message: string }) => Promise<string>
+  ) => {
     setIsBusy(true);
     setError(null);
 
+    // Prefer external signer (from caller's hook context), then wagmi hook signer.
+    // If neither is available (QR handshake desktop), skip signature.
+    const activeSigner = externalSignMessageAsync ?? wagmiSignMessageAsync;
+
     try {
-      const pxeUrl = typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== 'www.humanidfi.com' && window.location.hostname !== 'humanidfi.com'
-        ? `http://${window.location.hostname}:8080` 
-        : 'http://localhost:8080';
+      let signature: string | null = null;
 
-      // Step 1: Request signature via WalletConnect to generate entropy for Aztec
-      toast.loading("Sign message in your wallet to generate Aztec identity...", { id: "az-connect" });
-      const signature = await signMessageAsync({
-        message: "Welcome to Aztec Testnet.\n\nSign this message to derive your zero-knowledge private key for the local PXE."
-      });
+      if (activeSigner) {
+        // Has an active wallet connector — request signature for entropy
+        toast.loading("Sign message in your wallet to generate Aztec identity...", { id: "az-connect" });
+        try {
+          signature = await activeSigner({
+            message: "Welcome to Aztec Testnet.\n\nSign this message to derive your zero-knowledge private key for the local PXE."
+          });
+        } catch (sigErr: any) {
+          const sigMsg = sigErr?.message?.toLowerCase() ?? '';
+          const isConnErr = sigMsg.includes('connector not connected') ||
+            sigMsg.includes('not connected') ||
+            sigMsg.includes('unavailable') ||
+            sigMsg.includes('reconnecting');
+          if (isConnErr) {
+            // Connector lost — fall through to seedless derivation
+            console.warn('[AztecNative] Connector unavailable, falling back to seedless derivation.');
+            signature = null;
+          } else {
+            throw sigErr; // User rejection or other real error
+          }
+        }
+      } else {
+        // No wagmi connector (QR handshake session) — derive from address directly
+        toast.loading("Deriving Aztec identity from wallet address...", { id: "az-connect" });
+      }
 
-      // Step 2: Use viem to hash the signature into a 32-byte scalar
-      const entropy = keccak256(toBytes(signature));
+      // Step 2: Derive entropy — from signature (if available) or from raw EVM address (seedless)
+      let entropy: string;
+      if (signature) {
+        // Cryptographic path: hash the signature for maximum entropy
+        entropy = keccak256(toBytes(signature));
+      } else {
+        // Seedless path for QR handshake: use keccak256 of the EVM address as deterministic seed
+        // This produces the SAME Aztec address every time for the same wallet — no signature needed.
+        const seedInput = rawSeed.startsWith('0x') ? rawSeed.toLowerCase() : rawSeed;
+        entropy = keccak256(toBytes(seedInput));
+        toast.loading("Deriving Aztec identity from wallet address...", { id: "az-connect" });
+      }
 
-      // [CLIENT-SIDE PROVING REFACTOR]
-      // Replace centralized backend derivation with direct @aztec/aztec.js instantiation
-      toast.loading("Deriving Aztec Wallet locally via ZK...", { id: "az-connect" });
-      
+      // Step 2b: Server-side derivation (robust — no WASM required, no remote PXE needed)
+      // The server uses the same SHA-256 based deterministic algorithm as /api/aztec/derive-address.
+      // This is the guaranteed path; the local @aztec/aztec.js path is attempted as optimization.
       let derived = "";
       try {
-        const { Fr } = await import('@aztec/aztec.js/fields');
-        const { deriveSigningKey } = await import('@aztec/stdlib/keys');
-        const { SchnorrAccountContract } = await import('@aztec/accounts/schnorr');
-        const { AccountManager } = await import('@aztec/aztec.js/wallet');
-        
-        // Use a trusted remote PXE for now if local PXE WASM fails, but keys remain in browser memory
-        const remotePxeUrl = 'https://pxe.humanidfi.com'; // Placeholder for production PXE Relayer
-        const { createSafeJsonRpcClient } = await import('@aztec/foundation/json-rpc/client');
-        const { PXE } = await import('@aztec/pxe/client/lazy');
-        const pxe = createSafeJsonRpcClient(remotePxeUrl, PXE);
+        toast.loading("Deriving Aztec identity...", { id: "az-connect" });
+        const deriveRes = await fetch('/api/aztec/derive-address', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ seed: entropy }),
+        });
+        if (deriveRes.ok) {
+          const { aztecAddress: serverDerived } = await deriveRes.json();
+          if (serverDerived) derived = serverDerived;
+        }
+      } catch (e) {
+        console.warn('[AztecNative] Server derive failed, using local fallback:', e);
+      }
 
-        const secretKey = Fr.fromHexString(entropy.replace('0x', ''));
-        const signingKey = deriveSigningKey(secretKey);
-        const contract = new SchnorrAccountContract(signingKey);
-        
-        // This instantiates the wallet locally. The private key never leaves the browser.
-        const manager = await AccountManager.create(pxe, secretKey, contract);
-        const wallet = await manager.getWallet() as any;
-        derived = wallet.getAddress().toString();
-        
-      } catch (err) {
-        console.error("Local Aztec Derivation failed, falling back to deterministic hash:", err);
-        // Fallback for UI if WASM or SDK polyfills are still spinning up
-        derived = "0x" + entropy.slice(2, 66); 
+      // Local fallback: keccak256 slice (same algorithm as before) — only if server call failed
+      if (!derived) {
+        derived = "0x" + entropy.slice(2, 66);
+        console.warn('[AztecNative] Using local entropy-slice fallback for Aztec address.');
       }
 
       // Step 2 — Trigger genesis airdrop (idempotent — server skips if already claimed).
@@ -402,7 +441,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
     } finally {
       setIsBusy(false);
     }
-  }, [fetchLedgerState, startPolling]);
+  }, [fetchLedgerState, startPolling, wagmiSignMessageAsync]);
 
   // ─── Disconnect ───────────────────────────────────────────────────────────
 
@@ -455,7 +494,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
         const { PXE } = await import('@aztec/pxe/client/lazy');
 
         const pxeUrl = process.env.NEXT_PUBLIC_AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
-        const pxe = createSafeJsonRpcClient(pxeUrl, PXE);
+        const pxe = createSafeJsonRpcClient(pxeUrl, PXE as any);
 
         // Reconstruct wallet from stored seed (entropy still in React state)
         const storedSession = JSON.parse(localStorage.getItem('aztec_session') || '{}');
@@ -464,18 +503,18 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
         const secretKey = Fr.fromHexString(storedSession.seed.replace('0x', ''));
         const signingKey = deriveSigningKey(secretKey);
         const contract = new SchnorrAccountContract(signingKey);
-        const manager = await AccountManager.create(pxe, secretKey, contract);
-        const wallet = await manager.getWallet() as any;
+        const manager = await AccountManager.create(pxe as any, secretKey as any, contract as any);
+        const wallet = await (manager as any).getWallet() as any;
 
         const tokenAddressStr = process.env.NEXT_PUBLIC_TOKEN_ADDRESS;
         if (!tokenAddressStr) throw new Error("TOKEN_ADDRESS not set");
 
-        const tokenContract = await TokenContract.at(AztecAddress.fromString(tokenAddressStr), wallet);
+        const tokenContract = await TokenContract.at(AztecAddress.fromString(tokenAddressStr), wallet as any);
         const amountBigInt = BigInt(Math.floor(amount * 1e18));
         const FPC_ADDRESS = process.env.NEXT_PUBLIC_SPONSORED_FPC_ADDRESS || '0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7';
 
-        const tx = await tokenContract.methods
-          .transfer_public(wallet.getAddress(), AztecAddress.fromString(AZTEC_BURN_ADDRESS), amountBigInt, 0)
+        const tx = await (tokenContract.methods as any)
+          .transfer_in_public(wallet.getAddress(), AztecAddress.fromString(AZTEC_BURN_ADDRESS), amountBigInt, 0)
           .send({ fee: { paymentMethod: new SponsoredFeePaymentMethod(AztecAddress.fromString(FPC_ADDRESS)) } });
 
         await tx.wait();

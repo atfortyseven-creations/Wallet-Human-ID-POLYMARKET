@@ -36,8 +36,8 @@ export async function POST(req: Request) {
                 if (typeof parsedNodes === 'string') parsedNodes = JSON.parse(parsedNodes);
                 if (typeof parsedEdges === 'string') parsedEdges = JSON.parse(parsedEdges);
 
-                const nodes: NodeData[] = Array.isArray(parsedNodes) ? parsedNodes : [];
-                const edges: EdgeData[] = Array.isArray(parsedEdges) ? parsedEdges : [];
+                const nodes: NodeData[] = Array.isArray(parsedNodes) ? (parsedNodes as any as NodeData[]) : [];
+                const edges: EdgeData[] = Array.isArray(parsedEdges) ? (parsedEdges as any as EdgeData[]) : [];
 
                 // Skip executing completely empty dashboards to save compute
                 // A minimum topology requires at least one node to "run"
