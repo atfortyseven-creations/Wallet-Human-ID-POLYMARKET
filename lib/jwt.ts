@@ -1,34 +1,36 @@
 import { SignJWT, jwtVerify, JWTPayload, importJWK } from 'jose';
 
 const alg = 'EdDSA';
-const _rawJwtSecret = process.env.JWT_SECRET;
 
-// [BUILD-TIME GUARD] JWT_SECRET is a runtime secret — it is NOT available during
-// `next build` (Docker build phase). Next.js sets NODE_ENV=production during build,
-// which previously caused a false-positive throw that broke Railway deployments.
-// We skip the hard check when NEXT_PHASE indicates we are in the build phase,
-// or when SKIP_ENV_VALIDATION is set (CI / local builds without secrets).
-// The check still fires at server RUNTIME in production as intended.
-const _isBuildPhase =
-  process.env.NEXT_PHASE === 'phase-production-build' ||
-  process.env.SKIP_ENV_VALIDATION === '1';
-
-if (!_rawJwtSecret && process.env.NODE_ENV === 'production' && !_isBuildPhase) {
-    throw new Error('[SECURITY CRITICAL] JWT_SECRET not set in production. Halting to prevent forged JWTs.');
+// ─── Lazy secret resolver ─────────────────────────────────────────────────────
+// CRITICAL: Do NOT validate process.env at module level.
+// `next build` eagerly imports all server modules and sets NODE_ENV=production,
+// but runtime secrets (JWT_SECRET) are NOT injected until the container starts.
+// Any top-level throw here will crash the Docker build on Railway.
+// The validation is deferred to inside the exported functions so it only fires
+// during actual HTTP request handling — never at import / build time.
+function getHS256Secret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret && process.env.NODE_ENV === 'production') {
+    throw new Error(
+      '[SECURITY CRITICAL] JWT_SECRET is not set. ' +
+      'This error fires at request time — set JWT_SECRET in Railway environment variables.'
+    );
+  }
+  return secret || 'dev-only-fallback-jwt-secret-change-me-in-production';
 }
-// Safe fallback only in dev
-const secretHS256 = _rawJwtSecret || 'dev-only-fallback-jwt-secret-change-me-in-production';
 
-const migrationCutoff = process.env.JWT_MIGRATION_CUTOFF 
-  ? new Date(process.env.JWT_MIGRATION_CUTOFF).getTime() 
-  : Date.now() + 30 * 24 * 60 * 60 * 1000; // default 30 days from now
+// ─── EdDSA key cache ──────────────────────────────────────────────────────────
+const migrationCutoff = process.env.JWT_MIGRATION_CUTOFF
+  ? new Date(process.env.JWT_MIGRATION_CUTOFF).getTime()
+  : Date.now() + 30 * 24 * 60 * 60 * 1000; // default: 30 days from now
 
 let cachedPrivateKey: any = null;
-let cachedPublicKey: any = null;
+let cachedPublicKey: any  = null;
 
 async function getEdDSAKeys() {
   if (cachedPrivateKey && cachedPublicKey) return { privateKey: cachedPrivateKey, publicKey: cachedPublicKey };
-  
+
   if (process.env.JWT_EDDSA_PRIVATE_JWK && process.env.JWT_EDDSA_PUBLIC_JWK) {
     try {
       const privJwk = JSON.parse(process.env.JWT_EDDSA_PRIVATE_JWK);
@@ -37,7 +39,10 @@ async function getEdDSAKeys() {
       cachedPublicKey  = await importJWK(pubJwk,  'EdDSA');
       return { privateKey: cachedPrivateKey, publicKey: cachedPublicKey };
     } catch (parseErr) {
-      console.warn('[JWT] JWT_EDDSA_*_JWK env var is malformed or invalid JSON. Falling back to HS256.', parseErr instanceof SyntaxError ? parseErr.message : '');
+      console.warn(
+        '[JWT] JWT_EDDSA_*_JWK env var is malformed or invalid JSON. Falling back to HS256.',
+        parseErr instanceof SyntaxError ? parseErr.message : ''
+      );
       cachedPrivateKey = null;
       cachedPublicKey  = null;
       return null;
@@ -46,8 +51,10 @@ async function getEdDSAKeys() {
   return null;
 }
 
+// ─── Public API ───────────────────────────────────────────────────────────────
+
 export const mintJWT = async (payload: JWTPayload): Promise<string> => {
-  const now = Date.now();
+  const now  = Date.now();
   const keys = await getEdDSAKeys();
   const useEdDSA = keys && (now < migrationCutoff || process.env.NODE_ENV === 'production');
 
@@ -59,25 +66,26 @@ export const mintJWT = async (payload: JWTPayload): Promise<string> => {
       .sign(keys.privateKey);
   }
 
-  // Fallback HS256 with strictly enforced env secret
+  // Fallback HS256 — secret is validated lazily here (runtime only)
+  const secret = getHS256Secret();
   return new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('7d')
-    .sign(new TextEncoder().encode(secretHS256));
+    .sign(new TextEncoder().encode(secret));
 };
 
 export const verifyJWT = async (token: string): Promise<JWTPayload> => {
   const keys = await getEdDSAKeys();
 
-  // Try EdDSA first if keys are available
+  // EdDSA — strict: do not downgrade if keys are configured
   if (keys) {
     const { payload } = await jwtVerify(token, keys.publicKey, { algorithms: [alg] });
-    return payload; // Strict mode: do not downgrade to HS256 if EdDSA is configured
+    return payload;
   }
 
-  // Only attempt HS256 if EdDSA is NOT configured
-  const { payload } = await jwtVerify(token, new TextEncoder().encode(secretHS256), { algorithms: ['HS256'] });
+  // HS256 fallback — secret validated lazily (runtime only)
+  const secret = getHS256Secret();
+  const { payload } = await jwtVerify(token, new TextEncoder().encode(secret), { algorithms: ['HS256'] });
   return payload;
 };
-
