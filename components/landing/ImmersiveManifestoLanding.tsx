@@ -46,46 +46,46 @@ const COMPANY_LINKS = [
 // ─── Network stat strip ────────────────────────────────────────────────────────────────
 
 const STATS = [
-  { label: "Identity Layer", value: "Aztec Native Identity" },
-  { label: "Data Integrity", value: "Studio Provenance" },
-  { label: "Messaging", value: "Encrypted Whale Chat" },
+  { label: "Privacy Layer", value: "Aztec ZK Execution" },
+  { label: "Smart Contracts", value: "Noir Language" },
+  { label: "Proving System", value: "UltraHonk / Barretenberg" },
   { label: "Settlement", value: "Ethereum L1" },
-  { label: "Authentication", value: "Zero-Knowledge Proofs" },
-  { label: "Attestation", value: "Verifiable Credentials" },
+  { label: "Messaging", value: "XMTP E2E Encrypted" },
+  { label: "Identity", value: "ZK-Native Accounts" },
 ];
 
 // ─── Feature cards ────────────────────────────────────────────────────────────────
 
 const FEATURES = [
   {
-    title: "Claim Your Identity",
-    body: "Secure your decentralized identity via cryptographic signature directly from your dashboard. A foundation for all private interactions.",
+    title: "Native Aztec Identity",
+    body: "Your identity is a Noir-proven ZK account on Aztec. No passwords, no phone numbers — a cryptographic keypair that proves who you are without disclosing it.",
     tag: "Aztec Identity",
   },
   {
     title: "Studio Provenance",
-    body: "Establish absolute data provenance and asset tracking using zero-knowledge proofs. Verifiable history without public exposure.",
-    tag: "Provenance",
+    body: "Register on-chain provenance for assets using Aztec smart contracts written in Noir. The record is public; the payload stays private in encrypted notes.",
+    tag: "Noir Contracts",
   },
   {
-    title: "Whale Chat",
-    body: "Communicate securely with peers through an end-to-end encrypted protocol. Only cryptographic identities, no IP tracking.",
-    tag: "Encrypted Comms",
+    title: "Whale Chat — ZK Encrypted",
+    body: "End-to-end encrypted peer-to-peer messaging via XMTP, gated by Aztec identity. Messages are tied to your cryptographic address, not your phone or IP.",
+    tag: "E2E Messaging",
   },
   {
-    title: "Aztec Portfolio",
-    body: "Manage your assets privately. Your balances and transaction history are completely hidden from the public ledger.",
-    tag: "Private Wealth",
+    title: "Private Portfolio",
+    body: "Track balances and transactions shielded inside the Aztec Private Execution Environment. Your wealth remains invisible to the public state.",
+    tag: "Shielded State",
   },
   {
-    title: "Zero-Knowledge Proofs",
-    body: "All computation happens on your device. The network validates a proof of your actions without ever accessing your raw data.",
-    tag: "Local Execution",
+    title: "Local ZK Proving",
+    body: "Noir circuits run entirely on your device via the Aztec PXE. The network receives only a validity proof — never your raw inputs or private keys.",
+    tag: "PXE Local Proving",
   },
   {
-    title: "W3C Attestation",
-    body: "Generate verifiable credentials for audits or selective disclosure. Prove attestation without leaking your full identity.",
-    tag: "Verifiable Credentials",
+    title: "QDS Rewards Engine",
+    body: "Earn Quantum Dots (QDs) by completing Aztec-native quests. Governance, engagement, and protocol contributions are rewarded through a transparent on-chain ledger.",
+    tag: "Tokenomics",
   },
 ];
 
@@ -386,6 +386,23 @@ function HeroSection() {
     setMounted(true);
   }, []);
 
+  const heroCards = [
+              {
+                tag: "Analytics",
+                label: "Shielded Analytics",
+                desc: "Portfolio tracking across Ethereum L1 and Aztec L2. Monitor capital flows through encrypted notes inside the Private Execution Environment.",
+              },
+              {
+                tag: "Identity",
+                label: "Aztec ZK Identity",
+                desc: "Prove you are a unique human using Noir circuits running locally in your PXE — no biometric data, no personal information ever touches the network.",
+              },
+              {
+                tag: "Messaging",
+                label: "Whale Chat",
+                desc: "End-to-end encrypted messaging anchored to Aztec-native cryptographic identities. No phone number, no IP tracking, no metadata collection.",
+              },
+            ];
   return (
     <>
       {/* ── Presentation hero ── */}
@@ -420,7 +437,7 @@ function HeroSection() {
 
           {/* Subheadline */}
           <motion.p variants={FADE_UP} className="text-[16px] md:text-[19px] font-medium text-black/70 leading-relaxed text-center max-w-[700px] mb-12">
-            Whale Network operates as the sovereign application layer over Aztec's zero-knowledge execution environment. We abstract the complexity of ZK circuits into a sovereign-grade terminal — providing high-net-worth individuals and enterprises with cryptographic identity verification, end-to-end encrypted messaging, and fully shielded portfolio management. All executed privately, settled securely on Ethereum.
+            Whale Network operates as the sovereign application layer over Aztec&apos;s zero-knowledge execution environment. We abstract the complexity of ZK circuits into a sovereign-grade terminal — providing high-net-worth individuals and enterprises with cryptographic identity verification, end-to-end encrypted messaging, and fully shielded portfolio management. All executed privately, settled securely on Ethereum.
           </motion.p>
 
           {/* CTAs */}
@@ -437,23 +454,7 @@ function HeroSection() {
 
           {/* Three feature cards — animated stagger */}
           <motion.div variants={STAGGER_CONTAINER} initial="hidden" animate="visible" className="flex flex-col sm:flex-row items-stretch gap-6 w-full max-w-[1000px] relative z-20">
-            {[
-              {
-                tag: "Analytics",
-                label: "Whale Analytics",
-                desc: "Shielded portfolio tracking across Ethereum L1 and L2s. Monitor the flow of capital through encrypted transactions before it moves the market.",
-              },
-              {
-                tag: "Identity",
-                label: "Humanity Ledger",
-                desc: "Noir based identity verification. Prove you are a unique human using local zero-knowledge circuits without exposing any personal data to the public.",
-              },
-              {
-                tag: "Messaging",
-                label: "Whale Chat",
-                desc: "End to end encrypted messaging between wallets anchored to your private state. Only cryptographic identities, no IP tracking, no metadata.",
-              },
-            ].map((f) => (
+            {heroCards.map((f) => (
               <motion.div variants={FADE_UP} key={f.label} className="flex-1 bg-white/80 backdrop-blur-md border border-black/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] px-8 py-8 flex flex-col gap-4 rounded-2xl hover:border-black/30 hover:-translate-y-1 transition-all duration-300">
                 <span className="text-[11px] font-black uppercase tracking-widest text-indigo-500">{f.tag}</span>
                 <h3 className="text-[18px] font-black text-black leading-tight">{f.label}</h3>
@@ -471,7 +472,7 @@ function HeroSection() {
         </div>
       </section>
 
-      {/* ÔöÇÔöÇ Architecture Map ÔöÇÔöÇ */}
+      {/* ── Architecture Map ── */}
       <section
         className="relative w-full overflow-hidden flex-shrink-0 bg-white border-t border-black/10"
         style={{ minHeight: 'var(--dvh-100, 100dvh)' }}
@@ -488,7 +489,7 @@ function HeroSection() {
             How Whale Network is built
           </h2>
           <p className="text-[15px] text-black/65 font-medium mt-2 max-w-[560px]">
-            A live map of the protocol stack — from L1 settlement on Ethereum to private execution on Aztec, and the data layers in between.
+            A live map of the protocol stack — from L1 settlement on Ethereum to private execution on Aztec via the PXE, and the XMTP data layers in between.
           </p>
         </div>
 
@@ -540,10 +541,10 @@ function ValuePropositionSection() {
         <motion.h2 variants={FADE_UP} className="text-[36px] md:text-[64px] font-black tracking-tighter leading-[1.0] text-black max-w-[800px]">
           Ethereum security.
           <br />
-          <span className="text-black/55">Absolute privacy.</span>
+          <span className="text-black/55">Aztec-native privacy.</span>
         </motion.h2>
         <p className="mt-8 text-[16px] md:text-[18px] font-medium text-black/65 leading-relaxed max-w-[600px]">
-          By leveraging the Aztec Network Private Execution Environment, Whale Network shifts all computation to your local device. The network verifies a zero-knowledge proof of your actions without ever seeing your raw balances, chat metadata, or identity documents. This is the foundation of programmable privacy.
+          By leveraging the Aztec Network Private Execution Environment (PXE), Whale Network shifts all computation to your local device. The network verifies a zero-knowledge proof of your actions — generated by a Noir circuit — without ever seeing your raw balances, chat metadata, or identity documents. This is programmable privacy, native to Aztec.
         </p>
       </motion.div>
     </section>
@@ -621,32 +622,51 @@ function IntegrationSection() {
   const cards = [
     {
       title: "Studio Provenance",
-      body: "Establish zero-knowledge provenance for your creative and financial assets. Written in Noir and deployed on the decentralized Aztec rollup.",
+      body: "Register zero-knowledge provenance for creative and financial assets. Noir smart contracts on the Aztec rollup make the record tamper-proof without exposing the payload.",
       link: "Explore Provenance",
       href: "/studio/provenance"
     },
     {
-      title: "Claim Identity",
-      body: "Cryptographic identity verification through local zero-knowledge circuits. No password, no custody, no public data exposure.",
-      link: "Go to Dashboard",
-      href: "/terminal"
+      title: "Forum — Governance & Discourse",
+      body: "Participate in decentralized governance with ZK-verified votes. Propose, deliberate, and vote on protocol changes with Aztec identity-gated participation.",
+      link: "Open Forum",
+      href: "/forum"
     },
     {
-      title: "Whale Chat",
-      body: "Send and receive messages between verified identities. End to end encrypted messaging anchored to your private state.",
+      title: "Whale Chat — ZK Messaging",
+      body: "Send and receive messages between Aztec-verified identities. End-to-end encrypted via XMTP, anchored to your cryptographic state — no server stores your messages.",
       link: "Open Chat",
       href: "/chat"
-    }
+    },
+    {
+      title: "Developers — API & SDK",
+      body: "Build on top of Whale Network. Full API reference, Noir circuit guides, attestation SDK, and architecture documentation for teams integrating with Aztec.",
+      link: "View Docs",
+      href: "/developers/api-docs"
+    },
+    {
+      title: "Identity Registry",
+      body: "A global map of Aztec-verified identities. Every account in the registry has proven its uniqueness through a Noir circuit without disclosing personal data.",
+      link: "View Registry",
+      href: "/registry"
+    },
+    {
+      title: "Portfolio & Terminal",
+      body: "Manage your shielded Aztec assets. Balances, notes, and transaction history are stored as encrypted UTXO commitments — invisible to the public ledger.",
+      link: "Open Terminal",
+      href: "/terminal"
+    },
   ];
 
   return (
     <section className="w-full bg-white py-24 md:py-32 border-t border-black/10">
       <div className="w-full max-w-[1100px] mx-auto px-6">
         <div className="mb-16">
-          <h2 className="text-[32px] md:text-[42px] font-black tracking-tight text-black max-w-[500px] leading-[1.1]">
-            Built on
+          <span className="text-[11px] font-black uppercase tracking-widest text-black/50 block mb-4">Platform Modules</span>
+          <h2 className="text-[32px] md:text-[42px] font-black tracking-tight text-black max-w-[600px] leading-[1.1]">
+            Everything you need
             <br />
-            <span className="text-black/55">Noir circuits.</span>
+            <span className="text-black/55">on one sovereign layer.</span>
           </h2>
         </div>
 

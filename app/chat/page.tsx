@@ -1,14 +1,14 @@
-import ChatClientPage from '@/components/chat/ChatClientPage';
+import { WhaleChat } from '@/components/terminal/WhaleChat';
 
 export const metadata = {
-  title: 'Whale Chat · Whale Network',
-  description: 'End-to-end encrypted messaging with on-chain analytics.',
+  title: 'Whale Chat · Sovereign Network',
+  description: 'Zero-knowledge end-to-end encrypted messaging with hardware binding.',
 };
 
 export default function ChatPage() {
   return (
-    <div className="flex flex-col flex-1 w-full h-full min-h-0 relative bg-white">
-      <ChatClientPage />
+    <div className="flex flex-col w-full min-h-[100dvh] bg-[#F9F8F6] relative">
+      <WhaleChat forceAutoInit={true} />
     </div>
   );
 }

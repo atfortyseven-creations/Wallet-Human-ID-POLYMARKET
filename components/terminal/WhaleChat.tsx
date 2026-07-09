@@ -21,6 +21,7 @@ import { RemoteLottie } from '@/components/ui/RemoteLottie';
 import type { Client } from '@xmtp/browser-sdk';
 import { useSettingsStore } from '@/lib/store/useSettingsStore';
 import { useWalletStore } from '@/lib/store/wallet-store';
+import { useAztec } from '@/context/AztecContext';
 // NOTE: QDs state is sourced from AztecNativeContext (DB polling) — no local store needed.
 
 import { toast } from 'sonner';
@@ -50,7 +51,7 @@ function Avatar({ address }: { address: string }) {
   );
 }
 
-import { useAztec } from '@/context/AztecContext';
+
 
 export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const { address, isConnected, isSystemHandshake, isChecking, connector, isZkVerified, isLocalSystemWallet } = useSystemAccount();
@@ -484,27 +485,56 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   }, [messages, callActive]);
   
   const startCall = async (type: 'audio'|'video') => {
-      if (!peerInstance || !activePeer) return;
+      if (!peerInstance || !activePeer) {
+        toast.error('Chat connection not ready. Please wait and try again.');
+        return;
+      }
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        toast.error('Your browser does not support media access. Please use Chrome or Firefox.');
+        return;
+      }
       try {
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: type === 'video' });
+          // Request permissions explicitly — gives browser a chance to show its native prompt
+          const constraints: MediaStreamConstraints = {
+            audio: { echoCancellation: true, noiseSuppression: true },
+            video: type === 'video' ? { width: { ideal: 1280 }, height: { ideal: 720 } } : false,
+          };
+          const stream = await navigator.mediaDevices.getUserMedia(constraints);
           setLocalStream(stream);
           setCallType(type);
           setCallActive(true);
-          
           if (myVideoRef.current) myVideoRef.current.srcObject = stream;
-          
-          // Send XMTP Signal with our Peer ID
+          // Send XMTP Signal with our Peer ID so the remote peer can accept
           await executeSend(`__CALL_OFFER__:${myPeerId}`);
-          toast.success("Call signal sent to peer.");
-      } catch (e) {
-          toast.error("Microphone/Camera access denied");
+          toast.success('📡 Call signal sent. Waiting for peer to connect.');
+      } catch (e: any) {
+          const errName = e?.name || '';
+          if (errName === 'NotAllowedError' || errName === 'PermissionDeniedError') {
+            toast.error('🎙️ Microphone/Camera access denied. Please enable permissions in your browser settings and try again.');
+          } else if (errName === 'NotFoundError' || errName === 'DevicesNotFoundError') {
+            toast.error('🎙️ No microphone or camera found on this device.');
+          } else if (errName === 'NotReadableError' || errName === 'TrackStartError') {
+            toast.error('🎙️ Camera/Microphone is in use by another application. Please close it and try again.');
+          } else {
+            toast.error(`Call failed: ${e?.message || 'Unknown error'}`);
+          }
+          console.error('[Call] getUserMedia error:', e);
       }
   };
   
   const answerCall = async () => {
       if (!incomingCall) return;
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        toast.error('Your browser does not support media access. Please use Chrome or Firefox.');
+        return;
+      }
       try {
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: incomingCall.options?.metadata?.type === 'video' });
+          const isVideo = incomingCall.options?.metadata?.type === 'video';
+          const constraints: MediaStreamConstraints = {
+            audio: { echoCancellation: true, noiseSuppression: true },
+            video: isVideo ? { width: { ideal: 1280 }, height: { ideal: 720 } } : false,
+          };
+          const stream = await navigator.mediaDevices.getUserMedia(constraints);
           setLocalStream(stream);
           incomingCall.answer(stream);
           incomingCall.on('stream', (remoteStream: MediaStream) => {
@@ -512,8 +542,17 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               if (remoteVideoRef.current) remoteVideoRef.current.srcObject = remoteStream;
           });
           setCallActive(true);
-      } catch (e) {
-          toast.error("Failed to answer call");
+          toast.success('✅ Call connected.');
+      } catch (e: any) {
+          const errName = e?.name || '';
+          if (errName === 'NotAllowedError' || errName === 'PermissionDeniedError') {
+            toast.error('🎙️ Microphone/Camera access denied. Please enable permissions in your browser settings.');
+          } else if (errName === 'NotFoundError' || errName === 'DevicesNotFoundError') {
+            toast.error('🎙️ No microphone or camera found on this device.');
+          } else {
+            toast.error(`Failed to answer call: ${e?.message || 'Unknown error'}`);
+          }
+          console.error('[Call] answerCall getUserMedia error:', e);
       }
   };
   
@@ -1139,6 +1178,20 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   sentAtNs: new Date(p.timestamp).getTime(),
                   conversationId: `dm-${activePeer.toLowerCase()}`
                }));
+               
+               // CONSUME pending messages where we are the RECIPIENT:
+               // This clears them from the server queue so they are marked as delivered.
+               // Only delete messages addressed TO us — we must not delete messages we sent.
+               const incomingIds = pData.pending
+                 .filter((p: any) => p.recipient.toLowerCase() === address?.toLowerCase())
+                 .map((p: any) => p.id);
+               
+               if (incomingIds.length > 0) {
+                 fetch(`/api/chat/pending?address=${address}`, {
+                   method: 'DELETE',
+                   headers: { 'x-web3-address': address || '' }
+                 }).catch(err => console.warn('[PendingConsume] Failed to clear delivered messages:', err));
+               }
             }
           }
         } catch (e) { console.error('Failed to fetch pending messages', e); }
@@ -1411,149 +1464,95 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   if (!isConnected) {
     return (
       <TuringShieldGate>
-      <div className="flex flex-col items-center justify-center h-full min-h-[500px] gap-4">
-        <h3 className="text-sm font-black uppercase tracking-widest text-[#050505] ">Whale Chat</h3>
-        <p className="text-xs text-black/40  text-center max-w-xs">Connect your wallet to access maximum security decentralized messaging.</p>
-        <button onClick={() => openAppKit()} className="px-8 py-4 bg-black  text-white  rounded-xl text-[11px] font-black uppercase tracking-widest active:scale-95 transition-transform shadow-xl">Connect Wallet</button>
+      <div className="flex flex-col items-center justify-center h-full min-h-[100dvh] bg-[#F9F8F6] p-6 gap-6 relative overflow-hidden">
+        {/* Subtle background glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
+        
+        <h3 className="text-[28px] font-black tracking-tight text-black relative z-10">Sovereign Chat</h3>
+        <p className="text-[14px] font-medium text-[#555] text-center max-w-sm leading-relaxed relative z-10 px-4">
+          Establish an end-to-end encrypted connection. Your keys never leave your device.
+        </p>
+        <button 
+          onClick={() => openAppKit()} 
+          className="relative z-10 h-[56px] px-8 bg-black hover:bg-black/85 text-white rounded-2xl text-[14px] font-bold tracking-wide active:scale-[0.98] transition-all shadow-lg shadow-black/20 flex items-center justify-center"
+        >
+          Connect Identity
+        </button>
       </div>
       </TuringShieldGate>
     );
   }
 
-
   //  Loading / Auto-init state 
-  // Displayed while the XMTP client initialises automatically post-connection.
-  // On returning sessions, encryption keys are retrieved from IndexedDB instantly.
-  // On first-time sessions, a single gasless wallet signature derives the keys.
-    if (!client) {
+  if (!client) {
     return (
-      <div className="flex flex-col h-full min-h-[500px] bg-white rounded-2xl border border-gray-100 shadow-sm overflow-y-auto">
-        {/* Minimalist Protocol Header */}
-        <div className="flex items-center justify-between px-8 py-6 border-b border-gray-50 bg-white shrink-0">
-          <div className="flex items-center gap-3">
-          </div>
-          <div className="w-4" />
-        </div>
+      <TuringShieldGate>
+      <div className="flex flex-col h-full min-h-[100dvh] bg-[#F9F8F6] items-center justify-center p-6 relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
 
-        {/* Hero Sovereign Section */}
-        <div className="flex-1 px-8 py-16 flex flex-col items-center justify-center text-center gap-10">
-          <div className="relative w-48 h-48 md:w-56 md:h-56 flex items-center justify-center">
+        <div className="relative z-10 w-full max-w-md bg-white border border-[#EBEBEB] shadow-2xl rounded-3xl p-10 flex flex-col items-center">
+          
+          <div className="w-20 h-20 rounded-full border border-[#EBEBEB] bg-[#F9F8F6] flex items-center justify-center shadow-sm mb-8">
             {isInitializing ? (
-              <div className="w-12 h-12 rounded-full border-2 border-blue-100 border-t-blue-500 animate-spin" />
+              <div className="w-8 h-8 rounded-full border-2 border-indigo-100 border-t-indigo-600 animate-spin" />
             ) : (
-              <div className="w-32 h-32 rounded-full border border-gray-100 flex flex-col items-center justify-center bg-gray-50 shadow-sm gap-3">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                <div className="text-[11px] font-medium tracking-wide text-gray-500">Ready</div>
-              </div>
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-black">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
             )}
           </div>
 
-          <div className="space-y-4 max-w-2xl">
-            <h2 className="text-gray-900 text-[28px] sm:text-[36px] md:text-[44px] font-semibold leading-tight">
-                Web3 Messages <br /> <span className="text-gray-400">Secure & Private.</span>
-            </h2>
-            <div className="w-12 h-px bg-gray-200 mx-auto my-6" />
-            
-            <p className="text-gray-500 text-[15px] leading-relaxed px-6 max-w-sm mx-auto text-center">
-              Connect your wallet to start messaging. All conversations are end-to-end encrypted natively.
-            </p>
-          </div>
-        </div>
+          <h2 className="text-[28px] font-black tracking-tight text-black mb-3 text-center">
+            Zero-Knowledge <br /> <span className="text-black/30">Transport.</span>
+          </h2>
+          
+          <p className="text-[14px] font-medium text-[#555] text-center leading-[1.6] mb-10 max-w-[280px]">
+            {isInitializing ? "Deriving session keys and verifying hardware enclave..." : "Activate your cryptographic identity to access the sovereign network."}
+          </p>
 
-        {/* Action Area */}
-        <div className="bg-white p-8 md:p-12 border-t border-gray-50 flex flex-col items-center">
           {initError ? (
-            <div className="flex flex-col items-center gap-6 w-full max-w-md">
-              <div className="w-full bg-red-50 text-red-600 text-[13px] p-4 rounded-2xl border border-red-100 text-center">
+            <div className="flex flex-col items-center gap-4 w-full">
+              <div className="w-full bg-red-50 text-red-700 text-[13px] font-medium p-4 rounded-xl border border-red-100 text-center leading-relaxed">
                 {initError}
               </div>
               
-              {/* Expert UX: If the error is about a missing connector, offer to open the wallet modal */}
               {(initError.includes('wallet connection lost') || initError.includes('Connect your wallet') || initError.toLowerCase().includes('unknown signer')) ? (
                 <div className="flex flex-col gap-3 w-full">
-                  <button
-                    onClick={() => openAppKit()}
-                    className="w-full py-4 rounded-2xl bg-blue-500 text-white text-[14px] font-medium hover:bg-blue-600 transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
-                  >
+                  <button onClick={() => openAppKit()} className="w-full h-[56px] bg-black text-white rounded-2xl font-bold tracking-wide active:scale-[0.98] transition-all">
                     Reconnect Wallet
                   </button>
-                  <button
-                    onClick={() => { reconnect(); initClient(); }}
-                    className="w-full py-3.5 rounded-2xl bg-white border border-gray-200 text-gray-600 text-[13px] font-medium hover:bg-gray-50 transition-all"
-                  >
+                  <button onClick={() => { reconnect(); initClient(); }} className="w-full h-[56px] bg-white border border-[#EBEBEB] text-black rounded-2xl font-bold tracking-wide active:scale-[0.98] transition-all">
                     Refresh Session
                   </button>
                 </div>
               ) : (
-                <button
-                  onClick={initClient}
-                  disabled={isInitializing}
-                  className="w-full py-4 rounded-2xl bg-blue-500 text-white text-[14px] font-medium hover:bg-blue-600 transition-all flex items-center justify-center gap-3 disabled:opacity-50 active:scale-[0.98]"
-                >
-                  {isInitializing ? (
-                    <>Connecting...</>
-                  ) : (
-                    <>Try Again</>
-                  )}
+                <button onClick={initClient} disabled={isInitializing} className="w-full h-[56px] bg-black text-white rounded-2xl font-bold tracking-wide active:scale-[0.98] transition-all disabled:opacity-50">
+                  Try Again
                 </button>
               )}
             </div>
-          ) : isInitializing ? (
-            <div className="flex flex-col items-center gap-5 w-full max-w-sm px-4">
-               <div className="w-16 h-16 rounded-2xl bg-black border border-slate-800 flex items-center justify-center shadow-2xl relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/20 to-transparent animate-pulse" />
-                  <svg className="w-8 h-8 text-emerald-400 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-               </div>
-               
-               <div className="text-center w-full space-y-3">
-                  <div className="text-[10px] font-black uppercase tracking-widest text-black">
-                     Cryptographic Handshake
-                  </div>
-                  
-                  <div className="space-y-2 text-left bg-black/[0.03] p-4 rounded-xl border border-black/[0.05]">
-                     <div className="flex items-center gap-2 text-[9px] font-mono text-black/60">
-                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                        Deriving Aztec Schnorr Address
-                     </div>
-                     <div className="flex items-center gap-2 text-[9px] font-mono text-black/60">
-                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                        Fetching XMTP Public Key
-                     </div>
-                     <div className="flex items-center gap-2 text-[9px] font-mono text-black/60">
-                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        Zero-Knowledge Verification...
-                     </div>
-                  </div>
-               </div>
-
-              {isMobile && (
-                <p className="text-[9px] font-mono uppercase tracking-widest text-black/40 mt-2 text-center">
-                  Please confirm signature in wallet
-                </p>
-              )}
-            </div>
-          ) : (
-            <div className="flex flex-col gap-4">
+          ) : !isInitializing ? (
+            <div className="flex flex-col gap-4 w-full">
               <button
                 onClick={initClient}
-                disabled={isInitializing}
-                className="w-full max-w-md py-6 rounded-xl bg-[#050505]  text-white  text-[13px] font-black uppercase tracking-[0.2em] hover:bg-black/80  transition-all disabled:opacity-50 flex items-center justify-center gap-3"
+                className="w-full h-[56px] bg-black hover:bg-black/85 text-white rounded-2xl font-bold text-[14px] tracking-wide active:scale-[0.98] transition-all shadow-lg shadow-black/20"
               >
                 Activate Identity
               </button>
-              <p className="text-[9px] font-mono uppercase tracking-widest text-black/30 ">Protocol-level cryptographic activation</p>
+              <p className="text-[9px] font-mono uppercase tracking-widest text-black/30 text-center">Protocol-level cryptographic activation</p>
             </div>
+          ) : (
+            isMobile && (
+              <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-indigo-600 mt-6 text-center animate-pulse">
+                Confirm signature in wallet
+              </p>
+            )
           )}
         </div>
       </div>
+      </TuringShieldGate>
     );
-    }
-
-  const shortAddr = (a: string) => `${a.slice(0, 6)}${a.slice(-4)}`;
-
-  return (
+  }
     <TuringShieldGate>
     {/* Transparent container  wallpaper shows through via parent backdrop */}
     <div className={`relative flex w-full h-full overflow-hidden shadow-2xl ${(showScanner || showMyQR || showProfile) ? 'overflow-visible' : ''}`} style={{ 
@@ -1771,7 +1770,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                           </a>
                         </div>
                       ) : attachment ? (
-                        <div className={`mt-1 overflow-hidden rounded-xl border shadow-sm ${isMe ? 'border-transparent bg-blue-500' : 'border-transparent bg-gray-100'}`}>
+                        <div className={`mt-1 overflow-hidden rounded-xl border shadow-sm ${isMe ? 'border-transparent bg-black' : 'border-transparent bg-white'}`}>
                           {attachment.mime.startsWith('image/') || ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(attachment.name.split('.').pop()?.toLowerCase() || '') ? (
                             <a href={attachment.url} target="_blank" rel="noopener noreferrer">
                               <img src={attachment.url} alt={attachment.name} className="max-w-[240px] max-h-[300px] object-cover" />

@@ -206,11 +206,24 @@ export async function POST(req: NextRequest) {
           where: { fromAddress: fromAddr, token: 'QDs', status: 'COMPLETED' },
           _sum: { amount: true },
         });
+        const earnedQdAgg = await tx.qdTransaction.aggregate({
+          where: { aztecAddress: fromAddr, type: 'EARN' },
+          _sum: { amount: true },
+        });
+        const spentQdAgg = await tx.qdTransaction.aggregate({
+          where: { aztecAddress: fromAddr, type: { in: ['SPEND', 'SLASH'] } },
+          _sum: { amount: true },
+        });
 
         const received = Number(receivedAgg._sum.amount ?? 0);
         const sent     = Number(sentAgg._sum.amount     ?? 0);
+        const earned   = Number(earnedQdAgg._sum.amount ?? 0);
+        const spent    = Number(spentQdAgg._sum.amount  ?? 0);
+        
         // Integer math precision scaling to avoid IEEE 754 float dust
-        const balance  = Math.max(0, Math.round((received - sent) * 1_000_000) / 1_000_000);
+        const totalReceived = received + earned;
+        const totalSent = sent + spent;
+        const balance  = Math.max(0, Math.round((totalReceived - totalSent) * 1_000_000) / 1_000_000);
 
         if (balance < roundedAmount) {
           throw new Error(`Insufficient QDs. Available: ${balance.toFixed(6)} QDs.`);
