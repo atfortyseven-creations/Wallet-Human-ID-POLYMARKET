@@ -97,8 +97,8 @@ export const metadata = {
     title: 'Whale Network | Studio Provenance & Aztec Identity',
     description: 'Claim your decentralized identity, access Studio Provenance, and communicate securely via Whale Chat using zero-knowledge proofs.',
     images: ['/humanid_protocol_logo_1778714491433.png'],
-    site: '@whalenetwork',
-    creator: '@whalenetwork',
+    site: '@whalecosystem',
+    creator: '@whalecosystem',
   },
 }
 

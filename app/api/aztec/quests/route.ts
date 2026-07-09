@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
         // Fallback mock if tables aren't created yet during dev
         if (error.message.includes('does not exist')) {
             const fallbackQuests = [
-                { id: '1', slug: 'twitter-follow', title: 'Follow on Twitter', description: 'Follow @WhaleNetwork for 50 QDs', qdReward: 50, status: 'UNCLAIMED' },
+                { id: '1', slug: 'twitter-follow', title: 'Follow on Twitter', description: 'Follow @whalecosystem for 50 QDs', qdReward: 50, status: 'UNCLAIMED' },
                 { id: '2', slug: 'youtube-follow', title: 'Subscribe to YouTube', description: 'Subscribe to Humanity Ledger for 200 QDs', qdReward: 200, status: 'UNCLAIMED' },
                 { id: '3', slug: 'tg-join', title: 'Join Telegram', description: 'Join t.me/humanityledger for 200 QDs', qdReward: 200, status: 'UNCLAIMED' },
                 { id: '4', slug: 'page-share', title: 'Share Page', description: 'Share this page for 15 QDs', qdReward: 15, status: 'UNCLAIMED' }

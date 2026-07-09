@@ -40,7 +40,7 @@ const LinkedGate = dynamic(
 // 
 // Routes that don't need the gate (public / landing)
 // 
-const PUBLIC_PREFIXES = ['/privacy', '/terms', '/connect', '/sign-up', '/login', '/news', '/chat'];
+const PUBLIC_PREFIXES = ['/privacy', '/terms', '/connect', '/sign-up', '/login', '/news'];
 
 // 
 // Routes that must NOT get the legacy black Downhead footer

@@ -136,9 +136,17 @@ export async function POST(req: NextRequest) {
         // (studio-provenance-production.up.railway.app) gets cookies on its own domain,
         // not on humanidfi.com which would silently block all sessions.
         const appUrl = process.env.NEXT_PUBLIC_APP_URL || '';
-        const cookieDomain = (process.env.NODE_ENV === 'production' && appUrl)
+        let cookieDomain = (process.env.NODE_ENV === 'production' && appUrl)
             ? (() => { try { return new URL(appUrl).hostname; } catch { return undefined; } })()
             : undefined;
+
+        // VULN-02: Public Suffix List (PSL) rejection.
+        // Browsers SILENTLY REJECT cookies if you set the `Domain` attribute to a host
+        // that is on the PSL (like .up.railway.app or .vercel.app).
+        // By setting cookieDomain to undefined, it becomes a "host-only" cookie, which works perfectly.
+        if (cookieDomain && (cookieDomain.includes('railway.app') || cookieDomain.includes('vercel.app'))) {
+            cookieDomain = undefined;
+        }
 
         const secureCookieBase = {
             httpOnly: true,
