@@ -13,13 +13,8 @@ import { getSession } from '@/lib/session';
 interface VoteRequest {
     proposalId: string;
     vote: 'FOR' | 'AGAINST' | 'ABSTAIN';
-    voterAddress: string;
-    worldIdProof: {
-        merkle_root: string;
-        nullifier_hash: string;
-        proof: string;
-        verification_level: string;
-    };
+    // voterAddress and worldIdProof are no longer required from the client,
+    // as we derive identity from the session and burn QDs natively.
 }
 
 export async function POST(request: NextRequest) {
@@ -37,30 +32,16 @@ export async function POST(request: NextRequest) {
         const voterAddress = session.userId; // Cryptographically verified
 
         // Validate input
-        if (!body.proposalId || !body.vote || !body.worldIdProof) {
+        if (!body.proposalId || !body.vote) {
             return NextResponse.json(
                 { error: 'Missing required fields' },
                 { status: 400 }
             );
         }
 
-        // Verify World ID proof
-        const app_id = process.env.NEXT_PUBLIC_AUTH_APP_ID as string;
-        const action = `vote_${body.proposalId}`;
-
-        const verifyRes = await verifyWorldIDProof({
-            proof: body.worldIdProof.proof,
-            merkle_root: body.worldIdProof.merkle_root,
-            nullifier_hash: body.worldIdProof.nullifier_hash,
-            verification_level: body.worldIdProof.verification_level,
-        }, app_id, action);
-
-        if (!verifyRes.success) {
-            return NextResponse.json(
-                { error: 'World ID verification failed', detail: verifyRes.detail },
-                { status: 401 }
-            );
-        }
+        // Generate a deterministic nullifier hash for this user + proposal
+        // This ensures the user can only vote once per proposal, replacing the World ID nullifier
+        const generatedNullifier = `${body.proposalId}_${voterAddress}`;
 
         // Check if proposal exists and is still in voting period
         const proposal = await (prisma as any).marketProposal.findUnique({
@@ -88,12 +69,12 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Check if user already voted (using nullifier hash)
+        // Check if user already voted (using generated nullifier hash)
         const existingVote = await (prisma as any).proposalVote.findUnique({
             where: {
                 proposalId_nullifierHash: {
                     proposalId: body.proposalId,
-                    nullifierHash: body.worldIdProof.nullifier_hash,
+                    nullifierHash: generatedNullifier,
                 },
             },
         });
@@ -109,12 +90,12 @@ export async function POST(request: NextRequest) {
         const vote = await (prisma as any).proposalVote.create({
             data: {
                 proposalId: body.proposalId,
-                nullifierHash: body.worldIdProof.nullifier_hash,
-                voterAddress: body.voterAddress,
+                nullifierHash: generatedNullifier,
+                voterAddress: voterAddress,
                 vote: body.vote,
-                merkleRoot: body.worldIdProof.merkle_root,
-                proof: body.worldIdProof.proof,
-                verificationLevel: body.worldIdProof.verification_level,
+                merkleRoot: 'native_qd_vote',
+                proof: 'qd_burned',
+                verificationLevel: 'network_native',
             },
         });
 
