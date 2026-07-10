@@ -128,16 +128,34 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
   const [contextMenu, setContextMenu] = useState<{ id: string, content: string, x: number, y: number } | null>(null);
 
-  // WebRTC State
+  // ─── WebRTC Call State Machine ───────────────────────────────────────────────
+  // States: idle → calling (outgoing) → ringing (incoming) → active → idle
   const [peerInstance, setPeerInstance] = useState<Peer | null>(null);
   const [myPeerId, setMyPeerId] = useState<string>('');
-  const [callActive, setCallActive] = useState<boolean>(false);
-  const [incomingCall, setIncomingCall] = useState<any>(null);
+  // 'idle' | 'calling' | 'ringing' | 'active'
+  const [callState, setCallState] = useState<'idle'|'calling'|'ringing'|'active'>('idle');
+  const [callType, setCallType] = useState<'audio'|'video'|null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
-  const [callType, setCallType] = useState<'audio'|'video'|null>(null);
+  // The PeerJS MediaConnection object (from peerInstance.call() or Peer.on('call'))
+  const [activeConnection, setActiveConnection] = useState<any>(null);
+  // Caller stores the remotePeerId extracted from CALL_ANSWER signal
+  const remotePeerIdRef = useRef<string>('');
+  // Caller stores the call type sent to peer
+  const callTypeRef = useRef<'audio'|'video'>('audio');
+  // isCalling: true if we INITIATED the call (to know whether to call or answer)
+  const isCallerRef = useRef<boolean>(false);
+  // Mute / Camera state
+  const [isMicMuted, setIsMicMuted] = useState(false);
+  const [isCamOff, setIsCamOff] = useState(false);
   const myVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  const remoteAudioRef = useRef<HTMLAudioElement>(null);
+  // Ringtone state
+  const ringtoneRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  // ─── Backward compat shims so existing JSX works unchanged ──────────────────
+  const callActive = callState === 'active' || callState === 'calling';
+  const incomingCall = callState === 'ringing';
 
   // Emoji State
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
@@ -458,115 +476,346 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   };
 
 
-  // Initialize PeerJS
-  useEffect(() => {
-    if (address && !peerInstance) {
-      import('peerjs').then(({ default: Peer }) => {
-        const peer = new Peer();
-        peer.on('open', (id) => setMyPeerId(id));
-        peer.on('call', (call) => {
-          setIncomingCall(call);
-        });
-        setPeerInstance(peer);
-      });
-    }
-  }, [address, peerInstance]);
+  // ─── Ringtone Generator ──────────────────────────────────────────────────────
+  const startRingtone = useCallback(() => {
+    let ctx: AudioContext | null = null;
+    try {
+      ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    } catch { return () => {}; }
+    let stopped = false;
+    const playRing = () => {
+      if (stopped || !ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.setValueAtTime(480, ctx.currentTime);
+      osc.frequency.setValueAtTime(380, ctx.currentTime + 0.5);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 1);
+    };
+    playRing();
+    const id = setInterval(playRing, 2000);
+    ringtoneRef.current = id;
+    return () => { stopped = true; clearInterval(id); ctx?.close(); };
+  }, []);
 
-  // Handle incoming XMTP WebRTC signaling
-  useEffect(() => {
-    const lastMsg = messages[messages.length - 1];
-    if (lastMsg && lastMsg.content.startsWith('__CALL_OFFER__:')) {
-       // We received a call offer, the peerId is inside the message
-       const callerPeerId = lastMsg.content.split(':')[1];
-       if (callerPeerId && !callActive) {
-          toast(`Incoming Call! Accept it in the call modal.`, { duration: 5000 });
-          // In a real app we'd auto-trigger the incoming call logic, 
-          // but Peer.on('call') also triggers so this XMTP signal is mostly for notification/wakeup.
-       }
+  const stopRingtone = useCallback(() => {
+    if (ringtoneRef.current) {
+      clearInterval(ringtoneRef.current);
+      ringtoneRef.current = null;
     }
-  }, [messages, callActive]);
-  
-  const startCall = async (type: 'audio'|'video') => {
-      if (!peerInstance || !activePeer) {
-        toast.error('Chat connection not ready. Please wait and try again.');
-        return;
-      }
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        toast.error('Your browser does not support media access. Please use Chrome or Firefox.');
-        return;
-      }
-      try {
-          // Request permissions explicitly — gives browser a chance to show its native prompt
-          const constraints: MediaStreamConstraints = {
-            audio: { echoCancellation: true, noiseSuppression: true },
-            video: type === 'video' ? { width: { ideal: 1280 }, height: { ideal: 720 } } : false,
-          };
-          const stream = await navigator.mediaDevices.getUserMedia(constraints);
-          setLocalStream(stream);
-          setCallType(type);
-          setCallActive(true);
-          if (myVideoRef.current) myVideoRef.current.srcObject = stream;
-          // Send XMTP Signal with our Peer ID so the remote peer can accept
-          await executeSend(`__CALL_OFFER__:${myPeerId}`);
-          toast.success('📡 Call signal sent. Waiting for peer to connect.');
-      } catch (e: any) {
-          const errName = e?.name || '';
-          if (errName === 'NotAllowedError' || errName === 'PermissionDeniedError') {
-            toast.error('🎙️ Microphone/Camera access denied. Please enable permissions in your browser settings and try again.');
-          } else if (errName === 'NotFoundError' || errName === 'DevicesNotFoundError') {
-            toast.error('🎙️ No microphone or camera found on this device.');
-          } else if (errName === 'NotReadableError' || errName === 'TrackStartError') {
-            toast.error('🎙️ Camera/Microphone is in use by another application. Please close it and try again.');
-          } else {
-            toast.error(`Call failed: ${e?.message || 'Unknown error'}`);
-          }
-          console.error('[Call] getUserMedia error:', e);
-      }
-  };
-  
-  const answerCall = async () => {
-      if (!incomingCall) return;
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        toast.error('Your browser does not support media access. Please use Chrome or Firefox.');
-        return;
-      }
-      try {
-          const isVideo = incomingCall.options?.metadata?.type === 'video';
-          const constraints: MediaStreamConstraints = {
-            audio: { echoCancellation: true, noiseSuppression: true },
-            video: isVideo ? { width: { ideal: 1280 }, height: { ideal: 720 } } : false,
-          };
-          const stream = await navigator.mediaDevices.getUserMedia(constraints);
-          setLocalStream(stream);
-          incomingCall.answer(stream);
-          incomingCall.on('stream', (remoteStream: MediaStream) => {
-              setRemoteStream(remoteStream);
-              if (remoteVideoRef.current) remoteVideoRef.current.srcObject = remoteStream;
+  }, []);
+
+  // ─── PeerJS Initialisation ───────────────────────────────────────────────────
+  // Uses a deterministic peer ID derived from the wallet address for stable routing.
+  useEffect(() => {
+    if (!address || peerInstance) return;
+    import('peerjs').then(({ default: Peer }) => {
+      // ID must be alphanumeric only for PeerJS cloud server
+      const stableId = `whale${address.slice(2, 12).toLowerCase()}`;
+      const peer = new Peer(stableId, {
+        debug: 0,
+        config: {
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' },
+            { urls: 'stun:stun2.l.google.com:19302' },
+            { urls: 'stun:openrelay.metered.ca:80' },
+          ],
+        },
+      });
+      peer.on('open', (id) => {
+        console.log('[WhaleChat:PeerJS] Open with ID:', id);
+        setMyPeerId(id);
+      });
+      // ── Incoming call handler (receiver side only) ──────────────────────────
+      // This fires when the CALLER executes peerInstance.call(ourPeerId, stream)
+      peer.on('call', (connection) => {
+        console.log('[WhaleChat:PeerJS] Incoming call connection:', connection.peer);
+        // Store the connection so answerCall can use it
+        setActiveConnection(connection);
+        // Determine type from metadata sent by caller
+        const callTypeFromMeta: 'audio'|'video' = connection.metadata?.callType || 'audio';
+        setCallType(callTypeFromMeta);
+        isCallerRef.current = false;
+        setCallState('ringing');
+        startRingtone();
+      });
+      peer.on('error', (err) => {
+        console.warn('[WhaleChat:PeerJS] Error:', err.type, err.message);
+        // ID taken means another tab is open — fall back to random ID
+        if (err.type === 'unavailable-id') {
+          const fallback = new Peer();
+          fallback.on('open', (id) => setMyPeerId(id));
+          fallback.on('call', (connection) => {
+            setActiveConnection(connection);
+            const t: 'audio'|'video' = connection.metadata?.callType || 'audio';
+            setCallType(t);
+            isCallerRef.current = false;
+            setCallState('ringing');
+            startRingtone();
           });
-          setCallActive(true);
-          toast.success('✅ Call connected.');
-      } catch (e: any) {
-          const errName = e?.name || '';
-          if (errName === 'NotAllowedError' || errName === 'PermissionDeniedError') {
-            toast.error('🎙️ Microphone/Camera access denied. Please enable permissions in your browser settings.');
-          } else if (errName === 'NotFoundError' || errName === 'DevicesNotFoundError') {
-            toast.error('🎙️ No microphone or camera found on this device.');
-          } else {
-            toast.error(`Failed to answer call: ${e?.message || 'Unknown error'}`);
-          }
-          console.error('[Call] answerCall getUserMedia error:', e);
+          setPeerInstance(fallback);
+          return;
+        }
+      });
+      peer.on('disconnected', () => {
+        console.warn('[WhaleChat:PeerJS] Disconnected — attempting reconnect...');
+        try { peer.reconnect(); } catch {}
+      });
+      setPeerInstance(peer);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address]);
+
+  // Cleanup PeerJS on unmount
+  useEffect(() => {
+    return () => {
+      if (peerInstance && !peerInstance.destroyed) {
+        try { peerInstance.destroy(); } catch {}
       }
+      stopRingtone();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [peerInstance]);
+
+  // ─── XMTP Signaling Listener ─────────────────────────────────────────────────
+  // Monitors XMTP messages for call control signals.
+  // Protocol:
+  //   CALL_OFFER:<callerPeerId>:<callType>   — caller announces intent + its PeerID
+  //   CALL_ANSWER:<receiverPeerId>           — receiver sends back its PeerID
+  //   CALL_DECLINE                           — receiver declines
+  //   CALL_HANGUP                            — either party ends the call
+  // NOTE: performEndCallRef is wired below after performEndCall is defined.
+  const performEndCallRef = useRef<() => void>(() => {});
+  const processedSignalIds = useRef<Set<string>>(new Set());
+  useEffect(() => {
+    if (!messages.length) return;
+    const lastMsg = messages[messages.length - 1];
+    if (!lastMsg?.content || !lastMsg.id) return;
+    if (processedSignalIds.current.has(lastMsg.id)) return;
+    const isMine = lastMsg.senderInboxId?.toLowerCase() === (client?.inboxId as string)?.toLowerCase();
+    if (isMine) return; // ignore our own signals
+    const content: string = typeof lastMsg.content === 'string' ? lastMsg.content : '';
+
+    // ── CALL_OFFER: Peer is calling us ─────────────────────────────────────────
+    if (content.startsWith('__CALL_OFFER__:')) {
+      processedSignalIds.current.add(lastMsg.id);
+      const parts = content.split(':');
+      const callerPeerId = parts[1] || '';
+      const offerCallType: 'audio'|'video' = (parts[2] as any) || 'audio';
+      if (!callerPeerId) return;
+      remotePeerIdRef.current = callerPeerId;
+      // The PeerJS 'call' event fires when the caller calls peerInstance.call() on us.
+      // But the caller cannot call us unless we first acknowledge our PeerId.
+      // So we store the callerPeerId and wait for Peer.on('call') to fire.
+      // If somehow Peer.on('call') hasn't fired yet (network latency), trigger ringing.
+      setCallType(offerCallType);
+      isCallerRef.current = false;
+      if (callState === 'idle') {
+        setCallState('ringing');
+        startRingtone();
+      }
+      console.log('[WhaleChat:Signal] CALL_OFFER received from PeerID:', callerPeerId, 'type:', offerCallType);
+    }
+
+    // ── CALL_ANSWER: Our callee accepted — now we initiate the WebRTC call ──────
+    if (content.startsWith('__CALL_ANSWER__:') && isCallerRef.current && callState === 'calling') {
+      processedSignalIds.current.add(lastMsg.id);
+      const receiverPeerId = content.split(':')[1] || '';
+      if (!receiverPeerId || !peerInstance || !localStream) return;
+      console.log('[WhaleChat:Signal] CALL_ANSWER received. Calling receiver PeerID:', receiverPeerId);
+      // Now the CALLER connects the actual WebRTC media to the receiver
+      const conn = peerInstance.call(receiverPeerId, localStream, {
+        metadata: { callType: callTypeRef.current },
+      });
+      if (!conn) { toast.error('WebRTC: Could not initiate connection.'); return; }
+      setActiveConnection(conn);
+      conn.on('stream', (rStream: MediaStream) => {
+        console.log('[WhaleChat:PeerJS] Caller received remote stream');
+        setRemoteStream(rStream);
+        setCallState('active');
+        if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
+        if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = rStream; remoteAudioRef.current.play().catch(() => {}); }
+      });
+      conn.on('close', () => { console.log('[WhaleChat:PeerJS] Connection closed'); performEndCall(); });
+      conn.on('error', (e: any) => { console.error('[WhaleChat:PeerJS] Connection error:', e); performEndCall(); });
+    }
+
+    // ── CALL_DECLINE: Callee declined ──────────────────────────────────────────
+    if (content === '__CALL_DECLINE__') {
+      processedSignalIds.current.add(lastMsg.id);
+      if (callState !== 'idle') {
+        performEndCallRef.current();
+        toast('📵 Call declined.');
+      }
+    }
+
+    // ── CALL_HANGUP: Remote party hung up ─────────────────────────────────────
+    if (content === '__CALL_HANGUP__') {
+      processedSignalIds.current.add(lastMsg.id);
+      if (callState !== 'idle') {
+        performEndCallRef.current();
+        toast('📵 Call ended by peer.');
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages]);
+
+  // ─── performEndCall: Universal cleanup ──────────────────────────────────────
+  const performEndCall = useCallback(() => {
+    stopRingtone();
+    if (localStream) { try { localStream.getTracks().forEach(t => t.stop()); } catch {} }
+    if (remoteStream) { try { remoteStream.getTracks().forEach(t => t.stop()); } catch {} }
+    if (activeConnection) { try { activeConnection.close(); } catch {} }
+    setLocalStream(null);
+    setRemoteStream(null);
+    setActiveConnection(null);
+    setCallState('idle');
+    setCallType(null);
+    setIsMicMuted(false);
+    setIsCamOff(false);
+    isCallerRef.current = false;
+    remotePeerIdRef.current = '';
+    if (myVideoRef.current) myVideoRef.current.srcObject = null;
+    if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
+    if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = null; }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [localStream, remoteStream, activeConnection, stopRingtone]);
+  // Wire the always-fresh ref — avoids stale closure in the XMTP signal listener above
+  performEndCallRef.current = performEndCall;
+
+  // ─── startCall: Initiate outgoing call ──────────────────────────────────────
+  const startCall = async (type: 'audio'|'video') => {
+    if (callState !== 'idle') {
+      toast.error('A call is already in progress.');
+      return;
+    }
+    if (!peerInstance || !activePeer) {
+      toast.error('Chat connection not ready. Please wait and try again.');
+      return;
+    }
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      toast.error('Your browser does not support media access. Please use Chrome or Firefox.');
+      return;
+    }
+    try {
+      const constraints: MediaStreamConstraints = {
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+        video: type === 'video' ? { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' } : false,
+      };
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      setLocalStream(stream);
+      setCallType(type);
+      callTypeRef.current = type;
+      isCallerRef.current = true;
+      setCallState('calling');
+      if (myVideoRef.current) myVideoRef.current.srcObject = stream;
+      // Signal to peer: we are calling + share our PeerID and call type
+      // The receiver will send back CALL_ANSWER with their PeerID
+      // Then we call peerInstance.call(receiverPeerId, stream)
+      await executeSend(`__CALL_OFFER__:${myPeerId}:${type}`);
+      toast.success('📡 Ringing peer...');
+    } catch (e: any) {
+      setCallState('idle');
+      const errName = e?.name || '';
+      if (errName === 'NotAllowedError' || errName === 'PermissionDeniedError') {
+        toast.error('🎙️ Microphone/Camera access denied. Please enable permissions in your browser settings.');
+      } else if (errName === 'NotFoundError' || errName === 'DevicesNotFoundError') {
+        toast.error('🎙️ No microphone or camera found on this device.');
+      } else if (errName === 'NotReadableError' || errName === 'TrackStartError') {
+        toast.error('🎙️ Camera/Microphone is in use by another app. Please close it.');
+      } else {
+        toast.error(`Call failed: ${e?.message || 'Unknown error'}`);
+      }
+      console.error('[Call] getUserMedia error:', e);
+    }
   };
-  
-  const endCall = () => {
-      if (localStream) localStream.getTracks().forEach(t => t.stop());
-      if (remoteStream) remoteStream.getTracks().forEach(t => t.stop());
-      if (incomingCall) incomingCall.close();
-      setCallActive(false);
-      setIncomingCall(null);
-      setLocalStream(null);
-      setRemoteStream(null);
+
+  // ─── answerCall: Receiver accepts incoming call ──────────────────────────────
+  const answerCall = async () => {
+    stopRingtone();
+    if (callState !== 'ringing') return;
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      toast.error('Your browser does not support media access. Please use Chrome or Firefox.');
+      return;
+    }
+    try {
+      const isVideo = callType === 'video';
+      const constraints: MediaStreamConstraints = {
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+        video: isVideo ? { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' } : false,
+      };
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      setLocalStream(stream);
+      if (myVideoRef.current) myVideoRef.current.srcObject = stream;
+
+      // If the PeerJS 'call' event already fired (activeConnection set), answer directly
+      if (activeConnection) {
+        activeConnection.answer(stream);
+        activeConnection.on('stream', (rStream: MediaStream) => {
+          console.log('[WhaleChat:PeerJS] Receiver got remote stream from PeerJS');
+          setRemoteStream(rStream);
+          setCallState('active');
+          if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
+          if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = rStream; remoteAudioRef.current.play().catch(() => {}); }
+        });
+        activeConnection.on('close', () => performEndCall());
+        activeConnection.on('error', () => performEndCall());
+      }
+
+      // Send our PeerID back to the caller so they can peerInstance.call() us
+      await executeSend(`__CALL_ANSWER__:${myPeerId}`);
+      setCallState('active');
+      toast.success('✅ Call connected.');
+    } catch (e: any) {
+      setCallState('idle');
+      const errName = e?.name || '';
+      if (errName === 'NotAllowedError' || errName === 'PermissionDeniedError') {
+        toast.error('🎙️ Microphone/Camera access denied. Please enable permissions in your browser settings.');
+      } else if (errName === 'NotFoundError' || errName === 'DevicesNotFoundError') {
+        toast.error('🎙️ No microphone or camera found on this device.');
+      } else {
+        toast.error(`Failed to answer call: ${e?.message || 'Unknown error'}`);
+      }
+      console.error('[Call] answerCall error:', e);
+    }
   };
+
+  // ─── declineCall: Receiver declines ─────────────────────────────────────────
+  const declineCall = useCallback(async () => {
+    stopRingtone();
+    setCallState('idle');
+    setActiveConnection(null);
+    setCallType(null);
+    try { await executeSend('__CALL_DECLINE__'); } catch {}
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stopRingtone]);
+
+  // ─── endCall: Either party hangs up ─────────────────────────────────────────
+  const endCall = useCallback(async () => {
+    try { await executeSend('__CALL_HANGUP__'); } catch {}
+    performEndCall();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [performEndCall]);
+
+  // ─── toggleMic ───────────────────────────────────────────────────────────────
+  const toggleMic = useCallback(() => {
+    if (!localStream) return;
+    const nextMuted = !isMicMuted;
+    localStream.getAudioTracks().forEach(t => { t.enabled = !nextMuted; });
+    setIsMicMuted(nextMuted);
+  }, [localStream, isMicMuted]);
+
+  // ─── toggleCamera ────────────────────────────────────────────────────────────
+  const toggleCamera = useCallback(() => {
+    if (!localStream) return;
+    const nextOff = !isCamOff;
+    localStream.getVideoTracks().forEach(t => { t.enabled = !nextOff; });
+    setIsCamOff(nextOff);
+  }, [localStream, isCamOff]);
 
   //  Voice Recording: Hold-to-Record 
   const startRecording = useCallback(async () => {
@@ -1944,41 +2193,184 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       </div>
 
 
-      {/* WebRTC Call Overlay */}
-      {callActive && (
-          <div className="absolute inset-0 z-[300] bg-black/90 backdrop-blur-xl flex flex-col items-center justify-center p-6 animate-in fade-in duration-300">
-             <div className="w-full max-w-2xl bg-black rounded-3xl overflow-hidden relative border border-white/20 shadow-2xl flex flex-col h-[70vh]">
-                <div className="flex-1 bg-black/50 relative flex items-center justify-center">
-                   {remoteStream ? (
-                       <video ref={remoteVideoRef} autoPlay playsInline className="w-full h-full object-cover" />
-                   ) : (
-                       <div className="animate-pulse text-white/50 font-mono text-sm uppercase tracking-widest">Waiting for peer...</div>
-                   )}
-                   {localStream && (
-                       <video ref={myVideoRef} autoPlay playsInline muted className="absolute bottom-6 right-6 w-32 h-48 object-cover rounded-xl border border-white/30 shadow-lg" />
-                   )}
-                </div>
-                <div className="h-24 bg-black flex items-center justify-center gap-6 border-t border-white/10">
-                   <button onClick={endCall} className="w-14 h-14 bg-red-500 rounded-full flex items-center justify-center text-white hover:bg-red-600 transition-colors shadow-[0_0_15px_rgba(239,68,68,0.5)]">
-                      <PhoneOff size={24} />
-                   </button>
-                </div>
-             </div>
+      {/* Hidden audio element for audio-only calls */}
+      <audio ref={remoteAudioRef} autoPlay playsInline style={{ display: 'none' }} />
+
+      {/* ── Incoming Call Banner (state: ringing) ───────────────────────────── */}
+      {callState === 'ringing' && (
+        <div className="absolute inset-0 z-[400] bg-black/80 backdrop-blur-2xl flex flex-col items-center justify-center animate-in fade-in duration-500">
+          <div className="flex flex-col items-center gap-8">
+            {/* Avatar + pulse ring */}
+            <div className="relative">
+              <div className="absolute inset-0 rounded-full bg-green-500/20 animate-ping scale-150" />
+              <div className="w-28 h-28 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center shadow-2xl shadow-green-500/30 relative z-10">
+                <Phone size={48} className="text-white" />
+              </div>
+            </div>
+            <div className="text-center">
+              <p className="text-white/50 text-xs font-mono uppercase tracking-[0.3em] mb-2">
+                {callType === 'video' ? 'Incoming Video Call' : 'Incoming Audio Call'}
+              </p>
+              <p className="text-white text-xl font-black tracking-tight">
+                {activePeer ? shortAddr(activePeer) : 'Peer'}
+              </p>
+            </div>
+            <div className="flex items-center gap-6">
+              {/* Decline */}
+              <div className="flex flex-col items-center gap-2">
+                <button
+                  onClick={declineCall}
+                  className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center text-white hover:bg-red-400 active:scale-95 transition-all shadow-lg shadow-red-500/40"
+                >
+                  <PhoneOff size={24} />
+                </button>
+                <span className="text-white/40 text-[10px] font-mono uppercase">Decline</span>
+              </div>
+              {/* Answer */}
+              <div className="flex flex-col items-center gap-2">
+                <button
+                  onClick={answerCall}
+                  className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center text-white hover:bg-green-400 active:scale-95 transition-all shadow-2xl shadow-green-500/50 animate-pulse"
+                >
+                  <Phone size={30} />
+                </button>
+                <span className="text-white/40 text-[10px] font-mono uppercase">Answer</span>
+              </div>
+            </div>
           </div>
+        </div>
       )}
-      
-      {incomingCall && !callActive && (
-          <div className="absolute top-4 right-4 z-[300] bg-black text-white p-4 rounded-2xl shadow-2xl border border-white/20 animate-in slide-in-from-top-10 flex items-center gap-4">
-             <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
-             <div>
-                <p className="font-bold text-sm">Incoming Call</p>
-                <p className="text-xs text-white/60">Peer is calling you</p>
-             </div>
-             <div className="flex gap-2 ml-4">
-                 <button onClick={answerCall} className="px-4 py-2 bg-green-500 rounded-lg text-xs font-bold hover:bg-green-600">Answer</button>
-                 <button onClick={() => { setIncomingCall(null); incomingCall.close(); }} className="px-4 py-2 bg-red-500 rounded-lg text-xs font-bold hover:bg-red-600">Decline</button>
-             </div>
+
+      {/* ── Outgoing Call (state: calling — waiting for answer) ─────────────── */}
+      {callState === 'calling' && (
+        <div className="absolute inset-0 z-[400] bg-black/85 backdrop-blur-2xl flex flex-col items-center justify-center animate-in fade-in duration-400">
+          <div className="flex flex-col items-center gap-8">
+            <div className="relative">
+              <div className="absolute inset-0 rounded-full bg-blue-500/20 animate-ping scale-150" style={{ animationDuration: '2s' }} />
+              <div className="w-28 h-28 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-2xl shadow-blue-500/30 relative z-10">
+                <Phone size={48} className="text-white" />
+              </div>
+            </div>
+            <div className="text-center">
+              <p className="text-white/50 text-xs font-mono uppercase tracking-[0.3em] mb-2">Calling...</p>
+              <p className="text-white text-xl font-black tracking-tight">
+                {activePeer ? shortAddr(activePeer) : 'Peer'}
+              </p>
+              <p className="text-white/30 text-xs mt-1 font-mono">Waiting for answer</p>
+            </div>
+            {localStream && callType === 'video' && (
+              <div className="w-36 h-48 rounded-2xl overflow-hidden border border-white/20 shadow-xl">
+                <video ref={myVideoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
+              </div>
+            )}
+            <button
+              onClick={endCall}
+              className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center text-white hover:bg-red-400 active:scale-95 transition-all shadow-lg shadow-red-500/40"
+            >
+              <PhoneOff size={24} />
+            </button>
           </div>
+        </div>
+      )}
+
+      {/* ── Active Call Overlay (state: active) ─────────────────────────────── */}
+      {callState === 'active' && (
+        <div className="absolute inset-0 z-[350] bg-black flex flex-col animate-in fade-in duration-300">
+          {/* Video area */}
+          <div className="flex-1 relative bg-gray-950 flex items-center justify-center overflow-hidden">
+            {callType === 'video' ? (
+              <>
+                {remoteStream ? (
+                  <video
+                    ref={remoteVideoRef}
+                    autoPlay
+                    playsInline
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center gap-3 text-white/30">
+                    <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center">
+                      <Video size={32} />
+                    </div>
+                    <p className="text-sm font-mono uppercase tracking-widest animate-pulse">Connecting video...</p>
+                  </div>
+                )}
+                {/* PiP: local camera */}
+                {localStream && !isCamOff && (
+                  <div className="absolute bottom-4 right-4 w-32 h-44 rounded-2xl overflow-hidden border-2 border-white/20 shadow-xl bg-black">
+                    <video ref={myVideoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
+                  </div>
+                )}
+                {isCamOff && (
+                  <div className="absolute bottom-4 right-4 w-32 h-44 rounded-2xl bg-gray-900 border-2 border-white/10 flex items-center justify-center">
+                    <p className="text-white/30 text-[10px] text-center font-mono">CAM OFF</p>
+                  </div>
+                )}
+              </>
+            ) : (
+              /* Audio-only mode: big avatar */
+              <div className="flex flex-col items-center gap-6">
+                <div className="w-32 h-32 rounded-full bg-gradient-to-br from-indigo-600 to-blue-700 flex items-center justify-center shadow-2xl">
+                  <Mic size={52} className={`text-white transition-opacity ${isMicMuted ? 'opacity-20' : 'opacity-100'}`} />
+                </div>
+                <p className="text-white text-lg font-bold tracking-tight">
+                  {activePeer ? shortAddr(activePeer) : 'Connected'}
+                </p>
+                {remoteStream ? (
+                  <span className="text-green-400 text-xs font-mono uppercase tracking-widest">● Audio Connected</span>
+                ) : (
+                  <span className="text-yellow-400 text-xs font-mono uppercase tracking-widest animate-pulse">Establishing audio...</span>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Controls bar */}
+          <div className="h-28 bg-black/80 backdrop-blur-md border-t border-white/5 flex items-center justify-center gap-6 px-6 shrink-0">
+            {/* Mic toggle */}
+            <div className="flex flex-col items-center gap-1">
+              <button
+                onClick={toggleMic}
+                className={`w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95 ${
+                  isMicMuted
+                    ? 'bg-red-500/20 border border-red-500/50 text-red-400'
+                    : 'bg-white/10 hover:bg-white/20 text-white'
+                }`}
+              >
+                {isMicMuted ? <MicOff size={20} /> : <Mic size={20} />}
+              </button>
+              <span className="text-white/30 text-[9px] font-mono uppercase">{isMicMuted ? 'Unmute' : 'Mute'}</span>
+            </div>
+
+            {/* Camera toggle (only for video calls) */}
+            {callType === 'video' && (
+              <div className="flex flex-col items-center gap-1">
+                <button
+                  onClick={toggleCamera}
+                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-all active:scale-95 ${
+                    isCamOff
+                      ? 'bg-red-500/20 border border-red-500/50 text-red-400'
+                      : 'bg-white/10 hover:bg-white/20 text-white'
+                  }`}
+                >
+                  <Video size={20} />
+                </button>
+                <span className="text-white/30 text-[9px] font-mono uppercase">{isCamOff ? 'Start Cam' : 'Stop Cam'}</span>
+              </div>
+            )}
+
+            {/* End call */}
+            <div className="flex flex-col items-center gap-1">
+              <button
+                onClick={endCall}
+                className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center text-white hover:bg-red-400 active:scale-95 transition-all shadow-lg shadow-red-500/40"
+              >
+                <PhoneOff size={24} />
+              </button>
+              <span className="text-white/30 text-[9px] font-mono uppercase">End Call</span>
+            </div>
+          </div>
+        </div>
       )}
 
       {/*  Overlays  */}
