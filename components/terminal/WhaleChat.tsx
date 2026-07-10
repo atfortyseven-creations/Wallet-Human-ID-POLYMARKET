@@ -2198,7 +2198,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
       {/* ── Incoming Call Banner (state: ringing) ───────────────────────────── */}
       {callState === 'ringing' && (
-        <div className="absolute inset-0 z-[400] bg-black/80 backdrop-blur-2xl flex flex-col items-center justify-center animate-in fade-in duration-500">
+        <div className="fixed inset-0 z-[9000] bg-black/80 backdrop-blur-2xl flex flex-col items-center justify-center animate-in fade-in duration-500">
           <div className="flex flex-col items-center gap-8">
             {/* Avatar + pulse ring */}
             <div className="relative">
@@ -2243,7 +2243,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
       {/* ── Outgoing Call (state: calling — waiting for answer) ─────────────── */}
       {callState === 'calling' && (
-        <div className="absolute inset-0 z-[400] bg-black/85 backdrop-blur-2xl flex flex-col items-center justify-center animate-in fade-in duration-400">
+        <div className="fixed inset-0 z-[9000] bg-black/85 backdrop-blur-2xl flex flex-col items-center justify-center animate-in fade-in duration-400">
           <div className="flex flex-col items-center gap-8">
             <div className="relative">
               <div className="absolute inset-0 rounded-full bg-blue-500/20 animate-ping scale-150" style={{ animationDuration: '2s' }} />
@@ -2275,7 +2275,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
       {/* ── Active Call Overlay (state: active) ─────────────────────────────── */}
       {callState === 'active' && (
-        <div className="absolute inset-0 z-[350] bg-black flex flex-col animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-[9000] bg-black flex flex-col animate-in fade-in duration-300">
           {/* Video area */}
           <div className="flex-1 relative bg-gray-950 flex items-center justify-center overflow-hidden">
             {callType === 'video' ? (

@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import { useHardwareEnclave } from '@/hooks/useHardwareEnclave';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
-import { Fingerprint, ShieldAlert, Cpu, CheckCircle2, Loader2, LockKeyhole } from 'lucide-react';
+import { Fingerprint, Cpu, CheckCircle2, Loader2, LockKeyhole, Key } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export function TuringShieldGate({ children, onVerified }: { children: React.ReactNode, onVerified?: (enclaveId: string) => void }) {
@@ -25,7 +25,7 @@ export function TuringShieldGate({ children, onVerified }: { children: React.Rea
   }
 
   return (
-    <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#F9F8F6]/80 backdrop-blur-xl font-sans text-[#0A0A0A] p-6 overflow-hidden">
+    <div className="fixed inset-0 z-[9000] flex flex-col items-center justify-center bg-[#F9F8F6]/80 backdrop-blur-xl font-sans text-[#0A0A0A] p-6 overflow-hidden">
       {/* Background premium glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-indigo-500/5 blur-[80px] rounded-full pointer-events-none" />
       
@@ -36,17 +36,21 @@ export function TuringShieldGate({ children, onVerified }: { children: React.Rea
         style={{ willChange: "transform, opacity" }}
         className="relative z-10 w-full max-w-md border border-[#EBEBEB] bg-white rounded-3xl p-8 shadow-2xl flex flex-col items-center text-center"
       >
-        <div className="w-16 h-16 rounded-full bg-[#F9F8F6] border border-[#EBEBEB] flex items-center justify-center mb-6 text-black shadow-sm">
-          <ShieldAlert size={28} strokeWidth={2.5} />
+        <div className="relative w-20 h-20 mb-6 flex items-center justify-center">
+          <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 opacity-20 animate-pulse" />
+          <div className="absolute inset-1 rounded-full border border-indigo-500/30" />
+          <div className="w-16 h-16 rounded-full bg-white shadow-[0_0_40px_rgba(99,102,241,0.3)] flex items-center justify-center text-indigo-600 relative z-10">
+            <Key size={28} strokeWidth={2} />
+          </div>
         </div>
         
-        <h2 className="text-[22px] font-black tracking-tight text-black mb-1">Turing-Shield Gate</h2>
+        <h2 className="text-[24px] font-black tracking-tight text-black mb-1">Hardware Key Generation</h2>
         <div className="text-[11px] text-indigo-600 font-bold uppercase tracking-[0.2em] mb-6 flex items-center justify-center gap-2">
-          <Cpu size={12} strokeWidth={3} /> FHE + ZK-PUF Enabled
+          <Cpu size={12} strokeWidth={3} /> Secure Enclave Active
         </div>
 
         <p className="text-[14px] text-[#555] font-medium leading-[1.6] mb-8 px-2">
-          To access the Sovereign Chat network, your identity must be mathematically bound to the physical Secure Enclave of your device. This generates a zero-knowledge proof of biometric locality, guaranteeing absolute privacy.
+          To enter the sovereign network, we must generate your private cryptographic keys. These keys are mathematically bound to the physical hardware of your device and will never leave it.
         </p>
 
         {isEnclaveReady ? (
@@ -56,9 +60,9 @@ export function TuringShieldGate({ children, onVerified }: { children: React.Rea
             className="w-full h-[56px] bg-black hover:bg-black/85 text-white rounded-2xl font-bold text-[14px] tracking-wide transition-transform active:scale-[0.98] shadow-lg shadow-black/20 flex items-center justify-center gap-3 disabled:opacity-50"
           >
             {isAuthenticating ? (
-              <><Loader2 size={18} className="animate-spin" /> Verifying Enclave...</>
+              <><Loader2 size={18} className="animate-spin" /> Generating Keys...</>
             ) : (
-              <><Fingerprint size={18} /> Bind Hardware Identity</>
+              <><Fingerprint size={18} /> Generate Hardware Keys</>
             )}
           </button>
         ) : (

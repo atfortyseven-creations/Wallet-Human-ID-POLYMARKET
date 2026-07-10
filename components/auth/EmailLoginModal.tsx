@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Props {
@@ -165,7 +166,7 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <AnimatePresence>
       {isOpen && (
         <>
@@ -410,4 +411,9 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
       )}
     </AnimatePresence>
   );
+
+  if (typeof document !== "undefined") {
+    return createPortal(modalContent, document.body);
+  }
+  return null;
 }
