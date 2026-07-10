@@ -1349,7 +1349,7 @@ export function MobileLanding() {
   //  Render: Unified Mobile Landing & Login Modal 
   // CRITICAL: This block must be AFTER all isLinked guards above.
   return (
-    <div className="w-full bg-[#F9F8F6] relative font-sans" style={{ color: '#050505', minHeight: 'var(--dvh-100, 100dvh)' }}>
+    <div className="w-full bg-white relative font-sans" style={{ color: '#050505', minHeight: 'var(--dvh-100, 100dvh)' }}>
       
       {/*  Sticky Header  */}
       <motion.header

@@ -32,34 +32,33 @@ export async function GET() {
   }
 
   try {
-    const { createSafeJsonRpcClient } = await import('@aztec/foundation/json-rpc/client');
-    const { PXE } = await import('@aztec/pxe/client/lazy');
-    const { Fr } = await import('@aztec/aztec.js/fields');
-    const { deriveSigningKey } = await import('@aztec/stdlib/keys');
-    const { SchnorrAccountContract } = await import('@aztec/accounts/schnorr');
-    const { AccountManager } = await import('@aztec/aztec.js/wallet');
-    const pxe = createSafeJsonRpcClient(pxeUrl, PXE);
-    const secretKey  = Fr.fromHexString(relayerSecretHex.replace('0x', ''));
-    const signingKey = deriveSigningKey(secretKey);
-    const contract   = new SchnorrAccountContract(signingKey);
-
-    const manager = await AccountManager.create(pxe, secretKey, contract);
-    const wallet  = await manager.getWallet() as any;
-    const adminAddress = wallet.getAddress();
-
+    const { EmbeddedWallet } = await import('@aztec/wallets/embedded');
+    const { Fr } = await import('@aztec/foundation/curves/bn254');
     const { AztecAddress } = await import('@aztec/stdlib/aztec-address');
     const { SponsoredFeePaymentMethod } = await import('@aztec/aztec.js/fee');
     const { getFpcAddress } = await import('@/lib/aztec/client');
-    const SPONSORED_FPC = getFpcAddress();
-    const fpcAddress = AztecAddress.fromString(SPONSORED_FPC);
-    const paymentMethod = new SponsoredFeePaymentMethod(fpcAddress);
-
     const { TokenContract } = await import('@aztec/noir-contracts.js/Token');
-    const deployTx = TokenContract.deploy(wallet, adminAddress, 'Quantum Dollars', 'QDs', 18)
-      .send({ fee: { paymentMethod } });
 
-    const receipt = await deployTx.wait();
-    const tokenAddress = receipt.contract.address.toString();
+    const wallet = await EmbeddedWallet.create(pxeUrl, { ephemeral: true });
+    
+    try {
+      const secretKey = Fr.fromHexString(relayerSecretHex.replace(/^0x/i, ''));
+      const salt = new Fr(0n);
+      
+      const accountManager = await wallet.createSchnorrAccount(secretKey, salt);
+      const adminAddress = accountManager.address;
+
+      const fpcAddress = AztecAddress.fromString(getFpcAddress());
+      const paymentMethod = new SponsoredFeePaymentMethod(fpcAddress);
+
+      const deployResult = await TokenContract.deploy(wallet, adminAddress, 'Quantum Dollars', 'QDs', 18n)
+        .send({ 
+          from: adminAddress, 
+          fee: { paymentMethod } 
+        });
+
+      const tokenAddress = deployResult.contract.address.toString();
+      const txHash = deployResult.receipt.txHash.toString();
 
     console.log(`[Deploy] ✅ TokenContract deployed at: ${tokenAddress}`);
     console.log(`[Deploy] 📋 ACTION REQUIRED: Set AZTEC_TOKEN_CONTRACT_ADDRESS=${tokenAddress} in Railway`);
@@ -69,10 +68,13 @@ export async function GET() {
       message: '✅ QDs Token deployed! Set AZTEC_TOKEN_CONTRACT_ADDRESS in Railway env vars and redeploy.',
       tokenAddress,
       relayerAddress: adminAddress.toString(),
-      deployTxHash: receipt.txHash?.toString(),
+      deployTxHash: txHash,
       nodeInfo,
       actionRequired: `Set AZTEC_TOKEN_CONTRACT_ADDRESS=${tokenAddress} in Railway environment variables, then redeploy.`,
     });
+    } finally {
+      await wallet.stop();
+    }
 
   } catch (error: any) {
     console.error('[Deploy] Error:', error.message);
@@ -80,7 +82,7 @@ export async function GET() {
       {
         success: false,
         error: `Deployment failed: ${error.message}`,
-        hint: 'Ensure AZTEC_PXE_URL points to a running PXE sidecar. The PXE must be connected to the Aztec testnet node.',
+        hint: 'Ensure EmbeddedWallet dependencies and native binaries are available.',
         pxeUrl,
         nodeInfo,
       },

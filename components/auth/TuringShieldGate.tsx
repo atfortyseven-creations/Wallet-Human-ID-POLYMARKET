@@ -25,7 +25,7 @@ export function TuringShieldGate({ children, onVerified }: { children: React.Rea
   }
 
   return (
-    <div className="fixed inset-0 z-[9000] flex flex-col items-center justify-center bg-[#F9F8F6]/80 backdrop-blur-xl font-sans text-[#0A0A0A] p-6 overflow-hidden">
+    <div className="fixed inset-0 z-[9000] flex flex-col items-center justify-center bg-white font-sans text-[#0A0A0A] p-6 overflow-hidden">
       {/* Background premium glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-indigo-500/5 blur-[80px] rounded-full pointer-events-none" />
       
@@ -73,7 +73,7 @@ export function TuringShieldGate({ children, onVerified }: { children: React.Rea
           </div>
         )}
 
-        <div className="mt-8 flex flex-col gap-2.5 w-full text-left bg-[#F9F8F6] p-5 rounded-2xl border border-[#EBEBEB]">
+        <div className="mt-8 flex flex-col gap-2.5 w-full text-left bg-white p-5 rounded-2xl border border-[#EBEBEB] shadow-sm">
           <div className="text-[10px] uppercase tracking-[0.2em] text-black/40 font-black mb-2">Security Audit Trail</div>
           <div className="flex items-center gap-2.5 text-[12px] font-medium text-[#444]">
             <CheckCircle2 size={14} className="text-indigo-500" /> Fully Homomorphic Encryption Active

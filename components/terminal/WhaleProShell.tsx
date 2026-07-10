@@ -334,7 +334,7 @@ export function WhaleProShell({
             </motion.aside>
 
             {/* ── Main Content ── */}
-            <div className="flex-1 flex flex-col min-w-0 relative h-full">
+            <div className="flex-1 flex flex-col min-w-0 relative h-full bg-white">
 
                 {/* Top Bar */}
                 <header

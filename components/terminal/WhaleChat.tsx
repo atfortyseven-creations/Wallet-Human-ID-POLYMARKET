@@ -1742,7 +1742,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   if (!isConnected) {
     return (
       <TuringShieldGate>
-      <div className="flex flex-col items-center justify-center h-full min-h-[100dvh] bg-[#F9F8F6] p-6 gap-6 relative overflow-hidden">
+      <div className="flex flex-col items-center justify-center h-full min-h-[100dvh] bg-white p-6 gap-6 relative overflow-hidden">
         {/* Subtle background glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
         
@@ -1765,12 +1765,12 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   if (!client) {
     return (
       <TuringShieldGate>
-      <div className="flex flex-col h-full min-h-[100dvh] bg-[#F9F8F6] items-center justify-center p-6 relative overflow-hidden">
+      <div className="flex flex-col h-full min-h-[100dvh] bg-white items-center justify-center p-6 relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
 
         <div className="relative z-10 w-full max-w-md bg-white border border-[#EBEBEB] shadow-2xl rounded-3xl p-10 flex flex-col items-center">
           
-          <div className="w-20 h-20 rounded-full border border-[#EBEBEB] bg-[#F9F8F6] flex items-center justify-center shadow-sm mb-8">
+          <div className="w-20 h-20 rounded-full border border-[#EBEBEB] bg-white flex items-center justify-center shadow-sm mb-8">
             {isInitializing ? (
               <div className="w-8 h-8 rounded-full border-2 border-indigo-100 border-t-indigo-600 animate-spin" />
             ) : (
@@ -1834,15 +1834,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
   return (
     <TuringShieldGate>
-    {/* Transparent container  wallpaper shows through via parent backdrop */}
-    <div className={`relative flex w-full h-full overflow-hidden shadow-2xl ${(showScanner || showMyQR || showProfile) ? 'overflow-visible' : ''}`} style={{ 
-      borderRadius: isMobile ? 0 : '1rem', 
-      background: isMobile ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.70)',
-      backdropFilter: isMobile ? 'none' : 'blur(24px)',
-      WebkitBackdropFilter: isMobile ? 'none' : 'blur(24px)'
+    {/* Solid white container — no glass/blur so wallpaper never bleeds through */}
+    <div className={`relative flex w-full h-full overflow-hidden shadow-sm ${(showScanner || showMyQR || showProfile) ? 'overflow-visible' : ''}`} style={{ 
+      borderRadius: isMobile ? 0 : '0',
+      background: '#ffffff',
     }}>
       {/*  Sidebar: Conversation List  */}
-      <div className={`${showList ? 'flex' : 'hidden md:flex'} w-full md:w-80 flex-col border-r border-white/40 bg-white/40 backdrop-blur-md`}>
+      <div className={`${showList ? 'flex' : 'hidden md:flex'} w-full md:w-80 flex-col border-r border-black/10 bg-white`}>
         <div className="p-4 border-b border-white/30">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">

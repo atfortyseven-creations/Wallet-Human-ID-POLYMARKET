@@ -26,6 +26,11 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [countdown, setCountdown] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const codeRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -164,7 +169,7 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
     }
   }
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   const modalContent = (
     <AnimatePresence>

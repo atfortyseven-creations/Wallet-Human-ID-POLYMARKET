@@ -58,7 +58,9 @@ export async function POST(req: NextRequest) {
     let isDerivedOwner = false;
     if (!isEvmOwner) {
       try {
-        const derivedAztec = '0x' + crypto.createHash('sha256').update(sessionAddr).digest('hex');
+        const round1 = crypto.createHash('sha256').update(`aztec-schnorr:${sessionAddr}`).digest();
+        const round2 = crypto.createHash('sha256').update(round1).digest('hex');
+        const derivedAztec = `0x${round2}`;
         isDerivedOwner = derivedAztec.toLowerCase() === normalizedAddress;
       } catch {}
     }

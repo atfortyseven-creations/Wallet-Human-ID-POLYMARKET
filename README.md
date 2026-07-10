@@ -2,7 +2,7 @@
 
 *Privacy is a fundamental right. Architecture is a declaration of values.*
 
-> **Version 4.0.0 \u2014 July 7, 2026**
+> **Version 4.0.0 \u2014 July 10, 2026**
 > **Aztec Alpha Testnet Live** \u2014 RPC: `https://v5.testnet.rpc.aztec-labs.com`
 
 Whale Network is a sovereign-grade identity terminal and cryptographic analytics ecosystem built natively for the **Aztec Network**. It provides absolute user state privacy, data siloing, and mathematically provable censorship resistance via Zero-Knowledge (ZK) cryptography.
@@ -13,7 +13,7 @@ This system is structurally incapable of collecting user state. Data is sealed v
 > **Aztec Foundation Grant Acknowledgement:**
 > Humanity Ledger & Whale Network are built as public goods for the Zero-Knowledge ecosystem. This repository is proudly fully open-source (MIT License) and architected to meet the strictest cypherpunk requirements of the Aztec Foundation Grant program.
 
-## What's New \u2014 July 7, 2026
+## What's New \u2014 July 10, 2026
 
 - **Immersive Landing Page**: Full desktop and mobile redesign with Framer Motion scroll animations, global registry map, and Aztec integration showcase
 - **Native Wallet Connection**: `<appkit-button />` directly on landing page \u2014 no redirect required. Works on iOS, Android, and all desktop browsers
@@ -93,4 +93,4 @@ npm run build:ipfs
 ---
 **Humanity Ledger S.L.**
 *Aztec Native Architecture. ZKP Secured. Cypherpunk Aligned.*
-*Last updated: 2026-07-07*
+*Last updated: 2026-07-10*

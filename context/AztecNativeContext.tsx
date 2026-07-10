@@ -480,67 +480,25 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       // Burn address on Aztec — tokens sent here are permanently destroyed
       const AZTEC_BURN_ADDRESS = '0x0000000000000000000000000000000000000000000000000000000000000000';
       
-      // Attempt client-side Aztec transfer first (if wallet is alive in memory)
-      let onChainSuccess = false;
-      try {
-        const { Fr } = await import('@aztec/aztec.js/fields');
-        const { deriveSigningKey } = await import('@aztec/stdlib/keys');
-        const { SchnorrAccountContract } = await import('@aztec/accounts/schnorr');
-        const { AccountManager } = await import('@aztec/aztec.js/wallet');
-        const { AztecAddress } = await import('@aztec/stdlib/aztec-address');
-        const { TokenContract } = await import('@aztec/noir-contracts.js/Token');
-        const { SponsoredFeePaymentMethod } = await import('@aztec/aztec.js/fee');
-        const { createSafeJsonRpcClient } = await import('@aztec/foundation/json-rpc/client');
-        const { PXE } = await import('@aztec/pxe/client/lazy');
-
-        const pxeUrl = process.env.NEXT_PUBLIC_AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
-        const pxe = createSafeJsonRpcClient(pxeUrl, PXE as any);
-
-        // Reconstruct wallet from stored seed (entropy still in React state)
-        const storedSession = JSON.parse(localStorage.getItem('aztec_session') || '{}');
-        if (!storedSession.seed) throw new Error("No seed in session");
-
-        const secretKey = Fr.fromHexString(storedSession.seed.replace('0x', ''));
-        const signingKey = deriveSigningKey(secretKey);
-        const contract = new SchnorrAccountContract(signingKey);
-        const manager = await AccountManager.create(pxe as any, secretKey as any, contract as any);
-        const wallet = await (manager as any).getWallet() as any;
-
-        const tokenAddressStr = process.env.NEXT_PUBLIC_TOKEN_ADDRESS;
-        if (!tokenAddressStr) throw new Error("TOKEN_ADDRESS not set");
-
-        const tokenContract = await TokenContract.at(AztecAddress.fromString(tokenAddressStr), wallet as any);
-        const amountBigInt = BigInt(Math.floor(amount * 1e18));
-        const FPC_ADDRESS = process.env.NEXT_PUBLIC_SPONSORED_FPC_ADDRESS || '0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7';
-
-        const tx = await (tokenContract.methods as any)
-          .transfer_in_public(wallet.getAddress(), AztecAddress.fromString(AZTEC_BURN_ADDRESS), amountBigInt, 0)
-          .send({ fee: { paymentMethod: new SponsoredFeePaymentMethod(AztecAddress.fromString(FPC_ADDRESS)) } });
-
-        await tx.wait();
-        onChainSuccess = true;
-        console.log(`[Aztec Spend] ✅ Client-side on-chain burn: ${amount} QDs for "${reason}"`);
-      } catch (clientErr) {
-        console.warn('[Aztec Spend] Client-side burn failed, falling back to server relay:', clientErr);
-      }
-
-      // If client-side didn't work, delegate to server relay (which tries Mode A then Mode B)
-      if (!onChainSuccess) {
-        const res = await fetch("/api/aztec/transfer", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            from: activeAddr,
-            to: AZTEC_BURN_ADDRESS,
-            amount,
-            reason,
-          })
-        });
-        if (!res.ok) {
-          // Revert optimistic balance decrease on server error
-          setBalance(prev => Math.round((prev + amount) * 1_000_000) / 1_000_000);
-          throw new Error("Payment failed");
-        }
+      // Delegate to server relay (which tries Mode A then Mode B)
+      const res = await fetch("/api/aztec/transfer", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "x-web3-address": evmAddress || ''
+        },
+        body: JSON.stringify({
+          from: activeAddr,
+          to: AZTEC_BURN_ADDRESS,
+          amount,
+          reason,
+        })
+      });
+      
+      if (!res.ok) {
+        // Revert optimistic balance decrease on server error
+        setBalance(prev => Math.round((prev + amount) * 1_000_000) / 1_000_000);
+        throw new Error("Payment failed");
       }
 
       await fetchLedgerState(activeAddr); // reconcile with DB

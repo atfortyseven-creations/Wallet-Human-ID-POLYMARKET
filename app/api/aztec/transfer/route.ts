@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
 import { getSession } from '@/lib/session';
+import { assertVerifiedIdentity } from '@/lib/identity-gate';
 
 export const dynamic = 'force-dynamic';
 
@@ -68,7 +69,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // ── Identity Gate: Only verified identities (airdrop claimants) can transfer ──
+    // This blocks proxy farms: creating 10,000 wallets does nothing because
+    // none of them have signed and claimed one of the 200 genesis airdrops.
     const sessionAddr = (session?.userId ?? web3Header!).toLowerCase().trim();
+    try {
+      await assertVerifiedIdentity(sessionAddr);
+    } catch (gateErr: any) {
+      return NextResponse.json(
+        { error: gateErr.message, code: 'NOT_VERIFIED_IDENTITY' },
+        { status: gateErr.statusCode ?? 403 }
+      );
+    }
 
     // Accept exact EVM match OR the SHA-256 derived Aztec address
     const isEvmMatch = sessionAddr === fromAddr;
@@ -76,7 +88,9 @@ export async function POST(req: NextRequest) {
     if (!isEvmMatch) {
       try {
         const { createHash } = await import('crypto');
-        const derivedAztec   = '0x' + createHash('sha256').update(sessionAddr).digest('hex');
+        const round1 = createHash('sha256').update(`aztec-schnorr:${sessionAddr}`).digest();
+        const round2 = createHash('sha256').update(round1).digest('hex');
+        const derivedAztec = `0x${round2}`;
         isDerivedMatch = derivedAztec.toLowerCase() === fromAddr.toLowerCase();
       } catch {}
     }
