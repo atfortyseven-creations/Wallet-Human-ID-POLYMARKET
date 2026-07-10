@@ -162,40 +162,54 @@ export async function POST(req: NextRequest) {
       // ── MODE A: Full on-chain mint via PXE + TokenContract ────────────────
       console.log('[Aztec Airdrop] Mode A: On-chain mint via TokenContract');
 
-      const { createSafeJsonRpcClient } = await import('@aztec/foundation/json-rpc/client');
-      const { PXE }                     = await import('@aztec/pxe/client/lazy');
-      const { AccountManager }          = await import('@aztec/aztec.js/wallet');
-      const { SchnorrAccountContract }  = await import('@aztec/accounts/schnorr');
-      const { Fr }                      = await import('@aztec/aztec.js/fields');
-      const { deriveSigningKey }        = await import('@aztec/stdlib/keys');
-      const { AztecAddress }            = await import('@aztec/stdlib/aztec-address');
-      const { TokenContract }           = await import('@aztec/noir-contracts.js/Token');
+      const { EmbeddedWallet }            = await import('@aztec/wallets/embedded');
+      const { Fr }                        = await import('@aztec/foundation/curves/bn254');
+      const { AztecAddress }              = await import('@aztec/stdlib/aztec-address');
+      const { TokenContract }             = await import('@aztec/noir-contracts.js/Token');
       const { SponsoredFeePaymentMethod } = await import('@aztec/aztec.js/fee');
+      const { getFpcAddress }             = await import('@/lib/aztec/client');
 
-      const pxe        = createSafeJsonRpcClient(pxeUrl, PXE);
-      const secretKey  = Fr.fromHexString(relayerSecretHex.replace('0x', ''));
-      const signingKey = deriveSigningKey(secretKey);
-      const contract   = new SchnorrAccountContract(signingKey);
-      const manager    = await AccountManager.create(pxe, secretKey, contract);
-      const wallet     = await manager.getWallet();
+      // Initialize Embedded Wallet connected to PXE node
+      const wallet = await EmbeddedWallet.create(pxeUrl, { ephemeral: true });
 
-      const tokenAddress  = AztecAddress.fromString(tokenAddressStr);
-      const toAddress     = AztecAddress.fromString(normalizedAddress);
-      const tokenContract = await TokenContract.at(tokenAddress, wallet);
-      const amountBigInt  = BigInt(AIRDROP_AMOUNT) * (10n ** 18n);
-      const { getFpcAddress } = await import('@/lib/aztec/client');
-      const SPONSORED_FPC = getFpcAddress();
+      try {
+        const secretKeyHex = relayerSecretHex;
+        const secretKey    = Fr.fromHexString(secretKeyHex.replace(/^0x/i, ''));
+        const salt         = new Fr(0n);
+        
+        // Instantiate Schnorr account in EmbeddedWallet
+        const accountManager = await wallet.createSchnorrAccount(secretKey, salt);
+        const relayerAddr = accountManager.address;
 
-      const tx      = await tokenContract.methods.mint_to_public(toAddress, amountBigInt).send({
-        fee: { paymentMethod: new SponsoredFeePaymentMethod(AztecAddress.fromString(SPONSORED_FPC)) }
-      });
-      const receipt = await tx.wait();
-      aztecTxHash   = receipt.txHash.toString();
-      explorerUrl   = `${AZTEC_EXPLORER}/tx/${aztecTxHash}`;
-      onChain       = true;
-      blockNum      = Number(receipt.blockNumber ?? Math.floor(Date.now() / 12_000));
-      console.log(`[Aztec Airdrop] ✅ On-chain! Hash: ${aztecTxHash}`);
+        const tokenAddress  = AztecAddress.fromString(tokenAddressStr);
+        const toAddress     = AztecAddress.fromString(normalizedAddress);
+        
+        // Connect TokenContract instance to our wallet
+        const tokenContract = await TokenContract.at(tokenAddress, wallet);
+        const amountBigInt  = BigInt(AIRDROP_AMOUNT) * (10n ** 18n);
 
+        const SPONSORED_FPC = getFpcAddress();
+
+        // Dispatch transaction natively through Aztec sequencer
+        const txResult = await tokenContract.methods
+          .mint_to_public(toAddress, amountBigInt)
+          .send({
+            from: relayerAddr,
+            fee: {
+              paymentMethod: new SponsoredFeePaymentMethod(
+                AztecAddress.fromString(SPONSORED_FPC)
+              )
+            }
+          });
+        
+        aztecTxHash   = txResult.receipt.txHash.toString();
+        explorerUrl   = `${AZTEC_EXPLORER}/tx/${aztecTxHash}`;
+        onChain       = true;
+        blockNum      = Number(txResult.receipt.blockNumber ?? Math.floor(Date.now() / 12_000));
+        console.log(`[Aztec Airdrop] ✅ On-chain! Hash: ${aztecTxHash}`);
+      } finally {
+        await wallet.stop();
+      }
     } else {
       // ── MODE B: Node-verified DB airdrop ──────────────────────────────────
       console.log('[Aztec Airdrop] Mode B: Node-verified DB airdrop (token not deployed yet)');
