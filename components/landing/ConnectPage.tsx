@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
 import { QRCodeSVG } from 'qrcode.react';
 import { useSystemSignOut } from '@/hooks/useSystemSignOut';
+import { EmailLoginModal } from '@/components/auth/EmailLoginModal';
 
 import {
   ArrowRight,
@@ -115,6 +116,7 @@ export default function ConnectPage() {
   const [ephemeral, setEphemeral] = useState<{ publicKey: string; privateKey: string; isECDH?: boolean } | null>(null);
   const [authStatus, setAuthStatus] = useState<"idle" | "verifying" | "failed">("idle");
   const [pinCode, setPinCode] = useState<string | null>(null);
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
   const redirectingRef = useRef(false);
 
   let isGuarded = false;
@@ -653,6 +655,15 @@ export default function ConnectPage() {
                   {DESKTOP_WALLETS.map((w) => (
                     <WalletButton key={w.id} logo={w.logo} name={w.name} badge={w.badge} onClick={() => handleDesktopWallet(w.id, w.rdns, w.installUrl)} loading={isPending && pendingId === w.id} delay={w.delay} />
                   ))}
+                  
+                  <WalletButton 
+                    logo="https://www.svgrepo.com/show/475656/google-color.svg" 
+                    name="Gmail / Email" 
+                    badge="Sign in without a wallet" 
+                    onClick={() => setEmailModalOpen(true)} 
+                    delay={0.24} 
+                  />
+                  <EmailLoginModal isOpen={emailModalOpen} onClose={() => setEmailModalOpen(false)} />
                 </div>
               )}
             </div>

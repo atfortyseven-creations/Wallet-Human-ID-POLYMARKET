@@ -170,35 +170,32 @@ function DevelopersShowcase() {
       <div className="w-full max-w-[1100px] mx-auto px-6">
         <InViewSection>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            <motion.div variants={FADE_UP} className="order-2 lg:order-1">
+            <motion.div variants={FADE_UP} className="order-2 lg:order-1 w-full max-w-full overflow-hidden">
               {/* Code block visual */}
-              <div className="bg-[#0d0d0d] border border-white/5 p-6 font-mono text-[12.5px] leading-6 overflow-hidden select-none">
-                <div className="flex items-center gap-1.5 mb-4">
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+              <div className="bg-[#0A0A0A] border border-black/10 shadow-[0_20px_60px_rgba(0,0,0,0.15)] rounded-2xl p-6 font-mono text-[12.5px] leading-6 overflow-x-auto select-none w-full">
+                <div className="flex items-center gap-2 mb-5">
+                  <div className="w-3 h-3 rounded-full bg-[#FF5F56] border border-[#E0443E]" />
+                  <div className="w-3 h-3 rounded-full bg-[#FFBD2E] border border-[#DEA123]" />
+                  <div className="w-3 h-3 rounded-full bg-[#27C93F] border border-[#1AAB29]" />
                 </div>
-                <div className="text-[#6a737d]">{"// Whale Network REST API"}</div>
-                <div className="mt-2 text-[#79b8ff]">{"POST"} <span className="text-[#f97583]">/api/zk/compile</span></div>
-                <div className="text-white/40">{"{"}</div>
-                <div className="pl-4 text-[#b392f0]">{'"circuit"'}<span className="text-white/40">:</span> <span className="text-[#9ecbff]">{'"identity_proof"'}</span><span className="text-white/40">,</span></div>
-                <div className="pl-4 text-[#b392f0]">{'"inputs"'}<span className="text-white/40">:</span> <span className="text-[#9ecbff]">{'"{"walletAddress":"0x..."}"'}</span></div>
-                <div className="text-white/40">{"}"}</div>
-                <div className="mt-3 text-[#6a737d]">{"// → 200 OK"}</div>
-                <div className="text-white/40">{"{"}</div>
-                <div className="pl-4 text-[#e6db74]">{'"proof"'}<span className="text-white/40">:</span> <span className="text-[#9ecbff]">{'"0x2f7a8b..."'}</span><span className="text-white/40">,</span></div>
-                <div className="pl-4 text-[#e6db74]">{'"verified"'}<span className="text-white/40">:</span> <span className="text-[#f97583]">true</span></div>
-                <div className="text-white/40">{"}"}</div>
+                <div className="text-[#6a737d]">{"// Whale Network — Sovereign Aztec Gateway"}</div>
+                <div className="mt-2 text-[#79b8ff]">{"import"} <span className="text-[#f97583]">{'{ AztecTerminal }'}</span> {"from"} <span className="text-[#9ecbff]">{'@whale-network/aztec'}</span><span className="text-white/40">;</span></div>
+                <div className="mt-2 text-[#b392f0]">{'const'} <span className="text-white">terminal</span> <span className="text-[#f97583]">{'='}</span> <span className="text-[#79b8ff]">{'new'}</span> <span className="text-[#e6db74]">{'AztecTerminal()'}</span><span className="text-white/40">;</span></div>
+                <div className="mt-4 text-[#6a737d]">{"// Zero-knowledge shielded execution"}</div>
+                <div className="text-[#b392f0]">{'await'} <span className="text-white">terminal.</span><span className="text-[#e6db74]">executeShielded</span><span className="text-white/40">({'{'}</span></div>
+                <div className="pl-4 text-[#e6db74]">{'"privacy"'}<span className="text-white/40">:</span> <span className="text-[#9ecbff]">{'"MAXIMUM"'}</span><span className="text-white/40">,</span></div>
+                <div className="pl-4 text-[#e6db74]">{'"circuit"'}<span className="text-white/40">:</span> <span className="text-[#9ecbff]">{'"noir_identity_proof"'}</span></div>
+                <div className="text-white/40">{'}'}</div>
               </div>
             </motion.div>
             <div className="order-1 lg:order-2">
-              <SectionLabel>Developers — API & SDK</SectionLabel>
+              <SectionLabel>Sovereign Application Layer</SectionLabel>
               <SectionTitle>
-                Build private apps<br />
-                <span className="text-black/40">on Aztec infrastructure.</span>
+                The sovereign gateway<br />
+                <span className="text-black/40">to Aztec Network.</span>
               </SectionTitle>
               <SectionBody>
-                The Whale Network Developer Suite exposes a complete REST and WebSocket API over the Aztec execution layer. Compile Noir circuits, submit ZK proofs, query identity attestations, and integrate private state management — all through documented, audited endpoints.
+                Whale Network operates as the sovereign application layer over Aztec's zero-knowledge execution environment. We abstract the complexity of ZK circuits into a sovereign-grade terminal — providing high-net-worth individuals and enterprises with complete privacy over their transactions, assets, and communications.
               </SectionBody>
               <motion.div variants={FADE_UP} className="flex flex-wrap items-center gap-3">
                 <NavButton href="/developers/api-docs" label="View API Docs" />

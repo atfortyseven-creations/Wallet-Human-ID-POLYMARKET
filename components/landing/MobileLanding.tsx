@@ -95,6 +95,7 @@ const DynamicUniversalScanModal = dynamic(
 
 import { ImmersiveManifestoLanding } from "./ImmersiveManifestoLanding";
 import { WhalecosystemTweetFeed } from "./WhalecosystemTweetFeed";
+import { EmailLoginModal } from "@/components/auth/EmailLoginModal";
 
 //  Colour tokens 
 const IVORY = "#FFFFFF";
@@ -645,6 +646,7 @@ export function MobileLanding() {
   // which causes Chrome Android to silently block metamask:// navigations.
   const [wcDeepLink, setWcDeepLink] = useState<string | null>(null);
   const [wcTargetWallet, setWcTargetWallet] = useState<string>('metamask');
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -1448,16 +1450,16 @@ export function MobileLanding() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-md"
+            className="fixed inset-0 z-50 flex items-start sm:items-center justify-center bg-black/40 backdrop-blur-md"
             onClick={() => setShowConnectOverlay(false)}
           >
             <motion.div
-              initial={{ y: "100%" }}
+              initial={{ y: "-100%" }}
               animate={{ y: 0 }}
-              exit={{ y: "100%" }}
+              exit={{ y: "-100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
               onClick={e => e.stopPropagation()}
-              className="w-full sm:max-w-md bg-white border-t border-black/10 sm:border sm:rounded-3xl rounded-t-[32px] flex flex-col items-center px-6 pt-8 pb-12 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] relative max-h-[90vh] overflow-y-auto"
+              className="w-full sm:max-w-md bg-white border-b border-black/10 sm:border sm:rounded-3xl rounded-b-[32px] flex flex-col items-center px-6 pt-12 pb-12 shadow-[0_10px_40px_rgba(0,0,0,0.1)] relative max-h-[90vh] overflow-y-auto"
             >
               <button 
                 onClick={() => setShowConnectOverlay(false)}
@@ -1466,7 +1468,7 @@ export function MobileLanding() {
                 <X size={16} className="text-black/50" />
               </button>
 
-              <div className="w-12 h-1 rounded-full bg-black/10 absolute top-3 sm:hidden" />
+              <div className="w-12 h-1 rounded-full bg-black/10 absolute bottom-3 sm:hidden" />
 
       {/* Main Content (Modal Body) */}
       <div className="w-full flex flex-col items-center mt-2">
@@ -1550,6 +1552,16 @@ export function MobileLanding() {
               }}
               delay={0.18}
             />
+
+            <WalletOption
+              logo="https://www.svgrepo.com/show/475656/google-color.svg"
+              name="Gmail / Email"
+              badge="Sign in without a wallet"
+              loading={false}
+              onClick={() => setEmailModalOpen(true)}
+              delay={0.24}
+            />
+            <EmailLoginModal isOpen={emailModalOpen} onClose={() => setEmailModalOpen(false)} />
 
             <div className="w-full flex justify-center mt-2 mb-1">
               <RemoteLottie path="system-shots/Paper airplane.json" className="w-full max-w-[180px] h-[100px] object-contain" />

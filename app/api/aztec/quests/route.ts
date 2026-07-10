@@ -85,7 +85,23 @@ export async function POST(req: NextRequest) {
             const questRows: any[] = await prisma.$queryRaw`
                 SELECT id FROM "AztecQuest" WHERE slug = ${slug} AND "isActive" = true LIMIT 1
             `;
-            if (questRows.length > 0) resolvedQuestId = questRows[0].id;
+            if (questRows.length > 0) {
+                resolvedQuestId = questRows[0].id;
+            } else {
+                // Auto-seed missing quest to satisfy foreign key constraint
+                const newId = crypto.randomUUID();
+                const titles: Record<string, string> = {
+                    'twitter-follow': 'Follow on Twitter',
+                    'youtube-follow': 'Subscribe to YouTube',
+                    'tg-join': 'Join Telegram',
+                    'page-share': 'Share Page'
+                };
+                await prisma.$executeRaw`
+                    INSERT INTO "AztecQuest" (id, slug, title, description, "qdReward", "isActive", "createdAt")
+                    VALUES (${newId}, ${slug}, ${titles[slug] || slug}, 'Quest auto-seeded', ${rewardAmount}, true, NOW())
+                `;
+                resolvedQuestId = newId;
+            }
         } catch (_) { /* table may not exist in dev — use slug as fallback */ }
 
         // ── DEDUPLICATION: Atomic Serializable transaction ────────────────────────
