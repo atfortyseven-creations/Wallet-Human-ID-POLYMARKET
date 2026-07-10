@@ -1580,10 +1580,11 @@ export function MobileLanding() {
             </div>
           </div>
             </motion.div>
-          )}
-        </AnimatePresence>,
-        document.body
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>,
+      document.body
+    )}
 
       <DynamicUniversalScanModal
         isOpen={showScanner}
