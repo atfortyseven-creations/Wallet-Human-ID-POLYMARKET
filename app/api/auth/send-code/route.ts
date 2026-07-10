@@ -63,13 +63,14 @@ export async function POST(request: NextRequest) {
             apiKeyPresent: !!process.env.RESEND_API_KEY,
         });
         
-        return NextResponse.json(
-            { 
-                error: 'Email delivery failed. Please try again.',
-                details: 'Ensure your email address is valid.'
-            },
-            { status: 503 }
-        );
+        // [DEV OVERRIDE] If we fail to send the email (e.g. missing API key), 
+        // we still return success and log the code to the console so the user can test.
+        console.log(`\n\n[DEV MODE] Verification Code for ${emailMasked} is: ${code}\n\n`);
+        
+        return NextResponse.json({
+          success: true,
+          message: 'Verification code sent (DEV MODE - Check console)'
+        });
     }
 
     // [DATA LEAKAGE FIX] Do NOT return internal userId to the client

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import { ZKBiometricGate } from "@/components/security/ZKBiometricGate";
@@ -1444,16 +1445,17 @@ export function MobileLanding() {
       </div>
 
       {/*  Login Modal Overlay (Light Mode)  */}
-      <AnimatePresence>
-        {showConnectOverlay && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-start sm:items-center justify-center bg-black/40 backdrop-blur-md"
-            onClick={() => setShowConnectOverlay(false)}
-          >
+      {mounted && typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {showConnectOverlay && (
             <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[99999] flex items-start sm:items-center justify-center bg-black/40 backdrop-blur-md"
+              onClick={() => setShowConnectOverlay(false)}
+            >
+              <motion.div
               initial={{ y: "-100%" }}
               animate={{ y: 0 }}
               exit={{ y: "-100%" }}
@@ -1578,9 +1580,10 @@ export function MobileLanding() {
             </div>
           </div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
 
       <DynamicUniversalScanModal
         isOpen={showScanner}

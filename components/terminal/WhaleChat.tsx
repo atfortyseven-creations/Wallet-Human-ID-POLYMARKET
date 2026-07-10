@@ -133,10 +133,22 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const [peerInstance, setPeerInstance] = useState<Peer | null>(null);
   const [myPeerId, setMyPeerId] = useState<string>('');
   // 'idle' | 'calling' | 'ringing' | 'active'
-  const [callState, setCallState] = useState<'idle'|'calling'|'ringing'|'active'>('idle');
+  const [callState, _setCallState] = useState<'idle'|'calling'|'ringing'|'active'>('idle');
+  const callStateRef = useRef<'idle'|'calling'|'ringing'|'active'>('idle');
+  const setCallState = useCallback((s: 'idle'|'calling'|'ringing'|'active') => {
+    callStateRef.current = s;
+    _setCallState(s);
+  }, []);
+
   const [callType, setCallType] = useState<'audio'|'video'|null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
-  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+  const [localStream, _setLocalStream] = useState<MediaStream | null>(null);
+  const localStreamRef = useRef<MediaStream | null>(null);
+  const setLocalStream = useCallback((s: MediaStream | null) => {
+    localStreamRef.current = s;
+    _setLocalStream(s);
+  }, []);
+  
   // The PeerJS MediaConnection object (from peerInstance.call() or Peer.on('call'))
   const [activeConnection, setActiveConnection] = useState<any>(null);
   // Caller stores the remotePeerId extracted from CALL_ANSWER signal
@@ -534,9 +546,24 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       // This fires when the CALLER executes peerInstance.call(ourPeerId, stream)
       peer.on('call', (connection) => {
         console.log('[WhaleChat:PeerJS] Incoming call connection:', connection.peer);
-        // Store the connection so answerCall can use it
         setActiveConnection(connection);
-        // Determine type from metadata sent by caller
+        
+        // [AUDIT FIX] If we already answered this call (e.g., via answerCall which sent __CALL_ANSWER__ 
+        // and got the stream), then we must answer the connection IMMEDIATELY.
+        if (callStateRef.current === 'active' && localStreamRef.current) {
+           connection.answer(localStreamRef.current);
+           connection.on('stream', (rStream: MediaStream) => {
+              console.log('[WhaleChat:PeerJS] Receiver got remote stream immediately');
+              setRemoteStream(rStream);
+              if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
+              if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = rStream; remoteAudioRef.current.play().catch(() => {}); }
+           });
+           connection.on('close', () => performEndCallRef.current());
+           connection.on('error', () => performEndCallRef.current());
+           return;
+        }
+
+        // Otherwise, determine type and start ringing
         const callTypeFromMeta: 'audio'|'video' = connection.metadata?.callType || 'audio';
         setCallType(callTypeFromMeta);
         isCallerRef.current = false;
