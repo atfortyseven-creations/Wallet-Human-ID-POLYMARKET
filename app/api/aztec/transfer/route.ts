@@ -59,12 +59,12 @@ export async function POST(req: NextRequest) {
     const roundedAmount = Math.round(rawAmount * 1_000_000) / 1_000_000;
 
     // ── Session Authorization (CSRF / Replay Protection) ────────────────────
-    const session    = await getSession();
-    const web3Header = req.headers.get('x-web3-address')?.toLowerCase().trim();
+    // Rely strictly on Edge Middleware's cryptographically verified header
+    const verifiedSessionAddr = req.headers.get('x-verified-session-address')?.toLowerCase().trim();
 
-    if (!session?.userId && !web3Header) {
+    if (!verifiedSessionAddr) {
       return NextResponse.json(
-        { error: 'Unauthorized: Session missing. Please authenticate or connect your wallet.' },
+        { error: 'Unauthorized: Valid session required.' },
         { status: 401 }
       );
     }
@@ -72,9 +72,8 @@ export async function POST(req: NextRequest) {
     // ── Identity Gate: Only verified identities (airdrop claimants) can transfer ──
     // This blocks proxy farms: creating 10,000 wallets does nothing because
     // none of them have signed and claimed one of the 200 genesis airdrops.
-    const sessionAddr = (session?.userId ?? web3Header!).toLowerCase().trim();
     try {
-      await assertVerifiedIdentity(sessionAddr);
+      await assertVerifiedIdentity(verifiedSessionAddr);
     } catch (gateErr: any) {
       return NextResponse.json(
         { error: gateErr.message, code: 'NOT_VERIFIED_IDENTITY' },
@@ -83,12 +82,12 @@ export async function POST(req: NextRequest) {
     }
 
     // Accept exact EVM match OR the SHA-256 derived Aztec address
-    const isEvmMatch = sessionAddr === fromAddr;
+    const isEvmMatch = verifiedSessionAddr === fromAddr;
     let isDerivedMatch = false;
     if (!isEvmMatch) {
       try {
         const { createHash } = await import('crypto');
-        const round1 = createHash('sha256').update(`aztec-schnorr:${sessionAddr}`).digest();
+        const round1 = createHash('sha256').update(`aztec-schnorr:${verifiedSessionAddr}`).digest();
         const round2 = createHash('sha256').update(round1).digest('hex');
         const derivedAztec = `0x${round2}`;
         isDerivedMatch = derivedAztec.toLowerCase() === fromAddr.toLowerCase();
@@ -97,7 +96,7 @@ export async function POST(req: NextRequest) {
 
     if (!isEvmMatch && !isDerivedMatch) {
       return NextResponse.json(
-        { error: `Forbidden: Identity mismatch. Authenticated as ${sessionAddr.slice(0, 10)}…, but trying to spend from ${fromAddr.slice(0, 10)}…` },
+        { error: `Forbidden: Identity mismatch. Authenticated as ${verifiedSessionAddr.slice(0, 10)}…, but trying to spend from ${fromAddr.slice(0, 10)}…` },
         { status: 403 }
       );
     }

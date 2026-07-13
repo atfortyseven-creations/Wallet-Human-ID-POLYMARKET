@@ -1267,7 +1267,12 @@ export function MobileLanding() {
     if (isDisconnecting) return;
     setIsDisconnecting(true);
     setShowHub(false); // [FIX] Reset Hub so stale showHub=true doesn't auto-open after re-login
-    await nuclearDisconnect();
+    try {
+      await nuclearDisconnect();
+    } finally {
+      // [FIX] Always reset so button doesn't stay permanently dead if reload doesn't occur
+      setIsDisconnecting(false);
+    }
   }, [isDisconnecting, nuclearDisconnect]);
 
   if (!mounted) return null;
@@ -1456,15 +1461,16 @@ export function MobileLanding() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[99999] flex items-start sm:items-center justify-center bg-black/40 backdrop-blur-md"
+              className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/40 backdrop-blur-md"
               onClick={() => setShowConnectOverlay(false)}
             >
               <motion.div
-                initial={{ y: "-100%" }}
-                animate={{ y: 0 }}
-                exit={{ y: "-100%" }}
+                onClick={(e) => e.stopPropagation()}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="w-full sm:max-w-sm bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col max-h-[90dvh] overflow-hidden"
+                className="w-full max-w-sm bg-white rounded-3xl shadow-2xl flex flex-col max-h-[90dvh] overflow-hidden"
               >
                 {/* Modal Header */}
                 <div className="flex items-center justify-between px-6 py-6 border-b border-black/5">
@@ -1479,44 +1485,94 @@ export function MobileLanding() {
 
                 {/* Modal Body - Scrollable */}
                 <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
-                  {/* Wallet Options */}
-                  <WalletOption
-                    logo="https://wallet-select.imgix.net/asset/icon/metamask.svg"
-                    name="MetaMask"
-                    badge="Mobile, Extension"
-                    loading={loadingConnector === 'metaMask'}
-                    onClick={() => handleWalletClick('metaMask')}
-                    delay={0}
-                  />
-                  <WalletOption
-                    logo="https://wallet-select.imgix.net/asset/icon/coinbase.svg"
-                    name="Coinbase Wallet"
-                    badge="Mobile, Web"
-                    loading={loadingConnector === 'coinbaseWalletSDK'}
-                    onClick={() => handleWalletClick('coinbaseWalletSDK')}
-                    delay={0.08}
-                  />
-                  <WalletOption
-                    logo="https://wallet-select.imgix.net/asset/icon/walletconnect.svg"
-                    name="WalletConnect"
-                    badge="Any Wallet"
-                    loading={loadingConnector === 'walletConnect'}
-                    onClick={() => handleWalletClick('walletConnect')}
-                    delay={0.16}
-                  />
-                  <WalletOption
-                    logo="https://www.svgrepo.com/show/475656/google-color.svg"
-                    name="Gmail / Email"
-                    badge="Sign in without a wallet"
-                    loading={false}
-                    onClick={() => setEmailModalOpen(true)}
-                    delay={0.24}
-                  />
-                  {mounted && typeof document !== 'undefined' && (
-                    <EmailLoginModal isOpen={emailModalOpen} onClose={() => setEmailModalOpen(false)} />
-                  )}
-                  <div className="w-full flex justify-center mt-2 mb-1">
-                    <RemoteLottie path="system-shots/Paper airplane.json" className="w-full max-w-[180px] h-[100px] object-contain" />
+                  <div className="w-full flex flex-col gap-3">
+        
+                    {/*
+                      PRIMARY CONNECT BUTTON — Pure JS, fires synchronously inside the user-gesture.
+                      CRITICAL: We do NOT use the <appkit-button> web component here because:
+                      1. On iOS Safari/Chrome, the web component may not be registered by the time
+                         the user taps, causing the tap to be swallowed silently.
+                      2. React synthetic events break the "user gesture" requirement for wallet deep-links
+                         on iOS WKWebView when state updates happen before the open() call.
+                      This button calls rkOpenModal() as the VERY FIRST thing in the handler,
+                      synchronously in the user-gesture context, which iOS treats as user-initiated.
+                    */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        // MUST be the very first call — any state update before this
+                        // causes iOS to classify the subsequent window.open as a popup
+                        // and block it silently.
+                        try {
+                          // @ts-ignore
+                          rkOpenModal({ view: 'Connect' });
+                        } catch (e) {
+                          // AppKit not ready yet — force-open the w3m-modal DOM element directly.
+                          try {
+                            const modal = document.querySelector('w3m-modal') as any;
+                            if (modal?.open !== undefined) {
+                              modal.open = true;
+                            } else if (modal) {
+                              modal.setAttribute('open', '');
+                            }
+                          } catch {}
+                          // Last resort: query any reown modal variant
+                          try {
+                            const appkitModal = document.querySelector('appkit-modal') as any;
+                            if (appkitModal) appkitModal.open = true;
+                          } catch {}
+                          console.warn('[MobileWallet] rkOpenModal failed, used DOM fallback', e);
+                        }
+                        // Clear disconnect guard AFTER opening modal so the session
+                        // establishment flow can run once the wallet connects.
+                        try { sessionStorage.removeItem("__disconnected__"); } catch {}
+                        try { localStorage.removeItem("__disconnected__"); } catch {}
+                        try { localStorage.setItem('system_pending_wakeup', '1'); } catch {}
+                        try { sessionStorage.setItem('system_show_reconnect', '1'); } catch {}
+                      }}
+                      className="group w-full flex items-center gap-4 p-5 rounded-2xl border-2 border-[#5200FF]/30 bg-gradient-to-r from-[#5200FF]/5 to-[#5200FF]/10 hover:from-[#5200FF]/10 hover:to-[#5200FF]/15 hover:border-[#5200FF]/50 active:scale-[0.97] transition-all duration-200 shadow-sm"
+                    >
+                      <div className="w-12 h-12 rounded-xl bg-[#5200FF] flex items-center justify-center p-2.5 overflow-hidden shrink-0 shadow-lg">
+                        <img src="/official-whale-monochrome.png" alt="Connect" className="w-full h-full object-contain invert" />
+                      </div>
+                      <div className="flex-1 text-left">
+                        <p className="text-[14px] font-black uppercase tracking-tight text-[#050505]">Connect Wallet</p>
+                        <p className="text-[10px] font-mono text-[#050505]/50 uppercase tracking-widest mt-0.5">
+                          MetaMask · Trust · Coinbase · Rainbow · OKX · 300+
+                        </p>
+                      </div>
+                      <ArrowRight size={16} className="text-[#5200FF]/60 group-hover:text-[#5200FF] group-hover:translate-x-1 transition-all shrink-0" />
+                    </button>
+        
+                    {/* Secondary: Scan QR from desktop — opens native scanner */}
+                    <WalletOption
+                      logo="/system-shots/aztec-logo.png"
+                      name="Scan QR Code"
+                      badge="Link your desktop session via camera"
+                      loading={false}
+                      onClick={() => {
+                        setShowConnectOverlay(false);
+                        setScanMode('session-only');
+                        setShowScanner(true);
+                      }}
+                      delay={0.18}
+                    />
+        
+                    <WalletOption
+                      logo="https://www.svgrepo.com/show/475656/google-color.svg"
+                      name="Gmail / Email"
+                      badge="Sign in without a wallet"
+                      loading={false}
+                      onClick={() => setEmailModalOpen(true)}
+                      delay={0.24}
+                    />
+                    {mounted && typeof document !== 'undefined' && (
+                      <EmailLoginModal isOpen={emailModalOpen} onClose={() => setEmailModalOpen(false)} />
+                    )}
+        
+                    <div className="w-full flex justify-center mt-2 mb-1">
+                      <RemoteLottie path="system-shots/Paper airplane.json" className="w-full max-w-[180px] h-[100px] object-contain" />
+                    </div>
                   </div>
                 </div>
 

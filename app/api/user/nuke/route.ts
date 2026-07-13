@@ -71,7 +71,7 @@ export async function POST(req: Request) {
                 }
 
                 // Record the irreversible cryptographic proof securely in General Log (Zk-Hash mapped)
-                const salt = process.env.NUKE_SALT || 'WhaleAlert_ZeroG_Salt_777';
+                const salt = process.env.NUKE_SALT || process.env.JWT_SECRET || 'WhaleAlert_ZeroG_Salt_777';
                 const deletionCommitment = createHash('sha256').update(userAddress + salt).digest('hex');
                 
                 await tx.log.create({
@@ -127,6 +127,6 @@ export async function POST(req: Request) {
 
     } catch (error: any) {
         console.error(" [WhaleFortress:Nuke] Critical Failure:", error);
-        return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }

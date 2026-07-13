@@ -103,6 +103,11 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Invalid code");
       setStep("success");
+
+      // CLEAR DISCONNECT GUARD SO THE USER CAN ACTUALLY ENTER THE APP
+      try { sessionStorage.removeItem("__disconnected__"); } catch {}
+      try { localStorage.removeItem("__disconnected__"); } catch {}
+
       setTimeout(() => {
         onSuccess?.();
         onClose();

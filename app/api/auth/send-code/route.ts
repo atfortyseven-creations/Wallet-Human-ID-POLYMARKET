@@ -5,17 +5,37 @@ import { sendVerificationEmail } from '@/lib/email';
 
 export const dynamic = 'force-dynamic';
 
+// In-memory rate limit: { key -> [timestamps] }
+const _rl = new Map<string, number[]>();
+function checkRateLimit(key: string, limit: number, windowMs: number): boolean {
+  const now = Date.now();
+  const times = (_rl.get(key) || []).filter(t => now - t < windowMs);
+  if (times.length >= limit) return false;
+  _rl.set(key, [...times, now]);
+  return true;
+}
+
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() || '127.0.0.1';
     const body = await request.json();
     const { email } = body;
 
-    if (!email || typeof email !== 'string' || !email.includes('@')) {
-      return NextResponse.json(
-        { error: 'Valid email is required' },
-        { status: 400 }
-      );
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || typeof email !== 'string' || !emailRegex.test(email)) {
+      return NextResponse.json({ error: 'Valid email is required' }, { status: 400 });
     }
+
+    // Rate limit: 3 per IP per 5 minutes, 1 per email per 60 seconds
+    if (!checkRateLimit(`ip:${ip}`, 3, 5 * 60 * 1000)) {
+      return NextResponse.json({ error: 'Too many code requests. Please wait before trying again.' }, { status: 429 });
+    }
+    const emailKey = `email:${email.toLowerCase()}`;
+    if (!checkRateLimit(emailKey, 1, 60 * 1000)) {
+      return NextResponse.json({ error: 'A code was recently sent to this email. Please wait 60 seconds.' }, { status: 429 });
+    }
+
+    // (validation and rate limit already done above)
 
     // [DATA LEAKAGE FIX] Never log the full email address in plaintext
     const emailMasked = email.replace(/(.{2})(.*)(@.*)/, '$1***$3');
@@ -63,14 +83,9 @@ export async function POST(request: NextRequest) {
             apiKeyPresent: !!process.env.RESEND_API_KEY,
         });
         
-        // [DEV OVERRIDE] If we fail to send the email (e.g. missing API key), 
-        // we still return success and log the code to the console so the user can test.
-        console.log(`\n\n[DEV MODE] Verification Code for ${emailMasked} is: ${code}\n\n`);
-        
         return NextResponse.json({
-          success: true,
-          message: 'Verification code sent (DEV MODE - Check console)'
-        });
+          error: 'Failed to send verification email due to provider error.'
+        }, { status: 500 });
     }
 
     // [DATA LEAKAGE FIX] Do NOT return internal userId to the client
