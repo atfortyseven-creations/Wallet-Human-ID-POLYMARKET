@@ -22,6 +22,7 @@ import type { Client } from '@xmtp/browser-sdk';
 import { useSettingsStore } from '@/lib/store/useSettingsStore';
 import { useWalletStore } from '@/lib/store/wallet-store';
 import { useAztec } from '@/context/AztecContext';
+import { useAztecNative } from '@/context/AztecNativeContext';
 // NOTE: QDs state is sourced from AztecNativeContext (DB polling) — no local store needed.
 
 import { toast } from 'sonner';
@@ -64,6 +65,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // [PHASE 2 - SILOING] Consume the sandboxed PXE context for Chat Operations
   // This strictly isolates Chat from the Portfolio state to prevent cross-contamination.
   const { getSiloedPXE } = useAztec();
+  const { spendQDs, balance } = useAztecNative();
   const chatContractAddress = { toString: () => '0xCHAT_CONTRACT_ADDRESS_PLACEHOLDER' } as any;
   const siloedPxe = getSiloedPXE ? getSiloedPXE(chatContractAddress) : null;
   const { chatName, chatBio, soundEffects } = useSettingsStore();
@@ -535,6 +537,16 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             { urls: 'stun:stun1.l.google.com:19302' },
             { urls: 'stun:stun2.l.google.com:19302' },
             { urls: 'stun:openrelay.metered.ca:80' },
+            { 
+              urls: 'turn:openrelay.metered.ca:80', 
+              username: 'openrelayproject', 
+              credential: 'openrelayproject' 
+            },
+            { 
+              urls: 'turn:openrelay.metered.ca:443', 
+              username: 'openrelayproject', 
+              credential: 'openrelayproject' 
+            }
           ],
         },
       });
@@ -1626,8 +1638,24 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
   const executeSend = async (content: string) => {
     if (!client || !activePeer || !content.trim() || sending || !address) return;
+
     setSending(true);
-    
+
+    // --- QD DEDUCTION LOGIC ---
+    const isSystemSignal = content.startsWith('__CALL_');
+    if (!isSystemSignal) {
+      if (balance < 0.0001) {
+        toast.error("Insufficient QDs to send message.");
+        setSending(false);
+        return;
+      }
+      const success = await spendQDs(0.0001, 'Whale Chat message');
+      if (!success) {
+        setSending(false);
+        return;
+      }
+    }
+
     if (address) {
         localStorage.removeItem(`whale_draft_${address.toLowerCase()}_${activePeer.toLowerCase()}`);
     }

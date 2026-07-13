@@ -888,11 +888,8 @@ export interface ImmersiveManifestoLandingProps {
 export function ImmersiveManifestoLanding(_props: ImmersiveManifestoLandingProps = {}) {
   return (
     <div className="relative text-[#050505] font-sans antialiased overflow-x-hidden w-full flex flex-col bg-white">
-      {/* LandingNav is HIDDEN: InstitutionalHeader (from ClientLayout) already
-          renders as fixed top-0 on the landing page '/'. Rendering both causes
-          two overlapping fixed navbars. ImmersiveManifestoLanding's own nav is
-          only needed if this component is embedded in a context WITHOUT a global header. */}
-      {/* <LandingNav /> */}
+      {/* LandingNav restored: Provides landing-page-specific navigation */}
+      <LandingNav />
       <HeroSection />
       <ValuePropositionSection />
       <HowItWorksSection />

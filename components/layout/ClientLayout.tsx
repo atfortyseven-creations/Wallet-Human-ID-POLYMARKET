@@ -293,9 +293,8 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
       (pathname === '/portfolio' && isConnected) ||
       pathname === '/support' ||
       pathname === '/academy' ||
-      pathname === '/vip' ||
+      pathname === '/vip'
       // removed careers
-      pathname === '/'
     );
 
   // /chat has its own full-screen header  never show the global one there
