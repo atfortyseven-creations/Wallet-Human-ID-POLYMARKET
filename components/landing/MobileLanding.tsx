@@ -22,6 +22,7 @@ import {
   Newspaper, GraduationCap, Briefcase, Activity, TrendingUp, Package, LayoutDashboard, Target
 } from 'lucide-react';
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
+import { SafeErrorBoundary } from '@/components/ui/SafeErrorBoundary';
 
 //  Reown AppKit + WagmiAdapter localStorage key patterns 
 // These are ALL the keys that Reown AppKit v1/v2 and its WagmiAdapter write
@@ -1285,22 +1286,24 @@ export function MobileLanding() {
 
   if (isLinked && effectiveAddress && showHub) {
     return (
-      <div className="w-full min-h-[100dvh] bg-transparent">
-        <ConnectedScreen 
-           address={effectiveAddress} 
-           onScan={() => { setScanMode('session-only'); setShowScanner(true); }} 
-           onScanLabel={() => { setScanMode('universal'); setShowScanner(true); }}
-           showScanner={showScanner} 
-           onCloseScanner={() => setShowScanner(false)} 
-           scanMode={scanMode}
-           onBack={() => setShowHub(false)}
-           connectorName={connector?.name}
-           chainId={chainId}
-           onDisconnect={handleDisconnect}
-           signMessageAsync={signMessageAsync}
-           initialScanData={(autoSyncStarted && uuidParam) ? window.location.href : null}
-           setShowKyc={setShowKyc}
-        />
+      <div className="w-full min-h-[100dvh] bg-transparent" suppressHydrationWarning>
+        <SafeErrorBoundary>
+          <ConnectedScreen 
+             address={effectiveAddress} 
+             onScan={() => { setScanMode('session-only'); setShowScanner(true); }} 
+             onScanLabel={() => { setScanMode('universal'); setShowScanner(true); }}
+             showScanner={showScanner} 
+             onCloseScanner={() => setShowScanner(false)} 
+             scanMode={scanMode}
+             onBack={() => setShowHub(false)}
+             connectorName={connector?.name}
+             chainId={chainId}
+             onDisconnect={handleDisconnect}
+             signMessageAsync={signMessageAsync}
+             initialScanData={(autoSyncStarted && uuidParam) ? window.location.href : null}
+             setShowKyc={setShowKyc}
+          />
+        </SafeErrorBoundary>
       </div>
     );
   }
@@ -1449,6 +1452,7 @@ export function MobileLanding() {
         <AnimatePresence>
           {showConnectOverlay && (
             <motion.div
+              suppressHydrationWarning
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -1508,7 +1512,9 @@ export function MobileLanding() {
                     onClick={() => setEmailModalOpen(true)}
                     delay={0.24}
                   />
-                  <EmailLoginModal isOpen={emailModalOpen} onClose={() => setEmailModalOpen(false)} />
+                  {mounted && typeof document !== 'undefined' && (
+                    <EmailLoginModal isOpen={emailModalOpen} onClose={() => setEmailModalOpen(false)} />
+                  )}
                   <div className="w-full flex justify-center mt-2 mb-1">
                     <RemoteLottie path="system-shots/Paper airplane.json" className="w-full max-w-[180px] h-[100px] object-contain" />
                   </div>
@@ -1530,6 +1536,7 @@ export function MobileLanding() {
         document.body
       )}
 
+      {mounted && typeof document !== 'undefined' && (
       <DynamicUniversalScanModal
         isOpen={showScanner}
         onClose={() => setShowScanner(false)}
@@ -1544,6 +1551,7 @@ export function MobileLanding() {
           setTimeout(() => toast.remove(), 3000);
         }}
       />
+      )}
 
     </div>
   );
