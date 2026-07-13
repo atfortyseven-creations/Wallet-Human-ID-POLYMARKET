@@ -243,7 +243,7 @@ export function useSystemSignOut() {
             
             // Fallback in case window.location.replace hangs for some reason
             setTimeout(() => {
-                window.location.reload();
+                window.location.href = '/connect';
             }, 500);
         }
     }, [disconnect, disconnectAsync]);
