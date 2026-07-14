@@ -76,6 +76,16 @@ export async function POST(request: NextRequest) {
       // Set secure httpOnly cookies
       await setSessionCookies(accessToken, refreshToken);
 
+      // Set system_handshake so useSystemAccount detects the login on the client
+      request.cookies.set('system_handshake', `email_${user.email}`); // Just modifying the request won't work, we need to set it on the response.
+      // Wait, let's just use next/headers `cookies()` to set it.
+      const { cookies } = await import('next/headers');
+      const cookieStore = await cookies();
+      cookieStore.set('system_handshake', `email_${user.email}`, {
+          path: '/',
+          maxAge: 7 * 24 * 60 * 60, // 7 days
+      });
+
       return NextResponse.json({
         success: true,
         message: 'Logged in successfully',

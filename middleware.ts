@@ -56,6 +56,8 @@ const PUBLIC_PREFIXES = [
   '/api/status',
   '/_next/',
   '/connect',
+  '/terminal',
+  '/portfolio',
   '/fonts/',
   '/images/',
   '/icons/',
@@ -128,7 +130,7 @@ export async function middleware(req: NextRequest): Promise<NextResponse> {
         { status: 401 }
       );
     }
-    const signInUrl = new URL('/sign-in', req.url);
+    const signInUrl = new URL('/connect', req.url);
     signInUrl.searchParams.set('redirect', pathname);
     return NextResponse.redirect(signInUrl);
   }
