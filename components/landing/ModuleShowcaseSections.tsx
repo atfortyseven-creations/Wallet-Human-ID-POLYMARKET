@@ -1,5 +1,6 @@
 "use client";
 
+import { Shield } from 'lucide-react';
 import React, { useRef } from "react";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";

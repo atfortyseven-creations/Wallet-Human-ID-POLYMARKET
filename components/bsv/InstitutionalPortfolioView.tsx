@@ -33,7 +33,7 @@ import { OmnichainBridgeView } from '@/components/portfolio/OmnichainBridgeView'
 import { TransactionHistory } from '@/components/portfolio/TransactionHistory';
 import { QuantumDeFiPositions } from '@/components/portfolio/QuantumDeFiPositions';
 import { PerformanceChart } from '@/components/portfolio/PerformanceChart';
-import { Download, ArrowRightLeft, Route, Send, QrCode, Scan, Activity, Hexagon } from 'lucide-react';
+import { Download, ArrowRightLeft, Route, Send, QrCode, Scan, Activity, Hexagon, Shield, Settings, LogOut } from 'lucide-react';
 import { NativeSwapView } from '@/components/portfolio/NativeSwapView';
 import { NativeBridgeView } from '@/components/portfolio/NativeBridgeView';
 import { NativeBuyView } from '@/components/portfolio/NativeBuyView';

@@ -1,5 +1,6 @@
 "use client";
 
+import { Shield } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 

@@ -25,10 +25,13 @@ const VOTE_COST_QD = 10;
 export function GovernanceProposals() {
     const { address } = useAccount();
     const { spendQDs, balance } = useAztecNative();
-    const { data: proposals, isLoading, mutate } = useSWR<Proposal[]>('/api/governance/proposals', fetcher, {
+    const { data: rawProposals, isLoading, mutate } = useSWR<Proposal[] | any>('/api/governance/proposals', fetcher, {
         refreshInterval: 10_000,
         dedupingInterval: 5_000,
     });
+
+    // Guard: API can return { error } on failure instead of an array
+    const proposals: Proposal[] = Array.isArray(rawProposals) ? rawProposals : [];
 
     const [votingProposal, setVotingProposal] = useState<string | null>(null);
 
@@ -85,7 +88,7 @@ export function GovernanceProposals() {
         );
     }
 
-    if (!proposals || proposals.length === 0) {
+    if (proposals.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center py-12 text-center bg-white border border-black/10 rounded-xl">
                 <FileText className="w-8 h-8 text-black/40 mb-4" />
@@ -113,7 +116,7 @@ export function GovernanceProposals() {
             </div>
 
             <div className="space-y-6">
-                {proposals.map((proposal) => (
+                {proposals.map((proposal: Proposal) => (
                     <div key={proposal.id} className="bg-white border border-black/10 hover:border-black/30 rounded-lg p-6 transition-colors group">
                         
                         <div className="flex items-center justify-between mb-4">

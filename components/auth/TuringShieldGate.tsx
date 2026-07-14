@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import { useHardwareEnclave } from '@/hooks/useHardwareEnclave';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
-import { Fingerprint, Cpu, CheckCircle2, Loader2, LockKeyhole, Key } from 'lucide-react';
+import { Fingerprint, Cpu, CheckCircle2, Loader2, LockKeyhole, Key, Shield } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export function TuringShieldGate({ children, onVerified }: { children: React.ReactNode, onVerified?: (enclaveId: string) => void }) {

@@ -1770,9 +1770,9 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   if (!isConnected) {
     return (
       <TuringShieldGate>
-      <div className="flex flex-col items-center justify-center h-full min-h-[100dvh] bg-white p-6 gap-6 relative overflow-hidden">
+      <div className="flex-1 flex flex-col items-center justify-start h-full bg-white p-6 pt-12 gap-6 relative overflow-hidden">
         {/* Subtle background glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
         
         <h3 className="text-[28px] font-black tracking-tight text-black relative z-10">Sovereign Chat</h3>
         <p className="text-[14px] font-medium text-[#555] text-center max-w-sm leading-relaxed relative z-10 px-4">
@@ -1793,8 +1793,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   if (!client) {
     return (
       <TuringShieldGate>
-      <div className="flex flex-col h-full min-h-[100dvh] bg-white items-center justify-center p-6 relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
+      <div className="flex-1 flex flex-col h-full bg-white items-center justify-start p-6 pt-12 relative overflow-hidden">
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
 
         <div className="relative z-10 w-full max-w-md bg-white border border-[#EBEBEB] shadow-2xl rounded-3xl p-10 flex flex-col items-center">
           
@@ -1863,7 +1863,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   return (
     <TuringShieldGate>
     {/* Solid white container — no glass/blur so wallpaper never bleeds through */}
-    <div className={`relative flex w-full h-full overflow-hidden shadow-sm ${(showScanner || showMyQR || showProfile) ? 'overflow-visible' : ''}`} style={{ 
+      <div className={`relative flex flex-col flex-1 min-h-0 w-full overflow-hidden shadow-sm ${(showScanner || showMyQR || showProfile) ? 'overflow-visible' : ''}`} style={{ 
       borderRadius: isMobile ? 0 : '0',
       background: '#ffffff',
     }}>

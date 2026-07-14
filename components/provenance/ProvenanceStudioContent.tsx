@@ -4,8 +4,7 @@ import { useEffect, useState, useCallback, useMemo, startTransition } from 'reac
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { QRCodeSVG } from 'qrcode.react';
-import {
-  Loader2,
+import { Loader2,
   Package,
   QrCode,
   Anchor,
@@ -27,8 +26,7 @@ import {
   CreditCard,
   ArrowRight,
   X,
-  Zap,
-} from 'lucide-react';
+  Zap,, Shield } from 'lucide-react';
 import { useAccount } from 'wagmi';
 import { passportPublicUrl } from '@/lib/scan/parseScanPayload';
 import type { ProductPassportPublic } from '@/lib/passport/types';
