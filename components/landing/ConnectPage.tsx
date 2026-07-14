@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAccount, useConnect, useDisconnect, useSignMessage } from "wagmi";
+import { signIn } from "next-auth/react";
 import { reconnect as wagmiReconnect, watchAccount, getAccount, getConnectorClient } from '@wagmi/core';
 import { config as wagmiConfig } from '@/config/appkit';
 import { useAppKit } from "@reown/appkit/react";
@@ -117,6 +118,7 @@ export default function ConnectPage() {
   const [authStatus, setAuthStatus] = useState<"idle" | "verifying" | "failed">("idle");
   const [pinCode, setPinCode] = useState<string | null>(null);
   const [emailModalOpen, setEmailModalOpen] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const redirectingRef = useRef(false);
 
   let isGuarded = false;
@@ -656,12 +658,37 @@ export default function ConnectPage() {
                     <WalletButton key={w.id} logo={w.logo} name={w.name} badge={w.badge} onClick={() => handleDesktopWallet(w.id, w.rdns, w.installUrl)} loading={isPending && pendingId === w.id} delay={w.delay} />
                   ))}
                   
-                  <WalletButton 
-                    logo="https://www.svgrepo.com/show/475656/google-color.svg" 
-                    name="Gmail / Email" 
-                    badge="Sign in without a wallet" 
-                    onClick={() => setEmailModalOpen(true)} 
-                    delay={0.24} 
+                  {/* ── Google OAuth ── */}
+                  <WalletButton
+                    logo="https://www.svgrepo.com/show/475656/google-color.svg"
+                    name="Continue with Google"
+                    badge="1-click · No wallet needed"
+                    onClick={async () => {
+                      if (googleLoading) return;
+                      setGoogleLoading(true);
+                      try {
+                        // Clear disconnect guard so the session is accepted
+                        try { sessionStorage.removeItem('__disconnected__'); } catch {}
+                        try { localStorage.removeItem('__disconnected__'); } catch {}
+                        await signIn('google', { callbackUrl: '/' });
+                      } catch (err) {
+                        console.error('[Google OAuth] signIn error:', err);
+                        setGoogleLoading(false);
+                      }
+                    }}
+                    loading={googleLoading}
+                    delay={0.24}
+                  />
+                  {/* ── Email OTP ── */}
+                  <WalletButton
+                    logo="/email-icon.svg"
+                    name="Sign in with Email"
+                    badge="6-digit code sent to your inbox"
+                    onClick={() => setEmailModalOpen(true)}
+                    delay={0.3}
+                    extraIcon={
+                      <span className="text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 bg-black/5 rounded text-black/40">OTP</span>
+                    }
                   />
                   <EmailLoginModal isOpen={emailModalOpen} onClose={() => setEmailModalOpen(false)} />
                 </div>
