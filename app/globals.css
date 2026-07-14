@@ -231,7 +231,12 @@ main[class*="overflow-y-auto"] [class*="min-h-screen"] {
    This block intentionally left empty to avoid duplicate/contradictory zoom rules. */
 
   body {
-    background-color: transparent; /* wallpaper layer handles the base bg */
+    /* ANTI-VOID: Must be white, NOT transparent.
+       'transparent' would show the browser chrome (dark on dark mode OS)
+       below the last content section on the landing page on PC.
+       The UniversalEliteWallpaper (fixed, z-index:-1) covers the visible
+       viewport but NOT the scroll extension area — white body fills that gap. */
+    background-color: #FFFFFF;
     color: inherit;
   }
 

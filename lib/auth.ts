@@ -1,4 +1,4 @@
-﻿import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import bcrypt from "bcryptjs";
 import { NextAuthOptions } from "next-auth";
@@ -51,8 +51,22 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      authorization: {
+        params: {
+          // Request only email and profile (minimum scopes needed)
+          scope: 'openid email profile',
+          // Force account picker every time (security best practice)
+          prompt: 'select_account',
+        }
+      }
     }),
   ],
+  // Custom pages: use /connect as the sign-in page so Google OAuth
+  // users land on our branded connect page, not NextAuth's default UI.
+  pages: {
+    signIn: '/connect',
+    error: '/connect',  // Redirect auth errors to connect page
+  },
   session: {
     strategy: "jwt",
     maxAge: 7 * 24 * 60 * 60, // 7 days
@@ -71,6 +85,13 @@ export const authOptions: NextAuthOptions = {
     }
   },
   callbacks: {
+    async redirect({ url, baseUrl }) {
+      // Security: Prevents Open Redirects (SSRF).
+      // Only allow redirects to the same origin (baseUrl).
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      else if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
+    },
     async jwt({ token, user, account, trigger }) {
       // On initial sign in
       if (trigger === 'signIn' || (user && account)) {

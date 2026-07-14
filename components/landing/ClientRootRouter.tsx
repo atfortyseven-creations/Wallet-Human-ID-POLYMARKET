@@ -5,9 +5,53 @@ import { ImmersiveManifestoLanding } from "./ImmersiveManifestoLanding";
 import { SystemFooter } from "./SystemFooter";
 import { useSystemAccount } from "@/hooks/useSystemAccount";
 
+// Helper: check if system_handshake cookie already exists (any valid type)
+function hasValidHandshakeCookie(): boolean {
+  if (typeof document === 'undefined') return false;
+  try {
+    return document.cookie.split('; ').some(c =>
+      c.startsWith('system_handshake=0x') ||
+      c.startsWith('system_handshake=email_')
+    );
+  } catch { return false; }
+}
+
 export function ClientRootRouter() {
   const { isConnected } = useSystemAccount();
   const [hasSession, setHasSession] = useState(false);
+
+  // ── Google OAuth Session Heal ───────────────────────────────────────────
+  // After a Google OAuth callback, NextAuth sets HttpOnly `human.session-token`
+  // but the client-side gate needs `system_handshake` (a JS-readable cookie).
+  // We call /api/auth/session-heal once on mount to bridge that gap.
+  useEffect(() => {
+    const heal = async () => {
+      try {
+        // If system_handshake is already present, nothing to do.
+        if (hasValidHandshakeCookie()) return;
+
+        // Check if there is a NextAuth session and heal the cookie.
+        const res = await fetch('/api/auth/session-heal', {
+          credentials: 'include',
+          cache: 'no-store',
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.healed) {
+            console.info('[ClientRootRouter] Google OAuth session healed. Reloading gate check...');
+            // The cookie is now set; force the TitaniumGate to re-evaluate by
+            // triggering a storage event (it listens to visibilitychange + storage).
+            try { window.dispatchEvent(new Event('storage')); } catch {}
+          }
+        }
+      } catch {
+        // Non-blocking — if heal fails, the user will be prompted to re-authenticate.
+      }
+    };
+
+    heal();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const check = () => {
@@ -43,9 +87,16 @@ export function ClientRootRouter() {
   }, [isConnected]);
 
   return (
-    <div className="flex flex-col w-full min-h-screen flex-1 bg-white" style={{width:'100%',minWidth:'100%'}}>
+    // overflow-hidden prevents any scroll past the SystemFooter on PC.
+    // The landing page uses natural document scroll (no fixed container),
+    // so all sections must be self-contained with explicit backgrounds.
+    // The bg-white ensures no dark bleed-through below the footer.
+    <div className="flex flex-col w-full min-h-screen flex-1 bg-white overflow-x-hidden" style={{width:'100%',minWidth:'100%'}}>
       <ImmersiveManifestoLanding />
       <SystemFooter />
+      {/* Hard white seal: prevents any transparent gap below SystemFooter
+          from showing the wallpaper/body background color on PC */}
+      <div className="w-full bg-white" style={{minHeight: '0px', flex: '0 0 auto'}} />
     </div>
   );
 }

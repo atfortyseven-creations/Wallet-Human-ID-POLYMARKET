@@ -112,9 +112,12 @@ export function TitaniumGate({ children }: TitaniumGateProps) {
             }
 
             // Priority 3: system_handshake cookie (JS-readable, set by all auth paths).
-            // Must have real 0x address prefix — empty/expired values are rejected.
+            // Accepts: wallet address (0x...) OR Google/Email OAuth identifier (email_...)
             const hasHandshake = typeof document !== 'undefined'
-                && document.cookie.split('; ').some(r => r.startsWith('system_handshake=0x'));
+                && document.cookie.split('; ').some(r =>
+                    r.startsWith('system_handshake=0x') ||
+                    r.startsWith('system_handshake=email_')
+                );
 
             // Priority 3.5: Local System Wallet session storage fallback.
             const isLocalUnlocked = typeof window !== 'undefined'

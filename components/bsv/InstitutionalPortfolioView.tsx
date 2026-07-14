@@ -89,7 +89,7 @@ export function InstitutionalPortfolioView() {
     const isLocked = useWalletStore(s => s.isLocked);
     const displayCurrency = useWalletStore(s => s.displayCurrency || 'EUR');
     const setDisplayCurrency = useWalletStore(s => s.setDisplayCurrency);
-    const { address, isLocalSystemWallet, isConnected } = useSystemAccount();
+    const { address, isLocalSystemWallet, isConnected, isEmailAuth } = useSystemAccount();
     const { assets, totalBalance } = useRealWalletData([], address || undefined);
     
     // We keep 'HOME' as the main view, and overlay modals for actions
@@ -231,6 +231,7 @@ export function InstitutionalPortfolioView() {
                         setDisplayCurrency={setDisplayCurrency}
                         rate={rate}
                         symbol={symbol}
+                        isEmailAuth={isEmailAuth}
                     />
                 )}
                 {/* Embedded older views for deep protocol interactions */}
@@ -298,7 +299,7 @@ export function InstitutionalPortfolioView() {
     );
 }
 
-function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, loading, onRefresh, onSend, onReceive, onScan, onCreate, onBuy, onSwap, onBridge, onNetworkClick, onSettingsClick, onAccountsClick, scannerBase, onShield, onSecurity, onSmartAccount, onDeploy, onOmnichain, onMempool, onQds, assets, displayCurrency, setDisplayCurrency, rate, symbol }: any) {
+function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, loading, onRefresh, onSend, onReceive, onScan, onCreate, onBuy, onSwap, onBridge, onNetworkClick, onSettingsClick, onAccountsClick, scannerBase, onShield, onSecurity, onSmartAccount, onDeploy, onOmnichain, onMempool, onQds, assets, displayCurrency, setDisplayCurrency, rate, symbol, isEmailAuth }: any) {
     const [copied, setCopied] = useState(false);
     const [isDisconnecting, setIsDisconnecting] = useState(false);
     const [activeTab, setActiveTab] = useState<'TOKENS'|'DEFI'|'ACTIVITY'|'AZTEC'>('TOKENS');
@@ -318,7 +319,7 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
         navigator.clipboard.writeText(address);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
-        toast.success("Address Captured");
+        toast.success(isEmailAuth ? "Email Copied" : "Address Captured");
     };
 
     return (
@@ -360,43 +361,35 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                                 <button 
                                     key={c}
                                     onClick={() => setDisplayCurrency(c)}
-                                    className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-sm transition-colors ${displayCurrency === c ? 'bg-zinc-900 text-white' : 'text-zinc-900/40 hover:text-zinc-900'}`}
+                                    className={`px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-sm transition-all ${displayCurrency === c ? 'bg-white text-zinc-900 shadow-sm border border-zinc-900/10' : 'text-zinc-900/40 hover:text-zinc-900'}`}
                                 >
                                     {c}
                                 </button>
                             ))}
                         </div>
-                        <button onClick={onRefresh} disabled={loading} className="text-[10px] font-bold uppercase tracking-widest text-zinc-900/40 hover:text-zinc-900 transition-colors px-3 py-1.5 border border-transparent hover:border-zinc-900/10">
-                            {loading ? 'Refreshing…' : 'Refresh'}
+
+                        <button onClick={onAccountsClick} className="flex items-center gap-2 border border-zinc-900/10 bg-white hover:bg-zinc-900/5 transition-all px-4 py-2 rounded-md group">
+                            <Shield size={12} className="text-zinc-900/40 group-hover:text-zinc-900" />
+                            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-900 hidden sm:inline">Vault</span>
                         </button>
-                        <button onClick={onSettingsClick} className="text-[10px] font-bold uppercase tracking-widest text-zinc-900/40 hover:text-zinc-900 transition-colors px-3 py-1.5 border border-transparent hover:border-zinc-900/10">
-                            Settings
+                        <button onClick={onSettingsClick} className="flex items-center justify-center border border-zinc-900/10 bg-white hover:bg-zinc-900/5 transition-all p-2 rounded-md group">
+                            <Settings size={14} className="text-zinc-900/40 group-hover:text-zinc-900" />
                         </button>
-                        <button onClick={onAccountsClick} className="border border-zinc-900/20 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-zinc-900 hover:bg-zinc-900 hover:text-white transition-colors">
-                            Accounts
-                        </button>
-                        {/* QD Balance inline — quick-access to Aztec Identity */}
-                        <QDBadgeInline onClickAztec={() => setActiveTab('AZTEC')} />
-                        <button onClick={handleDisconnect} className="border border-red-300 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-500 hover:text-white transition-colors">
-                            Disconnect
+                        <button onClick={handleDisconnect} className="flex items-center justify-center border border-zinc-900/10 bg-white hover:bg-red-50 hover:border-red-200 transition-all p-2 rounded-md group">
+                            <LogOut size={14} className="text-zinc-900/40 group-hover:text-red-500" />
                         </button>
                     </div>
                 )}
             </header>
 
-            {/* ── Balance Hero Section ── */}
-            <section className="w-full flex flex-col items-center text-center px-6 pt-12 pb-10 border-b border-zinc-900/5 bg-white relative">
-                {address && feeData?.gasPrice && (
-                    <div className="absolute top-4 right-6 flex items-center gap-1.5 text-zinc-900/40">
-                        <Activity size={12} className="animate-pulse text-green-500" />
-                        <span className="text-[10px] font-mono tracking-widest">{parseFloat(formatUnits(feeData.gasPrice, 9)).toFixed(1)} GWEI</span>
-                    </div>
-                )}
-                
-                <div className="relative inline-flex items-baseline justify-center mb-2">
-                    <h1 className="font-light tracking-tighter text-zinc-900 flex items-start" style={{ fontSize: 'clamp(3.5rem, 9vw, 6.5rem)' }}>
-                        <span className="text-3xl mt-3 md:mt-5 mr-1 text-zinc-900/40">{symbol}</span>
-                        {totalBalance ? (parseFloat(totalBalance) * rate).toLocaleString('en-US', { minimumFractionDigits: displayCurrency === 'BTC' ? 4 : 2, maximumFractionDigits: displayCurrency === 'BTC' ? 4 : 2 }) : '0.00'}
+            {/* ── Main Dashboard Hero ── */}
+            <section className="w-full flex flex-col items-center justify-center py-10 px-4 md:py-16 md:px-10 border-b border-zinc-900/10 bg-zinc-900/[0.02]">
+                <div className="flex flex-col items-center mb-6">
+                    <span className="text-[10px] uppercase font-black tracking-[0.3em] text-zinc-900/40 mb-3">Portfolio Value</span>
+                    <h1 className="text-5xl md:text-7xl font-sans tracking-tighter text-zinc-900 flex items-baseline gap-1">
+                        <span className="text-3xl md:text-5xl opacity-40 font-serif mr-1">{symbol}</span>
+                        {totalBalance.split('.')[0]}
+                        <span className="text-2xl md:text-4xl opacity-50 font-serif">.{totalBalance.split('.')[1] || '00'}</span>
                     </h1>
                 </div>
                 <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
@@ -416,15 +409,17 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                     <div className="flex flex-col items-center gap-3 w-full max-w-lg mx-auto">
                         <button onClick={copy} className="w-full bg-zinc-900 text-white px-6 py-4 flex items-center justify-between hover:bg-zinc-900/80 transition-all group">
                             <div className="flex flex-col items-start">
-                                <span className="text-[8px] uppercase tracking-[0.3em] opacity-40 mb-1">Your Address</span>
-                                <code className="text-sm font-mono tracking-wider">{truncate(address, 26)}</code>
+                                <span className="text-[8px] uppercase tracking-[0.3em] opacity-40 mb-1">{isEmailAuth ? 'Linked Account' : 'Your Address'}</span>
+                                <code className="text-sm font-mono tracking-wider">{isEmailAuth ? address.replace('email_', '') : truncate(address, 26)}</code>
                             </div>
                             <span className="text-[9px] uppercase font-black tracking-widest opacity-50 group-hover:opacity-100 transition-opacity">{copied ? 'Copied' : 'Copy'}</span>
                         </button>
-                        <a href={`${scannerBase}/address/${address}`} target="_blank" rel="noopener noreferrer"
-                            className="w-full border border-zinc-900/10 bg-white px-6 py-3 flex items-center justify-center text-[10px] font-black uppercase tracking-[0.2em] text-zinc-900 hover:bg-zinc-900/5 transition-all">
-                            View on Explorer
-                        </a>
+                        {!isEmailAuth && (
+                            <a href={`${scannerBase}/address/${address}`} target="_blank" rel="noopener noreferrer"
+                                className="w-full border border-zinc-900/10 bg-white px-6 py-3 flex items-center justify-center text-[10px] font-black uppercase tracking-[0.2em] text-zinc-900 hover:bg-zinc-900/5 transition-all">
+                                View on Explorer
+                            </a>
+                        )}
                     </div>
                 ) : (
                     <div className="flex flex-col items-center gap-5 mt-4 p-10 bg-white border border-zinc-900/10 max-w-sm mx-auto">
@@ -444,11 +439,11 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                     {/* Horizontal scrollable Action buttons (Mobile First) */}
                     <div className="mb-8">
                         <div className="flex gap-3 overflow-x-auto no-scrollbar pb-4 -mx-4 px-4 md:mx-0 md:px-0 md:flex-wrap md:justify-center">
-                            <ActionPill label="Deposit" icon={<Download size={14} />} onClick={onBuy} />
-                            <ActionPill label="Swap" icon={<ArrowRightLeft size={14} />} onClick={onSwap} />
-                            <ActionPill label="Bridge" icon={<Route size={14} />} onClick={onBridge} />
-                            <ActionPill label="Send" icon={<Send size={14} />} onClick={onSend} />
-                            <ActionPill label="Receive" icon={<QrCode size={14} />} onClick={onReceive} />
+                            {!isEmailAuth && <ActionPill label="Deposit" icon={<Download size={14} />} onClick={onBuy} />}
+                            {!isEmailAuth && <ActionPill label="Swap" icon={<ArrowRightLeft size={14} />} onClick={onSwap} />}
+                            {!isEmailAuth && <ActionPill label="Bridge" icon={<Route size={14} />} onClick={onBridge} />}
+                            {!isEmailAuth && <ActionPill label="Send" icon={<Send size={14} />} onClick={onSend} />}
+                            {!isEmailAuth && <ActionPill label="Receive" icon={<QrCode size={14} />} onClick={onReceive} />}
                             <ActionPill label="Scan" icon={<Scan size={14} />} onClick={onScan} />
                         </div>
                     </div>

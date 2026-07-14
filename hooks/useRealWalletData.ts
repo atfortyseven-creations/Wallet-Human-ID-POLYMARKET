@@ -52,17 +52,18 @@ export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?:
 
     // 1. On-Chain Native Balance (Wagmi v2  no 'token' param, that's deprecated)
     // ERC-20 USDC balance is already fetched by the portfolio assets API below.
+    const isValidAddress = Boolean(effectiveAddress && effectiveAddress.startsWith('0x') && effectiveAddress.length === 42 && !effectiveAddress.includes('Virtual'));
+
     const { data: balanceData, isLoading: isBalanceLoading } = useBalance({
-        address: effectiveAddress as `0x${string}` | undefined,
+        address: isValidAddress ? (effectiveAddress as `0x${string}`) : undefined,
         chainId: currentChainId, // Dynamic based on active network
         query: {
-            enabled: !!effectiveAddress,
+            enabled: isValidAddress,
             refetchInterval: 10000,
         }
     });
 
     // 2. Posiciones Off-Chain (Vía nuestro Proxy)
-    const isValidAddress = effectiveAddress && effectiveAddress.startsWith('0x') && effectiveAddress.length === 42 && !effectiveAddress.includes('Virtual');
     
     const { data: positionsRaw, isLoading: isPositionsLoading } = useQuery({
         queryKey: ['positions', effectiveAddress],

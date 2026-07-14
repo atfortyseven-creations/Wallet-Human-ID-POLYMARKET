@@ -69,13 +69,19 @@ function safeSessionGet(key: string): string | null {
     }
 }
 
-//  Cookie parser (strict: requires 0x prefix) 
+//  Cookie parser — accepts 0x wallet addresses AND email_ OAuth identifiers 
 function readHandshakeCookie(): string | null {
     if (typeof document === 'undefined') return null;
     try {
-        const match = document.cookie.match(/system_handshake=(0x[0-9a-fA-F]{40,})/i);
-        if (!match?.[1]) return null;
-        try { return getAddress(match[1]); } catch { return match[1].toLowerCase(); }
+        // Priority A: 0x wallet address (MetaMask / WalletConnect / QR)
+        const walletMatch = document.cookie.match(/system_handshake=(0x[0-9a-fA-F]{40,})/i);
+        if (walletMatch?.[1]) {
+            try { return getAddress(walletMatch[1]); } catch { return walletMatch[1].toLowerCase(); }
+        }
+        // Priority B: email_ OAuth identifier (Google OAuth / Email OTP via NextAuth)
+        const emailMatch = document.cookie.match(/system_handshake=(email_[^;\s]+)/);
+        if (emailMatch?.[1]) return emailMatch[1];
+        return null;
     } catch {
         return null;
     }
@@ -307,10 +313,12 @@ export function useSystemAccount() {
         };
     }
 
-    //  Priority 4: QR Handshake cookie 
+    //  Priority 4: QR Handshake / OAuth cookie 
     if (handshakeAddress) {
+        const isEmailAuth = handshakeAddress.startsWith('email_');
         return {
-            address: handshakeAddress as `0x${string}`,
+            // For email_ auth, address is the email identifier; for 0x, it's the wallet
+            address: isEmailAuth ? handshakeAddress as any : handshakeAddress as `0x${string}`,
             isConnected: true,
             isConnecting: false,
             isReconnecting: false,
@@ -319,9 +327,10 @@ export function useSystemAccount() {
             chain: undefined,
             chainId: 1,
             connector: undefined,
-            isSystemHandshake: true,
+            isSystemHandshake: !isEmailAuth,
             isLocalSystemWallet: false,
-            needsWalletReconnect: !wagmiAccount.isConnected,
+            isEmailAuth,
+            needsWalletReconnect: !isEmailAuth && !wagmiAccount.isConnected,
             isZkVerified,
             isChecking: false,
         };

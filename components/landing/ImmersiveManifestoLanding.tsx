@@ -144,7 +144,8 @@ function LandingNav() {
   useEffect(() => {
     const readSession = () => {
       try {
-        const m = document.cookie.match(/system_handshake=(0x[a-fA-F0-9]{40})/i);
+        // Accept both 0x wallet addresses and email_ identifiers (Google OAuth)
+        const m = document.cookie.match(/system_handshake=(0x[a-fA-F0-9]{40}|email_[^;\s]+)/i);
         if (m?.[1]) {
           setConnectedAddress(m[1].toLowerCase());
           return;
