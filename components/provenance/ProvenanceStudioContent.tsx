@@ -26,7 +26,7 @@ import { Loader2,
   CreditCard,
   ArrowRight,
   X,
-  Zap,, Shield } from 'lucide-react';
+  Zap, Shield } from 'lucide-react';
 import { useAccount } from 'wagmi';
 import { passportPublicUrl } from '@/lib/scan/parseScanPayload';
 import type { ProductPassportPublic } from '@/lib/passport/types';
