@@ -39,6 +39,7 @@ import { jwtVerify } from 'jose';
 const PUBLIC_PATHS = new Set([
   '/',
   '/sign-in',
+  '/sign-up',
   '/login',
   '/auth',
   '/connect',
@@ -48,16 +49,23 @@ const PUBLIC_PATHS = new Set([
   '/sitemap.xml',
 ]);
 
-// Public path PREFIXES (startsWith check)
 const PUBLIC_PREFIXES = [
   '/api/auth/',           // All SIWE/session auth endpoints
   '/api/aztec/airdrop',   // The claim endpoint itself must remain public
+  '/api/aztec/balance',
+  '/api/aztec/transactions',
+  '/api/aztec/derive-address',
+  '/api/aztec/identity-status',
+  '/api/payments/checkout',      // Stripe checkout session creation
+  '/api/webhooks/stripe',        // Stripe webhook (must be unauthenticated)
+  '/api/webhooks/',              // All webhooks from external services
   '/api/health',
   '/api/status',
   '/_next/',
   '/connect',
   '/terminal',
   '/portfolio',
+  '/studio',                     // Studio Provenance public page
   '/fonts/',
   '/images/',
   '/icons/',

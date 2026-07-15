@@ -117,6 +117,11 @@ export async function POST(req: NextRequest) {
             }
         }
 
+        // Build correct return URLs based on context
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://humanidfi.com';
+        const successPath = returnTab === 'studio' ? '/studio/provenance' : `/terminal?tab=${returnTab}`;
+        const cancelPath  = returnTab === 'studio' ? '/studio/provenance' : `/terminal?tab=${returnTab}`;
+
         // Create Stripe Checkout Session payload
         const sessionPayload: any = {
             line_items: [
@@ -126,8 +131,8 @@ export async function POST(req: NextRequest) {
                 },
             ],
             mode: 'subscription',
-            success_url: `${process.env.NEXT_PUBLIC_APP_URL}/terminal?tab=${returnTab}&upgrade=success&session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url:  `${process.env.NEXT_PUBLIC_APP_URL}/terminal?tab=${returnTab}&upgrade=canceled`,
+            success_url: `${appUrl}${successPath}?upgrade=success&session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url:  `${appUrl}${cancelPath}?upgrade=canceled`,
             metadata: {
                 userId: normalizedUserId,
                 tier: tier,

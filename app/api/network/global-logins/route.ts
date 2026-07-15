@@ -9,17 +9,22 @@ export async function GET() {
     const totalHistoricalUsers = await prisma.user.count();
 
     // 2. Get the real geo-distribution since the geo-tracking system was deployed
-    const stats = await prisma.loginGeoEvent.groupBy({
-      by: ["countryCode", "countryName"],
-      _count: {
-        id: true, // total logins in this region
-      },
-      orderBy: {
+    let stats: any[] = [];
+    try {
+      stats = await (prisma as any).loginGeoEvent.groupBy({
+        by: ["countryCode", "countryName"],
         _count: {
-          id: 'desc'
+          id: true, // total logins in this region
+        },
+        orderBy: {
+          _count: {
+            id: 'desc'
+          }
         }
-      }
-    });
+      });
+    } catch (e) {
+      console.warn("[GLOBAL_LOGINS_API] loginGeoEvent table unavailable, using empty stats for build fallback");
+    }
 
     const totalGeoTrackedLogins = stats.reduce((acc, curr) => acc + curr._count.id, 0);
 

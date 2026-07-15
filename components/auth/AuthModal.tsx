@@ -175,7 +175,7 @@ export function AuthModal({ onAuthenticated }: AuthModalProps) {
                 onAuthenticated();
             } else {
                 // Sign in
-                const response = await fetch('/api/auth/signin', {
+                const response = await fetch('/api/auth/custom-signin', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })

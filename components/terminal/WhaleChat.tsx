@@ -69,7 +69,42 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const { spendQDs, balance } = useAztecNative();
   const chatContractAddress = { toString: () => '0xCHAT_CONTRACT_ADDRESS_PLACEHOLDER' } as any;
   const siloedPxe = getSiloedPXE ? getSiloedPXE(chatContractAddress) : null;
-  const { chatName, chatBio, soundEffects } = useSettingsStore();
+  const { 
+    chatName, 
+    chatBio, 
+    soundEffects,
+    chatBackground,
+    chatBackgroundCustomUrl,
+    bubbleStyle,
+    accentColor,
+    chatFont,
+    textSize 
+  } = useSettingsStore();
+
+  const bgStyle = React.useMemo((): React.CSSProperties => {
+    switch (chatBackground) {
+      case 'amoled': return { background: '#000000' };
+      case 'holographic':
+        return {
+          background: 'linear-gradient(135deg, rgba(147,197,253,0.1) 0%, rgba(196,181,253,0.1) 100%)',
+          backdropFilter: 'blur(10px)'
+        };
+      case 'matrix': return { background: '#000000' };
+      case 'gradient': return { background: 'linear-gradient(to bottom right, #1e1e1e, #000000)' };
+      case 'custom': return chatBackgroundCustomUrl ? { backgroundImage: `url(${chatBackgroundCustomUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : { background: '#050505' };
+      default: return { background: '#050505' };
+    }
+  }, [chatBackground, chatBackgroundCustomUrl]);
+
+  const FONT_MAP: Record<string, string> = {
+    'inter': '"Inter", sans-serif',
+    'mono': '"JetBrains Mono", monospace',
+    'comic': '"Comic Sans MS", "Comic Sans", cursive',
+    'serif': '"Merriweather", serif',
+    'dyslexic': '"OpenDyslexic", sans-serif'
+  };
+  const fontFamily = FONT_MAP[chatFont || 'inter'] || FONT_MAP['inter'];
+  const fontSizePx = (textSize || 2) * 2 + 6;
 
   // MASTER RECOVERY: If wallet is connected but connector is missing (zombie session after mobile deep-link)
   // Run a retry loop instead of a single instant attempt — the WalletConnect relay
@@ -1651,7 +1686,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
     // --- QD DEDUCTION LOGIC ---
     const isSystemSignal = content.startsWith('__CALL_');
-    if (!isSystemSignal) {
+    if (!isSystemSignal && !isLocalSystemWallet) {
       if (balance < 0.0001) {
         toast.error("Insufficient QDs to send message.");
         setSending(false);
@@ -2009,7 +2044,12 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 min-h-0 bg-white/30  backdrop-blur-sm">
+            {/* Dynamic Chat Background */}
+            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 min-h-0 relative" style={{ ...bgStyle, fontFamily, fontSize: `${fontSizePx}px` }}>
+              {/* Matrix Rain Effect Layer */}
+              {chatBackground === 'matrix' && (
+                <div className="absolute inset-0 pointer-events-none opacity-20" style={{ backgroundImage: 'radial-gradient(circle, rgba(0,255,0,0.1) 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+              )}
               {(() => {
                 // Filter messages for the current active conversation only
                 const convId = `dm-${activePeer!.toLowerCase()}`;

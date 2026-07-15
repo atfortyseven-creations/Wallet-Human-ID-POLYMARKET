@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { createAccessToken, createRefreshToken, setSessionCookies, generateFingerprint } from '@/lib/session';
 
 export const dynamic = 'force-dynamic';
 
@@ -65,10 +66,9 @@ export async function POST(request: NextRequest) {
     if (isLogin && user.verified) {
       // Passwordless login - create session and authenticate
       const userAgent = request.headers.get('user-agent') || '';
-      const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
+      const ipAddr = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
       
-      const { createAccessToken, createRefreshToken, setSessionCookies, generateFingerprint } = await import('@/lib/session');
-      const fingerprint = generateFingerprint(userAgent, ip);
+      const fingerprint = generateFingerprint(userAgent, ipAddr);
       
       const accessToken = await createAccessToken(user.id, user.email, fingerprint);
       const refreshToken = await createRefreshToken(user.id, user.email, fingerprint);
