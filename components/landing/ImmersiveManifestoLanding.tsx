@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
@@ -8,6 +8,8 @@ import { NetworkMapPanel } from '@/components/terminal/NetworkMapPanel';
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
 import { ModuleShowcaseSections } from '@/components/landing/ModuleShowcaseSections';
 import { EmailLoginModal } from '@/components/auth/EmailLoginModal';
+import { useDisconnect } from 'wagmi';
+import { signOut } from 'next-auth/react';
 // Lottie cargado din├ímicamente para evitar SSR issues
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
@@ -135,9 +137,24 @@ function LandingNav() {
   const [emailModalOpen, setEmailModalOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    // In bounded mode the scroll happens inside the <main> element, not on window.
+    // We try to find the bounded scroll container first, falling back to window.
+    const getContainer = () =>
+      (document.querySelector('main[class*="overflow-y-auto"]') as HTMLElement | null)
+      ?? document.documentElement;
+
+    const onScroll = () => {
+      const el = getContainer();
+      setScrolled((el.scrollTop ?? window.scrollY) > 10);
+    };
+
+    const container = getContainer();
+    container.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      container.removeEventListener('scroll', onScroll);
+      window.removeEventListener('scroll', onScroll);
+    };
   }, []);
 
   // Detect QR-linked or MetaMask session from system_handshake cookie
@@ -289,8 +306,11 @@ function LandingNav() {
           {connectedAddress ? (
             <div className="flex items-center gap-2">
               <span className="flex items-center gap-1.5 px-3 py-1.5 bg-black/[0.04] border border-black/10 text-[12px] font-mono text-black/70">
-                <span className="w-1.5 h-1.5 rounded-full bg-black/70 shrink-0" />
-                {connectedAddress.slice(0, 6)}…{connectedAddress.slice(-4)}
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0 animate-pulse" />
+                {connectedAddress.startsWith('email_')
+                  ? connectedAddress.replace('email_', '').slice(0, 18) + '…'
+                  : `${connectedAddress.slice(0, 6)}…${connectedAddress.slice(-4)}`
+                }
               </span>
               <Link
                 href="/terminal"
@@ -298,6 +318,33 @@ function LandingNav() {
               >
                 Dashboard →
               </Link>
+              {/* Disconnect button */}
+              <button
+                onClick={async () => {
+                  try {
+                    // Nuke cookies
+                    document.cookie.split(';').forEach(c => {
+                      const name = c.split('=')[0].trim();
+                      document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;SameSite=Lax`;
+                    });
+                    // Clear storage
+                    try { sessionStorage.clear(); localStorage.removeItem('system_session_v2'); } catch {}
+                    // NextAuth signOut
+                    try { await signOut({ redirect: false }); } catch {}
+                    // Force reload to landing
+                    window.location.replace('/');
+                  } catch { window.location.replace('/'); }
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 border border-black/15 text-[12px] font-medium text-black/50 hover:text-red-600 hover:border-red-300 hover:bg-red-50 transition-all duration-200 group"
+                title="Disconnect session"
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:stroke-red-500 transition-colors">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                  <polyline points="16 17 21 12 16 7"/>
+                  <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                Disconnect
+              </button>
             </div>
           ) : (
             <div className="flex items-center gap-2">
