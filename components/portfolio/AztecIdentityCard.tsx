@@ -31,15 +31,15 @@ import { AztecRewardsCard } from './AztecRewardsCard';
 import { AztecAirdropCalendar } from './AztecAirdropCalendar';
 
 // ─── On-Chain Verified Network Constants ─────────────────────────────────────
-// All addresses & hashes verified via node_getNodeInfo / node_getBlock RPC.
+// Addresses verified via node_getNodeInfo / node_getBlock RPC.
 const AZTEC_EXPLORER    = 'https://testnet.aztecscan.xyz';
 const CLAIM_TX_HASH     = '0x085abad7f0a1bc596e570079d209e6f5251efa5988f01d57bb165c4fa3691e8a';
 const CLAIM_TX_BLOCK    = 103861;
 const CLAIM_AMOUNT      = '200 QDs';
 const CLAIM_FEE         = '2.2694 QDs';
-const LAST_UPDATED      = '2026-06-26';
 const L1_ROLLUP_ADDR    = '0xf6d0d42ace06829becb78c74f49879528fc632c1';
-const LIVE_BLOCK_HEIGHT = 144318;
+// AUDIT FIX: LIVE_BLOCK_HEIGHT removed — now fetched live from RPC in useAztecNodeInfo()
+
 
 // ─── Utility ──────────────────────────────────────────────────────────────────
 
@@ -58,14 +58,66 @@ function useCopy(value: string, label = '') {
 const trunc = (s: string, front = 10, back = 8) =>
   s && s.length > front + back + 3 ? `${s.slice(0, front)}...${s.slice(-back)}` : s;
 
-function StatusBadge() {
+// ─── Live Node Health Hook ────────────────────────────────────────────────────
+// AUDIT FIX (High #4 + #5): Replaced the always-green fake StatusBadge and
+// the hardcoded LIVE_BLOCK_HEIGHT with a real RPC probe to the Aztec node.
+// Fires once on mount, then re-polls every 30 seconds.
+function useAztecNodeInfo() {
+  const [status, setStatus] = React.useState<'checking' | 'online' | 'degraded' | 'offline'>('checking');
+  const [blockHeight, setBlockHeight] = React.useState<number | null>(null);
+  const [nodeVersion, setNodeVersion] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    let cancelled = false;
+    const probe = async () => {
+      try {
+        // We call our own /api/aztec/account route which hits the node internally,
+        // keeping the client free of CORS issues with the Aztec RPC directly.
+        const res = await fetch('/api/aztec/account', {
+          method: 'GET',
+          signal: AbortSignal.timeout(8000),
+        });
+        if (cancelled) return;
+        if (res.ok) {
+          const data = await res.json();
+          // The account route proxies node info — use it if available
+          if (data.blockNumber) setBlockHeight(Number(data.blockNumber));
+          if (data.nodeVersion) setNodeVersion(data.nodeVersion);
+          setStatus('online');
+        } else {
+          setStatus('degraded');
+        }
+      } catch {
+        if (!cancelled) setStatus('offline');
+      }
+    };
+    probe();
+    const interval = setInterval(probe, 30_000);
+    return () => { cancelled = true; clearInterval(interval); };
+  }, []);
+
+  return { status, blockHeight, nodeVersion };
+}
+
+function StatusBadge({ status }: { status: 'checking' | 'online' | 'degraded' | 'offline' }) {
+  const dotColor =
+    status === 'online'   ? 'bg-emerald-500' :
+    status === 'degraded' ? 'bg-amber-400' :
+    status === 'offline'  ? 'bg-red-500' :
+    'bg-zinc-400';
+  const label =
+    status === 'online'   ? 'ONLINE' :
+    status === 'degraded' ? 'DEGRADED' :
+    status === 'offline'  ? 'OFFLINE' :
+    'CHECKING';
   return (
     <span className="inline-flex items-center gap-1.5 px-2 py-0.5 text-[8px] font-black uppercase tracking-widest border border-zinc-900/10 text-zinc-900 bg-zinc-900/[0.02]">
-      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-      ONLINE
+      <span className={`w-1.5 h-1.5 rounded-full ${dotColor} ${status === 'online' ? 'animate-pulse' : ''}`} />
+      {label}
     </span>
   );
 }
+
 
 // ─── Block Confirmation Animation ─────────────────────────────────────────────
 const BLOCK_STAGES = [
@@ -455,18 +507,20 @@ function HistoryPanel() {
   if (history.length === 0) {
     return (
       <div className="py-10 text-center flex flex-col items-center gap-2">
-        <div className="text-[10px] font-black uppercase tracking-widest text-zinc-900/40">No hay transacciones</div>
-        <div className="text-[8px] text-zinc-900/30">Los gastos de QDs (Chat, Videollamadas, Noir ZK) aparecerán aquí.</div>
+        <div className="text-[10px] font-black uppercase tracking-widest text-zinc-900/40">No transactions yet</div>
+        <div className="text-[8px] text-zinc-900/30">QD spending activity (Chat, Video Calls, Noir ZK) will appear here.</div>
       </div>
     );
   }
 
-  // Group by date for cleaner timeline display
+
+  // AUDIT FIX: grouping uses locale-neutral ISO date so it works across all locales
   const grouped = history.reduce<Record<string, typeof history>>((acc, tx) => {
-    const day = new Date(tx.date).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+    const day = new Date(tx.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
     acc[day] = acc[day] ? [...acc[day], tx] : [tx];
     return acc;
   }, {});
+
 
   return (
     <div className="space-y-4 max-h-[420px] overflow-y-auto pr-1">
@@ -554,12 +608,16 @@ export function AztecIdentityCard() {
   const evmAddress = wagmiAddress || systemAddress;
 
   const { signMessageAsync } = useSignMessage();
+
+  // AUDIT FIX: live node health & block height (replaces hardcoded LIVE_BLOCK_HEIGHT)
+  const { status: nodeStatus, blockHeight, nodeVersion } = useAztecNodeInfo();
   
   const [inputSeed, setInputSeed]    = useState('');
   const [activeTab, setActiveTab]    = useState<'IDENTITY'|'SEND'|'RECEIVE'|'HISTORY'|'CLAIM'|'NODE'|'PXE'|'NOIR'|'SHIELD'>('IDENTITY');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { copied: addrCopied, copy: copyAddr } = useCopy(aztecAddress || '', 'Aztec address');
   const { copied: txCopied,   copy: copyTx }   = useCopy(CLAIM_TX_HASH, 'TX hash');
+
 
   // ── Auto-Migration: Fix existing users whose QDs landed on the wrong address ──
   // Users who connected via WhaleChat before the fix have QDs at their raw EVM
@@ -773,7 +831,8 @@ export function AztecIdentityCard() {
           <button onClick={disconnectIdentity} className="text-[8px] font-black uppercase tracking-widest text-zinc-900/40 hover:text-zinc-900 border border-zinc-900/10 hover:border-zinc-900 px-2 py-1 transition-all mr-2">
             Logout
           </button>
-          <StatusBadge />
+          <StatusBadge status={nodeStatus} />
+
           <button onClick={handleRefresh} disabled={isRefreshing} className="text-zinc-900/30 hover:text-zinc-900 transition-colors p-1 flex items-center justify-center" title="Refresh from ledger">
             <RefreshCw size={12} className={isRefreshing ? 'animate-spin' : ''} />
           </button>
@@ -918,11 +977,12 @@ export function AztecIdentityCard() {
               <div className="space-y-2">
                 {[
                   { label: 'RPC Endpoint', value: 'https://rpc.testnet.aztec-labs.com', link: false },
-                  { label: 'Explorer',     value: AZTEC_EXPLORER,                        link: true  },
-                  { label: 'Faucet',       value: 'aztec-faucet.nethermind.io',          link: true  },
-                  { label: 'Node Version', value: `Aztec v${"v5.testnet"}`,              link: false },
-                  { label: 'Block Height', value: `#${LIVE_BLOCK_HEIGHT.toLocaleString()}`, link: false },
-                  { label: 'L1 Chain',     value: 'Ethereum Sepolia (11155111)',         link: false },
+                  { label: 'Explorer',     value: AZTEC_EXPLORER,                                                               link: true  },
+                  { label: 'Faucet',       value: 'aztec-faucet.nethermind.io',                                                 link: true  },
+                  { label: 'Node Version', value: nodeVersion ? `Aztec ${nodeVersion}` : 'v5.testnet',                          link: false },
+                  { label: 'Block Height', value: blockHeight ? `#${blockHeight.toLocaleString()}` : (nodeStatus === 'checking' ? 'Fetching...' : 'Unavailable'), link: false },
+                  { label: 'L1 Chain',     value: 'Ethereum Sepolia (11155111)',                                                 link: false },
+
                 ].map(({ label, value, link }) => (
                   <div key={label} className="flex items-start justify-between py-2.5 border-b border-zinc-900/5 last:border-0 gap-3">
                     <span className="text-[8px] text-zinc-900/30 uppercase tracking-widest shrink-0 mt-0.5">{label}</span>
@@ -939,13 +999,24 @@ export function AztecIdentityCard() {
               </div>
 
               <div className="border border-zinc-900/10 p-5 flex flex-col items-center gap-3">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center bg-emerald-50 border border-emerald-200">
-                  <Check size={18} strokeWidth={3} className="text-emerald-500" />
+                <div className={`w-12 h-12 rounded-full flex items-center justify-center border ${
+                  nodeStatus === 'online'   ? 'bg-emerald-50 border-emerald-200' :
+                  nodeStatus === 'degraded' ? 'bg-amber-50 border-amber-200' :
+                  nodeStatus === 'offline'  ? 'bg-red-50 border-red-200' :
+                  'bg-zinc-50 border-zinc-200'
+                }`}>
+                  {nodeStatus === 'online'   && <Check size={18} strokeWidth={3} className="text-emerald-500" />}
+                  {nodeStatus === 'degraded' && <span className="text-amber-500 font-black text-[10px]">!</span>}
+                  {nodeStatus === 'offline'  && <span className="text-red-500 font-black text-[10px]">✕</span>}
+                  {nodeStatus === 'checking' && <RefreshCw size={14} className="text-zinc-400 animate-spin" />}
                 </div>
                 <div className="text-center">
-                  <div className="text-[10px] font-black uppercase tracking-widest text-zinc-900/60">Node Online</div>
+                  <div className="text-[10px] font-black uppercase tracking-widest text-zinc-900/60">
+                    Node {nodeStatus === 'online' ? 'Online' : nodeStatus === 'degraded' ? 'Degraded' : nodeStatus === 'offline' ? 'Offline' : 'Checking...'}
+                  </div>
                   <div className="text-[8px] text-zinc-900/30 mt-0.5">https://rpc.testnet.aztec-labs.com</div>
                 </div>
+
                 <button
                   onClick={handleRefresh}
                   disabled={isRefreshing}
@@ -981,11 +1052,14 @@ export function AztecIdentityCard() {
         </motion.div>
       </AnimatePresence>
 
-      {/* Footer */}
+      {/* Footer — AUDIT FIX: removed hardcoded date and "Modo B" label */}
       <div className="px-6 py-3 border-t border-zinc-900/8 bg-zinc-900/[0.01] flex items-center justify-between">
-        <span className="text-[7px] text-zinc-900/20 uppercase tracking-widest">Updated {LAST_UPDATED}</span>
-        <span className="text-[7px] text-zinc-900/20 uppercase tracking-widest">Aztec Testnet · Modo B</span>
+        <span className="text-[7px] text-zinc-900/20 uppercase tracking-widest">Aztec Testnet</span>
+        <span className="text-[7px] text-zinc-900/20 uppercase tracking-widest font-mono">
+          {nodeStatus === 'online' && blockHeight ? `Block #${blockHeight.toLocaleString()}` : `Node ${nodeStatus}`}
+        </span>
       </div>
+
     </motion.div>
   );
 }

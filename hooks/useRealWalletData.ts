@@ -7,15 +7,23 @@ import { Asset, NewsItem, Position, Transaction } from '@/types/wallet';
 import { useAuth } from '@/hooks/useAuth';
 import { useWalletStore } from '@/lib/store/wallet-store';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
+import { useAztecNative } from '@/context/AztecNativeContext';
 
 import { safeToFixed, safeToLocaleString } from '@/lib/utils/number-format';
+
 
 export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?: string) => {
     const { address: web3Address, isConnected: isWeb3Connected } = useSystemAccount();
     const { isAuthenticated } = useAuth();
     
+    // AUDIT FIX (Medium #6): Consume the authoritative QDs balance from AztecNativeContext
+    // instead of deriving a different address locally (the old derivation used simple
+    // zero-padding which produced a completely different address than SHA-256 derivation).
+    const { balance: aztecQdBalance, aztecAddress: authorativeAztecAddress } = useAztecNative();
+    
     // Unified connection state
     const isConnected = isWeb3Connected || isAuthenticated;
+
     
     // Fetch managed wallet if not connected via Web3
     const { data: managedWallet } = useQuery({
@@ -184,25 +192,13 @@ export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?:
         change24h: t.change24h || 0
     }));
 
-    // Native Aztec ZK Balance (Off-Chain via PXE Proxy)
-    const { data: aztecBalanceRaw } = useQuery({
-        queryKey: ['aztec-balance', effectiveAddress],
-        queryFn: async () => {
-            if (!effectiveAddress) return null;
-            try {
-                // Derive Aztec deterministic address from EVM address for local proxy
-                const aztecAddr = `0x${effectiveAddress.slice(2).padStart(64, '0').slice(0, 64)}`;
-                const { data } = await axios.get(`/api/aztec/balance?address=${aztecAddr}`, { timeout: 15000 });
-                return data;
-            } catch (error) {
-                return null;
-            }
-        },
-        enabled: !!effectiveAddress,
-        refetchInterval: 15000,
-    });
+    // AUDIT FIX (Medium #6): Use the authoritative QDs balance from AztecNativeContext.
+    // The old implementation derived its own Aztec address (simple 0x + zero-padded EVM address)
+    // which was completely different from the SHA-256 derived address in AztecNativeContext.
+    // This caused the TOKENS tab to show 0 QDs while the AZTEC tab showed the real balance.
+    // Now both tabs read from the same source: the AztecNativeContext polling loop.
+    const qdBalanceNum = aztecQdBalance || 0;
 
-    let qdBalanceNum = aztecBalanceRaw && aztecBalanceRaw.balance ? parseFloat(aztecBalanceRaw.balance) : 0;
     
     if (qdBalanceNum > 0 || isConnected) {
         assets.unshift({

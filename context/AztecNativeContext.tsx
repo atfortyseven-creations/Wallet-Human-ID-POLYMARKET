@@ -174,56 +174,22 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ─── Auto-Init from EVM address (WalletConnect users who haven't clicked Aztec Identity) ──
-  // When a user connects their wallet but never visits the Aztec Identity tab,
-  // aztecAddress is null and spendQDs returns false. This effect auto-derives the
-  // Aztec address from the EVM address via the server-side SHA-256 derivation
-  // (same algorithm used in /api/aztec/derive-address) so ALL users get a working
-  // QD balance the moment they connect their wallet.
-  const autoInitRef = useRef(false);
-  useEffect(() => {
-    if (!evmAddress || aztecAddress || autoInitRef.current) return;
-    autoInitRef.current = true;
-    (async () => {
-      try {
-        const res = await fetch('/api/aztec/derive-address', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ seed: evmAddress }),
-        });
-        if (!res.ok) return;
-        const { aztecAddress: derived } = await res.json();
-        if (!derived) return;
-        setAztecAddress(derived);
-        setSeed(evmAddress);
-        // Store session so it persists on reload
-        try { localStorage.setItem('aztec_session', JSON.stringify({ address: derived, seed: evmAddress })); } catch {}
-        setIsLoading(true);
-        await fetchLedgerState(derived);
-        setIsLoading(false);
-        startPolling(derived);
 
-        // Auto-airdrop 200 QDs if this wallet has never received any
-        const balRes = await fetch(`/api/aztec/balance?aztecAddress=${encodeURIComponent(derived.toLowerCase())}`);
-        if (balRes.ok) {
-          const { balance: rawBal } = await balRes.json();
-          if (parseFloat(rawBal) === 0) {
-            // First time — give them 200 QDs automatically
-            await fetch('/api/aztec/airdrop', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ address: derived }),
-            });
-            await fetchLedgerState(derived);
-          }
-        }
-      } catch (e) {
-        console.warn('[AztecNative] Auto-init from EVM failed:', e);
-        autoInitRef.current = false; // allow retry
-      }
-    })();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [evmAddress, aztecAddress]);
+  // ── Explicit-Only Identity Connection ────────────────────────────────────
+  // AUDIT FIX (Critical #3): The previous "auto-init" effect silently derived
+  // an Aztec address and triggered a genesis airdrop for EVERY wallet connect
+  // without user consent. This was:
+  //   1. A Sybil attack vector — bots could drain all 200 genesis identities
+  //      by connecting wallets in a loop.
+  //   2. A UX violation — users never agreed to create an Aztec identity.
+  //   3. Misleading — showed "Identity Deployed" toast without any user action.
+  //
+  // Identity connection is now 100% EXPLICIT. Users must click
+  // "Authenticate to Enter" in the Aztec Identity tab (AztecIdentityCard.tsx).
+  // If spendQDs is called while aztecAddress is null, it returns false and the
+  // calling component should gate the action behind an identity-connect CTA.
+
+
 
   // ─── Core Poll Function ────────────────────────────────────────────────────
 

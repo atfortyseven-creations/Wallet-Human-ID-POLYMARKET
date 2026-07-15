@@ -11,6 +11,40 @@ import { useFeeData } from 'wagmi';
 import { formatUnits } from 'viem';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
 
+// AUDIT FIX #6: Live ECB exchange rates — replaces the hardcoded 0.92 "video demo" rate.
+// Module-level cache: one fetch per 5 minutes across all component instances.
+let _eurRateCache: { rate: number; ts: number } | null = null;
+const ECB_RATE_TTL = 5 * 60 * 1000; // 5 minutes
+
+async function fetchEurUsdRate(): Promise<number> {
+  if (_eurRateCache && Date.now() - _eurRateCache.ts < ECB_RATE_TTL) {
+    return _eurRateCache.rate;
+  }
+  try {
+    // ECB daily reference rates — free, no auth, no CORS issues via our proxy
+    const res = await fetch('/api/fx/eur-rate', { cache: 'no-store' });
+    if (res.ok) {
+      const { rate } = await res.json();
+      if (rate && typeof rate === 'number' && rate > 0) {
+        _eurRateCache = { rate, ts: Date.now() };
+        return rate;
+      }
+    }
+  } catch {
+    // fall through to hardcoded fallback
+  }
+  return 0.92; // ECB fallback if proxy unavailable
+}
+
+function useLiveEurRate() {
+  const [eurRate, setEurRate] = React.useState(0.92);
+  React.useEffect(() => {
+    fetchEurUsdRate().then(r => setEurRate(r)).catch(() => {});
+  }, []);
+  return eurRate;
+}
+
+
 import ReceiveHub from '@/components/wallet/ReceiveHub';
 import QRScannerModal from '@/components/wallet/QRScannerModal';
 import SecurityVault from '@/components/wallet/SecurityVault';
@@ -91,6 +125,8 @@ export function InstitutionalPortfolioView() {
     const setDisplayCurrency = useWalletStore(s => s.setDisplayCurrency);
     const { address, isLocalSystemWallet, isConnected, isEmailAuth } = useSystemAccount();
     const { assets, totalBalance } = useRealWalletData([], address || undefined);
+    const liveEurRate = useLiveEurRate(); // AUDIT FIX: live ECB rate
+
     
     // We keep 'HOME' as the main view, and overlay modals for actions
     const [view, setView] = useState<'HOME'|'NETWORK'|'CREATE'|'SHIELD'|'SECURITY'|'DEPLOY'|'MEMPOOL'|'SMART_ACCOUNT'|'OMNICHAIN'|'SWAP'|'BRIDGE'|'BUY'|'SEND'|'QDS'>('HOME');
@@ -153,10 +189,14 @@ export function InstitutionalPortfolioView() {
     const btcPrice = useVIPStore(s => s.btcPrice) || 68000;
 
     const getExchangeRate = (currency: string) => {
-        if (currency === 'EUR') return 0.92; // Fixed stable rate for video demo
+        // AUDIT FIX: EUR now uses the live ECB rate fetched on mount.
+        // BTC uses live price from VIP store.
+        // USD is always 1:1.
+        if (currency === 'EUR') return liveEurRate;
         if (currency === 'BTC') return 1 / btcPrice;
         return 1; // USD
     };
+
 
     const getCurrencySymbol = (currency: string) => {
         if (currency === 'EUR') return '€';

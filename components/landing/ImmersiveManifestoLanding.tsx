@@ -614,78 +614,7 @@ function HowItWorksSection() {
   );
 }
 
-// ÔöÇÔöÇÔöÇ Integration & Features ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
-
-function IntegrationSection() {
-  const cards = [
-    {
-      title: "Studio Provenance",
-      body: "Register zero-knowledge provenance for creative and financial assets. Noir smart contracts on the Aztec rollup make the record tamper-proof without exposing the payload.",
-      link: "Explore Provenance",
-      href: "/studio/provenance"
-    },
-    {
-      title: "Forum — Governance & Discourse",
-      body: "Participate in decentralized governance with ZK-verified votes. Propose, deliberate, and vote on protocol changes with Aztec identity-gated participation.",
-      link: "Open Forum",
-      href: "/forum"
-    },
-    {
-      title: "Whale Chat — ZK Messaging",
-      body: "Send and receive messages between Aztec-verified identities. End-to-end encrypted via XMTP, anchored to your cryptographic state — no server stores your messages.",
-      link: "Open Chat",
-      href: "/chat"
-    },
-    {
-      title: "Developers — API & SDK",
-      body: "Build on top of Whale Network. Full API reference, Noir circuit guides, attestation SDK, and architecture documentation for teams integrating with Aztec.",
-      link: "View Docs",
-      href: "/developers/api-docs"
-    },
-    {
-      title: "Identity Registry",
-      body: "A global map of Aztec-verified identities. Every account in the registry has proven its uniqueness through a Noir circuit without disclosing personal data.",
-      link: "View Registry",
-      href: "/registry"
-    },
-    {
-      title: "Portfolio & Terminal",
-      body: "Manage your shielded Aztec assets. Balances, notes, and transaction history are stored as encrypted UTXO commitments — invisible to the public ledger.",
-      link: "Open Terminal",
-      href: "/terminal"
-    },
-  ];
-
-  return (
-    <section className="w-full bg-white py-24 md:py-32 border-t border-black/10">
-      <div className="w-full max-w-[1100px] mx-auto px-6">
-        <div className="mb-16">
-          <span className="text-[11px] font-black uppercase tracking-widest text-black/50 block mb-4">Platform Modules</span>
-          <h2 className="text-[32px] md:text-[42px] font-black tracking-tight text-black max-w-[600px] leading-[1.1]">
-            Everything you need
-            <br />
-            <span className="text-black/55">on one sovereign layer.</span>
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {cards.map((c, i) => (
-            <div key={i} className="bg-[#fafafa] border border-black/15 rounded-2xl p-8 flex flex-col items-start transition-all hover:bg-[#f0f0f0] hover:border-black/25">
-              <h3 className="text-[18px] font-black text-black mb-3">{c.title}</h3>
-              <p className="text-[14.5px] font-medium text-black/65 leading-relaxed mb-8 flex-1">
-                {c.body}
-              </p>
-              <Link href={c.href} className="text-[13px] font-bold text-black flex items-center gap-1.5 hover:opacity-70 transition-opacity">
-                {c.link}
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </Link>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
+// ÔöÇÔöÇÔöÇ IntegrationSection Removed (Redundant with ModuleShowcaseSections) ÔöÇÔöÇÔöÇ
 
 // ÔöÇÔöÇÔöÇ Global Registry Map ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 
@@ -708,25 +637,28 @@ function GlobalRegistrySection() {
   }, []);
 
   return (
-    <section className="w-full bg-[#fafafa] py-24 md:py-32 border-t border-black/10">
+    <section className="w-full bg-[#050505] py-24 md:py-32 border-t border-white/10 text-white">
       <div className="w-full max-w-[1200px] mx-auto px-6">
         
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
           <div>
-            <span className="text-[11px] font-black uppercase tracking-widest text-black/55 mb-3 block">
-              Global Network
-            </span>
-            <h2 className="text-[28px] md:text-[36px] font-black text-black tracking-tight">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-[1px] w-8 bg-purple-500/50" />
+              <span className="text-[11px] font-mono uppercase tracking-[0.25em] text-purple-400 font-bold">
+                Global Network
+              </span>
+            </div>
+            <h2 className="text-[32px] md:text-[42px] font-black text-white tracking-tighter">
               Verification Registry Map
             </h2>
-            <p className="text-[14px] text-black/65 font-medium mt-2 max-w-[500px]">
+            <p className="text-[15px] text-white/50 font-light mt-3 max-w-[500px]">
               Hover any country to see coverage level and accepted document types.
             </p>
           </div>
           <Link
             href="/registry"
-            className="flex items-center gap-2 text-[13px] font-black uppercase tracking-wider text-black hover:opacity-60 transition-opacity shrink-0"
+            className="flex items-center gap-2 text-[13px] font-mono font-bold uppercase tracking-wider text-white hover:text-purple-400 transition-colors shrink-0 border border-white/20 hover:border-purple-500/50 px-6 py-3"
           >
             View Full Map
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -734,7 +666,8 @@ function GlobalRegistrySection() {
         </div>
 
         {/* Real map */}
-        <div style={{ aspectRatio: "21/9" }}>
+        <div style={{ aspectRatio: "21/9" }} className="rounded-xl overflow-hidden border border-white/10 bg-black shadow-2xl relative">
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10 pointer-events-none" />
           <RealWorldMap />
         </div>
 
@@ -743,27 +676,25 @@ function GlobalRegistrySection() {
   );
 }
 
-// ÔöÇÔöÇÔöÇ FAQ Section ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// ÔöÇÔöÇÔöÇ FAQ Section (Dark Mode) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 
-// ÔöÇÔöÇÔöÇ FAQ Item (extracted to fix React Hooks Rules violation) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
-// useState CANNOT be called inside .map(). Each FAQ needs its own component.
 function FAQItem({ faq, index }: { faq: { q: string; a: string }; index: number }) {
   const [isOpen, setIsOpen] = React.useState(false);
   return (
-    <div className="border-b border-black/10">
+    <div className="border-b border-white/10">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full py-6 flex items-center justify-between text-left hover:bg-black/[0.02] transition-colors px-2"
+        className="w-full py-6 flex items-center justify-between text-left hover:bg-white/[0.02] transition-colors px-2 group"
       >
-        <span className="text-[16px] font-bold text-black pr-8">{faq.q}</span>
-        <span className="text-[20px] text-black/40 font-light w-6 h-6 flex items-center justify-center shrink-0">
+        <span className="text-[16px] font-bold text-white pr-8 group-hover:text-purple-400 transition-colors">{faq.q}</span>
+        <span className="text-[20px] text-white/40 font-light w-6 h-6 flex items-center justify-center shrink-0 group-hover:text-white transition-colors">
           {isOpen ? "ÔêÆ" : "+"}
         </span>
       </button>
       {isOpen && (
-        <div className="pb-6 px-2 text-[15px] font-medium text-black/60 leading-relaxed">
+        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="pb-6 px-2 text-[15px] font-light text-white/60 leading-relaxed">
           {faq.a}
-        </div>
+        </motion.div>
       )}
     </div>
   );
@@ -772,49 +703,56 @@ function FAQItem({ faq, index }: { faq: { q: string; a: string }; index: number 
 function FAQSection() {
   const faqs = [
     {
-      q: "What user data is stored?",
-      a: "None. All identity attributes and financial data are encrypted and stored locally on your device. The network only processes mathematical proofs that attest to the validity of your data."
+      q: "What user data is stored on the network?",
+      a: "None. All identity attributes and financial data are encrypted and stored locally on your device inside the Private Execution Environment (PXE). The network only processes mathematical zero-knowledge proofs that attest to the validity of your data."
     },
     {
-      q: "How does the verification actually work?",
-      a: "When you prove a statement (e.g., 'I am over 18'), your device generates a zero-knowledge proof. The verifying application checks this proof against a smart contract or SDK, receiving a simple true/false answer without seeing your birthdate."
+      q: "How does the ZK verification actually work?",
+      a: "When you prove a statement (e.g., 'I am an accredited investor'), your device generates a zero-knowledge proof using a Noir circuit. The verifying application checks this proof against the smart contract, receiving a simple true/false boolean without ever seeing your underlying documents."
     },
     {
       q: "Are my wallet keys safe?",
-      a: "Yes. Your private keys never leave your device. They are encrypted using military-grade AES-GCM and require your password or biometric approval to unlock."
+      a: "Yes. Your private keys never leave your device. They are encrypted using military-grade AES-GCM and require your explicit authorization (password or biometric) to unlock the local enclave."
     },
     {
-      q: "Can regulators audit my activity?",
-      a: "Yes, but only if you explicitly authorize them. You can generate a specific 'viewing key' that grants read-only access to specific transactions for attestation purposes."
+      q: "Can regulators audit my shielded activity?",
+      a: "Yes, but only if you explicitly authorize them. The Aztec architecture allows you to generate a 'viewing key' that grants read-only access to specific transactions or credentials for attestation purposes, while keeping the rest of your portfolio entirely private."
     },
     {
       q: "What can I do once my identity is verified?",
-      a: "Once your zero-knowledge identity is established, you gain access to the full Whale Network terminal: encrypted peer-to-peer messaging via Whale Chat, provenance registration in the Studio, on-chain analytics in the Dashboard, and cryptographic session management across all twelve platform modules."
+      a: "Once your zero-knowledge identity is established on the registry, you gain access to the full Whale Network ecosystem: encrypted peer-to-peer messaging via Whale Chat, provenance registration in the Studio, shielded analytics in the Terminal, and cryptographic session management across all platform modules."
     },
     {
-      q: "How do you handle KYC requirements?",
-      a: "We utilize Zero-Knowledge (ZK) proofs to attest to your attestation. You undergo verification once, and from then on, you prove you've met KYC standards mathematically without repeatedly sharing your documents."
+      q: "How do you handle KYC requirements across jurisdictions?",
+      a: "We utilize Verifiable Credentials (W3C standard) combined with ZK proofs. You undergo verification once with a trusted issuer, and from then on, you prove you've met KYC standards mathematically without repeatedly sharing your passport or sensitive documents."
     },
     {
-      q: "What makes Whale Chat different from other messengers?",
-      a: "Whale Chat is tied to your verified cryptographic identity rather than a phone number or IP address. It offers true end-to-end encryption anchored on-chain."
+      q: "What makes Whale Chat different from other encrypted messengers?",
+      a: "Whale Chat is tied exclusively to your verified cryptographic Aztec identity rather than a phone number or IP address. It offers true end-to-end encryption anchored on-chain, enforcing Sybil-resistance so you always know you're talking to a verified human."
     },
     {
       q: "Is the Studio Provenance module public?",
-      a: "While cryptographic proofs are published to the network for public verifiability, the raw assets and documentation remain entirely private, unlocked only for intended recipients."
+      a: "The cryptographic proofs are published to the Aztec L2 rollup for public verifiability. However, the raw assets, metadata, and supporting documentation remain entirely private, unlocked only for intended recipients via selective disclosure."
     }
   ];
 
   return (
-    <section className="w-full bg-white py-24 border-t border-black/10">
+    <section className="w-full bg-[#000000] py-24 md:py-32 border-t border-white/10 text-white">
       <div className="w-full max-w-[800px] mx-auto px-6">
-        <div className="mb-12 text-center">
-          <h2 className="text-[32px] md:text-[42px] font-black tracking-tight text-black">
-            The questions prospects ask
+        <div className="mb-16 text-center flex flex-col items-center">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-[1px] w-8 bg-purple-500/50" />
+            <span className="text-[11px] font-mono uppercase tracking-[0.25em] text-purple-400 font-bold">
+              Knowledge Base
+            </span>
+            <div className="h-[1px] w-8 bg-purple-500/50" />
+          </div>
+          <h2 className="text-[36px] md:text-[48px] font-black tracking-tighter text-white">
+            Protocol Inquiries
           </h2>
         </div>
 
-        <div className="flex flex-col border-t border-black/10">
+        <div className="flex flex-col border-t border-white/10">
           {faqs.map((faq, i) => (
             <FAQItem key={i} faq={faq} index={i} />
           ))}
@@ -824,21 +762,31 @@ function FAQSection() {
   );
 }
 
-
-
 // ÔöÇÔöÇÔöÇ Powered By Aztec ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
 
 function PoweredBySection() {
   return (
-    <section className="w-full bg-[#f5f5f5] py-24 flex flex-col items-center justify-center border-t border-black/10">
-      <span className="text-sm md:text-base font-black uppercase tracking-[0.3em] text-black/60 mb-8">
-        Powered by
+    <section className="w-full bg-[#050505] py-24 flex flex-col items-center justify-center border-t border-white/10 relative overflow-hidden">
+      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay pointer-events-none" />
+      <span className="text-sm md:text-base font-mono uppercase tracking-[0.4em] text-white/40 mb-10 z-10">
+        Engineered on
       </span>
+      {/* We use the white version of the logo since the background is now black */}
       <img 
-        src="/aztec-logo-black.png" 
+        src="/aztec-logo-white.png" 
         alt="Aztec Network" 
-        className="h-40 md:h-56 lg:h-64 object-contain mix-blend-multiply opacity-95 hover:opacity-100 transition-all transform hover:scale-105 duration-500"
+        className="h-28 md:h-36 lg:h-44 object-contain opacity-90 hover:opacity-100 transition-all transform hover:scale-105 duration-500 z-10"
+        onError={(e) => {
+          // Fallback to text if white logo is missing
+          e.currentTarget.style.display = 'none';
+          if (e.currentTarget.nextElementSibling) {
+            (e.currentTarget.nextElementSibling as HTMLElement).style.display = 'block';
+          }
+        }}
       />
+      <div className="hidden z-10">
+        <h2 className="text-[48px] font-black tracking-tight text-white">AZTEC</h2>
+      </div>
     </section>
   );
 }
@@ -894,7 +842,6 @@ export function ImmersiveManifestoLanding(_props: ImmersiveManifestoLandingProps
       <HeroSection />
       <ValuePropositionSection />
       <HowItWorksSection />
-      <IntegrationSection />
       <GlobalRegistrySection />
       <FAQSection />
       {/* ── Module Showcase: expert presentations for all platform tabs ── */}
