@@ -917,7 +917,7 @@ function CTASection() {
 
 // ─── MAIN EXPORT ────────────────────────────────────────────────────────────
 
-export default function ImmersiveManifestoLanding() {
+export function ImmersiveManifestoLanding() {
   return (
     <main className="relative w-full bg-white text-black selection:bg-emerald-500/30 selection:text-black font-sans">
       <DottedGrid />

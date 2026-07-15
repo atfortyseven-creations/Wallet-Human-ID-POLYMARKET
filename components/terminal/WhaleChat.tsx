@@ -1110,10 +1110,21 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         // The mintIdentity endpoint wrote to the raw EVM address, but the portfolio
         // queries balance by the Aztec-derived address (SHA-256 of EVM address).
         // Using /api/aztec/airdrop guarantees both flows use the same ledger entry.
+        //
+        // BUG FIX (repeated +200 QDs toast): The old logic only set the localStorage
+        // guard key AFTER a successful API response. Any network error, server failure,
+        // or "Already received" mismatch left the key unset, causing the flow to re-run
+        // on every page load. Fix: set the key FIRST (optimistic lock) — if the user
+        // has already claimed, the server will confirm it; if not, we only show the toast
+        // once. The key is set unconditionally before the API call.
         const isWalletConnect = connector?.id?.toLowerCase().includes('walletconnect');
         if (isWalletConnect || !isLocalSystemWallet) {
             const mintKey = `qds_identity_mint_${address}`;
             if (typeof localStorage !== 'undefined' && !localStorage.getItem(mintKey)) {
+                // ✅ OPTIMISTIC LOCK: mark as attempted BEFORE the API call.
+                // This guarantees we only ever attempt the airdrop once per wallet,
+                // regardless of whether the API call succeeds, fails, or times out.
+                localStorage.setItem(mintKey, 'true');
                 try {
                     // Step 1: Derive the canonical Aztec address for this EVM wallet
                     const deriveRes = await fetch('/api/aztec/derive-address', {
@@ -1131,7 +1142,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                         });
                         const airdropData = await airdropRes.json();
                         if (airdropData.success) {
-                            localStorage.setItem(mintKey, 'true');
+                            // Only show the welcome toast on the very first successful claim
                             toast.success('⚡ Aztec Identity Active: 200 QDs received!', { 
                                 description: 'Transaction confirmed on Aztec Testnet.',
                                 duration: 8000,
@@ -1140,13 +1151,15 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                                     onClick: () => window.open(airdropData.explorerUrl, '_blank')
                                 } : undefined
                             });
-                        } else if (airdropData.message?.includes('Already received')) {
-                            localStorage.setItem(mintKey, 'true');
-                            // Already claimed — no toast needed
                         }
+                        // On any other response (Already received, error, etc.):
+                        // the optimistic lock above already prevents the next attempt.
                     }
                 } catch (e) {
                     console.error('Identity Airdrop Failed:', e);
+                    // Do NOT remove the localStorage key on error — the lock stays.
+                    // If the claim truly failed on-chain, the user can claim via the
+                    // AztecAirdropCalendar (monthly claim UI) instead.
                 }
             }
         }
