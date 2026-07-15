@@ -230,9 +230,7 @@ export async function encryptLayer(
     padded,
   );
 
-  // 7. Export ephemeral public key as SPKI bytes
-  const ephPubSpki = await crypto.subtle.exportKey('spki', await importPublicKey(eph.publicKey) as any);
-  // Re-export properly
+  // 7. Export ephemeral public key as raw bytes
   const ephPubCryptoKey = await crypto.subtle.importKey(
     'jwk', eph.publicKey.jwk,
     { name: 'ECDH', namedCurve: CURVE },

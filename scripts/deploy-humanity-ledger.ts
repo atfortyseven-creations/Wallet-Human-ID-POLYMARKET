@@ -114,7 +114,7 @@ async function main() {
   console.log('   DEPLOYMENT SUCCESSFUL!');
   console.log('   ================================================');
   console.log(`\n📍 Contract Address: ${contractAddress}`);
-  console.log(`🔍 Explorer: https://explorer.aztec.network/contracts/${contractAddress}\n`);
+  console.log(`🔍 Explorer: https://testnet.aztecscan.xyz/contract/${contractAddress}\n`);
 
   console.log('📋 ADD THESE TO YOUR .env AND Railway dashboard:\n');
   console.log(`AZTEC_QDS_CONTRACT_ADDRESS=${contractAddress}`);

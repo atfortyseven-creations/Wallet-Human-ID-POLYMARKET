@@ -35,7 +35,7 @@ export interface XmtpIdentifier {
 }
 
 const XMTP_ENV: XmtpEnv =
-  (process.env.NEXT_PUBLIC_XMTP_ENV as XmtpEnv) ?? 'production';
+  (process.env.NEXT_PUBLIC_XMTP_ENV as XmtpEnv) ?? 'dev';
 
 //  Singleton client registry (one client per lowercase address) 
 const clientRegistry = new Map<string, Client>();

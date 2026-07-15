@@ -1,5 +1,5 @@
 "use client";
-import { MoreVertical, MapPin, Copy, Trash2, UserPlus, Download, Slash } from 'lucide-react';
+import { MoreVertical, MapPin, Copy, Trash2, UserPlus, Download, Slash, Settings } from 'lucide-react';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
@@ -78,21 +78,21 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     bubbleStyle,
     accentColor,
     chatFont,
-    textSize 
+    textSize,
+    setSettingsOpen
   } = useSettingsStore();
 
   const bgStyle = React.useMemo((): React.CSSProperties => {
     switch (chatBackground) {
-      case 'amoled': return { background: '#000000' };
+      case 'amoled': return { background: '#ffffff' };
       case 'holographic':
         return {
-          background: 'linear-gradient(135deg, rgba(147,197,253,0.1) 0%, rgba(196,181,253,0.1) 100%)',
-          backdropFilter: 'blur(10px)'
+          background: 'linear-gradient(135deg, rgba(240,249,255,1) 0%, rgba(224,231,255,1) 100%)',
         };
-      case 'matrix': return { background: '#000000' };
-      case 'gradient': return { background: 'linear-gradient(to bottom right, #1e1e1e, #000000)' };
-      case 'custom': return chatBackgroundCustomUrl ? { backgroundImage: `url(${chatBackgroundCustomUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : { background: '#050505' };
-      default: return { background: '#050505' };
+      case 'matrix': return { background: '#f8fafc' };
+      case 'gradient': return { background: 'linear-gradient(to bottom right, #ffffff, #f1f5f9)' };
+      case 'custom': return chatBackgroundCustomUrl ? { backgroundImage: `url(${chatBackgroundCustomUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' } : { background: '#ffffff' };
+      default: return { background: '#ffffff' };
     }
   }, [chatBackground, chatBackgroundCustomUrl]);
 
@@ -1940,6 +1940,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 My QR
               </button>
             </div>
+            <button
+              onClick={() => setSettingsOpen(true)}
+              className="p-2.5 rounded-xl bg-gray-50 text-gray-700 hover:bg-gray-200 transition-all"
+              title="Settings"
+            >
+              <Settings size={18} />
+            </button>
           </div>
 
           <div className="flex gap-2">
@@ -2041,6 +2048,9 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 <button onClick={() => setShowProfile(true)} className="p-2 hover:bg-black/5  rounded-full transition-colors text-black/50 ">
                   <MoreVertical size={16} />
                 </button>
+                <button onClick={() => setSettingsOpen(true)} className="lg:hidden p-2 hover:bg-black/5  rounded-full transition-colors text-black/50 ">
+                  <Settings size={16} />
+                </button>
               </div>
             </div>
 
@@ -2104,7 +2114,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                       {isAudio && audioSrc ? (
                         <div className={`px-3 py-2.5 rounded-2xl ${
                           isMe
-                            ? 'bg-[#050505]  rounded-br-sm'
+                            ? 'bg-blue-500 text-white rounded-br-sm'
                             : 'bg-white  rounded-bl-sm border border-black/8  shadow-sm'
                         }`}>
                           <div className={`flex items-center gap-2 mb-1.5 ${isMe ? 'text-white/60 ' : 'text-black/40 '}`}>

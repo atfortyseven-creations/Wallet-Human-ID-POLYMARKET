@@ -7,7 +7,7 @@ import { assertVerifiedIdentity } from '@/lib/identity-gate';
 
 export const dynamic = 'force-dynamic';
 
-const AZTEC_EXPLORER = 'https://testnet.explorer.aztec.network';
+const AZTEC_EXPLORER = 'https://testnet.aztecscan.xyz';
 
 /**
  * POST /api/aztec/transfer

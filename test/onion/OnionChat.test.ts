@@ -12,24 +12,26 @@ describe('Multiplatform Chat (Onion Routing) Tests', () => {
 
     // 2. Sender (Platform A) encrypts a message
     const originalMessage = 'Hello from Platform A to Platform B!';
-    const layer = await encryptLayer(publicKey, originalMessage, 'final-hop');
+    const encodedPayload = new TextEncoder().encode(originalMessage);
+    const layer = await encryptLayer(encodedPayload, publicKey);
     
     expect(layer).toHaveProperty('ephPub');
     expect(layer).toHaveProperty('iv');
     expect(layer).toHaveProperty('ciphertext');
 
     // 3. Recipient (Platform B) decrypts the message
-    const { nextHop, payload } = await decryptLayer(_privateKey, layer);
+    const decryptedBytes = await decryptLayer(layer, _privateKey);
+    const decryptedMessage = new TextDecoder().decode(decryptedBytes);
 
     // 4. Verification
-    expect(nextHop).toBe('final-hop');
-    expect(payload).toBe(originalMessage);
+    expect(decryptedMessage).toBe(originalMessage);
   });
 
   it('should perfectly validate MAC to prevent tampering during transmission', async () => {
     const { publicKey, _privateKey } = await generateEphemeralKeyPair();
     const originalMessage = 'Secret multiplatform transmission';
-    const layer = await encryptLayer(publicKey, originalMessage, 'node-1');
+    const encodedPayload = new TextEncoder().encode(originalMessage);
+    const layer = await encryptLayer(encodedPayload, publicKey);
 
     // Simulate Hacker tampering with the ciphertext in transit
     const tamperedLayer = {
@@ -38,6 +40,6 @@ describe('Multiplatform Chat (Onion Routing) Tests', () => {
     };
 
     // Decryption should fail due to MAC validation (which is built into GCM ciphertext)
-    await expect(decryptLayer(_privateKey, tamperedLayer)).rejects.toThrow();
+    await expect(decryptLayer(tamperedLayer, _privateKey)).rejects.toThrow();
   });
 });
