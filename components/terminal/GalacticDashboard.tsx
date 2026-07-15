@@ -11,6 +11,7 @@ import {
   Wallet, PieChart, Clock, X
 } from 'lucide-react';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
+import { useSystemSignOut } from '@/hooks/useSystemSignOut';
 import { toast } from 'sonner';
 
 // Import all real functional modals
@@ -61,7 +62,7 @@ const GenericModal = ({ title, onClose, children }: { title: string, onClose: ()
 
 export function GalacticDashboard() {
   const { address } = useSystemAccount();
-  const { disconnect } = useDisconnect();
+  const { nuclearDisconnect } = useSystemSignOut();
   const [activeTab, setActiveTab] = useState<'TOKENS' | 'DEFI' | 'ACTIVITY'>('TOKENS');
   const [maticBalance, setMaticBalance] = useState<string>("0.0");
   const [maticValueUsd, setMaticValueUsd] = useState<string>("0.00");
@@ -199,7 +200,7 @@ export function GalacticDashboard() {
             <Key size={16} className="text-white/70" />
             <span className="text-[9px] font-black uppercase tracking-widest text-white/70">Vault Manager</span>
           </button>
-          <button onClick={() => disconnect()} className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 transition-colors border border-red-500/20 group">
+          <button onClick={() => nuclearDisconnect()} className="flex flex-col items-center justify-center gap-2 p-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 transition-colors border border-red-500/20 group">
             <LogOut size={16} className="text-red-500/70 group-hover:text-red-400" />
             <span className="text-[9px] font-black uppercase tracking-widest text-red-500/70 group-hover:text-red-400">Disconnect</span>
           </button>

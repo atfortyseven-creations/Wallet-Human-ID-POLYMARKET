@@ -125,25 +125,25 @@ export async function POST(request: NextRequest) {
 
         // Create or update user
         await prisma.user.upsert({
-            where: { walletAddress: body.voterAddress },
+            where: { walletAddress: voterAddress },
             update: {
                 updatedAt: new Date(),
             },
             create: {
-                walletAddress: body.voterAddress,
-                worldIdNullifierHash: body.worldIdProof.nullifier_hash,
+                walletAddress: voterAddress,
+                worldIdNullifierHash: generatedNullifier,
             },
         });
 
         // Update user metrics
         await (prisma as any).userMetrics.upsert({
-            where: { userAddress: body.voterAddress },
+            where: { userAddress: voterAddress },
             update: {
                 votescast: { increment: 1 },
                 lastActiveAt: new Date(),
             },
             create: {
-                userAddress: body.voterAddress,
+                userAddress: voterAddress,
                 votescast: 1,
             },
         });

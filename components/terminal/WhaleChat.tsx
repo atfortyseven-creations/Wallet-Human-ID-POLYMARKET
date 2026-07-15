@@ -1106,17 +1106,6 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         await loadConversations();
         
         // Identity Mint logic for WalletConnect wallets
-        // CRITICAL FIX: Use the same derive-address + airdrop flow as the portfolio.
-        // The mintIdentity endpoint wrote to the raw EVM address, but the portfolio
-        // queries balance by the Aztec-derived address (SHA-256 of EVM address).
-        // Using /api/aztec/airdrop guarantees both flows use the same ledger entry.
-        //
-        // BUG FIX (repeated +200 QDs toast): The old logic only set the localStorage
-        // guard key AFTER a successful API response. Any network error, server failure,
-        // or "Already received" mismatch left the key unset, causing the flow to re-run
-        // on every page load. Fix: set the key FIRST (optimistic lock) — if the user
-        // has already claimed, the server will confirm it; if not, we only show the toast
-        // once. The key is set unconditionally before the API call.
         const isWalletConnect = connector?.id?.toLowerCase().includes('walletconnect');
         if (isWalletConnect || !isLocalSystemWallet) {
             const mintKey = `qds_identity_mint_${address}`;
@@ -1130,15 +1119,16 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                     const deriveRes = await fetch('/api/aztec/derive-address', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ seed: address })
+                        body: JSON.stringify({ evmAddress: address })
                     });
-                    if (deriveRes.ok) {
-                        const { aztecAddress: derivedAztecAddr } = await deriveRes.json();
-                        // Step 2: Airdrop to the derived Aztec address (same as portfolio tab)
+                    const deriveData = await deriveRes.json();
+                    
+                    if (deriveData.success && deriveData.aztecAddress) {
+                        // Step 2: Trigger the airdrop script explicitly via the API route
                         const airdropRes = await fetch('/api/aztec/airdrop', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ address: derivedAztecAddr })
+                            body: JSON.stringify({ address: deriveData.aztecAddress, amount: 200 })
                         });
                         const airdropData = await airdropRes.json();
                         if (airdropData.success) {

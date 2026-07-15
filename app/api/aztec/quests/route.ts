@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
+import { getSession } from '@/lib/session';
 
 /**
  * GET /api/aztec/quests
@@ -59,11 +60,24 @@ export async function POST(req: NextRequest) {
     const ipHash = crypto.createHash('sha256').update(rawIp + (process.env.JWT_SECRET || 'whale-oracle-secret')).digest('hex');
 
     try {
+        const session = await getSession();
+        if (!session?.userId) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
         const body = await req.json();
         const { questId, slug, aztecAddress } = body;
 
         if (!aztecAddress || !slug) {
             return NextResponse.json({ error: 'Missing required fields: aztecAddress and slug' }, { status: 400 });
+        }
+
+        const evmAddress = session.userId.toLowerCase();
+        const round1 = crypto.createHash('sha256').update(`aztec-schnorr:${evmAddress}`).digest();
+        const derivedAztec = `0x${crypto.createHash('sha256').update(round1).digest('hex')}`;
+        
+        if (derivedAztec.toLowerCase() !== aztecAddress.toLowerCase() && evmAddress !== aztecAddress.toLowerCase()) {
+             return NextResponse.json({ error: 'Forbidden: Address mismatch' }, { status: 403 });
         }
 
         // Validate slug against hardcoded allowlist — cannot be spoofed via questId injection
@@ -198,6 +212,11 @@ export async function POST(req: NextRequest) {
  * Slashing logic: Admin/System endpoint to slash QDs if user unfollows
  */
 export async function DELETE(req: NextRequest) {
+    const authHeader = req.headers.get('authorization');
+    if (authHeader !== `Bearer ${process.env.ADMIN_SECRET}`) {
+        return NextResponse.json({ error: 'Unauthorized: Admin access required for slashing' }, { status: 401 });
+    }
+
     try {
         const body = await req.json();
         const { aztecAddress, slug } = body;

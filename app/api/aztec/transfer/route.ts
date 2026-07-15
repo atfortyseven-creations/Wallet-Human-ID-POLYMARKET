@@ -113,102 +113,88 @@ export async function POST(req: NextRequest) {
     const pxeUrl          = process.env.AZTEC_PXE_URL   || 'https://v5.testnet.rpc.aztec-labs.com';
     const nodeUrl         = process.env.AZTEC_NODE_URL  || 'https://v5.testnet.rpc.aztec-labs.com';
 
-    if (tokenAddressStr && tokenAddressStr !== 'PENDING_DEPLOY') {
-      // ── MODE A: Full on-chain public token transfer via EmbeddedWallet ────
-      console.log('[Aztec Transfer] Mode A: Full on-chain transfer via EmbeddedWallet + TokenContract');
+    if (!tokenAddressStr || tokenAddressStr === 'PENDING_DEPLOY') {
+      throw new Error('Aztec Testnet integration is currently pending deployment. Please check back later.');
+    }
 
-      const { EmbeddedWallet }            = await import('@aztec/wallets/embedded');
-      const { Fr }                        = await import('@aztec/foundation/curves/bn254');
-      const { AztecAddress }              = await import('@aztec/stdlib/aztec-address');
-      const { TokenContract }             = await import('@aztec/noir-contracts.js/Token');
-      const { SponsoredFeePaymentMethod } = await import('@aztec/aztec.js/fee');
-      const { deriveSecretKeyFromEvm }    = await import('@/lib/aztec/client');
-      const { getFpcAddress }             = await import('@/lib/aztec/client');
+    // ── NATIVE AZTEC TESTNET TRANSFER (No simulations allowed) ────
+    console.log('[Aztec Transfer] Native: Full on-chain transfer via EmbeddedWallet + TokenContract');
 
-      // Boot a local ephemeral PXE (no LMDB persistence needed for request handlers)
-      const wallet = await EmbeddedWallet.create(pxeUrl, { ephemeral: true });
+    const { EmbeddedWallet }            = await import('@aztec/wallets/embedded');
+    const { Fr }                        = await import('@aztec/foundation/curves/bn254');
+    const { AztecAddress }              = await import('@aztec/stdlib/aztec-address');
+    const { TokenContract }             = await import('@aztec/noir-contracts.js/Token');
+    const { SponsoredFeePaymentMethod } = await import('@aztec/aztec.js/fee');
+    const { deriveSecretKeyFromEvm }    = await import('@/lib/aztec/client');
+    const { getFpcAddress }             = await import('@/lib/aztec/client');
 
-      try {
-        // Derive sender's Schnorr key deterministically from their EVM address
-        const secretKeyHex  = deriveSecretKeyFromEvm(fromAddr);
-        const secretKey      = Fr.fromHexString(secretKeyHex.replace(/^0x/i, ''));
-        const salt           = new Fr(0n);
+    // Boot a local ephemeral PXE (no LMDB persistence needed for request handlers)
+    const wallet = await EmbeddedWallet.create(pxeUrl, { ephemeral: true });
 
-        // createSchnorrAccount → AccountManager; .address is a sync getter
-        const accountManager    = await wallet.createSchnorrAccount(secretKey, salt);
-        const senderAztecAddress = accountManager.address;
+    try {
+      // Derive sender's Schnorr key deterministically from their EVM address
+      const secretKeyHex  = deriveSecretKeyFromEvm(fromAddr);
+      const secretKey      = Fr.fromHexString(secretKeyHex.replace(/^0x/i, ''));
+      const salt           = new Fr(0n);
 
-        const tokenAddress  = AztecAddress.fromString(tokenAddressStr);
-        const recipientAddr = AztecAddress.fromString(toAddr);
+      // createSchnorrAccount → AccountManager; .address is a sync getter
+      const accountManager    = await wallet.createSchnorrAccount(secretKey, salt);
+      const senderAztecAddress = accountManager.address;
 
-        // TokenContract.at(address, wallet) — wallet implements Wallet via BaseWallet
-        const tokenContract = await TokenContract.at(tokenAddress, wallet);
+      const tokenAddress  = AztecAddress.fromString(tokenAddressStr);
+      const recipientAddr = AztecAddress.fromString(toAddr);
 
-        // Amount in token base units (18 decimals)
-        const amountBigInt = BigInt(Math.floor(roundedAmount * 1e18));
+      // TokenContract.at(address, wallet) — wallet implements Wallet via BaseWallet
+      const tokenContract = await TokenContract.at(tokenAddress, wallet);
 
-        // SPONSORED_FPC — canonical testnet fee payment contract
-        const fpcAddress       = AztecAddress.fromString(getFpcAddress());
-        const feePaymentMethod = new SponsoredFeePaymentMethod(fpcAddress);
+      // Amount in token base units (18 decimals)
+      const amountBigInt = BigInt(Math.floor(roundedAmount * 1e18));
 
-        //
-        // transfer_public(from: AztecAddressLike, to: AztecAddressLike, amount: bigint|number, authwit_nonce: FieldLike)
-        //   .send(options: SendInteractionOptionsWithoutWait) → Promise<TxSendResultMined<TxReceipt>>
-        //
-        // TxSendResultMined = { receipt: TxReceipt } & OffchainOutput
-        // TxReceipt.txHash → TxHash (has .toString())
-        //
-        const txResult = await tokenContract.methods
-          .transfer_public(senderAztecAddress, recipientAddr, amountBigInt, 0n)
-          .send({
-            from: senderAztecAddress,   // AztecAddress — mandatory field
-            fee: {
-              paymentMethod: feePaymentMethod,
-            },
-          });
+      // SPONSORED_FPC — canonical testnet fee payment contract
+      const fpcAddress       = AztecAddress.fromString(getFpcAddress());
+      const feePaymentMethod = new SponsoredFeePaymentMethod(fpcAddress);
 
-        // txResult.receipt.txHash — TxSendResultMined.receipt.txHash
-        aztecTxHash = txResult.receipt.txHash.toString();
-        explorerUrl = `${AZTEC_EXPLORER}/tx/${aztecTxHash}`;
-        onChain     = true;
-        blockNumber = Number(txResult.receipt.blockNumber ?? Math.floor(Date.now() / 12_000));
+      //
+      // transfer_public(from: AztecAddressLike, to: AztecAddressLike, amount: bigint|number, authwit_nonce: FieldLike)
+      //   .send(options: SendInteractionOptionsWithoutWait) → Promise<TxSendResultMined<TxReceipt>>
+      //
+      // TxSendResultMined = { receipt: TxReceipt } & OffchainOutput
+      // TxReceipt.txHash → TxHash (has .toString())
+      //
+      const txResult = await tokenContract.methods
+        .transfer_public(senderAztecAddress, recipientAddr, amountBigInt, 0n)
+        .send({
+          from: senderAztecAddress,   // AztecAddress — mandatory field
+          fee: {
+            paymentMethod: feePaymentMethod,
+          },
+        });
 
-        console.log(`[Aztec Transfer] ✅ On-chain! Hash: ${aztecTxHash}`);
-      } finally {
-        // Always shut down the PXE and LMDB store to prevent resource leaks
-        await wallet.stop();
-      }
-
-    } else {
-      // ── MODE B: Node-verified DB-ledger transfer ───────────────────────────
-      console.log('[Aztec Transfer] Mode B: Node-verified DB-ledger transfer (token not deployed yet)');
-
+      // txResult.receipt.txHash — TxSendResultMined.receipt.txHash
+      aztecTxHash = txResult.receipt.txHash.toString();
+      explorerUrl = `${AZTEC_EXPLORER}/tx/${aztecTxHash}`;
+      onChain     = true;
+      blockNumber = Number(txResult.receipt.blockNumber ?? Math.floor(Date.now() / 12_000));
+      
+      // Also get node info for metadata
       const { createAztecNodeClient } = await import('@aztec/aztec.js/node');
       const node = createAztecNodeClient(nodeUrl);
-
       try {
-        const [currentBlock, info] = await Promise.all([
-          node.getBlockNumber(),
-          node.getNodeInfo(),
-        ]);
-        blockNumber = currentBlock;
-        nodeInfo    = {
-          nodeVersion  : info.nodeVersion,
-          l1ChainId    : info.l1ChainId,
+        const info = await node.getNodeInfo();
+        nodeInfo = {
+          nodeVersion: info.nodeVersion,
+          l1ChainId: info.l1ChainId,
           rollupVersion: info.rollupVersion,
           rollupAddress: info.l1ContractAddresses?.rollupAddress?.toString(),
         };
-        console.log(`[Aztec Transfer] ✅ Testnet verified — Block #${blockNumber}, L1: ${nodeInfo.l1ChainId}`);
-      } catch (e: any) {
-        console.warn('[Aztec Transfer] Node probe failed (proceeding anyway):', e.message);
-        blockNumber = Math.floor(Date.now() / 12_000);
+      } catch(e) {
+          console.warn('[Aztec Transfer] Could not fetch node info for metadata.');
       }
 
-      const salt      = crypto.randomBytes(16).toString('hex');
-      const hashInput = `${blockNumber}:${fromAddr}:${toAddr}:${roundedAmount}:${salt}`;
-      aztecTxHash     = '0x' + crypto.createHash('sha256').update(hashInput).digest('hex');
-      explorerUrl     = `${AZTEC_EXPLORER}/tx/${aztecTxHash}`;
-      onChain         = false;
+      console.log(`[Aztec Transfer] ✅ Native On-chain! Hash: ${aztecTxHash}`);
+    } finally {
+      // Always shut down the PXE and LMDB store to prevent resource leaks
+      await wallet.stop();
     }
 
     // ── Atomic DB Ledger Write (Serializable — anti double-spend) ───────────
@@ -264,8 +250,8 @@ export async function POST(req: NextRequest) {
             metadata   : {
               network         : 'aztec-testnet',
               aztecTxHash,
-              explorerUrl     : onChain ? explorerUrl : null,
-              onChain,
+              explorerUrl,
+              onChain: true,
               tokenContractSet: !!tokenAddressStr,
               nodeInfo,
               nonce,

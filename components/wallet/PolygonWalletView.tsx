@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import {
@@ -13,7 +13,8 @@ import {
     Clock,
     ChevronDown
 } from "lucide-react";
-import { useAccount, useDisconnect, useBalance } from "wagmi";
+import { useAccount, useBalance } from "wagmi";
+import { useSystemSignOut } from '@/hooks/useSystemSignOut';
 
 import { safeToFixed, safeToLocaleString } from '@/lib/utils/number-format';
 // Default Initial Data
@@ -31,7 +32,7 @@ const TRANSACTIONS = [
 
 export default function PolygonWalletView() {
     const { address } = useAccount();
-    const { disconnect } = useDisconnect();
+    const { nuclearDisconnect } = useSystemSignOut();
     const [activeTab, setActiveTab] = useState<"tokens" | "activity">("tokens");
     const [isCopied, setIsCopied] = useState(false);
 
@@ -73,7 +74,7 @@ export default function PolygonWalletView() {
                             </button>
                         )}
                         <button
-                            onClick={() => disconnect()}
+                            onClick={() => nuclearDisconnect()}
                             className="text-xs font-medium text-slate-400 hover:text-red-500 transition-colors"
                         >
                             Disconnect

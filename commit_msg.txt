@@ -1,6 +1,9 @@
-fix: resolve Railway OOM restarts and Noir circuit syntax errors
+audit: portfolio & aztec identity phase 1 fixes
 
-- ecosystem.config.json: fix PM2 memory conflict - heap 512MB to 460MB, max_memory_restart 600M to 700M
-- NoirCircuitSandbox.tsx: fix all 4 circuit examples to modern Noir syntax (param: pub Type)
-- mint_private_license/src/main.nr: fix assert(is_valid == true) to assert(is_valid)
-- ProvenanceStudioContent.tsx: accessibility and privacy UI improvements
+- Remove silent auto-airdrop Sybil attack vector from AztecNativeContext
+- StatusBadge: live node healthcheck via useAztecNodeInfo hook (ONLINE/DEGRADED/OFFLINE)
+- Remove hardcoded LIVE_BLOCK_HEIGHT=144318, now fetched live from RPC
+- useRealWalletData: QDs balance unified via AztecNativeContext (single source of truth)
+- EUR rate: live ECB XML API via /api/fx/eur-rate, replaces hardcoded 0.92 demo rate
+- HistoryPanel: Spanish text to English, en-GB locale for date grouping
+- Footer: removed hardcoded date and Modo B label, shows live block height

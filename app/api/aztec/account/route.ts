@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { NextRequest, NextResponse } from 'next/server';
+import crypto from 'crypto';
 
 export const dynamic = 'force-dynamic';
 
@@ -23,10 +24,10 @@ export async function GET(req: NextRequest) {
   const nodeUrl = process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
 
   // ── Derive deterministic Aztec address from EVM address ────────────────────
-  // Pad the 20-byte EVM address to a 32-byte Fr field element (Aztec address space).
-  // This is stable, reproducible, and requires zero SDK imports in the runtime.
-  const normalized = evmAddress.toLowerCase().replace('0x', '').padStart(62, '0').slice(0, 62);
-  const aztecAddress = `0x00${normalized}`;
+  const normalized = evmAddress.toLowerCase().trim();
+  const round1 = crypto.createHash('sha256').update(`aztec-schnorr:${normalized}`).digest();
+  const round2 = crypto.createHash('sha256').update(round1).digest('hex');
+  const aztecAddress = `0x${round2}`;
 
   // ── Probe testnet node via raw JSON-RPC ────────────────────────────────────
   let testnetData: any = null;

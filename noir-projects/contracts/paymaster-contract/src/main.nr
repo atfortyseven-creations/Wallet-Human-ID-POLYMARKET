@@ -1,16 +1,22 @@
-// noir-projects/contracts/paymaster-contract/src/main.nr
-contract NativePaymaster {
-    use dep::aztec::prelude::*;
+use aztec::macros::aztec;
 
-    #[aztec::public]
-    fn sponsor_transaction(user_address: Field, tx_fee_limit: Field) {
-        // Account Abstraction (EIP-4337 compatibility natively in Aztec)
-        // Subsidizes gas for onboarding zero-balance users seamlessly
-        // Emits Metrics Sponsorship Event
+#[aztec]
+pub contract NativePaymaster {
+    use aztec::macros::{functions::external, storage::storage};
+    use aztec::protocol::{address::AztecAddress, traits::{Deserialize, Serialize, ToField}};
+    use aztec::state_vars::{Map, PublicMutable};
+
+    #[storage]
+    struct Storage<Context> {
+        // Dummy storage to satisfy compiler if needed
+        admin: PublicMutable<AztecAddress, Context>,
     }
 
-    #[aztec::private]
-    fn private_sponsor_execution(authwit_hash: Field) {
-        // Private sponsoring without leaking the institutional treasury's origin
+    #[external("public")]
+    fn sponsor_transaction(_user_address: Field, _tx_fee_limit: Field) {
+    }
+
+    #[external("private")]
+    fn private_sponsor_execution(_authwit_hash: Field) {
     }
 }

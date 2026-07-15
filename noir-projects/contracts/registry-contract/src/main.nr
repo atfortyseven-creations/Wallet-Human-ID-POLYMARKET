@@ -1,64 +1,49 @@
-contract ProvenanceRegistry {
-    use dep::aztec::prelude::{
-        AztecAddress,
-        Map,
-        PublicMutable,
-    };
+use aztec::macros::aztec;
 
-    struct PublicProductRecord {
-        slug_hash: Field,
-        issuer: AztecAddress,
-        confirmed_at: u64,
-        is_revoked: bool,
+#[aztec]
+pub contract ProvenanceRegistry {
+    use aztec::macros::{functions::{external, view}, storage::storage};
+    use aztec::protocol::{address::AztecAddress, traits::{Deserialize, Serialize, ToField}};
+    use aztec::state_vars::{Map, PublicMutable};
+
+    #[storage]
+    struct Storage<Context> {
+        issuer: Map<Field, PublicMutable<AztecAddress, Context>, Context>,
+        confirmed_at: Map<Field, PublicMutable<u32, Context>, Context>,
+        is_revoked: Map<Field, PublicMutable<bool, Context>, Context>,
     }
 
-    #[aztec::storage]
-    struct Storage {
-        public_records: Map<Field, PublicMutable<PublicProductRecord>>,
-    }
-
-    #[aztec::public]
+    #[external("public")]
     fn register_product(
         slug_hash: Field,
-        batch_id_hash: Field,
-        supplier_hash: Field,
-        metadata_hash: Field,
+        _batch_id_hash: Field,
+        _supplier_hash: Field,
+        _metadata_hash: Field,
     ) {
-        let issuer = context.msg_sender();
-        let record = PublicProductRecord {
-            slug_hash,
-            issuer,
-            confirmed_at: context.timestamp(),
-            is_revoked: false,
-        };
-        storage.public_records.at(slug_hash).write(record);
+        let issuer = self.msg_sender();
+        self.storage.issuer.at(slug_hash).write(issuer);
+        self.storage.confirmed_at.at(slug_hash).write(self.context.block_number());
+        self.storage.is_revoked.at(slug_hash).write(false);
     }
 
-    #[aztec::public]
-    #[aztec::view]
-    fn verify_product(slug_hash: Field) -> bool {
-        let record = storage.public_records.at(slug_hash).read();
-        let exists = !record.issuer.is_zero();
-        exists & !record.is_revoked
-    }
-
-    #[aztec::public]
-    #[aztec::view]
-    fn get_public_record(slug_hash: Field) -> PublicProductRecord {
-        storage.public_records.at(slug_hash).read()
-    }
-
-    #[aztec::public]
-    fn revoke_product(slug_hash: Field) {
-        let record = storage.public_records.at(slug_hash).read();
-        assert(record.issuer == context.msg_sender(), "Only issuer can revoke");
+    #[external("public")]
+    #[view]
+    fn verify_product(slug_hash: Field) -> Field {
+        let issuer: AztecAddress = self.storage.issuer.at(slug_hash).read();
+        let is_revoked: bool = self.storage.is_revoked.at(slug_hash).read();
         
-        let revoked = PublicProductRecord {
-            slug_hash: record.slug_hash,
-            issuer: record.issuer,
-            confirmed_at: record.confirmed_at,
-            is_revoked: true,
-        };
-        storage.public_records.at(slug_hash).write(revoked);
+        let exists = issuer.to_field() != 0;
+        if exists & !is_revoked {
+            1
+        } else {
+            0
+        }
+    }
+
+    #[external("public")]
+    fn revoke_product(slug_hash: Field) {
+        let issuer: AztecAddress = self.storage.issuer.at(slug_hash).read();
+        assert(issuer.eq(self.msg_sender()), "Only issuer can revoke");
+        self.storage.is_revoked.at(slug_hash).write(true);
     }
 }

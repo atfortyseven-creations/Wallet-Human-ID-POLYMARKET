@@ -29,7 +29,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useLanguage } from '@/lib/i18n/LanguageContext';
-import { useAccount, useDisconnect } from 'wagmi';
+import { useAccount } from 'wagmi';
+import { useSystemSignOut } from '@/hooks/useSystemSignOut';
 import { useAppKit } from '@reown/appkit/react';
 
 interface NavLinkProps {
@@ -72,7 +73,7 @@ export function DropdownNav() {
     const router = useRouter();
     const { t } = useLanguage();
     const { address, isConnected } = useAccount();
-    const { disconnect } = useDisconnect();
+    const { nuclearDisconnect } = useSystemSignOut();
     const { open } = useAppKit();
 
     const [isScrolled, setIsScrolled] = useState(false);
@@ -98,7 +99,7 @@ export function DropdownNav() {
     };
 
     const signOut = async () => {
-        disconnect();
+        await nuclearDisconnect();
     };
 
     return (

@@ -24,7 +24,7 @@ export async function GET(req: Request) {
   try {
     // ─── LEDGER BALANCE CALCULATION ───────────────────────────────────────
     // Prevent infinite minting by calculating absolute truth from PostgreSQL
-    const [receivedAgg, sentAgg] = await Promise.all([
+    const [receivedAgg, sentAgg, earnedAgg, spentAgg] = await Promise.all([
       prisma.transaction.aggregate({
         where: { toAddress: normalizedAddress, token: 'QDs', status: 'COMPLETED' },
         _sum: { amount: true }
@@ -32,15 +32,25 @@ export async function GET(req: Request) {
       prisma.transaction.aggregate({
         where: { fromAddress: normalizedAddress, token: 'QDs', status: 'COMPLETED' },
         _sum: { amount: true }
+      }),
+      prisma.qdTransaction.aggregate({
+        where: { aztecAddress: normalizedAddress, type: 'EARN' },
+        _sum: { amount: true }
+      }),
+      prisma.qdTransaction.aggregate({
+        where: { aztecAddress: normalizedAddress, type: { in: ['SPEND', 'SLASH'] } },
+        _sum: { amount: true }
       })
     ]);
 
     const genesisAmount = 0; // Genesis removed. Users must sign in Identity to get QDs.
-    const received = receivedAgg._sum.amount || 0;
-    const sent = sentAgg._sum.amount || 0;
+    const received = Number(receivedAgg._sum.amount || 0);
+    const sent = Number(sentAgg._sum.amount || 0);
+    const earned = Number(earnedAgg._sum.amount || 0);
+    const spent = Number(spentAgg._sum.amount || 0);
     
     // Fix precision
-    const rawBalance = genesisAmount + received - sent;
+    const rawBalance = genesisAmount + received + earned - sent - spent;
     const trueBalance = Math.round(rawBalance * 1000000) / 1000000;
 
     // Ensure we don't go below 0 theoretically, though transfers prevent it

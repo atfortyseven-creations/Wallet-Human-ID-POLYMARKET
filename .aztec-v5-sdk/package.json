@@ -4,10 +4,10 @@
   "type": "module",
   "private": true,
   "dependencies": {
-    "@aztec/accounts": "^5.0.0-nightly.20260625",
-    "@aztec/aztec.js": "^5.0.0-nightly.20260625",
-    "@aztec/noir-contracts.js": "^5.0.0-nightly.20260625",
-    "@aztec/pxe": "^5.0.0-nightly.20260625",
-    "@aztec/wallets": "^5.0.0-nightly.20260625"
+    "@aztec/accounts": "5.0.0",
+    "@aztec/aztec.js": "5.0.0",
+    "@aztec/noir-contracts.js": "5.0.0",
+    "@aztec/pxe": "5.0.0",
+    "@aztec/wallets": "5.0.0"
   }
 }

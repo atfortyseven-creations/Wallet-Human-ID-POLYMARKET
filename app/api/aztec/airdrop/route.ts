@@ -160,88 +160,76 @@ export async function POST(req: NextRequest) {
     const nodeUrl = process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
     const pxeUrl  = process.env.AZTEC_PXE_URL  || nodeUrl;
 
-    if (tokenAddressStr && tokenAddressStr !== 'PENDING_DEPLOY' && relayerSecretHex) {
-      // ── MODE A: Full on-chain mint via PXE + TokenContract ────────────────
-      console.log('[Aztec Airdrop] Mode A: On-chain mint via TokenContract');
+    if (!tokenAddressStr || tokenAddressStr === 'PENDING_DEPLOY' || !relayerSecretHex) {
+        throw new Error('Aztec Testnet integration is currently pending deployment. Please check back later.');
+    }
 
-      const { EmbeddedWallet }            = await import('@aztec/wallets/embedded');
-      const { Fr }                        = await import('@aztec/foundation/curves/bn254');
-      const { AztecAddress }              = await import('@aztec/stdlib/aztec-address');
-      const { TokenContract }             = await import('@aztec/noir-contracts.js/Token');
-      const { SponsoredFeePaymentMethod } = await import('@aztec/aztec.js/fee');
-      const { getFpcAddress }             = await import('@/lib/aztec/client');
+    // ── NATIVE AZTEC TESTNET MINT (No simulations allowed) ────────────────
+    console.log('[Aztec Airdrop] Native: On-chain mint via TokenContract');
 
-      // Initialize Embedded Wallet connected to PXE node
-      const wallet = await EmbeddedWallet.create(pxeUrl, { ephemeral: true });
+    const { EmbeddedWallet }            = await import('@aztec/wallets/embedded');
+    const { Fr }                        = await import('@aztec/foundation/curves/bn254');
+    const { AztecAddress }              = await import('@aztec/stdlib/aztec-address');
+    const { TokenContract }             = await import('@aztec/noir-contracts.js/Token');
+    const { SponsoredFeePaymentMethod } = await import('@aztec/aztec.js/fee');
+    const { getFpcAddress }             = await import('@/lib/aztec/client');
 
-      try {
-        const secretKeyHex = relayerSecretHex;
-        const secretKey    = Fr.fromHexString(secretKeyHex.replace(/^0x/i, ''));
-        const salt         = new Fr(0n);
-        
-        // Instantiate Schnorr account in EmbeddedWallet
-        const accountManager = await wallet.createSchnorrAccount(secretKey, salt);
-        const relayerAddr = accountManager.address;
+    // Initialize Embedded Wallet connected to PXE node
+    const wallet = await EmbeddedWallet.create(pxeUrl, { ephemeral: true });
 
-        const tokenAddress  = AztecAddress.fromString(tokenAddressStr);
-        const toAddress     = AztecAddress.fromString(normalizedAddress);
-        
-        // Connect TokenContract instance to our wallet
-        const tokenContract = await TokenContract.at(tokenAddress, wallet);
-        const amountBigInt  = BigInt(AIRDROP_AMOUNT) * (10n ** 18n);
+    try {
+      const secretKeyHex = relayerSecretHex;
+      const secretKey    = Fr.fromHexString(secretKeyHex.replace(/^0x/i, ''));
+      const salt         = new Fr(0n);
+      
+      // Instantiate Schnorr account in EmbeddedWallet
+      const accountManager = await wallet.createSchnorrAccount(secretKey, salt);
+      const relayerAddr = accountManager.address;
 
-        const SPONSORED_FPC = getFpcAddress();
+      const tokenAddress  = AztecAddress.fromString(tokenAddressStr);
+      const toAddress     = AztecAddress.fromString(normalizedAddress);
+      
+      // Connect TokenContract instance to our wallet
+      const tokenContract = await TokenContract.at(tokenAddress, wallet);
+      const amountBigInt  = BigInt(AIRDROP_AMOUNT) * (10n ** 18n);
 
-        // Dispatch transaction natively through Aztec sequencer
-        const txResult = await tokenContract.methods
-          .mint_to_public(toAddress, amountBigInt)
-          .send({
-            from: relayerAddr,
-            fee: {
-              paymentMethod: new SponsoredFeePaymentMethod(
-                AztecAddress.fromString(SPONSORED_FPC)
-              )
-            }
-          });
-        
-        aztecTxHash   = txResult.receipt.txHash.toString();
-        explorerUrl   = `${AZTEC_EXPLORER}/tx/${aztecTxHash}`;
-        onChain       = true;
-        blockNum      = Number(txResult.receipt.blockNumber ?? Math.floor(Date.now() / 12_000));
-        console.log(`[Aztec Airdrop] ✅ On-chain! Hash: ${aztecTxHash}`);
-      } finally {
-        await wallet.stop();
-      }
-    } else {
-      // ── MODE B: Node-verified DB airdrop ──────────────────────────────────
-      console.log('[Aztec Airdrop] Mode B: Node-verified DB airdrop (token not deployed yet)');
+      const SPONSORED_FPC = getFpcAddress();
 
+      // Dispatch transaction natively through Aztec sequencer
+      const txResult = await tokenContract.methods
+        .mint_to_public(toAddress, amountBigInt)
+        .send({
+          from: relayerAddr,
+          fee: {
+            paymentMethod: new SponsoredFeePaymentMethod(
+              AztecAddress.fromString(SPONSORED_FPC)
+            )
+          }
+        });
+      
+      aztecTxHash   = txResult.receipt.txHash.toString();
+      explorerUrl   = `${AZTEC_EXPLORER}/tx/${aztecTxHash}`;
+      onChain       = true;
+      blockNum      = Number(txResult.receipt.blockNumber ?? Math.floor(Date.now() / 12_000));
+      
+      // Also get node info for metadata
       const { createAztecNodeClient } = await import('@aztec/aztec.js/node');
       const node = createAztecNodeClient(nodeUrl);
-
       try {
-        const [currentBlock, info] = await Promise.all([
-          node.getBlockNumber(),
-          node.getNodeInfo(),
-        ]);
-        blockNum = currentBlock;
+        const info = await node.getNodeInfo();
         nodeInfo = {
           nodeVersion: info.nodeVersion,
           l1ChainId: info.l1ChainId,
           rollupVersion: info.rollupVersion,
           rollupAddress: info.l1ContractAddresses?.rollupAddress?.toString(),
         };
-        console.log(`[Aztec Airdrop] ✅ Testnet at block #${blockNum}, L1 chain: ${nodeInfo.l1ChainId}`);
-      } catch(e: any) {
-        console.warn('[Aztec Airdrop] Node probe failed:', e.message);
-        blockNum = Math.floor(Date.now() / 12_000);
+      } catch(e) {
+          console.warn('[Aztec Airdrop] Could not fetch node info for metadata.');
       }
 
-      const salt      = crypto.randomBytes(16).toString('hex');
-      const hashInput = `airdrop:${blockNum}:${normalizedAddress}:${AIRDROP_AMOUNT}:${salt}`;
-      aztecTxHash     = '0x' + crypto.createHash('sha256').update(hashInput).digest('hex');
-      explorerUrl     = `${AZTEC_EXPLORER}/tx/${aztecTxHash}`;
-      onChain         = false;
+      console.log(`[Aztec Airdrop] ✅ Native On-chain! Hash: ${aztecTxHash}`);
+    } finally {
+      await wallet.stop();
     }
 
     // ── Record in DB (ATOMIC — Serializable to prevent double-airdrop race condition) ──

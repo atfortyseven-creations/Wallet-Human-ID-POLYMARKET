@@ -19,6 +19,7 @@
     "start:prod": "npx prisma generate && npx prisma db push --accept-data-loss && cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" npx next start -p ${PORT:-3000} -H 0.0.0.0",
     "start:gateway": "npx tsx services/gateway/server.ts",
     "start:all": "npx prisma db push --accept-data-loss && pm2-runtime start ecosystem.config.json",
+    "compile:testnet": "node scripts/compile-testnet.js",
     "test": "vitest watch",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",

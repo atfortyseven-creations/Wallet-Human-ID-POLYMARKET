@@ -9,11 +9,13 @@ import { EmbeddedWallet } from '@aztec/wallets/embedded';
 import { Fr } from '@aztec/foundation/curves/bn254';
 import { AztecAddress } from '@aztec/stdlib/aztec-address';
 import { TokenContract } from '@aztec/noir-contracts.js/Token';
+import { SponsoredFPCContractArtifact } from '@aztec/noir-contracts.js/SponsoredFPC';
+import { FPCContractArtifact } from '@aztec/noir-contracts.js/FPC';
 import { SponsoredFeePaymentMethod } from '@aztec/aztec.js/fee';
 
 const NODE_URL   = 'https://v5.testnet.rpc.aztec-labs.com/';
 const SECRET_HEX = process.env.AZTEC_RELAYER_SECRET_KEY?.trim();
-const SPONSORED_FPC = process.env.SPONSORED_FPC_ADDRESS || '0x261366b3c0a9b4c30864629556cf282be409e6822b1f3a065fcb7e34f36d7880';
+const SPONSORED_FPC = '0x0628377e98bca5913dc86765ad0758f7b7aa83eac49079c6fba125807b393fe1';
 
 // ── Helpers de formato ──────────────────────────────────────
 const dim  = s => `\x1b[2m${s}\x1b[0m`;
@@ -48,18 +50,25 @@ async function main() {
 
   // ── 3. Registrar / Derivar claves Schnorr en PXE ───────────
   process.stdout.write('  [3/5] Registrando cuenta Schnorr en PXE...  ');
-  const secretKey = Fr.fromString(SECRET_HEX);
-  const accountManager = await wallet.createSchnorrAccount(secretKey, Fr.ZERO);
+  const secretKey = Fr.fromHexString(SECRET_HEX);
+  // In nightly.20260714+: createSchnorrAccount(secret, salt, signingKey, alias)
+  // signingKey is the Grumpkin private key — we derive it from the same secret
+  const signingKey = secretKey;
+  const accountManager = await wallet.createSchnorrAccount(secretKey, Fr.ZERO, signingKey);
   const addr = accountManager.address;
   console.log(ok(addr.toString().slice(0, 22) + '…'));
 
   // ── 4. Deploy QDs TokenContract ────────────────────────────
-  process.stdout.write('  [4/5] Enviando deploy (prueba ZK V5)  ');
-  
   // Usar SponsoredFeePaymentMethod con la dirección canónica
-  const CANONICAL_FPC = '0x08b888c4be63ed67f61a622fdd013ea028326bac22a8982a3b5a7e9ec62f765b';
-  const fpcAddress = AztecAddress.fromString(CANONICAL_FPC);
-  const paymentMethod = new SponsoredFeePaymentMethod(fpcAddress);
+  const fpcAddress = AztecAddress.fromStringUnsafe(SPONSORED_FPC);
+  
+  // Registrar el artifact del FPC en el PXE para poder simular la tx
+  await wallet.registerContractClass(SponsoredFPCContractArtifact).catch(() => {});
+  await wallet.registerContractClass(FPCContractArtifact).catch(() => {});
+
+  // ── 5. Construir y enviar la Tx (con Sponsored FPC) ────────
+  process.stdout.write('  [4/5] Enviando deploy (prueba ZK V5)  ');
+  const paymentMethod = new SponsoredFeePaymentMethod(fpcAddress, addr);
   
   // Enviamos la transaccion usando el wallet creado
   const deployTx = await TokenContract.deploy(wallet, addr, 'Quantum Dots', 'QDs', 18n)

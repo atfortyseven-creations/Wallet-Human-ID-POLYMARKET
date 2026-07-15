@@ -1036,7 +1036,7 @@ export function AztecIdentityCard() {
                     ['Account Type',    'Schnorr (ECC Grumpkin)'],
                     ['Fee Token',       'QDs (Quantum Dots)'],
                     ['L1 Chain',        'Ethereum Sepolia'],
-                    ['Rollup Version',  '4127419662'],
+                    ['Rollup Version',  '1821665230'],
                     ['Real Proofs',     '✅ Enabled'],
                     ['Address Format',  '32-byte Fr field (BN254)'],
                   ].map(([k, v]) => (
