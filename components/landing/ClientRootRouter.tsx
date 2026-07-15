@@ -91,7 +91,7 @@ export function ClientRootRouter() {
     // The landing page uses natural document scroll (no fixed container),
     // so all sections must be self-contained with explicit backgrounds.
     // The bg-white ensures no dark bleed-through below the footer.
-    <div className="flex flex-col w-full min-h-screen flex-1 bg-white overflow-x-hidden" style={{width:'100%',minWidth:'100%'}}>
+    <div className="w-full bg-white overflow-hidden" style={{width:'100%',minWidth:'100%'}}>
       <ImmersiveManifestoLanding />
       <SystemFooter />
       {/* Hard white seal: prevents any transparent gap below SystemFooter
