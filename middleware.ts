@@ -132,7 +132,10 @@ export async function middleware(req: NextRequest): Promise<NextResponse> {
     }
     const signInUrl = new URL('/connect', req.url);
     signInUrl.searchParams.set('redirect', pathname);
-    return NextResponse.redirect(signInUrl);
+    // Use 303 See Other to force the browser to change POST/PUT to GET
+    // This fixes the HTTP 405 Method Not Allowed error when NextAuth or Server Actions
+    // hit an unauthenticated route and get redirected to a Page.
+    return NextResponse.redirect(signInUrl, 303);
   }
 
   // 3. Session exists → pass the address to downstream handlers via header

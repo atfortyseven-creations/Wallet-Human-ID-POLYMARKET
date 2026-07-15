@@ -71,11 +71,11 @@ async function main() {
   const paymentMethod = new SponsoredFeePaymentMethod(fpcAddress, addr);
   
   // Enviamos la transaccion usando el wallet creado
-  const deployTx = await TokenContract.deploy(wallet, addr, 'Quantum Dots', 'QDs', 18n)
+  // In SDK v5, .send() directly returns DeployResultMined
+  const receipt = await TokenContract.deploy(wallet, addr, 'Quantum Dots', 'QDs', 18n)
     .send({ universalDeploy: true, from: addr, fee: { paymentMethod } });
   
-  process.stdout.write('\n         esperando minado en testnet...');
-  const receipt = await deployTx.wait();
+  process.stdout.write('\n         minada en testnet!\n');
   console.log('');
   console.log(ok(`TX minada: ${receipt.txHash?.toString()?.slice(0,20)}…`));
 

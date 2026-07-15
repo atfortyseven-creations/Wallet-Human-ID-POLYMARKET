@@ -134,8 +134,9 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   // LANDING     bounded via exact pathname === '/' — scroll contained in <main>
   const isDashboard = pathname.startsWith('/terminal');
   const isLanding = pathname === '/';
-  // Use exact match for landing, prefix match for all other bounded routes
-  const isBounded = !isDashboard && (isLanding || BOUNDED_PREFIXES.some(p => pathname.startsWith(p)));
+  // Use prefix match for bounded routes. The landing page must NOT be bounded
+  // to allow native body scroll and avoid layout bugs.
+  const isBounded = !isDashboard && !isLanding && BOUNDED_PREFIXES.some(p => pathname.startsWith(p));
 
   const isPublicPath = pathname === '/' || PUBLIC_PREFIXES.some(p => pathname.startsWith(p));
   const content = !isPublicPath ? <LinkedGate>{children}</LinkedGate> : children;

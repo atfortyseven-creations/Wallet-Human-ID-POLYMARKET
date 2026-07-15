@@ -504,7 +504,7 @@ export default function ConnectPage() {
   const isVerified = mounted && isLinked;
 
   return (
-    <div className="w-full min-h-screen flex flex-col relative overflow-y-auto overflow-x-hidden" style={{ background: 'transparent' }}>
+    <div className="w-full min-h-full flex flex-col relative" style={{ background: 'transparent' }}>
 
       {/* Background wallpaper */}
       <img
