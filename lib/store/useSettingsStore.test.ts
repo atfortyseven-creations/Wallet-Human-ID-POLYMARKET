@@ -31,59 +31,53 @@ describe('useSettingsStore (Quantum UX)', () => {
 
   it('should initialize with default Quantum values', () => {
     const state = useSettingsStore.getState();
-    expect(state.chatBackground).toBe('amoled');
-    expect(state.bubbleStyle).toBe('glass');
-    expect(state.accentColor).toBe('#00FFAA'); // Default cyber-green
+    expect(state.chatBackground).toBe('default');
+    expect(state.bubbleStyle).toBe('default');
+    expect(state.accentColor).toBe('#6366f1'); // Default indigo
     expect(state.burnOnRead).toBe(false);
     expect(state.ghostAutoReply).toBe(false);
   });
 
-  it('should successfully update Aesthetics settings and persist to safeStorage', () => {
-    // Update theme and styles
-    useSettingsStore.getState().updateSettings({
-      chatBackground: 'matrix',
-      bubbleStyle: 'cyberpunk',
-      accentColor: '#FF0055',
-      chatFont: 'geist-mono'
-    });
+  it('should successfully update Aesthetics settings and persist to safeStorage', async () => {
+    // Update theme and styles one by one using updateSetting
+    const { updateSetting } = useSettingsStore.getState();
+    await updateSetting('chatBackground', 'matrix');
+    await updateSetting('bubbleStyle', 'cyberpunk');
+    await updateSetting('accentColor', '#FF0055');
+    await updateSetting('chatFont', 'inter');
 
     const state = useSettingsStore.getState();
     expect(state.chatBackground).toBe('matrix');
     expect(state.bubbleStyle).toBe('cyberpunk');
     expect(state.accentColor).toBe('#FF0055');
-    expect(state.chatFont).toBe('geist-mono');
-
-    // In a Zustand persist middleware, it would save automatically.
-    // We assume the store relies on safeStorage or a custom persister.
+    expect(state.chatFont).toBe('inter');
   });
 
-  it('should perfectly handle Security configuration for Multiplatform', () => {
+  it('should perfectly handle Security configuration for Multiplatform', async () => {
     // Simulating user turning on extreme privacy mode
-    useSettingsStore.getState().updateSettings({
-      burnOnRead: true,
-      burnTimer: 10,
-      routingHops: 5,
-      watermarking: true,
-      stealthMode: true
-    });
+    const { updateSetting } = useSettingsStore.getState();
+    await updateSetting('burnOnRead', true);
+    await updateSetting('burnOnReadSeconds', 10);
+    await updateSetting('onionHops', 5);
+    await updateSetting('watermarkEnabled', true);
+    await updateSetting('stealthMode', true);
 
     const state = useSettingsStore.getState();
     expect(state.burnOnRead).toBe(true);
-    expect(state.burnTimer).toBe(10);
-    expect(state.routingHops).toBe(5);
-    expect(state.watermarking).toBe(true);
+    expect(state.burnOnReadSeconds).toBe(10);
+    expect(state.onionHops).toBe(5);
+    expect(state.watermarkEnabled).toBe(true);
     expect(state.stealthMode).toBe(true);
   });
 
-  it('should configure DeFi/Trading scanners flawlessly', () => {
-    useSettingsStore.getState().updateSettings({
-      recognizeTickers: true,
-      contractScanner: true,
-      whaleAlertThreshold: 50000
-    });
+  it('should configure DeFi/Trading scanners flawlessly', async () => {
+    const { updateSetting } = useSettingsStore.getState();
+    await updateSetting('tickerWidgets', true);
+    await updateSetting('contractScanner', true);
+    await updateSetting('whaleAlertThreshold', 50000);
 
     const state = useSettingsStore.getState();
-    expect(state.recognizeTickers).toBe(true);
+    expect(state.tickerWidgets).toBe(true);
     expect(state.contractScanner).toBe(true);
     expect(state.whaleAlertThreshold).toBe(50000);
   });
