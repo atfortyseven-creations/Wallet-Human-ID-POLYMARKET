@@ -12,7 +12,7 @@ const STATS = [
   { label: 'Decimal Precision', value: 'Noir Native',  sub: 'Aztec Network private state model' },
   { label: 'Distribution',     value: '100% earned',  sub: 'Proof of Contribution mechanism' },
   { label: 'Team Allocation',  value: '15%',           sub: '4-year vesting, 1-year cliff' },
-  { label: 'Network',          value: 'Aztec Testnet', sub: 'rpc.testnet.aztec-labs.com' },
+  { label: 'Network',          value: 'Aztec Testnet', sub: 'v5.testnet.rpc.aztec-labs.com' },
   { label: 'Governance',       value: 'On-chain ZK',   sub: 'Cryptographic community vote' },
 ];
 
@@ -111,7 +111,7 @@ const SECTIONS = [
     num: '10',
     title: 'Testnet Status',
     paragraphs: [
-      'QDs is currently active on the Aztec testnet (rpc.testnet.aztec-labs.com). The testnet phase is used for contract verification, circuit auditing, and infrastructure preparation. No tokens exist on mainnet. There are no pre-launch sale events, no private rounds, and no initial coin offerings.',
+      'QDs is currently active on the Aztec testnet (v5.testnet.rpc.aztec-labs.com). The testnet phase is used for contract verification, circuit auditing, and infrastructure preparation. No tokens exist on mainnet. There are no pre-launch sale events, no private rounds, and no initial coin offerings.',
       'Anyone wishing to participate in the testnet can review the technical documentation in the developer section of this site. No deposit, reservation, or registration is required or accepted. The network will transition to mainnet when the ZK security audit is complete and the circuit has been formally verified.',
       'After mainnet deployment, the protocol operates autonomously. The Humanity Ledger team contributes to the network as participants, not as administrators. The network is maintained by its participants, secured by cryptographic proofs, and governed by on-chain community vote. Any future evolution of the protocol must occur through decentralized consensus, not executive mandate.'
     ],

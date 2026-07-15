@@ -4,8 +4,12 @@ export const safeStorage = {
         try {
             return localStorage.getItem(name);
         } catch (e) {
-            console.warn(`[SafeStorage] LocalStorage read blocked for ${name}. Falling back to memory.`);
-            return (window as any)[`_fs_${name}`] || null;
+            console.warn(`[SafeStorage] LocalStorage read blocked for ${name}. Falling back to sessionStorage.`);
+            try {
+                return sessionStorage.getItem(`_fs_${name}`);
+            } catch (fallbackErr) {
+                return null;
+            }
         }
     },
     setItem: (name: string, value: string): void => {
@@ -13,8 +17,10 @@ export const safeStorage = {
         try {
             localStorage.setItem(name, value);
         } catch (e) {
-            console.warn(`[SafeStorage] LocalStorage write blocked for ${name}. Saving to memory.`);
-            (window as any)[`_fs_${name}`] = value;
+            console.warn(`[SafeStorage] LocalStorage write blocked for ${name}. Saving to sessionStorage.`);
+            try {
+                sessionStorage.setItem(`_fs_${name}`, value);
+            } catch (fallbackErr) { /* ignore */ }
         }
     },
     removeItem: (name: string): void => {
@@ -22,7 +28,9 @@ export const safeStorage = {
         try {
             localStorage.removeItem(name);
         } catch (e) {
-            delete (window as any)[`_fs_${name}`];
+            try {
+                sessionStorage.removeItem(`_fs_${name}`);
+            } catch (fallbackErr) { /* ignore */ }
         }
     },
 };

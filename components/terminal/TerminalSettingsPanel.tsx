@@ -42,40 +42,7 @@ export function TerminalSettingsPanel() {
     fetchSettings();
   }, [fetchSettings]);
 
-  const settings: SystemSettings = {
-    theme:                store.theme,
-    language:             store.language,
-    currency:             store.currency,
-    timeFormat:           store.timeFormat,
-    dateFormat:           store.dateFormat,
-    addressFormat:        store.addressFormat,
-    density:              store.density,
-    defaultTimeframe:     store.defaultTimeframe,
-    displayUnit:          store.displayUnit,
-    showBalances:         store.showBalances,
-    soundEffects:         store.soundEffects,
-    hardwareAcceleration: store.hardwareAcceleration,
-    gasPreset:            store.gasPreset,
-    maxSlippage:          store.maxSlippage,
-    customRpcUrl:         store.customRpcUrl,
-    mevProtection:        store.mevProtection,
-    testnetMode:          store.testnetMode,
-    emailAlerts:          store.emailAlerts,
-    telegramAlerts:       store.telegramAlerts,
-    audioAlerts:          store.audioAlerts,
-    whaleAlertThreshold:  store.whaleAlertThreshold,
-    email:                store.email,
-    inactivityLockMinutes: store.inactivityLockMinutes,
-    autoDisconnectTimer:  store.autoDisconnectTimer,
-    stealthMode:          store.stealthMode,
-    requireSignForExports: store.requireSignForExports,
-    allowAnalytics:       store.allowAnalytics,
-    chatName:             store.chatName,
-    chatBio:              store.chatBio,
-    qrLabel:              store.qrLabel,
-    hiddenAssets:         store.hiddenAssets,
-    hapticFeedback:       (store as any).hapticFeedback,
-  };
+  const settings: SystemSettings = store as unknown as SystemSettings;
 
   if (isLoading) {
     return (

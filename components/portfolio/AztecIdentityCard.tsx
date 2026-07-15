@@ -123,7 +123,7 @@ function StatusBadge({ status }: { status: 'checking' | 'online' | 'degraded' | 
 const BLOCK_STAGES = [
   { label: 'Generating ZK Proof',     sub: 'UltraHonk · Barretenberg backend'   },
   { label: 'Computing Nullifiers',    sub: 'Schnorr signature binding'           },
-  { label: 'Submitting to Sequencer', sub: 'rpc.testnet.aztec-labs.com'          },
+  { label: 'Submitting to Sequencer', sub: 'v5.testnet.rpc.aztec-labs.com'       },
   { label: 'Awaiting Confirmation',   sub: 'Block propagating across L2 nodes'  },
   { label: 'Block Confirmed',         sub: 'Transaction finalized on Aztec L2'  },
 ];
@@ -976,7 +976,7 @@ export function AztecIdentityCard() {
             <div className="space-y-5">
               <div className="space-y-2">
                 {[
-                  { label: 'RPC Endpoint', value: 'https://rpc.testnet.aztec-labs.com', link: false },
+                  { label: 'RPC Endpoint', value: 'https://v5.testnet.rpc.aztec-labs.com', link: false },
                   { label: 'Explorer',     value: AZTEC_EXPLORER,                                                               link: true  },
                   { label: 'Faucet',       value: 'aztec-faucet.nethermind.io',                                                 link: true  },
                   { label: 'Node Version', value: nodeVersion ? `Aztec ${nodeVersion}` : 'v5.testnet',                          link: false },
@@ -1014,7 +1014,7 @@ export function AztecIdentityCard() {
                   <div className="text-[10px] font-black uppercase tracking-widest text-zinc-900/60">
                     Node {nodeStatus === 'online' ? 'Online' : nodeStatus === 'degraded' ? 'Degraded' : nodeStatus === 'offline' ? 'Offline' : 'Checking...'}
                   </div>
-                  <div className="text-[8px] text-zinc-900/30 mt-0.5">https://rpc.testnet.aztec-labs.com</div>
+                  <div className="text-[8px] text-zinc-900/30 mt-0.5">https://v5.testnet.rpc.aztec-labs.com</div>
                 </div>
 
                 <button

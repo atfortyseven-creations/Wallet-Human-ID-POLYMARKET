@@ -49,6 +49,22 @@ export async function GET(
   }
   const { channelId } = await params;
 
+  // ── [SECURITY — HIGH-05] SSE Channel Authorization ────────────────────────
+  // Without this, any authenticated user can subscribe to another user's
+  // private message stream. An attacker with a valid session could receive
+  // all real-time messages sent to any address they know, in clear text.
+  // A valid channelId must be:
+  //   (a) the user's own address (self-channel), OR
+  //   (b) a conversation channel that contains the user's address
+  //       (composite channels like "0xAlice_0xBob")
+  const userAddr = session.userId.toLowerCase();
+  const chanLower = channelId.toLowerCase();
+  const isAuthorized = chanLower === userAddr || chanLower.includes(userAddr);
+  if (!isAuthorized) {
+    return new Response('Forbidden: You are not a participant in this channel.', { status: 403 });
+  }
+  // ─────────────────────────────────────────────────────────────────────────
+
   const encoder = new TextEncoder();
   let lastScore = Date.now() - 500; // start slightly in the past to pick up very recent msgs
   let closed = false;

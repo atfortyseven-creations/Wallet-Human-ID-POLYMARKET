@@ -12,6 +12,7 @@ import type Peer from 'peerjs';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
 
 import { useSignMessage, useReconnect } from 'wagmi';
+import { sendViaOnion, registerAsRelay } from '@/lib/onion/OnionRouter';
 
 import { useAppKit } from '@reown/appkit/react';
 import { getXMTPClient, canReceiveMessages, sendMessage, getMessages, destroyXMTPClient, nsToDate, discoverNewPeers, streamMessages, resolveSenderAddress, extractPeerAddress } from '@/lib/xmtp/client';
@@ -74,6 +75,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // Run a retry loop instead of a single instant attempt — the WalletConnect relay
   // needs time to re-establish after the user returns from the wallet app.
   useEffect(() => {
+    if (isConnected && address) {
+      registerAsRelay(address, window.location.origin).catch(console.error);
+    }
+    
     if (!isConnected || connector || isSystemHandshake) return;
     let cancelled = false;
     (async () => {
@@ -1695,7 +1700,17 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         localStorage.setItem(outboxKey, JSON.stringify(existing));
         toast.info("You are offline. Message queued to outbox.");
       } else {
-        await sendMessage(client, activePeer, content, address);
+        try {
+          const onionStatus = await sendViaOnion(content, activePeer, 'anonymous');
+          if (onionStatus === 'direct') {
+            await sendMessage(client, activePeer, content, address);
+          } else {
+            toast.success("Message routed via Quantum Onion Circuit", { icon: '🧅' });
+          }
+        } catch (onionErr) {
+          console.warn('[WhaleChat] Onion route failed, falling back to direct:', onionErr);
+          await sendMessage(client, activePeer, content, address);
+        }
       }
 
       // UPDATE LOCAL ADDRESS BOOK

@@ -54,8 +54,16 @@ export async function POST(req: NextRequest) {
 
     const { channelId, content } = await req.json();
 
-    if (!channelId || !content?.trim()) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    // [SECURITY — LOW-02] channelId validation
+    // Limit length to 150 chars (two Ethereum addresses + separator max) and prevent Redis control chars
+    if (
+      !channelId || 
+      typeof channelId !== 'string' || 
+      channelId.length > 150 || 
+      /[^\w\-]/.test(channelId) || // Only allow alphanumeric, underscore, hyphen
+      !content?.trim()
+    ) {
+      return NextResponse.json({ error: 'Missing or invalid required fields (channelId must be alphanumeric)' }, { status: 400 });
     }
 
     const message = {
