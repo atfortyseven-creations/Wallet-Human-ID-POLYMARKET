@@ -7,17 +7,23 @@ import dynamic from "next/dynamic";
 import { EmailLoginModal } from '@/components/auth/EmailLoginModal';
 import { signOut } from 'next-auth/react';
 
+// ─── NAV DATA ────────────────────────────────────────────────────────────────
+
 const PRODUCT_LINKS = [
   { label: "Studio Provenance", sub: "Zero-knowledge verifiable provenance", href: "/portfolio" },
   { label: "Aztec Identity", sub: "Privacy-preserving portfolio layer", href: "/developers/api-docs" },
   { label: "Whale Chat", sub: "Encrypted, verifiable communications", href: "/developer" },
+  { label: "Registry Explorer", sub: "Global network topology & coverage", href: "/registry" },
 ];
 
 const COMPANY_LINKS = [
-  { label: "About", href: "/company" },
-  { label: "Security", href: "/security" },
-  { label: "Blog", href: "/blog" },
+  { label: "About Humanity Ledger", href: "/company" },
+  { label: "Legal & Compliance", href: "/legal/compliance" },
+  { label: "Security & Audits", href: "/security" },
+  { label: "Network Forum", href: "/forum" },
 ];
+
+// ─── BACKGROUND GRID (IMMERSIVE) ─────────────────────────────────────────────
 
 const DottedGrid = React.memo(() => (
   <div className="fixed inset-0 z-0 pointer-events-none flex justify-center overflow-hidden bg-white" aria-hidden="true">
@@ -46,6 +52,8 @@ const DottedGrid = React.memo(() => (
   </div>
 ));
 DottedGrid.displayName = "DottedGrid";
+
+// ─── LANDING NAV ──────────────────────────────────────────────────────────────
 
 function LandingNav() {
   const [scrolled, setScrolled] = useState(false);
@@ -131,21 +139,20 @@ function LandingNav() {
               </svg>
             </div>
             <span className="font-serif text-[18px] font-black tracking-tight text-black leading-none">
-              Humanity Ledger
+              Whale Network
             </span>
           </Link>
 
           <div className="hidden md:flex items-center gap-6">
             <Link href="/architecture" className="text-[13.5px] font-semibold text-black/50 hover:text-black transition-colors">Architecture</Link>
-            <Link href="/roadmap" className="text-[13.5px] font-semibold text-black/50 hover:text-black transition-colors">Roadmap</Link>
-
+            
             <div className="relative group h-16 flex items-center" onMouseEnter={() => setProductOpen(true)} onMouseLeave={() => setProductOpen(false)}>
               <button className="flex items-center gap-1.5 text-[13.5px] font-semibold text-black/50 hover:text-black transition-colors" aria-expanded={productOpen} aria-haspopup="true">
-                Product <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className={`transition-transform duration-300 ${productOpen ? "rotate-180" : ""}`} aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                Ecosystem <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className={`transition-transform duration-300 ${productOpen ? "rotate-180" : ""}`} aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
               </button>
               <AnimatePresence>
                 {productOpen && (
-                  <motion.div initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }} transition={{ duration: 0.2, ease: "easeOut" }} className="absolute top-16 left-0 bg-white border border-black/5 shadow-2xl rounded-2xl p-2 w-[320px] z-50">
+                  <motion.div initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }} transition={{ duration: 0.2, ease: "easeOut" }} className="absolute top-16 left-0 bg-white border border-black/5 shadow-2xl rounded-2xl p-2 w-[340px] z-50">
                     {PRODUCT_LINKS.map((l) => (
                       <Link key={l.label} href={l.href} className="flex flex-col px-4 py-3 hover:bg-black/[0.02] rounded-xl transition-colors">
                         <span className="text-[14px] font-bold text-black mb-1">{l.label}</span>
@@ -159,11 +166,11 @@ function LandingNav() {
 
             <div className="relative group h-16 flex items-center" onMouseEnter={() => setCompanyOpen(true)} onMouseLeave={() => setCompanyOpen(false)}>
               <button className="flex items-center gap-1.5 text-[13.5px] font-semibold text-black/50 hover:text-black transition-colors" aria-expanded={companyOpen} aria-haspopup="true">
-                Company <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className={`transition-transform duration-300 ${companyOpen ? "rotate-180" : ""}`} aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                Entity <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className={`transition-transform duration-300 ${companyOpen ? "rotate-180" : ""}`} aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
               </button>
               <AnimatePresence>
                 {companyOpen && (
-                  <motion.div initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }} transition={{ duration: 0.2, ease: "easeOut" }} className="absolute top-16 left-0 bg-white border border-black/5 shadow-2xl rounded-2xl p-2 w-[200px] z-50">
+                  <motion.div initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }} transition={{ duration: 0.2, ease: "easeOut" }} className="absolute top-16 left-0 bg-white border border-black/5 shadow-2xl rounded-2xl p-2 w-[220px] z-50">
                     {COMPANY_LINKS.map((l) => (
                       <Link key={l.label} href={l.href} className="flex items-center px-4 py-2.5 hover:bg-black/[0.02] rounded-xl transition-colors">
                         <span className="text-[14px] font-bold text-black">{l.label}</span>
@@ -218,6 +225,8 @@ function LandingNav() {
   );
 }
 
+// ─── HERO SCROLL ENGINE ─────────────────────────────────────────────────────
+
 function HeroScrollSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -252,7 +261,7 @@ function HeroScrollSection() {
             <span className="absolute w-full h-full rounded-full bg-emerald-400 animate-ping opacity-75" />
             <span className="relative w-2 h-2 rounded-full bg-emerald-500" />
           </div>
-          <span className="text-[12px] font-bold text-black/80 tracking-widest uppercase">The Aztec Era Has Begun</span>
+          <span className="text-[12px] font-bold text-black/80 tracking-widest uppercase">Aztec Alpha Testnet Live (rc.2)</span>
         </motion.div>
 
         <motion.h1 
@@ -261,7 +270,7 @@ function HeroScrollSection() {
           transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="text-[72px] md:text-[110px] leading-[0.9] font-serif font-black text-black tracking-tighter max-w-[1100px]"
         >
-          Programmable Privacy <br/>
+          Absolute Privacy <br/>
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-black/30 via-black/80 to-black/30">for Ethereum.</span>
         </motion.h1>
 
@@ -271,7 +280,7 @@ function HeroScrollSection() {
           transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           className="mt-10 text-[20px] md:text-[26px] leading-[1.4] text-black/50 font-medium max-w-[800px]"
         >
-          Humanity Ledger provides a verifiable, privacy-first identity and portfolio layer, powered by Aztec's decentralized Private Execution Environment (PXE).
+          Whale Network is a sovereign-grade identity terminal and cryptographic analytics ecosystem built natively for the Aztec Network. We provide provable censorship resistance via Zero-Knowledge (ZK) cryptography.
         </motion.p>
 
         <motion.div 
@@ -280,9 +289,9 @@ function HeroScrollSection() {
           transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="mt-14 flex flex-col sm:flex-row items-center gap-4"
         >
-          <Link href="/developer" className="group relative h-16 px-10 bg-black text-white rounded-full flex items-center justify-center text-[16px] font-bold overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.2)] hover:scale-105 transition-all duration-300">
+          <Link href="/developers/api-docs" className="group relative h-16 px-10 bg-black text-white rounded-full flex items-center justify-center text-[16px] font-bold overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.2)] hover:scale-105 transition-all duration-300">
             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-            <span className="relative flex items-center gap-2">Start Building <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+            <span className="relative flex items-center gap-2">Read Documentation <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
           </Link>
           <Link href="/architecture" className="h-16 px-10 bg-white border border-black/10 text-black rounded-full flex items-center justify-center text-[16px] font-bold hover:bg-black/[0.02] hover:scale-105 transition-all duration-300 shadow-sm">
             Explore Architecture
@@ -292,6 +301,152 @@ function HeroScrollSection() {
     </section>
   );
 }
+
+// ─── THE CYPHERPUNK MANDATE ──────────────────────────────────────────────────
+
+function CypherpunkMandateSection() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  return (
+    <section className="relative w-full py-32 bg-[#050505] text-white z-10" aria-labelledby="mandate-heading">
+      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-screen pointer-events-none" aria-hidden="true" />
+      <div className="max-w-[1200px] mx-auto px-6" ref={ref}>
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center mb-20"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/[0.05] rounded-full border border-white/10 mb-6">
+            <span className="text-[11px] font-bold text-white/60 tracking-widest uppercase">Philosophical Foundation</span>
+          </div>
+          <h2 id="mandate-heading" className="text-[40px] md:text-[64px] font-serif font-black leading-[1] tracking-tighter">
+            The Cypherpunk Mandate.
+          </h2>
+          <p className="mt-8 text-[20px] text-white/50 font-medium max-w-[800px] mx-auto leading-relaxed">
+            Privacy is a fundamental right. Architecture is a declaration of values. In an era of pervasive telemetry and centralized tracking, Whale Network represents a hard cryptographic boundary.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            { title: "No Analytics", desc: "There is no Google Analytics, no Vercel Analytics, no tracking cookies. Zero client-side surveillance.", icon: "🚫" },
+            { title: "No IP Logging", desc: "The routing layer employs zero-metadata onion-like IP obfuscation (SHA-256 hashes with environmental salts).", icon: "🌐" },
+            { title: "Absolute Data Siloing", desc: "Cross-contamination of smart contract state is mathematically prevented via strict PXE proxy isolation.", icon: "🔒" },
+            { title: "Sovereign Killswitch", desc: "Initiating nuclearDisconnect performs a forensic purge of all local storage, keys, and session data irreversibly.", icon: "☢️" }
+          ].map((item, i) => (
+            <motion.div 
+              key={i}
+              initial={{ opacity: 0, y: 40 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+              transition={{ duration: 0.8, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+              className="p-8 border border-white/10 rounded-3xl bg-white/5 backdrop-blur-sm relative overflow-hidden group"
+            >
+              <div className="text-4xl mb-6">{item.icon}</div>
+              <h3 className="text-[20px] font-bold mb-3 font-serif">{item.title}</h3>
+              <p className="text-[15px] text-white/50 leading-relaxed font-medium">{item.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── SYSTEM TOPOLOGY & ACCESS GUIDE ──────────────────────────────────────────
+
+function SystemTopologySection() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  const modules = [
+    {
+      title: "Studio Provenance",
+      path: "/portfolio",
+      desc: "Track cross-chain capital flows and asset balances locally. No server ever sees your complete portfolio. Proof generation happens via WebAssembly directly in your browser.",
+      action: "Access Portfolio →"
+    },
+    {
+      title: "Registry Explorer",
+      path: "/registry",
+      desc: "Explore countries with supported documents, view node coverage and density. A real-time supervision map of the global network topology including Aztec sequencers.",
+      action: "View Explorer →"
+    },
+    {
+      title: "Whale Chat",
+      path: "/developer",
+      desc: "Peer-to-Peer encrypted communications using Perfect Forward Secrecy (ephemeral X25519 keys) and zero-metadata routing. Structurally immune to central surveillance.",
+      action: "Launch Chat →"
+    },
+    {
+      title: "Aztec Identity & Docs",
+      path: "/developers/api-docs",
+      desc: "The core of the project. Attest complex criteria using locally compiled Noir circuits. Read the full SDK documentation to integrate privacy-preserving identity verification into your dApps.",
+      action: "Read Docs →"
+    },
+    {
+      title: "Network Forum",
+      path: "/forum",
+      desc: "The decentralized governance and discussion hub for the Humanity Ledger ecosystem. Participate in protocol upgrades and cryptographic research.",
+      action: "Join Discussion →"
+    },
+    {
+      title: "System Terminal",
+      path: "/terminal",
+      desc: "For advanced users. Directly interface with the Private Execution Environment (PXE) nodes, monitor local proof generation, and manage cryptographic keychains.",
+      action: "Open Terminal →"
+    }
+  ];
+
+  return (
+    <section className="relative w-full py-40 bg-white z-10 border-t border-black/5" aria-labelledby="topology-heading">
+      <div className="max-w-[1400px] mx-auto px-6" ref={ref}>
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-20 max-w-[900px]"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-black/[0.03] rounded-full border border-black/5 mb-6">
+            <span className="text-[11px] font-bold text-black/60 tracking-widest uppercase">Ecosystem Map</span>
+          </div>
+          <h2 id="topology-heading" className="text-[48px] md:text-[64px] font-serif font-black text-black leading-[1] tracking-tighter">
+            System Topology & <br/><span className="text-black/30">Documentation Hub.</span>
+          </h2>
+          <p className="mt-8 text-[22px] text-black/50 font-medium max-w-[700px] leading-relaxed">
+            Whale Network consists of multiple sovereign modules running over the Aztec protocol. We provide absolute transparency on how to access every corner of our system. Nobody is locked out of the documentation.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {modules.map((mod, i) => (
+            <motion.div 
+              key={i}
+              initial={{ opacity: 0, y: 40 }}
+              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+              transition={{ duration: 0.8, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-col p-8 border border-black/10 rounded-3xl hover:border-black/30 hover:shadow-xl transition-all duration-500 bg-white group"
+            >
+              <div className="flex justify-between items-start mb-6">
+                <h3 className="text-[24px] font-bold font-serif text-black">{mod.title}</h3>
+                <span className="px-3 py-1 bg-black/[0.05] rounded-full text-[11px] font-mono font-bold text-black/60">{mod.path}</span>
+              </div>
+              <p className="text-[16px] text-black/60 font-medium leading-[1.6] mb-8 flex-1">
+                {mod.desc}
+              </p>
+              <Link href={mod.path} className="inline-flex items-center gap-2 text-[15px] font-bold text-emerald-600 group-hover:text-emerald-500 transition-colors">
+                {mod.action}
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── HORIZONTAL SCROLL TIMELINE (THE ARCHITECTURE) ──────────────────────────
 
 function HorizontalTransactionFlow() {
   const targetRef = useRef<HTMLDivElement>(null);
@@ -318,7 +473,7 @@ function HorizontalTransactionFlow() {
                 <div className="text-[14px] font-bold text-white/50 tracking-widest mb-4">PHASE 01</div>
                 <h3 className="text-[40px] font-serif font-black text-white mb-6 leading-tight">Client-Side Proving</h3>
                 <p className="text-[18px] text-white/70 leading-relaxed font-medium">
-                  Transactions are constructed and proven entirely on your local device within the Private Execution Environment (PXE). Your private keys and raw data never leave your browser, generating a highly compressed zero-knowledge proof.
+                  Transactions are constructed and proven entirely on your local device within the Private Execution Environment (PXE). Your private keys and raw data never leave your browser, generating a highly compressed zero-knowledge proof using the Noir WASM compiler.
                 </p>
               </div>
               <figure className="h-[400px] border border-white/10 rounded-3xl bg-[#0a0a0a] relative overflow-hidden flex items-center justify-center shadow-2xl">
@@ -336,7 +491,7 @@ function HorizontalTransactionFlow() {
                 <div className="text-[14px] font-bold text-white/50 tracking-widest mb-4">PHASE 02</div>
                 <h3 className="text-[40px] font-serif font-black text-white mb-6 leading-tight">Decentralized Sequencer Network</h3>
                 <p className="text-[18px] text-white/70 leading-relaxed font-medium">
-                  Local proofs are broadcasted to Aztec's decentralized network of sequencers and provers. The network aggregates thousands of UltraHonk ZK-proofs into a single master state transition proof, guaranteeing extreme scalability and anonymity sets.
+                  Local proofs are broadcasted to Aztec's decentralized network of sequencers and provers. The network aggregates thousands of UltraHonk ZK-proofs into a single master state transition proof, guaranteeing extreme scalability and anonymity sets without inspecting user payloads.
                 </p>
               </div>
               <figure className="h-[400px] border border-white/10 rounded-3xl bg-[#0a0a0a] relative overflow-hidden flex items-center justify-center shadow-2xl">
@@ -355,7 +510,7 @@ function HorizontalTransactionFlow() {
                 <div className="text-[14px] font-bold text-white/50 tracking-widest mb-4">PHASE 03</div>
                 <h3 className="text-[40px] font-serif font-black text-white mb-6 leading-tight">Ethereum L1 Finality</h3>
                 <p className="text-[18px] text-white/70 leading-relaxed font-medium">
-                  The aggregated master proof and encrypted state diffs are submitted to Aztec's rollup contracts on Ethereum Mainnet. The result is absolute, mathematically guaranteed settlement backed by the world's most secure network.
+                  The aggregated master proof and encrypted state diffs are submitted to Aztec's rollup contracts on Ethereum Mainnet. The result is absolute, mathematically guaranteed settlement backed by the world's most secure network. Privacy on L2, Security on L1.
                 </p>
               </div>
               <figure className="h-[400px] border border-white/10 rounded-3xl bg-[#0a0a0a] relative overflow-hidden flex items-center justify-center shadow-2xl">
@@ -370,6 +525,79 @@ function HorizontalTransactionFlow() {
     </section>
   );
 }
+
+// ─── REGULATORY & COMPLIANCE SECTION ────────────────────────────────────────
+
+function RegulatoryComplianceSection() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  return (
+    <section className="relative w-full py-40 bg-white z-10 border-t border-black/5" aria-labelledby="compliance-heading">
+      <div className="max-w-[1200px] mx-auto px-6" ref={ref}>
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-16"
+        >
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-500/[0.05] rounded-full border border-red-500/20 mb-6">
+            <span className="text-[11px] font-bold text-red-600 tracking-widest uppercase">Institutional & Government Notice</span>
+          </div>
+          <h2 id="compliance-heading" className="text-[40px] md:text-[56px] font-serif font-black text-black leading-[1] tracking-tighter">
+            Legal & Regulatory Architecture.
+          </h2>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <motion.div 
+            initial={{ opacity: 0, x: -40 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -40 }}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="prose prose-lg prose-p:text-black/60 prose-p:font-medium prose-p:leading-relaxed prose-headings:font-serif prose-headings:text-black max-w-none"
+          >
+            <h3>GDPR Compliance by Mathematical Default</h3>
+            <p>
+              Humanity Ledger S.L. operates a system that is <strong>structurally incapable of collecting, processing, or storing Personal Identifiable Information (PII)</strong>. Because all identity attestations occur locally within the user's browser via Zero-Knowledge Proofs, the network only ever receives encrypted cryptographic hashes. Consequently, the system is inherently compliant with strict data protection regulations (GDPR/CCPA) by eliminating the database itself.
+            </p>
+            <h3>Aztec Foundation Open-Source Mandate</h3>
+            <p>
+              Humanity Ledger and Whale Network are built as public goods for the Zero-Knowledge ecosystem. We proudly acknowledge the <strong>Aztec Foundation Grant program</strong>. To satisfy the open-source mandate of this grant, the cryptographic primitives and routing logic of this repository are provided transparently for public audit.
+            </p>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, x: 40 }}
+            animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 40 }}
+            transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="bg-black/[0.02] border border-black/10 rounded-3xl p-8"
+          >
+            <h3 className="text-[24px] font-serif font-bold text-black mb-6">The Dual License Model</h3>
+            <p className="text-[16px] text-black/60 font-medium leading-[1.6] mb-6">
+              This repository (`humanityledger/Humanity-Ledger`) is released under a Dual License model to protect the authors from unauthorized commercial exploitation while supporting the open-source ecosystem.
+            </p>
+            <div className="space-y-4">
+              <div className="p-4 bg-white border border-black/5 rounded-xl">
+                <h4 className="font-bold text-[14px] uppercase tracking-wider mb-2 text-emerald-600">Section 1: Public Good Use</h4>
+                <p className="text-[14px] text-black/60">Strictly non-commercial or academic use aligned with the Aztec Network infrastructure is granted freely (MIT Variant).</p>
+              </div>
+              <div className="p-4 bg-white border border-black/5 rounded-xl">
+                <h4 className="font-bold text-[14px] uppercase tracking-wider mb-2 text-red-600">Section 2: Commercial Prohibition</h4>
+                <p className="text-[14px] text-black/60">Operating a commercial service, monetizing transactions, or deploying clones of this system requires explicit written authorization from Humanity Ledger S.L.</p>
+              </div>
+            </div>
+            <Link href="/legal/compliance" className="inline-block mt-8 text-[14px] font-bold text-black border-b border-black hover:text-black/50 transition-colors">
+              Read Full Legal Terms
+            </Link>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
+// ─── CURSOR-AWARE BENTO GRID (INNOVATION) ───────────────────────────────────
 
 function CursorCard({ title, description, icon, delay }: { title: string, description: string, icon: React.ReactNode, delay: number }) {
   const mouseX = useMotionValue(0);
@@ -424,7 +652,7 @@ function CursorCard({ title, description, icon, delay }: { title: string, descri
 
 function BentoFeaturesSection() {
   return (
-    <section className="relative w-full py-40 bg-white z-10" aria-labelledby="features-heading">
+    <section className="relative w-full py-40 bg-white z-10 border-t border-black/5" aria-labelledby="features-heading">
       <div className="max-w-[1400px] mx-auto px-6">
         <div className="mb-24 max-w-[900px]">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-black/[0.03] rounded-full border border-black/5 mb-6">
@@ -443,14 +671,13 @@ function BentoFeaturesSection() {
           <CursorCard delay={0} title="Zero-Knowledge Accounts" description="Your identity is a Noir-proven ZK account. No passwords, no phone numbers. A cryptographic keypair proving who you are without disclosing your public address." icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>} />
           <CursorCard delay={0.1} title="Client-Side Proving" description="Noir circuits run entirely on your device via the Aztec PXE (Private Execution Environment). The network receives only a validity proof, never your private state." icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/></svg>} />
           <CursorCard delay={0.2} title="Noir Smart Contracts" description="Write, test, and deploy zero-knowledge circuits using Noir. The record is public on L2, but the payload stays strictly private in encrypted UTXOs." icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>} />
-          <CursorCard delay={0.3} title="Ethereum L1 Settlement" description="Security inherited directly from the Ethereum mainnet. Aztec rollups batch and prove transactions, posting state diffs to L1 for absolute finality." icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 2 22 12 17 22 22 12 2"/></svg>} />
-          <CursorCard delay={0.4} title="Encrypted Verification" description="Issue and verify verifiable credentials (VCs) without revealing the underlying data, ensuring strict compliance without compromising user privacy." icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>} />
-          <CursorCard delay={0.5} title="Shielded Portfolio" description="Track balances and transactions shielded inside the Aztec environment. Your token logic remains completely invisible to the public state tree." icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>} />
         </div>
       </div>
     </section>
   );
 }
+
+// ─── INTERACTIVE CODE SHOWCASE (TABS) ───────────────────────────────────────
 
 const NOIR_CONTRACTS = {
   transfer: `// Aztec Noir Smart Contract: Private Transfer
@@ -506,7 +733,7 @@ function highlightNoir(code: string) {
     .replace(/let /g, '<span class="text-purple-400">let </span>')
     .replace(/assert/g, '<span class="text-red-400">assert</span>')
     .replace(/Field|AztecAddress|bool/g, match => `<span class="text-emerald-200">${match}</span>`)
-    .replace(/\/\/.*/g, match => `<span class="text-white/40">${match}</span>`); // Comments last so they don't get overwritten
+    .replace(/\/\/.*/g, match => `<span class="text-white/40">${match}</span>`);
 
   return highlighted;
 }
@@ -599,12 +826,14 @@ function CodeShowcaseSection() {
   );
 }
 
+// ─── FAQ SECTION ────────────────────────────────────────────────────────────
+
 function FAQSection() {
   const faqs = [
     { q: "How is data kept private on a public blockchain?", a: "Aztec uses zero-knowledge cryptography (zk-SNARKs). Your data is encrypted and stored locally in your Private Execution Environment (PXE). When you transact, you generate a mathematical proof that the transaction is valid without revealing the actual data. Only the proof is sent to the network." },
     { q: "Do I need a new wallet?", a: "No. Aztec accounts are generated deterministically from your existing Ethereum keys (like MetaMask or WalletConnect) via signatures. You use your same Ethereum wallet, but interact within Aztec's shielded layer." },
     { q: "What is Noir?", a: "Noir is Aztec's domain-specific programming language for writing zero-knowledge circuits. It abstracts away complex cryptography, allowing developers to write private smart contracts using familiar Rust-like syntax." },
-    { q: "How are gas fees paid?", a: "Aztec natively supports fee abstraction (paymasters). Fees can be paid in the token you are transferring or sponsored by a third-party application, providing a seamless Web2-like experience." }
+    { q: "Where can I find the official license?", a: "The source code is governed by a Dual License protecting against commercial exploitation while remaining open for public goods via the Aztec Network grant. You can review the full legal terms on our GitHub repository under the LICENSE file." }
   ];
 
   const [openIndex, setOpenIndex] = useState<number | null>(0);
@@ -650,6 +879,8 @@ function FAQSection() {
   );
 }
 
+// ─── CTA SECTION ────────────────────────────────────────────────────────────
+
 function CTASection() {
   return (
     <section className="relative w-full py-40 bg-white z-10 border-t border-black/5" aria-labelledby="cta-heading">
@@ -669,16 +900,22 @@ function CTASection() {
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link href="/portfolio" className="h-16 px-10 bg-black text-white rounded-full flex items-center justify-center text-[16px] font-bold hover:bg-black/80 hover:-translate-y-1 transition-all duration-300 shadow-[0_10px_40px_rgba(0,0,0,0.2)] w-full sm:w-auto">
-            Connect Wallet
+            Access Portfolio
           </Link>
-          <a href="https://discord.gg/aztec" target="_blank" rel="noreferrer" className="h-16 px-10 bg-white border border-black/10 text-black rounded-full flex items-center justify-center text-[16px] font-bold hover:bg-black/[0.02] hover:-translate-y-1 transition-all duration-300 w-full sm:w-auto shadow-sm">
-            Join the Network
-          </a>
+          <Link href="/developers/api-docs" className="h-16 px-10 bg-white border border-black/10 text-black rounded-full flex items-center justify-center text-[16px] font-bold hover:bg-black/[0.02] hover:-translate-y-1 transition-all duration-300 w-full sm:w-auto shadow-sm">
+            Read Full Documentation
+          </Link>
         </div>
+        <p className="mt-12 text-[13px] text-black/40 font-medium max-w-[400px] mx-auto">
+          © 2026-2027 Humanity Ledger S.L.<br/>
+          Licensed under the Whale Network Dual License.
+        </p>
       </div>
     </section>
   );
 }
+
+// ─── MAIN EXPORT ────────────────────────────────────────────────────────────
 
 export default function ImmersiveManifestoLanding() {
   return (
@@ -686,9 +923,12 @@ export default function ImmersiveManifestoLanding() {
       <DottedGrid />
       <LandingNav />
       <HeroScrollSection />
+      <CypherpunkMandateSection />
+      <SystemTopologySection />
       <HorizontalTransactionFlow />
       <BentoFeaturesSection />
       <CodeShowcaseSection />
+      <RegulatoryComplianceSection />
       <FAQSection />
       <CTASection />
     </main>
