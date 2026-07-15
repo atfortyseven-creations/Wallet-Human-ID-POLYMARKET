@@ -87,16 +87,9 @@ export function ClientRootRouter() {
   }, [isConnected]);
 
   return (
-    // overflow-hidden prevents any scroll past the SystemFooter on PC.
-    // The landing page uses natural document scroll (no fixed container),
-    // so all sections must be self-contained with explicit backgrounds.
-    // The bg-white ensures no dark bleed-through below the footer.
-    <div className="w-full bg-white overflow-hidden" style={{width:'100%',minWidth:'100%'}}>
+    <div className="w-full bg-white flex flex-col">
       <ImmersiveManifestoLanding />
       <SystemFooter />
-      {/* Hard white seal: prevents any transparent gap below SystemFooter
-          from showing the wallpaper/body background color on PC */}
-      <div className="w-full bg-white" style={{minHeight: '0px', flex: '0 0 auto'}} />
     </div>
   );
 }
