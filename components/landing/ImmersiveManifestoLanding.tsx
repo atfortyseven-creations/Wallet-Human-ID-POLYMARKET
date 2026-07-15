@@ -405,8 +405,7 @@ function HeroSection() {
     <>
       {/* ── Presentation hero ── */}
       <section
-        className="relative w-full bg-white overflow-hidden flex-shrink-0"
-        style={{ minHeight: 'var(--dvh-100, 100dvh)' }}
+        className="relative w-full bg-white overflow-hidden flex-shrink-0 min-h-screen"
       >
         {/* Subtle dotted grid */}
         <div
@@ -414,14 +413,10 @@ function HeroSection() {
           style={{ backgroundImage: 'radial-gradient(#d1d5db 1px, transparent 1px)', backgroundSize: '24px 24px' }}
         />
 
-        {/* DvhPolyfill always renders — fixes iOS Safari viewport height bug */}
-        <DvhPolyfill />
-
-        {/* Centered content — iOS-safe min-height using calc(var(--vh, 1vh) * 100) */}
+        {/* Centered content */}
         <motion.div
           initial="hidden" animate="visible" variants={STAGGER_CONTAINER}
-          className="relative z-10 w-full h-full flex flex-col items-center justify-center px-6 pt-28 pb-20"
-          style={{ minHeight: 'var(--dvh-100, calc(var(--vh, 1vh) * 100))' }}
+          className="relative z-10 w-full min-h-screen flex flex-col items-center justify-center px-6 pt-28 pb-20"
         >
           {/* Subtle premium glow behind text */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
@@ -472,8 +467,7 @@ function HeroSection() {
 
       {/* ── Architecture Map ── */}
       <section
-        className="relative w-full overflow-hidden flex-shrink-0 bg-white border-t border-black/10"
-        style={{ minHeight: 'var(--dvh-100, 100dvh)' }}
+        className="relative w-full overflow-hidden flex-shrink-0 bg-white border-t border-black/10 py-20"
       >
         <div
           className="absolute inset-0 z-0 opacity-30 pointer-events-none"
@@ -500,29 +494,7 @@ function HeroSection() {
 }
 
 
-/**
- * DvhPolyfill — sets `--vh` CSS custom property to the actual inner viewport
- * height in pixels, updated on every resize. This corrects the `100vh`
- * bug on iOS/Android where the browser chrome collapses/expands.
- * Also sets --dvh-100 as a calc() ready value so we don't need dvh unit support.
- */
-function DvhPolyfill() {
-  useEffect(() => {
-    const setVh = () => {
-      const vh = window.innerHeight * 0.01;
-      document.documentElement.style.setProperty('--vh', `${vh}px`);
-      document.documentElement.style.setProperty('--dvh-100', `${window.innerHeight}px`);
-    };
-    setVh();
-    window.addEventListener('resize', setVh, { passive: true });
-    window.addEventListener('orientationchange', setVh);
-    return () => {
-      window.removeEventListener('resize', setVh);
-      window.removeEventListener('orientationchange', setVh);
-    };
-  }, []);
-  return null;
-}
+// DvhPolyfill removed — was causing a ResizeObserver/layout loop.
 
 // ─── Value Proposition ────────────────────────────────────────────────────────────────
 
