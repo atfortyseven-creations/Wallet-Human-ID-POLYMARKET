@@ -61,7 +61,6 @@ const NO_DOWNHEAD_PREFIXES = [
 // WhaleProShell with its own fixed-inset shell) should be fully contained.
 // 
 const BOUNDED_PREFIXES = [
-  '/', // landing page must be bounded to prevent infinite document scroll
   '/portfolio', '/academy', '/support', '/news',
   '/predictions', '/ledger', '/voss-supremacy',
   '/gold-registry', '/vip', '/developer', '/developers', '/faq',
@@ -131,11 +130,12 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
 
   //  Layout mode 
   // DASHBOARD   fixed inset-0 overflow-hidden   (WhaleProShell owns scroll)
-  // BOUNDED     h-[100dvh] overflow-hidden       (header + inner scroll box)
-  // LANDING     min-h-screen natural document scroll (immersive manifesto)
+  // BOUNDED     fixed inset-0 overflow-hidden   (header + inner scroll box)
+  // LANDING     bounded via exact pathname === '/' — scroll contained in <main>
   const isDashboard = pathname.startsWith('/terminal');
-  const isBounded = !isDashboard && BOUNDED_PREFIXES.some(p => pathname.startsWith(p));
   const isLanding = pathname === '/';
+  // Use exact match for landing, prefix match for all other bounded routes
+  const isBounded = !isDashboard && (isLanding || BOUNDED_PREFIXES.some(p => pathname.startsWith(p)));
 
   const isPublicPath = pathname === '/' || PUBLIC_PREFIXES.some(p => pathname.startsWith(p));
   const content = !isPublicPath ? <LinkedGate>{children}</LinkedGate> : children;
