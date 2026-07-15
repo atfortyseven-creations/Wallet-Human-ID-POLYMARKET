@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useRef, useEffect, useState, MouseEvent } from "react";
+import React, { useRef, useEffect, useState, MouseEvent, useCallback } from "react";
 import Link from "next/link";
-import { motion, useScroll, useTransform, AnimatePresence, useInView, useSpring, useMotionValue, useMotionTemplate } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence, useInView, useMotionValue, useMotionTemplate } from "framer-motion";
 import dynamic from "next/dynamic";
 import { EmailLoginModal } from '@/components/auth/EmailLoginModal';
-import { useDisconnect } from 'wagmi';
 import { signOut } from 'next-auth/react';
 
 const PRODUCT_LINKS = [
@@ -20,38 +19,36 @@ const COMPANY_LINKS = [
   { label: "Blog", href: "/blog" },
 ];
 
-const DottedGrid = () => {
-  return (
-    <div className="fixed inset-0 z-0 pointer-events-none flex justify-center overflow-hidden bg-white">
-      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.02] mix-blend-multiply" />
-      <div 
-        className="absolute inset-0"
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px)
-          `,
-          backgroundSize: '80px 80px',
-          maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.1) 100%)',
-          WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.1) 100%)'
-        }}
-      />
-      <div 
-        className="absolute inset-0"
-        style={{
-          backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(0,0,0,0.15) 1px, transparent 0)',
-          backgroundSize: '20px 20px',
-          maskImage: 'radial-gradient(circle at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 70%)',
-          WebkitMaskImage: 'radial-gradient(circle at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 70%)'
-        }}
-      />
-    </div>
-  );
-};
+const DottedGrid = React.memo(() => (
+  <div className="fixed inset-0 z-0 pointer-events-none flex justify-center overflow-hidden bg-white" aria-hidden="true">
+    <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.02] mix-blend-multiply" />
+    <div 
+      className="absolute inset-0"
+      style={{
+        backgroundImage: `
+          linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px)
+        `,
+        backgroundSize: '80px 80px',
+        maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.1) 100%)',
+        WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.1) 100%)'
+      }}
+    />
+    <div 
+      className="absolute inset-0"
+      style={{
+        backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(0,0,0,0.15) 1px, transparent 0)',
+        backgroundSize: '20px 20px',
+        maskImage: 'radial-gradient(circle at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 70%)',
+        WebkitMaskImage: 'radial-gradient(circle at center, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 70%)'
+      }}
+    />
+  </div>
+));
+DottedGrid.displayName = "DottedGrid";
 
 function LandingNav() {
   const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [productOpen, setProductOpen] = useState(false);
   const [companyOpen, setCompanyOpen] = useState(false);
   const [connectedAddress, setConnectedAddress] = useState<string | null>(null);
@@ -104,6 +101,17 @@ function LandingNav() {
     };
   }, []);
 
+  const handleDisconnect = useCallback(async () => {
+    try {
+      document.cookie.split(';').forEach(c => { 
+        document.cookie = `${c.split('=')[0].trim()}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;SameSite=Lax`; 
+      });
+      try { sessionStorage.clear(); localStorage.removeItem('system_session_v2'); } catch {}
+      try { await signOut({ redirect: false }); } catch {}
+      window.location.replace('/');
+    } catch { window.location.replace('/'); }
+  }, []);
+
   return (
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
@@ -112,11 +120,11 @@ function LandingNav() {
           : "bg-transparent"
       }`}
     >
-      <nav className="w-full max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between">
+      <nav className="w-full max-w-[1400px] mx-auto px-6 h-16 flex items-center justify-between" aria-label="Main Navigation">
         <div className="flex items-center gap-10">
-          <Link href="/" className="flex items-center gap-3 group">
+          <Link href="/" className="flex items-center gap-3 group" aria-label="Humanity Ledger Home">
             <div className="w-6 h-6 shrink-0 opacity-80 mix-blend-multiply group-hover:rotate-180 transition-transform duration-700 ease-in-out">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-full h-full text-black">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-full h-full text-black" aria-hidden="true">
                 <path d="M12 2L2 7l10 5 10-5-10-5z" />
                 <path d="M2 17l10 5 10-5" />
                 <path d="M2 12l10 5 10-5" />
@@ -132,8 +140,8 @@ function LandingNav() {
             <Link href="/roadmap" className="text-[13.5px] font-semibold text-black/50 hover:text-black transition-colors">Roadmap</Link>
 
             <div className="relative group h-16 flex items-center" onMouseEnter={() => setProductOpen(true)} onMouseLeave={() => setProductOpen(false)}>
-              <button className="flex items-center gap-1.5 text-[13.5px] font-semibold text-black/50 hover:text-black transition-colors">
-                Product <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className={`transition-transform duration-300 ${productOpen ? "rotate-180" : ""}`}><path d="m6 9 6 6 6-6"/></svg>
+              <button className="flex items-center gap-1.5 text-[13.5px] font-semibold text-black/50 hover:text-black transition-colors" aria-expanded={productOpen} aria-haspopup="true">
+                Product <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className={`transition-transform duration-300 ${productOpen ? "rotate-180" : ""}`} aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
               </button>
               <AnimatePresence>
                 {productOpen && (
@@ -150,8 +158,8 @@ function LandingNav() {
             </div>
 
             <div className="relative group h-16 flex items-center" onMouseEnter={() => setCompanyOpen(true)} onMouseLeave={() => setCompanyOpen(false)}>
-              <button className="flex items-center gap-1.5 text-[13.5px] font-semibold text-black/50 hover:text-black transition-colors">
-                Company <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className={`transition-transform duration-300 ${companyOpen ? "rotate-180" : ""}`}><path d="m6 9 6 6 6-6"/></svg>
+              <button className="flex items-center gap-1.5 text-[13.5px] font-semibold text-black/50 hover:text-black transition-colors" aria-expanded={companyOpen} aria-haspopup="true">
+                Company <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className={`transition-transform duration-300 ${companyOpen ? "rotate-180" : ""}`} aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
               </button>
               <AnimatePresence>
                 {companyOpen && (
@@ -174,8 +182,8 @@ function LandingNav() {
           </Link>
           {connectedAddress ? (
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-black/[0.03] border border-black/5 rounded-full">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-black/[0.03] border border-black/5 rounded-full" aria-label="Connected Wallet">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" aria-hidden="true" />
                 <span className="text-[12px] font-mono font-bold text-black/70">
                   {connectedAddress.startsWith('email_') ? connectedAddress.replace('email_', '').slice(0, 15) + '…' : `${connectedAddress.slice(0, 6)}…${connectedAddress.slice(-4)}`}
                 </span>
@@ -184,24 +192,18 @@ function LandingNav() {
                 Dashboard →
               </Link>
               <button
-                onClick={async () => {
-                  try {
-                    document.cookie.split(';').forEach(c => { document.cookie = `${c.split('=')[0].trim()}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;SameSite=Lax`; });
-                    try { sessionStorage.clear(); localStorage.removeItem('system_session_v2'); } catch {}
-                    try { await signOut({ redirect: false }); } catch {}
-                    window.location.replace('/');
-                  } catch { window.location.replace('/'); }
-                }}
+                onClick={handleDisconnect}
                 className="w-9 h-9 flex items-center justify-center bg-black/[0.03] border border-black/5 rounded-full text-black/40 hover:text-red-500 hover:bg-red-50 hover:border-red-200 transition-all duration-300"
                 title="Disconnect"
+                aria-label="Disconnect Session"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
               </button>
             </div>
           ) : (
             <div className="flex items-center gap-3">
               <button onClick={() => setEmailModalOpen(true)} className="flex items-center gap-2 px-5 py-2 bg-black/[0.03] border border-black/5 rounded-full text-[13.5px] font-bold text-black/80 hover:bg-black/[0.06] hover:scale-105 transition-all duration-300">
-                <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-4 h-4" alt="Google" />
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-4 h-4" alt="" aria-hidden="true" />
                 Connect Gmail
               </button>
               <Link href="/portfolio" className="px-5 py-2 bg-black text-white text-[13.5px] font-bold rounded-full hover:bg-black/80 hover:scale-105 transition-all duration-300 shadow-lg shadow-black/20">
@@ -232,9 +234,9 @@ function HeroScrollSection() {
   const rotate1 = useTransform(scrollYProgress, [0, 1], [0, 45]);
 
   return (
-    <div ref={containerRef} className="relative w-full h-[120vh] flex items-center justify-center overflow-hidden pt-20">
-      <motion.div style={{ y: y1, rotate: rotate1 }} className="absolute top-20 right-[10%] w-[500px] h-[500px] border-[1px] border-black/[0.03] rounded-full pointer-events-none" />
-      <motion.div style={{ y: y2 }} className="absolute bottom-[-10%] left-[5%] w-[800px] h-[800px] border-[1px] border-black/[0.02] rounded-full pointer-events-none" />
+    <section ref={containerRef} className="relative w-full h-[120vh] flex items-center justify-center overflow-hidden pt-20" aria-label="Hero Section">
+      <motion.div style={{ y: y1, rotate: rotate1 }} className="absolute top-20 right-[10%] w-[500px] h-[500px] border-[1px] border-black/[0.03] rounded-full pointer-events-none" aria-hidden="true" />
+      <motion.div style={{ y: y2 }} className="absolute bottom-[-10%] left-[5%] w-[800px] h-[800px] border-[1px] border-black/[0.02] rounded-full pointer-events-none" aria-hidden="true" />
 
       <motion.div 
         style={{ opacity, scale, y }}
@@ -246,7 +248,7 @@ function HeroScrollSection() {
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-[0_2px_20px_rgba(0,0,0,0.06)] border border-black/5 mb-10"
         >
-          <div className="relative flex items-center justify-center w-3 h-3">
+          <div className="relative flex items-center justify-center w-3 h-3" aria-hidden="true">
             <span className="absolute w-full h-full rounded-full bg-emerald-400 animate-ping opacity-75" />
             <span className="relative w-2 h-2 rounded-full bg-emerald-500" />
           </div>
@@ -269,7 +271,7 @@ function HeroScrollSection() {
           transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           className="mt-10 text-[20px] md:text-[26px] leading-[1.4] text-black/50 font-medium max-w-[800px]"
         >
-          Humanity Ledger leverages Aztec’s zero-knowledge execution environment to provide fully verifiable, unconditionally private interactions on-chain.
+          Humanity Ledger provides a verifiable, privacy-first identity and portfolio layer, powered by Aztec's decentralized Private Execution Environment (PXE).
         </motion.p>
 
         <motion.div 
@@ -278,16 +280,16 @@ function HeroScrollSection() {
           transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="mt-14 flex flex-col sm:flex-row items-center gap-4"
         >
-          <Link href="/developer" className="group relative h-16 px-10 bg-black text-white rounded-full flex items-center justify-center text-[16px] font-bold overflow-hidden shadow-2xl shadow-black/20 hover:scale-105 transition-all duration-300">
+          <Link href="/developer" className="group relative h-16 px-10 bg-black text-white rounded-full flex items-center justify-center text-[16px] font-bold overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.2)] hover:scale-105 transition-all duration-300">
             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
-            <span className="relative flex items-center gap-2">Start Building <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+            <span className="relative flex items-center gap-2">Start Building <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
           </Link>
           <Link href="/architecture" className="h-16 px-10 bg-white border border-black/10 text-black rounded-full flex items-center justify-center text-[16px] font-bold hover:bg-black/[0.02] hover:scale-105 transition-all duration-300 shadow-sm">
             Explore Architecture
           </Link>
         </motion.div>
       </motion.div>
-    </div>
+    </section>
   );
 }
 
@@ -300,8 +302,8 @@ function HorizontalTransactionFlow() {
   const x = useTransform(scrollYProgress, [0, 1], ["0%", "-66.66%"]);
 
   return (
-    <section ref={targetRef} className="relative h-[300vh] bg-[#050505]">
-      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-screen pointer-events-none" />
+    <section ref={targetRef} className="relative h-[300vh] bg-[#050505]" aria-label="Transaction Lifecycle Timeline">
+      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-screen pointer-events-none" aria-hidden="true" />
       <div className="sticky top-0 h-screen flex items-center overflow-hidden">
         <div className="absolute top-32 left-12 md:left-24 z-20 pointer-events-none">
           <h2 className="text-[32px] md:text-[48px] font-serif font-black text-white leading-none">
@@ -311,57 +313,57 @@ function HorizontalTransactionFlow() {
 
         <motion.div style={{ x }} className="flex w-[300vw]">
           <div className="w-screen h-screen flex items-center justify-center px-12 md:px-24">
-            <div className="w-full max-w-[1000px] grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <article className="w-full max-w-[1000px] grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               <div>
                 <div className="text-[14px] font-bold text-white/50 tracking-widest mb-4">PHASE 01</div>
-                <h3 className="text-[40px] font-serif font-black text-white mb-6">Client-Side Proving</h3>
+                <h3 className="text-[40px] font-serif font-black text-white mb-6 leading-tight">Client-Side Proving</h3>
                 <p className="text-[18px] text-white/70 leading-relaxed font-medium">
-                  Transactions are constructed and proven entirely on your local device within the Private Execution Environment (PXE). Your private keys and raw data never leave your browser.
+                  Transactions are constructed and proven entirely on your local device within the Private Execution Environment (PXE). Your private keys and raw data never leave your browser, generating a highly compressed zero-knowledge proof.
                 </p>
               </div>
-              <div className="h-[400px] border border-white/10 rounded-3xl bg-[#0a0a0a] relative overflow-hidden flex items-center justify-center shadow-2xl">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05)_0%,transparent_100%)]" />
-                <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="text-emerald-500 animate-pulse relative z-10">
+              <figure className="h-[400px] border border-white/10 rounded-3xl bg-[#0a0a0a] relative overflow-hidden flex items-center justify-center shadow-2xl">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05)_0%,transparent_100%)]" aria-hidden="true" />
+                <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="text-emerald-500 animate-pulse relative z-10" aria-label="Client Proving Icon">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                 </svg>
-              </div>
-            </div>
+              </figure>
+            </article>
           </div>
 
           <div className="w-screen h-screen flex items-center justify-center px-12 md:px-24">
-            <div className="w-full max-w-[1000px] grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <article className="w-full max-w-[1000px] grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               <div>
                 <div className="text-[14px] font-bold text-white/50 tracking-widest mb-4">PHASE 02</div>
-                <h3 className="text-[40px] font-serif font-black text-white mb-6">Aztec Sequencers</h3>
+                <h3 className="text-[40px] font-serif font-black text-white mb-6 leading-tight">Decentralized Sequencer Network</h3>
                 <p className="text-[18px] text-white/70 leading-relaxed font-medium">
-                  Local proofs are broadcasted to Aztec Network sequencers. The sequencers aggregate thousands of UltraHonk ZK-proofs into a single master proof, guaranteeing scalability and anonymity.
+                  Local proofs are broadcasted to Aztec's decentralized network of sequencers and provers. The network aggregates thousands of UltraHonk ZK-proofs into a single master state transition proof, guaranteeing extreme scalability and anonymity sets.
                 </p>
               </div>
-              <div className="h-[400px] border border-white/10 rounded-3xl bg-[#0a0a0a] relative overflow-hidden flex items-center justify-center shadow-2xl">
-                 <div className="grid grid-cols-3 gap-4">
+              <figure className="h-[400px] border border-white/10 rounded-3xl bg-[#0a0a0a] relative overflow-hidden flex items-center justify-center shadow-2xl">
+                 <div className="grid grid-cols-3 gap-4" aria-hidden="true">
                    {[...Array(9)].map((_, i) => (
                      <div key={i} className="w-12 h-12 border border-white/20 rounded-md bg-white/5 animate-pulse" style={{ animationDelay: `${i * 0.1}s` }} />
                    ))}
                  </div>
-              </div>
-            </div>
+              </figure>
+            </article>
           </div>
 
           <div className="w-screen h-screen flex items-center justify-center px-12 md:px-24">
-            <div className="w-full max-w-[1000px] grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <article className="w-full max-w-[1000px] grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
               <div>
                 <div className="text-[14px] font-bold text-white/50 tracking-widest mb-4">PHASE 03</div>
-                <h3 className="text-[40px] font-serif font-black text-white mb-6">L1 Finality</h3>
+                <h3 className="text-[40px] font-serif font-black text-white mb-6 leading-tight">Ethereum L1 Finality</h3>
                 <p className="text-[18px] text-white/70 leading-relaxed font-medium">
-                  The aggregated master proof and state diffs are submitted to Ethereum L1 smart contracts. The result is absolute, mathematically guaranteed finality backed by the world's most secure network.
+                  The aggregated master proof and encrypted state diffs are submitted to Aztec's rollup contracts on Ethereum Mainnet. The result is absolute, mathematically guaranteed settlement backed by the world's most secure network.
                 </p>
               </div>
-              <div className="h-[400px] border border-white/10 rounded-3xl bg-[#0a0a0a] relative overflow-hidden flex items-center justify-center shadow-2xl">
-                 <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="text-white">
+              <figure className="h-[400px] border border-white/10 rounded-3xl bg-[#0a0a0a] relative overflow-hidden flex items-center justify-center shadow-2xl">
+                 <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="text-white" aria-label="Ethereum L1 Icon">
                     <polygon points="12 2 2 22 12 17 22 22 12 2"/>
                  </svg>
-              </div>
-            </div>
+              </figure>
+            </article>
           </div>
         </motion.div>
       </div>
@@ -376,11 +378,11 @@ function CursorCard({ title, description, icon, delay }: { title: string, descri
   const inViewRef = useRef(null);
   const isInView = useInView(inViewRef, { once: true, margin: "-50px" });
 
-  function handleMouseMove({ currentTarget, clientX, clientY }: MouseEvent) {
+  const handleMouseMove = useCallback(({ currentTarget, clientX, clientY }: MouseEvent) => {
     const { left, top } = currentTarget.getBoundingClientRect();
     mouseX.set(clientX - left);
     mouseY.set(clientY - top);
-  }
+  }, [mouseX, mouseY]);
 
   return (
     <motion.div
@@ -406,12 +408,13 @@ function CursorCard({ title, description, icon, delay }: { title: string, descri
               )
             `,
           }}
+          aria-hidden="true"
         />
-        <div className="relative z-10 w-14 h-14 flex items-center justify-center bg-black/[0.02] border border-black/5 rounded-2xl mb-8 text-black shadow-inner">
+        <div className="relative z-10 w-14 h-14 flex items-center justify-center bg-black/[0.02] border border-black/5 rounded-2xl mb-8 text-black shadow-inner" aria-hidden="true">
           {icon}
         </div>
         <h3 className="relative z-10 text-[22px] font-bold text-black tracking-tight mb-4 font-serif">{title}</h3>
-        <p className="relative z-10 text-[16px] text-black/50 leading-[1.6] font-medium">
+        <p className="relative z-10 text-[16px] text-black/60 leading-[1.7] font-medium">
           {description}
         </p>
       </div>
@@ -421,14 +424,14 @@ function CursorCard({ title, description, icon, delay }: { title: string, descri
 
 function BentoFeaturesSection() {
   return (
-    <section className="relative w-full py-40 bg-white z-10">
+    <section className="relative w-full py-40 bg-white z-10" aria-labelledby="features-heading">
       <div className="max-w-[1400px] mx-auto px-6">
         <div className="mb-24 max-w-[900px]">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-black/[0.03] rounded-full border border-black/5 mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-black/40" />
+            <span className="w-1.5 h-1.5 rounded-full bg-black/40" aria-hidden="true" />
             <span className="text-[11px] font-bold text-black/60 tracking-widest uppercase">Platform Primitives</span>
           </div>
-          <h2 className="text-[56px] md:text-[80px] font-serif font-black text-black leading-[1] tracking-tighter">
+          <h2 id="features-heading" className="text-[56px] md:text-[80px] font-serif font-black text-black leading-[1] tracking-tighter">
             Institutional-Grade <br/><span className="text-black/30">Confidentiality.</span>
           </h2>
           <p className="mt-8 text-[22px] text-black/50 font-medium max-w-[700px] leading-relaxed">
@@ -438,11 +441,11 @@ function BentoFeaturesSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <CursorCard delay={0} title="Zero-Knowledge Accounts" description="Your identity is a Noir-proven ZK account. No passwords, no phone numbers. A cryptographic keypair proving who you are without disclosing your public address." icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>} />
-          <CursorCard delay={0.1} title="Client-Side Proving" description="Noir circuits run entirely on your device via the Aztec PXE (Private Execution Environment). The network receives only a validity proof, never raw inputs." icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/></svg>} />
+          <CursorCard delay={0.1} title="Client-Side Proving" description="Noir circuits run entirely on your device via the Aztec PXE (Private Execution Environment). The network receives only a validity proof, never your private state." icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/></svg>} />
           <CursorCard delay={0.2} title="Noir Smart Contracts" description="Write, test, and deploy zero-knowledge circuits using Noir. The record is public on L2, but the payload stays strictly private in encrypted UTXOs." icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>} />
           <CursorCard delay={0.3} title="Ethereum L1 Settlement" description="Security inherited directly from the Ethereum mainnet. Aztec rollups batch and prove transactions, posting state diffs to L1 for absolute finality." icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 2 22 12 17 22 22 12 2"/></svg>} />
-          <CursorCard delay={0.4} title="Encrypted Verification" description="Issue and verify verifiable credentials (VCs) without revealing the underlying data, ensuring compliance without compromising user privacy." icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>} />
-          <CursorCard delay={0.5} title="Shielded Portfolio" description="Track balances and transactions shielded inside the Aztec environment. Your wealth remains completely invisible to the public state." icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>} />
+          <CursorCard delay={0.4} title="Encrypted Verification" description="Issue and verify verifiable credentials (VCs) without revealing the underlying data, ensuring strict compliance without compromising user privacy." icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>} />
+          <CursorCard delay={0.5} title="Shielded Portfolio" description="Track balances and transactions shielded inside the Aztec environment. Your token logic remains completely invisible to the public state tree." icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>} />
         </div>
       </div>
     </section>
@@ -494,6 +497,20 @@ contract HumanityLedger {
 }`
 };
 
+// Robust syntax highlighter for Noir
+function highlightNoir(code: string) {
+  let highlighted = code
+    .replace(/contract/g, '<span class="text-emerald-400">contract</span>')
+    .replace(/fn [a-zA-Z_]+/g, match => `<span class="text-blue-400">${match}</span>`)
+    .replace(/#\[aztec\(private\)\]/g, '<span class="text-yellow-400">#[aztec(private)]</span>')
+    .replace(/let /g, '<span class="text-purple-400">let </span>')
+    .replace(/assert/g, '<span class="text-red-400">assert</span>')
+    .replace(/Field|AztecAddress|bool/g, match => `<span class="text-emerald-200">${match}</span>`)
+    .replace(/\/\/.*/g, match => `<span class="text-white/40">${match}</span>`); // Comments last so they don't get overwritten
+
+  return highlighted;
+}
+
 function CodeShowcaseSection() {
   const [activeTab, setActiveTab] = useState<'transfer' | 'identity'>('transfer');
   const ref = useRef(null);
@@ -502,8 +519,8 @@ function CodeShowcaseSection() {
   const codeString = NOIR_CONTRACTS[activeTab];
 
   return (
-    <section className="relative w-full py-40 bg-[#050505] z-10 border-t border-white/10">
-      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-screen pointer-events-none" />
+    <section className="relative w-full py-40 bg-[#050505] z-10 border-t border-white/10" aria-labelledby="developer-heading">
+      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-screen pointer-events-none" aria-hidden="true" />
       <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
         
         <motion.div 
@@ -515,21 +532,25 @@ function CodeShowcaseSection() {
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/[0.05] rounded-full border border-white/10 mb-6">
             <span className="text-[11px] font-bold text-white/60 tracking-widest uppercase">The Noir Language</span>
           </div>
-          <h2 className="text-[48px] md:text-[64px] font-serif font-black text-white leading-[1] tracking-tighter mb-8">
+          <h2 id="developer-heading" className="text-[48px] md:text-[64px] font-serif font-black text-white leading-[1] tracking-tighter mb-8">
             Write Private Smart Contracts.
           </h2>
           <p className="text-[20px] text-white/50 font-medium mb-10 leading-relaxed">
             Leverage Aztec's Rust-like ZK domain-specific language. Noir allows you to write private business logic that compiles to ultra-efficient Barretenberg circuits seamlessly.
           </p>
           
-          <div className="flex gap-4 mb-8">
+          <div className="flex gap-4 mb-8" role="tablist">
             <button 
+              role="tab"
+              aria-selected={activeTab === 'transfer'}
               onClick={() => setActiveTab('transfer')}
               className={`px-6 py-3 rounded-xl text-[14px] font-bold transition-all ${activeTab === 'transfer' ? 'bg-white text-black' : 'bg-white/5 text-white/50 hover:bg-white/10'}`}
             >
               Private Transfer
             </button>
             <button 
+              role="tab"
+              aria-selected={activeTab === 'identity'}
               onClick={() => setActiveTab('identity')}
               className={`px-6 py-3 rounded-xl text-[14px] font-bold transition-all ${activeTab === 'identity' ? 'bg-white text-black' : 'bg-white/5 text-white/50 hover:bg-white/10'}`}
             >
@@ -543,9 +564,9 @@ function CodeShowcaseSection() {
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="lg:col-span-7 w-full bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden shadow-2xl relative"
+          className="lg:col-span-7 w-full bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative"
         >
-          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none" />
+          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-emerald-500/10 blur-[100px] rounded-full pointer-events-none" aria-hidden="true" />
           
           <div className="flex items-center justify-between px-6 py-4 bg-white/5 border-b border-white/5">
             <div className="flex gap-2">
@@ -566,7 +587,7 @@ function CodeShowcaseSection() {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
                 dangerouslySetInnerHTML={{
-                  __html: `<pre><code>${codeString.split('\n').map((line, i) => `<div class="table-row"><span class="table-cell text-white/20 select-none pr-6 text-right">${i + 1}</span><span class="table-cell whitespace-pre">${line.replace('contract', '<span class="text-emerald-400">contract</span>').replace(/fn [a-zA-Z_]+/g, match => `<span class="text-blue-400">${match}</span>`).replace('#[aztec(private)]', '<span class="text-yellow-400">#[aztec(private)]</span>').replace(/\/\/.*/g, '<span class="text-white/40">$&</span>').replace('let', '<span class="text-purple-400">let</span>').replace('assert', '<span class="text-red-400">assert</span>')}</span></div>`).join('')}</code></pre>`
+                  __html: `<pre><code>${codeString.split('\n').map((line, i) => `<div class="table-row"><span class="table-cell text-white/20 select-none pr-6 text-right">${i + 1}</span><span class="table-cell whitespace-pre">${highlightNoir(line)}</span></div>`).join('')}</code></pre>`
                 }}
               />
             </AnimatePresence>
@@ -582,27 +603,28 @@ function FAQSection() {
   const faqs = [
     { q: "How is data kept private on a public blockchain?", a: "Aztec uses zero-knowledge cryptography (zk-SNARKs). Your data is encrypted and stored locally in your Private Execution Environment (PXE). When you transact, you generate a mathematical proof that the transaction is valid without revealing the actual data. Only the proof is sent to the network." },
     { q: "Do I need a new wallet?", a: "No. Aztec accounts are generated deterministically from your existing Ethereum keys (like MetaMask or WalletConnect) via signatures. You use your same Ethereum wallet, but interact within Aztec's shielded layer." },
-    { q: "What is Noir?", a: "Noir is Aztec's domain-specific programming language for writing zero-knowledge circuits. It abstracts away the complex cryptography, allowing developers to write private smart contracts using familiar Rust-like syntax." },
+    { q: "What is Noir?", a: "Noir is Aztec's domain-specific programming language for writing zero-knowledge circuits. It abstracts away complex cryptography, allowing developers to write private smart contracts using familiar Rust-like syntax." },
     { q: "How are gas fees paid?", a: "Aztec natively supports fee abstraction (paymasters). Fees can be paid in the token you are transferring or sponsored by a third-party application, providing a seamless Web2-like experience." }
   ];
 
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="relative w-full py-40 bg-white z-10 border-t border-black/5">
+    <section className="relative w-full py-40 bg-white z-10 border-t border-black/5" aria-labelledby="faq-heading">
       <div className="max-w-[1000px] mx-auto px-6">
-        <h2 className="text-[40px] md:text-[56px] font-serif font-black text-black leading-[1] tracking-tighter mb-16 text-center">
+        <h2 id="faq-heading" className="text-[40px] md:text-[56px] font-serif font-black text-black leading-[1] tracking-tighter mb-16 text-center">
           Frequently Asked Questions
         </h2>
         <div className="flex flex-col gap-4">
           {faqs.map((faq, i) => (
-            <div key={i} className="border border-black/10 rounded-2xl overflow-hidden bg-white shadow-sm">
+            <div key={i} className="border border-black/10 rounded-2xl overflow-hidden bg-white shadow-sm transition-shadow hover:shadow-md">
               <button 
                 onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                className="w-full flex items-center justify-between p-6 text-left hover:bg-black/[0.02] transition-colors"
+                className="w-full flex items-center justify-between p-6 text-left bg-transparent"
+                aria-expanded={openIndex === i}
               >
-                <span className="text-[18px] font-bold text-black font-serif">{faq.q}</span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`transform transition-transform duration-300 ${openIndex === i ? 'rotate-180 text-emerald-500' : 'text-black/30'}`}>
+                <span className="text-[18px] font-bold text-black font-serif pr-8">{faq.q}</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`transform transition-transform duration-300 shrink-0 ${openIndex === i ? 'rotate-180 text-emerald-500' : 'text-black/30'}`} aria-hidden="true">
                   <path d="m6 9 6 6 6-6"/>
                 </svg>
               </button>
@@ -630,26 +652,26 @@ function FAQSection() {
 
 function CTASection() {
   return (
-    <section className="relative w-full py-40 bg-white z-10 border-t border-black/5">
+    <section className="relative w-full py-40 bg-white z-10 border-t border-black/5" aria-labelledby="cta-heading">
       <div className="max-w-[800px] mx-auto px-6 text-center">
-        <div className="w-24 h-24 mx-auto bg-black/[0.02] border border-black/5 rounded-3xl flex items-center justify-center mb-10 shadow-inner">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-12 h-12 text-black">
+        <div className="w-24 h-24 mx-auto bg-black/[0.02] border border-black/5 rounded-3xl flex items-center justify-center mb-10 shadow-inner" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-12 h-12 text-black">
             <path d="M12 2L2 7l10 5 10-5-10-5z" />
             <path d="M2 17l10 5 10-5" />
             <path d="M2 12l10 5 10-5" />
           </svg>
         </div>
-        <h2 className="text-[56px] md:text-[80px] font-serif font-black text-black leading-[1] tracking-tighter mb-8">
+        <h2 id="cta-heading" className="text-[56px] md:text-[80px] font-serif font-black text-black leading-[1] tracking-tighter mb-8">
           Enter the <br/><span className="text-black/30">Sanctuary.</span>
         </h2>
         <p className="text-[20px] text-black/50 font-medium mb-12 max-w-[600px] mx-auto leading-relaxed">
           Initialize your Private Execution Environment and deploy your first confidential smart contract today. The future of Ethereum is verifiable and unconditionally private.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link href="/portfolio" className="h-16 px-10 bg-black text-white rounded-full flex items-center justify-center text-[16px] font-bold hover:bg-black/80 hover:scale-105 transition-all duration-300 shadow-2xl shadow-black/20 w-full sm:w-auto">
+          <Link href="/portfolio" className="h-16 px-10 bg-black text-white rounded-full flex items-center justify-center text-[16px] font-bold hover:bg-black/80 hover:-translate-y-1 transition-all duration-300 shadow-[0_10px_40px_rgba(0,0,0,0.2)] w-full sm:w-auto">
             Connect Wallet
           </Link>
-          <a href="https://discord.gg/aztec" target="_blank" rel="noreferrer" className="h-16 px-10 bg-white border border-black/10 text-black rounded-full flex items-center justify-center text-[16px] font-bold hover:bg-black/[0.02] hover:scale-105 transition-all duration-300 w-full sm:w-auto shadow-sm">
+          <a href="https://discord.gg/aztec" target="_blank" rel="noreferrer" className="h-16 px-10 bg-white border border-black/10 text-black rounded-full flex items-center justify-center text-[16px] font-bold hover:bg-black/[0.02] hover:-translate-y-1 transition-all duration-300 w-full sm:w-auto shadow-sm">
             Join the Network
           </a>
         </div>
@@ -660,7 +682,7 @@ function CTASection() {
 
 export default function ImmersiveManifestoLanding() {
   return (
-    <div className="relative w-full bg-white text-black selection:bg-emerald-500/30 selection:text-black font-sans">
+    <main className="relative w-full bg-white text-black selection:bg-emerald-500/30 selection:text-black font-sans">
       <DottedGrid />
       <LandingNav />
       <HeroScrollSection />
@@ -669,6 +691,6 @@ export default function ImmersiveManifestoLanding() {
       <CodeShowcaseSection />
       <FAQSection />
       <CTASection />
-    </div>
+    </main>
   );
 }
