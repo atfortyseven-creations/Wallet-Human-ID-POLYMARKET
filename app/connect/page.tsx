@@ -4,11 +4,17 @@ import { Suspense, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 
 // Desktop connect page (QR handshake)
-const ConnectPage = dynamic(() => import('@/components/landing/ConnectPage'), { ssr: false });
+const ConnectPage = dynamic(() => import('@/components/landing/ConnectPage'), { 
+  ssr: false,
+  loading: () => null
+});
 // Mobile gate — same immersive gate used on the root landing page
 const MobileImmersiveGate = dynamic(
   () => import('@/components/landing/MobileImmersiveGate').then(m => ({ default: m.MobileImmersiveGate })),
-  { ssr: false }
+  { 
+    ssr: false,
+    loading: () => null
+  }
 );
 
 import { RemoteLottie } from '@/components/ui/RemoteLottie';

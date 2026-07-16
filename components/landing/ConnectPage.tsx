@@ -809,12 +809,13 @@ export default function ConnectPage() {
   );
 
   return (
-    <div
-      ref={scrollContainerRef}
-      className="w-full overflow-y-scroll bg-white relative"
-      style={{ height: '100dvh' }}
-    >
-      <div className="w-full relative bg-white" style={{ height: '200vh' }}>
+    <div className="fixed inset-0 w-full bg-white z-50" style={{ height: '100dvh' }}>
+      <div
+        ref={scrollContainerRef}
+        className="w-full h-full overflow-y-scroll"
+        style={{ scrollSnapType: 'none', WebkitOverflowScrolling: 'touch' }}
+      >
+        <div className="w-full relative bg-white" style={{ height: '200dvh' }}>
 
         {/* Film grain noise overlay */}
       <motion.div
@@ -876,6 +877,7 @@ export default function ConnectPage() {
           />
         )}
       </div>
+        </div>
       </div>
     </div>
   );

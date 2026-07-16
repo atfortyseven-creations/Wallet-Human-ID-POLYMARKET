@@ -1,0 +1,26 @@
+Line  524 depth=+1:   return (
+Line  583 depth=+2:               {mounted && !isVerified && (
+Line  588 depth=+1:               )}
+Line  591 depth=+2:               {isVerified ? (
+Line  615 depth=+3:                   {authStatus === 'failed' ? (
+Line  632 depth=+2:                   )}
+Line  645 depth=+4:                   {MOBILE_WALLETS.map((w) => (
+Line  647 depth=+2:                   ))}
+Line  656 depth=+3:                   {syncStatus === "AWAITING" && qrData ? (
+Line  662 depth=+4:                         {pinCode && (
+Line  670 depth=+6:                               {pinCode.split('').map((digit, idx) => (
+Line  674 depth=+4:                               ))}
+Line  681 depth=+3:                         )}
+Line  701 depth=+2:                   ) : null}
+Line  703 depth=+4:                   {DESKTOP_WALLETS.map((w) => (
+Line  705 depth=+2:                   ))}
+Line  741 depth=+1:               )}
+Line  771 depth=+3:               ].map((item, i) => (
+Line  784 depth=+1:               ))}
+Line  798 depth=+3:                 ].map((r, i) => (
+Line  803 depth=+1:                 ))}
+Line  835 depth=+3:               ].map(({ label, path }) => (
+Line  840 depth=+1:               ))}
+Line  863 depth=+2:       {isMobile && mounted && (
+Line  871 depth=+1:       )}
+Line  874 depth=+0:   );
