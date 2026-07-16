@@ -4,6 +4,29 @@ import React, { useEffect, useState } from 'react';
 import { ClientRootRouter } from '@/components/landing/ClientRootRouter';
 import { ClientMobileLanding } from '@/components/landing/ClientMobileLanding';
 
+// ── Minimal white skeleton shown during JS hydration on mobile ──────────────
+// ClientMobileLanding (MobileImmersiveGate) has ssr:false because it reads
+// cookies synchronously to decide its starting phase. While the bundle loads,
+// we show a white screen with the "WHALE NETWORK" wordmark so the user never
+// sees a blank flash.
+function MobileSkeleton() {
+  return (
+    <div
+      className="fixed inset-0 bg-white flex flex-col items-center justify-center"
+      style={{ height: '100dvh' }}
+    >
+      <div className="flex flex-col items-center gap-5">
+        <h1 className="font-serif text-[13.5vw] font-normal tracking-[-0.02em] text-[#0A0A0A] leading-none select-none text-center">
+          WHALE
+          <br />
+          NETWORK
+        </h1>
+        <div className="w-6 h-6 border-2 border-[#0A0A0A]/20 border-t-[#0A0A0A]/60 rounded-full animate-spin" />
+      </div>
+    </div>
+  );
+}
+
 export function SmartLandingRouter({ isMobileUserAgent }: { isMobileUserAgent: boolean }) {
     const [mounted, setMounted] = useState(false);
     const [isPhysicallyMobile, setIsPhysicallyMobile] = useState(isMobileUserAgent);
@@ -30,9 +53,10 @@ export function SmartLandingRouter({ isMobileUserAgent }: { isMobileUserAgent: b
         // at route level — logout is handled exclusively by useSystemSignOut.
     }, []);
 
-    // Fast-path: server already told us it's mobile — render immediately
-    // without waiting for JS hydration (eliminates ~3s blank white screen).
-    if (!mounted && isMobileUserAgent) return <ClientMobileLanding />;
+    // Fast-path: server already told us it's mobile.
+    // ClientMobileLanding has ssr:false so we show the skeleton wordmark
+    // instead of the old <ClientMobileLanding /> to avoid a hydration mismatch.
+    if (!mounted && isMobileUserAgent) return <MobileSkeleton />;
 
     // Always show the landing page — never auto-redirect to /terminal.
     // The dashboard redirect is handled exclusively by ConnectPage after

@@ -53,7 +53,7 @@ import TestnetExplorer from '@/components/TestnetExplorer';
 /* ─────────────────────────────────────────────
    CONSTANTS
 ───────────────────────────────────────────── */
-const EXPLORER_BASE = 'https://testnet.aztecscan.xyz/tx-effect/';
+const EXPLORER_BASE = 'https://testnet.aztecscan.xyz/tx-effects/';
 
 /* ─────────────────────────────────────────────
    TYPES

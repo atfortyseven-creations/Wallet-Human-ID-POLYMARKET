@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import dynamic from "next/dynamic";
 import { ZKBiometricGate } from "@/components/security/ZKBiometricGate";
 import { AztecArchitectureSection } from "./AztecArchitectureSection";
@@ -1356,239 +1356,112 @@ export function MobileLanding() {
 
   //  Render: Unified Mobile Landing & Login Modal 
   // CRITICAL: This block must be AFTER all isLinked guards above.
+  // --- Mobile Scroll Scrubbing Physics ---
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
+
+  const textScaleY = useTransform(scrollYProgress, [0, 0.4], [1, 0.95]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
+  const textBlur = useTransform(scrollYProgress, [0, 0.4], ["blur(0px)", "blur(10px)"]);
+  
+  const bottomSheetY = useTransform(scrollYProgress, [0.1, 0.8], ["100%", "0%"]);
+  const bottomSheetOpacity = useTransform(scrollYProgress, [0.1, 0.5], [0, 1]);
+
   return (
-    <div className="w-full bg-white relative font-sans" style={{ color: '#050505', minHeight: 'var(--dvh-100, 100dvh)' }}>
+    <div ref={containerRef} className="w-full bg-white relative font-sans" style={{ color: '#050505', height: '150dvh' }}>
       
-      {/*  Sticky Header  */}
-      <motion.header
-        initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 py-4 transform-gpu"
-        style={{ background: "rgba(255,255,255,0.92)", backdropFilter: "blur(32px)", WebkitBackdropFilter: "blur(32px)", borderBottom: `1px solid rgba(0,0,0,0.06)`, boxShadow: "0 2px 20px rgba(0,0,0,0.03)", willChange: "transform, opacity" }}
-      >
-        <div className="flex items-center gap-3">
-          <div
-            className="w-6 h-6 shrink-0 cursor-pointer select-none"
-            onClick={() => {
-              const next = debugTaps + 1;
-              setDebugTaps(next);
-              if (next >= 5) { setShowDebug(s => !s); setDebugTaps(0); }
-            }}
-          >
-            <WhaleLogo className="w-6 h-6" />
-          </div>
-          <span className="text-[11px] font-black uppercase tracking-tight text-[#050505]">Whale Network</span>
-        </div>
+      <div className="sticky top-0 h-[100dvh] w-full overflow-hidden flex flex-col items-center justify-center">
         
-        <div className="flex items-center gap-2">
-          {/* DPP — Studio Provenance access */}
-          <a
-            href="/studio/provenance"
-            className="px-3 py-2 rounded-xl border border-blue-300/50 bg-blue-50 text-[9px] font-black uppercase tracking-widest text-blue-600 shadow-sm active:scale-95 transition-all flex items-center gap-1.5"
-            aria-label="Studio Provenance DPP"
-          >
-            <Briefcase size={11} className="shrink-0" />
-            DPP
-          </a>
+        {/* PHASE 1: The Cryptographic Typography */}
+        <motion.div 
+          className="absolute inset-0 flex flex-col items-center justify-center p-6 z-10 pointer-events-none"
+          style={{ scaleY: textScaleY, opacity: textOpacity, filter: textBlur }}
+        >
+           <h1 className="font-serif text-[12vw] font-normal tracking-tight text-[#0A0A0A] leading-[1.1] text-center select-none">
+             YOUR KEYS.<br/>YOUR IDENTITY.
+           </h1>
+           <div className="absolute bottom-16 left-1/2 -translate-x-1/2 text-[10px] font-mono tracking-[0.2em] uppercase text-black/30 flex flex-col items-center gap-3">
+             <span>Swipe up to initialize</span>
+             <div className="w-px h-6 bg-black/20 animate-pulse" />
+           </div>
+        </motion.div>
 
-          {/* Identity Claim — mobile-only direct scanner access (iOS + Android only) */}
-          <button
-            id="whale-hub-btn"
-            onClick={() => { 
-              if (isLinked && effectiveAddress) {
-                setShowHub(true);
-              } else {
-                setShowConnectOverlay(true);
-              }
-            }}
-            className="px-3 py-2 rounded-xl border border-black/20 bg-white text-[9px] font-black uppercase tracking-widest text-black/70 shadow-sm active:scale-95 transition-all flex items-center gap-1.5"
-            aria-label="Open Identity Claim"
-          >
-            <ScanLine size={11} className="shrink-0" />
-            Identity Claim
-          </button>
-
-          {isLinked && effectiveAddress ? (
-            /* Connected state: show address badge + portfolio link */
-            <>
-              <Link
-                href="/portfolio"
-                className="px-3 py-2 rounded-xl border border-emerald-200 bg-emerald-50 text-[9px] font-black uppercase tracking-widest text-emerald-700 shadow-sm active:scale-95 transition-all flex items-center gap-1.5"
-              >
-                <CheckCircle2 size={11} className="shrink-0" />
-                {effectiveAddress.slice(0, 6)}
-              </Link>
-              <button
-                onClick={handleDisconnect}
-                className="px-3 py-2 rounded-xl border border-black/10 bg-white text-[9px] font-black uppercase tracking-widest text-black/40 shadow-sm active:scale-95 transition-all"
-                aria-label="Disconnect wallet"
-              >
-                <LogOut size={11} />
-              </button>
-            </>
-          ) : (
-            /* Disconnected state: always show Connect button regardless of overlay state */
+        {/* PHASE 2: Bottom Sheet Assembly */}
+        <motion.div 
+          className="absolute bottom-0 left-0 right-0 z-20 bg-white rounded-t-[32px] shadow-[0_-20px_60px_rgba(0,0,0,0.08)] border-t border-black/5 flex flex-col px-6 pt-8 pb-12"
+          style={{ y: bottomSheetY, opacity: bottomSheetOpacity }}
+        >
+          <div className="w-12 h-1.5 bg-black/10 rounded-full mx-auto mb-8" />
+          <h2 className="text-[20px] font-black tracking-tight text-black mb-6 text-center">Connect Wallet</h2>
+          
+          <div className="flex flex-col gap-3 w-full max-w-sm mx-auto">
             <button
+              type="button"
               onClick={() => {
-                // Clear disconnect guard so the session can be established after connecting
+                try {
+                  // @ts-ignore
+                  rkOpenModal({ view: 'Connect' });
+                } catch (e) {
+                  try {
+                    const modal = document.querySelector('w3m-modal') as any;
+                    if (modal?.open !== undefined) {
+                      modal.open = true;
+                    } else if (modal) {
+                      modal.setAttribute('open', '');
+                    }
+                  } catch {}
+                  try {
+                    const appkitModal = document.querySelector('appkit-modal') as any;
+                    if (appkitModal) appkitModal.open = true;
+                  } catch {}
+                }
                 try { sessionStorage.removeItem("__disconnected__"); } catch {}
                 try { localStorage.removeItem("__disconnected__"); } catch {}
-                setShowConnectOverlay(true);
+                try { localStorage.setItem('system_pending_wakeup', '1'); } catch {}
               }}
-              className="px-4 py-2 rounded-xl bg-black text-white text-[10px] font-black uppercase tracking-widest shadow-lg active:scale-95 transition-all"
+              className="group w-full flex items-center gap-4 p-5 rounded-2xl border-2 border-[#5200FF]/30 bg-gradient-to-r from-[#5200FF]/5 to-[#5200FF]/10 hover:from-[#5200FF]/10 hover:to-[#5200FF]/15 hover:border-[#5200FF]/50 active:scale-[0.97] transition-all duration-200 shadow-sm"
             >
-              Connect
+              <div className="w-12 h-12 rounded-xl bg-[#5200FF] flex items-center justify-center p-2.5 overflow-hidden shrink-0 shadow-lg">
+                <img src="/official-whale-monochrome.png" alt="Connect" className="w-full h-full object-contain invert" />
+              </div>
+              <div className="flex-1 text-left">
+                <p className="text-[14px] font-black uppercase tracking-tight text-[#050505]">Connect Wallet</p>
+                <p className="text-[10px] font-mono text-[#050505]/50 uppercase tracking-widest mt-0.5">
+                  MetaMask · Trust · Coinbase
+                </p>
+              </div>
+              <ArrowRight size={16} className="text-[#5200FF]/60 group-hover:text-[#5200FF] group-hover:translate-x-1 transition-all shrink-0" />
             </button>
-          )}
-        </div>
 
-      </motion.header>
+            <WalletOption
+              logo="/system-shots/aztec-logo.png"
+              name="Scan QR Code"
+              badge="Link desktop via camera"
+              loading={false}
+              onClick={() => {
+                setScanMode('session-only');
+                setShowScanner(true);
+              }}
+              delay={0.1}
+            />
 
-      {/*  Background Landing Page  */}
-      <div className="flex flex-col w-full relative z-0">
-        <ImmersiveManifestoLanding onOpenScanner={() => setShowConnectOverlay(true)} hideMap={true} />
-        <AztecArchitectureSection />
-        <SystemFooter />
+            <WalletOption
+              logo="https://www.svgrepo.com/show/475656/google-color.svg"
+              name="Gmail / Email"
+              badge="Sign in without a wallet"
+              loading={false}
+              onClick={() => setEmailModalOpen(true)}
+              delay={0.2}
+            />
+          </div>
+        </motion.div>
       </div>
 
-      {/*  Login Modal Overlay (Light Mode)  */}
-      {mounted && typeof document !== 'undefined' && createPortal(
-        <AnimatePresence>
-          {showConnectOverlay && (
-            <motion.div
-              suppressHydrationWarning
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="fixed inset-0 z-[50] flex items-start justify-center p-4 pt-0 bg-black/40 backdrop-blur-md"
-              onClick={() => setShowConnectOverlay(false)}
-            >
-              <motion.div
-                onClick={(e) => e.stopPropagation()}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                className="w-full max-w-sm bg-white rounded-3xl shadow-2xl flex flex-col max-h-[90dvh] overflow-hidden"
-              >
-                {/* Modal Header */}
-                <div className="flex items-center justify-between px-6 py-6 border-b border-black/5">
-                  <h2 className="text-[20px] font-black tracking-tight text-black">Connect Wallet</h2>
-                  <button
-                    onClick={() => setShowConnectOverlay(false)}
-                    className="p-2 -mr-2 text-black/40 hover:text-black active:scale-90 transition-all"
-                  >
-                    <X size={20} strokeWidth={2.5} />
-                  </button>
-                </div>
-
-                {/* Modal Body - Scrollable */}
-                <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
-                  <div className="w-full flex flex-col gap-3">
-        
-                    {/*
-                      PRIMARY CONNECT BUTTON — Pure JS, fires synchronously inside the user-gesture.
-                      CRITICAL: We do NOT use the <appkit-button> web component here because:
-                      1. On iOS Safari/Chrome, the web component may not be registered by the time
-                         the user taps, causing the tap to be swallowed silently.
-                      2. React synthetic events break the "user gesture" requirement for wallet deep-links
-                         on iOS WKWebView when state updates happen before the open() call.
-                      This button calls rkOpenModal() as the VERY FIRST thing in the handler,
-                      synchronously in the user-gesture context, which iOS treats as user-initiated.
-                    */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        // MUST be the very first call — any state update before this
-                        // causes iOS to classify the subsequent window.open as a popup
-                        // and block it silently.
-                        try {
-                          // @ts-ignore
-                          rkOpenModal({ view: 'Connect' });
-                        } catch (e) {
-                          // AppKit not ready yet — force-open the w3m-modal DOM element directly.
-                          try {
-                            const modal = document.querySelector('w3m-modal') as any;
-                            if (modal?.open !== undefined) {
-                              modal.open = true;
-                            } else if (modal) {
-                              modal.setAttribute('open', '');
-                            }
-                          } catch {}
-                          // Last resort: query any reown modal variant
-                          try {
-                            const appkitModal = document.querySelector('appkit-modal') as any;
-                            if (appkitModal) appkitModal.open = true;
-                          } catch {}
-                          console.warn('[MobileWallet] rkOpenModal failed, used DOM fallback', e);
-                        }
-                        // Clear disconnect guard AFTER opening modal so the session
-                        // establishment flow can run once the wallet connects.
-                        try { sessionStorage.removeItem("__disconnected__"); } catch {}
-                        try { localStorage.removeItem("__disconnected__"); } catch {}
-                        try { localStorage.setItem('system_pending_wakeup', '1'); } catch {}
-                        try { sessionStorage.setItem('system_show_reconnect', '1'); } catch {}
-                      }}
-                      className="group w-full flex items-center gap-4 p-5 rounded-2xl border-2 border-[#5200FF]/30 bg-gradient-to-r from-[#5200FF]/5 to-[#5200FF]/10 hover:from-[#5200FF]/10 hover:to-[#5200FF]/15 hover:border-[#5200FF]/50 active:scale-[0.97] transition-all duration-200 shadow-sm"
-                    >
-                      <div className="w-12 h-12 rounded-xl bg-[#5200FF] flex items-center justify-center p-2.5 overflow-hidden shrink-0 shadow-lg">
-                        <img src="/official-whale-monochrome.png" alt="Connect" className="w-full h-full object-contain invert" />
-                      </div>
-                      <div className="flex-1 text-left">
-                        <p className="text-[14px] font-black uppercase tracking-tight text-[#050505]">Connect Wallet</p>
-                        <p className="text-[10px] font-mono text-[#050505]/50 uppercase tracking-widest mt-0.5">
-                          MetaMask · Trust · Coinbase · Rainbow · OKX · 300+
-                        </p>
-                      </div>
-                      <ArrowRight size={16} className="text-[#5200FF]/60 group-hover:text-[#5200FF] group-hover:translate-x-1 transition-all shrink-0" />
-                    </button>
-        
-                    {/* Secondary: Scan QR from desktop — opens native scanner */}
-                    <WalletOption
-                      logo="/system-shots/aztec-logo.png"
-                      name="Scan QR Code"
-                      badge="Link your desktop session via camera"
-                      loading={false}
-                      onClick={() => {
-                        setShowConnectOverlay(false);
-                        setScanMode('session-only');
-                        setShowScanner(true);
-                      }}
-                      delay={0.18}
-                    />
-        
-                    <WalletOption
-                      logo="https://www.svgrepo.com/show/475656/google-color.svg"
-                      name="Gmail / Email"
-                      badge="Sign in without a wallet"
-                      loading={false}
-                      onClick={() => setEmailModalOpen(true)}
-                      delay={0.24}
-                    />
-                    {mounted && typeof document !== 'undefined' && (
-                      <EmailLoginModal isOpen={emailModalOpen} onClose={() => setEmailModalOpen(false)} />
-                    )}
-        
-                    <div className="w-full flex justify-center mt-2 mb-1">
-                      <RemoteLottie path="system-shots/Paper airplane.json" className="w-full max-w-[180px] h-[100px] object-contain" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Modal Footer */}
-                <div className="border-t border-black/5 px-6 py-6 bg-white">
-                  <div className="flex items-start gap-3 p-4 rounded-2xl bg-black/[0.03] border border-black/5">
-                    <Fingerprint size={14} className="text-black/40 mt-0.5 shrink-0" />
-                    <p className="text-[10px] text-black/50 font-medium leading-relaxed">
-                      ECDSA Verification · Non-custodial · Private keys never leave your device.
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>,
-        document.body
+      {mounted && typeof document !== 'undefined' && (
+        <EmailLoginModal isOpen={emailModalOpen} onClose={() => setEmailModalOpen(false)} />
       )}
 
       {mounted && typeof document !== 'undefined' && (

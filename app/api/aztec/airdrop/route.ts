@@ -18,6 +18,7 @@ const AirdropSchema = z.object({
 });
 
 const AZTEC_EXPLORER        = 'https://testnet.aztecscan.xyz';
+const AZTEC_TX_URL          = (hash: string) => `https://testnet.aztecscan.xyz/tx-effects/${hash}`;
 const AIRDROP_AMOUNT        = 200;  // 200 QDs per airdrop
 
 /**
@@ -187,7 +188,10 @@ export async function POST(req: NextRequest) {
         }
         
         aztecTxHash = `aztec-airdrop-${crypto.randomBytes(20).toString('hex')}`;
-        explorerUrl  = `https://testnet.aztecscan.xyz`;
+        // explorerUrl points to AztecScan blocks list — we link to the block number when we have it
+        explorerUrl  = liveBlockNum
+          ? `https://testnet.aztecscan.xyz/blocks/${liveBlockNum}`
+          : `https://testnet.aztecscan.xyz`;
         onChain      = false;
         blockNum     = liveBlockNum;
         nodeInfo     = liveBlockHash ? { blockHash: liveBlockHash, blockNumber: liveBlockNum, network: 'aztec-testnet' } : null;
@@ -226,39 +230,69 @@ export async function POST(req: NextRequest) {
 
       const SPONSORED_FPC = getFpcAddress();
 
-      // Dispatch transaction natively through Aztec sequencer
-      const txResult = await tokenContract.methods
-        .mint_to_public(toAddress, amountBigInt)
-        .send({
-          from: relayerAddr,
-          fee: {
-            paymentMethod: new SponsoredFeePaymentMethod(
-              AztecAddress.fromString(SPONSORED_FPC)
-            )
-          }
-        });
-      
-      aztecTxHash   = txResult.receipt.txHash.toString();
-      explorerUrl   = `${AZTEC_EXPLORER}/tx/${aztecTxHash}`;
-      onChain       = true;
-      blockNum      = Number(txResult.receipt.blockNumber ?? Math.floor(Date.now() / 12_000));
-      
-      // Also get node info for metadata
-      const { createAztecNodeClient } = await import('@aztec/aztec.js/node');
-      const node = createAztecNodeClient(nodeUrl);
+      let onChainSuccess = false;
       try {
-        const info = await node.getNodeInfo();
-        nodeInfo = {
-          nodeVersion: info.nodeVersion,
-          l1ChainId: info.l1ChainId,
-          rollupVersion: info.rollupVersion,
-          rollupAddress: info.l1ContractAddresses?.rollupAddress?.toString(),
-        };
-      } catch(e) {
-          console.warn('[Aztec Airdrop] Could not fetch node info for metadata.');
+        const txResult = await tokenContract.methods
+          .mint_to_public(toAddress, amountBigInt)
+          .send({
+            from: relayerAddr,
+            fee: {
+              paymentMethod: new SponsoredFeePaymentMethod(
+                AztecAddress.fromString(SPONSORED_FPC)
+              )
+            }
+          });
+        
+        aztecTxHash   = txResult.receipt.txHash.toString();
+        explorerUrl   = `${AZTEC_EXPLORER}/tx-effects/${aztecTxHash}`;
+        onChain       = true;
+        onChainSuccess = true;
+        blockNum      = Number(txResult.receipt.blockNumber ?? Math.floor(Date.now() / 12_000));
+        console.log(`[Aztec Airdrop] ✅ Native On-chain! Hash: ${aztecTxHash}`);
+      } catch (fpcErr: any) {
+        const isFpcError = fpcErr?.message?.toLowerCase().includes('insufficient fee payer') ||
+                           fpcErr?.message?.toLowerCase().includes('fee juice') ||
+                           fpcErr?.message?.toLowerCase().includes('insufficient balance');
+        if (isFpcError) {
+          console.warn('[Aztec Airdrop] ⚠️ Sponsored FPC has zero Fee Juice (Aztec 5.0.1 known issue). Falling back to Mode B DB ledger.');
+          let liveBlockNum = Math.floor(Date.now() / 12_000);
+          try {
+            const nodeInfoRes = await fetch(`${nodeUrl}/node-info`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ jsonrpc: '2.0', method: 'node_getNodeInfo', params: [], id: 1 }),
+              signal: AbortSignal.timeout(8000),
+            });
+            if (nodeInfoRes.ok) {
+              const nodeData = await nodeInfoRes.json();
+              liveBlockNum = nodeData?.result?.l2BlockNumber ?? liveBlockNum;
+            }
+          } catch { /* node unreachable */ }
+          aztecTxHash = `aztec-airdrop-${crypto.randomBytes(20).toString('hex')}`;
+          explorerUrl = `https://testnet.aztecscan.xyz/blocks/${liveBlockNum}`;
+          onChain = false;
+          blockNum = liveBlockNum;
+        } else {
+          throw fpcErr;
+        }
       }
 
-      console.log(`[Aztec Airdrop] ✅ Native On-chain! Hash: ${aztecTxHash}`);
+      // Also get node info for metadata
+      if (onChainSuccess) {
+        const { createAztecNodeClient } = await import('@aztec/aztec.js/node');
+        const node = createAztecNodeClient(nodeUrl);
+        try {
+          const info = await node.getNodeInfo();
+          nodeInfo = {
+            nodeVersion: info.nodeVersion,
+            l1ChainId: info.l1ChainId,
+            rollupVersion: info.rollupVersion,
+            rollupAddress: info.l1ContractAddresses?.rollupAddress?.toString(),
+          };
+        } catch(e) {
+            console.warn('[Aztec Airdrop] Could not fetch node info for metadata.');
+        }
+      }
     } finally {
       await wallet.stop();
     }

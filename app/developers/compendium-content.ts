@@ -25,7 +25,7 @@ export const DISCLAIMER = `This technical white paper has not been approved by a
 export const INTRODUCTION_PARAGRAPHS: Paragraph[] = [
   { type: "p", text: "Whale Network was founded with a single deterministic mandate: to eliminate the epistemic asymmetry between sovereign and retail participants in decentralized financial markets. Unlike traditional financial systems where privileged information flows through private terminals, blockchain networks publish every state transition  every transfer, every swap, every liquidation  to a global, immutable, publicly-auditable ledger in real time." },
   { type: "p", text: "This radical transparency is simultaneously the most powerful feature and the most underexploited primitive of public blockchain infrastructure. The raw data is available to everyone; the structured analytics derived from that data is available to almost no one. Whale Network exists to close this gap." },
-  { type: "p", text: "The Compendium of System Analytics is the canonical technical and philosophical reference for this system. It is organized around four Pillars of progressively increasing specificity: from the abstract mathematical foundations of on-chain fluid stochastics, through the deterministic forensic reconstruction of EVM state, to the governance philosophy of financial systemty, and finally to the per-network forensic specifications that make the system operationally precise." },
+  { type: "p", text: "The Compendium of System Analytics is the canonical technical and philosophical reference for this system. It is organized around five Pillars of progressively increasing specificity: from the abstract mathematical foundations of on-chain fluid stochastics, through the deterministic forensic reconstruction of EVM state, to the governance philosophy of financial systemty, the per-network forensic specifications, and ultimately to the 2026 scalability epoch that guarantees computational verifiability." },
   { type: "p", text: "Some of the core axioms underlying the Whale Network Protocol are:" },
   { type: "list", items: [
     "Information asymmetry in public blockchain networks is a quantifiable, systematic, and correctable engineering problem  not an inherent property of decentralized systems.",
@@ -311,6 +311,37 @@ message EntityLabel {
           { type: "p", text: "A massive three full calendar days before mega-exchange Binance aggressively signaled public abandonment decimating their sprawling FTT token positioning, deep on-chain meta-analysis clearly detected gigantic colossal cross-capital asset transitions bleeding steadily originating from entities fundamentally mapped toward ultra-secure FTX Cold Storage routing aggressively inward dumping assets toward exceptionally active rapid exchange hot layer operational chains. Total directional cold-to-hot transition volume violently spiked screaming past 8.4x normalized routine 90-day base expectations  radiating severe 3.7 standard deviation catastrophic statistical outliers definitively shattering historical systemic norms." },
           { type: "math", text: "R_{ch}(t) = V_{coldhot}(t) / V̄_{coldhot}(90d) > 3.7σ" },
           { type: "p", text: "Privileged subscribers heavily fortified inside Whale Network's core VIP systemic alert structures received devastating maximum severity structural warnings relentlessly throughout that specific highly volatile timeframe, bestowing absolutely massive comprehensive defensive capital preservation positioning windows operating flawlessly entirely multiple days prior to fundamental baseline public sector media saturation. Total comprehensive value rigorously secured leveraging solely this hyper-specific isolated warning sequence routinely scales directly into multiple hundreds of millions of protected fractional USD assets exclusively shielding elite operators maintaining dangerously massive overarching exposure toward collapsing FTX infrastructures traversing that horrific historical moment." }
+        ]
+      }
+    ]
+  },
+  {
+    id: "pillar-5",
+    number: "PILLAR V",
+    title: "The 2026 Scalability Epoch",
+    subtitle: "Architectural evolution for mass adoption, zero-knowledge provability scaling, and deterministic execution environments.",
+    sections: [
+      {
+        id: "5-1",
+        title: "5.1 ZK-Coprocessors and Verifiable Off-Chain Compute",
+        content: [
+          { type: "p", text: "As of July 16, 2026, the on-chain analytics paradigm has decisively shifted from passive deterministic indexing to active, cryptographically verifiable compute. The Whale Network protocol now natively integrates ZK-Coprocessors to trustlessly offload heavy fluid stochastic computations and MEV impact differentials." },
+          { type: "p", text: "This fundamentally alters the protocol's trust assumptions: the network no longer requires sovereign clients to trust the SIN's internal hardware operations blindly. Instead, it provides a succinct zk-SNARK proving unconditionally that the EVM state transitions and the resulting algorithmic alerts were calculated perfectly according to the rigid rules of on-chain forensics." }
+        ]
+      },
+      {
+        id: "5-2",
+        title: "5.2 Parallelized EVM Execution and Hyper-Rollups",
+        content: [
+          { type: "p", text: "With the proliferation of Parallel EVM architectures (Monad, Sei) and ultra-high-throughput Hyper-Rollups, the ingestion engine has been structurally refactored. The 2026 scalability epoch demands multi-threaded transaction parsing, moving away from chronological single-thread bottlenecks." },
+          { type: "p", text: "Whale Network's 2026 engine implements optimistic parallel execution tracking, predicting state access conflicts before they finalize, enabling microsecond-latency alerts on parallelized networks while maintaining 100% deterministic accuracy." }
+        ]
+      },
+      {
+        id: "5-3",
+        title: "5.3 Quantum-Resistant Archival Constructs",
+        content: [
+          { type: "p", text: "Anticipating the cryptographic horizon, all historical forensic logs anchored into Arweave and IPFS are now dual-signed using post-quantum secure algorithms (lattice-based cryptographic primitives). This forward-looking security mandate guarantees that the sovereign metadata and historical analysis matrices of our elite user base remain unconditionally shielded against retroactive decryption." }
         ]
       }
     ]

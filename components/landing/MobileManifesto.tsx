@@ -6,6 +6,7 @@ import { motion, AnimatePresence, Variants } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useAppKit } from '@reown/appkit/react';
 import { EmailLoginModal } from '@/components/auth/EmailLoginModal';
+import { toast } from 'react-hot-toast';
 
 //  Constants 
 
@@ -80,29 +81,53 @@ export function MobileManifesto() {
           </motion.p>
 
           <motion.div variants={FADE_UP} className="w-full max-w-[300px] mx-auto flex flex-col items-center gap-3">
-            <button
-              onClick={() => open()}
-              className="flex items-center justify-center w-full h-[56px] bg-black text-white rounded-2xl text-[14px] font-bold tracking-wide active:scale-[0.98] transition-transform shadow-lg shadow-black/20"
-            >
-              Connect Wallet
-            </button>
-            {/* Email login — no wallet required, works on iOS & Android */}
-            <button
-              onClick={() => setEmailModalOpen(true)}
-              className="flex items-center justify-center gap-2 w-full h-[56px] bg-white border border-black/15 text-black rounded-2xl text-[14px] font-bold tracking-wide active:scale-[0.98] transition-transform shadow-sm"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="2" y="4" width="20" height="16" rx="2" />
-                <path d="M2 7l10 6 10-6" />
-              </svg>
-              Sign in with Email
-            </button>
+            {!hasSession ? (
+              <>
+                {/* Apple login */}
+                <button
+                  onClick={() => toast("Apple Sign In - Available Jan 1, 2027", { icon: '🍎' })}
+                  className="flex items-center justify-center gap-2 w-full h-[56px] bg-[#0A0A0A] text-white rounded-2xl text-[14px] font-bold tracking-wide active:scale-[0.98] transition-transform shadow-lg shadow-black/20"
+                >
+                  <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
+                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+                  </svg>
+                  Continue with Apple
+                </button>
+                {/* Google login */}
+                <button
+                  onClick={() => toast("Google Sign In - Available Jan 1, 2027", { icon: '🤖' })}
+                  className="flex items-center justify-center gap-2 w-full h-[56px] bg-white border border-black/15 text-black rounded-2xl text-[14px] font-bold tracking-wide active:scale-[0.98] transition-transform shadow-sm"
+                >
+                  <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
+                    <path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z" />
+                  </svg>
+                  Continue with Google
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => window.location.href = '/terminal'}
+                className="flex items-center justify-center w-full h-[56px] bg-black text-white rounded-2xl text-[14px] font-bold tracking-wide active:scale-[0.98] transition-transform shadow-lg shadow-black/20"
+              >
+                Access Dashboard
+              </button>
+            )}
             <Link
               href="/developers/api-docs"
               className="flex items-center justify-center w-full h-[48px] bg-transparent text-black/50 text-[13px] font-semibold tracking-wide active:scale-[0.98] transition-transform"
             >
               Read the Docs →
             </Link>
+          </motion.div>
+
+          {/* Jan 1 2027 Announcement */}
+          <motion.div variants={FADE_UP} className="mt-8 bg-white/80 backdrop-blur-md border border-[#EBEBEB] rounded-2xl p-4 shadow-sm w-full max-w-[300px] mx-auto text-center">
+            <div className="text-[10px] font-black uppercase tracking-[0.2em] text-[#0A0A0A] mb-1">
+              January 1, 2027
+            </div>
+            <p className="text-[9px] font-mono text-[#666] uppercase tracking-[0.1em] leading-relaxed">
+              Global release on App Store & Google Play
+            </p>
           </motion.div>
 
         </motion.div>
