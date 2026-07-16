@@ -87,7 +87,11 @@ export function ClientRootRouter() {
   }, [isConnected]);
 
   return (
-    <div className="w-full bg-white flex flex-col">
+    <div
+      id="landing-scroll-root"
+      className="fixed inset-0 w-full bg-white overflow-y-auto overflow-x-hidden"
+      style={{ height: '100dvh' }}
+    >
       <ImmersiveManifestoLanding />
       <SystemFooter />
     </div>

@@ -93,9 +93,15 @@ function LandingNav() {
   const { nuclearDisconnect } = useSystemSignOut();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const scroller = document.getElementById('landing-scroll-root') ?? window;
+    const onScroll = () => {
+      const scrollTop = scroller instanceof Window
+        ? window.scrollY
+        : (scroller as HTMLElement).scrollTop;
+      setScrolled(scrollTop > 24);
+    };
+    scroller.addEventListener("scroll", onScroll as EventListener, { passive: true });
+    return () => scroller.removeEventListener("scroll", onScroll as EventListener);
   }, []);
 
   useEffect(() => {
@@ -1007,7 +1013,7 @@ export function ImmersiveManifestoLanding({
   hideMap = false,
 }: ImmersiveManifestoLandingProps = {}) {
   return (
-    <div className="w-full flex flex-col min-h-screen bg-white text-black antialiased overflow-x-hidden">
+    <div className="w-full flex flex-col bg-white text-black antialiased overflow-x-hidden">
       <LandingNav />
       <main id="main-content">
         <HeroSection />
