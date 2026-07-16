@@ -361,14 +361,14 @@ export function MobileImmersiveGate() {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="relative w-full bg-white"
-            style={{ height: "200dvh" }}
+            className="fixed inset-0 w-full bg-white z-50"
+            style={{ height: "100dvh" }}
           >
             {/* ── Scrollable container ───────────────────────────────── */}
             <div
               ref={scrollContainerRef}
-              className="w-full overflow-y-scroll"
-              style={{ height: "100dvh", scrollSnapType: "none" }}
+              className="w-full h-full overflow-y-scroll"
+              style={{ scrollSnapType: "none", WebkitOverflowScrolling: "touch" }}
             >
               {/* Tall inner scroll surface */}
               <div style={{ height: "200dvh" }}>
