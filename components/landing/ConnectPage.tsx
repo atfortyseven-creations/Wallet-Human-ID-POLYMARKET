@@ -504,10 +504,9 @@ export default function ConnectPage() {
   const isVerified = mounted && isLinked;
 
   // ── Scroll Scrubbing Physics ──
-  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
+    container: scrollContainerRef
   });
 
   const textScale = useTransform(scrollYProgress, [0, 0.4, 0.6], [1, 5, 80]);
@@ -810,9 +809,14 @@ export default function ConnectPage() {
   );
 
   return (
-    <div ref={containerRef} className="w-full relative bg-white" style={{ height: '200vh' }}>
+    <div
+      ref={scrollContainerRef}
+      className="w-full overflow-y-scroll bg-white relative"
+      style={{ height: '100dvh' }}
+    >
+      <div className="w-full relative bg-white" style={{ height: '200vh' }}>
 
-      {/* Film grain noise overlay */}
+        {/* Film grain noise overlay */}
       <motion.div
         className="fixed inset-0 pointer-events-none z-50"
         style={{
@@ -871,6 +875,7 @@ export default function ConnectPage() {
             onScan={() => { setShowMobileScanner(false); toast.success("Session synchronized"); }}
           />
         )}
+      </div>
       </div>
     </div>
   );
