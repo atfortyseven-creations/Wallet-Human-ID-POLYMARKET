@@ -503,6 +503,17 @@ export default function ConnectPage() {
 
   const isVerified = mounted && isLinked;
 
+  // --- Automatic Cinematic Sequence ---
+  const [phase, setPhase] = useState<"intro" | "login">("intro");
+
+  useEffect(() => {
+    // Automatically transition to the login phase after 2 seconds
+    const t = setTimeout(() => {
+      setPhase("login");
+    }, 2000);
+    return () => clearTimeout(t);
+  }, []);
+
   // ── LEFT PANEL CONTENT (shared between mobile/desktop) ──
   const renderLoginCard = () => (
     <div className="w-full lg:w-[400px] flex-shrink-0 flex flex-col bg-white rounded-[20px] border border-[#E8E8E8] shadow-[0_8px_48px_rgba(0,0,0,0.18)] p-8">
@@ -795,50 +806,64 @@ export default function ConnectPage() {
   );
 
   return (
-    <div className="fixed inset-0 w-full bg-white z-50 flex flex-col min-h-screen">
+    <div className="fixed inset-0 w-full bg-white z-50 flex flex-col min-h-screen overflow-hidden">
       {/* Film grain noise overlay */}
-      <div
+      <motion.div
         className="fixed inset-0 pointer-events-none z-50"
+        animate={{ opacity: phase === "intro" ? 0.02 : 0.04 }}
+        transition={{ duration: 1.5 }}
         style={{
           backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Dissolve_Noise_Texture.png")',
-          opacity: 0.03,
           backgroundRepeat: 'repeat',
           mixBlendMode: 'multiply'
         }}
       />
 
-      <div className="w-full flex-1 flex flex-col items-center justify-center gap-8 px-4 py-12 relative z-10 overflow-y-auto">
-        
-        {/* Title */}
-        <motion.h1 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="font-serif text-[6vw] font-normal tracking-tight text-[#0A0A0A] leading-none select-none mb-4"
-        >
-          AUTHENTICATE
-        </motion.h1>
+      <div className="w-full flex-1 flex flex-col items-center justify-center relative z-10 h-full">
 
-        {/* Side-by-side: Login Card + QD Marketing Panel */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col lg:flex-row items-stretch justify-center gap-5 w-full max-w-[900px]"
-        >
-          {renderLoginCard()}
-          {renderQDPanel()}
-        </motion.div>
+        {/* PHASE 1: The Cryptographic Typography */}
+        <AnimatePresence>
+          {phase === "intro" && (
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 80, opacity: 0 }}
+              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute inset-0 flex items-center justify-center pointer-events-none z-20"
+            >
+              <div className="relative flex flex-col items-center">
+                <h1 className="font-serif text-[10vw] font-normal tracking-tight text-[#0A0A0A] leading-none select-none">
+                  AUTHENTICATE
+                </h1>
+                <div className="absolute -bottom-24 left-1/2 -translate-x-1/2 text-[10px] font-mono tracking-[0.3em] uppercase text-black/30 flex flex-col items-center gap-3">
+                  <span>Initializing Cryptography...</span>
+                  <div className="w-px h-8 bg-black/20 animate-pulse" />
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {/* Bottom section */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="w-full"
-        >
-          {renderBottomSection()}
-        </motion.div>
+        {/* PHASE 2: The Login Assembly */}
+        <AnimatePresence>
+          {phase === "login" && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, filter: "blur(15px)" }}
+              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+              className="relative z-10 w-full flex-1 flex flex-col items-center justify-center gap-8 px-4 py-12 h-full overflow-y-auto"
+            >
+              {/* Side-by-side: Login Card + QD Marketing Panel */}
+              <div className="flex flex-col lg:flex-row items-stretch justify-center gap-5 w-full max-w-[900px]">
+                {renderLoginCard()}
+                {renderQDPanel()}
+              </div>
+
+              {/* Bottom section */}
+              {renderBottomSection()}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Mobile QR Scanner modal */}
         {isMobile && mounted && (
