@@ -3,14 +3,14 @@
 import { Suspense, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 
-// Dynamic imports: never SSR these  they rely on wagmi/AppKit client hooks
-const ConnectPage  = dynamic(() => import('@/components/landing/ConnectPage'),  { ssr: false });
-const MobileLanding = dynamic(
-  () => import('@/components/landing/MobileLanding').then(m => ({ default: m.MobileLanding })),
+// Desktop connect page (QR handshake)
+const ConnectPage = dynamic(() => import('@/components/landing/ConnectPage'), { ssr: false });
+// Mobile gate — same immersive gate used on the root landing page
+const MobileImmersiveGate = dynamic(
+  () => import('@/components/landing/MobileImmersiveGate').then(m => ({ default: m.MobileImmersiveGate })),
   { ssr: false }
 );
 
-import { useSystemAccount } from '@/hooks/useSystemAccount';
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
 
 /**
@@ -30,42 +30,18 @@ import { RemoteLottie } from '@/components/ui/RemoteLottie';
  */
 function RealDeviceRouter() {
   const [view, setView] = useState<'loading' | 'mobile' | 'desktop'>('loading');
-  const { isConnected } = useSystemAccount();
-
-
 
   useEffect(() => {
-    // If already authenticated, redirect to the target destination immediately.
-    // Exception: if a 'uuid' parameter is present, the user is linking a desktop
-    // session from mobile — MUST stay on this page so MobileLanding handles the sync.
     const urlParams = new URLSearchParams(window.location.search);
     const hasUuid = urlParams.has('uuid') || urlParams.has('s');
 
-    // Check __disconnected__ guard first — if active, never auto-redirect.
+    // ── Disconnect guard: user explicitly logged out → always show connect UI ──
     let isGuarded = false;
     try {
       isGuarded = sessionStorage.getItem("__disconnected__") === "1" || localStorage.getItem("__disconnected__") === "1";
     } catch {}
 
-    if (isGuarded) {
-      // User explicitly logged out — show connect UI, do not redirect.
-      const isUaMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase());
-      const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0 || (navigator as any).msMaxTouchPoints > 0);
-      const isNarrowScreen = window.screen.width < 768;
-      setView((isUaMobile || (isTouchDevice && isNarrowScreen)) ? 'mobile' : 'desktop');
-      return;
-    }
-
-    // Session detection: check cookie for desktop QR sessions.
-    const hasCookie = document.cookie.split('; ').some(r => r.startsWith('system_handshake=0x'));
-
-    // HUMANITY LEDGER: Check sessionStorage unlock flag (set by /login page after successful unlock).
-    let hasLocalSession = false;
-    try {
-      hasLocalSession = sessionStorage.getItem('portfolio_unlocked') === 'true';
-    } catch {}
-
-    // Detect device type early — needed for both the early redirect and the view setting
+    // ── Device detection ─────────────────────────────────────────────────────
     const isUaMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase());
     const isTouchDevice = (
       'ontouchstart' in window ||
@@ -76,23 +52,47 @@ function RealDeviceRouter() {
     const isNarrowScreen = window.screen.width < 768;
     const isMobileDevice = isUaMobile || (isTouchDevice && isNarrowScreen);
 
-    // isConnected covers wagmi (MetaMask/WC) AND Humanity Ledger (via useSystemAccount priority ladder)
-    const isAlreadyLinked = hasCookie || hasLocalSession || isConnected;
+    if (isGuarded) {
+      setView(isMobileDevice ? 'mobile' : 'desktop');
+      return;
+    }
+
+    // ── Session detection ────────────────────────────────────────────────────
+    // ONLY redirect if there is a hard cookie (wallet QR handshake) OR an
+    // explicit email session flag.  Do NOT redirect based solely on wagmi
+    // isConnected because wagmi can persist stale state from a previous
+    // disconnected session, causing a redirect loop to /portfolio (blank page).
+    const hasCookie = document.cookie.split('; ').some(r =>
+      r.startsWith('system_handshake=0x') ||
+      r.startsWith('system_handshake=email_')
+    );
+
+    let hasLocalSession = false;
+    try {
+      hasLocalSession = sessionStorage.getItem('portfolio_unlocked') === 'true';
+    } catch {}
+
+    // Use hasCookie || hasLocalSession as the ONLY trusted signals for redirect.
+    // wagmi isConnected is NOT trusted here alone — it can be stale.
+    const isAlreadyLinked = hasCookie || hasLocalSession;
 
     if (isAlreadyLinked && !hasUuid) {
       const next = urlParams.get('next') || urlParams.get('returnUrl');
-      const fallback = '/';
-      const destination = next && !next.startsWith('/connect') && !next.startsWith('/sign-up')
-        ? next
-        : fallback;
+      // Only redirect to a safe destination — never back to /connect or /sign-up
+      const isSafe = (url: string) =>
+        url.startsWith('/') &&
+        !url.startsWith('/connect') &&
+        !url.startsWith('/sign-up') &&
+        url !== '/';
+      const destination = (next && isSafe(next)) ? next : '/terminal';
       window.location.replace(destination);
       return;
     }
 
     // Not authenticated — show appropriate connect UI
     setView(isMobileDevice ? 'mobile' : 'desktop');
-  // isConnected is in the dependency so wagmi-connected users trigger redirect immediately
-  }, [isConnected]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (view === 'loading') {
     return (
@@ -107,7 +107,7 @@ function RealDeviceRouter() {
     );
   }
 
-  return view === 'mobile' ? <MobileLanding /> : <ConnectPage />;
+  return view === 'mobile' ? <MobileImmersiveGate /> : <ConnectPage />;
 }
 
 export default function Page() {
