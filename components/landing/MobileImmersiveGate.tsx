@@ -21,7 +21,7 @@
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState, useCallback, startTransition } from "react";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppKit } from "@reown/appkit/react";
@@ -37,11 +37,7 @@ import { EmailLoginModal } from "@/components/auth/EmailLoginModal";
 import { Loader2, Mail, Wallet } from "lucide-react";
 import { toast } from "sonner";
 
-// ─── Dynamic imports ─────────────────────────────────────────────────────────
-const MobileManifesto = dynamic(
-  () => import("./MobileManifesto").then((m) => ({ default: m.MobileManifesto })),
-  { ssr: false, loading: () => null }
-);
+import { MobileManifesto } from "./MobileManifesto";
 
 // ─── Session helpers ──────────────────────────────────────────────────────────
 function readHandshakeCookie(): string | null {
@@ -145,7 +141,9 @@ export function MobileImmersiveGate() {
     const check = setInterval(() => {
       if (hasValidSession()) {
         clearInterval(check);
-        setPhase("landing");
+        startTransition(() => {
+          setPhase("landing");
+        });
       }
     }, 600);
     return () => clearInterval(check);
@@ -324,7 +322,9 @@ export function MobileImmersiveGate() {
     } catch {}
     setIsAuthenticating(false);
     signingRef.current = false;
-    setPhase("landing");
+    startTransition(() => {
+      setPhase("landing");
+    });
   };
 
   const handleConnectWallet = () => {

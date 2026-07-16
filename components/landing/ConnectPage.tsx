@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useCallback, useRef } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -503,20 +503,6 @@ export default function ConnectPage() {
 
   const isVerified = mounted && isLinked;
 
-  // ── Scroll Scrubbing Physics ──
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    container: scrollContainerRef
-  });
-
-  const textScale = useTransform(scrollYProgress, [0, 0.4, 0.6], [1, 5, 80]);
-  const textOpacity = useTransform(scrollYProgress, [0, 0.3, 0.5], [1, 1, 0]);
-  const loginOpacity = useTransform(scrollYProgress, [0.4, 0.7], [0, 1]);
-  const loginScale = useTransform(scrollYProgress, [0.4, 0.7], [0.95, 1]);
-  const loginBlur = useTransform(scrollYProgress, [0.4, 0.7], ["blur(15px)", "blur(0px)"]);
-  const loginPointerEvents = useTransform(scrollYProgress, [0.6, 0.7], ["none", "auto"]);
-  const noiseOpacity = useTransform(scrollYProgress, [0, 0.5], [0, 0.04]);
-
   // ── LEFT PANEL CONTENT (shared between mobile/desktop) ──
   const renderLoginCard = () => (
     <div className="w-full lg:w-[400px] flex-shrink-0 flex flex-col bg-white rounded-[20px] border border-[#E8E8E8] shadow-[0_8px_48px_rgba(0,0,0,0.18)] p-8">
@@ -809,60 +795,48 @@ export default function ConnectPage() {
   );
 
   return (
-    <div className="fixed inset-0 w-full bg-white z-50" style={{ height: '100dvh' }}>
+    <div className="fixed inset-0 w-full bg-white z-50 flex flex-col min-h-screen">
+      {/* Film grain noise overlay */}
       <div
-        ref={scrollContainerRef}
-        className="w-full h-full overflow-y-scroll"
-        style={{ scrollSnapType: 'none', WebkitOverflowScrolling: 'touch' }}
-      >
-        <div className="w-full relative bg-white" style={{ height: '200dvh' }}>
-
-        {/* Film grain noise overlay */}
-      <motion.div
         className="fixed inset-0 pointer-events-none z-50"
         style={{
           backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Dissolve_Noise_Texture.png")',
-          opacity: noiseOpacity,
+          opacity: 0.03,
           backgroundRepeat: 'repeat',
           mixBlendMode: 'multiply'
         }}
       />
 
-      <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
-
-        {/* PHASE 1: The Cryptographic Typography */}
-        <motion.div
-          className="absolute inset-0 flex items-center justify-center pointer-events-none z-20"
-          style={{ scale: textScale, opacity: textOpacity }}
+      <div className="w-full flex-1 flex flex-col items-center justify-center gap-8 px-4 py-12 relative z-10 overflow-y-auto">
+        
+        {/* Title */}
+        <motion.h1 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="font-serif text-[6vw] font-normal tracking-tight text-[#0A0A0A] leading-none select-none mb-4"
         >
-          <div className="relative flex flex-col items-center">
-            <h1 className="font-serif text-[10vw] font-normal tracking-tight text-[#0A0A0A] leading-none select-none">
-              AUTHENTICATE
-            </h1>
-            <div className="absolute -bottom-24 left-1/2 -translate-x-1/2 text-[10px] font-mono tracking-[0.3em] uppercase text-black/30 flex flex-col items-center gap-3">
-              <span>Scroll to initialize</span>
-              <div className="w-px h-8 bg-black/20 animate-pulse" />
-            </div>
-          </div>
+          AUTHENTICATE
+        </motion.h1>
+
+        {/* Side-by-side: Login Card + QD Marketing Panel */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col lg:flex-row items-stretch justify-center gap-5 w-full max-w-[900px]"
+        >
+          {renderLoginCard()}
+          {renderQDPanel()}
         </motion.div>
 
-        {/* PHASE 2: The Login Assembly */}
+        {/* Bottom section */}
         <motion.div
-          className="relative z-10 w-full flex-1 flex flex-col items-center justify-center gap-8 px-4 py-12 min-h-screen"
-          style={{
-            opacity: loginOpacity,
-            scale: loginScale,
-            filter: loginBlur,
-            pointerEvents: loginPointerEvents as any
-          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="w-full"
         >
-          {/* Side-by-side: Login Card + QD Marketing Panel */}
-          <div className="flex flex-col lg:flex-row items-stretch justify-center gap-5 w-full max-w-[900px]">
-            {renderLoginCard()}
-            {renderQDPanel()}
-          </div>
-
-          {/* Bottom section */}
           {renderBottomSection()}
         </motion.div>
 
@@ -876,8 +850,6 @@ export default function ConnectPage() {
             onScan={() => { setShowMobileScanner(false); toast.success("Session synchronized"); }}
           />
         )}
-      </div>
-        </div>
       </div>
     </div>
   );
