@@ -901,20 +901,11 @@ function FAQSection() {
 
 // ─── Final CTA + Giant AZTEC wordmark ─────────────────────────────────────────
 function AztecCTASection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
-  });
-  const y = useTransform(scrollYProgress, [0, 1], [80, -80]);
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
-
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
     <section
-      ref={sectionRef}
       className="w-full bg-white border-t border-black/[0.05] py-32 md:py-48 overflow-hidden"
     >
       <div className="w-full max-w-5xl mx-auto px-6" ref={ref}>
@@ -981,7 +972,7 @@ function AztecCTASection() {
 
         {/* ── GIANT "AZTEC" WORDMARK — the money shot ── */}
         <div className="w-full overflow-hidden select-none pointer-events-none -mx-6 md:-mx-12 lg:-mx-24">
-          <motion.div style={{ y, opacity }}>
+          <div>
             <p
               aria-hidden="true"
               className="text-center leading-none whitespace-nowrap font-black text-black"
@@ -994,7 +985,7 @@ function AztecCTASection() {
             >
               AZTEC
             </p>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
