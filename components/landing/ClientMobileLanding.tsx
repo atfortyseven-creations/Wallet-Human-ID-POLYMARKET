@@ -3,20 +3,14 @@
 import dynamic from 'next/dynamic';
 
 /**
- * ClientMobileLanding — dynamic import for MobileImmersiveGate.
- *
- * MobileImmersiveGate implements the full mobile flow:
- *   1. Cinematic scroll scrub (WHALE NETWORK zooms to infinity)
- *   2. Login gate (Wallet / Email) — iOS & Android safe
- *   3. Seamless transition into MobileManifesto landing page
- *
- * SSR is intentionally disabled: the gate reads cookies synchronously
- * on mount to decide which phase to start on (avoids a content flash).
- * The server-rendered fast-path in SmartLandingRouter handles the
- * initial paint with a lightweight skeleton.
+ * ClientMobileLanding
+ * 
+ * On mobile, the root domain `/` directly serves the ConnectPage flow.
+ * This guarantees users see the cinematic AUTHENTICATE presentation and
+ * the mobile-adapted native wallet login immediately upon visiting the domain.
  */
 export const ClientMobileLanding = dynamic(
-  () => import('./MobileImmersiveGate').then(m => ({ default: m.MobileImmersiveGate })),
+  () => import('./ConnectPage').then(m => ({ default: m.default })),
   {
     ssr: false,
   }
