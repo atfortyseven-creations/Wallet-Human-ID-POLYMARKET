@@ -6,7 +6,7 @@ import { motion, AnimatePresence, Variants } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useAppKit } from '@reown/appkit/react';
 import { EmailLoginModal } from '@/components/auth/EmailLoginModal';
-import { toast } from 'react-hot-toast';
+import { toast } from 'sonner';
 
 //  Constants 
 

@@ -47,7 +47,7 @@ import { reconnect as wagmiReconnect, watchAccount, getAccount, getConnectorClie
 import { config as wagmiConfig } from "@/config/appkit";
 import { EmailLoginModal } from "@/components/auth/EmailLoginModal";
 import { Loader2, Mail, Wallet, ChevronUp } from "lucide-react";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 
 // ─── Dynamic imports ─────────────────────────────────────────────────────────
 const MobileManifesto = dynamic(
