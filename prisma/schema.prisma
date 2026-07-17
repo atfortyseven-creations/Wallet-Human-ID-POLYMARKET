@@ -232,10 +232,13 @@ model AuthUser {
   id                  String    @id @default(uuid())
   email               String    @unique
   name                String?
+  username            String?   @unique
   passwordHash        String?
   walletAddress       String?   @unique
+  encryptedMnemonic   String?   @db.Text
+  walletSalt          String?
   verified            Boolean   @default(false)
-  verificationCode    String?
+  verificationCode    String?   // legacy inline code field (kept for compatibility)
   codeExpiresAt       DateTime?
   totpSecret          String?   @db.Text
   backupCodes         String[]  @default([])
@@ -245,10 +248,31 @@ model AuthUser {
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
 
-  securityEvents SecurityEvent[]
+  securityEvents      SecurityEvent[]
+  verificationCodes   VerificationCode[]
 
   @@index([email])
   @@index([walletAddress])
+  @@index([username])
+}
+
+// ─────────────────────────────────────────────
+// VERIFICATION CODE TABLE
+// Separate table for OTP codes (6 digits, 5 min TTL)
+// One user can have many codes; only one active at a time.
+// ─────────────────────────────────────────────
+model VerificationCode {
+  id        String   @id @default(uuid())
+  userId    String
+  code      String
+  used      Boolean  @default(false)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user      AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, used, expiresAt])
+  @@index([code])
 }
 
 model EmailSubscriber {
