@@ -256,24 +256,7 @@ model AuthUser {
   @@index([username])
 }
 
-// ─────────────────────────────────────────────
-// VERIFICATION CODE TABLE
-// Separate table for OTP codes (6 digits, 5 min TTL)
-// One user can have many codes; only one active at a time.
-// ─────────────────────────────────────────────
-model VerificationCode {
-  id        String   @id @default(uuid())
-  userId    String
-  code      String
-  used      Boolean  @default(false)
-  expiresAt DateTime
-  createdAt DateTime @default(now())
 
-  user      AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, used, expiresAt])
-  @@index([code])
-}
 
 model EmailSubscriber {
   id               String   @id @default(uuid())
@@ -1220,7 +1203,9 @@ model VerificationCode {
   expiresAt DateTime
   createdAt DateTime @default(now())
 
-  @@index([userId, used])
+  user      AuthUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, used, expiresAt])
   @@index([code])
 }
 
