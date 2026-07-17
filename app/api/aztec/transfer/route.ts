@@ -60,13 +60,25 @@ export async function POST(req: NextRequest) {
 
     // ── Session Authorization (CSRF / Replay Protection) ────────────────────
     // Rely strictly on Edge Middleware's cryptographically verified header
-    const verifiedSessionAddr = req.headers.get('x-verified-session-address')?.toLowerCase().trim();
+    let verifiedSessionAddr = req.headers.get('x-verified-session-address')?.toLowerCase().trim();
 
     if (!verifiedSessionAddr) {
       return NextResponse.json(
         { error: 'Unauthorized: Valid session required.' },
         { status: 401 }
       );
+    }
+
+    // If verifiedSessionAddr is a UUID (from email login), look up their actual wallet address
+    if (verifiedSessionAddr.includes('-') && verifiedSessionAddr.length > 30) {
+      const authUser = await prisma.authUser.findUnique({ where: { id: verifiedSessionAddr } });
+      if (!authUser || !authUser.walletAddress) {
+        return NextResponse.json(
+          { error: 'Unauthorized: Email account has no linked wallet. Please claim an identity first.' },
+          { status: 403 }
+        );
+      }
+      verifiedSessionAddr = authUser.walletAddress.toLowerCase();
     }
 
     // ── Identity Gate: Only verified identities (airdrop claimants) can transfer ──

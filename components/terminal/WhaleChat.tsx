@@ -1940,13 +1940,20 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 My QR
               </button>
             </div>
-            <button
-              onClick={() => setSettingsOpen(true)}
-              className="p-2.5 rounded-xl bg-gray-50 text-gray-700 hover:bg-gray-200 transition-all"
-              title="Settings"
-            >
-              <Settings size={18} />
-            </button>
+            
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50/50 border border-blue-100 rounded-xl" title="Available QDs">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)] animate-pulse" />
+                <span className="text-[11px] font-mono font-bold text-blue-700">{balance.toFixed(2)} QD</span>
+              </div>
+              <button
+                onClick={() => setSettingsOpen(true)}
+                className="p-2.5 rounded-xl bg-gray-50 text-gray-700 hover:bg-gray-200 transition-all"
+                title="Settings"
+              >
+                <Settings size={18} />
+              </button>
+            </div>
           </div>
 
           <div className="flex gap-2">
@@ -2033,6 +2040,9 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 </button>
               </div>
               <div className="flex items-center gap-2">
+                <div className="flex lg:hidden items-center gap-1 px-2.5 py-1 bg-blue-50/50 border border-blue-100 rounded-lg" title="Available QDs">
+                  <span className="text-[10px] font-mono font-bold text-blue-700">{balance.toFixed(2)} QD</span>
+                </div>
                 <button onClick={() => startCall('audio')} className="p-2 hover:bg-black/5 rounded-full transition-colors text-black/50" title="Audio Call">
                   <Phone size={16} />
                 </button>
