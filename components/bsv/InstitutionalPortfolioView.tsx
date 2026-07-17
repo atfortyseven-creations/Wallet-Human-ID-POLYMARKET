@@ -544,7 +544,7 @@ function QDBadgeInline({ onClickAztec }: { onClickAztec: () => void }) {
                 className="flex items-center gap-1.5 px-3 py-1.5 border border-amber-300 bg-amber-50 rounded-full text-amber-700 hover:bg-amber-100 transition-colors animate-pulse"
             >
                 <Zap size={10} />
-                <span className="text-[9px] font-black uppercase tracking-widest">CLAIM 200 QDs</span>
+                <span className="text-[9px] font-black uppercase tracking-widest">CLAIM 1000 QDs</span>
             </button>
         );
     }

@@ -35,7 +35,7 @@ import { AztecAirdropCalendar } from './AztecAirdropCalendar';
 const AZTEC_EXPLORER    = 'https://testnet.aztecscan.xyz';
 const CLAIM_TX_HASH     = '0x085abad7f0a1bc596e570079d209e6f5251efa5988f01d57bb165c4fa3691e8a';
 const CLAIM_TX_BLOCK    = 103861;
-const CLAIM_AMOUNT      = '200 QDs';
+const CLAIM_AMOUNT      = '1000 QDs';
 const CLAIM_FEE         = '2.2694 QDs';
 const L1_ROLLUP_ADDR    = '0xf6d0d42ace06829becb78c74f49879528fc632c1';
 // AUDIT FIX: LIVE_BLOCK_HEIGHT removed — now fetched live from RPC in useAztecNodeInfo()

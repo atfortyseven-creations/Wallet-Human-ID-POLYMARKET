@@ -19,12 +19,12 @@ const AirdropSchema = z.object({
 
 const AZTEC_EXPLORER        = 'https://testnet.aztecscan.xyz';
 const AZTEC_TX_URL          = (hash: string) => `https://testnet.aztecscan.xyz/tx-effects/${hash}`;
-const AIRDROP_AMOUNT        = 200;  // 200 QDs per airdrop
+const AIRDROP_AMOUNT        = 1000;  // 1000 QDs per airdrop
 
 /**
  * POST /api/aztec/airdrop
  *
- * Mints 200 QDs to the caller's Aztec address.
+ * Mints 1000 QDs to the caller's Aztec address.
  * Architecture (SDK v4.3.1):
  *  - Mode A: Full on-chain mint via PXE + TokenContract (requires AZTEC_TOKEN_CONTRACT_ADDRESS)
  *  - Mode B: Node-verified DB airdrop — real testnet block hash, no token contract needed
@@ -143,7 +143,7 @@ export async function POST(req: NextRequest) {
     // ── LAYER 3: One per wallet ─────────────────────────────────────────────────
     if (existingAirdrop) {
       return NextResponse.json(
-        { error: 'Already claimed. Each wallet receives 200 QDs once.' },
+        { error: 'Already claimed. Each wallet receives 1000 QDs once.' },
         { status: 409 }
       );
     }
@@ -342,7 +342,7 @@ export async function POST(req: NextRequest) {
       }, { isolationLevel: 'Serializable' });
     } catch (atomicErr: any) {
       if (atomicErr.message === 'ALREADY_CLAIMED' || atomicErr.code === 'P2002') {
-        return NextResponse.json({ error: 'Already claimed. Each wallet receives 200 QDs once.' }, { status: 409 });
+        return NextResponse.json({ error: 'Already claimed. Each wallet receives 1000 QDs once.' }, { status: 409 });
       }
       throw atomicErr;
     }
@@ -356,8 +356,8 @@ export async function POST(req: NextRequest) {
       network:     'aztec-testnet',
       nodeInfo:    nodeInfo,
       message:     onChain
-        ? '200 QDs minted on Aztec Testnet ⚡ - view on AztecScan!'
-        : `200 QDs airdropped. Aztec Testnet verified at block #${blockNum}.`,
+        ? '1000 QDs minted on Aztec Testnet ⚡ - view on AztecScan!'
+        : `1000 QDs airdropped. Aztec Testnet verified at block #${blockNum}.`,
     });
 
   } catch (error: any) {

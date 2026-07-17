@@ -514,6 +514,43 @@ export default function ConnectPage() {
     return () => clearTimeout(t);
   }, []);
 
+  // ── WEB2 LOGINS (Shared) ──
+  const renderWeb2Logins = () => (
+    <>
+      {/* Google OAuth */}
+      <WalletButton
+        logo="https://www.svgrepo.com/show/475656/google-color.svg"
+        name="Continue with Google"
+        badge="1-click · No wallet needed"
+        onClick={async () => {
+          if (googleLoading) return;
+          setGoogleLoading(true);
+          try {
+            try { sessionStorage.removeItem('__disconnected__'); } catch {}
+            try { localStorage.removeItem('__disconnected__'); } catch {}
+            await signIn('google', { callbackUrl: '/' });
+          } catch (err) {
+            console.error('[Google OAuth] signIn error:', err);
+            setGoogleLoading(false);
+          }
+        }}
+        loading={googleLoading}
+        delay={0.24}
+      />
+      {/* Email OTP */}
+      <WalletButton
+        logo="/email-icon.svg"
+        name="Sign in with Email"
+        badge="6-digit code sent to your inbox"
+        onClick={() => setEmailModalOpen(true)}
+        delay={0.3}
+        extraIcon={
+          <span className="text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 bg-black/5 rounded text-black/40">OTP</span>
+        }
+      />
+    </>
+  );
+
   // ── LEFT PANEL CONTENT (shared between mobile/desktop) ──
   const renderLoginCard = () => (
     <div className="w-full lg:w-[400px] flex-shrink-0 flex flex-col bg-white rounded-[20px] border border-[#E8E8E8] shadow-[0_8px_48px_rgba(0,0,0,0.18)] p-8">
@@ -586,6 +623,8 @@ export default function ConnectPage() {
           /* STATE: Mobile — wallet list */
           <div className="flex flex-col gap-3 flex-1">
             <span className="text-center text-[10px] font-mono uppercase tracking-[0.2em] text-black/35">QR synchronized</span>
+            {renderWeb2Logins()}
+            <div className="h-px w-full bg-[#F0F0F0] my-1" />
             {MOBILE_WALLETS.map((w) => (
               <WalletButton key={w.id} logo={w.logo} name={w.name} badge={w.badge} onClick={() => handleMobileWallet(w.id)} loading={isPending && pendingId === w.id} delay={w.delay} extraIcon={<ExternalLink size={13} />} />
             ))}
@@ -647,38 +686,8 @@ export default function ConnectPage() {
               <WalletButton key={w.id} logo={w.logo} name={w.name} badge={w.badge} onClick={() => handleDesktopWallet(w.id, w.rdns, w.installUrl)} loading={isPending && pendingId === w.id} delay={w.delay} />
             ))}
             
-            {/* Google OAuth */}
-            <WalletButton
-              logo="https://www.svgrepo.com/show/475656/google-color.svg"
-              name="Continue with Google"
-              badge="1-click · No wallet needed"
-              onClick={async () => {
-                if (googleLoading) return;
-                setGoogleLoading(true);
-                try {
-                  try { sessionStorage.removeItem('__disconnected__'); } catch {}
-                  try { localStorage.removeItem('__disconnected__'); } catch {}
-                  await signIn('google', { callbackUrl: '/' });
-                } catch (err) {
-                  console.error('[Google OAuth] signIn error:', err);
-                  setGoogleLoading(false);
-                }
-              }}
-              loading={googleLoading}
-              delay={0.24}
-            />
-            {/* Email OTP */}
-            <WalletButton
-              logo="/email-icon.svg"
-              name="Sign in with Email"
-              badge="6-digit code sent to your inbox"
-              onClick={() => setEmailModalOpen(true)}
-              delay={0.3}
-              extraIcon={
-                <span className="text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 bg-black/5 rounded text-black/40">OTP</span>
-              }
-            />
-            <EmailLoginModal isOpen={emailModalOpen} onClose={() => setEmailModalOpen(false)} />
+            <div className="h-px w-full bg-[#F0F0F0] my-1" />
+            {renderWeb2Logins()}
           </div>
         )}
       </div>
@@ -747,7 +756,7 @@ export default function ConnectPage() {
           ))}
         </div>
         <p className="text-[10px] font-medium text-[#666] mt-4 leading-relaxed ml-1">
-          Authenticate and receive <span className="font-black text-[#0A0A0A]">200 QDs</span> on entry. Spend them. Earn more. Climb the protocol.
+          Authenticate and receive <span className="font-black text-[#0A0A0A]">1000 QDs</span> on entry. Spend them. Earn more. Climb the protocol.
         </p>
       </div>
     </motion.div>
@@ -832,11 +841,16 @@ export default function ConnectPage() {
               className="absolute inset-0 flex items-center justify-center pointer-events-none z-20"
             >
               <div className="relative flex flex-col items-center">
-                <h1 className="font-serif text-[10vw] font-normal tracking-tight text-[#0A0A0A] leading-none select-none">
-                  AUTHENTICATE
-                </h1>
-                <div className="absolute -bottom-24 left-1/2 -translate-x-1/2 text-[10px] font-mono tracking-[0.3em] uppercase text-black/30 flex flex-col items-center gap-3">
-                  <span>Initializing Cryptography...</span>
+                <div className="flex flex-col items-center text-center gap-6">
+                  <h1 className="font-serif text-[15vw] md:text-[10vw] font-normal tracking-tight text-[#0A0A0A] leading-none select-none">
+                    AUTHENTICATE
+                  </h1>
+                  <p className="font-mono text-[9px] md:text-[11px] uppercase tracking-[0.4em] text-[#0A0A0A]/40 max-w-[80vw] md:max-w-none text-balance leading-relaxed">
+                    WITH HUMANITY LEDGER TO JOIN WHALE NETWORK
+                  </p>
+                </div>
+                <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 text-[9px] md:text-[10px] font-mono tracking-[0.3em] uppercase text-black/30 flex flex-col items-center gap-3">
+                  <span className="whitespace-nowrap">Initializing Cryptography...</span>
                   <div className="w-px h-8 bg-black/20 animate-pulse" />
                 </div>
               </div>
@@ -856,11 +870,11 @@ export default function ConnectPage() {
               {/* Side-by-side: Login Card + QD Marketing Panel */}
               <div className="flex flex-col lg:flex-row items-stretch justify-center gap-5 w-full max-w-[900px]">
                 {renderLoginCard()}
-                {renderQDPanel()}
+                {!isMobile && renderQDPanel()}
               </div>
 
               {/* Bottom section */}
-              {renderBottomSection()}
+              {!isMobile && renderBottomSection()}
             </motion.div>
           )}
         </AnimatePresence>
@@ -875,6 +889,9 @@ export default function ConnectPage() {
             onScan={() => { setShowMobileScanner(false); toast.success("Session synchronized"); }}
           />
         )}
+
+        {/* Global Email Login Modal */}
+        <EmailLoginModal isOpen={emailModalOpen} onClose={() => setEmailModalOpen(false)} />
       </div>
     </div>
   );
