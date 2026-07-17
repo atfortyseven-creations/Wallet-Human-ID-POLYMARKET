@@ -7,7 +7,7 @@ const resend = new Resend(process.env.RESEND_API_KEY || 're_123456789');
 // When using Resend without a verified domain, you MUST use onboarding@resend.dev
 // or emails will fail silently for external recipients.
 const getSender = (name: string) => {
-  const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+  const fromEmail = process.env.RESEND_FROM_EMAIL || 'noreply@humanidfi.com';
   return `${name} <${fromEmail}>`;
 };
 
@@ -24,7 +24,7 @@ export async function sendVerificationEmail(email: string, code: string): Promis
         from: getSender('HumanDefi'),
         to: email,
         subject: 'Your HumanDefi Verification Code',
-        replyTo: 'support@WhaleAlert ID.fi',
+        replyTo: 'support@humanidfi.com',
         html: `
           <!DOCTYPE html>
           <html>
