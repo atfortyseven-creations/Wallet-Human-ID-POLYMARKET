@@ -53,8 +53,29 @@ export async function POST(req: NextRequest) {
 
     const normalizedAddress = parsedBody.data.address.toLowerCase();
 
-    // ── Session must own the target address (EVM or derived Aztec) ─────────────────
-    const sessionAddr = session.userId.toLowerCase().trim();
+    // ── Resolve session address (EVM wallet OR email-derived Aztec address) ─────
+    // For email-only users: session.userId is a UUID. We derive their canonical
+    // Aztec address from their email using the same SHA-256 algorithm.
+    let sessionAddr = session.userId.toLowerCase().trim();
+    const isUUID = sessionAddr.includes('-') && sessionAddr.length > 30;
+    if (isUUID) {
+      const authUser = await (prisma.authUser as any).findUnique({ where: { id: sessionAddr } });
+      if (!authUser) {
+        return NextResponse.json({ error: 'Unauthorized: Session not found.' }, { status: 401 });
+      }
+      if (authUser.walletAddress) {
+        sessionAddr = authUser.walletAddress.toLowerCase();
+      } else if (authUser.email) {
+        // Derive canonical Aztec address from email (same 2-round SHA-256)
+        const round1Email = crypto.createHash('sha256').update(`aztec-schnorr:${authUser.email.toLowerCase().trim()}`).digest();
+        const round2Email = crypto.createHash('sha256').update(round1Email).digest('hex');
+        sessionAddr = `0x${round2Email}`;
+      } else {
+        return NextResponse.json({ error: 'Unauthorized: Account incomplete.' }, { status: 403 });
+      }
+    }
+
+    // ── Session must own the target address (EVM or derived Aztec) ────────────
     const isEvmOwner = sessionAddr === normalizedAddress;
     let isDerivedOwner = false;
     if (!isEvmOwner) {
@@ -65,8 +86,9 @@ export async function POST(req: NextRequest) {
         isDerivedOwner = derivedAztec.toLowerCase() === normalizedAddress;
       } catch {}
     }
-    // Also allow airdrop to EVM address itself (some wallets call airdrop with their EVM addr)
-    if (!isEvmOwner && !isDerivedOwner) {
+    // Direct address match (email-derived Aztec address matches what was passed)
+    const isDirectMatch = sessionAddr === normalizedAddress;
+    if (!isEvmOwner && !isDerivedOwner && !isDirectMatch) {
       return NextResponse.json(
         { error: 'Forbidden: You can only airdrop to your own wallet address.' },
         { status: 403 }

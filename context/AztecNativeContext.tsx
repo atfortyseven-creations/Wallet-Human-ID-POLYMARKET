@@ -174,43 +174,56 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
     }
 
     // ── Email / QR-session auto-derive ────────────────────────────────────────
-    // For users who logged in via email OTP or QR handshake (no wagmi connector),
-    // evmAddress is either a 0x address (QR) or an 'email_xxx' identifier.
-    // We silently derive an Aztec address for them so the QDs balance is always visible.
+    // For users who logged in via email OTP (no wagmi connector),
+    // we derive an Aztec address from their email identifier so the QDs
+    // balance can be fetched and displayed.
+    //
+    // SECURITY NOTE:
+    //   - We do NOT auto-trigger the airdrop from the client (that would be a
+    //     Sybil attack vector). Users must click "Claim Identity" to receive QDs.
+    //   - The derived address is cached in localStorage keyed by the handshake
+    //     value. It is deterministic and can always be re-derived from the same input.
     try {
-      const handshake = typeof document !== 'undefined'
-        ? (document.cookie.match(/system_handshake=([^;]+)/)?.[1] || null)
+      // Safely parse and decode the system_handshake cookie
+      const rawCookie = typeof document !== 'undefined'
+        ? (document.cookie.match(/(?:^|;\s*)system_handshake=([^;]+)/)?.[1] || null)
         : null;
-      if (handshake && !handshake.startsWith('0x')) {
-        // email_ session — derive Aztec address deterministically from the identifier
-        const identifierKey = `aztec_email_addr_${handshake}`;
+      // Decode in case the cookie value was URL-encoded (e.g. email_user%40gmail.com)
+      const handshake = rawCookie ? decodeURIComponent(rawCookie) : null;
+
+      if (handshake && handshake.startsWith('email_')) {
+        // Use the part after 'email_' as the seed (the actual email address)
+        const emailIdentifier = handshake.slice('email_'.length);
+        const identifierKey = `aztec_email_addr_${emailIdentifier}`;
         const cachedAddr = localStorage.getItem(identifierKey);
         if (cachedAddr) {
+          // Address already derived — just start polling balance
           setAztecAddress(cachedAddr);
           setIsLoading(true);
           fetchLedgerState(cachedAddr).finally(() => setIsLoading(false));
           startPolling(cachedAddr);
         } else {
-          // First time: call derive-address API
+          // First time for this email — derive deterministically from the server
+          // NOTE: The derive-address endpoint uses `seed` field (not `evmAddress`)
           fetch('/api/aztec/derive-address', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ evmAddress: handshake }),
+            body: JSON.stringify({ seed: emailIdentifier }),
           }).then(r => r.json()).then(data => {
             if (data?.aztecAddress) {
+              // Cache the derived address locally — never store the email in plain text
               localStorage.setItem(identifierKey, data.aztecAddress);
               setAztecAddress(data.aztecAddress);
               setIsLoading(true);
-              // Also trigger airdrop for email users (idempotent on server)
-              fetch('/api/aztec/airdrop', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ address: data.aztecAddress }),
-              }).catch(() => {});
+              // NOTE: We do NOT call /api/aztec/airdrop here.
+              // Airdrop is a user-initiated claim action (requires signing / explicit consent).
+              // Auto-claiming from the client is a Sybil attack surface.
               fetchLedgerState(data.aztecAddress).finally(() => setIsLoading(false));
               startPolling(data.aztecAddress);
             }
-          }).catch(() => {});
+          }).catch((err) => {
+            console.warn('[AztecNativeContext] Failed to auto-derive Aztec address for email user:', err);
+          });
         }
       }
     } catch (e) {

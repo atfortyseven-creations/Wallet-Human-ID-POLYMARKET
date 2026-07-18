@@ -40,11 +40,11 @@ export async function POST(req: NextRequest) {
     const rawAmount  = typeof body.amount === 'string' ? parseFloat(body.amount) : body.amount;
     const spendReason = typeof body.reason === 'string' ? body.reason.slice(0, 120) : null;
 
-    // ── Validation ──────────────────────────────────────────────────────────
-    if (!from || typeof from !== 'string' || from.trim().length < 10) {
+    // ── Validate addresses — reject email_ UI identifiers used as tx addresses ──
+    if (!from || typeof from !== 'string' || from.trim().length < 10 || from.startsWith('email_')) {
       return NextResponse.json({ error: 'Missing or invalid sender address.' }, { status: 400 });
     }
-    if (!to || typeof to !== 'string' || to.trim().length < 10) {
+    if (!to || typeof to !== 'string' || to.trim().length < 10 || to.startsWith('email_')) {
       return NextResponse.json({ error: 'Missing or invalid recipient address.' }, { status: 400 });
     }
     if (!rawAmount || isNaN(rawAmount) || rawAmount <= 0 || !isFinite(rawAmount)) {
@@ -53,6 +53,7 @@ export async function POST(req: NextRequest) {
     if (from.toLowerCase() === to.toLowerCase()) {
       return NextResponse.json({ error: 'Cannot transfer to yourself.' }, { status: 400 });
     }
+
 
     const fromAddr      = from.toLowerCase().trim();
     const toAddr        = to.toLowerCase().trim();
@@ -69,16 +70,34 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // If verifiedSessionAddr is a UUID (from email login), look up their actual wallet address
-    if (verifiedSessionAddr.includes('-') && verifiedSessionAddr.length > 30) {
+    // If verifiedSessionAddr is a UUID (from email login), look up their Aztec-derived address.
+    // Email users don't have a walletAddress, so we derive the canonical Aztec address
+    // from their email using the same 2-round SHA-256 algorithm used in derive-address API.
+    const isUUID = verifiedSessionAddr.includes('-') && verifiedSessionAddr.length > 30;
+    if (isUUID) {
       const authUser = await prisma.authUser.findUnique({ where: { id: verifiedSessionAddr } });
-      if (!authUser || !authUser.walletAddress) {
+      if (!authUser) {
         return NextResponse.json(
-          { error: 'Unauthorized: Email account has no linked wallet. Please claim an identity first.' },
+          { error: 'Unauthorized: Session not found.' },
+          { status: 401 }
+        );
+      }
+      if (authUser.walletAddress) {
+        // User has a linked wallet — use that
+        verifiedSessionAddr = authUser.walletAddress.toLowerCase();
+      } else if (authUser.email) {
+        // Email-only user — derive their Aztec address from email (canonical)
+        const { createHash } = await import('crypto');
+        const emailNormalized = authUser.email.toLowerCase().trim();
+        const round1 = createHash('sha256').update(`aztec-schnorr:${emailNormalized}`).digest();
+        const round2 = createHash('sha256').update(round1).digest('hex');
+        verifiedSessionAddr = `0x${round2}`;
+      } else {
+        return NextResponse.json(
+          { error: 'Unauthorized: Email account incomplete. Please contact support.' },
           { status: 403 }
         );
       }
-      verifiedSessionAddr = authUser.walletAddress.toLowerCase();
     }
 
     // ── Identity Gate: Only verified identities (airdrop claimants) can transfer ──
@@ -112,6 +131,7 @@ export async function POST(req: NextRequest) {
         { status: 403 }
       );
     }
+
 
     console.log(`[Aztec Transfer] ${roundedAmount} QDs: ${fromAddr.slice(0, 16)}… → ${toAddr.slice(0, 16)}…`);
 
