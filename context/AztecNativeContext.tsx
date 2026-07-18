@@ -166,10 +166,55 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
           setIsLoading(true);
           fetchLedgerState(parsed.address).finally(() => setIsLoading(false));
           startPolling(parsed.address);
+          return; // Already restored — skip email auto-derive below
         }
       }
     } catch (e) {
       console.warn("Could not restore Aztec session", e);
+    }
+
+    // ── Email / QR-session auto-derive ────────────────────────────────────────
+    // For users who logged in via email OTP or QR handshake (no wagmi connector),
+    // evmAddress is either a 0x address (QR) or an 'email_xxx' identifier.
+    // We silently derive an Aztec address for them so the QDs balance is always visible.
+    try {
+      const handshake = typeof document !== 'undefined'
+        ? (document.cookie.match(/system_handshake=([^;]+)/)?.[1] || null)
+        : null;
+      if (handshake && !handshake.startsWith('0x')) {
+        // email_ session — derive Aztec address deterministically from the identifier
+        const identifierKey = `aztec_email_addr_${handshake}`;
+        const cachedAddr = localStorage.getItem(identifierKey);
+        if (cachedAddr) {
+          setAztecAddress(cachedAddr);
+          setIsLoading(true);
+          fetchLedgerState(cachedAddr).finally(() => setIsLoading(false));
+          startPolling(cachedAddr);
+        } else {
+          // First time: call derive-address API
+          fetch('/api/aztec/derive-address', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ evmAddress: handshake }),
+          }).then(r => r.json()).then(data => {
+            if (data?.aztecAddress) {
+              localStorage.setItem(identifierKey, data.aztecAddress);
+              setAztecAddress(data.aztecAddress);
+              setIsLoading(true);
+              // Also trigger airdrop for email users (idempotent on server)
+              fetch('/api/aztec/airdrop', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ address: data.aztecAddress }),
+              }).catch(() => {});
+              fetchLedgerState(data.aztecAddress).finally(() => setIsLoading(false));
+              startPolling(data.aztecAddress);
+            }
+          }).catch(() => {});
+        }
+      }
+    } catch (e) {
+      console.warn("Could not auto-derive Aztec session for email user", e);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -434,6 +479,8 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
   // ─── Spend QDs Utility ────────────────────────────────────────────────────
 
   const spendQDs = useCallback(async (amount: number, reason: string): Promise<boolean> => {
+    // Priority: prefer aztecAddress (derived), then fall back to evmAddress
+    // For email users: aztecAddress is set via auto-derive in the mount effect
     const activeAddr = aztecAddress || evmAddress;
     if (!activeAddr || balance < amount) return false;
     
@@ -451,7 +498,9 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          "x-web3-address": evmAddress || ''
+          // Pass the aztecAddress as the web3 address header so the server can
+          // identify the user even if evmAddress is an email_ identifier
+          "x-web3-address": (evmAddress && !evmAddress.startsWith('email_')) ? evmAddress : (aztecAddress || '')
         },
         body: JSON.stringify({
           from: activeAddr,

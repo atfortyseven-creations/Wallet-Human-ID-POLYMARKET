@@ -899,94 +899,101 @@ function FAQSection() {
   );
 }
 
-// ─── Final CTA + Giant AZTEC wordmark ─────────────────────────────────────────
+// ─── Final CTA + Premium Wordmark ─────────────────────────────────────────
 function AztecCTASection() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
     <section
-      className="w-full bg-white border-t border-black/[0.05] py-32 md:py-48 overflow-hidden"
+      className="relative w-full bg-[#050505] border-t border-white/5 py-32 md:py-48 overflow-hidden flex flex-col items-center"
     >
-      <div className="w-full max-w-5xl mx-auto px-6" ref={ref}>
-        {/* CTA text block */}
-        <div className="text-center flex flex-col items-center gap-8 mb-24 md:mb-40">
-          <motion.p
-            initial="hidden"
-            animate={inView ? "visible" : "hidden"}
-            variants={fadeIn}
-            className="text-[10.5px] font-mono uppercase tracking-[0.25em] text-black/30"
-          >
-            Get started
-          </motion.p>
-          <motion.h2
-            initial="hidden"
-            animate={inView ? "visible" : "hidden"}
-            variants={fadeUp}
-            style={{
-              fontFamily: "var(--font-aztec-serif), Georgia, serif",
-              fontSize: "clamp(2.2rem, 6vw, 5rem)",
-              fontWeight: 700,
-            }}
-            className="leading-[1.05] tracking-tight text-black"
-          >
-            Your identity.
-            <br />
-            <span style={{ color: "rgba(0,0,0,0.2)" }}>
-              Proven without disclosure.
-            </span>
-          </motion.h2>
-          <motion.p
-            initial="hidden"
-            animate={inView ? "visible" : "hidden"}
-            variants={fadeUp}
-            custom={0.1}
-            className="text-[15px] text-black/45 max-w-[480px] leading-relaxed"
-          >
-            Built on Noir circuits, PXE, zk-SNARK note commitments, and
-            nullifier-based Sybil resistance.
-          </motion.p>
-          <motion.div
-            initial="hidden"
-            animate={inView ? "visible" : "hidden"}
-            variants={fadeUp}
-            custom={0.2}
-            className="flex flex-col sm:flex-row items-center gap-3"
-          >
-            <Link
-              href="/portfolio"
-              id="cta-launch-btn"
-              className="w-full sm:w-auto px-9 py-4 bg-black text-white rounded-full text-[14px] font-semibold hover:bg-black/80 transition-all shadow-[0_6px_28px_rgba(0,0,0,0.18)] hover:shadow-[0_10px_40px_rgba(0,0,0,0.22)] hover:-translate-y-0.5"
-            >
-              Initialize Session →
-            </Link>
-            <Link
-              href="/architecture"
-              id="cta-arch-btn"
-              className="w-full sm:w-auto px-9 py-4 border border-black/10 text-black rounded-full text-[14px] font-semibold hover:bg-zinc-50 hover:border-black/20 transition-all"
-            >
-              Read the Architecture
-            </Link>
-          </motion.div>
-        </div>
+      {/* Background ambient glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[var(--aztec-orchid)]/10 blur-[120px] rounded-full pointer-events-none" />
 
-        {/* ── GIANT "AZTEC" WORDMARK — the money shot ── */}
-        <div className="w-full overflow-hidden select-none pointer-events-none -mx-6 md:-mx-12 lg:-mx-24">
-          <div>
-            <p
-              aria-hidden="true"
-              className="text-center leading-none whitespace-nowrap font-black text-black"
-              style={{
-                fontFamily: "var(--font-aztec-serif), Georgia, serif",
-                fontSize: "clamp(7rem, 26vw, 26rem)",
-                letterSpacing: "-0.06em",
-                opacity: 0.055,
-              }}
-            >
-              AZTEC
-            </p>
-          </div>
-        </div>
+      <div className="relative z-10 w-full max-w-5xl mx-auto px-6 text-center flex flex-col items-center gap-10" ref={ref}>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md"
+        >
+          <div className="w-1.5 h-1.5 rounded-full bg-[var(--aztec-orchid)] animate-pulse" />
+          <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/70">
+            Network Initialization
+          </span>
+        </motion.div>
+
+        <motion.h2
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+          variants={fadeUp}
+          style={{
+            fontFamily: "var(--font-aztec-serif), Georgia, serif",
+            fontSize: "clamp(2.5rem, 7vw, 5.5rem)",
+            fontWeight: 700,
+          }}
+          className="leading-[1.05] tracking-tight text-white"
+        >
+          Your identity.
+          <br />
+          <span className="text-white/30 italic">
+            Proven without disclosure.
+          </span>
+        </motion.h2>
+
+        <motion.p
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+          variants={fadeUp}
+          custom={0.1}
+          className="text-[16px] md:text-[18px] text-white/50 max-w-[500px] leading-relaxed"
+        >
+          Join the sovereign tier. Powered by zero-knowledge architecture, client-side proving, and unstoppable cryptography.
+        </motion.p>
+
+        <motion.div
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+          variants={fadeUp}
+          custom={0.2}
+          className="flex flex-col sm:flex-row items-center gap-4 mt-4"
+        >
+          <Link
+            href="/portfolio"
+            id="cta-launch-btn"
+            className="group relative w-full sm:w-auto px-10 py-4 bg-white text-black rounded-full text-[14px] font-bold overflow-hidden transition-all hover:scale-105 shadow-[0_0_40px_rgba(255,255,255,0.15)]"
+          >
+            <span className="relative z-10 flex items-center justify-center gap-2">
+              Initialize Session
+              <svg viewBox="0 0 24 24" className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
+          </Link>
+          <Link
+            href="/architecture"
+            id="cta-arch-btn"
+            className="w-full sm:w-auto px-10 py-4 border border-white/20 text-white rounded-full text-[14px] font-medium hover:bg-white/10 transition-all"
+          >
+            Read the Architecture
+          </Link>
+        </motion.div>
+      </div>
+
+      {/* ── GIANT "WHALE" WORDMARK — responsive and contained ── */}
+      <div className="relative w-full overflow-hidden select-none pointer-events-none mt-20 md:mt-32 flex justify-center h-[12vw] min-h-[100px] max-h-[300px]">
+        <motion.p
+          initial={{ opacity: 0, y: 40 }}
+          animate={inView ? { opacity: 0.04, y: 0 } : { opacity: 0, y: 40 }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+          className="absolute bottom-0 leading-[0.75] font-black text-white whitespace-nowrap"
+          style={{
+            fontFamily: "var(--font-aztec-serif), Georgia, serif",
+            fontSize: "clamp(6rem, 24vw, 22rem)",
+            letterSpacing: "-0.04em",
+          }}
+        >
+          WHALE
+        </motion.p>
       </div>
     </section>
   );
@@ -998,7 +1005,7 @@ export function ImmersiveManifestoLanding({
   hideMap = false,
 }: ImmersiveManifestoLandingProps = {}) {
   return (
-    <div className="w-full flex flex-col min-h-screen bg-white text-black antialiased overflow-x-hidden">
+    <div className="w-full flex flex-col min-h-screen bg-white text-black antialiased overflow-clip">
       <LandingNav />
       <main id="main-content">
         <HeroSection />

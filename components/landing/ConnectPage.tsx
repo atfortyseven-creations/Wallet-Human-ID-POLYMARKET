@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useCallback, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -503,16 +503,27 @@ export default function ConnectPage() {
 
   const isVerified = mounted && isLinked;
 
-  // --- Automatic Cinematic Sequence ---
+  // --- Scroll-Driven Cinematic Sequence ---
   const [phase, setPhase] = useState<"intro" | "login">("intro");
+  const introScrollRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: introScrollProgress } = useScroll({
+    target: introScrollRef,
+    offset: ["start start", "end start"],
+  });
 
+  // Text scale/opacity driven by scroll (0 → 0.7 of the scroll container)
+  const introScale = useTransform(introScrollProgress, [0, 0.6], [1, 0.88]);
+  const introOpacity = useTransform(introScrollProgress, [0, 0.6], [1, 0]);
+  const introBlur = useTransform(introScrollProgress, [0, 0.6], ["blur(0px)", "blur(16px)"]);
+
+  // Transition to login phase when scrolled past 65% of intro container
   useEffect(() => {
-    // Automatically transition to the login phase after 2 seconds
-    const t = setTimeout(() => {
-      setPhase("login");
-    }, 2000);
-    return () => clearTimeout(t);
-  }, []);
+    return introScrollProgress.on('change', (v) => {
+      if (v >= 0.65 && phase === 'intro') {
+        setPhase('login');
+      }
+    });
+  }, [introScrollProgress, phase]);
 
   // ── WEB2 LOGINS (Shared) ──
   const renderWeb2Logins = () => (
@@ -815,7 +826,7 @@ export default function ConnectPage() {
   );
 
   return (
-    <div className="fixed inset-0 w-full bg-white z-50 flex flex-col min-h-screen overflow-hidden">
+    <div className="fixed inset-0 w-full bg-white z-50 flex flex-col min-h-screen overflow-y-auto">
       {/* Film grain noise overlay */}
       <motion.div
         className="fixed inset-0 pointer-events-none z-50"
@@ -830,29 +841,41 @@ export default function ConnectPage() {
 
       <div className="w-full flex-1 flex flex-col items-center justify-center relative z-10 h-full">
 
-        {/* PHASE 1: The Cryptographic Typography */}
+        {/* PHASE 1: The Cryptographic Typography — Scroll-Driven */}
         <AnimatePresence>
           {phase === "intro" && (
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 80, opacity: 0 }}
-              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute inset-0 flex items-center justify-center pointer-events-none z-20"
+              ref={introScrollRef}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ scale: 6, opacity: 0, filter: "blur(40px)" }}
+              transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+              className="relative z-20"
+              style={{ minHeight: '280vh', width: '100%' }}
             >
-              <div className="relative flex flex-col items-center">
-                <div className="flex flex-col items-center text-center gap-6">
-                  <h1 className="font-serif text-[15vw] md:text-[10vw] font-normal tracking-tight text-[#0A0A0A] leading-none select-none">
-                    AUTHENTICATE
-                  </h1>
-                  <p className="font-mono text-[9px] md:text-[11px] uppercase tracking-[0.4em] text-[#0A0A0A]/40 max-w-[80vw] md:max-w-none text-balance leading-relaxed">
-                    WITH HUMANITY LEDGER TO JOIN WHALE NETWORK
-                  </p>
-                </div>
-                <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 text-[9px] md:text-[10px] font-mono tracking-[0.3em] uppercase text-black/30 flex flex-col items-center gap-3">
-                  <span className="whitespace-nowrap">Initializing Cryptography...</span>
-                  <div className="w-px h-8 bg-black/20 animate-pulse" />
-                </div>
+              {/* Sticky viewport that holds the text during scroll */}
+              <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden pointer-events-none">
+                <motion.div
+                  style={{ scale: introScale, opacity: introOpacity, filter: introBlur }}
+                  className="relative flex flex-col items-center"
+                >
+                  <div className="flex flex-col items-center text-center gap-6">
+                    <h1 className="font-serif text-[15vw] md:text-[10vw] font-normal tracking-tight text-[#0A0A0A] leading-none select-none">
+                      AUTHENTICATE
+                    </h1>
+                    <p className="font-mono text-[9px] md:text-[11px] uppercase tracking-[0.4em] text-[#0A0A0A]/40 max-w-[80vw] md:max-w-none text-balance leading-relaxed">
+                      WITH HUMANITY LEDGER TO JOIN WHALE NETWORK
+                    </p>
+                  </div>
+                  <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 text-[9px] md:text-[10px] font-mono tracking-[0.3em] uppercase text-black/30 flex flex-col items-center gap-3">
+                    <span className="whitespace-nowrap">Scroll to initialize...</span>
+                    <motion.div
+                      className="w-px bg-black/20"
+                      animate={{ height: ['12px', '40px', '12px'] }}
+                      transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                    />
+                  </div>
+                </motion.div>
               </div>
             </motion.div>
           )}

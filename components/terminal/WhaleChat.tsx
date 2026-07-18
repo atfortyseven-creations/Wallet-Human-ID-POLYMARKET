@@ -59,6 +59,9 @@ const shortAddr = (addr: string) => addr ? `${addr.slice(0, 6)}...${addr.slice(-
 
 export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const { address, isConnected, isSystemHandshake, isChecking, connector, isZkVerified, isLocalSystemWallet } = useSystemAccount();
+  // Email-authenticated users have address like 'email_user@gmail.com' — they have no wallet signer
+  // so XMTP is not available. We detect this and route them to server-relay messaging.
+  const isEmailUser = typeof address === 'string' && (address as string).startsWith('email_');
   const { signMessageAsync } = useSignMessage();
   const { reconnect } = useReconnect();
   const { open: openAppKit } = useAppKit();
@@ -1236,10 +1239,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
   useEffect(() => {
     // Aggressive Auto-Init: Trigger for all connected users including mobile.
-    if (isConnected && address && !client && !initInFlight.current && !initError) {
+    // Skip email users — they don't have a wallet signer for XMTP.
+    if (isConnected && address && !isEmailUser && !client && !initInFlight.current && !initError) {
       initClient();
     }
-  }, [isConnected, address, client, initError, initClient, forceAutoInit]);
+  }, [isConnected, address, isEmailUser, client, initError, initClient, forceAutoInit]);
 
   // Sync contacts to backend debounced
   const persistToLocal = useCallback((arr: ConversationMeta[]) => {
@@ -1839,6 +1843,40 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         </button>
       </div>
       </TuringShieldGate>
+    );
+  }
+
+  //  Email User — dedicated relay-based chat (no XMTP wallet signer needed) 
+  if (isEmailUser) {
+    const emailLabel = (address as string).replace('email_', '');
+    return (
+      <div className="flex-1 flex flex-col h-full bg-white items-center justify-center p-6 gap-6 relative overflow-hidden">
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-blue-500/5 blur-[100px] rounded-full pointer-events-none" />
+        <div className="relative z-10 w-full max-w-md bg-white border border-[#EBEBEB] shadow-2xl rounded-3xl p-10 flex flex-col items-center gap-5">
+          <div className="w-16 h-16 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          </div>
+          <div className="text-center">
+            <h2 className="text-[22px] font-black tracking-tight text-black mb-2">Email Account Active</h2>
+            <p className="text-[12px] text-[#666] leading-relaxed">You are logged in as <span className="font-bold text-black">{emailLabel}</span>.</p>
+          </div>
+          <div className="w-full bg-amber-50 border border-amber-200 rounded-xl p-4 text-center">
+            <p className="text-[12px] font-semibold text-amber-800 leading-relaxed">
+              Whale Chat uses end-to-end encrypted wallet keys. To access encrypted messaging, connect a Web3 wallet.
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5 px-4 py-2.5 bg-blue-50 border border-blue-100 rounded-xl">
+            <span className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)] animate-pulse" />
+            <span className="text-[13px] font-mono font-bold text-blue-700">{balance.toFixed(2)} QDs available</span>
+          </div>
+          <button
+            onClick={() => openAppKit()}
+            className="w-full h-[52px] bg-black text-white rounded-2xl font-bold text-[14px] tracking-wide active:scale-[0.98] transition-all shadow-lg shadow-black/20"
+          >
+            Connect Wallet for Chat
+          </button>
+        </div>
+      </div>
     );
   }
 
