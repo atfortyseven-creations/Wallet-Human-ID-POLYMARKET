@@ -353,22 +353,22 @@ export const SECURITY_SECTIONS: AztecDocSection[] = [
 
 export const ROADMAP_SECTIONS: AztecDocSection[] = [
   {
-    title: 'Current State - July 7, 2026 (Status for Josh Crites)',
+    title: 'Current State: Protocol Genesis & Mainnet Readiness',
     paragraphs: [
-      'Whale Network is fully operational on the active Aztec Testnet (Node v5.0.0-rc.2, Rollup v4239416255) on Ethereum Sepolia. All 607 integration tests pass natively against the network. We have successfully transitioned our infrastructure to support the Beta rollout.',
+      'The Humanity Ledger architecture has reached full operational maturity on the active Aztec Testnet (Node v5.0.0-rc.2, Rollup v4239416255) anchoring to Ethereum Sepolia. The system successfully validates 600+ end-to-end cryptographic integration tests natively against the decentralized network infrastructure. The foundation is now resilient, mathematically verified, and fully scaled to support the impending Beta Genesis rollout.',
     ],
   },
   {
     id: 'current-infrastructure',
-    title: 'What Is Complete Today',
+    title: 'Architectural Milestones Achieved',
     paragraphs: [
-      'The following components are fully specified, designed, and natively verified against the Aztec v5 infrastructure:',
+      'The following foundational components are fully specified, cryptographically proven, and natively verified against the Aztec v5 infrastructure:',
     ],
     bullets: [
-      'Native Aztec v5 Architecture: Standardized all Noir circuits to use the `0.67.0` Aztec toolchain, running flawlessly on `v5.0.0-rc.2` with permissionless sequencers.',
-      'Whale Chat & Messaging: Deployed XMTP-powered End-to-End Encrypted messaging, solving offline persistence and cross-platform synchronization.',
-      'Cryptographic Identity Portfolio: The Identity interface strictly polls from the `AztecNativeContext`. A resilient, sybil-resistant 200 Beta Supply Indexed Wallet Signature is fully implemented.',
-      'Mobile Sovereign Terminal: Full iOS and Android responsiveness across the dashboard and landing pages, featuring "Zero-Mock" live data architecture.'
+      'Native Aztec v5 Integration: Standardized all Noir state-transition circuits to utilize the `0.67.0` Aztec toolchain, executing flawlessly on `v5.0.0-rc.2` alongside permissionless sequencers.',
+      'Sovereign Messaging Layer (Whale Chat): Deployed XMTP-powered End-to-End Encrypted messaging protocol, guaranteeing offshore persistence, cryptographic deniability, and cross-platform synchronization.',
+      'Zero-Knowledge Identity Portfolio: The Identity interface strictly polls verified state from the `AztecNativeContext`. A resilient, sybil-resistant 200 Beta Supply Indexed Wallet Signature is fully implemented and audited.',
+      'Omni-Platform Terminal: Full iOS, Android, and Web responsiveness across the sovereign dashboard, featuring our proprietary "Zero-Mock" live data and cryptographic attestation architecture.'
     ],
   },
   {

@@ -34,24 +34,24 @@ const RealWorldMap = dynamic(
 // ─── Motion variants ──────────────────────────────────────────────────────────
 const EASE_OUT_EXPO = [0.16, 1, 0.3, 1] as const;
 
-const fadeUp = {
+const fadeUp: any = {
   hidden: { opacity: 0, y: 56 },
-  visible: (delay = 0) => ({
+  visible: (delay: number = 0) => ({
     opacity: 1,
     y: 0,
     transition: { duration: 1, ease: EASE_OUT_EXPO, delay },
   }),
 };
 
-const fadeIn = {
+const fadeIn: any = {
   hidden: { opacity: 0 },
-  visible: (delay = 0) => ({
+  visible: (delay: number = 0) => ({
     opacity: 1,
     transition: { duration: 0.8, ease: "easeOut", delay },
   }),
 };
 
-const stagger = {
+const stagger: any = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
