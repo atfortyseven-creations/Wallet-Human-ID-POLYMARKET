@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useCallback, useRef } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -42,7 +42,7 @@ function useIsMobile() {
   useEffect(() => {
     setIsMobile(
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i.test(
-        navigator.userAgent
+        typeof navigator !== 'undefined' ? navigator.userAgent : ''
       )
     );
   }, []);
@@ -150,6 +150,14 @@ export default function ConnectPage() {
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.has('s') && urlParams.has('p')) {
         window.location.replace('/scan?payload=' + encodeURIComponent(window.location.href));
+      }
+      // After Google OAuth callback, heal the system_handshake cookie so
+      // the gate detects the authenticated state without a page reload.
+      if (!document.cookie.includes('system_handshake=')) {
+        fetch('/api/auth/session-heal', { credentials: 'include', cache: 'no-store' })
+          .then(r => r.json())
+          .then(d => { if (d.healed) window.dispatchEvent(new Event('storage')); })
+          .catch(() => {});
       }
     }
   }, []);
@@ -506,31 +514,56 @@ export default function ConnectPage() {
   // --- Scroll-Driven Cinematic Sequence ---
   const [phase, setPhase] = useState<"intro" | "login">("intro");
   const introScrollRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null); // NEW: Reference for the scrolling container
-  
-  const { scrollYProgress: introScrollProgress } = useScroll({
-    target: introScrollRef,
-    container: containerRef, // Attach to the modal container instead of window
-    offset: ["start start", "end start"],
-  });
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // 1. Authenticate Text (fades out early)
-  const introScale = useTransform(introScrollProgress, [0, 0.2], [1, 0.88]);
-  const introOpacity = useTransform(introScrollProgress, [0, 0.2], [1, 0]);
-  const introBlur = useTransform(introScrollProgress, [0, 0.2], ["blur(0px)", "blur(16px)"]);
+  // Manual scroll progress using useMotionValue — more reliable than useScroll
+  // inside a `position: fixed` container because useScroll can fail to detect
+  // the scroll root in some browser/Framer versions.
+  const rawProgress = useRef(0);
+  const [scrollPct, setScrollPct] = useState(0);
 
-  // 2. Whale Network Manifesto (fades in, stays, fades out)
-  const manifestoOpacity = useTransform(introScrollProgress, [0.2, 0.3, 0.8, 0.9], [0, 1, 1, 0]);
-  const manifestoY = useTransform(introScrollProgress, [0.2, 0.3, 0.8, 0.9], [40, 0, 0, -40]);
-
-  // Transition to login phase when scrolled past 95% of intro container
   useEffect(() => {
-    return introScrollProgress.on('change', (v) => {
-      if (v >= 0.95 && phase === 'intro') {
+    const el = containerRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const max = el.scrollHeight - el.clientHeight;
+      if (max <= 0) return;
+      const pct = el.scrollTop / max;
+      rawProgress.current = pct;
+      setScrollPct(pct);
+      if (pct >= 0.96 && phase === 'intro') {
         setPhase('login');
       }
-    });
-  }, [introScrollProgress, phase]);
+    };
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => el.removeEventListener('scroll', onScroll);
+  }, [phase]);
+
+  // Derive animation values from scrollPct
+  // 1. AUTHENTICATE title: fades out in first 15% of scroll
+  const introOpacityVal = scrollPct < 0.15 ? 1 - (scrollPct / 0.15) : 0;
+  const introScaleVal   = 1 - (Math.min(scrollPct, 0.15) / 0.15) * 0.12;
+  const introBlurVal    = `blur(${Math.min(scrollPct / 0.15, 1) * 16}px)`;
+
+  // 2. Manifesto: fades in 15–25%, visible 25–75%, fades out 75–90%
+  let manifestoOpacityVal = 0;
+  if (scrollPct >= 0.15 && scrollPct < 0.25) {
+    manifestoOpacityVal = (scrollPct - 0.15) / 0.10;
+  } else if (scrollPct >= 0.25 && scrollPct < 0.75) {
+    manifestoOpacityVal = 1;
+  } else if (scrollPct >= 0.75 && scrollPct < 0.90) {
+    manifestoOpacityVal = 1 - (scrollPct - 0.75) / 0.15;
+  }
+  const manifestoYVal = scrollPct < 0.25
+    ? 60 - ((scrollPct - 0.15) / 0.10) * 60
+    : scrollPct > 0.75
+    ? -((scrollPct - 0.75) / 0.15) * 60
+    : 0;
+
+  // Legacy motion value refs (kept for API compatibility — not used for transforms now)
+  const introScrollProgress = useRef({ on: (_: string, __: (v: number) => void) => () => {} }).current;
+
+
 
   // ── WEB2 LOGINS (Shared) ──
   const renderWeb2Logins = () => (
@@ -546,7 +579,7 @@ export default function ConnectPage() {
           try {
             try { sessionStorage.removeItem('__disconnected__'); } catch {}
             try { localStorage.removeItem('__disconnected__'); } catch {}
-            await signIn('google', { callbackUrl: '/' });
+            await signIn('google', { callbackUrl: '/terminal' });
           } catch (err) {
             console.error('[Google OAuth] signIn error:', err);
             setGoogleLoading(false);
@@ -833,10 +866,14 @@ export default function ConnectPage() {
   );
 
   return (
-    <div ref={containerRef} className="fixed inset-0 w-full bg-white z-50 flex flex-col min-h-screen overflow-y-auto">
+    <div
+      ref={containerRef}
+      className="fixed inset-0 w-full bg-white z-50 overflow-y-auto overflow-x-hidden"
+      style={{ WebkitOverflowScrolling: 'touch' }}
+    >
       {/* Film grain noise overlay */}
       <motion.div
-        className="fixed inset-0 pointer-events-none z-50"
+        className="fixed inset-0 pointer-events-none z-[60]"
         animate={{ opacity: phase === "intro" ? 0.02 : 0.04 }}
         transition={{ duration: 1.5 }}
         style={{
@@ -846,7 +883,7 @@ export default function ConnectPage() {
         }}
       />
 
-      <div className="w-full flex-1 flex flex-col items-center justify-center relative z-10 h-full">
+      <div className="w-full relative z-10">
 
         {/* PHASE 1: The Cryptographic Typography — Scroll-Driven */}
         <AnimatePresence>
@@ -858,14 +895,18 @@ export default function ConnectPage() {
               exit={{ scale: 2, opacity: 0, filter: "blur(40px)" }}
               transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
               className="relative z-20"
-              style={{ minHeight: '400vh', width: '100%' }}
+              style={{ minHeight: '600vh', width: '100%' }}
             >
               {/* Sticky viewport that holds the text during scroll */}
               <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden pointer-events-none">
                 
                 {/* 1. AUTHENTICATE TITLE */}
                 <motion.div
-                  style={{ scale: introScale, opacity: introOpacity, filter: introBlur }}
+                  style={{
+                    scale: introScaleVal,
+                    opacity: introOpacityVal,
+                    filter: introBlurVal,
+                  }}
                   className="absolute inset-0 flex flex-col items-center justify-center"
                 >
                   <div className="flex flex-col items-center text-center gap-6">
@@ -888,7 +929,7 @@ export default function ConnectPage() {
 
                 {/* 2. MANIFESTO PRESENTATION */}
                 <motion.div
-                  style={{ opacity: manifestoOpacity, y: manifestoY }}
+                  style={{ opacity: manifestoOpacityVal, y: manifestoYVal }}
                   className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 max-w-[800px] mx-auto pointer-events-none"
                 >
                   <h2 className="font-serif text-[8vw] md:text-5xl tracking-tight text-[#0A0A0A] mb-10 select-none">
@@ -927,7 +968,7 @@ export default function ConnectPage() {
               initial={{ opacity: 0, scale: 0.95, filter: "blur(15px)" }}
               animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
               transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-              className="relative z-10 w-full flex-1 flex flex-col items-center justify-center gap-8 px-4 py-12 h-full overflow-y-auto"
+              className="relative z-10 w-full min-h-screen flex flex-col items-center justify-center gap-8 px-4 py-12"
             >
               {/* Side-by-side: Login Card + QD Marketing Panel */}
               <div className="flex flex-col lg:flex-row items-stretch justify-center gap-5 w-full max-w-[900px]">

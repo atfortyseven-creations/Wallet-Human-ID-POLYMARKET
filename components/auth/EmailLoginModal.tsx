@@ -108,11 +108,15 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
       try { sessionStorage.removeItem("__disconnected__"); } catch {}
       try { localStorage.removeItem("__disconnected__"); } catch {}
 
-      setTimeout(() => {
+      setTimeout(async () => {
+        // Heal the system_handshake cookie so the gate detects auth state
+        try {
+          await fetch('/api/auth/session-heal', { credentials: 'include', cache: 'no-store' });
+        } catch {}
         onSuccess?.();
         onClose();
-        // Redirect to landing page (stays on / but now authenticated)
-        window.location.href = "/";
+        // Redirect to the authenticated terminal, not the public landing
+        window.location.replace("/terminal");
       }, 1800);
     } catch (err: any) {
       setError(err.message || "Invalid or expired code.");

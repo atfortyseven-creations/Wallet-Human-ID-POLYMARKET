@@ -42,8 +42,9 @@ export function SmartLandingRouter({ isMobileUserAgent }: { isMobileUserAgent: b
         // of screen dimensions. We treat all touch-primary Android/iOS as mobile.
         const isUaMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua);
         // Secondary: touch screen + no fine pointer (tablet/phone, not touch laptop)
-        const isTouchPrimary = navigator.maxTouchPoints > 1 && !window.matchMedia('(pointer: fine)').matches;
-        const isSmallScreen = window.screen.width < 1024; // extended breakpoint: covers large phones + tablets
+        const hasMatchMedia = typeof window !== 'undefined' && typeof window.matchMedia === 'function';
+        const isTouchPrimary = (navigator.maxTouchPoints || 0) > 0 && (!hasMatchMedia || !window.matchMedia('(pointer: fine)').matches);
+        const isSmallScreen = typeof window !== 'undefined' && window.screen && window.screen.width < 1024; // extended breakpoint: covers large phones + tablets
 
         setIsPhysicallyMobile(isUaMobile || (isTouchPrimary && isSmallScreen));
         setMounted(true);

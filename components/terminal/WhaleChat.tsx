@@ -69,7 +69,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // [PHASE 2 - SILOING] Consume the sandboxed PXE context for Chat Operations
   // This strictly isolates Chat from the Portfolio state to prevent cross-contamination.
   const { getSiloedPXE } = useAztec();
-  const { spendQDs, balance } = useAztecNative();
+  const aztecNative = useAztecNative();
+  const { spendQDs, balance } = aztecNative;
   const chatContractAddress = { toString: () => '0xCHAT_CONTRACT_ADDRESS_PLACEHOLDER' } as any;
   const siloedPxe = getSiloedPXE ? getSiloedPXE(chatContractAddress) : null;
   const { 
@@ -1690,17 +1691,17 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
     // --- QD DEDUCTION LOGIC ---
     const isSystemSignal = content.startsWith('__CALL_');
-    if (!isSystemSignal && !isLocalSystemWallet) {
+    // Only gate on QDs when user has a connected Aztec identity AND sufficient balance.
+    // If aztecAddress is null (user has not initialized their identity yet), allow messages.
+    const hasAztecId = !!aztecNative.aztecAddress;
+    if (!isSystemSignal && !isLocalSystemWallet && hasAztecId) {
       if (balance < 0.0001) {
-        toast.error("Insufficient QDs to send message.");
+        toast.error("Insufficient QDs to send message.", { description: "Top up via the Aztec Identity tab." });
         setSending(false);
         return;
       }
-      const success = await spendQDs(0.0001, 'Whale Chat message');
-      if (!success) {
-        setSending(false);
-        return;
-      }
+      // Deduct QDs — on server failure, log and continue (message still sends)
+      await spendQDs(0.0001, 'Whale Chat message').catch((e: any) => console.warn('[WhaleChat] QD deduction failed:', e));
     }
 
     if (address) {
