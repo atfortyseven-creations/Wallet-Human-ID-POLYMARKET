@@ -506,20 +506,27 @@ export default function ConnectPage() {
   // --- Scroll-Driven Cinematic Sequence ---
   const [phase, setPhase] = useState<"intro" | "login">("intro");
   const introScrollRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null); // NEW: Reference for the scrolling container
+  
   const { scrollYProgress: introScrollProgress } = useScroll({
     target: introScrollRef,
+    container: containerRef, // Attach to the modal container instead of window
     offset: ["start start", "end start"],
   });
 
-  // Text scale/opacity driven by scroll (0 → 0.7 of the scroll container)
-  const introScale = useTransform(introScrollProgress, [0, 0.6], [1, 0.88]);
-  const introOpacity = useTransform(introScrollProgress, [0, 0.6], [1, 0]);
-  const introBlur = useTransform(introScrollProgress, [0, 0.6], ["blur(0px)", "blur(16px)"]);
+  // 1. Authenticate Text (fades out early)
+  const introScale = useTransform(introScrollProgress, [0, 0.2], [1, 0.88]);
+  const introOpacity = useTransform(introScrollProgress, [0, 0.2], [1, 0]);
+  const introBlur = useTransform(introScrollProgress, [0, 0.2], ["blur(0px)", "blur(16px)"]);
 
-  // Transition to login phase when scrolled past 65% of intro container
+  // 2. Whale Network Manifesto (fades in, stays, fades out)
+  const manifestoOpacity = useTransform(introScrollProgress, [0.2, 0.3, 0.8, 0.9], [0, 1, 1, 0]);
+  const manifestoY = useTransform(introScrollProgress, [0.2, 0.3, 0.8, 0.9], [40, 0, 0, -40]);
+
+  // Transition to login phase when scrolled past 95% of intro container
   useEffect(() => {
     return introScrollProgress.on('change', (v) => {
-      if (v >= 0.65 && phase === 'intro') {
+      if (v >= 0.95 && phase === 'intro') {
         setPhase('login');
       }
     });
@@ -826,7 +833,7 @@ export default function ConnectPage() {
   );
 
   return (
-    <div className="fixed inset-0 w-full bg-white z-50 flex flex-col min-h-screen overflow-y-auto">
+    <div ref={containerRef} className="fixed inset-0 w-full bg-white z-50 flex flex-col min-h-screen overflow-y-auto">
       {/* Film grain noise overlay */}
       <motion.div
         className="fixed inset-0 pointer-events-none z-50"
@@ -848,16 +855,18 @@ export default function ConnectPage() {
               ref={introScrollRef}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ scale: 6, opacity: 0, filter: "blur(40px)" }}
+              exit={{ scale: 2, opacity: 0, filter: "blur(40px)" }}
               transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
               className="relative z-20"
-              style={{ minHeight: '280vh', width: '100%' }}
+              style={{ minHeight: '400vh', width: '100%' }}
             >
               {/* Sticky viewport that holds the text during scroll */}
               <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden pointer-events-none">
+                
+                {/* 1. AUTHENTICATE TITLE */}
                 <motion.div
                   style={{ scale: introScale, opacity: introOpacity, filter: introBlur }}
-                  className="relative flex flex-col items-center"
+                  className="absolute inset-0 flex flex-col items-center justify-center"
                 >
                   <div className="flex flex-col items-center text-center gap-6">
                     <h1 className="font-serif text-[15vw] md:text-[10vw] font-normal tracking-tight text-[#0A0A0A] leading-none select-none">
@@ -867,8 +876,8 @@ export default function ConnectPage() {
                       WITH HUMANITY LEDGER TO JOIN WHALE NETWORK
                     </p>
                   </div>
-                  <div className="absolute -bottom-32 left-1/2 -translate-x-1/2 text-[9px] md:text-[10px] font-mono tracking-[0.3em] uppercase text-black/30 flex flex-col items-center gap-3">
-                    <span className="whitespace-nowrap">Scroll to initialize...</span>
+                  <div className="absolute bottom-12 left-1/2 -translate-x-1/2 text-[9px] md:text-[10px] font-mono tracking-[0.3em] uppercase text-black/30 flex flex-col items-center gap-3">
+                    <span className="whitespace-nowrap">Scroll down</span>
                     <motion.div
                       className="w-px bg-black/20"
                       animate={{ height: ['12px', '40px', '12px'] }}
@@ -876,6 +885,36 @@ export default function ConnectPage() {
                     />
                   </div>
                 </motion.div>
+
+                {/* 2. MANIFESTO PRESENTATION */}
+                <motion.div
+                  style={{ opacity: manifestoOpacity, y: manifestoY }}
+                  className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 max-w-[800px] mx-auto pointer-events-none"
+                >
+                  <h2 className="font-serif text-[8vw] md:text-5xl tracking-tight text-[#0A0A0A] mb-10 select-none">
+                    The Sovereign Observation Layer
+                  </h2>
+                  <div className="flex flex-col gap-6 text-[11px] md:text-[13px] font-mono text-[#0A0A0A]/60 leading-[2] text-justify tracking-wide md:px-12">
+                    <p>
+                      Whale Network is not a data aggregator; it is a decentralized, zero-knowledge observation layer built natively over the Aztec protocol. It resolves the fundamental contradiction of on-chain capital flows: the absolute necessity to monitor systemic liquidity without participating in the public surveillance apparatus.
+                    </p>
+                    <p>
+                      Traditional blockchains broadcast every state transition to all observers, rendering financial privacy mathematically impossible. By integrating with Humanity Ledger, Whale Network processes high-frequency on-chain events—sovereign accumulation, dark pool transitions, and institutional liquidations—and relays them into a cryptographically shielded execution environment (PXE).
+                    </p>
+                    <p>
+                      Your queries, your alerts, and your portfolio positions are secured by Client-Side zk-SNARKs (Barretenberg proofs) and recursive Plonk verification. The network is structurally incapable of identifying you. Privacy is no longer an opt-in feature; it is the absolute mathematical baseline.
+                    </p>
+                  </div>
+                  <div className="absolute bottom-12 left-1/2 -translate-x-1/2 text-[9px] md:text-[10px] font-mono tracking-[0.3em] uppercase text-black/30 flex flex-col items-center gap-3">
+                    <span className="whitespace-nowrap">Continue scrolling to initialize</span>
+                    <motion.div
+                      className="w-px bg-black/20"
+                      animate={{ height: ['12px', '40px', '12px'] }}
+                      transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                    />
+                  </div>
+                </motion.div>
+
               </div>
             </motion.div>
           )}
