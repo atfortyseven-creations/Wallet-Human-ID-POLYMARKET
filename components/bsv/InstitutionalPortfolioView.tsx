@@ -76,33 +76,7 @@ import { SystemFooter } from '@/components/landing/SystemFooter';
 import { useAztecNative } from '@/context/AztecNativeContext';
 import { Zap } from 'lucide-react';
 
-// Original minimalist VaultUnlockScreen (internal)
-function VaultUnlockScreen({ unlockVault }: { unlockVault: (pwd: string) => boolean }) {
-    const [pwd, setPwd] = useState("");
-    return (
-        <div className="flex flex-col items-center justify-center min-h-[100dvh] bg-white text-zinc-900 p-4">
-            <h1 className="text-2xl font-black uppercase tracking-[0.2em] mb-2">Vault Locked</h1>
-            <p className="text-[10px] text-zinc-900/50 font-mono mb-8 text-center max-w-sm">
-                Your cryptographic identity is secured. Enter your master password to decrypt the local keystore.
-            </p>
-            <input 
-                type="password" 
-                value={pwd} 
-                onChange={e => setPwd(e.target.value)}
-                placeholder="Master Password" 
-                className="w-full max-w-xs border-b border-zinc-900/20 p-4 text-center text-xl tracking-widest outline-none focus:border-zinc-900 transition-colors mb-6 font-mono"
-            />
-            <button 
-                onClick={() => {
-                    if (!unlockVault(pwd)) toast.error("Invalid password");
-                }}
-                className="w-full max-w-xs bg-zinc-900 text-white font-black text-[10px] uppercase tracking-[0.2em] py-4 hover:bg-zinc-900/80 transition-colors"
-            >
-                Decrypt Vault
-            </button>
-        </div>
-    );
-}
+// Legacy VaultUnlockScreen removed.
 
 const truncate = (str: string, len: number) => {
     if (!str) return '';
@@ -213,12 +187,6 @@ export function InstitutionalPortfolioView() {
                 Loading...
             </div>
         );
-    }
-
-    // [BUG FIX] If a user is connected via WalletConnect (external), DO NOT block them 
-    // with the Humanity Ledger local vault unlock screen, even if they have a local vault.
-    if (isLocked && passwordHash && (!isConnected || isLocalSystemWallet)) {
-        return <VaultUnlockScreen unlockVault={unlockVault} />;
     }
 
     const getScannerBase = (netId: string) => {

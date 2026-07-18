@@ -1691,10 +1691,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
     // --- QD DEDUCTION LOGIC ---
     const isSystemSignal = content.startsWith('__CALL_');
-    // Only gate on QDs when user has a connected Aztec identity AND sufficient balance.
-    // If aztecAddress is null (user has not initialized their identity yet), allow messages.
-    const hasAztecId = !!aztecNative.aztecAddress;
-    if (!isSystemSignal && !isLocalSystemWallet && hasAztecId) {
+    if (!isSystemSignal && !isLocalSystemWallet) {
       if (balance < 0.0001) {
         toast.error("Insufficient QDs to send message.", { description: "Top up via the Aztec Identity tab." });
         setSending(false);

@@ -871,6 +871,12 @@ export default function ConnectPage() {
       className="fixed inset-0 w-full bg-white z-50 overflow-y-auto overflow-x-hidden"
       style={{ WebkitOverflowScrolling: 'touch' }}
     >
+      {/* 
+        CRITICAL FIX FOR MOBILE SCROLL: 
+        A transparent placeholder ensures the container actually has a large scroll height
+        even if child elements are absolutely positioned or sticky.
+      */}
+      <div style={{ height: '600vh', width: '100%', position: 'absolute', top: 0, left: 0, zIndex: 1, pointerEvents: 'none' }} />
       {/* Film grain noise overlay */}
       <motion.div
         className="fixed inset-0 pointer-events-none z-[60]"
@@ -933,17 +939,17 @@ export default function ConnectPage() {
                   className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 max-w-[800px] mx-auto pointer-events-none"
                 >
                   <h2 className="font-serif text-[8vw] md:text-5xl tracking-tight text-[#0A0A0A] mb-10 select-none">
-                    The Sovereign Observation Layer
+                    What is Whale Network?
                   </h2>
                   <div className="flex flex-col gap-6 text-[11px] md:text-[13px] font-mono text-[#0A0A0A]/60 leading-[2] text-justify tracking-wide md:px-12">
                     <p>
-                      Whale Network is not a data aggregator; it is a decentralized, zero-knowledge observation layer built natively over the Aztec protocol. It resolves the fundamental contradiction of on-chain capital flows: the absolute necessity to monitor systemic liquidity without participating in the public surveillance apparatus.
+                      Whale Network is the first decentralized, zero-knowledge financial observation layer natively built on the Aztec protocol. It was designed to solve the ultimate contradiction in modern capital flows: the necessity to monitor systemic liquidity without subjecting participants to the pervasive surveillance of public ledgers.
                     </p>
                     <p>
-                      Traditional blockchains broadcast every state transition to all observers, rendering financial privacy mathematically impossible. By integrating with Humanity Ledger, Whale Network processes high-frequency on-chain events—sovereign accumulation, dark pool transitions, and institutional liquidations—and relays them into a cryptographically shielded execution environment (PXE).
+                      In conventional Web3 architecture, every state transition is broadcast to the world, permanently stripping away your financial privacy. By integrating directly with Humanity Ledger, Whale Network intercepts and processes high-frequency on-chain events—sovereign accumulation, dark pool transitions, and institutional liquidations—and safely relays them into a cryptographically shielded execution environment (PXE).
                     </p>
                     <p>
-                      Your queries, your alerts, and your portfolio positions are secured by Client-Side zk-SNARKs (Barretenberg proofs) and recursive Plonk verification. The network is structurally incapable of identifying you. Privacy is no longer an opt-in feature; it is the absolute mathematical baseline.
+                      Through Client-Side zk-SNARKs and recursive Plonk verification, every query, alert, and portfolio calculation you execute is mathematically isolated. The network is structurally incapable of identifying you or tracking your balance. Here, privacy is not a feature you opt into; it is the absolute, uncompromising baseline of the protocol.
                     </p>
                   </div>
                   <div className="absolute bottom-12 left-1/2 -translate-x-1/2 text-[9px] md:text-[10px] font-mono tracking-[0.3em] uppercase text-black/30 flex flex-col items-center gap-3">

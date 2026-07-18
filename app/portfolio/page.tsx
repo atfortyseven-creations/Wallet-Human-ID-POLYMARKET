@@ -1,15 +1,16 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
 // Removed legacy QuantumVaultOnboarding import
 import { InstitutionalPortfolioView } from '@/components/bsv/InstitutionalPortfolioView';
-import { UnlockVaultScreen } from '@/components/security/UnlockVaultScreen';
 import { useWalletStore } from '@/lib/store/wallet-store';
 import Link from 'next/link';
 
 
 export default function PortfolioPage() {
+  const router = useRouter();
   const [sessionUnlocked, setSessionUnlocked] = useState(false);
   const [mounted, setMounted] = useState(false);
   const { address, isConnected: isSystemConnected, isChecking: isSystemChecking } = useSystemAccount();
@@ -53,9 +54,7 @@ export default function PortfolioPage() {
     );
   }
 
-  if (isLocked && passwordHash) {
-      return <UnlockVaultScreen />;
-  }
+  // Legacy unlock screen removed.
 
   // Gate: require wallet connection OR session storage unlock token
   const needsGate = !isSystemConnected && !sessionUnlocked;
