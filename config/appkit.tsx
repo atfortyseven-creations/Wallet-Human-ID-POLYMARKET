@@ -261,8 +261,6 @@ try {
     console.warn('[AppKit] Initialization skipped (already initialized):', e);
 }
 
-import { useEffect } from 'react';
-import { reconnect } from '@wagmi/core';
 
 export function Web3ModalProvider({ children, cookies }: { children: ReactNode; cookies: string | null }) {
     let initialState;
