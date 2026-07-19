@@ -30,7 +30,7 @@ function DustParticle({ origin }: { origin: THREE.Vector3 }) {
   ));
   const life = useRef(0);
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     if (!mesh.current) return;
     life.current += delta;
     const t = life.current / 0.9;
@@ -54,7 +54,7 @@ function DustEmitter({ pos, moving }: { pos: THREE.Vector3; moving: boolean }) {
   const timer = useRef(0);
   const id = useRef(0);
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     if (!moving) return;
     timer.current += delta;
     if (timer.current > 0.08) {
@@ -364,7 +364,7 @@ function Scene({ onMoving }: { onMoving: (v: boolean) => void }) {
     };
   }, []);
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     const up    = keys.current["ArrowUp"]    || keys.current["KeyW"];
     const down  = keys.current["ArrowDown"]  || keys.current["KeyS"];
     const left  = keys.current["ArrowLeft"]  || keys.current["KeyA"];

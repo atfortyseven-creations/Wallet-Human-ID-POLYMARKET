@@ -53,7 +53,7 @@ export function FloatingImmersiveBackground({
         }
 
         // Create random rainbow elements
-        const rainbowElements = Array.from({ length: rainbowCount }).map((_, i) => {
+        const rainbowElements = Array.from({ length: rainbowCount }).map((_idx, i) => {
             return {
                 id: Date.now() + i, 
                 src: RAINBOW_ASSET,
@@ -67,7 +67,7 @@ export function FloatingImmersiveBackground({
         });
 
         // Create kitten elements if requested
-        const kittenElements = Array.from({ length: kittenCount }).map((_, i) => {
+        const kittenElements = Array.from({ length: kittenCount }).map((_idx, i) => {
             return {
                 id: Date.now() + 1000 + i, 
                 src: KITTEN_ASSET,

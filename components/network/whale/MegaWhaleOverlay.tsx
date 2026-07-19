@@ -76,8 +76,8 @@ function playMegaWhaleSound(usdValue: number) {
         tone.stop(ctx.currentTime + 1.5);
 
         // Auto-close AudioContext after done
-        setTimeout(() => { try { ctx.close(); } catch(_) {} }, 3000);
-    } catch (_) {
+        setTimeout(() => { try { ctx.close(); } catch(e) {} }, 3000);
+    } catch (e) {
         // Silently fail if AudioContext not available (e.g. server-side)
     }
 }

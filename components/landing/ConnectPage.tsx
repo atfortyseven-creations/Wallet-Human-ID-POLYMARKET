@@ -572,7 +572,7 @@ export default function ConnectPage() {
     : 0;
 
   // Legacy motion value refs (kept for API compatibility — not used for transforms now)
-  const introScrollProgress = useRef({ on: (_: string, __: (v: number) => void) => () => {} }).current;
+  const introScrollProgress = useRef({ on: (_event: string, _callback: (v: number) => void) => () => {} }).current;
 
 
 
