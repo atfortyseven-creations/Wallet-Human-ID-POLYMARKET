@@ -244,9 +244,26 @@ const nextConfig = {
                     new (require('terser-webpack-plugin'))({
                         terserOptions: {
                             mangle: {
-                                // Prevent _, __, j, and I from being used as minified variable names.
-                                // These names collide with Safari's TDZ scope in specific hoist scenarios.
-                                reserved: ['_', '__', '___', 'j', 'I'],
+                                // ── DEFINITIVE SAFARI TDZ FIX ─────────────────────────────
+                                // Safari/WebKit throws "Cannot access 'X' before initialization"
+                                // when Terser assigns a single-letter name (a-z, A-Z) to a
+                                // mangled identifier that collides with a `let`/`const` in a
+                                // circular ESM import graph.
+                                //
+                                // Solution: reserve ALL 52 single-letter names + underscore
+                                // variants so Terser is forced to use 2+ character identifiers.
+                                // This eliminates the entire class of single-letter TDZ crashes
+                                // across every build, regardless of which letter the bundler picks.
+                                reserved: [
+                                  // lowercase a-z
+                                  'a','b','c','d','e','f','g','h','i','j','k','l','m',
+                                  'n','o','p','q','r','s','t','u','v','w','x','y','z',
+                                  // UPPERCASE A-Z
+                                  'A','B','C','D','E','F','G','H','I','J','K','L','M',
+                                  'N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+                                  // underscore variants used by SWC/Babel runtime helpers
+                                  '_','__','___',
+                                ],
                                 safari10: true,
                                 toplevel: false,
                             },
