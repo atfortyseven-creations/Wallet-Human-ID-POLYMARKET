@@ -235,7 +235,7 @@ export default function AztecMempoolSpace() {
                                         </div>
 
                                         <div className="flex-1 p-4 relative z-10 grid grid-cols-6 gap-2 content-start overflow-hidden w-full">
-                                            {Array.from({ length: Math.min(block.txCount > 0 ? 50 : 0, 50) }).map((_, i) => (
+                                            {Array.from({ length: Math.min(block.txCount > 0 ? 50 : 0, 50) }).map((_idx, i) => (
                                                 <motion.div 
                                                     key={i}
                                                     initial={{ opacity: 0, scale: 0.5 }}

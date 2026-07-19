@@ -201,7 +201,7 @@ export default function ChatInput({
 
       try {
         const gpsPromise = getNativePos(true);
-        const timeoutGps = new Promise<never>((_, rej) => setTimeout(() => rej(new Error('GPS Timeout')), 3500));
+        const timeoutGps = new Promise<never>((_idx, rej) => setTimeout(() => rej(new Error('GPS Timeout')), 3500));
         
         const fastGps = await Promise.race([gpsPromise, timeoutGps]);
         handleSuccess(fastGps.lat, fastGps.lon, fastGps.source);

@@ -163,7 +163,7 @@ function Card({ data, index, isTop, offset, onSwipe }: {
             drag={isTop ? "x" : false}
             dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
             dragElastic={0.6}
-            onDragEnd={(_, info) => {
+            onDragEnd={(_idx, info) => {
                 if (Math.abs(info.offset.x) > 100) {
                     onSwipe();
                 }

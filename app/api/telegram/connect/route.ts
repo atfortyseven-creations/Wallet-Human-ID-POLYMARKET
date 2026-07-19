@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
             minApy: record?.minApy ?? 20,
             evSignals: record?.evSignals ?? true,
         });
-    } catch (_) {
+    } catch (_err) {
         return NextResponse.json({ configured: false });
     }
 }
@@ -145,7 +145,7 @@ async function sendTelegramAlert(chatId: string, message: string): Promise<boole
         });
         const data = await res.json();
         return data.ok;
-    } catch (_) {
+    } catch (_err) {
         return false;
     }
 }

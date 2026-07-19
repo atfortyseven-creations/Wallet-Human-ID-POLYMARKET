@@ -55,7 +55,7 @@ export default function GlobalConsensus() {
 
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {loading ? (
-          Array.from({ length: 4 }).map((_, i) => (
+          Array.from({ length: 4 }).map((_idx, i) => (
             <div key={i} className="border border-white/5 bg-white/[0.02] h-32 animate-pulse" />
           ))
         ) : (

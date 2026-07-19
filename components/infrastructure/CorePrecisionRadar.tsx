@@ -43,7 +43,7 @@ export default function CorePrecisionRadar() {
 
             {/* Internal Precision Markers */}
             <div className="absolute inset-10 flex items-center justify-center">
-                {[...Array(24)].map((_, i) => (
+                {[...Array(24)].map((_idx, i) => (
                     <div 
                         key={i} 
                         className="absolute w-full h-px bg-white/10"

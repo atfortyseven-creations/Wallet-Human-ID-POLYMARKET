@@ -31,7 +31,7 @@ export function MiningDashboard() {
             return {
                 difficulty: {
                     current: diffData.difficulty,
-                    history: Array.from({ length: 7 }, (_, i) => ({
+                    history: Array.from({ length: 7 }, (_idx, i) => ({
                         time: Date.now() - (6 - i) * 24 * 60 * 60 * 1000,
                         difficulty: diffData.difficulty * (1 + diffData.difficultyChange / 100 * (i / 6)),
                     })),

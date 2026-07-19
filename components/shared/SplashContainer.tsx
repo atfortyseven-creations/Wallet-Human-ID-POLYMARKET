@@ -14,7 +14,7 @@ function WaterSplash({ x, y, containerWidth, onComplete }: { x: number; y: numbe
 
   return (
     <div className="absolute pointer-events-none z-[100]" style={{ left: x, top: y }}>
-      {[...Array(12)].map((_, i) => (
+      {[...Array(12)].map((_idx, i) => (
         <motion.div
           key={i}
           className="absolute rounded-full mix-blend-screen bg-[#4FC3F7]"

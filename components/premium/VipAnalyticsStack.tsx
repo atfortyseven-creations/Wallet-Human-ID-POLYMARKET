@@ -377,7 +377,7 @@ function ChainPanel() {
             </div>
             {isLoading ? (
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-3">
-                    {Array.from({ length: OMNI_CHAINS.length }).map((_, i) => (
+                    {Array.from({ length: OMNI_CHAINS.length }).map((_idx, i) => (
                         <div key={i} className="h-32 bg-white/5 animate-pulse rounded-3xl" style={{ opacity: 1 - i * 0.02 }} />
                     ))}
                 </div>

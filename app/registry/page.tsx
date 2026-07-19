@@ -1658,7 +1658,7 @@ export default function RegistryPage() {
                     {/* TBODY */}
                     <tbody>
                       {loading && paginatedWallets.length === 0
-                        ? Array.from({ length: 10 }).map((_, i) => (
+                        ? Array.from({ length: 10 }).map((_idx, i) => (
                             <tr
                               key={i}
                               className="animate-pulse"
@@ -1918,7 +1918,7 @@ export default function RegistryPage() {
 
                       {Array.from(
                         { length: Math.min(7, totalPages) },
-                        (_, i) => {
+                        (_idx, i) => {
                           const start =
                             page <= 4
                               ? 1
@@ -2016,7 +2016,7 @@ export default function RegistryPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {loading && blockRoots.length === 0
-                  ? Array.from({ length: 6 }).map((_, i) => (
+                  ? Array.from({ length: 6 }).map((_idx, i) => (
                       <div
                         key={i}
                         className="rounded-2xl p-5 animate-pulse"
@@ -2281,7 +2281,7 @@ export default function RegistryPage() {
               {/* Loading skeleton */}
               {zkLoading && zkEntries.length === 0 && (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                  {Array.from({ length: 4 }).map((_, i) => (
+                  {Array.from({ length: 4 }).map((_idx, i) => (
                     <div
                       key={i}
                       className="rounded-2xl p-5 animate-pulse"

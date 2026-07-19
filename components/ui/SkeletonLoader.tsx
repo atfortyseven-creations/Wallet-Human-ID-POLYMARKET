@@ -228,7 +228,7 @@ export function TableSkeleton({ rows = 8 }: { rows?: number }) {
         ))}
       </div>
       {/* Rows */}
-      {Array.from({ length: rows }).map((_, i) => (
+      {Array.from({ length: rows }).map((_idx, i) => (
         <div
           key={i}
           className="flex items-center gap-4 px-4 py-3 rounded-xl"

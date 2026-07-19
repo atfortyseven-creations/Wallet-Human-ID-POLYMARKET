@@ -123,7 +123,7 @@ export async function POST(req: NextRequest) {
                 `;
                 resolvedQuestId = newId;
             }
-        } catch (_) { /* table may not exist in dev — use slug as fallback */ }
+        } catch (_err) { /* table may not exist in dev — use slug as fallback */ }
 
         // ── DEDUPLICATION: Atomic Serializable transaction ────────────────────────
         // Both wallet AND IP uniqueness are enforced inside a single Serializable

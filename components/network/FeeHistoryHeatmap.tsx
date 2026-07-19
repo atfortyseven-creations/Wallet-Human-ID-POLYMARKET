@@ -118,7 +118,7 @@ export function FeeHistoryHeatmap() {
           <div className="min-w-[700px]">
             {/* X Axis Labels (Hours) */}
             <div className="flex ml-12 mb-2">
-              {Array.from({ length: 24 }).map((_, i) => (
+              {Array.from({ length: 24 }).map((_idx, i) => (
                 <div key={i} className="flex-1 text-center text-[8px] font-mono text-white/20">
                   {i % 4 === 0 ? `${i.toString().padStart(2, '0')}:00` : ''}
                 </div>

@@ -139,7 +139,7 @@ export async function GET(req: NextRequest) {
                 } else {
                     positives.push(` ${lockedPct.toFixed(0)}% de la liquidez está bloqueada`);
                 }
-            } catch (_) {}
+            } catch (_err) {}
         }
 
         //  Positives 

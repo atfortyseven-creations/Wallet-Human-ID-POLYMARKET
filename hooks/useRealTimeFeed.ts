@@ -73,7 +73,7 @@ export function useRealTimeFeed() {
                             lastUpdate:   Date.now(),
                         }
                     }));
-                } catch (_) { /* silently ignore malformed frames */ }
+                } catch (_err) { /* silently ignore malformed frames */ }
             };
 
             ws.onerror = () => {

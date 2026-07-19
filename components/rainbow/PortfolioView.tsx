@@ -695,7 +695,7 @@ export default function PortfolioView({
                       Prev
                     </button>
                     <div className="flex gap-1">
-                      {Array.from({ length: Math.ceil(balances.length / 8) }).map((_, idx) => (
+                      {Array.from({ length: Math.ceil(balances.length / 8) }).map((_idx, idx) => (
                         <button
                           key={idx}
                           onClick={() => setCurrentPage(idx + 1)}

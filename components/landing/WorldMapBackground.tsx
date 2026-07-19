@@ -27,7 +27,7 @@ interface WhaleFlow {
 }
 
 // Fallback static structure displayed while API loads
-const SKELETON = Array.from({ length: 5 }, (_, i) => ({
+const SKELETON = Array.from({ length: 5 }, (_idx, i) => ({
   txid:          `skel-${i}`,
   fromCity:      '',
   toCity:        '',

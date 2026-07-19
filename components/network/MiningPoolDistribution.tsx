@@ -148,7 +148,7 @@ export function MiningPoolDistribution({ hideHeader = false, theme = 'default' }
                   animationBegin={0}
                   animationDuration={1500}
                 >
-                  {(data?.pools || HISTORICAL_REFERENCE_DATA).map((_, idx) => (
+                  {(data?.pools || HISTORICAL_REFERENCE_DATA).map((_idx, idx) => (
                     <Cell
                       key={`cell-${idx}`}
                       fill={POOL_COLORS[idx % POOL_COLORS.length]}

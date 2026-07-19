@@ -111,7 +111,7 @@ function ZKArchitectureVisual() {
         ))}
         
         {/* Data Stream Particles */}
-        {Array.from({ length: 12 }).map((_, i) => (
+        {Array.from({ length: 12 }).map((_idx, i) => (
             <motion.div
                 key={i}
                 className="absolute w-1 h-1 bg-indigo-400 rounded-full"

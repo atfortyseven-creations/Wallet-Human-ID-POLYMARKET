@@ -21,8 +21,8 @@ function decodeHTMLEntities(text: string): string {
         .replace(/&#8220;/g, '').replace(/&#8221;/g, '')
         .replace(/&#8211;/g, '').replace(/&#8212;/g, '')
         .replace(/&#39;/g, "'")
-        .replace(/&#(\d+);/g, (_, dec) => String.fromCharCode(Number(dec)))
-        .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCharCode(parseInt(hex, 16)));
+        .replace(/&#(\d+);/g, (_idx, dec) => String.fromCharCode(Number(dec)))
+        .replace(/&#x([0-9a-f]+);/gi, (_idx, hex) => String.fromCharCode(parseInt(hex, 16)));
 }
 
 const fetcher = async (url: string) => {

@@ -39,7 +39,7 @@ function FloatingParticles() {
     })),
   []);
 
-  useFrame((_, delta) => {
+  useFrame((_idx, delta) => {
     if (!mesh.current) return;
     // Use delta so speed is frame-rate independent at any Hz
     for (let i = 0; i < COUNT; i++) {

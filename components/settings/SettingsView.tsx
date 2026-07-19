@@ -344,7 +344,7 @@ function SecurityModule({ passwordHash, setupPassword, lockVault, privateKey, mn
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-3 gap-4">
-                                    {Array.from({ length: 12 }).map((_, i) => (
+                                    {Array.from({ length: 12 }).map((_idx, i) => (
                                         <div key={i} className="border border-black p-3 text-center">
                                             <span className="text-[11px] tracking-widest">••••</span>
                                         </div>

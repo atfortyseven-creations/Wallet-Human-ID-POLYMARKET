@@ -116,7 +116,7 @@ export async function GET(req: NextRequest) {
 }
 
 function generateHeatmapFromActivity(intel: any) {
-    const heatmap = Array.from({ length: 24 }, (_, i) => ({
+    const heatmap = Array.from({ length: 24 }, (_idx, i) => ({
         hour: i,
         txCount: 0,
         volume: 0

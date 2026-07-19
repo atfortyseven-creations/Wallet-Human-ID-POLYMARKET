@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
                 undefined as any,
                 15000 as any
             ),
-            new Promise<never>((_, reject) =>
+            new Promise<never>((_idx, reject) =>
                 setTimeout(() => reject(new Error('Alpha scanner timeout')), API_TIMEOUT_MS)
             )
         ]);

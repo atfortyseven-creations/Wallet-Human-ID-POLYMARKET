@@ -148,7 +148,7 @@ function TyphoonRig({ scrollProgress }: { scrollProgress: number }) {
 
           {/* Logic Silos (Data Slots) */}
           <group position={[phaseDeconstruct * 3 + phaseNetwork * 5, 0.5 + phaseDeconstruct * 1.5, 0]}>
-            {Array.from({ length: 6 }).map((_, i) => (
+            {Array.from({ length: 6 }).map((_idx, i) => (
               <mesh key={`silo-${i}`} position={[(i - 2.5) * 0.4 * (1 + phaseZoom), 0, 0]} material={innerMaterial}>
                 <cylinderGeometry args={[0.08, 0.08, 1, 8]} />
               </mesh>
@@ -157,7 +157,7 @@ function TyphoonRig({ scrollProgress }: { scrollProgress: number }) {
 
           {/* Cryptographic Vault (Revealed during Phase 4) */}
           <group position={[-phaseDeconstruct * 3 - phaseNetwork * 5, -0.5 - phaseDeconstruct * 1.5 - phaseVault * 2, 0]}>
-             {Array.from({ length: 4 }).map((_, i) => (
+             {Array.from({ length: 4 }).map((_idx, i) => (
               <mesh key={`vault-${i}`} position={[(i - 1.5) * 0.5 * (1 + phaseVault), 0, 0]}>
                 <boxGeometry args={[0.3, 0.3, 0.3]} />
                 <meshStandardMaterial 
@@ -172,7 +172,7 @@ function TyphoonRig({ scrollProgress }: { scrollProgress: number }) {
 
           {/* Cosmic Data Nodes (The Immersive Swarm) */}
           <group>
-            {[...Array(60)].map((_, i) => {
+            {[...Array(60)].map((_idx, i) => {
               // Mathematical spiral placement
               const theta = i * 0.4;
               const radius = 1 + (i * 0.05);

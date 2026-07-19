@@ -5,7 +5,7 @@ import { privyRelayer } from '@/lib/services/PrivyRelayerService';
 
 /** Safe serializer  avoids JSON.stringify crash on BigInt values */
 function safeSerialize(data: unknown): string {
-  return JSON.stringify(data, (_, v) =>
+  return JSON.stringify(data, (_idx, v) =>
     typeof v === 'bigint' ? v.toString() : v
   );
 }

@@ -116,7 +116,7 @@ export function TransactionManagerView({ onBack }: { onBack: () => void }) {
                 </div>
 
                 {nonceState && nonceState.pending > nonceState.latest ? (
-                    Array.from({ length: nonceState.pending - nonceState.latest }).map((_, idx) => {
+                    Array.from({ length: nonceState.pending - nonceState.latest }).map((_idx, idx) => {
                         const currentNonce = nonceState.latest + idx;
                         return (
                             <div key={currentNonce} className="flex flex-col sm:flex-row sm:items-center justify-between p-5 border border-black/10 bg-white hover:border-black/30 transition-colors gap-4 shadow-sm">

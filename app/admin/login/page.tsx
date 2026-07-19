@@ -46,7 +46,7 @@ export default function AdminLoginPage() {
 
             {/* Animated Stars */}
             <div className="absolute inset-0">
-                {[...Array(50)].map((_, i) => (
+                {[...Array(50)].map((_idx, i) => (
                     <div
                         key={i}
                         className="absolute w-0.5 h-0.5 bg-white rounded-full opacity-30 animate-float"

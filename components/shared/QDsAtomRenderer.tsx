@@ -110,7 +110,7 @@ function OrbitalRing({ inclination, azimuth, vel, progress, baseSpeed, isDark, i
   const ref = useRef<THREE.Mesh>(null);
   const angle = useRef(0);
 
-  useFrame((_, dt) => {
+  useFrame((_idx, dt) => {
     if (!ref.current) return;
     angle.current += dt * baseSpeed + vel.current * 0.0003;
     ref.current.rotation.y = angle.current;
@@ -149,7 +149,7 @@ function Electron({ inclination, azimuth, phase, orbitRadius, vel }: any) {
   const meshRef = useRef<THREE.Mesh>(null);
   const t = useRef(phase);
 
-  useFrame((_, dt) => {
+  useFrame((_idx, dt) => {
     if (!meshRef.current) return;
     t.current += dt * 1.6 + Math.abs(vel.current) * 0.002;
     meshRef.current.position.set(
@@ -187,7 +187,7 @@ const NUC_MAT_LIGHT = new THREE.MeshPhysicalMaterial({
 function Nucleus({ vel, isDark }: any) {
   const ref = useRef<THREE.Mesh>(null);
 
-  useFrame((_, dt) => {
+  useFrame((_idx, dt) => {
     if (!ref.current) return;
     ref.current.rotation.y += dt * 0.3 + vel.current * 0.0008;
     ref.current.rotation.x += dt * 0.12;

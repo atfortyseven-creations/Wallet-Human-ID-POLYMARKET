@@ -140,13 +140,13 @@ function BlockConfirmingAnimation({ amount, to, blockNum }: { amount: string; to
 
   useEffect(() => {
     const timers: ReturnType<typeof setTimeout>[] = [];
-    const order = Array.from({ length: TOTAL }, (_, i) => i).sort(() => Math.random() - 0.5);
+    const order = Array.from({ length: TOTAL }, (_idx, i) => i).sort(() => Math.random() - 0.5);
     order.forEach((cellIdx, tick) => {
       timers.push(setTimeout(() => {
         setLit(prev => { const n = [...prev]; n[cellIdx] = true; return n; });
       }, tick * CELL_MS));
     });
-    BLOCK_STAGES.forEach((_, idx) => {
+    BLOCK_STAGES.forEach((_idx, idx) => {
       if (idx === 0) return;
       timers.push(setTimeout(() => setStageIdx(idx), (ANIM_MS / (BLOCK_STAGES.length - 1)) * idx));
     });

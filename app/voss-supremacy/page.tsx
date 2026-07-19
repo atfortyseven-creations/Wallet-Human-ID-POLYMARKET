@@ -22,7 +22,7 @@ export default function VossSupremacyPage() {
         </header>
 
         <div className="grid gap-8">
-          {Array.from({ length: 10 }).map((_, catIndex) => {
+          {Array.from({ length: 10 }).map((_idx, catIndex) => {
             const categoryItems = VOSS_MASTER_MATRIX.filter(item => item.category === catIndex + 1);
             if (!categoryItems.length) return null;
             

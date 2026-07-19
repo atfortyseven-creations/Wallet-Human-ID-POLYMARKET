@@ -162,7 +162,7 @@ export function SystemFAQ() {
 
                     <div className="w-full relative px-12">
                         <div className="flex items-center justify-center gap-4 overflow-x-auto no-scrollbar py-2">
-                            {Array.from({ length: totalPages }).map((_, i) => (
+                            {Array.from({ length: totalPages }).map((_idx, i) => (
                                 <button
                                     key={i}
                                     onClick={() => setPage(i)}

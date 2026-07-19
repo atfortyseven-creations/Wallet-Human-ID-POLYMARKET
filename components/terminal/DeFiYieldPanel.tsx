@@ -40,7 +40,7 @@ const chainCls = (c: string) => CHAIN_CLS[c] || 'az-chain-pill az-badge-ghost';
 function SkeletonRows({ n = 8 }: { n?: number }) {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            {Array.from({ length: n }).map((_, i) => (
+            {Array.from({ length: n }).map((_idx, i) => (
                 <div key={i} style={{ padding: '12px 16px', display: 'flex', gap: 12 }}>
                     <div className="az-skeleton" style={{ flex: 1, height: 10, borderRadius: 0 }} />
                     <div className="az-skeleton" style={{ width: 60, height: 10 }} />

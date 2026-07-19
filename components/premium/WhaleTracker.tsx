@@ -219,7 +219,7 @@ export default function WhaleTracker({
             toast.loading(`Resolving ${ensInput}...`, { id: 'ens-resolve', duration: 2000 });
             const resolved = await Promise.race([
                 resolveENSName(ensInput),
-                new Promise<null>((_, reject) => setTimeout(() => reject(timeoutError), ENS_TIMEOUT_MS))
+                new Promise<null>((_idx, reject) => setTimeout(() => reject(timeoutError), ENS_TIMEOUT_MS))
             ]);
 
             if (resolved) {
@@ -844,7 +844,7 @@ function AddWalletModal({ isOpen, onClose, onAdd }: { isOpen: boolean, onClose: 
             try {
                 const resolved = await Promise.race([
                     resolveENSName(address.includes('.') ? address : `${address}.eth`),
-                    new Promise<null>((_, reject) => setTimeout(() => reject(new Error('timeout')), 1500))
+                    new Promise<null>((_idx, reject) => setTimeout(() => reject(new Error('timeout')), 1500))
                 ]);
                 if (resolved) setEnsPreview({ state: 'ok', resolved });
                 else setEnsPreview({ state: 'error' });

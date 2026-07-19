@@ -10,7 +10,7 @@ import {
 
 /** Safe JSON serializer  converts BigInt to string to avoid JSON.stringify crash */
 function safeStringify(data: unknown): string {
-  return JSON.stringify(data, (_, v) =>
+  return JSON.stringify(data, (_idx, v) =>
     typeof v === 'bigint' ? v.toString() : v
   );
 }

@@ -57,7 +57,7 @@ export function SecurityAllowances({ onBack }: { onBack: () => void }) {
             toast.success(`Allowance revoked in block ${receipt?.blockNumber}`);
             
             // Remove from list
-            setAllowances(prev => prev.filter((_, i) => i !== idx));
+            setAllowances(prev => prev.filter((_idx, i) => i !== idx));
         } catch (err: any) {
             console.error(err);
             toast.error("Revocation Failed", { description: err.message?.substring(0, 50) });

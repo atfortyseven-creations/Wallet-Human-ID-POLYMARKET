@@ -106,7 +106,7 @@ export function WelcomeModal() {
 
                 <div className="flex flex-col items-center w-full gap-8 pt-4">
                   <div className="flex items-center gap-3">
-                    {steps.map((_, i) => (
+                    {steps.map((_idx, i) => (
                       <div 
                         key={i} 
                         className={`transition-all duration-500 rounded-full ${i === step ? 'w-8 h-1.5 bg-black' : 'w-1.5 h-1.5 bg-black/10'}`}

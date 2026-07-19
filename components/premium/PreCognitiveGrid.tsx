@@ -63,7 +63,7 @@ export function PreCognitiveGrid({ symbol }: PreCognitiveGridProps) {
                             try {
                                 const parsed = JSON.parse(line.slice(6));
                                 if (isMounted) setState(parsed);
-                            } catch (_) {}
+                            } catch (_err) {}
                         }
                     }
                 }

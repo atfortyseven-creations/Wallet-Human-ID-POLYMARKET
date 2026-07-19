@@ -31,7 +31,7 @@ const PARTICLE_MAT = new THREE.MeshStandardMaterial({
 });
 
 // Pre-compute particle data at module scope  zero allocation in render
-const PARTICLE_DATA = Array.from({ length: PARTICLE_COUNT }, (_, i) => ({
+const PARTICLE_DATA = Array.from({ length: PARTICLE_COUNT }, (_idx, i) => ({
   x: (Math.sin(i * 1234.5678) - 0.5) * 20,
   y: (Math.cos(i * 9876.5432) - 0.5) * 20,
   z: (Math.sin(i * 1357.9246) - 0.5) * 20,

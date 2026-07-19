@@ -43,7 +43,7 @@ function HealthScoreRing({ score }: { score: number }) {
                     transition={{ duration: 2, ease: 'easeOut' }}
                 />
                 
-                {Array.from({ length: 36 }).map((_, i) => {
+                {Array.from({ length: 36 }).map((_idx, i) => {
                     const angle = (i / 36) * Math.PI * 2;
                     const r1 = 95, r2 = i % 9 === 0 ? 86 : 90;
                     return (
@@ -80,7 +80,7 @@ function ScanLine() {
 function HexParticles() {
     return (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {Array.from({ length: 12 }).map((_, i) => (
+            {Array.from({ length: 12 }).map((_idx, i) => (
                 <motion.div key={i}
                     className="absolute text-indigo-600/5 font-mono text-[10px] font-bold"
                     style={{ left: `${10 + (i % 4) * 25}%`, top: `${10 + Math.floor(i / 4) * 35}%` }}

@@ -5,7 +5,7 @@ import { verifyJWT } from '@/lib/jwt';
 // Helper to handle BigInt serialization from Prisma
 function serializeData(data: any) {
   return JSON.parse(
-    JSON.stringify(data, (_, value) =>
+    JSON.stringify(data, (_idx, value) =>
       typeof value === 'bigint' ? value.toString() : value
     )
   );

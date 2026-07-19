@@ -245,7 +245,7 @@ function WatermarkOverlay({ peerAddress }: { peerAddress: string }) {
       className="pointer-events-none absolute inset-0 overflow-hidden select-none"
       style={{ zIndex: 10 }}
     >
-      {Array.from({ length: 8 }).map((_, i) => (
+      {Array.from({ length: 8 }).map((_idx, i) => (
         <div
           key={i}
           className="absolute font-mono text-[8px] font-bold whitespace-nowrap"
@@ -607,7 +607,7 @@ function MatrixRain() {
       aria-hidden="true"
       style={{ zIndex: 0 }}
     >
-      {Array.from({ length: 18 }).map((_, i) => (
+      {Array.from({ length: 18 }).map((_idx, i) => (
         <div
           key={i}
           className="absolute top-0 text-[10px] font-mono select-none"

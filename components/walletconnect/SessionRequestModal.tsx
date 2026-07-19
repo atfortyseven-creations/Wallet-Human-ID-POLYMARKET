@@ -85,7 +85,7 @@ export function SessionRequestModal() {
                     topic,
                     response: { id, jsonrpc: '2.0', error: getSdkError('USER_REJECTED') }
                 });
-            } catch (_) {}
+            } catch (_err) {}
         } finally {
             setIsProcessing(false);
             removeRequest(id);
@@ -101,7 +101,7 @@ export function SessionRequestModal() {
                     topic,
                     response: { id, jsonrpc: '2.0', error: getSdkError('USER_REJECTED') }
                 });
-            } catch (_) {}
+            } catch (_err) {}
         }
         removeRequest(id);
         setIsProcessing(false);

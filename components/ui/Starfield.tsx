@@ -31,7 +31,7 @@ const STAR_MAT_BLUE = new THREE.MeshBasicMaterial({
 const STAR_COUNT = 400;
 const starData = (() => {
   const rand = () => crypto.getRandomValues(new Uint32Array(1))[0] / 4294967296;
-  return Array.from({ length: STAR_COUNT }, (_, i) => {
+  return Array.from({ length: STAR_COUNT }, (_idx, i) => {
     const angle  = rand() * Math.PI * 2;
     const radius = rand() * 500 + 50;
     return {
@@ -49,7 +49,7 @@ function Star({ idx }: { idx: number }) {
   const mesh = useRef<THREE.Mesh>(null!);
   const d    = starData[idx];
 
-  useFrame((_, delta) => {
+  useFrame((_idx, delta) => {
     const m = mesh.current;
     // delta-correct motion  same speed at 60, 120, or 240 Hz
     const spd = d.speed * delta;
@@ -79,7 +79,7 @@ function Star({ idx }: { idx: number }) {
 
 // Memoized scene  star list never changes
 const StarfieldScene = React.memo(function StarfieldScene() {
-  const indices = useMemo(() => Array.from({ length: STAR_COUNT }, (_, i) => i), []);
+  const indices = useMemo(() => Array.from({ length: STAR_COUNT }, (_idx, i) => i), []);
   return (
     <>
       <color attach="background" args={['#000000']} />

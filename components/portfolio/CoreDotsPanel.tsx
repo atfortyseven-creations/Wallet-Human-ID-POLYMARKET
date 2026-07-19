@@ -148,7 +148,7 @@ function useNativePrice() {
 //  Entropy Visualizer 
 function EntropyVisualizer({ entropy }: { entropy: bigint }) {
     const hex = entropy.toString(16).padStart(64, '0');
-    const bytes = Array.from({ length: 32 }, (_, i) => parseInt(hex.slice(i * 2, i * 2 + 2), 16));
+    const bytes = Array.from({ length: 32 }, (_idx, i) => parseInt(hex.slice(i * 2, i * 2 + 2), 16));
     return (
         <div className="w-full">
             <div className="grid grid-cols-8 gap-1 mb-3">
@@ -515,7 +515,7 @@ function HistoryTab({
             const total  = Number(totalReceipts);
             const start  = Math.max(0, total - PAGE_SIZE * (page + 1));
             const end    = total - PAGE_SIZE * page;
-            const ids    = Array.from({ length: end - start }, (_, i) => BigInt(start + i)).reverse();
+            const ids    = Array.from({ length: end - start }, (_idx, i) => BigInt(start + i)).reverse();
 
             const fetched: OnChainReceipt[] = [];
             for (const id of ids) {

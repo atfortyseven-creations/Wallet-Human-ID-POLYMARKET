@@ -170,7 +170,7 @@ export function VirtualizedFirehose() {
                 {/* Empty State / Skeleton */}
                 {(!isMounted || whaleEvents.length === 0) && (
                     <div className="absolute inset-0 z-10 bg-[#FFFFFF] flex flex-col">
-                        {Array.from({ length: 10 }).map((_, i) => <FirehoseSkeleton key={i} />)}
+                        {Array.from({ length: 10 }).map((_idx, i) => <FirehoseSkeleton key={i} />)}
                     </div>
                 )}
 

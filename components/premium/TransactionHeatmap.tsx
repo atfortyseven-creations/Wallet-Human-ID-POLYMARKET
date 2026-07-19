@@ -38,9 +38,9 @@ export const TransactionHeatmap: React.FC<TransactionHeatmapProps> = ({ data }) 
         <div className="w-full overflow-x-auto pb-2 scrollbar-hide">
             <div className="flex gap-1 min-w-max">
                 {/* Simplified layout: 52 columns of 7 squares */}
-                {Array.from({ length: 52 }).map((_, weekIdx) => (
+                {Array.from({ length: 52 }).map((_idx, weekIdx) => (
                     <div key={weekIdx} className="flex flex-col gap-1">
-                        {Array.from({ length: 7 }).map((_, dayIdx) => {
+                        {Array.from({ length: 7 }).map((_idx, dayIdx) => {
                             const dataIdx = weekIdx * 7 + dayIdx;
                             const day = days[dataIdx];
                             if (!day) return null;

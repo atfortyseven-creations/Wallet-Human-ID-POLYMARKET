@@ -180,7 +180,7 @@ function NewTopicContent() {
       setDocuments(newDocs);
   };
   const removeDocument = (index: number) => {
-      setDocuments(documents.filter((_, i) => i !== index));
+      setDocuments(documents.filter((_idx, i) => i !== index));
   };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, index: number) => {

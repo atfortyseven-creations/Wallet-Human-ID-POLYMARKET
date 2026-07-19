@@ -125,7 +125,7 @@ export default function SocialRecoveryModal({ isOpen, onClose }: SocialRecoveryM
                                                 <span className="text-white text-sm font-mono">{g.slice(0, 20)}...</span>
                                             </div>
                                             <button
-                                                onClick={() => setGuardians(guardians.filter((_, idx) => idx !== i))}
+                                                onClick={() => setGuardians(guardians.filter((_idx, idx) => idx !== i))}
                                                 className="text-red-400 hover:text-red-300 text-sm"
                                             >
                                                 Remove

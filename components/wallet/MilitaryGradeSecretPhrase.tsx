@@ -153,7 +153,7 @@ Wallet: Whale Network Terminal v4.0
             {/* Entropy Visualizer */}
             <div className="mb-6 bg-black/40 rounded-xl p-4 border border-white/5 font-mono text-[10px] text-green-500/50 break-all h-24 overflow-hidden relative">
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80" />
-                {Array.from({ length: 12 }).map((_, i) => (
+                {Array.from({ length: 12 }).map((_idx, i) => (
                     <div key={i} className="opacity-50">
                         [ENTROPY_POOL_#{i}]...[BIP39_KMS_SECURE]...[256BIT_SEEDED]
                     </div>

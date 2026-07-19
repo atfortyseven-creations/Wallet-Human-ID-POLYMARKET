@@ -35,7 +35,7 @@ const SIGNAL_COLOR: Record<string, string> = {
 function Skeleton({ count = 6 }) {
     return (
         <div className="flex flex-col gap-3 p-6">
-            {Array.from({ length: count }).map((_, i) => (
+            {Array.from({ length: count }).map((_idx, i) => (
                 <div key={i} className="flex gap-4 p-5 border border-[#E5E5E5]  bg-[#FFFFFF]  rounded-2xl">
                     <div className="w-12 h-12 bg-[#E5E5E5]  rounded-xl animate-pulse" />
                     <div className="flex-1 space-y-3">

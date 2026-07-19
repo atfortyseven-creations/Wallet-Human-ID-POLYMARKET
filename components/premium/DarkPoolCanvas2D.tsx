@@ -597,7 +597,7 @@ export function DarkPoolCanvas2D() {
       <div className="absolute right-8 bottom-8 pointer-events-none text-right">
           <div className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] mb-4">Neural Fluid Sync</div>
           <div className="flex gap-1 justify-end">
-              {[...Array(12)].map((_, i) => (
+              {[...Array(12)].map((_idx, i) => (
                   <div key={i} className={`w-1 h-3 rounded-full bg-white/5 ${i < (txCount % 12) ? 'bg-indigo-500/40' : ''}`} />
               ))}
           </div>

@@ -13,7 +13,7 @@ export function AztecAirdropCalendar() {
 
     // Generate years from current up to 2100
     const currentYear = new Date().getUTCFullYear();
-    const years = Array.from({ length: 2100 - currentYear + 1 }, (_, i) => currentYear + i);
+    const years = Array.from({ length: 2100 - currentYear + 1 }, (_idx, i) => currentYear + i);
 
     useEffect(() => {
         if (!aztecAddress) return;
@@ -149,7 +149,7 @@ export function AztecAirdropCalendar() {
             {/* Calendar Grid */}
             <div className="p-6">
                 <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
-                    {Array.from({ length: 12 }, (_, i) => renderMonth(i))}
+                    {Array.from({ length: 12 }, (_idx, i) => renderMonth(i))}
                 </div>
             </div>
             
