@@ -314,16 +314,18 @@ export async function POST(req: NextRequest) {
           },
         });
 
-        // 3. [TOKENOMICS] Deduct 1 QD network fee (FPC simulation)
-        const FEE_AMOUNT = 1;
-        await (tx as any).qdTransaction.create({
-          data: {
-            aztecAddress: fromAddr,
-            type: 'FEE',
-            amount: FEE_AMOUNT,
-            description: `Aztec Network Fee — Transfer ${roundedAmount} QDs`,
-          },
-        });
+        // 3. [TOKENOMICS] Deduct 1 QD network fee (FPC simulation) - Waived for micro-transactions (e.g., 0.0001 QD chat messages)
+        if (roundedAmount >= 1) {
+          const FEE_AMOUNT = 1;
+          await (tx as any).qdTransaction.create({
+            data: {
+              aztecAddress: fromAddr,
+              type: 'FEE',
+              amount: FEE_AMOUNT,
+              description: `Aztec Network Fee — Transfer ${roundedAmount} QDs`,
+            },
+          });
+        }
 
         // 4. [TOKENOMICS] Reward sender +50 QDs for completing a ZK transfer (once per day)
         const startOfDay = new Date();
