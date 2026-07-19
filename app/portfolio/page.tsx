@@ -41,6 +41,15 @@ export default function PortfolioPage() {
     }
   }, [isSystemChecking, isSystemConnected]);
 
+  // Gate: require wallet connection OR session storage unlock token
+  const needsGate = !isSystemConnected && !sessionUnlocked;
+
+  useEffect(() => {
+    if (needsGate && mounted && !isSystemChecking) {
+      router.replace('/');
+    }
+  }, [needsGate, mounted, isSystemChecking, router]);
+
   // CRITICAL FIX: Never return null here — TitaniumGate sees a blank page and
   // redirects to /connect, which then redirects back to /portfolio → infinite loop.
   // Instead render a proper loading screen that TitaniumGate won't misinterpret.
@@ -55,15 +64,6 @@ export default function PortfolioPage() {
   }
 
   // Legacy unlock screen removed.
-
-  // Gate: require wallet connection OR session storage unlock token
-  const needsGate = !isSystemConnected && !sessionUnlocked;
-
-  useEffect(() => {
-    if (needsGate && mounted && !isSystemChecking) {
-      router.replace('/');
-    }
-  }, [needsGate, mounted, isSystemChecking, router]);
 
   if (needsGate) {
     return (
