@@ -89,7 +89,6 @@ export function ClientRootRouter() {
   return (
     <div className="w-full bg-white flex flex-col">
       <ImmersiveManifestoLanding />
-      <SystemFooter />
     </div>
   );
 }

@@ -341,15 +341,67 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
     setIsBusy(true);
     setError(null);
 
-    // Prefer external signer (from caller's hook context), then wagmi hook signer.
-    // If neither is available (QR handshake desktop), skip signature.
     const activeSigner = externalSignMessageAsync ?? wagmiSignMessageAsync;
 
     try {
+      // ── STEP 0: RETURNING USER CHECK ─────────────────────────────────────────
+      // Before doing ANY signature or derivation, check if this EVM address
+      // already has QDs in the DB from a prior session. If yes, restore that
+      // canonical address and skip the airdrop entirely. This fixes the bug
+      // where returning users had to "re-claim" their QDs on every login.
+      //
+      // We also pass the locally-cached aztec address (if any) as a candidate
+      // so we can find it even if the EVM derivation path changed.
+      const evmForRestore = rawSeed.startsWith('0x') ? rawSeed.toLowerCase() : null;
+      const localSession = (() => {
+        try { return JSON.parse(localStorage.getItem('aztec_session') || '{}'); } catch { return {}; }
+      })();
+
+      if (evmForRestore || localSession?.address) {
+        toast.loading("Checking existing Aztec identity...", { id: "az-connect" });
+        try {
+          const restoreRes = await fetch('/api/aztec/restore-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              evmAddress: evmForRestore ?? '',
+              candidateAddress: localSession?.address ?? '',
+            }),
+          });
+          if (restoreRes.ok) {
+            const restoreData = await restoreRes.json();
+            if (restoreData.found && restoreData.aztecAddress) {
+              // ✅ Returning user — restore their canonical address directly
+              const canonicalAddr = restoreData.aztecAddress;
+              setAztecAddress(canonicalAddr);
+              setSeed(evmForRestore || rawSeed);
+              try {
+                localStorage.setItem('aztec_session', JSON.stringify({
+                  address: canonicalAddr,
+                  seed: evmForRestore || rawSeed,
+                }));
+              } catch {}
+              notifiedRef.current = new Set();
+              setIsLoading(true);
+              await fetchLedgerState(canonicalAddr);
+              setIsLoading(false);
+              startPolling(canonicalAddr);
+              toast.success(
+                `✅ Identity restored — ${restoreData.balance.toFixed(2)} QDs in your wallet`,
+                { id: "az-connect", duration: 5000 }
+              );
+              return; // Done — no need to derive or claim
+            }
+          }
+        } catch (restoreErr) {
+          console.warn('[AztecNative] Restore-session check failed, proceeding with full derivation:', restoreErr);
+        }
+      }
+
+      // ── STEP 1: FIRST-TIME USER — Full derivation + airdrop ──────────────────
       let signature: string | null = null;
 
       if (activeSigner) {
-        // Has an active wallet connector — request signature for entropy
         toast.loading("Sign message in your wallet to generate Aztec identity...", { id: "az-connect" });
         try {
           signature = await activeSigner({
@@ -362,34 +414,27 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
             sigMsg.includes('unavailable') ||
             sigMsg.includes('reconnecting');
           if (isConnErr) {
-            // Connector lost — fall through to seedless derivation
             console.warn('[AztecNative] Connector unavailable, falling back to seedless derivation.');
             signature = null;
           } else {
-            throw sigErr; // User rejection or other real error
+            throw sigErr;
           }
         }
       } else {
-        // No wagmi connector (QR handshake session) — derive from address directly
         toast.loading("Deriving Aztec identity from wallet address...", { id: "az-connect" });
       }
 
-      // Step 2: Derive entropy — from signature (if available) or from raw EVM address (seedless)
+      // Step 2: Derive entropy
       let entropy: string;
       if (signature) {
-        // Cryptographic path: hash the signature for maximum entropy
         entropy = keccak256(toBytes(signature));
       } else {
-        // Seedless path for QR handshake: use keccak256 of the EVM address as deterministic seed
-        // This produces the SAME Aztec address every time for the same wallet — no signature needed.
         const seedInput = rawSeed.startsWith('0x') ? rawSeed.toLowerCase() : rawSeed;
         entropy = keccak256(toBytes(seedInput));
         toast.loading("Deriving Aztec identity from wallet address...", { id: "az-connect" });
       }
 
-      // Step 2b: Server-side derivation (robust — no WASM required, no remote PXE needed)
-      // The server uses the same SHA-256 based deterministic algorithm as /api/aztec/derive-address.
-      // This is the guaranteed path; the local @aztec/aztec.js path is attempted as optimization.
+      // Step 2b: Server-side derivation
       let derived = "";
       try {
         toast.loading("Deriving Aztec identity...", { id: "az-connect" });
@@ -406,14 +451,47 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
         console.warn('[AztecNative] Server derive failed, using local fallback:', e);
       }
 
-      // Local fallback: keccak256 slice (same algorithm as before) — only if server call failed
       if (!derived) {
         derived = "0x" + entropy.slice(2, 66);
         console.warn('[AztecNative] Using local entropy-slice fallback for Aztec address.');
       }
 
-      // Step 2 — Trigger genesis airdrop (idempotent — server skips if already claimed).
-      // CRITICAL: We AWAIT the full response and check it before showing success.
+      // ── STEP 2.5: Check restore again with the derived address ──────────────
+      // The signature-derived address is different from the EVM address, so do
+      // a second restore check with the freshly derived address as a candidate.
+      try {
+        const restoreRes2 = await fetch('/api/aztec/restore-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            evmAddress: evmForRestore ?? '',
+            candidateAddress: derived,
+          }),
+        });
+        if (restoreRes2.ok) {
+          const restoreData2 = await restoreRes2.json();
+          if (restoreData2.found && restoreData2.aztecAddress) {
+            const canonicalAddr = restoreData2.aztecAddress;
+            setAztecAddress(canonicalAddr);
+            setSeed(entropy);
+            try {
+              localStorage.setItem('aztec_session', JSON.stringify({ address: canonicalAddr, seed: entropy }));
+            } catch {}
+            notifiedRef.current = new Set();
+            setIsLoading(true);
+            await fetchLedgerState(canonicalAddr);
+            setIsLoading(false);
+            startPolling(canonicalAddr);
+            toast.success(
+              `✅ Identity restored — ${restoreData2.balance.toFixed(2)} QDs in your wallet`,
+              { id: "az-connect", duration: 5000 }
+            );
+            return;
+          }
+        }
+      } catch {}
+
+      // Step 3 — Trigger genesis airdrop (truly first-time user only)
       let airdropGranted = false;
       if (claimAirdrop) {
         toast.loading("Deploying Aztec Identity & funding genesis...", { id: "az-connect" });
@@ -428,47 +506,45 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
             airdropGranted = true;
             toast.success(
               <span className="flex flex-col gap-1">
-                <span>✅ Identity deployed — 10 QDs genesis airdrop received!</span>
+                <span>✅ Identity deployed — {airdropData.amount ?? 10} QDs genesis airdrop received!</span>
                 {airdropData.onChain && airdropData.explorerUrl && (
                   <a href={airdropData.explorerUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-400 hover:text-blue-300 underline font-mono truncate max-w-[200px]">
                     Verify on AztecScan
                   </a>
                 )}
-              </span>, 
+              </span>,
               { id: "az-connect", duration: 8000 }
             );
-          } else if (airdropData.message?.includes('Already received')) {
-            // Already claimed — still a success state
+          } else if (airdropRes.status === 409) {
+            // 409 = already claimed but restore-check missed it (edge case)
+            // Treat this as a successful restore
+            airdropGranted = false;
             toast.success("Identity restored — QDs already in your wallet", { id: "az-connect" });
           } else {
             console.warn('[Aztec Airdrop] Unexpected response:', airdropData);
             toast.success("Identity deployed", { id: "az-connect" });
           }
         } catch (airdropErr: any) {
-          // Non-fatal: identity still connects even if airdrop fails
           console.error('[Aztec Airdrop] Failed:', airdropErr?.message);
           toast.warning("Identity deployed but airdrop pending — retry in 10s", { id: "az-connect" });
         }
       } else {
-        toast.success("Identity deployed (No signature = 0 QDs granted)", { id: "az-connect" });
+        toast.success("Identity connected", { id: "az-connect" });
       }
 
-      // Step 3 — Set session state in memory & local storage.
+      // Step 4 — Set session state
       setAztecAddress(derived);
       setSeed(entropy);
       try {
         localStorage.setItem('aztec_session', JSON.stringify({ address: derived, seed: entropy }));
       } catch (e) {}
-      
-      notifiedRef.current = new Set(); // Reset notification tracking on new login.
-      // Step 4 — Immediate first fetch, then start polling loop.
+
+      notifiedRef.current = new Set();
       setIsLoading(true);
       await fetchLedgerState(derived);
       setIsLoading(false);
       startPolling(derived);
 
-      // Step 5 — If airdrop was freshly granted, do a second fetch after 1.5s
-      // to guarantee the DB write is reflected before the user sees the balance.
       if (airdropGranted) {
         setTimeout(async () => {
           await fetchLedgerState(derived);

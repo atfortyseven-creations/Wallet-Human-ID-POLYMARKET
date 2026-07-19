@@ -56,6 +56,7 @@ const PUBLIC_PREFIXES = [
   '/api/aztec/transactions',
   '/api/aztec/derive-address',
   '/api/aztec/identity-status',
+  '/api/aztec/restore-session',  // Session restore for returning users (pre-auth)
   '/api/payments/checkout',      // Stripe checkout session creation
   '/api/webhooks/stripe',        // Stripe webhook (must be unauthenticated)
   '/api/webhooks/',              // All webhooks from external services
