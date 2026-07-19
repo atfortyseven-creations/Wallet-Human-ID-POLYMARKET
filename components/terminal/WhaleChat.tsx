@@ -1690,15 +1690,22 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     setSending(true);
 
     // --- QD DEDUCTION LOGIC ---
+    // [FIX] Only gate on QDs if the user has an Aztec identity connected.
+    // If aztecAddress is null (user hasn't claimed yet), balance = 0 is expected
+    // and we should NOT block messaging — they can claim their identity later.
+    // The tiny 0.0001 QD cost per message is essentially free and serves as
+    // spam prevention only for users who already have an identity.
     const isSystemSignal = content.startsWith('__CALL_');
-    if (!isSystemSignal && !isLocalSystemWallet) {
+    const { aztecAddress: userAztecAddr } = aztecNative;
+    if (!isSystemSignal && !isLocalSystemWallet && userAztecAddr) {
+      // Only enforce QD balance if the user has a loaded Aztec identity
       if (balance < 0.0001) {
         toast.error("Insufficient QDs to send message.", { description: "Top up via the Aztec Identity tab." });
         setSending(false);
         return;
       }
-      // Deduct QDs — on server failure, log and continue (message still sends)
-      await spendQDs(0.0001, 'Whale Chat message').catch((e: any) => console.warn('[WhaleChat] QD deduction failed:', e));
+      // Deduct QDs — fire-and-forget, message always sends regardless of QD API result
+      spendQDs(0.0001, 'Whale Chat message').catch((e: any) => console.warn('[WhaleChat] QD deduction failed (non-blocking):', e));
     }
 
     if (address) {

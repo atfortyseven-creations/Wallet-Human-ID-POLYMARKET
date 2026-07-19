@@ -530,18 +530,31 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
         // Revert optimistic balance decrease on server error
         setBalance(prev => Math.round((prev + amount) * 1_000_000) / 1_000_000);
         const errData = await res.json().catch(() => ({}));
-        // Surface identity gate errors to the user clearly
+        // [FIX] Surface identity gate errors once (not double-toast)
+        // and return false without throwing so callers (WhaleChat) can continue.
         if (errData?.code === 'NOT_VERIFIED_IDENTITY') {
-          toast.error("Identity required", { description: "Claim your Aztec identity to use QDs." });
+          toast.info("Claim your Aztec Identity to earn QDs", { 
+            description: "Messages send for free until you claim. Aztec Identity tab → Claim.",
+            duration: 5000,
+          });
+          return false; // Non-fatal — message still sends
         }
-        throw new Error(errData?.error || "Payment failed");
+        const errMsg = errData?.error || "Payment failed";
+        console.warn(`[Aztec Spend] Server error for ${reason}:`, errMsg);
+        // Only show toast for non-trivial errors (not the identity gate which is handled above)
+        if (!errMsg.includes('Insufficient QDs') && !errMsg.includes('identity')) {
+          toast.error(`QD deduction failed`, { description: errMsg, duration: 4000 });
+        }
+        return false; // Return false instead of throwing — callers handle gracefully
       }
 
       await fetchLedgerState(activeAddr); // reconcile with DB
       return true;
     } catch (err: any) {
       console.error("[Aztec Spend] Failed:", err);
-      toast.error(`Payment failed for ${reason}`);
+      // Revert optimistic update on network error
+      setBalance(prev => Math.round((prev + amount) * 1_000_000) / 1_000_000);
+      // Don't toast on every network blip — WhaleChat fire-and-forgets this
       return false;
     } finally {
       setIsBusy(false);

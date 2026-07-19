@@ -12,6 +12,7 @@ import {
 import dynamic from "next/dynamic";
 import { EmailLoginModal } from "@/components/auth/EmailLoginModal";
 import { useSystemSignOut } from "@/hooks/useSystemSignOut";
+import { SystemFooter } from "./SystemFooter";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export interface ImmersiveManifestoLandingProps {
@@ -1005,9 +1006,9 @@ export function ImmersiveManifestoLanding({
   hideMap = false,
 }: ImmersiveManifestoLandingProps = {}) {
   return (
-    <div className="w-full flex flex-col min-h-screen bg-white text-black antialiased overflow-clip">
+    <div className="w-full flex flex-col min-h-screen bg-[#050505] text-black antialiased overflow-x-hidden">
       <LandingNav />
-      <main id="main-content">
+      <main id="main-content" className="flex-1 bg-white">
         <HeroSection />
         <StatementSection />
         <ModulesSection />
@@ -1015,6 +1016,7 @@ export function ImmersiveManifestoLanding({
         <FAQSection />
         <AztecCTASection />
       </main>
+      <SystemFooter />
     </div>
   );
 }
