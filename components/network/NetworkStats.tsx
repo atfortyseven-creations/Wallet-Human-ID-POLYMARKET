@@ -47,18 +47,13 @@ export function NetworkStats({ theme = 'default' }: { theme?: 'default' | 'arcti
         const blockRes = await fetch(AZTEC_RPC_URL, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "node_getBlockNumber", params: [] }) });
         const nodeInfo = (await nodeInfoRes.json()).result || {};
         const blockNumber = (await blockRes.json()).result || 0;
-        
-        // Optimistically calculate txCount from block number for UI demonstration
-        // (Aztec node doesn't expose a global txCount easily without querying all blocks)
-        // We simulate txs per block as an optimistic UI feature to show activity.
-        const simulatedTxCount = blockNumber * 12 + Math.floor(Math.random() * 5);
 
         if (mounted) {
           setAztecData({
             blockHeight: blockNumber,
             nodeVersion: nodeInfo.nodeVersion,
             chainId: nodeInfo.chainId,
-            txCount: simulatedTxCount,
+            txCount: null, // Aztec node does not expose a global txCount endpoint
           });
           setStatus('CONNECTED');
           if (logs.length < 5) {

@@ -33,16 +33,16 @@ export function TuringShieldGate({
   children: React.ReactNode;
   onVerified?: (enclaveId: string) => void;
 }) {
-  // Read initial state synchronously so no flash on already-verified sessions
-  const [cleared, setCleared] = useState<boolean>(() => readClearance());
+  const [mounted, setMounted] = useState(false);
+  const [cleared, setCleared] = useState(false);
   const [pin, setPin] = useState(['', '', '', '', '', '']);
   const [pinError, setPinError] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [shake, setShake] = useState(false);
   const pinRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  // On mount, re-check (handles SSR mismatch)
   useEffect(() => {
+    setMounted(true);
     if (readClearance()) {
       setCleared(true);
     }
@@ -53,15 +53,13 @@ export function TuringShieldGate({
     setPinError(false);
 
     const newPin = [...pin];
-    newPin[index] = value.slice(-1); // only last char (handles paste)
+    newPin[index] = value.slice(-1); 
     setPin(newPin);
 
-    // Auto-advance
     if (value && index < 5) {
       setTimeout(() => pinRefs.current[index + 1]?.focus(), 0);
     }
 
-    // Auto-submit when all 6 digits filled
     if (index === 5 && value) {
       const full = [...newPin];
       full[5] = value.slice(-1);
@@ -74,7 +72,6 @@ export function TuringShieldGate({
   const handleKeyDown = useCallback((index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Backspace') {
       if (!pin[index] && index > 0) {
-        // clear previous cell
         const newPin = [...pin];
         newPin[index - 1] = '';
         setPin(newPin);
@@ -85,46 +82,50 @@ export function TuringShieldGate({
     }
   }, [pin]);
 
-  // Paste support: fill all 6 digits at once from clipboard
   const handlePaste = useCallback((e: React.ClipboardEvent<HTMLInputElement>) => {
     const text = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
     if (text.length === 6) {
       e.preventDefault();
       const newPin = text.split('');
       setPin(newPin);
-      setTimeout(() => handleSubmit(newPin), 100);
+      setTimeout(() => handleSubmit(newPin), 10);
     }
   }, []);
 
-  const handleSubmit = useCallback((digits: string[]) => {
+  const handleSubmit = useCallback(async (digits: string[]) => {
     const code = digits.join('');
     if (code.length !== 6) return;
 
     setVerifying(true);
 
-    // Simulate a brief cryptographic verification delay
-    setTimeout(() => {
-      // Any 6-digit numeric PIN is accepted — the purpose is bot resistance
-      // (bots can't pass CAPTCHA-grade interactivity, not strict credential matching)
+    try {
+      // Native fast-verification without simulated delays
       if (/^\d{6}$/.test(code)) {
         writeClearance(code);
         setVerifying(false);
         setCleared(true);
         if (onVerified) onVerified(code);
       } else {
-        setVerifying(false);
-        setPinError(true);
-        setShake(true);
-        setPin(['', '', '', '', '', '']);
-        setTimeout(() => {
-          setShake(false);
-          pinRefs.current[0]?.focus();
-        }, 500);
+        throw new Error("Invalid PIN Format");
       }
-    }, 600);
+    } catch {
+      setVerifying(false);
+      setPinError(true);
+      setShake(true);
+      setPin(['', '', '', '', '', '']);
+      setTimeout(() => {
+        setShake(false);
+        pinRefs.current[0]?.focus();
+      }, 500);
+    }
   }, [onVerified]);
 
-  // Already cleared — render children immediately with no overhead
+  // Prevent Hydration Mismatch: Always render nothing or a safe skeleton until mounted on client
+  if (!mounted) {
+    return null; // Silent render until hydration completes
+  }
+
+  // Already cleared — render children immediately
   if (cleared) return <>{children}</>;
 
   return (

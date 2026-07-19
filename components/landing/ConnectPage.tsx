@@ -512,21 +512,11 @@ export default function ConnectPage() {
   const isVerified = mounted && isLinked;
 
   // --- Scroll-Driven Cinematic Sequence ---
-  // On mobile: skip the cinematic scroll-intro entirely — go straight to login.
-  // The 600vh scroll intro is designed for desktop (mouse wheel). On iOS/Android
-  // it creates a dead-end where users swipe for seconds and see nothing.
-  const [phase, setPhase] = useState<"intro" | "login">(isMobile ? "login" : "intro");
+  // We now show the cinematic intro on all devices (mobile + desktop)
+  // to preserve the premium aesthetic.
+  const [phase, setPhase] = useState<"intro" | "login">("intro");
   const introScrollRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // Mobile hydration fix: isMobile starts false (no navigator on server),
-  // then flips true once useEffect fires. Jump directly to login when detected.
-  useEffect(() => {
-    if (isMobile && phase === 'intro') {
-      setPhase('login');
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isMobile]);
 
   // Manual scroll progress using useMotionValue — more reliable than useScroll
   // inside a `position: fixed` container because useScroll can fail to detect
@@ -895,7 +885,7 @@ export default function ConnectPage() {
         even if child elements are absolutely positioned or sticky. Only active during intro.
       */}
       {phase === "intro" && (
-        <div style={{ height: '600vh', width: '100%', position: 'absolute', top: 0, left: 0, zIndex: 1, pointerEvents: 'none' }} />
+        <div style={{ height: isMobile ? '300vh' : '600vh', width: '100%', position: 'absolute', top: 0, left: 0, zIndex: 1, pointerEvents: 'none' }} />
       )}
       {/* Film grain noise overlay */}
       <motion.div
@@ -921,7 +911,7 @@ export default function ConnectPage() {
               exit={{ scale: 2, opacity: 0, filter: "blur(40px)" }}
               transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
               className="relative z-20"
-              style={{ minHeight: '600vh', width: '100%' }}
+              style={{ minHeight: isMobile ? '300vh' : '600vh', width: '100%' }}
             >
               {/* Sticky viewport that holds the text during scroll */}
               <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden pointer-events-none">

@@ -36,8 +36,16 @@ export class GlobalErrorBoundary extends Component<Props, State> {
   };
 
   private handleGoConnect = () => {
-    // Hard navigate so the entire React tree is rebuilt fresh
-    window.location.href = "/connect";
+    // Purge everything to break the reload loop
+    try { sessionStorage.clear(); } catch {}
+    try { localStorage.removeItem('__disconnected__'); } catch {}
+    try { localStorage.removeItem('system_session_v2'); } catch {}
+    
+    if (window.location.pathname === "/connect") {
+      window.location.href = "/?t=" + Date.now();
+    } else {
+      window.location.href = "/connect";
+    }
   };
 
   private handleGoHome = () => {

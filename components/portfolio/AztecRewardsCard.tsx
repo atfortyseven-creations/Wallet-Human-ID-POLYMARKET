@@ -65,29 +65,26 @@ export function AztecRewardsCard() {
 
         setLoading(prev => ({ ...prev, [quest.slug]: true }));
 
-        // Small delay to simulate verification
-        setTimeout(async () => {
-            try {
-                const res = await fetch('/api/aztec/quests', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ slug: quest.slug, questId: quest.slug, aztecAddress })
-                });
-                
-                const data = await res.json();
-                if (res.ok) {
-                    setClaimed(prev => ({ ...prev, [quest.slug]: true }));
-                    toast.success(`+\${quest.reward} QDs Claimed! \${data.message || ''}`);
-                    refresh(); // Update the global balance
-                } else {
-                    toast.error(data.error || "Failed to claim reward. You may have already claimed this on this IP.");
-                }
-            } catch (e) {
-                toast.error("Network error during claim.");
-            } finally {
-                setLoading(prev => ({ ...prev, [quest.slug]: false }));
+        try {
+            const res = await fetch('/api/aztec/quests', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ slug: quest.slug, questId: quest.slug, aztecAddress })
+            });
+            
+            const data = await res.json();
+            if (res.ok) {
+                setClaimed(prev => ({ ...prev, [quest.slug]: true }));
+                toast.success(`+${quest.reward} QDs Claimed! ${data.message || ''}`);
+                refresh(); // Update the global balance
+            } else {
+                toast.error(data.error || "Failed to claim reward. You may have already claimed this on this IP.");
             }
-        }, 2000);
+        } catch (e) {
+            toast.error("Network error during claim.");
+        } finally {
+            setLoading(prev => ({ ...prev, [quest.slug]: false }));
+        }
     };
 
     return (
