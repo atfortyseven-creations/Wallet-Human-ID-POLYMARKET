@@ -358,7 +358,10 @@ export default function ConnectPage() {
       try {
         const norm = address.toLowerCase();
         const nonceRes = await fetch('/api/auth/nonce', { cache: 'no-store' });
-        if (!nonceRes.ok) throw new Error('Failed to fetch authentication nonce');
+        if (!nonceRes.ok) {
+            const errData = await nonceRes.json().catch(() => ({}));
+            throw new Error(errData.error || 'Failed to fetch authentication nonce');
+        }
         const { nonce } = await nonceRes.json();
         const message = `Authenticate to Whale Network.\n\nNonce: ${nonce}`;
         let signature = '';
@@ -872,6 +875,8 @@ export default function ConnectPage() {
       <p className="text-black/30 text-[8px] font-mono uppercase tracking-[0.25em] text-center">© 2027 Humanity Ledger · Whale Network</p>
     </div>
   );
+
+  if (!mounted) return <div className="fixed inset-0 w-full bg-white z-50" />;
 
   return (
     <div

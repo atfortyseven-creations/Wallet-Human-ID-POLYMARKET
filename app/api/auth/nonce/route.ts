@@ -18,9 +18,9 @@ export async function GET(req: Request) {
     try {
         const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
         try {
-            await limiter.check(20, ip); // Max 20 requests per minute
+            await limiter.check(100, ip); // Max 100 requests per minute (increased to prevent lockout during reloads)
         } catch {
-            return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+            return NextResponse.json({ error: 'Too many requests. Please wait a moment.' }, { status: 429 });
         }
 
         // 1. Generate 32 bytes of cryptographic entropy
