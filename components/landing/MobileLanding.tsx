@@ -1275,6 +1275,20 @@ export function MobileLanding() {
     }
   }, [isDisconnecting, nuclearDisconnect]);
 
+  // --- Mobile Scroll Scrubbing Physics ---
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
+
+  const textScaleY = useTransform(scrollYProgress, [0, 0.4], [1, 0.95]);
+  const textOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
+  const textBlur = useTransform(scrollYProgress, [0, 0.4], ["blur(0px)", "blur(10px)"]);
+  
+  const bottomSheetY = useTransform(scrollYProgress, [0.1, 0.8], ["100%", "0%"]);
+  const bottomSheetOpacity = useTransform(scrollYProgress, [0.1, 0.5], [0, 1]);
+
   if (!mounted) return null;
 
   // (The previous showManualReconnect full-screen overlay was removed to prevent 
@@ -1356,19 +1370,6 @@ export function MobileLanding() {
 
   //  Render: Unified Mobile Landing & Login Modal 
   // CRITICAL: This block must be AFTER all isLinked guards above.
-  // --- Mobile Scroll Scrubbing Physics ---
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
-
-  const textScaleY = useTransform(scrollYProgress, [0, 0.4], [1, 0.95]);
-  const textOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
-  const textBlur = useTransform(scrollYProgress, [0, 0.4], ["blur(0px)", "blur(10px)"]);
-  
-  const bottomSheetY = useTransform(scrollYProgress, [0.1, 0.8], ["100%", "0%"]);
-  const bottomSheetOpacity = useTransform(scrollYProgress, [0.1, 0.5], [0, 1]);
 
   return (
     <div ref={containerRef} className="w-full bg-white relative font-sans" style={{ color: '#050505', height: '150dvh' }}>

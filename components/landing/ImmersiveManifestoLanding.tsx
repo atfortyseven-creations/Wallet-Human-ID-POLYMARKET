@@ -901,26 +901,29 @@ function FAQSection() {
 }
 
 // ─── Final CTA + Premium Wordmark ─────────────────────────────────────────
+// CRITICAL FIX: Changed from dark bg-[#050505] to white bg-white.
+// The dark section was causing the black zone visible below the footer
+// because it bled into the page body background.
 function AztecCTASection() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
     <section
-      className="relative w-full bg-[#050505] border-t border-white/5 py-32 md:py-48 overflow-hidden flex flex-col items-center"
+      className="relative w-full bg-white border-t border-black/[0.06] py-24 md:py-40 overflow-hidden flex flex-col items-center"
     >
-      {/* Background ambient glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[var(--aztec-orchid)]/10 blur-[120px] rounded-full pointer-events-none" />
+      {/* Subtle background ambient — light mode */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-black/[0.025] blur-[100px] rounded-full pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-5xl mx-auto px-6 text-center flex flex-col items-center gap-10" ref={ref}>
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={inView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-black/10 bg-black/[0.03]"
         >
-          <div className="w-1.5 h-1.5 rounded-full bg-[var(--aztec-orchid)] animate-pulse" />
-          <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/70">
+          <div className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
+          <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-black/50">
             Network Initialization
           </span>
         </motion.div>
@@ -934,11 +937,11 @@ function AztecCTASection() {
             fontSize: "clamp(2.5rem, 7vw, 5.5rem)",
             fontWeight: 700,
           }}
-          className="leading-[1.05] tracking-tight text-white"
+          className="leading-[1.05] tracking-tight text-black"
         >
           Your identity.
           <br />
-          <span className="text-white/30 italic">
+          <span className="text-black/30 italic">
             Proven without disclosure.
           </span>
         </motion.h2>
@@ -948,7 +951,7 @@ function AztecCTASection() {
           animate={inView ? "visible" : "hidden"}
           variants={fadeUp}
           custom={0.1}
-          className="text-[16px] md:text-[18px] text-white/50 max-w-[500px] leading-relaxed"
+          className="text-[16px] md:text-[18px] text-black/50 max-w-[500px] leading-relaxed"
         >
           Join the sovereign tier. Powered by zero-knowledge architecture, client-side proving, and unstoppable cryptography.
         </motion.p>
@@ -963,7 +966,7 @@ function AztecCTASection() {
           <Link
             href="/portfolio"
             id="cta-launch-btn"
-            className="group relative w-full sm:w-auto px-10 py-4 bg-white text-black rounded-full text-[14px] font-bold overflow-hidden transition-all hover:scale-105 shadow-[0_0_40px_rgba(255,255,255,0.15)]"
+            className="group relative w-full sm:w-auto px-10 py-4 bg-black text-white rounded-full text-[14px] font-bold overflow-hidden transition-all hover:scale-105 shadow-[0_4px_24px_rgba(0,0,0,0.12)]"
           >
             <span className="relative z-10 flex items-center justify-center gap-2">
               Initialize Session
@@ -973,7 +976,7 @@ function AztecCTASection() {
           <Link
             href="/architecture"
             id="cta-arch-btn"
-            className="w-full sm:w-auto px-10 py-4 border border-white/20 text-white rounded-full text-[14px] font-medium hover:bg-white/10 transition-all"
+            className="w-full sm:w-auto px-10 py-4 border border-black/20 text-black rounded-full text-[14px] font-medium hover:bg-black/[0.04] transition-all"
           >
             Read the Architecture
           </Link>
@@ -981,12 +984,12 @@ function AztecCTASection() {
       </div>
 
       {/* ── GIANT "WHALE" WORDMARK — responsive and contained ── */}
-      <div className="relative w-full overflow-hidden select-none pointer-events-none mt-20 md:mt-32 flex justify-center h-[12vw] min-h-[100px] max-h-[300px]">
+      <div className="relative w-full overflow-hidden select-none pointer-events-none mt-20 md:mt-28 flex justify-center h-[12vw] min-h-[80px] max-h-[200px]">
         <motion.p
           initial={{ opacity: 0, y: 40 }}
           animate={inView ? { opacity: 0.04, y: 0 } : { opacity: 0, y: 40 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-          className="absolute bottom-0 leading-[0.75] font-black text-white whitespace-nowrap"
+          className="absolute bottom-0 leading-[0.75] font-black text-black whitespace-nowrap"
           style={{
             fontFamily: "var(--font-aztec-serif), Georgia, serif",
             fontSize: "clamp(6rem, 24vw, 22rem)",
@@ -1006,7 +1009,10 @@ export function ImmersiveManifestoLanding({
   hideMap = false,
 }: ImmersiveManifestoLandingProps = {}) {
   return (
-    <div className="w-full flex flex-col min-h-screen bg-[#050505] text-black antialiased overflow-x-hidden">
+    // CRITICAL FIX: Remove min-h-screen and bg-[#050505] from root wrapper.
+    // min-h-screen on a flex column causes the dark background to bleed BELOW
+    // the footer creating a scrollable black zone. Use bg-white throughout.
+    <div className="w-full flex flex-col bg-white text-black antialiased overflow-x-hidden">
       <LandingNav />
       <main id="main-content" className="flex-1 bg-white">
         <HeroSection />
