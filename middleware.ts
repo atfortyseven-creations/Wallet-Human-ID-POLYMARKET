@@ -147,10 +147,20 @@ export async function middleware(req: NextRequest): Promise<NextResponse> {
   }
 
   // 3. Session exists → pass the address to downstream handlers via header
+  //    [ZK-ALIGNMENT] The middleware injects verified session metadata securely.
   //    The heavy DB identity-gate check (assertVerifiedIdentity) runs inside
   //    each sensitive API route — not here — to keep edge latency minimal.
+  //
+  //    Headers injected:
+  //      x-verified-session-address → cryptographically verified wallet address
+  //      x-session-ts               → timestamp for replay-attack detection in routes
+  //      x-request-id               → unique request correlation ID for audit trail
   const response = NextResponse.next();
   response.headers.set('x-verified-session-address', sessionAddress);
+  response.headers.set('x-session-ts', String(Date.now()));
+  // Unique request ID for distributed tracing — helps correlate audit logs
+  const requestId = crypto.randomUUID?.() ?? `req_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+  response.headers.set('x-request-id', requestId);
   return response;
 }
 

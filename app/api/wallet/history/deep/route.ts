@@ -17,26 +17,23 @@ export async function GET(req: NextRequest) {
     const address = session.userId.toLowerCase();
 
     // Find the internal user ID associated with this wallet address
-    // If none exists, we might need to create a shadow record or use the address as ID
+    // [ZK-ISOLATION] Transactions are now indexed by fromAddress/toAddress — no userId linkage
     const user = await prisma.user.findUnique({ where: { walletAddress: address } });
-    const authUserId = user?.id || `shadow_${address}`;
 
     // CHECK SYNC STATUS
-    // Logic: If no transactions in DB for this user, trigger full sync
-    const txCount = await prisma.transaction.count({ where: { authUserId } });
+    // [ZK] Count using address-based lookup — no authUserId needed
+    const txCount = await prisma.transaction.count({ 
+      where: { OR: [{ fromAddress: address }, { toAddress: address }] } 
+    });
     
-    if (txCount === 0) {
+    if (txCount === 0 && user?.id) {
         // First time sync (can be slow, maybe trigger background job in future)
-        await historySyncService.syncHistoricalTransactions(authUserId, address);
-    } else {
-        // Incremental sync - nice to have, but for now let's rely on websocket for new stuff
-        // or trigger a lighter sync for recent blocks
-        // historySyncService.syncRecentTransactions(...)
+        await historySyncService.syncHistoricalTransactions(user.id, address);
     }
 
-    // RETURN PERSISTED DATA
+    // RETURN PERSISTED DATA — by address, not userId
     const historyRaw = await prisma.transaction.findMany({
-        where: { authUserId },
+        where: { OR: [{ fromAddress: address }, { toAddress: address }] },
         orderBy: { 
             timestamp: 'desc' 
         },

@@ -26,7 +26,9 @@ export async function getTransactionHistory(authUserId: string, options?: any) {
   const offset = options?.offset || 0;
 
   //  UNIFICACIÓN SOBERANA DE TRIPLE FLUJO (5000T) 
-  // Consolidamos Ledger (Transaction), Inteligencia (WhaleActivity) y Red (BlockchainTransaction)
+  // [ZK-ISOLATION] authUserId is now the wallet address (SIWE session.userId).
+  // The Transaction table no longer has an authUserId column — it uses fromAddress/toAddress.
+  // We query all three sources by address for full fidelity.
   const [legacy, whales, blockchain] = await Promise.all([
     prisma.transaction.findMany({
       where: { 

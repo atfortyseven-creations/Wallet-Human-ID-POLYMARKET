@@ -755,7 +755,7 @@ model Transaction {
   fromAddress String
   toAddress   String
   timestamp   DateTime @default(now())
-  authUserId  String?
+  identityHash String? // ZK Proof derived hash of identity (Zero-Knowledge Data Isolation)
 
   chainId     Int     @default(1)
   value       String?
@@ -764,7 +764,7 @@ model Transaction {
   gasUsed     BigInt? @default(0)
   metadata    Json?   @default("{}")
 
-  @@index([authUserId])
+  @@index([identityHash])
   // [INSTITUTIONAL OPTIMIZATION] - Previene ataque DDoS (Sequential Scan) en el endpoint /api/payment/confirm
   @@index([fromAddress, type, timestamp(sort: Desc)])
 }
@@ -1408,7 +1408,7 @@ model AztecQuest {
 model QuestClaim {
   id             String   @id @default(uuid())
   questId        String
-  aztecAddress   String   // The L2 Identity address
+  identityHash   String   // ZK Proof derived hash of identity (Zero-Knowledge Data Isolation)
   ipHash         String   // SHA-256(ip) to prevent multi-account farming
   status         String   @default("CLAIMED") // CLAIMED, SLASHED
   claimedAt      DateTime @default(now())
@@ -1416,9 +1416,9 @@ model QuestClaim {
   
   quest          AztecQuest @relation(fields: [questId], references: [id], onDelete: Cascade)
 
-  @@unique([questId, aztecAddress])
+  @@unique([questId, identityHash])
   @@unique([questId, ipHash]) // IP can only claim a specific quest once
-  @@index([aztecAddress, status])
+  @@index([identityHash, status])
 }
 
 // 

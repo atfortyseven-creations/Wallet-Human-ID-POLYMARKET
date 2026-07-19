@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import crypto from 'crypto';
 import { getSession } from '@/lib/session';
+import { deriveIdentityHash, hashIpAddress, isOwner } from '@/lib/aztec/zk-identity';
 
 /**
  * GET /api/aztec/quests
  * Returns available quests and the claim status for a given aztecAddress
+ * [ZK-ISOLATION] Claims are queried by identityHash, not raw aztecAddress
  */
 export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
@@ -15,12 +16,16 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ error: 'Missing aztecAddress' }, { status: 400 });
     }
 
+    // [ZK-ISOLATION] Derive deterministic identityHash from aztecAddress
+    // This is what the DB stores — never the raw address
+    const identityHash = deriveIdentityHash(aztecAddress);
+
     try {
         // Fetch all active quests. If the table doesn't exist yet, we catch the error.
-        // We use queryRaw to avoid Prisma Client generation issues if schema is fresh.
         const quests: any[] = await prisma.$queryRaw`SELECT * FROM "AztecQuest" WHERE "isActive" = true ORDER BY "createdAt" ASC`;
         
-        const claims: any[] = await prisma.$queryRaw`SELECT * FROM "QuestClaim" WHERE "aztecAddress" = ${aztecAddress}`;
+        // [ZK] Query by identityHash, not raw aztecAddress
+        const claims: any[] = await prisma.$queryRaw`SELECT * FROM "QuestClaim" WHERE "identityHash" = ${identityHash}`;
         const claimMap = new Map(claims.map(c => [c.questId, c.status]));
 
         const result = quests.map(q => ({
@@ -55,9 +60,9 @@ export async function GET(req: NextRequest) {
  */
 export async function POST(req: NextRequest) {
     // Use the first IP from x-forwarded-for (actual client, not proxy chain)
-    const rawIp = (req.headers.get('x-forwarded-for') || '127.0.0.1').split(',')[0].trim();
+    const rawIp = req.headers.get('x-forwarded-for') || '127.0.0.1';
     // Salt IP hash with server secret to prevent rainbow table reversal
-    const ipHash = crypto.createHash('sha256').update(rawIp + (process.env.JWT_SECRET || 'whale-oracle-secret')).digest('hex');
+    const ipHash = hashIpAddress(rawIp);
 
     try {
         const session = await getSession();
@@ -73,12 +78,13 @@ export async function POST(req: NextRequest) {
         }
 
         const evmAddress = session.userId.toLowerCase();
-        const round1 = crypto.createHash('sha256').update(`aztec-schnorr:${evmAddress}`).digest();
-        const derivedAztec = `0x${crypto.createHash('sha256').update(round1).digest('hex')}`;
         
-        if (derivedAztec.toLowerCase() !== aztecAddress.toLowerCase() && evmAddress !== aztecAddress.toLowerCase()) {
+        if (!isOwner(evmAddress, aztecAddress)) {
              return NextResponse.json({ error: 'Forbidden: Address mismatch' }, { status: 403 });
         }
+
+        // [ZK-ISOLATION] Derive identityHash — this is stored in DB, not the raw aztecAddress
+        const identityHash = deriveIdentityHash(aztecAddress);
 
         // Validate slug against hardcoded allowlist — cannot be spoofed via questId injection
         const rewardMap: Record<string, number> = {
@@ -128,10 +134,10 @@ export async function POST(req: NextRequest) {
 
         try {
             await prisma.$transaction(async (tx) => {
-                // 1. Check wallet hasn't already claimed (SELECT FOR UPDATE locks the row-range)
+                // [ZK-ISOLATION] 1. Check identity hasn't already claimed (by identityHash, not raw address)
                 const existingWallet: any[] = await tx.$queryRaw`
                     SELECT id FROM "QuestClaim"
-                    WHERE "questId" = ${resolvedQuestId} AND "aztecAddress" = ${aztecAddress}
+                    WHERE "questId" = ${resolvedQuestId} AND "identityHash" = ${identityHash}
                     LIMIT 1
                 `;
                 if (existingWallet.length > 0) {
@@ -148,10 +154,10 @@ export async function POST(req: NextRequest) {
                     throw new Error('IP_ALREADY_CLAIMED');
                 }
 
-                // 3. Insert claim — both unique constraints protect against concurrent inserts
+                // 3. Insert claim — using identityHash (ZK-isolated), NOT raw aztecAddress
                 await tx.$executeRaw`
-                    INSERT INTO "QuestClaim" (id, "questId", "aztecAddress", "ipHash", status, "claimedAt")
-                    VALUES (${claimId}, ${resolvedQuestId}, ${aztecAddress}, ${ipHash}, 'CLAIMED', NOW())
+                    INSERT INTO "QuestClaim" (id, "questId", "identityHash", "ipHash", status, "claimedAt")
+                    VALUES (${claimId}, ${resolvedQuestId}, ${identityHash}, ${ipHash}, 'CLAIMED', NOW())
                 `;
 
                 // 4. Credit reward directly in the Transaction ledger
@@ -274,10 +280,12 @@ export async function DELETE(req: NextRequest) {
             }
         });
 
+        // [ZK-ISOLATION] Derive identityHash for the slash lookup
+        const slashIdentityHash = deriveIdentityHash(aztecAddress);
         try {
             await prisma.$executeRaw`
                 UPDATE "QuestClaim" SET status = 'SLASHED', "slashedAt" = NOW() 
-                WHERE "aztecAddress" = ${aztecAddress} AND ("questId" = ${slug} OR "questId" IN (SELECT id FROM "AztecQuest" WHERE slug = ${slug}))
+                WHERE "identityHash" = ${slashIdentityHash} AND ("questId" = ${slug} OR "questId" IN (SELECT id FROM "AztecQuest" WHERE slug = ${slug}))
             `;
         } catch(e) {}
 

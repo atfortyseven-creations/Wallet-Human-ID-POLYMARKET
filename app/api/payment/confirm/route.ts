@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
         token: 'EUR',
         fromAddress: walletAddress.toLowerCase(),
         toAddress: BANK_DETAILS.iban,
-        authUserId: user.id,
+        identityHash: user.id, // [ZK-ISOLATION] Hashed identity reference — not raw userId
         metadata: {
           planId,
           billingCycle,

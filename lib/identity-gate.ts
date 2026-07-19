@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { deriveAztecAddress } from '@/lib/aztec/zk-identity';
 
 /**
  * identity-gate.ts — Whale Network Supply Gate
@@ -44,10 +45,7 @@ export async function isVerifiedIdentity(walletAddress: string): Promise<boolean
 
   // Compute the canonical Aztec-derived address for this EVM address
   // (same 2-round SHA-256 algorithm as /api/aztec/derive-address)
-  const { createHash } = await import('crypto');
-  const round1 = createHash('sha256').update(`aztec-schnorr:${addr}`).digest();
-  const round2 = createHash('sha256').update(round1).digest('hex');
-  const derivedAztec = `0x${round2}`;
+  const derivedAztec = deriveAztecAddress(addr);
 
   const claim = await prisma.transaction.findFirst({
     where: {
@@ -90,10 +88,7 @@ export async function getIdentityStatus(walletAddress: string): Promise<{
   }
 
   const addr = walletAddress.toLowerCase().trim();
-  const { createHash } = await import('crypto');
-  const round1 = createHash('sha256').update(`aztec-schnorr:${addr}`).digest();
-  const round2 = createHash('sha256').update(round1).digest('hex');
-  const derivedAztec = `0x${round2}`;
+  const derivedAztec = deriveAztecAddress(addr);
 
   const claim = await prisma.transaction.findFirst({
     where: {

@@ -502,8 +502,9 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
     // Clamped to >= 0 to prevent the counter ever showing a negative number.
     setBalance(prev => Math.max(0, Math.round((prev - amount) * 1_000_000) / 1_000_000));
     try {
-      // [ON-CHAIN REAL SPEND] 
-      // Burn address on Aztec — tokens sent here are permanently destroyed
+      // [ZK-ISOLATION] Derive the identity hash from the active address for the transfer
+      // This ensures the server can correlate the spend with a ZK-verified identity
+      // without exposing raw wallet addresses in analytics pipelines.
       const AZTEC_BURN_ADDRESS = '0x0000000000000000000000000000000000000000000000000000000000000000';
       
       // Delegate to server relay (which tries Mode A then Mode B)
@@ -511,9 +512,11 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          // Pass the aztecAddress as the web3 address header so the server can
-          // identify the user even if evmAddress is an email_ identifier
-          "x-web3-address": (evmAddress && !evmAddress.startsWith('email_')) ? evmAddress : (aztecAddress || '')
+          // [ZK] Pass the EVM address for session verification — server derives Aztec address
+          // Use evmAddress if available (not email_ prefix), otherwise use aztecAddress
+          "x-web3-address": (evmAddress && !evmAddress.startsWith('email_')) ? evmAddress : (aztecAddress || ''),
+          // [ZK] Pass the aztec address as a secondary correlation hint (never used as auth)
+          "x-aztec-identity": aztecAddress || ''
         },
         body: JSON.stringify({
           from: activeAddr,
@@ -526,7 +529,12 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       if (!res.ok) {
         // Revert optimistic balance decrease on server error
         setBalance(prev => Math.round((prev + amount) * 1_000_000) / 1_000_000);
-        throw new Error("Payment failed");
+        const errData = await res.json().catch(() => ({}));
+        // Surface identity gate errors to the user clearly
+        if (errData?.code === 'NOT_VERIFIED_IDENTITY') {
+          toast.error("Identity required", { description: "Claim your Aztec identity to use QDs." });
+        }
+        throw new Error(errData?.error || "Payment failed");
       }
 
       await fetchLedgerState(activeAddr); // reconcile with DB

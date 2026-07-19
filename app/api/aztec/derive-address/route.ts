@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import crypto from 'crypto';
+import { deriveAztecAddress } from '@/lib/aztec/zk-identity';
 
 export const dynamic = 'force-dynamic';
 
@@ -38,13 +38,7 @@ export async function POST(req: Request) {
     // Deterministic SHA-256 derivation — the canonical address format.
     // We apply two rounds to reduce collision surface and to differentiate
     // between short seeds that might produce similar leading bytes.
-    const round1 = crypto.createHash('sha256').update(`aztec-schnorr:${normalized}`).digest();
-    const round2 = crypto.createHash('sha256').update(round1).digest('hex');
-
-    // Aztec addresses are 32-byte field elements (Fr) on the BN254 curve.
-    // We represent them as 0x-prefixed 64-char hex strings, matching the
-    // format stored in the `fromAddress` / `toAddress` columns.
-    const aztecAddress = `0x${round2}`;
+    const aztecAddress = deriveAztecAddress(normalized);
 
     return NextResponse.json({
       aztecAddress,

@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import crypto from 'crypto';
 import rateLimit from '@/lib/rate-limit';
 import { z } from 'zod';
+import { deriveAztecAddress, isOwner } from '@/lib/aztec/zk-identity';
 
 export const dynamic = 'force-dynamic';
 
@@ -67,28 +68,14 @@ export async function POST(req: NextRequest) {
         sessionAddr = authUser.walletAddress.toLowerCase();
       } else if (authUser.email) {
         // Derive canonical Aztec address from email (same 2-round SHA-256)
-        const round1Email = crypto.createHash('sha256').update(`aztec-schnorr:${authUser.email.toLowerCase().trim()}`).digest();
-        const round2Email = crypto.createHash('sha256').update(round1Email).digest('hex');
-        sessionAddr = `0x${round2Email}`;
+        sessionAddr = deriveAztecAddress(authUser.email.toLowerCase().trim());
       } else {
         return NextResponse.json({ error: 'Unauthorized: Account incomplete.' }, { status: 403 });
       }
     }
 
     // ── Session must own the target address (EVM or derived Aztec) ────────────
-    const isEvmOwner = sessionAddr === normalizedAddress;
-    let isDerivedOwner = false;
-    if (!isEvmOwner) {
-      try {
-        const round1 = crypto.createHash('sha256').update(`aztec-schnorr:${sessionAddr}`).digest();
-        const round2 = crypto.createHash('sha256').update(round1).digest('hex');
-        const derivedAztec = `0x${round2}`;
-        isDerivedOwner = derivedAztec.toLowerCase() === normalizedAddress;
-      } catch {}
-    }
-    // Direct address match (email-derived Aztec address matches what was passed)
-    const isDirectMatch = sessionAddr === normalizedAddress;
-    if (!isEvmOwner && !isDerivedOwner && !isDirectMatch) {
+    if (!isOwner(sessionAddr, normalizedAddress)) {
       return NextResponse.json(
         { error: 'Forbidden: You can only airdrop to your own wallet address.' },
         { status: 403 }
