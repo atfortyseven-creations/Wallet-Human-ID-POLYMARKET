@@ -42,10 +42,12 @@ export function deriveIdentityHash(address: string): string {
     .digest('hex');
 }
 
+import { keccak256, toBytes } from 'viem';
+
 /**
  * Derives the canonical Aztec address from an EVM address.
- * This is the same 2-round SHA-256 algorithm used across the codebase
- * (derive-address API, airdrop route, identity-gate, transfer route).
+ * This uses a 2-round deterministic hash (SHA-256 then Keccak256)
+ * as per the Aztec Network integration specifications.
  *
  * IMPORTANT: This must stay in sync with /api/aztec/derive-address.
  *
@@ -57,9 +59,9 @@ export function deriveAztecAddress(evmAddress: string): string {
     throw new TypeError('[ZK] deriveAztecAddress: evmAddress must start with 0x');
   }
   const normalized = evmAddress.toLowerCase().trim();
-  const round1 = crypto.createHash('sha256').update(`aztec-schnorr:${normalized}`).digest();
-  const round2 = crypto.createHash('sha256').update(round1).digest('hex');
-  return `0x${round2}`;
+  const round1 = crypto.createHash('sha256').update(`aztec-schnorr:${normalized}`).digest('hex');
+  const round2 = keccak256(toBytes(`0x${round1}`));
+  return round2;
 }
 
 /**

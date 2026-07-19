@@ -20,7 +20,7 @@ const AirdropSchema = z.object({
 
 const AZTEC_EXPLORER        = 'https://testnet.aztecscan.xyz';
 const AZTEC_TX_URL          = (hash: string) => `https://testnet.aztecscan.xyz/tx-effects/${hash}`;
-const AIRDROP_AMOUNT        = 1000;  // 1000 QDs per airdrop
+const AIRDROP_AMOUNT        = 10;  // 10 QDs per airdrop (Genesis Airdrop as per Forum)
 
 /**
  * POST /api/aztec/airdrop

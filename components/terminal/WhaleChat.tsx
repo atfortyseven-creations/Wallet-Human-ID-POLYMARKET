@@ -1172,12 +1172,12 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                         const airdropRes = await fetch('/api/aztec/airdrop', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ address: deriveData.aztecAddress, amount: 200 })
+                            body: JSON.stringify({ address: deriveData.aztecAddress, amount: 10 })
                         });
                         const airdropData = await airdropRes.json();
                         if (airdropData.success) {
                             // Only show the welcome toast on the very first successful claim
-                            toast.success('⚡ Aztec Identity Active: 1000 QDs received!', { 
+                            toast.success('⚡ Aztec Identity Active: 10 QDs received!', { 
                                 description: 'Transaction confirmed on Aztec Testnet.',
                                 duration: 8000,
                                 action: airdropData.explorerUrl ? {

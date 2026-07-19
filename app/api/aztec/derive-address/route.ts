@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       success: true,
       aztecAddress,
-      derivationMethod: 'SHA-256 (aztec-schnorr domain separation, 2-round)',
+      derivationMethod: 'SHA-256 + Keccak256 (aztec-schnorr domain separation)',
       network: 'aztec-testnet',
     });
 
