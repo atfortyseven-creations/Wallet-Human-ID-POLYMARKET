@@ -128,7 +128,7 @@ export default function ConnectPage() {
     }
   } catch {}
   
-  const effectiveIsConnected = isConnected && !isGuarded;
+  const effectiveIsConnected = mounted && isConnected && !isGuarded;
 
   useEffect(() => {
     if (!isError || !error) return;

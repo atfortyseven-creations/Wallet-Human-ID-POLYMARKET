@@ -561,10 +561,9 @@ export function MobileLanding() {
     }
   } catch {}
 
-  const isConnected = wagmiConnected && !isGuarded;
-  const address     = wagmiAddress;
-
   const [mounted, setMounted]           = useState(false);
+  const isConnected = mounted && wagmiConnected && !isGuarded;
+  const address     = wagmiAddress;
   const [showScanner, setShowScanner]   = useState(false);
   const [scanMode, setScanMode] = useState<'universal' | 'session-only'>('session-only');
   const [showHub, setShowHub]           = useState(false);
