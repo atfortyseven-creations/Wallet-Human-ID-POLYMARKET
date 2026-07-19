@@ -244,9 +244,9 @@ const nextConfig = {
                     new (require('terser-webpack-plugin'))({
                         terserOptions: {
                             mangle: {
-                                // Prevent _ and __ from being used as minified variable names.
-                                // These single-character names collide with Safari's TDZ scope.
-                                reserved: ['_', '__', '___'],
+                                // Prevent _, __, and j from being used as minified variable names.
+                                // These names collide with Safari's TDZ scope in specific hoist scenarios.
+                                reserved: ['_', '__', '___', 'j'],
                                 toplevel: false,
                             },
                             compress: {
