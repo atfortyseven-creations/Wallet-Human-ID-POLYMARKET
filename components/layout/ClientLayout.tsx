@@ -307,42 +307,42 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
       <TitaniumGate>
         <UniversalEliteWallpaper />
 
-        <div className={rootClass}>
-          {/* Top header for select standalone routes — single instance, responsive internally */}
-          {showInstitutionalHeader && !isChat && (
-            <div className="flex-none w-full z-50 fixed top-0 left-0 right-0">
-              <InstitutionalHeader />
-            </div>
-          )}
-          {/* Spacer to prevent content from hiding under fixed header */}
-          {showInstitutionalHeader && !isChat && (
-            <div className="w-full flex-none" style={{ minHeight: '64px' }} />
-          )}
+          <div className={rootClass}>
+            {/* Top header for select standalone routes — single instance, responsive internally */}
+            {showInstitutionalHeader && !isChat && (
+              <div className="flex-none w-full z-50 fixed top-0 left-0 right-0">
+                <InstitutionalHeader />
+              </div>
+            )}
+            {/* Spacer to prevent content from hiding under fixed header */}
+            {showInstitutionalHeader && !isChat && (
+              <div className="w-full flex-none" style={{ minHeight: '64px' }} />
+            )}
 
-          <div className={innerClass}>
-            <div className="relative z-40">
-              <UtilityPanels />
-              <BillionWhaleNotification />
+            <div className={innerClass}>
+              <div className="relative z-40">
+                <UtilityPanels />
+                <BillionWhaleNotification />
+              </div>
+
+              <ZoomWrapper>
+                <main
+                  className={mainClass}
+                  style={isBounded ? {
+                    height: '100%',
+                    minHeight: '100%',
+                    scrollbarWidth: 'thin',
+                    overscrollBehavior: 'contain',
+                    touchAction: 'pan-y',
+                  } : undefined}
+                >
+                  {displayContent}
+                </main>
+              </ZoomWrapper>
             </div>
 
-            <ZoomWrapper>
-              <main
-                className={mainClass}
-                style={isBounded ? {
-                  height: '100%',
-                  minHeight: '100%',
-                  scrollbarWidth: 'thin',
-                  overscrollBehavior: 'contain',
-                  touchAction: 'pan-y',
-                } : undefined}
-              >
-                {displayContent}
-              </main>
-            </ZoomWrapper>
           </div>
-
-        </div>
-      </TitaniumGate>
+        </TitaniumGate>
     </>
   );
 }

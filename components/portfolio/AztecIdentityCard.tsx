@@ -73,7 +73,8 @@ function useAztecNodeInfo() {
       try {
         // We call our own /api/aztec/account route which hits the node internally,
         // keeping the client free of CORS issues with the Aztec RPC directly.
-        const res = await fetch('/api/aztec/account', {
+        // We pass a dummy address just to trigger the health check correctly.
+        const res = await fetch('/api/aztec/account?address=0x0000000000000000000000000000000000000000', {
           method: 'GET',
           signal: AbortSignal.timeout(8000),
         });

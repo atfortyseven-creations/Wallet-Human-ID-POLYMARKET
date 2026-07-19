@@ -70,7 +70,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // This strictly isolates Chat from the Portfolio state to prevent cross-contamination.
   const { getSiloedPXE } = useAztec();
   const aztecNative = useAztecNative();
-  const { spendQDs, balance } = aztecNative;
+  const { spendQDs, balance, aztecAddress } = aztecNative;
   const chatContractAddress = { toString: () => '0xCHAT_CONTRACT_ADDRESS_PLACEHOLDER' } as any;
   const siloedPxe = getSiloedPXE ? getSiloedPXE(chatContractAddress) : null;
   const { 
@@ -1150,24 +1150,28 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             const mintKey = `qds_identity_mint_${address}`;
             if (typeof localStorage !== 'undefined' && !localStorage.getItem(mintKey)) {
                 // ✅ OPTIMISTIC LOCK: mark as attempted BEFORE the API call.
-                // This guarantees we only ever attempt the airdrop once per wallet,
-                // regardless of whether the API call succeeds, fails, or times out.
                 localStorage.setItem(mintKey, 'true');
                 try {
-                    // Step 1: Derive the canonical Aztec address for this EVM wallet
-                    const deriveRes = await fetch('/api/aztec/derive-address', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ evmAddress: address })
-                    });
-                    const deriveData = await deriveRes.json();
+                    // Step 1: Use the Aztec address from Context if available, else derive it deterministically
+                    let targetAztecAddress = aztecAddress;
+                    if (!targetAztecAddress) {
+                        const deriveRes = await fetch('/api/aztec/derive-address', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ evmAddress: address })
+                        });
+                        const deriveData = await deriveRes.json();
+                        if (deriveData.success) {
+                            targetAztecAddress = deriveData.aztecAddress;
+                        }
+                    }
                     
-                    if (deriveData.success && deriveData.aztecAddress) {
+                    if (targetAztecAddress) {
                         // Step 2: Trigger the airdrop script explicitly via the API route
                         const airdropRes = await fetch('/api/aztec/airdrop', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ address: deriveData.aztecAddress, amount: 10 })
+                            body: JSON.stringify({ address: targetAztecAddress, amount: 10 })
                         });
                         const airdropData = await airdropRes.json();
                         if (airdropData.success) {

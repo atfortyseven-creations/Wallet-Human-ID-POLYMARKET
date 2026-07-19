@@ -100,17 +100,34 @@ export interface AztecNativeState {
   spendQDs: (amount: number, reason: string) => Promise<boolean>;
 }
 
-// ─── Context ──────────────────────────────────────────────────────────────────
+// Safe default state returned when context is not yet available.
+// This prevents "Critical Node Failure" crashes during SSR / early hydration
+// when components mount before the AztecNativeProvider is ready.
+const SAFE_DEFAULT: AztecNativeState = {
+  aztecAddress: null,
+  seed: null,
+  balance: 0,
+  history: [],
+  isLoading: false,
+  isBusy: false,
+  error: null,
+  connectIdentity: async () => {},
+  disconnectIdentity: () => {},
+  refresh: async () => {},
+  spendQDs: async () => false,
+};
 
+// ─── Context ──────────────────────────────────────────────────────────────────
 const AztecNativeContext = createContext<AztecNativeState | null>(null);
 
 export function useAztecNative(): AztecNativeState {
   const ctx = useContext(AztecNativeContext);
-  if (!ctx) {
-    throw new Error("useAztecNative must be used inside <AztecNativeProvider>");
-  }
+  // Return safe defaults instead of throwing — components will render
+  // empty/zero state until the provider mounts. No crash on mobile.
+  if (!ctx) return SAFE_DEFAULT;
   return ctx;
 }
+
 
 // ─── Utility ──────────────────────────────────────────────────────────────────
 

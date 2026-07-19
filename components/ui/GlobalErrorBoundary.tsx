@@ -1,7 +1,6 @@
 "use client";
 
 import React, { Component, ErrorInfo, ReactNode } from "react";
-import { ShieldAlert, RefreshCw, Home } from "lucide-react";
 
 interface Props {
   children: ReactNode;
@@ -10,83 +9,226 @@ interface Props {
 interface State {
   hasError: boolean;
   error?: Error;
+  errorCount: number;
 }
 
 export class GlobalErrorBoundary extends Component<Props, State> {
   public state: State = {
     hasError: false,
+    errorCount: 0,
   };
 
-  public static getDerivedStateFromError(error: Error): State {
+  public static getDerivedStateFromError(error: Error): Partial<State> {
     return { hasError: true, error };
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("[Global Error Boundary] Caught exception:", error, errorInfo);
+    this.setState(prev => ({ errorCount: prev.errorCount + 1 }));
   }
 
   private handleReset = () => {
-    this.setState({ hasError: false });
+    this.setState({ hasError: false, error: undefined });
+    // Clear any stale wagmi / appkit state that could be causing the crash
+    try { sessionStorage.removeItem('WAGMI_CONNECTED'); } catch {}
+    try { sessionStorage.removeItem('__enclave_clearance_v2__'); } catch {}
     window.location.reload();
   };
 
+  private handleGoConnect = () => {
+    // Hard navigate so the entire React tree is rebuilt fresh
+    window.location.href = "/connect";
+  };
+
   private handleGoHome = () => {
-     this.setState({ hasError: false });
-     window.location.href = "/";
+    window.location.href = "/";
   };
 
   public render() {
     if (this.state.hasError) {
-      return (
-        <div className="min-h-screen bg-white  flex items-center justify-center p-6 transition-colors duration-500">
-          <div className="max-w-md w-full bg-white  border border-black/10  p-10 shadow-2xl relative overflow-hidden group">
-            
-            {/* Background pattern */}
-            <div className="absolute inset-0 opacity-[0.03]  pointer-events-none select-none">
-                <svg width="100%" height="100%">
-                    <pattern id="error-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="1" />
-                    </pattern>
-                    <rect width="100%" height="100%" fill="url(#error-grid)" />
-                </svg>
-            </div>
+      const errorMsg = this.state.error?.message || "Unknown module error";
+      // Check if this looks like a ChunkLoad error (stale deployment)
+      const isChunkError = /chunk|dynamically imported|loading chunk/i.test(errorMsg);
 
-            <div className="relative z-10 flex flex-col items-center text-center">
-              <div className="w-20 h-20 bg-red-500/10 border border-red-500/20 rounded-full flex items-center justify-center mb-8">
-                <ShieldAlert className="text-red-500" size={36} />
+      return (
+        <div
+          style={{
+            minHeight: "100dvh",
+            background: "#fff",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "24px",
+            fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif",
+          }}
+        >
+          <div
+            style={{
+              maxWidth: "400px",
+              width: "100%",
+              background: "#fff",
+              border: "1px solid rgba(0,0,0,0.08)",
+              borderRadius: "24px",
+              padding: "36px 28px",
+              boxShadow: "0 32px 80px rgba(0,0,0,0.1)",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            {/* Ambient gradient */}
+            <div style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%,-50%)",
+              width: "240px",
+              height: "240px",
+              background: "radial-gradient(circle, rgba(239,68,68,0.06) 0%, transparent 70%)",
+              borderRadius: "50%",
+              pointerEvents: "none",
+            }} />
+
+            <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+              {/* Icon */}
+              <div style={{
+                width: "64px",
+                height: "64px",
+                background: "rgba(239,68,68,0.08)",
+                border: "1px solid rgba(239,68,68,0.15)",
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: "20px",
+              }}>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgb(239,68,68)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <line x1="12" y1="8" x2="12" y2="12"/>
+                  <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
               </div>
-              
-              <h1 className="font-sans text-2xl font-black text-black  uppercase tracking-tighter mb-4">
-                Critical Node Failure
+
+              <h1 style={{
+                fontSize: "20px",
+                fontWeight: 900,
+                color: "#0A0A0A",
+                letterSpacing: "-0.02em",
+                marginBottom: "8px",
+                textTransform: "uppercase",
+              }}>
+                {isChunkError ? "Update Required" : "System Error"}
               </h1>
-              
-              <p className="font-mono text-[11px] text-black/40  uppercase tracking-widest leading-relaxed mb-8">
-                The terminal has encountered a module decoupling error. 
-                System state has been preserved.
+
+              <p style={{
+                fontSize: "11px",
+                color: "rgba(0,0,0,0.4)",
+                fontFamily: "monospace",
+                textTransform: "uppercase",
+                letterSpacing: "0.15em",
+                lineHeight: 1.6,
+                marginBottom: "28px",
+              }}>
+                {isChunkError
+                  ? "New version deployed. Tap below to reload."
+                  : "Module decoupling error. System state preserved."}
               </p>
 
-              <div className="w-full space-y-3">
+              {/* Buttons */}
+              <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "10px" }}>
+                {/* Primary: Go to Connect (most helpful on mobile) */}
+                <button
+                  onClick={this.handleGoConnect}
+                  style={{
+                    width: "100%",
+                    height: "52px",
+                    background: "#0A0A0A",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "14px",
+                    fontSize: "11px",
+                    fontWeight: 900,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.15em",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px",
+                  }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                    <polyline points="10 17 15 12 10 7"/>
+                    <line x1="15" y1="12" x2="3" y2="12"/>
+                  </svg>
+                  Connect Wallet
+                </button>
+
+                {/* Secondary: Reload */}
                 <button
                   onClick={this.handleReset}
-                  className="w-full flex items-center justify-center gap-3 py-4 bg-black  text-white  font-black uppercase tracking-[0.2em] text-[10px] hover:opacity-80 transition-opacity"
+                  style={{
+                    width: "100%",
+                    height: "48px",
+                    background: "transparent",
+                    color: "#0A0A0A",
+                    border: "1px solid rgba(0,0,0,0.1)",
+                    borderRadius: "14px",
+                    fontSize: "11px",
+                    fontWeight: 900,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.15em",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px",
+                  }}
                 >
-                  <RefreshCw size={14} />
-                  Re-initialize Core
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="23 4 23 10 17 10"/>
+                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                  </svg>
+                  Reload System
                 </button>
-                
+
+                {/* Tertiary: Home */}
                 <button
                   onClick={this.handleGoHome}
-                  className="w-full flex items-center justify-center gap-3 py-4 border border-black/10  text-black  font-black uppercase tracking-[0.2em] text-[10px] hover:bg-black/5  transition-colors"
+                  style={{
+                    width: "100%",
+                    height: "44px",
+                    background: "transparent",
+                    color: "rgba(0,0,0,0.35)",
+                    border: "none",
+                    borderRadius: "14px",
+                    fontSize: "10px",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.15em",
+                    cursor: "pointer",
+                  }}
                 >
-                  <Home size={14} />
                   Return to Landing
                 </button>
               </div>
 
-              <div className="mt-10 pt-8 border-t border-black/5  w-full">
-                <p className="font-mono text-[8px] text-black/40  uppercase tracking-[0.4em] font-black break-all">
-                    Error Integrity: {this.state.error?.message || "Unknown"}
-                </p>
+              {/* Error detail */}
+              <div style={{
+                marginTop: "24px",
+                width: "100%",
+                background: "rgba(0,0,0,0.02)",
+                border: "1px solid rgba(0,0,0,0.05)",
+                borderRadius: "10px",
+                padding: "12px 14px",
+                textAlign: "left",
+              }}>
+                <div style={{ fontSize: "8px", fontFamily: "monospace", textTransform: "uppercase", letterSpacing: "0.3em", color: "rgba(0,0,0,0.3)", marginBottom: "6px" }}>
+                  Error Integrity
+                </div>
+                <div style={{ fontSize: "9px", fontFamily: "monospace", color: "rgba(0,0,0,0.35)", wordBreak: "break-all", lineHeight: 1.5 }}>
+                  {errorMsg.slice(0, 120)}
+                </div>
               </div>
             </div>
           </div>

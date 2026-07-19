@@ -42,9 +42,6 @@ export async function POST(req: NextRequest) {
     }
 
     const session = await getSession();
-    if (!session?.userId) {
-      return NextResponse.json({ error: 'Unauthorized: sign in first.' }, { status: 401 });
-    }
 
     const body = await req.json();
     const parsedBody = AirdropSchema.safeParse(body);
@@ -54,60 +51,37 @@ export async function POST(req: NextRequest) {
 
     const normalizedAddress = parsedBody.data.address.toLowerCase();
 
-    // ── Resolve session address (EVM wallet OR email-derived Aztec address) ─────
-    // For email-only users: session.userId is a UUID. We derive their canonical
-    // Aztec address from their email using the same SHA-256 algorithm.
-    let sessionAddr = session.userId.toLowerCase().trim();
-    const isUUID = sessionAddr.includes('-') && sessionAddr.length > 30;
-    if (isUUID) {
-      const authUser = await (prisma.authUser as any).findUnique({ where: { id: sessionAddr } });
-      if (!authUser) {
-        return NextResponse.json({ error: 'Unauthorized: Session not found.' }, { status: 401 });
+    // ── Session Ownership Check (Only if authenticated) ─────────────
+    // For users claiming via authenticated paths, verify they aren't claiming for a different wallet.
+    // For unauthenticated users (Basic Identity), we rely solely on the 3-Layer Anti-Sybil defense.
+    if (session?.userId) {
+      let sessionAddr = session.userId.toLowerCase().trim();
+      const isUUID = sessionAddr.includes('-') && sessionAddr.length > 30;
+      if (isUUID) {
+        const authUser = await (prisma.authUser as any).findUnique({ where: { id: sessionAddr } });
+        if (!authUser) {
+          return NextResponse.json({ error: 'Unauthorized: Session not found.' }, { status: 401 });
+        }
+        if (authUser.walletAddress) {
+          sessionAddr = authUser.walletAddress.toLowerCase();
+        } else if (authUser.email) {
+          sessionAddr = deriveAztecAddress(authUser.email.toLowerCase().trim());
+        } else {
+          return NextResponse.json({ error: 'Unauthorized: Account incomplete.' }, { status: 403 });
+        }
       }
-      if (authUser.walletAddress) {
-        sessionAddr = authUser.walletAddress.toLowerCase();
-      } else if (authUser.email) {
-        // Derive canonical Aztec address from email (same 2-round SHA-256)
-        sessionAddr = deriveAztecAddress(authUser.email.toLowerCase().trim());
-      } else {
-        return NextResponse.json({ error: 'Unauthorized: Account incomplete.' }, { status: 403 });
-      }
-    }
 
-    // ── Session must own or be associated with the target address ─────────────
-    // [FIX] Users derive their Aztec address via keccak256(signature) which
-    // produces a DIFFERENT address than deriveAztecAddress(evmAddr). We must
-    // accept both paths:
-    //   1. Deterministic: deriveAztecAddress(sessionAddr) === normalizedAddress
-    //   2. Direct match: sessionAddr === normalizedAddress (email users)
-    //   3. New: the normalizedAddress is a keccak256(signature)-derived address
-    //      — we cannot verify this upfront, so we ONLY block if it looks like
-    //      someone is trying to airdrop to a completely different wallet.
-    //      The one-per-IP + one-per-wallet guards already prevent Sybil abuse.
-    const deterministicMatch = isOwner(sessionAddr, normalizedAddress);
-    const directMatch = sessionAddr.toLowerCase() === normalizedAddress.toLowerCase();
-    if (!deterministicMatch && !directMatch) {
-      // Check if the session address itself (EVM) matches via the deterministic path
-      // If neither path matches, this is a cross-wallet airdrop attempt — reject it.
-      // EXCEPTION: email users have sessionAddr = derived Aztec addr, which may differ.
-      // For email users (isUUID was true), we already resolved sessionAddr to the
-      // wallet or email-derived address — so if it still doesn't match, it's a
-      // cross-wallet attempt.
-      //
-      // Allow if the normalized address starts with 0x and is a valid hex address
-      // (not an email_ or UUID). This permits signature-derived Aztec addresses
-      // because we cannot pre-validate the keccak256(signature) path server-side
-      // without the actual signature. The one-per-IP guard is sufficient.
-      const isValidHexAddress = /^0x[0-9a-f]{40,64}$/i.test(normalizedAddress);
-      if (!isValidHexAddress || isUUID) {
-        return NextResponse.json(
-          { error: 'Forbidden: You can only airdrop to your own wallet address.' },
-          { status: 403 }
-        );
+      const deterministicMatch = isOwner(sessionAddr, normalizedAddress);
+      const directMatch = sessionAddr.toLowerCase() === normalizedAddress.toLowerCase();
+      if (!deterministicMatch && !directMatch) {
+        const isValidHexAddress = /^0x[0-9a-f]{40,64}$/i.test(normalizedAddress);
+        if (!isValidHexAddress || isUUID) {
+          return NextResponse.json(
+            { error: 'Forbidden: You can only airdrop to your own wallet address.' },
+            { status: 403 }
+          );
+        }
       }
-      // Valid hex address that doesn't match deterministic path — this is the
-      // signature-derived Aztec address case. Allow it through (IP + wallet guards
-      // prevent double-claiming).
     }
 
     // ══════════════════════════════════════════════════════════════════════════════
