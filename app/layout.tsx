@@ -292,12 +292,16 @@ export default async function RootLayout({
 
   // ── Nuclear Service Worker Purge ─────────────────────────────────────────
   // If the user is stuck with a broken SW returning HTML for CSS (un-styled page)
-  // or an old cached HTML, we force an unregister and reload ONCE per session.
-  var NUCLEAR_KEY = 'sw_nuclear_purge_v5';
+  // or an old cached HTML, we force an unregister ONCE per session.
+  // MOBILE FIX: Do NOT auto-reload on mobile as it creates infinite refresh loops
+  // on iOS Safari where sessionStorage persists across same-domain navigations.
+  var NUCLEAR_KEY = 'sw_nuclear_purge_v6';
+  var isMobileSW = /android|iphone|ipad|ipod/i.test(navigator.userAgent || '');
   if (!sessionStorage.getItem(NUCLEAR_KEY)) {
     sessionStorage.setItem(NUCLEAR_KEY, '1');
-    if ('serviceWorker' in navigator) {
+    if ('serviceWorker' in navigator && !isMobileSW) {
       navigator.serviceWorker.getRegistrations().then(function(regs) {
+        if (!regs || regs.length === 0) return; // no SW — nothing to do, skip reload
         var unregs = regs.map(function(r) { return r.unregister(); });
         Promise.all(unregs).then(function() {
           if (window.caches) {

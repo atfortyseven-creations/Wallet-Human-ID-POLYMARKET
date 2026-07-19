@@ -148,8 +148,25 @@ export const AztecProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
 
     // Only run in the browser (not during SSR / static generation)
+    // On mobile devices, skip the heavy Aztec SDK init entirely —
+    // the app uses the DB-backed API routes (AztecNativeContext) for all real operations.
+    // The PXE / local Sandbox is only useful for desktop developers running aztec-sandbox locally.
     if (typeof window !== 'undefined') {
-      initAztec();
+      const isMobileUA = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(
+        navigator?.userAgent ?? ''
+      );
+      if (isMobileUA) {
+        // Mobile fast-path: skip heavy WASM init, mark as ready with no PXE
+        setError(null); // no error — graceful degradation
+        return;
+      }
+      // Desktop-only: attempt PXE init
+      initAztec().catch((err: any) => {
+        const msg = err?.message ?? 'Aztec init failed';
+        console.warn('🔴 [Aztec] PXE init outer catch:', msg);
+        // Do NOT propagate — graceful degradation, app works without local Sandbox
+        setError(msg);
+      });
     }
   }, []);
 

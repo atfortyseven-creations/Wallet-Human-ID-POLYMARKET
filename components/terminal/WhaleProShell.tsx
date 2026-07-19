@@ -429,7 +429,7 @@ export function WhaleProShell({
                 <main className="flex-1 flex flex-col min-h-0 bg-white relative">
                     <div
                         id="main-scroll-container"
-                        className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden flex flex-col no-scrollbar"
+                        className={`flex-1 min-h-0 overflow-x-hidden flex flex-col no-scrollbar ${activeTab === 'chat' ? 'overflow-hidden' : 'overflow-y-auto'}`}
                         style={{
                             scrollbarWidth: 'none',
                             msOverflowStyle: 'none',

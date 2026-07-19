@@ -512,9 +512,21 @@ export default function ConnectPage() {
   const isVerified = mounted && isLinked;
 
   // --- Scroll-Driven Cinematic Sequence ---
-  const [phase, setPhase] = useState<"intro" | "login">("intro");
+  // On mobile: skip the cinematic scroll-intro entirely — go straight to login.
+  // The 600vh scroll intro is designed for desktop (mouse wheel). On iOS/Android
+  // it creates a dead-end where users swipe for seconds and see nothing.
+  const [phase, setPhase] = useState<"intro" | "login">(isMobile ? "login" : "intro");
   const introScrollRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Mobile hydration fix: isMobile starts false (no navigator on server),
+  // then flips true once useEffect fires. Jump directly to login when detected.
+  useEffect(() => {
+    if (isMobile && phase === 'intro') {
+      setPhase('login');
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMobile]);
 
   // Manual scroll progress using useMotionValue — more reliable than useScroll
   // inside a `position: fixed` container because useScroll can fail to detect
@@ -533,6 +545,10 @@ export default function ConnectPage() {
       setScrollPct(pct);
       if (pct >= 0.96 && phase === 'intro') {
         setPhase('login');
+        // Force scroll reset to top so the login page doesn't inherit a massive scroll offset
+        setTimeout(() => {
+          if (el) el.scrollTop = 0;
+        }, 0);
       }
     };
     el.addEventListener('scroll', onScroll, { passive: true });
@@ -540,24 +556,26 @@ export default function ConnectPage() {
   }, [phase]);
 
   // Derive animation values from scrollPct
+  const effectiveScrollPct = phase === 'login' ? 1 : scrollPct;
+
   // 1. AUTHENTICATE title: fades out in first 15% of scroll
-  const introOpacityVal = scrollPct < 0.15 ? 1 - (scrollPct / 0.15) : 0;
-  const introScaleVal   = 1 - (Math.min(scrollPct, 0.15) / 0.15) * 0.12;
-  const introBlurVal    = `blur(${Math.min(scrollPct / 0.15, 1) * 16}px)`;
+  const introOpacityVal = effectiveScrollPct < 0.15 ? 1 - (effectiveScrollPct / 0.15) : 0;
+  const introScaleVal   = 1 - (Math.min(effectiveScrollPct, 0.15) / 0.15) * 0.12;
+  const introBlurVal    = `blur(${Math.min(effectiveScrollPct / 0.15, 1) * 16}px)`;
 
   // 2. Manifesto: fades in 15–25%, visible 25–75%, fades out 75–90%
   let manifestoOpacityVal = 0;
-  if (scrollPct >= 0.15 && scrollPct < 0.25) {
-    manifestoOpacityVal = (scrollPct - 0.15) / 0.10;
-  } else if (scrollPct >= 0.25 && scrollPct < 0.75) {
+  if (effectiveScrollPct >= 0.15 && effectiveScrollPct < 0.25) {
+    manifestoOpacityVal = (effectiveScrollPct - 0.15) / 0.10;
+  } else if (effectiveScrollPct >= 0.25 && effectiveScrollPct < 0.75) {
     manifestoOpacityVal = 1;
-  } else if (scrollPct >= 0.75 && scrollPct < 0.90) {
-    manifestoOpacityVal = 1 - (scrollPct - 0.75) / 0.15;
+  } else if (effectiveScrollPct >= 0.75 && effectiveScrollPct < 0.90) {
+    manifestoOpacityVal = 1 - (effectiveScrollPct - 0.75) / 0.15;
   }
-  const manifestoYVal = scrollPct < 0.25
-    ? 60 - ((scrollPct - 0.15) / 0.10) * 60
-    : scrollPct > 0.75
-    ? -((scrollPct - 0.75) / 0.15) * 60
+  const manifestoYVal = effectiveScrollPct < 0.25
+    ? 60 - ((effectiveScrollPct - 0.15) / 0.10) * 60
+    : effectiveScrollPct > 0.75
+    ? -((effectiveScrollPct - 0.75) / 0.15) * 60
     : 0;
 
   // Legacy motion value refs (kept for API compatibility — not used for transforms now)

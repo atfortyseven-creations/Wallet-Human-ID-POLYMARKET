@@ -18,7 +18,7 @@ import { useAppKit } from '@reown/appkit/react';
 import { getXMTPClient, canReceiveMessages, sendMessage, getMessages, destroyXMTPClient, nsToDate, discoverNewPeers, streamMessages, resolveSenderAddress, extractPeerAddress } from '@/lib/xmtp/client';
 import { QrScanner } from '@/components/terminal/QrScanner';
 import { TuringShieldGate } from '@/components/auth/TuringShieldGate';
-import { RemoteLottie } from '@/components/ui/RemoteLottie';
+
 import type { Client } from '@xmtp/browser-sdk';
 import { useSettingsStore } from '@/lib/store/useSettingsStore';
 import { useWalletStore } from '@/lib/store/wallet-store';
@@ -156,7 +156,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   //  Audio recording state 
   const [isRecording, setIsRecording] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
-  const [keyboardOffset, setKeyboardOffset] = useState(0);
+
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const recordingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -334,11 +334,6 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         }
       }
       
-      // Calculate keyboard offset for iOS
-      if (window.visualViewport) {
-        const offset = window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop;
-        setKeyboardOffset(Math.max(0, offset));
-      }
     };
     window.addEventListener('resize', handleResize);
     window.addEventListener('scroll', handleResize);
@@ -2046,10 +2041,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                     </div>
                     {conv.unreadCount && conv.unreadCount > 0 ? (
                       <div className="relative w-6 h-6 flex items-center justify-center shrink-0">
-                        <RemoteLottie
-                          path="/system-shots/LOTTIECHAT/02dee108-117f-11ee-8417-5fe9d1aa5cbb.json"
-                          className="absolute inset-0 w-full h-full opacity-90"
-                        />
+                        <div className="absolute inset-0 w-full h-full opacity-90 bg-black/5 rounded-full" />
                         <span className="relative z-10 text-[8px] font-black text-black mt-0.5">
                           {conv.unreadCount > 9 ? '+9' : conv.unreadCount}
                         </span>
@@ -2237,9 +2229,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               {sending && (
                   <div className="flex flex-col self-end max-w-[80%] items-end mt-2">
                      <div className="w-32 h-1.5 bg-gradient-to-r from-indigo-500 via-teal-400 to-white/10 rounded-full animate-pulse shadow-sm" />
-                     <div className="w-8 h-8 mt-1 opacity-90">
-                       <RemoteLottie path="/system-shots/LOTTIECHAT/d5cfd39e-1150-11ee-8341-c736863152e8 (1).json" />
-                     </div>
+                       <div className="w-full h-full rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" />
                   </div>
               )}
               <div ref={messagesEndRef} />
@@ -2247,7 +2237,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
             <div
               className="shrink-0 bg-white/80 backdrop-blur-xl border-t border-black/10 z-10 shadow-[0_-4px_24px_rgba(0,0,0,0.02)]"
-              style={{ paddingBottom: `max(8px, env(safe-area-inset-bottom, 0px), ${keyboardOffset}px)` }}
+              style={{ paddingBottom: `max(8px, env(safe-area-inset-bottom, 0px))` }}
             >
               {/*  Offline Banner  */}
               {isOffline && (

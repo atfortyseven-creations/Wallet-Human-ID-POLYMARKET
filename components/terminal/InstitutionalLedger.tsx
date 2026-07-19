@@ -6,7 +6,7 @@ import { usePublicClient, useBlockNumber } from 'wagmi';
 import { formatEther } from 'viem';
 
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { RemoteLottie } from '@/components/ui/RemoteLottie';
+
 
 interface RealTransaction {
     id: string;
@@ -302,7 +302,7 @@ export default function InstitutionalLedger() {
                 <div className="border border-[#E5E5E5]  bg-[#F9F9F9]  rounded-2xl overflow-hidden shadow-sm">
                     <div className="flex items-center justify-between p-6 bg-[#E5E5E5]/50  border-b border-[#E5E5E5] ">
                         <div className="flex items-center gap-3">
-                            <div className="w-5 h-5 overflow-hidden flex items-center justify-center "><RemoteLottie path="/system-shots/block abstract.json" className="w-full h-full object-cover scale-[1.1]" loop={true} /></div>
+                            <div className="w-5 h-5 overflow-hidden flex items-center justify-center "><div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse" /></div>
                             <h2 className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#050505] ">BLOCK TELEMETRY</h2>
                         </div>
                         <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#A0A0A0]">LIVE STREAMING</span>
@@ -354,7 +354,7 @@ export default function InstitutionalLedger() {
                 <div className="border border-[#E5E5E5]  bg-[#F9F9F9]  rounded-2xl overflow-hidden shadow-sm">
                     <div className="flex items-center justify-between p-6 bg-[#E5E5E5]/50  border-b border-[#E5E5E5] ">
                         <div className="flex items-center gap-3">
-                            <div className="w-5 h-5 overflow-hidden flex items-center justify-center "><RemoteLottie path="/system-shots/block abstract.json" className="w-full h-full object-cover scale-[1.1]" loop={true} /></div>
+                            <div className="w-5 h-5 overflow-hidden flex items-center justify-center "><div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse" /></div>
                             <h2 className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#050505] ">TRANSACTION FLOWS</h2>
                         </div>
                         <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#A0A0A0]">MEMPOOL MONITOR</span>
@@ -421,7 +421,7 @@ export default function InstitutionalLedger() {
                             <div className="p-8 md:p-10">
                                 <div className="flex items-center gap-6 mb-10 pb-6 border-b border-[#E5E5E5] ">
                                     <div className="w-12 h-12 bg-white  border border-[#E5E5E5]  rounded-xl flex items-center justify-center shadow-sm">
-                                        <div className="w-6 h-6 overflow-hidden flex items-center justify-center "><RemoteLottie path="/system-shots/block abstract.json" className="w-full h-full object-cover scale-[1.1]" loop={true} /></div>
+                                        <div className="w-6 h-6 overflow-hidden flex items-center justify-center "><div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse" /></div>
                                     </div>
                                     <div className="flex flex-col gap-1">
                                         <h3 className="text-xl font-bold uppercase tracking-[0.1em] text-[#050505] ">
