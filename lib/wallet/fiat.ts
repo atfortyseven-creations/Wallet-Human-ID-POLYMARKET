@@ -1,3 +1,4 @@
+import { getRealTimePrice } from '../priceHelper';
 /**
  * Fiat On-Ramp Service (MoonPay Integration)
  * Buy crypto with credit card/bank transfer
@@ -44,7 +45,6 @@ export function getMoonPayUrl(
   return `${MOONPAY_BASE_URL}?${params.toString()}`;
 }
 
-import { getRealTimePrice } from '../priceHelper';
 
 /**
  * Get quote for fiat purchase

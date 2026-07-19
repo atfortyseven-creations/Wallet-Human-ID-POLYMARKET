@@ -1,5 +1,7 @@
 import 'dotenv/config';
 import { walletAnalyticsService } from '../lib/wallet/WalletAnalyticsService';
+import { portfolioService } from '../lib/blockchain/PortfolioService';
+import { ChainId } from '../lib/blockchain/BlockchainService';
 
 const USER_ADDRESS = '0x78831c25c86eA2a78A6127fC2Ccb95E612D87b4a';
 
@@ -37,8 +39,6 @@ async function testUserDebug() {
 }
 
 // 4. Detailed Portfolio Check
-import { portfolioService } from '../lib/blockchain/PortfolioService';
-import { ChainId } from '../lib/blockchain/BlockchainService';
 
 async function deepDive() {
     await testUserDebug();

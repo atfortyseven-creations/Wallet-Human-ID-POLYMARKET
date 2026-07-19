@@ -1,19 +1,21 @@
-// @ts-nocheck
 "use client";
-// TerminalDashboard v4 — dashboard tab replaces billing
 import React, { useMemo } from 'react';
-
 import { WhaleProShell } from '@/components/terminal/WhaleProShell';
 import { DashboardErrorBoundary } from '@/components/terminal/DashboardErrorBoundary';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
 import dynamic from 'next/dynamic';
-
-// --- Architectural Hooks ---
 import { useQuantumSessionVisibility } from '@/hooks/useQuantumSessionVisibility';
 import { useAztecStateSync } from '@/hooks/useAztecStateSync';
+import { GoldTicketPanel } from '@/components/terminal/GoldTicketPanel';
+import "@/app/terminal/terminal.css";
+import { motion, AnimatePresence } from 'framer-motion';
+// @ts-nocheck
+// TerminalDashboard v4 — dashboard tab replaces billing
+
+
+// --- Architectural Hooks ---
 
 // --- Static Imports ---
-import { GoldTicketPanel } from '@/components/terminal/GoldTicketPanel';
 
 
 // --- Dynamic Module Registry ---
@@ -42,9 +44,7 @@ const Registry = {
   GovernanceDashboard: dynamic(() => import('@/components/terminal/GovernanceProposals').then(m => ({ default: m.GovernanceProposals })), { ssr: false, loading: LoadingPanel })
 } as const;
 
-import "@/app/terminal/terminal.css";
 
-import { motion, AnimatePresence } from 'framer-motion';
 
 // --- Route Renderer Strategy ---
 interface RouteRendererProps {

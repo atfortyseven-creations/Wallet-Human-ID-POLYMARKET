@@ -5,7 +5,7 @@ async function testResilience() {
     
     // Test 1: Batch with many tokens (force many IDs)
     console.log('\nTesting Batch Fetching...');
-    const dummyAddresses = Array.from({ length: 110 }, (_, i) => `0x${(i + 1).toString(16).padStart(40, '0')}`);
+    const dummyAddresses = Array.from({ length: 110 }, (_idx, i) => `0x${(i + 1).toString(16).padStart(40, '0')}`);
     const batchResult = await getTokenPricesBatch(1, dummyAddresses);
     console.log(`Batch Result for 110 tokens: ${Object.keys(batchResult).length} prices found.`);
 

@@ -1,10 +1,11 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { appendAuditEntry, verifyAuditTrailIntegrity } from '../../../lib/audit/audit-trail';
 /**
  * AUDIT TRAIL  Test Suite
  * Validates HMAC chain integrity, tamper detection, and entry structure.
  * Uses an in-memory mock for Prisma to avoid DB dependency in unit tests.
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 //  Mock Prisma 
 const mockEntries: any[] = [];
@@ -35,7 +36,6 @@ vi.mock('@/lib/prisma', () => ({
 //  Set required env 
 process.env.AUDIT_SECRET = 'test-audit-secret-256-bits-minimum-length-ok';
 
-import { appendAuditEntry, verifyAuditTrailIntegrity } from '../../../lib/audit/audit-trail';
 
 describe('Audit Trail', () => {
   beforeEach(() => {

@@ -1,17 +1,17 @@
 "use client";
-
 import React, { useState } from "react";
 import { Copy, Menu, User, Loader2, ShieldCheck, AlertCircle, Settings as SettingsIcon, Vote } from "lucide-react";
 import { IDKitWidget, ISuccessResult, VerificationLevel } from "@worldcoin/idkit";
 import { useAccount } from "wagmi";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
 import { SettingsModal } from "@/components/ui/SettingsModal";
 import { useAuth } from "@/hooks/useAuth";
 import dynamic from 'next/dynamic';
-const GhostMessenger = dynamic(() => import('./chat/GhostMessenger').then(mod => mod.GhostMessenger), { ssr: false });
 import XMTPProviderWrapper from './chat/XMTPProviderWrapper'; // [NEW] Phase 4
+
+
+const GhostMessenger = dynamic(() => import('./chat/GhostMessenger').then(mod => mod.GhostMessenger), { ssr: false });
 
 
 export default function VoidShell({ children }: { children: React.ReactNode }) {

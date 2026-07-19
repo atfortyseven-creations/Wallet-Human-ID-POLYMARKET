@@ -1,10 +1,10 @@
 "use client";
-
-export const dynamic = 'force-dynamic';
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+
+export const dynamic = 'force-dynamic';
+
 
 export default function AdminLoginPage() {
     const router = useRouter();

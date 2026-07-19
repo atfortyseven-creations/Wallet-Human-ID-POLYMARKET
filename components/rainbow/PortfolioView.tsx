@@ -1,4 +1,36 @@
 "use client";
+import { motion, AnimatePresence } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import { TokenRow } from "./TokenRow";
+import { ActionCluster } from "./ActionCluster";
+import {
+  History,
+  Wallet,
+  RefreshCw,
+  ChevronDown,
+  CheckCircle2,
+  Sun,
+  Moon,
+  Menu,
+  Zap,
+  Plus,
+  X
+} from "lucide-react";
+import { useAppKitAccount } from "@reown/appkit/react";
+import { useChainId, useSwitchChain } from "wagmi";
+import { useSystemAccount } from "@/hooks/useSystemAccount";
+import { useSystemSignOut } from "@/hooks/useSystemSignOut";
+import { useState, useEffect, useCallback } from "react";
+import { LegendaryTransactionModal } from "./LegendaryTransactionModal";
+import { LegendaryActivityFeed } from "./LegendaryActivityFeed";
+import { DepositModal } from "./DepositModal";
+import { toast } from "sonner";
+import { useSWRConfig } from "swr";
+import { useSmartWebSockets } from "@/hooks/useSmartWebSockets";
+import { useSystemConnect } from "@/hooks/useSystemConnect";
+import { OptimisticExecutionIndicator } from "./OptimisticExecutionIndicator";
+import { safeToFixed, safeToLocaleString } from "@/lib/utils/number-format";
+import { GenerateWalletWizard } from "../wallet/GenerateWalletWizard";
 
 /**
  * PortfolioView  Cryptographic TERMINAL v5
@@ -27,38 +59,7 @@
 // Its JSX type is declared globally by the package itself
 
 
-import { motion, AnimatePresence } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
-import { TokenRow } from "./TokenRow";
-import { ActionCluster } from "./ActionCluster";
-import {
-  History,
-  Wallet,
-  RefreshCw,
-  ChevronDown,
-  CheckCircle2,
-  Sun,
-  Moon,
-  Menu,
-  Zap,
-  Plus,
-  X
-} from "lucide-react";
-import { useAppKitAccount } from "@reown/appkit/react";
-import { useChainId, useSwitchChain } from "wagmi";
-import { useSystemAccount } from "@/hooks/useSystemAccount";
-import { useSystemSignOut } from "@/hooks/useSystemSignOut";
 
-import { useState, useEffect, useCallback } from "react";
-import { LegendaryTransactionModal } from "./LegendaryTransactionModal";
-import { LegendaryActivityFeed } from "./LegendaryActivityFeed";
-import { DepositModal } from "./DepositModal";
-import { toast } from "sonner";
-import { useSWRConfig } from "swr";
-import { useSmartWebSockets } from "@/hooks/useSmartWebSockets";
-import { useSystemConnect } from "@/hooks/useSystemConnect";
-import { OptimisticExecutionIndicator } from "./OptimisticExecutionIndicator";
-import { safeToFixed, safeToLocaleString } from "@/lib/utils/number-format";
 
 interface PortfolioViewProps {
   totalValue: number;
@@ -186,7 +187,6 @@ function ChainSelector() {
 }
 
 // --- Rainbow Perfect Account Switcher ---
-import { GenerateWalletWizard } from "../wallet/GenerateWalletWizard";
 
 function RainbowAccountSwitcher({ userAddress }: { userAddress: string | undefined }) {
   const [isOpen, setIsOpen] = useState(false);

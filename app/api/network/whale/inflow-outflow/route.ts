@@ -1,5 +1,5 @@
-export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
 
 // Known major exchange cold wallet addresses (subset)
 const EXCHANGE_ADDRESSES: Record<string, string> = {

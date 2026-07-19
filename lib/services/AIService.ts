@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import { ForensicAnalysis, ForensicSignal } from './ai-types';
 
 /**
  * Elite FORENSIC AI SERVICE
@@ -8,7 +9,6 @@ declare global {
     var __aiQuotaWarned: boolean | undefined;
 }
 
-import { ForensicAnalysis, ForensicSignal } from './ai-types';
 export type { ForensicAnalysis, ForensicSignal };
 
 export class AIService {

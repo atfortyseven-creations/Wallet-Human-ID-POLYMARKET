@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
@@ -23,6 +22,10 @@ import {
 } from 'lucide-react';
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
 import { SafeErrorBoundary } from '@/components/ui/SafeErrorBoundary';
+import { ImmersiveManifestoLanding } from "./ImmersiveManifestoLanding";
+import { WhalecosystemTweetFeed } from "./WhalecosystemTweetFeed";
+import { EmailLoginModal } from "@/components/auth/EmailLoginModal";
+
 
 //  Reown AppKit + WagmiAdapter localStorage key patterns 
 // These are ALL the keys that Reown AppKit v1/v2 and its WagmiAdapter write
@@ -95,9 +98,6 @@ const DynamicUniversalScanModal = dynamic(
   { ssr: false }
 );
 
-import { ImmersiveManifestoLanding } from "./ImmersiveManifestoLanding";
-import { WhalecosystemTweetFeed } from "./WhalecosystemTweetFeed";
-import { EmailLoginModal } from "@/components/auth/EmailLoginModal";
 
 //  Colour tokens 
 const IVORY = "#FFFFFF";

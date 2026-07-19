@@ -1,32 +1,32 @@
 "use client";
 import { MoreVertical, MapPin, Copy, Trash2, UserPlus, Download, Slash, Settings } from 'lucide-react';
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-
 import { Video, Phone, PhoneOff, Mic, MicOff, Smile } from 'lucide-react';
 import dynamic from 'next/dynamic';
-const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
 import type Peer from 'peerjs';
-
 import { useSystemAccount } from '@/hooks/useSystemAccount';
-
 import { useSignMessage, useReconnect } from 'wagmi';
 import { sendViaOnion, registerAsRelay } from '@/lib/onion/OnionRouter';
-
 import { useAppKit } from '@reown/appkit/react';
 import { getXMTPClient, canReceiveMessages, sendMessage, getMessages, destroyXMTPClient, nsToDate, discoverNewPeers, streamMessages, resolveSenderAddress, extractPeerAddress } from '@/lib/xmtp/client';
 import { QrScanner } from '@/components/terminal/QrScanner';
 import { TuringShieldGate } from '@/components/auth/TuringShieldGate';
-
 import type { Client } from '@xmtp/browser-sdk';
 import { useSettingsStore } from '@/lib/store/useSettingsStore';
 import { useWalletStore } from '@/lib/store/wallet-store';
 import { useAztec } from '@/context/AztecContext';
 import { useAztecNative } from '@/context/AztecNativeContext';
+import { toast } from 'sonner';
+
+
+const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
+
+
+
+
 // NOTE: QDs state is sourced from AztecNativeContext (DB polling) — no local store needed.
 
-import { toast } from 'sonner';
 
 interface ConversationMeta {
   peerAddress: string;

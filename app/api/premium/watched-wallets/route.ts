@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getLegendaryStats } from '@/lib/stats-engine';
-
-
-export const revalidate = 0;
-
 import {
   validateSecureRequest,
   logAuditEvent,
@@ -13,6 +9,10 @@ import {
   logSecurityEvent,
 } from '@/lib/security/premium-security';
 import { prisma } from '@/lib/prisma';
+
+
+export const revalidate = 0;
+
 
 export async function POST(req: NextRequest) {
   try {

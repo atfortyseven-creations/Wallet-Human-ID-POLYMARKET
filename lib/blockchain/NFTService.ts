@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { ChainId, blockchainService } from './BlockchainService';
+import { ethers } from 'ethers';
 
 export interface NFTMetadata {
   tokenId: string;
@@ -93,6 +94,5 @@ export class NFTService {
   }
 }
 
-import { ethers } from 'ethers';
 export const nftService = new NFTService();
 

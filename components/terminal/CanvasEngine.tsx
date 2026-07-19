@@ -1,16 +1,16 @@
 "use client";
-
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useSystemAccount as useAccount } from '@/hooks/useSystemAccount';
 import type { NodeType, NodeData, EdgeData } from './canvas-types';
-// Re-export for backward compatibility with existing imports
-export type { NodeType, NodeData, EdgeData } from './canvas-types';
 import { AnimatePresence } from 'framer-motion';
 import { CanvasNode as CanvasNodeComponent } from './CanvasNode';
 import { CanvasEdges } from './CanvasEdges';
 import { ContextMenu } from './ContextMenu';
 import { TelemetryTerminal } from './TelemetryTerminal';
 import { WhaleSonar } from './WhaleSonar';
+
+// Re-export for backward compatibility with existing imports
+export type { NodeType, NodeData, EdgeData } from './canvas-types';
 
 
 // Debounce helper

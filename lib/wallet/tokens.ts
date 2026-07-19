@@ -1,3 +1,7 @@
+import { alchemyClient } from './alchemy-client';
+import { getChainById } from '../chains';
+import { getRealTimePrice, getPriceWithChange } from '../priceHelper';
+import { PriceService } from '../blockchain/PriceService';
 /**
  * Token Discovery & Management
  * Auto-discover ERC20 tokens and fetch metadata
@@ -26,10 +30,6 @@ export interface TokenMetadata {
   chainId: number;
 }
 
-import { alchemyClient } from './alchemy-client';
-import { getChainById } from '../chains';
-import { getRealTimePrice, getPriceWithChange } from '../priceHelper';
-import { PriceService } from '../blockchain/PriceService';
 
 
 /**

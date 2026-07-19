@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { 
+    getTransactionHistory 
+} from '@/lib/wallet/transactions-server';
 
 /**
  * [Elite] Transaction Registration API
@@ -50,9 +53,6 @@ export async function POST(req: Request) {
     }
 }
 
-import { 
-    getTransactionHistory 
-} from '@/lib/wallet/transactions-server';
 
 /**
  * Gets user transactions - Unified System Flow

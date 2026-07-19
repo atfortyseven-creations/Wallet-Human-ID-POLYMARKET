@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+import { keccak256, toBytes } from 'viem';
 /**
  * lib/aztec/zk-identity.ts
  * ─────────────────────────────────────────────────────────────────────────────
@@ -19,7 +21,6 @@
  * All ZK-sensitive API routes MUST use these helpers instead of raw addresses.
  */
 
-import crypto from 'crypto';
 
 // Domain-separated prefix for Whale Network identity hashing.
 // Changing this breaks all existing hashes — do NOT modify after launch.
@@ -42,7 +43,6 @@ export function deriveIdentityHash(address: string): string {
     .digest('hex');
 }
 
-import { keccak256, toBytes } from 'viem';
 
 /**
  * Derives the canonical Aztec address from an EVM address.

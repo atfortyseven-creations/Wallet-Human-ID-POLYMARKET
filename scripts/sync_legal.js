@@ -1,3 +1,4 @@
+import LegalDocLayout, { TocItem } from '@/components/layout/LegalDocLayout';
 const fs = require('fs');
 const path = require('path');
 
@@ -177,7 +178,6 @@ function processMarkdown(mdContent, title, category) {
   
   return `'use client';
 
-import LegalDocLayout, { TocItem } from '@/components/layout/LegalDocLayout';
 
 const TOC: TocItem[] = [
 ${tocStr}

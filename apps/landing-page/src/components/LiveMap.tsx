@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 
 // Generate some random positions for "wallets connecting"
 const generatePings = (count: number) => {
-  return Array.from({ length: count }).map((_, i) => ({
+  return Array.from({ length: count }).map((_idx, i) => ({
     id: i,
     x: Math.random() * 100,
     y: Math.random() * 100,

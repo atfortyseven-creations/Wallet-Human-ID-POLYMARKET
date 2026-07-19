@@ -2,6 +2,9 @@ import { useState, useCallback } from 'react';
 import { useWalletClient, usePublicClient, useAccount } from 'wagmi';
 import { lifiService } from '@/lib/wallet/lifi-service';
 import { parseUnits } from 'viem';
+import { useWalletStore } from '@/lib/store/wallet-store';
+import { ethers } from 'ethers';
+import { erc20Abi } from 'viem';
 
 export interface SwapParams {
     fromChain: number;
@@ -58,9 +61,6 @@ const TOKEN_MAP: Record<number, Record<string, string>> = {
  * [Elite] hook for Transaction Execution
  * Manages Approval -> Sign -> Broadcast -> DB Sync
  */
-import { useWalletStore } from '@/lib/store/wallet-store';
-import { ethers } from 'ethers';
-import { erc20Abi } from 'viem';
 
 const getRpcUrl = (chainId: number) => {
     switch(chainId) {

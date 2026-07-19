@@ -1,3 +1,7 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { createHmac, timingSafeEqual } from 'crypto';
+import { safeRedisGet, safeRedisSet } from '@/lib/redis/client';
+import rateLimit from '@/lib/rate-limit';
 /**
  * GET /api/market/signals
  *
@@ -23,9 +27,6 @@
  * Signals omit: walletAddress, fromAddress, toAddress (system source protection)
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { createHmac, timingSafeEqual } from 'crypto';
-import { safeRedisGet, safeRedisSet } from '@/lib/redis/client';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -131,7 +132,6 @@ function sanitizeSignal(raw: any) {
     };
 }
 
-import rateLimit from '@/lib/rate-limit';
 const limiter = rateLimit({ interval: 60_000 });
 
 //  Main Handler 

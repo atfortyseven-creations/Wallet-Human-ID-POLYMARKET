@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSendTransaction, useWriteContract, useReadContract, useChainId, useEnsAddress, useEstimateGas, useGasPrice, useSwitchChain, useChains, useBytecode } from "wagmi";
@@ -14,6 +13,11 @@ import { TokenLogo } from '@/components/ui/TokenLogo';
 import { RemoteLottie } from '@/components/ui/RemoteLottie';
 import { UNIVERSAL_TOKENS } from '@/config/universal-tokens';
 import { Activity, BookUser, X } from 'lucide-react';
+import { useWalletStore } from "@/lib/store/wallet-store";
+import { ethers } from "ethers";
+import { TransactionManager } from "@/lib/tx-manager";
+import { parseAbi } from "viem";
+
 
 // --- Constants & Types ---
 type MainTab = "SEND" | "SWAP" | "BRIDGE" | "BUY";
@@ -227,9 +231,6 @@ function TokenSelector({ assets, onSelect, onClose, currentChainId = null }: any
 // -----------------------------------------------------------------------------
 // SEND MODULE WITH NETWORK SWITCHING
 // -----------------------------------------------------------------------------
-import { useWalletStore } from "@/lib/store/wallet-store";
-import { ethers } from "ethers";
-import { TransactionManager } from "@/lib/tx-manager";
 
 function SendModule({ userAssets, forceToken, setStatus, setTxHash, setStatusMessage }: any) {
     const { address, chain: activeChain } = useAccount();
@@ -558,7 +559,6 @@ function SendModule({ userAssets, forceToken, setStatus, setTxHash, setStatusMes
 // -----------------------------------------------------------------------------
 // ADVANCED ROUTER MODULE (SWAP & BRIDGE) - Native Restored Backend
 // -----------------------------------------------------------------------------
-import { parseAbi } from "viem";
 
 const SWAP_ROUTER_MAP: Record<number, string> = {
     1: "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D", // Uniswap V2 Mainnet

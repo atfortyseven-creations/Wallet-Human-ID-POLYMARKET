@@ -1,3 +1,4 @@
+import { isTokenAllowed, getValidatedLogo } from './allowed-tokens';
 export const RAW_TOKENS_STRING = `
 Tether
 USDT
@@ -4546,7 +4547,6 @@ export const NETWORK_NATIVE_TOKENS: Record<string, { name: string; ticker: strin
     ],
 };
 
-import { isTokenAllowed, getValidatedLogo } from './allowed-tokens';
 
 // Quick runtime parser  deterministic round-robin network assignment (guarantees every network appears)
 export function getParsedMarkets() {

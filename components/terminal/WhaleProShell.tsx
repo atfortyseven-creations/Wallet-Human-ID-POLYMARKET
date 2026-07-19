@@ -1,7 +1,18 @@
 "use client";
-
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { MODULE_EXPLANATIONS } from './ModuleExplanations';
+import { useSettingsStore } from '@/lib/store/useSettingsStore';
+import { useRouter } from 'next/navigation';
+import { useEffect, useRef } from 'react';
+import { useMarketStream } from '@/context/MarketStreamContext';
+import { GlobalCommandPalette } from '@/components/ui/GlobalCommandPalette';
+import { InstitutionalErrorBoundary } from '@/components/ui/InstitutionalErrorBoundary';
+import { useSystemAccount } from '@/hooks/useSystemAccount';
+import { useEthMetrics } from '@/hooks/useEthMetrics';
+import { useDisconnect } from 'wagmi';
+import { toast } from 'sonner';
+
 
 // ─── Custom minimal SVG icons (not Lucide) ─────────────────────────────────
 const Icon = {
@@ -16,17 +27,6 @@ const Icon = {
   studio:     <span className="font-mono text-[10px] tracking-widest font-black">[STU]</span>,
   map:        <span className="font-mono text-[10px] tracking-widest font-black">[MAP]</span>,
 };
-import { MODULE_EXPLANATIONS } from './ModuleExplanations';
-import { useSettingsStore } from '@/lib/store/useSettingsStore';
-import { useRouter } from 'next/navigation';
-import { useEffect, useRef } from 'react';
-import { useMarketStream } from '@/context/MarketStreamContext';
-import { GlobalCommandPalette } from '@/components/ui/GlobalCommandPalette';
-import { InstitutionalErrorBoundary } from '@/components/ui/InstitutionalErrorBoundary';
-import { useSystemAccount } from '@/hooks/useSystemAccount';
-import { useEthMetrics } from '@/hooks/useEthMetrics';
-import { useDisconnect } from 'wagmi';
-import { toast } from 'sonner';
 
 // Tier access helper
 const TIER_LEVELS: Record<string, number> = { FREE: 0, STANDARD: 1 };

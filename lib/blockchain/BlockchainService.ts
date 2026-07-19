@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { getGbAllRpc } from './getblock-registry';
 
 export enum ChainId {
   MAINNET = 1,
@@ -248,7 +249,6 @@ export class BlockchainService {
 //  Tier 3: Nodos públicos gratuitos
 // =============================================================================
 
-import { getGbAllRpc } from './getblock-registry';
 
 const PUBLIC_FALLBACKS: Record<string, string[]> = {
   eth:     ['https://eth.llamarpc.com', 'https://cloudflare-eth.com', 'https://1rpc.io/eth'],

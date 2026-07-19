@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
@@ -10,6 +9,34 @@ import { useSystemSignOut } from '@/hooks/useSystemSignOut';
 import { useFeeData } from 'wagmi';
 import { formatUnits } from 'viem';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
+import ReceiveHub from '@/components/wallet/ReceiveHub';
+import QRScannerModal from '@/components/wallet/QRScannerModal';
+import SecurityVault from '@/components/wallet/SecurityVault';
+import SettingsPanel from '@/components/wallet/SettingsPanel';
+import { useRealWalletData } from '@/hooks/useRealWalletData';
+import { QRCodeSVG } from 'qrcode.react';
+import { MetaMaskNetworkSelector } from '@/components/portfolio/MetaMaskNetworkSelector';
+import { QuantumHoldingsEngine } from '@/components/portfolio/QuantumHoldingsEngine';
+import { AztecPrivacyTerminal } from '@/components/portfolio/AztecPrivacyTerminal';
+import { AztecIdentityCard } from '@/components/portfolio/AztecIdentityCard';
+import { SecurityAllowances } from '@/components/portfolio/SecurityAllowances';
+import { ContractDeployerView } from '@/components/portfolio/ContractDeployerView';
+import { TransactionManagerView } from '@/components/portfolio/TransactionManager';
+import { HDAccountManager } from '@/components/portfolio/HDAccountManager';
+import { SmartAccountTerminal } from '@/components/portfolio/SmartAccountTerminal';
+import { OmnichainBridgeView } from '@/components/portfolio/OmnichainBridgeView';
+import { TransactionHistory } from '@/components/portfolio/TransactionHistory';
+import { QuantumDeFiPositions } from '@/components/portfolio/QuantumDeFiPositions';
+import { PerformanceChart } from '@/components/portfolio/PerformanceChart';
+import { Download, ArrowRightLeft, Route, Send, QrCode, Scan, Activity, Hexagon, Shield, Settings, LogOut } from 'lucide-react';
+import { NativeSwapView } from '@/components/portfolio/NativeSwapView';
+import { NativeBridgeView } from '@/components/portfolio/NativeBridgeView';
+import { NativeBuyView } from '@/components/portfolio/NativeBuyView';
+import { NativeSendView } from '@/components/portfolio/NativeSendView';
+import { SystemFooter } from '@/components/landing/SystemFooter';
+import { useAztecNative } from '@/context/AztecNativeContext';
+import { Zap } from 'lucide-react';
+
 
 // AUDIT FIX #6: Live ECB exchange rates — replaces the hardcoded 0.92 "video demo" rate.
 // Module-level cache: one fetch per 5 minutes across all component instances.
@@ -45,36 +72,9 @@ function useLiveEurRate() {
 }
 
 
-import ReceiveHub from '@/components/wallet/ReceiveHub';
-import QRScannerModal from '@/components/wallet/QRScannerModal';
-import SecurityVault from '@/components/wallet/SecurityVault';
-import SettingsPanel from '@/components/wallet/SettingsPanel';
-import { useRealWalletData } from '@/hooks/useRealWalletData';
 
-import { QRCodeSVG } from 'qrcode.react';
-import { MetaMaskNetworkSelector } from '@/components/portfolio/MetaMaskNetworkSelector';
 
-import { QuantumHoldingsEngine } from '@/components/portfolio/QuantumHoldingsEngine';
 
-import { AztecPrivacyTerminal } from '@/components/portfolio/AztecPrivacyTerminal';
-import { AztecIdentityCard } from '@/components/portfolio/AztecIdentityCard';
-import { SecurityAllowances } from '@/components/portfolio/SecurityAllowances';
-import { ContractDeployerView } from '@/components/portfolio/ContractDeployerView';
-import { TransactionManagerView } from '@/components/portfolio/TransactionManager';
-import { HDAccountManager } from '@/components/portfolio/HDAccountManager';
-import { SmartAccountTerminal } from '@/components/portfolio/SmartAccountTerminal';
-import { OmnichainBridgeView } from '@/components/portfolio/OmnichainBridgeView';
-import { TransactionHistory } from '@/components/portfolio/TransactionHistory';
-import { QuantumDeFiPositions } from '@/components/portfolio/QuantumDeFiPositions';
-import { PerformanceChart } from '@/components/portfolio/PerformanceChart';
-import { Download, ArrowRightLeft, Route, Send, QrCode, Scan, Activity, Hexagon, Shield, Settings, LogOut } from 'lucide-react';
-import { NativeSwapView } from '@/components/portfolio/NativeSwapView';
-import { NativeBridgeView } from '@/components/portfolio/NativeBridgeView';
-import { NativeBuyView } from '@/components/portfolio/NativeBuyView';
-import { NativeSendView } from '@/components/portfolio/NativeSendView';
-import { SystemFooter } from '@/components/landing/SystemFooter';
-import { useAztecNative } from '@/context/AztecNativeContext';
-import { Zap } from 'lucide-react';
 
 // Legacy VaultUnlockScreen removed.
 
@@ -349,7 +349,7 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                         activeNetworkId={activeChainId}
                         onNetworkChange={(id) => {
                             const networkEntries = Object.entries(NETWORKS);
-                            const found = networkEntries.find(([_, config]) => config.chainId === id);
+                            const found = networkEntries.find(([_idx, config]) => config.chainId === id);
                             if (found) {
                                 useWalletStore.getState().setNetwork(found[0] as NetworkId);
                             }

@@ -1,5 +1,4 @@
 'use client';
-
 import { useEffect, useState, useCallback, useMemo, startTransition } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -37,13 +36,14 @@ import { useAztecNative } from '@/context/AztecNativeContext';
 import { toast } from 'sonner';
 import { TuringShieldGate } from '@/components/auth/TuringShieldGate';
 import dynamic from 'next/dynamic';
+import TestnetExplorer from '@/components/TestnetExplorer';
+
 
 const SubscriptionDashboard = dynamic(
   () => import('@/components/terminal/SubscriptionDashboard').then(mod => mod.SubscriptionDashboard),
   { ssr: false, loading: () => <div className="p-8 text-center text-xs text-black/50 uppercase tracking-widest">Loading Dashboard...</div> }
 );
 
-import TestnetExplorer from '@/components/TestnetExplorer';
 
 // SightInsightTab removed by user request
 

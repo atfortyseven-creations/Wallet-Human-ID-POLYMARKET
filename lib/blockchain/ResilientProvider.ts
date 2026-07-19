@@ -337,7 +337,7 @@ export class ResilientProvider {
   private callWithTimeout<T>(fn: (provider: ethers.JsonRpcProvider) => Promise<T>, provider: ethers.JsonRpcProvider, timeoutMs = 8000): Promise<T> {
     return Promise.race([
       fn(provider),
-      new Promise<T>((_, reject) =>
+      new Promise<T>((_idx, reject) =>
         setTimeout(() => reject(new Error(`RPC_TIMEOUT_${timeoutMs}ms`)), timeoutMs)
       ),
     ]);

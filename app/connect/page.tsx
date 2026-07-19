@@ -1,7 +1,8 @@
 "use client";
-
 import { Suspense, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { RemoteLottie } from '@/components/ui/RemoteLottie';
+
 
 // Desktop connect page (QR handshake)
 const ConnectPage = dynamic(() => import('@/components/landing/ConnectPage'), { 
@@ -17,7 +18,6 @@ const MobileImmersiveGate = dynamic(
   }
 );
 
-import { RemoteLottie } from '@/components/ui/RemoteLottie';
 
 /**
  * RealDeviceRouter  detects the PHYSICAL device, not the User-Agent string.

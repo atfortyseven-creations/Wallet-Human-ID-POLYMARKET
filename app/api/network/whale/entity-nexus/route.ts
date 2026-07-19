@@ -1,7 +1,7 @@
-export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
-
 import { walletAnalyticsService } from '@/lib/wallet/WalletAnalyticsService';
+export const dynamic = 'force-dynamic';
+
 
 interface NexusNode {
   id: string;

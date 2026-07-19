@@ -1,7 +1,7 @@
-export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
-
 import { walletAnalyticsService } from '@/lib/wallet/WalletAnalyticsService';
+export const dynamic = 'force-dynamic';
+
 
 const MEMPOOL_BASE = 'https://mempool.space/api';
 

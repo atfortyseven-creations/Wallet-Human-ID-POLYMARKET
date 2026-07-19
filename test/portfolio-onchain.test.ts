@@ -86,7 +86,7 @@ describe("Portfolio On-Chain Hardened Master Test Suite (200+ Scenarios)", () =>
 
     describe("Smart Account & Deployer Determinism", () => {
         // 30 Tests
-        const salts = Array.from({ length: 30 }).map((_, i) => ethers.id(`salt-${i}`));
+        const salts = Array.from({ length: 30 }).map((_idx, i) => ethers.id(`salt-${i}`));
         salts.forEach((salt, idx) => {
             it(`[Deploy-${idx}] should deterministically calculate CREATE2 address for salt ${salt.slice(0, 10)}...`, () => {
                 const dummyFactory = ethers.Wallet.createRandom().address;

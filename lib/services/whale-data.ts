@@ -1,6 +1,7 @@
 ﻿import { ethers } from 'ethers';
 import { safeRedisGet, safeRedisSet } from '../redis/client';
 import { getGbAllRpc } from '@/lib/blockchain/getblock-registry';
+import { ethereumResilientProvider, bscResilientProvider } from '../blockchain/ResilientProvider';
 
 /**
  *  WHALE Analytics Engine V8.0  ZERO SYNTHETIC DATA
@@ -109,7 +110,6 @@ const BINANCE_24_TOKENS: Record<string, Record<string, { symbol: string; decimal
     }
 };
 
-import { ethereumResilientProvider, bscResilientProvider } from '../blockchain/ResilientProvider';
 
 //  Price Feed (static estimates only for BUY/SELL USD sizing) 
 const FEED_PRICES: Record<string, number> = {

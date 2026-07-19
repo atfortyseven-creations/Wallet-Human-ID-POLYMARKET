@@ -57,7 +57,7 @@ describe('Whale Chat - Quantum Security & Stability Suite', () => {
   });
 
   it('should correctly process 100 contact sync transactions', async () => {
-    const peers = Array.from({ length: 100 }, (_, i) => `0xPeer${i}`);
+    const peers = Array.from({ length: 100 }, (_idx, i) => `0xPeer${i}`);
     mockPrisma.$transaction.mockResolvedValueOnce(peers);
     
     const txRes = await mockPrisma.$transaction(peers);

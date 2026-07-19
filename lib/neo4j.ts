@@ -41,7 +41,7 @@ export async function runQuery(cypher: string, params: Record<string, any> = {})
     }
   })();
 
-  const timeoutPromise = new Promise<never>((_, reject) =>
+  const timeoutPromise = new Promise<never>((_idx, reject) =>
     setTimeout(
       () => reject(new Error('NEO4J_QUERY_TIMEOUT: No response within 5s. Is the Neo4j service running?')),
       NEO4J_TIMEOUT_MS

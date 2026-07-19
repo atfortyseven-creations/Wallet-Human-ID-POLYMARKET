@@ -1,3 +1,6 @@
+import { LRUCache } from 'lru-cache'
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
 /**
  * AI-Powered Rate Limiter with Adaptive Thresholds
  * 
@@ -9,7 +12,6 @@
  * - Distributed rate limiting support (Redis)
  */
 
-import { LRUCache } from 'lru-cache'
 
 export interface RateLimitConfig {
   windowMs: number      // Time window in milliseconds
@@ -297,8 +299,6 @@ export default RateLimiter
 // The in-memory RateLimiter above handles server-side API routes only.
 // 
 
-import { Ratelimit } from '@upstash/ratelimit';
-import { Redis } from '@upstash/redis';
 
 export type RateLimitTier = 'FREE' | 'STANDARD' | 'STARTER' | 'PRO' | 'ELITE';
 

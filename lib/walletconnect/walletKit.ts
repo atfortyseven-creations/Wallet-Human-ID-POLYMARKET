@@ -102,7 +102,7 @@ export async function approveSession(proposal: any, currentAddress: string) {
                 id,
                 reason: getSdkError('USER_REJECTED')
             });
-        } catch (_) {}
+        } catch (_err) {}
         throw e;
     }
 }

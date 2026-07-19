@@ -1,3 +1,5 @@
+import CryptoJS from 'crypto-js';
+import { Buffer } from 'buffer';
 /**
  * Secure Storage Module
  * 
@@ -8,7 +10,6 @@
  * - XSS protection
  */
 
-import CryptoJS from 'crypto-js';
 
 interface StorageOptions {
   encrypt?: boolean;
@@ -25,7 +26,6 @@ interface StorageItem {
 const CURRENT_VERSION = 1;
 const ENCRYPTION_KEY_STORAGE = 'encryption_master_key';
 
-import { Buffer } from 'buffer';
 
 /**
  * Generate or retrieve encryption key securely using WebCrypto HKDF

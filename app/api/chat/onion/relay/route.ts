@@ -1,3 +1,11 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { jwtVerify } from 'jose';
+import {
+  type OnionLayer,
+  decryptLayer,
+  importPrivateKeyJwk,
+} from '@/lib/onion/OnionCrypto';
+import { safeRedisGet, safeRedisSet } from '@/lib/redis/client';
 /**
  * POST /api/chat/onion/relay
  *
@@ -28,20 +36,12 @@
  *  ✅ Timing attacks: jitter applied client-side before hitting relay
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { jwtVerify } from 'jose';
-import {
-  type OnionLayer,
-  decryptLayer,
-  importPrivateKeyJwk,
-} from '@/lib/onion/OnionCrypto';
 
 export interface OnionEnvelope {
   type: 'ONION_FORWARD';
   nextHop: string;
   layer: OnionLayer;
 }
-import { safeRedisGet, safeRedisSet } from '@/lib/redis/client';
 
 export const dynamic  = 'force-dynamic';
 export const maxDuration = 10; // seconds — relay must be fast

@@ -1,3 +1,5 @@
+import { NextRequest } from 'next/server';
+import { getSession } from '@/lib/session';
 /**
  * GET /api/chat/stream/[channelId]
  * Server-Sent Events endpoint. Streams new messages to connected clients in real-time.
@@ -6,7 +8,6 @@
  * Resilience: If Upstash is not configured, falls back to in-memory message store
  * so the SSE channel still works in development and on environments without Redis.
  */
-import { NextRequest } from 'next/server';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -37,7 +38,6 @@ if (!global.__whaleChatMemStore) {
 }
 const memoryStore = global.__whaleChatMemStore;
 
-import { getSession } from '@/lib/session';
 
 export async function GET(
   req: NextRequest,

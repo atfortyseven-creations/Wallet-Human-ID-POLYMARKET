@@ -223,7 +223,7 @@ export class PortfolioService {
       // Pagination Loop for exhaustive token discovery
       do {
           const fetchPromise = moralisService.getWalletBalances(address, chain, cursor);
-          const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('MORALIS_TIMEOUT')), 8000));
+          const timeoutPromise = new Promise((_idx, reject) => setTimeout(() => reject(new Error('MORALIS_TIMEOUT')), 8000));
           const tokensData: any = await Promise.race([fetchPromise, timeoutPromise]);
           
           if (tokensData && tokensData.result) {
@@ -239,7 +239,7 @@ export class PortfolioService {
       const [nativeData, netWorthData] = await Promise.all([
         Promise.race([
           moralisService.getNativeBalance(address, chain),
-          new Promise<any>((_, reject) => setTimeout(() => reject(new Error('MORALIS_TIMEOUT')), 8000))
+          new Promise<any>((_idx, reject) => setTimeout(() => reject(new Error('MORALIS_TIMEOUT')), 8000))
         ]),
         preFetchedNetWorth ? Promise.resolve(preFetchedNetWorth) : moralisService.getWalletNetWorth(address).catch(() => null)
       ]);
@@ -736,7 +736,7 @@ export class PortfolioService {
     const fetchPromise = (async () => {
         try {
             //  [Elite RESILIENCE] 25-second Global Hard-Timeout
-            const timeoutPromise = new Promise((_, reject) => 
+            const timeoutPromise = new Promise((_idx, reject) => 
                 setTimeout(() => reject(new Error('GLOBAL_PORTFOLIO_TIMEOUT')), 25000)
             );
 
@@ -873,7 +873,7 @@ export class PortfolioService {
             }
           };
 
-          const timeoutPromise = new Promise((_, reject) => 
+          const timeoutPromise = new Promise((_idx, reject) => 
               setTimeout(() => reject(new Error('CHAIN_TIMEOUT')), 20000)
           );
 

@@ -1,10 +1,10 @@
+import { CosmicSeed, WorldSimMetadata, AgentMetadata } from '../types';
 export * from './cosmic-art';
 export * from './living-music';
 export * from './biotech-dna';
 // Stubs exported directly for smaller generators to save file operations, 
 // they can be refactored into their own files when expanding their logic later.
 
-import { CosmicSeed, WorldSimMetadata, AgentMetadata } from '../types';
 
 export class WorldSimGenerator {
   static generate(seed: CosmicSeed): WorldSimMetadata {

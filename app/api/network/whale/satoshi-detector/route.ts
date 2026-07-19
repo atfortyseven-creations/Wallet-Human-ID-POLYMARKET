@@ -1,5 +1,5 @@
-export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
+export const dynamic = 'force-dynamic';
 
 // Known historical "sleeping giant" BTC wallets for demonstration + real monitoring
 // These are famous wallets well documented on-chain

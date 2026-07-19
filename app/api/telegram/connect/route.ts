@@ -1,3 +1,6 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import rateLimit from '@/lib/rate-limit';
 /**
  * FASE 7  ALERTAS TELEGRAM REALES
  * El usuario guarda su Chat ID y el servidor envía mensajes reales
@@ -11,12 +14,9 @@
  *      el cron llama a Telegram sendMessage con los datos reales.
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
 
 export const runtime = 'nodejs';
 
-import rateLimit from '@/lib/rate-limit';
 
 const limiter = rateLimit({ interval: 60_000 });
 // RATE_LIMIT_MAX is 3 in the route handler
