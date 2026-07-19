@@ -88,6 +88,12 @@ if (!process.env.MORALIS_API_KEY) {
 // Force deployment trigger [SOVEREIGN SYNC]: 2026-04-21T04:15:00Z
 const nextConfig = {
     ...(process.env.IPFS_BUILD === 'true' ? { output: 'export' } : {}),
+    // [SAFARI TDZ FIX] Disable the Rust SWC Minifier. SWC is notoriously bugged
+    // when it comes to ESM module scoping and let/const hoisting in Safari WebKit,
+    // causing "Cannot access 'X' before initialization" errors in libraries like viem.
+    // By disabling it, we fall back to our custom Terser configuration below, which
+    // has scope hoisting explicitly disabled and single-character names reserved.
+    swcMinify: false,
     // [EPERM FIX] outputFileTracingRoot must point to project dir.
     // outputFileTracingExcludes prevents Next.js file-tracer from scanning
     // Windows system folders (Mi música, etc.) which causes EPERM crashes
