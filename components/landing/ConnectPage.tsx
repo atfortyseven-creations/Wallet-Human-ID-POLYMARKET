@@ -874,9 +874,11 @@ export default function ConnectPage() {
       {/* 
         CRITICAL FIX FOR MOBILE SCROLL: 
         A transparent placeholder ensures the container actually has a large scroll height
-        even if child elements are absolutely positioned or sticky.
+        even if child elements are absolutely positioned or sticky. Only active during intro.
       */}
-      <div style={{ height: '600vh', width: '100%', position: 'absolute', top: 0, left: 0, zIndex: 1, pointerEvents: 'none' }} />
+      {phase === "intro" && (
+        <div style={{ height: '600vh', width: '100%', position: 'absolute', top: 0, left: 0, zIndex: 1, pointerEvents: 'none' }} />
+      )}
       {/* Film grain noise overlay */}
       <motion.div
         className="fixed inset-0 pointer-events-none z-[60]"
