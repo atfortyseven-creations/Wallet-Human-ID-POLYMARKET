@@ -249,7 +249,15 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
     }
   };
 
-  const [step, setStep] = useState<'home' | 'login' | 'mnemonic' | 'password' | 'generating_wallet' | 'transaction_complete' | 'secure' | 'reveal' | 'verify' | 'encrypting'>(startAt ?? getInitialStep);
+  const [step, setStep] = useState<'home' | 'login' | 'mnemonic' | 'password' | 'generating_wallet' | 'transaction_complete' | 'secure' | 'reveal' | 'verify' | 'encrypting'>(startAt ?? 'home');
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    setIsHydrated(true);
+    if (!startAt) {
+      setStep(getInitialStep());
+    }
+  }, [startAt]);
   const [hasKeystore, setHasKeystore] = useState(false);
   const [accounts, setAccounts] = useState<SystemAccount[]>([]);
   const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
