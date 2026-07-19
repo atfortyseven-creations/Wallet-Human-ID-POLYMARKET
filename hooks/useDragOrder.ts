@@ -12,24 +12,24 @@ export function useDragOrder<T extends { id: string }>(
     initialItems: T[],
     storageKey?: string
 ): [T[], (newOrder: T[]) => void, () => void] {
-    const [items, setItemsInternal] = useState<T[]>(() => {
-        if (typeof window === 'undefined' || !storageKey) return initialItems;
+    const [items, setItemsInternal] = useState<T[]>(initialItems);
+
+    useEffect(() => {
+        if (typeof window === 'undefined' || !storageKey) return;
         try {
             const saved = localStorage.getItem(storageKey);
-            if (!saved) return initialItems;
+            if (!saved) return;
             const savedIds: string[] = JSON.parse(saved);
             const reordered = savedIds
                 .map(id => initialItems.find(item => item.id === id))
                 .filter(Boolean) as T[];
-            // Append any new items not in saved state
             const newItems = initialItems.filter(
                 item => !savedIds.includes(item.id)
             );
-            return [...reordered, ...newItems];
-        } catch {
-            return initialItems;
-        }
-    });
+            setItemsInternal([...reordered, ...newItems]);
+        } catch {}
+    }, [storageKey, initialItems]);
+
 
     const setItems = useCallback((newOrder: T[]) => {
         setItemsInternal(newOrder);
