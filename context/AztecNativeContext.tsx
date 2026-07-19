@@ -249,6 +249,60 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // ── Auto-Restore Session from DB (Wallet Reconnection) ────────────────────
+  // When a user connects their wallet (evmAddress populates), we check if they
+  // already have an identity in the DB. If yes, we auto-restore it seamlessly.
+  // This prevents returning users from being asked to "Authenticate to Enter"
+  // and mistakenly believing they have to claim QDs again.
+  useEffect(() => {
+    if (!evmAddress || aztecAddress || isBusy) return;
+    
+    let cancelled = false;
+    const checkExistingIdentity = async () => {
+      try {
+        const restoreRes = await fetch('/api/aztec/restore-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ evmAddress }),
+        });
+        if (cancelled) return;
+        
+        if (restoreRes.ok) {
+          const restoreData = await restoreRes.json();
+          if (restoreData.found && restoreData.aztecAddress) {
+            const canonicalAddr = restoreData.aztecAddress;
+            setAztecAddress(canonicalAddr);
+            setSeed(evmAddress);
+            try {
+              localStorage.setItem('aztec_session', JSON.stringify({
+                address: canonicalAddr,
+                seed: evmAddress,
+              }));
+            } catch {}
+            notifiedRef.current = new Set();
+            setIsLoading(true);
+            await fetchLedgerState(canonicalAddr);
+            setIsLoading(false);
+            startPolling(canonicalAddr);
+            
+            // Only toast if we aren't currently authenticating manually
+            if (!isBusy) {
+              toast.success(
+                `✅ Identity seamlessly restored — ${restoreData.balance.toFixed(2)} QDs`,
+                { id: "az-auto-connect", duration: 4000 }
+              );
+            }
+          }
+        }
+      } catch (err) {
+        // silent fail for auto-restore
+      }
+    };
+    
+    checkExistingIdentity();
+    return () => { cancelled = true; };
+  }, [evmAddress, aztecAddress, isBusy, fetchLedgerState, startPolling]);
+
 
   // ── Explicit-Only Identity Connection ────────────────────────────────────
   // AUDIT FIX (Critical #3): The previous "auto-init" effect silently derived
