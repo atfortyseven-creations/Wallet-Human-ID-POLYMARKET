@@ -229,6 +229,40 @@ const nextConfig = {
             config.infrastructureLogging.level = 'error';
         }
 
+        // ─── SAFARI TDZ FIX ───────────────────────────────────────────────
+        // The SWC minifier (used by Next.js by default) generates internal
+        // variable names like `_`, `__`, `___` for mangled identifiers.
+        // In Safari/WebKit, when two modules share a chunk and one is loaded
+        // before the other has finished initializing, accessing `_` throws:
+        //   "Cannot access '_' before initialization" (TDZ error)
+        // Fix: use Terser instead and explicitly reserve `_` and `__` from
+        // being used as mangled variable names.
+        if (!dev) {
+            config.optimization = {
+                ...config.optimization,
+                minimizer: [
+                    new (require('terser-webpack-plugin'))({
+                        terserOptions: {
+                            mangle: {
+                                // Prevent _ and __ from being used as minified variable names.
+                                // These single-character names collide with Safari's TDZ scope.
+                                reserved: ['_', '__', '___'],
+                                toplevel: false,
+                            },
+                            compress: {
+                                passes: 2,
+                            },
+                            format: {
+                                comments: false,
+                            },
+                        },
+                        parallel: true,
+                    }),
+                ],
+            };
+        }
+        // ─────────────────────────────────────────────────────────────────────
+
         return config;
     },
     trailingSlash: isExtension,
