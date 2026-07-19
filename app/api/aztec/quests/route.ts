@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/session';
+import crypto from 'crypto';
 import { deriveIdentityHash, hashIpAddress, isOwner } from '@/lib/aztec/zk-identity';
 
 /**

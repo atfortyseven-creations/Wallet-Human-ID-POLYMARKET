@@ -80,7 +80,6 @@ export const historySyncService = {
             await prisma.transaction.upsert({
                 where: { txHash: tx.hash },
                 create: {
-                    authUserId,
                     txHash: tx.hash,
                     type,
                     status: TransactionStatus.CONFIRMED, // Historical is always confirmed
