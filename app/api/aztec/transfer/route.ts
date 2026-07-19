@@ -266,11 +266,11 @@ export async function POST(req: NextRequest) {
           _sum: { amount: true },
         });
         const earnedQdAgg = await tx.qdTransaction.aggregate({
-          where: { aztecAddress: fromAddr, type: 'EARN' },
+          where: { aztecAddress: fromAddr, type: { in: ['EARN', 'REWARD', 'UNSTAKE'] } },
           _sum: { amount: true },
         });
         const spentQdAgg = await tx.qdTransaction.aggregate({
-          where: { aztecAddress: fromAddr, type: { in: ['SPEND', 'SLASH'] } },
+          where: { aztecAddress: fromAddr, type: { in: ['SPEND', 'SLASH', 'STAKE', 'FEE'] } },
           _sum: { amount: true },
         });
 
@@ -313,6 +313,39 @@ export async function POST(req: NextRequest) {
             },
           },
         });
+
+        // 3. [TOKENOMICS] Deduct 1 QD network fee (FPC simulation)
+        const FEE_AMOUNT = 1;
+        await (tx as any).qdTransaction.create({
+          data: {
+            aztecAddress: fromAddr,
+            type: 'FEE',
+            amount: FEE_AMOUNT,
+            description: `Aztec Network Fee — Transfer ${roundedAmount} QDs`,
+          },
+        });
+
+        // 4. [TOKENOMICS] Reward sender +50 QDs for completing a ZK transfer (once per day)
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+        const existingReward = await (tx as any).qdTransaction.findFirst({
+          where: {
+            aztecAddress: fromAddr,
+            type: 'EARN',
+            description: 'Aztec ZK Transfer Completed',
+            createdAt: { gte: startOfDay },
+          },
+        });
+        if (!existingReward) {
+          await (tx as any).qdTransaction.create({
+            data: {
+              aztecAddress: fromAddr,
+              type: 'EARN',
+              amount: 50,
+              description: 'Aztec ZK Transfer Completed',
+            },
+          });
+        }
       }, {
         isolationLevel: 'Serializable', // Maximum protection against race conditions
       });

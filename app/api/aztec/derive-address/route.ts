@@ -7,40 +7,26 @@ export const dynamic = 'force-dynamic';
  * POST /api/aztec/derive-address
  *
  * Derives a deterministic Aztec-format address from a seed phrase or EVM address.
- *
- * Architecture:
- *   The derivation uses SHA-256 on the normalized seed to produce a 32-byte
- *   field element, prefixed with 0x, matching the address format used throughout
- *   the Transaction table. This is the canonical server-side derivation — it
- *   replaces the toy hash function that previously lived in the browser.
- *
- *   Note: In a production Aztec deployment this would call:
- *     getSchnorrAccount(pxe, GrumpkinScalar.fromBuffer(seed), signingKey).getAddress()
- *   Since we are operating as an L2 Sequencer Indexer (off-chain), we derive
- *   a deterministic 32-byte address that is consistent across all API routes.
- *
- * Body:   { seed: string }
- * Returns: { aztecAddress: string, derivationMethod: string }
+ * Accepts either { seed: string } or { evmAddress: string } for backwards compatibility.
  */
 export async function POST(req: Request) {
   try {
-    const { seed } = await req.json();
+    const body = await req.json();
+    // Accept both { seed } and { evmAddress } — evmAddress is used by WhaleChat
+    const raw = body.seed || body.evmAddress || body.address || '';
 
-    if (!seed || typeof seed !== 'string' || seed.trim().length < 3) {
+    if (!raw || typeof raw !== 'string' || raw.trim().length < 3) {
       return NextResponse.json(
-        { error: 'seed must be a non-empty string of at least 3 characters' },
+        { error: 'seed/evmAddress must be a non-empty string of at least 3 characters' },
         { status: 400 }
       );
     }
 
-    const normalized = seed.trim().toLowerCase();
-
-    // Deterministic SHA-256 derivation — the canonical address format.
-    // We apply two rounds to reduce collision surface and to differentiate
-    // between short seeds that might produce similar leading bytes.
+    const normalized = raw.trim().toLowerCase();
     const aztecAddress = deriveAztecAddress(normalized);
 
     return NextResponse.json({
+      success: true,
       aztecAddress,
       derivationMethod: 'SHA-256 (aztec-schnorr domain separation, 2-round)',
       network: 'aztec-testnet',
@@ -54,3 +40,4 @@ export async function POST(req: Request) {
     );
   }
 }
+

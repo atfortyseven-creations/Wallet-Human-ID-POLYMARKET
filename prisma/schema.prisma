@@ -1408,8 +1408,8 @@ model AztecQuest {
 model QuestClaim {
   id             String   @id @default(uuid())
   questId        String
-  identityHash   String   // ZK Proof derived hash of identity (Zero-Knowledge Data Isolation)
-  ipHash         String   // SHA-256(ip) to prevent multi-account farming
+  identityHash   String   @default("") // ZK Proof derived hash of identity (Zero-Knowledge Data Isolation)
+  ipHash         String   @default("") // SHA-256(ip) to prevent multi-account farming
   status         String   @default("CLAIMED") // CLAIMED, SLASHED
   claimedAt      DateTime @default(now())
   slashedAt      DateTime?
@@ -1431,7 +1431,7 @@ model QuestClaim {
 model QdTransaction {
   id           String   @id @default(uuid())
   aztecAddress String   // The L2 Identity address spending/receiving QDs
-  type         String   // "EARN", "SPEND", "SLASH"
+  type         String   // "EARN", "SPEND", "SLASH", "STAKE", "UNSTAKE", "FEE", "REWARD"
   amount       Float
   description  String   @db.Text
   txHash       String?  // Optional L2 Tx hash if executed on-chain
@@ -1439,6 +1439,26 @@ model QdTransaction {
 
   @@index([aztecAddress, createdAt(sort: Desc)])
   @@index([type])
+}
+
+//
+// SOVEREIGN NODE — QD Staking for Proof-of-Sovereignty
+// Users lock QDs for N days to earn Sovereign Node status and yield
+//
+model SovereignNode {
+  id             String   @id @default(uuid())
+  aztecAddress   String   @unique
+  identityHash   String
+  tier           String   // BRONZE, SILVER, GOLD
+  stakedAmount   Float
+  lockedAt       DateTime @default(now())
+  unlockAt       DateTime
+  lastYieldAt    DateTime @default(now())
+  active         Boolean  @default(true)
+  totalYieldPaid Float    @default(0)
+
+  @@index([aztecAddress, active])
+  @@index([identityHash])
 }
 
 // 
