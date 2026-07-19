@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useHardwareEnclave } from '@/hooks/useHardwareEnclave';
 import { useSystemAccount } from '@/hooks/useSystemAccount';
 import { Fingerprint, Cpu, CheckCircle2, Loader2, LockKeyhole, Key, Shield } from 'lucide-react';
@@ -9,6 +9,25 @@ import { motion } from 'framer-motion';
 export function TuringShieldGate({ children, onVerified }: { children: React.ReactNode, onVerified?: (enclaveId: string) => void }) {
   const { address } = useSystemAccount();
   const { isEnclaveReady, isAuthenticating, enclaveId, checkEnclaveSupport, generateEnclaveSignature } = useHardwareEnclave();
+  const [pinStep, setPinStep] = useState(true);
+  const [pin, setPin] = useState(['', '', '', '', '', '']);
+  const pinRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const handlePinChange = (index: number, value: string) => {
+    if (!/^\d*$/.test(value)) return;
+    const newPin = [...pin];
+    newPin[index] = value;
+    setPin(newPin);
+    if (value && index < 5) pinRefs.current[index + 1]?.focus();
+    if (newPin.every(d => d !== '')) {
+      setTimeout(() => setPinStep(false), 300);
+    }
+  };
+  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && !pin[index] && index > 0) {
+      pinRefs.current[index - 1]?.focus();
+    }
+  };
 
   useEffect(() => {
     checkEnclaveSupport();
@@ -44,33 +63,59 @@ export function TuringShieldGate({ children, onVerified }: { children: React.Rea
           </div>
         </div>
         
-        <h2 className="text-[24px] font-black tracking-tight text-black mb-1">Hardware Key Generation</h2>
+        <h2 className="text-[24px] font-black tracking-tight text-black mb-1">
+          {pinStep ? 'Enclave Authentication' : 'Hardware Key Generation'}
+        </h2>
         <div className="text-[11px] text-indigo-600 font-bold uppercase tracking-[0.2em] mb-6 flex items-center justify-center gap-2">
           <Cpu size={12} strokeWidth={3} /> Secure Enclave Active
         </div>
 
-        <p className="text-[14px] text-[#555] font-medium leading-[1.6] mb-8 px-2">
-          To enter the sovereign network, we must generate your private cryptographic keys. These keys are mathematically bound to the physical hardware of your device and will never leave it.
-        </p>
-
-        {isEnclaveReady ? (
-          <button
-            onClick={() => generateEnclaveSignature(address || 'anonymous')}
-            disabled={isAuthenticating}
-            className="w-full h-[56px] bg-black hover:bg-black/85 text-white rounded-2xl font-bold text-[14px] tracking-wide transition-transform active:scale-[0.98] shadow-lg shadow-black/20 flex items-center justify-center gap-3 disabled:opacity-50"
-          >
-            {isAuthenticating ? (
-              <><Loader2 size={18} className="animate-spin" /> Generating Keys...</>
-            ) : (
-              <><Fingerprint size={18} /> Generate Hardware Keys</>
-            )}
-          </button>
-        ) : (
-          <div className="w-full bg-red-50 border border-red-100 rounded-2xl p-5 flex flex-col items-center gap-2">
-            <LockKeyhole className="text-red-500" size={24} />
-            <div className="text-red-900 text-[14px] font-bold tracking-tight">Hardware Enclave Not Detected</div>
-            <div className="text-red-800/70 text-[12px] font-medium leading-relaxed">Your device lacks TPM/WebAuthn support required for Turing-Shield binding. Please use a supported device.</div>
+        {pinStep ? (
+          <div className="w-full flex flex-col items-center">
+            <p className="text-[14px] text-[#555] font-medium leading-[1.6] mb-8 px-2">
+              Please enter your 6-digit Secure Enclave PIN to decrypt your hardware context and access the sovereign network.
+            </p>
+            <div className="flex gap-2 mb-8">
+              {pin.map((digit, i) => (
+                <input
+                  key={i}
+                  ref={el => { pinRefs.current[i] = el; }}
+                  type="password"
+                  maxLength={1}
+                  value={digit}
+                  onChange={(e) => handlePinChange(i, e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(i, e)}
+                  className="w-12 h-14 text-center text-xl font-black bg-black/5 border border-black/10 rounded-xl focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all"
+                />
+              ))}
+            </div>
           </div>
+        ) : (
+          <>
+            <p className="text-[14px] text-[#555] font-medium leading-[1.6] mb-8 px-2">
+              To enter the sovereign network, we must generate your private cryptographic keys. These keys are mathematically bound to the physical hardware of your device and will never leave it.
+            </p>
+
+            {isEnclaveReady ? (
+              <button
+                onClick={() => generateEnclaveSignature(address || 'anonymous')}
+                disabled={isAuthenticating}
+                className="w-full h-[56px] bg-black hover:bg-black/85 text-white rounded-2xl font-bold text-[14px] tracking-wide transition-transform active:scale-[0.98] shadow-lg shadow-black/20 flex items-center justify-center gap-3 disabled:opacity-50"
+              >
+                {isAuthenticating ? (
+                  <><Loader2 size={18} className="animate-spin" /> Generating Keys...</>
+                ) : (
+                  <><Fingerprint size={18} /> Generate Hardware Keys</>
+                )}
+              </button>
+            ) : (
+              <div className="w-full bg-red-50 border border-red-100 rounded-2xl p-5 flex flex-col items-center gap-2">
+                <LockKeyhole className="text-red-500" size={24} />
+                <div className="text-red-900 text-[14px] font-bold tracking-tight">Hardware Enclave Not Detected</div>
+                <div className="text-red-800/70 text-[12px] font-medium leading-relaxed">Your device lacks TPM/WebAuthn support required for Turing-Shield binding. Please use a supported device.</div>
+              </div>
+            )}
+          </>
         )}
 
         <div className="mt-8 flex flex-col gap-2.5 w-full text-left bg-white p-5 rounded-2xl border border-[#EBEBEB] shadow-sm">

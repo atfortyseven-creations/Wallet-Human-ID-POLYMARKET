@@ -1951,13 +1951,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
   return (
     <TuringShieldGate>
-    {/* Solid white container — no glass/blur so wallpaper never bleeds through */}
-      <div className={`relative flex flex-col flex-1 min-h-0 w-full overflow-hidden shadow-sm ${(showScanner || showMyQR || showProfile) ? 'overflow-visible' : ''}`} style={{ 
+    {/* Solid white container — two-panel layout: sidebar (left) + chat (right) */}
+      <div className={`relative flex flex-row flex-1 min-h-0 w-full overflow-hidden shadow-sm ${(showScanner || showMyQR || showProfile) ? 'overflow-visible' : ''}`} style={{ 
       borderRadius: isMobile ? 0 : '0',
       background: '#ffffff',
     }}>
-      {/*  Sidebar: Conversation List  */}
-      <div className={`${showList ? 'flex' : 'hidden md:flex'} w-full md:w-80 flex-col border-r border-black/10 bg-white`}>
+      {/*  Sidebar: Conversation List — fixed width, full height  */}
+      <div className={`${showList ? 'flex' : 'hidden md:flex'} w-full md:w-72 flex-col border-r border-black/10 bg-white shrink-0 h-full overflow-hidden`}>
         <div className="p-4 border-b border-white/30">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -2060,7 +2060,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       <div className={`${!showList ? 'flex' : 'hidden md:flex'} flex-1 flex-col min-w-0 min-h-0`}>
         {activePeer ? (
           <>
-            <div className="h-16 px-4 border-b border-white/40 flex items-center justify-between bg-white/40 backdrop-blur-md shrink-0 z-10 shadow-sm">
+            <div className="h-16 px-4 border-b border-black/10 flex items-center justify-between bg-white/80 backdrop-blur-md shrink-0 z-10 shadow-sm">
               <div className="flex items-center gap-3">
                 <button onClick={() => setShowList(true)} className="md:hidden p-1.5 rounded-lg hover:bg-black/5  text-black/50  text-[10px] font-black">
                   BACK
@@ -2151,12 +2151,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                           </span>
                         </div>
                       )}
-                      <div className={`flex flex-col max-w-[80%] relative ${isMe ? 'self-end items-end' : 'self-start items-start'}`}>
-                        {/* Invisible overlay for tap precision / context menu */}
-                        <div 
-                           className="absolute inset-0 z-10 cursor-pointer"
-                           onContextMenu={(e) => { e.preventDefault(); setContextMenu({ id: msg.id, content, x: e.clientX, y: e.clientY }); }}
-                        />
+                      <div 
+                        className={`flex flex-col max-w-[80%] relative ${isMe ? 'self-end items-end' : 'self-start items-start'}`}
+                        onContextMenu={(e) => { e.preventDefault(); setContextMenu({ id: msg.id, content, x: e.clientX, y: e.clientY }); }}
+                      >
                       {isAudio && audioSrc ? (
                         <div className={`px-3 py-2.5 rounded-2xl ${
                           isMe
@@ -2206,8 +2204,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                       ) : (
                         <div className={`px-4 py-2.5 rounded-2xl text-[14px] leading-relaxed break-words shadow-md animate-in fade-in slide-in-from-bottom-2 duration-300 ${
                           isMe
-                            ? 'bg-blue-500/90 backdrop-blur-md text-white rounded-br-sm border border-blue-400/50'
-                            : 'bg-white/80 backdrop-blur-md text-gray-900 rounded-bl-sm border border-white/60'
+                            ? 'bg-blue-500 text-white rounded-br-sm border border-blue-600/30'
+                            : 'bg-[#F2F2F7] text-gray-900 rounded-bl-sm border border-black/5'
                         }`}>
                           {content.startsWith('__CALL_OFFER__') ? "📞 Initiated a Call" : content}
                         </div>
@@ -2241,7 +2239,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             </div>
 
             <div
-              className="shrink-0 bg-white/50 backdrop-blur-xl border-t border-white/40 z-10 shadow-[0_-4px_24px_rgba(0,0,0,0.02)]"
+              className="shrink-0 bg-white/80 backdrop-blur-xl border-t border-black/10 z-10 shadow-[0_-4px_24px_rgba(0,0,0,0.02)]"
               style={{ paddingBottom: `max(8px, env(safe-area-inset-bottom, 0px), ${keyboardOffset}px)` }}
             >
               {/*  Offline Banner  */}

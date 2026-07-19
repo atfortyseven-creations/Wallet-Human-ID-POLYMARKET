@@ -32,14 +32,11 @@ import { passportPublicUrl } from '@/lib/scan/parseScanPayload';
 import type { ProductPassportPublic } from '@/lib/passport/types';
 import { NODE_TIERS, PlanTier } from '@/lib/node_infrastructure/tiers';
 import { ShieldCheck } from 'lucide-react';
-import dynamic from 'next/dynamic';
+import { useSettingsStore } from '@/lib/store/useSettingsStore';
 import { useAztecNative } from '@/context/AztecNativeContext';
 import { toast } from 'sonner';
-
-const DotLottieReact = dynamic(
-  () => import('@lottiefiles/dotlottie-react').then(mod => mod.DotLottieReact),
-  { ssr: false, loading: () => <div className="w-10 h-10 border-2 border-black/10 border-t-black rounded-full animate-spin m-auto" /> }
-);
+import { TuringShieldGate } from '@/components/auth/TuringShieldGate';
+import dynamic from 'next/dynamic';
 
 const SubscriptionDashboard = dynamic(
   () => import('@/components/terminal/SubscriptionDashboard').then(mod => mod.SubscriptionDashboard),
@@ -1578,28 +1575,14 @@ export function ProvenanceStudioContent({
   // ─── Phase guard: show loading animation until Sequencer initializes ───
   if (initPhase < 2) {
     return (
-      <div className="flex min-h-[50vh] w-full flex-col items-center justify-center bg-[#fdfdfd] text-center p-8">
-        <div className="h-48 w-48 opacity-90 transition-all duration-500 ease-in-out">
-          {initPhase === 0 ? (
-            <DotLottieReact 
-              src="/lotties/block abstract.json" 
-              loop 
-              autoplay 
-              className="w-full h-full object-contain"
-            />
-          ) : (
-            <DotLottieReact 
-              src="/lotties/Transaction Complete.json" 
-              loop={false}
-              autoplay 
-              className="w-full h-full object-contain scale-110"
-            />
-          )}
+      <div className="flex min-h-[100dvh] w-full flex-col items-center justify-center bg-[#ffffff] text-center p-8">
+        <div className="flex items-center justify-center h-24 w-24 rounded-full bg-black/5 mb-8">
+          <ShieldCheck size={32} className={`text-black ${initPhase === 0 ? 'animate-pulse' : ''}`} />
         </div>
-        <h2 className="mt-8 text-sm font-black uppercase tracking-[0.3em] text-[#050505] transition-opacity duration-300">
+        <h2 className="text-sm font-black uppercase tracking-[0.3em] text-[#050505]">
           {initPhase === 0 ? 'Initializing Quantum Sequencer' : 'Sequencer Certified'}
         </h2>
-        <p className="mt-2 text-[10px] font-bold uppercase tracking-widest text-black/40 transition-opacity duration-300">
+        <p className="mt-2 text-[10px] font-bold uppercase tracking-widest text-black/40">
           {initPhase === 0 ? 'Syncing with Aztec Testnet v5' : 'Connection Established'}
         </p>
       </div>
@@ -1616,6 +1599,7 @@ export function ProvenanceStudioContent({
 
   // Removed legacy hasPlan iframe fallback to allow native Studio UI to render.
   return (
+    <TuringShieldGate>
     <div
       className={`min-h-[100dvh] bg-[#FFFFFF] text-[#050505] ${
         isMobile ? 'pb-[calc(2rem+env(safe-area-inset-bottom))]' : ''
@@ -1693,5 +1677,6 @@ export function ProvenanceStudioContent({
         {activeTab === 'dashboard' && <SubscriptionDashboard />}
       </div>
     </div>
+    </TuringShieldGate>
   );
 }
