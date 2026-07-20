@@ -171,6 +171,62 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
   // Polling interval ref for cleanup.
   const pollRef     = useRef<NodeJS.Timeout | null>(null);
 
+  // ─── Core Poll Function ────────────────────────────────────────────────────
+  const fetchLedgerState = useCallback(async (addr: string) => {
+    try {
+      const [balRes, txRes] = await Promise.all([
+        fetch(`/api/aztec/balance?aztecAddress=${encodeURIComponent(addr.toLowerCase())}`),
+        fetch(`/api/aztec/transactions?address=${encodeURIComponent(addr.toLowerCase())}`),
+      ]);
+
+      if (balRes.ok) {
+        const { balance: rawBal } = await balRes.json();
+        setBalance(parseFloat(rawBal));
+      }
+
+      if (txRes.ok) {
+        const { transactions } = await txRes.json();
+        if (Array.isArray(transactions)) {
+          const fresh = transactions.map((tx: any) => mapTx(tx, addr));
+          setHistory(fresh);
+
+          // Toast exactly once per genuinely new incoming transaction.
+          for (const tx of transactions) {
+            if (notifiedRef.current.has(tx.id)) continue;
+            notifiedRef.current.add(tx.id);
+            if (
+              tx.toAddress?.toLowerCase() === addr.toLowerCase() &&
+              tx.type !== "AIRDROP"
+            ) {
+              const amt = typeof tx.amount === "number" ? tx.amount : parseFloat(tx.amount);
+              toast.success(`+${amt} QDs received`, {
+                description: `From ${tx.fromAddress?.slice(0, 10)}...${tx.fromAddress?.slice(-6)}`,
+              });
+            }
+          }
+        }
+      }
+    } catch {
+      // Transient network errors — next poll cycle self-heals.
+    }
+  }, []);
+
+  // ─── Start / Stop Polling ─────────────────────────────────────────────────
+  const startPolling = useCallback((addr: string) => {
+    if (pollRef.current) clearInterval(pollRef.current);
+    pollRef.current = setInterval(() => fetchLedgerState(addr), POLL_INTERVAL);
+  }, [fetchLedgerState]);
+
+  const stopPolling = useCallback(() => {
+    if (pollRef.current) {
+      clearInterval(pollRef.current);
+      pollRef.current = null;
+    }
+  }, []);
+
+  // Cleanup on unmount.
+  useEffect(() => () => stopPolling(), [stopPolling]);
+
   // ─── Auto-Restore Session ──────────────────────────────────────────────────
   useEffect(() => {
     try {
@@ -320,63 +376,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
 
 
 
-  // ─── Core Poll Function ────────────────────────────────────────────────────
 
-  const fetchLedgerState = useCallback(async (addr: string) => {
-    try {
-      const [balRes, txRes] = await Promise.all([
-        fetch(`/api/aztec/balance?aztecAddress=${encodeURIComponent(addr.toLowerCase())}`),
-        fetch(`/api/aztec/transactions?address=${encodeURIComponent(addr.toLowerCase())}`),
-      ]);
-
-      if (balRes.ok) {
-        const { balance: rawBal } = await balRes.json();
-        setBalance(parseFloat(rawBal));
-      }
-
-      if (txRes.ok) {
-        const { transactions } = await txRes.json();
-        if (Array.isArray(transactions)) {
-          const fresh = transactions.map((tx: any) => mapTx(tx, addr));
-          setHistory(fresh);
-
-          // Toast exactly once per genuinely new incoming transaction.
-          for (const tx of transactions) {
-            if (notifiedRef.current.has(tx.id)) continue;
-            notifiedRef.current.add(tx.id);
-            if (
-              tx.toAddress?.toLowerCase() === addr.toLowerCase() &&
-              tx.type !== "AIRDROP"
-            ) {
-              const amt = typeof tx.amount === "number" ? tx.amount : parseFloat(tx.amount);
-              toast.success(`+${amt} QDs received`, {
-                description: `From ${tx.fromAddress?.slice(0, 10)}...${tx.fromAddress?.slice(-6)}`,
-              });
-            }
-          }
-        }
-      }
-    } catch {
-      // Transient network errors — next poll cycle self-heals.
-    }
-  }, []);
-
-  // ─── Start / Stop Polling ─────────────────────────────────────────────────
-
-  const startPolling = useCallback((addr: string) => {
-    if (pollRef.current) clearInterval(pollRef.current);
-    pollRef.current = setInterval(() => fetchLedgerState(addr), POLL_INTERVAL);
-  }, [fetchLedgerState]);
-
-  const stopPolling = useCallback(() => {
-    if (pollRef.current) {
-      clearInterval(pollRef.current);
-      pollRef.current = null;
-    }
-  }, []);
-
-  // Cleanup on unmount.
-  useEffect(() => () => stopPolling(), [stopPolling]);
 
   // ─── Connect Identity ─────────────────────────────────────────────────────
 
