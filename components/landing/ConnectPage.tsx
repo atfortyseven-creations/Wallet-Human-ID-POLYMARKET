@@ -830,12 +830,11 @@ export default function ConnectPage() {
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] max-h-[100dvh] bg-white z-50 overflow-y-auto overflow-x-hidden"
-      style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'none' }}
+      className="w-full min-h-screen bg-white relative flex flex-col overflow-x-hidden"
     >
       {/* Subtle dot grid background */}
       <div
-        className="fixed inset-0 pointer-events-none z-[0]"
+        className="absolute inset-0 pointer-events-none z-[0]"
         style={{
           backgroundImage: "radial-gradient(#0A0A0A 1px, transparent 1px)",
           backgroundSize: "28px 28px",
@@ -843,7 +842,7 @@ export default function ConnectPage() {
         }}
       />
 
-      <div className="w-full relative z-10 min-h-full flex flex-col items-center pt-16 pb-16 px-4 gap-12">
+      <div className="w-full relative z-10 flex-1 flex flex-col items-center pt-16 pb-16 px-4 gap-12">
         {/* Header Title */}
         <motion.h1
           initial={{ opacity: 0, y: -20 }}

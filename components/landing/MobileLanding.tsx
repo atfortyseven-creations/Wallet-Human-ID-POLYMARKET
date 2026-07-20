@@ -1447,106 +1447,52 @@ export function MobileLanding() {
 
         <div className="flex flex-col gap-2 w-full max-w-sm mx-auto">
 
-          {/* ── Helper: opens AppKit clearing disconnect guard ─────────── */}
-          {/* Each wallet button calls rkOpenModal() synchronously.        */}
-          {/* On iOS Safari this MUST be synchronous in the onClick handler */}
-          {/* to avoid the popup blocker. AppKit then deep-links the wallet. */}
-
-          {/* MetaMask */}
-          <WalletOption
-            logo="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg"
-            name="MetaMask"
-            badge="Most popular · iOS & Android"
-            loading={connecting === 'metamask'}
-            delay={0}
-            onClick={() => {
-              try { sessionStorage.removeItem('__disconnected__'); } catch {}
-              try { localStorage.removeItem('__disconnected__'); } catch {}
-              try { localStorage.setItem('system_pending_wakeup', '1'); } catch {}
-              signingInProgressRef.current = false;
-              setConnecting('metamask');
-              // If inside MetaMask in-app browser — connect directly
-              if (typeof window !== 'undefined' && (window as any).ethereum?.isMetaMask) {
-                const inj = connectors.find((c: any) => c.id === 'injected' || c.id === 'io.metamask');
-                if (inj) { connect({ connector: inj }); return; }
-              }
-              try { rkOpenModal(); } catch {}
-            }}
-          />
-
-          {/* Trust Wallet */}
-          <WalletOption
-            logo="https://trustwallet.com/assets/images/media/assets/TWT.png"
-            name="Trust Wallet"
-            badge="iOS & Android · Multi-chain"
-            loading={connecting === 'trust'}
-            delay={0.04}
-            onClick={() => {
-              try { sessionStorage.removeItem('__disconnected__'); } catch {}
-              try { localStorage.removeItem('__disconnected__'); } catch {}
-              try { localStorage.setItem('system_pending_wakeup', '1'); } catch {}
-              signingInProgressRef.current = false;
-              setConnecting('trust');
-              if (typeof window !== 'undefined' && (window as any).ethereum?.isTrust) {
-                const inj = connectors.find((c: any) => c.id === 'injected');
-                if (inj) { connect({ connector: inj }); return; }
-              }
-              try { rkOpenModal(); } catch {}
-            }}
-          />
-
-          {/* Coinbase Wallet */}
-          <WalletOption
-            logo="https://avatars.githubusercontent.com/u/18060234?s=200&v=4"
-            name="Coinbase Wallet"
-            badge="iOS & Android · Self-custody"
-            loading={connecting === 'coinbase'}
-            delay={0.08}
-            onClick={() => {
-              try { sessionStorage.removeItem('__disconnected__'); } catch {}
-              try { localStorage.removeItem('__disconnected__'); } catch {}
-              try { localStorage.setItem('system_pending_wakeup', '1'); } catch {}
-              signingInProgressRef.current = false;
-              setConnecting('coinbase');
-              if (typeof window !== 'undefined' && (window as any).ethereum?.isCoinbaseWallet) {
-                const inj = connectors.find((c: any) => c.id === 'com.coinbase.wallet' || c.id === 'injected');
-                if (inj) { connect({ connector: inj }); return; }
-              }
-              try { rkOpenModal(); } catch {}
-            }}
-          />
-
-          {/* Rainbow */}
-          <WalletOption
-            logo="https://rainbow.me/favicon.ico"
-            name="Rainbow"
-            badge="iOS & Android · Beautiful UX"
-            loading={connecting === 'rainbow'}
-            delay={0.12}
-            onClick={() => {
-              try { sessionStorage.removeItem('__disconnected__'); } catch {}
-              try { localStorage.removeItem('__disconnected__'); } catch {}
-              try { localStorage.setItem('system_pending_wakeup', '1'); } catch {}
-              signingInProgressRef.current = false;
-              setConnecting('rainbow');
-              try { rkOpenModal(); } catch {}
-            }}
-          />
-
-          {/* Other wallets — opens full AppKit selector */}
+          {/* ── Main AppKit / WalletConnect Button ────────────────────────────── */}
           <button
-            type="button"
             onClick={() => {
               try { sessionStorage.removeItem('__disconnected__'); } catch {}
               try { localStorage.removeItem('__disconnected__'); } catch {}
               try { localStorage.setItem('system_pending_wakeup', '1'); } catch {}
               signingInProgressRef.current = false;
-              try { rkOpenModal(); } catch {}
+
+              // If user is inside a dApp browser (MetaMask/Trust/Coinbase built-in browser),
+              // window.ethereum is injected. Use the injected connector directly — no modal needed.
+              if (typeof window !== 'undefined' && (window as any).ethereum) {
+                const injectedConn = connectors.find((c: any) =>
+                  c.id === 'injected' || c.type === 'injected' ||
+                  c.id === 'io.metamask' || c.id === 'com.coinbase.wallet'
+                );
+                if (injectedConn) {
+                  connect({ connector: injectedConn });
+                  return;
+                }
+              }
+              // Standard path: open Reown AppKit wallet selector modal.
+              // On iOS Safari, rkOpenModal() MUST be called synchronously here
+              // (directly in the onClick) to bypass Safari's popup blocker.
+              // The AppKit modal shows wallet options (MetaMask, Trust, Rainbow…)
+              // and generates WalletConnect deep-links automatically.
+              try { rkOpenModal(); } catch (e) {
+                console.warn('[MobileLanding] rkOpenModal failed, trying DOM fallback', e);
+                // Final DOM fallback for edge-case AppKit initialization failures
+                try {
+                  const modal = document.querySelector('w3m-modal') as any;
+                  if (modal) { modal.open = true; }
+                } catch {}
+              }
             }}
-            className="w-full flex items-center justify-center gap-2 h-11 rounded-2xl border border-black/10 bg-black/[0.02] text-[11px] font-black uppercase tracking-widest text-black/50 hover:text-black hover:border-black/20 active:scale-[0.97] transition-all"
+            className="group w-full flex items-center gap-4 p-4 rounded-2xl border-2 border-[#5200FF]/30 bg-gradient-to-r from-[#5200FF]/5 to-[#5200FF]/10 hover:from-[#5200FF]/10 hover:to-[#5200FF]/15 hover:border-[#5200FF]/50 active:scale-[0.97] transition-all duration-150 shadow-sm"
           >
-            <span>More Wallets</span>
-            <ArrowRight size={12} />
+            <div className="w-11 h-11 rounded-xl bg-[#5200FF] flex items-center justify-center p-2.5 shrink-0 shadow-lg">
+              <img src="/official-whale-monochrome.png" alt="Connect" className="w-full h-full object-contain invert" />
+            </div>
+            <div className="flex-1 text-left">
+              <p className="text-[14px] font-black uppercase tracking-tight text-[#050505]">Connect Wallet</p>
+              <p className="text-[10px] font-mono text-[#050505]/50 uppercase tracking-widest mt-0.5">
+                MetaMask · Trust · Rainbow · WalletConnect
+              </p>
+            </div>
+            <ArrowRight size={16} className="text-[#5200FF]/60 group-hover:text-[#5200FF] group-hover:translate-x-1 transition-all shrink-0" />
           </button>
 
           {/* Divider */}

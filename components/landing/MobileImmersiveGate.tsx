@@ -331,19 +331,33 @@ export function MobileImmersiveGate() {
   };
 
   const handleConnectWallet = () => {
-    // If we are already on /connect, open the AppKit modal directly (full wallet selector).
-    // If we are on the landing page or anywhere else, navigate to /connect.
-    // This avoids a redirect loop while ensuring the wallet modal opens reliably.
-    const isOnConnectPage = typeof window !== 'undefined' && window.location.pathname === '/connect';
-    if (isOnConnectPage) {
-      try { sessionStorage.removeItem("__disconnected__"); } catch {}
-      try { localStorage.removeItem("__disconnected__"); } catch {}
-      try { localStorage.setItem("system_pending_wakeup", "1"); } catch {}
+    // CRITICAL: rkOpenModal() MUST be called synchronously inside the onClick
+    // handler. iOS Safari treats any async delay before window.open() / modal
+    // triggers as a popup attempt and blocks it — producing a blank black screen.
+    // We clear the disconnect guard here (synchronously) and immediately open
+    // the AppKit modal so Safari allows it.
+    try { sessionStorage.removeItem("__disconnected__"); } catch {}
+    try { localStorage.removeItem("__disconnected__"); } catch {}
+    try { localStorage.setItem("system_pending_wakeup", "1"); } catch {}
+    signingRef.current = false;
+
+    // If inside a dApp browser (MetaMask/Trust/Coinbase in-app browser),
+    // window.ethereum is injected — no modal needed, connect directly.
+    if (typeof window !== "undefined" && (window as any).ethereum) {
+      // wagmi connect will be handled by the watchAccount listener above
+      try { rkOpenModal(); } catch (e) { console.warn('[MobileGate] rkOpenModal err:', e); }
+      return;
+    }
+
+    // Standard path: open Reown AppKit wallet selector (WalletConnect QR + deep links).
+    try {
       rkOpenModal();
-    } else {
-      if (typeof window !== 'undefined') {
-        window.location.href = '/connect';
-      }
+    } catch (e) {
+      console.warn("[MobileGate] rkOpenModal failed, DOM fallback:", e);
+      try {
+        const modal = document.querySelector("w3m-modal") as any;
+        if (modal) { modal.open = true; }
+      } catch {}
     }
   };
 

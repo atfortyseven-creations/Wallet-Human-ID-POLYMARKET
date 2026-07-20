@@ -65,7 +65,10 @@ const BOUNDED_PREFIXES = [
   '/predictions', '/ledger', '/voss-supremacy',
   '/gold-registry', '/vip', '/developer', '/developers', '/faq',
   '/ticket', '/settings', '/privacy', '/terms', '/legal',
-  '/connect', '/sign-up', '/login', '/admin', '/clearance',
+  // NOTE: /connect, /sign-up, /login are NOT bounded — they manage their
+  // own full-screen layout internally (ConnectPage / MobileImmersiveGate).
+  // Adding them here applies fixed+overflow:hidden which clips the content.
+  '/admin', '/clearance',
   '/api-marketplace', '/directory', '/company', '/infrastructure',
   '/forum', '/chat',
   '/', // Landing page — prevents white zone below footer
