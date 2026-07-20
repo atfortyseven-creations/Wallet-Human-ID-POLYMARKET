@@ -95,7 +95,7 @@ export default function CompliancePage() {
     <LegalDocLayout
       title="Regulatory Attestation Documentation"
       subtitle="This unified attestation hub centralizes all regulatory documents, audits, risk disclaimers, and procedures relevant to the Humanity Ledger S.L. ecosystem operating under MiCA and related frameworks."
-      lastUpdated="22 June 2026 - Version 3.0"
+      lastUpdated="20 July 2026 - Version 3.1"
       category="Legal & Regulatory"
       toc={TOC}
       backHref="/"
@@ -470,7 +470,7 @@ export default function CompliancePage() {
 
             <p className="text-[12px] text-black/35 font-mono pt-2">
               © 2026 Humanity Ledger S.L.  — Sagunto, Province of Valencia, Kingdom of Spain.
-              Document Reference: IDX-LEGAL-001-v3 | Version 3.0 | Last updated: 6 June 2026.
+              Document Reference: IDX-LEGAL-001-v3.1 | Version 3.1 | Last updated: 20 July 2026.
               This page does not constitute legal advice. All regulatory filings should be reviewed against the latest CNMV, SEPBLAC, and ESMA guidance prior to submission.
             </p>
           </div>
