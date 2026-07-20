@@ -160,7 +160,7 @@ const NODES: RoadmapNode[] = [
   {
     id: 'aztectestnet',
     title: 'Aztec Testnet Live',
-    status: 'completed',
+    status: 'live',
     quarter: 'Sep 2026',
     description: 'Full migration from local PXE sandbox to the live Aztec Testnet RPC. Private QDs token transfers, ZK identity proofs, and CoreLedger contract interactions all running against the public testnet chain.',
     x: C4, y: 480,

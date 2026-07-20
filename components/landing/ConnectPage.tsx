@@ -461,7 +461,7 @@ export default function ConnectPage() {
         if (returnUrl && returnUrl !== '/portfolio') {
             if (returnUrl.startsWith('http')) { window.location.href = returnUrl; }
             else { window.location.replace(returnUrl); }
-        } else { window.location.replace("/"); }
+        } else { window.location.replace("/terminal"); }
       } catch (err: any) {
         const msg = err?.message || '';
         if (!msg.toLowerCase().includes('rejected') && !msg.toLowerCase().includes('denied')) {

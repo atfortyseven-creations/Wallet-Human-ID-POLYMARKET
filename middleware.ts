@@ -60,6 +60,7 @@ const PUBLIC_PREFIXES = [
   '/api/payments/checkout',      // Stripe checkout session creation
   '/api/webhooks/stripe',        // Stripe webhook (must be unauthenticated)
   '/api/webhooks/',              // All webhooks from external services
+  '/api/dev/deploy',             // Temporary public route for deploying contracts
   '/api/health',
   '/api/status',
   '/_next/',
