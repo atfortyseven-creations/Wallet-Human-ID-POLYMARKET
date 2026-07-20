@@ -742,6 +742,24 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
 
+  // ─── WebRTC DOM Binding for Mobile (iOS/Android) ───────────────────────────
+  // Ensure video elements receive the stream once React actually mounts them
+  useEffect(() => {
+    if (myVideoRef.current && localStream && myVideoRef.current.srcObject !== localStream) {
+      myVideoRef.current.srcObject = localStream;
+    }
+  }, [callState, localStream, isCamOff]);
+
+  useEffect(() => {
+    if (remoteVideoRef.current && remoteStream && remoteVideoRef.current.srcObject !== remoteStream) {
+      remoteVideoRef.current.srcObject = remoteStream;
+    }
+    if (remoteAudioRef.current && remoteStream && remoteAudioRef.current.srcObject !== remoteStream) {
+      remoteAudioRef.current.srcObject = remoteStream;
+      remoteAudioRef.current.play().catch(e => console.warn('Audio play blocked:', e));
+    }
+  }, [callState, remoteStream]);
+
   // ─── performEndCall: Universal cleanup ──────────────────────────────────────
   const performEndCall = useCallback(() => {
     stopRingtone();
