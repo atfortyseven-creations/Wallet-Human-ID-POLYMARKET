@@ -244,8 +244,10 @@ const nextConfig = {
         // Layer 1: disable scope hoisting — breaks the circular-dep TDZ mechanism
         // Layer 2: Terser with reserved names — defence-in-depth against any
         //          remaining name collisions in non-concatenated chunks
-        if (!dev && !isServer) {
-            // Disable Module Concatenation (Scope Hoisting) — this is the real fix
+        if (!dev) {
+            // Disable Module Concatenation (Scope Hoisting) for ALL builds.
+            // Applies to both client and server bundles — SSR TDZ crashes cause
+            // hydration failures that surface as client-side errors.
             config.optimization.concatenateModules = false;
 
             const TerserPlugin = require('terser-webpack-plugin');
@@ -323,14 +325,16 @@ const nextConfig = {
     ],
 
     experimental: {
+        // [TDZ FIX] wagmi and viem are EXCLUDED from optimizePackageImports.
+        // optimizePackageImports re-exports only used symbols via synthetic
+        // barrel files — this creates circular re-export chains that webpack's
+        // scope hoisting turns into TDZ crashes ('T','j','_','Ce' before init).
         optimizePackageImports: [
             'lucide-react', 
             'framer-motion', 
             'three', 
             '@react-three/fiber',
             '@react-three/drei',
-            'wagmi',
-            'viem',
             '@tanstack/react-query',
             'ethers'
         ],
