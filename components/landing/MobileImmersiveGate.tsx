@@ -74,7 +74,7 @@ export function MobileImmersiveGate() {
 
   const { address: wagmiAddress, isConnected: wagmiConnected, connector } = useAccount();
   const { signMessageAsync } = useSignMessage();
-  const { open: rkOpenModal } = useAppKit();
+  const { open: rkOpenModal, close: rkCloseModal } = useAppKit();
   const signingRef = useRef(false);
   const pathname = usePathname();
 
@@ -234,6 +234,7 @@ export function MobileImmersiveGate() {
         let lastErr: any = null;
         for (let i = 0; i < 4; i++) {
           try {
+            try { rkCloseModal(); } catch {} // Close AppKit modal so user sees the native wallet popup
             signature = await signMessageAsync({ message });
             break;
           } catch (err: any) {

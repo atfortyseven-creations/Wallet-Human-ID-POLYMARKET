@@ -104,7 +104,7 @@ export default function ConnectPage() {
   const { isConnected, address, connector, status: accountStatus } = useAccount();
   const { connect, connectors, isPending, isError, error } = useConnect();
   const { signMessageAsync } = useSignMessage();
-  const { open: openAppKit } = useAppKit();
+  const { open: openAppKit, close: closeAppKit } = useAppKit();
   const { isLinked, setLinked } = useUIStore();
   const { nuclearDisconnect } = useSystemSignOut();
 
@@ -401,6 +401,7 @@ export default function ConnectPage() {
 
         for (let i = 0; i < 4; i++) {
             try {
+                try { closeAppKit(); } catch {} // Close AppKit modal so user can see signature UI and native wallet popup
                 signature = await signMessageAsync({ message });
                 break;
             } catch (err: any) {
@@ -596,20 +597,20 @@ export default function ConnectPage() {
             </div>
             <div>
               <h2 className="text-[17px] font-black tracking-tight text-[#0A0A0A] mb-2">Signature Required</h2>
-              <p className="text-[11px] text-[#888] leading-relaxed max-w-[230px] mx-auto">Sign the verification request in your wallet to complete secure authentication.</p>
+              <p className="text-[11px] text-[#888] leading-relaxed max-w-[230px] mx-auto">Please check your browser extension or mobile app to sign the request.</p>
             </div>
             {authStatus === 'failed' ? (
               <div className="flex flex-col gap-3 w-full mt-2">
-                <button onClick={() => { openAppKitSafe(); triggerManualVerify(); }} className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#0A0A0A] text-white font-mono text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#222] transition-all shadow-md active:scale-[0.98]">
-                  <ExternalLink size={13} /> Open Wallet &amp; Retry
+                <button onClick={() => { triggerManualVerify(); }} className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#0A0A0A] text-white font-mono text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#222] transition-all shadow-md active:scale-[0.98]">
+                  <ExternalLink size={13} /> Retry Signature
                 </button>
                 <button onClick={handleTotalDisconnect} className="w-full py-2.5 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 font-mono text-[10px] font-black uppercase tracking-[0.2em] transition-all active:scale-[0.98]">Disconnect</button>
               </div>
             ) : (
               <div className="flex flex-col gap-3 w-full mt-2">
-                <button onClick={() => openAppKitSafe()} className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-[#0A0A0A] text-white font-mono text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#222] transition-all shadow-md active:scale-[0.98]">
-                  <ExternalLink size={13} /> Tap to Sign / Open Wallet
-                </button>
+                <div className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border border-black/10 bg-black/5 text-black/40 font-mono text-[10px] font-black uppercase tracking-[0.2em] cursor-not-allowed">
+                  <ExternalLink size={13} /> Check Wallet App
+                </div>
                 <div className="flex items-center justify-center gap-2">
                   <Loader2 size={11} className="animate-spin text-black/35" />
                   <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-black/35 animate-pulse">Awaiting signature...</span>

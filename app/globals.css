@@ -68,7 +68,6 @@ body.ios-scroll-lock-strict {
   bottom: 0;
   overflow: hidden !important;
   overscroll-behavior: none !important;
-  touch-action: none !important;
 }
 
 /*  BOUNDED VIEWPORT SEAL 
