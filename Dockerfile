@@ -5,17 +5,22 @@
 # 
 
 #  STAGE 1: RUNTIME BASE 
-# Updated to node:22-slim to satisfy @xmtp/browser-sdk requirements (>=22.0.0).
-FROM node:22-slim AS runtime
+# Updated to ubuntu:24.04 to satisfy @aztec/bb.js requirements (GLIBCXX_3.4.32 / GCC 13).
+FROM ubuntu:24.04 AS runtime
 WORKDIR /app
 
-# Install runtime libraries + tools needed for Aztec PXE
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install runtime libraries + tools needed for Aztec PXE, and Node 22
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openssl \
     libstdc++6 \
     procps \
     curl \
     bash \
+    ca-certificates \
+    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Aztec CLI (provides `aztec start --pxe` for testnet connectivity)
