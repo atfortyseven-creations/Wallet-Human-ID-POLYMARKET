@@ -16,106 +16,95 @@ const STATS = [
   { label: 'Governance',       value: 'On-chain ZK',   sub: 'Cryptographic community vote' },
 ];
 
-const SECTIONS = [
+type Section = {
+  num: string;
+  title: string;
+  paragraphs: string[];
+  diagram?: string[];
+};
+
+const SECTIONS: Section[] = [
   {
     num: '01',
-    title: 'What QDs is',
+    title: 'What are QDs (Quantum Dots)?',
     paragraphs: [
-      'QDs (Quantum Dots, also known as Core Dots) is a digital asset designed to act as the foundational unit of economic exchange within the network. It is a base layer of exchange: finite, minable, and enforced entirely by the deployed contract code.',
-      'The name derives from the concept of Quantum Dots—representing the smallest indivisible unit of verifiable computational work (Core Dots). Just as physical matter cannot be reduced below the atomic scale, QDs cannot be created beyond its defined ceiling or subdivided beyond its defined precision. This physical analogy represents the strict mathematical boundaries established by the protocol layer.',
-      'Every design decision for QDs was measured against one test: does this reduce complexity, or add it? Any structure that added complexity without adding a mathematical guarantee was removed. What remains is a token defined by absolute clarity. The codebase has been stripped of any redundant logic, administrative backdoors, or upgradeable proxy patterns that could introduce centralized risk.',
-      'The full technical specification of QDs is publicly auditable from day one. There are no hidden parameters, no admin keys, and no emergency override functions. The rules encoded at genesis govern QDs until the final token is mined. Cryptographic integrators can rely on this stability to build deterministic financial models and automated settlement infrastructure without the counterparty risk associated with human intervention.'
+      'Updated as of July 21, 2026: QDs (Quantum Dots) are the foundational digital asset and economic engine of the Whale Network. They are the base layer of exchange: finite, cryptographically verifiable, and enforced entirely by the Aztec Network protocol.',
+      'The supply is mathematically hard-capped at 210,000,000 units. QDs do not operate on Ethereum L1 directly; they are native to the Aztec V5 Layer 2, meaning all QD balances and transfers are private by default, leveraging advanced Zero-Knowledge (ZK) circuits.',
+      'There are no admin backdoors, no emergency overrides, and no inflation mechanisms. The rules are baked into the genesis state.'
     ],
   },
   {
     num: '02',
-    title: 'The 21,000,000 limit',
+    title: 'What are QDs used for?',
     paragraphs: [
-      'The supply of QDs is capped at exactly twenty-one million tokens. This number is written into the genesis contract as an immutable constant. It cannot be changed by any vote, team decision, or on-chain governance action  because no such mechanism exists in the protocol. The absence of governance is a deliberate architectural choice to ensure maximum predictability.',
-      'Scarcity is not a feature layered on top of QDs. It is the architecture. Every participant, from the first block to the last, can know in advance the total number of tokens that will ever exist. Uncertainty about future supply is removed by design, not by promise. This rigid supply ceiling allows market participants to price risk and allocate capital with mathematical certainty.',
-      'Each token is divisible to eight decimal places, yielding two quadrillion one hundred trillion discrete units. This granularity is sufficient for all practical economic uses while preserving the mathematical weight of the twenty-one million ceiling. Micro-transactions, API paywalls, and high-frequency settlement channels can all operate efficiently using fractional QDs.',
-      'Any system claiming to offer QDs in quantities exceeding twenty-one million is operating outside the canonical protocol. The only authoritative record is the on-chain state of the genesis-deployed contract. No exception to this rule exists. Nodes validating the network will automatically reject any block proposing a supply expansion, ensuring the network remains structurally sound.'
+      'QDs are not just a store of value; they are utility tokens required to operate the most advanced features of the Whale Network ecosystem.',
+      '1. Whale Terminal Pro: Spending QDs unlocks Tier 2 (Pro) and Tier 3 (Whale) analytical tools, real-time tracking, and advanced market insights.',
+      '2. Encrypted Signals (Whale Chat): Users spend QDs to decrypt premium peer-to-peer signals and access exclusive anomaly alerts within the terminal chat.',
+      '3. On-Chain Governance: Proposing protocol upgrades or voting on market proposals requires QDs to prevent sybil attacks and align economic incentives.',
+      '4. Studio Provenance: Minting immutable product passports and QR walls requires a fee denominated in QDs.'
     ],
   },
   {
     num: '03',
-    title: 'Mining: earned, not issued',
+    title: 'Step-by-Step: Acquiring QDs',
     paragraphs: [
-      'QDs is distributed exclusively through mining. There are no pre-mines, no team allocations, no investor reserves, and no foundation treasury. From the first block, every token enters circulation through computational work performed by open, permissionless participants. This mechanism guarantees that the initial distribution of the asset is tied directly to energy expenditure and infrastructural commitment.',
-      'The mining process follows a deterministic emission schedule. As more people participate and mine on the network, the difficulty of finding a valid block increases proportionally. Consequently, it becomes harder to mine, and the relative reward per unit of compute decreases over time. The difficulty adjustment algorithm operates independently of human oversight, recalculating target thresholds strictly based on recent block times.',
-      'Block rewards halve at fixed intervals following a geometric decay schedule. Each halving reduces the new tokens issued per block by fifty percent, extending the mining timeline while preserving the overall supply ceiling. The final QDs will be issued through fractional issuance as the block reward approaches its lower bound, transitioning the network seamlessly from an inflationary bootstrapping phase to a pure fee-driven economic model.',
-      'Anyone with compatible hardware and a network connection can begin mining immediately after mainnet launch. There is no whitelist, no minimum stake requirement, and no registration process. The protocol is permissionless at every level of participation, ensuring that the network topology remains decentralized and resistant to localized regulatory pressures.'
+      'Currently, during the Aztec Testnet phase, QDs can be acquired through direct network participation and authorized airdrops.',
+      'Step 1: Authenticate into the Whale Network using your Web3 Wallet or Turing Shield (Email/PIN).',
+      'Step 2: Open the Whale Terminal (press Cmd/Ctrl + K from anywhere).',
+      'Step 3: Navigate to the "Identity / Airdrop" tab on the left sidebar.',
+      'Step 4: Click the "Claim Airdrop" button. Your identity will be verified via a ZK-proof, and 50 testnet QDs will be deposited into your private Aztec balance.'
     ],
   },
   {
     num: '04',
-    title: 'No team, no treasury',
+    title: 'Step-by-Step: Spending QDs in Whale Chat',
     paragraphs: [
-      'Zero percent of the QDs supply is allocated to the founding team, early investors, advisors, or any organizational entity. This is not a policy position subject to future amendment  it is a technical constraint baked into the genesis contract from which there is no administrative exit. The protocol fundamentally rejects the notion of privileged issuance.',
-      'The absence of a team allocation eliminates the most common form of misalignment in token design: the disconnect between team incentives and participant incentives. Every QDs token that exists was earned through the same mining process available to all participants. The creators of the protocol must commit computing resources to the network in the exact same manner as the general public if they wish to acquire the asset.',
-      'There is no treasury wallet with signing authority over accumulated funds. There is no multisig controlled by named individuals who could, under pressure or incentive, alter the distribution model. The contract is the only authority, and its logic is entirely deterministic and non-interactive regarding monetary policy.',
-      'Operating costs for the Whale Network network are funded separately from QDs supply. The protocol economics and the operational economics are structurally independent, so neither can compromise the other. This separation of concerns protects the monetary layer from corporate insolvency, strategic pivots, or operational mismanagement.'
+      'Whale Chat features an internal peer-to-peer economy where you can pay for high-value intelligence.',
+      'Step 1: Open Whale Chat and select a conversation with an encrypted signal.',
+      'Step 2: Click on the "Decrypt Signal" or "Pay" prompt attached to the message.',
+      'Step 3: The system will generate a Noir ABI encoded transaction. Confirm the payment (e.g., 5 QDs).',
+      'Step 4: Once the Aztec RPC confirms your ZK transaction, the signal decrypts locally on your device.'
     ],
+    diagram: [
+      "      [User]                        [Aztec Network]                  [Recipient]",
+      "         |                                 |                              |",
+      " 1. Clicks 'Pay 5 QDs'                     |                              |",
+      "         |---(Noir Encoded Tx)------------>|                              |",
+      "         |                                 |---(Verify ZK Proof)          |",
+      "         |                                 |                              |",
+      "         |<--(State Root Updated)----------|                              |",
+      " 2. Signal Decrypted                       |                              |",
+      "         |                                 |---(Private Balance +5)------>|"
+    ]
   },
   {
     num: '05',
-    title: 'The halving schedule',
+    title: 'Step-by-Step: Using QDs for Governance',
     paragraphs: [
-      'Block rewards in the QDs protocol decrease by fifty percent at regular intervals. This halving mechanism ensures that early miners receive proportionally more tokens for their initial network-bootstrapping work, while later participants still have meaningful earning potential from transaction fees and residual block rewards. The decay curve is mathematically rigid.',
-      'The halving schedule is predictable in advance by any participant. Block heights at which halvings occur are defined in the genesis parameters and cannot be adjusted. This predictability allows participants to plan hardware investments and energy costs with a clear view of expected revenue trajectories over multi-year capital depreciation cycles.',
-      'As the block reward decreases toward zero, transaction fees become the primary economic incentive for miners. The QDs fee market operates without a fee floor or ceiling imposed by the protocol  fees are determined by the competitive dynamics between transaction submitters and block producers. This transition is expected and modeled in the protocol architecture.',
-      'The final token will be mined in a distant future defined by the geometric decay rate of the emission schedule. The protocol does not set an end date for mining  it sets a mathematical limit that the emission curve asymptotically approaches. Long after the final whole unit is mined, the network will continue to process fractional rewards and transaction fees.'
+      'The network is governed by its active participants, not by a central authority.',
+      'Step 1: Open the Whale Terminal and navigate to the "Governance" tab.',
+      'Step 2: Browse active Market Proposals (e.g., modifying alert thresholds or adding new assets).',
+      'Step 3: Select a proposal and choose FOR, AGAINST, or ABSTAIN.',
+      'Step 4: Sign the transaction. A small QD fee is burned/locked to register your vote cryptographically on the ledger.'
     ],
   },
   {
     num: '06',
-    title: 'Immutable supply rule',
+    title: 'Privacy and Cryptography Architecture',
     paragraphs: [
-      'The twenty-one million supply ceiling is enforced by the contract itself, not by the goodwill of any team or governance body. Attempting to mint tokens beyond this ceiling will cause the transaction to revert with a protocol-level error. No account has the authority to modify this rule, nor does any proxy pattern exist to bypass it.',
-      "Immutability of the supply rule serves a specific function: it makes QDs useful as a unit of account in long-range planning. When the supply ceiling cannot be changed, participants can make calculations about QDs-denominated values that hold across time horizons longer than any single organization's commitment. This enables reliable discounting of future cash flows.",
-      'The contract code governing QDs supply is open source and independently auditable. Any cryptographer, developer, or analyst can verify the constraint directly from the on-chain bytecode without relying on documentation, announcements, or team statements. Verification at the binary level supersedes all external guarantees.',
-      'Forks of the QDs protocol that alter the supply ceiling are not QDs. A fork is a separate protocol with separate economics. The canonical QDs is the chain launched at genesis with the original parameters intact. Any deviation from the twenty-one million cap fundamentally alters the game-theoretic balance of the network and is therefore considered an entirely different asset.'
+      'Unlike public blockchains where your wallet balance is visible to everyone, QDs utilize Sovereign ZK Circuits to ensure complete financial privacy.',
+      'When you transfer QDs, the Aztec Network only verifies that you have sufficient balance and that you have authorized the transfer (via a valid ZK proof). The network does NOT learn who you are, who you sent it to, or how much you sent.',
+      'This architecture protects trading strategies, prevents front-running, and ensures that Whale Network participants can operate with sovereign-grade privacy.'
     ],
-  },
-  {
-    num: '07',
-    title: 'Integration with Whale Network',
-    paragraphs: [
-      'QDs functions as the native economic layer of the Whale Network network. Participants who contribute value to the network  through mining, data validation, or infrastructure provisioning  are compensated in QDs. Participants who consume network services pay in QDs. This creates a closed-loop economic system tied directly to network utility.',
-      'The Whale Network platform tracks on-chain capital flows across multiple blockchain networks. QDs provides the internal accounting unit that aligns the economic interests of data producers and data consumers within this system. It standardizes the cost of data queries across disparate underlying protocols and network states.',
-      'The fixed supply of QDs creates a deflationary pressure as network usage grows. More participants consuming network services while the supply remains constant means each QDs unit represents a greater share of network economic activity over time. This dynamic rewards long-term liquidity providers and network validators.',
-      'Integration between QDs and the broader Whale Network ecosystem is documented in the technical specifications available in the developer section of this site. The integration is designed to function without custodial intermediaries  all settlement occurs on-chain via smart contracts that programmatically enforce data delivery upon payment.'
-    ],
-  },
-  {
-    num: '08',
-    title: 'Technical specification',
-    paragraphs: [
-      'QDs is deployed natively on the Aztec Network as a Noir smart contract — it is not an ERC-20 token on Ethereum L1. There is no bridge contract, no wrapped asset, and no Solidity layer. All privacy is enforced at the ZK circuit level by the Barretenberg proving backend (UltraHonk proof system). Accounts use Schnorr signatures on the BN254 Grumpkin curve. The note commitment tree uses Poseidon2 hashing at depth 32. The nullifier tree is an Indexed Merkle tree at depth 20.',
-      'The token contract contains no administrative backdoors, no upgradeable proxy patterns, and no emergency override functions. The rules encoded at genesis govern QDs until the final token is mined. Cryptographic integrators can rely on this stability to build deterministic financial models and automated settlement infrastructure without the counterparty risk associated with human intervention.',
-      'The full technical specification of QDs is publicly auditable. There are no hidden parameters and no admin keys. The codebase has been stripped of any redundant logic or centralized risk vectors.',
-      'Security audits of the QDs circuit will be conducted by Tier-1 ZK auditors before any public mainnet deployment. All findings will be disclosed in full in the public audit documentation.'
-    ],
-  },
-  {
-    num: '09',
-    title: 'Participation and access',
-    paragraphs: [
-      'Mining QDs requires no permission, registration, or identity verification. Any device capable of performing the required computational work and maintaining a connection to the QDs network can participate in mining from the moment the genesis block is produced. The network is entirely agnostic to the identity or location of the participant.',
-      'Hardware requirements for mining will be specified in the technical documentation released before mainnet launch. The protocol is designed to remain accessible to a broad range of hardware configurations for as long as technically feasible, consistent with the security requirements of the network. Extreme hardware centralization is mitigated by the specific algorithmic choices outlined in the whitepaper.',
-      'Holding and transferring QDs requires only a standard Ethereum-compatible wallet. No special software, proprietary clients, or custodial accounts are required. Participants retain full self-custody of their tokens at all times, relying on their own key management security practices rather than third-party custodians.',
-      'There are no geographic restrictions on participation enforced at the protocol level. Access to QDs mining and holding is determined by network connectivity and hardware capability, not by jurisdiction, nationality, or any externally administered access control. The protocol operates in a stateless, borderless execution environment.'
-    ],
-  },
-  {
-    num: '10',
-    title: 'Testnet Status',
-    paragraphs: [
-      'QDs is currently active on the Aztec testnet (v5.testnet.rpc.aztec-labs.com). The testnet phase is used for contract verification, circuit auditing, and infrastructure preparation. No tokens exist on mainnet. There are no pre-launch sale events, no private rounds, and no initial coin offerings.',
-      'Anyone wishing to participate in the testnet can review the technical documentation in the developer section of this site. No deposit, reservation, or registration is required or accepted. The network will transition to mainnet when the ZK security audit is complete and the circuit has been formally verified.',
-      'After mainnet deployment, the protocol operates autonomously. The Humanity Ledger team contributes to the network as participants, not as administrators. The network is maintained by its participants, secured by cryptographic proofs, and governed by on-chain community vote. Any future evolution of the protocol must occur through decentralized consensus, not executive mandate.'
-    ],
-  },
+    diagram: [
+      "┌──────────────────────┐        ┌──────────────────────┐        ┌──────────────────────┐",
+      "│   Whale App Client   │        │     Aztec Testnet    │        │   Humanity Ledger    │",
+      "│                      │        │                      │        │                      │",
+      "│ 1. Encode parameters │───────>│ 3. Validate ACIR     │───────>│ 5. Store Encrypted   │",
+      "│ 2. Generate ZK Proof │        │ 4. Nullify spent QDs │        │    State Updates     │",
+      "└──────────────────────┘        └──────────────────────┘        └──────────────────────┘"
+    ]
+  }
 ];
 
 //  Main Page 
@@ -267,6 +256,13 @@ export default function QDsPage() {
                   {p}
                 </p>
               ))}
+              {s.diagram && (
+                <div className="mt-6 p-6 bg-black/[0.03] rounded-2xl border border-black/5 overflow-x-auto shadow-inner">
+                  <pre className="font-mono text-[10px] md:text-[12px] leading-[1.4] text-black/70">
+                    {s.diagram.join('\n')}
+                  </pre>
+                </div>
+              )}
             </div>
           </motion.article>
         ))}
