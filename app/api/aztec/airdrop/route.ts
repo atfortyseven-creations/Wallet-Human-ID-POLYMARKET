@@ -221,9 +221,12 @@ export async function POST(req: NextRequest) {
     const { getFpcAddress }             = await import('@/lib/aztec/client');
 
     // Initialize Embedded Wallet connected to PXE node
-    const wallet = await EmbeddedWallet.create(pxeUrl, { ephemeral: true });
+    let fallbackToModeB = false;
+    let onChainSuccess = false;
 
     try {
+      const wallet = await EmbeddedWallet.create(pxeUrl, { ephemeral: true });
+
       const secretKeyHex = relayerSecretHex;
       const secretKey    = Fr.fromHexString(secretKeyHex.replace(/^0x/i, ''));
       const salt         = new Fr(0n);
@@ -241,7 +244,6 @@ export async function POST(req: NextRequest) {
 
       const SPONSORED_FPC = getFpcAddress();
 
-      let onChainSuccess = false;
       try {
         const txResult = await tokenContract.methods
           .mint_to_public(toAddress, amountBigInt)
@@ -266,27 +268,36 @@ export async function POST(req: NextRequest) {
                            fpcErr?.message?.toLowerCase().includes('insufficient balance');
         if (isFpcError) {
           console.warn('[Aztec Airdrop] ⚠️ Sponsored FPC has zero Fee Juice (Aztec 5.0.1 known issue). Falling back to Mode B DB ledger.');
-          let liveBlockNum = Math.floor(Date.now() / 12_000);
-          try {
-            const nodeInfoRes = await fetch(`${nodeUrl}/node-info`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ jsonrpc: '2.0', method: 'node_getNodeInfo', params: [], id: 1 }),
-              signal: AbortSignal.timeout(8000),
-            });
-            if (nodeInfoRes.ok) {
-              const nodeData = await nodeInfoRes.json();
-              liveBlockNum = nodeData?.result?.l2BlockNumber ?? liveBlockNum;
-            }
-          } catch { /* node unreachable */ }
-          aztecTxHash = `aztec-airdrop-${crypto.randomBytes(20).toString('hex')}`;
-          explorerUrl = `https://testnet.aztecscan.xyz/blocks/${liveBlockNum}`;
-          onChain = false;
-          blockNum = liveBlockNum;
+          fallbackToModeB = true;
         } else {
-          throw fpcErr;
+          console.warn('[Aztec Airdrop] On-chain error, falling back:', fpcErr.message);
+          fallbackToModeB = true;
         }
       }
+    } catch (setupErr: any) {
+      console.warn(`[Aztec Airdrop] ⚠️ EmbeddedWallet or Node error (${setupErr.message}). Falling back to Mode B DB ledger.`);
+      fallbackToModeB = true;
+    }
+
+    if (fallbackToModeB) {
+      let liveBlockNum = Math.floor(Date.now() / 12_000);
+      try {
+        const nodeInfoRes = await fetch(`${nodeUrl}/node-info`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jsonrpc: '2.0', method: 'node_getNodeInfo', params: [], id: 1 }),
+          signal: AbortSignal.timeout(3000),
+        });
+        if (nodeInfoRes.ok) {
+          const nodeData = await nodeInfoRes.json();
+          liveBlockNum = nodeData?.result?.l2BlockNumber ?? liveBlockNum;
+        }
+      } catch { /* node unreachable */ }
+      aztecTxHash = `aztec-airdrop-${require('crypto').randomBytes(20).toString('hex')}`;
+      explorerUrl = `https://testnet.aztecscan.xyz/blocks/${liveBlockNum}`;
+      onChain = false;
+      blockNum = liveBlockNum;
+    }
 
       // Also get node info for metadata
       if (onChainSuccess) {

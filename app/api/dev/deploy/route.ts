@@ -1,14 +1,38 @@
 // @ts-nocheck
+/**
+ * /api/dev/deploy — Aztec QDs Token Deployment Status
+ *
+ * REVISED APPROACH: The Aztec SDK v4.3.1 EmbeddedWallet always boots a local PXE server
+ * (port 18080) via native C++ binaries from @aztec/pxe/server — this is not compatible
+ * with being called from a Next.js API route.
+ *
+ * THE CORRECT DEPLOYMENT PATH:
+ * Run the deploy script as a Railway one-off command using the Railway CLI or
+ * the "Railway Run" feature in the dashboard with:
+ *   npx tsx scripts/deploy_aztec_token.ts
+ *
+ * This endpoint now returns a clear status with the actionRequired instructions.
+ */
 import { NextResponse } from 'next/server';
-// Removed static @aztec imports to prevent Webpack bundling errors.
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  const nodeUrl  = process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
-  const pxeUrl   = process.env.AZTEC_PXE_URL  || nodeUrl;
+  const nodeUrl = process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
   const relayerSecretHex = process.env.AZTEC_RELAYER_SECRET_KEY;
+  const existingAddress = process.env.AZTEC_TOKEN_CONTRACT_ADDRESS;
 
+  // Already deployed — return the address
+  if (existingAddress && existingAddress !== 'PENDING_DEPLOY') {
+    return NextResponse.json({
+      success: true,
+      status: 'DEPLOYED',
+      tokenAddress: existingAddress,
+      message: '✅ QDs Token is already deployed.',
+    });
+  }
+
+  // Check connectivity to Aztec node
   let nodeInfo: any = null;
   try {
     const { createAztecNodeClient } = await import('@aztec/aztec.js/node');
@@ -17,76 +41,43 @@ export async function GET() {
       node.getBlockNumber(),
       node.getNodeInfo(),
     ]);
-    nodeInfo = { blockNumber, ...info };
+    nodeInfo = {
+      blockNumber,
+      chainId: info.l1ChainId,
+      version: info.nodeVersion,
+    };
   } catch (e: any) {
-    return NextResponse.json({ success: false, error: `Aztec Testnet unreachable: ${e.message}` }, { status: 503 });
-  }
-
-  if (!relayerSecretHex) {
-    return NextResponse.json({ success: false, error: 'AZTEC_RELAYER_SECRET_KEY not set.', nodeInfo }, { status: 400 });
-  }
-
-  const existingAddress = process.env.AZTEC_TOKEN_CONTRACT_ADDRESS;
-  if (existingAddress && existingAddress !== 'PENDING_DEPLOY') {
-    return NextResponse.json({ success: true, message: 'Already deployed.', tokenAddress: existingAddress, nodeInfo });
-  }
-
-  try {
-    const { EmbeddedWallet } = await import('@aztec/wallets/embedded');
-    const { Fr } = await import('@aztec/foundation/curves/bn254');
-    const { AztecAddress } = await import('@aztec/stdlib/aztec-address');
-    const { SponsoredFeePaymentMethod } = await import('@aztec/aztec.js/fee');
-    const { getFpcAddress } = await import('@/lib/aztec/client');
-    const { TokenContract } = await import('@aztec/noir-contracts.js/Token');
-
-    const wallet = await EmbeddedWallet.create(pxeUrl, { ephemeral: true });
-    
-    try {
-      const secretKey = Fr.fromHexString(relayerSecretHex.replace(/^0x/i, ''));
-      const salt = new Fr(0n);
-      
-      const accountManager = await wallet.createSchnorrAccount(secretKey, salt);
-      const adminAddress = accountManager.address;
-
-      const fpcAddress = AztecAddress.fromString(getFpcAddress());
-      const paymentMethod = new SponsoredFeePaymentMethod(fpcAddress);
-
-      const deployResult = await TokenContract.deploy(wallet, adminAddress, 'Quantum Dollars', 'QDs', 18n)
-        .send({ 
-          from: adminAddress, 
-          fee: { paymentMethod } 
-        });
-
-      const tokenAddress = deployResult.contract.address.toString();
-      const txHash = deployResult.receipt.txHash.toString();
-
-    console.log(`[Deploy] ✅ TokenContract deployed at: ${tokenAddress}`);
-    console.log(`[Deploy] 📋 ACTION REQUIRED: Set AZTEC_TOKEN_CONTRACT_ADDRESS=${tokenAddress} in Railway`);
-
     return NextResponse.json({
-      success: true,
-      message: '✅ QDs Token deployed! Set AZTEC_TOKEN_CONTRACT_ADDRESS in Railway env vars and redeploy.',
-      tokenAddress,
-      relayerAddress: adminAddress.toString(),
-      deployTxHash: txHash,
-      nodeInfo,
-      actionRequired: `Set AZTEC_TOKEN_CONTRACT_ADDRESS=${tokenAddress} in Railway environment variables, then redeploy.`,
-    });
-    } finally {
-      await wallet.stop();
-    }
-
-  } catch (error: any) {
-    console.error('[Deploy] Error:', error.message);
-    return NextResponse.json(
-      {
-        success: false,
-        error: `Deployment failed: ${error.message}`,
-        hint: 'Ensure EmbeddedWallet dependencies and native binaries are available.',
-        pxeUrl,
-        nodeInfo,
-      },
-      { status: 500 }
-    );
+      success: false,
+      status: 'NODE_UNREACHABLE',
+      error: `Aztec testnet node unreachable: ${e.message}`,
+      nodeUrl,
+    }, { status: 503 });
   }
+
+  // Node is reachable — return deployment instructions
+  return NextResponse.json({
+    success: false,
+    status: 'PENDING_DEPLOY',
+    message: 'QDs Token not yet deployed. The Aztec SDK requires running the deploy script as a one-off process.',
+    nodeInfo,
+    relayerConfigured: !!relayerSecretHex,
+    deploymentInstructions: {
+      method: 'Railway One-Off Command',
+      steps: [
+        '1. Open Railway Dashboard → your project → whale-wallet service',
+        '2. Click the "..." menu → "Run Command"',
+        '3. Enter: npx tsx scripts/deploy_aztec_token.ts',
+        '4. Copy the AZTEC_TOKEN_CONTRACT_ADDRESS from the output',
+        '5. Add it to Railway Environment Variables and redeploy',
+      ],
+      alternativeMethod: 'Local Linux / WSL',
+      alternativeSteps: [
+        'On a Linux machine: git clone the repo',
+        'Copy .env with AZTEC_RELAYER_SECRET_KEY set',
+        'Run: npm install && npx tsx scripts/deploy_aztec_token.ts',
+      ],
+    },
+    technicalNote: 'EmbeddedWallet.create() in @aztec/wallets v4.3.1 boots a local PXE process on port 18080 via @aztec/pxe/server native binaries. This cannot run inside a Next.js API route handler.',
+  }, { status: 202 });
 }

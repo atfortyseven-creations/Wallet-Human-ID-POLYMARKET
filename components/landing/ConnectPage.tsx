@@ -475,14 +475,11 @@ export default function ConnectPage() {
     runVerify();
   }, [accountStatus, address, mounted, setLinked, signMessageAsync, authStatus, connector]);
 
-  const openAppKitSafe = useCallback(async (retries = 0): Promise<void> => {
+  const openAppKitSafe = useCallback(() => {
     try {
-      await openAppKit();
+      openAppKit();
     } catch (e: any) {
-      if (retries < 5) {
-        await new Promise(r => setTimeout(r, 150));
-        return openAppKitSafe(retries + 1);
-      }
+      console.warn("AppKit open error", e);
     }
   }, [openAppKit]);
 
@@ -505,8 +502,19 @@ export default function ConnectPage() {
     try { sessionStorage.removeItem("__disconnected__"); } catch {}
     try { localStorage.removeItem("__disconnected__"); } catch {}
     try { localStorage.setItem('system_pending_wakeup', '1'); } catch {}
+    
+    // Si estamos en un navegador integrado (dApp browser) de MetaMask, Coinbase, etc.
+    const injected = connectors.find((c: any) => c.id === 'injected' || c.type === 'injected' || c.id === 'io.metamask' || c.name.toLowerCase().includes(walletId.split('-')[0].toLowerCase()));
+    
+    if (injected && typeof window !== 'undefined' && ((window as any).ethereum || (window as any).web3)) {
+      setPendingId(walletId);
+      connect({ connector: injected });
+      return;
+    }
+
+    // Llamada síncrona pura para evitar que Safari iOS bloquee el deep link de WalletConnect
     openAppKitSafe();
-  }, [openAppKitSafe]);
+  }, [openAppKitSafe, connect, connectors]);
 
   const triggerManualVerify = useCallback(() => {
     signingRef.current = false;
@@ -822,7 +830,7 @@ export default function ConnectPage() {
 
   return (
     <div
-      className="fixed inset-0 w-full bg-white z-50 overflow-y-auto overflow-x-hidden"
+      className="fixed inset-0 w-full h-[100dvh] max-h-[100dvh] bg-white z-50 overflow-y-auto overflow-x-hidden"
       style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'none' }}
     >
       {/* Subtle dot grid background */}

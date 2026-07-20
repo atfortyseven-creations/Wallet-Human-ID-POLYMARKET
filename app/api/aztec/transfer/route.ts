@@ -201,9 +201,11 @@ export async function POST(req: NextRequest) {
     const { getFpcAddress }             = await import('@/lib/aztec/client');
 
     let onChainSuccess = false;
-    const wallet = await EmbeddedWallet.create(pxeUrl, { ephemeral: true });
-
+    let fallbackToModeB = false;
+    
     try {
+      const wallet = await EmbeddedWallet.create(pxeUrl, { ephemeral: true });
+
       const secretKeyHex       = deriveSecretKeyFromEvm(fromAddr);
       const secretKey          = Fr.fromHexString(secretKeyHex.replace(/^0x/i, ''));
       const salt               = new Fr(0n);
@@ -230,32 +232,39 @@ export async function POST(req: NextRequest) {
         blockNumber   = Number(txResult.receipt.blockNumber ?? Math.floor(Date.now() / 12_000));
         console.log(`[Aztec Transfer] ✅ On-chain! Hash: ${aztecTxHash}`);
       } catch (fpcErr: any) {
-        // ── FPC FALLBACK: Sponsored FPC has zero Fee Juice (known Aztec 5.0.1 issue) ──
-        // Ref: https://forum.aztec.network — @joshc confirmed FPC funding is pending.
-        // Fall back to Mode B so users are not blocked.
         const isFpcError = fpcErr?.message?.toLowerCase().includes('insufficient fee payer') ||
                            fpcErr?.message?.toLowerCase().includes('fee juice') ||
                            fpcErr?.message?.toLowerCase().includes('insufficient balance');
         if (isFpcError) {
           console.warn('[Aztec Transfer] ⚠️ Sponsored FPC has zero Fee Juice (Aztec 5.0.1 known issue). Falling back to Mode B DB ledger.');
-          try {
-            const nodeInfoRes = await fetch(`${nodeUrl}/node-info`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ jsonrpc: '2.0', method: 'node_getNodeInfo', params: [], id: 1 }),
-              signal: AbortSignal.timeout(8000),
-            });
-            if (nodeInfoRes.ok) {
-              const nodeData = await nodeInfoRes.json();
-              blockNumber = nodeData?.result?.l2BlockNumber ?? blockNumber;
-            }
-          } catch { /* node unreachable */ }
-          aztecTxHash = 'offchain-' + crypto.randomBytes(16).toString('hex');
-          explorerUrl = `https://testnet.aztecscan.xyz/blocks/${blockNumber}`;
+          fallbackToModeB = true;
         } else {
-          throw fpcErr;
+          console.warn('[Aztec Transfer] On-chain error, falling back:', fpcErr.message);
+          fallbackToModeB = true;
         }
       }
+    } catch (setupErr: any) {
+      console.warn(`[Aztec Transfer] ⚠️ EmbeddedWallet or Node error (${setupErr.message}). Falling back to Mode B DB ledger.`);
+      fallbackToModeB = true;
+    }
+
+    if (fallbackToModeB) {
+      try {
+        const nodeInfoRes = await fetch(`${nodeUrl}/node-info`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ jsonrpc: '2.0', method: 'node_getNodeInfo', params: [], id: 1 }),
+          signal: AbortSignal.timeout(3000),
+        });
+        if (nodeInfoRes.ok) {
+          const nodeData = await nodeInfoRes.json();
+          blockNumber = nodeData?.result?.l2BlockNumber ?? blockNumber;
+        }
+      } catch { /* node unreachable */ }
+      aztecTxHash = 'offchain-' + require('crypto').randomBytes(16).toString('hex');
+      explorerUrl = `https://testnet.aztecscan.xyz/blocks/${blockNumber}`;
+      onChain = false;
+    }
 
       // Fetch node info for metadata (best-effort)
       if (onChainSuccess) {
