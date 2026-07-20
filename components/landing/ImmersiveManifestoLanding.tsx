@@ -1045,7 +1045,7 @@ export function ImmersiveManifestoLanding({
     // CRITICAL FIX: Remove min-h-screen and bg-[#050505] from root wrapper.
     // min-h-screen on a flex column causes the dark background to bleed BELOW
     // the footer creating a scrollable black zone. Use bg-white throughout.
-    <div className="w-full flex flex-col bg-white text-black antialiased overflow-x-hidden" style={{ overscrollBehavior: 'none' }}>
+    <div className="w-full flex flex-col bg-white text-black antialiased overflow-x-hidden">
       <LandingNav />
       <main id="main-content" className="flex-1 bg-white">
         <HeroSection />
