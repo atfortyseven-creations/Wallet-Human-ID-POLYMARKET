@@ -862,7 +862,7 @@ export default function ConnectPage() {
           className="flex flex-col items-center w-full max-w-[900px] gap-8"
         >
           {/* Side-by-side: Login Card + QD Marketing Panel */}
-          <div className="flex flex-col lg:flex-row items-stretch justify-center gap-5 w-full">
+          <div className="flex flex-col lg:flex-row items-start justify-center gap-5 w-full">
             {renderLoginCard()}
             {!isMobile && renderQDPanel()}
           </div>

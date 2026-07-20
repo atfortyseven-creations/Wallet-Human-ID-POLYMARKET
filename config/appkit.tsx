@@ -242,13 +242,12 @@ try {
                 send: true,
                 receive: true,
             },
-            themeMode: 'dark',
+            themeMode: 'light',
             themeVariables: {
                 '--w3m-accent': '#5200FF',                    // Aztec purple
-                '--w3m-color-mix': '#000000',
                 '--w3m-border-radius-master': '1.5rem',       // slightly less extreme for mobile hit areas
-                '--w3m-font-family': 'FT Regola Neue, Inter, sans-serif',
-                '--w3m-z-index': 9999,                       
+                '--w3m-font-family': 'Inter, sans-serif',
+                '--w3m-z-index': 99999,  // must be above our fixed inset-0 container                    
             },
             enableInjected: true,
             enableEIP6963: true, // MUST BE TRUE for wagmi 2.x to detect injected wallets like MetaMask properly
