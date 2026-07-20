@@ -118,10 +118,7 @@ const nextConfig = {
         '@react-three/drei',
         '@react-three/postprocessing',
         'postprocessing',
-        'framer-motion',
-        'wagmi',
-        'viem',
-        'lucide-react'
+        'framer-motion'
     ],
     webpack: (config, { isServer, dev }) => {
         // [LEGENDARY BUILD FIX] Force bypass for missing third-party SDK dependencies
@@ -244,52 +241,10 @@ const nextConfig = {
         // Fix: use Terser instead and explicitly reserve `_` and `__` from
         // being used as mangled variable names.
         if (!dev) {
-            config.optimization = {
-                ...config.optimization,
-                // ── ROOT-CAUSE SAFARI TDZ FIX ────────────────────────────────
-                // Webpack's "scope hoisting" (concatenateModules) merges multiple
-                // ESM modules into a single scope to improve tree-shaking and
-                // bundle size. However, when a pre-minified third-party library
-                // (e.g. wagmi, viem, framer-motion) uses short identifiers like
-                // Ce, De, Te inside `let`/`const` declarations, and Webpack
-                // hoists them into a shared chunk alongside another module that
-                // references them BEFORE their TDZ window has cleared, Safari/
-                // WebKit throws:
-                //   "Cannot access 'Ce' before initialization"
-                //
-                // Disabling concatenateModules forces every module to keep its
-                // own isolated scope. This eliminates the entire class of hoist-
-                // induced TDZ errors regardless of which identifier is involved.
-                // Trade-off: ~1-3% larger bundle (still gzip-compressed).
-                concatenateModules: false,
-                minimizer: [
-                    new (require('terser-webpack-plugin'))({
-                        terserOptions: {
-                            mangle: {
-                                // Also reserve all single-letter names as an
-                                // extra safety net for our own compiled code.
-                                reserved: [
-                                  'a','b','c','d','e','f','g','h','i','j','k','l','m',
-                                  'n','o','p','q','r','s','t','u','v','w','x','y','z',
-                                  'A','B','C','D','E','F','G','H','I','J','K','L','M',
-                                  'N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
-                                  '_','__','___',
-                                ],
-                                safari10: true,
-                                toplevel: false,
-                            },
-                            compress: {
-                                passes: 2,
-                            },
-                            format: {
-                                comments: false,
-                            },
-                        },
-                        parallel: true,
-                    }),
-                ],
-            };
+            // Reverted Terser and concatenateModules hacks. 
+            // The root cause is transpilePackages re-compiling wagmi/viem with SWC.
         }
+
 
         // ─────────────────────────────────────────────────────────────────────
 
