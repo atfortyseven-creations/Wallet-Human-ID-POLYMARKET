@@ -112,13 +112,13 @@ const nextConfig = {
             './**/node_modules/next/dist/compiled/**',
         ]
     },
+    productionBrowserSourceMaps: true,
     transpilePackages: [
         'three',
         '@react-three/fiber',
         '@react-three/drei',
         '@react-three/postprocessing',
-        'postprocessing',
-        'framer-motion'
+        'postprocessing'
     ],
     webpack: (config, { isServer, dev }) => {
         // [LEGENDARY BUILD FIX] Force bypass for missing third-party SDK dependencies
