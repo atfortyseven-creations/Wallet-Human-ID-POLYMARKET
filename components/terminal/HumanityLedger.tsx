@@ -70,7 +70,7 @@ const NODES: RoadmapNode[] = [
     title: 'SIWE Mobile Auth',
     status: 'live',
     quarter: 'Completed',
-    description: 'Sign-In with Ethereum with full iOS/Android support. Fixed the MetaMask App-Switch Loop — manual deep-link trigger prevents the double-signature bug on mobile wallets.',
+    description: 'Sign-In with Ethereum with full iOS/Android support. Fixed critical MetaMask App-Switch Loop and iOS/Android WebKit TDZ crash (React Error 310) — fully stable as of July 20, 2026.',
     x: C2, y: 60,
   },
   {
@@ -86,19 +86,19 @@ const NODES: RoadmapNode[] = [
     title: 'Whale Terminal',
     status: 'live',
     quarter: 'Completed',
-    description: 'Sovereign-grade multi-tab terminal: Portfolio Dashboard, Markets, Roadmap, Whale Chat, Studio Provenance, Alerts, Session Logs, and ZK Developer Sandbox — all in one shell.',
+    description: 'Sovereign-grade multi-tab terminal: Portfolio Dashboard, Markets, Roadmap, Governance, Whale Chat, Studio Provenance, Alerts, Session Logs, and ZK Developer Sandbox — all in one shell.',
     x: C2, y: 340,
   },
   {
     id: 'whalechat',
-    title: 'Whale Chat (E2E)',
+    title: 'Whale Chat + QD Economy',
     status: 'live',
     quarter: 'Completed',
-    description: 'End-to-end encrypted P2P messaging for verified Whale members. Real-time send/receive fully functional on iOS and Android with no message delivery bugs.',
+    description: 'End-to-end encrypted P2P messaging. Integrated QD micro-payment economy: messages cost QDs, senders earn daily rewards. Email login via OTP + Google OAuth fully operational.',
     x: C2, y: 480,
   },
 
-  // ─── PHASE 3: ZK Circuits & Studio Provenance (COMPLETED) ───────────────
+  // ─── PHASE 3: ZK Circuits, Studio & Security (COMPLETED) ───────────────
   {
     id: 'zksandbox',
     title: 'ZK Circuit Sandbox',
@@ -116,84 +116,84 @@ const NODES: RoadmapNode[] = [
     x: C3, y: 200,
   },
   {
-    id: 'studio',
-    title: 'Studio Provenance',
+    id: 'enclave',
+    title: 'Enclave PIN Security',
     status: 'live',
-    quarter: 'Completed',
-    description: 'Product Passport creation engine. Regular users create up to 3 passports; Owners unlimited. Each passport generates a tamper-proof QR code tied to the wallet that created it.',
+    quarter: 'Jul 2026',
+    description: 'Critical security hardening of the Turing Shield Enclave. Patched a full PIN bypass vulnerability. New system uses server-side HMAC-SHA256 verification, constant-time comparison (timing-attack proof), and 5-attempt brute-force lockout.',
     x: C3, y: 340,
   },
   {
     id: 'passportqr',
-    title: 'Passport QR Wall',
+    title: 'Studio Provenance + QR Wall',
     status: 'live',
     quarter: 'Completed',
-    description: 'Wallet authentication gate on all public passport URLs. Any person scanning a product QR code must connect a wallet before the provenance chain is decrypted and revealed.',
+    description: 'Product Passport creation engine. Regular users: up to 3 passports; Owners: unlimited. Each passport generates a tamper-proof QR code. Wallet auth gate on all public URLs before provenance is revealed.',
     x: C3, y: 480,
   },
 
-  // ─── PHASE 4: Markets & On-Chain Intelligence (Jul – Sep 2026) ─────────────
+  // ─── PHASE 4: Aztec Integration & On-Chain Intelligence (Jul 2026) ─────────────
+  {
+    id: 'aztectestnet',
+    title: 'Aztec V5 Testnet Live',
+    status: 'live',
+    quarter: 'Jul 20, 2026',
+    description: 'Full migration to Aztec V5 Alpha Testnet RPC (v5.testnet.rpc.aztec-labs.com). QD token transfers anchored to real Aztec blocks. Sponsored FPC (0x1969…) integrated for gas-free txs. DB ledger serializable transactions with double-spend protection.',
+    x: C4, y: 60,
+  },
+  {
+    id: 'governance',
+    title: 'On-Chain Governance',
+    status: 'live',
+    quarter: 'Jul 2026',
+    description: 'Protocol governance module live in the terminal. Members vote on proposals spending QDs as voting weight. One-vote-per-wallet nullifier, real-time vote tallying, and proposal lifecycle management (VOTING → APPROVED).',
+    x: C4, y: 200,
+  },
   {
     id: 'stealth-transfers',
     title: 'ZK Stealth Transfers',
     status: 'building',
-    quarter: 'Jul 2026',
+    quarter: 'Aug 2026',
     description: 'Private peer-to-peer capital routing leveraging Aztec\'s shielded state. Transfer significant capital between wallets with absolute cryptographic privacy, obscuring sender, receiver, and transaction size from public chain analysis.',
-    x: C4, y: 60,
-  },
-  {
-    id: 'hyperliquid',
-    title: 'Hyperliquid Execution',
-    status: 'building',
-    quarter: 'Jul 2026',
-    description: 'Direct perpetuals execution panel. Place, modify, and cancel orders on Hyperliquid L1 from within the Whale terminal with institutional-grade slippage and position controls.',
-    x: C4, y: 200,
+    x: C4, y: 340,
   },
   {
     id: 'alerts',
     title: 'Whale Alert Engine',
     status: 'building',
-    quarter: 'Aug 2026',
-    description: 'Real-time on-chain whale movement monitoring. Tracks wallets above $1M threshold, detects suspicious clustering and wash-trading patterns, and delivers push notifications through the in-terminal alert panel.',
-    x: C4, y: 340,
-  },
-  {
-    id: 'aztectestnet',
-    title: 'Aztec Testnet Live',
-    status: 'live',
     quarter: 'Sep 2026',
-    description: 'Full migration from local PXE sandbox to the live Aztec Testnet RPC. Private QDs token transfers, ZK identity proofs, and CoreLedger contract interactions all running against the public testnet chain.',
+    description: 'Real-time on-chain whale movement monitoring. Tracks wallets above $1M threshold, detects suspicious clustering and wash-trading patterns, and delivers push notifications through the in-terminal alert panel.',
     x: C4, y: 480,
   },
 
   // ─── PHASE 5: Protocol Expansion (Oct – Nov 2026) ────────────────────────
+  {
+    id: 'hyperliquid',
+    title: 'Hyperliquid Execution',
+    status: 'planned',
+    quarter: 'Oct 2026',
+    description: 'Direct perpetuals execution panel. Place, modify, and cancel orders on Hyperliquid L1 from within the Whale terminal with institutional-grade slippage and position controls.',
+    x: C5, y: 60,
+  },
   {
     id: 'darkpool',
     title: 'Dark Pool Orderbook',
     status: 'planned',
     quarter: 'Oct 2026',
     description: 'Private institutional orderbook using the compiled ZK Order Matching circuit. Makers and takers cross price without revealing order size or price. Beta access for Whale tier members only.',
-    x: C5, y: 60,
+    x: C5, y: 200,
   },
   {
     id: 'aml',
     title: 'AML Compliance Oracle',
     status: 'planned',
-    quarter: 'Oct 2026',
-    description: 'Automated AML screening for all wallet-to-wallet transfers above €1,000. Merkle-proof against OFAC sanction list. Travel Rule proof generated in <2s and stored on-chain for auditors.',
-    x: C5, y: 200,
-  },
-  {
-    id: 'whaletoken',
-    title: 'Whale Token Launch',
-    status: 'planned',
     quarter: 'Nov 2026',
-    description: 'Native utility token for Whale Network. Used for membership fees, governance voting weight, and staking rewards. Fair launch on Base network with vesting schedule for early members.',
+    description: 'Automated AML screening for all wallet-to-wallet transfers above €1,000. Merkle-proof against OFAC sanction list. Travel Rule proof generated in <2s and stored on-chain for auditors.',
     x: C5, y: 340,
   },
   {
     id: 'mobileapp',
-    title: 'Mobile App (iOS + Android)',
+    title: 'Native Mobile App',
     status: 'planned',
     quarter: 'Nov 2026',
     description: 'Native iOS and Android app wrapping the Whale terminal. Biometric wallet signing, push notifications for whale alerts, Whale Chat, and Studio Provenance QR scanning from the camera.',
@@ -235,33 +235,35 @@ const EDGES: RoadmapEdge[] = [
   { from: 'railway',     to: 'whalechat' },
   // P2 → P3
   { from: 'siwe',        to: 'zksandbox' },
-  { from: 'vip',         to: 'studio' },
-  { from: 'terminal',    to: 'studio' },
+  { from: 'vip',         to: 'enclave' },
+  { from: 'terminal',    to: 'enclave' },
   { from: 'whalechat',   to: 'circuits' },
+  { from: 'terminal',    to: 'passportqr' },
   // P3 → P4
-  { from: 'zksandbox',   to: 'stealth-transfers' },
-  { from: 'circuits',    to: 'hyperliquid' },
-  { from: 'studio',      to: 'alerts' },
-  { from: 'passportqr',  to: 'aztectestnet' },
+  { from: 'zksandbox',   to: 'aztectestnet' },
+  { from: 'circuits',    to: 'aztectestnet' },
+  { from: 'enclave',     to: 'governance' },
+  { from: 'passportqr',  to: 'stealth-transfers' },
   // P4 → P5
-  { from: 'stealth-transfers', to: 'darkpool' },
-  { from: 'hyperliquid', to: 'darkpool' },
-  { from: 'alerts',      to: 'aml' },
-  { from: 'aztectestnet',to: 'whaletoken' },
-  { from: 'aztectestnet',to: 'mobileapp' },
+  { from: 'aztectestnet',     to: 'hyperliquid' },
+  { from: 'governance',       to: 'hyperliquid' },
+  { from: 'stealth-transfers',to: 'darkpool' },
+  { from: 'alerts',           to: 'aml' },
   // P5 → P6
+  { from: 'hyperliquid', to: 'mainnet' },
   { from: 'darkpool',    to: 'mainnet' },
   { from: 'aml',         to: 'mainnet' },
-  { from: 'whaletoken',  to: 'dao' },
+  { from: 'hyperliquid', to: 'dao' },
   { from: 'mobileapp',   to: 'dao' },
   { from: 'aml',         to: 'mica' },
 ];
 
-const STATUS_CONFIG = {
+const STATUS_CONFIG: Record<string, { label: string; dot: string; text: string; border: string }> = {
   live:     { label: 'Completed',  dot: 'bg-black',       text: 'text-black',       border: 'border-black' },
   building: { label: 'Building',   dot: 'bg-black/40',    text: 'text-black/60',    border: 'border-black/40' },
   planned:  { label: 'Planned',    dot: 'bg-black/15',    text: 'text-black/35',    border: 'border-black/15' },
 };
+const DEFAULT_STATUS_CFG = STATUS_CONFIG.planned;
 
 const NODE_W = 200;
 const NODE_H = 88;
@@ -422,7 +424,7 @@ function RoadmapCanvas() {
 
           {/* Nodes */}
           {NODES.map(node => {
-            const cfg = STATUS_CONFIG[node.status];
+            const cfg = STATUS_CONFIG[node.status] ?? DEFAULT_STATUS_CFG;
             const isSelected = selected?.id === node.id;
             return (
               <div
