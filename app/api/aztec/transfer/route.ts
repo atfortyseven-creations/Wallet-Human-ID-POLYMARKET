@@ -243,6 +243,11 @@ export async function POST(req: NextRequest) {
           fallbackToModeB = true;
         }
       }
+      try {
+        await wallet.stop();
+      } catch (e) {
+        console.error('Failed to stop wallet', e);
+      }
     } catch (setupErr: any) {
       console.warn(`[Aztec Transfer] ⚠️ EmbeddedWallet or Node error (${setupErr.message}). Falling back to Mode B DB ledger.`);
       fallbackToModeB = true;
@@ -280,9 +285,6 @@ export async function POST(req: NextRequest) {
           };
         } catch { console.warn('[Aztec Transfer] Could not fetch node info.'); }
       }
-    } finally {
-      await wallet.stop();
-    }
     }
 
     // ── Atomic DB Ledger Write (Serializable — anti double-spend) ───────────

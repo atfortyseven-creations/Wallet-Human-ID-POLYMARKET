@@ -274,6 +274,11 @@ export async function POST(req: NextRequest) {
           fallbackToModeB = true;
         }
       }
+      try {
+        await wallet.stop();
+      } catch (e) {
+        console.error('Failed to stop wallet', e);
+      }
     } catch (setupErr: any) {
       console.warn(`[Aztec Airdrop] ⚠️ EmbeddedWallet or Node error (${setupErr.message}). Falling back to Mode B DB ledger.`);
       fallbackToModeB = true;
@@ -315,9 +320,6 @@ export async function POST(req: NextRequest) {
             console.warn('[Aztec Airdrop] Could not fetch node info for metadata.');
         }
       }
-    } finally {
-      await wallet.stop();
-    }
     } // end else (Mode A: on-chain)
 
     // ── Record in DB (ATOMIC — Serializable to prevent double-airdrop race condition) ──
