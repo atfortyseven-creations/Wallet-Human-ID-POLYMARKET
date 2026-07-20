@@ -1403,6 +1403,34 @@ export function MobileLanding() {
         >
           Aztec · ZK-Native · Sovereign
         </motion.p>
+
+        {/* ── ANDROID/iOS RECOVERY BANNER ─────────────────────────────────────
+            Shows when user returns from their wallet app but wagmi reconnection
+            hasn't fired yet. This is the PRIMARY recovery path for Android Chrome
+            after a deep-link to MetaMask/Trust/Rainbow. */}
+        {(showManualReconnect || showFallbackBtn) && !isActuallySigning && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="mt-6 w-full max-w-sm mx-auto"
+          >
+            <button
+              type="button"
+              onClick={() => {
+                setSigningError(null);
+                signingInProgressRef.current = false;
+                forceFullReconnect();
+              }}
+              className="w-full flex items-center justify-center gap-3 h-14 bg-emerald-500 text-white rounded-2xl text-[13px] font-black tracking-wide active:scale-[0.97] transition-transform shadow-lg shadow-emerald-500/25"
+            >
+              <RefreshCw size={16} strokeWidth={2.5} />
+              {fallbackStatus === 'checking' ? 'Reconnecting…' : 'Already Connected? Tap Here'}
+            </button>
+            <p className="text-center text-[9px] font-mono text-black/30 uppercase tracking-widest mt-2">
+              Tap after approving in your wallet app
+            </p>
+          </motion.div>
+        )}
       </div>
 
       {/* BOTTOM SHEET — Always visible, no scroll required */}
@@ -1410,87 +1438,93 @@ export function MobileLanding() {
         initial={{ opacity: 0, y: 32 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 w-full bg-white rounded-t-[32px] shadow-[0_-12px_40px_rgba(0,0,0,0.07)] border-t border-black/5 flex flex-col px-6 pt-6 pb-10"
-        style={{ paddingBottom: 'max(2.5rem, env(safe-area-inset-bottom))' }}
+        className="relative z-10 w-full bg-white rounded-t-[32px] shadow-[0_-12px_40px_rgba(0,0,0,0.07)] border-t border-black/5 flex flex-col px-6 pt-6"
+        style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom, 24px))' }}
       >
         {/* Pull handle */}
-        <div className="w-10 h-1 bg-black/10 rounded-full mx-auto mb-6" />
+        <div className="w-10 h-1 bg-black/10 rounded-full mx-auto mb-5" />
 
-        <h2 className="text-[18px] font-black tracking-tight text-black mb-5 text-center">
+        <h2 className="text-[18px] font-black tracking-tight text-black mb-4 text-center">
           Connect to Whale Network
         </h2>
 
-        <div className="flex flex-col gap-3 w-full max-w-sm mx-auto">
-          {/* Connect Wallet — primary CTA */}
+        <div className="flex flex-col gap-2.5 w-full max-w-sm mx-auto">
+
+          {/* ── PRIMARY: Connect Wallet (WalletConnect / Injected) ────────── */}
           <button
             type="button"
             onClick={() => {
+              // Clear disconnect guard FIRST (synchronous, before any async)
               try { sessionStorage.removeItem('__disconnected__'); } catch {}
               try { localStorage.removeItem('__disconnected__'); } catch {}
               try { localStorage.setItem('system_pending_wakeup', '1'); } catch {}
-              // Injected dApp browser (MetaMask, Coinbase built-in browser)
+              signingInProgressRef.current = false;
+
+              // If user is inside a dApp browser (MetaMask/Trust/Coinbase built-in browser),
+              // window.ethereum is injected. Use the injected connector directly — no modal needed.
               if (typeof window !== 'undefined' && (window as any).ethereum) {
-                // Use wagmi's injected connector
-                const injected = connectors.find((c: any) =>
-                  c.id === 'injected' || c.type === 'injected' || c.id === 'io.metamask'
+                const injectedConn = connectors.find((c: any) =>
+                  c.id === 'injected' || c.type === 'injected' ||
+                  c.id === 'io.metamask' || c.id === 'com.coinbase.wallet'
                 );
-                if (injected) { connect({ connector: injected }); return; }
+                if (injectedConn) {
+                  connect({ connector: injectedConn });
+                  return;
+                }
               }
-              // Fallback: open Reown AppKit (WalletConnect modal)
-              try { rkOpenModal(); } catch {}
+              // Standard path: open Reown AppKit wallet selector modal.
+              // On iOS Safari, rkOpenModal() MUST be called synchronously here
+              // (directly in the onClick) to bypass Safari's popup blocker.
+              // The AppKit modal shows wallet options (MetaMask, Trust, Rainbow…)
+              // and generates WalletConnect deep-links automatically.
+              try { rkOpenModal(); } catch (e) {
+                console.warn('[MobileLanding] rkOpenModal failed, trying DOM fallback', e);
+                // Final DOM fallback for edge-case AppKit initialization failures
+                try {
+                  const modal = document.querySelector('w3m-modal') as any;
+                  if (modal) { modal.open = true; }
+                } catch {}
+              }
             }}
-            className="group w-full flex items-center gap-4 p-5 rounded-2xl border-2 border-[#5200FF]/30 bg-gradient-to-r from-[#5200FF]/5 to-[#5200FF]/10 hover:from-[#5200FF]/10 hover:to-[#5200FF]/15 hover:border-[#5200FF]/50 active:scale-[0.97] transition-all duration-200 shadow-sm"
+            className="group w-full flex items-center gap-4 p-4 rounded-2xl border-2 border-[#5200FF]/30 bg-gradient-to-r from-[#5200FF]/5 to-[#5200FF]/10 hover:from-[#5200FF]/10 hover:to-[#5200FF]/15 hover:border-[#5200FF]/50 active:scale-[0.97] transition-all duration-150 shadow-sm"
           >
-            <div className="w-12 h-12 rounded-xl bg-[#5200FF] flex items-center justify-center p-2.5 overflow-hidden shrink-0 shadow-lg">
+            <div className="w-11 h-11 rounded-xl bg-[#5200FF] flex items-center justify-center p-2.5 shrink-0 shadow-lg">
               <img src="/official-whale-monochrome.png" alt="Connect" className="w-full h-full object-contain invert" />
             </div>
             <div className="flex-1 text-left">
               <p className="text-[14px] font-black uppercase tracking-tight text-[#050505]">Connect Wallet</p>
               <p className="text-[10px] font-mono text-[#050505]/50 uppercase tracking-widest mt-0.5">
-                MetaMask · Trust · Coinbase · WalletConnect
+                MetaMask · Trust · Rainbow · WalletConnect
               </p>
             </div>
             <ArrowRight size={16} className="text-[#5200FF]/60 group-hover:text-[#5200FF] group-hover:translate-x-1 transition-all shrink-0" />
           </button>
 
+          {/* ── Email sign-in ─────────────────────────────────────────────── */}
           <WalletOption
-            logo="https://www.svgrepo.com/show/475656/google-color.svg"
-            name="Gmail / Google"
-            badge="1-click · No wallet needed"
+            logo="https://www.svgrepo.com/show/513867/email-letter.svg"
+            name="Sign in with Email"
+            badge="One-time code · No wallet needed"
             loading={false}
-            onClick={() => {
-              import('next-auth/react').then(({ signIn }) => {
-                try { sessionStorage.removeItem('__disconnected__'); } catch {}
-                try { localStorage.removeItem('__disconnected__'); } catch {}
-                signIn('google', { callbackUrl: '/terminal' }).catch(console.error);
-              });
-            }}
+            onClick={() => setEmailModalOpen(true)}
             delay={0.05}
           />
 
-          <WalletOption
-            logo="/email-icon.svg"
-            name="Sign in with Email"
-            badge="6-digit OTP code"
-            loading={false}
-            onClick={() => setEmailModalOpen(true)}
-            delay={0.1}
-          />
-
+          {/* ── QR Code Scanner — links desktop session ────────────────────── */}
           <WalletOption
             logo="/system-shots/aztec-logo.png"
             name="Scan QR Code"
-            badge="Link desktop session via camera"
+            badge="Link your desktop session via camera"
             loading={false}
             onClick={() => {
               setScanMode('session-only');
               setShowScanner(true);
             }}
-            delay={0.15}
+            delay={0.1}
           />
         </div>
 
-        <p className="text-center text-[9px] font-mono text-black/20 uppercase tracking-[0.2em] mt-5">
+        <p className="text-center text-[9px] font-mono text-black/20 uppercase tracking-[0.2em] mt-4 mb-1">
           Secured by Aztec · ZK-Native · End-to-End Encrypted
         </p>
       </motion.div>
