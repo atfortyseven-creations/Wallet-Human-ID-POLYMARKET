@@ -530,10 +530,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
 
   // ─── Ringtone Generator ──────────────────────────────────────────────────────
+  const ringtoneCtxRef = useRef<AudioContext | null>(null);
+  
   const startRingtone = useCallback(() => {
     let ctx: AudioContext | null = null;
     try {
       ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      ringtoneCtxRef.current = ctx;
     } catch { return () => {}; }
     let stopped = false;
     const playRing = () => {
@@ -558,6 +561,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     if (ringtoneRef.current) {
       clearInterval(ringtoneRef.current);
       ringtoneRef.current = null;
+    }
+    if (ringtoneCtxRef.current) {
+      ringtoneCtxRef.current.close().catch(() => {});
+      ringtoneCtxRef.current = null;
     }
   }, []);
 
