@@ -1371,116 +1371,150 @@ export function MobileLanding() {
   // CRITICAL: This block must be AFTER all isLinked guards above.
 
   return (
-    <div ref={containerRef} className="w-full bg-white relative font-sans" style={{ color: '#050505', height: '150dvh' }}>
-      
-      <div className="sticky top-0 h-[100dvh] w-full overflow-hidden flex flex-col items-center justify-center">
-        
-        {/* PHASE 1: The Cryptographic Typography */}
-        <motion.div 
-          className="absolute inset-0 flex flex-col items-center justify-center p-6 z-10 pointer-events-none"
-          style={{ scaleY: textScaleY, opacity: textOpacity, filter: textBlur }}
+    <div
+      className="fixed inset-0 w-full bg-white flex flex-col overflow-hidden"
+      style={{ height: '100dvh' }}
+    >
+      {/* Background dot grid */}
+      <div
+        className="absolute inset-0 pointer-events-none z-0"
+        style={{
+          backgroundImage: 'radial-gradient(#0A0A0A 1px, transparent 1px)',
+          backgroundSize: '28px 28px',
+          opacity: 0.025,
+        }}
+      />
+
+      {/* TOP — Wordmark + tagline, always visible */}
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 text-center min-h-0">
+        <motion.h1
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="font-serif text-[clamp(2.8rem,12vw,5rem)] font-normal tracking-tight text-[#0A0A0A] leading-[1.1] select-none"
         >
-           <h1 className="font-serif text-[12vw] font-normal tracking-tight text-[#0A0A0A] leading-[1.1] text-center select-none">
-             YOUR KEYS.<br/>YOUR IDENTITY.
-           </h1>
-           <div className="absolute bottom-16 left-1/2 -translate-x-1/2 text-[10px] font-mono tracking-[0.2em] uppercase text-black/30 flex flex-col items-center gap-3">
-             <span>Swipe up to initialize</span>
-             <div className="w-px h-6 bg-black/20 animate-pulse" />
-           </div>
-        </motion.div>
-
-        {/* PHASE 2: Bottom Sheet Assembly */}
-        <motion.div 
-          className="absolute bottom-0 left-0 right-0 z-20 bg-white rounded-t-[32px] shadow-[0_-20px_60px_rgba(0,0,0,0.08)] border-t border-black/5 flex flex-col px-6 pt-8 pb-12"
-          style={{ y: bottomSheetY, opacity: bottomSheetOpacity }}
+          YOUR KEYS.<br />YOUR IDENTITY.
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+          className="mt-4 text-[10px] font-mono uppercase tracking-[0.25em] text-black/30"
         >
-          <div className="w-12 h-1.5 bg-black/10 rounded-full mx-auto mb-8" />
-          <h2 className="text-[20px] font-black tracking-tight text-black mb-6 text-center">Connect Wallet</h2>
-          
-          <div className="flex flex-col gap-3 w-full max-w-sm mx-auto">
-            <button
-              type="button"
-              onClick={() => {
-                try {
-                  // @ts-ignore
-                  rkOpenModal({ view: 'Connect' });
-                } catch (e) {
-                  try {
-                    const modal = document.querySelector('w3m-modal') as any;
-                    if (modal?.open !== undefined) {
-                      modal.open = true;
-                    } else if (modal) {
-                      modal.setAttribute('open', '');
-                    }
-                  } catch {}
-                  try {
-                    const appkitModal = document.querySelector('appkit-modal') as any;
-                    if (appkitModal) appkitModal.open = true;
-                  } catch {}
-                }
-                try { sessionStorage.removeItem("__disconnected__"); } catch {}
-                try { localStorage.removeItem("__disconnected__"); } catch {}
-                try { localStorage.setItem('system_pending_wakeup', '1'); } catch {}
-              }}
-              className="group w-full flex items-center gap-4 p-5 rounded-2xl border-2 border-[#5200FF]/30 bg-gradient-to-r from-[#5200FF]/5 to-[#5200FF]/10 hover:from-[#5200FF]/10 hover:to-[#5200FF]/15 hover:border-[#5200FF]/50 active:scale-[0.97] transition-all duration-200 shadow-sm"
-            >
-              <div className="w-12 h-12 rounded-xl bg-[#5200FF] flex items-center justify-center p-2.5 overflow-hidden shrink-0 shadow-lg">
-                <img src="/official-whale-monochrome.png" alt="Connect" className="w-full h-full object-contain invert" />
-              </div>
-              <div className="flex-1 text-left">
-                <p className="text-[14px] font-black uppercase tracking-tight text-[#050505]">Connect Wallet</p>
-                <p className="text-[10px] font-mono text-[#050505]/50 uppercase tracking-widest mt-0.5">
-                  MetaMask · Trust · Coinbase
-                </p>
-              </div>
-              <ArrowRight size={16} className="text-[#5200FF]/60 group-hover:text-[#5200FF] group-hover:translate-x-1 transition-all shrink-0" />
-            </button>
-
-            <WalletOption
-              logo="/system-shots/aztec-logo.png"
-              name="Scan QR Code"
-              badge="Link desktop via camera"
-              loading={false}
-              onClick={() => {
-                setScanMode('session-only');
-                setShowScanner(true);
-              }}
-              delay={0.1}
-            />
-
-            <WalletOption
-              logo="https://www.svgrepo.com/show/475656/google-color.svg"
-              name="Gmail / Email"
-              badge="Sign in without a wallet"
-              loading={false}
-              onClick={() => setEmailModalOpen(true)}
-              delay={0.2}
-            />
-          </div>
-        </motion.div>
+          Aztec · ZK-Native · Sovereign
+        </motion.p>
       </div>
+
+      {/* BOTTOM SHEET — Always visible, no scroll required */}
+      <motion.div
+        initial={{ opacity: 0, y: 32 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-10 w-full bg-white rounded-t-[32px] shadow-[0_-12px_40px_rgba(0,0,0,0.07)] border-t border-black/5 flex flex-col px-6 pt-6 pb-10"
+        style={{ paddingBottom: 'max(2.5rem, env(safe-area-inset-bottom))' }}
+      >
+        {/* Pull handle */}
+        <div className="w-10 h-1 bg-black/10 rounded-full mx-auto mb-6" />
+
+        <h2 className="text-[18px] font-black tracking-tight text-black mb-5 text-center">
+          Connect to Whale Network
+        </h2>
+
+        <div className="flex flex-col gap-3 w-full max-w-sm mx-auto">
+          {/* Connect Wallet — primary CTA */}
+          <button
+            type="button"
+            onClick={() => {
+              try { sessionStorage.removeItem('__disconnected__'); } catch {}
+              try { localStorage.removeItem('__disconnected__'); } catch {}
+              try { localStorage.setItem('system_pending_wakeup', '1'); } catch {}
+              // Injected dApp browser (MetaMask, Coinbase built-in browser)
+              if (typeof window !== 'undefined' && (window as any).ethereum) {
+                // Use wagmi's injected connector
+                const injected = connectors.find((c: any) =>
+                  c.id === 'injected' || c.type === 'injected' || c.id === 'io.metamask'
+                );
+                if (injected) { connect({ connector: injected }); return; }
+              }
+              // Fallback: open Reown AppKit (WalletConnect modal)
+              try { rkOpenModal(); } catch {}
+            }}
+            className="group w-full flex items-center gap-4 p-5 rounded-2xl border-2 border-[#5200FF]/30 bg-gradient-to-r from-[#5200FF]/5 to-[#5200FF]/10 hover:from-[#5200FF]/10 hover:to-[#5200FF]/15 hover:border-[#5200FF]/50 active:scale-[0.97] transition-all duration-200 shadow-sm"
+          >
+            <div className="w-12 h-12 rounded-xl bg-[#5200FF] flex items-center justify-center p-2.5 overflow-hidden shrink-0 shadow-lg">
+              <img src="/official-whale-monochrome.png" alt="Connect" className="w-full h-full object-contain invert" />
+            </div>
+            <div className="flex-1 text-left">
+              <p className="text-[14px] font-black uppercase tracking-tight text-[#050505]">Connect Wallet</p>
+              <p className="text-[10px] font-mono text-[#050505]/50 uppercase tracking-widest mt-0.5">
+                MetaMask · Trust · Coinbase · WalletConnect
+              </p>
+            </div>
+            <ArrowRight size={16} className="text-[#5200FF]/60 group-hover:text-[#5200FF] group-hover:translate-x-1 transition-all shrink-0" />
+          </button>
+
+          <WalletOption
+            logo="https://www.svgrepo.com/show/475656/google-color.svg"
+            name="Gmail / Google"
+            badge="1-click · No wallet needed"
+            loading={false}
+            onClick={() => {
+              import('next-auth/react').then(({ signIn }) => {
+                try { sessionStorage.removeItem('__disconnected__'); } catch {}
+                try { localStorage.removeItem('__disconnected__'); } catch {}
+                signIn('google', { callbackUrl: '/terminal' }).catch(console.error);
+              });
+            }}
+            delay={0.05}
+          />
+
+          <WalletOption
+            logo="/email-icon.svg"
+            name="Sign in with Email"
+            badge="6-digit OTP code"
+            loading={false}
+            onClick={() => setEmailModalOpen(true)}
+            delay={0.1}
+          />
+
+          <WalletOption
+            logo="/system-shots/aztec-logo.png"
+            name="Scan QR Code"
+            badge="Link desktop session via camera"
+            loading={false}
+            onClick={() => {
+              setScanMode('session-only');
+              setShowScanner(true);
+            }}
+            delay={0.15}
+          />
+        </div>
+
+        <p className="text-center text-[9px] font-mono text-black/20 uppercase tracking-[0.2em] mt-5">
+          Secured by Aztec · ZK-Native · End-to-End Encrypted
+        </p>
+      </motion.div>
 
       {mounted && typeof document !== 'undefined' && (
         <EmailLoginModal isOpen={emailModalOpen} onClose={() => setEmailModalOpen(false)} />
       )}
 
       {mounted && typeof document !== 'undefined' && (
-      <DynamicUniversalScanModal
-        isOpen={showScanner}
-        onClose={() => setShowScanner(false)}
-        address={effectiveAddress ?? undefined}
-        mode={scanMode}
-        initialScanData={(autoSyncStarted && uuidParam) ? window.location.href : null}
-        onScan={(_result: string) => {
-          const toast = document.createElement('div');
-          toast.className = 'fixed top-6 left-4 right-4 z-[99999] bg-black text-white text-[10px] border border-white/10 font-mono uppercase tracking-[0.3em] px-6 py-5 rounded-2xl shadow-2xl text-center';
-          toast.textContent = scanMode === 'session-only' ? 'Session Handshake Initiated' : 'Scan complete';
-          document.body.appendChild(toast);
-          setTimeout(() => toast.remove(), 3000);
-        }}
-      />
+        <DynamicUniversalScanModal
+          isOpen={showScanner}
+          onClose={() => setShowScanner(false)}
+          address={effectiveAddress ?? undefined}
+          mode={scanMode}
+          initialScanData={(autoSyncStarted && uuidParam) ? window.location.href : null}
+          onScan={(_result: string) => {
+            const t = document.createElement('div');
+            t.className = 'fixed top-6 left-4 right-4 z-[99999] bg-black text-white text-[10px] border border-white/10 font-mono uppercase tracking-[0.3em] px-6 py-5 rounded-2xl shadow-2xl text-center';
+            t.textContent = scanMode === 'session-only' ? 'Session Handshake Initiated' : 'Scan complete';
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 3000);
+          }}
+        />
       )}
-
     </div>
   );
 }

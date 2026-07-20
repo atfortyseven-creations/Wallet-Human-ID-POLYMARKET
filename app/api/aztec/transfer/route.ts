@@ -163,7 +163,7 @@ export async function POST(req: NextRequest) {
     let aztecTxHash : string  = '';
     let explorerUrl : string  = '';
     let onChain     : boolean = false;
-    let blockNumber : number  = Math.floor(Date.now() / 12_000);
+    let blockNumber : number  = 0; // only populated from real node data — NOT from timestamp
     let nodeInfo    : any     = null;
 
     const tokenAddressStr = process.env.AZTEC_TOKEN_CONTRACT_ADDRESS;
@@ -185,9 +185,10 @@ export async function POST(req: NextRequest) {
           const nodeData = await nodeInfoRes.json();
           blockNumber = nodeData?.result?.l2BlockNumber ?? blockNumber;
         }
-      } catch { /* node unreachable — use timestamp-derived block */ }
+      } catch { /* node unreachable */ }
       aztecTxHash = 'offchain-' + crypto.randomBytes(16).toString('hex');
-      explorerUrl = `https://testnet.aztecscan.xyz/blocks/${blockNumber}`;
+      // Only link to a real block if we got one from the node; otherwise link to AztecScan home
+      explorerUrl = blockNumber > 0 ? `https://testnet.aztecscan.xyz/blocks/${blockNumber}` : 'https://testnet.aztecscan.xyz';
     } else {
     // ── MODE A: NATIVE AZTEC TESTNET TRANSFER ────────────────────────────────
     console.log('[Aztec Transfer] Mode A: On-chain transfer via EmbeddedWallet + TokenContract');

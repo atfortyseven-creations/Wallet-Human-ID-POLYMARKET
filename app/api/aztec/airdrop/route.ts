@@ -165,7 +165,7 @@ export async function POST(req: NextRequest) {
     let explorerUrl: string;
     let onChain = false;
     let nodeInfo: any = null;
-    let blockNum: number;
+    let blockNum: number = 0; // only populated from real node data
 
     const tokenAddressStr  = process.env.AZTEC_TOKEN_CONTRACT_ADDRESS;
     const relayerSecretHex = process.env.AZTEC_RELAYER_SECRET_KEY;
@@ -179,7 +179,7 @@ export async function POST(req: NextRequest) {
         console.log('[Aztec Airdrop] Mode B: DB-only ledger with live Aztec node block verification.');
         
         let liveBlockHash = '';
-        let liveBlockNum = Math.floor(Date.now() / 12_000);
+        let liveBlockNum = 0; // only set from real node response, NOT from timestamp
         
         try {
           const nodeUrl = process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
@@ -195,12 +195,12 @@ export async function POST(req: NextRequest) {
             liveBlockHash = nodeData?.result?.l2BlockHash ?? '';
           }
         } catch {
-          console.warn('[Aztec Airdrop] Node unreachable — using timestamp-derived block number.');
+          console.warn('[Aztec Airdrop] Node unreachable — no real block number available.');
         }
         
         aztecTxHash = `aztec-airdrop-${crypto.randomBytes(20).toString('hex')}`;
-        // explorerUrl points to AztecScan blocks list — we link to the block number when we have it
-        explorerUrl  = liveBlockNum
+        // Only link to a real block if we got one from the node
+        explorerUrl  = liveBlockNum > 0
           ? `https://testnet.aztecscan.xyz/blocks/${liveBlockNum}`
           : `https://testnet.aztecscan.xyz`;
         onChain      = false;
