@@ -245,10 +245,11 @@ const nextConfig = {
         // Layer 2: Terser with reserved names — defence-in-depth against any
         //          remaining name collisions in non-concatenated chunks
         if (!dev) {
-            // Disable Module Concatenation (Scope Hoisting) for ALL builds.
-            // Applies to both client and server bundles — SSR TDZ crashes cause
-            // hydration failures that surface as client-side errors.
             config.optimization.concatenateModules = false;
+            
+            // Disable minification entirely to stop mangling variables to 'T', 'j', etc.
+            // This will either fix a Terser/SWC mangling bug OR reveal the exact original variable name in the TDZ crash.
+            config.optimization.minimize = false;
 
             const TerserPlugin = require('terser-webpack-plugin');
             config.optimization.minimizer = [
