@@ -68,6 +68,7 @@ const BOUNDED_PREFIXES = [
   '/connect', '/sign-up', '/login', '/admin', '/clearance',
   '/api-marketplace', '/directory', '/company', '/infrastructure',
   '/forum', '/chat',
+  '/', // Landing page — prevents white zone below footer
 ];
 
 export function ClientLayout({ children }: { children: React.ReactNode }) {
@@ -131,12 +132,10 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   //  Layout mode 
   // DASHBOARD   fixed inset-0 overflow-hidden   (WhaleProShell owns scroll)
   // BOUNDED     fixed inset-0 overflow-hidden   (header + inner scroll box)
-  // LANDING     bounded via exact pathname === '/' — scroll contained in <main>
+  // LANDING     also bounded — prevents white zone below footer
   const isDashboard = pathname.startsWith('/terminal');
   const isLanding = pathname === '/';
-  // Use prefix match for bounded routes. The landing page must NOT be bounded
-  // to allow native body scroll and avoid layout bugs.
-  const isBounded = !isDashboard && !isLanding && BOUNDED_PREFIXES.some(p => pathname.startsWith(p));
+  const isBounded = !isDashboard && BOUNDED_PREFIXES.some(p => pathname === p || (p !== '/' && pathname.startsWith(p)));
 
   const isPublicPath = pathname === '/' || PUBLIC_PREFIXES.some(p => pathname.startsWith(p));
   const content = !isPublicPath ? <LinkedGate>{children}</LinkedGate> : children;
@@ -268,7 +267,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     ? 'fixed inset-0 w-full overflow-hidden flex flex-col bg-transparent z-0'
     : isBounded
       ? 'fixed inset-0 w-full overflow-hidden flex flex-col bg-transparent z-0'
-      : 'min-h-screen w-full relative z-0 flex flex-col bg-transparent';
+      : 'w-full min-h-[100dvh] relative z-0 flex flex-col bg-transparent';
 
   // Inner wrapper (below header)
   const innerClass = isDashboard || isChat
@@ -281,8 +280,9 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
   const mainClass = isDashboard || isChat
     ? 'relative z-10 w-full flex-1 flex flex-col min-h-0 overflow-hidden md:pb-0'
     : isBounded
-      // Scroll is fully contained here — no empty page-level void zones
-      ? `relative z-10 w-full flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain flex flex-col md:pb-0 ${isLanding ? 'bg-white' : 'bg-white dark:bg-[#0a0a0a]'} ${isCenteredPage ? 'items-center justify-center' : ''}`
+      // Scroll is fully contained here — no empty page-level void zones.
+      // Landing page also uses this path so scroll stops exactly at footer.
+      ? `relative z-10 w-full flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-none flex flex-col md:pb-0 bg-white ${isCenteredPage ? 'items-center justify-center' : ''}`
       : `relative z-10 w-full flex-1 flex flex-col overscroll-none md:pb-0`;
 
   const showInstitutionalHeader =
@@ -332,7 +332,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
                     height: '100%',
                     minHeight: '100%',
                     scrollbarWidth: 'thin',
-                    overscrollBehavior: 'contain',
+                    overscrollBehavior: 'none',
                     touchAction: 'pan-y',
                   } : undefined}
                 >

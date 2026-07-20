@@ -513,66 +513,7 @@ export default function ConnectPage() {
   }, []);
 
   const isVerified = mounted && isLinked;
-
-  // --- Scroll-Driven Cinematic Sequence ---
-  // We now show the cinematic intro on all devices (mobile + desktop)
-  // to preserve the premium aesthetic.
-  const [phase, setPhase] = useState<"intro" | "login">("intro");
-  const introScrollRef = useRef<HTMLDivElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Manual scroll progress using useMotionValue — more reliable than useScroll
-  // inside a `position: fixed` container because useScroll can fail to detect
-  // the scroll root in some browser/Framer versions.
-  const rawProgress = useRef(0);
-  const [scrollPct, setScrollPct] = useState(0);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const onScroll = () => {
-      const max = el.scrollHeight - el.clientHeight;
-      if (max <= 0) return;
-      const pct = el.scrollTop / max;
-      rawProgress.current = pct;
-      setScrollPct(pct);
-      if (pct >= 0.96 && phase === 'intro') {
-        setPhase('login');
-        // Force scroll reset to top so the login page doesn't inherit a massive scroll offset
-        setTimeout(() => {
-          if (el) el.scrollTop = 0;
-        }, 0);
-      }
-    };
-    el.addEventListener('scroll', onScroll, { passive: true });
-    return () => el.removeEventListener('scroll', onScroll);
-  }, [phase]);
-
-  // Derive animation values from scrollPct
-  const effectiveScrollPct = phase === 'login' ? 1 : scrollPct;
-
-  // 1. AUTHENTICATE title: fades out in first 15% of scroll
-  const introOpacityVal = effectiveScrollPct < 0.15 ? 1 - (effectiveScrollPct / 0.15) : 0;
-  const introScaleVal   = 1 - (Math.min(effectiveScrollPct, 0.15) / 0.15) * 0.12;
-  const introBlurVal    = `blur(${Math.min(effectiveScrollPct / 0.15, 1) * 16}px)`;
-
-  // 2. Manifesto: fades in 15–25%, visible 25–75%, fades out 75–90%
-  let manifestoOpacityVal = 0;
-  if (effectiveScrollPct >= 0.15 && effectiveScrollPct < 0.25) {
-    manifestoOpacityVal = (effectiveScrollPct - 0.15) / 0.10;
-  } else if (effectiveScrollPct >= 0.25 && effectiveScrollPct < 0.75) {
-    manifestoOpacityVal = 1;
-  } else if (effectiveScrollPct >= 0.75 && effectiveScrollPct < 0.90) {
-    manifestoOpacityVal = 1 - (effectiveScrollPct - 0.75) / 0.15;
-  }
-  const manifestoYVal = effectiveScrollPct < 0.25
-    ? 60 - ((effectiveScrollPct - 0.15) / 0.10) * 60
-    : effectiveScrollPct > 0.75
-    ? -((effectiveScrollPct - 0.75) / 0.15) * 60
-    : 0;
-
-  // Legacy motion value refs (kept for API compatibility — not used for transforms now)
-  const introScrollProgress = useRef({ on: (_event: string, _callback: (v: number) => void) => () => {} }).current;
+  // Cinematic scroll intro has been removed. Auth is now immediate to match mobile gate.
 
 
 
@@ -880,128 +821,46 @@ export default function ConnectPage() {
 
   return (
     <div
-      ref={containerRef}
       className="fixed inset-0 w-full bg-white z-50 overflow-y-auto overflow-x-hidden"
-      style={{ WebkitOverflowScrolling: 'touch' }}
+      style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'none' }}
     >
-      {/* 
-        CRITICAL FIX FOR MOBILE SCROLL: 
-        A transparent placeholder ensures the container actually has a large scroll height
-        even if child elements are absolutely positioned or sticky. Only active during intro.
-      */}
-      {phase === "intro" && (
-        <div style={{ height: isMobile ? '300vh' : '600vh', width: '100%', position: 'absolute', top: 0, left: 0, zIndex: 1, pointerEvents: 'none' }} />
-      )}
-      {/* Film grain noise overlay */}
-      <motion.div
-        className="fixed inset-0 pointer-events-none z-[60]"
-        animate={{ opacity: phase === "intro" ? 0.02 : 0.04 }}
-        transition={{ duration: 1.5 }}
+      {/* Subtle dot grid background */}
+      <div
+        className="fixed inset-0 pointer-events-none z-[0]"
         style={{
-          backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/7/76/1k_Dissolve_Noise_Texture.png")',
-          backgroundRepeat: 'repeat',
-          mixBlendMode: 'multiply'
+          backgroundImage: "radial-gradient(#0A0A0A 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+          opacity: 0.03,
         }}
       />
 
-      <div className="w-full relative z-10">
+      <div className="w-full relative z-10 min-h-full flex flex-col items-center pt-16 pb-16 px-4 gap-12">
+        {/* Header Title */}
+        <motion.h1
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="font-serif text-[clamp(2.5rem,5vw,3.5rem)] font-normal tracking-tight text-[#0A0A0A] leading-none select-none text-center"
+        >
+          WHALE NETWORK
+        </motion.h1>
 
-        {/* PHASE 1: The Cryptographic Typography — Scroll-Driven */}
-        <AnimatePresence>
-          {phase === "intro" && (
-            <motion.div
-              ref={introScrollRef}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ scale: 2, opacity: 0, filter: "blur(40px)" }}
-              transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
-              className="relative z-20"
-              style={{ minHeight: isMobile ? '300vh' : '600vh', width: '100%' }}
-            >
-              {/* Sticky viewport that holds the text during scroll */}
-              <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden pointer-events-none">
-                
-                {/* 1. AUTHENTICATE TITLE */}
-                <motion.div
-                  style={{
-                    scale: introScaleVal,
-                    opacity: introOpacityVal,
-                    filter: introBlurVal,
-                  }}
-                  className="absolute inset-0 flex flex-col items-center justify-center"
-                >
-                  <div className="flex flex-col items-center text-center gap-6">
-                    <h1 className="font-serif text-[15vw] md:text-[10vw] font-normal tracking-tight text-[#0A0A0A] leading-none select-none">
-                      AUTHENTICATE
-                    </h1>
-                    <p className="font-mono text-[9px] md:text-[11px] uppercase tracking-[0.4em] text-[#0A0A0A]/40 max-w-[80vw] md:max-w-none text-balance leading-relaxed">
-                      WITH HUMANITY LEDGER TO JOIN WHALE NETWORK
-                    </p>
-                  </div>
-                  <div className="absolute bottom-12 left-1/2 -translate-x-1/2 text-[9px] md:text-[10px] font-mono tracking-[0.3em] uppercase text-black/30 flex flex-col items-center gap-3">
-                    <span className="whitespace-nowrap">Scroll down</span>
-                    <motion.div
-                      className="w-px bg-black/20"
-                      animate={{ height: ['12px', '40px', '12px'] }}
-                      transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-                    />
-                  </div>
-                </motion.div>
+        {/* Phase: Login */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+          className="flex flex-col items-center w-full max-w-[900px] gap-8"
+        >
+          {/* Side-by-side: Login Card + QD Marketing Panel */}
+          <div className="flex flex-col lg:flex-row items-stretch justify-center gap-5 w-full">
+            {renderLoginCard()}
+            {!isMobile && renderQDPanel()}
+          </div>
 
-                {/* 2. MANIFESTO PRESENTATION */}
-                <motion.div
-                  style={{ opacity: manifestoOpacityVal, y: manifestoYVal }}
-                  className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 max-w-[800px] mx-auto pointer-events-none"
-                >
-                  <h2 className="font-serif text-[8vw] md:text-5xl tracking-tight text-[#0A0A0A] mb-10 select-none">
-                    What is Whale Network?
-                  </h2>
-                  <div className="flex flex-col gap-6 text-[11px] md:text-[13px] font-mono text-[#0A0A0A]/60 leading-[2] text-justify tracking-wide md:px-12">
-                    <p>
-                      Whale Network is the first decentralized, zero-knowledge financial observation layer natively built on the Aztec protocol. It was designed to solve the ultimate contradiction in modern capital flows: the necessity to monitor systemic liquidity without subjecting participants to the pervasive surveillance of public ledgers.
-                    </p>
-                    <p>
-                      In conventional Web3 architecture, every state transition is broadcast to the world, permanently stripping away your financial privacy. By integrating directly with Humanity Ledger, Whale Network intercepts and processes high-frequency on-chain events—sovereign accumulation, dark pool transitions, and institutional liquidations—and safely relays them into a cryptographically shielded execution environment (PXE).
-                    </p>
-                    <p>
-                      Through Client-Side zk-SNARKs and recursive Plonk verification, every query, alert, and portfolio calculation you execute is mathematically isolated. The network is structurally incapable of identifying you or tracking your balance. Here, privacy is not a feature you opt into; it is the absolute, uncompromising baseline of the protocol.
-                    </p>
-                  </div>
-                  <div className="absolute bottom-12 left-1/2 -translate-x-1/2 text-[9px] md:text-[10px] font-mono tracking-[0.3em] uppercase text-black/30 flex flex-col items-center gap-3">
-                    <span className="whitespace-nowrap">Continue scrolling to initialize</span>
-                    <motion.div
-                      className="w-px bg-black/20"
-                      animate={{ height: ['12px', '40px', '12px'] }}
-                      transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-                    />
-                  </div>
-                </motion.div>
-
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* PHASE 2: The Login Assembly */}
-        <AnimatePresence>
-          {phase === "login" && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, filter: "blur(15px)" }}
-              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-              className="relative z-10 w-full min-h-screen flex flex-col items-center justify-center gap-8 px-4 py-12"
-            >
-              {/* Side-by-side: Login Card + QD Marketing Panel */}
-              <div className="flex flex-col lg:flex-row items-stretch justify-center gap-5 w-full max-w-[900px]">
-                {renderLoginCard()}
-                {!isMobile && renderQDPanel()}
-              </div>
-
-              {/* Bottom section */}
-              {!isMobile && renderBottomSection()}
-            </motion.div>
-          )}
-        </AnimatePresence>
+          {/* Bottom section */}
+          {!isMobile && renderBottomSection()}
+        </motion.div>
 
         {/* Mobile QR Scanner modal */}
         {isMobile && mounted && (

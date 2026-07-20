@@ -94,10 +94,43 @@ function LandingNav() {
   const { nuclearDisconnect } = useSystemSignOut();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    // The landing page uses a bounded scroll container (the <main> tag),
+    // so we must listen to it rather than window. We find the scrollable parent
+    // by traversing up from the document. As a fallback we also listen to window.
+    const checkScroll = (el: Element | Window) => {
+      const scrollTop = el === window
+        ? (document.documentElement.scrollTop || document.body.scrollTop)
+        : (el as Element).scrollTop;
+      setScrolled(scrollTop > 24);
+    };
+
+    // Find the closest scrollable ancestor by querying all overflow-y-auto elements
+    const findScrollParent = (): Element | Window => {
+      const candidates = document.querySelectorAll('main, [data-scroll-container]');
+      for (const el of Array.from(candidates)) {
+        if (el.scrollHeight > el.clientHeight) return el;
+      }
+      return window;
+    };
+
+    let scrollParent: Element | Window = window;
+    // Delay slightly to allow the DOM to mount
+    const setupTimer = setTimeout(() => {
+      scrollParent = findScrollParent();
+      scrollParent.addEventListener('scroll', () => checkScroll(scrollParent), { passive: true });
+    }, 100);
+
+    // Also listen to window as fallback
+    const onWindowScroll = () => setScrolled(window.scrollY > 24);
+    window.addEventListener('scroll', onWindowScroll, { passive: true });
+
+    return () => {
+      clearTimeout(setupTimer);
+      scrollParent?.removeEventListener?.('scroll', () => checkScroll(scrollParent));
+      window.removeEventListener('scroll', onWindowScroll);
+    };
   }, []);
+
 
   useEffect(() => {
     try {
@@ -255,7 +288,7 @@ function LandingNav() {
                   Email Access
                 </button>
                 <Link
-                  href="/portfolio"
+                  href="/connect"
                   id="connect-wallet-nav-btn"
                   className="px-4 py-2 bg-black text-white rounded-full text-[12.5px] font-semibold hover:bg-black/80 transition-all hover:-translate-y-px"
                 >
@@ -320,7 +353,7 @@ function LandingNav() {
                     Email Access
                   </button>
                   <Link
-                    href="/portfolio"
+                    href="/connect"
                     id="mobile-wallet-btn"
                     onClick={() => setMobileOpen(false)}
                     className="w-full text-center py-3.5 bg-black rounded-2xl text-[14px] font-semibold text-white hover:bg-black/80 transition-colors"
@@ -964,7 +997,7 @@ function AztecCTASection() {
           className="flex flex-col sm:flex-row items-center gap-4 mt-4"
         >
           <Link
-            href="/portfolio"
+            href="/connect"
             id="cta-launch-btn"
             className="group relative w-full sm:w-auto px-10 py-4 bg-black text-white rounded-full text-[14px] font-bold overflow-hidden transition-all hover:scale-105 shadow-[0_4px_24px_rgba(0,0,0,0.12)]"
           >

@@ -26,6 +26,7 @@ import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAppKit } from "@reown/appkit/react";
 import { useAccount, useSignMessage } from "wagmi";
+import { usePathname } from "next/navigation";
 import {
   reconnect as wagmiReconnect,
   watchAccount,
@@ -75,6 +76,7 @@ export function MobileImmersiveGate() {
   const { signMessageAsync } = useSignMessage();
   const { open: rkOpenModal } = useAppKit();
   const signingRef = useRef(false);
+  const pathname = usePathname();
 
   // ── Mount + OAuth-return detection ────────────────────────────────────────
   useEffect(() => {
@@ -328,16 +330,20 @@ export function MobileImmersiveGate() {
   };
 
   const handleConnectWallet = () => {
-    try {
-      sessionStorage.removeItem("__disconnected__");
-    } catch {}
-    try {
-      localStorage.removeItem("__disconnected__");
-    } catch {}
-    try {
-      localStorage.setItem("system_pending_wakeup", "1");
-    } catch {}
-    rkOpenModal();
+    // If we are already on /connect, open the AppKit modal directly (full wallet selector).
+    // If we are on the landing page or anywhere else, navigate to /connect.
+    // This avoids a redirect loop while ensuring the wallet modal opens reliably.
+    const isOnConnectPage = typeof window !== 'undefined' && window.location.pathname === '/connect';
+    if (isOnConnectPage) {
+      try { sessionStorage.removeItem("__disconnected__"); } catch {}
+      try { localStorage.removeItem("__disconnected__"); } catch {}
+      try { localStorage.setItem("system_pending_wakeup", "1"); } catch {}
+      rkOpenModal();
+    } else {
+      if (typeof window !== 'undefined') {
+        window.location.href = '/connect';
+      }
+    }
   };
 
   // ── Full render ───────────────────────────────────────────────────────────
