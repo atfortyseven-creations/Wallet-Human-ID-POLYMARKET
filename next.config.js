@@ -112,7 +112,7 @@ const nextConfig = {
             './**/node_modules/next/dist/compiled/**',
         ]
     },
-    productionBrowserSourceMaps: true,
+
     transpilePackages: [
         'three',
         '@react-three/fiber',
@@ -232,17 +232,31 @@ const nextConfig = {
             config.infrastructureLogging.level = 'error';
         }
 
-        // ─── SAFARI TDZ FIX ───────────────────────────────────────────────
-        // The SWC minifier (used by Next.js by default) generates internal
-        // variable names like `_`, `__`, `___` for mangled identifiers.
-        // In Safari/WebKit, when two modules share a chunk and one is loaded
-        // before the other has finished initializing, accessing `_` throws:
-        //   "Cannot access '_' before initialization" (TDZ error)
-        // Fix: use Terser instead and explicitly reserve `_` and `__` from
-        // being used as mangled variable names.
-        if (!dev) {
-            // Reverted Terser and concatenateModules hacks. 
-            // The root cause is transpilePackages re-compiling wagmi/viem with SWC.
+        // ─── DEFINITIVE TDZ FIX ──────────────────────────────────────────────
+        // Next.js 15 uses the SWC minifier which aggressively mangles variable
+        // names to single chars (_  __  ___). When ESM modules inside the same
+        // webpack chunk are evaluated in an order where a `const _ = ...` hasn't
+        // finished executing yet, any reference to `_` in another module throws:
+        //   "Cannot access '_' before initialization"  (Temporal Dead Zone)
+        //
+        // Root fix: replace SWC minifier with Terser and tell it to NEVER use
+        // `_`, `__`, `___`, `$`, `$$` as mangled identifiers.
+        if (!dev && !isServer) {
+            const TerserPlugin = require('terser-webpack-plugin');
+            config.optimization.minimizer = [
+                new TerserPlugin({
+                    terserOptions: {
+                        mangle: {
+                            reserved: ['_', '__', '___', '$', '$$'],
+                        },
+                        compress: {
+                            passes: 2,
+                        },
+                    },
+                    // Use the parallel workers but cap at 4 to avoid OOM on Railway
+                    parallel: 4,
+                }),
+            ];
         }
 
 
