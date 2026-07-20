@@ -101,18 +101,18 @@ const NODES: RoadmapNode[] = [
   // ─── PHASE 3: ZK Circuits, Studio & Security (COMPLETED) ───────────────
   {
     id: 'zksandbox',
-    title: 'ZK Circuit Sandbox',
+    title: 'Noir ABI Encoding Layer',
     status: 'live',
     quarter: 'Completed',
-    description: 'In-browser Noir circuit compiler with real Nargo backend on Railway. Full 4-stage pipeline: AST Security Linter → ACIR Compile → Witness → UltraHonk Prove & Verify with anti-replay nullifiers.',
+    description: 'Provides native TypeScript support for Noir ABI Encoding and decoding. Enables the frontend to serialize parameters into ACIR-compatible Witness Maps (Field, Integer, Array, Struct) before delegating proofs to the Aztec RPC.',
     x: C3, y: 60,
   },
   {
     id: 'circuits',
-    title: 'Sovereign ZK Circuits',
+    title: 'ZK-Anchored Identity',
     status: 'live',
     quarter: 'Completed',
-    description: 'Production circuit library: Dark Pool Order Matching (Pedersen commitments), AML Travel Rule (Merkle OFAC tree), Omnichain MPT State Proof (L1→L2), and Recursive SNARK aggregation.',
+    description: 'User identity is anchored to the Aztec Network using deterministic nullifiers instead of raw wallet addresses. Replaces naive signature checks with session-based identity derived from a secure handshake (SIWE + EIP-712).',
     x: C3, y: 200,
   },
   {
@@ -138,7 +138,7 @@ const NODES: RoadmapNode[] = [
     title: 'Aztec V5 Testnet Live',
     status: 'live',
     quarter: 'Jul 20, 2026',
-    description: 'Full migration to Aztec V5 Alpha Testnet RPC (v5.testnet.rpc.aztec-labs.com). QD token transfers anchored to real Aztec blocks. Sponsored FPC (0x1969…) integrated for gas-free txs. DB ledger serializable transactions with double-spend protection.',
+    description: 'Connected to Aztec Labs public RPC for testnet proof delegation and state reading. Full migration to Aztec V5 Alpha Testnet RPC. QD token transfers anchored to real Aztec blocks.',
     x: C4, y: 60,
   },
   {

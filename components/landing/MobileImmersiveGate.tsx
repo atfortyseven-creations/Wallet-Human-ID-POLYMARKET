@@ -341,21 +341,16 @@ export function MobileImmersiveGate() {
     try { localStorage.setItem("system_pending_wakeup", "1"); } catch {}
     signingRef.current = false;
 
-    // If inside a dApp browser (MetaMask/Trust/Coinbase in-app browser),
-    // window.ethereum is injected — no modal needed, connect directly.
-    if (typeof window !== "undefined" && (window as any).ethereum) {
-      // wagmi connect will be handled by the watchAccount listener above
-      try { rkOpenModal(); } catch (e) { console.warn('[MobileGate] rkOpenModal err:', e); }
-      return;
-    }
-
     // Standard path: open Reown AppKit wallet selector (WalletConnect QR + deep links).
+    // We REMOVED the window.ethereum interception here because on mobile Safari,
+    // extensions like 1Password inject window.ethereum and cause silent failures
+    // where the button appears to do nothing. AppKit handles injected wallets natively.
     try {
       rkOpenModal();
     } catch (e) {
       console.warn("[MobileGate] rkOpenModal failed, DOM fallback:", e);
       try {
-        const modal = document.querySelector("w3m-modal") as any;
+        const modal = (document.querySelector("appkit-modal") || document.querySelector("w3m-modal")) as any;
         if (modal) { modal.open = true; }
       } catch {}
     }

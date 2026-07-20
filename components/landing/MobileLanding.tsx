@@ -1455,28 +1455,17 @@ export function MobileLanding() {
               try { localStorage.setItem('system_pending_wakeup', '1'); } catch {}
               signingInProgressRef.current = false;
 
-              // If user is inside a dApp browser (MetaMask/Trust/Coinbase built-in browser),
-              // window.ethereum is injected. Use the injected connector directly — no modal needed.
-              if (typeof window !== 'undefined' && (window as any).ethereum) {
-                const injectedConn = connectors.find((c: any) =>
-                  c.id === 'injected' || c.type === 'injected' ||
-                  c.id === 'io.metamask' || c.id === 'com.coinbase.wallet'
-                );
-                if (injectedConn) {
-                  connect({ connector: injectedConn });
-                  return;
-                }
-              }
               // Standard path: open Reown AppKit wallet selector modal.
-              // On iOS Safari, rkOpenModal() MUST be called synchronously here
-              // (directly in the onClick) to bypass Safari's popup blocker.
-              // The AppKit modal shows wallet options (MetaMask, Trust, Rainbow…)
-              // and generates WalletConnect deep-links automatically.
-              try { rkOpenModal(); } catch (e) {
+              // We REMOVED the window.ethereum interception here because on mobile Safari,
+              // extensions like 1Password inject window.ethereum and cause silent failures
+              // where the button appears to do nothing. AppKit handles injected wallets natively.
+              try { 
+                rkOpenModal(); 
+              } catch (e) {
                 console.warn('[MobileLanding] rkOpenModal failed, trying DOM fallback', e);
-                // Final DOM fallback for edge-case AppKit initialization failures
+                // Final DOM fallback for AppKit initialization failures (v5 uses appkit-modal, v4 used w3m-modal)
                 try {
-                  const modal = document.querySelector('w3m-modal') as any;
+                  const modal = (document.querySelector('appkit-modal') || document.querySelector('w3m-modal')) as any;
                   if (modal) { modal.open = true; }
                 } catch {}
               }
