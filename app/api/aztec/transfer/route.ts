@@ -170,9 +170,9 @@ export async function POST(req: NextRequest) {
     const pxeUrl          = process.env.AZTEC_PXE_URL   || 'https://v5.testnet.rpc.aztec-labs.com';
     const nodeUrl         = process.env.AZTEC_NODE_URL  || 'https://v5.testnet.rpc.aztec-labs.com';
 
-    if (!tokenAddressStr || tokenAddressStr === 'PENDING_DEPLOY') {
-      // ── MODE B: Token contract not yet deployed — DB-only ledger ────────────
-      console.log('[Aztec Transfer] Mode B: Token contract not deployed. Using DB-only ledger.');
+    if (!tokenAddressStr || tokenAddressStr === 'PENDING_DEPLOY' || pxeUrl === 'https://v5.testnet.rpc.aztec-labs.com') {
+      // ── MODE B: Token contract not yet deployed OR missing external PXE — DB-only ledger ────────────
+      console.log('[Aztec Transfer] Mode B: Token contract not deployed or missing external PXE. Using DB-only ledger.');
       // Anchor to live Aztec block for verifiability
       try {
         const nodeInfoRes = await fetch(`${nodeUrl}/node-info`, {

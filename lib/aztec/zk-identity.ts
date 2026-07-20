@@ -55,8 +55,8 @@ export function deriveIdentityHash(address: string): string {
  * @returns           Canonical Aztec address (0x + 64 hex chars)
  */
 export function deriveAztecAddress(evmAddress: string): string {
-  if (!evmAddress || !evmAddress.startsWith('0x')) {
-    throw new TypeError('[ZK] deriveAztecAddress: evmAddress must start with 0x');
+  if (!evmAddress) {
+    throw new TypeError('[ZK] deriveAztecAddress: address cannot be empty');
   }
   const normalized = evmAddress.toLowerCase().trim();
   const round1 = crypto.createHash('sha256').update(`aztec-schnorr:${normalized}`).digest('hex');
