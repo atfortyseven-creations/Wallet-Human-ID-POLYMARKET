@@ -325,19 +325,6 @@ const nextConfig = {
     ],
 
     experimental: {
-        // [TDZ FIX] wagmi and viem are EXCLUDED from optimizePackageImports.
-        // optimizePackageImports re-exports only used symbols via synthetic
-        // barrel files — this creates circular re-export chains that webpack's
-        // scope hoisting turns into TDZ crashes ('T','j','_','Ce' before init).
-        optimizePackageImports: [
-            'lucide-react', 
-            'framer-motion', 
-            'three', 
-            '@react-three/fiber',
-            '@react-three/drei',
-            '@tanstack/react-query',
-            'ethers'
-        ],
         serverActions: {
             // [QUANTUM HARDENING] Block massive payloads at the framework level
             bodySizeLimit: '500kb'
