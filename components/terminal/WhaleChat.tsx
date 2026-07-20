@@ -2384,8 +2384,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       </div>
 
 
-      {/* Hidden audio element for audio-only calls */}
-      <audio ref={remoteAudioRef} autoPlay playsInline style={{ display: 'none' }} />
+      {/* Hidden audio element for audio-only calls - iOS WebKit Safe (no display:none) */}
+      <audio ref={remoteAudioRef} autoPlay playsInline style={{ position: 'absolute', width: 0, height: 0, opacity: 0, pointerEvents: 'none' }} />
 
       {/* ── Incoming Call Banner (state: ringing) ───────────────────────────── */}
       {callState === 'ringing' && (
