@@ -233,27 +233,33 @@ const nextConfig = {
         }
 
         // ─── DEFINITIVE TDZ FIX ──────────────────────────────────────────────
-        // Next.js 15 uses the SWC minifier which aggressively mangles variable
-        // names to single chars (_  __  ___). When ESM modules inside the same
-        // webpack chunk are evaluated in an order where a `const _ = ...` hasn't
-        // finished executing yet, any reference to `_` in another module throws:
-        //   "Cannot access '_' before initialization"  (Temporal Dead Zone)
+        // Root cause: webpack's Module Concatenation plugin (Scope Hoisting)
+        // merges multiple ESM modules into a single scope for performance.
+        // When circular dependencies exist (e.g. wagmi → viem → wagmi chains),
+        // the merged scope evaluates modules in an order where a `const j = ...`
+        // in module B is accessed by module A before B has initialized — TDZ crash.
+        // The minifier just picks whatever letter is free: `I`, `Ce`, `_`, `j`...
+        // the letter changes every build but the crash is always the same bug.
         //
-        // Root fix: replace SWC minifier with Terser and tell it to NEVER use
-        // `_`, `__`, `___`, `$`, `$$` as mangled identifiers.
+        // Layer 1: disable scope hoisting — breaks the circular-dep TDZ mechanism
+        // Layer 2: Terser with reserved names — defence-in-depth against any
+        //          remaining name collisions in non-concatenated chunks
         if (!dev && !isServer) {
+            // Disable Module Concatenation (Scope Hoisting) — this is the real fix
+            config.optimization.concatenateModules = false;
+
             const TerserPlugin = require('terser-webpack-plugin');
             config.optimization.minimizer = [
                 new TerserPlugin({
                     terserOptions: {
                         mangle: {
-                            reserved: ['_', '__', '___', '$', '$$'],
+                            // Reserve common single-char names as extra safety net
+                            reserved: ['_', '__', '___', '$', '$$', 'Ce', 'I', 'j'],
                         },
                         compress: {
                             passes: 2,
                         },
                     },
-                    // Use the parallel workers but cap at 4 to avoid OOM on Railway
                     parallel: 4,
                 }),
             ];
@@ -261,6 +267,7 @@ const nextConfig = {
 
 
         // ─────────────────────────────────────────────────────────────────────
+
 
         return config;
     },
