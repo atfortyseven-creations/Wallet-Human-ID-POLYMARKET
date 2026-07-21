@@ -24,11 +24,11 @@ export const L1_CHAIN_ID         = 11155111; // Sepolia
 export const ROLLUP_VERSION      = 2787991301;
 export const ROLLUP_ADDRESS      = '0xfe6061806cac748085904a010d2d9e33b8031741';
 
-// SponsoredFPC — canonical address from docs.aztec.network/networks
-// Only the confirmed canonical address is listed. Do NOT add speculative/mocked addresses.
+// SponsoredFPC — canonical address from docs.aztec.network/networks (V5.0.1 official, July 21 2026)
+// Source: https://docs.aztec.network/developers/getting_started_on_testnet
 export const PRIMARY_FPC_ADDRESS =
   process.env.SPONSORED_FPC_ADDRESS ||
-  '0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7';
+  '0x1441491b59934ec64f8c98f17c91f23c01ca2a45dbb35caf123146ec76f9970c';
 
 // Canonical alias for backward compatibility and test imports
 export const SPONSORED_FPC_ADDRESS = PRIMARY_FPC_ADDRESS;

@@ -172,10 +172,10 @@ export async function POST(req: NextRequest) {
     const nodeUrl = process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
     const pxeUrl  = process.env.AZTEC_PXE_URL  || nodeUrl;
 
-    if (!tokenAddressStr || tokenAddressStr === 'PENDING_DEPLOY' || !relayerSecretHex || pxeUrl === 'https://v5.testnet.rpc.aztec-labs.com') {
-        // ── MODE B: Node-verified DB airdrop (token contract not yet deployed or no external PXE) ──
+    if (!tokenAddressStr || tokenAddressStr === 'PENDING_DEPLOY' || !relayerSecretHex) {
+        // ── MODE B: Node-verified DB airdrop (token contract not yet deployed or no relayer key) ──
         // The airdrop is REAL — it is anchored to a genuine Aztec testnet block hash.
-        // The token contract deployment is a separate step that comes later.
+        // Once AZTEC_TOKEN_CONTRACT_ADDRESS and AZTEC_RELAYER_SECRET_KEY are set, Mode A activates.
         console.log('[Aztec Airdrop] Mode B: DB-only ledger with live Aztec node block verification.');
         
         let liveBlockHash = '';
