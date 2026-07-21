@@ -13,6 +13,7 @@ import dynamic from "next/dynamic";
 import { EmailLoginModal } from "@/components/auth/EmailLoginModal";
 import { useSystemSignOut } from "@/hooks/useSystemSignOut";
 import { SystemFooter } from "./SystemFooter";
+import { useAppKit } from "@reown/appkit/react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export interface ImmersiveManifestoLandingProps {
@@ -92,6 +93,7 @@ function LandingNav() {
   const [connectedAddress, setConnectedAddress] = useState<string | null>(null);
   const [emailModalOpen, setEmailModalOpen] = useState(false);
   const { nuclearDisconnect } = useSystemSignOut();
+  const { open: rkOpenModal } = useAppKit();
 
   useEffect(() => {
     // The landing page uses a bounded scroll container (the <main> tag),
@@ -383,14 +385,16 @@ function LandingNav() {
                       >
                         Sign in with Email
                       </button>
-                      <Link
-                        href="/connect"
-                        id="mobile-wallet-btn"
-                        onClick={() => setMobileOpen(false)}
+                      <button
+                        id="mobile-wallet-nav-btn"
+                        onClick={() => {
+                          setMobileOpen(false);
+                          try { rkOpenModal(); } catch(e) { console.warn('rkOpenModal failed', e); }
+                        }}
                         className="flex-1 text-center py-3.5 bg-black rounded-2xl text-[12.5px] font-semibold text-white hover:bg-black/80 transition-colors"
                       >
                         Connect Wallet
-                      </Link>
+                      </button>
                     </div>
                   )}
                 </div>
@@ -404,6 +408,32 @@ function LandingNav() {
         isOpen={emailModalOpen}
         onClose={() => setEmailModalOpen(false)}
       />
+
+      {/* ── Fixed mobile bottom CTA bar ───────────────────────────────────────
+          Always visible on mobile without needing to open the hamburger menu.
+          Only shown when NOT connected. Hidden on md+ screens. */}
+      {!connectedAddress && (
+        <div className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl border-t border-black/[0.07] px-4 py-3 flex gap-2.5"
+          style={{ paddingBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))' }}
+        >
+          <button
+            id="landing-mobile-email-cta"
+            onClick={() => setEmailModalOpen(true)}
+            className="flex-1 py-3 border border-black/15 rounded-2xl text-[13px] font-bold text-black hover:bg-zinc-50 transition-colors text-center"
+          >
+            Sign in with Email
+          </button>
+          <button
+            id="landing-mobile-wallet-cta"
+            onClick={() => {
+              try { rkOpenModal(); } catch(e) { console.warn('rkOpenModal failed', e); }
+            }}
+            className="flex-1 py-3 bg-black rounded-2xl text-[13px] font-bold text-white hover:bg-black/80 transition-colors text-center"
+          >
+            Connect Wallet
+          </button>
+        </div>
+      )}
     </>
   );
 }
