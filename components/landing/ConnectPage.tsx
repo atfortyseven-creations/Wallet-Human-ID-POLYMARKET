@@ -863,7 +863,7 @@ export default function ConnectPage() {
 
   return (
     <div
-      className="fixed inset-0 w-full h-[100dvh] bg-white flex flex-col overflow-y-auto overflow-x-hidden z-50"
+      className="fixed inset-0 w-full h-full bg-white flex flex-col overflow-y-auto overflow-x-hidden z-50"
     >
       {/* Force body background to white to prevent black overscroll area */}
       <style>{`body { background-color: white !important; }`}</style>

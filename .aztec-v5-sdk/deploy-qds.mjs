@@ -9,10 +9,8 @@ import { createAztecNodeClient } from '@aztec/aztec.js/node';
 import { EmbeddedWallet } from '@aztec/wallets/embedded';
 import { Fr } from '@aztec/foundation/curves/bn254';
 import { AztecAddress } from '@aztec/stdlib/aztec-address';
-import { NoFeePaymentMethod } from '@aztec/aztec.js/fee';
 import { TokenContract } from '@aztec/noir-contracts.js/Token';
 import { SponsoredFPCContractArtifact } from '@aztec/noir-contracts.js/SponsoredFPC';
-import { SponsoredFeePaymentMethod } from '@aztec/aztec.js/fee';
 
 const NODE_URL   = 'https://v5.testnet.rpc.aztec-labs.com/';
 const SECRET_HEX = process.env.AZTEC_RELAYER_SECRET_KEY?.trim();
@@ -59,10 +57,10 @@ async function main() {
 
   // ── 5. Construir y enviar la Tx ────────
   process.stdout.write('  [4/5] Enviando deploy (prueba ZK V5)  ');
-  const paymentMethod = new NoFeePaymentMethod();
   
-  const receipt = await TokenContract.deploy(wallet, addr, 'Quantum Dots', 'QDs', 18n)
-    .send({ universalDeploy: true, from: addr, fee: { paymentMethod } }).wait();
+  const deployTx = await TokenContract.deploy(wallet, addr, 'Quantum Dots', 'QDs', 18n)
+    .send({ universalDeploy: true, from: addr });
+  const receipt = await deployTx.wait();
   
   process.stdout.write('\n         ¡minada en testnet!\n');
   console.log('');
