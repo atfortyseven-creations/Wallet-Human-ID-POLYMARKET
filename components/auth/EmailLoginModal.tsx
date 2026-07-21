@@ -421,6 +421,7 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
                 </span>
               </div>
             </div>
+            </div>
           </motion.div>
         </>
       )}
