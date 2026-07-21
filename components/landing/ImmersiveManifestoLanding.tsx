@@ -291,7 +291,7 @@ function LandingNav() {
                   onClick={() => setEmailModalOpen(true)}
                   className="px-4 py-2 border border-black/10 rounded-full text-[12.5px] font-semibold text-black hover:bg-zinc-50 transition-colors"
                 >
-                  Email Access
+                  Sign in with Email
                 </button>
                 <Link
                   href="/connect"
@@ -348,24 +348,51 @@ function LandingNav() {
                   </Link>
                 ))}
                 <div className="flex flex-col gap-2.5 mt-5 pt-5 border-t border-black/[0.06]">
-                  <button
-                    id="mobile-email-btn"
-                    onClick={() => {
-                      setMobileOpen(false);
-                      setEmailModalOpen(true);
-                    }}
-                    className="w-full py-3.5 border border-black/10 rounded-2xl text-[14px] font-semibold text-black hover:bg-zinc-50 transition-colors"
-                  >
-                    Email Access
-                  </button>
-                  <Link
-                    href="/connect"
-                    id="mobile-wallet-btn"
-                    onClick={() => setMobileOpen(false)}
-                    className="w-full text-center py-3.5 bg-black rounded-2xl text-[14px] font-semibold text-white hover:bg-black/80 transition-colors"
-                  >
-                    Connect Wallet
-                  </Link>
+                  {connectedAddress ? (
+                    <>
+                      <span className="flex items-center justify-center gap-1.5 py-2 text-[12px] font-mono text-black/55 mb-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                        {fmtAddr(connectedAddress)}
+                      </span>
+                      <Link
+                        href="/terminal"
+                        onClick={() => setMobileOpen(false)}
+                        className="w-full text-center py-3.5 bg-black rounded-2xl text-[14px] font-semibold text-white hover:bg-black/80 transition-colors"
+                      >
+                        Dashboard →
+                      </Link>
+                      <button
+                        onClick={() => {
+                          setMobileOpen(false);
+                          nuclearDisconnect();
+                        }}
+                        className="w-full py-3.5 border border-black/10 rounded-2xl text-[14px] font-semibold text-red-500 hover:bg-red-50 transition-colors"
+                      >
+                        Sign out
+                      </button>
+                    </>
+                  ) : (
+                    <div className="flex flex-row items-center gap-2.5 w-full">
+                      <button
+                        id="mobile-email-btn"
+                        onClick={() => {
+                          setMobileOpen(false);
+                          setEmailModalOpen(true);
+                        }}
+                        className="flex-1 py-3.5 border border-black/10 rounded-2xl text-[12.5px] font-semibold text-black hover:bg-zinc-50 transition-colors text-center"
+                      >
+                        Sign in with Email
+                      </button>
+                      <Link
+                        href="/connect"
+                        id="mobile-wallet-btn"
+                        onClick={() => setMobileOpen(false)}
+                        className="flex-1 text-center py-3.5 bg-black rounded-2xl text-[12.5px] font-semibold text-white hover:bg-black/80 transition-colors"
+                      >
+                        Connect Wallet
+                      </Link>
+                    </div>
+                  )}
                 </div>
               </div>
             </motion.div>
@@ -455,29 +482,22 @@ function HeroSection() {
         <motion.div
           variants={fadeUp}
           custom={0.15}
-          className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full"
+          className="flex flex-col sm:flex-row items-center gap-3"
         >
           <Link
             href="/portfolio"
             id="hero-launch-btn"
-            className="w-full sm:w-auto px-8 py-4 bg-black text-white rounded-full text-[14px] font-semibold hover:bg-black/80 transition-all shadow-[0_6px_28px_rgba(0,0,0,0.2)] hover:shadow-[0_10px_40px_rgba(0,0,0,0.25)] hover:-translate-y-0.5 text-center"
+            className="w-full sm:w-auto px-8 py-4 bg-black text-white rounded-full text-[14px] font-semibold hover:bg-black/80 transition-all shadow-[0_6px_28px_rgba(0,0,0,0.2)] hover:shadow-[0_10px_40px_rgba(0,0,0,0.25)] hover:-translate-y-0.5"
           >
-            Enter Hub →
+            Launch Application →
           </Link>
           <Link
-            href="/connect"
-            id="hero-connect-btn"
-            className="w-full sm:w-auto px-8 py-4 bg-black text-white rounded-full text-[14px] font-semibold hover:bg-black/80 transition-all shadow-[0_6px_28px_rgba(0,0,0,0.2)] hover:-translate-y-0.5 text-center"
+            href="/developers/api-docs"
+            id="hero-docs-btn"
+            className="w-full sm:w-auto px-8 py-4 bg-white border border-black/10 text-black rounded-full text-[14px] font-semibold hover:bg-zinc-50 hover:border-black/20 transition-all"
           >
-            Connect Wallet
+            Read Documentation
           </Link>
-          <button
-            id="hero-email-btn"
-            onClick={() => window.dispatchEvent(new Event('open-email-modal'))}
-            className="w-full sm:w-auto px-8 py-4 bg-white border border-black/10 text-black rounded-full text-[14px] font-semibold hover:bg-zinc-50 hover:border-black/20 transition-all text-center"
-          >
-            Sign in with Email
-          </button>
         </motion.div>
       </motion.div>
 
