@@ -131,6 +131,12 @@ function LandingNav() {
     };
   }, []);
 
+  useEffect(() => {
+    const handleOpenEmail = () => setEmailModalOpen(true);
+    window.addEventListener('open-email-modal', handleOpenEmail);
+    return () => window.removeEventListener('open-email-modal', handleOpenEmail);
+  }, []);
+
 
   useEffect(() => {
     try {
@@ -449,22 +455,29 @@ function HeroSection() {
         <motion.div
           variants={fadeUp}
           custom={0.15}
-          className="flex flex-col sm:flex-row items-center gap-3"
+          className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full"
         >
           <Link
             href="/portfolio"
             id="hero-launch-btn"
-            className="w-full sm:w-auto px-8 py-4 bg-black text-white rounded-full text-[14px] font-semibold hover:bg-black/80 transition-all shadow-[0_6px_28px_rgba(0,0,0,0.2)] hover:shadow-[0_10px_40px_rgba(0,0,0,0.25)] hover:-translate-y-0.5"
+            className="w-full sm:w-auto px-8 py-4 bg-black text-white rounded-full text-[14px] font-semibold hover:bg-black/80 transition-all shadow-[0_6px_28px_rgba(0,0,0,0.2)] hover:shadow-[0_10px_40px_rgba(0,0,0,0.25)] hover:-translate-y-0.5 text-center"
           >
-            Launch Application →
+            Enter Hub →
           </Link>
           <Link
-            href="/developers/api-docs"
-            id="hero-docs-btn"
-            className="w-full sm:w-auto px-8 py-4 bg-white border border-black/10 text-black rounded-full text-[14px] font-semibold hover:bg-zinc-50 hover:border-black/20 transition-all"
+            href="/connect"
+            id="hero-connect-btn"
+            className="w-full sm:w-auto px-8 py-4 bg-black text-white rounded-full text-[14px] font-semibold hover:bg-black/80 transition-all shadow-[0_6px_28px_rgba(0,0,0,0.2)] hover:-translate-y-0.5 text-center"
           >
-            Read Documentation
+            Connect Wallet
           </Link>
+          <button
+            id="hero-email-btn"
+            onClick={() => window.dispatchEvent(new Event('open-email-modal'))}
+            className="w-full sm:w-auto px-8 py-4 bg-white border border-black/10 text-black rounded-full text-[14px] font-semibold hover:bg-zinc-50 hover:border-black/20 transition-all text-center"
+          >
+            Sign in with Email
+          </button>
         </motion.div>
       </motion.div>
 
