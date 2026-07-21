@@ -61,14 +61,19 @@ async function main() {
   // ── 4. Deploy QDs TokenContract ────────────────────────────
   // Usar SponsoredFeePaymentMethod con la dirección canónica
   const fpcAddress = AztecAddress.fromStringUnsafe(SPONSORED_FPC);
-  
   // Registrar el artifact del FPC en el PXE para poder simular la tx
   try {
-    await wallet.registerContract({ artifact: SponsoredFPCContractArtifact, instance: { address: fpcAddress } });
-  } catch (e) {}
-  try {
-    await wallet.registerContract({ artifact: FPCContractArtifact, instance: { address: fpcAddress } });
-  } catch (e) {}
+    const fpcInstance = await node.getContractInstance(fpcAddress);
+    await wallet.registerContract({ artifact: SponsoredFPCContractArtifact, instance: fpcInstance });
+  } catch (e) {
+    console.log(dim('    (Aviso: node.getContractInstance falló, intentando PXE...)'));
+    try {
+      const fpcInstancePxe = await wallet.getContractInstance(fpcAddress);
+      await wallet.registerContract({ artifact: SponsoredFPCContractArtifact, instance: fpcInstancePxe });
+    } catch (err2) {
+      console.log(dim('    (Aviso: No se pudo obtener la instancia del FPC. La simulación puede fallar si la clase difiere.)'));
+    }
+  }
 
   // ── 5. Construir y enviar la Tx (con Sponsored FPC) ────────
   process.stdout.write('  [4/5] Enviando deploy (prueba ZK V5)  ');
