@@ -64,9 +64,10 @@ type Phase = "gate" | "landing";
 
 // ─── Component ───────────────────────────────────────────────────────────────
 export function MobileImmersiveGate() {
-  const [phase, setPhase] = useState<Phase>(() =>
-    hasValidSession() ? "landing" : "gate"
-  );
+  // IMPORTANT: Always start as 'gate' — never call hasValidSession() in the
+  // lazy initializer because it reads document.cookie which doesn't exist on
+  // the server, causing a hydration mismatch that blanks the page on iOS.
+  const [phase, setPhase] = useState<Phase>("gate");
   const [mounted, setMounted] = useState(false);
   const [emailModalOpen, setEmailModalOpen] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -74,7 +75,7 @@ export function MobileImmersiveGate() {
 
   const { address: wagmiAddress, isConnected: wagmiConnected, connector } = useAccount();
   const { signMessageAsync } = useSignMessage();
-  const { open: rkOpenModal, close: rkCloseModal } = useAppKit();
+  const { open: rkOpenModal } = useAppKit();
   const signingRef = useRef(false);
   const pathname = usePathname();
 
@@ -336,31 +337,13 @@ export function MobileImmersiveGate() {
     try { localStorage.setItem("system_pending_wakeup", "1"); } catch {}
     signingRef.current = false;
 
-    // To completely bypass iOS Safari popup blockers, we must dispatch a click
-    // directly to the native Reown AppKit button element, which natively handles
-    // the synchronous window context for WalletConnect deep links.
+    // Call rkOpenModal directly — this is the correct Reown AppKit API.
+    // The old shadow DOM click hack was blocked by pointerEvents:none on the
+    // wrapper div, so it silently failed every time on iOS.
     try {
-      const appkitBtn = document.querySelector('appkit-button') || document.querySelector('w3m-button');
-      if (appkitBtn && appkitBtn.shadowRoot) {
-        const nativeBtn = appkitBtn.shadowRoot.querySelector('button');
-        if (nativeBtn) {
-          nativeBtn.click();
-          return; // Successfully dispatched
-        }
-      }
+      rkOpenModal();
     } catch (e) {
-      console.warn("[MobileGate] Native shadow DOM click failed:", e);
-    }
-
-    // Fallback if the shadow DOM button wasn't found (e.g. not mounted globally)
-    try {
-      (rkOpenModal as any)({ view: 'Connect' });
-    } catch {
-      try {
-        rkOpenModal();
-      } catch (e) {
-        console.warn("[MobileGate] rkOpenModal failed:", e);
-      }
+      console.warn("[MobileGate] rkOpenModal failed:", e);
     }
   };
 
@@ -516,11 +499,7 @@ export function MobileImmersiveGate() {
                         Sign in with Email
                       </button>
 
-                      {/* Hidden native AppKit button to capture shadow DOM clicks (must not be display:none) */}
-                      <div aria-hidden="true" style={{ position: 'absolute', opacity: 0, width: '1px', height: '1px', pointerEvents: 'none', overflow: 'hidden' }}>
-                        {/* @ts-ignore - Web component */}
-                        <appkit-button />
-                      </div>
+
 
                       <p className="text-center text-[10px] font-mono text-[#0A0A0A]/25 uppercase tracking-widest pt-1">
                         Secured by Aztec · ZK-Native

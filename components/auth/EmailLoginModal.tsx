@@ -180,6 +180,9 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
 
   if (!mounted) return null;
 
+  // Use a portal so the modal always renders on top of everything,
+  // including fixed/stacked parents. Guarded by `mounted` above so this
+  // only runs client-side — safe for SSR + iOS Safari.
   const modalContent = (
     <AnimatePresence>
       {isOpen && (
@@ -427,8 +430,5 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
     </AnimatePresence>
   );
 
-  if (typeof document !== "undefined") {
-    return createPortal(modalContent, document.body);
-  }
-  return null;
+  return createPortal(modalContent, document.body);
 }
