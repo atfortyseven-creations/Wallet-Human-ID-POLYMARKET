@@ -9,6 +9,7 @@ import { createAztecNodeClient } from '@aztec/aztec.js/node';
 import { EmbeddedWallet } from '@aztec/wallets/embedded';
 import { Fr } from '@aztec/foundation/curves/bn254';
 import { AztecAddress } from '@aztec/stdlib/aztec-address';
+import { NoFeePaymentMethod } from '@aztec/aztec.js/fee';
 import { TokenContract } from '@aztec/noir-contracts.js/Token';
 import { SponsoredFPCContractArtifact } from '@aztec/noir-contracts.js/SponsoredFPC';
 import { SponsoredFeePaymentMethod } from '@aztec/aztec.js/fee';
@@ -56,41 +57,12 @@ async function main() {
   const addr = accountManager.address;
   console.log(ok(addr.toString().slice(0, 22) + '…'));
 
-  // ── 4. Registrar FPC con instancia REAL de la testnet ──────
-  // node.getContract() devuelve la instancia real con el classId correcto (0x2015e1c6...)
-  // Usamos esa instancia + nuestro artifact local para que el PXE pueda simular la tx.
-  const fpcAddress = AztecAddress.fromStringUnsafe(SPONSORED_FPC);
-  process.stdout.write('  [3b] Registrando FPC en PXE (instancia de testnet)... ');
-  try {
-    const fpcInstance = await node.getContract(fpcAddress);
-    if (!fpcInstance) {
-      throw new Error('getContract devolvió null/undefined');
-    }
-
-    // Pass the instance directly without destructuring or converting
-    await wallet.registerContract({
-      artifact: SponsoredFPCContractArtifact,
-      instance: fpcInstance
-    });
-    console.log(ok(`registrado (classId: ${fpcInstance.currentContractClassId?.toString().slice(0,18) || fpcInstance.originalContractClassId?.toString().slice(0,18)}…)`));
-  } catch (regErr) {
-    console.log(dim(`  (aviso registro FPC: ${regErr.message.slice(0, 80)})`));
-    // Fallback: intentar con registerContractClass si está disponible
-    try {
-      const walletMethods = Object.getOwnPropertyNames(Object.getPrototypeOf(wallet));
-      if (walletMethods.includes('registerContractClass')) {
-        await wallet.registerContractClass(SponsoredFPCContractArtifact);
-        console.log(dim('  (registrado como class únicamente)'));
-      }
-    } catch {}
-  }
-
-  // ── 5. Construir y enviar la Tx (con Sponsored FPC) ────────
+  // ── 5. Construir y enviar la Tx ────────
   process.stdout.write('  [4/5] Enviando deploy (prueba ZK V5)  ');
-  const paymentMethod = new SponsoredFeePaymentMethod(fpcAddress, addr);
+  const paymentMethod = new NoFeePaymentMethod();
   
   const receipt = await TokenContract.deploy(wallet, addr, 'Quantum Dots', 'QDs', 18n)
-    .send({ universalDeploy: true, from: addr, fee: { paymentMethod } });
+    .send({ universalDeploy: true, from: addr, fee: { paymentMethod } }).wait();
   
   process.stdout.write('\n         ¡minada en testnet!\n');
   console.log('');
