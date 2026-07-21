@@ -663,13 +663,13 @@ export default function ConnectPage() {
         ) : isMobile ? (
           /* STATE: Mobile — wallet list */
           <div className="flex flex-col gap-3 flex-1">
-            <span className="text-center text-[10px] font-mono uppercase tracking-[0.2em] text-black/35">QR synchronized</span>
+            <span className="text-center text-[10px] font-mono uppercase tracking-[0.2em] text-black/35">Mobile Connection</span>
             {renderWeb2Logins()}
-            <div className="h-px w-full bg-[#F0F0F0] my-1" />
-            {MOBILE_WALLETS.map((w) => (
-              <WalletButton key={w.id} logo={w.logo} name={w.name} badge={w.badge} onClick={() => handleMobileWallet(w.id)} loading={isPending && pendingId === w.id} delay={w.delay} extraIcon={<ExternalLink size={13} />} />
-            ))}
-            <button onClick={() => setShowMobileScanner(true)} className="w-full flex items-center justify-center gap-3 py-4 mt-1 rounded-xl border border-[#E8E8E8] bg-white font-black uppercase tracking-[0.2em] text-[10px] text-[#0A0A0A] active:scale-[0.98] transition-all hover:bg-black/5">
+            <div className="h-px w-full bg-[#F0F0F0] my-2" />
+            <div className="flex w-full items-center justify-center py-2">
+              <appkit-button />
+            </div>
+            <button onClick={() => setShowMobileScanner(true)} className="w-full flex items-center justify-center gap-3 py-4 mt-2 rounded-xl border border-[#E8E8E8] bg-white font-black uppercase tracking-[0.2em] text-[10px] text-[#0A0A0A] active:scale-[0.98] transition-all hover:bg-black/5">
               <ScanLine size={13} /> Scan QR Code
             </button>
           </div>

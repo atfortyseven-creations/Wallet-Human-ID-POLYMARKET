@@ -61,25 +61,9 @@ function RealDeviceRouter() {
       return;
     }
 
-    if (isMobileDevice) {
-      // Mobile users → send them to the landing page (/)
-      // which has the full manifesto AND the auth buttons in the nav.
-      const redirect = urlParams.get('redirect') || urlParams.get('next');
-      const dest = redirect ? `/?redirect=${encodeURIComponent(redirect)}` : '/';
-      setMobileRedirectUrl(dest);
-      setView('mobile');
-    } else {
-      setView('desktop');
-    }
+    setView('desktop'); // Render ConnectPage for everyone, no mobile redirect
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // Redirect mobile users back to / immediately
-  useEffect(() => {
-    if (view === 'mobile') {
-      window.location.replace(mobileRedirectUrl);
-    }
-  }, [view, mobileRedirectUrl]);
 
   if (view === 'loading' || view === 'mobile') {
     return (

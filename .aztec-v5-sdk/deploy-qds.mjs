@@ -15,7 +15,7 @@ import { SponsoredFeePaymentMethod } from '@aztec/aztec.js/fee';
 
 const NODE_URL   = 'https://v5.testnet.rpc.aztec-labs.com/';
 const SECRET_HEX = process.env.AZTEC_RELAYER_SECRET_KEY?.trim();
-const SPONSORED_FPC = '0x0628377e98bca5913dc86765ad0758f7b7aa83eac49079c6fba125807b393fe1';
+const SPONSORED_FPC = '0x1441491b59934ec64f8c98f17c91f23c01ca2a45dbb35caf123146ec76f9970c'; // V5.0.1 canonical
 
 // ── Helpers de formato ──────────────────────────────────────
 const dim  = s => `\x1b[2m${s}\x1b[0m`;
