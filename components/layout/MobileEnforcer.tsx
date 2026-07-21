@@ -178,6 +178,7 @@ export function MobileEnforcer({ children }: { children: React.ReactNode }) {
         //     pages because they are designed exclusively for the PC terminal.
         //     They will stay on MobileSystemLanding as intended.
         const DIRECT_ACCESS_ROUTES = [
+            '/',
             '/news',
             '/connect',
             '/login',

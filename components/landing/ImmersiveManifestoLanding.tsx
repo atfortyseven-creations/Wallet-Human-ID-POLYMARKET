@@ -349,7 +349,7 @@ function LandingNav() {
                     {l.label}
                   </Link>
                 ))}
-                <div className="flex flex-col gap-2.5 mt-5 pt-5 border-t border-black/[0.06]">
+                    <div className="flex flex-col gap-2.5 mt-5 pt-5 border-t border-black/[0.06]">
                   {connectedAddress ? (
                     <>
                       <span className="flex items-center justify-center gap-1.5 py-2 text-[12px] font-mono text-black/55 mb-2">
@@ -385,15 +385,16 @@ function LandingNav() {
                       >
                         Sign in with Email
                       </button>
-                      <div className="relative flex-1 h-[46px]">
-                        <div className="absolute inset-0 flex items-center justify-center bg-black rounded-2xl text-[12.5px] font-semibold text-white pointer-events-none">
-                          Connect Wallet
-                        </div>
-                        <div className="relative z-10 w-full h-full opacity-[0.001] overflow-hidden flex items-center justify-center" style={{ transform: 'scale(3)' }}>
-                          {/* @ts-ignore */}
-                          <appkit-button />
-                        </div>
-                      </div>
+                      <button
+                        id="mobile-connect-wallet-nav-btn"
+                        onClick={() => {
+                          setMobileOpen(false);
+                          try { rkOpenModal(); } catch {}
+                        }}
+                        className="flex-1 py-3.5 bg-black rounded-2xl text-[12.5px] font-semibold text-white hover:bg-black/80 transition-colors text-center active:scale-[0.97]"
+                      >
+                        Connect Wallet
+                      </button>
                     </div>
                   )}
                 </div>
@@ -422,15 +423,15 @@ function LandingNav() {
           >
             Sign in with Email
           </button>
-          <div className="relative flex-1 h-[44px]">
-            <div className="absolute inset-0 flex items-center justify-center bg-black rounded-2xl text-[13px] font-bold text-white pointer-events-none">
-              Connect Wallet
-            </div>
-            <div className="relative z-10 w-full h-full opacity-[0.001] overflow-hidden flex items-center justify-center" style={{ transform: 'scale(3)' }}>
-              {/* @ts-ignore */}
-              <appkit-button />
-            </div>
-          </div>
+          <button
+            id="landing-mobile-connect-cta"
+            onClick={() => {
+              try { rkOpenModal(); } catch {}
+            }}
+            className="flex-1 py-3 bg-black rounded-2xl text-[13px] font-bold text-white hover:bg-black/80 transition-colors text-center active:scale-[0.97]"
+          >
+            Connect Wallet
+          </button>
         </div>
       )}
     </>

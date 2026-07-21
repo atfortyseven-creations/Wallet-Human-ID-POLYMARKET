@@ -666,9 +666,13 @@ export default function ConnectPage() {
             <span className="text-center text-[10px] font-mono uppercase tracking-[0.2em] text-black/35">Mobile Connection</span>
             {renderWeb2Logins()}
             <div className="h-px w-full bg-[#F0F0F0] my-2" />
-            <div className="flex w-full items-center justify-center py-2">
-              <appkit-button />
-            </div>
+            <WalletButton
+              logo="https://raw.githubusercontent.com/WalletConnect/walletconnect-assets/master/Logo/Blue%20(Default)/Logo.svg"
+              name="Connect Web3 Wallet"
+              badge="Select from 300+ wallets"
+              onClick={() => openAppKitSafe()}
+              delay={0.35}
+            />
             <button onClick={() => setShowMobileScanner(true)} className="w-full flex items-center justify-center gap-3 py-4 mt-2 rounded-xl border border-[#E8E8E8] bg-white font-black uppercase tracking-[0.2em] text-[10px] text-[#0A0A0A] active:scale-[0.98] transition-all hover:bg-black/5">
               <ScanLine size={13} /> Scan QR Code
             </button>
