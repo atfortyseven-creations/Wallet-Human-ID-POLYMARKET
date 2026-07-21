@@ -59,29 +59,15 @@ async function main() {
   // ── 4. Registrar FPC con instancia REAL de la testnet ──────
   // node.getContract() devuelve la instancia real con el classId correcto (0x2015e1c6...)
   // Usamos esa instancia + nuestro artifact local para que el PXE pueda simular la tx.
-    const fpcAddress = AztecAddress.fromStringUnsafe(SPONSORED_FPC);
+  const fpcAddress = AztecAddress.fromStringUnsafe(SPONSORED_FPC);
   process.stdout.write('  [3b] Registrando FPC en PXE (instancia de testnet)... ');
   try {
-    const rawFpcInstance = await node.getContract(fpcAddress);
-    if (!rawFpcInstance) {
+    const fpcInstance = await node.getContract(fpcAddress);
+    if (!fpcInstance) {
       throw new Error('getContract devolvió null/undefined');
     }
-    
-    // Convert raw JSON object from node to a proper class instance using stdlib
-    const stdlibContract = await import('@aztec/stdlib/contract').catch(() => ({}));
-    let fpcInstance = rawFpcInstance;
-    
-    if (stdlibContract.contractInstanceWithAddressFromPlainObject) {
-       fpcInstance = stdlibContract.contractInstanceWithAddressFromPlainObject(rawFpcInstance);
-    } else {
-       // Manual reconstruction fallback just in case
-       fpcInstance.salt = Fr.fromHexString(rawFpcInstance.salt);
-       fpcInstance.deployer = AztecAddress.fromString(rawFpcInstance.deployer);
-       fpcInstance.originalContractClassId = Fr.fromHexString(rawFpcInstance.originalContractClassId);
-       fpcInstance.initializationHash = Fr.fromHexString(rawFpcInstance.initializationHash);
-    }
 
-    // Usamos la instancia reconstruida
+    // Pass the instance directly without destructuring or converting
     await wallet.registerContract({
       artifact: SponsoredFPCContractArtifact,
       instance: fpcInstance
