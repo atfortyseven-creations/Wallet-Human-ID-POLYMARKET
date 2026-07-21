@@ -66,19 +66,15 @@ async function main() {
     if (!fpcInstance) {
       throw new Error('getContract devolvió null/undefined');
     }
-    // La instancia tiene originalContractClassId = 0x2015e1c6... (el real de testnet)
+    
     // Al registrar con nuestro artifact (que tiene funciones idénticas pero bytecode de v5.0.0),
-    // el PXE puede simular el entrypoint del FPC.
+    // el PXE puede simular el entrypoint del FPC. 
+    // Usamos la instancia directamente sin destructuring para no perder sus métodos prototipo (.toFields())
     await wallet.registerContract({
       artifact: SponsoredFPCContractArtifact,
-      instance: { 
-        address: fpcAddress,
-        ...fpcInstance,
-        // Forzamos el contract class ID de la testnet para que coincida exactamente
-        contractClassId: fpcInstance.originalContractClassId,
-      }
+      instance: fpcInstance
     });
-    console.log(ok(`registrado (classId: ${fpcInstance.originalContractClassId?.toString().slice(0,18)}…)`));
+    console.log(ok(`registrado (classId: ${fpcInstance.currentContractClassId?.toString().slice(0,18) || fpcInstance.originalContractClassId?.toString().slice(0,18)}…)`));
   } catch (regErr) {
     console.log(dim(`  (aviso registro FPC: ${regErr.message.slice(0, 80)})`));
     // Fallback: intentar con registerContractClass si está disponible
