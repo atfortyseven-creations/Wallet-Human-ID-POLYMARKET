@@ -93,7 +93,7 @@ const nextConfig = {
     // causing "Cannot access 'X' before initialization" errors in libraries like viem.
     // By disabling it, we fall back to our custom Terser configuration below, which
     // has scope hoisting explicitly disabled and single-character names reserved.
-    swcMinify: false,
+
     // [EPERM FIX] outputFileTracingRoot must point to project dir.
     // outputFileTracingExcludes prevents Next.js file-tracer from scanning
     // Windows system folders (Mi música, etc.) which causes EPERM crashes

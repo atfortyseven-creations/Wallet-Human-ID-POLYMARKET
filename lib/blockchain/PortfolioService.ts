@@ -785,6 +785,10 @@ export class PortfolioService {
     let btcData = null;
 
     // 1. Resolve ENS if valid name OR if it's not a hex address
+    if (rawAddress.startsWith('email_') || rawAddress.startsWith('aztec_')) {
+      return { error: 'Non-EVM identifier provided to EVM portfolio service.', tokens: [] };
+    }
+    
     if (isValidENSName(rawAddress) || (!isBitcoinAddress(rawAddress) && !rawAddress.startsWith('0x'))) {
       const nameToResolve = rawAddress.includes('.') ? rawAddress : `${rawAddress}.eth`;
       const resolved = await resolveENSName(nameToResolve);

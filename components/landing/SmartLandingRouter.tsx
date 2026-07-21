@@ -59,13 +59,8 @@ export function SmartLandingRouter({ isMobileUserAgent }: { isMobileUserAgent: b
     // instead of the old <ClientMobileLanding /> to avoid a hydration mismatch.
     if (!mounted && isMobileUserAgent) return <MobileSkeleton />;
 
-    // Always show the landing page — never auto-redirect to /terminal.
-    // The dashboard redirect is handled exclusively by ConnectPage after
-    // a successful wallet signature. This ensures that on page reload
-    // the user always lands on the public landing page.
-    if (isPhysicallyMobile) {
-        return <ClientMobileLanding />;
-    }
-
+    // Always show the full immersive landing page on all devices,
+    // including mobile. The user specifically requested the full landing
+    // page experience on mobile with the fixed bottom CTA bar.
     return <ClientRootRouter />;
 }
