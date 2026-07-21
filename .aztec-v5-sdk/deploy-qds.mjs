@@ -63,8 +63,12 @@ async function main() {
   const fpcAddress = AztecAddress.fromStringUnsafe(SPONSORED_FPC);
   
   // Registrar el artifact del FPC en el PXE para poder simular la tx
-  await wallet.registerContractClass(SponsoredFPCContractArtifact).catch(() => {});
-  await wallet.registerContractClass(FPCContractArtifact).catch(() => {});
+  try {
+    await wallet.registerContract({ artifact: SponsoredFPCContractArtifact, instance: { address: fpcAddress } });
+  } catch (e) {}
+  try {
+    await wallet.registerContract({ artifact: FPCContractArtifact, instance: { address: fpcAddress } });
+  } catch (e) {}
 
   // ── 5. Construir y enviar la Tx (con Sponsored FPC) ────────
   process.stdout.write('  [4/5] Enviando deploy (prueba ZK V5)  ');
