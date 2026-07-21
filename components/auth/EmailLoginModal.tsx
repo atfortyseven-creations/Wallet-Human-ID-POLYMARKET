@@ -188,7 +188,7 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
       {isOpen && (
         <motion.div
           key="modal-container"
-          className="fixed inset-0 z-[9000] flex items-center justify-center p-4 overflow-y-auto"
+          className="fixed inset-0 z-[9000] flex items-end sm:items-center justify-center p-0 sm:p-4 overflow-y-auto"
         >
           {/* Backdrop */}
           <motion.div
@@ -202,11 +202,12 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
 
           {/* Modal Panel */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.97, y: 12 }}
+            initial={{ opacity: 0, scale: 0.97, y: 32 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.97, y: 8 }}
+            exit={{ opacity: 0, scale: 0.97, y: 32 }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="w-full max-w-[440px] bg-white border border-black/10 shadow-2xl overflow-hidden rounded-2xl relative z-10"
+            className="w-full max-w-[440px] bg-white sm:border border-black/10 shadow-2xl sm:rounded-2xl rounded-t-3xl sm:rounded-b-2xl relative z-10 max-h-[85vh] overflow-y-auto"
+            style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -327,11 +328,11 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
                         <label className="block text-[12px] font-bold uppercase tracking-wider text-black/50 mb-3">
                           Verification Code
                         </label>
-                        <div className="flex gap-2.5" onPaste={handleCodePaste}>
+                        <div className="flex gap-1.5 sm:gap-2">
                           {code.map((digit, i) => (
                             <input
                               key={i}
-                              ref={(el) => { codeRefs.current[i] = el; }}
+                              ref={(el) => (codeRefs.current[i] = el)}
                               type="text"
                               inputMode="numeric"
                               pattern="[0-9]*"
@@ -339,8 +340,9 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
                               value={digit}
                               onChange={(e) => handleCodeInput(i, e.target.value)}
                               onKeyDown={(e) => handleCodeKeyDown(i, e)}
-                              className="flex-1 aspect-square text-center text-[22px] font-black text-black border border-black/15 focus:border-black/60 focus:outline-none transition-colors bg-white tabular-nums"
-                              style={{ minWidth: 0 }}
+                              onPaste={i === 0 ? handleCodePaste : undefined}
+                              autoFocus={i === 0}
+                              className="flex-1 aspect-square text-center text-[18px] sm:text-[22px] font-black text-black border border-black/15 focus:border-black/60 focus:outline-none transition-colors bg-white tabular-nums rounded-lg sm:rounded-xl"
                             />
                           ))}
                         </div>

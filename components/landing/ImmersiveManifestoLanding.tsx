@@ -385,16 +385,15 @@ function LandingNav() {
                       >
                         Sign in with Email
                       </button>
-                      <button
-                        id="mobile-wallet-nav-btn"
-                        onClick={() => {
-                          setMobileOpen(false);
-                          try { rkOpenModal(); } catch(e) { console.warn('rkOpenModal failed', e); }
-                        }}
-                        className="flex-1 text-center py-3.5 bg-black rounded-2xl text-[12.5px] font-semibold text-white hover:bg-black/80 transition-colors"
-                      >
-                        Connect Wallet
-                      </button>
+                      <div className="relative flex-1 h-[46px]">
+                        <div className="absolute inset-0 flex items-center justify-center bg-black rounded-2xl text-[12.5px] font-semibold text-white pointer-events-none">
+                          Connect Wallet
+                        </div>
+                        <div className="relative z-10 w-full h-full opacity-[0.001] overflow-hidden flex items-center justify-center" style={{ transform: 'scale(3)' }}>
+                          {/* @ts-ignore */}
+                          <appkit-button />
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -423,15 +422,15 @@ function LandingNav() {
           >
             Sign in with Email
           </button>
-          <button
-            id="landing-mobile-wallet-cta"
-            onClick={() => {
-              try { rkOpenModal(); } catch(e) { console.warn('rkOpenModal failed', e); }
-            }}
-            className="flex-1 py-3 bg-black rounded-2xl text-[13px] font-bold text-white hover:bg-black/80 transition-colors text-center"
-          >
-            Connect Wallet
-          </button>
+          <div className="relative flex-1 h-[44px]">
+            <div className="absolute inset-0 flex items-center justify-center bg-black rounded-2xl text-[13px] font-bold text-white pointer-events-none">
+              Connect Wallet
+            </div>
+            <div className="relative z-10 w-full h-full opacity-[0.001] overflow-hidden flex items-center justify-center" style={{ transform: 'scale(3)' }}>
+              {/* @ts-ignore */}
+              <appkit-button />
+            </div>
+          </div>
         </div>
       )}
     </>

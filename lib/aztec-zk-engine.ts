@@ -40,7 +40,7 @@ export const AZTEC_CONTRACTS = {
 // Aztec Sandbox PXE default endpoint (for local/testnet dev)
 export const AZTEC_PXE_ENDPOINTS = {
   sandbox: 'http://localhost:8080',
-  testnet: 'https://api.aztec.network/alpha-testnet/v1/pxe',
+  testnet: 'https://v5.testnet.rpc.aztec-labs.com',
 } as const;
 
 // Asset IDs as defined in Aztec's asset registry
