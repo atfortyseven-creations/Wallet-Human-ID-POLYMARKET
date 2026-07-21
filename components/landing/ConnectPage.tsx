@@ -526,19 +526,22 @@ export default function ConnectPage() {
       return;
     }
 
-    // Pure synchronous call — MUST stay inline here to satisfy iOS Safari's popup policy
-    let opened = false;
+    // Pure synchronous call — dispatch directly to the shadow DOM of <appkit-button>
+    // to bypass iOS Safari's popup blocker.
     try {
-      (openAppKit as any)({ view: 'Connect' });
-      opened = true;
-    } catch {
-      try { openAppKit(); opened = true; } catch {}
-    }
-    if (!opened) {
-      try {
-        const el = (document.querySelector('appkit-modal') || document.querySelector('w3m-modal')) as any;
-        if (el) { el.open = true; if (typeof el.openModal === 'function') el.openModal(); }
-      } catch {}
+      const appkitBtn = document.querySelector('appkit-button') || document.querySelector('w3m-button');
+      if (appkitBtn && appkitBtn.shadowRoot) {
+        const nativeBtn = appkitBtn.shadowRoot.querySelector('button');
+        if (nativeBtn) {
+          nativeBtn.click();
+          return; // Successfully dispatched
+        }
+      }
+    } catch (e) {}
+
+    // Fallback
+    try { (openAppKit as any)({ view: 'Connect' }); } catch {
+      try { openAppKit(); } catch {}
     }
   }, [openAppKit, connect, connectors]);
 
@@ -910,6 +913,12 @@ export default function ConnectPage() {
         {/* Global Email Login Modal */}
         <EmailLoginModal isOpen={emailModalOpen} onClose={() => setEmailModalOpen(false)} />
       </div>
+      {/* Hidden AppKit button for native mobile dispatch */}
+      <div className="hidden" aria-hidden="true" style={{ display: 'none', opacity: 0, pointerEvents: 'none' }}>
+        {/* @ts-ignore */}
+        <appkit-button />
+      </div>
+
     </div>
   );
 }
