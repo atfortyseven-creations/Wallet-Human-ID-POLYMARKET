@@ -516,8 +516,8 @@ export function MobileImmersiveGate() {
                         Sign in with Email
                       </button>
 
-                      {/* Hidden native AppKit button to capture shadow DOM clicks */}
-                      <div className="hidden" aria-hidden="true" style={{ display: 'none', opacity: 0, pointerEvents: 'none' }}>
+                      {/* Hidden native AppKit button to capture shadow DOM clicks (must not be display:none) */}
+                      <div aria-hidden="true" style={{ position: 'absolute', opacity: 0, width: '1px', height: '1px', pointerEvents: 'none', overflow: 'hidden' }}>
                         {/* @ts-ignore - Web component */}
                         <appkit-button />
                       </div>

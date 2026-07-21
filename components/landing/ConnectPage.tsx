@@ -861,6 +861,9 @@ export default function ConnectPage() {
     <div
       className="w-full min-h-screen bg-white relative flex flex-col overflow-x-hidden"
     >
+      {/* Force body background to white to prevent black overscroll area */}
+      <style>{`body { background-color: white !important; }`}</style>
+
       {/* Subtle dot grid background */}
       <div
         className="absolute inset-0 pointer-events-none z-[0]"
@@ -913,8 +916,8 @@ export default function ConnectPage() {
         {/* Global Email Login Modal */}
         <EmailLoginModal isOpen={emailModalOpen} onClose={() => setEmailModalOpen(false)} />
       </div>
-      {/* Hidden AppKit button for native mobile dispatch */}
-      <div className="hidden" aria-hidden="true" style={{ display: 'none', opacity: 0, pointerEvents: 'none' }}>
+      {/* Hidden AppKit button for native mobile dispatch (must not be display:none so shadow DOM mounts properly) */}
+      <div aria-hidden="true" style={{ position: 'absolute', opacity: 0, width: '1px', height: '1px', pointerEvents: 'none', overflow: 'hidden' }}>
         {/* @ts-ignore */}
         <appkit-button />
       </div>

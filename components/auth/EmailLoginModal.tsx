@@ -178,19 +178,22 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
     }
   }
 
-  if (!isOpen || !mounted) return null;
+  if (!mounted) return null;
 
   const modalContent = (
     <AnimatePresence>
       {isOpen && (
-        <>
+        <motion.div
+          key="modal-container"
+          className="fixed inset-0 z-[9000] flex items-center justify-center p-4 overflow-y-auto"
+        >
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[9000] bg-black/30 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm -z-10"
             onClick={onClose}
           />
 
@@ -200,13 +203,11 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97, y: 8 }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-[9001] overflow-y-auto"
+            className="w-full max-w-[440px] bg-white border border-black/10 shadow-2xl overflow-hidden rounded-2xl relative z-10"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex min-h-[100dvh] items-center justify-center p-4">
-              <div className="w-full max-w-[440px] bg-white border border-black/10 shadow-2xl overflow-hidden rounded-2xl md:rounded-none">
-                {/* Header */}
-              <div className="px-8 pt-8 pb-6 border-b border-black/8">
+            {/* Header */}
+            <div className="px-8 pt-8 pb-6 border-b border-black/8">
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="flex items-center gap-2.5 mb-3">
@@ -420,10 +421,8 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
                   Secured by Aztec Network ZK Architecture
                 </span>
               </div>
-            </div>
-            </div>
           </motion.div>
-        </>
+        </motion.div>
       )}
     </AnimatePresence>
   );
