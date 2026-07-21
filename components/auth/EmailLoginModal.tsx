@@ -200,7 +200,13 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97, y: 8 }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-0 z-[9001] flex items-center justify-center p-4"
+            className="fixed inset-0 z-[9001] flex items-start justify-center overflow-y-auto"
+            style={{
+              paddingTop: 'max(env(safe-area-inset-top, 16px), 10vh)',
+              paddingBottom: 'max(env(safe-area-inset-bottom, 16px), 16px)',
+              paddingLeft: '16px',
+              paddingRight: '16px',
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="w-full max-w-[440px] bg-white border border-black/10 shadow-2xl overflow-hidden">

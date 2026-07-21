@@ -477,9 +477,18 @@ export default function ConnectPage() {
 
   const openAppKitSafe = useCallback(() => {
     try {
-      openAppKit();
-    } catch (e: any) {
-      console.warn("AppKit open error", e);
+      (openAppKit as any)({ view: 'Connect' });
+    } catch {
+      try {
+        openAppKit();
+      } catch (e: any) {
+        console.warn("AppKit open error", e);
+        // DOM fallback
+        try {
+          const el = (document.querySelector("appkit-modal") || document.querySelector("w3m-modal")) as any;
+          if (el) { el.open = true; if (typeof el.openModal === 'function') el.openModal(); }
+        } catch {}
+      }
     }
   }, [openAppKit]);
 
@@ -502,19 +511,36 @@ export default function ConnectPage() {
     try { sessionStorage.removeItem("__disconnected__"); } catch {}
     try { localStorage.removeItem("__disconnected__"); } catch {}
     try { localStorage.setItem('system_pending_wakeup', '1'); } catch {}
-    
-    // Si estamos en un navegador integrado (dApp browser) de MetaMask, Coinbase, etc.
-    const injected = connectors.find((c: any) => c.id === 'injected' || c.type === 'injected' || c.id === 'io.metamask' || c.name.toLowerCase().includes(walletId.split('-')[0].toLowerCase()));
-    
-    if (injected && typeof window !== 'undefined' && ((window as any).ethereum || (window as any).web3)) {
+
+    // If we are inside a dApp browser (MetaMask, Coinbase, etc.) use injected connector directly
+    const injectedConn = connectors.find((c: any) =>
+      c.id === 'injected' ||
+      c.type === 'injected' ||
+      c.id === 'io.metamask' ||
+      c.name.toLowerCase().includes(walletId.split('-')[0].toLowerCase())
+    );
+
+    if (injectedConn && typeof window !== 'undefined' && ((window as any).ethereum || (window as any).web3)) {
       setPendingId(walletId);
-      connect({ connector: injected });
+      connect({ connector: injectedConn });
       return;
     }
 
-    // Llamada síncrona pura para evitar que Safari iOS bloquee el deep link de WalletConnect
-    openAppKitSafe();
-  }, [openAppKitSafe, connect, connectors]);
+    // Pure synchronous call — MUST stay inline here to satisfy iOS Safari's popup policy
+    let opened = false;
+    try {
+      (openAppKit as any)({ view: 'Connect' });
+      opened = true;
+    } catch {
+      try { openAppKit(); opened = true; } catch {}
+    }
+    if (!opened) {
+      try {
+        const el = (document.querySelector('appkit-modal') || document.querySelector('w3m-modal')) as any;
+        if (el) { el.open = true; if (typeof el.openModal === 'function') el.openModal(); }
+      } catch {}
+    }
+  }, [openAppKit, connect, connectors]);
 
   const triggerManualVerify = useCallback(() => {
     signingRef.current = false;

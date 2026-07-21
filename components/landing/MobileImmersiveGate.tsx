@@ -334,24 +334,38 @@ export function MobileImmersiveGate() {
     // CRITICAL: rkOpenModal() MUST be called synchronously inside the onClick
     // handler. iOS Safari treats any async delay before window.open() / modal
     // triggers as a popup attempt and blocks it — producing a blank black screen.
-    // We clear the disconnect guard here (synchronously) and immediately open
-    // the AppKit modal so Safari allows it.
     try { sessionStorage.removeItem("__disconnected__"); } catch {}
     try { localStorage.removeItem("__disconnected__"); } catch {}
     try { localStorage.setItem("system_pending_wakeup", "1"); } catch {}
     signingRef.current = false;
 
-    // Standard path: open Reown AppKit wallet selector (WalletConnect QR + deep links).
-    // We REMOVED the window.ethereum interception here because on mobile Safari,
-    // extensions like 1Password inject window.ethereum and cause silent failures
-    // where the button appears to do nothing. AppKit handles injected wallets natively.
+    // Open Reown AppKit with explicit view option.
+    // Passing { view: 'Connect' } ensures AppKit shows the wallet list immediately
+    // instead of potentially showing an account view if a stale session exists.
+    let opened = false;
     try {
-      rkOpenModal();
-    } catch (e) {
-      console.warn("[MobileGate] rkOpenModal failed, DOM fallback:", e);
+      (rkOpenModal as any)({ view: 'Connect' });
+      opened = true;
+    } catch {
       try {
-        const modal = (document.querySelector("appkit-modal") || document.querySelector("w3m-modal")) as any;
-        if (modal) { modal.open = true; }
+        rkOpenModal();
+        opened = true;
+      } catch (e) {
+        console.warn("[MobileGate] rkOpenModal failed:", e);
+      }
+    }
+
+    if (!opened) {
+      // Last resort: find the web component in the DOM and trigger it directly
+      try {
+        const el =
+          (document.querySelector("appkit-modal") ||
+           document.querySelector("w3m-modal")) as any;
+        if (el) {
+          el.open = true;
+          if (typeof el.setAttribute === "function") el.setAttribute("open", "");
+          if (typeof el.openModal === "function") el.openModal();
+        }
       } catch {}
     }
   };
