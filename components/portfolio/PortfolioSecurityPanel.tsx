@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Key, Eye, EyeOff, Copy, AlertTriangle, ShieldCheck, Lock } from 'lucide-react';
 import { tryDecryptAny } from '@/lib/wallet-security';

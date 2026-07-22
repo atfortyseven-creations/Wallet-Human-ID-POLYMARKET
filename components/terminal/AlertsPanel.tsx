@@ -1,4 +1,4 @@
-﻿// components/terminal/AlertsPanel.tsx
+// components/terminal/AlertsPanel.tsx
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';

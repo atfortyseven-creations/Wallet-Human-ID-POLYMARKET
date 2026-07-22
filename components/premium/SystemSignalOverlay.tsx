@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { motion } from 'framer-motion';
 import { Target, Copy, CheckCircle, Clock } from 'lucide-react';

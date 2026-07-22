@@ -1769,15 +1769,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         toast.info("You are offline. Message queued to outbox.");
       } else {
         try {
-          const onionStatus = await sendViaOnion(content, activePeer, 'anonymous');
-          if (onionStatus === 'direct') {
-            await sendMessage(client, activePeer, content, address);
-          } else {
-            toast.success("Message routed via Quantum Onion Circuit", { icon: '🧅' });
-          }
-        } catch (onionErr) {
-          console.warn('[WhaleChat] Onion route failed, falling back to direct:', onionErr);
           await sendMessage(client, activePeer, content, address);
+        } catch (err) {
+          console.error('[WhaleChat] Message send failed:', err);
+          toast.error("Failed to send message");
         }
       }
 
@@ -2013,13 +2008,6 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)] animate-pulse" />
                 <span className="text-[11px] font-mono font-bold text-blue-700">{balance.toFixed(2)} QD</span>
               </div>
-              <button
-                onClick={() => setSettingsOpen(true)}
-                className="p-2.5 rounded-xl bg-gray-50 text-gray-700 hover:bg-gray-200 transition-all"
-                title="Settings"
-              >
-                <Settings size={18} />
-              </button>
             </div>
           </div>
 
@@ -2340,7 +2328,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-400/10 rounded-full blur-[100px] pointer-events-none" />
             <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-teal-400/10 rounded-full blur-[80px] pointer-events-none" />
 
-            <div className="w-full max-w-lg flex flex-col items-center text-center relative z-10 animate-in fade-in zoom-in-95 duration-700">
+            <div className="w-full flex flex-col items-center text-center relative z-10 animate-in fade-in zoom-in-95 duration-700">
               
               {/* Whale Logo */}
               <div className="w-40 h-40 mb-8 rounded-full bg-white/50 backdrop-blur-xl shadow-2xl border border-white flex items-center justify-center relative">

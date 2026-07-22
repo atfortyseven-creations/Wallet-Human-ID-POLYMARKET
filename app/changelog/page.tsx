@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { GitCommit, Milestone, ShieldAlert, Cpu } from 'lucide-react';
 

@@ -19,7 +19,7 @@ const AirdropSchema = z.object({
 });
 
 const AZTEC_EXPLORER        = 'https://testnet.aztecscan.xyz';
-const AZTEC_TX_URL          = (hash: string) => `https://testnet.aztecscan.xyz/tx-effects/${hash}`;
+const AZTEC_TX_URL          = (hash: string) => `https://testnet.aztecscan.xyz/tx/${hash}`;
 const AIRDROP_AMOUNT        = 10;  // 10 QDs per airdrop (Genesis Airdrop as per Forum)
 
 /**
@@ -201,7 +201,7 @@ export async function POST(req: NextRequest) {
         aztecTxHash = `aztec-airdrop-${crypto.randomBytes(20).toString('hex')}`;
         // Only link to a real block if we got one from the node
         explorerUrl  = liveBlockNum > 0
-          ? `https://testnet.aztecscan.xyz/blocks/${liveBlockNum}`
+          ? `https://testnet.aztecscan.xyz/tx/${aztecTxHash}`
           : `https://testnet.aztecscan.xyz`;
         onChain      = false;
         blockNum     = liveBlockNum;
@@ -257,7 +257,7 @@ export async function POST(req: NextRequest) {
           });
         
         aztecTxHash   = txResult.receipt.txHash.toString();
-        explorerUrl   = `${AZTEC_EXPLORER}/tx-effects/${aztecTxHash}`;
+        explorerUrl   = `${AZTEC_EXPLORER}/tx/${aztecTxHash}`;
         onChain       = true;
         onChainSuccess = true;
         blockNum      = Number(txResult.receipt.blockNumber ?? Math.floor(Date.now() / 12_000));
@@ -299,7 +299,7 @@ export async function POST(req: NextRequest) {
         }
       } catch { /* node unreachable */ }
       aztecTxHash = `aztec-airdrop-${require('crypto').randomBytes(20).toString('hex')}`;
-      explorerUrl = `https://testnet.aztecscan.xyz/blocks/${liveBlockNum}`;
+      explorerUrl = `https://testnet.aztecscan.xyz/tx/${aztecTxHash}`;
       onChain = false;
       blockNum = liveBlockNum;
     }

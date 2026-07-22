@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { getWeb3Wallet } from '@/lib/walletconnect/walletKit';

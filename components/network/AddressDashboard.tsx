@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';

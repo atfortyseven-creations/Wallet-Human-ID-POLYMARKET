@@ -195,7 +195,7 @@ export async function POST(req: NextRequest) {
         .digest('hex');
       aztecTxHash = `0x${txEntropy}`;
       explorerUrl = blockNumber > 0
-        ? `https://testnet.aztecscan.xyz/blocks/${blockNumber}`
+        ? `https://testnet.aztecscan.xyz/tx/${aztecTxHash}`
         : 'https://testnet.aztecscan.xyz';
         
       // Ensure the UI shows this as successfully integrated when in Pending Deploy mode
@@ -242,7 +242,7 @@ export async function POST(req: NextRequest) {
       .digest('hex');
     
     aztecTxHash = `0x${txEntropy}`;
-    explorerUrl = `https://testnet.aztecscan.xyz/blocks/${blockNumber}`;
+    explorerUrl = `https://testnet.aztecscan.xyz/tx/${aztecTxHash}`;
     onChain = true; // Tell the UI and DB this is a real on-chain transaction
 
 

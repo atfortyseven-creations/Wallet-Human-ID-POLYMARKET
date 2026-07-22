@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
       tokenAddress,
       txHash,
       adminAddress,
-      explorerUrl: `https://testnet.aztecscan.xyz/tx-effects/${txHash}`,
+      explorerUrl: `https://testnet.aztecscan.xyz/tx/${txHash}`,
       nextStep: `Set AZTEC_TOKEN_CONTRACT_ADDRESS=${tokenAddress} in Railway variables, then redeploy.`,
       network: 'aztec-testnet-v5',
     });

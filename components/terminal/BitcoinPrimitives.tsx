@@ -1,4 +1,4 @@
-﻿// components/terminal/BitcoinPrimitives.tsx
+// components/terminal/BitcoinPrimitives.tsx
 "use client";
 
 import React, { useState, useEffect } from 'react';

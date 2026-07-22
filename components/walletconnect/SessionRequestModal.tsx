@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { useWalletConnectStore } from '@/lib/store/wallet-connect-store';

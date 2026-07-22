@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from 'react';
 import { Search, Bell, Clock, Eye, Settings, User, Wallet } from 'lucide-react';

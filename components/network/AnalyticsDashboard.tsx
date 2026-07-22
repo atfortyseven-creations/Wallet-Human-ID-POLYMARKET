@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { motion, useMotionValue, animate, useSpring } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';

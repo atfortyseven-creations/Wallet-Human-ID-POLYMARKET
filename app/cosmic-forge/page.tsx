@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { CosmicForgePanel } from "@/components/forge/CosmicForgePanel";
 
 export const dynamic = "force-dynamic";

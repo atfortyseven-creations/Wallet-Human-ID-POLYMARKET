@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 // No Clerk dependency  wallet identity comes from SIWE wagmi

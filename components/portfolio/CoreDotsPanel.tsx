@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 /**
  * CoreDotsPanel  Full system QDs interface

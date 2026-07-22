@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { Component, ErrorInfo, ReactNode } from "react";
 import { AlertOctagon, RotateCcw, Wifi } from "lucide-react";

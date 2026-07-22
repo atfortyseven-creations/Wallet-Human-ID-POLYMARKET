@@ -368,7 +368,7 @@ export default function AztecMempoolSpace() {
 
                                 <div className="mt-10 flex gap-4">
                                     <a
-                                        href={selectedBlock ? `https://testnet.aztecscan.xyz/blocks/${selectedBlock.id}` : `https://testnet.aztecscan.xyz/tx-effects/${selectedTx?.hash}`}
+                                        href={selectedBlock ? `https://testnet.aztecscan.xyz/blocks/${selectedBlock.id}` : `https://testnet.aztecscan.xyz/tx/${selectedTx?.hash}`}
                                         target="_blank" rel="noopener noreferrer"
                                         className="inline-flex items-center gap-2 px-6 py-2.5 bg-black hover:bg-zinc-800 text-white text-[10px] font-bold uppercase tracking-[0.2em] transition-colors"
                                       >
