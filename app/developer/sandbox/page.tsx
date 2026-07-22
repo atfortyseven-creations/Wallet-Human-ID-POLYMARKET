@@ -39,12 +39,12 @@ export default function SandboxPage() {
       </header>
 
       {/* Main sandbox */}
-      <div className="w-full max-w-6xl relative z-10">
+      <div className="w-full max-w-[1600px] relative z-10">
         <NoirCircuitSandbox />
       </div>
 
       {/* Architecture explanation */}
-      <section className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10 mt-12">
+      <section className="w-full max-w-[1600px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative z-10 mt-12">
         {[
           {
             icon: "01",
