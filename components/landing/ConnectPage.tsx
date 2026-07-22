@@ -573,23 +573,21 @@ export default function ConnectPage() {
 
   // ── RIGHT PANEL (Auth) ──
   const renderLoginCard = () => (
-    <div className="w-full lg:w-[420px] flex-shrink-0 flex flex-col bg-black/60 backdrop-blur-2xl rounded-3xl border border-white/10 shadow-[0_0_80px_rgba(0,0,0,0.8)] overflow-hidden relative">
-      {/* Top ambient glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-[1px] bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-50" />
+    <div className="w-full lg:w-[420px] flex-shrink-0 flex flex-col bg-white/95 backdrop-blur-2xl rounded-3xl border border-white shadow-[0_20px_60px_rgba(0,0,0,0.15)] overflow-hidden relative">
       
-      <div className="px-8 pt-8 pb-5 border-b border-white/5 flex items-center gap-3 relative z-10">
-        <Lock size={16} strokeWidth={2} className="text-blue-400" />
-        <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/50 font-medium flex-1">Secure Entry</span>
-        <Link href="/terminal" className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border border-white/10 text-white/70 font-black rounded-lg text-[9px] uppercase tracking-widest hover:bg-white/10 hover:text-white transition-all active:scale-95 shadow-sm">
+      <div className="px-8 pt-8 pb-5 border-b border-slate-100 flex items-center gap-3 relative z-10">
+        <Lock size={16} strokeWidth={2} className="text-blue-500" />
+        <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-slate-400 font-bold flex-1">Secure Entry</span>
+        <Link href="/terminal" className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 border border-slate-200 text-slate-600 font-black rounded-lg text-[9px] uppercase tracking-widest hover:bg-slate-200 hover:text-slate-800 transition-all active:scale-95 shadow-sm">
           <QrCode size={12} />Studio
         </Link>
       </div>
 
       <div className="w-full flex flex-col flex-1 p-8 relative z-10">
         {mounted && !isVerified && (
-          <div className="flex items-center justify-center gap-2 mb-6 opacity-40">
-            {isMobile ? <Smartphone size={12} className="text-white" /> : <Monitor size={12} className="text-white" />}
-            <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-white">{isMobile ? "Mobile connection" : "Desktop connection"}</span>
+          <div className="flex items-center justify-center gap-2 mb-6">
+            {isMobile ? <Smartphone size={12} className="text-slate-400" /> : <Monitor size={12} className="text-slate-400" />}
+            <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-slate-400 font-bold">{isMobile ? "Mobile connection" : "Desktop connection"}</span>
           </div>
         )}
 
@@ -597,12 +595,12 @@ export default function ConnectPage() {
         {isVerified ? (
           <motion.div key="verified" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} className="flex flex-col items-center justify-center flex-1 relative min-h-[280px]">
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-[260px] h-[260px] opacity-80 mix-blend-screen">
+              <div className="w-[260px] h-[260px] opacity-80 mix-blend-multiply">
                 <RemoteLottie path="/system-shots/Transaction Complete.json" loop={false} className="w-full h-full object-contain scale-[1.2]" />
               </div>
             </div>
             <div className="absolute bottom-4 flex flex-col items-center gap-2">
-              <button onClick={handleTotalDisconnect} className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-rose-500/30 text-[9px] font-black uppercase tracking-[0.2em] bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 transition-all active:scale-[0.98]">
+              <button onClick={handleTotalDisconnect} className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-rose-500/30 text-[9px] font-black uppercase tracking-[0.2em] bg-rose-50 text-rose-500 hover:bg-rose-100 transition-all active:scale-[0.98]">
                 Total Disconnect
               </button>
             </div>
@@ -610,28 +608,28 @@ export default function ConnectPage() {
         ) : effectiveIsConnected && !isLinked ? (
           /* STATE: Connected but awaiting signature */
           <div className="flex flex-col items-center justify-center gap-5 flex-1 py-4 text-center">
-            <div className="w-16 h-16 bg-blue-500/10 border border-blue-500/20 rounded-full flex items-center justify-center text-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]">
+            <div className="w-16 h-16 bg-blue-50 border border-blue-100 rounded-full flex items-center justify-center text-blue-500 shadow-[0_0_30px_rgba(59,130,246,0.1)]">
               <Lock size={20} strokeWidth={2} />
             </div>
             <div>
-              <h2 className="text-[18px] font-black tracking-tight text-white mb-2">Signature Required</h2>
-              <p className="text-[11px] text-white/50 leading-relaxed max-w-[230px] mx-auto">Please check your browser extension or mobile app to sign the request.</p>
+              <h2 className="text-[18px] font-black tracking-tight text-slate-900 mb-2">Signature Required</h2>
+              <p className="text-[11px] text-slate-500 font-medium leading-relaxed max-w-[230px] mx-auto">Please check your browser extension or mobile app to sign the request.</p>
             </div>
             {authStatus === 'failed' ? (
               <div className="flex flex-col gap-3 w-full mt-4">
                 <button onClick={() => { triggerManualVerify(); }} className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-blue-600 text-white font-mono text-[10px] font-black uppercase tracking-[0.2em] hover:bg-blue-500 transition-all shadow-md active:scale-[0.98]">
                   <ExternalLink size={13} /> Retry Signature
                 </button>
-                <button onClick={handleTotalDisconnect} className="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 text-rose-400 hover:bg-white/10 font-mono text-[10px] font-black uppercase tracking-[0.2em] transition-all active:scale-[0.98]">Disconnect</button>
+                <button onClick={handleTotalDisconnect} className="w-full py-2.5 rounded-xl bg-slate-100 border border-slate-200 text-rose-500 hover:bg-slate-200 font-mono text-[10px] font-black uppercase tracking-[0.2em] transition-all active:scale-[0.98]">Disconnect</button>
               </div>
             ) : (
               <div className="flex flex-col gap-3 w-full mt-4">
-                <div className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border border-white/10 bg-white/5 text-white/40 font-mono text-[10px] font-black uppercase tracking-[0.2em] cursor-not-allowed">
+                <div className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-400 font-mono text-[10px] font-black uppercase tracking-[0.2em] cursor-not-allowed">
                   <ExternalLink size={13} /> Check Wallet App
                 </div>
                 <div className="flex items-center justify-center gap-2">
-                  <Loader2 size={11} className="animate-spin text-blue-400" />
-                  <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-blue-400 animate-pulse">Awaiting signature...</span>
+                  <Loader2 size={11} className="animate-spin text-blue-500" />
+                  <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-blue-500 font-bold animate-pulse">Awaiting signature...</span>
                 </div>
               </div>
             )}
@@ -639,13 +637,13 @@ export default function ConnectPage() {
         ) : !mounted ? (
           /* STATE: Loading skeleton */
           <div className="flex flex-col gap-4 flex-1">
-            {[0, 1].map((i) => <div key={i} className="w-full h-[65px] rounded-xl bg-white/5 border border-white/5 animate-pulse" />)}
+            {[0, 1].map((i) => <div key={i} className="w-full h-[65px] rounded-xl bg-slate-100 border border-slate-200 animate-pulse" />)}
           </div>
         ) : isMobile ? (
           /* STATE: Mobile — wallet list */
           <div className="flex flex-col gap-3 flex-1">
             {renderWeb2Logins()}
-            <div className="h-px w-full bg-white/5 my-2 relative"><div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent" /></div>
+            <div className="h-px w-full bg-slate-100 my-2 relative"><div className="absolute inset-0 bg-gradient-to-r from-transparent via-slate-200 to-transparent" /></div>
             <WalletButton
               logo="https://raw.githubusercontent.com/WalletConnect/walletconnect-assets/master/Logo/Blue%20(Default)/Logo.svg"
               name="Connect Web3 Wallet"
@@ -653,7 +651,7 @@ export default function ConnectPage() {
               onClick={() => openAppKitSafe()}
               delay={0.35}
             />
-            <button onClick={() => setShowMobileScanner(true)} className="w-full flex items-center justify-center gap-3 py-4 mt-2 rounded-xl border border-white/10 bg-white/5 font-black uppercase tracking-[0.2em] text-[10px] text-white active:scale-[0.98] transition-all hover:bg-white/10 hover:border-white/20">
+            <button onClick={() => setShowMobileScanner(true)} className="w-full flex items-center justify-center gap-3 py-4 mt-2 rounded-xl border border-slate-200 bg-slate-50 font-black uppercase tracking-[0.2em] text-[10px] text-slate-700 active:scale-[0.98] transition-all hover:bg-slate-100 hover:border-slate-300">
               <ScanLine size={13} /> Scan QR Code
             </button>
           </div>
@@ -662,22 +660,22 @@ export default function ConnectPage() {
           <div className="flex flex-col gap-3 flex-1 w-full">
             {syncStatus === "AWAITING" && qrData ? (
               <motion.div key="qr-ready" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }} className="flex justify-center mb-4">
-                <div className="p-6 bg-black border border-white/10 rounded-2xl flex flex-col items-center gap-4 shadow-[0_0_40px_rgba(0,0,0,0.5)] w-full">
-                  <span className="text-[20px] font-black tracking-tight text-white">Connect</span>
-                  <div className="p-3 bg-white rounded-xl">
-                    <QRCodeSVG value={qrData} size={180} fgColor="#000000" bgColor="#FFFFFF" level="M" includeMargin={false} />
+                <div className="p-6 bg-white border border-slate-200 rounded-2xl flex flex-col items-center gap-4 shadow-xl w-full">
+                  <span className="text-[20px] font-black tracking-tight text-slate-900">Connect</span>
+                  <div className="p-3 bg-white rounded-xl shadow-sm border border-slate-100">
+                    <QRCodeSVG value={qrData} size={180} fgColor="#0F172A" bgColor="#FFFFFF" level="M" includeMargin={false} />
                   </div>
-                  <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/50">Scan with Mobile App</span>
+                  <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-slate-500 font-bold">Scan with Mobile App</span>
                   {pinCode && (
-                    <div className="w-full rounded-xl overflow-hidden border border-white/10">
-                      <div className="flex items-center gap-2 px-3 py-2 bg-white/5">
-                        <Shield size={11} className="text-blue-400" />
-                        <span className="text-[8px] font-black uppercase tracking-[0.25em] text-blue-400">Visual Security PIN</span>
+                    <div className="w-full rounded-xl overflow-hidden border border-slate-200 shadow-sm">
+                      <div className="flex items-center gap-2 px-3 py-2 bg-slate-50 border-b border-slate-100">
+                        <Shield size={11} className="text-blue-500" />
+                        <span className="text-[8px] font-black uppercase tracking-[0.25em] text-blue-500">Visual Security PIN</span>
                       </div>
-                      <div className="flex items-center justify-center gap-2 py-3 px-3 bg-black">
+                      <div className="flex items-center justify-center gap-2 py-3 px-3 bg-white">
                         {pinCode.split('').map((digit, idx) => (
-                          <motion.div key={idx} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.07, duration: 0.3 }} className="w-10 h-11 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shadow-inner">
-                            <span className="text-lg font-black text-white select-none">{digit}</span>
+                          <motion.div key={idx} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.07, duration: 0.3 }} className="w-10 h-11 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center shadow-inner">
+                            <span className="text-lg font-black text-slate-800 select-none">{digit}</span>
                           </motion.div>
                         ))}
                       </div>
@@ -687,19 +685,19 @@ export default function ConnectPage() {
               </motion.div>
             ) : syncStatus === "IDLE" || (syncStatus === "AWAITING" && !qrData) ? (
               <div className="flex justify-center mb-4">
-                <div className="p-6 bg-black border border-white/10 rounded-2xl flex flex-col items-center gap-3 shadow-inner w-full">
-                  <div className="w-full aspect-square max-w-[180px] rounded-xl bg-white/5 border border-white/10 animate-pulse flex items-center justify-center">
-                    <Loader2 size={24} className="animate-spin text-blue-400" />
+                <div className="p-6 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col items-center gap-3 shadow-inner w-full">
+                  <div className="w-full aspect-square max-w-[180px] rounded-xl bg-white border border-slate-200 animate-pulse flex items-center justify-center shadow-sm">
+                    <Loader2 size={24} className="animate-spin text-blue-500" />
                   </div>
-                  <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/40">Securing tunnel...</span>
+                  <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-slate-400 font-bold">Securing tunnel...</span>
                 </div>
               </div>
             ) : syncStatus === "ERROR" ? (
               <div className="flex justify-center mb-4">
-                <div className="p-6 bg-rose-500/10 rounded-2xl border border-rose-500/30 flex flex-col items-center gap-3 w-full">
-                  <Shield size={22} className="text-rose-400" />
-                  <p className="text-[10px] font-mono text-rose-400 text-center uppercase tracking-widest">Connection Failed</p>
-                  <button onClick={() => { setSyncStatus("IDLE"); setQrSession(null); setQrData(''); }} className="px-5 py-2.5 rounded-lg bg-rose-500 text-white text-[9px] font-black uppercase tracking-widest hover:bg-rose-600 transition-colors active:scale-[0.97] mt-1">Retry Link</button>
+                <div className="p-6 bg-rose-50 rounded-2xl border border-rose-100 flex flex-col items-center gap-3 w-full">
+                  <Shield size={22} className="text-rose-500" />
+                  <p className="text-[10px] font-mono text-rose-600 text-center font-bold uppercase tracking-widest">Connection Failed</p>
+                  <button onClick={() => { setSyncStatus("IDLE"); setQrSession(null); setQrData(''); }} className="px-5 py-2.5 rounded-lg bg-rose-500 text-white text-[9px] font-black uppercase tracking-widest hover:bg-rose-600 transition-colors active:scale-[0.97] mt-1 shadow-md">Retry Link</button>
                 </div>
               </div>
             ) : null}
@@ -708,7 +706,7 @@ export default function ConnectPage() {
               <WalletButton key={w.id} logo={w.logo} name={w.name} badge={w.badge} onClick={() => handleDesktopWallet(w.id, w.rdns, w.installUrl)} loading={isPending && pendingId === w.id} delay={w.delay} />
             ))}
             
-            <div className="h-px w-full bg-white/5 my-1" />
+            <div className="h-px w-full bg-slate-100 my-1 relative"><div className="absolute inset-0 bg-gradient-to-r from-transparent via-slate-200 to-transparent" /></div>
             {renderWeb2Logins()}
           </div>
         )}
@@ -724,67 +722,61 @@ export default function ConnectPage() {
       transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
       className="flex flex-col justify-center gap-8 px-4 lg:px-12 text-center lg:text-left z-10 max-w-2xl"
     >
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-center lg:justify-start gap-2 mb-2">
-          <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_12px_rgba(52,211,153,0.8)]" />
-          <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-emerald-400/80">Aztec V5 Testnet Active</span>
+      <div className="flex flex-col gap-4 items-center lg:items-start">
+        <div className="flex items-center gap-2 mb-2 bg-white px-4 py-2 rounded-full shadow-md w-fit mx-auto lg:mx-0">
+          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_12px_rgba(16,185,129,0.8)]" />
+          <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-emerald-600 font-bold">Aztec V5 Testnet Active</span>
         </div>
         
-        <h1 className="font-black tracking-tighter uppercase leading-[0.9] text-white" style={{ fontSize: 'clamp(48px, 8vw, 84px)' }}>
-          WHALE
-          <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">NETWORK</span>
-        </h1>
+        <div className="bg-white px-8 py-6 rounded-[2rem] shadow-xl w-fit mx-auto lg:mx-0">
+          <h1 className="font-black tracking-tighter uppercase leading-[0.9] text-slate-900" style={{ fontSize: 'clamp(48px, 8vw, 84px)' }}>
+            WHALE
+            <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-600">NETWORK</span>
+          </h1>
+        </div>
         
-        <div className="flex items-center justify-center lg:justify-start gap-3 mt-2">
-          <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-white/50 border border-white/10 px-3 py-1.5 rounded-full bg-white/5 backdrop-blur-sm">
+        <div className="flex items-center gap-3 mt-2 bg-white px-4 py-2 rounded-full shadow-md w-fit mx-auto lg:mx-0">
+          <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-slate-500 font-bold">
             Powered by Aztec Network
           </span>
         </div>
       </div>
       
-      <p className="text-[14px] md:text-[16px] font-medium text-white/60 leading-relaxed max-w-xl mx-auto lg:mx-0">
-        A private-by-default enclave for verifiable financial intelligence. Every transaction, signal, and identity proof is sealed using Zero Knowledge cryptography before reaching the network.
-      </p>
+      <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl shadow-lg max-w-xl mx-auto lg:mx-0">
+        <p className="text-[14px] md:text-[16px] font-medium text-slate-700 leading-relaxed">
+          A private-by-default enclave for verifiable financial intelligence. Every transaction, signal, and identity proof is sealed using Zero Knowledge cryptography before reaching the network.
+        </p>
+      </div>
 
-      <div className="grid grid-cols-2 gap-4 mt-4 max-w-xl">
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 flex flex-col gap-2 backdrop-blur-md">
-          <Shield className="text-blue-400 mb-2" size={20} />
-          <h3 className="text-[12px] font-black uppercase tracking-widest text-white">Absolute Privacy</h3>
-          <p className="text-[11px] text-white/40 leading-relaxed font-mono">Noir ZK circuits ensure your identity and balances are cryptographically invisible.</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 max-w-xl mx-auto lg:mx-0">
+        <div className="bg-white border border-slate-100 shadow-lg rounded-2xl p-5 flex flex-col gap-2 backdrop-blur-md">
+          <Shield className="text-blue-500 mb-2" size={20} />
+          <h3 className="text-[12px] font-black uppercase tracking-widest text-slate-900">Absolute Privacy</h3>
+          <p className="text-[11px] text-slate-500 leading-relaxed font-mono">Noir ZK circuits ensure your identity and balances are cryptographically invisible.</p>
         </div>
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 flex flex-col gap-2 backdrop-blur-md">
-          <MessageSquare className="text-indigo-400 mb-2" size={20} />
-          <h3 className="text-[12px] font-black uppercase tracking-widest text-white">Sovereign Intel</h3>
-          <p className="text-[11px] text-white/40 leading-relaxed font-mono">End-to-end encrypted signals and peer-to-peer data markets settled on L2.</p>
+        <div className="bg-white border border-slate-100 shadow-lg rounded-2xl p-5 flex flex-col gap-2 backdrop-blur-md">
+          <MessageSquare className="text-indigo-500 mb-2" size={20} />
+          <h3 className="text-[12px] font-black uppercase tracking-widest text-slate-900">Sovereign Intel</h3>
+          <p className="text-[11px] text-slate-500 leading-relaxed font-mono">End-to-end encrypted signals and peer-to-peer data markets settled on L2.</p>
         </div>
       </div>
     </motion.div>
   );
 
-  if (!mounted) return <div className="w-full min-h-screen bg-[#050505]" />;
+  if (!mounted) return <div className="w-full min-h-screen bg-slate-50" />;
 
   return (
-    <div className="w-full min-h-screen bg-[#050505] flex flex-col shrink-0 relative overflow-hidden text-white">
-      {/* Global CSS adjustments to force WalletButton dark mode without changing its prop api */}
-      <style>{`
-        body, html { background-color: #050505 !important; }
-        .group.relative.w-full { background: rgba(255,255,255,0.03) !important; border-color: rgba(255,255,255,0.08) !important; }
-        .group.relative.w-full:hover { background: rgba(255,255,255,0.06) !important; border-color: rgba(255,255,255,0.15) !important; }
-        .group.relative.w-full .absolute.inset-0.bg-\\[\\#FFFFFF\\] { background: rgba(255,255,255,0.02) !important; }
-        .group.relative.w-full p.text-\\[\\#0A0A0A\\] { color: #FFFFFF !important; }
-        .group.relative.w-full p.text-black\\/40 { color: rgba(255,255,255,0.5) !important; }
-        .group.relative.w-full .bg-white.border-\\[\\#E8E8E8\\] { background: rgba(255,255,255,0.05) !important; border-color: rgba(255,255,255,0.1) !important; }
-      `}</style>
-
-      {/* Abstract Background */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-blue-600/10 rounded-full blur-[120px] mix-blend-screen" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-indigo-600/10 rounded-full blur-[120px] mix-blend-screen" />
-        <div 
-          className="absolute inset-0 opacity-[0.03]"
-          style={{ backgroundImage: "linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px)", backgroundSize: "32px 32px" }}
+    <div className="w-full min-h-screen bg-slate-50 flex flex-col shrink-0 relative overflow-hidden text-slate-900">
+      
+      {/* Wave Background */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <img 
+          src="/bg-waves.png" 
+          alt="Waves" 
+          className="w-full h-full object-cover object-center opacity-90"
         />
+        <div className="absolute inset-0 bg-white/20 backdrop-blur-[2px]" />
       </div>
 
       <div className="w-full relative z-10 flex-1 flex flex-col lg:flex-row items-center justify-center lg:justify-between max-w-[1280px] mx-auto px-6 py-12 lg:py-0 gap-12 lg:gap-8 min-h-screen">
