@@ -368,7 +368,7 @@ export default function CoreTransfer() {
                             <div className="flex items-start justify-between mb-5">
                                 <div>
                                     <div className="text-[9px] font-mono font-black uppercase tracking-[0.3em] text-white/40 mb-1">
-                                        Aztec Testnet · Zero-Knowledge L2
+                                        Aztec Testnet · Zero Knowledge L2
                                     </div>
                                     <h2 className="text-2xl font-black tracking-tighter text-white uppercase">
                                         Transfer QDs

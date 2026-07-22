@@ -72,7 +72,7 @@ export function WalletConnectSessions() {
                      <div className="text-right">
                          <p className="text-xs font-bold text-[#1F1F1F]/40 uppercase">Encryption</p>
                          <p className="font-mono text-sm text-[#1F1F1F] flex items-center gap-1 justify-end">
-                            End-to-End
+                            End to End
                          </p>
                     </div>
                 </div>

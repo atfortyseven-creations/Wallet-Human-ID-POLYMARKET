@@ -262,7 +262,7 @@ export function AnalyticsDashboard() {
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}
                     className="text-center pt-16 border-t border-slate-100">
                     <p className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-300 max-w-3xl mx-auto leading-relaxed">
-                        Data synthesized from decentralized indexers and mempool state.
+                        Data synthesized from decentralised indexers and mempool state.
                         All analytics are provided for professional situational awareness and do not constitute financial advice.
                     </p>
                 </motion.div>

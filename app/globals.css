@@ -97,6 +97,19 @@ main[class*="overflow-y-auto"] .min-h-screen,
 main[class*="overflow-y-auto"] [class*="min-h-screen"] {
   min-height: 100% !important;
 }
+/* CRITICAL: Direct children of bounded main that use h-full or min-h-full
+   need the parent chain to have height set. Ensure the flex children fill. */
+main[class*="overflow-y-auto"] > div[class*="min-h-full"],
+main[class*="overflow-y-auto"] > div[class*="h-full"] {
+  flex: 1 1 auto;
+}
+
+/* ── ANTI-BLACK-VOID: Nuclear guarantee ──────────────────────────────────────
+   Ensures NO background behind any root-level layout ever shows as black.
+   The browser chrome (OS-level dark mode) can bleed through on some platforms. */
+html, body {
+  background-color: #FFFFFF !important;
+}
 
 
 /* 

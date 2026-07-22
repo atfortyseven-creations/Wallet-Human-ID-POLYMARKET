@@ -2,14 +2,14 @@ import { type Address, type Hex } from 'viem';
 
 /**
  * AgentRuntimeService
- * The orchestrator for decentralized AI agents within the Arctic System L3.
+ * The orchestrator for decentralised AI agents within the Arctic System L3.
  * Facilitates Autonolas integration and Grid-State feeding.
  */
 export class AgentRuntimeService {
     private readonly OLAS_VM_ENDPOINT = process.env.OLAS_VM_ENDPOINT || 'https://olas.arctic.protocol';
 
     /**
-     * Registers a new AI agent to the decentralized runtime.
+     * Registers a new AI agent to the decentralised runtime.
      */
     public async registerAgent(agentConfig: {
         id: string;

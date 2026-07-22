@@ -15,7 +15,7 @@ export default function AztecArchitecturePage() {
   return (
     <LegalDocLayout
       title="Aztec Network Technical Attestation Architecture"
-      subtitle="Detailed technical-legal specification of the $QDs token and Whale Network integration on Aztec Mainnet. This document outlines how zero-knowledge proofs (ZKPs), the Private Execution Environment (PXE), and native Noir smart contracts enable absolute financial privacy while guaranteeing full AML/CFT and MiCA regulatory attestation."
+      subtitle="Detailed technical-legal specification of the $QDs token and Whale Network integration on Aztec Mainnet. This document outlines how zero knowledge proofs (ZKPs), the Private Execution Environment (PXE), and native Noir smart contracts enable absolute financial privacy while guaranteeing full AML/CFT and MiCA regulatory attestation."
       lastUpdated="6 June 2026 — Version 1.0"
       category="Technical & Regulatory Architecture"
       toc={TOC}
@@ -31,7 +31,7 @@ export default function AztecArchitecturePage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              Humanity Ledger S.L. has architected the Whale Network and the $QDs utility token exclusively for the <strong className="text-black font-semibold">Aztec Network</strong>, a decentralised zero-knowledge rollup (ZK-Rollup) settling on Ethereum L1. By leveraging Aztec's native privacy-preserving execution capabilities, Whale Network resolves the fundamental paradox of Web3 regulation: achieving absolute consumer financial privacy without becoming a haven for illicit finance.
+              Humanity Ledger S.L. has architected the Whale Network and the $QDs utility token exclusively for the <strong className="text-black font-semibold">Aztec Network</strong>, a decentralised zero knowledge rollup (ZK-Rollup) settling on Ethereum L1. By leveraging Aztec's native privacy-preserving execution capabilities, Whale Network resolves the fundamental paradox of Web3 regulation: achieving absolute consumer financial privacy without becoming a haven for illicit finance.
             </p>
             <p>
               Unlike legacy Layer 1 networks (which expose all transaction graphs to public surveillance) or traditional "privacy coins" (which lack selective disclosure mechanisms and face widespread regulatory bans), the Aztec Network integration allows Humanity Ledger S.L. to enforce <strong className="text-black font-semibold">programmable attestation</strong> directly within the Noir smart contract logic.
@@ -53,7 +53,7 @@ export default function AztecArchitecturePage() {
             </p>
             <ul className="list-disc pl-5 space-y-2">
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong>Public State:</strong> Used exclusively for aggregate data, such as total $QDs supply issuance and global attestation registry roots.</span></li>
-              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong>Private State:</strong> User balances and transfers are represented as encrypted <code>TokenNote</code> UTXOs in the private state tree. A transfer destroys input notes and creates output notes via a zero-knowledge proof, revealing zero information about the sender, receiver, or amount to the public network sequencer.</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong>Private State:</strong> User balances and transfers are represented as encrypted <code>TokenNote</code> UTXOs in the private state tree. A transfer destroys input notes and creates output notes via a zero knowledge proof, revealing zero information about the sender, receiver, or amount to the public network sequencer.</span></li>
             </ul>
             <p>
               This architecture ensures attestation with the <strong>General Data Protection Regulation (GDPR)</strong> privacy-by-design mandate (Article 25), as on-chain transaction histories are inherently protected against unauthorized third-party mass surveillance and blockchain heuristics.
@@ -95,7 +95,7 @@ export default function AztecArchitecturePage() {
               Unlike standard tokens where attestation logic is applied off-chain at the application UI layer, the $QDs token embeds attestation at the protocol consensus layer using custom Noir circuits.
             </p>
             <p>
-              The system utilizes a <code>mint_private_license</code> Noir circuit. When a user completes biometric identity verification via our specialist provider (Sumsub), an off-chain oracle attestation is generated. The user submits this attestation alongside a zero-knowledge proof to mint an on-chain, non-transferable KYC credential (represented as a private note in the Aztec state tree).
+              The system utilizes a <code>mint_private_license</code> Noir circuit. When a user completes biometric identity verification via our specialist provider (Sumsub), an off-chain oracle attestation is generated. The user submits this attestation alongside a zero knowledge proof to mint an on-chain, non-transferable KYC credential (represented as a private note in the Aztec state tree).
             </p>
             <ul className="list-disc pl-5 space-y-2">
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong>Threshold Enforcement:</strong> The Noir <code>transfer()</code> function evaluates the transaction amount. If the transfer exceeds the regulatory threshold (e.g., €1,000 equivalent), the circuit strictly requires the sender to prove ownership of a valid KYC credential note.</span></li>
@@ -111,13 +111,13 @@ export default function AztecArchitecturePage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              A fundamental tenet of the Aztec Network is the <strong>Private Execution Environment (PXE)</strong>. All zero-knowledge proofs required to execute transactions or update private state are generated <em>locally on the user's own device</em>.
+              A fundamental tenet of the Aztec Network is the <strong>Private Execution Environment (PXE)</strong>. All zero knowledge proofs required to execute transactions or update private state are generated <em>locally on the user's own device</em>.
             </p>
             <p>
               Because the user's device holds the private decryption and spending keys, and generates the cryptographic proofs locally, Humanity Ledger S.L. acts strictly as a software provider and protocol designer. We do not hold, control, or have technical access to the user's digital assets or private keys at any time.
             </p>
             <div className="bg-black/5 p-4 rounded-lg font-medium border-l-4 border-black">
-              <strong>MiCA Recital 22 Exemption:</strong> Due to this strict non-custodial architecture powered by the PXE, Humanity Ledger S.L. does not provide the service of "safekeeping and administration of crypto-assets on behalf of clients" and is therefore exempt from the stringent custody requirements applicable to Crypto-Asset Service Providers (CASPs) under Title V of MiCA.
+              <strong>MiCA Recital 22 Exemption:</strong> Due to this strict non-custodial architecture powered by the PXE, Humanity Ledger S.L. does not provide the service of "safekeeping and administration of crypto assets on behalf of clients" and is therefore exempt from the stringent custody requirements applicable to Crypto Asset Service Providers (CASPs) under Title V of MiCA.
             </div>
           </div>
         </section>
@@ -129,7 +129,7 @@ export default function AztecArchitecturePage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              The synergy between the Aztec Network's Noir-based ZK-Rollup architecture and Humanity Ledger S.L.'s legal framework produces a attestation standard previously thought impossible in decentralized finance. By combining client-side proof generation, escrowed viewing keys, and protocol-level KYC gating, the Whale Network provides users with uncompromising data control while guaranteeing regulators absolute protection against money laundering and illicit finance.
+              The synergy between the Aztec Network's Noir-based ZK-Rollup architecture and Humanity Ledger S.L.'s legal framework produces a attestation standard previously thought impossible in decentralised finance. By combining client-side proof generation, escrowed viewing keys, and protocol-level KYC gating, the Whale Network provides users with uncompromising data control while guaranteeing regulators absolute protection against money laundering and illicit finance.
             </p>
             <p>
               This document forms part of the regulatory submission package prepared for Aztec Labs and the Comisión Nacional del Mercado de Valores (CNMV).

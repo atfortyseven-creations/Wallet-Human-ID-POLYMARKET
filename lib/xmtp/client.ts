@@ -340,7 +340,7 @@ export async function getDmId(client: Client, peerAddress: string): Promise<stri
 }
 
 /**
- * Send an end-to-end encrypted message to a wallet address.
+ * Send an end to end encrypted message to a wallet address.
  * v5.3.0 FIX: use newDmWithIdentifier() which accepts an Identifier object.
  * CRITICAL FIX: always checksum the toAddress before creating the DM.
  * XMTP v5.3.0 treats identifier strings as case-sensitive keys — a lowercase

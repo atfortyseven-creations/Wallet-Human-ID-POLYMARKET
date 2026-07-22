@@ -34,7 +34,7 @@ export function MetaMaskInterface({ onConnect }: { onConnect?: () => void }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          Your system digital identity, protected by zero-knowledge proofs.
+          Your system digital identity, protected by zero knowledge proofs.
           <br className="hidden sm:block" /> No seed phrases, just biometric verification.
         </motion.p>
 

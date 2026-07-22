@@ -1,7 +1,7 @@
 /**
  * GOLDEN TICKET  ZK-SNARK Verification Layer
  *
- * Implements Groth16-based Zero-Knowledge proof verification for the
+ * Implements Groth16-based Zero Knowledge proof verification for the
  * Golden Ticket NFT claim system. Allows users to prove:
  *   1. They hold a valid Golden Ticket (NFT ownership)
  *   2. Their WorldID nullifier has not been previously used (anti-sybil)

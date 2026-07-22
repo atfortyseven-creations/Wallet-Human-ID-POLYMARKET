@@ -4,8 +4,8 @@
  *
  * Deploys the Whale Network QDs TokenContract to Aztec Testnet v5 (rc.2).
  *
- * Architecture: Aztec SDK v4.3.1
- *   - EmbeddedWallet.create(nodeUrl) → boots a local PXE process (requires Linux/WSL for @aztec/native binaries)
+ * Architecture: Aztec SDK v5.0.0
+ * Run this as a separate standalone node process (e.g. via Railway "Run Command")l PXE process (requires Linux/WSL for @aztec/native binaries)
  *   - wallet.createSchnorrAccount(secret, salt) → AccountManager with .address getter
  *   - TokenContract.deploy(wallet, admin, name, symbol, decimals).send({ from, fee }) → DeployResultMined
  *   - result.contract.address.toString() → deployed contract address
@@ -39,8 +39,8 @@ const TOKEN_DECIMALS = 18n;
 async function main() {
     console.log('══════════════════════════════════════════════════════');
     console.log('  Whale Network — QDs Token Deployment                ');
-    console.log('  Aztec Testnet v5 (rc.2) | SDK v4.3.1                ');
-    console.log('══════════════════════════════════════════════════════');
+    console.log('  Aztec Testnet v5 (rc.2) | SDK v5.0.0                ');
+    console.log('======================================================');
     // ── Validate env ─────────────────────────────────────────────────────────
     const relayerSecretHex = process.env.AZTEC_RELAYER_SECRET_KEY;
     if (!relayerSecretHex) {

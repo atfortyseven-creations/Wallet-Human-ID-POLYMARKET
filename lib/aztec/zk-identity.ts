@@ -3,7 +3,7 @@ import { keccak256, toBytes } from 'viem';
 /**
  * lib/aztec/zk-identity.ts
  * ─────────────────────────────────────────────────────────────────────────────
- * [ZK-ALIGNMENT PHASE 4] Zero-Knowledge Identity Utilities
+ * [ZK-ALIGNMENT PHASE 4] Zero Knowledge Identity Utilities
  * ─────────────────────────────────────────────────────────────────────────────
  *
  * Provides deterministic, one-way cryptographic utilities for Aztec identity

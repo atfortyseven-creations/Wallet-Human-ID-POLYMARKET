@@ -44,8 +44,8 @@ let failures = 0;
 // ── Main ───────────────────────────────────────────────────────────────────────
 async function runHealthCheck() {
   console.log('\n══════════════════════════════════════════════════════');
-  console.log('  🛸 WHALE NETWORK — AZTEC TESTNET HEALTH CHECK');
-  console.log('  SDK v4.3.1 | Node: v5.testnet.rpc.aztec-labs.com');
+  console.log('  Whale Network ↔ Aztec Testnet V5 Gateway            ');
+  console.log('  SDK v5.0.0 | Node: v5.testnet.rpc.aztec-labs.com');
   console.log('══════════════════════════════════════════════════════\n');
 
   // ── TEST 1: Node Connectivity ─────────────────────────────────────────────
@@ -112,7 +112,7 @@ async function runHealthCheck() {
 
   // ── TEST 4: TokenContract ABI Audit ──────────────────────────────────────
   sep();
-  console.log('[TEST 4] TokenContract ABI Audit (SDK v4.3.1)');
+  console.log('[TEST 4] TokenContract ABI Audit (SDK v5.0.0)');
   try {
     const allMethods = TokenContract.artifact.functions.map((f: any) => f.name);
     info(`Total functions in artifact.functions: ${allMethods.length}`);

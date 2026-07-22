@@ -2,7 +2,7 @@
 /**
  * /api/dev/deploy — Aztec QDs Token Deployment Status
  *
- * REVISED APPROACH: The Aztec SDK v4.3.1 EmbeddedWallet always boots a local PXE server
+ * REVISED APPROACH: The Aztec SDK v5.0.0 EmbeddedWallet always boots a local PXE server
  * (port 18080) via native C++ binaries from @aztec/pxe/server — this is not compatible
  * with being called from a Next.js API route.
  *
@@ -78,6 +78,6 @@ export async function GET() {
         'Run: npm install && npx tsx scripts/deploy_aztec_token.ts',
       ],
     },
-    technicalNote: 'EmbeddedWallet.create() in @aztec/wallets v4.3.1 boots a local PXE process on port 18080 via @aztec/pxe/server native binaries. This cannot run inside a Next.js API route handler.',
+    technicalNote: 'EmbeddedWallet.create() in @aztec/wallets v5.0.0 boots a local PXE process on port 18080 via @aztec/pxe/server native binaries. This cannot run inside a Next.js API route handler.',
   }, { status: 202 });
 }

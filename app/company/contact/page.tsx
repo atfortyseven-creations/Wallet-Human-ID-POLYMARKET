@@ -133,7 +133,7 @@ export default function ContactPage() {
                         <a href="https://github.com/WhaleAlert ID-fi" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-br from-gray-600/20 to-slate-600/20 p-6 rounded-xl border border-gray-500/30 hover:scale-105 transition-transform">
                             <Github size={32} className="text-gray-300 mb-3" />
                             <h3 className="font-bold mb-2">GitHub</h3>
-                            <p className="text-sm text-white/70">Open-source code, SDKs, and developer resources.</p>
+                            <p className="text-sm text-white/70">Open source code, SDKs, and developer resources.</p>
                         </a>
 
                         <a href="https://t.me/WhaleAlert ID_fi" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-br from-sky-600/20 to-blue-600/20 p-6 rounded-xl border border-sky-500/30 hover:scale-105 transition-transform">

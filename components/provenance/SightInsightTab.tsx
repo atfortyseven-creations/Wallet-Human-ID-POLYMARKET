@@ -98,7 +98,7 @@ export function SightInsightTab() {
                 <Globe className="text-white" size={16} />
               </div>
               <div>
-                <p className="text-sm font-bold tracking-wide">Global Decentralized Relayers</p>
+                <p className="text-sm font-bold tracking-wide">Global Decentralised Relayers</p>
                 <p className="text-[10px] uppercase tracking-widest text-black/50">Mempool censorship resistance</p>
               </div>
             </div>

@@ -556,11 +556,12 @@ export default function ConnectPage() {
 
 
   // ── WEB2 LOGINS (Shared) ──
-  const renderWeb2Logins = () => (
+  const renderWeb2Logins = (hideGoogle: boolean = false) => (
     <>
       {/* Google OAuth */}
-      <WalletButton
-        logo="https://www.svgrepo.com/show/475656/google-color.svg"
+      {!hideGoogle && (
+        <WalletButton
+          logo="https://www.svgrepo.com/show/475656/google-color.svg"
         name="Continue with Google"
         badge="1-click · No wallet needed"
         onClick={async () => {
@@ -578,6 +579,7 @@ export default function ConnectPage() {
         loading={googleLoading}
         delay={0.24}
       />
+      )}
       {/* Email OTP */}
       <WalletButton
         logo="/email-icon.svg"
@@ -664,7 +666,7 @@ export default function ConnectPage() {
           /* STATE: Mobile — wallet list */
           <div className="flex flex-col gap-3 flex-1">
             <span className="text-center text-[10px] font-mono uppercase tracking-[0.2em] text-black/35">Mobile Connection</span>
-            {renderWeb2Logins()}
+            {renderWeb2Logins(true)}
             <div className="h-px w-full bg-[#F0F0F0] my-2" />
             <WalletButton
               logo="https://raw.githubusercontent.com/WalletConnect/walletconnect-assets/master/Logo/Blue%20(Default)/Logo.svg"
@@ -859,22 +861,23 @@ export default function ConnectPage() {
     </div>
   );
 
-  if (!mounted) return <div className="fixed inset-0 w-full bg-white z-50" />;
+  if (!mounted) return <div className="w-full min-h-full bg-white" />;
 
   return (
     <div
-      className="fixed inset-0 w-full h-full bg-white flex flex-col overflow-y-auto overflow-x-hidden z-50"
+      className="w-full min-h-full bg-white flex flex-col shrink-0"
     >
       {/* Force body background to white to prevent black overscroll area */}
-      <style>{`body { background-color: white !important; }`}</style>
+      <style>{`body, html { background-color: white !important; }`}</style>
 
       {/* Subtle dot grid background */}
       <div
-        className="absolute inset-0 pointer-events-none z-[0]"
+        className="fixed inset-0 pointer-events-none"
         style={{
           backgroundImage: "radial-gradient(#0A0A0A 1px, transparent 1px)",
           backgroundSize: "28px 28px",
           opacity: 0.03,
+          zIndex: 0,
         }}
       />
 

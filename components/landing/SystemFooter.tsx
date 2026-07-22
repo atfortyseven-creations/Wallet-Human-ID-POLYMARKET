@@ -51,7 +51,7 @@ const NAV_COLUMNS = [
 
 export function SystemFooter() {
   return (
-    <footer className="w-full bg-white text-black py-16 px-8 md:px-16 border-t border-black/10">
+    <footer className="w-full bg-white text-black py-16 px-8 md:px-16 border-t border-black/10 pb-24 md:pb-16">
       <div className="w-full max-w-[1300px] mx-auto flex flex-col gap-16">
 
         {/* Top Section: Logo + Columns */}

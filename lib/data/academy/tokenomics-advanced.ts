@@ -192,7 +192,7 @@ export const tokenomicsModules = [
                 </div>`
             },
             {
-                id: "smart-contract-vesting-models",
+                id: "smart contract-vesting-models",
                 title: "12. Modelos de Vesting Programático",
                 description: "Automatizando la confianza entre equipo e inversores.",
                 readTime: 45,

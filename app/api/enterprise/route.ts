@@ -10,7 +10,7 @@
  * non-negotiable at all tiers.
  *
  * Tiers:
- *   COMMUNITY    Open-source, self-hosted, no SLA
+ *   COMMUNITY    Open source, self-hosted, no SLA
  *   PRO          $99/mo. API key, email support, 48h response
  *   CRYPTOGRAPHIC   Custom pricing. SLA 99.9%, Slack channel, 4h response
  *   Private    Air-gapped deployment, on-site audit, phone+Slack

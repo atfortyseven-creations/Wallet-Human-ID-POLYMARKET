@@ -73,7 +73,7 @@ async function fetchOnChainPrices(): Promise<Record<string, number>> {
     return prices;
 }
 
-//  Centralized Exchanges REST (Primary Price Feeds) 
+//  Centralised Exchanges REST (Primary Price Feeds) 
 async function fetchCexMarkets(): Promise<any[] | null> {
     // 1. Try KuCoin API (Highly reliable, no US IP geoblocks for Railway/Vercel)
     try {

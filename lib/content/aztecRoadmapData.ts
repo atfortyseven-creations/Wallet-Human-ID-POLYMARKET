@@ -35,7 +35,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     title: "Dilithium Digital Signatures (CRYSTALS-Dilithium)",
     problem: "ECDSA signatures expose the public key and are factorable by quantum hardware.",
     solution: "Progressive replacement of the authorization scheme with the NIST Dilithium standard, optimized for L2 operations.",
-    contribution: "Open-source implementation of Dilithium validation in Noir.",
+    contribution: "Open source implementation of Dilithium validation in Noir.",
     deliverable: "Minimized L2 gas cost for post-quantum signatures (< 50k gas equivalent).",
     integrity: "Absolute cryptographic security for sovereign user authentication."
   },
@@ -115,7 +115,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
   },
   {
     id: 12, phase: 2, phaseTitle: "Absolute Privacy for Data, Identity, and Compute",
-    title: "Anonymous Zero-Knowledge Biometrics",
+    title: "Anonymous Zero Knowledge Biometrics",
     problem: "Sovereign identity requires KYC, but biometric storage creates data honeypots.",
     solution: "Hardware hashes (Wallet) of biometric data validated via local ZK-SNARKs; proving unique human status without transmitting fingerprints or facial data.",
     contribution: "Human-proof identity primitive without privacy compromise.",
@@ -136,7 +136,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     title: "Compliant Selective Disclosure",
     problem: "Institutions need to report holdings to auditors without exposing their transactional graph to the public.",
     solution: "Generation of granular viewing keys and ZK range proofs for regulatory authorities.",
-    contribution: "Open-source standard for regulatory attestation in private DeFi.",
+    contribution: "Open source standard for regulatory attestation in private DeFi.",
     deliverable: "Sovereign audit SDK with target adoption of 3 auditing firms within 18 months.",
     integrity: "Exact balance between absolute network privacy and on-demand legal transparency."
   },
@@ -210,7 +210,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     title: "Continuous Formal Verification of Noir Circuits",
     problem: "Human audits are fallible when dealing with complex constraint systems.",
     solution: "CI/CD integration of mathematical formal verifiers that logically demonstrate the impossibility of creating false proofs in key circuits.",
-    contribution: "Open-source Formal Verification tools for Noir code.",
+    contribution: "Open source Formal Verification tools for Noir code.",
     deliverable: "Mathematical guarantee certificate on every circuit deployment.",
     integrity: "The code is guaranteed by pure logic, eliminating human error in financial rules."
   },
@@ -253,10 +253,10 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
   {
     id: 27, phase: 3, phaseTitle: "Sovereign Security and Threat Modeling",
     title: "Nation-State Actor Resilience",
-    problem: "Cloud-centralized protocols can be shut down or coerced via DNS/IP blocking.",
-    solution: "Deployment of decentralized gateways (IPFS/Arweave) for interfaces and routing through integrated Tor/I2P mixnets in the client.",
+    problem: "Cloud-centralised protocols can be shut down or coerced via DNS/IP blocking.",
+    solution: "Deployment of decentralised gateways (IPFS/Arweave) for interfaces and routing through integrated Tor/I2P mixnets in the client.",
     contribution: "Operational model of absolute censorship resistance.",
-    deliverable: "100% static, auditable, and decentralized front-end interface.",
+    deliverable: "100% static, auditable, and decentralised front-end interface.",
     integrity: "Immutable survival without jurisdictional single points of failure."
   },
   {
@@ -264,14 +264,14 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     title: "Automated Incident Response via ZK-Rollback",
     problem: "In an emergency, pausing a protocol centrally betrays decentralization.",
     solution: "Smart contracts with ZK circuit-breakers that automatically pause flows if proofs detect algorithmic anomalies, privately votable by the DAO.",
-    contribution: "Introduction of decentralized reactive security systems in L2.",
+    contribution: "Introduction of decentralised reactive security systems in L2.",
     deliverable: "Vulnerability response time < 1 Ethereum block (12 seconds).",
     integrity: "Algorithmic self-defense without administrator dictatorship."
   },
   {
     id: 29, phase: 3, phaseTitle: "Sovereign Security and Threat Modeling",
     title: "Sovereign Multi-Sig via Threshold ZK-Signatures",
-    problem: "Traditional multi-sigs expose who has signed and the organizational topology.",
+    problem: "Traditional multisigs expose who has signed and the organizational topology.",
     solution: "Threshold Signatures evaluated within a ZK circuit; mathematically proves that M of N validly signed without revealing total N or the specific signers.",
     contribution: "Perfect and anonymous substitute for Gnosis Safe for private sovereign operations.",
     deliverable: "Integration of the Threshold ZK SDK into the corporate dashboard.",
@@ -374,8 +374,8 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     title: "High-Frequency Private MEV Protection",
     problem: "In rollups, the Sequencer has absolute power over transactional ordering (Sequencer MEV).",
     solution: "Financial intent routing via Encrypted Mempools; the Sequencer orders encrypted bytes and the state is decrypted only after block ordering.",
-    contribution: "Radical user defense against central/decentralized sequencer extraction.",
-    deliverable: "Zero front-running guarantee under protocol SLA agreement.",
+    contribution: "Radical user defense against central/decentralised sequencer extraction.",
+    deliverable: "Zero front running guarantee under protocol SLA agreement.",
     integrity: "Fair finance, immune to algorithmic extraction parasitism."
   },
 
@@ -387,7 +387,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     solution: "Development and open-sourcing of noir-pqc packages containing optimized implementations of quantum-resilient hash and signature schemes.",
     contribution: "Transforms the Noir programming ecosystem into the gold standard of academic research.",
     deliverable: "5 public repositories; over 1,000 clones/forks from Aztec developers.",
-    integrity: "Converts the secret architecture into a foundational block of the global decentralized internet."
+    integrity: "Converts the secret architecture into a foundational block of the global decentralised internet."
   },
   {
     id: 42, phase: 5, phaseTitle: "Aztec Ecosystem Contributions, Adoption, and Roadmap",
@@ -447,7 +447,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     id: 48, phase: 5, phaseTitle: "Aztec Ecosystem Contributions, Adoption, and Roadmap",
     title: "Relentless Execution of the Post-Grant Roadmap",
     problem: "Stagnant projects that pivot or lose momentum after initial capital injection.",
-    solution: "Milestone-Lock decentralized development structure where the ecosystem itself cryptographically validates progress (Proof of Contribution) to unlock treasury funds.",
+    solution: "Milestone-Lock decentralised development structure where the ecosystem itself cryptographically validates progress (Proof of Contribution) to unlock treasury funds.",
     contribution: "Guarantees absolute profitability and real delivery of the provided grant.",
     deliverable: "2026-2030 schedule executed with margin of error < 1 month.",
     integrity: "Self-fulfilling economic engineering; a mechanism impossible to stop."
@@ -458,7 +458,7 @@ export const AZTEC_ROADMAP: AztecRoadmapItem[] = [
     problem: "Measuring success in a private network (DAU/MAU) is complex without violating system rules.",
     solution: "ZK Oracles that aggregate metadata at the protocol level (e.g., \"Prove there are 100k notes spent today\") without revealing issuers or volumes.",
     contribution: "Provides a healthy analytics dashboard for founders without compromising the user.",
-    deliverable: "Macro metrics dashboard (System TVL, Active Proofs/sec, Zero-Knowledge Transactions).",
+    deliverable: "Macro metrics dashboard (System TVL, Active Proofs/sec, Zero Knowledge Transactions).",
     integrity: "Balance between the marketing required by investors and professional secrecy."
   },
   {

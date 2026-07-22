@@ -17,7 +17,7 @@ const faqs: FAQItem[] = [
     },
     {
         question: "Is biometric authentication secure?",
-        answer: "Absolutely. We use cryptographic sharding distributed across 3 secure nodes. Your biometric data never leaves your device and is end-to-end encrypted."
+        answer: "Absolutely. We use cryptographic sharding distributed across 3 secure nodes. Your biometric data never leaves your device and is end to end encrypted."
     },
     {
         question: "Which blockchain networks are supported?",

@@ -60,7 +60,7 @@ export const MobileWhaleLanding = () => {
             {/* Trust badges */}
             <div className="grid grid-cols-3 gap-3 w-full max-w-[320px] mb-12">
               {[
-                { icon: Lock, label: "End-to-End\nPrivacy" },
+                { icon: Lock, label: "End to End\nPrivacy" },
                 { icon: Shield, label: "Aztec\nZK Proofs" },
                 { icon: Globe, label: "20+ Chains\nMonitored" },
               ].map(({ icon: Icon, label }) => (

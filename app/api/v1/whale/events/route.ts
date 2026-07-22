@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
       take: limit,
     });
 
-    // 4. Generate Zero-Knowledge (ZK) Proof for the event batch
+    // 4. Generate Zero Knowledge (ZK) Proof for the event batch
     const formattedEvents = events.map((e: any) => ({
         id: e.id,
         hash: e.hash,
@@ -77,7 +77,7 @@ export async function GET(req: NextRequest) {
       threshold_enforced: subscription.whaleThresholdUsd,
       zk_authentication: zkPayload,
       data: formattedEvents,
-      attribution: "Data secured by Zero-Knowledge SNARK Cryptography. Mathematically unforgeable."
+      attribution: "Data secured by Zero Knowledge SNARK Cryptography. Mathematically unforgeable."
     });
 
   } catch (error: any) {

@@ -47,7 +47,7 @@ export const darkWebHistoryModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. La Escisión Ontológica Post-Nacional (Cyber-Balkanization O(N) L1 M2 P2P T-1)</h2>
-                        <p>El PhD geopolítico O(1) P2P L1 M1 constata que el mundo L2 M2 T-1 diverge en dos stacks P2P O(N). El <em>Stack Panóptico M1 L1 O(1)</em>: Monedas Digitales de Bancos Centrales (CBDC T-1 L2 M2) atadas al Social Credit Score y expiración programable P2P L1 O(N). El <em>Stack Criptográfico M1 L2 T-1 O(1)</em>: Redes Zero-Knowledge O(N) P2P L1 donde la matemática abstracta T-1 L2 M2 (SNARKs) garantiza Asimetría Periférica O(1) P2P M1 L1.</p>
+                        <p>El PhD geopolítico O(1) P2P L1 M1 constata que el mundo L2 M2 T-1 diverge en dos stacks P2P O(N). El <em>Stack Panóptico M1 L1 O(1)</em>: Monedas Digitales de Bancos Centrales (CBDC T-1 L2 M2) atadas al Social Credit Score y expiración programable P2P L1 O(N). El <em>Stack Criptográfico M1 L2 T-1 O(1)</em>: Redes Zero Knowledge O(N) P2P L1 donde la matemática abstracta T-1 L2 M2 (SNARKs) garantiza Asimetría Periférica O(1) P2P M1 L1.</p>
                     </section>
                     <section class="pro-section">
                         <h2>II. La Militarización del Espacio Euclidiano de Curvas Elípticas L1 P2P M1 T-1 L2 M2 O(N)</h2>
@@ -170,7 +170,7 @@ export const darkWebHistoryModules = [
                     </section>
                     <section class="pro-section">
                         <h2>II. Custodia Distribuida Multisig y Arquitecturas Escrow P2P L1 P2P M1 T-1 L2 O(N)</h2>
-                        <p>La falla de Ross Ulbricht fue el <em>Centralized Hot Wallet O(1) P2P L1 M1</em>. Si Silk Road guardaba los bitcoins L2 M2 T-1 O(N), el FBI confiscaba un SPoF O(1) P2P L1. Hoy usan Contratos Escrow 2/3 Multi-signature L1 P2P M1 O(1) T-1 L2 M2: El comprador, vendedor y mercado O(N) tienen 1 clave P2P L1 M1. El marketplace nunca custodia los fondos M2 L1 O(1) T-1. Los servidores TOR se ocultan tras barreras I2P anidadas O(N) convirtiendo al comercio C2C anónimo en una primitiva termodinámica imbatible por los estados M1 P2P L1 O(1) L2 T-1 M2 O(N).</p>
+                        <p>La falla de Ross Ulbricht fue el <em>Centralised Hot Wallet O(1) P2P L1 M1</em>. Si Silk Road guardaba los bitcoins L2 M2 T-1 O(N), el FBI confiscaba un SPoF O(1) P2P L1. Hoy usan Contratos Escrow 2/3 Multisignature L1 P2P M1 O(1) T-1 L2 M2: El comprador, vendedor y mercado O(N) tienen 1 clave P2P L1 M1. El marketplace nunca custodia los fondos M2 L1 O(1) T-1. Los servidores TOR se ocultan tras barreras I2P anidadas O(N) convirtiendo al comercio C2C anónimo en una primitiva termodinámica imbatible por los estados M1 P2P L1 O(1) L2 T-1 M2 O(N).</p>
                     </section>
                 </div>`
             },
@@ -294,7 +294,7 @@ export const darkWebHistoryModules = [
                 </div>`
             },
             {
-                id: "decentralized-vpns-routing",
+                id: "decentralised-vpns-routing",
                 title: "18. VPNs Descentralizadas y Routing",
                 description: "Más allá de TOR: Privacidad de red P2P.",
                 readTime: 45,
@@ -306,7 +306,7 @@ export const darkWebHistoryModules = [
                     </section>
                     <section class="pro-section">
                         <h2>II. Onion Routing Incentivado (Tokenized Tor-Relays L1 P2P M1 T-1 L2 M2 O(N))</h2>
-                        <p>La Red Tor L1 P2P M1 O(1) es lenta T-1 L2 porque depende de Relays voluntarios no pagados M2 O(N) P2P L1. Decentralized VPNs O(1) P2P M1 inyectan un incentivo de token-yield T-1 L2 M2 en la capa base O(N) P2P L1. Tu vecino provee ancho de banda M1 L2 T-1 O(1) y recibe MystTokens O(N) L1 P2P M2. El enrutamiento M1 P2P salta criptográficamente T-1 L2 a través de IPs aleatorizadas que no se conocen entre sí O(N) L1 P2P, destruyendo los esfuerzos de "Deep Packet Inspection P2P M1 L1 O(1)" de censores estatales O(N) L2 M2 T-1.</p>
+                        <p>La Red Tor L1 P2P M1 O(1) es lenta T-1 L2 porque depende de Relays voluntarios no pagados M2 O(N) P2P L1. Decentralised VPNs O(1) P2P M1 inyectan un incentivo de token-yield T-1 L2 M2 en la capa base O(N) P2P L1. Tu vecino provee ancho de banda M1 L2 T-1 O(1) y recibe MystTokens O(N) L1 P2P M2. El enrutamiento M1 P2P salta criptográficamente T-1 L2 a través de IPs aleatorizadas que no se conocen entre sí O(N) L1 P2P, destruyendo los esfuerzos de "Deep Packet Inspection P2P M1 L1 O(1)" de censores estatales O(N) L2 M2 T-1.</p>
                     </section>
                 </div>`
             },

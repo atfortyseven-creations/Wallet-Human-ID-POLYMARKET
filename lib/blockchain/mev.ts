@@ -3,7 +3,7 @@ import { FlashbotsBundleProvider } from '@flashbots/ethers-provider-bundle';
 
 //  System Architecture: MEV Protection (Phase 6) 
 // Routes all administrative transaction broadcasts through Private Mempools 
-// (Flashbots/Eden) to prevent front-running, sandwich attacks, and ensure 
+// (Flashbots/Eden) to prevent front running, sandwich attacks, and ensure 
 // Absolute Systemty over node operations.
 // 
 

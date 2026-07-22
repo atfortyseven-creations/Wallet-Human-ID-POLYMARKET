@@ -103,7 +103,7 @@ export const macroModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. Extirpación del "Buscador de Renta" Perimetral TradFi</h2>
-                        <p>El Sistema Financiero Tradicional (TradFi) opera bajo ineficiencia T+2 (Settlement Time 48 horas) reteniendo un impuesto monopolista extractivo donde Remesadoras, Auditores, Brókers, Market Makers de Citadel y Cámaras de Compensación DTCC merman y desgastan el margen bruto neto de cada transacción o inversión del usuario. Decentralized Finance (DeFi) aniquila estructuralmente este ecosistema usando "Automated Market Makers" inmutables (ej. Uniswap Constant Product Formula: <code>x * y = k</code>).</p>
+                        <p>El Sistema Financiero Tradicional (TradFi) opera bajo ineficiencia T+2 (Settlement Time 48 horas) reteniendo un impuesto monopolista extractivo donde Remesadoras, Auditores, Brókers, Market Makers de Citadel y Cámaras de Compensación DTCC merman y desgastan el margen bruto neto de cada transacción o inversión del usuario. Decentralised Finance (DeFi) aniquila estructuralmente este ecosistema usando "Automated Market Makers" inmutables (ej. Uniswap Constant Product Formula: <code>x * y = k</code>).</p>
                     </section>
 
                     <section class="pro-section">

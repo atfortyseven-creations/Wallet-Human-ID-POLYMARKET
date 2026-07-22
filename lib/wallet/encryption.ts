@@ -2,7 +2,7 @@ import crypto from 'crypto';
 
 /**
  * LEGENDARY ENCRYPTION UTILITIES
- * Centralized, secure encryption/decryption for wallet private keys
+ * Centralised, secure encryption/decryption for wallet private keys
  * Uses AES-256-GCM with authentication tags
  */
 

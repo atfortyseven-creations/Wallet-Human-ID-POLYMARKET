@@ -12,7 +12,7 @@ This document constitutes the complete technical specification, architectural na
 7. The Akashic Ledger
 8. Mass Transfer Analytics
 9. The System Vault
-10. Zero-Knowledge Infrastructure
+10. Zero Knowledge Infrastructure
 11. The Data Persistence Layer
 12. The API Surface
 13. The Dashboard Terminal
@@ -59,7 +59,7 @@ A $200 million sovereign position adjustment is rarely executed as a single $200
 The clustering algorithm operates on a Neo4j graph database that indexes wallet relationships derived from historical transaction data. Co-movement detection applies a sliding 15-minute temporal window.
 
 ## ZERO KNOWLEDGE INFRASTRUCTURE
-Sentinel nodes that produce signals for the System Mesh are required to construct a zero-knowledge proof demonstrating that their identity key satisfies the mesh membership predicate without revealing the key itself. This proof is constructed using SnarkJS with a Groth16 proving scheme over the BN254 elliptic curve.
+Sentinel nodes that produce signals for the System Mesh are required to construct a zero knowledge proof demonstrating that their identity key satisfies the mesh membership predicate without revealing the key itself. This proof is constructed using SnarkJS with a Groth16 proving scheme over the BN254 elliptic curve.
 
 ### ANNEX I. LA FALLA SISTÉMICA DE MT. GOX (2014)
 Cuando Mt. Gox transaccionaba más del 70% del volumen global de Bitcoin, dependía de una base de datos MySQL centralizada (Ledger Caliente) desconectada lógicamente de la topología real de la cadena de bloques (Bóvedas Frías). Un ataque de "maleabilidad de transacciones" permitió alterar el Hash ID de los retiros. Cerca de 850,000 BTC se desintegraron. Mitigación System: Nuestro sistema jamás confía en firmas relacionales (SQL). El "Whale Network" detecta flujos brutos directo de Opcodes.

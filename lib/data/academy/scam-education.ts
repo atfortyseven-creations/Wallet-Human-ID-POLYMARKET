@@ -114,12 +114,12 @@ export const scamEducationModules = [
                 content: `<div class="academy-article">
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
-                        <h2>I. El Riesgo del Multisig Débil (Centralized Relay Failure L1 M2 P2P T-1 O(N))</h2>
+                        <h2>I. El Riesgo del Multisig Débil (Centralised Relay Failure L1 M2 P2P T-1 O(N))</h2>
                         <p>Muchos puentes dependen de 5-9 validadores P2P L1 M1 O(1) para firmar salidas de fondos T-1 L2 M2. Si un atacante compromete 3 llaves privadas mediante phishing O(N) P2P L1, puede autorizar retiros falsos de billones M1 L2 T-1 O(1) sin que el activo colateral exista en la cadena de origen P2P L1 O(N).</p>
                     </section>
                     <section class="pro-section">
                         <h2>II. ZK-Bridges y Verificación Light Client L1 P2P M1 T-1 L2 M2 O(N)</h2>
-                        <p>La evolución forense exige Puentes Zero-Knowledge (ZK-Bridges P2P L1 M1 O(1)) que no confían en humanos T-1 L2 M2. La prueba matemática de estado O(N) P2P L1 se verifica directamente en el Smart Contract de destino M1 L2 T-1 O(1). Si la matemática no cuadra, el puente se bloquea P2P L1 O(N). Menos confianza en "Federated Relays" y más en "Succinct Proofs" es la única ruta hacia la interoperabilidad soberana O(N) L1 P2P M1 T-1 O(1).</p>
+                        <p>La evolución forense exige Puentes Zero Knowledge (ZK-Bridges P2P L1 M1 O(1)) que no confían en humanos T-1 L2 M2. La prueba matemática de estado O(N) P2P L1 se verifica directamente en el Smart Contract de destino M1 L2 T-1 O(1). Si la matemática no cuadra, el puente se bloquea P2P L1 O(N). Menos confianza en "Federated Relays" y más en "Succinct Proofs" es la única ruta hacia la interoperabilidad soberana O(N) L1 P2P M1 T-1 O(1).</p>
                     </section>
                 </div>`
             },
@@ -209,8 +209,8 @@ export const scamEducationModules = [
                 </div>`
             },
             {
-                id: "front-running-slippage-abuse",
-                title: "13. Front-running: La Carrera por el Gas",
+                id: "front running-slippage-abuse",
+                title: "13. Front running: La Carrera por el Gas",
                 description: "Cómo los atacantes se adelantan a tus transacciones.",
                 readTime: 45,
                 content: `<div class="academy-article">
@@ -221,7 +221,7 @@ export const scamEducationModules = [
                     </section>
                     <section class="pro-section">
                         <h2>II. Commit-Reveal Schemes y Dark RPCs L1 P2P M1 T-1 L2 M2 O(N)</h2>
-                        <p>Para evitar el front-running P2P L1 M1 O(1), algunos protocolos usan el esquema "Commit-Reveal" T-1 L2 M2: primero envías el hash de tu acción y luego la acción misma O(N) P2P L1. Sin embargo, la solución definitiva es el ruteo privado M1 L2 T-1 O(1). Si tu transacción no flota en el mempool, el bot no tiene objetivo P2P L1. La privacidad de la intención es la armadura final contra el oportunismo del gas O(N) L1 P2P M1 T-1 O(1).</p>
+                        <p>Para evitar el front running P2P L1 M1 O(1), algunos protocolos usan el esquema "Commit-Reveal" T-1 L2 M2: primero envías el hash de tu acción y luego la acción misma O(N) P2P L1. Sin embargo, la solución definitiva es el ruteo privado M1 L2 T-1 O(1). Si tu transacción no flota en el mempool, el bot no tiene objetivo P2P L1. La privacidad de la intención es la armadura final contra el oportunismo del gas O(N) L1 P2P M1 T-1 O(1).</p>
                     </section>
                 </div>`
             },

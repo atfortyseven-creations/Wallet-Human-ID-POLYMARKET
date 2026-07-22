@@ -101,7 +101,7 @@ export function SystemContractModal() {
                   <div>
                     <h3 className="text-sm font-black tracking-tight">Privacy Architecture</h3>
                     <p className={`text-[9px] font-bold uppercase tracking-widest mt-0.5 ${isReadingPrivacy ? "text-[#00C076]/70" : "text-[#888888]"}`}>
-                      Data Governance & End-to-End Encryption
+                      Data Governance & End to End Encryption
                     </p>
                   </div>
                 </div>

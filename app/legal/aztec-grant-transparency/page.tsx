@@ -45,7 +45,7 @@ export default function AztecGrantTransparencyPage() {
             </p>
             <ul className="list-disc pl-5 space-y-2 mt-4">
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong>Frontend & System Architecture:</strong> The Next.js/React frontend (humanidfi.com), including the complex UI components and developer portal framework, is fully built and deployed to production.</span></li>
-              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong>MiCA Regulatory Suite (25 Documents):</strong> We have drafted the complete legal infrastructure required to operate as a MiCA-compliant utility token issuer. This includes the Crypto-Asset White Paper (Annex I), CNMV Classification Justification, and AML/CFT Prevention Manual. These documents are currently in the formal process of being signed.</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong>MiCA Regulatory Suite (25 Documents):</strong> We have drafted the complete legal infrastructure required to operate as a MiCA-compliant utility token issuer. This includes the Crypto Asset White Paper (Annex I), CNMV Classification Justification, and AML/CFT Prevention Manual. These documents are currently in the formal process of being signed.</span></li>
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong>Aztec Integration Architecture:</strong> The logical architecture for how our $QDs token interacts with Aztec is fully defined. We rely exclusively on Noir, the Aztec Private Execution Environment (PXE), and a dual-state model with a viewing-key escrow for AML attestation (Travel Rule).</span></li>
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong>Identity Verification Logic:</strong> The business logic mapping Sumsub biometric KYC tiers to the <code>mint_private_license</code> Noir circuit is strictly defined.</span></li>
             </ul>
@@ -74,7 +74,7 @@ export default function AztecGrantTransparencyPage() {
                   </tr>
                   <tr>
                     <td className="px-4 py-3 border-r border-black/10 font-bold text-black bg-black/5">3. Open Source Noir Tooling</td>
-                    <td className="px-4 py-3">Contributing our attestation-focused Noir circuit templates (Travel Rule attestation, biometric gating) back to the Aztec developer community as open-source primitives.</td>
+                    <td className="px-4 py-3">Contributing our attestation-focused Noir circuit templates (Travel Rule attestation, biometric gating) back to the Aztec developer community as open source primitives.</td>
                   </tr>
                 </tbody>
               </table>

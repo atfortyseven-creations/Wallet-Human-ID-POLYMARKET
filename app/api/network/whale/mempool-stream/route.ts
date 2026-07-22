@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
                 let txCount = 0;
                 let ethPriceUSD = 3000; // Fallback
                 
-                // Fetch real ETH price background task using centralized cache
+                // Fetch real ETH price background task using centralised cache
                 const updateEthPrice = async () => {
                     try {
                         ethPriceUSD = await getPriceCached('ethereum', 'ETH');

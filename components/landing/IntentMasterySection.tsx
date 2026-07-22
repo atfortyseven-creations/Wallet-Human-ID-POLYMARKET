@@ -31,7 +31,7 @@ export function IntentMasterySection() {
           </h2>
           <p className="text-slate-500 text-xl leading-relaxed max-w-3xl mx-auto font-medium">
             While others track transactions after the fact, we capture **Intents** before they reach the public mempool. 
-            Our Private Flow infrastructure ensures that your execution remains shielded from MEV-predators and front-running bots.
+            Our Private Flow infrastructure ensures that your execution remains shielded from MEV-predators and front running bots.
           </p>
         </div>
 

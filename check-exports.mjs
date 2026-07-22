@@ -1,4 +1,4 @@
-// Use the correct sub-path imports for aztec.js v4.3.1
+// Use the correct sub-path imports for aztec.js v5.0.0
 import('@aztec/aztec.js/node').then(async nodeModule => {
   console.log('node exports:', Object.keys(nodeModule).join(', '));
   

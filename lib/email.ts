@@ -41,7 +41,7 @@ export async function sendVerificationEmail(email: string, code: string): Promis
                     <tr>
                       <td style="padding: 40px 40px 20px; text-align: center;">
                         <h1 style="margin: 0; font-size: 32px; font-weight: 700; color: #000000;">Human<span style="color: #2563eb;">ID</span></h1>
-                        <p style="margin: 10px 0 0; font-size: 14px; color: #666666;">Decentralized Identity Protocol</p>
+                        <p style="margin: 10px 0 0; font-size: 14px; color: #666666;">Decentralised Identity Protocol</p>
                       </td>
                     </tr>
                     
@@ -155,7 +155,7 @@ export async function sendWelcomeEmail(email: string, name?: string): Promise<vo
                       </h2>
                       
                       <p style="font-size: 16px; line-height: 1.8; margin-bottom: 30px; font-weight: 500;">
-                        You have been successfully integrated into the most advanced on-chain analytics stream on the planet. Your terminal has been validated, and you are now part of the elite monitoring the system liquidity of the decentralized financial system.
+                        You have been successfully integrated into the most advanced on-chain analytics stream on the planet. Your terminal has been validated, and you are now part of the elite monitoring the system liquidity of the decentralised financial system.
                       </p>
 
                       <div style="background-color: #1D1A10; color: #B6EA26; padding: 30px; font-family: 'Roboto Mono', monospace; font-size: 12px; margin-bottom: 40px; border-left: 4px solid #D125C7;">

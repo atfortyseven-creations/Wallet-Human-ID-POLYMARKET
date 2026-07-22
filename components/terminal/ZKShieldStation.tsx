@@ -58,7 +58,7 @@ export function ZKShieldStation() {
                   </div>
                   <div>
                      <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-[#050505]">ZK AZTEC PROTOCOL // PRIVACY LAYER</h2>
-                     <p className="text-[9px] text-[#888888] font-bold uppercase tracking-widest mt-1">Non-Interactive Zero-Knowledge Subnet // Groth16 Implementation</p>
+                     <p className="text-[9px] text-[#888888] font-bold uppercase tracking-widest mt-1">Non-Interactive Zero Knowledge Subnet // Groth16 Implementation</p>
                   </div>
                </div>
                <div className="flex items-center gap-4 text-[8px] text-[#888888] font-bold uppercase tracking-[0.2em]">

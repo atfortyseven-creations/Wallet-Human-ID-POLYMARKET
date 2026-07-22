@@ -28,7 +28,7 @@ export async function GET(request: Request) {
       overall: 'BULLISH',
       whaleIndex: 88,
       retailIndex: 42,
-      divergence: 'Whales front-running retail panic',
+      divergence: 'Whales front running retail panic',
     };
 
     return NextResponse.json({

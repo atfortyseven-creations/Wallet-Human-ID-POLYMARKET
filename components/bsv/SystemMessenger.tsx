@@ -102,7 +102,7 @@ export const SystemMessenger = () => {
             status: 'verified_zk'
         }]);
         setInput('');
-        toast.success("Zero-Knowledge Proof verified on Aztec Sandbox");
+        toast.success("Zero Knowledge Proof verified on Aztec Sandbox");
     };
 
     return (

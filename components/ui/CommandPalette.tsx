@@ -128,7 +128,7 @@ export function CommandPalette({ onNavigate, onBridgeOpen }: CommandPaletteProps
     // Academy
     { id: "bitcoin-net",    label: "Bitcoin Network",     description: "Bitcoin protocol fundamentals",            icon: <Cpu size={15}/>,            category: "Academy",      action: () => navigate("bitcoin-net", "Bitcoin Network"), keywords: ["bitcoin", "network", "protocol", "learn"] },
     { id: "support",        label: "Support Center",      description: "Documentation and help resources",         icon: <GraduationCap size={15}/>,  category: "Academy",      action: () => navigate("support", "Support Center"),    keywords: ["support", "help", "docs"] },
-    { id: "exchange",       label: "Connect Exchange",    description: "Link centralized exchange accounts",       icon: <Link2 size={15}/>,          category: "Academy",      action: () => navigate("exchange", "Connect Exchange"), keywords: ["exchange", "cex", "connect", "binance"] },
+    { id: "exchange",       label: "Connect Exchange",    description: "Link centralised exchange accounts",       icon: <Link2 size={15}/>,          category: "Academy",      action: () => navigate("exchange", "Connect Exchange"), keywords: ["exchange", "cex", "connect", "binance"] },
     // Membership
     { id: "gold-whale",     label: "Gold Whale Network",  description: "Sovereign membership tier",            icon: <Zap size={15} style={{ color: "#D4AF37" }}/>, category: "Membership", action: () => navigate("gold-whale", "Gold Whale Network"), keywords: ["gold", "membership", "premium", "vip"] },
     // Actions

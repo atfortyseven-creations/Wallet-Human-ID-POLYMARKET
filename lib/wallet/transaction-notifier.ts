@@ -16,7 +16,7 @@ export interface TransactionNotification {
 
 /**
  * [LEGENDARY] Transaction Notifier Service
- * Centralized notification system for all transaction types
+ * Centralised notification system for all transaction types
  */
 class TransactionNotifierService {
   private history: TransactionNotification[] = [];

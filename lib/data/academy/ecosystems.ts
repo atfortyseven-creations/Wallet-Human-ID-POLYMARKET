@@ -311,7 +311,7 @@ export const ecosystemModules = [
                 </div>`
             },
             {
-                id: "stacks-bitcoin-smart-contracts",
+                id: "stacks-bitcoin-smart contracts",
                 title: "19. Stacks: Smart Contracts en Bitcoin",
                 description: "Proof of Transfer (PoX) y Clarity.",
                 readTime: 50,

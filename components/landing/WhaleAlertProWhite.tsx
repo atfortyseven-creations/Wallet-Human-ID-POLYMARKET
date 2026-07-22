@@ -296,7 +296,7 @@ export default function WhaleAlertProWhite() {
                     Sovereign Attest Detection.
                 </h2>
                 <p className="text-[18px] text-slate-500 leading-relaxed font-medium">
-                    Whales attempt to hide their massive orders by splitting them across decentralized exchanges or utilizing dark pools. Our heuristic engine acts as an inescapable net.
+                    Whales attempt to hide their massive orders by splitting them across decentralised exchanges or utilizing dark pools. Our heuristic engine acts as an inescapable net.
                 </p>
                 <p className="text-[18px] text-slate-500 leading-relaxed font-medium">
                     By clustering wallet behaviors and tracing topological graphs in real-time, the System Protocol flags OTC deals, sudden liquidity injections, and coordinated dumping behaviors instantly. We translate complex hexadecimal contract interactions into plain-English, actionable alerts.
@@ -317,10 +317,10 @@ export default function WhaleAlertProWhite() {
                     <Database size={24} className="text-[#0044CC]" />
                 </div>
                 <h2 className="text-[36px] sm:text-[48px] font-black text-[#0A0A0A] leading-[1.1] tracking-tight">
-                    Decentralized Node Mesh.
+                    Decentralised Node Mesh.
                 </h2>
                 <p className="text-[18px] text-slate-500 leading-relaxed font-medium">
-                    During extreme market volatility, public RPC endpoints fail. Centralized APIs go down precisely when you need them most. We built an architecture that refuses to break.
+                    During extreme market volatility, public RPC endpoints fail. Centralised APIs go down precisely when you need them most. We built an architecture that refuses to break.
                 </p>
                 <p className="text-[18px] text-slate-500 leading-relaxed font-medium">
                     The Whale Network is powered by a globally distributed mesh of dedicated blockchain nodes. This physical layer ensures absolute redundancy. If an entire region goes offline, our traffic instantly routes through alternative clusters, guaranteeing 99.99% uptime and zero mock data.
@@ -355,7 +355,7 @@ export default function WhaleAlertProWhite() {
             <div className="space-y-6">
                 {[
                     { q: "Is the data really live?", a: "Yes. Our proprietary node network streams mempool data with a latency of under 100ms. We do not rely on delayed third-party APIs. You are observing the blockchain's state before blocks are even mined." },
-                    { q: "How is my privacy protected?", a: "We operate on a Zero-Knowledge paradigm. We use End-to-End Encryption (E2EE) and never store your wallet's private keys. All session data is cryptographically ephemeral and bound to your local device." },
+                    { q: "How is my privacy protected?", a: "We operate on a Zero Knowledge paradigm. We use End to End Encryption (E2EE) and never store your wallet's private keys. All session data is cryptographically ephemeral and bound to your local device." },
                     { q: "Do I need to be a programmer to use this?", a: "No. The System Engine translates complex hexadecimal contract data into clear, human-readable alerts and beautiful UI dashboards." },
                     { q: "Can I cancel my tier at any time?", a: "Absolutely. Subscriptions are managed transparently. You can modify or terminate your access instantly through the settings dashboard with zero friction." }
                 ].map((item, i) => (

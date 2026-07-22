@@ -785,7 +785,7 @@ export function AztecIdentityCard() {
               <div>
                 <div className="text-[10px] font-black uppercase tracking-widest text-zinc-900">Noir ZK Sandbox</div>
                 <div className="text-[9px] text-zinc-900/50 mt-1 leading-relaxed">
-                  Compile and generate Barretenberg Zero-Knowledge proofs purely on your device.
+                  Compile and generate Barretenberg Zero Knowledge proofs purely on your device.
                   <br /><span className="font-mono text-zinc-900 font-bold mt-1 inline-block border-b border-zinc-900/20">Cost: 0.1 QDs</span>
                 </div>
               </div>
@@ -825,7 +825,7 @@ export function AztecIdentityCard() {
           </div>
           <div>
             <h3 className="text-[11px] font-black uppercase tracking-[0.3em] text-zinc-900 leading-none">Aztec Identity</h3>
-            <p className="text-[8px] text-zinc-900/40 uppercase tracking-widest mt-0.5">Testnet · Zero-Knowledge L2</p>
+            <p className="text-[8px] text-zinc-900/40 uppercase tracking-widest mt-0.5">Testnet · Zero Knowledge L2</p>
           </div>
         </div>
         <div className="flex items-center gap-2 self-end sm:self-auto">

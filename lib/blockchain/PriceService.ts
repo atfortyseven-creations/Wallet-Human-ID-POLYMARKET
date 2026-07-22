@@ -5,7 +5,7 @@ import { LRUCache } from 'lru-cache';
 
 /**
  * Legendary PriceService
- * Centralized high-performance pricing engine with multi-source fallback.
+ * Centralised high-performance pricing engine with multi-source fallback.
  */
 export class PriceService {
   private static cache = new LRUCache<string, any>({

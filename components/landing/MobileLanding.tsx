@@ -1516,7 +1516,7 @@ export function MobileLanding() {
         </div>
 
         <p className="text-center text-[9px] font-mono text-black/20 uppercase tracking-[0.2em] mt-3 mb-0.5">
-          Secured by Aztec · ZK-Native · End-to-End Encrypted
+          Secured by Aztec · ZK-Native · End to End Encrypted
         </p>
       </motion.div>
 

@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Aztec Testnet Integration
 - `fix(aztec/rpc)`: `NetworkStats.tsx` — changed hardcoded `localhost:8080` to `https://v5.testnet.rpc.aztec-labs.com` (public Aztec Alpha Testnet), confirmed by @joshc [AZTC] 2026-07-10
 - `fix(aztec/rpc)`: `lib/aztec/client.ts` — canonical `AZTEC_TESTNET_NODE` = `https://v5.testnet.rpc.aztec-labs.com`, SponsoredFPC address `0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7` (rc.2 canonical)
-- `fix(aztec/build)`: `NetworkStats.tsx` — converted static `@aztec/aztec.js` import to dynamic `await import()` inside `useEffect` — webpack no longer rejects the package path (v4.3.1 does not export its root path)
+- `fix(aztec/build)`: `NetworkStats.tsx` — converted static `@aztec/aztec.js` import to dynamic `await import()` inside `useEffect` — webpack no longer rejects the package path (v5.0.0 does not export its root path)
 - `fix(aztec/build)`: `GoldTicketPanel.tsx` — same dynamic import fix applied
 - `feat(aztec/pxe)`: `lib/aztec/client.ts` — `getPXEClient()`, `getRelayerWallet()`, `deriveSecretKeyFromEvm()` utilities ready for production PXE sidecar on Railway
 - `feat(aztec/contract)`: `lib/aztec/qds-contract.ts` — QDs token wrapper with `rawToQds()`/`qdsToRaw()` helpers and `getQDsBalance()`

@@ -162,7 +162,7 @@ export const cryptographyModules = [
 
                     <section class="pro-section">
                         <h2>II. Proof-of-Stake (PoS) Asimétrico y Finalidad PBFT P2P L2</h2>
-                        <p>Los Consensos modernos Ethereum (Gasper) o Tendermint (Cosmos) mutaron a Garantías CriptoEconómicas internas. El capital apostado es Cautivo y Observable L2 (32 ETH Staking). Si un General Bizantino PoS (Validador) propone Bloque-Dobles M2 P2P Hostiles, el Código Algorítmico L1 asume función de Ejecutor T-1 Incorruptible P2P confiscando robóticamente sus 32 ETH (Slashing) y Expulsándolo irrevocable L2. Tendermint implementa Finalidad L1 BFT inmediata: una vez 2/3 de los Nodos Validadores Firman el Bloque con Rúbrica Multi-sig M2 L2 Cripto ECDSA L1, el bloque nunca Criptográficamente M2 será re-organizado L1, destituyendo demoras "Probabilísticas" (Confirmaciones Bitcoin de 6 bloques perimetrales) por Certeza Definitiva Inyectada Algorítmicamente instantánea M2 T-1 L1.</p>
+                        <p>Los Consensos modernos Ethereum (Gasper) o Tendermint (Cosmos) mutaron a Garantías CriptoEconómicas internas. El capital apostado es Cautivo y Observable L2 (32 ETH Staking). Si un General Bizantino PoS (Validador) propone Bloque-Dobles M2 P2P Hostiles, el Código Algorítmico L1 asume función de Ejecutor T-1 Incorruptible P2P confiscando robóticamente sus 32 ETH (Slashing) y Expulsándolo irrevocable L2. Tendermint implementa Finalidad L1 BFT inmediata: una vez 2/3 de los Nodos Validadores Firman el Bloque con Rúbrica Multisig M2 L2 Cripto ECDSA L1, el bloque nunca Criptográficamente M2 será re-organizado L1, destituyendo demoras "Probabilísticas" (Confirmaciones Bitcoin de 6 bloques perimetrales) por Certeza Definitiva Inyectada Algorítmicamente instantánea M2 T-1 L1.</p>
                     </section>
                 </div>`
             },
@@ -270,20 +270,20 @@ export const cryptographyModules = [
 
                     <section class="pro-section">
                         <h2>II. Cifrado de Flujo ARX: ChaCha20 y el Ocaso de AES</h2>
-                        <p>AES-256 es el Estándar Gobernamental, pero es pesado L1 y vulnerable computacionalmente (Timing/Cache Attacks L2) si el Hardware M2 P2P carece de "Instrucciones de Silicio AES-NI L1". El Criptógrafo Daniel J. Bernstein fabricó la salvación L2: La Familia <em>Salsa20/ChaCha20 M2</em>. Estos Stream Ciphers operan por estructura <strong>ARX (Add-Rotate-XOR) L1</strong>, eludiendo Tables Setups. ChaCha20 proporciona una Aleatoriedad Indistinguible Pseudoaleatoria L2 (PRF) un 300% más veloz en microcontroladores T-1 IoT o Móviles ARM desprovistos M1 sin AES, coronándolo como el Protocolo VPN/Wireguard/TLS Criptográfico End-to-End P2P supremo de latencia cero.</p>
+                        <p>AES-256 es el Estándar Gobernamental, pero es pesado L1 y vulnerable computacionalmente (Timing/Cache Attacks L2) si el Hardware M2 P2P carece de "Instrucciones de Silicio AES-NI L1". El Criptógrafo Daniel J. Bernstein fabricó la salvación L2: La Familia <em>Salsa20/ChaCha20 M2</em>. Estos Stream Ciphers operan por estructura <strong>ARX (Add-Rotate-XOR) L1</strong>, eludiendo Tables Setups. ChaCha20 proporciona una Aleatoriedad Indistinguible Pseudoaleatoria L2 (PRF) un 300% más veloz en microcontroladores T-1 IoT o Móviles ARM desprovistos M1 sin AES, coronándolo como el Protocolo VPN/Wireguard/TLS Criptográfico End to End P2P supremo de latencia cero.</p>
                     </section>
                 </div>`
             },
             {
-                id: "zero-knowledge-proofs",
+                id: "zero knowledge-proofs",
                 title: "16. Pruebas de Conocimiento Cero (ZKP)",
                 description: "zk-SNARKs, STARKs y privacidad extrema.",
                 readTime: 60,
                 content: `<div class="academy-article">
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
-                        <h2>I. Paradoja de Demostración Ciega a Terceros (Zero-Knowledge M2 L1)</h2>
-                        <p>Demostrar Fiduciariamente Propiedad T-1 tradicional en el Orbe Consensuado L2 demanda fatalmente "Exhibir tu Contraseña en Claro (Leakage) P2P al Server de Verificación L1", confiando fútilmente M2 que no la divulgue y vulnere tu Arquetipo Vital de Privacidad. <strong>ZKP (Zero-Knowledge Proofs)</strong> es el Coloso Matemático Invertidor L2: Una Prover L1 logra, sin ápice de asimetría de información exógena L2 T-1, que un Verifier M2 certifique como Válido Empírico e Inapelable un Postulado L1, <em>Revelando estricta y rígidamente Cero Byes de Data Subyacente del Enigma (Null Transcript Knowledge L2)</em>.</p>
+                        <h2>I. Paradoja de Demostración Ciega a Terceros (Zero Knowledge M2 L1)</h2>
+                        <p>Demostrar Fiduciariamente Propiedad T-1 tradicional en el Orbe Consensuado L2 demanda fatalmente "Exhibir tu Contraseña en Claro (Leakage) P2P al Server de Verificación L1", confiando fútilmente M2 que no la divulgue y vulnere tu Arquetipo Vital de Privacidad. <strong>ZKP (Zero Knowledge Proofs)</strong> es el Coloso Matemático Invertidor L2: Una Prover L1 logra, sin ápice de asimetría de información exógena L2 T-1, que un Verifier M2 certifique como Válido Empírico e Inapelable un Postulado L1, <em>Revelando estricta y rígidamente Cero Byes de Data Subyacente del Enigma (Null Transcript Knowledge L2)</em>.</p>
                     </section>
 
                     <section class="pro-section">
@@ -337,7 +337,7 @@ export const cryptographyModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. El Enigma de la Aleatoriedad Imparcial Distribuida (RANDAO M2 L1)</h2>
-                        <p>Los contratos Inteligentes T-1 P2P M2 (L2 Lotteries, Validators Selection) que usan el Reloj Fíat del Minero L1 (Block Timestamp) como semilla Aleatoria P2P sufren de Manipulación y MEV Atroces. Si el Minero desecha el Bloque L2 porque la Lotería M2 M1 no le favorece, destruye la confiabilidad del Casino Descentralizado (Entropy Centralized Extracción L2). Generar Semillas Aleatorias incorruptibles M2 L1 Globales es el Grial T-1 de Solana y Algorand P2P.</p>
+                        <p>Los contratos Inteligentes T-1 P2P M2 (L2 Lotteries, Validators Selection) que usan el Reloj Fíat del Minero L1 (Block Timestamp) como semilla Aleatoria P2P sufren de Manipulación y MEV Atroces. Si el Minero desecha el Bloque L2 porque la Lotería M2 M1 no le favorece, destruye la confiabilidad del Casino Descentralizado (Entropy Centralised Extracción L2). Generar Semillas Aleatorias incorruptibles M2 L1 Globales es el Grial T-1 de Solana y Algorand P2P.</p>
                     </section>
 
                     <section class="pro-section">

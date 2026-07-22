@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 /**
  * GET /api/aztec/test-flow?address=0x...
  *
- * Runs a comprehensive end-to-end test of the QD spend flow:
+ * Runs a comprehensive end to end test of the QD spend flow:
  * 1. Derives the Aztec address for the given EVM address
  * 2. Checks the current balance from the DB ledger
  * 3. Tests airdrop idempotency

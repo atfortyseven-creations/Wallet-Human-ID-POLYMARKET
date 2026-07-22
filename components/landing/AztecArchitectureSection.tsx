@@ -26,7 +26,7 @@ const SECURITY_PILLARS = [
     index: "04",
     label: "Secure Operations",
     protocol: "Encrypted Tunnels",
-    body: "Every action you take is routed through secure, end-to-end encrypted connections. Your data and strategies are always protected from third-party viewing."
+    body: "Every action you take is routed through secure, end to end encrypted connections. Your data and strategies are always protected from third-party viewing."
   }
 ];
 
@@ -35,7 +35,7 @@ const HIGHLIGHTS = [
   { key: "State Management", value: "Encrypted UTXOs (Private State)" },
   { key: "Encryption Standard", value: "AES-GCM-256" },
   { key: "Identity Verification", value: "Biometric Activeness Proofs" },
-  { key: "Session Control", value: "Zero-Knowledge Mathematics" },
+  { key: "Session Control", value: "Zero Knowledge Mathematics" },
   { key: "Cross-Layer Execution", value: "Seamless L1  L2 Messaging" }
 ];
 
@@ -69,7 +69,7 @@ const AZTEC_EXTENDED_POINTS = [
     desc: "Security proofs are generated on your own device, ensuring your raw data never leaves your hands."
   },
   {
-    title: "Decentralized Network",
+    title: "Decentralised Network",
     desc: "A globally distributed network processes transactions blindly, meaning they cannot front-run or censor you."
   },
   {

@@ -6,6 +6,8 @@
  */
 
 import { createAztecNodeClient } from '@aztec/aztec.js/node';
+import { getContractClassFromArtifact, contractInstanceWithAddressFromPlainObject } from '@aztec/stdlib/contract';
+import { SponsoredFeePaymentMethod } from '@aztec/aztec.js/fee';
 import { EmbeddedWallet } from '@aztec/wallets/embedded';
 import { Fr } from '@aztec/foundation/curves/bn254';
 import { AztecAddress } from '@aztec/stdlib/aztec-address';
@@ -55,11 +57,30 @@ async function main() {
   const addr = accountManager.address;
   console.log(ok(addr.toString().slice(0, 22) + '…'));
 
+  // ── 3b. Registrar FPC ────────
+  process.stdout.write('  [3b] Registrando FPC en PXE... ');
+  const fpcAddress = AztecAddress.fromStringUnsafe(SPONSORED_FPC);
+  try {
+    const plainFpc = await node.getContract(fpcAddress);
+    const inst = contractInstanceWithAddressFromPlainObject(fpcAddress, plainFpc);
+    await wallet.registerContract({
+      artifact: SponsoredFPCContractArtifact,
+      instance: inst
+    });
+    process.stdout.write('✓ OK\n');
+  } catch (err) {
+    process.stdout.write('\n    (Aviso: No se pudo registrar el FPC. Puede fallar si la clase difiere)\n');
+    console.error(err);
+  }
+  
+  const paymentMethod = new SponsoredFeePaymentMethod(fpcAddress, wallet);
+
+  
   // ── 5. Construir y enviar la Tx ────────
   process.stdout.write('  [4/5] Enviando deploy (prueba ZK V5)  ');
   
   const deployTx = await TokenContract.deploy(wallet, addr, 'Quantum Dots', 'QDs', 18n)
-    .send({ universalDeploy: true, from: addr });
+    .send({ universalDeploy: true, from: addr, fee: { feePaymentMethod: paymentMethod } });
   const receipt = await deployTx.wait();
   
   process.stdout.write('\n         ¡minada en testnet!\n');

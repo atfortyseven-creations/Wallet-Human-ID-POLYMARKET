@@ -916,12 +916,12 @@ uint256 userSharesSafe = (amount * totalSupply) / totalAssets;
 
                     <section class="pro-section">
                         <h2>II. Defensa Estructural: TWAP y Chainlink Aggregators</h2>
-                        <p>La contramedida institucional contra la deformación instantánea es prohibir la dependencia de cotizaciones atómicas. Un analista audita que los protocolos dependan íntegramente de <strong>TWAP (Time-Weighted Average Price)</strong> de Uniswap V3, que suaviza los precios acumulativamente a lo largo de docenas de bloques, o del <strong>Decentralized Oracle Network (DON)</strong> de Chainlink, implementando validaciones <code>require(answeredInRound >= roundID)</code> para garantizar que el precio sea algorítmicamente fresco e inmune a las inyecciones intra-bloque.</p>
+                        <p>La contramedida institucional contra la deformación instantánea es prohibir la dependencia de cotizaciones atómicas. Un analista audita que los protocolos dependan íntegramente de <strong>TWAP (Time-Weighted Average Price)</strong> de Uniswap V3, que suaviza los precios acumulativamente a lo largo de docenas de bloques, o del <strong>Decentralised Oracle Network (DON)</strong> de Chainlink, implementando validaciones <code>require(answeredInRound >= roundID)</code> para garantizar que el precio sea algorítmicamente fresco e inmune a las inyecciones intra-bloque.</p>
                     </section>
                 </div>`
             },
             {
-                id: "smart-contract-vulnerabilities",
+                id: "smart contract-vulnerabilities",
                 title: "20. Vectores Clínicos de Ataque a Contratos",
                 description: "Disección técnica de la explotación: De la reentrancia multi-contrato al compromiso de invariantes.",
                 readTime: 260,
@@ -1127,7 +1127,7 @@ uint256 userSharesSafe = (amount * totalSupply) / totalAssets;
 
                     <section class="pro-section">
                         <h2>II. Programabilidad del Cumplimiento (Attestation-as-Code)</h2>
-                        <p>El futuro reside en los <strong>Privacy-Preserving Protocols</strong> que utilizan Zero-Knowledge Proofs (ZKP) para demostrar cumplimiento regulatorio sin exponer la estrategia de attesting o el balance total. Para la Whale Academy, esto representa el clímax de la soberanía: control absoluto de la identidad y el flujo de datos, operando con eficiencia institucional pero con la privacidad del "Bosque Oscuro".</p>
+                        <p>El futuro reside en los <strong>Privacy-Preserving Protocols</strong> que utilizan Zero Knowledge Proofs (ZKP) para demostrar cumplimiento regulatorio sin exponer la estrategia de attesting o el balance total. Para la Whale Academy, esto representa el clímax de la soberanía: control absoluto de la identidad y el flujo de datos, operando con eficiencia institucional pero con la privacidad del "Bosque Oscuro".</p>
                         
                         <div class="diagram-container">
                             <svg viewBox="0 0 800 150" style="background: rgba(0,0,0,0.2); border-radius: 8px;">

@@ -22,7 +22,7 @@ export function SystemManifesto() {
                  Protocol <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#00f5ff] to-[#bd00ff]">Lexicon</span>
                </h2>
                <p className="mt-8 text-neutral-400 font-medium leading-relaxed text-base md:text-xl">
-                 An empirical outline of the systemic infrastructure required to transition away from centralized reliance. This document establishes the core tenets of an immutable consensus network resilient to external vector degradation.
+                 An empirical outline of the systemic infrastructure required to transition away from centralised reliance. This document establishes the core tenets of an immutable consensus network resilient to external vector degradation.
                </p>
             </motion.div>
 
@@ -30,10 +30,10 @@ export function SystemManifesto() {
             <div className="flex flex-col gap-32 lg:gap-48 w-full">
                 <ManifestoSection 
                    title="01 / Architectural Foundation" 
-                   description="The basal layer of the protocol operates autonomously via decentralized cryptographic ledgers. Distributed networks ensure redundancy while asset management relies strictly on programmatic mathematical guarantees, avoiding sovereign custodianship entirely."
+                   description="The basal layer of the protocol operates autonomously via decentralised cryptographic ledgers. Distributed networks ensure redundancy while asset management relies strictly on programmatic mathematical guarantees, avoiding sovereign custodianship entirely."
                    lotties={[
-                     { file: "Earth globe rotating with Seamless loop animation.json", title: "Global Node Distribution Geometry", desc: "Topographic dispersion of decentralized validating machines." },
-                     { file: "DeeWork About Blockchain.json", title: "Decentralized Ledger Cryptography", desc: "Cryptographic hashing algorithms binding immutable chained state." },
+                     { file: "Earth globe rotating with Seamless loop animation.json", title: "Global Node Distribution Geometry", desc: "Topographic dispersion of decentralised validating machines." },
+                     { file: "DeeWork About Blockchain.json", title: "Decentralised Ledger Cryptography", desc: "Cryptographic hashing algorithms binding immutable chained state." },
                      { file: "Crypto coins.json", title: "Core-Resistant Asset Management", desc: "Non-custodial, peer-to-peer liquidity handling and custody vectors." }
                    ]}
                 />
@@ -44,7 +44,7 @@ export function SystemManifesto() {
                    lotties={[
                      { file: "Big Data Analytics.json", title: "Thermodynamic Telemetry", desc: "Processing raw hex-encoded block data into behavioral maps." },
                      { file: "Isometric data analysis.json", title: "Predictive Vector Modeling", desc: "Machine learning heuristics tracking whale migration patterns." },
-                     { file: "A Female Employee is Reading Financial Statements.json", title: "Algorithmic Integrity Auditing", desc: "Automated verification of smart-contract liquidity reserves." }
+                     { file: "A Female Employee is Reading Financial Statements.json", title: "Algorithmic Integrity Auditing", desc: "Automated verification of smart contract liquidity reserves." }
                    ]}
                    reverse
                 />
@@ -55,8 +55,8 @@ export function SystemManifesto() {
                    lotties={[
                      { file: "enterprice.json", title: "Cryptographic Redundancy Grid", desc: "Fail-over clustering preventing catastrophic single-point failures." },
                      { file: "Manufacturing Industry Working Staff.json", title: "Infrastructural Load Balancing", desc: "Dynamic resource allocation across synchronized cluster nodes." },
-                     { file: "Business Analysis.json", title: "Yield Assessment Heuristics", desc: "Yield aggregation evaluation across diverse decentralized exchanges." },
-                     { file: "Browser Loading.json", title: "Sub-Second State Synchronization", desc: "Light-client propagation over decentralized peer gossip networks." },
+                     { file: "Business Analysis.json", title: "Yield Assessment Heuristics", desc: "Yield aggregation evaluation across diverse decentralised exchanges." },
+                     { file: "Browser Loading.json", title: "Sub-Second State Synchronization", desc: "Light-client propagation over decentralised peer gossip networks." },
                      { file: "Abstract Isometric Loader #1.json", title: "Consensus State Compilation", desc: "Aggregating valid mempool injections into finalized block proposals." }
                    ]}
                 />
@@ -66,7 +66,7 @@ export function SystemManifesto() {
                    description="The terminal phase of execution rigorously guarantees deterministic transaction finality. Overcoming geographical frictions involves atomic algorithmic settlement parameters, replacing legacy liquidity pipelines with direct peer-to-peer economic kinetic transfer layers."
                    lotties={[
                      { file: "Attest.json", title: "Algorithmic Market Execution", desc: "Programmatic order routing ensuring zero slippage and MEV resistance." },
-                     { file: "Online Payment.json", title: "Frictionless Decentralized Transfer", desc: "Censorship-resistant cross-chain value transmission models." },
+                     { file: "Online Payment.json", title: "Frictionless Decentralised Transfer", desc: "Censorship-resistant cross-chain value transmission models." },
                      { file: "Payments.json", title: "Cross-Border Terminal Liquidity", desc: "Atomic swapping infrastructure eliminating intermediary banks." },
                      { file: "Payment Success.json", title: "Immutable Transaction Finality", desc: "Deterministic block validation proving unequivocal ownership transfer." }
                    ]}
@@ -75,10 +75,10 @@ export function SystemManifesto() {
 
                 <ManifestoSection 
                    title="05 / Protocol Interaction Abstractions" 
-                   description="Synthesizing the global layer demands robust integration paradigms. Utilizing optimized Zero-Knowledge rollup computations, users interact securely with the computational ether. The abstract UI interface completely obfuscates the complex cryptographic reality underneath."
+                   description="Synthesizing the global layer demands robust integration paradigms. Utilizing optimized Zero Knowledge rollup computations, users interact securely with the computational ether. The abstract UI interface completely obfuscates the complex cryptographic reality underneath."
                    lotties={[
                      { file: "website.json", title: "Interface Abstraction Logic", desc: "Translating raw bytecode execution into human-readable topography." },
-                     { file: "File Loading.json", title: "Zero-Knowledge Rollup Processing", desc: "Compressing thousands of verifications into a single mathematical proof." },
+                     { file: "File Loading.json", title: "Zero Knowledge Rollup Processing", desc: "Compressing thousands of verifications into a single mathematical proof." },
                      { file: "Share.json", title: "Distributed State Propagation", desc: "Ensuring all remote nodes possess identical consensus validation signatures." },
                      { file: "Metaverse animations.json", title: "Spatial Web3 Computations", desc: "Immersive logic layers overlaying traditional internet TCP/IP structures." }
                    ]}

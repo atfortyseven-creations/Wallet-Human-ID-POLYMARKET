@@ -13,13 +13,13 @@ This system is structurally incapable of collecting user state. Data is sealed v
 > **Aztec Foundation Grant Acknowledgement:**
 > Humanity Ledger & Whale Network are built as public goods for the Zero-Knowledge ecosystem. This repository is proudly fully open-source (MIT License) and architected to meet the strictest cypherpunk requirements of the Aztec Foundation Grant program.
 
-## What's New \u2014 July 10, 2026
+## What's New — July 10, 2026
 
 - **Immersive Landing Page**: Full desktop and mobile redesign with Framer Motion scroll animations, global registry map, and Aztec integration showcase
-- **Native Wallet Connection**: `<appkit-button />` directly on landing page \u2014 no redirect required. Works on iOS, Android, and all desktop browsers
+- **Native Wallet Connection**: `<appkit-button />` directly on landing page — no redirect required. Works on iOS, Android, and all desktop browsers
 - **Aztec Testnet**: All RPC endpoints updated to `https://v5.testnet.rpc.aztec-labs.com` (Alpha Testnet rc.2). SponsoredFPC address confirmed by @joshc [AZTC]
-- **Build Fix**: Dynamic imports for `@aztec/aztec.js` v4.3.1 \u2014 webpack compatibility resolved across all components
-- **Mobile Viewport**: iOS/Android safe-area insets + `100dvh` + `DvhPolyfill` \u2014 zero clipping on Dynamic Island devices
+- **Build Fix**: Dynamic imports for `@aztec/aztec.js` v5.0.0 — webpack compatibility resolved across all components
+- **Mobile Viewport**: iOS/Android safe-area insets + `100dvh` + `DvhPolyfill` — zero clipping on Dynamic Island devices
 
 ## The Cypherpunk Mandate
 
@@ -57,7 +57,7 @@ The frontend is built to operate under adversarial network conditions.
 | **Testnet Node** | `https://v5.testnet.rpc.aztec-labs.com` |
 | **Explorer** | `https://testnet.aztecscan.xyz` |
 | **SponsoredFPC** | `0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7` |
-| **Aztec.js** | `v4.3.1` |
+| **Aztec.js** | `v5.0.0` |
 | **Network** | Aztec Alpha Testnet (rc.2) |
 
 ## Documentation Topology

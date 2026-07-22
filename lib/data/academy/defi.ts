@@ -141,7 +141,7 @@ export const defiModules = [
                 </div>`
         },
         {
-            id: "liquity-decentralized-stability",
+            id: "liquity-decentralised-stability",
             title: "8. Liquity: Estabilidad Descentralizada y LUSD",
             description: "Análisis del protocolo de préstamos con interés cero y liquidaciones instantáneas.",
             readTime: 190,
@@ -179,7 +179,7 @@ export const defiModules = [
         {
             id: "mev-protection-shielding",
             title: "10. MEV Protection: Blindando el Protocolo contra el Saneamiento",
-            description: "Defensa contra ataques sándwich y front-running en la ejecución de transacciones.",
+            description: "Defensa contra ataques sándwich y front running en la ejecución de transacciones.",
             readTime: 210,
             content: `<div class="academy-article">
                     <section class="pro-section">

@@ -2,7 +2,7 @@ import { type Hex } from 'viem';
 
 /**
  * ProverService
- * Manages decentralized proof generation for the Whale Network L3.
+ * Manages decentralised proof generation for the Whale Network L3.
  * Integrates Succinct SP1 and RiscZero for trustless state verification.
  */
 export class ProverService {

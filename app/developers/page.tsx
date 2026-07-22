@@ -113,7 +113,7 @@ const FullStack = () => {
     { num: "04", title: "Distributed Telemetry", desc: "A Redis topology enforces per-identity rate limits atomically. Usage ceilings are validated at the edge before any request reaches the application layer." },
     { num: "05", title: "Graph Database Topologies", desc: "Neo4j maps structural relationships between accounts, separating systemic capital flow patterns from isolated transaction events with precision that relational databases cannot match." },
     { num: "06", title: "Heuristic Block Analysis", desc: "Continuous state monitoring evaluates gas expenditure, contract interaction patterns, and timing characteristics to surface sovereign behavioural signals in real time." },
-    { num: "07", title: "Encrypted Messaging", desc: "Peer-to-peer communications are end-to-end encrypted at the protocol layer, anchored to wallet keys. No server holds the decryption material." },
+    { num: "07", title: "Encrypted Messaging", desc: "Peer-to-peer communications are end to end encrypted at the protocol layer, anchored to wallet keys. No server holds the decryption material." },
     { num: "08", title: "Zero-Trust Service Layer", desc: "API access is provisioned programmatically by verifying cryptographic subscription proofs. No manual intervention or privileged human access is involved in the authorisation path." }
   ];
 
@@ -124,7 +124,7 @@ const FullStack = () => {
             Core <br/> <span className="text-black/40 italic">Infrastructure.</span>
          </h2>
          <p className="mt-10 font-sans text-[20px] text-[#1a1a1a] max-w-4xl leading-[1.8] tracking-[0.01em]">
-            Every system layer is built with precision. We implement a deterministic, cryptographically provable framework designed for high-frequency analytical environments and zero-knowledge privacy operations.
+            Every system layer is built with precision. We implement a deterministic, cryptographically provable framework designed for high-frequency analytical environments and zero knowledge privacy operations.
          </p>
       </div>
 
@@ -209,7 +209,7 @@ const ToolsAndLibraries = () => {
                    <div className="mb-10">
                       <div className="font-serif text-[26px] font-normal hover:text-[#0044CC] cursor-pointer transition-colors mb-6">System Sandbox</div>
                       <p className="font-sans text-[15px] leading-[1.8] tracking-[0.01em] text-black/70">
-                        An isolated test environment enabling developers to execute zero-knowledge circuit tests and REST queries with minimal network latency before mainnet deployment.
+                        An isolated test environment enabling developers to execute zero knowledge circuit tests and REST queries with minimal network latency before mainnet deployment.
                       </p>
                    </div>
                 </div>
@@ -510,7 +510,7 @@ export default function DevelopersPage() {
                transition={{ delay: 0.2 }}
                className="font-sans text-[20px] md:text-[24px] text-[#1a1a1a] max-w-4xl leading-[1.7] mb-20 text-balance tracking-[0.01em]"
              >
-               The definitive technical reference for builders integrating with Whale Network. This document covers the exact cryptographic models, zero-knowledge constraints, and state transition logic that power the underlying architecture. Last updated June 5, 2026.
+               The definitive technical reference for builders integrating with Whale Network. This document covers the exact cryptographic models, zero knowledge constraints, and state transition logic that power the underlying architecture. Last updated June 5, 2026.
              </motion.p>
 
          </div>

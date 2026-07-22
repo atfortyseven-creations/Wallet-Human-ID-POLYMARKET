@@ -35,7 +35,7 @@ export function WelcomeModal() {
     },
     {
       title: "PRIVACY-PRESERVING ARCHITECTURE",
-      desc: "Your session is secured through MEV-protected routing and zero-knowledge proof primitives. Every dashboard interaction and transaction preview is cryptographically isolated from public mempool visibility.",
+      desc: "Your session is secured through MEV-protected routing and zero knowledge proof primitives. Every dashboard interaction and transaction preview is cryptographically isolated from public mempool visibility.",
       icon: <ShieldCheck size={48} className="text-[#00F2EA]" strokeWidth={1} />,
       action: "CONFIRM & CONTINUE"
     },

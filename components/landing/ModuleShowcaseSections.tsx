@@ -195,12 +195,12 @@ function DevelopersShowcase() {
                 <span className="text-white/40">to Aztec Network.</span>
               </SectionTitle>
               <SectionBody>
-                Whale Network operates as the sovereign application layer over Aztec's zero-knowledge execution environment. We abstract the complexity of ZK circuits into a sovereign-grade terminal — providing high-net-worth individuals and enterprises with complete privacy over their transactions, assets, and communications.
+                Whale Network operates as the sovereign application layer over Aztec's zero knowledge execution environment. We abstract the complexity of ZK circuits into a sovereign-grade terminal — providing high-net-worth individuals and enterprises with complete privacy over their transactions, assets, and communications.
               </SectionBody>
               <motion.div variants={FADE_UP} className="flex flex-wrap items-center gap-4">
                 <NavButton href="/developers/api-docs" label="View API Docs" />
                 <NavButton href="/developer/sandbox" label="Try Sandbox" variant="outline" />
-                <NavButton href="/developer/introduction-to-decentralized-analysis" label="Read Guides" variant="outline" />
+                <NavButton href="/developer/introduction-to-decentralised-analysis" label="Read Guides" variant="outline" />
               </motion.div>
             </div>
           </div>
@@ -222,7 +222,7 @@ function RegistryShowcase() {
               <span className="text-white/40">verified across 195 countries.</span>
             </SectionTitle>
             <SectionBody>
-              The Whale Network Identity Registry maps cryptographic attestations to real-world verification standards across every jurisdiction. Using zero-knowledge proofs, identities are verified once and proven indefinitely — without repeated document disclosure. This is the compliance layer of the post-KYC era.
+              The Whale Network Identity Registry maps cryptographic attestations to real-world verification standards across every jurisdiction. Using zero knowledge proofs, identities are verified once and proven indefinitely — without repeated document disclosure. This is the compliance layer of the post-KYC era.
             </SectionBody>
             <motion.div variants={FADE_UP} className="flex flex-wrap items-center justify-center gap-4 mt-4">
               <NavButton href="/registry" label="Explore Registry" />
@@ -286,7 +286,7 @@ function WhaleChatShowcase() {
             <motion.div variants={FADE_UP} className="flex flex-col gap-4">
               {[
                 {
-                  title: "End-to-End ZK Encryption",
+                  title: "End to End ZK Encryption",
                   desc: "Messages are encrypted using keys derived from your Aztec private note. The server processes only nullifiers — never content.",
                   badge: "Aztec Native",
                 },
@@ -409,7 +409,7 @@ function StudioProvenanceShowcase() {
               <span className="text-white/40">public exposure.</span>
             </SectionTitle>
             <SectionBody>
-              Studio Provenance is a zero-knowledge certification engine for digital and physical assets. Built on Noir circuits and deployed on the Aztec rollup, it enables creators, institutions, and collectors to establish irrefutable proof of asset origin, ownership history, and authenticity — all without revealing sensitive metadata to the public ledger.
+              Studio Provenance is a zero knowledge certification engine for digital and physical assets. Built on Noir circuits and deployed on the Aztec rollup, it enables creators, institutions, and collectors to establish irrefutable proof of asset origin, ownership history, and authenticity — all without revealing sensitive metadata to the public ledger.
             </SectionBody>
             <motion.div variants={FADE_UP} className="flex flex-wrap items-center justify-center gap-4 mt-2">
               <NavButton href="/studio/provenance" label="Open Studio" />
@@ -428,7 +428,7 @@ function StudioProvenanceShowcase() {
               {
                 step: "02",
                 title: "ZK Proof Generation",
-                desc: "A Noir circuit generates a zero-knowledge proof of your asset's provenance, signed by your Aztec identity.",
+                desc: "A Noir circuit generates a zero knowledge proof of your asset's provenance, signed by your Aztec identity.",
                 icon: <Cpu size={24} />,
               },
               {
@@ -575,7 +575,7 @@ function LegalComplianceShowcase() {
                 <span className="text-white/40">Regulatory-ready.</span>
               </SectionTitle>
               <SectionBody>
-                Whale Network is architected from the ground up to satisfy the most demanding legal and compliance frameworks globally — from EU GDPR and MiCA to US SEC guidance and FATF travel rules. Our compliance layer uses zero-knowledge selective disclosure to satisfy auditors and regulators without public exposure of private data.
+                Whale Network is architected from the ground up to satisfy the most demanding legal and compliance frameworks globally — from EU GDPR and MiCA to US SEC guidance and FATF travel rules. Our compliance layer uses zero knowledge selective disclosure to satisfy auditors and regulators without public exposure of private data.
               </SectionBody>
               <motion.div variants={FADE_UP} className="flex flex-wrap items-center gap-4">
                 <NavButton href="/legal/compliance" label="Read Compliance" />
@@ -586,7 +586,7 @@ function LegalComplianceShowcase() {
             <motion.div variants={FADE_UP} className="grid grid-cols-1 gap-4">
               {[
                 { badge: "EU GDPR", label: "Full data minimization compliance via ZK proof architecture." },
-                { badge: "MiCA", label: "Markets in Crypto-Assets regulation alignment and disclosure readiness." },
+                { badge: "MiCA", label: "Markets in Crypto Assets regulation alignment and disclosure readiness." },
                 { badge: "FATF Travel Rule", label: "Selective disclosure keys for cross-border transaction reporting." },
                 { badge: "W3C VC", label: "Verifiable Credentials standard — machine-readable, court-admissible." },
                 { badge: "AML/KYC", label: "Prove identity compliance without re-submitting documents repeatedly." },
@@ -619,7 +619,7 @@ function SupportShowcase() {
                 </span>
               </SectionTitle>
               <SectionBody>
-                Enterprise deployments, SLA agreements, custom integration support, and dedicated security consulting. Whale Network provides enterprise-grade onboarding for institutions, DAOs, and regulated entities requiring bespoke zero-knowledge infrastructure.
+                Enterprise deployments, SLA agreements, custom integration support, and dedicated security consulting. Whale Network provides enterprise-grade onboarding for institutions, DAOs, and regulated entities requiring bespoke zero knowledge infrastructure.
               </SectionBody>
             </div>
             <motion.div variants={FADE_UP} className="flex flex-col gap-4 w-full lg:w-auto shrink-0">

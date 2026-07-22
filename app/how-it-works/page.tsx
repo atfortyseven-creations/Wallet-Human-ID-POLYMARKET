@@ -41,7 +41,7 @@ export default function HowItWorksPage() {
               <div className="flex-1">
                 <h3 className="text-2xl font-black uppercase tracking-tighter mb-4 text-black">Account Creation</h3>
                 <p className="text-black/60 font-sans text-base leading-relaxed">
-                  When you sign up, the system generates a secure wallet directly on your device. Your private keys never leave your device. A unique decentralized identifier is registered on the network.
+                  When you sign up, the system generates a secure wallet directly on your device. Your private keys never leave your device. A unique decentralised identifier is registered on the network.
                 </p>
               </div>
             </div>

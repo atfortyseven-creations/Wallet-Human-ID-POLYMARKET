@@ -15,7 +15,7 @@ const AZTEC_EXPLORER = 'https://testnet.aztecscan.xyz';
  *
  * Transfers QDs on the Aztec Testnet v5 (rc.2).
  *
- * Architecture (SDK v4.3.1 — verified from source):
+ * Architecture (SDK v5.0.0 — verified from source):
  *
  *   MODE A — Full on-chain transfer (requires AZTEC_TOKEN_CONTRACT_ADDRESS):
  *     1. EmbeddedWallet.create(pxeUrl, { ephemeral: true })

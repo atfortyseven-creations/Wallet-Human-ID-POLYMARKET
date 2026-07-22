@@ -278,7 +278,7 @@ function DOMAnnotations({ scrollProgress }: { scrollProgress: number }) {
                 Sovereign <span className="text-[var(--aztec-orchid)]">Logic Core</span>
               </h3>
               <p className="text-white/60 text-[10px] uppercase font-aztec-mono tracking-widest leading-relaxed relative z-10">
-                Programmable zero-knowledge execution nodes. 100% mathematical certainty, 0% data leakage.
+                Programmable zero knowledge execution nodes. 100% mathematical certainty, 0% data leakage.
               </p>
             </div>
           </motion.div>

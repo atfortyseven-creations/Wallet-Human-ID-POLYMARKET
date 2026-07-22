@@ -20,7 +20,7 @@ if (typeof process !== 'undefined' && !_cleanupRan) {
     const TEST_TITLES = [
         'Overview', '29', 'bitcoin', 'Macroeconomic Analytics',
         'btc', '8', '2 seconds', '08', 'Hello',
-        'Zero-Knowledge Architecture', 'blockchain'
+        'Zero Knowledge Architecture', 'blockchain'
     ];
     // Fire and forget — never blocks a request
     (prisma as any).forumTopic.deleteMany({ where: { title: { in: TEST_TITLES } } })

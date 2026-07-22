@@ -4,7 +4,7 @@ import { ChainId, blockchainService } from './BlockchainService';
 /**
  * SwapService
  * Integration with 1inch/0x Aggregators.
- * Provides real quotes and constructs calldata for decentralized swaps.
+ * Provides real quotes and constructs calldata for decentralised swaps.
  */
 export class SwapService {
   private readonly ONEINCH_API_URL = 'https://api.1inch.dev/swap/v6.0';

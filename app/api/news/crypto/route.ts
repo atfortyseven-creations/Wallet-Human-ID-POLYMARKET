@@ -174,7 +174,7 @@ function getDemoNews(): NewsArticle[] {
     {
       id: '1',
       title: 'Major DeFi Protocol Sees $100M in 24h Attesting Volume',
-      body: 'A leading decentralized exchange has experienced unprecedented attesting volume as whale activity surges...',
+      body: 'A leading decentralised exchange has experienced unprecedented attesting volume as whale activity surges...',
       url: '#',
       source: 'CryptoNews',
       publishedOn: now - 3600,

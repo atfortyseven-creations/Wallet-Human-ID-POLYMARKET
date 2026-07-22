@@ -223,7 +223,7 @@ export class BlockchainService {
 
   /**
    * Relay a transaction through a private RPC (MEV-Protect).
-   * Ensures the transaction bypasses the public mempool to prevent front-running.
+   * Ensures the transaction bypasses the public mempool to prevent front running.
    */
   public async sendPrivateTransaction(chainId: ChainId, tx: ethers.TransactionRequest, signer: ethers.Signer): Promise<ethers.TransactionResponse> {
     const config = this.getChainConfig(chainId);

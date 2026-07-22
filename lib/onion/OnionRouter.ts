@@ -2,7 +2,7 @@
  * OnionRouter.ts — Whale Chat Quantum Onion Routing Engine
  * ═══════════════════════════════════════════════════════════
  *
- * Orchestrates the construction of an onion circuit for end-to-end
+ * Orchestrates the construction of an onion circuit for end to end
  * privacy-preserving message delivery through multiple relay nodes.
  *
  * Flow:

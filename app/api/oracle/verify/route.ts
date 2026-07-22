@@ -67,7 +67,7 @@ async function fetchRealFactCheck(claim: string): Promise<FactCheckResult> {
       claim,
       isTrue: null,
       confidence: 0,
-      summary: "Error connecting to decentralized search oracle.",
+      summary: "Error connecting to decentralised search oracle.",
       sources: [],
       analyzedAt: new Date()
     };

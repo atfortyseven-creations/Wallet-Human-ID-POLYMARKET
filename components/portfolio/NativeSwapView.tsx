@@ -350,7 +350,7 @@ export function NativeSwapView({ address, onBack }: any) {
 
         if (useMultiSig) {
             toast.loading("Multi-Sig Swap Initiated", { description: "Transaction pushed to Safe{Wallet} for signatures." });
-            addLog("Multi-sig execution queued to Gnosis Safe.");
+            addLog("Multisig execution queued to Gnosis Safe.");
             return;
         }
 

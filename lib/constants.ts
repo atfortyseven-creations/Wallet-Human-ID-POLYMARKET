@@ -1,7 +1,7 @@
 ﻿/**
  * Whale Network NETWORK - SOVEREIGN CONSTANTS
  * 
- * Centralized registry for visual assets, identities, and system parameters.
+ * Centralised registry for visual assets, identities, and system parameters.
  */
 
 export const VISUAL_ASSETS = {

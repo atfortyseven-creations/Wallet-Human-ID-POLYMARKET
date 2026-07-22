@@ -95,7 +95,7 @@ export const WalkawayPanel = () => {
                         <Lock size={14} className="text-[#FF3B30]" /> Walkaway Switch v3
                     </CardTitle>
                     <p className="text-[9px] text-[#888888] uppercase tracking-widest font-bold">
-                        Decentralized Ownership Handover
+                        Decentralised Ownership Handover
                     </p>
                 </div>
                 <Badge variant="outline" className="px-3 py-1 font-black bg-[#FF3B30]/10 text-[#FF3B30] border-[#FF3B30]/20 uppercase tracking-widest text-[8px]">
@@ -120,7 +120,7 @@ export const WalkawayPanel = () => {
                             Governance Clause
                         </div>
                         <p className="text-[10px] leading-relaxed text-[#050505] font-medium">
-                            If no heartbeat is detected for 180 consecutive days, all protocol administrative privileges are automatically transferred to the community-governed multi-signature vault.
+                            If no heartbeat is detected for 180 consecutive days, all protocol administrative privileges are automatically transferred to the community-governed multisignature vault.
                         </p>
                     </div>
 

@@ -20,7 +20,7 @@ export default function InstitutionalFooter() {
           </div>
           <p className="text-sm text-black/60 leading-relaxed font-serif max-w-sm">
             The System Analytics Protocol for advanced on-chain observability. 
-            Built on the principles of absolute privacy and zero-knowledge state transitions.
+            Built on the principles of absolute privacy and zero knowledge state transitions.
           </p>
         </div>
 

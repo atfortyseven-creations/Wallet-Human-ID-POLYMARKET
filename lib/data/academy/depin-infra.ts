@@ -13,7 +13,7 @@ export const depinModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. La Falla Teórica del Servidor Centralizado (AWS/GCP SPoF L1 M2 P2P T-1 O(N))</h2>
-                        <p>Delegar el 90% de la web global a granjas de servidores de 3 empresas (Amazon, Google, Microsoft) es un vector de ataque civilizatorio O(1) P2P L1 M1. Un incendio en US-East-1 T-1 L2 M2 o una orden judicial (Subpoena L1 O(N)) paraliza la economía digital P2P M1. <strong>Decentralized Physical Infrastructure Networks (DePIN L1 P2P M2 T-1 O(1))</strong> resuelven esto monetizando M1 el hardware redundante global L2.</p>
+                        <p>Delegar el 90% de la web global a granjas de servidores de 3 empresas (Amazon, Google, Microsoft) es un vector de ataque civilizatorio O(1) P2P L1 M1. Un incendio en US-East-1 T-1 L2 M2 o una orden judicial (Subpoena L1 O(N)) paraliza la economía digital P2P M1. <strong>Decentralised Physical Infrastructure Networks (DePIN L1 P2P M2 T-1 O(1))</strong> resuelven esto monetizando M1 el hardware redundante global L2.</p>
                     </section>
                     <section class="pro-section">
                         <h2>II. Mercados de Almacenamiento Criptográfico (Filecoin & Arweave L1 P2P M1 T-1 O(N))</h2>
@@ -39,7 +39,7 @@ export const depinModules = [
                 </div>`
             },
             {
-                id: "akash-decentralized-cloud",
+                id: "akash-decentralised-cloud",
                 title: "3. Computación Descentralizada: Akash Network",
                 description: "El Airbnb de los centros de datos.",
                 readTime: 50,
@@ -209,7 +209,7 @@ export const depinModules = [
                 </div>`
             },
             {
-                id: "hivemapper-decentralized-maps",
+                id: "hivemapper-decentralised-maps",
                 title: "13. Mapeando el Mundo: Hivemapper",
                 description: "Dashcams que destronan a Google Maps.",
                 readTime: 45,
@@ -255,7 +255,7 @@ export const depinModules = [
                     </section>
                     <section class="pro-section">
                         <h2>II. Subredes Mesh P2P y Credenciales Soberanas L1 P2P M1 T-1 L2 M2 O(N)</h2>
-                        <p>Instalas un Firmware open-source O(1) P2P L1 M1 en tu router T-1 L2 M2. Cuando un nodo caminante O(N) (usuario con su app) pasa cerca de tu casa P2P M1 L1, se conecta a tu Wi-Fi M2 L2 T-1 O(1). Se establece un <em>Micro-pago de Canal de Estado (State Channel L1 P2P M1 O(N) T-1)</em>. El router cobra M2 L2 P2P O(1) en fracciones de USDC por Megabyte usado M1 L1 O(N). El ISP tradicional es rebajado T-1 L2 M2 a un mero "Dumb Pipe O(1) P2P L1", mientras el valor residual es capturado asimétricamente por el ciudadano M1 O(N) L2 T-1.</p>
+                        <p>Instalas un Firmware open source O(1) P2P L1 M1 en tu router T-1 L2 M2. Cuando un nodo caminante O(N) (usuario con su app) pasa cerca de tu casa P2P M1 L1, se conecta a tu Wi-Fi M2 L2 T-1 O(1). Se establece un <em>Micro-pago de Canal de Estado (State Channel L1 P2P M1 O(N) T-1)</em>. El router cobra M2 L2 P2P O(1) en fracciones de USDC por Megabyte usado M1 L1 O(N). El ISP tradicional es rebajado T-1 L2 M2 a un mero "Dumb Pipe O(1) P2P L1", mientras el valor residual es capturado asimétricamente por el ciudadano M1 O(N) L2 T-1.</p>
                     </section>
                 </div>`
             },
@@ -319,7 +319,7 @@ export const depinModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. La Trampa de la Red de Retención Unidireccional (Utility Monopolies L1 M2 P2P T-1 O(N))</h2>
-                        <p>Las Utilities L1 P2P M1 O(1) compran tu excedente de techos solares a 3 centavos T-1 L2 M2 y se lo venden a tu vecino a 20 centavos O(N) P2P L1. <strong>Power Ledger (Decentralized Energy Grids L1 P2P M2 T-1 O(1))</strong> rompe la subyugación del peaje físico local M1.</p>
+                        <p>Las Utilities L1 P2P M1 O(1) compran tu excedente de techos solares a 3 centavos T-1 L2 M2 y se lo venden a tu vecino a 20 centavos O(N) P2P L1. <strong>Power Ledger (Decentralised Energy Grids L1 P2P M2 T-1 O(1))</strong> rompe la subyugación del peaje físico local M1.</p>
                     </section>
                     <section class="pro-section">
                         <h2>II. Micro-Grid Transactive Energy Markets P2P L1 P2P M1 T-1 L2 M2 O(N)</h2>

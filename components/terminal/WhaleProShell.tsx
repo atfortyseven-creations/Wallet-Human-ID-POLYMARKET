@@ -433,8 +433,6 @@ export function WhaleProShell({
                         style={{
                             scrollbarWidth: 'none',
                             msOverflowStyle: 'none',
-                            overscrollBehavior: 'contain',
-                            touchAction: 'pan-y',
                         }}
                     >
                         <div className="pb-0 md:pb-0 w-full flex-1 flex flex-col relative z-10">

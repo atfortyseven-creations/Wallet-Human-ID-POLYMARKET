@@ -14,7 +14,7 @@ The System Mesh Protocol
 The Akashic Ledger
 Mass Transfer Analytics
 The System Vault
-Zero-Knowledge Infrastructure
+Zero Knowledge Infrastructure
 The Data Persistence Layer
 The API Surface
 The Dashboard Terminal
@@ -273,7 +273,7 @@ The implementation uses a Solidity smart contract (SystemDeadmanSwitch.sol) depl
 9.5 The Wallet Module: Send, Swap, Bridge, Buy
 The Wallet module within the Portfolio interface provides four operational modes:
 
-Send: Constructs and broadcasts native token or ERC-20 transfer transactions using the connected wallet's signing capability. Supports direct address input, ENS name resolution (resolved via the Ethereum mainnet ENS registry), and optional MEV-protected routing through Flashbots RPC for mainnet transactions where front-running risk is significant.
+Send: Constructs and broadcasts native token or ERC-20 transfer transactions using the connected wallet's signing capability. Supports direct address input, ENS name resolution (resolved via the Ethereum mainnet ENS registry), and optional MEV-protected routing through Flashbots RPC for mainnet transactions where front running risk is significant.
 
 Swap: Aggregates swap routes across all major DEX protocols via the Li.Fi aggregation SDK. For each requested swap, the system fetches routes from 1inch, Paraswap, OpenOcean, and native pool sources simultaneously, selects the route with the optimal output amount after gas cost adjustment, and presents it to the user with full breakdown before requesting signing. Limit order functionality uses 1inch V3 EIP-712 typed data signing for gasless limit placement.
 
@@ -281,16 +281,16 @@ Bridge: Selects optimal cross-chain bridge routes using Li.Fi's cross-chain rout
 
 Buy: Integrates with the MoonPay fiat-to-crypto onramp for card-based crypto acquisition. The module constructs a pre-filled MoonPay session with the user's wallet address, selected currency, and selected crypto asset, and opens the MoonPay checkout in a new tab for compliance-isolated processing.
 
-10. Zero-Knowledge Infrastructure
-The zero-knowledge proof infrastructure provides two distinct capabilities: private signal authentication for the System Mesh, and identity verification for Sybil-resistant access control.
+10. Zero Knowledge Infrastructure
+The zero knowledge proof infrastructure provides two distinct capabilities: private signal authentication for the System Mesh, and identity verification for Sybil-resistant access control.
 
 10.1 Signal Authentication via Groth16
-Sentinel nodes that produce signals for the System Mesh are required to construct a zero-knowledge proof demonstrating that their identity key satisfies the mesh membership predicate without revealing the key itself. This proof is constructed using SnarkJS with a Groth16 proving scheme over the BN254 elliptic curve.
+Sentinel nodes that produce signals for the System Mesh are required to construct a zero knowledge proof demonstrating that their identity key satisfies the mesh membership predicate without revealing the key itself. This proof is constructed using SnarkJS with a Groth16 proving scheme over the BN254 elliptic curve.
 
 The membership circuit accepts the sentinel node's identity key as a private input and the node's public commitment (stored in the mesh membership smart contract) as a public input, and produces a proof that the private key corresponds to the registered commitment without revealing the key. This architecture provides the mesh with Sybil resistance: only nodes that have gone through the registration process  which includes proof of stake and a waiting period  can publish authenticated signals.
 
 10.2 World ID Integration
-The Whale ID verification system uses World Network's World ID protocol to provide proof-of-personhood verification for institutional feature access. World ID produces a zero-knowledge proof that the user has been verified as a unique human being by the World Network's biometric system, without revealing any biometric data to the application or linking the proof to any specific physical identity.
+The Whale ID verification system uses World Network's World ID protocol to provide proof-of-personhood verification for institutional feature access. World ID produces a zero knowledge proof that the user has been verified as a unique human being by the World Network's biometric system, without revealing any biometric data to the application or linking the proof to any specific physical identity.
 
 The proof verification occurs on-chain against the World ID verifier contract deployed on Optimism. The application submits the user's nullifier hash, root, and proof to /api/verify-human, which relays it to the verifier contract. If verification succeeds, the user's address is marked as verified in the PostgreSQL database and their access tier is elevated accordingly.
 
@@ -496,7 +496,7 @@ Coinbase  Provides the Coinbase Wallet SDK and Smart Wallet infrastructure, enab
 
 Clerk  Provides the session management infrastructure for authenticated users, including JWT-based session tokens, multi-device session management, organisational identity management for team accounts, and webhook delivery of session lifecycle events.
 
-World Network (Identity)  Provides the World ID zero-knowledge proof-of-personhood verification infrastructure used for Sybil-resistant institutional tier access control. The World ID nullifier hash mechanism ensures that each unique human can claim exactly one verified identity tier activation across all platform instances.
+World Network (Identity)  Provides the World ID zero knowledge proof-of-personhood verification infrastructure used for Sybil-resistant institutional tier access control. The World ID nullifier hash mechanism ensures that each unique human can claim exactly one verified identity tier activation across all platform instances.
 
 23.3 DeFi and Aggregation Partners
 Li.Fi  Provides the cross-chain swap and bridge aggregation SDK used in the Wallet module's Swap and Bridge modes. Li.Fi aggregates liquidity from all major DEX protocols and bridge providers and selects optimal routes based on output amount, execution time, and security model.
@@ -517,7 +517,7 @@ Prisma  Provides the type-safe ORM and database schema management system. Prisma
 Vercel (secondary deployment)  Provides the edge network infrastructure used for static asset delivery and as the secondary deployment target for the Next.js application in geographically-proximate edge regions.
 
 23.5 Security and Cryptography Partners
-Ethereum Foundation / PSE (Privacy and Scaling Explorations)  The SnarkJS library maintained by the PSE team provides the Groth16 zero-knowledge proof generation and verification used in the System Mesh signal authentication system.
+Ethereum Foundation / PSE (Privacy and Scaling Explorations)  The SnarkJS library maintained by the PSE team provides the Groth16 zero knowledge proof generation and verification used in the System Mesh signal authentication system.
 
 OpenZeppelin  The OpenZeppelin Contracts library provides the audited smart contract building blocks used in the SystemDeadmanSwitch and membership ERC-1155 implementations. OpenZeppelin's contract audit process provides a known-good security baseline for on-chain components.
 
@@ -534,7 +534,7 @@ World Foundation Developer Programme  World Foundation has provided development 
 Coinbase Developer Platform  Coinbase has provided developer access to the Coinbase Smart Wallet SDK and Base network infrastructure through the Coinbase Developer Platform programme.
 
 24.2 Open Source Community Acknowledgements
-The Whale Network makes extensive use of open-source software. The following communities and maintainers deserve specific acknowledgement for the quality of their work:
+The Whale Network makes extensive use of open source software. The following communities and maintainers deserve specific acknowledgement for the quality of their work:
 
 The Next.js team at Vercel, for the application framework that makes the production deployment architecture possible.
 The Viem and Wagmi maintainers, for the type-safe EVM interaction libraries that underpin the vault and transaction infrastructure.

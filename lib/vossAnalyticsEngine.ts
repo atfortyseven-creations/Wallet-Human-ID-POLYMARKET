@@ -98,7 +98,7 @@ const TITLES: Record<number, string[]> = {
     "Community Grant Committee", "Bug Bounty ZK Submission", "System Hackathon 2026",
     "Token-Gated Analytics Layer", "NFT-Bound Pro Subscription", "Community Watchlist Voting",
     "Leaderboard Retention Engine", "Daily Active Whale Streak", "Social Recovery Guardian Network",
-    "Whale School Graduation Badge", "Open Research DAO Format", "Decentralized Curation Market",
+    "Whale School Graduation Badge", "Open Research DAO Format", "Decentralised Curation Market",
     "P2P Knowledge Graph Sharing", "Governance Proposal Template Kit", "Cross-Community Bridge Protocol",
     "System Alumni Network", "Whale IQ Global Ranking", "Anonymous Whale Spotlight",
     "Sovereign Onboarding Guide", "Monthly System State Report", "Quarterly Whale Summit",
@@ -167,7 +167,7 @@ const TITLES: Record<number, string[]> = {
   ],
   8: [
     "World ID Anti-Sybil Auth Gate", "Hardware Security Module Vault", "Groth16 ZK-Login Protocol",
-    "MPC Threshold Signer v2", "Zero-Knowledge KYC Verifier", "FIDO2 Biometric Enclave",
+    "MPC Threshold Signer v2", "Zero Knowledge KYC Verifier", "FIDO2 Biometric Enclave",
     "Time-Delay Social Recovery", "Dead Man's Switch ZK Upgrade", "System Key Derivation",
     "BIP-32 HD Wallet Hardening", "Passkey WebAuthn Integration", "Argon2id Memory-Hard Hash",
     "AES-256-GCM Envelope Keys", "ChaCha20-Poly1305 Transport", "TLS 1.3 Pinning Grid",
@@ -240,7 +240,7 @@ const DESCRIPTIONS: Record<number, string[]> = {
   2: [
     "On-chain prediction engine classifying whale wallet behavior using DBSCAN clustering over 90 days of mempool signals.",
     "Dark pool detector identifying hidden block volume via implied vs realized volatility analysis in sub-second time.",
-    "MEV sandwich attack scanner alerting in real-time when a wallet pads blocks with front-running on target transactions.",
+    "MEV sandwich attack scanner alerting in real-time when a wallet pads blocks with front running on target transactions.",
     "Liquidation alert system monitoring margin positions across top 15 DeFi protocols and notifying prior to cascade events.",
     "Sovereign smart money classifier labeling wallets by historical behavior: exchanges, ETFs, quant funds, DAO treasuries.",
     "On-chain sentiment aggregator combining funding rates, options skew, and net flows to generate a market regime index.",
@@ -267,7 +267,7 @@ const DESCRIPTIONS: Record<number, string[]> = {
     "Analytics bounty program where the community provides verified on-chain analysis and receives rewards in $WHALE tokens.",
     "System Discord and Telegram bot broadcasting Whale Networks in real-time with enriched on-chain context and dashboard links.",
     "Certified ambassador system with ZK-proof identity: no visible KYC, with verifiable on-chain reputation via smart contract.",
-    "Decentralized curation marketplace where the community votes for the best whale signals and the author receives subscription revenue share.",
+    "Decentralised curation marketplace where the community votes for the best whale signals and the author receives subscription revenue share.",
     "Gamification system with daily streaks, on-chain achievements, and a global leaderboard of verified on-chain Whale IQ score.",
     "Social recovery network where 5 user-chosen guardians sign access recovery without revealing the master private key.",
     "Whale School: 50-lesson curriculum on on-chain analysis with a graduation NFT unlocking premium dashboard modules.",
@@ -328,7 +328,7 @@ const DESCRIPTIONS: Record<number, string[]> = {
     "PostgreSQL read replica mesh: writes to primary, reads distributed to 3 geographic replicas for < 30ms global latency.",
     "TimescaleDB hyper-tables: automatic time-chunk partitioning (1 day), compressing historical data > 7 days by 90% space.",
     "CDN edge cache across 300+ Cloudflare PoPs: static assets with 1-year TTL, API responses with stale-while-revalidate for zero perceived latency.",
-    "Distributed tracing with OpenTelemetry: every request traced end-to-end from ingestion engine to API response with span IDs.",
+    "Distributed tracing with OpenTelemetry: every request traced end to end from ingestion engine to API response with span IDs.",
     "Prometheus + Grafana stack: 200+ exposed metrics, P50/P99 latency dashboards, PagerDuty alerts for SLA violations.",
     "BullMQ with Redis backend: priority work queues, exponential backoff retries, dead-letter queue, and monitoring UI for devs.",
     "Circuit breaker pattern on all external clients: 5 failures in 60s opens the circuit, fallback to cache, automatic reset in 30s.",
@@ -348,7 +348,7 @@ const DESCRIPTIONS: Record<number, string[]> = {
 };
 
 const COMPETITIVE_EDGES: string[] = [
-  "Nansen uses centralized data warehouses; we mathematically prove the graph on-chain without central points of failure.",
+  "Nansen uses centralised data warehouses; we mathematically prove the graph on-chain without central points of failure.",
   "Arkham collapses under deep historical queries; Akashic Sharding parallelizes time in deterministic O(1).",
   "We eliminate 100% of counterparty risk by operating in System-Grade mode with no external custodians or intermediaries.",
   "Zero-perceived latency compared to the median 3-second lag of competing Web2 platforms.",
@@ -356,7 +356,7 @@ const COMPETITIVE_EDGES: string[] = [
   "Glassnode has data, we have context: the difference between seeing and understanding the sovereign market.",
   "Dune Analytics requires manual SQL; we execute natural language queries with an internal LLM.",
   "Bloomberg has price; we have the 'why' behind the price with complete and immutable on-chain traceability.",
-  "Chainalysis complies with the government; we serve the individual system with zero-knowledge by default.",
+  "Chainalysis complies with the government; we serve the individual system with zero knowledge by default.",
   "DeBank shows balance; we predict the next move with whale behavior models.",
   "Zerion has a pretty UI; we have the analytics engine that no frontend in the world can buy.",
   "CryptoSlate publishes news; we generate sovereign analysis that precedes on-chain events.",

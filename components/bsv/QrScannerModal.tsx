@@ -104,7 +104,7 @@ export const QrScannerModal = ({ isOpen, onClose, onScan }: QrScannerModalProps)
 
                <div className="mt-8 flex items-center gap-4 px-6 py-3 bg-white/5 border border-white/10 rounded-2xl w-full">
                   <Shield size={16} className="text-[var(--aztec-orchid)]" />
-                  <span className="text-[9px] font-black uppercase tracking-widest opacity-60">End-to-End Encrypted Hardware Bridge</span>
+                  <span className="text-[9px] font-black uppercase tracking-widest opacity-60">End to End Encrypted Hardware Bridge</span>
                </div>
             </div>
 

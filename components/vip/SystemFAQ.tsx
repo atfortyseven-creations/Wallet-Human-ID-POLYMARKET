@@ -17,12 +17,12 @@ const FAQ_DATA: FAQItem[][] = [
         { q: "What is the real-time latency difference?", a: "We operate on a proprietary mempool stream that precedes traditional RPC providers by 50-150ms, allowing users to identify move signatures before they are finalized.", tag: "PERFORMANCE" },
         { q: "Does the system support L2 native forensic analysis?", a: "Yes. Unlike generic systems, we analyze Arbitrum and Optimism sequencer batches directly to identify liquidity shifts at the rollup level.", tag: "NETWORKS" },
         { q: "How is identity tracking superior to legacy platforms?", a: "Our system identifies 'Ghost Wallets'addresses that move funds without explicit entity labelingusing behavioral fingerprinting rather than simple public tags.", tag: "INTELLIGENCE" },
-        { q: "What role does ZK-Analytics play?", a: "We use zero-knowledge proofs to allow high-tier alerts without compromising the original provider's anonymity, preserving the alpha of the source.", tag: "PRIVACY" },
+        { q: "What role does ZK-Analytics play?", a: "We use zero knowledge proofs to allow high-tier alerts without compromising the original provider's anonymity, preserving the alpha of the source.", tag: "PRIVACY" },
         { q: "Is the sovereign data feed compatible with standard Protobuf?", a: "Our v4 schema is fully compliant with modern gRPC streams, allowing direct ingestion into sovereign algorithmic attesting systems.", tag: "PROTOCOL" },
         { q: "How do we handle block reorgs on high-speed chains?", a: "We use a 'Virtual State Buffer' that validates transaction finality across three concurrent confirmation forks before flagging an alert.", tag: "RELIABILITY" },
         { q: "What protection does the system offer against MEV?", a: "Our alerts include a 'Slippage Risk Score' (SRS) that predicts if a transaction is likely to be front-run by sovereign bots.", tag: "SECURITY" },
         { q: "Can the system detect hardware wallet signatures?", a: "We can identify patterns consistent with Ledger/Trezor cold storage movements, differentiating them from high-velocity hot wallet churn.", tag: "FORENSICS" },
-        { q: "What is the System Analytics Network (SIN)?", a: "It is our decentralized node layer that ensures data integrity and resistance to regulatory censorship of on-chain information.", tag: "GOVERNANCE" }
+        { q: "What is the System Analytics Network (SIN)?", a: "It is our decentralised node layer that ensures data integrity and resistance to regulatory censorship of on-chain information.", tag: "GOVERNANCE" }
     ],
     // PAGE 2: Security & Privacy
     [
@@ -85,7 +85,7 @@ const FAQ_DATA: FAQItem[][] = [
         { q: "Is there a limit to the number of tracked wallets?", a: "No. Our horizontally scalable elastic-compute engine handles billions of events across millions of identified signatures.", tag: "SCALING" },
         { q: "How do we identify 'Exchange Proxy' addresses?", a: "We characterize wallets based on inflow/outflow frequency and time-correlation with known exchange hot-wallet rotations.", tag: "EXCHANGES" },
         { q: "What is the 'Actor Velocity' indicator?", a: "A high-frequency metric tracking how quickly an asset moves through sovereign hands vs. retail churn.", tag: "METRICS" },
-        { q: "Does the system monitor Decentralized Stablecoins?", a: "Yes, we monitor the collateral-to-debt ratios of large actors to predict treasury-driven liquidation events.", tag: "STABLES" },
+        { q: "Does the system monitor Decentralised Stablecoins?", a: "Yes, we monitor the collateral-to-debt ratios of large actors to predict treasury-driven liquidation events.", tag: "STABLES" },
         { q: "Can we track 'Governance Hijacking' alerts?", a: "We flag sudden concentration of voting power in DAO contracts that could signal a hostile takeover attempt.", tag: "GOVERNANCE" },
         { q: "What is the 'Sovereign Grade' guarantee?", a: "A 99.9% data accuracy SLA verified by independent on-chain auditing nodes in the System Analytics Network.", tag: "QUALITY" }
     ],
@@ -106,7 +106,7 @@ const FAQ_DATA: FAQItem[][] = [
     [
         { q: "Is the Whale Network system compliant with GDPR?", a: "Yes. We analyze public ledger data only and do not associate any PII (Personally Identifiable Information) with wallet addresses.", tag: "PRIVACY" },
         { q: "How can I keep my own movements private?", a: "Use private transfers and wallets that separate public activity from personal flows. Combine that with cautious address reuse and reputable privacy tools.", tag: "PRIVACY" },
-        { q: "What is the 'Zero-Knowledge' alert verify?", a: "A feature allowing us to prove the existence of a move without revealing the destination address until it is settled.", tag: "ZK" },
+        { q: "What is the 'Zero Knowledge' alert verify?", a: "A feature allowing us to prove the existence of a move without revealing the destination address until it is settled.", tag: "ZK" },
         { q: "How do we manage 'Data Systemty'?", a: "Users own their alert filters; no data is shared with third-party advertising or surveillance firms.", tag: "ETHICS" },
         { q: "Can the system detect identity disclosure attempts?", a: "We flag public social media correlations to warn users when their private wallet may have been compromised by public OSINT.", tag: "SECURITY" },
         { q: "What is the 'MPC' search advantage?", a: "Multi-party computation ensures that your specific search queries are mathematically impossible for us to decrypt or store.", tag: "TECH" },

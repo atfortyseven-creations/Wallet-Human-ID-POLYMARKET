@@ -8,11 +8,11 @@ export default function ChangelogPage() {
       version: 'v2.0.0-alpha',
       date: 'May 2026',
       title: 'The Aztec Migration',
-      description: 'Complete architecture overhaul to support Zero-Knowledge execution via Aztec Network.',
+      description: 'Complete architecture overhaul to support Zero Knowledge execution via Aztec Network.',
       changes: [
         { type: 'major', text: 'Integrated Barretenberg backend for client-side proving.' },
         { type: 'major', text: 'Replaced ECDSA signatures with Noir zk-SNARK circuits.' },
-        { type: 'removed', text: 'Removed all centralized biometric dependencies (Worldcoin).' },
+        { type: 'removed', text: 'Removed all centralised biometric dependencies (Worldcoin).' },
         { type: 'security', text: 'Implemented encrypted UTXO state for QDs.' }
       ]
     },

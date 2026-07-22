@@ -77,7 +77,7 @@ export function MobileManifesto() {
           </motion.h1>
 
           <motion.p variants={FADE_UP} className="text-[15px] text-[#444] leading-[1.6] mb-10 max-w-[340px] mx-auto px-4 font-medium">
-            Whale Network operates as the sovereign application layer over Aztec's zero-knowledge execution environment. We abstract the complexity of ZK circuits into a sovereign-grade terminal.
+            Whale Network operates as the sovereign application layer over Aztec's zero knowledge execution environment. We abstract the complexity of ZK circuits into a sovereign-grade terminal.
           </motion.p>
 
           <motion.div variants={FADE_UP} className="w-full max-w-[300px] mx-auto flex flex-col items-center gap-3">
@@ -157,7 +157,7 @@ export function MobileManifesto() {
 
         <div className="space-y-6 relative z-10">
           {[
-            { num: '01', title: 'Local Proving', desc: 'Your device runs Noir circuits locally, generating a zero-knowledge proof before touching the network.' },
+            { num: '01', title: 'Local Proving', desc: 'Your device runs Noir circuits locally, generating a zero knowledge proof before touching the network.' },
             { num: '02', title: 'Encrypted State', desc: 'Balances and identity credentials are stored as encrypted UTXO notes on the Aztec L2.' },
             { num: '03', title: 'Nullifier Resistance', desc: 'The protocol emits a deterministic nullifier, preventing double spending while keeping you completely anonymous.' },
           ].map((block, i) => (
@@ -192,7 +192,7 @@ export function MobileManifesto() {
 
           <div className="space-y-6 font-serif text-[16px] text-white/80 leading-[1.7] text-center max-w-[340px] mx-auto mb-10 px-2">
             <p>
-              Centralized messaging platforms are liabilities for sovereign operations. Whale Chat is built on XMTP ÔÇö encrypted directly with authorized personnel keys.
+              Centralised messaging platforms are liabilities for sovereign operations. Whale Chat is built on XMTP ÔÇö encrypted directly with authorized personnel keys.
             </p>
             
             <AnimatePresence>

@@ -5,7 +5,7 @@ export default function FeaturesPage() {
     return (
         <DocLayout
             title="Features"
-            description="Discover WhaleAlert ID.fi's powerful features: zero-knowledge identity, multi-chain wallet, professional attesting tools, and Elite-grade analytics."
+            description="Discover WhaleAlert ID.fi's powerful features: zero knowledge identity, multi-chain wallet, professional attesting tools, and Elite-grade analytics."
             lastUpdated="February 7, 2026"
             category="Product"
         >
@@ -14,7 +14,7 @@ export default function FeaturesPage() {
                 <section className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 p-8 rounded-xl border border-white/10">
                     <h2 className="text-4xl font-bold mb-4">The Future of DeFi Identity & Attesting</h2>
                     <p className="text-lg text-white/80">
-                        WhaleAlert ID.fi combines cutting-edge zero-knowledge technology with professional-grade attesting tools to deliver an unparalleled DeFi experience.
+                        WhaleAlert ID.fi combines cutting-edge zero knowledge technology with professional-grade attesting tools to deliver an unparalleled DeFi experience.
                     </p>
                 </section>
 
@@ -26,14 +26,14 @@ export default function FeaturesPage() {
                     </h2>
 
                     <div className="grid md:grid-cols-2 gap-6">
-                        {/* Zero-Knowledge Identity */}
+                        {/* Zero Knowledge Identity */}
                         <div className="bg-gradient-to-br from-purple-600/10 to-pink-600/10 p-6 rounded-xl border border-purple-500/30">
                             <div className="flex items-center gap-3 mb-4">
                                 <Shield className="text-purple-400" size={32} />
-                                <h3 className="text-2xl font-bold">Zero-Knowledge Identity</h3>
+                                <h3 className="text-2xl font-bold">Zero Knowledge Identity</h3>
                             </div>
                             <p className="mb-4 text-white/70">
-                                Prove you're human without revealing who you are. Our World ID integration uses zero-knowledge proofs to verify your identity while preserving complete privacy.
+                                Prove you're human without revealing who you are. Our World ID integration uses zero knowledge proofs to verify your identity while preserving complete privacy.
                             </p>
                             <ul className="space-y-2 text-sm">
                                 <li className="flex items-start gap-2">
@@ -242,12 +242,12 @@ export default function FeaturesPage() {
                             </div>
 
                             <div className="bg-white/5 p-4 rounded-lg border border-white/10">
-                                <h4 className="font-bold mb-2">️ Zero-Knowledge Proofs</h4>
+                                <h4 className="font-bold mb-2">️ Zero Knowledge Proofs</h4>
                                 <p className="text-sm text-white/70">Verify identity without revealing personal data.</p>
                             </div>
 
                             <div className="bg-white/5 p-4 rounded-lg border border-white/10">
-                                <h4 className="font-bold mb-2"> End-to-End Encryption</h4>
+                                <h4 className="font-bold mb-2"> End to End Encryption</h4>
                                 <p className="text-sm text-white/70">TLS 1.3, AES-256 encryption for all data.</p>
                             </div>
 

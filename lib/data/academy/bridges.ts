@@ -31,12 +31,12 @@ export const bridgesModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. El Engaño del "Traslado" (No-Transfer Theorem L1)</h2>
-                        <p>El error cognitivo retail L2 asume que un Bitcoin "Viaja" por un cable submarino P2P a Ethereum L1 T-1. La Física Cryptográfica M2 dictamina que ningún Token de la Red A M1 abandona jamás la Red A. Un puente es un <strong>Diódo Bi-Direccional Asincrónico L2</strong>. En el Modelo <em>Lock-and-Mint L1</em>: Un usuario "Bloquea" su BTC Original M2 en un Smart Contract Bóveda (Custodia Multi-sig L2), esto emite un evento P2P (Event Log T-1) que un Oráculo lee, instruyendo al Contrato Destino L1 (Ethereum) a Imprimir ("Mint") un Emisario Sintético Pasivo L2: "Wrapped Bitcoin (WBTC) M2".</p>
+                        <p>El error cognitivo retail L2 asume que un Bitcoin "Viaja" por un cable submarino P2P a Ethereum L1 T-1. La Física Cryptográfica M2 dictamina que ningún Token de la Red A M1 abandona jamás la Red A. Un puente es un <strong>Diódo Bi-Direccional Asincrónico L2</strong>. En el Modelo <em>Lock-and-Mint L1</em>: Un usuario "Bloquea" su BTC Original M2 en un Smart Contract Bóveda (Custodia Multisig L2), esto emite un evento P2P (Event Log T-1) que un Oráculo lee, instruyendo al Contrato Destino L1 (Ethereum) a Imprimir ("Mint") un Emisario Sintético Pasivo L2: "Wrapped Bitcoin (WBTC) M2".</p>
                     </section>
 
                     <section class="pro-section">
                         <h2>II. Liquidez Atómica y el Talón de Aquiles de la Custodia L2</h2>
-                        <p>El modelo secundario L1 es <em>Liquidity Networks (Pools P2P)</em>, esquivando el Wrapped Asset T-1 a favor de Mercados Creadores en ambas Cadenas (Stargate/LayerZero L2). El Talón Mortífero M2 yace en la <strong>Representatividad Huérfana L1</strong>: Si el Puente "Lock-and-Mint" de Origen L2 es Drenado por Hackers (Ataque al Vault Multi-sig P2P de 10,000 BTC reales L1), instantáneamente y sin aviso en la Red Destino, todos M1 los portadores de WBTC M2 (Sintéticos) colapsan matemáticamente a Valor $0.00 T-1, pues su reclamo Colateral Base asintótico P2P se ha evaporado irreversiblemente.</p>
+                        <p>El modelo secundario L1 es <em>Liquidity Networks (Pools P2P)</em>, esquivando el Wrapped Asset T-1 a favor de Mercados Creadores en ambas Cadenas (Stargate/LayerZero L2). El Talón Mortífero M2 yace en la <strong>Representatividad Huérfana L1</strong>: Si el Puente "Lock-and-Mint" de Origen L2 es Drenado por Hackers (Ataque al Vault Multisig P2P de 10,000 BTC reales L1), instantáneamente y sin aviso en la Red Destino, todos M1 los portadores de WBTC M2 (Sintéticos) colapsan matemáticamente a Valor $0.00 T-1, pues su reclamo Colateral Base asintótico P2P se ha evaporado irreversiblemente.</p>
                     </section>
                 </div>`
             },
@@ -85,7 +85,7 @@ export const bridgesModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. Oráculos Distribuidos de Valor Trillonario (DON Networks L1)</h2>
-                        <p>El nexo de unión de TradFi P2P (Bancos JP Morgan, SWIFT M2) recusa usar "Puentes Web3 Experimentales" controlados por Multisigs en discordia L1 T-1. Exigen Resiliencia Institucional L2 de Grado Armamentista. <strong>Chainlink CCIP (Cross-Chain Interoperability Protocol M1 P2P L2)</strong> aplica a la Transferencia T-1 la misma rigurosa Infraestructura de Nodos DON (Decentralized Oracle Networks L1) que asegura decenas de Billones M2 en DeFi L1.</p>
+                        <p>El nexo de unión de TradFi P2P (Bancos JP Morgan, SWIFT M2) recusa usar "Puentes Web3 Experimentales" controlados por Multisigs en discordia L1 T-1. Exigen Resiliencia Institucional L2 de Grado Armamentista. <strong>Chainlink CCIP (Cross-Chain Interoperability Protocol M1 P2P L2)</strong> aplica a la Transferencia T-1 la misma rigurosa Infraestructura de Nodos DON (Decentralised Oracle Networks L1) que asegura decenas de Billones M2 en DeFi L1.</p>
                     </section>
 
                     <section class="pro-section">
@@ -168,14 +168,14 @@ export const bridgesModules = [
             },
             {
                 id: "multisig-vs-pos-bridges",
-                title: "10. Espectro de Descentralización: Multi-sig vs PoS",
+                title: "10. Espectro de Descentralización: Multisig vs PoS",
                 description: "Quién controla las llaves del puente.",
                 readTime: 50,
                 content: `<div class="academy-article">
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
-                        <h2>I. El Espejismo de la Descentralización Retail (Multi-sig L2 M2 P2P T-1)</h2>
-                        <p>El escrutinio Criptográfico L1 Ph.D enmascara y dilucida una realidad T-1 espantosa: El 80% de los Grandes "Puentes Interoperables Billonarios L1 P2P M2" en el Cosmos Web3 ostentan el rótulo Falso de 'DeFi'. Sus Fundamentos de Firma L2 residen en esquemas paupérrimos "5 de 8" Multi-sig M1 L1. Significa T-1 que si 5 Fundadores o Nodos Centrales P2P se corrompen (Compromiso Operativo M2 L2, Hack Norcoreano T-1 O(1)), detentan la potestad dictatorial absoluta L1 para robar asintóticamente cada céntimo custodiado en el Puente sin objeción Matemática L2 M2.</p>
+                        <h2>I. El Espejismo de la Descentralización Retail (Multisig L2 M2 P2P T-1)</h2>
+                        <p>El escrutinio Criptográfico L1 Ph.D enmascara y dilucida una realidad T-1 espantosa: El 80% de los Grandes "Puentes Interoperables Billonarios L1 P2P M2" en el Cosmos Web3 ostentan el rótulo Falso de 'DeFi'. Sus Fundamentos de Firma L2 residen en esquemas paupérrimos "5 de 8" Multisig M1 L1. Significa T-1 que si 5 Fundadores o Nodos Centrales P2P se corrompen (Compromiso Operativo M2 L2, Hack Norcoreano T-1 O(1)), detentan la potestad dictatorial absoluta L1 para robar asintóticamente cada céntimo custodiado en el Puente sin objeción Matemática L2 M2.</p>
                     </section>
 
                     <section class="pro-section">
@@ -216,7 +216,7 @@ export const bridgesModules = [
 
                     <section class="pro-section">
                         <h2>II. Límite de Fuga Temporal Asintótica (Rate Limit T-1 M2 P2P)</h2>
-                        <p>Un Circuit Breaker O(N) L1 instruye a la Bóveda P2P Guardiana L2: <em>"Bajo NINGUNA Demanda Firmada Algorítmica Válida, jamás permitirás que Más del 5% del Total Value Locked M1 L1 abandone este Protocolo M2 en una ventana temporal continua de 60 Minutos T-1"</em>. Si Lazarus Hacker Group consigue quebrar el Multi-sig L2 P2P asimétricamente y ordena drenar los $500M Absolutos T-1, el Smart Contract asfixia Físicamente y 'Pausa (Halt L2 M2)' el ecosistema a los $25M extraídos. Esto desactiva el Ex-Nihilo asintótico L1 otorgando una "Ventana Reactiva T-1 de Intervención DAO/Whitehat O(1)" para actualizar el puente M2 P2P, garantizando la supervivencia del 95% del Colateral Institucional Fíat L1 M1 resguardado.</p>
+                        <p>Un Circuit Breaker O(N) L1 instruye a la Bóveda P2P Guardiana L2: <em>"Bajo NINGUNA Demanda Firmada Algorítmica Válida, jamás permitirás que Más del 5% del Total Value Locked M1 L1 abandone este Protocolo M2 en una ventana temporal continua de 60 Minutos T-1"</em>. Si Lazarus Hacker Group consigue quebrar el Multisig L2 P2P asimétricamente y ordena drenar los $500M Absolutos T-1, el Smart Contract asfixia Físicamente y 'Pausa (Halt L2 M2)' el ecosistema a los $25M extraídos. Esto desactiva el Ex-Nihilo asintótico L1 otorgando una "Ventana Reactiva T-1 de Intervención DAO/Whitehat O(1)" para actualizar el puente M2 P2P, garantizando la supervivencia del 95% del Colateral Institucional Fíat L1 M1 resguardado.</p>
                     </section>
                 </div>`
             },
@@ -234,7 +234,7 @@ export const bridgesModules = [
 
                     <section class="pro-section">
                         <h2>II. Agnosticismo Multi-Dialectal ZK (Universalizing TCP/IP L2 P2P)</h2>
-                        <p>Integrar Ethereum T-1 al cosmos IBC M2 P2P L1 exigió Criptografía Zero-Knowledge (ZK-Light Clients L2). Ethereum L1 genera ZK-SNARKs M1 comprobando el estado de sus Bloques Asincrónicos (Gasper Consensus T-1). El IBC de Cosmos M2 consume O(1) esa matemática ZK M1 P2P sin procesar todo el Validator Set L1 Etéreo. Esta Mutación Multigráfica T-1 P2P estandariza el Protocolo L2 M2 haciendo que Redes Heterogéneas (Avalanche C-Chain, Near Nightshade, Polkadot Substrate L1) inter-comuniquen Trama IBC M2 como Protocolo Supremo Internet-Estatal L1 sin puentes custodios L2.</p>
+                        <p>Integrar Ethereum T-1 al cosmos IBC M2 P2P L1 exigió Criptografía Zero Knowledge (ZK-Light Clients L2). Ethereum L1 genera ZK-SNARKs M1 comprobando el estado de sus Bloques Asincrónicos (Gasper Consensus T-1). El IBC de Cosmos M2 consume O(1) esa matemática ZK M1 P2P sin procesar todo el Validator Set L1 Etéreo. Esta Mutación Multigráfica T-1 P2P estandariza el Protocolo L2 M2 haciendo que Redes Heterogéneas (Avalanche C-Chain, Near Nightshade, Polkadot Substrate L1) inter-comuniquen Trama IBC M2 como Protocolo Supremo Internet-Estatal L1 sin puentes custodios L2.</p>
                     </section>
                 </div>`
             },
@@ -295,7 +295,7 @@ export const bridgesModules = [
             {
                 id: "cross-chain-mev",
                 title: "17. MEV Cross-Chain: El Impuesto Invisible",
-                description: "Arbitraje y Front-running entre redes.",
+                description: "Arbitraje y Front running entre redes.",
                 readTime: 55,
                 content: `<div class="academy-article">
                     <section class="pro-section">

@@ -4,9 +4,9 @@ import { SystemFooter } from '@/components/landing/SystemFooter';
 import { VisionAboutSection } from '@/components/vision/VisionAboutSection';
 
 export const metadata = {
-  title: 'Our Vision — Whale Network',
+  title: 'Our Vision, Whale Network',
   description:
-    'Humanity Ledger S.L. is building a secure, decentralised identity ecosystem for the next generation of financial infrastructure, powered by zero-knowledge cryptography on Aztec Network.',
+    'Humanity Ledger S.L. is building a secure, decentralised identity ecosystem for the next generation of financial infrastructure, powered by zero knowledge cryptography on Aztec Network.',
 };
 
 export default function VisionPage() {
@@ -34,7 +34,7 @@ export default function VisionPage() {
             <div className="space-y-5 text-black/65 font-sans text-base md:text-lg leading-relaxed max-w-2xl">
               <p>
                 At <strong className="text-black font-black">Humanity Ledger S.L.</strong>, our
-                primary goal is to build a secure and transparent identity layer for the Whale Network platform — one that protects
+                primary goal is to build a secure and transparent identity layer for the Whale Network platform, one that protects
                 user data while ensuring full regulatory attestation. We believe that a credible
                 digital identity is the foundation of a safer and more efficient financial
                 ecosystem, not a barrier to it.
@@ -42,11 +42,11 @@ export default function VisionPage() {
               <p>
                 To realise this, we have integrated directly with{' '}
                 <strong className="text-black font-black">Aztec Network</strong>. By building on
-                Aztec's zero-knowledge privacy infrastructure, we guarantee that user data
+                Aztec's zero knowledge privacy infrastructure, we guarantee that user data
                 remains mathematically confidential. Proofs replace personal data. That is the standard we hold ourselves to.
               </p>
               <p>
-                As an open-source initiative, we are expanding our coverage of Layer-2 protocols continuously. Financial independence, in our view, demands transparent code and trustless systems — giving every user the power to monitor global
+                As an open source initiative, we are expanding our coverage of Layer-2 protocols continuously. Financial independence, in our view, demands transparent code and trustless systems, giving every user the power to monitor global
                 markets privately and on their own terms.
               </p>
             </div>

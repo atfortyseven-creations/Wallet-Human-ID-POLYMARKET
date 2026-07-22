@@ -145,7 +145,7 @@ export default function SystemNodeCore() {
                             <div className="grid md:grid-cols-2 gap-8">
                                 {[
                                     { label: 'HSM Core', status: 'Operational', desc: 'Hardware-backed secret management active.', icon: Lock },
-                                    { label: 'Multi-sig Layer', status: 'Synchronized', desc: 'Elite multi-chain consensus flow.', icon: Network },
+                                    { label: 'Multisig Layer', status: 'Synchronized', desc: 'Elite multi-chain consensus flow.', icon: Network },
                                     { label: 'Core Shield', status: 'Active', desc: 'Post-core encryption enabled.', icon: ShieldCheck },
                                     { label: 'Intrusion Detection', status: 'Zero Threats', desc: 'Millimetre detection sensitivity.', icon: Search }
                                 ].map((sys, i) => (

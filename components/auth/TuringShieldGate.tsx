@@ -335,23 +335,24 @@ export function TuringShieldGate({
   // ─── PIN Gate ─────────────────────────────────────────────────────────────
   return (
     <div
-      className="fixed inset-0 z-[9000] flex flex-col items-center justify-center bg-white font-sans text-[#0A0A0A] p-4 overflow-hidden"
+      className="fixed inset-0 z-[9000] overflow-y-auto bg-white font-sans text-[#0A0A0A] p-4 flex flex-col items-center"
       style={{ WebkitOverflowScrolling: 'touch' }}
     >
-      {/* Background ambient glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
-      <div className="absolute top-1/4 right-1/4 w-[200px] h-[200px] bg-purple-500/4 blur-[80px] rounded-full pointer-events-none" />
+      <div className="flex-1 flex flex-col items-center w-full min-h-full pb-[10vh]">
+        {/* Background ambient glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
+        <div className="absolute top-1/4 right-1/4 w-[200px] h-[200px] bg-purple-500/4 blur-[80px] rounded-full pointer-events-none" />
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          key="enclave-gate"
-          initial={{ scale: 0.94, opacity: 0, y: 24 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.94, opacity: 0, y: -16 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          style={{ willChange: 'transform, opacity' }}
-          className="relative z-10 w-full max-w-[400px] border border-[#EBEBEB] bg-white rounded-[28px] p-7 shadow-[0_32px_80px_rgba(0,0,0,0.12)] flex flex-col items-center text-center"
-        >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key="enclave-gate"
+            initial={{ scale: 0.94, opacity: 0, y: 24 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.94, opacity: 0, y: -16 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            style={{ willChange: 'transform, opacity' }}
+            className="my-auto relative z-10 w-full max-w-[400px] border border-[#EBEBEB] bg-white rounded-[28px] p-7 shadow-[0_32px_80px_rgba(0,0,0,0.12)] flex flex-col items-center text-center"
+          >
           {/* Icon */}
           <div className="relative w-[72px] h-[72px] mb-5 flex items-center justify-center">
             <div className={`absolute inset-0 rounded-full opacity-15 animate-pulse ${locked ? 'bg-red-500' : 'bg-gradient-to-tr from-indigo-500 to-purple-600'}`} />
@@ -479,6 +480,7 @@ export function TuringShieldGate({
           </div>
         </motion.div>
       </AnimatePresence>
+      </div>
     </div>
   );
 }

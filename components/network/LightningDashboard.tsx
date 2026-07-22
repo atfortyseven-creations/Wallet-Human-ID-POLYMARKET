@@ -63,7 +63,7 @@ export function LightningDashboard() {
                         transition={{ delay: 0.2 }}
                         className="text-slate-500 text-lg leading-relaxed font-medium"
                     >
-                        Real-time global channel monitoring and decentralized capacity auditing.
+                        Real-time global channel monitoring and decentralised capacity auditing.
                         Direct verification of peer-to-peer liquidity for instant network settlement.
                     </motion.p>
                 </div>

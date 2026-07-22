@@ -6,7 +6,7 @@ import { mintJWT } from '@/lib/jwt';
 /**
  * POST /api/auth/kyc-verify
  * 
- * Finalizes the Zero-Knowledge KYC process by verifying the signature
+ * Finalizes the Zero Knowledge KYC process by verifying the signature
  * and updating the user's verification status in the database.
  */
 export async function POST(req: NextRequest) {

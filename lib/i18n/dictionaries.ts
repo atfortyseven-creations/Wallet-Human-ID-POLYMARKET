@@ -35,7 +35,7 @@ const en = {
         stats: {
             identities: 'Entities',
             secured: 'Monitored',
-            decentralized: 'Active'
+            decentralised: 'Active'
         },
         accessGranted: 'Dashboard Ready',
         welcome: 'Welcome,',
@@ -120,7 +120,7 @@ const en = {
             lowLatency: { title: 'Direct Mempool Feed', desc: 'Low-latency connection to global Bitcoin nodes for sub-second data' },
             volume: { title: 'Volume Analysis', desc: 'Intelligent tracking of Satoshi-era wallets and large flows' },
             alerts: { title: 'Real-Time Alerts', desc: 'Customizable sonar alerts for transactions exceeding your BTC threshold' },
-            security: { title: 'System Privacy', desc: 'Non-custodial, anonymous monitoring with zero-knowledge data proofs' }
+            security: { title: 'System Privacy', desc: 'Non-custodial, anonymous monitoring with zero knowledge data proofs' }
         },
         stats: {
             detection: 'Wallet Detection',
@@ -239,7 +239,7 @@ const en = {
   countdown: {
       badge: 'Beyond the Horizon',
       title: 'WORLD RELEASE',
-      description: 'Witness the convergence of system identity and decentralized power. Absolute financial freedom.',
+      description: 'Witness the convergence of system identity and decentralised power. Absolute financial freedom.',
       days: 'DAYS',
       hours: 'HOURS',
       minutes: 'MINUTES',

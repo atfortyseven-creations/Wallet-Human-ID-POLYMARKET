@@ -7,15 +7,15 @@ import { ChevronDown, Plus, Minus } from 'lucide-react';
 const FAQ_DATA = [
   {
     question: "What is the Wallet Human Polymarket ID?",
-    answer: "It is a unified identity layer that connects your cryptographic wallet with verified human credentials and predictive market capabilities. It allows you to prove humanity on-chain while keeping your private data completely secure and zero-knowledge."
+    answer: "It is a unified identity layer that connects your cryptographic wallet with verified human credentials and predictive market capabilities. It allows you to prove humanity on-chain while keeping your private data completely secure and zero knowledge."
   },
   {
-    question: "How does the Zero-Knowledge (ZK) verification work?",
+    question: "How does the Zero Knowledge (ZK) verification work?",
     answer: "Our ZK verification uses advanced cryptographic proofs (zk-SNARKs) to confirm your identity attributes without ever exposing the underlying data. When you verify, the blockchain only records that the proof is valid, ensuring absolute privacy."
   },
   {
     question: "Are my chat conversations fully encrypted?",
-    answer: "Yes. Whale Chat utilizes end-to-end encryption (E2EE) built directly into the protocol. Your messages are encrypted client-side using your wallet's keys before they even leave your device. We cannot read your messages, and neither can anyone else."
+    answer: "Yes. Whale Chat utilizes end to end encryption (E2EE) built directly into the protocol. Your messages are encrypted client-side using your wallet's keys before they even leave your device. We cannot read your messages, and neither can anyone else."
   },
   {
     question: "How does the Stripe integration interact with my node?",
@@ -49,7 +49,7 @@ export function VisionStatsSection() {
             Frequently Asked Questions
           </h2>
           <p className="text-sm md:text-base text-[#050505]/50 max-w-2xl mx-auto leading-relaxed">
-            Everything you need to know about the Humanity Ledger ecosystem, Zero-Knowledge proofs, and sovereign node infrastructure.
+            Everything you need to know about the Humanity Ledger ecosystem, Zero Knowledge proofs, and sovereign node infrastructure.
           </p>
         </div>
 

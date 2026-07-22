@@ -61,7 +61,7 @@ export const ecosystemFeatures: FeatureContent[] = [
     deepDive: [
       'We implement aggregated liquidity pools with slippage protection. Our engine analyzes multiple DEXs simultaneously to ensure the best execution price.',
       'Yield farming is managed through audited low-risk strategies, with transparent APYs calculated in real-time.',
-      'Integrated MEV (Maximal Extractable Value) protection in every swap to prevent sandwich attacks and front-running.',
+      'Integrated MEV (Maximal Extractable Value) protection in every swap to prevent sandwich attacks and front running.',
       'Competitive 0.1% fees vs 0.5% on Binance, with rewards distributed to governance token holders.'
     ],
     humanEdge: 'While other exchanges charge you hidden fees in the spread, we show the real cost of every operation. Transparency is our competitive advantage.',
@@ -93,7 +93,7 @@ export const ecosystemFeatures: FeatureContent[] = [
     subtitle: 'Execution Engine: High-Frequency On-Chain Settlement',
     shortDesc: '100x leverage without house advantage',
     deepDive: [
-      'Attesting perpetuals on centralized exchanges is often a rigged game: the exchange sees your stop-losses and attestations against you. At Whale Network, the matching engine is a hybrid architecture: order taking is instantaneous (off-chain) but settlement and funds custody is on-chain.',
+      'Attesting perpetuals on centralised exchanges is often a rigged game: the exchange sees your stop-losses and attestations against you. At Whale Network, the matching engine is a hybrid architecture: order taking is instantaneous (off-chain) but settlement and funds custody is on-chain.',
       'We calculate the Funding Rate every second to ensure the perpetual contract price follows the spot price without malicious deviations: Funding = max(0.01%, Premium) + min(0, Premium)',
       'Our liquidations engine is a public smart contract. There is no "secret liquidator" taking your funds; there is a Community Insurance Fund that guarantees protocol solvency even in "Black Swan" events.',
       'Up to 100x leverage with transparent risk management and fair liquidations.'
@@ -179,7 +179,7 @@ export const ecosystemFeatures: FeatureContent[] = [
       'Paymasters: pay gas in any token or we subsidize it.',
       'Social Recovery: your "Guardians" can rotate your access key without moving funds.',
       'Session Keys: authorize applications for a limited time without exposing your master key.',
-      'Gasless transactions, programmable spending limits, and multi-signature security.'
+      'Gasless transactions, programmable spending limits, and multisignature security.'
     ],
     humanEdge: 'Asking someone to save 12 words on a piece of paper is an insult to 2026 engineering. We have killed the Seed Phrase. Web2 experience, Web3 security.',
     lottieSrc: 'https://lottie.host/embed/i9j0k1l2-m3n4-5o6p-7q8r-s9t0u1v2w3x4/yz.json',

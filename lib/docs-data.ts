@@ -12,7 +12,7 @@ export const docsData: Record<string, DocSection> = {
     content: [
       "Our system employs a comprehensive security architecture designed to protect sensitive financial and personal data against advanced threats. By operating on a zero-trust model, every requestwhether originating from an internal microservice or an external clientmust be fully authenticated, authorized, and continuously validated before access is granted. This foundational principle ensures that no entity is trusted by default.",
       "The architecture is built upon industry-standard cryptographic primitives. We utilize elliptic curve cryptography, specifically the secp256k1 curve, which provides robust security with minimal computational overhead. All data in transit is encrypted using Transport Layer Security (TLS) 1.3, ensuring that man-in-the-middle attacks are mathematically unfeasible. Furthermore, data at rest is encrypted using AES-256-GCM, managed by isolated hardware security modules (HSMs).",
-      "To prevent lateral movement within the network, we have implemented strict network micro-segmentation. Each service operates within its own isolated virtual private cloud (VPC) subnet, with strict egress and ingress firewall rules. Application programming interfaces (APIs) are exposed only through a centralized gateway that performs deep packet inspection, rate limiting, and anomaly detection in real-time."
+      "To prevent lateral movement within the network, we have implemented strict network micro-segmentation. Each service operates within its own isolated virtual private cloud (VPC) subnet, with strict egress and ingress firewall rules. Application programming interfaces (APIs) are exposed only through a centralised gateway that performs deep packet inspection, rate limiting, and anomaly detection in real-time."
     ]
   },
   "mempool": {
@@ -20,7 +20,7 @@ export const docsData: Record<string, DocSection> = {
     category: "Protocol",
     content: [
       "Mempool analysis is a critical component for understanding pending transactions before they are confirmed on the blockchain. Our infrastructure connects directly to a globally distributed network of full nodes, allowing us to ingest and process unconfirmed transactions with sub-millisecond latency. This provides our users with a comprehensive view of network activity and transaction sequencing.",
-      "Upon ingestion, each transaction is parsed to extract metadata such as gas price, gas limit, sender, receiver, and execution data. We employ a highly optimized Rust-based indexer that categorizes these transactions into specific cohorts based on their complexity and economic value. This categorization enables advanced analytics, such as predicting block inclusion probabilities and identifying potential front-running or sandwich attacks.",
+      "Upon ingestion, each transaction is parsed to extract metadata such as gas price, gas limit, sender, receiver, and execution data. We employ a highly optimized Rust-based indexer that categorizes these transactions into specific cohorts based on their complexity and economic value. This categorization enables advanced analytics, such as predicting block inclusion probabilities and identifying potential front running or sandwich attacks.",
       "Developers can access this normalized mempool data via our WebSocket API or through historical REST endpoints. The data is continuously cleaned to filter out invalid or dropped transactions, ensuring that your attesting algorithms and analytical models are operating on the most accurate and up-to-date information available."
     ]
   },
@@ -37,8 +37,8 @@ export const docsData: Record<string, DocSection> = {
     title: "Edge Computing",
     category: "Protocol",
     content: [
-      "To guarantee low latency and high availability across the globe, our infrastructure leverages a robust edge computing network. Instead of routing all requests to a centralized data center, we deploy lightweight application runtimes and caching layers directly to edge nodes situated in hundreds of cities worldwide. This significantly reduces the physical distance between the end-user and the computational resources.",
-      "Our edge nodes are responsible for terminating TLS connections, verifying authentication tokens, and serving static assets. Furthermore, they execute serverless functions that perform data validation and routing before the request ever reaches our core infrastructure. This decentralized approach not only improves performance but also provides a massive buffer against Distributed Denial of Service (DDoS) attacks.",
+      "To guarantee low latency and high availability across the globe, our infrastructure leverages a robust edge computing network. Instead of routing all requests to a centralised data center, we deploy lightweight application runtimes and caching layers directly to edge nodes situated in hundreds of cities worldwide. This significantly reduces the physical distance between the end-user and the computational resources.",
+      "Our edge nodes are responsible for terminating TLS connections, verifying authentication tokens, and serving static assets. Furthermore, they execute serverless functions that perform data validation and routing before the request ever reaches our core infrastructure. This decentralised approach not only improves performance but also provides a massive buffer against Distributed Denial of Service (DDoS) attacks.",
       "Data consistency across the edge network is maintained through a distributed Key-Value store that propagates state changes globally in under 500 milliseconds. This ensures that users experience a seamless and synchronous application state, regardless of their geographical location, while developers benefit from a highly scalable and fault-tolerant deployment architecture."
     ]
   },
@@ -58,8 +58,8 @@ export const docsData: Record<string, DocSection> = {
     category: "Identity & Auth",
     content: [
       "Biometric verification represents the highest tier of identity assurance within our system. By integrating with leading biometric identity providers, we enable the verification of unique human users while strictly adhering to privacy and data protection regulations, such as GDPR and CCPA.",
-      "The system utilizes zero-knowledge proofs to verify biometric claims. When a user undergoes biometric verification (e.g., facial recognition or iris scanning) through an integrated hardware provider, the provider generates a cryptographic proof that the user is a unique, living human. Our servers verify this mathematical proof without ever receiving, processing, or storing the actual biometric data.",
-      "This separation of verification and data storage ensures that user privacy is absolute. The verified status is then linked to an anonymized decentralized identifier (DID), allowing the user to access restricted platform features, participate in governance, or prevent Sybil attacks, all without compromising their personal identity."
+      "The system utilizes zero knowledge proofs to verify biometric claims. When a user undergoes biometric verification (e.g., facial recognition or iris scanning) through an integrated hardware provider, the provider generates a cryptographic proof that the user is a unique, living human. Our servers verify this mathematical proof without ever receiving, processing, or storing the actual biometric data.",
+      "This separation of verification and data storage ensures that user privacy is absolute. The verified status is then linked to an anonymized decentralised identifier (DID), allowing the user to access restricted platform features, participate in governance, or prevent Sybil attacks, all without compromising their personal identity."
     ]
   },
   "sessions": {
@@ -163,8 +163,8 @@ export const docsData: Record<string, DocSection> = {
     category: "Integrations",
     content: [
       "Our platform integrates natively with the WorldID protocol to provide secure, privacy-preserving proof of humanity. WorldID allows users to verify that they are unique individuals without revealing any personal identifying information, effectively solving the problem of Sybil attacks in digital networks.",
-      "The integration utilizes WorldID's zero-knowledge proof verification endpoints. When a user authenticates, the World App generates a cryptographic proof. Our servers verify this proof against the WorldID smart contracts, ensuring the user's uniqueness. This verification process is completely anonymous; we receive a nullifier hash that proves uniqueness but cannot be linked to the user's real-world identity.",
-      "Developers can leverage this integration to gate access to specific features, distribute rewards fairly, or prevent automated bot activity within their applications. By relying on a standardized, decentralized identity protocol, we enhance the security and fairness of the platform while maintaining absolute respect for user privacy."
+      "The integration utilizes WorldID's zero knowledge proof verification endpoints. When a user authenticates, the World App generates a cryptographic proof. Our servers verify this proof against the WorldID smart contracts, ensuring the user's uniqueness. This verification process is completely anonymous; we receive a nullifier hash that proves uniqueness but cannot be linked to the user's real-world identity.",
+      "Developers can leverage this integration to gate access to specific features, distribute rewards fairly, or prevent automated bot activity within their applications. By relying on a standardized, decentralised identity protocol, we enhance the security and fairness of the platform while maintaining absolute respect for user privacy."
     ]
   },
   "cloudflare": {

@@ -78,7 +78,7 @@ export function NewsOfToday() {
         {
             id: "fallback-2",
             title: "Ethereum's Dencun Upgrade Drives Layer-2 Fees to Near Zero",
-            body: "Following the successful network upgrade, major Layer-2 networks report a 90% reduction in transaction fees, paving the way for mass adoption of decentralized applications.",
+            body: "Following the successful network upgrade, major Layer-2 networks report a 90% reduction in transaction fees, paving the way for mass adoption of decentralised applications.",
             source_info: { name: "CoinDesk" },
             published_on: Math.floor(Date.now() / 1000) - 7200,
             url: "https://coindesk.com"

@@ -359,7 +359,7 @@ export function NativeSendView({ onBack, initialTokenSymbol }: { onBack: () => v
                     <h2 className="text-lg sm:text-xl font-black uppercase tracking-widest text-black flex items-center gap-2">
                         Send Asset
                     </h2>
-                    <p className="text-[10px] uppercase text-black/50 tracking-widest mt-1">{selectedToken.symbol === 'QDs' ? 'Zero-Knowledge Private Transfer · Aztec Network' : 'Direct On-Chain Transfer'}</p>
+                    <p className="text-[10px] uppercase text-black/50 tracking-widest mt-1">{selectedToken.symbol === 'QDs' ? 'Zero Knowledge Private Transfer · Aztec Network' : 'Direct On-Chain Transfer'}</p>
                 </div>
                 <div className="flex items-center gap-3 shrink-0">
                     <label className="flex items-center gap-2 cursor-pointer text-[9px] uppercase font-bold text-black/40 hover:text-black transition-colors">

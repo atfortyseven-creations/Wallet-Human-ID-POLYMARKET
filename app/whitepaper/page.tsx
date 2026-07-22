@@ -7,8 +7,8 @@ export default function WhitepaperPage() {
   return (
     <AztecDocPage
       eyebrow="Protocol · Technical Whitepaper"
-      title="Humanity Ledger: Privacy-Native Social State"
-      subtitle="A formal technical exposition of how Humanity Ledger S.L. combines shielded notes, Noir circuits, and Ethereum settlement to enable provable interactions — without permanent public exposure."
+      title="Humanity Ledger: Privacy Native Social State"
+      subtitle="A formal technical exposition of how Humanity Ledger S.L. combines shielded notes, Noir circuits, and Ethereum settlement to enable provable interactions, without permanent public exposure."
       sections={WHITEPAPER_SECTIONS}
     >
       <div className="p-8 rounded-2xl border border-black/10 bg-black/[0.02]">

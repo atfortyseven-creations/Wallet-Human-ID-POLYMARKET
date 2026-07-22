@@ -44,7 +44,7 @@ export function FeatureCardsSection() {
                 </motion.h3>
             </div>
 
-            {/* Centralized Depth Group */}
+            {/* Centralised Depth Group */}
             <div className="relative w-full max-w-4xl h-[450px] flex items-center justify-center perspective-[2000px]">
                 
                 {/* Card 1: Left Back */}

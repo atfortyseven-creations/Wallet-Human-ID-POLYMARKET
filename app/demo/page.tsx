@@ -36,7 +36,7 @@ export default function DemoPage() {
           </h1>
 
           <p className="text-black/60 font-sans text-base leading-relaxed mb-12 max-w-lg">
-            The best way to understand Humanity Ledger is to use it. Launch the application to explore the identity dashboard, portfolio tools, and end-to-end encrypted messaging.
+            The best way to understand Humanity Ledger is to use it. Launch the application to explore the identity dashboard, portfolio tools, and end to end encrypted messaging.
           </p>
 
           <Link

@@ -481,7 +481,7 @@ function AztecAnalyticsTab({ isDark }: { isDark: boolean }) {
         ))}
       </div>
 
-      {/* L1 sync state — shown only when data is available */}
+      {/* L1 sync state, shown only when data is available */}
       {(fetching || syncBlock) && (
         <div
           className="rounded-2xl overflow-hidden mb-6"
@@ -819,7 +819,7 @@ function WhaleNetworkActivityTab({ isDark }: { isDark: boolean }) {
                 {/* Expanded detail */}
                 {isOpen && (
                   <div className="px-6 pb-4 pt-1 text-[11px] space-y-1" style={{ borderTop: divClr }}>
-                    <div className="font-black uppercase tracking-wider text-[9px] mb-2" style={{ color: labelClr }}>Event Detail — {m.label}</div>
+                    <div className="font-black uppercase tracking-wider text-[9px] mb-2" style={{ color: labelClr }}>Event Detail, {m.label}</div>
                     <div className="flex gap-2"><span style={{ color: labelClr }}>Full Hash:</span><span className="font-mono break-all" style={{ color: textClr }}>{tx.txHash}</span></div>
                     <div className="flex gap-2"><span style={{ color: labelClr }}>From:</span><span className="font-mono" style={{ color: textClr }}>{tx.fromAddress}</span></div>
                     <div className="flex gap-2"><span style={{ color: labelClr }}>To:</span><span className="font-mono" style={{ color: textClr }}>{tx.toAddress}</span></div>
@@ -1030,7 +1030,7 @@ export default function RegistryPage() {
     let totalTxs = 0;
 
     // ── FETCH OUR REGISTERED USERS FROM DB (primary wallet source) ────────────
-    // These are real wallets registered on humanidfi.com — shown in the wallets tab.
+    // These are real wallets registered on humanidfi.com, shown in the wallets tab.
     // The explorer link points to our own registry profile, NOT Etherscan.
     try {
       const res = await fetch("/api/registry/real-users");

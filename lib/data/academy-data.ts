@@ -87,7 +87,7 @@ export const ACADEMY_MODULES: AcademyModule[] = [
     {
         id: "market-microstructure",
         title: "Market Microstructure & Order Flow",
-        description: "Las minucias microscópicas del flujo de transacciones predicen la acción del precio minutos antes de que el mercado despierte. Nos sumergiremos en operaciones de front-running del mempool, lotes oscuros institucionales y latencia fraccional. Al acceder a los registros, desbloqueará un dossier en formato PDF cargado con espectrogramas de profundidad reales. El creador proveerá en sus páginas modelos estocásticos de deslizamiento (slippage) dinámico y trazabilidad de spoofing. Un documento de combate crudo para cuants.",
+        description: "Las minucias microscópicas del flujo de transacciones predicen la acción del precio minutos antes de que el mercado despierte. Nos sumergiremos en operaciones de front running del mempool, lotes oscuros institucionales y latencia fraccional. Al acceder a los registros, desbloqueará un dossier en formato PDF cargado con espectrogramas de profundidad reales. El creador proveerá en sus páginas modelos estocásticos de deslizamiento (slippage) dinámico y trazabilidad de spoofing. Un documento de combate crudo para cuants.",
         articles: [
             {
                 id: "microstructure-1",
@@ -101,7 +101,7 @@ export const ACADEMY_MODULES: AcademyModule[] = [
     {
         id: "quant-finance",
         title: "Quantitative Financial Analysis",
-        description: "Transformando el ruido caótico estocástico en señales financieras implacablemente deterministas. Exploraremos derivaciones del modelo de Black-Scholes integradas en opciones on-chain, cálculo de ratios de Sharpe ponderados por riesgo smart-contract, y farming delta-neutral. El PDF final entregado será una cumbre de la ingeniería cripto-financiera. El autor dispondrá de algoritmos nativos (con scripts exportados en Python), balances vectoriales en tiempo real y simulaciones retrospectivas (backtesting) para mercados bajistas.",
+        description: "Transformando el ruido caótico estocástico en señales financieras implacablemente deterministas. Exploraremos derivaciones del modelo de Black-Scholes integradas en opciones on-chain, cálculo de ratios de Sharpe ponderados por riesgo smart contract, y farming delta-neutral. El PDF final entregado será una cumbre de la ingeniería cripto-financiera. El autor dispondrá de algoritmos nativos (con scripts exportados en Python), balances vectoriales en tiempo real y simulaciones retrospectivas (backtesting) para mercados bajistas.",
         articles: [
             {
                 id: "quant-1",

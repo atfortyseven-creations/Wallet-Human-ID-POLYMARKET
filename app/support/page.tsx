@@ -26,7 +26,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "Is my financial data and identity private?",
-    a: "Yes, by architectural design. The platform does not store private keys, seed phrases, or biometric data under any circumstances. Wallet authentication produces a signed message that proves address ownership without exposing the private key. Portfolio data displayed within the terminal is fetched directly from public blockchain state via read-only RPC connections  it is never transmitted to or stored on the platform's servers. World ID verification, when used, employs zero-knowledge proofs that confirm personhood without linking the verification to any biometric record visible to the platform."
+    a: "Yes, by architectural design. The platform does not store private keys, seed phrases, or biometric data under any circumstances. Wallet authentication produces a signed message that proves address ownership without exposing the private key. Portfolio data displayed within the terminal is fetched directly from public blockchain state via read-only RPC connections  it is never transmitted to or stored on the platform's servers. World ID verification, when used, employs zero knowledge proofs that confirm personhood without linking the verification to any biometric record visible to the platform."
   },
   {
     q: "How does the Whale Network detection system identify significant movements?",

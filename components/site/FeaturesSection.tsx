@@ -67,7 +67,7 @@ export function FeaturesSection() {
                     <FeatureCard
                         icon={ShieldCheck}
                         title="Biometric Privacy (ZK-Snarks)"
-                        description="Verify your KYC without ever revealing your actual biometric data. Your face generates a zero-knowledge mathematical proof; your data never leaves your device."
+                        description="Verify your KYC without ever revealing your actual biometric data. Your face generates a zero knowledge mathematical proof; your data never leaves your device."
                         delay={0}
                     />
                     <FeatureCard

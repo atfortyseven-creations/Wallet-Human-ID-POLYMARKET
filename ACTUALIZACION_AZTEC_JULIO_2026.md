@@ -7,7 +7,7 @@ Hemos migrado toda la infraestructura desde nodos locales/sandbox hacia la red p
 
 - **RPC Oficial:** Se ha actualizado toda la conexión del cliente (`NetworkStats.tsx`, `lib/aztec/client.ts`) para apuntar al nodo oficial: `https://v5.testnet.rpc.aztec-labs.com`.
 - **SponsoredFPC:** Se ha implementado la dirección canónica (rc.2) de FPC (`0x1969946536f0c09269e2c75e414eef4e21a76e763c5514125208db33d7d944d7`) permitiendo transacciones sin fricción (gas-free).
-- **Resolución de Builds en Webpack:** Se ha solucionado el problema crítico donde la librería `@aztec/aztec.js` (v4.3.1) rompía el entorno de construcción por no exportar su ruta raíz. La solución implementada utiliza importaciones dinámicas (`await import()`) encapsuladas, garantizando compilaciones estables en Railway.
+- **Resolución de Builds en Webpack:** Se ha solucionado el problema crítico donde la librería `@aztec/aztec.js` (v5.0.0) rompía el entorno de construcción por no exportar su ruta raíz. La solución implementada utiliza importaciones dinámicas (`await import()`) encapsuladas, garantizando compilaciones estables en Railway.
 - **Preparación de Smart Contracts (Noir):** Se ha estructurado el wrapper del contrato `HumanityLedger` (`qds-contract.ts`) preparado para interactuar con la red Alpha.
 
 ## 2. Rediseño Cuántico del "Landing Page" (Desktop y Móvil)

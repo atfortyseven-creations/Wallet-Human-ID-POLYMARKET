@@ -3,7 +3,7 @@
 /**
  * TopWhaleEvents24h
  *
- * Consumes the System Intel pipeline via the centralized api-client.
+ * Consumes the System Intel pipeline via the centralised api-client.
  * Zero-Mock Mandate: no internal fetch loops or static data.
  */
 

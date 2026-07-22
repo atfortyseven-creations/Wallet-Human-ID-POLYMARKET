@@ -295,13 +295,15 @@ function LandingNav() {
                 >
                   Sign in with Email
                 </button>
-                <Link
-                  href="/connect"
+                <button
                   id="connect-wallet-nav-btn"
+                  onClick={() => {
+                    try { rkOpenModal(); } catch {}
+                  }}
                   className="px-4 py-2 bg-black text-white rounded-full text-[12.5px] font-semibold hover:bg-black/80 transition-all hover:-translate-y-px"
                 >
                   Connect Wallet
-                </Link>
+                </button>
               </>
             )}
           </div>
@@ -872,10 +874,10 @@ function RegistrySection({ hideMap }: { hideMap?: boolean }) {
 const FAQS = [
   {
     q: "What data does the network store about me?",
-    a: "None. Your identity and financial data stay encrypted inside your Private Execution Environment (PXE). The network sees only zero-knowledge proofs — mathematical attestations with no underlying data.",
+    a: "None. Your identity and financial data stay encrypted inside your Private Execution Environment (PXE). The network sees only zero knowledge proofs — mathematical attestations with no underlying data.",
   },
   {
-    q: "How does zero-knowledge verification work?",
+    q: "How does zero knowledge verification work?",
     a: "When you prove a statement, your device runs a Noir circuit locally and produces a ZK proof. The smart contract verifies: true or false. Your documents, balances, and private keys never leave your machine.",
   },
   {
@@ -1049,7 +1051,7 @@ function AztecCTASection() {
           custom={0.1}
           className="text-[16px] md:text-[18px] text-black/50 max-w-[500px] leading-relaxed"
         >
-          Join the sovereign tier. Powered by zero-knowledge architecture, client-side proving, and unstoppable cryptography.
+          Join the sovereign tier. Powered by zero knowledge architecture, client-side proving, and unstoppable cryptography.
         </motion.p>
 
         <motion.div

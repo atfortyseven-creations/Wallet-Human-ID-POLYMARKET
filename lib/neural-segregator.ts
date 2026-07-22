@@ -3,7 +3,7 @@ import { EventEmitter } from 'events';
 
 // The definitive 103 Sub-Sector taxonomy matched against live Websocket streams
 export const SECTOR_TAXONOMY = {
-  BIG_CAPS: ['layer-1', 'smart-contracts', 'stablecoins', 'exchange-tokens'],
+  BIG_CAPS: ['layer-1', 'smart contracts', 'stablecoins', 'exchange-tokens'],
   DEEP_NICHES: [
     'yield-farming', 'play-to-earn', 'depin', 'privacy', 'rwa', 'ai', 
     'business-services', 'entertainment', 'governance', 'memecoins', 'gaming',

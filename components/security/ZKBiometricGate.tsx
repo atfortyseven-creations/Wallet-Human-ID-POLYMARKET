@@ -131,7 +131,7 @@ export function ZKBiometricGate({ onSuccess, uuid }: ZKBiometricGateProps) {
         {/* Header */}
         <div className="mb-8 flex flex-col items-center">
            <h2 className="text-[14px] font-bold uppercase tracking-[0.4em] text-[#0a0a0a]">System Identity</h2>
-           <p className="text-[9px] text-black/40 uppercase tracking-widest mt-2">Zero-Knowledge Biometric Protocol</p>
+           <p className="text-[9px] text-black/40 uppercase tracking-widest mt-2">Zero Knowledge Biometric Protocol</p>
         </div>
 
         <div className="w-full h-full flex flex-col items-center justify-center flex-1 min-h-[300px]">
@@ -143,7 +143,7 @@ export function ZKBiometricGate({ onSuccess, uuid }: ZKBiometricGateProps) {
                    <Camera size={32} className="text-black/60" />
                  </div>
                  <p className="text-[11px] text-black/60 leading-relaxed mb-8 uppercase tracking-[0.1em] max-w-[280px]">
-                   Authentic WebRTC Telemetry. Your facial geometry is encrypted locally and transmitted via zero-knowledge tunnels.
+                   Authentic WebRTC Telemetry. Your facial geometry is encrypted locally and transmitted via zero knowledge tunnels.
                  </p>
                  <button 
                    onClick={handleStart}

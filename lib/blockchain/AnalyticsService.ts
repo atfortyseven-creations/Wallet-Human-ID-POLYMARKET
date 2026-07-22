@@ -371,7 +371,7 @@ export class AnalyticsService {
             const results = [
                 { id: 'op-124', dao: 'Optimism', title: 'Cycle 30: Grant Allocations', timeLeftHours: 14, userVoted: false, urgency: 'HIGH' },
                 { id: 'uni-89', dao: 'Uniswap', title: 'Treasury Working Group v2', timeLeftHours: 32, userVoted: true, urgency: 'LOW' },
-                { id: 'arb-34', dao: 'Arbitrum', title: 'LTIPP Multi-sig Expansion', timeLeftHours: 5, userVoted: false, urgency: 'CRITICAL' },
+                { id: 'arb-34', dao: 'Arbitrum', title: 'LTIPP Multisig Expansion', timeLeftHours: 5, userVoted: false, urgency: 'CRITICAL' },
                 { id: 'aave-15', dao: 'Aave', title: 'Adjust Risk Params (E-Mode)', timeLeftHours: 68, userVoted: false, urgency: 'LOW' },
                 { id: 'comp-102', dao: 'Compound', title: 'V2 to V3 Market Migration', timeLeftHours: 3, userVoted: false, urgency: 'CRITICAL' }
             ];

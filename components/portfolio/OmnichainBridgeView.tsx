@@ -79,7 +79,7 @@ export function OmnichainBridgeView({ onBack }: { onBack: () => void }) {
           <Radio size={12} /> L0 Endpoint: {LZ_ENDPOINT_V2.slice(0, 8)}...{LZ_ENDPOINT_V2.slice(-4)}
         </h3>
         <p className="text-[9px] text-[#00FF41]/60 uppercase tracking-widest max-w-lg leading-relaxed">
-          Natively bridging payloads via Decentralized Verifier Networks (DVNs). Bypasses centralized bridge limits.
+          Natively bridging payloads via Decentralised Verifier Networks (DVNs). Bypasses centralised bridge limits.
         </p>
       </div>
 

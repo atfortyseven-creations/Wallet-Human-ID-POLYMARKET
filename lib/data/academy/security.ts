@@ -72,7 +72,7 @@
 
                     <section class="pro-section">
                         <h2>II. La Guerra Autónoma: IA vs IA en el Mempool</h2>
-                        <p>El presente de la seguridad ya es de las máquinas. Los atacantes usan LLMs para encontrar vulnerabilidades lógicas en Solidity ("Autonomous Exploit Generation"). La defensa PhD pasa por desplegar <strong>Agentes Centinelas AI</strong> que monitorizan el mempool en tiempo real. Si detectan una transacción maliciosa atacando un protocolo propio, el Agente AI genera instantáneamente una contra-transacción de rescate (Whitehat MEV) enviándola a constructores privados vía Flashbots para extraer los fondos antes que el atacante (<em>Front-running al hacker</em>).</p>
+                        <p>El presente de la seguridad ya es de las máquinas. Los atacantes usan LLMs para encontrar vulnerabilidades lógicas en Solidity ("Autonomous Exploit Generation"). La defensa PhD pasa por desplegar <strong>Agentes Centinelas AI</strong> que monitorizan el mempool en tiempo real. Si detectan una transacción maliciosa atacando un protocolo propio, el Agente AI genera instantáneamente una contra-transacción de rescate (Whitehat MEV) enviándola a constructores privados vía Flashbots para extraer los fondos antes que el atacante (<em>Front running al hacker</em>).</p>
                     </section>
                 </div>`
         },
@@ -156,8 +156,8 @@
             content: `<div class="academy-article">
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
-                        <h2>I. DID (Decentralized Identity): La Primitiva de la Reputación ZK</h2>
-                        <p>Identificarse en Web3 sin revelar dox (identidad física) requiere criptografía avanzada. <strong>Decentralized Identifiers (DIDs)</strong> combinados con pruebas ZK (como <em>Sismo</em> o <em>zkPass</em>) permiten al usuario demostrar propiedades de su identidad sin revelar su identidad. Un PhD puede probar matemáticamente <code>es_mayor_de_21_años() == true</code> o <code>no_es_ciudadano_EEUU() == true</code> mediante un ZK-SNARK verificado contra credenciales cifradas, resolviendo el trilema del KYC DeFi: anonimato vs. cumplimiento regulatorio.</p>
+                        <h2>I. DID (Decentralised Identity): La Primitiva de la Reputación ZK</h2>
+                        <p>Identificarse en Web3 sin revelar dox (identidad física) requiere criptografía avanzada. <strong>Decentralised Identifiers (DIDs)</strong> combinados con pruebas ZK (como <em>Sismo</em> o <em>zkPass</em>) permiten al usuario demostrar propiedades de su identidad sin revelar su identidad. Un PhD puede probar matemáticamente <code>es_mayor_de_21_años() == true</code> o <code>no_es_ciudadano_EEUU() == true</code> mediante un ZK-SNARK verificado contra credenciales cifradas, resolviendo el trilema del KYC DeFi: anonimato vs. cumplimiento regulatorio.</p>
                     </section>
 
                     <section class="pro-section">
@@ -168,7 +168,7 @@
         },
         {
             id: "mev-protection-user-safety-phd",
-            title: "10. MEV y Seguridad del Usuario: Front-running y Mempools Privados",
+            title: "10. MEV y Seguridad del Usuario: Front running y Mempools Privados",
             description: "Defendiéndose del bosque oscuro: RPCs de protección y mitigación de ataques Sandwich.",
             readTime: 360,
             content: `<div class="academy-article">
@@ -186,14 +186,14 @@
         },
         {
             id: "sovereign-multisig-safe-standard-phd",
-            title: "11. Multi-sig Institucional: El Estándar Safe y Umbrales de Control",
+            title: "11. Multisig Institucional: El Estándar Safe y Umbrales de Control",
             description: "Arquitectura de custodia para tesorerías y capitales de gran escala.",
             readTime: 370,
             content: `<div class="academy-article">
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. Safe (Gnosis): El Estándar de Bóveda On-Chain</h2>
-                        <p>Las ballenas y las tesorerías DAO (Decentralized Autonomous Organizations) no usan EOA individuales. Utilizan <strong>Safe (anteriormente Gnosis Safe)</strong>, un contrato inteligente multifirma que protege más de $100B en el ecosistema. Su poder radica en la <em>flexibilidad de la matriz de acceso</em> (M-de-N, ej: "Se requieren 3 de 5 firmas"). Si un directivo es secuestrado o pierde su llave hardware, el quórum restante revoca su acceso y aprueba transferencias, eliminando el Single Point of Failure crítico de las EOA.</p>
+                        <p>Las ballenas y las tesorerías DAO (Decentralised Autonomous Organizations) no usan EOA individuales. Utilizan <strong>Safe (anteriormente Gnosis Safe)</strong>, un contrato inteligente multifirma que protege más de $100B en el ecosistema. Su poder radica en la <em>flexibilidad de la matriz de acceso</em> (M-de-N, ej: "Se requieren 3 de 5 firmas"). Si un directivo es secuestrado o pierde su llave hardware, el quórum restante revoca su acceso y aprueba transferencias, eliminando el Single Point of Failure crítico de las EOA.</p>
                     </section>
 
                     <section class="pro-section">

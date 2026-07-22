@@ -31,7 +31,7 @@ const SECTIONS: Section[] = [
     title: 'What are QDs — Quantum Dots?',
     tag: 'Foundation',
     paragraphs: [
-      'QDs (Quantum Dots) are the native digital asset of the Whale Network. They are not an ERC-20 token on Ethereum mainnet. They are not a wrapped asset. They live and move exclusively inside the Aztec Network — a Zero-Knowledge Layer 2 rollup — making every balance and every transfer private by cryptographic default.',
+      'QDs (Quantum Dots) are the native digital asset of the Whale Network. They are not an ERC-20 token on Ethereum mainnet. They are not a wrapped asset. They live and move exclusively inside the Aztec Network — a Zero Knowledge Layer 2 rollup — making every balance and every transfer private by cryptographic default.',
       'The name "Quantum Dots" comes from physics: the smallest indivisible unit of verifiable quantum energy output. Inside the protocol, QDs represent the smallest indivisible unit of verifiable economic contribution. You cannot fake them, you cannot mint extra ones, and you cannot subdivide them below 8 decimal places.',
       'The supply is mathematically hard-capped at exactly 210,000,000 units. This number is an immutable constant encoded in the genesis state of the contract. No governance vote, no team decision, no regulatory pressure, and no technical upgrade can ever change it. The protocol enforces this not by trust but by arithmetic: any transaction attempting to exceed the ceiling will be mathematically rejected by every node in the network.',
     ],
@@ -48,7 +48,7 @@ const SECTIONS: Section[] = [
     tag: 'Architecture',
     paragraphs: [
       'On a public blockchain like Ethereum, every transaction is permanently visible to everyone. Your balance, your trading history, who you paid, how much you earned — all of it is public. This creates real-world problems: competitors track your positions, front-runners exploit your pending transactions, and any counterparty can profile your economic activity.',
-      'QDs use Aztec\'s ZK-SNARK architecture to make balances and transfers mathematically private. When you send QDs to another participant, the Aztec network verifies only one thing: that a valid Zero-Knowledge proof was submitted proving you had sufficient balance and authorized the transfer. The network learns nothing else. The amount transferred, the recipient\'s address, and your remaining balance are all hidden inside the proof.',
+      'QDs use Aztec\'s ZK-SNARK architecture to make balances and transfers mathematically private. When you send QDs to another participant, the Aztec network verifies only one thing: that a valid Zero Knowledge proof was submitted proving you had sufficient balance and authorized the transfer. The network learns nothing else. The amount transferred, the recipient\'s address, and your remaining balance are all hidden inside the proof.',
       'This is not obscurity — it is cryptographic proof. Anyone can verify that the rules were followed (no double-spend, no out-of-thin-air creation) without being able to see the underlying numbers. This is the Aztec model: verifiable without being transparent.',
     ],
     diagram: [
@@ -154,7 +154,7 @@ const SECTIONS: Section[] = [
     title: 'ZK Architecture — how it works under the hood',
     tag: 'Technical',
     paragraphs: [
-      'QDs are built on the Aztec Network\'s Noir smart contract system. Noir is a domain-specific language for writing Zero-Knowledge circuits. A Noir program encodes the rules of a token transfer: "the spender owns a valid note, the amount is positive, the total supply constraint is preserved." These rules compile to ACIR (Abstract Circuit Intermediate Representation) bytecode.',
+      'QDs are built on the Aztec Network\'s Noir smart contract system. Noir is a domain-specific language for writing Zero Knowledge circuits. A Noir program encodes the rules of a token transfer: "the spender owns a valid note, the amount is positive, the total supply constraint is preserved." These rules compile to ACIR (Abstract Circuit Intermediate Representation) bytecode.',
       'When you perform any QD operation, the Barretenberg proving engine — a highly optimized C++ library compiled to WebAssembly — runs in your browser and generates a UltraHonk/UltraPlonk proof that you followed all the rules, without revealing any of your private inputs. This proof is then submitted to the Aztec sequencer, which batches it with other proofs and posts a single aggregated proof to Ethereum L1 for final settlement.',
       'The cryptographic primitives: Schnorr signatures on the BN254 Grumpkin curve for account authorization. Poseidon2 hashing for the Note commitment Merkle tree (depth 32). An Indexed Merkle tree for the nullifier set (depth 20). These are not arbitrary choices — they are the most efficient primitives for proof generation inside the BN254 proving system.',
     ],

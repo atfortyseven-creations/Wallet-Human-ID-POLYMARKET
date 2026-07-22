@@ -72,7 +72,7 @@ Respondents must reply with a signed architectural overview.`
 ];
 
 const ACTIONS = ['Acquire', 'Liquidate', 'Audit', 'Deploy', 'Hedge'];
-const TARGETS = ['Zero-Knowledge Provers', 'L2 Sequencer Nodes', 'Dark Pool Liquidity', 'Algorithmic Stablecoin Yields', 'Cross-chain Bridges'];
+const TARGETS = ['Zero Knowledge Provers', 'L2 Sequencer Nodes', 'Dark Pool Liquidity', 'Algorithmic Stablecoin Yields', 'Cross-chain Bridges'];
 const METHODS = ['flash-loan arbitrage', 'stat-arb neural models', 'multisig governance execution', 'optimistic rollups', 'MPC threshold signatures'];
 const CHAINS = ['Ethereum Mainnet', 'Solana', 'Arbitrum One', 'Base', 'Optimism'];
 const METRICS = ['Gas consumption', 'Mempool latency', 'TVL migration', 'MEV extraction rates', 'Smart contract deployments'];
@@ -121,7 +121,7 @@ export async function POST(req: Request) {
             { slug: 'onchain-forensics', name: 'On-Chain Forensics', description: 'Entity tracking, dark pool analysis, and security auditing.', color: '#DC2626', orderIndex: 4 },
             { slug: 'venture-allocation', name: 'Venture Allocation', description: 'Seed-stage capital deployment and strategic acquisitions.', color: '#7C3AED', orderIndex: 5 },
             { slug: 'cryptographic-audits', name: 'Cryptographic Audits', description: 'Smart contract security, mathematical proofs, and risk mitigation.', color: '#0284C7', orderIndex: 6 },
-            { slug: 'zero-knowledge', name: 'Zero-Knowledge Architecture', description: 'ZK-Rollups, privacy-preserving state transitions, and SNARKs.', color: '#DB2777', orderIndex: 7 },
+            { slug: 'zero knowledge', name: 'Zero Knowledge Architecture', description: 'ZK-Rollups, privacy-preserving state transitions, and SNARKs.', color: '#DB2777', orderIndex: 7 },
             { slug: 'mev-strategies', name: 'MEV Strategies', description: 'Maximal Extractable Value, block building, and searcher dynamics.', color: '#14B8A6', orderIndex: 8 }
         ];
 

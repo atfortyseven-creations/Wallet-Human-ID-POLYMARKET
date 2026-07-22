@@ -94,7 +94,7 @@ function ZkDecryptionEngine({ onComplete, item }: { onComplete: () => void, item
                     </div>
                     <div>
                         <div className="font-mono text-[13px] font-black uppercase tracking-widest" style={{ color: '#ffffff' }}>Aztec Unshielding Protocol</div>
-                        <div className="font-mono text-[9px] uppercase tracking-[0.2em] mt-1" style={{ color: 'rgba(255,255,255,0.45)' }}>Executing Zero-Knowledge Verification</div>
+                        <div className="font-mono text-[9px] uppercase tracking-[0.2em] mt-1" style={{ color: 'rgba(255,255,255,0.45)' }}>Executing Zero Knowledge Verification</div>
                     </div>
                 </div>
                 <div className="text-right">
@@ -289,7 +289,7 @@ function TransactionRow({ item }: { item: any }) {
                                         </div>
                                         <h4 className="text-[14px] font-black uppercase tracking-widest text-[#050505] mb-3">Private Data Shielded</h4>
                                         <p className="text-[12px] text-[#555555] text-center max-w-md mb-8 leading-relaxed">
-                                            This transaction utilizes Aztec Zero-Knowledge proofs. Contextual routing metadata, true market sentiment, and internal method execution remain cryptographically hidden on-chain.
+                                            This transaction utilizes Aztec Zero Knowledge proofs. Contextual routing metadata, true market sentiment, and internal method execution remain cryptographically hidden on-chain.
                                         </p>
                                         <button 
                                             onClick={() => setDecryptionState('DECRYPTING')}

@@ -53,7 +53,7 @@ export default function OpenLetterPage() {
           <ul className="space-y-4 my-8 list-none pl-0">
             <li className="flex items-start">
               <span className="text-[#0088cc] mr-3 font-bold">1.</span>
-              <span><strong>Private Forums:</strong> Where identity is verified via Zero-Knowledge proofs (Noir), but the wallet address remains completely hidden.</span>
+              <span><strong>Private Forums:</strong> Where identity is verified via Zero Knowledge proofs (Noir), but the wallet address remains completely hidden.</span>
             </li>
             <li className="flex items-start">
               <span className="text-[#0088cc] mr-3 font-bold">2.</span>

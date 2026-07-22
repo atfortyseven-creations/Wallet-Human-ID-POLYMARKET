@@ -18,7 +18,7 @@ export const LOTTIE_CONTENT: LottieItem[] = [
   {
     id: 'core-2',
     title: 'Prediction Markets',
-    subtitle: 'Decentralized prediction markets',
+    subtitle: 'Decentralised prediction markets',
     src: 'https://assets5.lottiefiles.com/packages/lf20_khtrdrwa.json',
     category: 'Core',
   },

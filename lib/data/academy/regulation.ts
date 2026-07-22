@@ -108,7 +108,7 @@ export const regulationModules = [
 
                     <section class="pro-section">
                         <h2>II. El "Bretton Woods" de la Era del Dato (Tratado BIS/IMF M2 L1 T-1)</h2>
-                        <p>El Fin-State O(1) no será la Anarquía P2P M1 ni la Censura L1. Las élites Financieras (G20, IMF, Bancos de Pagos Internacionales L2 T-1 M2) pavimentan el <strong>Global Value Transfer Standard P2P L1</strong>. Acuerdos Multilaterales que fusionarán Tratados de Extradición L2, Tax-Sharing Asintótico (CARF - Crypto-Asset Reporting Framework O(N) T-1) M2 y Tipificación de Commodities Digitales L1. El Inversor Cautivo P2P L2 transitará de "Activos en el Salvaje Oeste M1 T-1" a portar sus Claves Privadas L1 en un entorno asfixiantemente homologado de Grado Institucional Global M2.</p>
+                        <p>El Fin-State O(1) no será la Anarquía P2P M1 ni la Censura L1. Las élites Financieras (G20, IMF, Bancos de Pagos Internacionales L2 T-1 M2) pavimentan el <strong>Global Value Transfer Standard P2P L1</strong>. Acuerdos Multilaterales que fusionarán Tratados de Extradición L2, Tax-Sharing Asintótico (CARF - Crypto Asset Reporting Framework O(N) T-1) M2 y Tipificación de Commodities Digitales L1. El Inversor Cautivo P2P L2 transitará de "Activos en el Salvaje Oeste M1 T-1" a portar sus Claves Privadas L1 en un entorno asfixiantemente homologado de Grado Institucional Global M2.</p>
                     </section>
                 </div>`
             },
@@ -179,8 +179,8 @@ export const regulationModules = [
                     </section>
 
                     <section class="pro-section">
-                        <h2>II. Abstracción Zero-Knowledge de Estatus Aprobado (zk-SBTs M2 L1 P2P T-1)</h2>
-                        <p>Tras la verificación M1, la Institución Emite O(1) On-Chain L1 un Token Intransferible (Soulbound P2P M2 T-1) o una Prueba Zero-Knowledge ZK-SNARK L2 a la Wallet Pública P2P. Cuando la Billetera interactúa T-1 O(N) con un Protocolo AAVE Institucional L1 M2 restringido, el Smart Contract no solicita Nombre L2 M1 ni Dirección M2; Simplemente Requiere M1 P2P: <em>'Verify(zkProof_Age > 18 AND OFAC == CLEAR) == TRUE O(1) L1 T-1'</em>. Cumpliendo simultáneamente con el KYC Mandatorio Fiduciario L2 O(N) sin exponer asintóticamente M2 P2P Bytes Privados de Identidad On-Chain L1 T-1.</p>
+                        <h2>II. Abstracción Zero Knowledge de Estatus Aprobado (zk-SBTs M2 L1 P2P T-1)</h2>
+                        <p>Tras la verificación M1, la Institución Emite O(1) On-Chain L1 un Token Intransferible (Soulbound P2P M2 T-1) o una Prueba Zero Knowledge ZK-SNARK L2 a la Wallet Pública P2P. Cuando la Billetera interactúa T-1 O(N) con un Protocolo AAVE Institucional L1 M2 restringido, el Smart Contract no solicita Nombre L2 M1 ni Dirección M2; Simplemente Requiere M1 P2P: <em>'Verify(zkProof_Age > 18 AND OFAC == CLEAR) == TRUE O(1) L1 T-1'</em>. Cumpliendo simultáneamente con el KYC Mandatorio Fiduciario L2 O(N) sin exponer asintóticamente M2 P2P Bytes Privados de Identidad On-Chain L1 T-1.</p>
                     </section>
                 </div>`
             },
@@ -228,8 +228,8 @@ export const regulationModules = [
                 content: `<div class="academy-article">
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
-                        <h2>I. El Tratado de Roma del Internet P2P (Markets in Crypto-Assets M2 T-1)</h2>
-                        <p>La Unión Europea L1 O(1) sancionó el primer Opus Jurídico Continental exhaustivo M1 P2P: <strong>El Reglamento MiCA L2 T-1</strong>. Cesa la balcanización jurisdiccional M2 P2P (Leyes diferentes en España vs Alemania L1) estableciendo un Pasaporte Cripto Unificado O(N) T-1. Califica estrictamente a los Activos en E-Money Tokens (EMTs M2 P2P), Asset-Referenced Tokens (ARTs L1 M1), y Crypto-Assets Genéricos T-1.</p>
+                        <h2>I. El Tratado de Roma del Internet P2P (Markets in Crypto Assets M2 T-1)</h2>
+                        <p>La Unión Europea L1 O(1) sancionó el primer Opus Jurídico Continental exhaustivo M1 P2P: <strong>El Reglamento MiCA L2 T-1</strong>. Cesa la balcanización jurisdiccional M2 P2P (Leyes diferentes en España vs Alemania L1) estableciendo un Pasaporte Cripto Unificado O(N) T-1. Califica estrictamente a los Activos en E-Money Tokens (EMTs M2 P2P), Asset-Referenced Tokens (ARTs L1 M1), y Crypto Assets Genéricos T-1.</p>
                     </section>
 
                     <section class="pro-section">
@@ -329,7 +329,7 @@ export const regulationModules = [
                 </div>`
             },
             {
-                id: "smart-contract-liability",
+                id: "smart contract-liability",
                 title: "19. Responsabilidad Legal en Smart Contracts",
                 description: "¿Quién responde por un bug en el código?",
                 readTime: 55,
@@ -337,7 +337,7 @@ export const regulationModules = [
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
                         <h2>I. La Amorfia de La Responsabilidad Descentralizada L1 (General Partnership Liability T-1 M2 P2P)</h2>
-                        <p>Si el Smart Contract M1 L1 L2 T-1 de una Autoridad DAO (Decentralized Autonomous Organization P2P M2) es Drenado por Hackers O(1) costando Billones Asintóticos L1; ¿A quién demanda el Estado T-1 L2?. La perniciosa Jurisprudencia P2P L1 (Boki vs bZerox DAO M2 T-1 L1) dictaminó O(N) que las DAO sin envoltura legal M1 L2 son consideradas <strong>"Sociedades Colectivas Generales (General Partnerships L1 P2P M2 T-1)"</strong>.</p>
+                        <p>Si el Smart Contract M1 L1 L2 T-1 de una Autoridad DAO (Decentralised Autonomous Organization P2P M2) es Drenado por Hackers O(1) costando Billones Asintóticos L1; ¿A quién demanda el Estado T-1 L2?. La perniciosa Jurisprudencia P2P L1 (Boki vs bZerox DAO M2 T-1 L1) dictaminó O(N) que las DAO sin envoltura legal M1 L2 son consideradas <strong>"Sociedades Colectivas Generales (General Partnerships L1 P2P M2 T-1)"</strong>.</p>
                     </section>
 
                     <section class="pro-section">

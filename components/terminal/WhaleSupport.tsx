@@ -18,13 +18,13 @@ type Priority = 'LOW' | 'MEDIUM' | 'HIGH';
 
 const FAQ = [
     { q: 'How do I connect my wallet?',          a: 'Navigate to the Dashboard section and use the system handshake flow to link your wallet securely through WalletConnect or MetaMask.' },
-    { q: 'What is the Aztec Network integration?', a: 'Humanity Ledger is fully anchored to Aztec Network\'s privacy-preserving L2 rollup. All transactions execute inside Aztec\'s zero-knowledge virtual machine, ensuring your financial activity is never exposed on-chain.' },
+    { q: 'What is the Aztec Network integration?', a: 'Humanity Ledger is fully anchored to Aztec Network\'s privacy-preserving L2 rollup. All transactions execute inside Aztec\'s zero knowledge virtual machine, ensuring your financial activity is never exposed on-chain.' },
     { q: 'How do QDs tokens work?',              a: 'QDs (Network Score) are the native governance and utility token of the Humanity Ledger ecosystem. They enable voting rights, premium feature access, and staking for network security contributions.' },
-    { q: 'Is Whale Chat end-to-end encrypted?',  a: 'Yes. Whale Chat uses the XMTP protocol with full end-to-end encryption. Messages are encrypted client-side using your wallet keys. Not even Humanity Ledger can read your messages.' },
+    { q: 'Is Whale Chat end to end encrypted?',  a: 'Yes. Whale Chat uses the XMTP protocol with full end to end encryption. Messages are encrypted client-side using your wallet keys. Not even Humanity Ledger can read your messages.' },
     { q: 'How do I upgrade my plan?',            a: 'Go to the Pricing section in the sidebar to view and upgrade your sovereign tier. All payments are processed via Stripe with SEPA and card support.' },
     { q: 'Where does the market data come from?', a: 'Market data is sourced directly from on-chain oracles (Chainlink, GetBlock RPC nodes) and verified exchange APIs in real time with zero interpolation or mock data.' },
     { q: 'What is the Humanity Ledger indexer?', a: 'The Humanity Ledger is an official Aztec Network live indexer that records and stores all blockchain transactions in a local SQLite database. It resets every 11h 59m for optimal performance.' },
-    { q: 'How is my privacy protected?',         a: 'Your portfolio, identity, and messaging data is never stored on centralized servers. All sensitive operations use zero-knowledge proofs on Aztec\'s private execution layer. Your IP is never logged.' },
+    { q: 'How is my privacy protected?',         a: 'Your portfolio, identity, and messaging data is never stored on centralised servers. All sensitive operations use zero knowledge proofs on Aztec\'s private execution layer. Your IP is never logged.' },
 ];
 
 const COMMUNITY_CHANNELS = [
@@ -56,13 +56,13 @@ const COMMUNITY_CHANNELS = [
 
 const DOCS_LINKS = [
     { icon: <span className="font-mono font-black text-[10px]">[DOC]</span>, label: 'Technical Whitepaper',  href: '/whitepaper',  desc: 'Full cryptographic architecture of Humanity Ledger on Aztec L2.' },
-    { icon: <span className="font-mono font-black text-[10px]">[SEC]</span>,   label: 'Privacy Manifesto',     href: '/manifesto',   desc: 'Our commitment to zero-knowledge privacy and human Privatety.' },
+    { icon: <span className="font-mono font-black text-[10px]">[SEC]</span>,   label: 'Privacy Manifesto',     href: '/manifesto',   desc: 'Our commitment to zero knowledge privacy and human Privatety.' },
     { icon: <span className="font-mono font-black text-[10px]">[ZAP]</span>,      label: 'QDs Tokenomics',        href: '/tokenomics',  desc: 'Supply schedule, distribution model, and governance mechanics.' },
     { icon: <span className="font-mono font-black text-[10px]">[WWW]</span>,    label: 'Roadmap',               href: '/roadmap',     desc: 'Quarterly milestones and Aztec Network integration timeline.' },
     { icon: <span className="font-mono font-black text-[10px]">[DEV]</span>,    label: 'Developer Hub',         href: '/developer',   desc: 'API documentation, SDK references, and Noir circuit guides.' },
     { icon: <span className="font-mono font-black text-[10px]">[DEV]</span>,    label: 'API Reference',         href: '/developers/api-docs', desc: 'Full REST and WebSocket API specification with live playground.' },
     { icon: <span className="font-mono font-black text-[10px]">[DEV]</span>,    label: 'API Marketplace',       href: '/developers',  desc: 'Third-party integrations and licensed data endpoint catalogue.' },
-    { icon: <span className="font-mono font-black text-[10px]">[DEV]</span>,    label: 'Noir Circuits',         href: 'https://github.com/hvbr1s/noir-circuits', desc: 'Open-source ZK circuit implementations powering private execution.' },
+    { icon: <span className="font-mono font-black text-[10px]">[DEV]</span>,    label: 'Noir Circuits',         href: 'https://github.com/hvbr1s/noir-circuits', desc: 'Open source ZK circuit implementations powering private execution.' },
     { icon: <span className="font-mono font-black text-[10px]">[SEC]</span>,   label: 'Security Policy',       href: '/security',    desc: 'Responsible disclosure process and security architecture overview.' },
     { icon: <span className="font-mono font-black text-[10px]">[SEC]</span>,   label: 'Bug Bounty',            href: '/security',    desc: 'Earn rewards for reporting critical vulnerabilities in the protocol.' },
     { icon: <span className="font-mono font-black text-[10px]">[SEC]</span>,   label: 'Audits',                href: '/security',    desc: 'Independent third-party audit reports and formal verification results.' },

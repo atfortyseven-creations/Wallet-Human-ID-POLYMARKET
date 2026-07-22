@@ -34,7 +34,7 @@ export const translations = {
 
         // Hero
         'hero.welcome': 'WELCOME TO',
-        'hero.subtitle': 'System wallet with biometric security, zero-knowledge proofs, and unmatched privacy.',
+        'hero.subtitle': 'System wallet with biometric security, zero knowledge proofs, and unmatched privacy.',
         'hero.keys_control': 'Your keys. Your control.',
         'hero.cta': 'Get Started',
         'hero.stats.users': '10M+ Users',
@@ -96,7 +96,7 @@ export const translations = {
         'lottie.wallet.title': 'Whale Network Wallet',
         'lottie.wallet.desc': 'Non-custodial, biometric-secured vault for your digital assets.',
         'lottie.prediction.title': 'Prediction Markets',
-        'lottie.prediction.desc': 'Attest on future outcomes with zero-knowledge privacy.',
+        'lottie.prediction.desc': 'Attest on future outcomes with zero knowledge privacy.',
         'lottie.yield.title': 'Yield Governance',
         'lottie.yield.desc': 'Earn rewards by participating in protocol decisions.',
         'lottie.settlement.title': 'Global Settlements',
@@ -180,7 +180,7 @@ export const translations = {
         'dev.sdk.title': 'Identity SDK',
         'dev.sdk.desc': 'Integrate Whale Network ID verification into your dApp.',
         'dev.gov.title': 'Governance API',
-        'dev.gov.desc': 'Interact with the decentralized decision engine.',
+        'dev.gov.desc': 'Interact with the decentralised decision engine.',
 
         // Footer
         'footer.human_defi': 'Whale Network',

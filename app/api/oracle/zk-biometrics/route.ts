@@ -64,8 +64,8 @@ export async function POST(req: NextRequest) {
         console.log(`[ZK-ORACLE]  Analyzing 3D Activeness Mesh (Bound to Signature)`);
         
         // 4. Persistence & System Attestation Issuance
-        // Zero-Knowledge Proof minted immediately upon molecular verification.
-        console.log(`[ZK-ORACLE]  Molecular liveness confirmed for ${address}. Zero-Knowledge Proof minted.`);
+        // Zero Knowledge Proof minted immediately upon molecular verification.
+        console.log(`[ZK-ORACLE]  Molecular liveness confirmed for ${address}. Zero Knowledge Proof minted.`);
 
         // 5. Update Database (Zero Mock)
         // Ensure the identity is fully recognized by the session layer.

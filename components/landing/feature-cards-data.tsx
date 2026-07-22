@@ -56,7 +56,7 @@ export const FEATURE_CARDS: FeatureCard[] = [
     title: "Multi-Signature Accounts",
     category: "Security",
     description: "Require multiple approvals for high-value transactions.",
-    detailedInfo: "Implement cryptographic-grade multi-sig wallets requiring M-of-N signatures before execution. Perfect for DAOs, treasury management, or shared family accounts where collective consensus prevents unauthorized transfers.",
+    detailedInfo: "Implement cryptographic-grade multisig wallets requiring M-of-N signatures before execution. Perfect for DAOs, treasury management, or shared family accounts where collective consensus prevents unauthorized transfers.",
     benefits: [
       "Prevent single-point-of-failure attacks",
       "Customizable approval thresholds (2-of-3, 3-of-5, etc.)",
@@ -83,7 +83,7 @@ export const FEATURE_CARDS: FeatureCard[] = [
   },
   {
     id: 5,
-    title: "Zero-Knowledge Proofs",
+    title: "Zero Knowledge Proofs",
     category: "Privacy",
     description: "Prove ownership without revealing your identity.",
     detailedInfo: "Utilize advanced cryptographic techniques like zk-SNARKs to verify transactions and credentials without exposing sensitive data. Participate in DeFi protocols, governance, or attestation checks while maintaining complete anonymity.",
@@ -146,7 +146,7 @@ export const FEATURE_CARDS: FeatureCard[] = [
     title: "Encrypted Backup",
     category: "Security",
     description: "Automated cloud backups with military-grade encryption.",
-    detailedInfo: "Your wallet state is continuously encrypted using AES-256 and backed up to decentralized storage networks. Only you hold the decryption keynot even our servers can access your data.",
+    detailedInfo: "Your wallet state is continuously encrypted using AES-256 and backed up to decentralised storage networks. Only you hold the decryption keynot even our servers can access your data.",
     benefits: [
       "Zero-knowledge cloud architecture",
       "IPFS and Arweave redundancy",
@@ -177,8 +177,8 @@ export const FEATURE_CARDS: FeatureCard[] = [
     id: 11,
     title: "Prediction Markets",
     category: "DeFi",
-    description: "Attest on future outcomes with zero-knowledge privacy.",
-    detailedInfo: "Bet on real-world eventsfrom elections to sports to macroeconomic indicatorsusing decentralized prediction markets. All positions are settled via oracle consensus, ensuring fairness and transparency.",
+    description: "Attest on future outcomes with zero knowledge privacy.",
+    detailedInfo: "Bet on real-world eventsfrom elections to sports to macroeconomic indicatorsusing decentralised prediction markets. All positions are settled via oracle consensus, ensuring fairness and transparency.",
     benefits: [
       "No counterparty risk",
       "Instant global settlements",
@@ -193,7 +193,7 @@ export const FEATURE_CARDS: FeatureCard[] = [
     title: "Spot Attesting",
     category: "Attesting",
     description: "Attest 1000+ tokens with Elite liquidity.",
-    detailedInfo: "Access deep liquidity pools aggregated from Uniswap, Curve, Balancer, and centralized exchanges. Smart order routing guarantees best execution prices with minimal slippage.",
+    detailedInfo: "Access deep liquidity pools aggregated from Uniswap, Curve, Balancer, and centralised exchanges. Smart order routing guarantees best execution prices with minimal slippage.",
     benefits: [
       "Sub-second order execution",
       "MEV protection via Flashbots",
@@ -208,7 +208,7 @@ export const FEATURE_CARDS: FeatureCard[] = [
     title: "Perpetual Futures",
     category: "Attesting",
     description: "Leverage attest with up to 100x on perpetual contracts.",
-    detailedInfo: "Attest perpetual futures with no expiration dates. Built on decentralized protocols like dYdX and GMX, offering leverage without custodial risk. Automated liquidation protection keeps you safe.",
+    detailedInfo: "Attest perpetual futures with no expiration dates. Built on decentralised protocols like dYdX and GMX, offering leverage without custodial risk. Automated liquidation protection keeps you safe.",
     benefits: [
       "No KYC required",
       "Funding rate arbitrage opportunities",
@@ -708,8 +708,8 @@ export const FEATURE_CARDS: FeatureCard[] = [
     id: 46,
     title: "On-Chain Identity",
     category: "Identity",
-    description: "Build your decentralized reputation.",
-    detailedInfo: "Aggregate credentials from ENS, Lens Protocol, and POAPs to create a portable Web3 identity. Prove your expertise, achievements, and reputation across the decentralized web.",
+    description: "Build your decentralised reputation.",
+    detailedInfo: "Aggregate credentials from ENS, Lens Protocol, and POAPs to create a portable Web3 identity. Prove your expertise, achievements, and reputation across the decentralised web.",
     benefits: [
       "Sybil-resistant attestations",
       "Cross-platform portability",
@@ -754,7 +754,7 @@ export const FEATURE_CARDS: FeatureCard[] = [
     title: "DAO Treasury Management",
     category: "DAO",
     description: "Tools for managing community-owned assets.",
-    detailedInfo: "Multi-sig treasury with spending proposals, streaming payments, and diversification strategies. Perfect for DAOs managing millions in on-chain capital.",
+    detailedInfo: "Multisig treasury with spending proposals, streaming payments, and diversification strategies. Perfect for DAOs managing millions in on-chain capital.",
     benefits: [
       "Streaming salary payments",
       "Budget allocation dashboards",

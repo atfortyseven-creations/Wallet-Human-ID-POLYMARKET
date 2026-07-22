@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
  * GET /api/aztec/account?address=0x...
  *
  * Derives the Aztec L2 address for a given EVM address and probes the testnet.
- * Architecture (v4.3.1):
+ * Architecture (v5.0.0):
  *  - Probes the public Aztec Testnet node via raw JSON-RPC fetch (zero SDK imports)
  *  - Derives a deterministic Aztec address from the EVM address (pure hex math)
  *  - No PXE required — all read-only queries go directly to the public node
@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
           nodeVersion:   r.nodeVersion ?? 'v5.testnet',
           l1ChainId:     r.l1ChainId ?? 11155111,
           rollupVersion: r.rollupVersion ?? 2787991301,
-          rollupAddress: r.l1ContractAddresses?.rollupAddress ?? '0xfe6061806cac748085904a010d2d9e33b8031741',
+          rollupAddress: r.l1ContractAddresses?.rollupAddress ?? '0xd73a91bdcf6891c7642f3e460036e1ef2cc23178',
           latencyMs:     latency,
         };
         rpcStatus = 'live';
@@ -72,7 +72,7 @@ export async function GET(req: NextRequest) {
           nodeVersion:   r2?.nodeVersion ?? 'v5.testnet',
           l1ChainId:     r2?.l1ChainId ?? 11155111,
           rollupVersion: r2?.rollupVersion ?? 2787991301,
-          rollupAddress: r2?.l1ContractAddresses?.rollupAddress ?? '0xfe6061806cac748085904a010d2d9e33b8031741',
+          rollupAddress: r2?.l1ContractAddresses?.rollupAddress ?? '0xd73a91bdcf6891c7642f3e460036e1ef2cc23178',
           latencyMs:     latency,
         };
         // Node responded with 200 — still live even if result was minimal
@@ -86,10 +86,10 @@ export async function GET(req: NextRequest) {
     console.warn('[Aztec Account] RPC probe failed, using simulated live state:', e.message);
     testnetData = {
       blockNumber:   1821685239,
-      nodeVersion:   'aztec-v4.3.1',
+      nodeVersion:   'v5.testnet',
       l1ChainId:     11155111,
       rollupVersion: 2787991301,
-      rollupAddress: '0xfe6061806cac748085904a010d2d9e33b8031741',
+      rollupAddress: '0xd73a91bdcf6891c7642f3e460036e1ef2cc23178',
       latencyMs:     124,
       fallback:      true,
     };
@@ -104,8 +104,8 @@ export async function GET(req: NextRequest) {
     network:        'aztec-testnet',
     nodeUrl,
     registered:     true,
-    method:         'schnorr-deterministic-v4',
-    sdkVersion:     '4.3.1',
+    method:         'schnorr-deterministic-v5',
+    sdkVersion:     '5.0.0',
     rpcStatus,
     testnetData,
     explorerUrl:    `https://testnet.aztecscan.xyz/address/${aztecAddress}`,

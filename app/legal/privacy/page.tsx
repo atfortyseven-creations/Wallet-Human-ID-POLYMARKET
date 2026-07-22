@@ -13,7 +13,7 @@ const TOC: TocItem[] = [
   { id: '7-international-transfers-of-personal-data', label: `7. INTERNATIONAL TRANSFERS OF PERSONAL DATA` },
   { id: '8-data-subject-rights', label: `8. DATA SUBJECT RIGHTS` },
   { id: '9-special-section-blockchain-data-and-immutability', label: `9. SPECIAL SECTION: BLOCKCHAIN DATA AND IMMUTABILITY` },
-  { id: '10-special-section-zero-knowledge-proofs-and-privacy-by-design', label: `10. SPECIAL SECTION: ZERO-KNOWLEDGE PROOFS AND PRIVACY BY DESIGN` },
+  { id: '10-special-section-zero knowledge-proofs-and-privacy-by-design', label: `10. SPECIAL SECTION: ZERO-KNOWLEDGE PROOFS AND PRIVACY BY DESIGN` },
   { id: '11-data-security', label: `11. DATA SECURITY` },
   { id: '12-cookies-and-tracking-technologies', label: `12. COOKIES AND TRACKING TECHNOLOGIES` },
   { id: '13-automated-decision-making-and-profiling', label: `13. AUTOMATED DECISION-MAKING AND PROFILING` },
@@ -28,7 +28,7 @@ export default function LegalPage() {
     <LegalDocLayout
       title="Privacy Policy"
       subtitle="This policy sets forth the legal and attestation rules governing the Whale Network ecosystem."
-      lastUpdated="July 20, 2026"
+      lastUpdated="22 July 2026"
       category="Legal"
       toc={TOC}
       backHref="/"
@@ -63,7 +63,7 @@ export default function LegalPage() {
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>4.7 Commercial Communications and Marketing</span></li>
             </ul>
             <p>
-              5. <a href="#5-retention-periods" className="text-black underline underline-offset-2">Retention Periods</a> 6. <a href="#6-recipients-and-data-processors" className="text-black underline underline-offset-2">Recipients and Data Processors</a> 7. <a href="#7-international-transfers-of-personal-data" className="text-black underline underline-offset-2">International Transfers of Personal Data</a> 8. <a href="#8-data-subject-rights" className="text-black underline underline-offset-2">Data Subject Rights</a> 9. <a href="#9-special-section-blockchain-data-and-immutability" className="text-black underline underline-offset-2">Special Section: Blockchain Data and Immutability</a> 10. <a href="#10-special-section-zero-knowledge-proofs-and-privacy-by-design" className="text-black underline underline-offset-2">Special Section: Zero-Knowledge Proofs and Privacy by Design</a> 11. <a href="#11-data-security" className="text-black underline underline-offset-2">Data Security</a> 12. <a href="#12-cookies-and-tracking-technologies" className="text-black underline underline-offset-2">Cookies and Tracking Technologies</a> 13. <a href="#13-automated-decision-making-and-profiling" className="text-black underline underline-offset-2">Automated Decision-Making and Profiling</a> 14. <a href="#14-data-protection-officer-dpo" className="text-black underline underline-offset-2">Data Protection Officer (DPO)</a> 15. <a href="#15-complaints-to-the-supervisory-authority" className="text-black underline underline-offset-2">Complaints to the Supervisory Authority</a> 16. <a href="#16-updates-to-this-privacy-policy" className="text-black underline underline-offset-2">Updates to this Privacy Policy</a> 17. <a href="#17-contact" className="text-black underline underline-offset-2">Contact</a>
+              5. <a href="#5-retention-periods" className="text-black underline underline-offset-2">Retention Periods</a> 6. <a href="#6-recipients-and-data-processors" className="text-black underline underline-offset-2">Recipients and Data Processors</a> 7. <a href="#7-international-transfers-of-personal-data" className="text-black underline underline-offset-2">International Transfers of Personal Data</a> 8. <a href="#8-data-subject-rights" className="text-black underline underline-offset-2">Data Subject Rights</a> 9. <a href="#9-special-section-blockchain-data-and-immutability" className="text-black underline underline-offset-2">Special Section: Blockchain Data and Immutability</a> 10. <a href="#10-special-section-zero knowledge-proofs-and-privacy-by-design" className="text-black underline underline-offset-2">Special Section: Zero Knowledge Proofs and Privacy by Design</a> 11. <a href="#11-data-security" className="text-black underline underline-offset-2">Data Security</a> 12. <a href="#12-cookies-and-tracking-technologies" className="text-black underline underline-offset-2">Cookies and Tracking Technologies</a> 13. <a href="#13-automated-decision-making-and-profiling" className="text-black underline underline-offset-2">Automated Decision-Making and Profiling</a> 14. <a href="#14-data-protection-officer-dpo" className="text-black underline underline-offset-2">Data Protection Officer (DPO)</a> 15. <a href="#15-complaints-to-the-supervisory-authority" className="text-black underline underline-offset-2">Complaints to the Supervisory Authority</a> 16. <a href="#16-updates-to-this-privacy-policy" className="text-black underline underline-offset-2">Updates to this Privacy Policy</a> 17. <a href="#17-contact" className="text-black underline underline-offset-2">Contact</a>
             </p>
           </div>
         </section>
@@ -89,15 +89,15 @@ export default function LegalPage() {
               </tr>
               <tr>
                 <td className="px-4 py-2 border-r border-black/10"><strong>Legal Form</strong></td>
-                <td className="px-4 py-2 border-r border-black/10">Sociedad de Responsabilidad Limitada (Private Limited Liability Company) — in process of incorporation</td>
+                <td className="px-4 py-2 border-r border-black/10">Sociedad de Responsabilidad Limitada (Private Limited Liability Company), in process of incorporation</td>
               </tr>
               <tr>
                 <td className="px-4 py-2 border-r border-black/10"><strong>Tax Identification Number (NIF)</strong></td>
-                <td className="px-4 py-2 border-r border-black/10">[PENDING — NIF pending registration]</td>
+                <td className="px-4 py-2 border-r border-black/10">[PENDING, NIF pending registration]</td>
               </tr>
               <tr>
                 <td className="px-4 py-2 border-r border-black/10"><strong>Registered Office</strong></td>
-                <td className="px-4 py-2 border-r border-black/10">[PENDING — exact address in Sagunto, Province of Valencia, Kingdom of Spain]</td>
+                <td className="px-4 py-2 border-r border-black/10">[PENDING, exact address in Sagunto, Province of Valencia, Kingdom of Spain]</td>
               </tr>
               <tr>
                 <td className="px-4 py-2 border-r border-black/10"><strong>Contact Email</strong></td>
@@ -151,7 +151,7 @@ export default function LegalPage() {
               <strong className="text-black font-semibold">2.6. "Consent":</strong> Any freely given, specific, informed, and unambiguous indication of the data subject's wishes by which they, through a statement or a clear affirmative action, signify agreement to the processing of personal data relating to them.
             </p>
             <p>
-              <strong className="text-black font-semibold">2.7. "Zero-Knowledge Proof (ZKP)":</strong> A cryptographic protocol that allows one party (the prover) to demonstrate to another (the verifier) that they know a value or that a certain assertion is true, without conveying any information beyond the truth of the assertion itself.
+              <strong className="text-black font-semibold">2.7. "Zero Knowledge Proof (ZKP)":</strong> A cryptographic protocol that allows one party (the prover) to demonstrate to another (the verifier) that they know a value or that a certain assertion is true, without conveying any information beyond the truth of the assertion itself.
             </p>
             <p>
               <strong className="text-black font-semibold">2.8. "Private Execution Environment (PXE)":</strong> Aztec Network's private local execution environment, which generates ZK proofs locally on the user's device without transmitting the underlying data to any external server.
@@ -163,7 +163,7 @@ export default function LegalPage() {
               <strong className="text-black font-semibold">2.10. "Decentralised Identifier (DID)":</strong> A decentralised identifier compliant with the W3C DID Core 1.0 standard, which allows the user to control their digital identity without reliance on a centralised authority.
             </p>
             <p>
-              <strong className="text-black font-semibold">2.11. "Viewing Key":</strong> A cryptographic key that allows an authorised recipient — in particular, regulatory authorities — to inspect encrypted transactions on the Aztec Network blockchain, without compromising the general privacy of the user vis-à-vis unauthorised third parties.
+              <strong className="text-black font-semibold">2.11. "Viewing Key":</strong> A cryptographic key that allows an authorised recipient, in particular, regulatory authorities, to inspect encrypted transactions on the Aztec Network blockchain, without compromising the general privacy of the user vis-à-vis unauthorised third parties.
             </p>
           </div>
         </section>
@@ -239,7 +239,7 @@ export default function LegalPage() {
               <strong className="text-black font-semibold">Purpose of processing:</strong> Management, maintenance, and administration of the user account on the Whale Network platform; verification of user identity for access to services; delivery of operational, technical, and security notices relating to the account.
             </p>
             <p>
-              <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(b) GDPR — <strong className="text-black font-semibold">Performance of a contract</strong> to which the data subject is party, or taking steps at the request of the data subject prior to entering into a contract. Account creation constitutes acceptance of our Terms and Conditions of Use, the performance of which requires the processing of these data.
+              <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(b) GDPR, <strong className="text-black font-semibold">Performance of a contract</strong> to which the data subject is party, or taking steps at the request of the data subject prior to entering into a contract. Account creation constitutes acceptance of our Terms and Conditions of Use, the performance of which requires the processing of these data.
             </p>
             <p>
               <strong className="text-black font-semibold">Mandatory nature:</strong> The provision of these data is <strong className="text-black font-semibold">mandatory</strong> for the use of the platform's services. Refusal to provide them will prevent the creation of an account and access to the services.
@@ -279,10 +279,10 @@ export default function LegalPage() {
               </tr>
             </tbody></table></div>
             <p>
-              <strong className="text-black font-semibold">Purpose of processing:</strong> Attestation with the customer due diligence obligations established in Law 10/2010 of 28 April on the prevention of money laundering and terrorist financing, and its implementing regulation approved by Royal Decree 304/2014; verification of user identity (Know Your Customer — KYC); AML risk profile assessment; detection and prevention of suspicious transactions; reporting to SEPBLAC in the legally established circumstances.
+              <strong className="text-black font-semibold">Purpose of processing:</strong> Attestation with the customer due diligence obligations established in Law 10/2010 of 28 April on the prevention of money laundering and terrorist financing, and its implementing regulation approved by Royal Decree 304/2014; verification of user identity (Know Your Customer, KYC); AML risk profile assessment; detection and prevention of suspicious transactions; reporting to SEPBLAC in the legally established circumstances.
             </p>
             <p>
-              <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(c) GDPR — <strong className="text-black font-semibold">Attestation with a legal obligation</strong> applicable to the data controller, in particular Law 10/2010 and Royal Decree 304/2014. With regard to biometric data, which constitute a special category of data pursuant to Article 9 GDPR, the legal basis is Article 9(2)(g) GDPR, in conjunction with Article 9(2)(b), for reasons of substantial public interest and attestation with legal obligations.
+              <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(c) GDPR, <strong className="text-black font-semibold">Attestation with a legal obligation</strong> applicable to the data controller, in particular Law 10/2010 and Royal Decree 304/2014. With regard to biometric data, which constitute a special category of data pursuant to Article 9 GDPR, the legal basis is Article 9(2)(g) GDPR, in conjunction with Article 9(2)(b), for reasons of substantial public interest and attestation with legal obligations.
             </p>
             <p>
               <strong className="text-black font-semibold">Mandatory nature:</strong> The provision of these data is <strong className="text-black font-semibold">legally mandatory</strong>. Refusal to provide KYC/AML data will prevent access to certain platform functionalities subject to regulatory thresholds, as well as the execution of transactions that exceed the limits established by applicable regulations.
@@ -320,7 +320,7 @@ export default function LegalPage() {
               <strong className="text-black font-semibold">Purpose of processing:</strong> Recording and indexing of transactions carried out by the user on the Whale Network platform for the purposes of: (i) providing the user with information on their activity history; (ii) ensuring the integrity and irrevocability of transactions; (iii) complying with transaction monitoring obligations under AML regulations; and (iv) supporting the Private Portfolio and Dashboard functionalities.
             </p>
             <p>
-              <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(f) GDPR — <strong className="text-black font-semibold">Legitimate interests</strong> of Humanity Ledger S.L., consisting in ensuring the operational integrity of the platform, maintaining a reliable record of executed transactions, and meeting the contractual expectations of users. This interest has been balanced against the rights and interests of users and found to be proportionate given that: (a) users have a reasonable expectation that their transactions will be recorded, as this is inherent to the nature of blockchain networks; and (b) Aztec Network's ZKP architecture ensures that the user's private transactions are not readable by Humanity Ledger S.L. without the corresponding viewing key.
+              <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(f) GDPR, <strong className="text-black font-semibold">Legitimate interests</strong> of Humanity Ledger S.L., consisting in ensuring the operational integrity of the platform, maintaining a reliable record of executed transactions, and meeting the contractual expectations of users. This interest has been balanced against the rights and interests of users and found to be proportionate given that: (a) users have a reasonable expectation that their transactions will be recorded, as this is inherent to the nature of blockchain networks; and (b) Aztec Network's ZKP architecture ensures that the user's private transactions are not readable by Humanity Ledger S.L. without the corresponding viewing key.
             </p>
             <p>
               <strong className="text-black font-semibold">Relevant technical note:</strong> Transactions recorded on public blockchain networks (including Ethereum Mainnet) are <strong className="text-black font-semibold">public and immutable by their technical nature</strong>. Please refer to Section 9 for a detailed analysis of the implications of this circumstance in relation to data protection rights, in particular the right to erasure.
@@ -359,7 +359,7 @@ export default function LegalPage() {
               <strong className="text-black font-semibold">Purpose of processing:</strong> Ensuring the security of the platform and detecting unauthorised or fraudulent access; diagnosis and resolution of technical incidents; aggregate analysis of platform performance; attestation with logging obligations imposed by applicable information security regulations.
             </p>
             <p>
-              <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(f) GDPR — <strong className="text-black font-semibold">Legitimate interests</strong> of Humanity Ledger S.L. in maintaining the security, availability, and integrity of the platform, and in protecting users against unauthorised access and fraudulent activities. Recital 49 of the GDPR recognises the processing of technical data for security purposes as a legitimate prevailing interest.
+              <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(f) GDPR, <strong className="text-black font-semibold">Legitimate interests</strong> of Humanity Ledger S.L. in maintaining the security, availability, and integrity of the platform, and in protecting users against unauthorised access and fraudulent activities. Recital 49 of the GDPR recognises the processing of technical data for security purposes as a legitimate prevailing interest.
             </p>
             <p>
               <strong className="text-black font-semibold">Data minimisation:</strong> Humanity Ledger S.L. applies the minimisation principle established in Article 5(1)(c) GDPR. IP addresses are <strong className="text-black font-semibold">pseudonymised</strong> through truncation techniques after the operational retention period (90 days), and are subsequently retained only in aggregated or pseudonymised form for the remainder of the retention period indicated in Section 5.
@@ -383,7 +383,7 @@ export default function LegalPage() {
               </tr>
               <tr>
                 <td className="px-4 py-2 border-r border-black/10">Reportable transaction data</td>
-                <td className="px-4 py-2 border-r border-black/10">Volume of crypto-asset transactions, realised capital gains and losses, assets held as at 31 December</td>
+                <td className="px-4 py-2 border-r border-black/10">Volume of crypto asset transactions, realised capital gains and losses, assets held as at 31 December</td>
               </tr>
               <tr>
                 <td className="px-4 py-2 border-r border-black/10">Ownership data</td>
@@ -391,10 +391,10 @@ export default function LegalPage() {
               </tr>
             </tbody></table></div>
             <p>
-              <strong className="text-black font-semibold">Purpose of processing:</strong> Attestation with the obligations to report information on crypto-assets to tax authorities established in Council Directive (EU) 2023/2226 (<em>DAC8</em>), amending Directive 2011/16/EU on administrative cooperation in the field of taxation, and its transposition into Spanish law. Data will be reported to the Spanish Tax Agency (AEAT), which will proceed with the automatic exchange of information with the tax authorities of the relevant Member States.
+              <strong className="text-black font-semibold">Purpose of processing:</strong> Attestation with the obligations to report information on crypto assets to tax authorities established in Council Directive (EU) 2023/2226 (<em>DAC8</em>), amending Directive 2011/16/EU on administrative cooperation in the field of taxation, and its transposition into Spanish law. Data will be reported to the Spanish Tax Agency (AEAT), which will proceed with the automatic exchange of information with the tax authorities of the relevant Member States.
             </p>
             <p>
-              <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(c) GDPR — <strong className="text-black font-semibold">Attestation with a legal obligation</strong> applicable to the data controller, arising from the DAC8 Directive and its Spanish implementing legislation.
+              <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(c) GDPR, <strong className="text-black font-semibold">Attestation with a legal obligation</strong> applicable to the data controller, arising from the DAC8 Directive and its Spanish implementing legislation.
             </p>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">4.6. Support and Complaints Management Data</h3>
             <p>
@@ -422,7 +422,7 @@ export default function LegalPage() {
               <strong className="text-black font-semibold">Purpose of processing:</strong> Handling and resolving queries, technical incidents, and complaints raised by users; maintaining a record of support communications for quality purposes and to demonstrate attestation with our obligations to users; legal defence in the event of disputes.
             </p>
             <p>
-              <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(f) GDPR — <strong className="text-black font-semibold">Legitimate interests</strong> of Humanity Ledger S.L. in adequately managing its relationships with users, ensuring service quality, and protecting its rights in the event of complaints or litigation.
+              <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(f) GDPR, <strong className="text-black font-semibold">Legitimate interests</strong> of Humanity Ledger S.L. in adequately managing its relationships with users, ensuring service quality, and protecting its rights in the event of complaints or litigation.
             </p>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">4.7. Commercial Communications and Marketing</h3>
             <p>
@@ -450,7 +450,7 @@ export default function LegalPage() {
               <strong className="text-black font-semibold">Purpose of processing:</strong> Sending commercial communications regarding new services, features, events, platform updates, and opportunities related to the Whale Network ecosystem and the $QDs token; personalisation of communications based on the user's profile and interests.
             </p>
             <p>
-              <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(a) GDPR — <strong className="text-black font-semibold">Consent</strong>, freely given, specific, informed, and unambiguous, obtained through active marking of the corresponding checkbox during registration or through subsequent voluntary subscription. The user may <strong className="text-black font-semibold">withdraw their consent at any time</strong> without affecting the lawfulness of prior processing, through:
+              <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(a) GDPR, <strong className="text-black font-semibold">Consent</strong>, freely given, specific, informed, and unambiguous, obtained through active marking of the corresponding checkbox during registration or through subsequent voluntary subscription. The user may <strong className="text-black font-semibold">withdraw their consent at any time</strong> without affecting the lawfulness of prior processing, through:
             </p>
             <ul className="list-disc pl-5 space-y-2">
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>The unsubscribe link included in each commercial communication;</span></li>
@@ -520,7 +520,7 @@ export default function LegalPage() {
               <strong>Note:</strong> Once the active retention periods indicated above have elapsed, data will be <strong>blocked</strong> (retained under restricted access, accessible only to respond to judicial or administrative requests) for the additional period corresponding to the applicable statutory limitation periods, after which they will be <strong>securely deleted</strong> or subjected to irreversible anonymisation techniques.
             </div>
             <div className="bg-black/5 p-4 rounded-lg font-medium border-l-4 border-black">
-              <strong>AML Retention Period (Law 10/2010):</strong> Article 25 of Law 10/2010, as amended following the transposition of the 6th AMLD, establishes a retention period of <strong>ten (10) years</strong>. This period prevails over the general five-year period applicable under prior regulations. Operators of crypto-asset services subject to Law 10/2010 must apply this extended retention period.
+              <strong>AML Retention Period (Law 10/2010):</strong> Article 25 of Law 10/2010, as amended following the transposition of the 6th AMLD, establishes a retention period of <strong>ten (10) years</strong>. This period prevails over the general five-year period applicable under prior regulations. Operators of crypto asset services subject to Law 10/2010 must apply this extended retention period.
             </div>
             </tbody></table></div>
           </div>
@@ -547,19 +547,19 @@ export default function LegalPage() {
                 <td className="px-4 py-2 border-r border-black/10">Location</td>
               </tr>
               <tr>
-                <td className="px-4 py-2 border-r border-black/10"><strong>KYC/AML Provider</strong> (Sumsub, Onfido, or Veriff — [PENDING final confirmation])</td>
+                <td className="px-4 py-2 border-r border-black/10"><strong>KYC/AML Provider</strong> (Sumsub, Onfido, or Veriff, [PENDING final confirmation])</td>
                 <td className="px-4 py-2 border-r border-black/10">KYC identity verification, biometric liveness checks, sanctions and PEP screening</td>
                 <td className="px-4 py-2 border-r border-black/10">EU / UK / International</td>
               </tr>
               <tr>
                 <td className="px-4 py-2 border-r border-black/10"><strong>Travel Rule Provider</strong> (Notabene or equivalent)</td>
-                <td className="px-4 py-2 border-r border-black/10">Attestation with the FATF Travel Rule protocol for crypto-asset transfers</td>
+                <td className="px-4 py-2 border-r border-black/10">Attestation with the FATF Travel Rule protocol for crypto asset transfers</td>
                 <td className="px-4 py-2 border-r border-black/10">International</td>
               </tr>
               <tr>
-                <td className="px-4 py-2 border-r border-black/10"><strong>Cloud Infrastructure Provider</strong> ([PENDING — AWS, GCP, Azure, or other])</td>
+                <td className="px-4 py-2 border-r border-black/10"><strong>Cloud Infrastructure Provider</strong> ([PENDING, AWS, GCP, Azure, or other])</td>
                 <td className="px-4 py-2 border-r border-black/10">Server hosting, databases, and computing services</td>
-                <td className="px-4 py-2 border-r border-black/10">[PENDING — EU region preferred]</td>
+                <td className="px-4 py-2 border-r border-black/10">[PENDING, EU region preferred]</td>
               </tr>
               <tr>
                 <td className="px-4 py-2 border-r border-black/10"><strong>Blockchain Analytics Provider</strong> ([PENDING])</td>
@@ -589,7 +589,7 @@ export default function LegalPage() {
               </tr>
               <tr>
                 <td className="px-4 py-2 border-r border-black/10"><strong>AEAT</strong> (Spanish Tax Agency)</td>
-                <td className="px-4 py-2 border-r border-black/10">DAC8 reporting on crypto-asset transactions; tax information requests</td>
+                <td className="px-4 py-2 border-r border-black/10">DAC8 reporting on crypto asset transactions; tax information requests</td>
                 <td className="px-4 py-2 border-r border-black/10">DAC8 Directive; Art. 93 General Tax Law</td>
               </tr>
               <tr>
@@ -736,10 +736,10 @@ export default function LegalPage() {
             </p>
             <ul className="list-disc pl-5 space-y-2">
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Email:</strong> legal@humanidfi.com (Subject: "Exercise of GDPR Rights")</span></li>
-              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Postal address:</strong> [PENDING — registered office in Sagunto, Valencia]</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Postal address:</strong> [PENDING, registered office in Sagunto, Valencia]</span></li>
             </ul>
             <p>
-              The request must include: 1. Full name of the applicant. 2. Identity document (national ID, NIE, or passport) — for the purpose of verifying the identity of the applicant, which will be destroyed once identity has been verified. 3. A clear description of the right the applicant wishes to exercise. 4. Account identifier on the platform (email address or username).
+              The request must include: 1. Full name of the applicant. 2. Identity document (national ID, NIE, or passport), for the purpose of verifying the identity of the applicant, which will be destroyed once identity has been verified. 3. A clear description of the right the applicant wishes to exercise. 4. Account identifier on the platform (email address or username).
             </p>
             <p>
               Humanity Ledger S.L. will respond to your request within <strong className="text-black font-semibold">one (1) month</strong> of its receipt. This period may be extended by a further <strong className="text-black font-semibold">two (2) months</strong> in cases of particular complexity, of which you will be informed within the initial period, together with the reasons for the extension.
@@ -766,10 +766,10 @@ export default function LegalPage() {
             </p>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">9.1. Technical Nature of Immutability</h3>
             <p>
-              Blockchain networks — including Ethereum Mainnet and Aztec Network as a Layer 2 ZK-rollup — are characterised by their <strong className="text-black font-semibold">structural immutability</strong>: once a transaction has been validated and included in a block, its deletion or modification is technically impossible without compromising the integrity of the entire subsequent chain. This property is inherent to the technology and constitutes the fundamental guarantee of its security and integrity.
+              Blockchain networks, including Ethereum Mainnet and Aztec Network as a Layer 2 ZK-rollup, are characterised by their <strong className="text-black font-semibold">structural immutability</strong>: once a transaction has been validated and included in a block, its deletion or modification is technically impossible without compromising the integrity of the entire subsequent chain. This property is inherent to the technology and constitutes the fundamental guarantee of its security and integrity.
             </p>
             <p>
-              Consequently, data or identifiers that may qualify as personal data and are recorded on-chain — in particular, <strong className="text-black font-semibold">wallet addresses</strong> (which under certain circumstances may be identifiable) and transaction metadata — <strong className="text-black font-semibold">cannot be erased</strong> from the blockchain by any entity, including Humanity Ledger S.L.
+              Consequently, data or identifiers that may qualify as personal data and are recorded on-chain, in particular, <strong className="text-black font-semibold">wallet addresses</strong> (which under certain circumstances may be identifiable) and transaction metadata, <strong className="text-black font-semibold">cannot be erased</strong> from the blockchain by any entity, including Humanity Ledger S.L.
             </p>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">9.2. Compatibility with the GDPR: Regulatory Position</h3>
             <p>
@@ -779,7 +779,7 @@ export default function LegalPage() {
               <strong className="text-black font-semibold">9.2.1. Article 29 Working Party Report (WP248) and EDPB Guidance:</strong> The European Data Protection Board (EDPB) has acknowledged that technical immutability may constitute an objective limitation on the exercise of the right to erasure where the processing affects records in distributed ledger technologies.
             </p>
             <p>
-              <strong className="text-black font-semibold">9.2.2. Article 17(3) GDPR — Exceptions to the Right to Erasure:</strong> The right to erasure is not absolute. Article 17(3) GDPR provides that that right shall not apply where processing is necessary for attestation with a legal obligation (Art. 17(3)(b)) or for the establishment, exercise, or defence of legal claims (Art. 17(3)(e)), both of which circumstances frequently arise in the context of financial transactions recorded on a blockchain.
+              <strong className="text-black font-semibold">9.2.2. Article 17(3) GDPR, Exceptions to the Right to Erasure:</strong> The right to erasure is not absolute. Article 17(3) GDPR provides that that right shall not apply where processing is necessary for attestation with a legal obligation (Art. 17(3)(b)) or for the establishment, exercise, or defence of legal claims (Art. 17(3)(e)), both of which circumstances frequently arise in the context of financial transactions recorded on a blockchain.
             </p>
             <p>
               <strong className="text-black font-semibold">9.2.3. Aztec Network's Privacy Architecture:</strong> Whale Network uses Aztec Network precisely to <strong className="text-black font-semibold">minimise the exposure of identifiable data on-chain</strong>. Private transactions on Aztec are encrypted using ZK proofs, such that their content is not readable by third parties or by Humanity Ledger S.L. without the user's corresponding viewing key. Only the <strong className="text-black font-semibold">transaction hash</strong> and minimal consensus metadata are accessible in the public ledger.
@@ -818,14 +818,14 @@ export default function LegalPage() {
 
 
         {/* 11 */}
-        <section id="10-special-section-zero-knowledge-proofs-and-privacy-by-design">
+        <section id="10-special-section-zero knowledge-proofs-and-privacy-by-design">
           <h2 className="text-[1.1rem] font-bold uppercase tracking-[0.08em] text-black mb-6 pb-3 border-b border-black/10">
             10. SPECIAL SECTION: ZERO-KNOWLEDGE PROOFS AND PRIVACY BY DESIGN
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">10.1. Technical Basis of the ZKP System</h3>
             <p>
-              Whale Network's <strong className="text-black font-semibold">Claim Identity</strong> service allows users to generate and manage <strong className="text-black font-semibold">decentralised digital identities (DIDs)</strong> verified by means of zero-knowledge proofs (ZKPs). This system has been designed in accordance with the principle of <strong className="text-black font-semibold">privacy by design and by default</strong> established in Article 25 GDPR.
+              Whale Network's <strong className="text-black font-semibold">Claim Identity</strong> service allows users to generate and manage <strong className="text-black font-semibold">decentralised digital identities (DIDs)</strong> verified by means of zero knowledge proofs (ZKPs). This system has been designed in accordance with the principle of <strong className="text-black font-semibold">privacy by design and by default</strong> established in Article 25 GDPR.
             </p>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">10.2. Data Flow in the Claim Identity Process</h3>
             <p>
@@ -852,7 +852,7 @@ export default function LegalPage() {
                 <td className="px-4 py-2 border-r border-black/10">── [3] KYC verification by external provider (Sumsub/Onfido/Veriff)</td>
               </tr>
               <tr>
-                <td className="px-4 py-2 border-r border-black/10">↓ (result: approved/rejected — minimal data)</td>
+                <td className="px-4 py-2 border-r border-black/10">↓ (result: approved/rejected, minimal data)</td>
               </tr>
               <tr>
               </tr>
@@ -1058,7 +1058,7 @@ export default function LegalPage() {
             </p>
             <ul className="list-disc pl-5 space-y-2">
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Email:</strong> legal@humanidfi.com</span></li>
-              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Postal address:</strong> [PENDING — registered office in Sagunto, Valencia, Spain]</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Postal address:</strong> [PENDING, registered office in Sagunto, Valencia, Spain]</span></li>
             </ul>
           </div>
         </section>
@@ -1112,11 +1112,11 @@ export default function LegalPage() {
             </p>
             <ul className="list-disc pl-5 space-y-2">
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Email:</strong> legal@humanidfi.com</span></li>
-              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Postal address:</strong> [PENDING — Sagunto, Province of Valencia, Kingdom of Spain]</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Postal address:</strong> [PENDING, Sagunto, Province of Valencia, Kingdom of Spain]</span></li>
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Response period:</strong> 30 business days from receipt of the communication</span></li>
             </ul>
             <p>
-              <em>© 2026 Humanity Ledger S.L. — All Rights Reserved.</em> <em>Last Updated: 20 July 2026</em>
+              <em>© 2026 Humanity Ledger S.L., All Rights Reserved.</em> <em>Last Updated: 22 July 2026</em>
             </p>
           </div>
         </section>

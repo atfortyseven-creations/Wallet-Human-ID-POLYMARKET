@@ -1,8 +1,8 @@
 // @ts-nocheck
 /**
- * lib/aztec/client.ts — Aztec Testnet v4.3.1 client
+ * lib/aztec/client.ts — Aztec Testnet v5.0.0 client
  *
- * Architecture (v4.3.1 SDK):
+ * Architecture (v5.0.0 SDK):
  *  - createAztecNodeClient → connects to the public Aztec Testnet node
  *  - PXE runs as a sidecar (via `aztec start --pxe`) or externally
  *  - `AZTEC_PXE_URL` can point to an external PXE (e.g. https://pxe.humanidfi.com)
@@ -50,7 +50,7 @@ let _nodeClient: any = null;
 
 /**
  * Returns a cached Aztec Node JSON-RPC client.
- * In v4.3.1 of aztec.js, this is createAztecNodeClient from @aztec/aztec.js/node.
+ * In v5.0.0 of aztec.js, this is createAztecNodeClient from @aztec/aztec.js/node.
  * The node client supports: getBlockNumber, getNodeInfo, getTxReceipt, sendTx, etc.
  */
 export async function getAztecNodeClient() {

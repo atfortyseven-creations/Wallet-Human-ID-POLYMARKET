@@ -12,7 +12,7 @@ interface StakingProvider {
   min: string;
 }
 
-// [PRODUCTION] Providers should be fetched from a DeFi adapter or centralized API
+// [PRODUCTION] Providers should be fetched from a DeFi adapter or centralised API
 // For now, we define the structure and set to empty until real-time APYs are integrated
 const PROVIDERS: StakingProvider[] = [];
 
@@ -33,7 +33,7 @@ export default function StakingDashboard() {
     async function fetchStakingData() {
       try {
         setIsLoading(true);
-        // In a real scenario, this would call a centralized API or protocol subgraphs
+        // In a real scenario, this would call a centralised API or protocol subgraphs
         const response = await fetch('/api/staking/providers');
         if (response.ok) {
           const data = await response.json();

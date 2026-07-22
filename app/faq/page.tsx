@@ -39,7 +39,7 @@ export default function FAQPage() {
             <div className="py-10 first:pt-0">
               <h3 className="text-lg font-black uppercase tracking-wider text-black mb-3">Is my personal data stored on the blockchain?</h3>
               <p className="text-black/60 font-sans text-sm leading-relaxed">
-                No. Humanity Ledger never stores your personal information on a public network. Only cryptographic proofs and decentralized identifiers are anchored on-chain — your real data stays on your device.
+                No. Humanity Ledger never stores your personal information on a public network. Only cryptographic proofs and decentralised identifiers are anchored on-chain — your real data stays on your device.
               </p>
             </div>
 
@@ -53,7 +53,7 @@ export default function FAQPage() {
             <div className="py-10">
               <h3 className="text-lg font-black uppercase tracking-wider text-black mb-3">Can Humanity Ledger read my messages?</h3>
               <p className="text-black/60 font-sans text-sm leading-relaxed">
-                No. All communications are secured with end-to-end encryption. The decryption keys are held exclusively on your device — we cannot access your messages under any circumstances.
+                No. All communications are secured with end to end encryption. The decryption keys are held exclusively on your device — we cannot access your messages under any circumstances.
               </p>
             </div>
 

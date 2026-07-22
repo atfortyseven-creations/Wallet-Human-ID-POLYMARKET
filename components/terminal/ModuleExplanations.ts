@@ -183,7 +183,7 @@ export const MODULE_EXPLANATIONS: Record<string, { title: string, subtitle: stri
     'zk': {
         title: 'ZK Status',
         subtitle: 'Proof verification state',
-        overview: 'View the status of your zero-knowledge verification layer and confirm your session is operating within the shielded environment.',
+        overview: 'View the status of your zero knowledge verification layer and confirm your session is operating within the shielded environment.',
         features: [
             { title: 'PXE Status', desc: 'Confirms the local proving environment is initialized and active.' },
             { title: 'Proof Queue', desc: 'Shows pending and completed proof submissions.' },

@@ -1008,7 +1008,7 @@ function AdvancedRouterModule({ mode, userAssets, forceToken, setStatus, setTxHa
                 <div className="bg-red-500/10 border border-red-500/20 p-3 flex items-start gap-3 mb-2 rounded-[16px]">
                     <span className="font-black text-[10px] text-red-600 shrink-0 mt-0.5">[MEV ALERT]</span>
                     <p className="text-[10px] text-red-700 font-bold uppercase tracking-widest leading-relaxed">
-                        High slippage tolerance ({slippage}%). Your transaction is highly vulnerable to front-running and sandwich attacks by MEV bots.
+                        High slippage tolerance ({slippage}%). Your transaction is highly vulnerable to front running and sandwich attacks by MEV bots.
                     </p>
                 </div>
             )}

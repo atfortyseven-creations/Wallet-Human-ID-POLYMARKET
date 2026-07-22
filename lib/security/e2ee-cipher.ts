@@ -1,7 +1,7 @@
 /**
  * QUANTUM AEGIS E2EE CIPHER
  * 
- * End-to-End Encryption utility for Chat Logs and Signatures.
+ * End to End Encryption utility for Chat Logs and Signatures.
  * Ensures that even if the database is fully compromised (dumped), 
  * user messages and metadata remain cryptographic noise.
  */

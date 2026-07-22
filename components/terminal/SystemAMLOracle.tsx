@@ -90,7 +90,7 @@ export function SystemAMLOracle({ address = "0x..." }: { address?: string }) {
       <div className="mt-6 pt-4 border-t border-black/5 flex items-start gap-3">
         <Fingerprint size={16} className="text-black/30 shrink-0 mt-0.5" />
         <p className="text-[9px] text-black/40 leading-relaxed uppercase tracking-[0.1em]">
-          All checks are performed via zero-knowledge oracles. No PII is retained. 
+          All checks are performed via zero knowledge oracles. No PII is retained. 
           Resulting attestation hash: <span className="font-bold text-black/60 truncate inline-block w-[100px] align-bottom">{loading ? '...' : '0x8f7d...9a21'}</span>
         </p>
       </div>

@@ -3,7 +3,7 @@
  *
  * Deploys the Whale Network QDs TokenContract to Aztec Testnet v5 (rc.2).
  *
- * Architecture: Aztec SDK v4.3.1
+ * Architecture: Aztec SDK v5.0.0
  *   - EmbeddedWallet.create(nodeUrl) → boots a local PXE process (requires Linux/WSL for @aztec/native binaries)
  *   - wallet.createSchnorrAccount(secret, salt) → AccountManager with .address getter
  *   - TokenContract.deploy(wallet, admin, name, symbol, decimals).send({ from, fee }) → DeployResultMined
@@ -44,7 +44,7 @@ const TOKEN_DECIMALS = 18n;
 async function main(): Promise<void> {
   console.log('══════════════════════════════════════════════════════');
   console.log('  Whale Network — QDs Token Deployment                ');
-  console.log('  Aztec Testnet v5 (rc.2) | SDK v4.3.1                ');
+  console.log('  Aztec Testnet v5 (rc.2) | SDK v5.0.0                ');
   console.log('══════════════════════════════════════════════════════');
 
   // ── Validate env ─────────────────────────────────────────────────────────

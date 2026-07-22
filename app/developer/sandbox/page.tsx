@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description:
     "Interactive Noir environment to compile Aztec ZK circuits, generate Barretenberg proofs " +
     "and verify them on the Aztec L2 sequencer.",
-  keywords: ["Noir", "Aztec Network", "Zero-Knowledge", "ZK Proofs", "Barretenberg", "UltraHonk", "Whale Network"],
+  keywords: ["Noir", "Aztec Network", "Zero Knowledge", "ZK Proofs", "Barretenberg", "UltraHonk", "Whale Network"],
   openGraph: {
     title: "Noir Circuit Lab | Whale Network",
     description: "Compile, generate witnesses, prove and verify Noir circuits in real-time.",

@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
       // In production, we would query the actual Twitter/YouTube/Telegram APIs here
       // using the user's stored OAuth tokens to check `isFollowing(ourAccountId)`.
       // For this native architecture scaffolding, we simulate the API call returning false randomly (1% chance)
-      // just to prove the penalty logic works end-to-end natively in the DB.
+      // just to prove the penalty logic works end to end natively in the DB.
 
       const apiCallTwitter = true; // Replace with actual API call
       const apiCallYoutube = true; // Replace with actual API call

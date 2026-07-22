@@ -621,10 +621,10 @@ export function PassportView({ passport }: { passport: ProductPassportPublic }) 
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-4 ${theme.accentBg}`}>
                     <ShieldCheck size={20} className={theme.iconColor} />
                   </div>
-                  <h3 className={`text-lg font-black tracking-tight mb-2 ${theme.textMain}`}>Zero-Knowledge Provenance</h3>
+                  <h3 className={`text-lg font-black tracking-tight mb-2 ${theme.textMain}`}>Zero Knowledge Provenance</h3>
                   <p className={`text-sm leading-relaxed mb-4 opacity-90 ${theme.textMain}`}>
                     This Product Passport is cryptographically anchored to the <span className="font-bold">Aztec Network</span>. 
-                    It uses Zero-Knowledge Proofs (ZK-SNARKs) to prove the item's authenticity and origin without exposing sensitive manufacturing or supply chain data.
+                    It uses Zero Knowledge Proofs (ZK-SNARKs) to prove the item's authenticity and origin without exposing sensitive manufacturing or supply chain data.
                   </p>
                   <p className={`text-xs mb-6 leading-relaxed ${theme.textMuted}`}>
                     The QR code you scanned contains a unique signature that was verified mathematically on your device, ensuring it was created by the verified issuer.

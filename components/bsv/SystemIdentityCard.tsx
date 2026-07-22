@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 /**
  * KYC IDENTITY CARD (Pillar 2)
  * --------------------------------
- * A high-end UI component displaying decentralized identity (Paymail/DID).
+ * A high-end UI component displaying decentralised identity (Paymail/DID).
  * Features real-time resolution and 10000% sovereign fidelity.
  */
 export const SystemIdentityCard = ({ handle = 'ceo@humanidfi.com' }: { handle?: string }) => {

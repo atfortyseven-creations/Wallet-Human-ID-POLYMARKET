@@ -16,7 +16,7 @@ export default function ArchitecturePage() {
                     <h2 className="text-4xl md:text-5xl font-black mb-8 tracking-tight leading-tight">1. Protocol Overview</h2>
                     <div className="prose prose-lg max-w-none text-[#050505]/70 space-y-6">
                         <p>
-                            This document serves as the formal architectural specification for the Humanity Ledger protocol. The system is designed to provide privacy-preserving state transitions for financial interactions and identity attestation, leveraging zero-knowledge succinct non-interactive arguments of knowledge (zk-SNARKs).
+                            This document serves as the formal architectural specification for the Humanity Ledger protocol. The system is designed to provide privacy-preserving state transitions for financial interactions and identity attestation, leveraging zero knowledge succinct non-interactive arguments of knowledge (zk-SNARKs).
                         </p>
                         <p>
                             Unlike conventional transparent ledgers that broadcast unencrypted state data to all network participants, Humanity Ledger operates under a default-private model. Key generation, witness construction, and proof computation occur strictly within isolated local execution environments. The protocol ensures that validation networks receive only cryptographic proofs of correctness, thereby preserving the confidentiality of the underlying inputs.
@@ -78,17 +78,17 @@ export default function ArchitecturePage() {
                     </div>
                 </section>
 
-                {/* 5. End-to-End Encrypted Messaging */}
+                {/* 5. End to End Encrypted Messaging */}
                 <section>
                     <div className="flex items-center gap-4 mb-6">
                         <div className="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-[#050505]">
                             <MessageSquare size={24} />
                         </div>
-                        <h2 className="text-3xl font-black tracking-tight m-0">5. End-to-End Encrypted Communication</h2>
+                        <h2 className="text-3xl font-black tracking-tight m-0">5. End to End Encrypted Communication</h2>
                     </div>
                     <div className="prose prose-lg max-w-none text-[#050505]/70 space-y-6">
                         <p>
-                            Peer-to-peer communication is routed through the Extensible Message Transport Protocol (XMTP) network. Message payloads undergo client-side encryption before transmission, ensuring end-to-end confidentiality.
+                            Peer-to-peer communication is routed through the Extensible Message Transport Protocol (XMTP) network. Message payloads undergo client-side encryption before transmission, ensuring end to end confidentiality.
                         </p>
                         <p>
                             Identity keys are derived deterministically from the user's base Ethereum keypair. These keys facilitate the establishment of secure channels using standard public key cryptography methodologies. Protocol nodes serve strictly as data availability layers and cannot access the plaintext message content.
@@ -112,7 +112,7 @@ export default function ArchitecturePage() {
                             <div className="bg-white p-6 border border-black/10 rounded-2xl">
                                 <h4 className="font-bold text-[#050505] mb-4 text-lg">Local Client Environment</h4>
                                 <p className="text-sm text-[#050505]/70 leading-relaxed">
-                                    The local boundary is strictly isolated to handle sensitive cryptographic material. This environment securely manages base private keys, which are never transmitted, alongside ephemeral key exchange material and zero-knowledge proving witnesses. Additionally, it locally processes XMTP decryption keys and maintains the IndexedDB state cache.
+                                    The local boundary is strictly isolated to handle sensitive cryptographic material. This environment securely manages base private keys, which are never transmitted, alongside ephemeral key exchange material and zero knowledge proving witnesses. Additionally, it locally processes XMTP decryption keys and maintains the IndexedDB state cache.
                                 </p>
                             </div>
                             <div className="bg-white p-6 border border-black/10 rounded-2xl">
@@ -125,13 +125,13 @@ export default function ArchitecturePage() {
                     </div>
                 </section>
 
-                {/* 7. Zero-Knowledge Execution Environment */}
+                {/* 7. Zero Knowledge Execution Environment */}
                 <section className="bg-white p-10 md:p-14 rounded-3xl border border-black/5">
                     <div className="flex items-center gap-4 mb-6">
                         <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-[#050505]">
                             <Cpu size={24} />
                         </div>
-                        <h2 className="text-3xl font-black tracking-tight m-0">7. Zero-Knowledge Execution Environment</h2>
+                        <h2 className="text-3xl font-black tracking-tight m-0">7. Zero Knowledge Execution Environment</h2>
                     </div>
                     <div className="prose prose-lg max-w-none text-[#050505]/70 space-y-6">
                         <p>
@@ -144,7 +144,7 @@ export default function ArchitecturePage() {
                             <strong>Client-Side Proving:</strong> The computationally intensive process of generating cryptographic proofs occurs entirely within the user's browser, utilizing WebAssembly (Wasm) implementations of the Barretenberg proving backend. This guarantees that private inputs (witnesses) are never exposed to remote sequencers or provers.
                         </p>
                         <p>
-                            <strong>Account Abstraction:</strong> Interactions with the network utilize Aztec account contracts. These smart contracts decouple the signing mechanism from the transaction execution, allowing for advanced cryptographic authorization models, such as threshold signatures and non-ECDSA signature validation, directly within the zero-knowledge circuit.
+                            <strong>Account Abstraction:</strong> Interactions with the network utilize Aztec account contracts. These smart contracts decouple the signing mechanism from the transaction execution, allowing for advanced cryptographic authorization models, such as threshold signatures and non-ECDSA signature validation, directly within the zero knowledge circuit.
                         </p>
                     </div>
                 </section>

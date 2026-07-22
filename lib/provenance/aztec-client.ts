@@ -144,7 +144,7 @@ export function buildRevokeProductArgs(slug: string): { slug_hash: `0x${string}`
 /**
  * Arguments for ProvenanceRegistry.prove_batch_ownership() (private)
  *
- * Generates a zero-knowledge proof that the caller holds a private batch note
+ * Generates a zero knowledge proof that the caller holds a private batch note
  * matching the given batch ID for the specified product. The actual batch ID
  * is never revealed — only the claim that the note exists.
  */

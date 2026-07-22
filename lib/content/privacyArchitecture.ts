@@ -15,7 +15,7 @@ export const PRIVACY_ARCHITECTURE_SECTIONS: PrivacyArchitectureSection[] = [
     id: 'overview',
     title: 'System Overview — What Humanity Ledger actually does',
     paragraphs: [
-      'Updated July 21, 2026. Humanity Ledger is a web application that lets participants monitor on-chain capital flows, communicate with end-to-end encryption, and record verifiable product provenance — all anchored to the Aztec Network V5 testnet.',
+      'Updated July 21, 2026. Humanity Ledger is a web application that lets participants monitor on-chain capital flows, communicate with end to end encryption, and record verifiable product provenance — all anchored to the Aztec Network V5 testnet.',
       'The application is organized into three concentric layers: (1) the Client layer — a Next.js app running in your browser that handles all private computation locally; (2) the Platform API layer — our backend that handles authentication, session management, and routing, but never touches private keys; (3) the Aztec Network — the ZK rollup where all QD balances, provenance records, and identity proofs live as private encrypted state.',
       'The core principle is simple: anything that must stay secret never leaves your device. Our servers only see what they need to identify you — your wallet address — and nothing else.',
     ],
@@ -48,7 +48,7 @@ export const PRIVACY_ARCHITECTURE_SECTIONS: PrivacyArchitectureSection[] = [
       'EIP-712 signatures are single-use: each includes a timestamp making them replay-resistant.',
       'Turing Shield PIN is hashed with bcrypt server-side; the raw PIN is never stored or logged.',
       'Session JWTs expire after 15 minutes; refresh tokens expire after 7 days and rotate on each use.',
-      'No username, no password, no centralized identity registry — your Ethereum address is your identity.',
+      'No username, no password, no centralised identity registry — your Ethereum address is your identity.',
     ],
   },
 
@@ -57,7 +57,7 @@ export const PRIVACY_ARCHITECTURE_SECTIONS: PrivacyArchitectureSection[] = [
     id: 'aztec-private-state',
     title: 'Aztec Network — Private State and ZK Proofs',
     paragraphs: [
-      'QD balances and provenance records are not stored on a public blockchain where anyone can read them. They exist as private, encrypted Notes inside the Aztec Network — a Zero-Knowledge Layer 2 rollup anchored to Ethereum.',
+      'QD balances and provenance records are not stored on a public blockchain where anyone can read them. They exist as private, encrypted Notes inside the Aztec Network — a Zero Knowledge Layer 2 rollup anchored to Ethereum.',
       'When you perform an action that changes your balance (e.g., claim an airdrop, pay for a signal in Whale Chat), the application encodes the transaction parameters using Noir ABI encoding in the browser. This produces a structured witness that is sent to the Aztec V5 testnet RPC. The Aztec sequencer proves the state transition and anchors the resulting state root to Ethereum — without revealing your balance to anyone.',
       'What this means in practice: the Aztec Network knows a valid ZK proof was submitted and that a state transition occurred. It does NOT know your identity, your balance, who you sent tokens to, or how much. The cryptographic commitment scheme (Pedersen hashing over the Grumpkin curve) makes the private inputs mathematically opaque.',
       'Current testnet status: We are operating on the Aztec V5 testnet (v5.testnet.rpc.aztec-labs.com). Tokens are testnet-only. No real monetary value. The architecture is production-ready in design but not yet deployed to mainnet.',
@@ -83,12 +83,12 @@ export const PRIVACY_ARCHITECTURE_SECTIONS: PrivacyArchitectureSection[] = [
     title: 'Whale Chat — Peer-to-Peer Encrypted Messaging',
     paragraphs: [
       'Whale Chat enables encrypted, real-time communication between Whale Network participants. Messages are routed peer-to-peer and never stored in plaintext on any server we operate.',
-      'Text messages: Encrypted end-to-end using the recipient\'s wallet-derived public key. Our backend acts only as a signaling relay — it sees encrypted ciphertext, not message content.',
+      'Text messages: Encrypted end to end using the recipient\'s wallet-derived public key. Our backend acts only as a signaling relay — it sees encrypted ciphertext, not message content.',
       'Audio and Video Calls: Implemented via WebRTC with PeerJS for NAT traversal. The media stream (audio/video) travels directly between browsers using DTLS-SRTP encryption — our servers never touch the call audio or video. Only the signaling data (call initiation, answer, hang-up events) passes through our backend momentarily during connection setup.',
       'Paid Signals: Users can send encrypted signal attachments that require a QD payment to decrypt. The payment triggers a private Aztec state transition; upon confirmation, the decryption key is released locally on the recipient\'s device. Our servers never hold the decryption key.',
     ],
     bullets: [
-      'Message content is end-to-end encrypted — our servers cannot read your chats.',
+      'Message content is end to end encrypted — our servers cannot read your chats.',
       'WebRTC audio/video is DTLS-SRTP encrypted and peer-to-peer — never proxied through our infrastructure.',
       'PeerJS signaling only exchanges connection metadata (offer/answer/ICE candidates), not call content.',
       'Paid signal decryption keys are derived from the Aztec state transition — not held by our backend.',
@@ -121,7 +121,7 @@ export const PRIVACY_ARCHITECTURE_SECTIONS: PrivacyArchitectureSection[] = [
       'Defense in depth: our security is layered so that no single failure exposes user funds or private data.',
       'Edge layer: DDoS mitigation and a Web Application Firewall operate at the CDN level, blocking volumetric attacks and known smart contract scanning patterns before they reach our application servers. Per-IP and per-wallet rate limits use a token-bucket algorithm.',
       'Application layer: Every API request is validated against a JWT signed with Ed25519. We maintain a tamper-evident audit log of authenticated requests (wallet address, endpoint, request UUID, hashed IP) with no private data included. Requests that fail JWT validation are rejected before touching any database.',
-      'Smart contract layer: We monitor the Aztec testnet state root and nullifier tree for invariant violations (total supply conservation, Merkle root consistency). Anomalies trigger immediate alerts to the operations team. All QD contract code is open-source and independently auditable.',
+      'Smart contract layer: We monitor the Aztec testnet state root and nullifier tree for invariant violations (total supply conservation, Merkle root consistency). Anomalies trigger immediate alerts to the operations team. All QD contract code is open source and independently auditable.',
       'Operational security: JWT signing keys, database credentials, and all secrets are stored in an HSM-backed secrets manager. Secrets rotate on a 90-day schedule with zero-downtime hot rotation.',
     ],
     bullets: [

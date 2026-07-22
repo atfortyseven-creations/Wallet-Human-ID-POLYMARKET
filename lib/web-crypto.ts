@@ -87,7 +87,7 @@ export async function deriveSharedSecret(
   //   - AES-GCM encrypts payload with K
   //   - An attacker who captures (encryptedPayload, iv) cannot decrypt without K
   //   - Getting K requires PIN, which only the legitimate user can see physically
-  //   - This is a Zero-Knowledge proof of physical co-presence.
+  //   - This is a Zero Knowledge proof of physical co-presence.
   // ─────────────────────────────────────────────────────────────────────────
   if (visualPin && visualPin.length > 0) {
     const enc = new TextEncoder();

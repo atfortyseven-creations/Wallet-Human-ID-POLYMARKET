@@ -3,7 +3,7 @@
 import LegalDocLayout, { TocItem } from '@/components/layout/LegalDocLayout';
 
 const TOC: TocItem[] = [
-  { id: 'humanity-ledger-s-l-whale-network', label: `Humanity Ledger S.L. — Whale Network` },
+  { id: 'humanity-ledger-s-l-whale-network', label: `Humanity Ledger S.L., Whale Network` },
   { id: '1-objective-and-scope', label: `1. OBJECTIVE AND SCOPE` },
   { id: '2-incident-response-team-internal-cert', label: `2. INCIDENT RESPONSE TEAM (Internal CERT)` },
   { id: '3-incident-classification', label: `3. INCIDENT CLASSIFICATION` },
@@ -27,7 +27,7 @@ export default function LegalPage() {
         {/* 1 */}
         <section id="humanity-ledger-s-l-whale-network">
           <h2 className="text-[1.1rem] font-bold uppercase tracking-[0.08em] text-black mb-6 pb-3 border-b border-black/10">
-            Humanity Ledger S.L. — Whale Network
+            Humanity Ledger S.L., Whale Network
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
@@ -64,7 +64,7 @@ export default function LegalPage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              In the event of a High or Critical severity incident, the Response Team is constituted, led by: 1. <strong className="text-black font-semibold">Incident Manager:</strong> [PENDING — CTO or Director]. Coordinates the overall response. 2. <strong className="text-black font-semibold">Tech Lead:</strong> Responsible for containment, forensic analysis, and mitigation. 3. <strong className="text-black font-semibold">Legal/Attestation Officer:</strong> Manages mandatory notifications (AEPD, CNMV, users). 4. <strong className="text-black font-semibold">Communications (PR):</strong> Manages public communication on networks (Twitter, Discord) to prevent misinformation and FUD.
+              In the event of a High or Critical severity incident, the Response Team is constituted, led by: 1. <strong className="text-black font-semibold">Incident Manager:</strong> [PENDING, CTO or Director]. Coordinates the overall response. 2. <strong className="text-black font-semibold">Tech Lead:</strong> Responsible for containment, forensic analysis, and mitigation. 3. <strong className="text-black font-semibold">Legal/Attestation Officer:</strong> Manages mandatory notifications (AEPD, CNMV, users). 4. <strong className="text-black font-semibold">Communications (PR):</strong> Manages public communication on networks (Twitter, Discord) to prevent misinformation and FUD.
             </p>
           </div>
         </section>
@@ -115,7 +115,7 @@ export default function LegalPage() {
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">PHASE 1: PREPARATION (Continuous Maintenance)</h3>
             <ul className="list-disc pl-5 space-y-2">
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Perform daily immutable backups of off-chain databases.</span></li>
-              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Maintain multi-signature hardware wallets (Gnosis Safe) for treasury funds.</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Maintain multisignature hardware wallets (Gnosis Safe) for treasury funds.</span></li>
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Have pre-drafted crisis communications ready for Twitter/Discord.</span></li>
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Conduct smart contract audits pre-TGE.</span></li>
             </ul>

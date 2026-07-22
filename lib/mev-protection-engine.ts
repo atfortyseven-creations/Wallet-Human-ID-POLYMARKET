@@ -2,7 +2,7 @@
  * ============================================================
  * MEV PROTECTION ENGINE & PRIVATE MEMPOOL ROUTING
  * ============================================================
- * Prevents sandwich attacks, front-running, and liquidations by
+ * Prevents sandwich attacks, front running, and liquidations by
  * routing transactions exclusively to block builders (Flashbots, 
  * Eden Network, MEV-Blocker) instead of the public mempool.
  * ============================================================

@@ -26,7 +26,7 @@ const AIRDROP_AMOUNT        = 10;  // 10 QDs per airdrop (Genesis Airdrop as per
  * POST /api/aztec/airdrop
  *
  * Mints 1000 QDs to the caller's Aztec address.
- * Architecture (SDK v4.3.1):
+ * Architecture (SDK v5.0.0):
  *  - Mode A: Full on-chain mint via PXE + TokenContract (requires AZTEC_TOKEN_CONTRACT_ADDRESS)
  *  - Mode B: Node-verified DB airdrop — real testnet block hash, no token contract needed
  *

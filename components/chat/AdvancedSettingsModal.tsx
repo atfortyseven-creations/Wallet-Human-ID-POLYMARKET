@@ -436,7 +436,7 @@ function DefiPanel({ s, u }: { s: SystemSettings; u: <K extends keyof SystemSett
           />
         </Row>
         <Row isLast>
-          <RowLabel label="MEV Protection" sub="Protect swaps from front-running bots" />
+          <RowLabel label="MEV Protection" sub="Protect swaps from front running bots" />
           <Toggle value={s.mevProtection} onChange={(v) => u('mevProtection', v)} color="#f59e0b" />
         </Row>
       </Card>

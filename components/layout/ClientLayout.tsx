@@ -65,9 +65,9 @@ const BOUNDED_PREFIXES = [
   '/predictions', '/ledger', '/voss-supremacy',
   '/gold-registry', '/vip', '/developer', '/developers', '/faq',
   '/ticket', '/settings', '/privacy', '/terms', '/legal',
-  // NOTE: /connect, /sign-up, /login are NOT bounded — they manage their
-  // own full-screen layout internally (ConnectPage / MobileImmersiveGate).
-  // Adding them here applies fixed+overflow:hidden which clips the content.
+  // FIXED: /connect, /sign-up, /login are now bounded — fixed inset-0 overflow-hidden
+  // prevents the black void below content. ConnectPage uses flex fill (not fixed inset-0).
+  '/connect', '/sign-up', '/login',
   '/admin', '/clearance',
   '/api-marketplace', '/directory', '/company', '/infrastructure',
   '/forum', '/chat',
@@ -262,7 +262,8 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  const isCenteredPage = ['/connect', '/login', '/sign-up', '/clearance'].some(p => pathname.startsWith(p));
+  // /connect, /sign-up, /login manage their own internal centering
+  const isCenteredPage = ['/clearance'].some(p => pathname.startsWith(p));
   const isChat = pathname.startsWith('/chat');
 
   // Root container
@@ -285,7 +286,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     : isBounded
       // Scroll is fully contained here — no empty page-level void zones.
       // Landing page also uses this path so scroll stops exactly at footer.
-      ? `relative z-10 w-full flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-none flex flex-col md:pb-0 bg-white ${isCenteredPage ? 'items-center justify-center' : ''}`
+      ? `relative z-10 w-full flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-none flex flex-col md:pb-0 bg-white`
       : `relative z-10 w-full flex-1 flex flex-col overscroll-none md:pb-0`;
 
   const showInstitutionalHeader =

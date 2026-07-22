@@ -10,7 +10,7 @@ const TOC: TocItem[] = [
   { id: 'leadership', label: 'Leadership' },
   { id: 'global-reach', label: 'Global Reach & ESG' },
   { id: 'technology', label: 'Technology Stack' },
-  { id: 'open-source-aztec', label: 'Open Source & Aztec Integration' },
+  { id: 'open source-aztec', label: 'Open Source & Aztec Integration' },
 ];
 
 const VALUES = [
@@ -18,7 +18,7 @@ const VALUES = [
   { icon: <Shield size={18} />, title: 'Absolute Security', desc: 'We implement the highest security standards in the industry, undergoing regular public audits. Your funds remain in your custody at all times.' },
   { icon: <Users size={18} />, title: 'Community Driven', desc: 'We build for our users. Every feature is meticulously designed with the feedback, needs, and safety of our global community in mind.' },
   { icon: <Globe size={18} />, title: 'Global Accessibility', desc: 'Financial tools should not be limited by geography. We design our platform to be lightweight, responsive, and usable from any device, anywhere.' },
-  { icon: <Activity size={18} />, title: 'Transparency', desc: 'We believe trust is earned through complete transparency. From open-source components to clear documentation, we hide nothing from our users.' },
+  { icon: <Activity size={18} />, title: 'Transparency', desc: 'We believe trust is earned through complete transparency. From open source components to clear documentation, we hide nothing from our users.' },
   { icon: <Rocket size={18} />, title: 'Continuous Innovation', desc: 'We constantly iterate and improve our platform, adopting the latest proven technologies to provide the fastest and most reliable experience possible.' },
   { icon: <Lightbulb size={18} />, title: 'Education & Empowerment', desc: 'We do not just provide tools; we provide knowledge. We are committed to educating our users to make informed, intelligent financial decisions.' },
   { icon: <Handshake size={18} />, title: 'Integrity', desc: 'We operate with uncompromising ethical standards. We do not engage in hidden fees, deceptive practices, or user manipulation of any kind.' },
@@ -36,11 +36,11 @@ const STACK = [
   },
   {
     title: 'Security Infrastructure',
-    items: ['Zero-Knowledge Proofs (zk-SNARKs) for absolute privacy preservation', 'End-to-end encrypted protocol layers for all communications', 'WebAuthn and secure biometric authentication integration', 'Multi-layered automated DDoS protection and traffic filtering'],
+    items: ['Zero Knowledge Proofs (zk-SNARKs) for absolute privacy preservation', 'End-to-end encrypted protocol layers for all communications', 'WebAuthn and secure biometric authentication integration', 'Multi-layered automated DDoS protection and traffic filtering'],
   },
   {
     title: 'Blockchain Integration',
-    items: ['EVM-compatible, deeply audited smart contract infrastructure', 'Viem & Wagmi for resilient, agnostic wallet connection layers', 'Cryptographic-tier node providers (Alchemy, Infura) for uptime', 'Advanced real-time mempool monitoring and transaction simulation', 'Aztec Network (programmable ZK rollup) for private on-chain state transitions', 'Noir — domain-specific language for writing custom zero-knowledge circuits'],
+    items: ['EVM-compatible, deeply audited smart contract infrastructure', 'Viem & Wagmi for resilient, agnostic wallet connection layers', 'Cryptographic-tier node providers (Alchemy, Infura) for uptime', 'Advanced real-time mempool monitoring and transaction simulation', 'Aztec Network (programmable ZK rollup) for private on-chain state transitions', 'Noir — domain-specific language for writing custom zero knowledge circuits'],
   },
 ];
 
@@ -70,10 +70,10 @@ export default function AboutPage() {
               A specialised group of passionate software engineers, financial analysts, and user experience designers came together to bridge this growing gap. We set out to build a holistic platform that strips away the daunting complexity of blockchain technology, presenting users with a clean, intuitive, and highly professional interface that rivals the best consumer applications in the world.
             </p>
             <p>
-              The result is a comprehensive Web3 dashboard that seamlessly integrates nine core modules — including the Humanity Ledger (a real-time on-chain scanner and private portfolio tracker) and Whale Chat (end-to-end encrypted wallet-to-wallet messaging) — accessible across devices via a frictionless, cryptographically secure QR-code session synchronisation.
+              The result is a comprehensive Web3 dashboard that seamlessly integrates nine core modules — including the Humanity Ledger (a real-time on-chain scanner and private portfolio tracker) and Whale Chat (end to end encrypted wallet-to-wallet messaging) — accessible across devices via a frictionless, cryptographically secure QR-code session synchronisation.
             </p>
             <p>
-              From our early days developing simple portfolio trackers, we have rapidly evolved into a comprehensive global ecosystem. Today, we offer real-time market analysis, secure end-to-end encrypted communication channels, advanced asset management tools, and sovereign-grade charting — all packaged into an accessible web application. Our fundamental commitment to never compromising on user privacy has guided every architectural decision we have made since day one.
+              From our early days developing simple portfolio trackers, we have rapidly evolved into a comprehensive global ecosystem. Today, we offer real-time market analysis, secure end to end encrypted communication channels, advanced asset management tools, and sovereign-grade charting — all packaged into an accessible web application. Our fundamental commitment to never compromising on user privacy has guided every architectural decision we have made since day one.
             </p>
             <p>
               We maintain 100% operational status across our distributed node infrastructure with zero reported outages, demonstrating a proven track record of shipping complex features without compromising security or uptime.
@@ -208,7 +208,7 @@ export default function AboutPage() {
         </section>
 
         {/* Open Source & Aztec Integration */}
-        <section id="open-source-aztec">
+        <section id="open source-aztec">
           <h2 className="text-[1.1rem] font-bold uppercase tracking-[0.08em] text-black mb-6 pb-3 border-b border-black/10">
             Open Source &amp; Aztec Integration
           </h2>
@@ -217,7 +217,7 @@ export default function AboutPage() {
               Whale Network is entirely <strong>Open Source</strong>. We believe that true financial Privatety and privacy can only be achieved when the underlying code is fully transparent, auditable, and verifiable by the community. We do not commercialise the system; our goal is to provide a robust, production-ready public good for the decentralised ecosystem.
             </p>
             <p>
-              We are deeply integrated with the <strong>Aztec Network</strong>, a programmable zero-knowledge (ZK) rollup. By leveraging Aztec’s Noir circuits and confidential execution environments, we obscure sensitive user interactions:
+              We are deeply integrated with the <strong>Aztec Network</strong>, a programmable zero knowledge (ZK) rollup. By leveraging Aztec’s Noir circuits and confidential execution environments, we obscure sensitive user interactions:
             </p>
             <ul className="space-y-2 pl-5">
               <li className="flex items-start gap-3">
@@ -234,7 +234,7 @@ export default function AboutPage() {
               </li>
             </ul>
             <p>
-              This open-source initiative, spearheaded by our founder Stefan Antonio Cirisanu, is actively seeking support through the Aztec Network grant program to fund rigorous security auditing of our custom Noir circuits and facilitate our full deployment to the Aztec ecosystem.
+              This open source initiative, spearheaded by our founder Stefan Antonio Cirisanu, is actively seeking support through the Aztec Network grant program to fund rigorous security auditing of our custom Noir circuits and facilitate our full deployment to the Aztec ecosystem.
             </p>
           </div>
         </section>

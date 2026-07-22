@@ -60,7 +60,7 @@ export function InstitutionalShell({
             </span>
           </div>
           <span className="font-mono text-[9px] uppercase tracking-widest text-black/40 font-bold text-center md:text-right">
-            Privacy by Void · No data stored · All communication is end-to-end verified
+            Privacy by Void · No data stored · All communication is end to end verified
           </span>
         </div>
       </div>

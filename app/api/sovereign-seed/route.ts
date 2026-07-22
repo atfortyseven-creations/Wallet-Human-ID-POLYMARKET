@@ -68,7 +68,7 @@ Respondents must reply with a signed architectural overview.`
 ];
 
 const ACTIONS = ['Acquire', 'Liquidate', 'Audit', 'Deploy', 'Hedge'];
-const TARGETS = ['Zero-Knowledge Provers', 'L2 Sequencer Nodes', 'Dark Pool Liquidity', 'Algorithmic Stablecoin Yields', 'Cross-chain Bridges'];
+const TARGETS = ['Zero Knowledge Provers', 'L2 Sequencer Nodes', 'Dark Pool Liquidity', 'Algorithmic Stablecoin Yields', 'Cross-chain Bridges'];
 const METHODS = ['flash-loan arbitrage', 'stat-arb neural models', 'multisig governance execution', 'optimistic rollups', 'MPC threshold signatures'];
 const CHAINS = ['Ethereum Mainnet', 'Solana', 'Arbitrum One', 'Base', 'Optimism'];
 const METRICS = ['Gas consumption', 'Mempool latency', 'TVL migration', 'MEV extraction rates', 'Smart contract deployments'];

@@ -98,7 +98,7 @@ export function LandingHero({ onStart }: LandingHeroProps) {
                         </div>
                         <div>
                             <div className="text-2xl md:text-3xl font-black text-white mb-1">100%</div>
-                            <div className="text-[10px] uppercase tracking-widest text-white/40 font-bold">{t.landing.hero.stats.decentralized}</div>
+                            <div className="text-[10px] uppercase tracking-widest text-white/40 font-bold">{t.landing.hero.stats.decentralised}</div>
                         </div>
                     </div>
                 </motion.div>

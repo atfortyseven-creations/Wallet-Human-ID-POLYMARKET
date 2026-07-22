@@ -293,7 +293,7 @@ export const layer2Modules = [
                 </div>`
         },
         {
-            id: "decentralized-sequencing-phd-rigor",
+            id: "decentralised-sequencing-phd-rigor",
             title: "17. Secuenciación Descentralizada: Resiliencia y Gobernanza del Orden",
             description: "Eliminando el punto único de fallo: Análisis de redes de secuenciación compartida.",
             readTime: 360,
@@ -336,7 +336,7 @@ export const layer2Modules = [
             content: `<div class="academy-article">
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
-                        <h2>I. Validiums: Zero-Knowledge Execution + Off-Chain DA</h2>
+                        <h2>I. Validiums: Zero Knowledge Execution + Off-Chain DA</h2>
                         <p>Un <strong>Validium</strong> usa pruebas ZK de validez para la ejecución (como un ZK-Rollup) pero almacena los datos de transacciones <em>fuera de Ethereum</em>, en un <strong>Data Availability Committee (DAC)</strong> o en Celestia/EigenDA. Esto reduce el costo por transacción a una fracción de centésimo de dólar, ideal para gaming, redes sociales o aplicaciones con millones de micro-transacciones. <strong>Immutable X</strong> y <strong>Starknet Appchains</strong> son ejemplos de validiums en producción.</p>
                     </section>
 

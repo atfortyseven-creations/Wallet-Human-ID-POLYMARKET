@@ -4,8 +4,8 @@
 set -e
 
 echo "══════════════════════════════════════════════════════"
-echo "  Whale Network — QDs Token Deploy via WSL"
-echo "  Aztec Testnet v5 | SDK v4.3.1"
+echo "  Whale Network — QDs Token Deployment"
+echo "  Aztec Testnet v5 | SDK v5.0.0"
 echo "══════════════════════════════════════════════════════"
 
 # Load env vars from .env

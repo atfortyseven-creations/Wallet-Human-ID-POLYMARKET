@@ -218,7 +218,7 @@ export function VirtualizedFirehose() {
             {/* FOOTER */}
             <div className="shrink-0 p-4 border-t border-[#E5E5E5] bg-[#FFFFFF] rounded-b-xl flex items-center justify-between z-20">
                 <span className="text-[8px] font-mono text-[#888888] uppercase tracking-[0.3em]">
-                    Powered by Zero-Knowledge Nodes
+                    Powered by Zero Knowledge Nodes
                 </span>
                 {!autoScroll && whaleEvents.length > 0 && (
                     <button

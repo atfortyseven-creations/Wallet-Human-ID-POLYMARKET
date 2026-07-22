@@ -23,7 +23,7 @@ export const advancedAnalyticsModules = [
 
                     <section class="pro-section">
                         <h2>II. Mitigación de DoS y Preservación de Invariantes</h2>
-                        <p>El riesgo forense del EIP-2929 era el bloqueo de contratos antiguos que dependían de límites de gas fijos (Hardcoded Gas Limits). Las Access Lists actúan como una "póliza de seguro" técnica: si un contrato falla por falta de gas al intentar leer un slot frío, declarar ese slot en la Access List reduce el costo lo suficiente para que la transacción sea válida. En la Whale Academy, consideramos el uso de Access Lists como un estándar de <strong>Higiene de Gas</strong> para cualquier interacción con bóvedas multi-sig o protocolos de gobernanza.</p>
+                        <p>El riesgo forense del EIP-2929 era el bloqueo de contratos antiguos que dependían de límites de gas fijos (Hardcoded Gas Limits). Las Access Lists actúan como una "póliza de seguro" técnica: si un contrato falla por falta de gas al intentar leer un slot frío, declarar ese slot en la Access List reduce el costo lo suficiente para que la transacción sea válida. En la Whale Academy, consideramos el uso de Access Lists como un estándar de <strong>Higiene de Gas</strong> para cualquier interacción con bóvedas multisig o protocolos de gobernanza.</p>
                         
                         <div class="diagram-container">
                             <svg viewBox="0 0 800 220" style="background: rgba(0,0,0,0.2); border-radius: 8px;">

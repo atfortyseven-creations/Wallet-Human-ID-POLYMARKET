@@ -62,10 +62,10 @@ export default function TermsPage() {
                         </div>
                         <div>
                             <div className="flex items-center gap-4 mb-4">
-                                <h3 className="text-[22px] font-bold uppercase tracking-tight text-white">Zero-Knowledge Verification</h3>
+                                <h3 className="text-[22px] font-bold uppercase tracking-tight text-white">Zero Knowledge Verification</h3>
                             </div>
                             <p className="text-[15px] leading-relaxed text-white/60 font-light">
-                                All proofs are generated locally on your device. The network only receives cryptographically verified zero-knowledge payloads, ensuring absolute data privacy.
+                                All proofs are generated locally on your device. The network only receives cryptographically verified zero knowledge payloads, ensuring absolute data privacy.
                             </p>
                         </div>
                     </div>
@@ -82,13 +82,13 @@ export default function TermsPage() {
                             <h2 className="text-[28px] md:text-[36px] font-bold tracking-tight mb-8 text-[#c4f344] uppercase">Protocol Interaction</h2>
                             <div className="space-y-6 text-white/70 text-[18px] leading-[1.8] font-light">
                                 <p>
-                                    This document constitutes the legal agreement governing your use of the Humanity Ledger interface. By generating zero-knowledge proofs, deploying Noir contracts, or engaging with our decentralized sequencing architecture, you agree to these terms.
+                                    This document constitutes the legal agreement governing your use of the Humanity Ledger interface. By generating zero knowledge proofs, deploying Noir contracts, or engaging with our decentralised sequencing architecture, you agree to these terms.
                                 </p>
                                 <p>
-                                    The platform is a non-custodial, decentralized privacy infrastructure. Access to the protocol is facilitated through open-source cryptography. We do not custody, wrap, escrow, or otherwise manage your cryptographic assets or private viewing keys.
+                                    The platform is a non-custodial, decentralised privacy infrastructure. Access to the protocol is facilitated through open source cryptography. We do not custody, wrap, escrow, or otherwise manage your cryptographic assets or private viewing keys.
                                 </p>
                                 <p>
-                                    Consequently, we are mathematically incapable of reversing, pausing, or altering transactions once they have been signed by your wallet and finalized by the decentralized sequencer network on Ethereum Layer 1.
+                                    Consequently, we are mathematically incapable of reversing, pausing, or altering transactions once they have been signed by your wallet and finalized by the decentralised sequencer network on Ethereum Layer 1.
                                 </p>
                             </div>
                         </div>
@@ -101,14 +101,14 @@ export default function TermsPage() {
                             <h2 className="text-[28px] md:text-[36px] font-bold tracking-tight mb-8 text-[#c4f344] uppercase">Limitation of Liability</h2>
                             <div className="space-y-6 text-white/70 text-[18px] leading-[1.8] font-light">
                                 <p>
-                                    The protocol provides privacy-preserving infrastructure using experimental zero-knowledge cryptography. While the code is heavily audited, the use of decentralized finance protocols inherently carries significant risk.
+                                    The protocol provides privacy-preserving infrastructure using experimental zero knowledge cryptography. While the code is heavily audited, the use of decentralised finance protocols inherently carries significant risk.
                                 </p>
                                 
                                 <div className="p-8 my-10 bg-red-950/20 border border-red-500/30 rounded-3xl shadow-sm relative overflow-hidden group">
                                     <div className="absolute inset-0 bg-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                                     <AlertTriangle className="mb-6 text-red-400 relative z-10" size={32} />
                                     <p className="font-mono text-[12px] leading-[1.8] uppercase tracking-widest font-bold text-red-300 relative z-10">
-                                        "Interaction with zero-knowledge smart contracts implies an acknowledgment of cryptographic risk. We expressly disclaim all liability for capital loss resulting from protocol exploits, network congestion, incorrect proof generation, or loss of private decryption keys."
+                                        "Interaction with zero knowledge smart contracts implies an acknowledgment of cryptographic risk. We expressly disclaim all liability for capital loss resulting from protocol exploits, network congestion, incorrect proof generation, or loss of private decryption keys."
                                     </p>
                                 </div>
                             </div>

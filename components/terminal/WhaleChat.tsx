@@ -1862,7 +1862,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         
         <h3 className="text-[28px] font-black tracking-tight text-black relative z-10">Sovereign Chat</h3>
         <p className="text-[14px] font-medium text-[#555] text-center max-w-sm leading-relaxed relative z-10 px-4">
-          Establish an end-to-end encrypted connection. Your keys never leave your device.
+          Establish an end to end encrypted connection. Your keys never leave your device.
         </p>
         <button 
           onClick={() => openAppKit()} 
@@ -1891,7 +1891,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           </div>
           <div className="w-full bg-amber-50 border border-amber-200 rounded-xl p-4 text-center">
             <p className="text-[12px] font-semibold text-amber-800 leading-relaxed">
-              Whale Chat uses end-to-end encrypted wallet keys. To access encrypted messaging, connect a Web3 wallet.
+              Whale Chat uses end to end encrypted wallet keys. To access encrypted messaging, connect a Web3 wallet.
             </p>
           </div>
           <div className="flex items-center gap-1.5 px-4 py-2.5 bg-blue-50 border border-blue-100 rounded-xl">
@@ -1929,7 +1929,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           </div>
 
           <h2 className="text-[28px] font-black tracking-tight text-black mb-3 text-center">
-            Zero-Knowledge <br /> <span className="text-black/30">Transport.</span>
+            Zero Knowledge <br /> <span className="text-black/30">Transport.</span>
           </h2>
           
           <p className="text-[14px] font-medium text-[#555] text-center leading-[1.6] mb-10 max-w-[280px]">
@@ -2645,7 +2645,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                    <Avatar address={activePeer} />
                    <div className="text-center">
                      <p className="text-[13px] font-mono font-bold text-[#050505] ">{activePeer}</p>
-                     <p className="text-[12px] text-blue-500 font-medium mt-1">End-to-End Encrypted</p>
+                     <p className="text-[12px] text-blue-500 font-medium mt-1">End to End Encrypted</p>
                   </div>
                </div>
                <div className="flex flex-col gap-2">

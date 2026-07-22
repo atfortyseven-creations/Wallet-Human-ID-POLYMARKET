@@ -106,7 +106,7 @@ export function AztecPrivacyTerminal({ onBack }: { onBack: () => void }) {
               Aztec Privacy Terminal
             </h2>
             <p className="text-[9px] text-black/40 uppercase tracking-widest mt-0.5">
-              Zero-Knowledge L2 · On-Chain Only
+              Zero Knowledge L2 · On-Chain Only
             </p>
           </div>
         </div>

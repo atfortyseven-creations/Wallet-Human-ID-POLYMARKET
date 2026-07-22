@@ -97,7 +97,7 @@ export function SystemProfileModal({
                            {[
                                { label: 'Blockchain Architecture', score: 85 },
                                { label: 'Smart Contract Security', score: 42 },
-                               { label: 'Zero-Knowledge Proofs', score: 15 },
+                               { label: 'Zero Knowledge Proofs', score: 15 },
                                { label: 'On-Chain Forensics', score: 92 }
                            ].map((skill) => (
                                <div key={skill.label} className="flex items-center gap-4">

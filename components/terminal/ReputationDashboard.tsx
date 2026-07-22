@@ -51,7 +51,7 @@ export function ReputationDashboard() {
     setIsMinting(true);
     const t = toast.loading('Initiating sovereign verification sequence...');
     await new Promise(r => setTimeout(r, 1200));
-    toast.loading('Allocating Access Credential to the decentralized ledger...', { id: t });
+    toast.loading('Allocating Access Credential to the decentralised ledger...', { id: t });
     await new Promise(r => setTimeout(r, 1500));
     setHasCredential(true);
     setScore(score + 150);
@@ -68,7 +68,7 @@ export function ReputationDashboard() {
         <div className="flex flex-col items-center gap-2 text-center">
           <h3 className="text-xl font-bold text-[#050505] uppercase tracking-widest">Sovereign Portal</h3>
           <p className="text-sm text-black/50 max-w-[360px] leading-relaxed">
-            Connect your wallet to analyze your on-chain footprint and access your decentralized identity ledger.
+            Connect your wallet to analyze your on-chain footprint and access your decentralised identity ledger.
           </p>
         </div>
       </div>
@@ -93,7 +93,7 @@ export function ReputationDashboard() {
           
           <div className="flex justify-between items-start mb-8 relative z-10">
             <div>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-black/40 mb-2">Decentralized Verification</p>
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-black/40 mb-2">Decentralised Verification</p>
               <h2 className="text-3xl font-bold text-[#050505] tracking-tight mb-1">Sovereign Identity Ledger</h2>
               <p className="text-xs text-black/50 font-mono">{address}</p>
             </div>

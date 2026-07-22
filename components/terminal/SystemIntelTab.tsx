@@ -139,7 +139,7 @@ const SystemIntelTab: React.FC = () => {
                                                 </label>
                                             </div>
                                             <p className="text-[11px] text-[#888888] max-w-md leading-relaxed font-medium">
-                                                Activating the node allows your client to participate in the decentralized relay of block metadata and transactional signals. Network traffic is routed via secure WebRTC.
+                                                Activating the node allows your client to participate in the decentralised relay of block metadata and transactional signals. Network traffic is routed via secure WebRTC.
                                             </p>
                                         </div>
                                         

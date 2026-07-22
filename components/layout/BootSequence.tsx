@@ -132,7 +132,7 @@ export const BootSequence = () => {
                             <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
                                 <div className="w-2 h-2 rounded-full bg-[#00f2ea] animate-pulse" />
                                 <span className="text-[10px] tracking-[0.2em] text-[#00f2ea] uppercase">
-                                    Zero-Knowledge Environment
+                                    Zero Knowledge Environment
                                 </span>
                             </div>
                         </div>

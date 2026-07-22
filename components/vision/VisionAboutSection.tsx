@@ -16,7 +16,7 @@ const PILLARS = [
   {
     n: '03',
     title: 'Blockchain Forensics & Intelligence',
-    desc: 'Deep on-chain analysis of capital flows, wallet clustering, and smart-contract risk scoring — giving enterprises the intelligence to act with confidence in decentralised markets.',
+    desc: 'Deep on-chain analysis of capital flows, wallet clustering, and smart contract risk scoring — giving enterprises the intelligence to act with confidence in decentralised markets.',
   },
   {
     n: '04',
@@ -141,7 +141,7 @@ export function VisionAboutSection() {
               Beyond auditing, Humanity Ledger provides{' '}
               <span className="text-black font-semibold">Privacy Architecture &amp; Attestation</span> advisory —
               sovereign-grade guidance in the integration of cryptographic privacy layers, including
-              zero-knowledge proofs, trusted execution environments, and privacy-preserving smart contracts.
+              zero knowledge proofs, trusted execution environments, and privacy-preserving smart contracts.
               We process mathematical proofs, not personal data.
             </p>
 

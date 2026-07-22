@@ -46,10 +46,10 @@ export const metadata = {
     default: 'Whale Network | Studio Provenance & Aztec Identity',
     template: '%s | Whale Network'
   },
-  description: 'Whale Network is the premier privacy layer on the Aztec Network. Claim your decentralized identity, access Studio Provenance, and communicate securely via Whale Chat using zero-knowledge proofs.',
+  description: 'Whale Network is the premier privacy layer on the Aztec Network. Claim your decentralised identity, access Studio Provenance, and communicate securely via Whale Chat using zero knowledge proofs.',
   keywords: [
-    'whale network', 'aztec identity', 'studio provenance', 'whale chat', 'decentralized identity',
-    'zero-knowledge proofs', 'privacy', 'noir language', 'verifiable credentials'
+    'whale network', 'aztec identity', 'studio provenance', 'whale chat', 'decentralised identity',
+    'zero knowledge proofs', 'privacy', 'noir language', 'verifiable credentials'
   ],
   authors: [{ name: 'Whale Network' }],
   creator: 'Whale Network',
@@ -78,7 +78,7 @@ export const metadata = {
   },
   openGraph: {
     title: 'Whale Network | Studio Provenance & Aztec Identity',
-    description: 'Claim your decentralized identity, access Studio Provenance, and communicate securely via Whale Chat using zero-knowledge proofs.',
+    description: 'Claim your decentralised identity, access Studio Provenance, and communicate securely via Whale Chat using zero knowledge proofs.',
     url: 'https://humanidfi.com',
     siteName: 'Whale Network',
     images: [
@@ -95,7 +95,7 @@ export const metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Whale Network | Studio Provenance & Aztec Identity',
-    description: 'Claim your decentralized identity, access Studio Provenance, and communicate securely via Whale Chat using zero-knowledge proofs.',
+    description: 'Claim your decentralised identity, access Studio Provenance, and communicate securely via Whale Chat using zero knowledge proofs.',
     images: ['/humanid_protocol_logo_1778714491433.png'],
     site: '@whalecosystem',
     creator: '@whalecosystem',
@@ -128,7 +128,7 @@ export default async function RootLayout({
         "@type": "WebSite",
         "url": "https://humanidfi.com/",
         "name": "Whale Network",
-        "description": "Privacy-preserving identity verification solution integrating zero-knowledge proofs.",
+        "description": "Privacy-preserving identity verification solution integrating zero knowledge proofs.",
         "potentialAction": {
           "@type": "SearchAction",
           "target": {
@@ -168,7 +168,7 @@ export default async function RootLayout({
         "description": "Privacy-preserving identity verification and portfolio management.",
         "featureList": [
           "Identity Verification",
-          "Zero-Knowledge Proofs",
+          "Zero Knowledge Proofs",
           "Attestation Tools",
           "Privacy-Preserving Infrastructure"
         ]

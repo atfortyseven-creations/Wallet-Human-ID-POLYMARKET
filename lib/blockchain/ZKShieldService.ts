@@ -5,7 +5,7 @@ import { type Address, type Hex } from 'viem';
 
 /**
  * ZKShieldService
- * Orchestrates Zero-Knowledge assets shielding and unshielding.
+ * Orchestrates Zero Knowledge assets shielding and unshielding.
  * Uses Poseidon hashing and Groth16 proofs for state masking.
  */
 export class ZKShieldService {
@@ -58,7 +58,7 @@ export class ZKShieldService {
     }
     /**
      * Generates a ZK-Proof based on user-drawn geometrical entropy.
-     * Replaces simple captchas with client-side Zero-Knowledge tracing.
+     * Replaces simple captchas with client-side Zero Knowledge tracing.
      */
     public async generateGeometricProof(points: {x: number, y: number}[], walletAddress: string): Promise<string> {
         await this.init();

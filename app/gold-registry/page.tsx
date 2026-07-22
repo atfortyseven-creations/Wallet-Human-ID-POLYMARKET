@@ -19,7 +19,7 @@ export default function GoldRegistryPage() {
   const triggerOnChainPing = (id: string, name: string) => {
     setVerifying(id);
     
-    // Simulate smart-contract Ping to SystemValidator.sol
+    // Simulate smart contract Ping to SystemValidator.sol
     setTimeout(() => {
       setVerifiedList(prev => ({ ...prev, [id]: true }));
       setVerifying(null);

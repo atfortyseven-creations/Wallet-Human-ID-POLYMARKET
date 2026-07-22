@@ -452,7 +452,7 @@ export const genesisModules = [
                 </div>`
         },
         {
-            id: "szabo-smart-contracts-theory",
+            id: "szabo-smart contracts-theory",
             title: "16. Nick Szabo y la Teoría de los Smart Contracts",
             description: "Más allá del dinero: Automatización de acuerdos legales mediante protocolos.",
             readTime: 200,

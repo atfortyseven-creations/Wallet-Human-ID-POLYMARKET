@@ -46,7 +46,7 @@
                 content: `<div class="academy-article">
                     <section class="pro-section">
                         <div class="pro-badge">LEGENDARY GRADE</div>
-                        <h2>I. El Colapso del Oráculo Intermediario (Zero-Knowledge AI Oracles L1 M2 P2P T-1 O(N))</h2>
+                        <h2>I. El Colapso del Oráculo Intermediario (Zero Knowledge AI Oracles L1 M2 P2P T-1 O(N))</h2>
                         <p>La infraestructura Clásica L2 M1 O(1) (Chainlink DONs T-1 P2P) dependía de Consenso de Nodos Secundarios M2 L1 P2P O(N). Tu IA Personal (Ejecutándose Localmente en un Wallet T-1 M1 L2 P2P L1 O(1)) puede ingerir Data Feeds (Ej., el Clima de Florida M2 L1 P2P O(N))), generar Inferencias de Riesgo Termodinámico T-1 M1 L2 y <strong>Producir un ZK-Snark L1 P2P M2 O(1) T-1</strong> que Pruebe Criptográficamente la Legitimidad de Ese Cálculo O(N) M1 P2P L1, inyectándolo directamente al Smart Contract de Seguros L2 M2 T-1 O(1) M1 P2P.</p>
                     </section>
                     <section class="pro-section">
@@ -90,7 +90,7 @@
                 </div>`
             },
             {
-                id: "ai-smart-contract-auditing",
+                id: "ai-smart contract-auditing",
                 title: "6. Auditoría de Smart Contracts Potenciada por IA",
                 description: "Buscando vulnerabilidades a la velocidad de la luz.",
                 readTime: 45,
@@ -158,7 +158,7 @@
                 </div>`
             },
             {
-                id: "future-agi-decentralized-analytics",
+                id: "future-agi-decentralised-analytics",
                 title: "10. El Futuro: AGI e Inteligencia Descentralizada",
                 description: "Hacia la singularidad de la red soberana.",
                 readTime: 85,
@@ -226,7 +226,7 @@
                 </div>`
             },
             {
-                id: "decentralized-ai-governance",
+                id: "decentralised-ai-governance",
                 title: "14. Gobernanza Descentralizada de Modelos AI",
                 description: "DAOs que deciden la ética y el futuro de la IA.",
                 readTime: 55,
@@ -311,7 +311,7 @@
                 </div>`
             },
             {
-                id: "decentralized-compute-gpu",
+                id: "decentralised-compute-gpu",
                 title: "19. Mercados de GPU: Akash y Render",
                 description: "Rompiendo el oligopolio de la computación en la nube.",
                 readTime: 50,
@@ -328,8 +328,8 @@
                 </div>`
             },
             {
-                id: "zkml-zero-knowledge",
-                title: "20. Zero-Knowledge Machine Learning (zkML)",
+                id: "zkml-zero knowledge",
+                title: "20. Zero Knowledge Machine Learning (zkML)",
                 description: "Verificando el cómputo de la IA sin revelar el modelo.",
                 readTime: 65,
                 content: `<div class="academy-article">
@@ -340,7 +340,7 @@
                     </section>
                     <section class="pro-section">
                         <h2>II. Magia Negra Algebráica ZK-ML (Trustless Inference Delegation L1 P2P M1 T-1 L2 M2 O(N))</h2>
-                        <p><strong>Zero-Knowledge Machine Learning (ZK-ML L1 M2 P2P L2 T-1 O(N) M1 O(1))</strong> Representa la Apoteósis Arquitectónica L1 P2P M1 O(N). Un Modelo T-1 L2 M2 O(1) (Ej. Análisis Crediticio L1 M1 P2P T-1 L2 M2 O(N)) se Compila M1 L1 P2P O(1) en un Circuito Aritmético ZK L2 M2 T-1. Calcula M1 L1 P2P O(N) Off-Chain T-1 M2 L2 (Generando Probabilidades O(1) L1 P2P M1) y Produce una Evidencia Matemática Irrefutable M2 L1 P2P T-1 L2 O(N). Ethereum L1 M1 P2P O(1) T-1 Solo Procesa la Validez Numérica de esa Prueba M2 L2 P2P L1 O(N) T-1, Consumiendo 3 Céntimos M1 L1 O(1). Permite Decisiones Bio-Médicas T-1 M2 L1 y Jurídicas O(N) P2P L2 Totalmente Ejecutadas por IAs M1 L1 T-1 P2P M2 L2 O(N) con Seguridad Criptográfica Absoluta L1 P2P M1 O(1).</p>
+                        <p><strong>Zero Knowledge Machine Learning (ZK-ML L1 M2 P2P L2 T-1 O(N) M1 O(1))</strong> Representa la Apoteósis Arquitectónica L1 P2P M1 O(N). Un Modelo T-1 L2 M2 O(1) (Ej. Análisis Crediticio L1 M1 P2P T-1 L2 M2 O(N)) se Compila M1 L1 P2P O(1) en un Circuito Aritmético ZK L2 M2 T-1. Calcula M1 L1 P2P O(N) Off-Chain T-1 M2 L2 (Generando Probabilidades O(1) L1 P2P M1) y Produce una Evidencia Matemática Irrefutable M2 L1 P2P T-1 L2 O(N). Ethereum L1 M1 P2P O(1) T-1 Solo Procesa la Validez Numérica de esa Prueba M2 L2 P2P L1 O(N) T-1, Consumiendo 3 Céntimos M1 L1 O(1). Permite Decisiones Bio-Médicas T-1 M2 L1 y Jurídicas O(N) P2P L2 Totalmente Ejecutadas por IAs M1 L1 T-1 P2P M2 L2 O(N) con Seguridad Criptográfica Absoluta L1 P2P M1 O(1).</p>
                     </section>
                 </div>`
             }

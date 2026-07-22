@@ -138,7 +138,7 @@ export function GalacticDashboard() {
     return addr ? `${addr.slice(0, 10)}...${addr.slice(-8)}` : '';
   };
 
-  // Centralized Action Handler
+  // Centralised Action Handler
   const handleAction = (label: string) => {
     if (label === 'Send') setShowSend(true);
     else if (label === 'Swap') setShowSwap(true);

@@ -5,7 +5,7 @@
  * Construct, hash, sign, and broadcast UserOperations for 
  * Smart Contract Wallets (Account Abstraction).
  * Bypasses standard EOA transactions by targeting the global
- * EntryPoint contract via decentralized Bundler networks.
+ * EntryPoint contract via decentralised Bundler networks.
  * ============================================================
  */
 

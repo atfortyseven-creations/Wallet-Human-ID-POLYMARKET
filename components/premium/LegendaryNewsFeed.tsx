@@ -113,7 +113,7 @@ export default function LegendaryNewsFeed({ isPremium, walletAddress }: Legendar
         <div className="absolute inset-0 z-30 pt-20">
           <PremiumLocked
             feature="Whale Network NETWORK INTELLIGENCE"
-            description="Access Elite-grade market data verified by decentralized oracles. Detect arbitrage opportunities and value bets."
+            description="Access Elite-grade market data verified by decentralised oracles. Detect arbitrage opportunities and value bets."
             icon="sparkles"
             onUpgrade={() => console.log("Upgrade requested")}
           />

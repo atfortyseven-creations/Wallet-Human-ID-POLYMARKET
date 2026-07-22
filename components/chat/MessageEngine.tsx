@@ -734,7 +734,7 @@ function ContextMenu({
           onClose();
         } },
         { icon: Forward, label: 'Forward',     action: () => {
-          toast.info('Forwarding is disabled for secure end-to-end encrypted ZK messages.');
+          toast.info('Forwarding is disabled for secure end to end encrypted ZK messages.');
           onClose();
         } },
         { icon: Trash2,  label: 'Delete',      action: onDelete, danger: true },
