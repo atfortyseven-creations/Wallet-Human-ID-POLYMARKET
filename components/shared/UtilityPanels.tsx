@@ -422,7 +422,7 @@ export function UtilityPanels() {
                     // Mobile: full-width sheet from bottom
                     'bottom-0 left-0 right-0 rounded-t-[2rem] max-h-[88dvh] overflow-y-auto',
                     // Desktop: top-right floating card
-                    'sm:bottom-auto sm:top-20 sm:left-auto sm:right-6 sm:w-[420px] sm:max-w-[calc(100vw-3rem)] sm:rounded-[2.5rem] sm:max-h-[calc(100dvh-6rem)]',
+                    'sm:bottom-auto sm:top-20 sm:left-auto sm:right-6 sm:w-[420px] sm:max-w-[calc(100vw-3rem)] sm:rounded-[2.5rem] sm:max-h-[calc(100vh-6rem)]',
                 ].join(' ')}
             >
                 {/* Drag handle (mobile only) */}

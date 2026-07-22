@@ -1575,7 +1575,7 @@ export function ProvenanceStudioContent({
   // ─── Phase guard: show loading animation until Sequencer initializes ───
   if (initPhase < 2) {
     return (
-      <div className="flex min-h-[100dvh] w-full flex-col items-center justify-center bg-[#ffffff] text-center p-8">
+      <div className="flex min-h-[100vh] w-full flex-col items-center justify-center bg-[#ffffff] text-center p-8">
         <div className="flex items-center justify-center h-24 w-24 rounded-full bg-black/5 mb-8">
           <ShieldCheck size={32} className={`text-black ${initPhase === 0 ? 'animate-pulse' : ''}`} />
         </div>
@@ -1591,7 +1591,7 @@ export function ProvenanceStudioContent({
 
   if (hasPlan === null) {
     return (
-      <div className="w-full min-h-[100dvh] flex items-center justify-center bg-[#FFFFFF]">
+      <div className="w-full min-h-[100vh] flex items-center justify-center bg-[#FFFFFF]">
         <Loader2 size={24} className="animate-spin text-black/30" />
       </div>
     );
@@ -1601,7 +1601,7 @@ export function ProvenanceStudioContent({
   return (
     <TuringShieldGate>
     <div
-      className={`min-h-[100dvh] bg-[#FFFFFF] text-[#050505] ${
+      className={`min-h-[100vh] bg-[#FFFFFF] text-[#050505] ${
         isMobile ? 'pb-[calc(2rem+env(safe-area-inset-bottom))]' : ''
       }`}
     >

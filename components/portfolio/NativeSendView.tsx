@@ -351,7 +351,7 @@ export function NativeSendView({ onBack, initialTokenSymbol }: { onBack: () => v
             exit={{ opacity: 0, x: -40 }}
             transition={{ type: 'spring', damping: 28, stiffness: 260 }}
             className="flex flex-col w-full bg-white font-sans overflow-x-hidden"
-            style={{ minHeight: '100dvh', paddingBottom: 'calc(5rem + env(safe-area-inset-bottom, 0px))' }}
+            style={{ minHeight: '100vh', paddingBottom: 'calc(5rem + env(safe-area-inset-bottom, 0px))' }}
         >
             {/* ── Header ── */}
             <div className="flex flex-wrap items-start justify-between gap-3 px-4 sm:px-6 pt-6 pb-4 border-b border-black/10">

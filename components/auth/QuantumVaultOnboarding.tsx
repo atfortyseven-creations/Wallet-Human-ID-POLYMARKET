@@ -407,7 +407,7 @@ export function QuantumVaultOnboarding({ onComplete }: { onComplete: () => void 
   // --------------------------------------------------------
   return (
     <div 
-      className="w-full min-h-[100dvh] bg-transparent flex flex-col items-center justify-center relative overflow-hidden"
+      className="w-full min-h-[100vh] bg-transparent flex flex-col items-center justify-center relative overflow-hidden"
     >
       <div className="w-full max-w-5xl px-6 md:px-12 flex flex-col items-center justify-center relative z-10 py-12">
         <AnimatePresence mode="wait">

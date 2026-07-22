@@ -370,7 +370,7 @@ export function MobileImmersiveGate() {
             transition={{ duration: 0.4 }}
             className="fixed inset-0 w-full bg-white z-50 flex flex-col"
             style={{
-              height: "100dvh",
+              height: "100vh",
               paddingTop: "env(safe-area-inset-top, 0px)",
               paddingBottom: "env(safe-area-inset-bottom, 0px)",
             }}

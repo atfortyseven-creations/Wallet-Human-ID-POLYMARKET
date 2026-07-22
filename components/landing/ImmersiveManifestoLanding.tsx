@@ -444,7 +444,7 @@ function LandingNav() {
 function HeroSection() {
   return (
     <section
-      className="relative w-full min-h-[100svh] bg-white flex flex-col justify-center items-center text-center overflow-hidden"
+      className="relative w-full min-h-[100vh] bg-white flex flex-col justify-center items-center text-center overflow-hidden"
       style={{ paddingTop: 60 }}
     >
       {/* Subtle dot-grid background */}

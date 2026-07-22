@@ -183,7 +183,7 @@ export function InstitutionalPortfolioView() {
 
     if (!isHydrated) {
         return (
-            <div className="flex items-center justify-center min-h-[100dvh] bg-white text-zinc-900 text-[10px] uppercase tracking-widest font-bold">
+            <div className="flex items-center justify-center min-h-[100vh] bg-white text-zinc-900 text-[10px] uppercase tracking-widest font-bold">
                 Loading...
             </div>
         );
@@ -205,7 +205,7 @@ export function InstitutionalPortfolioView() {
     const balanceFiat = `${(parseFloat(balance || "0") * priceOracle * rate).toFixed(2)}`;
 
     return (
-        <div className="flex flex-col relative text-zinc-900 selection:bg-zinc-900/10 min-h-[100dvh] bg-white font-sans overflow-x-hidden">
+        <div className="flex flex-col relative text-zinc-900 selection:bg-zinc-900/10 min-h-[100vh] bg-white font-sans overflow-x-hidden">
             <AnimatePresence mode="wait">
                 {view === 'HOME' && (
                     <HomeView key="home"
@@ -331,7 +331,7 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
     };
 
     return (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col w-full min-h-[100dvh] bg-white">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col w-full min-h-[100vh] bg-white">
 
             {/* Disconnecting overlay */}
             {isDisconnecting && (

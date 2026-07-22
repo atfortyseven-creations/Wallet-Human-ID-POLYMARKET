@@ -669,12 +669,12 @@ html.hide-balances [data-balance]:active {
   }
 
   /* IOS 15 / SAFARI WEBKIT DVH OVERRIDE GLOBAL */
-  .min-h-screen { min-height: 100dvh !important; }
-  .h-screen { height: 100dvh !important; }
+  .min-h-screen { min-height: 100vh !important; }
+  .h-screen { height: 100vh !important; }
 
   /* MASTER LAYOUT HEIGHTS  Compensates for the 68px header */
-  .min-h-content { min-height: calc(100dvh - 68px) !important; }
-  .h-content { height: calc(100dvh - 68px) !important; }
+  .min-h-content { min-height: calc(100vh - 68px) !important; }
+  .h-content { height: calc(100vh - 68px) !important; }
 
   /* ============================================================
      Enterprise CONFIG: DENSITY & STEALTH MODE (Zero-JS)

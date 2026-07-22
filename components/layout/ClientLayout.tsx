@@ -271,7 +271,7 @@ export function ClientLayout({ children }: { children: React.ReactNode }) {
     ? 'fixed inset-0 w-full overflow-hidden flex flex-col bg-transparent z-0'
     : isBounded
       ? 'fixed inset-0 w-full overflow-hidden flex flex-col bg-transparent z-0'
-      : 'w-full min-h-[100dvh] relative z-0 flex flex-col bg-transparent';
+      : 'w-full min-h-[100vh] relative z-0 flex flex-col bg-transparent';
 
   // Inner wrapper (below header)
   const innerClass = isDashboard || isChat

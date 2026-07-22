@@ -24,7 +24,7 @@ export function PassportWalletGuard({ children, passportTitle }: { children: Rea
 
   if (!isConnected) {
     return (
-      <div className="min-h-[100dvh] bg-[#F9FAFB] text-[#050505] flex flex-col items-center justify-center p-6">
+      <div className="min-h-[100vh] bg-[#F9FAFB] text-[#050505] flex flex-col items-center justify-center p-6">
         <div className="w-full max-w-md bg-white border border-slate-200/60 rounded-3xl p-8 shadow-xl text-center flex flex-col items-center">
           <div className="w-16 h-16 bg-black text-white rounded-full flex items-center justify-center mb-6">
             <Lock size={24} />

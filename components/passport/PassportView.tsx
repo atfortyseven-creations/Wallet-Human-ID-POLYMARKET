@@ -292,7 +292,7 @@ export function PassportView({ passport }: { passport: ProductPassportPublic }) 
   );
 
   return (
-    <div className={`min-h-[100dvh] ${theme.bg} ${theme.textMain}`}>
+    <div className={`min-h-[100vh] ${theme.bg} ${theme.textMain}`}>
 
       {/* ── Verification banner ── */}
       <div

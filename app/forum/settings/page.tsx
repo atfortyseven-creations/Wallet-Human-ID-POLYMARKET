@@ -158,20 +158,20 @@ export default function ForumSettingsPage() {
 
   //  Render 
   if (loading) return (
-    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest animate-pulse min-h-[100dvh] bg-white text-gray-500 flex items-center justify-center flex-col gap-4">
+    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest animate-pulse min-h-[100vh] bg-white text-gray-500 flex items-center justify-center flex-col gap-4">
       <div className="w-8 h-8 border-2 border-t-black border-r-black border-b-transparent border-l-transparent rounded-full animate-spin" />
       Decrypting System Config...
     </div>
   );
 
   if (!profile) return (
-    <div className="flex flex-col items-center justify-center min-h-[100dvh] bg-white w-full">
+    <div className="flex flex-col items-center justify-center min-h-[100vh] bg-white w-full">
       <SIWEPanel inline onAuthenticated={() => window.location.reload()} />
     </div>
   );
 
   return (
-    <div className="w-full min-h-[100dvh] bg-white text-black py-10 font-sans relative selection:bg-black selection:text-white">
+    <div className="w-full min-h-[100vh] bg-white text-black py-10 font-sans relative selection:bg-black selection:text-white">
       
       <div className="w-full max-w-[860px] mx-auto px-6 lg:px-12 flex flex-col gap-10">
 

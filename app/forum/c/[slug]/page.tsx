@@ -17,19 +17,19 @@ export default function CategoryPage() {
   }, [slug]);
 
   if (!category) return (
-    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-gray-500 min-h-[100dvh] bg-white flex items-center justify-center flex-col gap-4">
+    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-gray-500 min-h-[100vh] bg-white flex items-center justify-center flex-col gap-4">
       Loading Sector...
     </div>
   );
 
   if (category.error) return (
-    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-red-500 min-h-[100dvh] bg-white flex items-center justify-center flex-col gap-4">
+    <div className="py-32 text-center text-[12px] font-mono uppercase tracking-widest text-red-500 min-h-[100vh] bg-white flex items-center justify-center flex-col gap-4">
       Sector not found.
     </div>
   );
 
   return (
-    <div className="w-full min-h-[100dvh] bg-white text-black py-10 font-sans selection:bg-black selection:text-white relative">
+    <div className="w-full min-h-[100vh] bg-white text-black py-10 font-sans selection:bg-black selection:text-white relative">
       
       <div className="w-full max-w-[1440px] mx-auto px-6 lg:px-12 mb-8">
         <Link href="/forum" className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-gray-500 hover:text-black transition-colors">

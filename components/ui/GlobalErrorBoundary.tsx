@@ -61,7 +61,7 @@ export class GlobalErrorBoundary extends Component<Props, State> {
       return (
         <div
           style={{
-            minHeight: "100dvh",
+            minHeight: "100vh",
             background: "#fff",
             display: "flex",
             alignItems: "center",

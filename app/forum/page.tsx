@@ -72,7 +72,7 @@ export default function ForumPage() {
   }, [searchQuery]);
 
   return (
-    <div className="w-full min-h-[100dvh] bg-white text-black py-10 font-sans selection:bg-black selection:text-white relative">
+    <div className="w-full min-h-[100vh] bg-white text-black py-10 font-sans selection:bg-black selection:text-white relative">
       
       {/* Search Overlay */}
       {searchOpen && (

@@ -364,7 +364,7 @@ function ConnectedScreen({
   const fmtDate   = (d: Date) => d.toLocaleDateString('en-US', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
 
   return (
-    <div className="relative w-full overflow-x-hidden font-sans flex flex-col bg-white selection:bg-black/10 selection:text-black" style={{ color: '#000000', minHeight: 'var(--dvh-100, 100dvh)' }}>
+    <div className="relative w-full overflow-x-hidden font-sans flex flex-col bg-white selection:bg-black/10 selection:text-black" style={{ color: '#000000', minHeight: 'var(--dvh-100, 100vh)' }}>
       {/* Background soft ambient noise/gradient */}
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-black/[0.01] via-white to-white" />
       
@@ -1304,7 +1304,7 @@ export function MobileLanding() {
 
   if (isLinked && effectiveAddress && showHub) {
     return (
-      <div className="w-full min-h-[100dvh] bg-transparent" suppressHydrationWarning>
+      <div className="w-full min-h-[100vh] bg-transparent" suppressHydrationWarning>
         <SafeErrorBoundary>
           <ConnectedScreen 
              address={effectiveAddress} 
@@ -1373,7 +1373,7 @@ export function MobileLanding() {
   return (
     <div
       className="fixed inset-0 w-full bg-white flex flex-col overflow-hidden"
-      style={{ height: '100dvh' }}
+      style={{ height: '100vh' }}
     >
       {/* Background dot grid */}
       <div

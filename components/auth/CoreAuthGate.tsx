@@ -1187,7 +1187,7 @@ export function CoreAuthGate({ onComplete, startAt }: { onComplete: () => void; 
   };
 
   return (
-    <div className="flex items-start sm:items-center justify-center px-4 sm:px-6 min-h-[100dvh] w-full relative overflow-y-auto py-8 sm:py-12">
+    <div className="flex items-start sm:items-center justify-center px-4 sm:px-6 min-h-[100vh] w-full relative overflow-y-auto py-8 sm:py-12">
       <div className="fixed inset-0 z-0 pointer-events-none opacity-50">
          <RemoteLottie path="/system-shots/Airplane Lottie Animation (1).json" className="w-full h-full object-cover" loop={false} />
       </div>
