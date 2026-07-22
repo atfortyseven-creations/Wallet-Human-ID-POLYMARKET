@@ -39,7 +39,7 @@ export default function SandboxPage() {
       </header>
 
       {/* Main sandbox */}
-      <div className="w-full max-w-[1600px] relative z-10">
+      <div className="w-full relative z-10">
         <NoirCircuitSandbox />
       </div>
 

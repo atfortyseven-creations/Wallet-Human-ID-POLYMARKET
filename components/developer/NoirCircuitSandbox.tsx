@@ -8,9 +8,9 @@ import { toast } from "sonner";
 // ─── Complex ZK Circuits ───────────
 const CIRCUIT_EXAMPLES: { label: string; code: string; difficulty: string; description: string }[] = [
   {
-    label: "1. Intercambio Privado (Dark Pool)",
+    label: "1. Dark Pool (Intercambio P2P)",
     difficulty: "INTERMEDIO",
-    description: "Demuestra cómo dos usuarios pueden intercambiar activos sin revelar públicamente el precio o la cantidad de la operación.",
+    description: "Ideal para DeFi. Demuestra cómo dos usuarios pueden intercambiar activos sin revelar públicamente el precio o la cantidad de la operación al secuenciador.",
     code: `// Matching de Órdenes (Dark Pool): Prueba que dos órdenes se cruzan sin revelar el precio ni la cantidad.
 // Usa compromisos de Pedersen para Ocultar Precio y Cantidad.
 use std::hash::pedersen_hash;
@@ -46,9 +46,9 @@ fn main(
 `,
   },
   {
-    label: "2. Identidad ZK & Cumplimiento (AML)",
+    label: "2. ZK KYC (Identidad Soberana)",
     difficulty: "EXPERTO",
-    description: "Prueba matemática de que un usuario ha superado el KYC y no reside en jurisdicciones sancionadas, sin revelar su país o identidad.",
+    description: "Fundamental para Compliance (AML). Prueba matemática de que un usuario ha superado el KYC y no reside en jurisdicciones sancionadas, sin revelar su país o identidad real.",
     code: `// Proves an identity is verified (Merkle) and not in a sanctioned region (Range)
 use std::merkle::compute_merkle_root;
 
@@ -71,9 +71,9 @@ fn main(
 `,
   },
   {
-    label: "3. Prueba de Estado (Omnichain MPT)",
+    label: "3. Omnichain MPT (Lectura L1)",
     difficulty: "AVANZADO",
-    description: "Permite leer de forma segura el estado de Ethereum L1 (ej. saldo de un contrato) desde la L2 de Aztec usando Merkle Patricia Tries.",
+    description: "Conexión L1-L2. Permite leer de forma segura el estado de Ethereum (ej. saldo de un contrato) desde la L2 de Aztec usando Merkle Patricia Tries.",
     code: `// Validates Ethereum L1 Merkle Patricia Trie inside L2 Noir.
 use std::hash::keccak256;
 
@@ -94,9 +94,9 @@ fn main(
 `,
   },
   {
-    label: "4. SNARK Recursivo (Plonk-in-Plonk)",
+    label: "4. Recursión Plonk (Proof-of-Proof)",
     difficulty: "DIOS",
-    description: "Arquitectura extremadamente compleja donde un circuito verifica la prueba de otro circuito interno, permitiendo comprimir miles de transacciones.",
+    description: "Escalabilidad Extrema. Arquitectura donde un circuito verifica la prueba de otro circuito interno, permitiendo comprimir miles de transacciones en una sola prueba.",
     code: `// Plonk-in-Plonk: Aggregates a child proof within this circuit
 use std::verify_proof;
 
@@ -405,7 +405,7 @@ contract ZKVerifier {
   const logColour = { info: "#6b7280", success: "#10b981", warn: "#f59e0b", error: "#ef4444", system: "#3b82f6" };
 
   return (
-    <section className="font-mono bg-white rounded-2xl border border-slate-200 overflow-hidden w-full max-w-[1400px] mx-auto shadow-xl text-black">
+    <section className="font-mono bg-white rounded-2xl border border-slate-200 overflow-hidden w-full max-w-none mx-auto shadow-xl text-black">
        {/* Header */}
       <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -476,9 +476,9 @@ contract ZKVerifier {
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row min-h-[600px]">
+      <div className="flex flex-col lg:flex-row min-h-[680px]">
         {/* Editor */}
-        <div className="flex-1 border-b md:border-b-0 md:border-r border-slate-200 flex flex-col min-w-[320px]">
+        <div className="flex-1 border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col min-w-[360px]">
           <div className="px-4 py-2 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
             <div className="flex items-center gap-2 text-slate-500 text-[11px]">
               <Code2 size={14} /> main.nr
@@ -505,7 +505,7 @@ contract ZKVerifier {
         </div>
 
         {/* Output Panel */}
-        <div className="flex-[0.8] flex flex-col bg-slate-50 min-w-[300px]">
+        <div className="flex-1 flex flex-col bg-slate-50 min-w-[320px]">
           <div className="p-6 border-b border-slate-200 bg-white">
             <h3 className="text-slate-400 text-[10px] font-bold tracking-[0.2em] uppercase mb-4">Pipeline Status</h3>
             {stages.map(stage => (
@@ -550,7 +550,7 @@ contract ZKVerifier {
                <Zap size={12} className="text-yellow-500" />
                <span className="text-slate-500 text-[10px] font-bold tracking-[0.2em] uppercase">Diagnostic Output</span>
             </div>
-            <div ref={logRef} className="flex-1 p-6 overflow-y-auto max-h-[300px] bg-white">
+            <div ref={logRef} className="flex-1 p-6 overflow-y-auto max-h-[400px] bg-white">
                {logLines.length === 0 && <div className="text-slate-400 text-[11px]">Awaiting kernel execution...</div>}
                {logLines.map((line, i) => (
                  <div key={i} className="text-[11px] leading-[1.7] mb-1 font-mono break-words" style={{ color: logColour[line.type] }}>

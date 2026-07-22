@@ -21,8 +21,8 @@ export const AZTEC_PXE_URL       = process.env.AZTEC_PXE_URL   || process.env.AZ
 export const AZTEC_EXPLORER      = 'https://testnet.aztecscan.xyz';
 export const AZTEC_NETWORK       = 'aztec-testnet';
 export const L1_CHAIN_ID         = 11155111; // Sepolia
-export const ROLLUP_VERSION      = 1821665230; // confirmed 2026-07-21 from live node
-export const ROLLUP_ADDRESS      = '0xd73a91bdcf6891c7642f3e460036e1ef2cc23178'; // confirmed live
+export const ROLLUP_VERSION      = 1; 
+export const ROLLUP_ADDRESS      = '0xd73a91bdcf6891c7642f3e460036e1ef2cc23178';
 // Additional L1 contracts (live node, 2026-07-21)
 export const REGISTRY_ADDRESS    = '0xa0bfb1b494fb49041e5c6e8c2c1be09cd171c6ba';
 export const FEE_JUICE_ADDRESS   = '0x762c132040fda6183066fa3b14d985ee55aa3c18';

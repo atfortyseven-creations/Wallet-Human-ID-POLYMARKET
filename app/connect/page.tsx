@@ -24,6 +24,7 @@ function RealDeviceRouter() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const hasUuid = urlParams.has('uuid') || urlParams.has('s');
+    const hasSessionParams = urlParams.has('s') && urlParams.has('p');
 
     // ── Device detection ─────────────────────────────────────────────────────
     const isUaMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase());
@@ -35,6 +36,17 @@ function RealDeviceRouter() {
     );
     const isNarrowScreen = window.screen.width < 768;
     const isMobileDevice = isUaMobile || (isTouchDevice && isNarrowScreen);
+
+    // ── If mobile scanned the QR, redirect to /scan with the payload ─────────
+    // The QR contains ?s=<sessionId>&p=<publicKey> — when scanned via native
+    // iPhone/Android camera, the user lands here on a mobile device.
+    // We redirect them to /scan so the UniversalScanModal handles the handshake.
+    if (isMobileDevice && hasSessionParams) {
+      const scanUrl = new URL('/scan', window.location.origin);
+      scanUrl.searchParams.set('payload', window.location.href);
+      window.location.replace(scanUrl.toString());
+      return;
+    }
 
     // ── Session detection ────────────────────────────────────────────────────
     const hasCookie = document.cookie.split('; ').some(r =>

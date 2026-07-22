@@ -773,7 +773,7 @@ export default function ConnectPage() {
       <div 
         className="absolute inset-0 pointer-events-none z-0 opacity-90"
         style={{
-          backgroundImage: 'url("/bg-waves.jpg")',
+          backgroundImage: 'url("/olas-hokusai-4k.png")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat'
