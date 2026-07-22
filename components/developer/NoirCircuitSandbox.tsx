@@ -6,12 +6,13 @@ import { useAztecNative } from "@/context/AztecNativeContext";
 import { toast } from "sonner";
 
 // ─── Complex ZK Circuits ───────────
-const CIRCUIT_EXAMPLES: { label: string; code: string; difficulty: string }[] = [
+const CIRCUIT_EXAMPLES: { label: string; code: string; difficulty: string; description: string }[] = [
   {
-    label: "Dark Pool Order Matching",
-    difficulty: "ADVANCED",
-    code: `// ZK Orderbook Matcher: Proves two orders cross without revealing price or amount.
-// Uses Pedersen commitments for Price and Amount, proving Volume >= MinVolume.
+    label: "1. Intercambio Privado (Dark Pool)",
+    difficulty: "INTERMEDIO",
+    description: "Demuestra cómo dos usuarios pueden intercambiar activos sin revelar públicamente el precio o la cantidad de la operación.",
+    code: `// Matching de Órdenes (Dark Pool): Prueba que dos órdenes se cruzan sin revelar el precio ni la cantidad.
+// Usa compromisos de Pedersen para Ocultar Precio y Cantidad.
 use std::hash::pedersen_hash;
 
 struct Order {
@@ -45,8 +46,9 @@ fn main(
 `,
   },
   {
-    label: "AML / Travel Rule Attestation",
-    difficulty: "EXTREME",
+    label: "2. Identidad ZK & Cumplimiento (AML)",
+    difficulty: "EXPERTO",
+    description: "Prueba matemática de que un usuario ha superado el KYC y no reside en jurisdicciones sancionadas, sin revelar su país o identidad.",
     code: `// Proves an identity is verified (Merkle) and not in a sanctioned region (Range)
 use std::merkle::compute_merkle_root;
 
@@ -69,8 +71,9 @@ fn main(
 `,
   },
   {
-    label: "Omnichain MPT State Proof",
-    difficulty: "ADVANCED",
+    label: "3. Prueba de Estado (Omnichain MPT)",
+    difficulty: "AVANZADO",
+    description: "Permite leer de forma segura el estado de Ethereum L1 (ej. saldo de un contrato) desde la L2 de Aztec usando Merkle Patricia Tries.",
     code: `// Validates Ethereum L1 Merkle Patricia Trie inside L2 Noir.
 use std::hash::keccak256;
 
@@ -91,8 +94,9 @@ fn main(
 `,
   },
   {
-    label: "Recursive SNARK Verification",
-    difficulty: "EXTREME",
+    label: "4. SNARK Recursivo (Plonk-in-Plonk)",
+    difficulty: "DIOS",
+    description: "Arquitectura extremadamente compleja donde un circuito verifica la prueba de otro circuito interno, permitiendo comprimir miles de transacciones.",
     code: `// Plonk-in-Plonk: Aggregates a child proof within this circuit
 use std::verify_proof;
 
@@ -437,17 +441,39 @@ contract ZKVerifier {
       </div>
 
       {/* Example Selector */}
-      <div className="bg-slate-100 border-b border-slate-200 px-4 py-3 flex gap-2 overflow-x-auto items-center no-scrollbar">
-        <span className="text-slate-500 text-[10px] font-bold tracking-[0.2em] uppercase mr-2">Architectures:</span>
-        {CIRCUIT_EXAMPLES.map((ex, i) => (
-          <button
-            key={i}
-            onClick={() => { setSelectedExample(i); setNoirCode(ex.code); resetAll(); }}
-            className={selectedExample === i ? 'px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded transition-all whitespace-nowrap bg-black text-white' : 'px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded transition-all whitespace-nowrap bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'}
-          >
-            {ex.label} <span className="opacity-50 ml-1">[{ex.difficulty}]</span>
-          </button>
-        ))}
+      <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex flex-col gap-3">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex flex-col">
+            <span className="text-slate-900 font-bold text-sm">Guía de Inicio Rápido</span>
+            <p className="text-slate-500 text-[11px] max-w-[600px] mt-1 leading-relaxed">
+              1. <b>Elige una arquitectura</b> de las pestañas a continuación para ver su código fuente.<br/>
+              2. <b>Analiza el contrato</b> escrito en Noir (el lenguaje de Zero Knowledge).<br/>
+              3. <b>Pulsa 'Compilar Circuito Noir'</b> (botón negro) para simular la síntesis de la prueba y enviarla a la Testnet.<br/>
+              4. <b>Observa el Pipeline</b> a la derecha para ver cómo el secuenciador verifica matemáticamente tu operación sin revelar los datos.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex gap-2 overflow-x-auto items-center no-scrollbar pb-2">
+          {CIRCUIT_EXAMPLES.map((ex, i) => (
+            <button
+              key={i}
+              onClick={() => { setSelectedExample(i); setNoirCode(ex.code); resetAll(); }}
+              className={selectedExample === i ? 'px-3 py-2 text-[11px] font-bold tracking-wider rounded transition-all whitespace-nowrap bg-black text-white' : 'px-3 py-2 text-[11px] font-bold tracking-wider rounded transition-all whitespace-nowrap bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'}
+            >
+              {ex.label} <span className="opacity-50 ml-1">[{ex.difficulty}]</span>
+            </button>
+          ))}
+        </div>
+        
+        {/* Helper description for the selected architecture */}
+        <div className="bg-blue-50/50 border border-blue-100 p-3 rounded-lg flex items-start gap-3">
+          <div className="text-blue-500 mt-0.5"><Zap size={14} /></div>
+          <div>
+            <div className="text-[11px] font-bold text-blue-900">{CIRCUIT_EXAMPLES[selectedExample].label}</div>
+            <div className="text-[11px] text-blue-700 mt-0.5">{CIRCUIT_EXAMPLES[selectedExample].description}</div>
+          </div>
+        </div>
       </div>
 
       <div className="flex flex-col md:flex-row min-h-[600px]">

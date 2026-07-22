@@ -770,12 +770,15 @@ export default function ConnectPage() {
     <div className="w-full min-h-screen bg-slate-50 flex flex-col shrink-0 relative overflow-hidden text-slate-900">
       
       {/* Wave Background */}
-      <div className="absolute inset-0 pointer-events-none z-0">
-        <img 
-          src="/bg-waves.jpg" 
-          alt="Waves" 
-          className="w-full h-full object-cover object-center opacity-90"
-        />
+      <div 
+        className="absolute inset-0 pointer-events-none z-0 opacity-90"
+        style={{
+          backgroundImage: 'url("/bg-waves.jpg")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
         <div className="absolute inset-0 bg-white/20 backdrop-blur-[2px]" />
       </div>
 
