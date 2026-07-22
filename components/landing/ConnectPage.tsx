@@ -773,13 +773,12 @@ export default function ConnectPage() {
       <div 
         className="absolute inset-0 pointer-events-none z-0"
         style={{
-          backgroundImage: 'url("/bg-waves.png")',
+          backgroundImage: 'url("/bg-waves.jpg")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat'
         }}
       >
-        <div className="absolute inset-0 bg-white/40 backdrop-blur-sm" />
       </div>
 
       <div className="w-full relative z-10 flex-1 flex flex-col lg:flex-row items-center justify-center lg:justify-between max-w-[1280px] mx-auto px-6 py-12 lg:py-0 gap-12 lg:gap-8 min-h-screen">
