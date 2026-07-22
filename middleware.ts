@@ -61,6 +61,7 @@ const PUBLIC_PREFIXES = [
   '/api/webhooks/stripe',        // Stripe webhook (must be unauthenticated)
   '/api/webhooks/',              // All webhooks from external services
   '/api/dev/deploy',             // Temporary public route for deploying contracts
+  '/api/aztec/deploy-token',     // Admin deploy endpoint — has own DEPLOY_SECRET auth inside
   '/api/health',
   '/api/status',
   '/_next/',
