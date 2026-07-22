@@ -1471,7 +1471,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 );
               } else {
                 updated = [{
-                  peerAddress: msg.conversation.peerAddress,
+                  peerAddress: msgConvPeer,
                   lastMessage: content.slice(0, 30),
                   lastAt: new Date()
                 }, ...prev];
