@@ -176,16 +176,17 @@ export async function POST(req: NextRequest) {
       
       let liveBlockHash = '';
       try {
-        const nodeInfoRes = await fetch(`${nodeUrl}/node-info`, {
+        const nodeInfoRes = await fetch(`${nodeUrl}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ jsonrpc: '2.0', method: 'node_getNodeInfo', params: [], id: 1 }),
+          body: JSON.stringify({ jsonrpc: '2.0', method: 'node_getBlockNumber', params: [], id: 1 }),
           signal: AbortSignal.timeout(8000),
         });
         if (nodeInfoRes.ok) {
           const nodeData = await nodeInfoRes.json();
-          blockNumber = nodeData?.result?.l2BlockNumber ?? blockNumber;
-          liveBlockHash = nodeData?.result?.l2BlockHash ?? '';
+          if (nodeData?.result && typeof nodeData.result === 'number') {
+            blockNumber = nodeData.result;
+          }
         }
       } catch { /* node unreachable */ }
       
@@ -220,17 +221,18 @@ export async function POST(req: NextRequest) {
     let fallbackToModeB = true; // Force virtual bypass due to SDK incompatibility
     let onChainSuccess = true;  // Mark as successful for the UI
     
-    // Fetch live node block to anchor the transaction
     try {
-      const nodeInfoRes = await fetch(`${nodeUrl}/node-info`, {
+      const nodeInfoRes = await fetch(`${nodeUrl}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ jsonrpc: '2.0', method: 'node_getNodeInfo', params: [], id: 1 }),
+        body: JSON.stringify({ jsonrpc: '2.0', method: 'node_getBlockNumber', params: [], id: 1 }),
         signal: AbortSignal.timeout(4000),
       });
       if (nodeInfoRes.ok) {
         const nodeData = await nodeInfoRes.json();
-        blockNumber = nodeData?.result?.l2BlockNumber ?? blockNumber;
+        if (nodeData?.result && typeof nodeData.result === 'number') {
+          blockNumber = nodeData.result;
+        }
       }
     } catch { /* node unreachable */ }
     
