@@ -772,7 +772,7 @@ export default function ConnectPage() {
       {/* Wave Background */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <img 
-          src="/bg-waves.png" 
+          src="/system-shots/152713-vector_de_patron_de_onda_japonesa-graficos_vectoriales-ilustracion-japon-dibujo-2560x1440.jpg" 
           alt="Waves" 
           className="w-full h-full object-cover object-center opacity-90"
         />
