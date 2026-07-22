@@ -118,6 +118,10 @@ export function TuringShieldGate({
           setLocked(true);
           setPinError('Enclave locked. Too many failed attempts. Wait 15 minutes.');
         } else {
+          if (data.error?.includes('expired')) {
+            window.location.href = '/connect';
+            return;
+          }
           setPinError(data.error || `Incorrect PIN. ${remaining !== null ? `${remaining} attempts remaining.` : ''}`);
         }
         setPin(['', '', '', '', '', '']);
@@ -226,11 +230,21 @@ export function TuringShieldGate({
         body: JSON.stringify({ newPin: code }),
         credentials: 'include',
       });
+      const data = await res.json();
       if (res.ok) {
         setPinSetSuccess(true);
+        setSettingPin(true); // Keep overlay open to show success
+      } else {
+        if (data.error?.includes('expired')) {
+          window.location.href = '/connect';
+          return;
+        }
+        setPinSetError(data.error || 'Failed to update PIN.');
+        setSettingPin(true);
       }
-    } catch {
-      // Non-critical: PIN set failure just means they'll use default next time
+    } catch (err) {
+      setPinSetError('Network error while saving PIN.');
+      setSettingPin(true);
     }
   }, [newPin, confirmPin, pinSetStep]);
 
@@ -375,7 +389,7 @@ export function TuringShieldGate({
           <p className="text-[13px] text-[#666] font-medium leading-[1.6] mb-6 px-1">
             {locked
               ? 'Too many failed attempts. Enclave is temporarily locked for security. Please wait 15 minutes before trying again.'
-              : 'Enter your 6-digit Enclave PIN to verify you are human and access the sovereign network.'
+              : 'Enter your 6-digit Enclave PIN to verify you are human and access the sovereign network. (Default PIN: 777777)'
             }
           </p>
 

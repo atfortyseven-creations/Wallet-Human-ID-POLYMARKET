@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
   try {
     const session = await getSession();
     if (!session?.userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'Session expired. Please reconnect.' }, { status: 401 });
     }
 
     const userId = session.userId;
@@ -188,7 +188,7 @@ export async function PUT(req: NextRequest) {
   try {
     const session = await getSession();
     if (!session?.userId) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: 'Session expired. Please reconnect.' }, { status: 401 });
     }
 
     const userId = session.userId;
