@@ -42,6 +42,7 @@ interface ReceiptData {
     payloadHash: `0x${string}`;
     memo:        string;
     txHash:      `0x${string}`;
+    explorerUrl?: string;
     gasUsed?:    bigint;
 }
 
@@ -176,7 +177,7 @@ function ReceiptCard({ receipt, onClose }: { receipt: ReceiptData; onClose: () =
 
             <div className="px-5 pb-5 pt-2 flex gap-3">
                 <a
-                    href={`https://testnet.aztecscan.xyz/tx-effects/${receipt.txHash}`}
+                    href={receipt.explorerUrl || `https://testnet.aztecscan.xyz/blocks/${receipt.blockNumber}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex-1 flex items-center justify-center gap-2 py-3 border border-black/10 rounded-2xl text-xs font-black uppercase tracking-widest text-black/60 hover:bg-black/5 transition-all"
@@ -321,7 +322,8 @@ export default function CoreTransfer() {
                 payloadHash: keccak256(toBytes(realTxHash)) as `0x${string}`,
                 memo:        memo || '',
                 txHash:      realTxHash,
-                gasUsed:     gasEst,
+                explorerUrl: data.explorerUrl,
+                gasUsed:     gasEst > 0n ? gasEst : undefined,
             });
             setShowReceipt(true);
             setRecipient('');
