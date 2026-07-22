@@ -414,9 +414,142 @@ export default function UniversalScanModal({
               </button>
             </div>
 
-            <div className="relative w-full min-h-[320px] bg-white border border-black/8 rounded-[28px] overflow-hidden shadow-2xl">
+            <div className="relative w-full min-h-[320px] bg-white border border-black/8 rounded-[28px] overflow-hidden shadow-2xl flex flex-col">
+              
+              {status === 'pin_required' && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-white z-30 p-6 gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-black flex items-center justify-center mb-1 flex-shrink-0">
+                    <Shield className="text-white" size={26} />
+                  </div>
+                  <p className="text-[13px] font-black uppercase tracking-widest text-black text-center leading-tight">
+                    Visual PIN
+                  </p>
+                  <p className="text-[10px] text-black/50 text-center max-w-[220px] leading-relaxed">
+                    Enter the 4-digit code displayed on your desktop screen
+                  </p>
+                  {/* 4-box PIN input */}
+                  <div className="flex gap-3 mt-1">
+                    {[0,1,2,3].map((i) => (
+                      <input
+                        key={i}
+                        ref={pinInputRefs[i]}
+                        id={`pin-digit-${i}`}
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        value={pinInput[i] || ''}
+                        className="w-12 h-14 text-center text-xl font-black bg-black/5 border-2 border-black/10 rounded-xl focus:outline-none focus:border-black transition-all"
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, '');
+                          const next = (pinInput.split(''));
+                          next[i] = val.slice(-1);
+                          const newPin = next.join('');
+                          setPinInput(newPin);
+                          if (val && i < 3) pinInputRefs[i + 1].current?.focus();
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Backspace' && !pinInput[i] && i > 0) {
+                            pinInputRefs[i - 1].current?.focus();
+                          }
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handlePinConfirm}
+                    disabled={pinInput.length < 4}
+                    className="mt-2 px-8 py-3 bg-black text-white text-[10px] font-black uppercase tracking-widest rounded-full disabled:opacity-30 transition-opacity"
+                  >
+                    Confirm & Link
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      hasScannedRef.current = false;
+                      setPinInput('');
+                      setPinScanData(null);
+                      setStatus('idle');
+                      initScanner();
+                    }}
+                    className="text-[9px] text-black/40 underline"
+                  >
+                    Cancel, re-scan
+                  </button>
+                </div>
+              )}
+              {status === 'verifying_pin' && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/95 z-30 gap-3">
+                  <Loader2 className="animate-spin text-black" size={28} />
+                  <p className="text-[10px] font-black uppercase tracking-widest text-black/60">
+                    Verifying PIN…
+                  </p>
+                </div>
+              )}
+              {status === 'success' && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/95 z-30 gap-2">
+                  <CheckCircle className="text-[#050505]" size={40} />
+                  <p className="text-[11px] font-black uppercase tracking-widest text-[#050505]">{successLabel}</p>
+                </div>
+              )}
+              {status === 'error' && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-white z-30 p-6 text-center gap-3">
+                  <Shield className="text-red-500 mx-auto" size={28} />
+                  <p className="text-[11px] font-black uppercase tracking-widest text-red-600 leading-relaxed">{errMsg}</p>
+                  {needsWallet ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          // Open wallet selector — once connected, auto-retry the handshake
+                          openAppKit();
+                          // Poll briefly for a wallet address to appear after connecting
+                          let attempts = 0;
+                          const poll = setInterval(async () => {
+                            attempts++;
+                            const currentAddr = addressRef.current;
+                            if (currentAddr && lastScanDataRef.current) {
+                              clearInterval(poll);
+                              setErrMsg('');
+                              setNeedsWallet(false);
+                              hasScannedRef.current = false;
+                              await handleRouteRef.current(lastScanDataRef.current);
+                            } else if (attempts > 60) {
+                              clearInterval(poll);
+                            }
+                          }, 1000);
+                        }}
+                        className="text-[9px] font-black uppercase px-6 py-2.5 bg-black text-white rounded-full mt-1"
+                      >
+                        Connect Wallet
+                      </button>
+                      <p className="text-[9px] text-black/40">Connect your wallet to link the session.</p>
+                    </>
+                  ) : (
+                    <>
+                      <a href="/privacy#qr-sync" className="text-[10px] underline text-black/50">
+                        What codes are supported?
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          hasScannedRef.current = false;
+                          firstFrameRef.current = false;
+                          setErrMsg('');
+                          setNeedsWallet(false);
+                          initScanner();
+                        }}
+                        className="text-[9px] font-black uppercase px-6 py-2 bg-black text-white rounded-full mt-2"
+                      >
+                        Retry
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+
               {tab === 'camera' && (
-                <div className="relative w-full h-[300px] bg-black">
+                <div className="relative w-full flex-1 min-h-[300px] bg-black">
                   <video ref={videoRef} className="absolute inset-0 w-full h-full object-cover" autoPlay playsInline muted />
                   {/* Canvas must NOT be display:none — hidden prevents pixel reads in some browsers */}
                   <canvas ref={canvasRef} className="absolute opacity-0 pointer-events-none" style={{ width: 1, height: 1, top: 0, left: 0 }} />
@@ -429,149 +562,15 @@ export default function UniversalScanModal({
                       </span>
                     </div>
                   )}
-                  {status === 'pin_required' && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white z-20 p-6 gap-4">
-                      <div className="w-14 h-14 rounded-2xl bg-black flex items-center justify-center mb-1">
-                        <Shield className="text-white" size={26} />
-                      </div>
-                      <p className="text-[13px] font-black uppercase tracking-widest text-black text-center leading-tight">
-                        Visual PIN
-                      </p>
-                      <p className="text-[10px] text-black/50 text-center max-w-[220px] leading-relaxed">
-                        Enter the 4-digit code displayed on your desktop screen
-                      </p>
-                      {/* 4-box PIN input */}
-                      <div className="flex gap-3 mt-1">
-                        {[0,1,2,3].map((i) => (
-                          <input
-                            key={i}
-                            ref={pinInputRefs[i]}
-                            id={`pin-digit-${i}`}
-                            type="text"
-                            inputMode="numeric"
-                            maxLength={1}
-                            value={pinInput[i] || ''}
-                            className="w-12 h-14 text-center text-xl font-black bg-black/5 border-2 border-black/10 rounded-xl focus:outline-none focus:border-black transition-all"
-                            onChange={(e) => {
-                              const val = e.target.value.replace(/\D/g, '');
-                              const next = (pinInput.split(''));
-                              next[i] = val.slice(-1);
-                              const newPin = next.join('');
-                              setPinInput(newPin);
-                              if (val && i < 3) pinInputRefs[i + 1].current?.focus();
-                            }}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Backspace' && !pinInput[i] && i > 0) {
-                                pinInputRefs[i - 1].current?.focus();
-                              }
-                            }}
-                          />
-                        ))}
-                      </div>
-                      <button
-                        type="button"
-                        onClick={handlePinConfirm}
-                        disabled={pinInput.length < 4}
-                        className="mt-2 px-8 py-3 bg-black text-white text-[10px] font-black uppercase tracking-widest rounded-full disabled:opacity-30 transition-opacity"
-                      >
-                        Confirm & Link
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          hasScannedRef.current = false;
-                          setPinInput('');
-                          setPinScanData(null);
-                          setStatus('idle');
-                          initScanner();
-                        }}
-                        className="text-[9px] text-black/40 underline"
-                      >
-                        Cancel, re-scan
-                      </button>
-                    </div>
-                  )}
-                  {status === 'verifying_pin' && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/95 z-20 gap-3">
-                      <Loader2 className="animate-spin text-black" size={28} />
-                      <p className="text-[10px] font-black uppercase tracking-widest text-black/60">
-                        Verifying PIN…
-                      </p>
-                    </div>
-                  )}
-                  {status === 'success' && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/95 z-20 gap-2">
-                      <CheckCircle className="text-[#050505]" size={40} />
-                      <p className="text-[11px] font-black uppercase tracking-widest text-[#050505]">{successLabel}</p>
-                    </div>
-                  )}
-                  {status === 'error' && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-white z-20 p-6 text-center gap-3">
-                      <Shield className="text-red-500 mx-auto" size={28} />
-                      <p className="text-[11px] font-black uppercase tracking-widest text-red-600 leading-relaxed">{errMsg}</p>
-                      {needsWallet ? (
-                        <>
-                          <button
-                            type="button"
-                            onClick={async () => {
-                              // Open wallet selector — once connected, auto-retry the handshake
-                              openAppKit();
-                              // Poll briefly for a wallet address to appear after connecting
-                              let attempts = 0;
-                              const poll = setInterval(async () => {
-                                attempts++;
-                                const currentAddr = addressRef.current;
-                                if (currentAddr && lastScanDataRef.current) {
-                                  clearInterval(poll);
-                                  setErrMsg('');
-                                  setNeedsWallet(false);
-                                  hasScannedRef.current = false;
-                                  await handleRouteRef.current(lastScanDataRef.current);
-                                } else if (attempts > 60) {
-                                  clearInterval(poll);
-                                }
-                              }, 1000);
-                            }}
-                            className="text-[9px] font-black uppercase px-6 py-2.5 bg-black text-white rounded-full mt-1"
-                          >
-                            Connect Wallet
-                          </button>
-                          <p className="text-[9px] text-black/40">Connect your wallet to link the session.</p>
-                        </>
-                      ) : (
-                        <>
-                          <a href="/privacy#qr-sync" className="text-[10px] underline text-black/50">
-                            What codes are supported?
-                          </a>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              hasScannedRef.current = false;
-                              firstFrameRef.current = false;
-                              setErrMsg('');
-                              setNeedsWallet(false);
-                              initScanner();
-                            }}
-                            className="text-[9px] font-black uppercase px-6 py-2 bg-black text-white rounded-full"
-                          >
-                            Retry
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  )}
                 </div>
               )}
               {tab === 'file' && (
-                <div className="flex flex-col items-center justify-center min-h-[280px] p-6 gap-4">
+                <div className="flex flex-col items-center justify-center flex-1 p-6 gap-4">
                   <label className="cursor-pointer flex items-center gap-2 px-6 py-3 bg-[#050505] text-white text-[10px] font-black uppercase rounded-xl">
                     {fileLoading ? <Loader2 className="animate-spin" size={13} /> : <Upload size={13} />}
                     Select image
                     <input type="file" accept="image/*" className="sr-only" onChange={handleFileChange} disabled={fileLoading} />
                   </label>
-                  {status === 'error' && (
-                    <p className="text-[11px] font-black uppercase text-red-500 text-center">{errMsg}</p>
-                  )}
                 </div>
               )}
             </div>

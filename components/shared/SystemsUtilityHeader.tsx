@@ -143,10 +143,20 @@ export function SystemsUtilityHeader() {
                         e.stopPropagation();
                         nuclearDisconnect();
                     }}
-                    className="ml-2 px-4 py-2 bg-red-50 text-red-600 border border-red-100 rounded-full text-[9px] font-black uppercase tracking-widest hover:bg-red-100 transition-colors shadow-sm"
+                    className="ml-2 px-4 py-2 bg-red-50 text-red-600 border border-red-100 rounded-full text-[9px] font-black uppercase tracking-widest hover:bg-red-100 transition-colors shadow-sm hidden md:block"
                 >
                     Disconnect
                 </button>
+            )}
+
+            {isConnected && (
+                <Link
+                    href="/scan"
+                    className="ml-2 xl:hidden flex items-center justify-center w-8 h-8 rounded-full bg-black text-white hover:scale-105 transition-transform"
+                    title="Scan QR Code"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path></svg>
+                </Link>
             )}
         </div>
     );
