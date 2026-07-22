@@ -298,7 +298,7 @@ function LandingNav() {
                 <button
                   id="connect-wallet-nav-btn"
                   onClick={() => {
-                    try { rkOpenModal(); } catch {}
+                    window.location.href = '/connect';
                   }}
                   className="px-4 py-2 bg-black text-white rounded-full text-[12.5px] font-semibold hover:bg-black/80 transition-all hover:-translate-y-px"
                 >
@@ -391,7 +391,7 @@ function LandingNav() {
                         id="mobile-connect-wallet-nav-btn"
                         onClick={() => {
                           setMobileOpen(false);
-                          try { rkOpenModal(); } catch {}
+                          window.location.href = '/connect';
                         }}
                         className="flex-1 py-3.5 bg-black rounded-2xl text-[12.5px] font-semibold text-white hover:bg-black/80 transition-colors text-center active:scale-[0.97]"
                       >
@@ -428,7 +428,7 @@ function LandingNav() {
           <button
             id="landing-mobile-connect-cta"
             onClick={() => {
-              try { rkOpenModal(); } catch {}
+              window.location.href = '/connect';
             }}
             className="flex-1 py-3 bg-black rounded-2xl text-[13px] font-bold text-white hover:bg-black/80 transition-colors text-center active:scale-[0.97]"
           >
