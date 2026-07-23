@@ -43,7 +43,11 @@ export async function GET(req: Request) {
       toAddress:   tx.toAddress,
       timestamp:   tx.timestamp.toISOString(),
       blockNumber: tx.blockNumber?.toString() ?? '0',
-      explorerUrl: (tx.metadata as any)?.explorerUrl ?? `https://testnet.aztecscan.xyz/tx/${(tx.metadata as any)?.aztecTxHash ?? tx.txHash}`,
+      explorerUrl: (tx.metadata as any)?.explorerUrl ?? (
+        ((tx.metadata as any)?.onChain === false && tx.blockNumber)
+          ? `https://testnet.aztecscan.xyz/blocks/${tx.blockNumber}`
+          : `https://testnet.aztecscan.xyz/tx/${(tx.metadata as any)?.aztecTxHash ?? tx.txHash}`
+      ),
     }));
 
     return NextResponse.json({ transactions: formatted });
