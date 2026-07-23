@@ -557,7 +557,7 @@ export default function ConnectPage() {
 
   // ── WEB2 LOGINS (Shared) ──
   const renderWeb2Logins = () => (
-    <>
+    <div className="flex flex-col gap-2">
       <WalletButton
         logo="/email-icon.svg"
         name="Sign in with Email"
@@ -568,7 +568,12 @@ export default function ConnectPage() {
           <span className="text-[9px] font-black uppercase tracking-widest px-1.5 py-0.5 bg-blue-500/10 rounded border border-blue-500/20 text-blue-400">OTP</span>
         }
       />
-    </>
+      <div className="text-center mt-1">
+        <span className="text-[9px] font-mono uppercase tracking-widest text-slate-400">
+          *Web3 wallet required later for L2 Aztec features
+        </span>
+      </div>
+    </div>
   );
 
   // ── RIGHT PANEL (Auth) ──
