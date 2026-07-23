@@ -1,6 +1,3 @@
 import { defineConfig } from '@prisma/config';
 
-export default defineConfig({
-  earlyAccess: true,
-  seed: "node prisma/seed-governance.cjs"
-});
+export default defineConfig({});

@@ -332,7 +332,7 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
                           {code.map((digit, i) => (
                             <input
                               key={i}
-                              ref={(el) => (codeRefs.current[i] = el)}
+                              ref={(el) => { codeRefs.current[i] = el; }}
                               type="text"
                               inputMode="numeric"
                               pattern="[0-9]*"

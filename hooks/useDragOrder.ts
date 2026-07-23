@@ -6,7 +6,7 @@
  * No external dependencies  pure React + localStorage.
  */
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 export function useDragOrder<T extends { id: string }>(
     initialItems: T[],

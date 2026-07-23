@@ -75,7 +75,7 @@ export function MobileImmersiveGate() {
 
   const { address: wagmiAddress, isConnected: wagmiConnected, connector } = useAccount();
   const { signMessageAsync } = useSignMessage();
-  const { open: rkOpenModal } = useAppKit();
+  const { open: rkOpenModal, close: rkCloseModal } = useAppKit();
   const signingRef = useRef(false);
   const pathname = usePathname();
 

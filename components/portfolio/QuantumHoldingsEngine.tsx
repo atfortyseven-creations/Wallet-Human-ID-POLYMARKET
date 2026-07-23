@@ -104,7 +104,7 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
                 value,
                 change24h,
                 isOwned: !!userOwned && balance > 0,
-                hasSnapshot: !!snapshot
+                hasSnapshot: false
             };
         });
 
@@ -237,7 +237,7 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
             {/* Live Stats Bar */}
             <div className="flex items-center justify-between px-6 py-2 border-b border-black/5 bg-black/[0.02]">
                 <div className="flex items-center gap-2">
-                    <span className="text-[9px] font-bold text-[#00C076] tracking-widest">{TOKEN_STATS_DATE}</span>
+                    <span className="text-[9px] font-bold text-[#00C076] tracking-widest">LIVE · {new Date().toISOString().split('T')[0]}</span>
                 </div>
                 <span className="text-[9px] font-bold text-black/30 tracking-widest uppercase">{combinedAssets.length} Assets · {activeNetwork}</span>
             </div>

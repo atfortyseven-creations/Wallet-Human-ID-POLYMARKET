@@ -190,6 +190,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [localStream, _setLocalStream] = useState<MediaStream | null>(null);
   const localStreamRef = useRef<MediaStream | null>(null);
+  // WeakSet to track answered PeerJS calls — avoids mutating MediaConnection type
+  const answeredCallsRef = useRef<WeakSet<object>>(new WeakSet());
   const setLocalStream = useCallback((s: MediaStream | null) => {
     localStreamRef.current = s;
     _setLocalStream(s);
@@ -610,8 +612,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         // answer the PeerJS connection immediately with our stored local stream.
         // Guard with _answered flag to prevent duplicate handlers if this fires twice.
         if ((callStateRef.current === 'connecting' || callStateRef.current === 'active') && localStreamRef.current) {
-           if (!connection._answered) {
-             connection._answered = true;
+           if (!answeredCallsRef.current.has(connection)) {
+             answeredCallsRef.current.add(connection);
              connection.answer(localStreamRef.current);
              connection.on('stream', (rStream: MediaStream) => {
                console.log('[WhaleChat:PeerJS] Receiver got remote stream — call now ACTIVE');
