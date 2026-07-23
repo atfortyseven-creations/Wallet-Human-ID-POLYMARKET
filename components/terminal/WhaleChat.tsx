@@ -178,10 +178,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // States: idle → calling (outgoing) → ringing (incoming) → active → idle
   const [peerInstance, setPeerInstance] = useState<Peer | null>(null);
   const [myPeerId, setMyPeerId] = useState<string>('');
-  // 'idle' | 'calling' | 'ringing' | 'active'
-  const [callState, _setCallState] = useState<'idle'|'calling'|'ringing'|'active'>('idle');
-  const callStateRef = useRef<'idle'|'calling'|'ringing'|'active'>('idle');
-  const setCallState = useCallback((s: 'idle'|'calling'|'ringing'|'active') => {
+  // 'idle' | 'calling' | 'ringing' | 'connecting' | 'active'
+  const [callState, _setCallState] = useState<'idle'|'calling'|'ringing'|'connecting'|'active'>('idle');
+  const callStateRef = useRef<'idle'|'calling'|'ringing'|'connecting'|'active'>('idle');
+  const setCallState = useCallback((s: 'idle'|'calling'|'ringing'|'connecting'|'active') => {
     callStateRef.current = s;
     _setCallState(s);
   }, []);
@@ -212,7 +212,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // Ringtone state
   const ringtoneRef = useRef<ReturnType<typeof setInterval> | null>(null);
   // ─── Backward compat shims so existing JSX works unchanged ──────────────────
-  const callActive = callState === 'active' || callState === 'calling';
+  const callActive = callState === 'active' || callState === 'calling' || callState === 'connecting';
   const incomingCall = callState === 'ringing';
 
   // Emoji State
@@ -606,13 +606,15 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         console.log('[WhaleChat:PeerJS] Incoming call connection:', connection.peer);
         setActiveConnection(connection);
         
-        // [AUDIT FIX] If we already answered this call (e.g., via answerCall which sent __CALL_ANSWER__ 
-        // and got the stream), then we must answer the connection IMMEDIATELY.
-        if (callStateRef.current === 'active' && localStreamRef.current) {
+        // [AUDIT FIX] If we already answered this call (receiver sent __CALL_ANSWER__ + got local stream),
+        // answer the PeerJS connection immediately with our stored local stream.
+        if ((callStateRef.current === 'connecting' || callStateRef.current === 'active') && localStreamRef.current) {
            connection.answer(localStreamRef.current);
            connection.on('stream', (rStream: MediaStream) => {
-              console.log('[WhaleChat:PeerJS] Receiver got remote stream immediately');
+              console.log('[WhaleChat:PeerJS] Receiver got remote stream — call now ACTIVE');
               setRemoteStream(rStream);
+              setCallState('active');
+              stopRingtone();
               if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
               if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = rStream; remoteAudioRef.current.play().catch(() => {}); }
            });
@@ -855,13 +857,14 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       setLocalStream(stream);
       if (myVideoRef.current) myVideoRef.current.srcObject = stream;
 
-      // If the PeerJS 'call' event already fired (activeConnection set), answer directly
+      // If PeerJS 'call' event already fired (activeConnection is set), answer immediately
       if (activeConnection) {
         activeConnection.answer(stream);
         activeConnection.on('stream', (rStream: MediaStream) => {
-          console.log('[WhaleChat:PeerJS] Receiver got remote stream from PeerJS');
+          console.log('[WhaleChat:PeerJS] Receiver got remote stream from PeerJS (answer path)');
           setRemoteStream(rStream);
           setCallState('active');
+          toast.success('✅ Call connected.');
           if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
           if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = rStream; remoteAudioRef.current.play().catch(() => {}); }
         });
@@ -869,10 +872,22 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         activeConnection.on('error', () => performEndCall());
       }
 
+      // Set 'connecting' — waiting for the caller to peerInstance.call() us back
+      // The peer.on('call') handler will complete the connection and set 'active'
+      setCallState('connecting');
+      toast.success('📡 Answering call...');
+
       // Send our PeerID back to the caller so they can peerInstance.call() us
       await executeSend(`__CALL_ANSWER__:${myPeerId}`);
-      setCallState('active');
-      toast.success('✅ Call connected.');
+
+      // Failsafe: if stream doesn't arrive within 15s, clean up
+      setTimeout(() => {
+        if (callStateRef.current === 'connecting') {
+          toast.error('Call timed out — no media stream received.');
+          performEndCallRef.current();
+        }
+      }, 15000);
+
     } catch (e: any) {
       setCallState('idle');
       const errName = e?.name || '';
@@ -2436,6 +2451,38 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 {activePeer ? shortAddr(activePeer) : 'Peer'}
               </p>
               <p className="text-white/30 text-xs mt-1 font-mono">Waiting for answer</p>
+            </div>
+            {localStream && callType === 'video' && (
+              <div className="w-36 h-48 rounded-2xl overflow-hidden border border-white/20 shadow-xl">
+                <video ref={myVideoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
+              </div>
+            )}
+            <button
+              onClick={endCall}
+              className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center text-white hover:bg-red-400 active:scale-95 transition-all shadow-lg shadow-red-500/40"
+            >
+              <PhoneOff size={24} />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── Connecting Overlay (state: connecting — receiver answered, waiting for WebRTC stream) ── */}
+      {callState === 'connecting' && (
+        <div className="fixed inset-0 z-[9000] bg-black/90 backdrop-blur-2xl flex flex-col items-center justify-center animate-in fade-in duration-400">
+          <div className="flex flex-col items-center gap-8">
+            <div className="relative">
+              <div className="absolute inset-0 rounded-full bg-emerald-500/20 animate-ping scale-150" style={{ animationDuration: '1.5s' }} />
+              <div className="w-28 h-28 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-2xl shadow-emerald-500/30 relative z-10">
+                <Phone size={48} className="text-white" />
+              </div>
+            </div>
+            <div className="text-center">
+              <p className="text-white/50 text-xs font-mono uppercase tracking-[0.3em] mb-2">Connecting...</p>
+              <p className="text-white text-xl font-black tracking-tight">
+                {activePeer ? shortAddr(activePeer) : 'Peer'}
+              </p>
+              <p className="text-white/30 text-xs mt-1 font-mono animate-pulse">Establishing secure media stream</p>
             </div>
             {localStream && callType === 'video' && (
               <div className="w-36 h-48 rounded-2xl overflow-hidden border border-white/20 shadow-xl">
