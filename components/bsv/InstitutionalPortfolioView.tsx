@@ -28,7 +28,7 @@ import { OmnichainBridgeView } from '@/components/portfolio/OmnichainBridgeView'
 import { TransactionHistory } from '@/components/portfolio/TransactionHistory';
 import { QuantumDeFiPositions } from '@/components/portfolio/QuantumDeFiPositions';
 import { PerformanceChart } from '@/components/portfolio/PerformanceChart';
-import { Download, ArrowRightLeft, Route, Send, QrCode, Scan, Activity, Hexagon, Shield, Settings, LogOut } from 'lucide-react';
+import { Download, ArrowRightLeft, Route, Send, QrCode, Scan, Activity, Hexagon, Shield, Settings, LogOut, Lock } from 'lucide-react';
 import { NativeSwapView } from '@/components/portfolio/NativeSwapView';
 import { NativeBridgeView } from '@/components/portfolio/NativeBridgeView';
 import { NativeBuyView } from '@/components/portfolio/NativeBuyView';
@@ -110,6 +110,9 @@ export function InstitutionalPortfolioView() {
     const [showScan, setShowScan] = useState(false);
     const [showAccounts, setShowAccounts] = useState(false);
     const [showSettings, setShowSettings] = useState(false);
+    
+    // MiCA License Lock State
+    const [micaLockType, setMicaLockType] = useState<'SWAP' | 'SEND' | 'RECEIVE' | 'BRIDGE' | null>(null);
     
     const [prefilledAddress, setPrefilledAddress] = useState('');
     const [loading, setLoading] = useState(false);
@@ -215,16 +218,16 @@ export function InstitutionalPortfolioView() {
                         loading={loading}
                         activeNetwork={activeNetwork}
                         onRefresh={refreshBalance}
-                        onSend={handleSend}
-                        onReceive={() => setShowReceive(true)}
-                        onScan={() => setShowScan(true)}
+                        onSend={() => setMicaLockType('SEND')}
+                        onReceive={() => setMicaLockType('RECEIVE')}
                         onCreate={() => setView('CREATE')}
                         onBuy={() => setView('BUY')}
-                        onSwap={() => setView('SWAP')}
-                        onBridge={() => setView('BRIDGE')}
+                        onSwap={() => setMicaLockType('SWAP')}
+                        onBridge={() => setMicaLockType('BRIDGE')}
                         onNetworkClick={() => setView('NETWORK')}
                         onSettingsClick={() => setShowSettings(true)}
                         onAccountsClick={() => setShowAccounts(true)}
+                        onScan={() => setShowScan(true)}
                         scannerBase={scannerBase}
                         onShield={() => setView('SHIELD')}
                         onSecurity={() => setView('SECURITY')}
@@ -256,6 +259,20 @@ export function InstitutionalPortfolioView() {
                 {view === 'BUY' && <NativeBuyView key="buy" address={address} onBack={() => setView('HOME')} />}
                 {view === 'SEND' && <NativeSendView key="send" onBack={() => setView('HOME')} />}
             </AnimatePresence>
+
+            {micaLockType && (
+                <div className="fixed inset-0 z-[110] flex items-center justify-center bg-zinc-900/40 backdrop-blur-sm p-6" onClick={() => setMicaLockType(null)}>
+                    <div className="bg-white p-8 max-w-sm w-full shadow-2xl border border-zinc-900/10 flex flex-col items-center text-center" onClick={e => e.stopPropagation()}>
+                        <div className="w-16 h-16 bg-zinc-100 flex items-center justify-center mb-6 rounded-full">
+                            <Lock className="text-zinc-900" size={24} />
+                        </div>
+                        <h3 className="text-sm font-black uppercase tracking-[0.2em] mb-3">MiCA License Required</h3>
+                        <p className="text-[10px] text-zinc-500 leading-relaxed mb-6">Your institutional account requires regulatory clearance for {micaLockType.toLowerCase()} operations. Please contact your compliance officer.</p>
+                        <button onClick={() => setMicaLockType(null)} className="w-full py-3 bg-zinc-900 text-white text-[10px] uppercase tracking-widest font-bold">ACKNOWLEDGE</button>
+                    </div>
+                </div>
+            )}
+
             {showReceive && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-white/90 backdrop-blur-sm" onClick={() => setShowReceive(false)}>
                     <div className="w-full max-w-5xl max-h-[90vh] bg-white border border-zinc-900/10 shadow-2xl flex flex-col" onClick={e => e.stopPropagation()}>
