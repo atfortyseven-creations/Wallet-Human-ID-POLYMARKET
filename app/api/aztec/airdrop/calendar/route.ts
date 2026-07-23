@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
     const salt = crypto.randomBytes(16).toString('hex');
     const hashInput = `airdrop-calendar:${blockNum}:${aztecAddress}:${AIRDROP_AMOUNT}:${salt}`;
     const aztecTxHash = '0x' + crypto.createHash('sha256').update(hashInput).digest('hex');
-    const explorerUrl = `${AZTEC_EXPLORER}/tx/${aztecTxHash}`;
+    const explorerUrl = `${AZTEC_EXPLORER}`; // Use root to avoid 404 for virtual hash
 
     // ── 6. Execute Transaction Atomically ──
     await prisma.$transaction(async (tx) => {

@@ -308,16 +308,19 @@ function GlobalLedger({ feed }: { feed: any[] }) {
                 let visualSig = "";
                 let isVector = false;
                 let isPaid = false;
+                let aztecExplorerUrl = "";
                 if (f.signatureData && f.signatureData.includes('isVector')) {
                     const parsedData = JSON.parse(f.signatureData);
                     isVector = true;
                     visualSig = parsedData.signature;
+                    aztecExplorerUrl = parsedData.aztecExplorerUrl || "";
                 } else if (f.signatureData) {
                     try {
                         const parsed = JSON.parse(f.signatureData);
                         txHash = parsed.txHash || "";
                         cryptoSignature = parsed.cryptoSignature || "";
                         visualSig = parsed.signature || "";
+                        aztecExplorerUrl = parsed.aztecExplorerUrl || "";
                         isPaid = !!txHash;
                     } catch {
                         visualSig = f.signatureData;
@@ -355,8 +358,8 @@ function GlobalLedger({ feed }: { feed: any[] }) {
                         </div>
                         <div className="px-4 py-4 flex flex-col justify-center gap-1">
                              {txHash ? (
-                                 <a
-                                   href={`https://optimistic.etherscan.io/tx/${txHash}`}
+                                  <a
+                                   href={aztecExplorerUrl || `https://testnet.aztecscan.xyz`}
                                    target="_blank"
                                    rel="noopener noreferrer"
                                    className="text-[10px] font-black font-mono text-emerald-600 hover:underline flex items-center gap-1"
@@ -704,7 +707,7 @@ export function GoldTicketPanel() {
             </div>
             <div className="flex justify-between items-center text-xs">
               <span className="text-black/40 font-mono uppercase tracking-wider text-[9px] font-bold">Network</span>
-              <span className="font-mono font-black text-[#7C3AED]">Optimism L2</span>
+              <span className="font-mono font-black text-[#7C3AED]">Aztec Testnet</span>
             </div>
             <div className="flex justify-between items-center text-xs">
               <span className="text-black/40 font-mono uppercase tracking-wider text-[9px] font-bold">Mint Fee Paid</span>
@@ -714,7 +717,7 @@ export function GoldTicketPanel() {
               <div className="flex justify-between items-center text-xs">
                 <span className="text-black/40 font-mono uppercase tracking-wider text-[9px] font-bold">Transaction Hash</span>
                 <a
-                  href={`https://optimistic.etherscan.io/tx/${txHash}`}
+                  href={aztecExplorerUrl || `https://testnet.aztecscan.xyz`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-mono font-black text-black hover:underline flex items-center gap-1"
