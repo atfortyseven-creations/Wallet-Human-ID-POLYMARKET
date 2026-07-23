@@ -264,6 +264,7 @@ export function LegendaryTransactionModal({
       return;
 
       if (mode === 'buy') {
+          try {
               const asset = toAssetSymbol.toUpperCase();
               const fiatCurrency = ['USD', 'EUR', 'GBP'].includes(subMode) ? subMode : 'EUR';
               const network = asset === 'ETH' ? 'ethereum' : asset === 'USDC' ? 'ethereum' : 'optimism';
