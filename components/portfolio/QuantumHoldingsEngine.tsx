@@ -6,7 +6,7 @@ import { createChart, ColorType, IChartApi, AreaSeries } from 'lightweight-chart
 import { motion, AnimatePresence } from 'framer-motion';
 import { safeToFixed } from '@/lib/utils/number-format';
 import { QUANTUM_TOKENS } from '@/lib/config/tokens';
-import { TOKEN_STATS_20260530, TOKEN_STATS_DATE } from '@/config/token-stats-snapshot';
+
 import { toast } from 'sonner';
 import { NETWORKS, NetworkId } from '@/lib/store/wallet-store';
 import { NativeSwapView } from '@/components/portfolio/NativeSwapView';
@@ -89,13 +89,11 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
         const combined = validNetworkTokens.map(t => {
             const userOwned = assetMap.get(t.symbol.toUpperCase());
             assetMap.delete(t.symbol.toUpperCase());
-            // Prefer user's real-time price, then fall back to our snapshot
-            const snapshot = TOKEN_STATS_20260530[t.symbol.toUpperCase()];
-            const basePrice = userOwned?.price ?? snapshot?.price ?? 0;
-            const price = basePrice * rate;
-            const change24h = userOwned?.change24h ?? snapshot?.change24h ?? 0;
             const balance = userOwned?.balanceNumeric || 0;
+            const basePrice = userOwned?.price ?? 0;
+            const price = basePrice * rate;
             const value = balance > 0 ? balance * price : 0;
+            const change24h = userOwned?.change24h ?? 0;
             
             return {
                 ...t,

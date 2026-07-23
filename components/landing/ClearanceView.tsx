@@ -20,21 +20,15 @@ const PRICE_USD = 5.0;
 
 async function fetchCryptoRates(): Promise<{ eur: number; usd: number } | null> {
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 4000);
-    const res = await fetch(
-      "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=eur,usd",
-      { cache: "no-store", signal: controller.signal }
-    );
-    clearTimeout(timeoutId);
-    if (!res.ok) return { eur: 3100.25, usd: 3350.5 };
+    const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=eur,usd", { cache: "no-store" });
+    if (!res.ok) return { eur: 0, usd: 0 };
     const data = await res.json();
     return {
-      eur: data?.ethereum?.eur ?? 3100.25,
-      usd: data?.ethereum?.usd ?? 3350.5,
+      eur: data?.ethereum?.eur ?? 0,
+      usd: data?.ethereum?.usd ?? 0,
     };
   } catch {
-    return { eur: 3100.25, usd: 3350.5 };
+    return { eur: 0, usd: 0 };
   }
 }
 

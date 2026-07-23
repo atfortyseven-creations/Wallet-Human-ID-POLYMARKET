@@ -160,7 +160,7 @@ export function InstitutionalPortfolioView() {
     }, [isHydrated, address]);
 
     const ethPrice = useVIPStore(s => s.ethPrice);
-    const btcPrice = useVIPStore(s => s.btcPrice) || 68000;
+    const btcPrice = useVIPStore(s => s.btcPrice) || 0;
 
     const getExchangeRate = (currency: string) => {
         // AUDIT FIX: EUR now uses the live ECB rate fetched on mount.
@@ -201,7 +201,7 @@ export function InstitutionalPortfolioView() {
         }
     };
     const scannerBase = getScannerBase(activeNetwork);
-    const priceOracle = ethPrice > 0 ? ethPrice : 3100;
+    const priceOracle = ethPrice;
     const balanceFiat = `${(parseFloat(balance || "0") * priceOracle * rate).toFixed(2)}`;
 
     return (

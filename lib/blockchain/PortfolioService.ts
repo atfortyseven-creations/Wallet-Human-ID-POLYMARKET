@@ -167,14 +167,10 @@ export class PortfolioService {
           const symbol = isQd ? 'QDs' : (chainId === ChainId.WORLDCHAIN && t.address.toLowerCase() === '0x2cfc85d8e48f8eab294be644d9e25c3030863003') ? 'WLD' : 'UNK';
           
           let tokenPrice = 0;
-          if (isQd) {
-              tokenPrice = 1.0;
-          } else {
-              try {
-                  const pData = await PriceService.getBulkPrices([{ symbol, address: t.address, chainId }]);
-                  tokenPrice = pData[symbol]?.price || 0;
-              } catch (e) {}
-          }
+          try {
+              const pData = await PriceService.getBulkPrices([{ symbol, address: t.address, chainId }]);
+              tokenPrice = pData[symbol]?.price || 0;
+          } catch (e) {}
 
           return {
             address: t.address,
