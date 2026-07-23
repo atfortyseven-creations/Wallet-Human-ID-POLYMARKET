@@ -5,6 +5,12 @@ export const revalidate = 10; // Cache for 10 seconds
 
 export async function GET() {
   try {
+    // Prevent Prisma crash during Next.js build phase (static rendering without DB access)
+    if (!process.env.DATABASE_URL) {
+      console.warn("[GLOBAL_LOGINS_API] Build phase detected. Skipping DB.");
+      return NextResponse.json({ ok: true, totalLogins: 0, countries: [], activeRegions: 0 });
+    }
+
     // 1. Get true historic scale from the very beginning of humanidfi.com
     const totalHistoricalUsers = await prisma.user.count();
 
