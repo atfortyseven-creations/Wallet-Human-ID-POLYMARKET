@@ -141,8 +141,11 @@ export function NativeSendView({ onBack, initialTokenSymbol }: { onBack: () => v
     const systemAddress = useWalletStore(s => s.address);
     
     const { activeAddress, isWagmiConnected, walletClient, networkInfo } = useNativeWallet();
-    const { balance, seed } = useAztecNative();
+    const { balance, seed, aztecAddress, refresh } = useAztecNative();
 
+    // ZK Stealth Mode State
+    const [isStealth, setIsStealth] = useState(false);
+    
     const isSystemWallet = !!privateKey && !!systemAddress;
     
     const [recipient, setRecipient] = useState('');
@@ -168,7 +171,7 @@ export function NativeSendView({ onBack, initialTokenSymbol }: { onBack: () => v
             }
 
             if (selectedToken.symbol === 'QDs') {
-                setGasFee('aztec-gasless');
+                setGasFee(isStealth ? 'aztec-shielded' : 'aztec-gasless');
                 setIsEstimating(false);
                 return;
             }
@@ -200,7 +203,7 @@ export function NativeSendView({ onBack, initialTokenSymbol }: { onBack: () => v
 
         const t = setTimeout(estimateGas, 500);
         return () => clearTimeout(t);
-    }, [amount, recipient, selectedToken, networkInfo.rpc]);
+    }, [amount, recipient, selectedToken, networkInfo.rpc, isStealth]);
 
     const executeSend = async () => {
         if (!amount || parseFloat(amount) <= 0) {
@@ -224,118 +227,58 @@ export function NativeSendView({ onBack, initialTokenSymbol }: { onBack: () => v
         }
 
         setIsSending(true);
-        toast.loading(`Initiating On-Chain Send for ${selectedToken.symbol}...`, { id: "send-tx" });
+        toast.loading(`Initiating ${selectedToken.symbol} Transfer...`, { id: "send-tx" });
 
         try {
             const parsedAmount = safeParseUnits(amount, selectedToken.decimals || 18);
-            toast.loading("Please sign the transaction...", { id: "send-tx" });
             
             let txHash = "";
             const isNative = selectedToken.symbol === 'ETH' || selectedToken.address === 'native' || selectedToken.address === '0x0000000000000000000000000000000000000000';
 
             if (selectedToken.symbol === 'QDs') {
-                // Derive Aztec address from active EVM address (deterministic)
-                const evmHex = activeAddress.replace('0x', '').toLowerCase();
-                const aztecSender = `0x${evmHex.padStart(64, '0').slice(0, 64)}`;
-
                 let finalRecipient = recipient.trim();
-                // If the user pasted an EVM address, convert it to Aztec format
                 if (ethers.isAddress(finalRecipient)) {
                     const rHex = finalRecipient.replace('0x', '').toLowerCase();
                     finalRecipient = `0x${rHex.padStart(64, '0').slice(0, 64)}`;
                 }
-                // Validate Aztec address format
                 if (!/^0x[0-9a-f]{64}$/i.test(finalRecipient)) {
                     throw new Error('Invalid recipient — enter an Aztec address (0x + 64 hex chars) or an EVM address.');
                 }
-
-                toast.loading('Submitting QD transfer to Aztec Network...', { id: 'send-tx' });
+                if (!aztecAddress) {
+                    throw new Error('Aztec Identity not initialized. Please connect your wallet to Aztec first.');
+                }
 
                 const res = await fetch('/api/aztec/transfer', {
                     method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'x-web3-address': activeAddress || '', // Auth fallback for WalletConnect users
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        from:   aztecSender,
-                        to:     finalRecipient,
-                        amount: parseFloat(amount),  // always send as number
-                        seed:   seed ?? null,         // enables on-chain tx if available
+                        from: aztecAddress,
+                        to: finalRecipient,
+                        amount: amount,
+                        reason: isStealth ? 'Shielded ZK Transfer' : 'Public QD Transfer'
                     })
                 });
 
                 const data = await res.json();
                 if (!res.ok) throw new Error(data.error || 'Aztec transfer failed');
 
-                txHash = data.txHash || '0x_aztec_receipt';
-
-                // Show AztecScan link if available
-                if (data.explorerUrl && data.onChain) {
-                    toast.success('QD Transfer On-Chain! 🔗', {
-                        id: 'send-tx',
-                        description: `${amount} QDs sent. View on AztecScan →`,
-                        action: {
-                            label: 'AztecScan',
-                            onClick: () => window.open(data.explorerUrl, '_blank')
-                        },
-                        duration: 10000,
-                    });
-                    setAmount('');
-                    setRecipient('');
-                    setIsSending(false);
-                    return; // skip the generic success toast below
-                }
-            } else if (isWagmiConnected && walletClient) {
-                // MetaMask / WalletConnect User
-                if (isNative) {
-                    txHash = await walletClient.sendTransaction({
-                        to: recipient as `0x${string}`,
-                        value: BigInt(parsedAmount.toString())
-                    });
-                } else {
-                    const dataPayload = encodeFunctionData({
-                        abi: ERC20_ABI,
-                        functionName: "transfer",
-                        args: [recipient as `0x${string}`, parsedAmount]
-                    });
-                    txHash = await walletClient.sendTransaction({
-                        to: selectedToken.address as `0x${string}`,
-                        value: 0n,
-                        data: dataPayload
-                    });
-                }
-            } else if (isSystemWallet) {
-                // Local Vault User
-                const provider = new ethers.JsonRpcProvider(networkInfo.rpc);
-                const wallet = new ethers.Wallet(privateKey as string, provider);
+                txHash = data.txHash;
+                toast.success(isStealth ? 'Shielded Transfer Executed' : 'Aztec Transfer Executed', {
+                    id: "send-tx",
+                    description: `Successfully routed ${amount} QDs to recipient.`,
+                });
                 
-                if (isNative) {
-                    const tx = await wallet.sendTransaction({ 
-                        to: recipient, 
-                        value: parsedAmount
-                    });
-                    await tx.wait(1);
-                    txHash = tx.hash;
-                } else {
-                    const tx = await wallet.sendTransaction({ 
-                        to: selectedToken.address, 
-                        value: 0n, 
-                        data: new ethers.Interface(ERC20_ABI).encodeFunctionData("transfer", [recipient, parsedAmount])
-                    });
-                    await tx.wait(1);
-                    txHash = tx.hash;
-                }
+                await refresh();
+                setTimeout(() => onBack(), 2000);
+                return;
             } else {
-                throw new Error("No valid wallet found.");
+                toast.error("MiCA Compliance Lock", { 
+                    id: "send-tx",
+                    description: "Standard EVM asset routing is administratively disabled pending MiCA clearance. Use Aztec ZK QDs for unhindered operations." 
+                });
+                setIsSending(false);
+                return;
             }
-
-            toast.success("Asset Sent Successfully", { 
-                id: "send-tx", 
-                description: `Successfully sent ${amount} ${selectedToken.symbol} to ${recipient.slice(0, 6)}... Hash: ${txHash.slice(0,10)}...`
-            });
-            setAmount('');
-            setRecipient('');
         } catch (e: any) {
             const cleanError = e?.shortMessage || e?.message?.split('\n')[0] || "Transaction cancelled or failed.";
             toast.error("Send Failed", { id: "send-tx", description: cleanError });
@@ -350,99 +293,154 @@ export function NativeSendView({ onBack, initialTokenSymbol }: { onBack: () => v
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -40 }}
             transition={{ type: 'spring', damping: 28, stiffness: 260 }}
-            className="flex flex-col w-full bg-white font-sans overflow-x-hidden"
-            style={{ minHeight: '100vh', paddingBottom: 'calc(5rem + env(safe-area-inset-bottom, 0px))' }}
+            className="flex flex-col w-full min-h-screen font-sans overflow-x-hidden"
         >
-            {/* ── Header ── */}
-            <div className="flex flex-wrap items-start justify-between gap-3 px-4 sm:px-6 pt-6 pb-4 border-b border-black/10">
-                <div className="min-w-0">
-                    <h2 className="text-lg sm:text-xl font-black uppercase tracking-widest text-black flex items-center gap-2">
-                        Send Asset
-                    </h2>
-                    <p className="text-[10px] uppercase text-black/50 tracking-widest mt-1">{selectedToken.symbol === 'QDs' ? 'Zero Knowledge Private Transfer · Aztec Network' : 'Direct On-Chain Transfer'}</p>
+             <div className={`w-full max-w-md mx-auto h-full flex flex-col bg-white relative overflow-hidden transition-colors duration-700 ${isStealth ? 'bg-zinc-950' : ''}`}>
+            
+            <AnimatePresence>
+                {isStealth && (
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 pointer-events-none z-0"
+                    >
+                        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-zinc-950 to-zinc-950" />
+                        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent" />
+                        <div className="absolute inset-0 opacity-[0.03] flex flex-wrap content-start overflow-hidden text-[8px] font-mono text-emerald-500 leading-none break-all select-none">
+                            {Array.from({length: 100}).map((_, i) => (
+                                <span key={i}>0x{Math.random().toString(16).slice(2, 10)} </span>
+                            ))}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <div className={`flex items-center justify-between p-4 border-b shrink-0 relative z-10 transition-colors ${isStealth ? 'border-emerald-900/30' : 'border-black/5'}`}>
+                <div className="flex items-center gap-4">
+                    <button onClick={onBack} className={`w-10 h-10 flex items-center justify-center bg-black/5 hover:bg-black/10 rounded-full transition-colors ${isStealth ? 'text-zinc-400 bg-white/5 hover:bg-white/10 hover:text-white' : ''}`}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    </button>
+                    <h2 className={`text-xl font-black tracking-tighter ${isStealth ? 'text-white' : ''}`}>SEND</h2>
                 </div>
-                <div className="flex items-center gap-3 shrink-0">
-                    <label className="flex items-center gap-2 cursor-pointer text-[9px] uppercase font-bold text-black/40 hover:text-black transition-colors">
-                        <input type="checkbox" checked={useMultiSig} onChange={e=>setUseMultiSig(e.target.checked)} className="accent-black" />
-                        Multi-Sig
-                    </label>
-                    <button onClick={onBack} className="text-[10px] uppercase font-bold tracking-widest border border-black/10 px-3 py-2 hover:bg-black hover:text-white active:bg-black active:text-white transition-colors">
-                        CLOSE
+
+                <div className="flex items-center gap-2">
+                    <span className={`text-[10px] font-bold uppercase tracking-widest transition-colors ${isStealth ? 'text-emerald-400' : 'text-black/40'}`}>ZK STEALTH</span>
+                    <button 
+                        onClick={() => {
+                            if (selectedToken.symbol !== 'QDs') {
+                                toast.error('Stealth Mode Unavailable', { description: 'Only Aztec-native QDs support Zero-Knowledge Stealth Transfers.'});
+                                return;
+                            }
+                            setIsStealth(!isStealth);
+                        }}
+                        className={`w-12 h-6 rounded-full p-1 transition-all duration-300 relative flex items-center ${isStealth ? 'bg-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.3)]' : 'bg-black/10'}`}
+                    >
+                        <motion.div 
+                            className={`w-4 h-4 rounded-full shadow-sm flex items-center justify-center ${isStealth ? 'bg-emerald-400' : 'bg-white'}`}
+                            animate={{ x: isStealth ? 24 : 0 }}
+                            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                        >
+                            {isStealth && <div className="w-1.5 h-1.5 bg-emerald-900 rounded-full" />}
+                        </motion.div>
                     </button>
                 </div>
             </div>
 
-            {/* ── Body ── */}
-            <div className="flex flex-col px-4 sm:px-6 pt-4 space-y-4">
-                {/* Destination */}
-                <div className="border border-black/10 p-4 sm:p-6 bg-white transition-colors hover:border-black/30">
-                    <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-black/40 mb-3 block">
-                        Recipient Address {selectedToken.symbol === 'QDs' ? '(Aztec ZK Address or EVM)' : ''}
+            <div className="flex-1 overflow-y-auto p-4 space-y-6 relative z-10">
+                <div className="space-y-3">
+                    <label className={`text-[11px] font-black tracking-[0.2em] uppercase ${isStealth ? 'text-emerald-500/70' : 'text-black/50'}`}>
+                        Recipient Address {selectedToken.symbol === 'QDs' ? '(Aztec ZK Address)' : ''}
                     </label>
-                    <input
-                        type="text"
-                        value={recipient}
-                        onChange={(e) => setRecipient(e.target.value)}
-                        placeholder="0x..."
-                        className="w-full bg-transparent font-mono text-sm outline-none text-black border-b border-black/10 pb-2 focus:border-black transition-colors"
-                        style={{ fontSize: '16px' }}
-                    />
-                </div>
-
-                {/* Amount */}
-                <div className="border border-black/10 p-4 sm:p-6 bg-black/[0.02] transition-colors hover:border-black/30">
-                    <label className="text-[10px] uppercase tracking-[0.2em] font-bold text-black/40 mb-3 block">
-                        Amount to Send
-                    </label>
-                    <div className="flex items-center justify-between gap-3">
+                    <div className="relative">
                         <input
-                            type="number"
-                            inputMode="decimal"
-                            value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
-                            placeholder="0.0"
-                            className="bg-transparent font-light outline-none w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-black"
-                            style={{ fontSize: 'clamp(1.75rem, 8vw, 3rem)' }}
+                            type="text"
+                            value={recipient}
+                            onChange={e => setRecipient(e.target.value)}
+                            placeholder="0x..."
+                            className={`w-full h-14 pl-4 pr-12 rounded-xl text-sm font-mono outline-none transition-all ${
+                                isStealth 
+                                ? 'bg-zinc-900/50 border border-emerald-900/30 text-emerald-400 placeholder-emerald-900/50 focus:border-emerald-500/50 focus:bg-zinc-900' 
+                                : 'bg-black/5 border border-transparent focus:border-black/10 focus:bg-white'
+                            }`}
                         />
-                        <TokenSelector selectedToken={selectedToken} onSelect={setSelectedToken} label="Asset" />
                     </div>
                 </div>
 
-                {/* Fee summary */}
-                <AnimatePresence>
-                    {amount && parseFloat(amount) > 0 && recipient && (
-                        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
-                            <div className="border border-black/10 p-5 bg-white text-[10px] uppercase tracking-widest space-y-4 font-mono">
-                                <div className="flex justify-between text-black/50">
-                                    <span>Network</span>
-                                    <span className="text-black font-bold uppercase">{selectedToken.symbol === 'QDs' ? 'Aztec Testnet' : activeNetwork}</span>
-                                </div>
-                                <div className="flex justify-between text-black/50">
-                                    <span>Estimated Gas Fee</span>
-                                    <span className="text-[#00C076] font-bold">
-                                        {selectedToken.symbol === 'QDs' ? '✓ Gasless (Aztec SponsoredFPC)' : isEstimating ? 'CALCULATING...' : `~ ${parseFloat(gasFee).toFixed(6)} ETH`}
-                                    </span>
-                                </div>
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            </div>{/* end body */}
+                <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                        <label className={`text-[11px] font-black tracking-[0.2em] uppercase ${isStealth ? 'text-emerald-500/70' : 'text-black/50'}`}>Amount</label>
+                        <span className={`text-[11px] font-medium font-mono ${isStealth ? 'text-emerald-500/50' : 'text-black/40'}`}>
+                            Balance: {selectedToken.symbol === 'QDs' ? balance.toLocaleString() : '0.00'}
+                        </span>
+                    </div>
+                    <div className="flex gap-2">
+                        <div className="flex-1 relative">
+                            <input
+                                type={isStealth ? "password" : "text"}
+                                value={amount}
+                                onChange={e => {
+                                    if (!/^\d*\.?\d*$/.test(e.target.value)) return;
+                                    setAmount(e.target.value);
+                                }}
+                                placeholder="0.00"
+                                className={`w-full h-14 pl-4 pr-4 rounded-xl text-lg font-mono outline-none transition-all ${
+                                    isStealth 
+                                    ? 'bg-zinc-900/50 border border-emerald-900/30 text-emerald-400 placeholder-emerald-900/50 focus:border-emerald-500/50 focus:bg-zinc-900' 
+                                    : 'bg-black/5 border border-transparent focus:border-black/10 focus:bg-white'
+                                }`}
+                            />
+                        </div>
+                        <TokenSelector 
+                            selectedToken={selectedToken} 
+                            onSelect={(t) => {
+                                setSelectedToken(t);
+                                if (t.symbol !== 'QDs' && isStealth) {
+                                    setIsStealth(false);
+                                    toast.info("Stealth Mode Disabled", { description: "Stealth mode is only available for Aztec-native assets like QDs."});
+                                }
+                            }} 
+                            label="Pay With" 
+                        />
+                    </div>
+                </div>
+            </div>
 
-            {/* ── Sticky CTA ── */}
-            <div
-                className="fixed bottom-0 left-0 right-0 z-10 bg-white border-t border-black/10 px-4 sm:px-6 pt-4"
-                style={{ paddingBottom: 'calc(1rem + env(safe-area-inset-bottom, 0px))' }}
-            >
+            <div className={`p-4 border-t shrink-0 relative z-10 transition-colors ${isStealth ? 'border-emerald-900/30 bg-zinc-950' : 'border-black/5'}`}>
+                <div className="flex justify-between items-center mb-4">
+                    <span className={`text-xs ${isStealth ? 'text-emerald-500/50' : 'text-black/40'}`}>Network Fee</span>
+                    <div className="flex items-center gap-2">
+                        {isEstimating ? (
+                            <span className="w-4 h-4 rounded-full border-2 border-black/10 border-t-black animate-spin" />
+                        ) : (
+                            <span className={`font-mono text-sm ${isStealth ? 'text-emerald-400' : ''}`}>{gasFee} {selectedToken.symbol === 'QDs' ? '' : 'ETH'}</span>
+                        )}
+                        {gasFee === 'aztec-gasless' && !isStealth && <span className="text-[9px] bg-black text-white px-1.5 py-0.5 rounded-sm font-bold uppercase tracking-wider">SPONSORED</span>}
+                        {isStealth && <span className="text-[9px] bg-emerald-900 text-emerald-100 px-1.5 py-0.5 rounded-sm font-bold uppercase tracking-wider shadow-[0_0_10px_rgba(16,185,129,0.5)]">SHIELDED</span>}
+                    </div>
+                </div>
+
                 <button
                     onClick={executeSend}
                     disabled={isSending || !amount || !recipient}
-                    className="w-full py-4 sm:py-5 bg-black text-white font-black text-[12px] uppercase tracking-[0.2em] transition-all hover:bg-black/90 active:bg-black/70 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 shadow-2xl rounded-sm"
+                    className={`w-full h-14 flex items-center justify-center gap-2 text-sm font-black tracking-widest uppercase transition-all
+                        ${isSending || !amount || !recipient ? 'opacity-50 cursor-not-allowed' : 'hover:scale-[0.99] active:scale-95'}
+                        ${isStealth ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.3)]' : 'bg-black text-white rounded-xl'}`}
+                    style={isStealth ? { borderRadius: '8px', border: '1px solid rgba(16,185,129,0.5)' } : {}}
                 >
-                    {useMultiSig ? 'SIGN & QUEUE (MULTI-SIG)' : isSending ? 'SENDING...' : 'CONFIRM SEND'}
+                    {isSending ? (
+                        <>
+                            <span className={`w-4 h-4 rounded-full border-2 ${isStealth ? 'border-white/20 border-t-white' : 'border-white/20 border-t-white'} animate-spin`} />
+                            {isStealth ? 'GENERATING ZK PROOF...' : 'SENDING...'}
+                        </>
+                    ) : (
+                        <>
+                            {isStealth ? 'EXECUTE STEALTH TRANSFER' : 'CONFIRM SEND'}
+                        </>
+                    )}
                 </button>
             </div>
+        </div>
         </motion.div>
     );
 }
-

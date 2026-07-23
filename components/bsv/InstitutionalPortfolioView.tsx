@@ -218,7 +218,7 @@ export function InstitutionalPortfolioView() {
                         loading={loading}
                         activeNetwork={activeNetwork}
                         onRefresh={refreshBalance}
-                        onSend={() => setMicaLockType('SEND')}
+                        onSend={() => setView('SEND')}
                         onReceive={() => setMicaLockType('RECEIVE')}
                         onCreate={() => setView('CREATE')}
                         onBuy={() => setView('BUY')}
