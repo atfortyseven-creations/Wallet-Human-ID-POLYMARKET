@@ -293,7 +293,7 @@ export async function POST(req: NextRequest) {
                 const nodeData = await nodeInfoRes.json();
                 aztecBlockNum = nodeData?.result || 0;
                 if (aztecBlockNum > 0) {
-                    aztecExplorerUrl = `https://testnet.aztecscan.xyz/blocks/${aztecBlockNum}`;
+                    aztecExplorerUrl = `https://testnet.aztecscan.xyz/block/${aztecBlockNum}`;
                 }
             }
         } catch (e) {

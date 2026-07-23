@@ -255,12 +255,15 @@ export function LegendaryTransactionModal({
   }, [amount, fromAssetSymbol, toAssetSymbol, toAsset, sourceChain, targetChain, mode, subMode, isOpen, address, balances]);
 
   const handleExecute = async () => {
+      // --- 🔴 MiCA REGULATORY LOCK (EU Compliance) ---
+      // Disable public EVM transactions (Send, Swap, Bridge, Buy) until VASP / MiCA license is acquired.
+      // Note: Aztec Testnet QDS transactions are routed via ZK Stealth UI, this blocks public EVM.
+      toast.error("Regulatory Lock (MiCA)", { 
+          description: "This action is disabled pending EU MiCA non-custodial authorization. Only ZK-native Testnet transfers are currently permitted." 
+      });
+      return;
+
       if (mode === 'buy') {
-          if (!amount) return;
-          setLoading(true);
-          try {
-              // Use Transak — works in Spain/EU without restricted API key.
-              // No test mode, no "Coming soon to your region" errors.
               const asset = toAssetSymbol.toUpperCase();
               const fiatCurrency = ['USD', 'EUR', 'GBP'].includes(subMode) ? subMode : 'EUR';
               const network = asset === 'ETH' ? 'ethereum' : asset === 'USDC' ? 'ethereum' : 'optimism';

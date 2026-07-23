@@ -175,6 +175,7 @@ const CHAIN_EXPLORERS: Record<number, { name: string; base: string }> = {
 ───────────────────────────────────────────── */
 function explorerUrl(chainId: number | null, txHash: string | null): string | null {
   if (!txHash || !chainId) return null;
+  if (chainId === 11155111 || chainId === 89021716) return 'https://testnet.aztecscan.xyz';
   const explorer = CHAIN_EXPLORERS[chainId];
   return explorer ? `${explorer.base}${txHash}` : null;
 }

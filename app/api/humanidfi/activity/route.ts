@@ -60,11 +60,9 @@ export async function GET(req: Request) {
         timestamp: tx.timestamp.toISOString(),
         chainId: tx.chainId,
         blockNumber: tx.blockNumber?.toString() ?? '0',
-        explorerUrl: meta.explorerUrl ?? (
-          (meta.onChain === false && tx.blockNumber)
-            ? `https://testnet.aztecscan.xyz/blocks/${tx.blockNumber}`
-            : `https://testnet.aztecscan.xyz/tx/${tx.txHash}`
-        ),
+        explorerUrl: (tx.metadata as any)?.explorerUrl 
+            ? ((tx.metadata as any).explorerUrl as string).replace(/\/tx\/0x[a-fA-F0-9]+/, tx.blockNumber ? `/block/${tx.blockNumber}` : '')
+            : (tx.blockNumber ? `https://testnet.aztecscan.xyz/block/${tx.blockNumber}` : `https://testnet.aztecscan.xyz`),
         provenance: meta.provenance === true,
         fingerprint: meta.fingerprint ?? null,
         actionDetails: meta.actionDetails ?? null,

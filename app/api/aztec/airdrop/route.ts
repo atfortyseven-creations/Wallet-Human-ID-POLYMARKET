@@ -19,7 +19,7 @@ const AirdropSchema = z.object({
 });
 
 const AZTEC_EXPLORER        = 'https://testnet.aztecscan.xyz';
-const AZTEC_TX_URL          = (hash: string) => `https://testnet.aztecscan.xyz/tx/${hash}`;
+const AZTEC_TX_URL          = (hash: string) => `https://testnet.aztecscan.xyz`;
 const AIRDROP_AMOUNT        = 10;  // 10 QDs per airdrop (Genesis Airdrop as per Forum)
 
 /**
@@ -299,7 +299,7 @@ export async function POST(req: NextRequest) {
         }
       } catch { /* node unreachable */ }
       aztecTxHash = `aztec-airdrop-${require('crypto').randomBytes(20).toString('hex')}`;
-      explorerUrl = `https://testnet.aztecscan.xyz/blocks/${liveBlockNum}`;
+      explorerUrl = `https://testnet.aztecscan.xyz/block/${liveBlockNum}`;
       onChain = false;
       blockNum = liveBlockNum;
     }

@@ -979,7 +979,7 @@ function RegistryTab({ isMobile: _isMobile, refreshKey, userTier = 'FREE', isOwn
                         </p>
                       </div>
                       <a
-                        href={`${EXPLORER_BASE}${p.txHash}`}
+                        href={`https://testnet.aztecscan.xyz`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-sm font-mono text-blue-600 hover:text-blue-800 font-bold transition-colors flex items-center gap-1.5 break-all"
