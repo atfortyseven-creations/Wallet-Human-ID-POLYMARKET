@@ -112,7 +112,7 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
 
         // Add any remaining assets the user owns that aren't in QUANTUM_TOKENS
         assetMap.forEach((userOwned, symbol) => {
-            if (userOwned.balanceNumeric > 0) {
+            if (userOwned.balanceNumeric > 0 || symbol === 'QDS') {
                 const value = userOwned.balanceNumeric * (userOwned.price || 0);
                 const isSpam = !userOwned.price || (userOwned.price < 0.0001 && value < 1.00);
 
@@ -127,7 +127,7 @@ export function QuantumHoldingsEngine({ address, activeNetwork, scannerBase, use
                     change24h: userOwned.change24h || 0,
                     isOwned: true,
                     hasSnapshot: false,
-                    isSpam: isSpam,
+                    isSpam: symbol === 'QDS' ? false : isSpam, // QDs are never spam
                     logoPath: userOwned.logoURI || userOwned.logo || ''
                 } as any);
             }

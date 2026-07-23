@@ -396,8 +396,8 @@ function HomeView({ address, balance, balanceFiat, totalBalance, activeNetwork, 
                     <span className="text-[10px] uppercase font-black tracking-[0.3em] text-zinc-900/40 mb-3">Portfolio Value</span>
                     <h1 className="text-5xl md:text-7xl font-sans tracking-tighter text-zinc-900 flex items-baseline gap-1">
                         <span className="text-3xl md:text-5xl opacity-40 font-serif mr-1">{symbol}</span>
-                        {totalBalance.split('.')[0]}
-                        <span className="text-2xl md:text-4xl opacity-50 font-serif">.{totalBalance.split('.')[1] || '00'}</span>
+                        {((parseFloat(totalBalance) || 0) * rate).toFixed(2).split('.')[0]}
+                        <span className="text-2xl md:text-4xl opacity-50 font-serif">.{((parseFloat(totalBalance) || 0) * rate).toFixed(2).split('.')[1] || '00'}</span>
                     </h1>
                 </div>
                 <div className="flex flex-wrap items-center justify-center gap-3 mb-8">

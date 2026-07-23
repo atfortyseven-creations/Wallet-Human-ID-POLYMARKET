@@ -177,7 +177,7 @@ export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?:
         symbol: t.symbol,
         name: t.name,
         balance: t.balance,
-        balanceNumeric: typeof t.balanceNumeric === 'number' ? t.balanceNumeric : 0,
+        balanceNumeric: typeof t.balanceNumeric === 'number' ? t.balanceNumeric : parseFloat(t.balance || t.balanceNumeric || '0'),
         balanceFormatted: t.balanceFormatted || (typeof t.balanceNumeric === 'number' ? t.balanceNumeric.toFixed(6) : "0"),
         price: t.price || t.priceUSD || 0,
         priceUSD: t.price || t.priceUSD || 0,
@@ -192,6 +192,32 @@ export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?:
         change24h: t.change24h || 0
     }));
 
+    // Inject Native Balance if not returned by the API (using Wagmi data)
+    const nativeSymbol = balanceData?.symbol || 'ETH';
+    const nativeBalanceNum = parseFloat(balanceData?.formatted || '0') || 0;
+    const hasNativeInAssets = assets.some(a => a.symbol === nativeSymbol && (a.address === 'native' || a.address === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'));
+    
+    if (!hasNativeInAssets && nativeBalanceNum > 0) {
+        assets.unshift({
+            symbol: nativeSymbol,
+            name: activeChains.find(c => c.id === currentChainId)?.nativeCurrency?.name || nativeSymbol,
+            balance: nativeBalanceNum.toString(),
+            balanceNumeric: nativeBalanceNum,
+            balanceFormatted: nativeBalanceNum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 }),
+            price: 0, // Fallback if API fails
+            priceUSD: 0,
+            usdPrice: 0,
+            value: 0,
+            valueUSD: 0,
+            address: 'native',
+            decimals: 18,
+            logoURI: '',
+            chainId: currentChainId,
+            network: getNetworkName(currentChainId),
+            change24h: 0
+        });
+    }
+
     // AUDIT FIX (Medium #6): Use the authoritative QDs balance from AztecNativeContext.
     // The old implementation derived its own Aztec address (simple 0x + zero-padded EVM address)
     // which was completely different from the SHA-256 derived address in AztecNativeContext.
@@ -199,8 +225,7 @@ export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?:
     // Now both tabs read from the same source: the AztecNativeContext polling loop.
     const qdBalanceNum = aztecQdBalance || 0;
 
-    
-    if (qdBalanceNum > 0 || isConnected) {
+    if (isConnected) {
         assets.unshift({
             symbol: "QDs",
             name: "Aztec QDs (ZK)",
