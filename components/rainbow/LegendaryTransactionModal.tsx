@@ -308,8 +308,8 @@ export function LegendaryTransactionModal({
                       //@ts-ignore
                       const resolvedAddress = await mainnetClient.getEnsAddress({ name: recipient });
                       if (!resolvedAddress) throw new Error("Could not resolve ENS name");
-                      finalRecipient = resolvedAddress;
-                      toast.success("ENS Resolved", { id: 'ens-resolve', description: `Target: ${resolvedAddress.slice(0, 10)}...` });
+                      finalRecipient = resolvedAddress as string;
+                      toast.success("ENS Resolved", { id: 'ens-resolve', description: `Target: ${(resolvedAddress as string).slice(0, 10)}...` });
                   } catch (e: any) {
                       toast.error("ENS Resolution Failed", { id: 'ens-resolve', description: e.message });
                       setLoading(false);
@@ -343,7 +343,7 @@ export function LegendaryTransactionModal({
               const amountInUnits = safeParseUnits(amount, decimals);
 
               if (isNative) {
-                  hash = await walletClient.sendTransaction({
+                  hash = await walletClient!.sendTransaction({
                       to: finalRecipient as `0x${string}`,
                       value: amountInUnits,
                       chain: sourceChain as any
@@ -361,7 +361,7 @@ export function LegendaryTransactionModal({
                       args: [finalRecipient as `0x${string}`, amountInUnits]
                   });
 
-                  hash = await walletClient.sendTransaction({
+                  hash = await walletClient!.sendTransaction({
                       to: activeFromAsset.address as `0x${string}`,
                       data,
                       chain: sourceChain as any
