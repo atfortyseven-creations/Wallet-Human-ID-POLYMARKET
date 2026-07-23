@@ -608,18 +608,22 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         
         // [AUDIT FIX] If we already answered this call (receiver sent __CALL_ANSWER__ + got local stream),
         // answer the PeerJS connection immediately with our stored local stream.
+        // Guard with _answered flag to prevent duplicate handlers if this fires twice.
         if ((callStateRef.current === 'connecting' || callStateRef.current === 'active') && localStreamRef.current) {
-           connection.answer(localStreamRef.current);
-           connection.on('stream', (rStream: MediaStream) => {
-              console.log('[WhaleChat:PeerJS] Receiver got remote stream — call now ACTIVE');
-              setRemoteStream(rStream);
-              setCallState('active');
-              stopRingtone();
-              if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
-              if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = rStream; remoteAudioRef.current.play().catch(() => {}); }
-           });
-           connection.on('close', () => performEndCallRef.current());
-           connection.on('error', () => performEndCallRef.current());
+           if (!connection._answered) {
+             connection._answered = true;
+             connection.answer(localStreamRef.current);
+             connection.on('stream', (rStream: MediaStream) => {
+               console.log('[WhaleChat:PeerJS] Receiver got remote stream — call now ACTIVE');
+               setRemoteStream(rStream);
+               setCallState('active');
+               stopRingtone();
+               if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
+               if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = rStream; remoteAudioRef.current.play().catch(() => {}); }
+             });
+             connection.on('close', () => performEndCallRef.current());
+             connection.on('error', () => performEndCallRef.current());
+           }
            return;
         }
 
@@ -678,6 +682,15 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // NOTE: performEndCallRef is wired below after performEndCall is defined.
   const performEndCallRef = useRef<() => void>(() => {});
   const processedSignalIds = useRef<Set<string>>(new Set());
+  // AUDIT FIX: Prune processedSignalIds set to avoid unbounded memory growth.
+  // Keep only the last 200 IDs to prevent memory leak over long sessions.
+  const pruneSignalIds = useCallback(() => {
+    if (processedSignalIds.current.size > 200) {
+      const arr = Array.from(processedSignalIds.current);
+      processedSignalIds.current = new Set(arr.slice(arr.length - 100));
+    }
+  }, []);
+
   useEffect(() => {
     if (!messages.length) return;
     const lastMsg = messages[messages.length - 1];
@@ -687,21 +700,26 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     if (isMine) return; // ignore our own signals
     const content: string = typeof lastMsg.content === 'string' ? lastMsg.content : '';
 
-    // ── CALL_OFFER: Peer is calling us ─────────────────────────────────────────
+    // ── CALL_OFFER: Peer is calling us ──────────────────────────────────────────
     if (content.startsWith('__CALL_OFFER__:')) {
       processedSignalIds.current.add(lastMsg.id);
       const parts = content.split(':');
       const callerPeerId = parts[1] || '';
       const offerCallType: 'audio'|'video' = (parts[2] as any) || 'audio';
       if (!callerPeerId) return;
+      // AUDIT FIX: Validate that the sender is the current active peer
+      // This prevents anyone sending __CALL_OFFER__ from triggering the call UI
+      const senderInbox = lastMsg.senderInboxId?.toLowerCase() || '';
+      const expectedPeer = activePeerRef.current?.toLowerCase() || '';
+      if (expectedPeer && !senderInbox.includes(expectedPeer.slice(2, 10))) {
+        console.warn('[WhaleChat:Signal] CALL_OFFER from unexpected sender, ignoring');
+        return;
+      }
       remotePeerIdRef.current = callerPeerId;
-      // The PeerJS 'call' event fires when the caller calls peerInstance.call() on us.
-      // But the caller cannot call us unless we first acknowledge our PeerId.
-      // So we store the callerPeerId and wait for Peer.on('call') to fire.
-      // If somehow Peer.on('call') hasn't fired yet (network latency), trigger ringing.
       setCallType(offerCallType);
       isCallerRef.current = false;
-      if (callState === 'idle') {
+      // AUDIT FIX: Use callStateRef for immediate state check, not stale closure
+      if (callStateRef.current === 'idle') {
         setCallState('ringing');
         startRingtone();
       }
@@ -709,13 +727,14 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     }
 
     // ── CALL_ANSWER: Our callee accepted — now we initiate the WebRTC call ──────
-    if (content.startsWith('__CALL_ANSWER__:') && isCallerRef.current && callState === 'calling') {
+    // AUDIT FIX: Use callStateRef (not stale closure callState) to check current state
+    if (content.startsWith('__CALL_ANSWER__:') && isCallerRef.current && callStateRef.current === 'calling') {
       processedSignalIds.current.add(lastMsg.id);
       const receiverPeerId = content.split(':')[1] || '';
-      if (!receiverPeerId || !peerInstance || !localStream) return;
+      if (!receiverPeerId || !peerInstance || !localStreamRef.current) return;
       console.log('[WhaleChat:Signal] CALL_ANSWER received. Calling receiver PeerID:', receiverPeerId);
       // Now the CALLER connects the actual WebRTC media to the receiver
-      const conn = peerInstance.call(receiverPeerId, localStream, {
+      const conn = peerInstance.call(receiverPeerId, localStreamRef.current, {
         metadata: { callType: callTypeRef.current },
       });
       if (!conn) { toast.error('WebRTC: Could not initiate connection.'); return; }
@@ -727,8 +746,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
         if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = rStream; remoteAudioRef.current.play().catch(() => {}); }
       });
-      conn.on('close', () => { console.log('[WhaleChat:PeerJS] Connection closed'); performEndCall(); });
-      conn.on('error', (e: any) => { console.error('[WhaleChat:PeerJS] Connection error:', e); performEndCall(); });
+      conn.on('close', () => { console.log('[WhaleChat:PeerJS] Connection closed'); performEndCallRef.current(); });
+      conn.on('error', (e: any) => { console.error('[WhaleChat:PeerJS] Connection error:', e); performEndCallRef.current(); });
     }
 
     // ── CALL_DECLINE: Callee declined ──────────────────────────────────────────
@@ -748,6 +767,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         toast('📵 Call ended by peer.');
       }
     }
+    // AUDIT FIX: Prune signal IDs to prevent memory leak
+    pruneSignalIds();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
 
@@ -769,12 +790,25 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     }
   }, [callState, remoteStream]);
 
-  // ─── performEndCall: Universal cleanup ──────────────────────────────────────
+  // ─── performEndCall: Universal cleanup ── uses refs to avoid stale closures ──
+  // AUDIT FIX: All mutable values accessed via refs, not closure captures.
+  // This ensures that when called from async contexts (timeouts, PeerJS events),
+  // we always clean up the CURRENT stream/connection, not a stale captured one.
+  const activeConnectionRef = useRef<any>(null);
+  const remoteStreamRef = useRef<MediaStream | null>(null);
+  // Keep refs in sync with state
+  useEffect(() => { activeConnectionRef.current = activeConnection; }, [activeConnection]);
+  useEffect(() => { remoteStreamRef.current = remoteStream; }, [remoteStream]);
+
   const performEndCall = useCallback(() => {
     stopRingtone();
-    if (localStream) { try { localStream.getTracks().forEach(t => t.stop()); } catch {} }
-    if (remoteStream) { try { remoteStream.getTracks().forEach(t => t.stop()); } catch {} }
-    if (activeConnection) { try { activeConnection.close(); } catch {} }
+    // Use refs — never captured closure values
+    const ls = localStreamRef.current;
+    const rs = remoteStreamRef.current;
+    const ac = activeConnectionRef.current;
+    if (ls) { try { ls.getTracks().forEach(t => t.stop()); } catch {} }
+    if (rs) { try { rs.getTracks().forEach(t => t.stop()); } catch {} }
+    if (ac) { try { ac.close(); } catch {} }
     setLocalStream(null);
     setRemoteStream(null);
     setActiveConnection(null);
@@ -787,8 +821,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     if (myVideoRef.current) myVideoRef.current.srcObject = null;
     if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
     if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = null; }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [localStream, remoteStream, activeConnection, stopRingtone]);
+  // stopRingtone and setters are stable refs, safe to include
+  }, [stopRingtone, setLocalStream, setCallState]);
   // Wire the always-fresh ref — avoids stale closure in the XMTP signal listener above
   performEndCallRef.current = performEndCall;
 
@@ -806,12 +840,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       toast.error('Your browser does not support media access. Please use Chrome or Firefox.');
       return;
     }
+    let stream: MediaStream | null = null;
     try {
       const constraints: MediaStreamConstraints = {
         audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
         video: type === 'video' ? { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' } : false,
       };
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      stream = await navigator.mediaDevices.getUserMedia(constraints);
       setLocalStream(stream);
       setCallType(type);
       callTypeRef.current = type;
@@ -819,12 +854,22 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       setCallState('calling');
       if (myVideoRef.current) myVideoRef.current.srcObject = stream;
       // Signal to peer: we are calling + share our PeerID and call type
-      // The receiver will send back CALL_ANSWER with their PeerID
-      // Then we call peerInstance.call(receiverPeerId, stream)
       await executeSend(`__CALL_OFFER__:${myPeerId}:${type}`);
       toast.success('📡 Ringing peer...');
+
+      // Caller timeout: if no CALL_ANSWER in 60s, clean up
+      setTimeout(() => {
+        if (callStateRef.current === 'calling') {
+          toast.error('No answer — call timed out.');
+          performEndCallRef.current();
+        }
+      }, 60000);
     } catch (e: any) {
+      // AUDIT FIX: Always stop any acquired stream tracks on error
+      if (stream) { try { stream.getTracks().forEach(t => t.stop()); } catch {} }
+      setLocalStream(null);
       setCallState('idle');
+      isCallerRef.current = false;
       const errName = e?.name || '';
       if (errName === 'NotAllowedError' || errName === 'PermissionDeniedError') {
         toast.error('🎙️ Microphone/Camera access denied. Please enable permissions in your browser settings.');
@@ -847,40 +892,46 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       toast.error('Your browser does not support media access. Please use Chrome or Firefox.');
       return;
     }
+    let stream: MediaStream | null = null;
     try {
       const isVideo = callType === 'video';
       const constraints: MediaStreamConstraints = {
         audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
         video: isVideo ? { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' } : false,
       };
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      stream = await navigator.mediaDevices.getUserMedia(constraints);
       setLocalStream(stream);
       if (myVideoRef.current) myVideoRef.current.srcObject = stream;
 
-      // If PeerJS 'call' event already fired (activeConnection is set), answer immediately
-      if (activeConnection) {
-        activeConnection.answer(stream);
-        activeConnection.on('stream', (rStream: MediaStream) => {
-          console.log('[WhaleChat:PeerJS] Receiver got remote stream from PeerJS (answer path)');
-          setRemoteStream(rStream);
-          setCallState('active');
-          toast.success('✅ Call connected.');
-          if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
-          if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = rStream; remoteAudioRef.current.play().catch(() => {}); }
-        });
-        activeConnection.on('close', () => performEndCall());
-        activeConnection.on('error', () => performEndCall());
+      // AUDIT FIX: Only register stream handler if NOT already done via peer.on('call')
+      // Check activeConnection at this moment (may have arrived via peer.on('call') already)
+      const existingConn = activeConnectionRef.current;
+      if (existingConn) {
+        // Guard: only answer if not already answered to prevent duplicate handlers
+        if (!(existingConn as any)._answered) {
+          (existingConn as any)._answered = true;
+          existingConn.answer(stream);
+          existingConn.on('stream', (rStream: MediaStream) => {
+            console.log('[WhaleChat:PeerJS] Receiver got remote stream (answerCall path)');
+            setRemoteStream(rStream);
+            setCallState('active');
+            toast.success('✅ Call connected.');
+            if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
+            if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = rStream; remoteAudioRef.current.play().catch(() => {}); }
+          });
+          existingConn.on('close', () => performEndCallRef.current());
+          existingConn.on('error', () => performEndCallRef.current());
+        }
       }
 
-      // Set 'connecting' — waiting for the caller to peerInstance.call() us back
-      // The peer.on('call') handler will complete the connection and set 'active'
+      // Transition to 'connecting' — peer.on('call') handler will complete it
       setCallState('connecting');
       toast.success('📡 Answering call...');
 
-      // Send our PeerID back to the caller so they can peerInstance.call() us
+      // Send our PeerID back to the caller
       await executeSend(`__CALL_ANSWER__:${myPeerId}`);
 
-      // Failsafe: if stream doesn't arrive within 15s, clean up
+      // Failsafe: if stream doesn't arrive within 20s, clean up
       setTimeout(() => {
         if (callStateRef.current === 'connecting') {
           toast.error('Call timed out — no media stream received.');

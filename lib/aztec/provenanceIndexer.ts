@@ -44,7 +44,7 @@ export async function logProvenanceEvent(
           fingerprint: fingerprint,
           actionDetails: details,
           certificateRoot: `0x${Buffer.from(fingerprint).toString('hex').slice(0, 64)}`,
-          explorerUrl: `https://testnet.aztecscan.xyz/tx-effect/${hash}`
+          explorerUrl: `https://testnet.aztecscan.xyz/tx/${hash}`
         }
       }
     });
