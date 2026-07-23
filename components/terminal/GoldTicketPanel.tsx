@@ -505,6 +505,24 @@ export function GoldTicketPanel() {
         toast.dismiss(t2);
         const json = await res.json();
         if (res.ok) {
+          if (json.ticket?.signatureData) {
+            try {
+              const sigData = JSON.parse(json.ticket.signatureData);
+              if (sigData.aztecExplorerUrl) {
+                toast.success(
+                  <span className="flex flex-col gap-1">
+                    <span>Registration Complete — Welcome to the System Ledger</span>
+                    <a href={sigData.aztecExplorerUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-400 hover:text-blue-300 underline font-mono">
+                      Verify on AztecScan
+                    </a>
+                  </span>,
+                  { duration: 10000 }
+                );
+                fetchStats();
+                return;
+              }
+            } catch {}
+          }
           toast.success('Registration Complete — Welcome to the System Ledger');
           fetchStats();
         } else if (res.status === 409) {
@@ -651,11 +669,13 @@ export function GoldTicketPanel() {
     const ticketData = dbStats.ticket;
     let txHash = "";
     let cryptoSignature = "";
+    let aztecExplorerUrl = "";
     if (ticketData.signatureData) {
       try {
         const parsed = JSON.parse(ticketData.signatureData);
         txHash = parsed.txHash || "";
         cryptoSignature = parsed.cryptoSignature || "";
+        aztecExplorerUrl = parsed.aztecExplorerUrl || "";
       } catch {}
     }
 
@@ -701,6 +721,19 @@ export function GoldTicketPanel() {
                 >
                   {txHash.slice(0, 8)}...{txHash.slice(-6)}
                   <span className="font-mono font-black text-[10px]">[↗]</span>
+                </a>
+              </div>
+            )}
+            {aztecExplorerUrl && (
+              <div className="flex justify-between items-center text-xs mt-2 border-t border-black/5 pt-2">
+                <span className="text-[#7C3AED] font-mono uppercase tracking-wider text-[9px] font-bold">Aztec Network Anchor</span>
+                <a
+                  href={aztecExplorerUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-mono font-black text-[#7C3AED] hover:underline flex items-center gap-1"
+                >
+                  Verify Block <span className="font-mono font-black text-[10px]">[↗]</span>
                 </a>
               </div>
             )}

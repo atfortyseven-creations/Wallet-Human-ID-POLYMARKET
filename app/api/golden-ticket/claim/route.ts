@@ -277,6 +277,29 @@ export async function POST(req: NextRequest) {
 
         //  Create ticket using standard Prisma methods 
         const tempSerial = `PENDING-${address}-${Date.now()}`;
+        
+        // --- 🔴 Aztec Testnet Verification Anchoring ---
+        let aztecBlockNum = 0;
+        let aztecExplorerUrl = '';
+        try {
+            const nodeUrl = process.env.AZTEC_NODE_URL || 'https://v5.testnet.rpc.aztec-labs.com';
+            const nodeInfoRes = await fetch(`${nodeUrl}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jsonrpc: '2.0', method: 'node_getBlockNumber', params: [], id: 1 }),
+                signal: AbortSignal.timeout(3000),
+            });
+            if (nodeInfoRes.ok) {
+                const nodeData = await nodeInfoRes.json();
+                aztecBlockNum = nodeData?.result || 0;
+                if (aztecBlockNum > 0) {
+                    aztecExplorerUrl = `https://testnet.aztecscan.xyz/blocks/${aztecBlockNum}`;
+                }
+            }
+        } catch (e) {
+            console.warn('[GoldenTicket] Failed to anchor to Aztec Testnet block:', e);
+        }
+
         // Pack on-chain mint details into signatureData JSON
         let packedSignatureData = safeSignatureData;
         try {
@@ -285,14 +308,16 @@ export async function POST(req: NextRequest) {
                 signature: parsed.signature || signatureData,
                 timestamp: parsed.timestamp || new Date().toISOString(),
                 txHash: txHash || parsed.txHash || null,
-                cryptoSignature: cryptoSignature || parsed.cryptoSignature || null
+                cryptoSignature: cryptoSignature || parsed.cryptoSignature || null,
+                aztecExplorerUrl: aztecExplorerUrl || undefined
             });
         } catch {
             packedSignatureData = JSON.stringify({
                 signature: signatureData,
                 timestamp: new Date().toISOString(),
                 txHash: txHash || null,
-                cryptoSignature: cryptoSignature || null
+                cryptoSignature: cryptoSignature || null,
+                aztecExplorerUrl: aztecExplorerUrl || undefined
             });
         }
 
