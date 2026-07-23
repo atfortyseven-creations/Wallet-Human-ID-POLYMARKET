@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function ChatPage() {
   return (
-    <div className="flex flex-col w-full min-h-[100vh] bg-white relative">
+    <div className="flex flex-col w-full h-[100dvh] bg-white overflow-hidden">
       <WhaleChat forceAutoInit={true} />
     </div>
   );

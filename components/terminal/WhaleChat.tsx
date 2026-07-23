@@ -2500,8 +2500,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       )}
 
       {/* ── Outgoing Call (state: calling — waiting for answer) ─────────────── */}
-      {callState === 'calling' && (
-        <div className="fixed inset-0 z-[9000] bg-black/85 backdrop-blur-2xl flex flex-col items-center justify-center animate-in fade-in duration-400">
+      {callState === 'calling' && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[99999] bg-black/85 backdrop-blur-2xl flex flex-col items-center justify-center animate-in fade-in duration-400">
           <div className="flex flex-col items-center gap-8">
             <div className="relative">
               <div className="absolute inset-0 rounded-full bg-blue-500/20 animate-ping scale-150" style={{ animationDuration: '2s' }} />
@@ -2528,12 +2528,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               <PhoneOff size={24} />
             </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ── Connecting Overlay (state: connecting — receiver answered, waiting for WebRTC stream) ── */}
-      {callState === 'connecting' && (
-        <div className="fixed inset-0 z-[9000] bg-black/90 backdrop-blur-2xl flex flex-col items-center justify-center animate-in fade-in duration-400">
+      {callState === 'connecting' && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-2xl flex flex-col items-center justify-center animate-in fade-in duration-400">
           <div className="flex flex-col items-center gap-8">
             <div className="relative">
               <div className="absolute inset-0 rounded-full bg-emerald-500/20 animate-ping scale-150" style={{ animationDuration: '1.5s' }} />
@@ -2560,12 +2561,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               <PhoneOff size={24} />
             </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ── Active Call Overlay — Full Screen Premium UI ──────────────────── */}
-      {callState === 'active' && (
-        <div className="fixed inset-0 z-[9000] bg-black flex flex-col" style={{ touchAction: 'none' }}>
+      {callState === 'active' && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[99999] bg-black flex flex-col" style={{ touchAction: 'none' }}>
 
           {/* ── Remote Video / Audio — covers full viewport ─────────────────── */}
           <div className="absolute inset-0">
@@ -2725,7 +2727,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
           {/* Hidden audio element for remote audio in all call modes */}
           <audio ref={remoteAudioRef} autoPlay playsInline className="hidden" />
-        </div>
+        </div>,
+        document.body
       )}
 
       {/*  Overlays  */}
