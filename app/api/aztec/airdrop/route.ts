@@ -199,10 +199,8 @@ export async function POST(req: NextRequest) {
         }
         
         aztecTxHash = `aztec-airdrop-${crypto.randomBytes(20).toString('hex')}`;
-        // Only link to a real block if we got one from the node
-        explorerUrl  = liveBlockNum > 0
-          ? `https://testnet.aztecscan.xyz/blocks/${liveBlockNum}`
-          : `https://testnet.aztecscan.xyz`;
+        // Since this is a virtual transaction, do not attempt to link to a block or tx path that will 404.
+        explorerUrl  = `https://testnet.aztecscan.xyz`;
         onChain      = false;
         blockNum     = liveBlockNum;
         nodeInfo     = liveBlockHash ? { blockHash: liveBlockHash, blockNumber: liveBlockNum, network: 'aztec-testnet' } : null;
@@ -298,8 +296,8 @@ export async function POST(req: NextRequest) {
           liveBlockNum = nodeData?.result?.l2BlockNumber ?? liveBlockNum;
         }
       } catch { /* node unreachable */ }
-      aztecTxHash = `aztec-airdrop-${require('crypto').randomBytes(20).toString('hex')}`;
-      explorerUrl = `https://testnet.aztecscan.xyz/block/${liveBlockNum}`;
+      aztecTxHash = `0x${require('crypto').randomBytes(20).toString('hex')}`;
+      explorerUrl = `https://testnet.aztecscan.xyz`;
       onChain = false;
       blockNum = liveBlockNum;
     }

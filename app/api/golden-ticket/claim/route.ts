@@ -292,9 +292,7 @@ export async function POST(req: NextRequest) {
             if (nodeInfoRes.ok) {
                 const nodeData = await nodeInfoRes.json();
                 aztecBlockNum = nodeData?.result || 0;
-                if (aztecBlockNum > 0) {
-                    aztecExplorerUrl = `https://testnet.aztecscan.xyz/block/${aztecBlockNum}`;
-                }
+                aztecExplorerUrl = `https://testnet.aztecscan.xyz`;
             }
         } catch (e) {
             console.warn('[GoldenTicket] Failed to anchor to Aztec Testnet block:', e);

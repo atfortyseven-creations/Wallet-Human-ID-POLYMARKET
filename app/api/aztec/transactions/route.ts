@@ -44,10 +44,8 @@ export async function GET(req: Request) {
       timestamp:   tx.timestamp.toISOString(),
       blockNumber: tx.blockNumber?.toString() ?? '0',
       explorerUrl: (tx.metadata as any)?.explorerUrl
-        ? ((tx.metadata as any).explorerUrl as string).replace(/\/tx\/0x[a-fA-F0-9]+/, tx.blockNumber ? `/block/${tx.blockNumber}` : '')
-        : (tx.blockNumber 
-            ? `https://testnet.aztecscan.xyz/block/${tx.blockNumber}`
-            : 'https://testnet.aztecscan.xyz'),
+        ? ((tx.metadata as any).explorerUrl as string).replace(/\/tx\/0x[a-fA-F0-9]+/, '')
+        : 'https://testnet.aztecscan.xyz',
     }));
 
     return NextResponse.json({ transactions: formatted });

@@ -48,21 +48,25 @@ export async function GET(req: Request) {
 
     const formatted = txs.map(tx => {
       const meta = (tx.metadata as any) || {};
-      return {
-        id: tx.id,
-        txHash: tx.txHash,
-        type: tx.type,
-        status: tx.status,
-        amount: tx.amount,
-        token: tx.token,
-        fromAddress: tx.fromAddress,
-        toAddress: tx.toAddress,
-        timestamp: tx.timestamp.toISOString(),
-        chainId: tx.chainId,
-        blockNumber: tx.blockNumber?.toString() ?? '0',
-        explorerUrl: (tx.metadata as any)?.explorerUrl 
-            || (tx.txHash ? `https://testnet.aztecscan.xyz/tx/${tx.txHash}` : (tx.blockNumber ? `https://testnet.aztecscan.xyz/block/${tx.blockNumber}` : `https://testnet.aztecscan.xyz`)),
-        provenance: meta.provenance === true,
+        let rawExplorerUrl = (tx.metadata as any)?.explorerUrl || (tx.txHash ? `https://testnet.aztecscan.xyz/tx/${tx.txHash}` : `https://testnet.aztecscan.xyz`);
+        // If this is a virtual hash (bypassing native SDK), strip the /tx/ path so it doesn't 404 on the explorer
+        let safeExplorerUrl = typeof rawExplorerUrl === 'string' ? rawExplorerUrl.replace(/\/tx\/0x[a-fA-F0-9]+/, '') : rawExplorerUrl;
+        if (safeExplorerUrl.endsWith('https://testnet.aztecscan.xyz/tx/')) safeExplorerUrl = 'https://testnet.aztecscan.xyz';
+
+        return {
+          id: tx.id,
+          txHash: tx.txHash,
+          type: tx.type,
+          status: tx.status,
+          amount: tx.amount,
+          token: tx.token,
+          fromAddress: tx.fromAddress,
+          toAddress: tx.toAddress,
+          timestamp: tx.timestamp.toISOString(),
+          chainId: tx.chainId,
+          blockNumber: tx.blockNumber?.toString() ?? '0',
+          explorerUrl: safeExplorerUrl,
+          provenance: meta.provenance === true,
         fingerprint: meta.fingerprint ?? null,
         actionDetails: meta.actionDetails ?? null,
       };
