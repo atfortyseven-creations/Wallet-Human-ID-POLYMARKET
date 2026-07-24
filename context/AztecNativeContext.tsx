@@ -271,6 +271,14 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
     const handleStorage = (e: StorageEvent) => {
       if (e.key === 'aztec_session') {
         restoreFromStorage();
+      } else if (e.key === 'aztec_sync_trigger') {
+        try {
+          const stored = localStorage.getItem('aztec_session');
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (parsed.address) fetchLedgerState(parsed.address);
+          }
+        } catch {}
       }
     };
     window.addEventListener('storage', handleStorage);
@@ -662,12 +670,19 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
     } catch (e) {}
   }, [stopPolling]);
 
-  // ─── Manual Refresh ───────────────────────────────────────────────────────
+  // ─── Manual Refresh & Cross-Tab Sync ──────────────────────────────────────
+
+  const triggerCrossTabSync = useCallback(() => {
+    try {
+      localStorage.setItem('aztec_sync_trigger', Date.now().toString());
+    } catch {}
+  }, []);
 
   const refresh = useCallback(async () => {
     if (!aztecAddress) return;
     await fetchLedgerState(aztecAddress);
-  }, [aztecAddress, fetchLedgerState]);
+    triggerCrossTabSync();
+  }, [aztecAddress, fetchLedgerState, triggerCrossTabSync]);
 
   // ─── Spend QDs Utility ────────────────────────────────────────────────────
 
@@ -729,6 +744,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       }
 
       await fetchLedgerState(activeAddr); // reconcile with DB
+      triggerCrossTabSync();
       return true;
     } catch (err: any) {
       console.error("[Aztec Spend] Failed:", err);
@@ -739,7 +755,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
     } finally {
       setIsBusy(false);
     }
-  }, [aztecAddress, evmAddress, balance, fetchLedgerState]);
+  }, [aztecAddress, evmAddress, balance, fetchLedgerState, triggerCrossTabSync]);
 
   // ─── Context Value ────────────────────────────────────────────────────────
 
