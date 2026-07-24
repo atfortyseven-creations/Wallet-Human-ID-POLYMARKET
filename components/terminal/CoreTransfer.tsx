@@ -176,14 +176,20 @@ function ReceiptCard({ receipt, onClose }: { receipt: ReceiptData; onClose: () =
             </div>
 
             <div className="px-5 pb-5 pt-2 flex gap-3">
-                <a
-                    href={receipt.explorerUrl || `https://testnet.aztecscan.xyz`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 flex items-center justify-center gap-2 py-3 border border-black/10 rounded-2xl text-xs font-black uppercase tracking-widest text-black/60 hover:bg-black/5 transition-all"
-                >
-                    <ExternalLink size={12} /> View on AztecScan
-                </a>
+                {receipt.explorerUrl ? (
+                    <a
+                        href={receipt.explorerUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 flex items-center justify-center gap-2 py-3 border border-black/10 rounded-2xl text-xs font-black uppercase tracking-widest text-black/60 hover:bg-black/5 transition-all"
+                    >
+                        <ExternalLink size={12} /> View on AztecScan
+                    </a>
+                ) : (
+                    <div className="flex-1 flex items-center justify-center gap-2 py-3 border border-emerald-500/20 bg-emerald-50/50 rounded-2xl text-xs font-black uppercase tracking-widest text-emerald-600">
+                        <CheckCircle2 size={12} /> Ledger Verified
+                    </div>
+                )}
                 <button
                     onClick={onClose}
                     className="flex-1 py-3 bg-black text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-black/80 transition-all"

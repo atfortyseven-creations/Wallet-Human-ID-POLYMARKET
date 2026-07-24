@@ -194,7 +194,7 @@ export async function POST(req: NextRequest) {
         .update(`${fromAddr}:${toAddr}:${roundedAmount}:${Date.now()}:${liveBlockHash || blockNumber}`)
         .digest('hex');
       aztecTxHash = `0x${txEntropy}`;
-      explorerUrl = 'https://testnet.aztecscan.xyz';
+      explorerUrl = '';
         
       // Ensure the UI shows this as successfully integrated when in Pending Deploy mode
       onChain = false; 
@@ -240,8 +240,9 @@ export async function POST(req: NextRequest) {
       .digest('hex');
     
     aztecTxHash = `0x${txEntropy}`;
-    // Anchor to the real Aztec block to avoid 404s on the explorer since this tx is virtualized
-    explorerUrl = 'https://testnet.aztecscan.xyz';
+    // Virtualized mode: the transaction is executed on the Humanity Ledger, not AztecScan.
+    // Set explorerUrl to null so the frontend doesn't render broken AztecScan links.
+    explorerUrl = '';
     onChain = true; // Tell the UI and DB this is a real on-chain transaction
 
 
