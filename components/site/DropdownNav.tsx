@@ -248,7 +248,6 @@ export function DropdownNav() {
                                                     onClick={async () => {
                                                         setShowSettings(false);
                                                         await signOut();
-                                                        window.location.href = '/?login=true'; // Direct to landing with login trigger
                                                     }}
                                                     className="w-full px-4 py-3 text-left text-sm text-gray-300 hover:text-white hover:bg-white/5 rounded-2xl transition-all flex items-center justify-between group"
                                                 >
@@ -282,7 +281,6 @@ export function DropdownNav() {
                                                     onClick={async () => {
                                                         setShowSettings(false);
                                                         await signOut();
-                                                        window.location.href = '/'; // Nuclear redirection to landing
                                                     }}
                                                     className="w-full px-4 py-4 text-left text-sm text-red-500 hover:bg-indigo-500/10 rounded-2xl transition-all flex items-center gap-3 group"
                                                 >

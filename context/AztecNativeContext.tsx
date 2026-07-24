@@ -227,23 +227,56 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
   // Cleanup on unmount.
   useEffect(() => () => stopPolling(), [stopPolling]);
 
-  // ─── Auto-Restore Session ──────────────────────────────────────────────────
+  // ─── Auto-Restore Session & Cross-Tab Sync ─────────────────────────────────
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem('aztec_session');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (parsed.address && parsed.seed) {
-          setAztecAddress(parsed.address);
-          setSeed(parsed.seed);
-          setIsLoading(true);
-          fetchLedgerState(parsed.address).finally(() => setIsLoading(false));
-          startPolling(parsed.address);
-          return; // Already restored — skip email auto-derive below
+    const restoreFromStorage = () => {
+      try {
+        const stored = localStorage.getItem('aztec_session');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed.address && parsed.seed) {
+            setAztecAddress(prev => {
+              if (prev !== parsed.address) {
+                setSeed(parsed.seed);
+                setIsLoading(true);
+                fetchLedgerState(parsed.address).finally(() => setIsLoading(false));
+                startPolling(parsed.address);
+              }
+              return parsed.address;
+            });
+            return true; // Indicates session was found
+          }
+        } else {
+          // If storage was cleared in another tab, disconnect here
+          setAztecAddress(prev => {
+            if (prev) {
+               setSeed(null);
+               setBalance(0);
+               setHistory([]);
+               stopPolling();
+            }
+            return null;
+          });
         }
+      } catch (e) {
+        console.warn("Could not restore Aztec session", e);
       }
-    } catch (e) {
-      console.warn("Could not restore Aztec session", e);
+      return false;
+    };
+
+    // Initial restore on mount
+    const hasSession = restoreFromStorage();
+
+    // Listen for changes from other tabs
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'aztec_session') {
+        restoreFromStorage();
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+
+    if (hasSession) {
+      return () => window.removeEventListener('storage', handleStorage);
     }
 
     // ── Email / QR-session auto-derive ────────────────────────────────────────

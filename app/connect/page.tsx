@@ -59,7 +59,12 @@ function RealDeviceRouter() {
       hasLocalSession = sessionStorage.getItem('portfolio_unlocked') === 'true';
     } catch {}
 
-    const isAlreadyLinked = hasCookie || hasLocalSession;
+    let isGuarded = false;
+    try {
+      isGuarded = sessionStorage.getItem('__disconnected__') === '1' || localStorage.getItem('__disconnected__') === '1';
+    } catch {}
+
+    const isAlreadyLinked = (hasCookie || hasLocalSession) && !isGuarded;
 
     if (isAlreadyLinked && !hasUuid) {
       const next = urlParams.get('next') || urlParams.get('returnUrl') || urlParams.get('redirect');

@@ -2,16 +2,7 @@
 
 import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-
-// ─── Local AI-generated images (hosted in /public/) ────────────────────────
-const IMAGES = {
-  hero:           "/aztec-hero-banner.jpg",
-  zkProofs:       "/aztec-zk-proofs.jpg",
-  privacyComponents: "/aztec-privacy-components.jpg",
-  nullifierTree:  "/aztec-nullifier-tree.jpg",
-  kernelCircuit:  "/aztec-kernel-circuit.jpg",
-  executionFlow:  "/aztec-execution-flow.jpg",
-};
+import { MermaidDiagram } from "../privacy/MermaidDiagram";
 
 const fadeUp: any = {
   hidden: { opacity: 0, y: 50 },
@@ -19,14 +10,6 @@ const fadeUp: any = {
     opacity: 1,
     y: 0,
     transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1], delay },
-  }),
-};
-
-const fadeIn: any = {
-  hidden: { opacity: 0 },
-  visible: (delay: number = 0) => ({
-    opacity: 1,
-    transition: { duration: 0.7, ease: "easeOut", delay },
   }),
 };
 
@@ -46,36 +29,9 @@ function Section({ children, className = "" }: { children: React.ReactNode; clas
   );
 }
 
-function Img({ src, alt, caption, className = "" }: { src: string; alt: string; caption?: string; className?: string }) {
-  const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-  return (
-    <motion.figure
-      ref={ref}
-      initial="hidden"
-      animate={inView ? "visible" : "hidden"}
-      variants={fadeIn}
-      custom={0.1}
-      className={`w-full my-10 ${className}`}
-    >
-      <img
-        src={src}
-        alt={alt}
-        className="w-full h-auto object-cover rounded-[24px] border border-slate-200/50 shadow-[0_20px_60px_rgba(30,41,59,0.10)] transition-transform duration-700 hover:scale-[1.01]"
-        loading="lazy"
-      />
-      {caption && (
-        <figcaption className="mt-4 text-center text-[12px] text-slate-400 font-semibold tracking-wide">
-          {caption}
-        </figcaption>
-      )}
-    </motion.figure>
-  );
-}
-
 function Tag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 text-[10px] font-black uppercase tracking-[0.2em] mb-4 shadow-sm">
+    <span className="inline-block px-4 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-slate-800 text-[10px] font-black uppercase tracking-[0.2em] mb-4 shadow-sm">
       {children}
     </span>
   );
@@ -84,11 +40,11 @@ function Tag({ children }: { children: React.ReactNode }) {
 function PartLabel({ number, title }: { number: string; title: string }) {
   return (
     <div className="flex items-center gap-4 mb-10">
-      <div className="w-12 h-[2px] bg-indigo-200 rounded-full" />
-      <span className="text-[11px] font-black uppercase tracking-[0.25em] text-indigo-400">
+      <div className="w-12 h-[2px] bg-slate-300 rounded-full" />
+      <span className="text-[11px] font-black uppercase tracking-[0.25em] text-slate-500">
         Part {number}
       </span>
-      <div className="flex-1 h-[1px] bg-gradient-to-r from-indigo-100 to-transparent" />
+      <div className="flex-1 h-[1px] bg-gradient-to-r from-slate-200 to-transparent" />
     </div>
   );
 }
@@ -97,189 +53,12 @@ function BulletList({ items }: { items: React.ReactNode[] }) {
   return (
     <ul className="space-y-4 my-8">
       {items.map((item, i) => (
-        <li key={i} className="flex gap-4 text-[16px] md:text-[18px] text-slate-600 leading-relaxed items-start">
-          <span className="mt-[8px] w-[8px] h-[8px] rounded-full bg-indigo-400/50 shrink-0 shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
+        <li key={i} className="flex gap-4 text-[16px] md:text-[18px] text-slate-700 leading-relaxed items-start">
+          <span className="mt-[8px] w-[6px] h-[6px] bg-slate-800 shrink-0" />
           <span className="flex-1">{item}</span>
         </li>
       ))}
     </ul>
-  );
-}
-
-// ─── Inline Privacy Components Diagram (replaces Mermaid) ────────────────────
-function PrivacyComponentsDiagram() {
-  return (
-    <div className="w-full rounded-[28px] border border-slate-100 bg-white p-10 shadow-sm">
-      <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-8 text-center">
-        Programmable Blockchain Privacy = Data Privacy + Confidentiality
-      </p>
-      <div className="flex flex-col md:flex-row items-center justify-center gap-6">
-        {/* Data Privacy */}
-        <div className="flex-1 rounded-[20px] bg-indigo-50 border border-indigo-200 p-8 text-center">
-          <div className="w-12 h-12 rounded-full bg-indigo-600 flex items-center justify-center mx-auto mb-4">
-            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
-          </div>
-          <h6 className="text-[14px] font-black uppercase tracking-wide text-indigo-900 mb-3">Data Privacy</h6>
-          <p className="text-[13px] text-indigo-700 leading-relaxed">
-            Encrypted state owned by the user. Hidden from the external world and from the network itself.
-          </p>
-        </div>
-
-        {/* Arrow */}
-        <div className="flex flex-col items-center gap-2 text-indigo-300 flex-shrink-0">
-          <svg className="w-8 h-8 rotate-90 md:rotate-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0l3-3m-3 3l-3-3M5 12h14" />
-          </svg>
-          <span className="text-[9px] font-black uppercase tracking-widest text-indigo-300">combined</span>
-        </div>
-
-        {/* Confidentiality */}
-        <div className="flex-1 rounded-[20px] bg-purple-50 border border-purple-200 p-8 text-center">
-          <div className="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center mx-auto mb-4">
-            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
-          </div>
-          <h6 className="text-[14px] font-black uppercase tracking-wide text-purple-900 mb-3">Confidentiality</h6>
-          <p className="text-[13px] text-purple-700 leading-relaxed">
-            Private encrypted execution. Functions run without exposing their inputs to unauthorized parties.
-          </p>
-        </div>
-
-        {/* Arrow */}
-        <div className="flex flex-col items-center gap-2 text-slate-300 flex-shrink-0">
-          <svg className="w-8 h-8 rotate-90 md:rotate-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0l3-3m-3 3l-3-3M5 12h14" />
-          </svg>
-          <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">equals</span>
-        </div>
-
-        {/* Result */}
-        <div className="flex-1 rounded-[20px] bg-gradient-to-br from-indigo-600 to-purple-700 p-8 text-center shadow-xl shadow-indigo-500/20">
-          <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-4">
-            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-          </div>
-          <h6 className="text-[14px] font-black uppercase tracking-wide text-white mb-3">Programmable Privacy</h6>
-          <p className="text-[13px] text-indigo-100 leading-relaxed">
-            The complete solution. Users control precisely what is revealed and to whom.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ─── Inline Execution Flow Diagram (replaces Mermaid) ─────────────────────────
-function ExecutionFlowDiagram() {
-  const steps = [
-    {
-      num: "01",
-      label: "User Device",
-      sub: "Execute private functions locally",
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-        </svg>
-      ),
-      color: "bg-slate-100 border-slate-200 text-slate-700",
-      iconBg: "bg-slate-700",
-    },
-    {
-      num: "02",
-      label: "Execution Trace",
-      sub: "Circuit witness generated",
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" />
-        </svg>
-      ),
-      color: "bg-indigo-50 border-indigo-200 text-indigo-800",
-      iconBg: "bg-indigo-600",
-    },
-    {
-      num: "03",
-      label: "ZK Proof",
-      sub: "UltraHonk SNARK generated on device",
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-        </svg>
-      ),
-      color: "bg-purple-50 border-purple-300 text-purple-900",
-      iconBg: "bg-purple-600",
-      highlight: true,
-    },
-    {
-      num: "04",
-      label: "Sequencer",
-      sub: "Orders transactions, runs public functions",
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-        </svg>
-      ),
-      color: "bg-slate-100 border-slate-200 text-slate-700",
-      iconBg: "bg-slate-600",
-    },
-    {
-      num: "05",
-      label: "Rollup Circuit",
-      sub: "Recursive proof compression",
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
-        </svg>
-      ),
-      color: "bg-indigo-50 border-indigo-200 text-indigo-800",
-      iconBg: "bg-indigo-700",
-    },
-    {
-      num: "06",
-      label: "Ethereum L1",
-      sub: "Final proof verified on-chain",
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
-      color: "bg-emerald-50 border-emerald-200 text-emerald-900",
-      iconBg: "bg-emerald-600",
-    },
-  ];
-
-  return (
-    <div className="w-full rounded-[28px] border border-slate-100 bg-white p-8 md:p-12 shadow-sm">
-      <p className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 mb-10 text-center">
-        Smart Contract Execution Flow
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {steps.map((step, i) => (
-          <div key={i} className="relative">
-            <div className={`rounded-[16px] border p-6 flex flex-col gap-3 ${step.color} ${step.highlight ? "ring-2 ring-purple-400/40 shadow-lg shadow-purple-500/10" : ""}`}>
-              <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white flex-shrink-0 ${step.iconBg}`}>
-                  {step.icon}
-                </div>
-                <span className="text-[10px] font-black tracking-widest text-slate-400">{step.num}</span>
-              </div>
-              <h6 className="text-[15px] font-black tracking-tight">{step.label}</h6>
-              <p className="text-[12px] leading-relaxed opacity-80">{step.sub}</p>
-            </div>
-            {i < steps.length - 1 && i !== 2 && (
-              <div className="hidden md:block absolute top-1/2 -right-2 z-10 w-4 h-4 -translate-y-1/2">
-                <svg className="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
   );
 }
 
@@ -321,11 +100,7 @@ export function AztecWTFSection() {
         </motion.div>
 
         {/* Hero image */}
-        <Img
-          src={IMAGES.hero}
-          alt="Understanding Aztec Network — Privacy, Programmability, Composability"
-          className="mb-24 md:mb-32"
-        />
+        <div className="w-full max-w-4xl mx-auto my-16 p-8 bg-white border border-slate-200 rounded-[24px] shadow-sm"><MermaidDiagram chart={`\n    flowchart TD\n      classDef public fill:#ffffff,stroke:#111111,stroke-width:2px,color:#111111\n      classDef private fill:#ffffff,stroke:#111111,stroke-width:2px,stroke-dasharray: 5 5,color:#111111\n      classDef action fill:#f9f9f9,stroke:#111111,stroke-width:1px,color:#111111\n\n      User((User))\n      \n      subgraph Aztec["Aztec Network"]\n        direction LR\n        PState[(Private State)]:::private\n        PuState[(Public State)]:::public\n      end\n      \n      User -- "Shields Assets" --> PState\n      PState -- "Private Transfers" --> PState\n      User -- "Public Transfers" --> PuState\n      PState -- "Unshields Assets" --> PuState\n  `} caption="Understanding Aztec Network: Programmability & Privacy" /></div>
 
         {/* ─── TL;DR ─────────────────────────────────────────────────── */}
         <Section className="mb-24">
@@ -442,7 +217,7 @@ export function AztecWTFSection() {
           </h4>
         </Section>
 
-        <Img src={IMAGES.zkProofs} alt="Zero Knowledge Proofs vs Privacy — What ZK Proofs really do" caption="ZK proofs enable scalability and computation integrity — not privacy by default" />
+        <div className="w-full max-w-4xl mx-auto my-16 p-8 bg-white border border-slate-200 rounded-[24px] shadow-sm"><MermaidDiagram chart={`\n    flowchart LR\n      classDef nofill fill:#ffffff,stroke:#111111,stroke-width:2px,color:#111111\n      \n      subgraph ZK["Zero-Knowledge Proofs"]\n        direction TB\n        Scale["Scalability (Rollups)"]:::nofill\n        Integrity["Computation Integrity"]:::nofill\n      end\n      \n      subgraph Privacy["Privacy"]\n        direction TB\n        Conf["Confidentiality"]:::nofill\n        Hide["Data Hiding"]:::nofill\n      end\n      \n      ZK -. "Do NOT provide by default" .-> Privacy\n  `} caption="ZK Proofs provide Scalability & Integrity, not Privacy by default" /></div>
 
         <Section className="mb-16">
           <div className="bg-white border border-rose-100 rounded-[24px] p-8 md:p-12 mb-8 shadow-sm">
@@ -512,12 +287,7 @@ export function AztecWTFSection() {
           {/* Premium inline diagram */}
           <PrivacyComponentsDiagram />
 
-          <Img
-            src={IMAGES.privacyComponents}
-            alt="Data Privacy and Confidentiality — The two pillars of programmable blockchain privacy"
-            caption="The two architectural pillars of programmable blockchain privacy"
-            className="mt-10"
-          />
+          
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 mt-10">
             <div className="bg-indigo-50 rounded-[24px] p-8 border border-indigo-100">
@@ -597,7 +367,7 @@ export function AztecWTFSection() {
           </p>
         </Section>
 
-        <Img src={IMAGES.nullifierTree} alt="Aztec Nullifier Tree and UTXO structure" caption="The Aztec Nullifier Set, an append only structure for private state deletion" />
+        <div className="w-full max-w-4xl mx-auto my-16 p-8 bg-white border border-slate-200 rounded-[24px] shadow-sm"><MermaidDiagram chart={`\n    flowchart TD\n      classDef tree fill:#ffffff,stroke:#111111,stroke-width:2px,color:#111111\n      classDef leaf fill:#f9f9f9,stroke:#111111,stroke-width:1px,color:#111111\n      \n      Root["Nullifier Tree Root"]:::tree\n      \n      N1["Node 1"]:::tree\n      N2["Node 2"]:::tree\n      Root --> N1\n      Root --> N2\n      \n      L1["Nullifier A"]:::leaf\n      L2["Nullifier B"]:::leaf\n      L3["Empty"]:::leaf\n      L4["Empty"]:::leaf\n      \n      N1 --> L1\n      N1 --> L2\n      N2 --> L3\n      N2 --> L4\n      \n      style Root font-weight:bold\n  `} caption="The Aztec Nullifier Set: An append-only structure for private state deletion" /></div>
 
         <Section className="mb-10">
           <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed">
@@ -676,12 +446,7 @@ export function AztecWTFSection() {
           {/* Premium inline execution flow diagram */}
           <ExecutionFlowDiagram />
 
-          <Img
-            src={IMAGES.executionFlow}
-            alt="Aztec Network smart contract execution architecture diagram"
-            caption="End to end flow: from user device to Ethereum L1 finality"
-            className="mt-10"
-          />
+          
 
           <h5 className="text-[24px] font-bold text-slate-900 mb-6 mt-12">Private functions to zk SNARK circuits</h5>
           <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-6">
@@ -703,7 +468,7 @@ export function AztecWTFSection() {
           </div>
         </Section>
 
-        <Img src={IMAGES.kernelCircuit} alt="How the Private Kernel Circuit works in Aztec Network" caption="The Private Kernel Circuit runs locally. Private inputs never leave the user's device." />
+        <div className="w-full max-w-4xl mx-auto my-16 p-8 bg-white border border-slate-200 rounded-[24px] shadow-sm"><MermaidDiagram chart={`\n    sequenceDiagram\n      actor User as User Device\n      participant Kernel as Private Kernel Circuit\n      participant Rollup as Rollup Circuit (Sequencer)\n      participant L1 as Ethereum L1\n      \n      User->>Kernel: 1. Execute Private Function locally\n      Kernel->>Kernel: 2. Generate ZK Proof of Execution\n      Kernel->>Rollup: 3. Send Proof + Public Inputs (No Private Data)\n      Rollup->>Rollup: 4. Verify Proof & Merge with others\n      Rollup->>L1: 5. Post Rollup Proof to L1\n      L1->>L1: 6. Verify Rollup Proof\n  `} caption="Private Kernel Circuit: Local execution ensures private inputs never leave the device" /></div>
 
         <Section className="mb-20">
           <h5 className="text-[24px] font-bold text-slate-900 mb-6">How the rollup circuit works</h5>
@@ -774,3 +539,8 @@ export function AztecWTFSection() {
     </section>
   );
 }
+
+
+function PrivacyComponentsDiagram() { return <div className="w-full max-w-4xl mx-auto my-16 p-8 bg-white border border-slate-200 rounded-[24px] shadow-sm"><MermaidDiagram chart={`\n    flowchart LR\n      classDef comp fill:#ffffff,stroke:#111111,stroke-width:2px,color:#111111\n      \n      P["Programmable Privacy"]:::comp\n      D["Data Privacy"]:::comp\n      C["Confidentiality"]:::comp\n      \n      P --> D\n      P --> C\n  `} caption="The two architectural pillars of programmable blockchain privacy" /></div>; }
+
+function ExecutionFlowDiagram() { return <div className="w-full max-w-4xl mx-auto my-16 p-8 bg-white border border-slate-200 rounded-[24px] shadow-sm"><MermaidDiagram chart={`\n    flowchart TD\n      classDef node fill:#ffffff,stroke:#111111,stroke-width:2px,color:#111111\n      \n      A["1. Private Function (User Device)"]:::node\n      B["2. Private Kernel Circuit (User Device)"]:::node\n      C["3. Sequencer Mempool"]:::node\n      D["4. Rollup Circuit (Sequencer)"]:::node\n      E["5. Ethereum L1 Verification"]:::node\n      \n      A --> B\n      B --> C\n      C --> D\n      D --> E\n  `} caption="End to end flow: from user device to Ethereum L1 finality" /></div>; }

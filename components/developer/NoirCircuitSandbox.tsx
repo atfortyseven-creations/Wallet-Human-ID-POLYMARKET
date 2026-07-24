@@ -144,7 +144,7 @@ interface CompileResult {
 }
 
 export function NoirCircuitSandbox() {
-  const { spendQDs } = useAztecNative();
+  const { balance, spendQDs } = useAztecNative();
   const [noirCode, setNoirCode] = useState(CIRCUIT_EXAMPLES[0].code);
   const [selectedExample, setSelectedExample] = useState(0);
 
@@ -315,7 +315,7 @@ export function NoirCircuitSandbox() {
     } finally {
       setRunning(false);
     }
-  }, [noirCode, resetAll, updateStage, addLog]);
+  }, [noirCode, resetAll, updateStage, addLog, spendQDs]);
 
   const handleFormat = useCallback(() => {
     addLog("> FORMATTING CIRCUIT AST...", "system");
@@ -412,7 +412,10 @@ contract ZKVerifier {
           <Terminal size={18} className="text-black" />
           <span className="font-bold text-sm tracking-widest uppercase">Noir Circuit Lab</span>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          <div className="mr-3 px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded font-bold text-[10px] tracking-widest uppercase shadow-sm">
+            {balance !== undefined ? `${balance.toFixed(2)} QDs` : '...'}
+          </div>
           <button
             id="btn-format"
             onClick={handleFormat}
