@@ -9,7 +9,8 @@ import {
   ZkRollupComparisonDiagram,
   UtxoArchitectureDiagram,
   TransactionLifecycleDiagram,
-  PrivacyComponentsDiagram
+  PrivacyComponentsDiagram,
+  ExecutionFlowDiagram
 } from './CustomDiagrams';
 
 const fadeUp: any = {
@@ -96,7 +97,7 @@ export function AztecWTFSection() {
     <section
       ref={heroRef}
       id="wtf-is-aztec"
-      className="w-full bg-[#FAFAFC] py-24 md:py-40 relative overflow-hidden"
+      className="w-full bg-[#FAFAFC] py-16 md:py-24 relative overflow-hidden"
     >
       {/* Premium subtle background glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none" />
@@ -108,7 +109,7 @@ export function AztecWTFSection() {
           initial="hidden"
           animate={heroInView ? "visible" : "hidden"}
           variants={fadeUp}
-          className="text-center mb-20 md:mb-32"
+          className="text-center mb-12 md:mb-16"
         >
           <Tag>Aztec Network Education</Tag>
           <h2
@@ -129,7 +130,7 @@ export function AztecWTFSection() {
         <ArchitectureDiagram />
 
         {/* ─── TL;DR ─────────────────────────────────────────────────── */}
-        <Section className="mb-24">
+        <Section className="mb-12">
           <div className="bg-white/60 backdrop-blur-3xl border border-white/80 shadow-[0_24px_80px_rgba(0,0,0,0.04)] rounded-[32px] p-10 md:p-16 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
             <h3 className="text-[14px] font-black uppercase tracking-[0.2em] text-indigo-400 mb-8">TL;DR</h3>
@@ -155,7 +156,7 @@ export function AztecWTFSection() {
         </Section>
 
         {/* Table of contents */}
-        <Section className="mb-24">
+        <Section className="mb-12">
           <div className="bg-white rounded-[24px] p-10 shadow-[0_8px_30px_rgba(0,0,0,0.03)] border border-slate-100">
             <h3 className="text-[12px] font-black uppercase tracking-[0.2em] text-slate-400 mb-8">Contents</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -184,7 +185,7 @@ export function AztecWTFSection() {
         </Section>
 
         {/* ─── PART 1 ────────────────────────────────────────────────── */}
-        <Section className="mb-16">
+        <Section className="mb-8">
           <PartLabel number="1" title="Introduction to privacy" />
           <h3
             className="text-[40px] md:text-[64px] font-bold tracking-tight text-slate-900 mb-8 leading-[1.05]"
@@ -195,7 +196,7 @@ export function AztecWTFSection() {
         </Section>
 
         {/* Do we need privacy? */}
-        <Section className="mb-10">
+        <Section className="mb-8">
           <h4 className="text-[28px] md:text-[36px] font-bold text-slate-900 mb-6 tracking-tight">
             Do we need privacy?
           </h4>
@@ -571,26 +572,3 @@ export function AztecWTFSection() {
 
 
 
-
-function ExecutionFlowDiagram() {
-  return (
-    <MermaidDiagram chart={`
-flowchart LR
-  A("Private Function
-(Noir Smart Contract)")
-  B("Private Kernel Circuit
-(Client-Side ZK Prover)")
-  C{"Sequencer Mempool
-(Validates Proofs)"}
-  D("Rollup Circuit
-(Aggregates Proofs)")
-  E[("Ethereum L1
-(Final Verification)")]
-  
-  A -- "Executes" --> B
-  B -- "Submits TX" --> C
-  C -- "Orders" --> D
-  D -- "Posts Root" --> E
-`} caption="End-to-End Execution Flow" />
-  );
-}
