@@ -100,7 +100,20 @@ export function AztecWTFSection() {
         </motion.div>
 
         {/* Hero image */}
-        <div className="w-full max-w-4xl mx-auto my-16 p-8 bg-white border border-slate-200 rounded-[24px] shadow-sm"><MermaidDiagram chart={`\n    flowchart TD\n      classDef public fill:#ffffff,stroke:#111111,stroke-width:2px,color:#111111\n      classDef private fill:#ffffff,stroke:#111111,stroke-width:2px,stroke-dasharray: 5 5,color:#111111\n      classDef action fill:#f9f9f9,stroke:#111111,stroke-width:1px,color:#111111\n\n      User((User))\n      \n      subgraph Aztec["Aztec Network"]\n        direction LR\n        PState[(Private State)]:::private\n        PuState[(Public State)]:::public\n      end\n      \n      User -- "Shields Assets" --> PState\n      PState -- "Private Transfers" --> PState\n      User -- "Public Transfers" --> PuState\n      PState -- "Unshields Assets" --> PuState\n  `} caption="Understanding Aztec Network: Programmability & Privacy" /></div>
+        <div className="w-full max-w-4xl mx-auto my-16 p-8 bg-white border border-slate-200 rounded-[24px] shadow-sm"><MermaidDiagram chart={`
+    flowchart TD
+      User((User))
+      
+      subgraph Aztec["Aztec Network"]
+        PState[(Private State)]
+        PuState[(Public State)]
+      end
+      
+      User -- "Shields Assets" --> PState
+      PState -- "Private Transfers" --> PState
+      User -- "Public Transfers" --> PuState
+      PState -- "Unshields Assets" --> PuState
+  `} caption="Understanding Aztec Network: Programmability & Privacy" /></div>
 
         {/* ─── TL;DR ─────────────────────────────────────────────────── */}
         <Section className="mb-24">
@@ -217,7 +230,20 @@ export function AztecWTFSection() {
           </h4>
         </Section>
 
-        <div className="w-full max-w-4xl mx-auto my-16 p-8 bg-white border border-slate-200 rounded-[24px] shadow-sm"><MermaidDiagram chart={`\n    flowchart LR\n      classDef nofill fill:#ffffff,stroke:#111111,stroke-width:2px,color:#111111\n      \n      subgraph ZK["Zero-Knowledge Proofs"]\n        direction TB\n        Scale["Scalability (Rollups)"]:::nofill\n        Integrity["Computation Integrity"]:::nofill\n      end\n      \n      subgraph Privacy["Privacy"]\n        direction TB\n        Conf["Confidentiality"]:::nofill\n        Hide["Data Hiding"]:::nofill\n      end\n      \n      ZK -. "Do NOT provide by default" .-> Privacy\n  `} caption="ZK Proofs provide Scalability & Integrity, not Privacy by default" /></div>
+        <div className="w-full max-w-4xl mx-auto my-16 p-8 bg-white border border-slate-200 rounded-[24px] shadow-sm"><MermaidDiagram chart={`
+    flowchart LR
+      subgraph ZK["Zero-Knowledge Proofs"]
+        Scale["Scalability (Rollups)"]
+        Integrity["Computation Integrity"]
+      end
+      
+      subgraph Privacy["Privacy"]
+        Conf["Confidentiality"]
+        Hide["Data Hiding"]
+      end
+      
+      ZK -. "Do NOT provide by default" .-> Privacy
+  `} caption="ZK Proofs provide Scalability & Integrity, not Privacy by default" /></div>
 
         <Section className="mb-16">
           <div className="bg-white border border-rose-100 rounded-[24px] p-8 md:p-12 mb-8 shadow-sm">
@@ -367,7 +393,25 @@ export function AztecWTFSection() {
           </p>
         </Section>
 
-        <div className="w-full max-w-4xl mx-auto my-16 p-8 bg-white border border-slate-200 rounded-[24px] shadow-sm"><MermaidDiagram chart={`\n    flowchart TD\n      classDef tree fill:#ffffff,stroke:#111111,stroke-width:2px,color:#111111\n      classDef leaf fill:#f9f9f9,stroke:#111111,stroke-width:1px,color:#111111\n      \n      Root["Nullifier Tree Root"]:::tree\n      \n      N1["Node 1"]:::tree\n      N2["Node 2"]:::tree\n      Root --> N1\n      Root --> N2\n      \n      L1["Nullifier A"]:::leaf\n      L2["Nullifier B"]:::leaf\n      L3["Empty"]:::leaf\n      L4["Empty"]:::leaf\n      \n      N1 --> L1\n      N1 --> L2\n      N2 --> L3\n      N2 --> L4\n      \n      style Root font-weight:bold\n  `} caption="The Aztec Nullifier Set: An append-only structure for private state deletion" /></div>
+        <div className="w-full max-w-4xl mx-auto my-16 p-8 bg-white border border-slate-200 rounded-[24px] shadow-sm"><MermaidDiagram chart={`
+    flowchart TD
+      Root["Nullifier Tree Root"]
+      
+      N1["Node 1"]
+      N2["Node 2"]
+      Root --> N1
+      Root --> N2
+      
+      L1["Nullifier A"]
+      L2["Nullifier B"]
+      L3["Empty"]
+      L4["Empty"]
+      
+      N1 --> L1
+      N1 --> L2
+      N2 --> L3
+      N2 --> L4
+  `} caption="The Aztec Nullifier Set: An append-only structure for private state deletion" /></div>
 
         <Section className="mb-10">
           <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed">
@@ -468,7 +512,20 @@ export function AztecWTFSection() {
           </div>
         </Section>
 
-        <div className="w-full max-w-4xl mx-auto my-16 p-8 bg-white border border-slate-200 rounded-[24px] shadow-sm"><MermaidDiagram chart={`\n    sequenceDiagram\n      actor User as User Device\n      participant Kernel as Private Kernel Circuit\n      participant Rollup as Rollup Circuit (Sequencer)\n      participant L1 as Ethereum L1\n      \n      User->>Kernel: 1. Execute Private Function locally\n      Kernel->>Kernel: 2. Generate ZK Proof of Execution\n      Kernel->>Rollup: 3. Send Proof + Public Inputs (No Private Data)\n      Rollup->>Rollup: 4. Verify Proof & Merge with others\n      Rollup->>L1: 5. Post Rollup Proof to L1\n      L1->>L1: 6. Verify Rollup Proof\n  `} caption="Private Kernel Circuit: Local execution ensures private inputs never leave the device" /></div>
+        <div className="w-full max-w-4xl mx-auto my-16 p-8 bg-white border border-slate-200 rounded-[24px] shadow-sm"><MermaidDiagram chart={`
+    sequenceDiagram
+      actor User as User Device
+      participant Kernel as Private Kernel Circuit
+      participant Rollup as Rollup Circuit (Sequencer)
+      participant L1 as Ethereum L1
+      
+      User->>Kernel: 1. Execute Private Function locally
+      Kernel->>Kernel: 2. Generate ZK Proof of Execution
+      Kernel->>Rollup: 3. Send Proof + Public Inputs (No Private Data)
+      Rollup->>Rollup: 4. Verify Proof & Merge with others
+      Rollup->>L1: 5. Post Rollup Proof to L1
+      L1->>L1: 6. Verify Rollup Proof
+  `} caption="Private Kernel Circuit: Local execution ensures private inputs never leave the device" /></div>
 
         <Section className="mb-20">
           <h5 className="text-[24px] font-bold text-slate-900 mb-6">How the rollup circuit works</h5>
@@ -541,6 +598,26 @@ export function AztecWTFSection() {
 }
 
 
-function PrivacyComponentsDiagram() { return <div className="w-full max-w-4xl mx-auto my-16 p-8 bg-white border border-slate-200 rounded-[24px] shadow-sm"><MermaidDiagram chart={`\n    flowchart LR\n      classDef comp fill:#ffffff,stroke:#111111,stroke-width:2px,color:#111111\n      \n      P["Programmable Privacy"]:::comp\n      D["Data Privacy"]:::comp\n      C["Confidentiality"]:::comp\n      \n      P --> D\n      P --> C\n  `} caption="The two architectural pillars of programmable blockchain privacy" /></div>; }
+function PrivacyComponentsDiagram() { return <div className="w-full max-w-4xl mx-auto my-16 p-8 bg-white border border-slate-200 rounded-[24px] shadow-sm"><MermaidDiagram chart={`
+    flowchart LR
+      P["Programmable Privacy"]
+      D["Data Privacy"]
+      C["Confidentiality"]
+      
+      P --> D
+      P --> C
+  `} caption="The two architectural pillars of programmable blockchain privacy" /></div>; }
 
-function ExecutionFlowDiagram() { return <div className="w-full max-w-4xl mx-auto my-16 p-8 bg-white border border-slate-200 rounded-[24px] shadow-sm"><MermaidDiagram chart={`\n    flowchart TD\n      classDef node fill:#ffffff,stroke:#111111,stroke-width:2px,color:#111111\n      \n      A["1. Private Function (User Device)"]:::node\n      B["2. Private Kernel Circuit (User Device)"]:::node\n      C["3. Sequencer Mempool"]:::node\n      D["4. Rollup Circuit (Sequencer)"]:::node\n      E["5. Ethereum L1 Verification"]:::node\n      \n      A --> B\n      B --> C\n      C --> D\n      D --> E\n  `} caption="End to end flow: from user device to Ethereum L1 finality" /></div>; }
+function ExecutionFlowDiagram() { return <div className="w-full max-w-4xl mx-auto my-16 p-8 bg-white border border-slate-200 rounded-[24px] shadow-sm"><MermaidDiagram chart={`
+    flowchart TD
+      A["1. Private Function (User Device)"]
+      B["2. Private Kernel Circuit (User Device)"]
+      C["3. Sequencer Mempool"]
+      D["4. Rollup Circuit (Sequencer)"]
+      E["5. Ethereum L1 Verification"]
+      
+      A --> B
+      B --> C
+      C --> D
+      D --> E
+  `} caption="End to end flow: from user device to Ethereum L1 finality" /></div>; }

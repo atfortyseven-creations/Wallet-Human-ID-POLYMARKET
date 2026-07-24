@@ -91,14 +91,15 @@ export function MermaidDiagram({ chart, caption }: MermaidDiagramProps) {
         const { svg: rendered } = await mermaid.render(diagramId, chart.trim());
 
         if (!cancelled) {
-          // Fully responsive patch:
-          // 1. Strip any inline max-width / width / height style that forces overflow
-          // 2. Set explicit width=100% so SVG fills the container
-          // 3. Preserve viewBox so browsers can scale proportionally
+          // Responsive SVG patch:
+          // 1. Remove max-width, width, and height so inline attributes don't conflict
+          // 2. Keep the native viewBox for proportional scaling
+          // 3. Inject responsive styles (min-width for mobile scrolling, max-width for desktop fit)
           const patched = rendered
-            .replace(/\sstyle="[^"]*max-width[^"]*"/g, '')
             .replace(/\sheight="[^"]*"/g, '')
-            .replace(/\swidth="[^"]*"/g, ' width="100%"');
+            .replace(/\swidth="[^"]*"/g, '')
+            .replace(/\sstyle="[^"]*"/g, '') // remove mermaid's injected max-width style
+            .replace(/<svg\s/, '<svg style="min-width: 600px; max-width: 100%; height: auto;" ');
 
           setSvg(patched);
           setError(null);
