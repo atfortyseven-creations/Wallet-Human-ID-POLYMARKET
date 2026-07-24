@@ -211,6 +211,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const myVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const remoteAudioRef = useRef<HTMLAudioElement>(null);
+  // Call Duration State
+  const [callDurationSeconds, setCallDurationSeconds] = useState(0);
+  const callDurationTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   // Ringtone state
   const ringtoneRef = useRef<ReturnType<typeof setInterval> | null>(null);
   // ─── Backward compat shims so existing JSX works unchanged ──────────────────
@@ -230,6 +234,36 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       if (b) setBlockedPeers(new Set(JSON.parse(b)));
     } catch {}
   }, []);
+
+  // ─── Call Timer Effect ────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (callState === 'active') {
+      setCallDurationSeconds(0);
+      callDurationTimerRef.current = setInterval(() => {
+        setCallDurationSeconds(prev => prev + 1);
+      }, 1000);
+    } else {
+      if (callDurationTimerRef.current) {
+        clearInterval(callDurationTimerRef.current);
+        callDurationTimerRef.current = null;
+      }
+      if (callState === 'idle') {
+        setCallDurationSeconds(0);
+      }
+    }
+    return () => {
+      if (callDurationTimerRef.current) {
+        clearInterval(callDurationTimerRef.current);
+        callDurationTimerRef.current = null;
+      }
+    };
+  }, [callState]);
+
+  const formatDuration = (totalSeconds: number) => {
+    const m = Math.floor(totalSeconds / 60);
+    const s = totalSeconds % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
 
   const toggleBlock = (peer: string) => {
     setBlockedPeers(prev => {
@@ -2620,7 +2654,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                     {remoteStream ? (
                       <span className="text-emerald-400 text-xs font-mono uppercase tracking-[0.3em] flex items-center gap-1.5 justify-center">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        Audio Connected
+                        Audio Connected • {formatDuration(callDurationSeconds)}
                       </span>
                     ) : (
                       <span className="text-yellow-400/70 text-xs font-mono uppercase tracking-widest animate-pulse">Establishing audio...</span>
@@ -2642,9 +2676,9 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 <p className="text-white/40 text-[10px] font-mono mt-0.5">{callType === 'video' ? '📹 Video Call' : '🎙️ Audio Call'}</p>
               </div>
             </div>
-            <div className="bg-black/40 backdrop-blur-xl rounded-2xl px-3 py-2 border border-white/10">
+            <div className="bg-black/40 backdrop-blur-xl rounded-2xl px-3 py-2 border border-white/10 flex items-center justify-center min-w-[80px]">
               <span className="text-emerald-400 text-[11px] font-mono font-bold uppercase tracking-wider">
-                {remoteStream ? '● LIVE' : 'Connecting...'}
+                {remoteStream ? `● LIVE | ${formatDuration(callDurationSeconds)}` : 'Connecting...'}
               </span>
             </div>
           </div>
