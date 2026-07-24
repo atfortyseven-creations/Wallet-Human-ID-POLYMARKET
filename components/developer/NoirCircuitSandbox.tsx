@@ -178,9 +178,17 @@ export function NoirCircuitSandbox() {
   }, []);
 
   const simulateCompilation = useCallback(async () => {
+    if (!aztecAddress) {
+      toast.error("Aztec Identity Required", { description: "You must claim your Aztec Identity to interact with the ZK Sandbox." });
+      return;
+    }
+    if (balance < 1) {
+      toast.error("Insufficient QDs", { description: "You need 1 QD to compile and prove Noir circuits." });
+      return;
+    }
     const paid = await spendQDs(1, "Noir Compilation & Proving");
     if (!paid) {
-      toast.error("Insufficient QDs", { description: "You need 1 QD to compile and prove Noir circuits." });
+      // spendQDs already toasts any server errors (e.g. rate limits, etc)
       return;
     }
 

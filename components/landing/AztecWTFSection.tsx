@@ -102,18 +102,34 @@ export function AztecWTFSection() {
         {/* Hero image */}
         <MermaidDiagram chart={`
 flowchart TD
-  User((User))
-  
-  subgraph Aztec["Aztec Network"]
-    PState[(Private State)]
-    PuState[(Public State)]
+  subgraph Ethereum["Ethereum L1 (Fully Public)"]
+    direction LR
+    EthState[(Public State)]
+    SmartContracts["Smart Contracts"]
+    EthState <--> SmartContracts
   end
   
-  User -- Shields Assets --> PState
-  PState -- Private Transfers --> PState
-  User -- Public Transfers --> PuState
-  PState -- Unshields Assets --> PuState
-`} caption="Understanding Aztec Network: Programmability & Privacy" />
+  subgraph Aztec["Aztec Network L2 (Programmable Privacy)"]
+    direction TB
+    subgraph Private["Private Execution Environment"]
+      PState[(Encrypted State)]
+      User(("User Device
+(Noir Circuits)"))
+      User -- "Read/Write
+(Encrypted)" <--> PState
+    end
+    subgraph Public["Public Execution Environment"]
+      PuState[(Public State)]
+      Sequencer["Aztec Sequencer"]
+      Sequencer -- "Read/Write
+(Cleartext)" <--> PuState
+    end
+    Private -- "ZK Proofs
+(Zero Data Leakage)" --> Public
+  end
+  
+  Aztec -- "Rollup Proofs & State Roots" --> Ethereum
+`} caption="Aztec Network Architecture: Combining L1 Security with L2 Programmable Privacy" />
 
         {/* ─── TL;DR ─────────────────────────────────────────────────── */}
         <Section className="mb-24">
@@ -232,18 +248,29 @@ flowchart TD
 
         <MermaidDiagram chart={`
 flowchart LR
-  subgraph ZK["Zero-Knowledge Proofs"]
-    Scale["Scalability via Rollups"]
-    Integrity["Computation Integrity"]
+  subgraph standard["Standard ZK Rollups (e.g. zkSync, Starknet)"]
+    direction TB
+    A["Public Inputs"] --> ZK1{"ZK Prover"}
+    ZK1 --> B("Succinct Proof
+(Scalability)")
+    ZK1 --> C("Computation Integrity
+(Correctness)")
+    B -. "Data is Public
+(No Privacy)" .-> D[("Public Ledger")]
   end
   
-  subgraph Privacy["Privacy"]
-    Conf["Confidentiality"]
-    Hide["Data Hiding"]
+  subgraph aztec["Aztec Privacy Rollup"]
+    direction TB
+    E["Private Inputs
+(User Secrets)"] --> ZK2{"Client-Side
+ZK Prover"}
+    ZK2 --> F("Succinct Proof")
+    ZK2 --> G("Data Hiding
+(Confidentiality)")
+    F -. "Data is Encrypted
+(Full Privacy)" .-> H[("Private State Tree")]
   end
-  
-  ZK -. Do NOT provide by default .-> Privacy
-`} caption="ZK Proofs provide Scalability & Integrity, not Privacy by default" />
+`} caption="Myth vs Reality: Standard ZK Rollups vs True Privacy Rollups" />
 
         <Section className="mb-16">
           <div className="bg-white border border-rose-100 rounded-[24px] p-8 md:p-12 mb-8 shadow-sm">
@@ -395,23 +422,30 @@ flowchart LR
 
         <MermaidDiagram chart={`
 flowchart TD
-  Root["Nullifier Tree Root"]
+  subgraph DataTree["Private State Tree (Append-Only)"]
+    D_Root(("State Root"))
+    D_Leaf1["Note A
+(Live)"]
+    D_Leaf2["Note B
+(Live)"]
+    D_Root --> D_Leaf1
+    D_Root --> D_Leaf2
+  end
   
-  N1["Node 1"]
-  N2["Node 2"]
-  Root --> N1
-  Root --> N2
+  subgraph NullifierTree["Nullifier Set (Deletion Tracking)"]
+    N_Root(("Nullifier Root"))
+    N_Leaf1["Nullifier for Note A
+(Prevents Double Spend)"]
+    N_Empty["Empty Leaf
+(Note B is Unspent)"]
+    N_Root --> N_Leaf1
+    N_Root --> N_Empty
+  end
   
-  L1["Nullifier A"]
-  L2["Nullifier B"]
-  L3["Empty"]
-  L4["Empty"]
+  D_Leaf1 -. "Derives via Secret Key" .-> N_Leaf1
   
-  N1 --> L1
-  N1 --> L2
-  N2 --> L3
-  N2 --> L4
-`} caption="The Aztec Nullifier Set: An append-only structure for private state deletion" />
+  note1>To 'delete' Note A, the user generates its Nullifier and appends it to the Nullifier Set]
+`} caption="UTXO Architecture: Private State Trees and the Nullifier Set" />
 
         <Section className="mb-10">
           <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed">
@@ -514,18 +548,24 @@ flowchart TD
 
         <MermaidDiagram chart={`
 sequenceDiagram
-  actor User as User Device
-  participant Kernel as Private Kernel Circuit
-  participant Rollup as Rollup Circuit (Sequencer)
+  autonumber
+  actor User as User Device (Client)
+  participant PXE as Private Execution Environment (PXE)
+  participant Kernel as Private Kernel Circuit (Noir)
+  participant Seq as Aztec Sequencer
   participant L1 as Ethereum L1
   
-  User->>Kernel: 1. Execute Private Function locally
-  Kernel->>Kernel: 2. Generate ZK Proof of Execution
-  Kernel->>Rollup: 3. Send Proof + Public Inputs
-  Rollup->>Rollup: 4. Verify Proof & Merge with others
-  Rollup->>L1: 5. Post Rollup Proof to L1
-  L1->>L1: 6. Verify Rollup Proof
-`} caption="Private Kernel Circuit: Local execution ensures private inputs never leave the device" />
+  User->>PXE: Request Private Transaction
+  PXE->>PXE: Fetch Encrypted UTXOs & Decrypt Locally
+  PXE->>Kernel: Execute Smart Contract logic
+  Kernel->>Kernel: Generate Zero-Knowledge Proof (ZK-SNARK)
+  Kernel->>Seq: Submit Proof + Public Inputs + Nullifiers
+  Note over Kernel,Seq: Raw private data NEVER leaves the device
+  Seq->>Seq: Verify Proofs & Check Nullifiers (Prevent Double Spend)
+  Seq->>Seq: Merge transactions into Rollup Block
+  Seq->>L1: Post Rollup Proof & State Root Updates
+  L1->>L1: Smart Contract Verifies Rollup Proof
+`} caption="Transaction Lifecycle: From Client-Side Proving to L1 Finality" />
 
         <Section className="mb-20">
           <h5 className="text-[24px] font-bold text-slate-900 mb-6">How the rollup circuit works</h5>
@@ -601,31 +641,46 @@ sequenceDiagram
 function PrivacyComponentsDiagram() {
   return (
     <MermaidDiagram chart={`
-flowchart LR
-  P["Programmable Privacy"]
-  D["Data Privacy"]
-  C["Confidentiality"]
+flowchart TD
+  ProgrammablePrivacy{"Programmable Privacy"}
   
-  P --> D
-  P --> C
-`} caption="The two architectural pillars of programmable blockchain privacy" />
+  subgraph DataPrivacy["1. Data Privacy"]
+    D1["User Owns Encrypted State"]
+    D2["External World Cannot Read"]
+    D3["Prevents Front-Running"]
+  end
+  
+  subgraph Confidentiality["2. Confidentiality"]
+    C1["Smart Contracts Process Encrypted Data"]
+    C2["Private Function Execution"]
+    C3["Unattainable by unauthorized apps"]
+  end
+  
+  ProgrammablePrivacy --> DataPrivacy
+  ProgrammablePrivacy --> Confidentiality
+`} caption="The Two Architectural Pillars of Programmable Blockchain Privacy" />
   );
 }
 
 function ExecutionFlowDiagram() {
   return (
     <MermaidDiagram chart={`
-flowchart TD
-  A["1. Private Function - User Device"]
-  B["2. Private Kernel Circuit - User Device"]
-  C["3. Sequencer Mempool"]
-  D["4. Rollup Circuit - Sequencer"]
-  E["5. Ethereum L1 Verification"]
+flowchart LR
+  A("Private Function
+(Noir Smart Contract)")
+  B("Private Kernel Circuit
+(Client-Side ZK Prover)")
+  C{"Sequencer Mempool
+(Validates Proofs)"}
+  D("Rollup Circuit
+(Aggregates Proofs)")
+  E[("Ethereum L1
+(Final Verification)")]
   
-  A --> B
-  B --> C
-  C --> D
-  D --> E
-`} caption="End to end flow: from user device to Ethereum L1 finality" />
+  A -- "Executes" --> B
+  B -- "Submits TX" --> C
+  C -- "Orders" --> D
+  D -- "Posts Root" --> E
+`} caption="End-to-End Execution Flow" />
   );
 }

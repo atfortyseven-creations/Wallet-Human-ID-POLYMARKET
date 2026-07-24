@@ -35,6 +35,7 @@ const THEME_INIT = {
     activationBorderColor: '#444444',
     activationBkgColor: '#eeeeee',
   },
+  flowchart: { htmlLabels: false },
 };
 
 // Scoped CSS injected INSIDE the SVG element — wins against any external stylesheet including Tailwind preflight
