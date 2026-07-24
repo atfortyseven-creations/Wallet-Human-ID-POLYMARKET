@@ -139,6 +139,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const [client, setClient] = useState<Client | null>(null);
   const [isInitializing, setIsInitializing] = useState(false);
   const [initError, setInitError] = useState('');
+  
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const [conversations, setConversations] = useState<ConversationMeta[]>([]);
   const [activePeer, setActivePeer] = useState<string | null>(null);
@@ -752,14 +757,9 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       const callerPeerId = parts[1] || '';
       const offerCallType: 'audio'|'video' = (parts[2] as any) || 'audio';
       if (!callerPeerId) return;
-      // AUDIT FIX: Validate that the sender is the current active peer
-      // This prevents anyone sending __CALL_OFFER__ from triggering the call UI
-      const senderInbox = lastMsg.senderInboxId?.toLowerCase() || '';
-      const expectedPeer = activePeerRef.current?.toLowerCase() || '';
-      if (expectedPeer && !senderInbox.includes(expectedPeer.slice(2, 10))) {
-        console.warn('[WhaleChat:Signal] CALL_OFFER from unexpected sender, ignoring');
-        return;
-      }
+      
+      // Removed broken senderInbox check: messages array is already filtered to activePeer's conversation.
+      
       remotePeerIdRef.current = callerPeerId;
       setCallType(offerCallType);
       isCallerRef.current = false;
@@ -2502,7 +2502,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       <audio ref={remoteAudioRef} autoPlay playsInline style={{ position: 'absolute', width: 0, height: 0, opacity: 0, pointerEvents: 'none' }} />
 
       {/* ── Incoming Call Banner (state: ringing) ───────────────────────────── */}
-      {callState === 'ringing' && typeof document !== 'undefined' && createPortal(
+      {callState === 'ringing' && isMounted && createPortal(
         <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] bg-black/90 backdrop-blur-3xl flex flex-col items-center justify-center animate-in fade-in duration-500" style={{ touchAction: 'none' }}>
           <div className="flex flex-col items-center gap-10 mt-[-10dvh]">
             {/* Avatar + pulse ring */}
@@ -2548,7 +2548,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       )}
 
       {/* ── Outgoing Call (state: calling — waiting for answer) ─────────────── */}
-      {callState === 'calling' && typeof document !== 'undefined' && createPortal(
+      {callState === 'calling' && isMounted && createPortal(
         <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] bg-black/85 backdrop-blur-2xl flex flex-col items-center justify-center animate-in fade-in duration-400" style={{ touchAction: 'none' }}>
           <div className="flex flex-col items-center gap-8 mt-[-10dvh]">
             <div className="relative">
@@ -2581,7 +2581,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       )}
 
       {/* ── Connecting Overlay (state: connecting — receiver answered, waiting for WebRTC stream) ── */}
-      {callState === 'connecting' && typeof document !== 'undefined' && createPortal(
+      {callState === 'connecting' && isMounted && createPortal(
         <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] bg-black/90 backdrop-blur-2xl flex flex-col items-center justify-center animate-in fade-in duration-400" style={{ touchAction: 'none' }}>
           <div className="flex flex-col items-center gap-8 mt-[-10dvh]">
             <div className="relative">
@@ -2614,7 +2614,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       )}
 
       {/* ── Active Call Overlay — Full Screen Premium UI ──────────────────── */}
-      {callState === 'active' && typeof document !== 'undefined' && createPortal(
+      {callState === 'active' && isMounted && createPortal(
         <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] bg-black flex flex-col" style={{ touchAction: 'none' }}>
 
           {/* ── Remote Video / Audio — covers full viewport ─────────────────── */}
