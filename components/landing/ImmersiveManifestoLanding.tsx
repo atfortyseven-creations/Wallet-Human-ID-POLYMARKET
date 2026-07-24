@@ -14,6 +14,7 @@ import { EmailLoginModal } from "@/components/auth/EmailLoginModal";
 import { useSystemSignOut } from "@/hooks/useSystemSignOut";
 import { SystemFooter } from "./SystemFooter";
 import { AztecWTFSection } from "./AztecWTFSection";
+import { SeeInActionSection } from "./SeeInActionSection";
 import { useAppKit } from "@reown/appkit/react";
 import { ReactLenis } from '@studio-freight/react-lenis';
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -1155,6 +1156,7 @@ export function ImmersiveManifestoLanding({
             <StatementSection />
             <AztecWTFSection />
             <ModulesSection />
+            <SeeInActionSection />
             <RegistrySection hideMap={hideMap} />
             <FAQSection />
             <AztecCTASection />
