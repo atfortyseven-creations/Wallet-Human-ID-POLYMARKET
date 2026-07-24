@@ -1,160 +1,79 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 
 /**
  * WavesSpotlight
  * 
- * Renders a fixed full-screen canvas that shows a circular "spotlight" revealing
- * the bg-waves texture wherever the user's cursor is.  The rest of the canvas
- * is fully transparent so the underlying white page background is visible.
- *
- * Key design decisions for readability / non-intrusiveness:
- *  - Spotlight opacity capped at 0.18 so text above is ALWAYS legible
- *  - Radial gradient inside the circle fades to transparent at the edges
- *  - Canvas is pointer-events:none so it never blocks clicks
- *  - Uses requestAnimationFrame with lerp for buttery-smooth follow
- *  - Image decoded once, drawn every frame via drawImage (GPU-composited)
- *  - Hidden on touch-only devices (no cursor) to avoid stale spotlight
+ * Re-engineered for maximum stability across Next.js route transitions.
+ * Uses a native CSS mask over a fixed div instead of a Canvas API loop.
+ * This prevents context loss, resizing bugs, and memory leaks when changing tabs,
+ * while being infinitely more performant since it runs on the GPU compositor.
  */
 export function WavesSpotlight() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const imageRef = useRef<HTMLImageElement | null>(null);
+  const spotlightRef = useRef<HTMLDivElement>(null);
   const mouse = useRef({ x: -9999, y: -9999 });
   const displayed = useRef({ x: -9999, y: -9999 });
   const rafId = useRef<number>(0);
-  const loaded = useRef(false);
-  const visible = useRef(false);
-
-  const RADIUS = 380;         // px – spotlight circle radius
-  const LERP = 0.08;          // 0→1 : lower = smoother / more lag
-  const OPACITY = 0.18;       // max canvas opacity (keeps text readable)
-
-  const resize = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }, []);
-
-  const draw = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || !loaded.current) {
-      rafId.current = requestAnimationFrame(draw);
-      return;
-    }
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    // Lerp toward mouse
-    displayed.current.x += (mouse.current.x - displayed.current.x) * LERP;
-    displayed.current.y += (mouse.current.y - displayed.current.y) * LERP;
-
-    const cx = displayed.current.x;
-    const cy = displayed.current.y;
-    const W = canvas.width;
-    const H = canvas.height;
-
-    ctx.clearRect(0, 0, W, H);
-
-    if (!visible.current) {
-      rafId.current = requestAnimationFrame(draw);
-      return;
-    }
-
-    // Clip to circle
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(cx, cy, RADIUS, 0, Math.PI * 2);
-    ctx.clip();
-
-    // Draw the tiling waves image across the full canvas
-    const img = imageRef.current!;
-    if (img.naturalWidth > 0) {
-      const iw = img.naturalWidth;
-      const ih = img.naturalHeight;
-      // Tile pattern
-      const pattern = ctx.createPattern(img, "repeat");
-      if (pattern) {
-        ctx.fillStyle = pattern;
-        ctx.fillRect(0, 0, W, H);
-      } else {
-        // Fallback: fit cover
-        const scale = Math.max(W / iw, H / ih);
-        const dw = iw * scale;
-        const dh = ih * scale;
-        const dx = (W - dw) / 2;
-        const dy = (H - dh) / 2;
-        ctx.drawImage(img, dx, dy, dw, dh);
-      }
-    }
-
-    ctx.restore();
-
-    // Radial gradient mask (fade edges of the spotlight)
-    const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, RADIUS);
-    grad.addColorStop(0, "rgba(255,255,255,0)");          // centre: fully transparent → shows waves
-    grad.addColorStop(0.65, "rgba(255,255,255,0)");
-    grad.addColorStop(1, "rgba(255,255,255,1)");           // edge: white → hides waves
-    ctx.globalCompositeOperation = "destination-out";
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.arc(cx, cy, RADIUS, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.globalCompositeOperation = "source-over";
-
-    rafId.current = requestAnimationFrame(draw);
-  }, []);
+  
+  // Triggers re-evaluation on route changes if needed, 
+  // though the fixed layout div persists safely.
+  const pathname = usePathname();
 
   useEffect(() => {
-    // Don't run on touch-only screens (no mouse cursor)
+    // Disable on touch devices
     const isTouchOnly = window.matchMedia("(pointer: coarse)").matches;
     if (isTouchOnly) return;
-
-    resize();
-    window.addEventListener("resize", resize, { passive: true });
-
-    // Load waves image
-    const img = new Image();
-    img.src = "/bg-waves.png";
-    img.onload = () => {
-      loaded.current = true;
-    };
-    imageRef.current = img;
 
     const onMove = (e: MouseEvent) => {
       mouse.current.x = e.clientX;
       mouse.current.y = e.clientY;
-      visible.current = true;
-    };
-    const onLeave = () => {
-      visible.current = false;
     };
 
     window.addEventListener("mousemove", onMove, { passive: true });
-    document.documentElement.addEventListener("mouseleave", onLeave, { passive: true });
+
+    const draw = () => {
+      // Smooth lerp (0.12 is a good balance between smooth and responsive)
+      displayed.current.x += (mouse.current.x - displayed.current.x) * 0.12;
+      displayed.current.y += (mouse.current.y - displayed.current.y) * 0.12;
+
+      if (spotlightRef.current) {
+        const x = displayed.current.x;
+        const y = displayed.current.y;
+        
+        // CSS Mask: black means visible, transparent means hidden.
+        // This reveals the bg-waves ONLY in a soft circle around the cursor.
+        const mask = `radial-gradient(350px circle at ${x}px ${y}px, black 0%, transparent 100%)`;
+        spotlightRef.current.style.maskImage = mask;
+        spotlightRef.current.style.webkitMaskImage = mask;
+      }
+
+      rafId.current = requestAnimationFrame(draw);
+    };
 
     rafId.current = requestAnimationFrame(draw);
 
     return () => {
-      cancelAnimationFrame(rafId.current);
-      window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMove);
-      document.documentElement.removeEventListener("mouseleave", onLeave);
+      cancelAnimationFrame(rafId.current);
     };
-  }, [draw, resize]);
+  }, [pathname]); // Re-bind safely if pathname changes to prevent stale refs
 
   return (
-    <canvas
-      ref={canvasRef}
+    <div
+      ref={spotlightRef}
       aria-hidden="true"
+      className="pointer-events-none fixed inset-0 z-0"
       style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 0,
-        pointerEvents: "none",
-        opacity: OPACITY,
-        mixBlendMode: "multiply",  // blends the teal waves naturally onto the white page
+        opacity: 0.18,                 // Keeps text completely legible
+        mixBlendMode: "multiply",      // Blends naturally with the white background
+        backgroundImage: "url('/bg-waves.png')",
+        backgroundRepeat: "repeat",
+        backgroundSize: "500px",       // Optimized tile size
+        // Start hidden off-screen until mouse moves
+        maskImage: "radial-gradient(350px circle at -9999px -9999px, black 0%, transparent 100%)",
+        WebkitMaskImage: "radial-gradient(350px circle at -9999px -9999px, black 0%, transparent 100%)",
       }}
     />
   );

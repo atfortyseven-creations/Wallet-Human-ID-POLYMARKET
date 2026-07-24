@@ -24,6 +24,15 @@ const NAV_COLUMNS = [
     ]
   },
   {
+    label: "DOCUMENTATION",
+    links: [
+      { label: "Overview",       href: "/docs/overview" },
+      { label: "Architecture",   href: "/docs/aztec-l2" },
+      { label: "Security Model", href: "/docs/security-model" },
+      { label: "Privacy Model",  href: "/docs/privacy-model" },
+    ]
+  },
+  {
     label: "DEVELOPERS",
     links: [
       { label: "API Docs",       href: "/developers/api-docs" },
