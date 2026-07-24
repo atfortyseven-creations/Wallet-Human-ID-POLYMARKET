@@ -32,15 +32,24 @@ const THEME_INIT = {
     noteBorderColor: '#cccccc',
     noteBkgColor: '#fffde7',
     noteTextColor: '#333333',
+    noteTextColor: '#333333',
     activationBorderColor: '#444444',
     activationBkgColor: '#eeeeee',
   },
-  flowchart: { htmlLabels: false },
+  flowchart: { htmlLabels: true },
 };
 
 // Scoped CSS injected INSIDE the SVG element — wins against any external stylesheet including Tailwind preflight
 const SVG_SCOPED_CSS = `
-  text, tspan, .label { fill: #111111 !important; color: #111111 !important; font-family: Inter, ui-sans-serif, system-ui, sans-serif !important; }
+  /* Force text visibility for BOTH SVG native text AND foreignObject HTML labels */
+  text, tspan, .label, .nodeLabel, .edgeLabel, .cluster-label { 
+    fill: #111111 !important; 
+    color: #111111 !important; 
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif !important; 
+  }
+  .nodeLabel *, .edgeLabel * {
+    color: #111111 !important;
+  }
   .node rect, .node polygon { fill: #ffffff !important; stroke: #444444 !important; stroke-width: 1.5px !important; }
   .node circle, .node ellipse { fill: #ffffff !important; stroke: #444444 !important; stroke-width: 1.5px !important; }
   .node path { fill: #ffffff !important; stroke: #444444 !important; stroke-width: 1.5px !important; }

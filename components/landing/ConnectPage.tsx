@@ -604,8 +604,13 @@ export default function ConnectPage() {
                 <RemoteLottie path="/system-shots/Transaction Complete.json" loop={false} className="w-full h-full object-contain scale-[1.2]" />
               </div>
             </div>
-            <div className="absolute bottom-4 flex flex-col items-center gap-2">
-              <button onClick={handleTotalDisconnect} className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-rose-500/30 text-[9px] font-black uppercase tracking-[0.2em] bg-rose-50 text-rose-500 hover:bg-rose-100 transition-all active:scale-[0.98]">
+            <div className="absolute bottom-4 flex flex-col items-center w-full px-6 gap-3">
+              {isMobile && (
+                <button onClick={() => setShowMobileScanner(true)} className="w-full flex items-center justify-center gap-3 py-3.5 rounded-xl border border-blue-200 bg-blue-50 text-blue-600 font-black uppercase tracking-[0.2em] text-[10px] active:scale-[0.98] transition-all hover:bg-blue-100 hover:border-blue-300 shadow-sm">
+                  <ScanLine size={13} /> Link to PC
+                </button>
+              )}
+              <button onClick={handleTotalDisconnect} className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-rose-500/30 text-[9px] font-black uppercase tracking-[0.2em] bg-rose-50 text-rose-500 hover:bg-rose-100 transition-all active:scale-[0.98] ${isMobile ? 'w-full py-3.5' : ''}`}>
                 Total Disconnect
               </button>
             </div>
