@@ -2,13 +2,12 @@
 
 import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { MermaidDiagram } from "@/components/privacy/MermaidDiagram";
 
 const CDN = "https://cdn.prod.website-files.com/6853ac4c855c81d9ecabc574";
 
 const IMAGES = {
   hero:           `${CDN}/68aefb9095a0a1447e9d5536_Aztec%20Blog%20Template_Archive.webp`,
-  transparency:   `${CDN}/68a35dcfe6c0178ab9ab92d4_65d8b665f2958ed62f9ed3f7_image-7.webp`,
-  privacyFeature: `${CDN}/68a35df115b93ae708ac249b_65d8b67818df829df1917b12_image-6.webp`,
   zkProofs:       `${CDN}/68a35dfdda3f0b7efe948426_65d8b68acf09fc8ea957d48d_image-8-1024x538.webp`,
   dataPrivacy:    `${CDN}/68a35e1c38e0197c1af7c5ee_65d8b6bf4ee00bcecc27b4a3_image-9.webp`,
   nullifierTree:  `${CDN}/68a35e4f3e3f72762c521c89_65d8b706f8126c79c3e1365d.webp`,
@@ -65,11 +64,11 @@ function Img({ src, alt, caption, className = "" }: { src: string; alt: string; 
       <img
         src={src}
         alt={alt}
-        className="w-full h-auto object-cover rounded-[20px] border border-black/[0.06] shadow-[0_12px_40px_rgba(0,0,0,0.07)]"
+        className="w-full h-auto object-cover rounded-[24px] border border-slate-200/50 shadow-[0_20px_60px_rgba(30,41,59,0.08)] transition-transform duration-700 hover:scale-[1.01]"
         loading="lazy"
       />
       {caption && (
-        <figcaption className="mt-3 text-center text-[11px] text-black/40 font-medium tracking-wide">
+        <figcaption className="mt-4 text-center text-[12px] text-slate-400 font-semibold tracking-wide">
           {caption}
         </figcaption>
       )}
@@ -79,7 +78,7 @@ function Img({ src, alt, caption, className = "" }: { src: string; alt: string; 
 
 function Tag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-block px-3 py-1 rounded-full bg-black text-white text-[10px] font-black uppercase tracking-[0.18em] mb-4">
+    <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600 text-[10px] font-black uppercase tracking-[0.2em] mb-4 shadow-sm">
       {children}
     </span>
   );
@@ -87,28 +86,58 @@ function Tag({ children }: { children: React.ReactNode }) {
 
 function PartLabel({ number, title }: { number: string; title: string }) {
   return (
-    <div className="flex items-center gap-3 mb-8">
-      <div className="w-8 h-[1px] bg-black/20" />
-      <span className="text-[10px] font-black uppercase tracking-[0.25em] text-black/40">
+    <div className="flex items-center gap-4 mb-10">
+      <div className="w-12 h-[2px] bg-indigo-200 rounded-full" />
+      <span className="text-[11px] font-black uppercase tracking-[0.25em] text-indigo-400">
         Part {number}
       </span>
-      <div className="flex-1 h-[1px] bg-black/10" />
+      <div className="flex-1 h-[1px] bg-gradient-to-r from-indigo-100 to-transparent" />
     </div>
   );
 }
 
 function BulletList({ items }: { items: React.ReactNode[] }) {
   return (
-    <ul className="space-y-3 my-6">
+    <ul className="space-y-4 my-8">
       {items.map((item, i) => (
-        <li key={i} className="flex gap-3 text-[16px] md:text-[18px] text-black/65 leading-relaxed">
-          <span className="mt-[6px] w-[6px] h-[6px] rounded-full bg-black/30 shrink-0" />
-          <span>{item}</span>
+        <li key={i} className="flex gap-4 text-[16px] md:text-[18px] text-slate-600 leading-relaxed items-start">
+          <span className="mt-[8px] w-[8px] h-[8px] rounded-full bg-indigo-400/50 shrink-0 shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
+          <span className="flex-1">{item}</span>
         </li>
       ))}
     </ul>
   );
 }
+
+const PRIVACY_CHART = `
+graph LR
+    subgraph Data Privacy
+        A[Encrypted State] -->|User Owned| B[Hidden from External World]
+    end
+    subgraph Confidentiality
+        C[Encrypted Execution] -->|Private Processing| D[Secure Application Data]
+    end
+    style A fill:#eef2ff,stroke:#818cf8,stroke-width:2px,color:#3730a3
+    style B fill:#ffffff,stroke:#c7d2fe,stroke-width:2px,color:#4f46e5
+    style C fill:#eef2ff,stroke:#818cf8,stroke-width:2px,color:#3730a3
+    style D fill:#ffffff,stroke:#c7d2fe,stroke-width:2px,color:#4f46e5
+`;
+
+const ARCHITECTURE_CHART = `
+flowchart TD
+    User[User Device] -->|1. Execute Private Functions locally| Trace[Execution Trace]
+    Trace -->|2. Generate Zero Knowledge Proof| Proof[ZK Proof]
+    Proof -->|Submit to Sequencer| Seq[Sequencer]
+    Seq -->|3. Execute Public Functions| Rollup[Rollup Circuit]
+    Rollup -->|Generate Final Block Proof| L1[Ethereum L1]
+    
+    style User fill:#f8fafc,stroke:#94a3b8,color:#334155
+    style Trace fill:#eef2ff,stroke:#818cf8,color:#3730a3
+    style Proof fill:#e0e7ff,stroke:#6366f1,stroke-width:2px,color:#312e81
+    style Seq fill:#f8fafc,stroke:#94a3b8,color:#334155
+    style Rollup fill:#eef2ff,stroke:#818cf8,color:#3730a3
+    style L1 fill:#e2e8f0,stroke:#64748b,color:#0f172a
+`;
 
 export function AztecWTFSection() {
   const heroRef = useRef<HTMLElement>(null);
@@ -118,86 +147,89 @@ export function AztecWTFSection() {
     <section
       ref={heroRef}
       id="wtf-is-aztec"
-      className="w-full bg-[#F8F8F6] border-t border-black/[0.06] py-24 md:py-36"
+      className="w-full bg-[#FAFAFC] py-24 md:py-40 relative overflow-hidden"
     >
-      <div className="w-full max-w-[860px] mx-auto px-6 md:px-8">
+      {/* Premium subtle background glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="w-full max-w-[900px] mx-auto px-6 md:px-10 relative z-10">
 
         {/* ─── MASTHEAD ─────────────────────────────────────────────── */}
         <motion.div
           initial="hidden"
           animate={heroInView ? "visible" : "hidden"}
           variants={fadeUp}
-          className="text-center mb-16 md:mb-24"
+          className="text-center mb-20 md:mb-32"
         >
-          <Tag>Aztec Network · Feb 23rd 2024</Tag>
+          <Tag>Aztec Network Education</Tag>
           <h2
-            className="text-[48px] md:text-[80px] lg:text-[96px] font-bold tracking-tight leading-[0.95] text-black mb-8"
-            style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+            className="text-[56px] md:text-[88px] lg:text-[104px] font-bold tracking-tight leading-[0.95] text-slate-900 mb-10 drop-shadow-sm"
           >
-            WTF is<br />
-            <em className="italic">Aztec?</em>
+            Understanding what<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Aztec Network is</span>
           </h2>
-          <p className="text-[18px] md:text-[22px] text-black/60 leading-relaxed max-w-[640px] mx-auto font-medium">
+          <p className="text-[20px] md:text-[24px] text-slate-500 leading-relaxed max-w-[720px] mx-auto font-medium">
             Blockchains like Bitcoin and Ethereum provide humanity with programmable digital money.
-            Aztec is a privacy-first Layer 2 on Ethereum. It enables a critical dimension of programmable
+            Aztec is a privacy first Layer 2 on Ethereum. It enables a critical dimension of programmable
             digital money that has heretofore been ignored:{" "}
-            <strong className="text-black font-semibold">privacy.</strong>
+            <strong className="text-indigo-600 font-bold">privacy.</strong>
           </p>
         </motion.div>
 
         {/* Hero image */}
         <Img
           src={IMAGES.hero}
-          alt="WTF is Aztec — Hero"
-          className="mb-20"
+          alt="Understanding Aztec Network"
+          className="mb-24 md:mb-32"
         />
 
         {/* ─── TL;DR ─────────────────────────────────────────────────── */}
-        <Section className="mb-20">
-          <div className="bg-black text-white rounded-[24px] p-8 md:p-12">
-            <h3 className="text-[13px] font-black uppercase tracking-[0.2em] text-white/40 mb-6">TL;DR</h3>
-            <p className="text-[18px] md:text-[20px] leading-relaxed mb-6 text-white/90">
+        <Section className="mb-24">
+          <div className="bg-white/60 backdrop-blur-3xl border border-white/80 shadow-[0_24px_80px_rgba(0,0,0,0.04)] rounded-[32px] p-10 md:p-16 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+            <h3 className="text-[14px] font-black uppercase tracking-[0.2em] text-indigo-400 mb-8">TL;DR</h3>
+            <p className="text-[20px] md:text-[24px] leading-relaxed mb-8 text-slate-800 font-medium">
               Blockchains like Bitcoin and Ethereum provide humanity with programmable digital money.
             </p>
-            <p className="text-[16px] md:text-[18px] leading-relaxed mb-4 text-white/75">
+            <p className="text-[18px] md:text-[20px] leading-relaxed mb-6 text-slate-600">
               By <em>programmable digital money,</em> we mean that users can:
             </p>
             <BulletList items={[
-              <span key="1" className="text-white/75">Program what digital money represents — what store of value is assigned to which specific digital currency</span>,
-              <span key="2" className="text-white/75">Define its properties and behavior: the rules of transmitting money, tracing it, destroying it, etc.</span>,
-              <span key="3" className="text-white/75">Ensure that money follows the rules and behaviors programmed into it — <strong className="text-white">without relying on a trusted third party</strong></span>,
+              <span key="1" className="text-slate-600">Program what digital money represents, what store of value is assigned to which specific digital currency</span>,
+              <span key="2" className="text-slate-600">Define its properties and behavior: the rules of transmitting money, tracing it, destroying it</span>,
+              <span key="3" className="text-slate-600">Ensure that money follows the rules and behaviors programmed into it, <strong className="text-slate-900 font-bold">without relying on a trusted third party</strong></span>,
             ]} />
-            <div className="mt-8 pt-8 border-t border-white/10">
-              <p className="text-[20px] md:text-[24px] font-bold text-white leading-relaxed">
-                Aztec is a privacy-first Layer 2 on Ethereum. It enables a critical dimension of
+            <div className="mt-12 pt-10 border-t border-slate-200/60">
+              <p className="text-[22px] md:text-[28px] font-bold text-slate-900 leading-relaxed">
+                Aztec is a privacy first Layer 2 on Ethereum. It enables a critical dimension of
                 programmable digital money that has heretofore been ignored:{" "}
-                <span className="text-[#D4FF28]">privacy.</span>
+                <span className="text-indigo-600">privacy.</span>
               </p>
             </div>
           </div>
         </Section>
 
         {/* Table of contents */}
-        <Section className="mb-20">
-          <div className="border border-black/10 rounded-[20px] p-8 bg-white">
-            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-black/40 mb-6">Contents</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Section className="mb-24">
+          <div className="bg-white rounded-[24px] p-10 shadow-[0_8px_30px_rgba(0,0,0,0.03)] border border-slate-100">
+            <h3 className="text-[12px] font-black uppercase tracking-[0.2em] text-slate-400 mb-8">Contents</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               <div>
-                <p className="text-[13px] font-black uppercase tracking-wide text-black mb-3">Part 1: Introduction into privacy</p>
-                <ul className="space-y-2">
-                  {["Do we need privacy?", "Do zero-knowledge proofs provide privacy by default?", "Early years of blockchain privacy", "What is programmable blockchain privacy?"].map((t, i) => (
-                    <li key={i} className="text-[14px] text-black/55 flex gap-2">
-                      <span className="text-black/20">—</span> {t}
+                <p className="text-[14px] font-black uppercase tracking-wide text-slate-900 mb-5">Part 1: Introduction into privacy</p>
+                <ul className="space-y-4">
+                  {["Do we need privacy?", "Do zero knowledge proofs provide privacy by default?", "Early years of blockchain privacy", "What is programmable blockchain privacy?"].map((t, i) => (
+                    <li key={i} className="text-[15px] text-slate-500 flex gap-3 items-center">
+                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-200" /> {t}
                     </li>
                   ))}
                 </ul>
               </div>
               <div>
-                <p className="text-[13px] font-black uppercase tracking-wide text-black mb-3">Part 2: How Aztec provides privacy</p>
-                <ul className="space-y-2">
+                <p className="text-[14px] font-black uppercase tracking-wide text-slate-900 mb-5">Part 2: How Aztec provides privacy</p>
+                <ul className="space-y-4">
                   {["Programmable composable privacy", "Private state", "Composing private state and public state", "How Aztec smart contracts are executed"].map((t, i) => (
-                    <li key={i} className="text-[14px] text-black/55 flex gap-2">
-                      <span className="text-black/20">—</span> {t}
+                    <li key={i} className="text-[15px] text-slate-500 flex gap-3 items-center">
+                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-200" /> {t}
                     </li>
                   ))}
                 </ul>
@@ -207,140 +239,147 @@ export function AztecWTFSection() {
         </Section>
 
         {/* ─── PART 1 ────────────────────────────────────────────────── */}
-        <Section className="mb-12">
+        <Section className="mb-16">
           <PartLabel number="1" title="Introduction to privacy" />
           <h3
-            className="text-[36px] md:text-[52px] font-bold tracking-tight text-black mb-6 leading-[1.1]"
-            style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+            className="text-[40px] md:text-[64px] font-bold tracking-tight text-slate-900 mb-8 leading-[1.05]"
           >
-            Part 1:<br />Introduction to privacy
+            Part 1<br />
+            <span className="text-slate-400">Introduction to privacy</span>
           </h3>
         </Section>
 
         {/* Do we need privacy? */}
-        <Section className="mb-6">
-          <h4 className="text-[24px] md:text-[32px] font-bold text-black mb-5 tracking-tight">
+        <Section className="mb-10">
+          <h4 className="text-[28px] md:text-[36px] font-bold text-slate-900 mb-6 tracking-tight">
             Do we need privacy?
           </h4>
-          <p className="text-[16px] md:text-[18px] text-black/60 leading-relaxed mb-4 italic">
-            If you're already an on-chain privacy maxi, feel free to skip this section.
+          <p className="text-[18px] md:text-[22px] text-slate-500 leading-relaxed mb-6 italic bg-indigo-50/50 p-6 rounded-2xl border border-indigo-50">
+            If you are already an on chain privacy maxi, feel free to skip this section.
           </p>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed mb-4">
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-6">
             Without privacy, every transaction is transparent. Everyone knows everything happening at all times.
           </p>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed">
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-6">
             Can you imagine our world with full financial transparency?
           </p>
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-6">
+            Today's blockchain activity is transparent not only for individuals but also for governments, corporations, financial and social institutions, Central Banks, insurance companies, hedge funds, family offices, and literally everyone else.
+          </p>
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-6">
+            Needless to say, governments and institutions are loath to jump into a financial system whereby their operations are fully transparent. Where you spend your money, and how, is itself critical intellectual property.
+          </p>
+          <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-8 my-10">
+            <p className="text-[20px] md:text-[24px] text-slate-800 leading-relaxed font-semibold">
+              The problem of transparency is not just in transparency itself, it is in its non configurability.
+            </p>
+            <p className="text-[18px] text-slate-500 mt-4">
+              Blockchain data is unalterably public.
+            </p>
+          </div>
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-8">
+            For many use cases, personal data compliance, trading and financial services, pulling off chain assets on chain, some data should stay public while some should stay private. A whole class of use cases demands public and private flexibility:
+          </p>
+          <div className="bg-slate-50 rounded-3xl p-8 border border-slate-100 mb-16">
+            <BulletList items={[
+              "On chain identity and KYC without data disclosure",
+              "Bringing off chain assets on chain (property, art, documents)",
+              "Building boutique financial services without trusted third parties",
+              "Compliant dapps allowing privacy",
+              "Customizable data disclosure (e.g. medical data or ML training datasets)",
+            ]} />
+          </div>
         </Section>
-
-        <Img src={IMAGES.transparency} alt="Full financial transparency" caption="Full financial transparency — the uncomfortable reality of today's public blockchains" />
-
-        <Section className="mb-6">
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed mb-4">
-            Today's blockchain activity is transparent not only for individuals but also for governments, corporations, financial and social institutions — Central Banks, insurance companies, hedge funds, family offices — and literally everyone else.
-          </p>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed mb-4">
-            Needless to say, governments and institutions are loath to jump into a financial system whereby their operations are fully transparent. Where you spend your money — and how — is itself critical intellectual property.
-          </p>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed mb-4">
-            <strong className="text-black">The problem of transparency is not just in transparency itself — it's in its non-configurability.</strong> Blockchain data is unalterably public.
-          </p>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed mb-6">
-            For many use cases — personal data compliance, trading and financial services, pulling off-chain assets on-chain — some data should stay public while some should stay private. A whole class of use-cases demands public-private flexibility:
-          </p>
-          <BulletList items={[
-            "On-chain identity and KYC without data disclosure",
-            "Bringing off-chain assets on-chain (property, art, documents)",
-            "Building boutique financial services without trusted third parties",
-            "Compliant dapps allowing privacy",
-            "Customizable data disclosure (e.g., medical data or ML training datasets)",
-          ]} />
-        </Section>
-
-        <Img src={IMAGES.privacyFeature} alt="What is privacy in blockchain context?" caption="What features and properties should blockchain privacy have?" />
 
         {/* ZK Proofs */}
-        <Section className="mb-6">
-          <h4 className="text-[24px] md:text-[32px] font-bold text-black mb-5 tracking-tight">
-            Do zero-knowledge proofs provide privacy?
+        <Section className="mb-10">
+          <h4 className="text-[28px] md:text-[36px] font-bold text-slate-900 mb-8 tracking-tight">
+            Do zero knowledge proofs provide privacy?
           </h4>
         </Section>
 
-        <Img src={IMAGES.zkProofs} alt="ZK Proofs and privacy" />
+        <Img src={IMAGES.zkProofs} alt="Zero knowledge Proofs and privacy" />
 
-        <Section className="mb-12">
-          <div className="bg-amber-50 border border-amber-200 rounded-[16px] p-6 md:p-8 mb-6">
-            <p className="text-[15px] font-black uppercase tracking-wide text-amber-700 mb-3">Common Myth</p>
-            <p className="text-[16px] md:text-[18px] text-amber-900 leading-relaxed">
-              It's a well-known myth that zero-knowledge proofs offer privacy by default, or that they make it simple to build dapps with on-chain privacy features.
+        <Section className="mb-16">
+          <div className="bg-white border border-rose-100 rounded-[24px] p-8 md:p-12 mb-8 shadow-sm">
+            <p className="text-[13px] font-black uppercase tracking-wide text-rose-500 mb-4">Common Myth</p>
+            <p className="text-[18px] md:text-[22px] text-slate-700 leading-relaxed font-medium">
+              It is a well known myth that zero knowledge proofs offer privacy by default, or that they make it simple to build dapps with on chain privacy features.
             </p>
           </div>
-          <div className="bg-black text-white rounded-[16px] p-6 md:p-8 mb-6">
-            <p className="text-[15px] font-black uppercase tracking-wide text-white/50 mb-3">Reality</p>
-            <p className="text-[16px] md:text-[18px] leading-relaxed text-white/90">
-              Zero-knowledge proofs <strong className="text-[#D4FF28]">DO NOT</strong> provide privacy by default. It's pretty hard in the current state of affairs to build dapps with privacy features.
+          <div className="bg-indigo-600 text-white rounded-[24px] p-8 md:p-12 mb-12 shadow-xl shadow-indigo-500/20">
+            <p className="text-[13px] font-black uppercase tracking-wide text-indigo-200 mb-4">Reality</p>
+            <p className="text-[20px] md:text-[26px] leading-relaxed text-white font-semibold">
+              Zero knowledge proofs DO NOT provide privacy by default. It is pretty hard in the current state of affairs to build dapps with privacy features.
             </p>
           </div>
-          <h5 className="text-[20px] font-bold text-black mb-4 mt-8">What zero-knowledge proofs actually do</h5>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed mb-4">
-            Before ZK proofs, checking that a network state transition is correct required re-executing all network transactions. With ZK proofs, instead of re-executing all transactions, one can simply verify a ~constant-size proof of correct computation.
+          
+          <h5 className="text-[24px] font-bold text-slate-900 mb-6 mt-12">What zero knowledge proofs actually do</h5>
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-6">
+            Before ZK proofs, checking that a network state transition is correct required re executing all network transactions. With ZK proofs, instead of re executing all transactions, one can simply verify a constant size proof of correct computation.
           </p>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed mb-4">
-            Proving state transitions (as in zk-rollups) or proving general claims about arbitrary program execution <strong className="text-black">has nothing to do with privacy.</strong>
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-6">
+            Proving state transitions (as in zk rollups) or proving general claims about arbitrary program execution <strong className="text-slate-900 font-bold">has nothing to do with privacy.</strong>
           </p>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed">
-            More specifically, zkRollups do <em>not</em> offer privacy by default, nor do they necessarily imply any privacy capability above and beyond public transparent blockchains.
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed">
+            More specifically, zk rollups do <em>not</em> offer privacy by default, nor do they necessarily imply any privacy capability above and beyond public transparent blockchains.
           </p>
         </Section>
 
         {/* Early years */}
-        <Section className="mb-12">
-          <h4 className="text-[24px] md:text-[32px] font-bold text-black mb-5 tracking-tight">
+        <Section className="mb-16">
+          <h4 className="text-[28px] md:text-[36px] font-bold text-slate-900 mb-8 tracking-tight">
             Early years of blockchain privacy
           </h4>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed mb-6">
-            You might think Ethereum already has privacy — a fair thought. There are a couple of categories of existing privacy protocols worth mentioning:
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-8">
+            You might think Ethereum already has privacy, a fair thought. There are a couple of categories of existing privacy protocols worth mentioning:
           </p>
-          <div className="space-y-4">
-            <div className="border border-black/10 rounded-[16px] p-6 bg-white">
-              <h6 className="text-[14px] font-black uppercase tracking-wide text-black mb-2">Mixnets</h6>
-              <p className="text-[15px] md:text-[16px] text-black/65 leading-relaxed">
-                One or more proxy servers take in messages from multiple senders, shuffle them, and send them back out in a random order to the next destination — either a message receiver or another proxy server.
+          <div className="grid gap-6 mb-10">
+            <div className="bg-white border border-slate-200 shadow-sm rounded-[24px] p-8">
+              <h6 className="text-[16px] font-black uppercase tracking-wide text-slate-900 mb-4">Mixnets</h6>
+              <p className="text-[16px] md:text-[18px] text-slate-500 leading-relaxed">
+                One or more proxy servers take in messages from multiple senders, shuffle them, and send them back out in a random order to the next destination, either a message receiver or another proxy server.
               </p>
             </div>
-            <div className="border border-black/10 rounded-[16px] p-6 bg-white">
-              <h6 className="text-[14px] font-black uppercase tracking-wide text-black mb-2">"Monolithic" Privacy dApps</h6>
-              <p className="text-[15px] md:text-[16px] text-black/65 leading-relaxed">
-                dApps on Ethereum, privacy-specific L2s, or privacy-specific L1s allowing private transfers. Nevertheless, their functionality is pretty limited: private transfers are allowed only <em>inside</em> the specific dapp, with no cross-application composability.
+            <div className="bg-white border border-slate-200 shadow-sm rounded-[24px] p-8">
+              <h6 className="text-[16px] font-black uppercase tracking-wide text-slate-900 mb-4">Monolithic Privacy dApps</h6>
+              <p className="text-[16px] md:text-[18px] text-slate-500 leading-relaxed">
+                dApps on Ethereum, privacy specific L2s, or privacy specific L1s allowing private transfers. Nevertheless, their functionality is pretty limited: private transfers are allowed only <em>inside</em> the specific dapp, with no cross application composability.
               </p>
             </div>
           </div>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed mt-6">
-            As we can see, privacy alone is not enough. <strong className="text-black">It must be programmable.</strong>
-          </p>
+          <div className="bg-slate-900 text-white rounded-3xl p-8 text-center mt-8">
+            <p className="text-[20px] md:text-[24px] font-medium">
+              As we can see, privacy alone is not enough. <br/>
+              <strong className="text-indigo-400 font-bold mt-2 inline-block">It must be programmable.</strong>
+            </p>
+          </div>
         </Section>
 
         {/* Programmable privacy */}
-        <Section className="mb-12">
-          <h4 className="text-[24px] md:text-[32px] font-bold text-black mb-5 tracking-tight">
+        <Section className="mb-16">
+          <h4 className="text-[28px] md:text-[36px] font-bold text-slate-900 mb-8 tracking-tight">
             What is programmable blockchain privacy?
           </h4>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed mb-6">
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-10">
             Blockchain privacy can be represented as a sum of two components:
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
-            <div className="bg-black text-white rounded-[20px] p-8">
-              <div className="text-[32px] mb-4">🔒</div>
-              <h6 className="text-[15px] font-black uppercase tracking-wide text-white/60 mb-3">Data Privacy</h6>
-              <p className="text-[15px] md:text-[16px] leading-relaxed text-white/85">
-                The ability of smart contracts to have private (encrypted) state owned by a user and unseen by the external world.
+          
+          <div className="bg-white rounded-[32px] p-6 shadow-sm border border-slate-100 mb-10">
+            <MermaidDiagram chart={PRIVACY_CHART} />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <div className="bg-indigo-50 rounded-[24px] p-8 border border-indigo-100">
+              <h6 className="text-[16px] font-black uppercase tracking-wide text-indigo-900 mb-4">Data Privacy</h6>
+              <p className="text-[16px] md:text-[18px] leading-relaxed text-indigo-700">
+                The ability of smart contracts to have private encrypted state owned by a user and unseen by the external world.
               </p>
             </div>
-            <div className="bg-black text-white rounded-[20px] p-8">
-              <div className="text-[32px] mb-4">🫥</div>
-              <h6 className="text-[15px] font-black uppercase tracking-wide text-white/60 mb-3">Confidentiality</h6>
-              <p className="text-[15px] md:text-[16px] leading-relaxed text-white/85">
-                The ability of smart contracts to process encrypted data internally — execute private functions and transactions. Ensures private information is not accessible to unauthorized applications.
+            <div className="bg-indigo-50 rounded-[24px] p-8 border border-indigo-100">
+              <h6 className="text-[16px] font-black uppercase tracking-wide text-indigo-900 mb-4">Confidentiality</h6>
+              <p className="text-[16px] md:text-[18px] leading-relaxed text-indigo-700">
+                The ability of smart contracts to process encrypted data internally, execute private functions and transactions. Ensures private information is not accessible to unauthorized applications.
               </p>
             </div>
           </div>
@@ -349,220 +388,233 @@ export function AztecWTFSection() {
         <Img src={IMAGES.dataPrivacy} alt="Data privacy and confidentiality" caption="The two pillars of programmable blockchain privacy" />
 
         {/* ─── PART 2 ────────────────────────────────────────────────── */}
-        <Section className="mb-12 mt-16">
+        <Section className="mb-16 mt-32">
           <PartLabel number="2" title="How has Aztec managed to provide privacy?" />
           <h3
-            className="text-[36px] md:text-[52px] font-bold tracking-tight text-black mb-6 leading-[1.1]"
-            style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+            className="text-[40px] md:text-[64px] font-bold tracking-tight text-slate-900 mb-8 leading-[1.05]"
           >
-            Part 2:<br />How has Aztec managed<br />to provide privacy?
+            Part 2<br />
+            <span className="text-slate-400">How has Aztec managed to provide privacy?</span>
           </h3>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed">
+          <p className="text-[20px] md:text-[24px] text-slate-600 leading-relaxed">
             We discussed how privacy is insufficient without programmability. But even programmability is not very useful without composability.
           </p>
         </Section>
 
         {/* Programmable composable */}
-        <Section className="mb-12">
-          <h4 className="text-[24px] md:text-[32px] font-bold text-black mb-5 tracking-tight">
+        <Section className="mb-16">
+          <h4 className="text-[28px] md:text-[36px] font-bold text-slate-900 mb-8 tracking-tight">
             Programmable composable privacy
           </h4>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed mb-4">
-            Programmability in a blockchain context implies smart contracts — programs which execute predetermined logic automatically when specific conditions are met. Regular blockchains have <em>public</em> network state.
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-6">
+            Programmability in a blockchain context implies smart contracts, programs which execute predetermined logic automatically when specific conditions are met. Regular blockchains have <em>public</em> network state.
           </p>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed mb-4">
-            To make money programmable, composable, and privacy-preserving, we need two types of network state: <strong className="text-black">public and private.</strong>
+          <div className="bg-white border border-slate-200 shadow-sm rounded-[24px] p-8 mb-10">
+            <p className="text-[20px] md:text-[24px] text-slate-800 leading-relaxed font-medium">
+              To make money programmable, composable, and privacy preserving, we need two types of network state: <strong className="text-indigo-600 font-bold">public and private.</strong>
+            </p>
+          </div>
+          <h5 className="text-[24px] font-bold text-slate-900 mb-6">Composability for functional goals</h5>
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-6">
+            Imagine a privacy preserving DEX on Aztec Network. Users can make swaps without disclosing what they are swapping or in what volumes. Asset names and transaction volumes stay private.
           </p>
-          <h5 className="text-[20px] font-bold text-black mb-4 mt-8">Composability for functional goals</h5>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed mb-4">
-            Imagine a privacy-preserving DEX on Aztec Network. Users can make swaps without disclosing what they're swapping or in what volumes. Asset names and transaction volumes stay private.
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-6">
+            However, if we make all DEX information private, users cannot know asset prices, and without prices, they cannot make trading decisions. So some information, like current asset prices, must stay public.
           </p>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed mb-4">
-            However, if we make all DEX information private, users can't know asset prices — and without prices, they can't make trading decisions. So some information, like current asset prices, must stay public.
-          </p>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed font-medium text-black">
+          <div className="inline-block bg-indigo-50 text-indigo-600 font-bold px-6 py-3 rounded-full text-[16px] mb-10">
             Privacy for user information. Publicity for protocol information.
-          </p>
-          <h5 className="text-[20px] font-bold text-black mb-4 mt-8">Composability for compliance goals</h5>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed">
-            Applications can configure compliance according to specific jurisdictions. Depending on what needs to be proven, only the required minimum of information can be disclosed while the rest stays private. Users can provide evidence that a specific event took place in their transaction history — without disclosing amounts, dates, addresses, or anything else.
+          </div>
+          
+          <h5 className="text-[24px] font-bold text-slate-900 mb-6">Composability for compliance goals</h5>
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed">
+            Applications can configure compliance according to specific jurisdictions. Depending on what needs to be proven, only the required minimum of information can be disclosed while the rest stays private. Users can provide evidence that a specific event took place in their transaction history, without disclosing amounts, dates, addresses, or anything else.
           </p>
         </Section>
 
         {/* Private state */}
-        <Section className="mb-6">
-          <h4 className="text-[24px] md:text-[32px] font-bold text-black mb-5 tracking-tight">
+        <Section className="mb-10">
+          <h4 className="text-[28px] md:text-[36px] font-bold text-slate-900 mb-8 tracking-tight">
             Private state
           </h4>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed mb-4">
-            Aztec's design for private state intends to leak no data at all. That's why we can't just encrypt account-based state and modify it in-place in the tree — modifying a particular encrypted leaf leaks information like the leaf location in the tree, what contract and state it touches, etc.
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-6">
+            Aztec design for private state intends to leak no data at all. That is why we cannot just encrypt account based state and modify it in place in the tree, modifying a particular encrypted leaf leaks information like the leaf location in the tree, what contract and state it touches, etc.
           </p>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed mb-4">
-            Therefore, to store private state, Aztec uses an <strong className="text-black">"append only"</strong> approach. Existing entries in the database cannot be modified or deleted — only new entries can be appended.
-          </p>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed">
-            To delete or update an entry, Aztec uses <strong className="text-black">nullifiers</strong>. Nullifiers live in a separate nullifier tree — the <em>Nullifier Set</em>. To delete an entry, a matching nullifier is created in the nullifier tree.
-          </p>
-        </Section>
-
-        <Img src={IMAGES.nullifierTree} alt="Nullifier tree structure" caption="The Aztec Nullifier Set — an append-only structure for private state deletion" />
-
-        <Section className="mb-6">
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed">
-            To create a nullifier for a specific entry, one must have the nullifier secret key corresponding to the owner of that entry. <strong className="text-black">No nullifier key — no nullifier.</strong> Nullifiers are deterministically generated from UTXO inputs and can't be forged.
+          <div className="bg-slate-50 border-l-4 border-indigo-500 p-8 rounded-r-2xl mb-6">
+            <p className="text-[18px] md:text-[22px] text-slate-800 leading-relaxed">
+              Therefore, to store private state, Aztec uses an <strong className="font-bold">append only</strong> approach. Existing entries in the database cannot be modified or deleted, only new entries can be appended.
+            </p>
+          </div>
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed">
+            To delete or update an entry, Aztec uses <strong className="text-slate-900 font-bold">nullifiers</strong>. Nullifiers live in a separate nullifier tree, the <em>Nullifier Set</em>. To delete an entry, a matching nullifier is created in the nullifier tree.
           </p>
         </Section>
 
-        <Img src={IMAGES.nullifierKey} alt="Nullifier key structure" caption="Nullifiers are deterministically generated — they cannot be forged without the secret key" />
+        <Img src={IMAGES.nullifierTree} alt="Nullifier tree structure" caption="The Aztec Nullifier Set, an append only structure for private state deletion" />
 
-        <Section className="mb-6">
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed">
+        <Section className="mb-10">
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed">
+            To create a nullifier for a specific entry, one must have the nullifier secret key corresponding to the owner of that entry. <strong className="text-slate-900 font-bold">No nullifier key, no nullifier.</strong> Nullifiers are deterministically generated from UTXO inputs and cannot be forged.
+          </p>
+        </Section>
+
+        <Img src={IMAGES.nullifierKey} alt="Nullifier key structure" caption="Nullifiers are deterministically generated, they cannot be forged without the secret key" />
+
+        <Section className="mb-10">
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed">
             The entry is live if there is no nullifier linked to it in the Nullifier Set.
           </p>
         </Section>
 
         <Img src={IMAGES.entryLive} alt="Entry liveness in Aztec" caption="An entry is live as long as no matching nullifier exists in the Nullifier Set" />
 
-        <Section className="mb-12">
-          <div className="bg-black text-white rounded-[20px] p-8 md:p-10 mt-4">
-            <p className="text-[13px] font-black uppercase tracking-[0.2em] text-white/40 mb-4">Core Architecture</p>
-            <p className="text-[17px] md:text-[19px] leading-relaxed text-white/90">
+        <Section className="mb-16">
+          <div className="bg-gradient-to-br from-indigo-900 to-slate-900 text-white rounded-[32px] p-10 md:p-14 mt-10 shadow-2xl">
+            <p className="text-[14px] font-black uppercase tracking-[0.2em] text-indigo-300 mb-6">Core Architecture</p>
+            <p className="text-[22px] md:text-[28px] leading-relaxed text-white/95 font-medium">
               Private state is structured as a{" "}
-              <span className="text-[#D4FF28] font-semibold">UTXO</span>
-              {" "}— the same fundamental structure underlying the Bitcoin network. If public state is stored in an account-based Merkle Tree and private state in a UTXO-based Merkle Tree, how are they composable?
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300 font-bold">UTXO</span>
+              {" "}, the same fundamental structure underlying the Bitcoin network. If public state is stored in an account based Merkle Tree and private state in a UTXO based Merkle Tree, how are they composable?
             </p>
           </div>
         </Section>
 
         {/* Composing states */}
-        <Section className="mb-12">
-          <h4 className="text-[24px] md:text-[32px] font-bold text-black mb-5 tracking-tight">
+        <Section className="mb-16">
+          <h4 className="text-[28px] md:text-[36px] font-bold text-slate-900 mb-8 tracking-tight">
             Composing private state and public state
           </h4>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed mb-6">
-            The requirements for private and public state transitions are entirely different. Let's deconstruct each:
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-10">
+            The requirements for private and public state transitions are entirely different. Let us deconstruct each:
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
-            <div className="border border-black/10 rounded-[20px] p-7 bg-white">
-              <h6 className="text-[13px] font-black uppercase tracking-wide text-black/50 mb-4">Private State Transitions</h6>
-              <p className="text-[15px] text-black/70 leading-relaxed">
-                Require <strong className="text-black">client-side proof generation</strong> to prevent data leakage. After function execution, a proof of correct execution is generated on the user's device <em>before</em> being sent to a sequencer. The private transaction is represented by the proof of its correct execution and a few other pieces of data — commitments, nullifiers, contract deployment data — that disclose nothing about the transaction.
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div className="bg-white border border-slate-200 shadow-md shadow-slate-100/50 rounded-[28px] p-10">
+              <h6 className="text-[15px] font-black uppercase tracking-wide text-indigo-600 mb-6">Private State Transitions</h6>
+              <p className="text-[16px] md:text-[18px] text-slate-600 leading-relaxed">
+                Require <strong className="text-slate-900">client side proof generation</strong> to prevent data leakage. After function execution, a proof of correct execution is generated on the user device <em>before</em> being sent to a sequencer. The private transaction is represented by the proof of its correct execution and a few other pieces of data, commitments, nullifiers, contract deployment data, that disclose nothing about the transaction.
               </p>
             </div>
-            <div className="border border-black/10 rounded-[20px] p-7 bg-white">
-              <h6 className="text-[13px] font-black uppercase tracking-wide text-black/50 mb-4">Public State Transitions</h6>
-              <p className="text-[15px] text-black/70 leading-relaxed">
-                The correctness of transaction execution is proven by a third party — usually a prover — since there is no need to hide transaction data. In both cases transactions are forwarded to the mempool and ordered by the sequencer.
+            <div className="bg-white border border-slate-200 shadow-md shadow-slate-100/50 rounded-[28px] p-10">
+              <h6 className="text-[15px] font-black uppercase tracking-wide text-purple-600 mb-6">Public State Transitions</h6>
+              <p className="text-[16px] md:text-[18px] text-slate-600 leading-relaxed">
+                The correctness of transaction execution is proven by a third party, usually a prover, since there is no need to hide transaction data. In both cases transactions are forwarded to the mempool and ordered by the sequencer.
               </p>
             </div>
           </div>
-          <h5 className="text-[18px] font-bold text-black mb-4">Public functions can:</h5>
-          <BulletList items={[
-            "Read and write public state",
-            "Insert into the UTXO tree for use in private functions",
-            "Broadcast information to everyone (similar to msg.data on Ethereum)",
-            "Unshield data (move data from private state to public state), if the call was initiated by a private function",
-          ]} />
-          <h5 className="text-[18px] font-bold text-black mb-4 mt-6">Private functions can:</h5>
-          <BulletList items={[
-            "Privately read from, and insert into the private UTXO tree",
-            "Insert into the Nullifier Set",
-            "Create proofs from historical data (coprocessor functionality)",
-            "Shield data (move data from public state to private state)",
-            "Call public functions (but without any return values)",
-          ]} />
+          
+          <div className="bg-slate-50 rounded-[32px] p-10 border border-slate-100">
+            <h5 className="text-[20px] font-bold text-slate-900 mb-6">Public functions can:</h5>
+            <BulletList items={[
+              "Read and write public state",
+              "Insert into the UTXO tree for use in private functions",
+              "Broadcast information to everyone (similar to msg.data on Ethereum)",
+              "Unshield data (move data from private state to public state), if the call was initiated by a private function",
+            ]} />
+            <h5 className="text-[20px] font-bold text-slate-900 mb-6 mt-12">Private functions can:</h5>
+            <BulletList items={[
+              "Privately read from, and insert into the private UTXO tree",
+              "Insert into the Nullifier Set",
+              "Create proofs from historical data (coprocessor functionality)",
+              "Shield data (move data from public state to private state)",
+              "Call public functions (but without any return values)",
+            ]} />
+          </div>
         </Section>
 
         {/* How smart contracts are executed */}
-        <Section className="mb-6">
-          <h4 className="text-[24px] md:text-[32px] font-bold text-black mb-5 tracking-tight">
+        <Section className="mb-12">
+          <h4 className="text-[28px] md:text-[36px] font-bold text-slate-900 mb-8 tracking-tight">
             How Aztec smart contracts are executed
           </h4>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed mb-6">
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-10">
             Aztec smart contract execution follows a specific order:
           </p>
-          <div className="space-y-4 mb-8">
-            {[
-              { n: "1", t: "All private functions are executed in an execution trace" },
-              { n: "2", t: "A proof of correct execution is generated on the user's device" },
-              { n: "3", t: "All public functions are executed by the sequencer" },
-            ].map((s) => (
-              <div key={s.n} className="flex gap-5 items-start bg-white border border-black/8 rounded-[16px] p-6">
-                <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center text-[14px] font-black shrink-0">
-                  {s.n}
-                </div>
-                <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed pt-1">{s.t}</p>
-              </div>
-            ))}
+          
+          <div className="bg-white rounded-[32px] p-6 shadow-sm border border-slate-100 mb-12">
+            <MermaidDiagram chart={ARCHITECTURE_CHART} />
           </div>
-          <h5 className="text-[20px] font-bold text-black mb-4">Private functions → zk-SNARK circuits</h5>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed mb-4">
-            Private functions do NOT perform any state updates on their own. Instead, they are executed privately and proofs of their correct execution are generated on the user's side. Each proof must then be verified by the kernel and rollup circuits.
+
+          <h5 className="text-[24px] font-bold text-slate-900 mb-6">Private functions to zk SNARK circuits</h5>
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-6">
+            Private functions do NOT perform any state updates on their own. Instead, they are executed privately and proofs of their correct execution are generated on the user side. Each proof must then be verified by the kernel and rollup circuits.
           </p>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed mb-4">
-            Every private function is converted into a zk-SNARK circuit — made possible thanks to the{" "}
-            <a href="https://noir-lang.org/" target="_blank" rel="noopener noreferrer" className="underline text-black font-semibold">
+          <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-8">
+            Every private function is converted into a zk SNARK circuit, made possible thanks to the{" "}
+            <a href="https://noir-lang.org/" target="_blank" rel="noopener noreferrer" className="text-indigo-600 font-bold hover:underline">
               Noir
             </a>
-            {" "}programming language — a Domain Specific Language for SNARK proving systems developed by the Aztec team.
+            {" "}programming language, a Domain Specific Language for SNARK proving systems developed by the Aztec team.
           </p>
-          <h5 className="text-[20px] font-bold text-black mb-4 mt-8">The Private Kernel Circuit</h5>
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed">
-            To execute all private functions and build a proof of transaction execution correctness, Aztec uses the Private Kernel Circuit — which runs <strong className="text-black">locally on the user's device</strong> so all private inputs remain private.
-          </p>
+          
+          <div className="bg-indigo-50 border border-indigo-100 rounded-[28px] p-10 mb-8">
+            <h5 className="text-[24px] font-bold text-indigo-900 mb-4">The Private Kernel Circuit</h5>
+            <p className="text-[18px] md:text-[22px] text-indigo-700 leading-relaxed">
+              To execute all private functions and build a proof of transaction execution correctness, Aztec uses the Private Kernel Circuit, which runs <strong className="font-bold">locally on the user device</strong> so all private inputs remain private.
+            </p>
+          </div>
         </Section>
 
-        <Img src={IMAGES.kernelCircuit} alt="How the Private Kernel Circuit works" caption="The Private Kernel Circuit — runs locally on the user's device to ensure private inputs never leave" />
+        <Img src={IMAGES.kernelCircuit} alt="How the Private Kernel Circuit works" caption="The Private Kernel Circuit, runs locally on the user device to ensure private inputs never leave" />
 
-        <Section className="mb-12">
-          <h5 className="text-[20px] font-bold text-black mb-4">How the rollup circuit works</h5>
-          <BulletList items={[
-            "The rollup circuit creates proofs of pairs of transactions recursively until it gets a final block proof",
-            "The sequencer validates 'Oracle' data provided as public inputs to the circuits",
-            "The sequencer performs UTXO updates",
-            "The sequencer performs nullifier updates and validates nullifiers that do not already exist",
-          ]} />
-          <p className="text-[16px] md:text-[18px] text-black/70 leading-relaxed mt-6">
-            Once the rollup circuit proof is generated, the sequencer posts calldata to L1 and the proof is verified by a smart contract on Ethereum. State hashes and message boxes are updated.
-          </p>
+        <Section className="mb-20">
+          <h5 className="text-[24px] font-bold text-slate-900 mb-6">How the rollup circuit works</h5>
+          <div className="bg-white border border-slate-200 shadow-sm rounded-[32px] p-10">
+            <BulletList items={[
+              "The rollup circuit creates proofs of pairs of transactions recursively until it gets a final block proof",
+              "The sequencer validates Oracle data provided as public inputs to the circuits",
+              "The sequencer performs UTXO updates",
+              "The sequencer performs nullifier updates and validates nullifiers that do not already exist",
+            ]} />
+            <p className="text-[18px] md:text-[20px] text-slate-500 leading-relaxed mt-10 pt-8 border-t border-slate-100">
+              Once the rollup circuit proof is generated, the sequencer posts calldata to L1 and the proof is verified by a smart contract on Ethereum. State hashes and message boxes are updated.
+            </p>
+          </div>
         </Section>
 
         {/* ─── SUMMARY ────────────────────────────────────────────────── */}
-        <Section className="mt-20">
-          <div className="bg-black rounded-[28px] p-10 md:p-14 text-center">
+        <Section className="mt-32">
+          <div className="bg-white border border-slate-200 rounded-[40px] p-12 md:p-20 text-center shadow-[0_20px_80px_rgba(0,0,0,0.05)] relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+            
             <Tag>Summary</Tag>
             <h3
-              className="text-[32px] md:text-[52px] font-bold text-white tracking-tight leading-[1.1] mb-8"
-              style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+              className="text-[40px] md:text-[64px] font-bold text-slate-900 tracking-tight leading-[1.05] mb-10"
             >
               Privacy is a fundamental<br />human right.
             </h3>
-            <p className="text-[17px] md:text-[20px] text-white/70 leading-relaxed mb-8 max-w-[600px] mx-auto">
-              We all expect privacy with our personal info, payments, and daily communications. Aztec Labs is building toward a blockchain-based internet where privacy will be protected.
+            <p className="text-[20px] md:text-[24px] text-slate-500 leading-relaxed mb-12 max-w-[700px] mx-auto">
+              We all expect privacy with our personal info, payments, and daily communications. Aztec Labs is building toward a blockchain based internet where privacy will be protected.
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-left mt-10">
-              <div className="bg-white/5 border border-white/10 rounded-[16px] p-6">
-                <div className="text-[24px] mb-3">👩‍💻</div>
-                <h6 className="text-[14px] font-black uppercase tracking-wide text-white/50 mb-2">For Developers</h6>
-                <p className="text-[15px] text-white/75 leading-relaxed">Build privacy-preserving applications using Noir — the universal ZK language</p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mb-16">
+              <div className="bg-slate-50 border border-slate-100 rounded-[28px] p-10">
+                <div className="text-[14px] font-black uppercase tracking-widest text-indigo-500 mb-4 flex items-center gap-3">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                  For Developers
+                </div>
+                <p className="text-[16px] md:text-[18px] text-slate-600 leading-relaxed">Build privacy preserving applications using Noir, the universal ZK language.</p>
               </div>
-              <div className="bg-white/5 border border-white/10 rounded-[16px] p-6">
-                <div className="text-[24px] mb-3">🔐</div>
-                <h6 className="text-[14px] font-black uppercase tracking-wide text-white/50 mb-2">For Users</h6>
-                <p className="text-[15px] text-white/75 leading-relaxed">Selectively reveal information about your identity, finances, and more — on your terms</p>
+              <div className="bg-slate-50 border border-slate-100 rounded-[28px] p-10">
+                <div className="text-[14px] font-black uppercase tracking-widest text-purple-500 mb-4 flex items-center gap-3">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                  For Users
+                </div>
+                <p className="text-[16px] md:text-[18px] text-slate-600 leading-relaxed">Selectively reveal information about your identity, finances, and more, on your terms.</p>
               </div>
             </div>
-            <p className="text-[17px] font-bold text-[#D4FF28] mt-10">
+            
+            <p className="text-[20px] md:text-[24px] font-bold text-indigo-600 mt-10 mb-12">
               Privacy is the single critical feature that will bring users into this future.
             </p>
-            <div className="mt-8">
+            
+            <div>
               <a
                 href="https://aztec.network"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-[#D4FF28] text-black text-[13px] font-black uppercase tracking-widest rounded-full hover:scale-105 transition-transform"
+                className="inline-flex items-center gap-3 px-10 py-5 bg-slate-900 text-white text-[14px] font-black uppercase tracking-[0.2em] rounded-full hover:bg-indigo-600 hover:shadow-xl hover:shadow-indigo-500/30 transition-all duration-300"
               >
-                Learn More at aztec.network →
+                Learn More at aztec.network
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
               </a>
             </div>
           </div>
