@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { sanitiseExplorerUrl } from '@/lib/aztec/client';
 
 export const dynamic = 'force-dynamic';
 
@@ -43,9 +44,7 @@ export async function GET(req: Request) {
       toAddress:   tx.toAddress,
       timestamp:   tx.timestamp.toISOString(),
       blockNumber: tx.blockNumber?.toString() ?? '0',
-      explorerUrl: (tx.metadata as any)?.explorerUrl
-        ? ((tx.metadata as any).explorerUrl as string).replace(/\/tx\/0x[a-fA-F0-9]+/, '')
-        : 'https://testnet.aztecscan.xyz',
+      explorerUrl: sanitiseExplorerUrl((tx.metadata as any)?.explorerUrl ?? null),
     }));
 
     return NextResponse.json({ transactions: formatted });

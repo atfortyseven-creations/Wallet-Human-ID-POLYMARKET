@@ -78,9 +78,36 @@ export function deriveSecretKeyFromEvm(evmAddress: string): string {
 
 /**
  * Aztec testnet explorer URL for a given transaction hash.
+ *
+ * AztecScan SPA uses /tx-effect/:hash (NOT /tx/:hash — that route does not exist).
+ * Virtual/synthetic hashes generated server-side are never indexed on-chain, so we
+ * route them to the explorer root to avoid the "Page does not exist" 404 screen.
+ *
+ * Rules:
+ *  - Real Aztec tx hash: starts with 0x and is 66 chars (32-byte hex) → /tx-effect/
+ *  - Virtual hash (aztec-airdrop-*, or sha256 0x but >66 chars): → explorer root
+ *  - Empty/null: → explorer root
  */
-export function explorerTxUrl(txHash: string): string {
-  return `${AZTEC_EXPLORER}/tx/${txHash}`;
+export function explorerTxUrl(txHash: string | null | undefined): string {
+  if (!txHash) return AZTEC_EXPLORER;
+  // A real Aztec tx hash is exactly 66 chars: '0x' + 64 hex digits
+  const isRealHash = /^0x[a-fA-F0-9]{64}$/.test(txHash);
+  if (isRealHash) return `${AZTEC_EXPLORER}/tx-effect/${txHash}`;
+  // Virtual hash — route to root so user sees the live explorer, not a 404
+  return AZTEC_EXPLORER;
+}
+
+/**
+ * Safe wrapper: given a stored explorerUrl from DB (may be old /tx/ format),
+ * sanitise it to the correct AztecScan path format.
+ */
+export function sanitiseExplorerUrl(stored: string | null | undefined): string {
+  if (!stored) return AZTEC_EXPLORER;
+  // Fix old /tx/ path → /tx-effect/
+  const fixed = stored.replace(/\/tx\/(?=0x[a-fA-F0-9]{64}$)/, '/tx-effect/');
+  // Strip any remaining /tx/ path (virtual hashes that don't belong on-chain)
+  const safe = fixed.replace(/\/tx\/[^/]+$/, '');
+  return safe || AZTEC_EXPLORER;
 }
 
 /**

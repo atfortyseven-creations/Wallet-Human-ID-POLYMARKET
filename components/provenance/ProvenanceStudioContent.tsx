@@ -50,7 +50,8 @@ const SubscriptionDashboard = dynamic(
 /* ─────────────────────────────────────────────
    CONSTANTS
 ───────────────────────────────────────────── */
-const EXPLORER_BASE = 'https://testnet.aztecscan.xyz/tx/';
+// AztecScan uses /tx-effect/:hash — the /tx/ path does not exist and shows "Page does not exist"
+const EXPLORER_BASE = 'https://testnet.aztecscan.xyz/tx-effect/';
 
 /* ─────────────────────────────────────────────
    TYPES

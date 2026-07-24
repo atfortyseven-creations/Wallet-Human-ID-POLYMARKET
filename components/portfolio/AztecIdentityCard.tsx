@@ -330,7 +330,7 @@ function SendQDsPanel() {
           </button>
         </div>
         <a
-          href={`${AZTEC_EXPLORER}/blocks/${blockNum}`}
+          href={`${AZTEC_EXPLORER}/block/${blockNum}`}
           target="_blank" rel="noopener noreferrer"
           className="flex items-center justify-between w-full py-3 px-4 border border-emerald-200 bg-emerald-50 hover:border-emerald-400 hover:bg-emerald-100 text-emerald-700 text-[9px] font-black uppercase tracking-widest transition-all group"
         >

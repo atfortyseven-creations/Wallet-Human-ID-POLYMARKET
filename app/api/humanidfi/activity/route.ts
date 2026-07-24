@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { sanitiseExplorerUrl } from '@/lib/aztec/client';
 
 export const dynamic = 'force-dynamic';
 
@@ -48,10 +49,10 @@ export async function GET(req: Request) {
 
     const formatted = txs.map(tx => {
       const meta = (tx.metadata as any) || {};
-        let rawExplorerUrl = (tx.metadata as any)?.explorerUrl || (tx.txHash ? `https://testnet.aztecscan.xyz/tx/${tx.txHash}` : `https://testnet.aztecscan.xyz`);
-        // If this is a virtual hash (bypassing native SDK), strip the /tx/ path so it doesn't 404 on the explorer
-        let safeExplorerUrl = typeof rawExplorerUrl === 'string' ? rawExplorerUrl.replace(/\/tx\/0x[a-fA-F0-9]+/, '') : rawExplorerUrl;
-        if (safeExplorerUrl.endsWith('https://testnet.aztecscan.xyz/tx/')) safeExplorerUrl = 'https://testnet.aztecscan.xyz';
+        // sanitiseExplorerUrl fixes old /tx/ paths stored in DB and virtual hashes that 404 on AztecScan.
+        // AztecScan SPA uses /tx-effect/:hash — /tx/ does not exist and always shows "Page does not exist".
+        const rawUrl = (tx.metadata as any)?.explorerUrl ?? null;
+        const safeExplorerUrl = sanitiseExplorerUrl(rawUrl);
 
         return {
           id: tx.id,
