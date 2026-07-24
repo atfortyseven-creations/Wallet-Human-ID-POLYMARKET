@@ -17,7 +17,7 @@ const IMAGES = {
   kernelCircuit:  `${CDN}/68a35ec438e0197c1af81cf6_65d8b769b6af8c17617287c8.webp`,
 };
 
-const fadeUp = {
+const fadeUp: any = {
   hidden: { opacity: 0, y: 50 },
   visible: (delay: number = 0) => ({
     opacity: 1,
@@ -26,7 +26,7 @@ const fadeUp = {
   }),
 };
 
-const fadeIn = {
+const fadeIn: any = {
   hidden: { opacity: 0 },
   visible: (delay: number = 0) => ({
     opacity: 1,
@@ -51,7 +51,7 @@ function Section({ children, className = "" }: { children: React.ReactNode; clas
 }
 
 function Img({ src, alt, caption, className = "" }: { src: string; alt: string; caption?: string; className?: string }) {
-  const ref = useRef<HTMLFigureElement>(null);
+  const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   return (
     <motion.figure
