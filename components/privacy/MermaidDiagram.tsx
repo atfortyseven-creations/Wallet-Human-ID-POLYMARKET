@@ -2,159 +2,196 @@
 
 import React, { useEffect, useId, useState } from 'react';
 
-type MermaidDiagramProps = {
-  chart: string;
-  caption?: string;
+type Props = { chart: string; caption?: string };
+
+// Theme config injected as %%{init}%% frontmatter — guaranteed per-diagram override
+const THEME_INIT = {
+  theme: 'base',
+  themeVariables: {
+    primaryColor: '#ffffff',
+    primaryTextColor: '#111111',
+    primaryBorderColor: '#444444',
+    secondaryColor: '#f5f5f5',
+    tertiaryColor: '#f5f5f5',
+    lineColor: '#444444',
+    fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif',
+    fontSize: '14px',
+    nodeBorder: '#444444',
+    clusterBkg: '#f5f5f5',
+    clusterBorder: '#aaaaaa',
+    edgeLabelBackground: '#ffffff',
+    nodeTextColor: '#111111',
+    labelTextColor: '#111111',
+    // sequence diagram
+    actorBorder: '#444444',
+    actorBkg: '#ffffff',
+    actorTextColor: '#111111',
+    actorLineColor: '#777777',
+    signalColor: '#444444',
+    signalTextColor: '#111111',
+    noteBorderColor: '#cccccc',
+    noteBkgColor: '#fffde7',
+    noteTextColor: '#333333',
+    activationBorderColor: '#444444',
+    activationBkgColor: '#eeeeee',
+  },
 };
 
-// Generates a self-contained HTML page that renders a single Mermaid diagram.
-// By using an iframe we completely isolate the SVG from Tailwind's CSS resets.
-function buildIframeDoc(chart: string): string {
-  const escaped = chart
-    .replace(/\\/g, '\\\\')
-    .replace(/`/g, '\\`')
-    .replace(/\$/g, '\\$');
+// Scoped CSS injected INSIDE the SVG element — wins against any external stylesheet including Tailwind preflight
+const SVG_SCOPED_CSS = `
+  text, tspan, .label { fill: #111111 !important; color: #111111 !important; font-family: Inter, ui-sans-serif, system-ui, sans-serif !important; }
+  .node rect, .node polygon { fill: #ffffff !important; stroke: #444444 !important; stroke-width: 1.5px !important; }
+  .node circle, .node ellipse { fill: #ffffff !important; stroke: #444444 !important; stroke-width: 1.5px !important; }
+  .node path { fill: #ffffff !important; stroke: #444444 !important; stroke-width: 1.5px !important; }
+  .cluster rect { fill: #f5f5f5 !important; stroke: #aaaaaa !important; stroke-width: 1px !important; }
+  .cluster text, .cluster-label text { fill: #333333 !important; }
+  .edgePath .path { stroke: #444444 !important; fill: none !important; stroke-width: 1.5px !important; }
+  .flowchart-link { stroke: #444444 !important; fill: none !important; }
+  .arrowheadPath { fill: #444444 !important; stroke: none !important; }
+  .marker { fill: #444444 !important; stroke: #444444 !important; }
+  .edgeLabel { background: #ffffff !important; }
+  .edgeLabel rect, .labelBkg { fill: #ffffff !important; opacity: 0.85 !important; }
+  .edgeLabel text, .edgeLabel tspan { fill: #111111 !important; }
+  /* sequence diagram */
+  .actor { fill: #ffffff !important; stroke: #444444 !important; stroke-width: 1.5px !important; }
+  .actor-line { stroke: #888888 !important; stroke-width: 1px !important; }
+  .messageLine0, .messageLine1 { stroke: #444444 !important; fill: none !important; }
+  .messageText { fill: #111111 !important; }
+  .labelBox { fill: #f5f5f5 !important; stroke: #cccccc !important; }
+  .labelText { fill: #111111 !important; }
+  .loopText, .loopLine { fill: #111111 !important; stroke: #aaaaaa !important; }
+  .note { fill: #fffde7 !important; stroke: #cccccc !important; }
+  .noteText { fill: #333333 !important; }
+  .activation0, .activation1, .activation2 { fill: #eeeeee !important; stroke: #444444 !important; }
+  .sequenceNumber { fill: #ffffff !important; }
+`;
 
-  return `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8"/>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { background: #ffffff; width: 100%; overflow-x: auto; }
-  body { display: flex; align-items: flex-start; justify-content: center; padding: 32px 24px; }
-  #diagram svg {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    font-family: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
-  }
-  /* sequence diagram text fix */
-  text, tspan { fill: #111111 !important; color: #111111 !important; }
-  .actor { stroke: #333 !important; fill: #fff !important; }
-  .actor-line { stroke: #aaa !important; }
-  .messageLine0, .messageLine1 { stroke: #444 !important; }
-  .messageText { fill: #111 !important; }
-  .labelBox { stroke: #ccc !important; fill: #f5f5f5 !important; }
-  .labelText { fill: #111 !important; }
-  .loopText { fill: #111 !important; }
-  .note { stroke: #ccc !important; fill: #fffde7 !important; }
-  .noteText { fill: #333 !important; }
-  .activation0, .activation1 { fill: #f0f0f0 !important; stroke: #333 !important; }
-  /* flowchart node fix */
-  .node rect, .node circle, .node ellipse, .node polygon, .node path { fill: #fff !important; stroke: rgba(0,0,0,0.2) !important; }
-  .edgeLabel { background: #fff !important; }
-  .cluster rect { fill: #fafafa !important; stroke: rgba(0,0,0,0.15) !important; }
-  .arrowheadPath { fill: #444 !important; }
-  .edgePath .path { stroke: #444 !important; }
-</style>
-</head>
-<body>
-<div id="diagram"></div>
-<script type="module">
-  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-  mermaid.initialize({
-    startOnLoad: false,
-    theme: 'base',
-    themeVariables: {
-      primaryColor: '#ffffff',
-      primaryTextColor: '#111111',
-      primaryBorderColor: 'rgba(0,0,0,0.22)',
-      secondaryColor: '#f5f5f5',
-      tertiaryColor: '#f9f9f9',
-      lineColor: '#444444',
-      fontFamily: '"Inter", ui-sans-serif, system-ui, sans-serif',
-      fontSize: '14px',
-      nodeBorder: 'rgba(0,0,0,0.2)',
-      clusterBkg: '#fafafa',
-      clusterBorder: 'rgba(0,0,0,0.15)',
-      edgeLabelBackground: '#ffffff',
-      nodeTextColor: '#111111',
-      labelTextColor: '#111111',
-      actorBorder: '#333333',
-      actorBkg: '#ffffff',
-      actorTextColor: '#111111',
-      actorLineColor: '#888888',
-      signalColor: '#333333',
-      signalTextColor: '#111111',
-      noteBorderColor: '#cccccc',
-      noteBkgColor: '#fffde7',
-      noteTextColor: '#333333',
-      activationBorderColor: '#333333',
-      activationBkgColor: '#f0f0f0',
-    },
-    flowchart: { curve: 'basis', padding: 20, htmlLabels: true, useMaxWidth: true },
-    sequence: { actorMargin: 60, messageMargin: 40, useMaxWidth: true, mirrorActors: false },
-  });
+let mermaidReady = false;
 
-  const chart = \`${escaped}\`;
-  const { svg } = await mermaid.render('mermaid-diagram', chart);
-  const el = document.getElementById('diagram');
-  el.innerHTML = svg;
-
-  // Make SVG responsive
-  const svgEl = el.querySelector('svg');
-  if (svgEl) {
-    svgEl.removeAttribute('width');
-    svgEl.removeAttribute('height');
-    svgEl.style.width = '100%';
-    svgEl.style.height = 'auto';
-    svgEl.style.maxWidth = '100%';
-  }
-
-  // Notify parent of content height so iframe resizes
-  const height = document.body.scrollHeight;
-  window.parent.postMessage({ type: 'mermaid-height', height }, '*');
-</script>
-</body>
-</html>`;
-}
-
-export function MermaidDiagram({ chart, caption }: MermaidDiagramProps) {
-  const id = useId().replace(/:/g, '');
-  const [height, setHeight] = useState(320);
-  const [srcDoc, setSrcDoc] = useState('');
+export function MermaidDiagram({ chart, caption }: Props) {
+  const reactId = useId().replace(/:/g, '');
+  const [svg, setSvg] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setSrcDoc(buildIframeDoc(chart.trim()));
-  }, [chart]);
+    let cancelled = false;
 
-  useEffect(() => {
-    const handler = (e: MessageEvent) => {
-      if (e.data?.type === 'mermaid-height' && typeof e.data.height === 'number') {
-        setHeight(Math.max(160, e.data.height + 16));
+    (async () => {
+      try {
+        const mermaid = (await import('mermaid')).default;
+
+        // Initialize once globally — the %%{init}%% per-chart override handles theming
+        if (!mermaidReady) {
+          mermaid.initialize({ startOnLoad: false, securityLevel: 'loose' });
+          mermaidReady = true;
+        }
+
+        // Prepend %%{init}%% so every chart carries its own theme regardless of global state
+        const finalChart = `%%{init: ${JSON.stringify(THEME_INIT)}}%%\n${chart.trim()}`;
+        const diagramId = `mmd-${reactId}`;
+
+        const { svg: raw } = await mermaid.render(diagramId, finalChart);
+
+        if (!cancelled) {
+          // Step 1: inject our scoped CSS override as a <style> tag inside the SVG
+          // This beats Tailwind preflight and any external global styles
+          const withStyles = raw.replace(
+            /(<svg[^>]*>)/,
+            `$1<style id="mmd-override">${SVG_SCOPED_CSS}</style>`,
+          );
+
+          // Step 2: make the SVG fully responsive
+          // Remove mermaid's hardcoded width/height/max-width and let CSS handle sizing
+          const responsive = withStyles
+            .replace(/\sheight="[^"]*"/g, '')
+            .replace(/\swidth="[^"]*"/g, '')
+            .replace(/\sstyle="[^"]*max-width[^"]*"/g, 'style="width:100%;height:auto;display:block;"');
+
+          setSvg(responsive);
+          setError(null);
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setError(e instanceof Error ? e.message : String(e));
+          setSvg('');
+        }
       }
+    })();
+
+    return () => {
+      cancelled = true;
     };
-    window.addEventListener('message', handler);
-    return () => window.removeEventListener('message', handler);
-  }, []);
+  }, [chart, reactId]);
 
   return (
-    <figure className="my-10 border border-black/10 bg-white overflow-hidden" style={{ borderRadius: 2 }}>
-      {srcDoc ? (
-        <iframe
-          id={`mermaid-iframe-${id}`}
-          srcDoc={srcDoc}
-          title={caption ?? 'Diagram'}
-          sandbox="allow-scripts"
-          scrolling="no"
-          style={{
-            width: '100%',
-            height: `${height}px`,
-            border: 'none',
-            display: 'block',
-            transition: 'height 0.3s ease',
-          }}
-        />
-      ) : (
-        <div className="h-36 flex items-center justify-center">
-          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#050505]/25 animate-pulse">
-            Rendering diagram…
+    <figure
+      style={{
+        margin: '40px 0',
+        border: '1px solid rgba(0,0,0,0.1)',
+        borderRadius: '4px',
+        background: '#ffffff',
+        overflow: 'hidden',
+      }}
+    >
+      {/* overflow-x:auto so wide diagrams scroll on mobile instead of clipping */}
+      <div
+        style={{
+          overflowX: 'auto',
+          WebkitOverflowScrolling: 'touch',
+          padding: '32px 24px',
+          minHeight: '160px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        {error ? (
+          <pre
+            style={{
+              fontSize: '11px',
+              color: '#cc0000',
+              fontFamily: 'monospace',
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              maxWidth: '100%',
+            }}
+          >
+            {error}
+          </pre>
+        ) : svg ? (
+          <div
+            style={{ width: '100%', lineHeight: 1 }}
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: Mermaid SVG is trusted output
+            dangerouslySetInnerHTML={{ __html: svg }}
+          />
+        ) : (
+          <span
+            style={{
+              fontFamily: 'monospace',
+              fontSize: '10px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.3em',
+              color: 'rgba(0,0,0,0.2)',
+            }}
+          >
+            Rendering…
           </span>
-        </div>
-      )}
+        )}
+      </div>
+
       {caption && (
-        <figcaption className="px-5 py-3 border-t border-black/8 font-mono text-[9px] font-bold uppercase tracking-[0.25em] text-[#050505]/35">
+        <figcaption
+          style={{
+            padding: '10px 20px',
+            borderTop: '1px solid rgba(0,0,0,0.06)',
+            fontFamily: 'monospace',
+            fontSize: '9px',
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            letterSpacing: '0.25em',
+            color: 'rgba(0,0,0,0.35)',
+          }}
+        >
           {caption}
         </figcaption>
       )}
