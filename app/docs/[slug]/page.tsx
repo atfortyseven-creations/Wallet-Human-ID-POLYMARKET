@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { DocsShell, DocH1, DocH2, DocH3, DocP, DocTable, DocCallout, DocOrderedList, DocTag, ALL_DOC_SLUGS } from "@/components/docs/DocsShell";
+import { DocsShell, DocH1, DocH2, DocH3, DocP, DocTable, DocCallout, DocOrderedList, DocTag } from "@/components/docs/DocsShell";
+import { ALL_DOC_SLUGS } from "@/components/docs/DocsData";
 
 // This allows Next.js to statically generate all doc routes at build time
 export function generateStaticParams() {
