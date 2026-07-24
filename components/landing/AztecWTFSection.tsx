@@ -14,6 +14,14 @@ const fadeUp: any = {
   }),
 };
 
+const stagger: any = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1, delayChildren: 0.05 },
+  },
+};
+
 function Section({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
@@ -52,14 +60,24 @@ function PartLabel({ number, title }: { number: string; title: string }) {
 
 function BulletList({ items }: { items: React.ReactNode[] }) {
   return (
-    <ul className="space-y-4 my-8">
+    <motion.ul 
+      variants={stagger}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-50px" }}
+      className="space-y-4 my-8"
+    >
       {items.map((item, i) => (
-        <li key={i} className="flex gap-4 text-[16px] md:text-[18px] text-slate-700 leading-relaxed items-start">
+        <motion.li 
+          key={i} 
+          variants={fadeUp}
+          className="flex gap-4 text-[16px] md:text-[18px] text-slate-700 leading-relaxed items-start"
+        >
           <span className="mt-[8px] w-[6px] h-[6px] bg-slate-800 shrink-0" />
           <span className="flex-1">{item}</span>
-        </li>
+        </motion.li>
       ))}
-    </ul>
+    </motion.ul>
   );
 }
 
@@ -229,7 +247,7 @@ flowchart TD
           <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-8">
             For many use cases, personal data compliance, trading and financial services, pulling off chain assets on chain, some data should stay public while some should stay private. A whole class of use cases demands public and private flexibility:
           </p>
-          <div className="bg-slate-50 rounded-3xl p-8 border border-slate-100 mb-16">
+          <div className="bg-white/60 backdrop-blur-xl border-slate-200/50 shadow-[0_30px_80px_rgba(0,0,0,0.03)] rounded-3xl p-8 border mb-16">
             <BulletList items={[
               "On chain identity and KYC without data disclosure",
               "Bringing off chain assets on chain (property, art, documents)",
@@ -344,13 +362,13 @@ ZK Prover"}
           
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 mt-10">
-            <div className="bg-indigo-50 rounded-[24px] p-8 border border-indigo-100">
+            <div className="bg-white/60 backdrop-blur-xl border-slate-200/50 shadow-[0_30px_80px_rgba(0,0,0,0.03)] rounded-[24px] p-8 border">
               <h6 className="text-[16px] font-black uppercase tracking-wide text-indigo-900 mb-4">Data Privacy</h6>
               <p className="text-[16px] md:text-[18px] leading-relaxed text-indigo-700">
                 The ability of smart contracts to have private encrypted state owned by a user and unseen by the external world.
               </p>
             </div>
-            <div className="bg-indigo-50 rounded-[24px] p-8 border border-indigo-100">
+            <div className="bg-white/60 backdrop-blur-xl border-slate-200/50 shadow-[0_30px_80px_rgba(0,0,0,0.03)] rounded-[24px] p-8 border">
               <h6 className="text-[16px] font-black uppercase tracking-wide text-indigo-900 mb-4">Confidentiality</h6>
               <p className="text-[16px] md:text-[18px] leading-relaxed text-indigo-700">
                 The ability of smart contracts to process encrypted data internally, execute private functions and transactions. Ensures private information is not accessible to unauthorized applications.
@@ -411,7 +429,7 @@ ZK Prover"}
           <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed mb-6">
             Aztec design for private state intends to leak no data at all. That is why we cannot just encrypt account based state and modify it in place in the tree, modifying a particular encrypted leaf leaks information like the leaf location in the tree, what contract and state it touches, etc.
           </p>
-          <div className="bg-slate-50 border-l-4 border-indigo-500 p-8 rounded-r-2xl mb-6">
+          <div className="bg-white/60 backdrop-blur-xl shadow-[0_30px_80px_rgba(0,0,0,0.03)] border-l-4 border-indigo-500 p-8 rounded-r-2xl mb-6">
             <p className="text-[18px] md:text-[22px] text-slate-800 leading-relaxed">
               Therefore, to store private state, Aztec uses an <strong className="font-bold">append only</strong> approach. Existing entries in the database cannot be modified or deleted, only new entries can be appended.
             </p>
@@ -494,7 +512,7 @@ flowchart TD
             </div>
           </div>
           
-          <div className="bg-slate-50 rounded-[32px] p-10 border border-slate-100">
+          <div className="bg-white/60 backdrop-blur-xl border-slate-200/50 shadow-[0_30px_80px_rgba(0,0,0,0.03)] rounded-[32px] p-10 border">
             <h5 className="text-[20px] font-bold text-slate-900 mb-6">Public functions can:</h5>
             <BulletList items={[
               "Read and write public state",
@@ -539,7 +557,7 @@ flowchart TD
             {" "}programming language, a Domain Specific Language for SNARK proving systems developed by the Aztec team.
           </p>
           
-          <div className="bg-indigo-50 border border-indigo-100 rounded-[28px] p-10 mb-8">
+          <div className="bg-white/60 backdrop-blur-xl border-slate-200/50 shadow-[0_30px_80px_rgba(0,0,0,0.03)] rounded-[28px] p-10 mb-8 border">
             <h5 className="text-[24px] font-bold text-indigo-900 mb-4">The Private Kernel Circuit</h5>
             <p className="text-[18px] md:text-[22px] text-indigo-700 leading-relaxed">
               To execute all private functions and build a proof of transaction execution correctness, Aztec uses the Private Kernel Circuit, which runs <strong className="font-bold">locally on the user device</strong> so all private inputs remain private.
@@ -602,14 +620,14 @@ sequenceDiagram
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mb-16">
-              <div className="bg-slate-50 border border-slate-100 rounded-[28px] p-10">
+              <div className="bg-white/60 backdrop-blur-xl border-slate-200/50 shadow-[0_30px_80px_rgba(0,0,0,0.03)] rounded-[28px] p-10 border">
                 <div className="text-[14px] font-black uppercase tracking-widest text-indigo-500 mb-4 flex items-center gap-3">
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
                   For Developers
                 </div>
                 <p className="text-[16px] md:text-[18px] text-slate-600 leading-relaxed">Build privacy-preserving applications using Noir, the universal ZK language.</p>
               </div>
-              <div className="bg-slate-50 border border-slate-100 rounded-[28px] p-10">
+              <div className="bg-white/60 backdrop-blur-xl border-slate-200/50 shadow-[0_30px_80px_rgba(0,0,0,0.03)] rounded-[28px] p-10 border">
                 <div className="text-[14px] font-black uppercase tracking-widest text-purple-500 mb-4 flex items-center gap-3">
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                   For Users

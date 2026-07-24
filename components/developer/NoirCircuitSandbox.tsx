@@ -144,7 +144,7 @@ interface CompileResult {
 }
 
 export function NoirCircuitSandbox() {
-  const { balance, spendQDs } = useAztecNative();
+  const { balance, spendQDs, aztecAddress } = useAztecNative();
   const [noirCode, setNoirCode] = useState(CIRCUIT_EXAMPLES[0].code);
   const [selectedExample, setSelectedExample] = useState(0);
 

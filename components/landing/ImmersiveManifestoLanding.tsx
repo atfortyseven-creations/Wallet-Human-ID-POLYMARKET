@@ -443,15 +443,24 @@ function LandingNav() {
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 function HeroSection() {
+  const { scrollY } = useScroll();
+  const yParallax = useTransform(scrollY, [0, 1000], [0, 300]);
+  const opacityFade = useTransform(scrollY, [0, 500], [1, 0]);
+
   return (
     <section
-      className="relative w-full min-h-[100vh] bg-white flex flex-col justify-center items-center text-center overflow-hidden"
+      className="relative w-full min-h-[100vh] flex flex-col justify-center items-center text-center overflow-hidden"
       style={{ paddingTop: 60 }}
     >
-      {/* Subtle dot-grid background */}
-      <div
-        aria-hidden="true"
+      {/* Background with Parallax */}
+      <motion.div 
+        style={{ y: yParallax, opacity: opacityFade, z: 0, willChange: "transform, opacity" }}
         className="absolute inset-0 pointer-events-none"
+      >
+        {/* Subtle dot-grid background */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0"
         style={{
           backgroundImage:
             "radial-gradient(circle, rgba(0,0,0,0.07) 1px, transparent 1px)",
@@ -467,6 +476,7 @@ function HeroSection() {
             "radial-gradient(ellipse 70% 60% at 50% 50%, transparent 20%, white 90%)",
         }}
       />
+      </motion.div>
 
       <motion.div
         variants={stagger}
@@ -483,33 +493,56 @@ function HeroSection() {
           You are now entering
         </motion.p>
 
-        {/* Main heading — Martel serif, massive clamp */}
-        <motion.h1
-          variants={fadeUp}
-          custom={0.05}
-          className="tracking-tight leading-[0.9] text-black mb-8"
-          style={{
-            fontFamily: "var(--font-aztec-serif), Georgia, serif",
-            fontSize: "clamp(3.8rem, 11vw, 9rem)",
-            fontWeight: 700,
-          }}
-        >
-          The Privacy Layer
-          <br />
-          <span style={{ color: "rgba(0,0,0,0.2)" }}>
-            for Everything On-Chain.
-          </span>
-        </motion.h1>
+        {/* Main heading — Apertrue style line-by-line reveal */}
+        <div className="mb-8 flex flex-col items-center">
+          <div className="overflow-hidden pb-2">
+            <motion.h1
+              initial={{ y: "110%" }}
+              animate={{ y: 0 }}
+              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+              className="tracking-tight leading-[0.9] text-black"
+              style={{
+                fontFamily: "var(--font-aztec-serif), Georgia, serif",
+                fontSize: "clamp(3.8rem, 11vw, 9rem)",
+                fontWeight: 700,
+                willChange: "transform"
+              }}
+            >
+              The Privacy Layer
+            </motion.h1>
+          </div>
+          <div className="overflow-hidden pb-4 pt-2">
+            <motion.h1
+              initial={{ y: "110%" }}
+              animate={{ y: 0 }}
+              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+              className="tracking-tight leading-[0.9]"
+              style={{
+                color: "rgba(0,0,0,0.2)",
+                fontFamily: "var(--font-aztec-serif), Georgia, serif",
+                fontSize: "clamp(3.8rem, 11vw, 9rem)",
+                fontWeight: 700,
+                willChange: "transform"
+              }}
+            >
+              for Everything On-Chain.
+            </motion.h1>
+          </div>
+        </div>
 
         {/* Subtitle */}
-        <motion.p
-          variants={fadeUp}
-          custom={0.1}
-          className="text-[16px] md:text-[19px] text-black/45 leading-relaxed max-w-[520px] mb-12 font-medium"
-        >
-          Humanity Ledger is built on Aztec Network — ZK identity, shielded
-          assets, encrypted communications. All client-side. All yours.
-        </motion.p>
+        <div className="overflow-hidden mb-12">
+          <motion.p
+            initial={{ y: "110%" }}
+            animate={{ y: 0 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+            className="text-[16px] md:text-[19px] text-black/45 leading-relaxed max-w-[520px] font-medium"
+            style={{ willChange: "transform" }}
+          >
+            Humanity Ledger is built on Aztec Network — ZK identity, shielded
+            assets, encrypted communications. All client-side. All yours.
+          </motion.p>
+        </div>
 
         {/* CTAs */}
         <motion.div
@@ -1112,18 +1145,23 @@ export function ImmersiveManifestoLanding({
     // min-h-screen on a flex column causes the dark background to bleed BELOW
     // the footer creating a scrollable black zone. Use bg-white throughout.
     <ReactLenis root options={{ lerp: 0.05, syncTouch: true, smoothWheel: true }}>
-      <div className="w-full flex flex-col bg-white text-black antialiased overflow-x-hidden">
-        <LandingNav />
-        <main id="main-content" className="flex-1 bg-white">
-          <HeroSection />
-          <StatementSection />
-          <AztecWTFSection />
-          <ModulesSection />
-          <RegistrySection hideMap={hideMap} />
-          <FAQSection />
-          <AztecCTASection />
-        </main>
-        <SystemFooter />
+      <div className="w-full flex flex-col bg-white text-black antialiased overflow-x-hidden relative">
+        {/* Architectural Light Grid */}
+        <div className="absolute inset-0 z-0 pointer-events-none bg-[linear-gradient(to_right,#f1f5f9_1px,transparent_1px),linear-gradient(to_bottom,#f1f5f9_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] opacity-80" />
+        
+        <div className="relative z-10 w-full flex flex-col">
+          <LandingNav />
+          <main id="main-content" className="flex-1">
+            <HeroSection />
+            <StatementSection />
+            <AztecWTFSection />
+            <ModulesSection />
+            <RegistrySection hideMap={hideMap} />
+            <FAQSection />
+            <AztecCTASection />
+          </main>
+          <SystemFooter />
+        </div>
       </div>
     </ReactLenis>
   );

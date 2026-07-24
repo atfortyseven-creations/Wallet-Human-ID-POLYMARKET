@@ -57,6 +57,8 @@ export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?:
     // [DEBUG] Monitor address resolution changes
     // console.log('[useRealWalletData] Address Resolution:', { effectiveAddress, isConnected, isAuthenticated, isWeb3Connected, handshakeAddressFromCookie });
 
+    const currentChainId = useChainId();
+
     // Derive target chain ID from activeNetwork store selection, fallback to wagmi's currentChainId
     const { activeNetwork } = useWalletStore();
     const targetChainId = Object.values(SUPPORTED_CHAINS).find(c => c.name.toLowerCase() === activeNetwork?.toLowerCase() || Object.keys(SUPPORTED_CHAINS).find(k => k === activeNetwork && SUPPORTED_CHAINS[k].id === c.id))?.id || currentChainId;

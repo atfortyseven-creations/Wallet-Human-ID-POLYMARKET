@@ -32,7 +32,6 @@ const THEME_INIT = {
     noteBorderColor: '#cccccc',
     noteBkgColor: '#fffde7',
     noteTextColor: '#333333',
-    noteTextColor: '#333333',
     activationBorderColor: '#444444',
     activationBkgColor: '#eeeeee',
   },
