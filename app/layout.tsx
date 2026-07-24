@@ -19,6 +19,7 @@ import { MobileEnforcer } from '@/components/layout/MobileEnforcer';
 import { ClientOverlays } from "@/components/layout/ClientOverlays";
 import { GlobalErrorBoundary } from "@/components/ui/GlobalErrorBoundary";
 import { ScrollProgressBar } from "@/components/ui/ScrollProgressBar";
+import { WavesSpotlight } from "@/components/ui/WavesSpotlight";
 import { AntiTamperCore } from "@/components/security/AntiTamperCore";
 import { AztecProvider } from "@/context/AztecContext";
 import { AztecNativeProvider } from "@/context/AztecNativeContext";
@@ -335,6 +336,7 @@ export default async function RootLayout({
           Skip to absolute content
         </a>
         <ScrollProgressBar />
+        <WavesSpotlight />
         <Providers cookies={cookies}>
           <GlobalErrorBoundary>
             <MobileEnforcer>
