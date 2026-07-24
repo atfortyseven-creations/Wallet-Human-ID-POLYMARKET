@@ -10,6 +10,7 @@ import { useSystemAccount } from '@/hooks/useSystemAccount';
 import { useAztecNative } from '@/context/AztecNativeContext';
 
 import { safeToFixed, safeToLocaleString } from '@/lib/utils/number-format';
+import { SUPPORTED_CHAINS } from '@/lib/wallet/chains';
 
 
 export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?: string) => {
@@ -56,7 +57,9 @@ export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?:
     // [DEBUG] Monitor address resolution changes
     // console.log('[useRealWalletData] Address Resolution:', { effectiveAddress, isConnected, isAuthenticated, isWeb3Connected, handshakeAddressFromCookie });
 
-    const currentChainId = useChainId();
+    // Derive target chain ID from activeNetwork store selection, fallback to wagmi's currentChainId
+    const { activeNetwork } = useWalletStore();
+    const targetChainId = Object.values(SUPPORTED_CHAINS).find(c => c.name.toLowerCase() === activeNetwork?.toLowerCase() || Object.keys(SUPPORTED_CHAINS).find(k => k === activeNetwork && SUPPORTED_CHAINS[k].id === c.id))?.id || currentChainId;
 
     // 1. On-Chain Native Balance (Wagmi v2  no 'token' param, that's deprecated)
     // ERC-20 USDC balance is already fetched by the portfolio assets API below.
@@ -64,7 +67,7 @@ export const useRealWalletData = (recentNews: NewsItem[] = [], overrideAddress?:
 
     const { data: balanceData, isLoading: isBalanceLoading } = useBalance({
         address: isValidAddress ? (effectiveAddress as `0x${string}`) : undefined,
-        chainId: currentChainId, // Dynamic based on active network
+        chainId: targetChainId, // Dynamic based on active network selection
         query: {
             enabled: isValidAddress,
             refetchInterval: 10000,

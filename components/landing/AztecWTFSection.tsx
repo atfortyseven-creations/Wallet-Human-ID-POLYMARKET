@@ -3,6 +3,7 @@
 import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { MermaidDiagram } from "../privacy/MermaidDiagram";
+import { ArchitectureDefragmenter } from "./ArchitectureDefragmenter";
 
 const fadeUp: any = {
   hidden: { opacity: 0, y: 50 },
@@ -465,7 +466,7 @@ flowchart TD
             <p className="text-[22px] md:text-[28px] leading-relaxed text-white/95 font-medium">
               Private state is structured as a{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300 font-bold">UTXO</span>
-              {" "}, the same fundamental structure underlying the Bitcoin network. If public state is stored in an account based Merkle Tree and private state in a UTXO based Merkle Tree, how are they composable?
+              , the same fundamental structure underlying the Bitcoin network. If public state is stored in an account based Merkle Tree and private state in a UTXO based Merkle Tree, how are they composable?
             </p>
           </div>
         </Section>
@@ -545,6 +546,9 @@ flowchart TD
             </p>
           </div>
         </Section>
+        
+        {/* Defragmentation Visualizer */}
+        <ArchitectureDefragmenter />
 
         <MermaidDiagram chart={`
 sequenceDiagram
@@ -594,7 +598,7 @@ sequenceDiagram
               Privacy is a fundamental<br />human right.
             </h3>
             <p className="text-[20px] md:text-[24px] text-slate-500 leading-relaxed mb-12 max-w-[700px] mx-auto">
-              We all expect privacy with our personal info, payments, and daily communications. Aztec Labs is building toward a blockchain based internet where privacy will be protected.
+              We all expect privacy with our personal info, payments, and daily communications. Aztec Labs is building toward a blockchain-based internet where privacy will be protected.
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left mb-16">
@@ -603,7 +607,7 @@ sequenceDiagram
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
                   For Developers
                 </div>
-                <p className="text-[16px] md:text-[18px] text-slate-600 leading-relaxed">Build privacy preserving applications using Noir, the universal ZK language.</p>
+                <p className="text-[16px] md:text-[18px] text-slate-600 leading-relaxed">Build privacy-preserving applications using Noir, the universal ZK language.</p>
               </div>
               <div className="bg-slate-50 border border-slate-100 rounded-[28px] p-10">
                 <div className="text-[14px] font-black uppercase tracking-widest text-purple-500 mb-4 flex items-center gap-3">

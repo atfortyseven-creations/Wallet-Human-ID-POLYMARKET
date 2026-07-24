@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Loader2, FileText, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useSystemAccount as useAccount } from '@/hooks/useSystemAccount';
@@ -25,7 +25,7 @@ const VOTE_COST_QD = 10;
 export function GovernanceProposals() {
     const { address } = useAccount();
     const { spendQDs, balance } = useAztecNative();
-    const { data: rawProposals, isLoading, mutate } = useSWR<Proposal[] | any>('/api/governance/proposals', fetcher, {
+    const { data: rawProposals, isLoading, error, mutate } = useSWR<Proposal[] | any>('/api/governance/proposals', fetcher, {
         refreshInterval: 10_000,
         dedupingInterval: 5_000,
     });
@@ -80,10 +80,27 @@ export function GovernanceProposals() {
         }
     };
 
+    const [isMounted, setIsMounted] = useState(false);
+    
+    // Fix hydration mismatch
+    useEffect(() => { setIsMounted(true); }, []);
+
+    if (!isMounted) return null;
+
     if (isLoading) {
         return (
             <div className="flex items-center justify-center py-12">
                 <Loader2 className="w-8 h-8 animate-spin text-black" />
+            </div>
+        );
+    }
+
+    if (error || rawProposals?.error) {
+        return (
+            <div className="flex flex-col items-center justify-center py-12 text-center bg-red-50 border border-red-200 rounded-xl">
+                <p className="text-sm font-medium text-red-600">
+                    Failed to load proposals: {error?.message || rawProposals?.error || 'Unknown error'}
+                </p>
             </div>
         );
     }

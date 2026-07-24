@@ -163,7 +163,12 @@ export function AztecPrivacyTerminal({ onBack }: { onBack: () => void }) {
               className="p-6 md:p-10"
             >
               {step === 'OVERVIEW' && <OverviewPanel address={address} balance={balance} pendingDeposit={pendingDeposit} viewingKey={viewingKey} onDeposit={() => setStep('DEPOSIT')} />}
-              {step === 'DEPOSIT' && <DepositPanel log={log} privateKey={privateKey} onSuccess={(hash: string) => { setLastTx(hash); refreshPendingDeposit(); setStep('PENDING'); }} />}
+              {step === 'DEPOSIT' && <DepositPanel log={log} privateKey={privateKey} onSuccess={(hash: string, depositedAmountStr: string) => { 
+                setLastTx(hash); 
+                try { setPendingDeposit(prev => prev + ethers.parseEther(depositedAmountStr || '0')); } catch(e){}
+                refreshPendingDeposit(); 
+                setStep('PENDING'); 
+              }} />}
               {step === 'REGISTER' && <RegisterPanel log={log} privateKey={privateKey} />}
               {step === 'TRANSFER' && <PrivateTransferPanel log={log} privateKey={privateKey} />}
               {step === 'PENDING' && <PendingPanel pendingDeposit={pendingDeposit} lastTx={lastTx} onRefresh={refreshPendingDeposit} />}
@@ -241,6 +246,7 @@ function DepositPanel({ log, privateKey, onSuccess }: any) {
   const [isBusy, setIsBusy] = useState(false);
 
   const execute = async () => {
+    if (isBusy) return;
     if (!amount || parseFloat(amount) <= 0) return toast.error("Enter an amount greater than 0");
     if (!privateKey) return toast.error("Wallet not connected", { description: "Please create or import a wallet first." });
     setIsBusy(true);
@@ -269,7 +275,7 @@ function DepositPanel({ log, privateKey, onSuccess }: any) {
       log("Funds are now pending in the Aztec L2 sequencer queue.", 'SUCCESS');
 
       toast.success("Deposit confirmed on L1");
-      onSuccess(result.txHash);
+      onSuccess(result.txHash, amount);
     } catch (err: any) {
       log(`ERROR: ${err.message}`, 'ERROR');
       toast.error("Deposit failed", { description: err.message?.slice(0, 80) });
@@ -495,12 +501,12 @@ function PendingPanel({ pendingDeposit, lastTx, onRefresh }: any) {
         </div>
         {lastTx && (
           <a
-            href={`https://testnet.aztecscan.xyz`}
+            href={`https://etherscan.io/tx/${lastTx}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-widest text-black/40 hover:text-black transition-colors"
           >
-            <ExternalLink size={10} /> View on Aztecscan
+            <ExternalLink size={10} /> View on Etherscan (L1)
           </a>
         )}
       </div>

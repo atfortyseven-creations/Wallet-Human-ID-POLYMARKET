@@ -15,6 +15,7 @@ import { useSystemSignOut } from "@/hooks/useSystemSignOut";
 import { SystemFooter } from "./SystemFooter";
 import { AztecWTFSection } from "./AztecWTFSection";
 import { useAppKit } from "@reown/appkit/react";
+import { ReactLenis } from '@studio-freight/react-lenis';
 // ─── Types ────────────────────────────────────────────────────────────────────
 export interface ImmersiveManifestoLandingProps {
   onOpenScanner?: () => void;
@@ -1110,18 +1111,20 @@ export function ImmersiveManifestoLanding({
     // CRITICAL FIX: Remove min-h-screen and bg-[#050505] from root wrapper.
     // min-h-screen on a flex column causes the dark background to bleed BELOW
     // the footer creating a scrollable black zone. Use bg-white throughout.
-    <div className="w-full flex flex-col bg-white text-black antialiased overflow-x-hidden">
-      <LandingNav />
-      <main id="main-content" className="flex-1 bg-white">
-        <HeroSection />
-        <StatementSection />
-        <AztecWTFSection />
-        <ModulesSection />
-        <RegistrySection hideMap={hideMap} />
-        <FAQSection />
-        <AztecCTASection />
-      </main>
-      <SystemFooter />
-    </div>
+    <ReactLenis root options={{ lerp: 0.05, syncTouch: true, smoothWheel: true }}>
+      <div className="w-full flex flex-col bg-white text-black antialiased overflow-x-hidden">
+        <LandingNav />
+        <main id="main-content" className="flex-1 bg-white">
+          <HeroSection />
+          <StatementSection />
+          <AztecWTFSection />
+          <ModulesSection />
+          <RegistrySection hideMap={hideMap} />
+          <FAQSection />
+          <AztecCTASection />
+        </main>
+        <SystemFooter />
+      </div>
+    </ReactLenis>
   );
 }

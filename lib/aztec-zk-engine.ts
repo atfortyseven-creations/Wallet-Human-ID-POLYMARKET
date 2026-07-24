@@ -175,6 +175,17 @@ export async function depositEthToAztecL1(
     gasEstimate = 150000n; // Fallback gas limit for L1 deposits
   }
 
+  // Anti-exhaustion: Cap maxFeePerGas to 150 gwei to prevent drain attacks
+  const MAX_FEE_CAP = ethers.parseUnits('150', 'gwei');
+  const safeMaxFeePerGas = feeData.maxFeePerGas && feeData.maxFeePerGas > MAX_FEE_CAP ? MAX_FEE_CAP : feeData.maxFeePerGas;
+
+  // Bound Validation: Ensure the wallet has enough funds for valueWei + estimated gas
+  const walletBalance = await wallet.provider.getBalance(wallet.address);
+  const estimatedGasCost = gasEstimate * (safeMaxFeePerGas || 0n);
+  if (walletBalance < valueWei + estimatedGasCost) {
+    throw new Error("Insufficient funds for deposit and gas.");
+  }
+
   const tx = await rollup.depositPendingFunds(
     AZTEC_ASSET_IDS.ETH,
     valueWei,
@@ -183,7 +194,7 @@ export async function depositEthToAztecL1(
     {
       value: valueWei,
       gasLimit: gasEstimate * 110n / 100n, // 10% buffer
-      maxFeePerGas: feeData.maxFeePerGas,
+      maxFeePerGas: safeMaxFeePerGas,
       maxPriorityFeePerGas: feeData.maxPriorityFeePerGas,
       type: 2,
     }

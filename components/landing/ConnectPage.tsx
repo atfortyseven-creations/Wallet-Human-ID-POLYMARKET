@@ -774,7 +774,22 @@ export default function ConnectPage() {
     </motion.div>
   );
 
-  if (!mounted) return <div className="w-full min-h-screen bg-slate-50" />;
+  if (!mounted) {
+    return (
+      <div className="w-full min-h-screen bg-slate-50 flex flex-col shrink-0 relative overflow-hidden text-slate-900">
+        <div 
+          className="fixed inset-0 pointer-events-none z-0"
+          style={{
+            backgroundImage: 'url("/bg-waves.jpg")',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        />
+        <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-white/40 via-transparent to-slate-50/90" />
+      </div>
+    );
+  }
 
   return (
     <div className="w-full min-h-screen bg-slate-50 flex flex-col shrink-0 relative overflow-hidden text-slate-900">

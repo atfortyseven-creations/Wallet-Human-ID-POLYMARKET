@@ -56,7 +56,22 @@ export async function GET() {
       }
     );
   } catch (err: any) {
-    console.warn('[FX/EUR] ECB fetch failed, returning fallback rate:', err.message);
+    console.warn('[FX/EUR] ECB fetch failed, attempting secondary fallback:', err.message);
+    try {
+      const fbRes = await fetch('https://open.er-api.com/v6/latest/USD', { signal: AbortSignal.timeout(4000) });
+      if (fbRes.ok) {
+        const data = await fbRes.json();
+        if (data && data.rates && data.rates.EUR) {
+          return NextResponse.json(
+            { rate: data.rates.EUR, source: 'open.er-api', timestamp: new Date().toISOString() },
+            { headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600' } }
+          );
+        }
+      }
+    } catch (fbErr: any) {
+      console.warn('[FX/EUR] Secondary fallback failed:', fbErr.message);
+    }
+
     return NextResponse.json(
       { rate: 0.92, source: 'fallback', timestamp: new Date().toISOString() },
       {

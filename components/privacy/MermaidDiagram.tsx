@@ -98,7 +98,7 @@ export function MermaidDiagram({ chart, caption }: Props) {
 
         // Prepend %%{init}%% so every chart carries its own theme regardless of global state
         const finalChart = `%%{init: ${JSON.stringify(THEME_INIT)}}%%\n${chart.trim()}`;
-        const diagramId = `mmd-${reactId}`;
+        const diagramId = `mmd-${reactId}-${Math.random().toString(36).substring(2, 9)}`;
 
         const { svg: raw } = await mermaid.render(diagramId, finalChart);
 

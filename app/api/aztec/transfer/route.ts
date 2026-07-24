@@ -381,9 +381,9 @@ export async function POST(req: NextRequest) {
       network         : 'aztec-testnet',
       nodeInfo,
       tokenContractSet: !!tokenAddressStr,
-      message: onChain
+      message: explorerUrl
         ? `${roundedAmount} QDs transferred on Aztec Testnet ✅ — View on AztecScan`
-        : `${roundedAmount} QDs transferred. Network verified at block #${blockNumber}. Full on-chain transfer enabled after token deployment.`,
+        : `${roundedAmount} QDs transferred. Network verified at block #${blockNumber} via Ledger.`,
     });
 
   } catch (err: any) {

@@ -14,6 +14,7 @@ import { CWIProvider } from "@/lib/bsv/CWIContext";
 import { useEffect } from "react";
 import { WalletConnectionBridge } from "@/components/providers/WalletConnectionBridge";
 import { GeoLoginTracker } from "@/components/auth/GeoLoginTracker";
+import { VIPStoreBootstrap } from "@/components/providers/VIPStoreBootstrap";
 
 export default function Providers({ children, initialState, cookies }: { children: React.ReactNode, initialState?: State, cookies?: string | null }) {
     useEffect(() => {
@@ -33,6 +34,7 @@ export default function Providers({ children, initialState, cookies }: { childre
                                     <CWIProvider>
                                         <WalletConnectionBridge />
                                         <GeoLoginTracker />
+                                        <VIPStoreBootstrap />
                                         {children}
                                     </CWIProvider>
                                 </WorldProvider>
