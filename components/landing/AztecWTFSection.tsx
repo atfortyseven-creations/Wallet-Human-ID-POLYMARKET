@@ -4,6 +4,13 @@ import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { MermaidDiagram } from "../privacy/MermaidDiagram";
 import { ArchitectureDefragmenter } from "./ArchitectureDefragmenter";
+import {
+  ArchitectureDiagram,
+  ZkRollupComparisonDiagram,
+  UtxoArchitectureDiagram,
+  TransactionLifecycleDiagram,
+  PrivacyComponentsDiagram
+} from './CustomDiagrams';
 
 const fadeUp: any = {
   hidden: { opacity: 0, y: 50 },
@@ -119,24 +126,7 @@ export function AztecWTFSection() {
         </motion.div>
 
         {/* Hero image */}
-        <MermaidDiagram chart={`
-flowchart TD
-  subgraph Ethereum ["Ethereum L1 (Fully Public)"]
-    EthState[("Public State")] --- SmartContracts["Smart Contracts"]
-  end
-  
-  subgraph Aztec ["Aztec Network L2 (Programmable Privacy)"]
-    subgraph Private ["Private Execution Environment"]
-      User(("User Device<br>Noir Circuits")) --- PState[("Encrypted State")]
-    end
-    subgraph Public ["Public Execution Environment"]
-      Sequencer["Aztec Sequencer"] --- PuState[("Public State")]
-    end
-    Private -- "ZK Proofs<br>(Zero Data Leakage)" --> Public
-  end
-  
-  Aztec -- "Rollup Proofs & State Roots" --> Ethereum
-`} caption="Aztec Network Architecture: Combining L1 Security with L2 Programmable Privacy" />
+        <ArchitectureDiagram />
 
         {/* ─── TL;DR ─────────────────────────────────────────────────── */}
         <Section className="mb-24">
@@ -253,22 +243,7 @@ flowchart TD
           </h4>
         </Section>
 
-        <MermaidDiagram chart={`
-flowchart LR
-  subgraph standard ["Standard ZK Rollups (zkSync, Starknet)"]
-    A["Public Inputs"] --> ZK1{"ZK Prover"}
-    ZK1 --> B("Succinct Proof<br>(Scalability)")
-    ZK1 --> C("Computation Integrity<br>(Correctness)")
-    B -. "Data is Public<br>(No Privacy)" .-> D[("Public Ledger")]
-  end
-  
-  subgraph aztec ["Aztec Privacy Rollup"]
-    E["Private Inputs<br>(User Secrets)"] --> ZK2{"Client-Side<br>ZK Prover"}
-    ZK2 --> F("Succinct Proof")
-    ZK2 --> G("Data Hiding<br>(Confidentiality)")
-    F -. "Data is Encrypted<br>(Full Privacy)" .-> H[("Private State Tree")]
-  end
-`} caption="Myth vs Reality: Standard ZK Rollups vs True Privacy Rollups" />
+        <ZkRollupComparisonDiagram />
 
         <Section className="mb-16">
           <div className="bg-white border border-rose-100 rounded-[24px] p-8 md:p-12 mb-8 shadow-sm">
@@ -418,20 +393,7 @@ flowchart LR
           </p>
         </Section>
 
-        <MermaidDiagram chart={`
-flowchart TD
-  subgraph DataTree ["Private State Tree (Append-Only)"]
-    D_Root(("State Root")) --> D_Leaf1["Note A<br>(Live)"]
-    D_Root --> D_Leaf2["Note B<br>(Live)"]
-  end
-  
-  subgraph NullifierTree ["Nullifier Set (Deletion Tracking)"]
-    N_Root(("Nullifier Root")) --> N_Leaf1["Nullifier for Note A<br>(Prevents Double Spend)"]
-    N_Root --> N_Empty["Empty Leaf<br>(Note B is Unspent)"]
-  end
-  
-  D_Leaf1 -. "Derives via Secret Key" .-> N_Leaf1
-`} caption="UTXO Architecture: Private State Trees and the Nullifier Set" />
+        <UtxoArchitectureDiagram />
 
         <Section className="mb-10">
           <p className="text-[18px] md:text-[22px] text-slate-600 leading-relaxed">
@@ -535,26 +497,7 @@ flowchart TD
         {/* Defragmentation Visualizer */}
         <ArchitectureDefragmenter />
 
-        <MermaidDiagram chart={`
-sequenceDiagram
-  autonumber
-  actor User as User Device (Client)
-  participant PXE as Private Execution Environment
-  participant Kernel as Private Kernel Circuit
-  participant Seq as Aztec Sequencer
-  participant L1 as Ethereum L1
-  
-  User->>PXE: Request Private Transaction
-  PXE->>PXE: Fetch Encrypted UTXOs & Decrypt
-  PXE->>Kernel: Execute Smart Contract logic
-  Kernel->>Kernel: Generate ZK-SNARK Proof
-  Kernel->>Seq: Submit Proof + Public Inputs + Nullifiers
-  Note over Kernel,Seq: Raw private data NEVER leaves the device
-  Seq->>Seq: Verify Proofs & Check Nullifiers
-  Seq->>Seq: Merge transactions into Rollup Block
-  Seq->>L1: Post Rollup Proof & State Root Updates
-  L1->>L1: Smart Contract Verifies Rollup Proof
-`} caption="Transaction Lifecycle: From Client-Side Proving to L1 Finality" />
+        <TransactionLifecycleDiagram />
 
         <Section className="mb-20">
           <h5 className="text-[24px] font-bold text-slate-900 mb-6">How the rollup circuit works</h5>
@@ -627,29 +570,7 @@ sequenceDiagram
 }
 
 
-function PrivacyComponentsDiagram() {
-  return (
-    <MermaidDiagram chart={`
-flowchart TD
-  ProgrammablePrivacy{"Programmable Privacy"}
-  
-  subgraph DataPrivacy ["1. Data Privacy"]
-    D1["User Owns Encrypted State"]
-    D2["External World Cannot Read"]
-    D3["Prevents Front-Running"]
-  end
-  
-  subgraph Confidentiality ["2. Confidentiality"]
-    C1["Smart Contracts Process Encrypted Data"]
-    C2["Private Function Execution"]
-    C3["Unattainable by unauthorized apps"]
-  end
-  
-  ProgrammablePrivacy --> DataPrivacy
-  ProgrammablePrivacy --> Confidentiality
-`} caption="The Two Architectural Pillars of Programmable Blockchain Privacy" />
-  );
-}
+
 
 function ExecutionFlowDiagram() {
   return (

@@ -1141,10 +1141,9 @@ export function ImmersiveManifestoLanding({
   hideMap = false,
 }: ImmersiveManifestoLandingProps = {}) {
   return (
-    // CRITICAL FIX: Remove min-h-screen and bg-[#050505] from root wrapper.
-    // min-h-screen on a flex column causes the dark background to bleed BELOW
-    // the footer creating a scrollable black zone. Use bg-white throughout.
-    <ReactLenis root options={{ lerp: 0.05, syncTouch: true, smoothWheel: true }}>
+    // CRITICAL FIX: Remove ReactLenis root to prevent scroll lock on mobile Safari
+    // and remove min-h-screen to prevent dark background bleed.
+    <>
       <div className="w-full flex flex-col bg-white text-black antialiased overflow-x-hidden relative">
         {/* Architectural Light Grid */}
         <div className="absolute inset-0 z-0 pointer-events-none bg-[linear-gradient(to_right,#f1f5f9_1px,transparent_1px),linear-gradient(to_bottom,#f1f5f9_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_110%)] opacity-80" />
@@ -1163,6 +1162,6 @@ export function ImmersiveManifestoLanding({
           <SystemFooter />
         </div>
       </div>
-    </ReactLenis>
+    </>
   );
 }
