@@ -13,8 +13,8 @@ import dynamic from "next/dynamic";
 import { EmailLoginModal } from "@/components/auth/EmailLoginModal";
 import { useSystemSignOut } from "@/hooks/useSystemSignOut";
 import { SystemFooter } from "./SystemFooter";
+import { AztecWTFSection } from "./AztecWTFSection";
 import { useAppKit } from "@reown/appkit/react";
-
 // ─── Types ────────────────────────────────────────────────────────────────────
 export interface ImmersiveManifestoLandingProps {
   onOpenScanner?: () => void;
@@ -1115,6 +1115,7 @@ export function ImmersiveManifestoLanding({
       <main id="main-content" className="flex-1 bg-white">
         <HeroSection />
         <StatementSection />
+        <AztecWTFSection />
         <ModulesSection />
         <RegistrySection hideMap={hideMap} />
         <FAQSection />
