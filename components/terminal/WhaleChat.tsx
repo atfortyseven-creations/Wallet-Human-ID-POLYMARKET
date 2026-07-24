@@ -618,6 +618,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             { urls: 'stun:stun.l.google.com:19302' },
             { urls: 'stun:stun1.l.google.com:19302' },
             { urls: 'stun:stun2.l.google.com:19302' },
+            { urls: 'stun:stun3.l.google.com:19302' },
+            { urls: 'stun:stun4.l.google.com:19302' },
             { urls: 'stun:openrelay.metered.ca:80' },
             { 
               urls: 'turn:openrelay.metered.ca:80', 
@@ -628,8 +630,15 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               urls: 'turn:openrelay.metered.ca:443', 
               username: 'openrelayproject', 
               credential: 'openrelayproject' 
+            },
+            { 
+              urls: 'turn:openrelay.metered.ca:443?transport=tcp', 
+              username: 'openrelayproject', 
+              credential: 'openrelayproject' 
             }
           ],
+          sdpSemantics: 'unified-plan',
+          iceTransportPolicy: 'all' as RTCIceTransportPolicy,
         },
       });
       peer.on('open', (id) => {
@@ -880,7 +889,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     try {
       const constraints: MediaStreamConstraints = {
         audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
-        video: type === 'video' ? { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' } : false,
+        video: type === 'video' ? { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30, max: 60 }, facingMode: 'user' } : false,
       };
       stream = await navigator.mediaDevices.getUserMedia(constraints);
       setLocalStream(stream);
@@ -933,7 +942,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       const isVideo = callType === 'video';
       const constraints: MediaStreamConstraints = {
         audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
-        video: isVideo ? { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' } : false,
+        video: isVideo ? { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30, max: 60 }, facingMode: 'user' } : false,
       };
       stream = await navigator.mediaDevices.getUserMedia(constraints);
       setLocalStream(stream);
@@ -1811,9 +1820,12 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const handleStartConversation = async () => handleStartConversationWithPeer(peerInput);
 
   const executeSend = async (content: string) => {
-    if (!client || !activePeer || !content.trim() || sending || !address) return;
+    if (!client || !activePeer || !content.trim() || !address) return;
+    
+    const isSystemSignal = content.startsWith('__CALL_');
+    if (!isSystemSignal && sending) return;
 
-    setSending(true);
+    if (!isSystemSignal) setSending(true);
 
     // --- QD DEDUCTION LOGIC ---
     // [FIX] Only gate on QDs if the user has an Aztec identity connected.
@@ -1821,7 +1833,6 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     // and we should NOT block messaging — they can claim their identity later.
     // The tiny 0.0001 QD cost per message is essentially free and serves as
     // spam prevention only for users who already have an identity.
-    const isSystemSignal = content.startsWith('__CALL_');
     const { aztecAddress: userAztecAddr } = aztecNative;
     if (!isSystemSignal && !isLocalSystemWallet && userAztecAddr) {
       // Only enforce QD balance if the user has a loaded Aztec identity
@@ -1898,7 +1909,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       ));
       console.error('[Chat] executeSend failed:', err);
     } finally {
-      setSending(false);
+      if (!isSystemSignal) setSending(false);
     }
   };
 
