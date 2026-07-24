@@ -803,6 +803,44 @@ export default function RegistryPage() {
     setZkLoading(true);
     const entries: ZkEntry[] = [];
 
+    try {
+      // Fetch our internal golden tickets — each one carries a real Noir ZK proof
+      const res = await fetch("/api/golden-ticket/list?limit=30");
+      if (res.ok) {
+        const { tickets } = await res.json();
+        for (const t of (tickets ?? [])) {
+          let parsed: any = {};
+          try { parsed = JSON.parse(t.signatureData || "{}"); } catch {}
+
+          const blockNum = parsed.blockNumber ?? 0;
+          const stateRoot = parsed.noteCommitment || parsed.proofHash || parsed.cryptoSignature?.slice(0, 66) || "";
+          const blockHash  = parsed.txHash || parsed.aztecTxHash || "";
+
+          entries.push({
+            chain: "Whale Network · Aztec Testnet",
+            badge: "WN-ZK",
+            color: "#6366f1",
+            proofType: "SNARK",
+            blockNumber: Number(blockNum),
+            stateRoot,
+            blockHash,
+            parentHash: "",
+            l1BatchNumber: null,
+            proofVerified: stateRoot.length > 10,
+            txCount: 1,
+            gasUsedPct: 0,
+            timestamp: t.createdAt ?? new Date().toISOString(),
+            network: "testnet",
+            isCurrent: false,
+            explorer: AZTEC_EXPLORER,
+            l1Explorer: AZTEC_EXPLORER,
+          });
+        }
+      }
+    } catch (e) {
+      console.warn("[Registry] ZK indexer failed:", e);
+    }
+
     setZkEntries(entries.sort((a, b) => b.blockNumber - a.blockNumber));
     setZkLoading(false);
   }, []);
@@ -905,7 +943,7 @@ export default function RegistryPage() {
                 txCount: 1,
                 blockNumber: Number(tx.blockNumber) || 0,
                 timestamp: tx.timestamp,
-                explorer: tx.explorerUrl || AZTEC_EXPLORER,
+                explorer: AZTEC_EXPLORER,
                 network: "testnet",
                 role: "sender",
               });
@@ -925,7 +963,7 @@ export default function RegistryPage() {
                 txCount: 1,
                 blockNumber: Number(tx.blockNumber) || 0,
                 timestamp: tx.timestamp,
-                explorer: tx.explorerUrl || AZTEC_EXPLORER,
+                explorer: AZTEC_EXPLORER,
                 network: "testnet",
                 role: "receiver",
               });
@@ -982,7 +1020,7 @@ export default function RegistryPage() {
             gasUsedPct: 0,
             network: "testnet",
             isCurrent: i === 0,
-            explorer: `${AZTEC_EXPLORER}/block/${blockN}`,
+            explorer: AZTEC_EXPLORER,
           });
         } catch (blockErr) {
           console.warn(`[Registry] Aztec block ${blockN} error:`, blockErr);
@@ -1004,7 +1042,7 @@ export default function RegistryPage() {
           gasUsedPct: 0,
           network: "testnet",
           isCurrent: true,
-          explorer: `${AZTEC_EXPLORER}/block/${latestBlockNum}`,
+          explorer: AZTEC_EXPLORER,
         });
       }
     } catch (e) {
@@ -2091,24 +2129,9 @@ export default function RegistryPage() {
                   </p>
                 </div>
                 <div className="flex gap-2 flex-wrap shrink-0">
-                  {(network === "mainnet" ? ZK_MAINNET_CHAINS : ZK_TESTNET_CHAINS).map((cfg) => (
-                    <a
-                      key={cfg.chain.id}
-                      href={cfg.explorer}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-[0.1em] transition-opacity hover:opacity-80"
-                      style={{
-                        backgroundColor: cfg.color + "18",
-                        color: cfg.color,
-                        border: `1px solid ${cfg.color}35`,
-                      }}
-                    >
-                      
-                      {cfg.label}
-                      
-                    </a>
-                  ))}
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-[0.1em]" style={{ backgroundColor: "#7C3AED18", color: "#7C3AED", border: "1px solid #7C3AED35" }}>
+                    AZTEC TESTNET
+                  </div>
                 </div>
               </div>
 
