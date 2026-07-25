@@ -343,12 +343,24 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   };
 
   const clearChat = () => {
-    if (!activePeer) return;
+    if (!activePeer || !address) return;
     const dmId = `dm-${activePeer.toLowerCase()}`;
+    const clearTs = Date.now();
+    localStorage.setItem(`whale_cleared_${address}_${activePeer.toLowerCase()}`, clearTs.toString());
+
     // Remove all messages belonging to this conversation
     setMessages(prev => prev.filter(m => m.conversationId !== dmId));
+    
+    // Remove from conversations list
+    setConversations(prev => {
+      const next = prev.filter(c => c.peerAddress.toLowerCase() !== activePeer.toLowerCase());
+      persistToLocal(next);
+      return next;
+    });
+
     // Auditor Fix: Do NOT clear confirmedMsgIds globally to prevent cross-chat deduplication leaks.
     setShowProfile(false);
+    setActivePeer(null); // Exit the chat
     toast.success('Chat cleared');
   };
 
@@ -1768,8 +1780,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       if (isFetching || cancelled) return;
       isFetching = true;
       try {
-        const raw = await getMessages(client, activePeer);
+        let raw = await getMessages(client, activePeer);
         if (cancelled) return;
+        
+        const clearTs = parseInt(localStorage.getItem(`whale_cleared_${address}_${activePeer.toLowerCase()}`) || '0', 10);
+        if (clearTs > 0) {
+          raw = raw.filter((m: any) => m.sentAtNs > clearTs);
+        }
         
         // FETCH PENDING MESSAGES (OFFLINE ROUTING)
         let pendingServer: any[] = [];
@@ -2569,32 +2586,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               </div>
             </div>
 
-            {/* ── Active Audio Call Banner — Non-blocking, Telegram-style ── */}
-            {callState === 'active' && callType === 'audio' && (
-              <div className="shrink-0 flex items-center justify-between px-4 py-2.5 bg-emerald-500 z-20">
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                  <span className="text-white text-[12px] font-bold uppercase tracking-widest">Audio Call Active</span>
-                  <span className="text-white/80 text-[11px] font-mono">{formatDuration(callDurationSeconds)}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={toggleMic}
-                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
-                      isMicMuted ? 'bg-red-400 text-white' : 'bg-white/20 text-white hover:bg-white/30'
-                    }`}
-                  >
-                    {isMicMuted ? <MicOff size={14} /> : <Mic size={14} />}
-                  </button>
-                  <button
-                    onClick={endCall}
-                    className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white hover:bg-red-600 transition-all"
-                  >
-                    <PhoneOff size={14} />
-                  </button>
-                </div>
-              </div>
-            )}
+            {/* ── Active Audio Call Banner — Non-blocking, shown only when no full-screen audio overlay is desired ── */}
+            {/* NOTE: audio active call is now handled by a full-screen portal below — this banner is intentionally removed */}
 
             {/* Hito 4: Search bar */}
             {showSearch && (() => {
@@ -3144,8 +3137,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       </div>
 
 
-      {/* Hidden audio element for audio-only calls - iOS WebKit Safe (no display:none) */}
-      <audio ref={remoteAudioRef} autoPlay playsInline style={{ position: 'absolute', width: 0, height: 0, opacity: 0, pointerEvents: 'none' }} />
+      {/* NOTE: remoteAudioRef lives ONLY inside the active call portal below to avoid ref conflicts */}
 
       {/* ── Incoming Call Banner (state: ringing) ───────────────────────────── */}
       {callState === 'ringing' && isMounted && createPortal(
@@ -3259,60 +3251,63 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         document.body
       )}
 
-      {/* ── Active Call Overlay — Full Screen Premium UI ──────────────────── */}
-      {callState === 'active' && callType === 'video' && isMounted && createPortal(
+      {/* ── Active Call Overlay — Full Screen (video + audio) — WhatsApp/Telegram style ──────── */}
+      {callState === 'active' && isMounted && createPortal(
         <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] bg-black flex flex-col" style={{ touchAction: 'none' }}>
 
-          {/* ── Local Video / Audio — covers full viewport ─────────────────── */}
+          {/* ─── BACKGROUND: Remote video (full screen) or audio UI ─────────── */}
           <div className="absolute inset-0">
             {callType === 'video' ? (
-              !isCamOff && localStream ? (
+              remoteStream ? (
+                // REMOTE fills the screen — like WhatsApp/Telegram
                 <video
-                  ref={myVideoRef}
+                  ref={remoteVideoRef}
                   autoPlay
                   playsInline
-                  muted
                   className="w-full h-full object-cover"
                   style={{ background: '#000' }}
                 />
               ) : (
-                /* Camera off — dark background with animated ring */
-                <div className="w-full h-full flex flex-col items-center justify-center bg-white gap-6">
-                  <div className="w-24 h-24 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
-                    <VideoOff size={40} />
+                // Waiting for remote stream
+                <div className="w-full h-full flex flex-col items-center justify-center bg-slate-900 gap-4">
+                  <div className="relative">
+                    <div className="absolute inset-0 rounded-full bg-indigo-500/20 animate-ping scale-150" style={{ animationDuration: '2s' }} />
+                    <div className="w-28 h-28 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-xl relative z-10">
+                      <span className="text-white text-4xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '??'}</span>
+                    </div>
                   </div>
-                  <p className="text-slate-400 text-sm font-mono uppercase tracking-widest">Camera Off</p>
+                  <p className="text-white/60 text-sm font-mono uppercase tracking-widest animate-pulse">Connecting video...</p>
                 </div>
               )
             ) : (
-              /* Audio-only — Fable 5 Pro White Theme */
-              <div className="w-full h-full flex flex-col items-center justify-center bg-white gap-8">
+              // ── AUDIO CALL full-screen UI ──────────────────────────────────
+              <div className="w-full h-full flex flex-col items-center justify-center bg-slate-900 gap-8">
                 {/* Ambient glow */}
                 <div className="absolute inset-0 pointer-events-none">
-                  <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-50 rounded-full blur-[120px]" />
+                  <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-900/40 rounded-full blur-[150px]" />
                 </div>
-                <div className="relative z-10 flex flex-col items-center gap-6">
-                  {/* Pulsing rings for active audio */}
+                <div className="relative z-10 flex flex-col items-center gap-8">
+                  {/* Pulsing avatar */}
                   <div className="relative">
                     {remoteStream && (
                       <>
-                        <div className="absolute inset-0 rounded-full bg-indigo-100 animate-ping scale-125" style={{ animationDuration: '2s' }} />
-                        <div className="absolute inset-0 rounded-full bg-indigo-50 animate-ping scale-150" style={{ animationDuration: '2.8s', animationDelay: '0.4s' }} />
+                        <div className="absolute inset-0 rounded-full bg-indigo-500/20 animate-ping scale-125" style={{ animationDuration: '2s' }} />
+                        <div className="absolute inset-0 rounded-full bg-indigo-500/10 animate-ping scale-175" style={{ animationDuration: '2.8s', animationDelay: '0.4s' }} />
                       </>
                     )}
-                    <div className="w-36 h-36 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-xl shadow-indigo-200 relative z-10">
-                      <span className="text-white text-5xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '??'}</span>
+                    <div className="w-40 h-40 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-2xl shadow-indigo-500/30 relative z-10">
+                      <span className="text-white text-6xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '??'}</span>
                     </div>
                   </div>
                   <div className="text-center">
-                    <p className="text-slate-900 text-2xl font-black tracking-tight mb-1">{activePeer ? shortAddr(activePeer) : 'Peer'}</p>
+                    <p className="text-white text-3xl font-black tracking-tight mb-2">{activePeer ? shortAddr(activePeer) : 'Peer'}</p>
                     {remoteStream ? (
-                      <span className="text-emerald-500 text-xs font-mono uppercase tracking-[0.3em] flex items-center gap-1.5 justify-center">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        Audio Connected • {formatDuration(callDurationSeconds)}
+                      <span className="text-emerald-400 text-sm font-mono uppercase tracking-[0.25em] flex items-center gap-2 justify-center">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                        {formatDuration(callDurationSeconds)}
                       </span>
                     ) : (
-                      <span className="text-amber-500/80 text-xs font-mono uppercase tracking-widest animate-pulse">Establishing audio...</span>
+                      <span className="text-white/40 text-sm font-mono uppercase tracking-widest animate-pulse">Establishing audio...</span>
                     )}
                   </div>
                 </div>
@@ -3320,110 +3315,97 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             )}
           </div>
 
-          {/* ── Top bar: caller info + timer ─────────────────────────────────── */}
-          <div className="absolute top-0 inset-x-0 z-10 flex items-center justify-between px-5 pt-safe" style={{ paddingTop: 'max(16px, env(safe-area-inset-top, 16px))' }}>
-            <div className="flex items-center gap-3 bg-white/90 backdrop-blur-xl rounded-2xl px-4 py-2.5 border border-slate-200/80 shadow-sm">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center">
-                <span className="text-white text-xs font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '??'}</span>
-              </div>
-              <div>
-                <p className="text-slate-900 text-[13px] font-bold leading-none">{activePeer ? shortAddr(activePeer) : 'Peer'}</p>
-                <p className="text-slate-400 text-[10px] font-mono mt-0.5">{callType === 'video' ? '📹 Video Call' : '🎙️ Audio Call'}</p>
-              </div>
-            </div>
-            <div className="bg-white/90 backdrop-blur-xl rounded-2xl px-3 py-2 border border-slate-200/80 shadow-sm flex items-center justify-center min-w-[80px]">
-              <span className="text-emerald-600 text-[11px] font-mono font-bold uppercase tracking-wider">
-                {remoteStream ? `● LIVE | ${formatDuration(callDurationSeconds)}` : 'Connecting...'}
-              </span>
-            </div>
-          </div>
-
-          {/* ── PiP: Remote camera (video calls only) — draggable, bottom-right ──────── */}
+          {/* ─── PiP: LOCAL camera (video calls only) — draggable, top-right ── */}
           {callType === 'video' && (
             <motion.div
               drag
-              dragConstraints={{ top: 100, left: 20, right: 20, bottom: 120 }}
+              dragConstraints={{ top: 60, left: 20, right: 20, bottom: 120 }}
               initial={{ x: 0, y: 0 }}
-              className="absolute bottom-[140px] right-4 z-20 cursor-grab active:cursor-grabbing"
-              style={{ bottom: 'max(140px, calc(env(safe-area-inset-bottom, 0px) + 120px))' }}
+              className="absolute top-[80px] right-4 z-20 cursor-grab active:cursor-grabbing"
             >
-              {remoteStream ? (
-                <div className="w-32 h-48 md:w-40 md:h-60 rounded-3xl overflow-hidden border-2 border-white/80 shadow-[0_20px_60px_rgba(0,0,0,0.3)] bg-black">
-                  <video ref={remoteVideoRef} autoPlay playsInline className="w-full h-full object-cover" />
+              {!isCamOff && localStream ? (
+                <div className="w-28 h-40 md:w-36 md:h-52 rounded-2xl overflow-hidden border-2 border-white/60 shadow-[0_20px_60px_rgba(0,0,0,0.5)] bg-black">
+                  <video ref={myVideoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
                 </div>
               ) : (
-                <div className="w-32 h-48 md:w-40 md:h-60 rounded-3xl bg-black/80 border-2 border-white/20 flex items-center justify-center backdrop-blur shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
-                  <div className="flex flex-col items-center gap-2 text-white/50">
-                    <div className="relative">
-                      <div className="absolute inset-0 rounded-full bg-white/10 animate-ping scale-150" style={{ animationDuration: '2s' }} />
-                      <Video size={24} />
-                    </div>
-                    <p className="text-[9px] font-mono uppercase text-center mt-2 animate-pulse">Connecting<br/>Peer...</p>
-                  </div>
+                <div className="w-28 h-40 md:w-36 md:h-52 rounded-2xl bg-black/80 border-2 border-white/20 flex items-center justify-center">
+                  <VideoOff size={24} className="text-white/40" />
                 </div>
               )}
             </motion.div>
           )}
 
-          {/* ── Floating Controls Bar ─────────────────────────────────────────── */}
+          {/* ─── Top bar: caller info + timer ─────────────────────────────── */}
+          <div className="absolute top-0 inset-x-0 z-10 flex items-center justify-between px-5" style={{ paddingTop: 'max(16px, env(safe-area-inset-top, 16px))' }}>
+            <div className="flex items-center gap-3 bg-black/40 backdrop-blur-xl rounded-2xl px-4 py-2.5 border border-white/10">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center">
+                <span className="text-white text-xs font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '??'}</span>
+              </div>
+              <div>
+                <p className="text-white text-[13px] font-bold leading-none">{activePeer ? shortAddr(activePeer) : 'Peer'}</p>
+                <p className="text-white/50 text-[10px] font-mono mt-0.5">{callType === 'video' ? '📹 Video' : '🎙️ Audio'}</p>
+              </div>
+            </div>
+            <div className="bg-black/40 backdrop-blur-xl rounded-2xl px-3 py-2 border border-white/10">
+              <span className="text-emerald-400 text-[11px] font-mono font-bold uppercase tracking-wider">
+                {remoteStream ? `● ${formatDuration(callDurationSeconds)}` : 'Connecting...'}
+              </span>
+            </div>
+          </div>
+
+          {/* ─── Floating Controls Bar ─────────────────────────────────────── */}
           <div
-            className="absolute bottom-0 inset-x-0 z-10 pointer-events-none"
-            style={{ paddingBottom: 'max(24px, env(safe-area-inset-bottom, 24px))' }}
+            className="absolute bottom-0 inset-x-0 z-10"
+            style={{ paddingBottom: 'max(32px, env(safe-area-inset-bottom, 32px))' }}
           >
-            <div className="mx-4 mb-2 bg-white/80 backdrop-blur-3xl border border-slate-200/60 rounded-[32px] px-6 py-4 flex items-center justify-center gap-5 shadow-[0_20px_80px_rgba(0,0,0,0.1)] pointer-events-auto max-w-fit mx-auto">
+            <div className="flex items-center justify-center gap-5 mx-auto">
 
               {/* Mic toggle */}
-              <div className="flex flex-col items-center gap-1.5">
+              <button
+                onClick={toggleMic}
+                className={`w-16 h-16 rounded-full flex items-center justify-center transition-all active:scale-90 shadow-lg ${
+                  isMicMuted
+                    ? 'bg-red-500/80 text-white border border-red-400/50'
+                    : 'bg-white/20 backdrop-blur text-white hover:bg-white/30 border border-white/20'
+                }`}
+              >
+                {isMicMuted ? <MicOff size={24} /> : <Mic size={24} />}
+              </button>
+
+              {/* END CALL */}
+              <button
+                onClick={endCall}
+                className="w-20 h-16 bg-red-500 rounded-[24px] flex items-center justify-center text-white hover:bg-red-600 active:scale-90 transition-all shadow-[0_8px_24px_rgba(239,68,68,0.5)]"
+              >
+                <PhoneOff size={28} />
+              </button>
+
+              {/* Camera toggle (video only) */}
+              {callType === 'video' && (
                 <button
-                  onClick={toggleMic}
-                  className={`w-14 h-14 rounded-full flex items-center justify-center transition-all active:scale-90 shadow-sm ${
-                    isMicMuted
-                      ? 'bg-red-50 text-red-500 hover:bg-red-100 border border-red-200'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200/50'
+                  onClick={toggleCamera}
+                  className={`w-16 h-16 rounded-full flex items-center justify-center transition-all active:scale-90 shadow-lg ${
+                    isCamOff
+                      ? 'bg-red-500/80 text-white border border-red-400/50'
+                      : 'bg-white/20 backdrop-blur text-white hover:bg-white/30 border border-white/20'
                   }`}
                 >
-                  {isMicMuted ? <MicOff size={22} /> : <Mic size={22} />}
+                  {isCamOff ? <VideoOff size={24} /> : <Video size={24} />}
                 </button>
-              </div>
-
-              {/* Camera toggle (video calls) */}
-              {callType === 'video' && (
-                <div className="flex flex-col items-center gap-1.5">
-                  <button
-                    onClick={toggleCamera}
-                    className={`w-14 h-14 rounded-full flex items-center justify-center transition-all active:scale-90 shadow-sm ${
-                      isCamOff
-                        ? 'bg-red-50 text-red-500 hover:bg-red-100 border border-red-200'
-                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200/50'
-                    }`}
-                  >
-                    {isCamOff ? <VideoOff size={22} /> : <Video size={22} />}
-                  </button>
-                </div>
               )}
 
-              {/* END CALL — prominently larger */}
-              <div className="flex flex-col items-center gap-1.5">
-                <button
-                  onClick={endCall}
-                  className="w-20 h-14 bg-red-500 rounded-[24px] flex items-center justify-center text-white hover:bg-red-600 active:scale-90 transition-all shadow-[0_8px_24px_rgba(239,68,68,0.3)]"
-                >
-                  <PhoneOff size={26} />
-                </button>
-              </div>
-
-              {/* Speaker / volume indicator */}
-              <div className="flex flex-col items-center gap-1.5">
-                <div className="w-14 h-14 rounded-full bg-slate-100 border border-slate-200/50 flex items-center justify-center text-slate-700 shadow-sm">
-                  <Volume2 size={22} />
+              {/* Speaker indicator (audio only) */}
+              {callType === 'audio' && (
+                <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur border border-white/20 flex items-center justify-center text-white">
+                  <Volume2 size={24} />
                 </div>
-              </div>
+              )}
 
             </div>
           </div>
 
-          {/* Hidden audio element for remote audio in all call modes */}
-          <audio ref={remoteAudioRef} autoPlay playsInline className="hidden" />
+          {/* Single audio element for remote stream — lives here only, no duplicates */}
+          <audio ref={remoteAudioRef} autoPlay playsInline style={{ position: 'absolute', width: 0, height: 0, opacity: 0, pointerEvents: 'none' }} />
         </div>,
         document.body
       )}
