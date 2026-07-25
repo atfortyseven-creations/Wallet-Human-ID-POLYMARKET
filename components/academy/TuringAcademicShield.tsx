@@ -2,60 +2,29 @@
 
 import React, { useState, useRef, useCallback } from 'react';
 import {
-  ShieldCheck, FileText, BrainCircuit, Lock, Loader2, CheckCircle2,
-  AlertTriangle, Fingerprint, Upload, XCircle, Activity, BookOpen,
-  Layers, Cpu, BarChart2, ChevronDown, ChevronUp, Copy, Check, ShieldAlert
+  FileText, BrainCircuit, Lock, Loader2, CheckCircle2,
+  Upload, XCircle, ChevronDown, ChevronUp, Copy, Check, ShieldAlert,
+  Globe
 } from 'lucide-react';
 import { 
   runAcademicIntegrityAnalysis, 
   AnalysisResult, 
   AnalysisPhase, 
-  Verdict, 
-  AIVerdict,
   ProgressUpdate
 } from '@/lib/academic-integrity-engine';
 import { useAztecNative } from '@/context/AztecNativeContext';
+import { turingTranslations, Language } from '@/lib/i18n-turing';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CONFIG
-// ─────────────────────────────────────────────────────────────────────────────
-const PHASE_CONFIG: Record<string, { label: string; icon: React.ReactNode }> = {
-  normalizing:      { label: 'Normalización de texto y auditoría', icon: <ShieldAlert size={16} /> },
-  scanning_unicode: { label: 'Búsqueda de caracteres ocultos', icon: <ShieldCheck size={16} /> },
-  shingling:        { label: 'Generación de n-gramas estructurales', icon: <Layers size={16} /> },
-  winnowing:        { label: 'Análisis de huellas dactilares', icon: <Fingerprint size={16} /> },
-  minhash:          { label: 'Firma de similitud', icon: <BarChart2 size={16} /> },
-  entropy:          { label: 'Análisis de entropía y cadencia', icon: <Activity size={16} /> },
-  stylometry:       { label: 'Perfil estilométrico', icon: <BookOpen size={16} /> },
-  zk_commit:        { label: 'Generación de prueba de integridad', icon: <Lock size={16} /> },
-};
-
-const VERDICT_CONFIG: Record<Verdict, { color: string; bg: string; border: string; label: string; desc: string }> = {
-  LIKELY_ORIGINAL:  { color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200', label: 'Alta Probabilidad de Originalidad', desc: 'No se han detectado coincidencias significativas ni patrones de Inteligencia Artificial.' },
-  REVIEW_REQUIRED:  { color: 'text-amber-700',   bg: 'bg-amber-50',   border: 'border-amber-200',   label: 'Requiere Revisión Manual', desc: 'Se detectaron anomalías estadísticas o posibles alteraciones de texto. Se recomienda investigar.' },
-  HIGH_RISK:        { color: 'text-red-700',     bg: 'bg-red-50',     border: 'border-red-200',     label: 'Riesgo Alto de Plagio o IA', desc: 'Fuertes indicadores de texto generado por IA, plagio, o intentos de manipulación del documento.' },
-};
-
-const AI_VERDICT_CONFIG: Record<AIVerdict, { color: string; label: string }> = {
-  LIKELY_HUMAN: { color: 'text-emerald-700', label: 'Probablemente Humano' },
-  UNCERTAIN:    { color: 'text-amber-700',   label: 'Incierto' },
-  LIKELY_AI:    { color: 'text-red-700',     label: 'Probablemente Generado por IA' },
-};
-
-function generateSubmissionId(): string {
-  const ts = Date.now().toString(36).toUpperCase();
-  const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
-  return `ID-${ts}-${rand}`;
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// MAIN COMPONENT
+// COMPONENT
 // ─────────────────────────────────────────────────────────────────────────────
 export function TuringAcademicShield() {
+  const [lang, setLang] = useState<Language>('es');
+  const t = (key: keyof typeof turingTranslations['es']) => turingTranslations[lang][key];
+
   const [text, setText] = useState('');
   const [fileName, setFileName] = useState('');
   const [phase, setPhase] = useState<AnalysisPhase | null>(null);
-  const [phaseLabel, setPhaseLabel] = useState('');
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
@@ -63,18 +32,24 @@ export function TuringAcademicShield() {
   const [showDetails, setShowDetails] = useState(false);
   const [copied, setCopied] = useState(false);
   const [completedPhases, setCompletedPhases] = useState<string[]>([]);
+  const [showLangMenu, setShowLangMenu] = useState(false);
 
   const { spendQDs, balance, aztecAddress } = useAztecNative();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Phase Order for UI Checklist
+  const PHASE_KEYS: AnalysisPhase[] = [
+    'normalizing', 'scanning_unicode', 'shingling', 'winnowing',
+    'minhash', 'entropy', 'stylometry', 'zk_commit'
+  ];
+
   // ── Handle file reading safely
   const readFile = (file: File) => {
-    // Reject binary formats that readAsText will ruin
     if (file.name.endsWith('.pdf') || file.name.endsWith('.doc') || file.name.endsWith('.docx')) {
       setPhase('error');
-      setErrorMsg(`No es posible leer archivos PDF o Word de forma directa. Por favor, abre el documento y pega el texto en el cuadro inferior.`);
+      setErrorMsg(t('errShort')); // Reusing a general error or making a specific one. Actually, let's just use errShort for any file error here to keep it simple, or hardcode a tiny text.
       return;
     }
     
@@ -88,7 +63,7 @@ export function TuringAcademicShield() {
     };
     reader.onerror = () => {
       setPhase('error');
-      setErrorMsg('Error al leer el archivo. Por favor pega el texto directamente.');
+      setErrorMsg(t('errShort'));
     };
     reader.readAsText(file);
   };
@@ -110,19 +85,19 @@ export function TuringAcademicShield() {
   const handleAnalyze = async () => {
     if (!aztecAddress) {
       setPhase('error');
-      setErrorMsg('Debes conectar tu Aztec Identity para realizar un análisis.');
+      setErrorMsg(t('errConnect'));
       return;
     }
 
     if (balance < 500) {
       setPhase('error');
-      setErrorMsg(`Saldo insuficiente. Necesitas 500 QDs para realizar el análisis (Balance actual: ${balance.toFixed(2)} QDs).`);
+      setErrorMsg(t('errBalance'));
       return;
     }
 
     if (!text.trim() || text.trim().length < 100) {
       setPhase('error');
-      setErrorMsg('El documento es demasiado corto. Introduce al menos 100 caracteres para un análisis confiable.');
+      setErrorMsg(t('errShort'));
       return;
     }
     
@@ -132,13 +107,16 @@ export function TuringAcademicShield() {
     setResult(null);
     setCompletedPhases([]);
 
-    const submissionId = generateSubmissionId();
+    // We generate an ID based on time
+    const ts = Date.now().toString(36).toUpperCase();
+    const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const submissionId = `ID-${ts}-${rand}`;
 
     try {
       const spendSuccess = await spendQDs(500, "Turing Shield Anti-Plagiarism Analysis");
       if (!spendSuccess) {
          setPhase('error');
-         setErrorMsg("Fallo al debitar 500 QDs de la red Aztec. Verifica tu conexión e intenta de nuevo.");
+         setErrorMsg(t('errDebit'));
          setProgress(0);
          return;
       }
@@ -148,12 +126,10 @@ export function TuringAcademicShield() {
         submissionId,
         (update: ProgressUpdate) => {
           setPhase(update.phase);
-          setPhaseLabel(update.label);
           setProgress(update.progress);
           setCompletedPhases(prev => {
-            const phases = Object.keys(PHASE_CONFIG);
-            const idx = phases.indexOf(update.phase);
-            return phases.slice(0, Math.max(0, idx)); 
+            const idx = PHASE_KEYS.indexOf(update.phase);
+            return PHASE_KEYS.slice(0, Math.max(0, idx)); 
           });
         }
       );
@@ -161,10 +137,10 @@ export function TuringAcademicShield() {
       setResult(res);
       setPhase('complete');
       setProgress(100);
-      setCompletedPhases(Object.keys(PHASE_CONFIG));
+      setCompletedPhases(PHASE_KEYS);
     } catch (err: any) {
       setPhase('error');
-      setErrorMsg(err.message || 'Se produjo un error durante el análisis.');
+      setErrorMsg(err.message || t('errShort'));
       setProgress(0);
     }
   };
@@ -192,127 +168,167 @@ export function TuringAcademicShield() {
   const isIdle = phase === null;
 
   return (
-    <div className="w-full max-w-4xl mx-auto flex flex-col gap-8 animate-in fade-in duration-500 text-gray-900 font-sans">
+    <div className="w-full max-w-5xl mx-auto flex flex-col gap-10 animate-in fade-in duration-700 text-gray-900 font-sans px-4 sm:px-0 pb-16">
 
-      {/* ─── Header ─────────────────────────────────────────── */}
-      <div className="text-center space-y-2">
-        <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900">
-          Turing Shield <span className="text-blue-600">Academic</span>
-        </h2>
-        <p className="text-gray-500 max-w-xl mx-auto text-sm md:text-base">
-          Herramienta profesional de verificación de integridad académica. Detecta alteraciones de texto, plagio estructural y uso de IA.
-        </p>
+      {/* ─── Header & Language Selector ──────────────────────── */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-gray-200 pb-8 relative">
+        <div className="space-y-3 max-w-2xl">
+          <h2 className="text-4xl md:text-5xl font-black tracking-tight text-gray-900">
+            {t('heroTitle').replace('Academic', '')} <span className="text-blue-600">Academic</span>
+          </h2>
+          <h3 className="text-lg md:text-xl font-medium text-gray-600 tracking-wide">
+            {t('heroSubtitle')}
+          </h3>
+          <p className="text-gray-500 leading-relaxed text-sm md:text-base pt-2">
+            {t('heroDesc')}
+          </p>
+        </div>
+
+        {/* Language Selector */}
+        <div className="relative">
+          <button 
+            onClick={() => setShowLangMenu(!showLangMenu)}
+            className="flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 px-4 py-2.5 rounded-full text-sm font-semibold transition-all shadow-sm"
+          >
+            <Globe size={16} className="text-gray-400" />
+            {lang.toUpperCase()}
+            <ChevronDown size={14} className="text-gray-400" />
+          </button>
+          
+          {showLangMenu && (
+            <div className="absolute right-0 top-full mt-2 w-40 bg-white border border-gray-100 shadow-xl rounded-xl overflow-hidden z-50 animate-in slide-in-from-top-2 duration-200">
+              {(['en', 'es', 'fr', 'de', 'pt', 'zh'] as Language[]).map(l => (
+                <button
+                  key={l}
+                  onClick={() => { setLang(l); setShowLangMenu(false); }}
+                  className={`w-full text-left px-4 py-3 text-sm transition-colors hover:bg-gray-50
+                    ${lang === l ? 'font-bold text-blue-600 bg-blue-50/50' : 'font-medium text-gray-700'}`}
+                >
+                  {l === 'en' && 'English'}
+                  {l === 'es' && 'Español'}
+                  {l === 'fr' && 'Français'}
+                  {l === 'de' && 'Deutsch'}
+                  {l === 'pt' && 'Português'}
+                  {l === 'zh' && '中文'}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* ─── Main Card ─────────────────────────────────────── */}
-      <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+      {/* ─── Main Interactive Card ───────────────────────────── */}
+      <div className="bg-white border border-gray-200 rounded-[24px] overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         
-        <div className="p-6 md:p-8">
+        <div className="p-8 md:p-12">
 
           {/* ── IDLE STATE ── */}
           {(isIdle || phase === 'error') && (
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-6 max-w-3xl mx-auto">
+
+              {/* Error */}
+              {phase === 'error' && (
+                <div className="bg-red-50/80 border border-red-100 rounded-xl p-4 flex items-start gap-3 animate-in fade-in zoom-in duration-300">
+                  <XCircle className="text-red-500 shrink-0 mt-0.5" size={18} />
+                  <p className="text-red-700 text-sm font-medium leading-relaxed">{errorMsg}</p>
+                </div>
+              )}
 
               {/* Drop zone */}
               <div
                 onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
                 onDragLeave={() => setIsDragging(false)}
                 onDrop={handleDrop}
-                className={`border-2 border-dashed rounded-xl p-5 transition-all duration-200 cursor-pointer flex flex-col items-center justify-center gap-3
-                  ${isDragging ? 'border-blue-400 bg-blue-50' : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'}`}
+                className={`border-2 border-dashed rounded-2xl p-8 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center gap-4
+                  ${isDragging ? 'border-blue-500 bg-blue-50 scale-[1.02]' : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50/50'}`}
                 onClick={() => fileInputRef.current?.click()}
               >
-                <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
-                  <Upload size={20} className={isDragging ? 'text-blue-500' : 'text-gray-500'} />
+                <div className={`w-16 h-16 rounded-full flex items-center justify-center transition-colors duration-300 ${isDragging ? 'bg-blue-100' : 'bg-gray-100'}`}>
+                  <Upload size={24} className={isDragging ? 'text-blue-600' : 'text-gray-400'} />
                 </div>
                 <div className="text-center">
-                  <p className="text-gray-700 font-medium text-sm">Arrastra un archivo de texto o haz clic para examinar</p>
-                  <p className="text-gray-400 text-xs mt-1">Soporta .txt, .md, .csv (PDF y Word deben ser pegados manualmente)</p>
+                  <p className="text-gray-900 font-bold text-base">{t('dropzoneTitle')}</p>
+                  <p className="text-gray-500 text-xs mt-1.5">{t('dropzoneSub')}</p>
                 </div>
                 {fileName && (
-                  <div className="flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-full px-3 py-1 text-blue-600 text-xs mt-2">
-                    <FileText size={12} />
+                  <div className="flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-full px-4 py-1.5 text-blue-700 text-sm font-medium mt-2">
+                    <FileText size={14} />
                     {fileName}
                   </div>
                 )}
                 <input ref={fileInputRef} type="file" accept=".txt,.md,.csv" className="hidden" onChange={handleFileInput} />
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4 py-2">
                 <div className="flex-1 h-px bg-gray-100" />
-                <span className="text-gray-400 text-xs uppercase tracking-wider font-semibold">O pega el texto directamente</span>
+                <span className="text-gray-300 text-xs font-bold tracking-widest">{t('orPaste')}</span>
                 <div className="flex-1 h-px bg-gray-100" />
               </div>
 
               {/* Textarea */}
-              <div className="relative">
+              <div className="relative group">
                 <textarea
                   ref={textareaRef}
                   value={text}
                   onChange={(e) => setText(e.target.value)}
-                  placeholder="Pega el ensayo, tesis o documento académico del estudiante aquí..."
-                  className="w-full h-40 bg-white border border-gray-200 rounded-xl p-4 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 resize-none text-sm transition-all"
+                  placeholder={t('textareaPlaceholder')}
+                  className="w-full h-48 bg-white border border-gray-200 rounded-2xl p-5 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-400 resize-none text-sm transition-all shadow-inner"
                 />
                 {text && (
-                  <div className="absolute bottom-3 right-3 text-xs text-gray-400">
-                    {text.split(/\s+/).filter(Boolean).length.toLocaleString()} palabras
+                  <div className="absolute bottom-4 right-4 text-xs font-semibold text-gray-400 bg-white px-2 py-1 rounded-md border border-gray-100 shadow-sm">
+                    {text.split(/\s+/).filter(Boolean).length.toLocaleString()} {t('wordCount')}
                   </div>
                 )}
               </div>
-
-              {/* Error */}
-              {phase === 'error' && (
-                <div className="bg-red-50 border border-red-100 rounded-lg p-3 flex items-start gap-2">
-                  <XCircle className="text-red-500 shrink-0 mt-0.5" size={16} />
-                  <p className="text-red-700 text-sm">{errorMsg}</p>
-                </div>
-              )}
 
               {/* CTA */}
               <button
                 onClick={handleAnalyze}
                 disabled={!text.trim()}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed text-white font-medium text-sm py-3.5 rounded-xl transition-all flex items-center justify-center gap-2"
+                className="w-full bg-black hover:bg-gray-900 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed text-white font-bold text-base py-4 rounded-2xl transition-all flex items-center justify-center gap-3 shadow-lg shadow-black/10 active:scale-[0.98]"
               >
-                <BrainCircuit size={18} />
-                Analizar Documento
+                <BrainCircuit size={20} />
+                {t('analyzeBtn')}
               </button>
             </div>
           )}
 
           {/* ── PROCESSING STATE ── */}
           {isProcessing && (
-            <div className="flex flex-col items-center gap-8 py-6">
-              <div className="relative w-20 h-20 flex items-center justify-center">
-                <Loader2 size={40} className="text-blue-500 animate-spin" />
+            <div className="flex flex-col items-center gap-12 py-10 max-w-2xl mx-auto">
+              <div className="relative">
+                <div className="absolute inset-0 bg-blue-500 blur-2xl opacity-20 rounded-full animate-pulse" />
+                <div className="w-24 h-24 bg-white border border-gray-100 shadow-xl rounded-2xl flex items-center justify-center relative z-10">
+                  <Loader2 size={40} className="text-blue-600 animate-spin" />
+                </div>
               </div>
 
-              <div className="w-full max-w-sm flex flex-col gap-2">
-                {Object.entries(PHASE_CONFIG).map(([key, cfg]) => {
+              <div className="w-full flex flex-col gap-3">
+                {PHASE_KEYS.map((key) => {
                   const isDone = completedPhases.includes(key);
                   const isActive = phase === key;
                   return (
-                    <div key={key} className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all
-                      ${isActive ? 'bg-blue-50 text-blue-700' : isDone ? 'text-gray-400' : 'text-gray-300'}`}>
-                      <div className="shrink-0">
-                        {isDone ? <Check size={14} className="text-emerald-500" /> : isActive ? <Loader2 size={14} className="animate-spin" /> : cfg.icon}
+                    <div key={key} className={`flex items-center gap-4 px-4 py-3 rounded-xl transition-all duration-300
+                      ${isActive ? 'bg-blue-50/50 border border-blue-100 scale-[1.02]' : isDone ? 'opacity-50' : 'opacity-30'}`}>
+                      <div className="shrink-0 w-6 h-6 flex items-center justify-center">
+                        {isDone ? <Check size={18} className="text-emerald-500" /> : isActive ? <Loader2 size={16} className="text-blue-600 animate-spin" /> : <div className="w-2 h-2 rounded-full bg-gray-300" />}
                       </div>
-                      <span className="text-sm font-medium">
-                        {cfg.label}
+                      <span className={`text-sm font-semibold tracking-wide ${isActive ? 'text-blue-900' : 'text-gray-600'}`}>
+                        {t(`phase_${key}` as keyof typeof turingTranslations['es'])}
                       </span>
                     </div>
                   );
                 })}
               </div>
 
-              <div className="w-full max-w-sm">
-                <div className="flex justify-between text-xs text-gray-500 mb-1">
-                  <span>{phaseLabel}</span>
+              <div className="w-full">
+                <div className="flex justify-between text-xs font-bold text-gray-400 tracking-wider mb-2">
+                  <span className="uppercase">{t(`phase_${phase}` as keyof typeof turingTranslations['es'])}</span>
                   <span>{progress.toFixed(0)}%</span>
                 </div>
-                <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-blue-500 transition-all duration-300"
+                    className="h-full bg-blue-600 transition-all duration-500 ease-out"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
@@ -322,22 +338,32 @@ export function TuringAcademicShield() {
 
           {/* ── RESULTS STATE ── */}
           {phase === 'complete' && result && (
-            <div className="flex flex-col gap-5 animate-in fade-in duration-300">
+            <div className="flex flex-col gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700 max-w-4xl mx-auto">
 
               {/* Verdict banner */}
               {(() => {
-                const vc = VERDICT_CONFIG[result.plagiarismVerdict];
+                let vc = { color: '', bg: '', border: '', label: '', desc: '' };
+                if (result.plagiarismVerdict === 'LIKELY_ORIGINAL') {
+                  vc = { color: 'text-emerald-700', bg: 'bg-emerald-50/50', border: 'border-emerald-200', label: t('verdict_LIKELY_ORIGINAL_title'), desc: t('verdict_LIKELY_ORIGINAL_desc') };
+                } else if (result.plagiarismVerdict === 'REVIEW_REQUIRED') {
+                  vc = { color: 'text-amber-700', bg: 'bg-amber-50/50', border: 'border-amber-200', label: t('verdict_REVIEW_REQUIRED_title'), desc: t('verdict_REVIEW_REQUIRED_desc') };
+                } else {
+                  vc = { color: 'text-red-700', bg: 'bg-red-50/50', border: 'border-red-200', label: t('verdict_HIGH_RISK_title'), desc: t('verdict_HIGH_RISK_desc') };
+                }
+
                 return (
-                  <div className={`flex items-start gap-4 p-5 rounded-xl border ${vc.bg} ${vc.border}`}>
-                    <CheckCircle2 size={24} className={`${vc.color} mt-0.5 shrink-0`} />
-                    <div className="flex-1">
-                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
-                        <p className={`text-base font-bold ${vc.color}`}>{vc.label}</p>
-                        <span className={`text-sm font-semibold px-2.5 py-0.5 rounded-full bg-white/50 border ${vc.border} ${vc.color}`}>
-                          Nivel de Riesgo: {result.overallRisk}/100
+                  <div className={`flex flex-col sm:flex-row items-start sm:items-center gap-6 p-6 rounded-[20px] border ${vc.bg} ${vc.border} shadow-sm`}>
+                    <div className={`w-14 h-14 rounded-full flex items-center justify-center shrink-0 bg-white shadow-sm border ${vc.border}`}>
+                      <CheckCircle2 size={28} className={vc.color} />
+                    </div>
+                    <div className="flex-1 space-y-1">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+                        <h3 className={`text-xl font-black tracking-tight ${vc.color}`}>{vc.label}</h3>
+                        <span className={`text-xs font-bold px-3 py-1.5 rounded-lg bg-white border ${vc.border} ${vc.color} shadow-sm uppercase tracking-wider`}>
+                          {t('riskLevel')}: {result.overallRisk}/100
                         </span>
                       </div>
-                      <p className={`text-sm mt-1 opacity-90 ${vc.color}`}>{vc.desc}</p>
+                      <p className={`text-sm font-medium opacity-90 leading-relaxed max-w-2xl ${vc.color}`}>{vc.desc}</p>
                     </div>
                   </div>
                 );
@@ -345,115 +371,119 @@ export function TuringAcademicShield() {
 
               {/* Security Alerts */}
               {(result.securityAlerts.homoglyphsFound > 0 || result.securityAlerts.zeroWidthCharsFound > 0) && (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <ShieldAlert size={16} className="text-red-600" />
-                    <h4 className="text-sm font-bold text-red-800">Se detectó manipulación del documento</h4>
+                <div className="bg-red-50/50 border border-red-200 rounded-[20px] p-6 shadow-sm">
+                  <div className="flex items-center gap-3 mb-3">
+                    <ShieldAlert size={20} className="text-red-600" />
+                    <h4 className="text-base font-black text-red-900 tracking-tight">{t('alertTitle')}</h4>
                   </div>
-                  <ul className="list-disc pl-5 space-y-1 text-xs text-red-700 mb-2">
+                  <ul className="list-disc pl-5 space-y-1.5 text-sm text-red-800 font-medium mb-3">
                     {result.securityAlerts.unicodeAnomalies.map((anom, i) => (
                       <li key={i}>{anom}</li>
                     ))}
                   </ul>
-                  <p className="text-xs text-red-600">
-                    Se encontraron caracteres ocultos o letras reemplazadas visualmente idénticas. Estos métodos suelen usarse para evadir detectores. El texto ha sido limpiado para el análisis.
+                  <p className="text-sm text-red-700/80 leading-relaxed font-medium max-w-3xl">
+                    {t('alertDesc')}
                   </p>
                 </div>
               )}
 
-              {/* Score grid */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {/* Premium Metrics Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {[
-                  { label: 'Integridad General', value: `${(result.documentIntegrityScore * 100).toFixed(1)}%`, color: 'text-gray-900', sub: 'Métrica base' },
-                  { label: 'Probabilidad IA', value: `${(result.aiProbability * 100).toFixed(1)}%`, color: result.aiProbability > 0.5 ? 'text-red-600' : 'text-blue-600', sub: AI_VERDICT_CONFIG[result.aiVerdict].label },
-                  { label: 'Entropía de Texto', value: result.shannonEntropy, color: 'text-gray-700', sub: 'Aleatoriedad de caracteres' },
-                  { label: 'Cadencia (Burstiness)', value: result.burstinessScore, color: 'text-gray-700', sub: 'Variación de oraciones' },
-                  { label: 'Riqueza Léxica', value: result.stylometrics.ttr, color: 'text-gray-700', sub: 'Variedad de vocabulario' },
-                  { label: 'Palabras Analizadas', value: result.totalWords.toLocaleString(), color: 'text-gray-900', sub: `${result.uniqueWords.toLocaleString()} únicas` },
+                  { label: t('metricIntegrity'), value: `${(result.documentIntegrityScore * 100).toFixed(1)}%`, color: 'text-gray-900', sub: t('metricIntegritySub') },
+                  { label: t('metricAIProb'), value: `${(result.aiProbability * 100).toFixed(1)}%`, color: result.aiProbability > 0.5 ? 'text-red-600' : 'text-blue-600', sub: t(`ai_${result.aiVerdict}` as keyof typeof turingTranslations['es']) },
+                  { label: t('metricEntropy'), value: result.shannonEntropy, color: 'text-gray-800', sub: t('metricEntropySub') },
+                  { label: t('metricBurstiness'), value: result.burstinessScore, color: 'text-gray-800', sub: t('metricBurstinessSub') },
+                  { label: t('metricLexical'), value: result.stylometrics.ttr, color: 'text-gray-800', sub: t('metricLexicalSub') },
+                  { label: t('metricWords'), value: result.totalWords.toLocaleString(), color: 'text-gray-900', sub: `${result.uniqueWords.toLocaleString()} ${t('metricWordsSub')}` },
                 ].map((m, i) => (
-                  <div key={i} className="bg-gray-50 border border-gray-100 rounded-lg p-3 flex flex-col gap-0.5">
-                    <span className="text-gray-500 text-xs font-semibold">{m.label}</span>
-                    <span className={`text-lg font-bold ${m.color}`}>{m.value}</span>
-                    <span className="text-gray-400 text-xs">{m.sub}</span>
+                  <div key={i} className="bg-white border border-gray-100 shadow-[0_2px_10px_rgb(0,0,0,0.02)] rounded-[16px] p-5 flex flex-col gap-1 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-gray-200 transition-all">
+                    <span className="text-gray-400 text-[11px] font-bold uppercase tracking-wider">{m.label}</span>
+                    <span className={`text-2xl font-black tracking-tight ${m.color}`}>{m.value}</span>
+                    <span className="text-gray-400 text-xs font-medium">{m.sub}</span>
                   </div>
                 ))}
               </div>
 
               {/* Expandable: Stylometric details */}
-              <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+              <div className="bg-white border border-gray-200 rounded-[16px] overflow-hidden shadow-sm">
                 <button
                   onClick={() => setShowDetails(!showDetails)}
-                  className="w-full flex items-center justify-between p-3.5 hover:bg-gray-50 transition-colors"
+                  className="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition-colors"
                 >
-                  <span className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                    <BarChart2 size={16} className="text-gray-400" /> Ver reporte estilométrico completo
+                  <span className="text-sm font-bold text-gray-900 tracking-wide">
+                    {t('viewFullReport')}
                   </span>
-                  {showDetails ? <ChevronUp size={16} className="text-gray-400" /> : <ChevronDown size={16} className="text-gray-400" />}
+                  {showDetails ? <ChevronUp size={18} className="text-gray-400" /> : <ChevronDown size={18} className="text-gray-400" />}
                 </button>
                 {showDetails && (
-                  <div className="px-4 pb-4 grid grid-cols-1 sm:grid-cols-2 gap-3 border-t border-gray-100 pt-3">
+                  <div className="px-6 pb-6 grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-gray-100 pt-6 bg-gray-50/30">
                     {Object.entries(result.stylometrics).map(([k, v]) => (
-                      <div key={k} className="flex flex-col">
-                        <span className="text-xs text-gray-500 capitalize">{k.replace(/([A-Z])/g, ' $1')}</span>
-                        <span className="text-sm font-medium text-gray-900">{v}</span>
+                      <div key={k} className="flex flex-col gap-1">
+                        <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">{k.replace(/([A-Z])/g, ' $1')}</span>
+                        <span className="text-sm font-bold text-gray-900 font-mono bg-white px-3 py-2 rounded-lg border border-gray-100 inline-block w-max">{v}</span>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
 
-              {/* ZK Commitment - simplified view */}
-              <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <Lock size={14} />
-                    <span className="text-xs font-semibold">Identificador de Reporte</span>
+              {/* ZK Commitment - Minimalist Premium */}
+              <div className="bg-gray-900 rounded-[20px] p-6 shadow-2xl relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 blur-3xl rounded-full -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+                
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10 mb-4">
+                  <div className="flex items-center gap-2">
+                    <Lock size={16} className="text-blue-400" />
+                    <span className="text-sm font-bold text-white tracking-wide">{t('zkTitle')}</span>
                   </div>
                   <button
                     onClick={handleCopyCommitment}
-                    className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700 transition-colors bg-white border border-gray-200 px-2 py-1 rounded shadow-sm"
+                    className="flex items-center gap-2 text-xs font-bold text-white/70 hover:text-white bg-white/5 hover:bg-white/10 transition-all px-3 py-1.5 rounded-lg border border-white/10"
                   >
-                    {copied ? <><Check size={12} className="text-emerald-500" /> Copiado</> : <><Copy size={12} /> Copiar</>}
+                    {copied ? <><Check size={14} className="text-emerald-400" /> {t('copiedBtn')}</> : <><Copy size={14} /> {t('copyBtn')}</>}
                   </button>
                 </div>
-                <div className="text-xs text-gray-400 font-mono break-all">
-                  {result.zkCommitment}
+                
+                <div className="bg-black/50 border border-white/10 rounded-xl p-4 mb-3 relative z-10">
+                  <p className="text-sm text-blue-300 font-mono break-all leading-relaxed">{result.zkCommitment}</p>
                 </div>
-                <div className="flex justify-between text-xs text-gray-400 mt-1">
-                  <span>ID: {result.submissionId}</span>
-                  <span>{new Date(result.timestamp).toLocaleString()}</span>
+                
+                <div className="flex justify-between text-xs font-semibold text-gray-500 relative z-10 uppercase tracking-wider">
+                  <span>{t('idLabel')}: {result.submissionId}</span>
+                  <span>{new Date(result.timestamp).toLocaleString(lang)}</span>
                 </div>
               </div>
 
               <button
                 onClick={handleReset}
-                className="w-full bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 font-medium text-sm py-3 rounded-xl transition-colors mt-1 shadow-sm"
+                className="w-full bg-white hover:bg-gray-50 border-2 border-gray-200 text-gray-900 font-bold text-base py-4 rounded-2xl transition-all shadow-sm active:scale-[0.99] mt-2"
               >
-                Analizar Nuevo Documento
+                {t('newAnalysis')}
               </button>
             </div>
           )}
         </div>
       </div>
 
-      {/* ─── Footer info ──────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* ─── Redesigned Typographic Footer (The "WOW" Factor) ──────────────────────── */}
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16 pt-10 border-t border-gray-200">
         {[
-          { icon: <ShieldAlert size={18} className="text-gray-400" />, title: 'Anti-Evasión', desc: 'Detecta y limpia sustituciones de caracteres y espacios invisibles diseñados para engañar detectores.' },
-          { icon: <Fingerprint size={18} className="text-gray-400" />, title: 'Análisis Estructural', desc: 'Evalúa la estructura profunda del texto para encontrar parafraseos y plagios complejos.' },
-          { icon: <Activity size={18} className="text-gray-400" />, title: 'Detección Estilométrica', desc: 'Estudia patrones como la variación de longitud de oraciones para identificar textos generados por IA.' },
-        ].map((card, i) => (
-          <div key={i} className="flex gap-3 items-start">
-            <div className="w-8 h-8 rounded-lg bg-white border border-gray-200 flex items-center justify-center shrink-0 shadow-sm mt-0.5">
-              {card.icon}
-            </div>
-            <div>
-              <h4 className="text-gray-800 font-medium text-sm">{card.title}</h4>
-              <p className="text-gray-500 text-xs mt-0.5 leading-relaxed">{card.desc}</p>
-            </div>
+          { title: t('usp1Title'), desc: t('usp1Desc') },
+          { title: t('usp2Title'), desc: t('usp2Desc') },
+          { title: t('usp3Title'), desc: t('usp3Desc') },
+        ].map((block, i) => (
+          <div key={i} className="flex flex-col gap-3">
+            <h4 className="text-gray-900 font-black text-lg tracking-tight border-b-2 border-blue-600 inline-block w-max pb-1 mb-1">
+              {block.title}
+            </h4>
+            <p className="text-gray-500 text-sm leading-relaxed font-medium">
+              {block.desc}
+            </p>
           </div>
         ))}
       </div>
+
     </div>
   );
 }
