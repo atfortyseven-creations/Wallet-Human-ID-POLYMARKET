@@ -1005,6 +1005,21 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       setLocalStream(stream);
       if (myVideoRef.current) myVideoRef.current.srcObject = stream;
 
+      // ── AUDIO AUTOPLAY UNLOCK ─────────────────────────────────────────────────
+      // Browsers require a user-gesture (the "Answer" button click) to allow autoplay.
+      // We create a silent AudioContext here, which is the recognized unlock pattern.
+      // Without this, remoteAudioRef.play() will be silently rejected by the browser.
+      try {
+        const unlockCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const silentBuf = unlockCtx.createBuffer(1, 1, 22050);
+        const src = unlockCtx.createBufferSource();
+        src.buffer = silentBuf;
+        src.connect(unlockCtx.destination);
+        src.start(0);
+        await unlockCtx.resume();
+        unlockCtx.close();
+      } catch { /* ignore — best effort */ }
+
       // AUDIT FIX: Only register stream handler if NOT already done via peer.on('call')
       // Check activeConnection at this moment (may have arrived via peer.on('call') already)
       const existingConn = activeConnectionRef.current;
@@ -1019,7 +1034,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             setCallState('active');
             toast.success('✅ Call connected.');
             if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
-            if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = rStream; remoteAudioRef.current.play().catch(() => {}); }
+            if (remoteAudioRef.current) {
+              remoteAudioRef.current.srcObject = rStream;
+              // Play is now allowed — browser gesture was already unlocked above
+              remoteAudioRef.current.play().catch(err => console.warn('[Audio] play() blocked:', err));
+            }
           });
           existingConn.on('close', () => performEndCallRef.current());
           existingConn.on('error', () => performEndCallRef.current());
@@ -3528,14 +3547,14 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           </div>
         )}
 
-        {/* Profile Popover Overlay */}
-       {showProfile && activePeer && (
-         <div className="absolute inset-0 z-[150] bg-white/95  backdrop-blur-md flex flex-col items-center justify-center p-6 animate-in fade-in zoom-in duration-300" onClick={() => setShowProfile(false)}>
-           <div className="w-full max-w-sm bg-white  p-6 rounded-3xl border border-black/10  shadow-2xl" onClick={e => e.stopPropagation()}>
+        {/* Profile Popover Overlay — fixed + portal so it escapes overflow:hidden containers */}
+       {showProfile && activePeer && isMounted && createPortal(
+         <div className="fixed inset-0 z-[99999] bg-black/30 backdrop-blur-sm flex flex-col items-center justify-center p-6 animate-in fade-in duration-200" onClick={() => setShowProfile(false)}>
+           <div className="w-full max-w-sm bg-white p-6 rounded-3xl border border-black/10 shadow-2xl animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
                <div className="flex justify-between items-center mb-6">
-                   <h3 className="text-[13px] font-black uppercase tracking-[0.25em] text-[#050505] ">Profile</h3>
-                   <button onClick={() => setShowProfile(false)} className="w-8 h-8 flex items-center justify-center hover:bg-black/5  rounded-full transition-colors text-[11px] font-black uppercase text-[#050505] ">
-                     X
+                   <h3 className="text-[13px] font-black uppercase tracking-[0.25em] text-[#050505]">Profile</h3>
+                   <button onClick={() => setShowProfile(false)} className="w-8 h-8 flex items-center justify-center hover:bg-black/5 rounded-full transition-colors text-[11px] font-black uppercase text-[#050505]">
+                     ✕
                    </button>
                </div>
                <div className="flex flex-col items-center gap-4 mb-8">
@@ -3546,26 +3565,27 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                      {activePeer.slice(2, 4).toUpperCase()}
                    </div>
                    <div className="text-center">
-                     <p className="text-[13px] font-mono font-bold text-[#050505] ">{activePeer}</p>
+                     <p className="text-[13px] font-mono font-bold text-[#050505] break-all">{activePeer}</p>
                      <p className="text-[12px] text-blue-500 font-medium mt-1">End to End Encrypted</p>
                   </div>
                </div>
                <div className="flex flex-col gap-2">
-                   <button onClick={() => { syncToAddressBook(activePeer); setShowProfile(false); }} className="w-full flex items-center gap-3 px-4 py-3.5 bg-black/5  hover:bg-black/10  rounded-xl transition-colors text-[11px] font-mono font-bold text-[#050505] ">
-                       <UserPlus size={16} className="text-black/50 " /> Add to Contacts
+                   <button onClick={() => { syncToAddressBook(activePeer); setShowProfile(false); }} className="w-full flex items-center gap-3 px-4 py-3.5 bg-black/5 hover:bg-black/10 rounded-xl transition-colors text-[11px] font-mono font-bold text-[#050505]">
+                       <UserPlus size={16} className="text-black/50" /> Add to Contacts
                    </button>
-                   <button onClick={exportChat} className="w-full flex items-center gap-3 px-4 py-3.5 bg-black/5  hover:bg-black/10  rounded-xl transition-colors text-[11px] font-mono font-bold text-[#050505] ">
-                       <Download size={16} className="text-black/50 " /> Export Chat
+                   <button onClick={exportChat} className="w-full flex items-center gap-3 px-4 py-3.5 bg-black/5 hover:bg-black/10 rounded-xl transition-colors text-[11px] font-mono font-bold text-[#050505]">
+                       <Download size={16} className="text-black/50" /> Export Chat
                    </button>
-                   <button onClick={() => toggleBlock(activePeer)} className="w-full flex items-center gap-3 px-4 py-3.5 bg-black/5  hover:bg-black/10  rounded-xl transition-colors text-[11px] font-mono font-bold text-orange-500">
+                   <button onClick={() => toggleBlock(activePeer)} className="w-full flex items-center gap-3 px-4 py-3.5 bg-black/5 hover:bg-black/10 rounded-xl transition-colors text-[11px] font-mono font-bold text-orange-500">
                        <Slash size={16} /> {blockedPeers.has(activePeer.toLowerCase()) ? 'Unblock Wallet' : 'Block Wallet'}
                    </button>
-                   <button onClick={clearChat} className="w-full flex items-center gap-3 px-4 py-3.5 bg-black/5  hover:bg-red-50  rounded-xl transition-colors text-[11px] font-mono font-bold text-red-500">
+                   <button onClick={clearChat} className="w-full flex items-center gap-3 px-4 py-3.5 bg-black/5 hover:bg-red-50 rounded-xl transition-colors text-[11px] font-mono font-bold text-red-500">
                        <Trash2 size={16} /> Clear Chat
                    </button>
                </div>
            </div>
-         </div>
+         </div>,
+         document.body
        )}
       </div>
     </TuringShieldGate>
