@@ -14,6 +14,7 @@ import {
   AIVerdict,
   ProgressUpdate
 } from '@/lib/academic-integrity-engine';
+import { useAztecNative } from '@/context/AztecNativeContext';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CONFIG
@@ -30,9 +31,9 @@ const PHASE_CONFIG: Record<string, { label: string; icon: React.ReactNode }> = {
 };
 
 const VERDICT_CONFIG: Record<Verdict, { color: string; bg: string; border: string; label: string; desc: string }> = {
-  LIKELY_ORIGINAL:  { color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200', label: '✓ Alta Probabilidad de Originalidad', desc: 'No se han detectado coincidencias significativas ni patrones de Inteligencia Artificial.' },
-  REVIEW_REQUIRED:  { color: 'text-amber-700',   bg: 'bg-amber-50',   border: 'border-amber-200',   label: '⚠ Requiere Revisión Manual', desc: 'Se detectaron anomalías estadísticas o posibles alteraciones de texto. Se recomienda investigar.' },
-  HIGH_RISK:        { color: 'text-red-700',     bg: 'bg-red-50',     border: 'border-red-200',     label: '✗ Riesgo Alto de Plagio o IA', desc: 'Fuertes indicadores de texto generado por IA, plagio, o intentos de manipulación del documento.' },
+  LIKELY_ORIGINAL:  { color: 'text-emerald-700', bg: 'bg-emerald-50', border: 'border-emerald-200', label: 'Alta Probabilidad de Originalidad', desc: 'No se han detectado coincidencias significativas ni patrones de Inteligencia Artificial.' },
+  REVIEW_REQUIRED:  { color: 'text-amber-700',   bg: 'bg-amber-50',   border: 'border-amber-200',   label: 'Requiere Revisión Manual', desc: 'Se detectaron anomalías estadísticas o posibles alteraciones de texto. Se recomienda investigar.' },
+  HIGH_RISK:        { color: 'text-red-700',     bg: 'bg-red-50',     border: 'border-red-200',     label: 'Riesgo Alto de Plagio o IA', desc: 'Fuertes indicadores de texto generado por IA, plagio, o intentos de manipulación del documento.' },
 };
 
 const AI_VERDICT_CONFIG: Record<AIVerdict, { color: string; label: string }> = {
@@ -62,6 +63,8 @@ export function TuringAcademicShield() {
   const [showDetails, setShowDetails] = useState(false);
   const [copied, setCopied] = useState(false);
   const [completedPhases, setCompletedPhases] = useState<string[]>([]);
+
+  const { spendQDs, balance, aztecAddress } = useAztecNative();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -105,6 +108,18 @@ export function TuringAcademicShield() {
 
   // ── Start analysis
   const handleAnalyze = async () => {
+    if (!aztecAddress) {
+      setPhase('error');
+      setErrorMsg('Debes conectar tu Aztec Identity para realizar un análisis.');
+      return;
+    }
+
+    if (balance < 500) {
+      setPhase('error');
+      setErrorMsg(`Saldo insuficiente. Necesitas 500 QDs para realizar el análisis (Balance actual: ${balance.toFixed(2)} QDs).`);
+      return;
+    }
+
     if (!text.trim() || text.trim().length < 100) {
       setPhase('error');
       setErrorMsg('El documento es demasiado corto. Introduce al menos 100 caracteres para un análisis confiable.');
@@ -120,6 +135,14 @@ export function TuringAcademicShield() {
     const submissionId = generateSubmissionId();
 
     try {
+      const spendSuccess = await spendQDs(500, "Turing Shield Anti-Plagiarism Analysis");
+      if (!spendSuccess) {
+         setPhase('error');
+         setErrorMsg("Fallo al debitar 500 QDs de la red Aztec. Verifica tu conexión e intenta de nuevo.");
+         setProgress(0);
+         return;
+      }
+
       const res = await runAcademicIntegrityAnalysis(
         text, 
         submissionId,

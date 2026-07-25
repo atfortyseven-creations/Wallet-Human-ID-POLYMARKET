@@ -61,7 +61,7 @@ export function WhaleMissionLoader({ children, duration = 4000, label = "Loading
         initial={{ opacity: 0 }}
         animate={{ opacity: isLoading ? 0 : 1 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
-        className="w-full h-full flex flex-col flex-1"
+        className="w-full flex flex-col flex-1"
         style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
       >
         {shouldRenderChildren && children}
