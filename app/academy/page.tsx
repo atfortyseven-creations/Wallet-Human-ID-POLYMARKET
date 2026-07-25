@@ -32,11 +32,12 @@ export default async function AcademyPage() {
                 </div>
                 
                 {/* ── ICAIEPHE 2026 ZK Anti-Plagiarism Engine ── */}
-                <div className="w-full max-w-[1200px] mt-8 mb-24 flex flex-col z-10 relative">
+                <div className="w-full max-w-[1200px] mt-8 mb-12 flex flex-col z-10 relative">
                    <TuringAcademicShield />
                 </div>
+                
+                <WhaleChatLink />
               </div>
-              <WhaleChatLink />
               <SystemFooter />
             </div>
         </WhaleMissionLoader>
