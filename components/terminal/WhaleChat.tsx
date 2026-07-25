@@ -2374,10 +2374,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     {/* Solid white container — two-panel layout: sidebar (left) + chat (right) */}
       <div className={`relative flex flex-row flex-1 min-h-0 w-full overflow-hidden shadow-sm ${(showScanner || showMyQR || showProfile) ? 'overflow-visible' : ''}`} style={{ 
       borderRadius: isMobile ? 0 : '0',
-      background: '#ffffff',
+      ...bgStyle,
+      fontFamily,
     }}>
       {/*  Sidebar: Conversation List — fixed width, full height  */}
-      <div className={`${showList ? 'flex' : 'hidden md:flex'} w-full md:w-72 flex-col border-r border-black/10 bg-white shrink-0 h-full overflow-hidden`}>
+      <div className={`${showList ? 'flex' : 'hidden md:flex'} w-full md:w-72 flex-col border-r border-black/10 bg-white/60 backdrop-blur-xl shrink-0 h-full overflow-hidden`}>
         <div className="p-4 border-b border-white/30">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -2477,7 +2478,12 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 </button>
                 <button onClick={() => setShowProfile(true)} className="flex items-center gap-3 text-left hover:opacity-80 transition-opacity">
                   <div className="relative">
-                    <Avatar address={activePeer!} />
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center text-[12px] font-black text-white shadow-lg"
+                      style={{ background: `hsl(${parseInt(activePeer.slice(2, 8), 16) % 360},70%,45%)` }}
+                    >
+                      {activePeer.slice(2, 4).toUpperCase()}
+                    </div>
                     {/* Online indicator */}
                     <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white shadow-sm ${peerStatus.online ? 'bg-emerald-500' : 'bg-gray-400'}`} />
                   </div>
@@ -2543,6 +2549,33 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 </button>
               </div>
             </div>
+
+            {/* ── Active Audio Call Banner — Non-blocking, Telegram-style ── */}
+            {callState === 'active' && callType === 'audio' && (
+              <div className="shrink-0 flex items-center justify-between px-4 py-2.5 bg-emerald-500 z-20">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                  <span className="text-white text-[12px] font-bold uppercase tracking-widest">Audio Call Active</span>
+                  <span className="text-white/80 text-[11px] font-mono">{formatDuration(callDurationSeconds)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={toggleMic}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${
+                      isMicMuted ? 'bg-red-400 text-white' : 'bg-white/20 text-white hover:bg-white/30'
+                    }`}
+                  >
+                    {isMicMuted ? <MicOff size={14} /> : <Mic size={14} />}
+                  </button>
+                  <button
+                    onClick={endCall}
+                    className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white hover:bg-red-600 transition-all"
+                  >
+                    <PhoneOff size={14} />
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Hito 4: Search bar */}
             {showSearch && (() => {
@@ -2619,10 +2652,19 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               {(() => {
                 // Filter messages for the current active conversation only
                 const convId = `dm-${activePeer!.toLowerCase()}`;
-                const filteredMsgs = messages.filter(m =>
-                  (m.conversationId === convId || m.conversationId === `dm-${activePeer!.toLowerCase()}`) &&
-                  (!m.burnAtNs || m.burnAtNs > Date.now())
-                );
+                const filteredMsgs = messages.filter(m => {
+                  if (m.conversationId !== convId && m.conversationId !== `dm-${activePeer!.toLowerCase()}`) return false;
+                  if (m.burnAtNs && m.burnAtNs <= Date.now()) return false;
+                  const c = typeof m.content === 'string' ? m.content : '';
+                  if (c.startsWith('__CALL_ANSWER__')) return false;
+                  if (c === '__CALL_DECLINE__') return false;
+                  if (c === '__CALL_HANGUP__') return false;
+                  if (c.startsWith('__REACT__')) return false;
+                  if (c.startsWith('__PIN__')) return false;
+                  if (c.startsWith('__UNPIN__')) return false;
+                  if (c.startsWith('__REVOKE__')) return false;
+                  return true;
+                });
                 if (filteredMsgs.length === 0) return (
                   <div className="flex-1 flex flex-col items-center justify-center">
                     <div className="flex flex-col items-center max-w-[280px] text-center gap-6">
@@ -2760,7 +2802,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                             ) : (
                               <p className="whitespace-pre-wrap break-words" style={{ fontSize: `${fontSizePx}px`, lineHeight: '1.4' }}>
                                 {(() => {
-                                  let text = content.startsWith('__CALL_OFFER__') ? "📞 Initiated a Call" : content;
+                                  let text = content;
+                                  if (content.startsWith('__CALL_OFFER__')) text = "📞 Initiated a Call";
+                                  else if (content.startsWith('__CALL_ANSWER__')) text = "✅ Call Answered";
+                                  else if (content === '__CALL_DECLINE__') text = "❌ Call Declined";
+                                  else if (content === '__CALL_HANGUP__') text = "🔚 Call Ended";
                                   if (searchQuery && text.toLowerCase().includes(searchQuery.toLowerCase())) {
                                     const parts = text.split(new RegExp(`(${searchQuery})`, 'gi'));
                                     return parts.map((part: string, i: number) => part.toLowerCase() === searchQuery.toLowerCase() ? <span key={i} className="bg-yellow-300 text-black px-0.5 rounded-sm">{part}</span> : part);
@@ -2808,7 +2854,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                           
                           {/* Emoji Picker Popover */}
                           {reactionMenu === msg.id && (
-                            <div className="absolute top-0 right-0 -translate-y-full translate-x-4 z-50 shadow-2xl rounded-3xl overflow-hidden border border-black/5">
+                            <div className="absolute bottom-full right-0 mb-1 z-50 shadow-2xl rounded-3xl overflow-hidden border border-black/5">
                               <EmojiPicker 
                                 onEmojiClick={(e) => {
                                   executeSend(`__REACT__${msg.id}__::${e.emoji}`);
@@ -2845,10 +2891,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   </div>
               )}
               {sending && (
-                  <div className="flex flex-col self-end max-w-[80%] items-end mt-2">
-                     <div className="w-32 h-1.5 bg-gradient-to-r from-indigo-500 via-teal-400 to-white/10 rounded-full animate-pulse shadow-sm" />
-                       <div className="w-full h-full rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" />
-                  </div>
+                <div className="flex self-end items-center gap-2 mt-2 px-4 py-1.5 bg-white rounded-full shadow-sm border border-black/5">
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                </div>
               )}
               <div ref={messagesEndRef} />
             </div>
@@ -3083,12 +3130,12 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
       {/* ── Incoming Call Banner (state: ringing) ───────────────────────────── */}
       {callState === 'ringing' && isMounted && createPortal(
-        <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] bg-white backdrop-blur-3xl flex flex-col items-center justify-center animate-in fade-in duration-500" style={{ touchAction: 'none' }}>
+        <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] bg-slate-900/95 backdrop-blur-3xl flex flex-col items-center justify-center animate-in fade-in duration-500" style={{ touchAction: 'none' }}>
           <div className="flex flex-col items-center gap-10 mt-[-10dvh]">
             {/* Avatar + pulse ring */}
             <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-emerald-100 animate-ping scale-150" style={{ animationDuration: '2s' }} />
-              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-xl shadow-emerald-200 relative z-10">
+              <div className="absolute inset-0 rounded-full bg-emerald-500/20 animate-ping scale-150" style={{ animationDuration: '2s' }} />
+              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-xl shadow-emerald-500/30 relative z-10">
                 <Phone size={56} className="text-white" />
               </div>
             </div>
@@ -3096,7 +3143,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               <p className="text-slate-400 text-sm font-mono uppercase tracking-[0.3em] mb-3">
                 {callType === 'video' ? 'Incoming Video Call' : 'Incoming Audio Call'}
               </p>
-              <p className="text-slate-900 text-3xl font-black tracking-tight">
+              <p className="text-white text-3xl font-black tracking-tight">
                 {activePeer ? shortAddr(activePeer) : 'Peer'}
               </p>
             </div>
@@ -3129,17 +3176,17 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
       {/* ── Outgoing Call (state: calling — waiting for answer) ─────────────── */}
       {callState === 'calling' && isMounted && createPortal(
-        <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] bg-white flex flex-col items-center justify-center animate-in fade-in duration-400" style={{ touchAction: 'none' }}>
+        <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] bg-slate-900/95 backdrop-blur-3xl flex flex-col items-center justify-center animate-in fade-in duration-400" style={{ touchAction: 'none' }}>
           <div className="flex flex-col items-center gap-8 mt-[-10dvh]">
             <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-blue-100 animate-ping scale-150" style={{ animationDuration: '2s' }} />
-              <div className="w-28 h-28 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-xl shadow-blue-200 relative z-10">
+              <div className="absolute inset-0 rounded-full bg-blue-500/20 animate-ping scale-150" style={{ animationDuration: '2s' }} />
+              <div className="w-28 h-28 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-xl shadow-blue-500/30 relative z-10">
                 <Phone size={48} className="text-white" />
               </div>
             </div>
             <div className="text-center">
               <p className="text-slate-400 text-xs font-mono uppercase tracking-[0.3em] mb-2">Calling...</p>
-              <p className="text-slate-900 text-xl font-black tracking-tight">
+              <p className="text-white text-xl font-black tracking-tight">
                 {activePeer ? shortAddr(activePeer) : 'Peer'}
               </p>
               <p className="text-slate-400 text-xs mt-1 font-mono">Waiting for answer</p>
@@ -3162,20 +3209,20 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
       {/* ── Connecting Overlay (state: connecting — receiver answered, waiting for WebRTC stream) ── */}
       {callState === 'connecting' && isMounted && createPortal(
-        <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] bg-white flex flex-col items-center justify-center animate-in fade-in duration-400" style={{ touchAction: 'none' }}>
+        <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] bg-slate-900/95 backdrop-blur-3xl flex flex-col items-center justify-center animate-in fade-in duration-400" style={{ touchAction: 'none' }}>
           <div className="flex flex-col items-center gap-8 mt-[-10dvh]">
             <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-emerald-100 animate-ping scale-150" style={{ animationDuration: '1.5s' }} />
-              <div className="w-28 h-28 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-xl shadow-emerald-200 relative z-10">
+              <div className="absolute inset-0 rounded-full bg-emerald-500/20 animate-ping scale-150" style={{ animationDuration: '1.5s' }} />
+              <div className="w-28 h-28 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-xl shadow-emerald-500/30 relative z-10">
                 <Phone size={48} className="text-white" />
               </div>
             </div>
             <div className="text-center">
               <p className="text-slate-400 text-xs font-mono uppercase tracking-[0.3em] mb-2">Connecting...</p>
-              <p className="text-slate-900 text-xl font-black tracking-tight">
+              <p className="text-white text-xl font-black tracking-tight">
                 {activePeer ? shortAddr(activePeer) : 'Peer'}
               </p>
-              <p className="text-slate-400 text-xs mt-1 font-mono animate-pulse">Establishing secure media stream</p>
+              <p className="text-emerald-400 text-xs mt-1 font-mono animate-pulse">Establishing secure media stream</p>
             </div>
             {localStream && callType === 'video' && (
               <div className="w-36 h-48 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
@@ -3194,8 +3241,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       )}
 
       {/* ── Active Call Overlay — Full Screen Premium UI ──────────────────── */}
-      {callState === 'active' && isMounted && createPortal(
-        <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] bg-white flex flex-col" style={{ touchAction: 'none' }}>
+      {callState === 'active' && callType === 'video' && isMounted && createPortal(
+        <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] bg-black flex flex-col" style={{ touchAction: 'none' }}>
 
           {/* ── Local Video / Audio — covers full viewport ─────────────────── */}
           <div className="absolute inset-0">
@@ -3492,7 +3539,12 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                    </button>
                </div>
                <div className="flex flex-col items-center gap-4 mb-8">
-                   <Avatar address={activePeer} />
+                   <div
+                     className="w-20 h-20 rounded-full flex items-center justify-center text-[24px] font-black text-white shadow-lg"
+                     style={{ background: `hsl(${parseInt(activePeer.slice(2, 8), 16) % 360},70%,45%)` }}
+                   >
+                     {activePeer.slice(2, 4).toUpperCase()}
+                   </div>
                    <div className="text-center">
                      <p className="text-[13px] font-mono font-bold text-[#050505] ">{activePeer}</p>
                      <p className="text-[12px] text-blue-500 font-medium mt-1">End to End Encrypted</p>

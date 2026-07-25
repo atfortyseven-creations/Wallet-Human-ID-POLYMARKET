@@ -5,6 +5,7 @@ import { AcademyInteractiveEngine } from "@/components/academy/AcademyInteractiv
 import { TOPIC_CATEGORIES } from "@/lib/data/academy-curriculum";
 import { SystemFooter } from "@/components/landing/SystemFooter";
 import { WhaleChatLink } from "@/components/shared/WhaleChatLink";
+import { TuringAcademicShield } from "@/components/academy/TuringAcademicShield";
 
 export const revalidate = 60;
 
@@ -28,6 +29,12 @@ export default async function AcademyPage() {
                         isSeeded={isDatabaseSeeded}
                         expectedCategories={TOPIC_CATEGORIES.length} 
                     />
+                </div>
+                
+                {/* ── ICAIEPHE 2026 ZK Anti-Plagiarism Engine ── */}
+                <div className="w-full max-w-[1200px] mt-12 bg-slate-900 border border-slate-800 rounded-[2rem] shadow-2xl flex flex-col p-8 md:p-16 z-10 overflow-hidden relative">
+                   <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-blue-500" />
+                   <TuringAcademicShield />
                 </div>
               </div>
               <WhaleChatLink />
