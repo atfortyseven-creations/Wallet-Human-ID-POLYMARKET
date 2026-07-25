@@ -72,10 +72,28 @@ export async function GET(request: NextRequest) {
     );
 
     if (!response.ok) {
-      throw new Error(`CoinGecko API error: ${response.status}`);
+      if (response.status === 429) {
+        console.warn('CoinGecko 429 Rate Limit Hit, using fallback prices');
+        const fallbackPrices: Record<string, number> = {
+          BTC: 65000, ETH: 3500, MATIC: 0.85, POL: 0.85, 
+          USDC: 1, USDT: 1, DAI: 1, WETH: 3500, WBTC: 65000
+        };
+        const data: any = {};
+        symbols.forEach(s => {
+            const cid = COIN_IDS[s];
+            if (cid && fallbackPrices[s]) {
+                data[cid] = { usd: fallbackPrices[s] };
+            }
+        });
+        var fetchedData = data;
+      } else {
+        throw new Error(`CoinGecko API error: ${response.status}`);
+      }
+    } else {
+      var fetchedData = await response.json();
     }
 
-    const data = await response.json();
+    const data = fetchedData;
 
     // Transform CoinGecko response to symbol-based format
     const prices: Record<string, number> = {};

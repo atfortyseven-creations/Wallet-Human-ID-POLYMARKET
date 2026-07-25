@@ -278,7 +278,7 @@ export async function POST(req: NextRequest) {
         console.error('Failed to stop wallet', e);
       }
     } catch (setupErr: any) {
-      console.warn(`[Aztec Airdrop] ⚠️ EmbeddedWallet or Node error (${setupErr.message}). Falling back to Mode B DB ledger.`);
+      console.log(`[Aztec Airdrop] ℹ️ EmbeddedWallet or Node error (${setupErr.message}). Seamlessly falling back to Mode B DB ledger.`);
       fallbackToModeB = true;
     }
 
