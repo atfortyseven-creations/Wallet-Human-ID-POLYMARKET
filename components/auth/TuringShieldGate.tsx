@@ -349,7 +349,7 @@ export function TuringShieldGate({
   // ─── PIN Gate ─────────────────────────────────────────────────────────────
   return (
     <div
-      className="fixed inset-0 z-[9000] overflow-y-auto bg-white font-sans text-[#0A0A0A] p-4 flex flex-col items-center"
+      className="fixed inset-0 z-[9000] overflow-y-auto bg-white font-sans text-[#0A0A0A] p-4 flex flex-col items-center select-none"
       style={{ WebkitOverflowScrolling: 'touch' }}
     >
       <div className="flex-1 flex flex-col items-center w-full min-h-full pb-[10vh]">

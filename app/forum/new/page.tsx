@@ -220,7 +220,7 @@ function NewTopicContent() {
   };
 
   return (
-    <div className="w-full min-h-[100vh] bg-white text-black py-10 font-sans relative selection:bg-black selection:text-white">
+    <div className="w-full bg-white text-black py-10 font-sans relative selection:bg-black selection:text-white">
       
       <div className="w-full max-w-[1110px] mx-auto px-6 lg:px-12">
         <div className="w-full mb-6">

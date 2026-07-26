@@ -173,7 +173,7 @@ export default function TopicPage() {
   const isTopicAuthor = sessionAddress && topic.author?.walletAddress?.toLowerCase() === sessionAddress;
 
   return (
-    <div className="w-full min-h-[100vh] bg-white text-black py-10 font-sans selection:bg-black selection:text-white">
+    <div className="w-full bg-white text-black py-10 font-sans selection:bg-black selection:text-white">
       
       <div className="w-full max-w-[1440px] mx-auto px-6 lg:px-12 mb-8">
         <Link href="/forum" className="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-gray-500 hover:text-black transition-colors">

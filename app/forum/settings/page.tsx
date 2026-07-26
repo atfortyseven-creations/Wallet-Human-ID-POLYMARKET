@@ -171,7 +171,7 @@ export default function ForumSettingsPage() {
   );
 
   return (
-    <div className="w-full min-h-[100vh] bg-white text-black py-10 font-sans relative selection:bg-black selection:text-white">
+    <div className="w-full bg-white text-black py-10 font-sans relative selection:bg-black selection:text-white">
       
       <div className="w-full max-w-[860px] mx-auto px-6 lg:px-12 flex flex-col gap-10">
 

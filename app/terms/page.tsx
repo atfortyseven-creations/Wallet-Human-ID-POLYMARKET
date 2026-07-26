@@ -42,7 +42,7 @@ export default function TermsPage() {
                     <div className="bg-white/5 backdrop-blur-3xl border border-white/10 p-10 rounded-[2.5rem] shadow-sm flex flex-col justify-between group hover:border-[#c4f344]/30 transition-all duration-500">
                         <div className="w-full h-[180px] bg-black/20 rounded-3xl border border-white/5 mb-8 flex flex-col items-center justify-center overflow-hidden gap-4 text-white/20">
                             <Scale size={48} strokeWidth={1} className="group-hover:text-[#c4f344] transition-colors duration-500" />
-                            <span className="font-mono text-[10px] font-bold uppercase tracking-widest">Self-Custody</span>
+                            <span className="font-mono text-[10px] font-bold uppercase tracking-widest">Self Custody</span>
                         </div>
                         <div>
                             <div className="flex items-center gap-4 mb-4">
@@ -58,7 +58,7 @@ export default function TermsPage() {
                     <div className="bg-white/5 backdrop-blur-3xl border border-white/10 p-10 rounded-[2.5rem] shadow-sm flex flex-col justify-between group hover:border-[#c4f344]/30 transition-all duration-500">
                         <div className="w-full h-[180px] bg-black/20 rounded-3xl border border-white/5 mb-8 flex flex-col items-center justify-center overflow-hidden gap-4 text-white/20">
                             <Database size={48} strokeWidth={1} className="group-hover:text-[#c4f344] transition-colors duration-500" />
-                            <span className="font-mono text-[10px] font-bold uppercase tracking-widest">Client-Side Execution</span>
+                            <span className="font-mono text-[10px] font-bold uppercase tracking-widest">Client Side Execution</span>
                         </div>
                         <div>
                             <div className="flex items-center gap-4 mb-4">
@@ -85,7 +85,7 @@ export default function TermsPage() {
                                     This document constitutes the legal agreement governing your use of the Humanity Ledger interface. By generating zero knowledge proofs, deploying Noir contracts, or engaging with our decentralised sequencing architecture, you agree to these terms.
                                 </p>
                                 <p>
-                                    The platform is a non-custodial, decentralised privacy infrastructure. Access to the protocol is facilitated through open source cryptography. We do not custody, wrap, escrow, or otherwise manage your cryptographic assets or private viewing keys.
+                                    The platform is a non custodial, decentralised privacy infrastructure. Access to the protocol is facilitated through open source cryptography. We do not custody, wrap, escrow, or otherwise manage your cryptographic assets or private viewing keys.
                                 </p>
                                 <p>
                                     Consequently, we are mathematically incapable of reversing, pausing, or altering transactions once they have been signed by your wallet and finalized by the decentralised sequencer network on Ethereum Layer 1.
@@ -101,7 +101,7 @@ export default function TermsPage() {
                             <h2 className="text-[28px] md:text-[36px] font-bold tracking-tight mb-8 text-[#c4f344] uppercase">Limitation of Liability</h2>
                             <div className="space-y-6 text-white/70 text-[18px] leading-[1.8] font-light">
                                 <p>
-                                    The protocol provides privacy-preserving infrastructure using experimental zero knowledge cryptography. While the code is heavily audited, the use of decentralised finance protocols inherently carries significant risk.
+                                    The protocol provides privacy preserving infrastructure using experimental zero knowledge cryptography. While the code is heavily audited, the use of decentralised finance protocols inherently carries significant risk.
                                 </p>
                                 
                                 <div className="p-8 my-10 bg-red-950/20 border border-red-500/30 rounded-3xl shadow-sm relative overflow-hidden group">
@@ -125,7 +125,7 @@ export default function TermsPage() {
                                     The protocol is designed to provide financial privacy for legitimate users. We strictly prohibit the use of our infrastructure for money laundering, terrorism financing, or any activity that violates applicable international sanctions.
                                 </p>
                                 <p>
-                                    While we cannot access your private state, we reserve the right to block IP addresses or client-side identifiers that engage in denial of service attacks against our RPC infrastructure or attempt to exploit the platform's front-end interfaces.
+                                    While we cannot access your private state, we reserve the right to block IP addresses or client side identifiers that engage in denial of service attacks against our RPC infrastructure or attempt to exploit the platform's front-end interfaces.
                                 </p>
                             </div>
                         </div>

@@ -85,7 +85,7 @@ export const Footer = () => {
                     
                     {/* MiCA Warning */}
                     <div className="max-w-4xl mx-auto text-center border border-black/5 bg-black/5 p-4 rounded-lg">
-                        <p className="text-[10px] text-black/60 font-sans leading-relaxed text-justify">
+                        <p className="text-[10px] text-black/60 font-sans leading-relaxed text-left">
                             <strong className="text-black/80">⚠️ Regulatory Risk Warning (MiCA):</strong> The acquisition of the $QDs token entails risks. It is possible to lose the entire capital invested. The $QDs token is not covered by deposit guarantee schemes or investor compensation schemes. This crypto asset has not been verified or approved by the CNMV or any other competent authority. Read the full Whitepaper before operating.
                         </p>
                     </div>

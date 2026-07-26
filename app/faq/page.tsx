@@ -12,7 +12,7 @@ const BG = "url('/rectangle_large_type_2_a9c6cc1e1738c43864683c13c43314d9.jpg')"
 export default function FAQPage() {
   return (
     <div
-      className="min-h-screen flex flex-col text-black"
+      className="flex flex-col text-black"
       style={{
         backgroundColor: '#ffffff',
         backgroundImage: BG,

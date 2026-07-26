@@ -8,6 +8,17 @@ import { getGbAllRpc, getGbAllWss } from './getblock-registry';
 // We intercept it globally to protect the System Terminal.
 if (typeof process !== 'undefined' && !(globalThis as any).__WS_PROTECTED) {
     (globalThis as any).__WS_PROTECTED = true;
+
+    // Silence Next.js uncaughtException stderr writes for aborted network drops and Server Actions
+    const originalStderrWrite = process.stderr.write.bind(process.stderr);
+    process.stderr.write = (chunk: any, encoding?: any, cb?: any) => {
+        const str = chunk?.toString() || '';
+        if (str.includes('ECONNRESET') || str.includes('Failed to find Server Action') || str.includes('Error: aborted')) {
+            return true;
+        }
+        return originalStderrWrite(chunk, encoding, cb);
+    };
+
     process.on('uncaughtException', (err: any) => {
         const msg = err?.message || '';
         const code = err?.code || '';
@@ -29,7 +40,6 @@ if (typeof process !== 'undefined' && !(globalThis as any).__WS_PROTECTED) {
         ];
 
         if (lethalWSPatterns.some(p => msg.includes(p) || code.includes(p))) {
-            console.warn(`[WhaleFortress:Resilience] Swallowed lethal network drop: ${msg} (${code})`);
             return;
         }
         

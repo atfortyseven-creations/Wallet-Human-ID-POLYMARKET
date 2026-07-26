@@ -1,4 +1,4 @@
-﻿import React from "react";
+import React from "react";
 import { notFound } from "next/navigation";
 import { ALL_MODULES } from "@/lib/data/academy-curriculum";
 import { SystemFooter } from "@/components/landing/SystemFooter";
@@ -17,7 +17,7 @@ export default async function AcademyModulePage({ params }: { params: Promise<{ 
     }
 
     return (
-        <div className="min-h-screen bg-transparent text-[#0A0A0A] dark:text-[#FFFFFF] flex flex-col">
+        <div className="bg-transparent text-[#0A0A0A] dark:text-[#FFFFFF] flex flex-col">
             {/* Header / Navigation */}
             <header className="sticky top-0 z-50 px-6 py-4 border-b border-black/5 dark:border-white/5 bg-white/20 dark:bg-black/20 backdrop-blur-3xl flex items-center justify-between">
                 <Link href="/academy" className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-black/50 dark:text-white/50 hover:text-black dark:hover:text-white transition-colors">

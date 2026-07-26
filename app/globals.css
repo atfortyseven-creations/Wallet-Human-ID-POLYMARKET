@@ -24,6 +24,12 @@
   }
 }
 
+/* NO HYPHENS GLOBALLY */
+* {
+  hyphens: none !important;
+  -webkit-hyphens: none !important;
+}
+
 /* 
    IOS 15 / SAFARI WEBKIT UNIVERSAL COMPATIBILITY LAYER
    Resolves blank screen, viewport bugs, and font rendering on iOS 15.x

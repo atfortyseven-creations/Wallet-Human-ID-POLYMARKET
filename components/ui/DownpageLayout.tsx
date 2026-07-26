@@ -94,7 +94,7 @@ export function DownpageLayout({ pageTitle, subtitle, indexTitle, sections }: Do
               </h2>
               <div className="space-y-6">
                 {sec.paragraphs.map((p, j) => (
-                  <p key={j} className="text-[16px] md:text-[18px] leading-[1.8] text-black/80 font-medium text-justify">
+                  <p key={j} className="text-[16px] md:text-[18px] leading-[1.8] text-black/80 font-medium text-left">
                     {p}
                   </p>
                 ))}

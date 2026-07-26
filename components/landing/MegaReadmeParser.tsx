@@ -31,7 +31,7 @@ export const MegaReadmeParser = ({ content }: { content: string }) => {
            return <p key={idx} className="font-bold border border-[#050505]/10 p-4 bg-[#FFFFFF]">{block}</p>;
         }
         return (
-          <p key={idx} className="leading-relaxed text-justify opacity-90 px-4 md:px-0">
+          <p key={idx} className="leading-relaxed text-left opacity-90 px-4 md:px-0">
             {block}
           </p>
         );

@@ -15,7 +15,7 @@ export default function PredictionGridTab() {
   const [activeFilter, setActiveFilter] = useState('All');
 
   return (
-    <div className="w-full bg-transparent text-[#050505] dark:text-[#FFFFFF] p-12 min-h-screen">
+    <div className="w-full bg-transparent text-[#050505] dark:text-[#FFFFFF] p-12">
       <header className="mb-14 border-b border-black/10 pb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <div className="flex items-center gap-3 mb-3">

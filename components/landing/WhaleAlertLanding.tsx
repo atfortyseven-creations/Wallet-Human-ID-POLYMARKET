@@ -328,7 +328,6 @@ export default function WhaleAlertLanding({
                         color: "#2a2a2a",
                         margin: 0,
                         textAlign: "justify",
-                        hyphens: "auto",
                       }}
                     >
                       {para}

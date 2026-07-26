@@ -287,7 +287,7 @@ export function SmartMoneyTracker() {
           </div>
 
           <div className="mt-8 pt-6 border-t border-stone-200/60">
-            <p className="text-[10px] text-stone-400 leading-relaxed text-justify">
+            <p className="text-[10px] text-stone-400 leading-relaxed text-left">
               The "win-rate %" indicates the proportion of historical purchases that generated more than a 20% gain in 30 days or less. Wallet categorizations are assigned by comparing managed volume and on-chain history.
             </p>
           </div>

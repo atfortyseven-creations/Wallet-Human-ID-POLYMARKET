@@ -295,7 +295,7 @@ export function TokenUnlockCalendar() {
                           <AlertTriangle className="w-3.5 h-3.5 text-stone-400" />
                           <span className="text-[10px] uppercase font-bold tracking-widest text-stone-500">Analyst Note</span>
                         </div>
-                        <p className="text-[12px] text-stone-600 leading-relaxed text-justify">{u.notes}</p>
+                        <p className="text-[12px] text-stone-600 leading-relaxed text-left">{u.notes}</p>
                       </div>
 
                       <div className="bg-white border border-stone-200/80 p-5 shadow-sm">

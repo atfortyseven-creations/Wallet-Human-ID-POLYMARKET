@@ -337,7 +337,7 @@ function NewsArticleCard({ a, index, isExpanded, setExpandedId, readTime, volati
                             {/* High Fidelity Sovereign Text Rendering */}
                             <div className="prose prose-sm max-w-none">
                                 {(translatedText ? translatedText : a.summary).split('\n\n').map((paragraph: string, i: number) => (
-                                    <p key={i} className="font-serif text-[15px] leading-relaxed text-[#222222]  text-justify mb-4 last:mb-0">
+                                    <p key={i} className="font-serif text-[15px] leading-relaxed text-[#222222] text-left mb-4 last:mb-0">
                                         {paragraph}
                                     </p>
                                 ))}
