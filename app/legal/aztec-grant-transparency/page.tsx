@@ -4,7 +4,7 @@ import LegalDocLayout, { TocItem } from '@/components/layout/LegalDocLayout';
 
 const TOC: TocItem[] = [
   { id: 'statement-of-alignment', label: '1. Statement of Alignment with Aztec' },
-  { id: 'current-status-june-2026', label: '2. Current Status (As of June 2026)' },
+  { id: 'current-status-june-2026', label: '2. Current Status (As of July 2026)' },
   { id: 'grant-utilization', label: '3. Grant Utilization for Scaling' },
   { id: 'final-declaration', label: '4. Final Declaration to Aztec' }
 ];
@@ -14,7 +14,7 @@ export default function AztecGrantTransparencyPage() {
     <LegalDocLayout
       title="Aztec Grant Alignment & Scaling Report"
       subtitle="A transparent breakdown of Humanity Ledger S.L.'s commitments, grant allocations, and milestone deliverables for the Aztec Network grant."
-      lastUpdated="22 June 2026"
+      lastUpdated="26 July 2026"
       category="Transparency & Scaling"
       toc={TOC}
       backHref="/legal/compliance"
@@ -37,7 +37,7 @@ export default function AztecGrantTransparencyPage() {
         {/* 2 */}
         <section id="current-status-june-2026">
           <h2 className="text-[1.1rem] font-bold uppercase tracking-[0.08em] text-black mb-6 pb-3 border-b border-black/10">
-            2. Current Status (As of June 2026)
+            2. Current Status (As of July 2026)
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>

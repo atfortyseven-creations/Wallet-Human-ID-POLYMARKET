@@ -70,7 +70,7 @@ const NODES: RoadmapNode[] = [
     title: 'SIWE Mobile Auth',
     status: 'live',
     quarter: 'Completed',
-    description: 'Sign-In with Ethereum with full iOS/Android support. Fixed critical MetaMask App-Switch Loop and iOS/Android WebKit TDZ crash (React Error 310) — fully stable as of July 20, 2026.',
+    description: 'Sign-In with Ethereum with full iOS/Android support. Fixed critical MetaMask App-Switch Loop and iOS/Android WebKit TDZ crash (React Error 310) — fully stable as of July 26, 2026.',
     x: C2, y: 60,
   },
   {

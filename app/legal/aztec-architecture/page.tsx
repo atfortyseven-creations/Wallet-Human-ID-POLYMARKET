@@ -16,7 +16,7 @@ export default function AztecArchitecturePage() {
     <LegalDocLayout
       title="Aztec Network Technical Attestation Architecture"
       subtitle="Detailed technical-legal specification of the $QDs token and Whale Network integration on Aztec Mainnet. This document outlines how zero knowledge proofs (ZKPs), the Private Execution Environment (PXE), and native Noir smart contracts enable absolute financial privacy while guaranteeing full AML/CFT and MiCA regulatory attestation."
-      lastUpdated="6 June 2026 — Version 1.0"
+      lastUpdated="26 July 2026 — Version 1.0"
       category="Technical & Regulatory Architecture"
       toc={TOC}
       backHref="/legal/compliance"

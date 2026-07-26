@@ -1,4 +1,4 @@
-// Updated: July 21, 2026 — Aligned with Aztec Network V5 Testnet reality.
+// Updated: July 26, 2026 — Aligned with Aztec Network V5 Testnet reality.
 
 export type PrivacyArchitectureSection = {
   id: string;
@@ -15,7 +15,7 @@ export const PRIVACY_ARCHITECTURE_SECTIONS: PrivacyArchitectureSection[] = [
     id: 'overview',
     title: 'System Overview — What Humanity Ledger actually does',
     paragraphs: [
-      'Updated July 21, 2026. Humanity Ledger is a web application that lets participants monitor on chain capital flows, communicate with end to end encryption, and record verifiable product provenance — all anchored to the Aztec Network V5 testnet.',
+      'Updated July 26, 2026. Humanity Ledger is a web application that lets participants monitor on chain capital flows, communicate with end to end encryption, and record verifiable product provenance — all anchored to the Aztec Network V5 testnet.',
       'The application is organized into three concentric layers: (1) the Client layer — a Next.js app running in your browser that handles all private computation locally; (2) the Platform API layer — our backend that handles authentication, session management, and routing, but never touches private keys; (3) the Aztec Network — the ZK rollup where all QD balances, provenance records, and identity proofs live as private encrypted state.',
       'The core principle is simple: anything that must stay secret never leaves your device. Our servers only see what they need to identify you — your wallet address — and nothing else.',
     ],

@@ -28,7 +28,7 @@ export default function LegalPage() {
     <LegalDocLayout
       title="Privacy Policy"
       subtitle="This policy sets forth the legal and attestation rules governing the Whale Network ecosystem."
-      lastUpdated="22 July 2026"
+      lastUpdated="26 July 2026"
       category="Legal"
       toc={TOC}
       backHref="/"
@@ -1116,7 +1116,7 @@ export default function LegalPage() {
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Response period:</strong> 30 business days from receipt of the communication</span></li>
             </ul>
             <p>
-              <em>© 2026 Humanity Ledger S.L., All Rights Reserved.</em> <em>Last Updated: 22 July 2026</em>
+              <em>© 2026 Humanity Ledger S.L., All Rights Reserved.</em> <em>Last Updated: 26 July 2026</em>
             </p>
           </div>
         </section>

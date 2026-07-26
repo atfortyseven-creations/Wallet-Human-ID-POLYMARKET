@@ -113,7 +113,7 @@ export const WHITEPAPER_SECTIONS: AztecDocSection[] = [
     title: '9. Development Status',
     paragraphs: [
       'The protocol development focuses on verified foundations built directly on the Aztec Network.',
-      'Current status (22 July 2026): The frontend platform (humanidfi.com) is live and connected to the Aztec testnet (v5.testnet.rpc.aztec-labs.com). The Noir smart contracts, specifically QDsToken.nr as a native Aztec token and the mint_private_license KYC circuit, are fully specified and in active development. The legal and regulatory framework (25-document MiCA suite) is fully drafted and in the formal process of being executed.',
+      'Current status (26 July 2026): The frontend platform (humanidfi.com) is live and connected to the Aztec testnet (v5.testnet.rpc.aztec-labs.com). The Noir smart contracts, specifically QDsToken.nr as a native Aztec token and the mint_private_license KYC circuit, are fully specified and in active development. The legal and regulatory framework (25-document MiCA suite) is fully drafted and in the formal process of being executed.',
     ],
   },
   {

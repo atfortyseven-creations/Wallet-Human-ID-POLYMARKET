@@ -479,7 +479,7 @@ export default function QDsPage() {
       <footer className="w-full bg-white border-t border-black/[0.05] py-10 px-6">
         <div className="max-w-[960px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <span className="font-mono text-[9px] font-black uppercase tracking-[0.28em] text-black/25">
-            © 2026 Humanity Ledger · QDs Protocol · Updated July 21, 2026
+            © 2026 Humanity Ledger · QDs Protocol · Updated July 26, 2026
           </span>
           <div className="flex items-center gap-6">
             {[

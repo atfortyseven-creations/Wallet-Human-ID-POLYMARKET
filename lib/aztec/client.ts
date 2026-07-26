@@ -27,7 +27,7 @@ export const ROLLUP_ADDRESS      = '0xd73a91bdcf6891c7642f3e460036e1ef2cc23178';
 export const REGISTRY_ADDRESS    = '0xa0bfb1b494fb49041e5c6e8c2c1be09cd171c6ba';
 export const FEE_JUICE_ADDRESS   = '0x762c132040fda6183066fa3b14d985ee55aa3c18';
 
-// SponsoredFPC — canonical address from docs.aztec.network/networks (V5.0.1 official, July 21 2026)
+// SponsoredFPC — canonical address from docs.aztec.network/networks (V5.0.1 official, July 26, 2026)
 // Source: https://docs.aztec.network/developers/getting_started_on_testnet
 export const PRIMARY_FPC_ADDRESS =
   process.env.SPONSORED_FPC_ADDRESS ||

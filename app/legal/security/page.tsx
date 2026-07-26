@@ -16,7 +16,7 @@ export default function LegalPage() {
     <LegalDocLayout
       title="Security Architecture"
       subtitle="This policy sets forth the legal and attestation rules governing the Whale Network ecosystem."
-      lastUpdated="June 2026"
+      lastUpdated="July 2026"
       category="Legal & Security"
       toc={TOC}
       backHref="/"
@@ -31,7 +31,7 @@ export default function LegalPage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              <strong className="text-black font-semibold">Version:</strong> 1.0 | <strong className="text-black font-semibold">Date:</strong> 6 June 2026 | <strong className="text-black font-semibold">Classification:</strong> Confidential / Internal Use Only
+              <strong className="text-black font-semibold">Version:</strong> 1.0 | <strong className="text-black font-semibold">Date:</strong> 26 July 2026 | <strong className="text-black font-semibold">Classification:</strong> Confidential / Internal Use Only
             </p>
           </div>
         </section>

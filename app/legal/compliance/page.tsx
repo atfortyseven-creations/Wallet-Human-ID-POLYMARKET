@@ -95,7 +95,7 @@ export default function CompliancePage() {
     <LegalDocLayout
       title="Regulatory Attestation Documentation"
       subtitle="This unified attestation hub centralizes all regulatory documents, audits, risk disclaimers, and procedures relevant to the Humanity Ledger S.L. ecosystem operating under MiCA and related frameworks."
-      lastUpdated="22 July 2026 - Version 3.1"
+      lastUpdated="26 July 2026 - Version 3.1"
       category="Legal & Regulatory"
       toc={TOC}
       backHref="/"
@@ -121,7 +121,7 @@ export default function CompliancePage() {
                   <tr><td className="px-4 py-2.5 border-r border-black/10 font-semibold text-black">MiCA Classification</td><td className="px-4 py-2.5">Utility Token, Article 3(1)(5), Regulation (EU) 2023/1114</td></tr>
                   <tr><td className="px-4 py-2.5 border-r border-black/10 font-semibold text-black">Network</td><td className="px-4 py-2.5">Aztec Network Mainnet, Noir native token (no Ethereum L1 contract; no bridge). <em className="text-black/60">Note: Multi-chain RPCs (Ethereum, Polygon, Arbitrum, etc.) are used exclusively for read-only tracking in the Private Portfolio feature.</em></td></tr>
                   <tr><td className="px-4 py-2.5 border-r border-black/10 font-semibold text-black">Maximum Supply (Hard Cap)</td><td className="px-4 py-2.5"><strong className="text-black">210,000,000 QDs, Technically immutable (enforced by Noir contract)</strong></td></tr>
-                  <tr><td className="px-4 py-2.5 border-r border-black/10 font-semibold text-black">AML Supervisor</td><td className="px-4 py-2.5">SEPBLAC, Registration in progress (Form F22, June 2026)</td></tr>
+                  <tr><td className="px-4 py-2.5 border-r border-black/10 font-semibold text-black">AML Supervisor</td><td className="px-4 py-2.5">SEPBLAC, Registration in progress (Form F22, July 2026)</td></tr>
                   <tr><td className="px-4 py-2.5 border-r border-black/10 font-semibold text-black">KYC Provider</td><td className="px-4 py-2.5">Sumsub (biometric) + ZK credential on-chain via <code className="text-[12px] bg-black/5 px-1 rounded">mint_private_license</code> Noir circuit</td></tr>
                   <tr><td className="px-4 py-2.5 border-r border-black/10 font-semibold text-black">AML Attestation Mechanism</td><td className="px-4 py-2.5">Mandatory viewing keys, selective disclosure to SEPBLAC/CNMV under lawful order (Travel Rule, Reg. (EU) 2023/1113)</td></tr>
                   <tr><td className="px-4 py-2.5 border-r border-black/10 font-semibold text-black">CASP Status</td><td className="px-4 py-2.5">NOT a CASP, non-custodial protocol (Recital 22, MiCA); issuer only under Title II</td></tr>
@@ -470,7 +470,7 @@ export default function CompliancePage() {
 
             <p className="text-[12px] text-black/35 font-mono pt-2">
               © 2026 Humanity Ledger S.L. , Sagunto, Province of Valencia, Kingdom of Spain.
-              Document Reference: IDX-LEGAL-001-v3.1 | Version 3.1 | Last updated: 22 July 2026.
+              Document Reference: IDX-LEGAL-001-v3.1 | Version 3.1 | Last updated: 26 July 2026.
               This page does not constitute legal advice. All regulatory filings should be reviewed against the latest CNMV, SEPBLAC, and ESMA guidance prior to submission.
             </p>
           </div>

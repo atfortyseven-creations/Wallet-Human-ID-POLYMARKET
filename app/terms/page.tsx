@@ -31,7 +31,7 @@ export default function TermsPage() {
                     </motion.p>
                     
                     <motion.p variants={FADE_UP} className="font-mono text-[11px] uppercase tracking-widest font-bold text-white/30">
-                        Effective Date: July 20, 2026
+                        Effective Date: July 26, 2026
                     </motion.p>
                 </motion.div>
 

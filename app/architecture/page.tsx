@@ -7,7 +7,7 @@ export default function ArchitecturePage() {
         <DocLayout
             title="System Architecture Protocol"
             description="A formal technical specification of the Humanity Ledger infrastructure, detailing cryptographic primitives, state transitions, and privacy-preserving consensus mechanisms."
-            lastUpdated="June 22, 2026"
+            lastUpdated="July 26, 2026"
             category="Technical"
         >
             <div className="space-y-16 text-[#050505]">
