@@ -1041,38 +1041,58 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     }
   };
 
-  // ─── [ARCH-FIX] answerCall: Receiver accepts incoming call ─────────────────
-  // NEW ARCHITECTURE: The pending PeerJS connection from peer.on('call') is stored
-  // in pendingConnectionRef. We answer it DIRECTLY here with the local stream.
-  // No XMTP round-trip required. The call activates in sub-100ms.
+  // ─── answerCall: Receiver accepts incoming call ──────────────────────────────
+  // ANDROID FIX: Called directly from the "Answer" onClick — preserves user-gesture
+  // context required by Android Chrome for getUserMedia.
   const answerCall = async () => {
     stopRingtone();
     if (callState !== 'ringing') return;
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      toast.error('Your browser does not support media access. Please use Chrome or Firefox.');
+      toast.error('Your browser does not support media access. Please use Chrome.');
       return;
     }
+
+    // [ANDROID GUARD] Pre-check Permissions API before calling getUserMedia.
+    // This detects the 'denied' state and shows a clear, actionable message.
+    try {
+      if (navigator.permissions) {
+        const micStatus = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+        if (micStatus.state === 'denied') {
+          toast.error(
+            '\uD83C\uDFA4 Microphone blocked. Tap the lock \uD83D\uDD12 in Chrome\'s address bar \u2192 set Microphone to "Allow" \u2192 refresh.',
+            { duration: 8000 }
+          );
+          setCallState('idle');
+          return;
+        }
+      }
+    } catch { /* Permissions API unavailable — proceed */ }
+
+    // [AUDIO UNLOCK] Android/iOS require a user-gesture to unlock AudioContext.
+    // The "Answer" button click IS that gesture — unlock here immediately.
     let stream: MediaStream | null = null;
     try {
       const isVideo = callType === 'video';
-      const constraints: MediaStreamConstraints = {
-        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
-        video: isVideo ? { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30, max: 60 }, facingMode: 'user' } : false,
-      };
+      // ── TIER 1: Full quality constraints ─────────────────────────────────
       try {
-        stream = await navigator.mediaDevices.getUserMedia(constraints);
-      } catch (initialErr) {
-        console.warn('[Call] Initial getUserMedia failed, trying fallback constraints...', initialErr);
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+          video: isVideo ? { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30, max: 60 }, facingMode: 'user' } : false,
+        });
+      } catch (t1Err) {
+        console.warn('[answerCall] Tier-1 getUserMedia failed:', t1Err);
+        // ── TIER 2: Simplified ─────────────────────────────────────────
         try {
           stream = await navigator.mediaDevices.getUserMedia({
             audio: true,
-            video: isVideo ? { facingMode: 'user' } : false
+            video: isVideo ? { facingMode: 'user' } : false,
           });
-        } catch (fallbackErr) {
-          console.warn('[Call] Second getUserMedia failed, trying absolute minimal constraints...', fallbackErr);
+        } catch (t2Err) {
+          console.warn('[answerCall] Tier-2 getUserMedia failed:', t2Err);
+          // ── TIER 3: Absolute minimal ─────────────────────────────────
           stream = await navigator.mediaDevices.getUserMedia({
             audio: true,
-            video: isVideo ? true : false
+            video: isVideo,
           });
         }
       }
