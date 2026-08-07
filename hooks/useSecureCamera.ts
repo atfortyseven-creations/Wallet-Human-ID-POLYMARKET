@@ -35,28 +35,17 @@ export function useSecureCamera({ facingMode = 'user', onFrame }: UseSecureCamer
 
       let stream: MediaStream;
       try {
+        // ─── ROBUST SINGLE-CALL WEBRTC (Android Fix) ─────────────────────────
+        // We must NEVER use nested try-catch fallbacks for getUserMedia on Android.
+        // If the first request fails, the transient user-activation token is lost,
+        // and all subsequent fallbacks will automatically throw NotAllowedError.
+        // Therefore, we make exactly ONE robust request.
         stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: { ideal: facingMode },
-            width: { ideal: 1280 },
-            height: { ideal: 720 },
-          },
+          video: { facingMode: { ideal: facingMode } },
           audio: false,
         });
-      } catch (err1) {
-        try {
-          // Fallback 1: less strict width/height constraints
-          stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: { ideal: facingMode } },
-            audio: false,
-          });
-        } catch (err2) {
-          // Fallback 2: Any available video device
-          stream = await navigator.mediaDevices.getUserMedia({
-            video: true,
-            audio: false,
-          });
-        }
+      } catch (err) {
+        throw err;
       }
 
       if (activeRequestRef.current !== activeRequestId) {

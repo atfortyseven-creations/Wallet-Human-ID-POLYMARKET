@@ -914,39 +914,15 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
     let stream: MediaStream | null = null;
     try {
-      // ── TIER 1: Full quality constraints ────────────────────────────────────
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
-          video: type === 'video' ? { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30, max: 60 }, facingMode: 'user' } : false,
-        });
-      } catch (t1Err) {
-        console.warn('[Call] Tier-1 getUserMedia failed:', t1Err);
-        // ── TIER 2: Simplified constraints (drops facingMode strict params) ───
-        try {
-          stream = await navigator.mediaDevices.getUserMedia({
-            audio: true,
-            video: type === 'video' ? { facingMode: 'user' } : false,
-          });
-        } catch (t2Err) {
-          console.warn('[Call] Tier-2 getUserMedia failed:', t2Err);
-          // ── TIER 3: Absolute minimal — any audio/video device ────────────────
-          try {
-            stream = await navigator.mediaDevices.getUserMedia({
-              audio: true,
-              video: type === 'video',
-            });
-          } catch (t3Err) {
-            console.warn('[Call] Tier-3 getUserMedia failed:', t3Err);
-            // ── TIER 4: AUDIO ONLY (If camera is totally blocked/broken) ───────
-            stream = await navigator.mediaDevices.getUserMedia({
-              audio: true,
-              video: false,
-            });
-            if (type === 'video') toast.error('Camera blocked. Falling back to Audio-Only call.', { duration: 5000 });
-          }
-        }
-      }
+      // ─── ROBUST SINGLE-CALL WEBRTC (Android Fix) ─────────────────────────
+      // We must NEVER use nested try-catch fallbacks for getUserMedia on Android.
+      // If the first request fails, the transient user-activation token is lost,
+      // and all subsequent fallbacks will automatically throw NotAllowedError.
+      // Therefore, we make exactly ONE robust request with minimal safe constraints.
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: type === 'video' ? { facingMode: 'user' } : false,
+      });
 
       // Prevent state inconsistency if unmounted while waiting for permissions
       if (!isComponentMountedRef.current) {
@@ -1020,40 +996,15 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
     let stream: MediaStream | null = null;
     try {
-      const isVideo = callType === 'video';
-      // ── TIER 1: Full quality constraints ─────────────────────────────────
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
-          video: isVideo ? { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30, max: 60 }, facingMode: 'user' } : false,
-        });
-      } catch (t1Err) {
-        console.warn('[answerCall] Tier-1 getUserMedia failed:', t1Err);
-        // ── TIER 2: Simplified ─────────────────────────────────────────
-        try {
-          stream = await navigator.mediaDevices.getUserMedia({
-            audio: true,
-            video: isVideo ? { facingMode: 'user' } : false,
-          });
-        } catch (t2Err) {
-          console.warn('[answerCall] Tier-2 getUserMedia failed:', t2Err);
-          // ── TIER 3: Absolute minimal ─────────────────────────────────
-          try {
-            stream = await navigator.mediaDevices.getUserMedia({
-              audio: true,
-              video: isVideo,
-            });
-          } catch (t3Err) {
-            console.warn('[answerCall] Tier-3 getUserMedia failed:', t3Err);
-            // ── TIER 4: AUDIO ONLY (If camera is totally blocked/broken) ─────
-            stream = await navigator.mediaDevices.getUserMedia({
-              audio: true,
-              video: false,
-            });
-            if (isVideo) toast.error('Camera blocked. Falling back to Audio-Only call.', { duration: 5000 });
-          }
-        }
-      }
+      // ─── ROBUST SINGLE-CALL WEBRTC (Android Fix) ─────────────────────────
+      // We must NEVER use nested try-catch fallbacks for getUserMedia on Android.
+      // If the first request fails, the transient user-activation token is lost,
+      // and all subsequent fallbacks will automatically throw NotAllowedError.
+      // Therefore, we make exactly ONE robust request with minimal safe constraints.
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: callType === 'video' ? { facingMode: 'user' } : false,
+      });
       // Prevent state inconsistency if unmounted while waiting for permissions
       if (!isComponentMountedRef.current) {
         stream.getTracks().forEach(t => t.stop());
