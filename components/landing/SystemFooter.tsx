@@ -48,12 +48,12 @@ const NAV_COLUMNS = [
     ]
   },
   {
-    label: "REGULATORY",
+    label: "LEGAL",
     links: [
-      { label: "Attestation Docs", href: "/legal/attestation" },
-      { label: "Aztec Transparency", href: "/legal/aztec-grant-transparency" },
       { label: "Terms & Conditions", href: "/legal/terms" },
       { label: "Privacy Policy", href: "/legal/privacy" },
+      { label: "Security", href: "/legal/security" },
+      { label: "GitHub", href: "https://github.com/humanityledger/Humanity-Ledger", isExternal: true },
     ]
   }
 ];
@@ -112,8 +112,8 @@ export function SystemFooter() {
             <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-black/20 border border-black/10 rounded px-2 py-1">
               Aztec Native · MiCA Compliant
             </span>
-            <Link href="/legal/compliance" className="text-[11px] font-bold uppercase tracking-wider text-black/30 hover:text-black transition-colors">
-              Legal &amp; Attestation
+            <Link href="/legal/terms" className="text-[11px] font-bold uppercase tracking-wider text-black/30 hover:text-black transition-colors">
+              Terms &amp; Attestation
             </Link>
           </div>
         </div>

@@ -65,14 +65,14 @@ export const Footer = () => {
                             </div>
                         </div>
 
-                        {/* REGULATORY */}
+                        {/* LEGAL */}
                         <div className="flex flex-col gap-8">
-                            <h4 className="text-[11px] font-sans font-black uppercase tracking-[0.1em] text-black">REGULATORY</h4>
+                            <h4 className="text-[11px] font-sans font-black uppercase tracking-[0.1em] text-black">LEGAL</h4>
                             <div className="flex flex-col gap-4">
-                                <FooterLink href="/legal/compliance">Attestation Docs</FooterLink>
-                                <FooterLink href="/legal/aztec-grant-transparency">Aztec Transparency</FooterLink>
                                 <FooterLink href="/legal/terms">Terms & Conditions</FooterLink>
                                 <FooterLink href="/legal/privacy">Privacy Policy</FooterLink>
+                                <FooterLink href="/legal/security">Security</FooterLink>
+                                <FooterLink href="https://github.com/humanityledger/Humanity-Ledger" external>GitHub</FooterLink>
                             </div>
                         </div>
 
@@ -83,10 +83,10 @@ export const Footer = () => {
                 <div className="pt-8 flex flex-col items-center gap-6">
                     <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-black/10 to-transparent" />
                     
-                    {/* MiCA Warning */}
+                    {/* Technical Disclaimer */}
                     <div className="max-w-4xl mx-auto text-center border border-black/5 bg-black/5 p-4 rounded-lg">
                         <p className="text-[10px] text-black/60 font-sans leading-relaxed text-left">
-                            <strong className="text-black/80">⚠️ Regulatory Risk Warning (MiCA):</strong> The acquisition of the $QDs token entails risks. It is possible to lose the entire capital invested. The $QDs token is not covered by deposit guarantee schemes or investor compensation schemes. This crypto asset has not been verified or approved by the CNMV or any other competent authority. Read the full Whitepaper before operating.
+                            <strong className="text-black/80">⚠️ Alpha Testnet:</strong> WhaleChat operates on the Aztec Alpha V5 Testnet. This is experimental software. Do not use with real funds. The protocol is in active development.
                         </p>
                     </div>
 

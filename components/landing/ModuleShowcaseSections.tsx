@@ -578,7 +578,7 @@ function LegalComplianceShowcase() {
                 Whale Network is architected from the ground up to satisfy the most demanding legal and compliance frameworks globally — from EU GDPR and MiCA to US SEC guidance and FATF travel rules. Our compliance layer uses zero knowledge selective disclosure to satisfy auditors and regulators without public exposure of private data.
               </SectionBody>
               <motion.div variants={FADE_UP} className="flex flex-wrap items-center gap-4">
-                <NavButton href="/legal/compliance" label="Read Compliance" />
+                <NavButton href="/legal/terms" label="Read Terms" />
                 <NavButton href="/legal/privacy" label="Privacy Policy" variant="outline" />
                 <NavButton href="/legal/security" label="Security" variant="outline" />
               </motion.div>

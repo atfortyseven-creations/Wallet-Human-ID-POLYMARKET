@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `fix(ui/layout)`: Resolved infinite layout shift / scrollbar jitter on desktop landing page
 - `fix(ui/layout)`: Eliminated missing asset black voids; all images now use `loading="lazy"` with proper aspect ratios
 - `fix(ui/layout)`: `globals.css` — `overflow-x: hidden` on `html` prevents Windows scrollbar phantom overflow
-- `feat(ui/footer)`: `SystemFooter.tsx` — clean white footer with PRODUCT / DEVELOPERS / COMPANY / REGULATORY nav columns, GDPR statement, MiCA compliance badge
+- `feat(ui/footer)`: `SystemFooter.tsx` — clean white footer with PRODUCT / DEVELOPERS / COMPANY / LEGAL nav columns
 - `feat(ui/wallpaper)`: `UniversalEliteWallpaper` — `fixed inset-0` white background layer, dark mode overlay support, `/connect` bypass
 
 #### Mobile Wallet Connection — iOS & Android

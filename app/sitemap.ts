@@ -16,13 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/developers/api-docs', priority: 0.9, frequency: 'weekly' },
     { path: '/roadmap', priority: 0.9, frequency: 'weekly' },
     { path: '/whitepaper', priority: 0.9, frequency: 'monthly' },
-    { path: '/tokenomics', priority: 0.8, frequency: 'monthly' },
-
-    // Legal & Regulatory — indexed for CNMV / Aztec evaluation
-    { path: '/legal/compliance', priority: 0.9, frequency: 'weekly' },
-    { path: '/legal/aztec-architecture', priority: 0.9, frequency: 'weekly' },
-    { path: '/legal/aztec-grant-transparency', priority: 0.9, frequency: 'weekly' },
-    { path: '/legal/legal-notice', priority: 0.7, frequency: 'monthly' },
+    // Legal
     { path: '/legal/privacy', priority: 0.7, frequency: 'monthly' },
     { path: '/legal/terms', priority: 0.7, frequency: 'monthly' },
     { path: '/legal/cookies', priority: 0.6, frequency: 'monthly' },

@@ -26,12 +26,10 @@ export function TerminalSettingsPanel() {
   ];
 
   const LEGAL_LINKS = [
-    { href: '/legal/compliance',              icon: Shield,   label: 'Regulatory Attestation Portal', desc: '27-document MiCA regulatory suite — full EU attestation documentation.' },
-    { href: '/legal/aztec-grant-transparency', icon: Scale,    label: 'Aztec Grant Transparency',       desc: 'Sincere current status report and grant utilization roadmap for Aztec Network.' },
-    { href: '/legal/aztec-architecture',       icon: Lock,     label: 'Aztec Technical Architecture',   desc: 'ZK-Rollup architecture, Noir circuits, PXE and viewing key attestation.' },
-    { href: '/legal/privacy',                  icon: FileText, label: 'Privacy Policy (GDPR)',          desc: 'Data processing, right of erasure and ZKP anonymization protocol.' },
-    { href: '/legal/terms',                    icon: FileText, label: 'Terms & Conditions',              desc: 'Platform terms, MiCA utility token classification and CASP exemption.' },
-    { href: '/legal/security',                 icon: Globe,    label: 'Security Architecture',          desc: 'Noir circuit audit status, key management and incident response policy.' },
+    { href: '/legal/privacy',   icon: FileText, label: 'Privacy Policy (GDPR)',  desc: 'Data processing, right of erasure and ZKP anonymization protocol.' },
+    { href: '/legal/terms',     icon: FileText, label: 'Terms & Conditions',      desc: 'Platform terms and utility token classification.' },
+    { href: '/legal/security',  icon: Globe,    label: 'Security Architecture',   desc: 'Noir circuit audit status, key management and incident response policy.' },
+    { href: 'https://github.com/humanityledger/Humanity-Ledger', icon: Lock, label: 'GitHub Repository', desc: 'Open source code — WhaleChat P2P protocol on Aztec V5.' },
   ];
 
   const handleTotalDisconnect = async () => {
