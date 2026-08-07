@@ -903,24 +903,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // ANDROID FIX: This function MUST be called directly from a user-gesture handler
   // (onClick). Android Chrome enforces that getUserMedia() is only callable from
   // a trusted user-gesture context. Any async indirection breaks this.
-  // We also pre-check the Permissions API to detect blocked state before trying.
+  // CRITICAL: We do NOT await anything before getUserMedia, otherwise
+  // Android WebViews will strip the transient user-activation token.
   const startCall = async (type: 'audio' | 'video') => {
     if (!peerInstance || !activePeer) return;
-
-    // [ANDROID GUARD] Check Permissions API first to give a clear error
-    // instead of a cryptic NotAllowedError from getUserMedia.
-    try {
-      if (navigator.permissions) {
-        const micStatus = await navigator.permissions.query({ name: 'microphone' as PermissionName });
-        if (micStatus.state === 'denied') {
-          toast.error(
-            '🎙️ Microphone blocked. Open Chrome → tap the lock icon (🔒) in the address bar → set Microphone to "Allow", then refresh.',
-            { duration: 8000 }
-          );
-          return;
-        }
-      }
-    } catch { /* Permissions API not available — proceed anyway */ }
 
     // [ARCH-FIX] Derive receiver PeerID deterministically — no XMTP round-trip needed
     const receiverPeerId = derivePeerId(activePeer);
@@ -1019,24 +1005,19 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       return;
     }
 
-    // [ANDROID GUARD] Pre-check Permissions API before calling getUserMedia.
-    // This detects the 'denied' state and shows a clear, actionable message.
-    try {
-      if (navigator.permissions) {
-        const micStatus = await navigator.permissions.query({ name: 'microphone' as PermissionName });
-        if (micStatus.state === 'denied') {
-          toast.error(
-            '\uD83C\uDFA4 Microphone blocked. Tap the lock \uD83D\uDD12 in Chrome\'s address bar \u2192 set Microphone to "Allow" \u2192 refresh.',
-            { duration: 8000 }
-          );
-          setCallState('idle');
-          return;
-        }
-      }
-    } catch { /* Permissions API unavailable — proceed */ }
-
     // [AUDIO UNLOCK] Android/iOS require a user-gesture to unlock AudioContext.
-    // The "Answer" button click IS that gesture — unlock here immediately.
+    // CRITICAL: Do NOT await unlockCtx.resume(). If we yield the event loop here,
+    // Android will strip the transient user-activation token and block getUserMedia.
+    try {
+      const unlockCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const silentBuf = unlockCtx.createBuffer(1, 1, 22050);
+      const src = unlockCtx.createBufferSource();
+      src.buffer = silentBuf;
+      src.connect(unlockCtx.destination);
+      src.start(0);
+      unlockCtx.resume().then(() => unlockCtx.close()).catch(() => {});
+    } catch { /* ignore — best effort */ }
+
     let stream: MediaStream | null = null;
     try {
       const isVideo = callType === 'video';
@@ -1147,6 +1128,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       if (stream) { try { stream.getTracks().forEach(t => t.stop()); } catch {} }
       setLocalStream(null);
       setCallState('idle');
+      
+      // Tell the caller immediately that we couldn't answer due to hardware/permission failure
+      executeSend('__CALL_DECLINE__').catch(() => {});
+
       const errName = e?.name || '';
       if (errName === 'NotAllowedError' || errName === 'PermissionDeniedError') {
         toast.error('Mic/Camera access denied. If allowed in OS, check Chrome Site Settings or open outside of in-app browsers (Telegram/Twitter).', { duration: 6000 });
