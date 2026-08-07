@@ -930,10 +930,18 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         stream = await navigator.mediaDevices.getUserMedia(constraints);
       } catch (initialErr) {
         console.warn('[Call] Initial getUserMedia failed, trying fallback constraints...', initialErr);
-        stream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-          video: type === 'video' ? { facingMode: 'user' } : false
-        });
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: type === 'video' ? { facingMode: 'user' } : false
+          });
+        } catch (fallbackErr) {
+          console.warn('[Call] Second getUserMedia failed, trying absolute minimal constraints...', fallbackErr);
+          stream = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: type === 'video' ? true : false
+          });
+        }
       }
       // Prevent state inconsistency if unmounted while waiting for permissions
       if (!isComponentMountedRef.current) {
@@ -1030,10 +1038,18 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         stream = await navigator.mediaDevices.getUserMedia(constraints);
       } catch (initialErr) {
         console.warn('[Call] Initial getUserMedia failed, trying fallback constraints...', initialErr);
-        stream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-          video: isVideo ? { facingMode: 'user' } : false
-        });
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: isVideo ? { facingMode: 'user' } : false
+          });
+        } catch (fallbackErr) {
+          console.warn('[Call] Second getUserMedia failed, trying absolute minimal constraints...', fallbackErr);
+          stream = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+            video: isVideo ? true : false
+          });
+        }
       }
       // Prevent state inconsistency if unmounted while waiting for permissions
       if (!isComponentMountedRef.current) {
