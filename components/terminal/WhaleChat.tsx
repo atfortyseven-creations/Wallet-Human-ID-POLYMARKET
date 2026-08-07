@@ -796,15 +796,23 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     if (content.startsWith('__CALL_OFFER__:')) {
       processedSignalIds.current.add(lastMsg.id);
       const parts = content.split(':');
+      const callerPeerId = parts[1];
       const offerCallType: 'audio'|'video' = (parts[2] as any) || 'audio';
-      // Only update state if PeerJS has not already put us in 'ringing' (which is faster)
+      
+      // ─── REVERSE-DIAL ARCHITECTURE ─────────────────────────────────────────
+      // We must save the Caller's dynamic PeerID so that when the user clicks
+      // "Answer", we know who to initiate the WebRTC connection back to.
+      if (callerPeerId) {
+        remotePeerIdRef.current = callerPeerId;
+      }
+
       if (callStateRef.current === 'idle') {
         setCallType(offerCallType);
         isCallerRef.current = false;
         setCallState('ringing');
         startRingtone();
       }
-      console.log('[WhaleChat:Signal] CALL_OFFER (ring notification) received, type:', offerCallType);
+      console.log('[WhaleChat:Signal] CALL_OFFER received, callerPeerId:', callerPeerId, 'type:', offerCallType);
     }
 
     // ── CALL_ANSWER signal from receiver (kept for compatibility / fallback logging) ─
