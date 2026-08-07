@@ -916,33 +916,61 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     if (myVideoRef.current) myVideoRef.current.srcObject = null;
     if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
     if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = null; }
-        // [ARCH-FIX] Derive receiver PeerID deterministically — no XMTP round-trip needed
+  }, []);
+
+  // ─── startCall: Initiates an outgoing call ───────────────────────────────────
+  // ANDROID FIX: This function MUST be called directly from a user-gesture handler
+  // (onClick). Android Chrome enforces that getUserMedia() is only callable from
+  // a trusted user-gesture context. Any async indirection breaks this.
+  // We also pre-check the Permissions API to detect blocked state before trying.
+  const startCall = async (type: 'audio' | 'video') => {
+    if (!peerInstance || !activePeer) return;
+
+    // [ANDROID GUARD] Check Permissions API first to give a clear error
+    // instead of a cryptic NotAllowedError from getUserMedia.
+    try {
+      if (navigator.permissions) {
+        const micStatus = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+        if (micStatus.state === 'denied') {
+          toast.error(
+            '🎙️ Microphone blocked. Open Chrome → tap the lock icon (🔒) in the address bar → set Microphone to "Allow", then refresh.',
+            { duration: 8000 }
+          );
+          return;
+        }
+      }
+    } catch { /* Permissions API not available — proceed anyway */ }
+
+    // [ARCH-FIX] Derive receiver PeerID deterministically — no XMTP round-trip needed
     const receiverPeerId = derivePeerId(activePeer);
     console.log('[Call:ARCH-FIX] Derived receiver PeerID:', receiverPeerId, 'for address:', activePeer);
 
     let stream: MediaStream | null = null;
     try {
-      const constraints: MediaStreamConstraints = {
-        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
-        video: type === 'video' ? { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30, max: 60 }, facingMode: 'user' } : false,
-      };
+      // ── TIER 1: Full quality constraints ────────────────────────────────────
       try {
-        stream = await navigator.mediaDevices.getUserMedia(constraints);
-      } catch (initialErr) {
-        console.warn('[Call] Initial getUserMedia failed, trying fallback constraints...', initialErr);
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+          video: type === 'video' ? { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30, max: 60 }, facingMode: 'user' } : false,
+        });
+      } catch (t1Err) {
+        console.warn('[Call] Tier-1 getUserMedia failed:', t1Err);
+        // ── TIER 2: Simplified constraints (drops facingMode strict params) ───
         try {
           stream = await navigator.mediaDevices.getUserMedia({
             audio: true,
-            video: type === 'video' ? { facingMode: 'user' } : false
+            video: type === 'video' ? { facingMode: 'user' } : false,
           });
-        } catch (fallbackErr) {
-          console.warn('[Call] Second getUserMedia failed, trying absolute minimal constraints...', fallbackErr);
+        } catch (t2Err) {
+          console.warn('[Call] Tier-2 getUserMedia failed:', t2Err);
+          // ── TIER 3: Absolute minimal — any audio/video device ────────────────
           stream = await navigator.mediaDevices.getUserMedia({
             audio: true,
-            video: type === 'video' ? true : false
+            video: type === 'video',
           });
         }
       }
+
       // Prevent state inconsistency if unmounted while waiting for permissions
       if (!isComponentMountedRef.current) {
         stream.getTracks().forEach(t => t.stop());
@@ -957,7 +985,6 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       if (myVideoRef.current) myVideoRef.current.srcObject = stream;
 
       // [ARCH-FIX] Dial the receiver IMMEDIATELY via PeerJS WebSocket — sub-100ms.
-      // This is the critical change: no more waiting for XMTP CALL_ANSWER.
       const conn = peerInstance.call(receiverPeerId, stream, {
         metadata: { callType: type },
       });
@@ -984,11 +1011,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       conn.on('error', (e: any) => { console.error('[Call:PeerJS] Connection error:', e); performEndCallRef.current(); });
 
       // [ARCH-FIX] Send CALL_OFFER in parallel as a ring notification to the receiver's device
-      // (alerts them even if their peer.on('call') hasn't fired yet in their UI)
       executeSend(`__CALL_OFFER__:${myPeerId}:${type}`).catch(() => {});
       toast.success('Ringing...');
 
-      // Caller timeout: if no stream arrives in 60s (peer did not answer), clean up
+      // Caller timeout: if no stream arrives in 60s, clean up
       callTimeoutRef.current = setTimeout(() => {
         if (callStateRef.current === 'calling') {
           toast.error('No answer — call timed out.');
@@ -997,7 +1023,6 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       }, 60000);
 
     } catch (e: any) {
-      // Always stop any acquired stream tracks on error
       if (stream) { try { stream.getTracks().forEach(t => t.stop()); } catch {} }
       setLocalStream(null);
       setCallState('idle');
