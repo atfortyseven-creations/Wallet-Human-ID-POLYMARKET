@@ -27,7 +27,6 @@ import { LottiePlayer } from '../ui/LottiePlayer';
 import { AztecPXEVisualizer } from './AztecPXEVisualizer';
 import { ZKProofGrid } from '../premium/ZKProofGrid';
 import { AztecShieldingTerminal } from './AztecShieldingTerminal';
-import { AztecRewardsCard } from './AztecRewardsCard';
 import { AztecAirdropCalendar } from './AztecAirdropCalendar';
 
 // ─── On-Chain Verified Network Constants ─────────────────────────────────────
@@ -967,7 +966,6 @@ export function AztecIdentityCard() {
           {/* CLAIM */}
           {activeTab === 'CLAIM' && (
             <div className="space-y-4">
-              <AztecRewardsCard />
               <AztecAirdropCalendar />
             </div>
           )}

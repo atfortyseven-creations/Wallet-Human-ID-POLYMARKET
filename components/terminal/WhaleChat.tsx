@@ -916,31 +916,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     if (myVideoRef.current) myVideoRef.current.srcObject = null;
     if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
     if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = null; }
-  // stopRingtone and setters are stable refs, safe to include
-  }, [stopRingtone, setLocalStream, setCallState]);
-  // Wire the always-fresh ref — avoids stale closure in the XMTP signal listener above
-  performEndCallRef.current = performEndCall;
-
-  // ─── [ARCH-FIX] startCall: Initiate outgoing call ─────────────────────────
-  // NEW ARCHITECTURE: The caller derives the receiver's PeerID deterministically
-  // from their wallet address and calls peerInstance.call() IMMEDIATELY after
-  // acquiring media. No waiting for XMTP CALL_ANSWER.
-  // XMTP CALL_OFFER is sent in parallel as a ring notification only.
-  const startCall = async (type: 'audio'|'video') => {
-    if (callState !== 'idle') {
-      toast.error('A call is already in progress.');
-      return;
-    }
-    if (!peerInstance || !activePeer) {
-      toast.error('Chat connection not ready. Please wait and try again.');
-      return;
-    }
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      toast.error('Your browser does not support media access. Please use Chrome or Firefox.');
-      return;
-    }
-
-    // [ARCH-FIX] Derive receiver PeerID deterministically — no XMTP round-trip needed
+        // [ARCH-FIX] Derive receiver PeerID deterministically — no XMTP round-trip needed
     const receiverPeerId = derivePeerId(activePeer);
     console.log('[Call:ARCH-FIX] Derived receiver PeerID:', receiverPeerId, 'for address:', activePeer);
 
@@ -950,7 +926,15 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
         video: type === 'video' ? { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30, max: 60 }, facingMode: 'user' } : false,
       };
-      stream = await navigator.mediaDevices.getUserMedia(constraints);
+      try {
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+      } catch (initialErr) {
+        console.warn('[Call] Initial getUserMedia failed, trying fallback constraints...', initialErr);
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: type === 'video' ? { facingMode: 'user' } : false
+        });
+      }
       // Prevent state inconsistency if unmounted while waiting for permissions
       if (!isComponentMountedRef.current) {
         stream.getTracks().forEach(t => t.stop());
@@ -1042,7 +1026,15 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
         video: isVideo ? { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30, max: 60 }, facingMode: 'user' } : false,
       };
-      stream = await navigator.mediaDevices.getUserMedia(constraints);
+      try {
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+      } catch (initialErr) {
+        console.warn('[Call] Initial getUserMedia failed, trying fallback constraints...', initialErr);
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: isVideo ? { facingMode: 'user' } : false
+        });
+      }
       // Prevent state inconsistency if unmounted while waiting for permissions
       if (!isComponentMountedRef.current) {
         stream.getTracks().forEach(t => t.stop());
@@ -1165,16 +1157,22 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const startRecording = useCallback(async () => {
     if (isRecording || !activePeer) return;
     try {
-      // [iOS FIX] Safari requires explicit constraint hints to enable microphone.
-      // echoCancellation and noiseSuppression are critical for call quality on iPhone.
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          sampleRate: 44100,
-          channelCount: 1,
-        }
-      });
+      let stream: MediaStream;
+      try {
+        // [iOS FIX] Safari requires explicit constraint hints to enable microphone.
+        // echoCancellation and noiseSuppression are critical for call quality on iPhone.
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            sampleRate: 44100,
+            channelCount: 1,
+          }
+        });
+      } catch (initialErr) {
+        console.warn('[Voice] Initial getUserMedia failed, trying fallback...', initialErr);
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      }
       // [iOS FIX] Safari does NOT support audio/webm or audio/webm;codecs=opus.
       // It only supports audio/mp4 (AAC). We must check in correct priority order.
       const mimeType = MediaRecorder.isTypeSupported('audio/mp4')
