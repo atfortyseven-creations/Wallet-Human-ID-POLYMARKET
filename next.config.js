@@ -374,18 +374,17 @@ const nextConfig = {
                     { key: 'X-Content-Type-Options',     value: 'nosniff' },
                     { key: 'X-Frame-Options',            value: 'SAMEORIGIN' },
                     { key: 'X-XSS-Protection',          value: '1; mode=block' },
-                    { key: 'Content-Security-Policy',    value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; font-src 'self' data:; connect-src 'self' https: wss:; frame-src 'self' https:;" },
-                    // [IOS FIX] HSTS removed from next.config.js static headers.
-                    // middleware.ts already sets HSTS dynamically per-request in production.
-                    // Having it in BOTH places causes iOS Safari/Chrome to apply the union of both,
-                    // potentially enforcing HTTPS even on Railway preview/staging HTTP URLs,
-                    // which breaks SIWE nonce requests during QA and staging validation.
-                    // Referrer: Only send origin, never full URL (protects wallet addresses in query strings)
+                    // [WEBRTC FIX] CSP must explicitly allow:
+                    //   - blob: in connect-src for WebRTC data channels
+                    //   - blob: in media-src for getUserMedia MediaStream playback
+                    //   - wss: in connect-src for PeerJS WebSocket signaling
+                    //   - stun: and turn: schemes are handled by browser internally, NOT via CSP
+                    { key: 'Content-Security-Policy',    value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; font-src 'self' data:; connect-src 'self' https: wss: blob:; media-src 'self' blob: mediastream:; frame-src 'self' https:; worker-src 'self' blob:;" },
                     { key: 'Referrer-Policy',            value: 'strict-origin-when-cross-origin' },
-                    // Permissions: disable all sensitive APIs we don't use
-                    // camera=*, microphone=* required for WhaleChat WebRTC calls across all Android WebViews/Iframes
+                    // [ANDROID WEBRTC FIX] Permissions-Policy MUST be set correctly.
+                    // 'camera=*' and 'microphone=*' allow ALL origins (including iframes) to request them.
+                    // Without this, Android Chrome silently blocks getUserMedia even if the user said Allow.
                     { key: 'Permissions-Policy', value: 'camera=*, microphone=*, geolocation=(), interest-cohort=()' },
-                    // Prevent IE content sniffing
                     { key: 'X-DNS-Prefetch-Control',     value: 'on' },
                 ]
             },
