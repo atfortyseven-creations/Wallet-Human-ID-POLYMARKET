@@ -216,9 +216,11 @@ export function TuringShieldGate({
 
     // Confirm step
     if (code !== conf) {
-      setPinSetError('PINs do not match. Try again.');
+      setPinSetError('PINs do not match. Please start over.');
+      setPinSetStep('new');
+      setNewPin(['', '', '', '', '', '']);
       setConfirmPin(['', '', '', '', '', '']);
-      setTimeout(() => confirmPinRefs.current[0]?.focus(), 100);
+      setTimeout(() => newPinRefs.current[0]?.focus(), 100);
       return;
     }
 

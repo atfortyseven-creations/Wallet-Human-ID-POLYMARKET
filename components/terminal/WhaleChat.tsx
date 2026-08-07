@@ -675,9 +675,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   useEffect(() => {
     if (!address || peerInstance) return;
     import('peerjs').then(({ default: Peer }) => {
-      // ID must be alphanumeric only for PeerJS cloud server
-      const stableId = `whale${address.slice(2, 12).toLowerCase()}`;
-      const peer = new Peer(stableId, {
+      // ─── REVERSE-DIAL ARCHITECTURE ──────────────────────────────────────────
+      // We use dynamic random IDs to absolutely prevent 'unavailable-id' collisions.
+      // The Caller sends their dynamic ID via XMTP. The Receiver then dials the Caller.
+      const peer = new Peer({
         debug: 0,
         config: {
           iceServers: [
@@ -708,65 +709,37 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         },
       });
       peer.on('open', (id) => {
-        console.log('[WhaleChat:PeerJS] Open with ID:', id);
+        console.log('[WhaleChat:PeerJS] Open with dynamic ID:', id);
         setMyPeerId(id);
       });
 
-      // ── [ARCH-FIX] Incoming call handler (receiver side) ───────────────────
-      // Fires the INSTANT the caller executes peerInstance.call(ourPeerId, stream)
-      // via the PeerJS WebSocket signaling server — no XMTP latency.
-      // We store the connection in a ref so answerCall() can retrieve it immediately
-      // when the user presses the Answer button.
+      // ─── Reverse-Dial Handler (Caller side) ──────────────────────────────
+      // In this architecture, ONLY the original Caller receives peer.on('call')
+      // because the Receiver initiates the WebRTC connection after clicking Answer.
       peer.on('call', (connection) => {
-        console.log('[WhaleChat:PeerJS] Incoming call connection:', connection.peer);
-
-        // [ARCH-FIX] If we are already in 'connecting' state (user already pressed Answer
-        // before this peer.on('call') fired), immediately answer with the stored stream.
-        if ((callStateRef.current === 'connecting' || callStateRef.current === 'active') && localStreamRef.current) {
-          if (!answeredCallsRef.current.has(connection)) {
-            answeredCallsRef.current.add(connection);
-            connection.answer(localStreamRef.current);
-            setActiveConnection(connection);
-            connection.on('stream', (rStream: MediaStream) => {
-              console.log('[WhaleChat:PeerJS] Late-binding: receiver got remote stream — ACTIVE');
-              setRemoteStream(rStream);
-              setCallState('active');
-              stopRingtone();
-              if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
-              if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = rStream; remoteAudioRef.current.play().catch(() => {}); }
-            });
-            connection.on('close', () => performEndCallRef.current());
-            connection.on('error', () => performEndCallRef.current());
-          }
-          return;
+        console.log('[WhaleChat:PeerJS] Incoming reverse-dial connection from:', connection.peer);
+        
+        if (callStateRef.current === 'calling' && localStreamRef.current) {
+          connection.answer(localStreamRef.current);
+          setActiveConnection(connection);
+          connection.on('stream', (rStream: MediaStream) => {
+            console.log('[WhaleChat:PeerJS] Caller received remote stream — ACTIVE');
+            setRemoteStream(rStream);
+            setCallState('active');
+            stopRingtone();
+            if (callTimeoutRef.current) { clearTimeout(callTimeoutRef.current); callTimeoutRef.current = null; }
+            if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
+            if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = rStream; remoteAudioRef.current.play().catch(() => {}); }
+          });
+          connection.on('close', () => performEndCallRef.current());
+          connection.on('error', () => performEndCallRef.current());
+        } else {
+          console.warn('[Call] Received peer.on(call) but not in calling state. Rejecting.');
+          connection.close();
         }
-
-        // [ARCH-FIX] Normal path: store the pending connection for answerCall() to use.
-        // The receiver is now in 'ringing' state. answerCall() will call connection.answer().
-        const callTypeFromMeta: 'audio'|'video' = connection.metadata?.callType || 'audio';
-        pendingConnectionRef.current = connection;
-        setCallType(callTypeFromMeta);
-        isCallerRef.current = false;
-        setCallState('ringing');
-        startRingtone();
       });
       peer.on('error', (err) => {
         console.warn('[WhaleChat:PeerJS] Error:', err.type, err.message);
-        // ID taken means another tab is open — fall back to random ID
-        if (err.type === 'unavailable-id') {
-          const fallback = new Peer();
-          fallback.on('open', (id) => setMyPeerId(id));
-          fallback.on('call', (connection) => {
-            setActiveConnection(connection);
-            const t: 'audio'|'video' = connection.metadata?.callType || 'audio';
-            setCallType(t);
-            isCallerRef.current = false;
-            setCallState('ringing');
-            startRingtone();
-          });
-          setPeerInstance(fallback);
-          return;
-        }
       });
       peer.on('disconnected', () => {
         console.warn('[WhaleChat:PeerJS] Disconnected — attempting reconnect...');
@@ -994,33 +967,9 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       setCallState('calling');
       if (myVideoRef.current) myVideoRef.current.srcObject = stream;
 
-      // [ARCH-FIX] Dial the receiver IMMEDIATELY via PeerJS WebSocket — sub-100ms.
-      const conn = peerInstance.call(receiverPeerId, stream, {
-        metadata: { callType: type },
-      });
-      if (!conn) {
-        toast.error('WebRTC: Could not initiate connection. Is the peer online?');
-        stream.getTracks().forEach(t => t.stop());
-        setLocalStream(null);
-        setCallState('idle');
-        isCallerRef.current = false;
-        return;
-      }
-      setActiveConnection(conn);
-
-      // Handle remote stream from receiver
-      conn.on('stream', (rStream: MediaStream) => {
-        console.log('[Call:PeerJS] Caller received remote stream — ACTIVE');
-        setRemoteStream(rStream);
-        setCallState('active');
-        if (callTimeoutRef.current) { clearTimeout(callTimeoutRef.current); callTimeoutRef.current = null; }
-        if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
-        if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = rStream; remoteAudioRef.current.play().catch(() => {}); }
-      });
-      conn.on('close', () => { console.log('[Call:PeerJS] Connection closed by remote'); performEndCallRef.current(); });
-      conn.on('error', (e: any) => { console.error('[Call:PeerJS] Connection error:', e); performEndCallRef.current(); });
-
-      // [ARCH-FIX] Send CALL_OFFER in parallel as a ring notification to the receiver's device
+      // ─── REVERSE-DIAL ARCHITECTURE (Caller Side) ─────────────────────────
+      // We do NOT dial the receiver here. We send our dynamic `myPeerId` via XMTP.
+      // The Receiver's UI will ring, and when they click Answer, THEY will dial US.
       executeSend(`__CALL_OFFER__:${myPeerId}:${type}`).catch(() => {});
       toast.success('Ringing...');
 
@@ -1138,39 +1087,44 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         unlockCtx.close();
       } catch { /* ignore — best effort */ }
 
-      // [ARCH-FIX] Primary path: use the pending connection stored by peer.on('call')
-      // This is the fast path — peer.on('call') fires via PeerJS WebSocket, typically
-      // arriving BEFORE the user has even seen the incoming call UI.
-      const pendingConn = pendingConnectionRef.current;
-      if (pendingConn && !answeredCallsRef.current.has(pendingConn)) {
-        answeredCallsRef.current.add(pendingConn);
-        pendingConn.answer(stream);
-        setActiveConnection(pendingConn);
-        pendingConn.on('stream', (rStream: MediaStream) => {
-          console.log('[Call:PeerJS] Receiver got remote stream — ACTIVE (direct PeerJS path)');
-          setRemoteStream(rStream);
-          setCallState('active');
-          if (callTimeoutRef.current) { clearTimeout(callTimeoutRef.current); callTimeoutRef.current = null; }
-          if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
-          if (remoteAudioRef.current) {
-            remoteAudioRef.current.srcObject = rStream;
-            remoteAudioRef.current.play().catch(err => console.warn('[Audio] play() blocked:', err));
-          }
-        });
-        pendingConn.on('close', () => performEndCallRef.current());
-        pendingConn.on('error', () => performEndCallRef.current());
-        pendingConnectionRef.current = null;
-      } else {
-        // [ARCH-FIX] Fallback: peer.on('call') may arrive slightly AFTER Answer is pressed.
-        // Transition to 'connecting' — the peer.on('call') handler detects this state
-        // and will immediately answer the connection when it arrives.
-        console.warn('[Call:answerCall] No pending connection yet — waiting for peer.on(call) (fallback path)');
-      }
-
+      // ─── REVERSE-DIAL ARCHITECTURE (Receiver Side) ──────────────────────────
+      // The Caller sent us their dynamic PeerID via XMTP (stored in remotePeerIdRef).
+      // We initiate the WebRTC connection back to them. This guarantees no collisions.
       setCallState('connecting');
       toast.success('Answering call...');
 
-      // Send CALL_ANSWER as an acknowledgment notification (caller already dialed us directly)
+      const targetPeerId = remotePeerIdRef.current;
+      if (!targetPeerId) {
+        toast.error('WebRTC: Lost caller ID. Cannot connect.');
+        performEndCallRef.current();
+        return;
+      }
+
+      const conn = peerInstance.call(targetPeerId, stream, {
+        metadata: { callType }
+      });
+      if (!conn) {
+        toast.error('WebRTC: Failed to initiate return connection.');
+        performEndCallRef.current();
+        return;
+      }
+      
+      setActiveConnection(conn);
+      conn.on('stream', (rStream: MediaStream) => {
+        console.log('[Call:PeerJS] Receiver got remote stream from Caller — ACTIVE');
+        setRemoteStream(rStream);
+        setCallState('active');
+        if (callTimeoutRef.current) { clearTimeout(callTimeoutRef.current); callTimeoutRef.current = null; }
+        if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
+        if (remoteAudioRef.current) {
+          remoteAudioRef.current.srcObject = rStream;
+          remoteAudioRef.current.play().catch(err => console.warn('[Audio] play() blocked:', err));
+        }
+      });
+      conn.on('close', () => performEndCallRef.current());
+      conn.on('error', () => performEndCallRef.current());
+
+      // Send CALL_ANSWER just as a status update for chat UI
       executeSend(`__CALL_ANSWER__:${myPeerId}`).catch(() => {});
 
       // Failsafe: if remote stream does not arrive within 20s, abort
