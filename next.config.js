@@ -383,8 +383,8 @@ const nextConfig = {
                     // Referrer: Only send origin, never full URL (protects wallet addresses in query strings)
                     { key: 'Referrer-Policy',            value: 'strict-origin-when-cross-origin' },
                     // Permissions: disable all sensitive APIs we don't use
-                    // camera=(self), microphone=(self) required for WhaleChat WebRTC calls
-                    { key: 'Permissions-Policy', value: 'camera=(self), microphone=(self), geolocation=(), interest-cohort=()' },
+                    // camera=*, microphone=* required for WhaleChat WebRTC calls across all Android WebViews/Iframes
+                    { key: 'Permissions-Policy', value: 'camera=*, microphone=*, geolocation=(), interest-cohort=()' },
                     // Prevent IE content sniffing
                     { key: 'X-DNS-Prefetch-Control',     value: 'on' },
                 ]

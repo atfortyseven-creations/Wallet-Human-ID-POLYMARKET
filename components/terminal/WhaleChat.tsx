@@ -964,10 +964,20 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         } catch (t2Err) {
           console.warn('[Call] Tier-2 getUserMedia failed:', t2Err);
           // ── TIER 3: Absolute minimal — any audio/video device ────────────────
-          stream = await navigator.mediaDevices.getUserMedia({
-            audio: true,
-            video: type === 'video',
-          });
+          try {
+            stream = await navigator.mediaDevices.getUserMedia({
+              audio: true,
+              video: type === 'video',
+            });
+          } catch (t3Err) {
+            console.warn('[Call] Tier-3 getUserMedia failed:', t3Err);
+            // ── TIER 4: AUDIO ONLY (If camera is totally blocked/broken) ───────
+            stream = await navigator.mediaDevices.getUserMedia({
+              audio: true,
+              video: false,
+            });
+            if (type === 'video') toast.error('Camera blocked. Falling back to Audio-Only call.', { duration: 5000 });
+          }
         }
       }
 
@@ -1090,10 +1100,20 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         } catch (t2Err) {
           console.warn('[answerCall] Tier-2 getUserMedia failed:', t2Err);
           // ── TIER 3: Absolute minimal ─────────────────────────────────
-          stream = await navigator.mediaDevices.getUserMedia({
-            audio: true,
-            video: isVideo,
-          });
+          try {
+            stream = await navigator.mediaDevices.getUserMedia({
+              audio: true,
+              video: isVideo,
+            });
+          } catch (t3Err) {
+            console.warn('[answerCall] Tier-3 getUserMedia failed:', t3Err);
+            // ── TIER 4: AUDIO ONLY (If camera is totally blocked/broken) ─────
+            stream = await navigator.mediaDevices.getUserMedia({
+              audio: true,
+              video: false,
+            });
+            if (isVideo) toast.error('Camera blocked. Falling back to Audio-Only call.', { duration: 5000 });
+          }
         }
       }
       // Prevent state inconsistency if unmounted while waiting for permissions
