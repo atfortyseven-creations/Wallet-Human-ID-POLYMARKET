@@ -1004,11 +1004,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       isCallerRef.current = false;
       const errName = e?.name || '';
       if (errName === 'NotAllowedError' || errName === 'PermissionDeniedError') {
-        toast.error('Microphone/Camera access denied. Please enable permissions in your browser settings.');
+        toast.error('Mic/Camera access denied. If allowed in OS, check Chrome Site Settings or open outside of in-app browsers (Telegram/Twitter).', { duration: 6000 });
       } else if (errName === 'NotFoundError' || errName === 'DevicesNotFoundError') {
         toast.error('No microphone or camera found on this device.');
       } else if (errName === 'NotReadableError' || errName === 'TrackStartError') {
-        toast.error('Camera/Microphone is in use by another app. Please close it.');
+        toast.error('Camera/Microphone is in use by another app. Please close it.', { duration: 6000 });
       } else {
         toast.error(`Call failed: ${e?.message || 'Unknown error'}`);
       }
@@ -1122,9 +1122,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       setCallState('idle');
       const errName = e?.name || '';
       if (errName === 'NotAllowedError' || errName === 'PermissionDeniedError') {
-        toast.error('Microphone/Camera access denied. Please enable permissions in your browser settings.');
+        toast.error('Mic/Camera access denied. If allowed in OS, check Chrome Site Settings or open outside of in-app browsers (Telegram/Twitter).', { duration: 6000 });
       } else if (errName === 'NotFoundError' || errName === 'DevicesNotFoundError') {
         toast.error('No microphone or camera found on this device.');
+      } else if (errName === 'NotReadableError' || errName === 'TrackStartError') {
+        toast.error('Camera/Microphone is in use by another app. Please close it.', { duration: 6000 });
       } else {
         toast.error(`Failed to answer call: ${e?.message || 'Unknown error'}`);
       }
