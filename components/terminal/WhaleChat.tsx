@@ -985,28 +985,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const answerCall = async () => {
     stopRingtone();
     // [ANDROID FIX] Use callStateRef.current instead of the stale React state closure.
-    // On Android, between the render that shows the Answer button and the moment
-    // the user taps it, React may have re-rendered with a new state but the
-    // onClick closure still holds the old `callState` value from the previous render.
-    // callStateRef.current is ALWAYS the real, current value.
     if (callStateRef.current !== 'ringing') return;
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       toast.error('Your browser does not support media access. Please use Chrome.');
       return;
     }
-
-    // [AUDIO UNLOCK] Android/iOS require a user-gesture to unlock AudioContext.
-    // CRITICAL: Do NOT await unlockCtx.resume(). If we yield the event loop here,
-    // Android will strip the transient user-activation token and block getUserMedia.
-    try {
-      const unlockCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
-      const silentBuf = unlockCtx.createBuffer(1, 1, 22050);
-      const src = unlockCtx.createBufferSource();
-      src.buffer = silentBuf;
-      src.connect(unlockCtx.destination);
-      src.start(0);
-      unlockCtx.resume().then(() => unlockCtx.close()).catch(() => {});
-    } catch { /* ignore — best effort */ }
 
     let stream: MediaStream | null = null;
     try {
@@ -1015,9 +998,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       // If the first request fails, the transient user-activation token is lost,
       // and all subsequent fallbacks will automatically throw NotAllowedError.
       // Therefore, we make exactly ONE robust request with minimal safe constraints.
+      // [ANDROID FIX] We use callTypeRef.current to avoid stale closures.
       stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
-        video: callType === 'video' ? { facingMode: 'user' } : false,
+        video: callTypeRef.current === 'video' ? { facingMode: 'user' } : false,
       });
       // Prevent state inconsistency if unmounted while waiting for permissions
       if (!isComponentMountedRef.current) {
