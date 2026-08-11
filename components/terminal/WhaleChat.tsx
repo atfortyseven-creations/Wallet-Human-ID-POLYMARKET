@@ -2729,7 +2729,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       </div>
 
       {/*  Chat Area  */}
-      <div className={`${!showList ? 'flex' : 'hidden md:flex'} flex-1 flex-col min-w-0 min-h-0`}>
+      <div className={`${!showList ? 'flex' : 'hidden md:flex'} relative flex-1 flex-col min-w-0 min-h-0`}>
         {activePeer ? (
           <>
             <div className="h-[68px] px-4 border-b border-black/[0.08] flex items-center justify-between bg-white shrink-0 z-10 shadow-[0_1px_8px_rgba(0,0,0,0.05)]">
@@ -3359,14 +3359,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           </div>
         )}
 
-      </div>
-
-
       {/* NOTE: remoteAudioRef lives ONLY inside the active call portal below to avoid ref conflicts */}
 
       {/* ── Incoming Call Banner (state: ringing) ───────────────────────────── */}
-      {callState === 'ringing' && isMounted && createPortal(
-        <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] flex flex-col items-center justify-between" style={{ touchAction: 'none', background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)' }}>
+      {callState === 'ringing' && isMounted && (
+        <div className="absolute inset-0 w-full h-full z-[100000] flex flex-col items-center justify-between" style={{ touchAction: 'none', background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)' }}>
           {/* Top section */}
           <div className="flex flex-col items-center w-full pt-[max(60px,env(safe-area-inset-top,60px))] px-6">
             <p className="text-white/50 text-[11px] font-semibold uppercase tracking-[0.3em] mb-2">
@@ -3414,13 +3411,12 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               <span className="text-white/50 text-[11px] font-medium tracking-widest uppercase">Answer</span>
             </div>
           </div>
-        </div>,
-        document.body
+        </div>
       )}
 
       {/* ── Outgoing Call (state: calling — waiting for answer) ─────────────── */}
-      {callState === 'calling' && isMounted && createPortal(
-        <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] flex flex-col items-center justify-between" style={{ touchAction: 'none', background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)' }}>
+      {callState === 'calling' && isMounted && (
+        <div className="absolute inset-0 w-full h-full z-[100000] flex flex-col items-center justify-between" style={{ touchAction: 'none', background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)' }}>
           <div className="flex flex-col items-center w-full pt-[max(60px,env(safe-area-inset-top,60px))] px-6">
             <p className="text-white/50 text-[11px] font-semibold uppercase tracking-[0.3em] mb-2">
               {callTypeRef.current === 'video' ? '📹 Video Call' : '🎙️ Voice Call'}
@@ -3448,13 +3444,12 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 <PhoneOff size={28} className="text-white" />
               </button>
           </div>
-        </div>,
-        document.body
+        </div>
       )}
 
       {/* ── Active Call Overlay — WhatsApp/Telegram parity ──────── */}
-      {callState === 'active' && isMounted && createPortal(
-        isCallMinimized ? (
+      {callState === 'active' && isMounted && (
+        isCallMinimized ? createPortal(
           /* ── MINIMIZED VIEW (Floating Banner or Video PiP) ── */
           callType === 'video' ? (
              <motion.div
@@ -3482,10 +3477,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               <span className="text-xs font-mono font-black">{formatDuration(callDurationSeconds)}</span>
               <audio ref={remoteAudioRef} autoPlay playsInline style={{ position: 'absolute', width: 0, height: 0, opacity: 0, pointerEvents: 'none' }} />
             </div>
-          )
+          ),
+          document.body
         ) : (
           /* ── FULL SCREEN VIEW ── */
-          <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] bg-black flex flex-col" style={{ touchAction: 'none' }}>
+          <div className="absolute inset-0 w-full h-full z-[100000] bg-black flex flex-col" style={{ touchAction: 'none' }}>
             
             {/* ── BACKGROUND ── */}
             <div className="absolute inset-0">
@@ -3645,9 +3641,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
             <audio ref={remoteAudioRef} autoPlay playsInline style={{ position: 'absolute', width: 0, height: 0, opacity: 0, pointerEvents: 'none' }} />
           </div>
-        ),
-        document.body
+        )
       )}
+
+      </div> {/* Close Chat Area */}
 
       {/*  Overlays  */}
       {showScanner && (
