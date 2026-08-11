@@ -138,12 +138,13 @@ export function TuringShieldGate({
     }
   }, []);
 
-  // Initialize CAPTCHA
+  // Initialize CAPTCHA immediately on mount (do not wait for dependency loop)
   useEffect(() => {
-    if (mounted && !cleared && !captchaPassed && !currentCaptcha) {
+    if (mounted && !cleared && !captchaPassed) {
       setCurrentCaptcha(generateCaptchaChallenge());
     }
-  }, [mounted, cleared, captchaPassed, currentCaptcha]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mounted, cleared]);
 
   const handleCaptchaAnswer = (answer: string) => {
     if (!currentCaptcha) return;
@@ -163,8 +164,6 @@ export function TuringShieldGate({
       setTimeout(() => setPinError(null), 3000);
     }
   };
-    }
-  }, []);
 
   const triggerShake = useCallback(() => {
     setShake(true);
@@ -487,8 +486,14 @@ export function TuringShieldGate({
             {locked ? 'Brute-Force Protection Active' : 'Secure Enclave Active'}
           </div>
 
-          {/* Description or CAPTCHA */}
-          {!captchaPassed && currentCaptcha ? (
+          {/* CAPTCHA or PIN Panel — three distinct states */}
+          {!captchaPassed && !currentCaptcha ? (
+            // State 1: Loading — spinner while CAPTCHA generates
+            <div className="w-full flex items-center justify-center py-8">
+              <Loader2 size={28} className="animate-spin text-indigo-500" />
+            </div>
+          ) : !captchaPassed && currentCaptcha ? (
+            // State 2: CAPTCHA challenge — must pass before seeing PIN
             <div className="w-full flex flex-col items-center">
               <p className="text-[13px] text-[#0A0A0A] font-black leading-[1.6] mb-2 px-1">
                 Anti-Bot Verification ({captchaIndex + 1}/3)
@@ -511,7 +516,6 @@ export function TuringShieldGate({
                   </button>
                 ))}
               </motion.div>
-              {/* Error */}
               <AnimatePresence>
                 {pinError && (
                   <motion.div
