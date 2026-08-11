@@ -254,6 +254,14 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // Mute / Camera state
   const [isMicMuted, setIsMicMuted] = useState(false);
   const [isCamOff, setIsCamOff] = useState(false);
+  
+  // ── Telegram/WhatsApp Parity States ──
+  const [isCallMinimized, setIsCallMinimized] = useState(false);
+  const [networkQuality, setNetworkQuality] = useState<'good' | 'poor' | 'disconnected'>('good');
+  const [audioLevel, setAudioLevel] = useState<number>(0);
+  const [activeCamera, setActiveCamera] = useState<'user' | 'environment'>('user');
+  const [isScreenSharing, setIsScreenSharing] = useState(false);
+
   const myVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const remoteAudioRef = useRef<HTMLAudioElement>(null);
@@ -874,6 +882,84 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     }
   }, [callState, remoteStream]);
 
+  // ─── WebRTC Advanced Telemetry & Telegram-Parity Visuals ─────────────────
+  
+  // Audio Visualizer for Audio Calls
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const dataArrayRef = useRef<Uint8Array | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (callState === 'active' && remoteStream && callTypeRef.current === 'audio') {
+      try {
+        const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+        const ctx = new AudioCtx();
+        audioContextRef.current = ctx;
+        const analyser = ctx.createAnalyser();
+        analyser.fftSize = 256;
+        analyserRef.current = analyser;
+        
+        // Connect stream to analyser (do NOT connect to destination to avoid echo, <audio> plays it)
+        const source = ctx.createMediaStreamSource(remoteStream);
+        source.connect(analyser);
+
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+        dataArrayRef.current = dataArray;
+
+        const updateLevel = () => {
+          if (!analyserRef.current || !dataArrayRef.current) return;
+          analyserRef.current.getByteFrequencyData(dataArrayRef.current);
+          let sum = 0;
+          for (let i = 0; i < bufferLength; i++) sum += dataArrayRef.current[i];
+          const avg = sum / bufferLength;
+          setAudioLevel(avg);
+          animationFrameRef.current = requestAnimationFrame(updateLevel);
+        };
+        updateLevel();
+      } catch (e) {
+        console.warn("[WhaleChat:AudioViz] AudioContext error:", e);
+      }
+    }
+    return () => {
+      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+      if (audioContextRef.current) {
+        audioContextRef.current.close().catch(()=>{});
+        audioContextRef.current = null;
+      }
+    };
+  }, [callState, remoteStream]);
+
+  // Network Quality Monitor
+  useEffect(() => {
+    if (callState !== 'active' || !activeConnectionRef.current) {
+      setNetworkQuality('good');
+      return;
+    }
+    const interval = setInterval(async () => {
+      try {
+        const peerConn = activeConnectionRef.current?.peerConnection;
+        if (!peerConn) return;
+        const stats = await peerConn.getStats();
+        let isPoor = false;
+        stats.forEach((report: any) => {
+          if (report.type === 'candidate-pair' && report.state === 'succeeded') {
+            if (report.currentRoundTripTime > 0.4) isPoor = true; // > 400ms latency
+          }
+          if (report.type === 'inbound-rtp' && report.kind === 'video') {
+            if (report.packetsReceived > 0) {
+              const fractionLost = report.packetsLost / report.packetsReceived;
+              if (fractionLost > 0.05) isPoor = true; // > 5% packet loss
+            }
+          }
+        });
+        setNetworkQuality(isPoor ? 'poor' : 'good');
+      } catch (e) {}
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [callState]);
+
   // ─── performEndCall: Universal cleanup ── uses refs to avoid stale closures ──
   // AUDIT FIX: All mutable values accessed via refs, not closure captures.
   // This ensures that when called from async contexts (timeouts, PeerJS events),
@@ -1142,6 +1228,99 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     localStream.getVideoTracks().forEach(t => { t.enabled = !nextOff; });
     setIsCamOff(nextOff);
   }, [localStream, isCamOff]);
+
+  // ─── Hardware Media Routing (replaceTrack) ──────────────────────────────────
+  const switchCamera = async () => {
+    if (!localStreamRef.current || !activeConnectionRef.current) return;
+    const newFacingMode = activeCamera === 'user' ? 'environment' : 'user';
+    try {
+      const newStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { exact: newFacingMode } },
+        audio: false
+      });
+      const newVideoTrack = newStream.getVideoTracks()[0];
+      const oldVideoTrack = localStreamRef.current.getVideoTracks()[0];
+      
+      const peerConn = activeConnectionRef.current.peerConnection;
+      if (!peerConn) return;
+      const sender = peerConn.getSenders().find((s: any) => s.track?.kind === 'video');
+      
+      if (sender) {
+        await sender.replaceTrack(newVideoTrack);
+        localStreamRef.current.removeTrack(oldVideoTrack);
+        localStreamRef.current.addTrack(newVideoTrack);
+        oldVideoTrack.stop();
+        setActiveCamera(newFacingMode);
+        setIsScreenSharing(false);
+      }
+    } catch (e) {
+      toast.error('Rear camera not found or access denied.');
+      // Fallback if exact fails
+      try {
+         const newStream = await navigator.mediaDevices.getUserMedia({
+           video: { facingMode: newFacingMode }, audio: false
+         });
+         const newVideoTrack = newStream.getVideoTracks()[0];
+         const oldVideoTrack = localStreamRef.current.getVideoTracks()[0];
+         const peerConn = activeConnectionRef.current.peerConnection;
+         const sender = peerConn.getSenders().find((s: any) => s.track?.kind === 'video');
+         if (sender) {
+           await sender.replaceTrack(newVideoTrack);
+           localStreamRef.current.removeTrack(oldVideoTrack);
+           localStreamRef.current.addTrack(newVideoTrack);
+           oldVideoTrack.stop();
+           setActiveCamera(newFacingMode);
+           setIsScreenSharing(false);
+         }
+      } catch (err) {}
+    }
+  };
+
+  const toggleScreenShare = async () => {
+    if (!localStreamRef.current || !activeConnectionRef.current) return;
+    try {
+      if (isScreenSharing) {
+        // Switch back to camera
+        const newStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: activeCamera } });
+        const newVideoTrack = newStream.getVideoTracks()[0];
+        const oldVideoTrack = localStreamRef.current.getVideoTracks()[0];
+        const peerConn = activeConnectionRef.current.peerConnection;
+        const sender = peerConn.getSenders().find((s: any) => s.track?.kind === 'video');
+        if (sender) {
+          await sender.replaceTrack(newVideoTrack);
+          localStreamRef.current.removeTrack(oldVideoTrack);
+          localStreamRef.current.addTrack(newVideoTrack);
+          oldVideoTrack.stop();
+          setIsScreenSharing(false);
+        }
+      } else {
+        // Start screen share
+        if (!navigator.mediaDevices.getDisplayMedia) {
+          toast.error('Screen sharing is not supported on this device/browser.');
+          return;
+        }
+        const newStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+        const newVideoTrack = newStream.getVideoTracks()[0];
+        const oldVideoTrack = localStreamRef.current.getVideoTracks()[0];
+        
+        newVideoTrack.onended = () => {
+          if (isComponentMountedRef.current && isScreenSharing) toggleScreenShare();
+        };
+
+        const peerConn = activeConnectionRef.current.peerConnection;
+        const sender = peerConn.getSenders().find((s: any) => s.track?.kind === 'video');
+        if (sender) {
+          await sender.replaceTrack(newVideoTrack);
+          localStreamRef.current.removeTrack(oldVideoTrack);
+          localStreamRef.current.addTrack(newVideoTrack);
+          oldVideoTrack.stop();
+          setIsScreenSharing(true);
+        }
+      }
+    } catch (e) {
+      toast.error('Screen sharing cancelled or unsupported.');
+    }
+  };
 
   //  Voice Recording: Hold-to-Record 
   const startRecording = useCallback(async () => {
@@ -3239,148 +3418,201 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             <p className="text-white text-[28px] font-black tracking-tight mb-1">{activePeer ? shortAddr(activePeer) : 'Unknown Peer'}</p>
             <p className="text-white/40 text-[13px] font-mono animate-pulse">Calling...</p>
 
-            {localStream && callTypeRef.current === 'video' && (
-              <div className="mt-8 w-32 h-44 rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
-                <video ref={myVideoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
-              </div>
-            )}
-          </div>
-
-          <div className="w-full flex justify-center pb-[max(56px,env(safe-area-inset-bottom,56px))]">
-            <div className="flex flex-col items-center gap-3">
-              <button
-                onClick={endCall}
-                className="w-[72px] h-[72px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-[0_8px_32px_rgba(239,68,68,0.4)]"
-                style={{ background: 'linear-gradient(135deg, #dc2626, #ef4444)' }}
-              >
-                <PhoneOff size={30} className="text-white" />
-              </button>
-              <span className="text-white/50 text-[11px] font-medium tracking-widest uppercase">Cancel</span>
-            </div>
-          </div>
-        </div>,
-        document.body
-      )}
-
-      {/* ── Connecting Overlay ─────────────────────────────────────────────── */}
-      {callState === 'connecting' && isMounted && createPortal(
-        <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] flex flex-col items-center justify-between" style={{ touchAction: 'none', background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)' }}>
-          <div className="flex flex-col items-center w-full pt-[max(60px,env(safe-area-inset-top,60px))] px-6">
-            <p className="text-white/50 text-[11px] font-semibold uppercase tracking-[0.3em] mb-2">
-              {callTypeRef.current === 'video' ? '📹 Video Call' : '🎙️ Voice Call'}
-            </p>
-            <p className="text-white/30 text-[13px] font-mono mb-10">Whale Chat · End-to-end encrypted</p>
-
-            <div className="relative flex items-center justify-center mb-8">
-              <div className="absolute w-44 h-44 rounded-full border border-emerald-400/20 animate-ping" style={{ animationDuration: '1.5s' }} />
-              <div className="w-28 h-28 rounded-full flex items-center justify-center relative z-10 shadow-[0_0_60px_rgba(52,211,153,0.3)]" style={{ background: 'linear-gradient(135deg, #059669, #10b981)' }}>
-                <span className="text-white text-4xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '🐳'}</span>
-              </div>
-            </div>
-
-            <p className="text-white text-[28px] font-black tracking-tight mb-1">{activePeer ? shortAddr(activePeer) : 'Unknown Peer'}</p>
-            <p className="text-emerald-400 text-[13px] font-mono animate-pulse">🔐 Securing connection...</p>
-
-            {localStream && callTypeRef.current === 'video' && (
-              <div className="mt-8 w-32 h-44 rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
-                <video ref={myVideoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
-              </div>
-            )}
-          </div>
-
-          <div className="w-full flex justify-center pb-[max(56px,env(safe-area-inset-bottom,56px))]">
-            <div className="flex flex-col items-center gap-3">
-              <button
-                onClick={endCall}
-                className="w-[72px] h-[72px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-[0_8px_32px_rgba(239,68,68,0.4)]"
-                style={{ background: 'linear-gradient(135deg, #dc2626, #ef4444)' }}
-              >
-                <PhoneOff size={30} className="text-white" />
-              </button>
-              <span className="text-white/50 text-[11px] font-medium tracking-widest uppercase">Cancel</span>
-            </div>
-          </div>
-        </div>,
-        document.body
-      )}
-
-      {/* ── Active Call Overlay — Full Screen (video + audio) — WhatsApp/Telegram style ──────── */}
+            {localStr      {/* ── Active Call Overlay — WhatsApp/Telegram parity ──────── */}
       {callState === 'active' && isMounted && createPortal(
-        <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] bg-black flex flex-col" style={{ touchAction: 'none' }}>
-
-          {/* ─── BACKGROUND: Remote video (full screen) or audio UI ─────────── */}
-          <div className="absolute inset-0">
-            {callTypeRef.current === 'video' ? (
-              remoteStream ? (
-                <video
-                  ref={remoteVideoRef}
-                  autoPlay
-                  playsInline
-                  className="w-full h-full object-cover"
-                  style={{ background: '#000' }}
-                />
+        isCallMinimized ? (
+          /* ── MINIMIZED VIEW (Floating Banner or Video PiP) ── */
+          callType === 'video' ? (
+             <motion.div
+              drag
+              dragConstraints={{ top: 0, left: 0, right: typeof window !== 'undefined' ? window.innerWidth - 120 : 0, bottom: typeof window !== 'undefined' ? window.innerHeight - 160 : 0 }}
+              initial={{ x: 20, y: 80 }}
+              onClick={() => setIsCallMinimized(false)}
+              className="fixed z-[100000] w-28 h-40 md:w-36 md:h-52 rounded-2xl overflow-hidden shadow-2xl bg-black cursor-pointer border-2 border-indigo-500/50"
+            >
+               <video ref={remoteVideoRef} autoPlay playsInline muted={false} className="w-full h-full object-cover" />
+               <div className="absolute top-2 left-2 bg-emerald-500 text-white text-[10px] font-mono px-2 py-0.5 rounded-full font-bold">
+                 {formatDuration(callDurationSeconds)}
+               </div>
+            </motion.div>
+          ) : (
+            <div 
+              onClick={() => setIsCallMinimized(false)}
+              className="fixed top-0 left-0 w-full z-[100000] bg-emerald-500 text-white px-4 py-2 flex items-center justify-between cursor-pointer shadow-lg animate-in slide-in-from-top"
+              style={{ paddingTop: 'max(8px, env(safe-area-inset-top, 8px))' }}
+            >
+              <div className="flex items-center gap-2">
+                <Volume2 size={16} className="animate-pulse" />
+                <span className="text-xs font-bold font-mono">Tap to return to call</span>
+              </div>
+              <span className="text-xs font-mono font-black">{formatDuration(callDurationSeconds)}</span>
+              <audio ref={remoteAudioRef} autoPlay playsInline style={{ position: 'absolute', width: 0, height: 0, opacity: 0, pointerEvents: 'none' }} />
+            </div>
+          )
+        ) : (
+          /* ── FULL SCREEN VIEW ── */
+          <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] bg-black flex flex-col" style={{ touchAction: 'none' }}>
+            
+            {/* ── BACKGROUND ── */}
+            <div className="absolute inset-0">
+              {callTypeRef.current === 'video' ? (
+                remoteStream ? (
+                  <video ref={remoteVideoRef} autoPlay playsInline className="w-full h-full object-cover" style={{ filter: networkQuality === 'poor' ? 'blur(4px)' : 'none' }} />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center gap-4" style={{ background: 'linear-gradient(180deg, #1a1a2e 0%, #0f3460 100%)' }}>
+                    <div className="relative">
+                      <div className="absolute inset-0 rounded-full bg-indigo-500/20 animate-ping scale-150" style={{ animationDuration: '2s' }} />
+                      <div className="w-28 h-28 rounded-full flex items-center justify-center shadow-xl relative z-10" style={{ background: 'linear-gradient(135deg, #4f46e5, #6366f1)' }}>
+                        <span className="text-white text-4xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '🐳'}</span>
+                      </div>
+                    </div>
+                    <p className="text-white/60 text-sm font-mono uppercase tracking-widest animate-pulse">Connecting video...</p>
+                  </div>
+                )
               ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center gap-4" style={{ background: 'linear-gradient(180deg, #1a1a2e 0%, #0f3460 100%)' }}>
-                  <div className="relative">
-                    <div className="absolute inset-0 rounded-full bg-indigo-500/20 animate-ping scale-150" style={{ animationDuration: '2s' }} />
-                    <div className="w-28 h-28 rounded-full flex items-center justify-center shadow-xl relative z-10" style={{ background: 'linear-gradient(135deg, #4f46e5, #6366f1)' }}>
-                      <span className="text-white text-4xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '🐳'}</span>
+                /* ── AUDIO CALL ── */
+                <div className="w-full h-full flex flex-col items-center justify-center" style={{ background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)' }}>
+                  <div className="relative z-10 flex flex-col items-center gap-8">
+                    {/* Audio Visualizer Rings */}
+                    <div className="relative flex items-center justify-center">
+                      {remoteStream && (
+                        <>
+                          <div className="absolute rounded-full border border-indigo-400/30 transition-all duration-75" style={{ width: 140 + audioLevel * 1.5, height: 140 + audioLevel * 1.5, opacity: Math.min(1, audioLevel / 50 + 0.1) }} />
+                          <div className="absolute rounded-full bg-indigo-500/10 transition-all duration-75" style={{ width: 120 + audioLevel, height: 120 + audioLevel, opacity: Math.min(1, audioLevel / 100 + 0.2) }} />
+                        </>
+                      )}
+                      <div className="w-32 h-32 rounded-full flex items-center justify-center shadow-[0_0_80px_rgba(99,102,241,0.4)] relative z-10" style={{ background: 'linear-gradient(135deg, #4f46e5, #6366f1)' }}>
+                        <span className="text-white text-5xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '🐳'}</span>
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-white text-[30px] font-black tracking-tight mb-2">{activePeer ? shortAddr(activePeer) : 'Unknown Peer'}</p>
+                      {remoteStream ? (
+                        <span className={`text-[13px] font-mono uppercase tracking-[0.25em] flex items-center gap-2 justify-center ${networkQuality === 'poor' ? 'text-amber-400' : 'text-emerald-400'}`}>
+                          <span className={`w-2 h-2 rounded-full animate-pulse ${networkQuality === 'poor' ? 'bg-amber-400' : 'bg-emerald-400'}`} />
+                          {networkQuality === 'poor' ? 'Poor Connection' : formatDuration(callDurationSeconds)}
+                        </span>
+                      ) : (
+                        <span className="text-white/40 text-[13px] font-mono uppercase tracking-widest animate-pulse">Establishing audio...</span>
+                      )}
                     </div>
                   </div>
-                  <p className="text-white/60 text-sm font-mono uppercase tracking-widest animate-pulse">Connecting video...</p>
                 </div>
-              )
-            ) : (
-              // ── AUDIO CALL full-screen UI — deep dark like Telegram ─────────
-              <div className="w-full h-full flex flex-col items-center justify-center" style={{ background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)' }}>
-                {/* Ambient glow blob */}
-                <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                  <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full opacity-30" style={{ background: 'radial-gradient(circle, rgba(99,102,241,0.5) 0%, transparent 70%)' }} />
+              )}
+            </div>
+
+            {/* ── PiP LOCAL VIDEO ── */}
+            {callType === 'video' && (
+              <motion.div
+                drag
+                dragConstraints={{ top: 60, left: 20, right: 20, bottom: 120 }}
+                initial={{ x: 0, y: 0 }}
+                className="absolute top-[80px] right-4 z-20 cursor-grab active:cursor-grabbing"
+              >
+                {!isCamOff && localStream ? (
+                  <div className="w-28 h-40 md:w-36 md:h-52 rounded-2xl overflow-hidden border-2 border-white/60 shadow-[0_20px_60px_rgba(0,0,0,0.5)] bg-black">
+                    <video ref={myVideoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
+                  </div>
+                ) : (
+                  <div className="w-28 h-40 md:w-36 md:h-52 rounded-2xl bg-black/80 border-2 border-white/20 flex items-center justify-center">
+                    <VideoOff size={24} className="text-white/40" />
+                  </div>
+                )}
+              </motion.div>
+            )}
+
+            {/* ── Top Bar ── */}
+            <div className="absolute top-0 inset-x-0 z-30 flex items-center justify-between px-5 pointer-events-none" style={{ paddingTop: 'max(16px, env(safe-area-inset-top, 16px))' }}>
+              <div className="flex items-center gap-3 bg-black/40 backdrop-blur-xl rounded-2xl px-4 py-2.5 border border-white/10">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center">
+                  <span className="text-white text-xs font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '??'}</span>
                 </div>
-                <div className="relative z-10 flex flex-col items-center gap-8">
-                  {/* Pulsing rings around avatar */}
-                  <div className="relative flex items-center justify-center">
-                    {remoteStream && (
-                      <>
-                        <div className="absolute w-60 h-60 rounded-full border border-indigo-400/10 animate-ping" style={{ animationDuration: '3s' }} />
-                        <div className="absolute w-48 h-48 rounded-full border border-indigo-400/15 animate-ping" style={{ animationDuration: '2.2s', animationDelay: '0.5s' }} />
-                        <div className="absolute w-36 h-36 rounded-full border border-indigo-400/20 animate-ping" style={{ animationDuration: '1.6s', animationDelay: '1s' }} />
-                      </>
-                    )}
-                    <div className="w-32 h-32 rounded-full flex items-center justify-center shadow-[0_0_80px_rgba(99,102,241,0.4)] relative z-10" style={{ background: 'linear-gradient(135deg, #4f46e5, #6366f1)' }}>
-                      <span className="text-white text-5xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '🐳'}</span>
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-white text-[30px] font-black tracking-tight mb-2">{activePeer ? shortAddr(activePeer) : 'Unknown Peer'}</p>
-                    {remoteStream ? (
-                      <span className="text-emerald-400 text-[13px] font-mono uppercase tracking-[0.25em] flex items-center gap-2 justify-center">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                        {formatDuration(callDurationSeconds)}
-                      </span>
-                    ) : (
-                      <span className="text-white/40 text-[13px] font-mono uppercase tracking-widest animate-pulse">Establishing audio...</span>
-                    )}
-                  </div>
+                <div>
+                  <p className="text-white text-[13px] font-bold leading-none">{activePeer ? shortAddr(activePeer) : 'Peer'}</p>
+                  <p className="text-white/50 text-[10px] font-mono mt-0.5">{callType === 'video' ? '📹 Video' : '🎙️ Audio'}</p>
                 </div>
               </div>
-            )}
-          </div>
+              
+              <button 
+                onClick={() => setIsCallMinimized(true)}
+                className="bg-black/30 hover:bg-black/50 active:scale-95 transition-all backdrop-blur-xl rounded-full w-10 h-10 flex items-center justify-center border border-white/20 pointer-events-auto"
+              >
+                <div className="w-3 h-3 border-b-2 border-l-2 border-white transform -rotate-45" />
+              </button>
+            </div>
 
-          {/* ─── PiP: LOCAL camera (video calls only) — draggable, top-right ── */}
-          {callType === 'video' && (
-            <motion.div
-              drag
-              dragConstraints={{ top: 60, left: 20, right: 20, bottom: 120 }}
-              initial={{ x: 0, y: 0 }}
-              className="absolute top-[80px] right-4 z-20 cursor-grab active:cursor-grabbing"
+            {/* ── Network Alert ── */}
+            {networkQuality === 'poor' && (
+              <div className="absolute top-[100px] left-1/2 -translate-x-1/2 bg-amber-500/90 backdrop-blur text-white text-[11px] font-mono font-bold px-4 py-1.5 rounded-full z-20 flex items-center gap-2">
+                 ⚠️ Weak Connection
+              </div>
+            )}
+
+            {/* ── Expanded Controls ── */}
+            <div
+              className="absolute bottom-0 inset-x-0 z-30 flex flex-col gap-4 pb-8"
+              style={{ paddingBottom: 'max(32px, env(safe-area-inset-bottom, 32px))' }}
             >
-              {!isCamOff && localStream ? (
-                <div className="w-28 h-40 md:w-36 md:h-52 rounded-2xl overflow-hidden border-2 border-white/60 shadow-[0_20px_60px_rgba(0,0,0,0.5)] bg-black">
-                  <video ref={myVideoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
-                </div>
-              ) : (
-                <div className="w-28 h-40 md:w-36 md:h-52 rounded-2xl bg-black/80 border-2 border-white/20 flex items-center justify-center">
+              {/* Secondary Controls Row (Camera Flip, Screen Share) */}
+              <div className="flex items-center justify-center gap-6 opacity-90 mb-2">
+                 {callType === 'video' && (
+                   <>
+                     <button onClick={switchCamera} className="w-12 h-12 rounded-full bg-white/10 backdrop-blur flex items-center justify-center text-white hover:bg-white/20 transition-all border border-white/10 shadow-lg">
+                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.29 7 12 12 20.71 7"></polyline><line x1="12" y1="22" x2="12" y2="12"></line></svg>
+                     </button>
+                     <button onClick={toggleScreenShare} className={`w-12 h-12 rounded-full flex items-center justify-center transition-all border border-white/10 shadow-lg ${isScreenSharing ? 'bg-indigo-500 text-white' : 'bg-white/10 backdrop-blur text-white hover:bg-white/20'}`}>
+                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                     </button>
+                   </>
+                 )}
+                 {callType === 'audio' && (
+                   <button className="w-12 h-12 rounded-full bg-white/10 backdrop-blur flex items-center justify-center text-white border border-white/10 cursor-not-allowed opacity-50 shadow-lg">
+                     <Volume2 size={20} />
+                   </button>
+                 )}
+              </div>
+
+              {/* Primary Controls Row */}
+              <div className="flex items-center justify-center gap-8 mx-auto bg-black/40 backdrop-blur-2xl px-8 py-4 rounded-[2.5rem] border border-white/10 shadow-2xl">
+                <button
+                  onClick={toggleMic}
+                  className={`w-[60px] h-[60px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-lg ${
+                    isMicMuted
+                      ? 'bg-white text-black'
+                      : 'bg-white/10 text-white hover:bg-white/20'
+                  }`}
+                >
+                  {isMicMuted ? <MicOff size={24} /> : <Mic size={24} />}
+                </button>
+
+                <button
+                  onClick={endCall}
+                  className="w-[72px] h-[72px] bg-red-500 rounded-[28px] flex items-center justify-center text-white hover:bg-red-600 active:scale-90 transition-all shadow-[0_8px_32px_rgba(239,68,68,0.6)]"
+                >
+                  <PhoneOff size={32} />
+                </button>
+
+                {callType === 'video' ? (
+                  <button
+                    onClick={toggleCamera}
+                    className={`w-[60px] h-[60px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-lg ${
+                      isCamOff
+                        ? 'bg-white text-black'
+                        : 'bg-white/10 text-white hover:bg-white/20'
+                    }`}
+                  >
+                    {isCamOff ? <VideoOff size={24} /> : <Video size={24} />}
+                  </button>
+                ) : (
+                  <div className="w-[60px] h-[60px]" />
+                )}
+              </div>
+            </div>
+
+            <audio ref={remoteAudioRef} autoPlay playsInline style={{ position: 'absolute', width: 0, height: 0, opacity: 0, pointerEvents: 'none' }} />
+          </div>
+        )
+      )}ex items-center justify-center">
                   <VideoOff size={24} className="text-white/40" />
                 </div>
               )}
