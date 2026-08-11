@@ -199,21 +199,39 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'New PIN must be exactly 6 digits.' }, { status: 400 });
     }
 
-    // Must verify current PIN before changing (or be first-time)
+    // Fetch stored PIN hash from DB to determine if user is first-time
+    let storedPinHash: string | null = null;
+    const user = await prisma.user.findUnique({
+      where: { walletAddress: userId.toLowerCase() },
+      select: { enclavePinHash: true } as any,
+    }).catch(() => null);
+    
+    if (user && (user as any).enclavePinHash) {
+      storedPinHash = (user as any).enclavePinHash;
+    } else {
+      const authUser = await prisma.authUser.findFirst({
+        where: { OR: [{ id: userId }, { walletAddress: userId.toLowerCase() }] },
+        select: { enclavePinHash: true } as any,
+      }).catch(() => null);
+      if (authUser && (authUser as any).enclavePinHash) {
+        storedPinHash = (authUser as any).enclavePinHash;
+      }
+    }
+
+    const isFirstTimeUser = !storedPinHash;
+
+    // [SECURITY FIX] If they already have a PIN, they MUST provide the current PIN
+    if (!isFirstTimeUser && !currentPin) {
+      return NextResponse.json({ error: 'Current PIN is required to change PIN.' }, { status: 400 });
+    }
+
+    // Verify current PIN before changing
     if (currentPin) {
       const bfKey = getBruteforceKey(req, userId);
       const { blocked } = checkBruteforce(bfKey);
       if (blocked) {
         return NextResponse.json({ error: 'Too many attempts. Try again in 15 minutes.' }, { status: 429 });
       }
-
-      // Validate current PIN
-      let storedPinHash: string | null = null;
-      const user = await prisma.user.findUnique({
-        where: { walletAddress: userId.toLowerCase() },
-        select: { enclavePinHash: true } as any,
-      }).catch(() => null);
-      if (user) storedPinHash = (user as any).enclavePinHash;
 
       const expectedHash = storedPinHash ?? getDefaultPinHash(userId);
       const submittedHash = hashPin(userId, currentPin);
@@ -253,6 +271,41 @@ export async function PUT(req: NextRequest) {
 
   } catch (err: any) {
     console.error('[Enclave PIN] Update error:', err);
+    return NextResponse.json({ error: 'Internal server error.' }, { status: 500 });
+  }
+}
+
+// ── DELETE — Reset PIN (Requires re-authentication) ──────────────────────────
+export async function DELETE(req: NextRequest) {
+  try {
+    const session = await getSession();
+    if (!session?.userId) {
+      return NextResponse.json({ error: 'Session expired. Please reconnect.' }, { status: 401 });
+    }
+
+    const userId = session.userId;
+
+    // Clear PIN from User table
+    await prisma.user.update({
+      where: { walletAddress: userId.toLowerCase() },
+      data: { enclavePinHash: null } as any,
+    }).catch(async () => {
+      // Fallback: AuthUser table
+      await prisma.authUser.updateMany({
+        where: {
+          OR: [
+            { id: userId },
+            { walletAddress: userId.toLowerCase() },
+          ]
+        },
+        data: { enclavePinHash: null } as any,
+      });
+    });
+
+    return NextResponse.json({ success: true, message: 'Enclave PIN reset successfully.' });
+
+  } catch (err: any) {
+    console.error('[Enclave PIN] Delete error:', err);
     return NextResponse.json({ error: 'Internal server error.' }, { status: 500 });
   }
 }

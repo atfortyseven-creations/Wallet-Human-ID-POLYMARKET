@@ -11,7 +11,22 @@ import { motion, AnimatePresence } from 'framer-motion';
 const CLEARANCE_KEY = '__enclave_clearance_v2__';
 const CLEARANCE_TOKEN_KEY = '__enclave_token__';
 const CLEARANCE_TS_KEY = '__enclave_ts__';
+// [SECURITY FIX] Add token fingerprint to detect manual sessionStorage injection
+const CLEARANCE_FINGERPRINT_KEY = '__enclave_fp__';
 const CLEARANCE_TTL_MS = 8 * 60 * 60 * 1000; // 8 hours
+
+// Derive a simple client-side fingerprint from the token to detect tampering.
+// This is NOT cryptographic security — it's a client-side sanity check.
+// Real security is always enforced server-side by the /api/auth/enclave-pin route.
+function deriveFingerprint(token: string, ts: number): string {
+  // Simple XOR-based fingerprint: makes manual injection require knowing the token
+  const combined = `${token}:${ts}:whale_enclave`;
+  let hash = 0;
+  for (let i = 0; i < combined.length; i++) {
+    hash = ((hash << 5) - hash + combined.charCodeAt(i)) | 0;
+  }
+  return Math.abs(hash).toString(36);
+}
 
 function readClearance(): boolean {
   try {
@@ -24,6 +39,19 @@ function readClearance(): boolean {
       sessionStorage.removeItem(CLEARANCE_KEY);
       sessionStorage.removeItem(CLEARANCE_TOKEN_KEY);
       sessionStorage.removeItem(CLEARANCE_TS_KEY);
+      sessionStorage.removeItem(CLEARANCE_FINGERPRINT_KEY);
+      return false;
+    }
+    // [SECURITY FIX] Validate fingerprint — catches naive sessionStorage injection
+    const token = sessionStorage.getItem(CLEARANCE_TOKEN_KEY) || '';
+    const storedFp = sessionStorage.getItem(CLEARANCE_FINGERPRINT_KEY) || '';
+    const expectedFp = deriveFingerprint(token, ts);
+    if (!token || storedFp !== expectedFp) {
+      // Fingerprint mismatch — possible injection attempt, clear and force re-auth
+      sessionStorage.removeItem(CLEARANCE_KEY);
+      sessionStorage.removeItem(CLEARANCE_TOKEN_KEY);
+      sessionStorage.removeItem(CLEARANCE_TS_KEY);
+      sessionStorage.removeItem(CLEARANCE_FINGERPRINT_KEY);
       return false;
     }
     return true;
@@ -34,9 +62,11 @@ function readClearance(): boolean {
 
 function writeClearance(token: string, ts: number) {
   try {
+    const fp = deriveFingerprint(token, ts);
     sessionStorage.setItem(CLEARANCE_KEY, 'granted');
     sessionStorage.setItem(CLEARANCE_TOKEN_KEY, token);
     sessionStorage.setItem(CLEARANCE_TS_KEY, ts.toString());
+    sessionStorage.setItem(CLEARANCE_FINGERPRINT_KEY, fp);
   } catch {}
 }
 
@@ -85,6 +115,10 @@ export function TuringShieldGate({
   const [pinSetStep, setPinSetStep] = useState<'new' | 'confirm'>('new');
   const [pinSetError, setPinSetError] = useState<string | null>(null);
   const [pinSetSuccess, setPinSetSuccess] = useState(false);
+  
+  // Reset PIN flow
+  const [confirmReset, setConfirmReset] = useState(false);
+  const [resetting, setResetting] = useState(false);
 
   const pinRefs = useRef<(HTMLInputElement | null)[]>([]);
   const newPinRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -248,7 +282,10 @@ export function TuringShieldGate({
       return;
     }
 
-    setSettingPin(false);
+    // [SECURITY FIX] Do NOT close the overlay before server confirmation.
+    // Previously, setSettingPin(false) was called before the fetch, meaning
+    // a network failure left the user in a broken state (cleared but no PIN saved).
+    setPinSetError(null);
     try {
       const res = await fetch('/api/auth/enclave-pin', {
         method: 'PUT',
@@ -259,18 +296,22 @@ export function TuringShieldGate({
       const data = await res.json();
       if (res.ok) {
         setPinSetSuccess(true);
-        setSettingPin(true); // Keep overlay open to show success
+        // Only NOW close the input step and show the success message
+        setSettingPin(true);
       } else {
         if (data.error?.includes('expired')) {
           window.location.href = '/connect';
           return;
         }
         setPinSetError(data.error || 'Failed to update PIN.');
-        setSettingPin(true);
+        // Stay on the confirm step so user can retry
+        setPinSetStep('new');
+        setNewPin(['', '', '', '', '', '']);
+        setConfirmPin(['', '', '', '', '', '']);
       }
     } catch (err) {
-      setPinSetError('Network error while saving PIN.');
-      setSettingPin(true);
+      setPinSetError('Network error while saving PIN. Please try again.');
+      // Stay on confirm step, do NOT close overlay
     }
   }, [newPin, confirmPin, pinSetStep]);
 
@@ -486,10 +527,19 @@ export function TuringShieldGate({
                   <><Shield size={16} /> Confirm Enclave Access</>
                 )}
               </button>
+              
+              {!locked && (
+                <button
+                  onClick={() => setConfirmReset(true)}
+                  className="w-full text-center text-[12px] font-bold text-[#999] hover:text-black transition-colors mb-2"
+                >
+                  Forgot PIN? Reset Enclave
+                </button>
+              )}
             </>
           )}
 
-          {locked && (
+          {locked && !confirmReset && (
             <div className="w-full flex flex-col items-center gap-3 mb-6">
               <div className="flex items-center gap-2 text-[12px] text-red-400 font-mono">
                 <RefreshCw size={12} className="animate-spin" />
@@ -513,19 +563,70 @@ export function TuringShieldGate({
           )}
 
           {/* Audit trail */}
-          <div className="w-full flex flex-col gap-2 text-left bg-black/[0.02] px-4 py-4 rounded-2xl border border-black/[0.06]">
-            <div className="text-[9px] uppercase tracking-[0.25em] text-black/35 font-black mb-1">Security Audit Trail</div>
-            {[
-              'Server-side PIN verification (no local bypass)',
-              'HMAC-SHA256 • Timing-safe comparison',
-              'Brute-force protection: 5 attempts / 15 min',
-            ].map(item => (
-              <div key={item} className="flex items-center gap-2 text-[11px] font-medium text-[#555]">
-                <CheckCircle2 size={12} className="text-indigo-500 shrink-0" />
-                {item}
-              </div>
-            ))}
-          </div>
+          {!confirmReset && (
+            <div className="w-full flex flex-col gap-2 text-left bg-black/[0.02] px-4 py-4 rounded-2xl border border-black/[0.06]">
+              <div className="text-[9px] uppercase tracking-[0.25em] text-black/35 font-black mb-1">Security Audit Trail</div>
+              {[
+                'Server-side PIN verification (no local bypass)',
+                'HMAC-SHA256 • Timing-safe comparison',
+                'Brute-force protection: 5 attempts / 15 min',
+              ].map(item => (
+                <div key={item} className="flex items-center gap-2 text-[11px] font-medium text-[#555]">
+                  <CheckCircle2 size={12} className="text-indigo-500 shrink-0" />
+                  {item}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Reset Confirmation */}
+          <AnimatePresence>
+            {confirmReset && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="w-full overflow-hidden"
+              >
+                <div className="w-full p-5 bg-red-50 border border-red-100 rounded-2xl text-left mt-2 mb-4">
+                  <h3 className="text-red-700 font-black text-[13px] uppercase tracking-widest flex items-center gap-2 mb-2">
+                    <AlertTriangle size={14} /> Reset Enclave PIN
+                  </h3>
+                  <p className="text-red-600/80 text-[12px] font-medium leading-relaxed mb-4">
+                    Resetting your PIN will log you out immediately. To set a new PIN, you must prove ownership of this account by re-authenticating with your wallet or email.
+                  </p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setConfirmReset(false)}
+                      disabled={resetting}
+                      className="flex-1 py-2.5 rounded-xl border border-red-200 text-red-700 text-[11px] font-bold uppercase tracking-widest hover:bg-red-100 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={async () => {
+                        setResetting(true);
+                        try {
+                          await fetch('/api/auth/enclave-pin', { method: 'DELETE' });
+                          await fetch('/api/auth/logout', { method: 'POST' });
+                          sessionStorage.clear();
+                          window.location.href = '/connect';
+                        } catch {
+                          setResetting(false);
+                          setConfirmReset(false);
+                        }
+                      }}
+                      disabled={resetting}
+                      className="flex-1 py-2.5 rounded-xl bg-red-600 text-white text-[11px] font-bold uppercase tracking-widest hover:bg-red-700 transition-colors disabled:opacity-50"
+                    >
+                      {resetting ? 'Resetting...' : 'Log Out & Reset'}
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
         </motion.div>
       </AnimatePresence>
       </div>
