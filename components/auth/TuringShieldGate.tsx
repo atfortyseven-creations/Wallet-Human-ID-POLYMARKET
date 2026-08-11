@@ -56,6 +56,26 @@ export function TuringShieldGate({
   const [shake, setShake] = useState(false);
   const [attemptsRemaining, setAttemptsRemaining] = useState<number | null>(null);
   const [locked, setLocked] = useState(false);
+  // [SECURITY FIX] Server-enforced lockout timer — cannot be bypassed client-side
+  const [lockoutExpiresAt, setLockoutExpiresAt] = useState<number | null>(null);
+  const [lockoutCountdown, setLockoutCountdown] = useState(0);
+
+  // Count down the lockout timer — purely cosmetic, server enforces the real block
+  React.useEffect(() => {
+    if (!lockoutExpiresAt) return;
+    const interval = setInterval(() => {
+      const remaining = Math.max(0, Math.ceil((lockoutExpiresAt - Date.now()) / 1000));
+      setLockoutCountdown(remaining);
+      if (remaining === 0) {
+        setLocked(false);
+        setLockoutExpiresAt(null);
+        setAttemptsRemaining(null);
+        setPinError(null);
+        setPin(['', '', '', '', '', '']);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [lockoutExpiresAt]);
 
   // Set new PIN flow
   const [isFirstTime, setIsFirstTime] = useState(false);
@@ -102,12 +122,16 @@ export function TuringShieldGate({
       const data = await res.json();
 
       if (res.status === 429) {
-        // Locked out
+        // [SECURITY FIX] Record server-side lockout expiry — client CANNOT reset this
         setLocked(true);
         setPinError(data.error || 'Too many attempts. Please wait 15 minutes.');
         setPin(['', '', '', '', '', '']);
         triggerShake();
         setVerifying(false);
+        // Set lockout for 15 minutes from now — countdown is cosmetic only
+        // Server will continue to block all requests regardless of client state
+        setLockoutExpiresAt(Date.now() + 15 * 60 * 1000);
+        setLockoutCountdown(15 * 60);
         return;
       }
 
@@ -390,8 +414,8 @@ export function TuringShieldGate({
           {/* Description */}
           <p className="text-[13px] text-[#666] font-medium leading-[1.6] mb-6 px-1">
             {locked
-              ? 'Too many failed attempts. Enclave is temporarily locked for security. Please wait 15 minutes before trying again.'
-              : 'Enter your 6-digit Enclave PIN to verify you are human and access the sovereign network. (Default PIN: 777777)'
+              ? 'Too many failed attempts. Enclave is temporarily locked for security. Please wait before trying again.'
+              : 'Enter your 6-digit Enclave PIN to verify identity and access the sovereign network.'
             }
           </p>
 
@@ -469,14 +493,22 @@ export function TuringShieldGate({
             <div className="w-full flex flex-col items-center gap-3 mb-6">
               <div className="flex items-center gap-2 text-[12px] text-red-400 font-mono">
                 <RefreshCw size={12} className="animate-spin" />
-                Lockout expires in ~15 minutes
+                {/* [SECURITY FIX] Countdown is cosmetic — server enforces the real lockout */}
+                {lockoutCountdown > 0
+                  ? `Lockout expires in ${Math.floor(lockoutCountdown / 60)}:${String(lockoutCountdown % 60).padStart(2, '0')}`
+                  : 'Lockout active. Server will verify readiness.'}
               </div>
-              <button
-                onClick={() => { setLocked(false); setPinError(null); setAttemptsRemaining(null); setPin(['', '', '', '', '', '']); }}
-                className="w-full py-3 border border-black/10 rounded-2xl text-[12px] font-bold text-[#666] hover:bg-black/[0.03] transition-all"
-              >
-                Try again anyway
-              </button>
+              {/* [SECURITY FIX] Removed "Try again anyway" button — it allowed infinite attempts
+                   by resetting client-side state only. The server enforces brute-force protection
+                   independently. Attempting again while locked will receive a 429 from the server. */}
+              {lockoutCountdown === 0 && (
+                <button
+                  onClick={() => { setPinError(null); setPin(['', '', '', '', '', '']); }}
+                  className="w-full py-3 border border-black/10 rounded-2xl text-[12px] font-bold text-[#666] hover:bg-black/[0.03] transition-all"
+                >
+                  Try Again
+                </button>
+              )}
             </div>
           )}
 
