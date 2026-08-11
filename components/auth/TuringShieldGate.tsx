@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Cpu, CheckCircle2, Key, Shield, AlertTriangle, Loader2, Lock, RefreshCw } from 'lucide-react';
+import { Cpu, CheckCircle2, Key, Shield, AlertTriangle, Loader2, Lock, RefreshCw, Bot } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { generateCaptchaChallenge, verifyCaptchaAnswer, CaptchaChallenge } from '@/lib/humanity-captcha';
 
 // ─── Session key ─────────────────────────────────────────────────────────────
 // The enclave clearance token is persisted for the current browser session only.
@@ -120,6 +121,11 @@ export function TuringShieldGate({
   const [confirmReset, setConfirmReset] = useState(false);
   const [resetting, setResetting] = useState(false);
 
+  // Anti-Bot CAPTCHA
+  const [captchaPassed, setCaptchaPassed] = useState(false);
+  const [captchaIndex, setCaptchaIndex] = useState(0);
+  const [currentCaptcha, setCurrentCaptcha] = useState<CaptchaChallenge | null>(null);
+
   const pinRefs = useRef<(HTMLInputElement | null)[]>([]);
   const newPinRefs = useRef<(HTMLInputElement | null)[]>([]);
   const confirmPinRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -128,6 +134,35 @@ export function TuringShieldGate({
     setMounted(true);
     if (readClearance()) {
       setCleared(true);
+      setCaptchaPassed(true);
+    }
+  }, []);
+
+  // Initialize CAPTCHA
+  useEffect(() => {
+    if (mounted && !cleared && !captchaPassed && !currentCaptcha) {
+      setCurrentCaptcha(generateCaptchaChallenge());
+    }
+  }, [mounted, cleared, captchaPassed, currentCaptcha]);
+
+  const handleCaptchaAnswer = (answer: string) => {
+    if (!currentCaptcha) return;
+    if (verifyCaptchaAnswer(answer, currentCaptcha.salt, currentCaptcha.answerHash)) {
+      if (captchaIndex >= 2) {
+        setCaptchaPassed(true);
+      } else {
+        setCaptchaIndex(prev => prev + 1);
+        setCurrentCaptcha(generateCaptchaChallenge());
+      }
+    } else {
+      // Failed - reset everything
+      triggerShake();
+      setCaptchaIndex(0);
+      setCurrentCaptcha(generateCaptchaChallenge());
+      setPinError('Incorrect. Bot behavior detected. Resetting challenge.');
+      setTimeout(() => setPinError(null), 3000);
+    }
+  };
     }
   }, []);
 
@@ -452,47 +487,30 @@ export function TuringShieldGate({
             {locked ? 'Brute-Force Protection Active' : 'Secure Enclave Active'}
           </div>
 
-          {/* Description */}
-          <p className="text-[13px] text-[#666] font-medium leading-[1.6] mb-6 px-1">
-            {locked
-              ? 'Too many failed attempts. Enclave is temporarily locked for security. Please wait before trying again.'
-              : 'Enter your 6-digit Enclave PIN to verify identity and access the sovereign network.'
-            }
-          </p>
-
-          {!locked && (
-            <>
-              {/* PIN inputs */}
+          {/* Description or CAPTCHA */}
+          {!captchaPassed && currentCaptcha ? (
+            <div className="w-full flex flex-col items-center">
+              <p className="text-[13px] text-[#0A0A0A] font-black leading-[1.6] mb-2 px-1">
+                Anti-Bot Verification ({captchaIndex + 1}/3)
+              </p>
+              <p className="text-[12px] text-[#666] font-medium leading-[1.4] mb-5 px-1 bg-black/[0.03] p-3 rounded-xl border border-black/[0.05]">
+                {currentCaptcha.question}
+              </p>
               <motion.div
                 animate={shake ? { x: [0, -10, 10, -10, 10, 0] } : { x: 0 }}
                 transition={{ duration: 0.4 }}
-                className="flex gap-2 mb-4 w-full justify-center"
+                className="w-full flex flex-col gap-2 mb-6"
               >
-                {pin.map((digit, i) => (
-                  <input
-                    key={i}
-                    ref={el => { pinRefs.current[i] = el; }}
-                    type="tel"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    autoComplete="one-time-code"
-                    maxLength={1}
-                    value={digit}
-                    onChange={e => handlePinChange(i, e.target.value, pin, setPin, pinRefs, handleSubmit)}
-                    onKeyDown={e => handleKeyDown(i, e, pin, setPin, pinRefs, () => handleSubmit(pin))}
-                    disabled={verifying}
-                    className={`w-11 h-13 sm:w-12 sm:h-14 text-center text-[18px] font-black rounded-xl outline-none transition-all duration-200 disabled:opacity-50
-                      ${pinError
-                        ? 'bg-red-50 border-2 border-red-400 text-red-600'
-                        : digit
-                        ? 'bg-indigo-50 border-2 border-indigo-500 text-indigo-700'
-                        : 'bg-black/[0.04] border border-black/10 text-black focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20'
-                      }`}
-                    style={{ height: '56px' }}
-                  />
+                {currentCaptcha.options.map((opt, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => handleCaptchaAnswer(opt)}
+                    className="w-full py-3 bg-white border-2 border-[#EBEBEB] hover:border-indigo-500 hover:bg-indigo-50 text-indigo-900 rounded-xl font-bold text-[13px] transition-all"
+                  >
+                    {opt}
+                  </button>
                 ))}
               </motion.div>
-
               {/* Error */}
               <AnimatePresence>
                 {pinError && (
@@ -502,39 +520,96 @@ export function TuringShieldGate({
                     exit={{ opacity: 0 }}
                     className="flex items-center gap-1.5 text-red-600 text-[11px] font-bold uppercase tracking-widest mb-4 text-center"
                   >
-                    <AlertTriangle size={12} className="shrink-0" />
+                    <Bot size={14} className="shrink-0" />
                     {pinError}
                   </motion.div>
                 )}
               </AnimatePresence>
+            </div>
+          ) : (
+            <>
+              <p className="text-[13px] text-[#666] font-medium leading-[1.6] mb-6 px-1">
+                {locked
+                  ? 'Too many failed attempts. Enclave is temporarily locked for security. Please wait before trying again.'
+                  : 'Enter your 6-digit Enclave PIN to verify identity and access the sovereign network.'
+                }
+              </p>
 
-              {/* Attempts indicator */}
-              {attemptsRemaining !== null && attemptsRemaining <= 3 && !locked && (
-                <p className="text-orange-500 text-[10px] font-bold uppercase tracking-widest mb-3">
-                  ⚠ {attemptsRemaining} attempt{attemptsRemaining !== 1 ? 's' : ''} remaining before lockout
-                </p>
-              )}
-
-              {/* Submit button */}
-              <button
-                onClick={() => handleSubmit(pin)}
-                disabled={pin.some(d => d === '') || verifying}
-                className="w-full h-[52px] bg-[#0A0A0A] hover:bg-black/80 text-white rounded-2xl font-black text-[13px] uppercase tracking-[0.15em] transition-all duration-200 active:scale-[0.97] shadow-lg shadow-black/15 flex items-center justify-center gap-3 disabled:opacity-40 disabled:cursor-not-allowed mb-6"
-              >
-                {verifying ? (
-                  <><Loader2 size={16} className="animate-spin" /> Verifying...</>
-                ) : (
-                  <><Shield size={16} /> Confirm Enclave Access</>
-                )}
-              </button>
-              
               {!locked && (
-                <button
-                  onClick={() => setConfirmReset(true)}
-                  className="w-full text-center text-[12px] font-bold text-[#999] hover:text-black transition-colors mb-2"
-                >
-                  Forgot PIN? Reset Enclave
-                </button>
+                <>
+                  {/* PIN inputs */}
+                  <motion.div
+                    animate={shake ? { x: [0, -10, 10, -10, 10, 0] } : { x: 0 }}
+                    transition={{ duration: 0.4 }}
+                    className="flex gap-2 mb-4 w-full justify-center"
+                  >
+                    {pin.map((digit, i) => (
+                      <input
+                        key={i}
+                        ref={el => { pinRefs.current[i] = el; }}
+                        type="tel"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        autoComplete="one-time-code"
+                        maxLength={1}
+                        value={digit}
+                        onChange={e => handlePinChange(i, e.target.value, pin, setPin, pinRefs, handleSubmit)}
+                        onKeyDown={e => handleKeyDown(i, e, pin, setPin, pinRefs, () => handleSubmit(pin))}
+                        disabled={verifying}
+                        className={`w-11 h-13 sm:w-12 sm:h-14 text-center text-[18px] font-black rounded-xl outline-none transition-all duration-200 disabled:opacity-50
+                          ${pinError
+                            ? 'bg-red-50 border-2 border-red-400 text-red-600'
+                            : digit
+                            ? 'bg-indigo-50 border-2 border-indigo-500 text-indigo-700'
+                            : 'bg-black/[0.04] border border-black/10 text-black focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20'
+                          }`}
+                        style={{ height: '56px' }}
+                      />
+                    ))}
+                  </motion.div>
+
+                  {/* Error */}
+                  <AnimatePresence>
+                    {pinError && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        className="flex items-center gap-1.5 text-red-600 text-[11px] font-bold uppercase tracking-widest mb-4 text-center"
+                      >
+                        <AlertTriangle size={12} className="shrink-0" />
+                        {pinError}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Attempts indicator */}
+                  {attemptsRemaining !== null && attemptsRemaining <= 3 && !locked && (
+                    <p className="text-orange-500 text-[10px] font-bold uppercase tracking-widest mb-3">
+                      ⚠ {attemptsRemaining} attempt{attemptsRemaining !== 1 ? 's' : ''} remaining before lockout
+                    </p>
+                  )}
+
+                  {/* Submit button */}
+                  <button
+                    onClick={() => handleSubmit(pin)}
+                    disabled={pin.some(d => d === '') || verifying}
+                    className="w-full h-[52px] bg-[#0A0A0A] hover:bg-black/80 text-white rounded-2xl font-black text-[13px] uppercase tracking-[0.15em] transition-all duration-200 active:scale-[0.97] shadow-lg shadow-black/15 flex items-center justify-center gap-3 disabled:opacity-40 disabled:cursor-not-allowed mb-6"
+                  >
+                    {verifying ? (
+                      <><Loader2 size={16} className="animate-spin" /> Verifying...</>
+                    ) : (
+                      <><Shield size={16} /> Confirm Enclave Access</>
+                    )}
+                  </button>
+                  
+                  <button
+                    onClick={() => setConfirmReset(true)}
+                    className="w-full text-center text-[12px] font-bold text-[#999] hover:text-black transition-colors mb-2"
+                  >
+                    Forgot PIN? Reset Enclave
+                  </button>
+                </>
               )}
             </>
           )}
