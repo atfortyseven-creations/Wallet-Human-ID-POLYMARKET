@@ -450,13 +450,13 @@ export function TuringShieldGate({
   // ─── PIN Gate ─────────────────────────────────────────────────────────────
   return (
     <div
-      className="fixed inset-0 z-[9000] overflow-y-auto bg-white font-sans text-[#0A0A0A] p-4 flex flex-col items-center select-none"
+      className="fixed inset-0 z-[99999] overflow-y-auto bg-[#FAFAFA] font-sans text-[#0A0A0A] p-4 flex flex-col items-center select-none"
       style={{ WebkitOverflowScrolling: 'touch' }}
     >
-      <div className="flex-1 flex flex-col items-center w-full min-h-full pb-[10vh]">
+      <div className="flex-1 flex flex-col items-center justify-start w-full min-h-full">
         {/* Background ambient glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
-        <div className="absolute top-1/4 right-1/4 w-[200px] h-[200px] bg-purple-500/4 blur-[80px] rounded-full pointer-events-none" />
+        <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute top-[30%] right-1/4 w-[300px] h-[300px] bg-purple-500/4 blur-[100px] rounded-full pointer-events-none" />
 
         <AnimatePresence mode="wait">
           <motion.div
@@ -466,7 +466,7 @@ export function TuringShieldGate({
             exit={{ scale: 0.94, opacity: 0, y: -16 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             style={{ willChange: 'transform, opacity' }}
-            className="my-auto relative z-10 w-full max-w-[400px] border border-[#EBEBEB] bg-white rounded-[28px] p-7 shadow-[0_32px_80px_rgba(0,0,0,0.12)] flex flex-col items-center text-center"
+            className="mt-[100px] mb-12 relative z-10 w-full max-w-[420px] border border-[#EBEBEB] bg-white rounded-[32px] p-8 shadow-[0_40px_100px_rgba(0,0,0,0.08)] flex flex-col items-center text-center mx-auto"
           >
           {/* Icon */}
           <div className="relative w-[72px] h-[72px] mb-5 flex items-center justify-center">
