@@ -1,33 +1,36 @@
-# Security Model & Timelock Policy
+﻿# Security Policy and Vulnerability Disclosure
 
-## 1. Zero-Trust Architecture & Open-Source Mandate (MIT)
+## 1. Zero-Trust Architecture
 
-Humanity Ledger is built on the **Aztec Network**, ensuring that privacy is a foundational architectural component, not an optional overlay. The entire project is licensed under the **MIT License**, guaranteeing absolute transparency, code auditability, and cypherpunk alignment for the Aztec Grant program and the open-source Web3 ecosystem.
+Humanity Ledger is engineered upon a foundational **Zero-Trust Architecture**, leveraging the Aztec Network to guarantee privacy at the protocol layer.
 
-- **Client-Side Proving:** Zero-knowledge proofs (Noir circuits) are generated exclusively on the user's local hardware. No raw, unencrypted state is ever transmitted to the sequencer.
-- **Encrypted UTXOs:** All private asset balances and reputational scores are maintained as encrypted UTXOs. Sequencers cannot censor or front-run operations because payloads are fully opaque.
-- **Decentralized Sequencer Network:** While transaction ordering is decentralized, the privacy guarantees rely solely on cryptography, not sequencer honesty.
+- **Client-Side Proving:** All zero-knowledge proofs (via Noir circuits) are generated strictly on the local client hardware. Raw, unencrypted state parameters are never transmitted across the network.
+- **Encrypted State:** Sovereign assets and reputational scores are maintained as encrypted UTXOs. Network sequencers operate on opaque payloads, preventing censorship or front-running vectors.
+- **Cryptographic Enclaves:** Local session secrets and Private Execution Environment (PXE) states are mathematically siloed per contract address, preventing cross-module memory leaks.
 
-## 2. Timelock Policy
+## 2. Protocol Upgrades and Timelock
 
-To protect sovereign and retail capital against malicious governance upgrades or compromised administrative keys, all protocol smart contracts enforce a strict **Timelock Policy**.
+To safeguard sovereign capital against malicious governance or compromised administrative keys, all smart contract infrastructure adheres to a rigid **Timelock Policy**.
 
-### Timelock Specifications
-- **Delay Period:** 7 Days (168 hours)
-- **Scope:** All upgrades to the core Token Contract, Ledger Contract, and Circuit Verifiers.
-- **Emergency Pause:** A multisig of 3/5 trusted security council members can pause specific functions (e.g., cross-chain bridging) instantly in the event of an actively exploited CVE, but they **cannot** upgrade logic or move funds without the 7-day timelock.
+### 2.1 Specifications
+- **Enforcement Delay:** 168 hours (7 Days).
+- **Scope of Delay:** All logical upgrades to the Token Contract, Ledger Contract, and Circuit Verifier implementations.
 
-### Upgrade Process
-1. A transaction proposing an upgrade is submitted to the Timelock contract.
-2. The 7-day delay period begins. The transaction hash and plaintext payload are broadcast via our public `/changelog`.
-3. Users have 7 days to evaluate the new circuits/contracts and, if they disagree, withdraw their liquidity back to Ethereum L1 via the canonical bridge.
-4. After 168 hours, the upgrade can be executed.
+### 2.2 Emergency Intervention
+A federated multisig of trusted security council members retains the capability to execute an immediate protocol pause (e.g., halting the cross-chain bridge) during an active zero-day exploit. However, the multisig is cryptographically restricted from upgrading logic or migrating funds bypassing the 168-hour timelock.
 
-## 3. Web Application Firewall (WAF) & Rate Limiting
+## 3. Web Application Firewall & Network Security
 
-The application edge employs a distributed rate limiter (Upstash) and an OWASP-compliant WAF:
-- **Rate Limits:** Enforced per-IP and per-Session via a sliding window algorithm to defeat Layer 7 DDoS attacks.
-- **CSP & Anti-Tampering:** A dynamic, nonce-based Content Security Policy (CSP) restricts `script-src` and `frame-src`. All inline scripts and `eval()` are strictly prohibited.
-- **Replay Protection:** All state-mutating POST requests require a cryptographic nonce and timestamp (`x-system-nonce`, `x-system-timestamp`) enforced within a 60-second validity window.
+The application edge is fortified by a distributed rate limiter and an OWASP-compliant Web Application Firewall (WAF):
+- **DDoS Mitigation:** Enforced per-IP and per-session rate limits using a sliding window algorithm.
+- **Content Security Policy (CSP):** A dynamic, nonce-based CSP strictly limits script-src and rame-src. Inline script execution and eval() functions are permanently disabled.
+- **Replay Protection:** State-mutating requests mandate a cryptographic nonce and a precise timestamp window, verified server-side to reject replay attacks.
 
+## 4. Reporting a Vulnerability
 
+We treat all security disclosures with the highest priority. If you discover a vulnerability within the cryptographic implementations, the communication protocols, or the application interface, please adhere to the following coordinated disclosure process:
+
+1. **Do not open a public issue.**
+2. Email your findings directly to the Lead Architect: tfortyseven2@gmail.com.
+3. Include a detailed proof-of-concept, steps to reproduce, and the potential impact of the vulnerability.
+4. You will receive an acknowledgment within 24 hours, followed by a remediation timeline.

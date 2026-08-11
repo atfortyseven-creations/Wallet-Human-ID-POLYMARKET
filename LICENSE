@@ -1,24 +1,16 @@
-Whale Network Dual License
-Copyright (c) 2026-2027 Stefan Antonio Cirisanu / humanityledger
+﻿MIT License
 
-This project is released under a Dual License model to ensure compliance with the Aztec Foundation Grant requirements while protecting the authors against unauthorized commercial exploitation.
+Copyright (c) 2026 Stefan Antonio Cirisanu / Humanity Ledger
 
----
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-### SECTION 1: NON-COMMERCIAL & PUBLIC GOOD USE (MIT LICENSE VARIANT)
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, and distribute copies of the Software, provided that such use is STRICTLY NON-COMMERCIAL or explicitly aligned with public goods infrastructure via the Aztec Network.
-
-You may use, study, and modify this Software for personal, academic, or non-profit purposes.
-
-### SECTION 2: UNAUTHORIZED COMMERCIAL USE STRICTLY PROHIBITED
-You are expressly PROHIBITED from using this Software, in whole or in part, to operate a commercial service, monetize transactions, or sell it as a product without explicit prior written authorization from the Copyright Holders.
-
-Any commercial deployment, fork, or clone (e.g., launching a competing commercial application based on this UI or smart contracts) requires a Commercial License.
-
-### SECTION 3: AZTEC FOUNDATION GRANT EXCEPTION
-Nothing in this License shall restrict the rights granted to the Aztec Foundation or its grantees regarding the cryptographic primitives and protocols required to satisfy the open-source mandate of the Aztec Network Grant program. 
-
----
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
