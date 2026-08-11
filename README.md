@@ -74,8 +74,7 @@ The resulting architecture demonstrates that users can prove their identity cryp
 │           ▼   ▼  XMTP Signaling   │              ┌───────────▼──────────────┐   │
 │  ┌─────────────────────────────┐  │              │   DATA LAYER              │   │
 │  │   XMTP Network (MLS E2EE)  │  │              │   PostgreSQL (Prisma ORM) │   │
-│  │   No server reads content   │  │              │   Redis (Upstash PubSub)  │   │
-│  │   Wallet-to-wallet relay    │  │              │   Neo4j (Graph State)     │   │
+│  │   No server reads content   │  │              │   Wallet-to-wallet relay    │  │              │   Neo4j (Graph State)     │   │
 │  └─────────────────────────────┘  │              └───────────────────────────┘   │
 │                                   │                                               │
 │           ┌───────────────────────┘                                               │
@@ -272,16 +271,19 @@ Empirical observation of over 842,000 high-value transactions validates the EVM 
 **Stefan Antonio Cirisanu**
 Founder & Lead Architect, humanidfi.com
 
-Humanity Ledger is the culmination of extensive research into applied zero-knowledge cryptography, decentralized communication topologies, and empirical on-chain data analytics. It stands as a testament to the viability of building sovereign, production-grade systems independent of traditional, centralized intermediaries.
+Humanity Ledger is the culmination of extensive research and engineering spanning multiple bleeding-edge domains. As a solo architect, my technical purview encompasses:
 
-I am actively seeking rigorous academic and protocol-level collaboration, particularly in the following domains:
-- **Zero-Knowledge Cryptography:** Applications in scalable identity verification and private state execution (Aztec Network / Noir).
-- **Decentralized Network Topologies:** Advancing metadata-resistant P2P communication protocols and NAT traversal optimizations.
-- **Behavioral Economics & On-Chain Analytics:** Refining statistical models for predicting macro capital flows utilizing EVM execution data.
+- **Applied Cryptography & Zero-Knowledge Systems:** Deep expertise in Aztec Network, Noir, Grumpkin curve mathematics, and client-side verifiable computing (WASM/UltraHonk).
+- **Decentralized Network Topologies:** Advanced implementation of WebRTC, ICE/STUN/TURN NAT traversal, and metadata-resistant P2P communication protocols (XMTP/MLS).
+- **EVM Thermodynamics & On-Chain Analytics:** Development of high-frequency mempool ingestion engines, statistical anomaly detection (Z-scores), and graph database correlation (Neo4j).
+- **Full-Stack Systems Engineering:** Production-grade deployment architectures utilizing Next.js 15, TypeScript, WebGL/Framer Motion, and distributed state management (Redis PubSub, Prisma/PostgreSQL).
+- **AI Forensics & Detection:** Architected and deployed proprietary analytical tools capable of executing deep forensic analysis on text to determine the precise percentage of LLM/AI generative influence within any document.
+
+I am actively seeking rigorous academic and protocol-level collaboration. I invite researchers and university faculties to partner in expanding these domains into published research or novel decentralized primitives.
 
 **Contact Information:**
 - 📧 **Email:** [atfortyseven2@gmail.com](mailto:atfortyseven2@gmail.com)
-- 🔗 **LinkedIn:** [Stefan Antonio Cirisanu](https://www.linkedin.com/in/stefan-antonio-cirisanu-40116140b/)
+- 🔗 **LinkedIn:** [Stefan Antonio Cirisanu](https://www.linkedin.com/in/stefan-antonio-cirisanu/)
 - 🌐 **Platform:** [humanidfi.com](https://humanidfi.com)
 
 *Scholarly inquiries, technical feedback, and academic discourse are highly encouraged.*
