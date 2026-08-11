@@ -210,7 +210,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // ─── WebRTC Call State Machine ───────────────────────────────────────────────
   // States: idle → calling (outgoing) → ringing (incoming) → active → idle
   const [peerInstance, setPeerInstance] = useState<Peer | null>(null);
+  // [ANDROID FIX] peerInstanceRef — always holds the current peer, avoids stale closures
+  // in answerCall/startCall which are async and can capture stale state.
+  const peerInstanceRef = useRef<Peer | null>(null);
   const [myPeerId, setMyPeerId] = useState<string>('');
+  const myPeerIdRef = useRef<string>(''); // [ANDROID FIX] ref mirrors state for async safety
   // 'idle' | 'calling' | 'ringing' | 'connecting' | 'active'
   const [callState, _setCallState] = useState<'idle'|'calling'|'ringing'|'connecting'|'active'>('idle');
   const callStateRef = useRef<'idle'|'calling'|'ringing'|'connecting'|'active'>('idle');
@@ -746,9 +750,14 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         try { peer.reconnect(); } catch {}
       });
       setPeerInstance(peer);
+      peerInstanceRef.current = peer; // [ANDROID FIX] sync ref immediately
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
+
+  // [ANDROID FIX] Keep peerInstanceRef and myPeerIdRef in sync with state
+  useEffect(() => { peerInstanceRef.current = peerInstance; }, [peerInstance]);
+  useEffect(() => { myPeerIdRef.current = myPeerId; }, [myPeerId]);
 
   // Cleanup PeerJS on unmount
   useEffect(() => {
@@ -975,7 +984,12 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // context required by Android Chrome for getUserMedia.
   const answerCall = async () => {
     stopRingtone();
-    if (callState !== 'ringing') return;
+    // [ANDROID FIX] Use callStateRef.current instead of the stale React state closure.
+    // On Android, between the render that shows the Answer button and the moment
+    // the user taps it, React may have re-rendered with a new state but the
+    // onClick closure still holds the old `callState` value from the previous render.
+    // callStateRef.current is ALWAYS the real, current value.
+    if (callStateRef.current !== 'ringing') return;
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       toast.error('Your browser does not support media access. Please use Chrome.');
       return;
@@ -1040,8 +1054,19 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         return;
       }
 
-      const conn = peerInstance.call(targetPeerId, stream, {
-        metadata: { callType }
+      // [ANDROID FIX] Use peerInstanceRef.current — NEVER the stale closure `peerInstance`.
+      // `peerInstance` is a React state value captured at render time. On Android,
+      // by the time the user taps Answer, the closure may hold a null or old instance.
+      // peerInstanceRef.current is always the live, current PeerJS instance.
+      const livePeer = peerInstanceRef.current;
+      if (!livePeer || livePeer.destroyed) {
+        toast.error('WebRTC: Peer connection not ready. Please refresh.');
+        performEndCallRef.current();
+        return;
+      }
+
+      const conn = livePeer.call(targetPeerId, stream, {
+        metadata: { callType: callTypeRef.current }
       });
       if (!conn) {
         toast.error('WebRTC: Failed to initiate return connection.');
