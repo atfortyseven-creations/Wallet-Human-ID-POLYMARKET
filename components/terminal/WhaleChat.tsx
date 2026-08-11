@@ -1303,8 +1303,24 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         const newVideoTrack = newStream.getVideoTracks()[0];
         const oldVideoTrack = localStreamRef.current.getVideoTracks()[0];
         
-        newVideoTrack.onended = () => {
-          if (isComponentMountedRef.current && isScreenSharing) toggleScreenShare();
+        newVideoTrack.onended = async () => {
+          if (!isComponentMountedRef.current) return;
+          // User clicked "Stop sharing" via the browser's native UI
+          // Directly switch back to the user's camera to avoid stale closure issues
+          try {
+            const fallbackStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: activeCamera } });
+            const fallbackTrack = fallbackStream.getVideoTracks()[0];
+            const pc = activeConnectionRef.current?.peerConnection;
+            const s = pc?.getSenders().find((s: any) => s.track?.kind === 'video');
+            if (s && localStreamRef.current) {
+              await s.replaceTrack(fallbackTrack);
+              localStreamRef.current.removeTrack(newVideoTrack);
+              localStreamRef.current.addTrack(fallbackTrack);
+              setIsScreenSharing(false);
+            }
+          } catch (err) {
+            console.error('Failed to revert to camera after screen share stopped', err);
+          }
         };
 
         const peerConn = activeConnectionRef.current.peerConnection;
