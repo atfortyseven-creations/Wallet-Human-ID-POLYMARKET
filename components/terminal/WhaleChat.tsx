@@ -987,6 +987,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     setCallType(null);
     setIsMicMuted(false);
     setIsCamOff(false);
+    setIsCallMinimized(false); // [AUDIT FIX] Always reset minimized state so next call starts full-screen
+    setIsScreenSharing(false); // [AUDIT FIX] Reset screen sharing state
+    setAudioLevel(0);          // [AUDIT FIX] Reset audio visualizer level
+    setNetworkQuality('good'); // [AUDIT FIX] Reset network quality indicator
     isCallerRef.current = false;
     remotePeerIdRef.current = '';
     if (myVideoRef.current) myVideoRef.current.srcObject = null;
@@ -3433,8 +3437,22 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
             <p className="text-white text-[28px] font-black tracking-tight mb-1">{activePeer ? shortAddr(activePeer) : 'Unknown Peer'}</p>
             <p className="text-white/40 text-[13px] font-mono animate-pulse">Calling...</p>
+          </div>
 
-            {localStr      {/* ── Active Call Overlay — WhatsApp/Telegram parity ──────── */}
+          <div className="w-full flex flex-col items-center pb-[max(32px,env(safe-area-inset-bottom,32px))]">
+             <button
+                onClick={performEndCallRef.current}
+                className="w-16 h-16 rounded-full flex items-center justify-center transition-all active:scale-90 shadow-[0_8px_40px_rgba(239,68,68,0.5)]"
+                style={{ background: 'linear-gradient(135deg, #ef4444, #f87171)' }}
+              >
+                <PhoneOff size={28} className="text-white" />
+              </button>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* ── Active Call Overlay — WhatsApp/Telegram parity ──────── */}
       {callState === 'active' && isMounted && createPortal(
         isCallMinimized ? (
           /* ── MINIMIZED VIEW (Floating Banner or Video PiP) ── */
@@ -3627,87 +3645,6 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
             <audio ref={remoteAudioRef} autoPlay playsInline style={{ position: 'absolute', width: 0, height: 0, opacity: 0, pointerEvents: 'none' }} />
           </div>
-        )
-      )}ex items-center justify-center">
-                  <VideoOff size={24} className="text-white/40" />
-                </div>
-              )}
-            </motion.div>
-          )}
-
-          {/* ─── Top bar: caller info + timer ─────────────────────────────── */}
-          <div className="absolute top-0 inset-x-0 z-10 flex items-center justify-between px-5" style={{ paddingTop: 'max(16px, env(safe-area-inset-top, 16px))' }}>
-            <div className="flex items-center gap-3 bg-black/40 backdrop-blur-xl rounded-2xl px-4 py-2.5 border border-white/10">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center">
-                <span className="text-white text-xs font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '??'}</span>
-              </div>
-              <div>
-                <p className="text-white text-[13px] font-bold leading-none">{activePeer ? shortAddr(activePeer) : 'Peer'}</p>
-                <p className="text-white/50 text-[10px] font-mono mt-0.5">{callType === 'video' ? '📹 Video' : '🎙️ Audio'}</p>
-              </div>
-            </div>
-            <div className="bg-black/40 backdrop-blur-xl rounded-2xl px-3 py-2 border border-white/10">
-              <span className="text-emerald-400 text-[11px] font-mono font-bold uppercase tracking-wider">
-                {remoteStream ? `● ${formatDuration(callDurationSeconds)}` : 'Connecting...'}
-              </span>
-            </div>
-          </div>
-
-          {/* ─── Floating Controls Bar ─────────────────────────────────────── */}
-          <div
-            className="absolute bottom-0 inset-x-0 z-10"
-            style={{ paddingBottom: 'max(32px, env(safe-area-inset-bottom, 32px))' }}
-          >
-            <div className="flex items-center justify-center gap-5 mx-auto">
-
-              {/* Mic toggle */}
-              <button
-                onClick={toggleMic}
-                className={`w-16 h-16 rounded-full flex items-center justify-center transition-all active:scale-90 shadow-lg ${
-                  isMicMuted
-                    ? 'bg-red-500/80 text-white border border-red-400/50'
-                    : 'bg-white/20 backdrop-blur text-white hover:bg-white/30 border border-white/20'
-                }`}
-              >
-                {isMicMuted ? <MicOff size={24} /> : <Mic size={24} />}
-              </button>
-
-              {/* END CALL */}
-              <button
-                onClick={endCall}
-                className="w-20 h-16 bg-red-500 rounded-[24px] flex items-center justify-center text-white hover:bg-red-600 active:scale-90 transition-all shadow-[0_8px_24px_rgba(239,68,68,0.5)]"
-              >
-                <PhoneOff size={28} />
-              </button>
-
-              {/* Camera toggle (video only) */}
-              {callType === 'video' && (
-                <button
-                  onClick={toggleCamera}
-                  className={`w-16 h-16 rounded-full flex items-center justify-center transition-all active:scale-90 shadow-lg ${
-                    isCamOff
-                      ? 'bg-red-500/80 text-white border border-red-400/50'
-                      : 'bg-white/20 backdrop-blur text-white hover:bg-white/30 border border-white/20'
-                  }`}
-                >
-                  {isCamOff ? <VideoOff size={24} /> : <Video size={24} />}
-                </button>
-              )}
-
-              {/* Speaker indicator (audio only) */}
-              {callType === 'audio' && (
-                <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur border border-white/20 flex items-center justify-center text-white">
-                  <Volume2 size={24} />
-                </div>
-              )}
-
-            </div>
-          </div>
-
-          {/* Single audio element for remote stream — lives here only, no duplicates */}
-          <audio ref={remoteAudioRef} autoPlay playsInline style={{ position: 'absolute', width: 0, height: 0, opacity: 0, pointerEvents: 'none' }} />
-        </div>,
-        document.body
       )}
 
       {/*  Overlays  */}
