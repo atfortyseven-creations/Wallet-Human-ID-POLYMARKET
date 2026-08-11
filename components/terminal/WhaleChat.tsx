@@ -3645,6 +3645,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
             <audio ref={remoteAudioRef} autoPlay playsInline style={{ position: 'absolute', width: 0, height: 0, opacity: 0, pointerEvents: 'none' }} />
           </div>
+        ),
+        document.body
       )}
 
       {/*  Overlays  */}
