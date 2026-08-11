@@ -3167,44 +3167,52 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
       {/* ── Incoming Call Banner (state: ringing) ───────────────────────────── */}
       {callState === 'ringing' && isMounted && createPortal(
-        <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] bg-slate-900/95 backdrop-blur-3xl flex flex-col items-center justify-center animate-in fade-in duration-500" style={{ touchAction: 'none' }}>
-          <div className="flex flex-col items-center gap-10 mt-[-10dvh]">
-            {/* Avatar + pulse ring */}
-            <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-emerald-500/20 animate-ping scale-150" style={{ animationDuration: '2s' }} />
-              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-xl shadow-emerald-500/30 relative z-10">
-                <Phone size={56} className="text-white" />
+        <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] flex flex-col items-center justify-between" style={{ touchAction: 'none', background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)' }}>
+          {/* Top section */}
+          <div className="flex flex-col items-center w-full pt-[max(60px,env(safe-area-inset-top,60px))] px-6">
+            <p className="text-white/50 text-[11px] font-semibold uppercase tracking-[0.3em] mb-2">
+              {callTypeRef.current === 'video' ? '📹 Incoming Video Call' : '🎙️ Incoming Voice Call'}
+            </p>
+            <p className="text-white/30 text-[13px] font-mono mb-10">Whale Chat · End-to-end encrypted</p>
+
+            {/* Animated avatar */}
+            <div className="relative flex items-center justify-center mb-8">
+              <div className="absolute w-56 h-56 rounded-full border border-emerald-400/10 animate-ping" style={{ animationDuration: '3s' }} />
+              <div className="absolute w-44 h-44 rounded-full border border-emerald-400/15 animate-ping" style={{ animationDuration: '2.2s', animationDelay: '0.4s' }} />
+              <div className="absolute w-36 h-36 rounded-full border border-emerald-400/20 animate-ping" style={{ animationDuration: '1.8s', animationDelay: '0.8s' }} />
+              <div className="w-28 h-28 rounded-full flex items-center justify-center relative z-10 shadow-[0_0_60px_rgba(52,211,153,0.3)]" style={{ background: 'linear-gradient(135deg, #059669, #10b981)' }}>
+                <span className="text-white text-4xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '🐳'}</span>
               </div>
             </div>
-            <div className="text-center">
-              <p className="text-slate-400 text-sm font-mono uppercase tracking-[0.3em] mb-3">
-                {callType === 'video' ? 'Incoming Video Call' : 'Incoming Audio Call'}
-              </p>
-              <p className="text-white text-3xl font-black tracking-tight">
-                {activePeer ? shortAddr(activePeer) : 'Peer'}
-              </p>
+
+            <p className="text-white text-[28px] font-black tracking-tight mb-1">{activePeer ? shortAddr(activePeer) : 'Unknown Peer'}</p>
+            <p className="text-emerald-400 text-[13px] font-mono animate-pulse">Ringing...</p>
+          </div>
+
+          {/* Bottom controls */}
+          <div className="w-full flex items-end justify-between px-12 pb-[max(48px,env(safe-area-inset-bottom,48px))]">
+            {/* Decline */}
+            <div className="flex flex-col items-center gap-3">
+              <button
+                onClick={declineCall}
+                className="w-[72px] h-[72px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-[0_8px_32px_rgba(239,68,68,0.4)]"
+                style={{ background: 'linear-gradient(135deg, #dc2626, #ef4444)' }}
+              >
+                <PhoneOff size={30} className="text-white" />
+              </button>
+              <span className="text-white/50 text-[11px] font-medium tracking-widest uppercase">Decline</span>
             </div>
-            <div className="flex items-center gap-12 mt-4">
-              {/* Decline */}
-              <div className="flex flex-col items-center gap-3">
-                <button
-                  onClick={declineCall}
-                  className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center text-red-500 hover:bg-red-100 active:scale-95 transition-all shadow-sm border border-red-200"
-                >
-                  <PhoneOff size={32} />
-                </button>
-                <span className="text-slate-400 text-xs font-mono uppercase tracking-widest">Decline</span>
-              </div>
-              {/* Answer */}
-              <div className="flex flex-col items-center gap-3">
-                <button
-                  onClick={answerCall}
-                  className="w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center text-white hover:bg-emerald-600 active:scale-95 transition-all shadow-xl shadow-emerald-200 animate-pulse"
-                >
-                  <Phone size={40} className="animate-bounce" />
-                </button>
-                <span className="text-slate-400 text-xs font-mono uppercase tracking-widest">Answer</span>
-              </div>
+
+            {/* Answer */}
+            <div className="flex flex-col items-center gap-3">
+              <button
+                onClick={answerCall}
+                className="w-[84px] h-[84px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-[0_8px_40px_rgba(52,211,153,0.5)]"
+                style={{ background: 'linear-gradient(135deg, #059669, #10b981)' }}
+              >
+                <Phone size={36} className="text-white" />
+              </button>
+              <span className="text-white/50 text-[11px] font-medium tracking-widest uppercase">Answer</span>
             </div>
           </div>
         </div>,
@@ -3213,65 +3221,84 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
       {/* ── Outgoing Call (state: calling — waiting for answer) ─────────────── */}
       {callState === 'calling' && isMounted && createPortal(
-        <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] bg-slate-900/95 backdrop-blur-3xl flex flex-col items-center justify-center animate-in fade-in duration-400" style={{ touchAction: 'none' }}>
-          <div className="flex flex-col items-center gap-8 mt-[-10dvh]">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-blue-500/20 animate-ping scale-150" style={{ animationDuration: '2s' }} />
-              <div className="w-28 h-28 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-xl shadow-blue-500/30 relative z-10">
-                <Phone size={48} className="text-white" />
+        <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] flex flex-col items-center justify-between" style={{ touchAction: 'none', background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)' }}>
+          <div className="flex flex-col items-center w-full pt-[max(60px,env(safe-area-inset-top,60px))] px-6">
+            <p className="text-white/50 text-[11px] font-semibold uppercase tracking-[0.3em] mb-2">
+              {callTypeRef.current === 'video' ? '📹 Video Call' : '🎙️ Voice Call'}
+            </p>
+            <p className="text-white/30 text-[13px] font-mono mb-10">Whale Chat · End-to-end encrypted</p>
+
+            <div className="relative flex items-center justify-center mb-8">
+              <div className="absolute w-52 h-52 rounded-full border border-blue-400/10 animate-ping" style={{ animationDuration: '3s' }} />
+              <div className="absolute w-40 h-40 rounded-full border border-blue-400/15 animate-ping" style={{ animationDuration: '2.2s', animationDelay: '0.4s' }} />
+              <div className="w-28 h-28 rounded-full flex items-center justify-center relative z-10 shadow-[0_0_60px_rgba(99,102,241,0.35)]" style={{ background: 'linear-gradient(135deg, #4f46e5, #6366f1)' }}>
+                <span className="text-white text-4xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '🐳'}</span>
               </div>
             </div>
-            <div className="text-center">
-              <p className="text-slate-400 text-xs font-mono uppercase tracking-[0.3em] mb-2">Calling...</p>
-              <p className="text-white text-xl font-black tracking-tight">
-                {activePeer ? shortAddr(activePeer) : 'Peer'}
-              </p>
-              <p className="text-slate-400 text-xs mt-1 font-mono">Waiting for answer</p>
-            </div>
-            {localStream && callType === 'video' && (
-              <div className="w-36 h-48 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+
+            <p className="text-white text-[28px] font-black tracking-tight mb-1">{activePeer ? shortAddr(activePeer) : 'Unknown Peer'}</p>
+            <p className="text-white/40 text-[13px] font-mono animate-pulse">Calling...</p>
+
+            {localStream && callTypeRef.current === 'video' && (
+              <div className="mt-8 w-32 h-44 rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
                 <video ref={myVideoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
               </div>
             )}
-            <button
-              onClick={endCall}
-              className="w-16 h-16 bg-red-50 border border-red-200 rounded-full flex items-center justify-center text-red-500 hover:bg-red-100 active:scale-95 transition-all shadow-sm"
-            >
-              <PhoneOff size={24} />
-            </button>
+          </div>
+
+          <div className="w-full flex justify-center pb-[max(56px,env(safe-area-inset-bottom,56px))]">
+            <div className="flex flex-col items-center gap-3">
+              <button
+                onClick={endCall}
+                className="w-[72px] h-[72px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-[0_8px_32px_rgba(239,68,68,0.4)]"
+                style={{ background: 'linear-gradient(135deg, #dc2626, #ef4444)' }}
+              >
+                <PhoneOff size={30} className="text-white" />
+              </button>
+              <span className="text-white/50 text-[11px] font-medium tracking-widest uppercase">Cancel</span>
+            </div>
           </div>
         </div>,
         document.body
       )}
 
-      {/* ── Connecting Overlay (state: connecting — receiver answered, waiting for WebRTC stream) ── */}
+      {/* ── Connecting Overlay ─────────────────────────────────────────────── */}
       {callState === 'connecting' && isMounted && createPortal(
-        <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] bg-slate-900/95 backdrop-blur-3xl flex flex-col items-center justify-center animate-in fade-in duration-400" style={{ touchAction: 'none' }}>
-          <div className="flex flex-col items-center gap-8 mt-[-10dvh]">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-emerald-500/20 animate-ping scale-150" style={{ animationDuration: '1.5s' }} />
-              <div className="w-28 h-28 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-xl shadow-emerald-500/30 relative z-10">
-                <Phone size={48} className="text-white" />
+        <div className="fixed top-0 left-0 w-[100dvw] h-[100dvh] z-[100000] flex flex-col items-center justify-between" style={{ touchAction: 'none', background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)' }}>
+          <div className="flex flex-col items-center w-full pt-[max(60px,env(safe-area-inset-top,60px))] px-6">
+            <p className="text-white/50 text-[11px] font-semibold uppercase tracking-[0.3em] mb-2">
+              {callTypeRef.current === 'video' ? '📹 Video Call' : '🎙️ Voice Call'}
+            </p>
+            <p className="text-white/30 text-[13px] font-mono mb-10">Whale Chat · End-to-end encrypted</p>
+
+            <div className="relative flex items-center justify-center mb-8">
+              <div className="absolute w-44 h-44 rounded-full border border-emerald-400/20 animate-ping" style={{ animationDuration: '1.5s' }} />
+              <div className="w-28 h-28 rounded-full flex items-center justify-center relative z-10 shadow-[0_0_60px_rgba(52,211,153,0.3)]" style={{ background: 'linear-gradient(135deg, #059669, #10b981)' }}>
+                <span className="text-white text-4xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '🐳'}</span>
               </div>
             </div>
-            <div className="text-center">
-              <p className="text-slate-400 text-xs font-mono uppercase tracking-[0.3em] mb-2">Connecting...</p>
-              <p className="text-white text-xl font-black tracking-tight">
-                {activePeer ? shortAddr(activePeer) : 'Peer'}
-              </p>
-              <p className="text-emerald-400 text-xs mt-1 font-mono animate-pulse">Establishing secure media stream</p>
-            </div>
-            {localStream && callType === 'video' && (
-              <div className="w-36 h-48 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+
+            <p className="text-white text-[28px] font-black tracking-tight mb-1">{activePeer ? shortAddr(activePeer) : 'Unknown Peer'}</p>
+            <p className="text-emerald-400 text-[13px] font-mono animate-pulse">🔐 Securing connection...</p>
+
+            {localStream && callTypeRef.current === 'video' && (
+              <div className="mt-8 w-32 h-44 rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
                 <video ref={myVideoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
               </div>
             )}
-            <button
-              onClick={endCall}
-              className="w-16 h-16 bg-red-50 border border-red-200 rounded-full flex items-center justify-center text-red-500 hover:bg-red-100 active:scale-95 transition-all shadow-sm"
-            >
-              <PhoneOff size={24} />
-            </button>
+          </div>
+
+          <div className="w-full flex justify-center pb-[max(56px,env(safe-area-inset-bottom,56px))]">
+            <div className="flex flex-col items-center gap-3">
+              <button
+                onClick={endCall}
+                className="w-[72px] h-[72px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-[0_8px_32px_rgba(239,68,68,0.4)]"
+                style={{ background: 'linear-gradient(135deg, #dc2626, #ef4444)' }}
+              >
+                <PhoneOff size={30} className="text-white" />
+              </button>
+              <span className="text-white/50 text-[11px] font-medium tracking-widest uppercase">Cancel</span>
+            </div>
           </div>
         </div>,
         document.body
@@ -3283,9 +3310,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
           {/* ─── BACKGROUND: Remote video (full screen) or audio UI ─────────── */}
           <div className="absolute inset-0">
-            {callType === 'video' ? (
+            {callTypeRef.current === 'video' ? (
               remoteStream ? (
-                // REMOTE fills the screen — like WhatsApp/Telegram
                 <video
                   ref={remoteVideoRef}
                   autoPlay
@@ -3294,46 +3320,46 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   style={{ background: '#000' }}
                 />
               ) : (
-                // Waiting for remote stream
-                <div className="w-full h-full flex flex-col items-center justify-center bg-slate-900 gap-4">
+                <div className="w-full h-full flex flex-col items-center justify-center gap-4" style={{ background: 'linear-gradient(180deg, #1a1a2e 0%, #0f3460 100%)' }}>
                   <div className="relative">
                     <div className="absolute inset-0 rounded-full bg-indigo-500/20 animate-ping scale-150" style={{ animationDuration: '2s' }} />
-                    <div className="w-28 h-28 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-xl relative z-10">
-                      <span className="text-white text-4xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '??'}</span>
+                    <div className="w-28 h-28 rounded-full flex items-center justify-center shadow-xl relative z-10" style={{ background: 'linear-gradient(135deg, #4f46e5, #6366f1)' }}>
+                      <span className="text-white text-4xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '🐳'}</span>
                     </div>
                   </div>
                   <p className="text-white/60 text-sm font-mono uppercase tracking-widest animate-pulse">Connecting video...</p>
                 </div>
               )
             ) : (
-              // ── AUDIO CALL full-screen UI ──────────────────────────────────
-              <div className="w-full h-full flex flex-col items-center justify-center bg-slate-900 gap-8">
-                {/* Ambient glow */}
-                <div className="absolute inset-0 pointer-events-none">
-                  <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-900/40 rounded-full blur-[150px]" />
+              // ── AUDIO CALL full-screen UI — deep dark like Telegram ─────────
+              <div className="w-full h-full flex flex-col items-center justify-center" style={{ background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)' }}>
+                {/* Ambient glow blob */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                  <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full opacity-30" style={{ background: 'radial-gradient(circle, rgba(99,102,241,0.5) 0%, transparent 70%)' }} />
                 </div>
                 <div className="relative z-10 flex flex-col items-center gap-8">
-                  {/* Pulsing avatar */}
-                  <div className="relative">
+                  {/* Pulsing rings around avatar */}
+                  <div className="relative flex items-center justify-center">
                     {remoteStream && (
                       <>
-                        <div className="absolute inset-0 rounded-full bg-indigo-500/20 animate-ping scale-125" style={{ animationDuration: '2s' }} />
-                        <div className="absolute inset-0 rounded-full bg-indigo-500/10 animate-ping scale-175" style={{ animationDuration: '2.8s', animationDelay: '0.4s' }} />
+                        <div className="absolute w-60 h-60 rounded-full border border-indigo-400/10 animate-ping" style={{ animationDuration: '3s' }} />
+                        <div className="absolute w-48 h-48 rounded-full border border-indigo-400/15 animate-ping" style={{ animationDuration: '2.2s', animationDelay: '0.5s' }} />
+                        <div className="absolute w-36 h-36 rounded-full border border-indigo-400/20 animate-ping" style={{ animationDuration: '1.6s', animationDelay: '1s' }} />
                       </>
                     )}
-                    <div className="w-40 h-40 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-2xl shadow-indigo-500/30 relative z-10">
-                      <span className="text-white text-6xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '??'}</span>
+                    <div className="w-32 h-32 rounded-full flex items-center justify-center shadow-[0_0_80px_rgba(99,102,241,0.4)] relative z-10" style={{ background: 'linear-gradient(135deg, #4f46e5, #6366f1)' }}>
+                      <span className="text-white text-5xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '🐳'}</span>
                     </div>
                   </div>
                   <div className="text-center">
-                    <p className="text-white text-3xl font-black tracking-tight mb-2">{activePeer ? shortAddr(activePeer) : 'Peer'}</p>
+                    <p className="text-white text-[30px] font-black tracking-tight mb-2">{activePeer ? shortAddr(activePeer) : 'Unknown Peer'}</p>
                     {remoteStream ? (
-                      <span className="text-emerald-400 text-sm font-mono uppercase tracking-[0.25em] flex items-center gap-2 justify-center">
+                      <span className="text-emerald-400 text-[13px] font-mono uppercase tracking-[0.25em] flex items-center gap-2 justify-center">
                         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                         {formatDuration(callDurationSeconds)}
                       </span>
                     ) : (
-                      <span className="text-white/40 text-sm font-mono uppercase tracking-widest animate-pulse">Establishing audio...</span>
+                      <span className="text-white/40 text-[13px] font-mono uppercase tracking-widest animate-pulse">Establishing audio...</span>
                     )}
                   </div>
                 </div>
