@@ -1486,15 +1486,12 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
   // ─── declineCall: Receiver declines ─────────────────────────────────────────
   const declineCall = useCallback(async () => {
-    stopRingtone();
-    setCallState('idle');
-    setActiveConnection(null);
-    setCallType(null);
     try {
       if (executeSendRef.current) await executeSendRef.current('__CALL_DECLINE__');
     } catch {}
+    performEndCall();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stopRingtone]);
+  }, [performEndCall]);
 
   // ─── endCall: Either party hangs up ─────────────────────────────────────────
   const endCall = useCallback(async () => {
@@ -2197,6 +2194,12 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               mappedContent = parts.slice(1).join('__::');
               burnAtNs = sentAtNs + (seconds * 1000);
             }
+          }
+
+          // Phase 5: Intercept Payment Signals for Auto-Sync
+          if (typeof mappedContent === 'string' && mappedContent.startsWith('__PAYMENT__')) {
+            // Reconcile balance from server because the sender just transferred QDs to our address
+            refreshBalance().catch(() => {});
           }
 
           const mappedMsg = {

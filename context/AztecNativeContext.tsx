@@ -96,8 +96,8 @@ export interface AztecNativeState {
   disconnectIdentity: () => void;
   /** Force-refresh balance & history from the DB immediately. */
   refresh: () => Promise<void>;
-  /** Spend QDs for utility actions (Chat, Noir, Passports, etc) */
-  spendQDs: (amount: number, reason: string) => Promise<boolean>;
+  /** Spend QDs for utility actions (Chat, Noir, Passports, etc) or P2P transfers */
+  spendQDs: (amount: number, reason: string, toAddress?: string) => Promise<boolean>;
 }
 
 // Safe default state returned when context is not yet available.
@@ -114,7 +114,7 @@ const SAFE_DEFAULT: AztecNativeState = {
   connectIdentity: async () => {},
   disconnectIdentity: () => {},
   refresh: async () => {},
-  spendQDs: async () => false,
+  spendQDs: async (amount: number, reason: string, toAddress?: string) => false,
 };
 
 // ─── Context ──────────────────────────────────────────────────────────────────
@@ -686,7 +686,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
 
   // ─── Spend QDs Utility ────────────────────────────────────────────────────
 
-  const spendQDs = useCallback(async (amount: number, reason: string): Promise<boolean> => {
+  const spendQDs = useCallback(async (amount: number, reason: string, toAddress?: string): Promise<boolean> => {
     // Priority: prefer aztecAddress (derived), then fall back to evmAddress
     // For email users: aztecAddress is set via auto-derive in the mount effect
     const activeAddr = aztecAddress || evmAddress;
@@ -701,6 +701,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       // This ensures the server can correlate the spend with a ZK-verified identity
       // without exposing raw wallet addresses in analytics pipelines.
       const AZTEC_BURN_ADDRESS = '0x0000000000000000000000000000000000000000000000000000000000000000';
+      const destinationAddr = toAddress || AZTEC_BURN_ADDRESS;
       
       // Delegate to server relay (which tries Mode A then Mode B)
       const res = await fetch("/api/aztec/transfer", {
@@ -715,7 +716,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
         },
         body: JSON.stringify({
           from: activeAddr,
-          to: AZTEC_BURN_ADDRESS,
+          to: destinationAddr,
           amount,
           reason,
         })
