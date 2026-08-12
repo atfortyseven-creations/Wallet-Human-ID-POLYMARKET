@@ -2923,7 +2923,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       <TuringShieldGate>
       <div className="flex-1 flex flex-col items-center justify-start h-full bg-white p-6 pt-12 gap-6 relative overflow-hidden">
         {/* Subtle background glow */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-black/5 blur-[100px] rounded-full pointer-events-none" />
         
         <h3 className="text-[28px] font-black tracking-tight text-black relative z-10">Sovereign Chat</h3>
         <p className="text-[14px] font-medium text-[#555] text-center max-w-sm leading-relaxed relative z-10 px-4">
@@ -2945,10 +2945,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     const emailLabel = (address as string).replace('email_', '');
     return (
       <div className="flex-1 flex flex-col h-full bg-white items-center justify-center p-6 gap-6 relative overflow-hidden">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-blue-500/5 blur-[100px] rounded-full pointer-events-none" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-black/5 blur-[100px] rounded-full pointer-events-none" />
         <div className="relative z-10 w-full max-w-md bg-white border border-[#EBEBEB] shadow-2xl rounded-3xl p-10 flex flex-col items-center gap-5">
-          <div className="w-16 h-16 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          <div className="w-16 h-16 rounded-full bg-[#f5f5f7] border border-black/10 flex items-center justify-center">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#050505" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
           </div>
           <div className="text-center">
             <h2 className="text-[22px] font-black tracking-tight text-black mb-2">Email Account Active</h2>
@@ -2959,9 +2959,9 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               Whale Chat uses end to end encrypted wallet keys. To access encrypted messaging, connect a Web3 wallet.
             </p>
           </div>
-          <div className="flex items-center gap-1.5 px-4 py-2.5 bg-blue-50 border border-blue-100 rounded-xl">
-            <span className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)] animate-pulse" />
-            <span className="text-[13px] font-mono font-bold text-blue-700">{balance.toFixed(2)} QDs available</span>
+          <div className="flex items-center gap-1.5 px-4 py-2.5 bg-[#f5f5f7] border border-black/10 rounded-xl">
+            <span className="w-2 h-2 rounded-full bg-black shadow-sm animate-pulse" />
+            <span className="text-[13px] font-mono font-bold text-[#050505]">{balance.toFixed(2)} QDs available</span>
           </div>
           <button
             onClick={() => openAppKit()}
@@ -2979,13 +2979,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     return (
       <TuringShieldGate>
       <div className="flex-1 flex flex-col h-full bg-white items-center justify-start p-6 pt-12 relative overflow-hidden">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-500/5 blur-[100px] rounded-full pointer-events-none" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-black/5 blur-[100px] rounded-full pointer-events-none" />
 
         <div className="relative z-10 w-full max-w-md bg-white border border-[#EBEBEB] shadow-2xl rounded-3xl p-10 flex flex-col items-center">
           
           <div className="w-20 h-20 rounded-full border border-[#EBEBEB] bg-white flex items-center justify-center shadow-sm mb-8">
             {isInitializing ? (
-              <div className="w-8 h-8 rounded-full border-2 border-indigo-100 border-t-indigo-600 animate-spin" />
+              <div className="w-8 h-8 rounded-full border-2 border-black/10 border-t-black animate-spin" />
             ) : (
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-black">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
@@ -3338,7 +3338,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             )}
 
             {/* Dynamic Chat Background */}
-            <div className={`flex-1 overflow-y-auto p-4 flex flex-col gap-3 min-h-0 relative ${isSecretChat ? 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-neutral-900 via-red-950 to-black' : ''}`} style={isSecretChat ? { fontFamily, fontSize: `${fontSizePx}px` } : { ...bgStyle, fontFamily, fontSize: `${fontSizePx}px` }}>
+            <div className={`flex-1 overflow-y-auto p-4 flex flex-col gap-3 min-h-0 relative ${isSecretChat ? 'bg-[#fffafa]' : ''}`} style={isSecretChat ? { fontFamily, fontSize: `${fontSizePx}px` } : { ...bgStyle, fontFamily, fontSize: `${fontSizePx}px` }}>
               {/* Matrix Rain Effect Layer */}
               {chatBackground === 'matrix' && (
                 <div className="absolute inset-0 pointer-events-none opacity-20" style={{ backgroundImage: 'radial-gradient(circle, rgba(0,255,0,0.1) 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
@@ -3472,12 +3472,12 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                           const myInboxId = client?.inboxId || '';
                           const myVote = votes[myInboxId] ?? -1;
                           return (
-                            <div id={`msg-${msg.id}`} className={`px-4 py-3 rounded-2xl shadow-md min-w-[220px] max-w-[280px] ${isMe ? 'bg-blue-500 text-white' : 'bg-white border border-black/8 text-gray-900'}`}>
-                              <div className={`text-[10px] font-black uppercase tracking-widest mb-2 flex items-center gap-1.5 ${isMe ? 'text-white/60' : 'text-blue-500'}`}>
+                            <div id={`msg-${msg.id}`} className={`px-4 py-3 rounded-2xl shadow-md min-w-[220px] max-w-[280px] ${isMe ? 'bg-[#050505] text-white' : 'bg-[#f5f5f7] border-transparent text-[#050505]'}`}>
+                              <div className={`text-[10px] font-black uppercase tracking-widest mb-2 flex items-center gap-1.5 ${isMe ? 'text-white/60' : 'text-black/50'}`}>
                                 <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h18v2H3zM3 7h12v2H3zM3 11h15v2H3zM3 15h9v2H3z"/></svg>
                                 Poll
                               </div>
-                              <p className={`text-[13px] font-bold leading-snug mb-3 ${isMe ? 'text-white' : 'text-gray-900'}`}>{questionPart}</p>
+                              <p className={`text-[13px] font-bold leading-snug mb-3 ${isMe ? 'text-white' : 'text-[#050505]'}`}>{questionPart}</p>
                               <div className="flex flex-col gap-2">
                                 {options.map((opt: string, i: number) => {
                                   const count = Object.values(votes).filter(v => v === i).length;
@@ -3487,7 +3487,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                                     <button
                                       key={i}
                                       onClick={() => { const myId = client?.inboxId || address || 'me'; setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, pollVotes: { ...(m.pollVotes || {}), [myId]: i } } : m)); executeSend(`__VOTE__${msg.id}__::${i}`); }}
-                                      className={`relative w-full text-left rounded-xl px-3 py-2 text-[12px] font-semibold overflow-hidden transition-all border ${isSelected ? (isMe ? 'border-white/50 bg-white/20' : 'border-blue-500 bg-blue-50 text-blue-700') : (isMe ? 'border-white/20 bg-white/10 hover:bg-white/20' : 'border-gray-200 bg-gray-50 hover:bg-gray-100 text-gray-800')}`}
+                                      className={`relative w-full text-left rounded-xl px-3 py-2 text-[12px] font-semibold overflow-hidden transition-all border ${isSelected ? (isMe ? 'border-white bg-white/20' : 'border-black bg-[#e5e5ea] text-black') : (isMe ? 'border-transparent bg-white/10 hover:bg-white/20' : 'border-transparent bg-white hover:bg-[#e5e5ea] text-[#050505]')}`}
                                     >
                                       <div className="absolute left-0 top-0 h-full bg-white/20 rounded-xl transition-all duration-500" style={{ width: `${pct}%` }} />
                                       <span className="relative z-10 flex justify-between items-center gap-2">
@@ -3505,13 +3505,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                           // Phase 5: QD Payment Receipt Bubble
                           const amount = content.replace('__PAYMENT__::', '');
                           return (
-                            <div id={`msg-${msg.id}`} className={`px-4 py-3 rounded-2xl shadow-md min-w-[200px] border ${isMe ? 'bg-gradient-to-br from-emerald-500 to-teal-600 border-emerald-400/30 text-white' : 'bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200 text-emerald-900'}`}>
+                            <div id={`msg-${msg.id}`} className={`px-4 py-3 rounded-2xl shadow-md min-w-[200px] border ${isMe ? 'bg-[#050505] border-[#050505] text-white' : 'bg-[#f5f5f7] border-transparent text-[#050505]'}`}>
                               <div className="flex items-center gap-2 mb-1">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                                <span className={`text-[10px] font-black uppercase tracking-widest ${isMe ? 'text-white/70' : 'text-emerald-600'}`}>QD Transfer</span>
+                                <span className={`text-[10px] font-black uppercase tracking-widest ${isMe ? 'text-white/70' : 'text-[#050505]/70'}`}>QD Transfer</span>
                               </div>
                               <p className="text-[22px] font-black font-mono">{amount} <span className="text-[14px] font-semibold opacity-80">QD</span></p>
-                              <p className={`text-[10px] mt-1 ${isMe ? 'text-white/60' : 'text-emerald-600/80'}`}>
+                              <p className={`text-[10px] mt-1 ${isMe ? 'text-white/60' : 'text-[#050505]/60'}`}>
                                 {isMe ? `Sent to ${shortAddr(activePeer!)}` : `Received from ${shortAddr(activePeer!)}`}
                               </p>
                             </div>
@@ -3520,8 +3520,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                         <div className="relative group" id={`msg-${msg.id}`}>
                           <div className={`px-4 py-2.5 rounded-2xl text-[14px] leading-relaxed break-words break-all shadow-md animate-in fade-in slide-in-from-bottom-2 duration-300 relative overflow-hidden ${
                             isMe
-                              ? 'bg-blue-500 text-white rounded-br-sm border border-blue-600/30'
-                              : 'bg-[#F2F2F7] text-gray-900 rounded-bl-sm border border-black/5'
+                              ? 'bg-[#050505] text-white rounded-br-sm border border-transparent'
+                              : 'bg-[#f5f5f7] text-[#050505] rounded-bl-sm border border-transparent'
                           }`}>
                             {isBurning && (
                               <div className="absolute top-0 left-0 w-full h-0.5 bg-black/10">
@@ -4068,41 +4068,41 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 remoteStream ? (
                   <video ref={remoteVideoRef} autoPlay playsInline className="w-full h-full object-cover" style={{ filter: networkQuality === 'poor' ? 'blur(4px)' : 'none' }} />
                 ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center gap-4" style={{ background: 'linear-gradient(180deg, #1a1a2e 0%, #0f3460 100%)' }}>
+                  <div className="w-full h-full flex flex-col items-center justify-center gap-4 bg-[#f5f5f7]">
                     <div className="relative">
-                      <div className="absolute inset-0 rounded-full bg-indigo-500/20 animate-ping scale-150" style={{ animationDuration: '2s' }} />
-                      <div className="w-28 h-28 rounded-full flex items-center justify-center shadow-xl relative z-10" style={{ background: 'linear-gradient(135deg, #4f46e5, #6366f1)' }}>
-                        <span className="text-white text-4xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '🐳'}</span>
+                      <div className="absolute inset-0 rounded-full bg-black/5 animate-ping scale-150" style={{ animationDuration: '2s' }} />
+                      <div className="w-28 h-28 rounded-full flex items-center justify-center shadow-xl relative z-10 bg-white border border-black/5">
+                        <span className="text-black text-4xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '🐳'}</span>
                       </div>
                     </div>
-                    <p className="text-white/60 text-sm font-mono uppercase tracking-widest animate-pulse">Connecting video...</p>
+                    <p className="text-black/50 text-sm font-mono uppercase tracking-widest animate-pulse">Connecting video...</p>
                   </div>
                 )
               ) : (
                 /* ── AUDIO CALL ── */
-                <div className="w-full h-full flex flex-col items-center justify-center" style={{ background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)' }}>
+                <div className="w-full h-full flex flex-col items-center justify-center bg-[#f5f5f7]">
                   <div className="relative z-10 flex flex-col items-center gap-8">
                     {/* Audio Visualizer Rings */}
                     <div className="relative flex items-center justify-center">
                       {remoteStream && (
                         <>
-                          <div className="absolute rounded-full border border-indigo-400/30 transition-all duration-75" style={{ width: 140 + audioLevel * 1.5, height: 140 + audioLevel * 1.5, opacity: Math.min(1, audioLevel / 50 + 0.1) }} />
-                          <div className="absolute rounded-full bg-indigo-500/10 transition-all duration-75" style={{ width: 120 + audioLevel, height: 120 + audioLevel, opacity: Math.min(1, audioLevel / 100 + 0.2) }} />
+                          <div className="absolute rounded-full border border-black/10 transition-all duration-75" style={{ width: 140 + audioLevel * 1.5, height: 140 + audioLevel * 1.5, opacity: Math.min(1, audioLevel / 50 + 0.1) }} />
+                          <div className="absolute rounded-full bg-black/5 transition-all duration-75" style={{ width: 120 + audioLevel, height: 120 + audioLevel, opacity: Math.min(1, audioLevel / 100 + 0.2) }} />
                         </>
                       )}
-                      <div className="w-32 h-32 rounded-full flex items-center justify-center shadow-[0_0_80px_rgba(99,102,241,0.4)] relative z-10" style={{ background: 'linear-gradient(135deg, #4f46e5, #6366f1)' }}>
-                        <span className="text-white text-5xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '🐳'}</span>
+                      <div className="w-32 h-32 rounded-full flex items-center justify-center shadow-lg relative z-10 bg-white border border-black/5">
+                        <span className="text-black text-5xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '🐳'}</span>
                       </div>
                     </div>
                     <div className="text-center">
-                      <p className="text-white text-[30px] font-black tracking-tight mb-2">{activePeer ? shortAddr(activePeer) : 'Unknown Peer'}</p>
+                      <p className="text-black text-[30px] font-black tracking-tight mb-2">{activePeer ? shortAddr(activePeer) : 'Unknown Peer'}</p>
                       {remoteStream ? (
-                        <span className={`text-[13px] font-mono uppercase tracking-[0.25em] flex items-center gap-2 justify-center ${networkQuality === 'poor' ? 'text-amber-400' : 'text-emerald-400'}`}>
-                          <span className={`w-2 h-2 rounded-full animate-pulse ${networkQuality === 'poor' ? 'bg-amber-400' : 'bg-emerald-400'}`} />
+                        <span className={`text-[13px] font-mono uppercase tracking-[0.25em] flex items-center gap-2 justify-center ${networkQuality === 'poor' ? 'text-black/50' : 'text-black/80'}`}>
+                          <span className={`w-2 h-2 rounded-full animate-pulse ${networkQuality === 'poor' ? 'bg-black/50' : 'bg-black/80'}`} />
                           {networkQuality === 'poor' ? 'Poor Connection' : formatDuration(callDurationSeconds)}
                         </span>
                       ) : (
-                        <span className="text-white/40 text-[13px] font-mono uppercase tracking-widest animate-pulse">Establishing audio...</span>
+                        <span className="text-black/40 text-[13px] font-mono uppercase tracking-widest animate-pulse">Establishing audio...</span>
                       )}
                     </div>
                   </div>
@@ -4132,21 +4132,21 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
             {/* ── Top Bar ── */}
             <div className="absolute top-0 inset-x-0 z-30 flex items-center justify-between px-5 pointer-events-none" style={{ paddingTop: 'max(16px, env(safe-area-inset-top, 16px))' }}>
-              <div className="flex items-center gap-3 bg-black/40 backdrop-blur-xl rounded-2xl px-4 py-2.5 border border-white/10">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center">
-                  <span className="text-white text-xs font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '??'}</span>
+              <div className="flex items-center gap-3 bg-white/90 backdrop-blur-xl rounded-2xl px-4 py-2.5 border border-black/10 shadow-sm pointer-events-auto">
+                <div className="w-8 h-8 rounded-full bg-[#f5f5f7] border border-black/10 flex items-center justify-center">
+                  <span className="text-black text-xs font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '??'}</span>
                 </div>
                 <div>
-                  <p className="text-white text-[13px] font-bold leading-none">{activePeer ? shortAddr(activePeer) : 'Peer'}</p>
-                  <p className="text-white/50 text-[10px] font-mono mt-0.5">{callType === 'video' ? '📹 Video' : '🎙️ Audio'}</p>
+                  <p className="text-black text-[13px] font-bold leading-none">{activePeer ? shortAddr(activePeer) : 'Peer'}</p>
+                  <p className="text-black/50 text-[10px] font-mono mt-0.5">{callType === 'video' ? '📹 Video' : '🎙️ Audio'}</p>
                 </div>
               </div>
               
               <button 
                 onClick={() => setIsCallMinimized(true)}
-                className="bg-black/30 hover:bg-black/50 active:scale-95 transition-all backdrop-blur-xl rounded-full w-10 h-10 flex items-center justify-center border border-white/20 pointer-events-auto"
+                className="bg-white/90 hover:bg-white active:scale-95 transition-all backdrop-blur-xl rounded-full w-10 h-10 flex items-center justify-center border border-black/10 shadow-sm pointer-events-auto"
               >
-                <div className="w-3 h-3 border-b-2 border-l-2 border-white transform -rotate-45" />
+                <div className="w-3 h-3 border-b-2 border-l-2 border-black transform -rotate-45" />
               </button>
             </div>
 
@@ -4166,29 +4166,29 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               <div className="flex items-center justify-center gap-6 opacity-90 mb-2">
                  {callType === 'video' && (
                    <>
-                     <button onClick={switchCamera} className="w-12 h-12 rounded-full bg-white/10 backdrop-blur flex items-center justify-center text-white hover:bg-white/20 transition-all border border-white/10 shadow-lg">
+                     <button onClick={switchCamera} className="w-12 h-12 rounded-full bg-white/90 backdrop-blur flex items-center justify-center text-black hover:bg-white transition-all border border-black/10 shadow-sm">
                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.29 7 12 12 20.71 7"></polyline><line x1="12" y1="22" x2="12" y2="12"></line></svg>
                      </button>
-                     <button onClick={toggleScreenShare} className={`w-12 h-12 rounded-full flex items-center justify-center transition-all border border-white/10 shadow-lg ${isScreenSharing ? 'bg-indigo-500 text-white' : 'bg-white/10 backdrop-blur text-white hover:bg-white/20'}`}>
+                     <button onClick={toggleScreenShare} className={`w-12 h-12 rounded-full flex items-center justify-center transition-all border border-black/10 shadow-sm ${isScreenSharing ? 'bg-black text-white' : 'bg-white/90 backdrop-blur text-black hover:bg-white'}`}>
                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
                      </button>
                    </>
                  )}
                  {callType === 'audio' && (
-                   <button className="w-12 h-12 rounded-full bg-white/10 backdrop-blur flex items-center justify-center text-white border border-white/10 cursor-not-allowed opacity-50 shadow-lg">
+                   <button className="w-12 h-12 rounded-full bg-white/90 backdrop-blur flex items-center justify-center text-black border border-black/10 cursor-not-allowed opacity-50 shadow-sm">
                      <Volume2 size={20} />
                    </button>
                  )}
               </div>
 
               {/* Primary Controls Row */}
-              <div className="flex items-center justify-center gap-8 mx-auto bg-black/40 backdrop-blur-2xl px-8 py-4 rounded-[2.5rem] border border-white/10 shadow-2xl">
+              <div className="flex items-center justify-center gap-8 mx-auto bg-white/90 backdrop-blur-2xl px-8 py-4 rounded-[2.5rem] border border-black/10 shadow-xl">
                 <button
                   onClick={toggleMic}
-                  className={`w-[60px] h-[60px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-lg ${
+                  className={`w-[60px] h-[60px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-sm ${
                     isMicMuted
-                      ? 'bg-white text-black'
-                      : 'bg-white/10 text-white hover:bg-white/20'
+                      ? 'bg-black text-white'
+                      : 'bg-[#f5f5f7] text-black hover:bg-[#e5e5ea]'
                   }`}
                 >
                   {isMicMuted ? <MicOff size={24} /> : <Mic size={24} />}
@@ -4196,7 +4196,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
                 <button
                   onClick={endCall}
-                  className="w-[72px] h-[72px] bg-red-500 rounded-[28px] flex items-center justify-center text-white hover:bg-red-600 active:scale-90 transition-all shadow-[0_8px_32px_rgba(239,68,68,0.6)]"
+                  className="w-[72px] h-[72px] bg-[#050505] rounded-[28px] flex items-center justify-center text-white hover:opacity-80 active:scale-90 transition-all shadow-[0_8px_32px_rgba(0,0,0,0.15)]"
                 >
                   <PhoneOff size={32} />
                 </button>
@@ -4204,10 +4204,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 {callType === 'video' ? (
                   <button
                     onClick={toggleCamera}
-                    className={`w-[60px] h-[60px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-lg ${
+                    className={`w-[60px] h-[60px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-sm ${
                       isCamOff
-                        ? 'bg-white text-black'
-                        : 'bg-white/10 text-white hover:bg-white/20'
+                        ? 'bg-black text-white'
+                        : 'bg-[#f5f5f7] text-black hover:bg-[#e5e5ea]'
                     }`}
                   >
                     {isCamOff ? <VideoOff size={24} /> : <Video size={24} />}
