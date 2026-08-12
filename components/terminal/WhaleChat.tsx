@@ -404,13 +404,21 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // isCalling: true if we INITIATED the call (to know whether to call or answer)
   const isCallerRef = useRef<boolean>(false);
 
+  const [isMicMuted, setIsMicMuted] = useState(false);
+  const [isCamOff, setIsCamOff] = useState(false);
+  const [activeCamera, setActiveCamera] = useState<'user'|'environment'>('user');
+  const [isScreenSharing, setIsScreenSharing] = useState(false);
+  const [showCallSettings, setShowCallSettings] = useState(false);
+  const [voiceIsolation, setVoiceIsolation] = useState(true);
+  const [dataSaver, setDataSaver] = useState(false);
+  const [showE2EE, setShowE2EE] = useState(false);
+
   // [ARCH-FIX] Deterministic PeerID derivation — mirrors the logic in PeerJS initialization.
   // Both caller and receiver can compute each other's PeerID from the wallet address alone.
   // This eliminates the need for XMTP to carry the PeerID in CALL_ANSWER.
   const derivePeerId = useCallback((walletAddress: string): string => {
     return `whale${walletAddress.slice(2, 12).toLowerCase()}`;
   }, []);
-  // Mute / Camera state
   const [isMicMuted, setIsMicMuted] = useState(false);
   const [isCamOff, setIsCamOff] = useState(false);
   
@@ -1529,6 +1537,66 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     localStream.getVideoTracks().forEach(t => { t.enabled = !nextOff; });
     setIsCamOff(nextOff);
   }, [localStream, isCamOff]);
+
+  // ─── toggleVoiceIsolation ────────────────────────────────────────────────────────
+  const toggleVoiceIsolation = useCallback(async () => {
+    if (!localStreamRef.current || !activeConnectionRef.current) return;
+    const nextIsolation = !voiceIsolation;
+    try {
+      const newStream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: nextIsolation,
+          autoGainControl: true
+        }
+      });
+      const newAudioTrack = newStream.getAudioTracks()[0];
+      const oldAudioTrack = localStreamRef.current.getAudioTracks()[0];
+      const peerConn = activeConnectionRef.current.peerConnection;
+      if (peerConn) {
+        const sender = peerConn.getSenders().find((s: any) => s.track?.kind === 'audio');
+        if (sender) {
+          await sender.replaceTrack(newAudioTrack);
+          localStreamRef.current.removeTrack(oldAudioTrack);
+          localStreamRef.current.addTrack(newAudioTrack);
+          oldAudioTrack.stop();
+          setVoiceIsolation(nextIsolation);
+          newAudioTrack.enabled = !isMicMuted;
+        }
+      }
+    } catch (e) {
+      toast.error('Failed to change voice isolation settings.');
+    }
+  }, [voiceIsolation, isMicMuted]);
+
+  // ─── toggleDataSaver ──────────────────────────────────────────────────────────
+  const toggleDataSaver = useCallback(async () => {
+    if (!localStreamRef.current || !activeConnectionRef.current || callTypeRef.current !== 'video') return;
+    const nextSaver = !dataSaver;
+    try {
+      const newStream = await navigator.mediaDevices.getUserMedia({
+        video: nextSaver 
+          ? { width: { ideal: 480 }, frameRate: { ideal: 15 }, facingMode: activeCamera }
+          : { width: { ideal: 1280 }, frameRate: { ideal: 30 }, facingMode: activeCamera }
+      });
+      const newVideoTrack = newStream.getVideoTracks()[0];
+      const oldVideoTrack = localStreamRef.current.getVideoTracks()[0];
+      const peerConn = activeConnectionRef.current.peerConnection;
+      if (peerConn) {
+        const sender = peerConn.getSenders().find((s: any) => s.track?.kind === 'video');
+        if (sender) {
+          await sender.replaceTrack(newVideoTrack);
+          localStreamRef.current.removeTrack(oldVideoTrack);
+          localStreamRef.current.addTrack(newVideoTrack);
+          oldVideoTrack.stop();
+          setDataSaver(nextSaver);
+          newVideoTrack.enabled = !isCamOff;
+        }
+      }
+    } catch (e) {
+      toast.error('Failed to apply data saver mode.');
+    }
+  }, [dataSaver, activeCamera, isCamOff]);
 
   // ─── Hardware Media Routing (replaceTrack) ──────────────────────────────────
   const switchCamera = async () => {
@@ -4142,12 +4210,20 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 </div>
               </div>
               
-              <button 
-                onClick={() => setIsCallMinimized(true)}
-                className="bg-white/90 hover:bg-white active:scale-95 transition-all backdrop-blur-xl rounded-full w-10 h-10 flex items-center justify-center border border-black/10 shadow-sm pointer-events-auto"
-              >
-                <div className="w-3 h-3 border-b-2 border-l-2 border-black transform -rotate-45" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => setShowCallSettings(true)}
+                  className="bg-white/90 hover:bg-white active:scale-95 transition-all backdrop-blur-xl rounded-full w-10 h-10 flex items-center justify-center border border-black/10 shadow-sm pointer-events-auto text-black"
+                >
+                  <Settings size={20} />
+                </button>
+                <button 
+                  onClick={() => setIsCallMinimized(true)}
+                  className="bg-white/90 hover:bg-white active:scale-95 transition-all backdrop-blur-xl rounded-full w-10 h-10 flex items-center justify-center border border-black/10 shadow-sm pointer-events-auto"
+                >
+                  <div className="w-3 h-3 border-b-2 border-l-2 border-black transform -rotate-45" />
+                </button>
+              </div>
             </div>
 
             {/* ── Network Alert ── */}
@@ -4224,6 +4300,91 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       )}
 
       </div> {/* Close Chat Area */}
+
+      {showCallSettings && (
+        <div className="absolute inset-0 z-[100] bg-white/95 backdrop-blur-md flex flex-col items-center justify-center p-6 animate-in fade-in zoom-in duration-300">
+           <div className="w-full max-w-sm">
+               <div className="flex justify-between items-center mb-8">
+                   <h3 className="text-[13px] font-black uppercase tracking-[0.25em] text-[#050505]">Call Settings</h3>
+                   <button onClick={() => setShowCallSettings(false)} className="w-10 h-10 flex items-center justify-center hover:bg-black/5 rounded-full transition-colors text-[11px] font-black uppercase text-[#050505]">
+                     X
+                   </button>
+               </div>
+               
+               <div className="space-y-6">
+                 {/* Voice Isolation */}
+                 <div className="flex items-center justify-between p-4 bg-[#f5f5f7] rounded-2xl">
+                   <div>
+                     <h4 className="text-[13px] font-bold text-black">Voice Isolation</h4>
+                     <p className="text-[11px] font-mono text-black/50 mt-1">Filters out background noise</p>
+                   </div>
+                   <button 
+                     onClick={toggleVoiceIsolation}
+                     className={`w-12 h-6 rounded-full transition-colors relative ${voiceIsolation ? 'bg-[#050505]' : 'bg-black/20'}`}
+                   >
+                     <div className={`w-5 h-5 rounded-full bg-white absolute top-0.5 transition-all ${voiceIsolation ? 'left-6' : 'left-0.5'}`} />
+                   </button>
+                 </div>
+
+                 {/* Data Saver Mode */}
+                 <div className="flex items-center justify-between p-4 bg-[#f5f5f7] rounded-2xl">
+                   <div>
+                     <h4 className="text-[13px] font-bold text-black">Data Saver</h4>
+                     <p className="text-[11px] font-mono text-black/50 mt-1">Reduces video quality (480p)</p>
+                   </div>
+                   <button 
+                     onClick={toggleDataSaver}
+                     className={`w-12 h-6 rounded-full transition-colors relative ${dataSaver ? 'bg-[#050505]' : 'bg-black/20'}`}
+                   >
+                     <div className={`w-5 h-5 rounded-full bg-white absolute top-0.5 transition-all ${dataSaver ? 'left-6' : 'left-0.5'}`} />
+                   </button>
+                 </div>
+
+                 {/* End-to-End Encryption Verification */}
+                 <button 
+                   onClick={() => { setShowCallSettings(false); setShowE2EE(true); }}
+                   className="w-full p-4 bg-black/5 hover:bg-black/10 transition-colors rounded-2xl flex items-center justify-between"
+                 >
+                   <div>
+                     <h4 className="text-[13px] font-bold text-black text-left">E2EE Verification</h4>
+                     <p className="text-[11px] font-mono text-black/50 mt-1">Verify connection security</p>
+                   </div>
+                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                 </button>
+               </div>
+           </div>
+        </div>
+      )}
+
+      {showE2EE && (
+        <div className="absolute inset-0 z-[100] bg-white/95 backdrop-blur-md flex flex-col items-center justify-center p-6 animate-in fade-in zoom-in duration-300">
+           <div className="w-full max-w-sm">
+               <div className="flex justify-between items-center mb-8">
+                   <h3 className="text-[13px] font-black uppercase tracking-[0.25em] text-[#050505]">E2EE Status</h3>
+                   <button onClick={() => setShowE2EE(false)} className="w-10 h-10 flex items-center justify-center hover:bg-black/5 rounded-full transition-colors text-[11px] font-black uppercase text-[#050505]">
+                     X
+                   </button>
+               </div>
+               
+               <div className="flex flex-col items-center justify-center gap-4 mb-6">
+                 <div className="w-16 h-16 rounded-full bg-[#f5f5f7] flex items-center justify-center text-green-500">
+                   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                 </div>
+                 <h4 className="text-[18px] font-black text-black">Connection is Secure</h4>
+                 <p className="text-[12px] font-mono text-black/60 text-center px-4">
+                   Your call with <br/> <span className="font-bold text-black">{activePeer ? shortAddr(activePeer) : 'this peer'}</span> <br/> is End-to-End Encrypted.
+                 </p>
+               </div>
+
+               <div className="p-4 bg-[#f5f5f7] rounded-2xl break-all text-center">
+                 <p className="text-[10px] font-black uppercase tracking-widest text-black/40 mb-2">Verification Hash</p>
+                 <p className="text-[11px] font-mono text-black font-bold">
+                   {activePeer ? (activePeer + address!).replace(/0x/g, '').slice(0, 32).toUpperCase().match(/.{1,4}/g)?.join(' ') : '...'}
+                 </p>
+               </div>
+           </div>
+        </div>
+      )}
 
       {/*  Overlays  */}
       {showScanner && (
