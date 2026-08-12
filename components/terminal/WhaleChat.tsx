@@ -211,7 +211,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // This strictly isolates Chat from the Portfolio state to prevent cross-contamination.
   const { getSiloedPXE } = useAztec();
   const aztecNative = useAztecNative();
-  const { spendQDs, balance, aztecAddress } = aztecNative;
+  const { spendQDs, balance, aztecAddress, refresh: refreshBalance } = aztecNative;
   const chatContractAddress = { toString: () => '0xCHAT_CONTRACT_ADDRESS_PLACEHOLDER' } as any;
   const siloedPxe = getSiloedPXE ? getSiloedPXE(chatContractAddress) : null;
   const { 
@@ -901,13 +901,20 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
   // ─── PeerJS Initialisation ───────────────────────────────────────────────────
   // Uses a deterministic peer ID derived from the wallet address for stable routing.
+  // [CALL FIX] We MUST use a deterministic, stable PeerID based on the wallet address.
+  // The Reverse-Dial architecture requires the CALLER to know the receiver's PeerID
+  // WITHOUT an XMTP round-trip. derivePeerId(address) gives us that stable ID.
+  // Using a random ID would make startCall's derivePeerId() useless — the IDs would
+  // never match and WebRTC would always fail to connect.
   useEffect(() => {
     if (!address || peerInstance) return;
     import('peerjs').then(({ default: Peer }) => {
-      // ─── REVERSE-DIAL ARCHITECTURE ──────────────────────────────────────────
-      // We use dynamic random IDs to absolutely prevent 'unavailable-id' collisions.
-      // The Caller sends their dynamic ID via XMTP. The Receiver then dials the Caller.
-      const peer = new Peer({
+      // ─── DETERMINISTIC PEERID — CRITICAL FOR REVERSE-DIAL ARCHITECTURE ───
+      // Both peers derive each other's ID from the wallet address alone.
+      // This means: Caller computes derivePeerId(activePeer) → dials the receiver.
+      // No XMTP signaling of PeerID needed. Connection is instantaneous.
+      const stablePeerId = derivePeerId(address);
+      const peer = new Peer(stablePeerId, {
         debug: 0,
         config: {
           iceServers: [
@@ -942,28 +949,40 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         setMyPeerId(id);
       });
 
-      // ─── Reverse-Dial Handler (Caller side) ──────────────────────────────
-      // In this architecture, ONLY the original Caller receives peer.on('call')
-      // because the Receiver initiates the WebRTC connection after clicking Answer.
+      // ─── Universal Incoming Call Handler ─────────────────────────────────
+      // With the deterministic architecture, EITHER party can receive an incoming
+      // PeerJS connection. The Caller dials the receiver directly, so the receiver
+      // gets peer.on('call') in 'ringing' state BEFORE they have a localStream.
+      // In that case, save the connection in pendingConnectionRef so answerCall()
+      // can answer it after obtaining the stream (user-gesture on Android).
       peer.on('call', (connection) => {
-        console.log('[WhaleChat:PeerJS] Incoming reverse-dial connection from:', connection.peer);
+        console.log('[WhaleChat:PeerJS] Incoming PeerJS connection from:', connection.peer, '| callState:', callStateRef.current);
         
-        if (callStateRef.current === 'calling' && localStreamRef.current) {
-          connection.answer(localStreamRef.current);
+        if (callStateRef.current === 'ringing') {
+          // Receiver gets the call before clicking Answer — store it for answerCall()
+          console.log('[WhaleChat:PeerJS] Storing pending connection for answerCall()');
+          pendingConnectionRef.current = connection;
+        } else if (
+          (callStateRef.current === 'calling' || callStateRef.current === 'connecting')
+          && localStreamRef.current
+        ) {
+          // Caller gets a reverse-dial from receiver — answer immediately
+          connection.answer(localStreamRef.current!);
           setActiveConnection(connection);
+          setCallState('active');
+          if (callTimeoutRef.current) { clearTimeout(callTimeoutRef.current); callTimeoutRef.current = null; }
           connection.on('stream', (rStream: MediaStream) => {
-            console.log('[WhaleChat:PeerJS] Caller received remote stream — ACTIVE');
+            console.log('[WhaleChat:PeerJS] Got remote stream — ACTIVE');
             setRemoteStream(rStream);
             setCallState('active');
             stopRingtone();
-            if (callTimeoutRef.current) { clearTimeout(callTimeoutRef.current); callTimeoutRef.current = null; }
             if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
             if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = rStream; remoteAudioRef.current.play().catch(() => {}); }
           });
           connection.on('close', () => performEndCallRef.current());
           connection.on('error', () => performEndCallRef.current());
         } else {
-          console.warn('[Call] Received peer.on(call) but not in calling state. Rejecting.');
+          console.warn('[Call] Received peer.on(call) in unexpected state:', callStateRef.current, '— rejecting.');
           connection.close();
         }
       });
@@ -1210,6 +1229,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     setNetworkQuality('good'); // [AUDIT FIX] Reset network quality indicator
     isCallerRef.current = false;
     remotePeerIdRef.current = '';
+    // [CALL FIX] Clear any stored pending connection to prevent stale state across calls
+    if (pendingConnectionRef.current) {
+      try { pendingConnectionRef.current.close(); } catch {}
+      pendingConnectionRef.current = null;
+    }
     if (myVideoRef.current) myVideoRef.current.srcObject = null;
     if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
     if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = null; }
@@ -1253,10 +1277,37 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       setCallState('calling');
       if (myVideoRef.current) myVideoRef.current.srcObject = stream;
 
-      // ─── REVERSE-DIAL ARCHITECTURE (Caller Side) ─────────────────────────
-      // We do NOT dial the receiver here. We send our dynamic `myPeerId` via XMTP.
-      // The Receiver's UI will ring, and when they click Answer, THEY will dial US.
-      executeSend(`__CALL_OFFER__:${myPeerId}:${type}`).catch(() => {});
+      // ─── DETERMINISTIC CALL ARCHITECTURE (Caller Side) ────────────────────
+      // With deterministic PeerIDs, the Caller dials the receiver DIRECTLY using
+      // derivePeerId(activePeer). We also send CALL_OFFER via XMTP so the receiver's
+      // UI shows the ringing screen. The CALL_OFFER carries the caller's stable PeerID.
+      const myStablePeerId = derivePeerId(address!);
+      executeSend(`__CALL_OFFER__:${myStablePeerId}:${type}`).catch(() => {});
+
+      // Directly dial the receiver via PeerJS — no XMTP round-trip needed
+      const livePeerForStart = peerInstanceRef.current;
+      if (livePeerForStart && !livePeerForStart.destroyed) {
+        const outConn = livePeerForStart.call(receiverPeerId, stream, {
+          metadata: { callType: type }
+        });
+        if (outConn) {
+          setActiveConnection(outConn);
+          outConn.on('stream', (rStream: MediaStream) => {
+            console.log('[Call:PeerJS] Caller received remote stream — ACTIVE');
+            setRemoteStream(rStream);
+            setCallState('active');
+            stopRingtone();
+            if (callTimeoutRef.current) { clearTimeout(callTimeoutRef.current); callTimeoutRef.current = null; }
+            if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
+            if (remoteAudioRef.current) {
+              remoteAudioRef.current.srcObject = rStream;
+              remoteAudioRef.current.play().catch(err => console.warn('[Audio] play() blocked:', err));
+            }
+          });
+          outConn.on('close', () => performEndCallRef.current());
+          outConn.on('error', () => performEndCallRef.current());
+        }
+      }
       toast.success('Ringing...');
 
       // Caller timeout: if no stream arrives in 60s, clean up
@@ -1332,56 +1383,76 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         unlockCtx.close();
       } catch { /* ignore — best effort */ }
 
-      // ─── REVERSE-DIAL ARCHITECTURE (Receiver Side) ──────────────────────────
-      // The Caller sent us their dynamic PeerID via XMTP (stored in remotePeerIdRef).
-      // We initiate the WebRTC connection back to them. This guarantees no collisions.
       setCallState('connecting');
       toast.success('Answering call...');
 
-      const targetPeerId = remotePeerIdRef.current;
-      if (!targetPeerId) {
-        toast.error('WebRTC: Lost caller ID. Cannot connect.');
-        performEndCallRef.current();
-        return;
-      }
+      // ─── DETERMINISTIC ANSWER ARCHITECTURE ────────────────────────────────
+      // PRIMARY PATH: If the Caller dialed us directly (deterministic architecture),
+      // peer.on('call') already stored the pending connection in pendingConnectionRef.
+      // We answer THAT connection with our stream — no outbound call needed.
+      //
+      // FALLBACK PATH: If pendingConnectionRef is empty (e.g., old session, XMTP-only),
+      // we make an outbound call to the Caller's deterministic PeerID.
+      const pendingConn = pendingConnectionRef.current;
 
-      // [ANDROID FIX] Use peerInstanceRef.current — NEVER the stale closure `peerInstance`.
-      // `peerInstance` is a React state value captured at render time. On Android,
-      // by the time the user taps Answer, the closure may hold a null or old instance.
-      // peerInstanceRef.current is always the live, current PeerJS instance.
-      const livePeer = peerInstanceRef.current;
-      if (!livePeer || livePeer.destroyed) {
-        toast.error('WebRTC: Peer connection not ready. Please refresh.');
-        performEndCallRef.current();
-        return;
-      }
-
-      const conn = livePeer.call(targetPeerId, stream, {
-        metadata: { callType: callTypeRef.current }
-      });
-      if (!conn) {
-        toast.error('WebRTC: Failed to initiate return connection.');
-        performEndCallRef.current();
-        return;
-      }
-      
-      setActiveConnection(conn);
-      conn.on('stream', (rStream: MediaStream) => {
-        console.log('[Call:PeerJS] Receiver got remote stream from Caller — ACTIVE');
-        setRemoteStream(rStream);
-        setCallState('active');
-        if (callTimeoutRef.current) { clearTimeout(callTimeoutRef.current); callTimeoutRef.current = null; }
-        if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
-        if (remoteAudioRef.current) {
-          remoteAudioRef.current.srcObject = rStream;
-          remoteAudioRef.current.play().catch(err => console.warn('[Audio] play() blocked:', err));
+      if (pendingConn) {
+        console.log('[Call:answerCall] Answering stored pending connection from Caller');
+        pendingConnectionRef.current = null;
+        pendingConn.answer(stream);
+        setActiveConnection(pendingConn);
+        pendingConn.on('stream', (rStream: MediaStream) => {
+          console.log('[Call:PeerJS] Receiver got remote stream — ACTIVE');
+          setRemoteStream(rStream);
+          setCallState('active');
+          stopRingtone();
+          if (callTimeoutRef.current) { clearTimeout(callTimeoutRef.current); callTimeoutRef.current = null; }
+          if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
+          if (remoteAudioRef.current) {
+            remoteAudioRef.current.srcObject = rStream;
+            remoteAudioRef.current.play().catch(err => console.warn('[Audio] play() blocked:', err));
+          }
+        });
+        pendingConn.on('close', () => performEndCallRef.current());
+        pendingConn.on('error', () => performEndCallRef.current());
+      } else {
+        // FALLBACK: Outbound call to Caller's deterministic PeerID
+        console.log('[Call:answerCall] No pending connection — falling back to outbound dial');
+        const targetPeerId = remotePeerIdRef.current || derivePeerId(activePeer!);
+        const livePeer = peerInstanceRef.current;
+        if (!livePeer || livePeer.destroyed) {
+          toast.error('WebRTC: Peer connection not ready. Please refresh.');
+          performEndCallRef.current();
+          return;
         }
-      });
-      conn.on('close', () => performEndCallRef.current());
-      conn.on('error', () => performEndCallRef.current());
 
-      // Send CALL_ANSWER just as a status update for chat UI
-      executeSend(`__CALL_ANSWER__:${myPeerId}`).catch(() => {});
+        const conn = livePeer.call(targetPeerId, stream, {
+          metadata: { callType: callTypeRef.current }
+        });
+        if (!conn) {
+          toast.error('WebRTC: Failed to initiate connection.');
+          performEndCallRef.current();
+          return;
+        }
+        
+        setActiveConnection(conn);
+        conn.on('stream', (rStream: MediaStream) => {
+          console.log('[Call:PeerJS] Receiver got remote stream (fallback) — ACTIVE');
+          setRemoteStream(rStream);
+          setCallState('active');
+          if (callTimeoutRef.current) { clearTimeout(callTimeoutRef.current); callTimeoutRef.current = null; }
+          if (remoteVideoRef.current) remoteVideoRef.current.srcObject = rStream;
+          if (remoteAudioRef.current) {
+            remoteAudioRef.current.srcObject = rStream;
+            remoteAudioRef.current.play().catch(err => console.warn('[Audio] play() blocked:', err));
+          }
+        });
+        conn.on('close', () => performEndCallRef.current());
+        conn.on('error', () => performEndCallRef.current());
+      }
+
+      // Send CALL_ANSWER as status update for chat UI
+      const myStableId = derivePeerId(address!);
+      executeSend(`__CALL_ANSWER__:${myStableId}`).catch(() => {});
 
       // Failsafe: if remote stream does not arrive within 20s, abort
       callTimeoutRef.current = setTimeout(() => {
@@ -2562,7 +2633,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         return;
       }
       // Deduct QDs — fire-and-forget, message always sends regardless of QD API result
-      spendQDs(0.0001, 'Whale Chat message').catch((e: any) => console.warn('[WhaleChat] QD deduction failed (non-blocking):', e));
+      // [BALANCE FIX] After spending, force a refresh from DB so the balance counter
+      // reflects the real server-side balance, not just the optimistic local deduction.
+      spendQDs(0.0001, 'Whale Chat message').then(() => {
+        refreshBalance().catch(() => {}); // Reconcile balance with DB after spend
+      }).catch((e: any) => console.warn('[WhaleChat] QD deduction failed (non-blocking):', e));
     }
 
     if (address) {
