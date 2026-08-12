@@ -56,7 +56,147 @@ function Avatar({ address }: { address: string }) {
 
 const shortAddr = (addr: string) => addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : '';
 
+export const formatMessagePreview = (content: string): string => {
+  if (typeof content !== 'string') return 'Message';
+  let cleanContent = content;
+  
+  // Recursively unwrap replies
+  while (cleanContent.startsWith('__REPLY__')) {
+    const parts = cleanContent.split('__::');
+    if (parts.length >= 2) {
+      cleanContent = parts.slice(1).join('__::');
+    } else {
+      break;
+    }
+  }
 
+  // Handle system messages and metadata
+  if (cleanContent.startsWith('__CALL_OFFER__:')) {
+    return cleanContent.includes(':video') ? '📹 Video Call' : '📞 Voice Call';
+  }
+  if (cleanContent.startsWith('__AUDIO__')) return '🎙️ Voice Note';
+  if (cleanContent.startsWith('[LOCATION]')) return '📍 Location';
+  if (cleanContent.startsWith('[ATTACHMENT')) return '📎 Attachment';
+  if (cleanContent.startsWith('[GIF]')) return '🖼️ GIF';
+  if (cleanContent.startsWith('__PIN__') || cleanContent.startsWith('__REVOKE__') || cleanContent.startsWith('__READ__')) {
+    return 'System Message';
+  }
+
+  return cleanContent;
+};
+
+export const parseMessageText = (text: string, isMe: boolean) => {
+  if (typeof text !== 'string') return text;
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const parts = text.split(urlRegex);
+  return parts.map((part, i) => {
+    if (part.match(urlRegex)) {
+      return (
+        <a key={i} href={part} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className={`underline break-all ${isMe ? 'text-white' : 'text-blue-500 hover:text-blue-600'}`}>
+          {part}
+        </a>
+      );
+    }
+    const boldParts = part.split(/\*\*(.*?)\*\*/g);
+    const parsedBold = boldParts.map((bp, j) => j % 2 === 1 ? <strong key={`b-${i}-${j}`}>{bp}</strong> : bp);
+    return <React.Fragment key={i}>{parsedBold}</React.Fragment>;
+  });
+};
+
+const CustomAudioPlayer = ({ src, isMe }: { src: string, isMe: boolean }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [playbackRate, setPlaybackRate] = useState(1);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const handleTimeUpdate = () => setProgress(audio.currentTime);
+    const handleLoadedMetadata = () => {
+      if (audio.duration === Infinity) {
+        audio.currentTime = 1e101;
+        audio.ontimeupdate = () => {
+          audio.ontimeupdate = () => setProgress(audio.currentTime);
+          audio.currentTime = 0;
+          setDuration(audio.duration);
+        };
+      } else {
+        setDuration(audio.duration);
+      }
+    };
+    const handleEnded = () => { setIsPlaying(false); setProgress(0); };
+    
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audio.addEventListener('ended', handleEnded);
+    return () => {
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.removeEventListener('ended', handleEnded);
+    };
+  }, []);
+
+  const togglePlay = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!audioRef.current) return;
+    if (isPlaying) audioRef.current.pause();
+    else audioRef.current.play();
+    setIsPlaying(!isPlaying);
+  };
+
+  const cycleSpeed = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const nextRate = playbackRate === 1 ? 1.5 : playbackRate === 1.5 ? 2 : 1;
+    setPlaybackRate(nextRate);
+    if (audioRef.current) audioRef.current.playbackRate = nextRate;
+  };
+
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+    const time = parseFloat(e.target.value);
+    setProgress(time);
+    if (audioRef.current) audioRef.current.currentTime = time;
+  };
+
+  const formatTime = (t: number) => {
+    if (isNaN(t) || !isFinite(t)) return '0:00';
+    const m = Math.floor(t / 60);
+    const s = Math.floor(t % 60);
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  };
+
+  return (
+    <div className={`flex items-center gap-2 p-1 ${isMe ? 'text-white' : 'text-gray-800'}`} onClick={e => e.stopPropagation()}>
+      <audio ref={audioRef} src={src} preload="metadata" />
+      <button onClick={togglePlay} className="w-8 h-8 flex items-center justify-center shrink-0">
+        {isPlaying ? (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+        ) : (
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        )}
+      </button>
+      <div className="flex flex-col flex-1 gap-1 min-w-[120px]">
+        <input 
+          type="range" 
+          min={0} max={duration || 100} 
+          value={progress} 
+          onChange={handleSeek} 
+          onClick={e => e.stopPropagation()}
+          className="w-full h-1 bg-black/10 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5 [&::-webkit-slider-thumb]:bg-current [&::-webkit-slider-thumb]:rounded-full"
+        />
+        <div className="flex justify-between items-center text-[10px] font-mono opacity-70">
+          <span>{formatTime(progress)}</span>
+          <span>{formatTime(duration)}</span>
+        </div>
+      </div>
+      <button onClick={cycleSpeed} className="w-8 h-8 flex items-center justify-center shrink-0 text-[10px] font-bold font-mono opacity-80 hover:opacity-100 bg-black/5 rounded-full">
+        {playbackRate}x
+      </button>
+    </div>
+  );
+};
 
 export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const { address, isConnected, isSystemHandshake, isChecking, connector, isZkVerified, isLocalSystemWallet } = useSystemAccount();
@@ -192,9 +332,28 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
   // Telegram-style features
   const [showProfile, setShowProfile] = useState(false);
+  const [lightboxImg, setLightboxImg] = useState<string | null>(null);
   const [blockedPeers, setBlockedPeers] = useState<Set<string>>(new Set());
 
   const [contextMenu, setContextMenu] = useState<{ id: string, content: string, x: number, y: number } | null>(null);
+
+  // ─── Phase 4: Ecosystem Features ─────────────────────────────────────────────
+  const [archivedPeers, setArchivedPeers] = useState<Set<string>>(new Set());
+  const [showArchived, setShowArchived] = useState(false); // toggle archived section
+  const [sidebarMenu, setSidebarMenu] = useState<{ peer: string; x: number; y: number } | null>(null); // right-click on sidebar
+  const [editingMsg, setEditingMsg] = useState<{ id: string; content: string } | null>(null); // inline edit state
+  const [showClearConfirm, setShowClearConfirm] = useState(false); // clear chat confirmation
+
+  // ─── Phase 5: Secret Chat & Integrations ──────────────────────────────────────
+  const [isSecretChat, setIsSecretChat] = useState(false);
+  const [showPollCreator, setShowPollCreator] = useState(false);
+  const [showWalletTransfer, setShowWalletTransfer] = useState(false);
+  // Phase 5: Poll creator form state (hoisted to satisfy React rules of hooks)
+  const [pollQuestion, setPollQuestion] = useState('');
+  const [pollOptions, setPollOptions] = useState<string[]>(['', '']);
+  // Phase 5: Wallet transfer form state
+  const [transferAmount, setTransferAmount] = useState('');
+  const [transferSending, setTransferSending] = useState(false);
 
   // ─── Hito 4: Search, Forward, GIF, Scheduled ──────────────────────────────
   const [searchQuery, setSearchQuery] = useState(''); // in-chat search
@@ -203,7 +362,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const [forwardMsg, setForwardMsg] = useState<any | null>(null); // message to forward
   const [scheduledAt, setScheduledAt] = useState<Date | null>(null); // scheduled send time
   const [showGifPicker, setShowGifPicker] = useState(false); // GIF picker
-  const [gifSearch, setGifSearch] = useState(''); // GIF search query
+  const [gifSearch, setGifSearch] = useState('trending'); // GIF search query
   const [gifResults, setGifResults] = useState<string[]>([]); // GIF URLs
   const [linkPreview, setLinkPreview] = useState<{ url: string, title: string, description: string, image?: string } | null>(null);
 
@@ -302,7 +461,27 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       const b = localStorage.getItem('whale_blocked');
       if (b) setBlockedPeers(new Set(JSON.parse(b)));
     } catch {}
+    // Phase 5: Request push notifications
+    if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
   }, []);
+
+  useEffect(() => {
+    if (address) {
+      try {
+        const a = localStorage.getItem(`whale_archived_${address}`);
+        if (a) setArchivedPeers(new Set(JSON.parse(a)));
+      } catch {}
+    }
+  }, [address]);
+
+  // Phase 5: Reset Secret Chat and Polls when changing peer
+  useEffect(() => {
+    setIsSecretChat(false);
+    setShowPollCreator(false);
+    setShowWalletTransfer(false);
+  }, [activePeer]);
 
   // ─── Call Timer Effect ────────────────────────────────────────────────────────
   useEffect(() => {
@@ -363,20 +542,58 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     setShowProfile(false);
   };
 
+  // Phase 4: clearChat — shows confirmation modal first
   const clearChat = () => {
+    setShowProfile(false);
+    setShowClearConfirm(true);
+  };
+
+  const executeClearChat = () => {
     if (!activePeer || !address) return;
     const dmId = `dm-${activePeer.toLowerCase()}`;
     const clearTs = Date.now();
     localStorage.setItem(`whale_cleared_${address}_${activePeer.toLowerCase()}`, clearTs.toString());
-
-    // Remove all messages belonging to this conversation
     setMessages(prev => prev.filter(m => m.conversationId !== dmId));
-    
-    // Do NOT remove from conversations list (User requested to keep the contact)
-    
-    // Auditor Fix: Do NOT clear confirmedMsgIds globally to prevent cross-chat deduplication leaks.
-    setShowProfile(false);
-    toast.success('Chat cleared');
+    setShowClearConfirm(false);
+    toast.success('✅ Chat cleared.');
+  };
+
+  // Phase 4: Archive/Unarchive a conversation (persisted to localStorage)
+  const toggleArchive = (peer: string) => {
+    setArchivedPeers(prev => {
+      const next = new Set(prev);
+      if (next.has(peer.toLowerCase())) {
+        next.delete(peer.toLowerCase());
+        toast.success('Chat unarchived.');
+      } else {
+        next.add(peer.toLowerCase());
+        toast.success('Chat archived.');
+      }
+      try { localStorage.setItem(`whale_archived_${address}`, JSON.stringify([...next])); } catch {}
+      return next;
+    });
+    setSidebarMenu(null);
+  };
+
+  // Phase 4: Delete conversation from sidebar entirely (local only)
+  const deleteConversation = (peer: string) => {
+    setConversations(prev => prev.filter(c => c.peerAddress.toLowerCase() !== peer.toLowerCase()));
+    const dmId = `dm-${peer.toLowerCase()}`;
+    setMessages(prev => prev.filter(m => m.conversationId !== dmId));
+    if (activePeer?.toLowerCase() === peer.toLowerCase()) setActivePeer(null);
+    setSidebarMenu(null);
+    toast.success('Conversation removed.');
+  };
+
+  // Phase 4: Submit edited message — sends XMTP signal __EDIT__id__::newContent
+  const submitEditMessage = async () => {
+    if (!editingMsg || !editingMsg.content.trim()) return;
+    const signal = `__EDIT__${editingMsg.id}__::${editingMsg.content.trim()}`;
+    // Optimistic local update
+    setMessages(prev => prev.map(m => m.id === editingMsg.id ? { ...m, content: editingMsg.content.trim(), edited: true } : m));
+    setEditingMsg(null);
+    // Persist signal over XMTP so peer sees the edit too
+    if (executeSendRef.current) await executeSendRef.current(signal);
   };
 
 
@@ -1866,6 +2083,38 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             continue;
           }
 
+          // Phase 5: Intercept VOTE signals
+          if (typeof content === 'string' && content.startsWith('__VOTE__')) {
+            const parts = content.replace('__VOTE__', '').split('__::');
+            if (parts.length >= 2) {
+              const targetPollId = parts[0];
+              const optionIndex = parseInt(parts[1], 10);
+              const sender = msg.senderInboxId || 'peer';
+              setMessages(prev => prev.map(m => {
+                if (m.id === targetPollId && m.content.startsWith('__POLL__')) {
+                  // A vote mutates the poll's state array
+                  const pollData = m.pollVotes || {}; // { [user]: optionIndex }
+                  return { ...m, pollVotes: { ...pollData, [sender]: optionIndex } };
+                }
+                return m;
+              }));
+            }
+            continue;
+          }
+
+          // Phase 4: Intercept __EDIT__ — remote peer edited a message
+          if (typeof content === 'string' && content.startsWith('__EDIT__')) {
+            const editParts = content.replace('__EDIT__', '').split('__::');
+            if (editParts.length >= 2) {
+              const editTargetId = editParts[0];
+              const editNewContent = editParts.slice(1).join('__::');
+              setMessages(prev => prev.map(m =>
+                m.id === editTargetId ? { ...m, content: editNewContent, edited: true } : m
+              ));
+            }
+            continue;
+          }
+
           let mappedContent = content || msg.fallback || 'Encrypted Data';
           let burnAtNs: number | undefined = undefined;
 
@@ -1928,7 +2177,17 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               // ── PEER MESSAGE: straightforward insert ──────────────────────────
               if (fromPeer && !content.startsWith('__')) {
                 // We are focused on this chat, so send a read receipt!
-                sendMessage(client, msgConvPeer, `__READ__${realId}`, address).catch(e => console.warn('Failed to send read receipt', e));
+                if (!document.hidden) {
+                  sendMessage(client, msgConvPeer, `__READ__${realId}`, address).catch(e => console.warn('Failed to send read receipt', e));
+                } else {
+                  // Phase 5: Push Notifications when app is hidden
+                  if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+                    new Notification(`WhaleChat: ${shortAddr(msgConvPeer)}`, {
+                      body: formatMessagePreview(content),
+                      icon: '/favicon.ico'
+                    });
+                  }
+                }
               }
               return [...prev, mappedMsg].sort((a, b) => a.sentAtNs - b.sentAtNs);
             });
@@ -1945,6 +2204,15 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             });
           } else {
             // Belongs to a different (background) conversation
+            if (fromPeer && !content.startsWith('__')) {
+              // Phase 5: Push Notifications when receiving a message in background chat
+              if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+                new Notification(`WhaleChat: ${shortAddr(msgConvPeer || 'Unknown')}`, {
+                  body: formatMessagePreview(content),
+                  icon: '/favicon.ico'
+                });
+              }
+            }
             setConversations(prev => {
               if (!msgConvPeer) return prev;
               const exists = prev.some(c => c.peerAddress.toLowerCase() === msgConvPeer);
@@ -2266,7 +2534,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     if (!client || !activePeer || !content.trim() || !address) return;
     
     const isReaction = content.startsWith('__REACT__');
-    const isSystemSignal = content.startsWith('__CALL_') || isReaction;
+    const isVote = content.startsWith('__VOTE__');
+    const isSystemSignal = content.startsWith('__CALL_') || isReaction || isVote;
     if (!isSystemSignal && sending) return;
 
     if (!isSystemSignal) setSending(true);
@@ -2432,6 +2701,35 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   }, [gifSearch, searchGifs]);
 
   // ─── Hito 4: Scheduled Messages ──────────────────────────────────────────
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    // Check size limit (~1MB safe for XMTP encoded as Base64)
+    if (file.size > 1024 * 1024) {
+      toast.error('File exceeds 1MB limit for P2P messaging.');
+      if (fileRef.current) fileRef.current.value = '';
+      return;
+    }
+    
+    setIsUploading(true);
+    try {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64data = reader.result as string;
+        const msg = `[ATTACHMENT:${file.type || 'application/octet-stream'}]${base64data}|${file.name}`;
+        executeSend(msg);
+        setIsUploading(false);
+        if (fileRef.current) fileRef.current.value = '';
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to attach file.');
+      setIsUploading(false);
+    }
+  };
+
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputText.trim()) return;
@@ -2440,7 +2738,9 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       txt = `__REPLY__${replyingTo.id}__::${txt}`;
       setReplyingTo(null);
     }
-    if (burnTimer) {
+    if (isSecretChat) {
+      txt = `__BURN_15__::${txt}`;
+    } else if (burnTimer) {
       txt = `__BURN_${burnTimer}__::${txt}`;
       setBurnTimer(null);
     }
@@ -2687,41 +2987,75 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         </div>
 
         <div className="flex-1 overflow-y-auto">
+          {conversations.length > 0 && archivedPeers.size > 0 && (
+            <button
+              onClick={() => setShowArchived(!showArchived)}
+              className="w-full text-left p-3.5 border-b border-white/20 bg-gray-50/50 hover:bg-gray-100/50 transition-all flex items-center justify-between"
+            >
+              <div className="flex items-center gap-2 text-gray-500">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+                <span className="text-[11px] font-bold uppercase tracking-wider">Archived Chats ({archivedPeers.size})</span>
+              </div>
+              <span className="text-[10px] font-bold text-gray-400">{showArchived ? 'Hide' : 'Show'}</span>
+            </button>
+          )}
           {conversations.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full gap-3 p-6 text-center">
-              <p className="text-[10px] text-black/30  font-medium uppercase tracking-widest">Vault is Empty</p>
+              <p className="text-[10px] text-black/30 font-medium uppercase tracking-widest">Vault is Empty</p>
             </div>
           ) : (
-            conversations.map((conv, i) => {
+            conversations.filter(conv => showArchived ? archivedPeers.has(conv.peerAddress.toLowerCase()) : !archivedPeers.has(conv.peerAddress.toLowerCase())).map((conv, i) => {
               const isActive = activePeer?.toLowerCase() === conv.peerAddress.toLowerCase();
               return (
-                <button
-                  key={i}
-                  onClick={() => { setActivePeer(conv.peerAddress); setShowList(false); }}
-                  className={`w-full text-left p-3.5 border-b border-white/20 transition-all ${
-                    isActive ? 'bg-white/60 shadow-sm' : 'hover:bg-white/40'
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-3 w-full">
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <Avatar address={conv.peerAddress} />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[11px] font-bold text-[#050505]  font-mono truncate">{shortAddr(conv.peerAddress)}</p>
-                        {conv.lastMessage && (
-                          <p className="text-[10px] text-black/40  truncate mt-0.5">{conv.lastMessage}</p>
-                        )}
-                      </div>
-                    </div>
-                    {conv.unreadCount && conv.unreadCount > 0 ? (
-                      <div className="relative w-6 h-6 flex items-center justify-center shrink-0">
-                        <div className="absolute inset-0 w-full h-full opacity-90 bg-black/5 rounded-full" />
-                        <span className="relative z-10 text-[8px] font-black text-black mt-0.5">
-                          {conv.unreadCount > 9 ? '+9' : conv.unreadCount}
-                        </span>
-                      </div>
-                    ) : null}
+                <div key={i} className="relative w-full overflow-hidden border-b border-white/20">
+                  <div className="absolute inset-y-0 right-0 flex flex-col items-center justify-center w-20 bg-blue-500/90 text-white text-[10px] font-bold tracking-widest uppercase transition-colors" onClick={() => toggleArchive(conv.peerAddress)}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="mb-1"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+                    {archivedPeers.has(conv.peerAddress.toLowerCase()) ? 'Unarchive' : 'Archive'}
                   </div>
-                </button>
+                  <motion.div
+                    drag="x"
+                    dragConstraints={{ left: -80, right: 0 }}
+                    dragElastic={0.1}
+                    whileTap={{ cursor: "grabbing" }}
+                    onDragEnd={(e, info) => {
+                      if (info.offset.x < -50) {
+                        toggleArchive(conv.peerAddress);
+                      }
+                    }}
+                    className="relative z-10 w-full bg-white shadow-sm"
+                  >
+                    <button
+                      onContextMenu={(e) => {
+                        e.preventDefault();
+                        setSidebarMenu({ peer: conv.peerAddress, x: e.clientX, y: e.clientY });
+                      }}
+                      onClick={() => { setActivePeer(conv.peerAddress); setShowList(false); }}
+                      className={`w-full text-left p-3.5 transition-all ${
+                        isActive ? 'bg-black/5' : 'hover:bg-black/5'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-3 w-full">
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <Avatar address={conv.peerAddress} />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[11px] font-bold text-[#050505]  font-mono truncate">{shortAddr(conv.peerAddress)}</p>
+                            {conv.lastMessage && (
+                              <p className="text-[10px] text-black/40  truncate mt-0.5">{formatMessagePreview(conv.lastMessage)}</p>
+                            )}
+                          </div>
+                        </div>
+                        {conv.unreadCount && conv.unreadCount > 0 ? (
+                          <div className="relative w-6 h-6 flex items-center justify-center shrink-0">
+                            <div className="absolute inset-0 w-full h-full opacity-90 bg-black/5 rounded-full" />
+                            <span className="relative z-10 text-[8px] font-black text-black mt-0.5">
+                              {conv.unreadCount > 9 ? '+9' : conv.unreadCount}
+                            </span>
+                          </div>
+                        ) : null}
+                      </div>
+                    </button>
+                  </motion.div>
+                </div>
               );
             })
           )}
@@ -2778,6 +3112,14 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.8)] animate-pulse" />
                   <span className="text-[10px] font-mono font-bold text-blue-700">{balance.toFixed(2)} QD</span>
                 </div>
+                {/* Phase 5: Secret Chat Toggle */}
+                <button
+                  onClick={() => setIsSecretChat(!isSecretChat)}
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${isSecretChat ? 'bg-red-500 text-white shadow-lg shadow-red-500/40 animate-pulse' : 'bg-gray-50 text-gray-400 hover:bg-red-50 hover:text-red-500'}`}
+                  title={isSecretChat ? "Secret Chat Active (Auto-Burn 15s)" : "Start Secret Chat"}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </button>
                 <button
                   onClick={() => startCall('audio')}
                   className="w-9 h-9 bg-emerald-50 hover:bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 transition-colors"
@@ -2881,7 +3223,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             )}
 
             {/* Dynamic Chat Background */}
-            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 min-h-0 relative" style={{ ...bgStyle, fontFamily, fontSize: `${fontSizePx}px` }}>
+            <div className={`flex-1 overflow-y-auto p-4 flex flex-col gap-3 min-h-0 relative ${isSecretChat ? 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-neutral-900 via-red-950 to-black' : ''}`} style={isSecretChat ? { fontFamily, fontSize: `${fontSizePx}px` } : { ...bgStyle, fontFamily, fontSize: `${fontSizePx}px` }}>
               {/* Matrix Rain Effect Layer */}
               {chatBackground === 'matrix' && (
                 <div className="absolute inset-0 pointer-events-none opacity-20" style={{ backgroundImage: 'radial-gradient(circle, rgba(0,255,0,0.1) 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
@@ -2900,6 +3242,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   if (c.startsWith('__PIN__')) return false;
                   if (c.startsWith('__UNPIN__')) return false;
                   if (c.startsWith('__REVOKE__')) return false;
+                  if (c.startsWith('__EDIT__')) return false;
                   return true;
                 });
                 if (filteredMsgs.length === 0) return (
@@ -2970,14 +3313,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                           <div className={`flex items-center gap-2 mb-1.5 ${isMe ? 'text-white/60 ' : 'text-black/40 '}`}>
                             <span className="text-[9px] font-black uppercase tracking-widest">AUDIO</span>
                           </div>
-                          <audio
-                            controls
-                            src={audioSrc}
-                            playsInline
-                            preload="metadata"
-                            className="h-8 max-w-[200px]"
-                            style={{ filter: isMe ? 'invert(1) brightness(0.8)' : 'invert(var(--dark-invert, 0))' }}
-                          />
+                          <CustomAudioPlayer src={audioSrc} isMe={isMe} />
                         </div>
                       ) : isLocation && locationCoords ? (
                         <div className={`px-4 py-3 rounded-2xl flex flex-col gap-2 relative z-20 shadow-sm ${
@@ -2996,9 +3332,9 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                       ) : attachment ? (
                         <div className={`mt-1 overflow-hidden rounded-xl border shadow-sm ${isMe ? 'border-transparent bg-black' : 'border-transparent bg-white'}`}>
                           {attachment.mime.startsWith('image/') || ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(attachment.name.split('.').pop()?.toLowerCase() || '') ? (
-                            <a href={attachment.url} target="_blank" rel="noopener noreferrer">
-                              <img src={attachment.url} alt={attachment.name} className="max-w-[240px] max-h-[300px] object-cover" />
-                            </a>
+                            <button type="button" onClick={() => setLightboxImg(attachment.url)} className="block p-1">
+                              <img src={attachment.url} alt={attachment.name} className="max-w-[240px] max-h-[300px] object-cover rounded-xl" />
+                            </button>
                           ) : attachment.mime.startsWith('video/') || ['mp4', 'webm', 'mov'].includes(attachment.name.split('.').pop()?.toLowerCase() || '') ? (
                             <video src={attachment.url} controls className="max-w-[260px] max-h-[300px] object-contain bg-black" />
                           ) : (
@@ -3007,9 +3343,63 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                             </a>
                           )}
                         </div>
-                      ) : (
+                      ) : content.startsWith('__POLL__') ? (() => {
+                          // Phase 5: Interactive Poll Bubble
+                          const [, pollBody] = content.split('__POLL__');
+                          const [questionPart, ...optionParts] = pollBody.split('__::');
+                          const options = optionParts[0]?.split('|') ?? [];
+                          const votes: Record<string, number> = msg.pollVotes || {};
+                          const totalVotes = Object.keys(votes).length;
+                          const myInboxId = client?.inboxId || '';
+                          const myVote = votes[myInboxId] ?? -1;
+                          return (
+                            <div id={`msg-${msg.id}`} className={`px-4 py-3 rounded-2xl shadow-md min-w-[220px] max-w-[280px] ${isMe ? 'bg-blue-500 text-white' : 'bg-white border border-black/8 text-gray-900'}`}>
+                              <div className={`text-[10px] font-black uppercase tracking-widest mb-2 flex items-center gap-1.5 ${isMe ? 'text-white/60' : 'text-blue-500'}`}>
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h18v2H3zM3 7h12v2H3zM3 11h15v2H3zM3 15h9v2H3z"/></svg>
+                                Poll
+                              </div>
+                              <p className={`text-[13px] font-bold leading-snug mb-3 ${isMe ? 'text-white' : 'text-gray-900'}`}>{questionPart}</p>
+                              <div className="flex flex-col gap-2">
+                                {options.map((opt: string, i: number) => {
+                                  const count = Object.values(votes).filter(v => v === i).length;
+                                  const pct = totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0;
+                                  const isSelected = myVote === i;
+                                  return (
+                                    <button
+                                      key={i}
+                                      onClick={() => executeSend(`__VOTE__${msg.id}__::${i}`)}
+                                      className={`relative w-full text-left rounded-xl px-3 py-2 text-[12px] font-semibold overflow-hidden transition-all border ${isSelected ? (isMe ? 'border-white/50 bg-white/20' : 'border-blue-500 bg-blue-50 text-blue-700') : (isMe ? 'border-white/20 bg-white/10 hover:bg-white/20' : 'border-gray-200 bg-gray-50 hover:bg-gray-100 text-gray-800')}`}
+                                    >
+                                      <div className="absolute left-0 top-0 h-full bg-white/20 rounded-xl transition-all duration-500" style={{ width: `${pct}%` }} />
+                                      <span className="relative z-10 flex justify-between items-center gap-2">
+                                        <span>{opt}</span>
+                                        {totalVotes > 0 && <span className={`font-mono text-[10px] ${isSelected ? '' : 'opacity-60'}`}>{pct}%</span>}
+                                      </span>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                              <p className={`text-[10px] mt-2 text-right ${isMe ? 'text-white/50' : 'text-gray-400'}`}>{totalVotes} vote{totalVotes !== 1 ? 's' : ''}</p>
+                            </div>
+                          );
+                        })() : content.startsWith('__PAYMENT__') ? (() => {
+                          // Phase 5: QD Payment Receipt Bubble
+                          const amount = content.replace('__PAYMENT__::', '');
+                          return (
+                            <div id={`msg-${msg.id}`} className={`px-4 py-3 rounded-2xl shadow-md min-w-[200px] border ${isMe ? 'bg-gradient-to-br from-emerald-500 to-teal-600 border-emerald-400/30 text-white' : 'bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200 text-emerald-900'}`}>
+                              <div className="flex items-center gap-2 mb-1">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                                <span className={`text-[10px] font-black uppercase tracking-widest ${isMe ? 'text-white/70' : 'text-emerald-600'}`}>QD Transfer</span>
+                              </div>
+                              <p className="text-[22px] font-black font-mono">{amount} <span className="text-[14px] font-semibold opacity-80">QD</span></p>
+                              <p className={`text-[10px] mt-1 ${isMe ? 'text-white/60' : 'text-emerald-600/80'}`}>
+                                {isMe ? `Sent to ${shortAddr(activePeer!)}` : `Received from ${shortAddr(activePeer!)}`}
+                              </p>
+                            </div>
+                          );
+                        })() : (
                         <div className="relative group" id={`msg-${msg.id}`}>
-                          <div className={`px-4 py-2.5 rounded-2xl text-[14px] leading-relaxed break-words shadow-md animate-in fade-in slide-in-from-bottom-2 duration-300 relative overflow-hidden ${
+                          <div className={`px-4 py-2.5 rounded-2xl text-[14px] leading-relaxed break-words break-all shadow-md animate-in fade-in slide-in-from-bottom-2 duration-300 relative overflow-hidden ${
                             isMe
                               ? 'bg-blue-500 text-white rounded-br-sm border border-blue-600/30'
                               : 'bg-[#F2F2F7] text-gray-900 rounded-bl-sm border border-black/5'
@@ -3027,29 +3417,29 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                                 className={`mb-2 pl-2 border-l-2 text-[11px] opacity-75 line-clamp-1 cursor-pointer ${isMe ? 'border-white/40 hover:opacity-100' : 'border-black/20 hover:opacity-100'}`}
                               >
                                 <strong className="uppercase tracking-wider">{replyMsg.senderInboxId?.toLowerCase() === client?.inboxId?.toLowerCase() ? 'You' : 'Peer'}: </strong>
-                                {typeof replyMsg.content === 'string' && replyMsg.content.startsWith('__REPLY__') 
-                                  ? replyMsg.content.split('__::').slice(1).join('__::') 
-                                  : typeof replyMsg.content === 'string' ? replyMsg.content.replace(/^__REPLY__[a-zA-Z0-9_-]+__::/, '').replace('__AUDIO__', '🎙️ Voice Note').replace('[LOCATION]', '📍 Location') : '📎 Attachment'}
+                                {replyMsg.content ? formatMessagePreview(replyMsg.content) : '📎 Attachment'}
                               </div>
                             )}
                             {content.startsWith('[GIF]') ? (
-                              <div className="rounded-xl overflow-hidden mt-1 max-w-[200px]">
+                              <button type="button" onClick={() => setLightboxImg(content.replace('[GIF]', ''))} className="rounded-xl overflow-hidden mt-1 max-w-[200px] hover:opacity-90 transition-opacity">
                                 <img src={content.replace('[GIF]', '')} alt="GIF" className="w-full h-auto object-cover" />
-                              </div>
+                              </button>
                             ) : (
-                              <p className="whitespace-pre-wrap break-words" style={{ fontSize: `${fontSizePx}px`, lineHeight: '1.4' }}>
+                              <p className="whitespace-pre-wrap break-words break-all" style={{ fontSize: `${fontSizePx}px`, lineHeight: '1.4' }}>
                                 {(() => {
                                   let text = content;
                                   if (content.startsWith('__CALL_OFFER__')) text = "📞 Initiated a Call";
                                   else if (content.startsWith('__CALL_ANSWER__')) text = "✅ Call Answered";
                                   else if (content === '__CALL_DECLINE__') text = "❌ Call Declined";
                                   else if (content === '__CALL_HANGUP__') text = "🔚 Call Ended";
+                                  
                                   if (searchQuery && text.toLowerCase().includes(searchQuery.toLowerCase())) {
                                     const parts = text.split(new RegExp(`(${searchQuery})`, 'gi'));
                                     return parts.map((part: string, i: number) => part.toLowerCase() === searchQuery.toLowerCase() ? <span key={i} className="bg-yellow-300 text-black px-0.5 rounded-sm">{part}</span> : part);
                                   }
-                                  return text;
+                                  return parseMessageText(text, isMe);
                                 })()}
+                                {msg.edited && <span className="text-[10px] opacity-70 ml-1.5 italic">(edited)</span>}
                               </p>
                             )}
                             {msg.reactions && Object.keys(msg.reactions).length > 0 && (
@@ -3173,6 +3563,39 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   </button>
                 </div>
               )}
+              {/* Phase 4: Editing UI */}
+              {editingMsg && (
+                <div className="mx-3 mt-2 px-4 py-2.5 bg-blue-50 border border-blue-100 rounded-t-2xl flex items-center justify-between animate-in slide-in-from-bottom-2 duration-200">
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-[11px] font-black uppercase tracking-widest text-blue-600 mb-0.5">Edit Message</span>
+                    <input
+                      type="text"
+                      className="text-[13px] bg-transparent outline-none text-blue-900 w-full font-mono placeholder:text-blue-300"
+                      value={editingMsg.content}
+                      onChange={e => setEditingMsg({ ...editingMsg, content: e.target.value })}
+                      onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); submitEditMessage(); } }}
+                      autoFocus
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button onClick={submitEditMessage} className="p-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+                    <button onClick={() => setEditingMsg(null)} className="p-1.5 text-blue-400 hover:text-blue-700"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                  </div>
+                </div>
+              )}
+              {replyingTo && !editingMsg && (
+                <div className="flex items-center justify-between px-4 pt-2 pb-1 bg-gray-50/50 border-t border-gray-100 animate-in slide-in-from-bottom-2">
+                  <div className="flex-1 pl-3 border-l-2 border-black/20 overflow-hidden">
+                    <p className="text-[11px] font-bold text-gray-700">Replying to</p>
+                    <p className="text-[12px] text-gray-500 truncate">{
+                      replyingTo.content ? formatMessagePreview(replyingTo.content) : 'Message'
+                    }</p>
+                  </div>
+                  <button onClick={() => setReplyingTo(null)} className="p-2 text-gray-400 hover:text-gray-700">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                  </button>
+                </div>
+              )}
               {/* Hito 4: Scheduled send indicator */}
               {scheduledAt && (
                 <div className="flex items-center justify-between px-4 pt-2 pb-1 bg-amber-50 border-t border-amber-100 animate-in slide-in-from-bottom-2">
@@ -3221,9 +3644,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   <div className="flex-1 pl-3 border-l-2 border-black/20 overflow-hidden">
                     <p className="text-[11px] font-bold text-gray-700">Replying to</p>
                     <p className="text-[12px] text-gray-500 truncate">{
-                      typeof replyingTo.content === 'string' 
-                        ? replyingTo.content.replace(/^__REPLY__[a-zA-Z0-9_-]+__::/, '').replace('__AUDIO__', 'Voice Note').replace('[LOCATION]', 'Location') 
-                        : 'Message'
+                      replyingTo.content ? formatMessagePreview(replyingTo.content) : 'Message'
                     }</p>
                   </div>
                   <button onClick={() => setReplyingTo(null)} className="p-2 text-gray-400 hover:text-gray-700">
@@ -3231,7 +3652,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   </button>
                 </div>
               )}
-              <form onSubmit={handleSend} className="flex gap-2 p-3 items-center">
+                <input type="file" ref={fileRef} className="hidden" onChange={handleFileUpload} />
+                <form onSubmit={handleSend} className="flex gap-2 p-3 items-center">
                 {/* GIF Button */}
                 <button
                   type="button"
@@ -3255,6 +3677,26 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   title="Attach File"
                 >
                   {isUploading ? <span className="text-[12px] animate-spin">⌛</span> : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>}
+                </button>
+
+                {/* Phase 5: Poll Creator Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowPollCreator(p => !p)}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shrink-0 ${showPollCreator ? 'bg-indigo-100 text-indigo-600 border border-indigo-200' : 'hover:bg-gray-100 text-gray-500'}`}
+                  title="Create Poll"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                </button>
+
+                {/* Phase 5: Wallet Send Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowWalletTransfer(w => !w)}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shrink-0 ${showWalletTransfer ? 'bg-emerald-100 text-emerald-600 border border-emerald-200' : 'hover:bg-gray-100 text-gray-500'}`}
+                  title="Send QD Tokens"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
                 </button>
 
                 <input
@@ -3297,9 +3739,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 ) : (
                   <button
                     type="button"
-                    onPointerDown={startRecording}
-                    onPointerUp={stopRecording}
-                    onPointerLeave={stopRecording}
+                    onTouchStart={startRecording}
+                    onMouseDown={startRecording}
+                    onTouchEnd={stopRecording}
+                    onMouseUp={stopRecording}
+                    onMouseLeave={stopRecording}
                     onContextMenu={(e) => e.preventDefault()}
                     className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shrink-0 ${
                       isRecording ? 'bg-red-500 text-white shadow-md scale-110' : 'hover:bg-gray-100 text-gray-500'
@@ -3742,14 +4186,12 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 <button onClick={() => setForwardMsg(null)} className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400">✕</button>
               </div>
               <div className="bg-gray-50 rounded-xl border border-black/5 px-3 py-2 mb-3">
-                <p className="text-[11px] font-mono text-gray-500 truncate">{typeof forwardMsg.content === 'string' ? forwardMsg.content.replace(/^__REPLY__[a-zA-Z0-9_-]+__::/, '').replace('__AUDIO__', '🎙️ Voice Note').slice(0, 80) : 'Message'}</p>
+                <p className="text-[11px] font-mono text-gray-500 truncate">{forwardMsg.content ? formatMessagePreview(forwardMsg.content) : 'Message'}</p>
               </div>
               <div className="flex flex-col gap-1.5 max-h-64 overflow-y-auto">
                 {conversations.map(conv => (
                   <button key={conv.peerAddress} onClick={() => {
-                    const content = typeof forwardMsg.content === 'string'
-                      ? forwardMsg.content.replace(/^__REPLY__[a-zA-Z0-9_-]+__::/, '')
-                      : 'Message';
+                    const content = forwardMsg.content ? formatMessagePreview(forwardMsg.content) : 'Message';
                     const currentPeer = activePeer;
                     setActivePeer(conv.peerAddress);
                     setTimeout(() => { executeSendRef.current?.(`[Forwarded] ${content}`); setActivePeer(currentPeer); }, 300);
@@ -3805,6 +4247,189 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
          </div>,
          document.body
        )}
+
+       {/* Phase 2: Immersive Lightbox Modal */}
+       {lightboxImg && typeof document !== 'undefined' && createPortal(
+        <div 
+          className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/95 backdrop-blur-lg animate-in fade-in duration-200"
+          onClick={() => setLightboxImg(null)}
+        >
+          <button 
+            className="absolute top-6 right-6 text-white/50 hover:text-white bg-black/20 hover:bg-black/40 rounded-full p-2 transition-all"
+            onClick={(e) => { e.stopPropagation(); setLightboxImg(null); }}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+          <img 
+            src={lightboxImg} 
+            alt="Fullscreen" 
+            className="max-w-[95vw] max-h-[90vh] object-contain shadow-2xl animate-in zoom-in-95 duration-300 select-none"
+            onClick={(e) => e.stopPropagation()} 
+          />
+          <a 
+            href={lightboxImg} 
+            download="WhaleChat_Media" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            onClick={e => e.stopPropagation()}
+            className="absolute bottom-8 flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-5 py-2.5 rounded-full backdrop-blur-md text-[13px] font-bold font-mono transition-all"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download Original
+          </a>
+        </div>,
+        document.body
+       )}
+
+       {/* Phase 4: Clear Chat Confirmation Modal */}
+       {showClearConfirm && (
+         <div className="fixed inset-0 z-[1000] bg-black/40 backdrop-blur-sm flex items-center justify-center p-6 animate-in fade-in zoom-in duration-200">
+           <div className="w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl flex flex-col items-center text-center">
+             <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center text-red-500 mb-4">
+               <Trash2 size={28} />
+             </div>
+             <h3 className="text-[18px] font-black tracking-tight text-gray-900 mb-2">Clear Chat?</h3>
+             <p className="text-[13px] text-gray-500 mb-6 px-4">
+               Are you sure you want to clear this conversation? This will remove all messages from your device.
+             </p>
+             <div className="flex items-center gap-3 w-full">
+               <button onClick={() => setShowClearConfirm(false)} className="flex-1 py-3.5 rounded-xl bg-gray-50 hover:bg-gray-100 text-[13px] font-bold text-gray-700 transition-colors">
+                 Cancel
+               </button>
+               <button onClick={executeClearChat} className="flex-1 py-3.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-[13px] font-bold transition-colors shadow-lg shadow-red-500/30">
+                 Clear Chat
+               </button>
+             </div>
+           </div>
+         </div>
+       )}
+
+       {/* Phase 4: Sidebar Context Menu */}
+       {sidebarMenu && typeof document !== 'undefined' && createPortal(
+         <div className="fixed inset-0 z-[200]" onClick={() => setSidebarMenu(null)} onContextMenu={(e) => { e.preventDefault(); setSidebarMenu(null); }}>
+           <div 
+             className="absolute bg-white border border-black/10 rounded-2xl shadow-xl p-2 min-w-[160px] flex flex-col animate-in fade-in zoom-in-95 duration-150"
+             style={{ 
+               top: Math.min(sidebarMenu.y, window.innerHeight - 150), 
+               left: Math.min(sidebarMenu.x, window.innerWidth - 180) 
+             }}
+             onClick={e => e.stopPropagation()}
+           >
+             <button onClick={() => toggleArchive(sidebarMenu.peer)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-black/5 text-[11px] font-mono text-[#050505] text-left">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg> 
+                {archivedPeers.has(sidebarMenu.peer.toLowerCase()) ? 'Unarchive' : 'Archive'}
+             </button>
+             <button onClick={() => deleteConversation(sidebarMenu.peer)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-50 text-[11px] font-mono text-red-500 text-left mt-1">
+                <Trash2 size={14} /> Delete Chat
+             </button>
+           </div>
+         </div>,
+         document.body
+       )}
+
+       {/* Phase 5: Poll Creator Modal */}
+       {showPollCreator && (
+           <div className="fixed inset-0 z-[1000] bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
+             <div className="w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl flex flex-col gap-4">
+               <div className="flex items-center justify-between">
+                 <h3 className="text-[16px] font-black tracking-tight text-gray-900">Create Poll</h3>
+                 <button onClick={() => { setShowPollCreator(false); setPollQuestion(''); setPollOptions(['', '']); }} className="p-2 rounded-full hover:bg-gray-100 text-gray-400">✕</button>
+               </div>
+               <input
+                 type="text"
+                 placeholder="Ask a question..."
+                 value={pollQuestion}
+                 onChange={e => setPollQuestion(e.target.value)}
+                 className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-[13px] font-medium focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+               />
+               <div className="flex flex-col gap-2">
+                 {pollOptions.map((opt, i) => (
+                   <div key={i} className="flex gap-2 items-center">
+                     <input
+                       type="text"
+                       placeholder={`Option ${i + 1}`}
+                       value={opt}
+                       onChange={e => setPollOptions(prev => prev.map((o, j) => j === i ? e.target.value : o))}
+                       className="flex-1 px-3 py-2 rounded-xl border border-gray-200 text-[13px] focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                     />
+                     {pollOptions.length > 2 && (
+                       <button onClick={() => setPollOptions(prev => prev.filter((_, j) => j !== i))} className="text-gray-400 hover:text-red-500 text-[12px] font-black">✕</button>
+                     )}
+                   </div>
+                 ))}
+                 {pollOptions.length < 5 && (
+                   <button onClick={() => setPollOptions(prev => [...prev, ''])} className="text-indigo-500 text-[12px] font-bold hover:underline text-left">+ Add option</button>
+                 )}
+               </div>
+               <button
+                 onClick={() => {
+                   const validOpts = pollOptions.filter(o => o.trim());
+                   if (!pollQuestion.trim() || validOpts.length < 2) return;
+                   const pollId = `poll_${Date.now()}`;
+                   const payload = `__POLL__${pollId}__::${pollQuestion.trim()}__::${validOpts.join('|')}`;
+                   executeSend(payload);
+                   setShowPollCreator(false);
+                   setPollQuestion('');
+                   setPollOptions(['', '']);
+                 }}
+                 className="w-full py-3.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white text-[13px] font-bold shadow-lg shadow-indigo-500/30 transition-colors"
+               >
+                 Send Poll
+               </button>
+             </div>
+           </div>
+       )}
+
+       {/* Phase 5: Wallet QD Transfer Modal */}
+       {showWalletTransfer && (
+           <div className="fixed inset-0 z-[1000] bg-black/40 backdrop-blur-sm flex items-end sm:items-center justify-center p-4 animate-in fade-in slide-in-from-bottom-4 duration-300">
+             <div className="w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl flex flex-col gap-4">
+               <div className="flex items-center justify-between">
+                 <div>
+                   <h3 className="text-[16px] font-black tracking-tight text-gray-900">Send QD Tokens</h3>
+                   <p className="text-[11px] text-gray-400 font-mono mt-0.5">Balance: {balance.toFixed(4)} QD</p>
+                 </div>
+                 <button onClick={() => { setShowWalletTransfer(false); setTransferAmount(''); }} className="p-2 rounded-full hover:bg-gray-100 text-gray-400">✕</button>
+               </div>
+               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center self-center shadow-lg shadow-emerald-500/30">
+                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+               </div>
+               <p className="text-[12px] text-gray-500 text-center font-mono">To: {shortAddr(activePeer!)}</p>
+               <input
+                 type="number"
+                 placeholder="Amount in QD..."
+                 value={transferAmount}
+                 onChange={e => setTransferAmount(e.target.value)}
+                 min="0.01"
+                 step="0.01"
+                 className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[18px] font-black text-center focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 font-mono"
+               />
+               <button
+                 disabled={!transferAmount || parseFloat(transferAmount) <= 0 || parseFloat(transferAmount) > balance || transferSending}
+                 onClick={async () => {
+                   const parsed = parseFloat(transferAmount);
+                   if (isNaN(parsed) || parsed <= 0 || parsed > balance) return;
+                   setTransferSending(true);
+                   try {
+                     await spendQDs(parsed, `Transfer to ${shortAddr(activePeer!)}`);
+                     executeSend(`__PAYMENT__::${parsed}`);
+                     toast.success(`Sent ${parsed} QD to ${shortAddr(activePeer!)}!`);
+                     setShowWalletTransfer(false);
+                     setTransferAmount('');
+                   } catch {
+                     toast.error('Transfer failed. Please try again.');
+                   } finally {
+                     setTransferSending(false);
+                   }
+                 }}
+                 className="w-full py-3.5 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 hover:opacity-90 text-white text-[13px] font-bold shadow-lg shadow-emerald-500/30 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+               >
+                 {transferSending ? 'Processing...' : `Send ${transferAmount || '0'} QD`}
+               </button>
+             </div>
+           </div>
+       )}
+
       </div>
     </TuringShieldGate>
   );

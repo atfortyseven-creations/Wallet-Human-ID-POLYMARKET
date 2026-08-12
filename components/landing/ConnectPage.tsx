@@ -776,45 +776,22 @@ export default function ConnectPage() {
 
   if (!mounted) {
     return (
-      <div className="w-full min-h-screen bg-slate-50 flex flex-col shrink-0 relative overflow-hidden text-slate-900">
-        <div 
-          className="fixed inset-0 pointer-events-none z-0"
-          style={{
-            backgroundImage: 'url("/bg-waves.jpg")',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat'
-          }}
-        />
-        <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-white/40 via-transparent to-slate-50/90" />
-      </div>
+      <div className="w-full min-h-screen bg-white flex flex-col shrink-0 relative overflow-hidden text-slate-900" />
     );
   }
 
   return (
-    <div className="w-full min-h-screen bg-slate-50 flex flex-col shrink-0 relative overflow-hidden text-slate-900">
-      
-      {/* Wave Background */}
-      <div 
-        className="fixed inset-0 pointer-events-none z-0"
-        style={{
-          backgroundImage: 'url("/bg-waves.jpg")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
-      />
-      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-b from-white/40 via-transparent to-slate-50/90" />
+    <div className="w-full min-h-screen bg-white flex flex-col shrink-0 relative overflow-hidden text-slate-900">
 
-      <div className="w-full relative z-10 flex-1 flex flex-col lg:flex-row items-center justify-center lg:justify-between max-w-[1280px] mx-auto px-6 py-12 lg:py-0 gap-12 lg:gap-8 min-h-screen">
+      <div className="w-full relative z-10 flex-1 flex flex-col items-center justify-center max-w-[1280px] mx-auto px-6 py-12 gap-12 min-h-screen">
         
-        {/* Left Side: Branding */}
-        <div className="flex-1 flex justify-center lg:justify-start w-full">
+        {/* Branding (Centered) */}
+        <div className="flex justify-center w-full max-w-xl text-center">
           {renderInfoPanel()}
         </div>
 
-        {/* Right Side: Auth */}
-        <div className="flex-1 flex justify-center lg:justify-end w-full">
+        {/* Auth (Centered) */}
+        <div className="flex justify-center w-full">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
