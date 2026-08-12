@@ -553,7 +553,19 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     const dmId = `dm-${activePeer.toLowerCase()}`;
     const clearTs = Date.now();
     localStorage.setItem(`whale_cleared_${address}_${activePeer.toLowerCase()}`, clearTs.toString());
-    setMessages(prev => prev.filter(m => m.conversationId !== dmId));
+    // [BUG FIX] Filter by BOTH conversationId match AND by peer address presence in id
+    // This catches messages that may not have conversationId set correctly
+    setMessages(prev => prev.filter(m => {
+      if (m.conversationId === dmId) return false; // explicit conversationId match
+      // fallback: if message belongs to this peer by sender/content heuristic
+      if (!m.conversationId && (
+        m.senderInboxId?.toLowerCase() === activePeer.toLowerCase() ||
+        m.id?.includes(activePeer.toLowerCase().slice(2, 8))
+      )) return false;
+      return true;
+    }));
+    // Also reset the dedup set so stream doesn't re-inject old messages
+    confirmedMsgIds.current.clear();
     setShowClearConfirm(false);
     toast.success('✅ Chat cleared.');
   };
@@ -1723,7 +1735,9 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     } catch (err) {
       console.warn('[Voice] Microphone access denied or unavailable:', err);
     }
-  }, [isRecording, activePeer, client]);
+  // [BUG FIX] Added 'address' to dependency array — was causing stale closure where
+  // audio messages were sent with null/undefined address after wallet reconnect
+  }, [isRecording, activePeer, client, address]);
 
   const stopRecording = useCallback(() => {
     if (!isRecording || !mediaRecorderRef.current) return;
@@ -2421,6 +2435,22 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         let latestPinnedId: string | null = null;
         let lastPeerMsgId: string | null = null;
 
+        // [BUG FIX] Collect __VOTE__ signals from history so polls show correct tallies on load
+        const historicalPollVotes: Record<string, Record<string, number>> = {};
+        for (const m of combined) {
+          const content = m.content;
+          if (typeof content === 'string' && content.startsWith('__VOTE__')) {
+            const parts = content.replace('__VOTE__', '').split('__::');
+            if (parts.length >= 2) {
+              const targetPollId = parts[0];
+              const optionIndex = parseInt(parts[1], 10);
+              const sender = m.senderInboxId || 'peer';
+              if (!historicalPollVotes[targetPollId]) historicalPollVotes[targetPollId] = {};
+              historicalPollVotes[targetPollId][sender] = optionIndex;
+            }
+          }
+        }
+
         for (const m of combined) {
           const content = m.content;
           if (typeof content === 'string' && content.startsWith('__REACT__')) {
@@ -2440,6 +2470,9 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             latestPinnedId = content.replace('__PIN__', '');
           } else if (typeof content === 'string' && content.startsWith('__REVOKE__')) {
             revokedIds.add(content.replace('__REVOKE__', ''));
+          // [BUG FIX] Skip __VOTE__ signals from main message list — they are control signals only
+          } else if (typeof content === 'string' && content.startsWith('__VOTE__')) {
+            // Already processed above — skip rendering as bubble
           } else if (typeof content === 'string' && !content.startsWith('__CALL_')) {
              if (m.senderInboxId?.toLowerCase() === activePeer.toLowerCase()) {
                lastPeerMsgId = m.id;
@@ -2451,6 +2484,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                  m.content = parts.slice(1).join('__::');
                  m.burnAtNs = m.sentAtNs + (seconds * 1000);
                }
+             }
+             // [BUG FIX] Apply historical poll votes to POLL messages
+             if (content.startsWith('__POLL__') && historicalPollVotes[m.id]) {
+               m.pollVotes = historicalPollVotes[m.id];
              }
              mappedMsgs.push(m);
           } else {
@@ -3423,9 +3460,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                         </div>
                       ) : content.startsWith('__POLL__') ? (() => {
                           // Phase 5: Interactive Poll Bubble
+                          // Format: __POLL__{pollId}__::{question}__::{opt1|opt2|...}
                           const [, pollBody] = content.split('__POLL__');
-                          const [questionPart, ...optionParts] = pollBody.split('__::');
-                          const options = optionParts[0]?.split('|') ?? [];
+                          const parts = pollBody.split('__::');
+                          // parts[0] = pollId, parts[1] = question, parts[2] = options
+                          const pollId = parts[0] || '';
+                          const questionPart = parts[1] || 'Poll';
+                          const options = parts[2]?.split('|') ?? [];
                           const votes: Record<string, number> = msg.pollVotes || {};
                           const totalVotes = Object.keys(votes).length;
                           const myInboxId = client?.inboxId || '';
@@ -3445,7 +3486,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                                   return (
                                     <button
                                       key={i}
-                                      onClick={() => executeSend(`__VOTE__${msg.id}__::${i}`)}
+                                      onClick={() => { const myId = client?.inboxId || address || 'me'; setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, pollVotes: { ...(m.pollVotes || {}), [myId]: i } } : m)); executeSend(`__VOTE__${msg.id}__::${i}`); }}
                                       className={`relative w-full text-left rounded-xl px-3 py-2 text-[12px] font-semibold overflow-hidden transition-all border ${isSelected ? (isMe ? 'border-white/50 bg-white/20' : 'border-blue-500 bg-blue-50 text-blue-700') : (isMe ? 'border-white/20 bg-white/10 hover:bg-white/20' : 'border-gray-200 bg-gray-50 hover:bg-gray-100 text-gray-800')}`}
                                     >
                                       <div className="absolute left-0 top-0 h-full bg-white/20 rounded-xl transition-all duration-500" style={{ width: `${pct}%` }} />
@@ -3623,8 +3664,24 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 <div className="flex items-center gap-2 px-4 pt-3 pb-1">
                     <div className="flex items-center gap-1.5 bg-red-50 text-red-500 px-3 py-1.5 rounded-full">
                         <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-                        <span className="text-[12px] font-medium">{recordingSeconds}s</span>
+                        <span className="text-[12px] font-medium">{recordingSeconds}s — Recording voice message</span>
                     </div>
+                </div>
+              )}
+              {/* [BUG FIX] Secret Chat Active Banner — clearly visible above input */}
+              {isSecretChat && !isRecording && (
+                <div className="flex items-center gap-2 px-4 pt-2 pb-1 bg-red-950/10 border-b border-red-900/10 animate-in slide-in-from-top-1 duration-200">
+                  <span className="flex items-center gap-1.5 text-[11px] font-mono font-black text-red-600 uppercase tracking-wider">
+                    <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse inline-block" />
+                    🔥 SECRET CHAT ACTIVE — Messages burn in 15s
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIsSecretChat(false)}
+                    className="ml-auto text-red-400 hover:text-red-600 text-[10px] font-black uppercase tracking-widest transition-colors"
+                  >
+                    Disable
+                  </button>
                 </div>
               )}
               {/* Hito 4: Link Preview Card */}
