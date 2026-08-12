@@ -92,7 +92,7 @@ export const parseMessageText = (text: string, isMe: boolean) => {
   return parts.map((part, i) => {
     if (part.match(urlRegex)) {
       return (
-        <a key={i} href={part} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className={`underline break-all ${isMe ? 'text-white' : 'text-blue-500 hover:text-blue-600'}`}>
+        <a key={i} href={part} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} className={`underline break-all ${isMe ? 'text-white' : 'text-black hover:text-black'}`}>
           {part}
         </a>
       );
@@ -3022,8 +3022,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             <h2 className="text-[22px] font-black tracking-tight text-black mb-2">Email Account Active</h2>
             <p className="text-[12px] text-[#666] leading-relaxed">You are logged in as <span className="font-bold text-black">{emailLabel}</span>.</p>
           </div>
-          <div className="w-full bg-amber-50 border border-amber-200 rounded-xl p-4 text-center">
-            <p className="text-[12px] font-semibold text-amber-800 leading-relaxed">
+          <div className="w-full bg-[#f5f5f7] border border-black/10 rounded-xl p-4 text-center">
+            <p className="text-[12px] font-semibold text-[#050505] leading-relaxed">
               Whale Chat uses end to end encrypted wallet keys. To access encrypted messaging, connect a Web3 wallet.
             </p>
           </div>
@@ -3071,7 +3071,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
           {initError ? (
             <div className="flex flex-col items-center gap-4 w-full">
-              <div className="w-full bg-red-50 text-red-700 text-[13px] font-medium p-4 rounded-xl border border-red-100 text-center leading-relaxed">
+              <div className="w-full bg-[#f5f5f7] text-[#050505] text-[13px] font-medium p-4 rounded-xl border border-black/10 text-center leading-relaxed">
                 {initError}
               </div>
               
@@ -3102,7 +3102,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             </div>
           ) : (
             isMobile && (
-              <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-indigo-600 mt-6 text-center animate-pulse">
+              <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-black mt-6 text-center animate-pulse">
                 Confirm signature in wallet
               </p>
             )
@@ -3128,14 +3128,14 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setShowScanner(true)}
-                className="p-2.5 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all text-[12px] font-medium"
+                className="p-2.5 rounded-xl bg-[#f5f5f7] text-black hover:bg-[#e5e5ea] transition-all text-[12px] font-medium"
                 title="Scan QR"
               >
                 Scan QR
               </button>
               <button
                 onClick={() => setShowMyQR(true)}
-                className="p-2.5 rounded-xl bg-gray-50 text-gray-500 hover:bg-gray-100 transition-all text-[12px] font-medium"
+                className="p-2.5 rounded-xl bg-[#f5f5f7] text-black/50 hover:bg-[#e5e5ea] transition-all text-[12px] font-medium"
                 title="Show My QR"
               >
                 My QR
@@ -3143,9 +3143,9 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             </div>
             
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50/50 border border-blue-100 rounded-xl" title="Available QDs">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)] animate-pulse" />
-                <span className="text-[11px] font-mono font-bold text-blue-700">{balance.toFixed(2)} QD</span>
+              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#f5f5f7] border border-black/10 rounded-xl" title="Available QDs">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#050505] shadow-sm animate-pulse" />
+                <span className="text-[11px] font-mono font-bold text-black">{balance.toFixed(2)} QD</span>
               </div>
             </div>
           </div>
@@ -3157,12 +3157,12 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               value={peerInput}
               onChange={e => setPeerInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleStartConversation()}
-              className="flex-1 bg-gray-50 border-none rounded-xl px-3 py-2.5 text-[13px] focus:outline-none focus:ring-1 focus:ring-gray-200 placeholder:text-gray-400 text-gray-900"
+              className="flex-1 bg-[#f5f5f7] border-none rounded-xl px-3 py-2.5 text-[13px] focus:outline-none focus:ring-1 focus:ring-gray-200 placeholder:text-black/40 text-gray-900"
             />
             <button
               onClick={handleStartConversation}
               disabled={sending}
-              className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center text-white hover:bg-blue-600 transition-colors active:scale-95 disabled:opacity-50 text-[18px]"
+              className="w-10 h-10 bg-[#050505] rounded-xl flex items-center justify-center text-white hover:opacity-80 transition-colors active:scale-95 disabled:opacity-50 text-[18px]"
             >
               +
             </button>
@@ -3173,13 +3173,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           {conversations.length > 0 && archivedPeers.size > 0 && (
             <button
               onClick={() => setShowArchived(!showArchived)}
-              className="w-full text-left p-3.5 border-b border-white/20 bg-gray-50/50 hover:bg-gray-100/50 transition-all flex items-center justify-between"
+              className="w-full text-left p-3.5 border-b border-white/20 bg-[#f5f5f7]/50 hover:bg-[#e5e5ea]/50 transition-all flex items-center justify-between"
             >
-              <div className="flex items-center gap-2 text-gray-500">
+              <div className="flex items-center gap-2 text-black/50">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
                 <span className="text-[11px] font-bold uppercase tracking-wider">Archived Chats ({archivedPeers.size})</span>
               </div>
-              <span className="text-[10px] font-bold text-gray-400">{showArchived ? 'Hide' : 'Show'}</span>
+              <span className="text-[10px] font-bold text-black/40">{showArchived ? 'Hide' : 'Show'}</span>
             </button>
           )}
           {conversations.length === 0 ? (
@@ -3191,7 +3191,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               const isActive = activePeer?.toLowerCase() === conv.peerAddress.toLowerCase();
               return (
                 <div key={i} className="relative w-full overflow-hidden border-b border-white/20">
-                  <div className="absolute inset-y-0 right-0 flex flex-col items-center justify-center w-20 bg-blue-500/90 text-white text-[10px] font-bold tracking-widest uppercase transition-colors" onClick={() => toggleArchive(conv.peerAddress)}>
+                  <div className="absolute inset-y-0 right-0 flex flex-col items-center justify-center w-20 bg-[#050505]/90 text-white text-[10px] font-bold tracking-widest uppercase transition-colors" onClick={() => toggleArchive(conv.peerAddress)}>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="mb-1"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
                     {archivedPeers.has(conv.peerAddress.toLowerCase()) ? 'Unarchive' : 'Archive'}
                   </div>
@@ -3263,21 +3263,21 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                       {activePeer.slice(2, 4).toUpperCase()}
                     </div>
                     {/* Online indicator */}
-                    <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white shadow-sm ${peerStatus.online ? 'bg-emerald-500' : 'bg-gray-400'}`} />
+                    <span className={`absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border-2 border-white shadow-sm ${peerStatus.online ? 'bg-black' : 'bg-gray-400'}`} />
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[13px] font-black text-[#050505] font-mono flex items-center gap-1.5">
                       {shortAddr(activePeer!)}
                     </span>
-                    <span className={`text-[10px] font-semibold flex items-center gap-1 ${peerStatus.online ? 'text-emerald-600' : 'text-gray-500'}`}>
+                    <span className={`text-[10px] font-semibold flex items-center gap-1 ${peerStatus.online ? 'text-black' : 'text-black/50'}`}>
                       {peerStatus.isTyping ? (
                         <>
-                          <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse inline-block" />
+                          <span className="w-1 h-1 rounded-full bg-black animate-pulse inline-block" />
                           typing...
                         </>
                       ) : peerStatus.online ? (
                         <>
-                          <span className="w-1 h-1 rounded-full bg-emerald-500 inline-block" />
+                          <span className="w-1 h-1 rounded-full bg-black inline-block" />
                           Online
                         </>
                       ) : (
@@ -3291,41 +3291,41 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 </button>
               </div>
               <div className="flex items-center gap-1.5">
-                <div className="hidden lg:flex items-center gap-1 px-2.5 py-1 bg-blue-50 border border-blue-100 rounded-xl" title="Available QDs">
-                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.8)] animate-pulse" />
-                  <span className="text-[10px] font-mono font-bold text-blue-700">{balance.toFixed(2)} QD</span>
+                <div className="hidden lg:flex items-center gap-1 px-2.5 py-1 bg-[#f5f5f7] border border-black/10 rounded-xl" title="Available QDs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#050505] shadow-sm animate-pulse" />
+                  <span className="text-[10px] font-mono font-bold text-black">{balance.toFixed(2)} QD</span>
                 </div>
                 {/* Phase 5: Secret Chat Toggle */}
                 <button
                   onClick={() => setIsSecretChat(!isSecretChat)}
-                  className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${isSecretChat ? 'bg-red-500 text-white shadow-lg shadow-red-500/40 animate-pulse' : 'bg-gray-50 text-gray-400 hover:bg-red-50 hover:text-red-500'}`}
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${isSecretChat ? 'bg-[#050505] text-white shadow-lg shadow-black/10 animate-pulse' : 'bg-[#f5f5f7] text-black/40 hover:bg-black/5 hover:text-black/60'}`}
                   title={isSecretChat ? "Secret Chat Active (Auto-Burn 15s)" : "Start Secret Chat"}
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                 </button>
                 <button
                   onClick={() => startCall('audio')}
-                  className="w-9 h-9 bg-emerald-50 hover:bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 transition-colors"
+                  className="w-9 h-9 bg-[#f5f5f7] hover:bg-[#e5e5ea] rounded-xl flex items-center justify-center text-black transition-colors"
                   title="Audio Call"
                 >
                   <Phone size={16} />
                 </button>
                 <button
                   onClick={() => startCall('video')}
-                  className="w-9 h-9 bg-blue-50 hover:bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 transition-colors"
+                  className="w-9 h-9 bg-[#f5f5f7] hover:bg-[#e5e5ea] rounded-xl flex items-center justify-center text-black transition-colors"
                   title="Video Call"
                 >
                   <Video size={16} />
                 </button>
                 <button
                   onClick={() => setShowScanner(true)}
-                  className="lg:hidden w-9 h-9 bg-gray-50 hover:bg-gray-100 rounded-xl flex items-center justify-center text-gray-500 transition-colors text-[11px] font-black"
+                  className="lg:hidden w-9 h-9 bg-[#f5f5f7] hover:bg-[#e5e5ea] rounded-xl flex items-center justify-center text-black/50 transition-colors text-[11px] font-black"
                 >
                   QR
                 </button>
                 <button 
                   onClick={() => { setShowSearch(s => !s); setSearchQuery(''); setSearchIndex(0); }}
-                  className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors ${showSearch ? 'bg-blue-100 text-blue-600' : 'hover:bg-black/5 text-black/40'}`}
+                  className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors ${showSearch ? 'bg-black/10 text-black' : 'hover:bg-black/5 text-black/40'}`}
                   title="Search in chat"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -3355,24 +3355,24 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               };
               return (
                 <div className="bg-white/90 backdrop-blur-md border-b border-black/5 px-3 py-2 flex items-center gap-2 z-20 animate-in slide-in-from-top-2 duration-200">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-gray-400 shrink-0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-black/40 shrink-0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                   <input
                     autoFocus
                     value={searchQuery}
                     onChange={e => { setSearchQuery(e.target.value); setSearchIndex(0); }}
                     placeholder="Search in conversation..."
-                    className="flex-1 bg-transparent text-[13px] font-mono text-gray-800 placeholder:text-gray-400 outline-none"
+                    className="flex-1 bg-transparent text-[13px] font-mono text-gray-800 placeholder:text-black/40 outline-none"
                   />
                   {matches.length > 0 && (
-                    <span className="text-[11px] font-mono text-gray-500 shrink-0">{searchIndex + 1}/{matches.length}</span>
+                    <span className="text-[11px] font-mono text-black/50 shrink-0">{searchIndex + 1}/{matches.length}</span>
                   )}
                   {matches.length > 1 && (
                     <>
-                      <button onClick={() => handleNavSearch(-1)} className="p-1 hover:bg-black/5 rounded-lg text-gray-500">↑</button>
-                      <button onClick={() => handleNavSearch(1)} className="p-1 hover:bg-black/5 rounded-lg text-gray-500">↓</button>
+                      <button onClick={() => handleNavSearch(-1)} className="p-1 hover:bg-black/5 rounded-lg text-black/50">↑</button>
+                      <button onClick={() => handleNavSearch(1)} className="p-1 hover:bg-black/5 rounded-lg text-black/50">↓</button>
                     </>
                   )}
-                  <button onClick={() => { setShowSearch(false); setSearchQuery(''); }} className="p-1 hover:bg-black/5 rounded-lg text-gray-400">
+                  <button onClick={() => { setShowSearch(false); setSearchQuery(''); }} className="p-1 hover:bg-black/5 rounded-lg text-black/40">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                   </button>
                 </div>
@@ -3385,9 +3385,9 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 const el = document.getElementById(`msg-${pinnedMessageId}`);
                 el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
               }}>
-                <div className="w-1 h-8 bg-blue-500 rounded-full" />
+                <div className="w-1 h-8 bg-[#050505] rounded-full" />
                 <div className="flex-1 min-w-0 flex flex-col">
-                  <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest flex items-center gap-1"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg> Pinned Message</span>
+                  <span className="text-[10px] font-black text-black uppercase tracking-widest flex items-center gap-1"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg> Pinned Message</span>
                   <span className="text-[12px] font-mono font-medium text-black/70 truncate">
                     {messages.find(m => m.id === pinnedMessageId)?.content?.replace(/__REPLY__[a-zA-Z0-9_-]+__::/, '').replace('__AUDIO__', '🎙️ Voice Note') || 'Pinned Message'}
                   </span>
@@ -3432,7 +3432,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   <div className="flex-1 flex flex-col items-center justify-center">
                     <div className="flex flex-col items-center max-w-[280px] text-center gap-6">
                       <div className="flex flex-col items-center opacity-40">
-                        <p className="text-[12px] font-medium text-gray-400">No messages yet. Start the conversation!</p>
+                        <p className="text-[12px] font-medium text-black/40">No messages yet. Start the conversation!</p>
                       </div>
                     </div>
                   </div>
@@ -3490,7 +3490,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                       {isAudio && audioSrc ? (
                         <div className={`px-3 py-2.5 rounded-2xl ${
                           isMe
-                            ? 'bg-blue-500 text-white rounded-br-sm'
+                            ? 'bg-[#050505] text-white rounded-br-sm'
                             : 'bg-white  rounded-bl-sm border border-black/8  shadow-sm'
                         }`}>
                           <div className={`flex items-center gap-2 mb-1.5 ${isMe ? 'text-white/60 ' : 'text-black/40 '}`}>
@@ -3501,14 +3501,14 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                       ) : isLocation && locationCoords ? (
                         <div className={`px-4 py-3 rounded-2xl flex flex-col gap-2 relative z-20 shadow-sm ${
                           isMe
-                            ? 'bg-blue-500 text-white rounded-br-sm'
+                            ? 'bg-[#050505] text-white rounded-br-sm'
                             : 'bg-gray-100 text-gray-900 rounded-bl-sm'
                         }`}>
                           <div className="flex items-center gap-2">
-                             <MapPin size={14} className={isMe ? 'text-white/70 ' : 'text-blue-500'} />
+                             <MapPin size={14} className={isMe ? 'text-white/70 ' : 'text-black'} />
                              <span className="text-[10px] font-mono uppercase font-bold">Real-time Location</span>
                           </div>
-                          <a href={`https://www.google.com/maps?q=${locationCoords}`} target="_blank" rel="noopener noreferrer" className={`text-[11px] underline mt-1 font-mono ${isMe ? 'text-white/80 ' : 'text-blue-500'}`}>
+                          <a href={`https://www.google.com/maps?q=${locationCoords}`} target="_blank" rel="noopener noreferrer" className={`text-[11px] underline mt-1 font-mono ${isMe ? 'text-white/80 ' : 'text-black'}`}>
                             Open in Maps ({locationCoords})
                           </a>
                         </div>
@@ -3566,7 +3566,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                                   );
                                 })}
                               </div>
-                              <p className={`text-[10px] mt-2 text-right ${isMe ? 'text-white/50' : 'text-gray-400'}`}>{totalVotes} vote{totalVotes !== 1 ? 's' : ''}</p>
+                              <p className={`text-[10px] mt-2 text-right ${isMe ? 'text-white/50' : 'text-black/40'}`}>{totalVotes} vote{totalVotes !== 1 ? 's' : ''}</p>
                             </div>
                           );
                         })() : content.startsWith('__PAYMENT__') ? (() => {
@@ -3594,7 +3594,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                             {isBurning && (
                               <div className="absolute top-0 left-0 w-full h-0.5 bg-black/10">
                                 <div 
-                                  className="h-full bg-red-500" 
+                                  className="h-full bg-[#050505]" 
                                   style={{ width: `${(secondsLeft! / 60) * 100}%`, transition: 'width 1s linear' }} 
                                 />
                               </div>
@@ -3622,7 +3622,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                                   
                                   if (searchQuery && text.toLowerCase().includes(searchQuery.toLowerCase())) {
                                     const parts = text.split(new RegExp(`(${searchQuery})`, 'gi'));
-                                    return parts.map((part: string, i: number) => part.toLowerCase() === searchQuery.toLowerCase() ? <span key={i} className="bg-yellow-300 text-black px-0.5 rounded-sm">{part}</span> : part);
+                                    return parts.map((part: string, i: number) => part.toLowerCase() === searchQuery.toLowerCase() ? <span key={i} className="bg-[#e5e5ea] text-black px-0.5 rounded-sm">{part}</span> : part);
                                   }
                                   return parseMessageText(text, isMe);
                                 })()}
@@ -3635,7 +3635,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                                   <button 
                                     key={emoji} 
                                     onClick={() => executeSend(`__REACT__${msg.id}__::${emoji}`)}
-                                    className={`text-[12px] px-1.5 py-0.5 rounded-full flex items-center gap-1 transition-all ${users.includes(client?.inboxId || 'me') ? 'bg-blue-500/20 border-blue-500/30' : 'bg-black/5 hover:bg-black/10'} border shadow-sm`}
+                                    className={`text-[12px] px-1.5 py-0.5 rounded-full flex items-center gap-1 transition-all ${users.includes(client?.inboxId || 'me') ? 'bg-[#050505]/20 border-black/20' : 'bg-black/5 hover:bg-black/10'} border shadow-sm`}
                                   >
                                     <span>{emoji}</span>
                                     {users.length > 1 && <span className="font-bold font-mono text-[10px] opacity-70">{users.length}</span>}
@@ -3648,7 +3648,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                           {/* Context Menu / Reply Trigger */}
                           <div className="absolute top-1/2 -translate-y-1/2 -right-16 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 z-10">
                             {isBurning && (
-                               <span className="mr-1 text-[10px] font-mono font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded shadow-sm border border-red-100">{secondsLeft}s</span>
+                               <span className="mr-1 text-[10px] font-mono font-bold text-[#050505] bg-[#f5f5f7] px-1.5 py-0.5 rounded shadow-sm border border-black/10">{secondsLeft}s</span>
                             )}
                             <button
                               onClick={() => setReactionMenu(reactionMenu === msg.id ? null : msg.id)}
@@ -3685,7 +3685,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                       <div className={`text-[9px] text-black/25 mt-1 px-1 font-mono flex items-center gap-1 ${isMe ? 'justify-end' : 'justify-start'}`}>
                         {new Date(sentTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         {isMe && !content.startsWith('__CALL_') && (
-                          <span className={`text-[12px] -mt-0.5 ${msg.status === 'read' ? 'text-blue-500' : 'text-gray-400'}`}>
+                          <span className={`text-[12px] -mt-0.5 ${msg.status === 'read' ? 'text-black' : 'text-black/40'}`}>
                             {msg.status === 'scheduled' ? <Clock size={10} className="inline ml-0.5 mb-0.5 text-orange-400" /> : msg.status === 'read' ? '✓✓' : '✓'}
                           </span>
                         )}
@@ -3706,9 +3706,9 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               )}
               {sending && (
                 <div className="flex self-end items-center gap-2 mt-2 px-4 py-1.5 bg-white rounded-full shadow-sm border border-black/5">
-                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <div className="w-1.5 h-1.5 bg-[#050505] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <div className="w-1.5 h-1.5 bg-[#050505] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <div className="w-1.5 h-1.5 bg-[#050505] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
               )}
               <div ref={messagesEndRef} />
@@ -3730,23 +3730,23 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               {/*  Audio recording indicator  */}
               {isRecording && (
                 <div className="flex items-center gap-2 px-4 pt-3 pb-1">
-                    <div className="flex items-center gap-1.5 bg-red-50 text-red-500 px-3 py-1.5 rounded-full">
-                        <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                    <div className="flex items-center gap-1.5 bg-[#f5f5f7] text-[#050505] px-3 py-1.5 rounded-full">
+                        <span className="w-2 h-2 rounded-full bg-[#050505] animate-pulse" />
                         <span className="text-[12px] font-medium">{recordingSeconds}s — Recording voice message</span>
                     </div>
                 </div>
               )}
               {/* [BUG FIX] Secret Chat Active Banner — clearly visible above input */}
               {isSecretChat && !isRecording && (
-                <div className="flex items-center gap-2 px-4 pt-2 pb-1 bg-red-950/10 border-b border-red-900/10 animate-in slide-in-from-top-1 duration-200">
-                  <span className="flex items-center gap-1.5 text-[11px] font-mono font-black text-red-600 uppercase tracking-wider">
-                    <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse inline-block" />
+                <div className="flex items-center gap-2 px-4 pt-2 pb-1 bg-black/5 border-b border-black/10 animate-in slide-in-from-top-1 duration-200">
+                  <span className="flex items-center gap-1.5 text-[11px] font-mono font-black text-[#050505] uppercase tracking-wider">
+                    <span className="w-2 h-2 rounded-full bg-[#050505] animate-pulse inline-block" />
                     🔥 SECRET CHAT ACTIVE — Messages burn in 15s
                   </span>
                   <button
                     type="button"
                     onClick={() => setIsSecretChat(false)}
-                    className="ml-auto text-red-400 hover:text-red-600 text-[10px] font-black uppercase tracking-widest transition-colors"
+                    className="ml-auto text-black/60 hover:text-black/80 text-[10px] font-black uppercase tracking-widest transition-colors"
                   >
                     Disable
                   </button>
@@ -3754,26 +3754,26 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               )}
               {/* Hito 4: Link Preview Card */}
               {linkPreview && !isRecording && (
-                <div className="flex items-start gap-3 px-4 pt-2 pb-1 bg-blue-50/80 border-t border-blue-100/50 animate-in slide-in-from-bottom-2">
+                <div className="flex items-start gap-3 px-4 pt-2 pb-1 bg-[#f5f5f7] border-t border-black/10/50 animate-in slide-in-from-bottom-2">
                   {linkPreview.image && <img src={linkPreview.image} alt="" className="w-14 h-14 object-cover rounded-xl border border-white shadow-sm shrink-0" />}
                   <div className="flex-1 min-w-0">
-                    <p className="text-[11px] font-bold text-blue-600 truncate">{linkPreview.title}</p>
-                    <p className="text-[11px] text-gray-500 line-clamp-2">{linkPreview.description}</p>
-                    <p className="text-[10px] font-mono text-blue-400 truncate mt-0.5">{linkPreview.url}</p>
+                    <p className="text-[11px] font-bold text-black truncate">{linkPreview.title}</p>
+                    <p className="text-[11px] text-black/50 line-clamp-2">{linkPreview.description}</p>
+                    <p className="text-[10px] font-mono text-black/50 truncate mt-0.5">{linkPreview.url}</p>
                   </div>
-                  <button onClick={() => setLinkPreview(null)} className="text-gray-400 hover:text-gray-600 p-1 shrink-0">
+                  <button onClick={() => setLinkPreview(null)} className="text-black/40 hover:text-gray-600 p-1 shrink-0">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                   </button>
                 </div>
               )}
               {/* Phase 4: Editing UI */}
               {editingMsg && (
-                <div className="mx-3 mt-2 px-4 py-2.5 bg-blue-50 border border-blue-100 rounded-t-2xl flex items-center justify-between animate-in slide-in-from-bottom-2 duration-200">
+                <div className="mx-3 mt-2 px-4 py-2.5 bg-[#f5f5f7] border border-black/10 rounded-t-2xl flex items-center justify-between animate-in slide-in-from-bottom-2 duration-200">
                   <div className="flex flex-col min-w-0">
-                    <span className="text-[11px] font-black uppercase tracking-widest text-blue-600 mb-0.5">Edit Message</span>
+                    <span className="text-[11px] font-black uppercase tracking-widest text-black mb-0.5">Edit Message</span>
                     <input
                       type="text"
-                      className="text-[13px] bg-transparent outline-none text-blue-900 w-full font-mono placeholder:text-blue-300"
+                      className="text-[13px] bg-transparent outline-none text-[#050505] w-full font-mono placeholder:text-black/30"
                       value={editingMsg.content}
                       onChange={e => setEditingMsg({ ...editingMsg, content: e.target.value })}
                       onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); submitEditMessage(); } }}
@@ -3781,32 +3781,32 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                     />
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-                    <button onClick={submitEditMessage} className="p-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
-                    <button onClick={() => setEditingMsg(null)} className="p-1.5 text-blue-400 hover:text-blue-700"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                    <button onClick={submitEditMessage} className="p-1.5 bg-[#050505] text-white rounded-lg hover:opacity-80 shadow-sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+                    <button onClick={() => setEditingMsg(null)} className="p-1.5 text-black/50 hover:text-black"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
                   </div>
                 </div>
               )}
               {replyingTo && !editingMsg && (
-                <div className="flex items-center justify-between px-4 pt-2 pb-1 bg-gray-50/50 border-t border-gray-100 animate-in slide-in-from-bottom-2">
+                <div className="flex items-center justify-between px-4 pt-2 pb-1 bg-[#f5f5f7] border-t border-black/5 animate-in slide-in-from-bottom-2">
                   <div className="flex-1 pl-3 border-l-2 border-black/20 overflow-hidden">
-                    <p className="text-[11px] font-bold text-gray-700">Replying to</p>
-                    <p className="text-[12px] text-gray-500 truncate">{
+                    <p className="text-[11px] font-bold text-black">Replying to</p>
+                    <p className="text-[12px] text-black/50 truncate">{
                       replyingTo.content ? formatMessagePreview(replyingTo.content) : 'Message'
                     }</p>
                   </div>
-                  <button onClick={() => setReplyingTo(null)} className="p-2 text-gray-400 hover:text-gray-700">
+                  <button onClick={() => setReplyingTo(null)} className="p-2 text-black/40 hover:text-black/70">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                   </button>
                 </div>
               )}
               {/* Hito 4: Scheduled send indicator */}
               {scheduledAt && (
-                <div className="flex items-center justify-between px-4 pt-2 pb-1 bg-amber-50 border-t border-amber-100 animate-in slide-in-from-bottom-2">
-                  <span className="flex items-center gap-1.5 text-[11px] font-mono font-bold text-amber-600">
+                <div className="flex items-center justify-between px-4 pt-2 pb-1 bg-[#f5f5f7] border-t border-black/10 animate-in slide-in-from-bottom-2">
+                  <span className="flex items-center gap-1.5 text-[11px] font-mono font-bold text-black/70">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
                     Scheduled: {scheduledAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
-                  <button onClick={() => setScheduledAt(null)} className="text-amber-400 hover:text-amber-600 text-[10px] font-bold">Cancel</button>
+                  <button onClick={() => setScheduledAt(null)} className="text-black/50 hover:text-black/70 text-[10px] font-bold">Cancel</button>
                 </div>
               )}
               {/* Hito 4: GIF Picker */}
@@ -3819,15 +3819,15 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                       value={gifSearch}
                       onChange={e => setGifSearch(e.target.value)}
                       placeholder="Search GIFs..."
-                      className="flex-1 bg-gray-100 rounded-xl px-3 py-1.5 text-[13px] outline-none text-gray-800 placeholder:text-gray-400"
+                      className="flex-1 bg-gray-100 rounded-xl px-3 py-1.5 text-[13px] outline-none text-gray-800 placeholder:text-black/40"
                     />
-                    <button onClick={() => setShowGifPicker(false)} className="p-1.5 hover:bg-black/5 rounded-lg text-gray-400">
+                    <button onClick={() => setShowGifPicker(false)} className="p-1.5 hover:bg-black/5 rounded-lg text-black/40">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     </button>
                   </div>
                   <div className="grid grid-cols-3 gap-1.5 max-h-40 overflow-y-auto">
                     {gifResults.length === 0 ? (
-                      <p className="col-span-3 text-center text-[12px] text-gray-400 py-4">{gifSearch ? 'No GIFs found' : 'Search for GIFs above...'}</p>
+                      <p className="col-span-3 text-center text-[12px] text-black/40 py-4">{gifSearch ? 'No GIFs found' : 'Search for GIFs above...'}</p>
                     ) : gifResults.map((url, i) => (
                       <button key={i} onClick={() => {
                         executeSend(`[GIF]${url}`);
@@ -3839,18 +3839,18 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                       </button>
                     ))}
                   </div>
-                  <p className="text-[9px] text-gray-400 text-right mt-1 font-mono">Powered by Tenor</p>
+                  <p className="text-[9px] text-black/40 text-right mt-1 font-mono">Powered by Tenor</p>
                 </div>
               )}
               {replyingTo && (
-                <div className="flex items-center justify-between px-4 pt-2 pb-1 bg-gray-50/50 border-t border-gray-100 animate-in slide-in-from-bottom-2">
+                <div className="flex items-center justify-between px-4 pt-2 pb-1 bg-[#f5f5f7]/50 border-t border-gray-100 animate-in slide-in-from-bottom-2">
                   <div className="flex-1 pl-3 border-l-2 border-black/20 overflow-hidden">
                     <p className="text-[11px] font-bold text-gray-700">Replying to</p>
-                    <p className="text-[12px] text-gray-500 truncate">{
+                    <p className="text-[12px] text-black/50 truncate">{
                       replyingTo.content ? formatMessagePreview(replyingTo.content) : 'Message'
                     }</p>
                   </div>
-                  <button onClick={() => setReplyingTo(null)} className="p-2 text-gray-400 hover:text-gray-700">
+                  <button onClick={() => setReplyingTo(null)} className="p-2 text-black/40 hover:text-gray-700">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                   </button>
                 </div>
@@ -3861,13 +3861,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 <button
                   type="button"
                   onClick={() => setShowGifPicker(g => !g)}
-                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shrink-0 font-black text-[13px] ${showGifPicker ? 'bg-purple-100 text-purple-600 border border-purple-200' : 'hover:bg-gray-100 text-gray-500'}`}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shrink-0 font-black text-[13px] ${showGifPicker ? 'bg-black/5 text-black border border-black/10' : 'hover:bg-[#e5e5ea] text-black/50'}`}
                   title="Send GIF"
                 >GIF</button>
                 <button
                   type="button"
                   onClick={() => setBurnTimer(burnTimer ? null : 60)}
-                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shrink-0 ${burnTimer ? 'bg-red-50 text-red-500 shadow-sm border border-red-100' : 'hover:bg-gray-100 text-gray-500'}`}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shrink-0 ${burnTimer ? 'bg-[#f5f5f7] text-[#050505] shadow-sm border border-black/10' : 'hover:bg-[#e5e5ea] text-black/50'}`}
                   title="Self-Destruct Timer (60s)"
                 >
                   {burnTimer ? <span className="font-bold font-mono text-[11px]">{burnTimer}s</span> : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"></path></svg>}
@@ -3876,7 +3876,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   type="button"
                   onClick={() => fileRef.current?.click()}
                   disabled={isUploading || sending}
-                  className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:bg-gray-100 text-gray-500 shrink-0"
+                  className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:bg-[#e5e5ea] text-black/50 shrink-0"
                   title="Attach File"
                 >
                   {isUploading ? <span className="text-[12px] animate-spin">⌛</span> : <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>}
@@ -3886,7 +3886,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 <button
                   type="button"
                   onClick={() => setShowPollCreator(p => !p)}
-                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shrink-0 ${showPollCreator ? 'bg-indigo-100 text-indigo-600 border border-indigo-200' : 'hover:bg-gray-100 text-gray-500'}`}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shrink-0 ${showPollCreator ? 'bg-black/5 text-black border border-black/10' : 'hover:bg-[#e5e5ea] text-black/50'}`}
                   title="Create Poll"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
@@ -3896,7 +3896,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 <button
                   type="button"
                   onClick={() => setShowWalletTransfer(w => !w)}
-                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shrink-0 ${showWalletTransfer ? 'bg-emerald-100 text-emerald-600 border border-emerald-200' : 'hover:bg-gray-100 text-gray-500'}`}
+                  className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shrink-0 ${showWalletTransfer ? 'bg-[#e5e5ea] text-black border border-black/10' : 'hover:bg-[#e5e5ea] text-black/50'}`}
                   title="Send QD Tokens"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
@@ -3910,7 +3910,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   onChange={e => setInputText(e.target.value)}
                   disabled={isUploading}
                   placeholder={isUploading ? "Uploading..." : "Type a message..."}
-                  className="flex-1 bg-gray-50 border-none rounded-2xl px-4 py-2.5 text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-200 placeholder:text-gray-400 disabled:opacity-50 text-[15px]"
+                  className="flex-1 bg-[#f5f5f7] border-none rounded-2xl px-4 py-2.5 text-[#050505] focus:outline-none focus:ring-1 focus:ring-black/10 placeholder:text-black/40 disabled:opacity-50 text-[15px]"
                 />
                 
                 {inputText.trim() ? (
@@ -3924,14 +3924,14 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                         const d = new Date(Date.now() + 5 * 60 * 1000);
                         setScheduledAt(d);
                       }}
-                      className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${scheduledAt ? 'bg-amber-400 text-white' : 'hover:bg-gray-100 text-gray-400'}`}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${scheduledAt ? 'bg-[#050505] text-white' : 'hover:bg-[#e5e5ea] text-black/40'}`}
                     >
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
                     </button>
                     <button
                       type="submit"
                       disabled={sending || isUploading}
-                      className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white disabled:opacity-30 hover:bg-blue-600 transition-all shrink-0"
+                      className="w-10 h-10 rounded-full bg-[#050505] flex items-center justify-center text-white disabled:opacity-30 hover:opacity-80 transition-all shrink-0"
                     >
                       {scheduledAt
                         ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
@@ -3949,7 +3949,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                     onMouseLeave={stopRecording}
                     onContextMenu={(e) => e.preventDefault()}
                     className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shrink-0 ${
-                      isRecording ? 'bg-red-500 text-white shadow-md scale-110' : 'hover:bg-gray-100 text-gray-500'
+                      isRecording ? 'bg-[#050505] text-white shadow-md scale-110' : 'hover:bg-[#e5e5ea] text-black/50'
                     }`}
                     style={{ touchAction: 'none', WebkitUserSelect: 'none', userSelect: 'none' }}
                   >
@@ -3962,8 +3962,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center bg-white/30 backdrop-blur-lg relative overflow-hidden p-6 md:p-12 border-l border-white/40">
             {/* Ambient glows */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-400/10 rounded-full blur-[100px] pointer-events-none" />
-            <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-teal-400/10 rounded-full blur-[80px] pointer-events-none" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-black/5 rounded-full blur-[100px] pointer-events-none" />
+            <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-black/5 rounded-full blur-[80px] pointer-events-none" />
 
             <div className="w-full flex flex-col items-center text-center relative z-10 animate-in fade-in zoom-in-95 duration-700">
               
@@ -3977,27 +3977,27 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 mb-4 bg-clip-text text-transparent bg-gradient-to-b from-gray-900 to-gray-600">
                 WHALE CHAT
               </h1>
-              <h2 className="text-sm md:text-base font-semibold tracking-[0.2em] uppercase text-blue-500 mb-8">
+              <h2 className="text-sm md:text-base font-semibold tracking-[0.2em] uppercase text-black mb-8">
                 The Native Web3 Social Network
               </h2>
 
               {/* Marketing Banner */}
               <div className="w-full bg-white/60 backdrop-blur-md border border-white/60 rounded-3xl p-6 shadow-xl mb-12 transform hover:scale-[1.02] transition-transform duration-500">
                 <div className="flex items-center justify-center gap-2 mb-3">
-                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-[11px] font-bold uppercase tracking-widest text-gray-500">Global Release</span>
+                  <div className="w-2 h-2 rounded-full bg-[#050505] animate-pulse" />
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-black/50">Global Release</span>
                 </div>
                 <p className="text-2xl font-black text-gray-800 tracking-tight mb-2">01 / 01 / 2027</p>
-                <div className="flex items-center justify-center gap-4 text-gray-400 mt-4">
-                   <span className="text-[12px] font-medium border border-gray-200/50 bg-white/50 px-3 py-1 rounded-full">App Store</span>
-                   <span className="text-[12px] font-medium border border-gray-200/50 bg-white/50 px-3 py-1 rounded-full">Google Play</span>
+                <div className="flex items-center justify-center gap-4 text-black/40 mt-4">
+                   <span className="text-[12px] font-medium border border-black/10/50 bg-white/50 px-3 py-1 rounded-full">App Store</span>
+                   <span className="text-[12px] font-medium border border-black/10/50 bg-white/50 px-3 py-1 rounded-full">Google Play</span>
                 </div>
               </div>
 
               {/* Action Call */}
               <div className="w-full px-8 py-5 bg-white/40 backdrop-blur-sm rounded-2xl border border-white/50 shadow-sm">
                 <span className="text-[14px] font-medium text-gray-600 flex items-center justify-center gap-2">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-500"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-black"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                   Select a wallet to initialize an encrypted tunnel
                 </span>
               </div>
@@ -4010,26 +4010,26 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
       {/* ── Incoming Call Banner (state: ringing) ───────────────────────────── */}
       {callState === 'ringing' && isMounted && (
-        <div className="absolute inset-0 w-full h-full z-[100000] flex flex-col items-center justify-between" style={{ touchAction: 'none', background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)' }}>
+        <div className="absolute inset-0 w-full h-full z-[100000] flex flex-col items-center justify-between bg-white" style={{ touchAction: 'none' }}>
           {/* Top section */}
           <div className="flex flex-col items-center w-full pt-[max(60px,env(safe-area-inset-top,60px))] px-6">
-            <p className="text-white/50 text-[11px] font-semibold uppercase tracking-[0.3em] mb-2">
+            <p className="text-black/40 text-[11px] font-semibold uppercase tracking-[0.3em] mb-2">
               {callTypeRef.current === 'video' ? '📹 Incoming Video Call' : '🎙️ Incoming Voice Call'}
             </p>
-            <p className="text-white/30 text-[13px] font-mono mb-10">Whale Chat · End-to-end encrypted</p>
+            <p className="text-black/25 text-[13px] font-mono mb-10">Whale Chat · End-to-end encrypted</p>
 
             {/* Animated avatar */}
             <div className="relative flex items-center justify-center mb-8">
-              <div className="absolute w-56 h-56 rounded-full border border-emerald-400/10 animate-ping" style={{ animationDuration: '3s' }} />
-              <div className="absolute w-44 h-44 rounded-full border border-emerald-400/15 animate-ping" style={{ animationDuration: '2.2s', animationDelay: '0.4s' }} />
-              <div className="absolute w-36 h-36 rounded-full border border-emerald-400/20 animate-ping" style={{ animationDuration: '1.8s', animationDelay: '0.8s' }} />
-              <div className="w-28 h-28 rounded-full flex items-center justify-center relative z-10 shadow-[0_0_60px_rgba(52,211,153,0.3)]" style={{ background: 'linear-gradient(135deg, #059669, #10b981)' }}>
-                <span className="text-white text-4xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '🐳'}</span>
+              <div className="absolute w-56 h-56 rounded-full border border-black/10 animate-ping" style={{ animationDuration: '3s' }} />
+              <div className="absolute w-44 h-44 rounded-full border border-black/10 animate-ping" style={{ animationDuration: '2.2s', animationDelay: '0.4s' }} />
+              <div className="absolute w-36 h-36 rounded-full border border-black/10 animate-ping" style={{ animationDuration: '1.8s', animationDelay: '0.8s' }} />
+              <div className="w-28 h-28 rounded-full flex items-center justify-center relative z-10 shadow-xl bg-[#f5f5f7] border border-black/10">
+                <span className="text-black text-4xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '🐳'}</span>
               </div>
             </div>
 
-            <p className="text-white text-[28px] font-black tracking-tight mb-1">{activePeer ? shortAddr(activePeer) : 'Unknown Peer'}</p>
-            <p className="text-emerald-400 text-[13px] font-mono animate-pulse">Ringing...</p>
+            <p className="text-black text-[28px] font-black tracking-tight mb-1">{activePeer ? shortAddr(activePeer) : 'Unknown Peer'}</p>
+            <p className="text-black/50 text-[13px] font-mono animate-pulse">Ringing...</p>
           </div>
 
           {/* Bottom controls */}
@@ -4038,24 +4038,22 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             <div className="flex flex-col items-center gap-3">
               <button
                 onClick={declineCall}
-                className="w-[72px] h-[72px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-[0_8px_32px_rgba(239,68,68,0.4)]"
-                style={{ background: 'linear-gradient(135deg, #dc2626, #ef4444)' }}
+                className="w-[72px] h-[72px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-sm bg-[#f5f5f7] border border-black/10"
               >
-                <PhoneOff size={30} className="text-white" />
+                <PhoneOff size={30} className="text-[#050505]" />
               </button>
-              <span className="text-white/50 text-[11px] font-medium tracking-widest uppercase">Decline</span>
+              <span className="text-black/50 text-[11px] font-medium tracking-widest uppercase">Decline</span>
             </div>
 
             {/* Answer */}
             <div className="flex flex-col items-center gap-3">
               <button
                 onClick={answerCall}
-                className="w-[84px] h-[84px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-[0_8px_40px_rgba(52,211,153,0.5)]"
-                style={{ background: 'linear-gradient(135deg, #059669, #10b981)' }}
+                className="w-[84px] h-[84px] rounded-full flex items-center justify-center transition-all active:scale-90 shadow-xl bg-[#050505]"
               >
                 <Phone size={36} className="text-white" />
               </button>
-              <span className="text-white/50 text-[11px] font-medium tracking-widest uppercase">Answer</span>
+              <span className="text-black/50 text-[11px] font-medium tracking-widest uppercase">Answer</span>
             </div>
           </div>
         </div>
@@ -4063,33 +4061,33 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
       {/* ── Outgoing Call (state: calling — waiting for answer) ─────────────── */}
       {callState === 'calling' && isMounted && (
-        <div className="absolute inset-0 w-full h-full z-[100000] flex flex-col items-center justify-between" style={{ touchAction: 'none', background: 'linear-gradient(180deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)' }}>
+        <div className="absolute inset-0 w-full h-full z-[100000] flex flex-col items-center justify-between bg-white" style={{ touchAction: 'none' }}>
           <div className="flex flex-col items-center w-full pt-[max(60px,env(safe-area-inset-top,60px))] px-6">
-            <p className="text-white/50 text-[11px] font-semibold uppercase tracking-[0.3em] mb-2">
+            <p className="text-black/40 text-[11px] font-semibold uppercase tracking-[0.3em] mb-2">
               {callTypeRef.current === 'video' ? '📹 Video Call' : '🎙️ Voice Call'}
             </p>
-            <p className="text-white/30 text-[13px] font-mono mb-10">Whale Chat · End-to-end encrypted</p>
+            <p className="text-black/25 text-[13px] font-mono mb-10">Whale Chat · End-to-end encrypted</p>
 
             <div className="relative flex items-center justify-center mb-8">
-              <div className="absolute w-52 h-52 rounded-full border border-blue-400/10 animate-ping" style={{ animationDuration: '3s' }} />
-              <div className="absolute w-40 h-40 rounded-full border border-blue-400/15 animate-ping" style={{ animationDuration: '2.2s', animationDelay: '0.4s' }} />
-              <div className="w-28 h-28 rounded-full flex items-center justify-center relative z-10 shadow-[0_0_60px_rgba(99,102,241,0.35)]" style={{ background: 'linear-gradient(135deg, #4f46e5, #6366f1)' }}>
-                <span className="text-white text-4xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '🐳'}</span>
+              <div className="absolute w-52 h-52 rounded-full border border-black/10 animate-ping" style={{ animationDuration: '3s' }} />
+              <div className="absolute w-40 h-40 rounded-full border border-black/10 animate-ping" style={{ animationDuration: '2.2s', animationDelay: '0.4s' }} />
+              <div className="w-28 h-28 rounded-full flex items-center justify-center relative z-10 shadow-xl bg-[#f5f5f7] border border-black/10">
+                <span className="text-black text-4xl font-black">{activePeer ? activePeer.slice(2, 4).toUpperCase() : '🐳'}</span>
               </div>
             </div>
 
-            <p className="text-white text-[28px] font-black tracking-tight mb-1">{activePeer ? shortAddr(activePeer) : 'Unknown Peer'}</p>
-            <p className="text-white/40 text-[13px] font-mono animate-pulse">Calling...</p>
+            <p className="text-black text-[28px] font-black tracking-tight mb-1">{activePeer ? shortAddr(activePeer) : 'Unknown Peer'}</p>
+            <p className="text-black/40 text-[13px] font-mono animate-pulse">Calling...</p>
           </div>
 
           <div className="w-full flex flex-col items-center pb-[max(32px,env(safe-area-inset-bottom,32px))]">
              <button
                 onClick={performEndCallRef.current}
-                className="w-16 h-16 rounded-full flex items-center justify-center transition-all active:scale-90 shadow-[0_8px_40px_rgba(239,68,68,0.5)]"
-                style={{ background: 'linear-gradient(135deg, #ef4444, #f87171)' }}
+                className="w-16 h-16 rounded-full flex items-center justify-center transition-all active:scale-90 shadow-sm bg-[#f5f5f7] border border-black/10"
               >
-                <PhoneOff size={28} className="text-white" />
+                <PhoneOff size={28} className="text-[#050505]" />
               </button>
+              <span className="text-black/40 text-[11px] font-mono mt-3 uppercase tracking-widest">Cancel</span>
           </div>
         </div>
       )}
@@ -4104,17 +4102,17 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               dragConstraints={{ top: 0, left: 0, right: typeof window !== 'undefined' ? window.innerWidth - 120 : 0, bottom: typeof window !== 'undefined' ? window.innerHeight - 160 : 0 }}
               initial={{ x: 20, y: 80 }}
               onClick={() => setIsCallMinimized(false)}
-              className="fixed z-[100000] w-28 h-40 md:w-36 md:h-52 rounded-2xl overflow-hidden shadow-2xl bg-black cursor-pointer border-2 border-indigo-500/50"
+              className="fixed z-[100000] w-28 h-40 md:w-36 md:h-52 rounded-2xl overflow-hidden shadow-2xl bg-black cursor-pointer border-2 border-black/30"
             >
                <video ref={remoteVideoRef} autoPlay playsInline muted={false} className="w-full h-full object-cover" />
-               <div className="absolute top-2 left-2 bg-emerald-500 text-white text-[10px] font-mono px-2 py-0.5 rounded-full font-bold">
+               <div className="absolute top-2 left-2 bg-black text-white text-[10px] font-mono px-2 py-0.5 rounded-full font-bold">
                  {formatDuration(callDurationSeconds)}
                </div>
             </motion.div>
           ) : (
             <div 
               onClick={() => setIsCallMinimized(false)}
-              className="fixed top-0 left-0 w-full z-[100000] bg-emerald-500 text-white px-4 py-2 flex items-center justify-between cursor-pointer shadow-lg animate-in slide-in-from-top"
+              className="fixed top-0 left-0 w-full z-[100000] bg-black text-white px-4 py-2 flex items-center justify-between cursor-pointer shadow-lg animate-in slide-in-from-top"
               style={{ paddingTop: 'max(8px, env(safe-area-inset-top, 8px))' }}
             >
               <div className="flex items-center gap-2">
@@ -4228,7 +4226,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
             {/* ── Network Alert ── */}
             {networkQuality === 'poor' && (
-              <div className="absolute top-[100px] left-1/2 -translate-x-1/2 bg-amber-500/90 backdrop-blur text-white text-[11px] font-mono font-bold px-4 py-1.5 rounded-full z-20 flex items-center gap-2">
+              <div className="absolute top-[100px] left-1/2 -translate-x-1/2 bg-[#050505]/90 backdrop-blur text-white text-[11px] font-mono font-bold px-4 py-1.5 rounded-full z-20 flex items-center gap-2">
                  ⚠️ Weak Connection
               </div>
             )}
@@ -4367,7 +4365,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                </div>
                
                <div className="flex flex-col items-center justify-center gap-4 mb-6">
-                 <div className="w-16 h-16 rounded-full bg-[#f5f5f7] flex items-center justify-center text-green-500">
+                 <div className="w-16 h-16 rounded-full bg-[#f5f5f7] flex items-center justify-center text-[#050505]">
                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                  </div>
                  <h4 className="text-[18px] font-black text-black">Connection is Secure</h4>
@@ -4465,7 +4463,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                  setMessages(prev => prev.filter(m => m.id !== contextMenu.id));
                  executeSend(`__REVOKE__${contextMenu.id}`);
                  setContextMenu(null);
-             }} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-50 text-[11px] font-mono text-red-500 text-left">
+             }} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-black/5 text-[11px] font-mono text-[#050505] text-left">
                 <Trash2 size={14} /> Delete for everyone
              </button>
            </div>
@@ -4479,10 +4477,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
             <div className="w-full max-w-md bg-white rounded-t-3xl p-5 shadow-2xl animate-in slide-in-from-bottom-4 duration-300" onClick={e => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-[13px] font-black uppercase tracking-widest text-gray-800">Forward to...</h3>
-                <button onClick={() => setForwardMsg(null)} className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400">✕</button>
+                <button onClick={() => setForwardMsg(null)} className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-[#e5e5ea] text-black/40">✕</button>
               </div>
-              <div className="bg-gray-50 rounded-xl border border-black/5 px-3 py-2 mb-3">
-                <p className="text-[11px] font-mono text-gray-500 truncate">{forwardMsg.content ? formatMessagePreview(forwardMsg.content) : 'Message'}</p>
+              <div className="bg-[#f5f5f7] rounded-xl border border-black/5 px-3 py-2 mb-3">
+                <p className="text-[11px] font-mono text-black/50 truncate">{forwardMsg.content ? formatMessagePreview(forwardMsg.content) : 'Message'}</p>
               </div>
               <div className="flex flex-col gap-1.5 max-h-64 overflow-y-auto">
                 {conversations.map(conv => (
@@ -4492,12 +4490,12 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                     setActivePeer(conv.peerAddress);
                     setTimeout(() => { executeSendRef.current?.(`[Forwarded] ${content}`); setActivePeer(currentPeer); }, 300);
                     setForwardMsg(null);
-                  }} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 text-left">
+                  }} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#f5f5f7] text-left">
                     <Avatar address={conv.peerAddress} />
                     <span className="text-[12px] font-mono text-gray-700 truncate">{conv.peerAddress.slice(0, 8)}...{conv.peerAddress.slice(-4)}</span>
                   </button>
                 ))}
-                {conversations.length === 0 && <p className="text-center text-[12px] text-gray-400 py-6">No conversations yet</p>}
+                {conversations.length === 0 && <p className="text-center text-[12px] text-black/40 py-6">No conversations yet</p>}
               </div>
             </div>
           </div>
@@ -4522,7 +4520,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                    </div>
                    <div className="text-center">
                      <p className="text-[13px] font-mono font-bold text-[#050505] break-all">{activePeer}</p>
-                     <p className="text-[12px] text-blue-500 font-medium mt-1">End to End Encrypted</p>
+                     <p className="text-[12px] text-black font-medium mt-1">End to End Encrypted</p>
                   </div>
                </div>
                <div className="flex flex-col gap-2">
@@ -4535,7 +4533,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                    <button onClick={() => toggleBlock(activePeer)} className="w-full flex items-center gap-3 px-4 py-3.5 bg-black/5 hover:bg-black/10 rounded-xl transition-colors text-[11px] font-mono font-bold text-orange-500">
                        <Slash size={16} /> {blockedPeers.has(activePeer.toLowerCase()) ? 'Unblock Wallet' : 'Block Wallet'}
                    </button>
-                   <button onClick={clearChat} className="w-full flex items-center gap-3 px-4 py-3.5 bg-black/5 hover:bg-red-50 rounded-xl transition-colors text-[11px] font-mono font-bold text-red-500">
+                   <button onClick={clearChat} className="w-full flex items-center gap-3 px-4 py-3.5 bg-black/5 hover:bg-black/5 rounded-xl transition-colors text-[11px] font-mono font-bold text-[#050505]">
                        <Trash2 size={16} /> Clear Chat
                    </button>
                </div>
@@ -4581,18 +4579,18 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
        {showClearConfirm && (
          <div className="fixed inset-0 z-[1000] bg-black/40 backdrop-blur-sm flex items-center justify-center p-6 animate-in fade-in zoom-in duration-200">
            <div className="w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl flex flex-col items-center text-center">
-             <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center text-red-500 mb-4">
+             <div className="w-16 h-16 rounded-full bg-[#f5f5f7] flex items-center justify-center text-[#050505] mb-4">
                <Trash2 size={28} />
              </div>
              <h3 className="text-[18px] font-black tracking-tight text-gray-900 mb-2">Clear Chat?</h3>
-             <p className="text-[13px] text-gray-500 mb-6 px-4">
+             <p className="text-[13px] text-black/50 mb-6 px-4">
                Are you sure you want to clear this conversation? This will remove all messages from your device.
              </p>
              <div className="flex items-center gap-3 w-full">
-               <button onClick={() => setShowClearConfirm(false)} className="flex-1 py-3.5 rounded-xl bg-gray-50 hover:bg-gray-100 text-[13px] font-bold text-gray-700 transition-colors">
+               <button onClick={() => setShowClearConfirm(false)} className="flex-1 py-3.5 rounded-xl bg-[#f5f5f7] hover:bg-[#e5e5ea] text-[13px] font-bold text-gray-700 transition-colors">
                  Cancel
                </button>
-               <button onClick={executeClearChat} className="flex-1 py-3.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-[13px] font-bold transition-colors shadow-lg shadow-red-500/30">
+               <button onClick={executeClearChat} className="flex-1 py-3.5 rounded-xl bg-[#050505] hover:bg-[#050505] text-white text-[13px] font-bold transition-colors shadow-lg shadow-black/10">
                  Clear Chat
                </button>
              </div>
@@ -4615,7 +4613,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg> 
                 {archivedPeers.has(sidebarMenu.peer.toLowerCase()) ? 'Unarchive' : 'Archive'}
              </button>
-             <button onClick={() => deleteConversation(sidebarMenu.peer)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-50 text-[11px] font-mono text-red-500 text-left mt-1">
+             <button onClick={() => deleteConversation(sidebarMenu.peer)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-black/5 text-[11px] font-mono text-[#050505] text-left mt-1">
                 <Trash2 size={14} /> Delete Chat
              </button>
            </div>
@@ -4629,14 +4627,14 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
              <div className="w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl flex flex-col gap-4">
                <div className="flex items-center justify-between">
                  <h3 className="text-[16px] font-black tracking-tight text-gray-900">Create Poll</h3>
-                 <button onClick={() => { setShowPollCreator(false); setPollQuestion(''); setPollOptions(['', '']); }} className="p-2 rounded-full hover:bg-gray-100 text-gray-400">✕</button>
+                 <button onClick={() => { setShowPollCreator(false); setPollQuestion(''); setPollOptions(['', '']); }} className="p-2 rounded-full hover:bg-[#e5e5ea] text-black/40">✕</button>
                </div>
                <input
                  type="text"
                  placeholder="Ask a question..."
                  value={pollQuestion}
                  onChange={e => setPollQuestion(e.target.value)}
-                 className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-[13px] font-medium focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                 className="w-full px-4 py-2.5 rounded-xl border border-black/10 text-[13px] font-medium focus:outline-none focus:border-black focus:ring-2 focus:ring-black/10"
                />
                <div className="flex flex-col gap-2">
                  {pollOptions.map((opt, i) => (
@@ -4646,15 +4644,15 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                        placeholder={`Option ${i + 1}`}
                        value={opt}
                        onChange={e => setPollOptions(prev => prev.map((o, j) => j === i ? e.target.value : o))}
-                       className="flex-1 px-3 py-2 rounded-xl border border-gray-200 text-[13px] focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+                       className="flex-1 px-3 py-2 rounded-xl border border-black/10 text-[13px] focus:outline-none focus:border-black focus:ring-2 focus:ring-black/10"
                      />
                      {pollOptions.length > 2 && (
-                       <button onClick={() => setPollOptions(prev => prev.filter((_, j) => j !== i))} className="text-gray-400 hover:text-red-500 text-[12px] font-black">✕</button>
+                       <button onClick={() => setPollOptions(prev => prev.filter((_, j) => j !== i))} className="text-black/40 hover:text-black/60 text-[12px] font-black">✕</button>
                      )}
                    </div>
                  ))}
                  {pollOptions.length < 5 && (
-                   <button onClick={() => setPollOptions(prev => [...prev, ''])} className="text-indigo-500 text-[12px] font-bold hover:underline text-left">+ Add option</button>
+                   <button onClick={() => setPollOptions(prev => [...prev, ''])} className="text-black text-[12px] font-bold hover:underline text-left">+ Add option</button>
                  )}
                </div>
                <button
@@ -4668,7 +4666,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                    setPollQuestion('');
                    setPollOptions(['', '']);
                  }}
-                 className="w-full py-3.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white text-[13px] font-bold shadow-lg shadow-indigo-500/30 transition-colors"
+                 className="w-full py-3.5 rounded-xl bg-[#050505] hover:opacity-80 text-white text-[13px] font-bold shadow-sm transition-colors"
                >
                  Send Poll
                </button>
@@ -4683,14 +4681,14 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                <div className="flex items-center justify-between">
                  <div>
                    <h3 className="text-[16px] font-black tracking-tight text-gray-900">Send QD Tokens</h3>
-                   <p className="text-[11px] text-gray-400 font-mono mt-0.5">Balance: {balance.toFixed(4)} QD</p>
+                   <p className="text-[11px] text-black/40 font-mono mt-0.5">Balance: {balance.toFixed(4)} QD</p>
                  </div>
-                 <button onClick={() => { setShowWalletTransfer(false); setTransferAmount(''); }} className="p-2 rounded-full hover:bg-gray-100 text-gray-400">✕</button>
+                 <button onClick={() => { setShowWalletTransfer(false); setTransferAmount(''); }} className="p-2 rounded-full hover:bg-[#e5e5ea] text-black/40">✕</button>
                </div>
-               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center self-center shadow-lg shadow-emerald-500/30">
-                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br bg-[#f5f5f7] border border-black/10 flex items-center justify-center self-center shadow-sm">
+                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#050505" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
                </div>
-               <p className="text-[12px] text-gray-500 text-center font-mono">To: {shortAddr(activePeer!)}</p>
+               <p className="text-[12px] text-black/50 text-center font-mono">To: {shortAddr(activePeer!)}</p>
                <input
                  type="number"
                  placeholder="Amount in QD..."
@@ -4698,7 +4696,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                  onChange={e => setTransferAmount(e.target.value)}
                  min="0.01"
                  step="0.01"
-                 className="w-full px-4 py-3 rounded-xl border border-gray-200 text-[18px] font-black text-center focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100 font-mono"
+                 className="w-full px-4 py-3 rounded-xl border border-black/10 text-[18px] font-black text-center focus:outline-none focus:border-black focus:ring-2 focus:ring-black/10 font-mono"
                />
                <button
                  disabled={!transferAmount || parseFloat(transferAmount) <= 0 || parseFloat(transferAmount) > balance || transferSending}
@@ -4718,7 +4716,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                      setTransferSending(false);
                    }
                  }}
-                 className="w-full py-3.5 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 hover:opacity-90 text-white text-[13px] font-bold shadow-lg shadow-emerald-500/30 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                 className="w-full py-3.5 rounded-xl bg-[#050505] hover:opacity-80 text-white text-[13px] font-bold shadow-lg shadow-black/10 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                >
                  {transferSending ? 'Processing...' : `Send ${transferAmount || '0'} QD`}
                </button>
@@ -4730,3 +4728,4 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     </TuringShieldGate>
   );
 }
+
