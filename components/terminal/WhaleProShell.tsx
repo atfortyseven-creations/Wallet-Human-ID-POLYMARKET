@@ -48,11 +48,9 @@ interface NavItem {
 const SIDEBAR_ITEMS: NavItem[] = [
     { id: 'humanity-ledger', label: 'Roadmap',     icon: Icon.roadmap   },
     { id: 'gold',            label: 'Identity',    icon: Icon.identity  },
-    { id: 'portfolio',       label: 'Portfolio',   icon: <span className="font-mono text-[10px] tracking-widest font-black">[PFL]</span> },
     { id: 'studio',          label: 'Provenance',  icon: Icon.studio    },
     { id: 'markets',         label: 'Markets',     icon: Icon.markets   },
     { id: 'governance',      label: 'Governance',  icon: <span className="font-mono text-[10px] tracking-widest font-black">[GOV]</span> },
-    { id: 'chat',            label: 'Whale Chat',  icon: <span className="font-mono text-[10px] tracking-widest font-black">[CHT]</span> },
     { id: 'token',           label: 'Token',       icon: <span className="font-mono text-[10px] tracking-widest font-black">[TKN]</span> },
     { id: 'map',             label: 'Network Map', icon: Icon.map       },
     { id: 'logs',            label: 'Privacy',     icon: Icon.logs      },

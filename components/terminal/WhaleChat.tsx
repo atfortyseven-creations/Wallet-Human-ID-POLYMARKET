@@ -945,7 +945,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // Using a random ID would make startCall's derivePeerId() useless — the IDs would
   // never match and WebRTC would always fail to connect.
   useEffect(() => {
-    if (!address || peerInstance) return;
+    // Re-init if no peer OR if the existing peer was destroyed
+    if (!address || (peerInstance && !peerInstance.destroyed)) return;
     import('peerjs').then(({ default: Peer }) => {
       // ─── DETERMINISTIC PEERID — CRITICAL FOR REVERSE-DIAL ARCHITECTURE ───
       // Both peers derive each other's ID from the wallet address alone.
@@ -1060,7 +1061,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   //   CALL_DECLINE                           — receiver declines
   //   CALL_HANGUP                            — either party ends the call
   // NOTE: performEndCallRef is wired below after performEndCall is defined.
-  const performEndCallRef = useRef<() => void>(() => {});
+  // performEndCallRef is wired after performEndCall is defined below
   const processedSignalIds = useRef<Set<string>>(new Set());
   // AUDIT FIX: Prune processedSignalIds set to avoid unbounded memory growth.
   // Keep only the last 200 IDs to prevent memory leak over long sessions.
@@ -1288,6 +1289,12 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
     if (remoteAudioRef.current) { remoteAudioRef.current.srcObject = null; }
   }, []);
+
+  // [CRITICAL FIX] Wire the ref immediately after performEndCall is created.
+  // Without this, performEndCallRef.current stays as the empty initializer and
+  // the hang-up button and PeerJS close events do nothing.
+  const performEndCallRef = useRef<() => void>(performEndCall);
+  useEffect(() => { performEndCallRef.current = performEndCall; }, [performEndCall]);
 
   // ─── startCall: Initiates an outgoing call ───────────────────────────────────
   // ANDROID FIX: This function MUST be called directly from a user-gesture handler

@@ -70,8 +70,6 @@ export function InstitutionalHeader() {
       { label: 'Identity', href: "/terminal?tab=gold" },
       { label: 'TOKEN', href: "/qds" },
       { label: 'MAP', href: "/registry" },
-      { label: 'Chat', href: "/chat" },
-      { label: 'Portfolio', href: "/portfolio" },
       { label: 'Community', href: "#", subItems: [{ label: 'ACADEMY', href: "/academy" }, { label: 'FORUM', href: "/forum" }] },
       { label: 'PRIVACY', href: '/privacy' }
     ];
