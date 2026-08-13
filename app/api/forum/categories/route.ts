@@ -4,12 +4,12 @@ import { prisma } from '@/lib/prisma';
 export const dynamic = 'force-dynamic';
 
 const DEFAULT_CATEGORIES = [
-    { name: 'Whale Network',  slug: 'whale-network',  description: 'Core discussions about whale movements, large transactions, and on-chain intelligence across all chains.', color: '#050505', orderIndex: 1 },
+    { name: 'Humanity Ledger',  slug: 'whale-network',  description: 'Core discussions about whale movements, large transactions, and on-chain intelligence across all chains.', color: '#050505', orderIndex: 1 },
     { name: 'General',        slug: 'general',        description: 'General community discussions, announcements, and introductions.', color: '#0088cc', orderIndex: 2 },
     { name: 'Applications',   slug: 'applications',   description: 'Talk about dApps, DeFi protocols, tools, and ecosystem applications.', color: '#00C076', orderIndex: 3 },
     { name: 'Testnets',       slug: 'testnets',       description: 'Testing environments, devnet updates, and testnet coordination.', color: '#F59E0B', orderIndex: 4 },
     { name: 'Noir',           slug: 'noir',           description: 'Zero-knowledge circuit development with Noir, proving systems, and ZK research.', color: '#7C3AED', orderIndex: 5 },
-    { name: 'Site Feedback',  slug: 'site-feedback',  description: 'Report bugs, suggest improvements, and share feedback about Whale Network.', color: '#64748B', orderIndex: 6 },
+    { name: 'Site Feedback',  slug: 'site-feedback',  description: 'Report bugs, suggest improvements, and share feedback about Humanity Ledger.', color: '#64748B', orderIndex: 6 },
     { name: 'QDs Connect',    slug: 'qds-connect',    description: 'QDs ecosystem connectivity, integrations, and cross-platform collaboration.', color: '#EC4899', orderIndex: 7 },
     { name: 'Provenance',     slug: 'provenance',     description: 'Product passports, Humanity Provenance Framework, labels, GS1 Digital Link, and issuer discussion.', color: '#404040', orderIndex: 8 },
 ];

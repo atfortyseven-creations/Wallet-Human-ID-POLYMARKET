@@ -22,7 +22,7 @@ import { keccak256, toBytes } from 'viem';
  */
 
 
-// Domain-separated prefix for Whale Network identity hashing.
+// Domain-separated prefix for Humanity Ledger identity hashing.
 // Changing this breaks all existing hashes — do NOT modify after launch.
 const ZK_DOMAIN_PREFIX = 'whale-identity:';
 

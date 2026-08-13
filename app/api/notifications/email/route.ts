@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     // Format email based on type
     switch (type) {
       case 'whale_alert':
-        subject = ` Whale Network: $${safeToLocaleString(data.amount)} Movement`;
+        subject = ` Humanity Ledger: $${safeToLocaleString(data.amount)} Movement`;
         html = formatWhaleAlertEmail(data);
         break;
       
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
 
     // Send via Resend
     const result = await resend.emails.send({
-      from: 'Whale Network Sovereign <alerts@sovereign.pro>',
+      from: 'Humanity Ledger Sovereign <alerts@sovereign.pro>',
       to: [to],
       subject,
       html,
@@ -108,7 +108,7 @@ function formatWhaleAlertEmail(data: {
 <body>
   <div class="container">
     <div class="header">
-      <h1> Whale Network</h1>
+      <h1> Humanity Ledger</h1>
     </div>
     <div class="content">
       <p>A significant transaction has been detected on one of your tracked wallets.</p>
@@ -136,7 +136,7 @@ function formatWhaleAlertEmail(data: {
       ${data.txHash ? `<a href="https://basescan.org/tx/${data.txHash}" class="button">View Transaction</a>` : ''}
     </div>
     <div class="footer">
-      Whale Network VIP - Whale Tracking Platform<br>
+      Humanity Ledger VIP - Whale Tracking Platform<br>
       <a href="/vip" style="color: #ffffff;">Manage Alerts</a>
     </div>
   </div>

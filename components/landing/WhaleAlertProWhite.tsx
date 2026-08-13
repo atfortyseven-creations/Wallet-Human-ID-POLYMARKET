@@ -33,7 +33,7 @@ const PRICING_TIERS: PricingTier[] = [
     tagline: 'Basic on-chain visibility.',
     accentColor: '#888888',
     features: [
-      { text: 'Real-time Whale Networks', included: true },
+      { text: 'Real-time Humanity Ledgers', included: true },
       { text: 'Basic Market Analytics', included: true },
       { text: 'Community Chat Access', included: true },
       { text: 'Priority Node Access', included: false }
@@ -56,7 +56,7 @@ const PRICING_TIERS: PricingTier[] = [
   },
   {
     id: 'INSTITUTIONAL',
-    name: 'Whale Network Pro',
+    name: 'Humanity Ledger Pro',
     priceMonthly: 299,
     tagline: 'The ultimate firm-wide edge.',
     accentColor: '#9945FF',
@@ -179,7 +179,7 @@ export default function WhaleAlertProWhite() {
               <Image src="/official-whale-monochrome.png" alt="System Whale" fill className="object-contain" />
             </div>
             <div className="flex flex-col">
-              <span className="text-[12px] font-black uppercase tracking-tight leading-none">Whale Network</span>
+              <span className="text-[12px] font-black uppercase tracking-tight leading-none">Humanity Ledger</span>
               <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Network</span>
             </div>
           </Link>
@@ -233,7 +233,7 @@ export default function WhaleAlertProWhite() {
           </h1>
           
           <p className="text-[18px] sm:text-[22px] font-medium text-slate-500 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-            Whale Network is the sovereign platform for self-managing crypto portfolios. We intercept global mempool data so you can track massive liquidity shifts instantly.
+            Humanity Ledger is the sovereign platform for self-managing crypto portfolios. We intercept global mempool data so you can track massive liquidity shifts instantly.
           </p>
           
           <div className="flex flex-col sm:flex-row items-center gap-6 justify-center lg:justify-start pt-4">
@@ -254,7 +254,7 @@ export default function WhaleAlertProWhite() {
         </div>
       </section>
 
-      {/*  WHY Whale Network NETWORK: BLOCKS  */}
+      {/*  WHY Humanity Ledger NETWORK: BLOCKS  */}
       <section id="capabilities" className="py-24 px-6 lg:px-12 space-y-32">
         
         {/* Block 1 */}
@@ -323,7 +323,7 @@ export default function WhaleAlertProWhite() {
                     During extreme market volatility, public RPC endpoints fail. Centralised APIs go down precisely when you need them most. We built an architecture that refuses to break.
                 </p>
                 <p className="text-[18px] text-slate-500 leading-relaxed font-medium">
-                    The Whale Network is powered by a globally distributed mesh of dedicated blockchain nodes. This physical layer ensures absolute redundancy. If an entire region goes offline, our traffic instantly routes through alternative clusters, guaranteeing 99.99% uptime and zero mock data.
+                    The Humanity Ledger is powered by a globally distributed mesh of dedicated blockchain nodes. This physical layer ensures absolute redundancy. If an entire region goes offline, our traffic instantly routes through alternative clusters, guaranteeing 99.99% uptime and zero mock data.
                 </p>
             </div>
         </div>

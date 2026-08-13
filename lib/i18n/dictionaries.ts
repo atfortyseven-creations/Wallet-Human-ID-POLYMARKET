@@ -3,7 +3,7 @@ export type Locale = 'en';
 //  Base dictionary shape (English is the source of truth) 
 const en = {
   metadata: {
-    title: 'Whale Network',
+    title: 'Humanity Ledger',
     description: 'The leading system identity and whale analytics platform.',
   },
   nav: {
@@ -28,7 +28,7 @@ const en = {
   landing: {
     hero: {
         badge: 'Elite Tracking Protocol',
-        title: 'Whale Network',
+        title: 'Humanity Ledger',
         subtitle: 'System tracking with advanced security, real-time alerts, and unmatched precision.',
         keys: 'Real data. Deep insights.',
         identity: 'Tracking. Data. Alpha.',
@@ -103,10 +103,10 @@ const en = {
             benefits: ["Historical volume rankings", "Transaction frequency data", "Wallet label identification", "Direct profile deep-links"]
           },
           {
-            title: "Whale Network",
+            title: "Humanity Ledger",
             category: "Protocol",
             description: "Elite identity for the next billion.",
-            detailedInfo: "Whale Network is built on the principle of market transparency. We provide verified data directly from the blockchain for professional verifiers.",
+            detailedInfo: "Humanity Ledger is built on the principle of market transparency. We provide verified data directly from the blockchain for professional verifiers.",
             benefits: ["Verified data streams", "Encrypted data persistence", "Elite grade architecture", "On-chain verification"]
           }
         ]
@@ -234,7 +234,7 @@ const en = {
           security: 'Security',
           attestation: 'Compliance'
       },
-      rights: '© 2026 Whale Network. All rights reserved.'
+      rights: '© 2026 Humanity Ledger. All rights reserved.'
   },
   countdown: {
       badge: 'Beyond the Horizon',
@@ -246,7 +246,7 @@ const en = {
       seconds: 'SECONDS'
   },
   ecosystem: {
-    title: 'Whale Network',
+    title: 'Humanity Ledger',
     subtitle: "Engineering trust. We don't sell hype, we sell verifiable architecture.",
     cat_core: 'Core Ecosystem',
     cat_attesting: 'Attesting & Security',

@@ -124,7 +124,7 @@ export function AdvancedAnalytics() {
                         </div>
                     </div>
 
-                    {/* Whale Network Stream */}
+                    {/* Humanity Ledger Stream */}
                     <div className="bg-white/5 rounded-xl border border-white/5 p-4 flex-1">
                         <div className="flex items-center justify-between mb-4">
                             <h3 className="font-bold text-sm flex items-center gap-2">

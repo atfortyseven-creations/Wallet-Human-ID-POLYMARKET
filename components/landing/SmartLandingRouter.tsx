@@ -7,7 +7,7 @@ import { ClientMobileLanding } from '@/components/landing/ClientMobileLanding';
 // ── Minimal white skeleton shown during JS hydration on mobile ──────────────
 // ClientMobileLanding (MobileImmersiveGate) has ssr:false because it reads
 // cookies synchronously to decide its starting phase. While the bundle loads,
-// we show a white screen with the "WHALE NETWORK" wordmark so the user never
+// we show a white screen with the "Humanity Ledger" wordmark so the user never
 // sees a blank flash.
 function MobileSkeleton() {
   return (

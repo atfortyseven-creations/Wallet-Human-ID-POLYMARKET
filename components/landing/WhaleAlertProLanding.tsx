@@ -133,12 +133,12 @@ export function WhaleAlertProLanding() {
           >
             <div className="flex items-center justify-center gap-4 mb-8">
               <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-cyan-500" />
-              <span className="text-cyan-400 font-mono text-[10px] tracking-[0.5em] uppercase">Whale Network Analytics</span>
+              <span className="text-cyan-400 font-mono text-[10px] tracking-[0.5em] uppercase">Humanity Ledger Analytics</span>
               <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-cyan-500" />
             </div>
             
             <h1 className="text-7xl md:text-[9rem] font-black tracking-tighter leading-[0.85] mb-8">
-              Whale Network <br />
+              Humanity Ledger <br />
               <ShimmerText text="PRO" />
             </h1>
 
@@ -351,7 +351,7 @@ export function WhaleAlertProLanding() {
             transition={{ duration: 1.5, ease: "easeOut" }}
           >
             <h2 className="text-[10vw] font-black tracking-tighter text-white/5 opacity-50 absolute inset-0 flex items-center justify-center select-none pointer-events-none">
-              Whale Network
+              Humanity Ledger
             </h2>
             <div className="max-w-4xl mx-auto relative z-20">
               <h3 className="text-4xl md:text-7xl font-black mb-8 leading-tight tracking-tighter">
@@ -361,7 +361,7 @@ export function WhaleAlertProLanding() {
               </h3>
               <p className="text-xl text-white/40 mb-12 font-light">
                 Join the network that defines the frontier. <br />
-                Whale Network Pro is more than a toolit's your absolute vision into the cosmic flow of value.
+                Humanity Ledger Pro is more than a toolit's your absolute vision into the cosmic flow of value.
               </p>
               <Link href="/vip">
                 <motion.button
@@ -381,8 +381,8 @@ export function WhaleAlertProLanding() {
       <footer className="py-20 px-12 border-t border-white/5 bg-black/90 relative z-50">
         <div className="max-w-[2560px] mx-auto flex flex-col md:row items-start justify-between gap-12 text-left">
            <div className="text-left">
-              <div className="text-2xl font-black tracking-tighter mb-4">Whale Network <span className="text-cyan-500">PRO</span></div>
-              <div className="text-[10px] font-mono text-white/20 uppercase tracking-[0.4em]">© 2026 Whale Network Access</div>
+              <div className="text-2xl font-black tracking-tighter mb-4">Humanity Ledger <span className="text-cyan-500">PRO</span></div>
+              <div className="text-[10px] font-mono text-white/20 uppercase tracking-[0.4em]">© 2026 Humanity Ledger Access</div>
            </div>
            <div className="flex gap-12">
               <div className="flex flex-col gap-4">

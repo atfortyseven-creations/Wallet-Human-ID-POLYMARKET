@@ -27,7 +27,7 @@ export function ProFeatureGate({ children, featureName = "Premium Feature" }: Pr
 
             <div className="space-y-1 relative z-10">
                 <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">{featureName}</h3>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Whale Network Pro Membership Required</p>
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Humanity Ledger Pro Membership Required</p>
             </div>
 
             <motion.button 

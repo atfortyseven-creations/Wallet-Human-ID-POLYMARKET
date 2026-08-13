@@ -1,6 +1,6 @@
-Ôªøexport const MEGA_MANIFESTO_TEXT = `
+export const MEGA_MANIFESTO_TEXT = `
 ## Executive Foreword
-This document constitutes the complete technical specification, architectural narrative, historical context, and operational manual for the Whale Network  a system-grade, real-time blockchain analytics system designed, engineered, and deployed entirely by one person...
+This document constitutes the complete technical specification, architectural narrative, historical context, and operational manual for the Humanity Ledger  a system-grade, real-time blockchain analytics system designed, engineered, and deployed entirely by one person...
 
 ## Table of Contents
 1. The Origin and Vision
@@ -61,18 +61,18 @@ The clustering algorithm operates on a Neo4j graph database that indexes wallet 
 ## ZERO KNOWLEDGE INFRASTRUCTURE
 Sentinel nodes that produce signals for the System Mesh are required to construct a zero knowledge proof demonstrating that their identity key satisfies the mesh membership predicate without revealing the key itself. This proof is constructed using SnarkJS with a Groth16 proving scheme over the BN254 elliptic curve.
 
-### ANNEX I. LA FALLA SIST√âMICA DE MT. GOX (2014)
-Cuando Mt. Gox transaccionaba m√°s del 70% del volumen global de Bitcoin, depend√≠a de una base de datos MySQL centralizada (Ledger Caliente) desconectada l√≥gicamente de la topolog√≠a real de la cadena de bloques (B√≥vedas Fr√≠as). Un ataque de "maleabilidad de transacciones" permiti√≥ alterar el Hash ID de los retiros. Cerca de 850,000 BTC se desintegraron. Mitigaci√≥n System: Nuestro sistema jam√°s conf√≠a en firmas relacionales (SQL). El "Whale Network" detecta flujos brutos directo de Opcodes.
+### ANNEX I. LA FALLA SIST…MICA DE MT. GOX (2014)
+Cuando Mt. Gox transaccionaba m·s del 70% del volumen global de Bitcoin, dependÌa de una base de datos MySQL centralizada (Ledger Caliente) desconectada lÛgicamente de la topologÌa real de la cadena de bloques (BÛvedas FrÌas). Un ataque de "maleabilidad de transacciones" permitiÛ alterar el Hash ID de los retiros. Cerca de 850,000 BTC se desintegraron. MitigaciÛn System: Nuestro sistema jam·s confÌa en firmas relacionales (SQL). El "Humanity Ledger" detecta flujos brutos directo de Opcodes.
 
 ### ANNEX II. THE DAO RECURSIVO (2016)
-El primer experimento de organizaci√≥n descentralizada en Ethereum albergaba 150 millones de d√≥lares. Un ente minero inyect√≥ un contrato fallback malicioso que reinvocaba infinitamente la funci√≥n splitDAO(). Defensa System: Operamos un Nodo Local Teranode de 1TB. Monitoreamos Mempools operando pre-c√°lculos sint√°cticos sobre OPCODES de cada contrato invocado.
+El primer experimento de organizaciÛn descentralizada en Ethereum albergaba 150 millones de dÛlares. Un ente minero inyectÛ un contrato fallback malicioso que reinvocaba infinitamente la funciÛn splitDAO(). Defensa System: Operamos un Nodo Local Teranode de 1TB. Monitoreamos Mempools operando pre-c·lculos sint·cticos sobre OPCODES de cada contrato invocado.
 
 ### ANNEX III. COLAPSO DE TERRA (LUNA) UST
-Un ente deposit√≥ masivamente UST en Curve Finance (DeFi 3Pool), desestabilizando la gema. El incentivo hiper-racional oblig√≥ al contrato a acu√±ar trillones de LUNA para respaldar a UST. Cuarenta mil millones de d√≥lares murieron en una semana. System Grid extrae liquidez cruzada de AMM en tiempo de micro-segundos para alertar p√°nicos estructurales.
+Un ente depositÛ masivamente UST en Curve Finance (DeFi 3Pool), desestabilizando la gema. El incentivo hiper-racional obligÛ al contrato a acuÒar trillones de LUNA para respaldar a UST. Cuarenta mil millones de dÛlares murieron en una semana. System Grid extrae liquidez cruzada de AMM en tiempo de micro-segundos para alertar p·nicos estructurales.
 
 ### ANNEX IV. EL ABISMO CONTABLE DE FTX
-Alameda Research transaccionaba secretamente con c√≥digo hardcodeado en los motores del CEX FTX que le preven√≠a de liquidaciones algor√≠tmicas, 100% Off-Chain. EL MANDATO DEL Cryptographic MESH: CERO MOCK. No existen bases de datos sombras. Todo lo que ves en The Whale Network ocurre On-Chain.
+Alameda Research transaccionaba secretamente con cÛdigo hardcodeado en los motores del CEX FTX que le prevenÌa de liquidaciones algorÌtmicas, 100% Off-Chain. EL MANDATO DEL Cryptographic MESH: CERO MOCK. No existen bases de datos sombras. Todo lo que ves en The Humanity Ledger ocurre On-Chain.
 
-### ANNEX V. LIQUIDACI√ìN EN CASCADA 3AC
-Pr√©stamos cruzados sin colateralizaci√≥n at√≥mica on-chain. Three Arrows Capital sobreapalanc√≥ el mercado OTC bas√°ndose en confianza ciega inter-institucional en el ciclo de 2022. La arquitectura Akashic Ledger erradica la dependencia OTC calculando el coeficiente de Gini de los flujos pre-liquidaci√≥n institucionales en las pools de liquidez DeFi Aave y Compound.
+### ANNEX V. LIQUIDACI”N EN CASCADA 3AC
+PrÈstamos cruzados sin colateralizaciÛn atÛmica on-chain. Three Arrows Capital sobreapalancÛ el mercado OTC bas·ndose en confianza ciega inter-institucional en el ciclo de 2022. La arquitectura Akashic Ledger erradica la dependencia OTC calculando el coeficiente de Gini de los flujos pre-liquidaciÛn institucionales en las pools de liquidez DeFi Aave y Compound.
 `;

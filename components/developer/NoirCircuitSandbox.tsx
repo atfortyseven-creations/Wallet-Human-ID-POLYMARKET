@@ -489,7 +489,7 @@ contract ZKVerifier {
 
       <div className="flex flex-col lg:flex-row min-h-[680px]">
         {/* Editor */}
-        <div className="flex-1 border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col min-w-[360px]">
+        <div className="flex-1 border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col min-w-0 lg:min-w-[360px]">
           <div className="px-4 py-2 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
             <div className="flex items-center gap-2 text-slate-500 text-[11px]">
               <Code2 size={14} /> main.nr
@@ -516,7 +516,7 @@ contract ZKVerifier {
         </div>
 
         {/* Output Panel */}
-        <div className="flex-1 flex flex-col bg-slate-50 min-w-[320px]">
+        <div className="flex-1 flex flex-col bg-slate-50 min-w-0 lg:min-w-[320px]">
           <div className="p-6 border-b border-slate-200 bg-white">
             <h3 className="text-slate-400 text-[10px] font-bold tracking-[0.2em] uppercase mb-4">Pipeline Status</h3>
             {stages.map(stage => (

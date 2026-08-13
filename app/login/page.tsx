@@ -197,7 +197,7 @@ export default function LoginPage() {
             <ShieldCheck size={24} className="text-white" />
           </div>
           <h1 className="text-2xl font-black uppercase tracking-tight text-black text-center">
-            Whale Network
+            Humanity Ledger
           </h1>
           <p className="text-xs font-mono text-black/40 uppercase tracking-widest mt-1 text-center">
             Acceso Seguro · Email OTP

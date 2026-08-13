@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Whale Support',
-  description: '24/7 sovereign-grade assistance for the Whale Network Pro ecosystem.',
+  description: '24/7 sovereign-grade assistance for the Humanity Ledger Pro ecosystem.',
 };
 
 export default function SupportLayout({

@@ -123,7 +123,7 @@ function ForumShowcase() {
                 <span className="text-white/40">deliberate publicly.</span>
               </SectionTitle>
               <SectionBody>
-                The Whale Network Forum is a fully on-chain governance and discourse infrastructure. Every topic, proposal, and debate is cryptographically attributed to a verified Aztec identity — ensuring every voice belongs to a real, Sybil-resistant participant. No bots, no ghost accounts, no anonymous manipulation.
+                The Humanity Ledger Forum is a fully on-chain governance and discourse infrastructure. Every topic, proposal, and debate is cryptographically attributed to a verified Aztec identity — ensuring every voice belongs to a real, Sybil-resistant participant. No bots, no ghost accounts, no anonymous manipulation.
               </SectionBody>
               <motion.p variants={FADE_UP} className="text-[14px] font-mono text-purple-300/70 mb-10 leading-relaxed border-l-2 border-purple-500/30 pl-4">
                 Built on the Aztec ZK stack, participation is permissionless for reading and identity-gated for writing. Escalate discourse directly to on-chain votes.
@@ -147,7 +147,7 @@ function ForumShowcase() {
               <FeatureItem
                 icon={<Globe size={20} />}
                 title="Public Discourse"
-                description="Engage with the global Whale Network community on research, security, and strategy."
+                description="Engage with the global Humanity Ledger community on research, security, and strategy."
               />
               <FeatureItem
                 icon={<Activity size={20} />}
@@ -195,7 +195,7 @@ function DevelopersShowcase() {
                 <span className="text-white/40">to Aztec Network.</span>
               </SectionTitle>
               <SectionBody>
-                Whale Network operates as the sovereign application layer over Aztec's zero knowledge execution environment. We abstract the complexity of ZK circuits into a sovereign-grade terminal — providing high-net-worth individuals and enterprises with complete privacy over their transactions, assets, and communications.
+                Humanity Ledger operates as the sovereign application layer over Aztec's zero knowledge execution environment. We abstract the complexity of ZK circuits into a sovereign-grade terminal — providing high-net-worth individuals and enterprises with complete privacy over their transactions, assets, and communications.
               </SectionBody>
               <motion.div variants={FADE_UP} className="flex flex-wrap items-center gap-4">
                 <NavButton href="/developers/api-docs" label="View API Docs" />
@@ -222,7 +222,7 @@ function RegistryShowcase() {
               <span className="text-white/40">verified across 195 countries.</span>
             </SectionTitle>
             <SectionBody>
-              The Whale Network Identity Registry maps cryptographic attestations to real-world verification standards across every jurisdiction. Using zero knowledge proofs, identities are verified once and proven indefinitely — without repeated document disclosure. This is the compliance layer of the post-KYC era.
+              The Humanity Ledger Identity Registry maps cryptographic attestations to real-world verification standards across every jurisdiction. Using zero knowledge proofs, identities are verified once and proven indefinitely — without repeated document disclosure. This is the compliance layer of the post-KYC era.
             </SectionBody>
             <motion.div variants={FADE_UP} className="flex flex-wrap items-center justify-center gap-4 mt-4">
               <NavButton href="/registry" label="Explore Registry" />
@@ -340,7 +340,7 @@ function PortfolioShowcase() {
                 <span className="text-white/40">Invisible to the world.</span>
               </SectionTitle>
               <SectionBody>
-                The Whale Network Terminal is the sovereign operating system for high-net-worth individuals navigating the on-chain economy. Portfolio balances, transaction history, whale movements, and liquidity flows are all tracked in real-time — and all encrypted. Your wealth management is your business alone.
+                The Humanity Ledger Terminal is the sovereign operating system for high-net-worth individuals navigating the on-chain economy. Portfolio balances, transaction history, whale movements, and liquidity flows are all tracked in real-time — and all encrypted. Your wealth management is your business alone.
               </SectionBody>
               <motion.div variants={FADE_UP} className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6 mb-10">
                 {[
@@ -508,7 +508,7 @@ function QDSShowcase() {
                 <span className="text-white/40">quantified.</span>
               </SectionTitle>
               <SectionBody>
-                The QDS (Quantum Data Scoring) module is Whale Network's proprietary risk and signal intelligence framework. It aggregates on-chain activity, liquidity flows, smart money positioning, and regulatory exposure into composite scores that institutional investors use to make decisions before the market moves.
+                The QDS (Quantum Data Scoring) module is Humanity Ledger's proprietary risk and signal intelligence framework. It aggregates on-chain activity, liquidity flows, smart money positioning, and regulatory exposure into composite scores that institutional investors use to make decisions before the market moves.
               </SectionBody>
               <motion.div variants={FADE_UP} className="flex flex-wrap items-center gap-4">
                 <NavButton href="/qds" label="Open QDS Dashboard" />
@@ -534,7 +534,7 @@ function TokenomicsShowcase() {
               <span className="text-white/40">built in code.</span>
             </SectionTitle>
             <SectionBody>
-              Whale Network's economic model is anchored on zero-founder-allocation principles. Token distribution is driven exclusively by verifiable on-chain participation — every credential earned, every governance vote submitted, every ZK proof generated. There is no insider advantage in a system where all merit is public and cryptographic.
+              Humanity Ledger's economic model is anchored on zero-founder-allocation principles. Token distribution is driven exclusively by verifiable on-chain participation — every credential earned, every governance vote submitted, every ZK proof generated. There is no insider advantage in a system where all merit is public and cryptographic.
             </SectionBody>
             <motion.div variants={FADE_UP} className="flex flex-wrap items-center justify-center gap-4 mt-2">
               <NavButton href="/tokenomics" label="Explore Tokenomics" />
@@ -575,7 +575,7 @@ function LegalComplianceShowcase() {
                 <span className="text-white/40">Regulatory-ready.</span>
               </SectionTitle>
               <SectionBody>
-                Whale Network is architected from the ground up to satisfy the most demanding legal and compliance frameworks globally — from EU GDPR and MiCA to US SEC guidance and FATF travel rules. Our compliance layer uses zero knowledge selective disclosure to satisfy auditors and regulators without public exposure of private data.
+                Humanity Ledger is architected from the ground up to satisfy the most demanding legal and compliance frameworks globally — from EU GDPR and MiCA to US SEC guidance and FATF travel rules. Our compliance layer uses zero knowledge selective disclosure to satisfy auditors and regulators without public exposure of private data.
               </SectionBody>
               <motion.div variants={FADE_UP} className="flex flex-wrap items-center gap-4">
                 <NavButton href="/legal/terms" label="Read Terms" />
@@ -619,7 +619,7 @@ function SupportShowcase() {
                 </span>
               </SectionTitle>
               <SectionBody>
-                Enterprise deployments, SLA agreements, custom integration support, and dedicated security consulting. Whale Network provides enterprise-grade onboarding for institutions, DAOs, and regulated entities requiring bespoke zero knowledge infrastructure.
+                Enterprise deployments, SLA agreements, custom integration support, and dedicated security consulting. Humanity Ledger provides enterprise-grade onboarding for institutions, DAOs, and regulated entities requiring bespoke zero knowledge infrastructure.
               </SectionBody>
             </div>
             <motion.div variants={FADE_UP} className="flex flex-col gap-4 w-full lg:w-auto shrink-0">

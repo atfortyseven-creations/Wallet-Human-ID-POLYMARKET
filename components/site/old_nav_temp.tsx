@@ -66,7 +66,7 @@ export function DropdownNav() {
                     transition={{ duration: 0.3 }}
                 >
                     <span className="text-lg font-black tracking-tight text-[#1F1F1F] ">
-                        Whale Network
+                        Humanity Ledger
                     </span>
                     <motion.div
                         animate={{ rotate: isOpen ? 180 : 0 }}

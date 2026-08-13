@@ -16,12 +16,12 @@ export default function StatusNavbar() {
       <div className="flex items-center gap-3">
         <Image 
           src="/official-whale-monochrome.png" 
-          alt="Whale Network" 
+          alt="Humanity Ledger" 
           width={32} 
           height={32} 
           className="rounded-full bg-black p-1"
         />
-        <span className="font-bold text-black text-lg tracking-tight">Whale Network</span>
+        <span className="font-bold text-black text-lg tracking-tight">Humanity Ledger</span>
       </div>
 
       {/* Actions */}

@@ -102,7 +102,7 @@ export async function GET(req: NextRequest) {
               <div class="container">
                 <div class="header">
                   <h2 style="color: #000; margin: 0;"> Hourly Supply Monitors</h2>
-                  <p style="color: #666; margin-top: 5px;">Whale Network Logic - Real-Time Tracking</p>
+                  <p style="color: #666; margin-top: 5px;">Humanity Ledger Logic - Real-Time Tracking</p>
                 </div>
                 
                 <p>Hello VIP,</p>

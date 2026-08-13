@@ -1,5 +1,5 @@
 /**
- *  Whale Network NETWORK  NEWS INTELLIGENCE DOMAIN
+ *  Humanity Ledger NETWORK  NEWS INTELLIGENCE DOMAIN
  * Sovereign-grade type definitions for forensic news analysis.
  */
 

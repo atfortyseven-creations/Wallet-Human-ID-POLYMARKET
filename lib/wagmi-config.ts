@@ -35,14 +35,14 @@ export const config = createConfig({
         walletConnect({
             projectId,
             metadata: {
-                name: 'Whale Network',
+                name: 'Humanity Ledger',
                 description: 'The System Identity & Prediction Market Suite',
                 url: 'https://whalealert.network',
                 icons: ['https://whalealert.network/official-whale-legendary.png'],
             }
         }),
         coinbaseWallet({ 
-            appName: 'Whale Network',
+            appName: 'Humanity Ledger',
             // 'smartWalletOnly' requires passkeys  unavailable on iOS < 16.
             // 'all' shows both classic and smart wallet  safe for all devices.
             preference: 'all'

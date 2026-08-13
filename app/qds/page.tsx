@@ -31,7 +31,7 @@ const SECTIONS: Section[] = [
     title: 'What are QDs — Quantum Dots?',
     tag: 'Foundation',
     paragraphs: [
-      'QDs (Quantum Dots) are the native digital asset of the Whale Network. They are not an ERC-20 token on Ethereum mainnet. They are not a wrapped asset. They live and move exclusively inside the Aztec Network — a Zero Knowledge Layer 2 rollup — making every balance and every transfer private by cryptographic default.',
+      'QDs (Quantum Dots) are the native digital asset of the Humanity Ledger. They are not an ERC-20 token on Ethereum mainnet. They are not a wrapped asset. They live and move exclusively inside the Aztec Network — a Zero Knowledge Layer 2 rollup — making every balance and every transfer private by cryptographic default.',
       'The name "Quantum Dots" comes from physics: the smallest indivisible unit of verifiable quantum energy output. Inside the protocol, QDs represent the smallest indivisible unit of verifiable economic contribution. You cannot fake them, you cannot mint extra ones, and you cannot subdivide them below 8 decimal places.',
       'The supply is mathematically hard-capped at exactly 210,000,000 units. This number is an immutable constant encoded in the genesis state of the contract. No governance vote, no team decision, no regulatory pressure, and no technical upgrade can ever change it. The protocol enforces this not by trust but by arithmetic: any transaction attempting to exceed the ceiling will be mathematically rejected by every node in the network.',
     ],
@@ -67,7 +67,7 @@ const SECTIONS: Section[] = [
     tag: 'Getting Started',
     paragraphs: [
       'Currently (Aztec Testnet phase, July 2026), QDs are distributed exclusively through the network\'s Proof of Contribution airdrop mechanism. There is no purchase, no presale, and no ICO. Acquiring QDs requires participation.',
-      'Step 1 — Authenticate: Connect to the Whale Network at humanidfi.com/connect using your Web3 wallet (MetaMask, Coinbase Wallet, WalletConnect) or via Turing Shield (email + 6-digit PIN for mobile users).',
+      'Step 1 — Authenticate: Connect to the Humanity Ledger at humanidfi.com/connect using your Web3 wallet (MetaMask, Coinbase Wallet, WalletConnect) or via Turing Shield (email + 6-digit PIN for mobile users).',
       'Step 2 — Open the Terminal: Once authenticated, press Cmd+K (Mac) or Ctrl+K (Windows) to open the Whale Terminal from anywhere on the platform.',
       'Step 3 — Navigate to Identity: In the terminal sidebar, find the "Identity / Airdrop" tab. This section shows your current ZK identity status, your Aztec account address, and your current QD balance.',
       'Step 4 — Claim Airdrop: Click "Claim Airdrop". The system verifies your identity via a ZK proof — confirming you are a unique, active participant — and deposits 50 testnet QDs directly into your private Aztec balance. The balance update happens on-chain and is visible only to you.',
@@ -84,7 +84,7 @@ const SECTIONS: Section[] = [
     title: 'What QDs unlock — Current utility',
     tag: 'Utility',
     paragraphs: [
-      'QDs are not a speculative asset waiting for utility. They have concrete, working utility inside the Whale Network ecosystem today on testnet. Here is an honest description of each use case as it exists right now.',
+      'QDs are not a speculative asset waiting for utility. They have concrete, working utility inside the Humanity Ledger ecosystem today on testnet. Here is an honest description of each use case as it exists right now.',
     ],
     bullets: [
       'Whale Terminal Pro Access: Spending QDs unlocks advanced analytical tiers (Tier 2 Pro, Tier 3 Whale). These tiers provide real-time whale alert filtering, anomaly detection dashboards, and cross-chain capital flow monitoring beyond what the free tier offers.',
@@ -189,7 +189,7 @@ const SECTIONS: Section[] = [
     paragraphs: [
       'Zero percent of the 210,000,000 QD supply is reserved for the founding team, investors, advisors, or any organizational entity. This is not a policy statement that can be walked back — it is a technical constraint enforced at the genesis state of the contract.',
       'This matters because team allocations are the most common source of token supply manipulation. When a team holds a large block of tokens, they can: sell into price rallies, create artificial scarcity by withholding, or dilute holders through vesting unlocks. None of these attack vectors exist in QDs, because no such block was ever created.',
-      'If the Whale Network team wants QDs, they must acquire them through the same participation mechanisms available to every other user: airdrops, governance contributions, and future mining. The protocol treats its creators identically to any other participant. This is enforced by code, not by promise.',
+      'If the Humanity Ledger team wants QDs, they must acquire them through the same participation mechanisms available to every other user: airdrops, governance contributions, and future mining. The protocol treats its creators identically to any other participant. This is enforced by code, not by promise.',
     ],
     bullets: [
       '0% team reserve. 0% investor allocation. 0% foundation treasury.',
@@ -222,7 +222,7 @@ const SECTIONS: Section[] = [
       'Private Wealth Intelligence: On mainnet, Whale Terminal Pro access paid in QDs grants participants private real-time intelligence on capital movements across Ethereum, Aztec, and bridged L2 networks. The competitive advantage is significant: most participants use public data. Whale Terminal users operate on private analytics that no one else can see or intercept.',
       'Sovereign P2P Economy: Whale Chat on mainnet becomes a fully operational peer-to-peer marketplace for financial intelligence. Analysts, researchers, and whale-level investors will be able to sell encrypted insights directly to each other, denominated in QDs, with no intermediary, no platform fee beyond the ZK transaction cost, and no record of who paid whom.',
       'Verifiable Provenance at Scale: Studio Provenance on mainnet allows manufacturers, artists, and institutions to anchor physical-world ownership records to the Aztec state permanently. A QD-denominated fee mints an immutable, cryptographically verifiable passport for any asset — from luxury goods to medical devices to art.',
-      'Protocol Governance: On mainnet, every significant parameter change to the Whale Network protocol (alert thresholds, new asset integrations, fee structures) goes through ZK-based on-chain governance. QD holders vote. QDs locked in proposals cannot be double-voted. The protocol evolves only through demonstrated economic consensus.',
+      'Protocol Governance: On mainnet, every significant parameter change to the Humanity Ledger protocol (alert thresholds, new asset integrations, fee structures) goes through ZK-based on-chain governance. QD holders vote. QDs locked in proposals cannot be double-voted. The protocol evolves only through demonstrated economic consensus.',
     ],
   },
   {
@@ -231,10 +231,10 @@ const SECTIONS: Section[] = [
     tag: 'Roadmap',
     paragraphs: [
       'Phase 1 — Testnet Validation (Current): All four QD use cases operational on Aztec V5 testnet. Security audit of Noir circuits in preparation. Barretenberg WASM proving performance benchmarking underway. Community participation through airdrops building initial network effects.',
-      'Phase 2 — ZK Audit and Pre-Mainnet: Independent Tier-1 ZK security audit of the QD token circuit and all Whale Network Noir contracts. All findings published publicly in full. No mainnet deployment before 100% audit completion and resolution of all critical findings.',
+      'Phase 2 — ZK Audit and Pre-Mainnet: Independent Tier-1 ZK security audit of the QD token circuit and all Humanity Ledger Noir contracts. All findings published publicly in full. No mainnet deployment before 100% audit completion and resolution of all critical findings.',
       'Phase 3 — Mainnet Launch: Deployment of the canonical QD genesis state on Aztec mainnet. Initial distribution via the Proof of Contribution mechanism begins. Studio Provenance mainnet records activated. Whale Chat P2P payments operational with real economic value.',
       'Phase 4 — Ecosystem Expansion: Integration with external Aztec-native applications and DeFi protocols. Cross-chain capital bridges (Ethereum ↔ Aztec) for shielding/unshielding. QD-denominated fee markets for new terminal data sources. Full on-chain governance activation for protocol parameter changes.',
-      'Phase 5 — Autonomous Protocol: Network reaches sufficient decentralization that no single participant, including the Whale Network team, can alter the protocol unilaterally. The emission schedule completes. The network operates on pure fee economics. QDs exist as a sovereign, immutable unit of account — exactly as designed from genesis.',
+      'Phase 5 — Autonomous Protocol: Network reaches sufficient decentralization that no single participant, including the Humanity Ledger team, can alter the protocol unilaterally. The emission schedule completes. The network operates on pure fee economics. QDs exist as a sovereign, immutable unit of account — exactly as designed from genesis.',
     ],
   },
 ];

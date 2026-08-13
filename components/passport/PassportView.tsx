@@ -642,7 +642,7 @@ export function PassportView({ passport }: { passport: ProductPassportPublic }) 
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-4 ${theme.accentBg}`}>
                     <Globe size={20} className={theme.iconColor} />
                   </div>
-                  <h3 className={`text-lg font-black tracking-tight mb-2 ${theme.textMain}`}>Whale Network Registry</h3>
+                  <h3 className={`text-lg font-black tracking-tight mb-2 ${theme.textMain}`}>Humanity Ledger Registry</h3>
                   <p className={`text-sm leading-relaxed mb-4 opacity-90 ${theme.textMain}`}>
                     You are currently viewing an isolated, public-facing record. The Global Registry is a private environment restricted to verified manufacturers and auditors.
                   </p>

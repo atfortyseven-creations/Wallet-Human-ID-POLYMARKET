@@ -9,7 +9,7 @@
 import { verifyTypedData } from 'viem';
 
 export const WHALE_NETWORK_DOMAIN = {
-  name: 'Whale Network Fortress',
+  name: 'Humanity Ledger Fortress',
   version: '1.0.0',
   chainId: 1, // Enforced Mainnet
   // Verifying contract would go here if this was an on-chain verification

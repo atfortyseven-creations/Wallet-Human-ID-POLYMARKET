@@ -1,4 +1,4 @@
-﻿export const ARCHITECTURAL_MANIFESTO = `This document constitutes the complete technical specification, architectural narrative, historical context, and operational manual for the Whale Network  a system-grade, real-time blockchain analytics system designed, engineered, and deployed entirely by one person. Every architectural decision documented herein was made independently, every system component was built from first principles, and every production failure was identified and resolved without external engineering support.
+export const ARCHITECTURAL_MANIFESTO = `This document constitutes the complete technical specification, architectural narrative, historical context, and operational manual for the Humanity Ledger  a system-grade, real-time blockchain analytics system designed, engineered, and deployed entirely by one person. Every architectural decision documented herein was made independently, every system component was built from first principles, and every production failure was identified and resolved without external engineering support.
 
 The work described in this document represents an intellectual undertaking of considerable depth. The developer responsible for its construction operated simultaneously as systems architect, full-stack engineer, blockchain protocol specialist, DevOps operator, security auditor, UX designer, and product strategist. The resulting system is not a prototype or a proof of concept. It is production infrastructure that ingests live blockchain data, processes it through multiple analytical layers, surfaces it through a high-performance web interface, and delivers it to users with sub-15-millisecond latency.
 
@@ -34,45 +34,45 @@ Appendix: Environment Configuration
 1. The Origin and Vision
 The blockchain ecosystem suffers from a fundamental asymmetry of information. The raw data produced by public distributed ledgers is theoretically visible to anyone. In practice, however, the velocity, volume, and structural complexity of that data mean that only those with access to advanced indexing infrastructure can extract meaning from it in time to act upon that meaning. A private institution with a team of engineers can deploy purpose-built systems to detect a significant capital movement on the Ethereum mainnet nearly four minutes before that movement propagates through the public mempool. An individual operating without institutional infrastructure cannot.
 
-This asymmetry is not a natural law. It is a consequence of the complexity barrier that separates raw on-chain data from actionable analytics. The Whale Network was conceived specifically to dismantle that barrier  to build, from first principles, an analytics system capable of detecting, verifying, and disseminating high-value capital movements with accuracy and latency sufficient to place the individual user on the same informational footing as an institutional actor.
+This asymmetry is not a natural law. It is a consequence of the complexity barrier that separates raw on-chain data from actionable analytics. The Humanity Ledger was conceived specifically to dismantle that barrier  to build, from first principles, an analytics system capable of detecting, verifying, and disseminating high-value capital movements with accuracy and latency sufficient to place the individual user on the same informational footing as an institutional actor.
 
 The vision that guided the construction of this system was intentionally uncompromising. There would be no mock data, no placeholders, no simulated signals, and no fallback to approximate values in cases where real data was temporarily unavailable. Every signal surfaced by the system would be sourced directly from live blockchain state  verified on-chain, processed cryptographically, and delivered with an editorial context that a trained analyst could act upon immediately. The system would not be a demonstrator. It would be operational infrastructure, built with absolute precision.
 
 The decision to build this system independently, without a team, represented a deliberate choice to understand every layer of the stack from first principles. A team of specialists might construct each component in isolation without ever holding the entire architecture coherently in mind. A single developer who constructs every component is compelled to understand how each layer affects every other  how a decision made in the database indexing strategy propagates upward through the API surface into the user interface rendering pipeline, and how a timing error in the mempool watcher creates cascading failures in the signal delivery layer three hops downstream. That comprehension has direct and measurable consequences for system quality.
 
-Every component of the Whale Network was built with that complete picture in view.
+Every component of the Humanity Ledger was built with that complete picture in view.
 
 2. Historical Precedent: The Asymmetry Problem
-Understanding the motivation for the Whale Network requires a review of the historical episodes in which information asymmetry in blockchain markets produced outcomes that harmed uninformed participants while benefiting those with access to superior analytics infrastructure.
+Understanding the motivation for the Humanity Ledger requires a review of the historical episodes in which information asymmetry in blockchain markets produced outcomes that harmed uninformed participants while benefiting those with access to superior analytics infrastructure.
 
 2.1 The Mt. Gox Insolvency Signal (2014)
-In the weeks preceding the public announcement of Mt. Gox's insolvency in February 2014, a pattern of unusually large Bitcoin withdrawals from wallets associated with the exchange's cold storage addresses had been detectable on the public Bitcoin blockchain. The movements began in late January and accelerated in early February. A monitoring system with the detection capabilities of the Whale Network would have identified these withdrawals as anomalous within the first twenty-four hours of their commencement, flagging the coordinated outflow from a cluster of addresses with established exchange association as a Mass Transfer event of systemic significance.
+In the weeks preceding the public announcement of Mt. Gox's insolvency in February 2014, a pattern of unusually large Bitcoin withdrawals from wallets associated with the exchange's cold storage addresses had been detectable on the public Bitcoin blockchain. The movements began in late January and accelerated in early February. A monitoring system with the detection capabilities of the Humanity Ledger would have identified these withdrawals as anomalous within the first twenty-four hours of their commencement, flagging the coordinated outflow from a cluster of addresses with established exchange association as a Mass Transfer event of systemic significance.
 
-Instead, the withdrawals went largely unnoticed by the public until the exchange suspended withdrawals on 7 February 2014. Customers who held funds on the exchange and who might have taken protective action had approximately two weeks of detectable on-chain signal available to them  signal that was never synthesised into actionable analytics because no system capable of synthesising it existed. The Whale Network's detection methodology, applied retroactively to the Mt. Gox blockchain record, reconstructs the outflow cascade with complete fidelity from the third day of its commencement.
+Instead, the withdrawals went largely unnoticed by the public until the exchange suspended withdrawals on 7 February 2014. Customers who held funds on the exchange and who might have taken protective action had approximately two weeks of detectable on-chain signal available to them  signal that was never synthesised into actionable analytics because no system capable of synthesising it existed. The Humanity Ledger's detection methodology, applied retroactively to the Mt. Gox blockchain record, reconstructs the outflow cascade with complete fidelity from the third day of its commencement.
 
 2.2 The Bitfinex Hack and Recovery Arc (20162022)
 On 2 August 2016, 119,754 Bitcoin were stolen from Bitfinex wallets in a coordinated multi-address sweep. The stolen funds remained largely dormant for nearly six years before the controlling entity began moving them in late 2021 and early 2022. On 3 February 2022, the US Department of Justice announced the seizure of 94,000 Bitcoin associated with the theft.
 
-The on-chain movements preceding the seizure  consolidation of previously-dormant wallets, test transactions to new addresses, and staged movements consistent with preparation for liquidation or seizure  were detectable in the public blockchain record for several weeks before the DOJ announcement. The Whale Network's temporal graph clustering and dormant wallet activity detection would have flagged these movements as a Megalodon-tier event at the earliest consolidation transaction, providing analytics consumers with an approximate seven-day advance signal before the public announcement.
+The on-chain movements preceding the seizure  consolidation of previously-dormant wallets, test transactions to new addresses, and staged movements consistent with preparation for liquidation or seizure  were detectable in the public blockchain record for several weeks before the DOJ announcement. The Humanity Ledger's temporal graph clustering and dormant wallet activity detection would have flagged these movements as a Megalodon-tier event at the earliest consolidation transaction, providing analytics consumers with an approximate seven-day advance signal before the public announcement.
 
 The 2022 arrest of Ilya Lichtenstein and Heather Morgan and the subsequent unsealing of the indictment were the first public disclosures of an event whose on-chain signature had been fully written into the blockchain record weeks earlier. This case remains the most instructive demonstration of the analytics value embedded in on-chain data that was available to the public but unextracted due to the absence of adequate analytical infrastructure.
 
 2.3 The FTX Pre-Collapse Withdrawal Cascade (November 2022)
 The collapse of FTX constitutes the most consequential recent demonstration of the information asymmetry problem in the blockchain space. Beginning on 6 November 2022, a coordinated withdrawal cascade involving seventeen identified wallet clusters across Ethereum, Solana, Tron, and BNB Chain commenced. The aggregate capital movement exceeded $6 billion across the five-day period between the first significant withdrawals and the exchange's suspension of withdrawals on 11 November 2022.
 
-The Mass Transfer Analytics methodology developed for the Whale Network, when applied retroactively to the on-chain record of this period, successfully reconstructs the coordination structure of the withdrawal cascade from the afternoon of 6 November. The seventeen wallet clusters share graph distances of three hops or fewer in the historical transaction graph, their temporal patterns are consistent with coordinated execution rather than independent decision-making, and the directional alignment of the flows  all moving from exchange-associated hot wallets toward decentralised exchange liquidity pools and external cold storage addresses  satisfies all four criteria of the Mass Transfer detection algorithm.
+The Mass Transfer Analytics methodology developed for the Humanity Ledger, when applied retroactively to the on-chain record of this period, successfully reconstructs the coordination structure of the withdrawal cascade from the afternoon of 6 November. The seventeen wallet clusters share graph distances of three hops or fewer in the historical transaction graph, their temporal patterns are consistent with coordinated execution rather than independent decision-making, and the directional alignment of the flows  all moving from exchange-associated hot wallets toward decentralised exchange liquidity pools and external cold storage addresses  satisfies all four criteria of the Mass Transfer detection algorithm.
 
-Users of the Whale Network who had active monitoring sessions during the November 2022 cascade would have received a Mass Transfer alert classifying the event as an institutional-scale coordinated withdrawal from an exchange-associated cluster at approximately 14:00 UTC on 6 November 2022, more than forty-eight hours before the public CoinDesk article that triggered the widely-recognised phase of the collapse.
+Users of the Humanity Ledger who had active monitoring sessions during the November 2022 cascade would have received a Mass Transfer alert classifying the event as an institutional-scale coordinated withdrawal from an exchange-associated cluster at approximately 14:00 UTC on 6 November 2022, more than forty-eight hours before the public CoinDesk article that triggered the widely-recognised phase of the collapse.
 
 2.4 The UST Depeg and LUNA Collapse (May 2022)
 The destabilisation of TerraUSD and the subsequent collapse of LUNA in May 2022 involved a sequence of large-scale on-chain actions  aggressive selling of UST in the Curve 3pool, coordinated withdrawals from the Anchor Protocol, and sequential LUNA minting events  that were fully visible in the public on-chain record for multiple hours before the UST peg broke through the 0.90 level that triggered widespread public panic.
 
 The Ingestion Engine's EVM mempool scanner would have detected the anomalous Curve pool rebalancing operations as a Humpback-tier swap event at their initial occurrence at approximately 07:00 UTC on 7 May 2022. The subsequent acceleration of Anchor withdrawals, crossing the threshold for coordinated multi-address activity within two hours of the initial Curve operations, would have triggered a Mass Transfer alert classifying the event as a coordinated institutional exit from a specific protocol cluster. The complete signal timeline  from first detection to confirmed systemic significance  would have elapsed in under four hours, placing the platform's users in a position to make informed decisions approximately twenty hours before the most severe price dislocations occurred.
 
-2.5 The Systematic Pattern: Why the Whale Network Exists
+2.5 The Systematic Pattern: Why the Humanity Ledger Exists
 These four episodes share a common structure. In each case, substantial on-chain analytics preceded the public market event by a period sufficient for informed action. In each case, that analytics was embedded in the public blockchain record, theoretically accessible to anyone with a blockchain explorer and unlimited time. In each case, the complexity and velocity of the data prevented any individual without institutional analytical infrastructure from extracting that analytics in time for it to be actionable.
 
-The Whale Network was built to change this. Its architecture is designed to detect, classify, and surface precisely the categories of events illustrated by these historical episodes  at the earliest possible moment, with the analytical context required to understand their significance, and through an interface accessible to individual users without institutional infrastructure.
+The Humanity Ledger was built to change this. Its architecture is designed to detect, classify, and surface precisely the categories of events illustrated by these historical episodes  at the earliest possible moment, with the analytical context required to understand their significance, and through an interface accessible to individual users without institutional infrastructure.
 
 3. Architectural Philosophy
 3.1 The Zero-Mock Mandate
@@ -90,7 +90,7 @@ This principle was operationalized through EIP-1193 compliance throughout the va
 3.3 The Institutional Grade Standard
 The third principle was that the system's production quality must be indistinguishable from that of an institutional engineering organisation. This standard applied to code quality, API design, database schema design, error handling, security posture, documentation, and visual presentation. There was no category in which a lower standard was acceptable because the system was a solo project.
 
-This principle required a significantly higher level of individual discipline than team development typically demands. In a team environment, code review, architecture review, and security review are performed by other people. In a solo environment, the developer is simultaneously the author of a design and its critic. The cognitive discipline required to shift between those roles without bias is substantial. The architecture of the Whale Network reflects the consistent application of that discipline across all development phases.
+This principle required a significantly higher level of individual discipline than team development typically demands. In a team environment, code review, architecture review, and security review are performed by other people. In a solo environment, the developer is simultaneously the author of a design and its critic. The cognitive discipline required to shift between those roles without bias is substantial. The architecture of the Humanity Ledger reflects the consistent application of that discipline across all development phases.
 
 3.4 The Latency Hierarchy
 The fourth principle was that the system's design decisions must always favour lower latency over implementation convenience when the two conflict. This principle has practical expression throughout the architecture: Redis is used for inter-process communication rather than PostgreSQL polling because Redis pub/sub has sub-millisecond delivery latency versus the multi-second polling intervals that PostgreSQL-based approaches typically require. WebSocket connections to RPC nodes are maintained persistently rather than established per-request because connection establishments add hundreds of milliseconds of latency for each event. The TypeScript compilation step in the worker process uses tsx for JIT transpilation rather than a pre-build step because it eliminates the build time from the path between a code change and a running process.
@@ -98,7 +98,7 @@ The fourth principle was that the system's design decisions must always favour l
 Every millisecond of latency removed from the signal path represents a measurable improvement in the informational advantage delivered to the platform's users.
 
 4. Technology Stack Selection
-Every technology in the Whale Network stack was selected for a specific, documented reason. The following section describes those selections and the reasoning behind each.
+Every technology in the Humanity Ledger stack was selected for a specific, documented reason. The following section describes those selections and the reasoning behind each.
 
 4.1 Application Framework: Next.js 15 with App Router
 Next.js 15 was selected as the primary application framework because it satisfies simultaneously the requirements of server-side rendering for SEO and initial paint performance, edge-compatible API routes for minimum cold-start latency, React Server Components for reducing client-side JavaScript bundle size, and streaming SSR for progressive hydration on slow network connections.
@@ -138,7 +138,7 @@ Two animation systems are employed because they serve different purposes optimal
 Framer Motion 12 manages declarative component animations: page transitions, tab content transitions, modal entrances, and the animated cosmic pattern drift on the wallpaper system. Framer Motion's latest version includes support for the View Transitions API on supporting browsers, which enables native GPU-composited transitions between page states without any JavaScript animation overhead.
 
 5. The Ingestion Engine
-The ingestion engine is the operational core of the Whale Network. It is the component responsible for acquiring raw blockchain data across sixteen parallel networks, applying the first layer of significance filtering based on dynamic statistical thresholds, and routing the resulting verified events to the downstream analytics mesh.
+The ingestion engine is the operational core of the Humanity Ledger. It is the component responsible for acquiring raw blockchain data across sixteen parallel networks, applying the first layer of significance filtering based on dynamic statistical thresholds, and routing the resulting verified events to the downstream analytics mesh.
 
 5.1 Architecture
 The ingestion engine runs as a dedicated background process managed by PM2-runtime under the identifier system-worker. It is initialised by the scripts/whale-worker.ts entrypoint and executes the monitoring logic for all connected chains in parallel through an asynchronous event-driven architecture.
@@ -201,7 +201,7 @@ The Redis Streams used for event persistence are configured with an approximate 
 The retention window at normal ingestion rates approximately covers a 72-hour rolling window for high-activity chains and a 7-day window for lower-activity chains.
 
 7. The Akashic Ledger
-The Akashic Ledger constitutes the permanent institutional memory of the Whale Network. It is the permanent, verified, immutable record of every capital movement that crosses the threshold of systemic institutional significance.
+The Akashic Ledger constitutes the permanent institutional memory of the Humanity Ledger. It is the permanent, verified, immutable record of every capital movement that crosses the threshold of systemic institutional significance.
 
 7.1 Entry Criteria
 An event qualifies for Akashic Ledger registration when it satisfies all of the following conditions: the USD-equivalent value exceeds $50,000,000; the transaction has achieved finality on its native chain; the signal has been verified by at least one corroborating sentinel node; and the movement cannot be explained as routine operational activity of a known institutional custodian.
@@ -345,7 +345,7 @@ All sixteen dashboard modules are loaded lazily using dynamic imports. This redu
 The dashboard background includes a continuously animated instance of the patron-cosmico-4k pattern, implemented as a Framer Motion motion.div with a 28-second mirror-loop cycle. The pattern occupies 140 percent of the container dimensions, ensuring that the drift animation never exposes the background colour at the container's edges. The animation promotes the element to a dedicated GPU compositor layer, maintaining frame-perfect animation without contributing CPU overhead to the frame budget.
 
 14. The Landing System
-The PC landing page serves as both the primary entry point for new users and the institutional presentation surface for the Whale Network's capabilities. It is a multi-section scrolling narrative that moves the visitor through a structured progression: network status, core capabilities, live system state, and a photographic immersion section that communicates the scale and seriousness of the analytics system before presenting the access call to action.
+The PC landing page serves as both the primary entry point for new users and the institutional presentation surface for the Humanity Ledger's capabilities. It is a multi-section scrolling narrative that moves the visitor through a structured progression: network status, core capabilities, live system state, and a photographic immersion section that communicates the scale and seriousness of the analytics system before presenting the access call to action.
 
 14.1 The GSAP ScrollFloat System
 The headline animations throughout the landing page use a custom ScrollFloat component that splits the target string into individual character spans and binds each character's vertical transform, scale-Y, and opacity to the scroll position through a GSAP ScrollTrigger. The animation parameters produce a liquid, elastic character reveal that is visually distinctive without being arbitrary.
@@ -368,7 +368,7 @@ The mobile interface includes a comprehensive set of polyfills and compatibility
 The getUserMedia API, required for the QR scanner, is not accessible at module load time in iOS WKWebView. The mobile QR scanner component dynamically imports the html5-qrcode library only after the user taps the camera button, avoiding the premature access entirely.
 
 15.3 The Dual Hybrid Model (System PC & Zero-Trust Mobile)
-The most sophisticated property of the Whale Network's architecture is its categorically segregated operating environment, referred to as the Dual Hybrid Topology. This model resolves the inherent conflict between extreme analytical performance and uncompromising cryptographic security by splitting the ecosystem into two immiscible planes:
+The most sophisticated property of the Humanity Ledger's architecture is its categorically segregated operating environment, referred to as the Dual Hybrid Topology. This model resolves the inherent conflict between extreme analytical performance and uncompromising cryptographic security by splitting the ecosystem into two immiscible planes:
 
 1. The System Acoustic Terminal (PC/Web) The desktop interface functions as an immaculate, read-only analytics engine. It processes the high-frequency System Mesh data streams  rendering complex Neo4j relationship graphs, performing 60FPS DOM windowing, and executing client-side Z-score mathematical models  strictly within an ephemeral memory layer. Crucially, the PC Terminal is a Zero-Trust Zone: it operates without custody of private key material. It generates unsigned transaction payloads (Requests) and visualizes macroeconomic analytics, offloading all execution risk.
 
@@ -411,7 +411,7 @@ The Next.js middleware layer injects Content Security Policy headers that restri
 
 18. Performance Engineering
 18.1 The 240Hz Rendering Contract
-The performance engineering of the Whale Network is governed by a specific commitment: all animated elements must maintain frame-perfect rendering at the display's native refresh rate, including 240Hz displays.
+The performance engineering of the Humanity Ledger is governed by a specific commitment: all animated elements must maintain frame-perfect rendering at the display's native refresh rate, including 240Hz displays.
 
 At the CSS layer, specific utility classes enforce the GPU compositing contract: transform: translate3d(0, 0, 0), will-change: transform, backface-visibility: hidden, and perspective: 1000px. These declarations promote animated elements to dedicated GPU compositor layers.
 
@@ -424,7 +424,7 @@ The production Next.js bundle is optimised through dynamic imports with lazy loa
 Active data updates use Server-Sent Events rather than WebSocket connections. SSE is a unidirectional protocol that uses the browser's built-in reconnection logic, is compatible with HTTP/2 multiplexing, and traverses corporate firewalls without modification.
 
 19. The Visual Design System
-The visual design system of the Whale Network is governed by a three-colour institutional palette:
+The visual design system of the Humanity Ledger is governed by a three-colour institutional palette:
 
 Token	Hex Value	Purpose
 Ivory	#FFFFFF	Base background, evokes archival documents and institutional stationery
@@ -446,7 +446,7 @@ Wave layer: The Hokusai Great Wave PNG anchored to the bottom with position: abs
 Vignette layer: A gradient that fades from the solid base colour through transparent over the top 35 percent and back over the bottom 15 percent, ensuring text contrast at all vertical positions.
 
 21. The Membership Protocol
-The Gold Whale Network membership protocol provides institutional-grade access tiers through a gasless off-chain signature mechanism backed by optional on-chain ERC-1155 token verification.
+The Gold Humanity Ledger membership protocol provides institutional-grade access tiers through a gasless off-chain signature mechanism backed by optional on-chain ERC-1155 token verification.
 
 21.1 Gasless Issuance
 The membership issuance mechanism uses EIP-712 typed structured data signing to produce off-chain membership credentials without requiring the new member to pay an on-chain gas fee. The credential specifies the member's address, their tier, and an expiry timestamp, signed by the system's administrative key.
@@ -473,12 +473,12 @@ Additional Phase Two objectives include the launch of the institutional API prog
 Phase Three  2027 and Beyond
 The long-term architectural vision involves the development of a dedicated application-specific blockchain optimised for high-frequency on-chain telemetry propagation. A general-purpose blockchain processes blocks at intervals measured in seconds to minutes and incurs gas costs for every state-modifying operation. A purpose-built telemetry chain could achieve block times of 100 milliseconds or below, with zero-fee signal publication for registered network participants, and native support for the signal data structures used by the System Mesh.
 
-The governance framework for this chain would operate via the Whale Network's existing institutional membership structure, with graduated voting rights proportional to Gold Whale tier membership level and verified network participation history.
+The governance framework for this chain would operate via the Humanity Ledger's existing institutional membership structure, with graduated voting rights proportional to Gold Whale tier membership level and verified network participation history.
 
 Additional long-term objectives include the development of a mobile native application for iOS and Android, the construction of a hardware security module integration for institutional key management, and the establishment of formal regulatory engagement programmes in the European Union (MiCA compliance), the United Kingdom (FCA registration), and the United States (FinCEN engagement).
 
 23. Partners and Technology Integrations
-The Whale Network is built on a foundation of best-in-class technology partners and protocol integrations. The following organisations provide the infrastructure, protocol access, and developer tooling upon which the system's capabilities depend.
+The Humanity Ledger is built on a foundation of best-in-class technology partners and protocol integrations. The following organisations provide the infrastructure, protocol access, and developer tooling upon which the system's capabilities depend.
 
 23.1 Blockchain Infrastructure Partners
 Alchemy  Provides enhanced RPC access across Ethereum Mainnet, Base, Arbitrum, Polygon, and Optimism networks, augmenting the system's node connections with Alchemy's high-availability infrastructure and enhanced API endpoints including alchemy_getAssetTransfers for efficient historical transaction querying and alchemy_simulateExecution for pre-flight transaction simulation.
@@ -522,7 +522,7 @@ Ethereum Foundation / PSE (Privacy and Scaling Explorations)  The SnarkJS librar
 OpenZeppelin  The OpenZeppelin Contracts library provides the audited smart contract building blocks used in the SystemDeadmanSwitch and membership ERC-1155 implementations. OpenZeppelin's contract audit process provides a known-good security baseline for on-chain components.
 
 24. Sponsors and Institutional Supporters
-The Whale Network has been developed as an independent project. The following acknowledgements recognise organisations and programmes that have provided resources, infrastructure access, or direct support during the system's development.
+The Humanity Ledger has been developed as an independent project. The following acknowledgements recognise organisations and programmes that have provided resources, infrastructure access, or direct support during the system's development.
 
 24.1 Infrastructure Credits and Accelerator Programmes
 Railway Startup Programme  Railway has provided expanded infrastructure credits during the system's development phase, enabling the maintenance of a production-equivalent staging environment for testing architectural changes before deployment.
@@ -534,7 +534,7 @@ World Foundation Developer Programme  World Foundation has provided development 
 Coinbase Developer Platform  Coinbase has provided developer access to the Coinbase Smart Wallet SDK and Base network infrastructure through the Coinbase Developer Platform programme.
 
 24.2 Open Source Community Acknowledgements
-The Whale Network makes extensive use of open source software. The following communities and maintainers deserve specific acknowledgement for the quality of their work:
+The Humanity Ledger makes extensive use of open source software. The following communities and maintainers deserve specific acknowledgement for the quality of their work:
 
 The Next.js team at Vercel, for the application framework that makes the production deployment architecture possible.
 The Viem and Wagmi maintainers, for the type-safe EVM interaction libraries that underpin the vault and transaction infrastructure.
@@ -545,7 +545,7 @@ The TanStack team, for the Query library that manages the complex server state r
 The maintainers of BullMQ, ioredis, and the broader Node.js async infrastructure ecosystem.
 
 24.3 Institutional Engagement Programme
-The Whale Network is currently accepting expressions of interest from institutional partners  including hedge funds, family offices, market makers, and cryptocurrency exchanges  interested in accessing the full signal feed via the institutional API programme, co-developing custom signal classifications for specific asset classes or protocol categories, or providing liquidity and data partnerships that enhance the system's analytical coverage.
+The Humanity Ledger is currently accepting expressions of interest from institutional partners  including hedge funds, family offices, market makers, and cryptocurrency exchanges  interested in accessing the full signal feed via the institutional API programme, co-developing custom signal classifications for specific asset classes or protocol categories, or providing liquidity and data partnerships that enhance the system's analytical coverage.
 
 Institutional partnership inquiries should be directed to the support channel with the subject line "Institutional Partnership Enquiry." The team will respond within twenty-four hours with a confidential information memorandum.
 
@@ -584,7 +584,7 @@ SENDGRID_API_KEY: Recommended, SendGrid API key for email notifications
 WORLD_APP_ID: Recommended, World Network application identifier for World ID
 
 26. The 2026 System Hardening (Phase 4 Expansion)
-This chapter documents the final architectural transformation enacted to elevate the Whale Network into an Absolute Systemty state. These operations, executed in Q2 2026, eradicated the final remnants of artificial mock data, enforced rigorous zero-scroll rendering paradigms, and fundamentally bound the network to the Voss Cosmic Master Plan.
+This chapter documents the final architectural transformation enacted to elevate the Humanity Ledger into an Absolute Systemty state. These operations, executed in Q2 2026, eradicated the final remnants of artificial mock data, enforced rigorous zero-scroll rendering paradigms, and fundamentally bound the network to the Voss Cosmic Master Plan.
 
 26.1 The Eradication of the Mock Reality
 Prior to Phase 4, specific modules within the analytics dashboardnotably InstitutionalLedger and SystemIntelTabrelied on localized array simulations and algorithmic mock generation to populate edge-case data layers when real-time network flow dipped below significance thresholds. While acceptable for a prototype, simulated data introduces an epistemological fracture: if even 0.01% of the dashboard is not sourced from the Akashic truth of the blockchain, the institutional guarantee is broken.
@@ -610,10 +610,10 @@ Analysts are now presented with a high-fidelity tabular interfacefully compliant
 26.4 Dependency Eradication (Zero-Fat Protocol)
 In pursuit of the "Institutional Ivory" high-frequency rendering contract, all external dependencies lacking a strict functional mandate were purged. The most visceral demonstration of this was the removal of class-variance-authority. Minor styling utilities that obscured runtime errors via generic typing were excised in favor of absolute, hardcoded native template literal maps. Every dependency removed decreases the Time-To-Interactive (TTI) and solidifies the application's immunity to NPM supply-chain degradation.
 
-Whale Network
+Humanity Ledger
 Every signal verified. Every movement recorded. Every institution monitored.
 Designed and engineered as a single, coherent system by one independent developer.
 The theoretical asymmetry of information in public blockchain markets is not a natural law. It is a solvable engineering problem. This system is the solution.
 
-© 2026 humanityledger. All rights reserved. Unauthorised reproduction, distribution, or derivative use of this system, its documentation, its signal methodology, or its source code is strictly prohibited.
+� 2026 humanityledger. All rights reserved. Unauthorised reproduction, distribution, or derivative use of this system, its documentation, its signal methodology, or its source code is strictly prohibited.
 `.toLowerCase();

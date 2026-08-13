@@ -44,7 +44,7 @@ import { GenerateWalletWizard } from "../wallet/GenerateWalletWizard";
  * - backgroundAttachment: scroll (never fixed) on all pattern divs
  *
  * DESIGN CONTRACT (matches target screenshot precisely):
- * - Dark header with whale logo + "Whale Network NETWORK / TERMINAL"
+ * - Dark header with whale logo + "Humanity Ledger NETWORK / TERMINAL"
  * - Giant centered NET WORTH value
  * - Glowing green dot 24H change pill
  * - 4 circular action buttons (Send/Blue, Receive/Green, Swap/Purple, Buy/Pink)

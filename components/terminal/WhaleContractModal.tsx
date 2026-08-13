@@ -47,7 +47,7 @@ export function SystemContractModal() {
             </div>
             <div>
               <h1 className="text-xl font-black text-[#050505] tracking-tight uppercase mb-1">
-                Whale Network Agreement
+                Humanity Ledger Agreement
               </h1>
               <p className="text-[10px] font-bold text-[#888888] uppercase tracking-widest leading-relaxed">
                 Terminal connection established. Network verification required.
@@ -58,7 +58,7 @@ export function SystemContractModal() {
           {/* Body */}
           <div className="p-10 flex-col gap-6 flex">
             <p className="text-xs font-bold text-[#444444] leading-relaxed">
-              By accessing the Whale Network, you operate under an elevated state of market analytics. 
+              By accessing the Humanity Ledger, you operate under an elevated state of market analytics. 
               The infrastructure processes real-time on-chain data, deep mempool mechanics, and accelerated market analytics. 
               You must fully understand the operational guidelines preserving data integrity and privacy.
             </p>

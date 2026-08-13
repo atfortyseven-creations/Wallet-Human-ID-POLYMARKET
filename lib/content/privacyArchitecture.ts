@@ -82,7 +82,7 @@ export const PRIVACY_ARCHITECTURE_SECTIONS: PrivacyArchitectureSection[] = [
     id: 'whale-chat-encryption',
     title: 'Whale Chat — Peer to Peer Encrypted Messaging',
     paragraphs: [
-      'Whale Chat enables encrypted, real time communication between Whale Network participants. Messages are routed peer to peer and never stored in plaintext on any server we operate.',
+      'Whale Chat enables encrypted, real time communication between Humanity Ledger participants. Messages are routed peer to peer and never stored in plaintext on any server we operate.',
       'Text messages: Encrypted end to end using the recipient\'s wallet-derived public key. Our backend acts only as a signaling relay — it sees encrypted ciphertext, not message content.',
       'Audio and Video Calls: Implemented via WebRTC with PeerJS for NAT traversal. The media stream (audio/video) travels directly between browsers using DTLS-SRTP encryption — our servers never touch the call audio or video. Only the signaling data (call initiation, answer, hang-up events) passes through our backend momentarily during connection setup.',
       'Paid Signals: Users can send encrypted signal attachments that require a QD payment to decrypt. The payment triggers a private Aztec state transition; upon confirmation, the decryption key is released locally on the recipient\'s device. Our servers never hold the decryption key.',

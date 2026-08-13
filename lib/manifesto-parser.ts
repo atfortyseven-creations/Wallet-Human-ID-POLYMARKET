@@ -1,4 +1,4 @@
-﻿import fs from 'fs';
+import fs from 'fs';
 import path from 'path';
 
 export interface ManifestoSection {
@@ -16,7 +16,7 @@ const FALLBACK_SECTIONS: ManifestoSection[] = [
     id: 'what-is-this-system',
     title: 'what is this system',
     body: [
-      'Whale Network network is a system, sovereign-grade analytics platform engineered to detect, classify, and broadcast anomalous on-chain capital movements across all major evm-compatible networks in real time.',
+      'Humanity Ledger network is a system, sovereign-grade analytics platform engineered to detect, classify, and broadcast anomalous on-chain capital movements across all major evm-compatible networks in real time.',
       'it operates as a zero-latency telemetry layer positioned between raw blockchain mempool data and the decision-making analytics layer of professional market participants.',
       '[SUBTITLE]core design principle',
       'every data point surfaced by this system is derived directly from cryptographically verified on-chain events. no inference, no interpolation, no editorial distortion.',

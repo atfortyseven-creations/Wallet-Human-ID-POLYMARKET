@@ -2,7 +2,7 @@ export const DOC_SECTIONS = [
   {
     group: "Overview",
     items: [
-      { slug: "overview", label: "What Whale Network Does" },
+      { slug: "overview", label: "What Humanity Ledger Does" },
       { slug: "why-privacy", label: "Why Privacy Matters" },
     ],
   },
@@ -51,7 +51,7 @@ export const DOC_SECTIONS = [
     group: "Reference",
     items: [
       { slug: "api-reference", label: "API Reference" },
-      { slug: "sdk", label: "SDK (Whale Network JS)" },
+      { slug: "sdk", label: "SDK (Humanity Ledger JS)" },
       { slug: "security-model", label: "Security Model" },
       { slug: "open-source", label: "Open Source" },
     ],

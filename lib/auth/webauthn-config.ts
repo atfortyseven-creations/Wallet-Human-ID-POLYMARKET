@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 
-export const rpName = 'Whale Network Wallet';
+export const rpName = 'Humanity Ledger Wallet';
 
 // Fallback for static contexts (client-side build time)
 export const rpID = process.env.NEXT_PUBLIC_RP_ID || 'localhost';

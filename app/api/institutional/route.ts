@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     // Simulate legendary-quality backend processing for the Sovereign Menu
     switch (action) {
       case 'file_save':
-        return NextResponse.json({ success: true, message: 'Sovereign state successfully encrypted and saved to Whale Network.' });
+        return NextResponse.json({ success: true, message: 'Sovereign state successfully encrypted and saved to Humanity Ledger.' });
       case 'file_export':
         return NextResponse.json({ success: true, message: 'Data grid exported with military-grade zk-SNARK proof.' });
       case 'edit_preferences':

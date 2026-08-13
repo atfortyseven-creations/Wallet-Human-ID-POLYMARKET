@@ -117,7 +117,7 @@ const EDITION_MATRIX = {
 
 export async function GET() {
     return NextResponse.json({
-        product:      'Whale Network',
+        product:      'Humanity Ledger',
         version:      '3.0.0',
         philosophy:   'Cryptographic support. System architecture. Non-custodial always.',
         editions:     EDITION_MATRIX,

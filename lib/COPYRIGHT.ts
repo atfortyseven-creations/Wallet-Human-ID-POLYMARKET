@@ -1,6 +1,6 @@
 /**
  * 
- *   Whale Network NETWORK  SOVEREIGN ON-CHAIN INTELLIGENCE TERMINAL     
+ *   Humanity Ledger NETWORK  SOVEREIGN ON-CHAIN INTELLIGENCE TERMINAL     
  *   © 20242026 humanityledger. All Rights Reserved.               
  *   PROPRIETARY & CONFIDENTIAL  ATTEST SECRET                              
  *   Unauthorized copying, modification, distribution, or deployment of     
@@ -17,7 +17,7 @@
 
 export const COPYRIGHT = {
   owner:       'humanityledger',
-  product:     'Whale Network',
+  product:     'Humanity Ledger',
   description: 'Sovereign On-Chain Analytics Terminal',
   years:       '20242026',
   contact:     'legal@humanidfi.com',
@@ -25,7 +25,7 @@ export const COPYRIGHT = {
   platform:    'https://www.humanidfi.com',
   license:     'Proprietary  All Rights Reserved',
   attestmarks:  [
-    'Whale Network',
+    'Humanity Ledger',
     'WhaleCosystem',
     'System Access Protocol',
     'System Analytics Terminal',

@@ -12,7 +12,7 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: { params: { slug: string } }) {
   const doc = ALL_DOC_SLUGS.find((d) => d.slug === params.slug);
   if (!doc) return { title: "Not Found" };
-  return { title: `${doc.label} - Whale Network Docs` };
+  return { title: `${doc.label} - Humanity Ledger Docs` };
 }
 
 export default function DocPage({ params }: { params: { slug: string } }) {
@@ -30,12 +30,12 @@ export default function DocPage({ params }: { params: { slug: string } }) {
         return (
           <>
             <DocTag>Overview</DocTag>
-            <DocH1>What Whale Network Does</DocH1>
+            <DocH1>What Humanity Ledger Does</DocH1>
             <DocP>
-              Whale Network is a privacy-first ecosystem built on top of Aztec L2. It provides infrastructure for decentralized identity, verifiable asset registration, and encrypted peer-to-peer communication—all running directly in the browser.
+              Humanity Ledger is a privacy-first ecosystem built on top of Aztec L2. It provides infrastructure for decentralized identity, verifiable asset registration, and encrypted peer-to-peer communication—all running directly in the browser.
             </DocP>
             <DocP>
-              At its core, Whale Network utilizes <strong className="font-semibold text-slate-800">Zero-Knowledge Proofs (ZKPs)</strong> to verify actions without revealing the underlying data. Everything happens locally within your device's Private Execution Environment (PXE).
+              At its core, Humanity Ledger utilizes <strong className="font-semibold text-slate-800">Zero-Knowledge Proofs (ZKPs)</strong> to verify actions without revealing the underlying data. Everything happens locally within your device's Private Execution Environment (PXE).
             </DocP>
             
             <DocH2>The Three Pillars</DocH2>
@@ -57,7 +57,7 @@ export default function DocPage({ params }: { params: { slug: string } }) {
             />
 
             <DocCallout title="Key Insight" type="note">
-              Whale Network doesn't just choose to protect your data—it is mathematically incapable of accessing it. Your encryption keys never leave your browser, and only cryptographic proofs are submitted to the network.
+              Humanity Ledger doesn't just choose to protect your data—it is mathematically incapable of accessing it. Your encryption keys never leave your browser, and only cryptographic proofs are submitted to the network.
             </DocCallout>
 
             <DocH2>System Architecture</DocH2>
@@ -80,7 +80,7 @@ export default function DocPage({ params }: { params: { slug: string } }) {
             <DocTag>Getting Started</DocTag>
             <DocH1>Create Aztec Identity</DocH1>
             <DocP>
-              Unlike traditional blockchains where your wallet address is public and all your transactions are traceable, Whale Network uses Aztec's privacy abstraction.
+              Unlike traditional blockchains where your wallet address is public and all your transactions are traceable, Humanity Ledger uses Aztec's privacy abstraction.
             </DocP>
             <DocP>
               Your Aztec Identity is a combination of public nullifiers and private spending keys. When you perform an action, you don't broadcast a signature from your address; you submit a Zero-Knowledge Proof that you own a valid key.
@@ -105,7 +105,7 @@ export default function DocPage({ params }: { params: { slug: string } }) {
             />
 
             <DocCallout title="Warning" type="warning">
-              If you lose access to your private key, your funds and encrypted data cannot be recovered by the Whale Network team. Always back up your seed phrase securely.
+              If you lose access to your private key, your funds and encrypted data cannot be recovered by the Humanity Ledger team. Always back up your seed phrase securely.
             </DocCallout>
           </>
         );
@@ -121,7 +121,7 @@ export default function DocPage({ params }: { params: { slug: string } }) {
             
             <DocH2>Client-Side Proving</DocH2>
             <DocP>
-              Unlike standard ZK Rollups (like zkSync or Starknet) where proofs are generated on centralized servers, Whale Network leverages Aztec's architecture to generate proofs directly on your device.
+              Unlike standard ZK Rollups (like zkSync or Starknet) where proofs are generated on centralized servers, Humanity Ledger leverages Aztec's architecture to generate proofs directly on your device.
             </DocP>
             
             <DocTable
@@ -151,7 +151,7 @@ export default function DocPage({ params }: { params: { slug: string } }) {
             </DocP>
             
             <DocCallout title="Privacy Guarantee" type="key">
-              Because messages are encrypted locally using AES-GCM before being sent over the peer-to-peer network, not even Whale Network nodes can read the contents or metadata of your conversations.
+              Because messages are encrypted locally using AES-GCM before being sent over the peer-to-peer network, not even Humanity Ledger nodes can read the contents or metadata of your conversations.
             </DocCallout>
           </>
         );

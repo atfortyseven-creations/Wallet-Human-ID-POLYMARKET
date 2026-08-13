@@ -153,7 +153,7 @@ export function SystemLanding() {
             </div>
           </div>
           <div className="flex flex-col">
-            <span className="text-[14px] font-black tracking-tighter text-white">Whale Network NET</span>
+            <span className="text-[14px] font-black tracking-tighter text-white">Humanity Ledger NET</span>
             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#00f5ff] flex items-center gap-1.5">
               <span className="w-1 h-1 rounded-full bg-[#00f5ff] animate-pulse" />
               KYC

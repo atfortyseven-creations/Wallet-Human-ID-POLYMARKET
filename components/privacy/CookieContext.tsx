@@ -3,7 +3,7 @@
 /**
  * [PHASE 5 — HARDENED ZERO-CONSENT CONTEXT]
  *
- * Whale Network collects NO analytics and NO marketing cookies.
+ * Humanity Ledger collects NO analytics and NO marketing cookies.
  * The "analytics" and "marketing" consent states are permanently locked to FALSE
  * at the source. This context is preserved for structural compatibility with
  * components that may reference it, but it CANNOT be used to enable trackers.

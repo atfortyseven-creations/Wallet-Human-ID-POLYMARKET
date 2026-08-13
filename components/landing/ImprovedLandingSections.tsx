@@ -196,7 +196,7 @@ export function DownloadCTASection() {
                     className="space-y-8"
                 >
                     <h2 className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter text-[#1F1F1F] uppercase leading-tight">
-                        Descarga <br className="md:hidden" /> Whale Network Wallet <br className="hidden md:block" /> Para Empezar
+                        Descarga <br className="md:hidden" /> Humanity Ledger Wallet <br className="hidden md:block" /> Para Empezar
                     </h2>
                     <p className="text-xl md:text-2xl text-[#1F1F1F]/60 max-w-2xl mx-auto font-light leading-relaxed">
                         Disponible en navegador y pronto en iOS/Android. <br />

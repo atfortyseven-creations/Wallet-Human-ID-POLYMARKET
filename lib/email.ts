@@ -116,9 +116,9 @@ export async function sendVerificationEmail(email: string, code: string): Promis
 export async function sendWelcomeEmail(email: string, name?: string): Promise<void> {
   try {
     const { error } = await resend.emails.send({
-      from: getSender('Whale Network'),
+      from: getSender('Humanity Ledger'),
       to: email,
-      subject: 'WELCOME TO THE Whale Network NETWORK // SENSORS INITIALIZED',
+      subject: 'WELCOME TO THE Humanity Ledger NETWORK // SENSORS INITIALIZED',
       replyTo: 'support@whalealertid.fi',
       html: `
         <!DOCTYPE html>
@@ -151,7 +151,7 @@ export async function sendWelcomeEmail(email: string, name?: string): Promise<vo
                   <tr>
                     <td style="padding: 60px;">
                       <h2 style="font-family: 'Martel', serif; font-size: 24px; font-weight: 900; text-transform: uppercase; margin: 0 0 30px;">
-                        Welcome to <span style="font-style: italic;">Whale Network</span>.
+                        Welcome to <span style="font-style: italic;">Humanity Ledger</span>.
                       </h2>
                       
                       <p style="font-size: 16px; line-height: 1.8; margin-bottom: 30px; font-weight: 500;">
@@ -185,7 +185,7 @@ export async function sendWelcomeEmail(email: string, name?: string): Promise<vo
                   <tr>
                     <td style="padding: 40px 60px; background-color: #1D1A10; color: #F2ECD8; font-family: 'Roboto Mono', monospace;">
                       <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.5; margin-bottom: 10px;">
-                        Whale Network Corporation // All Rights Reserved © 2026
+                        Humanity Ledger Corporation // All Rights Reserved © 2026
                       </div>
                       <div style="font-size: 9px; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.3;">
                         Confidential Transmission // Sovereign Eyes Only

@@ -109,7 +109,7 @@ const MUTED = "rgba(5,5,5,0.50)";
 function buildSystemMessage(address: string): string {
   return [
     '',
-    '  Whale Network',
+    '  Humanity Ledger',
     '  SECURE ACCESS HANDSHAKE',
     '',
     '',
@@ -748,7 +748,7 @@ export function MobileLanding() {
       if (!nonceRes.ok) throw new Error('Failed to fetch cryptographic nonce');
       const { nonce } = await nonceRes.json();
 
-      const message = `Authenticate to Whale Network.\n\nNonce: ${nonce}`;
+      const message = `Authenticate to Humanity Ledger.\n\nNonce: ${nonce}`;
       let signature = '';
 
       // ═══════════════════════════════════════════════════════════════════════
@@ -1442,7 +1442,7 @@ export function MobileLanding() {
         <div className="w-10 h-1 bg-black/10 rounded-full mx-auto mb-4" />
 
         <h2 className="text-[16px] font-black tracking-tight text-black mb-3 text-center">
-          Connect to Whale Network
+          Connect to Humanity Ledger
         </h2>
 
         <div className="flex flex-col gap-2 w-full max-w-sm mx-auto">

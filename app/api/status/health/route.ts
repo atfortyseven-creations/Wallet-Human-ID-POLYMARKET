@@ -16,7 +16,7 @@ interface ServiceResult {
 }
 
 // 
-// AZTEC ZK & WHALE NETWORK - 18 CIRCUIT HEALTH CHECK API
+// AZTEC ZK & Humanity Ledger - 18 CIRCUIT HEALTH CHECK API
 // 
 
 async function probe(name: string, category: string, url: string, timeoutMs = 9000): Promise<ServiceResult> {
@@ -118,12 +118,12 @@ export async function GET() {
     probe('ZK Shielded Pool', 'ZK & Privacy Layer', `${baseUrl}/api/aztec/account`),
     probe('Humanity Identity Registry', 'ZK & Privacy Layer', `${baseUrl}/registry`),
 
-    // Whale Network & Liquidity
-    probe('Whale Terminal Core', 'Whale Network & Markets', `${baseUrl}/terminal`),
-    probe('Mempool Synchronizer', 'Whale Network & Markets', `${baseUrl}/api/network/mempool/recent`),
-    probe('Polymarket Data Graph', 'Whale Network & Markets', `${baseUrl}/predictions`),
-    probe('Institutional Darkpools', 'Whale Network & Markets', `${baseUrl}/gold-registry`),
-    probe('Sovereign Intel Feed', 'Whale Network & Markets', `${baseUrl}/sovereign-intel`),
+    // Humanity Ledger & Liquidity
+    probe('Whale Terminal Core', 'Humanity Ledger & Markets', `${baseUrl}/terminal`),
+    probe('Mempool Synchronizer', 'Humanity Ledger & Markets', `${baseUrl}/api/network/mempool/recent`),
+    probe('Polymarket Data Graph', 'Humanity Ledger & Markets', `${baseUrl}/predictions`),
+    probe('Institutional Darkpools', 'Humanity Ledger & Markets', `${baseUrl}/gold-registry`),
+    probe('Sovereign Intel Feed', 'Humanity Ledger & Markets', `${baseUrl}/sovereign-intel`),
 
     // Sentinel AI & Data Lake
     probe('Sentinel AI Engine', 'Data Lake & Intelligence', `${baseUrl}/api/whale-events`),

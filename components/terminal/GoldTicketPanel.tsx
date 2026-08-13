@@ -573,7 +573,7 @@ export function GoldTicketPanel() {
       // address (from useSystemAccount) can lag behind on mobile after connect.
       // Using wagmiAddress guarantees the API verification matches the actual signer.
       const signerAddress = (wagmiAddress || address) as string;
-      const messageToSign = `Whale Network NETWORK GOLD ACCESS VERIFICATION: ${signerAddress}`;
+      const messageToSign = `Humanity Ledger NETWORK GOLD ACCESS VERIFICATION: ${signerAddress}`;
       let cryptoSignature = '';
 
       const signToastId = toast.loading('Opening your wallet to sign — approve the request...');
@@ -795,7 +795,7 @@ export function GoldTicketPanel() {
                 </div>
                 <p className="text-[9px] font-bold uppercase tracking-[0.15em] text-black/30 mb-5 border-b border-black/[0.05] pb-4">
                    Any obscene, offensive or fraudulent signature will be permanently erased from the network —
-                   that identity will never again be eligible for uniqueness within Whale Network.
+                   that identity will never again be eligible for uniqueness within Humanity Ledger.
                 </p>
                  <div className="flex-1 flex flex-col justify-between">
                     <SignaturePad 

@@ -196,7 +196,7 @@ function buildWorkspace(workspaceDir: string, sourceCode: string, analysis: Circ
   const toml = `[package]
 name = "sandbox_circuit"
 type = "${packageType}"
-authors = ["Whale Network Sandbox"]${editionLine}
+authors = ["Humanity Ledger Sandbox"]${editionLine}
 
 [dependencies]
 `;

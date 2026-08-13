@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        username: 'Whale Network VIP',
+        username: 'Humanity Ledger VIP',
         avatar_url: 'https://sovereign.pro/official-whale-legendary.png', // Optional
         embeds: [embed],
       }),
@@ -98,7 +98,7 @@ function formatWhaleAlertDiscord(data: {
   if (data.amount > 5000000) color = 0xe74c3c; // Red
 
   return {
-    title: ' Whale Network',
+    title: ' Humanity Ledger',
     color,
     fields: [
       {
@@ -123,7 +123,7 @@ function formatWhaleAlertDiscord(data: {
       },
     ],
     footer: {
-      text: 'Whale Network VIP - Whale Tracker',
+      text: 'Humanity Ledger VIP - Whale Tracker',
     },
     timestamp: new Date().toISOString(),
     ...(data.txHash && {
@@ -167,7 +167,7 @@ function formatPriceAlertDiscord(data: {
       },
     ],
     footer: {
-      text: 'Whale Network VIP - Price Alerts',
+      text: 'Humanity Ledger VIP - Price Alerts',
     },
     timestamp: new Date().toISOString(),
   };
@@ -214,7 +214,7 @@ function formatDailyDigestDiscord(data: {
       },
     ],
     footer: {
-      text: 'Whale Network VIP - Daily Report',
+      text: 'Humanity Ledger VIP - Daily Report',
     },
     timestamp: new Date().toISOString(),
   };

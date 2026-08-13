@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
       supplyCapTotal: Number(process.env.IDENTITY_CAP ?? 200),
       network: 'aztec-testnet',
       message: status.verified
-        ? '✅ Verified Whale Network Identity — Full domain access granted.'
+        ? '✅ Verified Humanity Ledger Identity — Full domain access granted.'
         : status.capReached
           ? '🔒 All 200 identities have been claimed. The network is closed.'
           : `${status.remaining} of ${Number(process.env.IDENTITY_CAP ?? 200)} identities remain. Claim yours at /api/aztec/airdrop.`,

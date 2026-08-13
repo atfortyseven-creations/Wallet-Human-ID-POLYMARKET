@@ -47,7 +47,7 @@ export function WalletPreview() {
                 
                 {/* Centered Title */}
                 <div className="absolute left-1/2 -translate-x-1/2 text-white font-black text-2xl tracking-tight">
-                    Whale Network
+                    Humanity Ledger
                 </div>
 
                 <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 border-2 border-white/20 shadow-lg" />

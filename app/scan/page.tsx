@@ -35,12 +35,12 @@ export default function ScanPage() {
         {/* Logo */}
         <img
           src="/whale-logo.png"
-          alt="Whale Network"
+          alt="Humanity Ledger"
           className="w-16 h-16 object-contain rounded-2xl shadow-sm"
         />
 
         <div className="flex flex-col items-center gap-2">
-          <h1 className="text-2xl font-black tracking-tight text-slate-900">Whale Network</h1>
+          <h1 className="text-2xl font-black tracking-tight text-slate-900">Humanity Ledger</h1>
           <p className="text-[11px] font-mono uppercase tracking-[0.3em] text-slate-400 font-bold">
             Aztec ZK Identity Portal
           </p>

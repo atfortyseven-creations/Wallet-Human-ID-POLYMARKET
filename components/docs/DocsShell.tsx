@@ -154,7 +154,7 @@ export function DocsShell({
               <line x1="2" y1="12" x2="22" y2="12" />
               <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
             </svg>
-            <span className="text-[14px] font-semibold tracking-tight text-slate-900">Whale Network</span>
+            <span className="text-[14px] font-semibold tracking-tight text-slate-900">Humanity Ledger</span>
             <span className="text-slate-300">/</span>
             <span className="text-[13px] font-medium text-slate-400">Docs</span>
           </Link>

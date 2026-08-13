@@ -70,7 +70,7 @@ export function EnterpriseFooter() {
                     className="text-center mb-16"
                 >
                     <h2 className="text-5xl md:text-6xl font-black text-white mb-4 tracking-tight">
-                        Descarga <span className="bg-gradient-to-r from-yellow-300 to-orange-400 bg-clip-text text-transparent">Whale Network Wallet</span>
+                        Descarga <span className="bg-gradient-to-r from-yellow-300 to-orange-400 bg-clip-text text-transparent">Humanity Ledger Wallet</span>
                     </h2>
                     <p className="text-xl text-white/80 mb-10 max-w-2xl mx-auto font-light">
                         La wallet Web3 más segura y fácil de usar. Disponible en múltiples plataformas.
@@ -190,7 +190,7 @@ export function EnterpriseFooter() {
                 {/* Bottom Bar */}
                 <div className="border-t border-white/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                     <div className="text-white/70 text-sm font-mono">
-                        © 2026 Whale Network. All rights reserved.
+                        © 2026 Humanity Ledger. All rights reserved.
                     </div>
                     <div className="flex items-center gap-6 text-sm text-white/70">
                         <span>v4.0.0</span>

@@ -396,11 +396,11 @@ const nextConfig = {
                     { key: 'Pragma',        value: 'no-cache' },
                 ]
             },
-            //  HTML pages: always serve fresh — prevents stale cookie / old JS chunk issues
+            //  HTML pages: Cache for offline PWA boot (AppStore requirement) but force revalidation when online
             {
                 source: '/((?!_next|api|.*\\..*).*)',
                 headers: [
-                    { key: 'Cache-Control', value: 'no-cache, no-store, must-revalidate, max-age=0' },
+                    { key: 'Cache-Control', value: 'public, max-age=0, must-revalidate' },
                     { key: 'Pragma',        value: 'no-cache' },
                     { key: 'Expires',       value: '0' },
                 ]

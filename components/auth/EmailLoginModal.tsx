@@ -217,11 +217,11 @@ export function EmailLoginModal({ isOpen, onClose, onSuccess }: Props) {
                     <div className="flex items-center gap-2.5 mb-3">
                       <img
                         src="/atom_3d_silver.jpg"
-                        alt="Whale Network"
+                        alt="Humanity Ledger"
                         className="w-5 h-5 object-contain mix-blend-multiply"
                       />
                       <span className="text-[11px] font-black uppercase tracking-[0.2em] text-black/40">
-                        Whale Network
+                        Humanity Ledger
                       </span>
                     </div>
                     <h2 className="text-[22px] font-black tracking-tight text-black leading-tight">

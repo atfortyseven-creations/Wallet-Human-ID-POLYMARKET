@@ -56,6 +56,7 @@ import { toast } from "sonner";
 import { useSignMessage, useAccount } from "wagmi";
 import { useSystemAccount } from '@/hooks/useSystemAccount';
 import { keccak256, toBytes } from "viem";
+import { vault } from "@/lib/core/SecureVault";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -229,9 +230,9 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
 
   // ─── Auto-Restore Session & Cross-Tab Sync ─────────────────────────────────
   useEffect(() => {
-    const restoreFromStorage = () => {
+    const restoreFromStorage = async () => {
       try {
-        const stored = localStorage.getItem('aztec_session');
+        const stored = await vault.getItem('aztec_session');
         if (stored) {
           const parsed = JSON.parse(stored);
           if (parsed.address && parsed.seed) {
@@ -265,15 +266,16 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
     };
 
     // Initial restore on mount
-    const hasSession = restoreFromStorage();
+    restoreFromStorage();
 
-    // Listen for changes from other tabs
-    const handleStorage = (e: StorageEvent) => {
-      if (e.key === 'aztec_session') {
-        restoreFromStorage();
+    // Listen for changes from other tabs (web only, will gracefully ignore in Native)
+    const handleStorage = async (e: StorageEvent) => {
+      // Cross-tab sync uses raw localStorage events as signals, then we read from vault
+      if (e.key === 'hl_secure_aztec_session' || e.key === 'aztec_session') {
+        await restoreFromStorage();
       } else if (e.key === 'aztec_sync_trigger') {
         try {
-          const stored = localStorage.getItem('aztec_session');
+          const stored = await vault.getItem('aztec_session');
           if (stored) {
             const parsed = JSON.parse(stored);
             if (parsed.address) fetchLedgerState(parsed.address);
@@ -282,10 +284,6 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       }
     };
     window.addEventListener('storage', handleStorage);
-
-    if (hasSession) {
-      return () => window.removeEventListener('storage', handleStorage);
-    }
 
     // ── Email / QR-session auto-derive ────────────────────────────────────────
     // For users who logged in via email OTP (no wagmi connector),
@@ -306,43 +304,39 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       const handshake = rawCookie ? decodeURIComponent(rawCookie) : null;
 
       if (handshake && handshake.startsWith('email_')) {
-        // Use the part after 'email_' as the seed (the actual email address)
         const emailIdentifier = handshake.slice('email_'.length);
         const identifierKey = `aztec_email_addr_${emailIdentifier}`;
-        const cachedAddr = localStorage.getItem(identifierKey);
-        if (cachedAddr) {
-          // Address already derived — just start polling balance
-          setAztecAddress(cachedAddr);
-          setIsLoading(true);
-          fetchLedgerState(cachedAddr).finally(() => setIsLoading(false));
-          startPolling(cachedAddr);
-        } else {
-          // First time for this email — derive deterministically from the server
-          // NOTE: The derive-address endpoint uses `seed` field (not `evmAddress`)
-          fetch('/api/aztec/derive-address', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ seed: emailIdentifier }),
-          }).then(r => r.json()).then(data => {
-            if (data?.aztecAddress) {
-              // Cache the derived address locally — never store the email in plain text
-              localStorage.setItem(identifierKey, data.aztecAddress);
-              setAztecAddress(data.aztecAddress);
-              setIsLoading(true);
-              // NOTE: We do NOT call /api/aztec/airdrop here.
-              // Airdrop is a user-initiated claim action (requires signing / explicit consent).
-              // Auto-claiming from the client is a Sybil attack surface.
-              fetchLedgerState(data.aztecAddress).finally(() => setIsLoading(false));
-              startPolling(data.aztecAddress);
-            }
-          }).catch((err) => {
-            console.warn('[AztecNativeContext] Failed to auto-derive Aztec address for email user:', err);
-          });
-        }
+        
+        vault.getItem(identifierKey).then(cachedAddr => {
+          if (cachedAddr) {
+            setAztecAddress(cachedAddr);
+            setIsLoading(true);
+            fetchLedgerState(cachedAddr).finally(() => setIsLoading(false));
+            startPolling(cachedAddr);
+          } else {
+            fetch('/api/aztec/derive-address', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ seed: emailIdentifier }),
+            }).then(r => r.json()).then(data => {
+              if (data?.aztecAddress) {
+                vault.setItem(identifierKey, data.aztecAddress);
+                setAztecAddress(data.aztecAddress);
+                setIsLoading(true);
+                fetchLedgerState(data.aztecAddress).finally(() => setIsLoading(false));
+                startPolling(data.aztecAddress);
+              }
+            }).catch((err) => {
+              console.warn('[AztecNativeContext] Failed to auto-derive Aztec address for email user:', err);
+            });
+          }
+        });
       }
     } catch (e) {
       console.warn("Could not auto-derive Aztec session for email user", e);
     }
+    
+    return () => window.removeEventListener('storage', handleStorage);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -371,7 +365,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
             setAztecAddress(canonicalAddr);
             setSeed(evmAddress);
             try {
-              localStorage.setItem('aztec_session', JSON.stringify({
+              await vault.setItem('aztec_session', JSON.stringify({
                 address: canonicalAddr,
                 seed: evmAddress,
               }));
@@ -448,9 +442,11 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       // We also pass the locally-cached aztec address (if any) as a candidate
       // so we can find it even if the EVM derivation path changed.
       const evmForRestore = rawSeed.startsWith('0x') ? rawSeed.toLowerCase() : null;
-      const localSession = (() => {
-        try { return JSON.parse(localStorage.getItem('aztec_session') || '{}'); } catch { return {}; }
-      })();
+      let localSession: any = {};
+      try { 
+        const storedStr = await vault.getItem('aztec_session');
+        if (storedStr) localSession = JSON.parse(storedStr);
+      } catch {}
 
       if (evmForRestore || localSession?.address) {
         toast.loading("Checking existing Aztec identity...", { id: "az-connect" });
@@ -471,7 +467,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
               setAztecAddress(canonicalAddr);
               setSeed(evmForRestore || rawSeed);
               try {
-                localStorage.setItem('aztec_session', JSON.stringify({
+                await vault.setItem('aztec_session', JSON.stringify({
                   address: canonicalAddr,
                   seed: evmForRestore || rawSeed,
                 }));
@@ -570,7 +566,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
             setAztecAddress(canonicalAddr);
             setSeed(entropy);
             try {
-              localStorage.setItem('aztec_session', JSON.stringify({ address: canonicalAddr, seed: entropy }));
+              await vault.setItem('aztec_session', JSON.stringify({ address: canonicalAddr, seed: entropy }));
             } catch {}
             notifiedRef.current = new Set();
             setIsLoading(true);
@@ -631,7 +627,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
       setAztecAddress(derived);
       setSeed(entropy);
       try {
-        localStorage.setItem('aztec_session', JSON.stringify({ address: derived, seed: entropy }));
+        await vault.setItem('aztec_session', JSON.stringify({ address: derived, seed: entropy }));
       } catch (e) {}
 
       notifiedRef.current = new Set();
@@ -666,7 +662,7 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
     setError(null);
     notifiedRef.current = new Set();
     try {
-      localStorage.removeItem('aztec_session');
+      vault.removeItem('aztec_session');
     } catch (e) {}
   }, [stopPolling]);
 

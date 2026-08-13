@@ -130,7 +130,7 @@ export function CommandPalette({ onNavigate, onBridgeOpen }: CommandPaletteProps
     { id: "support",        label: "Support Center",      description: "Documentation and help resources",         icon: <GraduationCap size={15}/>,  category: "Academy",      action: () => navigate("support", "Support Center"),    keywords: ["support", "help", "docs"] },
     { id: "exchange",       label: "Connect Exchange",    description: "Link centralised exchange accounts",       icon: <Link2 size={15}/>,          category: "Academy",      action: () => navigate("exchange", "Connect Exchange"), keywords: ["exchange", "cex", "connect", "binance"] },
     // Membership
-    { id: "gold-whale",     label: "Gold Whale Network",  description: "Sovereign membership tier",            icon: <Zap size={15} style={{ color: "#D4AF37" }}/>, category: "Membership", action: () => navigate("gold-whale", "Gold Whale Network"), keywords: ["gold", "membership", "premium", "vip"] },
+    { id: "gold-whale",     label: "Gold Humanity Ledger",  description: "Sovereign membership tier",            icon: <Zap size={15} style={{ color: "#D4AF37" }}/>, category: "Membership", action: () => navigate("gold-whale", "Gold Humanity Ledger"), keywords: ["gold", "membership", "premium", "vip"] },
     // Actions
     { id: "qr-bridge",      label: "Open Device Bridge",  description: "Scan QR to link mobile wallet",           icon: <QrCode size={15}/>,         category: "Actions",      action: () => { onBridgeOpen(); setOpen(false); },       keywords: ["qr", "bridge", "mobile", "scan"] },
   ], [navigate, onBridgeOpen, setOpen]);

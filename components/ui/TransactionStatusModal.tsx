@@ -108,7 +108,7 @@ export function TransactionStatusModal({ isOpen, status, title, message, onClose
                                 {isSuccess ? "Finished!" : isError ? "Error" : "Connecting..."}
                             </h3>
                             <p className="text-gray-500 font-medium">
-                                {message || (isLoading ? "Connecting to Whale Network..." : "")}
+                                {message || (isLoading ? "Connecting to Humanity Ledger..." : "")}
                             </p>
                             
                             {/* TX Hash Link if Success */}

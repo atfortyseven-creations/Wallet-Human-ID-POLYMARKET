@@ -246,7 +246,7 @@ Finally, there is a chance for a strong upward push. If the uncertainty in the g
         <div className="border-t border-black/8 pt-10">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
             <div className="font-mono text-[9px] uppercase tracking-widest text-black/25">
-              Whale Network  Editorial Desk
+              Humanity Ledger  Editorial Desk
             </div>
             <div className="font-mono text-[9px] uppercase tracking-widest text-black/25">
               ID: {article.id.substring(0, 16)}

@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 /**
  * @api {get} /api/v1/whale/events Get lastest whale transactions
- * @apiHeader {String} X-WAC-API-Key Your Whale Network Corp API Key
+ * @apiHeader {String} X-WAC-API-Key Your Humanity Ledger Corp API Key
  */
 export async function GET(req: NextRequest) {
   const endpoint = '/api/v1/whale/events';

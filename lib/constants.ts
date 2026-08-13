@@ -1,5 +1,5 @@
-﻿/**
- * Whale Network NETWORK - SOVEREIGN CONSTANTS
+/**
+ * Humanity Ledger NETWORK - SOVEREIGN CONSTANTS
  * 
  * Centralised registry for visual assets, identities, and system parameters.
  */

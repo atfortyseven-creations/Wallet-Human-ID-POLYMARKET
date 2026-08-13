@@ -169,7 +169,7 @@ export function RealPrivacySettings() {
              onChange={e => handleUpdate("systemVisibility", e.target.value)}
              className="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white focus:border-[#00f5ff] outline-none text-xs"
           >
-             <option value="Public">Public (Visible in Whale Network)</option>
+             <option value="Public">Public (Visible in Humanity Ledger)</option>
              <option value="Trusted Only">Trusted Only (Contacts)</option>
              <option value="Private">Private (Cloaked)</option>
           </select>

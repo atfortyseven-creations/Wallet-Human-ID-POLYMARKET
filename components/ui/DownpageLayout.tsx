@@ -105,7 +105,7 @@ export function DownpageLayout({ pageTitle, subtitle, indexTitle, sections }: Do
 
         <footer className="mt-48 pt-12 border-t border-black/10 max-w-[800px]">
           <p className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-40">
-            © 2026 Whale Network · Desarrollado por Aztec Network
+            © 2026 Humanity Ledger · Desarrollado por Aztec Network
           </p>
         </footer>
       </main>

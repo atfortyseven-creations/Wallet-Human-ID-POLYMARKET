@@ -1,10 +1,10 @@
 /**
  * GET /api/powered-by
  *
- * "Powered by Whale Network" Integration Registry
+ * "Powered by Humanity Ledger" Integration Registry
  *
  * Serves metadata for the dApps/protocols that have integrated
- * Whale Network as their on-chain analytics layer.
+ * Humanity Ledger as their on-chain analytics layer.
  *
  * Also acts as registration endpoint for new integrators.
  *
@@ -25,7 +25,7 @@ export const dynamic = 'force-dynamic';
 const FEATURED_INTEGRATIONS = [
     {
         id:          'whale-alert-native',
-        name:        'Whale Network',
+        name:        'Humanity Ledger',
         url:         'https://whalealert.network',
         description: 'The system terminal. EVM Thermodynamics engine, ZK identity layer, sovereign analytics.',
         category:    'analytics',
@@ -140,7 +140,7 @@ export async function POST(req: NextRequest) {
             approved:       false,
             reviewTime:     '24-48 hours',
             embedSnippet:   `<script src="https://whalealert.network/sdk/powered-by.js" data-key="${embedKey}" data-theme="dark" async></script>`,
-            badgeMarkdown:  `[![Powered by Whale Network](https://whalealert.network/badges/powered-by-dark.svg)](https://whalealert.network?ref=${integrationId})`,
+            badgeMarkdown:  `[![Powered by Humanity Ledger](https://whalealert.network/badges/powered-by-dark.svg)](https://whalealert.network?ref=${integrationId})`,
             nextSteps: [
                 'Add the badge to your README and UI',
                 'Our team will review and approve within 48h',

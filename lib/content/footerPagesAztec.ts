@@ -9,7 +9,7 @@ export const WHITEPAPER_SECTIONS: AztecDocSection[] = [
     paragraphs: [
       'Humanity Ledger is a privacy-preserving protocol built natively on the Aztec Network. It provides a zero knowledge execution environment where financial activity, identity verification, and governance actions are proven locally on the user device and verified by the network, without the network ever accessing the underlying private data.',
       'Public blockchains, by design, expose all transaction metadata to every observer. This creates fundamental problems for individuals, businesses, and institutions that require confidentiality as a standard operating condition. Humanity Ledger resolves this by making privacy the default state of the network, not an opt-in feature.',
-      'The protocol is deeply integrated with the Whale Network, which provides real-time monitoring of large capital flows across major blockchains. Users can act on these analytics, setting alerts, analyzing flows, executing attestations, entirely within the shielded environment. Their positions and intentions remain cryptographically hidden from all external observers.',
+      'The protocol is deeply integrated with the Humanity Ledger, which provides real-time monitoring of large capital flows across major blockchains. Users can act on these analytics, setting alerts, analyzing flows, executing attestations, entirely within the shielded environment. Their positions and intentions remain cryptographically hidden from all external observers.',
       'This document describes the technical architecture, cryptographic primitives, economic model, and development roadmap of the Humanity Ledger protocol.',
     ],
   },
@@ -56,9 +56,9 @@ export const WHITEPAPER_SECTIONS: AztecDocSection[] = [
   },
   {
     id: 'whale-network-integration',
-    title: '5. Integration with Whale Network',
+    title: '5. Integration with Humanity Ledger',
     paragraphs: [
-      'The Whale Network monitors capital flows across more than 20 major blockchain networks in real time. It identifies large asset transfers, exchange inflows and outflows, wallet activations, and macroeconomic flow patterns, and surfaces these events as structured, queryable data.',
+      'The Humanity Ledger monitors capital flows across more than 20 major blockchain networks in real time. It identifies large asset transfers, exchange inflows and outflows, wallet activations, and macroeconomic flow patterns, and surfaces these events as structured, queryable data.',
       'This dataset is accessible within the Humanity Ledger shielded environment through private indexing logic. Users interact with the data, querying events, setting alert conditions, analyzing accumulation patterns, entirely inside the Aztec shielded pool. Their queries, alert configurations, and subsequent actions are cryptographically hidden from the public network.',
       'The architecture creates a dual-state design: market analytics are derived from publicly available on-chain data (via rigorous graph DB parsing and RPC ingestion), while user engagement with those analytics remains entirely private. A user who acts on a large transfer alert cannot be observed by competitors or adversarial actors.',
     ],
@@ -120,7 +120,7 @@ export const WHITEPAPER_SECTIONS: AztecDocSection[] = [
     id: 'conclusion',
     title: '10. Conclusion',
     paragraphs: [
-      'Humanity Ledger provides the missing privacy layer for decentralised finance. By integrating natively with the Aztec Network and combining institutional market analytics from Whale Network with cryptographically private execution, the protocol enables a new category of financial activity: verifiable, compliant, and completely private.',
+      'Humanity Ledger provides the missing privacy layer for decentralised finance. By integrating natively with the Aztec Network and combining institutional market analytics from Humanity Ledger with cryptographically private execution, the protocol enables a new category of financial activity: verifiable, compliant, and completely private.',
       'The architecture is designed to scale without compromising its privacy guarantees. Each component, proving, sequencing, settlement, identity, operates with well-defined trust boundaries. Users retain exclusive control over their keys and data at all times.',
       'We invite developers, institutions, and privacy advocates to build on Humanity Ledger, contribute to its open source circuits, and participate in governance. The protocol belongs to its participants.',
     ],
@@ -165,7 +165,7 @@ export const MANIFESTO_SECTIONS: AztecDocSection[] = [
     title: 'The Role of Market Analytics',
     paragraphs: [
       'Understanding capital flows is a legitimate and important activity. Large movements of assets across blockchain networks often signal significant market events: sovereign accumulation, exchange insolvency risk, protocol migrations, and macro repositioning. Participants who understand these flows are better positioned to make informed decisions.',
-      'The Whale Network makes these analytics available. The challenge is that acting on public analytics in a public environment creates a surveillance problem: if your alerts, queries, and attestations are all visible, the analytical advantage is neutralized and your own position becomes vulnerable.',
+      'The Humanity Ledger makes these analytics available. The challenge is that acting on public analytics in a public environment creates a surveillance problem: if your alerts, queries, and attestations are all visible, the analytical advantage is neutralized and your own position becomes vulnerable.',
       'Humanity Ledger solves this by integrating market analytics into a private execution environment. You can access the same on-chain data, configure the same alerts, and execute the same strategies, without any of your activity being observable. The analytics are derived from public data. Your response to it is not.',
     ],
   },
@@ -273,7 +273,7 @@ export const DEVELOPER_SECTIONS: AztecDocSection[] = [
   {
     title: 'WebSocket Streams',
     paragraphs: [
-      'The Humanity Ledger WebSocket API provides real-time delivery of on-chain events identified by the Whale Network. Connections are authenticated using the same HMAC mechanism as REST requests, with the initial handshake including a signed timestamp.',
+      'The Humanity Ledger WebSocket API provides real-time delivery of on-chain events identified by the Humanity Ledger. Connections are authenticated using the same HMAC mechanism as REST requests, with the initial handshake including a signed timestamp.',
       'Once connected, clients subscribe to specific event channels. Available channels include large transfer events (by chain and minimum value), exchange flow events (deposits and withdrawals above threshold), and wallet activation events (first outbound transaction from a previously inactive address).',
       'Events are delivered as structured JSON objects with a consistent schema across all channels. Each event includes the originating chain, transaction identifier, asset type, normalized USD value, and a confidence score indicating the reliability of the classification.',
     ],
@@ -416,7 +416,7 @@ export const API_REFERENCE_SECTIONS: AztecDocSection[] = [
   {
     title: 'API Overview & Network Architecture',
     paragraphs: [
-      'The Humanity Ledger Sovereign API provides deterministic, cryptographically secure programmatic access to network analytics, Aztec L2 state commitments, and real-time Whale Network event streams. The API architecture separates read-only analytics endpoints from write-heavy state-transition relay layers.',
+      'The Humanity Ledger Sovereign API provides deterministic, cryptographically secure programmatic access to network analytics, Aztec L2 state commitments, and real-time Humanity Ledger event streams. The API architecture separates read-only analytics endpoints from write-heavy state-transition relay layers.',
       'All interactions operate over TLS 1.3 with strict cypher suite enforcement. The base URL for the production environment is `https://api.humanidfi.com/v1`. Testnet environments operate on `https://testnet-api.humanidfi.com/v1`.',
       'The API Gateway implements a sophisticated bucket-algorithm rate limiter based on the caller\'s institutional tier, verifying HMAC-SHA256 signatures derived from assigned API keys in sub-millisecond latencies using edge-deployed WebAssembly verifiers.'
     ],
@@ -458,7 +458,7 @@ export const API_REFERENCE_SECTIONS: AztecDocSection[] = [
   {
     title: 'JSON Schemas and Type Definitions',
     paragraphs: [
-      'All event objects conform to strict TypeScript interfaces. For example, a Whale Network event will consistently contain `transaction_hash`, `source_chain`, `destination_chain`, `asset_contract`, `normalized_usd_volume`, and `z_score`.',
+      'All event objects conform to strict TypeScript interfaces. For example, a Humanity Ledger event will consistently contain `transaction_hash`, `source_chain`, `destination_chain`, `asset_contract`, `normalized_usd_volume`, and `z_score`.',
       'Amounts are serialized as stringified BigInts (e.g., `"1500000000000000000"`) to prevent IEEE-754 floating-point precision loss in JSON parsers. Timestamps are invariably ISO-8601 strings in UTC.'
     ],
   },
@@ -524,7 +524,7 @@ export const COMMUNITY_FORUM_INTRO: AztecDocSection[] = [
   {
     title: 'Categories',
     paragraphs: [
-      'Topics are organized into structured categories: Whale Network, General, Applications, Testnets, Noir Circuits, Site Feedback, and QDs Connect. Select the appropriate category before posting to ensure visibility to the relevant participants.',
+      'Topics are organized into structured categories: Humanity Ledger, General, Applications, Testnets, Noir Circuits, Site Feedback, and QDs Connect. Select the appropriate category before posting to ensure visibility to the relevant participants.',
     ],
   },
 ];

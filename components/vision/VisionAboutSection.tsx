@@ -124,7 +124,7 @@ export function VisionAboutSection() {
               <span className="text-black font-semibold">Humanity Ledger</span> is a company based in the{' '}
               <span className="text-black font-semibold">Valencian Community, Spain</span>, founded and led by
               Stefan Antonio Cirisanu. The company was born from the real-world experience of building the{' '}
-              <span className="text-black font-semibold">Whale Network</span> — one of the most widely used
+              <span className="text-black font-semibold">Humanity Ledger</span> — one of the most widely used
               on-chain intelligence platforms in DeFi — and has since evolved into a specialised firm focused on
               protecting the infrastructure layer of the decentralised economy.
             </p>

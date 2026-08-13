@@ -10,7 +10,7 @@ export const LOTTIE_CONTENT: LottieItem[] = [
   // --- CORE FEATURES ---
   {
     id: 'core-1',
-    title: 'Whale Network Wallet',
+    title: 'Humanity Ledger Wallet',
     subtitle: 'The world\'s most human wallet',
     src: 'https://assets9.lottiefiles.com/packages/lf20_yom6uvgj.json',
     category: 'Core',

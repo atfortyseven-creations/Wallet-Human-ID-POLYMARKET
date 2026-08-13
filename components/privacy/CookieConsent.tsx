@@ -3,7 +3,7 @@
 /**
  * [PHASE 5 — CYPHERPUNK PRIVACY NOTICE]
  *
- * This is NOT a cookie consent banner. Whale Network does not collect analytics.
+ * This is NOT a cookie consent banner. Humanity Ledger does not collect analytics.
  * This is a one-time privacy notice that informs users of our zero-data architecture.
  *
  * Architecture: The notice is shown once, persisted in localStorage with key

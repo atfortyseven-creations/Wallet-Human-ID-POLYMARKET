@@ -23,7 +23,7 @@ export const ecosystemFeatures: FeatureContent[] = [
     subtitle: 'Protocol: ERC-4337 Account Abstraction Layer',
     shortDesc: 'The end of the seed phrase era',
     deepDive: [
-      'Traditional accounts (EOAs) are slaves to a private key. If you lose the key, you lose access. Whale Network breaks this paradigm through Account Abstraction. Your wallet is not just an address, it\'s an intelligent Smart Contract deployed on the network.',
+      'Traditional accounts (EOAs) are slaves to a private key. If you lose the key, you lose access. Humanity Ledger breaks this paradigm through Account Abstraction. Your wallet is not just an address, it\'s an intelligent Smart Contract deployed on the network.',
       'This allows us to implement Paymaster logic, meaning you can pay gas in any token (or we can subsidize it for you), eliminating the friction of having to buy ETH or MATIC to move your funds.',
       'Security is managed through a Multi-faceted Signature scheme, enabling social recovery: if you lose your device, your "Guardians" (trusted friends or secondary devices) can rotate your access key without your funds moving.',
       'We use elliptic curve cryptography y² = x³ + 7 over secp256k1, but abstracted for humans. We don\'t generate a vulnerable local private key; we deploy a Smart Contract Wallet with daily spending limits and social recovery.'
@@ -93,7 +93,7 @@ export const ecosystemFeatures: FeatureContent[] = [
     subtitle: 'Execution Engine: High-Frequency On-Chain Settlement',
     shortDesc: '100x leverage without house advantage',
     deepDive: [
-      'Attesting perpetuals on centralised exchanges is often a rigged game: the exchange sees your stop-losses and attestations against you. At Whale Network, the matching engine is a hybrid architecture: order taking is instantaneous (off-chain) but settlement and funds custody is on-chain.',
+      'Attesting perpetuals on centralised exchanges is often a rigged game: the exchange sees your stop-losses and attestations against you. At Humanity Ledger, the matching engine is a hybrid architecture: order taking is instantaneous (off-chain) but settlement and funds custody is on-chain.',
       'We calculate the Funding Rate every second to ensure the perpetual contract price follows the spot price without malicious deviations: Funding = max(0.01%, Premium) + min(0, Premium)',
       'Our liquidations engine is a public smart contract. There is no "secret liquidator" taking your funds; there is a Community Insurance Fund that guarantees protocol solvency even in "Black Swan" events.',
       'Up to 100x leverage with transparent risk management and fair liquidations.'

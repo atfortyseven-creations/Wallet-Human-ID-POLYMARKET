@@ -27,7 +27,7 @@ export const runtime = 'nodejs';
 //  Program Metadata 
 
 const PROGRAM_INFO = {
-    name:        'Whale Network Ambassador Program',
+    name:        'Humanity Ledger Ambassador Program',
     version:     '1.0.0',
     launched:    '2026-04-01',
     tiers: [

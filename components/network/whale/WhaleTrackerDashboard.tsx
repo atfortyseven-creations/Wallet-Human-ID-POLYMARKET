@@ -277,7 +277,7 @@ export function WhaleTrackerDashboard() {
                                     <img 
                                         src="/official-whale-monochrome.png" 
                                         className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]" 
-                                        alt="Whale Network Pro"
+                                        alt="Humanity Ledger Pro"
                                     />
                                 </SplashContainer>
                             </motion.div>

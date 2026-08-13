@@ -3,7 +3,7 @@
 import LegalDocLayout, { TocItem } from '@/components/layout/LegalDocLayout';
 
 const TOC: TocItem[] = [
-  { id: 'whale-network-humanidfi-com', label: `Whale Network at humanidfi.com` },
+  { id: 'whale-network-humanidfi-com', label: `Humanity Ledger at humanidfi.com` },
   { id: '1-identification-of-the-parties-and-acceptance', label: `1. IDENTIFICATION OF THE PARTIES AND ACCEPTANCE` },
   { id: '2-description-of-services', label: `2. DESCRIPTION OF SERVICES` },
   { id: '3-the-qds-token', label: `3. THE $QDs TOKEN` },
@@ -25,7 +25,7 @@ export default function LegalPage() {
   return (
     <LegalDocLayout
       title="Terms of Service"
-      subtitle="This policy sets forth the legal and attestation rules governing the Whale Network ecosystem."
+      subtitle="This policy sets forth the legal and attestation rules governing the Humanity Ledger ecosystem."
       lastUpdated="26 July 2026"
       category="Legal"
       toc={TOC}
@@ -37,7 +37,7 @@ export default function LegalPage() {
         {/* 1 */}
         <section id="whale-network-humanidfi-com">
           <h2 className="text-[1.1rem] font-bold uppercase tracking-[0.08em] text-black mb-6 pb-3 border-b border-black/10">
-            Whale Network at humanidfi.com
+            Humanity Ledger at humanidfi.com
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">Humanity Ledger S.L.</h3>
@@ -75,11 +75,11 @@ export default function LegalPage() {
               <strong className="text-black font-semibold">THE USER</strong> (hereinafter "the User" or "you")
             </p>
             <ul className="list-disc pl-5 space-y-2">
-              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Any natural person aged 18 years or older, or any legal entity, that accesses, browses, or uses the services of Whale Network.</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span>Any natural person aged 18 years or older, or any legal entity, that accesses, browses, or uses the services of Humanity Ledger.</span></li>
             </ul>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">1.2 Acceptance</h3>
             <p>
-              Access to the services of the Whale Network platform constitutes the User's <strong className="text-black font-semibold">express, informed, and unreserved acceptance</strong> of these Terms and Conditions, as well as of the Privacy Policy, the Cookie Policy, and the Legal Notice. If you do not agree with any of these documents, you must refrain from using the platform.
+              Access to the services of the Humanity Ledger platform constitutes the User's <strong className="text-black font-semibold">express, informed, and unreserved acceptance</strong> of these Terms and Conditions, as well as of the Privacy Policy, the Cookie Policy, and the Legal Notice. If you do not agree with any of these documents, you must refrain from using the platform.
             </p>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">1.3 Legal Capacity</h3>
             <p>
@@ -98,9 +98,9 @@ export default function LegalPage() {
             2. DESCRIPTION OF SERVICES
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
-            <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">2.1 Whale Network, Digital Identity and Privacy Infrastructure Platform</h3>
+            <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">2.1 Humanity Ledger, Digital Identity and Privacy Infrastructure Platform</h3>
             <p>
-              Whale Network is a technological infrastructure protocol built on <strong className="text-black font-semibold">Aztec Network</strong> (a ZK-rollup Layer 2 blockchain network on Ethereum) that provides the following services:
+              Humanity Ledger is a technological infrastructure protocol built on <strong className="text-black font-semibold">Aztec Network</strong> (a ZK-rollup Layer 2 blockchain network on Ethereum) that provides the following services:
             </p>
             <p>
               <strong className="text-black font-semibold">2.1.1 Private Premium Dashboard.</strong> A personalised control panel for the management of your digital assets and activity on the Aztec Network. All portfolio data is processed locally on the user's device through Aztec Network's Private Execution Environment (PXE). Humanity Ledger S.L. has no technical access to this data at any time.
@@ -115,7 +115,7 @@ export default function LegalPage() {
               <strong className="text-black font-semibold">2.1.4 Studio Provenance, Digital Product Passport.</strong> An authenticity and traceability registry for physical and digital assets. Enables the issuance of certificates of authenticity linked to on-chain records or non-fungible tokens (NFTs).
             </p>
             <p>
-              <strong className="text-black font-semibold">2.1.5 Humanity Ledger Registry.</strong> A decentralised registry of verified identities and assets on the Whale Network. Functions as a directory of wallets holding accredited KYC credentials issued through the platform.
+              <strong className="text-black font-semibold">2.1.5 Humanity Ledger Registry.</strong> A decentralised registry of verified identities and assets on the Humanity Ledger. Functions as a directory of wallets holding accredited KYC credentials issued through the platform.
             </p>
             <p>
               <strong className="text-black font-semibold">2.1.6 Private Portfolio.</strong> A multi-chain asset balance and transaction history tracking tool, processed entirely on a local basis. No server operated by Humanity Ledger S.L. accesses the user's complete portfolio data.
@@ -136,7 +136,7 @@ export default function LegalPage() {
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">3.1 Nature and Classification</h3>
             <p>
-              The $QDs token (Quantum Digital Signature Token) is a <strong className="text-black font-semibold">utility token</strong> classified as a crypto asset pursuant to Article 3(1)(5) of Regulation (EU) 2023/1114 (MiCA). It provides exclusively functional access to the premium services of Whale Network described in Clause 2.
+              The $QDs token (Quantum Digital Signature Token) is a <strong className="text-black font-semibold">utility token</strong> classified as a crypto asset pursuant to Article 3(1)(5) of Regulation (EU) 2023/1114 (MiCA). It provides exclusively functional access to the premium services of Humanity Ledger described in Clause 2.
             </p>
             <p>
               <strong className="text-black font-semibold">The $QDs token is NOT, under any circumstances:</strong>
@@ -154,7 +154,7 @@ export default function LegalPage() {
               Humanity Ledger S.L. acts exclusively as the issuer of the $QDs token (within the scope of MiCA Title II) and as a software developer (operating a non-custodial protocol). <strong className="text-black font-semibold">Humanity Ledger S.L. is NOT a Crypto Asset Service Provider (CASP)</strong> within the meaning of Title V of the MiCA Regulation.
             </p>
             <p>
-              Pursuant to Recital 22 of MiCA, CASP obligations do not apply to services provided in a fully decentralised manner without intermediaries. As Whale Network is a ZK-rollup protocol over which users retain absolute, non-custodial control of their private keys, the Company does not provide custody services, does not execute orders on behalf of third parties, and does not manage crypto asset portfolios.
+              Pursuant to Recital 22 of MiCA, CASP obligations do not apply to services provided in a fully decentralised manner without intermediaries. As Humanity Ledger is a ZK-rollup protocol over which users retain absolute, non-custodial control of their private keys, the Company does not provide custody services, does not execute orders on behalf of third parties, and does not manage crypto asset portfolios.
             </p>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">3.2 Technical Characteristics</h3>
             <div className="overflow-x-auto"><table className="min-w-full border text-sm text-left"><tbody className="divide-y divide-black/10">
@@ -206,7 +206,7 @@ export default function LegalPage() {
             </ul>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">3.4 Use of $QDs to Access Services</h3>
             <p>
-              $QDs holders may use their tokens to access the premium services of Whale Network in accordance with the access model in force from time to time, as published at https://humanidfi.com. The access model may evolve subject to prior notification to Users of at least 30 days.
+              $QDs holders may use their tokens to access the premium services of Humanity Ledger in accordance with the access model in force from time to time, as published at https://humanidfi.com. The access model may evolve subject to prior notification to Users of at least 30 days.
             </p>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">3.5 Right of Withdrawal (MiCA Art. 13)</h3>
             <p>
@@ -239,7 +239,7 @@ export default function LegalPage() {
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">4.1 Account Creation</h3>
             <p>
-              To access the services of Whale Network, the User must: 1. Connect a wallet compatible with Aztec Network; 2. Accept these Terms and Conditions; and 3. Complete the identity verification process (KYC) when required by applicable AML regulations.
+              To access the services of Humanity Ledger, the User must: 1. Connect a wallet compatible with Aztec Network; 2. Accept these Terms and Conditions; and 3. Complete the identity verification process (KYC) when required by applicable AML regulations.
             </p>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">4.2 Account Security</h3>
             <p>
@@ -270,7 +270,7 @@ export default function LegalPage() {
               The User undertakes to:
             </p>
             <p>
-              a) Use the Whale Network services in a lawful manner and in accordance with these Terms; b) Complete the KYC process when required by applicable AML regulations; c) Provide the information required by the Travel Rule (FATF Recommendation 16) for transactions of €1,000 or more; d) Comply with their applicable tax obligations in their jurisdiction of residence, including the declaration of crypto asset holdings and any resulting capital gains or losses; e) Acknowledge that, pursuant to the case-law of the Court of Justice of the European Union and the Spanish Directorate-General of Taxation (DGT), the acquisition of utility tokens conferring access to a future digital service may be subject to Value Added Tax (VAT) at the standard rate (currently 21% in Spain), and to provide accurate data for proper invoicing purposes where applicable; f) Refrain from using the platform for any unlawful activities; and g) Notify Humanity Ledger S.L. promptly of any unauthorised use of their account.
+              a) Use the Humanity Ledger services in a lawful manner and in accordance with these Terms; b) Complete the KYC process when required by applicable AML regulations; c) Provide the information required by the Travel Rule (FATF Recommendation 16) for transactions of €1,000 or more; d) Comply with their applicable tax obligations in their jurisdiction of residence, including the declaration of crypto asset holdings and any resulting capital gains or losses; e) Acknowledge that, pursuant to the case-law of the Court of Justice of the European Union and the Spanish Directorate-General of Taxation (DGT), the acquisition of utility tokens conferring access to a future digital service may be subject to Value Added Tax (VAT) at the standard rate (currently 21% in Spain), and to provide accurate data for proper invoicing purposes where applicable; f) Refrain from using the platform for any unlawful activities; and g) Notify Humanity Ledger S.L. promptly of any unauthorised use of their account.
             </p>
           </div>
         </section>
@@ -283,7 +283,7 @@ export default function LegalPage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              The following uses of Whale Network are <strong className="text-black font-semibold">absolutely prohibited</strong>:
+              The following uses of Humanity Ledger are <strong className="text-black font-semibold">absolutely prohibited</strong>:
             </p>
             <p>
               a) <strong className="text-black font-semibold">Money laundering or terrorist financing</strong>, activities criminalised under Law 10/2010 and the Spanish Criminal Code; b) <strong className="text-black font-semibold">Tax evasion or tax fraud</strong> of any kind; c) <strong className="text-black font-semibold">Circumvention of international sanctions</strong>, access to the platform by any person subject to OFAC, EU, or UN sanctions; d) <strong className="text-black font-semibold">Activities in prohibited jurisdictions</strong>, access from or to jurisdictions where crypto asset services are legally prohibited, including the United States of America; e) <strong className="text-black font-semibold">Use by minors</strong>, use by persons under the age of 18 is strictly prohibited; f) <strong className="text-black font-semibold">Market manipulation</strong>, any activity designed to artificially manipulate the price of the $QDs token; g) <strong className="text-black font-semibold">Phishing or identity impersonation</strong>, impersonating Humanity Ledger S.L. or any other User; h) <strong className="text-black font-semibold">Cyberattacks</strong>, any attempt at unauthorised access, malicious code injection, DoS/DDoS attacks, or any other attack on the platform's infrastructure; and i) <strong className="text-black font-semibold">Activities contrary to public order</strong>, any activity that infringes public order, public morality, or good faith.
@@ -303,11 +303,11 @@ export default function LegalPage() {
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">7.1 Ownership</h3>
             <p>
-              All intellectual and industrial property rights in the Whale Network platform, including its design, source code, interfaces, logos, attest marks, texts, and any other content, are the property of Humanity Ledger S.L. or its licensors.
+              All intellectual and industrial property rights in the Humanity Ledger platform, including its design, source code, interfaces, logos, attest marks, texts, and any other content, are the property of Humanity Ledger S.L. or its licensors.
             </p>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">7.2 Licence of Use</h3>
             <p>
-              Humanity Ledger S.L. grants the User a <strong className="text-black font-semibold">non-exclusive, non-transferable, limited, and revocable</strong> licence to access and use the Whale Network services exclusively for lawful personal or professional purposes, in accordance with these Terms.
+              Humanity Ledger S.L. grants the User a <strong className="text-black font-semibold">non-exclusive, non-transferable, limited, and revocable</strong> licence to access and use the Humanity Ledger services exclusively for lawful personal or professional purposes, in accordance with these Terms.
             </p>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">7.3 Open-Source Components</h3>
             <p>
@@ -377,7 +377,7 @@ export default function LegalPage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              The services of Whale Network are not available to:
+              The services of Humanity Ledger are not available to:
             </p>
             <div className="overflow-x-auto"><table className="min-w-full border text-sm text-left"><tbody className="divide-y divide-black/10">
               <tr>
@@ -406,7 +406,7 @@ export default function LegalPage() {
               </tr>
             </tbody></table></div>
             <p>
-              The User is solely responsible for determining whether they may lawfully use the Whale Network services in their jurisdiction of residence.
+              The User is solely responsible for determining whether they may lawfully use the Humanity Ledger services in their jurisdiction of residence.
             </p>
           </div>
         </section>

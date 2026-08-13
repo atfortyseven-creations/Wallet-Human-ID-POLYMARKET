@@ -98,7 +98,7 @@ export function InstitutionalHeader() {
                         >
                             <Image
                                 src="/official-whale-monochrome.png"
-                                alt="Whale Network Logo"
+                                alt="Humanity Ledger Logo"
                                 width={52}
                                 height={32}
                                 className="object-contain w-full h-full p-1 opacity-80 mix-blend-multiply"
@@ -107,7 +107,7 @@ export function InstitutionalHeader() {
                         </motion.div>
                         <div className="flex flex-col leading-none text-[#050505] justify-center">
                             <span className="font-aztec-serif text-[18px] font-black uppercase tracking-tighter leading-none">
-                                WHALE NETWORK
+                                Humanity Ledger
                             </span>
                         </div>
                     </Link>

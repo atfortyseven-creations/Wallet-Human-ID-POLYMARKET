@@ -87,7 +87,7 @@ export function AlphaToaster() {
                         transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
                         className="pointer-events-auto"
                     >
-                        <div className="relative group overflow-hidden bg-white  border border-black/10  rounded-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] flex flex-col min-w-[360px]">
+                        <div className="relative group overflow-hidden bg-white  border border-black/10  rounded-2xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] flex flex-col min-w-0 sm:min-w-[360px] w-[calc(100vw-32px)] sm:w-auto">
                             
                             {/* Subtle Ambient Glow (Non-transparent container now helps contrast) */}
                             <div className={`absolute -top-[50%] -right-[50%] w-[100%] h-[100%] blur-[100px] rounded-full opacity-10 pointer-events-none transition-colors duration-700 ${

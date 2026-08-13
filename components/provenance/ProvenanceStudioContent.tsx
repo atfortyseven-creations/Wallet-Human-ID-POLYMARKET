@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState, useCallback, useMemo, startTransition } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { QRCodeSVG } from 'qrcode.react';
@@ -1666,16 +1667,27 @@ export function ProvenanceStudioContent({
           ))}
         </div>
 
-        {/* Tab content */}
-        {activeTab === 'create' && (
-          <CreateTab isMobile={isMobile} onCreated={handleCreated} hasPlan={!!hasPlan} isOwner={isOwner} />
-        )}
-        {activeTab === 'registry' && (
-          <RegistryTab isMobile={isMobile} refreshKey={registryRefreshKey} userTier={userTier} isOwner={isOwner} />
-        )}
-        {activeTab === 'aztec' && <AztecTab />}
-        {activeTab === 'billing' && <BandwidthTab />}
-        {activeTab === 'dashboard' && <SubscriptionDashboard />}
+        {/* Tab content with 60fps hardware-accelerated transitions */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 10, scale: 0.99 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.99 }}
+            transition={{ duration: 0.25, ease: [0.23, 1, 0.32, 1] }}
+            className="w-full will-change-transform"
+          >
+            {activeTab === 'create' && (
+              <CreateTab isMobile={isMobile} onCreated={handleCreated} hasPlan={!!hasPlan} isOwner={isOwner} />
+            )}
+            {activeTab === 'registry' && (
+              <RegistryTab isMobile={isMobile} refreshKey={registryRefreshKey} userTier={userTier} isOwner={isOwner} />
+            )}
+            {activeTab === 'aztec' && <AztecTab />}
+            {activeTab === 'billing' && <BandwidthTab />}
+            {activeTab === 'dashboard' && <SubscriptionDashboard />}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
     </TuringShieldGate>

@@ -77,7 +77,7 @@ export function MobileManifesto() {
           </motion.h1>
 
           <motion.p variants={FADE_UP} className="text-[15px] text-[#444] leading-[1.6] mb-10 max-w-[340px] mx-auto px-4 font-medium">
-            Whale Network operates as the sovereign application layer over Aztec's zero knowledge execution environment. We abstract the complexity of ZK circuits into a sovereign-grade terminal.
+            Humanity Ledger operates as the sovereign application layer over Aztec's zero knowledge execution environment. We abstract the complexity of ZK circuits into a sovereign-grade terminal.
           </motion.p>
 
           <motion.div variants={FADE_UP} className="w-full max-w-[300px] mx-auto flex flex-col items-center gap-3">

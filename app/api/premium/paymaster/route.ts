@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Abstract the gas fee: 
-    // In production, this signs the user's transaction payload with the Whale Network sponsor private key.
+    // In production, this signs the user's transaction payload with the Humanity Ledger sponsor private key.
     console.log(`[Paymaster] Subsidizing gas for transaction payload from tier: ${userTier}`);
 
     return NextResponse.json({

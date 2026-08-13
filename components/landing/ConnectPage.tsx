@@ -363,7 +363,7 @@ export default function ConnectPage() {
             throw new Error(errData.error || 'Failed to fetch authentication nonce');
         }
         const { nonce } = await nonceRes.json();
-        const message = `Authenticate to Whale Network.\n\nNonce: ${nonce}`;
+        const message = `Authenticate to Humanity Ledger.\n\nNonce: ${nonce}`;
         let signature = '';
         let lastErr: any = null;
 

@@ -3,11 +3,11 @@
 /**
  * [PHASE 5 — NULLIFIED]
  *
- * GoogleTagManager has been permanently removed from Whale Network.
+ * GoogleTagManager has been permanently removed from Humanity Ledger.
  * 
  * REASON: Irreconcilable with the Zero-Tracker / Cypherpunk mandate.
  * Third-party analytics infrastructure violates the absolute privacy
- * guarantee: "Whale Network is structurally incapable of collecting user state."
+ * guarantee: "Humanity Ledger is structurally incapable of collecting user state."
  *
  * This file is preserved as a tombstone to document the architectural decision
  * and prevent accidental re-introduction of tracking infrastructure.

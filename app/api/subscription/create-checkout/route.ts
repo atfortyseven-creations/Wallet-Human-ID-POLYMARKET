@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
           price_data: {
             currency: 'eur',
             product_data: {
-              name: 'Whale Network ID - VIP Lifetime Access',
+              name: 'Humanity Ledger ID - VIP Lifetime Access',
               description: 'Acceso de por vida a todas las herramientas PRO (Sin suscripciones).',
             },
             unit_amount: 150, // 1.50 EUR in cents

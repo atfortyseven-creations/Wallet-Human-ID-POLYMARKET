@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
         break;
       
       case 'custom':
-        message = data.message || 'Test notification from Whale Network VIP';
+        message = data.message || 'Test notification from Humanity Ledger VIP';
         break;
       
       default:
@@ -121,7 +121,7 @@ export async function GET(request: NextRequest) {
 
  Your Telegram alerts are working!
 
-This is a test message from <b>Whale Network VIP</b>.
+This is a test message from <b>Humanity Ledger VIP</b>.
 
 You will now receive:
  Whale movement alerts

@@ -26,7 +26,7 @@ export const Footer = () => {
                     {/* Brand Identity */}
                     <div className="md:col-span-5 flex flex-col items-start">
                         <div className="flex items-center gap-3 mb-6 bg-black/5 border border-black/10 px-5 py-2.5 rounded-full backdrop-blur-md shadow-sm">
-                            <span className="text-[12px] font-aztec-mono font-black tracking-[0.25em] uppercase text-black">Whale Network</span>
+                            <span className="text-[12px] font-aztec-mono font-black tracking-[0.25em] uppercase text-black">Humanity Ledger</span>
                         </div>
                         <p className="text-[13px] font-sans text-black/60 leading-relaxed max-w-sm tracking-wide mb-8">
                             Decentralised digital identity and financial privacy infrastructure built natively on Aztec Network L2. 

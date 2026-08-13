@@ -51,7 +51,7 @@ export function CookieConsentBanner() {
                   Sovereign Telemetry & Privacy
                 </h3>
                 <p className="text-[10px] md:text-[11px] text-black/50 leading-relaxed font-mono uppercase tracking-[0.1em] max-w-2xl">
-                  Whale Network utilizes cryptographic local storage to maintain System identity sessions (Zero Knowledge) and standard cookies for platform functionality. You must authorize data retention policies before operating the terminal.
+                  Humanity Ledger utilizes cryptographic local storage to maintain System identity sessions (Zero Knowledge) and standard cookies for platform functionality. You must authorize data retention policies before operating the terminal.
                 </p>
               </div>
             </div>

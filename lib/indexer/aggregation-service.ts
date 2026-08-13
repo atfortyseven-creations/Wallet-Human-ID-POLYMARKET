@@ -1,6 +1,6 @@
 /**
  * 
- * Whale Network NETWORK  Aggregation & Indexing Service
+ * Humanity Ledger NETWORK  Aggregation & Indexing Service
  * 
  *
  * Purpose: Pre-computes expensive analytics across the 1TB Railway volume.

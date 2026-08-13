@@ -132,7 +132,7 @@ export function ProvenanceSessionGate({ children }: { children: React.ReactNode 
           <p className="text-sm text-black/60 leading-relaxed">
             {isConnected 
               ? 'Please sign the message in your wallet to verify your identity and enable write access to the Studio Provenance database.'
-              : 'Connect your wallet to access the Whale Network terminal and all its modules.'}
+              : 'Connect your wallet to access the Humanity Ledger terminal and all its modules.'}
           </p>
           
           {isConnected ? (

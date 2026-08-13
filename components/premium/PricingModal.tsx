@@ -15,7 +15,7 @@ export default function PricingModal({ isOpen, onClose, onSubscribe }: PricingMo
 
   const features = [
     'Unlimited Watch Wallets',
-    'Real-time Whale Networks',
+    'Real-time Humanity Ledgers',
     'Smart Money Tracking',
     'Wallet Comparison Tool',
     'Copy Attesting Alerts',
@@ -174,7 +174,7 @@ export default function PricingModal({ isOpen, onClose, onSubscribe }: PricingMo
               </button>
 
               <div className="mt-4 text-center">
-                  <span className="text-[10px] font-black text-white/50 uppercase tracking-[0.2em]">Instant Activation via Whale Network ID</span>
+                  <span className="text-[10px] font-black text-white/50 uppercase tracking-[0.2em]">Instant Activation via Humanity Ledger ID</span>
               </div>
             </div>
           </div>

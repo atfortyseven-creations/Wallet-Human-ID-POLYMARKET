@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { ArrowLeft, Shield, AlertTriangle, CheckCircle2, BookOpen, Users, Zap, Flag, Scale, MessageSquare } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Normas de la Comunidad | Whale Network Forum',
-  description: 'Las normas y estándares de participación en el foro de Análisis Institucional de Whale Network.',
+  title: 'Normas de la Comunidad | Humanity Ledger Forum',
+  description: 'Las normas y estándares de participación en el foro de Análisis Institucional de Humanity Ledger.',
 };
 
 const RULES = [
@@ -61,7 +61,7 @@ const RULES = [
     n: '04',
     icon: Zap,
     title: 'Mantenerse en el tema del foro',
-    body: 'Este foro está dedicado al análisis de la blockchain, finanzas descentralizadas (DeFi), comportamiento de grandes billeteras (whales) y la plataforma Whale Network. Las conversaciones fuera de tema o la promoción no autorizada no están permitidas.',
+    body: 'Este foro está dedicado al análisis de la blockchain, finanzas descentralizadas (DeFi), comportamiento de grandes billeteras (whales) y la plataforma Humanity Ledger. Las conversaciones fuera de tema o la promoción no autorizada no están permitidas.',
     dos: [
       'Abrir hilos en la categoría correcta (Análisis, Plataforma, Investigación, etc.)',
       'Usar títulos descriptivos que faciliten la lectura de los temas',
@@ -127,7 +127,7 @@ export default function ForumGuidelinesPage() {
             Normas de la Comunidad
           </h1>
           <p className="text-[14px] text-slate-500 font-medium max-w-2xl leading-relaxed">
-            El foro de Whale Network es un espacio de alta calidad para el análisis de blockchain, DeFi e inteligencia financiera. Estas normas existen para proteger la calidad del contenido y asegurar una convivencia sana.
+            El foro de Humanity Ledger es un espacio de alta calidad para el análisis de blockchain, DeFi e inteligencia financiera. Estas normas existen para proteger la calidad del contenido y asegurar una convivencia sana.
           </p>
         </div>
 

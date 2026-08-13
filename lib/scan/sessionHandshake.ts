@@ -67,7 +67,7 @@ export async function completeSessionHandshake(
       return {
         ok: false,
         message:
-          'Invalid QR code. Please scan the QR code displayed on the Whale Network desktop site.',
+          'Invalid QR code. Please scan the QR code displayed on the Humanity Ledger desktop site.',
       };
     }
   }
@@ -152,7 +152,7 @@ export async function completeSessionHandshake(
         const nonceRes = await fetch('/api/auth/nonce', { cache: 'no-store' });
         if (nonceRes.ok) {
           const { nonce } = await nonceRes.json();
-          const message = `Authenticate to Whale Network.\n\nNonce: ${nonce}`;
+          const message = `Authenticate to Humanity Ledger.\n\nNonce: ${nonce}`;
           
           let signature = '';
           try {

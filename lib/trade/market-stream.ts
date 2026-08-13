@@ -99,11 +99,11 @@ class MarketStream {
 
       store.addAttest(symbol, attest);
 
-      // Whale Network for large attestations
+      // Humanity Ledger for large attestations
       const value = attest.quantity * attest.price;
       if (value > 50000) {
         import('sonner').then(({ toast }) => {
-          toast(` Whale Network: ${symbol}`, {
+          toast(` Humanity Ledger: ${symbol}`, {
             description: `${attest.side === 'buy' ? 'BOUGHT' : 'SOLD'} $${safeToLocaleString(value)}`,
             style: {
               background: attest.side === 'buy' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(244, 63, 94, 0.2)',

@@ -3,7 +3,7 @@
 import React, { useRef, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 
-// ─── Roadmap Data — Whale Network Full Architecture ───────────────────────────
+// ─── Roadmap Data — Humanity Ledger Full Architecture ───────────────────────────
 
 interface RoadmapNode {
   id: string;
@@ -512,7 +512,7 @@ export default function HumanityLedger() {
             Protocol Roadmap
           </h1>
           <p className="text-[12px] sm:text-[13.5px] text-black/50 leading-relaxed pointer-events-auto max-w-xl">
-            Whale Network development timeline — from core infrastructure to Genesis in December 2026.
+            Humanity Ledger development timeline — from core infrastructure to Genesis in December 2026.
             Drag the canvas to explore, scroll to zoom, and click any node for details.
           </p>
         </div>

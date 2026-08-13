@@ -26,7 +26,7 @@ export default function InstitutionalHeader() {
       console.log('Protocol Action:', data.message);
       setActiveMenu(null);
     } catch (e) {
-      console.error('Failed to communicate with the Whale Network backend.', e);
+      console.error('Failed to communicate with the Humanity Ledger backend.', e);
     }
   };
 
@@ -110,7 +110,7 @@ export default function InstitutionalHeader() {
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-3">
               <WhaleLogo className="w-7 h-7" priority />
-              <span className="font-black text-lg tracking-tight">Whale Network NETWORK</span>
+              <span className="font-black text-lg tracking-tight">Humanity Ledger NETWORK</span>
             </div>
             <nav className="flex items-center gap-8 font-black">
               <button className="hover:text-black transition-opacity text-black">TELEMETRY</button>

@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
         // Query recent high-volume attestations/buys. 
         // Note: The tokenunion polymarket subgraph has `transactions` or `attestations` or we can just fetch top users' recent actions.
         // As a fallback heuristic that uses actual on-chain graph data, we'll query the users with highest volume 
-        // and fetch their latest activity, or just query `users` sorted by totalVolume and map it to a "Whale Network" format.
+        // and fetch their latest activity, or just query `users` sorted by totalVolume and map it to a "Humanity Ledger" format.
         // Let's query recent FPMMAttestations if available, or just use the users table for demonstration of real data.
         
         // Let's try to query 'fpmmAttestations' or 'transactions'.

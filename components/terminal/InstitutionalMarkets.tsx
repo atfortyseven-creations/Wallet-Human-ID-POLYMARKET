@@ -55,25 +55,37 @@ function ZkDecryptionEngine({ onComplete, item }: { onComplete: () => void, item
 
     useEffect(() => {
         let currentStep = 0;
-        const interval = setInterval(() => {
-            if (currentStep < ZK_LOGS.length) {
-                setLogs(prev => [...prev, ZK_LOGS[currentStep]]);
-                setProgress(Math.floor(((currentStep + 1) / ZK_LOGS.length) * 100));
-                currentStep++;
-            } else {
-                clearInterval(interval);
-                setTimeout(() => onCompleteRef.current(), 1200); 
+        let animationFrameId: number;
+        let lastUpdate = performance.now();
+        let lastRenderTick = performance.now();
+
+        const loop = (time: number) => {
+            // Update logs every 350ms
+            if (time - lastUpdate >= 350) {
+                if (currentStep < ZK_LOGS.length) {
+                    setLogs(prev => [...prev, ZK_LOGS[currentStep]]);
+                    setProgress(Math.floor(((currentStep + 1) / ZK_LOGS.length) * 100));
+                    currentStep++;
+                    lastUpdate = time;
+                } else if (time - lastUpdate >= 1200) {
+                    // Final delay before completion
+                    onCompleteRef.current();
+                    return; // exit loop
+                }
             }
-        }, 350); 
 
-        const renderInterval = setInterval(() => {
-            setTick(t => t + 1);
-        }, 50);
+            // Render visual noise every 50ms (simulating high-speed cryptography at 20fps for text readability while maintaining 60fps for the layout)
+            if (time - lastRenderTick >= 50 && currentStep < ZK_LOGS.length) {
+                setTick(t => t + 1);
+                lastRenderTick = time;
+            }
 
-        return () => {
-            clearInterval(interval);
-            clearInterval(renderInterval);
+            animationFrameId = requestAnimationFrame(loop);
         };
+
+        animationFrameId = requestAnimationFrame(loop);
+
+        return () => cancelAnimationFrame(animationFrameId);
     }, []);
 
     const realPayload = `TX_HASH:${item.hash} | SRC:${item.from} | DEST:${item.to} | VAL:${item.usdValue} | MTD:${item.method || 'UNKNOWN'}`;
@@ -434,7 +446,7 @@ function WhaleTransactionExplorer() {
                         className="w-40 h-40 flex items-center justify-center mx-auto relative group"
                     >
                         <SplashContainer className="w-full h-full transition-transform duration-700 scale-110 group-hover:scale-125 relative z-10 flex items-center justify-center">
-                            <img src="/official-whale-monochrome.png" className="w-full h-full object-contain brightness-0 opacity-90" alt="Whale Network" />
+                            <img src="/official-whale-monochrome.png" className="w-full h-full object-contain brightness-0 opacity-90" alt="Humanity Ledger" />
                         </SplashContainer>
                     </motion.div>
 

@@ -47,6 +47,6 @@ export const PAIR_METADATA: Record<string, PairMetadata> = {
   'AXSUSDT': { displayName: 'Axie Infinity', baseAsset: 'AXS', category: 'Gaming' },
   'THETAUSDT': { displayName: 'Theta', baseAsset: 'THETA', category: 'Infrastructure' },
   'AAVEUSDT': { displayName: 'Aave', baseAsset: 'AAVE', category: 'DeFi' },
-  'AUTHUSDT': { displayName: 'Identity', baseAsset: 'AUTH', category: 'Identity' } //  Whale Network IDentity Token
+  'AUTHUSDT': { displayName: 'Identity', baseAsset: 'AUTH', category: 'Identity' } //  Humanity Ledger IDentity Token
 };
 

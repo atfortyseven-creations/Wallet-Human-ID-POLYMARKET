@@ -3,7 +3,7 @@
 import LegalDocLayout, { TocItem } from '@/components/layout/LegalDocLayout';
 
 const TOC: TocItem[] = [
-  { id: 'humanity-ledger-s-l-whale-network', label: `Humanity Ledger S.L., Whale Network` },
+  { id: 'humanity-ledger-s-l-whale-network', label: `Humanity Ledger S.L., Humanity Ledger` },
   { id: '1-objective-and-scope', label: `1. OBJECTIVE AND SCOPE` },
   { id: '2-incident-response-team-internal-cert', label: `2. INCIDENT RESPONSE TEAM (Internal CERT)` },
   { id: '3-incident-classification', label: `3. INCIDENT CLASSIFICATION` },
@@ -15,7 +15,7 @@ export default function LegalPage() {
   return (
     <LegalDocLayout
       title="Security Architecture"
-      subtitle="This policy sets forth the legal and attestation rules governing the Whale Network ecosystem."
+      subtitle="This policy sets forth the legal and attestation rules governing the Humanity Ledger ecosystem."
       lastUpdated="July 2026"
       category="Legal & Security"
       toc={TOC}
@@ -27,7 +27,7 @@ export default function LegalPage() {
         {/* 1 */}
         <section id="humanity-ledger-s-l-whale-network">
           <h2 className="text-[1.1rem] font-bold uppercase tracking-[0.08em] text-black mb-6 pb-3 border-b border-black/10">
-            Humanity Ledger S.L., Whale Network
+            Humanity Ledger S.L., Humanity Ledger
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
@@ -44,7 +44,7 @@ export default function LegalPage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              This Cyber Security Incident Response Plan (CSIRP) establishes the technical, organisational, and legal procedures that Humanity Ledger S.L. must follow in the event of incidents compromising the confidentiality, integrity, or availability of the Whale Network infrastructure, user data (GDPR), or digital assets ($QDs).
+              This Cyber Security Incident Response Plan (CSIRP) establishes the technical, organisational, and legal procedures that Humanity Ledger S.L. must follow in the event of incidents compromising the confidentiality, integrity, or availability of the Humanity Ledger infrastructure, user data (GDPR), or digital assets ($QDs).
             </p>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">Scope of application:</h3>
             <ul className="list-disc pl-5 space-y-2">

@@ -2,16 +2,16 @@ import type { Metadata } from "next";
 import { NoirCircuitSandbox } from "@/components/developer/NoirCircuitSandbox";
 
 export const metadata: Metadata = {
-  title: "Noir Circuit Lab | Whale Network",
+  title: "Noir Circuit Lab | Humanity Ledger",
   description:
     "Interactive Noir environment to compile Aztec ZK circuits, generate Barretenberg proofs " +
     "and verify them on the Aztec L2 sequencer.",
-  keywords: ["Noir", "Aztec Network", "Zero Knowledge", "ZK Proofs", "Barretenberg", "UltraHonk", "Whale Network"],
+  keywords: ["Noir", "Aztec Network", "Zero Knowledge", "ZK Proofs", "Barretenberg", "UltraHonk", "Humanity Ledger"],
   openGraph: {
-    title: "Noir Circuit Lab | Whale Network",
+    title: "Noir Circuit Lab | Humanity Ledger",
     description: "Compile, generate witnesses, prove and verify Noir circuits in real-time.",
     url: "https://humanidfi.com/developer/sandbox",
-    siteName: "Whale Network",
+    siteName: "Humanity Ledger",
   },
 };
 
@@ -83,7 +83,7 @@ export default function SandboxPage() {
       </section>
 
       <footer className="mt-20 text-slate-400 text-[10px] font-mono tracking-[0.2em] text-center w-full uppercase border-t border-slate-100 pt-12">
-        Whale Network • Humanity Ledger S.L. • Aztec Native Integration
+        Humanity Ledger • Humanity Ledger S.L. • Aztec Native Integration
       </footer>
     </main>
   );

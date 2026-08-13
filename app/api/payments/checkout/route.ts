@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
                 try {
                     const priceAmount = billingCycle === 'ANNUAL' ? planConfig.priceMetrics.annual : planConfig.priceMetrics.monthly;
                     const newProduct = await stripe.products.create({
-                        name: `Whale Network - ${planConfig.name}`,
+                        name: `Humanity Ledger - ${planConfig.name}`,
                         description: `Cryptographic Node Infrastructure - ${tier} Tier`,
                         metadata: { tier: tier }
                     });

@@ -209,7 +209,7 @@ export function WhaleProfiler({ address, onClose }: Props) {
                                                             <span className="text-slate-950 font-black text-[10px] uppercase tracking-widest">Market Impact Spec</span>
                                                         </div>
                                                         <p className="text-[11px] text-slate-500 leading-relaxed font-medium italic">
-                                                            "High-velocity capital detected in this timeframe. Each marker represents a localized liquidity event captured by our Whale Network Pro indexers."
+                                                            "High-velocity capital detected in this timeframe. Each marker represents a localized liquidity event captured by our Humanity Ledger Pro indexers."
                                                         </p>
                                                     </motion.div>
                                                 </div>

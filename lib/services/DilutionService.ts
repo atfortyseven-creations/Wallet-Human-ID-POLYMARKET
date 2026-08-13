@@ -101,7 +101,7 @@ export class DilutionService {
                                 </div>
                             </div>
                             <p style="font-size: 10px; color: #444; margin-top: 30px; text-align: center;">
-                                © 2026 Whale Network - ESTE ES UN MENSAJE AUTOMATIZADO DE Análisis Institucional.
+                                © 2026 Humanity Ledger - ESTE ES UN MENSAJE AUTOMATIZADO DE Análisis Institucional.
                             </p>
                         </div>
                     `

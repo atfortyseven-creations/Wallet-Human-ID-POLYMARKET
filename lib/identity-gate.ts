@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { deriveAztecAddress } from '@/lib/aztec/zk-identity';
 
 /**
- * identity-gate.ts — Whale Network Supply Gate
+ * identity-gate.ts — Humanity Ledger Supply Gate
  * ─────────────────────────────────────────────
  * Enforces the hard cap of 200 unique identities on the Aztec Testnet.
  *
@@ -134,7 +134,7 @@ export async function assertVerifiedIdentity(walletAddress: string | undefined):
   if (!verified) {
     throw Object.assign(
       new Error(
-        'Access denied: You are not a verified Whale Network identity. '
+        'Access denied: You are not a verified Humanity Ledger identity. '
         + 'Claim your genesis airdrop to gain access (limited to 200 global identities).'
       ),
       { statusCode: 403, code: 'NOT_VERIFIED_IDENTITY' }

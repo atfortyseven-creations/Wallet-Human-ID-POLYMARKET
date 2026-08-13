@@ -131,7 +131,7 @@ export function NewsOfToday() {
                     <ArrowLeft size={13} />
                     Home
                 </a>
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black/20">Whale Network</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-black/20">Humanity Ledger</span>
                 <a href="/" className="text-[10px] font-black uppercase tracking-widest text-black/40 hover:text-black transition-colors">Dashboard →</a>
             </div>
             <div className="flex-1 w-full flex flex-col min-h-0 overflow-hidden relative">

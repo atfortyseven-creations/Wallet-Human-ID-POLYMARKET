@@ -44,17 +44,17 @@ const robotoMono = Roboto_Mono({
 
 export const metadata = {
   title: {
-    default: 'Whale Network | Studio Provenance & Aztec Identity',
-    template: '%s | Whale Network'
+    default: 'Humanity Ledger | Privacy Infrastructure on Aztec',
+    template: '%s | Humanity Ledger'
   },
-  description: 'Whale Network is the premier privacy layer on the Aztec Network. Claim your decentralised identity, access Studio Provenance, and communicate securely via Whale Chat using zero knowledge proofs.',
+  description: 'Humanity Ledger is the premier privacy layer on the Aztec Network. Claim your decentralised identity, access Studio Provenance, and communicate securely via Whale Chat using zero knowledge proofs.',
   keywords: [
-    'whale network', 'aztec identity', 'studio provenance', 'whale chat', 'decentralised identity',
+    'humanity ledger', 'aztec identity', 'studio provenance', 'whale chat', 'decentralised identity',
     'zero knowledge proofs', 'privacy', 'noir language', 'verifiable credentials'
   ],
-  authors: [{ name: 'Whale Network' }],
-  creator: 'Whale Network',
-  publisher: 'Whale Network',
+  authors: [{ name: 'Humanity Ledger' }],
+  creator: 'Humanity Ledger',
+  publisher: 'Humanity Ledger',
   metadataBase: new URL('https://humanidfi.com'),
   alternates: {
     canonical: '/',
@@ -74,20 +74,20 @@ export const metadata = {
   },
   appleWebApp: {
     capable: true,
-    title: 'Whale Network',
-    statusBarStyle: 'default',
+    title: 'Humanity Ledger',
+    statusBarStyle: 'black-translucent',
   },
   openGraph: {
-    title: 'Whale Network | Studio Provenance & Aztec Identity',
+    title: 'Humanity Ledger | Privacy Infrastructure on Aztec',
     description: 'Claim your decentralised identity, access Studio Provenance, and communicate securely via Whale Chat using zero knowledge proofs.',
     url: 'https://humanidfi.com',
-    siteName: 'Whale Network',
+    siteName: 'Humanity Ledger',
     images: [
       {
         url: '/humanid_protocol_logo_1778714491433.png',
         width: 1200,
         height: 1200,
-        alt: 'Whale Network Logo',
+        alt: 'Humanity Ledger Logo',
       },
     ],
     locale: 'en_US',
@@ -95,11 +95,11 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Whale Network | Studio Provenance & Aztec Identity',
+    title: 'Humanity Ledger | Privacy Infrastructure on Aztec',
     description: 'Claim your decentralised identity, access Studio Provenance, and communicate securely via Whale Chat using zero knowledge proofs.',
     images: ['/humanid_protocol_logo_1778714491433.png'],
-    site: '@whalecosystem',
-    creator: '@whalecosystem',
+    site: '@humanityledger',
+    creator: '@humanityledger',
   },
 }
 
@@ -128,7 +128,7 @@ export default async function RootLayout({
       {
         "@type": "WebSite",
         "url": "https://humanidfi.com/",
-        "name": "Whale Network",
+        "name": "Humanity Ledger",
         "description": "Privacy-preserving identity verification solution integrating zero knowledge proofs.",
         "potentialAction": {
           "@type": "SearchAction",
@@ -145,8 +145,8 @@ export default async function RootLayout({
       {
         "@type": "Organization",
         "@id": "https://humanidfi.com/#organization",
-        "name": "Whale Network",
-        "alternateName": ["Whale Ecosystem", "Whale Network Protocol"],
+        "name": "Humanity Ledger",
+        "alternateName": ["Humanity Ledger Ecosystem", "Humanity Ledger Protocol"],
         "url": "https://humanidfi.com",
         "logo": "https://humanidfi.com/humanid_protocol_logo_1778714491433.png",
         "sameAs": [
@@ -155,7 +155,7 @@ export default async function RootLayout({
       },
       {
         "@type": "WebApplication",
-        "name": "Whale Network Platform",
+        "name": "Humanity Ledger Platform",
         "applicationCategory": "SecurityApplication",
         "operatingSystem": "Web",
         "offers": {
@@ -181,7 +181,7 @@ export default async function RootLayout({
             "@type": "SiteNavigationElement",
             "position": 1,
             "name": "Docs",
-            "description": "Whale Network SDK enables privacy-preserving identity verification.",
+            "description": "Humanity Ledger SDK enables privacy-preserving identity verification.",
             "url": "https://humanidfi.com/developers/api-docs"
           },
           {
@@ -194,7 +194,7 @@ export default async function RootLayout({
           {
             "@type": "SiteNavigationElement",
             "position": 3,
-            "name": "Whale Network Registry Explorer",
+            "name": "Humanity Ledger Registry Explorer",
             "description": "Explore countries with supported documents, view coverage and node density.",
             "url": "https://humanidfi.com/registry"
           }

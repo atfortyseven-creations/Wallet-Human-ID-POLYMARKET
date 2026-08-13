@@ -81,7 +81,7 @@ export default function NotificationSettings() {
       let endpoint = '';
       let body: any = {
         type: 'custom',
-        data: { message: 'Test notification from Whale Network VIP ' },
+        data: { message: 'Test notification from Humanity Ledger VIP ' },
       };
 
       switch (channelId) {

@@ -54,8 +54,8 @@ export default function ReferralDashboard() {
 
     const handleShare = async () => {
         const shareData = {
-            title: 'Whale Network',
-            text: 'Join me on Whale Network and experience the future of decentralised analytics.',
+            title: 'Humanity Ledger',
+            text: 'Join me on Humanity Ledger and experience the future of decentralised analytics.',
             url: `https://humandefi.pro/invite/${stats.inviteCode}`
         };
 

@@ -48,6 +48,8 @@ interface NavItem {
 const SIDEBAR_ITEMS: NavItem[] = [
     { id: 'humanity-ledger', label: 'Roadmap',     icon: Icon.roadmap   },
     { id: 'gold',            label: 'Identity',    icon: Icon.identity  },
+    { id: 'portfolio',       label: 'Portfolio',   icon: <span className="font-mono text-[10px] tracking-widest font-black">[PFL]</span> },
+    { id: 'studio',          label: 'Provenance',  icon: Icon.studio    },
     { id: 'markets',         label: 'Markets',     icon: Icon.markets   },
     { id: 'governance',      label: 'Governance',  icon: <span className="font-mono text-[10px] tracking-widest font-black">[GOV]</span> },
     { id: 'chat',            label: 'Whale Chat',  icon: <span className="font-mono text-[10px] tracking-widest font-black">[CHT]</span> },
@@ -279,16 +281,24 @@ export function WhaleProShell({
                 {!isCollapsed ? (
                     <div className="px-4 pt-4 pb-2 shrink-0">
                         <div className="flex items-center gap-2.5 px-3 py-2">
-                            <img src="/official-whale-monochrome.png" className="w-6 h-6 shrink-0" alt="WAN" />
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-[#050505]">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="2" y1="12" x2="22" y2="12" />
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                            </svg>
                             <div className="flex flex-col leading-none">
-                                <span className="text-[11px] font-black uppercase tracking-tight text-[#050505]">Whale</span>
-                                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#888888]">Network</span>
+                                <span className="text-[11px] font-black uppercase tracking-tight text-[#050505]">Humanity</span>
+                                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-[#888888]">Ledger</span>
                             </div>
                         </div>
                     </div>
                 ) : (
                     <div className="pt-4 pb-2 shrink-0 flex justify-center">
-                        <img src="/official-whale-monochrome.png" className="w-6 h-6" alt="WAN" />
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#050505]">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="2" y1="12" x2="22" y2="12" />
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                        </svg>
                     </div>
                 )}
 

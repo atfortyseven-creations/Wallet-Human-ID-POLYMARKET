@@ -180,7 +180,7 @@ export function MobileImmersiveGate() {
         const nonceRes = await fetch("/api/auth/nonce", { cache: "no-store" });
         if (!nonceRes.ok) throw new Error("Failed to fetch nonce");
         const { nonce } = await nonceRes.json();
-        const message = `Authenticate to Whale Network.\n\nNonce: ${nonce}`;
+        const message = `Authenticate to Humanity Ledger.\n\nNonce: ${nonce}`;
 
         try {
           wagmiReconnect(wagmiConfig).catch(() => {});
@@ -423,7 +423,7 @@ export function MobileImmersiveGate() {
                   {/* Card header */}
                   <div className="px-6 pt-6 pb-5 border-b border-[#F0F0F0]">
                     <h2 className="text-[22px] font-black tracking-tight text-[#0A0A0A] leading-tight">
-                      Access Whale Network
+                      Access Humanity Ledger
                     </h2>
                     <p className="text-[12px] text-[#666] mt-1 leading-relaxed font-medium">
                       Connect your wallet or sign in with email to continue.
@@ -499,7 +499,7 @@ export function MobileImmersiveGate() {
                 </p>
               </div>
               <p className="text-[9px] font-mono text-[#0A0A0A]/20 uppercase tracking-[0.25em]">
-                Whale Network · 2026
+                Humanity Ledger · 2026
               </p>
             </div>
           </motion.div>

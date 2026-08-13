@@ -1,7 +1,7 @@
 /**
  * GetBlock WebSocket Whale Engine  Registry-backed
  * Subscribes to all on-chain ERC-20 Transfer events above $WHALE_THRESHOLD_USD
- * Feeds the WhalePortfolio leaderboard and the live Whale Network feed.
+ * Feeds the WhalePortfolio leaderboard and the live Humanity Ledger feed.
  * WSS pool: getblock-registry.ts (GB_ETH_WSS_*)
  */
 

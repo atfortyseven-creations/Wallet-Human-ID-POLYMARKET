@@ -419,15 +419,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const derivePeerId = useCallback((walletAddress: string): string => {
     return `whale${walletAddress.slice(2, 12).toLowerCase()}`;
   }, []);
-  const [isMicMuted, setIsMicMuted] = useState(false);
-  const [isCamOff, setIsCamOff] = useState(false);
   
   // ── Telegram/WhatsApp Parity States ──
   const [isCallMinimized, setIsCallMinimized] = useState(false);
   const [networkQuality, setNetworkQuality] = useState<'good' | 'poor' | 'disconnected'>('good');
   const [audioLevel, setAudioLevel] = useState<number>(0);
-  const [activeCamera, setActiveCamera] = useState<'user' | 'environment'>('user');
-  const [isScreenSharing, setIsScreenSharing] = useState(false);
 
   const myVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
@@ -769,14 +765,26 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       return () => clearInterval(interval);
   }, [address, client]);
 
-  // Telemetry: Peer Polling Loop
+  // Telemetry: Peer Polling Loop (adaptive interval based on network quality)
   useEffect(() => {
       if (!activePeer || !address) {
           setPeerStatus({ online: false, lastSeen: null, isTyping: false });
           return;
       }
       let isMounted = true;
+
+      // Determine polling interval: poor connection = less aggressive polling
+      const getPollingInterval = () => {
+          if (typeof navigator !== 'undefined') {
+              const conn = (navigator as any).connection;
+              if (!navigator.onLine) return 15000; // offline: back way off
+              if (conn && (conn.effectiveType === '2g' || conn.effectiveType === 'slow-2g')) return 8000;
+          }
+          return 3000; // default: 3s on good connection
+      };
+
       const pollPeer = async () => {
+          if (!isMounted) return;
           try {
               const res = await fetch(`/api/chat/telemetry?peer=${activePeer}&self=${address}`, { cache: 'no-store' });
               if (!res.ok) return;
@@ -786,8 +794,18 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       };
 
       pollPeer();
-      const interval = setInterval(pollPeer, 3000);
-      return () => { isMounted = false; clearInterval(interval); };
+      // Adaptive interval: re-evaluate every poll cycle
+      let timeoutId: ReturnType<typeof setTimeout>;
+      const scheduleNext = () => {
+          if (!isMounted) return;
+          timeoutId = setTimeout(async () => {
+              await pollPeer();
+              scheduleNext();
+          }, getPollingInterval());
+      };
+      scheduleNext();
+
+      return () => { isMounted = false; clearTimeout(timeoutId); };
   }, [activePeer, address]);
 
 
@@ -1187,33 +1205,45 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
     };
   }, [callState, remoteStream]);
 
-  // Network Quality Monitor
+  // Network Quality Monitor (RAF-based — saves battery on mobile vs setInterval)
   useEffect(() => {
     if (callState !== 'active' || !activeConnectionRef.current) {
       setNetworkQuality('good');
       return;
     }
-    const interval = setInterval(async () => {
-      try {
-        const peerConn = activeConnectionRef.current?.peerConnection;
-        if (!peerConn) return;
-        const stats = await peerConn.getStats();
-        let isPoor = false;
-        stats.forEach((report: any) => {
-          if (report.type === 'candidate-pair' && report.state === 'succeeded') {
-            if (report.currentRoundTripTime > 0.4) isPoor = true; // > 400ms latency
+
+    let rafId: number;
+    let lastCheckTime = 0;
+    const CHECK_INTERVAL_MS = 2000; // Only check every 2 seconds, but via RAF to stay in sync
+
+    const checkQuality = async (timestamp: number) => {
+      if (timestamp - lastCheckTime >= CHECK_INTERVAL_MS) {
+        lastCheckTime = timestamp;
+        try {
+          const peerConn = activeConnectionRef.current?.peerConnection;
+          if (peerConn) {
+            const stats = await peerConn.getStats();
+            let isPoor = false;
+            stats.forEach((report: any) => {
+              if (report.type === 'candidate-pair' && report.state === 'succeeded') {
+                if (report.currentRoundTripTime > 0.4) isPoor = true;
+              }
+              if (report.type === 'inbound-rtp' && report.kind === 'video') {
+                if (report.packetsReceived > 0) {
+                  const fractionLost = report.packetsLost / report.packetsReceived;
+                  if (fractionLost > 0.05) isPoor = true;
+                }
+              }
+            });
+            setNetworkQuality(isPoor ? 'poor' : 'good');
           }
-          if (report.type === 'inbound-rtp' && report.kind === 'video') {
-            if (report.packetsReceived > 0) {
-              const fractionLost = report.packetsLost / report.packetsReceived;
-              if (fractionLost > 0.05) isPoor = true; // > 5% packet loss
-            }
-          }
-        });
-        setNetworkQuality(isPoor ? 'poor' : 'good');
-      } catch (e) {}
-    }, 2000);
-    return () => clearInterval(interval);
+        } catch {}
+      }
+      rafId = requestAnimationFrame(checkQuality);
+    };
+
+    rafId = requestAnimationFrame(checkQuality);
+    return () => cancelAnimationFrame(rafId);
   }, [callState]);
 
   // ─── performEndCall: Universal cleanup ── uses refs to avoid stale closures ──
@@ -2036,7 +2066,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         if (attempts >= maxAttempts) {
           console.error('[WhaleChat] Init Error:', err);
           if (err?.name === 'ChunkLoadError' || errorMsg.includes('Loading chunk')) {
-            setInitError('Whale Network module failed to load. Please check your network connection and reload the terminal.');
+            setInitError('Humanity Ledger module failed to load. Please check your network connection and reload the terminal.');
           } else if (errorMsg.includes('No active wallet') || errorMsg.includes('connector') || errorMsg.includes('signMessage') || errorMsg.toLowerCase().includes('unknown signer')) {
             if (isSystemHandshake) {
                setInitError('Whale identity not yet synchronized from desktop. Please keep this browser open while the desktop terminal finishes the handshake.');
@@ -2046,7 +2076,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           } else if (errorMsg.includes('WASM') || errorMsg.includes('wasm')) {
             setInitError('Cryptographic Engine Failure. Hardware architecture error or restricted browser security settings.');
           } else {
-            setInitError(`Whale Network handshake failure: ${errorMsg.slice(0, 80) || 'Unknown Protocol Error'}. Please retry.`);
+            setInitError(`Humanity Ledger handshake failure: ${errorMsg.slice(0, 80) || 'Unknown Protocol Error'}. Please retry.`);
           }
           setIsInitializing(false);
           initInFlight.current = false;
@@ -3970,7 +4000,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               {/* Whale Logo */}
               <div className="w-40 h-40 mb-8 rounded-full bg-white/50 backdrop-blur-xl shadow-2xl border border-white flex items-center justify-center relative">
                 <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/40 to-transparent pointer-events-none" />
-                <img src="/official-whale-monochrome.png" alt="Whale Network" className="w-24 h-24 object-contain opacity-90 drop-shadow-md" style={{ filter: 'invert(var(--dark-invert, 0))' }} />
+                <img src="/official-whale-monochrome.png" alt="Humanity Ledger" className="w-24 h-24 object-contain opacity-90 drop-shadow-md" style={{ filter: 'invert(var(--dark-invert, 0))' }} />
               </div>
 
               {/* Main Typography */}

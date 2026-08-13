@@ -303,7 +303,7 @@ export function InstitutionalQuantChart() {
             Volume Bars
           </span>
         </div>
-        <span>Whale Network NETWORK · SOVEREIGN ENGINE</span>
+        <span>Humanity Ledger NETWORK · SOVEREIGN ENGINE</span>
       </div>
     </div>
   );

@@ -12,8 +12,8 @@ interface FAQItem {
 
 const faqs: FAQItem[] = [
     {
-        question: "What is Whale Network Wallet?",
-        answer: "Whale Network Wallet is a non-custodial Web3 wallet that uses biometrics to eliminate the need for seed phrases. Your face is your private key."
+        question: "What is Humanity Ledger Wallet?",
+        answer: "Humanity Ledger Wallet is a non-custodial Web3 wallet that uses biometrics to eliminate the need for seed phrases. Your face is your private key."
     },
     {
         question: "Is biometric authentication secure?",
@@ -58,7 +58,7 @@ export function FAQSection() {
                         Need To Know
                     </h2>
                     <p className="text-xl md:text-2xl text-[#1F1F1F]/60 max-w-2xl mx-auto font-light leading-relaxed">
-                        Clear answers to common questions about Whale Network Wallet
+                        Clear answers to common questions about Humanity Ledger Wallet
                     </p>
                 </motion.div>
 

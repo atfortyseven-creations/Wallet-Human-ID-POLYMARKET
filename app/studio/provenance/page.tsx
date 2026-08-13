@@ -3,7 +3,7 @@ import { ProvenanceStudioContent } from '@/components/provenance/ProvenanceStudi
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Studio Provenance | Whale Network',
+  title: 'Studio Provenance | Humanity Ledger',
   description: 'Zero-knowledge verifiable product passports on Aztec Network.',
 };
 

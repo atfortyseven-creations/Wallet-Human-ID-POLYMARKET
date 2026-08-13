@@ -68,7 +68,7 @@ export const TelemetryTerminal = React.memo(function TelemetryTerminal({ nodes }
                 id: ++logCounter,
                 timestamp: timeStr,
                 type: 'warning',
-                message: <span><span className="text-[#E5E5E5]">[{data.chain?.toUpperCase() || 'ETH'}]</span> Whale Network: {data.type || 'Transfer'} detected for <span className="text-[#FF9500] font-black">${(data.usdValue || data.amountUsd || 0).toLocaleString()}</span> USD.</span>
+                message: <span><span className="text-[#E5E5E5]">[{data.chain?.toUpperCase() || 'ETH'}]</span> Humanity Ledger: {data.type || 'Transfer'} detected for <span className="text-[#FF9500] font-black">${(data.usdValue || data.amountUsd || 0).toLocaleString()}</span> USD.</span>
             }]);
         });
 

@@ -27,7 +27,7 @@ export default function LegalPage() {
   return (
     <LegalDocLayout
       title="Privacy Policy"
-      subtitle="This policy sets forth the legal and attestation rules governing the Whale Network ecosystem."
+      subtitle="This policy sets forth the legal and attestation rules governing the Humanity Ledger ecosystem."
       lastUpdated="26 July 2026"
       category="Legal"
       toc={TOC}
@@ -40,7 +40,7 @@ export default function LegalPage() {
         <div className="p-6 bg-black text-white font-mono text-sm border border-black shadow-2xl rounded-xl">
           <p className="font-bold text-emerald-400 uppercase tracking-widest mb-2">Absolute Privacy Guarantee</p>
           <p>
-            Whale Network is structurally incapable of collecting user state. Data is sealed via SNARKs before reaching any network layer. Privacy is not a feature; it is an unalienable cryptographic right.
+            Humanity Ledger is structurally incapable of collecting user state. Data is sealed via SNARKs before reaching any network layer. Privacy is not a feature; it is an unalienable cryptographic right.
           </p>
         </div>
 
@@ -109,7 +109,7 @@ export default function LegalPage() {
               </tr>
               <tr>
                 <td className="px-4 py-2 border-r border-black/10"><strong>Platform</strong></td>
-                <td className="px-4 py-2 border-r border-black/10">Whale Network</td>
+                <td className="px-4 py-2 border-r border-black/10">Humanity Ledger</td>
               </tr>
               <tr>
                 <td className="px-4 py-2 border-r border-black/10"><strong>Token</strong></td>
@@ -117,7 +117,7 @@ export default function LegalPage() {
               </tr>
             </tbody></table></div>
             <p>
-              Humanity Ledger S.L. acts as the <strong className="text-black font-semibold">data controller</strong> with respect to the personal data that you provide to us or that we generate as a result of your use of the Whale Network platform, subject to the specific technical qualifications described in Sections 9 and 10 of this document in relation to data processed in decentralised environments.
+              Humanity Ledger S.L. acts as the <strong className="text-black font-semibold">data controller</strong> with respect to the personal data that you provide to us or that we generate as a result of your use of the Humanity Ledger platform, subject to the specific technical qualifications described in Sections 9 and 10 of this document in relation to data processed in decentralised environments.
             </p>
           </div>
         </section>
@@ -145,7 +145,7 @@ export default function LegalPage() {
               <strong className="text-black font-semibold">2.4. "Data Processor":</strong> A natural or legal person, public authority, agency, or other body which processes personal data on behalf of the data controller.
             </p>
             <p>
-              <strong className="text-black font-semibold">2.5. "Data Subject":</strong> The User of the Whale Network platform whose personal data is subject to processing.
+              <strong className="text-black font-semibold">2.5. "Data Subject":</strong> The User of the Humanity Ledger platform whose personal data is subject to processing.
             </p>
             <p>
               <strong className="text-black font-semibold">2.6. "Consent":</strong> Any freely given, specific, informed, and unambiguous indication of the data subject's wishes by which they, through a statement or a clear affirmative action, signify agreement to the processing of personal data relating to them.
@@ -176,7 +176,7 @@ export default function LegalPage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              <strong className="text-black font-semibold">3.1.</strong> This Privacy Policy applies to all personal data processed by Humanity Ledger S.L. in connection with access to and use of the Whale Network platform, available at https://humanidfi.com, as well as the following services integrated into that platform:
+              <strong className="text-black font-semibold">3.1.</strong> This Privacy Policy applies to all personal data processed by Humanity Ledger S.L. in connection with access to and use of the Humanity Ledger platform, available at https://humanidfi.com, as well as the following services integrated into that platform:
             </p>
             <ul className="list-disc pl-5 space-y-2">
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Private Dashboard:</strong> User control panel with portfolio and activity information.</span></li>
@@ -190,7 +190,7 @@ export default function LegalPage() {
               <strong className="text-black font-semibold">3.2.</strong> This Policy does not apply to third-party websites that you may access through links on our platform. Humanity Ledger S.L. accepts no responsibility for the privacy practices of such third parties, and we strongly encourage you to consult their respective privacy policies.
             </p>
             <p>
-              <strong className="text-black font-semibold">3.3.</strong> The Whale Network platform is intended for persons aged <strong className="text-black font-semibold">18 years or older</strong>. We do not knowingly collect personal data from minors. If you become aware that a minor has provided us with personal data without parental consent, please notify us at legal@humanidfi.com so that we may proceed with its immediate deletion.
+              <strong className="text-black font-semibold">3.3.</strong> The Humanity Ledger platform is intended for persons aged <strong className="text-black font-semibold">18 years or older</strong>. We do not knowingly collect personal data from minors. If you become aware that a minor has provided us with personal data without parental consent, please notify us at legal@humanidfi.com so that we may proceed with its immediate deletion.
             </p>
           </div>
         </section>
@@ -236,7 +236,7 @@ export default function LegalPage() {
               </tr>
             </tbody></table></div>
             <p>
-              <strong className="text-black font-semibold">Purpose of processing:</strong> Management, maintenance, and administration of the user account on the Whale Network platform; verification of user identity for access to services; delivery of operational, technical, and security notices relating to the account.
+              <strong className="text-black font-semibold">Purpose of processing:</strong> Management, maintenance, and administration of the user account on the Humanity Ledger platform; verification of user identity for access to services; delivery of operational, technical, and security notices relating to the account.
             </p>
             <p>
               <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(b) GDPR, <strong className="text-black font-semibold">Performance of a contract</strong> to which the data subject is party, or taking steps at the request of the data subject prior to entering into a contract. Account creation constitutes acceptance of our Terms and Conditions of Use, the performance of which requires the processing of these data.
@@ -317,7 +317,7 @@ export default function LegalPage() {
               </tr>
             </tbody></table></div>
             <p>
-              <strong className="text-black font-semibold">Purpose of processing:</strong> Recording and indexing of transactions carried out by the user on the Whale Network platform for the purposes of: (i) providing the user with information on their activity history; (ii) ensuring the integrity and irrevocability of transactions; (iii) complying with transaction monitoring obligations under AML regulations; and (iv) supporting the Private Portfolio and Dashboard functionalities.
+              <strong className="text-black font-semibold">Purpose of processing:</strong> Recording and indexing of transactions carried out by the user on the Humanity Ledger platform for the purposes of: (i) providing the user with information on their activity history; (ii) ensuring the integrity and irrevocability of transactions; (iii) complying with transaction monitoring obligations under AML regulations; and (iv) supporting the Private Portfolio and Dashboard functionalities.
             </p>
             <p>
               <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(f) GDPR, <strong className="text-black font-semibold">Legitimate interests</strong> of Humanity Ledger S.L., consisting in ensuring the operational integrity of the platform, maintaining a reliable record of executed transactions, and meeting the contractual expectations of users. This interest has been balanced against the rights and interests of users and found to be proportionate given that: (a) users have a reasonable expectation that their transactions will be recorded, as this is inherent to the nature of blockchain networks; and (b) Aztec Network's ZKP architecture ensures that the user's private transactions are not readable by Humanity Ledger S.L. without the corresponding viewing key.
@@ -447,7 +447,7 @@ export default function LegalPage() {
               </tr>
             </tbody></table></div>
             <p>
-              <strong className="text-black font-semibold">Purpose of processing:</strong> Sending commercial communications regarding new services, features, events, platform updates, and opportunities related to the Whale Network ecosystem and the $QDs token; personalisation of communications based on the user's profile and interests.
+              <strong className="text-black font-semibold">Purpose of processing:</strong> Sending commercial communications regarding new services, features, events, platform updates, and opportunities related to the Humanity Ledger ecosystem and the $QDs token; personalisation of communications based on the user's profile and interests.
             </p>
             <p>
               <strong className="text-black font-semibold">Legal basis:</strong> Article 6(1)(a) GDPR, <strong className="text-black font-semibold">Consent</strong>, freely given, specific, informed, and unambiguous, obtained through active marking of the corresponding checkbox during registration or through subsequent voluntary subscription. The user may <strong className="text-black font-semibold">withdraw their consent at any time</strong> without affecting the lawfulness of prior processing, through:
@@ -762,7 +762,7 @@ export default function LegalPage() {
           </h2>
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <p>
-              This section specifically addresses the implications of processing personal data in the context of decentralised blockchain networks, with particular reference to the technologies employed by the Whale Network platform.
+              This section specifically addresses the implications of processing personal data in the context of decentralised blockchain networks, with particular reference to the technologies employed by the Humanity Ledger platform.
             </p>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">9.1. Technical Nature of Immutability</h3>
             <p>
@@ -782,7 +782,7 @@ export default function LegalPage() {
               <strong className="text-black font-semibold">9.2.2. Article 17(3) GDPR, Exceptions to the Right to Erasure:</strong> The right to erasure is not absolute. Article 17(3) GDPR provides that that right shall not apply where processing is necessary for attestation with a legal obligation (Art. 17(3)(b)) or for the establishment, exercise, or defence of legal claims (Art. 17(3)(e)), both of which circumstances frequently arise in the context of financial transactions recorded on a blockchain.
             </p>
             <p>
-              <strong className="text-black font-semibold">9.2.3. Aztec Network's Privacy Architecture:</strong> Whale Network uses Aztec Network precisely to <strong className="text-black font-semibold">minimise the exposure of identifiable data on-chain</strong>. Private transactions on Aztec are encrypted using ZK proofs, such that their content is not readable by third parties or by Humanity Ledger S.L. without the user's corresponding viewing key. Only the <strong className="text-black font-semibold">transaction hash</strong> and minimal consensus metadata are accessible in the public ledger.
+              <strong className="text-black font-semibold">9.2.3. Aztec Network's Privacy Architecture:</strong> Humanity Ledger uses Aztec Network precisely to <strong className="text-black font-semibold">minimise the exposure of identifiable data on-chain</strong>. Private transactions on Aztec are encrypted using ZK proofs, such that their content is not readable by third parties or by Humanity Ledger S.L. without the user's corresponding viewing key. Only the <strong className="text-black font-semibold">transaction hash</strong> and minimal consensus metadata are accessible in the public ledger.
             </p>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">9.3. Data Processed in the PXE (Private Execution Environment)</h3>
             <p>
@@ -804,7 +804,7 @@ export default function LegalPage() {
               Humanity Ledger S.L. may provide, or be legally required to provide, viewing keys to competent authorities (SEPBLAC, AEAT, CNMV, judicial authorities) in the legally established circumstances. This disclosure constitutes an expressly foreseen and necessary exception to the privacy principle, required for the fulfilment of anti-money laundering obligations and cooperation with authorities.
             </p>
             <p>
-              The viewing key system <strong className="text-black font-semibold">does not make $QDs or the Whale Network platform a "privacy coin"</strong> in the technical-regulatory sense, as a controlled regulatory transparency mechanism exists. The privacy offered is from unauthorised third parties, not from competent authorities.
+              The viewing key system <strong className="text-black font-semibold">does not make $QDs or the Humanity Ledger platform a "privacy coin"</strong> in the technical-regulatory sense, as a controlled regulatory transparency mechanism exists. The privacy offered is from unauthorised third parties, not from competent authorities.
             </p>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">9.5. Compensatory Data Protection Measures On-Chain</h3>
             <p>
@@ -825,7 +825,7 @@ export default function LegalPage() {
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">10.1. Technical Basis of the ZKP System</h3>
             <p>
-              Whale Network's <strong className="text-black font-semibold">Claim Identity</strong> service allows users to generate and manage <strong className="text-black font-semibold">decentralised digital identities (DIDs)</strong> verified by means of zero knowledge proofs (ZKPs). This system has been designed in accordance with the principle of <strong className="text-black font-semibold">privacy by design and by default</strong> established in Article 25 GDPR.
+              Humanity Ledger's <strong className="text-black font-semibold">Claim Identity</strong> service allows users to generate and manage <strong className="text-black font-semibold">decentralised digital identities (DIDs)</strong> verified by means of zero knowledge proofs (ZKPs). This system has been designed in accordance with the principle of <strong className="text-black font-semibold">privacy by design and by default</strong> established in Article 25 GDPR.
             </p>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">10.2. Data Flow in the Claim Identity Process</h3>
             <p>
@@ -885,7 +885,7 @@ export default function LegalPage() {
             </p>
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">10.4. Attestation with the Principle of Privacy by Design (Art. 25 GDPR)</h3>
             <p>
-              Whale Network's ZKP architecture gives practical effect to the principle of <strong className="text-black font-semibold">privacy by design and by default</strong> under Article 25 GDPR through the following measures:
+              Humanity Ledger's ZKP architecture gives practical effect to the principle of <strong className="text-black font-semibold">privacy by design and by default</strong> under Article 25 GDPR through the following measures:
             </p>
             <div className="overflow-x-auto"><table className="min-w-full border text-sm text-left"><tbody className="divide-y divide-black/10">
               <tr>

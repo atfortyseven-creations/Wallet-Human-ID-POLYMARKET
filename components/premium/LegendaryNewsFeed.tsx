@@ -90,7 +90,7 @@ export default function LegendaryNewsFeed({ isPremium, walletAddress }: Legendar
             <div className="p-2 bg-blue-500/20 rounded-lg">
                 <BrainCircuit className="text-blue-400 w-8 h-8" />
             </div>
-            Whale Network <span className="text-blue-500">OPERATIONS</span>
+            Humanity Ledger <span className="text-blue-500">OPERATIONS</span>
           </motion.h1>
           <p className="text-gray-400 mt-2 font-medium max-w-2xl">
             Accurate predictions in markets
@@ -112,7 +112,7 @@ export default function LegendaryNewsFeed({ isPremium, walletAddress }: Legendar
       {!isPremium && (
         <div className="absolute inset-0 z-30 pt-20">
           <PremiumLocked
-            feature="Whale Network NETWORK INTELLIGENCE"
+            feature="Humanity Ledger NETWORK INTELLIGENCE"
             description="Access Elite-grade market data verified by decentralised oracles. Detect arbitrage opportunities and value bets."
             icon="sparkles"
             onUpgrade={() => console.log("Upgrade requested")}
