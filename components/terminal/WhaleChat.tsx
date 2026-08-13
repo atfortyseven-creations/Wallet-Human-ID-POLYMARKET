@@ -19,6 +19,9 @@ import { useWalletStore } from '@/lib/store/wallet-store';
 import { useAztec } from '@/context/AztecContext';
 import { useAztecNative } from '@/context/AztecNativeContext';
 import { toast } from 'sonner';
+import { vault } from '@/lib/core/SecureVault';
+import { ChatCommunityGate } from '@/components/chat/ChatCommunityGate';
+import { MediaPermissionsPrePrompt } from '@/components/chat/MediaPermissionsPrePrompt';
 
 
 const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
@@ -309,6 +312,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const [inputText, setInputText] = useState('');
   const [peerInput, setPeerInput] = useState('');
   const [sending, setSending] = useState(false);
+  // ── [FASE 16: Rate Limiting Anti-Spam] ───────────────────────────────
+  // Prevents spam abuse: max 5 messages per 10 seconds (App Store Guideline 1.2)
+  const rateLimitRef = useRef<{ timestamps: number[] }>({ timestamps: [] });
+  const RATE_LIMIT_MAX = 5;
+  const RATE_LIMIT_WINDOW_MS = 10_000;
   const [showList, setShowList] = useState(true);
   const [showScanner, setShowScanner] = useState(false);
   const [showMyQR, setShowMyQR] = useState(false);
@@ -458,13 +466,23 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
   // Offline Queue State
   const [isOffline, setIsOffline] = useState(false);
+  const [hasAcceptedEula, setHasAcceptedEula] = useState(false);
+  const [hasMediaPermission, setHasMediaPermission] = useState(false);
+  const [pendingCallType, setPendingCallType] = useState<'audio' | 'video' | 'answer' | null>(null);
 
 
   useEffect(() => {
-    try {
-      const b = localStorage.getItem('whale_blocked');
-      if (b) setBlockedPeers(new Set(JSON.parse(b)));
-    } catch {}
+    const loadBlocked = async () => {
+      try {
+        const b = await vault.getItem('whale_blocked');
+        if (b) setBlockedPeers(new Set(JSON.parse(b)));
+        const eula = await vault.getItem('whale_eula_accepted');
+        if (eula === 'true') setHasAcceptedEula(true);
+        const perm = await vault.getItem('whale_media_perm');
+        if (perm === 'true') setHasMediaPermission(true);
+      } catch {}
+    };
+    loadBlocked();
     // Phase 5: Request push notifications
     if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission();
@@ -520,11 +538,33 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const toggleBlock = (peer: string) => {
     setBlockedPeers(prev => {
       const next = new Set(prev);
-      if (next.has(peer.toLowerCase())) next.delete(peer.toLowerCase());
+      const isBlocked = next.has(peer.toLowerCase());
+      if (isBlocked) next.delete(peer.toLowerCase());
       else next.add(peer.toLowerCase());
-      localStorage.setItem('whale_blocked', JSON.stringify(Array.from(next)));
+      
+      vault.setItem('whale_blocked', JSON.stringify(Array.from(next)));
+      toast.success(isBlocked ? "User unblocked." : "User blocked. They can no longer message you.");
       return next;
     });
+  };
+
+  const reportMessage = async (msgId: string, content: string) => {
+    setMessages(prev => prev.filter(m => m.id !== msgId));
+    setContextMenu(null);
+    toast.success("Message reported. Thank you.");
+    
+    try {
+      const msgHash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(content))))
+        .map(b => b.toString(16).padStart(2, '0')).join('');
+      
+      await fetch('/api/moderation/report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messageHash: msgHash, timestamp: new Date() })
+      });
+    } catch (e) {
+      console.error("Report failed", e);
+    }
   };
 
   const exportChat = () => {
@@ -1538,6 +1578,22 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         toast.error(`Failed to answer call: ${e?.message || 'Unknown error'}`);
       }
       console.error('[Call] answerCall error:', e);
+    }
+  };
+
+  const handleStartCall = (type: 'audio' | 'video') => {
+    if (hasMediaPermission) {
+      startCall(type);
+    } else {
+      setPendingCallType(type);
+    }
+  };
+
+  const handleAnswerCall = () => {
+    if (hasMediaPermission) {
+      answerCall();
+    } else {
+      setPendingCallType('answer');
     }
   };
 
@@ -2953,6 +3009,15 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputText.trim()) return;
+    // ── [FASE 16: Rate-Limit Guard] ──────────────────────────────────────
+    const now = Date.now();
+    const rl = rateLimitRef.current;
+    rl.timestamps = rl.timestamps.filter(t => now - t < RATE_LIMIT_WINDOW_MS);
+    if (rl.timestamps.length >= RATE_LIMIT_MAX) {
+      toast.warning('Slow down — you are sending messages too quickly.');
+      return;
+    }
+    rl.timestamps.push(now);
     let txt = inputText.trim();
     if (replyingTo) {
       txt = `__REPLY__${replyingTo.id}__::${txt}`;
@@ -3149,6 +3214,19 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       </TuringShieldGate>
     );
   }
+  if (!hasAcceptedEula) {
+    return (
+      <ChatCommunityGate
+        onAccept={() => {
+          vault.setItem('whale_eula_accepted', 'true');
+          setHasAcceptedEula(true);
+        }}
+        onDecline={() => {
+          window.location.href = '/';
+        }}
+      />
+    );
+  }
 
   return (
     <TuringShieldGate>
@@ -3341,14 +3419,14 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                 </button>
                 <button
-                  onClick={() => startCall('audio')}
+                  onClick={() => handleStartCall('audio')}
                   className="w-9 h-9 bg-[#f5f5f7] hover:bg-[#e5e5ea] rounded-xl flex items-center justify-center text-black transition-colors"
                   title="Audio Call"
                 >
                   <Phone size={16} />
                 </button>
                 <button
-                  onClick={() => startCall('video')}
+                  onClick={() => handleStartCall('video')}
                   className="w-9 h-9 bg-[#f5f5f7] hover:bg-[#e5e5ea] rounded-xl flex items-center justify-center text-black transition-colors"
                   title="Video Call"
                 >
@@ -3372,9 +3450,6 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                 </button>
               </div>
             </div>
-
-            {/* ── Active Audio Call Banner — Non-blocking, shown only when no full-screen audio overlay is desired ── */}
-            {/* NOTE: audio active call is now handled by a full-screen portal below — this banner is intentionally removed */}
 
             {/* Hito 4: Search bar */}
             {showSearch && (() => {
@@ -4503,6 +4578,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
              }} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-black/5 text-[11px] font-mono text-[#050505] text-left">
                 <Trash2 size={14} /> Delete for everyone
              </button>
+             <button onClick={() => {
+                 reportMessage(contextMenu.id, contextMenu.content);
+             }} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-black/5 text-[11px] font-mono text-red-500 text-left">
+                🚩 Report Message
+             </button>
            </div>
          </div>,
          document.body
@@ -4573,6 +4653,15 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                    <button onClick={clearChat} className="w-full flex items-center gap-3 px-4 py-3.5 bg-black/5 hover:bg-black/5 rounded-xl transition-colors text-[11px] font-mono font-bold text-[#050505]">
                        <Trash2 size={16} /> Clear Chat
                    </button>
+                   {/* ── [FASE 9: App Store Guideline 1.2 — Support Contact] ── */}
+                   <a href="mailto:support@humanidfi.com" className="w-full flex items-center gap-3 px-4 py-3.5 bg-black/5 hover:bg-black/10 rounded-xl transition-colors text-[11px] font-mono font-bold text-[#050505]">
+                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+                       Contact Support
+                   </a>
+                   <a href="/legal/terms" target="_blank" className="w-full flex items-center gap-3 px-4 py-3.5 bg-black/5 hover:bg-black/10 rounded-xl transition-colors text-[11px] font-mono font-bold text-[#050505]">
+                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                       Community Guidelines
+                   </a>
                </div>
            </div>
          </div>,
@@ -4762,6 +4851,19 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
        )}
 
       </div>
+
+      {/* Fase 13: WebRTC Pre-Prompt — shown before getUserMedia is called */}
+      <MediaPermissionsPrePrompt
+        pendingCallType={pendingCallType}
+        setPendingCallType={setPendingCallType}
+        onGrant={(type) => {
+          vault.setItem('whale_media_perm', 'true');
+          setHasMediaPermission(true);
+          setPendingCallType(null);
+          if (type === 'audio' || type === 'video') startCall(type);
+          else if (type === 'answer') answerCall();
+        }}
+      />
     </TuringShieldGate>
   );
 }

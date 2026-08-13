@@ -73,17 +73,17 @@ const PRODUCT_LINKS = [
   {
     label: "Studio Provenance",
     sub: "On-chain asset registry",
-    href: "/portfolio",
-  },
-  {
-    label: "Aztec Identity",
-    sub: "Client-side ZK accounts",
-    href: "/developers/api-docs",
+    href: "/studio/provenance",
   },
   {
     label: "Whale Chat",
     sub: "Encrypted P2P messaging",
     href: "/chat",
+  },
+  {
+    label: "Portfolio Terminal",
+    sub: "Private balance & history",
+    href: "/terminal",
   },
 ];
 

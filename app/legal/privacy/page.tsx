@@ -36,9 +36,9 @@ export default function LegalPage() {
     >
       <div className="space-y-10 sm:space-y-14 text-black">
 
-        {/* CYPHERPUNK MANIFESTO / ABSOLUTE PRIVACY GUARANTEE */}
+        {/* CYPHERPUNK MANIFESTO / CLIENT-SIDE PRIVACY GUARANTEE */}
         <div className="p-6 bg-black text-white font-mono text-sm border border-black shadow-2xl rounded-xl">
-          <p className="font-bold text-emerald-400 uppercase tracking-widest mb-2">Absolute Privacy Guarantee</p>
+          <p className="font-bold text-emerald-400 uppercase tracking-widest mb-2">Privacy by design. No data leaves your device.</p>
           <p>
             Humanity Ledger is structurally incapable of collecting user state. Data is sealed via SNARKs before reaching any network layer. Privacy is not a feature; it is an unalienable cryptographic right.
           </p>

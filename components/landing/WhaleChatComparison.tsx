@@ -24,14 +24,14 @@ const CHAT_DATA = [
   },
   {
     feature: "Phone Number Requirement",
-    us: "Unnecessary. 100% Anonymous Privacy.",
+    us: "No phone number required",
     common: "Mandatory (Linked to your identity)",
     usState: "positive",
     commonState: "negative",
   },
   {
     feature: "Risk of Censorship or Ban",
-    us: "Impossible. System Infrastructure.",
+    us: "Decentralised by design",
     common: "Accounts unilaterally deleted",
     usState: "positive",
     commonState: "negative",

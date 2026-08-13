@@ -688,6 +688,19 @@ export function AztecNativeProvider({ children }: { children: React.ReactNode })
     const activeAddr = aztecAddress || evmAddress;
     if (!activeAddr || balance < amount) return false;
     
+    // ── [FASE 14: Battery Throttling — Apple Guideline 2.5.1] ─────────────────
+    // Pause heavy cryptographic operations when battery is critically low on mobile.
+    // This prevents rejection for excessive power consumption.
+    if (typeof window !== 'undefined' && 'getBattery' in navigator) {
+      try {
+        const battery = await (navigator as any).getBattery();
+        if (battery && battery.level < 0.15 && !battery.charging) {
+          toast.warning('Low battery. Cryptographic operations paused to preserve power. Please charge your device.');
+          return false;
+        }
+      } catch { /* getBattery not available on all browsers */ }
+    }
+
     setIsBusy(true);
     // Optimistic update: immediately show the deducted balance in the UI.
     // Clamped to >= 0 to prevent the counter ever showing a negative number.

@@ -1501,3 +1501,13 @@ model AirdropClaim {
   @@unique([walletAddress, year, month])
   @@index([walletAddress])
 }
+
+
+model ModerationReport {
+  id              String   @id @default(uuid())
+  reporterAddress String
+  messageHash     String
+  timestamp       DateTime @default(now())
+  status          String   @default("PENDING")
+}
+

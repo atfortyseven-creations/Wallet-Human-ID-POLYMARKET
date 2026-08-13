@@ -188,7 +188,7 @@ export default async function RootLayout({
             "@type": "SiteNavigationElement",
             "position": 2,
             "name": "Portfolio App",
-            "description": "Track cross-chain capital flows and asset balances locally. No server ever sees your complete portfolio.",
+            "description": "Track cross-chain capital flows and asset balances locally. Portfolio data is computed locally on your device.",
             "url": "https://humanidfi.com/portfolio"
           },
           {

@@ -26,7 +26,7 @@ export default function PrivacyMixerModal({ isOpen, onClose }: PrivacyMixerModal
                 }),
             });
             const data = await res.json();
-            alert(` Anonymous donation sent! Your identity is protected via privacy protocol.`);
+            alert(` Private transaction sent! Your identity is protected via privacy protocol.`);
             onClose();
         } catch (e: any) {
             alert(e.message || 'Privacy send failed');
@@ -62,7 +62,7 @@ export default function PrivacyMixerModal({ isOpen, onClose }: PrivacyMixerModal
                             </div>
                             <div>
                                 <h2 className="text-2xl font-black text-white">Privacy Mixer</h2>
-                                <p className="text-sm text-white/60">Anonymous donations</p>
+                                <p className="text-sm text-white/60">Private transactions</p>
                             </div>
                         </div>
 
@@ -116,7 +116,7 @@ export default function PrivacyMixerModal({ isOpen, onClose }: PrivacyMixerModal
                             className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 disabled:bg-white/10 rounded-xl font-bold text-white flex items-center justify-center gap-2"
                         >
                             {loading ? <Loader2 className="animate-spin" size={20} /> : <Heart size={20} />}
-                            {loading ? 'Mixing & Sending...' : 'Send Anonymously'}
+                            {loading ? 'Mixing & Sending...' : 'Send with ZK-privacy'}
                         </button>
 
                         <p className="text-white/40 text-xs text-center mt-4">

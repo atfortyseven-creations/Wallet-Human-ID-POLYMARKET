@@ -44,11 +44,11 @@ export const AztecProverHUD: React.FC<AztecProverHUDProps> = ({ isVisible, onCom
   }, [isVisible, onComplete]);
 
   const steps = [
-    { name: "Initializing PXE Context", icon: <Cpu size={14} /> },
-    { name: "Generating Witness (Private Execution)", icon: <Lock size={14} /> },
-    { name: "Constructing UltraPlonk ZK Proof", icon: <Activity size={14} /> },
-    { name: "Emitting Encrypted Logs & State Update", icon: <Shield size={14} /> },
-    { name: "Proof Verified on Aztec Network", icon: <CheckCircle2 size={14} className="text-[var(--aztec-chartreuse)]" /> }
+    { name: "Setting up private identity", icon: <Cpu size={14} /> },
+    { name: "Verifying local credentials", icon: <Lock size={14} /> },
+    { name: "Securing your transaction", icon: <Activity size={14} /> },
+    { name: "Encrypting and sending", icon: <Shield size={14} /> },
+    { name: "Verified on Privacy Network", icon: <CheckCircle2 size={14} className="text-[var(--aztec-chartreuse)]" /> }
   ];
 
   return (
@@ -70,7 +70,7 @@ export const AztecProverHUD: React.FC<AztecProverHUDProps> = ({ isVisible, onCom
           <div className="flex items-center gap-2 mb-3 border-b border-white/10 pb-2">
             <Cpu className="text-[var(--aztec-orchid)] animate-pulse" size={16} />
             <h4 className="text-xs font-black uppercase tracking-widest text-[var(--aztec-orchid)]">
-              Noir ZK Prover 
+              Private Identity Layer
             </h4>
           </div>
 
@@ -97,7 +97,7 @@ export const AztecProverHUD: React.FC<AztecProverHUDProps> = ({ isVisible, onCom
           </div>
 
           <div className="mt-3 pt-2 border-t border-white/10 flex justify-between items-center text-[8px] font-aztec-mono text-white/40">
-            <span>Barretenberg Backend</span>
+            <span>Encrypted Privacy Protocol</span>
             <span>Circuit: WhaleChat</span>
           </div>
         </motion.div>

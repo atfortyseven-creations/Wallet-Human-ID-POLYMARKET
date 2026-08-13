@@ -121,6 +121,22 @@ async function extractSessionAddress(req: NextRequest): Promise<string | null> {
 export async function middleware(req: NextRequest): Promise<NextResponse> {
   const { pathname } = req.nextUrl;
 
+  // ── [FASE 18: OFAC / Restricted Jurisdiction Geofencing] ─────────────────
+  // Blocks IP addresses from the US and OFAC-sanctioned countries at the edge.
+  // This is a hard requirement for App Store / Play Store compliance for crypto apps.
+  const country = req.headers.get('x-vercel-ip-country') || req.headers.get('cf-ipcountry') || '';
+  const RESTRICTED_COUNTRIES = ['US', 'CU', 'IR', 'KP', 'SY', 'RU', 'BY'];
+  
+  if (country && RESTRICTED_COUNTRIES.includes(country.toUpperCase())) {
+    return new NextResponse(
+      `<!DOCTYPE html><html><head><title>Unavailable</title></head><body style="font-family: monospace; padding: 40px; background: #000; color: #fff;">
+       <h2>Error 451: Unavailable For Legal Reasons</h2>
+       <p>The Humanity Ledger services are not available in your jurisdiction (${country}) due to regulatory restrictions.</p>
+       </body></html>`,
+      { status: 451, headers: { 'content-type': 'text/html' } }
+    );
+  }
+
   // 1. Allow all public paths through immediately
   if (isPublicPath(pathname)) {
     return NextResponse.next();
@@ -164,6 +180,13 @@ export async function middleware(req: NextRequest): Promise<NextResponse> {
   // Unique request ID for distributed tracing — helps correlate audit logs
   const requestId = crypto.randomUUID?.() ?? `req_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
   response.headers.set('x-request-id', requestId);
+
+  // [PRIVACY COMPLIANCE] Strict CSP to block GTM and external trackers
+  response.headers.set(
+    'Content-Security-Policy',
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com; object-src 'none'; base-uri 'self';"
+  );
+
   return response;
 }
 

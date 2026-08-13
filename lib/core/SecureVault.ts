@@ -24,9 +24,16 @@ export class SecureVault {
   private cryptoKey: CryptoKey | null = null;
   // Whether Web Crypto + localStorage are available
   private isWebCryptoAvailable = false;
+  // ── [FASE 15: Auto-Lock por inactividad] ─────────────────────────────
+  // Auto-locks after 15 minutes of inactivity (Apple Privacy + enterprise grade)
+  private autoLockTimeout: ReturnType<typeof setTimeout> | null = null;
+  private readonly AUTO_LOCK_MS = 15 * 60 * 1000; // 15 minutes
 
   private constructor() {
     // Lazily init crypto on first use to avoid SSR crashes
+    if (typeof window !== 'undefined') {
+      this._initAutoLock();
+    }
   }
 
   public static getInstance(): SecureVault {
@@ -36,7 +43,24 @@ export class SecureVault {
     return SecureVault._instance;
   }
 
-  // ── Private Helpers ───────────────────────────────────────────────────────
+  // ── Auto-Lock Helpers (Fase 15) ─────────────────────────────────────────
+  private _initAutoLock(): void {
+    if (typeof window === 'undefined') return;
+    const resetEvents = ['mousemove', 'keydown', 'touchstart', 'click', 'scroll'];
+    const onActivity = () => this._resetAutoLock();
+    resetEvents.forEach(evt => window.addEventListener(evt, onActivity, { passive: true }));
+    this._resetAutoLock();
+  }
+
+  private _resetAutoLock(): void {
+    if (this.autoLockTimeout) clearTimeout(this.autoLockTimeout);
+    this.autoLockTimeout = setTimeout(() => {
+      this.lock();
+      console.info('[SecureVault] Auto-locked after inactivity.');
+    }, this.AUTO_LOCK_MS);
+  }
+
+  // ── Private Helpers ─────────────────────────────────────────────────────
 
   private async ensureCryptoKey(): Promise<boolean> {
     if (typeof window === 'undefined') return false;

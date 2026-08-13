@@ -68,20 +68,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true, message: 'Survey recorded securely' });
     }
 
-    // Route 2: Anonymous Client-Side Telemetry (e.g., Handshake Latency)
-    // Client strictly sends the numeric value. IP addresses are dropped at the edge.
-    if (body.type === 'HANDSHAKE_LATENCY') {
-      const { latencyMs } = body;
-      
-      if (typeof latencyMs !== 'number' || latencyMs < 0 || latencyMs > 30000) {
-        return NextResponse.json({ error: 'Invalid metric payload' }, { status: 400 });
-      }
-
-      // Feed into the memory aggregator (which automatically calculates P95 and flushes)
-      SystemTelemetry.recordMetric('HANDSHAKE_LATENCY', latencyMs);
-      
-      return NextResponse.json({ success: true, status: 'Aggregated' });
-    }
+    // Route 2: [REMOVED - Privacy Compliance]
+    // Anonymous Client-Side Telemetry (e.g., Handshake Latency) has been removed
+    // to strictly enforce the "Zero Data Collected" privacy policy.
 
     return NextResponse.json({ error: 'Invalid telemetry type' }, { status: 400 });
 

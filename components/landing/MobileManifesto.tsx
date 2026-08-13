@@ -148,7 +148,7 @@ export function MobileManifesto() {
         
         <div className="text-center space-y-4 mb-12 relative z-10">
             <motion.h2 initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={FADE_UP} className="text-[36px] font-black tracking-tighter leading-[0.95] text-[#0A0A0A]">
-                Absolute <span className="text-[#0A0A0A]/30">Privacy.</span>
+                Client-Side <span className="text-[#0A0A0A]/30">Privacy.</span>
             </motion.h2>
             <motion.p initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={FADE_UP} className="text-[16px] text-[#555] font-medium leading-relaxed max-w-[320px] mx-auto px-2">
                 By leveraging the Aztec Network Private Execution Environment, we shift all computation to your local device.
@@ -159,7 +159,7 @@ export function MobileManifesto() {
           {[
             { num: '01', title: 'Local Proving', desc: 'Your device runs Noir circuits locally, generating a zero knowledge proof before touching the network.' },
             { num: '02', title: 'Encrypted State', desc: 'Balances and identity credentials are stored as encrypted UTXO notes on the Aztec L2.' },
-            { num: '03', title: 'Nullifier Resistance', desc: 'The protocol emits a deterministic nullifier, preventing double spending while keeping you completely anonymous.' },
+            { num: '03', title: 'Nullifier Resistance', desc: 'The protocol emits a deterministic nullifier, preventing double spending without linking your identity to the network.' },
           ].map((block, i) => (
             <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} variants={FADE_UP} className="flex flex-col gap-3 bg-[#F9F8F6] p-8 rounded-3xl border border-[#EBEBEB] shadow-sm">
               <span className="font-black text-[12px] text-indigo-500 tracking-widest uppercase">Step {block.num}</span>

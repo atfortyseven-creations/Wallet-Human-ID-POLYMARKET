@@ -131,7 +131,7 @@ export function ArchitectureDiagram() {
 
           {/* ZK proof bridge */}
           <div className="mt-4 flex items-center justify-center gap-3 bg-indigo-600 rounded-xl py-3 px-5 shadow-lg shadow-indigo-500/25">
-            <span className="text-[10px] font-black text-white uppercase tracking-wider">ZK Proofs — Zero Data Leakage</span>
+            <span className="text-[10px] font-black text-white uppercase tracking-wider">ZK Proofs — No server access to private state</span>
             <span className="text-white/60">→</span>
           </div>
         </div>

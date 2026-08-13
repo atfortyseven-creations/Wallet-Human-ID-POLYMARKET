@@ -6,6 +6,7 @@ import { useSystemAccount } from '@/hooks/useSystemAccount';
 // Removed legacy QuantumVaultOnboarding import
 import { InstitutionalPortfolioView } from '@/components/bsv/InstitutionalPortfolioView';
 import { useWalletStore } from '@/lib/store/wallet-store';
+import { NonCustodialBanner } from '@/components/compliance/NonCustodialBanner';
 import Link from 'next/link';
 
 
@@ -75,5 +76,12 @@ export default function PortfolioPage() {
     );
   }
 
-  return <InstitutionalPortfolioView />;
+  return (
+    <div className="flex flex-col h-full w-full">
+      <NonCustodialBanner />
+      <div className="flex-1 overflow-hidden">
+        <InstitutionalPortfolioView />
+      </div>
+    </div>
+  );
 }

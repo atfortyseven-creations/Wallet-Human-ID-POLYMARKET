@@ -12,7 +12,7 @@ const SECURITY_PILLARS = [
   },
   {
     index: "02",
-    label: "Absolute Privacy",
+    label: "Client-side Privacy",
     protocol: "Anonymity Sets",
     body: "By employing the \"Mixing Effect\", your assets are indistinguishable from others in the network. Aztec provides true privacy on L1 bridging through massive anonymity sets, obscuring senders and receivers."
   },
@@ -78,7 +78,7 @@ const AZTEC_EXTENDED_POINTS = [
   },
   {
     title: "Bot Prevention",
-    desc: "We stop automated bots completely using biometric liveness checks while keeping real human users fully anonymous."
+    desc: "We stop automated bots completely using biometric liveness checks without exposing personal data to the network."
   }
 ];
 

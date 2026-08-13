@@ -121,11 +121,11 @@ function StatusBadge({ status }: { status: 'checking' | 'online' | 'degraded' | 
 
 // ─── Block Confirmation Animation ─────────────────────────────────────────────
 const BLOCK_STAGES = [
-  { label: 'Generating ZK Proof',     sub: 'UltraHonk · Barretenberg backend'   },
-  { label: 'Computing Nullifiers',    sub: 'Schnorr signature binding'           },
-  { label: 'Submitting to Sequencer', sub: 'v5.testnet.rpc.aztec-labs.com'       },
-  { label: 'Awaiting Confirmation',   sub: 'Block propagating across L2 nodes'  },
-  { label: 'Block Confirmed',         sub: 'Transaction finalized on Aztec L2'  },
+  { label: 'Securing your local vault',    sub: 'Private identity verification'        },
+  { label: 'Binding your identity',        sub: 'Cryptographic signature applied'       },
+  { label: 'Submitting to Network',        sub: 'Privacy Network (Aztec L2)'            },
+  { label: 'Awaiting Confirmation',        sub: 'Block propagating across nodes'        },
+  { label: 'Block Confirmed',              sub: 'Transaction finalized'                 },
 ];
 
 function BlockConfirmingAnimation({ amount, to, blockNum }: { amount: string; to: string; blockNum: number | string }) {
@@ -782,9 +782,9 @@ export function AztecIdentityCard() {
                 <Zap size={12} className="text-zinc-900" />
               </div>
               <div>
-                <div className="text-[10px] font-black uppercase tracking-widest text-zinc-900">Noir ZK Sandbox</div>
+                <div className="text-[10px] font-black uppercase tracking-widest text-zinc-900">Private Identity Sandbox</div>
                 <div className="text-[9px] text-zinc-900/50 mt-1 leading-relaxed">
-                  Compile and generate Barretenberg Zero Knowledge proofs purely on your device.
+                  Generate verifiable identity proofs locally on your device — nothing leaves your browser.
                   <br /><span className="font-mono text-zinc-900 font-bold mt-1 inline-block border-b border-zinc-900/20">Cost: 0.1 QDs</span>
                 </div>
               </div>
