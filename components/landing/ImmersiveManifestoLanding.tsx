@@ -83,7 +83,7 @@ const PRODUCT_LINKS = [
   {
     label: "Whale Chat",
     sub: "Encrypted P2P messaging",
-    href: "/developer",
+    href: "/chat",
   },
 ];
 
