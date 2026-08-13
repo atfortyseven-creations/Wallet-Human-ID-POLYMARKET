@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/core/prisma';
+import { prisma } from '@/lib/prisma';
 
 /**
  * GET /api/moderation/status?address=<address>
