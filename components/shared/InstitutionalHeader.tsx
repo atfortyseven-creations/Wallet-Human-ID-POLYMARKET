@@ -64,6 +64,8 @@ export function InstitutionalHeader() {
 
     const MENU_ITEMS = [
       { label: 'Dashboard', href: "/terminal" },
+      { label: 'Portfolio', href: "/portfolio" },
+      { label: 'Whale Chat', href: "/chat" },
       { label: 'Studio', href: "/terminal?tab=studio" },
       { label: 'Markets', href: "/terminal?tab=markets" },
       { label: 'Roadmap', href: "/terminal?tab=humanity-ledger" },

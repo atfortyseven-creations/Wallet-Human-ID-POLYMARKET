@@ -367,6 +367,14 @@ function LandingNav() {
                       >
                         Dashboard →
                       </Link>
+                      <Link
+                        href="/scan"
+                        onClick={() => setMobileOpen(false)}
+                        className="w-full text-center py-3.5 border border-black/10 rounded-2xl text-[14px] font-semibold text-black hover:bg-black/5 transition-colors flex items-center justify-center gap-2"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path></svg>
+                        Scan QR
+                      </Link>
                       <button
                         onClick={() => {
                           setMobileOpen(false);
