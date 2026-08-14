@@ -1,4 +1,6 @@
-ï»¿# STATE OF Market Analytics 2026
+> **Last Updated: 14/08/2026** - Official January Launch Revision
+
+# STATE OF Market Analytics 2026
 ## Annual On-Chain Capital Flow Report
 ### Whale Alert Network  System Analytics Division
 
@@ -18,7 +20,7 @@ The year 2026 marked the institutionalization of on-chain capital. For the first
 - **$4.7 Trillion** total USD volume captured across chains
 - **217** "Mega Whale" transactions exceeding $100M in a single move
 - **Q1 2026**: 68% of ETH price moves >5% were preceded by detectable whale accumulation 72h prior
-- **BASE L2**: 4Ã— growth in whale activity vs 2025, driven by sovereign BASE-native deployments
+- **BASE L2**: 4× growth in whale activity vs 2025, driven by sovereign BASE-native deployments
 - **DeFi Dark Pools**: 23% of detected whales routed through Uniswap V4 pools with custom hooks, obscuring capital intent
 
 ---
@@ -49,11 +51,11 @@ The year 2026 marked the institutionalization of on-chain capital. For the first
 
 Our thesis  that gas expenditure patterns function as thermodynamic signatures of capital intent  was validated across 3 independent time windows in 2026:
 
-**Q1 Validation (January 1418):** A 340% spike in `SSTORE` operations across Ethereum addresses ending with sovereign multi-sig patterns preceded the January 19 BTC breakout from $95K by exactly 72 hours. The energy model (gas Ã— block density) achieved an RÂ² = 0.847 correlation with subsequent price movement.
+**Q1 Validation (January 1418):** A 340% spike in `SSTORE` operations across Ethereum addresses ending with sovereign multi-sig patterns preceded the January 19 BTC breakout from $95K by exactly 72 hours. The energy model (gas × block density) achieved an R² = 0.847 correlation with subsequent price movement.
 
 **Q2 Validation (April 37):** `EIP-1153 TSTORE` operation density increased 890% in the 48h preceding the ETH Pectra upgrade coordination activities. Institutions were pre-positioning via transient storage before the upgrade went live.
 
-**Q3 Validation (AugustSeptember):** Base chain `CREATE2` factory deployments spiked 3.2Ïƒ above 90-day moving average during a 72h period that preceded a $2.1B sovereign DeFi position being established across 14 protocols simultaneously.
+**Q3 Validation (AugustSeptember):** Base chain `CREATE2` factory deployments spiked 3.2s above 90-day moving average during a 72h period that preceded a $2.1B sovereign DeFi position being established across 14 protocols simultaneously.
 
 ### 2.2 Z-Score Threshold Calibration
 
@@ -104,13 +106,13 @@ The Whale Alert Hall of Fame  launched in Q2 2026  enabled community Sentinels t
 
 | Metric                          | 2025      | 2026      | Improvement |
 |---------------------------------|-----------|-----------|-------------|
-| Detection Latency (EVM)         | 4,200ms   | 890ms     | 4.7Ã—        |
+| Detection Latency (EVM)         | 4,200ms   | 890ms     | 4.7×        |
 | Detection Latency (Solana)      | N/A       | 1,100ms   | New         |
-| False Positive Rate             | 31%       | 12.3%     | 2.5Ã—        |
+| False Positive Rate             | 31%       | 12.3%     | 2.5×        |
 | Uptime (99th percentile)        | 94.2%     | 99.7%     | +5.5%       |
-| Events / Second (peak)          | 12        | 847       | 70Ã—         |
+| Events / Second (peak)          | 12        | 847       | 70×         |
 | Chains Monitored                | 3         | 5         | +2          |
-| Total DB Records (whaleActivity)| 412K      | 1.25M     | 3Ã—          |
+| Total DB Records (whaleActivity)| 412K      | 1.25M     | 3×          |
 
 ---
 
@@ -141,4 +143,5 @@ The Whale Alert Hall of Fame  launched in Q2 2026  enabled community Sentinels t
 
 ---
 
-**Â© 2026 Whale Alert Network. System Analytics. All On-Chain.**
+**© 2026 Whale Alert Network. System Analytics. All On-Chain.**
+

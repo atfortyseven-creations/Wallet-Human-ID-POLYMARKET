@@ -79,7 +79,7 @@ export default function PortfolioPage() {
   return (
     <div className="flex flex-col h-full w-full">
       <NonCustodialBanner />
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-y-auto relative z-0">
         <InstitutionalPortfolioView />
       </div>
     </div>

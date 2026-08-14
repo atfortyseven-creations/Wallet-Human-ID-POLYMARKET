@@ -1,4 +1,5 @@
-# WhaleChat: Private WebRTC Signaling Protocol on Aztec
+# Humanity Ledger 2.0: Mini-App Ecosystem Whitepaper
+> **Last Updated: 14/08/2026**
 
 ## Abstract
 
@@ -127,3 +128,4 @@ Live: https://humanidfi.com
 MIT. Open source. Public domain contributions welcome.
 
 Stefan Antonio Cirisanu — atfortyseven2@gmail.com
+

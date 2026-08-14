@@ -4121,8 +4121,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       {/* NOTE: remoteAudioRef lives ONLY inside the active call portal below to avoid ref conflicts */}
 
       {/* ── Incoming Call Banner (state: ringing) ───────────────────────────── */}
-      {callState === 'ringing' && isMounted && (
-        <div className="absolute inset-0 w-full h-full z-[100000] flex flex-col items-center justify-between bg-white" style={{ touchAction: 'none' }}>
+      {callState === 'ringing' && isMounted && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 w-full h-full z-[200000] flex flex-col items-center justify-between bg-white" style={{ touchAction: 'none' }}>
           {/* Top section */}
           <div className="flex flex-col items-center w-full pt-[max(60px,env(safe-area-inset-top,60px))] px-6">
             <p className="text-black/40 text-[11px] font-semibold uppercase tracking-[0.3em] mb-2">
@@ -4168,12 +4168,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               <span className="text-black/50 text-[11px] font-medium tracking-widest uppercase">Answer</span>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ── Outgoing Call (state: calling — waiting for answer) ─────────────── */}
-      {callState === 'calling' && isMounted && (
-        <div className="absolute inset-0 w-full h-full z-[100000] flex flex-col items-center justify-between bg-white" style={{ touchAction: 'none' }}>
+      {callState === 'calling' && isMounted && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 w-full h-full z-[200000] flex flex-col items-center justify-between bg-white" style={{ touchAction: 'none' }}>
           <div className="flex flex-col items-center w-full pt-[max(60px,env(safe-area-inset-top,60px))] px-6">
             <p className="text-black/40 text-[11px] font-semibold uppercase tracking-[0.3em] mb-2">
               {callTypeRef.current === 'video' ? '📹 Video Call' : '🎙️ Voice Call'}
@@ -4201,7 +4202,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
               </button>
               <span className="text-black/40 text-[11px] font-mono mt-3 uppercase tracking-widest">Cancel</span>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ── Active Call Overlay — WhatsApp/Telegram parity ──────── */}
@@ -4238,7 +4240,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           document.body
         ) : (
           /* ── FULL SCREEN VIEW ── */
-          <div className="absolute inset-0 w-full h-full z-[100000] bg-black flex flex-col" style={{ touchAction: 'none' }}>
+          <div className="fixed inset-0 w-full h-full z-[200000] bg-black flex flex-col" style={{ touchAction: 'none' }}>
             
             {/* ── BACKGROUND ── */}
             <div className="absolute inset-0">
@@ -4406,22 +4408,23 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
             <audio ref={remoteAudioRef} autoPlay playsInline style={{ position: 'absolute', width: 0, height: 0, opacity: 0, pointerEvents: 'none' }} />
           </div>
-        )
+        ),
+        document.body
       )}
 
       </div> {/* Close Chat Area */}
 
-      {showCallSettings && (
-        <div className="absolute inset-0 z-[100] bg-white/95 backdrop-blur-md flex flex-col items-center justify-center p-6 animate-in fade-in zoom-in duration-300">
-           <div className="w-full max-w-sm">
+      {showCallSettings && isMounted && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[300000] bg-black/30 backdrop-blur-sm flex flex-col items-center justify-center p-6 animate-in fade-in duration-200" onClick={() => setShowCallSettings(false)}>
+           <div className="w-full max-w-sm bg-white rounded-3xl p-8 shadow-2xl" onClick={e => e.stopPropagation()}>
                <div className="flex justify-between items-center mb-8">
                    <h3 className="text-[13px] font-black uppercase tracking-[0.25em] text-[#050505]">Call Settings</h3>
-                   <button onClick={() => setShowCallSettings(false)} className="w-10 h-10 flex items-center justify-center hover:bg-black/5 rounded-full transition-colors text-[11px] font-black uppercase text-[#050505]">
-                     X
+                   <button onClick={() => setShowCallSettings(false)} className="w-10 h-10 flex items-center justify-center hover:bg-black/5 rounded-full transition-colors text-[#050505]">
+                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                    </button>
                </div>
                
-               <div className="space-y-6">
+               <div className="space-y-4">
                  {/* Voice Isolation */}
                  <div className="flex items-center justify-between p-4 bg-[#f5f5f7] rounded-2xl">
                    <div>

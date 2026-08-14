@@ -9,12 +9,14 @@
 
 > Designed and architected by **Stefan Antonio Cirisanu**, Founder of [humanidfi.com](https://humanidfi.com).
 > An independent research initiative advancing applied cryptography, decentralized communications, and on-chain capital intelligence.
+> 
+> **Last Updated: 14/08/2026** — *Preparing for the Official January Ecosystem Launch.*
 
 ---
 
 ## What is Humanity Ledger?
 
-Humanity Ledger is not a wallet or a messaging application. It is a **sovereign communications and financial intelligence terminal** — a production-grade research system that solves a fundamental problem in modern digital infrastructure: **the centralization of trust**.
+Humanity Ledger is a **System Execution Environment** — a sovereign communications and financial intelligence hub designed to host decentralized, zero-knowledge Mini-Apps. It solves a fundamental problem in modern digital infrastructure: **the centralization of trust**.
 
 Every "secure" messaging application, every "private" financial platform, and every "verified" identity system ultimately routes its most critical operations through a centralized authority that can surveil, censor, or fail. Humanity Ledger implements a concrete, mathematically verifiable alternative to this paradigm.
 

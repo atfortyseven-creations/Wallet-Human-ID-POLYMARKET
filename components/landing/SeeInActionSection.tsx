@@ -346,8 +346,8 @@ export function SeeInActionSection() {
               onClick={() => setActive(i)}
               className={`px-5 py-2.5 rounded-full text-[13px] font-semibold transition-all duration-300 ${
                 active === i
-                  ? "bg-black text-white shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
-                  : "bg-black/[0.04] text-black/50 hover:bg-black/[0.08] hover:text-black/80"
+                  ? "bg-white text-[#050505] border border-black/[0.06] shadow-[0_4px_20px_rgba(0,0,0,0.06)]"
+                  : "bg-transparent text-black/50 hover:bg-black/[0.03] hover:text-black/80"
               }`}
             >
               {p.label}
@@ -412,7 +412,7 @@ export function SeeInActionSection() {
                 <DesktopShell product={product} />
                 <Link
                   href={product.href}
-                  className="flex items-center gap-2 px-7 py-3 bg-black text-white rounded-full text-[13px] font-semibold hover:bg-black/80 transition-all shadow-[0_4px_20px_rgba(0,0,0,0.2)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.25)] hover:-translate-y-0.5"
+                  className="flex items-center gap-2 px-7 py-3 bg-white border border-black/[0.06] text-[#050505] rounded-full text-[13px] font-semibold hover:bg-zinc-50 transition-all shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)] hover:-translate-y-0.5"
                 >
                   {product.cta}
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

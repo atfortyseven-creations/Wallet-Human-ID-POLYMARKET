@@ -71,20 +71,10 @@ const NAV_LINKS = [
 ];
 const PRODUCT_LINKS = [
   {
-    label: "Studio Provenance",
-    sub: "On-chain asset registry",
-    href: "/studio/provenance",
-  },
-  {
-    label: "Whale Chat",
-    sub: "Encrypted P2P messaging",
-    href: "/chat",
-  },
-  {
-    label: "Portfolio Terminal",
-    sub: "Private balance & history",
-    href: "/terminal",
-  },
+    label: "App Hub",
+    sub: "Launch all Mini-Apps",
+    href: "/hub",
+  }
 ];
 
 // ─── Nav ─────────────────────────────────────────────────────────────────────
@@ -202,61 +192,12 @@ function LandingNav() {
                 {l.label}
               </Link>
             ))}
-            {/* Products dropdown */}
-            <div
-              className="relative"
-              onMouseEnter={() => setProductOpen(true)}
-              onMouseLeave={() => setProductOpen(false)}
+            <Link
+              href="/hub"
+              className="px-3 py-1.5 text-[13px] font-semibold text-indigo-600 hover:text-indigo-700 transition-colors rounded-lg hover:bg-indigo-50"
             >
-              <button
-                id="products-menu-btn"
-                aria-haspopup="true"
-                aria-expanded={productOpen}
-                className="flex items-center gap-1 px-3 py-1.5 text-[13px] font-medium text-black/50 hover:text-black transition-colors rounded-lg hover:bg-black/[0.035]"
-              >
-                Products
-                <svg
-                  width="9"
-                  height="9"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  className={`transition-transform duration-200 ${productOpen ? "rotate-180" : ""}`}
-                >
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
-              </button>
-              <AnimatePresence>
-                {productOpen && (
-                  <motion.div
-                    id="products-dropdown"
-                    role="menu"
-                    initial={{ opacity: 0, y: -8, scale: 0.97 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -8, scale: 0.97 }}
-                    transition={{ duration: 0.14, ease: "easeOut" }}
-                    className="absolute top-full mt-2 left-0 bg-white rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.12)] border border-black/[0.06] w-[272px] overflow-hidden z-50"
-                  >
-                    {PRODUCT_LINKS.map((l) => (
-                      <Link
-                        key={l.href}
-                        href={l.href}
-                        role="menuitem"
-                        className="flex flex-col gap-0.5 px-5 py-3.5 hover:bg-zinc-50 transition-colors border-b border-black/[0.05] last:border-b-0 group"
-                      >
-                        <span className="text-[13px] font-semibold text-black group-hover:text-black/80 transition-colors">
-                          {l.label}
-                        </span>
-                        <span className="text-[11.5px] text-black/40">
-                          {l.sub}
-                        </span>
-                      </Link>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+              App Hub
+            </Link>
           </div>
 
           {/* Desktop CTA */}
@@ -276,10 +217,10 @@ function LandingNav() {
                   {fmtAddr(connectedAddress)}
                 </span>
                 <Link
-                  href="/terminal"
-                  className="px-4 py-2 bg-black text-white rounded-full text-[12.5px] font-semibold hover:bg-black/80 transition-colors"
+                  href="/hub"
+                  className="px-4 py-2 bg-[#f4f4f4] text-[#050505] border border-black/[0.04] shadow-sm rounded-full text-[12.5px] font-semibold hover:bg-white hover:border-black/10 transition-colors"
                 >
-                  Dashboard →
+                  App Hub →
                 </Link>
                 <button
                   onClick={() => nuclearDisconnect()}
@@ -302,7 +243,7 @@ function LandingNav() {
                   onClick={() => {
                     window.location.href = '/connect';
                   }}
-                  className="px-4 py-2 bg-black text-white rounded-full text-[12.5px] font-semibold hover:bg-black/80 transition-all hover:-translate-y-px"
+                  className="px-4 py-2 bg-[#f4f4f4] text-[#050505] border border-black/[0.04] shadow-sm rounded-full text-[12.5px] font-semibold hover:bg-white hover:border-black/10 transition-all hover:-translate-y-px"
                 >
                   Connect Wallet
                 </button>
@@ -361,11 +302,11 @@ function LandingNav() {
                         {fmtAddr(connectedAddress)}
                       </span>
                       <Link
-                        href="/terminal"
+                        href="/hub"
                         onClick={() => setMobileOpen(false)}
-                        className="w-full text-center py-3.5 bg-black rounded-2xl text-[14px] font-semibold text-white hover:bg-black/80 transition-colors"
+                        className="w-full text-center py-3.5 bg-[#f4f4f4] border border-black/[0.04] rounded-2xl text-[14px] font-semibold text-[#050505] hover:bg-white hover:border-black/10 transition-colors shadow-sm"
                       >
-                        Dashboard →
+                        App Hub →
                       </Link>
                       <Link
                         href="/scan"
@@ -403,7 +344,7 @@ function LandingNav() {
                           setMobileOpen(false);
                           window.location.href = '/connect';
                         }}
-                        className="flex-1 py-3.5 bg-black rounded-2xl text-[12.5px] font-semibold text-white hover:bg-black/80 transition-colors text-center active:scale-[0.97]"
+                        className="flex-1 py-3.5 bg-[#f4f4f4] border border-black/[0.04] shadow-sm rounded-2xl text-[12.5px] font-semibold text-[#050505] hover:bg-white transition-colors text-center active:scale-[0.97]"
                       >
                         Connect Wallet
                       </button>
@@ -440,7 +381,7 @@ function LandingNav() {
             onClick={() => {
               window.location.href = '/connect';
             }}
-            className="flex-1 py-3 bg-black rounded-2xl text-[13px] font-bold text-white hover:bg-black/80 transition-colors text-center active:scale-[0.97]"
+            className="flex-1 py-3 bg-[#f4f4f4] border border-black/[0.04] shadow-sm rounded-2xl text-[13px] font-bold text-[#050505] hover:bg-white transition-colors text-center active:scale-[0.97]"
           >
             Connect Wallet
           </button>
@@ -541,16 +482,20 @@ function HeroSection() {
 
         {/* Subtitle */}
         <div className="overflow-hidden mb-12">
-          <motion.p
+          <motion.div
             initial={{ y: "110%" }}
             animate={{ y: 0 }}
             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
-            className="text-[16px] md:text-[19px] text-black/45 leading-relaxed max-w-[520px] font-medium"
+            className="flex flex-col gap-2 max-w-[560px]"
             style={{ willChange: "transform" }}
           >
-            Humanity Ledger is built on Aztec Network — ZK identity, shielded
-            assets, encrypted communications. All client-side. All yours.
-          </motion.p>
+            <p className="text-[16px] md:text-[19px] text-black/45 leading-relaxed font-medium">
+              Humanity Ledger operates as a System Execution Environment containing modular, sovereign Mini-Apps. Built on Aztec Network.
+            </p>
+            <p className="text-[13px] md:text-[14px] font-semibold text-indigo-600/90 tracking-wide uppercase mt-2">
+              Preparing for the Official Ecosystem Launch — January
+            </p>
+          </motion.div>
         </div>
 
         {/* CTAs */}
@@ -560,11 +505,11 @@ function HeroSection() {
           className="flex flex-col sm:flex-row items-center gap-3"
         >
           <Link
-            href="/portfolio"
+            href="/hub"
             id="hero-launch-btn"
-            className="w-full sm:w-auto px-8 py-4 bg-black text-white rounded-full text-[14px] font-semibold hover:bg-black/80 transition-all shadow-[0_6px_28px_rgba(0,0,0,0.2)] hover:shadow-[0_10px_40px_rgba(0,0,0,0.25)] hover:-translate-y-0.5"
+            className="w-full sm:w-auto px-8 py-4 bg-[#f4f4f4] border border-black/[0.04] text-[#050505] rounded-full text-[14px] font-semibold hover:bg-white hover:border-black/10 transition-all shadow-[0_6px_28px_rgba(0,0,0,0.08)] hover:shadow-[0_10px_40px_rgba(0,0,0,0.12)] hover:-translate-y-0.5"
           >
-            Launch Application →
+            Launch App Hub →
           </Link>
           <Link
             href="/developers/api-docs"

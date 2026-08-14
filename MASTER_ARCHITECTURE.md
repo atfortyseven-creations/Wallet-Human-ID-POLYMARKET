@@ -1,12 +1,13 @@
-# WHALE ALERT PORTAL: MASTER ARCHITECTURE ️️
-"Bringing real-time on-chain data to an elite-grade standard. Optical fiber speed, resilient nodes, and maximum fidelity."
+# Humanity Ledger 2.0: MASTER ARCHITECTURE
+"A System Execution Environment for Sovereign Mini-Apps. Built for the Official January Ecosystem Launch."
 
-This document serves as the absolute blueprint and master photograph of the Whale Alert Portal architecture, built on an uncompromising "Legendary Level" standard.
+> **Date of Record: 14/08/2026**
+> This document serves as the absolute blueprint and master photograph of the Humanity Ledger architecture, built on an uncompromising "Legendary Level" standard.
 
 ---
 
-## ️ 1. MACRO-ARCHITECTURE OVERVIEW
-The Whale Alert Portal is not merely a wallet; it is a **High-Frequency On-Chain Analytics Terminal**. It fuses Zero-Knowledge identity verification (WorldID), real-time Ethereum/Base mempool telemetry, predictive markets (Polymarket), and elite-grade portfolio analytics into a single seamless interface.
+## 1. MACRO-ARCHITECTURE OVERVIEW
+Humanity Ledger is no longer just a portal; it is a **Hub & Spoke System Execution Environment**. It acts as a unified OS hosting sovereign Mini-Apps (Whale Chat, Portfolio, Markets, Studio Provenance). The central Hub provides Zero-Knowledge identity verification, while each Mini-App executes in its own isolated context.
 
 ### Topology Grid
 ```mermaid

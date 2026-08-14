@@ -1,3 +1,5 @@
+> **Last Updated: 14/08/2026** - Official January Launch Revision
+
 # COMPREHENSIVE OPERATING CODEX: WHALE ALERT
 ## Treatise on System Capabilities, Limitations, and Systemty
 
@@ -75,3 +77,4 @@ The scope of our creation is thus sealed and documented.
 ---
 **Digital Signature:** Whale Network Team  
 **Verification Hash:** 0x...[IMMUTABLE]
+

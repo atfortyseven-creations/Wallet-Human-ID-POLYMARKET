@@ -52,7 +52,7 @@ const NO_DOWNHEAD_PREFIXES = [
   '/gold-registry', '/infrastructure', '/directory', '/company',
   '/vip', '/faq', '/api-marketplace', '/clearance', '/settings',
   '/login', '/sign-up', '/legal', '/admin', '/developer', '/forum',
-  // removed careers
+  '/hub', '/whitepaper', '/manifesto'
 ];
 
 // 
@@ -70,7 +70,7 @@ const BOUNDED_PREFIXES = [
   '/connect', '/sign-up', '/login',
   '/admin', '/clearance',
   '/api-marketplace', '/directory', '/company', '/infrastructure',
-  '/forum', '/chat',
+  '/forum', '/chat', '/hub', '/whitepaper', '/manifesto',
   '/', // Landing page — prevents white zone below footer
 ];
 

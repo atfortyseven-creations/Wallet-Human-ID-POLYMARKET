@@ -294,10 +294,10 @@ export function AztecWTFSection() {
               </p>
             </div>
           </div>
-          <div className="bg-slate-900 text-white rounded-3xl p-8 text-center mt-8">
+          <div className="bg-[#f8f9fc] border border-black/[0.04] text-slate-800 rounded-3xl p-8 text-center mt-8 shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
             <p className="text-[20px] md:text-[24px] font-medium">
               As we can see, privacy alone is not enough. <br/>
-              <strong className="text-indigo-400 font-bold mt-2 inline-block">It must be programmable.</strong>
+              <strong className="text-indigo-600 font-bold mt-2 inline-block">It must be programmable.</strong>
             </p>
           </div>
         </Section>
@@ -409,11 +409,11 @@ export function AztecWTFSection() {
         </Section>
 
         <Section className="mb-16">
-          <div className="bg-gradient-to-br from-indigo-900 to-slate-900 text-white rounded-[32px] p-10 md:p-14 mt-10 shadow-2xl">
-            <p className="text-[14px] font-black uppercase tracking-[0.2em] text-indigo-300 mb-6">Core Architecture</p>
-            <p className="text-[22px] md:text-[28px] leading-relaxed text-white/95 font-medium">
+          <div className="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 text-slate-800 rounded-[32px] p-10 md:p-14 mt-10 shadow-lg shadow-indigo-500/5">
+            <p className="text-[14px] font-black uppercase tracking-[0.2em] text-indigo-500 mb-6">Core Architecture</p>
+            <p className="text-[22px] md:text-[28px] leading-relaxed text-slate-700 font-medium">
               Private state is structured as a{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300 font-bold">UTXO</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600 font-bold">UTXO</span>
               , the same fundamental structure underlying the Bitcoin network. If public state is stored in an account based Merkle Tree and private state in a UTXO based Merkle Tree, how are they composable?
             </p>
           </div>
@@ -556,7 +556,7 @@ export function AztecWTFSection() {
                 href="https://aztec.network"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 px-10 py-5 bg-slate-900 text-white text-[14px] font-black uppercase tracking-[0.2em] rounded-full hover:bg-indigo-600 hover:shadow-xl hover:shadow-indigo-500/30 transition-all duration-300"
+                className="inline-flex items-center gap-3 px-10 py-5 bg-white border border-black/[0.06] text-indigo-600 text-[14px] font-black uppercase tracking-[0.2em] rounded-full hover:bg-indigo-50 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300"
               >
                 Learn More at aztec.network
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
