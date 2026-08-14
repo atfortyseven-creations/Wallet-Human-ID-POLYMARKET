@@ -28,7 +28,7 @@ export default function LegalPage() {
     <LegalDocLayout
       title="Privacy Policy"
       subtitle="This policy sets forth the legal and attestation rules governing the Humanity Ledger ecosystem."
-      lastUpdated="26 July 2026"
+      lastUpdated="14 August 2026"
       category="Legal"
       toc={TOC}
       backHref="/"
@@ -179,12 +179,11 @@ export default function LegalPage() {
               <strong className="text-black font-semibold">3.1.</strong> This Privacy Policy applies to all personal data processed by Humanity Ledger S.L. in connection with access to and use of the Humanity Ledger platform, available at https://humanidfi.com, as well as the following services integrated into that platform:
             </p>
             <ul className="list-disc pl-5 space-y-2">
-              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Private Dashboard:</strong> User control panel with portfolio and activity information.</span></li>
-              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Whale Chat:</strong> End-to-end encrypted (E2EE) messaging system powered by the Extensible Message Transport Protocol (XMTP). Messages are not routed through or stored on the Aztec PXE.</span></li>
-              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Claim Identity:</strong> Service for the issuance and management of decentralised digital identities (DIDs) with ZKP verification.</span></li>
-              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Studio Provenance:</strong> Authorship and provenance registry for digital assets.</span></li>
-              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Humanity Ledger Registry:</strong> Public registry of verified identities and assets.</span></li>
-              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Private Portfolio:</strong> Portfolio asset tracking tool with enhanced privacy features.</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">App Launcher Hub:</strong> The central identity and execution gateway that orchestrates sovereign access to all ecosystem modules.</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Private Portfolio Terminal:</strong> Multi-chain asset tracking and analytics enclosed within the user's local Private Execution Environment (PXE).</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Whale Chat:</strong> End-to-end encrypted (E2EE) peer-to-peer communications protocol powered by XMTP, completely isolated from Aztec network telemetry.</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Claim Identity:</strong> Decentralised Digital Identity (DID) issuer utilizing Zero-Knowledge proofs for sovereign credential verification.</span></li>
+              <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Studio Provenance:</strong> Cryptographic registry for real-world asset tokenization and irrefutable authorship proofs.</span></li>
             </ul>
             <p>
               <strong className="text-black font-semibold">3.2.</strong> This Policy does not apply to third-party websites that you may access through links on our platform. Humanity Ledger S.L. accepts no responsibility for the privacy practices of such third parties, and we strongly encourage you to consult their respective privacy policies.
@@ -1116,7 +1115,7 @@ export default function LegalPage() {
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">Response period:</strong> 30 business days from receipt of the communication</span></li>
             </ul>
             <p>
-              <em>© 2026 Humanity Ledger S.L., All Rights Reserved.</em> <em>Last Updated: 26 July 2026</em>
+              <em>© 2026 Humanity Ledger S.L., All Rights Reserved.</em> <em>Last Updated: 14 August 2026</em>
             </p>
           </div>
         </section>

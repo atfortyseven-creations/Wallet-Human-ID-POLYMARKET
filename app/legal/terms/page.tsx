@@ -26,7 +26,7 @@ export default function LegalPage() {
     <LegalDocLayout
       title="Terms of Service"
       subtitle="This policy sets forth the legal and attestation rules governing the Humanity Ledger ecosystem."
-      lastUpdated="26 July 2026"
+      lastUpdated="14 August 2026"
       category="Legal"
       toc={TOC}
       backHref="/"
@@ -42,7 +42,7 @@ export default function LegalPage() {
           <div className="space-y-4 text-[15px] leading-[1.75] text-black/70">
             <h3 className="text-[14px] font-bold uppercase tracking-[0.06em] text-black mt-6 mb-3">Humanity Ledger S.L.</h3>
             <p>
-              <strong className="text-black font-semibold">Version:</strong> 2.1 (English) | <strong className="text-black font-semibold">Date:</strong> 26 July 2026 | <strong className="text-black font-semibold">Entry into Force:</strong> Upon publication on the website
+              <strong className="text-black font-semibold">Version:</strong> 2.1 (English) | <strong className="text-black font-semibold">Date:</strong> 14 August 2026 | <strong className="text-black font-semibold">Entry into Force:</strong> Upon publication on the website
             </p>
             <div className="bg-black/5 p-4 rounded-lg font-medium border-l-4 border-black">
               <strong>MANDATORY LEGAL WARNING (MiCA Art. 6):</strong> The acquisition of the $QDs token entails significant financial risks. It is possible to lose the entirety of the capital invested. The $QDs token is not covered by deposit guarantee schemes established pursuant to Directive 2014/49/EU. The $QDs token is not covered by investor compensation schemes established pursuant to Directive 97/9/EC. This crypto asset has not been verified or approved by the Comisión Nacional del Mercado de Valores (CNMV) or any other competent authority of a Member State of the European Union. Please read this document and the Whitepaper in full before making any acquisition decision.
@@ -501,7 +501,7 @@ export default function LegalPage() {
               <li className="flex items-start gap-3"><span className="mt-2 w-1.5 h-1.5 rounded-full bg-black/30 shrink-0" /><span><strong className="text-black font-semibold">For the exercise of GDPR rights:</strong> legal@humanidfi.com</span></li>
             </ul>
             <p>
-              <em>© 2026 Humanity Ledger S.L., All Rights Reserved.</em> <em>Last Updated: 26 July 2026</em>
+              <em>© 2026 Humanity Ledger S.L., All Rights Reserved.</em> <em>Last Updated: 14 August 2026</em>
             </p>
           </div>
         </section>

@@ -490,10 +490,10 @@ function HeroSection() {
             style={{ willChange: "transform" }}
           >
             <p className="text-[16px] md:text-[19px] text-black/45 leading-relaxed font-medium">
-              Humanity Ledger operates as a System Execution Environment containing modular, sovereign Mini-Apps. Built on Aztec Network.
+              Humanity Ledger operates as an Institutional-Grade System Execution Environment. Modular, sovereign Mini-Apps shielded by Aztec Network cryptography.
             </p>
             <p className="text-[13px] md:text-[14px] font-semibold text-indigo-600/90 tracking-wide uppercase mt-2">
-              Preparing for the Official Ecosystem Launch — January
+              Official Institutional Ecosystem Launch — January 2027
             </p>
           </motion.div>
         </div>
@@ -639,8 +639,8 @@ const MODULES = [
     ),
     tag: "On-Chain Registry",
     title: "Studio Provenance",
-    desc: "Register real-world assets on Aztec L2. The proof is public. Ownership stays private.",
-    href: "/portfolio",
+    desc: "Register and tokenize real-world assets on Aztec L2. Immutable public proofs with absolute ownership privacy.",
+    href: "/studio/provenance",
     cta: "Open Studio",
     id: "module-studio-btn",
   },
@@ -659,8 +659,8 @@ const MODULES = [
     ),
     tag: "Encrypted Messaging",
     title: "Whale Chat",
-    desc: "End-to-end encrypted P2P messaging. Gated by your Aztec ZK identity. No phone. No IP.",
-    href: "/developer",
+    desc: "End-to-end encrypted peer-to-peer communications. Cryptographically gated by your Zero-Knowledge identity.",
+    href: "/chat",
     cta: "Open Chat",
     id: "module-chat-btn",
   },
@@ -680,9 +680,9 @@ const MODULES = [
     ),
     tag: "Shielded Analytics",
     title: "Portfolio Terminal",
-    desc: "Multi-chain asset tracking inside your PXE. Block explorers see nothing.",
-    href: "/terminal",
-    cta: "Open Terminal",
+    desc: "Multi-chain asset tracking enclosed within your local Private Execution Environment. Total financial opacity.",
+    href: "/portfolio",
+    cta: "Open Portfolio",
     id: "module-terminal-btn",
   },
 ];
