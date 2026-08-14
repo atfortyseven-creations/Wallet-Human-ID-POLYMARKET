@@ -4,7 +4,7 @@ const config: CapacitorConfig = {
   appId: 'com.humanidfi.app',
   appName: 'Humanity Ledger',
   webDir: 'public', // Using public as dummy dir, we use remote server
-  bundledWebRuntime: false,
+
   server: {
     url: 'https://humanidfi.com',
     cleartext: false, // Force HTTPS

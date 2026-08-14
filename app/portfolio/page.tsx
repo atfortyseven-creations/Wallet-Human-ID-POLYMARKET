@@ -56,9 +56,9 @@ export default function PortfolioPage() {
   // Instead render a proper loading screen that TitaniumGate won't misinterpret.
   if (!mounted || isSystemChecking) {
     return (
-      <div className="bg-white flex items-center justify-center">
+      <div className="min-h-[100dvh] w-full bg-white flex items-center justify-center">
         <div className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30 animate-pulse">
-          Loading...
+          Initializing...
         </div>
       </div>
     );
@@ -68,9 +68,9 @@ export default function PortfolioPage() {
 
   if (needsGate) {
     return (
-      <div className="bg-white flex items-center justify-center">
+      <div className="min-h-[100dvh] w-full bg-white flex items-center justify-center">
         <div className="text-[10px] font-black uppercase tracking-[0.3em] text-black/30 animate-pulse">
-          Redirecting...
+          Verifying Credentials...
         </div>
       </div>
     );

@@ -4121,7 +4121,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
       {/* NOTE: remoteAudioRef lives ONLY inside the active call portal below to avoid ref conflicts */}
 
       {/* ── Incoming Call Banner (state: ringing) ───────────────────────────── */}
-      {callState === 'ringing' && isMounted && typeof document !== 'undefined' && createPortal(
+      {callState === 'ringing' && isMounted && typeof document !== 'undefined'
+        ? (createPortal(
         <div className="fixed inset-0 w-full h-full z-[200000] flex flex-col items-center justify-between bg-white" style={{ touchAction: 'none' }}>
           {/* Top section */}
           <div className="flex flex-col items-center w-full pt-[max(60px,env(safe-area-inset-top,60px))] px-6">
@@ -4170,10 +4171,10 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           </div>
         </div>,
         document.body
-      )}
-
+      ) as React.ReactNode) : null}
       {/* ── Outgoing Call (state: calling — waiting for answer) ─────────────── */}
-      {callState === 'calling' && isMounted && typeof document !== 'undefined' && createPortal(
+      {(callState === 'calling' && isMounted && typeof document !== 'undefined')
+        ? (createPortal(
         <div className="fixed inset-0 w-full h-full z-[200000] flex flex-col items-center justify-between bg-white" style={{ touchAction: 'none' }}>
           <div className="flex flex-col items-center w-full pt-[max(60px,env(safe-area-inset-top,60px))] px-6">
             <p className="text-black/40 text-[11px] font-semibold uppercase tracking-[0.3em] mb-2">
@@ -4204,7 +4205,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           </div>
         </div>,
         document.body
-      )}
+      ) as React.ReactNode) : null}
 
       {/* ── Active Call Overlay — WhatsApp/Telegram parity ──────── */}
       {callState === 'active' && isMounted && (
@@ -4408,13 +4409,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
 
             <audio ref={remoteAudioRef} autoPlay playsInline style={{ position: 'absolute', width: 0, height: 0, opacity: 0, pointerEvents: 'none' }} />
           </div>
-        ),
-        document.body
+        )
       )}
 
       </div> {/* Close Chat Area */}
 
-      {showCallSettings && isMounted && typeof document !== 'undefined' && createPortal(
+      {(showCallSettings && isMounted && typeof document !== 'undefined')
+        ? createPortal(
         <div className="fixed inset-0 z-[300000] bg-black/30 backdrop-blur-sm flex flex-col items-center justify-center p-6 animate-in fade-in duration-200" onClick={() => setShowCallSettings(false)}>
            <div className="w-full max-w-sm bg-white rounded-3xl p-8 shadow-2xl" onClick={e => e.stopPropagation()}>
                <div className="flex justify-between items-center mb-8">
@@ -4466,16 +4467,18 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                  </button>
                </div>
            </div>
-        </div>
-      )}
+        </div>,
+        document.body
+      ) : null}
 
-      {showE2EE && (
-        <div className="absolute inset-0 z-[100] bg-white/95 backdrop-blur-md flex flex-col items-center justify-center p-6 animate-in fade-in zoom-in duration-300">
+      {(showE2EE && isMounted && typeof document !== 'undefined')
+        ? createPortal(
+        <div className="fixed inset-0 z-[200000] bg-white/95 backdrop-blur-md flex flex-col items-center justify-center p-6 animate-in fade-in zoom-in duration-300">
            <div className="w-full max-w-sm">
                <div className="flex justify-between items-center mb-8">
                    <h3 className="text-[13px] font-black uppercase tracking-[0.25em] text-[#050505]">E2EE Status</h3>
                    <button onClick={() => setShowE2EE(false)} className="w-10 h-10 flex items-center justify-center hover:bg-black/5 rounded-full transition-colors text-[11px] font-black uppercase text-[#050505]">
-                     X
+                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                    </button>
                </div>
                
@@ -4496,36 +4499,39 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                  </p>
                </div>
            </div>
-        </div>
-      )}
+        </div>,
+        document.body
+      ) : null}
 
-      {/*  Overlays  */}
-      {showScanner && (
-        <div className="absolute inset-0 z-[100] bg-white/95  backdrop-blur-md flex flex-col items-center justify-center p-6 animate-in fade-in zoom-in duration-300">
+      {(showScanner && isMounted && typeof document !== 'undefined')
+        ? createPortal(
+        <div className="fixed inset-0 z-[200000] bg-white/95 backdrop-blur-md flex flex-col items-center justify-center p-6 animate-in fade-in zoom-in duration-300">
            <div className="w-full max-w-sm">
                <div className="flex justify-between items-center mb-8">
-                   <h3 className="text-[13px] font-black uppercase tracking-[0.25em] text-[#050505] ">Scan Peer QR</h3>
-                   <button onClick={() => setShowScanner(false)} className="w-10 h-10 flex items-center justify-center hover:bg-black/5  rounded-full transition-colors text-[11px] font-black uppercase text-[#050505] ">
-                     X
+                   <h3 className="text-[13px] font-black uppercase tracking-[0.25em] text-[#050505]">Scan Peer QR</h3>
+                   <button onClick={() => setShowScanner(false)} className="w-10 h-10 flex items-center justify-center hover:bg-black/5 rounded-full transition-colors text-[11px] font-black uppercase text-[#050505]">
+                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                    </button>
                </div>
                <div className="mb-8">
-                 <p className="text-[10px] text-black/40  text-center font-mono leading-relaxed px-4">
+                 <p className="text-[10px] text-black/40 text-center font-mono leading-relaxed px-4">
                    Establish a cryptographically secured P2P channel by scanning a peer&apos;s System QR identity.
                  </p>
                </div>
                <QrScanner mode="scan" onScanSuccess={(addr) => handleStartConversationWithPeer(addr)} />
            </div>
-        </div>
-      )}
+        </div>,
+        document.body
+      ) : null}
 
-      {showMyQR && (
-        <div className="absolute inset-0 z-[100] bg-white/95  backdrop-blur-md flex flex-col items-center justify-center p-6 animate-in fade-in zoom-in duration-300">
+      {(showMyQR && isMounted && typeof document !== 'undefined')
+        ? createPortal(
+        <div className="fixed inset-0 z-[200000] bg-white/95 backdrop-blur-md flex flex-col items-center justify-center p-6 animate-in fade-in zoom-in duration-300">
            <div className="w-full max-w-sm">
                <div className="flex justify-between items-center mb-8">
-                   <h3 className="text-[13px] font-black uppercase tracking-[0.25em] text-[#050505] ">My Identity QR</h3>
-                   <button onClick={() => setShowMyQR(false)} className="w-10 h-10 flex items-center justify-center hover:bg-black/5  rounded-full transition-colors text-[11px] font-black uppercase text-[#050505] ">
-                     X
+                   <h3 className="text-[13px] font-black uppercase tracking-[0.25em] text-[#050505]">My Identity QR</h3>
+                   <button onClick={() => setShowMyQR(false)} className="w-10 h-10 flex items-center justify-center hover:bg-black/5 rounded-full transition-colors text-[11px] font-black uppercase text-[#050505]">
+                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                    </button>
                </div>
                <QrScanner 
@@ -4535,11 +4541,13 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                    projectDescription={chatBio || "Present this code to a peer. Once scanned, you can start messaging securely."} 
                />
            </div>
-        </div>
-      )}
+        </div>,
+        document.body
+      ) : null}
 
        {/* Context Menu Overlay */}
-       {contextMenu && typeof document !== 'undefined' && createPortal(
+       {(contextMenu && typeof document !== 'undefined')
+         ? createPortal(
          <div className="fixed inset-0 z-[200]" onClick={() => setContextMenu(null)}>
            <div 
              className="absolute bg-white  border border-black/10  rounded-2xl shadow-xl p-2 min-w-[160px] flex flex-col"
@@ -4589,7 +4597,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
            </div>
          </div>,
          document.body
-       )}
+       ) : null}
 
         {/* Hito 4: Forward Message Modal */}
         {forwardMsg && (
@@ -4622,7 +4630,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
         )}
 
         {/* Profile Popover Overlay — fixed + portal so it escapes overflow:hidden containers */}
-       {showProfile && activePeer && isMounted && createPortal(
+       {(showProfile && activePeer && isMounted)
+         ? createPortal(
          <div className="fixed inset-0 z-[99999] bg-black/30 backdrop-blur-sm flex flex-col items-center justify-center p-6 animate-in fade-in duration-200" onClick={() => setShowProfile(false)}>
            <div className="w-full max-w-sm bg-white p-6 rounded-3xl border border-black/10 shadow-2xl animate-in zoom-in-95 duration-200" onClick={e => e.stopPropagation()}>
                <div className="flex justify-between items-center mb-6">
@@ -4669,10 +4678,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
            </div>
          </div>,
          document.body
-       )}
+       ) : null}
 
        {/* Phase 2: Immersive Lightbox Modal */}
-       {lightboxImg && typeof document !== 'undefined' && createPortal(
+       {(lightboxImg && typeof document !== 'undefined')
+         ? createPortal(
         <div 
           className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/95 backdrop-blur-lg animate-in fade-in duration-200"
           onClick={() => setLightboxImg(null)}
@@ -4702,7 +4712,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
           </a>
         </div>,
         document.body
-       )}
+       ) : null}
 
        {/* Phase 4: Clear Chat Confirmation Modal */}
        {showClearConfirm && (
@@ -4728,7 +4738,8 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
        )}
 
        {/* Phase 4: Sidebar Context Menu */}
-       {sidebarMenu && typeof document !== 'undefined' && createPortal(
+       {(sidebarMenu && typeof document !== 'undefined')
+         ? createPortal(
          <div className="fixed inset-0 z-[200]" onClick={() => setSidebarMenu(null)} onContextMenu={(e) => { e.preventDefault(); setSidebarMenu(null); }}>
            <div 
              className="absolute bg-white border border-black/10 rounded-2xl shadow-xl p-2 min-w-[160px] flex flex-col animate-in fade-in zoom-in-95 duration-150"
@@ -4748,7 +4759,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
            </div>
          </div>,
          document.body
-       )}
+       ) : null}
 
        {/* Phase 5: Poll Creator Modal */}
        {showPollCreator && (
