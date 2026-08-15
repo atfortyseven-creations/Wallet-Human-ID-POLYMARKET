@@ -1343,7 +1343,11 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
   // CRITICAL: We do NOT await anything before getUserMedia, otherwise
   // Android WebViews will strip the transient user-activation token.
   const startCall = async (type: 'audio' | 'video') => {
-    if (!peerInstance || !activePeer) return;
+    if (!activePeer) return;
+    if (!peerInstance) {
+      toast.error("WebRTC is initializing. Please wait a moment and try again.");
+      return;
+    }
 
     // [ARCH-FIX] Derive receiver PeerID deterministically — no XMTP round-trip needed
     const receiverPeerId = derivePeerId(activePeer);
@@ -2089,13 +2093,9 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                         const airdropData = await airdropRes.json();
                         if (airdropData.success) {
                             // Only show the welcome toast on the very first successful claim
-                            toast.success('⚡ Aztec Identity Active: 10 QDs received!', { 
+                            console.log('⚡ Aztec Identity Active: 10 QDs received!', { 
                                 description: 'Transaction confirmed on Aztec Testnet.',
-                                duration: 8000,
-                                action: airdropData.explorerUrl ? {
-                                    label: 'View on AztecScan',
-                                    onClick: () => window.open(airdropData.explorerUrl, '_blank')
-                                } : undefined
+                                explorerUrl: airdropData.explorerUrl
                             });
                         }
                         // On any other response (Already received, error, etc.):
@@ -4716,7 +4716,7 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
        ) : null}
 
        {/* Phase 4: Clear Chat Confirmation Modal */}
-       {showClearConfirm && (
+       {showClearConfirm && typeof document !== 'undefined' ? createPortal(
          <div className="fixed inset-0 z-[1000] bg-black/40 backdrop-blur-sm flex items-center justify-center p-6 animate-in fade-in zoom-in duration-200">
            <div className="w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl flex flex-col items-center text-center">
              <div className="w-16 h-16 rounded-full bg-[#f5f5f7] flex items-center justify-center text-[#050505] mb-4">
@@ -4735,8 +4735,9 @@ export function WhaleChat({ forceAutoInit = false }: WhaleChatProps) {
                </button>
              </div>
            </div>
-         </div>
-       )}
+         </div>,
+         document.body
+       ) : null}
 
        {/* Phase 4: Sidebar Context Menu */}
        {(sidebarMenu && typeof document !== 'undefined')

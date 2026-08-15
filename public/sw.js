@@ -15,10 +15,8 @@
 // ─── CRITICAL: This timestamp changes on EVERY build ────────────────────────
 // Format: ISO string replaced by build script / CI. Falls back to deployment
 // URL parameter so Railway's CDN can distinguish builds.
-const BUILD_ID = self.registration.scope + '?v=' + Date.now().toString(36);
-const CACHE_VERSION = 'system-v3-' + (typeof __BUILD_TIMESTAMP__ !== 'undefined'
-  ? __BUILD_TIMESTAMP__
-  : Math.random().toString(36).slice(2));
+const BUILD_ID = self.registration.scope + '?v=4';
+const CACHE_VERSION = 'system-v4-08152026';
 
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const PAGE_CACHE   = `${CACHE_VERSION}-pages`;
